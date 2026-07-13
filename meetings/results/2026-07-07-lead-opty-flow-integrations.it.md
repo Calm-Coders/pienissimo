@@ -1,0 +1,51 @@
+# [ROMI-PIENISSIMO] Flusso Lead/Opty + Logiche Integrazioni — 07/07/2026
+
+**Fonti:** meetings/2026-07-07-lead-opty-flow-integrations-transcript.it.md (trascrizione originale in italiano, 148 min)
+
+**Partecipanti:** Elena Spini (ROMI), Andrea Di Cicco (ROMI), Aurel Mrruku (ROMI), Sabatino Rinaldi (Pienissimo), Fabrizio Paganelli (Pienissimo), Elisa Migliano (Pienissimo), Daniela Morgese (Pienissimo — entrata ~1:44). Assente: Marco Montesi (responsabile commerciale Pienissimo — serve il suo parere su più punti). Nota: le etichette dei parlanti nella trascrizione automatica sono inaffidabili nella seconda metà (diverse spiegazioni tecniche di Aurel risultano attribuite ad altri); il contenuto qui sotto è ricostruito dal contesto.
+
+## Decisioni
+
+- **Integrazione Mexal via REST API, non via file.** La strada CSV/file è lievitata a 8 file, avrebbe richiesto workaround su Data Cloud, aumentato i costi e non è best practice Salesforce; anche il contratto prevede le API. Fabrizio approva. ROMI ha già abbozzato il mapping delle API dalla documentazione Passepartout. L'unica API mancante (agenti) è accettabile: a ogni nuova assunzione l'agente si crea manualmente su Mexal e il codice si riporta su Salesforce.
+- **Gestione bundle: soluzione custom invece di Revenue Cloud (CPQ), in attesa di demo visiva.** Le licenze Revenue Cloud non erano nel pacchetto acquistato. Dopo che Aurel ha mostrato un bundle customizzato di un progetto precedente (bundle come record contenitore, prezzo fisso del bundle, prodotti componenti con *prezzo spalmato/scontato* così le statistiche per prodotto continuano a funzionare), Pienissimo concorda che la strada custom sembra adeguata — Revenue Cloud è sovradimensionato per il loro caso (niente logiche di prezzo dinamiche; il prezzo del bundle è fisso in configurazione). Via libera definitivo solo dopo che ROMI mostrerà la propria soluzione custom nell'ambiente di test (entro la prossima settimana, non giovedì).
+- **Punti fermi sui bundle:** un ordine non contiene mai più di un bundle; un tutor non vende mai bundle + prodotto singolo nello stesso ordine (si fanno due preventivi/ordini separati) — questo ha risolto il problema principale di design. Prezzo del bundle fisso (ammesso sconto manuale aggiuntivo); listini e scontistiche per cliente valgono solo sui prodotti singoli.
+- **La statistica è il requisito dominante:** il fatturato per singolo prodotto deve restare misurabile anche quando venduto dentro un bundle → internamente i componenti hanno un prezzo spalmato. La resa in fattura/ordine (mostrare componenti o rate, nascondere i prezzi interni dei componenti al cliente) resta una decisione di business Pienissimo da prendere dopo — la piattaforma supporta entrambe.
+- **DocuSign confermato come strumento di firma.** Sabatino ha attivato il trial 30 giorni e ha già scritto ai commerciali DocuSign (italiani); tratterà il prezzo a firma (~2–3 €/documento) usando i volumi annui di partecipanti agli eventi, poi acquista. Integrazione via pacchetto AppExchange; le mail degli utenti Salesforce devono coincidere con quelle DocuSign; basta un solo utente mittente (la casella "padrona del funnel", es. marketing@) perché gli invii sono automatici N giorni prima dell'evento.
+- **Data Cloud (sostituto di Zoho Analytics) rimandato:** inutilizzabile finché i dati non sono in piattaforma — import previsto ~1 settembre, preceduto dalla pulizia dati (~6.000 lead/account con molti duplicati vs ~7.500 clienti paganti). Nel frattempo Fabrizio + Elisa fanno analytics con altri strumenti.
+- **Revisione flusso Lead/Opportunity rimandata.** A Elena è caduta la connessione e la call era già lunga. Il workflow commerciale ridisegnato (proposta ROMI basata sul flusso Pienissimo, adattata alle logiche Salesforce) passa alla call di giovedì; Elena registrerà e taglierà il segmento sul flusso commerciale per Daniela; Sabatino fa da portavoce e risponderà in giornata.
+- **Terminologia allineata:** quello che su Zoho chiamavano "ordine" prima dell'accettazione in Salesforce è un **preventivo**; diventa Ordine quando accettato/pagato.
+
+## Azioni
+
+| Attività | Responsabile | Stato |
+|---|---|---|
+| Chiamare Creosoft/Passepartout (referente tecnico: Mirko) per annunciare la nuova integrazione API e metterlo in contatto diretto con ROMI | Fabrizio | Aperta |
+| Verificare con Mexal/Passepartout se le API documentate coprono anche l'outbound (CRM→Mexal) — chiedere collection/webhook con esempi; verso Mexal vanno solo ordini (+ nuovi account) | ROMI (Andrea Di Cicco) | Aperta |
+| Stima tecnica dell'effort per la soluzione bundle custom + passaggio interno con Galotto | ROMI (Andrea Di Cicco) | Aperta |
+| Mostrare la soluzione bundle custom funzionante in ambiente di test | ROMI | Aperta — entro settimana prossima (non giovedì) |
+| Eventualmente coinvolgere Salesforce direttamente per presentare pro/contro di Revenue Cloud | ROMI (Elena + Andrea) | Aperta |
+| Sbloccare il marketing: risposte su form + sottodominio pendenti dalla riunione marketing del 23 giugno — smuovere Matteo | Sabatino | Aperta — il lavoro marketing è bloccato su questo |
+| Chiudere l'acquisto DocuSign: trattativa col commerciale (3 tipologie di documenti da firmare: ordine/contratto, accettazione T&C evento, modulo RID; + template preventivo), poi avvisare ROMI | Sabatino | Aperta — mail inviata, in attesa di risposta |
+| Pulizia dati (dedup lead/account) in vista dell'import ~1 settembre; analytics provvisoria con altri strumenti | Fabrizio + Elisa | Aperta |
+| Registrare la call di giovedì, tagliare il segmento sul flusso commerciale, inviarlo a Daniela | Elena | Aperta |
+| Rivedere il video tagliato del flusso commerciale e rispondere nel pomeriggio stesso | Sabatino (+ Daniela) | Aperta |
+| Decidere la politica di esposizione in fattura (righe componenti vs righe rate; nascondere i prezzi dei componenti) | Daniela / Fabrizio (con Marco) | Aperta — la piattaforma supporta entrambe |
+
+## Domande aperte / Rischi
+
+- **Escalation sul gap licenze bundle:** Fabrizio e Daniela sono contrariati che i bundle (>50% del fatturato) emergano solo ora, dopo 7–9 incontri, e non siano stati quotati nell'offerta licenze. Posizione ROMI: il significato concreto di "bundle" è diventato chiaro solo la settimana scorsa con il file Excel. Rischio parcheggiato in attesa della demo della soluzione custom — se la demo delude, la questione licenze (e attribuzione costi) si riapre.
+- **Codice cliente Mexal sui clienti nuovi:** il modulo RID richiede il codice cliente Mexal, che il gestionale assegna solo dopo il primo ordine. Da progettare il flusso: account nasce *prospect* in Salesforce, l'ordine spinge account+ordine sull'ERP, l'account diventa *customer*, e solo allora possono partire i flussi RID/contratto. Elena e Aurel non concordano sul fatto che ogni account diventi prima o poi customer — da chiudere nella discussione sul data model.
+- **Flusso RID (addebito diretto) — ~50% degli incassi:** oggi inviato via ZohoSign; da ricostruire come template dinamico DocuSign (campi bancari obbligatori compilati dal cliente, dati aziendali precompilati). Le banche finora hanno sempre accettato la firma digitale. Documento firmato da agganciare ad account/contatto in Salesforce.
+- **Template documentali — 4 individuati finora:** (1) ordine/contratto con condizioni generali (inviato solo per pacchetti grossi: Performance Plus, "anno con Pienissimo" ~10k€+; mai per piccoli ordini), (2) accettazione T&C partecipazione evento (privacy, non concorrenza, riservatezza — firmata da ogni partecipante ~3 giorni prima dell'evento), (3) modulo RID, (4) stampa preventivo (sottoinsieme del documento ordine). Tutti da rivedere riga per riga con ROMI; i documenti attuali non sono normalizzati (layout incoerente).
+- **Vincoli generazione PDF:** la generazione front-end (da bottone) è pienamente personalizzabile; quella server-side (schedulata, es. 3–5 giorni prima dell'evento) è limitata dalla libreria PDF. Pattern proposto: generare il PDF da azione utente/flag di stato, poi inviare quel PDF archiviato via DocuSign in automatico prima dell'evento.
+- **Costo storage file:** lo storage Salesforce è caro (~soglia 10 GB); Pienissimo ha "tanti" documenti (non quantificati). Valutare archiviazione PDF su SharePoint/Drive con link sul record. Serve una stima dei volumi.
+- **Modello ordine Performance Plus:** ordine annuale unico (es. 20k€) spacchettato in una riga per rata (12× 1.700 € mensili, stesso codice prodotto; il trimestrale usa un codice diverso). Contratto inviato manualmente da bottone quando il cliente conferma l'intenzione (i clienti vogliono vedere il contratto prima di pagare; stato "vinto" solo alla ricezione incasso; esiste lo stato intermedio "accettato — copia contabile ricevuta" perché spesso i clienti bonificano senza accettazione formale). ~100 contratti/anno, in crescita con i rinnovi.
+- **Ciclo di vita del preventivo:** il tutor può modificarlo infinite volte prima che diventi ordine; non esiste un momento formale di accettazione. Stati e flag da modellare nel flusso Salesforce (si aggancia alla discussione lead/opty rimandata).
+- **Riunioni intermedie mancanti nel tracker:** questa call cita una riunione marketing del 23 giugno (minuta form/sottodominio) e 7–9 incontri totali fatti finora — quelle trascrizioni non sono state processate qui, quindi il tracker ha un buco tra il 27/05 e il 07/07.
+
+## Note
+
+- Aurel ha mostrato un'implementazione reale di bundle customizzato da un progetto precedente (contenitore con prodotti componenti, alcuni a prezzo zero, regole di sconto per quantità/cliente/valore) — è stato il punto di svolta che ha rassicurato Pienissimo sulla strada custom.
+- Principio guida di Fabrizio, ribadito: niente "accrocchi" — meglio crescere in modo nativo; ma il team ha accettato che un layer custom ben costruito non è un accrocchio: è soprattutto un tema di visualizzazione.
+- Promemoria finale di Daniela: ogni decisione di design deve tenere in mente il dato statistico finale — "il tema non è solo il fare, ma le dashboard finali".
+- Elena porterà giovedì una proposta di schema aggiuntiva per gli ordini rinnovabili tipo Performance Plus ("me la tengo per giovedì") — vuole chiamarli in modo distinto dai bundle.

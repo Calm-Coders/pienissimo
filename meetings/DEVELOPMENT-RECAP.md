@@ -1,0 +1,114 @@
+# ROMI-PIENISSIMO — Salesforce Development Recap
+
+> Consolidated from the 7 tracked meetings (2026-05-27 → 2026-07-07), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
+> Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
+
+---
+
+## 1. Project frame
+
+| Fact | Value | Source |
+|---|---|---|
+| Zoho CRM contract expiry | **October 31, 2026** (corrects kickoff's "end September") | 06/08 |
+| Dual-run window | Zoho + Salesforce in parallel until end of October; stage-sale invoicing stays on Zoho through Food Marketing; ticket data double-entered | 06/08 |
+| Hard calendar | Tour (free events): Sept 7–19 · Food Marketing Festival: Sept 29 · Big kickoff event (1,500+): Oct 29 | 05/27, 06/08 |
+| Data import into Salesforce | ~September 1, after dedupe (~6,000 leads/accounts vs ~7,500 paying clients) | 06/30, 07/07 |
+| Phase 1 (by end September, usable) | Everything the Zoho CRM does today: lead/opty flow, quotes/orders, **ticket warehouse + attendance** (top priority), Mexal + WooCommerce integrations | 05/27, 06/08 |
+| Phase 2 (by end October) | Product sales via WooCommerce/GLS (books, video courses), Pienissimo Pro flows, Data Cloud analytics, remaining automation | 06/30 |
+| Method | ROMI writes the **blueprint** doc → Pienissimo approves → configure (partly in parallel) → key-user reviews in test env | 05/27 |
+| Guiding principles | No "accrocchi" (hacks) — redesign don't replicate; start simple/manual, automate what proves repetitive; every design decision must serve the **final statistics/dashboards** | 05/27, 06/16, 07/07 |
+| Org language | Italian (translate custom labels via translation workbench) | 06/03 |
+
+## 2. Data model
+
+| Object | Usage / decisions | Status |
+|---|---|---|
+| **Lead** | Only self-serve actions with no purchase intent (live-stream signup, free video download, quiz). Early workflow stages (in lavorazione, non risponde, primo contatto, da ricontattare, prequalifica) live here. Owned by marketing. | ✅ 06/30 |
+| **Account / Contact** | Account = azienda (add **nome locale** field alongside ragione sociale). Opportunity always requires an account: forms create "primordial" account+contact automatically; sales completes registry after first call. Dedup keys: **email OR phone** (forms), **email + VAT** (WooCommerce orders). Converted-lead origin stays visible. | ✅ 06/16 |
+| **Opportunity** | Created directly (skipping Lead) for: explicit contact-request forms (sponsored landings, live QR) and all existing-client requests. 4 phases (negotiation w/ sub-levels → rinviata / persa / vinta). Closed-won driven by **payment** (admin manual). Mandatory loss reason, **two picklist sets** (opportunity-stage vs quote-stage; "errato" must not exist for quotes). SLA: new → in lavorazione within **48 working hours**, else escalation to sales manager. Manual stage transitions at go-live. **Record Types** separate commercial vs e-commerce flows for clean statistics (decided drill-me 07/13; dynamic forms may complement field-level layout inside each type). Track **existing-client vs new-business** origin per opportunity (Daniela's ad-spend attribution). | ✅ 06/16–06/30 |
+| **Quote (Preventivo)** | Always under an opportunity; multiple quotes per opportunity; 5-day validity → "scaduto" substatus is routine; retry = **clone** the expired quote (keeps history). Statuses follow the opportunity. Quote = "condizioni generali + economic summary" in one PDF. Terminology: Zoho's pre-acceptance "ordine" = Salesforce **Quote**. | ✅ 06/30 |
+| **Order** | ONE order object; **one order line per installment** with due date (kills the Zoho child-order/"blocchi" pattern). Max **one bundle per order**, never bundle + loose product (two orders instead). Immutable once invoiced (narrow admin correction permission set). Needs an **order typology** field (stage sale / tutor / book / video course / PP activation / PP renewal…) driving admin processes. Orders/products from Mexal are **read-only** in Salesforce. | ✅ 06/30–07/07 |
+| **Bundle (custom)** | Custom container record (NOT Revenue Cloud/CPQ — not licensed, oversized). Fixed price defined at configuration (manual extra discount only); components carry **spread/discounted prices** so product-level revenue stats survive (acceptance criterion). Configured per event (3–5 per event), identical for all buyers, never modified after sale, never reused (activate/deactivate). BLO block codes and €0 omaggio lines are dead: real product codes at 100% discount instead; BLO codes not migrated. UI: bundle as one order line, expandable to components. | 🟡 07/07 — conditional on ROMI's test-env demo (due w/o 07/07); Revenue Cloud question reopens if demo disappoints |
+| **Asset (or custom) — ticket movement** | Reproduces the Zoho "magazzino biglietti": joins order + contacts; states track the 3-stage lifecycle (§3.4). Files (signed PDFs, QR) attached here. | ✅ 06/08 (object choice TBD in blueprint) |
+| **Campaign = event** | One campaign per event edition; campaign members = participants with check-in status (participated / no-show) → feeds no-show and room-composition analytics. Product codes stay cross-year; year handled via campaign dates + competence-year field on movements. | ✅ 06/08 |
+| **Contract (Performance Plus)** | Standard Contract object + custom logic: contracts-as-database (start/end/renewal dates, amount, linked quote/invoices/payments), renewals panel, invoiced-vs-collected per contract, service-block flag on serious arrears. Annual, invoiced in N tranches (12× monthly = same product code; quarterly = different code). Contract sent manually (button) on client's confirmed intent. ~100/year and growing. Elena to propose a distinct name/type for renewable orders (not "bundle"). | ✅ 06/08–07/07 (dedicated analysis session still to hold) |
+| **Invoice** | Created in Salesforce as reference shell when order closes → Mexal invoices → returns number/status into dedicated searchable fields. Same pattern for every order origin. | ✅ 06/16 |
+| **Credit note** | ~30/year, some large. Check license for standard object, else custom. | 🔴 06/30 — license check pending (Andrea) |
+
+## 3. Core flows to build
+
+### 3.1 Lead/Opportunity intake (form routing)
+- Routing decided by **source, not form content**: hidden pre-filled fields (fonte, categoria, sottocategoria, UTM) discriminate. Source A → Lead; source B → Opportunity (+auto account/contact). Forms change ~every 15 days → repeatable field-mapping process; new fields must pre-exist; Pienissimo can self-manage mappings; consider Marketing Cloud forms/landings. (06/16)
+- Multi-select service interest must land readable + reportable on the opportunity (multi-picklist or `;`-joined text + "contains" reports; every value individually countable). (06/16)
+- ⚠ Elena's rewritten Salesforce-oriented flow (states, actions) is 🔴 **still not reviewed** — postponed on 07/07; direction has NOT pre-accepted it.
+
+### 3.2 Sales flow (tutor)
+- Quote sent → statuses per §2; "da ricontattare" = task/alert (48h parking). New-opportunity SLA 48h. Tutor daily-activities dashboard + manager cross-tutor dashboard (standard components identified). Notification channel (bell vs email) 🔴 TBD by Pienissimo. (06/16, 06/30)
+- Tutors on fixed price list, no discretionary discounts unless authorized; installment dates must always keep the client fully paid **before** attending. (06/30)
+
+### 3.3 E-commerce parallel flow (phase 2 build, design now)
+- Book: WooCommerce order arrives closed → GLS delivery confirmation (greenfield integration) → **+15 days** → nightly job creates non-commercial opportunity. Video course: Teachable completion API → opportunity immediately → **48 working-hours** task SLA. Opportunity chosen over bare task (funnel reporting). (06/16) Architecture: **Record Types** (decided drill-me 07/13).
+
+### 3.4 Ticket lifecycle — THE priority (phase 1)
+Three stages (this reconciles all meetings — state it verbatim in the blueprint):
+1. **ORDER** placed → movement *loaded* (parked, not usable);
+2. **PAYMENT** of the linked invoice completed → movement *available* (today: nightly Mexal→Zoho procedure; replicate via Mexal integration; manual check until then — painful at Food Marketing volumes, 100–150 invoices/day);
+3. **SIGNATURE** of docs (privacy, non-compete, photo/video consent) via DocuSign → **QR code (usable ticket) generated**;
+4. **CHECK-IN**: QR scanned (internal phone app today) → unload movement → per-client algebraic sum 0; unused tickets stay visible (no-show data).
+- Participants ≠ account contacts: post-payment email to referent → fills **participant list** → contacts auto-created → per-participant signature → QR. Reminder funnel (60/30/15/1 days); **day-of-event fallback button** (instant email / identity check → QR at the door); last-minute purchases accepted until day before. (06/08)
+- Payment split: card = auto-completed; bonifico = manual admin confirmation (stays manual at go-live). (06/30)
+
+### 3.5 Documents & signatures
+- **DocuSign** (AppExchange package; Salesforce user emails must match DocuSign users; ONE sending user = funnel-owner mailbox; async sends N days pre-event). Purchase in negotiation (Sabatino). (07/07)
+- 4+ templates: order/contract (incl. general conditions — sent only for big packages ≥ ~€10k; never small orders), event T&C participation acceptance, **RID mandate** (~50% of payments; dynamic template, client-filled bank fields, requires Mexal client code → prospect→customer flow), quote print. Line-by-line design with ROMI; current docs not normalized. (07/07)
+- PDF generation: front-end (button) fully stylable; server-side limited → pattern: generate PDF on user action/status flag, send stored PDF via DocuSign later. (07/07)
+- Storage: org has **35.2 GB**; plan purge batch (e.g. 30 days post-event after client cloud backup) or SharePoint/Drive links. (06/08, 07/07)
+- 🔴 Quote+contract double-signature vs sequential — Pienissimo internal decision pending. Manual-signature fallback path needed. (06/30)
+
+### 3.6 Performance Plus contracts → §2 Contract. Monthly "what to invoice" report, exportable + schedulable by email; year-end revenue projection for direction (target €4–5M). (05/27, 07/07)
+
+## 4. Integrations map
+
+| # | Integration | Direction / notes | Status |
+|---|---|---|---|
+| 1 | **Mexal (Passepartout)** | **REST API** (reversed from CSV/FTP on 07/07). Inbound: clients, agents, payment conditions, destinations, invoices, orders, products, exposure. Outbound: orders (+ account creation for prospects, together with the order). Agents API missing → manual code copy on hire. Contact: Mirko (Creosoft) — Fabrizio connecting him with ROMI. Dual-run sync design needed. | 🟡 in analysis |
+| 2 | **WooCommerce ×2** (events/stage-sales + books/marketing) | API (not plugin). Check Salesforce standard APIs suffice; CK/CS keys from Sabatino; dedup email+VAT; 2×1 promos = qty 2 @50%. | 🟡 |
+| 3 | **DocuSign** | AppExchange; envelope status tracking; three signed-doc types + quote template. | 🟡 awaiting purchase |
+| 4 | **Anticipay (ex CreditSafe)** | VAT lookup auto-filling registry + legal representative; must fire for ALL new accounts (not only at order); alert on invalid VAT; probably Italian VAT only (verify foreign skip). Timing decision (with Mexal integration per Pienissimo vs phase 2 per ROMI) 🔴 pending. | 🔴 |
+| 5 | **GLS** | Delivery confirmation events (book flow trigger). Greenfield. | phase 2 |
+| 6 | **Teachable** | Course-completion API (confirmed easy). | phase 2 |
+| 7 | **Pienissimo Software SRL (Zoho)** | Orders containing the P-Pro product auto-pass to the software company (separate entity, keeps Zoho). Discriminator = product. | 🟡 design |
+| 8 | **Gmail/Outlook** | Native connectors, email + calendar sync — urgent (paper agendas). | ✅ decided, to configure |
+| 9 | **3CX + internal AI** | Call recording → CRM → coaching insights. Status of 3CX commercial setup NEVER reported (open since kickoff). | 🔴 stalled |
+| 10 | **Meta/Google Ads** | Acquisition cost + origin campaign on contact (feeds RFM panel). | later |
+
+## 5. Analytics & reporting requirements
+- **Traceability chain both directions**: invoice ↔ order ↔ quote ↔ opportunity ↔ campaign ↔ lead — cascading IDs; blueprint acceptance criterion. (06/16)
+- **RFM matrix rebuilt in Salesforce**: order-date base (not invoice date — annual billing falsifies), segmented per product line (courses / platform / PP), on the account page with acquisition cost + origin campaign. Replaces Fabrizio's SQL-on-Mexal. Dedicated workshop. (06/16)
+- **No-show analytics**: acquisition-source tag per customer + no-show propensity per source + room-composition dashboards (fed by campaign check-in statuses). (05/27, 06/08)
+- Dashboards: rep-filtered by default; manager cross-view; per-source opportunity counts incl. existing-client vs new-business split. (06/03)
+- Reports exportable to Excel + schedulable by email. (05/27)
+
+## 6. Security & visibility
+- ~6 salespeople; sharing model mirrors the org chart (in survey). Default **restrict-then-widen**, never the reverse. Reassignment (dormant clients) manual now; automatic rules once Pienissimo defines dormancy thresholds (🔴 open since kickoff). Order edit lock post-invoicing with 1–2 admin exceptions. (06/03, 06/30)
+
+## 7. Cross-cutting configuration decisions
+- Italian translations for custom labels/states/guidance. (06/03)
+- Terminology reference = Salesforce: lead → opportunity → quote → order. (06/30)
+- Start simple: manual stage transitions, automate later. (06/16)
+- Duplicate rules: forms email OR phone; WooCommerce email + VAT; lead↔account VAT/company matching on conversion. (06/16, 07/02)
+
+## 8. What's already resolved (don't re-litigate)
+Morris AI discarded (internal AI instead) · demo phase done · Zoho deadline = Oct 31 · NBA/Einstein parked (not licensed) · signature-gated QR approved by direction · Mexal multi-tranche invoicing confirmed possible (line-level due dates) · file-vs-API reversed to API · BLO codes retired · WooCommerce = API · one-bundle-per-order confirmed · ticket-trigger "contradiction" was terminology (3-stage lifecycle) · opportunity flow separation = **Record Types** (drill-me 07/13).
+
+## 9. 🔴 Blocking decisions / inputs — chase these before the blueprint freezes
+1. **Lead/opty flow review** with Daniela (Elena's rewrite + recorded segment) — the last big unapproved design; postponed AGAIN past July 9, no news as of 07/13 → chase hard. (#19)
+2. **Custom bundle demo** in test env — accept/reject criterion: product-level stats via spread prices. In development, on track for week of July 13 (drill-me 07/13). (#13)
+3. **Marketing forms + subdomain** answers from Matteo — blocking the whole marketing stream since 06/23. (#14)
+4. **DocuSign purchase** closure. (#16)
+5. **Anticipay timing** (with Mexal integration vs phase 2) + docs + foreign-VAT rule. (#21)
+6. **Quote+contract signature flow** decision (Pienissimo internal). (#27)
+7. **Key-users list** (never delivered since kickoff) and **3CX status** (never reported). (#1, #3)
+8. **Data model workbook** kickoff: ROMI structure + Pienissimo field lists from Zoho. (#24)
+9. Pienissimo inputs still due: quote templates + real client emails (#26), form-links Google Sheet with hidden-source fields (#33), WooCommerce CK/CS keys (#22), dormancy rules (#8), notification-channel choice.
+10. Feasibility confirmation: scope achievable by Sept 29 / Oct 31 with the current integration list — ROMI to re-plan and commit. (#4)
