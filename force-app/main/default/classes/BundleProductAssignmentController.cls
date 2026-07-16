@@ -52,6 +52,8 @@ public with sharing class BundleProductAssignmentController {
     @AuraEnabled
     public Decimal fixedPrice;
     @AuraEnabled
+    public Decimal calculatedBundlePrice;
+    @AuraEnabled
     public Decimal spreadTotal;
     @AuraEnabled
     public Decimal variance;
@@ -79,6 +81,7 @@ public with sharing class BundleProductAssignmentController {
         Id,
         Name,
         Bundle_Selling_Price__c,
+        Calculated_Bundle_Price__c,
         Spread_Total__c,
         Spread_Variance__c
       FROM Product2
@@ -89,6 +92,9 @@ public with sharing class BundleProductAssignmentController {
     BundleContext context = new BundleContext();
     context.bundleName = bundle.Name;
     context.fixedPrice = bundle.Bundle_Selling_Price__c;
+    context.calculatedBundlePrice = bundle.Calculated_Bundle_Price__c == null
+      ? bundle.Spread_Total__c
+      : bundle.Calculated_Bundle_Price__c;
     context.spreadTotal = bundle.Spread_Total__c;
     context.variance = bundle.Spread_Variance__c;
     context.components = new List<ComponentRow>();

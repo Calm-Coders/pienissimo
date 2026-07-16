@@ -1,11 +1,14 @@
 import { api, LightningElement } from "lwc";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import { RefreshEvent } from "lightning/refresh";
 import getBundleContext from "@salesforce/apex/BundleProductAssignmentController.getBundleContext";
 import saveComponents from "@salesforce/apex/BundleProductAssignmentController.saveComponents";
-import searchItems from "@salesforce/apex/BundleProductAssignmentController.searchItems";
 
 export default class BundleProductAssignment extends LightningElement {
+  duplicateProductMessage =
+    "This product is already a component of this bundle. A product can belong to several bundles, but only once per bundle.";
+
   componentColumns = [
     { label: "Name", fieldName: "name" },
     { label: "Code", fieldName: "productCode" },
@@ -16,7 +19,6 @@ export default class BundleProductAssignment extends LightningElement {
       initialWidth: 70,
       editable: true
     },
-    { label: "List price", fieldName: "listPrice", type: "currency" },
     { label: "Line list", fieldName: "lineListPrice", type: "currency" },
     {
       label: "Spread (line)",
@@ -24,7 +26,6 @@ export default class BundleProductAssignment extends LightningElement {
       type: "currency",
       editable: true
     },
-    { label: "Unit spread", fieldName: "unitSpread", type: "currency" },
     { label: "Discount", fieldName: "discountLabel" },
     {
       type: "button-icon",
@@ -38,23 +39,18 @@ export default class BundleProductAssignment extends LightningElement {
     }
   ];
 
-  searchColumns = [
-    { label: "Name", fieldName: "name" },
-    { label: "Code", fieldName: "productCode" },
-    { label: "List price", fieldName: "productPrice", type: "currency" }
-  ];
-
   _recordId;
 
   isLoading = false;
-  searchTerm = "";
+  hasLoaded = false;
+  isCreateModalOpen = false;
+  keepCreateModalOpen = false;
+  createProductError = "";
+  createFormError = "";
   bundleName = "";
   fixedPrice = 0;
+  calculatedBundlePrice = 0;
   rows = [];
-  searchResults = [];
-  selectedIds = new Set();
-  searchTimeout;
-  resultLimit = 100;
 
   @api
   get recordId() {
@@ -102,50 +98,48 @@ export default class BundleProductAssignment extends LightningElement {
     return this.rows.length > 0;
   }
 
-  get hasSearchResults() {
-    return this.searchResults.length > 0;
+  get showMainView() {
+    return !this.isCreateModalOpen;
   }
 
-  get selectedCount() {
-    return this.selectedIds.size;
+  get showCreateView() {
+    return this.isCreateModalOpen;
   }
 
-  get selectedRowIds() {
-    return Array.from(this.selectedIds);
+  get showFooter() {
+    return this.hasLoaded && this.showMainView;
   }
 
-  get showEmptySearchState() {
-    return !this.isLoading && !this.hasSearchResults;
+  get panelHeader() {
+    return this.isCreateModalOpen
+      ? "New Bundle Component"
+      : "Configure bundle components";
+  }
+
+  get showInitialLoader() {
+    return !this.hasLoaded && this.isLoading;
   }
 
   async loadContext() {
     this.isLoading = true;
     try {
-      const context = await getBundleContext({ bundleId: this.recordId });
-      this.bundleName = context.bundleName;
-      this.fixedPrice = context.fixedPrice || 0;
-      this.rows = (context.components || []).map((row) => this.decorate(row));
-      await this.loadSearchResults();
+      this.applyContext(
+        await getBundleContext({ bundleId: this.recordId })
+      );
     } catch (error) {
       this.showToast("Error", this.reduceError(error), "error");
     } finally {
+      this.hasLoaded = true;
       this.isLoading = false;
     }
   }
 
-  async loadSearchResults() {
-    try {
-      const items = await searchItems({
-        bundleId: this.recordId,
-        searchTerm: this.searchTerm
-      });
-      const takenProductIds = new Set(this.rows.map((row) => row.productId));
-      this.searchResults = items.filter(
-        (item) => !takenProductIds.has(item.id)
-      );
-    } catch (error) {
-      this.showToast("Error", this.reduceError(error), "error");
-    }
+  applyContext(context) {
+    this.bundleName = context.bundleName;
+    this.fixedPrice = context.fixedPrice || 0;
+    this.calculatedBundlePrice =
+      context.calculatedBundlePrice ?? context.spreadTotal ?? 0;
+    this.rows = (context.components || []).map((row) => this.decorate(row));
   }
 
   decorate(row) {
@@ -161,69 +155,8 @@ export default class BundleProductAssignment extends LightningElement {
       lineListPrice,
       unitSpread: spreadPrice / quantity,
       key: row.id || `new-${row.productId}`,
-      discountLabel: lineListPrice === 0 ? "—" : `${discount.toFixed(2)}%`
+      discountLabel: lineListPrice === 0 ? "-" : `${discount.toFixed(2)}%`
     };
-  }
-
-  handleSearchChange(event) {
-    this.searchTerm = event.target.value;
-    window.clearTimeout(this.searchTimeout);
-    // eslint-disable-next-line @lwc/lwc/no-async-operation
-    this.searchTimeout = window.setTimeout(() => {
-      this.loadSearchResults();
-    }, 300);
-  }
-
-  handleSearchSelection(event) {
-    this.selectedIds = new Set(event.detail.selectedRows.map((row) => row.id));
-  }
-
-  // Newly added components start at a spread of 0 rather than the list price:
-  // the bundle price is fixed, so the spread is a deliberate allocation, never a default.
-  handleAddSelected() {
-    if (this.selectedIds.size === 0) {
-      this.showToast("Info", "Select at least one product to add.", "info");
-      return;
-    }
-
-    const picked = this.searchResults.filter((item) =>
-      this.selectedIds.has(item.id)
-    );
-
-    // A row without a product id is unsaveable. Never let one into the table.
-    const unusable = picked.filter((item) => !item.id);
-    if (unusable.length) {
-      console.error(
-        "bundleProductAssignment: search rows with no id",
-        unusable
-      );
-      this.showToast(
-        "Error",
-        `${unusable.length} selected product(s) could not be read and were not added. ` +
-          "Reload the page and try again.",
-        "error"
-      );
-    }
-
-    const additions = picked
-      .filter((item) => item.id)
-      .map((item) =>
-        this.decorate({
-          id: null,
-          productId: item.id,
-          name: item.name,
-          productCode: item.productCode,
-          quantity: 1,
-          listPrice: item.productPrice,
-          spreadPrice: 0
-        })
-      );
-
-    if (additions.length) {
-      this.rows = [...this.rows, ...additions];
-    }
-    this.selectedIds = new Set();
-    this.loadSearchResults();
   }
 
   handleCellChange(event) {
@@ -247,7 +180,6 @@ export default class BundleProductAssignment extends LightningElement {
             : Number(draft.spreadPrice) || 0
       });
     });
-    // The table is gone from the DOM once the last row is removed, so this can be null.
     const table = this.template.querySelector('[data-id="components"]');
     if (table) {
       table.draftValues = [];
@@ -260,12 +192,92 @@ export default class BundleProductAssignment extends LightningElement {
     }
     const removed = event.detail.row;
     this.rows = this.rows.filter((row) => row.key !== removed.key);
-    this.loadSearchResults();
+  }
+
+  handleAddComponent() {
+    this.keepCreateModalOpen = false;
+    this.createProductError = "";
+    this.createFormError = "";
+    this.isCreateModalOpen = true;
+  }
+
+  handleCloseCreateModal() {
+    this.closeCreateModal();
+  }
+
+  handleSaveAndNew() {
+    this.keepCreateModalOpen = true;
+    const form = this.template.querySelector("lightning-record-edit-form");
+    if (form) {
+      form.submit();
+    }
+  }
+
+  async handleCreateSuccess() {
+    await this.loadContext();
+    this.createProductError = "";
+    this.createFormError = "";
+    this.showToast("Success", "Bundle component created.", "success");
+
+    if (this.keepCreateModalOpen) {
+      this.closeCreateModal();
+      requestAnimationFrame(() => {
+        this.isCreateModalOpen = true;
+      });
+      return;
+    }
+
+    this.closeCreateModal();
+  }
+
+  handleCreateError(event) {
+    this.keepCreateModalOpen = false;
+    const message = this.reduceError(event.detail);
+    if (message.includes(this.duplicateProductMessage)) {
+      this.createProductError = this.duplicateProductMessage;
+      this.createFormError = "";
+      return;
+    }
+    this.createProductError = "";
+    this.createFormError = message;
+    console.error(
+      "bundleProductAssignment create error",
+      event.detail
+    );
+  }
+
+  closeCreateModal() {
+    this.keepCreateModalOpen = false;
+    this.isCreateModalOpen = false;
+    this.createProductError = "";
+    this.createFormError = "";
+  }
+
+  handleProductFieldChange() {
+    this.createProductError = "";
+    this.createFormError = "";
+  }
+
+  handleCreateSubmit(event) {
+    event.preventDefault();
+    this.createProductError = "";
+    this.createFormError = "";
+    event.target.submit({
+      ...event.detail.fields,
+      Bundle__c: this.recordId
+    });
+  }
+
+  serializeRows() {
+    return this.rows.map((row) => ({
+      id: row.id,
+      productId: row.productId,
+      quantity: Number(row.quantity) || 1,
+      spreadPrice: Number(row.spreadPrice) || 0
+    }));
   }
 
   async handleSave() {
-    // Refuse to send a row the server cannot store, and name it, rather than letting
-    // the Product_Required rule fire with a message that identifies nothing.
     const orphans = this.rows.filter((row) => !row.productId);
     if (orphans.length) {
       console.error(
@@ -287,21 +299,12 @@ export default class BundleProductAssignment extends LightningElement {
 
     this.isLoading = true;
     try {
-      const components = this.rows.map((row) => ({
-        id: row.id,
-        productId: row.productId,
-        quantity: Number(row.quantity) || 1,
-        spreadPrice: Number(row.spreadPrice) || 0
-      }));
-      const context = await saveComponents({
-        bundleId: this.recordId,
-        // Explicit JSON avoids the LWC/Apex bridge constructing blank instances of
-        // this nested wrapper class, which loses productId before Apex can save it.
-        componentsJson: JSON.stringify(components)
-      });
-
-      this.fixedPrice = context.fixedPrice || 0;
-      this.rows = (context.components || []).map((row) => this.decorate(row));
+      this.applyContext(
+        await saveComponents({
+          bundleId: this.recordId,
+          componentsJson: JSON.stringify(this.serializeRows())
+        })
+      );
 
       const message = this.isReconciled
         ? "Components saved."
@@ -313,7 +316,7 @@ export default class BundleProductAssignment extends LightningElement {
         message,
         this.isReconciled ? "success" : "warning"
       );
-      this.dispatchEvent(new CloseActionScreenEvent());
+      this.closeAndRefresh();
     } catch (error) {
       this.showToast("Error", this.reduceError(error), "error");
     } finally {
@@ -322,7 +325,12 @@ export default class BundleProductAssignment extends LightningElement {
   }
 
   handleCancel() {
+    this.closeAndRefresh();
+  }
+
+  closeAndRefresh() {
     this.dispatchEvent(new CloseActionScreenEvent());
+    this.dispatchEvent(new RefreshEvent());
   }
 
   formatCurrency(value) {
@@ -336,9 +344,6 @@ export default class BundleProductAssignment extends LightningElement {
     this.dispatchEvent(new ShowToastEvent({ title, message, variant }));
   }
 
-  // Aura/LDS errors arrive in several shapes, and a plain JS error in this component
-  // arrives in none of them. Collapsing them all to "Unexpected error" hides the cause,
-  // so unpack every known shape and fall back to the raw message.
   reduceError(error) {
     console.error("bundleProductAssignment error", error);
 
