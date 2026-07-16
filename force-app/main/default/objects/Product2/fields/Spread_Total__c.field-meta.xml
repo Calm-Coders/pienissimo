@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Spread_Total__c</fullName>
+    <description
+  >Sum of the spread prices of this bundle's components, maintained by BundleComponentTriggerHandler (Product2 does not accept master-detail children, so a roll-up summary is not available). Must reconcile to Bundle_Selling_Price__c, otherwise product-level revenue would not add up to what the client actually paid.</description>
+    <label>Spread Total</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

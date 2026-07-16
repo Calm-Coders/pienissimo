@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Calculated_Bundle_Price__c</fullName>
+    <description
+  >DEPRECATED 2026-07-16 — no longer maintained; use Spread_Total__c. Summed the list prices of the products hanging off Parent__c, i.e. computed the bundle price upward from its components, which is the opposite of the agreed design (fixed bundle price spread downward). Kept for review before deletion.</description>
+    <label>Calculated Bundle Price</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

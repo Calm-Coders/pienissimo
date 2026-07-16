@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Spread_Variance__c</fullName>
+    <description
+  >Bundle_Selling_Price__c minus Spread_Total__c. Anything other than zero means the spread does not reconcile to the price the client pays, and per-product revenue for this bundle would be wrong.</description>
+    <formula>Bundle_Selling_Price__c - Spread_Total__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Spread Variance</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

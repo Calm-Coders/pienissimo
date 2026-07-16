@@ -21,7 +21,7 @@ Whenever the user provides a meeting transcript — pasted in chat or as a file 
 3. **Write TWO recaps** to `meetings/results/`, same basename as the transcript minus `-transcript.it`:
    - `<name>.md` — English
    - `<name>.it.md` — Italian
-   Structure: title+date, Sources, Attendees (with label-garbling note), Decisions, Action Items table (Task/Owner/Status), Open Questions / Risks, Notes. The user acts from these recaps — decisions and owners must be complete and unambiguous; mark genuinely unclear points as TBD instead of guessing, and collect TBDs for the final report.
+     Structure: title+date, Sources, Attendees (with label-garbling note), Decisions, Action Items table (Task/Owner/Status), Open Questions / Risks, Notes. The user acts from these recaps — decisions and owners must be complete and unambiguous; mark genuinely unclear points as TBD instead of guessing, and collect TBDs for the final report.
 
 4. **Update BOTH trackers** — `meetings/open-items.md` (EN) and `meetings/open-items.it.md` (IT):
    - Apply meetings in **chronological order**. If this transcript backfills an earlier date, set its "Raised" dates accordingly and never move "Last touched" backwards on rows later meetings already touched.
@@ -38,6 +38,8 @@ Whenever the user provides a meeting transcript — pasted in chat or as a file 
 6. **Report back** in chat: file paths created/updated, the headline decisions (the user executes actions from this), TBDs needing their confirmation, cross-meeting reversals, and any ⚠ stale tracker rows (2+ meetings untouched) — surfacing stale items is the tracker's whole purpose.
 
 ## Notes
+
+- **`meetings/proposals/` holds ROMI-side design proposals** (e.g. the Asset/ticket data model). When a transcript discusses a topic covered by a proposal, RECONCILE it: append the outcome (accepted / modified / rejected, with date and what changed) to the proposal's "Reconciliation log" section, update its status line, and reflect the outcome in the trackers + DEVELOPMENT-RECAP.
 - Everything is bilingual by convention: transcript stays Italian-only (original); recaps, trackers, and DEVELOPMENT-RECAP exist in EN + IT.
 - Multiple raw files (summary + transcript) can exist for one meeting; result filename pairs with the primary source.
 - If several transcripts arrive at once, process each fully but apply steps 4–5 once, in date order, at the end.

@@ -1,0 +1,112 @@
+<template>
+  <lightning-quick-action-panel header="Configure bundle components">
+    <div class="content">
+      <template if:true={isLoading}>
+        <lightning-spinner
+          alternative-text="Loading"
+          size="small"
+        ></lightning-spinner>
+      </template>
+
+      <div class="reconciliation">
+        <div class="figures">
+          <div class="figure">
+            <span class="figure-label">Bundle price (fixed)</span>
+            <lightning-formatted-number
+              value={fixedPrice}
+              format-style="currency"
+              currency-code="EUR"
+              class="figure-value"
+            ></lightning-formatted-number>
+          </div>
+          <div class="figure">
+            <span class="figure-label">Spread total</span>
+            <lightning-formatted-number
+              value={spreadTotal}
+              format-style="currency"
+              currency-code="EUR"
+              class="figure-value"
+            ></lightning-formatted-number>
+          </div>
+          <div class="figure">
+            <span class="figure-label">Variance</span>
+            <lightning-formatted-number
+              value={variance}
+              format-style="currency"
+              currency-code="EUR"
+              class="figure-value"
+            ></lightning-formatted-number>
+          </div>
+        </div>
+        <div class={varianceClass}>{varianceMessage}</div>
+      </div>
+
+      <h3 class="section-heading">Components</h3>
+      <template if:true={hasRows}>
+        <lightning-datatable
+          data-id="components"
+          key-field="key"
+          data={rows}
+          columns={componentColumns}
+          hide-checkbox-column
+          oncellchange={handleCellChange}
+          onrowaction={handleRowAction}
+        ></lightning-datatable>
+      </template>
+      <template if:false={hasRows}>
+        <div class="empty-state">
+          No components yet. Search below and add the products this bundle
+          contains.
+        </div>
+      </template>
+
+      <h3 class="section-heading">Add products</h3>
+      <lightning-input
+        type="search"
+        label="Search products"
+        value={searchTerm}
+        onchange={handleSearchChange}
+        placeholder="Search by name or code"
+      ></lightning-input>
+
+      <div class="search-hint">
+        Showing up to the first {resultLimit} active Item products not already
+        in this bundle. A product may belong to several bundles, each with its
+        own spread price.
+      </div>
+
+      <template if:true={hasSearchResults}>
+        <lightning-datatable
+          key-field="id"
+          data={searchResults}
+          columns={searchColumns}
+          selected-rows={selectedRowIds}
+          onrowselection={handleSearchSelection}
+        ></lightning-datatable>
+        <lightning-button
+          label="Add selected"
+          onclick={handleAddSelected}
+          class="slds-m-top_small"
+        ></lightning-button>
+        <span class="selection-summary">Selected: {selectedCount}</span>
+      </template>
+
+      <template if:true={showEmptySearchState}>
+        <div class="empty-state">No matching Item products found.</div>
+      </template>
+    </div>
+
+    <div slot="footer">
+      <lightning-button
+        label="Cancel"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label="Save"
+        onclick={handleSave}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>

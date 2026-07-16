@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Required</fullName>
+    <active>true</active>
+    <description
+  >Product2 forbids cascade/restrict lookups, so Product__c cannot be flagged required on the field itself.</description>
+    <errorConditionFormula>ISBLANK(Product__c)</errorConditionFormula>
+    <errorDisplayField>Product__c</errorDisplayField>
+    <errorMessage>A bundle component must point to a product.</errorMessage>
+</ValidationRule>
