@@ -19,9 +19,9 @@ export default class BundleProductAssignment extends LightningElement {
       initialWidth: 70,
       editable: true
     },
-    { label: "Line list", fieldName: "lineListPrice", type: "currency" },
+    { label: "Row Price", fieldName: "lineListPrice", type: "currency" },
     {
-      label: "Spread (line)",
+      label: "Row Selling Price",
       fieldName: "spreadPrice",
       type: "currency",
       editable: true
