@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pienissimo Biglietto Relationships</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --background: light-dark(#f4f6f4, #101512);
+        --foreground: light-dark(#17211c, #e8f0eb);
+        --muted: light-dark(#637069, #a7b4ac);
+        --border: light-dark(#cbd3ce, #3d4942);
+        --commercial: light-dark(#986b10, #d9ad50);
+        --participant: light-dark(#056866, #58b9b6);
+        --event: light-dark(#6b4fa1, #b8a4ee);
+        --indirect: light-dark(#7b8580, #89968e);
+        --surface: light-dark(#ffffff, #171e1a);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        margin: 0;
+        padding: 32px 20px;
+      }
+
+      main { margin: 0 auto; max-width: 1320px; }
+
+      h1 { font-size: clamp(24px, 4vw, 38px); font-weight: 500; margin: 0; }
+
+      .subtitle { color: var(--muted); margin: 8px 0 20px; }
+
+      .controls { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+      .controls span { color: var(--muted); margin-right: 4px; }
+
+      button {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--foreground);
+        cursor: pointer;
+        font: inherit;
+        padding: 7px 14px;
+      }
+
+      button[aria-pressed="true"] { background: var(--foreground); border-color: var(--foreground); color: var(--background); }
+      button:focus-visible { outline: 3px solid var(--participant); outline-offset: 2px; }
+
+      .diagram { display: block; height: auto; width: 100%; }
+      .diagram text { fill: var(--foreground); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; }
+      .diagram .column-label { fill: var(--muted); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; }
+      .diagram .title { font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 13px; font-weight: 600; }
+      .diagram .meta, .diagram .field-type { fill: var(--muted); }
+      .diagram .field-name { font-weight: 500; }
+      .diagram .relationship-label { fill: var(--muted); font-size: 10px; }
+      .diagram .relation { fill: none; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
+      .diagram .relation.commercial { stroke: var(--commercial); }
+      .diagram .relation.participant { stroke: var(--participant); }
+      .diagram .relation.event { stroke: var(--event); }
+      .diagram .relation.indirect { stroke: var(--indirect); stroke-dasharray: 5 5; }
+      .diagram .object rect { fill: var(--surface); stroke: var(--border); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+      .diagram .object.commercial rect { stroke: var(--commercial); }
+      .diagram .object.participant rect { stroke: var(--participant); }
+      .diagram .object.event rect { stroke: var(--event); }
+      .diagram .object.planned rect { stroke: var(--indirect); stroke-dasharray: 5 4; }
+      .diagram .object.ticket rect.outer { fill: color-mix(in srgb, var(--participant) 7%, var(--surface)); stroke: var(--participant); stroke-width: 2; }
+      .diagram .divider { stroke: var(--border); stroke-width: 1; }
+
+      [data-domain], [data-domains] { transition: opacity 180ms ease; }
+      .dimmed { opacity: 0.1; }
+
+      .legend, .summary { color: var(--muted); font-size: 13px; }
+      .legend { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 8px; }
+      .legend span { align-items: center; display: inline-flex; gap: 6px; }
+      .swatch { border-top: 2px solid; display: inline-block; width: 22px; }
+      .swatch.indirect { border-top-style: dashed; }
+      .summary { margin-top: 10px; text-align: center; }
+      .mobile-list { display: none; }
+
+      @media (max-width: 650px) {
+        body { padding: 24px 16px; }
+        .diagram, .legend { display: none; }
+        .mobile-list { display: grid; gap: 14px; }
+        .mobile-list section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+        .mobile-list h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+        .mobile-list p, .mobile-list ul { color: var(--muted); font-size: 13px; margin: 0; }
+        .mobile-list ul { padding-left: 20px; }
+        .mobile-list li + li { margin-top: 6px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) { [data-domain], [data-domains] { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Biglietto unified relationship map</h1>
+      <p class="subtitle">
+        Commercial attribution, product line items, event participation, and the current
+        <code>Biglietto__c</code> relationships in one schema.
+      </p>
+
+      <div class="controls" aria-label="Relationship filters">
+        <span>Highlight</span>
+        <button type="button" data-view="all" aria-pressed="true">All</button>
+        <button type="button" data-view="commercial" aria-pressed="false">Commercial</button>
+        <button type="button" data-view="participant" aria-pressed="false">Participant</button>
+        <button type="button" data-view="event" aria-pressed="false">Event</button>
+      </div>
+
+      <svg class="diagram" viewBox="0 0 1300 780" role="img" aria-labelledby="map-title map-description">
+        <title id="map-title">Unified Biglietto schema</title>
+        <desc id="map-description">
+          Acquisition source fields feed Opportunity. Sales documents have line items that resolve Product2 through PricebookEntry. Biglietto is generated from OrderItem, carries the event Campaign directly, and synchronizes participation with CampaignMember through Contact and Campaign.
+        </desc>
+
+        <text class="column-label" x="20" y="28">ACQUISITION DATA</text>
+        <text class="column-label" x="250" y="28">OPPORTUNITY</text>
+        <text class="column-label" x="470" y="28">QUOTE</text>
+        <text class="column-label" x="690" y="28">ORDER</text>
+        <text class="column-label" x="910" y="28">ORDER ITEM</text>
+        <text class="column-label" x="1080" y="28">TICKET</text>
+
+        <path class="relation indirect" data-domain="commercial" d="M205 104 C222 104 232 104 250 104" />
+        <text class="relationship-label" data-domain="commercial" x="157" y="91">source / UTM / form fields</text>
+        <path class="relation commercial" data-domain="commercial" d="M430 104 C446 104 454 104 470 104" />
+        <text class="relationship-label" data-domain="commercial" x="433" y="92">OpportunityId</text>
+        <path class="relation commercial" data-domain="commercial" d="M650 104 C666 104 674 104 690 104" />
+        <text class="relationship-label" data-domain="commercial" x="654" y="92">QuoteId</text>
+        <path class="relation commercial" data-domain="commercial" d="M870 104 C886 104 894 104 910 104" />
+        <text class="relationship-label" data-domain="commercial" x="874" y="92">OrderId</text>
+        <path class="relation commercial" data-domain="commercial" d="M1080 128 C1090 170 1095 270 1080 365" />
+        <text class="relationship-label" data-domain="commercial" x="1092" y="245">Order_Product__c</text>
+
+        <g class="object planned" data-domain="commercial">
+          <rect x="20" y="62" width="185" height="84" rx="5" />
+          <text class="title" x="36" y="88">Source fields</text>
+          <text class="meta" x="36" y="111">fonte / UTM / form data</text>
+          <text class="meta" x="36" y="132">not a Campaign object</text>
+        </g>
+        <g class="object commercial" data-domain="commercial">
+          <rect x="250" y="62" width="180" height="84" rx="5" />
+          <text class="title" x="266" y="88">Opportunity</text>
+          <text class="meta" x="266" y="111">commercial intent</text>
+          <text class="meta" x="266" y="132">attribution and pipeline</text>
+        </g>
+        <g class="object commercial" data-domain="commercial">
+          <rect x="470" y="62" width="180" height="84" rx="5" />
+          <text class="title" x="486" y="88">Quote</text>
+          <text class="meta" x="486" y="111">editable proposal</text>
+          <text class="meta" x="486" y="132">multiple attempts allowed</text>
+        </g>
+        <g class="object commercial" data-domain="commercial">
+          <rect x="690" y="62" width="180" height="84" rx="5" />
+          <text class="title" x="706" y="88">Order</text>
+          <text class="meta" x="706" y="111">accepted / paid sale</text>
+          <text class="meta" x="706" y="132">invoice source</text>
+        </g>
+        <g class="object commercial" data-domain="commercial">
+          <rect x="910" y="62" width="170" height="84" rx="5" />
+          <text class="title" x="926" y="88">OrderItem</text>
+          <text class="meta" x="926" y="111">ticket source line</text>
+          <text class="meta" x="926" y="132">N tickets from quantity</text>
+        </g>
+
+        <text class="column-label" x="250" y="230">LINE-ITEM PRODUCT RESOLUTION</text>
+        <path class="relation commercial" data-domain="commercial" d="M340 146 C340 190 340 205 340 250" />
+        <text class="relationship-label" data-domain="commercial" x="349" y="204">OpportunityId</text>
+        <path class="relation commercial" data-domain="commercial" d="M560 146 C560 190 560 205 560 250" />
+        <text class="relationship-label" data-domain="commercial" x="569" y="204">QuoteId</text>
+        <path class="relation commercial" data-domain="commercial" d="M425 290 C530 290 592 325 690 325" />
+        <path class="relation commercial" data-domain="commercial" d="M645 290 C660 290 675 315 690 325" />
+        <path class="relation commercial" data-domain="commercial" d="M995 146 C920 185 820 280 800 325" />
+        <text class="relationship-label" data-domain="commercial" x="616" y="310">PricebookEntryId</text>
+        <path class="relation commercial" data-domain="commercial" d="M880 325 C895 325 902 325 920 325" />
+        <text class="relationship-label" data-domain="commercial" x="882" y="313">Product2Id</text>
+        <path class="relation commercial" data-domain="commercial" d="M1005 365 C1035 390 1050 420 1080 440" />
+        <text class="relationship-label" data-domain="commercial" x="1016" y="409">Product__c</text>
+
+        <g class="object commercial" data-domain="commercial">
+          <rect x="250" y="250" width="175" height="80" rx="5" />
+          <text class="title" x="266" y="276">OpportunityLineItem</text>
+          <text class="meta" x="266" y="299">Opportunity product</text>
+          <text class="meta" x="266" y="318">PricebookEntryId</text>
+        </g>
+        <g class="object commercial" data-domain="commercial">
+          <rect x="470" y="250" width="175" height="80" rx="5" />
+          <text class="title" x="486" y="276">QuoteLineItem</text>
+          <text class="meta" x="486" y="299">Quote product</text>
+          <text class="meta" x="486" y="318">PricebookEntryId</text>
+        </g>
+        <g class="object commercial" data-domain="commercial">
+          <rect x="690" y="280" width="190" height="90" rx="5" />
+          <text class="title" x="706" y="306">PricebookEntry</text>
+          <text class="meta" x="706" y="329">catalog price bridge</text>
+          <text class="meta" x="706" y="350">Product2Id</text>
+        </g>
+        <g class="object commercial" data-domain="commercial">
+          <rect x="920" y="280" width="170" height="90" rx="5" />
+          <text class="title" x="936" y="306">Product2</text>
+          <text class="meta" x="936" y="329">course / service / bundle</text>
+          <text class="meta" x="936" y="350">product reporting</text>
+        </g>
+
+        <text class="column-label" x="20" y="490">EVENT EDITION AND PARTICIPATION</text>
+        <path class="relation event" data-domain="event" d="M205 585 C440 585 720 505 1080 485" />
+        <text class="relationship-label" data-domain="event" x="606" y="536">Biglietto.Campaign__c</text>
+        <path class="relation event" data-domain="event" d="M205 620 C380 690 580 680 760 620" />
+        <text class="relationship-label" data-domain="event" x="450" y="675">CampaignId</text>
+        <path class="relation participant" data-domain="participant" d="M525 570 C600 570 650 590 760 600" />
+        <text class="relationship-label" data-domain="participant" x="604" y="559">ContactId</text>
+        <path class="relation indirect" data-domains="participant event" d="M1080 525 C1020 670 900 660 865 620" />
+        <text class="relationship-label" data-domains="participant event" x="926" y="664">status sync</text>
+
+        <g class="object event" data-domain="event">
+          <rect x="20" y="540" width="185" height="86" rx="5" />
+          <text class="title" x="36" y="566">Campaign</text>
+          <text class="meta" x="36" y="589">event edition</text>
+          <text class="meta" x="36" y="610">one per event</text>
+        </g>
+        <g class="object participant" data-domain="participant">
+          <rect x="345" y="528" width="180" height="84" rx="5" />
+          <text class="title" x="361" y="554">Contact</text>
+          <text class="meta" x="361" y="577">participant / signer</text>
+          <text class="meta" x="361" y="598">assigned after purchase</text>
+        </g>
+        <g class="object event" data-domains="participant event">
+          <rect x="760" y="550" width="210" height="86" rx="5" />
+          <text class="title" x="776" y="576">CampaignMember</text>
+          <text class="meta" x="776" y="599">firmato / partecipato</text>
+          <text class="meta" x="776" y="620">no-show status</text>
+        </g>
+        <g class="object ticket" data-domains="commercial participant event">
+          <rect class="outer" x="1080" y="365" width="190" height="170" rx="6" />
+          <text class="title" x="1096" y="392">Biglietto__c</text>
+          <text class="meta" x="1096" y="414">1 record = 1 ticket</text>
+          <line class="divider" x1="1080" y1="428" x2="1270" y2="428" />
+          <text class="field-name" x="1096" y="451">Order_Product__c</text>
+          <text class="field-type" x="1254" y="451" text-anchor="end">OrderItem</text>
+          <text class="field-name" x="1096" y="474">Product__c</text>
+          <text class="field-type" x="1254" y="474" text-anchor="end">Product2</text>
+          <text class="field-name" x="1096" y="497">Campaign__c</text>
+          <text class="field-type" x="1254" y="497" text-anchor="end">Campaign</text>
+          <text class="meta" x="1096" y="521">payment, signature, QR, check-in</text>
+        </g>
+      </svg>
+
+      <div class="legend" aria-label="Relationship legend">
+        <span><i class="swatch" style="border-color: var(--commercial)"></i>Commercial</span>
+        <span><i class="swatch" style="border-color: var(--participant)"></i>Participant</span>
+        <span><i class="swatch" style="border-color: var(--event)"></i>Event</span>
+        <span><i class="swatch indirect" style="border-color: var(--indirect)"></i>Planned or automation</span>
+      </div>
+
+      <div class="mobile-list" aria-label="Biglietto relationships">
+        <section data-domain="commercial">
+          <h2>Commercial flow</h2>
+          <p>Source fields &rarr; Opportunity &rarr; Quote &rarr; Order &rarr; OrderItem &rarr; Biglietto.</p>
+        </section>
+        <section data-domain="commercial">
+          <h2>Products</h2>
+          <p>OpportunityLineItem, QuoteLineItem, and OrderItem resolve Product2 through PricebookEntry. Biglietto keeps Product__c for reporting.</p>
+        </section>
+        <section data-domain="event">
+          <h2>Event and attendance</h2>
+          <p>Biglietto.Campaign__c identifies the event edition. CampaignMember is synchronized from Contact + Campaign for signature, attendance, and no-show status.</p>
+        </section>
+      </div>
+
+      <div id="summary" class="summary" aria-live="polite">5 direct Biglietto lookups &middot; commercial, catalog, and event traceability</div>
+    </main>
+
+    <script>
+      const buttons = Array.from(document.querySelectorAll("[data-view]"));
+      const related = Array.from(document.querySelectorAll("[data-domain], [data-domains]"));
+      const summary = document.getElementById("summary");
+      const summaries = {
+        all: "5 direct Biglietto lookups · commercial, catalog, and event traceability",
+        commercial: "Source fields -> Opportunity -> Quote -> Order -> OrderItem -> Biglietto",
+        participant: "Contact is the participant and DocuSign signer",
+        event: "Campaign is the event edition · CampaignMember is synchronized indirectly"
+      };
+
+      const setView = (view) => {
+        buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
+        related.forEach((element) => {
+          const domains = (element.dataset.domains || element.dataset.domain || "").split(" ");
+          element.classList.toggle("dimmed", view !== "all" && !domains.includes(view));
+        });
+        summary.textContent = summaries[view];
+      };
+
+      buttons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+    </script>
+  </body>
+</html>

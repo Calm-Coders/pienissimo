@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <defaultValue>&quot;Caricato&quot;</defaultValue>
+    <description>Main lifecycle status of the ticket, from creation through signature and check-in.</description>
+    <label>Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Caricato</fullName>
+                <default>true</default>
+                <label>Caricato</label>
+            </value>
+            <value>
+                <fullName>Disponibile</fullName>
+                <default>false</default>
+                <label>Disponibile</label>
+            </value>
+            <value>
+                <fullName>In attesa partecipante</fullName>
+                <default>false</default>
+                <label>In attesa partecipante</label>
+            </value>
+            <value>
+                <fullName>In attesa firma</fullName>
+                <default>false</default>
+                <label>In attesa firma</label>
+            </value>
+            <value>
+                <fullName>Firmato</fullName>
+                <default>false</default>
+                <label>Firmato</label>
+            </value>
+            <value>
+                <fullName>Emesso</fullName>
+                <default>false</default>
+                <label>Emesso</label>
+            </value>
+            <value>
+                <fullName>Utilizzato</fullName>
+                <default>false</default>
+                <label>Utilizzato</label>
+            </value>
+            <value>
+                <fullName>No Show</fullName>
+                <default>false</default>
+                <label>No Show</label>
+            </value>
+            <value>
+                <fullName>Annullato</fullName>
+                <default>false</default>
+                <label>Annullato</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
