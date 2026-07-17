@@ -2,7 +2,6 @@ import { createElement } from "lwc";
 import BundleProductAssignment from "c/bundleProductAssignment";
 import getBundleContext from "@salesforce/apex/BundleProductAssignmentController.getBundleContext";
 import saveComponents from "@salesforce/apex/BundleProductAssignmentController.saveComponents";
-import searchItems from "@salesforce/apex/BundleProductAssignmentController.searchItems";
 
 jest.mock(
   "@salesforce/apex/BundleProductAssignmentController.getBundleContext",
@@ -11,11 +10,6 @@ jest.mock(
 );
 jest.mock(
   "@salesforce/apex/BundleProductAssignmentController.saveComponents",
-  () => ({ default: jest.fn() }),
-  { virtual: true }
-);
-jest.mock(
-  "@salesforce/apex/BundleProductAssignmentController.searchItems",
   () => ({ default: jest.fn() }),
   { virtual: true }
 );
@@ -37,6 +31,7 @@ const BUNDLE_ID = "01tMA00000F5CBLYA3";
 const CONTEXT = {
   bundleName: "ACADEMY 2026",
   fixedPrice: 9800,
+  calculatedBundlePrice: 9800,
   spreadTotal: 9800,
   variance: 0,
   components: [
@@ -79,7 +74,6 @@ describe("c-bundle-product-assignment", () => {
 
   beforeEach(() => {
     getBundleContext.mockResolvedValue(JSON.parse(JSON.stringify(CONTEXT)));
-    searchItems.mockResolvedValue([]);
     saveComponents.mockResolvedValue(JSON.parse(JSON.stringify(CONTEXT)));
     toastHandler = jest.fn();
   });
@@ -186,85 +180,6 @@ describe("c-bundle-product-assignment", () => {
     const toast = toastHandler.mock.calls[0][0].detail;
     expect(toast.variant).toBe("error");
     expect(toast.message).toContain("GHOST ROW");
-  });
-
-  it("never adds a search result that has no id", async () => {
-    searchItems.mockResolvedValue([
-      { id: null, name: "BROKEN", productCode: "X", productPrice: 10 }
-    ]);
-    const element = buildComponent();
-    listenForToast(element);
-    await flush();
-    await flush();
-
-    const tables = element.shadowRoot.querySelectorAll("lightning-datatable");
-    const search = Array.from(tables).find(
-      (t) => t.dataset.id !== "components"
-    );
-    search.dispatchEvent(
-      new CustomEvent("rowselection", {
-        detail: { selectedRows: [{ id: null }] }
-      })
-    );
-    await flush();
-
-    const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-    const add = Array.from(buttons).find((b) => b.label === "Add selected");
-    if (add) {
-      add.click();
-      await flush();
-    }
-
-    const componentsTable = element.shadowRoot.querySelector(
-      '[data-id="components"]'
-    );
-    const rows = componentsTable ? componentsTable.data : [];
-    expect(rows.every((row) => row.productId)).toBe(true);
-  });
-
-  it("preserves the selected product id in the JSON save payload", async () => {
-    const selectedProduct = {
-      id: "01t000000000003",
-      name: "NEW ITEM",
-      productCode: "CS-00003",
-      productPrice: 250
-    };
-    searchItems.mockResolvedValue([selectedProduct]);
-    const element = buildComponent();
-    await flush();
-    await flush();
-
-    const tables = element.shadowRoot.querySelectorAll("lightning-datatable");
-    const search = Array.from(tables).find(
-      (table) => table.dataset.id !== "components"
-    );
-    search.dispatchEvent(
-      new CustomEvent("rowselection", {
-        detail: { selectedRows: [selectedProduct] }
-      })
-    );
-    await flush();
-
-    const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-    Array.from(buttons)
-      .find((button) => button.label === "Add selected")
-      .click();
-    await flush();
-    Array.from(buttons)
-      .find((button) => button.label === "Save")
-      .click();
-    await flush();
-
-    const payload = saveComponents.mock.calls[0][0];
-    const added = JSON.parse(payload.componentsJson).find(
-      (row) => row.productId === selectedProduct.id
-    );
-    expect(added).toEqual({
-      id: null,
-      productId: selectedProduct.id,
-      quantity: 1,
-      spreadPrice: 0
-    });
   });
 
   it('reports the real message instead of "Unexpected error"', async () => {

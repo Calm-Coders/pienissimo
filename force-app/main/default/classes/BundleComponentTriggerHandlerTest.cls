@@ -74,7 +74,11 @@ private class BundleComponentTriggerHandlerTest {
 
     Map<Id, Product2> bundles = new Map<Id, Product2>(
       [
-        SELECT Id, Spread_Total__c, Spread_Variance__c
+        SELECT
+          Id,
+          Spread_Total__c,
+          Spread_Variance__c,
+          Calculated_Bundle_Price__c
         FROM Product2
         WHERE Id IN (:stageBundle.Id, :summerBundle.Id)
       ]
@@ -86,9 +90,19 @@ private class BundleComponentTriggerHandlerTest {
       'Stage bundle spreads should sum to its fixed selling price'
     );
     System.assertEquals(
+      1000,
+      bundles.get(stageBundle.Id).Calculated_Bundle_Price__c,
+      'Calculated bundle price should mirror the spread sum'
+    );
+    System.assertEquals(
       1990,
       bundles.get(summerBundle.Id).Spread_Total__c,
       'Summer bundle spreads should sum to its fixed selling price'
+    );
+    System.assertEquals(
+      1990,
+      bundles.get(summerBundle.Id).Calculated_Bundle_Price__c,
+      'Calculated bundle price should mirror the spread sum'
     );
     System.assertEquals(
       0,
@@ -137,9 +151,23 @@ private class BundleComponentTriggerHandlerTest {
     update first;
     System.assertEquals(
       1050,
-      [SELECT Spread_Total__c FROM Product2 WHERE Id = :bundle.Id]
+      [
+        SELECT Spread_Total__c, Calculated_Bundle_Price__c
+        FROM Product2
+        WHERE Id = :bundle.Id
+      ]
       .Spread_Total__c,
       'Total should follow a spread edit'
+    );
+    System.assertEquals(
+      1050,
+      [
+        SELECT Spread_Total__c, Calculated_Bundle_Price__c
+        FROM Product2
+        WHERE Id = :bundle.Id
+      ]
+      .Calculated_Bundle_Price__c,
+      'Calculated bundle price should follow a spread edit'
     );
 
     delete second;
@@ -147,9 +175,23 @@ private class BundleComponentTriggerHandlerTest {
 
     System.assertEquals(
       450,
-      [SELECT Spread_Total__c FROM Product2 WHERE Id = :bundle.Id]
+      [
+        SELECT Spread_Total__c, Calculated_Bundle_Price__c
+        FROM Product2
+        WHERE Id = :bundle.Id
+      ]
       .Spread_Total__c,
       'Total should follow a component deletion'
+    );
+    System.assertEquals(
+      450,
+      [
+        SELECT Spread_Total__c, Calculated_Bundle_Price__c
+        FROM Product2
+        WHERE Id = :bundle.Id
+      ]
+      .Calculated_Bundle_Price__c,
+      'Calculated bundle price should follow a component deletion'
     );
   }
 

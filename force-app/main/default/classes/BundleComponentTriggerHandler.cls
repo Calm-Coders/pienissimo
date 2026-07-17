@@ -111,10 +111,12 @@ public with sharing class BundleComponentTriggerHandler {
 
     List<Product2> bundlesToUpdate = new List<Product2>();
     for (Id bundleId : totalsByBundleId.keySet()) {
+      Decimal spreadTotal = totalsByBundleId.get(bundleId);
       bundlesToUpdate.add(
         new Product2(
           Id = bundleId,
-          Spread_Total__c = totalsByBundleId.get(bundleId)
+          Spread_Total__c = spreadTotal,
+          Calculated_Bundle_Price__c = spreadTotal
         )
       );
     }
