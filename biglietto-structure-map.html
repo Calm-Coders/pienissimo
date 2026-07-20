@@ -3,297 +3,453 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pienissimo Biglietto Relationships</title>
+    <title>Pienissimo Biglietto Data Relations</title>
     <style>
       :root {
         color-scheme: light dark;
-        --background: light-dark(#f4f6f4, #101512);
-        --foreground: light-dark(#17211c, #e8f0eb);
+        --bg: light-dark(#f4f6f4, #101512);
+        --panel: light-dark(#ffffff, #171e1a);
+        --ink: light-dark(#17211c, #e8f0eb);
         --muted: light-dark(#637069, #a7b4ac);
-        --border: light-dark(#cbd3ce, #3d4942);
+        --line: light-dark(#cbd3ce, #3d4942);
+        --guide: light-dark(#dbe3dd, #2a342e);
         --commercial: light-dark(#986b10, #d9ad50);
         --participant: light-dark(#056866, #58b9b6);
         --event: light-dark(#6b4fa1, #b8a4ee);
-        --indirect: light-dark(#7b8580, #89968e);
-        --surface: light-dark(#ffffff, #171e1a);
+        --automation: light-dark(#7b8580, #89968e);
+        --accent-soft: light-dark(rgba(5, 104, 102, 0.08), rgba(88, 185, 182, 0.10));
+        --ref: light-dark(#c2410c, #ff8a4c);
       }
 
       * { box-sizing: border-box; }
 
       body {
-        background: var(--background);
-        color: var(--foreground);
-        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
         margin: 0;
-        padding: 32px 20px;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        padding: 32px 20px 48px;
       }
 
       main { margin: 0 auto; max-width: 1320px; }
-
       h1 { font-size: clamp(24px, 4vw, 38px); font-weight: 500; margin: 0; }
+      .subtitle { color: var(--muted); margin: 8px 0 18px; max-width: 960px; }
 
-      .subtitle { color: var(--muted); margin: 8px 0 20px; }
+      .map-intro {
+        max-width: 980px;
+        font-size: 13.5px;
+        color: var(--muted);
+        margin: 0 0 18px;
+      }
+      .map-intro b { color: var(--ink); }
 
-      .controls { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-      .controls span { color: var(--muted); margin-right: 4px; }
+      .flow-strip {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+      }
+      .flow-step {
+        flex: 1 1 180px;
+        max-width: 260px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 9px 12px;
+      }
+      .flow-step .fs-n {
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--participant);
+        text-transform: uppercase;
+      }
+      .flow-step .fs-t { font-weight: 600; font-size: 13px; margin: 1px 0 2px; }
+      .flow-step .fs-d { font-size: 12px; color: var(--muted); line-height: 1.45; }
+      .flow-arrow { align-self: center; color: var(--muted); font-size: 18px; flex: none; }
 
-      button {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        color: var(--foreground);
-        cursor: pointer;
-        font: inherit;
-        padding: 7px 14px;
+      .map-diagram { position: relative; min-width: 960px; max-width: 1280px; }
+      .map-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+      .map-cols {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: minmax(280px, 1fr) minmax(300px, 1fr) minmax(280px, 1fr);
+        gap: 80px;
+        align-items: start;
+      }
+      .map-col { display: flex; flex-direction: column; gap: 14px; }
+      .map-col-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding-bottom: 2px;
+        border-bottom: 2px solid var(--line);
       }
 
-      button[aria-pressed="true"] { background: var(--foreground); border-color: var(--foreground); color: var(--background); }
-      button:focus-visible { outline: 3px solid var(--participant); outline-offset: 2px; }
+      .ent {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+      .ent.child { margin-left: 26px; position: relative; }
+      .ent.child::before {
+        content: "";
+        position: absolute;
+        left: -15px;
+        top: 18px;
+        width: 14px;
+        height: 1.5px;
+        background: var(--participant);
+      }
+      .ent.commercial .ent-head { background: color-mix(in srgb, var(--commercial) 10%, var(--panel)); }
+      .ent.participant .ent-head { background: color-mix(in srgb, var(--participant) 10%, var(--panel)); }
+      .ent.event .ent-head { background: color-mix(in srgb, var(--event) 10%, var(--panel)); }
+      .ent.automation .ent-head { background: color-mix(in srgb, var(--automation) 10%, var(--panel)); }
 
-      .diagram { display: block; height: auto; width: 100%; }
-      .diagram text { fill: var(--foreground); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; }
-      .diagram .column-label { fill: var(--muted); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; }
-      .diagram .title { font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 13px; font-weight: 600; }
-      .diagram .meta, .diagram .field-type { fill: var(--muted); }
-      .diagram .field-name { font-weight: 500; }
-      .diagram .relationship-label { fill: var(--muted); font-size: 10px; }
-      .diagram .relation { fill: none; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
-      .diagram .relation.commercial { stroke: var(--commercial); }
-      .diagram .relation.participant { stroke: var(--participant); }
-      .diagram .relation.event { stroke: var(--event); }
-      .diagram .relation.indirect { stroke: var(--indirect); stroke-dasharray: 5 5; }
-      .diagram .object rect { fill: var(--surface); stroke: var(--border); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
-      .diagram .object.commercial rect { stroke: var(--commercial); }
-      .diagram .object.participant rect { stroke: var(--participant); }
-      .diagram .object.event rect { stroke: var(--event); }
-      .diagram .object.planned rect { stroke: var(--indirect); stroke-dasharray: 5 4; }
-      .diagram .object.ticket rect.outer { fill: color-mix(in srgb, var(--participant) 7%, var(--surface)); stroke: var(--participant); stroke-width: 2; }
-      .diagram .divider { stroke: var(--border); stroke-width: 1; }
+      .ent-head {
+        padding: 7px 11px 6px;
+        border-bottom: 1px solid var(--line);
+      }
+      .ent-head .ent-name {
+        font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        color: var(--ink);
+      }
+      .ent-head .ent-sub { font-size: 11px; color: var(--muted); }
 
-      [data-domain], [data-domains] { transition: opacity 180ms ease; }
-      .dimmed { opacity: 0.1; }
+      .ent ul { list-style: none; margin: 0; padding: 5px 0; }
+      .ent li {
+        font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        padding: 2.5px 11px;
+        color: var(--ink);
+        display: flex;
+        gap: 7px;
+        align-items: baseline;
+      }
+      .ent li .fnote {
+        font: 11px system-ui, sans-serif;
+        color: var(--muted);
+        margin-left: auto;
+        text-align: right;
+      }
+      .ent li.joinfield {
+        background: color-mix(in srgb, var(--ref) 9%, transparent);
+        border-right: 3px solid var(--ref);
+      }
+      .ent li.parentfield {
+        background: color-mix(in srgb, var(--participant) 10%, transparent);
+        border-right: 3px solid var(--participant);
+      }
+      .ent li.syncfield {
+        background: color-mix(in srgb, var(--automation) 10%, transparent);
+        border-right: 3px solid var(--automation);
+      }
+      .ent li.keyfield { font-weight: 700; }
+      .ent li.keyfield::before { content: "⚷"; color: var(--ref); }
+      .ent li.joinfield:hover, .ent li.parentfield:hover, .ent li.syncfield:hover,
+      .ent li.joinfield.lit, .ent li.parentfield.lit, .ent li.syncfield.lit {
+        background: color-mix(in srgb, var(--ref) 18%, transparent);
+      }
+      .ent.lit { border-color: var(--ref); box-shadow: 0 0 0 1px var(--ref); }
 
-      .legend, .summary { color: var(--muted); font-size: 13px; }
-      .legend { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 8px; }
-      .legend span { align-items: center; display: inline-flex; gap: 6px; }
-      .swatch { border-top: 2px solid; display: inline-block; width: 22px; }
-      .swatch.indirect { border-top-style: dashed; }
-      .summary { margin-top: 10px; text-align: center; }
-      .mobile-list { display: none; }
+      .map-legend {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin: 18px 0 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .map-legend .sw {
+        display: inline-block;
+        width: 22px;
+        height: 0;
+        border-top: 2.5px solid;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+      .map-legend .sw.lookup { border-color: var(--ref); }
+      .map-legend .sw.parent { border-color: var(--participant); border-top-width: 3px; }
+      .map-legend .sw.dash { border-color: var(--automation); border-top-style: dashed; }
 
-      @media (max-width: 650px) {
-        body { padding: 24px 16px; }
-        .diagram, .legend { display: none; }
-        .mobile-list { display: grid; gap: 14px; }
-        .mobile-list section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
-        .mobile-list h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
-        .mobile-list p, .mobile-list ul { color: var(--muted); font-size: 13px; margin: 0; }
-        .mobile-list ul { padding-left: 20px; }
-        .mobile-list li + li { margin-top: 6px; }
+      .summary {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 13px;
       }
 
-      @media (prefers-reduced-motion: reduce) { [data-domain], [data-domains] { transition: none; } }
+      @media (max-width: 1020px) {
+        body { padding: 24px 16px 40px; }
+        .map-diagram { min-width: 100%; }
+        .map-cols { grid-template-columns: 1fr; gap: 16px; }
+        .map-svg { display: none; }
+      }
     </style>
   </head>
   <body>
     <main>
-      <h1>Biglietto unified relationship map</h1>
+      <h1>Biglietto data relations</h1>
       <p class="subtitle">
-        Commercial attribution, product line items, event participation, and the current
-        <code>Biglietto__c</code> relationships in one schema.
+        Relationship map restructured in the same card-and-connector format as the “Data relations”
+        page, using the ticketing decisions confirmed in the meeting transcripts.
       </p>
 
-      <div class="controls" aria-label="Relationship filters">
-        <span>Highlight</span>
-        <button type="button" data-view="all" aria-pressed="true">All</button>
-        <button type="button" data-view="commercial" aria-pressed="false">Commercial</button>
-        <button type="button" data-view="participant" aria-pressed="false">Participant</button>
-        <button type="button" data-view="event" aria-pressed="false">Event</button>
+      <p class="map-intro">
+        Solid orange lines are <b>lookup relationships</b>. Solid teal lines are
+        <b>parent/child links</b> used to show the record hierarchy. Dashed gray lines are
+        <b>automation or sync flows</b>, where the relation exists by process rather than as a direct
+        field on the object. In this local project view, <b>Biglietto has no direct Account field</b>:
+        buyer context stays indirect through the sales records.
+      </p>
+
+      <div class="flow-strip" aria-label="Biglietto lifecycle">
+        <div class="flow-step">
+          <div class="fs-n">Stage 1</div>
+          <div class="fs-t">Order inserted</div>
+          <div class="fs-d">The source sales line exists and ticket stock is loaded, but not yet usable.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="fs-n">Stage 2</div>
+          <div class="fs-t">Payment confirmed</div>
+          <div class="fs-d">The ticket unit becomes available after the invoice is fully paid.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="fs-n">Stage 3</div>
+          <div class="fs-t">Participant signs</div>
+          <div class="fs-d">The participant is assigned, documents are signed, and only then is the QR issued.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="fs-n">Stage 4</div>
+          <div class="fs-t">Check-in</div>
+          <div class="fs-d">Attendance updates CampaignMember and unused tickets remain visible for no-show analysis.</div>
+        </div>
       </div>
 
-      <svg class="diagram" viewBox="0 0 1300 780" role="img" aria-labelledby="map-title map-description">
-        <title id="map-title">Unified Biglietto schema</title>
-        <desc id="map-description">
-          Acquisition source fields feed Opportunity. Sales documents have line items that resolve Product2 through PricebookEntry. Biglietto is generated from OrderItem, carries the event Campaign directly, and synchronizes participation with CampaignMember through Contact and Campaign.
-        </desc>
+      <div class="map-diagram" id="relDiagram">
+        <svg class="map-svg" aria-hidden="true"></svg>
+        <div class="map-cols">
+          <div class="map-col">
+            <div class="map-col-title">Commercial source objects</div>
 
-        <text class="column-label" x="20" y="28">ACQUISITION DATA</text>
-        <text class="column-label" x="250" y="28">OPPORTUNITY</text>
-        <text class="column-label" x="470" y="28">QUOTE</text>
-        <text class="column-label" x="690" y="28">ORDER</text>
-        <text class="column-label" x="910" y="28">ORDER ITEM</text>
-        <text class="column-label" x="1080" y="28">TICKET</text>
+            <div class="ent commercial" id="rel-source">
+              <div class="ent-head"><span class="ent-name">Source fields</span> <span class="ent-sub">marketing source, UTM, form metadata</span></div>
+              <ul>
+                <li class="syncfield" data-edge="rel-opty" data-dashed="1">fonte / UTM / hidden form fields<span class="fnote">automation into Opportunity</span></li>
+              </ul>
+            </div>
 
-        <path class="relation indirect" data-domain="commercial" d="M205 104 C222 104 232 104 250 104" />
-        <text class="relationship-label" data-domain="commercial" x="157" y="91">source / UTM / form fields</text>
-        <path class="relation commercial" data-domain="commercial" d="M430 104 C446 104 454 104 470 104" />
-        <text class="relationship-label" data-domain="commercial" x="433" y="92">OpportunityId</text>
-        <path class="relation commercial" data-domain="commercial" d="M650 104 C666 104 674 104 690 104" />
-        <text class="relationship-label" data-domain="commercial" x="654" y="92">QuoteId</text>
-        <path class="relation commercial" data-domain="commercial" d="M870 104 C886 104 894 104 910 104" />
-        <text class="relationship-label" data-domain="commercial" x="874" y="92">OrderId</text>
-        <path class="relation commercial" data-domain="commercial" d="M1080 128 C1090 170 1095 270 1080 365" />
-        <text class="relationship-label" data-domain="commercial" x="1092" y="245">Order_Product__c</text>
+            <div class="ent commercial" id="rel-opty">
+              <div class="ent-head"><span class="ent-name">Opportunity</span> <span class="ent-sub">commercial intent and attribution</span></div>
+              <ul>
+                <li class="parentfield" data-edge="rel-quote">Quote parent<span class="fnote">one opportunity, many quotes</span></li>
+                <li>pipeline stage · source analysis</li>
+              </ul>
+            </div>
 
-        <g class="object planned" data-domain="commercial">
-          <rect x="20" y="62" width="185" height="84" rx="5" />
-          <text class="title" x="36" y="88">Source fields</text>
-          <text class="meta" x="36" y="111">fonte / UTM / form data</text>
-          <text class="meta" x="36" y="132">not a Campaign object</text>
-        </g>
-        <g class="object commercial" data-domain="commercial">
-          <rect x="250" y="62" width="180" height="84" rx="5" />
-          <text class="title" x="266" y="88">Opportunity</text>
-          <text class="meta" x="266" y="111">commercial intent</text>
-          <text class="meta" x="266" y="132">attribution and pipeline</text>
-        </g>
-        <g class="object commercial" data-domain="commercial">
-          <rect x="470" y="62" width="180" height="84" rx="5" />
-          <text class="title" x="486" y="88">Quote</text>
-          <text class="meta" x="486" y="111">editable proposal</text>
-          <text class="meta" x="486" y="132">multiple attempts allowed</text>
-        </g>
-        <g class="object commercial" data-domain="commercial">
-          <rect x="690" y="62" width="180" height="84" rx="5" />
-          <text class="title" x="706" y="88">Order</text>
-          <text class="meta" x="706" y="111">accepted / paid sale</text>
-          <text class="meta" x="706" y="132">invoice source</text>
-        </g>
-        <g class="object commercial" data-domain="commercial">
-          <rect x="910" y="62" width="170" height="84" rx="5" />
-          <text class="title" x="926" y="88">OrderItem</text>
-          <text class="meta" x="926" y="111">ticket source line</text>
-          <text class="meta" x="926" y="132">N tickets from quantity</text>
-        </g>
+            <div class="ent commercial child" id="rel-quote">
+              <div class="ent-head"><span class="ent-name">Quote</span> <span class="ent-sub">editable proposal / multiple attempts</span></div>
+              <ul>
+                <li class="joinfield" data-edge="rel-order">Order lookup / conversion<span class="fnote">accepted quote becomes order</span></li>
+                <li>validity · retry by cloning</li>
+              </ul>
+            </div>
 
-        <text class="column-label" x="250" y="230">LINE-ITEM PRODUCT RESOLUTION</text>
-        <path class="relation commercial" data-domain="commercial" d="M340 146 C340 190 340 205 340 250" />
-        <text class="relationship-label" data-domain="commercial" x="349" y="204">OpportunityId</text>
-        <path class="relation commercial" data-domain="commercial" d="M560 146 C560 190 560 205 560 250" />
-        <text class="relationship-label" data-domain="commercial" x="569" y="204">QuoteId</text>
-        <path class="relation commercial" data-domain="commercial" d="M425 290 C530 290 592 325 690 325" />
-        <path class="relation commercial" data-domain="commercial" d="M645 290 C660 290 675 315 690 325" />
-        <path class="relation commercial" data-domain="commercial" d="M995 146 C920 185 820 280 800 325" />
-        <text class="relationship-label" data-domain="commercial" x="616" y="310">PricebookEntryId</text>
-        <path class="relation commercial" data-domain="commercial" d="M880 325 C895 325 902 325 920 325" />
-        <text class="relationship-label" data-domain="commercial" x="882" y="313">Product2Id</text>
-        <path class="relation commercial" data-domain="commercial" d="M1005 365 C1035 390 1050 420 1080 440" />
-        <text class="relationship-label" data-domain="commercial" x="1016" y="409">Product__c</text>
+            <div class="ent commercial" id="rel-order">
+              <div class="ent-head"><span class="ent-name">Order</span> <span class="ent-sub">accepted / paid sale</span></div>
+              <ul>
+                <li class="parentfield" data-edge="rel-orderitem">OrderItem parent<span class="fnote">one order, many lines</span></li>
+                <li>buyer account lives here, not on Biglietto</li>
+                <li>invoice source · payment tracking</li>
+              </ul>
+            </div>
 
-        <g class="object commercial" data-domain="commercial">
-          <rect x="250" y="250" width="175" height="80" rx="5" />
-          <text class="title" x="266" y="276">OpportunityLineItem</text>
-          <text class="meta" x="266" y="299">Opportunity product</text>
-          <text class="meta" x="266" y="318">PricebookEntryId</text>
-        </g>
-        <g class="object commercial" data-domain="commercial">
-          <rect x="470" y="250" width="175" height="80" rx="5" />
-          <text class="title" x="486" y="276">QuoteLineItem</text>
-          <text class="meta" x="486" y="299">Quote product</text>
-          <text class="meta" x="486" y="318">PricebookEntryId</text>
-        </g>
-        <g class="object commercial" data-domain="commercial">
-          <rect x="690" y="280" width="190" height="90" rx="5" />
-          <text class="title" x="706" y="306">PricebookEntry</text>
-          <text class="meta" x="706" y="329">catalog price bridge</text>
-          <text class="meta" x="706" y="350">Product2Id</text>
-        </g>
-        <g class="object commercial" data-domain="commercial">
-          <rect x="920" y="280" width="170" height="90" rx="5" />
-          <text class="title" x="936" y="306">Product2</text>
-          <text class="meta" x="936" y="329">course / service / bundle</text>
-          <text class="meta" x="936" y="350">product reporting</text>
-        </g>
+            <div class="ent commercial child" id="rel-orderitem">
+              <div class="ent-head"><span class="ent-name">OrderItem</span> <span class="ent-sub">event line or rate line</span></div>
+              <ul>
+                <li class="keyfield">quantity<span class="fnote">explodes into 1 record per ticket unit</span></li>
+                <li class="joinfield" data-edge="rel-product">Product2 lookup</li>
+                <li class="syncfield" data-edge="rel-ticket" data-dashed="1">ticket-stock generation<span class="fnote">automation after order insert</span></li>
+              </ul>
+            </div>
 
-        <text class="column-label" x="20" y="490">EVENT EDITION AND PARTICIPATION</text>
-        <path class="relation event" data-domain="event" d="M205 585 C440 585 720 505 1080 485" />
-        <text class="relationship-label" data-domain="event" x="606" y="536">Biglietto.Campaign__c</text>
-        <path class="relation event" data-domain="event" d="M205 620 C380 690 580 680 760 620" />
-        <text class="relationship-label" data-domain="event" x="450" y="675">CampaignId</text>
-        <path class="relation participant" data-domain="participant" d="M525 570 C600 570 650 590 760 600" />
-        <text class="relationship-label" data-domain="participant" x="604" y="559">ContactId</text>
-        <path class="relation indirect" data-domains="participant event" d="M1080 525 C1020 670 900 660 865 620" />
-        <text class="relationship-label" data-domains="participant event" x="926" y="664">status sync</text>
+            <div class="ent commercial" id="rel-product">
+              <div class="ent-head"><span class="ent-name">Product2</span> <span class="ent-sub">course / service / bundle component</span></div>
+              <ul>
+                <li>reporting survives bundles</li>
+              </ul>
+            </div>
+          </div>
 
-        <g class="object event" data-domain="event">
-          <rect x="20" y="540" width="185" height="86" rx="5" />
-          <text class="title" x="36" y="566">Campaign</text>
-          <text class="meta" x="36" y="589">event edition</text>
-          <text class="meta" x="36" y="610">one per event</text>
-        </g>
-        <g class="object participant" data-domain="participant">
-          <rect x="345" y="528" width="180" height="84" rx="5" />
-          <text class="title" x="361" y="554">Contact</text>
-          <text class="meta" x="361" y="577">participant / signer</text>
-          <text class="meta" x="361" y="598">assigned after purchase</text>
-        </g>
-        <g class="object event" data-domains="participant event">
-          <rect x="760" y="550" width="210" height="86" rx="5" />
-          <text class="title" x="776" y="576">CampaignMember</text>
-          <text class="meta" x="776" y="599">firmato / partecipato</text>
-          <text class="meta" x="776" y="620">no-show status</text>
-        </g>
-        <g class="object ticket" data-domains="commercial participant event">
-          <rect class="outer" x="1080" y="365" width="190" height="170" rx="6" />
-          <text class="title" x="1096" y="392">Biglietto__c</text>
-          <text class="meta" x="1096" y="414">1 record = 1 ticket</text>
-          <line class="divider" x1="1080" y1="428" x2="1270" y2="428" />
-          <text class="field-name" x="1096" y="451">Order_Product__c</text>
-          <text class="field-type" x="1254" y="451" text-anchor="end">OrderItem</text>
-          <text class="field-name" x="1096" y="474">Product__c</text>
-          <text class="field-type" x="1254" y="474" text-anchor="end">Product2</text>
-          <text class="field-name" x="1096" y="497">Campaign__c</text>
-          <text class="field-type" x="1254" y="497" text-anchor="end">Campaign</text>
-          <text class="meta" x="1096" y="521">payment, signature, QR, check-in</text>
-        </g>
-      </svg>
+          <div class="map-col">
+            <div class="map-col-title">Ticket stock and participant flow</div>
 
-      <div class="legend" aria-label="Relationship legend">
-        <span><i class="swatch" style="border-color: var(--commercial)"></i>Commercial</span>
-        <span><i class="swatch" style="border-color: var(--participant)"></i>Participant</span>
-        <span><i class="swatch" style="border-color: var(--event)"></i>Event</span>
-        <span><i class="swatch indirect" style="border-color: var(--indirect)"></i>Planned or automation</span>
+            <div class="ent participant" id="rel-ticket">
+              <div class="ent-head"><span class="ent-name">Asset / Biglietto</span> <span class="ent-sub">1 record = 1 ticket unit</span></div>
+              <ul>
+                <li class="joinfield keyfield" data-edge="rel-orderitem" data-main="1">Riga_Ordine__c<span class="fnote">lookup to OrderItem</span></li>
+                <li class="joinfield" data-edge="rel-product">Product2<span class="fnote">lookup</span></li>
+                <li class="joinfield" data-edge="rel-campaign">Evento__c<span class="fnote">lookup to Campaign</span></li>
+                <li class="joinfield" data-edge="rel-contact">ContactId<span class="fnote">assigned after participant list</span></li>
+                <li>no direct Account field<span class="fnote">buyer derives via OrderItem → Order</span></li>
+                <li>Caricato → Disponibile → In attesa firma → Emesso → Utilizzato</li>
+              </ul>
+            </div>
+
+            <div class="ent participant" id="rel-contact">
+              <div class="ent-head"><span class="ent-name">Contact</span> <span class="ent-sub">participant / signer, not necessarily the buyer</span></div>
+              <ul>
+                <li class="syncfield" data-edge="rel-ticket" data-dashed="1">participant list assigns Contact to ticket</li>
+                <li class="parentfield" data-edge="rel-cmember">CampaignMember parent<span class="fnote">member row per event</span></li>
+                <li>auto-created after payment when the referent fills the list</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="map-col">
+            <div class="map-col-title">Event and attendance objects</div>
+
+            <div class="ent event" id="rel-campaign">
+              <div class="ent-head"><span class="ent-name">Campaign</span> <span class="ent-sub">one campaign per dated event edition</span></div>
+              <ul>
+                <li class="parentfield" data-edge="rel-cmember">CampaignMember parent</li>
+                <li>event edition · room composition · no-show analytics</li>
+              </ul>
+            </div>
+
+            <div class="ent event child" id="rel-cmember">
+              <div class="ent-head"><span class="ent-name">CampaignMember</span> <span class="ent-sub">attendance and signature status</span></div>
+              <ul>
+                <li class="syncfield" data-edge="rel-ticket" data-dashed="1">status sync from Contact + Campaign + ticket lifecycle</li>
+                <li>firmato · partecipato · no-show</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="mobile-list" aria-label="Biglietto relationships">
-        <section data-domain="commercial">
-          <h2>Commercial flow</h2>
-          <p>Source fields &rarr; Opportunity &rarr; Quote &rarr; Order &rarr; OrderItem &rarr; Biglietto.</p>
-        </section>
-        <section data-domain="commercial">
-          <h2>Products</h2>
-          <p>OpportunityLineItem, QuoteLineItem, and OrderItem resolve Product2 through PricebookEntry. Biglietto keeps Product__c for reporting.</p>
-        </section>
-        <section data-domain="event">
-          <h2>Event and attendance</h2>
-          <p>Biglietto.Campaign__c identifies the event edition. CampaignMember is synchronized from Contact + Campaign for signature, attendance, and no-show status.</p>
-        </section>
+      <div class="map-legend">
+        <span><span class="sw lookup"></span>lookup relationship</span>
+        <span><span class="sw parent"></span>parent / child hierarchy</span>
+        <span><span class="sw dash"></span>automation or sync flow</span>
+        <span>⚷ key field or driver field</span>
       </div>
 
-      <div id="summary" class="summary" aria-live="polite">5 direct Biglietto lookups &middot; commercial, catalog, and event traceability</div>
+      <div class="summary">
+        OrderItem creates ticket stock by automation, Asset / Biglietto keeps the direct lookups,
+        Contact and Campaign remain the participation anchors, and CampaignMember is synchronized
+        indirectly for signature, attendance, and no-show analysis.
+      </div>
     </main>
 
     <script>
-      const buttons = Array.from(document.querySelectorAll("[data-view]"));
-      const related = Array.from(document.querySelectorAll("[data-domain], [data-domains]"));
-      const summary = document.getElementById("summary");
-      const summaries = {
-        all: "5 direct Biglietto lookups · commercial, catalog, and event traceability",
-        commercial: "Source fields -> Opportunity -> Quote -> Order -> OrderItem -> Biglietto",
-        participant: "Contact is the participant and DocuSign signer",
-        event: "Campaign is the event edition · CampaignMember is synchronized indirectly"
-      };
+      function drawDiagramEdges(diagram) {
+        const svg = diagram.querySelector(":scope > .map-svg");
+        if (!svg || diagram.offsetParent === null) return;
 
-      const setView = (view) => {
-        buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
-        related.forEach((element) => {
-          const domains = (element.dataset.domains || element.dataset.domain || "").split(" ");
-          element.classList.toggle("dimmed", view !== "all" && !domains.includes(view));
-        });
-        summary.textContent = summaries[view];
-      };
+        const cs = getComputedStyle(document.documentElement);
+        const pal = {
+          lookup: cs.getPropertyValue("--ref").trim(),
+          parent: cs.getPropertyValue("--participant").trim(),
+          dashed: cs.getPropertyValue("--automation").trim()
+        };
 
-      buttons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+        const dRect = diagram.getBoundingClientRect();
+        svg.setAttribute("viewBox", "0 0 " + dRect.width + " " + dRect.height);
+        svg.innerHTML = "";
+
+        const rows = diagram.querySelectorAll("[data-edge]");
+        for (const row of rows) {
+          const target = document.getElementById(row.dataset.edge);
+          if (!target) continue;
+
+          const a = row.getBoundingClientRect();
+          const b = target.getBoundingClientRect();
+          const leftward = (b.left + b.width / 2) < (a.left + a.width / 2);
+          const x1 = (leftward ? a.left : a.right) - dRect.left;
+          const y1 = a.top + a.height / 2 - dRect.top;
+          const x2 = (leftward ? b.right : b.left) - dRect.left;
+          const y2 = b.top + Math.min(20, b.height / 2) - dRect.top;
+          const span = Math.max(40, Math.abs(x2 - x1) * 0.45);
+          const dx = leftward ? -span : span;
+
+          const dashed = row.dataset.dashed === "1";
+          const parent = row.classList.contains("parentfield");
+          const main = row.dataset.main === "1";
+
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute(
+            "d",
+            "M" + x1 + "," + y1 +
+            " C" + (x1 + dx) + "," + y1 + " " + (x2 - dx) + "," + y2 + " " + x2 + "," + y2
+          );
+          path.setAttribute("fill", "none");
+          path.setAttribute("stroke", dashed ? pal.dashed : parent ? pal.parent : pal.lookup);
+          path.setAttribute("stroke-width", parent ? "3" : main ? "3" : "1.9");
+          path.setAttribute("opacity", dashed ? "0.75" : parent ? "0.95" : main ? "0.95" : "0.60");
+          if (dashed) path.setAttribute("stroke-dasharray", "6 5");
+          svg.appendChild(path);
+
+          const ah = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          if (parent) {
+            const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            dot.setAttribute("cx", x1);
+            dot.setAttribute("cy", y1);
+            dot.setAttribute("r", "3.2");
+            dot.setAttribute("fill", pal.parent);
+            svg.appendChild(dot);
+
+            const bar = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            bar.setAttribute("d", "M" + x2 + "," + (y2 - 7) + " L" + x2 + "," + (y2 + 7));
+            bar.setAttribute("stroke", pal.parent);
+            bar.setAttribute("stroke-width", "2.2");
+            svg.appendChild(bar);
+          } else {
+            const s = main ? 8 : 6;
+            const ax = leftward ? s : -s;
+            ah.setAttribute("d", "M" + x2 + "," + y2 + " l" + ax + "," + (-s * 0.55) + " l0," + (s * 1.1) + " z");
+            ah.setAttribute("fill", dashed ? pal.dashed : pal.lookup);
+            ah.setAttribute("opacity", dashed ? "0.8" : "0.9");
+            svg.appendChild(ah);
+          }
+
+          row._mapPath = path;
+          if (!row._mapHoverBound) {
+            row._mapHoverBound = true;
+            row.addEventListener("mouseenter", () => {
+              const p = row._mapPath;
+              if (!p) return;
+              p.setAttribute("opacity", "1");
+              p.setAttribute("stroke-width", parent ? "4" : main ? "4" : "3");
+              target.classList.add("lit");
+              row.classList.add("lit");
+            });
+            row.addEventListener("mouseleave", () => {
+              const p = row._mapPath;
+              if (!p) return;
+              p.setAttribute("opacity", dashed ? "0.75" : parent ? "0.95" : main ? "0.95" : "0.60");
+              p.setAttribute("stroke-width", parent ? "3" : main ? "3" : "1.9");
+              target.classList.remove("lit");
+              row.classList.remove("lit");
+            });
+          }
+        }
+      }
+
+      function drawVisibleDiagrams() {
+        for (const d of document.querySelectorAll(".map-diagram")) {
+          if (d.offsetParent !== null) drawDiagramEdges(d);
+        }
+      }
+
+      window.addEventListener("resize", () => requestAnimationFrame(drawVisibleDiagrams));
+      window.addEventListener("load", drawVisibleDiagrams);
     </script>
   </body>
 </html>
