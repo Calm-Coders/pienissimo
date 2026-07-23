@@ -200,6 +200,22 @@ The screenshot exposed a gap: five lines have **quantity 2**. `BundleComponent__
 
 Zoho: _"the client paid 9.800 for six blocks."_ Salesforce: _"the client paid 9.800, of which Food Marketing Festival Gold earned 2.200, Camerieri Venditori 1.900 (950 per head), Happy Team 400 at a 60% discount."_ Same money, same codes, same client — the difference is that the second sentence can be reported on.
 
+## Reconciliation log
+
+**2026-07-23 (Check Codici Prodotto call, with Fabrizio) — premises CONFIRMED against the source file.** Walking `anar_PIE_ricla.xlsx` and the live Mexal screen with Fabrizio validated every assumption this demo rests on:
+
+- `_ARTIP` decoded: **A** = ordinary product · **Z** = rata/block (`BLO-`, carries the instalment price) · **C** = bundle (`PACK-`). Exactly the split used in §6.
+- The **BLO blocks are payment dates, not products**, and each carries the instalment value while the real items sit at €0 omaggio — confirmed verbatim ("il blocco è la rata; gli item sono a zero perché Mexal valorizza solo il BLO"). This is precisely the pattern §6 rebuilds.
+- **The whole C/Z/BLO/PACK apparatus will NOT be migrated** — on Salesforce the bundle explodes into product order-lines with dates, grouped by date into instalments. Confirms the demo's direction (money on components, dates on instalments; BLO codes disappear).
+
+**Additions from 07/23 (not in this proposal, tracked separately):**
+
+- Both a **fixed bundle price** and an **auto-calc-from-components** option are wanted (tracker #13); ties to the variance question (#43).
+- Bundle **classification picklists**: `Anno solare` (master) → `Evento` (dependent) + `Tipologia bundle`, 7 canonical events — tracker #46. Values rebuilt clean, not migrated from LIVELLO_3/4.
+- Product-master flags `Genera biglietto` + `Solo bundle` — tracker #47; ~10 bundle-only codes from Fabrizio — tracker #48.
+
+Status unchanged: demo built & passing in UAT, still to be **shown to Pienissimo** (#13). The real catalogue prices (#42) remain the gating input before showing §6 to the business.
+
 ## 7. Bearing on the licence question
 
 The custom route delivers the fixed price, the per-bundle spread, the shared product and the product-level statistics — with one junction object, ~150 lines of Apex and two formula fields. Nothing here needed Revenue Cloud's pricing engine, which is consistent with Elena's 07/07 point that the bundle is _"semplicemente un contenitore che avrà un prezzo, non ci sono delle logiche del prezzo dietro le quinte."_ If the demo is accepted, the licence gap escalation (#13, >50% of revenue) can close on the custom solution.
