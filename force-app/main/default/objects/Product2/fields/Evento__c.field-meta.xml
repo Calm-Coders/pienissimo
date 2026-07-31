@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Evento__c</fullName>
+    <label>Evento</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Anno_Solare__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Tour</fullName>
+                <default>false</default>
+                <label>Tour</label>
+            </value>
+            <value>
+                <fullName>Food Marketing Festival</fullName>
+                <default>false</default>
+                <label>Food Marketing Festival</label>
+            </value>
+            <value>
+                <fullName>Pienissimo Live</fullName>
+                <default>false</default>
+                <label>Pienissimo Live</label>
+            </value>
+            <value>
+                <fullName>Academy</fullName>
+                <default>false</default>
+                <label>Academy</label>
+            </value>
+            <value>
+                <fullName>Sold Out</fullName>
+                <default>false</default>
+                <label>Sold Out</label>
+            </value>
+            <value>
+                <fullName>Odb Live</fullName>
+                <default>false</default>
+                <label>Odb Live</label>
+            </value>
+            <value>
+                <fullName>Camerieri</fullName>
+                <default>false</default>
+                <label>Camerieri</label>
+            </value>
+            <value>
+                <fullName>Mastery</fullName>
+                <default>false</default>
+                <label>Mastery</label>
+            </value>
+            <value>
+                <fullName>ND</fullName>
+                <default>false</default>
+                <label>ND</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <valueName>Tour</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
+            <valueName>Food Marketing Festival</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <valueName>Pienissimo Live</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <valueName>Academy</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
+            <valueName>Sold Out</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <valueName>Odb Live</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
+            <valueName>Camerieri</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <valueName>Mastery</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <valueName>ND</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>
