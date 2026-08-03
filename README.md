@@ -1,58 +1,42 @@
-# Salesforce DX Project
+# ROMI — Pienissimo (Salesforce)
 
-Salesforce DX is a development approach that brings source-driven development, team collaboration, and continuous integration to the Salesforce Platform. Instead of working directly in an org through a web browser, you work with metadata as source files in a local DX project, track changes in version control, and deploy through automated processes.
+Salesforce DX project for the Pienissimo CRM migration (Zoho → Salesforce, contract expiry **31 October 2026**).
 
-This project template gets you started with the tools and structure you need to build Salesforce applications using source control, scratch orgs, and the Salesforce CLI.
+- **Requirements for client sign-off: [REQUISITI.it.md](REQUISITI.it.md) (the version to present) · [REQUIREMENTS.md](REQUIREMENTS.md) (EN mirror)**
+- Consolidated design state: [meetings/DEVELOPMENT-RECAP.md](meetings/DEVELOPMENT-RECAP.md) · [IT](meetings/DEVELOPMENT-RECAP.it.md)
+- Open decisions tracker: [meetings/open-items.md](meetings/open-items.md) · [IT](meetings/open-items.it.md)
+- Per-meeting recaps: [meetings/results/](meetings/results/) — original transcripts in [meetings/](meetings/)
+- Proposals: [meetings/proposals/](meetings/proposals/)
 
-## Prerequisites
+## Artifacts
 
-Before you start, make sure you have:
+Interactive artifacts published on claude.ai (private unless shared).
 
-- **Salesforce CLI** - Download from [developer.salesforce.com/tools/salesforcecli](https://developer.salesforce.com/tools/salesforcecli). See [Install Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm) for details.
-- **VS Code with Salesforce Extension Pack** - See [Installation Instructions](https://developer.salesforce.com/docs/platform/sfvscode-extensions/guide/install.html) for details. Includes the Agentforce Vibes extension.
-- **A development org** - Sign up for a free Developer Edition org [here](https://developer.salesforce.com/signup).
-- **Dev Hub enabled** (optional, required to create scratch orgs) - You can enable Dev Hub in your development org under Setup > Dev Hub.  See [Provide Developers Access to Salesforce DX Tools](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_setup_dx_tools.htm).
+**▶ Project Status — live dashboard: [EN](https://claude.ai/code/artifact/89ff4377-f47e-4239-8b5c-222401e985f1) · [IT](https://claude.ai/code/artifact/9b229522-9799-49bf-adca-70bc24e45521)** — 48 tasks across seven workstreams with per-task status, the seven live blockers, and the calendar to the 6 October go-live. Compiled 2026-08-03 from Slack, Gmail, Drive and Fathom.
 
-## Project Structure
+| Artifact                                                                                                               | What it covers                                                                                                                  | Updated    |
+| ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| [Project Status](https://claude.ai/code/artifact/89ff4377-f47e-4239-8b5c-222401e985f1) (EN)                            | Workstream/task status board, blockers, timeline, provenance                                                                    | 2026-08-03 |
+| [Stato Progetto](https://claude.ai/code/artifact/9b229522-9799-49bf-adca-70bc24e45521) (IT)                            | Italian version of the status board — the one to share with Pienissimo                                                          | 2026-08-03 |
+| [Pienissimo — Analisi Catalogo Prodotti](https://claude.ai/code/artifact/3d9acb50-961d-485f-8092-3eb0090b59a0)         | Analysis of the Mexal article master (`anar_PIE_ricla.xlsx`): `_ARTIP` A/Z/C decoding, `BLO-`/`PACK-` codes, LIVELLO_ hierarchy | 2026-07-23 |
+| [Bundle Schema — Pienissimo](https://claude.ai/code/artifact/970c98df-7b58-4c4c-b9f8-5cda981966eb)                     | Bundle data model: `BundleComponent__c` junction, spread pricing, `Spread_Total__c` / `Spread_Variance__c` reconciliation       | 2026-07-16 |
+| [Bundle ⇄ Product — the many-to-many](https://claude.ai/code/artifact/b064715d-4efb-4d5c-a7fb-d593193e8198)            | Explainer of the bundle↔product junction — why the spread price lives on the link, not the product (EN)                         | 2026-07-16 |
+| [Bundle ⇄ Prodotto — la relazione molti-a-molti](https://claude.ai/code/artifact/9b8f038f-bf80-4d0a-943d-98b91617d9d1) | Italian version of the above, for sharing with Pienissimo                                                                       | 2026-07-16 |
 
-Your DX project follows this structure:
+Standing after the client's bundle approval (22–24 Jul): the three bundle artifacts remain accurate — the junction model and spread-on-the-link design were approved as built. The catalogue analysis is accurate on structure, but every price it shows is a ROMI placeholder (tracker [#42](meetings/open-items.md)); real catalogue prices are still owed before it goes in front of Pienissimo.
 
-- **`force-app/main/default/`** - Your metadata source files live in this default package directory. You can configure additional package directories in the `sfdx-project.json` file.
-- **`config/`** - Scratch org definitions and project settings
-- **`scripts/`** - Automation scripts for common tasks
-- **`sfdx-project.json`** - Project manifest that defines package directories, namespace, API version, and other project-level settings
+Local (non-published) diagrams in the repo root:
 
-See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm).
+- [bundle-relationship-map.html](bundle-relationship-map.html) — Pienissimo Bundle Relationships
+- [biglietto-structure-map.html](biglietto-structure-map.html) — Pienissimo Biglietto Data Relations
 
-## Get Started
+## Salesforce DX
 
-Ready to start developing? The [Get Started with Salesforce DX](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_get_started_dx.htm) guide walks you through your first project, from creating a scratch org to creating a simple Apex class or LWC to deploying your code to a sandbox.
+Metadata lives in [force-app/main/default/](force-app/main/default/); scratch-org definitions in [config/](config/); project manifest in [sfdx-project.json](sfdx-project.json).
 
-## Common Salesforce CLI Commands
-
-Here are common CLI commands that you'll use the most:
-
-- `sf org login web`: Authorize an org
-- `sf org open`: Open your org in a browser
-- `sf org create scratch`: Create a scratch org
-- `sf project deploy start`: Deploy metadata to your org
-- `sf project retrieve start`: Retrieve metadata from your org
-- `sf template generate <artifact>`: Scaffold new components, such as Apex classes and triggers, LWC components, Lightning apps, and more
-- `sf apex <command>`: Run Apex tests, run anonymous Apex blocks, and view logs
-- `sf data <command>`: Work with test data
-- `sf alias <command>`: Manage org aliases
-- `sf config <command>`: Configure CLI settings
-
-## Use Agentforce Vibes to Build Lightning Apps
-
-Transform your ideas into custom Lightning apps that extend CRM workflows directly in Lightning Experience. Through natural conversations with Agentforce Vibes, implement custom objects and fields, complex business logic, and dynamic UI components. See [Build a Lightning App Using Agentforce Vibes](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/lexapp-overview.html).
-
-## Additional Resources
-
-- [Agentforce Vibes Developer Guide](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/einstein-overview.html)
-- [Salesforce CLI Installation Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/)
-- [Salesforce CLI Plugin Development Guide](https://developer.salesforce.com/docs/platform/salesforce-cli-plugin/guide/conceptual-overview.html)
-- [Salesforce VS Code Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-
+```
+sf org login web            # authorize an org
+sf project deploy start     # deploy metadata
+sf project retrieve start   # retrieve metadata
+sf apex run test            # run Apex tests
+```

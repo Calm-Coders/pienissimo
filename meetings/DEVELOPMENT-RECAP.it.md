@@ -1,6 +1,7 @@
 # ROMI-PIENISSIMO — Recap di Sviluppo Salesforce
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
+> ⚠ **I §1–§9 sono aggiornati al 23/07/2026. Il [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) porta il delta 24/07 → 03/08 e prevale su tutto ciò che contraddice** — in particolare la data di go-live, l'approvazione lead/opty, l'approvazione bundle e il dietrofront su DocuSign.
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
 ---
@@ -116,7 +117,7 @@ Morris AI scartata (AI interna) · fase demo conclusa · scadenza Zoho = 31/10 �
 
 ## 9. 🔴 Decisioni/input bloccanti — da chiudere prima del congelamento del blueprint
 
-1. **Review del flusso lead/opty** con Daniela (riscrittura di Elena + segmento registrato) — l'ultimo grande design non approvato; rimandato DI NUOVO oltre il 9/7, nessuna novità al 13/07 → sollecitare con forza. (#19)
+1. ~~**Review del flusso lead/opty** con Daniela (riscrittura di Elena + segmento registrato) — l'ultimo grande design non approvato; rimandato DI NUOVO oltre il 9/7, nessuna novità al 13/07 → sollecitare con forza. (#19)~~ → ✅ **CONFERMATO nella business review del 31/07**; restano solo voci di configurazione (#59). Vedi §10.
 2. **Demo del bundle custom** — ✅ costruita e verde in UAT il 16/07 sull'oggetto ponte `BundleComponent__c`; il criterio di accettazione (statistica per prodotto via prezzi spalmati) è soddisfatto, incluso uno stesso prodotto in due bundle con spalmati diversi. Ora serve **mostrarla a Pienissimo** + la stima effort di Andrea. (#13)
 3. **Risposte marketing su form + sottodominio** da Matteo — blocca l'intero filone marketing dal 23/06. (#14)
 4. **Chiusura acquisto DocuSign**. (#16)
@@ -126,3 +127,78 @@ Morris AI scartata (AI interna) · fase demo conclusa · scadenza Zoho = 31/10 �
 8. **Avvio workbook data model**: struttura ROMI + liste campi Pienissimo da Zoho. (#24)
 9. Input Pienissimo ancora dovuti: template preventivi + mail reali (#26), Google Sheet dei form con campi fonte nascosti (#33), chiavi CK/CS WooCommerce (#22), regole di dormienza (#8), scelta canale di notifica.
 10. Conferma di fattibilità: scope raggiungibile entro 29/09 / 31/10 con l'attuale lista integrazioni — ROMI ripianifica e si impegna. (#4)
+
+---
+
+## 10. Aggiornamento 03/08/2026 — sweep multi-sorgente
+
+Compilato il 03/08/2026 da Slack `#tproj-pienissimo`, Gmail, Google Drive e Fathom, su cinque sessioni mai confluite nei §1–§9: **14/07** integrazione Mexal, **16/07** demo bundle + flusso ordini, **22/07** bundle + flusso biglietti, **29/07** follow-up temi aperti (nessuna minuta circolata), **31/07** business review. Dove questa sezione contraddice i §1–§9, prevale questa.
+
+### 10.1 Tempistiche — la data è il 6 ottobre 2026
+
+Elena pubblica la stessa riga in ogni status settimanale dal 26/06: **go-live 6 ottobre 2026, focus sulle integrazioni WooCommerce + Mexal**, con le integrazioni minori rimandate a una seconda fase. L'impostazione "Fase 1 entro fine settembre / Fase 2 entro fine ottobre" del §1 è precedente ed è superata — ma il contratto Zoho scade comunque il **31 ottobre**, quindi la finestra di dual-run si riduce a ~3 settimane. Nota di Elena del 31/07: la data di go-live "sta iniziando a non essere più una notizia positiva dati i tempi". È fissata una **sessione di chiusura giovedì 6 agosto, 15:00–17:00** ("Chiusura ultimi punti aperti") e diverse risposte lato cliente sono attese _prima_.
+
+### 10.2 Cosa è stato approvato
+
+- **Flusso Lead/Opportunity — CONFERMATO (31/07).** Il marketing converte i lead in opportunità; i tutor gestiscono il richiamo con task automatici e stati dedicati; i contatti qualificati bypassano le fasi iniziali per accelerare la trattativa. Il più grande design non approvato del progetto è chiuso. Resta la configurazione: stato "qualificato da ricontattare", pulsante di creazione manuale preventivo, scadenza come campo obbligatorio all'invio, alert automatici al secondo giorno e alla scadenza. Marco Montesi deve i tempi di validità preimpostati per categoria prodotto e linea di business.
+- **Bundle — APPROVATO (22–24/07).** Confermato con Daniela: **si fattura il singolo prodotto elementare**, mai una cifra generica. Il nome del bundle diventa la descrizione portata su Mexal; codice e date di scadenza restano a livello di riga. **Solo l'amministrazione** crea i bundle su Salesforce; i singoli prodotti continuano a essere configurati su Mexal. Residui: la stima di effort di Andrea e un buco reale — nulla impedisce all'amministrazione di associare un articolo non coerente con la categoria del bundle (oggi solo attenzione manuale).
+
+### 10.3 Flusso ordini — tranche, contratti, report
+
+- **Le "rate" diventano "tranche"** (oggetto custom), costruite automaticamente dalle **date di scadenza delle righe d'ordine**: righe con la stessa scadenza formano una tranche. L'ordine intero passa da Salesforce a Mexal con il riferimento tranche **a livello di riga**, non come oggetto. Mexal aggiorna lo stato pagamento per riga; Salesforce aggrega verso la tranche — Mexal non scrive mai direttamente la tranche. In fatturazione: **n fatture Mexal → n fatture Salesforce**.
+- **La generazione automatica del contratto è legata al codice prodotto, non allo stato ordine** — il contratto Performance Plus e le sue logiche (date, stato, totale, fatturato, incassato, insoluto) partono dal codice prodotto, esattamente come per i bundle. Ipotizzati i "tipi ordine" (bundle da palco, palco/performance) per separare flussi e reportistica.
+- **Due report permanenti**: _insoluti_ settimanale (es. lunedì) a commerciale + amministrazione — fatture emesse e non pagate con scadenza antecedente alla data di controllo, produzione rimossa dalla distribuzione; e _tranche in scadenza_ all'amministrazione prima di fine mese per il mese successivo. Entrambi sempre disponibili e aggiornati, senza lancio manuale.
+- **Performance Plus** può nascere da bundle da palco o da inserimento diretto dei tutor. La valutazione di Marco — un'opinione, non una certezza — è che la vendita da palco di questo servizio sia ormai remota, vista l'evoluzione verso un modello consulenziale via tutor; va comunque tenuta come casistica.
+
+### 10.4 Biglietti e firma — dietrofront su DocuSign
+
+- **Regola di generazione asset**: ogni ordine con un prodotto di tipo "evento" crea automaticamente una **Campagna** (se assente) e **un Asset per ciascun codice articolo evento** — anche con bundle multi-evento e ordini inseriti dai tutor. Terminologia fissata: l'**Asset è il record**, il **QR è un valore contenuto** in esso.
+- 🔴 **DocuSign non è più certo.** Il 22/07 Sabatino ha comunicato che, in base all'ultimo confronto con Daniela, DocuSign potrebbe essere abbandonato mantenendo temporaneamente il **processo cartaceo** (PDF stampato, firmato e consegnato al check-in). Aurel ha proposto una via intermedia: firma cartacea con caricamento del documento scansionato/fotografato su una **pagina Community personalizzata**, evitando i ~**€1,80–2 a documento** ma con verifica umana necessaria (nessun controllo automatico possibile su un PDF). Scartata la firma "in link" — nessuna valenza legale/GDPR. Andrea ha segnalato che alcuni clienti non gestiranno scarico → firma → ricarico e si presenteranno comunque col cartaceo. **31/07: Sabatino deve trovare una soluzione valida entro il 6 agosto, altrimenti prepara la procedura per i contratti stampati.** L'ultimatum di Elena resta: senza news si tiene il cartaceo as-is. ⚠ L'incertezza tocca **solo la fase di raccolta firma** — creazione ordine/asset a monte e scansione QR/controllo accessi a valle non cambiano.
+- **Note di credito** (il tema del §2 passa da questione di licenze a flusso vero): l'amministrazione crea la nota di credito e la collega **sia all'ordine sia alla riga d'ordine** — il livello riga serve per gli storni parziali su bundle multi-evento. Le note di credito su prodotti "evento" portano **automaticamente l'Asset corrispondente ad Annullato**. Il rimborso di norma è un credito per acquisti futuri anziché un bonifico, gestito dal tutor. Non urgente, ma Elena deve un diagramma dedicato.
+
+### 10.5 Nuovo workstream — link di checkout WooCommerce (Salesforce → WooCommerce)
+
+Deciso il 31/07, specificato in `Integrazione_Salesforce_WooCommerce.docx` (Sabatino, 31/07). Il tutor genera dall'Opportunity un URL di checkout che porta con sé l'id dell'Opportunity, così l'ordine risultante è attribuibile:
+
+1. **Salesforce** costruisce `https://<sito>/checkout/?add-to-cart=<woo_product_id>&sf_opp_id=<opportunity_id>` (opzionali `quantity[...]` e `coupon`).
+2. **WooCommerce** — un must-use plugin (`wp-content/mu-plugins/sf-opportunity-tracker.php`, deliberatamente _non_ `functions.php`) cattura `sf_opp_id` in sessione + cookie a 30 giorni, lo scrive alla creazione dell'ordine come meta `_sf_opportunity_id` e lo riespone via REST API come `sf_opportunity_id`.
+3. **Salesforce** legge `/wp-json/wc/v3/orders/{id}` con Consumer Key/Secret, trova l'Opportunity per id, scrive `WooCommerce_Order_Id__c`, Amount e CloseDate e porta lo stage a **Closed Won**, innescando le automazioni a valle.
+
+Da costruire — Salesforce: `WooCommerce_Product_Id__c` su Prodotto (popolato per ogni articolo a catalogo), `WooCommerce_Order_Id__c` su Opportunity, il pulsante generatore link con tendine prodotto/quantità (Aurel), la logica di lettura ordini. Pienissimo: installare il mu-plugin, generare le credenziali REST e consegnarle, creare il template email precompilato (Sabatino), fissare la call tecnica congiunta (Sabatino), poi test end-to-end (Aurel + Sabatino).
+
+🔴 **Tre decisioni aperte**: job pull vs webhook WooCommerce (in produzione è consigliato il webhook); fonte di verità dei prezzi — listino WooCommerce vs prezzi negoziati Salesforce tramite **coupon dinamici monouso**; id in chiaro (indovinabile) o token firmato.
+
+### 10.6 Mexal — sbloccato
+
+**Le credenziali WEBAPI sono state consegnate il 15/07** da Mirko Merendi (Kreosoft): `https://services.passepartout.cloud/`, dominio **PIENISSIMO**, azienda **PIE**, utente dedicato, password inviata separatamente a Fabrizio. Meccanica concordata il 14/07:
+
+| Tema              | Decisione                                                                                                                    |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Fonte di verità   | **Salesforce** per le nuove creazioni; **Mexal** per le modifiche amministrative; riallineamenti periodici                   |
+| Permessi          | Modifica dell'anagrafica cliente sincronizzata ristretta agli utenti admin — i commerciali non devono alterarla dopo la sync |
+| Strategia di sync | **GET notturne** schedulate, solo delta, su "data ultima modifica"                                                           |
+| Fatture           | ~**2.300 fatture nel 2025** → filtri temporali + paginazione, contro i limiti 6 MB sync / 12 MB async                        |
+| Ordini            | Niente GET ripetute (l'id torna in creazione); invece un **pulsante "rinvio ordine"** per errori/modifiche                   |
+| Prodotti          | Configurati su Mexal; **pulsante di importazione on-demand** (non solo notturna) per la disponibilità immediata alla vendita |
+| Agenti            | Su Mexal sono **fornitori**, filtrati per mastro — codici che iniziano per **610** per l'azienda "P"                         |
+| Ambiente di test  | **Non esiste** → va creata un'azienda di test per validare POST e ordini di prova senza toccare la contabilità reale         |
+| Anagrafica        | Campo che referenzia codice/P.IVA precedente, così i **cambi di ragione sociale** non spezzano lo storico                    |
+
+Sempre il 14/07: gli **ordini a zero euro** (biglietti gratuiti) restano nel CRM per attivare la generazione biglietti e **non** vanno a Mexal; la P.IVA è la chiave primaria del cliente e Anticipay oggi verifica solo in fase di importazione ordine, bloccando i trasferimenti Zoho→Mexal sui dati errati.
+
+### 10.7 Analytics — percorso di ingestion Data 360
+
+Risposta interna di Davide Bocchieri (29/06), non ancora progettata né mostrata al cliente: la catena as-is (CSV notturni Mexal → FTP su Work Drive Zoho → ETL Zoho Data Prep → data warehouse → Zoho Analytics) si traduce su Salesforce in **Mexal → Google Cloud Storage → ingestion Data 360 → trasformazione → report/dashboard standard su oggetti Data 360** — dati esterni utilizzabili per la reportistica senza caricarli tutti come record CRM. Le licenze sono coperte via MC Growth. Le capacità di trasformazione dentro Data 360 hanno però dei limiti: da testare prima di impegnarsi.
+
+### 10.8 🔴 Contenzioso commerciale — perimetro fuori contratto
+
+Elena segnala lo stesso punto rosso in tre status settimanali consecutivi: **GLS, Teachable e l'integrazione Salesforce↔Zoho** (ordini Pienissimo Pro della **Pienissimo Software Srl — società diversa dal cliente di questo progetto**) non sono stati discussi in prevendita, **non risultano a contratto** e andrebbero valutati e quotati come evolutiva separata, come concordato con Andrea G. Sabatino e Fabrizio non erano d'accordo, sostengono che di Zoho si fosse parlato, e hanno portato il tema a Daniela. ROMI deve una quotazione per lo sviluppo Salesforce↔Zoho se resta nel perimetro. **Non risolto al 03/08** — e contraddice direttamente la mappa integrazioni del §4, che elenca GLS e Teachable come normali deliverable di fase 2.
+
+### 10.9 Altri fili aperti dallo sweep
+
+- **Marketing parzialmente sbloccato**: sottodominio creato e informazioni consegnate; la titolarità lato ROMI passa a **Fabrizio Mastracci**. Resta l'attesa della review Pienissimo sull'Excel con **oltre 100 form**.
+- **Data model workbook**: Sabatino si è impegnato il 22/07 a completarlo entro la settimana successiva — `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx` nella cartella Drive `[Pienissimo] Fase Progettuale`. Pienissimo deve i campi Zoho per Account, Referente, Opportunity, Offerta, Ordine, Articoli.
+- **Procedura accettazione ordine e contratti**: Marco Montesi + Elisa Migliano devono chiuderla con Daniela e comunicarla a Elena **entro giovedì 6 agosto**.
+- **Pulsanti accetta/rifiuta nell'email del preventivo** che pilotano lo stato Preventivo/Opportunity: ROMI valuta fattibilità e rischio di modifica dati CRM da parte di clienti esterni.
+- **Date evento**: "Camerieri Venditori" 3 novembre o rinvio ad aprile; **Pienissimo Live 24–26 novembre**, tempi di consegna biglietti (60 giorni as-is — si può posticipare?).
+- **Il codice bundle viene comunicato a WooCommerce manualmente, a voce**, per scelta, così da mantenere flessibilità a ridosso degli eventi.
