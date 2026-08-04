@@ -1,8 +1,10 @@
 # Requirements Document — Pienissimo Salesforce Project
 
 **Client:** Pienissimo · **Supplier:** ROMI S.r.l. · **Project:** Zoho CRM → Salesforce migration
-**Version:** 1.0 — draft for approval · **Date:** 3 August 2026
-**Sign-off session:** Thursday 6 August 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
+**Version:** 1.2 — draft for approval · **Date:** 3 August 2026
+
+> **What changed since 1.0.** The two draw.io design files have been read and merged in — `Flows & Objects.drawio` by Elena Spini and `Workflow Pienissimo 23-7-26.drawio` annotated by Marco Montesi, both last modified on 31 July. They produce the new **§16** (state machines, picklist values, 17 requirements that existed only in the drawings) and **§17**, which lists the points where the sources disagree. Two of those corrections are our own errors: the order-typology list in DM-15 was invented, and one item we had presented as a contradiction — the reminder cadence — was not one. Both are described in §17.
+> **Sign-off session:** Thursday 6 August 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
 
 > English mirror of `REQUISITI.it.md`. The **Italian version is the one presented to and signed by the client**; this copy exists for the ROMI team. If the two ever diverge, the Italian text prevails.
 
@@ -89,30 +91,30 @@ Everything described in §3–§11 with priority **M**, **S** or **C**.
 
 ## 3. Data model
 
-| ID    | Requirement                                                                                                                                                                                                                           | Pri. | Status |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :----: |
-| DM-01 | **Lead** — holds only self-serve actions with no purchase intent (live-stream signup, free video download, quiz). Early workflow states live here. Owned by marketing.                                                                |  M   |   ✅   |
-| DM-02 | **Account** = company, with a dedicated **local name** field alongside the registered name.                                                                                                                                           |  M   |   ✅   |
-| DM-03 | Every Opportunity requires an Account. Forms auto-create "primordial" accounts and contacts; sales completes the registry after first contact.                                                                                        |  M   |   ✅   |
-| DM-04 | Duplicate rules: **email OR phone** for forms; **email + VAT** for WooCommerce orders; VAT/company matching on lead → account conversion.                                                                                             |  M   |   ✅   |
-| DM-05 | **Opportunity** — created directly, skipping the Lead, for explicit contact-request forms (sponsored landings, live QR codes) and for all requests from existing clients.                                                             |  M   |   ✅   |
-| DM-06 | Four Opportunity stages (negotiation with sub-levels → postponed / lost / won). _Closed won_ is driven by **payment**, confirmed manually by administration.                                                                          |  M   |   ✅   |
-| DM-07 | **Mandatory** loss reason, with **two distinct picklist sets**: one for Opportunity stages, one for Quote stages. The value "errato" must not exist for quotes.                                                                       |  M   |   ✅   |
-| DM-08 | Separate **Record Types** for the commercial and e-commerce flows, to keep statistics clean.                                                                                                                                          |  M   |   ✅   |
-| DM-09 | Track **existing-client vs new-business** origin on every Opportunity.                                                                                                                                                                |  M   |   ✅   |
-| DM-10 | **Quote** — always under an Opportunity; multiple quotes per Opportunity allowed. Five-day validity; "expired" is a routine state. Retry is by **cloning** the expired quote, preserving history.                                     |  M   |   ✅   |
-| DM-11 | The Quote is a single PDF carrying general conditions and the economic summary.                                                                                                                                                       |  M   |   ✅   |
-| DM-12 | **Order** — one order object. One order line per instalment, with the due date on the line. Zoho's child-order / "blocchi" pattern is abolished.                                                                                      |  M   |   ✅   |
-| DM-13 | At most **one bundle per order**; never bundle plus loose product in the same order (two separate orders instead).                                                                                                                    |  M   |   ✅   |
-| DM-14 | The order is **immutable once invoiced**, with a narrow permission set (1–2 admin users) for corrections.                                                                                                                             |  M   |   ✅   |
-| DM-15 | An **order typology** field (stage sale, tutor, book, video course, PP activation, PP renewal, …) driving administrative processes.                                                                                                   |  M   |   ✅   |
-| DM-16 | Orders and products originating in Mexal are **read-only** in Salesforce.                                                                                                                                                             |  M   |   ✅   |
-| DM-17 | **Tranche** (renaming of "rate") — custom object auto-created from order-line due dates: lines sharing a due date form one tranche.                                                                                                   |  M   |   ✅   |
-| DM-18 | **Campaign = event**: one campaign per edition. Campaign members are participants with check-in status (attended / no-show), feeding no-show and room-composition analytics.                                                          |  M   |   ✅   |
-| DM-19 | **Contract** (Performance Plus) — standard Contract object with custom logic: start/end/renewal dates, amount, linked quote and invoices, renewals panel, invoiced vs collected, service block on serious arrears.                    |  S   |   ✅   |
-| DM-20 | **Credit note** — linked to both the order and the **order line**, to handle partial reversals on multi-event bundles.                                                                                                                |  S   |   ✅   |
-| DM-21 | **Invoice** — created in Salesforce as a reference shell when the order closes; Mexal invoices and returns number and status into dedicated, searchable fields.                                                                       |  M   |   ✅   |
-| DM-22 | **Ticket** — one record per ticket, with the lifecycle in §6. Delivered in UAT as a custom `Biglietto__c` object. 🟡 _The written proposal specified the standard Asset object; confirmation of the implemented choice is requested._ |  M   |   🟡   |
+| ID    | Requirement                                                                                                                                                                                                                                                                                                                                                                                                                      | Pri. | Status |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :----: |
+| DM-01 | **Lead** — holds only self-serve actions with no purchase intent (live-stream signup, free video download, quiz). Early workflow states live here. Owned by marketing.                                                                                                                                                                                                                                                           |  M   |   ✅   |
+| DM-02 | **Account** = company, with a dedicated **local name** field alongside the registered name.                                                                                                                                                                                                                                                                                                                                      |  M   |   ✅   |
+| DM-03 | Every Opportunity requires an Account. Forms auto-create "primordial" accounts and contacts; sales completes the registry after first contact.                                                                                                                                                                                                                                                                                   |  M   |   ✅   |
+| DM-04 | Duplicate rules: **email OR phone** for forms; **email + VAT** for WooCommerce orders; VAT/company matching on lead → account conversion.                                                                                                                                                                                                                                                                                        |  M   |   ✅   |
+| DM-05 | **Opportunity** — created directly, skipping the Lead, for explicit contact-request forms (sponsored landings, live QR codes) and for all requests from existing clients.                                                                                                                                                                                                                                                        |  M   |   ✅   |
+| DM-06 | Four Opportunity stages (negotiation with sub-levels → postponed / lost / won). _Closed won_ is driven by **payment**, confirmed manually by administration.                                                                                                                                                                                                                                                                     |  M   |   ✅   |
+| DM-07 | **Mandatory** loss reason, with **two distinct picklist sets**: one for Opportunity stages, one for Quote stages. The value "errato" must not exist for quotes.                                                                                                                                                                                                                                                                  |  M   |   ✅   |
+| DM-08 | Separate **Record Types** for the commercial and e-commerce flows, to keep statistics clean.                                                                                                                                                                                                                                                                                                                                     |  M   |   ✅   |
+| DM-09 | Track **existing-client vs new-business** origin on every Opportunity.                                                                                                                                                                                                                                                                                                                                                           |  M   |   ✅   |
+| DM-10 | **Quote** — always under an Opportunity; multiple quotes per Opportunity allowed. Five-day validity; "expired" is a routine state. Retry is by **cloning** the expired quote, preserving history.                                                                                                                                                                                                                                |  M   |   ✅   |
+| DM-11 | The Quote is a single PDF carrying general conditions and the economic summary.                                                                                                                                                                                                                                                                                                                                                  |  M   |   ✅   |
+| DM-12 | **Order** — one order object. One order line per instalment, with the due date on the line. Zoho's child-order / "blocchi" pattern is abolished.                                                                                                                                                                                                                                                                                 |  M   |   ✅   |
+| DM-13 | At most **one bundle per order**; never bundle plus loose product in the same order (two separate orders instead).                                                                                                                                                                                                                                                                                                               |  M   |   ✅   |
+| DM-14 | The order is **immutable once invoiced**, with a narrow permission set (1–2 admin users) for corrections.                                                                                                                                                                                                                                                                                                                        |  M   |   ✅   |
+| DM-15 | Two distinct fields, not one. **Order type** = `STANDARD` · `BUNDLE` · `PLUS`, the three design values that drive automation. **Sales typology** = the seven entries from the client's own Excel: stage sales, tutor packages, tutor combo, tutor one-shot, Performance Plus, product sales, Pienissimo Pro. ⚠ The six-value list in v1.0 of this document was our error: it appears in no source and is withdrawn (§17, RC-04). |  M   |   🟡   |
+| DM-16 | Orders and products originating in Mexal are **read-only** in Salesforce.                                                                                                                                                                                                                                                                                                                                                        |  M   |   ✅   |
+| DM-17 | **Tranche** (renaming of "rate") — custom object auto-created from order-line due dates: lines sharing a due date form one tranche.                                                                                                                                                                                                                                                                                              |  M   |   ✅   |
+| DM-18 | **Campaign = event**: one campaign per edition. Campaign members are participants with check-in status (attended / no-show), feeding no-show and room-composition analytics.                                                                                                                                                                                                                                                     |  M   |   ✅   |
+| DM-19 | **Contract** (Performance Plus) — standard Contract object with custom logic: start/end/renewal dates, amount, linked quote and invoices, renewals panel, invoiced vs collected, service block on serious arrears.                                                                                                                                                                                                               |  S   |   ✅   |
+| DM-20 | **Credit note** — linked to both the order and the **order line**, to handle partial reversals on multi-event bundles.                                                                                                                                                                                                                                                                                                           |  S   |   ✅   |
+| DM-21 | **Invoice** — created in Salesforce as a reference shell when the order closes; Mexal invoices and returns number and status into dedicated, searchable fields.                                                                                                                                                                                                                                                                  |  M   |   ✅   |
+| DM-22 | **Ticket** — one record per ticket, with the lifecycle in §6. Delivered in UAT as a custom `Biglietto__c` object. 🟡 _The written proposal specified the standard Asset object; confirmation of the implemented choice is requested._                                                                                                                                                                                            |  M   |   🟡   |
 
 ---
 
@@ -391,6 +393,128 @@ By signing, the parties confirm that the requirements marked ✅ are complete, c
 | Pienissimo product and registry | Fabrizio Paganelli |      |           |
 | ROMI Project Manager            | Elena Spini        |      |           |
 | ROMI technical lead             | Aurel Mrruku       |      |           |
+
+---
+
+## 16. What was written only in the drawings
+
+The two draw.io files carry decisions that were never minuted. From here on they are part of the scope like everything else.
+
+### 16.1 How a record moves
+
+A record enters as a **Lead**, becomes an **Opportunity**, carries a **Quote**, turns into an **Order** with its tranches, and emits a **Ticket**.
+
+| Object      | States, in the order they are traversed                                                                                                                        |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lead        | New → In Lavorazione → Primo contatto → Qualificato · or Non Risponde (automatic task with a 48h reminder, then back into In Lavorazione) · or Non qualificato |
+| Opportunity | Qualificato → In trattativa (quote sent) → Chiusa/Vinta · with Da ricontattare as a parking state and Chiusa/Persa as the exit                                 |
+| Quote       | Bozza → In trattativa (5-day validity) → **In attesa di accettazione** → Accettato (accounting copy received) · or Rifiutata                                   |
+| Order       | CREATO → CHIUSO/ACQUISITO                                                                                                                                      |
+| Tranche     | CREATO → CHIUSO/ACQUISITO                                                                                                                                      |
+| Ticket      | Ordinato → Disponibile → Assegnato → Utilizzato · or Non utilizzato · or Annullato                                                                             |
+
+⚠ **“In attesa di accettazione” is the new name for “preventivo scaduto”.** The room will keep saying “scaduto” for months: it is the same thing.
+
+⚠ **The order of the values in the Salesforce ticket picklist is not the order of the flow.** The picklist reads Ordinato, Assegnato, Disponibile, Non utilizzato, Utilizzato, Annullato; the real flow is the one in the table above.
+
+**Steps a person performs, not the system.** These read as standing workload, because signing them accepts them: administration confirms receipt of a bank transfer in WooCommerce; administration moves the order to CHIUSO/ACQUISITO within a maximum of 5 days; the tutor sets Accepted or Refused on a quote; the tutor puts an expired quote back into negotiation; staff scan the QR at the event.
+
+### 16.2 Words that mean different things on different objects
+
+| Word                   | Lives on                 | Watch out                                                                                                                   |
+| ---------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| **In trattativa**      | Opportunity, Quote       | On the opportunity it is the negotiation; on the quote it is that quote inside its 5 days                                   |
+| **Da ricontattare**    | Lead, Opportunity, Quote | On the Lead it is a task; on the other two a status, each with its own reason picklist                                      |
+| **CHIUSO / ACQUISITO** | Order, Tranche           | On the order administration sets it by hand within 5 days; on the first tranche it fires by itself when the deposit is paid |
+
+When one of these words is said aloud, the object must be named too.
+
+### 16.3 Picklist values
+
+**Lead · Exit reason — LOST** (the lead was right but did not close): Not interested · Price too high · Chose a competitor · Service not suitable
+
+**Lead · Exit reason — WRONGLY ENTERED** (should never have come in; dedicated sub-category, exportable to analyse source quality): Already has P.Pro · Already in contact · Inaccurate contact data · Duplicate from CRM · Out of target · Request sent by mistake · SW House, marketing or web agency · Test
+
+**Opportunity · Closed lost:** Price too high · Chose a competitor · Delivery timing · Not aligned with expectations
+
+**Opportunity · To recall:** Course date incompatible · Venue not open yet · Not answering · Postponing on price · Postponing for personal reasons · Postponing for business reasons · Call back after the season
+
+**Quote · To recall:** Call back after the season · Busy · Needs to think about it
+
+**Order type:** STANDARD · BUNDLE · PLUS · **Opportunity type:** Vendita da tutor · Recall tutor
+
+### 16.4 The seventeen requirements to ratify
+
+They exist only in the drawings and have never been discussed in a meeting. Signature makes them binding.
+
+| ID     | Requirement                                                                                                             | Pri. |
+| ------ | ----------------------------------------------------------------------------------------------------------------------- | :--: |
+| SAL-19 | An expired quote must be returnable to negotiation by the tutor alone.                                                  |  S   |
+| SAL-20 | Two “to recall” tasks to add: after first contact and after the appointment, with a settable date.                      |  S   |
+| SAL-21 | Opportunity type field with the values “Vendita da tutor” and “Recall tutor”.                                           |  S   |
+| SAL-22 | An INFO field explaining how to use the exit reasons.                                                                   |  C   |
+| SAL-23 | Enable the standard behaviour moving the opportunity to “quote sent” automatically.                                     |  S   |
+| ORD-06 | Order types STANDARD, BUNDLE, PLUS.                                                                                     |  S   |
+| ORD-07 | Overdue report every Monday to Marco and administration.                                                                |  S   |
+| ORD-12 | A WooCommerce order stays invisible in Salesforce until COMPLETATO; for bank transfers administration flips it by hand. |  M   |
+| ORD-13 | On deposit payment the first tranche goes straight to CHIUSO/ACQUISITO; later ones start CREATO.                        |  M   |
+| ORD-14 | CHIUSO/ACQUISITO is set by administration by hand within a maximum of 5 days of confirmed payment.                      |  M   |
+| ORD-15 | “Create Credit Note” button on the order, with a pop-up to pick the lines.                                              |  S   |
+| INT-22 | Overdue amounts come from the Mexal “scoperto clienti” API.                                                             |  S   |
+| BIG-17 | Ticket status picklist with six values.                                                                                 |  M   |
+| BIG-18 | Participant landing reached by a link carrying the Account ID; with several events the event is chosen first.           |  M   |
+| BIG-19 | On list confirmation a flow creates or matches contacts, adds campaign members and sends the signature request.         |  M   |
+| BIG-20 | The QR contains the campaign member ID.                                                                                 |  M   |
+| BIG-21 | “Edge cases” button on the ticket, visible only from Assegnato, for name change and missing signature.                  |  S   |
+
+---
+
+## 17. Where the sources disagree
+
+Five points, and they are not the same kind of thing. The label says which, because treating them alike would be misleading at the moment of signature.
+
+### RC-01 · To ratify — the ticket object
+
+The UAT org already contains a custom object `Biglietto__c` with six Apex classes for DocuSign and PDF generation. The design specifies the standard Salesforce Asset object instead.
+
+This is not a choice between two designs: the custom one exists and works, and the design file was never updated. Ratifying costs nothing; reverting to the standard Asset means rebuilding the six classes — **we have not estimated how long**.
+**Proposal:** ratify `Biglietto__c` as built. **If nobody decides:** the custom object stays; silence ratifies what is built.
+
+### RC-02 · To clarify — what creates the campaign and the tickets
+
+The design says the campaign is born when the EVENTO product is created in Mexal; the minutes of 22/07 say it is born when an order with an event product arrives. Once separated the two are not in conflict: **campaign on product creation, tickets on order**. The documents describe different automations only because neither says which object it means.
+**If nobody decides:** it stays ambiguous, whoever builds picks one, and the other document stays wrong.
+
+### RC-03 · Never decided — how many reminders, and on which channel
+
+⚠ **Our error, withdrawn.** We had presented this as a contradiction between “60 and 2 days” and “60, 30, 15 and 1”. It is not.
+
+The minutes of 08/06, line 17, read verbatim: _“Reminder funnel for uncompiled tickets (they already run a WhatsApp/60-30-15-1-day funnel)”_. That describes **your existing WhatsApp practice**, in brackets — not a requirement for Salesforce. No Salesforce cadence was ever agreed, so there is nothing to contradict.
+
+The real question was never asked: does Salesforce replicate your four-touch cadence by email, or run two touches (60 and 2) as drawn? Four sends cost more to build and risk spam; two risk more no-shows.
+**Proposal:** none until you tell us the channel. **If nobody decides:** 60 and 2, because that is what is drawn.
+
+### RC-04 · Our correction — order types
+
+The minutes of 30/06, line 7, record **seven** typologies from your own Excel and PDF: _stage sales, tutor packages, tutor combo, tutor one-shot, Performance Plus, product sales, Pienissimo Pro_. The design specifies **three** order types: STANDARD, BUNDLE, PLUS.
+
+⚠ The six entries listed in v1.0 of this document (stage sale, tutor, book, video course, PP activation, PP renewal) **appear in no source**: we wrote them ourselves and they are withdrawn.
+
+Two fields are being confused: the three values drive automation, your seven describe what is sold. Both can exist.
+**Proposal:** order type = the three; sales typology = your seven, unchanged. **If nobody decides:** only the three survive and Marco loses the breakdown he supplied.
+
+### RC-05 · Our walk-back — the credit note
+
+On 22/07 it was **agreed** that a credit note on an event product would automatically set the ticket to Annullato. It stands as a decision taken, not an open point.
+
+ROMI is now asking to go back and select the tickets **by hand** in a pop-up, because on a multi-event bundle a partial reversal cannot be inferred: the system cannot know which ticket the note refers to.
+
+This is the supplier asking to undo something already approved, for a technical reason. It is not a tie-break between two sources and must not be recorded as one.
+**If nobody decides:** the 22/07 decision stands — automatic cancellation, and the multi-event bundle case stays unsolved.
+
+### A note on sources
+
+The citations do not all carry the same weight, and that should be said: the minutes of 08/06, 30/06 and 23/07 are on file in `meetings/results/`; **22/07 is a set of minutes circulated by email and not present in the repository**, and RC-02 and RC-05 both rest on it; the meetings of 29/07 and 31/07 have **automatic notes only**, with no human-written minutes.
 
 ---
 

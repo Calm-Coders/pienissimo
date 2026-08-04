@@ -108,6 +108,35 @@ glossary:
   ASSET_vs_QR: L'Asset è il record; il QR è un valore contenuto in esso e porta l'ID del campaign member. [22/07, DGM-2]
   ANNO_SOLARE: Classificazione dei bundle. Distinto da ANNO_ACCADEMICO (maggio-settembre) usato per la generazione biglietti. [23/07]
 
+# Words that mean different things on different objects. When one of these is said aloud in a
+# meeting, the record type must be named too, or nobody knows which object is being discussed.
+name_collisions:
+  - term: "In trattativa"
+    lives_on: [Opportunity, Quote]
+    note: "On the Opportunity it means a deal is being negotiated; on the Quote it means a specific quote is live within its 5 days."
+  - term: "Da ricontattare"
+    lives_on: [Lead, Opportunity, Quote]
+    note: "On the Lead it is a task raised after Non Risponde; on the Opportunity and the Quote it is a status, each with its own picklist of reasons."
+  - term: "CHIUSO / ACQUISITO"
+    lives_on: [Order, Tranche]
+    note: "On the Order it is set manually by administration within 5 days of confirmed payment; on the first Tranche it is set automatically the moment the deposit is paid."
+  - term: "preventivo scaduto"
+    lives_on: [Quote]
+    note: "Retired label. The state is now called 'In attesa di accettazione'. The room has used the old name for months and will keep using it."
+
+# How the headline counts are built, so nobody has to reverse-engineer them.
+count_basis:
+  requirements_register: 154
+  by_status: { agreed: 100, to_confirm: 21, open: 28, conflict: 5 }
+  excluded_from_the_154:
+    - "OUT-01..03 — scope-change requests, held in the scope block, not requirements"
+    - "F2-01..05 — Phase 2 items, in scope but out of this freeze"
+    - "AC-01..10 — acceptance criteria, which test requirements rather than being them"
+    - "REG-01..02 — build regressions, recorded in build_state"
+  note: >
+    A grep for 'status: open' returns 31, not 28: the extra three are OUT-01/02/03, which carry a
+    status but are not requirements. Any headline that says 28 must say 28 of what.
+
 # -----------------------------------------------------------------------------
 scope:
   out_of_scope:
@@ -292,9 +321,26 @@ picklists:
     - Ha da fare
     - Deve pensarci
   asset_status:
-    [Ordinato, Assegnato, Disponibile, Non utilizzato, Utilizzato, Annullato]
+    # ⚠ This is the DISPLAY order as drawn in DGM-2 — it is NOT the lifecycle sequence.
+    # Anything that renders these left-to-right must use flow_order below, or it will
+    # contradict the state diagram on the same page.
+    display_order:
+      [Ordinato, Assegnato, Disponibile, Non utilizzato, Utilizzato, Annullato]
+    flow_order:
+      [Ordinato, Disponibile, Assegnato, Utilizzato, Non utilizzato, Annullato]
+    terminal: [Utilizzato, Non utilizzato, Annullato]
   order_type: [STANDARD, BUNDLE, PLUS]
   opportunity_type: ["Vendita da tutor", "Recall tutor"]
+  # The client's own seven sales typologies, verbatim from the Excel and PDF they supplied,
+  # per meetings/results/2026-06-30-sales-types-quotes.md line 7. Distinct from order_type.
+  sales_typology:
+    - stage sales
+    - tutor packages
+    - tutor combo
+    - tutor one-shot
+    - Performance Plus
+    - product sales
+    - Pienissimo Pro
 
 # =============================================================================
 # REQUIREMENTS REGISTER
@@ -1464,50 +1510,116 @@ requirements:
     }
 
 # =============================================================================
-# RECONCILIATION — the diagrams and the prose requirements disagree here.
-# Must be settled at the 6 August session. Default resolution follows DGM-2
-# (ROMI's master design file) unless the client rules otherwise.
+# RECONCILIATION — points where the sources do not agree, or where ROMI is
+# asking to change something already agreed. Each needs a ruling on 6 August.
+#
+# `kind` matters more than the old blanket word "contradiction":
+#   ratification  — already built or already true; the room accepts or pays to undo it
+#   clarification — the two sources are compatible once separated; nothing to choose
+#   open_question — never actually decided; the "disagreement" was a mis-reading
+#   walk_back     — ROMI asks to reverse a decision the record shows as agreed
+#   correction    — a value or list in ROMI's own material is wrong
+#
+# `evidence_grade` states what a citation can be shown against:
+#   minuted    — a recap file exists in meetings/results/
+#   emailed    — Elena circulated minutes by email; not in the repo
+#   ai_notes   — Gemini meeting notes only, no human-written minutes
+#   org        — verified directly against the Salesforce UAT org
 # =============================================================================
 reconciliation:
   - id: RC-01
-    topic: Ticket object
+    kind: ratification
+    topic: Ticket object — accept what is already built
     requirement: DM-22
-    diagram_says: "Asset == Ticket evento (standard Asset object) [DGM-2]"
-    org_says: "Custom object Biglietto__c, with six active Apex classes"
-    proposed: "Keep the custom object already built; update the design file and the proposal to match"
-    impact: low
+    design_says: "Asset == Ticket evento, i.e. the standard Salesforce Asset object [DGM-2]"
+    org_says: "Custom object Biglietto__c is live with six active Apex classes for DocuSign and PDF"
+    evidence_grade: org
+    honest_framing: >
+      This is not a choice between two designs. The custom object exists and works; the design file
+      was simply never updated to match. Ratifying costs nothing. Reverting to the standard Asset
+      means rebuilding the six Apex classes.
+    cost_of_reverting: not estimated
+    proposed: "Ratify Biglietto__c as built; correct DGM-2 and the written proposal to match it"
+    default_if_undecided: "The custom object stays. Silence ratifies the built state."
+    impact_on: none — no other decision depends on this
 
   - id: RC-02
-    topic: Campaign and ticket creation trigger
+    kind: clarification
+    topic: What triggers campaign creation, and what triggers ticket creation
     requirement: BIG-02
-    diagram_says: "Campaign created automatically whenever the EVENTO product is created in Mexal [DGM-2]"
-    minutes_say: "Campaign created when an order containing an event product arrives [22/07]"
-    proposed: "Campaign on product creation, tickets on order — the two are not mutually exclusive"
-    impact: medium
+    design_says: "A Campaign is created automatically whenever the EVENTO product is created in Mexal [DGM-2]"
+    minutes_say: "A Campaign is created when an order containing an event product arrives [22/07]"
+    evidence_grade: emailed
+    honest_framing: >
+      These are not in conflict once separated: the campaign is created with the product, the
+      tickets are created with the order. Today the two documents describe different automations
+      because neither says which object it is talking about.
+    proposed: "State both explicitly — campaign on product creation, tickets on order"
+    default_if_undecided: "Ambiguous. The builder picks one, and the other document stays wrong."
+    impact_on: build — one Flow or two
 
   - id: RC-03
-    topic: Reminder funnel cadence
+    kind: open_question
+    topic: How many reminders before an event, and on which channel
     requirement: BIG-06
-    diagram_says: "60 days and 2 days before the event [DGM-2]"
-    minutes_say: "60, 30, 15 and 1 days before the event [08/06]"
-    proposed: "Adopt the diagram: 60 and 2 days"
-    impact: low
+    was_previously_framed_as: >
+      A contradiction between "60 and 2 days" (DGM-2) and "60, 30, 15 and 1 days" (08/06).
+      That framing was wrong and is withdrawn.
+    what_the_record_actually_says: >
+      meetings/results/2026-06-08-ticketing-compliance.md line 17, verbatim: "Reminder funnel for
+      uncompiled tickets (they already run a WhatsApp/60-30-15-1-day funnel)". That is a
+      description of Pienissimo's existing WhatsApp practice, in parentheses — not a stated
+      requirement for the Salesforce reminders. No cadence for Salesforce was ever agreed.
+    evidence_grade: minuted
+    honest_framing: >
+      Nothing was decided, so nothing contradicts. The real question has never been asked:
+      does Salesforce replicate their four-touch WhatsApp cadence as email, or run the lighter
+      two-touch 60/2 in the design file?
+    trade_off: "Four touches costs more build and carries a spam risk on email; two touches risks a higher no-show rate"
+    proposed: "Ask the question properly on 6 August. ROMI has no preference until Pienissimo states the channel."
+    default_if_undecided: "60 and 2, per the design file, because it is what is drawn"
+    impact_on: build — number of scheduled sends
 
   - id: RC-04
-    topic: Order typology values
+    kind: correction
+    topic: Order typology values — ROMI's list was wrong
     requirement: DM-15
-    diagram_says: "STANDARD, BUNDLE, PLUS [DGM-2]"
-    minutes_say: "Stage sale, tutor, book, video course, PP activation, PP renewal [30/06]"
-    proposed: "Adopt the diagram's three values as the order type; keep the longer list as a separate sales-typology field if still needed"
-    impact: medium
+    design_says: "Three order types: STANDARD, BUNDLE, PLUS [DGM-2]"
+    minutes_say: >
+      meetings/results/2026-06-30-sales-types-quotes.md line 7, verbatim, from the sales-typology
+      Excel and PDF Pienissimo themselves delivered: "stage sales, tutor packages, tutor combo,
+      tutor one-shot, Performance Plus, product sales, Pienissimo Pro" — SEVEN values.
+    romi_error: >
+      Earlier versions of this register listed six invented values (stage sale, tutor, book,
+      video course, PP activation, PP renewal). That list appears in no source document and is
+      withdrawn.
+    evidence_grade: minuted
+    honest_framing: >
+      Two different fields are being confused. DGM-2's three values drive automation. The client's
+      seven describe what is being sold. Both can exist.
+    proposed: "Order type = the three automation values; sales typology = the client's own seven, unchanged"
+    default_if_undecided: "Three values only, and the client's seven typologies lose their home"
+    impact_on: reporting — Marco loses the breakdown he supplied if the seven are dropped
 
   - id: RC-05
-    topic: Credit note effect on tickets
+    kind: walk_back
+    topic: ROMI asks to reverse the automatic cancellation of tickets on a credit note
     requirement: BIG-10
-    diagram_says: "Assets are selected manually and then set to Annullato [DGM-2]"
-    minutes_say: "Credit notes on event products automatically set the matching asset to Annullato [22/07]"
-    proposed: "Adopt the diagram: manual selection, since partial reversals on multi-event bundles cannot be inferred"
-    impact: medium
+    what_was_agreed: >
+      On 22/07 it was agreed that credit notes on event products would AUTOMATICALLY set the
+      matching ticket to Annullato. This is recorded as an agreed decision, not as an open point.
+    what_romi_now_asks: >
+      That the tickets be selected MANUALLY in a pop-up instead, as drawn in DGM-2.
+    romi_reason: >
+      On a multi-event bundle a partial reversal cannot be inferred — the system has no way to
+      know which of several tickets a credit note refers to.
+    evidence_grade: emailed
+    honest_framing: >
+      This is ROMI asking to undo something the client already approved, for a technical reason.
+      It is not a tie-break between two equal sources, and it should not be recorded as one.
+    proposed: "Manual selection, with the reason above stated on the record"
+    default_if_undecided: "The 22/07 decision stands: automatic cancellation, with the multi-event bundle case unsolved"
+    impact_on: build and administration workload
 
 # =============================================================================
 open_points:

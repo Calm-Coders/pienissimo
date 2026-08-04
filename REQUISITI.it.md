@@ -1,8 +1,10 @@
 # Documento di Requisiti — Progetto Salesforce Pienissimo
 
 **Cliente:** Pienissimo · **Fornitore:** ROMI S.r.l. · **Progetto:** migrazione Zoho CRM → Salesforce
-**Versione:** 1.0 — bozza per approvazione · **Data:** 3 agosto 2026
-**Sessione di approvazione:** giovedì 6 agosto 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
+**Versione:** 1.2 — bozza per approvazione · **Data:** 3 agosto 2026
+
+> **Cosa è cambiato dalla 1.0.** Sono stati letti e integrati i due file di design draw.io — `Flows & Objects.drawio` di Elena Spini e `Workflow Pienissimo 23-7-26.drawio` annotato da Marco Montesi, entrambi modificati il 31 luglio. Ne derivano il nuovo **§16** (macchine a stati, valori delle picklist, 17 requisiti che esistevano solo nei disegni) e il **§17**, che elenca i punti in cui le fonti non concordano. Due correzioni riguardano errori nostri: la lista dei tipi ordine in DM-15 era inventata, e un punto che avevamo presentato come contraddizione (la cadenza dei promemoria) non lo era. Entrambe sono descritte nel §17.
+> **Sessione di approvazione:** giovedì 6 agosto 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
 
 ---
 
@@ -87,30 +89,30 @@ Tutto ciò che è descritto nei capitoli §3–§11 con priorità **M**, **S** o
 
 ## 3. Modello dati
 
-| ID    | Requisito                                                                                                                                                                                                                                                                             | Pri. | Stato |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :---: |
-| DM-01 | **Lead** — accoglie esclusivamente azioni self-serve senza intento d'acquisto (iscrizione a dirette, download video gratuito, quiz). Gli stati iniziali del workflow (in lavorazione, non risponde, primo contatto, da ricontattare, prequalifica) vivono qui. Titolarità: marketing. |  M   |  ✅   |
-| DM-02 | **Account** = azienda, con campo dedicato **nome locale** accanto alla ragione sociale.                                                                                                                                                                                               |  M   |  ✅   |
-| DM-03 | Ogni Opportunità richiede sempre un Account. I form creano automaticamente account e contatto "primordiali"; il commerciale completa l'anagrafica dopo il primo contatto.                                                                                                             |  M   |  ✅   |
-| DM-04 | Regole di deduplica: **email OR telefono** per i form; **email + P.IVA** per gli ordini WooCommerce; corrispondenza P.IVA/ragione sociale in conversione lead → account.                                                                                                              |  M   |  ✅   |
-| DM-05 | **Opportunità** — creata direttamente, saltando il Lead, per: form di richiesta contatto esplicita (landing sponsorizzate, QR delle dirette) e per tutte le richieste da clienti già acquisiti.                                                                                       |  M   |  ✅   |
-| DM-06 | Quattro fasi di Opportunità (negoziazione con sotto-livelli → rinviata / persa / vinta). La chiusura _vinta_ è guidata dal **pagamento**, confermato manualmente dall'amministrazione.                                                                                                |  M   |  ✅   |
-| DM-07 | Motivo di perdita **obbligatorio**, con **due set di picklist distinti**: uno per gli stati di Opportunità, uno per quelli di Preventivo. Il valore "errato" non deve esistere per i preventivi.                                                                                      |  M   |  ✅   |
-| DM-08 | **Record Type** separati per il flusso commerciale e per il flusso e-commerce, a garanzia di statistiche pulite.                                                                                                                                                                      |  M   |  ✅   |
-| DM-09 | Tracciare per ogni Opportunità l'origine **cliente esistente vs new business**.                                                                                                                                                                                                       |  M   |  ✅   |
-| DM-10 | **Preventivo** — sempre sotto un'Opportunità; più preventivi per Opportunità ammessi. Validità 5 giorni; lo stato "scaduto" è fisiologico. Il rilancio avviene per **clonazione** del preventivo scaduto, così da conservare lo storico.                                              |  M   |  ✅   |
-| DM-11 | Il Preventivo è un unico PDF contenente condizioni generali e riepilogo economico.                                                                                                                                                                                                    |  M   |  ✅   |
-| DM-12 | **Ordine** — un solo oggetto ordine. Una riga d'ordine per ciascuna rata, con data di scadenza sulla riga. Il pattern Zoho degli ordini figli / "blocchi" è abolito.                                                                                                                  |  M   |  ✅   |
-| DM-13 | Massimo **un bundle per ordine**; mai bundle + prodotto sciolto nello stesso ordine (in tal caso si generano due ordini distinti).                                                                                                                                                    |  M   |  ✅   |
-| DM-14 | L'ordine è **immutabile dopo la fatturazione**, con permission set ristretto (1–2 utenti amministrativi) per le correzioni.                                                                                                                                                           |  M   |  ✅   |
-| DM-15 | Campo **tipologia ordine** (vendita da palco, tutor, libro, videocorso, attivazione PP, rinnovo PP, …) a guida dei processi amministrativi.                                                                                                                                           |  M   |  ✅   |
-| DM-16 | Ordini e prodotti provenienti da Mexal sono in **sola lettura** su Salesforce.                                                                                                                                                                                                        |  M   |  ✅   |
-| DM-17 | **Tranche** (rinominazione di "rate") — oggetto custom creato automaticamente dalle date di scadenza delle righe d'ordine: righe con la stessa scadenza formano una tranche.                                                                                                          |  M   |  ✅   |
-| DM-18 | **Campagna = evento**: una campagna per edizione. I membri campagna sono i partecipanti, con stato di check-in (partecipato / no-show), a supporto delle analisi di no-show e composizione aula.                                                                                      |  M   |  ✅   |
-| DM-19 | **Contratto** (Performance Plus) — oggetto Contract standard con logica custom: date di inizio/fine/rinnovo, importo, preventivo e fatture collegate, pannello rinnovi, fatturato vs incassato, blocco servizio in caso di morosità grave.                                            |  S   |  ✅   |
-| DM-20 | **Nota di credito** — collegata sia all'ordine sia alla **riga d'ordine**, per gestire storni parziali su bundle multi-evento.                                                                                                                                                        |  S   |  ✅   |
-| DM-21 | **Fattura** — creata su Salesforce come contenitore di riferimento alla chiusura dell'ordine; Mexal fattura e restituisce numero e stato in campi dedicati e ricercabili.                                                                                                             |  M   |  ✅   |
-| DM-22 | **Biglietto** — un record per biglietto, con ciclo di vita a stati (§6). Rilasciato in UAT come oggetto custom `Biglietto__c`. 🟡 _La proposta scritta prevedeva l'oggetto standard Asset: si chiede conferma della scelta implementata._                                             |  M   |  🟡   |
+| ID    | Requisito                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Pri. | Stato |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :---: |
+| DM-01 | **Lead** — accoglie esclusivamente azioni self-serve senza intento d'acquisto (iscrizione a dirette, download video gratuito, quiz). Gli stati iniziali del workflow (in lavorazione, non risponde, primo contatto, da ricontattare, prequalifica) vivono qui. Titolarità: marketing.                                                                                                                                                                     |  M   |  ✅   |
+| DM-02 | **Account** = azienda, con campo dedicato **nome locale** accanto alla ragione sociale.                                                                                                                                                                                                                                                                                                                                                                   |  M   |  ✅   |
+| DM-03 | Ogni Opportunità richiede sempre un Account. I form creano automaticamente account e contatto "primordiali"; il commerciale completa l'anagrafica dopo il primo contatto.                                                                                                                                                                                                                                                                                 |  M   |  ✅   |
+| DM-04 | Regole di deduplica: **email OR telefono** per i form; **email + P.IVA** per gli ordini WooCommerce; corrispondenza P.IVA/ragione sociale in conversione lead → account.                                                                                                                                                                                                                                                                                  |  M   |  ✅   |
+| DM-05 | **Opportunità** — creata direttamente, saltando il Lead, per: form di richiesta contatto esplicita (landing sponsorizzate, QR delle dirette) e per tutte le richieste da clienti già acquisiti.                                                                                                                                                                                                                                                           |  M   |  ✅   |
+| DM-06 | Quattro fasi di Opportunità (negoziazione con sotto-livelli → rinviata / persa / vinta). La chiusura _vinta_ è guidata dal **pagamento**, confermato manualmente dall'amministrazione.                                                                                                                                                                                                                                                                    |  M   |  ✅   |
+| DM-07 | Motivo di perdita **obbligatorio**, con **due set di picklist distinti**: uno per gli stati di Opportunità, uno per quelli di Preventivo. Il valore "errato" non deve esistere per i preventivi.                                                                                                                                                                                                                                                          |  M   |  ✅   |
+| DM-08 | **Record Type** separati per il flusso commerciale e per il flusso e-commerce, a garanzia di statistiche pulite.                                                                                                                                                                                                                                                                                                                                          |  M   |  ✅   |
+| DM-09 | Tracciare per ogni Opportunità l'origine **cliente esistente vs new business**.                                                                                                                                                                                                                                                                                                                                                                           |  M   |  ✅   |
+| DM-10 | **Preventivo** — sempre sotto un'Opportunità; più preventivi per Opportunità ammessi. Validità 5 giorni; lo stato "scaduto" è fisiologico. Il rilancio avviene per **clonazione** del preventivo scaduto, così da conservare lo storico.                                                                                                                                                                                                                  |  M   |  ✅   |
+| DM-11 | Il Preventivo è un unico PDF contenente condizioni generali e riepilogo economico.                                                                                                                                                                                                                                                                                                                                                                        |  M   |  ✅   |
+| DM-12 | **Ordine** — un solo oggetto ordine. Una riga d'ordine per ciascuna rata, con data di scadenza sulla riga. Il pattern Zoho degli ordini figli / "blocchi" è abolito.                                                                                                                                                                                                                                                                                      |  M   |  ✅   |
+| DM-13 | Massimo **un bundle per ordine**; mai bundle + prodotto sciolto nello stesso ordine (in tal caso si generano due ordini distinti).                                                                                                                                                                                                                                                                                                                        |  M   |  ✅   |
+| DM-14 | L'ordine è **immutabile dopo la fatturazione**, con permission set ristretto (1–2 utenti amministrativi) per le correzioni.                                                                                                                                                                                                                                                                                                                               |  M   |  ✅   |
+| DM-15 | Due campi distinti, non uno. **Tipo ordine** = `STANDARD` · `BUNDLE` · `PLUS`, i tre valori del disegno che guidano le automazioni. **Tipologia di vendita** = le sette voci del vostro Excel: stage sales, tutor packages, tutor combo, tutor one-shot, Performance Plus, product sales, Pienissimo Pro. ⚠ La lista di sei valori presente nella v1.0 di questo documento era un nostro errore: non compare in nessuna fonte ed è ritirata (§17, RC-04). |  M   |  🟡   |
+| DM-16 | Ordini e prodotti provenienti da Mexal sono in **sola lettura** su Salesforce.                                                                                                                                                                                                                                                                                                                                                                            |  M   |  ✅   |
+| DM-17 | **Tranche** (rinominazione di "rate") — oggetto custom creato automaticamente dalle date di scadenza delle righe d'ordine: righe con la stessa scadenza formano una tranche.                                                                                                                                                                                                                                                                              |  M   |  ✅   |
+| DM-18 | **Campagna = evento**: una campagna per edizione. I membri campagna sono i partecipanti, con stato di check-in (partecipato / no-show), a supporto delle analisi di no-show e composizione aula.                                                                                                                                                                                                                                                          |  M   |  ✅   |
+| DM-19 | **Contratto** (Performance Plus) — oggetto Contract standard con logica custom: date di inizio/fine/rinnovo, importo, preventivo e fatture collegate, pannello rinnovi, fatturato vs incassato, blocco servizio in caso di morosità grave.                                                                                                                                                                                                                |  S   |  ✅   |
+| DM-20 | **Nota di credito** — collegata sia all'ordine sia alla **riga d'ordine**, per gestire storni parziali su bundle multi-evento.                                                                                                                                                                                                                                                                                                                            |  S   |  ✅   |
+| DM-21 | **Fattura** — creata su Salesforce come contenitore di riferimento alla chiusura dell'ordine; Mexal fattura e restituisce numero e stato in campi dedicati e ricercabili.                                                                                                                                                                                                                                                                                 |  M   |  ✅   |
+| DM-22 | **Biglietto** — un record per biglietto, con ciclo di vita a stati (§6). Rilasciato in UAT come oggetto custom `Biglietto__c`. 🟡 _La proposta scritta prevedeva l'oggetto standard Asset: si chiede conferma della scelta implementata._                                                                                                                                                                                                                 |  M   |  🟡   |
 
 ---
 
@@ -389,6 +391,128 @@ Con la sottoscrizione, le parti confermano che i requisiti contrassegnati come �
 | Anagrafiche e prodotti Pienissimo | Fabrizio Paganelli |      |       |
 | Project Manager ROMI              | Elena Spini        |      |       |
 | Referente tecnico ROMI            | Aurel Mrruku       |      |       |
+
+---
+
+## 16. Quello che era scritto solo nei disegni
+
+I due file draw.io contengono decisioni che non sono mai state messe a verbale. Da qui in poi fanno parte del perimetro come tutto il resto.
+
+### 16.1 Come si muove un record
+
+Un record entra come **Lead**, diventa **Opportunità**, porta un **Preventivo**, si trasforma in **Ordine** con le sue tranche ed emette un **Biglietto**.
+
+| Oggetto     | Stati, nell'ordine in cui si attraversano                                                                                                                              |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lead        | New → In Lavorazione → Primo contatto → Qualificato · oppure Non Risponde (task automatico con promemoria a 48h, poi si torna in lavorazione) · oppure Non qualificato |
+| Opportunità | Qualificato → In trattativa (preventivo inviato) → Chiusa/Vinta · con Da ricontattare come parcheggio e Chiusa/Persa come uscita                                       |
+| Preventivo  | Bozza → In trattativa (validità 5 giorni) → **In attesa di accettazione** → Accettato (copia contabile ricevuta) · oppure Rifiutata                                    |
+| Ordine      | CREATO → CHIUSO/ACQUISITO                                                                                                                                              |
+| Tranche     | CREATO → CHIUSO/ACQUISITO                                                                                                                                              |
+| Biglietto   | Ordinato → Disponibile → Assegnato → Utilizzato · oppure Non utilizzato · oppure Annullato                                                                             |
+
+⚠ **«In attesa di accettazione» è il nuovo nome di «preventivo scaduto».** In stanza si continuerà a dire "scaduto" per mesi: è la stessa cosa.
+
+⚠ **L'ordine dei valori nella picklist del biglietto su Salesforce non è l'ordine del flusso.** Nella picklist compaiono come Ordinato, Assegnato, Disponibile, Non utilizzato, Utilizzato, Annullato; il flusso reale è quello della tabella sopra.
+
+**Passaggi che fa una persona, non il sistema.** Vanno letti come carico di lavoro ricorrente, perché firmandoli si accettano: l'amministrazione conferma l'incasso del bonifico su WooCommerce; l'amministrazione porta l'ordine a CHIUSO/ACQUISITO entro massimo 5 giorni; il tutor imposta Accettato o Rifiutata sul preventivo; il tutor riporta in trattativa un preventivo scaduto; lo staff scansiona il QR all'evento.
+
+### 16.2 Parole che significano cose diverse su oggetti diversi
+
+| Parola                 | Vive su                       | Attenzione                                                                                                                 |
+| ---------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **In trattativa**      | Opportunità, Preventivo       | Sull'opportunità è la trattativa in corso; sul preventivo è quel preventivo dentro i suoi 5 giorni                         |
+| **Da ricontattare**    | Lead, Opportunità, Preventivo | Sul Lead è un task; sugli altri due è uno stato, ognuno con la sua picklist di motivazioni                                 |
+| **CHIUSO / ACQUISITO** | Ordine, Tranche               | Sull'ordine lo mette l'amministrazione a mano entro 5 giorni; sulla prima tranche scatta da solo al pagamento dell'acconto |
+
+Quando una di queste parole viene detta a voce, va detto anche di quale oggetto si sta parlando.
+
+### 16.3 Valori delle picklist
+
+**Lead · Motivazione uscita — PERSO** (il lead era giusto ma non si è chiuso): Non interessato · Prezzo alto · Sceglie concorrenza · Servizio non adatto
+
+**Lead · Motivazione uscita — ERRATO** (non doveva proprio entrare; sotto-categoria dedicata, esportabile per analizzare la qualità delle sorgenti): Ha già P.Pro · Già in contatto · Dati inesatti · Duplicato da CRM · Non in target · Richiesta per errore · SW House, Ag. Marketing, Web Agency · Test
+
+**Opportunità · Chiusa persa:** Prezzo alto · Sceglie concorrenza · Tempistiche di erogazione · Non allineato alle aspettative
+
+**Opportunità · Da ricontattare:** Data corso incompatibile · Locale ancora da aprire · Non risponde · Rimanda per prezzo · Rimanda per motivi personali · Rimanda per problemi con attività · Richiamare dopo la stagione
+
+**Preventivo · Da ricontattare:** Richiamare dopo la stagione · Ha da fare · Deve pensarci
+
+**Tipo ordine:** STANDARD · BUNDLE · PLUS · **Tipo opportunità:** Vendita da tutor · Recall tutor
+
+### 16.4 I diciassette requisiti da ratificare
+
+Esistono solo nei disegni e non sono mai stati discussi in riunione. Con la firma diventano vincolanti.
+
+| ID     | Requisito                                                                                                                        | Pri. |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------- | :--: |
+| SAL-19 | Un preventivo scaduto deve poter tornare in trattativa in autonomia dal tutor.                                                   |  S   |
+| SAL-20 | Due task «da ricontattare» da aggiungere: dopo il primo contatto e dopo l'appuntamento, con data impostabile.                    |  S   |
+| SAL-21 | Campo tipo opportunità con i valori «Vendita da tutor» e «Recall tutor».                                                         |  S   |
+| SAL-22 | Un campo INFO che spiega come usare le motivazioni di uscita.                                                                    |  C   |
+| SAL-23 | Attivare la funzione standard che porta l'opportunità in «preventivo inviato» automaticamente.                                   |  S   |
+| ORD-06 | Tipi ordine STANDARD, BUNDLE, PLUS.                                                                                              |  S   |
+| ORD-07 | Report insoluti ogni lunedì a Marco e all'amministrazione.                                                                       |  S   |
+| ORD-12 | Un ordine WooCommerce resta invisibile su Salesforce finché non è COMPLETATO; per i bonifici lo cambia a mano l'amministrazione. |  M   |
+| ORD-13 | Al pagamento dell'acconto la prima tranche va subito a CHIUSO/ACQUISITO; le successive nascono CREATO.                           |  M   |
+| ORD-14 | CHIUSO/ACQUISITO lo imposta l'amministrazione a mano entro massimo 5 giorni dalla conferma di pagamento.                         |  M   |
+| ORD-15 | Bottone «Crea Nota di Credito» sull'ordine, con pop-up per scegliere le righe.                                                   |  S   |
+| INT-22 | Gli insoluti arrivano dall'API Mexal «scoperto clienti».                                                                         |  S   |
+| BIG-17 | Picklist stato biglietto a sei valori.                                                                                           |  M   |
+| BIG-18 | Landing partecipanti raggiunta da un link che porta l'Account ID; con più eventi si sceglie prima l'evento.                      |  M   |
+| BIG-19 | Alla conferma della lista un flow crea o abbina i contatti, aggiunge i campaign member e invia la richiesta di firma.            |  M   |
+| BIG-20 | Il QR contiene l'ID del campaign member.                                                                                         |  M   |
+| BIG-21 | Bottone «Casi Limite» sul biglietto, visibile solo da Assegnato, per cambio nome e mancata firma.                                |  S   |
+
+---
+
+## 17. Dove le fonti non concordano
+
+Cinque punti, e non sono dello stesso tipo. L'etichetta lo dice, perché trattarli tutti allo stesso modo sarebbe fuorviante al momento della firma.
+
+### RC-01 · Da ratificare — l'oggetto biglietto
+
+L'org UAT contiene già un oggetto custom `Biglietto__c` con sei classi Apex per DocuSign e la generazione dei PDF. Il disegno prevede invece l'oggetto Asset standard di Salesforce.
+
+Non è una scelta fra due disegni: quello custom esiste e funziona, il file di design non è mai stato aggiornato. Ratificare non costa nulla; tornare all'Asset standard significa rifare le sei classi — **a oggi non abbiamo stimato quanto**.
+**Proposta:** ratificare `Biglietto__c` com'è. **Se non si decide:** resta il custom; il silenzio ratifica ciò che è costruito.
+
+### RC-02 · Da chiarire — cosa fa nascere campagna e biglietti
+
+Il disegno dice che la campagna nasce quando su Mexal viene creato il prodotto EVENTO; il verbale del 22/07 dice che nasce all'arrivo di un ordine con prodotto evento. Separate, le due cose non sono in conflitto: **campagna alla creazione del prodotto, biglietti all'ordine**. Oggi i documenti descrivono automazioni diverse solo perché nessuno dei due dice di quale oggetto parla.
+**Se non si decide:** resta ambiguo, chi costruisce ne sceglie una e l'altro documento resta sbagliato.
+
+### RC-03 · Mai deciso — quanti promemoria, e su quale canale
+
+⚠ **Errore nostro, ritirato.** Avevamo presentato questo punto come una contraddizione fra «60 e 2 giorni» e «60, 30, 15 e 1». Non lo è.
+
+Il verbale dell'08/06, riga 17, dice testualmente: _«Reminder funnel for uncompiled tickets (they already run a WhatsApp/60-30-15-1-day funnel)»_. È la descrizione di una **vostra pratica WhatsApp già esistente**, fra parentesi — non un requisito per Salesforce. Una cadenza per Salesforce non è mai stata concordata, quindi non c'è nulla che si contraddica.
+
+La domanda vera non è mai stata posta: Salesforce replica via email la vostra cadenza a quattro tocchi, oppure ne fa due (60 e 2) come disegnato? Quattro invii costano più build e rischiano lo spam; due rischiano più no-show.
+**Proposta:** nessuna finché non ci dite il canale. **Se non si decide:** 60 e 2, perché è quello che è disegnato.
+
+### RC-04 · Correzione nostra — i tipi di ordine
+
+Il verbale del 30/06, riga 7, riporta dal vostro Excel e PDF **sette** tipologie: _stage sales, tutor packages, tutor combo, tutor one-shot, Performance Plus, product sales, Pienissimo Pro_. Il disegno prevede **tre** tipi ordine: STANDARD, BUNDLE, PLUS.
+
+⚠ Le sei voci elencate nella v1.0 di questo documento (vendita da palco, tutor, libro, videocorso, attivazione PP, rinnovo PP) **non compaiono in nessuna fonte**: le avevamo scritte noi e sono ritirate.
+
+Si stanno confondendo due campi: i tre valori guidano le automazioni, i vostri sette descrivono cosa si vende. Possono esistere entrambi.
+**Proposta:** tipo ordine = i tre; tipologia di vendita = i vostri sette, invariati. **Se non si decide:** restano solo i tre e Marco perde la ripartizione che ci ha fornito.
+
+### RC-05 · Passo indietro nostro — la nota di credito
+
+Il 22/07 era stato **concordato** che una nota di credito su prodotto evento portasse automaticamente il biglietto ad Annullato. Risulta come decisione presa, non come punto aperto.
+
+ROMI chiede ora di tornare indietro e selezionare i biglietti **a mano** in un pop-up, perché su un bundle multi-evento uno storno parziale non è deducibile: il sistema non sa a quale biglietto si riferisce la nota.
+
+Questo è il fornitore che chiede di disfare una cosa già approvata, per un motivo tecnico. Non è un pareggio fra due fonti e non va registrato come tale.
+**Se non si decide:** vale la decisione del 22/07 — annullamento automatico, e il caso del bundle multi-evento resta irrisolto.
+
+### Nota sulle fonti
+
+Le citazioni non hanno tutte lo stesso peso e va detto: i verbali di 08/06, 30/06 e 23/07 sono agli atti in `meetings/results/`; il **22/07 è una minuta circolata via mail e non presente nel repository**, e su di essa poggiano RC-02 e RC-05; le riunioni del 29/07 e 31/07 hanno **solo note automatiche**, nessun verbale scritto da una persona.
 
 ---
 
