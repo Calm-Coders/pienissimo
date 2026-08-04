@@ -1,0 +1,1721 @@
+# =============================================================================
+# ROMI · PIENISSIMO — Registro requisiti consolidato
+# Machine-readable source of truth. Prose lives in REQUISITI.it.md / REQUIREMENTS.md.
+# This file merges: meeting decisions + the two draw.io design diagrams + the UAT org check.
+# =============================================================================
+
+meta:
+  project: Pienissimo — Zoho CRM to Salesforce migration
+  client: Pienissimo
+  supplier: ROMI S.r.l.
+  version: "1.1"
+  date: 2026-08-03
+  signoff_session: 2026-08-06T15:00:00+02:00
+  go_live: 2026-10-06
+  zoho_expiry: 2026-10-31
+  prose_documents:
+    it: REQUISITI.it.md # authoritative, client-facing
+    en: REQUIREMENTS.md # internal mirror
+  status_legend:
+    agreed: Agreed in a meeting; binding on signature
+    to_confirm: Proposed or discussed, not closed
+    open: Missing a decision or a client input
+    conflict: Two sources disagree; must be reconciled before signature
+  priority_legend:
+    M: Must — required for go-live
+    S: Should — important, go-live possible without
+    C: Could — delivered if time allows
+    F2: Deferred to Phase 2
+
+sources:
+  meetings:
+    - { date: 2026-05-27, topic: kickoff }
+    - { date: 2026-06-03, topic: sales demo }
+    - { date: 2026-06-04, topic: marketing demo }
+    - { date: 2026-06-08, topic: ticketing and compliance }
+    - { date: 2026-06-16, topic: tech sales }
+    - { date: 2026-06-23, topic: marketing }
+    - { date: 2026-06-30, topic: sales types and quotes }
+    - { date: 2026-07-02, topic: Mexal invoicing }
+    - { date: 2026-07-07, topic: lead/opty and integrations }
+    - { date: 2026-07-14, topic: Mexal integration, minutes: 2026-07-16 }
+    - {
+        date: 2026-07-16,
+        topic: bundle demo and order flow,
+        minutes: 2026-07-17
+      }
+    - { date: 2026-07-22, topic: bundle and ticket flow, minutes: 2026-07-27 }
+    - { date: 2026-07-23, topic: product codes and bundles }
+    - {
+        date: 2026-07-29,
+        topic: open-topics follow-up,
+        minutes: none,
+        gemini_notes: true
+      }
+    - {
+        date: 2026-07-31,
+        topic: business review,
+        minutes: none,
+        gemini_notes: true
+      }
+  documents:
+    - {
+        title: Integrazione_Salesforce_WooCommerce.docx,
+        owner: sabatinopienissimo@gmail.com,
+        date: 2026-07-31
+      }
+    - {
+        title: anar_PIE_ricla.xlsx,
+        owner: fabrizio.p@pienissimo.com,
+        date: 2026-07-22
+      }
+    - {
+        title: "Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx",
+        owner: e.spini@romicompany.com
+      }
+    - {
+        title: Credenziali WEBAPI Passepartout,
+        owner: mirko@kreosoft.com,
+        date: 2026-07-15
+      }
+  diagrams:
+    - id: DGM-1
+      title: Workflow Pienissimo 23-7-26.drawio
+      owner: marco.m@pienissimo.com
+      drive_id: 1rfmySNKyhhNJnaV-2ULkGl0vUIf50Q7t
+      modified: 2026-07-31T12:46:09Z
+      pages: [LEAD-OPTY]
+      note: Client-annotated lead/opportunity workflow, edited right after the 31/07 review
+    - id: DGM-2
+      title: Flows & Objects.drawio
+      owner: e.spini@romicompany.com
+      drive_id: 11ly3iGQc1smlY8IybSnUMQBGXbZ-ddbx
+      modified: 2026-07-31T09:50:03Z
+      pages: [LEAD-OPTY, Ordini, Flusso Biglietti]
+      note: ROMI master design file; the most detailed source for orders and tickets
+  org_check:
+    org: a.mrruku@pienissimo.uat
+    instance: ability-customization-52152--partial
+    date: 2026-08-03
+
+# -----------------------------------------------------------------------------
+glossary:
+  ACCOUNT: Ragione sociale qualificata, a prescindere dall'aver già acquistato. [DGM-1]
+  OPPORTUNITA: Si apre quando il contatto manifesta un interesse economico. [DGM-1]
+  LEAD_QUALIFICATO: Interessato a un appuntamento, richiede una demo, o richiede preventivo. [DGM-1]
+  LEAD_NON_QUALIFICATO: Fuori target, non titolare di ristorante, ha compilato il form per curiosità. [DGM-1]
+  TRANCHE: Contenitore di un sottoinsieme delle righe d'ordine con scadenza di pagamento a livello di riga. [DGM-2]
+  ASSET_vs_QR: L'Asset è il record; il QR è un valore contenuto in esso e porta l'ID del campaign member. [22/07, DGM-2]
+  ANNO_SOLARE: Classificazione dei bundle. Distinto da ANNO_ACCADEMICO (maggio-settembre) usato per la generazione biglietti. [23/07]
+
+# -----------------------------------------------------------------------------
+scope:
+  out_of_scope:
+    - id: OUT-01
+      item: GLS integration (delivery confirmation, book flow)
+      reason: Not discussed pre-sale, not in contract
+      status: open
+      escalated_to: Daniela
+    - id: OUT-02
+      item: Teachable integration (course-completion API)
+      reason: Not discussed pre-sale, not in contract
+      status: open
+      escalated_to: Daniela
+    - id: OUT-03
+      item: Salesforce to Zoho for Pienissimo Pro orders (Pienissimo Software S.r.l.)
+      reason: Distinct legal entity; not discussed pre-sale, not in contract
+      status: open
+      escalated_to: Daniela
+  phase_2:
+    - { id: F2-01, item: E-commerce product sales via WooCommerce/GLS }
+    - { id: F2-02, item: Pienissimo Pro flows }
+    - { id: F2-03, item: Data Cloud / Data 360 analytics }
+    - { id: F2-04, item: Remaining automation and minor integrations }
+    - { id: F2-05, item: Meta/Google Ads acquisition cost and origin campaign }
+
+# =============================================================================
+# STATE MACHINES — extracted verbatim from the diagrams
+# =============================================================================
+state_machines:
+  lead:
+    source: [DGM-1, DGM-2]
+    states:
+      [
+        New,
+        In Lavorazione,
+        Non Risponde,
+        Primo contatto,
+        Qualificato,
+        Non qualificato
+      ]
+    transitions:
+      - { from: New, to: In Lavorazione }
+      - { from: In Lavorazione, to: Non Risponde }
+      - { from: In Lavorazione, to: Primo contatto }
+      - {
+          from: Non Risponde,
+          to: "Task = da ricontattare",
+          note: "auto task/event with red reminder 48h after the status change"
+        }
+      - { from: Primo contatto, to: Qualificato }
+      - { from: Primo contatto, to: Non qualificato }
+      - {
+          from: Qualificato,
+          to: "OPPORTUNITA'",
+          note: "Lead converted into ACCOUNT + REFERENTE + OPPORTUNITA'"
+        }
+      - { from: Non qualificato, to: Motivazione uscita }
+
+  opportunity:
+    source: [DGM-1, DGM-2]
+    states:
+      [
+        Qualificato,
+        "In trattativa (Prev inviato)",
+        "Da ricontattare - Prev. inviato",
+        Chiusa/Vinta,
+        Chiusa/Persa
+      ]
+    rules:
+      - Created automatically when the contact is qualified
+      - Multiple quotes allowed per opportunity
+      - An existing client's request enters directly as an OPPORTUNITA'
+      - "Chiusa/Vinta requires at least one quote sent; payment confirms the win"
+
+  quote:
+    source: [DGM-1, DGM-2]
+    states:
+      [
+        Bozza,
+        "In trattativa (Prev inviato)",
+        "In attesa di accettazione",
+        "Accettato - Copia Contabile Ricevuta",
+        Rifiutata
+      ]
+    rules:
+      - "'In attesa di accettazione' is the new label for the former 'preventivo scaduto'"
+      - Validity 5 days
+      - Expiry date mandatory, set by the tutor at send
+      - Alert to tutor and client on day 2 after sending, and again at expiry
+      - "Accettato and Rifiutata are manual tutor actions"
+      - New quote created manually via a button
+
+  order:
+    source: [DGM-2]
+    types:
+      - { value: STANDARD, note: default }
+      - { value: BUNDLE, note: "Order type == Bundle - Vendita da palco" }
+      - { value: PLUS, note: "Order type == Plus + Attivazione o Rinnovo" }
+    states: [CREATO, CHIUSO/ACQUISITO]
+    creation_systems: [WooCommerce, SFDC, Mexal]
+    rules:
+      - "A WooCommerce order is not visible in SFDC until its WooCommerce status is COMPLETATO"
+      - "Bank transfer: administration waits for the transfer, then sets the WooCommerce order to COMPLETATO"
+      - "Card payment: completes automatically"
+      - "CHIUSO/ACQUISITO is set manually by administration within max 5 days of confirmed payment"
+    opportunity_types: ["Vendita da tutor", "Recall tutor"]
+
+  tranche:
+    source: [DGM-2]
+    states: [CREATO, CHIUSO/ACQUISITO]
+    rules:
+      - "When the client pays the deposit, the FIRST tranche goes immediately to CHIUSO/ACQUISITO"
+      - "Subsequent tranches are created in CREATO"
+      - "Mexal updates payment status at order-line level; SFDC aggregates upward onto the tranche"
+
+  asset:
+    source: [DGM-2]
+    label_in_diagram: "Asset == Ticket evento"
+    label_in_org: "Biglietto__c (custom object)"
+    states:
+      [Ordinato, Assegnato, Disponibile, Non utilizzato, Utilizzato, Annullato]
+    transitions:
+      - {
+          from: Ordinato,
+          to: Disponibile,
+          trigger: "Fattura pagata a livello di Tranche o riga d'ordine"
+        }
+      - {
+          from: Disponibile,
+          to: Assegnato,
+          trigger: "Participant list confirmed by the referent"
+        }
+      - { from: Assegnato, to: Utilizzato, trigger: "QR scanned at the event" }
+      - {
+          from: Assegnato,
+          to: Non utilizzato,
+          trigger: "3 days after the event"
+        }
+      - {
+          from: Assegnato,
+          to: Annullato,
+          trigger: "Name change (option 1) or credit note"
+        }
+
+# =============================================================================
+# PICKLISTS — verbatim from DGM-1
+# =============================================================================
+picklists:
+  lead_motivazione_uscita:
+    definition_perso: "Il lead era potenzialmente giusto, ma per motivi commerciali (prezzo, timing, concorrenza) non si è chiuso."
+    definition_errato: "Il lead non avrebbe mai dovuto entrare — profilo sbagliato, zona non coperta, fuori target."
+    note: "I lead con Motivazione Uscita == Errato hanno una sotto-categoria dedicata ed esportabile, per analizzare la qualità delle sorgenti nel tempo."
+    perso:
+      - Non interessato
+      - Prezzo alto
+      - Sceglie concorrenza (lista competitor da selezionare)
+      - Servizio non adatto (per caratteristiche attività)
+    errato:
+      - Ha già P.Pro
+      - Già in contatto
+      - Dati per il contatto inesatti
+      - Duplicato da CRM
+      - Non in target (non è ristoratore)
+      - Richiesta inviata per errore
+      - "SW House, Ag. Marketing, Web Agency"
+      - Test
+  opportunity_chiusa_persa:
+    - Prezzo alto
+    - Sceglie concorrenza (lista competitor da selezionare)
+    - Tempistiche di erogazione servizio
+    - Servizio/prodotto non allineato con le aspettative
+  opportunity_da_ricontattare:
+    - Data corso incompatibile
+    - Locale ancora da aprire
+    - Non risponde
+    - Rimanda acquisto per prezzo
+    - Rimanda acquisto per motivi personali
+    - Rimanda acquisto per problemi con attività
+    - Richiamare dopo la stagione
+  quote_da_ricontattare:
+    - Richiamare dopo la stagione
+    - Ha da fare
+    - Deve pensarci
+  asset_status:
+    [Ordinato, Assegnato, Disponibile, Non utilizzato, Utilizzato, Annullato]
+  order_type: [STANDARD, BUNDLE, PLUS]
+  opportunity_type: ["Vendita da tutor", "Recall tutor"]
+
+# =============================================================================
+# REQUIREMENTS REGISTER
+# Full prose in REQUISITI.it.md. `ref` points at the section there.
+# =============================================================================
+requirements:
+  # --- Context -------------------------------------------------------------
+  - {
+      id: CTX-01,
+      area: context,
+      pri: M,
+      status: agreed,
+      text: "Salesforce replaces Zoho as the single operational CRM"
+    }
+  - {
+      id: CTX-02,
+      area: context,
+      pri: M,
+      status: agreed,
+      text: "Go-live 6 October 2026, focused on WooCommerce and Mexal"
+    }
+  - {
+      id: CTX-03,
+      area: context,
+      pri: M,
+      status: agreed,
+      text: "Zoho expires 31 October 2026; dual-run window is ~3 weeks"
+    }
+  - {
+      id: CTX-04,
+      area: context,
+      pri: M,
+      status: agreed,
+      text: "During dual-run tickets are double-entered; stage-sale invoicing stays on Zoho through 29 September"
+    }
+  - {
+      id: CTX-05,
+      area: context,
+      pri: M,
+      status: agreed,
+      text: "No workarounds: redesign for Salesforce, start simple, automate what repeats"
+    }
+  - {
+      id: CTX-06,
+      area: context,
+      pri: M,
+      status: agreed,
+      text: "Every design decision must serve the final statistics"
+    }
+  - {
+      id: CTX-07,
+      area: context,
+      pri: M,
+      status: agreed,
+      text: "Org language Italian via Translation Workbench"
+    }
+  - {
+      id: CTX-08,
+      area: context,
+      pri: M,
+      status: agreed,
+      text: "Salesforce terminology: Lead, Opportunity, Quote, Order"
+    }
+
+  # --- Data model ----------------------------------------------------------
+  - {
+      id: DM-01,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Lead holds only self-serve actions with no purchase intent"
+    }
+  - {
+      id: DM-02,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Account = company, with a local-name field alongside the registered name"
+    }
+  - {
+      id: DM-03,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Every Opportunity requires an Account; forms auto-create primordial account and contact"
+    }
+  - {
+      id: DM-04,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Dedup: email OR phone for forms; email + VAT for WooCommerce"
+    }
+  - {
+      id: DM-05,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Opportunity created directly for explicit contact requests and existing clients"
+    }
+  - {
+      id: DM-06,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Four opportunity stages; closed-won driven by payment"
+    }
+  - {
+      id: DM-07,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Mandatory loss reason with two distinct picklist sets",
+      picklists: [opportunity_chiusa_persa, lead_motivazione_uscita]
+    }
+  - {
+      id: DM-08,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Record Types separate commercial and e-commerce flows"
+    }
+  - {
+      id: DM-09,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Track existing-client vs new-business origin"
+    }
+  - {
+      id: DM-10,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Quote always under an opportunity; retry by cloning"
+    }
+  - {
+      id: DM-11,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Quote is a single PDF with conditions and economic summary"
+    }
+  - {
+      id: DM-12,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "One order object; one line per instalment with due date on the line"
+    }
+  - {
+      id: DM-13,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Max one bundle per order; never bundle plus loose product"
+    }
+  - {
+      id: DM-14,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Order immutable once invoiced, narrow admin permission set"
+    }
+  - {
+      id: DM-15,
+      area: data_model,
+      pri: M,
+      status: conflict,
+      text: "Order typology field",
+      conflict: RC-04
+    }
+  - {
+      id: DM-16,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Mexal-sourced orders and products are read-only in Salesforce"
+    }
+  - {
+      id: DM-17,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Tranche custom object auto-created from order-line due dates",
+      state_machine: tranche
+    }
+  - {
+      id: DM-18,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Campaign = event edition; members are participants with check-in status"
+    }
+  - {
+      id: DM-19,
+      area: data_model,
+      pri: S,
+      status: agreed,
+      text: "Contract object for Performance Plus with renewal and collection tracking"
+    }
+  - {
+      id: DM-20,
+      area: data_model,
+      pri: S,
+      status: agreed,
+      text: "Credit note linked to both order and order line"
+    }
+  - {
+      id: DM-21,
+      area: data_model,
+      pri: M,
+      status: agreed,
+      text: "Invoice created in Salesforce as reference shell; Mexal returns number and status"
+    }
+  - {
+      id: DM-22,
+      area: data_model,
+      pri: M,
+      status: conflict,
+      text: "Ticket object: custom Biglietto__c as built vs standard Asset as designed",
+      conflict: RC-01
+    }
+
+  # --- Sales ---------------------------------------------------------------
+  - {
+      id: SAL-01,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Form routing by source, not content, via hidden pre-filled fields"
+    }
+  - {
+      id: SAL-02,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Repeatable field-mapping process, self-manageable by Pienissimo"
+    }
+  - {
+      id: SAL-03,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Multi-service interest readable and individually countable"
+    }
+  - {
+      id: SAL-04,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Marketing converts leads; tutors handle recalls; qualified contacts bypass early stages"
+    }
+  - {
+      id: SAL-05,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "SLA: new opportunity in lavorazione within 48 working hours, else escalation"
+    }
+  - {
+      id: SAL-06,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Qualificato da ricontattare state with 48h parking task"
+    }
+  - {
+      id: SAL-07,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Manual quote-creation button"
+    }
+  - {
+      id: SAL-08,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Quote expiry date mandatory at send"
+    }
+  - {
+      id: SAL-09,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Automatic alerts on day 2 after send and at expiry, to tutor and client"
+    }
+  - {
+      id: SAL-10,
+      area: sales,
+      pri: M,
+      status: open,
+      text: "Preset validity times per product category and business line",
+      owner: Marco Montesi
+    }
+  - {
+      id: SAL-11,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Stage transitions manual at go-live"
+    }
+  - {
+      id: SAL-12,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Tutors on fixed price list, no discretionary discounts"
+    }
+  - {
+      id: SAL-13,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Instalment dates leave the client fully paid before attending"
+    }
+  - {
+      id: SAL-14,
+      area: sales,
+      pri: M,
+      status: agreed,
+      text: "Tutor daily dashboard plus manager cross-view, user-filtered by default"
+    }
+  - {
+      id: SAL-15,
+      area: sales,
+      pri: S,
+      status: open,
+      text: "Notification channel: Salesforce bell vs email",
+      owner: Pienissimo
+    }
+  - {
+      id: SAL-16,
+      area: sales,
+      pri: C,
+      status: to_confirm,
+      text: "Accept/reject buttons inside the quote email"
+    }
+  - {
+      id: SAL-17,
+      area: sales,
+      pri: M,
+      status: open,
+      text: "Order-acceptance and contract procedure",
+      owner: "Marco Montesi + Elisa Migliano",
+      due: 2026-08-06
+    }
+  - {
+      id: SAL-18,
+      area: sales,
+      pri: S,
+      status: open,
+      source: DGM-1,
+      text: "Leads land in a queue named CODE for custom assignment; open questions on manual assignment by the sales manager and on mass assignment by parameter"
+    }
+  - {
+      id: SAL-19,
+      area: sales,
+      pri: S,
+      status: to_confirm,
+      source: DGM-1,
+      text: "An expired quote must be returnable to In trattativa autonomously by the tutor; a 'richiamare' state is suggested"
+    }
+  - {
+      id: SAL-20,
+      area: sales,
+      pri: S,
+      status: to_confirm,
+      source: DGM-1,
+      text: "Two 'da ricontattare' tasks to add: after first contact and after the appointment/demo, both with a settable specific date"
+    }
+  - {
+      id: SAL-21,
+      area: sales,
+      pri: S,
+      status: to_confirm,
+      source: DGM-2,
+      text: "Opportunity type field with values Vendita da tutor and Recall tutor",
+      picklists: [opportunity_type]
+    }
+  - {
+      id: SAL-22,
+      area: sales,
+      pri: C,
+      status: to_confirm,
+      source: DGM-1,
+      text: "Add an INFO field explaining how to use the loss-reason values"
+    }
+  - {
+      id: SAL-23,
+      area: sales,
+      pri: S,
+      status: to_confirm,
+      source: DGM-1,
+      text: "Enable the Salesforce feature that moves the opportunity to 'preventivo inviato' automatically"
+    }
+
+  # --- Bundles -------------------------------------------------------------
+  - {
+      id: BUN-01,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Bundle is a custom container, not Revenue Cloud/CPQ"
+    }
+  - {
+      id: BUN-02,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Fixed bundle price with spread prices on components; acceptance criterion",
+      acceptance: AC-02
+    }
+  - {
+      id: BUN-03,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Spread lives on the bundle-product junction, so one product can sit in many bundles",
+      acceptance: AC-03,
+      built: true
+    }
+  - {
+      id: BUN-04,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Both fixed price and auto-calc from components available, chosen per bundle"
+    }
+  - {
+      id: BUN-05,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Invoice the elementary product; bundle name becomes the Mexal description"
+    }
+  - {
+      id: BUN-06,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Bundles created by administration only; products stay configured in Mexal"
+    }
+  - {
+      id: BUN-07,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Bundles never modified after sale nor reused; 3-5 per event"
+    }
+  - {
+      id: BUN-08,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Classification anno solare to evento (dependent) plus bundle typology",
+      built: fields_only
+    }
+  - {
+      id: BUN-09,
+      area: bundles,
+      pri: M,
+      status: open,
+      text: "Definitive 7-event list for the picklists",
+      owner: Fabrizio
+    }
+  - {
+      id: BUN-10,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Bundle shown as one order line, expandable to components"
+    }
+  - {
+      id: BUN-11,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Legacy C/Z/BLO/PACK apparatus not migrated"
+    }
+  - {
+      id: BUN-12,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Genera biglietto flag on the article, admin-editable",
+      built: field_only
+    }
+  - {
+      id: BUN-13,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Solo bundle flag on the article, hidden from tutors in direct sales",
+      built: false
+    }
+  - {
+      id: BUN-14,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Article codes unique and stable"
+    }
+  - {
+      id: BUN-15,
+      area: bundles,
+      pri: M,
+      status: open,
+      text: "About 10 bundle-only article codes; 3-5 samples before September",
+      owner: Fabrizio
+    }
+  - {
+      id: BUN-16,
+      area: bundles,
+      pri: M,
+      status: agreed,
+      text: "Zero-price omaggio codes and BLO blocks abolished; real codes at 100% discount"
+    }
+  - {
+      id: BUN-17,
+      area: bundles,
+      pri: M,
+      status: to_confirm,
+      text: "A non-zero spread variance must block saving",
+      evidence: "ACADEMY 2026 sits at -1422 in UAT"
+    }
+  - {
+      id: BUN-18,
+      area: bundles,
+      pri: S,
+      status: to_confirm,
+      text: "Coherence control on bundle composition"
+    }
+  - {
+      id: BUN-19,
+      area: bundles,
+      pri: S,
+      status: to_confirm,
+      text: "Bundle code passed to WooCommerce manually and verbally, by design"
+    }
+  - {
+      id: BUN-20,
+      area: bundles,
+      pri: M,
+      status: open,
+      text: "Real catalogue prices; everything in UAT today is a ROMI placeholder",
+      owner: "Marco, Fabrizio"
+    }
+
+  # --- Tickets -------------------------------------------------------------
+  - {
+      id: BIG-01,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "Four-stage lifecycle: order, payment, signature, check-in",
+      acceptance: AC-05
+    }
+  - {
+      id: BIG-02,
+      area: tickets,
+      pri: M,
+      status: conflict,
+      text: "Campaign and ticket auto-creation trigger",
+      conflict: RC-02
+    }
+  - {
+      id: BIG-03,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "The Asset is the record; the QR is a value inside it"
+    }
+  - {
+      id: BIG-04,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "Ticket-generating set driven by the product flag, not by a letter in the code"
+    }
+  - {
+      id: BIG-05,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "Participants are not account contacts; referent fills the participant list"
+    }
+  - {
+      id: BIG-06,
+      area: tickets,
+      pri: S,
+      status: conflict,
+      text: "Reminder funnel cadence",
+      conflict: RC-03
+    }
+  - {
+      id: BIG-07,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "Day-of-event fallback button issuing the QR on the spot"
+    }
+  - {
+      id: BIG-08,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "Card auto-completes; bank transfer confirmed manually by administration"
+    }
+  - {
+      id: BIG-09,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "Zero-euro orders stay in the CRM and are not sent to Mexal"
+    }
+  - {
+      id: BIG-10,
+      area: tickets,
+      pri: S,
+      status: conflict,
+      text: "Credit note sets the ticket to Annullato",
+      conflict: RC-05
+    }
+  - {
+      id: BIG-11,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "Check-in by QR scan"
+    }
+  - {
+      id: BIG-12,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "QR issuance conditional on signature; confirmed by direction"
+    }
+  - {
+      id: BIG-13,
+      area: tickets,
+      pri: M,
+      status: open,
+      text: "Signature collection method: DocuSign, Community upload, or paper",
+      due: 2026-08-06,
+      owner: Sabatino,
+      default_if_undecided: paper
+    }
+  - {
+      id: BIG-14,
+      area: tickets,
+      pri: M,
+      status: agreed,
+      text: "A manual signature path must exist for non-digital clients"
+    }
+  - {
+      id: BIG-15,
+      area: tickets,
+      pri: S,
+      status: open,
+      text: "Quote and contract signature: single send or sequential"
+    }
+  - {
+      id: BIG-16,
+      area: tickets,
+      pri: S,
+      status: open,
+      text: "Event dates and ticket delivery lead times to confirm"
+    }
+  - {
+      id: BIG-17,
+      area: tickets,
+      pri: M,
+      status: to_confirm,
+      source: DGM-2,
+      text: "Asset status picklist with six values",
+      picklists: [asset_status],
+      state_machine: asset
+    }
+  - {
+      id: BIG-18,
+      area: tickets,
+      pri: M,
+      status: to_confirm,
+      source: DGM-2,
+      text: "Participant landing page reached by a link carrying the Account ID; if the account bought several events the referent picks the event first, then fills one row per purchased ticket"
+    }
+  - {
+      id: BIG-19,
+      area: tickets,
+      pri: M,
+      status: to_confirm,
+      source: DGM-2,
+      text: "On list confirmation a flow creates or matches contacts, adds campaign members, and sends the signature request"
+    }
+  - {
+      id: BIG-20,
+      area: tickets,
+      pri: M,
+      status: to_confirm,
+      source: DGM-2,
+      text: "The QR code contains the campaign member ID"
+    }
+  - {
+      id: BIG-21,
+      area: tickets,
+      pri: S,
+      status: to_confirm,
+      source: DGM-2,
+      text: "Casi Limite button on the Asset, visible only once Assegnato, handling participant name change and missing signature"
+    }
+  - {
+      id: BIG-22,
+      area: tickets,
+      pri: S,
+      status: open,
+      source: DGM-2,
+      text: "Must participant emails on the landing page be unique?"
+    }
+  - {
+      id: BIG-23,
+      area: tickets,
+      pri: M,
+      status: open,
+      source: DGM-2,
+      text: "Does every product have a different code per event, and can Mexal pass genera biglietto, bundle only and product name?"
+    }
+  - {
+      id: BIG-24,
+      area: tickets,
+      pri: S,
+      status: open,
+      source: DGM-2,
+      text: "Clarify whether tutors are allowed to create event products"
+    }
+
+  # --- Orders --------------------------------------------------------------
+  - {
+      id: ORD-01,
+      area: orders,
+      pri: M,
+      status: agreed,
+      text: "Tranches auto-created from order-line due dates",
+      acceptance: AC-06
+    }
+  - {
+      id: ORD-02,
+      area: orders,
+      pri: M,
+      status: agreed,
+      text: "Whole order goes to Mexal; tranche reference travels at line level"
+    }
+  - {
+      id: ORD-03,
+      area: orders,
+      pri: M,
+      status: agreed,
+      text: "Mexal updates payment per line; Salesforce aggregates onto the tranche"
+    }
+  - {
+      id: ORD-04,
+      area: orders,
+      pri: M,
+      status: agreed,
+      text: "n Mexal invoices produce n Salesforce invoices"
+    }
+  - {
+      id: ORD-05,
+      area: orders,
+      pri: S,
+      status: agreed,
+      text: "Contract auto-generation keyed to the product code, not order status"
+    }
+  - {
+      id: ORD-06,
+      area: orders,
+      pri: S,
+      status: to_confirm,
+      source: DGM-2,
+      text: "Order types STANDARD, BUNDLE, PLUS",
+      picklists: [order_type]
+    }
+  - {
+      id: ORD-07,
+      area: orders,
+      pri: S,
+      status: agreed,
+      text: "Weekly overdue report every Monday to Marco and administration",
+      source: DGM-2
+    }
+  - {
+      id: ORD-08,
+      area: orders,
+      pri: S,
+      status: agreed,
+      text: "Expiring-tranche report to administration before month end"
+    }
+  - {
+      id: ORD-09,
+      area: orders,
+      pri: S,
+      status: agreed,
+      text: "Both reports always available and refreshed, no manual launch"
+    }
+  - {
+      id: ORD-10,
+      area: orders,
+      pri: M,
+      status: open,
+      text: "Invoice display policy: component vs instalment lines, masking internal prices"
+    }
+  - {
+      id: ORD-11,
+      area: orders,
+      pri: S,
+      status: agreed,
+      text: "Performance Plus from stage bundle or direct tutor entry; 1-year contract with 1-year renewals"
+    }
+  - {
+      id: ORD-12,
+      area: orders,
+      pri: M,
+      status: to_confirm,
+      source: DGM-2,
+      text: "A WooCommerce order is invisible in Salesforce until its WooCommerce status is COMPLETATO; for bank transfers administration flips it manually on receipt"
+    }
+  - {
+      id: ORD-13,
+      area: orders,
+      pri: M,
+      status: to_confirm,
+      source: DGM-2,
+      text: "On deposit payment the first tranche goes immediately to CHIUSO/ACQUISITO; later tranches start in CREATO"
+    }
+  - {
+      id: ORD-14,
+      area: orders,
+      pri: M,
+      status: to_confirm,
+      source: DGM-1,
+      text: "CHIUSO/ACQUISITO set manually by administration within max 5 days of confirmed payment"
+    }
+  - {
+      id: ORD-15,
+      area: orders,
+      pri: S,
+      status: to_confirm,
+      source: DGM-2,
+      text: "Crea Nota di Credito button at order level, with a pop-up to pick the order lines for partial reversals"
+    }
+
+  # --- Integrations --------------------------------------------------------
+  - {
+      id: INT-01,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Mexal over REST API; eight objects"
+    }
+  - {
+      id: INT-02,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Salesforce source of truth for new records, Mexal for administrative edits"
+    }
+  - {
+      id: INT-03,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Edit rights on the synced client registry restricted to admins"
+    }
+  - {
+      id: INT-04,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Nightly delta GETs keyed on data ultima modifica"
+    }
+  - {
+      id: INT-05,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Invoice pulls need date filters and pagination against callout size limits"
+    }
+  - {
+      id: INT-06,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "No repeated order GETs; a rinvio ordine button instead"
+    }
+  - {
+      id: INT-07,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "On-demand product import button beside the nightly sync"
+    }
+  - {
+      id: INT-08,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Agents held as suppliers under mastro 610; no agents API"
+    }
+  - {
+      id: INT-09,
+      area: integrations,
+      pri: S,
+      status: agreed,
+      text: "Registry field referencing the previous client code and VAT"
+    }
+  - {
+      id: INT-10,
+      area: integrations,
+      pri: M,
+      status: open,
+      text: "No Mexal test environment; a test company must be created",
+      owner: "Pienissimo / Kreosoft"
+    }
+  - {
+      id: INT-11,
+      area: integrations,
+      pri: M,
+      status: open,
+      text: "WooCommerce over API, two instances; CK/CS credentials owed",
+      owner: Sabatino
+    }
+  - {
+      id: INT-12,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Checkout links carrying the Opportunity id, returned via REST",
+      acceptance: AC-08
+    }
+  - {
+      id: INT-13,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Build list: product and opportunity WooCommerce id fields, link generator button, mu-plugin, REST credentials, email template"
+    }
+  - {
+      id: INT-14,
+      area: integrations,
+      pri: M,
+      status: open,
+      text: "Pull job vs webhook",
+      recommendation: webhook
+    }
+  - {
+      id: INT-15,
+      area: integrations,
+      pri: M,
+      status: open,
+      text: "Price source of truth: WooCommerce list vs Salesforce negotiated with dynamic coupons"
+    }
+  - {
+      id: INT-16,
+      area: integrations,
+      pri: S,
+      status: open,
+      text: "Id in clear vs signed token in the checkout link",
+      recommendation: signed_token
+    }
+  - {
+      id: INT-17,
+      area: integrations,
+      pri: S,
+      status: agreed,
+      text: "2x1 promotions as quantity 2 at 50%"
+    }
+  - {
+      id: INT-18,
+      area: integrations,
+      pri: M,
+      status: open,
+      text: "Anticipay VAT check timing and foreign-VAT handling",
+      recommendation: phase_2
+    }
+  - {
+      id: INT-19,
+      area: integrations,
+      pri: M,
+      status: open,
+      text: "Digital signature provider",
+      see: BIG-13
+    }
+  - {
+      id: INT-20,
+      area: integrations,
+      pri: M,
+      status: agreed,
+      text: "Gmail/Outlook native connectors for mail and calendar"
+    }
+  - {
+      id: INT-21,
+      area: integrations,
+      pri: C,
+      status: open,
+      text: "3CX call recording to CRM; setup status never reported"
+    }
+  - {
+      id: INT-22,
+      area: integrations,
+      pri: S,
+      status: to_confirm,
+      source: DGM-2,
+      text: "Overdue amounts sourced from the Mexal scoperto clienti API"
+    }
+
+  # --- Data ----------------------------------------------------------------
+  - {
+      id: DAT-01,
+      area: data,
+      pri: M,
+      status: agreed,
+      text: "Two-way traceability chain invoice to lead",
+      acceptance: AC-01
+    }
+  - {
+      id: DAT-02,
+      area: data,
+      pri: S,
+      status: agreed,
+      text: "RFM matrix rebuilt natively, order-date based, per product line"
+    }
+  - {
+      id: DAT-03,
+      area: data,
+      pri: S,
+      status: agreed,
+      text: "No-show analytics fed by campaign check-in statuses"
+    }
+  - {
+      id: DAT-04,
+      area: data,
+      pri: M,
+      status: agreed,
+      text: "Reports exportable to Excel and schedulable by email"
+    }
+  - {
+      id: DAT-05,
+      area: data,
+      pri: S,
+      status: agreed,
+      text: "Monthly what-to-invoice report and year-end revenue projection"
+    }
+  - {
+      id: DAT-06,
+      area: data,
+      pri: M,
+      status: open,
+      text: "Data cleanup before the ~1 September import",
+      owner: "Fabrizio, Elisa"
+    }
+  - {
+      id: DAT-07,
+      area: data,
+      pri: M,
+      status: open,
+      text: "Data model workbook with Zoho field lists",
+      owner: Sabatino
+    }
+  - {
+      id: DAT-08,
+      area: data,
+      pri: F2,
+      status: to_confirm,
+      text: "Data 360 ingestion path via Google Cloud Storage"
+    }
+  - {
+      id: DAT-09,
+      area: data,
+      pri: S,
+      status: agreed,
+      text: "Interim analytics on external tools until the September import"
+    }
+
+  # --- Marketing -----------------------------------------------------------
+  - {
+      id: MKT-01,
+      area: marketing,
+      pri: M,
+      status: open,
+      text: "Form inventory review; 100+ forms shared, review outstanding",
+      owner: Pienissimo
+    }
+  - {
+      id: MKT-02,
+      area: marketing,
+      pri: S,
+      status: agreed,
+      text: "Double opt-in on forms"
+    }
+  - {
+      id: MKT-03,
+      area: marketing,
+      pri: M,
+      status: agreed,
+      text: "Dedicated subdomain, delivered"
+    }
+
+  # --- Non functional ------------------------------------------------------
+  - {
+      id: NFR-01,
+      area: nfr,
+      pri: M,
+      status: agreed,
+      text: "Visibility model from the org chart, restrict-then-widen"
+    }
+  - {
+      id: NFR-02,
+      area: nfr,
+      pri: S,
+      status: open,
+      text: "Dormant-client thresholds and reassignment policy"
+    }
+  - {
+      id: NFR-03,
+      area: nfr,
+      pri: M,
+      status: open,
+      text: "Document storage strategy against the 35.2 GB org limit"
+    }
+  - {
+      id: NFR-04,
+      area: nfr,
+      pri: M,
+      status: agreed,
+      text: "PDF generated on user action or status flag, sent later"
+    }
+  - {
+      id: NFR-05,
+      area: nfr,
+      pri: M,
+      status: agreed,
+      text: "Four document templates including the dynamic RID mandate"
+    }
+  - {
+      id: NFR-06,
+      area: nfr,
+      pri: M,
+      status: open,
+      text: "Apex coverage at or above 75% before production release",
+      acceptance: AC-10,
+      current: "1%"
+    }
+  - {
+      id: NFR-07,
+      area: nfr,
+      pri: M,
+      status: agreed,
+      text: "Italian labels, states and help text"
+    }
+  - {
+      id: NFR-08,
+      area: nfr,
+      pri: M,
+      status: agreed,
+      text: "Test environment available for key-user validation"
+    }
+
+# =============================================================================
+# RECONCILIATION — the diagrams and the prose requirements disagree here.
+# Must be settled at the 6 August session. Default resolution follows DGM-2
+# (ROMI's master design file) unless the client rules otherwise.
+# =============================================================================
+reconciliation:
+  - id: RC-01
+    topic: Ticket object
+    requirement: DM-22
+    diagram_says: "Asset == Ticket evento (standard Asset object) [DGM-2]"
+    org_says: "Custom object Biglietto__c, with six active Apex classes"
+    proposed: "Keep the custom object already built; update the design file and the proposal to match"
+    impact: low
+
+  - id: RC-02
+    topic: Campaign and ticket creation trigger
+    requirement: BIG-02
+    diagram_says: "Campaign created automatically whenever the EVENTO product is created in Mexal [DGM-2]"
+    minutes_say: "Campaign created when an order containing an event product arrives [22/07]"
+    proposed: "Campaign on product creation, tickets on order — the two are not mutually exclusive"
+    impact: medium
+
+  - id: RC-03
+    topic: Reminder funnel cadence
+    requirement: BIG-06
+    diagram_says: "60 days and 2 days before the event [DGM-2]"
+    minutes_say: "60, 30, 15 and 1 days before the event [08/06]"
+    proposed: "Adopt the diagram: 60 and 2 days"
+    impact: low
+
+  - id: RC-04
+    topic: Order typology values
+    requirement: DM-15
+    diagram_says: "STANDARD, BUNDLE, PLUS [DGM-2]"
+    minutes_say: "Stage sale, tutor, book, video course, PP activation, PP renewal [30/06]"
+    proposed: "Adopt the diagram's three values as the order type; keep the longer list as a separate sales-typology field if still needed"
+    impact: medium
+
+  - id: RC-05
+    topic: Credit note effect on tickets
+    requirement: BIG-10
+    diagram_says: "Assets are selected manually and then set to Annullato [DGM-2]"
+    minutes_say: "Credit notes on event products automatically set the matching asset to Annullato [22/07]"
+    proposed: "Adopt the diagram: manual selection, since partial reversals on multi-event bundles cannot be inferred"
+    impact: medium
+
+# =============================================================================
+open_points:
+  due_2026_08_06:
+    - { ref: BIG-13, point: Signature collection method, owner: Sabatino }
+    - {
+        ref: SAL-17,
+        point: Order-acceptance and contract procedure,
+        owner: "Marco Montesi, Elisa Migliano"
+      }
+    - {
+        ref: "OUT-01,OUT-02,OUT-03",
+        point: Out-of-contract scope,
+        owner: Daniela
+      }
+  client_inputs:
+    - { ref: BUN-20, input: Real catalogue prices, owner: "Marco, Fabrizio" }
+    - { ref: BUN-09, input: Definitive 7-event list, owner: Fabrizio }
+    - { ref: BUN-15, input: Sample bundle-only article codes, owner: Fabrizio }
+    - { ref: DAT-07, input: Data model workbook, owner: Sabatino }
+    - { ref: MKT-01, input: Form inventory review, owner: Pienissimo marketing }
+    - { ref: INT-11, input: WooCommerce REST credentials, owner: Sabatino }
+    - { ref: SAL-10, input: Quote validity times, owner: Marco Montesi }
+    - { ref: INT-10, input: Mexal test company, owner: "Pienissimo, Kreosoft" }
+    - {
+        ref: null,
+        input: Key-user list,
+        owner: Sabatino,
+        outstanding_since: 2026-05-27
+      }
+    - {
+        ref: INT-21,
+        input: 3CX setup status,
+        owner: Sabatino,
+        outstanding_since: 2026-05-27
+      }
+    - {
+        ref: NFR-05,
+        input: Real quote templates and client emails,
+        owner: Marco
+      }
+  technical_decisions:
+    - { ref: INT-14, decision: WooCommerce direction, recommendation: webhook }
+    - {
+        ref: INT-15,
+        decision: Price source of truth,
+        recommendation: "Salesforce negotiated with dynamic coupons"
+      }
+    - {
+        ref: INT-16,
+        decision: Checkout id security,
+        recommendation: signed token
+      }
+    - {
+        ref: BUN-17,
+        decision: Blocking spread variance,
+        recommendation: blocking
+      }
+    - { ref: INT-18, decision: Anticipay timing, recommendation: phase 2 }
+    - {
+        ref: NFR-03,
+        decision: Storage strategy,
+        recommendation: "30-day post-event purge with client backup"
+      }
+    - {
+        ref: ORD-10,
+        decision: Invoice line exposure,
+        recommendation: "instalment lines, components masked"
+      }
+    - {
+        ref: DM-22,
+        decision: Ticket object,
+        recommendation: "confirm the custom object"
+      }
+    - {
+        ref: SAL-15,
+        decision: Notification channel,
+        recommendation: Salesforce bell
+      }
+    - {
+        ref: BIG-15,
+        decision: Signature sequencing,
+        recommendation: single send
+      }
+    - {
+        ref: SAL-18,
+        decision: Lead queue assignment model,
+        recommendation: "queue plus assignment rules; mass reassignment via list views"
+      }
+    - {
+        ref: BIG-22,
+        decision: Unique participant emails,
+        recommendation: "unique, since the QR is per campaign member"
+      }
+
+# =============================================================================
+acceptance_criteria:
+  - {
+      id: AC-01,
+      text: "A form lead reaches an invoiced order with the traceability chain intact both ways",
+      refs: [DAT-01]
+    }
+  - {
+      id: AC-02,
+      text: "A sold bundle produces order lines per elementary product, spreads summing exactly to the selling price",
+      refs: [BUN-02, BUN-05]
+    }
+  - {
+      id: AC-03,
+      text: "The same product in two bundles at different spreads yields correct revenue for both",
+      refs: [BUN-03]
+    }
+  - {
+      id: AC-04,
+      text: "An order with an event product generates campaign and tickets, one per event article code",
+      refs: [BIG-02]
+    }
+  - {
+      id: AC-05,
+      text: "The QR is issued only after signature; scanning unloads the movement to zero",
+      refs: [BIG-01, BIG-12]
+    }
+  - {
+      id: AC-06,
+      text: "A multi-instalment order builds correct tranches, transits to Mexal and receives aggregated payment statuses",
+      refs: [ORD-01, ORD-03]
+    }
+  - {
+      id: AC-07,
+      text: "A credit note on an event order sets the selected tickets to Annullato",
+      refs: [BIG-10]
+    }
+  - {
+      id: AC-08,
+      text: "A checkout link from an Opportunity moves that Opportunity to Closed Won on purchase",
+      refs: [INT-12]
+    }
+  - {
+      id: AC-09,
+      text: "Both scheduled reports reach their recipients without manual launch",
+      refs: [ORD-07, ORD-08]
+    }
+  - {
+      id: AC-10,
+      text: "Apex coverage at or above 75% with the whole suite green",
+      refs: [NFR-06]
+    }
+
+# =============================================================================
+build_state:
+  checked: 2026-08-03
+  org: a.mrruku@pienissimo.uat
+  built:
+    - {
+        component: BundleComponent__c junction with spread formulas and active trigger,
+        refs: [BUN-03]
+      }
+    - {
+        component: "Product2 bundle fields: selling price, spread total, spread variance",
+        refs: [BUN-02]
+      }
+    - {
+        component: "Classification picklists anno solare, evento, bundle type — populated on zero bundles",
+        refs: [BUN-08]
+      }
+    - { component: Bundle configurator controller and LWC, refs: [BUN-10] }
+    - {
+        component: "Biglietto__c custom object with six Apex classes for DocuSign and PDF",
+        refs: [DM-22, BIG-01]
+      }
+    - {
+        component: "Genera_Biglietto__c field — true on zero products",
+        refs: [BUN-12]
+      }
+  not_built:
+    - {
+        component: Tranche object; Order and OrderItem have no custom fields,
+        refs: [DM-17, ORD-01]
+      }
+    - {
+        component: WooCommerce id fields on Product and Opportunity,
+        refs: [INT-13]
+      }
+    - {
+        component: Any active Flow; nothing creates a ticket from an order,
+        refs: [BIG-02, BIG-19]
+      }
+    - { component: Solo_Bundle__c field, refs: [BUN-13] }
+    - {
+        component: Contract auto-generation,
+        scheduled reports,
+        credit-note flow,
+        refs: [ORD-05, ORD-07, ORD-08, ORD-15]
+      }
+  regressions:
+    - {
+        id: REG-01,
+        issue: "Product2.Code__c became required; 9 of 10 bundle tests fail; org coverage 1%",
+        refs: [NFR-06]
+      }
+    - {
+        id: REG-02,
+        issue: "ACADEMY 2026 bundle variance -1422 across four components",
+        refs: [BUN-17]
+      }
+  lifecycle_evidence:
+    tickets: 29
+    awaiting_signature: 28
+    docusign_envelopes_sent: 17
+    signatures_recorded: 0
+    qr_generated: 0
