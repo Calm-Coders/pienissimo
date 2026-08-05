@@ -1,6 +1,5 @@
 /**
  * @description       : Class used for REST API
- * @author            : Massimo Nigra
  **/
 public without sharing class API_Callout_Engine {
   /* Method to be used to call a REST API, with JSON input/output and Named Credential for authentication,
