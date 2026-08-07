@@ -1,7 +1,8 @@
 # ROMI-PIENISSIMO — Recap di Sviluppo Salesforce
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
-> ⚠ **I §1–§9 sono aggiornati al 23/07/2026. Il [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) porta il delta 24/07 → 03/08 e prevale su tutto ciò che contraddice** — in particolare la data di go-live, l'approvazione lead/opty, l'approvazione bundle e il dietrofront su DocuSign.
+> ⚠ **Precedenza, dal più recente: [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
+> I §1–§9 sono aggiornati al 23/07/2026. Il §10 porta il delta 24/07 → 03/08. **Il §11 porta la sessione di chiusura del 06/08 e prevale su entrambi** — in particolare la separazione su DocuSign, i modelli di stato ordine/asset, la regola di disponibilità dei biglietti e la decisione sui webhook WooCommerce.
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
 ---
@@ -202,3 +203,91 @@ Elena segnala lo stesso punto rosso in tre status settimanali consecutivi: **GLS
 - **Pulsanti accetta/rifiuta nell'email del preventivo** che pilotano lo stato Preventivo/Opportunity: ROMI valuta fattibilità e rischio di modifica dati CRM da parte di clienti esterni.
 - **Date evento**: "Camerieri Venditori" 3 novembre o rinvio ad aprile; **Pienissimo Live 24–26 novembre**, tempi di consegna biglietti (60 giorni as-is — si può posticipare?).
 - **Il codice bundle viene comunicato a WooCommerce manualmente, a voce**, per scelta, così da mantenere flessibilità a ridosso degli eventi.
+
+---
+
+## 11. Aggiornamento 06/08/2026 — sessione di chiusura dei punti aperti
+
+Compilato dalla sessione **06/08 "Chiusura ultimi punti aperti"** (2h30m, Google Meet + note Gemini), emersa il 07/08 dal canvas Slack `#tproj-pienissimo`. È la sessione che il §10.1 anticipava senza poterne riportare gli esiti. **Dove questa sezione contraddice i §1–§10, vince questa sezione.** È la riunione più densa di decisioni dal 22/07 e l'ultima sessione operativa sostanziale prima della pausa di agosto — tutti rientrano intorno al **24–26 agosto**.
+
+⚠ Note sulla fonte: l'auto-summary di Gemini contiene almeno un errore netto (sostiene che gli asset restino _Disponibile_ fino all'utilizzo — Sabatino si è corretto 40 secondi dopo mantenendo _Assegnato_), e attribuisce in modo approssimativo gli interventi amministrativi e tecnici — l'autorità operativa è sempre **Elisa Migliano**, che gestisce lei stessa l'infopoint agli eventi e ha fatto le correzioni decisive su fatturazione e match. Da notare inoltre che **Fabrizio Mastracci, pur nell'invito, si è scollegato alle 00:01:30** senza contribuire. Questa sezione segue la trascrizione. **Date di rientro concordate in sessione:** Elisa 17/08 · Aurel 24/08 · Sabatino 25/08 (chiede di essere convocato dal 26) · Fabrizio Paganelli ~31/08 · Andrea Parmeggiani terza settimana di agosto. Finestra operativa: **26–29 agosto**. Dettaglio completo: [`results/2026-08-06-chiusura-punti-aperti.it.md`](results/2026-08-06-chiusura-punti-aperti.it.md).
+
+### 11.1 Firma — DocuSign è risolto, separato in due
+
+Il 🔴 "DocuSign potrebbe essere abbandonato" del §10.4 è **risolto**, separando la questione:
+
+- ✅ **Preventivi / contratti → DocuSign C'È.** Flusso: mail con un **link, non bottoni** → landing page con preventivo + contratto + condizioni generali (**un unico PDF**) → il cliente clicca **Accetto / Rifiuto** → il rifiuto porta il preventivo in _Rifiutato_; l'accettazione invia i documenti **via DocuSign** → la firma porta il preventivo in _Accettato_ → **l'ordine si genera automaticamente**. Il preventivo parte mentre l'opportunità è _in trattativa_, ed **è da lì che partono i 5 giorni** di validità; scaduti, l'opportunità sta _in attesa accettazione_ e **la stessa landing page continua a funzionare** — il cliente può accettare settimane dopo e il flusso procede identico. La ragione per cui ROMI ha scartato i bottoni in mail proposti da Elisa: _"noi non abbiamo controllo su quello che mandiamo a livello di email, dobbiamo per forza rimanere sul CRM."_
+- ✅ **Documentazione biglietti / partecipanti → DocuSign NON C'È.** Elena: _"la firma digitale c'è solo per i preventivi."_ I partecipanti firmano **su carta** al check-in. Il caso limite "mancata firma digitale" è stato eliminato dal disegno.
+
+Questo **elimina anche l'idea dei pulsanti accetta/rifiuta in mail del §10.9** — la landing page la sostituisce, e con essa il rischio che clienti esterni modifichino direttamente dati CRM.
+
+### 11.2 Modelli di stato ordine e opportunità
+
+- ✅ **Stati ordine: Ordinato → Fatturato → Incassato.** Il vecchio **"Chiuso acquisito" è eliminato** (Fabrizio Paganelli: _"non serve più"_). 🟡 Un quarto stato **_Perso_**, legato alle note di credito, è stato ipotizzato e lasciato indeciso (_"Non lo so come funzionerà"_), ed Elena ha segnalato che l'insieme è scarno: _"mi sembrano troppo pochi"_.
+- ✅ **L'Opportunity passa a Chiusa Vinta solo quando l'ordine raggiunge _Incassato_** — è il pagamento a chiudere l'opportunità, non la firma. Lega la regola "closed-won guidato dal pagamento" del §2 a uno stato esplicito.
+- ✅ **Le opportunità Performance Plus vanno tipizzate dal tutor in creazione** — **attivazione** vs **rinnovo**, obbligatorio e manuale, perché la generazione del contratto ne dipende.
+- ✅ **La data di inizio/fine servizio è dello Strategist, non del contratto.** Firma ≠ inizio servizio; i clienti vanno in coda giorni o settimane (Marco Montesi). Il responsabile di reparto inserisce la data reale all'avvio. ROMI svilupperà un **banner/alert o email quando il campo data inizio è vuoto**.
+
+### 11.3 Biglietti e asset — la macchina a stati è definitiva
+
+| Stato                           | Trigger                                                                    |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| **Ordinato**                    | Scende l'ordine (es. da WooCommerce); l'asset viene creato                 |
+| **Disponibile**                 | La fattura che contiene quella riga d'ordine è **incassata integralmente** |
+| **Assegnato**                   | Documentazione + QR code inviati via mail al partecipante nominativo       |
+| **Utilizzato / Non utilizzato** | Impostati dalla scansione del QR all'evento                                |
+
+_Assegnato_ stava per essere eliminato quando la firma è uscita dal flusso biglietti; **Sabatino l'ha mantenuto per il reporting** — _"ci fa statistica per capire quante persone hanno il biglietto nelle mani."_
+
+⚠ **La regola di disponibilità del §10 era ambigua; la formulazione concordata è "fattura pagata a livello di rata/tranche".** Elisa: _"quel biglietto è disponibile quando la fattura con la quale l'ho fatturato deve essere integralmente pagata, tutta pagata."_ Il pagamento parziale non libera **nulla**. Le righe d'ordine si raggruppano in tranche per **data di scadenza** (evento 1+2 → tranche 1 al 31 gen, evento 3+4 → tranche 2 al 28 feb, …); ogni tranche è fatturata separatamente, e quando _quella_ fattura è integralmente incassata _quei_ biglietti passano a Disponibile. ⚠ Punto critico: **la composizione delle tranche segue la gestione del pagamento del cliente, non gli eventi** — _"ci sono tot rate che vengono suddivise sulla base della gestione del cliente, non sulla base dell'evento"_ — quindi il biglietto di un evento può stare dietro voci non correlate nella stessa fattura.
+
+**La fattura deve arrivare su Salesforce, e il match è sul numero di riga d'ordine — non sulla data, non sul prodotto.** Due chiavi candidate sono state testate e scartate in sessione, entrambe da Elisa:
+
+- **Per data** — non funziona perché la data della tranche è la _data di presumibile incasso_ e Pienissimo fattura **in anticipo** (le tranche in scadenza il 31 gennaio si fatturano a inizio gennaio).
+- **Per prodotto** — non funziona perché _"un tutor può mettere anche lo stesso codice due volte nello stesso ordine"_.
+
+La fattura Mexal porta **cliente, numero documento, riferimento numero d'ordine, codice articolo e numero di riga d'ordine**; il match è sul **numero di riga d'ordine**, secondo il principio di Elisa: _"è bene lavorare su elementi che sono nascosti ai tutor."_ Aurel osservava che sarebbe bastato un segnale "righe pagate" senza la fattura; **Elena ha imposto il contrario** — la fattura serve per le logiche di reporting concordate.
+
+Deciso inoltre:
+
+- ✅ **Un prodotto evento creato su Mexal genera automaticamente la Campagna Salesforce corrispondente** con il sync notturno, così la presenza si indicizza sulla campagna alla scansione.
+- ✅ **La tipologia biglietto diventa un menù a tendina nell'anagrafica prodotto** (Gold / Silver / Executive …). Posizione precisa: ogni tipologia **ha già un proprio codice prodotto** (Camerieri Venditori Silver ≠ Gold), ma un codice non è filtrabile in modo affidabile, quindi Elisa ha accettato di aggiungere il campo — _"mettiamo un campo in anagrafica, un menù a tendina tipo biglietto"_. Fabrizio Paganelli aggiunge inoltre un **flag evento** (distinto dai flag di eleggibilità bundle già esistenti).
+- ✅ **Un bundle multi-evento crea automaticamente un asset per ogni evento.**
+- ✅ **Raccolta dati partecipanti**: l'acquirente — sempre il titolare dell'azienda che ha pagato, e intestatario iniziale di **tutti** i biglietti — riceve una landing page con una riga per biglietto acquistato e inserisce **nome, cognome, email e telefono** di ogni partecipante → Salesforce collega il contatto all'asset, **crea il contatto se assente**, aggiunge il **Campaign Member**. Ogni partecipante riceve poi il proprio documento con QR e lo stampa. ⚠ Lo step "scegli l'evento" ipotizzato da ROMI è **eliminato** — Sabatino: _"No, non scelgono mai loro. Noi gli diciamo cosa devono fare."_
+- ✅ **Due percorsi distinti per i casi limite — da non confondere.** _Cambio nominativo **prima** dell'evento_: un pulsante sull'account elenca gli asset di quell'account; annulla il vecchio nominativo, inserisce il nuovo, **si genera un nuovo QR** (il documento riporta nome partecipante ed evento sopra il codice) e la documentazione aggiornata viene inviata **all'indirizzo della nuova persona**. _Sostituzione o mancanza di documenti **al** check-in_: il personale verifica biglietto + ordine + pagamento all'infopoint, il partecipante **rifirma il modulo cartaceo**, il personale inserisce i dati a mano — **in questo percorso non si emette alcun QR**. Il caso più frequente non è la sostituzione ma chi non ha stampato o non ha ricevuto la mail; Elisa ha indicato una causa reale — clienti **disiscritti dalle mail marketing** smettevano di ricevere i biglietti, _"un cane che si mordeva la coda"_.
+- 🔴 **Il percorso manuale ha un buco di tracciamento non chiuso**: un sostituto inserito a mano rischia di non risultare Campaign Member con il biglietto marcato utilizzato. Elena ha sollevato il punto; Elisa l'ha ridimensionato contando sulla competenza del personale. **La gestione del Campaign Member per gli inserimenti manuali resta non disegnata** — e l'analisi presenze/no-show è un obiettivo dichiarato del progetto.
+- ✅ **Note di credito**: un pulsante a **livello di ordine** seleziona le righe d'ordine da stornare, parzialmente o totalmente; per i prodotti _evento_ annulla anche l'**asset** collegato.
+
+### 11.4 Bundle — eliminata la duplicazione
+
+✅ **I bundle si creano solo su Salesforce, solo dall'amministrazione**; i singoli prodotti continuano ad arrivare da Mexal. La duplicazione prevista per vendite da palco vs recall tutor sparisce — quella distinzione viaggia ora sulla **tipizzazione dell'Opportunity**. ✅ Confermato di nuovo: **nessuna validazione della composizione del singolo bundle**. Perimetro preciso — due flag a livello prodotto **esistono** (eleggibile da bundle, solo bundle, confermato da Aurel quando Fabrizio Paganelli ha contestato il punto); ciò che **non** esiste è la validazione che un prodotto eleggibile appartenga a _quello specifico_ bundle. Il gap del §10.2 è quindi **accettato, non risolto**.
+
+### 11.5 WooCommerce — webhook, e una data di partenza
+
+- ✅ **L'integrazione avviene via Webhook**, scelta contro il polling. Chiude la prima delle tre decisioni aperte del §10.5.
+- ✅ **Pulsante "Crea link" sull'Opportunity per il tipo "Recall tutor"**, che genera il link di checkout contenente l'ID Opportunity Salesforce, inviato al cliente via mail.
+- 📅 Scambio credenziali e test dei payload dal **26 agosto** (Sabatino + Aurel).
+- 🔴 Le altre due decisioni del §10.5 — **fonte di verità dei prezzi** (listino WooCommerce vs prezzi negoziati Salesforce via coupon one-shot) e **id opportunità in chiaro vs token firmato** — **non** sono state discusse e restano aperte.
+
+### 11.6 Qualità del dato e migrazione
+
+- ✅ **La verifica P.IVA si sposta dentro Salesforce e gira alla generazione del PRIMO ordine di un account**, non alla creazione dell'account. L'as-is gira prima della fatturazione su Mexal: legge la P.IVA dell'ordine, controlla l'anagrafica Mexal e, se assente, chiama un **servizio di business information** che restituisce ragione sociale, indirizzo, PEC e legale rappresentante — un'anagrafica _"corretta al 99,5%"_. **Elisa ha proposto di spostare la chiamata su Salesforce alla generazione dell'ordine**, scrivendo i dati ufficiali direttamente su Salesforce _"per cui quando Salesforce passa i dati a Mexal siamo sicuri che i dati sono già puliti"_; Elena: _"Questo mi piace molto."_ Stessa regola per gli ordini WooCommerce. Argomento costi di Elisa: gli eventi gratuiti raccolgono 3.000–6.000 iscritti (6.000 al Food Marketing l'anno scorso) di cui forse 250 acquistano. Un account già verificato porta un **flag "consolidato"** e non viene riverificato; i fallimenti generano una **email di notifica a un indirizzo amministrazione che Pienissimo fornirà**; un **pulsante di ri-verifica manuale** sta sia sull'ordine sia sull'account (lato account manuale, stessa API). Oggi una P.IVA errata blocca la generazione dell'ordine su Mexal e l'amministrazione telefona al cliente per correggerla a mano. ⚠ Il fornitore **non è nominato in modo univoco** — l'audio lo storpia; i meeting precedenti citano **Anticipay**, compare anche **CreditSafe**. Elisa ha confermato che il servizio è **già attivo in Pienissimo** e può passare i riferimenti. Call tecnica con **Andrea Parmeggiani** (`a.parmeggiani@pienissimo.pro`), terza settimana di agosto.
+- ✅ **La Partita IVA diventa obbligatoria nei form lead usati in diretta** — accettato sapendo che gli iscritti agli eventi gratuiti inseriranno dati spazzatura ("00"), corretti al pagamento. È la validazione all'ordine qui sopra a intercettarli davvero.
+- ✅ **Volumi di migrazione corretti**: ~**17.000** record nell'anagrafica clienti Zoho, di cui solo ~**8.500** sono clienti veri con ragione sociale censita; il resto viene eliminato prima dell'import. Il filtro operativo di bonifica è il **codice cliente Mexal** — _"andremo a caricare solo i clienti che hanno il codice cliente Mexal."_ _(Supera il "~6.000 lead/account vs ~7.500 clienti paganti" del §1.)_
+- ✅ **La mappatura campi mantiene le etichette originali Zoho** nel file condiviso. Il modulo cliente porta ~**150 campi di cui se ne usa circa un quarto**; Pienissimo elenca solo ciò che vale la pena spostare, e Aurel mappa in fase di inserimento dopo una **call congiunta campo per campo**. La mappatura era al ~95% in sessione, promessa per il giorno dopo. 🟡 **Lead e Referente/Contatti sono l'eccezione** — Elisa ha rifiutato di farli da sola (_"non sono sufficientemente competente"_); da fare a sei mani con Sabatino e Marco. 🟡 **Campi asset deliberatamente rimandati** alla revisione del flusso: oggi Pienissimo ha **evento/edizione, anno accademico, anno di competenza** (l'ultimo guida il movimento di "magazzino" del biglietto).
+- 📅 Andrea Di Cicco invia un file con le **domande aperte sulla mappatura campi Mexal**; risponde Elisa, con escalation a Kreosoft se serve.
+
+### 11.7 Marketing e lead
+
+- ✅ **Il funnel di comunicazione evento si automatizza a 60 giorni dall'evento** (finestra 30–60 giorni, per ridurre i no-show), guidato dai tag account + data evento, con invio automatico del link per i dati partecipanti. I bundle multi-evento ricevono comunicazioni **per singolo evento**, ciascuna sul proprio conto alla rovescia — non tutte insieme.
+- ✅ **Disegno del trigger**: un **job notturno** che legge la data di inizio della Campagna e seleziona gli account con ≥1 biglietto per quell'evento a data-inizio − 60 giorni. Il funnel parte da un **tag** applicato nel CRM agli account che hanno pagato e possiedono biglietti.
+- ✅ **La mail con il QR per singolo partecipante parte da Salesforce, non da marketing**; solo la comunicazione iniziale del funnel è lato marketing. 🟡 **Non è deciso chi ospita la landing page dei dati partecipanti** (community Salesforce vs piattaforma marketing).
+- 📅 Meeting dedicato ai funnel marketing dopo il **17 agosto** con **Rebecca Marmo** (`rebecca.m@pienissimo.com`, responsabile dei funnel biglietti), Marco e Matteo. Rebecca entra in **tutte** le call su flussi/campi/biglietti. Sabatino vuole **entrambi** i funnel già pronti puntati sui biglietti. ➖ La review dei 100+ form marketing è stata **depriorizzata dal cliente** in sessione.
+- 🟡 **Assegnazione lead**: oggi Zoho distribuisce a rotazione un lead per tutor e Marco dice che non funziona più. La direzione concordata è **code per tipologia di servizio e/o geografia** con assegnazione automatica. ⚠ **L'assegnazione automatica basata sul carico non è disponibile con le loro licenze** (funzionalità orientata ai Case), quindi la risposta pratica è **regole + trasferimento massivo** — selezionare molti lead e riassegnarli in due click. **Marco deve fornire i desiderata concreti** una volta vista la piattaforma reale.
+
+### 11.8 🔴 Programma e contestazione commerciale
+
+- ✅ **Daniela ha approvato la timeline Fase 1 / Fase 2** così com'era — Sabatino: _"l'ha vista tutta, mi ha dato l'ok, non mi ha chiesto niente."_
+- 🔴 **Ma non le è mai stato detto che esiste la contestazione di perimetro.** Sabatino, 02:24:17: _"Tutto questo è pienissimo pro, però **Daniela non sapeva questa informazione qui**, quindi tocca rifare un altro giro, ma questo giro me lo faccio dopo le ferie."_ La sua approvazione non può quindi essere letta come accettazione di perimetro o budget, e la conversazione correttiva è rimandata a dopo le ferie. La contestazione del §10.8 — **GLS, Teachable e l'integrazione Zoho per gli ordini Pienissimo Pro (Pienissimo Software Srl)** — richiede ancora _"valutazione economica contrattuale con Daniela per definire se il lavoro rientra in una fase aggiuntiva quotata o potrà essere gestita internamente da Pienissimo."_ Elena ha sollevato il punto; **Sabatino ha ammesso di non aver letto la minuta** che lo segnalava (_"Io non l'ho nemmeno letto quello, ho preso direttamente il link"_). Quarto meeting/status consecutivo che porta questa voce. **Rischio: l'approvazione della timeline venga citata più avanti come accettazione di perimetro.** Non esiste alcuna stima di costo/effort per la Fase 2 — esplicitamente rimandata "al rientro dalle ferie".
+- 🔴 **Il rischio di planning è ora concentrato in una settimana.** Sabatino, Aurel e Andrea Parmeggiani sono fuori fino al ~24–26 agosto. Build dei webhook WooCommerce, integrazione servizio P.IVA, mappatura Zoho, revisione flusso asset e funnel marketing partono **tutti** nell'ultima settimana di agosto — contro un **go-live 6 ottobre** e una **scadenza Zoho al 31 ottobre**. Elena in sessione: _"a voi scade il contratto di Zoho."_
+- 🟡 **Il flusso asset/biglietti richiede ancora una revisione dedicata** — sia Elisa sia Elena hanno detto che non è completamente specificato. Meeting dopo il 17 agosto, con Rebecca inclusa. Previsione di Sabatino stesso: _"vedrai che anche dopo lo sviluppo esce qualcosa che tocca cambiare."_

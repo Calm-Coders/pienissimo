@@ -2,7 +2,8 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **§1–§9 are current to 2026-07-23. [§10](#10-update-2026-08-03--multi-source-sweep) carries the 07/24 → 08/03 delta and overrides anything above it that it contradicts** — most importantly the go-live date, the lead/opty approval, the bundle approval and the DocuSign reversal.
+> ⚠ **Precedence, newest first: [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
+> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta. **§11 carries the 06/08 closing session and overrides both** — most importantly the DocuSign split, the order/asset state models, the ticket-availability rule and the WooCommerce webhook decision.
 
 ---
 
@@ -202,3 +203,91 @@ Elena has flagged the same red item in three consecutive weekly statuses: **GLS,
 - **Accept/reject buttons inside the quote email** driving the Preventivo/Opportunity status: ROMI to assess feasibility and the risk of external clients mutating CRM data.
 - **Event dates**: "Camerieri Venditori" 3 November or postponed to April; **Pienissimo Live 24–26 November** ticket-delivery lead time (60 days as-is — can it be pushed?).
 - **Bundle code → WooCommerce is communicated manually, verbally**, by design, to keep flexibility close to events.
+
+---
+
+## 11. Update 2026-08-06 — closing session on open points
+
+Compiled from the **06/08 "Chiusura ultimi punti aperti"** session (2h30m, Google Meet + Gemini notes), surfaced 07/08 from the Slack `#tproj-pienissimo` canvas. This is the session §10.1 anticipated but could not report on. **Where this section contradicts §1–§10, this section wins.** It is the most decision-dense meeting since 07/22 and the last substantive working session before the Italian August break — everyone returns ~**24–26 August**.
+
+⚠ Source caveats: the Gemini auto-summary contains at least one outright error (it claims assets stay _Disponibile_ until use — Sabatino reversed himself 40 seconds later and kept _Assegnato_), and it credits admin/technical statements loosely — the operational authority throughout is **Elisa Migliano**, who runs the event infopoint herself and made the decisive corrections on invoicing and matching. Note also that **Fabrizio Mastracci, though on the invite, disconnected at 00:01:30** and contributed nothing. This section follows the transcript. **Return dates agreed in session:** Elisa 17 Aug · Aurel 24 Aug · Sabatino 25 Aug (asks to be booked from the 26th) · Fabrizio Paganelli ~31 Aug · Andrea Parmeggiani third week of August. Working window: **26–29 August**. Full detail: [`results/2026-08-06-chiusura-punti-aperti.md`](results/2026-08-06-chiusura-punti-aperti.md).
+
+### 11.1 Signature — DocuSign is settled, split in two
+
+§10.4's 🔴 "DocuSign may be dropped" is **resolved**, by splitting the question:
+
+- ✅ **Quotes / contracts → DocuSign is IN.** Flow: email with a **link, not buttons** → landing page showing preventivo + contratto + condizioni generali (**a single PDF**) → client clicks **Accetto / Rifiuto** → reject sets the quote _Rifiutato_; accept sends the documents **via DocuSign** → signature flips the quote to _Accettato_ → **the order is generated automatically**. The quote goes out while the opportunity is _in trattativa_, and **the 5-day validity starts there**; once it lapses the opportunity sits in _in attesa accettazione_ and **the same landing page still works** — the client can accept weeks later and the flow proceeds unchanged. ROMI's reason for rejecting Elisa's in-email buttons: _"noi non abbiamo controllo su quello che mandiamo a livello di email, dobbiamo per forza rimanere sul CRM."_
+- ✅ **Ticket / participant documentation → DocuSign is OUT.** Elena: _"la firma digitale c'è solo per i preventivi."_ Participants sign **on paper** at check-in. The planned "mancata firma digitale" edge case was struck from the design.
+
+This also **kills the §10.9 accept/reject-buttons-in-email idea** — the landing page replaces it, and with it the risk of external clients mutating CRM data directly.
+
+### 11.2 Order and opportunity state models
+
+- ✅ **Order states: Ordinato → Fatturato → Incassato.** The old **"Chiuso acquisito" is deleted** (Fabrizio Paganelli: _"non serve più"_). 🟡 A fourth state **_Perso_**, tied to credit notes, was floated and left undecided (_"Non lo so come funzionerà"_), and Elena flagged the set as thin: _"mi sembrano troppo pochi"_.
+- ✅ **Opportunity goes Closed Won only when the order reaches _Incassato_** — payment closes the opportunity, not signature. This binds §2's "closed-won driven by payment" to an explicit state.
+- ✅ **Performance Plus opportunities must be typed by the tutor at creation** — **attivazione** vs **rinnovo**, mandatory and manual, because contract generation depends on it.
+- ✅ **Service start/end date belongs to the Strategist, not the contract.** Signature ≠ service start; clients queue days-to-weeks (Marco Montesi). The department head enters the real start date at kick-off. ROMI to build a **banner/alert or email when the start-date field is empty**.
+
+### 11.3 Tickets and assets — the state machine is final
+
+| State                           | Trigger                                                       |
+| ------------------------------- | ------------------------------------------------------------- |
+| **Ordinato**                    | The order lands (e.g. from WooCommerce); the asset is created |
+| **Disponibile**                 | The invoice carrying that order line is **collected in full** |
+| **Assegnato**                   | Documentation + QR code emailed to the named participant      |
+| **Utilizzato / Non utilizzato** | Set by the QR scan at the event                               |
+
+_Assegnato_ was nearly dropped once signature left the ticket flow; **Sabatino kept it for reporting** — _"ci fa statistica per capire quante persone hanno il biglietto nelle mani."_
+
+⚠ **The availability rule in §10 was ambiguous; the agreed wording is "fattura pagata a livello di rata/tranche".** Elisa: _"quel biglietto è disponibile quando la fattura con la quale l'ho fatturato deve essere integralmente pagata, tutta pagata."_ Partial payment releases **nothing**. Order lines are grouped into tranches by **due date** (events 1+2 → tranche 1 at 31 Jan, events 3+4 → tranche 2 at 28 Feb, …); each tranche is invoiced separately, and when _that_ invoice is fully collected _those_ tickets go Disponibile. ⚠ Critically, **tranche composition follows customer payment convenience, not events** — _"ci sono tot rate che vengono suddivise sulla base della gestione del cliente, non sulla base dell'evento"_ — so an event's ticket can sit behind unrelated items in the same invoice.
+
+**The invoice must arrive in Salesforce, and the match is on order-line number — not date, not product.** Two candidate keys were tested and killed in session, both by Elisa:
+
+- **By date** — fails because the tranche date is the _presumed collection date_ and Pienissimo invoices **in advance** (tranches due 31 Jan are invoiced in early January).
+- **By product** — fails because _"un tutor può mettere anche lo stesso codice due volte nello stesso ordine"_.
+
+The Mexal invoice carries **cliente, numero documento, riferimento numero d'ordine, codice articolo and numero di riga d'ordine**; the match is on **numero di riga d'ordine**, on Elisa's principle: _"è bene lavorare su elementi che sono nascosti ai tutor."_ Aurel suggested a "lines paid" signal would suffice without the invoice; **Elena overruled** — the invoice is required for the agreed reporting logic.
+
+Also decided:
+
+- ✅ **A Mexal event product auto-creates the matching Salesforce Campaign** on the nightly sync, so attendance indexes against the campaign at scan time.
+- ✅ **Ticket type becomes a picklist on the product record** (Gold / Silver / Executive …). Precise position: each type **already has its own product code** (Camerieri Venditori Silver ≠ Gold), but a code is not reliably filterable, so Elisa agreed to add the field — _"mettiamo un campo in anagrafica, un menù a tendina tipo biglietto"_. Fabrizio Paganelli additionally adds an **event flag** (distinct from the existing bundle-eligibility flags).
+- ✅ **A multi-event bundle auto-creates one asset per event.**
+- ✅ **Participant data collection**: the buyer — always the company owner who paid, and initial holder of **all** the tickets — receives a landing page with one row per purchased ticket and enters **name, surname, email and phone** per participant → Salesforce links contact to asset, **creates the contact if absent**, adds a **Campaign Member**. Each participant then receives their own QR document and prints it. ⚠ ROMI's assumed "choose your event" step is **deleted** — Sabatino: _"No, non scelgono mai loro. Noi gli diciamo cosa devono fare."_
+- ✅ **Two distinct edge-case paths — do not conflate them.** _Name change **before** the event_: a button on the account lists that account's assets; cancel the old name, enter the new one, **a new QR is generated** (the document prints participant name and event above the code) and updated documentation is emailed **to the new person's address**. _Substitution or missing documents **at** check-in_: staff verify ticket + order + payment at the infopoint, the attendee **re-signs the paper form**, staff key the data in — **no QR is issued in this path**. The commonest case is not substitution but people who never printed or never received the email; Elisa named a live root cause — clients who had **unsubscribed from marketing email** stopped receiving tickets, _"un cane che si mordeva la coda"_.
+- 🔴 **The manual path has an unclosed tracking gap**: a hand-keyed substitute may never be recorded as Campaign Member with the ticket marked used. Elena raised it; Elisa waved it off on staff competence. **Campaign Member handling for manual entries is still undesigned** — and attendance/no-show analytics is a stated project goal.
+- ✅ **Credit notes**: a button at **order level** selects the order line(s) to reverse, partially or fully; for _evento_ products it also cancels the linked **asset**.
+
+### 11.4 Bundles — duplication removed
+
+✅ **Bundles are created only in Salesforce, only by administration**; single products keep coming from Mexal. The previously-planned duplication for stage sales vs tutor recall is gone — that distinction now rides on the **Opportunity typing**. ✅ Confirmed again: **no per-bundle composition validation**. Precise scope — two product-level flags **do** exist (bundle-eligible, bundle-only, confirmed by Aurel when Fabrizio Paganelli challenged the point); what does **not** exist is validation that an eligible product belongs in _this particular_ bundle. The §10.2 gap is therefore **accepted, not fixed**.
+
+### 11.5 WooCommerce — webhooks, and a build start date
+
+- ✅ **Integration is via Webhooks**, decided against polling. This closes the first of §10.5's three open decisions.
+- ✅ **"Crea link" button on Opportunity for the "Recall tutor" opportunity type**, generating the checkout link carrying the Salesforce Opportunity id, emailed to the client.
+- 📅 Credential exchange and payload testing start **26 August** (Sabatino + Aurel).
+- 🔴 §10.5's other two decisions — **price source of truth** (WooCommerce listino vs Salesforce negotiated prices via one-shot coupons) and **clear-text vs signed opportunity id** — were **not** discussed and remain open.
+
+### 11.6 Data quality and migration
+
+- ✅ **VAT validation moves into Salesforce and runs at the FIRST order of an account**, not at account creation. The as-is runs pre-invoicing in Mexal: read the order's VAT, check the Mexal registry, and if absent call a **business-information service** returning ragione sociale, address, PEC and legal representative — a registry _"corretta al 99,5%"_. **Elisa proposed relocating the call to Salesforce at order generation**, writing the official data straight into Salesforce _"per cui quando Salesforce passa i dati a Mexal siamo sicuri che i dati sono già puliti"_; Elena: _"Questo mi piace molto."_ Same rule for WooCommerce orders. Elisa's cost argument: free events draw 3,000–6,000 registrants (6,000 at Food Marketing last year) of whom perhaps 250 buy. An already-checked account carries a **"consolidato" flag** and is never re-checked; failures send a **notification email to an administration address Pienissimo will supply**; a **manual re-check button** sits on both order and account (account-side manual, same API). Today a failed VAT blocks order generation in Mexal and admin phone the client to fix it by hand. ⚠ The provider is **not named unambiguously** — the audio garbles it; prior meetings say **Anticipay**, **CreditSafe** also appears. Elisa confirmed the service is **already live at Pienissimo** and she can hand over the references. Technical call with **Andrea Parmeggiani** (`a.parmeggiani@pienissimo.pro`), third week of August.
+- ✅ **Partita IVA becomes mandatory on the live-stream lead forms** — accepted knowing free-event registrants will enter junk ("00"), corrected at payment time. The order-time validation above is what actually catches it.
+- ✅ **Migration volumes corrected**: ~**17,000** records in the Zoho client registry, of which only ~**8,500** are real clients with a registered ragione sociale; the rest is deleted before import. The operative cleanup filter is the **Mexal client code** — _"andremo a caricare solo i clienti che hanno il codice cliente Mexal."_ _(This supersedes §1's "~6,000 leads/accounts vs ~7,500 paying clients".)_
+- ✅ **Field mapping keeps the original Zoho labels** in the shared workbook. The client module holds ~**150 fields of which about a quarter are used**; Pienissimo lists only what is worth moving, and Aurel maps at insert time after a **joint field-by-field call**. Mapping was ~95% done in session, promised for the next day. 🟡 **Lead and Referente/Contatti are the exception** — Elisa declined to do them alone (_"non sono sufficientemente competente"_); to be done three-handed with Sabatino and Marco. 🟡 **Asset fields deliberately deferred** until the flow review: today Pienissimo hold **evento/edizione, anno accademico, anno di competenza** (the last drives the ticket "magazzino" movement).
+- 📅 Andrea Di Cicco sends a file of open **Mexal field-mapping questions**; Elisa answers, escalating to Kreosoft if needed.
+
+### 11.7 Marketing and leads
+
+- ✅ **Event communication funnel automates at 60 days before the event** (30–60 day window, to cut no-shows), driven by account tags + event date, auto-sending the participant-data link. Multi-event bundles get **per-event** communications, each on its own countdown — not all at once.
+- ✅ **Trigger design**: a **nightly job** reading the Campaign start date and selecting accounts holding ≥1 ticket for that event at start-date − 60 days. The funnel keys off a **tag** applied in the CRM to accounts that have paid and hold tickets.
+- ✅ **The per-participant QR email is sent from Salesforce, not marketing**; only the opening funnel communication is marketing-side. 🟡 **Who hosts the participant-data landing page is undecided** (Salesforce community vs marketing platform).
+- 📅 Dedicated marketing-funnel meeting after **17 August** with **Rebecca Marmo** (`rebecca.m@pienissimo.com`, owns the ticket funnels), Marco and Matteo. Rebecca joins **all** flow/field/ticket calls from now on. Sabatino wants **both** ready-made funnels pointed at tickets. ➖ The 100+ marketing-form review was **deprioritised by the client** in session.
+- 🟡 **Lead routing**: today Zoho round-robins one lead per tutor and Marco says it no longer works. Agreed direction is **queues by service type and/or geography** with automatic assignment. ⚠ **Load-based automatic assignment is not available on their licences** (a Case-oriented capability), so the practical answer is **rules + mass transfer** — select many leads, reassign in two clicks. **Marco owes the concrete desiderata** once he has seen the real platform.
+
+### 11.8 🔴 Programme and the commercial dispute
+
+- ✅ **Daniela approved the Phase 1 / Phase 2 timeline** as sent — Sabatino: _"l'ha vista tutta, mi ha dato l'ok, non mi ha chiesto niente."_
+- 🔴 **But she was never told the scope dispute exists.** Sabatino, 02:24:17: _"Tutto questo è pienissimo pro, però **Daniela non sapeva questa informazione qui**, quindi tocca rifare un altro giro, ma questo giro me lo faccio dopo le ferie."_ Her approval therefore cannot be read as scope or budget acceptance, and the correcting conversation is deferred to after the holidays. The §10.8 dispute — **GLS, Teachable and the Zoho integration for Pienissimo Pro orders (Pienissimo Software Srl)** — still needs _"valutazione economica contrattuale con Daniela per definire se il lavoro rientra in una fase aggiuntiva quotata o potrà essere gestita internamente da Pienissimo."_ Elena raised it; **Sabatino admitted he had not read the minuta** flagging it (_"Io non l'ho nemmeno letto quello, ho preso direttamente il link"_). Fourth consecutive meeting/status carrying this item. **Risk: the timeline approval gets cited later as scope acceptance.** No Phase 2 cost/effort estimate exists — explicitly deferred to "on return from holidays".
+- 🔴 **Schedule risk is now concentrated in one week.** Sabatino, Aurel and Andrea Parmeggiani are out until ~24–26 August. The WooCommerce webhook build, the VAT-service integration, the Zoho mapping, the asset-flow review and the marketing funnels **all** start in the final week of August — against a **6 October go-live** and a **31 October Zoho expiry**. Elena in-session: _"a voi scade il contratto di Zoho."_
+- 🟡 **The asset/ticket flow still needs a dedicated review** — both Elisa and Elena said it is not fully specified. Meeting after 17 August, Rebecca included. Sabatino's own prediction: _"vedrai che anche dopo lo sviluppo esce qualcosa che tocca cambiare."_
