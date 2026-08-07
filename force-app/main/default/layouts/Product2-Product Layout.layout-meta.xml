@@ -43,6 +43,10 @@
                 <behavior>Edit</behavior>
                 <field>Genera_Biglietto__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Solo_Bundle__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
