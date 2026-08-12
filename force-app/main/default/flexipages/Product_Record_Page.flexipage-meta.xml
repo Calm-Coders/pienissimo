@@ -146,6 +146,12 @@
                 <identifier>RecordGenera_Biglietto__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Solo_Bundle__c</fieldItem>
+                <identifier>RecordSolo_Bundle__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-218fea7c-3e45-425f-ab12-664779e19118</name>
         <type>Facet</type>
     </flexiPageRegions>

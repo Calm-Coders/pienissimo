@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Motivazione_Da_Ricontattare__c</fullName>
+    <description>Motivo per cui l’Opportunità deve essere ricontattata.</description>
+    <label>Motivazione Da Ricontattare</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Data corso incompatibile</fullName>
+                <default>false</default>
+                <label>Data corso incompatibile</label>
+            </value>
+            <value>
+                <fullName>Locale ancora da aprire</fullName>
+                <default>false</default>
+                <label>Locale ancora da aprire</label>
+            </value>
+            <value>
+                <fullName>Non risponde</fullName>
+                <default>false</default>
+                <label>Non risponde</label>
+            </value>
+            <value>
+                <fullName>Rimanda acquisto per prezzo</fullName>
+                <default>false</default>
+                <label>Rimanda acquisto per prezzo</label>
+            </value>
+            <value>
+                <fullName>Rimanda acquisto per motivi personali</fullName>
+                <default>false</default>
+                <label>Rimanda acquisto per motivi personali</label>
+            </value>
+            <value>
+                <fullName>Rimanda acquisto per problemi con attività</fullName>
+                <default>false</default>
+                <label>Rimanda acquisto per problemi con attività</label>
+            </value>
+            <value>
+                <fullName>Richiamare dopo la stagione</fullName>
+                <default>false</default>
+                <label>Richiamare dopo la stagione</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Motivazione_Chiusa_Persa__c</fullName>
+    <description>Motivo per cui l’Opportunità è stata chiusa come persa.</description>
+    <label>Motivazione Chiusa Persa</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Prezzo alto</fullName>
+                <default>false</default>
+                <label>Prezzo alto</label>
+            </value>
+            <value>
+                <fullName>Sceglie concorrenza</fullName>
+                <default>false</default>
+                <label>Sceglie concorrenza</label>
+            </value>
+            <value>
+                <fullName>Tempistiche di erogazione servizio</fullName>
+                <default>false</default>
+                <label>Tempistiche di erogazione servizio</label>
+            </value>
+            <value>
+                <fullName>Servizio/prodotto non allineato con le aspettative</fullName>
+                <default>false</default>
+                <label>Servizio/prodotto non allineato con le aspettative</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
