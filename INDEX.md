@@ -133,7 +133,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [Andrea Di Cicco — solution architect](notes/people/Andrea%20Di%20Cicco%20-%20solution%20architect%20ROMI.md) | ROMI |
 | [Anita Aga — developer](notes/people/Anita%20Aga%20-%20Salesforce%20developer%20ROMI.md)          | ROMI       |
 | [Sara Aga — developer](notes/people/Sara%20Aga%20-%20Salesforce%20developer%20ROMI.md)            | ROMI       |
-| [Rexhina — developer](notes/people/Rexhina%20-%20Salesforce%20developer%20ROMI.md)                | ROMI       |
+| [Rexhina Hysi — developer](notes/people/Rexhina%20Hysi%20-%20Salesforce%20developer%20ROMI.md)                | ROMI       |
 
 ### Reference
 

@@ -19,7 +19,7 @@ For attribution purposes, every contributor under `Calm-Coders` is **ROMI-side**
 | `Aurel Mrruku` / `aureliii` | [Aurel Mrruku](people/Aurel%20Mrruku%20-%20technical%20lead%20ROMI.md) — technical lead  |
 | `Anita Aga` / `anitaaga`    | [Anita Aga](people/Anita%20Aga%20-%20Salesforce%20developer%20ROMI.md) — developer       |
 | `Sara Aga` / `saraagaa`     | [Sara Aga](people/Sara%20Aga%20-%20Salesforce%20developer%20ROMI.md) — developer         |
-| `Rexhina`                   | [Rexhina](people/Rexhina%20-%20Salesforce%20developer%20ROMI.md) — developer             |
+| `Rexhina`                   | [Rexhina Hysi](people/Rexhina%20Hysi%20-%20Salesforce%20developer%20ROMI.md) — developer          |
 
 The convention answers **who wrote something and which side they are on**. It
 says nothing about whether a given change was minuted or reviewed — and in this

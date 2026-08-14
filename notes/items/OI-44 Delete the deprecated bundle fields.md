@@ -18,7 +18,7 @@ Deactivated and unused since, but still present in UAT, and they must be
 removed in production too.
 
 **Half of this is already done and the tracker does not know.**
-[Rexhina](../people/Rexhina%20-%20Salesforce%20developer%20ROMI.md) deleted
+[Rexhina Hysi](../people/Rexhina%20Hysi%20-%20Salesforce%20developer%20ROMI.md) deleted
 `ProductTrigger` on 5 August — commit `ba842ad`, _"delete product trigger since
 is inactive and not needed logic"_ — merged in PR #8. The tracker still shows
 the whole item blocked on Andrea Di Cicco's review.

@@ -124,6 +124,13 @@ changed.
 - **Read-only on every external source.** Never send an email or a message,
   never modify or share a Drive file, never mark anything read. If something
   needs to be sent, say so and stop.
+
+  **One carve-out, and only one:** the **scheduled nightly run** posts its own
+  report to the Slack conversation `C0BQD34LLF4` — the ROMI Salesforce dev group
+  (Aurel Mrruku, Anita Aga, Sara Aga, Rexhina Hysi). That is the single message
+  this procedure may send, it goes only to that conversation, and it contains
+  only the run's own findings. It is never a reply to someone, never a post in a
+  channel, and never a message to the client. Everything else stays read-only.
 - Never copy credentials, tokens, catalogue prices or personal data into the
   records — see [docs/publishing.md](../../../docs/publishing.md).
 - Never fabricate a participant, a date, a decision, or an owner.

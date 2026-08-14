@@ -10,7 +10,37 @@ Keep the ten most recent entries here; archive older ones to
 
 ---
 
-## 2026-08-14 — claude — recap §12 written, register re-merged
+## 2026-08-14 — claude — nightly requirements-check scheduled
+
+- **Did:** created cloud routine `trig_01VCdUXmqy8PngWPJHA2dSYC` —
+  **Mon–Fri 23:30 Europe/Budapest** (`30 21 * * 1-5` UTC), reporting to Slack
+  group DM `C0BQD34LLF4` (Aurel, Anita Aga, Sara Aga). Full configuration in
+  [docs/task-status.md](docs/task-status.md). First run **Mon 17 August**.
+- **State:** it **commits directly to DevMain**, Aurel's explicit choice over a
+  PR-based flow. Guarded: it commits only if `npm run vault:check` passes, and
+  on failure commits nothing and leads its report with the failure. No-change
+  runs write nothing and keep the existing watermark.
+- **The skill had to change.** `requirements-check` guardrails said "never send a
+  chat message", which would have made the routine refuse to post. Added **one
+  explicit carve-out** naming that single group DM, mirrored to `.agents/`.
+  **Do not widen it** — everything else stays read-only.
+- **Watch:** ⚠ **the cron is fixed UTC and DST will break it.** Budapest leaves
+  CEST on **25 October 2026**; after that it fires at 22:30 local. Change the
+  cron to `30 22 * * 1-5` then.
+- **Corrections, same day.** I reported that **Rexhina was unreachable on
+  Slack** — wrong. I had searched four names in one query and got nothing;
+  searching her name alone returns her immediately
+  (`U0B36MRLJUV`, `r.hysi@romicompany.com`). Aurel then added her to the
+  conversation by hand; **the channel id did not change**, so the routine still
+  points at `C0BQD34LLF4` and now reaches all four developers.
+- **Her surname is now known: Hysi**, supplied by Aurel on 2026-08-14 and
+  matching the sister project's records. The person note was **renamed**
+  accordingly — filename, H1 and all four inbound links — since the filename is
+  the note's title.
+- **Model set to `claude-opus-5`**, on Aurel's instruction, matching the sister
+  project. The `schedule` skill defaults to Sonnet, so a future edit that resends
+  `job_config` without the model will silently downgrade it — the model lives
+  inside `session_context` and a partial update replaces the whole block.
 
 - **Did:** R1 and R2. Added **§12 to `DEVELOPMENT-RECAP.md` and `.it.md`** — nine
   subsections, both twins in the same session, precedence headers updated so §12

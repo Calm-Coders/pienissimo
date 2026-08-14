@@ -21,7 +21,7 @@ Committed after the org check by the
 [Calm-Coders developers working for ROMI](../Calm-Coders%20on%20GitHub%20means%20ROMI.md) —
 [Anita Aga](../people/Anita%20Aga%20-%20Salesforce%20developer%20ROMI.md),
 [Sara Aga](../people/Sara%20Aga%20-%20Salesforce%20developer%20ROMI.md) and
-[Rexhina](../people/Rexhina%20-%20Salesforce%20developer%20ROMI.md):
+[Rexhina Hysi](../people/Rexhina%20Hysi%20-%20Salesforce%20developer%20ROMI.md):
 
 | In the repository now                                            | The 08-03 check said         | Item  |
 | ---------------------------------------------------------------- | ---------------------------- | ----- |

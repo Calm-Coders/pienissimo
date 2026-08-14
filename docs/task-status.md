@@ -31,6 +31,41 @@ Opened 2026-08-14. Status legend: 🔴 not started · 🟡 in progress · ✅ do
 | R3 | Drill the four untracked ROMI-internal meetings: 13/07 and 03/08 Follow-up Interno, 16/07 Interna Review Flussi, 05/08 BBP Aurel/Elena. | Gemini notes exist for all four; none has ever been processed. | 🔴 |
 | R4 | Ingest the **NotebookLM notebook "PIENISSIMO"** (shared 25/06) and confirm whether `PIENISSIMO - Flusso Lead-Opportunita.drawio` is superseded. | Both referenced nowhere in the repo. The notebook is an entire knowledge surface nobody has opened. | 🔴 |
 
+## Standing automation
+
+**Nightly requirements-check** — cloud routine `trig_01VCdUXmqy8PngWPJHA2dSYC`,
+created 2026-08-14.
+<https://claude.ai/code/routines/trig_01VCdUXmqy8PngWPJHA2dSYC>
+
+| | |
+| --- | --- |
+| Schedule | `30 21 * * 1-5` UTC = **Mon–Fri 23:30 Europe/Budapest** |
+| Reports to | Slack `C0BQD34LLF4` — the ROMI Salesforce dev group: Aurel Mrruku, Anita Aga, Sara Aga, **Rexhina Hysi** |
+| Repo | `Calm-Coders/pienissimo`, branch **DevMain** |
+| Writes | **Commits directly to DevMain**, but only if `npm run vault:check` passes. On failure it commits nothing and leads the report with the failure. No-change runs commit nothing and write no trace note. |
+| Connectors | Slack · Gmail · Google Drive · Fathom |
+| Model | **`claude-opus-5`** — set deliberately on 2026-08-14, matching the sister project. Do not let a later edit silently drop it back to the Sonnet default. |
+
+⚠ **DST — needs a one-line fix in late October.** The cron is fixed UTC. Europe/
+Budapest leaves CEST on **25 October 2026**, after which `30 21` fires at
+**22:30 local, not 23:30**. That lands inside the go-live window. Change the cron
+to `30 22 * * 1-5` on or after 25 October.
+
+📋 **All four developers are in it.** Aurel renamed the conversation to
+"pienissimo devs" and added Rexhina Hysi by hand on 2026-08-14; **the channel id
+did not change**, so the routine needed no reconfiguration. A sample report was
+posted there the same day to show the format.
+
+Note for future edits: apps **cannot create channels** in this workspace
+(`restricted_action`, private and public alike), and Slack conversations of this
+kind cannot be renamed through the API. Any change of destination has to be made
+by hand in Slack, after which two files need the new id — the routine prompt and
+the skill carve-out.
+
+📌 The `requirements-check` skill is otherwise strictly read-only on external
+sources. It carries **one explicit carve-out** for this routine's Slack post —
+see its Guardrails section. Do not widen it.
+
 ## Correction — 2026-08-14
 
 I recommended R2 as "the highest contractual consequence on this board" on the

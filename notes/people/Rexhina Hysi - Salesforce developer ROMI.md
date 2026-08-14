@@ -7,7 +7,7 @@ team: Calm-Coders
 updated: 2026-08-14
 ---
 
-# Rexhina - Salesforce developer ROMI
+# Rexhina Hysi - Salesforce developer ROMI
 
 Salesforce developer on this project, part of the
 [Calm-Coders team working for ROMI](../Calm-Coders%20on%20GitHub%20means%20ROMI.md).
@@ -19,7 +19,9 @@ tracker still shows that item blocked on Andrea Di Cicco's review. The
 `Parent__c` and `Calculated_Bundle_Price__c` fields she did not touch are still
 present.
 
-Works on `DevRexhina_*` branches.
+Works on `DevRexhina_*` branches. Slack `@r.hysi`
+(`r.hysi@romicompany.com`), timezone Europe/Amsterdam.
 
-⚠ Her surname is not recorded anywhere in this repository. Do not guess it —
-add it here when someone confirms it.
+Her surname was recorded as unknown until **2026-08-14**, when Aurel Mrruku
+supplied it. It matches the sister project's records, so the two are the same
+person.
