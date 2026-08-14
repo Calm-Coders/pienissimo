@@ -2,6 +2,18 @@
 
 Salesforce DX project for the Pienissimo CRM migration (Zoho → Salesforce, contract expiry **31 October 2026**).
 
+## Start here
+
+- **[MAP.md](MAP.md)** — where the project stands right now, under 5 KB. Read this first, always.
+- **[INDEX.md](INDEX.md)** — the router: one line per artifact with its read cost, so you can budget before opening anything.
+- **[notes/](notes/)** — the knowledge vault. One fact per note, stable ids (`OI-NN` matches the tracker row number). This is the source of truth for open items, risks, people and what is actually built; the big documents in `meetings/` are rendered views.
+- **[AGENTS.md](AGENTS.md)** — instructions for any AI agent working here (`CLAUDE.md`, `GEMINI.md` and `.github/copilot-instructions.md` are pointers to it).
+- **[JOURNAL.md](JOURNAL.md)** — session handoffs, newest first.
+
+Run `npm run vault:check` before committing knowledge changes. ⚠ `meetings/open-items.md` is ~50k tokens and `meetings/*-transcript.it.md` ~207k — never load them whole; see the read costs in [INDEX.md](INDEX.md).
+
+## Requirements
+
 - **Requirements for client sign-off: [REQUISITI.it.md](REQUISITI.it.md) (the version to present) · [REQUIREMENTS.md](REQUIREMENTS.md) (EN mirror)**
 - **Machine-readable register: [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml)** — the single source of truth. Merges the meeting record, both design diagrams and the UAT org check into one file: requirement IDs with priority and status, the state machines, every picklist value, the five source contradictions, acceptance criteria and build state.
 - Consolidated design state: [meetings/DEVELOPMENT-RECAP.md](meetings/DEVELOPMENT-RECAP.md) · [IT](meetings/DEVELOPMENT-RECAP.it.md)

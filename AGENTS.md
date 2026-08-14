@@ -1,0 +1,184 @@
+# Agent Instructions - Pienissimo
+
+Canonical instructions for **any** AI coding agent working in this repository
+(Claude Code, Codex, Cursor, Gemini, Copilot). Tool-specific files
+(`CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`) are thin pointers
+to this file. Edit this file, not the pointers.
+
+This is a Salesforce DX project for the ROMI → Pienissimo delivery (Zoho CRM →
+Salesforce, Zoho contract expires **31 October 2026**, go-live **6 October
+2026**). It carries both a real metadata build and a very large body of project
+knowledge in markdown. The markdown is big enough that reading it carelessly
+will exhaust your context before you reach the answer.
+
+## Read protocol
+
+1. Start with [MAP.md](MAP.md) — current project state, under 5 KB. Always cheap.
+2. Route through [INDEX.md](INDEX.md) — one line per artifact, with read costs.
+3. Open only the specific notes in [notes/](notes/) that the task needs.
+4. Escalate to the big documents in `meetings/` or `REQUIREMENTS.md` **only**
+   when the atomic notes are genuinely insufficient, and say so when you do.
+
+Full retrieval and write rules:
+[notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md).
+
+## The three sources of truth, in precedence order
+
+This project has more than one authority. Do not collapse them.
+
+| Layer                                                                     | Authoritative for                                                         |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml) | **Requirement IDs**, priorities, state machines, picklist values, acceptance criteria. Contract-bound and versioned. Never restructure it from a note. |
+| [notes/](notes/)                                                          | The **volatile layer** — open items, decisions, risks, people, what is actually built. One fact per note. |
+| `meetings/DEVELOPMENT-RECAP*.md`, `meetings/open-items*.md`               | **Rendered views** for humans and the client. Regenerate them from the notes; do not treat them as the source. |
+
+`meetings/*-transcript.it.md` and `meetings/results/*.md` are **preserved
+records**. Never edit either.
+
+## Never read these whole
+
+| Path pattern                              | Size    | Cost   | Instead                              |
+| ----------------------------------------- | ------- | ------ | ------------------------------------ |
+| `meetings/*-transcript.it.md`             | ~830 KB | ~207k  | `rg` for the line, read a range      |
+| `meetings/open-items.it.md`               | ~224 KB | ~56k   | Read the note, or the EN twin's rows |
+| `meetings/open-items.md`                  | ~200 KB | ~50k   | Read `notes/items/`                  |
+| `REQUISITI.it.md` / `REQUIREMENTS.md`     | ~86/80 KB | ~21k/20k | `rg` for the requirement id       |
+| `meetings/DEVELOPMENT-RECAP*.md`          | ~74/78 KB | ~18k/20k | Read the relevant notes           |
+| `anar_PIE_ricla.xlsx`                     | ~476 KB | binary | Never; the decode is in the notes    |
+| `node_modules/**`, `.sf/`, `.sfdx/`       | huge    | —      | Generated                            |
+
+`force-app/**` is **not** on this list. Unlike a pure-analysis repo, this
+project has a live build and the org-vs-requirements gap matters. Glob or grep
+for the specific file — do not walk the tree.
+
+## Write protocol
+
+Facts live in `notes/` as atomic notes. See
+[notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md)
+for the full rules. The short version:
+
+- One fact, one note, one stable `id`.
+- **The filename is the note's H1 title**, so the Obsidian graph is readable
+  without opening a node — `notes/items/OI-64 The bundle Apex test suite is broken.md`
+  holds `# OI-64 — The bundle Apex test suite is broken`. Spaces yes; **ASCII
+  only**. Never `/ \ : * ? " < > | ( )` or apostrophes — they break Markdown
+  link targets or Windows paths. An em dash in the H1 becomes `-` in the
+  filename. Italian domain terms are welcome (`Biglietto`, `tranche`, `anno
+  solare`) but accented characters are transliterated (`Perche`, not `Perché`).
+- **Item ids map 1:1 onto the tracker's numbers.** Tracker row `#64` is note
+  `OI-64`, forever. Never renumber — the numbers are cited in
+  `REQUIREMENTS.md`, in the published artifacts and in the client's own
+  correspondence.
+- Update the note's `updated:` field whenever you change it.
+- Append a session entry to [JOURNAL.md](JOURNAL.md) at the end of any session
+  that changed project state, so the next agent — possibly a different model —
+  can resume without re-reading everything.
+- Never edit a preserved raw transcript or a file in `meetings/results/`.
+- Never fabricate owners, dates, decisions, or attribution. Mark uncertainty.
+
+## Language
+
+English is the working language for `notes/`, `MAP.md`, `INDEX.md` and
+`JOURNAL.md`.
+
+**Italian is not merely a translation here.** [REQUISITI.it.md](REQUISITI.it.md)
+is the document presented to Pienissimo for signature — it is the
+contractually operative text, and `REQUIREMENTS.md` is its English mirror. The
+same holds for `meetings/DEVELOPMENT-RECAP.it.md` and `meetings/open-items.it.md`,
+which are client-facing. So:
+
+- Facts and reasoning: read the **English**.
+- Wording that a client has agreed to or will sign: the **Italian** governs.
+- Any change to a requirement must land in **both**, in the same session.
+
+## Link and format rules (portability)
+
+These exist so the same files work in Obsidian, VS Code, GitHub, and every
+agent CLI:
+
+- **Relative Markdown links only** —
+  `[OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md)`.
+  Do **not** use Obsidian `[[wikilinks]]`; agents outside Obsidian cannot
+  resolve them, and GitHub renders them as literal text.
+- **Encode the spaces in a link target as `%20`.** A raw space ends the target
+  in every Markdown parser. Note filenames carry spaces by design, so every
+  link into `notes/` is percent-encoded; `vault:check` decodes before
+  resolving, and quote the path when passing one to a shell.
+- **Plain YAML frontmatter** on every note in `notes/`.
+- **No Dataview / Bases query blocks in anything an agent reads.** Those render
+  only inside Obsidian; an agent sees the query source, not the table. Keep
+  them confined to `notes/dashboards/`, which is human-only.
+
+## Frontmatter schema
+
+```yaml
+---
+id: OI-64 # stable, unique, never reused, matches the tracker row number
+type: open-item # open-item | meeting | person | flow | object | decision | risk | reference
+status: open # open | in-progress | resolved | stale | superseded
+owner: Aurel Mrruku # free text; person note name where one exists
+org: ROMI # ROMI | Pienissimo | both | external
+raised: 2026-08-03 # ISO date
+updated: 2026-08-14 # ISO date, bump on every edit
+depends_on: [OI-66] # ids
+blocks: [go-live] # ids
+requirement: BIG-13 # optional, the id in requirements/pienissimo-requirements.yaml
+source: meetings/results/2026-08-06-chiusura-punti-aperti.md
+---
+```
+
+## Workflows
+
+Four repeatable procedures live in `.agents/skills/` (mirrored in
+`.claude/skills/`). They are plain Markdown — any agent can follow them.
+
+| Task                                | Procedure                                                             |
+| ----------------------------------- | --------------------------------------------------------------------- |
+| A new meeting transcript arrived    | [.agents/skills/drill-meeting/SKILL.md](.agents/skills/drill-meeting/SKILL.md) |
+| Decide what to unblock next         | [.agents/skills/drill-me/SKILL.md](.agents/skills/drill-me/SKILL.md)  |
+| Compare the org against the record  | [.agents/skills/org-status-check/SKILL.md](.agents/skills/org-status-check/SKILL.md) |
+| Sweep mail/Slack/Drive for new input | [.agents/skills/requirements-check/SKILL.md](.agents/skills/requirements-check/SKILL.md) |
+
+Claude Code loads these as skills automatically. Every other tool: read the
+file and follow it. "Follow `.agents/skills/drill-me/SKILL.md`" is a complete
+instruction.
+
+## Standing instructions from the user
+
+- **Never write Apex test classes unprompted, and never offer to.** Aurel
+  requests the test suite **separately, as its own task, before the production
+  deploy** — writing or proposing it in the middle of other work spends effort
+  he wants on feature work. Wait to be asked, then do it properly in one pass.
+
+  **Keep the coverage records complete and current**, because they are the
+  brief for that task when it comes:
+  [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
+  [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)
+  and [the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)
+  stay `gating`, stay in `MAP.md`, and get updated like any other item. Report
+  them when the state changes or when asked. Do not act on them.
+
+## Checks
+
+```bash
+npm run vault:check      # frontmatter + link integrity across notes/
+npm run prettier:verify  # formatting
+npm run test:unit        # LWC jest
+```
+
+Run `vault:check` before committing knowledge changes.
+
+## Repository conventions
+
+- **Branches:** day-to-day work happens on `DevMain`; developers work on
+  personal branches (`DevAnita`, `DevSara`, `DevRexhina_*`) and open PRs.
+  `main` is the default PR target.
+- **`Calm-Coders` is the development team working for ROMI** — every contributor
+  under that GitHub organisation is ROMI-side, not client-side. See
+  [the convention](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md). It says
+  nothing about whether a change was minuted or reviewed.
+- Commits and pushes only when the user asks. If on `main`, branch first.
+- Secrets, client credentials, catalogue prices and personal data never enter
+  `notes/`, the recaps, or [site/](site/) — see
+  [docs/publishing.md](docs/publishing.md). The repository is private; `site/`
+  is public.

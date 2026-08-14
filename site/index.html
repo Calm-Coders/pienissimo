@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>CRM Migration - Delivery Status</title>
+    <style>
+      :root {
+        --bg: #fbfbfa;
+        --fg: #1c1c1a;
+        --muted: #6b6b66;
+        --line: #e3e3df;
+        --card: #ffffff;
+        --ok: #2f6f4f;
+        --warn: #8a6413;
+        --risk: #9b3226;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #16161a;
+          --fg: #ececea;
+          --muted: #9a9a95;
+          --line: #2c2c31;
+          --card: #1e1e23;
+          --ok: #7fc0a0;
+          --warn: #d9b168;
+          --risk: #e08b7f;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 2.5rem 1.25rem 4rem;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      main {
+        max-width: 46rem;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      .sub {
+        color: var(--muted);
+        margin: 0 0 2.5rem;
+        font-size: 0.9rem;
+      }
+      h2 {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--muted);
+        margin: 2.5rem 0 0.75rem;
+        font-weight: 600;
+      }
+      .grid {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 0.6rem;
+        padding: 0.9rem 1rem;
+      }
+      .num {
+        font-size: 1.7rem;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+      }
+      .lab {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.55rem 0.6rem;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .wrap {
+        overflow-x: auto;
+      }
+      .tag {
+        font-size: 0.75rem;
+        padding: 0.1rem 0.45rem;
+        border-radius: 0.3rem;
+        border: 1px solid currentColor;
+        white-space: nowrap;
+      }
+      .t-ok {
+        color: var(--ok);
+      }
+      .t-warn {
+        color: var(--warn);
+      }
+      .t-risk {
+        color: var(--risk);
+      }
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>CRM Migration &mdash; Delivery Status</h1>
+      <p class="sub">Legacy CRM &rarr; Salesforce. Status as of 14 August 2026.</p>
+
+      <h2>Position</h2>
+      <div class="grid">
+        <div class="card"><div class="num">6 Oct</div><div class="lab">Go-live</div></div>
+        <div class="card"><div class="num">31 Oct</div><div class="lab">Legacy contract ends</div></div>
+        <div class="card"><div class="num">1 Sep</div><div class="lab">Data import</div></div>
+        <div class="card"><div class="num">7 wk</div><div class="lab">Remaining</div></div>
+      </div>
+
+      <h2>Workstreams</h2>
+      <div class="wrap">
+        <table>
+          <thead>
+            <tr><th>Area</th><th>State</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Bundle model</td><td><span class="tag t-ok">approved &amp; built</span></td></tr>
+            <tr><td>Quote &rarr; order flow</td><td><span class="tag t-warn">designed, build pending</span></td></tr>
+            <tr><td>Ticketing lifecycle</td><td><span class="tag t-warn">designed, unproven</span></td></tr>
+            <tr><td>ERP integration</td><td><span class="tag t-warn">unblocked, in build</span></td></tr>
+            <tr><td>E-commerce integration</td><td><span class="tag t-warn">webhooks agreed, starts late Aug</span></td></tr>
+            <tr><td>Instalment / tranche model</td><td><span class="tag t-risk">not started</span></td></tr>
+            <tr><td>Marketing funnels</td><td><span class="tag t-risk">blocked on client review</span></td></tr>
+            <tr><td>Data migration</td><td><span class="tag t-risk">field mapping incomplete</span></td></tr>
+            <tr><td>Test coverage</td><td><span class="tag t-risk">below deployment threshold</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Milestones before go-live</h2>
+      <div class="wrap">
+        <table>
+          <thead>
+            <tr><th>When</th><th>What</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>7&ndash;19 Sep</td><td>Free event tour &mdash; ticketed, before go-live</td></tr>
+            <tr><td>~1 Sep</td><td>Client data import</td></tr>
+            <tr><td>29 Sep</td><td>Annual festival &mdash; ticketed, before go-live</td></tr>
+            <tr><td>6 Oct</td><td>Go-live</td></tr>
+            <tr><td>29 Oct</td><td>Large kickoff event</td></tr>
+            <tr><td>31 Oct</td><td>Dual-run ends; legacy contract expires</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Open by owner</h2>
+      <div class="grid">
+        <div class="card"><div class="num">4</div><div class="lab">Client inputs owed</div></div>
+        <div class="card"><div class="num">3</div><div class="lab">Supplier build items gating</div></div>
+        <div class="card"><div class="num">2</div><div class="lab">Joint decisions pending</div></div>
+        <div class="card"><div class="num">1</div><div class="lab">Commercial escalation</div></div>
+      </div>
+
+      <footer>
+        Published from a private repository. Delivery status only &mdash; no names,
+        commercial terms, prices or credentials. Not indexed.
+      </footer>
+    </main>
+  </body>
+</html>
