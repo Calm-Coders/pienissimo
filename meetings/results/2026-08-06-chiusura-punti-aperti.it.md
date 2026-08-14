@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Chiusura ultimi punti aperti — 2026-08-06
 
-**Fonti:** `meetings/2026-08-06-chiusura-punti-aperti-transcript.it.md` (trascrizione originale italiana, Google Meet + note Gemini, **2h30m30s**) · [registrazione](https://drive.google.com/file/d/1i0M2dURQYHLB92v8SeI1uJaz7xCcTg1X/view) · [appunti e trascrizione](https://docs.google.com/document/d/1roHKiiF8qSlvqCnStsvY9ldpQxdi0SSFNS4a0xiObxk/edit) · emersa dal canvas Slack `#tproj-pienissimo` "Link utili Pienissimo" (aggiornato il 2026-08-07)
+**Fonti:** [meetings/2026-08-06-chiusura-punti-aperti-transcript.it.md](../2026-08-06-chiusura-punti-aperti-transcript.it.md) (trascrizione originale italiana, Google Meet + note Gemini, **2h30m30s**) · [registrazione](https://drive.google.com/file/d/1i0M2dURQYHLB92v8SeI1uJaz7xCcTg1X/view) · [appunti e trascrizione](https://docs.google.com/document/d/1roHKiiF8qSlvqCnStsvY9ldpQxdi0SSFNS4a0xiObxk/edit) · emersa dal canvas Slack `#tproj-pienissimo` "Link utili Pienissimo" (aggiornato il 2026-08-07)
 
 **Partecipanti:** ROMI — Elena Spini (conduce), Aurel Mrruku, Andrea Di Cicco (uscito prima del punto Mexal, ~02:02). Pienissimo — Sabatino Rinaldi, Marco Montesi ("Marco"), Elisa Migliano (amministrazione), Fabrizio Paganelli (amministrazione/Mexal, entrato alle 00:14).
 **Non presente:** Fabrizio **Mastracci** (marketing ROMI) è stato invitato per errore al posto di Fabrizio **Paganelli** e si è **scollegato alle 00:01:30**, prima di qualsiasi contenuto. Compare nell'invito ma non ha contribuito.

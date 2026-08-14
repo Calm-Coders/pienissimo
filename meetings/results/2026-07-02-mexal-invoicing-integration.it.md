@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Integrazione Mexal (Fatturazione) — 02/07/2026
 
-**Fonti:** meetings/2026-07-02-mexal-invoicing-integration-transcript.it.md (trascrizione originale in italiano, 104 min)
+**Fonti:** [meetings/2026-07-02-mexal-invoicing-integration-transcript.it.md](../2026-07-02-mexal-invoicing-integration-transcript.it.md) (trascrizione originale in italiano, 104 min)
 
 **Partecipanti:** Elena Spini (ROMI), Andrea Di Cicco (ROMI), Sabatino Rinaldi, Fabrizio Paganelli, Marco (Pienissimo — più persone nella stessa stanza con una sola camera, cadute di connessione ricorrenti). Nota: le etichette dei parlanti sono molto imprecise — gran parte dei contenuti etichettati "Marco" è chiaramente Fabrizio (dettagli Mexal/amministrazione), e alcuni segmenti "Sabatino" sono anch'essi di Fabrizio; ricostruito dal contesto.
 

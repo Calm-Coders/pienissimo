@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Demo Sales — 2026-06-03
 
-**Sources:** meetings/2026-06-03-demo-sales-transcript.it.md (original Italian transcript, 93 min)
+**Sources:** [meetings/2026-06-03-demo-sales-transcript.it.md](../2026-06-03-demo-sales-transcript.it.md) (original Italian transcript, 93 min)
 
 **Attendees:** Elena Spini (ROMI), Sabatino Rinaldi, Fabrizio Paganelli, Marco Montesi (in room), Elisa Migliano (Pienissimo); Daniela Morgese joined ~16:27 and left ~1:20. Andrea Di Cicco referenced but not speaking. Speaker labels partially garbled (some "Fabrizio"/"Daniela" lines are other speakers).
 

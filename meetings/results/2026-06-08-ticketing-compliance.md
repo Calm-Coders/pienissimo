@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Focus Requirements: Ticketing & Compliance — 2026-06-08
 
-**Sources:** meetings/2026-06-08-ticketing-compliance-transcript.it.md (original Italian transcript, 70 min)
+**Sources:** [meetings/2026-06-08-ticketing-compliance-transcript.it.md](../2026-06-08-ticketing-compliance-transcript.it.md) (original Italian transcript, 70 min)
 
 **Attendees:** Elena Spini, Andrea Di Cicco (ROMI); Sabatino Rinaldi, Fabrizio Paganelli (Pienissimo); Daniela Morgese joined ~40:56. Speaker labels heavily garbled (much "Sabatino" content is Fabrizio or Daniela); reconstructed from context.
 

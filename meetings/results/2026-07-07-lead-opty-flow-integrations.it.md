@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Flusso Lead/Opty + Logiche Integrazioni — 07/07/2026
 
-**Fonti:** meetings/2026-07-07-lead-opty-flow-integrations-transcript.it.md (trascrizione originale in italiano, 148 min)
+**Fonti:** [meetings/2026-07-07-lead-opty-flow-integrations-transcript.it.md](../2026-07-07-lead-opty-flow-integrations-transcript.it.md) (trascrizione originale in italiano, 148 min)
 
 **Partecipanti:** Elena Spini (ROMI), Andrea Di Cicco (ROMI), Aurel Mrruku (ROMI), Sabatino Rinaldi (Pienissimo), Fabrizio Paganelli (Pienissimo), Elisa Migliano (Pienissimo), Daniela Morgese (Pienissimo — entrata ~1:44). Assente: Marco Montesi (responsabile commerciale Pienissimo — serve il suo parere su più punti). Nota: le etichette dei parlanti nella trascrizione automatica sono inaffidabili nella seconda metà (diverse spiegazioni tecniche di Aurel risultano attribuite ad altri); il contenuto qui sotto è ricostruito dal contesto.
 

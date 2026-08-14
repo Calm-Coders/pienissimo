@@ -75,6 +75,11 @@ Immediately after each round:
 3. **The register** — if a requirement changed,
    `requirements/pienissimo-requirements.yaml` plus **both**
    `REQUIREMENTS.md` and `REQUISITI.it.md`. The Italian is what gets signed.
+   **Wire the requirement to its note in both directions**: the note carries
+   `requirement: BIG-06`, and the requirement entry carries
+   `tracked_by: [OI-75]`. One direction alone is a dead end — a requirement
+   nobody can trace back to a decision is unauditable at sign-off.
+   `vault:check` reports the mismatches.
 4. [MAP.md](../../../MAP.md) if the live position moved, then
    [JOURNAL.md](../../../JOURNAL.md), then `npm run vault:check`.
 

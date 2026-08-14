@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Tipologie Vendite e Preventivi — 30/06/2026
 
-**Fonti:** meetings/2026-06-30-sales-types-quotes-transcript.it.md (trascrizione originale in italiano, 125 min)
+**Fonti:** [meetings/2026-06-30-sales-types-quotes-transcript.it.md](../2026-06-30-sales-types-quotes-transcript.it.md) (trascrizione originale in italiano, 125 min)
 
 **Partecipanti:** Elena Spini (ROMI), Andrea Di Cicco (ROMI), Sabatino Rinaldi, Fabrizio Paganelli, Marco Montesi, Elisa Migliano (Pienissimo — stessa stanza, cambio dispositivo a metà call). Nota: le etichette dei parlanti sono molto imprecise — gran parte del contenuto etichettato "Marco" è in realtà di Fabrizio o Elisa; ricostruito dal contesto.
 

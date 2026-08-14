@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Mexal Integration (Invoicing) — 2026-07-02
 
-**Sources:** meetings/2026-07-02-mexal-invoicing-integration-transcript.it.md (original Italian transcript, 104 min)
+**Sources:** [meetings/2026-07-02-mexal-invoicing-integration-transcript.it.md](../2026-07-02-mexal-invoicing-integration-transcript.it.md) (original Italian transcript, 104 min)
 
 **Attendees:** Elena Spini (ROMI), Andrea Di Cicco (ROMI), Sabatino Rinaldi, Fabrizio Paganelli, Marco (Pienissimo — several people sharing one room/camera, with recurring connection drops). Note: speaker labels are heavily garbled — most content labeled "Marco" is clearly Fabrizio (Mexal/admin process detail), and some "Sabatino" segments are Fabrizio too; reconstructed from context.
 

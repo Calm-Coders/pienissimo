@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Check Codici Prodotto — Codici prodotto, bundle e livelli di classificazione — 2026-07-23
 
-**Fonti:** meetings/2026-07-23-product-codes-bundles-transcript.it.md (trascrizione originale italiana, Fathom, 45 min) · file di riferimento `anar_PIE_ricla.xlsx` (estratto anagrafica articoli) condiviso da Fabrizio
+**Fonti:** [meetings/2026-07-23-product-codes-bundles-transcript.it.md](../2026-07-23-product-codes-bundles-transcript.it.md) (trascrizione originale italiana, Fathom, 45 min) · file di riferimento `anar_PIE_ricla.xlsx` (estratto anagrafica articoli) condiviso da Fabrizio
 
 **Partecipanti:** Aurel Mrruku (ROMI), Fabrizio Paganelli (Pienissimo — admin/Mexal), Elena Spini (ROMI — presente ~1:00→13:40, poi disconnessa). Nota: le etichette Fathom sono affidabili qui (solo tre voci); Aurel guida le domande, Fabrizio le risposte.
 

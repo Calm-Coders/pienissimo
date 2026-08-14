@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Salesforce Kick-Off — 2026-05-27
 
-**Sources:** meetings/2026-05-27-salesforce-kickoff-transcript.it.md (original Italian transcript, 46 min — Fathom recording: https://fathom.video/calls/686882530)
+**Sources:** [meetings/2026-05-27-salesforce-kickoff-transcript.it.md](../2026-05-27-salesforce-kickoff-transcript.it.md) (original Italian transcript, 46 min — Fathom recording: https://fathom.video/calls/686882530)
 
 **Attendees:** Sabatino Rinaldi (Pienissimo), Elena Spini (ROMI Company), Andrea Galotto (ROMI Company), Andrea Di Cicco (ROMI Company). Also present/referenced on the Pienissimo side: Daniela (admin/warehouse process), Fabrizio (admin/finance). Referenced but not present: Giuliano Aranzetti (Pienissimo frontman), Vittorio, Giulia, Francesco.
 

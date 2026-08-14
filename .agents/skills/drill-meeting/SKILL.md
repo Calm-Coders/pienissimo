@@ -75,6 +75,11 @@ From the notes, not from memory of the transcript:
 - `meetings/results/<name>.md` and `<name>.it.md` — the per-meeting recap.
   Structure: title + date, Sources, Attendees (with the label-garbling note),
   Decisions, Action Items table, Open Questions / Risks, Notes.
+  **The Sources / Fonti line must link the transcript, not just name it** —
+  `**Sources:** [meetings/<name>-transcript.it.md](../<name>-transcript.it.md) (…)`.
+  A bare path or one wrapped in backticks renders as text, so the recap and its
+  transcript end up as disconnected nodes in the Obsidian graph. The recap is
+  the only side that links: the transcript itself is never edited.
 - `meetings/open-items.md` and `.it.md` — apply meetings in **chronological
   order**. Add rows for new items, move answered rows to Resolved citing dates,
   update "Last touched" on discussed-but-open rows, leave untouched rows alone.
@@ -89,6 +94,14 @@ From the notes, not from memory of the transcript:
 [requirements/pienissimo-requirements.yaml](../../../requirements/pienissimo-requirements.yaml)
 **and** both `REQUIREMENTS.md` / `REQUISITI.it.md`, in the same session. The
 Italian is the text the client signs.
+
+**Wire every requirement you touch to its note, in both directions** — the note
+carries `requirement: BIG-06`, the requirement entry carries
+`tracked_by: [OI-75]`. That pair is what lets anyone walk a signed requirement
+back to the meeting that produced it: requirement → note → the note's
+`source:` → the recap → the transcript. Adding only one side leaves a dead end.
+`npm run vault:check` reports every mismatch, and a requirement id that does not
+exist in the registry.
 
 ## 5. Close out
 

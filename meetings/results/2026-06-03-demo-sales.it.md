@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Demo Sales — 03/06/2026
 
-**Fonti:** meetings/2026-06-03-demo-sales-transcript.it.md (trascrizione originale in italiano, 93 min)
+**Fonti:** [meetings/2026-06-03-demo-sales-transcript.it.md](../2026-06-03-demo-sales-transcript.it.md) (trascrizione originale in italiano, 93 min)
 
 **Partecipanti:** Elena Spini (ROMI), Sabatino Rinaldi, Fabrizio Paganelli, Marco Montesi (in stanza), Elisa Migliano (Pienissimo); Daniela Morgese entrata ~16:27 e uscita ~1:20. Andrea Di Cicco citato ma non presente. Etichette dei parlanti in parte imprecise.
 

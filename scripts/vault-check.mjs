@@ -12,6 +12,12 @@
  *   - no [[wikilinks]] (unresolvable outside Obsidian)
  *   - no Dataview/Bases blocks outside notes/dashboards/ (render-only)
  *   - note filenames stay ASCII (Windows paths + markdown link targets)
+ *
+ * It also traces notes against requirements/pienissimo-requirements.yaml in both
+ * directions - a note's `requirement:` and a requirement's `tracked_by:` must
+ * agree - so a signed requirement can always be walked back to the meeting that
+ * produced it. Those findings are WARNINGS, not errors: the backlog predates the
+ * check and the nightly routine commits only when this script exits 0.
  */
 
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
@@ -23,7 +29,9 @@ const REQUIRED = ['id', 'type', 'status', 'updated'];
 const ROOT_DOCS = ['MAP.md', 'INDEX.md', 'AGENTS.md', 'JOURNAL.md', 'CLAUDE.md', 'GEMINI.md'];
 
 const errors = [];
+const warnings = [];
 const ids = new Map();
+const noteRequirements = []; // { noteId, rel, req }
 
 function walk(dir) {
   const out = [];
@@ -111,6 +119,12 @@ for (const file of noteFiles) {
     if (ids.has(fm.id)) errors.push(`${rel}: duplicate id "${fm.id}" (also in ${ids.get(fm.id)})`);
     else ids.set(fm.id, rel);
   }
+  if (fm.requirement && fm.id) {
+    for (const req of fm.requirement.replace(/[[\]]/g, '').split(',')) {
+      const trimmed = req.trim();
+      if (trimmed) noteRequirements.push({ noteId: fm.id, rel, req: trimmed });
+    }
+  }
 }
 
 // Code spans and fenced blocks are documentation, not live links or queries.
@@ -140,7 +154,79 @@ for (const file of [...noteFiles, ...rootFiles]) {
   }
 }
 
+// --- Requirement trace: notes <-> requirements/pienissimo-requirements.yaml ---
+// Deliberately regex-based, to keep this script dependency-free like the rest of
+// it. Requirement ids are scanned across the whole file - most live under
+// `requirements:`, but OUT-01..03 sit in `scope:` and REG-01/02 in
+// `build_state:`, and a note may legitimately cite any of them. DGM-1/DGM-2 in
+// `sources:` are the draw.io diagrams, not requirements.
+const registry = join(root, 'requirements', 'pienissimo-requirements.yaml');
+if (existsSync(registry)) {
+  const yaml = readFileSync(registry, 'utf8');
+
+  const requirementIds = new Set();
+  const trackedBy = new Map(); // requirement id -> Set of note ids
+  // Each entry is a flow mapping; slice from one `id:` to just before the next.
+  const marks = [...yaml.matchAll(/^\s*-?\s*id:\s*([A-Z]{3}-\d+)/gm)].filter(
+    (m) => !m[1].startsWith('DGM-')
+  );
+  marks.forEach((mark, i) => {
+    const reqId = mark[1];
+    requirementIds.add(reqId);
+    const chunk = yaml.slice(mark.index, i + 1 < marks.length ? marks[i + 1].index : undefined);
+    const tracked = /tracked_by:\s*\[([^\]]*)\]/.exec(chunk);
+    const set = trackedBy.get(reqId) || new Set();
+    if (tracked) {
+      for (const n of tracked[1].split(',').map((s) => s.trim()).filter(Boolean)) set.add(n);
+    }
+    trackedBy.set(reqId, set);
+  });
+
+  if (requirementIds.size === 0) {
+    warnings.push('requirements registry: no requirement ids parsed - has the file structure changed?');
+  }
+
+  let untraced = 0;
+  for (const { noteId, rel, req } of noteRequirements) {
+    if (!requirementIds.has(req)) {
+      warnings.push(`${rel}: cites requirement "${req}", which is not defined in the registry`);
+    } else if (trackedBy.get(req).size === 0) {
+      // Not yet backfilled. Counted, not shouted about, one line per note is noise.
+      untraced++;
+    } else if (!trackedBy.get(req).has(noteId)) {
+      warnings.push(`${rel}: cites "${req}", but ${req} does not list ${noteId} in tracked_by`);
+    }
+  }
+  if (untraced) {
+    warnings.push(
+      `${untraced} note(s) cite a requirement that does not name them back - run the trace backfill`
+    );
+  }
+
+  for (const [reqId, notes] of trackedBy) {
+    for (const noteId of notes) {
+      if (!ids.has(noteId)) {
+        warnings.push(`requirements registry: ${reqId} tracked_by "${noteId}", which is not a note id`);
+      } else if (!noteRequirements.some((n) => n.noteId === noteId && n.req === reqId)) {
+        warnings.push(`requirements registry: ${reqId} lists ${noteId}, but that note does not cite ${reqId}`);
+      }
+    }
+  }
+
+  const traced = [...trackedBy.values()].filter((s) => s.size > 0).length;
+  if (!errors.length) {
+    console.log(
+      `requirement trace: ${traced}/${requirementIds.size} requirements reachable from a note`
+    );
+  }
+}
+
 const noteCount = noteFiles.length;
+if (warnings.length) {
+  console.warn(`\nvault:check - ${warnings.length} trace warning(s), not blocking:\n`);
+  for (const w of warnings) console.warn(`  ! ${w}`);
+  console.warn('');
+}
 if (errors.length) {
   console.error(`vault:check FAILED - ${errors.length} problem(s) across ${noteCount} notes\n`);
   for (const e of errors) console.error(`  ${e}`);

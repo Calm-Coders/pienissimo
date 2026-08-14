@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Chiusura ultimi punti aperti — Closing Session on Open Points — 2026-08-06
 
-**Sources:** `meetings/2026-08-06-chiusura-punti-aperti-transcript.it.md` (original Italian transcript, Google Meet + Gemini notes, **2h30m30s**) · [recording](https://drive.google.com/file/d/1i0M2dURQYHLB92v8SeI1uJaz7xCcTg1X/view) · [notes & transcript](https://docs.google.com/document/d/1roHKiiF8qSlvqCnStsvY9ldpQxdi0SSFNS4a0xiObxk/edit) · surfaced from the Slack `#tproj-pienissimo` canvas "Link utili Pienissimo" (updated 2026-08-07)
+**Sources:** [meetings/2026-08-06-chiusura-punti-aperti-transcript.it.md](../2026-08-06-chiusura-punti-aperti-transcript.it.md) (original Italian transcript, Google Meet + Gemini notes, **2h30m30s**) · [recording](https://drive.google.com/file/d/1i0M2dURQYHLB92v8SeI1uJaz7xCcTg1X/view) · [notes & transcript](https://docs.google.com/document/d/1roHKiiF8qSlvqCnStsvY9ldpQxdi0SSFNS4a0xiObxk/edit) · surfaced from the Slack `#tproj-pienissimo` canvas "Link utili Pienissimo" (updated 2026-08-07)
 
 **Attendees:** ROMI — Elena Spini (chair), Aurel Mrruku, Andrea Di Cicco (left before the Mexal item, ~02:02). Pienissimo — Sabatino Rinaldi, Marco Montesi ("Marco"), Elisa Migliano (admin), Fabrizio Paganelli (admin/Mexal, joined 00:14).
 **Not present:** Fabrizio **Mastracci** (ROMI marketing) was invited by mistake instead of Fabrizio **Paganelli** and **disconnected at 00:01:30**, before any content. He is listed in the calendar invite but contributed nothing.

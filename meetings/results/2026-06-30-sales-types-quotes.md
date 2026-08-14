@@ -1,6 +1,6 @@
 # [ROMI-PIENISSIMO] Sales Types and Quotes — 2026-06-30
 
-**Sources:** meetings/2026-06-30-sales-types-quotes-transcript.it.md (original Italian transcript, 125 min)
+**Sources:** [meetings/2026-06-30-sales-types-quotes-transcript.it.md](../2026-06-30-sales-types-quotes-transcript.it.md) (original Italian transcript, 125 min)
 
 **Attendees:** Elena Spini (ROMI), Andrea Di Cicco (ROMI), Sabatino Rinaldi, Fabrizio Paganelli, Marco Montesi, Elisa Migliano (Pienissimo — shared room, mid-call device swap). Note: speaker labels are heavily garbled — much of the content labeled "Marco" is actually Fabrizio or Elisa; reconstructed from context.
 
