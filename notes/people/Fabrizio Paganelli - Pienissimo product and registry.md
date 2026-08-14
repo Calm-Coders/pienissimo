@@ -8,7 +8,10 @@ updated: 2026-08-14
 
 # Fabrizio Paganelli - Pienissimo product and registry
 
-Owns the article master and the Mexal side of the registry. He decoded
+**Responsabile Amministrazione** on the April 2026 org chart — he heads
+administration, with [Elisa Migliano](Elisa%20Migliano%20-%20Pienissimo%20administration.md)
+in Accounting under him. Owns the article master and the Mexal side of the
+registry. He decoded
 `anar_PIE_ricla.xlsx` with ROMI on 2026-07-23 — `_ARTIP` A = product,
 Z = rata/`BLO-` block, C = bundle/`PACK-` — and confirmed that article codes
 are unique and stable, which is what makes the ticket-generating set safe to

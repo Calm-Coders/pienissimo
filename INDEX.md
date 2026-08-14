@@ -57,6 +57,8 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-24 data model workbook](notes/items/OI-24%20Data%20model%20workbook.md)                | open · gating | Sabatino Rinaldi  |
 | [OI-79 migration volumes and mapping](notes/items/OI-79%20Migration%20volumes%20and%20mapping%20method.md) | open · gating | Elisa Migliano |
 | [OI-88 Zoho import template](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md) | open · gating | **ROMI** |
+| [OI-89 BigliettoPdfQueueable callout error](notes/items/OI-89%20BigliettoPdfQueueable%20callout%20error.md) | open | ROMI |
+| [OI-90 whether to introduce a Prospect state](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md) | open · 2 months silent | Sabatino Rinaldi |
 | [OI-04 scope against the go-live date](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md) | open · gating | Elena Spini |
 
 ### Open items — client inputs owed
@@ -139,10 +141,13 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | ------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | [Source trace 2026-08-14 external sweep](notes/traces/Source%20trace%202026-08-14%20external%20sweep.md) | **Watermark for the next `requirements-check` run** — 2026-08-14 |
 | [Source trace 2026-08-14](notes/traces/Source%20trace%202026-08-14.md)              | Superseded — repository read only, moved no external watermark |
+| [The newest design diagram](notes/The%20newest%20design%20diagram.md)           | **Authority for state machines** — newer than the register believes |
+| [The client June requirements document](notes/The%20client%20June%20requirements%20document.md) | Pienissimo's own 11 June requirements — earliest structured statement of scope |
 | [Calm-Coders means ROMI](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md)         | Attributing git authors to the right org             |
 | [Integration Configuration is standard scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md) | House pattern, not a project requirement — do not re-flag |
 | [Retrieval and write protocol](notes/Retrieval%20and%20write%20protocol.md)         | How to read and write knowledge here                 |
 | [JOURNAL.md](JOURNAL.md)                                                            | Cross-tool session handoffs, newest first            |
+| [docs/task-status.md](docs/task-status.md)                                          | **ROMI-internal action board** — not the client tracker, no `OI-NN` |
 | [docs/publishing.md](docs/publishing.md)                                            | What may be published, and the leak check            |
 
 ## Querying without reading

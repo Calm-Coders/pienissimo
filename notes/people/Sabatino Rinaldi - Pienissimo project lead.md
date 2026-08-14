@@ -11,6 +11,10 @@ updated: 2026-08-14
 The day-to-day counterpart and the channel through which almost everything
 reaches [Daniela Morgese](Daniela%20Morgese%20-%20Pienissimo%20direction.md).
 
+His title on the April 2026 org chart is **Growth Manager**, not project lead —
+"project lead" is the role he plays here, not the one he holds. Worth knowing
+when judging what he can commit Pienissimo to.
+
 He is also the largest single source of unmet inputs. Owed since the 27 May
 kickoff and never delivered: the **key-user list** and the **3CX status
 report**. Also owed: WooCommerce consumer keys, the form-links inventory, and

@@ -83,16 +83,21 @@ sources:
       title: Workflow Pienissimo 23-7-26.drawio
       owner: marco.m@pienissimo.com
       drive_id: 1rfmySNKyhhNJnaV-2ULkGl0vUIf50Q7t
-      modified: 2026-07-31T12:46:09Z
+      modified: 2026-08-04T10:09:12Z # re-checked against Drive 2026-08-14; was recorded as 2026-07-31T12:46:09Z
       pages: [LEAD-OPTY]
       note: Client-annotated lead/opportunity workflow, edited right after the 31/07 review
     - id: DGM-2
       title: Flows & Objects.drawio
       owner: e.spini@romicompany.com
       drive_id: 11ly3iGQc1smlY8IybSnUMQBGXbZ-ddbx
-      modified: 2026-07-31T09:50:03Z
+      modified: 2026-08-06T15:22:03Z # re-checked against Drive 2026-08-14; was recorded as 2026-07-31T09:50:03Z
       pages: [LEAD-OPTY, Ordini, Flusso Biglietti]
-      note: ROMI master design file; the most detailed source for orders and tickets
+      note: >-
+        ROMI master design file; the most detailed source for orders and tickets.
+        Re-read in full on 2026-08-14 against this version: the state machines and
+        picklists below match it and were NOT re-extracted. Only the provenance
+        dates were wrong. The one content gap found is order.states — see the
+        reconciliation note there.
   org_check:
     org: a.mrruku@pienissimo.uat
     instance: ability-customization-52152--partial
@@ -236,13 +241,28 @@ state_machines:
       - { value: BUNDLE, note: "Order type == Bundle - Vendita da palco" }
       - { value: PLUS, note: "Order type == Plus + Attivazione o Rinnovo" }
     states: [CREATO, CHIUSO/ACQUISITO]
+    states_agreed_06_08: [Ordinato, Fatturato, Incassato]
+    status: conflict # ⚠ unreconciled — see reconciliation below
+    reconciliation: >-
+      The states above come from DGM-2. The 2026-08-06 closing session replaced them
+      with Ordinato -> Fatturato -> Incassato and struck "Chiuso acquisito" outright
+      ("non serve piu", Fabrizio Paganelli), with the Opportunity going Closed Won
+      only when the order reaches Incassato. Nobody has stated whether Incassato is
+      CHIUSO/ACQUISITO renamed or a different milestone. This is unresolved because
+      (a) tranche.states below still uses CHIUSO/ACQUISITO, (b) name_collisions
+      documents CHIUSO/ACQUISITO as a deliberate Order/Tranche pair, and (c) a fourth
+      order state "Perso", tied to credit notes, was floated and left undecided.
+      Owner: Elena Spini. Must close before Order or Tranche is configured.
     creation_systems: [WooCommerce, SFDC, Mexal]
     rules:
       - "A WooCommerce order is not visible in SFDC until its WooCommerce status is COMPLETATO"
       - "Bank transfer: administration waits for the transfer, then sets the WooCommerce order to COMPLETATO"
       - "Card payment: completes automatically"
       - "CHIUSO/ACQUISITO is set manually by administration within max 5 days of confirmed payment"
-    opportunity_types: ["Vendita da tutor", "Recall tutor"]
+    opportunity_types:
+      - "Vendita da tutor"
+      - "Recall tutor"
+      - "Plus + Attivazione o Rinnovo" # added 2026-08-14 from DGM-2; drives contract generation
 
   tranche:
     source: [DGM-2]

@@ -20,11 +20,17 @@ callout limits, mastro 610, the "rinvio ordine" button — are written up in
 **WEBAPI credentials were delivered on 15 July** (`services.passepartout.cloud`,
 dominio PIENISSIMO, azienda PIE), so the build is unblocked.
 
-**The field mapping is now answered.** Andrea Di Cicco sent the per-API workbook
-on 2026-08-07; Mirko Merendi returned it filled in on 2026-08-11 with answers to
-all eight questions — agent filter, availability formula, the two-step invoice
-retrieval, client-code generation and the order serie. The detail is in
+**The field mapping is answered, and the workbook has now been read.** Andrea Di
+Cicco sent the per-API workbook on 2026-08-07; Mirko Merendi returned it filled
+in on 2026-08-11. `Integrazioni pienissimo.xlsx` was opened on 2026-08-14 and
+its contents — seven sheets, three previously unrecorded calls, the target
+column structures — are in
 [the Mexal integration](../flows/The%20Mexal%20integration.md).
+
+🔴 **It exposed a gap:** `Get Fatture` maps `numero_ordine` but **no order-line
+number**, which is the key
+[ticket availability](OI-75%20Ticket%20availability%20rule.md) was agreed to match
+on. Raise it at the 27 August call.
 
 Three things still sit under this item:
 

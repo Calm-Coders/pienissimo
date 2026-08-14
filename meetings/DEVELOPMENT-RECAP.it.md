@@ -2,7 +2,7 @@
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
 > ⚠ **Precedenza, dal più recente: [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
-> I §1–§9 sono aggiornati al 23/07/2026. Il §10 porta il delta 24/07 → 03/08. **Il §11 porta la sessione di chiusura del 06/08 e prevale su entrambi** — in particolare la separazione su DocuSign, i modelli di stato ordine/asset, la regola di disponibilità dei biglietti e la decisione sui webhook WooCommerce.
+> I §1–§9 sono aggiornati al 23/07/2026. Il §10 porta il delta 24/07 → 03/08. Il §11 porta la sessione di chiusura del 06/08. **Il §12 porta lo sweep documentale del 14/08 e prevale su tutti.** Il §11 prevale sui precedenti — in particolare la separazione su DocuSign, i modelli di stato ordine/asset, la regola di disponibilità dei biglietti e la decisione sui webhook WooCommerce.
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
 ---
@@ -291,3 +291,84 @@ Deciso inoltre:
 - 🔴 **Ma non le è mai stato detto che esiste la contestazione di perimetro.** Sabatino, 02:24:17: _"Tutto questo è pienissimo pro, però **Daniela non sapeva questa informazione qui**, quindi tocca rifare un altro giro, ma questo giro me lo faccio dopo le ferie."_ La sua approvazione non può quindi essere letta come accettazione di perimetro o budget, e la conversazione correttiva è rimandata a dopo le ferie. La contestazione del §10.8 — **GLS, Teachable e l'integrazione Zoho per gli ordini Pienissimo Pro (Pienissimo Software Srl)** — richiede ancora _"valutazione economica contrattuale con Daniela per definire se il lavoro rientra in una fase aggiuntiva quotata o potrà essere gestita internamente da Pienissimo."_ Elena ha sollevato il punto; **Sabatino ha ammesso di non aver letto la minuta** che lo segnalava (_"Io non l'ho nemmeno letto quello, ho preso direttamente il link"_). Quarto meeting/status consecutivo che porta questa voce. **Rischio: l'approvazione della timeline venga citata più avanti come accettazione di perimetro.** Non esiste alcuna stima di costo/effort per la Fase 2 — esplicitamente rimandata "al rientro dalle ferie".
 - 🔴 **Il rischio di planning è ora concentrato in una settimana.** Sabatino, Aurel e Andrea Parmeggiani sono fuori fino al ~24–26 agosto. Build dei webhook WooCommerce, integrazione servizio P.IVA, mappatura Zoho, revisione flusso asset e funnel marketing partono **tutti** nell'ultima settimana di agosto — contro un **go-live 6 ottobre** e una **scadenza Zoho al 31 ottobre**. Elena in sessione: _"a voi scade il contratto di Zoho."_
 - 🟡 **Il flusso asset/biglietti richiede ancora una revisione dedicata** — sia Elisa sia Elena hanno detto che non è completamente specificato. Meeting dopo il 17 agosto, con Rebecca inclusa. Previsione di Sabatino stesso: _"vedrai che anche dopo lo sviluppo esce qualcosa che tocca cambiare."_
+
+---
+
+## 12. Aggiornamento 14/08/2026 — sweep documentale, nessuna riunione
+
+Compilato da uno sweep completo di Gmail (67 thread fino ad aprile), dell'intera cartella Drive `[Pienissimo] Fase Progettuale`, di Slack e di Fathom. **Non si è tenuta alcuna riunione** — tutto ciò che segue proviene da documenti già esistenti e mai letti. **Dove questa sezione contraddice i §1–§11, prevale questa sezione.**
+
+### 12.1 🔴 Gli sviluppi di Fase 1 finiscono il 10 settembre, non il 6 ottobre
+
+`Pienissimo_Project Plan.pptx` (Elena Spini, 10 luglio, nella cartella Drive di progetto) fissa l'intera catena di milestone, e non era mai stato aperto:
+
+| Data | Milestone |
+| ---- | --------- |
+| **10 settembre** | **Fine sviluppi Fase 1** |
+| 25 settembre | Approvazione Soluzione 1 |
+| 6 ottobre | **GO-LIVE Fase 1** |
+| 24 ottobre | Fine sviluppi Fase 2 |
+| 31 ottobre | Approvazione Soluzione 2 · scadenza Zoho |
+| **9 novembre** | **GO-LIVE Fase 2**, poi supporto post go-live |
+
+Il 6 ottobre che tutti citano è il **go-live**; UAT, fine tuning, bug fixing, formazione e l'import dati del ~1 settembre stanno tutti prima. Con il team di rientro il 24–26 agosto restano **circa due settimane di sviluppo**. **Il go-live di Fase 2 del 9 novembre non compare in alcun verbale, tracker o recap.** ⚠ Il piano è datato 10 luglio e potrebbe essere stato rivisto — confermare con Elena prima di pianificarci sopra.
+
+### 12.2 La divisione in fasi è nel piano ROMI, e taglia da entrambe le parti
+
+Lo stesso deck elenca **Fase 1**: WooCommerce → SFDC · Mexal ⇆ SFDC · Anticipay (ex CreditSafe) → SFDC. **Fase 2**: GLS → SFDC · Teachable → SFDC · Ordini Pienissimo Pro → Zoho Pienissimo Software SRL.
+
+Sostiene la posizione ROMI della "fase separata". **Non** sostiene "fuori dal progetto": i tre elementi compaiono nel piano ROMI come perimetro, ed è quel piano che Sabatino dice sia stato approvato da Daniela. Vedi §12.3.
+
+### 12.3 Il cliente ha messo per iscritto i tre punti contesi l'11 giugno
+
+`Salesforce - Requisiti e Domande per Elena (16-06-2026).pdf` — documento di requisiti di Pienissimo, sette pagine, assente da ogni tracker fino ad oggi. Il §2.9 elenca **GLS** e **Teachball** sotto _"Integrazioni richieste"_; il §2.7 descrive **Pienissimo Pro** con _"instradamento diretto alla Software"_; la **domanda 10** riguarda GLS e Teachable, la **domanda 11** l'instradamento di Pienissimo Pro al team Software.
+
+⚠ **Questo non decide la contestazione e non va presentato come se lo facesse.** L'11 giugno è _dopo_ il kickoff del 27 maggio, quindi non dice nulla sulla conversazione di prevendita su cui poggia la posizione ROMI. Spiega però perché Sabatino e Fabrizio sono sicuri, e significa che la discussione non si vince affermando che dei temi non si è mai parlato. La domanda che decide è più stretta: **erano a contratto.** Il record di prevendita non è nella casella di Aurel — la sua prima mail Pienissimo è del 24 giugno, un mese dopo il kickoff.
+
+Lo stesso documento è all'origine di **"rinuncia al servizio"** (punto aperto interno con owner Fabrizio Paganelli) e di una domanda mai risposta sull'introduzione di uno stato **Prospect** (#90).
+
+### 12.4 🔴 La chiave per il rilascio dei biglietti manca dalla mappatura Mexal
+
+`Integrazioni pienissimo.xlsx` — la mappatura campi completata da Kreosoft, risposta da Mirko Merendi l'11 agosto — definisce **Get Fatture** come `numero_fattura`, `data_fattura`, `codice_cliente`, `codice_agente`, `note_testata`, `codice_prodotto`, `quantita`, `prezzo_unitario`, `sconto`, `totale_riga`, `aliquota_iva`, `codice_pagamento`, **`numero_ordine`**.
+
+**Non c'è il numero di _riga_ d'ordine.** Il §11 ha fissato la disponibilità del biglietto sul _numero di riga d'ordine_ perché Elisa aveva escluso per data e per prodotto — quest'ultima proprio perché un tutor può mettere lo stesso codice due volte nello stesso ordine. Il solo numero d'ordine non distingue quelle righe.
+
+Il dato esiste alla fonte (la chiamata per singolo documento restituisce le righe): è quindi una **lacuna di mappatura, non un limite di Mexal**. **Sollevarlo alla call del 27 agosto.** Fino ad allora il rilascio dei biglietti non è implementabile come specificato (#75).
+
+Altri fatti ora noti dalla mappatura: tre chiamate mai registrate — **Condizioni pagamento** (p.122, giornaliera), **destinazioni / Indirizzi-spedizione** (p.180–188, _"da verificare"_), **ordini** (p.146); `totale_riga` **non è restituito** e va calcolato come (qta × prezzo) − sconto; `Get Scoperto` porta `stato_pagamento` (`P` = pagato, vuoto = non pagato) ed è la fonte migliore per lo stato di pagamento; gli agenti si filtrano dal prefisso codice **610**; ordini **serie 1 in produzione, serie 10 per i test** — una corsia di test dentro l'azienda di produzione, non l'azienda di test richiesta.
+
+### 12.5 Macchine a stati — il registro era corretto; restano due lacune
+
+`Flows & Objects.drawio` è stato decodificato integralmente. **Le macchine a stati estratte nel registro dei requisiti corrispondono al diagramma corrente** — sei stati asset incluso `Annullato`, gli stati tranche, la rinomina `preventivo scaduto → In attesa di accettazione` segnalata come etichetta ritirata, e `CHIUSO/ACQUISITO` documentato come **collisione di nome** deliberata tra Ordine e Tranche. Nessuna ri-estrazione necessaria.
+
+Due lacune reali:
+
+- 🔴 **`order.states` riporta ancora `[CREATO, CHIUSO/ACQUISITO]`** — i valori del diagramma, non `Ordinato → Fatturato → Incassato` del §11.2. **Nessuno ha detto se `Incassato` sia `CHIUSO/ACQUISITO` rinominato o una milestone diversa**, e la regola delle tranche dipende ancora dal vecchio nome. Ora marcato `status: conflict` nel registro, owner Elena Spini. **Da chiudere prima di configurare Ordine o Tranche** (#69, #50).
+- ✅ **`opportunity_types` non aveva `Plus + Attivazione o Rinnovo`** — aggiunto.
+
+⚠ **Nomenclatura:** lo stato di annullamento dell'asset è **`Annullato`** sia nel diagramma sia nel registro. Il `PIENISSIMO - Project Status.docx` di Elena e il documento di giugno del cliente lo chiamano _"rinuncia al servizio"_. **Costruire `Annullato`**; è la prosa a essere l'eccezione.
+
+📌 Il registro riportava entrambi i diagrammi come modificati il **31 luglio**; Drive dice **6 agosto** (DGM-2) e **4 agosto** (DGM-1). Date di provenienza corrette nel registro, in `README.md`, in `REQUIREMENTS.md` e in questo documento. Il contenuto estratto è stato verificato sulle versioni correnti e non è cambiato.
+
+### 12.6 Il calendario di ripresa è fissato
+
+**19 ago** funnel marketing, entrambi ora con focus biglietti · **20 ago** flusso asset, voluto da Elisa perché _"ci sono delle cose di cui non abbiamo mai parlato"_ · **25 ago** Anticipay con Andrea Parmeggiani · **27 ago** webhook WooCommerce e scambio credenziali.
+
+⚠ **Due dei quattro sono scoperta di ambito, non sviluppo.** Entrambi i follow-up interni ROMI (10 e 17 agosto) sono stati cancellati il 7 agosto: non c'è alcun checkpoint prima del 19.
+
+### 12.7 Persone — l'organigramma di aprile chiude quattro lacune e ne apre una
+
+`Organigrammi Pienissimo (EV - SW) (APRILE 26).pdf`: **Matteo = Matteo Distaso, Responsabile Marketing** — detentore del blocco #14, cognome finora ignoto · **Sabatino Rinaldi = Growth Manager** · **Fabrizio Paganelli = Responsabile Amministrazione**, con Elisa Migliano in Accounting sotto di lui · **Rebecca Marmo = Content Creator**, non decisore benché due design siano in attesa della sua call.
+
+Novità: **G. Lanzetti è CEO di entrambe, Pienissimo Srl e Pienissimo Software Srl**, con Daniela Morgese General Executive di entrambe — e non compare in alcun verbale. ⚠ **Andrea Parmeggiani lavora per Pienissimo Software Srl**, l'entità al centro della contestazione di perimetro, pur essendo il contatto tecnico designato per un'integrazione di Fase 1.
+
+### 12.8 Altri punti emersi
+
+- **#88 NUOVO** — il **template di import Zoho è un deliverable ROMI** senza riga in tracker, ed è l'unica voce di migrazione in carico a ROMI. Blocca l'import del ~1 settembre.
+- **#89 NUOVO** — `BigliettoPdfQueueable` va in errore a runtime: _"Callout not allowed from this future method"_ (mail sandbox, 17 luglio). È il meccanismo dietro "17 envelope inviati, 0 QR generati" della verifica org del 03/08. La classe è in org ma non in `force-app/`.
+- **#90 NUOVO** — se introdurre uno stato **Prospect**, aperto dall'11 giugno.
+- **#49** — la specifica WooCommerce è stata letta integralmente. Si chiude con **cinque** punti da concordare; i tracker ne seguivano due. Ora registrati anche: il **nome del parametro URL** e il **formato dell'ID**. I coupon sono **esclusi dalla prima fase**, il che risolve la questione della fonte prezzi a favore del listino WooCommerce.
+
+### 12.9 ⚠ Igiene del dato
+
+Tre artefatti di progetto usano **dati di clienti reali** come esempi: il diagramma di design (`SO_Ordine Nr. SO-72216 … DUOMO 2.0 SRL`), il workbook di mappatura Mexal (un'anagrafica cliente completa con P.IVA, indirizzo, telefono, email e PEC) e il contenuto di `01 Documenti forniti dal cliente/Documenti inviati ai clienti/`. Nessuno di quei valori può entrare in `notes/`, in questi recap o in `site/`.

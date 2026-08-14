@@ -10,6 +10,140 @@ Keep the ten most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-14 — claude — recap §12 written, register re-merged
+
+- **Did:** R1 and R2. Added **§12 to `DEVELOPMENT-RECAP.md` and `.it.md`** — nine
+  subsections, both twins in the same session, precedence headers updated so §12
+  wins. Corrected the diagram provenance dates in the register, `README.md`,
+  `REQUIREMENTS.md` and `REQUISITI.it.md`.
+- **Correction, and it matters.** I had claimed the register and the prose
+  carried stale state names, and recommended R2 on that basis. **They did not.**
+  The register already held `In attesa di accettazione`, `Annullato`, six asset
+  states, the tranche states, and `preventivo scaduto` documented as a retired
+  label. Notes that over-claimed — OI-50, OI-59, OI-74, OI-69 and
+  [the diagram note](notes/The%20newest%20design%20diagram.md) — have been
+  corrected. **Verify before asserting a document is stale.**
+- **State:** two genuine gaps were found. `order.states` still reads
+  `[CREATO, CHIUSO/ACQUISITO]` against the 06/08 decision of
+  `Ordinato → Fatturato → Incassato` — now marked `status: conflict` in the
+  register with Elena Spini as owner. And `opportunity_types` was missing
+  `Plus + Attivazione o Rinnovo`, now added.
+- **Next:** **R2b** — get Elena to say whether `Incassato` is `CHIUSO/ACQUISITO`
+  renamed. It is the same question as A2 on the board and it blocks configuring
+  both `Order` and `Tranche__c`.
+- **Watch:** §12 is now the top of the precedence chain in both recaps. Anything
+  written after this must either fold into §12 or open §13.
+
+---
+
+## 2026-08-14 — claude — action board opened
+
+- **Did:** created [docs/task-status.md](docs/task-status.md), a **ROMI-internal
+  action board** modelled on the sister project's. It holds chores,
+  confirmations and repo work that must **not** consume an `OI-NN`, because that
+  numbering is client-facing and cited in `REQUIREMENTS.md`. Linked from
+  [MAP.md](MAP.md) and [INDEX.md](INDEX.md).
+- **State:** six actions for Aurel (A1–A6), four repo tasks (R1–R4). **A6 is
+  already sent** — he replied on the *"Lista Eventi, Codici prodotto, esempio
+  Bundle"* thread on 14/08 to establish what Fabrizio delivered on 07/08;
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) and
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) now record that
+  and are **waiting on Elena**, who returns 17 August.
+- **Next:** **R2 first** when work resumes — re-merging the diagrams into the
+  register and correcting the "31 July" claim. It is the only queued task with
+  contractual consequence: `REQUISITI.it.md` goes to Pienissimo for signature
+  and currently carries state names the design has moved past. Then R1.
+- **Watch:** A4 (retrieving the six Biglietto classes into `force-app/`) is
+  **source control, not test work** — it is deliberately outside the test-suite
+  deferral and should not be swept up in it.
+
+---
+
+## 2026-08-14 — claude — newest diagram and the Mexal workbook drilled
+
+- **Did:** decoded `Flows & Objects.drawio` (all three pages) and parsed
+  `Integrazioni pienissimo.xlsx`, which Aurel downloaded manually after no
+  connected tool could reach it.
+- **State:** 🔴 **`Get Fatture` maps `numero_ordine` but no order-*line*
+  number** — the key
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) was agreed to match
+  on. Mapping gap, not a Mexal limit; the line data is in the per-document call.
+  **Raise at the 27 August call.** The diagram also settles three disputes with
+  the prose: asset states are six with the sixth named **`Annullato`** (not
+  "rinuncia al servizio"), `CHIUSO/ACQUISITO` **still appears** on the Ordini
+  page after the session deleted it, and the quote state _Scaduto_ was renamed
+  **`In Attesa Accettazione`**. Tranche states appear for the first time.
+- **Next:** confirm `CHIUSO/ACQUISITO` with Elena — the tranche rule depends on
+  it. Re-merge the diagrams into the register.
+- **Watch:** ⚠ **the register is reading stale copies.** It records both diagrams
+  as modified 31 July; Drive says **6 August** and **4 August**. `README.md` and
+  `REQUIREMENTS.md` repeat the 31 July date. Anything "extracted verbatim from
+  the diagrams" needs re-checking — see
+  [the newest design diagram](notes/The%20newest%20design%20diagram.md).
+- **Note:** both the diagram and the Mexal workbook use **real customer data** as
+  worked examples — a named company with VAT, address, phone, email and PEC.
+  Recorded as a hazard; the values are not reproduced in `notes/`.
+
+---
+
+## 2026-08-14 — claude — client documents drilled
+
+- **Did:** drilled `01 Documenti forniti dal cliente/`, located the untracked
+  16/07 internal meeting, and chased the two artifacts that could not be read.
+- **State:** the find is
+  [the client's own 11 June requirements document](notes/The%20client%20June%20requirements%20document.md) —
+  seven pages, 13 numbered questions to ROMI, an internal owners table, and in
+  no tracker. It is the **origin of `rinuncia al servizio`** (a Fabrizio-owned
+  requirement, not an August addition), it yielded
+  [OI-90](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md),
+  and it puts **GLS, Teachable and Pienissimo Pro in writing on 11 June**.
+- **Next:** open `Integrazioni pienissimo.xlsx` manually before 27 August — the
+  per-field mapping is in the workbook, not in Mirko's mail body.
+- **Watch:** the June document is **not** pre-sale evidence — 11 June is after
+  the 27 May kickoff. It shows the topics were raised early and formally, which
+  is why the client is confident, but the question that decides
+  [the dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)
+  is whether they were **in the contract**. Do not present it as settling
+  anything.
+- **Tool limits, recorded so nobody repeats the attempt:** Gmail exposes
+  attachment metadata but has **no download tool**; Drive cannot render
+  `.drawio` as text. Both are noted in the trace with the fallback.
+
+---
+
+## 2026-08-14 — claude — full history sweep from April, all attachments read
+
+- **Did:** swept Gmail from 2026-04-01 (67 threads, two pages, four query
+  angles) and the entire `[Pienissimo] Fase Progettuale` Drive folder including
+  both subfolders. Read every reachable attachment.
+- **State:** 🔴 **The binding deadline is 10 September, not 6 October.**
+  `Pienissimo_Project Plan.pptx` (Elena, 10 July, never read until today) sets
+  _Fine sviluppi Fase 1 entro 10/09_, with UAT, training and the data import
+  between that and go-live — and a **second go-live on 9 November** for Fase 2
+  that appears in no meeting record. Full dates now in
+  [OI-04](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md) and
+  [the calendar risk](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
+  The same deck lists GLS, Teachable and Zoho-for-Pienissimo-Pro as **Fase 2**,
+  which is genuinely two-edged evidence in
+  [the dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
+- **Next:** ingest what this sweep found but did not drill — a **NotebookLM
+  notebook** and a **LastPass folder** (both shared 25 June, referenced
+  nowhere), a **third design diagram**, and **four ROMI-internal meetings** with
+  Gemini notes never processed (13/07, 16/07, 03/08, 05/08).
+- **Watch:** three things. **(1)** The **pre-sales record is not in this
+  mailbox** — earliest Pienissimo mail is 24 June; Aurel was onboarded 25 June,
+  a month after kickoff. The prevendita evidence the dispute turns on sits with
+  Elena Spini or Andrea Galotto. **(2)** `01 Documenti forniti dal cliente/`
+  holds a **real customer order PDF with company name and VAT number** — keep it
+  out of `notes/`, the recaps and `site/`. **(3)** New people from the April org
+  chart: [G Lanzetti](notes/people/G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)
+  is CEO of **both** companies and appears nowhere in the project record;
+  [Andrea Parmeggiani](notes/people/Andrea%20Parmeggiani%20-%20Pienissimo%20Software%20maintenance%20manager.md)
+  belongs to **Pienissimo Software Srl**, the disputed entity, while being the
+  Fase 1 Anticipay contact.
+
+---
+
 ## 2026-08-14 — claude — requirements check, watermark 2026-08-07
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from the 2026-08-07 watermark.
@@ -37,6 +171,17 @@ Keep the ten most recent entries here; archive older ones to
 - **Note:** the trace note now carries `external_watermark:`, and the earlier
   same-day repository trace is marked `superseded` and links forward, so the
   next run cannot mistake a repo read for a sweep.
+- **Correction, same session.** The first pass ran only **one** Gmail query and
+  read eight of nine threads from snippets, then reported the client inputs as
+  outstanding. Re-running the prescribed search angles showed no new threads —
+  but a subject search surfaced that **Fabrizio Paganelli wrote to a thread
+  titled "Lista Eventi, Codici prodotto, esempio Bundle" on 07/08 12:17** and
+  Elena thanked him 21 minutes later. His message is **not retrievable from the
+  mailbox** — an empty quoted stub only, consistent with an attachment. So
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) and
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) are now marked
+  **unverified in both directions**; open that thread in a mail client before
+  chasing the client again. Read full bodies next run, not snippets.
 
 ---
 

@@ -24,11 +24,23 @@ The 2026-08-06 session specified the mechanism: a **button at order level**
 opening a popup to select the specific order lines to reverse, partially or
 fully.
 
-**The cancellation state is named.** Elena Spini's `PIENISSIMO - Project Status`
-document (6 August) specifies that the individual tickets are selected and
-cancelled by setting the asset to **"rinuncia al servizio"** — a state missing
-from [the agreed state machine](OI-74%20Asset%20state%20machine.md), which stops
-at _Utilizzato / Non utilizzato_.
+**The cancellation state has two names, and the diagram wins.**
+[The newest design diagram](../The%20newest%20design%20diagram.md) (6 August 15:22)
+specifies a button _"Crea Nota di Credito"_ at order level opening a popup to
+pick the order lines, and states that credit notes on `evento` products update
+the manually selected assets to **`Annullato`**. Elena's `PIENISSIMO - Project
+Status.docx`, same day, calls the same state **"rinuncia al servizio"**.
+
+**Build `Annullato`** — see [OI-74](OI-74%20Asset%20state%20machine.md) — and
+correct the prose document.
+
+**The requirement is older than the tracker row.** Pienissimo asked for exactly
+this on **11 June 2026**, in
+[their own requirements document](../The%20client%20June%20requirements%20document.md),
+as an internal open point owned by **Fabrizio Paganelli**: _"cliente che rinuncia
+a servizio già parzialmente fatturato (nota di credito + chiusura ordine, oggi
+'chiuso perso' su Zoho)"_. So the flow has a named owner on the client side who
+has never been asked for it here.
 
 Volume is ~30 a year, some large. Not urgent, but it must be diagrammed —
 Elena Spini owns the diagram, ROMI the build.

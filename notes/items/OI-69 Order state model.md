@@ -23,10 +23,25 @@ opportunity closure now depends on the invoice arriving back from Mexal.
 Decided; configuration pending. `Order` carries **no custom fields** in the
 repository, so nothing of this exists yet.
 
-⚠ The set may be incomplete. Fabrizio floated a fourth state **_Perso_** driven
-by credit notes and Elena Spini called three states thin — see
+🔴 **The requirement register still carries the old order states, and this is
+the one real state-machine gap.** `order.states` reads
+**`[CREATO, CHIUSO/ACQUISITO]`** — the values from
+[the diagram](../The%20newest%20design%20diagram.md), with the rule that
+`CHIUSO/ACQUISITO` is _"set manually by administration within max 5 days of
+confirmed payment"_. The 6 August session replaced that with
+`Ordinato → Fatturato → Incassato`.
+
+**Nobody has stated whether `Incassato` is `CHIUSO/ACQUISITO` renamed or a
+different milestone.** It matters because
+[the tranche](OI-50%20Tranche%20object.md) still uses `CHIUSO/ACQUISITO`, the
+register documents the name as a deliberate Order/Tranche collision, and
+`REQUIREMENTS.md` carries both vocabularies. **Confirm with Elena Spini, then
+update the register** — configuring before that means configuring twice.
+
+⚠ The set may also be incomplete. Fabrizio floated a fourth state **_Perso_**
+driven by credit notes and Elena Spini called three states thin — see
 [OI-85](OI-85%20Order%20state%20set%20may%20be%20incomplete.md). Configuring
-before that is settled means configuring twice.
+before both points are settled means configuring twice.
 
 Sits in the middle of
 [the quote to order flow](../flows/The%20quote%20to%20order%20flow.md).

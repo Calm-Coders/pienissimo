@@ -44,5 +44,15 @@ Invited: Aurel Mrruku, Elisa Migliano (`amministrazione@`), **Andrea
 Parmeggiani** (`andrea.p@pienissimo.pro`) and Sabatino Rinaldi, cc Andrea Di
 Cicco. It is the **first** of the post-Ferragosto restart meetings.
 
+A third independent confirmation: `Pienissimo_Project Plan.pptx` (10 July) lists
+**"Anticipay (ex CreditSafe) → SFDC"** among the **Fase 1** integrations.
+
+⚠ [Andrea Parmeggiani works for **Pienissimo Software Srl**](../people/Andrea%20Parmeggiani%20-%20Pienissimo%20Software%20maintenance%20manager.md),
+not Pienissimo Srl — he is its Maintenance Manager, on the `.pro` domain. That
+is the entity at the centre of
+[the scope dispute](../risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md),
+yet he is the named technical contact for a Fase 1 integration. Not a problem in
+itself; worth knowing before anyone bills time or touches their systems.
+
 Still outstanding: **credentials**, and the **administration address** that
 failure notifications should go to.

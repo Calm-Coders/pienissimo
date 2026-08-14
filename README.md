@@ -53,7 +53,7 @@ Local (non-published) diagrams in the repo root:
 
 ## Source design diagrams
 
-Both live in Google Drive, both last modified 31 July 2026, both merged into the YAML register. They are the normative definition of every status field in the build.
+Both live in Google Drive and both are merged into the YAML register. They are the normative definition of every status field in the build. **Current versions: `Flows & Objects.drawio` last modified 6 August 2026, `Workflow Pienissimo 23-7-26.drawio` 4 August 2026** — re-checked against Drive on 14 August; the register previously recorded 31 July for both. The extracted state machines were verified against the current versions and match; only the provenance dates were wrong. See [the newest design diagram](notes/The%20newest%20design%20diagram.md).
 
 | Diagram                              | Owner                      | Pages                                 | Drive                                                                              |
 | ------------------------------------ | -------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------- |

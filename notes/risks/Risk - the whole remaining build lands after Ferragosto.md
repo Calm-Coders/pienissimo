@@ -39,6 +39,27 @@ exists because administration says there are things never discussed; the
 19 August marketing session has to define two flows from scratch. Design work
 landing that late is worse than build work landing that late.
 
+## The deadline is 10 September, not 6 October
+
+`Pienissimo_Project Plan.pptx` — ROMI's own plan, 10 July, read on 2026-08-14 —
+sets **"Fine sviluppi Fase 1 entro 10/09"**. The 6 October everyone quotes is
+**go-live**, and the plan puts UAT, fine tuning, bug fixing, training and the
+data import between the two.
+
+So the real build window is **~24–26 August → 10 September: about two weeks**,
+and into it must fit the [tranche object](../items/OI-50%20Tranche%20object.md)
+(not started), the [participant flow](../items/OI-78%20Participant%20data%20collection.md)
+(not designed until 20 August), [WooCommerce webhooks](../items/OI-49%20WooCommerce%20checkout-link%20flow.md)
+(credentials exchanged 27 August), [VAT validation](../items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
+(kick-off 25 August), the [quote landing page](../items/OI-68%20Quote%20acceptance%20landing%20page.md),
+the [order](../items/OI-69%20Order%20state%20model.md) and
+[asset](../items/OI-74%20Asset%20state%20machine.md) state models, and the
+~1 September data import which depends on
+[a template ROMI has not written](../items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md).
+
+**Nobody has stated this out loud in any meeting record.** Every discussion
+anchors on 6 October.
+
 That is roughly five weeks of calendar between the restart and go-live, for
 work that includes two integrations not yet started, an object
 (`Tranche__c`) that does not exist, and a

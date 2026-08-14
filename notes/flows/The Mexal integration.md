@@ -54,6 +54,44 @@ are integration contract, not opinion:
 | **Creazione Cliente**   | Send `501.AUTO` in the codice field; the generated code comes back in a **response header** field.    |
 | **Creazione ordini**    | **Serie `1` in production; serie `10` for tests.**                                                    |
 
+## The workbook itself, opened 2026-08-14
+
+`Integrazioni pienissimo.xlsx` has seven sheets: **General** plus one per call.
+Each maps the Mexal API field to the field in today's file-based exchange and to
+the target column, type and obligatoriness.
+
+**The General sheet lists three calls the notes never mentioned**, with their
+page in the Passepartout documentation:
+
+| Entity                | Page    | Method | Mexal name           | Cadence          |
+| --------------------- | ------- | ------ | -------------------- | ---------------- |
+| Clienti               | 98      | POST   | —                    | changes in last 24h |
+| Agenti                | —       | POST   | Fornitori            | once a day       |
+| **Condizioni pagamento** | 122  | GET    | —                    | **once a day**   |
+| **destinazioni**      | 180–188 | GET    | Indirizzi-spedizione | _"da verificare"_ |
+| fatture               | 146     | GET    | Documenti            | —                |
+| prodotti              | 68      | GET    | Articoli             | —                |
+| **ordini**            | 146     | GET    | ordini clienti       | —                |
+| scoperto cliente      | 222     | GET    | Scadenziario         | —                |
+
+Outbound: `Cliente` POST _"quando l'account viene creato su SF va su Mexal"_,
+`Ordine` POST, and a _"pulsante per rinvio verso gestionale"_.
+
+**Key details from the sheets:** `totale_riga` is **not returned** — _"campo che
+devi calcolare (qta\*prezzo)-sconto"_. `Get Scoperto` gives `stato_pagamento` as
+`P` = pagato, empty = non pagato, and confirms the agent code prefix in its
+example (`610.00010`). `Get Agenti` confirms three target fields only — codice,
+nome, email.
+
+🔴 **`Get Fatture` has no order-line number** — only `numero_ordine`
+(`serie_ordine/numero_ordine`). That breaks the agreed ticket-release key; see
+[OI-75](../items/OI-75%20Ticket%20availability%20rule.md).
+
+⚠ **The workbook contains a real customer's registry record as its worked
+example** — company name, VAT, address, phone, email and PEC, plus a real
+agent's VAT. Never copy those values into `notes/`, the recaps or
+[site/](../../site/).
+
 Two consequences worth carrying:
 
 - The invoice retrieval is **one callout per document**, against ~2,300 invoices

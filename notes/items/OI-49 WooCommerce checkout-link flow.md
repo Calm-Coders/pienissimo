@@ -34,6 +34,26 @@ is out for phase 1, leaving the **WooCommerce listino** as the price source of
 truth. Still open: whether the opportunity id travels **in clear or as a signed
 token**.
 
+**The spec itself was read on 2026-08-14** — it carries the complete mu-plugin
+source, the URL anatomy (`?add-to-cart=[IDs]&quantity[ID]=N&coupon=X&sf_opp_id=Y`),
+the REST contract (`GET /wp-json/wc/v3/orders/{id}` returning `sf_opportunity_id`
+at top level), and an operational checklist split by team. Its closing section
+lists **five** points for the two teams to agree; the records tracked two:
+
+| Point to agree               | State                                             |
+| ---------------------------- | ------------------------------------------------- |
+| Pull vs webhook              | ✅ **closed — webhooks**                          |
+| Price source of truth        | ✅ **closed — coupons excluded from phase 1**     |
+| ID in clear vs signed token  | 🔴 open                                           |
+| **URL parameter name**       | 🔴 open — `sf_opp_id` is only the snippet default |
+| **ID format**                | 🔴 open — 15/18-char Salesforce id, or a custom identifier |
+
+The last two were never tracked anywhere. Both are trivial to settle and both
+break the integration silently if the two sides assume differently.
+
+⚠ The spec's worked examples use an **invented** shop and invented prices
+(`pienissimo-academy.it`, €497 / €297 / €150). They are not a price source.
+
 The same document pins the sale-origin discriminator, which had been loose:
 **"da palco"** is identified by the **product code on the WooCommerce order**;
 **"recall tutor"** by a **mandatory field on the Opportunity** the tutor must

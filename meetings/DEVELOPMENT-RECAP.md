@@ -2,8 +2,8 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **Precedence, newest first: [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
-> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta. **§11 carries the 06/08 closing session and overrides both** — most importantly the DocuSign split, the order/asset state models, the ticket-availability rule and the WooCommerce webhook decision.
+> ⚠ **Precedence, newest first: §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
+> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta. §11 carries the 06/08 closing session and overrides both — the DocuSign split, the order/asset state models, the ticket-availability rule and the WooCommerce webhook decision. **§12 carries the 14/08 document sweep and overrides all of them** — most importantly the 10 September development deadline and the missing order-line key.
 
 ---
 
@@ -291,3 +291,84 @@ Also decided:
 - 🔴 **But she was never told the scope dispute exists.** Sabatino, 02:24:17: _"Tutto questo è pienissimo pro, però **Daniela non sapeva questa informazione qui**, quindi tocca rifare un altro giro, ma questo giro me lo faccio dopo le ferie."_ Her approval therefore cannot be read as scope or budget acceptance, and the correcting conversation is deferred to after the holidays. The §10.8 dispute — **GLS, Teachable and the Zoho integration for Pienissimo Pro orders (Pienissimo Software Srl)** — still needs _"valutazione economica contrattuale con Daniela per definire se il lavoro rientra in una fase aggiuntiva quotata o potrà essere gestita internamente da Pienissimo."_ Elena raised it; **Sabatino admitted he had not read the minuta** flagging it (_"Io non l'ho nemmeno letto quello, ho preso direttamente il link"_). Fourth consecutive meeting/status carrying this item. **Risk: the timeline approval gets cited later as scope acceptance.** No Phase 2 cost/effort estimate exists — explicitly deferred to "on return from holidays".
 - 🔴 **Schedule risk is now concentrated in one week.** Sabatino, Aurel and Andrea Parmeggiani are out until ~24–26 August. The WooCommerce webhook build, the VAT-service integration, the Zoho mapping, the asset-flow review and the marketing funnels **all** start in the final week of August — against a **6 October go-live** and a **31 October Zoho expiry**. Elena in-session: _"a voi scade il contratto di Zoho."_
 - 🟡 **The asset/ticket flow still needs a dedicated review** — both Elisa and Elena said it is not fully specified. Meeting after 17 August, Rebecca included. Sabatino's own prediction: _"vedrai che anche dopo lo sviluppo esce qualcosa che tocca cambiare."_
+
+---
+
+## 12. Update 2026-08-14 — document sweep, no meeting
+
+Compiled from a full sweep of Gmail (67 threads back to April), the whole `[Pienissimo] Fase Progettuale` Drive folder, Slack and Fathom. **No meeting took place** — everything here comes from documents that already existed and had never been read. **Where this section contradicts §1–§11, this section wins.**
+
+### 12.1 🔴 Development on Fase 1 ends 10 September, not 6 October
+
+`Pienissimo_Project Plan.pptx` (Elena Spini, 10 July, in the Drive project folder) sets the full milestone chain, and had never been opened:
+
+| Date | Milestone |
+| ---- | --------- |
+| **10 September** | **Fine sviluppi Fase 1** |
+| 25 September | Approvazione Soluzione 1 |
+| 6 October | **GO-LIVE Fase 1** |
+| 24 October | Fine sviluppi Fase 2 |
+| 31 October | Approvazione Soluzione 2 · Zoho expires |
+| **9 November** | **GO-LIVE Fase 2**, then post go-live support |
+
+The 6 October everyone quotes is **go-live**; UAT, fine tuning, bug fixing, training and the ~1 September data import all sit before it. With the team back 24–26 August that is **about two weeks of build**. **The 9 November Fase 2 go-live appears in no meeting record, tracker or recap.** ⚠ The plan is dated 10 July and may have been revised — confirm with Elena before planning against it.
+
+### 12.2 The phase split is in ROMI's own plan, and it cuts both ways
+
+The same deck lists **Fase 1**: WooCommerce → SFDC · Mexal ⇆ SFDC · Anticipay (ex CreditSafe) → SFDC. **Fase 2**: GLS → SFDC · Teachable → SFDC · Ordini Pienissimo Pro → Zoho Pienissimo Software SRL.
+
+It supports ROMI's "separate phase" position. It does **not** support "outside the project" — the three appear in ROMI's own plan as scope, and that plan is what Sabatino says Daniela approved. See §12.3.
+
+### 12.3 The client put the three disputed items in writing on 11 June
+
+`Salesforce - Requisiti e Domande per Elena (16-06-2026).pdf` — Pienissimo's own requirements paper, seven pages, absent from every tracker until now. §2.9 lists **GLS** and **Teachball** under _"Integrazioni richieste"_; §2.7 describes **Pienissimo Pro** with _"instradamento diretto alla Software"_; **question 10** asks about GLS and Teachable, **question 11** about routing Pienissimo Pro to the software team.
+
+⚠ **This does not decide the dispute and must not be presented as if it does.** 11 June is _after_ the 27 May kickoff, so it says nothing about the pre-sale conversation ROMI's position rests on. It does explain why Sabatino and Fabrizio are confident, and it means the argument cannot be won by asserting the topics never came up. The deciding question is narrower: **were they in the contract.** The pre-sale record is not in Aurel's mailbox — his earliest Pienissimo mail is 24 June, a month after kickoff.
+
+The same document is the origin of **"rinuncia al servizio"** (an internal open point owned by Fabrizio Paganelli) and of a still-unanswered question on whether to introduce a **Prospect** state (#90).
+
+### 12.4 🔴 The ticket-release key is missing from the Mexal mapping
+
+`Integrazioni pienissimo.xlsx` — Kreosoft's completed field mapping, answered by Mirko Merendi on 11 August — defines **Get Fatture** as `numero_fattura`, `data_fattura`, `codice_cliente`, `codice_agente`, `note_testata`, `codice_prodotto`, `quantita`, `prezzo_unitario`, `sconto`, `totale_riga`, `aliquota_iva`, `codice_pagamento`, **`numero_ordine`**.
+
+**There is no order _line_ number.** §11 fixed ticket availability on _numero di riga d'ordine_ because Elisa killed by-date and by-product — the latter precisely because a tutor can put the same code twice on one order. The order number alone cannot separate those lines.
+
+The data exists at source (the per-document call returns the lines), so this is a **mapping gap, not a Mexal limitation**. **Raise it at the 27 August call.** Until then ticket release is unimplementable as specified (#75).
+
+Other mapping facts now known: three calls nobody had recorded — **Condizioni pagamento** (p.122, daily), **destinazioni / Indirizzi-spedizione** (p.180–188, _"da verificare"_), **ordini** (p.146); `totale_riga` is **not returned** and must be computed as (qta × prezzo) − sconto; `Get Scoperto` carries `stato_pagamento` (`P` = paid, empty = unpaid) and is the better payment-state source; agents filter on code prefix **610**; order **serie 1 in production, serie 10 for tests** — a test lane inside the production company, not the test company that was asked for.
+
+### 12.5 State machines — the register was right; two gaps remain
+
+`Flows & Objects.drawio` was decoded in full. **The requirement register's extracted state machines match the current diagram** — six asset states including `Annullato`, the tranche states, the `preventivo scaduto → In attesa di accettazione` rename flagged as a retired label, and `CHIUSO/ACQUISITO` documented as a deliberate Order/Tranche **name collision**. No re-extraction was needed.
+
+Two real gaps were found:
+
+- 🔴 **`order.states` still reads `[CREATO, CHIUSO/ACQUISITO]`** — the diagram's values, not §11.2's `Ordinato → Fatturato → Incassato`. **Nobody has said whether `Incassato` is `CHIUSO/ACQUISITO` renamed or a different milestone**, and the tranche rule still depends on the old name. Now marked `status: conflict` in the register, owner Elena Spini. **Must close before Order or Tranche is configured** (#69, #50).
+- ✅ **`opportunity_types` was missing `Plus + Attivazione o Rinnovo`** — added.
+
+⚠ **Naming:** the asset cancellation state is **`Annullato`** in both the diagram and the register. Elena's `PIENISSIMO - Project Status.docx` and the client's June document both call it _"rinuncia al servizio"_. **Build `Annullato`**; the prose is the outlier.
+
+📌 The register recorded both diagrams as modified **31 July**; Drive says **6 August** (DGM-2) and **4 August** (DGM-1). Provenance dates corrected in the register, `README.md`, `REQUIREMENTS.md` and `REQUISITI.it.md`. The extracted content was verified against the current versions and did not change.
+
+### 12.6 The restart calendar is fixed
+
+**19 Aug** marketing funnels, both now ticket-focused · **20 Aug** asset flow, requested by Elisa because _"ci sono delle cose di cui non abbiamo mai parlato"_ · **25 Aug** Anticipay with Andrea Parmeggiani · **27 Aug** WooCommerce webhooks and credential exchange.
+
+⚠ **Two of the four are design discovery, not build.** Both internal ROMI follow-ups (10 and 17 August) were cancelled on 7 August, so there is no checkpoint before the 19th.
+
+### 12.7 People — the April org chart resolves four gaps and adds one
+
+`Organigrammi Pienissimo (EV - SW) (APRILE 26).pdf`: **Matteo = Matteo Distaso, Responsabile Marketing** — holder of the #14 blocker, surname unknown until now · **Sabatino Rinaldi = Growth Manager** · **Fabrizio Paganelli = Responsabile Amministrazione**, with Elisa Migliano in Accounting under him · **Rebecca Marmo = Content Creator**, not a decision-maker although two designs are parked pending her call.
+
+New: **G. Lanzetti is CEO of both Pienissimo Srl and Pienissimo Software Srl**, with Daniela Morgese General Executive of both — and he appears in no meeting record. ⚠ **Andrea Parmeggiani works for Pienissimo Software Srl**, the entity at the centre of the scope dispute, while being the named technical contact for a Fase 1 integration.
+
+### 12.8 Other items raised
+
+- **#88 NEW** — the **Zoho import template is a ROMI deliverable** with no prior tracker row, and the only migration item ROMI owns. Gates the ~1 September import.
+- **#89 NEW** — `BigliettoPdfQueueable` fails at runtime: _"Callout not allowed from this future method"_ (sandbox mail, 17 July). This is the mechanism behind "17 envelopes sent, 0 QR codes generated" in the 03/08 org check. The class is in the org but not in `force-app/`.
+- **#90 NEW** — whether to introduce a **Prospect** state, open since 11 June.
+- **#49** — the WooCommerce spec was read in full. It closes with **five** points to agree; the trackers carried two. Newly recorded: the **URL parameter name** and the **ID format**. Coupons are **excluded from phase 1**, which settles the price-source question in favour of the WooCommerce listino.
+
+### 12.9 ⚠ Data hygiene
+
+Three project artifacts use **real customer data** as worked examples: the design diagram (`SO_Ordine Nr. SO-72216 … DUOMO 2.0 SRL`), the Mexal mapping workbook (a full client registry record with VAT, address, phone, email and PEC), and the contents of `01 Documenti forniti dal cliente/Documenti inviati ai clienti/`. None of those values may enter `notes/`, these recaps, or `site/`.

@@ -3,7 +3,7 @@
 **Cliente:** Pienissimo · **Fornitore:** ROMI S.r.l. · **Progetto:** migrazione Zoho CRM → Salesforce
 **Versione:** 1.2 — bozza per approvazione · **Data:** 3 agosto 2026
 
-> **Cosa è cambiato dalla 1.0.** Sono stati letti e integrati i due file di design draw.io — `Flows & Objects.drawio` di Elena Spini e `Workflow Pienissimo 23-7-26.drawio` annotato da Marco Montesi, entrambi modificati il 31 luglio. Ne derivano il nuovo **§16** (macchine a stati, valori delle picklist, 17 requisiti che esistevano solo nei disegni) e il **§17**, che elenca i punti in cui le fonti non concordano. Due correzioni riguardano errori nostri: la lista dei tipi ordine in DM-15 era inventata, e un punto che avevamo presentato come contraddizione (la cadenza dei promemoria) non lo era. Entrambe sono descritte nel §17.
+> **Cosa è cambiato dalla 1.0.** Sono stati letti e integrati i due file di design draw.io — `Flows & Objects.drawio` di Elena Spini e `Workflow Pienissimo 23-7-26.drawio` annotato da Marco Montesi — versioni correnti modificate rispettivamente il **6 agosto** e il **4 agosto 2026**, riverificate il 14 agosto (questo documento riportava il 31 luglio per entrambi; il contenuto estratto corrisponde alle versioni correnti, erano sbagliate solo le date). Ne derivano il nuovo **§16** (macchine a stati, valori delle picklist, 17 requisiti che esistevano solo nei disegni) e il **§17**, che elenca i punti in cui le fonti non concordano. Due correzioni riguardano errori nostri: la lista dei tipi ordine in DM-15 era inventata, e un punto che avevamo presentato come contraddizione (la cadenza dei promemoria) non lo era. Entrambe sono descritte nel §17.
 > **Sessione di approvazione:** giovedì 6 agosto 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
 
 ---

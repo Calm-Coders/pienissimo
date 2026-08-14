@@ -23,6 +23,21 @@ status per line; Salesforce aggregates upward to the tranche. **Mexal never
 writes the tranche.** At invoicing, n Mexal invoices become n Salesforce
 invoices.
 
+**Tranche states** — in [the diagram](../The%20newest%20design%20diagram.md) and
+already in the requirement register: a tranche is _"un contenitore di un
+sottoinsieme delle righe d'ordine con scadenza di pagamento a livello di riga"_.
+On deposit, **the first tranche goes straight to `CHIUSO/ACQUISITO`; subsequent
+tranches are created in `CREATO`**. Mexal updates payment status at order-line
+level and Salesforce aggregates upward onto the tranche.
+
+⚠ That state name is shared with the Order, deliberately — the register records
+it as a **name collision**, set manually by administration on the order and
+automatically on the first tranche. But the 6 August session **struck
+`Chiuso acquisito` from the order** and replaced the order states with
+`Ordinato → Fatturato → Incassato`. Whether the tranche keeps the old name, or
+`Incassato` is the same milestone renamed, is settled nowhere —
+[OI-69](OI-69%20Order%20state%20model.md). Resolve before configuring either.
+
 **`Tranche__c` does not exist**, in the org or in the repository. What does
 exist, committed 4 August and mentioned in no tracker, is
 `OrderItem.Data_Scadenza__c` — the line-level due date the design is built on.

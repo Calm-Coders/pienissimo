@@ -12,6 +12,12 @@ Joined the project at the 2026-08-06 session, with the explicit agreement that
 she is to be included in **all** flow, field and ticket calls from that point
 on.
 
+Her title on the April 2026 org chart is **Content Creator**, reporting into
+marketing under [Matteo Distaso](Matteo%20Distaso%20-%20Pienissimo%20marketing%20lead.md) —
+not a decision-making role. Two open designs are nonetheless parked pending
+"Rebecca's call", so check whether she can actually settle them or whether
+Distaso has to.
+
 She has not yet attended one. The dedicated marketing-funnel meeting that
 introduces her is scheduled only as "after 17 August"
 ([OI-81](../items/OI-81%20Event%20communication%20funnel.md)), and the open
