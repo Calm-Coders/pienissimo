@@ -6,9 +6,8 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/open-items.md row 59
-requirement: SAL-10
 ---
 
 # OI-59 - Quote workflow configuration

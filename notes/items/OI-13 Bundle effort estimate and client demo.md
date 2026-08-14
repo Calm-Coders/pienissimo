@@ -6,10 +6,9 @@ owner: Andrea Di Cicco
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-07-02
-updated: 2026-08-14
+updated: 2026-08-15
 depends_on: [OI-48, OI-87]
 source: meetings/open-items.md row 13
-requirement: BUN-01
 ---
 
 # OI-13 - Bundle effort estimate and client demo

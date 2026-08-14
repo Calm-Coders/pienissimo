@@ -4,9 +4,8 @@ type: object
 status: resolved
 owner: Aurel Mrruku
 org: ROMI
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/proposals/2026-07-16-bundle-spread-demo.md
-requirement: BUN-01
 ---
 
 # The BundleComponent junction

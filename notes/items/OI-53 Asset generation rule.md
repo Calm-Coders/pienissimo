@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/open-items.md row 53
 requirement: BIG-02
 ---

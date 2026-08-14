@@ -5,12 +5,11 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-15
 depends_on: [OI-24, OI-79]
 blocks: [go-live]
 severity: gating
 source: Drive - PIENISSIMO - Project Status.docx, open point 13
-requirement: DAT-07
 ---
 
 # OI-88 - Zoho import template owed to Pienissimo

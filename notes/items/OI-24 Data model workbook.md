@@ -6,11 +6,10 @@ owner: Sabatino Rinaldi
 with: Elisa Migliano
 org: both
 raised: 2026-07-02
-updated: 2026-08-14
+updated: 2026-08-15
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 24
-requirement: DAT-07
 ---
 
 # OI-24 - Data model workbook

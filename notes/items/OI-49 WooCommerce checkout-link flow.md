@@ -6,9 +6,8 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-07-31
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/open-items.md row 49
-requirement: INT-11
 ---
 
 # OI-49 - WooCommerce checkout-link flow

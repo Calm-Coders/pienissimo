@@ -918,7 +918,9 @@ requirements:
       pri: M,
       status: agreed,
       text: "Four-stage lifecycle: order, payment, signature, check-in",
-      acceptance: AC-05
+      acceptance: AC-05,
+      conflict: RC-06,
+      tracked_by: [flow-ticket-lifecycle]
     }
   - {
       id: BIG-02,
@@ -926,21 +928,24 @@ requirements:
       pri: M,
       status: conflict,
       text: "Campaign and ticket auto-creation trigger",
-      conflict: RC-02
+      conflict: RC-02,
+      tracked_by: [OI-53, OI-77]
     }
   - {
       id: BIG-03,
       area: tickets,
       pri: M,
       status: agreed,
-      text: "The Asset is the record; the QR is a value inside it"
+      text: "The Asset is the record; the QR is a value inside it",
+      tracked_by: [obj-biglietto]
     }
   - {
       id: BIG-04,
       area: tickets,
       pri: M,
       status: agreed,
-      text: "Ticket-generating set driven by the product flag, not by a letter in the code"
+      text: "Ticket-generating set driven by the product flag, not by a letter in the code",
+      tracked_by: [OI-76]
     }
   - {
       id: BIG-05,
@@ -955,7 +960,8 @@ requirements:
       pri: S,
       status: conflict,
       text: "Reminder funnel cadence",
-      conflict: RC-03
+      conflict: RC-03,
+      tracked_by: [OI-81]
     }
   - {
       id: BIG-07,
@@ -976,7 +982,8 @@ requirements:
       area: tickets,
       pri: M,
       status: agreed,
-      text: "Zero-euro orders stay in the CRM and are not sent to Mexal"
+      text: "Zero-euro orders stay in the CRM and are not sent to Mexal",
+      tracked_by: [OI-57]
     }
   - {
       id: BIG-10,
@@ -1039,7 +1046,8 @@ requirements:
       source: DGM-2,
       text: "Asset status picklist with six values",
       picklists: [asset_status],
-      state_machine: asset
+      state_machine: asset,
+      tracked_by: [OI-74]
     }
   - {
       id: BIG-18,
@@ -1047,7 +1055,8 @@ requirements:
       pri: M,
       status: to_confirm,
       source: DGM-2,
-      text: "Participant landing page reached by a link carrying the Account ID; if the account bought several events the referent picks the event first, then fills one row per purchased ticket"
+      text: "Participant landing page reached by a link carrying the Account ID; if the account bought several events the referent picks the event first, then fills one row per purchased ticket",
+      tracked_by: [OI-78, OI-86]
     }
   - {
       id: BIG-19,
@@ -1640,6 +1649,36 @@ reconciliation:
     proposed: "Manual selection, with the reason above stated on the record"
     default_if_undecided: "The 22/07 decision stands: automatic cancellation, with the multi-event bundle case unsolved"
     impact_on: build and administration workload
+
+  - id: RC-06
+    kind: contradiction
+    topic: Signature is still encoded in the ticket flow, after 06/08 struck it
+    requirement: "BIG-01, BIG-12, BIG-19, BIG-21"
+    register_says: >
+      Four ticket requirements still carry signature as part of the ticket path.
+      BIG-01 "Four-stage lifecycle: order, payment, signature, check-in";
+      BIG-12 "QR issuance conditional on signature; confirmed by direction";
+      BIG-19 "...adds campaign members, and sends the signature request";
+      BIG-21 "Casi Limite button ... handling participant name change and missing signature".
+    minutes_say: >
+      meetings/results/2026-08-06-chiusura-punti-aperti.md removed signature from the ticket
+      flow outright. Recorded in notes/flows/The ticket lifecycle.md, verbatim: "Signature is
+      out of this flow. Participants sign on paper at check-in; DocuSign applies only to quotes
+      and contracts. The 'mancata firma digitale' edge case was struck outright on 2026-08-06."
+    evidence_grade: minuted
+    honest_framing: >
+      This is not a tie-break between two equal sources. A later meeting overrode an earlier
+      design, and the register was never updated to follow. BIG-01 is the four-stage lifecycle
+      that names the phases of the whole ticket flow, so the stale wording is load-bearing:
+      anyone reading the signed document builds a signature step that was cancelled. Found on
+      2026-08-15 while re-deriving the note-to-requirement trace, not raised in any meeting.
+    proposed: >
+      Restate BIG-01 as three stages (order, payment, check-in); drop the signature condition
+      from BIG-12; drop "and sends the signature request" from BIG-19; reduce BIG-21 to the
+      participant name-change case. Requires the same edit in REQUIREMENTS.md and
+      REQUISITI.it.md, and the Italian is the text the client signs.
+    default_if_undecided: "The register keeps describing a signature step that 06/08 cancelled"
+    impact_on: build — a whole signature stage in the ticket flow, and the signed scope
 
 # =============================================================================
 open_points:

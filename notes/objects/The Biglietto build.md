@@ -4,9 +4,9 @@ type: object
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/open-items.md org verification 2026-08-03
-requirement: BIG-01
+requirement: BIG-03
 ---
 
 # The Biglietto build

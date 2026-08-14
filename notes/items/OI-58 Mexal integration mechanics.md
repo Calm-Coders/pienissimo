@@ -6,9 +6,8 @@ owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
 raised: 2026-07-14
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/open-items.md row 58
-requirement: INT-01
 ---
 
 # OI-58 - Mexal integration mechanics

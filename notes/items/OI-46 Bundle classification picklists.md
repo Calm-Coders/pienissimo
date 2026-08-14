@@ -6,9 +6,8 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-07-23
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/open-items.md row 46
-requirement: BUN-07
 ---
 
 # OI-46 - Bundle classification picklists

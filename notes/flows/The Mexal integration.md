@@ -5,10 +5,9 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-08-14
+updated: 2026-08-15
 depends_on: [OI-58]
 source: meetings/open-items.md row 58
-requirement: INT-01
 ---
 
 # The Mexal integration

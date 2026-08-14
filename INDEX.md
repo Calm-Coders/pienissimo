@@ -141,6 +141,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | ------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | [Source trace 2026-08-14 external sweep](notes/traces/Source%20trace%202026-08-14%20external%20sweep.md) | **Watermark for the next `requirements-check` run** — 2026-08-14 |
 | [Source trace 2026-08-14](notes/traces/Source%20trace%202026-08-14.md)              | Superseded — repository read only, moved no external watermark |
+| [The requirement mappings were fabricated](notes/The%20requirement%20mappings%20were%20fabricated.md) | **Read before trusting any note-to-requirement link** — the 23 discarded claims, and what to re-derive |
 | [The newest design diagram](notes/The%20newest%20design%20diagram.md)           | **Authority for state machines** — newer than the register believes |
 | [The client June requirements document](notes/The%20client%20June%20requirements%20document.md) | Pienissimo's own 11 June requirements — earliest structured statement of scope |
 | [Calm-Coders means ROMI](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md)         | Attributing git authors to the right org             |

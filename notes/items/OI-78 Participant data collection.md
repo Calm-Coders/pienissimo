@@ -6,10 +6,10 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-15
 depends_on: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
-requirement: BIG-09
+requirement: BIG-18
 ---
 
 # OI-78 - Participant data collection

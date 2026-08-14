@@ -4,9 +4,8 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
-requirement: SAL-17
 ---
 
 # The quote to order flow

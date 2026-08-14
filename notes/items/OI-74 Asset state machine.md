@@ -5,10 +5,10 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-15
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
-requirement: BIG-05
+requirement: BIG-17
 ---
 
 # OI-74 - Asset state machine

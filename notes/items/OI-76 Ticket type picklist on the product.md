@@ -6,8 +6,9 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
+requirement: BIG-04
 ---
 
 # OI-76 - Ticket type picklist on the product

@@ -1,58 +1,128 @@
 {
-  "collapse-filter": true,
-  "search": "",
+  "collapse-filter": false,
+  "search": "aurel",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
   "showOrphans": true,
-  "collapse-color-groups": false,
+  "collapse-color-groups": true,
   "colorGroups": [
     {
-      "query": "path:notes/items",
+      "query": "path:notes/items/",
       "color": {
         "a": 1,
-        "rgb": 5431378
+        "rgb": 5017087
       }
     },
     {
-      "query": "path:notes/risks",
+      "query": "path:notes/risks/",
       "color": {
         "a": 1,
         "rgb": 14701138
       }
     },
     {
-      "query": "path:notes/people",
+      "query": "path:notes/people/",
       "color": {
         "a": 1,
-        "rgb": 5419488
+        "rgb": 5030794
       }
     },
     {
-      "query": "path:notes/objects",
+      "query": "path:notes/objects/",
       "color": {
         "a": 1,
-        "rgb": 11908533
+        "rgb": 11032055
       }
     },
     {
-      "query": "path:notes/flows",
+      "query": "path:notes/flows/",
       "color": {
         "a": 1,
-        "rgb": 8420223
+        "rgb": 2282478
+      }
+    },
+    {
+      "query": "path:notes/decisions/",
+      "color": {
+        "a": 1,
+        "rgb": 16096779
+      }
+    },
+    {
+      "query": "path:notes/meetings/",
+      "color": {
+        "a": 1,
+        "rgb": 16628340
+      }
+    },
+    {
+      "query": "path:notes/traces/",
+      "color": {
+        "a": 1,
+        "rgb": 9741240
+      }
+    },
+    {
+      "query": "path:notes/ -path:notes/items/ -path:notes/risks/ -path:notes/people/ -path:notes/objects/ -path:notes/flows/ -path:notes/decisions/ -path:notes/meetings/ -path:notes/traces/ -path:notes/sessions/ -path:notes/dashboards/",
+      "color": {
+        "a": 1,
+        "rgb": 3003583
+      }
+    },
+    {
+      "query": "path:meetings/results/",
+      "color": {
+        "a": 1,
+        "rgb": 16486972
+      }
+    },
+    {
+      "query": "file:transcript.it.md",
+      "color": {
+        "a": 1,
+        "rgb": 11817737
+      }
+    },
+    {
+      "query": "path:meetings/proposals/",
+      "color": {
+        "a": 1,
+        "rgb": 16020150
+      }
+    },
+    {
+      "query": "file:open-items OR file:DEVELOPMENT-RECAP",
+      "color": {
+        "a": 1,
+        "rgb": 15235577
+      }
+    },
+    {
+      "query": "file:REQUIREMENTS.md OR file:REQUISITI.it.md",
+      "color": {
+        "a": 1,
+        "rgb": 16436245
+      }
+    },
+    {
+      "query": "file:MAP.md OR file:INDEX.md OR file:JOURNAL.md OR file:AGENTS.md OR file:CLAUDE.md OR file:GEMINI.md OR file:README.md OR path:docs/",
+      "color": {
+        "a": 1,
+        "rgb": 6583435
       }
     }
   ],
-  "collapse-display": true,
+  "collapse-display": false,
   "showArrow": true,
   "textFadeMultiplier": 0,
   "nodeSizeMultiplier": 1,
   "lineSizeMultiplier": 1,
-  "collapse-forces": true,
+  "collapse-forces": false,
   "centerStrength": 0.518713248970312,
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 0.7051610327211544,
-  "close": true
+  "scale": 1.049494195499064,
+  "close": false
 }

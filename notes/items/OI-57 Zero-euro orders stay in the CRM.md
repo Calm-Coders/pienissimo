@@ -5,8 +5,9 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-07-14
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/open-items.md row 57
+requirement: BIG-09
 ---
 
 # OI-57 - Zero-euro orders stay in the CRM

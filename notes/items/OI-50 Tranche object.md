@@ -5,11 +5,10 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-08-14
+updated: 2026-08-15
 blocks: [OI-75, go-live]
 severity: gating
 source: meetings/open-items.md row 50
-requirement: ORD-06
 ---
 
 # OI-50 - Tranche object

@@ -6,9 +6,10 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-15
 blocks: [OI-78]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
+requirement: BIG-18
 ---
 
 # OI-86 - Who hosts the participant landing page

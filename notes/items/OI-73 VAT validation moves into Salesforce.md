@@ -6,9 +6,8 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
-requirement: INT-14
 ---
 
 # OI-73 - VAT validation moves into Salesforce

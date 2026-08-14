@@ -42,6 +42,46 @@ Keep the ten most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-15 — claude — requirement trace, tickets batch
+
+- **Did:** re-derived the `tickets` area. **10 notes mapped to 8 `BIG`
+  requirements**, written in both directions (`requirement:` on the note,
+  `tracked_by:` on the requirement) and verified by `vault:check`, which now
+  reports `8/137 reachable` with **zero** disagreements. Mappings:
+  `BIG-01←flow-ticket-lifecycle` · `BIG-02←OI-53,OI-77` · `BIG-03←obj-biglietto`
+  · `BIG-04←OI-76` · `BIG-06←OI-81` · `BIG-09←OI-57` · `BIG-17←OI-74` ·
+  `BIG-18←OI-78,OI-86`.
+- **🔴 Found `RC-06`: four requirements still encode signature in the ticket
+  flow** — `BIG-01`, `BIG-12`, `BIG-19`, `BIG-21` — after 2026-08-06 struck it
+  outright ("Participants sign on paper at check-in; DocuSign applies only to
+  quotes and contracts"). `BIG-01` is the four-stage lifecycle naming the phases
+  of the whole flow, so the stale wording is load-bearing: anyone building from
+  the signed document builds a cancelled signature step. Recorded as a
+  reconciliation entry on Aurel's instruction; **no requirement text changed**,
+  because that edits `REQUISITI.it.md`. **The correction is still owed.**
+- **Two register gaps, both deliberate non-mappings.**
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) — the rule
+  releasing a ticket when the tranche invoice is paid in full, which the entire
+  flow keys on — **has no requirement id at all**. And
+  [OI-84](notes/items/OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md),
+  manual check-in issuing no QR, is covered by nothing; what breaks is `DAT-03`.
+  Full Tier C list in
+  [the fabricated-mappings note](notes/The%20requirement%20mappings%20were%20fabricated.md).
+- **Method, and why:** batch by the register's own `area:` field — ~20
+  requirements per batch instead of 132. Text-similarity scoring was built and
+  **rejected**: it produced 28 confident matches, most wrong, because a
+  four-word requirement whose words all appear in a long note scores 1.00. That
+  is almost certainly how the original 23 were fabricated. The rule is now **a
+  mapping needs a quotable sentence**. Written up as a fifth skill,
+  `requirement-trace`, in `.agents/` and `.claude/`, registered in `AGENTS.md`
+  and `CLAUDE.md`.
+- **Next:** five batches left — `SAL` 23, `INT` 22, `BUN` 20, `ORD` 15, and
+  data/marketing/nfr/context 28. Run `/requirement-trace` per area. Also note
+  **16 of 24 `BIG` requirements have no note**; worth a pre-sign-off pass to
+  check none is unbuilt and untracked.
+
+---
+
 ## 2026-08-15 — claude — 🔴 the note-to-requirement mappings are fabricated
 
 - **Finding, and it is serious.** Trying to make requirements traceable back to
@@ -76,11 +116,15 @@ Keep the ten most recent entries here; archive older ones to
   reports `0/137 reachable`, the PRD-04 break, and 22 one-way citations. Added
   the both-directions rule to step 4 of `drill-meeting` and step 4.3 of
   `drill-me`, in both `.agents/` and `.claude/`.
-- **Next, and it needs Aurel's call:** re-derive all 23 mappings from the note
-  bodies and fill the 33 item notes that have none — 56 decisions total. The
-  alternative is to strip the `requirement:` fields entirely rather than leave
-  wrong ones, since a wrong trace is worse than no trace at sign-off. Only after
-  that does `tracked_by:` belong in the register.
+- **Aurel chose the safe path, and it is done:** all **23** `requirement:`
+  fields were **stripped** from the notes rather than left wrong, and every
+  discarded claim is preserved in
+  [the fabricated-mappings note](notes/The%20requirement%20mappings%20were%20fabricated.md)
+  with a first-impression assessment per row, so re-derivation starts warm
+  instead of from nothing. `updated:` bumped on all 23. Nothing else in those
+  files changed — the diffs are two lines each.
+- **The register was never written to.** It is untouched at HEAD. `tracked_by:`
+  belongs there only after the 56 mappings are re-derived and checked.
 - **Also unverified:** `AGENTS.md` states the item numbers are cited in
   `REQUIREMENTS.md`. Measured: **zero** `OI-nn` or `#nn` references in either
   `REQUIREMENTS.md` or `REQUISITI.it.md`, and zero links into `notes/` or

@@ -6,10 +6,9 @@ owner: ROMI
 with: Fabrizio Paganelli
 org: both
 raised: 2026-07-16
-updated: 2026-08-14
+updated: 2026-08-15
 blocks: [OI-65]
 source: meetings/open-items.md row 43
-requirement: BUN-04
 ---
 
 # OI-43 - Spread variance does not block saving

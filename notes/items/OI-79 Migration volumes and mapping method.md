@@ -6,11 +6,10 @@ owner: Elisa Migliano
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-15
 blocks: [go-live]
 severity: gating
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
-requirement: DAT-07
 ---
 
 # OI-79 - Migration volumes and mapping method

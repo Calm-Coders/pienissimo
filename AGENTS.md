@@ -129,7 +129,7 @@ source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 
 ## Workflows
 
-Four repeatable procedures live in `.agents/skills/` (mirrored in
+Five repeatable procedures live in `.agents/skills/` (mirrored in
 `.claude/skills/`). They are plain Markdown — any agent can follow them.
 
 | Task                                | Procedure                                                             |
@@ -138,6 +138,7 @@ Four repeatable procedures live in `.agents/skills/` (mirrored in
 | Decide what to unblock next         | [.agents/skills/drill-me/SKILL.md](.agents/skills/drill-me/SKILL.md)  |
 | Compare the org against the record  | [.agents/skills/org-status-check/SKILL.md](.agents/skills/org-status-check/SKILL.md) |
 | Sweep mail/Slack/Drive for new input | [.agents/skills/requirements-check/SKILL.md](.agents/skills/requirements-check/SKILL.md) |
+| Make a requirement auditable back to its meeting | [.agents/skills/requirement-trace/SKILL.md](.agents/skills/requirement-trace/SKILL.md) |
 
 Claude Code loads these as skills automatically. Every other tool: read the
 file and follow it. "Follow `.agents/skills/drill-me/SKILL.md`" is a complete

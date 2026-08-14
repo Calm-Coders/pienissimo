@@ -5,9 +5,10 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-15
 depends_on: [OI-76]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
+requirement: BIG-02
 ---
 
 # OI-77 - Mexal event product creates the Campaign

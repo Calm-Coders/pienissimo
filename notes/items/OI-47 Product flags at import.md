@@ -5,9 +5,8 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-23
-updated: 2026-08-14
+updated: 2026-08-15
 source: meetings/open-items.md row 47
-requirement: PRD-04
 ---
 
 # OI-47 - Product flags at import
