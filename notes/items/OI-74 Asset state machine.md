@@ -22,6 +22,14 @@ with no signature there seemed to be no moment between "available" and "used".
 Sabatino Rinaldi kept it for reporting: _"ci fa statistica per capire quante
 persone hanno il biglietto nelle mani."_
 
+⚠ **The set is incomplete — a sixth state exists and is not in the machine.**
+Elena Spini's `PIENISSIMO - Project Status` document (6 August) specifies that a
+credit note on an event product cancels the linked tickets by setting the asset
+to **"rinuncia al servizio"** — see
+[OI-54](OI-54%20Credit%20note%20flow.md). That state appears in no version of the
+lifecycle recorded from the session. Add it before configuring the picklist, or
+credit notes will have nowhere to put a cancelled ticket.
+
 **Design agreed, build pending.** `Biglietto__c.Status__c` in UAT still carries
 the old signature-era values — the 29 existing records read _In attesa firma_
 and _Caricato_, states this machine does not contain. Reconfiguring the

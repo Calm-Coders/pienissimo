@@ -7,7 +7,6 @@ with: Elisa Migliano
 org: both
 raised: 2026-08-06
 updated: 2026-08-14
-uncertain: provider name
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: INT-14
 ---
@@ -31,11 +30,19 @@ re-checked; failures email an **administration address Pienissimo must still
 supply**; a **manual re-check button** sits on both order and account, using the
 same API.
 
-⚠ **The provider is unconfirmed.** The transcript garbles it; earlier meetings
-say **Anticipay**, and **CreditSafe** also appears. Elisa says it is already
-live and can hand over references. Do not write either name into a requirement
-until it is confirmed.
+✅ **The provider is settled: Anticipay, formerly CreditSafe.** They are the
+same company under two names, which is what made the transcript read as two
+candidates. Elena Spini's `PIENISSIMO - Project Status` document (6 August)
+writes it as _"Anticipay (ex CreditSafe)"_ and marks the timing **confirmed at
+order creation**; the calendar invitation for the technical call is titled
+_Integrazione Anticipay_ and describes the service as CreditSafe in its body.
+Either name may be used in a requirement, but prefer **Anticipay** and note the
+former name once.
 
-Technical call with **Andrea Parmeggiani** (`a.parmeggiani@pienissimo.pro`) in
-the third week of August — he is
-[out until roughly 24–26 August](../risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
+📅 **The technical call is scheduled: Tuesday 25 August 2026, 10:00–11:00.**
+Invited: Aurel Mrruku, Elisa Migliano (`amministrazione@`), **Andrea
+Parmeggiani** (`andrea.p@pienissimo.pro`) and Sabatino Rinaldi, cc Andrea Di
+Cicco. It is the **first** of the post-Ferragosto restart meetings.
+
+Still outstanding: **credentials**, and the **administration address** that
+failure notifications should go to.

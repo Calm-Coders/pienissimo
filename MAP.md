@@ -1,8 +1,7 @@
 # MAP - Pienissimo
 
-Entry point for humans and agents. Keep this file under 5 KB — the percent-encoded
-links cost bytes, so the budget is larger than it looks. If it grows, move detail
-into a note and link it.
+Entry point for humans and agents. Keep this file under 5 KB. If it grows, move
+detail into a note and link it.
 
 Last updated: 2026-08-14 · Source of record: [notes/](notes/)
 
@@ -27,8 +26,10 @@ Requirements went to sign-off on 2026-08-06.
   [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
   [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md).
   The suite is written as one task, requested separately before the deploy.
-- **Everything restarts after Ferragosto** (~24–26 Aug) against a 6 October
-  go-live — [the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
+- **The restart calendar is fixed: 19 Aug** marketing funnels · **20 Aug** asset
+  flow · **25 Aug** Anticipay · **27 Aug** WooCommerce credentials. Two of the
+  four are design discovery, not build —
+  [the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
 
 ## The live chain
 
@@ -38,7 +39,9 @@ Requirements went to sign-off on 2026-08-06.
    ([OI-87](notes/items/OI-87%20Real%20catalogue%20prices%20still%20outstanding.md)),
    the event list ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)),
    bundle codes ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)),
-   the Zoho workbook ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)).
+   the Zoho workbook ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)) —
+   and ROMI owes the
+   [import template](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md).
 3. **Dated but unbuilt** — [tranche](notes/items/OI-50%20Tranche%20object.md)
    (nothing exists),
    [participants](notes/items/OI-78%20Participant%20data%20collection.md),
@@ -65,15 +68,14 @@ Requirements went to sign-off on 2026-08-06.
 
 ## Standing constraints
 
-- **Daniela Morgese** decides and signs commercially; **Sabatino Rinaldi** is
-  the day-to-day lead; **Elisa Migliano** is the operational authority on
-  administration, invoicing and the infopoint; **Fabrizio Paganelli** owns the
-  product registry; **Marco Montesi** owns sales. **Elena Spini** chairs for
-  ROMI, **Aurel Mrruku** is technical lead. Full list: [notes/people/](notes/people/).
-- **The build is written by the Calm-Coders team working for ROMI** — Anita Aga,
-  Sara Aga, Rexhina, with Aurel Mrruku. Their work lands in the repository ahead
-  of the trackers, so check `git log` and `force-app/` before saying something
-  is unbuilt.
+- **Daniela Morgese** decides and signs commercially; **Sabatino Rinaldi** leads
+  day-to-day; **Elisa Migliano** is the operational authority on administration,
+  invoicing and the infopoint; **Fabrizio Paganelli** owns the product registry;
+  **Marco Montesi** sales. **Elena Spini** chairs for ROMI, **Aurel Mrruku** is
+  technical lead. Full list: [notes/people/](notes/people/).
+- **The build is written by the Calm-Coders team working for ROMI.** Their work
+  lands in the repository ahead of the trackers — check `git log` and
+  `force-app/` before calling something unbuilt.
 - **Never show placeholder prices to Pienissimo** — every catalogue price in UAT
   is a ROMI invention tagged `[PLACEHOLDER …]`.
 - Requirements have two governing texts: `REQUISITI.it.md` is presented for

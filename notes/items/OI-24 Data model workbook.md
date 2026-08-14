@@ -37,3 +37,7 @@ anno solare, evento and tipologia.
 This gates the **~1 September import**, which gates every realistic test of the
 [ticket lifecycle](../flows/The%20ticket%20lifecycle.md) before the September
 events.
+
+⚠ It also gates a ROMI-side deliverable that had no tracker row until the
+2026-08-14 sweep: **the import template Pienissimo loads the Zoho export into**
+— [OI-88](OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md).

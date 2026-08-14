@@ -21,13 +21,16 @@ event date, and auto-sending the participant-data link.
 countdown. That is the detail that makes this more than a scheduled email: one
 purchase can produce several independent funnels running months apart.
 
-A dedicated marketing-funnel meeting is to be held **after 17 August** with
-Rebecca Marmo, Marco Montesi and Matteo, and Rebecca is to join **all** flow,
-field and ticket calls from now on.
+A dedicated marketing-funnel meeting is to be held with Rebecca Marmo, Marco
+Montesi and Matteo, and Rebecca is to join **all** flow, field and ticket calls
+from now on.
 
-**The meeting is not scheduled.** It carries
-[OI-86](OI-86%20Who%20hosts%20the%20participant%20landing%20page.md) with it, which
-blocks [OI-78](OI-78%20Participant%20data%20collection.md).
+📅 **Now scheduled: 19 August 2026.** Elena Spini's 7 August status names it —
+_"il 19.08 meeting per definire i due flussi MKT"_ — and notes that **both
+marketing flows will be ticket-focused**, now that the ticket flow is confirmed.
+It carries [OI-86](OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)
+with it, which blocks
+[OI-78](OI-78%20Participant%20data%20collection.md).
 
 ⚠ The marketing workstream has its own long-standing block —
 [OI-14](OI-14%20Marketing%20forms%20and%20subdomain.md), open since 23 June — so

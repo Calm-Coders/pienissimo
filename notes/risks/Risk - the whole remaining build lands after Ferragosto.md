@@ -17,15 +17,27 @@ Everything material was pushed past the Italian August break in the 2026-08-06
 session. Sabatino Rinaldi, Aurel Mrruku and Andrea Parmeggiani are out until
 roughly **24–26 August**; Elisa Migliano returns **17 August**.
 
-Starting in the final week of August, against a **6 October go-live** and a
+**The restart calendar is now fixed** (confirmed by calendar invitations and
+Elena Spini's 7 August status), against a **6 October go-live** and a
 **31 October** Zoho expiry:
 
-- the [WooCommerce webhook build](../items/OI-49%20WooCommerce%20checkout-link%20flow.md) — credential exchange and payload testing begin 26 August
-- the [VAT validation integration](../items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md), whose provider is still unconfirmed
-- the [Zoho field mapping](../items/OI-79%20Migration%20volumes%20and%20mapping%20method.md), with a joint field-by-field call still to hold
-- the [asset flow review](../items/OI-82%20Asset%20flow%20needs%20a%20dedicated%20review.md), which both Elisa and Elena admit is under-specified
-- the [marketing funnel design](../items/OI-81%20Event%20communication%20funnel.md), meeting not yet scheduled
-- the [phase 2 estimate](../items/OI-83%20No%20phase%202%20estimate.md), explicitly deferred to after the holidays
+| Date       | What                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| **19 Aug** | [Marketing funnels](../items/OI-81%20Event%20communication%20funnel.md) — both ticket-focused    |
+| **20 Aug** | [Asset flow](../items/OI-82%20Asset%20flow%20needs%20a%20dedicated%20review.md) — Elisa's, on things _"di cui non abbiamo mai parlato"_ |
+| **25 Aug** | [Anticipay VAT integration](../items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) — with Andrea Parmeggiani |
+| **27 Aug** | [WooCommerce webhooks](../items/OI-49%20WooCommerce%20checkout-link%20flow.md) — credential exchange |
+
+Not yet scheduled and still due in the same window: the
+[Zoho field mapping call](../items/OI-79%20Migration%20volumes%20and%20mapping%20method.md),
+the [import template](../items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
+ROMI owes, and the
+[phase 2 estimate](../items/OI-83%20No%20phase%202%20estimate.md).
+
+**Two of those four are discovery, not build.** The 20 August asset meeting
+exists because administration says there are things never discussed; the
+19 August marketing session has to define two flows from scratch. Design work
+landing that late is worse than build work landing that late.
 
 That is roughly five weeks of calendar between the restart and go-live, for
 work that includes two integrations not yet started, an object
@@ -35,4 +47,9 @@ that blocks deployment on its own. The data import was planned for ~1 September
 and depends on a workbook Pienissimo has not finished.
 
 Nothing about this was framed as a risk in the session — the return dates were
-recorded as logistics.
+recorded as logistics. Elena's own status reads the go-live line drily:
+_"Go-live: 6 ottobre 2026 … sta iniziando a non essere più una notizia positiva
+dati tempi ahaha."_
+
+Both **internal follow-ups on 10 and 17 August were cancelled** on 7 August, so
+there is no ROMI-side checkpoint between the break and the 19 August restart.

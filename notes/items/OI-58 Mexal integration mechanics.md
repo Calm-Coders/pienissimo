@@ -20,11 +20,19 @@ callout limits, mastro 610, the "rinvio ordine" button — are written up in
 **WEBAPI credentials were delivered on 15 July** (`services.passepartout.cloud`,
 dominio PIENISSIMO, azienda PIE), so the build is unblocked.
 
-Two things still sit under this item:
+**The field mapping is now answered.** Andrea Di Cicco sent the per-API workbook
+on 2026-08-07; Mirko Merendi returned it filled in on 2026-08-11 with answers to
+all eight questions — agent filter, availability formula, the two-step invoice
+retrieval, client-code generation and the order serie. The detail is in
+[the Mexal integration](../flows/The%20Mexal%20integration.md).
 
-- **There is no Mexal test environment.** A test company has to be created
-  before anything can be exercised safely. Nobody is recorded as owning that,
-  and it gates every integration test.
+Three things still sit under this item:
+
+- **Listino 1 versus listino 2** — Mirko deferred to Fabrizio Paganelli, who has
+  not answered. Whether a third listino could ever be needed is also open.
+- **There is still no Mexal test environment.** Serie `10` gives a test lane,
+  but inside the **production** company — test orders land in live data. A test
+  company was the ask; nobody owns it.
 - A registry field referencing the **previous code and VAT** is needed so a
   ragione-sociale change does not orphan the account.
 

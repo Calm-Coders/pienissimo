@@ -20,8 +20,15 @@ only one component reversed. Credit notes on "evento" products **auto-set the
 matching asset to _Annullato_**. Refunds are normally issued as credit toward
 future purchases rather than bank transfers, handled by the tutor.
 
-The 2026-08-06 session specified the mechanism: a **button at order level**,
-selecting the order line or lines to reverse, partially or fully.
+The 2026-08-06 session specified the mechanism: a **button at order level**
+opening a popup to select the specific order lines to reverse, partially or
+fully.
+
+**The cancellation state is named.** Elena Spini's `PIENISSIMO - Project Status`
+document (6 August) specifies that the individual tickets are selected and
+cancelled by setting the asset to **"rinuncia al servizio"** — a state missing
+from [the agreed state machine](OI-74%20Asset%20state%20machine.md), which stops
+at _Utilizzato / Non utilizzato_.
 
 Volume is ~30 a year, some large. Not urgent, but it must be diagrammed —
 Elena Spini owns the diagram, ROMI the build.

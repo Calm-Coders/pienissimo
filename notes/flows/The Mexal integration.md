@@ -35,8 +35,35 @@ Mechanics settled 2026-07-14
   code/VAT.
 
 **WEBAPI credentials arrived 2026-07-15** (`services.passepartout.cloud`,
-dominio PIENISSIMO, azienda PIE), so the build is unblocked. **There is no
-Mexal test environment** — a test company still has to be created.
+dominio PIENISSIMO, azienda PIE), so the build is unblocked.
+
+## Field mapping, answered 2026-08-11
+
+Andrea Di Cicco sent a per-API field-mapping workbook on 2026-08-07 with eight
+open questions; **Mirko Merendi (Kreosoft) answered them on 2026-08-11** and
+returned `Integrazioni pienissimo.xlsx` with the mapping filled in. The answers
+are integration contract, not opinion:
+
+| Call                    | What Mirko settled                                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Get Clienti**         | Picks up client changes in the **last 24 hours**. Mapping confirmed.                                  |
+| **Get Agenti**          | It is Get **Fornitori** — filter agents by **code starting `610`**. Three fields only: codice, nome, email. Nothing further needed. |
+| **Get Product**         | **Availability is computed, not stored**: `inventario + carico − scarico − ordini`. Listino 1 vs 2 still owed by Fabrizio Paganelli. |
+| **Get Scoperto clienti** | Take **only causale `FE`** — fatture emesse.                                                         |
+| **Get Fatture**         | **Two-step, N+1.** First `documenti/movimenti-magazzino` for sigla + serie + numero only, then `documenti/movimenti-magazzino/sigla+serie+numero` **one document at a time** to get the full field set **including the lines**. |
+| **Creazione Cliente**   | Send `501.AUTO` in the codice field; the generated code comes back in a **response header** field.    |
+| **Creazione ordini**    | **Serie `1` in production; serie `10` for tests.**                                                    |
+
+Two consequences worth carrying:
+
+- The invoice retrieval is **one callout per document**, against ~2,300 invoices
+  a year and the 6 MB sync / 12 MB async limits. It is also the only way to get
+  the **numero riga d'ordine** that
+  [ticket availability](../items/OI-75%20Ticket%20availability%20rule.md) matches
+  on — so the N+1 is on the critical path, not an optimisation detail.
+- **There is still no Mexal test environment**, but serie `10` gives a test lane
+  inside production. That is narrower than the "test company" OI-58 asks for,
+  and it means test orders land in the live company.
 
 What travels: the whole order, all lines, with the tranche reference at **line
 level** rather than as an object; Mexal updates payment status per line and

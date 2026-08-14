@@ -7,11 +7,41 @@
   "showOrphans": true,
   "collapse-color-groups": false,
   "colorGroups": [
-    { "query": "path:notes/items", "color": { "a": 1, "rgb": 5431378 } },
-    { "query": "path:notes/risks", "color": { "a": 1, "rgb": 14701138 } },
-    { "query": "path:notes/people", "color": { "a": 1, "rgb": 5419488 } },
-    { "query": "path:notes/objects", "color": { "a": 1, "rgb": 11908533 } },
-    { "query": "path:notes/flows", "color": { "a": 1, "rgb": 8420223 } }
+    {
+      "query": "path:notes/items",
+      "color": {
+        "a": 1,
+        "rgb": 5431378
+      }
+    },
+    {
+      "query": "path:notes/risks",
+      "color": {
+        "a": 1,
+        "rgb": 14701138
+      }
+    },
+    {
+      "query": "path:notes/people",
+      "color": {
+        "a": 1,
+        "rgb": 5419488
+      }
+    },
+    {
+      "query": "path:notes/objects",
+      "color": {
+        "a": 1,
+        "rgb": 11908533
+      }
+    },
+    {
+      "query": "path:notes/flows",
+      "color": {
+        "a": 1,
+        "rgb": 8420223
+      }
+    }
   ],
   "collapse-display": true,
   "showArrow": true,

@@ -20,14 +20,25 @@ exposes it via REST as `sf_opportunity_id`; Salesforce reads the order, writes
 back, and moves the Opportunity to Closed Won. Spec:
 `Integrazione_Salesforce_WooCommerce.docx` (Sabatino Rinaldi, 31/07).
 
-**Pull versus webhook is CLOSED: webhooks.** Credential exchange and payload
-testing start **26 August**.
+**Pull versus webhook is CLOSED: webhooks.**
 
-**Two decisions remain open** and were not discussed on 2026-08-06: the **price
-source of truth** — WooCommerce listino versus the Salesforce negotiated price
-via dynamic one-shot coupons — and whether the opportunity id travels **in
-clear or as a signed token**. Elena Spini's flag that requirements were not
-frozen at end of July still stands.
+📅 **The technical meeting is scheduled: Thursday 27 August 2026, 10:00–11:30** —
+_"integrazione tecnica con WooCommerce tramite Webhook, comprensiva dello
+scambio di credenziali"_. Invited: Aurel Mrruku, Andrea Di Cicco, Sabatino
+Rinaldi. (Earlier notes said 26 August; the invitation says the 27th.)
+
+**One of the two open decisions is now closed.** Elena Spini's
+`PIENISSIMO - Project Status` document (6 August) states **"I coupon sono
+esclusi dalla prima fase"** — so the negotiated-price-via-dynamic-coupon option
+is out for phase 1, leaving the **WooCommerce listino** as the price source of
+truth. Still open: whether the opportunity id travels **in clear or as a signed
+token**.
+
+The same document pins the sale-origin discriminator, which had been loose:
+**"da palco"** is identified by the **product code on the WooCommerce order**;
+**"recall tutor"** by a **mandatory field on the Opportunity** the tutor must
+fill before generating the link. That field is the one carried by
+[OI-70](OI-70%20Performance%20Plus%20opportunity%20typing.md).
 
 **Partly built, unrecorded.** `Product2.WooCommerce_Product_Id__c` and
 `Opportunity.WooCommerce_Order_Id__c` were both committed in early August,

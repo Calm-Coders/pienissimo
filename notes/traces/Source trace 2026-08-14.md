@@ -1,14 +1,20 @@
 ---
 id: trace-2026-08-14
 type: reference
-status: active
+status: superseded
 updated: 2026-08-14
+superseded_by: trace-2026-08-14-external
+scope: repository only
 ---
 
 # Source trace 2026-08-14
 
-**Watermark for the next `requirements-check` run.** What was read to build the
-`notes/` vault, and what was deliberately not.
+> ⚠ **This is a repository trace, not an external sweep — it never moved the
+> external watermark.** For that, and for the next `requirements-check`
+> watermark, use
+> [the external sweep of the same day](Source%20trace%202026-08-14%20external%20sweep.md).
+
+What was read to build the `notes/` vault, and what was deliberately not.
 
 ## Read
 
