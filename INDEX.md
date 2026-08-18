@@ -6,7 +6,8 @@ any agent can budget before opening anything. Start at [MAP.md](MAP.md).
 Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 **Costly** = justify it. **Never** = do not load whole; grep instead.
 
-77 notes. Item ids are the tracker's own row numbers — `#75` is `OI-75`.
+91 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
+`#75` is `OI-75`.
 
 ## Cheap — load freely
 
@@ -139,8 +140,10 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 | Note                                                                                | What it holds                                        |
 | ------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| [Source trace 2026-08-14 external sweep](notes/traces/Source%20trace%202026-08-14%20external%20sweep.md) | **Watermark for the next `requirements-check` run** — 2026-08-14 |
+| [Source trace 2026-08-18](notes/traces/Source%20trace%202026-08-18.md)              | **Watermark for the next `requirements-check` run** — 2026-08-18 |
+| [Source trace 2026-08-14 external sweep](notes/traces/Source%20trace%202026-08-14%20external%20sweep.md) | The previous external watermark — 2026-08-14 |
 | [Source trace 2026-08-14](notes/traces/Source%20trace%202026-08-14.md)              | Superseded — repository read only, moved no external watermark |
+| [The Prodotti e Bundle workbook](notes/The%20Prodotti%20e%20Bundle%20workbook.md)   | Fabrizio Paganelli's 07 Aug attachment, surfaced 18 Aug — **delivered, unread**; bears on OI-46/OI-48 |
 | [The requirement mappings were fabricated](notes/The%20requirement%20mappings%20were%20fabricated.md) | **Read before trusting any note-to-requirement link** — the 23 discarded claims, and what to re-derive |
 | [The newest design diagram](notes/The%20newest%20design%20diagram.md)           | **Authority for state machines** — newer than the register believes |
 | [The client June requirements document](notes/The%20client%20June%20requirements%20document.md) | Pienissimo's own 11 June requirements — earliest structured statement of scope |

@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-14 · Source of record: [notes/](notes/)
+Last updated: 2026-08-18 · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -40,6 +40,11 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    the Zoho workbook ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)) —
    and ROMI owes the
    [import template](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md).
+   🟡 **One of these may already be answered and unopened:**
+   [`Prodotti e Bundle.xlsx`](notes/The%20Prodotti%20e%20Bundle%20workbook.md),
+   Fabrizio Paganelli's 07 Aug attachment, surfaced 18 Aug. It bears on OI-46
+   and OI-48. **No agent can read a Gmail attachment — a human must download
+   it.**
 3. **Dated but unbuilt** — [tranche](notes/items/OI-50%20Tranche%20object.md)
    (nothing exists),
    [participants](notes/items/OI-78%20Participant%20data%20collection.md),

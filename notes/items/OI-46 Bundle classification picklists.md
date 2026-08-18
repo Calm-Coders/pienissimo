@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-07-23
-updated: 2026-08-15
+updated: 2026-08-18
 source: meetings/open-items.md row 46
 ---
 
@@ -30,21 +30,25 @@ from `LIVELLO_3`/`LIVELLO_4`.
 **Fields built, data absent.** `Anno_Solare__c`, `Evento__c` and
 `Bundle_Type__c` all exist on `Product2` and are **populated on zero bundles**.
 
-⚠ **The event list may already have been delivered — verify before chasing.**
-On 2026-08-07 at 12:17 CEST Fabrizio Paganelli wrote to a thread titled
-**"Lista Eventi, Codici prodotto, esempio Bundle"**, and Elena Spini replied at
-12:38 — _"Grazie Fabrizio, aggiungo anche Aurel al thread."_ The thanks and the
-subject both suggest delivery.
+✅ **Something was delivered on 2026-08-07 — and on 2026-08-18 we learned what.**
+Fabrizio Paganelli wrote to a thread titled **"Lista Eventi, Codici prodotto,
+esempio Bundle"** at 12:17 CEST that day; Elena Spini thanked him 21 minutes
+later and added Aurel to the thread. His message could not be retrieved for
+eleven days — it survived only as an empty quoted stub — so the record could not
+say whether the event list had arrived.
 
-**It could not be confirmed on 2026-08-14.** Fabrizio's message is not
-retrievable from the ROMI mailbox: it survives only as an empty quoted stub
-inside Elena's reply, consistent with content carried as an **attachment**, and
-it does not appear under a `from:` search.
+Aurel Mrruku asked Elena to forward it on 2026-08-14. **She forwarded it on
+2026-08-18 at 09:41 CEST.** Fabrizio's message carries **no body text and one
+attachment, `Prodotti e Bundle.xlsx`** — see
+[the workbook](../The%20Prodotti%20e%20Bundle%20workbook.md). The empty stub is
+explained: the content was always the attachment.
 
-✉️ **Asked. Aurel Mrruku replied on that thread on 2026-08-14** to establish what
-Fabrizio actually sent. **Awaiting Elena Spini's answer** — she is on leave until
-17 August, so expect nothing before the 19 August meeting. Do not re-request the
-list from the client until she replies.
+⚠ **Do not close this item yet. Nobody has opened the file.** Whether it
+contains the definitive 7-event list is **unverified** — the mail subject says
+"Lista Eventi", the filename says "Prodotti e Bundle". No connected tool can
+read a Gmail attachment, and the file is in neither Drive nor Slack. **It needs
+a human to download it.** Until then this stays `in-progress`: the delivery is
+confirmed, its sufficiency is not. Do not re-request the list from the client.
 
 Re-requested at the 2026-08-06 session alongside
 [prices](OI-87%20Real%20catalogue%20prices%20still%20outstanding.md) and

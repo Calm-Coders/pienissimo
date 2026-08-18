@@ -10,6 +10,38 @@ Keep the ten most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-18 — claude — nightly requirements-check, the 07/08 attachment surfaced
+
+- **Did:** ran `requirements-check` against watermark **2026-08-14**. Gmail,
+  Slack, Drive and Fathom all swept; **one finding**. Elena Spini forwarded the
+  thread *"Lista Eventi, Codici prodotto, esempio Bundle"* on **18 Aug 09:41
+  CEST**, answering Aurel's 14 Aug request. Fabrizio Paganelli's 07 Aug 12:17
+  message carries **no body text and exactly one attachment,
+  `Prodotti e Bundle.xlsx`** — which is why no `from:` search ever found it and
+  why only an empty quoted stub survived.
+- **State:** new note
+  [the workbook](notes/The%20Prodotti%20e%20Bundle%20workbook.md); OI-46, OI-48
+  and OI-87 updated; MAP, INDEX, both trackers and both recaps carry the change;
+  trace at [Source trace 2026-08-18](notes/traces/Source%20trace%202026-08-18.md).
+  The oldest journal entry moved to `notes/sessions/2026-Q3.md`.
+- **🔴 Next — this is the whole point of the finding: the file is still
+  unread.** No connected tool can read a Gmail attachment; the integration
+  exposes metadata only and has no download call, and the file is in neither
+  Drive nor Slack. **Aurel must download it**, exactly as
+  `Integrazioni pienissimo.xlsx` was handled on 14 Aug. Until then **nothing
+  closes**: whether it holds the 7-event list (OI-46), the "(B)" bundle-only
+  codes (OI-48) or any price (OI-87) is unverified.
+- **Watch:** ⚠ it may well be the *anagrafica prodotti* promised at the 22/07
+  session, which also carried an action on Aurel to attend a review meeting
+  *after receiving the Excel* — if so, that meeting is owed. ⚠ Treat the file as
+  **price-bearing** until proven otherwise; record what it answers, never the
+  values. ⚠ Two `[ROMI-LIFE365]` marketing docs were shared on 18 Aug dated
+  23/07 and **30/07** — a different client, *not* the Pienissimo 30/07 marketing
+  follow-up, which is still unminuted. Do not conflate them.
+
+---
+
+
 ## 2026-08-15 — claude — transcripts linked to their recaps
 
 - **Did:** turned the transcript path in the `Sources:` / `Fonti:` line of all
@@ -337,38 +369,3 @@ Keep the ten most recent entries here; archive older ones to
   chasing the client again. Read full bodies next run, not snippets.
 
 ---
-
-## 2026-08-14 — claude — knowledge structure installed
-
-- **Did:** replicated the Life365 knowledge architecture onto this repository.
-  Added the routing layer ([MAP.md](MAP.md), [INDEX.md](INDEX.md),
-  [AGENTS.md](AGENTS.md) with `CLAUDE.md` / `GEMINI.md` /
-  `.github/copilot-instructions.md` as pointers, this journal), the
-  [notes/](notes/) vault with its
-  [protocol](notes/Retrieval%20and%20write%20protocol.md),
-  `npm run vault:check`, committed Obsidian config, the four project skills in
-  both `.agents/skills/` and `.claude/skills/`, and
-  [docs/publishing.md](docs/publishing.md) + [site/](site/).
-- **State:** the first wave of notes is written — every live open item, the
-  people, the risks, what is actually built, and the three core flows.
-  **Resolved tracker rows were deliberately not split**; they stay in
-  `meetings/open-items.md` under `## Resolved`, which remains the archive.
-- **Two findings came out of the migration, neither of them in any tracker.**
-  **(1)** The repository is roughly a week ahead of the 2026-08-03 org check:
-  `OrderBigliettoTrigger`, `Solo_Bundle__c`, both WooCommerce fields,
-  `OrderItem.Data_Scadenza__c`, `Opportunity.Tipo_Opportunita__c` and an
-  standard integration scaffolding were all committed 04–07 August by the
-  Calm-Coders developers working for ROMI — Anita Aga, Sara Aga and Rexhina —
-  and the trackers were never updated to match. (The scaffolding itself is
-  house pattern and correctly has no requirement; everything else on that list
-  does.) **(2)** The Biglietto DocuSign/PDF
-  Apex stack that the org check found Active in UAT is **not in `force-app/`
-  at all** — six classes live only in the org.
-- **Next:** re-run the org check against UAT to date the divergence properly
-  (the 2026-08-03 snapshot is now stale in both directions), and decide whether
-  `Tranche__c` or the participant flow goes first when the team returns ~24–26
-  August.
-- **Watch:** item ids in `notes/items/` are the tracker's own numbers
-  (`#64` → `OI-64`) because those numbers are cited in `REQUIREMENTS.md` and in
-  the published artifacts. Never renumber them. Note filenames are ASCII with
-  spaces — Italian domain words are fine, accents are transliterated.
