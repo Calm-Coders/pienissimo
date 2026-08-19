@@ -10,6 +10,43 @@ Keep the ten most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-19 — claude — nightly requirements-check, the ticket design moved and nobody said so
+
+- **Did:** ran `requirements-check` against watermark **2026-08-18**. Gmail,
+  Slack, Drive and Fathom all swept; **two findings**, one substantial. Elena
+  Spini created a **new standalone `Flusso Biglietti.drawio`** in
+  `[Pienissimo] Fase Progettuale` on **19 Aug 15:00 UTC**, and modified the
+  master `Flows & Objects.drawio` **92 minutes later**. The new file was
+  downloaded and base64-decoded in full.
+- **State:** new notes
+  [the 19 August ticket flow diagram](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md)
+  and [OI-91](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md); OI-74,
+  OI-78, OI-81, the ticket lifecycle and the master-diagram note updated; MAP,
+  INDEX, both trackers (row 91 added, rows 74/78/81 flagged) and both recaps
+  §11.3 carry the change; trace at
+  [Source trace 2026-08-19](notes/traces/Source%20trace%202026-08-19.md). The
+  oldest journal entry moved to `notes/sessions/2026-Q3.md`.
+- **🔴 Next — re-decode `Flows & Objects.drawio` at its 19 Aug 16:33 UTC
+  version.** It is the master the requirement register is checked against and it
+  was **not** re-decoded this run. It is reachable — Drive simply does not
+  full-text index mxfiles; download it and base64-decode. Until then it is
+  unknown whether the master also shows `Rinuncia`.
+- **Watch:** ⚠ **The 14/08 instinct was probably right and 15/08 overruled it.**
+  That entry flagged `rinuncia al servizio` as a possible sixth state; OI-74 then
+  settled it as loose prose for `Annullato`. The 19/08 drawing puts
+  **`Rinuncia` and `Annullato` in the same row as separate boxes**, at different
+  moments — decline at the participant-list request vs. name change or credit
+  note. **Do not reconfigure the picklist either way**; Elena or Sabatino rules.
+  ⚠ **The requirement register was deliberately left alone** — nothing in the
+  drawing is minuted, so no agreed requirement has moved. ⚠ OI-91's
+  `Aggiornamento Incasso` button is the **first backward transition** in the
+  asset state machine and qualifies OI-75's release rule; it also needs the
+  tranche object, which does not exist. ⚠ If the 19/08 marketing session ran, it
+  is **unminuted** — no recording, no canvas entry, no message.
+- **Note:** a new internal meeting is on the calendar — *[PIENISSIMO] - Interna
+  per update flusso Lead/Opty*, **Mon 24 Aug 16:00–17:00 CEST**, Elena + Aurel.
+
+---
 ## 2026-08-18 — claude — nightly requirements-check, the 07/08 attachment surfaced
 
 - **Did:** ran `requirements-check` against watermark **2026-08-14**. Gmail,
@@ -326,46 +363,3 @@ Keep the ten most recent entries here; archive older ones to
   [Andrea Parmeggiani](notes/people/Andrea%20Parmeggiani%20-%20Pienissimo%20Software%20maintenance%20manager.md)
   belongs to **Pienissimo Software Srl**, the disputed entity, while being the
   Fase 1 Anticipay contact.
-
----
-
-## 2026-08-14 — claude — requirements check, watermark 2026-08-07
-
-- **Did:** swept Gmail, Slack, Drive and Fathom from the 2026-08-07 watermark.
-  Six material findings, all folded into notes and both tracker languages.
-- **State:** **Mexal field mapping answered** by Mirko Merendi on 11/08 —
-  agent filter `610`, computed availability, causale FE, a **two-step N+1
-  invoice retrieval** that is also the only source of the `numero riga d'ordine`
-  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) needs, `501.AUTO`
-  client creation, order serie 1 prod / 10 test. **Anticipay = ex CreditSafe**,
-  one company — [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
-  is no longer uncertain. **Coupons excluded from phase 1**, closing one of
-  [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)'s two open
-  decisions. Four meetings dated: **19, 20, 25, 27 August**.
-- **Next:** the 20/08 asset meeting is scope discovery, not review — Elisa says
-  there are things never discussed. Read the two attachments before the 27/08
-  build call: `Integrazioni pienissimo.xlsx` and the Mexal mapping workbook.
-  Chase Fabrizio on **listino 1 vs listino 2**.
-- **Watch:** three things. **(1)** A **sixth asset state, `rinuncia al
-  servizio`**, exists in Elena's client-facing doc and in no version of
-  [OI-74](notes/items/OI-74%20Asset%20state%20machine.md) — do not configure the
-  picklist without it. **(2)** `PIENISSIMO - Project Status.docx` numbers its
-  open points **1–15 under its own scheme**; never conflate with the tracker's
-  `#NN`. **(3)** [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
-  is new and is the **only migration item ROMI owns** — it had no row anywhere.
-- **Note:** the trace note now carries `external_watermark:`, and the earlier
-  same-day repository trace is marked `superseded` and links forward, so the
-  next run cannot mistake a repo read for a sweep.
-- **Correction, same session.** The first pass ran only **one** Gmail query and
-  read eight of nine threads from snippets, then reported the client inputs as
-  outstanding. Re-running the prescribed search angles showed no new threads —
-  but a subject search surfaced that **Fabrizio Paganelli wrote to a thread
-  titled "Lista Eventi, Codici prodotto, esempio Bundle" on 07/08 12:17** and
-  Elena thanked him 21 minutes later. His message is **not retrievable from the
-  mailbox** — an empty quoted stub only, consistent with an attachment. So
-  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) and
-  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) are now marked
-  **unverified in both directions**; open that thread in a mail client before
-  chasing the client again. Read full bodies next run, not snippets.
-
----

@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-15
+updated: 2026-08-19
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-17
@@ -39,6 +39,34 @@ the Ordini page of the same diagram sets selected assets to **`Annullato`**.
 `Assegnato → Annullato` on _"name change (option 1) or credit note"_,
 `Assegnato → Non utilizzato` three days after the event. Nothing needs
 re-extracting here.
+
+## 🔴 Reopened 2026-08-19 - a seventh box appeared, and it is not a synonym
+
+[The 19 August ticket flow diagram](../The%20ticket%20flow%20diagram%20of%2019%20August.md)
+draws the status row with **seven** boxes, not six:
+
+**`Ordinato` · `Disponibile` · `Rinuncia` · `Assegnato` · `Utilizzato` ·
+`Non utilizzato` · `Annullato`**
+
+`Rinuncia` and `Annullato` are drawn as **separate boxes in the same row**, so
+the ruling recorded above — that _rinuncia_ is loose prose for `Annullato` and
+only `Annullato` should be configured — **can no longer be assumed**. The new
+box is annotated _"Avviene nella comunicazione dei partecipanti o accetta o
+rinuncia"_, which places it at a specific and different moment: the referent
+declines **when asked for the participant list**, before any ticket is assigned.
+`Annullato`'s recorded triggers are a name change or a credit note, both later.
+
+Read at face value they are two different events, and the earlier reading — one
+state, two names — was the reasonable inference from the evidence that existed
+on 06 August. **Later evidence wins, but this evidence is a diagram with no
+minute behind it**, so nothing is settled here.
+
+**This is a human decision and must not be inferred.** Elena Spini drew it; she
+or Sabatino Rinaldi can say in one sentence whether `Rinuncia` is a seventh
+state to configure or a label for the same outcome. Until then **do not
+reconfigure the picklist** — building six or building seven are different
+migrations, and the 29 existing UAT records are already stranded on the old
+signature-era values.
 
 ⚠ The naming outlier is the prose: Elena's `PIENISSIMO - Project Status.docx`
 and [the client's June document](../The%20client%20June%20requirements%20document.md)

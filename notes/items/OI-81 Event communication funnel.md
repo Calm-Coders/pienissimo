@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-08-15
+updated: 2026-08-19
 blocks: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-06
@@ -36,3 +36,17 @@ with it, which blocks
 ⚠ The marketing workstream has its own long-standing block —
 [OI-14](OI-14%20Marketing%20forms%20and%20subdomain.md), open since 23 June — so
 this funnel is being designed on top of a stream that is not itself unblocked.
+
+## 2026-08-19 - a second send, with no date on it
+
+[The 19 August ticket flow diagram](../The%20ticket%20flow%20diagram%20of%2019%20August.md)
+draws the funnel as **two communications, not one**: the known one _"A 30-60
+giorni dall'evento"_, and a second marked **_"A XX giorni dall'evento"_**. The
+`XX` is literal — a placeholder left in the file. So the funnel's second send
+exists in the design and **its timing is an open decision**, owned with the rest
+of this item.
+
+**Whether the 19 August session actually took place is unconfirmed.** The
+diagram landed that afternoon and matches the subject, but there is no
+recording, no canvas entry and no message — see the diagram note. If the
+session did run, **it is unminuted**, and this item cannot close on a drawing.

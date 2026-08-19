@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-18 · Source of record: [notes/](notes/)
+Last updated: 2026-08-19 · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -25,9 +25,21 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
   [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md).
   The suite is written as one task, requested separately before the deploy.
-- **Restart: 19 Aug** marketing · **20 Aug** asset flow · **25 Aug** Anticipay ·
+- **Restart: 19 Aug** marketing · **20 Aug** asset flow · **24 Aug** internal
+  Lead/Opty update (Elena + Aurel, 16:00 CEST) · **25 Aug** Anticipay ·
   **27 Aug** WooCommerce. Two are design discovery, not build —
   [the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
+
+- 🔴 **The ticket design moved on 19 Aug and nobody minuted it.**
+  [A new ticket flow diagram](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md)
+  appeared in Drive that afternoon, with **`Rinuncia` drawn as a seventh asset
+  state** ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)) and a new
+  admin-only
+  [`Aggiornamento Incasso` button](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md)
+  that runs the state machine **backwards**. No recording, no canvas entry, no
+  message. The master `Flows & Objects.drawio` moved 92 minutes later and is
+  **not yet re-decoded** —
+  [the newest design diagram](notes/The%20newest%20design%20diagram.md).
 
 ## The live chain
 

@@ -4,7 +4,7 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-15
+updated: 2026-08-19
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-01
 ---
@@ -41,6 +41,22 @@ Participant data, name changes and check-in fallbacks are in
 [OI-78](../items/OI-78%20Participant%20data%20collection.md); the 60-day
 communication funnel that drives it is
 [OI-81](../items/OI-81%20Event%20communication%20funnel.md).
+
+## 2026-08-19 - the table above is no longer known to be complete
+
+[The 19 August ticket flow diagram](../The%20ticket%20flow%20diagram%20of%2019%20August.md)
+disturbs this flow in two ways, and neither is settled:
+
+- **A state that may be missing.** `Rinuncia` is drawn as its own box, at the
+  participant-communication step — the referent declines when asked for the
+  list. See [OI-74](../items/OI-74%20Asset%20state%20machine.md).
+- **A transition that runs backwards.** The new
+  [`Aggiornamento Incasso` button](../items/OI-91%20Aggiornamento%20Incasso%20button.md)
+  puts an asset from `Disponibile` back to `Ordinato` when a payment was booked
+  against the wrong tranche. Every transition in the table above moves forward;
+  this one does not, and it means **release is reversible** — which
+  [OI-75](../items/OI-75%20Ticket%20availability%20rule.md) does not currently
+  allow for.
 
 Built against this: [`Biglietto__c`](../objects/The%20Biglietto%20build.md) — but
 the states above are not yet configured, and

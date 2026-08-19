@@ -60,6 +60,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-88 Zoho import template](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md) | open · gating | **ROMI** |
 | [OI-89 BigliettoPdfQueueable callout error](notes/items/OI-89%20BigliettoPdfQueueable%20callout%20error.md) | open | ROMI |
 | [OI-90 whether to introduce a Prospect state](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md) | open · 2 months silent | Sabatino Rinaldi |
+| [OI-91 Aggiornamento Incasso button](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md) | open · new 19 Aug · reverses the state machine | ROMI |
 | [OI-04 scope against the go-live date](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md) | open · gating | Elena Spini |
 
 ### Open items — client inputs owed
@@ -145,7 +146,8 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [Source trace 2026-08-14](notes/traces/Source%20trace%202026-08-14.md)              | Superseded — repository read only, moved no external watermark |
 | [The Prodotti e Bundle workbook](notes/The%20Prodotti%20e%20Bundle%20workbook.md)   | Fabrizio Paganelli's 07 Aug attachment, surfaced 18 Aug — **delivered, unread**; bears on OI-46/OI-48 |
 | [The requirement mappings were fabricated](notes/The%20requirement%20mappings%20were%20fabricated.md) | **Read before trusting any note-to-requirement link** — the 23 discarded claims, and what to re-derive |
-| [The newest design diagram](notes/The%20newest%20design%20diagram.md)           | **Authority for state machines** — newer than the register believes |
+| [The newest design diagram](notes/The%20newest%20design%20diagram.md)           | **Authority for state machines** — newer than the register believes · ⚠ moved 19 Aug, not re-decoded |
+| [The ticket flow diagram of 19 August](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md) | New standalone `Flusso Biglietti.drawio` — `Rinuncia` as a 7th state, OI-91, unminuted |
 | [The client June requirements document](notes/The%20client%20June%20requirements%20document.md) | Pienissimo's own 11 June requirements — earliest structured statement of scope |
 | [Calm-Coders means ROMI](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md)         | Attributing git authors to the right org             |
 | [Integration Configuration is standard scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md) | House pattern, not a project requirement — do not re-flag |

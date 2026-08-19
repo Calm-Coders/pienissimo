@@ -228,7 +228,7 @@ This also **kills the §10.9 accept/reject-buttons-in-email idea** — the landi
 - ✅ **Performance Plus opportunities must be typed by the tutor at creation** — **attivazione** vs **rinnovo**, mandatory and manual, because contract generation depends on it.
 - ✅ **Service start/end date belongs to the Strategist, not the contract.** Signature ≠ service start; clients queue days-to-weeks (Marco Montesi). The department head enters the real start date at kick-off. ROMI to build a **banner/alert or email when the start-date field is empty**.
 
-### 11.3 Tickets and assets — the state machine is final
+### 11.3 Tickets and assets — the state machine, final as of 06/08 and queried again on 19/08
 
 | State                           | Trigger                                                       |
 | ------------------------------- | ------------------------------------------------------------- |
@@ -238,6 +238,8 @@ This also **kills the §10.9 accept/reject-buttons-in-email idea** — the landi
 | **Utilizzato / Non utilizzato** | Set by the QR scan at the event                               |
 
 _Assegnato_ was nearly dropped once signature left the ticket flow; **Sabatino kept it for reporting** — _"ci fa statistica per capire quante persone hanno il biglietto nelle mani."_
+
+🔴 **Queried 19/08, and not yet resolved.** A new `Flusso Biglietti.drawio` appeared in `[Pienissimo] Fase Progettuale` on 19 August, drawn by Elena Spini. It draws the status row with **seven boxes**, adding **`Rinuncia`** — annotated _"avviene nella comunicazione dei partecipanti o accetta o rinuncia"_ — as a box distinct from `Annullato`. Until 19/08 the record treated _rinuncia_ as loose prose for `Annullato`; on this drawing they are two different moments, the first when the referent declines at the participant-list request, the second on a name change or credit note. The same file adds an admin-only **`Aggiornamento Incasso`** button that moves an asset **backwards**, `Disponibile → Ordinato`, when an amount was booked against the wrong tranche (#91). ⚠ **No minute, recording or message accompanies the drawing**, so nothing here is agreed — the picklist must not be reconfigured on it. See #74, #91.
 
 ⚠ **The availability rule in §10 was ambiguous; the agreed wording is "fattura pagata a livello di rata/tranche".** Elisa: _"quel biglietto è disponibile quando la fattura con la quale l'ho fatturato deve essere integralmente pagata, tutta pagata."_ Partial payment releases **nothing**. Order lines are grouped into tranches by **due date** (events 1+2 → tranche 1 at 31 Jan, events 3+4 → tranche 2 at 28 Feb, …); each tranche is invoiced separately, and when _that_ invoice is fully collected _those_ tickets go Disponibile. ⚠ Critically, **tranche composition follows customer payment convenience, not events** — _"ci sono tot rate che vengono suddivise sulla base della gestione del cliente, non sulla base dell'evento"_ — so an event's ticket can sit behind unrelated items in the same invoice.
 

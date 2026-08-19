@@ -228,7 +228,7 @@ Questo **elimina anche l'idea dei pulsanti accetta/rifiuta in mail del §10.9** 
 - ✅ **Le opportunità Performance Plus vanno tipizzate dal tutor in creazione** — **attivazione** vs **rinnovo**, obbligatorio e manuale, perché la generazione del contratto ne dipende.
 - ✅ **La data di inizio/fine servizio è dello Strategist, non del contratto.** Firma ≠ inizio servizio; i clienti vanno in coda giorni o settimane (Marco Montesi). Il responsabile di reparto inserisce la data reale all'avvio. ROMI svilupperà un **banner/alert o email quando il campo data inizio è vuoto**.
 
-### 11.3 Biglietti e asset — la macchina a stati è definitiva
+### 11.3 Biglietti e asset — la macchina a stati, definitiva al 06/08 e rimessa in discussione il 19/08
 
 | Stato                           | Trigger                                                                    |
 | ------------------------------- | -------------------------------------------------------------------------- |
@@ -238,6 +238,8 @@ Questo **elimina anche l'idea dei pulsanti accetta/rifiuta in mail del §10.9** 
 | **Utilizzato / Non utilizzato** | Impostati dalla scansione del QR all'evento                                |
 
 _Assegnato_ stava per essere eliminato quando la firma è uscita dal flusso biglietti; **Sabatino l'ha mantenuto per il reporting** — _"ci fa statistica per capire quante persone hanno il biglietto nelle mani."_
+
+🔴 **Rimessa in discussione il 19/08, e non ancora risolta.** Un nuovo `Flusso Biglietti.drawio` è comparso in `[Pienissimo] Fase Progettuale` il 19 agosto, disegnato da Elena Spini. La riga degli stati vi compare con **sette caselle**, con l'aggiunta di **`Rinuncia`** — annotata _"avviene nella comunicazione dei partecipanti o accetta o rinuncia"_ — come casella distinta da `Annullato`. Fino al 19/08 il record trattava _rinuncia_ come formulazione discorsiva per `Annullato`; in questo disegno sono due momenti diversi, il primo quando il referente rinuncia alla richiesta della lista partecipanti, il secondo su cambio nome o nota di credito. Lo stesso file aggiunge un pulsante **`Aggiornamento Incasso`**, riservato all'amministrazione, che riporta l'asset **all'indietro**, da `Disponibile` a `Ordinato`, quando un importo è stato imputato alla tranche sbagliata (#91). ⚠ **Nessun verbale, registrazione o messaggio accompagna il disegno**, quindi nulla di tutto ciò è concordato — la picklist non va riconfigurata su questa base. Vedi #74, #91.
 
 ⚠ **La regola di disponibilità del §10 era ambigua; la formulazione concordata è "fattura pagata a livello di rata/tranche".** Elisa: _"quel biglietto è disponibile quando la fattura con la quale l'ho fatturato deve essere integralmente pagata, tutta pagata."_ Il pagamento parziale non libera **nulla**. Le righe d'ordine si raggruppano in tranche per **data di scadenza** (evento 1+2 → tranche 1 al 31 gen, evento 3+4 → tranche 2 al 28 feb, …); ogni tranche è fatturata separatamente, e quando _quella_ fattura è integralmente incassata _quei_ biglietti passano a Disponibile. ⚠ Punto critico: **la composizione delle tranche segue la gestione del pagamento del cliente, non gli eventi** — _"ci sono tot rate che vengono suddivise sulla base della gestione del cliente, non sulla base dell'evento"_ — quindi il biglietto di un evento può stare dietro voci non correlate nella stessa fattura.
 

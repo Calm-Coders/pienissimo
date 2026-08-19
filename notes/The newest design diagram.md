@@ -4,16 +4,27 @@ type: reference
 status: active
 owner: Elena Spini
 org: ROMI
-updated: 2026-08-14
-source: Drive - Flows & Objects.drawio, modified 2026-08-06T15:22:03Z
+updated: 2026-08-19
+source: Drive - Flows & Objects.drawio, modified 2026-08-19T16:33:19Z
+decoded_at_version: 2026-08-06T15:22:03Z
 supersedes_in_register: DGM-2
 ---
 
 # The newest design diagram
 
 `Flows & Objects.drawio` — Elena Spini's master design file, **three pages:
-LEAD-OPTY, Ordini, Flusso Biglietti**. Decoded and read in full on 2026-08-14.
-**This is the authority for state machines**, ahead of the prose recaps.
+LEAD-OPTY, Ordini, Flusso Biglietti**. **This is the authority for state
+machines**, ahead of the prose recaps.
+
+> 🔴 **Everything below describes the 06 August version, decoded on 2026-08-14.
+> The file was modified again on 2026-08-19 at 16:33 UTC and has NOT been
+> re-decoded.** That is 92 minutes after Elena created the standalone
+> [19 August ticket flow diagram](The%20ticket%20flow%20diagram%20of%2019%20August.md),
+> so the likeliest content is that same ticket flow folded into the master — but
+> **that is a guess, and the master is the file the requirement register is
+> checked against.** Re-decode it before trusting any state machine here. In
+> particular it is unknown whether the master now also shows `Rinuncia` as a
+> seventh asset state; see [OI-74](items/OI-74%20Asset%20state%20machine.md).
 
 ## The register's dates are wrong; its content is not
 
