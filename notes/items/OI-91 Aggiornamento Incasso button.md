@@ -5,10 +5,11 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-19
-updated: 2026-08-19
+updated: 2026-08-20
 depends_on: [OI-50, OI-75]
+blocks: [OI-92]
 uncertain: who requested it, and whether it is in contract scope
-source: Drive - Flusso Biglietti.drawio, created 2026-08-19T15:00:55Z
+source: Drive - Flusso Biglietti.drawio, created 2026-08-19T15:00:55Z; confirmed in Flows & Objects.drawio, modified 2026-08-20T15:36:24Z
 ---
 
 # OI-91 - Aggiornamento Incasso button
@@ -48,3 +49,23 @@ the 19 August session, and whether it falls inside the contracted scope or is
 evolutiva. The diagram is the only evidence; it carries no attribution. The
 20 August asset meeting called by Elisa Migliano — _"ci sono delle cose di cui
 non abbiamo mai parlato"_ — is the obvious place it gets confirmed or denied.
+
+## Confirmed in the master, 2026-08-20 - and now questioned
+
+The button is **no longer only in the standalone drawing**: the 20 August
+re-decode of `Flows & Objects.drawio` found it folded into the master's
+`Flusso Biglietti` page, unchanged, with the same
+_"visibile solo dopo che un Asset è DISPONIBILE"_ rule. See
+[the newest design diagram](../The%20newest%20design%20diagram.md).
+
+Drawn beside it on the same day is a new question —
+[OI-92](OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)
+— asking whether an **unpaid invoice in Mexal's _scadenziario_** could drive the
+same reversal automatically. If the answer is yes, this manual button may be the
+wrong shape for the requirement, or may be only the fallback path. **That is
+reason not to build it yet**, on top of the tranche object not existing.
+
+⚠ Still no attribution, and Elisa Migliano's 20 August asset meeting left **no
+recording, no canvas entry and no message** — see
+[the trace](../traces/Source%20trace%202026-08-20.md). Whether it ran at all is
+unrecorded.

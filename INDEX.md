@@ -61,6 +61,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-89 BigliettoPdfQueueable callout error](notes/items/OI-89%20BigliettoPdfQueueable%20callout%20error.md) | open | ROMI |
 | [OI-90 whether to introduce a Prospect state](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md) | open · 2 months silent | Sabatino Rinaldi |
 | [OI-91 Aggiornamento Incasso button](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md) | open · new 19 Aug · reverses the state machine | ROMI |
+| [OI-92 Mexal Scadenziario as the trigger to reverse an asset](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md) | open · new 20 Aug · due at the 26 Aug Mexal review | Andrea Di Cicco |
 | [OI-04 scope against the go-live date](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md) | open · gating | Elena Spini |
 
 ### Open items — client inputs owed
@@ -141,13 +142,16 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 | Note                                                                                | What it holds                                        |
 | ------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| [Source trace 2026-08-18](notes/traces/Source%20trace%202026-08-18.md)              | **Watermark for the next `requirements-check` run** — 2026-08-18 |
+| [Source trace 2026-08-20](notes/traces/Source%20trace%202026-08-20.md)              | **Watermark for the next `requirements-check` run** — 2026-08-20 · both design diagrams moved, master re-decoded |
+| [Source trace 2026-08-19](notes/traces/Source%20trace%202026-08-19.md)              | Previous watermark — 2026-08-19 · the 19 Aug ticket flow diagram |
+| [Source trace 2026-08-18](notes/traces/Source%20trace%202026-08-18.md)              | Previous watermark — 2026-08-18 · the 07 Aug attachment surfaced |
 | [Source trace 2026-08-14 external sweep](notes/traces/Source%20trace%202026-08-14%20external%20sweep.md) | The previous external watermark — 2026-08-14 |
 | [Source trace 2026-08-14](notes/traces/Source%20trace%202026-08-14.md)              | Superseded — repository read only, moved no external watermark |
 | [The Prodotti e Bundle workbook](notes/The%20Prodotti%20e%20Bundle%20workbook.md)   | Fabrizio Paganelli's 07 Aug attachment, surfaced 18 Aug — **delivered, unread**; bears on OI-46/OI-48 |
 | [The requirement mappings were fabricated](notes/The%20requirement%20mappings%20were%20fabricated.md) | **Read before trusting any note-to-requirement link** — the 23 discarded claims, and what to re-derive |
-| [The newest design diagram](notes/The%20newest%20design%20diagram.md)           | **Authority for state machines** — newer than the register believes · ⚠ moved 19 Aug, not re-decoded |
+| [The newest design diagram](notes/The%20newest%20design%20diagram.md)           | **Authority for state machines** · re-decoded 20 Aug at its 20/08 15:36Z version — `Rinuncia` folded into the master, order states drawn but old ones not struck |
 | [The ticket flow diagram of 19 August](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md) | New standalone `Flusso Biglietti.drawio` — `Rinuncia` as a 7th state, OI-91, unminuted |
+| [The client Lead-Opty diagram moved on 20 August](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md) | `DGM-1`, Marco Montesi's own copy — moved 68 min before the master, both unminuted |
 | [The client June requirements document](notes/The%20client%20June%20requirements%20document.md) | Pienissimo's own 11 June requirements — earliest structured statement of scope |
 | [Calm-Coders means ROMI](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md)         | Attributing git authors to the right org             |
 | [Integration Configuration is standard scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md) | House pattern, not a project requirement — do not re-flag |

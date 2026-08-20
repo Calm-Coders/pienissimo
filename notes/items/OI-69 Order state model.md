@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-15
+updated: 2026-08-20
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -36,6 +36,34 @@ different milestone.** It matters because
 register documents the name as a deliberate Order/Tranche collision, and
 `REQUIREMENTS.md` carries both vocabularies. **Confirm with Elena Spini, then
 update the register** — configuring before that means configuring twice.
+
+## 2026-08-20 - the diagram caught up, and still did not answer the question
+
+`Flows & Objects.drawio` was re-decoded at its **2026-08-20T15:36:24Z** version
+and now **draws `Ordinato · Fatturato · Incasato`** (one `s`, as drawn) — on the
+LEAD-OPTY page as a new `ORDINE` block, and again on the Ordini page — together
+with the rule _"Status Order == Incassato >> Aggiornamento dell'Opty in **Chiusa
+Vinta**"_. That is exactly the 06 August decision, and it is the first time the
+drawing has carried it. It also confirms the second half of this note: the
+Opportunity closes on `Incassato`, not on signature.
+
+🔴 **But `CHIUSO/ACQUISITO` was not struck.** `Order Status SF ==
+CHIUSO/ACQUISITO` and `Order Status SF == CREATO` are still on the Ordini page,
+and the tranche rule still sends the first tranche to `CHIUSO/ACQUISITO`. **The
+diagram now shows both vocabularies at once**, which is worse than showing only
+the old one: it can no longer be dismissed as a drawing that predates the
+decision, and it still does not say whether `Incassato` and `CHIUSO/ACQUISITO`
+are the same milestone.
+
+One weak signal, not enough to act on: the client's own
+[`Workflow Pienissimo 23-7-26.drawio`](../The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md),
+edited the same afternoon, labels its closed-won box **"Chiuso Vinto /
+Incassato"** — while still defining `CHIUSO/ACQUISITO` separately elsewhere on
+the same page. Suggestive of a rename; **not a ruling**.
+
+**The ask is unchanged.** Elena Spini: is `Incassato` `CHIUSO/ACQUISITO`
+renamed, or a different milestone? Neither the register nor the tranche object
+can be configured until that sentence exists.
 
 ⚠ The set may also be incomplete. Fabrizio floated a fourth state **_Perso_**
 driven by credit notes and Elena Spini called three states thin — see

@@ -6,7 +6,7 @@ owner: ROMI
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-20
 blocks: [OI-69]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -26,6 +26,13 @@ question is really whether a reversal is a **state** of the order or an
 [credit-note flow](OI-54%20Credit%20note%20flow.md) already links a credit note to
 both the order and the order line, and supports partial reversal of a
 multi-event bundle. A partially reversed order is not obviously "lost".
+
+**2026-08-20:** when the order states were finally drawn into
+[the master diagram](../The%20newest%20design%20diagram.md), **only three boxes
+appeared** — `Ordinato · Fatturato · Incasato`. **No `Perso`.** That is evidence
+about the drawing, not a decision: Elena drew what was agreed on 06 August, and
+this item records something floated *after* that agreement and left open. It
+does mean nobody has acted on Fabrizio's fourth state in the fortnight since.
 
 That also interacts with tickets: a credit note on an "evento" product
 auto-cancels the matching asset, so a per-line reversal has to be expressible

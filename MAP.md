@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-19 · Source of record: [notes/](notes/)
+Last updated: 2026-08-20 · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -25,21 +25,30 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
   [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md).
   The suite is written as one task, requested separately before the deploy.
-- **Restart: 19 Aug** marketing · **20 Aug** asset flow · **24 Aug** internal
-  Lead/Opty update (Elena + Aurel, 16:00 CEST) · **25 Aug** Anticipay ·
-  **27 Aug** WooCommerce. Two are design discovery, not build —
+- **Restart: 19 Aug** marketing · **20 Aug** asset flow (Elisa) · **24 Aug**
+  internal Lead/Opty update (Elena + Aurel, 16:00 CEST) · **25 Aug** Anticipay ·
+  **26 Aug** [ROMI-PIENISSIMO] Review Temi Integrazione Mexal (16:00–17:00 CEST,
+  **client-facing** — Elena, Aurel, Andrea Di Cicco, amministrazione and
+  Fabrizio Paganelli; first Mexal session since 14 Jul) · **27 Aug**
+  WooCommerce. Several are design discovery, not build —
   [the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
+  ⚠ **The 19 and 20 Aug sessions left no minute of any kind** — only diagram
+  edits. If they ran, nothing records what was agreed.
 
-- 🔴 **The ticket design moved on 19 Aug and nobody minuted it.**
-  [A new ticket flow diagram](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md)
-  appeared in Drive that afternoon, with **`Rinuncia` drawn as a seventh asset
-  state** ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)) and a new
-  admin-only
-  [`Aggiornamento Incasso` button](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md)
-  that runs the state machine **backwards**. No recording, no canvas entry, no
-  message. The master `Flows & Objects.drawio` moved 92 minutes later and is
-  **not yet re-decoded** —
-  [the newest design diagram](notes/The%20newest%20design%20diagram.md).
+- 🔴 **The design moved three times in two days; none of it is minuted.** On
+  20 Aug **both register source diagrams moved 68 minutes apart** — the client's
+  ([Marco Montesi](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md))
+  and ROMI's [master](notes/The%20newest%20design%20diagram.md), now re-decoded,
+  after [the 19 Aug ticket flow](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md).
+  `Rinuncia` is now **in the master**, so the seventh asset state sits in the
+  file the register is validated against ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md));
+  the 06 Aug order states are drawn **alongside** the old ones rather than
+  replacing them ([OI-69](notes/items/OI-69%20Order%20state%20model.md)); a tier
+  became `Dinamond` where the minute says `Silver`
+  ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md));
+  and a new question asks whether an **unpaid** Mexal invoice can reverse an
+  asset ([OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md),
+  due at the 26 Aug client Mexal review). **Nothing was reconfigured.**
 
 ## The live chain
 

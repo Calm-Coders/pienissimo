@@ -3,7 +3,7 @@
 **Cliente:** Pienissimo · **Fornitore:** ROMI S.r.l. · **Progetto:** migrazione Zoho CRM → Salesforce
 **Versione:** 1.2 — bozza per approvazione · **Data:** 3 agosto 2026
 
-> **Cosa è cambiato dalla 1.0.** Sono stati letti e integrati i due file di design draw.io — `Flows & Objects.drawio` di Elena Spini e `Workflow Pienissimo 23-7-26.drawio` annotato da Marco Montesi — versioni correnti modificate rispettivamente il **6 agosto** e il **4 agosto 2026**, riverificate il 14 agosto (questo documento riportava il 31 luglio per entrambi; il contenuto estratto corrisponde alle versioni correnti, erano sbagliate solo le date). Ne derivano il nuovo **§16** (macchine a stati, valori delle picklist, 17 requisiti che esistevano solo nei disegni) e il **§17**, che elenca i punti in cui le fonti non concordano. Due correzioni riguardano errori nostri: la lista dei tipi ordine in DM-15 era inventata, e un punto che avevamo presentato come contraddizione (la cadenza dei promemoria) non lo era. Entrambe sono descritte nel §17.
+> **Cosa è cambiato dalla 1.0.** Sono stati letti e integrati i due file di design draw.io — `Flows & Objects.drawio` di Elena Spini e `Workflow Pienissimo 23-7-26.drawio` annotato da Marco Montesi — entrambi ri-decodificati integralmente il **20 agosto 2026**, giorno in cui risultavano modificati nello stesso pomeriggio, rispettivamente alle 15:36 UTC e alle 14:28 UTC (questo documento riportava il 6 agosto e il 4 agosto). ⚠ **Nessuna di queste due modifiche è verbalizzata, quindi nulla di quanto segue è stato cambiato sulla loro base**; i tre punti in cui i disegni si sono spostati rispetto a questo testo sono elencati nel §17. Ne derivano il nuovo **§16** (macchine a stati, valori delle picklist, 17 requisiti che esistevano solo nei disegni) e il **§17**, che elenca i punti in cui le fonti non concordano. Due correzioni riguardano errori nostri: la lista dei tipi ordine in DM-15 era inventata, e un punto che avevamo presentato come contraddizione (la cadenza dei promemoria) non lo era. Entrambe sono descritte nel §17.
 > **Sessione di approvazione:** giovedì 6 agosto 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
 
 ---
@@ -469,7 +469,9 @@ Esistono solo nei disegni e non sono mai stati discussi in riunione. Con la firm
 
 ## 17. Dove le fonti non concordano
 
-Cinque punti, e non sono dello stesso tipo. L'etichetta lo dice, perché trattarli tutti allo stesso modo sarebbe fuorviante al momento della firma.
+Otto punti, e non sono dello stesso tipo. L'etichetta lo dice, perché trattarli tutti allo stesso modo sarebbe fuorviante al momento della firma.
+
+⚠ **RC-06, RC-07 e RC-08 sono nuovi in questa revisione e hanno un'unica causa.** Entrambi i file di design sono stati modificati il **20 agosto 2026**, a 68 minuti di distanza, e **nessuna delle due modifiche è verbalizzata** — nessuna riunione, nessun appunto, nessun messaggio. In ciascun caso il disegno dice ora qualcosa che questo documento non dice. **Nulla di quanto segue è stato modificato sulla base di un disegno**: sono elencati perché possiate deciderli.
 
 ### RC-01 · Da ratificare — l'oggetto biglietto
 
@@ -509,6 +511,27 @@ ROMI chiede ora di tornare indietro e selezionare i biglietti **a mano** in un p
 
 Questo è il fornitore che chiede di disfare una cosa già approvata, per un motivo tecnico. Non è un pareggio fra due fonti e non va registrato come tale.
 **Se non si decide:** vale la decisione del 22/07 — annullamento automatico, e il caso del bundle multi-evento resta irrisolto.
+
+### RC-06 · Da decidere — `Rinuncia` è un settimo stato del biglietto?
+
+Questo documento e il registro dei requisiti prevedono **sei** stati dell'asset: `Ordinato`, `Disponibile`, `Assegnato`, `Utilizzato`, `Non utilizzato`, `Annullato`. Dal 19 agosto i file di design disegnano un **settimo** riquadro, **`Rinuncia`**, con l'annotazione _"avviene nella comunicazione dei partecipanti o accetta o rinuncia"_ — il referente che rinuncia nel momento in cui gli viene chiesta la lista partecipanti. I trigger registrati di `Annullato` sono invece il cambio nome o la nota di credito, entrambi momenti successivi.
+
+Letti alla lettera sono due eventi diversi. Ma il verbale del 6 agosto tratta _rinuncia_ come dicitura generica per `Annullato`, e da allora non è stato verbalizzato nulla.
+**Proposta:** una frase di Elena Spini o Sabatino Rinaldi chiude il punto. **Se non si decide:** si realizzano i sei stati previsti qui e `Rinuncia` non viene configurato.
+
+### RC-07 · Da chiarire — `Incassato` e `CHIUSO/ACQUISITO`
+
+La sessione del 6 agosto ha sostituito gli stati dell'ordine con **`Ordinato → Fatturato → Incassato`**, eliminando _Chiuso acquisito_. Il file di design si è ora allineato e disegna questi tre — **ma non ha rimosso i valori precedenti**: `CHIUSO/ACQUISITO` e `CREATO` sono ancora nella pagina degli ordini, e la regola delle tranche manda tuttora la prima tranche in `CHIUSO/ACQUISITO`.
+
+La fonte porta quindi entrambi i vocabolari insieme. **Nessuno ha detto se `Incassato` sia `CHIUSO/ACQUISITO` rinominato oppure una milestone diversa** — e la tranche dipende dalla risposta.
+**Proposta:** confermare che sono la stessa milestone con un nuovo nome, oppure indicare quale sia la seconda. **Se non si decide:** né Ordine né Tranche possono essere configurati senza un rischio concreto di doverlo rifare.
+
+### RC-08 · Segnalazione nostra — una tipologia di biglietto ha cambiato nome in un disegno
+
+Il verbale del 6 agosto riporta come codici prodotto di esempio **_Camerieri Venditori Gold_** e **_Camerieri Venditori Silver_**. Il 20 agosto il file di design ha cambiato `Silver` in **`Dinamond`** — con ogni probabilità _Diamond_, scritto male.
+
+È la modifica di una parola in un disegno contro un termine messo a verbale in riunione, e tocca l'elenco delle tipologie biglietto che è ancora atteso insieme all'anagrafica prodotto.
+**Proposta:** inviare l'elenco delle tipologie insieme ai campi dell'anagrafica prodotto; lo prenderemo da lì e non dal disegno. **Se non si decide:** non realizziamo nulla, perché un elenco dedotto da stringhe di esempio sarebbe una supposizione.
 
 ### Nota sulle fonti
 

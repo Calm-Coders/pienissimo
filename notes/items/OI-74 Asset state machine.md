@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-19
+updated: 2026-08-20
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-17
@@ -60,6 +60,24 @@ Read at face value they are two different events, and the earlier reading — on
 state, two names — was the reasonable inference from the evidence that existed
 on 06 August. **Later evidence wins, but this evidence is a diagram with no
 minute behind it**, so nothing is settled here.
+
+### 🔴 Escalated 2026-08-20 - it is in the master now, not just a side file
+
+`Flows & Objects.drawio` was re-decoded on **20 August at its
+2026-08-20T15:36:24Z version** and the seven-box row **has been folded into the
+master**, on the `Flusso Biglietti` page, with the same annotation. See
+[the newest design diagram](../The%20newest%20design%20diagram.md).
+
+That removes the one comfort in the 19 August reading. `Rinuncia` is no longer
+confined to a standalone drawing that might have been a sketch — it now sits in
+**the file the requirement register is checked against**, which is what
+`BIG-17`'s six states are validated from. The register was still **not**
+changed: nothing here is minuted, and a picklist is not reconfigured off an
+unminuted drawing. But the gap between the register and its own source document
+is now real, and it widens every day it is left.
+
+**The ask is unchanged and one sentence long.** Elena Spini or Sabatino Rinaldi:
+is `Rinuncia` a seventh state, or another name for `Annullato`?
 
 **This is a human decision and must not be inferred.** Elena Spini drew it; she
 or Sabatino Rinaldi can say in one sentence whether `Rinuncia` is a seventh

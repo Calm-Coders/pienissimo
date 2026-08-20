@@ -3,7 +3,7 @@
 **Client:** Pienissimo · **Supplier:** ROMI S.r.l. · **Project:** Zoho CRM → Salesforce migration
 **Version:** 1.2 — draft for approval · **Date:** 3 August 2026
 
-> **What changed since 1.0.** The two draw.io design files have been read and merged in — `Flows & Objects.drawio` by Elena Spini and `Workflow Pienissimo 23-7-26.drawio` annotated by Marco Montesi — current versions last modified **6 August** and **4 August 2026** respectively, re-verified on 14 August (this document previously said 31 July for both; the extracted content matches the current versions, only the dates were wrong). They produce the new **§16** (state machines, picklist values, 17 requirements that existed only in the drawings) and **§17**, which lists the points where the sources disagree. Two of those corrections are our own errors: the order-typology list in DM-15 was invented, and one item we had presented as a contradiction — the reminder cadence — was not one. Both are described in §17.
+> **What changed since 1.0.** The two draw.io design files have been read and merged in — `Flows & Objects.drawio` by Elena Spini and `Workflow Pienissimo 23-7-26.drawio` annotated by Marco Montesi — both re-decoded in full on **20 August 2026**, at which point each had been modified that same afternoon — 15:36 UTC and 14:28 UTC respectively (this document previously said 6 August and 4 August). ⚠ **Neither of those edits is minuted, so nothing below was changed on the strength of them**; the three points where the drawings have now moved ahead of this text are listed in §17. They produce the new **§16** (state machines, picklist values, 17 requirements that existed only in the drawings) and **§17**, which lists the points where the sources disagree. Two of those corrections are our own errors: the order-typology list in DM-15 was invented, and one item we had presented as a contradiction — the reminder cadence — was not one. Both are described in §17.
 > **Sign-off session:** Thursday 6 August 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
 
 > English mirror of `REQUISITI.it.md`. The **Italian version is the one presented to and signed by the client**; this copy exists for the ROMI team. If the two ever diverge, the Italian text prevails.
@@ -471,7 +471,9 @@ They exist only in the drawings and have never been discussed in a meeting. Sign
 
 ## 17. Where the sources disagree
 
-Five points, and they are not the same kind of thing. The label says which, because treating them alike would be misleading at the moment of signature.
+Eight points, and they are not the same kind of thing. The label says which, because treating them alike would be misleading at the moment of signature.
+
+⚠ **RC-06 to RC-08 are new in this revision and share one cause.** Both design files were edited on **20 August 2026**, 68 minutes apart, and **neither edit was minuted** — no meeting, no notes, no message. In each case the drawing now says something this document does not. **Nothing below has been changed on the strength of a drawing**; they are listed so you can rule on them.
 
 ### RC-01 · To ratify — the ticket object
 
@@ -511,6 +513,27 @@ ROMI is now asking to go back and select the tickets **by hand** in a pop-up, be
 
 This is the supplier asking to undo something already approved, for a technical reason. It is not a tie-break between two sources and must not be recorded as one.
 **If nobody decides:** the 22/07 decision stands — automatic cancellation, and the multi-event bundle case stays unsolved.
+
+### RC-06 · To rule on — is `Rinuncia` a seventh ticket state?
+
+This document and the register specify **six** asset states: `Ordinato`, `Disponibile`, `Assegnato`, `Utilizzato`, `Non utilizzato`, `Annullato`. Since 19 August the design files draw a **seventh** box, **`Rinuncia`**, annotated _"avviene nella comunicazione dei partecipanti o accetta o rinuncia"_ — the referent declining at the moment the participant list is requested. `Annullato`'s recorded triggers are a name change or a credit note, both later moments.
+
+Read plainly these are two different events. But the 6 August record treats _rinuncia_ as loose wording for `Annullato`, and nothing since has been minuted.
+**Proposal:** one sentence from Elena Spini or Sabatino Rinaldi settles it. **If nobody decides:** six states are built as specified here, and `Rinuncia` is not configured.
+
+### RC-07 · To clarify — `Incassato` and `CHIUSO/ACQUISITO`
+
+The 6 August session replaced the order states with **`Ordinato → Fatturato → Incassato`** and struck _Chiuso acquisito_ outright. The design file has now caught up and draws those three — **but it did not remove the old values**: `CHIUSO/ACQUISITO` and `CREATO` are still on the orders page, and the tranche rule still sends the first tranche to `CHIUSO/ACQUISITO`.
+
+So the source now carries both vocabularies at once. **Nobody has said whether `Incassato` is `CHIUSO/ACQUISITO` renamed, or a different milestone** — and the tranche depends on the answer.
+**Proposal:** confirm they are the same milestone under a new name, or name the second one. **If nobody decides:** neither Order nor Tranche can be configured without a real chance of configuring twice.
+
+### RC-08 · Our flag — a ticket tier changed name in a drawing
+
+The 6 August minutes record the example product codes as **_Camerieri Venditori Gold_** and **_Camerieri Venditori Silver_**. On 20 August the design file changed `Silver` to **`Dinamond`** — most likely _Diamond_, misspelt.
+
+This is a one-word change in a drawing against a term a meeting put on the record, and it touches the ticket-type list that is still owed with the product master.
+**Proposal:** send the tier list with the product-master fields, and we will take it from there rather than from the drawing. **If nobody decides:** we build nothing, because a tier list inferred from example strings would be guesswork.
 
 ### A note on sources
 

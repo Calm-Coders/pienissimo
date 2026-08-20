@@ -83,21 +83,33 @@ sources:
       title: Workflow Pienissimo 23-7-26.drawio
       owner: marco.m@pienissimo.com
       drive_id: 1rfmySNKyhhNJnaV-2ULkGl0vUIf50Q7t
-      modified: 2026-08-04T10:09:12Z # re-checked against Drive 2026-08-14; was recorded as 2026-07-31T12:46:09Z
+      modified: 2026-08-20T14:28:17Z # re-checked against Drive 2026-08-20; was 2026-08-04T10:09:12Z
       pages: [LEAD-OPTY]
-      note: Client-annotated lead/opportunity workflow, edited right after the 31/07 review
+      note: >-
+        Client-annotated lead/opportunity workflow. Moved again on 2026-08-20,
+        68 minutes before DGM-2, with no minute behind either edit. Decoded in
+        full that day: the picklists below still match it verbatim and were NOT
+        re-extracted. A handful of client annotations are in the file but not
+        here, and no decode exists between 04 and 20 August to date them — see
+        notes/The client Lead-Opty diagram moved on 20 August.md
     - id: DGM-2
       title: Flows & Objects.drawio
       owner: e.spini@romicompany.com
       drive_id: 11ly3iGQc1smlY8IybSnUMQBGXbZ-ddbx
-      modified: 2026-08-06T15:22:03Z # re-checked against Drive 2026-08-14; was recorded as 2026-07-31T09:50:03Z
+      modified: 2026-08-20T15:36:24Z # re-checked against Drive 2026-08-20; was 2026-08-06T15:22:03Z
       pages: [LEAD-OPTY, Ordini, Flusso Biglietti]
       note: >-
         ROMI master design file; the most detailed source for orders and tickets.
-        Re-read in full on 2026-08-14 against this version: the state machines and
-        picklists below match it and were NOT re-extracted. Only the provenance
-        dates were wrong. The one content gap found is order.states — see the
-        reconciliation note there.
+        Re-decoded in full on 2026-08-20 at this version. The state machines and
+        picklists below were NOT re-extracted: the file has moved twice since the
+        06/08 version they came from (19/08 16:33Z, 20/08 15:36Z) and NEITHER
+        edit is minuted, so no agreed requirement has moved. Three divergences
+        between this file and the register are now open and deliberately NOT
+        applied here: Rinuncia drawn as a seventh asset state (see asset_status
+        and OI-74), the order states drawn alongside rather than replacing the
+        old ones (see order.reconciliation), and a ticket tier renamed Silver ->
+        Dinamond against the 06/08 minute (OI-76). See
+        notes/The newest design diagram.md
   org_check:
     org: a.mrruku@pienissimo.uat
     instance: ability-customization-52152--partial
@@ -253,6 +265,14 @@ state_machines:
       documents CHIUSO/ACQUISITO as a deliberate Order/Tranche pair, and (c) a fourth
       order state "Perso", tied to credit notes, was floated and left undecided.
       Owner: Elena Spini. Must close before Order or Tranche is configured.
+      2026-08-20: DGM-2 now DRAWS Ordinato/Fatturato/Incasato — on LEAD-OPTY as a
+      new ORDINE block and again on Ordini — with the rule "Status Order ==
+      Incassato >> Aggiornamento dell'Opty in Chiusa Vinta". It did NOT strike the
+      old values: Order Status SF == CHIUSO/ACQUISITO and == CREATO are still on
+      the Ordini page and tranche.states still uses CHIUSO/ACQUISITO. So the
+      source now carries both vocabularies and the question is still unanswered.
+      Only three states are drawn; no "Perso". states/ states_agreed_06_08 above
+      are deliberately left as they are — the edit is unminuted.
     creation_systems: [WooCommerce, SFDC, Mexal]
     rules:
       - "A WooCommerce order is not visible in SFDC until its WooCommerce status is COMPLETATO"
@@ -344,6 +364,11 @@ picklists:
     # ⚠ This is the DISPLAY order as drawn in DGM-2 — it is NOT the lifecycle sequence.
     # Anything that renders these left-to-right must use flow_order below, or it will
     # contradict the state diagram on the same page.
+    # ⚠ 2026-08-20 — DGM-2 now draws a SEVENTH box, "Rinuncia", between Disponibile and
+    # Assegnato, annotated "Avviene nella comunicazione dei partecipanti o accetta o
+    # rinuncia". It is NOT added below: the edit is unminuted, and BIG-17's six states
+    # stand until Elena Spini or Sabatino Rinaldi rules on it. See OI-74. Do not
+    # reconfigure the picklist from this comment.
     display_order:
       [Ordinato, Assegnato, Disponibile, Non utilizzato, Utilizzato, Annullato]
     flow_order:

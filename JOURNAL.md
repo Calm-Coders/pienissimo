@@ -10,6 +10,55 @@ Keep the ten most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-20 — claude — nightly requirements-check, both design diagrams moved on the same afternoon
+
+- **Did:** ran `requirements-check` against watermark **2026-08-19**. Gmail,
+  Slack, Drive and Fathom all swept; **three findings**. Cleared the 🔴 action
+  carried from 19 August by **re-decoding the master `Flows & Objects.drawio`**
+  at its 2026-08-20T15:36:24Z version — and found that the **client's own
+  `Workflow Pienissimo 23-7-26.drawio` had moved 68 minutes earlier**, at 14:28
+  UTC. Both are register source diagrams (`DGM-2`, `DGM-1`). **Neither edit is
+  minuted.** Both decoded in full from base64.
+- **State:** new notes
+  [the client Lead-Opty diagram](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md)
+  and [OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md);
+  [the newest design diagram](notes/The%20newest%20design%20diagram.md) rewritten
+  for the new version; OI-69, OI-74, OI-76, OI-85, OI-91 updated. Register:
+  **provenance dates for both diagrams corrected**, plus non-normative notes on
+  `order.reconciliation` and `asset_status`. MAP, INDEX, both trackers (row 92
+  added, rows 69/74/76/85/91 flagged), both recaps (§11.3 and the order-state
+  gap), README, and **RC-06/07/08 added to §17 of `REQUIREMENTS.md` and
+  `REQUISITI.it.md`**. Trace at
+  [Source trace 2026-08-20](notes/traces/Source%20trace%202026-08-20.md). The
+  oldest journal entry moved to `notes/sessions/2026-Q3.md`.
+- **🔴 Next — nothing in the register was re-extracted, and that was deliberate.**
+  Three divergences between the register and its own source files are now open
+  and need a human, not another sweep: is `Rinuncia` a seventh asset state
+  (OI-74); is `Incassato` `CHIUSO/ACQUISITO` renamed (OI-69); and is the ticket
+  tier `Silver` or `Dinamond` (OI-76). Each is one sentence from Elena Spini or
+  Sabatino Rinaldi.
+- **Watch:** ⚠ **The master now draws the 06 Aug order states *alongside* the old
+  ones without striking them** — `CHIUSO/ACQUISITO` and `CREATO` are still on the
+  Ordini page. OI-69 can no longer be waved off as "the drawing predates the
+  decision"; the source itself is now ambiguous. Only three states, **no
+  `Perso`** (OI-85). ⚠ **`DGM-1` is reached through a Drive shortcut**, so a
+  `parentId` listing of the project folder returns the shortcut, not the file's
+  real `modifiedTime` — this run only caught the client-side edit because the
+  sweep was by `modifiedTime` across all files. **Resolve shortcuts.** ⚠ There is
+  **no decode of `DGM-1` between 4 and 20 August**, so its divergences from the
+  register cannot be dated and are recorded as "present, not registered" — do not
+  let a later run report them as "changed today". ⚠ Both the **19 Aug marketing**
+  and **20 Aug asset** sessions left **no recording, no canvas entry, no
+  message**; Fathom holds nothing after 06 Aug. Whether they ran is unrecorded.
+  ⚠ `Prodotti e Bundle.xlsx` is **still unread** — and may also hold the ticket
+  tier list OI-76 now needs.
+- **Note:** a client-facing meeting is on the calendar — *[ROMI-PIENISSIMO] -
+  Review Temi Integrazione Mexal*, **Wed 26 Aug 16:00–17:00 CEST**, Elena Spini
+  with Aurel, Andrea Di Cicco, amministrazione@pienissimo.com and Fabrizio
+  Paganelli. First Mexal session since 14 July, and the forum for OI-92.
+
+---
+
 ## 2026-08-19 — claude — nightly requirements-check, the ticket design moved and nobody said so
 
 - **Did:** ran `requirements-check` against watermark **2026-08-18**. Gmail,
@@ -330,36 +379,3 @@ Keep the ten most recent entries here; archive older ones to
 - **Tool limits, recorded so nobody repeats the attempt:** Gmail exposes
   attachment metadata but has **no download tool**; Drive cannot render
   `.drawio` as text. Both are noted in the trace with the fallback.
-
----
-
-## 2026-08-14 — claude — full history sweep from April, all attachments read
-
-- **Did:** swept Gmail from 2026-04-01 (67 threads, two pages, four query
-  angles) and the entire `[Pienissimo] Fase Progettuale` Drive folder including
-  both subfolders. Read every reachable attachment.
-- **State:** 🔴 **The binding deadline is 10 September, not 6 October.**
-  `Pienissimo_Project Plan.pptx` (Elena, 10 July, never read until today) sets
-  _Fine sviluppi Fase 1 entro 10/09_, with UAT, training and the data import
-  between that and go-live — and a **second go-live on 9 November** for Fase 2
-  that appears in no meeting record. Full dates now in
-  [OI-04](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md) and
-  [the calendar risk](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
-  The same deck lists GLS, Teachable and Zoho-for-Pienissimo-Pro as **Fase 2**,
-  which is genuinely two-edged evidence in
-  [the dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
-- **Next:** ingest what this sweep found but did not drill — a **NotebookLM
-  notebook** and a **LastPass folder** (both shared 25 June, referenced
-  nowhere), a **third design diagram**, and **four ROMI-internal meetings** with
-  Gemini notes never processed (13/07, 16/07, 03/08, 05/08).
-- **Watch:** three things. **(1)** The **pre-sales record is not in this
-  mailbox** — earliest Pienissimo mail is 24 June; Aurel was onboarded 25 June,
-  a month after kickoff. The prevendita evidence the dispute turns on sits with
-  Elena Spini or Andrea Galotto. **(2)** `01 Documenti forniti dal cliente/`
-  holds a **real customer order PDF with company name and VAT number** — keep it
-  out of `notes/`, the recaps and `site/`. **(3)** New people from the April org
-  chart: [G Lanzetti](notes/people/G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)
-  is CEO of **both** companies and appears nowhere in the project record;
-  [Andrea Parmeggiani](notes/people/Andrea%20Parmeggiani%20-%20Pienissimo%20Software%20maintenance%20manager.md)
-  belongs to **Pienissimo Software Srl**, the disputed entity, while being the
-  Fase 1 Anticipay contact.
