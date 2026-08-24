@@ -9,7 +9,7 @@ The canonical, tool-neutral instructions for this repository live in
 
 - Project skills live in `.claude/skills/` (mirrored in `.agents/skills/` for
   other agent runtimes): `drill-meeting`, `drill-me`, `org-status-check`,
-  `requirements-check`, `requirement-trace`.
+  `requirements-check`, `requirement-trace`, `start-sf-projects`.
 - Claude's own persistent memory directory is **not** the project memory. It
   holds only pointers into this repository, because Codex and other tools
   cannot see it. Durable project facts belong in [notes/](notes/).

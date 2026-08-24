@@ -10,6 +10,90 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-24 — claude — start-sf-projects brought in, and its templates fixed
+
+- **Compared the two projects' skill sets properly.** Neither has strictly more:
+  **Life365** had `start-sf-projects` (the generator that scaffolded both),
+  **Pienissimo** has `requirement-trace` — correctly, since Life365 has no
+  `requirements/` register at all to trace against.
+- **Copied `start-sf-projects` into this repo**, `.agents/` and `.claude/`,
+  verified identical: `SKILL.md`, `agents/openai.yaml`,
+  `scripts/create_sf_project.py`, `scripts/install_project_workflows.py`, and
+  four `assets/project-skills/*/SKILL.md.tpl` templates.
+- 🔴 **Fixed the defect that prompted this.** The generator's `drill-me` and
+  `drill-meeting` templates carried **zero** mention of `STATUS.md` or Notion,
+  so every project scaffolded from it got drill skills that move note statuses
+  and leave the mirror silently stale. Life365's live copies had been
+  hand-patched after generation; the generator never was. Both templates now
+  carry the refresh step, matching the wording already in
+  `requirements-check.tpl`. All four templates now reference `STATUS.md`.
+- **The generator's design was never the problem.** It already scaffolds
+  `STATUS.md` as a stub for `org-status-check` to fill, and ships a
+  `notes/notion-mirror.md` with an empty id table and a first-run procedure.
+  Only the two close-out pointers were missing.
+- ⚠ **Naming divergence, left alone:** the generator scaffolds the mirror note
+  as `notes/notion-mirror.md`, while **both** live projects renamed it to
+  `notes/The Notion mirror of the project status.md` to satisfy the
+  filename-is-the-H1-title rule. The generator's stub name breaks that
+  convention. Not changed — it would alter what every future project gets, and
+  is a naming call, not a bug fix.
+- ⚠ **Two copies of the generator now exist**, here and in `life365`, and
+  **only this one carries the template fix.** They can drift. If the generator
+  should live in one place, that is a decision nobody has taken.
+- `AGENTS.md` now says six procedures, with a warning that `start-sf-projects`
+  is a generator: **editing a skill here does not change what the next project
+  gets** — that has to be done in the template. `CLAUDE.md` skill list updated.
+
+## 2026-08-24 — claude — STATUS.md created and mirrored to Notion
+
+Replicated the Life365 status apparatus for this project, at Aurel's request.
+Pienissimo had **none** of it: no `STATUS.md`, and `org-status-check` stopped at
+step 5 with no publish step.
+
+- **New [STATUS.md](STATUS.md)** — the ROMI-internal, human-facing status page,
+  generated from `notes/`. ⚠ **Its basis line says plainly that this was not a
+  live org check.** The newest org verification is still **2026-08-03** and is
+  stale in both directions; the "what is built" table is read from `force-app/`
+  on `DevMain` and labelled as such. Do not let a later regeneration quietly
+  upgrade that claim.
+- **New [the mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md)**
+  — the four Notion ids, the workspace, and the sharing rules.
+- **Notion, in `Aurel mrruku's Space`**: parent page **PIENISSIMO**, page
+  **ROMI - PIENISSIMO Project Status**, and database **PIENISSIMO - Open Items**
+  with **54 rows**, one per note in `notes/items/`, keyed on `Ref`.
+- **`org-status-check` gained step 6** (6a–6f), in both `.agents/` and
+  `.claude/` mirrors, which are byte-identical. It updates the page **in place**
+  — creating a replacement would strand everyone invited to the old one.
+- **Precedence is now written down** in `AGENTS.md`: `notes/` → `meetings/`
+  views → `STATUS.md` + mirror → `site/`. Notion is a **publish target, never a
+  source**. `docs/publishing.md` now governs the internal surface too.
+- ⚠ **The mirror shows 54 of roughly 86 tracker rows**, because only 54 have
+  atomic notes. That is stated on the status page, the parent page and in the
+  note, so it cannot be mistaken for a complete tracker. **Closing the gap means
+  writing the missing notes, not adding Notion rows** — a row with no note
+  breaks the `Ref` join step 6d depends on.
+- **Price rule extended to the new surface.** `Prodotti e Bundle.xlsx` put real
+  catalogue prices in the repository for the first time this morning; neither
+  `STATUS.md` nor the mirror carries a single value, and both say so.
+- **Second pass, same day — two parity gaps closed.** The first build had the
+  database but not everything Life365's has: **the `Note` URL column** and **the
+  three views**. Both now exist. `Note` links each row to its atomic note on
+  GitHub (`DevMain`, percent-encoded); views are **Board** by status,
+  **Critical path** filtered to the checkbox, and **By owner** — all sorted by
+  `Ref`, matching Life365's config. ⚠ The `Note` links **404 until the branch is
+  pushed**, which reads as a missing note rather than an unpushed commit; step
+  6d now says so.
+- **Also closed: only `org-status-check` knew the page existed.** In Life365
+  four skills carry a close-out pointer to step 6; Pienissimo's had none, so a
+  `drill-meeting` or `drill-me` run would have moved a dozen note statuses and
+  left Notion silently stale. `drill-meeting`, `drill-me`,
+  `requirements-check` and `requirement-trace` now all end by refreshing
+  `STATUS.md` and the mirror.
+- **Watch:** the workspace is **personal** (`a.mrruku@romicompany.com`), not a
+  ROMI company workspace, and it also holds the **LIFE365** mirror whose pages
+  are named alike. Step 6 forbids locating anything by title for exactly that
+  reason. If ROMI ever adopts a company workspace, the pages move by hand.
+
 ## 2026-08-24 — claude — the Prodotti e Bundle workbook drilled, 17 days late
 
 - **Aurel downloaded `Prodotti e Bundle.xlsx` and it was read.** This is the

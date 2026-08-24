@@ -107,6 +107,13 @@ exist in the registry.
 
 - Update [MAP.md](../../../MAP.md) if the live position moved, and
   [INDEX.md](../../../INDEX.md) if notes were added.
+- If the session moved the live position, refresh
+  [STATUS.md](../../../STATUS.md) and its Notion mirror — **step 6 of
+  [org-status-check](../org-status-check/SKILL.md)** is the procedure and the
+  rules there apply unchanged. A missing Notion connector is not a failure:
+  regenerate `STATUS.md`, report the mirror as stale. **Never** put anything
+  from `STATUS.md` into `site/`, which is public and sanitized to different
+  rules, and never a price or an article-code value into either.
 - Append a [JOURNAL.md](../../../JOURNAL.md) entry.
 - Run `npm run vault:check`.
 

@@ -64,7 +64,7 @@ For each note, one of:
     This is the most valuable output the skill produces. Flag it loudly.
   - **out of area** — belongs to a later batch. Say which.
   - **not a requirement at all** — a meeting, a defect, a superseded proposal.
-    A `superseded` note records a *rejected* alternative: pointing it at a live
+    A `superseded` note records a _rejected_ alternative: pointing it at a live
     requirement misrepresents it.
 
 ## 4. Drill the ambiguous ones with AskUserQuestion
@@ -103,6 +103,12 @@ Update the progress table in
 [the fabricated-mappings note](../../../notes/The%20requirement%20mappings%20were%20fabricated.md)
 with the batch result and its Tier C list, append to
 [JOURNAL.md](../../../JOURNAL.md), and run `vault:check`.
+
+**A trace batch moves the "requirements reachable from a note" count**, which
+`STATUS.md` and its mirror both publish. Refresh them — **step 6 of
+[org-status-check](../org-status-check/SKILL.md)**, rules unchanged — and update
+the `Requirement` column of any tracker row whose note you wired. A missing
+Notion connector is not a failure: regenerate the file, report the mirror stale.
 
 ## 8. Report
 

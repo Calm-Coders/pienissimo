@@ -10,9 +10,9 @@ Requirements arrive by email, in chat, and as files people share — and then di
 there. This procedure sweeps those sources, ingests what is new, and updates the
 project records.
 
-It is the inbound counterpart to `org-status-check`: that one asks *does the org
-match the requirements*, this one asks *have the requirements changed and nobody
-told the repository*.
+It is the inbound counterpart to `org-status-check`: that one asks _does the org
+match the requirements_, this one asks _have the requirements changed and nobody
+told the repository_.
 
 ## 1. Establish the watermark
 
@@ -76,8 +76,8 @@ Where two documents claim the same role, say which is current.
 
 ## 5. Triage what you found
 
-| Found                                    | Do                                                          |
-| ---------------------------------------- | ----------------------------------------------------------- |
+| Found                                    | Do                                                           |
+| ---------------------------------------- | ------------------------------------------------------------ |
 | Meeting recording, transcript or notes   | Run **`drill-meeting`** on it                                |
 | A specification, payload or API contract | Create or update the note; record the contract               |
 | A decision or reversal in a message      | Update the affected note, cite the message and its date      |
@@ -110,6 +110,12 @@ changed.
    each ran against, what was found, and what remains unreachable. **This is the
    watermark for the next run** — without it the next sweep starts blind.
 6. Append a [JOURNAL.md](../../../JOURNAL.md) entry; run `npm run vault:check`.
+7. If the sweep moved the live position, refresh
+   [STATUS.md](../../../STATUS.md) and its Notion mirror — **step 6 of
+   [org-status-check](../org-status-check/SKILL.md)**, rules unchanged. A
+   missing connector is not a failure: regenerate the file and report the mirror
+   stale. **Never** put anything from `STATUS.md` into `site/`, and never a
+   price or an article-code value into either.
 
 ## 8. Report
 
@@ -131,6 +137,7 @@ changed.
   this procedure may send, it goes only to that conversation, and it contains
   only the run's own findings. It is never a reply to someone, never a post in a
   channel, and never a message to the client. Everything else stays read-only.
+
 - Never copy credentials, tokens, catalogue prices or personal data into the
   records — see [docs/publishing.md](../../../docs/publishing.md).
 - Never fabricate a participant, a date, a decision, or an owner.

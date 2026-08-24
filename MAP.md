@@ -89,15 +89,16 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 
 ## Map of the territory
 
-| Area                           | Start here                                                                                          |
-| ------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Everything, indexed            | [INDEX.md](INDEX.md)                                                                                |
-| How to read/write              | [notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md)                |
-| Requirement ids                | [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml)              |
-| Items · built · people · risks | [items](notes/items/) · [objects](notes/objects/) · [people](notes/people/) · [risks](notes/risks/) |
-| **What to do next**            | **[docs/task-status.md](docs/task-status.md)** — ROMI action board                                  |
-| Session handoffs               | [JOURNAL.md](JOURNAL.md)                                                                            |
-| Publishing rules               | [docs/publishing.md](docs/publishing.md)                                                            |
+| Area                           | Start here                                                                                                                               |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Everything, indexed            | [INDEX.md](INDEX.md)                                                                                                                     |
+| How to read/write              | [notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md)                                                     |
+| Requirement ids                | [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml)                                                   |
+| Items · built · people · risks | [items](notes/items/) · [objects](notes/objects/) · [people](notes/people/) · [risks](notes/risks/)                                      |
+| **What to do next**            | **[docs/task-status.md](docs/task-status.md)** — ROMI action board                                                                       |
+| Status for humans              | **[STATUS.md](STATUS.md)** — ROMI internal · [Notion mirror](notes/The%20Notion%20mirror%20of%20the%20project%20status.md) (invite-only) |
+| Session handoffs               | [JOURNAL.md](JOURNAL.md)                                                                                                                 |
+| Publishing rules               | [docs/publishing.md](docs/publishing.md)                                                                                                 |
 
 ## Standing constraints
 

@@ -36,7 +36,7 @@ Pick items where the USER's answer actually unblocks something:
 
 1. **gating items and anything that blocks the deploy** — the coverage debt,
    the tranche object, the data workbook. On coverage, the only useful question
-   is *when to schedule the suite*; never offer to write it;
+   is _when to schedule the suite_; never offer to write it;
 2. **deadline pressure** — tour 7–19 Sept, Food Marketing 29 Sept, go-live
    6 Oct, Zoho expiry 31 Oct;
 3. **decisions ROMI owns that have been deferred** — a validation rule, a
@@ -82,6 +82,12 @@ Immediately after each round:
    `vault:check` reports the mismatches.
 4. [MAP.md](../../../MAP.md) if the live position moved, then
    [JOURNAL.md](../../../JOURNAL.md), then `npm run vault:check`.
+5. **A drill-me session almost always moves an item's `status:`, which is what
+   the Notion tracker mirrors.** Refresh [STATUS.md](../../../STATUS.md) and the
+   mirror — **step 6 of [org-status-check](../org-status-check/SKILL.md)**,
+   rules unchanged. Reconcile the tracker rows on `Ref`, never on the title. A
+   missing connector is not a failure: regenerate the file, report the mirror
+   stale. Nothing from it ever reaches `site/`.
 
 ## 5. Report
 

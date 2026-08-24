@@ -1,7 +1,19 @@
 # Publishing the status page
 
 The repository stays **private**. Only the contents of [`site/`](../site/) are
-ever published.
+ever published to a public URL.
+
+There is a **second, internal** rendered surface: [`STATUS.md`](../STATUS.md)
+and its invite-only
+[Notion mirror](../notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
+That one is ROMI-only, is candid about delivery and the client relationship, and
+**deliberately names people**. It is governed by this file too:
+
+- **Text never moves from the internal surface to `site/`.** Not a sentence.
+- **No catalogue prices, no article-code values, no credentials on either** —
+  internal included. Describe a field, never a value.
+- Never turn on Notion's **Publish to web** — it removes the login gate from a
+  page that carries client-relationship candour.
 
 Everything in `site/` is served on a public URL with no authentication — that is
 deliberate, because the page is meant to be readable by people and by AI agents
