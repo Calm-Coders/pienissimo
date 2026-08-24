@@ -44,7 +44,18 @@ See [the workbook](The%20Prodotti%20e%20Bundle%20workbook.md).
 | Parent page **PIENISSIMO**                | `3c6a6b77-a25c-814c-b214-ec60e5f4ab89` | Project frame; auto-lists its children |
 | Page **ROMI - PIENISSIMO Project Status** | `3c6a6b77-a25c-818e-9b51-dc873a2f489c` | The mirror of `STATUS.md`              |
 | Database **PIENISSIMO - Open Items**      | `04cc8a62-d28a-4041-9d79-16271f6cae11` | One row per `notes/items/` note        |
+| Page **PIENISSIMO - Flows**               | `3c6a6b77-a25c-81f8-91e7-ffba884cd150` | A Mermaid schema per flow              |
 | Its data source                           | `34bc2bc0-2608-4779-829f-5be6f8f7974a` | Needed to create rows or views         |
+
+Openable links, the same ones quoted in [STATUS.md](../STATUS.md) and
+[README.md](../README.md):
+[status page](https://app.notion.com/p/3c6a6b77a25c818e9b51dc873a2f489c) ·
+[open-items tracker](https://app.notion.com/p/04cc8a62d28a40419d7916271f6cae11) ·
+[flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150).
+
+⚠ **Three files quote these URLs.** If a page is ever replaced rather than
+updated in place, all three go stale at once — which is the reason step 6c
+forbids creating a replacement page.
 
 Workspace: **Aurel mrruku's Space**, `132a6b77-a25c-8158-a1e2-000390dba9f5`,
 authenticated as `a.mrruku@romicompany.com`.
@@ -94,3 +105,29 @@ complete to anyone who does not know that. Both the status page and the parent
 page say so in as many words. **Closing that gap means writing the missing
 notes, not adding rows to Notion** — a row with no note breaks the `Ref` join
 the reconcile step depends on.
+
+## The Flows page
+
+Added 2026-08-24. Eight Mermaid diagrams, one per flow, drawn from
+[notes/flows/](flows/) and the `state_machines` block of
+[the register](../requirements/pienissimo-requirements.yaml) — lead, opportunity,
+quote, quote-to-order, order, tranche, the ticket/asset lifecycle and the Mexal
+call sequence.
+
+**The visual vocabulary is defined by a Legend diagram at the top of the page**,
+and it is load-bearing: a dark green `START` stadium for the trigger, a
+thick-bordered green box for **the first status the record actually holds**,
+grey for terminal, red dashed for disputed. Statuses are numbered only where the
+order is fixed.
+
+**Dotted edges carry meaning.** They mark a transition drawn in a source diagram
+but agreed in no minute — the `Aggiornamento Incasso` reversal
+([OI-91](items/OI-91%20Aggiornamento%20Incasso%20button.md)) and `Rinuncia`
+([OI-74](items/OI-74%20Asset%20state%20machine.md)). Keep that convention: a
+diagram that renders an unminuted edge as solid quietly promotes a drawing into
+a decision.
+
+⚠ **Three flows are deliberately not drawn** — the e-commerce parallel flow,
+documents and signatures, and Performance Plus contracts. The development recap
+names them as core flows, but none has an atomic note, so drawing them would
+mean inventing the detail. The page says so rather than leaving a silent gap.

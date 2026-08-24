@@ -114,6 +114,10 @@ exist in the registry.
   regenerate `STATUS.md`, report the mirror as stale. **Never** put anything
   from `STATUS.md` into `site/`, which is public and sanitized to different
   rules, and never a price or an article-code value into either.
+  **If a note in `notes/flows/` or the register's `state_machines` block
+  changed, regenerate the Flows page too** — step 6a-bis, same rules. A
+  drill that moves a flow note and leaves the diagrams behind is the most
+  likely way this space goes stale.
 - Append a [JOURNAL.md](../../../JOURNAL.md) entry.
 - Run `npm run vault:check`.
 

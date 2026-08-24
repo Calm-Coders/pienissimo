@@ -137,6 +137,24 @@ the risk table. Then `npx prettier --write STATUS.md`.
 or the mirror. Describe a field, never a value — see
 [docs/publishing.md](../../../docs/publishing.md).
 
+**6a-bis. Regenerate the Flows page** if a flow note or the register's
+`state_machines` block changed. It holds one Mermaid diagram per flow, and the
+page carries a Legend diagram that defines the visual vocabulary. **Keep all
+four conventions** — they are what make the diagrams readable at a glance:
+
+| Convention                   | Meaning                                            |
+| ---------------------------- | -------------------------------------------------- |
+| Dark green `START` stadium   | What triggers the flow — not a status              |
+| Green box, thick border      | **The first status the record actually holds**     |
+| Grey box                     | Terminal — nothing leaves it                       |
+| Red dashed box / dotted edge | Drawn in a source diagram, **agreed in no minute** |
+
+Number the statuses (`1. Ordinato`, `2. Disponibile`) only where the order is
+fixed; leave branches unnumbered. **Never render an unminuted transition solid**
+— that promotes a drawing into a decision, which is the exact failure the
+register keeps recording. Do not draw a flow that has no atomic note; say it is
+undrawn instead.
+
 **6b. Check the connector before touching anything.** Fetch the identity
 (`notion-fetch` with id `self`) and confirm the workspace is the one named in
 the mirror note. If that call fails, or the workspace differs, stop here and go

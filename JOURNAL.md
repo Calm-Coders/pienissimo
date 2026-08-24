@@ -10,6 +10,82 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-24 — claude — Flows refresh wired into all five skills
+
+- 🔴 **Third instance of the same defect, caught by Aurel asking when the flows
+  update.** Only `org-status-check` step 6a-bis regenerated the Flows page. The
+  four skills that actually **edit** `notes/flows/` — `drill-meeting`,
+  `drill-me`, `requirements-check`, `requirement-trace` — refreshed `STATUS.md`
+  and the status mirror but **never the diagrams**. `drill-meeting` is exactly
+  what moved `The ticket lifecycle` on 19 August, so the next such drill would
+  have left the diagrams silently stale. All four now carry the pointer; all
+  five skill pairs verified byte-identical.
+- **The pattern to watch:** every time a new rendered surface is added, the
+  skills that write its _source_ have to be told. It has now been missed three
+  times in one day — the STATUS.md close-out, the README links, and this.
+- ⚠ **The register's own date stamp is stale.**
+  `requirements/pienissimo-requirements.yaml` declares `version: 1.1,
+date: 2026-08-03`, but the file was last written **2026-08-20** by the nightly
+  routine. Do not use that stamp as a freshness signal; use `git log`.
+  Not corrected here — bumping a contract-bound register's version is a
+  deliberate act, not a side effect of a journal entry.
+- **Freshness at this moment:** flow notes 2026-08-19 (ticket lifecycle) and
+  2026-08-15 (quote-to-order, Mexal); register content 2026-08-20; Notion Flows
+  page regenerated 2026-08-24, so the page is current with every source.
+- ⚠ **The nightly cannot push any of this.** The routine runs
+  `requirements-check` Mon–Fri 23:30, but a headless cloud run has no
+  interactively-authenticated Notion connector, so it will report the mirror
+  stale rather than refresh it. **In practice every Notion surface updates only
+  when a human-driven session with the connector runs one of the five skills.**
+
+## 2026-08-24 — claude — a Flows page, one schema per flow
+
+- **New Notion page `PIENISSIMO - Flows`**, `3c6a6b77-a25c-81f8-91e7-ffba884cd150`,
+  under the PIENISSIMO parent. **Eight Mermaid diagrams**: lead, opportunity,
+  quote, quote-to-order, order, tranche, the ticket/asset lifecycle, and the
+  Mexal call sequence.
+- **Every diagram is sourced, none invented.** They come from the three notes in
+  [notes/flows/](notes/flows/) and the `state_machines` block of
+  [the register](requirements/pienissimo-requirements.yaml) — which is why the
+  page is a mirror like the rest of the space, not a new source.
+- **Dotted edges are the convention that matters.** An edge drawn in a source
+  diagram but agreed in no minute renders **dotted**, labelled with its item:
+  the `Aggiornamento Incasso` reversal
+  ([OI-91](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md)) and
+  `Rinuncia` ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)). Rendering
+  either solid would quietly promote a drawing into a decision. Step 6a-bis now
+  says so.
+- **The order diagram draws the conflict rather than resolving it** — two
+  vocabularies side by side with an unanswered dotted link between
+  `CHIUSO/ACQUISITO` and `Incassato`
+  ([OI-69](notes/items/OI-69%20Order%20state%20model.md)). The tranche diagram
+  carries the callout about the client's **second, product-side** tranche.
+- ⚠ **Three flows are deliberately undrawn** — e-commerce parallel, documents &
+  signatures, Performance Plus contracts. `DEVELOPMENT-RECAP` §3 names them as
+  core flows but **none has an atomic note**, so drawing them would mean
+  inventing detail. The page states this instead of leaving a silent gap. **If
+  those flows matter, the fix is to write the notes**, not to draw from the
+  recap.
+- **Re-fetched after publishing** and confirmed all eight Mermaid blocks
+  survived intact with no markup mangling — avoided wrapping inline code in
+  bold this time, which is what broke the parent page earlier.
+- **Made the entry points explicit, on Aurel's note that they were not.** Every
+  diagram now opens with a dark green `START` stadium naming the **trigger**,
+  and the **first status the record actually holds** is a thick-bordered green
+  box beside it — the two were previously indistinguishable from ordinary
+  states. Terminal states are grey, disputed ones red dashed, and statuses are
+  numbered where the order is fixed (`1. Ordinato`, `2. Disponibile`). A
+  **Legend diagram** at the top defines the vocabulary.
+- Two entry points that are easy to get wrong are now stated on the face of
+  the diagram: **tranche 1 starts at `CHIUSO/ACQUISITO` and skips `CREATO`
+  entirely** while tranches 2..n start at `CREATO`; and the order flow has
+  **two competing first states** drawn side by side, because the record has
+  not chosen.
+- Wired in: the mirror note's id table and a new section, README and `STATUS.md`
+  link lines, and **step 6a-bis** of `org-status-check` in both skill mirrors —
+  which now carries the four conventions as a table, so a regeneration cannot
+  quietly drop them.
+
 ## 2026-08-24 — claude — start-sf-projects brought in, and its templates fixed
 
 - **Compared the two projects' skill sets properly.** Neither has strictly more:
@@ -40,6 +116,30 @@ Keep the twenty most recent entries here; archive older ones to
 - ⚠ **Two copies of the generator now exist**, here and in `life365`, and
   **only this one carries the template fix.** They can drift. If the generator
   should live in one place, that is a decision nobody has taken.
+- **Traced the Notion URL through every file that should carry it.** It was
+  quoted **nowhere** — `README.md` had no mention of `STATUS.md` or Notion at
+  all, and `STATUS.md` named Notion only in passing, without the links. Step 6c
+  meanwhile _asserted_ the URL was "quoted in `STATUS.md` and the mirror note",
+  which was false when written. Now true: **README.md, STATUS.md and the mirror
+  note** all carry both URLs, verified byte-identical against the live page ids.
+- **The nightly routine was undocumented in the README too.** Pienissimo has run
+  cloud routine `trig_01VCdUXmqy8PngWPJHA2dSYC` since 2026-08-14, and only
+  `docs/task-status.md` described it — the README had no `Scheduled checks`
+  section at all, where the sister project devotes one to it. Added, matching
+  Life365's shape with this project's own facts: Mon–Fri 23:30 Europe/Budapest,
+  Opus 5, commits **directly to DevMain** and only when `vault:check` passes,
+  reporting to the "pienissimo devs" group DM. It also now carries the
+  🔴 **DST fix due 25 October** (`30 21` → `30 22`), which otherwise fires
+  22:30 local inside the go-live window.
+- ⚠ **Not independently verified.** The routine's configuration above is
+  transcribed from `docs/task-status.md`, not read back from the cloud — no
+  connected tool here lists cloud routines. The evidence it still runs is the
+  commit trail: `nightly requirements-check` on 18, 19 and 20 August. Friday
+  21 August produced no commit, which is the documented behaviour for a
+  no-change run, not proof of a failure.
+- ⚠ **Three files quote those URLs**, so a page replaced rather than updated in
+  place breaks all three at once. That is exactly why step 6c forbids creating a
+  replacement page, and the mirror note now says so beside the id table.
 - `AGENTS.md` now says six procedures, with a warning that `start-sf-projects`
   is a generator: **editing a skill here does not change what the next project
   gets** — that has to be done in the template. `CLAUDE.md` skill list updated.

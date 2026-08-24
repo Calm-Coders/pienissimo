@@ -16,6 +16,13 @@ a note disagree, the note wins — regenerate this page rather than editing fact
 into it. Agent-facing equivalent: [MAP.md](MAP.md). ROMI action board:
 [docs/task-status.md](docs/task-status.md).
 
+Shared with colleagues as a Notion mirror, invite-only and refreshed by step 6
+of `org-status-check`:
+[status page](https://app.notion.com/p/3c6a6b77a25c818e9b51dc873a2f489c) ·
+[open-items tracker](https://app.notion.com/p/04cc8a62d28a40419d7916271f6cae11) ·
+[flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150).
+See [the mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
+
 ⚠ **No catalogue prices, no article-code values, no credentials on this page or
 its mirror.** Every price in UAT is a ROMI placeholder, and the real ones now
 live in a private workbook — describe a field, never a value. See

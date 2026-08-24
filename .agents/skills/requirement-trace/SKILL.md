@@ -110,6 +110,9 @@ with the batch result and its Tier C list, append to
 the `Requirement` column of any tracker row whose note you wired. A missing
 Notion connector is not a failure: regenerate the file, report the mirror stale.
 
+**If a note in `notes/flows/` or the register's `state_machines` block changed,
+regenerate the Flows page too** — step 6a-bis, same rules.
+
 ## 8. Report
 
 Mappings written, gaps found, contradictions raised, and the count of

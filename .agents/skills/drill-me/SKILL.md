@@ -88,6 +88,8 @@ Immediately after each round:
    rules unchanged. Reconcile the tracker rows on `Ref`, never on the title. A
    missing connector is not a failure: regenerate the file, report the mirror
    stale. Nothing from it ever reaches `site/`.
+   **If a note in `notes/flows/` or the register's `state_machines` block
+   changed, regenerate the Flows page too** — step 6a-bis, same rules.
 
 ## 5. Report
 

@@ -116,6 +116,8 @@ changed.
    missing connector is not a failure: regenerate the file and report the mirror
    stale. **Never** put anything from `STATUS.md` into `site/`, and never a
    price or an article-code value into either.
+   **If a note in `notes/flows/` or the register's `state_machines` block
+   changed, regenerate the Flows page too** — step 6a-bis, same rules.
 
 ## 8. Report
 

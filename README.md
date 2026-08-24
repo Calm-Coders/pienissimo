@@ -9,6 +9,11 @@ Salesforce DX project for the Pienissimo CRM migration (Zoho → Salesforce, con
 - **[notes/](notes/)** — the knowledge vault. One fact per note, stable ids (`OI-NN` matches the tracker row number). This is the source of truth for open items, risks, people and what is actually built; the big documents in `meetings/` are rendered views.
 - **[AGENTS.md](AGENTS.md)** — instructions for any AI agent working here (`CLAUDE.md`, `GEMINI.md` and `.github/copilot-instructions.md` are pointers to it).
 - **[JOURNAL.md](JOURNAL.md)** — session handoffs, newest first.
+- **[STATUS.md](STATUS.md)** — the shareable status view for humans, regenerated from `notes/`. **ROMI internal** — it names people and states the slippage plainly, which is the point of it.
+
+[STATUS.md](STATUS.md) is mirrored to Notion for colleagues who do not read the repository: [status page](https://app.notion.com/p/3c6a6b77a25c818e9b51dc873a2f489c) and [open-items tracker](https://app.notion.com/p/04cc8a62d28a40419d7916271f6cae11) (54 rows, one per note in `notes/items/`, joined on `Ref`) and [flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150) (a Mermaid schema per flow, generated from [notes/flows/](notes/flows/) and the register). Both are **invite-only and not for Pienissimo**, and both are **mirrors, never sources**: refreshed by step 6 of `org-status-check`, and an edit typed into Notion is lost at the next regeneration. Ids, shape and sharing rules: [the Notion mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
+
+⚠ **Two rules, both easy to breach by accident.** [site/](site/) is **public** and sanitized to [docs/publishing.md](docs/publishing.md) — never copy text from `STATUS.md` or the mirror into it. And **no catalogue prices or article-code values on any published surface, internal included** — describe a field, never a value.
 
 Run `npm run vault:check` before committing knowledge changes. ⚠ `meetings/open-items.md` is ~50k tokens and `meetings/*-transcript.it.md` ~207k — never load them whole; see the read costs in [INDEX.md](INDEX.md).
 
@@ -55,7 +60,7 @@ Local (non-published) diagrams in the repo root:
 
 Both live in Google Drive and both are merged into the YAML register. They are the normative definition of every status field in the build. **Current versions: `Flows & Objects.drawio` last modified 20 August 2026 15:36 UTC, `Workflow Pienissimo 23-7-26.drawio` 20 August 2026 14:28 UTC** — both re-decoded in full on 20 August.
 
-🔴 **Both files moved on the same afternoon, 68 minutes apart, and neither edit is minuted.** The register's state machines were deliberately **not** re-extracted from them: nothing in either drawing is minuted, so no agreed requirement has moved. Three divergences are open — `Rinuncia` drawn as a seventh asset state ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)), the 06 August order states drawn *alongside* the old ones rather than replacing them ([OI-69](notes/items/OI-69%20Order%20state%20model.md)), and a ticket tier renamed `Silver` → `Dinamond` against the 06 August minute ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)). See [the newest design diagram](notes/The%20newest%20design%20diagram.md) and [the client's file](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md).
+🔴 **Both files moved on the same afternoon, 68 minutes apart, and neither edit is minuted.** The register's state machines were deliberately **not** re-extracted from them: nothing in either drawing is minuted, so no agreed requirement has moved. Three divergences are open — `Rinuncia` drawn as a seventh asset state ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)), the 06 August order states drawn _alongside_ the old ones rather than replacing them ([OI-69](notes/items/OI-69%20Order%20state%20model.md)), and a ticket tier renamed `Silver` → `Dinamond` against the 06 August minute ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)). See [the newest design diagram](notes/The%20newest%20design%20diagram.md) and [the client's file](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md).
 
 | Diagram                              | Owner                      | Pages                                 | Drive                                                                              |
 | ------------------------------------ | -------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -63,6 +68,35 @@ Both live in Google Drive and both are merged into the YAML register. They are t
 | `Workflow Pienissimo 23-7-26.drawio` | Marco Montesi (Pienissimo) | LEAD-OPTY, client-annotated           | [1rfmySN…](https://drive.google.com/file/d/1rfmySNKyhhNJnaV-2ULkGl0vUIf50Q7t/view) |
 
 Elena's file is the more detailed and is treated as authoritative where the two disagree. Marco's carries the client's own annotations — the complete loss-reason picklists, the request to revive expired quotes, and the open questions on lead queue assignment.
+
+## Scheduled checks
+
+A cloud agent runs [`requirements-check`](.agents/skills/requirements-check/SKILL.md) automatically.
+
+| Setting    | Value                                                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Routine    | **Nightly requirements-check**, `trig_01VCdUXmqy8PngWPJHA2dSYC`, created 2026-08-14                                               |
+| Schedule   | **Monday–Friday at 23:30** Europe/Budapest — cron `30 21 * * 1-5` (UTC)                                                           |
+| Model      | **Claude Opus 5** — set deliberately, matching the sister project. Do not let a later edit silently drop it to the Sonnet default |
+| Branch     | `Calm-Coders/pienissimo`, **`DevMain`** — it **commits directly**, Aurel's explicit choice over a PR flow                         |
+| Connectors | Slack · Gmail · Google Drive · Fathom                                                                                             |
+| Manage     | <https://claude.ai/code/routines/trig_01VCdUXmqy8PngWPJHA2dSYC>                                                                   |
+
+Full configuration, including the Slack-destination caveats: [docs/task-status.md](docs/task-status.md).
+
+What it does each run:
+
+- Reads the newest file in [`notes/traces/`](notes/traces/) as its watermark and sweeps only for material newer than that.
+- **Finds nothing** → writes nothing and commits nothing. Quiet nights leave no commit, and the watermark is left where it was.
+- **Finds something** → updates the affected notes, writes the next trace note, appends to [`JOURNAL.md`](JOURNAL.md), runs `npm run vault:check`, then commits to `DevMain`. **It commits only if that check passes**; on failure it commits nothing and leads its report with the failure.
+- **Always, either way** → posts the report as a single Slack message to the **"pienissimo devs" group DM** (`C0BQD34LLF4` — Aurel Mrruku, Anita Aga, Sara Aga, Rexhina Hysi).
+
+Apart from that one group-DM message it is **read-only everywhere**: the `requirements-check` skill carries exactly one carve-out for this post, in its Guardrails section. Do not widen it.
+
+Two things to remember:
+
+- 🔴 **DST — a one-line fix is due in late October.** The cron is fixed in UTC. Europe/Budapest leaves CEST on **25 October 2026**, after which `30 21` fires at **22:30 local, not 23:30**. That lands inside the go-live window. Change it to `30 22 * * 1-5` on or after that date.
+- **Weekends are not covered.** Anything arriving Friday evening is picked up Monday night.
 
 ## Salesforce DX
 
