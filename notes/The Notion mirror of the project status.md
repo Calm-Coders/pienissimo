@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-24
 updated: 2026-08-24
-source: published 2026-08-24 from STATUS.md and notes/items/
+source: published 2026-08-24 from STATUS.md and notes/items/; Flows refreshed after Aurel tranche decision at 13:47 CEST
 ---
 
 # The Notion mirror of the project status
@@ -53,9 +53,10 @@ Openable links, the same ones quoted in [STATUS.md](../STATUS.md) and
 [open-items tracker](https://app.notion.com/p/04cc8a62d28a40419d7916271f6cae11) ·
 [flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150).
 
-⚠ **Stale after Aurel's 2026-08-24 tranche decision.** The repository surfaces
-now show Quote-side tranche creation and payment roll-up; the three Notion
-surfaces have not yet been regenerated from that decision.
+**Flows is current after Aurel's 2026-08-24 tranche decision.** Its Quote-to-order
+and Tranche diagrams were refreshed at 13:47 CEST and fetched again to verify
+the saved content. ⚠ The Notion **Status** page and **Open Items** database have
+not yet been regenerated from that decision.
 
 ⚠ **Three files quote these URLs.** If a page is ever replaced rather than
 updated in place, all three go stale at once — which is the reason step 6c

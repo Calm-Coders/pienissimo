@@ -22,8 +22,10 @@ Keep the twenty most recent entries here; archive older ones to
   The `BLO-` catalogue block is now explicitly separate and does not create
   `Tranche__c`. The register/prose version is 1.3 dated 2026-08-24.
 - **Next:** build remains entirely outstanding: `Tranche__c`, Quote-side action
-  and fields, propagation to Order Items, and payment roll-up. The Notion status
-  and Flows mirrors were not refreshed in this session.
+  and fields, propagation to Order Items, and payment roll-up. The Notion
+  **Flows** page was refreshed and verified at 13:47 CEST after installing the
+  Notion plugin; its Quote-to-order and Tranche diagrams now carry this
+  decision. The Notion Status page and Open Items database remain stale.
 - **Watch:** the final paid-state API value is deliberately still open under
   OI-69. Do not infer `CHIUSO/ACQUISITO`; creation and roll-up can proceed while
   the final label waits for Elena's answer.
