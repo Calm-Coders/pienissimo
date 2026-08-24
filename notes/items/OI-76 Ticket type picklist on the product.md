@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-08-06
-updated: 2026-08-20
+updated: 2026-08-24
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-04
 ---
@@ -52,3 +52,45 @@ that an order line produces a ticket, and what
 [the nightly Mexal sync](OI-77%20Mexal%20event%20product%20creates%20the%20Campaign.md)
 would use to auto-create a Campaign. Both are specified against a flag that has
 not been created.
+
+## ✅ 2026-08-24 - the registry settles the vocabulary, not the field
+
+[`Prodotti e Bundle.xlsx`](../The%20Prodotti%20e%20Bundle%20workbook.md) was
+read on 2026-08-24 and it does answer the tier question the note above parks —
+though only as evidence, not as a delivered field.
+
+**The tiers that exist in the client's registry are `EXECUTIVE`, `GOLD` and
+`DIAMOND`.** Across all 29 articles:
+
+- Food Marketing Festival carries all three.
+- Camerieri Venditori carries **`EXECUTIVE` only**.
+- The other seven events carry no tier at all.
+
+So both contested values are wrong. **`Dinamond` is `Diamond` misspelt** — the
+20 August diagram edit was a typo, not a new tier. And **`Silver` does not exist
+anywhere in the registry**; the minuted 06 August line _"camerieri venditori
+Silver ha un codice diverso da camerieri venditori gold"_ names two tiers for an
+event that has **neither** — Camerieri Venditori has one tier, `EXECUTIVE`. The
+example was illustrative and was read as literal.
+
+⚠ **Tier is not a uniform picklist.** Seven of nine selling events have no tier
+at all, and only one event has more than one. A restricted picklist of three
+values applied to every product would be mostly blank and would invite an admin
+to invent a tier where the client has none.
+
+### The item stays open, because the field still does not exist
+
+`Lista Prodotti` has **four columns** — `LIVELLO_6`, `_ARCOD`, `Articolo`,
+`Prezzo Listino`. There is **no ticket-type column and no event flag**. The tier
+is still readable only by parsing the article name string, which is the precise
+practice this item exists to end. Fabrizio Paganelli has not added the fields to
+the product master; the workbook is the proof, not the delivery.
+
+On the Salesforce side the flag half **is already built** and the record did not
+say so: `Product2.Genera_Biglietto__c` exists in `force-app`, as does
+`Solo_Bundle__c` for [OI-47](OI-47%20Product%20flags%20at%20import.md). What is
+missing is anything upstream to populate them from — another instance of
+[the build running ahead of the record](../objects/The%20build%20ahead%20of%20the%20record.md).
+
+Ask for the tier column at the **2026-08-26 Mexal review**, and ask for it as a
+column in the registry rather than as a list of values.

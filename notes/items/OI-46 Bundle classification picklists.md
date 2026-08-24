@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-07-23
-updated: 2026-08-18
+updated: 2026-08-24
 source: meetings/open-items.md row 46
 ---
 
@@ -29,6 +29,80 @@ from `LIVELLO_3`/`LIVELLO_4`.
 
 **Fields built, data absent.** `Anno_Solare__c`, `Evento__c` and
 `Bundle_Type__c` all exist on `Product2` and are **populated on zero bundles**.
+
+## ✅ 2026-08-24 - the event list arrived, and it is not the list we built
+
+[`Prodotti e Bundle.xlsx`](../The%20Prodotti%20e%20Bundle%20workbook.md) was
+read on 2026-08-24, seventeen days after Fabrizio Paganelli sent it. Its
+`Lista Eventi` sheet is the definitive list, and it **contradicts the seed above
+in three ways**.
+
+### It is eleven events, in four types
+
+The sheet carries a second column, `tipologia evento`, that nobody requested and
+that the register has no field for:
+
+| Type                              | Events                                                                  |
+| --------------------------------- | ----------------------------------------------------------------------- |
+| `Evento a pagamento`              | Academy, Camerieri Venditori, Happy Team, Mastery, Odb, Pienissimo Live |
+| `Evento a pagamento/gratuito`     | Food Marketing Festival — attendable **both** ways                      |
+| `Evento gratuito`                 | Sold Out, Tour                                                          |
+| `Evento annullato`                | Golden Numbers                                                          |
+| `Evento in fase di ridefinizione` | Pienissimo Intensive                                                    |
+
+**Golden Numbers and Pienissimo Intensive appear nowhere else in this project's
+record.** Neither has any article in `Lista Prodotti`, consistent with being
+cancelled and under redefinition. Whether either belongs in the picklist is a
+decision nobody has taken.
+
+### 🔴 "Happy Team sells nothing" is wrong, and the built picklist is wrong because of it
+
+The seed above excludes Happy Team on the strength of the 2026-07-23 transcript,
+where the line is _"c'è Happy Team, ma durante l'Happy Team non vendiamo
+niente"_ — **"we don't sell anything _during_ Happy Team"**, a statement about
+selling _at_ the event. It was read as "Happy Team has nothing to sell".
+
+The registry says otherwise: **`CS-00154 HAPPY TEAM` is a priced article**, with
+a complimentary twin, and it is a **component of the Academy bundle at quantity
+2**. Happy Team tickets are sold, bundled, and must generate assets.
+
+`Product2.Evento__c` in `force-app` is a restricted picklist and **has no
+`Happy Team` value**. A Happy Team article therefore cannot be classified at
+all, and the asset it generates has no event. **This is a build defect, not a
+paperwork gap.**
+
+### Two more built values do not match the client's names
+
+| Client's name                       | Built value |                                               |
+| ----------------------------------- | ----------- | --------------------------------------------- |
+| `Camerieri Venditori`               | `Camerieri` | truncated                                     |
+| `Odb` (articles read `O.D.B. LIVE`) | `Odb Live`  | inconsistent with both                        |
+| —                                   | `ND`        | invented; no counterpart in the client's list |
+
+Since values are _"re-created clean from Fabrizio Paganelli's lists"_, the
+client's spelling governs. Align the picklist to `Lista Eventi`.
+
+### ⚠ The anno solare dependency has no source
+
+`Evento__c` is already built as a dependent picklist controlled by
+`Anno_Solare__c`, with a specific matrix — Food Marketing Festival on 2026 and
+2028, Mastery on 2026 and 2027, Pienissimo Live on 2026 only, and so on.
+
+**The workbook contains no year column of any kind.** The only year anywhere in
+it is the literal `2026` inside the six Tour article names. So that matrix has
+**no client source — it is ROMI guesswork**, and it is the controlling half of
+the mechanism this item specifies. Ask Fabrizio which events run in which
+calendar years, and do not treat the current mapping as agreed.
+
+### Where this leaves the item
+
+**Still open**, but for the opposite reason to before: the input is no longer
+missing, the configuration is now known to be wrong. Fix the picklist, get the
+year matrix, and decide on the two unknown events. `Anno_Solare__c`, `Evento__c`
+and `Bundle_Type__c` all exist on `Product2` and are still **populated on zero
+bundles**.
+
+## How it arrived
 
 ✅ **Something was delivered on 2026-08-07 — and on 2026-08-18 we learned what.**
 Fabrizio Paganelli wrote to a thread titled **"Lista Eventi, Codici prodotto,

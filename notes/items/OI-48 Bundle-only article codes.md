@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-07-23
-updated: 2026-08-18
+updated: 2026-08-24
 blocks: [OI-13]
 source: meetings/open-items.md row 48
 ---
@@ -22,6 +22,43 @@ acceptable** to start, because the real codes cannot yet be hidden on the
 website and would risk misuse.
 
 Committed "for tomorrow" on 23 July. Re-requested on 2026-08-06.
+
+## ✅ 2026-08-24 - answered, but not with what was asked for
+
+[`Prodotti e Bundle.xlsx`](../The%20Prodotti%20e%20Bundle%20workbook.md) was
+read on 2026-08-24. Its `Esempio di Bundle` sheet delivers **one worked bundle**
+— `PACK-93`, _ACADEMY 2026 - UN ANNO CON PIENISSIMO (NUOVI)_ — which is the
+"esempio Bundle" the mail subject promised.
+
+**It is not the deliverable this item describes.** The ask was ~10 **new**
+bundle-only article codes on a **"(B)" naming convention**, 3–5 of them sent
+before September. What arrived is:
+
+- **No `(B)` codes.** The convention appears nowhere in the workbook.
+- **No new codes at all.** Every code in the example is an existing article from
+  `Lista Prodotti`, or a `BLO-`/`PACK-` code from the legacy Mexal structure.
+- **One example, not 3–5** — though it is a complete one, which the ask did not
+  guarantee.
+
+What it does deliver instead is
+[the real shape of a bundle](../objects/A%20bundle%20is%20two%20levels%20deep.md):
+`PACK-93` → five `BLO-` blocchi → the articles inside each, with quantities.
+That is arguably more useful to
+[the bundle-selection logic](OI-13%20Bundle%20effort%20estimate%20and%20client%20demo.md)
+than five invented codes would have been, and it settles
+[the code namespace](../objects/The%20article%20code%20namespace.md).
+
+⚠ **The `(B)` convention may be obsolete rather than forgotten.** Its purpose
+was to mark codes tutors cannot sell directly. `Product2.Solo_Bundle__c` — the
+[flag from OI-47](OI-47%20Product%20flags%20at%20import.md) — already does that
+job in a field, which is the better mechanism and the one the project chose. If
+so this item should be **retargeted, not chased**: ask Fabrizio to set the flag
+on the right articles rather than to mint new codes.
+
+**Kept open** pending that confirmation. Do not re-request the `(B)` codes from
+the client before asking whether they are still wanted.
+
+## How it arrived
 
 ✅ **A delivery on 2026-08-07 is now confirmed — its contents are not.** Fabrizio
 Paganelli wrote to a thread titled **"Lista Eventi, Codici prodotto, esempio

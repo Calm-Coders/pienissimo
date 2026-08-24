@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-20 · Source of record: [notes/](notes/)
+Last updated: 2026-08-24 · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -44,8 +44,10 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   file the register is validated against ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md));
   the 06 Aug order states are drawn **alongside** the old ones rather than
   replacing them ([OI-69](notes/items/OI-69%20Order%20state%20model.md)); a tier
-  became `Dinamond` where the minute says `Silver`
-  ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md));
+  became `Dinamond` where the minute says `Silver` — **both settled 24 Aug: the
+  registry's tiers are `EXECUTIVE`/`GOLD`/`DIAMOND` and neither contested value
+  exists** ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md),
+  still open because the field does not exist);
   and a new question asks whether an **unpaid** Mexal invoice can reverse an
   asset ([OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md),
   due at the 26 Aug client Mexal review). **Nothing was reconfigured.**
@@ -54,18 +56,24 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 
 1. **Deployability** — the two coverage items above gate every other, and are
    handled as one late task on Aurel's request.
-2. **Client inputs owed** — prices
-   ([OI-87](notes/items/OI-87%20Real%20catalogue%20prices%20still%20outstanding.md)),
-   the event list ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)),
-   bundle codes ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)),
-   the Zoho workbook ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)) —
-   and ROMI owes the
-   [import template](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md).
-   🟡 **One of these may already be answered and unopened:**
+2. **Client inputs owed** — 🟢 **the biggest one landed and was read on 24 Aug.**
    [`Prodotti e Bundle.xlsx`](notes/The%20Prodotti%20e%20Bundle%20workbook.md),
-   Fabrizio Paganelli's 07 Aug attachment, surfaced 18 Aug. It bears on OI-46
-   and OI-48. **No agent can read a Gmail attachment — a human must download
-   it.**
+   sent 7 Aug and unopened for seventeen days, delivered **real catalogue
+   prices** ([OI-87](notes/items/OI-87%20Real%20catalogue%20prices%20still%20outstanding.md)
+   resolved), the **event list**
+   ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)) and a
+   **worked bundle** ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)).
+   A copy is now in the repository root. 🔴 **It broke more than it closed** —
+   the built `Product2.Evento__c` picklist is wrong against the client's own
+   list (**no `Happy Team` value**, though Happy Team is priced and sits in the
+   Academy bundle at quantity 2), and the `Anno_Solare__c` dependency matrix has
+   **no client source at all**. New:
+   [OI-93](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md),
+   a client change request nobody knew existed. Still owed: the Zoho workbook
+   ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)), and ROMI owes the
+   [import template](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
+   — both must carry the rule that
+   [`_ARCOD` is an opaque string](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
 3. **Dated but unbuilt** — [tranche](notes/items/OI-50%20Tranche%20object.md)
    (nothing exists),
    [participants](notes/items/OI-78%20Participant%20data%20collection.md),
@@ -81,15 +89,15 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 
 ## Map of the territory
 
-| Area                | Start here                                                                             |
-| ------------------- | -------------------------------------------------------------------------------------- |
-| Everything, indexed | [INDEX.md](INDEX.md)                                                                   |
-| How to read/write   | [notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md)   |
-| Requirement ids     | [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml) |
+| Area                           | Start here                                                                                          |
+| ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Everything, indexed            | [INDEX.md](INDEX.md)                                                                                |
+| How to read/write              | [notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md)                |
+| Requirement ids                | [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml)              |
 | Items · built · people · risks | [items](notes/items/) · [objects](notes/objects/) · [people](notes/people/) · [risks](notes/risks/) |
-| **What to do next** | **[docs/task-status.md](docs/task-status.md)** — ROMI action board                     |
-| Session handoffs    | [JOURNAL.md](JOURNAL.md)                                                               |
-| Publishing rules    | [docs/publishing.md](docs/publishing.md)                                               |
+| **What to do next**            | **[docs/task-status.md](docs/task-status.md)** — ROMI action board                                  |
+| Session handoffs               | [JOURNAL.md](JOURNAL.md)                                                                            |
+| Publishing rules               | [docs/publishing.md](docs/publishing.md)                                                            |
 
 ## Standing constraints
 

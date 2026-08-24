@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-08-15
+updated: 2026-08-24
 blocks: [OI-75, go-live]
 severity: gating
 source: meetings/open-items.md row 50
@@ -48,3 +48,18 @@ tranche-level invoicing, which means the whole
 [ticket lifecycle](../flows/The%20ticket%20lifecycle.md) is downstream of an
 object nobody has started — and the build restarts
 [in the last week of August](../risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
+
+## 2026-08-24 - the client has a product-side tranche too
+
+[`Prodotti e Bundle.xlsx`](../The%20Prodotti%20e%20Bundle%20workbook.md), read
+on 2026-08-24, shows a bundle composed of five `BLO-` **blocchi**, and its own
+headings call their contents _"i componenti **delle tranche**"_. So `BLOCCO` is
+the client's word for tranche, and it exists **in the catalogue, before any
+order** — with its own article code.
+
+This item derives a tranche from **order-line due dates**, after the sale. Those
+are two different things sharing a name, and the register does not distinguish
+them. Resolve which before building `Tranche__c` — the answer decides whether
+the object is created at import from `BLO-` codes or at order time from due
+dates. Detail:
+[a bundle is two levels deep](../objects/A%20bundle%20is%20two%20levels%20deep.md).

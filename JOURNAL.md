@@ -10,6 +10,79 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-24 — claude — the Prodotti e Bundle workbook drilled, 17 days late
+
+- **Aurel downloaded `Prodotti e Bundle.xlsx` and it was read.** This is the
+  file [MAP.md](MAP.md) had been flagging as delivered-but-unopened since
+  18 August. Fabrizio Paganelli sent it **2026-08-07 at 12:17 CEST**; the file's
+  own metadata shows it was saved **10:16 UTC — one minute before he sent it**,
+  so it was built for that request and is the `anagrafica prodotti` the 22/07
+  session asked him for. **A copy now sits in the repository root** beside
+  `anar_PIE_ricla.xlsx`, so no future agent has to ask a human to fetch it.
+  ⚠ It carries **real list prices** — private repo only.
+- **Three sheets, four answers.** `Lista Eventi` (11 events, 4 types),
+  `Lista Prodotti` (29 articles, 9 events, prices on every row),
+  `Esempio di Bundle` (one worked bundle, drawn twice). Decode:
+  [the workbook note](notes/The%20Prodotti%20e%20Bundle%20workbook.md).
+- ✅ **[OI-87](notes/items/OI-87%20Real%20catalogue%20prices%20still%20outstanding.md)
+  resolved** — the real prices are here. It does **not** clear
+  [OI-42](notes/items/OI-42%20List%20prices%20in%20UAT%20are%20placeholders.md):
+  UAT still holds the placeholders, the input arrived and the load did not. And
+  **no bundle price exists anywhere**, so
+  [the bundle demo](notes/items/OI-13%20Bundle%20effort%20estimate%20and%20client%20demo.md)
+  is still short.
+- 🔴 **The headline is a build defect, not a paperwork gap.** The record has
+  said since 23/07 that "Happy Team sells nothing". The transcript actually says
+  _"durante l'Happy Team non vendiamo niente"_ — **we don't sell _during_ Happy
+  Team**. `CS-00154 HAPPY TEAM` is priced, has a complimentary twin, and is in
+  the Academy bundle **at quantity 2**. `Product2.Evento__c` is a **restricted**
+  picklist with **no `Happy Team` value**, so such an article cannot be
+  classified and its asset has no event. Also wrong: `Camerieri` (truncated),
+  `Odb Live`, an invented `ND`. See
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md).
+- ⚠ **The `Anno_Solare__c` → `Evento__c` dependency matrix is ROMI guesswork.**
+  It is built with a specific mapping and **the workbook has no year column at
+  all**. That is the controlling half of the mechanism OI-46 specifies.
+- **[OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)
+  — `Silver` and `Dinamond` both die.** The registry's tiers are `EXECUTIVE`,
+  `GOLD`, `DIAMOND`. `Dinamond` was a typo for `Diamond`; `Silver` exists
+  nowhere, and the minuted 06/08 example named two tiers for an event that has
+  neither. **Still open** — `Lista Prodotti` has four columns and neither a
+  ticket-type nor an event-flag column, so tier is still parsed out of a name.
+- 🆕 **[OI-93](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md)
+  — a client change request nobody knew existed.** The bundle is drawn as
+  `COME SONO ADESSO` (components are `OMAGGIO`) and `COME LO VORREMMO`
+  (components are priced). ⚠ **It may already be built and I did not verify
+  that** — `BundleComponent__c.Spread_Price__c` and the `Spread_*` fields exist
+  for this purpose, but they change the _price on the junction_, not _which code
+  is in the bundle_. Different data, same revenue answer.
+- **New structural notes:**
+  [the article code namespace](notes/objects/The%20article%20code%20namespace.md),
+  [a bundle is two levels deep](notes/objects/A%20bundle%20is%20two%20levels%20deep.md),
+  and [the normalisation risk](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
+  The last is the one to carry forward: **`_ARCOD` is an opaque string.**
+  `CS-00061` and `CS-0061` are different events at different prices, one leading
+  zero apart, and `Product2.Code__c` is a unique case-insensitive external id —
+  a normalising import overwrites a product or throws an opaque duplicate error
+  during the ~1 September load.
+- **[OI-50](notes/items/OI-50%20Tranche%20object.md) gained a problem.** The
+  client has a **product-side** tranche — the `BLO-` blocco, in the catalogue,
+  before any order — while OI-50 derives one from order-line due dates after the
+  sale. Two things, one name. It decides whether `Tranche__c` is created at
+  import or at order time. `BundleComponent__c` is also flat and cannot express
+  the middle level at all.
+- **Views regenerated:** `meetings/open-items.md` + `.it.md` (rows 46/48/50/76
+  rewritten, #87 moved to Resolved, #93 added, fourth-pass block appended),
+  `meetings/DEVELOPMENT-RECAP.md` + `.it.md` (new §13, §9 blockers updated),
+  `MAP.md`, `INDEX.md`.
+- **Next / owed:** the 22/07 action paired this file with a **review meeting on
+  the anagrafica prodotti** that never happened. OI-46, OI-48, OI-76 and OI-93
+  all want the **26/08 client Mexal review**, where Fabrizio is an invitee.
+- **Not done, deliberately:** nothing in `force-app/` was changed and
+  `requirements/pienissimo-requirements.yaml` was not touched — the event
+  picklist fix and OI-93 both need a decision, and a client workbook is evidence,
+  not a signed requirement.
+
 ## 2026-08-24 — codex — restored the full colored Obsidian graph
 
 - **Did:** verified that Prettier and the vault's 15 native Obsidian graph color
