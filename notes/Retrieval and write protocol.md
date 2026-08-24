@@ -58,7 +58,7 @@ Rules that do not bend:
   They are cited in `REQUIREMENTS.md`, in the published artifacts and in client
   correspondence. Never renumber, never reuse.
 - The filename is the note's H1, in ASCII with spaces — `OI-75 Ticket
-  availability rule.md`. Reword a title and you rename the file and fix the
+availability rule.md`. Reword a title and you rename the file and fix the
   links; the `id:` stays. No `/ \ : * ? " < > | ( )` or apostrophes. Italian
   domain words are welcome; accents are transliterated (`Perche`, not
   `Perché`).
@@ -87,7 +87,7 @@ agent can resume without re-reading the corpus:
 - **Watch:** #75 supersedes the §10 availability rule — do not reinstate it.
 ```
 
-Keep the ten most recent entries in `JOURNAL.md`. Move older ones to
+Keep the twenty most recent entries in `JOURNAL.md`. Move older ones to
 `notes/sessions/YYYY-QN.md`.
 
 ## Why the format is what it is

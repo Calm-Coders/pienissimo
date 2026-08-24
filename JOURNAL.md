@@ -5,8 +5,25 @@ at the end of a session that changed project state, so the next one can resume
 cold. Format and intent:
 [notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md).
 
-Keep the ten most recent entries here; archive older ones to
+Keep the twenty most recent entries here; archive older ones to
 `notes/sessions/YYYY-QN.md`.
+
+---
+
+## 2026-08-24 — codex — restored the full colored Obsidian graph
+
+- **Did:** verified that Prettier and the vault's 15 native Obsidian graph color
+  groups were already installed/configured. Registered Pienissimo as an
+  Obsidian vault, cleared the stale `aurel` global graph search from
+  `.obsidian/graph.json`, and expanded the color-group panel.
+- **Why:** Obsidian was opening the separate Life365 vault, while Pienissimo was
+  not registered; its saved graph also carried an old filter. Graph coloring is
+  native Obsidian configuration and does not depend on Prettier or a community
+  plugin.
+- **State:** Pienissimo now opens directly into Graph view with the full color
+  configuration; `vault:check` passes.
+- **Follow-up:** increased this journal's retention from 10 to 20 entries and
+  restored all four archived entries; there are currently 14 in total.
 
 ---
 
@@ -37,7 +54,7 @@ Keep the ten most recent entries here; archive older ones to
   (OI-74); is `Incassato` `CHIUSO/ACQUISITO` renamed (OI-69); and is the ticket
   tier `Silver` or `Dinamond` (OI-76). Each is one sentence from Elena Spini or
   Sabatino Rinaldi.
-- **Watch:** ⚠ **The master now draws the 06 Aug order states *alongside* the old
+- **Watch:** ⚠ **The master now draws the 06 Aug order states _alongside_ the old
   ones without striking them** — `CHIUSO/ACQUISITO` and `CREATO` are still on the
   Ordini page. OI-69 can no longer be waved off as "the drawing predates the
   decision"; the source itself is now ambiguous. Only three states, **no
@@ -52,8 +69,8 @@ Keep the ten most recent entries here; archive older ones to
   message**; Fathom holds nothing after 06 Aug. Whether they ran is unrecorded.
   ⚠ `Prodotti e Bundle.xlsx` is **still unread** — and may also hold the ticket
   tier list OI-76 now needs.
-- **Note:** a client-facing meeting is on the calendar — *[ROMI-PIENISSIMO] -
-  Review Temi Integrazione Mexal*, **Wed 26 Aug 16:00–17:00 CEST**, Elena Spini
+- **Note:** a client-facing meeting is on the calendar — _[ROMI-PIENISSIMO] -
+  Review Temi Integrazione Mexal_, **Wed 26 Aug 16:00–17:00 CEST**, Elena Spini
   with Aurel, Andrea Di Cicco, amministrazione@pienissimo.com and Fabrizio
   Paganelli. First Mexal session since 14 July, and the forum for OI-92.
 
@@ -92,15 +109,16 @@ Keep the ten most recent entries here; archive older ones to
   asset state machine and qualifies OI-75's release rule; it also needs the
   tranche object, which does not exist. ⚠ If the 19/08 marketing session ran, it
   is **unminuted** — no recording, no canvas entry, no message.
-- **Note:** a new internal meeting is on the calendar — *[PIENISSIMO] - Interna
-  per update flusso Lead/Opty*, **Mon 24 Aug 16:00–17:00 CEST**, Elena + Aurel.
+- **Note:** a new internal meeting is on the calendar — _[PIENISSIMO] - Interna
+  per update flusso Lead/Opty_, **Mon 24 Aug 16:00–17:00 CEST**, Elena + Aurel.
 
 ---
+
 ## 2026-08-18 — claude — nightly requirements-check, the 07/08 attachment surfaced
 
 - **Did:** ran `requirements-check` against watermark **2026-08-14**. Gmail,
   Slack, Drive and Fathom all swept; **one finding**. Elena Spini forwarded the
-  thread *"Lista Eventi, Codici prodotto, esempio Bundle"* on **18 Aug 09:41
+  thread _"Lista Eventi, Codici prodotto, esempio Bundle"_ on **18 Aug 09:41
   CEST**, answering Aurel's 14 Aug request. Fabrizio Paganelli's 07 Aug 12:17
   message carries **no body text and exactly one attachment,
   `Prodotti e Bundle.xlsx`** — which is why no `from:` search ever found it and
@@ -117,16 +135,15 @@ Keep the ten most recent entries here; archive older ones to
   `Integrazioni pienissimo.xlsx` was handled on 14 Aug. Until then **nothing
   closes**: whether it holds the 7-event list (OI-46), the "(B)" bundle-only
   codes (OI-48) or any price (OI-87) is unverified.
-- **Watch:** ⚠ it may well be the *anagrafica prodotti* promised at the 22/07
+- **Watch:** ⚠ it may well be the _anagrafica prodotti_ promised at the 22/07
   session, which also carried an action on Aurel to attend a review meeting
-  *after receiving the Excel* — if so, that meeting is owed. ⚠ Treat the file as
+  _after receiving the Excel_ — if so, that meeting is owed. ⚠ Treat the file as
   **price-bearing** until proven otherwise; record what it answers, never the
   values. ⚠ Two `[ROMI-LIFE365]` marketing docs were shared on 18 Aug dated
-  23/07 and **30/07** — a different client, *not* the Pienissimo 30/07 marketing
+  23/07 and **30/07** — a different client, _not_ the Pienissimo 30/07 marketing
   follow-up, which is still unminuted. Do not conflate them.
 
 ---
-
 
 ## 2026-08-15 — claude — transcripts linked to their recaps
 
@@ -206,23 +223,23 @@ Keep the ten most recent entries here; archive older ones to
   the meetings that produced them, the existing `requirement:` frontmatter
   fields turned out to be **generated by arithmetic, not by matching content**.
   In the 2026-08-06 cluster the id is literally `BIG-(OI number minus 69)`:
-  - `OI-74` *Asset state machine* → cites **BIG-05** *"Participants are not
-    account contacts"*. The note is entirely the six-value Asset status
+  - `OI-74` _Asset state machine_ → cites **BIG-05** _"Participants are not
+    account contacts"_. The note is entirely the six-value Asset status
     picklist, i.e. **BIG-17**.
-  - `OI-75` *Ticket availability rule* → cites **BIG-06** *"Reminder funnel
-    cadence"*. Unrelated; the note is tranche-paid-in-full release.
-  - `OI-78` *Participant data collection* → cites **BIG-09** *"Zero-euro orders
-    stay in the CRM"*. Unrelated; the note is the participant landing page,
+  - `OI-75` _Ticket availability rule_ → cites **BIG-06** _"Reminder funnel
+    cadence"_. Unrelated; the note is tranche-paid-in-full release.
+  - `OI-78` _Participant data collection_ → cites **BIG-09** _"Zero-euro orders
+    stay in the CRM"_. Unrelated; the note is the participant landing page,
     i.e. **BIG-18/BIG-19**.
-  - `OI-50` *Tranche object* → cites **ORD-06** *"Order types"*. Its body is
-    verbatim **ORD-01** *"Tranches auto-created from order-line due dates"*.
-  - `OI-43` *Spread variance does not block saving* → cites **BUN-04**. Its
-    body is verbatim **BUN-17** *"A non-zero spread variance must block
-    saving"*.
+  - `OI-50` _Tranche object_ → cites **ORD-06** _"Order types"_. Its body is
+    verbatim **ORD-01** _"Tranches auto-created from order-line due dates"_.
+  - `OI-43` _Spread variance does not block saving_ → cites **BUN-04**. Its
+    body is verbatim **BUN-17** _"A non-zero spread variance must block
+    saving"_.
   - `OI-47` cites **PRD-04**, and there is no PRD prefix in the register at
     all. Probably **BUN-12/BUN-13**, the two product flags.
-  **Five of five spot-checks were wrong.** Treat all 23 `requirement:` fields as
-  unverified until re-derived from the note bodies.
+    **Five of five spot-checks were wrong.** Treat all 23 `requirement:` fields as
+    unverified until re-derived from the note bodies.
 - **Did NOT write them into the register.** A `tracked_by:` reverse index was
   built and then **reverted** — mirroring fabricated mappings into the
   contract-bound YAML would have laundered them into the document Pienissimo
@@ -315,8 +332,8 @@ Keep the ten most recent entries here; archive older ones to
   numbering is client-facing and cited in `REQUIREMENTS.md`. Linked from
   [MAP.md](MAP.md) and [INDEX.md](INDEX.md).
 - **State:** six actions for Aurel (A1–A6), four repo tasks (R1–R4). **A6 is
-  already sent** — he replied on the *"Lista Eventi, Codici prodotto, esempio
-  Bundle"* thread on 14/08 to establish what Fabrizio delivered on 07/08;
+  already sent** — he replied on the _"Lista Eventi, Codici prodotto, esempio
+  Bundle"_ thread on 14/08 to establish what Fabrizio delivered on 07/08;
   [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) and
   [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) now record that
   and are **waiting on Elena**, who returns 17 August.
@@ -335,7 +352,7 @@ Keep the ten most recent entries here; archive older ones to
 - **Did:** decoded `Flows & Objects.drawio` (all three pages) and parsed
   `Integrazioni pienissimo.xlsx`, which Aurel downloaded manually after no
   connected tool could reach it.
-- **State:** 🔴 **`Get Fatture` maps `numero_ordine` but no order-*line*
+- **State:** 🔴 **`Get Fatture` maps `numero_ordine` but no order-_line_
   number** — the key
   [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) was agreed to match
   on. Mapping gap, not a Mexal limit; the line data is in the per-document call.
@@ -379,3 +396,114 @@ Keep the ten most recent entries here; archive older ones to
 - **Tool limits, recorded so nobody repeats the attempt:** Gmail exposes
   attachment metadata but has **no download tool**; Drive cannot render
   `.drawio` as text. Both are noted in the trace with the fallback.
+
+---
+
+## 2026-08-14 — claude — knowledge structure installed
+
+- **Did:** replicated the Life365 knowledge architecture onto this repository.
+  Added the routing layer ([MAP.md](MAP.md), [INDEX.md](INDEX.md),
+  [AGENTS.md](AGENTS.md) with `CLAUDE.md` / `GEMINI.md` /
+  `.github/copilot-instructions.md` as pointers, this journal), the
+  [notes/](notes/) vault with its
+  [protocol](notes/Retrieval%20and%20write%20protocol.md),
+  `npm run vault:check`, committed Obsidian config, the four project skills in
+  both `.agents/skills/` and `.claude/skills/`, and
+  [docs/publishing.md](docs/publishing.md) + [site/](site/).
+- **State:** the first wave of notes is written — every live open item, the
+  people, the risks, what is actually built, and the three core flows.
+  **Resolved tracker rows were deliberately not split**; they stay in
+  `meetings/open-items.md` under `## Resolved`, which remains the archive.
+- **Two findings came out of the migration, neither of them in any tracker.**
+  **(1)** The repository is roughly a week ahead of the 2026-08-03 org check:
+  `OrderBigliettoTrigger`, `Solo_Bundle__c`, both WooCommerce fields,
+  `OrderItem.Data_Scadenza__c`, `Opportunity.Tipo_Opportunita__c` and an
+  standard integration scaffolding were all committed 04–07 August by the
+  Calm-Coders developers working for ROMI — Anita Aga, Sara Aga and Rexhina —
+  and the trackers were never updated to match. (The scaffolding itself is
+  house pattern and correctly has no requirement; everything else on that list
+  does.) **(2)** The Biglietto DocuSign/PDF
+  Apex stack that the org check found Active in UAT is **not in `force-app/`
+  at all** — six classes live only in the org.
+- **Next:** re-run the org check against UAT to date the divergence properly
+  (the 2026-08-03 snapshot is now stale in both directions), and decide whether
+  `Tranche__c` or the participant flow goes first when the team returns ~24–26
+  August.
+- **Watch:** item ids in `notes/items/` are the tracker's own numbers
+  (`#64` → `OI-64`) because those numbers are cited in `REQUIREMENTS.md` and in
+  the published artifacts. Never renumber them. Note filenames are ASCII with
+  spaces — Italian domain words are fine, accents are transliterated.
+
+---
+
+## 2026-08-14 — claude — requirements check, watermark 2026-08-07
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from the 2026-08-07 watermark.
+  Six material findings, all folded into notes and both tracker languages.
+- **State:** **Mexal field mapping answered** by Mirko Merendi on 11/08 —
+  agent filter `610`, computed availability, causale FE, a **two-step N+1
+  invoice retrieval** that is also the only source of the `numero riga d'ordine`
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) needs, `501.AUTO`
+  client creation, order serie 1 prod / 10 test. **Anticipay = ex CreditSafe**,
+  one company — [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
+  is no longer uncertain. **Coupons excluded from phase 1**, closing one of
+  [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)'s two open
+  decisions. Four meetings dated: **19, 20, 25, 27 August**.
+- **Next:** the 20/08 asset meeting is scope discovery, not review — Elisa says
+  there are things never discussed. Read the two attachments before the 27/08
+  build call: `Integrazioni pienissimo.xlsx` and the Mexal mapping workbook.
+  Chase Fabrizio on **listino 1 vs listino 2**.
+- **Watch:** three things. **(1)** A **sixth asset state, `rinuncia al
+servizio`**, exists in Elena's client-facing doc and in no version of
+  [OI-74](notes/items/OI-74%20Asset%20state%20machine.md) — do not configure the
+  picklist without it. **(2)** `PIENISSIMO - Project Status.docx` numbers its
+  open points **1–15 under its own scheme**; never conflate with the tracker's
+  `#NN`. **(3)** [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
+  is new and is the **only migration item ROMI owns** — it had no row anywhere.
+- **Note:** the trace note now carries `external_watermark:`, and the earlier
+  same-day repository trace is marked `superseded` and links forward, so the
+  next run cannot mistake a repo read for a sweep.
+- **Correction, same session.** The first pass ran only **one** Gmail query and
+  read eight of nine threads from snippets, then reported the client inputs as
+  outstanding. Re-running the prescribed search angles showed no new threads —
+  but a subject search surfaced that **Fabrizio Paganelli wrote to a thread
+  titled "Lista Eventi, Codici prodotto, esempio Bundle" on 07/08 12:17** and
+  Elena thanked him 21 minutes later. His message is **not retrievable from the
+  mailbox** — an empty quoted stub only, consistent with an attachment. So
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) and
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) are now marked
+  **unverified in both directions**; open that thread in a mail client before
+  chasing the client again. Read full bodies next run, not snippets.
+
+---
+
+## 2026-08-14 — claude — full history sweep from April, all attachments read
+
+- **Did:** swept Gmail from 2026-04-01 (67 threads, two pages, four query
+  angles) and the entire `[Pienissimo] Fase Progettuale` Drive folder including
+  both subfolders. Read every reachable attachment.
+- **State:** 🔴 **The binding deadline is 10 September, not 6 October.**
+  `Pienissimo_Project Plan.pptx` (Elena, 10 July, never read until today) sets
+  _Fine sviluppi Fase 1 entro 10/09_, with UAT, training and the data import
+  between that and go-live — and a **second go-live on 9 November** for Fase 2
+  that appears in no meeting record. Full dates now in
+  [OI-04](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md) and
+  [the calendar risk](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
+  The same deck lists GLS, Teachable and Zoho-for-Pienissimo-Pro as **Fase 2**,
+  which is genuinely two-edged evidence in
+  [the dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
+- **Next:** ingest what this sweep found but did not drill — a **NotebookLM
+  notebook** and a **LastPass folder** (both shared 25 June, referenced
+  nowhere), a **third design diagram**, and **four ROMI-internal meetings** with
+  Gemini notes never processed (13/07, 16/07, 03/08, 05/08).
+- **Watch:** three things. **(1)** The **pre-sales record is not in this
+  mailbox** — earliest Pienissimo mail is 24 June; Aurel was onboarded 25 June,
+  a month after kickoff. The prevendita evidence the dispute turns on sits with
+  Elena Spini or Andrea Galotto. **(2)** `01 Documenti forniti dal cliente/`
+  holds a **real customer order PDF with company name and VAT number** — keep it
+  out of `notes/`, the recaps and `site/`. **(3)** New people from the April org
+  chart: [G Lanzetti](notes/people/G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)
+  is CEO of **both** companies and appears nowhere in the project record;
+  [Andrea Parmeggiani](notes/people/Andrea%20Parmeggiani%20-%20Pienissimo%20Software%20maintenance%20manager.md)
+  belongs to **Pienissimo Software Srl**, the disputed entity, while being the
+  Fase 1 Anticipay contact.
