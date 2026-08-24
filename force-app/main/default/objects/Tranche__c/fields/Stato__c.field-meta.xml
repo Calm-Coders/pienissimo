@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stato__c</fullName>
+    <description>Stato di pagamento della tranche, calcolato in base alle righe collegate.</description>
+    <label>Stato</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Aperta</fullName>
+                <default>true</default>
+                <label>Aperta</label>
+            </value>
+            <value>
+                <fullName>Parzialmente Pagata</fullName>
+                <default>false</default>
+                <label>Parzialmente Pagata</label>
+            </value>
+            <value>
+                <fullName>Pagata</fullName>
+                <default>false</default>
+                <label>Pagata</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
