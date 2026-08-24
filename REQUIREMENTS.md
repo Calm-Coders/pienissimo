@@ -1,8 +1,10 @@
 # Requirements Document — Pienissimo Salesforce Project
 
 **Client:** Pienissimo · **Supplier:** ROMI S.r.l. · **Project:** Zoho CRM → Salesforce migration
-**Version:** 1.2 — draft for approval · **Date:** 3 August 2026
+**Version:** 1.3 — draft for approval · **Date:** 24 August 2026
 
+> **What changed in 1.3.** Aurel Mrruku directly decided the Quote-side creation of payment tranches, propagation to Order Items and all-lines-paid roll-up on 24 August. The final paid-state API value remains open under RC-07.
+>
 > **What changed since 1.0.** The two draw.io design files have been read and merged in — `Flows & Objects.drawio` by Elena Spini and `Workflow Pienissimo 23-7-26.drawio` annotated by Marco Montesi — both re-decoded in full on **20 August 2026**, at which point each had been modified that same afternoon — 15:36 UTC and 14:28 UTC respectively (this document previously said 6 August and 4 August). ⚠ **Neither of those edits is minuted, so nothing below was changed on the strength of them**; the three points where the drawings have now moved ahead of this text are listed in §17. They produce the new **§16** (state machines, picklist values, 17 requirements that existed only in the drawings) and **§17**, which lists the points where the sources disagree. Two of those corrections are our own errors: the order-typology list in DM-15 was invented, and one item we had presented as a contradiction — the reminder cadence — was not one. Both are described in §17.
 > **Sign-off session:** Thursday 6 August 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
 
@@ -104,12 +106,12 @@ Everything described in §3–§11 with priority **M**, **S** or **C**.
 | DM-09 | Track **existing-client vs new-business** origin on every Opportunity.                                                                                                                                                                                                                                                                                                                                                           |  M   |   ✅   |
 | DM-10 | **Quote** — always under an Opportunity; multiple quotes per Opportunity allowed. Five-day validity; "expired" is a routine state. Retry is by **cloning** the expired quote, preserving history.                                                                                                                                                                                                                                |  M   |   ✅   |
 | DM-11 | The Quote is a single PDF carrying general conditions and the economic summary.                                                                                                                                                                                                                                                                                                                                                  |  M   |   ✅   |
-| DM-12 | **Order** — one order object. One order line per instalment, with the due date on the line. Zoho's child-order / "blocchi" pattern is abolished.                                                                                                                                                                                                                                                                                 |  M   |   ✅   |
+| DM-12 | **Order** — one order object. Product lines inherit their Quote-side tranche reference and payment due date. Zoho's child-order / "blocchi" pattern is abolished.                                                                                                                                                                                                                                                                |  M   |   ✅   |
 | DM-13 | At most **one bundle per order**; never bundle plus loose product in the same order (two separate orders instead).                                                                                                                                                                                                                                                                                                               |  M   |   ✅   |
 | DM-14 | The order is **immutable once invoiced**, with a narrow permission set (1–2 admin users) for corrections.                                                                                                                                                                                                                                                                                                                        |  M   |   ✅   |
 | DM-15 | Two distinct fields, not one. **Order type** = `STANDARD` · `BUNDLE` · `PLUS`, the three design values that drive automation. **Sales typology** = the seven entries from the client's own Excel: stage sales, tutor packages, tutor combo, tutor one-shot, Performance Plus, product sales, Pienissimo Pro. ⚠ The six-value list in v1.0 of this document was our error: it appears in no source and is withdrawn (§17, RC-04). |  M   |   🟡   |
 | DM-16 | Orders and products originating in Mexal are **read-only** in Salesforce.                                                                                                                                                                                                                                                                                                                                                        |  M   |   ✅   |
-| DM-17 | **Tranche** (renaming of "rate") — custom object auto-created from order-line due dates: lines sharing a due date form one tranche.                                                                                                                                                                                                                                                                                              |  M   |   ✅   |
+| DM-17 | **Tranche** (renaming of "rate") — custom object created on the **Quote**, after products are selected, through a guided action that asks which Quote Line Items to include and the planned payment due date. Each selected line stores the tranche reference and date; both propagate to the corresponding Order Item.                                                                                                          |  M   |   ✅   |
 | DM-18 | **Campaign = event**: one campaign per edition. Campaign members are participants with check-in status (attended / no-show), feeding no-show and room-composition analytics.                                                                                                                                                                                                                                                     |  M   |   ✅   |
 | DM-19 | **Contract** (Performance Plus) — standard Contract object with custom logic: start/end/renewal dates, amount, linked quote and invoices, renewals panel, invoiced vs collected, service block on serious arrears.                                                                                                                                                                                                               |  S   |   ✅   |
 | DM-20 | **Credit note** — linked to both the order and the **order line**, to handle partial reversals on multi-event bundles.                                                                                                                                                                                                                                                                                                           |  S   |   ✅   |
@@ -221,19 +223,19 @@ Everything described in §3–§11 with priority **M**, **S** or **C**.
 
 ## 7. Orders, tranches and the administrative cycle
 
-| ID     | Requirement                                                                                                                                                                                  | Pri. | Status |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :----: |
-| ORD-01 | Tranches are created automatically from order-line due dates (lines sharing a date = one tranche).                                                                                           |  M   |   ✅   |
-| ORD-02 | The order passes to Mexal **in full**; the tranche reference and date travel **at line level**, not as a tranche object.                                                                     |  M   |   ✅   |
-| ORD-03 | Mexal updates payment status **per line**; Salesforce aggregates and updates the corresponding tranche automatically. Mexal never writes the tranche directly.                               |  M   |   ✅   |
-| ORD-04 | At invoicing, every invoice generated by Mexal is reflected in Salesforce: **n Mexal invoices → n Salesforce invoices**.                                                                     |  M   |   ✅   |
-| ORD-05 | **Automatic contract generation** is keyed to the **product type** on the order (e.g. the Performance Plus code), **not** to order status — the same criterion adopted for bundles.          |  S   |   ✅   |
-| ORD-06 | Introduce **order types** (e.g. stage bundle, stage/performance) to differentiate workflows and reporting.                                                                                   |  S   |   ✅   |
-| ORD-07 | **Overdue report**, scheduled weekly (e.g. Monday) to sales and administration — invoices issued and unpaid with a due date before the check date. Production is excluded from distribution. |  S   |   ✅   |
-| ORD-08 | **Expiring-tranche report**, emailed to administration before month end listing the following month's expiring tranches.                                                                     |  S   |   ✅   |
-| ORD-09 | Both reports are permanently available and refreshed, with no manual launch.                                                                                                                 |  S   |   ✅   |
-| ORD-10 | Invoice display policy: component lines vs instalment lines, and masking internal component prices from the client. 🔴 _Daniela/Fabrizio decision with Marco._                               |  M   |   🔴   |
-| ORD-11 | **Performance Plus** can originate from a stage bundle or from direct tutor entry. Both cases must be supported.                                                                             |  S   |   ✅   |
+| ID     | Requirement                                                                                                                                                                                                                    | Pri. | Status |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--: | :----: |
+| ORD-01 | After products are selected on the Quote, the user creates each tranche through a guided action, selecting its Quote Line Items and entering the planned payment due date.                                                     |  M   |   ✅   |
+| ORD-02 | The tranche reference and date propagate from Quote Line Item to Order Item. The order passes to Mexal **in full**, carrying both values **at line level**, not as a tranche object.                                           |  M   |   ✅   |
+| ORD-03 | Mexal updates payment status **per Order Item/invoice line**; Salesforce recalculates the corresponding tranche. It becomes fully paid only when every included line is fully paid. Mexal never creates or writes the tranche. |  M   |   ✅   |
+| ORD-04 | At invoicing, every invoice generated by Mexal is reflected in Salesforce: **n Mexal invoices → n Salesforce invoices**.                                                                                                       |  M   |   ✅   |
+| ORD-05 | **Automatic contract generation** is keyed to the **product type** on the order (e.g. the Performance Plus code), **not** to order status — the same criterion adopted for bundles.                                            |  S   |   ✅   |
+| ORD-06 | Introduce **order types** (e.g. stage bundle, stage/performance) to differentiate workflows and reporting.                                                                                                                     |  S   |   ✅   |
+| ORD-07 | **Overdue report**, scheduled weekly (e.g. Monday) to sales and administration — invoices issued and unpaid with a due date before the check date. Production is excluded from distribution.                                   |  S   |   ✅   |
+| ORD-08 | **Expiring-tranche report**, emailed to administration before month end listing the following month's expiring tranches.                                                                                                       |  S   |   ✅   |
+| ORD-09 | Both reports are permanently available and refreshed, with no manual launch.                                                                                                                                                   |  S   |   ✅   |
+| ORD-10 | Invoice display policy: component lines vs instalment lines, and masking internal component prices from the client. 🔴 _Daniela/Fabrizio decision with Marco._                                                                 |  M   |   🔴   |
+| ORD-11 | **Performance Plus** can originate from a stage bundle or from direct tutor entry. Both cases must be supported.                                                                                                               |  S   |   ✅   |
 
 ---
 
@@ -355,18 +357,18 @@ These block signature, ordered by urgency.
 
 The project is considered compliant when all of the following are verified in the test environment by Pienissimo's key users.
 
-|   #   | Criterion                                                                                                                                                                  | Ref.           |
-| :---: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| AC-01 | A form-generated lead reaches an invoiced order with no unplanned manual intervention, and the traceability chain resolves in both directions.                             | DAT-01         |
-| AC-02 | A sold bundle produces order lines per **elementary product**, with the sum of spreads exactly equal to the bundle's selling price.                                        | BUN-02, BUN-05 |
-| AC-03 | The same product placed in two different bundles at different spreads yields correct revenue statistics for both.                                                          | BUN-03         |
-| AC-04 | An order with an event product automatically generates the campaign and the tickets, one per event article code, including multi-event bundles.                            | BIG-02         |
-| AC-05 | The QR is issued **only** after signature, and scanning at check-in unloads the movement, bringing the client's algebraic sum to zero.                                     | BIG-01, BIG-12 |
-| AC-06 | A multi-instalment order generates the correct tranches from line due dates, transits to Mexal, and receives payment statuses back, correctly aggregated onto the tranche. | ORD-01, ORD-03 |
-| AC-07 | A credit note on an event order sets the ticket to Annullato.                                                                                                              | BIG-10         |
-| AC-08 | A checkout link generated from an Opportunity updates that same Opportunity to Closed Won once the purchase completes.                                                     | INT-12         |
-| AC-09 | The two scheduled reports (overdue, expiring tranches) reach their recipients without manual launch.                                                                       | ORD-07, ORD-08 |
-| AC-10 | Apex code coverage is at or above 75% and the test suite is entirely green.                                                                                                | NFR-06         |
+|   #   | Criterion                                                                                                                                                                                                                                                         | Ref.           |
+| :---: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| AC-01 | A form-generated lead reaches an invoiced order with no unplanned manual intervention, and the traceability chain resolves in both directions.                                                                                                                    | DAT-01         |
+| AC-02 | A sold bundle produces order lines per **elementary product**, with the sum of spreads exactly equal to the bundle's selling price.                                                                                                                               | BUN-02, BUN-05 |
+| AC-03 | The same product placed in two different bundles at different spreads yields correct revenue statistics for both.                                                                                                                                                 | BUN-03         |
+| AC-04 | An order with an event product automatically generates the campaign and the tickets, one per event article code, including multi-event bundles.                                                                                                                   | BIG-02         |
+| AC-05 | The QR is issued **only** after signature, and scanning at check-in unloads the movement, bringing the client's algebraic sum to zero.                                                                                                                            | BIG-01, BIG-12 |
+| AC-06 | On a Quote with several products, the user creates tranches by selecting lines and due dates; acceptance preserves those assignments on the Order Items; Mexal returns payment by line and the tranche becomes fully paid only when all its lines are fully paid. | ORD-01, ORD-03 |
+| AC-07 | A credit note on an event order sets the ticket to Annullato.                                                                                                                                                                                                     | BIG-10         |
+| AC-08 | A checkout link generated from an Opportunity updates that same Opportunity to Closed Won once the purchase completes.                                                                                                                                            | INT-12         |
+| AC-09 | The two scheduled reports (overdue, expiring tranches) reach their recipients without manual launch.                                                                                                                                                              | ORD-07, ORD-08 |
+| AC-10 | Apex code coverage is at or above 75% and the test suite is entirely green.                                                                                                                                                                                       | NFR-06         |
 
 ---
 
@@ -410,7 +412,7 @@ A record enters as a **Lead**, becomes an **Opportunity**, carries a **Quote**, 
 | Opportunity | Qualificato → In trattativa (quote sent) → Chiusa/Vinta · with Da ricontattare as a parking state and Chiusa/Persa as the exit                                 |
 | Quote       | Bozza → In trattativa (5-day validity) → **In attesa di accettazione** → Accettato (accounting copy received) · or Rifiutata                                   |
 | Order       | CREATO → CHIUSO/ACQUISITO                                                                                                                                      |
-| Tranche     | CREATO → CHIUSO/ACQUISITO                                                                                                                                      |
+| Tranche     | Created on the Quote → fully paid when every included line is paid. ⚠ Final API value open: `Pagata`/`Incassata` vs legacy `CHIUSO/ACQUISITO`.                 |
 | Ticket      | Ordinato → Disponibile → Assegnato → Utilizzato · or Non utilizzato · or Annullato                                                                             |
 
 ⚠ **“In attesa di accettazione” is the new name for “preventivo scaduto”.** The room will keep saying “scaduto” for months: it is the same thing.
@@ -421,11 +423,11 @@ A record enters as a **Lead**, becomes an **Opportunity**, carries a **Quote**, 
 
 ### 16.2 Words that mean different things on different objects
 
-| Word                   | Lives on                 | Watch out                                                                                                                   |
-| ---------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| **In trattativa**      | Opportunity, Quote       | On the opportunity it is the negotiation; on the quote it is that quote inside its 5 days                                   |
-| **Da ricontattare**    | Lead, Opportunity, Quote | On the Lead it is a task; on the other two a status, each with its own reason picklist                                      |
-| **CHIUSO / ACQUISITO** | Order, Tranche           | On the order administration sets it by hand within 5 days; on the first tranche it fires by itself when the deposit is paid |
+| Word                   | Lives on                 | Watch out                                                                                                                                                      |
+| ---------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **In trattativa**      | Opportunity, Quote       | On the opportunity it is the negotiation; on the quote it is that quote inside its 5 days                                                                      |
+| **Da ricontattare**    | Lead, Opportunity, Quote | On the Lead it is a task; on the other two a status, each with its own reason picklist                                                                         |
+| **CHIUSO / ACQUISITO** | Order, Tranche           | Legacy diagram value. The 24 August decision supersedes the tranche trigger with all-lines-paid aggregation; whether this remains the final API value is open. |
 
 When one of these words is said aloud, the object must be named too.
 
@@ -447,25 +449,25 @@ When one of these words is said aloud, the object must be named too.
 
 They exist only in the drawings and have never been discussed in a meeting. Signature makes them binding.
 
-| ID     | Requirement                                                                                                             | Pri. |
-| ------ | ----------------------------------------------------------------------------------------------------------------------- | :--: |
-| SAL-19 | An expired quote must be returnable to negotiation by the tutor alone.                                                  |  S   |
-| SAL-20 | Two “to recall” tasks to add: after first contact and after the appointment, with a settable date.                      |  S   |
-| SAL-21 | Opportunity type field with the values “Vendita da tutor” and “Recall tutor”.                                           |  S   |
-| SAL-22 | An INFO field explaining how to use the exit reasons.                                                                   |  C   |
-| SAL-23 | Enable the standard behaviour moving the opportunity to “quote sent” automatically.                                     |  S   |
-| ORD-06 | Order types STANDARD, BUNDLE, PLUS.                                                                                     |  S   |
-| ORD-07 | Overdue report every Monday to Marco and administration.                                                                |  S   |
-| ORD-12 | A WooCommerce order stays invisible in Salesforce until COMPLETATO; for bank transfers administration flips it by hand. |  M   |
-| ORD-13 | On deposit payment the first tranche goes straight to CHIUSO/ACQUISITO; later ones start CREATO.                        |  M   |
-| ORD-14 | CHIUSO/ACQUISITO is set by administration by hand within a maximum of 5 days of confirmed payment.                      |  M   |
-| ORD-15 | “Create Credit Note” button on the order, with a pop-up to pick the lines.                                              |  S   |
-| INT-22 | Overdue amounts come from the Mexal “scoperto clienti” API.                                                             |  S   |
-| BIG-17 | Ticket status picklist with six values.                                                                                 |  M   |
-| BIG-18 | Participant landing reached by a link carrying the Account ID; with several events the event is chosen first.           |  M   |
-| BIG-19 | On list confirmation a flow creates or matches contacts, adds campaign members and sends the signature request.         |  M   |
-| BIG-20 | The QR contains the campaign member ID.                                                                                 |  M   |
-| BIG-21 | “Edge cases” button on the ticket, visible only from Assegnato, for name change and missing signature.                  |  S   |
+| ID     | Requirement                                                                                                                                                                                                   | Pri. |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: |
+| SAL-19 | An expired quote must be returnable to negotiation by the tutor alone.                                                                                                                                        |  S   |
+| SAL-20 | Two “to recall” tasks to add: after first contact and after the appointment, with a settable date.                                                                                                            |  S   |
+| SAL-21 | Opportunity type field with the values “Vendita da tutor” and “Recall tutor”.                                                                                                                                 |  S   |
+| SAL-22 | An INFO field explaining how to use the exit reasons.                                                                                                                                                         |  C   |
+| SAL-23 | Enable the standard behaviour moving the opportunity to “quote sent” automatically.                                                                                                                           |  S   |
+| ORD-06 | Order types STANDARD, BUNDLE, PLUS.                                                                                                                                                                           |  S   |
+| ORD-07 | Overdue report every Monday to Marco and administration.                                                                                                                                                      |  S   |
+| ORD-12 | A WooCommerce order stays invisible in Salesforce until COMPLETATO; for bank transfers administration flips it by hand.                                                                                       |  M   |
+| ORD-13 | ⚠ Legacy diagram rule: the first tranche goes to `CHIUSO/ACQUISITO` on deposit. Aurel's 24 August decision supersedes the trigger with aggregation of all included lines; the final state label remains open. |  M   |
+| ORD-14 | CHIUSO/ACQUISITO is set by administration by hand within a maximum of 5 days of confirmed payment.                                                                                                            |  M   |
+| ORD-15 | “Create Credit Note” button on the order, with a pop-up to pick the lines.                                                                                                                                    |  S   |
+| INT-22 | Overdue amounts come from the Mexal “scoperto clienti” API.                                                                                                                                                   |  S   |
+| BIG-17 | Ticket status picklist with six values.                                                                                                                                                                       |  M   |
+| BIG-18 | Participant landing reached by a link carrying the Account ID; with several events the event is chosen first.                                                                                                 |  M   |
+| BIG-19 | On list confirmation a flow creates or matches contacts, adds campaign members and sends the signature request.                                                                                               |  M   |
+| BIG-20 | The QR contains the campaign member ID.                                                                                                                                                                       |  M   |
+| BIG-21 | “Edge cases” button on the ticket, visible only from Assegnato, for name change and missing signature.                                                                                                        |  S   |
 
 ---
 
@@ -525,8 +527,8 @@ Read plainly these are two different events. But the 6 August record treats _rin
 
 The 6 August session replaced the order states with **`Ordinato → Fatturato → Incassato`** and struck _Chiuso acquisito_ outright. The design file has now caught up and draws those three — **but it did not remove the old values**: `CHIUSO/ACQUISITO` and `CREATO` are still on the orders page, and the tranche rule still sends the first tranche to `CHIUSO/ACQUISITO`.
 
-So the source now carries both vocabularies at once. **Nobody has said whether `Incassato` is `CHIUSO/ACQUISITO` renamed, or a different milestone** — and the tranche depends on the answer.
-**Proposal:** confirm they are the same milestone under a new name, or name the second one. **If nobody decides:** neither Order nor Tranche can be configured without a real chance of configuring twice.
+So the source now carries both vocabularies at once. **Nobody has said whether `Incassato` is `CHIUSO/ACQUISITO` renamed, or a different milestone.** Aurel's 24 August decision settles tranche creation and payment aggregation, so those mechanics can proceed; only the final tranche-state label still depends on this answer.
+**Proposal:** confirm they are the same milestone under a new name, or name the second one. **If nobody decides:** the creation and roll-up can be built, but the final Order and Tranche state values cannot be configured safely.
 
 ### RC-08 · Our flag — a ticket tier changed name in a drawing
 
@@ -546,6 +548,8 @@ The citations do not all carry the same weight, and that should be said: the min
 Tracked meetings: 27/05 (kickoff), 03/06 (sales demo), 04/06 (marketing demo), 08/06 (ticketing and compliance), 16/06 (tech sales), 23/06 (marketing), 30/06 (sales types and quotes), 02/07 (Mexal invoicing), 07/07 (lead/opty and integrations), 14/07 (Mexal integration), 16/07 (bundle demo and order flow), 22/07 (bundle and ticket flow), 23/07 (product codes and bundles), 29/07 (open-topics follow-up), 31/07 (business review).
 
 Documents: `Integrazione_Salesforce_WooCommerce.docx` (31/07), `anar_PIE_ricla.xlsx` (article master, 22/07), `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`, Passepartout WEBAPI credentials (15/07).
+
+Direct decision: Aurel Mrruku, 24/08, Quote-side tranche creation, propagation to Order Items and payment roll-up.
 
 Technical verification against the Pienissimo UAT org carried out on 3 August 2026.
 

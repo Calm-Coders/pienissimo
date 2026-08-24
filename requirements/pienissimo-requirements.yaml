@@ -8,8 +8,8 @@ meta:
   project: Pienissimo — Zoho CRM to Salesforce migration
   client: Pienissimo
   supplier: ROMI S.r.l.
-  version: "1.1"
-  date: 2026-08-03
+  version: "1.3"
+  date: 2026-08-24
   signoff_session: 2026-08-06T15:00:00+02:00
   go_live: 2026-10-06
   zoho_expiry: 2026-10-31
@@ -17,7 +17,7 @@ meta:
     it: REQUISITI.it.md # authoritative, client-facing
     en: REQUIREMENTS.md # internal mirror
   status_legend:
-    agreed: Agreed in a meeting; binding on signature
+    agreed: Agreed in a meeting or explicitly decided by the named authority; binding on signature
     to_confirm: Proposed or discussed, not closed
     open: Missing a decision or a client input
     conflict: Two sources disagree; must be reconciled before signature
@@ -28,6 +28,11 @@ meta:
     F2: Deferred to Phase 2
 
 sources:
+  direct_decisions:
+    - id: AUREL-2026-08-24-TRANCHE
+      date: 2026-08-24
+      owner: Aurel Mrruku
+      topic: Quote-side tranche creation, propagation and payment aggregation
   meetings:
     - { date: 2026-05-27, topic: kickoff }
     - { date: 2026-06-03, topic: sales demo }
@@ -121,7 +126,7 @@ glossary:
   OPPORTUNITA: Si apre quando il contatto manifesta un interesse economico. [DGM-1]
   LEAD_QUALIFICATO: Interessato a un appuntamento, richiede una demo, o richiede preventivo. [DGM-1]
   LEAD_NON_QUALIFICATO: Fuori target, non titolare di ristorante, ha compilato il form per curiosità. [DGM-1]
-  TRANCHE: Contenitore di un sottoinsieme delle righe d'ordine con scadenza di pagamento a livello di riga. [DGM-2]
+  TRANCHE: Piano di pagamento definito nel Preventivo selezionando righe e data di scadenza; riferimento e data passano poi alle righe d'ordine. [AUREL-2026-08-24-TRANCHE]
   ASSET_vs_QR: L'Asset è il record; il QR è un valore contenuto in esso e porta l'ID del campaign member. [22/07, DGM-2]
   ANNO_SOLARE: Classificazione dei bundle. Distinto da ANNO_ACCADEMICO (maggio-settembre) usato per la generazione biglietti. [23/07]
 
@@ -285,12 +290,19 @@ state_machines:
       - "Plus + Attivazione o Rinnovo" # added 2026-08-14 from DGM-2; drives contract generation
 
   tranche:
-    source: [DGM-2]
+    source: [DGM-2, AUREL-2026-08-24-TRANCHE]
+    status: conflict
     states: [CREATO, CHIUSO/ACQUISITO]
     rules:
-      - "When the client pays the deposit, the FIRST tranche goes immediately to CHIUSO/ACQUISITO"
-      - "Subsequent tranches are created in CREATO"
-      - "Mexal updates payment status at order-line level; SFDC aggregates upward onto the tranche"
+      - "After products are selected on the Quote, a guided action creates each tranche by asking which Quote Line Items it contains and the planned payment due date"
+      - "Each selected Quote Line Item stores the tranche reference and due date; both propagate to the corresponding Order Item"
+      - "Mexal updates payment status at order-line level; SFDC aggregates upward and marks the tranche fully paid only when every included line is fully paid"
+      - "Mexal never creates or writes the tranche"
+    reconciliation: >-
+      Creation and roll-up mechanics were decided by Aurel Mrruku on 2026-08-24.
+      The final paid-state API value remains open: DGM-2 says
+      CHIUSO/ACQUISITO, while the newer order vocabulary uses Incassato. Do not
+      configure that label until OI-69 is resolved.
 
   asset:
     source: [DGM-2]
@@ -534,7 +546,7 @@ requirements:
       area: data_model,
       pri: M,
       status: agreed,
-      text: "One order object; one line per instalment with due date on the line"
+      text: "One order object; product lines inherit their Quote-side tranche reference and payment due date; Zoho child orders are abolished"
     }
   - {
       id: DM-13,
@@ -570,7 +582,8 @@ requirements:
       area: data_model,
       pri: M,
       status: agreed,
-      text: "Tranche custom object auto-created from order-line due dates",
+      source: AUREL-2026-08-24-TRANCHE,
+      text: "Tranche custom object created on the Quote through guided selection of Quote Line Items and a planned payment due date",
       state_machine: tranche
     }
   - {
@@ -1138,7 +1151,8 @@ requirements:
       area: orders,
       pri: M,
       status: agreed,
-      text: "Tranches auto-created from order-line due dates",
+      source: AUREL-2026-08-24-TRANCHE,
+      text: "After Quote products are selected, the user creates each tranche by choosing its Quote Line Items and payment due date",
       acceptance: AC-06
     }
   - {
@@ -1146,14 +1160,16 @@ requirements:
       area: orders,
       pri: M,
       status: agreed,
-      text: "Whole order goes to Mexal; tranche reference travels at line level"
+      source: AUREL-2026-08-24-TRANCHE,
+      text: "Tranche reference and due date propagate from Quote Line Item to Order Item; the whole order then goes to Mexal with both values at line level"
     }
   - {
       id: ORD-03,
       area: orders,
       pri: M,
       status: agreed,
-      text: "Mexal updates payment per line; Salesforce aggregates onto the tranche"
+      source: AUREL-2026-08-24-TRANCHE,
+      text: "Mexal updates payment per order line; Salesforce recalculates the tranche and marks it fully paid only when every included line is fully paid"
     }
   - {
       id: ORD-04,
@@ -1226,9 +1242,9 @@ requirements:
       id: ORD-13,
       area: orders,
       pri: M,
-      status: to_confirm,
-      source: DGM-2,
-      text: "On deposit payment the first tranche goes immediately to CHIUSO/ACQUISITO; later tranches start in CREATO"
+      status: conflict,
+      source: [DGM-2, AUREL-2026-08-24-TRANCHE],
+      text: "The old diagram sends the first tranche to CHIUSO/ACQUISITO on deposit; the 2026-08-24 decision instead derives the final paid state from all included lines. The final state label remains open under OI-69"
     }
   - {
       id: ORD-14,
@@ -1828,7 +1844,7 @@ acceptance_criteria:
     }
   - {
       id: AC-06,
-      text: "A multi-instalment order builds correct tranches, transits to Mexal and receives aggregated payment statuses",
+      text: "A quote with several products supports guided tranche creation by line and due date; acceptance preserves those assignments on the Order Items; Mexal payment statuses return per line and the tranche becomes fully paid only when all its lines are fully paid",
       refs: [ORD-01, ORD-03]
     }
   - {

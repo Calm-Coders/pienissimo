@@ -72,7 +72,7 @@ Detail: [the build ahead of the record](notes/objects/The%20build%20ahead%20of%2
 | **Ticket generation**     | `OrderBigliettoTriggerHandler` — creates a Biglietto from an Order. The 08-03 check said nothing did this                                                                                                         |
 | **Product flags**         | `Genera_Biglietto__c` and `Solo_Bundle__c` both exist. **Nothing upstream populates them** — the client's registry carries neither column                                                                         |
 | **Classification fields** | `Anno_Solare__c`, `Evento__c`, `Bundle_Type__c` on Product2 — all three **populated on zero bundles**                                                                                                             |
-| **Instalment input**      | `OrderItem.Data_Scadenza__c`, the line-level due date the tranche design is built on. Committed 4 August, in no tracker                                                                                           |
+| **Instalment input**      | `OrderItem.Data_Scadenza__c` exists downstream. The 24 Aug decision requires Quote-side tranche selection, reference/date fields and propagation; none exists                                                     |
 | **WooCommerce keys**      | `Product2.WooCommerce_Product_Id__c`, `Opportunity.WooCommerce_Order_Id__c`                                                                                                                                       |
 | **Integration framework** | `Integration_Configuration__c`, `Integration_Log__c`, `API_Callout_Engine` — [standard ROMI scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md), not a Pienissimo requirement |
 | **UI**                    | `bundleProductAssignment` LWC + controller                                                                                                                                                                        |
@@ -86,16 +86,16 @@ tracker**, which is why the written record repeatedly understates what exists.
 
 ## What is not built
 
-| Gap                                                                                                                           | Item                                                                                                                                                                  |
-| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`Tranche__c` — does not exist in the org or the repository.** The input (`Data_Scadenza__c`) is there; the mechanism is not | [OI-50](notes/items/OI-50%20Tranche%20object.md)                                                                                                                      |
-| **Any Apex coverage worth the name** — 1% org-wide against a 75% deploy floor                                                 | [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md), [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md) |
-| **The six Biglietto Apex classes are not in source control** — they exist only in the UAT org                                 | [risk](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                                                                   |
-| Participant data collection, and who hosts the landing page                                                                   | [OI-78](notes/items/OI-78%20Participant%20data%20collection.md), [OI-86](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                     |
-| The WooCommerce checkout-link flow — credentials expected 26 August                                                           | [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)                                                                                                    |
-| VAT validation moving into Salesforce — provider unconfirmed                                                                  | [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)                                                                                          |
-| The Zoho import template ROMI owes the client, ahead of the ~1 September import                                               | [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)                                                                                     |
-| The whole phase 2 scope — no estimate exists and the decision-maker was never told                                            | [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                                                                             |
+| Gap                                                                                                                                   | Item                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`Tranche__c` — does not exist in the org or the repository.** The Quote-side action/fields, propagation and roll-up are also absent | [OI-50](notes/items/OI-50%20Tranche%20object.md)                                                                                                                      |
+| **Any Apex coverage worth the name** — 1% org-wide against a 75% deploy floor                                                         | [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md), [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md) |
+| **The six Biglietto Apex classes are not in source control** — they exist only in the UAT org                                         | [risk](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                                                                   |
+| Participant data collection, and who hosts the landing page                                                                           | [OI-78](notes/items/OI-78%20Participant%20data%20collection.md), [OI-86](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                     |
+| The WooCommerce checkout-link flow — credentials expected 26 August                                                                   | [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)                                                                                                    |
+| VAT validation moving into Salesforce — provider unconfirmed                                                                          | [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)                                                                                          |
+| The Zoho import template ROMI owes the client, ahead of the ~1 September import                                                       | [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)                                                                                     |
+| The whole phase 2 scope — no estimate exists and the decision-maker was never told                                                    | [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                                                                             |
 
 ---
 
@@ -109,13 +109,12 @@ tracker**, which is why the written record repeatedly understates what exists.
    ⚠ **This is handled as one deliberate task, requested separately before the
    production deploy — it is not to be picked up mid-flight.** The records stay
    current so that task has a brief when it comes.
-2. **Build `Tranche__c`.** _ROMI._ The most consequential unbuilt object in the
-   project: [ticket availability](notes/items/OI-75%20Ticket%20availability%20rule.md)
-   depends on tranche-level invoicing, so the whole ticket lifecycle sits
-   downstream of something nobody has started
+2. **Build the Quote-side tranche flow.** _ROMI._ Aurel decided the mechanics on
+   24 Aug: guided selection of Quote Line Items plus payment date, propagation
+   to Order Items, then payment roll-up from Mexal lines. `Tranche__c` and every
+   part of that mechanism remain unbuilt. The catalogue `BLO-` block is now
+   explicitly a different concept
    ([OI-50](notes/items/OI-50%20Tranche%20object.md)).
-   **Newly complicated:** the client also has a _product-side_ tranche — see §
-   the workbook below.
 3. **Fix `Product2.Evento__c` before any product import.** _ROMI._ The built
    restricted picklist is wrong against the client's own event list: **no
    `Happy Team` value**, although Happy Team is priced and sits in the Academy
@@ -131,8 +130,9 @@ tracker**, which is why the written record repeatedly understates what exists.
    ([OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)).
    **Nothing was reconfigured against any of it.**
 5. **Close the `CHIUSO/ACQUISITO` question.** _Elena Spini._ The 06-08 session
-   struck it from the Order; the tranche design still uses the name. Blocks
-   configuring **both** objects
+   struck it from the Order; the legacy tranche design still uses the name.
+   Aurel's 24 Aug decision unblocks tranche creation mechanics, but the final
+   Order and Tranche state values remain blocked
    ([OI-69](notes/items/OI-69%20Order%20state%20model.md)).
 6. **Send Pienissimo the Zoho import template.** _ROMI._ Owed before the
    ~1 September import

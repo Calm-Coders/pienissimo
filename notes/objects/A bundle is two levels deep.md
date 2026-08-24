@@ -51,11 +51,12 @@ does not currently distinguish them:
 - **The tranche of OI-50** — an _order-side_ grouping, created from due dates
   after the sale, carrying payment state up from Mexal.
 
-⚠ **Unresolved: are they the same object at two life stages, or two objects?**
-Nothing in the record decides this. It needs deciding before `Tranche__c` is
-built, because the answer changes whether the object is created at import from
-`BLO-` codes or at order time from due dates. Raise it at the
-**2026-08-26 Mexal review**.
+**Resolved by Aurel Mrruku on 2026-08-24: they are different concepts.** A
+`BLO-` row remains a catalogue-side bundle block. It does not create
+`Tranche__c` during import. The operational payment tranche is created later on
+the Quote through a guided selection of Quote Line Items plus a payment due
+date; those values then propagate to the Order Items. See
+[OI-50](../items/OI-50%20Tranche%20object.md).
 
 ## What the current build does with it
 

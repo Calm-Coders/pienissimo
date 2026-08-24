@@ -75,7 +75,7 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    — both must carry the rule that
    [`_ARCOD` is an opaque string](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
 3. **Dated but unbuilt** — [tranche](notes/items/OI-50%20Tranche%20object.md)
-   (nothing exists),
+   (creation in the Quote decided by Aurel 24 Aug; nothing exists),
    [participants](notes/items/OI-78%20Participant%20data%20collection.md),
    [WooCommerce](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)
    (credentials 26 Aug),

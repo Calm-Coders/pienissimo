@@ -1,8 +1,8 @@
 # ROMI-PIENISSIMO — Recap di Sviluppo Salesforce
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
-> ⚠ **Precedenza, dal più recente: [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
-> I §1–§9 sono aggiornati al 23/07/2026. Il §10 porta il delta 24/07 → 03/08. Il §11 porta la sessione di chiusura del 06/08. **Il §12 porta lo sweep documentale del 14/08 e prevale su tutti.** Il §11 prevale sui precedenti — in particolare la separazione su DocuSign, i modelli di stato ordine/asset, la regola di disponibilità dei biglietti e la decisione sui webhook WooCommerce.
+> ⚠ **Precedenza, dal più recente: §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
+> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.**
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
 ---
@@ -473,3 +473,29 @@ Padova, Brescia, Milano, Pescara, Roma, Catania — sei codici, tutti gratuiti, 
 ### 13.8 Ancora dovuto
 
 La sessione del 22/07 abbinava al file un'azione su Aurel Mrruku: **partecipare a una riunione di approfondimento sull'anagrafica prodotti dopo aver ricevuto il file**. Il file è arrivato il 07/08. **La riunione non si è tenuta.** #46, #48, #76 e #93 vogliono tutte la stessa sede: la **review Mexal con il cliente del 26/08**, dove Fabrizio Paganelli è invitato e che è la prima sessione client-facing da quando il file è arrivato.
+
+## 14. Aggiornamento 24/08/2026 — creazione tranche decisa da Aurel Mrruku
+
+È una decisione architetturale diretta di Aurel Mrruku, non una frase
+ricostruita da una riunione.
+
+- La tranche operativa di pagamento viene creata **nel Preventivo, dopo la
+  selezione dei prodotti**.
+- Un'azione guidata richiede quali righe di Preventivo appartengono alla tranche
+  e la data prevista di pagamento. Ogni riga selezionata conserva riferimento e
+  data della tranche; una riga appartiene a una sola tranche.
+- Quando il Preventivo accettato genera l'Ordine, entrambi i valori si propagano
+  alle corrispondenti righe d'Ordine. L'Ordine eredita il piano; non ricrea le
+  tranche limitandosi a raggruppare date uguali.
+- Mexal aggiorna il pagamento per riga d'Ordine/fattura. Salesforce aggrega gli
+  stati e la tranche raggiunge lo stato finale di pagamento soltanto quando
+  **tutte le righe incluse sono integralmente pagate**. Il pagamento parziale
+  non chiude nulla; Mexal non crea né scrive mai la tranche.
+- Il livello intermedio `BLO-` del catalogo è un blocco bundle distinto. Non
+  crea `Tranche__c` durante l'import. Questo chiude l'ambiguità del §13.4.
+- Il valore API dello stato finale resta **aperto**. Concettualmente è
+  `Pagata`/`Incassata`; non va assunto il valore legacy
+  `CHIUSO/ACQUISITO` finché non viene chiusa la #69.
+
+`Tranche__c`, l'azione e i campi lato Preventivo, la propagazione alle righe
+d'Ordine e l'automazione di roll-up sono ancora tutti da costruire.

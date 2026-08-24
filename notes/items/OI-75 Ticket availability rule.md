@@ -6,7 +6,7 @@ owner: ROMI
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-15
+updated: 2026-08-24
 depends_on: [OI-50]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -17,7 +17,9 @@ source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 is paid in full.** Partial payment releases nothing. This supersedes every
 earlier wording.
 
-Order lines group into tranches by due date and each tranche is invoiced
+The tranche is defined earlier on the Quote: the user selects its Quote Line
+Items and supplies the payment due date. The tranche reference and date then
+propagate to the corresponding Order Items. Each tranche is invoiced
 separately, so per-event release comes out of tranche-level invoicing —
 [OI-50](OI-50%20Tranche%20object.md).
 
@@ -40,7 +42,7 @@ defines the **Get Fatture** target structure as `numero_fattura`,
 `aliquota_iva`, `codice_pagamento` and **`numero_ordine`** — documented as
 `serie_ordine/numero_ordine`.
 
-**There is no order *line* number in it.** The rule agreed on 2026-08-06 matches
+**There is no order _line_ number in it.** The rule agreed on 2026-08-06 matches
 on _numero di riga d'ordine_ because Elisa killed the two alternatives; the
 mapping delivers only the order number, which cannot separate two lines of the
 same order — and she killed by-product precisely because a tutor can put the

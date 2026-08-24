@@ -10,6 +10,24 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-24 — codex — Aurel decided Quote-side tranche creation
+
+- **Did:** recorded Aurel Mrruku's direct decision that payment tranches are
+  created on the Quote after product selection through a guided choice of Quote
+  Line Items and a planned payment due date. The tranche reference/date
+  propagate to Order Items; Mexal returns payment per line; Salesforce marks
+  the tranche fully paid only when every included line is fully paid.
+- **State:** updated OI-50, OI-75, the quote-to-order and Mexal flows, the
+  catalogue-block note, the YAML register and both contractual prose mirrors.
+  The `BLO-` catalogue block is now explicitly separate and does not create
+  `Tranche__c`. The register/prose version is 1.3 dated 2026-08-24.
+- **Next:** build remains entirely outstanding: `Tranche__c`, Quote-side action
+  and fields, propagation to Order Items, and payment roll-up. The Notion status
+  and Flows mirrors were not refreshed in this session.
+- **Watch:** the final paid-state API value is deliberately still open under
+  OI-69. Do not infer `CHIUSO/ACQUISITO`; creation and roll-up can proceed while
+  the final label waits for Elena's answer.
+
 ## 2026-08-24 — claude — generator reconciled with what the live projects actually do
 
 Two divergences between `start-sf-projects` and both live projects, closed in
@@ -764,36 +782,3 @@ servizio`**, exists in Elena's client-facing doc and in no version of
   [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) are now marked
   **unverified in both directions**; open that thread in a mail client before
   chasing the client again. Read full bodies next run, not snippets.
-
----
-
-## 2026-08-14 — claude — full history sweep from April, all attachments read
-
-- **Did:** swept Gmail from 2026-04-01 (67 threads, two pages, four query
-  angles) and the entire `[Pienissimo] Fase Progettuale` Drive folder including
-  both subfolders. Read every reachable attachment.
-- **State:** 🔴 **The binding deadline is 10 September, not 6 October.**
-  `Pienissimo_Project Plan.pptx` (Elena, 10 July, never read until today) sets
-  _Fine sviluppi Fase 1 entro 10/09_, with UAT, training and the data import
-  between that and go-live — and a **second go-live on 9 November** for Fase 2
-  that appears in no meeting record. Full dates now in
-  [OI-04](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md) and
-  [the calendar risk](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
-  The same deck lists GLS, Teachable and Zoho-for-Pienissimo-Pro as **Fase 2**,
-  which is genuinely two-edged evidence in
-  [the dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
-- **Next:** ingest what this sweep found but did not drill — a **NotebookLM
-  notebook** and a **LastPass folder** (both shared 25 June, referenced
-  nowhere), a **third design diagram**, and **four ROMI-internal meetings** with
-  Gemini notes never processed (13/07, 16/07, 03/08, 05/08).
-- **Watch:** three things. **(1)** The **pre-sales record is not in this
-  mailbox** — earliest Pienissimo mail is 24 June; Aurel was onboarded 25 June,
-  a month after kickoff. The prevendita evidence the dispute turns on sits with
-  Elena Spini or Andrea Galotto. **(2)** `01 Documenti forniti dal cliente/`
-  holds a **real customer order PDF with company name and VAT number** — keep it
-  out of `notes/`, the recaps and `site/`. **(3)** New people from the April org
-  chart: [G Lanzetti](notes/people/G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)
-  is CEO of **both** companies and appears nowhere in the project record;
-  [Andrea Parmeggiani](notes/people/Andrea%20Parmeggiani%20-%20Pienissimo%20Software%20maintenance%20manager.md)
-  belongs to **Pienissimo Software Srl**, the disputed entity, while being the
-  Fase 1 Anticipay contact.

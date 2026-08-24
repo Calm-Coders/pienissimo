@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-20
+updated: 2026-08-24
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -61,9 +61,11 @@ edited the same afternoon, labels its closed-won box **"Chiuso Vinto /
 Incassato"** — while still defining `CHIUSO/ACQUISITO` separately elsewhere on
 the same page. Suggestive of a rename; **not a ruling**.
 
-**The ask is unchanged.** Elena Spini: is `Incassato` `CHIUSO/ACQUISITO`
-renamed, or a different milestone? Neither the register nor the tranche object
-can be configured until that sentence exists.
+**The state-name ask is unchanged.** Elena Spini: is `Incassato`
+`CHIUSO/ACQUISITO` renamed, or a different milestone? Aurel Mrruku's 2026-08-24
+decision now settles how the tranche is created and how payment rolls up, so
+that mechanism can be built. The final tranche-state label and the Order state
+machine must not be configured until this sentence exists.
 
 ⚠ The set may also be incomplete. Fabrizio floated a fourth state **_Perso_**
 driven by credit notes and Elena Spini called three states thin — see

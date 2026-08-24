@@ -1,8 +1,10 @@
 # Documento di Requisiti — Progetto Salesforce Pienissimo
 
 **Cliente:** Pienissimo · **Fornitore:** ROMI S.r.l. · **Progetto:** migrazione Zoho CRM → Salesforce
-**Versione:** 1.2 — bozza per approvazione · **Data:** 3 agosto 2026
+**Versione:** 1.3 — bozza per approvazione · **Data:** 24 agosto 2026
 
+> **Cosa cambia nella 1.3.** Il 24 agosto Aurel Mrruku ha deciso direttamente la creazione delle tranche nel Preventivo, la propagazione alle righe d'Ordine e il roll-up quando tutte le righe risultano pagate. Il valore API dello stato finale resta aperto sotto RC-07.
+>
 > **Cosa è cambiato dalla 1.0.** Sono stati letti e integrati i due file di design draw.io — `Flows & Objects.drawio` di Elena Spini e `Workflow Pienissimo 23-7-26.drawio` annotato da Marco Montesi — entrambi ri-decodificati integralmente il **20 agosto 2026**, giorno in cui risultavano modificati nello stesso pomeriggio, rispettivamente alle 15:36 UTC e alle 14:28 UTC (questo documento riportava il 6 agosto e il 4 agosto). ⚠ **Nessuna di queste due modifiche è verbalizzata, quindi nulla di quanto segue è stato cambiato sulla loro base**; i tre punti in cui i disegni si sono spostati rispetto a questo testo sono elencati nel §17. Ne derivano il nuovo **§16** (macchine a stati, valori delle picklist, 17 requisiti che esistevano solo nei disegni) e il **§17**, che elenca i punti in cui le fonti non concordano. Due correzioni riguardano errori nostri: la lista dei tipi ordine in DM-15 era inventata, e un punto che avevamo presentato come contraddizione (la cadenza dei promemoria) non lo era. Entrambe sono descritte nel §17.
 > **Sessione di approvazione:** giovedì 6 agosto 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
 
@@ -102,12 +104,12 @@ Tutto ciò che è descritto nei capitoli §3–§11 con priorità **M**, **S** o
 | DM-09 | Tracciare per ogni Opportunità l'origine **cliente esistente vs new business**.                                                                                                                                                                                                                                                                                                                                                                           |  M   |  ✅   |
 | DM-10 | **Preventivo** — sempre sotto un'Opportunità; più preventivi per Opportunità ammessi. Validità 5 giorni; lo stato "scaduto" è fisiologico. Il rilancio avviene per **clonazione** del preventivo scaduto, così da conservare lo storico.                                                                                                                                                                                                                  |  M   |  ✅   |
 | DM-11 | Il Preventivo è un unico PDF contenente condizioni generali e riepilogo economico.                                                                                                                                                                                                                                                                                                                                                                        |  M   |  ✅   |
-| DM-12 | **Ordine** — un solo oggetto ordine. Una riga d'ordine per ciascuna rata, con data di scadenza sulla riga. Il pattern Zoho degli ordini figli / "blocchi" è abolito.                                                                                                                                                                                                                                                                                      |  M   |  ✅   |
+| DM-12 | **Ordine** — un solo oggetto ordine. Le righe prodotto ereditano dal Preventivo il riferimento alla tranche e la data prevista di pagamento. Il pattern Zoho degli ordini figli / "blocchi" è abolito.                                                                                                                                                                                                                                                    |  M   |  ✅   |
 | DM-13 | Massimo **un bundle per ordine**; mai bundle + prodotto sciolto nello stesso ordine (in tal caso si generano due ordini distinti).                                                                                                                                                                                                                                                                                                                        |  M   |  ✅   |
 | DM-14 | L'ordine è **immutabile dopo la fatturazione**, con permission set ristretto (1–2 utenti amministrativi) per le correzioni.                                                                                                                                                                                                                                                                                                                               |  M   |  ✅   |
 | DM-15 | Due campi distinti, non uno. **Tipo ordine** = `STANDARD` · `BUNDLE` · `PLUS`, i tre valori del disegno che guidano le automazioni. **Tipologia di vendita** = le sette voci del vostro Excel: stage sales, tutor packages, tutor combo, tutor one-shot, Performance Plus, product sales, Pienissimo Pro. ⚠ La lista di sei valori presente nella v1.0 di questo documento era un nostro errore: non compare in nessuna fonte ed è ritirata (§17, RC-04). |  M   |  🟡   |
 | DM-16 | Ordini e prodotti provenienti da Mexal sono in **sola lettura** su Salesforce.                                                                                                                                                                                                                                                                                                                                                                            |  M   |  ✅   |
-| DM-17 | **Tranche** (rinominazione di "rate") — oggetto custom creato automaticamente dalle date di scadenza delle righe d'ordine: righe con la stessa scadenza formano una tranche.                                                                                                                                                                                                                                                                              |  M   |  ✅   |
+| DM-17 | **Tranche** (rinominazione di "rate") — oggetto custom creato nel **Preventivo**, dopo la selezione dei prodotti, tramite un'azione guidata che richiede quali righe includere e la data prevista di pagamento. Ogni riga selezionata conserva riferimento e data della tranche, poi propagati alla corrispondente riga d'Ordine.                                                                                                                         |  M   |  ✅   |
 | DM-18 | **Campagna = evento**: una campagna per edizione. I membri campagna sono i partecipanti, con stato di check-in (partecipato / no-show), a supporto delle analisi di no-show e composizione aula.                                                                                                                                                                                                                                                          |  M   |  ✅   |
 | DM-19 | **Contratto** (Performance Plus) — oggetto Contract standard con logica custom: date di inizio/fine/rinnovo, importo, preventivo e fatture collegate, pannello rinnovi, fatturato vs incassato, blocco servizio in caso di morosità grave.                                                                                                                                                                                                                |  S   |  ✅   |
 | DM-20 | **Nota di credito** — collegata sia all'ordine sia alla **riga d'ordine**, per gestire storni parziali su bundle multi-evento.                                                                                                                                                                                                                                                                                                                            |  S   |  ✅   |
@@ -219,19 +221,19 @@ Tutto ciò che è descritto nei capitoli §3–§11 con priorità **M**, **S** o
 
 ## 7. Ordini, tranche e ciclo amministrativo
 
-| ID     | Requisito                                                                                                                                                                                                                | Pri. | Stato |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--: | :---: |
-| ORD-01 | Le tranche sono create automaticamente dalle date di scadenza delle righe d'ordine (righe con stessa scadenza = una tranche).                                                                                            |  M   |  ✅   |
-| ORD-02 | L'ordine passa **integralmente** da Salesforce a Mexal; il riferimento e la data della tranche viaggiano **a livello di riga**, non come oggetto tranche.                                                                |  M   |  ✅   |
-| ORD-03 | Mexal aggiorna lo stato di pagamento **a livello di riga**; Salesforce aggrega automaticamente e aggiorna lo stato della tranche corrispondente. Mexal non scrive mai direttamente sulla tranche.                        |  M   |  ✅   |
-| ORD-04 | Alla fatturazione, ogni fattura generata da Mexal è riportata su Salesforce: **n fatture Mexal → n fatture Salesforce**.                                                                                                 |  M   |  ✅   |
-| ORD-05 | La **generazione automatica del contratto** è legata alla **tipologia di prodotto** presente in ordine (es. codice Performance Plus), **non** allo stato dell'ordine — stesso criterio adottato per i bundle.            |  S   |  ✅   |
-| ORD-06 | Introduzione dei **tipi ordine** (es. bundle da palco, palco/performance) per differenziare flussi di lavoro e reportistica.                                                                                             |  S   |  ✅   |
-| ORD-07 | **Report insoluti**, schedulato settimanalmente (es. lunedì) a commerciale e amministrazione — fatture emesse e non pagate con scadenza antecedente alla data di controllo. La produzione è esclusa dalla distribuzione. |  S   |  ✅   |
-| ORD-08 | **Report tranche in scadenza**, inviato all'amministrazione prima di fine mese con le tranche in scadenza nel mese successivo.                                                                                           |  S   |  ✅   |
-| ORD-09 | Entrambi i report sono sempre disponibili e aggiornati, senza necessità di lancio manuale.                                                                                                                               |  S   |  ✅   |
-| ORD-10 | Politica di esposizione in fattura: righe componenti vs righe rata, e mascheramento dei prezzi interni dei componenti al cliente. 🔴 _Decisione Daniela/Fabrizio con Marco._                                             |  M   |  🔴   |
-| ORD-11 | **Performance Plus** può originare sia da bundle "da palco" sia da inserimento diretto dei tutor. Entrambe le casistiche vanno supportate.                                                                               |  S   |  ✅   |
+| ID     | Requisito                                                                                                                                                                                                                                   | Pri. | Stato |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :---: |
+| ORD-01 | Dopo la selezione dei prodotti nel Preventivo, l'utente crea ogni tranche tramite un'azione guidata, scegliendo le righe da includere e inserendo la data prevista di pagamento.                                                            |  M   |  ✅   |
+| ORD-02 | Riferimento e data della tranche si propagano dalla riga di Preventivo alla riga d'Ordine. L'ordine passa **integralmente** a Mexal portando entrambi i valori **a livello di riga**, non come oggetto tranche.                             |  M   |  ✅   |
+| ORD-03 | Mexal aggiorna lo stato di pagamento **a livello di riga d'Ordine/fattura**; Salesforce ricalcola la tranche, che risulta integralmente pagata soltanto quando tutte le righe incluse sono pagate. Mexal non crea né scrive mai la tranche. |  M   |  ✅   |
+| ORD-04 | Alla fatturazione, ogni fattura generata da Mexal è riportata su Salesforce: **n fatture Mexal → n fatture Salesforce**.                                                                                                                    |  M   |  ✅   |
+| ORD-05 | La **generazione automatica del contratto** è legata alla **tipologia di prodotto** presente in ordine (es. codice Performance Plus), **non** allo stato dell'ordine — stesso criterio adottato per i bundle.                               |  S   |  ✅   |
+| ORD-06 | Introduzione dei **tipi ordine** (es. bundle da palco, palco/performance) per differenziare flussi di lavoro e reportistica.                                                                                                                |  S   |  ✅   |
+| ORD-07 | **Report insoluti**, schedulato settimanalmente (es. lunedì) a commerciale e amministrazione — fatture emesse e non pagate con scadenza antecedente alla data di controllo. La produzione è esclusa dalla distribuzione.                    |  S   |  ✅   |
+| ORD-08 | **Report tranche in scadenza**, inviato all'amministrazione prima di fine mese con le tranche in scadenza nel mese successivo.                                                                                                              |  S   |  ✅   |
+| ORD-09 | Entrambi i report sono sempre disponibili e aggiornati, senza necessità di lancio manuale.                                                                                                                                                  |  S   |  ✅   |
+| ORD-10 | Politica di esposizione in fattura: righe componenti vs righe rata, e mascheramento dei prezzi interni dei componenti al cliente. 🔴 _Decisione Daniela/Fabrizio con Marco._                                                                |  M   |  🔴   |
+| ORD-11 | **Performance Plus** può originare sia da bundle "da palco" sia da inserimento diretto dei tutor. Entrambe le casistiche vanno supportate.                                                                                                  |  S   |  ✅   |
 
 ---
 
@@ -353,18 +355,18 @@ Questi punti impediscono la firma. Sono ordinati per urgenza.
 
 Il progetto si considera conforme ai requisiti quando tutte le condizioni seguenti sono verificate in ambiente di test dai key user di Pienissimo.
 
-|   #   | Criterio                                                                                                                                                                         | Rif.           |
-| :---: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| AC-01 | Da un lead generato da form si arriva a un ordine fatturato senza interventi manuali non previsti, con la catena di tracciabilità integra in entrambe le direzioni.              | DAT-01         |
-| AC-02 | Un bundle venduto produce righe d'ordine per **prodotto elementare**, con la somma degli spalmati esattamente pari al prezzo di vendita del bundle.                              | BUN-02, BUN-05 |
-| AC-03 | Lo stesso prodotto inserito in due bundle diversi con spalmati diversi produce statistiche di fatturato corrette per entrambi.                                                   | BUN-03         |
-| AC-04 | Un ordine con prodotto evento genera automaticamente campagna e biglietti, uno per codice articolo evento, anche in presenza di bundle multi-evento.                             | BIG-02         |
-| AC-05 | Il QR viene emesso **solo** dopo la firma, e la scansione al check-in scarica il movimento portando la somma algebrica del cliente a zero.                                       | BIG-01, BIG-12 |
-| AC-06 | Un ordine multi-rata genera le tranche corrette dalle date di scadenza di riga, transita a Mexal e riceve indietro gli stati di pagamento aggregati correttamente sulla tranche. | ORD-01, ORD-03 |
-| AC-07 | Una nota di credito su ordine evento porta il biglietto ad Annullato.                                                                                                            | BIG-10         |
-| AC-08 | Un link di checkout generato da un'Opportunità produce, ad acquisto completato, l'aggiornamento automatico della stessa Opportunità a Closed Won.                                | INT-12         |
-| AC-09 | I due report schedulati (insoluti, tranche in scadenza) arrivano ai destinatari previsti senza lancio manuale.                                                                   | ORD-07, ORD-08 |
-| AC-10 | La copertura del codice Apex è pari o superiore al 75% e la suite di test è interamente verde.                                                                                   | NFR-06         |
+|   #   | Criterio                                                                                                                                                                                                                                                                     | Rif.           |
+| :---: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| AC-01 | Da un lead generato da form si arriva a un ordine fatturato senza interventi manuali non previsti, con la catena di tracciabilità integra in entrambe le direzioni.                                                                                                          | DAT-01         |
+| AC-02 | Un bundle venduto produce righe d'ordine per **prodotto elementare**, con la somma degli spalmati esattamente pari al prezzo di vendita del bundle.                                                                                                                          | BUN-02, BUN-05 |
+| AC-03 | Lo stesso prodotto inserito in due bundle diversi con spalmati diversi produce statistiche di fatturato corrette per entrambi.                                                                                                                                               | BUN-03         |
+| AC-04 | Un ordine con prodotto evento genera automaticamente campagna e biglietti, uno per codice articolo evento, anche in presenza di bundle multi-evento.                                                                                                                         | BIG-02         |
+| AC-05 | Il QR viene emesso **solo** dopo la firma, e la scansione al check-in scarica il movimento portando la somma algebrica del cliente a zero.                                                                                                                                   | BIG-01, BIG-12 |
+| AC-06 | Su un Preventivo con più prodotti, l'utente crea le tranche selezionando righe e scadenze; l'accettazione conserva le assegnazioni sulle righe d'Ordine; Mexal restituisce il pagamento per riga e la tranche risulta pagata soltanto quando tutte le sue righe sono pagate. | ORD-01, ORD-03 |
+| AC-07 | Una nota di credito su ordine evento porta il biglietto ad Annullato.                                                                                                                                                                                                        | BIG-10         |
+| AC-08 | Un link di checkout generato da un'Opportunità produce, ad acquisto completato, l'aggiornamento automatico della stessa Opportunità a Closed Won.                                                                                                                            | INT-12         |
+| AC-09 | I due report schedulati (insoluti, tranche in scadenza) arrivano ai destinatari previsti senza lancio manuale.                                                                                                                                                               | ORD-07, ORD-08 |
+| AC-10 | La copertura del codice Apex è pari o superiore al 75% e la suite di test è interamente verde.                                                                                                                                                                               | NFR-06         |
 
 ---
 
@@ -402,14 +404,14 @@ I due file draw.io contengono decisioni che non sono mai state messe a verbale. 
 
 Un record entra come **Lead**, diventa **Opportunità**, porta un **Preventivo**, si trasforma in **Ordine** con le sue tranche ed emette un **Biglietto**.
 
-| Oggetto     | Stati, nell'ordine in cui si attraversano                                                                                                                              |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lead        | New → In Lavorazione → Primo contatto → Qualificato · oppure Non Risponde (task automatico con promemoria a 48h, poi si torna in lavorazione) · oppure Non qualificato |
-| Opportunità | Qualificato → In trattativa (preventivo inviato) → Chiusa/Vinta · con Da ricontattare come parcheggio e Chiusa/Persa come uscita                                       |
-| Preventivo  | Bozza → In trattativa (validità 5 giorni) → **In attesa di accettazione** → Accettato (copia contabile ricevuta) · oppure Rifiutata                                    |
-| Ordine      | CREATO → CHIUSO/ACQUISITO                                                                                                                                              |
-| Tranche     | CREATO → CHIUSO/ACQUISITO                                                                                                                                              |
-| Biglietto   | Ordinato → Disponibile → Assegnato → Utilizzato · oppure Non utilizzato · oppure Annullato                                                                             |
+| Oggetto     | Stati, nell'ordine in cui si attraversano                                                                                                                                  |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lead        | New → In Lavorazione → Primo contatto → Qualificato · oppure Non Risponde (task automatico con promemoria a 48h, poi si torna in lavorazione) · oppure Non qualificato     |
+| Opportunità | Qualificato → In trattativa (preventivo inviato) → Chiusa/Vinta · con Da ricontattare come parcheggio e Chiusa/Persa come uscita                                           |
+| Preventivo  | Bozza → In trattativa (validità 5 giorni) → **In attesa di accettazione** → Accettato (copia contabile ricevuta) · oppure Rifiutata                                        |
+| Ordine      | CREATO → CHIUSO/ACQUISITO                                                                                                                                                  |
+| Tranche     | Creata nel Preventivo → integralmente pagata quando tutte le righe incluse sono pagate. ⚠ Valore API finale aperto: `Pagata`/`Incassata` oppure legacy `CHIUSO/ACQUISITO`. |
+| Biglietto   | Ordinato → Disponibile → Assegnato → Utilizzato · oppure Non utilizzato · oppure Annullato                                                                                 |
 
 ⚠ **«In attesa di accettazione» è il nuovo nome di «preventivo scaduto».** In stanza si continuerà a dire "scaduto" per mesi: è la stessa cosa.
 
@@ -419,11 +421,11 @@ Un record entra come **Lead**, diventa **Opportunità**, porta un **Preventivo**
 
 ### 16.2 Parole che significano cose diverse su oggetti diversi
 
-| Parola                 | Vive su                       | Attenzione                                                                                                                 |
-| ---------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| **In trattativa**      | Opportunità, Preventivo       | Sull'opportunità è la trattativa in corso; sul preventivo è quel preventivo dentro i suoi 5 giorni                         |
-| **Da ricontattare**    | Lead, Opportunità, Preventivo | Sul Lead è un task; sugli altri due è uno stato, ognuno con la sua picklist di motivazioni                                 |
-| **CHIUSO / ACQUISITO** | Ordine, Tranche               | Sull'ordine lo mette l'amministrazione a mano entro 5 giorni; sulla prima tranche scatta da solo al pagamento dell'acconto |
+| Parola                 | Vive su                       | Attenzione                                                                                                                                                                                  |
+| ---------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **In trattativa**      | Opportunità, Preventivo       | Sull'opportunità è la trattativa in corso; sul preventivo è quel preventivo dentro i suoi 5 giorni                                                                                          |
+| **Da ricontattare**    | Lead, Opportunità, Preventivo | Sul Lead è un task; sugli altri due è uno stato, ognuno con la sua picklist di motivazioni                                                                                                  |
+| **CHIUSO / ACQUISITO** | Ordine, Tranche               | Valore legacy del diagramma. La decisione del 24 agosto sostituisce il trigger della tranche con l'aggregazione di tutte le righe pagate; resta aperto se questo sarà il valore API finale. |
 
 Quando una di queste parole viene detta a voce, va detto anche di quale oggetto si sta parlando.
 
@@ -445,25 +447,25 @@ Quando una di queste parole viene detta a voce, va detto anche di quale oggetto 
 
 Esistono solo nei disegni e non sono mai stati discussi in riunione. Con la firma diventano vincolanti.
 
-| ID     | Requisito                                                                                                                        | Pri. |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------- | :--: |
-| SAL-19 | Un preventivo scaduto deve poter tornare in trattativa in autonomia dal tutor.                                                   |  S   |
-| SAL-20 | Due task «da ricontattare» da aggiungere: dopo il primo contatto e dopo l'appuntamento, con data impostabile.                    |  S   |
-| SAL-21 | Campo tipo opportunità con i valori «Vendita da tutor» e «Recall tutor».                                                         |  S   |
-| SAL-22 | Un campo INFO che spiega come usare le motivazioni di uscita.                                                                    |  C   |
-| SAL-23 | Attivare la funzione standard che porta l'opportunità in «preventivo inviato» automaticamente.                                   |  S   |
-| ORD-06 | Tipi ordine STANDARD, BUNDLE, PLUS.                                                                                              |  S   |
-| ORD-07 | Report insoluti ogni lunedì a Marco e all'amministrazione.                                                                       |  S   |
-| ORD-12 | Un ordine WooCommerce resta invisibile su Salesforce finché non è COMPLETATO; per i bonifici lo cambia a mano l'amministrazione. |  M   |
-| ORD-13 | Al pagamento dell'acconto la prima tranche va subito a CHIUSO/ACQUISITO; le successive nascono CREATO.                           |  M   |
-| ORD-14 | CHIUSO/ACQUISITO lo imposta l'amministrazione a mano entro massimo 5 giorni dalla conferma di pagamento.                         |  M   |
-| ORD-15 | Bottone «Crea Nota di Credito» sull'ordine, con pop-up per scegliere le righe.                                                   |  S   |
-| INT-22 | Gli insoluti arrivano dall'API Mexal «scoperto clienti».                                                                         |  S   |
-| BIG-17 | Picklist stato biglietto a sei valori.                                                                                           |  M   |
-| BIG-18 | Landing partecipanti raggiunta da un link che porta l'Account ID; con più eventi si sceglie prima l'evento.                      |  M   |
-| BIG-19 | Alla conferma della lista un flow crea o abbina i contatti, aggiunge i campaign member e invia la richiesta di firma.            |  M   |
-| BIG-20 | Il QR contiene l'ID del campaign member.                                                                                         |  M   |
-| BIG-21 | Bottone «Casi Limite» sul biglietto, visibile solo da Assegnato, per cambio nome e mancata firma.                                |  S   |
+| ID     | Requisito                                                                                                                                                                                                                              | Pri. |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: |
+| SAL-19 | Un preventivo scaduto deve poter tornare in trattativa in autonomia dal tutor.                                                                                                                                                         |  S   |
+| SAL-20 | Due task «da ricontattare» da aggiungere: dopo il primo contatto e dopo l'appuntamento, con data impostabile.                                                                                                                          |  S   |
+| SAL-21 | Campo tipo opportunità con i valori «Vendita da tutor» e «Recall tutor».                                                                                                                                                               |  S   |
+| SAL-22 | Un campo INFO che spiega come usare le motivazioni di uscita.                                                                                                                                                                          |  C   |
+| SAL-23 | Attivare la funzione standard che porta l'opportunità in «preventivo inviato» automaticamente.                                                                                                                                         |  S   |
+| ORD-06 | Tipi ordine STANDARD, BUNDLE, PLUS.                                                                                                                                                                                                    |  S   |
+| ORD-07 | Report insoluti ogni lunedì a Marco e all'amministrazione.                                                                                                                                                                             |  S   |
+| ORD-12 | Un ordine WooCommerce resta invisibile su Salesforce finché non è COMPLETATO; per i bonifici lo cambia a mano l'amministrazione.                                                                                                       |  M   |
+| ORD-13 | ⚠ Regola legacy del diagramma: all'acconto la prima tranche va a `CHIUSO/ACQUISITO`. La decisione di Aurel del 24 agosto sostituisce il trigger con l'aggregazione di tutte le righe incluse; resta aperto il nome dello stato finale. |  M   |
+| ORD-14 | CHIUSO/ACQUISITO lo imposta l'amministrazione a mano entro massimo 5 giorni dalla conferma di pagamento.                                                                                                                               |  M   |
+| ORD-15 | Bottone «Crea Nota di Credito» sull'ordine, con pop-up per scegliere le righe.                                                                                                                                                         |  S   |
+| INT-22 | Gli insoluti arrivano dall'API Mexal «scoperto clienti».                                                                                                                                                                               |  S   |
+| BIG-17 | Picklist stato biglietto a sei valori.                                                                                                                                                                                                 |  M   |
+| BIG-18 | Landing partecipanti raggiunta da un link che porta l'Account ID; con più eventi si sceglie prima l'evento.                                                                                                                            |  M   |
+| BIG-19 | Alla conferma della lista un flow crea o abbina i contatti, aggiunge i campaign member e invia la richiesta di firma.                                                                                                                  |  M   |
+| BIG-20 | Il QR contiene l'ID del campaign member.                                                                                                                                                                                               |  M   |
+| BIG-21 | Bottone «Casi Limite» sul biglietto, visibile solo da Assegnato, per cambio nome e mancata firma.                                                                                                                                      |  S   |
 
 ---
 
@@ -523,8 +525,8 @@ Letti alla lettera sono due eventi diversi. Ma il verbale del 6 agosto tratta _r
 
 La sessione del 6 agosto ha sostituito gli stati dell'ordine con **`Ordinato → Fatturato → Incassato`**, eliminando _Chiuso acquisito_. Il file di design si è ora allineato e disegna questi tre — **ma non ha rimosso i valori precedenti**: `CHIUSO/ACQUISITO` e `CREATO` sono ancora nella pagina degli ordini, e la regola delle tranche manda tuttora la prima tranche in `CHIUSO/ACQUISITO`.
 
-La fonte porta quindi entrambi i vocabolari insieme. **Nessuno ha detto se `Incassato` sia `CHIUSO/ACQUISITO` rinominato oppure una milestone diversa** — e la tranche dipende dalla risposta.
-**Proposta:** confermare che sono la stessa milestone con un nuovo nome, oppure indicare quale sia la seconda. **Se non si decide:** né Ordine né Tranche possono essere configurati senza un rischio concreto di doverlo rifare.
+La fonte porta quindi entrambi i vocabolari insieme. **Nessuno ha detto se `Incassato` sia `CHIUSO/ACQUISITO` rinominato oppure una milestone diversa.** La decisione di Aurel del 24 agosto definisce la creazione della tranche e l'aggregazione dei pagamenti, quindi questi meccanismi possono procedere; soltanto il nome dello stato finale della tranche dipende ancora dalla risposta.
+**Proposta:** confermare che sono la stessa milestone con un nuovo nome, oppure indicare quale sia la seconda. **Se non si decide:** si possono costruire creazione e roll-up, ma non configurare in sicurezza i valori finali di stato di Ordine e Tranche.
 
 ### RC-08 · Segnalazione nostra — una tipologia di biglietto ha cambiato nome in un disegno
 
@@ -544,6 +546,8 @@ Le citazioni non hanno tutte lo stesso peso e va detto: i verbali di 08/06, 30/0
 Riunioni tracciate: 27/05 (kickoff), 03/06 (demo sales), 04/06 (demo marketing), 08/06 (ticketing e compliance), 16/06 (tech sales), 23/06 (marketing), 30/06 (tipologie vendita e preventivi), 02/07 (fatturazione Mexal), 07/07 (lead/opty e integrazioni), 14/07 (integrazione Mexal), 16/07 (demo bundle e flusso ordini), 22/07 (bundle e flusso biglietti), 23/07 (codici prodotto e bundle), 29/07 (follow-up temi aperti), 31/07 (business review).
 
 Documenti: `Integrazione_Salesforce_WooCommerce.docx` (31/07), `anar_PIE_ricla.xlsx` (anagrafica articoli, 22/07), `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`, credenziali WEBAPI Passepartout (15/07).
+
+Decisione diretta: Aurel Mrruku, 24/08, creazione tranche nel Preventivo, propagazione alle righe d'Ordine e aggregazione dei pagamenti.
 
 Verifica tecnica sull'org Pienissimo UAT eseguita il 3 agosto 2026.
 

@@ -2,8 +2,8 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **Precedence, newest first: §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
-> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta. §11 carries the 06/08 closing session and overrides both — the DocuSign split, the order/asset state models, the ticket-availability rule and the WooCommerce webhook decision. **§12 carries the 14/08 document sweep and overrides all of them** — most importantly the 10 September development deadline and the missing order-line key.
+> ⚠ **Precedence, newest first: §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
+> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta; §11 the 06/08 closing session; §12 the 14/08 document sweep; §13 the 24/08 product workbook. **§14 is Aurel Mrruku's direct tranche decision and overrides every earlier statement that tranches are created from Order Items or imported from `BLO-` codes.**
 
 ---
 
@@ -473,3 +473,30 @@ Padova, Brescia, Milano, Pescara, Roma, Catania — six codes, all free, each na
 ### 13.8 Still owed
 
 The 22/07 session paired the workbook with an action on Aurel Mrruku to **attend a review meeting on the anagrafica prodotti after receiving it**. The file arrived on 07/08. **The meeting has not happened.** #46, #48, #76 and #93 all want the same forum: the **26/08 client Mexal review**, where Fabrizio Paganelli is an invitee and which is the first client-facing session since the workbook landed.
+
+## 14. Update 2026-08-24 — tranche creation decided by Aurel Mrruku
+
+This is a direct architecture decision by Aurel Mrruku, not a reconstructed
+meeting statement.
+
+- The operational payment tranche is created **on the Quote, after products
+  have been selected**.
+- A guided action asks which Quote Line Items belong to the tranche and the
+  planned payment due date. Every selected line stores the tranche reference
+  and date; one line belongs to one tranche.
+- When the accepted Quote generates the Order, both values propagate to the
+  corresponding Order Items. The Order inherits the plan; it does not recreate
+  tranches by merely grouping equal dates.
+- Mexal updates payment status per Order Item / invoice line. Salesforce rolls
+  those states up, and the tranche reaches its final paid state only when
+  **every included line is fully paid**. Partial payment closes nothing; Mexal
+  never creates or writes the tranche.
+- The `BLO-` middle level in the product catalogue is a separate bundle block.
+  It does not create `Tranche__c` during import. This closes the ambiguity raised
+  in §13.4.
+- The final state API value is **still open**. Conceptually it is
+  `Pagata`/`Incassata`; the legacy `CHIUSO/ACQUISITO` value must not be assumed
+  until #69 is resolved.
+
+`Tranche__c`, the Quote-side action and fields, propagation to Order Items and
+the roll-up automation are all still unbuilt.

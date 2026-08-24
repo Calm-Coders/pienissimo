@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-08-15
+updated: 2026-08-24
 depends_on: [OI-58]
 source: meetings/open-items.md row 58
 ---
@@ -43,15 +43,15 @@ open questions; **Mirko Merendi (Kreosoft) answered them on 2026-08-11** and
 returned `Integrazioni pienissimo.xlsx` with the mapping filled in. The answers
 are integration contract, not opinion:
 
-| Call                    | What Mirko settled                                                                                   |
-| ----------------------- | ----------------------------------------------------------------------------------------------------- |
-| **Get Clienti**         | Picks up client changes in the **last 24 hours**. Mapping confirmed.                                  |
-| **Get Agenti**          | It is Get **Fornitori** — filter agents by **code starting `610`**. Three fields only: codice, nome, email. Nothing further needed. |
-| **Get Product**         | **Availability is computed, not stored**: `inventario + carico − scarico − ordini`. Listino 1 vs 2 still owed by Fabrizio Paganelli. |
-| **Get Scoperto clienti** | Take **only causale `FE`** — fatture emesse.                                                         |
-| **Get Fatture**         | **Two-step, N+1.** First `documenti/movimenti-magazzino` for sigla + serie + numero only, then `documenti/movimenti-magazzino/sigla+serie+numero` **one document at a time** to get the full field set **including the lines**. |
-| **Creazione Cliente**   | Send `501.AUTO` in the codice field; the generated code comes back in a **response header** field.    |
-| **Creazione ordini**    | **Serie `1` in production; serie `10` for tests.**                                                    |
+| Call                     | What Mirko settled                                                                                                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Get Clienti**          | Picks up client changes in the **last 24 hours**. Mapping confirmed.                                                                                                                                                            |
+| **Get Agenti**           | It is Get **Fornitori** — filter agents by **code starting `610`**. Three fields only: codice, nome, email. Nothing further needed.                                                                                             |
+| **Get Product**          | **Availability is computed, not stored**: `inventario + carico − scarico − ordini`. Listino 1 vs 2 still owed by Fabrizio Paganelli.                                                                                            |
+| **Get Scoperto clienti** | Take **only causale `FE`** — fatture emesse.                                                                                                                                                                                    |
+| **Get Fatture**          | **Two-step, N+1.** First `documenti/movimenti-magazzino` for sigla + serie + numero only, then `documenti/movimenti-magazzino/sigla+serie+numero` **one document at a time** to get the full field set **including the lines**. |
+| **Creazione Cliente**    | Send `501.AUTO` in the codice field; the generated code comes back in a **response header** field.                                                                                                                              |
+| **Creazione ordini**     | **Serie `1` in production; serie `10` for tests.**                                                                                                                                                                              |
 
 ## The workbook itself, opened 2026-08-14
 
@@ -62,16 +62,16 @@ the target column, type and obligatoriness.
 **The General sheet lists three calls the notes never mentioned**, with their
 page in the Passepartout documentation:
 
-| Entity                | Page    | Method | Mexal name           | Cadence          |
-| --------------------- | ------- | ------ | -------------------- | ---------------- |
-| Clienti               | 98      | POST   | —                    | changes in last 24h |
-| Agenti                | —       | POST   | Fornitori            | once a day       |
-| **Condizioni pagamento** | 122  | GET    | —                    | **once a day**   |
-| **destinazioni**      | 180–188 | GET    | Indirizzi-spedizione | _"da verificare"_ |
-| fatture               | 146     | GET    | Documenti            | —                |
-| prodotti              | 68      | GET    | Articoli             | —                |
-| **ordini**            | 146     | GET    | ordini clienti       | —                |
-| scoperto cliente      | 222     | GET    | Scadenziario         | —                |
+| Entity                   | Page    | Method | Mexal name           | Cadence             |
+| ------------------------ | ------- | ------ | -------------------- | ------------------- |
+| Clienti                  | 98      | POST   | —                    | changes in last 24h |
+| Agenti                   | —       | POST   | Fornitori            | once a day          |
+| **Condizioni pagamento** | 122     | GET    | —                    | **once a day**      |
+| **destinazioni**         | 180–188 | GET    | Indirizzi-spedizione | _"da verificare"_   |
+| fatture                  | 146     | GET    | Documenti            | —                   |
+| prodotti                 | 68      | GET    | Articoli             | —                   |
+| **ordini**               | 146     | GET    | ordini clienti       | —                   |
+| scoperto cliente         | 222     | GET    | Scadenziario         | —                   |
 
 Outbound: `Cliente` POST _"quando l'account viene creato su SF va su Mexal"_,
 `Ordine` POST, and a _"pulsante per rinvio verso gestionale"_.
@@ -102,9 +102,11 @@ Two consequences worth carrying:
   inside production. That is narrower than the "test company" OI-58 asks for,
   and it means test orders land in the live company.
 
-What travels: the whole order, all lines, with the tranche reference at **line
-level** rather than as an object; Mexal updates payment status per line and
-Salesforce aggregates upward — Mexal never writes the tranche
+What travels: the whole order, all lines, with the tranche reference and planned
+payment date copied from the Quote and carried at **Order Item level** rather
+than as a tranche object. Mexal updates payment status per line and Salesforce
+aggregates upward; the tranche becomes fully paid only when every one of its
+lines is fully paid. Mexal never creates or writes the tranche
 ([OI-50](../items/OI-50%20Tranche%20object.md)). At invoicing, n Mexal invoices
 become n Salesforce invoices. **Zero-euro orders stay in the CRM and are not
 transferred** ([OI-57](../items/OI-57%20Zero-euro%20orders%20stay%20in%20the%20CRM.md)).

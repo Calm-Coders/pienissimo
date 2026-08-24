@@ -4,7 +4,7 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-15
+updated: 2026-08-24
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -14,18 +14,25 @@ Settled on 2026-08-06. It replaced the accept/reject buttons that were to sit
 inside the quote email — a design that would have let an external client mutate
 CRM data directly.
 
-1. The quote email carries a **link, not buttons**.
-2. The link opens a **landing page** showing preventivo + contratto + condizioni
+1. After products are selected, the user defines each payment tranche on the
+   Quote through a guided action: choose the Quote Line Items and enter the
+   payment due date. Each line stores the tranche reference and date —
+   [OI-50](../items/OI-50%20Tranche%20object.md), decided by Aurel Mrruku on
+   2026-08-24.
+2. The quote email carries a **link, not buttons**.
+3. The link opens a **landing page** showing preventivo + contratto + condizioni
    generali as a single PDF —
    [OI-68](../items/OI-68%20Quote%20acceptance%20landing%20page.md).
-3. **Rifiuto** sets the quote _Rifiutato_. **Accetto** sends the documents via
+4. **Rifiuto** sets the quote _Rifiutato_. **Accetto** sends the documents via
    **DocuSign**.
-4. On signature the quote flips to _Accettato_ and **the order is generated
-   automatically**.
-5. The order runs **Ordinato → Fatturato → Incassato** —
+5. On signature the quote flips to _Accettato_ and **the order is generated
+   automatically**. The tranche reference and payment date propagate from each
+   Quote Line Item to its corresponding Order Item; the Order does not recreate
+   the tranche.
+6. The order runs **Ordinato → Fatturato → Incassato** —
    [OI-69](../items/OI-69%20Order%20state%20model.md). The old "Chiuso acquisito"
    state is deleted.
-6. **The Opportunity goes Closed Won only when the order reaches _Incassato_.**
+7. **The Opportunity goes Closed Won only when the order reaches _Incassato_.**
    Payment closes the opportunity, not signature.
 
 **DocuSign is in for the commercial document and out for tickets** — Elena
