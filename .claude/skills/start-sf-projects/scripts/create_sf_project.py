@@ -163,7 +163,7 @@ do not read the repository.
 
 The mirror is not created by the scaffolder: the Notion page ids only exist once the pages do. Publishing
 the first time is a one-time step for an agent session that has the Notion connector, described in
-[`notes/notion-mirror.md`](notes/notion-mirror.md). Until then `STATUS.md` stands alone, which is a
+[`notes/The Notion mirror of the project status.md`](notes/The%20Notion%20mirror%20of%20the%20project%20status.md). Until then `STATUS.md` stands alone, which is a
 perfectly good place to stop.
 
 ## Public status page
@@ -913,7 +913,7 @@ and the client - regenerate them from the notes, do not hand-edit them as the
 source of truth.
 
 Precedence, highest first: **`notes/`** → the rendered views in `meetings/` →
-[STATUS.md](STATUS.md) and [its Notion mirror](notes/notion-mirror.md) →
+[STATUS.md](STATUS.md) and [its Notion mirror](notes/The%20Notion%20mirror%20of%20the%20project%20status.md) →
 [site/](site/). Everything below `notes/` is regenerated, never authored.
 **Notion is a publish target - never read a fact out of it into a note.**
 `STATUS.md` and the mirror are **internal** and name people; `site/` is
@@ -1021,7 +1021,7 @@ blocker first, each item linking to its note in `notes/items/`.
 | People and roles    | [notes/people/](notes/people/)                     |
 | Risks               | [notes/risks/](notes/risks/)                       |
 | Session handoffs    | [JOURNAL.md](JOURNAL.md)                           |
-| Status, to share    | [STATUS.md](STATUS.md) → [Notion mirror](notes/notion-mirror.md) - **internal**, not the public page |
+| Status, to share    | [STATUS.md](STATUS.md) → [Notion mirror](notes/The%20Notion%20mirror%20of%20the%20project%20status.md) - **internal**, not the public page |
 | Scope + provenance  | [docs/project-context.md](docs/project-context.md) |
 | Publishing rules    | [docs/publishing.md](docs/publishing.md)           |
 
@@ -1044,7 +1044,7 @@ freely. **Costly** = justify it. **Never** = do not load; grep instead.
 | -------------------------------------------------- | ---------------------------------------- |
 | [MAP.md](MAP.md)                                   | Current state, what is blocked, who owns |
 | [INDEX.md](INDEX.md)                               | This router                              |
-| [STATUS.md](STATUS.md)                             | The **shareable** status view - internal, regenerate from `notes/`, [mirrored to Notion](notes/notion-mirror.md) |
+| [STATUS.md](STATUS.md)                             | The **shareable** status view - internal, regenerate from `notes/`, [mirrored to Notion](notes/The%20Notion%20mirror%20of%20the%20project%20status.md) |
 | [notes/agent-protocol.md](notes/agent-protocol.md) | How to read and write knowledge here     |
 | [AGENTS.md](AGENTS.md)                             | Rules for every agent                    |
 | any single note in [notes/](notes/)                | One fact each                            |
@@ -1118,7 +1118,7 @@ into it. Agent-facing equivalent: [MAP.md](MAP.md).
 
 Once published, this page is mirrored to Notion, invite-only and refreshed by
 step 6 of `org-status-check`. Ids and sharing rules:
-[the mirror note](notes/notion-mirror.md).
+[the mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
 
 ---
 
@@ -1166,7 +1166,7 @@ Names and roles on each side, from `notes/people/`.
 - Contains no credentials, no tokens and no personal contact data, and must not
   acquire any - describe a field, never a value.
 """,
-        "notes/notion-mirror.md": """---
+        "notes/The Notion mirror of the project status.md": """---
 id: ref-notion-mirror
 type: reference
 status: unpublished
@@ -1219,7 +1219,8 @@ workspace-level create followed by `notion-move-pages` succeeds.
 ## The tracker's shape
 
 Properties: `Item` (title), `Ref` (the item id), `Status`
-(Open / In progress / Resolved), `Severity`, `Critical path` (checkbox),
+(Open / In progress / Resolved / Stale / Superseded), `Severity`,
+`Critical path` (checkbox),
 `Owner`, `Org`, `Raised`, `Blocks`, `Depends on`, `Note` (link to the atomic
 note on the working branch).
 

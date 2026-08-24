@@ -94,7 +94,7 @@ The script must create `<current-directory>/<derived-slug>` with:
 - the derived Gmail subject tag in the README and research log;
 - `.agents/skills/` copies of `drill-meeting`, `drill-me`, `requirements-check` and `org-status-check` for open-standard agent discovery;
 - matching `.claude/skills/` copies for Claude Code;
-- `STATUS.md`, the internal shareable status view, and `notes/notion-mirror.md`, which holds the ids of its Notion mirror once it is published;
+- `STATUS.md`, the internal shareable status view, and `notes/The Notion mirror of the project status.md`, which holds the ids of its Notion mirror once it is published;
 - bilingual `meetings/open-items*` and `meetings/DEVELOPMENT-RECAP*` starter files;
 - empty `meetings/results/` and `meetings/proposals/` workspaces;
 - `site/index.html`, `site/_headers` and `site/robots.txt` for the public status page, plus `docs/publishing.md`;
@@ -122,7 +122,7 @@ A scaffolded project has **two** rendered status views with deliberately opposit
 - **`site/`** - public, unauthenticated, sanitized to `docs/publishing.md`. No names, no endpoints, no credentials.
 - **`STATUS.md` and its Notion mirror** - internal and invite-only. They name people and state the slippage plainly, which is the point of them.
 
-`STATUS.md` is scaffolded as a stub with section headings and no facts; `org-status-check` fills it. The **Notion mirror is not scaffolded** - the page ids only exist once the pages do, and the script has no Notion connector. `notes/notion-mirror.md` ships with an empty id table and the first-run procedure. Publishing is a one-time step for an agent session that has the connector, and a project that never takes that step still works: `STATUS.md` stands alone.
+`STATUS.md` is scaffolded as a stub with section headings and no facts; `org-status-check` fills it. The **Notion mirror is not scaffolded** - the page ids only exist once the pages do, and the script has no Notion connector. `notes/The Notion mirror of the project status.md` ships with an empty id table and the first-run procedure. Publishing is a one-time step for an agent session that has the connector, and a project that never takes that step still works: `STATUS.md` stands alone.
 
 ## Tool-neutral knowledge vault
 
@@ -140,7 +140,7 @@ Written every run, kept in sync (`outputs`):
 - `.obsidian/app.json`, configured for **relative Markdown links, not wikilinks**.
 
 Seeded once, then left alone (`seeded`): `MAP.md`, `INDEX.md`, `JOURNAL.md`, `STATUS.md`,
-`notes/notion-mirror.md`, and `docs/project-context.md`. These accumulate real project content — the
+`notes/The Notion mirror of the project status.md`, and `docs/project-context.md`. These accumulate real project content — the
 mirror note accumulates the Notion ids — so re-running the installer must never overwrite them.
 
 Rules that keep the vault portable across tools — enforce them in anything you generate:

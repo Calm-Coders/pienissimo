@@ -148,7 +148,7 @@ Follow the project's own write protocol where it has one; it overrides this list
 
 The record is now correct. This step makes it visible to the colleagues who do
 not read the repository. Ids, shape and sharing rules:
-[the Notion mirror note](../../../notes/notion-mirror.md).
+[the Notion mirror note](../../../notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
 
 **6a. Regenerate [STATUS.md](../../../STATUS.md)** from the notes you just
 corrected - it is the source, and Notion only ever mirrors it. Refresh the

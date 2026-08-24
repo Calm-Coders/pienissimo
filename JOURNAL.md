@@ -10,6 +10,39 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-24 — claude — generator reconciled with what the live projects actually do
+
+Two divergences between `start-sf-projects` and both live projects, closed in
+the generator so future projects inherit the corrected shape.
+
+- **The scaffolded mirror note is renamed.** It shipped as
+  `notes/notion-mirror.md`, which **breaks this project family's own rule** that
+  the filename is the note's H1 title — both Pienissimo and Life365 had renamed
+  it by hand. The generator now writes
+  `notes/The Notion mirror of the project status.md`, and every scaffolded link
+  to it is **percent-encoded**, as the portability rules require.
+  ⚠ **The `id:` stays `ref-notion-mirror`** — ids are stable forever and both
+  live projects already use it. Renaming the file is not renaming the note.
+- **Checked the overwrite guard rather than assuming it.** The installer's
+  `seeded` set — files written once and never rewritten — is built from the keys
+  of `vault_seed_templates()`, so it follows the rename automatically. Confirmed
+  the renamed key sits inside that function. Had the path been hardcoded
+  anywhere else, a re-run would have **overwritten a mirror note holding real
+  Notion ids**; it is not.
+- **The tracker's Status picklist goes from three values to five.** The stub
+  offered `Open / In progress / Resolved`; the vault's frontmatter schema allows
+  `open | in-progress | resolved | stale | superseded`, so a scaffolded tracker
+  could not represent a stale or superseded item at all. Now aligned.
+- Both scripts still compile (`py_compile`), and `.agents/` and `.claude/`
+  copies verified byte-identical.
+- ⚠ **Life365 still holds an unreconciled copy of the generator** — it now
+  differs in four files (the two drill templates, the script, the
+  org-status-check template). If the generator is meant to live in one place,
+  that decision is still nobody's.
+- **Not done:** the Flows page is not part of the scaffold. It is a Pienissimo
+  invention, and adding it to the generator would push an unproven idea onto
+  every future project.
+
 ## 2026-08-24 — claude — Flows refresh wired into all five skills
 
 - 🔴 **Third instance of the same defect, caught by Aurel asking when the flows
