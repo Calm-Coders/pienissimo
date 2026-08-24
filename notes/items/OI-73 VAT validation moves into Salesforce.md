@@ -1,12 +1,12 @@
 ---
 id: OI-73
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-15
+updated: 2026-08-24
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -55,3 +55,30 @@ itself; worth knowing before anyone bills time or touches their systems.
 
 Still outstanding: **credentials**, and the **administration address** that
 failure notifications should go to.
+
+## 2026-08-24 - the provider is named: Anticipay
+
+The [master design file](../The%20newest%20design%20diagram.md), re-decoded at its 2026-08-24T16:34:34Z version,
+names the provider this item has carried as unconfirmed. On **both** the
+LEAD-OPTY and Ordini pages:
+
+> _"Alla generazione del primo ordine di un ACCOUNT chiamata API **Anticipay**
+> per check P.iVA Account"_
+
+with the failure path drawn beside it:
+
+> _"Unhappy path: info con email ad amministrazione"_
+
+So the trigger point is settled too — **the first order for an Account**, not
+lead capture and not account creation.
+
+⚠ **This cannot be dated.** The cell is present in the 24 August version and
+absent from the 20 August decode write-up, but that write-up was prose rather
+than a byte-level record, so absence from it is not proof of absence from the
+file. Record it as **present, not previously registered**. There is an
+**Anticipay meeting on 25 August**, which is consistent with the cell being
+either new or long-standing.
+
+Still open: whether Anticipay is contracted, what the API costs, and what
+"unhappy path" means operationally — an email to amministrazione is a
+notification, not a decision about whether the order proceeds.

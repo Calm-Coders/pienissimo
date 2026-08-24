@@ -94,3 +94,38 @@ missing is anything upstream to populate them from — another instance of
 
 Ask for the tier column at the **2026-08-26 Mexal review**, and ask for it as a
 column in the registry rather than as a list of values.
+
+## 2026-08-24 - the 20 August client session ruled on it
+
+Recovered on 2026-08-24: the [20 August asset session](../meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md) took the decision
+this item has been waiting for, and minuted it **to the client** the same
+evening.
+
+**The "tipo biglietto" field is added and maintained manually on the Salesforce
+side.** The reason is a hard constraint Fabrizio Paganelli stated in that
+meeting: **Mexal supports at most three article classifications**, which cannot
+carry event, ticket type and variants (omaggio, aggiuntivo) at once. So the
+field cannot come down from the registry the way
+[the product flags](OI-47%20Product%20flags%20at%20import.md) were meant to.
+
+- **Owner of keeping it current: amministrazione — Fabrizio Paganelli and Elisa
+  Migliano**, with periodic verification reminders.
+- **The one-off mass update of existing products at go-live is ROMI's**, so it
+  does not land on Rebecca Marmo.
+
+This resolves the *ownership* question and reverses the assumption above that the
+values would arrive as a registry column. **Do not ask for a tier column at the
+26 August review** — ask instead for the agreed value list, because the client
+has now accepted that the list lives in Salesforce.
+
+**Still open**, and the reason this item is not resolved: the field does not
+exist in `force-app/`, and the value list has never been written down. The
+registry evidence from `Prodotti e Bundle.xlsx` (`EXECUTIVE`, `GOLD`, `DIAMOND`,
+with seven of nine events carrying no tier) remains the best available basis, but
+nobody has ratified it as the picklist.
+
+⚠ Also unresolved and now explicitly parked in the minute: whether this same
+product-master field covers the **marketing segmentation** need (tags vs
+segments). Assigned in the minute to "Fabrizio ROMI" —
+[Fabrizio Mastracci](../people/Fabrizio%20Mastracci%20-%20marketing%20automation%20ROMI.md),
+not Paganelli.

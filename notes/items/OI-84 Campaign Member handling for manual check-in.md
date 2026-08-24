@@ -1,11 +1,11 @@
 ---
 id: OI-84
 type: open-item
-status: open
+status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-24
 depends_on: [OI-78]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -32,3 +32,21 @@ Flows from the manual path in
 [OI-78](OI-78%20Participant%20data%20collection.md), where the substitute
 re-signs on paper and **no QR is issued** — so the QR scan, which is what
 normally sets attendance, never fires.
+
+## 2026-08-24 - membership is created at enrolment only
+
+The [24 August Follow-up Interno](../meetings/2026-08-24%20Follow-up%20Interno.md) ruled on when a Campaign Member record
+comes into existence: **only at enrolment**. The purchaser is explicitly **not**
+added as a campaign member merely by buying tickets.
+
+That matters because the buyer and the attendees are routinely different people —
+a referente buys a block and then names the participants — and it means campaign
+membership is a list of **attendees**, not of customers.
+
+The [19 August session](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) supplies the trigger: on confirmation of the
+participant list, new contacts are created if absent from the CRM (otherwise
+matched), and the campaign member is added to the chosen event campaign. The QR
+code then carries the **campaign member id**, which is what check-in scans.
+
+So the chain is: participant list confirmed → contact matched or created →
+campaign member created → QR issued carrying its id → scan at the event.

@@ -4,9 +4,9 @@ type: reference
 status: active
 owner: Elena Spini
 org: ROMI
-updated: 2026-08-20
-source: Drive - Flows & Objects.drawio, modified 2026-08-20T15:36:24Z
-decoded_at_version: 2026-08-20T15:36:24Z
+updated: 2026-08-24
+source: Drive - Flows & Objects.drawio, modified 2026-08-24T16:34:34Z
+decoded_at_version: 2026-08-24T16:34:34Z
 supersedes_in_register: DGM-2
 ---
 
@@ -16,18 +16,71 @@ supersedes_in_register: DGM-2
 LEAD-OPTY, Ordini, Flusso Biglietti**. **This is the authority for state
 machines**, ahead of the prose recaps.
 
-**Re-decoded 2026-08-20 at its 2026-08-20T15:36:24Z version** — 128 KB, plain
-uncompressed mxfile XML, read in full. This clears the 🔴 action carried since
-19 August, when the file had moved and had not been re-read.
+**Re-decoded 2026-08-24 at its 2026-08-24T16:34:34Z version** — 130 KB, plain
+uncompressed mxfile XML, read in full. Three pages, 163 distinct labels.
 
-> ⚠ **The file has now moved twice in two days** — 19 Aug 16:33 UTC and 20 Aug
-> 15:36 UTC — and **neither edit is minuted**. The 19 August version was never
-> decoded, so the changes below are dated only as *"after the 06 August version
-> that was decoded on 14 August"*. Where a change can be pinned to 20 August it
-> is because [the 19 August standalone drawing](The%20ticket%20flow%20diagram%20of%2019%20August.md)
-> is a one-day-old reference point that does not contain it.
+> ⚠ **The file has now moved four times in six days** — 19 Aug 16:33 UTC, 20 Aug
+> 15:36 UTC and 24 Aug 16:34 UTC. The 19 August version was never decoded, so
+> pre-20-August changes are dated only as *"after the 06 August version that was
+> decoded on 14 August"*.
+>
+> 🟢 **The 24 August edit is the first one that is minuted.** It lands the same
+> afternoon as Elena Spini's action _"Inviare i verbali della riunione e il link
+> al flusso di lavoro aggiornato sul Drive"_ from
+> [the Follow-up Interno](meetings/2026-08-24%20Follow-up%20Interno.md), and its
+> new content restates that session's decisions. For the first time the drawing
+> is downstream of a meeting rather than ahead of one.
 
-## What changed since the record
+## What changed on 2026-08-24
+
+**1. The campaign configuration, as a new `IMPORTANTE` cell** on the
+`Flusso Biglietti` page, verbatim:
+
+> _"Prodotto creazione di un campo lookup campagna codice campagna padre che deve
+> essere messo manuale post creazione campagna — Sulle campagna figlie deve
+> esserci logica solo una campagni attiva"_
+
+This is the [Follow-up Interno](meetings/2026-08-24%20Follow-up%20Interno.md)
+decision written into the design file the same day. See
+[the campaign parent and child model](objects/The%20campaign%20parent%20and%20child%20model.md).
+
+**2. Two full specification blocks on the LEAD-OPTY page**, `RULES + FLOW TASK
+OPTY` and `RULES + FLOW OPTY/QUOTE`, which carry the
+[24 August Lead/Opty rulings](meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md)
+including, for the first time anywhere, **the picklist values themselves**:
+
+- `Motivazione da Ricontattare` — Data corso incompatibile · Locale ancora da
+  aprire · Non risponde · Rimanda acquisto per prezzo · Rimanda acquisto per
+  motivi personali · Rimanda acquisto per problemi con attività · Richiamare dopo
+  la stagione.
+- `Motivazione da Ricontattare - Preventivo Inviato` — Richiamare dopo la
+  stagione · Ha da fare · Deve pensarci.
+
+Plus the validation rules (`Motivazione da Ricontattare` and `Data da
+Ricontattare` mandatory to save the Opty status; `Data Di Scadenza` mandatory to
+save a Quote in `In Trattativa`), the **day-2 reminder task** spec
+(`Subject = Preventivo Inviato`, `Task Sub type = Da Ricontattare`,
+`Due Date = the day after creation`), and `Status Quote == Rifiutato >>` Opty to
+Chiusa Persa with a mandatory popup reason. These feed
+[OI-59](items/OI-59%20Quote%20workflow%20configuration.md).
+
+**3. A third loss-reason list, `Motivazioni CHIUSA PERSA`** — prezzo alto ·
+sceglie concorrenza (competitor list) · tempistiche di erogazione servizio ·
+servizio/prodotto non allineato con le aspettative. Distinct from the Lead-level
+`PERSO` and `ERRATO` lists already recorded below.
+
+**4. `Anticipay` is named as the VAT-check provider** — _"Alla generazione del
+primo ordine di un ACCOUNT chiamata API Anticipay per check P.iVA Account"_, with
+_"Unhappy path: info con email ad amministrazione"_, on **both** the LEAD-OPTY
+and Ordini pages. See [OI-73](items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md).
+
+⚠ **Items 3 and 4 cannot be dated to 24 August.** They are present in this
+version and absent from this note's 20 August write-up, but that write-up was
+prose, not a byte-level record — absence from a summary is not proof of absence
+from the file. Record them as **present, not previously registered**. There is an
+Anticipay meeting on 25 August, which is consistent with either reading.
+
+## What changed on 2026-08-20 and before
 
 **1. The 19 August ticket flow has been folded into the master.** The
 `Flusso Biglietti` page now carries everything that was new in the standalone

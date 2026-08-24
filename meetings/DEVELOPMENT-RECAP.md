@@ -516,3 +516,134 @@ effort is not estimated, and no standard-Asset replacement exists yet.
 
 #41 is resolved as a design decision; the implementation divergence remains an
 open delivery risk.
+
+## 16. Update 2026-08-24 — four meetings recovered in one nightly sweep
+
+The nightly `requirements-check` folded in **four previously untracked
+sessions**. Two of them — 19 and 20 August — had been reported missing by three
+consecutive sweeps and are now fully minuted. Sources: canvas entries added
+between 21 and 24 August, and Elena Spini's own minute forwarded on 24 August.
+
+| Date | Session | Nature | Weight |
+| ---- | ------- | ------ | ------ |
+| 19/08 | Flussi MKT Biglietti | Client + ROMI marketing | Gemini notes + transcript |
+| 20/08 | Flusso Asset/Biglietti | Client, called by Elisa Migliano | **Elena Spini's minute, sent to the client the same evening** |
+| 24/08 | Interna per update flusso Lead/Opty | ROMI-internal (Elena + Aurel) | Gemini notes + transcript |
+| 24/08 | Follow-up Interno | ROMI-internal (Elena, Aurel, Andrea Di Cicco, Fabrizio Mastracci) | Gemini notes + transcript |
+
+⚠ **Aurel Mrruku was in neither client session.** The 20/08 technical decisions
+were taken without ROMI's technical lead, and the minute reached him four days
+later.
+
+### 16.1 🔴 The event edition is not an attribute of the product
+
+Fabrizio Paganelli, minuted to the client on 20/08:
+
+- **Mexal article codes are transversal across years** — no code per edition.
+- Classification is **Evento → Tipo Biglietto → Edizione**, and the **edition is
+  determined by the order date, not by the product**.
+- **Mexal supports at most three article classifications**, insufficient for
+  event + ticket type + variants.
+
+The built `Product2.Anno_Solare__c` picklist and its `Evento__c` dependency
+matrix assume the year lives on the product. **The question is no longer what
+values the picklist needs but whether the field should exist.** §13's finding
+that the matrix was ROMI guesswork now has its answer: there is no client source
+because there is no client concept. Blocks #46; needs Aurel Mrruku's ruling.
+
+Compounding it: Elisa Migliano's 19/08 example was the **academic year
+2026-2027**, and Rebecca Marmo described Zoho's hierarchy as **four** levels
+(Evento → Edizione Evento → Evento Biglietto → Evento Biglietto Prodotto)
+against the build's two.
+
+### 16.2 🆕 What carries the edition instead: a three-level campaign model
+
+Agreed with the client 20/08, configured internally 24/08:
+
+**Campagna Padre** (grouping container, statistics) → **Campagna Figlio** (the
+annual edition — dates, venue, check-in) → **Campaign Member** (participants).
+
+- Created **manually, once a year, ~10 a year**, with cloning. Fabrizio
+  Paganelli confirmed the volume is manageable by hand, so **no generation
+  tooling is owed**.
+- **Two Record Types** on Campaign, parent and child.
+- **A lookup on Product holding the parent campaign code**, populated **by hand
+  after the campaign is created**.
+- **Automation enforcing one active child campaign per parent**, so the asset can
+  resolve "the current edition".
+- **Campaign membership is created at enrolment only** — buying does not make the
+  purchaser a member.
+
+**Entirely unbuilt.** This supersedes the flat model in §11 and rewrites the
+scope of #77 and #84. ⚠ The whole edition-resolution mechanism hangs on a lookup
+an administrator must remember to fill in, ten times a year, with no minuted
+control that catches an empty one.
+
+### 16.3 ✅ Settled
+
+- **#76 — ticket type is a manually maintained Salesforce field**, owned by
+  **amministrazione (Fabrizio Paganelli + Elisa Migliano)** with periodic
+  verification reminders; the **one-off mass update at go-live is ROMI's**. It
+  cannot come from Mexal — hence 16.1's three-classification limit. This
+  reverses the standing instruction to ask for a tier *column*: ask for the
+  agreed **value list** instead.
+- **#50 — the tranche is created and managed manually on the Quote**, before the
+  order; **products and tranches are editable only in `Bozza`**.
+- **#75 — ticket availability follows the tranche chronologically**: an unpaid
+  earlier instalment blocks the later events, so availability is a function of
+  the order's whole payment history.
+- **#73 — the VAT provider is `Anticipay`**, called on the **first order for an
+  Account**; unhappy path is an email to amministrazione.
+- **#82 — resolved.** The dedicated asset-flow review is the 20/08 session.
+- **#59 — the quote lifecycle is fully specified**, and the **picklist values now
+  exist** (in the design diagram, not the register): `Motivazione da
+  Ricontattare` and `Motivazione da Ricontattare - Preventivo Inviato`.
+- **#58 — a field-level Mexal mapping exists** for the first time
+  (`Integrazioni pienissimo.xlsx`, Andrea Di Cicco, 24/08): entities, methods,
+  cadence, per-field customer payload. Sandbox pattern fixed — **code 501 for
+  new customers, series 10 for new orders**.
+
+### 16.4 🔴 Two contradictions that block building
+
+1. **#59 — "Da ricontattare".** The 20/08 minute told the **client** it generates
+   **no automatic task**, using an informational banner instead. The 24/08
+   internal session specifies a validation rule, a trigger and reminder
+   notifications on the same state. A banner and a validation rule can coexist,
+   but the "no automatic task" line is a client-facing commitment the internal
+   session never referenced. **Neither is buildable until reconciled.**
+2. **#53 — asset generation.** The 19/08 minute says it two ways in one document:
+   the **Dettagli** say the asset is created when an **order** with an
+   event-type product is generated (with the motivation — avoiding assets
+   created at quote stage); the auto-generated **Decisioni** line says "order
+   **or quote**". Prefer the Dettagli, but get it ruled on.
+
+Still unruled and now sharper: **#74 — `Rinuncia`.** The 19/08 minute describes
+*rinuncia* as a marketing tag and funnel opt-out applying to the **whole
+participation**, and does not list it among the asset states; the master diagram
+still draws it as a state box. Diagram and minute now disagree.
+
+### 16.5 The design file moved a fourth time — and this edit is minuted
+
+`Flows & Objects.drawio` re-decoded at **2026-08-24T16:34:34Z**. For the first
+time the edit is downstream of a meeting: it lands the same afternoon as Elena
+Spini's action to circulate the minutes and the updated workflow link, and its
+new content restates that session's decisions — the campaign lookup rule, the
+two `RULES + FLOW` specification blocks with the picklist values, a third loss
+reason list (`Motivazioni CHIUSA PERSA`), and `Anticipay`.
+
+⚠ The last two **cannot be dated** to 24/08 — they are present now and absent
+from the 20/08 prose write-up, but prose is not a byte-level record. Recorded as
+*present, not previously registered*.
+
+### 16.6 Not done, deliberately
+
+**No requirement was changed.** `requirements/pienissimo-requirements.yaml`,
+`REQUIREMENTS.md` and `REQUISITI.it.md` were not touched. Several of these
+decisions bear on signed requirement text — most directly #46 and #76 — but a
+nightly sweep is not the right instrument for rewriting a contractual document.
+**Flagged for Aurel Mrruku and Elena Spini.**
+
+⚠ `Integrazioni pienissimo.xlsx` **holds real customer records** — company name,
+address, VAT number, personal email, telephone. Existence and coverage are
+recorded; **no value from it is in this repository**. It is the third artifact
+with this problem, after the master diagram and `anar_PIE_ricla.xlsx`.

@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-20
+updated: 2026-08-24
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-17
@@ -106,3 +106,32 @@ data, so deletion is probably right, but say so rather than assume it.
 
 Related: [the Biglietto build](../objects/The%20Biglietto%20build.md), and
 [the object diverged from the approved proposal](../risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md).
+
+## 2026-08-24 - evidence on `Rinuncia`, but still no ruling
+
+The [19 August MKT session](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) is the first minuted discussion of *rinuncia*,
+and it describes it as a **funnel concept, not an asset status**:
+
+- It is one of the marketing tags — **`rinuncia`, `iscritto`, `presente`** — used
+  to drive segments, alongside post-event uses such as surveys to attendees and
+  targeted offers to those who declined.
+- The **decline link** in the funnel exists to remove the contact from subsequent
+  communications immediately.
+- Rebecca Marmo is minuted saying the decline applies to **the whole
+  participation — all associated tickets** — not to one ticket.
+
+That last point cuts against `Rinuncia` being a per-Asset status, since Asset
+status is per-ticket. But **nobody put the question in those terms**, so this is
+evidence, not a ruling.
+
+The same session narrates the asset states as `ordinato` → `pagato` /
+disponibile → `assegnato` → `utilizzato`, with `annullato` on a name-change
+request and an automatism **three days after the event** moving unscanned tickets
+to `non utilizzato`. **`Rinuncia` is not in that list** — while
+[the master diagram](../The%20newest%20design%20diagram.md) still draws it as a box annotated _"Avviene nella
+comunicazione dei partecipanti o accetta o rinuncia"_.
+
+**Still open, and still blocking.** The diagram and the minute now disagree, so
+the question is sharper than before rather than closed: is `Rinuncia` a seventh
+Asset status, another name for `Annullato`, or a marketing tag that never touches
+the Asset record? Build nothing until someone rules.

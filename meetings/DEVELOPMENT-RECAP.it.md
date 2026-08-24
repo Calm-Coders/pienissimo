@@ -516,3 +516,146 @@ Asset standard.
 
 La #41 è risolta come decisione di design; la divergenza di implementazione
 resta un rischio di delivery aperto.
+
+## 16. Aggiornamento 24/08/2026 — quattro riunioni recuperate in un solo sweep notturno
+
+Il `requirements-check` notturno ha integrato **quattro sessioni non tracciate**.
+Due di esse — 19 e 20 agosto — erano state segnalate come mancanti da tre sweep
+consecutivi e ora sono interamente verbalizzate. Fonti: voci di canvas aggiunte
+tra il 21 e il 24 agosto e la minuta di Elena Spini inoltrata il 24 agosto.
+
+| Data | Sessione | Natura | Peso |
+| ---- | -------- | ------ | ---- |
+| 19/08 | Flussi MKT Biglietti | Cliente + marketing ROMI | Appunti Gemini + trascrizione |
+| 20/08 | Flusso Asset/Biglietti | Cliente, voluta da Elisa Migliano | **Minuta di Elena Spini, inviata al cliente la sera stessa** |
+| 24/08 | Interna per update flusso Lead/Opty | Interna ROMI (Elena + Aurel) | Appunti Gemini + trascrizione |
+| 24/08 | Follow-up Interno | Interna ROMI (Elena, Aurel, Andrea Di Cicco, Fabrizio Mastracci) | Appunti Gemini + trascrizione |
+
+⚠ **Aurel Mrruku non era in nessuna delle due sessioni con il cliente.** Le
+decisioni tecniche del 20/08 sono state prese senza il referente tecnico ROMI, e
+la minuta gli è arrivata quattro giorni dopo.
+
+### 16.1 🔴 L'edizione dell'evento non è un attributo del prodotto
+
+Fabrizio Paganelli, verbalizzato al cliente il 20/08:
+
+- **I codici articolo Mexal sono trasversali agli anni** — non esiste un codice
+  per edizione.
+- La classificazione è **Evento → Tipo Biglietto → Edizione**, e l'**edizione è
+  determinata dalla data dell'ordine, non dal prodotto**.
+- **Mexal supporta al massimo tre classificazioni di articolo**, insufficienti
+  per evento + tipo biglietto + varianti.
+
+La picklist `Product2.Anno_Solare__c` costruita e la sua matrice di dipendenza su
+`Evento__c` presuppongono che l'anno stia sul prodotto. **La domanda non è più
+quali valori servano alla picklist, ma se il campo debba esistere.** Il rilievo
+del §13 — che la matrice fosse un'invenzione ROMI — ha ora la sua risposta: non
+esiste una fonte cliente perché non esiste il concetto lato cliente. Blocca la
+#46; serve la decisione di Aurel Mrruku.
+
+Ad aggravarlo: l'esempio di Elisa Migliano del 19/08 era l'**anno accademico
+2026-2027**, e Rebecca Marmo ha descritto la gerarchia Zoho su **quattro**
+livelli (Evento → Edizione Evento → Evento Biglietto → Evento Biglietto Prodotto)
+contro i due del build.
+
+### 16.2 🆕 Ciò che porta l'edizione: un modello di campagne a tre livelli
+
+Concordato con il cliente il 20/08, configurato internamente il 24/08:
+
+**Campagna Padre** (contenitore di raggruppamento, fini statistici) → **Campagna
+Figlio** (l'edizione annuale — date, luogo, check-in) → **Campaign Member** (i
+partecipanti).
+
+- Create **manualmente, una volta l'anno, ~10 all'anno**, per clonazione.
+  Fabrizio Paganelli ha confermato che il volume è gestibile a mano, quindi **non
+  è dovuto alcuno strumento di generazione**.
+- **Due Record Type** su Campagna, padre e figlio.
+- **Un lookup sul Prodotto con il codice della campagna padre**, compilato **a
+  mano dopo la creazione della campagna**.
+- **Automatismo che impone una sola campagna figlia attiva per padre**, così che
+  l'asset possa risolvere "l'edizione corrente".
+- **L'iscrizione a campagna nasce solo al momento dell'iscrizione** — l'acquisto
+  non rende l'acquirente un membro.
+
+**Interamente da costruire.** Supera il modello piatto del §11 e riscrive la
+portata delle #77 e #84. ⚠ L'intero meccanismo di risoluzione dell'edizione
+dipende da un lookup che un amministratore deve ricordarsi di compilare, dieci
+volte l'anno, senza alcun controllo verbalizzato che intercetti un campo vuoto.
+
+### 16.3 ✅ Deciso
+
+- **#76 — la tipologia biglietto è un campo Salesforce mantenuto manualmente**,
+  di titolarità dell'**amministrazione (Fabrizio Paganelli + Elisa Migliano)**
+  con reminder periodici di verifica; l'**aggiornamento massivo una tantum
+  all'avvio è di ROMI**. Non può arrivare da Mexal — vedi il limite delle tre
+  classificazioni al §16.1. Questo ribalta l'indicazione corrente di chiedere una
+  *colonna* tipologia: chiedere invece la **lista dei valori** concordata.
+- **#50 — la tranche si crea e si gestisce manualmente sul Preventivo**, prima
+  dell'ordine; **prodotti e tranche sono modificabili solo in `Bozza`**.
+- **#75 — la disponibilità del biglietto segue la tranche in ordine
+  cronologico**: una rata precedente non pagata blocca gli eventi successivi,
+  quindi la disponibilità è funzione dell'intera storia dei pagamenti
+  dell'ordine.
+- **#73 — il fornitore per la verifica P.IVA è `Anticipay`**, chiamato al
+  **primo ordine di un Account**; l'unhappy path è una mail all'amministrazione.
+- **#82 — risolta.** La revisione dedicata al flusso asset è la sessione del
+  20/08.
+- **#59 — il ciclo di vita del preventivo è specificato integralmente**, e i
+  **valori delle picklist ora esistono** (nel diagramma, non nel registro):
+  `Motivazione da Ricontattare` e `Motivazione da Ricontattare - Preventivo
+  Inviato`.
+- **#58 — esiste per la prima volta una mappatura Mexal a livello di campo**
+  (`Integrazioni pienissimo.xlsx`, Andrea Di Cicco, 24/08): entità, metodi,
+  cadenza, payload cliente campo per campo. Pattern di sandbox fissato —
+  **codice 501 per i nuovi clienti, serie 10 per i nuovi ordini**.
+
+### 16.4 🔴 Due contraddizioni che bloccano il build
+
+1. **#59 — "Da ricontattare".** La minuta del 20/08 ha detto **al cliente** che
+   non genera **alcun task automatico**, ma un banner informativo. La sessione
+   interna del 24/08 specifica validation rule, trigger e notifiche di reminder
+   sullo stesso stato. Banner e validation rule possono convivere, ma il
+   "nessun task automatico" è un impegno preso col cliente che la sessione
+   interna non ha mai richiamato. **Nessuna delle due è costruibile finché non si
+   riconcilia.**
+2. **#53 — generazione dell'asset.** La minuta del 19/08 lo dice in due modi
+   nello stesso documento: i **Dettagli** dicono che l'asset si crea quando viene
+   generato un **ordine** con prodotto di tipo evento (con la motivazione: evitare
+   asset creati in fase di preventivo); la riga **Decisioni** generata
+   automaticamente dice "ordine **o** preventivo". Preferire i Dettagli, ma farlo
+   decidere.
+
+Ancora senza decisione e ora più netta: **#74 — `Rinuncia`.** La minuta del 19/08
+descrive la *rinuncia* come tag di marketing e uscita dal funnel valida per
+l'**intera partecipazione**, e non la elenca fra gli stati dell'asset; il
+diagramma master continua a disegnarla come box di stato. Diagramma e minuta ora
+si contraddicono.
+
+### 16.5 Il file di design si è mosso una quarta volta — e questa modifica è verbalizzata
+
+`Flows & Objects.drawio` ri-decodificato alla versione **24/08/2026 16:34:34Z**.
+Per la prima volta la modifica è a valle di una riunione: cade nello stesso
+pomeriggio dell'azione di Elena Spini di inviare i verbali e il link al flusso
+aggiornato, e il contenuto nuovo riprende le decisioni di quella sessione — la
+regola del lookup campagna, i due blocchi di specifica `RULES + FLOW` con i
+valori delle picklist, una terza lista di motivazioni (`Motivazioni CHIUSA
+PERSA`) e `Anticipay`.
+
+⚠ Le ultime due **non sono databili** al 24/08: sono presenti ora e assenti dal
+resoconto in prosa del 20/08, ma la prosa non è un record byte a byte.
+Registrate come *presenti, non precedentemente censite*.
+
+### 16.6 Non fatto, deliberatamente
+
+**Nessun requisito è stato modificato.**
+`requirements/pienissimo-requirements.yaml`, `REQUIREMENTS.md` e
+`REQUISITI.it.md` non sono stati toccati. Diverse di queste decisioni toccano il
+testo dei requisiti firmati — le #46 e #76 in modo diretto — ma uno sweep
+notturno non è lo strumento adatto per riscrivere un documento contrattuale.
+**Segnalato ad Aurel Mrruku ed Elena Spini.**
+
+⚠ `Integrazioni pienissimo.xlsx` **contiene dati reali di clienti** — ragione
+sociale, indirizzo, partita IVA, email personale, telefono. Ne sono registrate
+esistenza e copertura; **in questo repository non è finito alcun valore**. È il
+terzo artefatto con questo problema, dopo il diagramma master e
+`anar_PIE_ricla.xlsx`.

@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-24 · Source of record: [notes/](notes/)
+Last updated: 2026-08-24 (nightly sweep) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -29,32 +29,67 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
   [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md).
   The suite is written as one task, requested separately before the deploy.
-- **Restart: 19 Aug** marketing · **20 Aug** asset flow (Elisa) · **24 Aug**
-  internal Lead/Opty update (Elena + Aurel, 16:00 CEST) · **25 Aug** Anticipay ·
-  **26 Aug** [ROMI-PIENISSIMO] Review Temi Integrazione Mexal (16:00–17:00 CEST,
-  **client-facing** — Elena, Aurel, Andrea Di Cicco, amministrazione and
-  Fabrizio Paganelli; first Mexal session since 14 Jul) · **27 Aug**
-  WooCommerce. Several are design discovery, not build —
-  [the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md).
-  ⚠ **The 19 and 20 Aug sessions left no minute of any kind** — only diagram
-  edits. If they ran, nothing records what was agreed.
+- 🟢 **2026-08-24: four meetings came out of the dark at once.** The 19 and
+  20 Aug sessions **did run and are fully minuted** — recovered on 24 Aug from a
+  canvas update and a forwarded mail, after three sweeps reported them missing.
+  Two further ROMI-internal sessions ran on 24 Aug itself.
+  [19 Aug MKT funnel](notes/meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) ·
+  [20 Aug asset flow](notes/meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md)
+  (Elena's own minute, sent **to the client**, so it is the strongest evidence in
+  the record) ·
+  [24 Aug Lead/Opty](notes/meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md) ·
+  [24 Aug Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md).
 
-- 🔴 **The design moved three times in two days; none of it is minuted.** On
-  20 Aug **both register source diagrams moved 68 minutes apart** — the client's
-  ([Marco Montesi](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md))
-  and ROMI's [master](notes/The%20newest%20design%20diagram.md), now re-decoded,
-  after [the 19 Aug ticket flow](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md).
-  `Rinuncia` is now **in the master**, so the seventh asset state sits in the
-  file the register is validated against ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md));
-  the 06 Aug order states are drawn **alongside** the old ones rather than
-  replacing them ([OI-69](notes/items/OI-69%20Order%20state%20model.md)); a tier
-  became `Dinamond` where the minute says `Silver` — **both settled 24 Aug: the
-  registry's tiers are `EXECUTIVE`/`GOLD`/`DIAMOND` and neither contested value
-  exists** ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md),
-  still open because the field does not exist);
-  and a new question asks whether an **unpaid** Mexal invoice can reverse an
-  asset ([OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md),
-  due at the 26 Aug client Mexal review). **Nothing was reconfigured.**
+- 🔴 **The biggest thing they carry is a design conflict, not a decision.** The
+  client states that **Mexal article codes are transversal across years** and the
+  **edition is determined by the order date, not by the product**. The built
+  `Product2.Anno_Solare__c` picklist and its dependency matrix assume the
+  opposite — so the question is no longer what values it needs but whether the
+  field should exist ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)).
+  What carries the edition instead is
+  [the campaign parent and child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)
+  — Campagna Padre → Campagna Figlio → Campaign Member, agreed 20 Aug, configured
+  24 Aug, **entirely unbuilt**.
+
+- ✅ **Settled by these minutes:** ticket type is a **manually maintained
+  Salesforce field owned by amministrazione**, because Mexal cannot carry a
+  fourth classification ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md));
+  the **tranche is created by hand on the Quote before the order**
+  ([OI-50](notes/items/OI-50%20Tranche%20object.md)); ticket availability follows
+  the tranche **and every tranche before it**
+  ([OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md)); the quote
+  lifecycle is fully specified, picklist values included
+  ([OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)); the VAT
+  provider is **Anticipay** ([OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md));
+  the asset-flow review is done ([OI-82](notes/items/OI-82%20Asset%20flow%20needs%20a%20dedicated%20review.md)).
+
+- 🔴 **Two contradictions a human must settle.** The 20 Aug minute told the
+  **client** that "Da ricontattare" generates **no automatic task** (a banner
+  instead); the 24 Aug internal session specified a validation rule, a trigger and
+  reminder notifications on the same state
+  ([OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)). And the
+  19 Aug minute states the asset-creation rule **two incompatible ways in the same
+  document** ([OI-53](notes/items/OI-53%20Asset%20generation%20rule.md)).
+
+- **Calendar: 25 Aug** Anticipay · **26 Aug** [ROMI-PIENISSIMO] Review Temi
+  Integrazione Mexal (16:00–17:00 CEST, **client-facing** — Elena, Aurel, Andrea
+  Di Cicco, amministrazione and Fabrizio Paganelli; first Mexal session since
+  14 Jul) · **27 Aug** WooCommerce ·
+  [PIENISSIMO] Follow-up Interno is now a **weekly Monday 17:00 slot**.
+  [The compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)
+  still governs.
+
+- **The design file moved a fourth time, on 24 Aug — and for the first time the
+  edit is minuted.** [The master](notes/The%20newest%20design%20diagram.md)
+  re-decoded at its 2026-08-24T16:34:34Z version now carries the campaign lookup
+  rule, the full Lead/Opty validation spec **with the picklist values**, and
+  `Anticipay`. Earlier unminuted edits stand: `Rinuncia` in the master
+  ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md) — the 19 Aug minute
+  calls it a marketing tag, so diagram and minute now disagree); both order
+  vocabularies side by side
+  ([OI-69](notes/items/OI-69%20Order%20state%20model.md)); the client's own
+  [DGM-1](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md)
+  unmoved since 20 Aug.
 
 ## The live chain
 
@@ -86,7 +121,11 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    [WooCommerce](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)
    (credentials 26 Aug),
    [VAT](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
-   (provider unconfirmed).
+   (**provider named 24 Aug: Anticipay**; contract and cost unknown), and now
+   the whole
+   [campaign parent/child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)
+   — Record Types, the product lookup and the one-active-child rule, none of it
+   built.
 4. **Commercial** — the
    [phase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)
    has run four meetings, and

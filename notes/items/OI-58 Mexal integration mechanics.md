@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
 raised: 2026-07-14
-updated: 2026-08-15
+updated: 2026-08-24
 source: meetings/open-items.md row 58
 ---
 
@@ -49,3 +49,31 @@ The build sits on
 [ROMI's standard integration scaffolding](../Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md),
 committed in early August. That is house pattern and needs no requirement of its
 own — what this item tracks is the Mexal-specific configuration on top of it.
+
+## 2026-08-24 - a field-level mapping exists for the first time
+
+Andrea Di Cicco created **`Integrazioni pienissimo.xlsx`** on 2026-08-24 and
+presented it at [the Follow-up Interno](../meetings/2026-08-24%20Follow-up%20Interno.md) the same afternoon. See
+[the Mexal integration mapping workbook](../The%20Mexal%20integration%20mapping%20workbook.md) for what it covers — entity list
+with methods, Mexal manual page references, sync cadence, and a per-field
+customer payload mapping.
+
+Until now this item rested on meeting narration. It now has an artifact.
+
+**Also settled at that session:**
+
+- **The sandbox test pattern** — new customers under code **501**, new orders on
+  **series 10**.
+- **GET calls run once a day** for changed records.
+- Andrea Di Cicco to send **the Postman collection** to Aurel Mrruku.
+
+**Still open, and named as the hard part:**
+
+- **The invoice-to-order-line link.** Instalment invoices against order lines are
+  not yet understood; Andrea Di Cicco holds the action to study the detail call
+  that confirms payment status.
+- **Agent vs supplier filtering** on the read calls — needs Fabrizio Paganelli.
+
+⚠ The **Mexal WEBAPI credentials** promised since July have still not arrived,
+and Mirko Merendi's technical mail to Fabrizio Paganelli is still unanswered —
+Fabrizio Paganelli was asked on 20 August to reply before the 26 August review.

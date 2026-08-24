@@ -1,11 +1,11 @@
 ---
 id: OI-47
 type: open-item
-status: in-progress
+status: open
 owner: ROMI
 org: ROMI
 raised: 2026-07-23
-updated: 2026-08-15
+updated: 2026-08-24
 source: meetings/open-items.md row 47
 ---
 
@@ -34,3 +34,27 @@ which is the only thing standing between administration and
 since that risk was accepted on the basis of these flags.
 
 Feeds [the workbook](OI-24%20Data%20model%20workbook.md).
+
+## 2026-08-24 - the division of labour is agreed
+
+The [19 August MKT session](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) agreed where products come from, which is the
+premise this item depends on:
+
+**Anything with an economic value is created on Mexal and carried to Salesforce
+by batch. The bundle layer is Salesforce-only.**
+
+Elena Spini, Fabrizio Mastracci and Elisa Migliano are minuted settling it, with
+the ticket-generation logic kept as a separate function from the product sync.
+
+That confirms the direction of travel for the flags — they have to originate in
+the Mexal product master, not be maintained in Salesforce. ⚠ **Except that
+[OI-76](OI-76%20Ticket%20type%20picklist%20on%20the%20product.md) went the other
+way the next day**: because Mexal supports at most three article
+classifications, the client agreed on 20 August that **ticket type is maintained
+manually in Salesforce**.
+
+So the rule is not uniform. Product identity and price come down from Mexal;
+classification that Mexal cannot carry is maintained in Salesforce by
+amministrazione. Whether the **event flag** falls on the Mexal side or the
+Salesforce side of that line has not been stated, and it is the flag
+[OI-53](OI-53%20Asset%20generation%20rule.md) keys on.

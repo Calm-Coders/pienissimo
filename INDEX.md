@@ -121,6 +121,18 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-85 order state set may be incomplete](notes/items/OI-85%20Order%20state%20set%20may%20be%20incomplete.md)                              |
 | [OI-86 who hosts the participant landing page](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                    |
 
+### Meetings
+
+Minuted sessions, newest first. The four below were all recovered on 2026-08-24;
+before that the record said the 19 and 20 August sessions had left no minute.
+
+| Note                                                                                                                | Weight                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [2026-08-24 Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md)                                  | ROMI-internal · Mexal mapping + campaign configuration · Gemini notes                      |
+| [2026-08-24 Interna per update flusso Lead-Opty](notes/meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md) | ROMI-internal · 15 Lead/Quote decisions · Gemini notes · **conflicts with the 20 Aug minute** |
+| [2026-08-20 Flusso Asset Biglietti](notes/meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md)                      | **Strongest evidence in the record** — Elena's own minute, sent to the client              |
+| [2026-08-19 Flussi MKT Biglietti](notes/meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md)                          | Marketing funnel · Gemini notes · the asset-rule wording conflict lives here                |
+
 ### People
 
 | Note                                                                                                                          | Org        |
@@ -134,6 +146,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [Elena Spini — project manager](notes/people/Elena%20Spini%20-%20project%20manager%20ROMI.md)                                 | ROMI       |
 | [Aurel Mrruku — technical lead](notes/people/Aurel%20Mrruku%20-%20technical%20lead%20ROMI.md)                                 | ROMI       |
 | [Andrea Di Cicco — solution architect](notes/people/Andrea%20Di%20Cicco%20-%20solution%20architect%20ROMI.md)                 | ROMI       |
+| [Fabrizio Mastracci — marketing automation](notes/people/Fabrizio%20Mastracci%20-%20marketing%20automation%20ROMI.md)         | ROMI       |
 | [Anita Aga — developer](notes/people/Anita%20Aga%20-%20Salesforce%20developer%20ROMI.md)                                      | ROMI       |
 | [Sara Aga — developer](notes/people/Sara%20Aga%20-%20Salesforce%20developer%20ROMI.md)                                        | ROMI       |
 | [Rexhina Hysi — developer](notes/people/Rexhina%20Hysi%20-%20Salesforce%20developer%20ROMI.md)                                | ROMI       |
@@ -142,7 +155,8 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 | Note                                                                                                                                            | What it holds                                                                                                                                                    |
 | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Source trace 2026-08-20](notes/traces/Source%20trace%202026-08-20.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-20 · both design diagrams moved, master re-decoded                                                 |
+| [Source trace 2026-08-24](notes/traces/Source%20trace%202026-08-24.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-24 · four meetings recovered, master re-decoded again                                              |
+| [Source trace 2026-08-20](notes/traces/Source%20trace%202026-08-20.md)                                                                          | Previous watermark — 2026-08-20 · both design diagrams moved, master re-decoded                                                                                  |
 | [Source trace 2026-08-19](notes/traces/Source%20trace%202026-08-19.md)                                                                          | Previous watermark — 2026-08-19 · the 19 Aug ticket flow diagram                                                                                                 |
 | [Source trace 2026-08-18](notes/traces/Source%20trace%202026-08-18.md)                                                                          | Previous watermark — 2026-08-18 · the 07 Aug attachment surfaced                                                                                                 |
 | [Source trace 2026-08-14 external sweep](notes/traces/Source%20trace%202026-08-14%20external%20sweep.md)                                        | The previous external watermark — 2026-08-14                                                                                                                     |
@@ -154,7 +168,9 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [Risk - normalising an article code merges two products](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md) | `_ARCOD` is opaque; two pairs differ by one zero or one dash                                                                                                     |
 | [OI-93 Bundle components should be priced articles](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md)               | Client change request found in the workbook, 17 days unread                                                                                                      |
 | [The requirement mappings were fabricated](notes/The%20requirement%20mappings%20were%20fabricated.md)                                           | **Read before trusting any note-to-requirement link** — the 23 discarded claims, and what to re-derive                                                           |
-| [The newest design diagram](notes/The%20newest%20design%20diagram.md)                                                                           | **Authority for state machines** · re-decoded 20 Aug at its 20/08 15:36Z version — `Rinuncia` folded into the master, order states drawn but old ones not struck |
+| [The newest design diagram](notes/The%20newest%20design%20diagram.md)                                                                           | **Authority for state machines** · re-decoded 24 Aug at its 24/08 16:34Z version — campaign lookup rule, full Lead/Opty spec with picklist values, `Anticipay`   |
+| [The campaign parent and child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)                                            | Campagna Padre → Figlio → Member · **how the event edition is carried without a year on the product** · entirely unbuilt                                         |
+| [The Mexal integration mapping workbook](notes/The%20Mexal%20integration%20mapping%20workbook.md)                                                | Andrea Di Cicco's 24 Aug field mapping · ⚠ **holds real customer records — never copy values**                                                                   |
 | [The ticket flow diagram of 19 August](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md)                                               | New standalone `Flusso Biglietti.drawio` — `Rinuncia` as a 7th state, OI-91, unminuted                                                                           |
 | [The client Lead-Opty diagram moved on 20 August](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md)                       | `DGM-1`, Marco Montesi's own copy — moved 68 min before the master, both unminuted                                                                               |
 | [The client June requirements document](notes/The%20client%20June%20requirements%20document.md)                                                 | Pienissimo's own 11 June requirements — earliest structured statement of scope                                                                                   |

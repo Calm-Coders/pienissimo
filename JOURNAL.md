@@ -212,6 +212,95 @@ date: 2026-08-03`, but the file was last written **2026-08-20** by the nightly
   is a generator: **editing a skill here does not change what the next project
   gets** — that has to be done in the template. `CLAUDE.md` skill list updated.
 
+## 2026-08-24 — claude — nightly requirements-check, four meetings out of the dark at once
+
+- **Did:** ran `requirements-check` against watermark **2026-08-20**. Gmail,
+  Slack, Drive and Fathom all swept. **Six findings — the largest single sweep in
+  the project's records.**
+- **The headline: the 19 and 20 August sessions were minuted all along.** Three
+  consecutive sweeps reported them as leaving no minute of any kind. Both now
+  have a canvas entry, a recording and a Gemini notes-plus-transcript doc, added
+  to the canvas between the 21 Aug re-read and 24 Aug. And Elena Spini had
+  **minuted the 20 Aug session to the client the same evening** (20/08 18:08
+  CEST) — she forwarded it to Aurel on 24/08 16:38. **The gap was distribution,
+  not existence.** That minute is now the strongest evidence in the record:
+  human-written, sent to the client, uncontradicted for four days.
+- **Two further ROMI-internal sessions ran on 24 Aug** — Interna per update
+  flusso Lead/Opty (Elena + Aurel, 15 decisions) and Follow-up Interno (Elena,
+  Aurel, Andrea Di Cicco, Fabrizio Mastracci, 5 decisions). Both fully minuted.
+- 🔴 **The most consequential finding is a design conflict, not a decision.**
+  Fabrizio Paganelli, minuted to the client 20/08: **Mexal article codes are
+  transversal across years and the edition is determined by the ORDER DATE, not
+  the product.** `Product2.Anno_Solare__c` and its dependency matrix assume the
+  opposite. §13's finding that the matrix was ROMI guesswork now has its answer —
+  there is no client source because there is no client concept.
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) is now
+  "should this field exist", and it needs **Aurel's ruling**.
+- 🆕 **What carries the edition instead is a three-level campaign model** —
+  Campagna Padre → Campagna Figlio → Campaign Member, agreed with the client
+  20/08 and configured internally 24/08: two Record Types, a **hand-populated
+  lookup on Product** for the parent campaign code, one active child per parent,
+  membership at enrolment only. ~10 campaigns a year, created manually.
+  **Entirely unbuilt.** New note:
+  [the campaign parent and child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md).
+  It rewrites the scope of OI-77 and OI-84.
+- 🔴 **Two contradictions block building.** (1)
+  [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md): the 20/08
+  minute told the **client** that "Da ricontattare" generates **no automatic
+  task** (banner instead); the 24/08 internal session specifies a validation
+  rule, a trigger and reminder notifications on that same state. (2)
+  [OI-53](notes/items/OI-53%20Asset%20generation%20rule.md): the 19/08 minute
+  states the asset-creation rule **two incompatible ways in one document** — the
+  Dettagli say "at order", the auto-generated Decisioni line says "order **or**
+  quote". Prefer the Dettagli; get both ruled on.
+- ✅ **Settled:** [OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)
+  — ticket type is a **manually maintained Salesforce field owned by
+  amministrazione**, because Mexal carries at most three classifications; this
+  **reverses** the standing instruction to ask for a tier *column* on 26/08.
+  [OI-50](notes/items/OI-50%20Tranche%20object.md) — tranche created by hand on
+  the Quote, before the order, editable only in `Bozza`.
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) — availability
+  follows the tranche **and every tranche before it**.
+  [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) —
+  the provider is **Anticipay**, called on the first order for an Account.
+  [OI-82](notes/items/OI-82%20Asset%20flow%20needs%20a%20dedicated%20review.md)
+  **resolved** — the review it asked for is the 20/08 session.
+- **New artifact:** `Integrazioni pienissimo.xlsx` (Andrea Di Cicco, 24/08) — the
+  first field-level Mexal↔Salesforce mapping;
+  [note](notes/The%20Mexal%20integration%20mapping%20workbook.md). Sandbox pattern
+  fixed: **code 501 for new customers, series 10 for new orders**. ⚠ **It holds
+  real customer records** — existence recorded, **no values copied**. Third
+  artifact with this problem.
+- **The design file moved a fourth time** (24/08 16:34:34Z), re-decoded in full.
+  **For the first time the edit is minuted**: it carries the campaign lookup
+  rule, two `RULES + FLOW` blocks with the **actual picklist values** for both
+  "Motivazione da Ricontattare" fields, a third loss-reason list, and
+  `Anticipay`. The last two **cannot be dated** — present now, absent from the
+  20/08 prose write-up, and prose is not a byte-level record.
+- **Written:** 4 meeting notes, 3 new supporting notes (campaign model,
+  integration workbook, Fabrizio Mastracci person note — ROMI marketing, **not**
+  Fabrizio Paganelli), 19 item notes rewritten + OI-82 resolved, the design
+  diagram note, `MAP.md`, `INDEX.md`, `meetings/open-items.md` + `.it.md` (19
+  rows, #82 moved to Resolved, new header note and status block),
+  `meetings/DEVELOPMENT-RECAP.md` + `.it.md` (new §16), and
+  [the trace](notes/traces/Source%20trace%202026-08-24.md).
+- **Not done, deliberately:** **no requirement was changed.** The YAML register,
+  `REQUIREMENTS.md` and `REQUISITI.it.md` are untouched. OI-46 and OI-76 bear
+  directly on signed text, but rewriting a contractual document off a nightly
+  sweep is a human's call. Nothing in `force-app/` was touched. `STATUS.md` and
+  the Notion mirror were **not** regenerated — see Watch.
+- **Watch:** ⚠ `STATUS.md` and its Notion mirror are now **stale** — this sweep
+  moved the live position substantially and step 6 of `org-status-check` was not
+  run. That is the first thing the next session should do. ⚠ Matteo Distaso's
+  DNS deadline (21/08) passed unconfirmed and the forms deadline is 26/08;
+  Rebecca Marmo's funnel screenshots never arrived. ⚠ Fathom has held **0
+  recordings since 06 August** while five sessions were recorded — **a Fathom
+  miss no longer proves a meeting did not happen**; check Drive and the canvas.
+- **Next:** take OI-46, OI-53 and OI-59 to a human — they are three
+  one-sentence rulings and they block Order, Tranche, Asset and the picklists.
+  The 26/08 client Mexal review is the forum for OI-46 and OI-92; ask OI-76 for
+  the **value list**, not a column.
+
 ## 2026-08-24 — claude — STATUS.md created and mirrored to Notion
 
 Replicated the Life365 status apparatus for this project, at Aurel's request.
