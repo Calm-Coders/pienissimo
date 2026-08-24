@@ -8,7 +8,7 @@ meta:
   project: Pienissimo — Zoho CRM to Salesforce migration
   client: Pienissimo
   supplier: ROMI S.r.l.
-  version: "1.3"
+  version: "1.4"
   date: 2026-08-24
   signoff_session: 2026-08-06T15:00:00+02:00
   go_live: 2026-10-06
@@ -33,6 +33,10 @@ sources:
       date: 2026-08-24
       owner: Aurel Mrruku
       topic: Quote-side tranche creation, propagation and payment aggregation
+    - id: DIRECT-2026-08-24-ASSET
+      date: 2026-08-24
+      topic: Standard Salesforce Asset selected as the target ticket object
+      attribution: not stated in the direct instruction
   meetings:
     - { date: 2026-05-27, topic: kickoff }
     - { date: 2026-06-03, topic: sales demo }
@@ -305,9 +309,11 @@ state_machines:
       configure that label until OI-69 is resolved.
 
   asset:
-    source: [DGM-2]
+    source: [DGM-2, DIRECT-2026-08-24-ASSET]
     label_in_diagram: "Asset == Ticket evento"
     label_in_org: "Biglietto__c (custom object)"
+    target_object: "Asset (standard Salesforce object)"
+    implementation_gap: "Biglietto__c must be replaced or migrated; effort not estimated"
     states:
       [Ordinato, Assegnato, Disponibile, Non utilizzato, Utilizzato, Annullato]
     transitions:
@@ -618,9 +624,10 @@ requirements:
       id: DM-22,
       area: data_model,
       pri: M,
-      status: conflict,
-      text: "Ticket object: custom Biglietto__c as built vs standard Asset as designed",
-      conflict: RC-01
+      status: agreed,
+      text: "Ticket: one standard Salesforce Asset record per ticket; the custom Biglietto__c UAT implementation must be replaced or migrated",
+      source: DIRECT-2026-08-24-ASSET,
+      tracked_by: [OI-41]
     }
 
   # --- Sales ---------------------------------------------------------------
@@ -1598,20 +1605,20 @@ requirements:
 # =============================================================================
 reconciliation:
   - id: RC-01
-    kind: ratification
-    topic: Ticket object — accept what is already built
+    kind: resolved
+    topic: Ticket object — standard Salesforce Asset selected
     requirement: DM-22
     design_says: "Asset == Ticket evento, i.e. the standard Salesforce Asset object [DGM-2]"
     org_says: "Custom object Biglietto__c is live with six active Apex classes for DocuSign and PDF"
-    evidence_grade: org
+    decision_says: "Use the standard Asset object [DIRECT-2026-08-24-ASSET]"
+    evidence_grade: direct_instruction_and_org
     honest_framing: >
-      This is not a choice between two designs. The custom object exists and works; the design file
-      was simply never updated to match. Ratifying costs nothing. Reverting to the standard Asset
-      means rebuilding the six Apex classes.
-    cost_of_reverting: not estimated
-    proposed: "Ratify Biglietto__c as built; correct DGM-2 and the written proposal to match it"
-    default_if_undecided: "The custom object stays. Silence ratifies the built state."
-    impact_on: none — no other decision depends on this
+      The object decision is closed in favour of the standard Asset. The custom object remains the
+      current UAT implementation and is now an implementation gap. Its fields, relationships and six
+      Apex classes must be mapped before Biglietto__c is replaced or migrated.
+    migration_effort: not estimated
+    attribution: not stated in the direct instruction
+    impact_on: BIG-01, BIG-02, BIG-03, BIG-17, BIG-18, BIG-19, BIG-20, BIG-21
 
   - id: RC-02
     kind: clarification
@@ -1792,7 +1799,7 @@ open_points:
     - {
         ref: DM-22,
         decision: Ticket object,
-        recommendation: "confirm the custom object"
+        recommendation: "resolved 2026-08-24 — use standard Salesforce Asset; migrate or replace Biglietto__c"
       }
     - {
         ref: SAL-15,

@@ -10,7 +10,7 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
-## 2026-08-24 — codex — Aurel decided Quote-side tranche creation
+## 2026-08-24 — codex — tranche and standard Asset decisions recorded
 
 - **Did:** recorded Aurel Mrruku's direct decision that payment tranches are
   created on the Quote after product selection through a guided choice of Quote
@@ -20,12 +20,27 @@ Keep the twenty most recent entries here; archive older ones to
 - **State:** updated OI-50, OI-75, the quote-to-order and Mexal flows, the
   catalogue-block note, the YAML register and both contractual prose mirrors.
   The `BLO-` catalogue block is now explicitly separate and does not create
-  `Tranche__c`. The register/prose version is 1.3 dated 2026-08-24.
+  `Tranche__c`.
+- **Also decided:** the target ticket object is the standard Salesforce Asset.
+  The direct instruction did not identify the decision-maker, so it is not
+  personally attributed. OI-41 is resolved; `Biglietto__c` remains the current
+  UAT implementation and its migration/rebuild is an open, unestimated gap.
+  Updated the atomic item, object/flow/risk notes, both trackers and recaps,
+  `STATUS.md`, `MAP.md`, the register and both contractual prose mirrors. The
+  register/prose version is now 1.4 dated 2026-08-24.
+- **Check correction:** mapping OI-41 to `DM-22` exposed that `vault:check`
+  accepted only three-letter requirement prefixes and silently omitted all
+  `DM-*` ids. The parser now accepts the `DM` prefix without counting
+  two-letter reconciliation ids; OI-41 and DM-22 carry the reciprocal trace,
+  bringing the measured coverage to 9/159 (the 154 main entries plus five
+  requirement ids under `scope:` and `build_state:`).
 - **Next:** build remains entirely outstanding: `Tranche__c`, Quote-side action
   and fields, propagation to Order Items, and payment roll-up. The Notion
-  **Flows** page was refreshed and verified at 13:47 CEST after installing the
-  Notion plugin; its Quote-to-order and Tranche diagrams now carry this
-  decision. The Notion Status page and Open Items database remain stale.
+  **Flows** page was refreshed for the tranche decision at 13:47 CEST. At 16:07
+  CEST the Notion Status and Flows pages were refreshed for the Asset decision,
+  OI-41 was moved to `Resolved` and mapped to `DM-22`, and all three were fetched
+  again to verify them. Asset field/automation mapping and migration are still
+  to plan and build.
 - **Watch:** the final paid-state API value is deliberately still open under
   OI-69. Do not infer `CHIUSO/ACQUISITO`; creation and roll-up can proceed while
   the final label waits for Elena's answer.

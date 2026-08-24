@@ -167,7 +167,7 @@ if (existsSync(registry)) {
   const requirementIds = new Set();
   const trackedBy = new Map(); // requirement id -> Set of note ids
   // Each entry is a flow mapping; slice from one `id:` to just before the next.
-  const marks = [...yaml.matchAll(/^\s*-?\s*id:\s*([A-Z]{3}-\d+)/gm)].filter(
+  const marks = [...yaml.matchAll(/^\s*-?\s*id:\s*((?:DM|[A-Z]{3})-\d+)/gm)].filter(
     (m) => !m[1].startsWith('DGM-')
   );
   marks.forEach((mark, i) => {

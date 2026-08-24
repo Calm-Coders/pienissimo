@@ -1,9 +1,9 @@
 # Documento di Requisiti — Progetto Salesforce Pienissimo
 
 **Cliente:** Pienissimo · **Fornitore:** ROMI S.r.l. · **Progetto:** migrazione Zoho CRM → Salesforce
-**Versione:** 1.3 — bozza per approvazione · **Data:** 24 agosto 2026
+**Versione:** 1.4 — bozza per approvazione · **Data:** 24 agosto 2026
 
-> **Cosa cambia nella 1.3.** Il 24 agosto Aurel Mrruku ha deciso direttamente la creazione delle tranche nel Preventivo, la propagazione alle righe d'Ordine e il roll-up quando tutte le righe risultano pagate. Il valore API dello stato finale resta aperto sotto RC-07.
+> **Cosa cambia nella 1.4.** È stato deciso l'oggetto target del biglietto: si usa l'oggetto standard Salesforce **Asset**. L'istruzione diretta non indica chi ha preso la decisione. L'implementazione custom `Biglietto__c` presente in UAT deve essere sostituita o migrata; l'effort non è ancora stimato. La versione 1.3 registrava la decisione di Aurel Mrruku sulle tranche create nel Preventivo.
 >
 > **Cosa è cambiato dalla 1.0.** Sono stati letti e integrati i due file di design draw.io — `Flows & Objects.drawio` di Elena Spini e `Workflow Pienissimo 23-7-26.drawio` annotato da Marco Montesi — entrambi ri-decodificati integralmente il **20 agosto 2026**, giorno in cui risultavano modificati nello stesso pomeriggio, rispettivamente alle 15:36 UTC e alle 14:28 UTC (questo documento riportava il 6 agosto e il 4 agosto). ⚠ **Nessuna di queste due modifiche è verbalizzata, quindi nulla di quanto segue è stato cambiato sulla loro base**; i tre punti in cui i disegni si sono spostati rispetto a questo testo sono elencati nel §17. Ne derivano il nuovo **§16** (macchine a stati, valori delle picklist, 17 requisiti che esistevano solo nei disegni) e il **§17**, che elenca i punti in cui le fonti non concordano. Due correzioni riguardano errori nostri: la lista dei tipi ordine in DM-15 era inventata, e un punto che avevamo presentato come contraddizione (la cadenza dei promemoria) non lo era. Entrambe sono descritte nel §17.
 > **Sessione di approvazione:** giovedì 6 agosto 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
@@ -114,7 +114,7 @@ Tutto ciò che è descritto nei capitoli §3–§11 con priorità **M**, **S** o
 | DM-19 | **Contratto** (Performance Plus) — oggetto Contract standard con logica custom: date di inizio/fine/rinnovo, importo, preventivo e fatture collegate, pannello rinnovi, fatturato vs incassato, blocco servizio in caso di morosità grave.                                                                                                                                                                                                                |  S   |  ✅   |
 | DM-20 | **Nota di credito** — collegata sia all'ordine sia alla **riga d'ordine**, per gestire storni parziali su bundle multi-evento.                                                                                                                                                                                                                                                                                                                            |  S   |  ✅   |
 | DM-21 | **Fattura** — creata su Salesforce come contenitore di riferimento alla chiusura dell'ordine; Mexal fattura e restituisce numero e stato in campi dedicati e ricercabili.                                                                                                                                                                                                                                                                                 |  M   |  ✅   |
-| DM-22 | **Biglietto** — un record per biglietto, con ciclo di vita a stati (§6). Rilasciato in UAT come oggetto custom `Biglietto__c`. 🟡 _La proposta scritta prevedeva l'oggetto standard Asset: si chiede conferma della scelta implementata._                                                                                                                                                                                                                 |  M   |  🟡   |
+| DM-22 | **Biglietto** — un record dell'oggetto standard Salesforce **Asset** per ogni biglietto, con il ciclo di vita del §6. L'oggetto custom `Biglietto__c` oggi presente in UAT deve essere sostituito o migrato ad Asset senza perdere campi, relazioni o automazioni necessarie.                                                                                                                                                                             |  M   |  ✅   |
 
 ---
 
@@ -345,7 +345,7 @@ Questi punti impediscono la firma. Sono ordinati per urgenza.
 | 19  | Timing di Anticipay                               | INT-18 | Fase 2                                           |
 | 20  | Strategia di storage documentale                  | NFR-03 | Purge a 30 giorni post-evento con backup cliente |
 | 21  | Esposizione dei prezzi componenti in fattura      | ORD-10 | Righe rata, componenti mascherati                |
-| 22  | Oggetto biglietto: custom vs Asset standard       | DM-22  | Confermare l'oggetto custom già realizzato       |
+| 22  | Oggetto biglietto: custom vs Asset standard       | DM-22  | ✅ Asset standard deciso il 24 agosto            |
 | 23  | Canale di notifica                                | SAL-15 | Campanella Salesforce                            |
 | 24  | Firma preventivo e contratto: unica o sequenziale | BIG-15 | Unico invio                                      |
 
@@ -475,12 +475,11 @@ Otto punti, e non sono dello stesso tipo. L'etichetta lo dice, perché trattarli
 
 ⚠ **RC-06, RC-07 e RC-08 sono nuovi in questa revisione e hanno un'unica causa.** Entrambi i file di design sono stati modificati il **20 agosto 2026**, a 68 minuti di distanza, e **nessuna delle due modifiche è verbalizzata** — nessuna riunione, nessun appunto, nessun messaggio. In ciascun caso il disegno dice ora qualcosa che questo documento non dice. **Nulla di quanto segue è stato modificato sulla base di un disegno**: sono elencati perché possiate deciderli.
 
-### RC-01 · Da ratificare — l'oggetto biglietto
+### RC-01 · Risolto il 24 agosto — l'oggetto biglietto
 
 L'org UAT contiene già un oggetto custom `Biglietto__c` con sei classi Apex per DocuSign e la generazione dei PDF. Il disegno prevede invece l'oggetto Asset standard di Salesforce.
 
-Non è una scelta fra due disegni: quello custom esiste e funziona, il file di design non è mai stato aggiornato. Ratificare non costa nulla; tornare all'Asset standard significa rifare le sei classi — **a oggi non abbiamo stimato quanto**.
-**Proposta:** ratificare `Biglietto__c` com'è. **Se non si decide:** resta il custom; il silenzio ratifica ciò che è costruito.
+**Decisione:** usare l'oggetto standard Salesforce Asset. L'istruzione diretta non indica chi ha preso la decisione. `Biglietto__c` è ora un gap di implementazione, non una scelta da ratificare: campi, relazioni e sei classi Apex devono essere mappati e poi migrati, riscritti o dismessi. **L'effort non è ancora stimato.**
 
 ### RC-02 · Da chiarire — cosa fa nascere campagna e biglietti
 

@@ -66,10 +66,10 @@ Detail: [the build ahead of the record](notes/objects/The%20build%20ahead%20of%2
 
 | Area                      | State                                                                                                                                                                                                             |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Custom objects**        | `Biglietto__c`, `BundleComponent__c`, plus extensions to Account, Lead, Opportunity, OrderItem, Product2, Quote                                                                                                   |
+| **Custom objects**        | `Biglietto__c` (legacy UAT ticket implementation; standard Asset is the decided target), `BundleComponent__c`, plus extensions to Account, Lead, Opportunity, OrderItem, Product2, Quote                          |
 | **Bundle composition**    | `BundleComponent__c` — a Product2↔Product2 junction carrying a per-bundle `Spread_Price__c`. Replaced `Product2.Parent__c` on 2026-07-16                                                                          |
 | **Bundle reconciliation** | `Bundle_Selling_Price__c`, `Spread_Total__c`, `Spread_Variance__c` — maintained by `BundleComponentTriggerHandler`, since Product2 takes no roll-ups                                                              |
-| **Ticket generation**     | `OrderBigliettoTriggerHandler` — creates a Biglietto from an Order. The 08-03 check said nothing did this                                                                                                         |
+| **Ticket generation**     | `OrderBigliettoTriggerHandler` creates a `Biglietto__c` from an Order. No equivalent standard Asset generation or migration is built                                                                              |
 | **Product flags**         | `Genera_Biglietto__c` and `Solo_Bundle__c` both exist. **Nothing upstream populates them** — the client's registry carries neither column                                                                         |
 | **Classification fields** | `Anno_Solare__c`, `Evento__c`, `Bundle_Type__c` on Product2 — all three **populated on zero bundles**                                                                                                             |
 | **Instalment input**      | `OrderItem.Data_Scadenza__c` exists downstream. The 24 Aug decision requires Quote-side tranche selection, reference/date fields and propagation; none exists                                                     |
@@ -86,16 +86,17 @@ tracker**, which is why the written record repeatedly understates what exists.
 
 ## What is not built
 
-| Gap                                                                                                                                   | Item                                                                                                                                                                  |
-| ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`Tranche__c` — does not exist in the org or the repository.** The Quote-side action/fields, propagation and roll-up are also absent | [OI-50](notes/items/OI-50%20Tranche%20object.md)                                                                                                                      |
-| **Any Apex coverage worth the name** — 1% org-wide against a 75% deploy floor                                                         | [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md), [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md) |
-| **The six Biglietto Apex classes are not in source control** — they exist only in the UAT org                                         | [risk](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                                                                   |
-| Participant data collection, and who hosts the landing page                                                                           | [OI-78](notes/items/OI-78%20Participant%20data%20collection.md), [OI-86](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                     |
-| The WooCommerce checkout-link flow — credentials expected 26 August                                                                   | [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)                                                                                                    |
-| VAT validation moving into Salesforce — provider unconfirmed                                                                          | [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)                                                                                          |
-| The Zoho import template ROMI owes the client, ahead of the ~1 September import                                                       | [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)                                                                                     |
-| The whole phase 2 scope — no estimate exists and the decision-maker was never told                                                    | [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                                                                             |
+| Gap                                                                                                                                                         | Item                                                                                                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Standard Asset migration** — target decided 24 Aug, but fields, relationships and six Apex classes still sit on custom `Biglietto__c`; effort unestimated | [OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md), [risk](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md) |
+| **`Tranche__c` — does not exist in the org or the repository.** The Quote-side action/fields, propagation and roll-up are also absent                       | [OI-50](notes/items/OI-50%20Tranche%20object.md)                                                                                                                              |
+| **Any Apex coverage worth the name** — 1% org-wide against a 75% deploy floor                                                                               | [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md), [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)         |
+| **The six Biglietto Apex classes are not in source control** — they exist only in the UAT org                                                               | [risk](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                                                                           |
+| Participant data collection, and who hosts the landing page                                                                                                 | [OI-78](notes/items/OI-78%20Participant%20data%20collection.md), [OI-86](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                             |
+| The WooCommerce checkout-link flow — credentials expected 26 August                                                                                         | [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)                                                                                                            |
+| VAT validation moving into Salesforce — provider unconfirmed                                                                                                | [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)                                                                                                  |
+| The Zoho import template ROMI owes the client, ahead of the ~1 September import                                                                             | [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)                                                                                             |
+| The whole phase 2 scope — no estimate exists and the decision-maker was never told                                                                          | [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                                                                                     |
 
 ---
 
@@ -115,13 +116,18 @@ tracker**, which is why the written record repeatedly understates what exists.
    part of that mechanism remain unbuilt. The catalogue `BLO-` block is now
    explicitly a different concept
    ([OI-50](notes/items/OI-50%20Tranche%20object.md)).
-3. **Fix `Product2.Evento__c` before any product import.** _ROMI._ The built
+3. **Plan and build the move from `Biglietto__c` to standard Asset.** _ROMI._
+   The object decision is closed; implementation is not. Map every field,
+   relationship and automation, including the six UAT-only Apex classes, then
+   decide what is migrated, rewritten or retired. Effort is not estimated
+   ([OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md)).
+4. **Fix `Product2.Evento__c` before any product import.** _ROMI._ The built
    restricted picklist is wrong against the client's own event list: **no
    `Happy Team` value**, although Happy Team is priced and sits in the Academy
    bundle at quantity 2. Also `Camerieri` truncated, `Odb Live`, and an invented
    `ND`. And the `Anno_Solare__c` dependency matrix has **no client source at
    all** ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)).
-4. **Get the 19 and 20 August sessions minuted, or re-run them.** _Elena Spini._
+5. **Get the 19 and 20 August sessions minuted, or re-run them.** _Elena Spini._
    Three design moves in two days, none recorded — `Rinuncia` entering the
    master diagram ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)), the
    06-08 order states drawn _alongside_ the old ones rather than replacing them
@@ -129,19 +135,19 @@ tracker**, which is why the written record repeatedly understates what exists.
    about Mexal reversing an asset
    ([OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)).
    **Nothing was reconfigured against any of it.**
-5. **Close the `CHIUSO/ACQUISITO` question.** _Elena Spini._ The 06-08 session
+6. **Close the `CHIUSO/ACQUISITO` question.** _Elena Spini._ The 06-08 session
    struck it from the Order; the legacy tranche design still uses the name.
    Aurel's 24 Aug decision unblocks tranche creation mechanics, but the final
    Order and Tranche state values remain blocked
    ([OI-69](notes/items/OI-69%20Order%20state%20model.md)).
-6. **Send Pienissimo the Zoho import template.** _ROMI._ Owed before the
+7. **Send Pienissimo the Zoho import template.** _ROMI._ Owed before the
    ~1 September import
    ([OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)),
    and it must carry the opaque-code rule below.
-7. **Take the phase 2 dispute to Daniela Morgese.** Four meetings, and
+8. **Take the phase 2 dispute to Daniela Morgese.** Four meetings, and
    [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md) records that the only
    person who can decide it was never told.
-8. **Confirm the 10 September development deadline still stands.** _Elena
+9. **Confirm the 10 September development deadline still stands.** _Elena
    Spini._ Every conversation anchors on 6 October, which is go-live, not
    code-complete ([OI-04](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md)).
 
@@ -179,17 +185,17 @@ the anagrafica prodotti**. The file arrived; the meeting has not happened.
 
 Nine recorded. Severity is the note's own.
 
-| Risk                                                                               | Severity |
-| ---------------------------------------------------------------------------------- | -------- |
-| Production deploy is blocked by Apex coverage — 1% against a 75% floor             | high     |
-| The Biglietto Apex stack is not in source control — six classes exist only in UAT  | high     |
-| The whole remaining build lands after Ferragosto — two weeks for everything        | high     |
-| The phase 2 scope dispute is unresolved, and the decision-maker was never told     | high     |
-| Placeholder prices could reach the client — every UAT price is a ROMI invention    | high     |
-| Normalising an article code merges two products — bites at the ~1 September import | high     |
-| The Biglietto object diverged from the approved proposal                           | medium   |
-| The ticket lifecycle has never run end to end                                      | medium   |
-| No coherence control on bundle composition                                         | medium   |
+| Risk                                                                                      | Severity |
+| ----------------------------------------------------------------------------------------- | -------- |
+| Production deploy is blocked by Apex coverage — 1% against a 75% floor                    | high     |
+| The Biglietto Apex stack is not in source control — six classes exist only in UAT         | high     |
+| The whole remaining build lands after Ferragosto — two weeks for everything               | high     |
+| The phase 2 scope dispute is unresolved, and the decision-maker was never told            | high     |
+| Placeholder prices could reach the client — every UAT price is a ROMI invention           | high     |
+| Normalising an article code merges two products — bites at the ~1 September import        | high     |
+| Standard Asset is decided, but UAT still runs on custom Biglietto — migration unestimated | medium   |
+| The ticket lifecycle has never run end to end                                             | medium   |
+| No coherence control on bundle composition                                                | medium   |
 
 ---
 
@@ -200,12 +206,12 @@ Nine recorded. Severity is the note's own.
 | Atomic notes                        | 92                                                 |
 | Item notes in `notes/items/`        | 54 — of which **7 gating**, 42 open, 8 in progress |
 | Numbered rows in the client tracker | ~86                                                |
-| Requirements reachable from a note  | **8 of 137**                                       |
+| Requirements reachable from a note  | **9 of 159**                                       |
 
 ⚠ **Two honest gaps in the record itself.** The tracker carries roughly 86
 numbered rows and only 54 have atomic notes behind them, so this page's item
 view is the _notes_ view, not the whole tracker. And the requirement trace is
-**8 of 137** — most signed requirements cannot yet be walked back to the meeting
+**9 of 159** — most signed requirements cannot yet be walked back to the meeting
 that produced them
 ([the trace](notes/The%20requirement%20mappings%20were%20fabricated.md)).
 

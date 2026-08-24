@@ -18,6 +18,10 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   quotes/contracts, out for tickets; order states
   `Ordinato → Fatturato → Incassato`; the
   [ticket lifecycle](notes/flows/The%20ticket%20lifecycle.md).
+- **2026-08-24 settled the ticket object:** the target is the standard
+  Salesforce **Asset**. [OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md)
+  is resolved, but UAT still runs on custom `Biglietto__c`; mapping and migration
+  are unbuilt and unestimated.
 - **The repo is a week ahead of every tracker**, and the org holds Apex the repo
   does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
   [missing stack](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
@@ -74,7 +78,9 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    [import template](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
    — both must carry the rule that
    [`_ARCOD` is an opaque string](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
-3. **Dated but unbuilt** — [tranche](notes/items/OI-50%20Tranche%20object.md)
+3. **Dated but unbuilt** — the
+   [standard Asset migration](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md),
+   [tranche](notes/items/OI-50%20Tranche%20object.md)
    (creation in the Quote decided by Aurel 24 Aug; nothing exists),
    [participants](notes/items/OI-78%20Participant%20data%20collection.md),
    [WooCommerce](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)

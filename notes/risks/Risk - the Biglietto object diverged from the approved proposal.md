@@ -6,7 +6,7 @@ severity: medium
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-14
+updated: 2026-08-24
 depends_on: [OI-41]
 source: meetings/proposals/2026-07-13-asset-ticket-data-model.md
 ---
@@ -19,10 +19,10 @@ ROMI's own data-model proposal of 2026-07-13
 flow-synced CampaignMember. What was built is a **custom object**,
 [`Biglietto__c`](../objects/The%20Biglietto%20build.md).
 
-No meeting minuted the change. The proposal was never formally reviewed by
-Elena Spini and Andrea Di Cicco as OI-41 asks, so the divergence was never
-approved or rejected — it simply happened, and the recaps still describe the
-design in terms of assets.
+**The object choice was resolved on 2026-08-24: the target is the standard
+Salesforce Asset object.** The direct instruction did not identify the
+decision-maker. The current custom build is therefore an implementation gap,
+not an alternative awaiting ratification.
 
 **Why it matters beyond naming.** Standard Asset carries product, account,
 contact, serial number, install/usage dates, lifecycle status and a hierarchy
@@ -31,12 +31,12 @@ means rebuilding whatever of that is needed, and the analytics goal — no-show
 and room-composition dashboards indexed against campaigns — is exactly the kind
 of reporting that leans on standard objects.
 
-It also leaves the written record inconsistent: `REQUIREMENTS.md`, the
-requirement register and the open-items tracker discuss assets; the org and the
-repository contain `Biglietto__c`.
+The org and repository still contain `Biglietto__c`, including six active Apex
+classes in UAT for DocuSign and PDF generation. Before replacement, ROMI must
+map every field, relationship and automation to Asset and decide which existing
+logic is migrated, rewritten or retired. The effort has not been estimated.
 
-**The decision is probably fine and simply needs to be made and recorded.**
-Either ratify the custom object and correct the documents, or state why the
-standard object should have been used — before the
+Do not build further ticket functionality on `Biglietto__c` as though it were
+the target model. The migration plan must be settled before the
 [dedicated asset-flow review](../items/OI-82%20Asset%20flow%20needs%20a%20dedicated%20review.md)
-designs further work on top of it.
+adds more work on top of the custom object.

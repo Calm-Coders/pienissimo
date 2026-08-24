@@ -4,7 +4,7 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-19
+updated: 2026-08-24
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-01
 ---
@@ -14,12 +14,12 @@ requirement: BIG-01
 The state machine agreed on 2026-08-06 and final as of that session
 ([OI-74](../items/OI-74%20Asset%20state%20machine.md)):
 
-| State                           | Trigger                                                         |
-| ------------------------------- | --------------------------------------------------------------- |
-| **Ordinato**                    | The order lands — the ticket record is created                   |
-| **Disponibile**                 | The invoice carrying that order line is **collected in full**    |
-| **Assegnato**                   | Documentation + QR emailed to the **named** participant          |
-| **Utilizzato / Non utilizzato** | Set by the QR scan at the event                                  |
+| State                           | Trigger                                                       |
+| ------------------------------- | ------------------------------------------------------------- |
+| **Ordinato**                    | The order lands — the ticket record is created                |
+| **Disponibile**                 | The invoice carrying that order line is **collected in full** |
+| **Assegnato**                   | Documentation + QR emailed to the **named** participant       |
+| **Utilizzato / Non utilizzato** | Set by the QR scan at the event                               |
 
 _Assegnato_ was nearly dropped when digital signature left the ticket flow;
 Sabatino Rinaldi kept it for reporting — _"ci fa statistica per capire quante
@@ -58,6 +58,8 @@ disturbs this flow in two ways, and neither is settled:
   [OI-75](../items/OI-75%20Ticket%20availability%20rule.md) does not currently
   allow for.
 
-Built against this: [`Biglietto__c`](../objects/The%20Biglietto%20build.md) — but
-the states above are not yet configured, and
+**Target object decided on 2026-08-24: standard Salesforce Asset.** The direct
+instruction did not identify the decision-maker. The current UAT automation is
+built against [`Biglietto__c`](../objects/The%20Biglietto%20build.md), which must
+be migrated or rebuilt on Asset. The states above are not yet configured, and
 [none of it has ever run end to end](../risks/Risk%20-%20the%20ticket%20lifecycle%20has%20never%20run%20end%20to%20end.md).

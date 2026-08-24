@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-24
 updated: 2026-08-24
-source: published 2026-08-24 from STATUS.md and notes/items/; Flows refreshed after Aurel tranche decision at 13:47 CEST
+source: published 2026-08-24 from STATUS.md and notes/items/; Status, Flows and OI-41 refreshed after the standard Asset decision and verified at 16:07 CEST
 ---
 
 # The Notion mirror of the project status
@@ -53,10 +53,11 @@ Openable links, the same ones quoted in [STATUS.md](../STATUS.md) and
 [open-items tracker](https://app.notion.com/p/04cc8a62d28a40419d7916271f6cae11) ·
 [flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150).
 
-**Flows is current after Aurel's 2026-08-24 tranche decision.** Its Quote-to-order
-and Tranche diagrams were refreshed at 13:47 CEST and fetched again to verify
-the saved content. ⚠ The Notion **Status** page and **Open Items** database have
-not yet been regenerated from that decision.
+**The Notion Status page, Flows page and OI-41 tracker row are current as of
+16:07 CEST on 2026-08-24.** Flows first received Aurel's Quote-side tranche
+decision at 13:47 CEST. After the later standard Asset decision, Status and
+Flows were refreshed, OI-41 moved from `Superseded` to `Resolved` with
+requirement `DM-22`, and all three were fetched again to verify the saved state.
 
 ⚠ **Three files quote these URLs.** If a page is ever replaced rather than
 updated in place, all three go stale at once — which is the reason step 6c

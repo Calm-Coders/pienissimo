@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-15
-updated: 2026-08-15
+updated: 2026-08-24
 blocks: [go-live]
 ---
 
@@ -24,13 +24,13 @@ In the 2026-08-06 cluster the cited id is literally `BIG-(OI number minus 69)`:
 `OI-74 → BIG-05`, `OI-75 → BIG-06`, `OI-78 → BIG-09`. Five of five spot-checks
 against the note bodies were wrong:
 
-| Note | Claimed | What that requirement actually says | What the note is about |
-| ---- | ------- | ----------------------------------- | ---------------------- |
-| [OI-74](items/OI-74%20Asset%20state%20machine.md) | BIG-05 | "Participants are not account contacts" | the six-value Asset status picklist — reads as **BIG-17** |
-| [OI-75](items/OI-75%20Ticket%20availability%20rule.md) | BIG-06 | "Reminder funnel cadence" | release when the tranche invoice is paid in full — unrelated |
-| [OI-78](items/OI-78%20Participant%20data%20collection.md) | BIG-09 | "Zero-euro orders stay in the CRM" | the participant landing page — reads as **BIG-18/BIG-19** |
-| [OI-50](items/OI-50%20Tranche%20object.md) | ORD-06 | "Order types STANDARD, BUNDLE, PLUS" | body is verbatim **ORD-01**, "tranches auto-created from order-line due dates" |
-| [OI-43](items/OI-43%20Spread%20variance%20does%20not%20block%20saving.md) | BUN-04 | "Both fixed price and auto-calc" | body is verbatim **BUN-17**, "a non-zero spread variance must block saving" |
+| Note                                                                      | Claimed | What that requirement actually says     | What the note is about                                                         |
+| ------------------------------------------------------------------------- | ------- | --------------------------------------- | ------------------------------------------------------------------------------ |
+| [OI-74](items/OI-74%20Asset%20state%20machine.md)                         | BIG-05  | "Participants are not account contacts" | the six-value Asset status picklist — reads as **BIG-17**                      |
+| [OI-75](items/OI-75%20Ticket%20availability%20rule.md)                    | BIG-06  | "Reminder funnel cadence"               | release when the tranche invoice is paid in full — unrelated                   |
+| [OI-78](items/OI-78%20Participant%20data%20collection.md)                 | BIG-09  | "Zero-euro orders stay in the CRM"      | the participant landing page — reads as **BIG-18/BIG-19**                      |
+| [OI-50](items/OI-50%20Tranche%20object.md)                                | ORD-06  | "Order types STANDARD, BUNDLE, PLUS"    | body is verbatim **ORD-01**, "tranches auto-created from order-line due dates" |
+| [OI-43](items/OI-43%20Spread%20variance%20does%20not%20block%20saving.md) | BUN-04  | "Both fixed price and auto-calc"        | body is verbatim **BUN-17**, "a non-zero spread variance must block saving"    |
 
 [OI-47](items/OI-47%20Product%20flags%20at%20import.md) claimed `PRD-04`, and
 **there is no `PRD` prefix anywhere in the register**. Its two product flags read
@@ -41,31 +41,31 @@ as `BUN-12` (Genera biglietto) and `BUN-13` (Solo bundle).
 Every row below is **unverified**. Do not restore one without reading the note
 body against the requirement text.
 
-| Note | Discarded claim | First impression, still unchecked |
-| ---- | --------------- | --------------------------------- |
-| obj-bundlecomponent | BUN-01 | plausible; BUN-03 also fits the junction |
-| obj-biglietto | BIG-01 | plausible |
-| flow-ticket-lifecycle | BIG-01 | plausible — BIG-01 is the four-stage lifecycle |
-| flow-quote-to-order | SAL-17 | plausible |
-| flow-mexal | INT-01 | plausible |
-| OI-13 | BUN-01 | weak — the note is an effort estimate, not the container decision |
-| OI-24 | DAT-07 | **looks right** — titles match verbatim |
-| OI-43 | BUN-04 | **wrong** — see above, reads as BUN-17 |
-| OI-46 | BUN-07 | wrong — classification picklists read as BUN-08/BUN-09 |
-| OI-47 | PRD-04 | **broken** — no such id; reads as BUN-12/BUN-13 |
-| OI-49 | INT-11 | near — INT-12, "checkout links carrying the Opportunity id", is the closer match |
-| OI-50 | ORD-06 | **wrong** — see above, reads as ORD-01 |
-| OI-53 | BIG-02 | plausible — auto-creation trigger |
-| OI-58 | INT-01 | plausible |
-| OI-59 | SAL-10 | plausible; SAL-07/08/09 also candidates |
-| OI-68 | SAL-17 | plausible |
-| OI-69 | ORD-01 | wrong — order states read as ORD-13/ORD-14 |
-| OI-73 | INT-14 | wrong — VAT reads as **INT-18**, "Anticipay VAT check timing" |
-| OI-74 | BIG-05 | **wrong** — see above |
-| OI-75 | BIG-06 | **wrong** — see above |
-| OI-78 | BIG-09 | **wrong** — see above |
-| OI-79 | DAT-07 | plausible |
-| OI-88 | DAT-07 | plausible |
+| Note                  | Discarded claim | First impression, still unchecked                                                |
+| --------------------- | --------------- | -------------------------------------------------------------------------------- |
+| obj-bundlecomponent   | BUN-01          | plausible; BUN-03 also fits the junction                                         |
+| obj-biglietto         | BIG-01          | plausible                                                                        |
+| flow-ticket-lifecycle | BIG-01          | plausible — BIG-01 is the four-stage lifecycle                                   |
+| flow-quote-to-order   | SAL-17          | plausible                                                                        |
+| flow-mexal            | INT-01          | plausible                                                                        |
+| OI-13                 | BUN-01          | weak — the note is an effort estimate, not the container decision                |
+| OI-24                 | DAT-07          | **looks right** — titles match verbatim                                          |
+| OI-43                 | BUN-04          | **wrong** — see above, reads as BUN-17                                           |
+| OI-46                 | BUN-07          | wrong — classification picklists read as BUN-08/BUN-09                           |
+| OI-47                 | PRD-04          | **broken** — no such id; reads as BUN-12/BUN-13                                  |
+| OI-49                 | INT-11          | near — INT-12, "checkout links carrying the Opportunity id", is the closer match |
+| OI-50                 | ORD-06          | **wrong** — see above, reads as ORD-01                                           |
+| OI-53                 | BIG-02          | plausible — auto-creation trigger                                                |
+| OI-58                 | INT-01          | plausible                                                                        |
+| OI-59                 | SAL-10          | plausible; SAL-07/08/09 also candidates                                          |
+| OI-68                 | SAL-17          | plausible                                                                        |
+| OI-69                 | ORD-01          | wrong — order states read as ORD-13/ORD-14                                       |
+| OI-73                 | INT-14          | wrong — VAT reads as **INT-18**, "Anticipay VAT check timing"                    |
+| OI-74                 | BIG-05          | **wrong** — see above                                                            |
+| OI-75                 | BIG-06          | **wrong** — see above                                                            |
+| OI-78                 | BIG-09          | **wrong** — see above                                                            |
+| OI-79                 | DAT-07          | plausible                                                                        |
+| OI-88                 | DAT-07          | plausible                                                                        |
 
 ## Progress
 
@@ -77,14 +77,14 @@ a long note scores as a perfect hit. That is almost certainly how the original
 23 were produced. The rule now is that **a mapping needs a quotable sentence**,
 or it is not a mapping.
 
-| Batch | Requirements | Status |
-| ----- | ------------ | ------ |
-| tickets `BIG` | 24 | **done 2026-08-15** — 10 notes mapped, 8 requirements traced |
-| sales `SAL` | 23 | not started |
-| integrations `INT` | 22 | not started |
-| bundles `BUN` | 20 | not started |
-| orders `ORD` | 15 | not started |
-| data / marketing / nfr / context | 28 | not started |
+| Batch                            | Requirements | Status                                                       |
+| -------------------------------- | ------------ | ------------------------------------------------------------ |
+| tickets `BIG`                    | 24           | **done 2026-08-15** — 10 notes mapped, 8 requirements traced |
+| sales `SAL`                      | 23           | not started                                                  |
+| integrations `INT`               | 22           | not started                                                  |
+| bundles `BUN`                    | 20           | not started                                                  |
+| orders `ORD`                     | 15           | not started                                                  |
+| data / marketing / nfr / context | 28           | not started                                                  |
 
 ### Tickets batch — notes with no requirement, deliberately
 
@@ -103,9 +103,20 @@ Absence here is a finding, not an omission:
   whether free registrants become Accounts, Leads or Campaign Members is
   unanswered anywhere. Belongs to the sales/data batch. Needed before the
   7–19 September tour.
-- [OI-41](items/OI-41%20Asset%20and%20ticket%20data%20model.md) — `superseded`. It
-  records a **rejected** proposal, so pointing it at a live requirement would
-  misrepresent it.
+- [OI-41](items/OI-41%20Asset%20and%20ticket%20data%20model.md) was deliberately
+  unmapped while it recorded a rejected proposal. **That changed on
+  2026-08-24:** standard Asset was selected as the target ticket object, OI-41
+  was resolved and mapped to `DM-22`. This is new direct evidence, not a
+  restoration of the fabricated mapping.
+
+The same update exposed a validator defect: `vault:check` parsed only
+three-letter requirement prefixes, so every two-letter `DM-*` requirement was
+missing from its denominator. The parser now also accepts the `DM` prefix while
+still excluding non-requirement two-letter ids such as reconciliation entries;
+the trace is **9 of 159**, including the new OI-41 ↔ DM-22 pair. The denominator
+includes the five requirement ids that live in `scope:` and `build_state:` as
+well as the 154 entries under `requirements:`.
+
 - [OI-82](items/OI-82%20Asset%20flow%20needs%20a%20dedicated%20review.md) — a meeting,
   not a requirement.
 - [OI-89](items/OI-89%20BigliettoPdfQueueable%20callout%20error.md) — a runtime

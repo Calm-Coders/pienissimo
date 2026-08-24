@@ -99,7 +99,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-29 accounts for free tour tickets](notes/items/OI-29%20Account%20creation%20policy%20for%20free%20tour%20tickets.md)                   |
 | [OI-37 e-commerce parallel flow](notes/items/OI-37%20E-commerce%20parallel%20flow%20build.md) · **disputed scope**                         |
 | [OI-38 Salesforce to Zoho for Pienissimo Pro](notes/items/OI-38%20Salesforce%20to%20Zoho%20for%20Pienissimo%20Pro.md) · **disputed scope** |
-| [OI-41 asset and ticket data model](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md) · superseded                               |
+| [OI-41 asset and ticket data model](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md) · resolved 24 Aug — standard Asset         |
 | [OI-43 spread variance does not block saving](notes/items/OI-43%20Spread%20variance%20does%20not%20block%20saving.md)                      |
 | [OI-44 delete the deprecated bundle fields](notes/items/OI-44%20Delete%20the%20deprecated%20bundle%20fields.md)                            |
 | [OI-47 product flags at import](notes/items/OI-47%20Product%20flags%20at%20import.md)                                                      |
