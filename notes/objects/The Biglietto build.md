@@ -4,7 +4,7 @@ type: object
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-15
+updated: 2026-08-24
 source: meetings/open-items.md org verification 2026-08-03
 requirement: BIG-03
 ---
@@ -27,11 +27,18 @@ test class, which create tickets when an order is confirmed.
 `DocuSign_Envelope_Id__c` field. See
 [the source-control risk](../risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
 
-**The build diverged from the design that was proposed.**
+**This is now a legacy UAT implementation, not the target data model.**
 `meetings/proposals/2026-07-13-asset-ticket-data-model.md`
 ([OI-41](../items/OI-41%20Asset%20and%20ticket%20data%20model.md)) specified the
-**standard Asset** object. A custom object was built instead. The decision was
-never minuted, and the recaps still describe the lifecycle in terms of assets.
+**standard Asset** object. A custom object was built instead. On 2026-08-24 the
+object choice was resolved in favour of standard Salesforce Asset; the direct
+instruction did not name the decision-maker.
+
+No Asset replacement or migration is built yet. ROMI must map the twelve known
+fields, relationships, order-trigger behaviour and the six org-only Apex
+classes to Asset, then decide what to migrate, rewrite or retire. Until that is
+done, `Biglietto__c` remains the actual UAT implementation and the divergence
+risk remains open.
 
 Two things are settled and not yet built into it: the
 [state machine](../flows/The%20ticket%20lifecycle.md) agreed on 2026-08-06

@@ -1,7 +1,7 @@
 ---
 id: OI-50
 type: open-item
-status: open
+status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
@@ -72,3 +72,30 @@ Aurel's decision separates the two meanings. A `BLO-` record is a
 import. The operational payment tranche is created later, on the Quote, from an
 explicit selection of Quote Line Items and a payment due date. Detail:
 [a bundle is two levels deep](../objects/A%20bundle%20is%20two%20levels%20deep.md).
+
+## 2026-08-24 - decided: the tranche is created on the Quote, by hand
+
+The [24 August Lead/Opty session](../meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md) ruled on where `Tranche__c` comes from,
+which is the question this item has carried since it was raised.
+
+**Tranches are created and managed manually by the user at Quote (offerta) level,
+before the order is generated.** Not derived from order-line due dates after the
+sale, and not created at import.
+
+With it, a constraint that decides the UI:
+
+- **Products and tranches may only be edited while the quote is in `Bozza`.**
+  Once the quote is "in attesa di accettazione", neither can change.
+
+Aurel Mrruku holds two open actions from the same session — **define the initial
+state and the due dates for tranches**, and implement the creation/update logic
+on the quote draft. Nothing exists in `force-app/` yet.
+
+This settles the *sales-side* tranche. It does **not** settle the collision
+recorded above with the client's **product-side** `BLO-` blocco tranche from
+`Prodotti e Bundle.xlsx`, which sits in the catalogue before any order exists.
+Two different things still share the name, and only one of them now has a
+creation rule.
+
+The chronological payment rule that consumes tranches is confirmed at
+[OI-75](OI-75%20Ticket%20availability%20rule.md).

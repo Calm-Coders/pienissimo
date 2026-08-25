@@ -1,12 +1,12 @@
 ---
 id: OI-82
 type: open-item
-status: open
+status: resolved
 owner: Elena Spini
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-08-24
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -40,3 +40,23 @@ Worth bringing to it: the
 the [undesigned manual check-in path](OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md),
 and the fact that
 [the lifecycle has never run end to end](../risks/Risk%20-%20the%20ticket%20lifecycle%20has%20never%20run%20end%20to%20end.md).
+
+## ✅ 2026-08-24 - the review happened, on 20 August
+
+This item asked for a dedicated session on the asset flow. **It ran on 20 August
+2026** — [Flusso Asset/Biglietti](../meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md) — called by Elisa Migliano, with Fabrizio
+Paganelli, Marco Montesi and Rebecca Marmo for Pienissimo and Elena Spini for
+ROMI. A [marketing session on the ticket funnel](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) ran the day before.
+
+Elena Spini minuted it to the client the same evening. It produced rulings on
+event/ticket classification, the campaign model, ticket-type ownership, the
+incasso correction route, and the quote lifecycle — recorded on
+[OI-46](OI-46%20Bundle%20classification%20picklists.md),
+[OI-76](OI-76%20Ticket%20type%20picklist%20on%20the%20product.md),
+[OI-92](OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md),
+[OI-59](OI-59%20Quote%20workflow%20configuration.md) and
+[the campaign parent and child model](../objects/The%20campaign%20parent%20and%20child%20model.md).
+
+**Resolved as an ask.** ⚠ But note what the review cost: Aurel Mrruku was not in
+it, so the technical decisions were taken without ROMI's technical lead present,
+and the minute reached him only on **24 August**, four days later.

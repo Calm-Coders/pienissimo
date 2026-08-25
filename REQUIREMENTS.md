@@ -1,9 +1,9 @@
 # Requirements Document — Pienissimo Salesforce Project
 
 **Client:** Pienissimo · **Supplier:** ROMI S.r.l. · **Project:** Zoho CRM → Salesforce migration
-**Version:** 1.3 — draft for approval · **Date:** 24 August 2026
+**Version:** 1.4 — draft for approval · **Date:** 24 August 2026
 
-> **What changed in 1.3.** Aurel Mrruku directly decided the Quote-side creation of payment tranches, propagation to Order Items and all-lines-paid roll-up on 24 August. The final paid-state API value remains open under RC-07.
+> **What changed in 1.4.** The target ticket object is now decided: use the standard Salesforce Asset object. The direct instruction did not identify the decision-maker. The custom `Biglietto__c` implementation in UAT must be replaced or migrated; the effort is not yet estimated. Version 1.3 recorded Aurel Mrruku's Quote-side tranche decision.
 >
 > **What changed since 1.0.** The two draw.io design files have been read and merged in — `Flows & Objects.drawio` by Elena Spini and `Workflow Pienissimo 23-7-26.drawio` annotated by Marco Montesi — both re-decoded in full on **20 August 2026**, at which point each had been modified that same afternoon — 15:36 UTC and 14:28 UTC respectively (this document previously said 6 August and 4 August). ⚠ **Neither of those edits is minuted, so nothing below was changed on the strength of them**; the three points where the drawings have now moved ahead of this text are listed in §17. They produce the new **§16** (state machines, picklist values, 17 requirements that existed only in the drawings) and **§17**, which lists the points where the sources disagree. Two of those corrections are our own errors: the order-typology list in DM-15 was invented, and one item we had presented as a contradiction — the reminder cadence — was not one. Both are described in §17.
 > **Sign-off session:** Thursday 6 August 2026, 15:00–17:00 — "Chiusura ultimi punti aperti"
@@ -116,7 +116,7 @@ Everything described in §3–§11 with priority **M**, **S** or **C**.
 | DM-19 | **Contract** (Performance Plus) — standard Contract object with custom logic: start/end/renewal dates, amount, linked quote and invoices, renewals panel, invoiced vs collected, service block on serious arrears.                                                                                                                                                                                                               |  S   |   ✅   |
 | DM-20 | **Credit note** — linked to both the order and the **order line**, to handle partial reversals on multi-event bundles.                                                                                                                                                                                                                                                                                                           |  S   |   ✅   |
 | DM-21 | **Invoice** — created in Salesforce as a reference shell when the order closes; Mexal invoices and returns number and status into dedicated, searchable fields.                                                                                                                                                                                                                                                                  |  M   |   ✅   |
-| DM-22 | **Ticket** — one record per ticket, with the lifecycle in §6. Delivered in UAT as a custom `Biglietto__c` object. 🟡 _The written proposal specified the standard Asset object; confirmation of the implemented choice is requested._                                                                                                                                                                                            |  M   |   🟡   |
+| DM-22 | **Ticket** — one standard Salesforce **Asset** record per ticket, with the lifecycle in §6. The custom `Biglietto__c` object currently delivered in UAT must be replaced or migrated to Asset without losing its fields, relationships or required automation.                                                                                                                                                                   |  M   |   ✅   |
 
 ---
 
@@ -347,7 +347,7 @@ These block signature, ordered by urgency.
 | 19  | Anticipay timing                                   | INT-18 | Phase 2                                          |
 | 20  | Document storage strategy                          | NFR-03 | 30-day post-event purge with client backup       |
 | 21  | Component price exposure on invoices               | ORD-10 | Instalment lines, components masked              |
-| 22  | Ticket object: custom vs standard Asset            | DM-22  | Confirm the custom object already built          |
+| 22  | Ticket object: custom vs standard Asset            | DM-22  | ✅ Standard Salesforce Asset decided 24 August   |
 | 23  | Notification channel                               | SAL-15 | Salesforce bell                                  |
 | 24  | Quote and contract signature: single or sequential | BIG-15 | Single send                                      |
 
@@ -477,12 +477,11 @@ Eight points, and they are not the same kind of thing. The label says which, bec
 
 ⚠ **RC-06 to RC-08 are new in this revision and share one cause.** Both design files were edited on **20 August 2026**, 68 minutes apart, and **neither edit was minuted** — no meeting, no notes, no message. In each case the drawing now says something this document does not. **Nothing below has been changed on the strength of a drawing**; they are listed so you can rule on them.
 
-### RC-01 · To ratify — the ticket object
+### RC-01 · Resolved 24 August — the ticket object
 
 The UAT org already contains a custom object `Biglietto__c` with six Apex classes for DocuSign and PDF generation. The design specifies the standard Salesforce Asset object instead.
 
-This is not a choice between two designs: the custom one exists and works, and the design file was never updated. Ratifying costs nothing; reverting to the standard Asset means rebuilding the six classes — **we have not estimated how long**.
-**Proposal:** ratify `Biglietto__c` as built. **If nobody decides:** the custom object stays; silence ratifies what is built.
+**Decision:** use the standard Salesforce Asset object. The direct instruction did not identify the decision-maker. `Biglietto__c` is now an implementation gap rather than a choice awaiting ratification: its fields, relationships and six Apex classes must be mapped, then migrated, rewritten or retired. **The effort has not been estimated.**
 
 ### RC-02 · To clarify — what creates the campaign and the tickets
 

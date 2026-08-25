@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-19
+updated: 2026-08-24
 depends_on: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-18
@@ -67,3 +67,31 @@ does. The manual check-in path leaves
 [OI-84](OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md)
 undesigned; the diagram's `CASO 2` confirms it stays manual, with **no
 automation at all**.
+
+## 2026-08-24 - the client walked through their current version of it
+
+The [19 August MKT session](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) covered the participant flow in enough detail to
+build against, as it works today in Zoho:
+
+- The communication carries a **link containing the Account id**, redirecting to
+  a landing page where the referente who bought the tickets names the attendees —
+  **Nome, Cognome, Email** — with **as many rows as tickets purchased**.
+- **Fields autocomplete if the contact already exists**: entering a known email
+  makes the system recognise the contact and fill the rest; otherwise a new
+  contact is created and associated to the company.
+- On confirmation, each participant is emailed **the ticket, the QR code and the
+  authorisation and profiling-consent documentation**.
+- The QR code carries the **campaign member id**, per
+  [OI-84](OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md).
+- Rebecca Marmo showed that the current system uses **variable fields (`CF1`,
+  `CF2`, …)** pulled from the CRM to personalise both the emails and the landing
+  page, which is how one funnel serves several concurrent events.
+
+**On a late withdrawal**, the group agreed that notification needs **no complex
+logic** — it can be handled by manual communication, provided the system allows
+the state to be updated.
+
+Not settled here: who hosts the page —
+[OI-86](OI-86%20Who%20hosts%20the%20participant%20landing%20page.md) — and
+whether it is the same surface as the quote landing page in
+[OI-68](OI-68%20Quote%20acceptance%20landing%20page.md).

@@ -59,3 +59,24 @@ specified.
 `numero_ordine`, `data_scadenza`, `codice_causale` (take only **FE**) and
 `stato_pagamento` (`P` = paid, empty = unpaid). See
 [the Mexal integration](../flows/The%20Mexal%20integration.md).
+
+## 2026-08-24 - confirmed by the client, with the ordering constraint spelled out
+
+The [19 August MKT session](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) put this on the record as an agreed decision:
+**ticket availability is subordinate to payment of the corresponding order
+tranche, in chronological order.**
+
+Elena Spini and Elisa Migliano worked the case explicitly: where an order carries
+several tranches, a ticket becomes available only when its own instalment is
+paid, and **failure to pay an earlier instalment blocks access to the later
+events**. So the rule is not "this tranche paid" but "this tranche and every
+tranche before it".
+
+The [20 August session](../meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md) then confirmed the correction path when an
+instalment is booked against the wrong invoice — see
+[OI-91](OI-91%20Aggiornamento%20Incasso%20button.md) and
+[OI-92](OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md).
+
+The ordering constraint is the part most likely to be missed in implementation:
+it makes availability a function of the whole payment history of the order, not
+of one tranche's status.

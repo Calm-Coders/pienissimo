@@ -1,11 +1,11 @@
 ---
 id: OI-91
 type: open-item
-status: open
+status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-08-19
-updated: 2026-08-20
+updated: 2026-08-24
 depends_on: [OI-50, OI-75]
 blocks: [OI-92]
 uncertain: who requested it, and whether it is in contract scope
@@ -69,3 +69,31 @@ reason not to build it yet**, on top of the tranche object not existing.
 recording, no canvas entry and no message** — see
 [the trace](../traces/Source%20trace%202026-08-20.md). Whether it ran at all is
 unrecorded.
+
+## 2026-08-24 - the origin is now known, and an alternative is on the table
+
+Two recovered minutes date this item precisely.
+
+**It was raised on [19 August](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md)** by Elisa Migliano and Elena Spini: a
+button, named "Aggiornamento Incasso" or similar, letting administrators fix an
+instalment recorded against the wrong invoice by forcing the ticket's
+availability back to `ordinato`. The same session listed the underlying problem
+as explicitly **da approfondire** — it is the one thing that meeting declined to
+settle.
+
+**On [20 August](../meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md) Fabrizio Paganelli proposed an alternative** to the button
+entirely: compare the **Mexal scadenziario** day over day, detect the
+discrepancy, and correct availability automatically without an administrator
+pressing anything. See
+[OI-92](OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md).
+
+**These are competing designs, not complements** — one is a manual admin
+override, the other removes the need for the override. The 20 August decision was
+to take the choice to Andrea Di Cicco rather than to decide it in the room.
+
+Elena Spini also holds an action from 19 August to design the button's logic and
+circulate the proposal; there is no sign on any source that she has.
+
+The button remains drawn in the [master diagram](../The%20newest%20design%20diagram.md) — admin users only, visible
+only after an asset is `Disponibile` — so the design file still shows the manual
+route as current.

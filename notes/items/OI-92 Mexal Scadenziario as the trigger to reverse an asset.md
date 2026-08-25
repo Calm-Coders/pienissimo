@@ -1,11 +1,11 @@
 ---
 id: OI-92
 type: open-item
-status: open
+status: in-progress
 owner: Andrea Di Cicco
 org: ROMI
 raised: 2026-08-20
-updated: 2026-08-20
+updated: 2026-08-24
 depends_on: [OI-50, OI-91]
 uncertain: who raised it; the diagram carries no attribution beyond the name Andrea
 source: Drive - Flows & Objects.drawio, modified 2026-08-20T15:36:24Z
@@ -70,3 +70,34 @@ Related: [the Mexal integration](../flows/The%20Mexal%20integration.md) if the
 answer changes the contract, and
 [the newest design diagram](../The%20newest%20design%20diagram.md) for where the
 note sits.
+
+## 2026-08-24 - it came from Fabrizio Paganelli, and it is now Andrea Di Cicco's
+
+This item was raised from an undated sticky note in the design file. Two
+recovered minutes now supply its provenance and its status.
+
+**[20 August](../meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md) — it is Fabrizio Paganelli's proposal.** In the client asset
+session he offered it as the alternative to Elena Spini's manual button
+([OI-91](OI-91%20Aggiornamento%20Incasso%20button.md)): compare the **Mexal
+scadenziario** between yesterday and today, detect the discrepancy, and correct
+ticket availability automatically.
+
+**Decision at that meeting: taken to Andrea Di Cicco** as ROMI's Salesforce/Mexal
+flow owner, with Fabrizio Paganelli to brief him beforehand on the **three-level
+hook — ordine → fattura → scadenziario**. So the sticky's _"Check con Andrea"_ is
+a minuted action, not a loose thought.
+
+**[24 August](../meetings/2026-08-24%20Follow-up%20Interno.md) — it advanced but did not land.** The Follow-up Interno
+confirmed the scadenziario as the mechanism that lets Salesforce realign an
+asset's state when an invoice changes, and
+[the integration mapping workbook](../The%20Mexal%20integration%20mapping%20workbook.md) lists **scoperto cliente (Scadenziario)
+as a GET endpoint**, which makes it technically reachable rather than
+hypothetical.
+
+**Still not answered** is the question the sticky actually asks — whether an
+**unpaid** invoice in the scadenziario can drive an asset *backwards* to its
+previous state. Andrea Di Cicco holds the open action to work out the
+invoice-to-order-line link, which was named as the hard part and is unresolved.
+
+It remains the natural question for the **26 August client Mexal review**, where
+Fabrizio Paganelli is an invitee.

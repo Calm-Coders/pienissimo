@@ -1,7 +1,7 @@
 ---
 id: OI-46
 type: open-item
-status: in-progress
+status: open
 owner: Fabrizio Paganelli
 with: ROMI
 org: both
@@ -128,3 +128,39 @@ Re-requested at the 2026-08-06 session alongside
 [prices](OI-87%20Real%20catalogue%20prices%20still%20outstanding.md) and
 [bundle-only codes](OI-48%20Bundle-only%20article%20codes.md) — one day before
 that thread.
+
+## 🔴 2026-08-24 - the client says the edition is not on the product at all
+
+The [20 August asset session](../meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md) supplied the client source this item has never
+had — and it **contradicts the built design** rather than filling it in.
+
+Fabrizio Paganelli, minuted to the client:
+
+- **Mexal article codes are transversal across years.** There is no code per
+  edition.
+- Classification is three levels — **Evento** (macro name) → **Tipo Biglietto**
+  (from the article code) → **Edizione**, and the edition is **determined by the
+  order date, not by the product**.
+
+The built `Product2.Anno_Solare__c` picklist, and the `Anno_Solare__c` →
+`Evento__c` dependency matrix, both assume the year is an attribute *of the
+product*. On the client's account it is an attribute *of the order*. That is not
+a missing-values problem; it is the wrong mechanism.
+
+**What the design uses instead** is the active child campaign, resolved at order
+time — see
+[the campaign parent and child model](../objects/The%20campaign%20parent%20and%20child%20model.md).
+That is what makes the year unnecessary on the product.
+
+Two further complications from the same week:
+
+- The period is an **event edition, not necessarily a calendar year**. Elisa
+  Migliano's [19 August](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) example was the academic year **2026-2027**, which
+  a calendar-year picklist cannot express.
+- Rebecca Marmo described the current Zoho hierarchy as **Evento → Edizione
+  Evento (anno) → Evento Biglietto (tipologia) → Evento Biglietto Prodotto** —
+  four levels, against the two the Salesforce build has.
+
+**Do not add values to `Anno_Solare__c`.** The question is now whether the field
+should exist. This needs Aurel Mrruku's ruling before any further work on the
+picklists, and it is the single most consequential thing this sweep found.
