@@ -4,7 +4,7 @@ type: object
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-24
+updated: 2026-08-25
 source: meetings/open-items.md org verification 2026-08-03
 requirement: BIG-03
 ---
@@ -49,3 +49,33 @@ release to a fully paid tranche invoice.
 The stack has **no test coverage at all** —
 [OI-66](../items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md) —
 and has [never run end to end](../risks/Risk%20-%20the%20ticket%20lifecycle%20has%20never%20run%20end%20to%20end.md).
+
+## 2026-08-25 - org check: the data confirms it has never run
+
+Verified read-only against **Pienissimo UAT**.
+
+**37 `Biglietto__c` records exist**, and every one is stalled before release:
+
+| `Status__c`       | Records |
+| ----------------- | ------- |
+| `In attesa firma` | **30**  |
+| `Caricato`        | 7       |
+
+**Zero tickets have reached `Disponibile`**, `Emesso` or `Utilizzato`. The 30
+sitting in `In attesa firma` are waiting on a digital signature step that was
+**struck from the design on 2026-08-06** — they are parked against a state the
+agreed lifecycle deletes, and nothing will ever move them.
+
+The org-only Apex list in this note is confirmed unchanged, last modified
+2026-07-22. Add to it, previously unrecorded: the `Biglietto__c` **custom tab**,
+the **Biglietto Layout**, and the `DocuSign`, `Full_Permission` and `Sales_User`
+**permission sets**, none of which are in `force-app/`.
+
+The twelve fields are confirmed; the org additionally holds
+`DocuSign_Envelope_Id__c` as this note already records.
+
+This strengthens rather than changes the conclusion: `Biglietto__c` is a legacy
+UAT implementation of a superseded design, holding 37 records that would all
+have to be re-stated under the four agreed states before they could migrate to
+standard Asset — which itself carries
+[zero custom fields](../items/OI-41%20Asset%20and%20ticket%20data%20model.md).

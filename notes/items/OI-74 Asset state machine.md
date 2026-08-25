@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-08-25
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-17
@@ -109,7 +109,7 @@ Related: [the Biglietto build](../objects/The%20Biglietto%20build.md), and
 
 ## 2026-08-24 - evidence on `Rinuncia`, but still no ruling
 
-The [19 August MKT session](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) is the first minuted discussion of *rinuncia*,
+The [19 August MKT session](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) is the first minuted discussion of _rinuncia_,
 and it describes it as a **funnel concept, not an asset status**:
 
 - It is one of the marketing tags — **`rinuncia`, `iscritto`, `presente`** — used
@@ -135,3 +135,38 @@ comunicazione dei partecipanti o accetta o rinuncia"_.
 the question is sharper than before rather than closed: is `Rinuncia` a seventh
 Asset status, another name for `Annullato`, or a marketing tag that never touches
 the Asset record? Build nothing until someone rules.
+
+## 2026-08-25 - org check: the configured states are the pre-06-August design
+
+Verified read-only against **Pienissimo UAT**. `Biglietto__c.Status__c` carries
+**nine values**, and they are not the agreed four:
+
+`Caricato · Disponibile · In attesa partecipante · In attesa firma · Firmato ·
+Emesso · Utilizzato · No Show · Annullato`
+
+Against [the agreed lifecycle](../flows/The%20ticket%20lifecycle.md) —
+`Ordinato → Disponibile → Assegnato → Utilizzato / Non utilizzato`:
+
+| Agreed 2026-08-06 | In the org                                                        |
+| ----------------- | ----------------------------------------------------------------- |
+| `Ordinato`        | 🔴 absent — `Caricato` occupies the entry slot                    |
+| `Disponibile`     | present                                                           |
+| `Assegnato`       | 🔴 absent — `In attesa partecipante` / `Emesso` may be the intent |
+| `Utilizzato`      | present                                                           |
+| `Non utilizzato`  | `No Show`                                                         |
+
+🔴 **`In attesa firma` and `Firmato` are still configured, and they were struck
+outright on 2026-08-06** when digital signature left the ticket flow. They are
+not dormant: **30 of the 37 tickets in UAT sit in `In attesa firma`**, with the
+other 7 in `Caricato`. Every ticket in the org is parked in a state the agreed
+design deletes, and none has ever reached `Disponibile`.
+
+`Rinuncia` — the seventh state drawn on
+[the 19 August diagram](../The%20ticket%20flow%20diagram%20of%2019%20August.md)
+and never minuted — is **not** configured. The build has not promoted the
+drawing into a decision, which is correct.
+
+This state machine has to be rebuilt on standard **Asset** in any case
+([OI-41](OI-41%20Asset%20and%20ticket%20data%20model.md)), where `Status` today
+holds stock Salesforce values and nothing else. So the question is not how to
+correct these nine values but which four to configure on the target object.

@@ -6,7 +6,7 @@ any agent can budget before opening anything. Start at [MAP.md](MAP.md).
 Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 **Costly** = justify it. **Never** = do not load whole; grep instead.
 
-91 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
+112 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
 `#75` is `OI-75`.
 
 ## Cheap — load freely
@@ -21,11 +21,12 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 ### What is actually built
 
-| Note                                                                                      | Status                               |
-| ----------------------------------------------------------------------------------------- | ------------------------------------ |
-| [The build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md) | **read this before any build claim** |
-| [The BundleComponent junction](notes/objects/The%20BundleComponent%20junction.md)         | built, approved, in source control   |
-| [The Biglietto build](notes/objects/The%20Biglietto%20build.md)                           | built, partly outside source control |
+| Note                                                                                                    | Status                               |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| [The build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md)               | **read this before any build claim** |
+| [The BundleComponent junction](notes/objects/The%20BundleComponent%20junction.md)                       | built, approved, in source control   |
+| [The Biglietto build](notes/objects/The%20Biglietto%20build.md)                                         | built, partly outside source control |
+| [Unrequested implementation in the org](notes/objects/Unrequested%20implementation%20in%20the%20org.md) | stock scaffolding — do not re-flag   |
 
 ### Flows
 
@@ -37,16 +38,17 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 ### Risks
 
-| Note                                                                                                                                                         | Severity          |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
-| [Production deploy is blocked by Apex coverage](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)                         | high              |
-| [The Biglietto Apex stack is not in source control](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)             | high              |
-| [The whole remaining build lands after Ferragosto](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)                   | high              |
-| [The ticket lifecycle has never run end to end](notes/risks/Risk%20-%20the%20ticket%20lifecycle%20has%20never%20run%20end%20to%20end.md)                     | high              |
-| [The phase 2 scope dispute is unresolved](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)                                     | high              |
-| [Placeholder prices could reach the client](notes/risks/Risk%20-%20placeholder%20prices%20could%20reach%20the%20client.md)                                   | high              |
-| [The Biglietto object diverged from the approved proposal](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md) | medium            |
-| [No coherence control on bundle composition](notes/risks/Risk%20-%20no%20coherence%20control%20on%20bundle%20composition.md)                                 | medium (accepted) |
+| Note                                                                                                                                                                 | Severity          |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| [Production deploy is blocked by Apex coverage](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)                                 | high              |
+| [The Biglietto Apex stack is not in source control](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                     | high              |
+| [The whole remaining build lands after Ferragosto](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)                           | high              |
+| [The ticket lifecycle has never run end to end](notes/risks/Risk%20-%20the%20ticket%20lifecycle%20has%20never%20run%20end%20to%20end.md)                             | high              |
+| [The phase 2 scope dispute is unresolved](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)                                             | high              |
+| [Placeholder prices could reach the client](notes/risks/Risk%20-%20placeholder%20prices%20could%20reach%20the%20client.md)                                           | high              |
+| [OrderItem Tranche is in the repository but not in the org](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20in%20the%20repository%20but%20not%20in%20the%20org.md) | high              |
+| [The Biglietto object diverged from the approved proposal](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md)         | medium            |
+| [No coherence control on bundle composition](notes/risks/Risk%20-%20no%20coherence%20control%20on%20bundle%20composition.md)                                         | medium (accepted) |
 
 ### Open items — gating first
 
@@ -126,12 +128,12 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 Minuted sessions, newest first. The four below were all recovered on 2026-08-24;
 before that the record said the 19 and 20 August sessions had left no minute.
 
-| Note                                                                                                                | Weight                                                                                    |
-| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| [2026-08-24 Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md)                                  | ROMI-internal · Mexal mapping + campaign configuration · Gemini notes                      |
+| Note                                                                                                                         | Weight                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [2026-08-24 Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md)                                           | ROMI-internal · Mexal mapping + campaign configuration · Gemini notes                         |
 | [2026-08-24 Interna per update flusso Lead-Opty](notes/meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md) | ROMI-internal · 15 Lead/Quote decisions · Gemini notes · **conflicts with the 20 Aug minute** |
-| [2026-08-20 Flusso Asset Biglietti](notes/meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md)                      | **Strongest evidence in the record** — Elena's own minute, sent to the client              |
-| [2026-08-19 Flussi MKT Biglietti](notes/meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md)                          | Marketing funnel · Gemini notes · the asset-rule wording conflict lives here                |
+| [2026-08-20 Flusso Asset Biglietti](notes/meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md)                               | **Strongest evidence in the record** — Elena's own minute, sent to the client                 |
+| [2026-08-19 Flussi MKT Biglietti](notes/meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md)                                   | Marketing funnel · Gemini notes · the asset-rule wording conflict lives here                  |
 
 ### People
 
@@ -153,33 +155,34 @@ before that the record said the 19 and 20 August sessions had left no minute.
 
 ### Reference
 
-| Note                                                                                                                                            | What it holds                                                                                                                                                    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Source trace 2026-08-24](notes/traces/Source%20trace%202026-08-24.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-24 · four meetings recovered, master re-decoded again                                              |
-| [Source trace 2026-08-20](notes/traces/Source%20trace%202026-08-20.md)                                                                          | Previous watermark — 2026-08-20 · both design diagrams moved, master re-decoded                                                                                  |
-| [Source trace 2026-08-19](notes/traces/Source%20trace%202026-08-19.md)                                                                          | Previous watermark — 2026-08-19 · the 19 Aug ticket flow diagram                                                                                                 |
-| [Source trace 2026-08-18](notes/traces/Source%20trace%202026-08-18.md)                                                                          | Previous watermark — 2026-08-18 · the 07 Aug attachment surfaced                                                                                                 |
-| [Source trace 2026-08-14 external sweep](notes/traces/Source%20trace%202026-08-14%20external%20sweep.md)                                        | The previous external watermark — 2026-08-14                                                                                                                     |
-| [Source trace 2026-08-14](notes/traces/Source%20trace%202026-08-14.md)                                                                          | Superseded — repository read only, moved no external watermark                                                                                                   |
-| [The Prodotti e Bundle workbook](notes/The%20Prodotti%20e%20Bundle%20workbook.md)                                                               | Fabrizio Paganelli's 07 Aug attachment — **read 24 Aug**; the decode. Prices stay in the file                                                                    |
-| [The Notion mirror of the project status](notes/The%20Notion%20mirror%20of%20the%20project%20status.md)                                         | Page ids and sharing rules for the invite-only mirror of STATUS.md                                                                                               |
-| [The article code namespace](notes/objects/The%20article%20code%20namespace.md)                                                                 | `CS` / `BLO-` / `PACK-`, three code shapes, meaning buried in the name string                                                                                    |
-| [A bundle is two levels deep](notes/objects/A%20bundle%20is%20two%20levels%20deep.md)                                                           | PACK -> BLOCCO -> article; the blocco is the client's tranche                                                                                                    |
-| [Risk - normalising an article code merges two products](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md) | `_ARCOD` is opaque; two pairs differ by one zero or one dash                                                                                                     |
-| [OI-93 Bundle components should be priced articles](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md)               | Client change request found in the workbook, 17 days unread                                                                                                      |
-| [The requirement mappings were fabricated](notes/The%20requirement%20mappings%20were%20fabricated.md)                                           | **Read before trusting any note-to-requirement link** — the 23 discarded claims, and what to re-derive                                                           |
-| [The newest design diagram](notes/The%20newest%20design%20diagram.md)                                                                           | **Authority for state machines** · re-decoded 24 Aug at its 24/08 16:34Z version — campaign lookup rule, full Lead/Opty spec with picklist values, `Anticipay`   |
-| [The campaign parent and child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)                                            | Campagna Padre → Figlio → Member · **how the event edition is carried without a year on the product** · entirely unbuilt                                         |
-| [The Mexal integration mapping workbook](notes/The%20Mexal%20integration%20mapping%20workbook.md)                                                | Andrea Di Cicco's 24 Aug field mapping · ⚠ **holds real customer records — never copy values**                                                                   |
-| [The ticket flow diagram of 19 August](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md)                                               | New standalone `Flusso Biglietti.drawio` — `Rinuncia` as a 7th state, OI-91, unminuted                                                                           |
-| [The client Lead-Opty diagram moved on 20 August](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md)                       | `DGM-1`, Marco Montesi's own copy — moved 68 min before the master, both unminuted                                                                               |
-| [The client June requirements document](notes/The%20client%20June%20requirements%20document.md)                                                 | Pienissimo's own 11 June requirements — earliest structured statement of scope                                                                                   |
-| [Calm-Coders means ROMI](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md)                                                                     | Attributing git authors to the right org                                                                                                                         |
-| [Integration Configuration is standard scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md)                  | House pattern, not a project requirement — do not re-flag                                                                                                        |
-| [Retrieval and write protocol](notes/Retrieval%20and%20write%20protocol.md)                                                                     | How to read and write knowledge here                                                                                                                             |
-| [JOURNAL.md](JOURNAL.md)                                                                                                                        | Cross-tool session handoffs, newest first                                                                                                                        |
-| [docs/task-status.md](docs/task-status.md)                                                                                                      | **ROMI-internal action board** — not the client tracker, no `OI-NN`                                                                                              |
-| [docs/publishing.md](docs/publishing.md)                                                                                                        | What may be published, and the leak check                                                                                                                        |
+| Note                                                                                                                                            | What it holds                                                                                                                                                  |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Source trace 2026-08-24](notes/traces/Source%20trace%202026-08-24.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-24 · four meetings recovered, master re-decoded again                                            |
+| [meetings/open-items.md, 2026-08-25 org verification block](meetings/open-items.md)                                                             | **Newest three-way gap table** — requirements vs `force-app/` vs Pienissimo UAT · grep `## Org verification`, do not load the file                             |
+| [Source trace 2026-08-20](notes/traces/Source%20trace%202026-08-20.md)                                                                          | Previous watermark — 2026-08-20 · both design diagrams moved, master re-decoded                                                                                |
+| [Source trace 2026-08-19](notes/traces/Source%20trace%202026-08-19.md)                                                                          | Previous watermark — 2026-08-19 · the 19 Aug ticket flow diagram                                                                                               |
+| [Source trace 2026-08-18](notes/traces/Source%20trace%202026-08-18.md)                                                                          | Previous watermark — 2026-08-18 · the 07 Aug attachment surfaced                                                                                               |
+| [Source trace 2026-08-14 external sweep](notes/traces/Source%20trace%202026-08-14%20external%20sweep.md)                                        | The previous external watermark — 2026-08-14                                                                                                                   |
+| [Source trace 2026-08-14](notes/traces/Source%20trace%202026-08-14.md)                                                                          | Superseded — repository read only, moved no external watermark                                                                                                 |
+| [The Prodotti e Bundle workbook](notes/The%20Prodotti%20e%20Bundle%20workbook.md)                                                               | Fabrizio Paganelli's 07 Aug attachment — **read 24 Aug**; the decode. Prices stay in the file                                                                  |
+| [The Notion mirror of the project status](notes/The%20Notion%20mirror%20of%20the%20project%20status.md)                                         | Page ids and sharing rules for the invite-only mirror of STATUS.md                                                                                             |
+| [The article code namespace](notes/objects/The%20article%20code%20namespace.md)                                                                 | `CS` / `BLO-` / `PACK-`, three code shapes, meaning buried in the name string                                                                                  |
+| [A bundle is two levels deep](notes/objects/A%20bundle%20is%20two%20levels%20deep.md)                                                           | PACK -> BLOCCO -> article; the blocco is the client's tranche                                                                                                  |
+| [Risk - normalising an article code merges two products](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md) | `_ARCOD` is opaque; two pairs differ by one zero or one dash                                                                                                   |
+| [OI-93 Bundle components should be priced articles](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md)               | Client change request found in the workbook, 17 days unread                                                                                                    |
+| [The requirement mappings were fabricated](notes/The%20requirement%20mappings%20were%20fabricated.md)                                           | **Read before trusting any note-to-requirement link** — the 23 discarded claims, and what to re-derive                                                         |
+| [The newest design diagram](notes/The%20newest%20design%20diagram.md)                                                                           | **Authority for state machines** · re-decoded 24 Aug at its 24/08 16:34Z version — campaign lookup rule, full Lead/Opty spec with picklist values, `Anticipay` |
+| [The campaign parent and child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)                                           | Campagna Padre → Figlio → Member · **how the event edition is carried without a year on the product** · entirely unbuilt                                       |
+| [The Mexal integration mapping workbook](notes/The%20Mexal%20integration%20mapping%20workbook.md)                                               | Andrea Di Cicco's 24 Aug field mapping · ⚠ **holds real customer records — never copy values**                                                                 |
+| [The ticket flow diagram of 19 August](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md)                                               | New standalone `Flusso Biglietti.drawio` — `Rinuncia` as a 7th state, OI-91, unminuted                                                                         |
+| [The client Lead-Opty diagram moved on 20 August](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md)                       | `DGM-1`, Marco Montesi's own copy — moved 68 min before the master, both unminuted                                                                             |
+| [The client June requirements document](notes/The%20client%20June%20requirements%20document.md)                                                 | Pienissimo's own 11 June requirements — earliest structured statement of scope                                                                                 |
+| [Calm-Coders means ROMI](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md)                                                                     | Attributing git authors to the right org                                                                                                                       |
+| [Integration Configuration is standard scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md)                  | House pattern, not a project requirement — do not re-flag                                                                                                      |
+| [Retrieval and write protocol](notes/Retrieval%20and%20write%20protocol.md)                                                                     | How to read and write knowledge here                                                                                                                           |
+| [JOURNAL.md](JOURNAL.md)                                                                                                                        | Cross-tool session handoffs, newest first                                                                                                                      |
+| [docs/task-status.md](docs/task-status.md)                                                                                                      | **ROMI-internal action board** — not the client tracker, no `OI-NN`                                                                                            |
+| [docs/publishing.md](docs/publishing.md)                                                                                                        | What may be published, and the leak check                                                                                                                      |
 
 ## Querying without reading
 

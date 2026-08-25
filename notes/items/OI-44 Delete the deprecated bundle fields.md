@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 org: ROMI
 raised: 2026-07-16
-updated: 2026-08-14
+updated: 2026-08-25
 source: meetings/open-items.md row 44
 ---
 
@@ -29,3 +29,10 @@ Still present in `force-app/main/default/objects/Product2/fields/`:
 So the remaining work is the two fields, and the open question is whether the
 review that was meant to gate this ever happened — one of several places where
 [the build ran ahead of the record](../objects/The%20build%20ahead%20of%20the%20record.md).
+
+## 2026-08-25 - org check: both fields still present, in both places
+
+Verified read-only against **Pienissimo UAT**. `Product2.Parent__c` and
+`Product2.Calculated_Bundle_Price__c` are still defined in the org **and** still
+in `force-app/main/default/objects/Product2/fields/`. Nothing has been deleted.
+The item stays open.

@@ -4,7 +4,7 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-24
+updated: 2026-08-25
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -49,3 +49,29 @@ Two order-side questions are still open: whether a fourth state _Perso_ is
 needed ([OI-85](../items/OI-85%20Order%20state%20set%20may%20be%20incomplete.md)) and
 how the [credit-note flow](../items/OI-54%20Credit%20note%20flow.md) reverses
 lines.
+
+## 2026-08-25 - org check: there is not a single Flow in the org
+
+Verified read-only against **Pienissimo UAT**, two ways — `sf org list metadata
+--metadata-type Flow` and `--metadata-type FlowDefinition` both return _no
+metadata found_, and a Tooling query `SELECT MasterLabel, ProcessType, Status
+FROM Flow` returns **zero rows**. There is also no `flows/` directory in
+`force-app/`.
+
+**Every declarative automation this project has designed is unbuilt.** Not
+partially built, not built and inactive — absent. That covers this flow, the
+[ticket lifecycle](The%20ticket%20lifecycle.md), the asset state machine
+([OI-74](../items/OI-74%20Asset%20state%20machine.md)), the quote alerts
+([OI-59](../items/OI-59%20Quote%20workflow%20configuration.md)), the Lead/Opty
+validation specified on 24 August, and the campaign member automation
+([OI-84](../items/OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md)).
+
+All automation in the org is **Apex**: three triggers (`BigliettoTrigger`,
+`BundleComponentTrigger`, `OrderBigliettoTrigger`) and their handlers. The
+register's `build_state` line "Any active Flow; nothing creates a ticket from an
+order" (BIG-02, BIG-19) was written on 2026-08-03 and is **still exactly true**
+three weeks later, except that `OrderBigliettoTrigger` does now create tickets
+from an order in Apex.
+
+This is the single largest missing surface in the build, and it sits against a
+**10 September** development end date.

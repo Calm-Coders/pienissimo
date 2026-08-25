@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-08-24
+updated: 2026-08-25
 source: meetings/open-items.md row 59
 ---
 
@@ -30,12 +30,12 @@ quotes** — which is a related behaviour nobody has specified.
 [The newest design diagram](../The%20newest%20design%20diagram.md) (6 August)
 carries the renames in brackets, which is how they can be identified at all:
 
-| Object      | New name                                | Was                |
-| ----------- | --------------------------------------- | ------------------ |
-| Quote       | `In Trattativa`                         | _Prev. Inviato_    |
-| Quote       | **`In Attesa Accettazione`**            | **_Scaduto_**      |
-| Opportunity | `In Trattativa`                         | _Preventivo Inviato_ |
-| Opportunity | `Da Ricontattare - Prev. Inviato`       | _Da Ricontattare_  |
+| Object      | New name                          | Was                  |
+| ----------- | --------------------------------- | -------------------- |
+| Quote       | `In Trattativa`                   | _Prev. Inviato_      |
+| Quote       | **`In Attesa Accettazione`**      | **_Scaduto_**        |
+| Opportunity | `In Trattativa`                   | _Preventivo Inviato_ |
+| Opportunity | `Da Ricontattare - Prev. Inviato` | _Da Ricontattare_    |
 
 The second row matters most: the "scaduto" substatus that the 5-day validity
 produces is now **`In Attesa Accettazione`**.
@@ -111,3 +111,38 @@ but the "no automatic task" ruling is a **client-facing commitment** and the
 internal session did not reference it. **Neither should be built until Elena
 Spini or Aurel Mrruku reconciles them**, because one of the two audiences is
 going to be told something that is not true.
+
+## 2026-08-25 - org check: the quote states are stock Salesforce
+
+Verified read-only against **Pienissimo UAT**. None of the agreed lifecycle is
+configured.
+
+`Quote.Status` holds the **stock Salesforce values** — `Draft · Needs Review ·
+In Review · Approved · Rejected · Presented · Accepted · Denied` — against the
+agreed `Bozza → Nuovo Preventivo → In Trattativa → In Attesa Accettazione →
+Accettato / Rifiutato`. Not one agreed value is present, including
+**`In Attesa Accettazione`**, the rename this item singles out as mattering
+most.
+
+What _does_ exist on Quote:
+
+- `Motivazione_Da_Ricontattare__c`, with three values (`Richiamare dopo la
+stagione · Ha da fare · Deve pensarci`) — so the "qualificato da ricontattare"
+  reason is captured, while the state it hangs off is not.
+- `Quote.Crea_Tranche`, the **manual quote-side button** added 2026-08-25 — but
+  for tranches, not for quote creation. The manual quote-creation button this
+  item asks for does not exist.
+
+The 5-day validity, the mandatory expiry date at send, and the day-2 and expiry
+alerts have **no implementation at all** — there is no Flow in the org (see
+[the quote to order flow](../flows/The%20quote%20to%20order%20flow.md)) and no
+Apex that touches Quote other than `QuoteTrancheController`.
+
+🔴 The constraint recorded on 2026-08-24 — **products and tranches may only be
+edited while the quote is in `Bozza`** — is therefore **unenforced**. The
+tranche UI shipped on 25 August without it, and `Bozza` is not a value
+`Quote.Status` can hold. There are no validation rules on Quote.
+
+This remains configuration, not design. The contradiction with the 20 August
+client minute over whether "Da ricontattare" generates a task is untouched by
+this check and still needs a human.

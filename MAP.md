@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-24 (nightly sweep) · Source of record: [notes/](notes/)
+Last updated: 2026-08-25 (org-status-check vs Pienissimo UAT) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -22,12 +22,26 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   Salesforce **Asset**. [OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md)
   is resolved, but UAT still runs on custom `Biglietto__c`; mapping and migration
   are unbuilt and unestimated.
-- **The repo is a week ahead of every tracker**, and the org holds Apex the repo
-  does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
+- **2026-08-25 org check vs Pienissimo UAT** — full gap table in
+  [the tracker's org-verification block](meetings/open-items.md). Four findings
+  change the plan: 🟢 the **tranche is built** (object + Quote-side UI, though
+  the controller and LWC are org-only and untested —
+  [OI-50](notes/items/OI-50%20Tranche%20object.md)); 🔴 **there is not one Flow
+  in the org**, so every declarative automation designed since June is absent
+  ([the flow](notes/flows/The%20quote%20to%20order%20flow.md)); 🔴
+  `OrderItem.Tranche__c` is **committed but never deployed**, so propagation
+  cannot run while `force-app/` reads as done
+  ([risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20in%20the%20repository%20but%20not%20in%20the%20org.md));
+  🔴 **37 tickets sit in states deleted on 6 August**, none ever reaching
+  `Disponibile` ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)), while
+  standard **Asset** carries zero custom fields.
+- The repo still runs ahead of the trackers and the org still holds Apex the
+  repo does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
   [missing stack](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
-- **Nothing can deploy today.** Apex coverage is **1%** against a 75% floor —
-  [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
-  [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md).
+- **Nothing can deploy today.** Apex coverage is **0%** against a 75% floor —
+  measured 2026-08-25, 24 classes and triggers, 1028 uncovered lines, zero
+  covered ([OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
+  [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)).
   The suite is written as one task, requested separately before the deploy.
 - 🟢 **2026-08-24: four meetings came out of the dark at once.** The 19 and
   20 Aug sessions **did run and are fully minuted** — recovered on 24 Aug from a
@@ -115,8 +129,9 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    [`_ARCOD` is an opaque string](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
 3. **Dated but unbuilt** — the
    [standard Asset migration](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md),
-   [tranche](notes/items/OI-50%20Tranche%20object.md)
-   (creation in the Quote decided by Aurel 24 Aug; nothing exists),
+   the [tranche](notes/items/OI-50%20Tranche%20object.md) **remainder**
+   (object and Quote-side creation now built; propagation to Order Item,
+   payment aggregation and tests are not),
    [participants](notes/items/OI-78%20Participant%20data%20collection.md),
    [WooCommerce](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)
    (credentials 26 Aug),

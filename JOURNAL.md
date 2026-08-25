@@ -10,6 +10,51 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-25 — claude — org-status-check against Pienissimo UAT
+
+- **Did:** ran the three-way comparison — requirements register vs `force-app/`
+  vs the live **Pienissimo UAT** org (`a.mrruku@pienissimo.uat`,
+  `00DMA000004nMMr2AM`), read-only. Metadata inventories, sObject describes,
+  picklist extraction, record counts and `ApexCodeCoverageAggregate`.
+- **Biggest correction:** the record said **`Tranche__c` exists in neither the
+  org nor the repository**. It exists in **both**, and the Quote-side creation
+  UI (`Quote.Crea_Tranche` + `quoteCreateTranche` LWC + `QuoteTrancheController`)
+  went into the org on **2026-08-25**, hours before the check. OI-50 rewritten.
+- **Four findings that change the plan:**
+  1. 🔴 **Zero Flows in the org** — confirmed three ways (`Flow` and
+     `FlowDefinition` metadata lists, Tooling query). Every declarative
+     automation designed since June is absent; all automation is three Apex
+     triggers.
+  2. 🔴 **`OrderItem.Tranche__c` is committed and never deployed** — a new
+     divergence direction, repository ahead of org. New risk note.
+  3. 🔴 **Coverage is 0%, not 1%** — 24 classes/triggers, 1028 uncovered lines,
+     zero covered. `QuoteTrancheController` (144 lines) shipped the same day
+     with no test.
+  4. 🔴 **30 of 37 tickets sit in `In attesa firma`**, a state struck on
+     2026-08-06. None has ever reached `Disponibile`. Standard `Asset` carries
+     zero custom fields.
+- **State:** updated OI-41, OI-44, OI-46, OI-47, OI-49, OI-50, OI-59, OI-64,
+  OI-66, OI-69, OI-74; the Biglietto build, build-ahead-of-record, campaign
+  parent/child and quote-to-order notes; the coverage, source-control and
+  ticket-lifecycle risks. Added two notes — the `OrderItem.Tranche__c` risk and
+  `Unrequested implementation in the org`. Rewrote the register's `build_state`
+  block (`checked: 2026-08-25`, with new `divergent:` entries); no requirement
+  text touched. Inserted a 2026-08-25 org-verification block into
+  `meetings/open-items.md` **and** `.it.md`. Refreshed MAP.md, INDEX.md,
+  STATUS.md. Pushed the Notion mirror: Status page, Flows page (diagrams
+  unchanged, build-state text rewritten) and **13 tracker rows reconciled on
+  `Ref`** — all 13 were stale from earlier sessions, not from this check.
+- **Watch out:** `sf project retrieve preview` **cannot be used on this org** —
+  partial sandbox, no source tracking, `NonSourceTrackedOrgError`. Divergence
+  has to be found component by component. Also: `sf` subcommands other than
+  `org list` fail under the Bash tool on this machine (`'C:\Program' is not
+recognized`); use the PowerShell tool for them.
+- **Next:** the org-only tranche components need retrieving into source control,
+  and `OrderItem.Tranche__c` needs deploying or an explicit deferral. Both are
+  write actions this check deliberately did not take.
+
+---
+
 ## 2026-08-24 — codex — tranche and standard Asset decisions recorded
 
 - **Did:** recorded Aurel Mrruku's direct decision that payment tranches are
@@ -256,7 +301,7 @@ date: 2026-08-03`, but the file was last written **2026-08-20** by the nightly
 - ✅ **Settled:** [OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)
   — ticket type is a **manually maintained Salesforce field owned by
   amministrazione**, because Mexal carries at most three classifications; this
-  **reverses** the standing instruction to ask for a tier *column* on 26/08.
+  **reverses** the standing instruction to ask for a tier _column_ on 26/08.
   [OI-50](notes/items/OI-50%20Tranche%20object.md) — tranche created by hand on
   the Quote, before the order, editable only in `Bozza`.
   [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) — availability

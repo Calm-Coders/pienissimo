@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-08-25
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -73,4 +73,27 @@ driven by credit notes and Elena Spini called three states thin — see
 before both points are settled means configuring twice.
 
 Sits in the middle of
+[the quote to order flow](../flows/The%20quote%20to%20order%20flow.md).
+
+## 2026-08-25 - org check: neither vocabulary is configured
+
+Verified read-only against **Pienissimo UAT**. The argument recorded above —
+`Ordinato · Fatturato · Incassato` versus `CREATO · CHIUSO/ACQUISITO` — has not
+reached the org in either form.
+
+- `Order.Status` holds the **stock Salesforce values `Draft` and `Activated`**.
+- `Order` carries **zero custom fields**, in the org and in `force-app/`.
+- Three Order records exist: one `Draft`, two `Activated`.
+
+So the unresolved naming question has cost nothing yet, and the note's advice
+holds exactly: **do not configure before Elena Spini answers whether `Incassato`
+is `CHIUSO/ACQUISITO` renamed or a different milestone.** Nothing has been built
+twice, because nothing has been built once.
+
+⚠ The same is true one level down, and it is a bigger gap:
+`Opportunity.StageName` is stock (`Qualification · Needs Analysis · Proposal ·
+Negotiation · Closed Won · Closed Lost`), so the rule this item turns on — the
+Opportunity going Closed Won **when the order reaches `Incassato`** — has
+neither a source state nor a target state configured, and **no automation of any
+kind** to carry it. See the flow finding at
 [the quote to order flow](../flows/The%20quote%20to%20order%20flow.md).

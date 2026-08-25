@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-07-23
-updated: 2026-08-24
+updated: 2026-08-25
 source: meetings/open-items.md row 46
 ---
 
@@ -143,8 +143,8 @@ Fabrizio Paganelli, minuted to the client:
   order date, not by the product**.
 
 The built `Product2.Anno_Solare__c` picklist, and the `Anno_Solare__c` →
-`Evento__c` dependency matrix, both assume the year is an attribute *of the
-product*. On the client's account it is an attribute *of the order*. That is not
+`Evento__c` dependency matrix, both assume the year is an attribute _of the
+product_. On the client's account it is an attribute _of the order_. That is not
 a missing-values problem; it is the wrong mechanism.
 
 **What the design uses instead** is the active child campaign, resolved at order
@@ -164,3 +164,30 @@ Two further complications from the same week:
 **Do not add values to `Anno_Solare__c`.** The question is now whether the field
 should exist. This needs Aurel Mrruku's ruling before any further work on the
 picklists, and it is the single most consequential thing this sweep found.
+
+## 2026-08-25 - org check: the fields exist and are populated on one product
+
+Verified read-only against **Pienissimo UAT**. Both disputed fields are
+configured, and both are effectively empty.
+
+| Field                     | Configured values                                                                                             | Populated on |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------ |
+| `Product2.Anno_Solare__c` | `Anno Solare 2026 · 2027 · 2028`                                                                              | **1 of 280** |
+| `Product2.Evento__c`      | `Tour · Food Marketing Festival · Pienissimo Live · Academy · Sold Out · Odb Live · Camerieri · Mastery · ND` | **1 of 280** |
+
+🔴 **`Happy Team` is confirmed absent from `Evento__c`** — the client's own
+workbook prices it and places it in the Academy bundle at quantity 2. The gap
+this item records against the client's list is real and measured, not inferred.
+
+**The population figures change what the fix costs.** One product out of 280
+carries either value, so correcting or removing the fields breaks essentially no
+data. The decision that
+[OI-46](OI-46%20Bundle%20classification%20picklists.md) actually turns on —
+whether `Anno_Solare__c` should exist at all, given that the client states
+article codes are transversal across years and the edition comes from the order
+date — can be taken **without a migration**. If the edition moves to
+[the campaign parent and child model](../objects/The%20campaign%20parent%20and%20child%20model.md),
+dropping the field costs one record.
+
+The register's `build_state` describes these as "populated on zero bundles". One
+product now carries them; the substance of that line is unchanged.
