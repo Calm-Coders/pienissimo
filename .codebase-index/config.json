@@ -1,0 +1,52 @@
+{
+  "embeddingProvider": "ollama",
+  "embeddingModel": "nomic-embed-text",
+  "scope": "project",
+  "include": [
+    "**/*.apex",
+    "**/*.cls",
+    "**/*.css",
+    "**/*.html",
+    "**/*.js",
+    "**/*.json",
+    "**/*.mjs",
+    "**/*.soql",
+    "**/*.trigger",
+    "**/*.xml",
+    "**/*.yaml",
+    "**/*.yml"
+  ],
+  "exclude": [
+    "**/.git/**",
+    "**/.sf/**",
+    "**/.sfdx/**",
+    "**/coverage/**",
+    "**/graphify-out/**",
+    "**/node_modules/**",
+    "package-lock.json"
+  ],
+  "indexing": {
+    "autoIndex": false,
+    "watchFiles": true,
+    "maxFileSize": 1048576,
+    "maxChunksPerFile": 100,
+    "semanticOnly": false,
+    "requireProjectMarker": true,
+    "maxDepth": 12,
+    "maxFilesPerDirectory": 250,
+    "gitBlame": {
+      "enabled": false
+    }
+  },
+  "search": {
+    "maxResults": 20,
+    "minScore": 0.1,
+    "includeContext": true,
+    "fusionStrategy": "rrf",
+    "rerankTopN": 20,
+    "routingGraphHandoffHints": true
+  },
+  "effectivenessMetrics": {
+    "enabled": false
+  }
+}

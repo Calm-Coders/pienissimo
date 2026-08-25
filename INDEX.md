@@ -13,6 +13,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 | Cost  | File                                                                                 | What it answers                          |
 | ----- | ------------------------------------------------------------------------------------ | ---------------------------------------- |
+| ~1.0k | [docs/code-intelligence.md](docs/code-intelligence.md)                               | Codex + Claude code/SF indexes           |
 | ~1.1k | [MAP.md](MAP.md)                                                                     | Current state, what is blocked, who owns |
 | ~1.3k | [INDEX.md](INDEX.md)                                                                 | This router                              |
 | ~1.2k | [notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md) | How to read and write knowledge here     |
@@ -198,13 +199,14 @@ rg -l "^uncertain:"        notes/         # what is explicitly unverified
 
 ## Costly — justify before loading
 
-| Cost  | File                                                                                                         | When it is worth it                                        |
-| ----- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
-| ~14k  | [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml)                       | **Authority for requirement ids** — grep it, don't load it |
-| ~8k   | [meetings/results/2026-08-06-chiusura-punti-aperti.md](meetings/results/2026-08-06-chiusura-punti-aperti.md) | The decisive session, in full                              |
-| ~4-5k | [meetings/proposals/](meetings/proposals/)                                                                   | The asset data model or the bundle demo                    |
-| ~2k   | [README.md](README.md)                                                                                       | Published artifacts and the design diagrams                |
-| ~1-3k | other files in [meetings/results/](meetings/results/)                                                        | A specific earlier meeting                                 |
+| Cost  | File                                                                                                         | When it is worth it                                          |
+| ----- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| ~14k  | [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml)                       | **Authority for requirement ids** — grep it, don't load it   |
+| ~8k   | [meetings/results/2026-08-06-chiusura-punti-aperti.md](meetings/results/2026-08-06-chiusura-punti-aperti.md) | The decisive session, in full                                |
+| ~6k   | [docs/architecture.md](docs/architecture.md)                                                                 | How the vault, the MCP indexes and the surfaces fit together |
+| ~6k   | [README.md](README.md)                                                                                       | Stack and setup, published artifacts, the design diagrams    |
+| ~4-5k | [meetings/proposals/](meetings/proposals/)                                                                   | The asset data model or the bundle demo                      |
+| ~1-3k | other files in [meetings/results/](meetings/results/)                                                        | A specific earlier meeting                                   |
 
 ## Never — grep, do not load
 

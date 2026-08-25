@@ -36,7 +36,12 @@
         padding: 2.5rem 1.25rem 4rem;
         background: var(--bg);
         color: var(--fg);
-        font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        font:
+          16px/1.6 ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
       }
       main {
         max-width: 46rem;
@@ -130,32 +135,95 @@
   <body>
     <main>
       <h1>CRM Migration &mdash; Delivery Status</h1>
-      <p class="sub">Legacy CRM &rarr; Salesforce. Status as of 14 August 2026.</p>
+      <p class="sub">
+        Legacy CRM &rarr; Salesforce. Status as of 25 August 2026, verified
+        against the working org.
+      </p>
 
       <h2>Position</h2>
       <div class="grid">
-        <div class="card"><div class="num">6 Oct</div><div class="lab">Go-live</div></div>
-        <div class="card"><div class="num">31 Oct</div><div class="lab">Legacy contract ends</div></div>
-        <div class="card"><div class="num">1 Sep</div><div class="lab">Data import</div></div>
-        <div class="card"><div class="num">7 wk</div><div class="lab">Remaining</div></div>
+        <div class="card">
+          <div class="num">6 Oct</div>
+          <div class="lab">Go-live</div>
+        </div>
+        <div class="card">
+          <div class="num">31 Oct</div>
+          <div class="lab">Legacy contract ends</div>
+        </div>
+        <div class="card">
+          <div class="num">1 Sep</div>
+          <div class="lab">Data import</div>
+        </div>
+        <div class="card">
+          <div class="num">6 wk</div>
+          <div class="lab">Remaining</div>
+        </div>
       </div>
 
       <h2>Workstreams</h2>
       <div class="wrap">
         <table>
           <thead>
-            <tr><th>Area</th><th>State</th></tr>
+            <tr>
+              <th>Area</th>
+              <th>State</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td>Bundle model</td><td><span class="tag t-ok">approved &amp; built</span></td></tr>
-            <tr><td>Quote &rarr; order flow</td><td><span class="tag t-warn">designed, build pending</span></td></tr>
-            <tr><td>Ticketing lifecycle</td><td><span class="tag t-warn">designed, unproven</span></td></tr>
-            <tr><td>ERP integration</td><td><span class="tag t-warn">unblocked, in build</span></td></tr>
-            <tr><td>E-commerce integration</td><td><span class="tag t-warn">webhooks agreed, starts late Aug</span></td></tr>
-            <tr><td>Instalment / tranche model</td><td><span class="tag t-risk">not started</span></td></tr>
-            <tr><td>Marketing funnels</td><td><span class="tag t-risk">blocked on client review</span></td></tr>
-            <tr><td>Data migration</td><td><span class="tag t-risk">field mapping incomplete</span></td></tr>
-            <tr><td>Test coverage</td><td><span class="tag t-risk">below deployment threshold</span></td></tr>
+            <tr>
+              <td>Bundle model</td>
+              <td><span class="tag t-ok">approved &amp; built</span></td>
+            </tr>
+            <tr>
+              <td>Instalment / tranche model</td>
+              <td>
+                <span class="tag t-warn"
+                  >partly built, propagation pending</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>ERP integration</td>
+              <td><span class="tag t-warn">unblocked, in build</span></td>
+            </tr>
+            <tr>
+              <td>E-commerce integration</td>
+              <td>
+                <span class="tag t-warn">agreed, awaiting credentials</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Quote &rarr; order flow</td>
+              <td>
+                <span class="tag t-risk">designed, no automation built</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Ticketing lifecycle</td>
+              <td>
+                <span class="tag t-risk">designed, never run end to end</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Record status models</td>
+              <td><span class="tag t-risk">agreed, not configured</span></td>
+            </tr>
+            <tr>
+              <td>Marketing funnels</td>
+              <td>
+                <span class="tag t-risk">model agreed, build not started</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Data migration</td>
+              <td><span class="tag t-risk">field mapping incomplete</span></td>
+            </tr>
+            <tr>
+              <td>Test coverage</td>
+              <td>
+                <span class="tag t-risk">below deployment threshold</span>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -164,30 +232,67 @@
       <div class="wrap">
         <table>
           <thead>
-            <tr><th>When</th><th>What</th></tr>
+            <tr>
+              <th>When</th>
+              <th>What</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td>7&ndash;19 Sep</td><td>Free event tour &mdash; ticketed, before go-live</td></tr>
-            <tr><td>~1 Sep</td><td>Client data import</td></tr>
-            <tr><td>29 Sep</td><td>Annual festival &mdash; ticketed, before go-live</td></tr>
-            <tr><td>6 Oct</td><td>Go-live</td></tr>
-            <tr><td>29 Oct</td><td>Large kickoff event</td></tr>
-            <tr><td>31 Oct</td><td>Dual-run ends; legacy contract expires</td></tr>
+            <tr>
+              <td>~1 Sep</td>
+              <td>Client data import</td>
+            </tr>
+            <tr>
+              <td>7&ndash;19 Sep</td>
+              <td>Free event tour &mdash; ticketed, before go-live</td>
+            </tr>
+            <tr>
+              <td>29 Sep</td>
+              <td>Annual festival &mdash; ticketed, before go-live</td>
+            </tr>
+            <tr>
+              <td>6 Oct</td>
+              <td>Go-live</td>
+            </tr>
+            <tr>
+              <td>29 Oct</td>
+              <td>Large kickoff event</td>
+            </tr>
+            <tr>
+              <td>31 Oct</td>
+              <td>Dual-run ends; legacy contract expires</td>
+            </tr>
           </tbody>
         </table>
       </div>
 
-      <h2>Open by owner</h2>
+      <h2>Open items</h2>
       <div class="grid">
-        <div class="card"><div class="num">4</div><div class="lab">Client inputs owed</div></div>
-        <div class="card"><div class="num">3</div><div class="lab">Supplier build items gating</div></div>
-        <div class="card"><div class="num">2</div><div class="lab">Joint decisions pending</div></div>
-        <div class="card"><div class="num">1</div><div class="lab">Commercial escalation</div></div>
+        <div class="card">
+          <div class="num">50</div>
+          <div class="lab">Open or in progress</div>
+        </div>
+        <div class="card">
+          <div class="num">7</div>
+          <div class="lab">Gating the deployment path</div>
+        </div>
+        <div class="card">
+          <div class="num">11</div>
+          <div class="lab">Awaiting client input</div>
+        </div>
+        <div class="card">
+          <div class="num">1</div>
+          <div class="lab">Commercial escalation</div>
+        </div>
       </div>
+      <p class="sub" style="margin: 0.75rem 0 0">
+        Counted from recorded delivery items on 25 August 2026. Categories
+        overlap.
+      </p>
 
       <footer>
-        Published from a private repository. Delivery status only &mdash; no names,
-        commercial terms, prices or credentials. Not indexed.
+        Published from a private repository. Delivery status only &mdash; no
+        names, commercial terms, prices or credentials. Not indexed.
       </footer>
     </main>
   </body>

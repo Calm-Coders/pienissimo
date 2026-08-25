@@ -116,13 +116,30 @@ The updated records are the deliverable, not the chat report:
 3. Update [MAP.md](../../../MAP.md) and [INDEX.md](../../../INDEX.md), then
    regenerate the affected rows of `meetings/open-items.md` **and** `.it.md`, so
    the client-facing view stops contradicting the org.
-4. Append a [JOURNAL.md](../../../JOURNAL.md) entry.
-5. Run `npm run vault:check`.
+4. **Append a build-state section to `meetings/DEVELOPMENT-RECAP.md` and
+   `.it.md`, in the same session.** The recap is the consolidated client-facing
+   design document and it carries a build-state column, so an org check that
+   moves what exists leaves it wrong until this is done — and the tracker rows in
+   step 3 are not a substitute for it.
+   - **Append the next numbered section; never rewrite an earlier one.** The
+     recap is append-with-precedence, so the finding goes in a new `## N.`
+     section and the **precedence line in the header is extended to name it**.
+     That line goes stale silently — check it names every section that exists,
+     not only the one you added.
+   - Say plainly that the section records **build state only**: an org check
+     moves no requirement and no design decision. Where it contradicts an
+     earlier section on what _exists_ it wins; where an earlier section records
+     what was _agreed_, that section still governs.
+   - **Both languages, same session.** The Italian is the client-facing text.
+5. Append a [JOURNAL.md](../../../JOURNAL.md) entry.
+6. Run `npm run vault:check`.
 
-## 6. Publish the shared status page
+## 6. Publish the rendered surfaces
 
-The record is now correct. This step makes it visible to the colleagues who do
-not read the repository. Ids, shape and sharing rules:
+The record is now correct. This step makes it visible to people who do not read
+the repository — **two audiences, on two surfaces that never exchange text**:
+`STATUS.md` and its Notion mirror for ROMI (6a–6e), and the public `site/` page
+(6f). Ids, shape and sharing rules:
 [the Notion mirror note](../../../notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
 
 **6a. Regenerate [STATUS.md](../../../STATUS.md)** from the notes you just
@@ -216,10 +233,34 @@ usually transient: retry once. If writes are refused consistently, treat it as
 Never turn on **Publish to web** to work around any access problem — it removes
 the login gate from a page that carries client-relationship candour.
 
-**6f. `site/` is a different surface and is not part of this step.** The
-Cloudflare page is public and sanitized to
-[docs/publishing.md](../../../docs/publishing.md); `STATUS.md` and its mirror
-are internal and name people. Never copy text between them.
+**6f. Refresh [`site/`](../../../site/) — re-derived from the notes, never
+copied from this page.**
+
+`site/` is a **different surface with the same subject**, and it is the one
+rendered view no other procedure regenerates, so it rots silently between org
+checks. This step owns it. The separation from 6a–6e is absolute: `STATUS.md`
+and the Notion mirror are internal and name people; `site/` is public and
+sanitized to [docs/publishing.md](../../../docs/publishing.md).
+
+- **Re-derive every row from `notes/` and this run's findings. Never move a
+  sentence across from `STATUS.md` or Notion** — if a phrase would sit equally
+  well on both, it came from the wrong side and has to be rewritten.
+- Refresh the **"Status as of" date** and the remaining-weeks figure. A stale
+  date is the failure mode that makes the whole page misleading rather than
+  merely incomplete.
+- Keep the **anonymised vocabulary the page already uses** — _Legacy CRM_, _ERP
+  integration_, _E-commerce integration_ — never the vendor, client, product or
+  person names behind them.
+- Permitted: delivery phase, milestone dates, item counts, workstream state,
+  role names without person names. Everything in `docs/publishing.md`'s
+  not-permitted list stays out, and **keep the page's register**: it says
+  "below deployment threshold", not the coverage percentage. Status, not
+  candour.
+- Run the **leak-check grep** from `docs/publishing.md` before finishing. It
+  must return nothing.
+- `site/` is **deployed by hand** and nothing in this step publishes it. Say in
+  the report that the page was refreshed but not deployed, so nobody assumes the
+  public URL moved.
 
 ## Guardrails
 

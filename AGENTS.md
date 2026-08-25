@@ -19,6 +19,31 @@ will exhaust your context before you reach the answer.
 4. Escalate to the big documents in `meetings/` or `REQUIREMENTS.md` **only**
    when the atomic notes are genuinely insufficient, and say so when you do.
 
+## Machine intelligence routing
+
+Codex and Claude Code share two generated, local indexes. Their setup and
+refresh commands are in [docs/code-intelligence.md](docs/code-intelligence.md).
+
+- For code discovery, semantic search, definitions, callers and dependency
+  paths, check the `open-codebase-index` MCP server first. Start with
+  `codebase_context`; use `implementation_lookup`, `call_graph` or
+  `call_graph_path` for known symbols. Use `rg` for exact or exhaustive text.
+- For Salesforce object, field, permission, Flow, order-of-execution, Governor
+  Limit and Salesforce impact questions, check the `graphify-sfdx` MCP server
+  first. Prefer `sf_impact`, `sf_violations`, `sf_cpq_chain` or `sf_ooe` over a
+  broad metadata scan.
+- If an index is missing or stale, run `npm run intelligence:refresh`. The
+  Graphify snapshot otherwise keeps itself current: git hooks cover checkout,
+  merge and rebase, and both clients launch the server through
+  `scripts/graphify_serve_fresh.py`, which rebuilds at session start and watches
+  `force-app/` for the life of the session. The server reloads the file by
+  itself, so nothing needs restarting.
+- Both indexes are derived navigation aids. They never override the requirements
+  register, atomic notes, preserved records or a current org inspection.
+- Treat Graphify confidence labels and violation results as leads. Inspect the
+  cited metadata before reporting or changing anything; Apex SOQL-for loops can
+  be flagged by simple loop heuristics even when no query executes per record.
+
 Full retrieval and write rules:
 [notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md).
 
@@ -188,9 +213,10 @@ A copy also lives in the `life365` repository; the two can drift.
 ## Checks
 
 ```bash
-npm run vault:check      # frontmatter + link integrity across notes/
-npm run prettier:verify  # formatting
-npm run test:unit        # LWC jest
+npm run vault:check          # frontmatter + link integrity across notes/
+npm run prettier:verify      # formatting
+npm run test:unit            # LWC jest
+npm run intelligence:verify  # Graphify refresh still works end to end (~20s)
 ```
 
 Run `vault:check` before committing knowledge changes.

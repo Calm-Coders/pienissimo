@@ -1,8 +1,8 @@
 # ROMI-PIENISSIMO — Recap di Sviluppo Salesforce
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
-> ⚠ **Precedenza, dal più recente: §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
-> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.**
+> ⚠ **Precedenza, dal più recente: §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
+> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08; il §15 la scelta dell'Asset standard; il §16 le quattro riunioni recuperate il 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.** **Il §17 è una verifica dello stato del build sull'org UAT del 25/08: dove contraddice una sezione precedente su ciò che _esiste_, vince il §17; dove una sezione precedente registra ciò che è stato _concordato_, quella sezione resta valida.**
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
 ---
@@ -524,12 +524,12 @@ Due di esse — 19 e 20 agosto — erano state segnalate come mancanti da tre sw
 consecutivi e ora sono interamente verbalizzate. Fonti: voci di canvas aggiunte
 tra il 21 e il 24 agosto e la minuta di Elena Spini inoltrata il 24 agosto.
 
-| Data | Sessione | Natura | Peso |
-| ---- | -------- | ------ | ---- |
-| 19/08 | Flussi MKT Biglietti | Cliente + marketing ROMI | Appunti Gemini + trascrizione |
-| 20/08 | Flusso Asset/Biglietti | Cliente, voluta da Elisa Migliano | **Minuta di Elena Spini, inviata al cliente la sera stessa** |
-| 24/08 | Interna per update flusso Lead/Opty | Interna ROMI (Elena + Aurel) | Appunti Gemini + trascrizione |
-| 24/08 | Follow-up Interno | Interna ROMI (Elena, Aurel, Andrea Di Cicco, Fabrizio Mastracci) | Appunti Gemini + trascrizione |
+| Data  | Sessione                            | Natura                                                           | Peso                                                         |
+| ----- | ----------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| 19/08 | Flussi MKT Biglietti                | Cliente + marketing ROMI                                         | Appunti Gemini + trascrizione                                |
+| 20/08 | Flusso Asset/Biglietti              | Cliente, voluta da Elisa Migliano                                | **Minuta di Elena Spini, inviata al cliente la sera stessa** |
+| 24/08 | Interna per update flusso Lead/Opty | Interna ROMI (Elena + Aurel)                                     | Appunti Gemini + trascrizione                                |
+| 24/08 | Follow-up Interno                   | Interna ROMI (Elena, Aurel, Andrea Di Cicco, Fabrizio Mastracci) | Appunti Gemini + trascrizione                                |
 
 ⚠ **Aurel Mrruku non era in nessuna delle due sessioni con il cliente.** Le
 decisioni tecniche del 20/08 sono state prese senza il referente tecnico ROMI, e
@@ -589,7 +589,7 @@ volte l'anno, senza alcun controllo verbalizzato che intercetti un campo vuoto.
   con reminder periodici di verifica; l'**aggiornamento massivo una tantum
   all'avvio è di ROMI**. Non può arrivare da Mexal — vedi il limite delle tre
   classificazioni al §16.1. Questo ribalta l'indicazione corrente di chiedere una
-  *colonna* tipologia: chiedere invece la **lista dei valori** concordata.
+  _colonna_ tipologia: chiedere invece la **lista dei valori** concordata.
 - **#50 — la tranche si crea e si gestisce manualmente sul Preventivo**, prima
   dell'ordine; **prodotti e tranche sono modificabili solo in `Bozza`**.
 - **#75 — la disponibilità del biglietto segue la tranche in ordine
@@ -603,7 +603,7 @@ volte l'anno, senza alcun controllo verbalizzato che intercetti un campo vuoto.
 - **#59 — il ciclo di vita del preventivo è specificato integralmente**, e i
   **valori delle picklist ora esistono** (nel diagramma, non nel registro):
   `Motivazione da Ricontattare` e `Motivazione da Ricontattare - Preventivo
-  Inviato`.
+Inviato`.
 - **#58 — esiste per la prima volta una mappatura Mexal a livello di campo**
   (`Integrazioni pienissimo.xlsx`, Andrea Di Cicco, 24/08): entità, metodi,
   cadenza, payload cliente campo per campo. Pattern di sandbox fissato —
@@ -626,7 +626,7 @@ volte l'anno, senza alcun controllo verbalizzato che intercetti un campo vuoto.
    decidere.
 
 Ancora senza decisione e ora più netta: **#74 — `Rinuncia`.** La minuta del 19/08
-descrive la *rinuncia* come tag di marketing e uscita dal funnel valida per
+descrive la _rinuncia_ come tag di marketing e uscita dal funnel valida per
 l'**intera partecipazione**, e non la elenca fra gli stati dell'asset; il
 diagramma master continua a disegnarla come box di stato. Diagramma e minuta ora
 si contraddicono.
@@ -643,7 +643,7 @@ PERSA`) e `Anticipay`.
 
 ⚠ Le ultime due **non sono databili** al 24/08: sono presenti ora e assenti dal
 resoconto in prosa del 20/08, ma la prosa non è un record byte a byte.
-Registrate come *presenti, non precedentemente censite*.
+Registrate come _presenti, non precedentemente censite_.
 
 ### 16.6 Non fatto, deliberatamente
 
@@ -659,3 +659,106 @@ sociale, indirizzo, partita IVA, email personale, telefono. Ne sono registrate
 esistenza e copertura; **in questo repository non è finito alcun valore**. È il
 terzo artefatto con questo problema, dopo il diagramma master e
 `anar_PIE_ricla.xlsx`.
+
+## 17. Aggiornamento 25/08/2026 — verifica sull'org UAT Pienissimo
+
+Una **verifica in sola lettura sull'org UAT Pienissimo** (`a.mrruku@pienissimo.uat`),
+confrontata con `force-app/` sul ramo `DevMain`. Sostituisce la verifica del
+03/08/2026, che era disallineata in entrambe le direzioni.
+
+⚠ **Questa sezione registra solo lo stato del build.** Nessun requisito si è
+mosso, nessuna decisione di design si è mossa e nulla qui riapre un punto già
+chiuso. Dove contraddice una sezione precedente su **ciò che esiste**, vince il
+§17; dove una sezione precedente registra **ciò che è stato concordato**, quella
+sezione resta valida. Tabella completa degli scostamenti: il blocco di verifica
+org in `open-items.it.md`.
+
+### 17.1 ✅ La tranche è costruita — il record la dava inesistente
+
+`Tranche__c` è attivo, con stato, data di scadenza, importo previsto, sequenza e
+lookup al Preventivo, insieme a `QuoteLineItem.Tranche__c`. Sei record, tutti
+aperti. Il percorso di creazione manuale concordato al §14 — quick action, LWC e
+controller — **esiste e funziona**.
+
+⚠ Due precisazioni, entrambe sostanziali:
+
+- L'interfaccia di creazione (`quoteCreateTranche` e il suo controller) è **solo
+  in org**: non è in controllo di versione e non ha test.
+- **La propagazione alle righe d'Ordine e l'aggregazione dei pagamenti non sono
+  costruite.**
+
+Quindi la #50 passa da "non iniziata" a **parzialmente costruita**, e ciò che
+resta è più circoscritto e più chiaro di quanto il tracker riportasse.
+
+### 17.2 🔴 Nell'org non esiste un solo Flow
+
+**Tutta l'automazione dichiarativa progettata da giugno in poi è assente.**
+L'unica automazione presente nell'org sono tre trigger Apex —
+`BigliettoTrigger`, `BundleComponentTrigger`, `OrderBigliettoTrigger`.
+
+Non c'è nulla dietro: la generazione dell'asset (#53), gli alert e i solleciti
+sul preventivo (#59), il funnel partecipanti (#78), i membri di campagna (§16.2 —
+`Campaign` non ha alcun campo custom, né record type, né regole di validazione),
+né la validazione Lead/Opty specificata il 24/08.
+
+I flussi dei §3 e §11 sono quindi **progetti senza implementazione**, non build
+parziali.
+
+### 17.3 🔴 Tutte le macchine a stati sono ancora quelle standard
+
+Ordine, Preventivo, Lead e Opportunità portano le **picklist predefinite di
+Salesforce**. Non è configurato un solo valore concordato. Il vocabolario degli
+ordini deciso il 06/08 (#69) e il ciclo di vita del preventivo specificato il
+24/08 (#59) — valori di picklist inclusi — esistono solo sulla carta.
+
+### 17.4 🔴 Il repository è insieme avanti e indietro rispetto all'org
+
+Entrambe le direzioni contemporaneamente: per questo un'affermazione su "cosa è
+costruito" deve dire da quale lato è stata letta.
+
+- **`OrderItem.Tranche__c` è committato in `force-app/` e assente dall'org.** La
+  propagazione tranche → ordine non può funzionare, mentre il repository risulta
+  completo.
+- **Sette componenti `Biglietto` e l'intero stack di creazione tranche esistono
+  solo nell'org** e non sono in controllo di versione: una scratch org o un
+  refresh li perde.
+
+### 17.5 🔴 Trentasette biglietti sono fermi in uno stato eliminato il 6 agosto
+
+Nessuno ha mai raggiunto `Disponibile`; trenta attendono un passaggio di firma
+che il design ha rimosso. Il ciclo di vita del biglietto **non è mai stato
+percorso da capo a fondo**.
+
+Nel frattempo l'oggetto di destinazione deciso — l'**Asset** standard — non ha
+**alcun campo custom**: l'oggetto target della #41 è vuoto e la mappatura non è
+stimata. Questo rende la #74 più netta, non la chiude.
+
+### 17.6 🔴 Oggi non è possibile alcun deploy
+
+La copertura Apex è allo **0%** contro la soglia di piattaforma del 75% — 24
+classi e trigger, 1028 righe non coperte, zero coperte, misurate il 25/08/2026.
+Le #64 e #66 bloccano ogni altra voce di questo elenco. La suite di test è
+trattata come **un unico task, richiesto separatamente prima del deploy in
+produzione**, e non va avviata come effetto collaterale di altro lavoro.
+
+### 17.7 L'apparato di classificazione non è solo controverso: è vuoto
+
+Misurato sui 280 prodotti presenti nell'org:
+
+| Campo                                             | Valorizzato                                          |
+| ------------------------------------------------- | ---------------------------------------------------- |
+| `Genera_Biglietto__c`                             | vero su **4 di 280**                                 |
+| `Solo_Bundle__c`                                  | vero su **0 di 280**, e nessuna automazione lo legge |
+| `Anno_Solare__c` · `Evento__c` · `Bundle_Type__c` | **1 di 280**                                         |
+| `WooCommerce_Product_Id__c`                       | **0 record**                                         |
+
+Quindi la domanda su `Anno_Solare__c` sollevata al §16.1 — se il campo debba
+esistere — costa quasi nulla in entrambe le direzioni: non c'è alcun dato
+valorizzato da migrare altrove.
+
+### 17.8 Non fatto, deliberatamente
+
+**Nessun requisito è stato modificato.** Una verifica sull'org registra ciò che è
+costruito; non riscrive un documento contrattuale. Le decisioni ancora dovute dal
+§16 — #46 (`Anno_Solare__c`), #53 (generazione asset enunciata in due modi) e #59
+("Da ricontattare") — **non sono toccate da questa verifica e restano dovute**.
