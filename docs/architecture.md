@@ -254,6 +254,19 @@ channel** (a stray `print()` corrupts the protocol), and **child processes must
 not inherit fd 0** — measured at a 20 s timeout inherited against 0.25 s with
 `stdin=DEVNULL`.
 
+### Seeing them
+
+Both indexes answer in text — that is what they are for. The one visual is
+`npm run intelligence:view`, which renders the Salesforce graph into
+`graphify-out/graph.html`: a filterable force-directed map of objects, fields,
+Apex, LWC, rules and order-of-execution steps, with the `file:line` behind every
+edge. Generated, gitignored, and stripped of the Apex source the graph carries.
+Detail: [code-intelligence.md](code-intelligence.md).
+
+The knowledge vault has its own, older answer to the same question — Obsidian's
+graph view, coloured by the committed groups in `.obsidian/graph.json`. The two
+never meet: one draws the metadata, the other draws the record.
+
 ### The standing caveat
 
 Graphify confidence labels and violation results are **leads**. Inspect the cited

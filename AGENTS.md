@@ -172,17 +172,18 @@ source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 
 ## Workflows
 
-Six repeatable procedures live in `.agents/skills/` (mirrored in
+Seven repeatable procedures live in `.agents/skills/` (mirrored in
 `.claude/skills/`). They are plain Markdown — any agent can follow them.
 
-| Task                                             | Procedure                                                                                |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| A new meeting transcript arrived                 | [.agents/skills/drill-meeting/SKILL.md](.agents/skills/drill-meeting/SKILL.md)           |
-| Decide what to unblock next                      | [.agents/skills/drill-me/SKILL.md](.agents/skills/drill-me/SKILL.md)                     |
-| Compare the org against the record               | [.agents/skills/org-status-check/SKILL.md](.agents/skills/org-status-check/SKILL.md)     |
-| Sweep mail/Slack/Drive for new input             | [.agents/skills/requirements-check/SKILL.md](.agents/skills/requirements-check/SKILL.md) |
-| Make a requirement auditable back to its meeting | [.agents/skills/requirement-trace/SKILL.md](.agents/skills/requirement-trace/SKILL.md)   |
-| Scaffold or upgrade another SF project           | [.agents/skills/start-sf-projects/SKILL.md](.agents/skills/start-sf-projects/SKILL.md)   |
+| Task                                             | Procedure                                                                                          |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Set up or repair local code intelligence         | [.agents/skills/setup-code-intelligence/SKILL.md](.agents/skills/setup-code-intelligence/SKILL.md) |
+| A new meeting transcript arrived                 | [.agents/skills/drill-meeting/SKILL.md](.agents/skills/drill-meeting/SKILL.md)                     |
+| Decide what to unblock next                      | [.agents/skills/drill-me/SKILL.md](.agents/skills/drill-me/SKILL.md)                               |
+| Compare the org against the record               | [.agents/skills/org-status-check/SKILL.md](.agents/skills/org-status-check/SKILL.md)               |
+| Sweep mail/Slack/Drive for new input             | [.agents/skills/requirements-check/SKILL.md](.agents/skills/requirements-check/SKILL.md)           |
+| Make a requirement auditable back to its meeting | [.agents/skills/requirement-trace/SKILL.md](.agents/skills/requirement-trace/SKILL.md)             |
+| Scaffold or upgrade another SF project           | [.agents/skills/start-sf-projects/SKILL.md](.agents/skills/start-sf-projects/SKILL.md)             |
 
 Claude Code loads these as skills automatically. Every other tool: read the
 file and follow it. "Follow `.agents/skills/drill-me/SKILL.md`" is a complete

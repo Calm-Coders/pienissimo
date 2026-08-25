@@ -24,11 +24,26 @@ Prerequisites are Node.js 20+, Python 3.10+, and Ollama. From the repository
 root:
 
 ```powershell
-npm ci
-python -m pip install --user -r requirements-code-intelligence.txt
-ollama pull nomic-embed-text
-npm run intelligence:refresh
+npm run intelligence:setup
 ```
+
+The repository-local `setup-code-intelligence` skill runs this command when a
+developer asks Codex or Claude Code to set up or repair code intelligence. The
+skill, installer, MCP configs and Git-hook definitions all arrive with
+`git pull`; machine-level prerequisites and generated indexes deliberately do
+not. Start or restart the agent after the pull so it discovers the new skill.
+Use `npm run intelligence:setup:check` to inspect a machine without changing
+it.
+
+The installer runs `npm ci` when the installed packages do not match
+`package-lock.json`, otherwise it reuses them; installs
+`requirements-code-intelligence.txt`; pulls `nomic-embed-text`; builds both
+indexes; and runs the complete hook/watcher verification. If a system
+prerequisite is missing, it stops before installing anything and reports what
+the developer needs. On Windows, an active Open Codebase Index process may lock
+its native module when a changed lockfile genuinely requires `npm ci`; close
+Codex and Claude Code, run the setup command once from a terminal, then reopen
+the clients.
 
 Ollama must be running while Open Codebase Index builds or searches the semantic
 index. On Windows, start it with `ollama serve` if the desktop service is not
@@ -47,9 +62,31 @@ npm run intelligence:index            # refresh semantic/code graph only
 npm run intelligence:index:dry-run    # parse and count without embeddings
 npm run intelligence:graph            # rebuild Salesforce graph only
 npm run intelligence:status           # Open Codebase Index readiness
+npm run intelligence:setup:check      # read-only local environment check
+npm run intelligence:view             # render the SF graph as a browsable page
 npm run retrieve                      # sf retrieve, then rebuild the graph
 npm run intelligence:verify           # prove the refresh mechanism works
 ```
+
+### Seeing the graph
+
+Both indexes answer in text. `npm run intelligence:view` is the exception: it
+renders `graphify-out/graph.json` into **`graphify-out/graph.html`**, a
+self-contained page you open in a browser — objects, fields, Apex, LWC,
+validation rules and order-of-execution steps as a force-directed map, filterable
+by node kind and by relation, searchable, with a detail panel per node listing its
+connections and the `file:line` each one was extracted from.
+
+It is a **reading aid, not evidence**: inferred edges are dashed and governor
+violations are red precisely so you go and check the cited metadata, per the
+routing rules below.
+
+Two properties worth knowing. The page **strips the Apex `source` text** that the
+graph carries on every node, keeping the file path instead — so it stays small
+and is not a way to forward source code. And it is written into `graphify-out/`,
+which is **gitignored**: the page is generated data, like the graph, and is
+rebuilt rather than committed. Re-run the command after a graph rebuild; nothing
+refreshes it automatically.
 
 Open Codebase Index watches included source files and updates incrementally.
 Graphify-SFDX is a snapshot and has to be re-extracted. That is now automated on

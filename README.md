@@ -96,15 +96,25 @@ sf org login web                       # authorize an org
 
 Adds the two MCP servers that Claude Code and Codex query instead of walking `force-app/`. Prerequisites are Python 3.10+ and Ollama.
 
+After cloning or pulling the repository, start or restart the agent so it
+discovers the repository-local skill, then ask it to run
+`$setup-code-intelligence`, or use the equivalent terminal command:
+
 ```powershell
-python -m pip install --user -r requirements-code-intelligence.txt
-ollama pull nomic-embed-text
-npm run intelligence:refresh
+npm run intelligence:setup
 ```
+
+The installer checks Node.js, Python, Git, Ollama and Git Bash; installs the
+locked Node dependencies when they do not already match `package-lock.json`;
+installs the pinned Graphify requirements; pulls `nomic-embed-text`; builds both
+indexes; activates the Husky hooks; and runs the end-to-end refresh test. Use
+`npm run intelligence:setup:check` for a read-only health check.
 
 Ollama must be running while the semantic index builds or is searched — `ollama serve` on Windows if the desktop service is not already up. Restart the client, or open a new session, after first setup or an MCP configuration change.
 
 **Skipping this costs nothing else.** The git hooks detect the missing Python toolchain and no-op silently, so no Git operation ever fails because of it. Refresh commands, the freshness model and the wrapper's constraints: [docs/code-intelligence.md](docs/code-intelligence.md).
+
+`npm run intelligence:view` renders the Salesforce graph into `graphify-out/graph.html` — a self-contained, offline page: objects, fields, Apex, LWC, rules and order-of-execution steps as a filterable map, with the `file:line` behind every edge. Generated and gitignored; re-run it after a graph rebuild.
 
 ### The knowledge vault — optional
 
