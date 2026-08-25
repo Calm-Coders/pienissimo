@@ -1,0 +1,118 @@
+<template>
+  <lightning-quick-action-panel header="Crea Tranche">
+    <div class="content">
+      <template if:true={showInitialLoader}>
+        <div class="initial-loader">
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="medium"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:true={hasLoaded}>
+        <template if:true={isLoading}>
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="small"
+          ></lightning-spinner>
+        </template>
+
+        <div class="summary">
+          <div>
+            <div class="summary-label">Preventivo</div>
+            <div class="summary-value">{quoteName}</div>
+          </div>
+          <div>
+            <div class="summary-label">Stato</div>
+            <div class={statusClass}>{quoteStatus}</div>
+          </div>
+        </div>
+
+        <template if:false={isEditable}>
+          <div class="message warning">
+            La tranche puo essere creata o modificata solo quando il preventivo
+            e in Bozza.
+          </div>
+        </template>
+
+        <template if:true={hasNoLines}>
+          <div class="message">
+            Questo preventivo non contiene righe prodotto.
+          </div>
+        </template>
+
+        <template if:true={hasSelectableLines}>
+          <div class="input-grid">
+            <lightning-input
+              type="number"
+              label="Sequenza"
+              value={sequence}
+              min="1"
+              step="1"
+              required
+              disabled={isSaveDisabledByStatus}
+              onchange={handleSequenceChange}
+            ></lightning-input>
+
+            <lightning-input
+              type="date"
+              label="Data scadenza"
+              value={dueDate}
+              required
+              disabled={isSaveDisabledByStatus}
+              onchange={handleDueDateChange}
+            ></lightning-input>
+          </div>
+
+          <div class="section-header">
+            <h3 class="section-heading">Righe da includere</h3>
+            <span>{selectedCountLabel}</span>
+          </div>
+
+          <lightning-datatable
+            data-id="lineTable"
+            key-field="id"
+            data={selectableLines}
+            columns={lineColumns}
+            selected-rows={selectedLineIds}
+            onrowselection={handleRowSelection}
+          ></lightning-datatable>
+        </template>
+
+        <template if:true={hasOnlyAssignedLines}>
+          <div class="message">
+            Tutte le righe del preventivo sono gia associate a una tranche.
+          </div>
+        </template>
+
+        <template if:true={hasAssignedLines}>
+          <div class="section-header assigned">
+            <h3 class="section-heading">Righe gia assegnate</h3>
+          </div>
+          <lightning-datatable
+            key-field="id"
+            data={assignedLines}
+            columns={assignedColumns}
+            hide-checkbox-column
+            onrowaction={handleAssignedRowAction}
+          ></lightning-datatable>
+        </template>
+      </template>
+    </div>
+
+    <div slot="footer">
+      <lightning-button
+        label="Annulla"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label="Crea Tranche"
+        disabled={isSaveDisabled}
+        onclick={handleSave}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>
