@@ -10,6 +10,54 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-25 — claude — Nightly requirements-check: the Anticipay call reversed the integration design
+
+- **Watermark used:** 2026-08-24, from
+  [that day's trace](notes/traces/Source%20trace%202026-08-24.md), selected by
+  `updated:`. **New watermark: 2026-08-25**,
+  [Source trace 2026-08-25](notes/traces/Source%20trace%202026-08-25.md).
+- **Did:** swept Gmail, Slack (channel, canvas, workspace, DMs), Drive and
+  Fathom. Six findings; the sweep was not dry.
+- **The headline:** the **25 August client Anticipay call ran and changed the
+  counterparty**. Salesforce will **not** call Anticipay — it calls a middleware
+  **built and hosted by Pienissimo Software Srl**. Token in the HTTP header,
+  `404`/`500` error codes returned with their messages and stored in Salesforce
+  for three months, returned values overwrite Salesforce, payload trimmed to
+  fields nobody has chosen yet. New
+  [OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)
+  and [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md),
+  session at
+  [2026-08-25 Integrazione Anticipay](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md).
+- **The thing that actually needs a human:** a **Fase 1** integration now has a
+  hard build dependency on **the entity at the centre of the phase 2 scope
+  dispute**. Fase 1 cannot go live unless Pienissimo Software writes the service,
+  hosts it and keeps it running. Who pays and who owns uptime was never raised.
+  Recorded in
+  [the risk note](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
+- **Two accuracy problems to know about.** The Gemini minute assigns "create the
+  test environment" to Aurel Mrruku — wrong; he corrected it on Slack (_"serve un
+  loro ambiente di test dove noi dobbiamo puntare"_) and Elena Spini accepted,
+  but **the client-facing calendar invitation still carries the error**. And
+  `Flows & Objects.drawio` moved a **fifth** time, during the call, updating only
+  the LEAD-OPTY page — so **the master now contradicts itself**, Ordini still
+  naming Anticipay.
+- **Also closed, all from Slack DMs:** the Postman collection (partial), the
+  invoice-to-order-line link (a Mexal invoice carries its item list — the input
+  the tranche aggregation needs), and Marco Montesi's reminder-email copy.
+- **State:** three notes created, seven updated, `MAP.md`, `INDEX.md`, both
+  trackers (rows 50, 58, 59, 73 + new 94, 95) and both recaps (§18) regenerated.
+  `npm run vault:check` green.
+- **Next:** the **26 August** client Mexal review is the venue for the WEBAPI
+  credentials, `Get Fatture`'s missing order-line number, listino 1 vs 2, the
+  Mexal test company and #93. Chase Andrea Parmeggiani's API example ahead of
+  **1 September**.
+- **Watch:** **no requirement document was touched.** OI-94 bears directly on
+  signed integration text and a human has to decide whether `REQUISITI.it.md`
+  moves. Do not read the **Ordini** page of the design file for the VAT rule —
+  it is stale.
+
+---
+
 ## 2026-08-25 — codex — Teammate code-intelligence bootstrap added
 
 - **Did:** added the repository-local `setup-code-intelligence` skill under

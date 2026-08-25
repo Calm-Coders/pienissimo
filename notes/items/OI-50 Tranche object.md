@@ -148,3 +148,28 @@ are null on the three oldest, populated on the three newest.
 The final state label is **unaffected** — `Stato__c` uses `Pagata`, not
 `CHIUSO/ACQUISITO`, which is what [OI-69](OI-69%20Order%20state%20model.md)
 asked for. That question is now only about the _Order_, not the tranche.
+
+## 2026-08-25 - how Mexal tells us a tranche is paid
+
+Gap 2 above — _"the aggregation mechanism is unverified"_ — now has its **input**
+identified, though still no implementation.
+
+Working through the Mexal data on Slack at 17:56 CEST, Andrea Di Cicco found that
+**a single invoice carries the list of its items**, and concluded: _"quindi per
+le trance sappiamo come capire quando sono state pagate"_. So the per-line
+payment status this note depends on is reachable from the invoice, which is what
+[OI-58](OI-58%20Mexal%20integration%20mechanics.md) had open as the hard part.
+
+Two things this does **not** do:
+
+- It does not build the aggregation. `Completamente_Pagata__c` still exists as a
+  checkbox with nothing proving Salesforce recalculates the parent when every
+  line is paid. Aurel Mrruku's reply was _"poi capiamo come strutturare le
+  chiamate"_ — the call structure is still to be designed.
+- It does not settle **how tranches are created on the Mexal side**. That is
+  Andrea Di Cicco's own stated next unknown — _"ora devo capire come si creano le
+  trance"_. The Salesforce-side creation rule is decided (by hand on the Quote);
+  what the Mexal counterpart looks like is not.
+
+Gap 1 — `OrderItem.Tranche__c` committed but not deployed — and gap 3, the
+missing coverage, are **unchanged**.

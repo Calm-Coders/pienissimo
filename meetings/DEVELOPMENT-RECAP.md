@@ -747,3 +747,119 @@ migrate off it.
 rewrite a contractual document. The rulings still owed from §16 — #46
 (`Anno_Solare__c`), #53 (asset generation stated two ways) and #59 ("Da
 ricontattare") — are **unaffected by this check and still owed**.
+
+
+---
+
+## 18. Update 2026-08-25 — the Anticipay technical call
+
+Source:
+[2026-08-25 Integrazione Anticipay](../notes/meetings/2026-08-25%20Integrazione%20Anticipay.md).
+Client-facing, 10:00 CEST. Elena Spini, Aurel Mrruku, Andrea Di Cicco for ROMI;
+Andrea Parmeggiani (Pienissimo Software), Fabrizio Paganelli and Elisa Migliano
+for Pienissimo. Gemini notes, transcript and recording exist. This is the call
+#73 had been waiting for since 6 August.
+
+### 18.1 🔴 Salesforce will not call Anticipay
+
+**The counterparty changed.** Salesforce calls an API **built and hosted by
+Pienissimo Software Srl**, which fronts Anticipay, caches lookups and returns a
+standardised payload. New item **#94**.
+
+Two reasons, both accepted in the room:
+
+- **Cost** — Andrea Parmeggiani's argument. Anticipay charges per lookup, and
+  Pienissimo already holds much of the data, so the middleware stops the same VAT
+  number being paid for twice.
+- **Insulation** — Aurel Mrruku's addition. If Anticipay changes its endpoints,
+  only the middleware moves.
+
+### 18.2 The contract as far as it is agreed
+
+| Element | Agreed |
+| ------- | ------ |
+| Caller → callee | Salesforce → **Pienissimo middleware**, not Anticipay |
+| Trigger | the **first Order inserted for an Account** — confirmed, unchanged |
+| Authentication | a **token in the HTTP request header** |
+| Errors | `404` VAT not found · `500` generic — **code and message both returned** |
+| Error storage | **saved in Salesforce, kept three months**, used to raise internal notifications |
+| Conflicts | the returned value **overwrites** Salesforce |
+| Payload | **trimmed** to the needed fields — see §18.3 |
+
+### 18.3 Which fields is now its own open item
+
+The payload is deliberately trimmed, and **nobody has said what to keep**. New
+item **#95**, owned by Fabrizio Paganelli and Elisa Migliano. Candidates raised
+and none decided: ragione sociale, rappresentante fiscale, legale rappresentante,
+the **Anticipay reliability score**, and **e-invoice routing via PEC**. Fabrizio
+Paganelli framed it as a chance to revisit the Mexal registry fields too.
+
+⚠ Two of those are not registry data. A reliability score is a commercial
+judgement about a customer; PEC routing is invoicing configuration. The
+three-month retention agreed for **error codes** was **not** stated to cover the
+returned **data**, and nobody asked how long the company details are kept.
+
+### 18.4 Nothing is buildable yet, and the dates are tight
+
+No endpoint, no schema, no token, no test environment. **Andrea Parmeggiani owes
+the API structure example by Friday 4 September** — committed as "end of next
+week" — plus an example of every field Anticipay returns. A follow-up call is
+booked for **Tuesday 1 September, 10:00 CEST**, cancellable if the material
+arrives first.
+
+Set against the **10 September** end of Fase 1 development, that leaves roughly
+four working days between the specification arriving and development closing.
+
+### 18.5 ⚠ One action is wrongly assigned in the client-facing invitation
+
+The Gemini minute assigns *"create a dedicated test environment"* to **Aurel
+Mrruku**. That is not what was agreed. Elena Spini put the list to him on Slack
+at 15:03 CEST and he corrected it: ROMI's test environment already exists — it is
+UAT — and what is needed is **Pienissimo's, for ROMI to point at**. Elena Spini
+accepted the correction.
+
+**The calendar invitation sent to the client at 13:17 UTC carries the
+uncorrected wording and has not been re-sent.**
+
+### 18.6 🔴 A Fase 1 integration now depends on the disputed entity
+
+Anticipay → SFDC is **Fase 1** in ROMI's own project plan. As of this session,
+Fase 1 cannot go live unless **Pienissimo Software Srl** — the separate legal
+entity ROMI argues is not this project's client, and the entity at the centre of
+the phase 2 scope dispute — writes a service, stands up a test environment for
+it, and keeps it running.
+
+Who pays for that work, and who owns the middleware's uptime after go-live, was
+not raised. The decision was taken on technical merit and both arguments are
+good ones; the point is that a **commercial boundary moved inside a technical
+decision**, and nobody in the session said so.
+
+### 18.7 The master diagram now contradicts itself
+
+`Flows & Objects.drawio` was edited **during the call**, at 08:23 UTC. The
+**LEAD-OPTY** page now reads *"chiamata API **al middleware Pienissimo** per
+check P.IVA Account"*. The **Ordini** page still reads *"chiamata API
+**Anticipay**"*. The LEAD-OPTY wording is the later and correct one.
+
+### 18.8 Also landed on 25 August, from Slack rather than a meeting
+
+- 🟢 **The Postman collection** — `Mexal Dev.postman_collection.json`, sent by
+  Andrea Di Cicco at 11:52 CEST, closing an action from 24 August. **Incomplete
+  and he says so.** (#58)
+- 🟢 **The invoice-to-order-line link is answered.** A single Mexal invoice
+  carries the list of its items, so per-line payment status is reachable —
+  *"quindi per le trance sappiamo come capire quando sono state pagate"*. That is
+  the input the tranche aggregation needs. It is a reading of the data, not a
+  built call, and **how tranches are created on the Mexal side is still
+  unknown**. (#50, #58)
+- 🟢 **Marco Montesi's reminder-email copy arrived**, owed since 20 August. A
+  quote-expiry reminder built from merge fields. The **preset expiry timings** he
+  also owes are still outstanding. (#59)
+
+### 18.9 Not done, deliberately
+
+**No requirement document was touched.** `pienissimo-requirements.yaml`,
+`REQUIREMENTS.md` and `REQUISITI.it.md` are unchanged. §18.1 bears directly on
+the signed integration text — the counterparty in a Fase 1 integration is not a
+detail — but rewriting a contractual document off a nightly sweep is a human's
+call. Flagged, not done.

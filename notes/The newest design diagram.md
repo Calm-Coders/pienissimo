@@ -4,9 +4,9 @@ type: reference
 status: active
 owner: Elena Spini
 org: ROMI
-updated: 2026-08-24
-source: Drive - Flows & Objects.drawio, modified 2026-08-24T16:34:34Z
-decoded_at_version: 2026-08-24T16:34:34Z
+updated: 2026-08-25
+source: Drive - Flows & Objects.drawio, modified 2026-08-25T08:23:31Z
+decoded_at_version: 2026-08-25T08:23:31Z
 supersedes_in_register: DGM-2
 ---
 
@@ -16,20 +16,49 @@ supersedes_in_register: DGM-2
 LEAD-OPTY, Ordini, Flusso Biglietti**. **This is the authority for state
 machines**, ahead of the prose recaps.
 
-**Re-decoded 2026-08-24 at its 2026-08-24T16:34:34Z version** — 130 KB, plain
-uncompressed mxfile XML, read in full. Three pages, 163 distinct labels.
+**Re-decoded 2026-08-25 at its 2026-08-25T08:23:31Z version** — 130 KB, plain
+uncompressed mxfile XML, read in full. Three pages.
 
-> ⚠ **The file has now moved four times in six days** — 19 Aug 16:33 UTC, 20 Aug
-> 15:36 UTC and 24 Aug 16:34 UTC. The 19 August version was never decoded, so
-> pre-20-August changes are dated only as *"after the 06 August version that was
-> decoded on 14 August"*.
+> ⚠ **The file has now moved five times in seven days** — 19 Aug 16:33 UTC,
+> 20 Aug 15:36 UTC, 24 Aug 16:34 UTC and 25 Aug 08:23 UTC. The 19 August version
+> was never decoded, so pre-20-August changes are dated only as *"after the
+> 06 August version that was decoded on 14 August"*.
 >
-> 🟢 **The 24 August edit is the first one that is minuted.** It lands the same
-> afternoon as Elena Spini's action _"Inviare i verbali della riunione e il link
-> al flusso di lavoro aggiornato sul Drive"_ from
-> [the Follow-up Interno](meetings/2026-08-24%20Follow-up%20Interno.md), and its
-> new content restates that session's decisions. For the first time the drawing
-> is downstream of a meeting rather than ahead of one.
+> 🟢 **The 24 and 25 August edits are both minuted**, which no earlier one was.
+> The 24 August edit lands the same afternoon as Elena Spini's action _"Inviare i
+> verbali della riunione e il link al flusso di lavoro aggiornato sul Drive"_
+> from [the Follow-up Interno](meetings/2026-08-24%20Follow-up%20Interno.md). The
+> 25 August edit is made **during the meeting it records** — 10:23 CEST, twenty
+> minutes into
+> [the Anticipay session](meetings/2026-08-25%20Integrazione%20Anticipay.md).
+
+## What changed on 2026-08-25
+
+🔴 **One cell, and it leaves the file contradicting itself.**
+
+The **LEAD-OPTY** page now reads:
+
+> _"Alla generazione del primo ordine di un ACCOUNT chiamata API **al middleware
+> Pienissimo** per check P.IVA Account"_
+
+The **Ordini** page still carries the previous wording, verbatim and unedited:
+
+> _"Alla generazione del primo ordine di un ACCOUNT chiamata API **Anticipay**
+> per check P.iVA Account"_
+
+Both pages had the second wording on 24 August. Only one was updated when
+[the meeting](meetings/2026-08-25%20Integrazione%20Anticipay.md) replaced the
+direct call with the middleware. **The LEAD-OPTY wording is the later and correct
+one** — see
+[OI-94](items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md).
+Anyone reading the Ordini page alone will build the architecture that was
+superseded at 10:20 that morning.
+
+Nothing else moved: the campaign `IMPORTANTE` cell, both LEAD-OPTY specification
+blocks, the picklist values, the three loss-reason lists, the order and asset
+boxes and the `Scadenziario MEXAL` sticky are all present and unchanged. The
+`Unhappy path: info con email ad amministrazione` note sits beside both versions
+of the cell.
 
 ## What changed on 2026-08-24
 
@@ -73,6 +102,8 @@ servizio/prodotto non allineato con le aspettative. Distinct from the Lead-level
 primo ordine di un ACCOUNT chiamata API Anticipay per check P.iVA Account"_, with
 _"Unhappy path: info con email ad amministrazione"_, on **both** the LEAD-OPTY
 and Ordini pages. See [OI-73](items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md).
+**Superseded on the LEAD-OPTY page on 25 August** — see the 25 August section
+above.
 
 ⚠ **Items 3 and 4 cannot be dated to 24 August.** They are present in this
 version and absent from this note's 20 August write-up, but that write-up was

@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-25 (org-status-check vs Pienissimo UAT) · Source of record: [notes/](notes/)
+Last updated: 2026-08-25 (requirements-check external sweep) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -35,6 +35,22 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   🔴 **37 tickets sit in states deleted on 6 August**, none ever reaching
   `Disponibile` ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)), while
   standard **Asset** carries zero custom fields.
+- 🔴 **2026-08-25 — the Anticipay integration changed counterparty.** The
+  technical call ran and agreed that **Salesforce will not call Anticipay**: it
+  calls a **middleware built and hosted by Pienissimo Software Srl**, which
+  caches lookups and returns a standard payload
+  ([OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md),
+  [the session](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md)). Token
+  in the header, `404`/`500` error codes stored in Salesforce for three months
+  and used for internal notifications, returned values overwrite Salesforce, and
+  the payload is trimmed to fields **nobody has chosen yet**
+  ([OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)).
+  Nothing is buildable until Andrea Parmeggiani sends the payload example, owed
+  by **4 September**; follow-up **1 September 10:00**.
+  ⚠ **A Fase 1 integration now depends on the entity at the centre of
+  [the phase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)**
+  — nobody in the session said so.
+
 - The repo still runs ahead of the trackers and the org still holds Apex the
   repo does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
   [missing stack](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
@@ -85,10 +101,12 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   19 Aug minute states the asset-creation rule **two incompatible ways in the same
   document** ([OI-53](notes/items/OI-53%20Asset%20generation%20rule.md)).
 
-- **Calendar: 25 Aug** Anticipay · **26 Aug** [ROMI-PIENISSIMO] Review Temi
+- **Calendar: 25 Aug** Anticipay ✅ ran · **26 Aug** [ROMI-PIENISSIMO] Review Temi
   Integrazione Mexal (16:00–17:00 CEST, **client-facing** — Elena, Aurel, Andrea
   Di Cicco, amministrazione and Fabrizio Paganelli; first Mexal session since
-  14 Jul) · **27 Aug** WooCommerce ·
+  14 Jul) · **27 Aug** WooCommerce (Elisa Migliano and Fabrizio Paganelli added
+  25 Aug) · **1 Sept 10:00** [ROMI-PIENISSIMO] Follow-up Integrazione Anticipay,
+  client-facing ·
   [PIENISSIMO] Follow-up Interno is now a **weekly Monday 17:00 slot**.
   [The compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)
   still governs.
@@ -136,7 +154,8 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    [WooCommerce](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)
    (credentials 26 Aug),
    [VAT](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
-   (**provider named 24 Aug: Anticipay**; contract and cost unknown), and now
+   (**architecture settled 25 Aug — via the Pienissimo middleware, not Anticipay
+   directly**; no endpoint, schema, token or test environment yet), and now
    the whole
    [campaign parent/child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)
    — Record Types, the product lookup and the one-active-child rule, none of it

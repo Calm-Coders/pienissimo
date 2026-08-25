@@ -762,3 +762,125 @@ valorizzato da migrare altrove.
 costruito; non riscrive un documento contrattuale. Le decisioni ancora dovute dal
 §16 — #46 (`Anno_Solare__c`), #53 (generazione asset enunciata in due modi) e #59
 ("Da ricontattare") — **non sono toccate da questa verifica e restano dovute**.
+
+
+---
+
+## 18. Aggiornamento 25/08/2026 — la call tecnica Anticipay
+
+Fonte:
+[2026-08-25 Integrazione Anticipay](../notes/meetings/2026-08-25%20Integrazione%20Anticipay.md).
+Sessione con il cliente, ore 10:00 CEST. Per ROMI Elena Spini, Aurel Mrruku,
+Andrea Di Cicco; per Pienissimo Andrea Parmeggiani (Pienissimo Software),
+Fabrizio Paganelli ed Elisa Migliano. Esistono appunti Gemini, trascrizione e
+registrazione. È la call che il #73 attendeva dal 6 agosto.
+
+### 18.1 🔴 Salesforce non chiamerà Anticipay
+
+**È cambiata la controparte.** Salesforce chiamerà un'API **realizzata e ospitata
+da Pienissimo Software Srl**, che si mette davanti ad Anticipay, memorizza i dati
+e restituisce un payload standardizzato. Nuovo punto **#94**.
+
+Due motivazioni, entrambe accolte in riunione:
+
+- **Costi** — argomento di Andrea Parmeggiani. Anticipay fattura a chiamata e
+  Pienissimo ha già gran parte del dato, quindi il middleware evita di pagare due
+  volte la stessa partita IVA.
+- **Isolamento** — aggiunta di Aurel Mrruku. Se Anticipay cambia i propri
+  endpoint, si muove solo il middleware.
+
+### 18.2 Il contratto, per quanto concordato
+
+| Elemento | Concordato |
+| -------- | ---------- |
+| Chiamante → chiamato | Salesforce → **middleware Pienissimo**, non Anticipay |
+| Innesco | il **primo Ordine inserito per un Account** — confermato, invariato |
+| Autenticazione | un **token nell'header della richiesta HTTP** |
+| Errori | `404` P.IVA non trovata · `500` generico — **codice e messaggio entrambi restituiti** |
+| Conservazione errori | **salvati su Salesforce per tre mesi**, usati per generare notifiche interne |
+| Discrepanze | il valore restituito **sovrascrive** Salesforce |
+| Payload | **ridotto** ai soli campi necessari — vedi §18.3 |
+
+### 18.3 Quali campi è ora un punto aperto a sé
+
+Il payload viene ridotto di proposito, e **nessuno ha detto cosa tenere**. Nuovo
+punto **#95**, in carico a Fabrizio Paganelli ed Elisa Migliano. Candidati
+emersi e nessuno deciso: ragione sociale, rappresentante fiscale, legale
+rappresentante, lo **scoring di affidabilità Anticipay** e la **gestione della
+fattura elettronica via PEC**. Fabrizio Paganelli lo ha impostato come occasione
+per rivedere anche i campi dell'anagrafica Mexal.
+
+⚠ Due di questi non sono dati anagrafici. Uno scoring di affidabilità è un
+giudizio commerciale sul cliente; la PEC è configurazione di fatturazione. La
+conservazione a tre mesi concordata per i **codici di errore** **non** è stata
+dichiarata valida anche per i **dati** restituiti, e nessuno ha chiesto per
+quanto tempo si conservano i dati aziendali.
+
+### 18.4 Non è ancora costruibile nulla, e le date sono strette
+
+Nessun endpoint, nessuno schema, nessun token, nessun ambiente di test. **Andrea
+Parmeggiani deve l'esempio della struttura della chiamata entro venerdì 4
+settembre** — impegno preso come «entro la fine della settimana prossima» — più
+un esempio di tutti i campi restituiti da Anticipay. È fissata una call di
+follow-up per **martedì 1 settembre, ore 10:00 CEST**, annullabile se il
+materiale arriva prima.
+
+Rispetto al **10 settembre** come fine dello sviluppo di Fase 1, restano circa
+quattro giorni lavorativi fra l'arrivo della specifica e la chiusura dello
+sviluppo.
+
+### 18.5 ⚠ Un'azione è assegnata in modo errato nell'invito inviato al cliente
+
+Il verbale Gemini assegna *«creare un ambiente di test dedicato»* ad **Aurel
+Mrruku**. Non è quanto concordato. Elena Spini gli ha sottoposto la lista su
+Slack alle 15:03 CEST e lui ha corretto: l'ambiente di test di ROMI esiste già —
+è UAT — e quello che serve è **il loro, su cui ROMI deve puntare**. Elena Spini
+ha accettato la correzione.
+
+**L'invito di calendario inviato al cliente alle 13:17 UTC riporta ancora la
+formulazione non corretta e non è stato reinviato.**
+
+### 18.6 🔴 Un'integrazione di Fase 1 dipende ora dall'entità contesa
+
+Anticipay → SFDC è in **Fase 1** nel project plan di ROMI. Da questa sessione, la
+Fase 1 non può andare in go-live se **Pienissimo Software Srl** — l'entità legale
+distinta che ROMI sostiene non essere il cliente di questo progetto, e che sta al
+centro della disputa sulla fase 2 — non realizza un servizio, non predispone un
+ambiente di test e non ne garantisce l'esercizio.
+
+Chi paga quel lavoro, e chi ne garantisce la continuità dopo il go-live, non è
+stato sollevato. La decisione è stata presa nel merito tecnico e le due
+motivazioni sono buone; il punto è che **un confine commerciale si è spostato
+dentro una decisione tecnica**, e nessuno in riunione lo ha detto.
+
+### 18.7 Il diagramma master ora si contraddice
+
+`Flows & Objects.drawio` è stato modificato **durante la call**, alle 08:23 UTC.
+La pagina **LEAD-OPTY** riporta ora *«chiamata API **al middleware Pienissimo**
+per check P.IVA Account»*. La pagina **Ordini** riporta ancora *«chiamata API
+**Anticipay**»*. La formulazione corretta e più recente è quella della pagina
+LEAD-OPTY.
+
+### 18.8 Arrivato sempre il 25/08, ma da Slack e non da una riunione
+
+- 🟢 **La collection Postman** — `Mexal Dev.postman_collection.json`, inviata da
+  Andrea Di Cicco alle 11:52 CEST, che chiude un'azione del 24/08. **Incompleta,
+  e lo dice lui stesso.** (#58)
+- 🟢 **Il collegamento fattura → riga d'ordine ha una risposta.** La singola
+  fattura Mexal porta la lista dei suoi item, quindi lo stato di pagamento per
+  riga è raggiungibile — *«quindi per le trance sappiamo come capire quando sono
+  state pagate»*. È l'input di cui ha bisogno l'aggregazione delle tranche. È una
+  lettura del dato, non una chiamata costruita, e **come si creano le tranche
+  lato Mexal resta ignoto**. (#50, #58)
+- 🟢 **È arrivato il copy della mail di reminder di Marco Montesi**, atteso dal
+  20/08. È un promemoria di scadenza preventivo costruito su campi di unione. Le
+  **tempistiche di scadenza preimpostate** che deve ancora restano aperte. (#59)
+
+### 18.9 Non fatto, deliberatamente
+
+**Nessun documento di requisiti è stato toccato.**
+`pienissimo-requirements.yaml`, `REQUIREMENTS.md` e `REQUISITI.it.md` sono
+invariati. Il §18.1 incide direttamente sul testo firmato dell'integrazione — la
+controparte di un'integrazione di Fase 1 non è un dettaglio — ma riscrivere un
+documento contrattuale sulla base di uno sweep notturno è una decisione umana.
+Segnalato, non fatto.

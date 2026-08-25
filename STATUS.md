@@ -5,9 +5,10 @@
 > page in [site/](site/), which is sanitized to different rules
 > ([docs/publishing.md](docs/publishing.md)).
 
-**Last regenerated: 2026-08-25** · **Basis: a live, read-only check of the
-Pienissimo UAT org** (`a.mrruku@pienissimo.uat`), compared against the
-repository, the notes and the requirements register. This supersedes the
+**Last regenerated: 2026-08-25 (second pass — nightly requirements-check)** ·
+**Basis: a live, read-only check of the Pienissimo UAT org**
+(`a.mrruku@pienissimo.uat`), compared against the repository, the notes and the
+requirements register, plus the external sweep of 25 August. This supersedes the
 2026-08-03 verification, which was stale in both directions. Everything below
 marked as built or not built was **observed in the org today**, unless the row
 says otherwise.
@@ -42,6 +43,7 @@ live in a private workbook — describe a field, never a value. See
 | ✅ **The tranche is built** — the record said it existed nowhere              | Object, Quote-side creation UI and controller are live. Propagation and tests are not                     |
 | **The repository is ahead of the trackers, and now ahead of the org too**     | `OrderItem.Tranche__c` is committed and **never deployed** — it reads as done and cannot run              |
 | ✅ **The client's product registry finally arrived — and was read 24 August** | Sent 7 August, unopened for seventeen days. It broke more of the record than it closed                    |
+| 🔴 **A Fase 1 integration now depends on the disputed entity**                | Anticipay is called through a **Pienissimo Software** middleware, agreed 25 August. Nobody said so         |
 | **Zoho expires 31 October 2026**                                              | Go-live Fase 1 **6 October**, Fase 2 **9 November**, data import ~1 September                             |
 
 ---
@@ -181,6 +183,36 @@ tracker**, which is why the written record repeatedly understates what exists.
 10. **Confirm the 10 September development deadline still stands.** _Elena
     Spini._ Every conversation anchors on 6 October, which is go-live, not
     code-complete ([OI-04](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md)).
+11. **Decide who owns the Anticipay middleware before anyone builds against it.**
+    _Elena Spini._ The 25 August client call moved the VAT check off a direct
+    Anticipay call and onto **an API that Pienissimo Software Srl must build,
+    host and keep running**
+    ([OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)).
+    Anticipay → SFDC is **Fase 1**. So Fase 1 now cannot go live without work
+    from the separate legal entity ROMI argues is not this project's client, and
+    the entity at the centre of
+    [the phase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
+    Who pays, and who owns uptime after go-live, was not raised in the session.
+    The technical decision is sound on its own terms — this is a commercial line,
+    and it moved inside an architecture diagram.
+12. **Chase Andrea Parmeggiani's API payload example.** _Aurel Mrruku._ Due
+    **Friday 4 September**; nothing about the VAT integration is buildable until
+    it arrives — no endpoint, no schema, no token, no test environment. Follow-up
+    call **Tuesday 1 September 10:00**. Set against the **10 September**
+    development end, that is roughly four working days. The trimmed field list is
+    a second, client-owned dependency
+    ([OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)).
+13. **Re-send the 1 September invitation, or correct it in the call.** _Elena
+    Spini._ The client-facing invitation of 25 August states that ROMI will
+    create the integration test environment. That is wrong — ROMI's exists, and
+    what is needed is **Pienissimo's, for ROMI to point at**. Aurel Mrruku
+    corrected it internally the same afternoon; the client has not been told.
+14. **Fix the master design file — it contradicts itself.** _Elena Spini._
+    `Flows & Objects.drawio` was edited during the 25 August call and only the
+    **LEAD-OPTY** page was updated. The **Ordini** page still instructs a direct
+    Anticipay call. A developer reading that page will build the superseded
+    architecture
+    ([the diagram](notes/The%20newest%20design%20diagram.md)).
 
 ---
 

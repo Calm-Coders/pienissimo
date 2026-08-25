@@ -6,7 +6,7 @@ any agent can budget before opening anything. Start at [MAP.md](MAP.md).
 Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 **Costly** = justify it. **Never** = do not load whole; grep instead.
 
-112 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
+116 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
 `#75` is `OI-75`.
 
 ## Cheap — load freely
@@ -65,6 +65,8 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-90 whether to introduce a Prospect state](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md)                                       | open · 2 months silent                             | Sabatino Rinaldi |
 | [OI-91 Aggiornamento Incasso button](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md)                                                               | open · new 19 Aug · reverses the state machine     | ROMI             |
 | [OI-92 Mexal Scadenziario as the trigger to reverse an asset](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md) | open · new 20 Aug · due at the 26 Aug Mexal review | Andrea Di Cicco  |
+| [OI-94 Anticipay is called through the Pienissimo middleware](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md) | open · new 25 Aug · blocks the VAT build | Andrea Parmeggiani |
+| [OI-95 which Anticipay fields land in Salesforce](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) | open · new 25 Aug · client-owned | Fabrizio Paganelli |
 | [OI-04 scope against the go-live date](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md)                                                       | open · gating                                      | Elena Spini      |
 
 ### Open items — client inputs owed
@@ -131,6 +133,7 @@ before that the record said the 19 and 20 August sessions had left no minute.
 
 | Note                                                                                                                         | Weight                                                                                        |
 | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [2026-08-25 Integrazione Anticipay](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md)                                 | **Client-facing** · the VAT call moves behind a Pienissimo middleware · Gemini notes          |
 | [2026-08-24 Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md)                                           | ROMI-internal · Mexal mapping + campaign configuration · Gemini notes                         |
 | [2026-08-24 Interna per update flusso Lead-Opty](notes/meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md) | ROMI-internal · 15 Lead/Quote decisions · Gemini notes · **conflicts with the 20 Aug minute** |
 | [2026-08-20 Flusso Asset Biglietti](notes/meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md)                               | **Strongest evidence in the record** — Elena's own minute, sent to the client                 |
@@ -158,7 +161,8 @@ before that the record said the 19 and 20 August sessions had left no minute.
 
 | Note                                                                                                                                            | What it holds                                                                                                                                                  |
 | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Source trace 2026-08-24](notes/traces/Source%20trace%202026-08-24.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-24 · four meetings recovered, master re-decoded again                                            |
+| [Source trace 2026-08-25](notes/traces/Source%20trace%202026-08-25.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-25 · the Anticipay session, the middleware decision, master re-decoded a fifth time              |
+| [Source trace 2026-08-24](notes/traces/Source%20trace%202026-08-24.md)                                                                          | Previous watermark — 2026-08-24 · four meetings recovered, master re-decoded again                                                                             |
 | [meetings/open-items.md, 2026-08-25 org verification block](meetings/open-items.md)                                                             | **Newest three-way gap table** — requirements vs `force-app/` vs Pienissimo UAT · grep `## Org verification`, do not load the file                             |
 | [Source trace 2026-08-20](notes/traces/Source%20trace%202026-08-20.md)                                                                          | Previous watermark — 2026-08-20 · both design diagrams moved, master re-decoded                                                                                |
 | [Source trace 2026-08-19](notes/traces/Source%20trace%202026-08-19.md)                                                                          | Previous watermark — 2026-08-19 · the 19 Aug ticket flow diagram                                                                                               |
@@ -172,7 +176,7 @@ before that the record said the 19 and 20 August sessions had left no minute.
 | [Risk - normalising an article code merges two products](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md) | `_ARCOD` is opaque; two pairs differ by one zero or one dash                                                                                                   |
 | [OI-93 Bundle components should be priced articles](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md)               | Client change request found in the workbook, 17 days unread                                                                                                    |
 | [The requirement mappings were fabricated](notes/The%20requirement%20mappings%20were%20fabricated.md)                                           | **Read before trusting any note-to-requirement link** — the 23 discarded claims, and what to re-derive                                                         |
-| [The newest design diagram](notes/The%20newest%20design%20diagram.md)                                                                           | **Authority for state machines** · re-decoded 24 Aug at its 24/08 16:34Z version — campaign lookup rule, full Lead/Opty spec with picklist values, `Anticipay` |
+| [The newest design diagram](notes/The%20newest%20design%20diagram.md)                                                                           | **Authority for state machines** · re-decoded 25 Aug at its 25/08 08:23Z version — ⚠ **now contradicts itself**: LEAD-OPTY says the middleware, Ordini still says `Anticipay` |
 | [The campaign parent and child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)                                           | Campagna Padre → Figlio → Member · **how the event edition is carried without a year on the product** · entirely unbuilt                                       |
 | [The Mexal integration mapping workbook](notes/The%20Mexal%20integration%20mapping%20workbook.md)                                               | Andrea Di Cicco's 24 Aug field mapping · ⚠ **holds real customer records — never copy values**                                                                 |
 | [The ticket flow diagram of 19 August](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md)                                               | New standalone `Flusso Biglietti.drawio` — `Rinuncia` as a 7th state, OI-91, unminuted                                                                         |

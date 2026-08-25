@@ -6,8 +6,8 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-07-10
-updated: 2026-08-14
-depends_on: [OI-37, OI-38, OI-83]
+updated: 2026-08-25
+depends_on: [OI-37, OI-38, OI-83, OI-94]
 source: meetings/open-items.md status updates 2026-08-03 and 2026-08-06
 ---
 
@@ -93,3 +93,35 @@ argument cannot be won by asserting the topics never came up.
 The question that actually decides it is narrower: **were they in the contract**,
 which turns on the pre-sale record and the signed scope, neither of which is in
 this mailbox.
+
+## 2026-08-25 - Fase 1 now depends on the disputed entity
+
+🔴 **The line ROMI is defending got harder to hold, and nobody in the room
+noticed.**
+
+[The Anticipay session](../../notes/meetings/2026-08-25%20Integrazione%20Anticipay.md)
+agreed that Salesforce will not call Anticipay directly. It will call **an API
+built and hosted by Pienissimo Software Srl**, acting as middleware
+([OI-94](../items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)).
+Anticipay → SFDC is a **Fase 1** integration in ROMI's own project plan, quoted
+above.
+
+So Fase 1 cannot go live unless the entity ROMI argues is *not* this project's
+client **writes a service, stands up a test environment for it, and keeps it
+running**. Until 25 August the crossover was only that its maintenance manager
+was the named technical contact. It is now a build dependency.
+
+Nothing was said about who pays for that work, who owns the middleware after the
+project closes, or which contract it sits under. The decision was taken on
+technical merit — cost of repeat lookups, insulation from endpoint changes — and
+both arguments are good ones. That is not the issue; the issue is that a
+commercial boundary moved inside a technical decision.
+
+Elena Spini restated the corporate structure on Slack the same morning, so the
+distinction is live in her mind: _"La loro società è Pienissimo SRL che
+rivenditore del software Pienissimo Pro, di proprietà di un'entità legale
+distinta, Pienissimo Software SRL."_ — Pienissimo Srl **resells** Pienissimo Pro;
+the software is owned by Pienissimo Software Srl. It is the clearest statement of
+the relationship in the record.
+
+**This needs Elena Spini before the middleware is built against, not after.**
