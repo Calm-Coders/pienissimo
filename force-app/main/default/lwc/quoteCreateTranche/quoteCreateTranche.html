@@ -1,10 +1,10 @@
 <template>
-  <lightning-quick-action-panel header="Crea Tranche">
+  <lightning-quick-action-panel header={panelHeader}>
     <div class="content">
       <template if:true={showInitialLoader}>
         <div class="initial-loader">
           <lightning-spinner
-            alternative-text="Caricamento"
+            alternative-text="Loading"
             size="medium"
           ></lightning-spinner>
         </div>
@@ -13,102 +13,221 @@
       <template if:true={hasLoaded}>
         <template if:true={isLoading}>
           <lightning-spinner
-            alternative-text="Caricamento"
+            alternative-text="Loading"
             size="small"
           ></lightning-spinner>
         </template>
 
         <div class="summary">
           <div>
-            <div class="summary-label">Preventivo</div>
+            <div class="summary-label">Quote</div>
             <div class="summary-value">{quoteName}</div>
           </div>
           <div>
-            <div class="summary-label">Stato</div>
+            <div class="summary-label">Status</div>
             <div class={statusClass}>{quoteStatus}</div>
           </div>
         </div>
 
         <template if:false={isEditable}>
           <div class="message warning">
-            La tranche puo essere creata o modificata solo quando il preventivo
-            e in Bozza.
+            The tranche can be created or changed only when the quote is in
+            Draft.
           </div>
         </template>
 
-        <template if:true={hasNoLines}>
-          <div class="message">
-            Questo preventivo non contiene righe prodotto.
+        <template if:true={isEditMode}>
+          <div class="section-header edit-selector-header">
+            <h3 class="section-heading">Existing Tranches</h3>
+            <span>Select a tranche to edit</span>
+          </div>
+          <div class="edit-tranche-list">
+            <template for:each={editTrancheCards} for:item="tranche">
+              <button
+                key={tranche.key}
+                type="button"
+                class={tranche.cardClass}
+                data-index={tranche.index}
+                disabled={isSaveDisabledByStatus}
+                onclick={handleSelectEditTranche}
+              >
+                <span class="edit-tranche-main">
+                  <span class="edit-tranche-title">{tranche.name}</span>
+                  <span class="edit-tranche-meta">
+                    <span>Sequence {tranche.sequence}</span>
+                    <span>{tranche.dueDateLabel}</span>
+                    <span>{tranche.lineCountLabel}</span>
+                  </span>
+                </span>
+              </button>
+            </template>
           </div>
         </template>
 
-        <template if:true={hasSelectableLines}>
-          <div class="input-grid">
+        <template if:false={isEditMode}>
+          <div class="count-row">
             <lightning-input
               type="number"
-              label="Sequenza"
-              value={sequence}
+              label="Number of Tranches"
+              value={trancheCount}
               min="1"
+              max="20"
               step="1"
               required
               disabled={isSaveDisabledByStatus}
-              onchange={handleSequenceChange}
+              onchange={handleTrancheCountChange}
             ></lightning-input>
-
-            <lightning-input
-              type="date"
-              label="Data scadenza"
-              value={dueDate}
-              required
-              disabled={isSaveDisabledByStatus}
-              onchange={handleDueDateChange}
-            ></lightning-input>
-          </div>
-
-          <div class="section-header">
-            <h3 class="section-heading">Righe da includere</h3>
-            <span>{selectedCountLabel}</span>
-          </div>
-
-          <lightning-datatable
-            data-id="lineTable"
-            key-field="id"
-            data={selectableLines}
-            columns={lineColumns}
-            selected-rows={selectedLineIds}
-            onrowselection={handleRowSelection}
-          ></lightning-datatable>
-        </template>
-
-        <template if:true={hasOnlyAssignedLines}>
-          <div class="message">
-            Tutte le righe del preventivo sono gia associate a una tranche.
           </div>
         </template>
 
-        <template if:true={hasAssignedLines}>
-          <div class="section-header assigned">
-            <h3 class="section-heading">Righe gia assegnate</h3>
+        <template if:true={hasPlannedTranches}>
+          <template if:false={isEditMode}>
+            <div class="pager">
+              <lightning-button-icon
+                icon-name="utility:chevronleft"
+                alternative-text="Previous tranche"
+                title="Previous tranche"
+                disabled={isPreviousDisabled}
+                onclick={handlePreviousTranche}
+              ></lightning-button-icon>
+              <div class="pager-label">{currentTrancheLabel}</div>
+              <lightning-button-icon
+                icon-name="utility:chevronright"
+                alternative-text="Next tranche"
+                title="Next tranche"
+                disabled={isNextDisabled}
+                onclick={handleNextTranche}
+              ></lightning-button-icon>
+            </div>
+          </template>
+
+          <template if:true={pageValidationMessage}>
+            <div class="message error">{pageValidationMessage}</div>
+          </template>
+
+          <div class="tranche-card">
+            <template if:true={showDeleteCurrentPage}>
+              <div class="delete-page-actions">
+                <lightning-button
+                  label="Delete this Tranche"
+                  variant="destructive"
+                  disabled={isDeleteCurrentPageDisabled}
+                  onclick={handleDeleteCurrentPage}
+                ></lightning-button>
+              </div>
+            </template>
+
+            <div class="tranche-row">
+              <div class="sequence-badge">{currentTranche.sequence}</div>
+              <lightning-input
+                type="text"
+                label="Tranche Name"
+                value={currentTranche.name}
+                data-index={currentTranche.index}
+                required
+                disabled={isSaveDisabledByStatus}
+                onchange={handlePlannedNameChange}
+              ></lightning-input>
+              <lightning-input
+                type="date"
+                label="Due Date"
+                value={currentTranche.dueDate}
+                data-index={currentTranche.index}
+                data-current-tranche-due-date
+                required
+                disabled={isSaveDisabledByStatus}
+                onchange={handlePlannedDueDateChange}
+              ></lightning-input>
+            </div>
+
+            <div class="section-header">
+              <h3 class="section-heading">Quote Lines</h3>
+              <span>{currentSelectionLabel}</span>
+            </div>
+
+            <template if:true={hasQuoteLines}>
+              <template if:true={hasCurrentSelectedLines}>
+                <div class="line-group">
+                  <div class="line-group-title">Assigned to this Tranche</div>
+                  <div class="quote-line-list">
+                    <template for:each={currentSelectedLines} for:item="line">
+                      <div class="quote-line-card selected" key={line.id}>
+                        <div class="line-main">
+                          <div class="line-title">{line.productName}</div>
+                          <div class="line-meta">
+                            <span>{line.productCode}</span>
+                            <span>Qty {line.quantity}</span>
+                            <span>Total {line.totalLabel}</span>
+                          </div>
+                        </div>
+                        <lightning-button-icon
+                          icon-name="utility:delete"
+                          alternative-text="Remove line"
+                          title="Remove line"
+                          variant="bare"
+                          data-id={line.id}
+                          disabled={isSaveDisabledByStatus}
+                          onclick={handleRemoveLine}
+                        ></lightning-button-icon>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+
+              <template if:true={hasAvailableQuoteLines}>
+                <div class="line-group">
+                  <div class="line-group-title">Available Quote Lines</div>
+                  <div class="quote-line-list">
+                    <template for:each={availableQuoteLines} for:item="line">
+                      <div class="quote-line-card" key={line.id}>
+                        <div class="line-main">
+                          <div class="line-title">{line.productName}</div>
+                          <div class="line-meta">
+                            <span>{line.productCode}</span>
+                            <span>Qty {line.quantity}</span>
+                            <span>Total {line.totalLabel}</span>
+                          </div>
+                        </div>
+                        <lightning-button
+                          label="Assign to this Tranche"
+                          data-id={line.id}
+                          disabled={isSaveDisabledByStatus}
+                          onclick={handleAssignLine}
+                        ></lightning-button>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+
+              <template if:false={hasAvailableQuoteLines}>
+                <template if:false={hasCurrentSelectedLines}>
+                  <div class="message">
+                    No quote lines are available for this tranche.
+                  </div>
+                </template>
+              </template>
+            </template>
+
+            <template if:false={hasQuoteLines}>
+              <div class="message">
+                This quote does not contain product lines.
+              </div>
+            </template>
           </div>
-          <lightning-datatable
-            key-field="id"
-            data={assignedLines}
-            columns={assignedColumns}
-            hide-checkbox-column
-            onrowaction={handleAssignedRowAction}
-          ></lightning-datatable>
         </template>
       </template>
     </div>
 
     <div slot="footer">
       <lightning-button
-        label="Annulla"
+        label="Cancel"
         onclick={handleCancel}
       ></lightning-button>
       <lightning-button
         variant="brand"
-        label="Crea Tranche"
+        label={saveButtonLabel}
         disabled={isSaveDisabled}
         onclick={handleSave}
         class="slds-m-left_small"
