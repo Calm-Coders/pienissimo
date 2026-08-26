@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-07-23
-updated: 2026-08-25
+updated: 2026-08-26
 source: meetings/open-items.md row 46
 ---
 
@@ -191,3 +191,34 @@ dropping the field costs one record.
 
 The register's `build_state` describes these as "populated on zero bundles". One
 product now carries them; the substance of that line is unchanged.
+
+## 🔴 2026-08-26 - the replacement mechanism is now specified, and it is a table
+
+The [26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+supplies what the 20 August ruling left as a gap: **how** the edition is derived
+from the order date.
+
+Fabrizio Paganelli restated the ruling unprompted in the first two minutes —
+_"l'anno accademico avevamo detto di no perché deve essere derivato in base alla
+data dell'ordine"_ — and then specified the mechanism:
+[a manually maintained Salesforce table](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)
+keyed on `article code × order-date window → edizione`, matched **per order
+line**.
+
+**This settles the question this item has been parked on.** `Anno_Solare__c` does
+not merely lack a client source for its dependency matrix — its job now belongs
+to [OI-96](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md). The field
+should go, and it costs one record to remove.
+
+The **event** half also gets its carrier: Mexal's `categoria statistica`, which
+the session tested on the wire and assigned to the event (Campagna Padre). So the
+event is not a hand-maintained Salesforce picklist either — it descends from
+Mexal.
+
+⚠ **Do not correct `Evento__c`'s values yet.**
+[OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md):
+Fabrizio Paganelli intends to close all ~1000 existing article codes and re-create
+them, taking it to direction on 31 August. The event list this item measures the
+picklist against is derived from the workbook extract of the registry he is about
+to replace. `Happy Team` being absent is still a real defect; the rest of the
+value list is provisional until the new registry arrives.

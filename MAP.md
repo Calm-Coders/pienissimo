@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-26 (org check vs Pienissimo UAT) · Source of record: [notes/](notes/)
+Last updated: 2026-08-26 (nightly requirements-check — the Mexal review) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -59,6 +59,42 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   [the phase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)**
   — nobody in the session said so.
 
+- 🔴 **2026-08-26 — the Mexal review ran, and the edition mechanism changed
+  again.** First Mexal session since 14 July; full transcript, Gemini notes and
+  recording all recovered
+  ([the session](notes/meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)).
+  **The event edition now comes from a hand-maintained Salesforce table** — one
+  row per `article code × order-date window → edizione`, matched **per order
+  line**, with a separate hand-entered event date for the no-show logic
+  ([OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)).
+  🔴 **This kills the one-active-child-campaign rule** agreed 24 August — Elena
+  Spini killed her own rule in session, because a bundle spanning two events
+  cannot resolve to one active edition
+  ([the campaign model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)).
+  🟢 **Mexal's three classification fields are assigned and tested on the wire** —
+  `natura` → genera biglietto, `categoria statistica` → the event,
+  `gruppo merceologico` → candidate for ticket type, plus `Gest. annullato` →
+  product disabled ([the integration](notes/flows/The%20Mexal%20integration.md)).
+  Values chosen at Pienissimo's direction on **31 August**.
+  🔴 **Fabrizio Paganelli intends to close all ~1000 article codes and re-create
+  them**, listini included
+  ([OI-98](notes/items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md))
+  — which makes `Prodotti e Bundle.xlsx`, the event list, the tier evidence and
+  the 280 UAT products provisional, eleven days before Fase 1 development ends.
+  🔴 **[OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)
+  was the question this meeting existed to answer and was never asked** — the
+  word *scadenziario* is not in the transcript. It now has no forum.
+  Also: a **bundle twin needs its own article code**, not just a flag
+  ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)); **only listino 1
+  is used**; **invoicing stays Mexal-driven for ~6 months**; and
+  `tipo nazionalità` is a **mandatory, undocumented** five-way fiscal residence
+  ([OI-97](notes/items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)).
+  🔴 **Mexal's coded-value dictionaries are unknown to ROMI** — Andrea Di Cicco on
+  Slack the same evening: _"loro hanno dei valori che sono tipo per valuta:
+  1,2,3,4 — che lato nostro non sappiamo"_, asked for by email and unanswered
+  ([OI-99](notes/items/OI-99%20Customer%20registry%20deep%20mapping%20session.md),
+  booked for **2 Sept** but titled for the article registry).
+
 - The repo still runs ahead of the trackers and the org still holds Apex the
   repo does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
   [missing stack](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
@@ -84,10 +120,13 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   `Product2.Anno_Solare__c` picklist and its dependency matrix assume the
   opposite — so the question is no longer what values it needs but whether the
   field should exist ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)).
-  What carries the edition instead is
+  🟢 **26 Aug supplied the mechanism and makes this decidable:** the edition comes
+  from [an order-date mapping table](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md),
+  per order line — so `Anno_Solare__c`'s job now belongs elsewhere and dropping it
+  costs one record. The container is still
   [the campaign parent and child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)
-  — Campagna Padre → Campagna Figlio → Campaign Member, agreed 20 Aug, configured
-  24 Aug, **entirely unbuilt**.
+  — Campagna Padre → Campagna Figlio → Campaign Member, agreed 20 Aug, **entirely
+  unbuilt** — but its one-active-child rule is dead.
 
 - ✅ **Settled by these minutes:** ticket type is a **manually maintained
   Salesforce field owned by amministrazione**, because Mexal cannot carry a
@@ -109,12 +148,11 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   19 Aug minute states the asset-creation rule **two incompatible ways in the same
   document** ([OI-53](notes/items/OI-53%20Asset%20generation%20rule.md)).
 
-- **Calendar: 25 Aug** Anticipay ✅ ran · **26 Aug** [ROMI-PIENISSIMO] Review Temi
-  Integrazione Mexal (16:00–17:00 CEST, **client-facing** — Elena, Aurel, Andrea
-  Di Cicco, amministrazione and Fabrizio Paganelli; first Mexal session since
-  14 Jul) · **27 Aug** WooCommerce (Elisa Migliano and Fabrizio Paganelli added
+- **Calendar: 25 Aug** Anticipay ✅ ran · **26 Aug** Review Temi
+  Integrazione Mexal ✅ ran, 1h25m, fully minuted · **27 Aug** WooCommerce (Elisa Migliano and Fabrizio Paganelli added
   25 Aug) · **1 Sept 10:00** [ROMI-PIENISSIMO] Follow-up Integrazione Anticipay,
-  client-facing ·
+  client-facing · **2 Sept 10:00–11:30** [ROMI-PIENISSIMO] Follow-up Anagrafica
+  Articoli, client-facing, **new — invited 26 Aug 16:40Z** ·
   [PIENISSIMO] Follow-up Interno is now a **weekly Monday 17:00 slot**.
   [The compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)
   still governs.
@@ -148,7 +186,10 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    Academy bundle at quantity 2), and the `Anno_Solare__c` dependency matrix has
    **no client source at all**. New:
    [OI-93](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md),
-   a client change request nobody knew existed. Still owed: the Zoho workbook
+   a client change request nobody knew existed. ⚠ **And its shelf life is now short** —
+   [OI-98](notes/items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
+   re-creates the whole registry the workbook extracts. Still owed: the Zoho
+   workbook
    ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)), and ROMI owes the
    [import template](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
    — both must carry the rule that

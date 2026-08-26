@@ -172,3 +172,65 @@ than repeating that they are absent.
 🔴 **The file must not be committed** — live credentials in cleartext against
 the ERP that is the system of record for invoicing. Handling:
 [the collection note](../The%20Mexal%20Postman%20collection.md).
+
+## 2026-08-26 - the review ran: two of the three open threads answered
+
+The [26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+was the first Mexal session since 14 July. It ran for 1h25m with Fabrizio
+Paganelli and Elisa Migliano on the client side, and it closed two of the three
+things this item was holding.
+
+🟢 **Listino 1 versus listino 2 — answered.** Fabrizio Paganelli: _"usiamo solo
+l'uno."_ Products carry two price lists, only listino 1 is in use. Mirko Merendi
+deferred this to him in July; it has been open since. **Whether a third listino
+could ever be needed was not asked and stays open.**
+
+🔴 **There is still no Mexal test environment.** Confirmed the hard way rather
+than restated: Andrea Di Cicco created customer `501.08721` and order `OC11`
+**in production**, on serie 10, during the call — _"purtroppo solamente in
+produzione posso fare i test."_ He will send the created record IDs to Fabrizio
+Paganelli **and** to `amministrazione@` so Elisa Migliano can verify them, because
+Fabrizio Paganelli is out of office for the following days. The test-company ask
+still has no owner.
+
+**A registry field for the previous code and VAT** was not raised. Still open.
+
+### The credentials question is now settled by behaviour
+
+Andrea Di Cicco queried the article registry, created a customer and created an
+order against production live in this session, and Aurel Mrruku followed in the
+Postman collection. Whatever the 24 August line in this note claims, **ROMI's
+Mexal WEBAPI access works**. Nobody mentioned credentials at the review. Treat the
+"credentials still owed" thread as closed unless someone names a specific missing
+credential.
+
+### 🔴 New: the API documentation is materially incomplete
+
+Andrea Di Cicco hit mandatory fields that are not documented — _"tutti sti campi
+non c'erano sulla documentazione"_ — including `tipo nazionalità`
+([OI-97](OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)) and
+`valuta`, which he set to `1` **without knowing whether 1 means euro**. The
+documentation describes part of the contract; the API's rejections are the rest.
+
+### Three Mexal fields are now assigned, and tested on the wire
+
+| Mexal field              | API name                           | Carries                        |
+| ------------------------ | ---------------------------------- | ------------------------------ |
+| `natura`                 | `COD_Natura`                       | genera biglietto sì/no         |
+| `categoria statistica`   | `Sigla cat sta` + `Numero cat sta` | the event (Campagna Padre)     |
+| `gruppo merceologico`    | `GRP merch`                        | candidate for tipo biglietto   |
+| `Gest. annullato`        | `Gest. annullato` (`n`/`S`)        | product active/disabled in SF  |
+
+Each was changed in Mexal during the call and observed arriving over the API.
+Full detail in [the meeting note](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md).
+
+🟢 **Invoicing stays out of scope for now.** Andrea Di Cicco had found the JSON to
+create an invoice from Salesforce; Fabrizio Paganelli declined — _"per il momento
+preferisco che venga pilotata solo da Mexal la fatturazione"_ — and put it at
+**roughly six months** after go-live. That removes a build item nobody had
+estimated.
+
+🔴 **New session requested:** [OI-99](OI-99%20Customer%20registry%20deep%20mapping%20session.md),
+a dedicated hour on the customer registry — categoria provvigioni, condizioni
+documenti di magazzino, and the prealimented order fields that block invoicing if
+wrong.

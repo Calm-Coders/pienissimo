@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-07-23
-updated: 2026-08-24
+updated: 2026-08-26
 blocks: [OI-13]
 source: meetings/open-items.md row 48
 ---
@@ -83,3 +83,32 @@ Same thread covers [OI-46](OI-46%20Bundle%20classification%20picklists.md). It s
 queue, owed by the same person, all three feeding
 [the bundle demo](OI-13%20Bundle%20effort%20estimate%20and%20client%20demo.md) that
 still has to be shown to Pienissimo.
+
+## 🔴 2026-08-26 - the twin codes are needed after all
+
+The note above parks this item on the theory that the `(B)` convention is
+**obsolete rather than forgotten**, because `Product2.Solo_Bundle__c` does the
+same job in a field. The
+[26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+reverses that reading.
+
+Aurel Mrruku, unambiguously:
+
+> _"se vuoi due prodotti come abbiamo fatto per fare i test, uno per generare il
+> biglietto e l'altro per non generare il biglietto, devi per forza avere due
+> prodotti, non lo puoi fare un unico prodotto."_
+
+Fabrizio Paganelli accepted and named the convention himself: _"se un codice
+articolo è visibile, se non è il bundle, avrà il codice A. L'altro codice che è
+visibile a tutor avrà il codice B."_ **Two codes per article, not one code with a
+flag.** The flag survives as the marker that tells Salesforce which is which.
+
+So the item is **not retargeted** — the twin codes are wanted. What has changed is
+that they will be minted as part of
+[the full registry re-creation](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
+rather than as ten additions to the existing one, and the `(B)` string itself was
+never mentioned. **Ask for the convention when the new registry arrives; do not
+chase `(B)` specifically.**
+
+Fabrizio Paganelli will **configure two such articles as a test next week**, which
+is the 3–5 examples this item asked for, arriving by a different route.

@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-08-26
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-04
 ---
@@ -129,3 +129,31 @@ product-master field covers the **marketing segmentation** need (tags vs
 segments). Assigned in the minute to "Fabrizio ROMI" —
 [Fabrizio Mastracci](../people/Fabrizio%20Mastracci%20-%20marketing%20automation%20ROMI.md),
 not Paganelli.
+
+## 2026-08-26 - the tiers are confirmed out loud, the carrier is not
+
+At the [26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md),
+Fabrizio Paganelli listed the tiers from memory when Aurel Mrruku asked how many
+there were: **_"c'è Executive… Gold e Diamond."_**
+
+That is the registry's list exactly. **`Silver` and `Dinamond` are both dead** —
+the first was an illustrative example read as literal in the 06 August minute, the
+second a typo in the 20 August diagram. Neither needs chasing again.
+
+**The carrier is still undecided.** Fabrizio Paganelli offered Mexal's `gruppo
+merceologico` — hierarchical, parent/child levels — as the field that could hold
+the ticket type, and Andrea Di Cicco tested it live: the code came over the API as
+`GRP merch`, but **the level did not**. Aurel Mrruku pushed the other way,
+preferring a dedicated field once he heard there were three values —
+_"se sono tre meglio se lasciamo un campo a sé"_ — and the discussion ended with
+Fabrizio Paganelli saying _"facciamo una prova"_ rather than a decision.
+
+So the record now holds **two answers to where ticket type lives**: the
+20 August client minute says Salesforce, maintained by hand; the 26 August session
+put Mexal's `gruppo merceologico` back on the table without retracting it. **Later
+evidence does not win here** — the 26 August discussion did not conclude. Treat
+the 20 August ruling as standing and the Mexal option as an open alternative.
+
+⚠ Whichever way it lands, [OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
+governs the timing: the article registry is being re-created, and the tier values
+this note cites were parsed from an extract of the registry being replaced.

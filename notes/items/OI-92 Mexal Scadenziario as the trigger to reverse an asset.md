@@ -126,3 +126,28 @@ deliberate uses. Only `Ricerca Scadenziario` is the real one.
 
 **Still the natural question for today's 16:00 client review**, where Fabrizio
 Paganelli — who proposed the mechanism on 20 August — is an invitee.
+
+## 🔴 2026-08-26 - the review ran and the question was never asked
+
+The session this item named as its forum — `[ROMI-PIENISSIMO] - Review Temi
+Integrazione Mexal`, 26 August 16:00 CEST — **ran for 1h25m with Fabrizio
+Paganelli present, and the scadenziario was not raised**. The word does not appear
+once in the transcript, nor in the Gemini notes, decisions or next steps. See
+[the meeting note](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md).
+
+Fabrizio Paganelli proposed this mechanism himself on 20 August and it was minuted
+as an action to Andrea Di Cicco. Both were in the room. Neither brought it up; the
+session went to the article registry and customer creation instead.
+
+**Still open, and now without a scheduled forum.** The next Mexal-adjacent slots
+are the WooCommerce session (27 August, wrong topic) and
+`[ROMI-PIENISSIMO] - Follow-up Anagrafica Articoli` on **2 September
+10:00–11:30 CEST**, which is scoped to the article registry. **Put it on an agenda
+explicitly** rather than assuming a Mexal meeting will reach it — that assumption
+has now failed once.
+
+⚠ One thing the session did change indirectly: Fabrizio Paganelli ruled that
+**invoicing stays piloted by Mexal for roughly six months** with no Salesforce
+automatism. That does not answer this item — the scadenziario read is a GET, not
+an invoice write — but it means any reversal driven from the scadenziario would be
+Salesforce reacting to a Mexal-side event it does not control.

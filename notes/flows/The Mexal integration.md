@@ -169,3 +169,60 @@ rolling.
 
 ⚠ The file carries **live, enabled credentials** and must never be committed —
 detail and handling in [the collection note](../The%20Mexal%20Postman%20collection.md).
+
+## 2026-08-26 - the first write calls succeed, and the classification contract lands
+
+At the [26 August review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+Andrea Di Cicco exercised the two untested write calls live, **against
+production**, and both worked:
+
+- `Creazione Cliente` → customer **`501.08721`**, "Test Roni"
+- `Creazione ordini` → order **`OC11`** on **serie 10**
+
+Fabrizio Paganelli confirmed both on his own Mexal screen. The new order shows
+status `S` (*sospeso*), which he explained is normal and flips when the order is
+transformed into an invoice.
+
+### Which Mexal fields carry which project concept
+
+Settled in this session, each verified by editing in Mexal and watching the API
+response change:
+
+| Mexal field            | API name                           | Carries                        | Notes                                                   |
+| ---------------------- | ---------------------------------- | ------------------------------ | ------------------------------------------------------- |
+| `natura`               | `COD_Natura`                       | genera biglietto sì/no         | Lookup to a managed base table, **not free text**       |
+| `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | the event (Campagna Padre)     | **Splits into two API fields**                          |
+| `gruppo merceologico`  | `GRP merch`                        | candidate for tipo biglietto   | Hierarchical in Mexal; **the level did not come over**  |
+| `Gest. annullato`      | `Gest. annullato`                  | product disabled in Salesforce | `n` = active, `S` = cancelled                           |
+
+**Mexal offers at most three classification fields on an article**, and they were
+entirely unused before this session. That constraint is why ticket type and
+bundle-only visibility keep being pushed onto the Salesforce side.
+
+**The values themselves are not chosen.** Fabrizio Paganelli takes the scheme to
+Pienissimo's direction on 31 August.
+
+### Invoicing stays Mexal-driven
+
+Andrea Di Cicco had worked out the JSON to create an invoice from Salesforce.
+Fabrizio Paganelli declined it for now — _"per il momento preferisco che venga
+pilotata solo da Mexal la fatturazione"_ — and put a revisit at roughly **six
+months** after go-live. Salesforce reads invoices; it does not create them.
+
+### 🔴 The documentation is not the contract
+
+Andrea Di Cicco hit several **mandatory fields absent from the documentation**:
+_"tutti sti campi non c'erano sulla documentazione."_ Two are recorded:
+
+- `tipo nazionalità` — mandatory, and it is *residenza fiscale*. See
+  [OI-97](../items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md).
+- `valuta` — set to `1` by trial. **Nobody knows whether `1` is euro.**
+
+`codice listino` was answered: **only listino 1 is used**, though products carry
+two.
+
+⚠ Still unexplained: the **one-to-many relationship between a tranche and the
+order rows** implied by Mexal's row identifiers. Andrea Di Cicco described the
+row-id structure as what makes per-tranche invoicing of a bundle possible; Aurel
+Mrruku asked him to explain it — _"mi devi spiegare sta roba"_ — and the call
+ended first. It bears on [OI-50](../items/OI-50%20Tranche%20object.md).

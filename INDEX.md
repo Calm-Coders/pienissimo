@@ -70,6 +70,10 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-92 Mexal Scadenziario as the trigger to reverse an asset](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md) | open · new 20 Aug · due at the 26 Aug Mexal review | Andrea Di Cicco    |
 | [OI-94 Anticipay is called through the Pienissimo middleware](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)     | open · new 25 Aug · blocks the VAT build           | Andrea Parmeggiani |
 | [OI-95 which Anticipay fields land in Salesforce](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)                               | open · new 25 Aug · client-owned                   | Fabrizio Paganelli |
+| [OI-96 edition mapping table on Salesforce](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)                                             | open · new 26 Aug · replaces the active-child rule | Aurel Mrruku       |
+| [OI-97 fiscal residence on the customer registry](notes/items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)                               | open · new 26 Aug · blocks customer creation       | Andrea Di Cicco    |
+| [OI-98 the Mexal article registry is being re-created](notes/items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)                   | open · new 26 Aug · client-owned                   | Fabrizio Paganelli |
+| [OI-99 customer registry deep mapping session](notes/items/OI-99%20Customer%20registry%20deep%20mapping%20session.md)                                       | open · new 26 Aug · unscheduled                    | Fabrizio Paganelli |
 | [OI-04 scope against the go-live date](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md)                                                       | open · gating                                      | Elena Spini        |
 
 ### Open items — client inputs owed
@@ -131,11 +135,14 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 ### Meetings
 
-Minuted sessions, newest first. The four below were all recovered on 2026-08-24;
-before that the record said the 19 and 20 August sessions had left no minute.
+Minuted sessions, newest first. The 26 August Mexal review was recovered by the
+nightly sweep the same evening, with its full transcript. The four from 19–24
+August were all recovered on 2026-08-24; before that the record said the 19 and
+20 August sessions had left no minute.
 
 | Note                                                                                                                         | Weight                                                                                        |
 | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [2026-08-26 Review Temi Integrazione Mexal](notes/meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)             | **Client-facing** · full transcript · the edition mechanism changes again · first Mexal session since 14 Jul |
 | [2026-08-25 Integrazione Anticipay](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md)                                 | **Client-facing** · the VAT call moves behind a Pienissimo middleware · Gemini notes          |
 | [2026-08-24 Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md)                                           | ROMI-internal · Mexal mapping + campaign configuration · Gemini notes                         |
 | [2026-08-24 Interna per update flusso Lead-Opty](notes/meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md) | ROMI-internal · 15 Lead/Quote decisions · Gemini notes · **conflicts with the 20 Aug minute** |
@@ -215,13 +222,14 @@ rg -l "^uncertain:"        notes/         # what is explicitly unverified
 | ~6k   | [docs/architecture.md](docs/architecture.md)                                                                 | How the vault, the MCP indexes and the surfaces fit together |
 | ~6k   | [README.md](README.md)                                                                                       | Stack and setup, published artifacts, the design diagrams    |
 | ~4-5k | [meetings/proposals/](meetings/proposals/)                                                                   | The asset data model or the bundle demo                      |
+| ~5k   | [meetings/results/2026-08-26-review-temi-integrazione-mexal.md](meetings/results/2026-08-26-review-temi-integrazione-mexal.md) | The Mexal classification contract and the edition mechanism |
 | ~1-3k | other files in [meetings/results/](meetings/results/)                                                        | A specific earlier meeting                                   |
 
 ## Never — grep, do not load
 
 | Cost      | Pattern                               | Instead                                           |
 | --------- | ------------------------------------- | ------------------------------------------------- |
-| ~207k     | `meetings/*-transcript.it.md`         | `rg "term" meetings/`, then read that line range  |
+| ~229k     | `meetings/*-transcript.it.md`         | `rg "term" meetings/`, then read that line range  |
 | ~56k/~50k | `meetings/open-items.it.md` / `.md`   | Read `notes/items/`                               |
 | ~21k/~20k | `REQUISITI.it.md` / `REQUIREMENTS.md` | `rg` for the requirement id                       |
 | ~20k/~18k | `meetings/DEVELOPMENT-RECAP*.md`      | Read the relevant notes                           |

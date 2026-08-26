@@ -993,3 +993,232 @@ Two things are **flagged for a human, not corrected**: the register's
 disagrees with both the org and #59; and the rulings owed since §16 — #46, #53
 and #59's "Da ricontattare" contradiction — are untouched by an org check and
 **still owed**.
+
+---
+
+## 20. Update 2026-08-26 — the Mexal review, and the edition mechanism changes again
+
+The **26 August `[ROMI-PIENISSIMO] - Review Temi Integrazione Mexal`** client
+session, 16:00–17:26 CEST, 1h25m45s, recovered by the nightly
+`requirements-check` sweep the same evening. Gemini notes, full transcript and
+recording all exist and were read; the transcript is preserved at
+`meetings/2026-08-26-review-temi-integrazione-mexal-transcript.it.md` and the
+bilingual recap at `meetings/results/2026-08-26-review-temi-integrazione-mexal.md`.
+
+**First Mexal session since 14 July.** Present: Elena Spini (left ~01:02), Aurel
+Mrruku, Andrea Di Cicco (ROMI); Fabrizio Paganelli, Elisa Migliano (Pienissimo).
+Sabatino Rinaldi was invited and never spoke.
+
+⚠ **This section records decisions, not build state.** Where it meets §19, §19
+still governs what exists in the org.
+
+### 20.1 🔴 §16.2's active-child-campaign rule is dead
+
+§16.2 records the edition being carried by **a parent-campaign code in a lookup
+on Product, plus a rule enforcing one active child campaign per parent**. Both
+halves were abandoned on 26 August.
+
+**The edition now comes from a hand-maintained Salesforce table**, one row per
+`article code × data inizio × data fine → edizione`. At order time each **order
+line** is matched on the **order date** against its article's window and takes
+the edition from the matching row.
+
+Elena Spini killed her own rule in the session: a bundle spanning two events
+cannot resolve to a single active edition — _"quello che avevamo pensato Aurel,
+cioè non può esistere perché… se prendi il bundle, cioè come fai?"_ Aurel Mrruku
+accepted the replacement: _"non mettono il flag campagna attiva… mettono solo le
+date, faccio io il check nel momento in cui si genera l'ordine."_
+
+Three properties are easy to get wrong and all three are load-bearing:
+
+- **It resolves per order line, not per order.** Elena Spini asked; Fabrizio
+  Paganelli confirmed — _"a livello di riga ordine."_ One order legitimately
+  splits across editions.
+- **The windows are arbitrary.** They are the period during which orders for an
+  edition are taken, set by hand, and are **not** the edition's calendar year and
+  **not** the event's own dates. Aurel Mrruku restated it and got confirmation:
+  _"puoi mettere data a piacere… io mi baso solo su quelle date."_
+- **The order date governs, not the tranche date.** Fabrizio Paganelli:
+  _"le tranche ci servono a noi solo per definire i pagamenti."_
+
+A **separate hand-entered event date** — column G of the same table — carries the
+real event date and is what the post-event no-show deactivation keys on.
+
+Recorded as **#96**. ⚠ **Agreed in principle and explicitly not finished.** The
+Gemini decisions list files the order-line-to-campaign mapping under
+*"Da approfondire"*, the only item there, and Aurel Mrruku asked for a dedicated
+hour of concrete worked examples first. **That session is not scheduled.**
+
+### 20.2 §16.1 is confirmed, and now has a mechanism
+
+§16.1 records the client's ruling that the edition is not an attribute of the
+product. Fabrizio Paganelli restated it unprompted in the first two minutes —
+_"l'anno accademico avevamo detto di no perché deve essere derivato in base alla
+data dell'ordine"_ — and §20.1 is the mechanism it always lacked.
+
+**This settles what #46 turns on.** `Product2.Anno_Solare__c` does not merely
+lack a client source for its dependency matrix; its job now belongs to #96. It is
+populated on 1 of 280 products, so removing it costs one record.
+
+The **event** half gets a carrier too, and it is not a Salesforce picklist: it
+descends from Mexal's `categoria statistica`.
+
+### 20.3 🟢 The three Mexal classification fields are assigned and tested on the wire
+
+Fabrizio Paganelli's constraint, stated at the top of the call: **the Mexal
+article registry has at most three fields available to classify a product**, and
+none of them is in use — _"siamo liberissimi di fare come è più comodo per noi."_
+
+Each assignment below was proved during the session, Fabrizio Paganelli editing
+in Mexal while Andrea Di Cicco diffed the API response in real time.
+
+| Mexal field | API name | Carries | Verified |
+| --- | --- | --- | --- |
+| `natura` | `COD_Natura` | genera biglietto sì/no | ✅ set on `CS_00154`, seen over the API |
+| `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | the event (Campagna Padre) | ✅ `C01` then `P02`. **Two API fields** |
+| `gruppo merceologico` | `GRP merch` | candidate for tipo biglietto | ⚠ hierarchical; **only the code came over, not the level** |
+| `Gest. annullato` | `Gest. annullato` — `n`/`S` | product disabled in Salesforce | ✅ `CS58` cancelled and restored live |
+
+`natura` resolves against a managed base table, **not free text** — which answers
+Andrea Di Cicco's objection that an operator could type anything.
+
+⚠ **The values themselves are not chosen.** Fabrizio Paganelli takes the scheme to
+Pienissimo's direction on **Monday 31 August**.
+
+This answers the question §16 left open at #47: **the event flag falls on the
+Mexal side.**
+
+### 20.4 🔴 The bundle twin needs its own article code — #48 reverses
+
+The record read on 24 August that `Product2.Solo_Bundle__c` made the `(B)`
+convention obsolete. Aurel Mrruku established the opposite: _"devi per forza
+avere due prodotti, non lo puoi fare un unico prodotto."_ Fabrizio Paganelli
+agreed and named it — code A outside the bundle, code B for tutors.
+
+The flag marks which is which; it does not remove the twin. The codes will be
+minted inside §20.7's registry re-creation, and the `(B)` string was never
+mentioned — **ask for the convention when the new registry arrives.** Two such
+articles are promised as a test next week.
+
+### 20.5 Obsolete products disabled via `Gest. annullato`, at a known manual cost
+
+~1000 legacy article codes exist and tutors pick from them. Mexal's
+`annulla/ripristina` sets the flag, the integration maps it to an inactive flag on
+`Product2`, the product stops being selectable. Tested against a real invoice:
+the cancelled article's line stayed visible on the issued invoice.
+
+⚠ **Elisa Migliano supplied the failure mode from live experience** — tutors have
+quoted a code while administration cancelled it underneath, the quote then failed
+to reach Mexal and was fixed by hand. Andrea Di Cicco confirmed Salesforce
+behaves the same: **nobody can re-select a disabled product, master and
+administration users included**, but an existing order line can be edited to swap
+in the replacement code. Both accepted that cost.
+
+### 20.6 New: fiscal residence is mandatory, and the API documentation is incomplete
+
+Andrea Di Cicco's live customer-creation call failed on **`tipo nazionalità`**,
+which is `residenza fiscale` in the Mexal UI. It must distinguish **Italia, San
+Marino, Città del Vaticano, Unione Europea, extra-Unione Europea**, because it
+drives invoice transmission to the San Marino *ufficio tributario*. Whether
+Salesforce carries or derives the value **was not discussed** — **#97**.
+
+⚠ It was not the only undocumented mandatory field: _"tutti sti campi non
+c'erano sulla documentazione."_ `valuta` was set to `1` by trial and **nobody
+knows whether 1 is euro**. Treat the Mexal documentation as a partial description
+of the contract.
+
+Once set, both write calls worked: customer `501.08721` and order `OC11`, on
+serie 10 — **in production**. 🔴 **There is still no Mexal test environment.**
+
+### 20.7 🔴 The entire Mexal article registry is scheduled to be re-created
+
+The opening statement of the meeting, and the largest thing in it by consequence:
+
+> _"vorrei chiudere tutti i codici prodotto che abbiamo adesso e crearne di nuovi
+> in base alle regole che ci siamo dati fino ad oggi… è probabile che ci sia
+> l'intenzione di rivedere un attimo i listini."_
+
+It goes to Pienissimo's direction on **31 August**; the revised registry is
+promised "next week". Recorded as **#98**.
+
+It renders provisional almost everything derived from `Prodotti e Bundle.xlsx` —
+the event list (§13, #46), the tier evidence (#76), the bundle-only codes (#48),
+the priced-component request (#93) — and the 280 `Product2` rows in UAT. ⚠ Price
+lists are in scope, so the prices delivered on 07/08 have a shelf life; record
+that they change, never the values. **Nobody connected it to the 10 September end
+of Fase 1 development.**
+
+### 20.8 ✅ Settled, and one thing removed from scope
+
+- **Only listino 1 is used.** _"usiamo solo l'uno."_ Open since July, deferred by
+  Mirko Merendi to Fabrizio Paganelli — now answered (#58).
+- **Ticket tiers are Executive, Gold and Diamond**, said out loud by Fabrizio
+  Paganelli and matching the registry. `Silver` and `Dinamond` are both dead
+  (#76). ⚠ Where the tier *lives* reopened and did not close — see §20.10.
+- 🟢 **Invoicing stays piloted by Mexal for roughly six months.** Andrea Di Cicco
+  had the JSON; Fabrizio Paganelli declined — _"per il momento preferisco che
+  venga pilotata solo da Mexal la fatturazione."_ Salesforce reads invoices, it
+  does not create them. That removes an unestimated build item.
+- **Multi-edition bundles of the same article are out of scope** —
+  _"questa qui è una cosa che non facciamo."_ Read narrowly: different articles
+  with different windows still split across editions in one order.
+- **New requirement:** when a no-show is manually given a goodwill ticket for the
+  next edition, **the Asset must be linked to the next Campagna Figlio by hand**,
+  or the reminder automation never fires again. No control catches it.
+
+### 20.9 🔴 #92 was the question this meeting existed to answer, and was never asked
+
+The scadenziario question — can an *unpaid* Mexal invoice drive an Asset back to
+its previous state? — was minuted on 20 August as an action for this forum. Its
+proposer (Fabrizio Paganelli) and its owner (Andrea Di Cicco) were both in the
+room for 1h25m. **The word *scadenziario* does not appear once** in the
+transcript, the notes, the decisions or the next steps.
+
+It now has **no scheduled forum**: 27 August is WooCommerce, and the 2 September
+`Follow-up Anagrafica Articoli` is scoped to the article registry. Put it on an
+agenda explicitly.
+
+### 20.10 Open questions this session leaves behind
+
+- ⚠ **Ticket type has two live answers.** The 20 August client minute says a
+  Salesforce-only field; this session put Mexal's `gruppo merceologico` back on
+  the table without retracting it and ended on _"facciamo una prova"_. **Later
+  evidence does not win here** — the discussion did not conclude. Treat 20 August
+  as standing and Mexal as an open alternative.
+- ⚠ **The four-value encoding scheme was proposed and abandoned mid-discussion.**
+  Aurel Mrruku floated packing two booleans into `natura`, backed off when ticket
+  type turned out to have three values, and Andrea Di Cicco called it
+  _"un po' complicato"_. **Do not build against it.**
+- ⚠ **The tranche-to-order-row relationship is still unexplained.** Aurel Mrruku
+  asked Andrea Di Cicco directly — _"mi devi spiegare sta roba"_ — and the call
+  ended first. It bears on #50.
+- 🟢 **The customer-registry session was booked the same evening** — 2 September
+  10:00–11:30 CEST — though the invitation is titled
+  `Follow-up Anagrafica Articoli` and the thread that produced it covers both
+  registries. **Put the customer-registry agenda in writing before it** (**#99**).
+- 🔴 **Mexal's coded-value dictionaries are unknown to ROMI as a class.** Andrea
+  Di Cicco on Slack at 18:16 CEST: _"loro hanno dei valori che sono tipo per
+  valuta: 1,2,3,4 — che lato nostro non sappiamo"_. He had already asked for them
+  by email and is unanswered. His verdict on the day's work:
+  _"le integrazioni per ordini e clienti funzionicchiano"_.
+- ⚠ **The master design file is now stale on campaigns.** `Flows & Objects.drawio`
+  moved a **sixth** time on 26 August at 14:06Z — six minutes into this meeting —
+  and **no tracked text cell changed**. It still carries _"Sulle campagne figlie
+  deve esserci logica solo una campagna attiva"_ and the manual product→parent
+  lookup, both superseded here, and the Ordini page still reads *Anticipay*
+  against LEAD-OPTY's *middleware Pienissimo* (§18.7), unfixed after two further
+  edits.
+
+### 20.11 Not done, deliberately
+
+**No requirement was changed.** `pienissimo-requirements.yaml`, `REQUIREMENTS.md`
+and `REQUISITI.it.md` carry no edit from this session. Two of its decisions —
+§20.1's replacement of the edition mechanism and §20.4's twin-code rule — plainly
+bear on `BIG-02`, `BUN-12`, `BUN-13` and the campaign requirements, but the
+session settled a **mechanism** rather than a contractual clause, and #96 is
+explicitly unfinished. **Raise the register change with Aurel Mrruku once the
+worked-examples session has run**, so the Italian text the client signs is
+written against a design that is finished.
+
+The rulings owed since §16 — #46, #53 and #59's "Da ricontattare" contradiction —
+are unchanged by this session. #46 is now decidable; the other two are not.

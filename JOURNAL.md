@@ -10,6 +10,62 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-26 — claude — nightly requirements-check: the Mexal review, and the edition mechanism changes again
+
+- **Did:** swept Gmail, Slack, Drive and Fathom against the **2026-08-26**
+  watermark (the trace taken at ~13:15 CEST the same day, selected by
+  `updated:`). Found the **26 August `Review Temi Integrazione Mexal`** client
+  session — Gemini notes, **full 1h25m45s transcript** and recording — and
+  drilled it per `drill-meeting`. Also found a new **2 September** client meeting
+  and a substantive ROMI group DM thread.
+- **State:** transcript preserved verbatim at
+  `meetings/2026-08-26-review-temi-integrazione-mexal-transcript.it.md` and read
+  once in full. Bilingual recap in `meetings/results/`. **Five notes created**
+  (the meeting, OI-96/97/98/99), **eleven updated**, both trackers, both recaps
+  (§20), `MAP.md`, `INDEX.md`. `vault:check` green — 126 notes, 126 unique ids,
+  all links resolve. Full audit:
+  [the trace](notes/traces/Source%20trace%202026-08-26%20nightly.md).
+- **The headline:** 🔴 **the event edition now comes from a hand-maintained
+  Salesforce table** keyed on `article code × order-date window`, matched **per
+  order line**, with a separate hand-entered event date driving the no-show
+  logic — [OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md).
+  It **replaces the one-active-child-campaign rule** agreed 24 August, which
+  Elena Spini killed in session because a bundle spanning two events cannot
+  resolve to one active edition. This also settles what
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) turns on:
+  `Anno_Solare__c`'s job now belongs to OI-96, and it is populated on 1 of 280
+  products, so dropping it costs one record.
+- **Also landed:** Mexal's three classification fields are assigned and each was
+  **tested on the wire** — `natura` → genera biglietto, `categoria statistica` →
+  the event, `gruppo merceologico` → candidate for ticket type, `Gest. annullato`
+  → product disabled. Only **listino 1** is used. **Invoicing stays Mexal-driven
+  for ~6 months.** A ticket-generating article and its bundle twin need **two
+  distinct codes**, which reverses the 24 August reading in
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md).
+- **Next:** 🔴 **[OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)
+  was the question this meeting existed to answer and was never asked** — the
+  word *scadenziario* is not in the transcript, and it now has no forum. Put it
+  on the **2 September** agenda explicitly, together with the customer-registry
+  items, because that invitation is titled for the **article** registry only.
+- **Watch:** 🔴
+  [OI-98](notes/items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
+  — Fabrizio Paganelli intends to **close all ~1000 article codes and re-create
+  them**, listini included, going to direction on **31 August**. It makes
+  `Prodotti e Bundle.xlsx`, the event list, the tier evidence and the 280 UAT
+  products provisional, **eleven days before Fase 1 development ends**. Nobody in
+  the session connected the two. ⚠ Also: `Flows & Objects.drawio` moved a
+  **sixth** time, six minutes into the meeting, and **no tracked text cell
+  changed** — but it now contradicts the minutes on campaigns as well as on
+  Anticipay. Prefer the meeting note over the diagram on campaigns.
+- **Not done, deliberately:** no requirement document was opened or changed —
+  the session settled a mechanism, not a clause, and OI-96 is explicitly
+  unfinished. `STATUS.md`, the Notion mirror and `site/` were not regenerated:
+  they carry build state, refreshed by the same day's org check, and this sweep
+  moved decisions. **The Flows page is flagged** — `notes/flows/The Mexal
+  integration.md` changed, so step 6a-bis applies on the next org-status run.
+
+---
+
 ## 2026-08-26 — codex — org-status results now deliver to Aurel by Slack DM
 
 - **Standing instruction implemented:** every completed `org-status-check` run

@@ -5,7 +5,7 @@ status: active
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-08-24
-updated: 2026-08-24
+updated: 2026-08-26
 source: Prodotti e Bundle.xlsx, sheets "Lista Prodotti" and "Esempio di Bundle"
 ---
 
@@ -77,3 +77,30 @@ to end: stop reading meaning out of a code or a name, put it in a field an admin
 maintains. The workbook shows the client has **not yet added those fields** —
 so the fields exist on the Salesforce side and there is nothing upstream to
 populate them from.
+
+## 🔴 2026-08-26 - this namespace is scheduled to be replaced
+
+Everything decoded in this note is an extract of a registry Fabrizio Paganelli
+intends to **close and re-create in full** —
+[OI-98](../items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md),
+stated at the opening of the
+[26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+and going to Pienissimo's direction on **31 August**.
+
+Roughly **1000 article codes** exist, many of them residue of past practice. The
+new codes will be minted against the classification rules the project has agreed,
+and a **price-list revision is likely alongside**.
+
+Two consequences for this note:
+
+1. The prefix decoding stays true of the **current** namespace and may not survive
+   the new one. Treat it as a description of what is in UAT today, not as the
+   convention going forward.
+2. **The twin-code rule is now part of the namespace**, not a flag on top of it: a
+   ticket-generating article and its bundle-only counterpart are **two distinct
+   codes** — Aurel Mrruku, _"devi per forza avere due prodotti"_, Fabrizio
+   Paganelli, _"avrà il codice A… l'altro… avrà il codice B."_ See
+   [OI-48](../items/OI-48%20Bundle-only%20article%20codes.md).
+
+⚠ [Normalising an article code merges two products](../risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)
+applies with more force after a re-coding, not less.

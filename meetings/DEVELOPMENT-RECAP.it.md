@@ -1024,3 +1024,255 @@ Due cose sono **segnalate a un umano, non corrette**: il registro, in
 DGM e ora è in disaccordo sia con l'org sia con il #59; e le decisioni dovute dal
 §16 — #46, #53 e la contraddizione del #59 su «Da ricontattare» — non sono
 toccate da una verifica in org e **restano dovute**.
+
+---
+
+## 20. Aggiornamento 26/08/2026 — la review Mexal, e il meccanismo dell'edizione cambia di nuovo
+
+La sessione cliente **`[ROMI-PIENISSIMO] - Review Temi Integrazione Mexal` del
+26 agosto**, 16:00–17:26 CEST, 1h25m45s, recuperata la stessa sera dallo sweep
+notturno `requirements-check`. Appunti Gemini, trascrizione completa e
+registrazione esistono tutti e sono stati letti; la trascrizione è conservata in
+`meetings/2026-08-26-review-temi-integrazione-mexal-transcript.it.md` e il
+verbale bilingue in
+`meetings/results/2026-08-26-review-temi-integrazione-mexal.it.md`.
+
+**Prima sessione Mexal dal 14 luglio.** Presenti: Elena Spini (esce a ~01:02),
+Aurel Mrruku, Andrea Di Cicco (ROMI); Fabrizio Paganelli, Elisa Migliano
+(Pienissimo). Sabatino Rinaldi era invitato e non è mai intervenuto.
+
+⚠ **Questa sezione registra decisioni, non stato di build.** Dove incontra il
+§19, sul cosa esiste in org comanda il §19.
+
+### 20.1 🔴 La regola della campagna figlia attiva del §16.2 è superata
+
+Il §16.2 registra l'edizione come portata da **un codice di campagna padre in un
+lookup sul Prodotto, più una regola che impone una sola campagna figlia attiva
+per padre**. Entrambe le metà sono state abbandonate il 26 agosto.
+
+**L'edizione ora deriva da una tabella su Salesforce gestita a mano**, una riga
+per `codice articolo × data inizio × data fine → edizione`. Alla generazione
+dell'ordine ogni **riga d'ordine** viene confrontata sulla **data dell'ordine**
+con l'intervallo del proprio codice articolo.
+
+È stata Elena Spini a superare la propria regola in riunione: un bundle che copre
+due eventi non può risolversi su un'unica edizione attiva — _"quello che avevamo
+pensato Aurel, cioè non può esistere perché… se prendi il bundle, cioè come
+fai?"_ Aurel Mrruku ha accettato la sostituzione: _"non mettono il flag campagna
+attiva… mettono solo le date, faccio io il check nel momento in cui si genera
+l'ordine."_
+
+Tre proprietà sono facili da fraintendere e tutte e tre sono portanti:
+
+- **Si risolve per riga d'ordine, non per ordine.** Elena Spini ha chiesto;
+  Fabrizio Paganelli ha confermato — _"a livello di riga ordine."_ Un ordine si
+  divide legittimamente su più edizioni.
+- **Gli intervalli sono arbitrari.** Sono il periodo in cui si raccolgono gli
+  ordini di un'edizione, impostati a mano, e **non** sono l'anno solare
+  dell'edizione né le date dell'evento. Aurel Mrruku l'ha ripetuto e confermato:
+  _"puoi mettere data a piacere… io mi baso solo su quelle date."_
+- **Comanda la data dell'ordine, non quella della tranche.** Fabrizio Paganelli:
+  _"le tranche ci servono a noi solo per definire i pagamenti."_
+
+Una **data evento separata, inserita a mano** — la colonna G della stessa tabella
+— porta la data reale dell'evento ed è ciò su cui si aggancia la disattivazione
+post-evento dei no-show.
+
+Registrato come **#96**. ⚠ **Concordato nel principio ed esplicitamente non
+concluso.** Le decisioni Gemini classificano la mappatura riga d'ordine → campagna
+sotto *"Da approfondire"*, unico punto in quella sezione, e Aurel Mrruku ha
+chiesto prima un'ora dedicata di esempi concreti. **Quella sessione non è
+fissata.**
+
+### 20.2 Il §16.1 è confermato, e ora ha un meccanismo
+
+Il §16.1 registra la decisione del cliente per cui l'edizione non è un attributo
+del prodotto. Fabrizio Paganelli l'ha ribadita spontaneamente nei primi due
+minuti — _"l'anno accademico avevamo detto di no perché deve essere derivato in
+base alla data dell'ordine"_ — e il §20.1 è il meccanismo che era sempre mancato.
+
+**Questo scioglie il nodo del #46.** A `Product2.Anno_Solare__c` non manca
+soltanto una fonte cliente per la matrice di dipendenza: il suo compito ora
+appartiene al #96. È valorizzato su 1 prodotto su 280, quindi rimuoverlo costa un
+solo record.
+
+Anche l'**evento** trova il suo vettore, e non è una picklist Salesforce:
+discende dalla `categoria statistica` di Mexal.
+
+### 20.3 🟢 I tre campi di classificazione Mexal sono assegnati e verificati sul campo
+
+Il vincolo posto da Fabrizio Paganelli in apertura: **l'anagrafica articoli di
+Mexal ha al massimo tre campi disponibili per classificare un prodotto**, e
+nessuno di essi è oggi gestito — _"siamo liberissimi di fare come è più comodo
+per noi."_
+
+Ogni assegnazione qui sotto è stata dimostrata durante la sessione, con Fabrizio
+Paganelli che modificava su Mexal e Andrea Di Cicco che confrontava la risposta
+API in tempo reale.
+
+| Campo Mexal | Nome API | Porta | Verificato |
+| --- | --- | --- | --- |
+| `natura` | `COD_Natura` | genera biglietto sì/no | ✅ impostato su `CS_00154`, visto via API |
+| `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | l'evento (Campagna Padre) | ✅ `C01` poi `P02`. **Due campi API** |
+| `gruppo merceologico` | `GRP merch` | candidato per il tipo biglietto | ⚠ gerarchico; **è arrivato solo il codice, non il livello** |
+| `Gest. annullato` | `Gest. annullato` — `n`/`S` | prodotto disattivato su Salesforce | ✅ `CS58` annullato e ripristinato in diretta |
+
+`natura` è collegato a una tabella di base gestita, **non è campo libero** — il
+che risponde all'obiezione di Andrea Di Cicco che un operatore potesse scriverci
+qualsiasi cosa.
+
+⚠ **I valori non sono stati scelti.** Fabrizio Paganelli porta lo schema alla
+direzione Pienissimo **lunedì 31 agosto**.
+
+Questo risponde alla domanda lasciata aperta dal §16 al #47: **il flag evento sta
+sul lato Mexal.**
+
+### 20.4 🔴 Il gemello da bundle ha bisogno di un codice articolo proprio — il #48 si ribalta
+
+Il 24 agosto il record leggeva `Product2.Solo_Bundle__c` come sostituto della
+convenzione `(B)`. Aurel Mrruku ha stabilito il contrario: _"devi per forza avere
+due prodotti, non lo puoi fare un unico prodotto."_ Fabrizio Paganelli ha
+concordato e l'ha nominata — codice A fuori dal bundle, codice B per i tutor.
+
+Il flag dice quale sia quale; non elimina il gemello. I codici nasceranno dentro
+la ricreazione dell'anagrafica del §20.7, e la sigla `(B)` non è mai stata
+nominata — **chiedere la convenzione quando arriva la nuova anagrafica.** Due
+articoli di questo tipo sono promessi come test la settimana prossima.
+
+### 20.5 Prodotti obsoleti disattivati via `Gest. annullato`, con un costo manuale noto
+
+Esistono circa 1000 codici articolo storici e i tutor li selezionano. Il pulsante
+`annulla/ripristina` di Mexal imposta il flag, l'integrazione lo mappa su un flag
+di inattività su `Product2`, il prodotto smette di essere selezionabile. Testato
+su una fattura reale: la riga dell'articolo annullato è rimasta visibile sulla
+fattura emessa.
+
+⚠ **Elisa Migliano ha portato il caso di errore dall'esperienza reale**: è
+successo che i tutor quotassero un codice mentre l'amministrazione lo annullava,
+il preventivo non arrivasse a Mexal e venisse corretto a mano. Andrea Di Cicco ha
+confermato che Salesforce si comporta allo stesso modo: **nessuno può
+riselezionare un prodotto disabilitato, utenti master e amministrazione
+compresi**, ma una riga d'ordine esistente può essere modificata inserendo il
+codice sostitutivo. Entrambi hanno accettato il costo.
+
+### 20.6 Nuovo: la residenza fiscale è obbligatoria, e la documentazione API è incompleta
+
+La chiamata di creazione cliente di Andrea Di Cicco è fallita su **`tipo
+nazionalità`**, che nella schermata Mexal è la `residenza fiscale`. Deve
+distinguere **Italia, San Marino, Città del Vaticano, Unione Europea,
+extra-Unione Europea**, perché determina la trasmissione delle fatture
+all'ufficio tributario sammarinese. Se Salesforce debba portare o derivare il
+valore **non è stato discusso** — **#97**.
+
+⚠ Non era l'unico campo obbligatorio non documentato: _"tutti sti campi non
+c'erano sulla documentazione."_ `valuta` è stato impostato a `1` per tentativi e
+**nessuno sa se 1 sia l'euro**. Trattare la documentazione Mexal come una
+descrizione parziale del contratto.
+
+Una volta impostato, entrambe le chiamate in scrittura hanno funzionato: cliente
+`501.08721` e ordine `OC11`, sulla serie 10 — **in produzione**. 🔴 **Non esiste
+ancora un ambiente di test Mexal.**
+
+### 20.7 🔴 L'intera anagrafica articoli Mexal è destinata a essere ricreata
+
+Dichiarazione di apertura della riunione, e la cosa più gravida di conseguenze
+che contenga:
+
+> _"vorrei chiudere tutti i codici prodotto che abbiamo adesso e crearne di nuovi
+> in base alle regole che ci siamo dati fino ad oggi… è probabile che ci sia
+> l'intenzione di rivedere un attimo i listini."_
+
+Va alla direzione Pienissimo il **31 agosto**; l'anagrafica revisionata è
+promessa "settimana prossima". Registrato come **#98**.
+
+Rende provvisorio quasi tutto ciò che è stato derivato da
+`Prodotti e Bundle.xlsx` — la lista eventi (§13, #46), l'evidenza sulle tipologie
+(#76), i codici solo-bundle (#48), la richiesta sui componenti a pagamento (#93)
+— e le 280 righe `Product2` in UAT. ⚠ I listini rientrano nella revisione, quindi
+i prezzi consegnati il 07/08 hanno una scadenza; registrare che cambiano, mai i
+valori. **Nessuno ha collegato la cosa alla fine dello sviluppo Fase 1 del
+10 settembre.**
+
+### 20.8 ✅ Definito, e una cosa esce dal perimetro
+
+- **Si usa solo il listino 1.** _"usiamo solo l'uno."_ Aperto da luglio, rinviato
+  da Mirko Merendi a Fabrizio Paganelli — ora risposto (#58).
+- **Le tipologie di biglietto sono Executive, Gold e Diamond**, pronunciate da
+  Fabrizio Paganelli e coincidenti con l'anagrafica. `Silver` e `Dinamond` sono
+  entrambi da scartare (#76). ⚠ *Dove* risieda la tipologia si è riaperto e non
+  si è chiuso — vedi §20.10.
+- 🟢 **La fatturazione resta pilotata da Mexal per circa sei mesi.** Andrea Di
+  Cicco aveva il JSON; Fabrizio Paganelli ha declinato — _"per il momento
+  preferisco che venga pilotata solo da Mexal la fatturazione."_ Salesforce legge
+  le fatture, non le crea. Toglie una voce di sviluppo mai stimata.
+- **I bundle multi-edizione dello stesso articolo sono fuori perimetro** —
+  _"questa qui è una cosa che non facciamo."_ Da leggere in senso stretto:
+  articoli diversi con intervalli diversi continuano a dividersi su edizioni
+  diverse nello stesso ordine.
+- **Nuovo requisito:** quando a un no-show viene dato manualmente un biglietto
+  omaggio per l'edizione successiva, **l'Asset va collegato a mano alla Campagna
+  Figlia successiva**, altrimenti l'automatismo dei reminder non scatta più.
+  Nessun controllo lo intercetta.
+
+### 20.9 🔴 Il #92 era la domanda per cui questa riunione esisteva, e non è stata posta
+
+La domanda sullo scadenziario — una fattura Mexal *non* pagata può riportare un
+Asset allo stato precedente? — era verbalizzata il 20 agosto come azione per
+questa sede. Il proponente (Fabrizio Paganelli) e il responsabile (Andrea Di
+Cicco) sono stati entrambi in riunione per 1h25m. **La parola *scadenziario* non
+compare nemmeno una volta** nella trascrizione, negli appunti, nelle decisioni o
+nei passaggi successivi.
+
+Ora non ha **alcuna sede fissata**: il 27 agosto è WooCommerce e il
+`Follow-up Anagrafica Articoli` del 2 settembre è centrato sull'anagrafica
+articoli. Metterlo esplicitamente a ordine del giorno.
+
+### 20.10 Domande aperte che questa sessione lascia
+
+- ⚠ **Il tipo biglietto ha due risposte in campo.** Il verbale cliente del
+  20 agosto dice campo solo-Salesforce; questa sessione ha rimesso in gioco il
+  `gruppo merceologico` di Mexal senza ritrattarlo e si è chiusa con _"facciamo
+  una prova"_. **Qui l'evidenza più recente non prevale** — la discussione non ha
+  concluso. Considerare il 20 agosto come vigente e Mexal come alternativa
+  aperta.
+- ⚠ **Lo schema combinatorio a quattro valori è stato proposto e abbandonato in
+  corsa.** Aurel Mrruku ha ipotizzato di comprimere due booleani dentro `natura`,
+  ha fatto marcia indietro quando le tipologie sono risultate tre, e Andrea Di
+  Cicco l'ha definito _"un po' complicato"_. **Non implementare su quella base.**
+- ⚠ **La relazione tranche ↔ righe d'ordine resta inspiegata.** Aurel Mrruku l'ha
+  chiesto direttamente ad Andrea Di Cicco — _"mi devi spiegare sta roba"_ — e la
+  call si è chiusa prima. Impatta il #50.
+- 🟢 **La sessione sull'anagrafica clienti è stata prenotata la sera stessa** —
+  2 settembre 10:00–11:30 CEST — benché l'invito sia intitolato
+  `Follow-up Anagrafica Articoli` e il thread che l'ha generato copra entrambe le
+  anagrafiche. **Mettere per iscritto l'agenda dell'anagrafica clienti prima
+  della riunione** (**#99**).
+- 🔴 **I dizionari di valori codificati di Mexal sono ignoti a ROMI come classe.**
+  Andrea Di Cicco su Slack alle 18:16 CEST: _"loro hanno dei valori che sono tipo
+  per valuta: 1,2,3,4 — che lato nostro non sappiamo"_. Li aveva già chiesti per
+  email e non ha avuto risposta. Il suo verdetto sulla giornata:
+  _"le integrazioni per ordini e clienti funzionicchiano"_.
+- ⚠ **Il file di disegno principale è ora superato sulle campagne.**
+  `Flows & Objects.drawio` si è mosso una **sesta** volta il 26 agosto alle
+  14:06Z — sei minuti dopo l'inizio di questa riunione — e **nessuna cella di
+  testo tracciata è cambiata**. Riporta ancora _"Sulle campagne figlie deve
+  esserci logica solo una campagna attiva"_ e il lookup manuale prodotto→padre,
+  entrambi superati qui, e la pagina Ordini legge ancora *Anticipay* contro il
+  *middleware Pienissimo* di LEAD-OPTY (§18.7), non riconciliato dopo altre due
+  modifiche.
+
+### 20.11 Non fatto, deliberatamente
+
+**Nessun requisito è stato modificato.** `pienissimo-requirements.yaml`,
+`REQUIREMENTS.md` e `REQUISITI.it.md` non ricevono da questa sessione alcuna
+modifica. Due delle sue decisioni — la sostituzione del meccanismo dell'edizione
+al §20.1 e la regola dei due codici al §20.4 — toccano evidentemente `BIG-02`,
+`BUN-12`, `BUN-13` e i requisiti sulle campagne, ma la sessione ha definito un
+**meccanismo** più che una clausola contrattuale, e il #96 è esplicitamente
+incompiuto. **Sollevare la modifica al registro con Aurel Mrruku una volta svolta
+la sessione di esempi concreti**, così che il testo italiano che il cliente firma
+sia scritto su un disegno concluso.
+
+Le decisioni dovute dal §16 — #46, #53 e la contraddizione del #59 su
+«Da ricontattare» — non sono cambiate con questa sessione. Il #46 è ora
+decidibile; le altre due no.

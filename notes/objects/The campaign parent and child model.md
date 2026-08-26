@@ -5,7 +5,7 @@ status: in-progress
 owner: Elena Spini
 org: both
 raised: 2026-08-20
-updated: 2026-08-25
+updated: 2026-08-26
 source: notes/meetings/2026-08-20 Flusso Asset Biglietti.md
 depends_on: [OI-77, OI-84, OI-46]
 ---
@@ -103,3 +103,53 @@ This matters more than its own row suggests: the campaign parent/child model is
 what carries the event edition **instead of** `Product2.Anno_Solare__c`
 ([OI-46](../items/OI-46%20Bundle%20classification%20picklists.md)). The
 replacement is unbuilt while the thing it replaces is still configured.
+
+## 🔴 2026-08-26 - the resolution mechanism is replaced
+
+The [26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+kept the three levels above and **replaced how an order reaches the right child
+campaign**. Two of the four items under "The configuration agreed 24 August" are
+now superseded.
+
+| 24 August                                            | 26 August                                                                                       |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| A lookup on Product holding the parent campaign code | The **event** comes from Mexal's `categoria statistica`                                          |
+| **Automation enforcing one active child per parent** | 🔴 **Dead.** Replaced by [an order-date mapping table](../items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md) |
+| Asset attached by checking the code as the order descends | Attached per **order line**, by matching the order date against the article's date window   |
+
+**Two Record Types on Campaign** and **membership created at enrolment only**
+stand unchanged.
+
+### Why the one-active-child rule could not survive
+
+Elena Spini killed it in the session, having proposed it: a bundle carrying two
+different events cannot resolve to a single active edition.
+
+> _"In effetti quello che avevamo pensato Aurel, cioè non può esistere perché…
+> se prendi il bundle, cioè come fai?"_
+
+Aurel Mrruku accepted the replacement in the same exchange: _"praticamente non
+mettono il flag campagna attiva… mettono solo le date, faccio io il check nel
+momento in cui si genera l'ordine a quale campagna figlia si deve collegare."_
+
+The date windows are **arbitrary and hand-set** — they are the period in which
+orders for an edition are taken, not the edition's calendar year and not the
+event's dates. A separate hand-entered **event date** (column G of the table)
+carries the real date and is what the post-event no-show deactivation keys on.
+
+### A new manual link, and the same fragility
+
+⚠ The note above flags the hand-populated product lookup as _"a fragile link"_
+with no control catching an empty value. **That fragility moves rather than
+resolves**, and grows a second instance:
+
+1. The mapping table itself is maintained by hand, article by article, window by
+   window. Fabrizio Paganelli: _"dobbiamo essere svizzeri nella gestione di questa
+   tabella."_ Nobody discussed what happens when an order date falls in no window
+   or in two.
+2. When a no-show is given a goodwill ticket for the next edition, the Asset must
+   be **linked to the next Campagna Figlio by hand**, or the reminder automation
+   stops firing for it. Aurel Mrruku raised it; Elena Spini agreed. No control.
+
+Everything in this note remains **unbuilt** — the 25 August org check measured it,
+and nothing has been deployed since.

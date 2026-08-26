@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-07-23
-updated: 2026-08-25
+updated: 2026-08-26
 source: meetings/open-items.md row 47
 ---
 
@@ -80,3 +80,34 @@ four are what `OrderBigliettoTrigger` acts on.
 
 Import-time population of both flags is still owed and depends on
 [the Zoho workbook](OI-24%20Data%20model%20workbook.md).
+
+## 2026-08-26 - both flags get a Mexal carrier, and one gets a caveat
+
+The [26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+answered the question this note leaves open — _"whether the event flag falls on
+the Mexal side or the Salesforce side"_ — and answered it for both flags.
+
+**Mexal carries them, in the `natura` field (`COD_Natura` over the API).** Tested
+live: Fabrizio Paganelli created a `natura` value against article `CS_00154` and
+Andrea Di Cicco saw it arrive over the API within seconds. `natura` is a lookup
+to a managed base table, **not free text**, so an operator cannot invent a value —
+which was Andrea Di Cicco's first objection and is now answered.
+
+**The value convention is not chosen.** Fabrizio Paganelli takes the scheme to
+Pienissimo's direction on **31 August**.
+
+⚠ **`Solo_Bundle__c` alone does not do the job.** Aurel Mrruku established in the
+same session that a ticket-generating article and its bundle-only twin must be
+**two distinct article codes**, not one code with a flag —
+_"devi per forza avere due prodotti, non lo puoi fare un unico prodotto."_ The
+flag marks which is which; it does not remove the need for the twin. See
+[OI-48](OI-48%20Bundle-only%20article%20codes.md), where the opposite reading was
+recorded on 24 August.
+
+Fabrizio Paganelli will **configure two test articles** carrying the new flags
+next week. That is the first thing that will actually populate either field.
+
+⚠ Aurel Mrruku floated encoding both booleans as four `natura` values, then
+backed away from it when ticket type turned out to have three values; Andrea Di
+Cicco called it _"un po' complicato"_. **No conclusion** — do not build against
+the combination scheme.
