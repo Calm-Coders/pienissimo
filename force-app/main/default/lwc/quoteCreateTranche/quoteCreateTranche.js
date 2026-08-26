@@ -1,50 +1,11 @@
 import { api, LightningElement } from "lwc";
 import { CloseActionScreenEvent } from "lightning/actions";
-import LightningConfirm from "lightning/confirm";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
-import createTranche from "@salesforce/apex/QuoteTrancheController.createTranche";
-import deleteTranche from "@salesforce/apex/QuoteTrancheController.deleteTranche";
+import createTranches from "@salesforce/apex/QuoteTrancheController.createTranches";
 import getContext from "@salesforce/apex/QuoteTrancheController.getContext";
 
 export default class QuoteCreateTranche extends LightningElement {
-  lineColumns = [
-    { label: "Prodotto", fieldName: "productName" },
-    { label: "Codice", fieldName: "productCode", initialWidth: 130 },
-    {
-      label: "Quantita",
-      fieldName: "quantity",
-      type: "number",
-      initialWidth: 90
-    },
-    { label: "Totale", fieldName: "totalPrice", type: "currency" }
-  ];
-
-  assignedColumns = [
-    { label: "Prodotto", fieldName: "productName" },
-    { label: "Codice", fieldName: "productCode", initialWidth: 130 },
-    { label: "Tranche", fieldName: "trancheName", initialWidth: 120 },
-    {
-      label: "Sequenza",
-      fieldName: "trancheSequence",
-      type: "number",
-      initialWidth: 100
-    },
-    { label: "Data scadenza", fieldName: "dueDate", type: "date" },
-    {
-      type: "button-icon",
-      initialWidth: 56,
-      typeAttributes: {
-        alternativeText: "Elimina tranche",
-        disabled: { fieldName: "deleteDisabled" },
-        iconName: "utility:delete",
-        name: "delete_tranche",
-        title: "Elimina tranche",
-        variant: "bare"
-      }
-    }
-  ];
-
   _recordId;
 
   isLoading = false;
@@ -52,10 +13,13 @@ export default class QuoteCreateTranche extends LightningElement {
   quoteName = "";
   quoteStatus = "";
   isEditable = false;
-  lines = [];
-  sequence = "";
-  dueDate = "";
-  selectedLineIds = [];
+  quoteLines = [];
+  existingTranches = [];
+  trancheCount = "";
+  plannedTranches = [];
+  currentTrancheIndex = 0;
+  pageValidationMessage = "";
+  deletedTrancheIds = [];
 
   @api
   get recordId() {
@@ -73,28 +37,137 @@ export default class QuoteCreateTranche extends LightningElement {
     return !this.hasLoaded && this.isLoading;
   }
 
-  get selectableLines() {
-    return this.lines.filter((line) => !line.trancheId);
+  get hasExistingTranches() {
+    return this.existingTranches.length > 0;
   }
 
-  get assignedLines() {
-    return this.lines.filter((line) => line.trancheId);
+  get isEditMode() {
+    return this.hasExistingTranches;
   }
 
-  get hasNoLines() {
-    return this.lines.length === 0;
+  get saveButtonLabel() {
+    return this.isEditMode ? "Edit Tranche" : "Create Tranche";
   }
 
-  get hasSelectableLines() {
-    return this.selectableLines.length > 0;
+  get panelHeader() {
+    return this.isEditMode ? "Edit Tranche" : "Create Tranche";
   }
 
-  get hasAssignedLines() {
-    return this.assignedLines.length > 0;
+  get hasPlannedTranches() {
+    return this.plannedTranches.length > 0;
   }
 
-  get hasOnlyAssignedLines() {
-    return this.lines.length > 0 && !this.hasSelectableLines;
+  get editTrancheCards() {
+    return this.plannedTranches.map((tranche) => {
+      const lineCount = tranche.quoteLineItemIds?.length || 0;
+      return {
+        ...tranche,
+        cardClass:
+          tranche.index === this.currentTrancheIndex
+            ? "edit-tranche-card selected"
+            : "edit-tranche-card",
+        dueDateLabel: tranche.dueDate
+          ? `Due ${tranche.dueDate}`
+          : "No due date",
+        lineCountLabel:
+          lineCount === 1 ? "1 quote line" : `${lineCount} quote lines`
+      };
+    });
+  }
+
+  get hasQuoteLines() {
+    return this.quoteLines.length > 0;
+  }
+
+  get currentTranche() {
+    return this.plannedTranches[this.currentTrancheIndex] || {};
+  }
+
+  get currentTrancheLabel() {
+    return `${this.ordinalLabel(
+      this.currentTrancheIndex + 1
+    )} Tranche (${this.currentTrancheIndex + 1} of ${
+      this.plannedTranches.length
+    })`;
+  }
+
+  get currentSelectedLineIds() {
+    return this.currentTranche.quoteLineItemIds || [];
+  }
+
+  get selectedElsewhereLineIds() {
+    return new Set(
+      this.plannedTranches
+        .filter((tranche) => tranche.index !== this.currentTrancheIndex)
+        .flatMap((tranche) => tranche.quoteLineItemIds || [])
+    );
+  }
+
+  get currentSelectedLines() {
+    const currentIds = new Set(this.currentSelectedLineIds);
+
+    return this.quoteLines
+      .filter((line) => currentIds.has(line.id))
+      .map((line) => this.decorateQuoteLine(line));
+  }
+
+  get availableQuoteLines() {
+    const currentIds = new Set(this.currentSelectedLineIds);
+    const selectedElsewhere = this.selectedElsewhereLineIds;
+
+    return this.quoteLines
+      .filter(
+        (line) =>
+          (this.isEditMode || !line.trancheId) &&
+          !currentIds.has(line.id) &&
+          !selectedElsewhere.has(line.id)
+      )
+      .map((line) => this.decorateQuoteLine(line));
+  }
+
+  get hasCurrentSelectedLines() {
+    return this.currentSelectedLines.length > 0;
+  }
+
+  get hasAvailableQuoteLines() {
+    return this.availableQuoteLines.length > 0;
+  }
+
+  get hasUnassignedQuoteLines() {
+    const selectedLineIds = new Set(
+      this.plannedTranches.flatMap((tranche) => tranche.quoteLineItemIds || [])
+    );
+    return this.quoteLines.some((line) => !selectedLineIds.has(line.id));
+  }
+
+  get currentSelectionLabel() {
+    const count = this.currentSelectedLineIds.length;
+    return count === 1 ? "1 line selected" : `${count} lines selected`;
+  }
+
+  get isPreviousDisabled() {
+    return this.isSaveDisabledByStatus || this.currentTrancheIndex === 0;
+  }
+
+  get isNextDisabled() {
+    return (
+      this.isSaveDisabledByStatus ||
+      this.currentTrancheIndex >= this.plannedTranches.length - 1
+    );
+  }
+
+  get isDeleteCurrentPageDisabled() {
+    return this.isSaveDisabledByStatus || this.plannedTranches.length <= 1;
+  }
+
+  get showDeleteCurrentPage() {
+    return (
+      !this.isEditMode &&
+      this.hasPlannedTranches &&
+      !this.hasCurrentSelectedLines &&
+      !this.hasAvailableQuoteLines &&
+      this.plannedTranches.length > 1
+    );
   }
 
   get isSaveDisabledByStatus() {
@@ -104,15 +177,14 @@ export default class QuoteCreateTranche extends LightningElement {
   get isSaveDisabled() {
     return (
       this.isSaveDisabledByStatus ||
-      !this.sequence ||
-      !this.dueDate ||
-      this.selectedLineIds.length === 0
+      !this.hasPlannedTranches ||
+      this.plannedTranches.some(
+        (tranche) =>
+          !tranche.name?.trim() ||
+          !tranche.dueDate ||
+          !tranche.quoteLineItemIds?.length
+      )
     );
-  }
-
-  get selectedCountLabel() {
-    const count = this.selectedLineIds.length;
-    return count === 1 ? "1 riga selezionata" : `${count} righe selezionate`;
   }
 
   get statusClass() {
@@ -124,7 +196,7 @@ export default class QuoteCreateTranche extends LightningElement {
     try {
       this.applyContext(await getContext({ quoteId: this.recordId }));
     } catch (error) {
-      this.showToast("Errore", this.reduceError(error), "error");
+      this.showToast("Error", this.reduceError(error), "error");
     } finally {
       this.hasLoaded = true;
       this.isLoading = false;
@@ -135,26 +207,237 @@ export default class QuoteCreateTranche extends LightningElement {
     this.quoteName = context.quoteName || "";
     this.quoteStatus = context.quoteStatus || "";
     this.isEditable = context.isEditable === true;
-    this.lines = (context.lines || []).map((line) => ({
-      ...line,
-      deleteDisabled: !this.isEditable || !line.trancheId
+    this.quoteLines = context.lines || [];
+    this.existingTranches = (context.tranches || []).map((tranche) => ({
+      ...tranche,
+      deleteDisabled: !this.isEditable
     }));
-    const selectableIds = new Set(this.selectableLines.map((line) => line.id));
-    this.selectedLineIds = this.selectedLineIds.filter((id) =>
-      selectableIds.has(id)
+    if (this.existingTranches.length) {
+      this.plannedTranches = this.existingTranches.map((tranche, index) =>
+        this.buildExistingPlannedTranche(tranche, index)
+      );
+      this.trancheCount = String(this.plannedTranches.length);
+      this.currentTrancheIndex = Math.min(
+        this.currentTrancheIndex,
+        this.plannedTranches.length - 1
+      );
+    } else {
+      this.plannedTranches = [];
+      this.trancheCount = "";
+      this.currentTrancheIndex = 0;
+    }
+    this.deletedTrancheIds = [];
+    this.pageValidationMessage = "";
+  }
+
+  handleTrancheCountChange(event) {
+    const count = Number(event.detail.value);
+    this.trancheCount = event.detail.value;
+    if (!Number.isInteger(count) || count < 1) {
+      this.plannedTranches = [];
+      this.currentTrancheIndex = 0;
+      return;
+    }
+    const normalizedCount = Math.min(count, 20);
+    const removedExistingIds = this.plannedTranches
+      .slice(normalizedCount)
+      .map((tranche) => tranche.id)
+      .filter(Boolean);
+    if (removedExistingIds.length) {
+      this.deletedTrancheIds = [
+        ...new Set([...this.deletedTrancheIds, ...removedExistingIds])
+      ];
+    }
+    this.plannedTranches = Array.from({ length: normalizedCount }, (_, i) =>
+      this.buildPlannedTranche(i)
+    );
+    this.currentTrancheIndex = Math.min(
+      this.currentTrancheIndex,
+      this.plannedTranches.length - 1
     );
   }
 
-  handleDueDateChange(event) {
-    this.dueDate = event.detail.value;
+  handlePlannedNameChange(event) {
+    this.pageValidationMessage = "";
+    this.updatePlannedTranche(event, "name");
   }
 
-  handleSequenceChange(event) {
-    this.sequence = event.detail.value;
+  handlePlannedDueDateChange(event) {
+    this.pageValidationMessage = "";
+    this.updatePlannedTranche(event, "dueDate");
   }
 
-  handleRowSelection(event) {
-    this.selectedLineIds = event.detail.selectedRows.map((row) => row.id);
+  handleAssignLine(event) {
+    const lineId = event.target.dataset.id;
+    const selectedIds = new Set(this.currentSelectedLineIds);
+    selectedIds.add(lineId);
+
+    this.updateCurrentSelectedLineIds([...selectedIds]);
+  }
+
+  handleRemoveLine(event) {
+    const lineId = event.target.dataset.id;
+    const selectedIds = new Set(this.currentSelectedLineIds);
+    selectedIds.delete(lineId);
+
+    this.updateCurrentSelectedLineIds([...selectedIds]);
+  }
+
+  handleSelectEditTranche(event) {
+    this.currentTrancheIndex = Number(event.currentTarget.dataset.index);
+    this.pageValidationMessage = "";
+  }
+
+  updateCurrentSelectedLineIds(lineIds) {
+    this.plannedTranches = this.plannedTranches.map((tranche) => {
+      if (tranche.index === this.currentTrancheIndex) {
+        return { ...tranche, quoteLineItemIds: lineIds };
+      }
+      return tranche;
+    });
+  }
+
+  handlePreviousTranche() {
+    if (!this.validateCurrentTranche()) {
+      return;
+    }
+    this.pageValidationMessage = "";
+    this.currentTrancheIndex = Math.max(0, this.currentTrancheIndex - 1);
+  }
+
+  handleNextTranche() {
+    if (!this.validateCurrentTranche()) {
+      return;
+    }
+    this.pageValidationMessage = "";
+    this.currentTrancheIndex = Math.min(
+      this.plannedTranches.length - 1,
+      this.currentTrancheIndex + 1
+    );
+  }
+
+  handleDeleteCurrentPage() {
+    if (this.isDeleteCurrentPageDisabled) {
+      return;
+    }
+
+    const nextPlannedTranches = this.plannedTranches
+      .filter((tranche) => tranche.index !== this.currentTrancheIndex)
+      .map((tranche, index) => this.renumberPlannedTranche(tranche, index));
+    if (this.currentTranche.id) {
+      this.deletedTrancheIds = [
+        ...this.deletedTrancheIds,
+        this.currentTranche.id
+      ];
+    }
+
+    this.plannedTranches = nextPlannedTranches;
+    this.trancheCount = String(nextPlannedTranches.length);
+    this.currentTrancheIndex = Math.min(
+      this.currentTrancheIndex,
+      nextPlannedTranches.length - 1
+    );
+    this.pageValidationMessage = "";
+  }
+
+  validateCurrentTranche() {
+    const inputs = [
+      ...this.template.querySelectorAll("[data-current-tranche-due-date]")
+    ];
+    const isValid = inputs.every((input) => input.reportValidity());
+    this.pageValidationMessage = isValid
+      ? ""
+      : "Complete the due date before moving to another tranche.";
+    return isValid;
+  }
+
+  updatePlannedTranche(event, fieldName) {
+    const index = Number(event.target.dataset.index);
+    this.plannedTranches = this.plannedTranches.map((tranche) => {
+      if (tranche.index === index) {
+        return { ...tranche, [fieldName]: event.detail.value };
+      }
+      return tranche;
+    });
+  }
+
+  buildPlannedTranche(index) {
+    const existing = this.plannedTranches[index] || {};
+    const sequence = index + 1;
+    return {
+      key: `planned-${sequence}`,
+      index,
+      sequence,
+      name: existing.name || `T${sequence} - ${this.quoteName}`,
+      dueDate: existing.dueDate || "",
+      quoteLineItemIds: existing.quoteLineItemIds || []
+    };
+  }
+
+  buildExistingPlannedTranche(tranche, index) {
+    return {
+      key: `planned-${tranche.trancheId}`,
+      id: tranche.trancheId,
+      index,
+      sequence: index + 1,
+      name: tranche.trancheName,
+      dueDate: tranche.dueDate || "",
+      quoteLineItemIds: this.quoteLines
+        .filter((line) => line.trancheId === tranche.trancheId)
+        .map((line) => line.id)
+    };
+  }
+
+  renumberPlannedTranche(tranche, index) {
+    const sequence = index + 1;
+    const generatedNamePattern = /^T\d+ - /;
+    const shouldRefreshName =
+      !tranche.name || generatedNamePattern.test(tranche.name);
+
+    return {
+      ...tranche,
+      key: `planned-${sequence}`,
+      index,
+      sequence,
+      name: shouldRefreshName
+        ? `T${sequence} - ${this.quoteName}`
+        : tranche.name
+    };
+  }
+
+  ordinalLabel(numberValue) {
+    const labels = [
+      "First",
+      "Second",
+      "Third",
+      "Fourth",
+      "Fifth",
+      "Sixth",
+      "Seventh",
+      "Eighth",
+      "Ninth",
+      "Tenth"
+    ];
+    return labels[numberValue - 1] || `${numberValue}th`;
+  }
+
+  formatAmount(value) {
+    if (value === null || value === undefined) {
+      return "-";
+    }
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: "EUR"
+    }).format(value);
+  }
+
+  decorateQuoteLine(line) {
+    return {
+      ...line,
+      productCode: line.productCode || "No code",
+      productName: line.productName || "Unnamed product",
+      totalLabel: this.formatAmount(line.totalPrice)
+    };
   }
 
   async handleSave() {
@@ -162,54 +445,39 @@ export default class QuoteCreateTranche extends LightningElement {
     if (!inputs.every((input) => input.reportValidity())) {
       return;
     }
+    if (this.hasUnassignedQuoteLines) {
+      this.pageValidationMessage =
+        "Assign every quote line to a tranche before saving.";
+      this.showToast("Error", this.pageValidationMessage, "error");
+      return;
+    }
 
+    const wasEditMode = this.isEditMode;
     this.isLoading = true;
     try {
       this.applyContext(
-        await createTranche({
+        await createTranches({
           quoteId: this.recordId,
-          dueDate: this.dueDate,
-          sequence: Number(this.sequence),
-          quoteLineItemIdsJson: JSON.stringify(this.selectedLineIds)
+          trancheInputsJson: JSON.stringify(
+            this.plannedTranches.map((tranche) => ({
+              name: tranche.name.trim(),
+              trancheId: tranche.id,
+              dueDate: tranche.dueDate,
+              sequence: tranche.sequence,
+              quoteLineItemIds: tranche.quoteLineItemIds
+            }))
+          ),
+          deletedTrancheIdsJson: JSON.stringify(this.deletedTrancheIds)
         })
       );
-      this.showToast("Successo", "Tranche creata.", "success");
+      this.showToast(
+        "Success",
+        wasEditMode ? "Tranches updated." : "Tranches created.",
+        "success"
+      );
       this.closeAndRefresh();
     } catch (error) {
-      this.showToast("Errore", this.reduceError(error), "error");
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  async handleAssignedRowAction(event) {
-    const { action, row } = event.detail;
-    if (action.name !== "delete_tranche" || !row.trancheId) {
-      return;
-    }
-
-    const confirmed = await LightningConfirm.open({
-      label: "Elimina tranche",
-      message:
-        "Eliminare questa tranche? Le righe collegate torneranno senza tranche e senza data scadenza.",
-      theme: "warning"
-    });
-    if (!confirmed) {
-      return;
-    }
-
-    this.isLoading = true;
-    try {
-      this.applyContext(
-        await deleteTranche({
-          quoteId: this.recordId,
-          trancheId: row.trancheId
-        })
-      );
-      this.showToast("Successo", "Tranche eliminata.", "success");
-      this.dispatchEvent(new RefreshEvent());
-    } catch (error) {
-      this.showToast("Errore", this.reduceError(error), "error");
+      this.showToast("Error", this.reduceError(error), "error");
     } finally {
       this.isLoading = false;
     }
@@ -232,7 +500,7 @@ export default class QuoteCreateTranche extends LightningElement {
     console.error("quoteCreateTranche error", error);
 
     if (!error) {
-      return "Errore sconosciuto";
+      return "Unknown error";
     }
     if (typeof error === "string") {
       return error;

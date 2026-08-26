@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>Raggruppamento delle tranche di pagamento per le righe di preventivo e di ordine.</description>
+    <description
+  >Raggruppamento delle tranche di pagamento per le righe di preventivo e di ordine.</description>
     <enableActivities>false</enableActivities>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <label>Tranche</label>
     <nameField>
-        <displayFormat>TR-{0000}</displayFormat>
-        <label>Numero Tranche</label>
-        <type>AutoNumber</type>
+        <label>Tranche Name</label>
+        <type>Text</type>
     </nameField>
     <pluralLabel>Tranche</pluralLabel>
     <sharingModel>ReadWrite</sharingModel>
