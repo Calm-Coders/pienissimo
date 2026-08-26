@@ -4,7 +4,7 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-25
+updated: 2026-08-26
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -75,3 +75,32 @@ from an order in Apex.
 
 This is the single largest missing surface in the build, and it sits against a
 **10 September** development end date.
+
+## 2026-08-26 - still zero, and the absence is wider than Flow
+
+Re-verified read-only against **Pienissimo UAT**. `Flow` **0**, `FlowDefinition`
+**0** — unchanged. The check was widened to every other declarative surface, and
+they are empty too:
+
+| Metadata type             | In the org                                     |
+| ------------------------- | ---------------------------------------------- |
+| `Flow` / `FlowDefinition` | **0**                                          |
+| `WorkflowRule`            | **0**                                          |
+| `ApprovalProcess`         | **0**                                          |
+| `CustomNotificationType`  | **0**                                          |
+| `EmailTemplate`           | **0**                                          |
+| `ValidationRule`          | **2**, both on `BundleComponent__c`            |
+| Scheduled Apex            | **0** — `CronTrigger` holds platform jobs only |
+
+So there is no declarative automation of any kind, no notification channel, no
+email template and no timer. The day-2 and expiry alerts, the reminder
+notifications specified on 24 August, and the automatism that moves unscanned
+tickets three days after an event are all designs against surfaces that do not
+exist yet in the org.
+
+🟢 One thing this flow needs **did** appear: `Quote.Status` now carries the
+agreed lifecycle values, so the states this flow moves between are configurable
+at last — see [OI-59](../items/OI-59%20Quote%20workflow%20configuration.md).
+The transitions themselves remain unbuilt.
+
+Still against a **10 September** development end date.

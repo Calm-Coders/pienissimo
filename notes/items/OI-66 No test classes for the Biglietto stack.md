@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-25
+updated: 2026-08-26
 blocks: [go-live]
 depends_on: [risk-biglietto-not-in-scm]
 severity: gating
@@ -54,3 +54,20 @@ plus the three triggers at 22 between them.
 Scope for the suite when it is commissioned has therefore widened from the
 Biglietto stack to **the tranche stack as well**. See
 [OI-50](OI-50%20Tranche%20object.md).
+
+## 2026-08-26 - the numbers, restated
+
+Re-measured read-only against **Pienissimo UAT**. Uncovered lines in the
+project's own Apex, largest first: `QuoteTrancheController` **185**,
+`BundleProductAssignmentController` 132, `OrderBigliettoTriggerHandler` 123,
+`API_Callout_Engine` 109, `BigliettoDocuSignService` 94,
+`BundleComponentTriggerHandler` 65, `BigliettoPdfService` 53,
+`BigliettoDocuSignQueueable` 50, `BigliettoTriggerHandler` 49,
+`BigliettoPdfQueueable` 15, `BigliettoPdfBatch` 9, plus the three triggers at 22
+between them. Zero covered, everywhere.
+
+One scoping change for whoever writes the suite: `QuoteTrancheController` is now
+**in `force-app/`** (PR #12, 2026-08-26), so it can be read and tested from the
+repository. The six Biglietto classes still cannot — they remain org-only, which
+is why this item depends on
+[the source-control risk](../risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).

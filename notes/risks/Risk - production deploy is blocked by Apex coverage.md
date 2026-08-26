@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-25
+updated: 2026-08-26
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -55,3 +55,18 @@ The risk is unchanged in kind and worse in degree. It stays **high** and
 **gating**, and it stays a single late task at Aurel Mrruku's request — see
 [OI-64](../items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md) and
 [OI-66](../items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md).
+
+## 2026-08-26 - org check: 1069 uncovered lines, still zero covered
+
+Re-measured read-only against **Pienissimo UAT**. Same 24 classes and triggers,
+**zero lines covered**, and the uncovered total has risen from 1028 to
+**1069**.
+
+The whole of the increase is `QuoteTrancheController`, recorded at 144 uncovered
+lines on 25 August and reporting **185** today. Its body has not been modified
+in the org since **2026-08-25T12:50:07Z**, so the code did not grow — the
+coverage snapshot did, having caught up with the deploy. Treat 1069 as the
+first complete measurement of the tranche stack rather than as a regression.
+
+Nothing else moved. The floor is 75%; the org is at 0%. This stays **high**,
+stays **gating**, and stays one late task at Aurel Mrruku's request.

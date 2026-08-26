@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-25
+updated: 2026-08-26
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -55,3 +55,13 @@ Sixteen of the 24 entries are stock Experience Cloud scaffolding
 denominator down without belonging to this project. They still have to be
 covered or excluded before a production deploy — see
 [the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+## 2026-08-26 - re-measured: 1069 uncovered lines
+
+Still 24 entries in `ApexCodeCoverageAggregate`, still **zero covered**, and the
+uncovered total is now **1069** (1028 on 25 August). The difference is entirely
+`QuoteTrancheController`, whose recorded figure rose from 144 to 185 without the
+class changing — the snapshot caught up with the 25 August deploy.
+
+No test run has succeeded in this org since. The suite remains a single task,
+requested separately before the production deploy.

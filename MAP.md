@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-25 (requirements-check external sweep) · Source of record: [notes/](notes/)
+Last updated: 2026-08-26 (org check vs Pienissimo UAT) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -22,19 +22,27 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   Salesforce **Asset**. [OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md)
   is resolved, but UAT still runs on custom `Biglietto__c`; mapping and migration
   are unbuilt and unestimated.
-- **2026-08-25 org check vs Pienissimo UAT** — full gap table in
-  [the tracker's org-verification block](meetings/open-items.md). Four findings
-  change the plan: 🟢 the **tranche is built** (object + Quote-side UI, though
-  the controller and LWC are org-only and untested —
-  [OI-50](notes/items/OI-50%20Tranche%20object.md)); 🔴 **there is not one Flow
-  in the org**, so every declarative automation designed since June is absent
-  ([the flow](notes/flows/The%20quote%20to%20order%20flow.md)); 🔴
-  `OrderItem.Tranche__c` is **committed but never deployed**, so propagation
-  cannot run while `force-app/` reads as done
-  ([risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20in%20the%20repository%20but%20not%20in%20the%20org.md));
-  🔴 **37 tickets sit in states deleted on 6 August**, none ever reaching
-  `Disponibile` ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)), while
-  standard **Asset** carries zero custom fields.
+- **2026-08-26 org check vs Pienissimo UAT** — supersedes the 25 Aug run; gap
+  table in [the tracker's org-verification block](meetings/open-items.md).
+  🟢 **The tranche stack is in source control** (PR #12, one day after deploy —
+  [OI-50](notes/items/OI-50%20Tranche%20object.md)); only the Tranche layout is
+  still org-only. 🟢 **`Quote.Status` carries the agreed lifecycle at last** —
+  the first state machine to reach the org, though 3 of 4 quotes were left on
+  deactivated stock values ([OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)).
+  🔴 **Correction: `OrderItem.Tranche__c` is deployed, not missing** — the
+  25 Aug finding was a false negative, because `sf sobject describe` hides
+  fields the running user cannot see and this one is granted to **nobody**
+  ([risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md),
+  [method](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md)).
+  Propagation still cannot run. 🔴 **Still not one Flow** — nor workflow rule,
+  approval process, email template, notification or scheduled job
+  ([the flow](notes/flows/The%20quote%20to%20order%20flow.md)). 🔴 **The
+  integration scaffolding holds zero configuration rows**, so no outbound
+  integration has an endpoint
+  ([note](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)).
+  🔴 **37 tickets still parked in states deleted on 6 August**
+  ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)); **Asset** still has
+  zero custom fields; coverage **0%**, 1069 uncovered lines.
 - 🔴 **2026-08-25 — the Anticipay integration changed counterparty.** The
   technical call ran and agreed that **Salesforce will not call Anticipay**: it
   calls a **middleware built and hosted by Pienissimo Software Srl**, which

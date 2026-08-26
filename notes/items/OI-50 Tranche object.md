@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-08-25
+updated: 2026-08-26
 blocks: [OI-75, go-live]
 severity: gating
 source: Aurel Mrruku direct decision, 2026-08-24; meetings/open-items.md row 50
@@ -173,3 +173,59 @@ Two things this does **not** do:
 
 Gap 1 — `OrderItem.Tranche__c` committed but not deployed — and gap 3, the
 missing coverage, are **unchanged**.
+
+## 2026-08-26 - org check: two of the three gaps changed shape
+
+Verified read-only against **Pienissimo UAT**. The three gaps recorded above
+were re-checked one by one. Gap 1 was **misdiagnosed** and gap 3 has a new
+number; the source-control problem is largely fixed.
+
+### 🟢 The creation stack is in source control now
+
+`QuoteTrancheController`, the `quoteCreateTranche` LWC, `Quote.Crea_Tranche`,
+`Tranche__c.Importo_Previsto__c`, `Tranche__c.Sequenza__c` and the
+`Tranche_Management` permission set were merged to `DevMain` on **2026-08-26**
+in PR #12 (`dc513c6`, from `DevAnitaSeptember`; the work is Anita Aga's commit
+`38dc7b6`). The committed `QuoteTrancheController` is **byte-identical to the
+org copy** apart from a leading byte-order mark, so the retrieve was faithful.
+
+Six of the seven components listed as org-only on 25 August are now tracked.
+**One is still org-only: the `Tranche__c-Tranche Layout`.**
+
+### 🔴 Gap 1 was wrong — the field is deployed, and nobody can see it
+
+The 25 August reading that `OrderItem.Tranche__c` is _"in `force-app/` but not
+in the org"_ **does not survive re-checking**. Tooling `FieldDefinition` lists
+the field; it was created 2026-08-24T15:18:02Z, one minute after its Quote-side
+twin. `sf sobject describe` missed it because **describe is filtered by the
+running user's field-level security** and the field is granted to nobody —
+its only `FieldPermissions` row is the Salesforce-internal
+`sfdc_a360_sfcrm_data_extract`. The `Tranche_Management` permission set grants
+the `QuoteLineItem` twin read and edit and **omits the `OrderItem` side
+entirely**.
+
+The conclusion is unchanged and the cause is not: propagation cannot run,
+because no user can read the field **and** because nothing in `force-app/`
+references it — not the classes, not the triggers, not the LWC. Full diagnosis
+and the corrected method:
+[the risk](../risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md)
+and [how to read the org schema](../How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
+
+### Gap 2 unchanged, and one tranche moved by hand
+
+`Completamente_Pagata__c` is still a checkbox nothing computes. `TR-0009` now
+reads `Parzialmente Pagata` where all six were `Aperta` on 25 August — set
+manually, since no Flow, trigger or scheduled job touches `Tranche__c` and
+`Integration_Log__c` is empty. Do not read it as roll-up working.
+
+New, and it constrains [OI-75](OI-75%20Ticket%20availability%20rule.md):
+`Sequenza__c` runs **1, 4, 3** on one quote and is null on the other three
+records, with nothing enforcing uniqueness or contiguity —
+[the sequence risk](../risks/Risk%20-%20the%20tranche%20sequence%20has%20no%20integrity%20control.md).
+
+### Gap 3 unchanged, and larger
+
+`QuoteTrancheController` still has no test class. It is **185 uncovered lines**,
+the largest uncovered class in the org, against 144 recorded on 25 August; the
+class body has not changed since 2026-08-25T12:50:07Z, so the figure moved with
+the coverage snapshot rather than the code.

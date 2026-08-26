@@ -5,8 +5,8 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-24
-updated: 2026-08-25
-source: refreshed 2026-08-25 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status and Flows pages and 13 tracker rows updated and re-fetched to verify
+updated: 2026-08-26
+source: refreshed 2026-08-26 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status and Flows pages updated in place, 2 tracker rows added, all 54 existing rows verified against their notes
 ---
 
 # The Notion mirror of the project status
@@ -54,24 +54,40 @@ Openable links, the same ones quoted in [STATUS.md](../STATUS.md) and
 [flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150).
 
 **The Notion Status page, Flows page and the tracker are current as of
-2026-08-25**, refreshed by the `org-status-check` run against the live
-Pienissimo UAT org. The Status page carries the new basis line, the 0% coverage
-figure, the zero-Flow finding and the tranche correction; the Flows page keeps
-every diagram unchanged — no state machine moved — but its build-state text and
-the tranche section were rewritten. Both were re-fetched and verified.
+2026-08-26**, refreshed by the `org-status-check` run against the live
+Pienissimo UAT org. The Status page carries the new basis line, the 1069-line
+coverage figure, the corrected Order Item finding, the configured quote
+lifecycle and the empty integration scaffolding; the Flows page again keeps
+every diagram unchanged — no state machine moved — but its build-state text, the
+quote section and the tranche callouts were rewritten. The Status page was
+re-fetched and read back after the push; **no markup was mangled this time**.
 
 ⚠ **Notion mangled one span on the way in**, exactly as the procedure warns:
 `**text `code`**` round-tripped as `****` visible on the page. **Never wrap
 inline code in bold** — say "the available state" rather than bolding a span
 that ends in a backticked value. It was caught by re-fetching and corrected.
 
-**Thirteen tracker rows were reconciled on `Ref`**, all of them stale from
-earlier sessions rather than from this check: OI-46, OI-47 and OI-53 were
-showing `In progress` against notes that read `open`; OI-50, OI-59, OI-68,
-OI-73, OI-77, OI-80, OI-84, OI-91 and OI-92 were showing `Open` against notes
-that read `in-progress`; and OI-82 was still `Open` after being resolved on
-24 August. **The database drifts whenever a session updates a note without
-running step 6d** — check all 54 rows, not only the ones the session touched.
+⚠ **On 2026-08-26 all 54 existing rows matched their notes exactly** — status,
+owner and severity, no drift. That is the first clean reconcile, and it holds
+only because the 25 August run fixed thirteen rows and no item changed status in
+between. Do not read it as evidence the database has stopped drifting: it drifts
+whenever a session updates a note without running step 6d, so **check every row,
+not only the ones the session touched**.
+
+The thirteen fixed on 2026-08-25 were OI-46, OI-47 and OI-53 (showing
+`In progress` against notes that read `open`); OI-50, OI-59, OI-68, OI-73,
+OI-77, OI-80, OI-84, OI-91 and OI-92 (showing `Open` against notes that read
+`in-progress`); and OI-82, still `Open` after being resolved on 24 August.
+
+**Two rows were added on 2026-08-26** — `OI-94` and `OI-95`, whose notes were
+written by the 25 August requirements-check and never mirrored. The database now
+holds **56** rows.
+
+⚠ **Their `Note` URLs 404 until `DevMain` is pushed.** The 26 August session was
+read-only against the org and neither committed nor pushed, so both links point
+at a branch state GitHub does not have yet. This is exactly the failure mode the
+`Note` column warns about: a 404 there looks like a missing note and is actually
+an unpushed commit.
 
 ⚠ **Three files quote these URLs.** If a page is ever replaced rather than
 updated in place, all three go stale at once — which is the reason step 6c
@@ -113,12 +129,12 @@ pushed.** A note written in a session and not yet pushed gives a 404 in Notion,
 which looks like a missing note rather than an unpushed commit. If the working
 branch ever stops being `DevMain`, every one of these URLs has to be rewritten.
 
-## ⚠ It shows 54 of roughly 86 items
+## ⚠ It shows 56 of roughly 86 items
 
 The database mirrors `notes/items/`, which is the source of record. The
 client-facing tracker in
 [meetings/open-items.md](../meetings/open-items.md) carries roughly **86**
-numbered rows, and only **54** have atomic notes behind them.
+numbered rows, and only **56** have atomic notes behind them.
 
 So the mirror is the _notes_ view, not the whole tracker, and it will look
 complete to anyone who does not know that. Both the status page and the parent

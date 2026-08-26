@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-08-14
+updated: 2026-08-26
 depends_on: [OI-50]
 source: meetings/open-items.md row 52
 ---
@@ -32,3 +32,20 @@ learns which tickets are about to become releasable under
 
 Worth building the same week as the tranche object rather than as a later
 reporting pass.
+
+## 2026-08-26 - org check: neither report exists, and nothing is scheduled
+
+Verified read-only against **Pienissimo UAT**. The org holds roughly 170
+reports and **every one of them is stock Salesforce sample content** —
+`Sample Report: …`, the `ES:` / `KPI:` / `SM:` / `SR:` sales dashboards, the
+case and cadence packs. There is no report belonging to this project.
+
+`CronTrigger` holds **five scheduled jobs and none is Apex or a report** — they
+are platform internals (`CommSitemapJob`, `CommIncrementalSitemapJob`, the SRT
+and Metalytics loaders). So there is no scheduled delivery mechanism configured
+at all.
+
+Two consequences beyond this item: `BigliettoPdfBatch` exists in the org and is
+**never scheduled**, and the day-2 / expiry alerts at
+[OI-59](OI-59%20Quote%20workflow%20configuration.md) have no scheduled path
+either. Both were designed to run on a timer that does not exist.

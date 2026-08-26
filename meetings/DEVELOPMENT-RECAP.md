@@ -2,8 +2,8 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **Precedence, newest first: §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
-> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta; §11 the 06/08 closing session; §12 the 14/08 document sweep; §13 the 24/08 product workbook; §15 the standard-Asset selection; §16 the four meetings recovered on 24/08. **§14 is Aurel Mrruku's direct tranche decision and overrides every earlier statement that tranches are created from Order Items or imported from `BLO-` codes.** **§17 is a build-state check against the live UAT org on 25/08 — where it contradicts an earlier section on what _exists_, §17 wins; where an earlier section records what was _agreed_, that section still governs.**
+> ⚠ **Precedence, newest first: §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
+> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta; §11 the 06/08 closing session; §12 the 14/08 document sweep; §13 the 24/08 product workbook; §15 the standard-Asset selection; §16 the four meetings recovered on 24/08. **§14 is Aurel Mrruku's direct tranche decision and overrides every earlier statement that tranches are created from Order Items or imported from `BLO-` codes.** **§17 and §19 are build-state checks against the live UAT org, on 25/08 and 26/08 — where they contradict an earlier section on what _exists_, the newer wins; where an earlier section records what was _agreed_, that section still governs. §19 corrects one finding of §17 outright.** §18 is the 25/08 Anticipay call.
 
 ---
 
@@ -748,7 +748,6 @@ rewrite a contractual document. The rulings still owed from §16 — #46
 (`Anno_Solare__c`), #53 (asset generation stated two ways) and #59 ("Da
 ricontattare") — are **unaffected by this check and still owed**.
 
-
 ---
 
 ## 18. Update 2026-08-25 — the Anticipay technical call
@@ -776,15 +775,15 @@ Two reasons, both accepted in the room:
 
 ### 18.2 The contract as far as it is agreed
 
-| Element | Agreed |
-| ------- | ------ |
-| Caller → callee | Salesforce → **Pienissimo middleware**, not Anticipay |
-| Trigger | the **first Order inserted for an Account** — confirmed, unchanged |
-| Authentication | a **token in the HTTP request header** |
-| Errors | `404` VAT not found · `500` generic — **code and message both returned** |
-| Error storage | **saved in Salesforce, kept three months**, used to raise internal notifications |
-| Conflicts | the returned value **overwrites** Salesforce |
-| Payload | **trimmed** to the needed fields — see §18.3 |
+| Element         | Agreed                                                                           |
+| --------------- | -------------------------------------------------------------------------------- |
+| Caller → callee | Salesforce → **Pienissimo middleware**, not Anticipay                            |
+| Trigger         | the **first Order inserted for an Account** — confirmed, unchanged               |
+| Authentication  | a **token in the HTTP request header**                                           |
+| Errors          | `404` VAT not found · `500` generic — **code and message both returned**         |
+| Error storage   | **saved in Salesforce, kept three months**, used to raise internal notifications |
+| Conflicts       | the returned value **overwrites** Salesforce                                     |
+| Payload         | **trimmed** to the needed fields — see §18.3                                     |
 
 ### 18.3 Which fields is now its own open item
 
@@ -812,7 +811,7 @@ four working days between the specification arriving and development closing.
 
 ### 18.5 ⚠ One action is wrongly assigned in the client-facing invitation
 
-The Gemini minute assigns *"create a dedicated test environment"* to **Aurel
+The Gemini minute assigns _"create a dedicated test environment"_ to **Aurel
 Mrruku**. That is not what was agreed. Elena Spini put the list to him on Slack
 at 15:03 CEST and he corrected it: ROMI's test environment already exists — it is
 UAT — and what is needed is **Pienissimo's, for ROMI to point at**. Elena Spini
@@ -837,9 +836,9 @@ decision**, and nobody in the session said so.
 ### 18.7 The master diagram now contradicts itself
 
 `Flows & Objects.drawio` was edited **during the call**, at 08:23 UTC. The
-**LEAD-OPTY** page now reads *"chiamata API **al middleware Pienissimo** per
-check P.IVA Account"*. The **Ordini** page still reads *"chiamata API
-**Anticipay**"*. The LEAD-OPTY wording is the later and correct one.
+**LEAD-OPTY** page now reads _"chiamata API **al middleware Pienissimo** per
+check P.IVA Account"_. The **Ordini** page still reads _"chiamata API
+**Anticipay**"_. The LEAD-OPTY wording is the later and correct one.
 
 ### 18.8 Also landed on 25 August, from Slack rather than a meeting
 
@@ -848,7 +847,7 @@ check P.IVA Account"*. The **Ordini** page still reads *"chiamata API
   and he says so.** (#58)
 - 🟢 **The invoice-to-order-line link is answered.** A single Mexal invoice
   carries the list of its items, so per-line payment status is reachable —
-  *"quindi per le trance sappiamo come capire quando sono state pagate"*. That is
+  _"quindi per le trance sappiamo come capire quando sono state pagate"_. That is
   the input the tranche aggregation needs. It is a reading of the data, not a
   built call, and **how tranches are created on the Mexal side is still
   unknown**. (#50, #58)
@@ -863,3 +862,134 @@ check P.IVA Account"*. The **Ordini** page still reads *"chiamata API
 the signed integration text — the counterparty in a Fase 1 integration is not a
 detail — but rewriting a contractual document off a nightly sweep is a human's
 call. Flagged, not done.
+
+---
+
+## 19. Update 2026-08-26 — org check against the Pienissimo UAT org
+
+A second **read-only check of the live Pienissimo UAT org**
+(`a.mrruku@pienissimo.uat`), one day after §17, cross-checked against
+`force-app/` on `DevMain` at `dc513c6`. It supersedes §17 on build state.
+
+⚠ **This section records build state only.** No requirement moved, no design
+decision moved, and nothing here reopens a settled point. Where it contradicts
+an earlier section on **what exists**, §19 wins; where an earlier section
+records **what was agreed**, that section still governs. Full gap table: the
+2026-08-26 org-verification block in `open-items.md`.
+
+### 19.1 ❌ §17.4 was wrong, and the instrument was at fault
+
+§17.4 reported `OrderItem.Tranche__c` as _"committed to `force-app/` and absent
+from the org"_. **The field is in the org.** It was created 24/08 at 15:18Z,
+one minute after its Quote-side twin.
+
+`sf sobject describe` — the instrument §17 used — **filters its field list by
+the running user's field-level security**. This field is granted to no profile
+and no project permission set, so it is invisible to every user including System
+Administrator, and `describe` omitted it exactly as it would omit a field that
+was never created. Every field comparison from §17 was re-run against Tooling
+`FieldDefinition`, which is not filtered. **Only this one finding changed.**
+
+The consequence §17.4 drew still holds, for different reasons: **propagation
+cannot run.** No user can read the field, and nothing in `force-app/` writes it
+— not the classes, not the triggers, not the LWC. The `Tranche_Management`
+permission set grants the `QuoteLineItem` twin read and edit, and omits the
+`OrderItem` side entirely.
+
+### 19.2 🟢 The first agreed state machine reached the org
+
+`Quote.Status` now carries **`Bozza · Nuovo Preventivo · In Trattativa · In
+Attesa Accettazione · Accettato · Rifiutato`**, with the eight stock English
+values deactivated. That is the lifecycle specified on 24/08 (#59), including
+`In Attesa Accettazione`, the rename that item singles out as mattering most.
+
+§17.3 said every state machine was still stock. **That is now true of Order,
+Lead and Opportunity, and no longer true of Quote.**
+
+🔴 One qualification: **the records were left on the old values.** Three of the
+four quotes in UAT still sit on deactivated stock values. Four development
+records is nothing — but it is a rehearsal for the same operation against the
+**37 tickets** stranded at #74, and it went the wrong way.
+
+### 19.3 🟢 The retrieve gap closed within a day
+
+§17.4 recorded the tranche creation stack as org-only. PR #12 (`dc513c6`,
+merged 26/08) brought `QuoteTrancheController`, the `quoteCreateTranche` LWC,
+`Quote.Crea_Tranche`, two `Tranche__c` fields and the `Tranche_Management`
+permission set into `force-app/`. The committed controller is **byte-identical
+to the org copy**.
+
+**One component is still org-only: the `Tranche__c-Tranche Layout`.** And the
+Biglietto stack has not moved since 22/07 — it is in fact **three components
+larger** than recorded, since the `BigliettoPdf` Visualforce page, the
+`DocuSign` named credential and the `BundleComponent__c` custom tab were never
+on the list. Without the page and the credential the stack could not run in a
+fresh org even if the six classes were retrieved.
+
+### 19.4 🔴 §17.2 understated the absence
+
+There is still not one Flow. The check was widened, and the rest is empty too:
+**zero** `WorkflowRule`, `ApprovalProcess`, `EmailTemplate`,
+`CustomNotificationType`, and **no scheduled Apex**. Two validation rules exist
+in the whole org, both on `BundleComponent__c`.
+
+So there is no declarative automation, **no notification channel, no email
+template and no timer**. Three designed behaviours have nothing to sit on:
+Marco Montesi's reminder copy (#59, delivered 25/08), the reminder
+notifications specified on 24/08, and the automatism that moves unscanned
+tickets three days after an event.
+
+### 19.5 🔴 The integration scaffolding has never been configured
+
+New finding, not in §17. `Integration_Configuration__c` and
+`Integration_Log__c` hold **zero records**, the org has **one** named credential
+(`DocuSign`) and no remote site settings.
+
+So no outbound integration — Mexal (#58), WooCommerce (#49), VAT through the
+middleware (#73, #94) — has an endpoint defined in the org. `API_Callout_Engine`
+is committed, working, and wired to nothing. The engine is not the integration;
+the configuration row is.
+
+DocuSign is the exception and the proof: it is the one integration with a
+credential and it has demonstrably run — `DocuSign_Envelope_Id__c` is populated
+on **19 of the 37** tickets — and it does not use this scaffolding. It runs on
+the org-only classes above.
+
+### 19.6 🔴 The tranche ordering key cannot be trusted
+
+`Tranche__c.Sequenza__c` is what ticket release (#75) reads to mean "every
+tranche before this one". It runs **1, 4, 3** on one quote — a gap, out of
+creation order — and is **null** on the three older records. No validation rule,
+no Flow, nothing enforcing presence, uniqueness or contiguity.
+
+One tranche also moved to `Parzialmente Pagata` **by hand**; no automation
+exists that could have set it. Payment roll-up remains unproven, as §17.1 said.
+
+### 19.7 Unchanged since §17
+
+The ticket stall (§17.5): still **37 tickets**, 30 in `In attesa firma`, **0**
+ever `Disponibile`, **0** QR codes. Standard **Asset** still zero custom fields
+— confirmed against `FieldDefinition`, so this is not an FLS artefact — holding
+one record named `Test`. Campaign and Campaign Member both still zero custom
+fields, so the parent/child model of §16.2 remains entirely unbuilt.
+
+Deployability (§17.6): coverage **0%**, now **1069** uncovered lines across the
+same 24 classes. The rise from 1028 is entirely `QuoteTrancheController`, whose
+body has not changed since 25/08 12:50Z — the snapshot caught up with the
+deploy, the code did not grow.
+
+The classification apparatus (§17.7) is unchanged, with one number worth adding:
+`Tipologia__c` is populated on **249 of 280** products, which no earlier check
+recorded.
+
+### 19.8 Not done, deliberately
+
+**No requirement was changed.** `pienissimo-requirements.yaml`,
+`REQUIREMENTS.md` and `REQUISITI.it.md` carry no edit from this check beyond the
+register's own `build_state` block, which exists to record exactly this.
+
+Two things are **flagged for a human, not corrected**: the register's
+`state_machines.quote.states` still carries the older DGM-derived labels and now
+disagrees with both the org and #59; and the rulings owed since §16 — #46, #53
+and #59's "Da ricontattare" contradiction — are untouched by an org check and
+**still owed**.

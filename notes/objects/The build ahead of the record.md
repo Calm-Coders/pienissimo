@@ -4,7 +4,7 @@ type: object
 status: active
 owner: Aurel Mrruku
 org: ROMI
-updated: 2026-08-25
+updated: 2026-08-26
 source: git log 2026-08-03..2026-08-13 + force-app/main/default
 evidence: repository working tree on DevMain, commit 8712344
 ---
@@ -81,3 +81,37 @@ tranche-to-order propagation exists. It does not run in UAT.
 
 The corrective action is unchanged and still on the record: retrieve the
 org-only components into source control, then regenerate the tracker rows.
+
+## 2026-08-26 - the third direction was a measurement error
+
+Verified read-only against **Pienissimo UAT**. The table immediately above says
+the divergence runs in three directions. **It runs in two.**
+
+The third row — _"Repository ahead of org: `OrderItem.Tranche__c`, committed,
+never deployed"_ — **is wrong**. The field is in the org. It was created
+2026-08-24T15:18:02Z and reported missing because `sf sobject describe` is
+filtered by the running user's field-level security and the field is granted to
+nobody. See
+[the risk](../risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md)
+and [how to read the org schema](../How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
+Every other field comparison in the 25 August check was re-run against Tooling
+`FieldDefinition`, which is not FLS-filtered, and **only this one was affected**.
+
+So the standing picture is the original two:
+
+| Direction                    | State on 2026-08-26                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------------------- |
+| Repository ahead of trackers | still true — the tranche stack reached `DevMain` before any tracker named it          |
+| Org ahead of repository      | still true, and now **only the Biglietto stack** plus the `Tranche__c-Tranche Layout` |
+
+🟢 **The org-ahead direction shrank for the first time.** PR #12 (`dc513c6`,
+merged 2026-08-26) retrieved six of the seven org-only tranche components into
+`force-app/`, one day after they were deployed. That is the corrective action
+this note has been asking for, performed without being asked.
+
+🔴 **The Biglietto stack has not moved since 22 July**, and is three components
+larger than recorded — the `BigliettoPdf` Visualforce page, the `DocuSign` named
+credential and the `BundleComponent__c` custom tab all belong on the list.
+
+The corrective action is now narrow and nameable: **retrieve the Biglietto
+stack and the Tranche layout.** Everything else is committed.

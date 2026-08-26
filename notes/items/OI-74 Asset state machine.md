@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-25
+updated: 2026-08-26
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-17
@@ -170,3 +170,30 @@ This state machine has to be rebuilt on standard **Asset** in any case
 ([OI-41](OI-41%20Asset%20and%20ticket%20data%20model.md)), where `Status` today
 holds stock Salesforce values and nothing else. So the question is not how to
 correct these nine values but which four to configure on the target object.
+
+## 2026-08-26 - re-verified, unchanged
+
+Re-checked read-only against **Pienissimo UAT**, this time with Tooling
+`FieldDefinition` rather than `sf sobject describe`, so the reading is not
+affected by field-level security. Nothing moved.
+
+`Biglietto__c.Status__c` still carries the same nine values. Still **30 of 37
+tickets in `In attesa firma`**, 7 in `Caricato`, **0 ever `Disponibile`**, and
+**0 QR codes generated**. `Rinuncia` is still not configured.
+
+Standard **Asset** still carries **zero custom fields** — confirmed against
+`FieldDefinition`, so this is not an FLS artefact — and holds **one record**,
+named `Test`, with an empty `Status`.
+
+⚠ One number in the paragraphs above needs reading with care: the 2026-08-20
+section says _"the 29 existing UAT records"_. That was the count on 20 August;
+it has been **37** since 25 August. The argument it supports — that
+reconfiguring the picklist means deciding what happens to the stranded records —
+is unaffected, and the queue is eight records longer.
+
+The migration this note defers to is **cheaper to do now than it will ever be**,
+and there is a worked example one object away:
+[OI-59](OI-59%20Quote%20workflow%20configuration.md) records `Quote.Status`
+being replaced on 26 August with the agreed Italian values while three of its
+four records were left sitting on deactivated ones. Same operation, four records
+instead of thirty-seven.
