@@ -5,7 +5,7 @@
 > page in [site/](site/), which is sanitized to different rules
 > ([docs/publishing.md](docs/publishing.md)).
 
-**Last regenerated: 2026-08-26 (org-status-check)** ·
+**Last regenerated: 2026-08-26 (org-status-check, then the `SAL` requirement-trace batch)** ·
 **Basis: a live, read-only check of the Pienissimo UAT org**
 (`a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`) run on **2026-08-26**,
 compared against `force-app/` on `DevMain` at `dc513c6`, the notes and the
@@ -283,19 +283,19 @@ Eleven recorded. Severity is the note's own.
 
 ## Register coverage
 
-|                                     |                                                                   |
-| ----------------------------------- | ----------------------------------------------------------------- |
-| Atomic notes                        | 119                                                               |
-| Item notes in `notes/items/`        | 54 — of which **7 gating**, 42 open, 8 in progress                |
-| Numbered rows in the client tracker | ~86                                                               |
-| Requirements reachable from a note  | **9 of 167**                                                      |
-| Org components verified 2026-08-26  | 6 custom objects, 34 Apex classes, 3 triggers, 2 LWC, **0 Flows** |
+|                                     |                                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------ |
+| Atomic notes                        | 120                                                                      |
+| Item notes in `notes/items/`        | 56 — of which **7 gating**, 37 open, 14 in progress, 4 resolved, 1 stale |
+| Numbered rows in the client tracker | ~86                                                                      |
+| Requirements reachable from a note  | **19 of 167**                                                            |
+| Org components verified 2026-08-26  | 6 custom objects, 34 Apex classes, 3 triggers, 2 LWC, **0 Flows**        |
 
 ⚠ **Two honest gaps in the record itself.** The tracker carries roughly 86
-numbered rows and only 54 have atomic notes behind them, so this page's item
+numbered rows and only 56 have atomic notes behind them, so this page's item
 view is the _notes_ view, not the whole tracker. And the requirement trace is
-**9 of 163** — most signed requirements cannot yet be walked back to the meeting
-that produced them
+**19 of 167** — the `tickets` and `sales` areas are traced; most signed
+requirements still cannot be walked back to the meeting that produced them
 ([the trace](notes/The%20requirement%20mappings%20were%20fabricated.md)).
 
 ⚠ **`sf project retrieve preview` cannot be used on this org.** Pienissimo UAT is

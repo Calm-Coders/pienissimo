@@ -6,7 +6,7 @@ any agent can budget before opening anything. Start at [MAP.md](MAP.md).
 Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 **Costly** = justify it. **Never** = do not load whole; grep instead.
 
-119 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
+120 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
 `#75` is `OI-75`.
 
 ## Cheap — load freely
@@ -163,7 +163,8 @@ before that the record said the 19 and 20 August sessions had left no minute.
 
 | Note                                                                                                                                            | What it holds                                                                                                                                                                 |
 | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Source trace 2026-08-25](notes/traces/Source%20trace%202026-08-25.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-25 · the Anticipay session, the middleware decision, master re-decoded a fifth time                             |
+| [Source trace 2026-08-26](notes/traces/Source%20trace%202026-08-26.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-26 · **dry sweep**; four marketing commitments went overdue, design file unmoved                                |
+| [Source trace 2026-08-25](notes/traces/Source%20trace%202026-08-25.md)                                                                          | Previous watermark — 2026-08-25 · the Anticipay session, the middleware decision, master re-decoded a fifth time                                                              |
 | [Source trace 2026-08-24](notes/traces/Source%20trace%202026-08-24.md)                                                                          | Previous watermark — 2026-08-24 · four meetings recovered, master re-decoded again                                                                                            |
 | [meetings/open-items.md, 2026-08-26 org verification block](meetings/open-items.md)                                                             | **Newest three-way gap table** — requirements vs `force-app/` vs Pienissimo UAT · grep `## Org verification`, do not load the file                                            |
 | [How to read the org schema without a false negative](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md)           | **Read before any org check** — `describe` is FLS-filtered and reports deployed fields as missing; use Tooling `FieldDefinition`                                              |

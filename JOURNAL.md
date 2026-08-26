@@ -10,6 +10,104 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-26 — claude — requirement-trace: the `sales` batch, 9 → 19 of 167
+
+- **Batch:** `sales` (`SAL`), 23 requirements. **Five notes mapped, ten
+  requirements traced.** Progress table and full evidence:
+  [the fabricated-mappings note](notes/The%20requirement%20mappings%20were%20fabricated.md).
+  Tickets and sales are now done; **36 requirements remain** across `INT`,
+  `BUN`, `ORD`, `DAT`, `MKT`, `NFR`, `CTX`.
+- **Every pair was decided by quotation**, requirement text beside a line from
+  the note. Nothing scored, nothing carried over from the discarded 2026-08-15
+  table — two of which (`OI-68 → SAL-17`, `OI-59 → SAL-10`) this batch
+  **rejected** in favour of better-evidenced targets.
+- **Wired:** `SAL-07/06/08/09/10` ← [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md) ·
+  `SAL-18/04` ← [OI-80](notes/items/OI-80%20Lead%20routing%20queues.md) ·
+  `SAL-16` ← [OI-68](notes/items/OI-68%20Quote%20acceptance%20landing%20page.md) ·
+  `SAL-17` ← [the quote to order flow](notes/flows/The%20quote%20to%20order%20flow.md) ·
+  `SAL-21` ← [OI-70](notes/items/OI-70%20Performance%20Plus%20opportunity%20typing.md).
+  Both directions written; `vault:check` reciprocates all ten with no warnings.
+- **⚠ The thing to carry forward: `requirement:` accepts a LIST.**
+  `vault:check` strips brackets and comma-splits, so
+  `requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]` validates in both
+  directions. Without it, one note evidencing five requirements emits four
+  permanent "does not cite back" warnings — which is how a real disagreement
+  would end up ignored. **The schema block in `AGENTS.md` still documents only
+  the singular form and should be corrected** — I did not edit the canonical
+  instructions unasked. Convention adopted: **primary id first**.
+- **Two contradictions raised, no requirement text touched.** `RC-07` —
+  `SAL-16` is still `to_confirm` but was **rejected outright** on 2026-08-06 and
+  replaced by the landing page, so it reads to a builder as still open. `RC-08` —
+  `SAL-21` documents only one of the two jobs `Opportunity.Tipo_Opportunita__c`
+  is asked to do; the attivazione/rinnovo typing that drives contract generation
+  ([OI-51](notes/items/OI-51%20Contract%20auto-generation%20keyed%20to%20product%20code.md))
+  is in no requirement.
+- **Two register gaps found** — [OI-90](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md)
+  (a **Prospect** state alongside Lead and Cliente is covered by nothing, in any
+  area) and [OI-71](notes/items/OI-71%20Service%20start%20date%20owned%20by%20the%20Strategist.md)
+  (the Strategist-owned service start date, its banner and its email alert are
+  covered by nothing; `DM-19` is adjacent and does not cover it).
+- **Two deferrals, now with ids to test against:**
+  [OI-72](notes/items/OI-72%20Partita%20IVA%20mandatory%20on%20lead%20forms.md) →
+  marketing/data-model batch, and ⚠ it **contradicts `MKT-02`** (double opt-in);
+  [OI-29](notes/items/OI-29%20Account%20creation%20policy%20for%20free%20tour%20tickets.md) →
+  data-model batch, check `DM-01` and `DM-03`. OI-29 is needed before the
+  7–19 September tour.
+- **13 of the 23 `SAL` requirements still have no note.** Two are worth a human
+  rather than another pass: `SAL-13` (cross-check in the orders batch — it is
+  the sales-side statement of the tranche mechanism) and `SAL-20`, the batch's
+  closest near-miss, **left untraced on purpose** because OI-59's "generic and
+  preventivo-inviato" pair does not clearly correspond to the requirement's
+  "after first contact / after the appointment" pair.
+- **Published:** `STATUS.md` and the Notion status page refreshed (**19 of 167**,
+  120 notes, 56 item notes) and the `Requirement` column set on the four Notion
+  tracker rows, verified by re-query. `site/` was **not** touched — it publishes
+  no trace count and no item status changed. The Flows page was **not**
+  regenerated: the flow note changed only in frontmatter provenance and the
+  register's `state_machines` block did not move, so it would have been a no-op
+  push.
+- ⚠ Also corrected on `STATUS.md`: the prose still read "9 of **163**" against a
+  table saying 167, and the item-note counts were a batch stale (54/42/8).
+
+## 2026-08-26 — claude — requirements-check: a dry sweep, and four marketing commitments went overdue
+
+- **Watermark used:** 2026-08-25, from
+  [that day's trace](notes/traces/Source%20trace%202026-08-25.md), selected by
+  `updated:`. **New watermark: 2026-08-26**,
+  [Source trace 2026-08-26](notes/traces/Source%20trace%202026-08-26.md).
+- **Did:** swept Gmail (two query shapes), Slack (`#tproj-pienissimo`, the
+  canvas re-read in full, workspace-wide DMs, and `from:` filters on Elena Spini
+  and Andrea Di Cicco), Drive (two query shapes), Fathom and Calendar.
+  **Nothing new arrived.** First fully dry sweep in this record — and it is a
+  one-day window, so it is a sample of one, not a trend.
+- **The one record change came from the calendar, not from an inbox.** Every
+  marketing commitment made on 19 August is now overdue with no evidence on any
+  channel: DNS records **five days** late, funnel screenshots and graphics
+  **six days** late, and the forms were **due today**.
+  [OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md) is the only
+  note this sweep changed. It has been open since 23 June — **nine weeks**, the
+  oldest live blocker — and the first ticketed event is **7 September**.
+  ⚠ Matteo Distaso and Rebecca Marmo correspond with Fabrizio Mastracci on
+  channels this sweep does not reach: **ask him before escalating.**
+- **Four confirmations of absence worth keeping.** `Flows & Objects.drawio` has
+  **not** moved since 25 Aug 08:23Z, so its self-contradiction stands — LEAD-OPTY
+  says the middleware, Ordini still says `Anticipay`. The Slack canvas is
+  unchanged with newest entry **20.08**, so the client-facing 25 Aug session is
+  still not indexed on it. `#tproj-pienissimo` is silent for a **sixth** week.
+  Fathom still holds **0** recordings since 6 Aug.
+- **Today's Mexal review had not run yet** when the sweep was taken (~13:15 CEST
+  against a 16:00–17:00 slot). Confirmed, client-facing, six attendees, first
+  Mexal session since 14 July, and **the Mexal WEBAPI credentials are due at
+  it**. The next run should expect a recording and drill it. Tomorrow 10:00 is
+  the WooCommerce session, where its credentials are due.
+- **Did not do:** no requirement document opened; `MAP.md`, both trackers and
+  both recaps untouched, because the live position did not move.
+  **`STATUS.md`, the Notion mirror and `site/` were regenerated earlier the same
+  day by `org-status-check` and are current** — step 7's refresh was deliberately
+  not repeated, since it would have rewritten identical figures.
+- **Read-only throughout.** Nothing sent, replied to, shared or marked read; no
+  Slack message posted on this run.
+
 ## 2026-08-26 — claude — org-status-check: one finding of the 25 Aug check was a false negative
 
 - **Org:** Pienissimo UAT (`a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`),

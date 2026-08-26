@@ -6,7 +6,8 @@ owner: Marco Montesi
 with: ROMI
 org: both
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-08-26
+requirement: [SAL-18, SAL-04]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 

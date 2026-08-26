@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-15
-updated: 2026-08-24
+updated: 2026-08-26
 blocks: [go-live]
 ---
 
@@ -80,7 +80,7 @@ or it is not a mapping.
 | Batch                            | Requirements | Status                                                       |
 | -------------------------------- | ------------ | ------------------------------------------------------------ |
 | tickets `BIG`                    | 24           | **done 2026-08-15** — 10 notes mapped, 8 requirements traced |
-| sales `SAL`                      | 23           | not started                                                  |
+| sales `SAL`                      | 23           | **done 2026-08-26** — 5 notes mapped, 10 requirements traced |
 | integrations `INT`               | 22           | not started                                                  |
 | bundles `BUN`                    | 20           | not started                                                  |
 | orders `ORD`                     | 15           | not started                                                  |
@@ -135,9 +135,95 @@ phases of the whole flow, so the stale wording is load-bearing. Recorded as a
 reconciliation entry; **no requirement text was changed**, because that would
 edit `REQUISITI.it.md`, the text the client signs.
 
+## Sales batch — 2026-08-26
+
+**Five notes mapped, ten requirements traced.** Every pair below was decided by
+putting the requirement text next to a line from the note; nothing was scored,
+inferred, or carried over from the discarded table.
+
+| Requirement | Note                                                                | The line that justifies it                                                                                                      |
+| ----------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `SAL-07`    | [OI-59](items/OI-59%20Quote%20workflow%20configuration.md)          | "a **manual quote-creation button**"                                                                                            |
+| `SAL-06`    | [OI-59](items/OI-59%20Quote%20workflow%20configuration.md)          | 'a **"qualificato da ricontattare"** state' — ⚠ the note does **not** evidence the requirement's "48h parking task" half        |
+| `SAL-08`    | [OI-59](items/OI-59%20Quote%20workflow%20configuration.md)          | "**5-day validity**, with the expiry date a **mandatory field at send**"                                                        |
+| `SAL-09`    | [OI-59](items/OI-59%20Quote%20workflow%20configuration.md)          | "automatic alerts to tutor and client **on day 2 and at expiry**"                                                               |
+| `SAL-10`    | [OI-59](items/OI-59%20Quote%20workflow%20configuration.md)          | "**Marco Montesi owes the list of preset expiry timings** per product category and business line" — register owner matches      |
+| `SAL-18`    | [OI-80](items/OI-80%20Lead%20routing%20queues.md)                   | "The `CODE` container for custom assignment remains as drawn" + "**rules plus mass transfer** … reassign in two clicks"         |
+| `SAL-04`    | [OI-80](items/OI-80%20Lead%20routing%20queues.md)                   | "marketing converts leads to opportunities, tutors work recalls … and qualified contacts skip the early stages" — near-verbatim |
+| `SAL-16`    | [OI-68](items/OI-68%20Quote%20acceptance%20landing%20page.md)       | "Replaces the accept/reject buttons that were to sit inside the quote email." — the note records SAL-16's **rejection**         |
+| `SAL-17`    | [the quote to order flow](flows/The%20quote%20to%20order%20flow.md) | "Settled on 2026-08-06" + the accept → DocuSign → order-generated chain; matches SAL-17's own due date                          |
+| `SAL-21`    | [OI-70](items/OI-70%20Performance%20Plus%20opportunity%20typing.md) | "The field exists: `Opportunity.Tipo_Opportunita__c`" — ⚠ values diverge, see `RC-08`                                           |
+
+⚠ **`requirement:` accepts a list, and the schema documentation does not say so.**
+`vault:check` strips brackets and splits on commas, so
+`requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]` validates and
+reciprocates correctly in both directions. Without it, one note evidencing five
+requirements produces four permanent "does not cite back" warnings — which is
+how a real disagreement would come to be ignored. The schema block in `AGENTS.md`
+still shows only the singular form; **it should be corrected.** The primary id is
+listed **first** by convention.
+
+### Two contradictions raised
+
+- **`RC-07`** — `SAL-16` is still `to_confirm` in the register, but it was
+  **rejected outright** on 2026-08-06 and replaced by the landing page. It reads
+  to a builder as though the email-button option is still open.
+- **`RC-08`** — `SAL-21` documents only one of the two jobs
+  `Opportunity.Tipo_Opportunita__c` is being asked to do. The
+  attivazione/rinnovo typing that drives contract generation
+  ([OI-51](items/OI-51%20Contract%20auto-generation%20keyed%20to%20product%20code.md))
+  is in no requirement. OI-70 says this in as many words.
+
+**No requirement text, priority or status was changed.**
+
+### Sales batch — notes with no requirement, deliberately
+
+- [OI-90](items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md) —
+  **register gap.** Whether a **Prospect** state joins Lead and Cliente is
+  covered by no requirement in any area. Raised by the client on 11 June, silent
+  for two months, and it would touch conversion, reporting and the queue design
+  at once.
+- [OI-71](items/OI-71%20Service%20start%20date%20owned%20by%20the%20Strategist.md) —
+  **register gap.** The Strategist-owned service start date, and the page banner
+  **and** email alert agreed for when it is empty, appear in no requirement.
+  `DM-19` (contract renewal and collection tracking) is adjacent and does not
+  cover it, which matters because a Performance Plus contract has a period
+  nobody knows at signature.
+- [OI-72](items/OI-72%20Partita%20IVA%20mandatory%20on%20lead%20forms.md) —
+  **out of area**, belongs to the marketing/data-model batch. ⚠ It also
+  contradicts **`MKT-02`** ("Double opt-in on forms"): the note accepts junk
+  data at capture in exchange for better conversion, which is the opposite
+  trade. Raise it in that batch.
+- [OI-29](items/OI-29%20Account%20creation%20policy%20for%20free%20tour%20tickets.md) —
+  **out of area**, belongs to the data-model batch; check against `DM-01` and
+  `DM-03` specifically. Deferred here by the tickets batch; deferred again, but
+  now with the ids to test it against. Needed before the 7–19 September tour.
+
+### 13 of the 23 `SAL` requirements still have no note
+
+`SAL-01` `SAL-02` `SAL-03` `SAL-05` `SAL-11` `SAL-12` `SAL-13` `SAL-14`
+`SAL-15` `SAL-19` `SAL-20` `SAL-22` `SAL-23`.
+
+Two are worth a human's eye before sign-off rather than another pass:
+
+- **`SAL-13`** — "Instalment dates leave the client fully paid before attending"
+  is the sales-side statement of what the tranche mechanism
+  ([OI-50](items/OI-50%20Tranche%20object.md)) and ticket release
+  ([OI-75](items/OI-75%20Ticket%20availability%20rule.md)) implement. Both notes
+  belong to the orders batch. **Cross-check it there** rather than forcing a
+  sales-side mapping.
+- **`SAL-20`** — "Two 'da ricontattare' tasks … after first contact and after
+  the appointment/demo, both with a settable specific date" is the closest
+  near-miss in the batch. OI-59 records "Mandatory reason **and recontact date**
+  on `Da ricontattare`, enforced by trigger, **for both the generic and the
+  'preventivo inviato' case**". The two halves do not clearly correspond —
+  "after first contact" is not obviously "generic" — so it was **left
+  untraced**. It needs one sentence from Elena Spini or Marco Montesi, not a
+  guess.
+
 ## What still needs doing
 
-1. **Re-derive the remaining 46** area by area, per the table above.
+1. **Re-derive the remaining 36** area by area, per the table above.
    `npm run vault:check` prints the traced count and flags any id that does not
    exist in the register or any pair that disagrees.
 2. **Only then** add the reverse index. The register is contract-bound and
