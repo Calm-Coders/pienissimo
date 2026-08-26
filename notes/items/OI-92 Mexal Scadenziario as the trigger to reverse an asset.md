@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 org: ROMI
 raised: 2026-08-20
-updated: 2026-08-24
+updated: 2026-08-26
 depends_on: [OI-50, OI-91]
 uncertain: who raised it; the diagram carries no attribution beyond the name Andrea
 source: Drive - Flows & Objects.drawio, modified 2026-08-20T15:36:24Z
@@ -21,7 +21,7 @@ yellow note placed beside the `Aggiornamento Incasso` button on the
 > Capire se da fattura NON pagata (Scadenziario) è possibile aggiornare ASSET
 > allo stato prima
 
-In English: **can an *unpaid* invoice in Mexal's _scadenziario_ (the payment
+In English: **can an _unpaid_ invoice in Mexal's _scadenziario_ (the payment
 schedule / aged-receivables ledger) drive an Asset back to its previous
 state?**
 
@@ -95,9 +95,34 @@ as a GET endpoint**, which makes it technically reachable rather than
 hypothetical.
 
 **Still not answered** is the question the sticky actually asks — whether an
-**unpaid** invoice in the scadenziario can drive an asset *backwards* to its
+**unpaid** invoice in the scadenziario can drive an asset _backwards_ to its
 previous state. Andrea Di Cicco holds the open action to work out the
 invoice-to-order-line link, which was named as the hard part and is unresolved.
 
 It remains the natural question for the **26 August client Mexal review**, where
 Fabrizio Paganelli is an invitee.
+
+## 2026-08-26 - the endpoint is confirmed on the wire
+
+[The Postman collection](../The%20Mexal%20Postman%20collection.md), read on
+26 August, contains a working request against
+**`https://services.passepartout.cloud/webapi/risorse/scadenzario/ricerca`** —
+`POST`, with the standard `{"filtri":[{"campo":"data_ult_mod",…}]}` delta body.
+
+That moves the scadenziario from _"listed as a GET endpoint in the workbook"_ to
+**a call Andrea Di Cicco has actually configured**. The mechanism this item asks
+about is reachable.
+
+⚠ **It confirms the endpoint, not the semantics.** The collection saves **no
+responses**, so nothing here shows what the scadenziario returns for an
+**unpaid** invoice, or whether that state is distinguishable in a way that could
+drive an Asset backwards. The question the sticky note actually asks is exactly
+as open as it was on 20 August.
+
+⚠ Note also that two _other_ requests in the collection are mis-pointed at this
+same endpoint (`Ricerca Ordini Clienti`, `Ricerca Indirizzo di spedizione`), so
+its presence three times over is a copy-paste artefact rather than three
+deliberate uses. Only `Ricerca Scadenziario` is the real one.
+
+**Still the natural question for today's 16:00 client review**, where Fabrizio
+Paganelli — who proposed the mechanism on 20 August — is an invitee.

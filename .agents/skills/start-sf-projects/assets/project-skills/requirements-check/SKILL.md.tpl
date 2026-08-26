@@ -80,7 +80,7 @@ Decide what each item is before acting on it:
 
 | Found                                    | Do                                                           |
 | ---------------------------------------- | ------------------------------------------------------------ |
-| Meeting recording, transcript or notes   | Run the project's **`drill-meeting`** workflow on it          |
+| Meeting recording, transcript or notes   | Run the project's **`drill-meeting`** workflow on it         |
 | A specification, payload or API contract | Create or update the requirement note; record the contract   |
 | A decision or reversal in a message      | Update the affected note, cite the message and its date      |
 | A commitment or deadline                 | Create or update the tracked item, with owner and date       |
@@ -114,8 +114,8 @@ in the report what each one cost and what it changed.
 6. Run the project's integrity check (`npm run vault:check`).
 
 If the sweep changed the live position of the project, also refresh
-[STATUS.md](../../../STATUS.md) and its Notion mirror - step 6 of
-`org-status-check` describes how, and the same rules apply here.
+[STATUS.md](../../../STATUS.md) and its Notion mirror using the reconciliation
+and publishing references under `org-status-check`; the same rules apply here.
 
 Follow the project's own write protocol where it has one; it overrides this list.
 

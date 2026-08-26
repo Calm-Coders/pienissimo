@@ -151,7 +151,7 @@ npm run vault:check   # frontmatter, unique ids, and link integrity across notes
 - Use `$drill-meeting` when a meeting transcript arrives. It preserves the source, extracts facts into `notes/`, then regenerates the bilingual recaps and trackers from those notes.
 - Use `$drill-me` to run an interactive decision session against the current blockers and open items.
 - Use `$requirements-check` to sweep **email, chat and Drive** for anything new since the last check, drill any new meeting, and fold the findings into the records. Each run writes a trace note under [`notes/traces/`](notes/traces/) that becomes the watermark for the next one.
-- Use `$org-status-check` to compare what is **actually implemented in the Salesforce org** against the requirements recorded here, and report the gap both ways. Run it before a go-live, a sign-off, or UAT. Its last step regenerates [`STATUS.md`](STATUS.md) and pushes the Notion mirror.
+- Use `$org-status-check` to compare the recorded requirements, committed source and what is **actually implemented in the Salesforce org**. It reports compliance, deployment drift and operability separately. Reporting is read-only; reconciliation and publishing [`STATUS.md`](STATUS.md) or its Notion mirror are explicit modes. Recurring Slack DM delivery remains disabled until a user explicitly authorizes it and the exact recipient id is verified.
 - Project-local skills are available under `.agents/skills/` for open-standard agents and `.claude/skills/` for Claude Code. Tools without a skills mechanism can simply be told to follow `.agents/skills/drill-me/SKILL.md`.
 - Meeting state lives in [`meetings/`](meetings/), with recaps in [`meetings/results/`](meetings/results/) and design proposals in [`meetings/proposals/`](meetings/proposals/). Those files are **rendered views** of `notes/`, not the place a fact lives.
 
@@ -974,8 +974,8 @@ Four repeatable procedures live in `.agents/skills/` (mirrored in
 Claude Code loads these as skills automatically. Every other tool: read the
 file and follow it.
 
-`org-status-check` also owns [STATUS.md](STATUS.md) and the Notion mirror - it
-is the only procedure that publishes them.
+`org-status-check` owns [STATUS.md](STATUS.md) and the Notion mirror when the run
+explicitly selects its reconciliation or publishing mode.
 
 ## Checks
 
@@ -1116,8 +1116,8 @@ Generated from [notes/](notes/), which is the source of record. If this page and
 a note disagree, the note wins - regenerate this page rather than editing facts
 into it. Agent-facing equivalent: [MAP.md](MAP.md).
 
-Once published, this page is mirrored to Notion, invite-only and refreshed by
-step 6 of `org-status-check`. Ids and sharing rules:
+Once published, this page is mirrored to Notion, invite-only and refreshed in
+the explicit publishing mode of `org-status-check`. Ids and sharing rules:
 [the mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
 
 ---
@@ -1232,7 +1232,7 @@ title** - titles are edited, ids never are.
 
 ## Refreshing it
 
-Owned by step 6 of
+Owned by the explicit publishing mode of
 [org-status-check](../.agents/skills/org-status-check/SKILL.md). Update the page
 content in place and match tracker rows on `Ref`, so the URLs stay stable and
 existing invitations keep working.

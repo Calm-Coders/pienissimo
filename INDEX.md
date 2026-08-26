@@ -14,6 +14,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | Cost  | File                                                                                 | What it answers                          |
 | ----- | ------------------------------------------------------------------------------------ | ---------------------------------------- |
 | ~1.0k | [docs/code-intelligence.md](docs/code-intelligence.md)                               | Codex + Claude code/SF indexes           |
+| ~0.9k | [requirements/org-verification.json](requirements/org-verification.json)             | Executable org-status evidence targets   |
 | ~1.1k | [MAP.md](MAP.md)                                                                     | Current state, what is blocked, who owns |
 | ~1.3k | [INDEX.md](INDEX.md)                                                                 | This router                              |
 | ~1.2k | [notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md) | How to read and write knowledge here     |

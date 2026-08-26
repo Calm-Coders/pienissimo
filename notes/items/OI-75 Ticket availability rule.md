@@ -106,3 +106,30 @@ and referenced by nothing in `force-app/`.
 The mapping gap recorded above — no order **line** number in the Get Fatture
 structure — is untouched by this check and is still the thing to raise at the
 Mexal call.
+
+## 2026-08-26 - the collection makes the mapping gap worse, not better
+
+[Andrea Di Cicco's Postman collection](../The%20Mexal%20Postman%20collection.md)
+was read on 26 August. It does not close the gap recorded above — **it shows
+that the call the gap concerns has never been made.**
+
+- **There is no invoice endpoint in the collection.** Mirko Merendi's two-step
+  `Get Fatture` via `documenti/movimenti-magazzino` is absent; both requests
+  labelled _Fatture_ call `documenti/ordini-clienti/ricerca`, the **customer
+  orders** resource.
+- **There are no saved responses**, so the file shows no field lists. It
+  therefore says nothing about whether the invoice payload carries **numero riga
+  d'ordine** — the key this rule was agreed to match on, and the one thing that
+  would settle it.
+
+So the position is unchanged in substance and sharper in evidence: the rule
+agreed on 2026-08-06 keys on a field that **no mapping delivers and no tested
+call returns**. Treat ticket release as unimplementable as specified until an
+invoice call exists that demonstrably returns the line number.
+
+🟢 One adjacent confirmation: `scadenzario/ricerca` **is** in the collection and
+is reachable, which is what [OI-92](OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)
+needs — though its semantics are still unasked.
+
+**This is the first question for the 26 August 16:00 Mexal review**, and it can
+now be asked with a URL beside it rather than as a mapping abstraction.

@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
 raised: 2026-07-14
-updated: 2026-08-25
+updated: 2026-08-26
 source: meetings/open-items.md row 58
 ---
 
@@ -115,3 +115,60 @@ an individual theatre performance was missing from the catalogue; on checking he
 withdrew it — `Performance` carries **`prices` as a related object** and a
 **`Rate` field**, which holds IDs rather than values. Recorded so the same alarm
 is not raised twice.
+
+## 2026-08-26 - the collection was read; it is a probe, not a contract
+
+[Decoded in full](../The%20Mexal%20Postman%20collection.md). Nine requests, no
+folders, no saved responses. It closes the "has anyone opened it" question and
+**opens four sharper ones**, all of which belong at today's 16:00 review.
+
+🟢 **What it settles.** The real endpoint paths, on the wire: `clienti/ricerca`,
+`fornitori/ricerca` (agents as suppliers — the mastro-610 design confirmed),
+`dati-generali/pagamenti/ricerca` (**new** — the workbook had no path for it),
+`articoli/ricerca`, `scadenzario/ricerca` and
+`documenti/ordini-clienti/ricerca`. All **POST** to `/ricerca` with a
+`{"filtri":[{"campo","condizione","valore"}]}` body, delta key `data_ult_mod`,
+timestamps `YYYYMMDD HHMMSS`.
+
+🔴 **The invoice call is absent.** Mirko Merendi's two-step `Get Fatture` via
+`documenti/movimenti-magazzino` **is not in the file**; both requests named
+_Fatture_ hit the customer-orders resource instead. So the call this item's
+biggest open question depends on has **never been tested**, and the collection
+does not show how to make it.
+
+🔴 **The order-line-number gap is untouched.** With no saved responses, the file
+shows no payloads and no field lists. It cannot and does not answer whether
+`Get Fatture` returns the **numero riga d'ordine**. The 2026-08-25 Slack
+reading — "a single invoice carries the list of its items" — remains a reading
+of data, not a demonstrated call.
+
+🔴 **Three requests are pointed at the wrong resource** — `Ricerca Ordini
+Clienti` and `Ricerca Indirizzo di spedizione` both call `scadenzario/ricerca`,
+and `Ricerca Fatture Copy` duplicates its twin. **Read the URL, never the
+name.** There is **no shipping-address call at all**, so _destinazioni_ is still
+_"da verificare"_ exactly as the workbook left it.
+
+🔴 **Also missing:** any pagination parameter (against the 6 MB / 12 MB callout
+limits), any write call (`Creazione Cliente` / `Creazione ordini` untested), and
+a rolling watermark — the delta filter is hard-coded to **16 July 2026**.
+
+⚠ **The workbook's `Method` column is wrong as an HTTP verb** — it says GET on
+six calls that are really POST. That column feeds
+`Integration_Configuration__c.HTTP_Method__c` directly, so the error is one
+configuration step from being built.
+
+### The credentials line in the 24 August section above is wrong
+
+That section says _"the Mexal WEBAPI credentials promised since July have still
+not arrived"_. **This file proves working credentials exist and are in active
+use by ROMI** — two enabled credential headers on all nine requests. That is
+consistent with the earlier paragraph in this note recording delivery on
+**15 July**, and inconsistent with the 24 August line.
+
+Whichever set is still owed from Fabrizio Paganelli, **it is not the one Andrea
+Di Cicco is testing with.** Ask precisely which credential is missing rather
+than repeating that they are absent.
+
+🔴 **The file must not be committed** — live credentials in cleartext against
+the ERP that is the system of record for invoicing. Handling:
+[the collection note](../The%20Mexal%20Postman%20collection.md).

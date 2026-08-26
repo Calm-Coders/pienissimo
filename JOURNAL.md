@@ -10,6 +10,62 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-26 — codex — org-status results now deliver to Aurel by Slack DM
+
+- **Standing instruction implemented:** every completed `org-status-check` run
+  now sends its final result to Aurel Mrruku by direct message, independently of
+  `report`, `reconcile` or `publish` mode. Aurel can opt out for an individual
+  run without disabling the standing preference.
+- **Destination verified, not inferred:** the Slack connector returned one exact
+  Aurel match in the `Romi` workspace. The stable workspace and user ids are
+  recorded in the skill's Slack-delivery reference; ordinary runs do not search
+  again or substitute a channel or similarly named account.
+- **Delivery contract:** send only after validation and selected write/publish
+  work finishes; include the full substantive result, thread numbered
+  continuations above 4,500 characters, omit secrets and local paths, and return
+  the message link in chat. An unavailable or ambiguous Slack send is reported
+  without retrying or invalidating the org check.
+- **Generator:** future Salesforce projects receive the same delivery mechanism
+  disabled by default; it becomes active only after explicit authorization and
+  exact recipient verification. Agent and Claude mirrors remain synchronized.
+- **End-to-end proof:** a one-time configuration confirmation was delivered to
+  Aurel's DM successfully and Slack returned its message permalink. No org-status
+  report was generated merely to test delivery.
+
+## 2026-08-26 — codex — org-status-check rebuilt as a hybrid evidence pipeline
+
+- **Structure:** replaced the 278-line monolith with a compact router and four
+  progressive references: evidence model, live-org inventory, reconciliation
+  and publishing. Scope (`targeted`/`full`) is now independent from output
+  (`report`/`reconcile`/`publish`), so a status question no longer implies a
+  large repository or Notion rewrite.
+- **Precision:** the report keeps requirement compliance, repository/org drift
+  and operability as separate axes. Field existence uses Tooling
+  `FieldDefinition`; access requires matching `FieldPermissions` and
+  `ObjectPermissions`. Failed inventory calls become `unverifiable`, never an
+  empty result. Graphify and Open Codebase Index are exception-navigation aids,
+  not deployment evidence; exact search remains the exhaustive fallback.
+- **Deterministic layer:** added a nine-assertion starter plan at
+  `requirements/org-verification.json` and local commands for repository and
+  live-org snapshots, structural comparison, validation and tests. Generated
+  evidence stays under gitignored `.org-status-cache/`; output paths are
+  constrained there and Salesforce credentials or record data are not stored.
+- **Regression protection:** five Node tests cover object-qualified duplicate
+  field names, the deployed-but-no-FLS failure mode, matching field/object
+  access, failed-inventory uncertainty and invalid requirement references.
+  Windows Salesforce CLI invocation was smoke-tested after handling `.cmd`
+  execution explicitly.
+- **Mirrors and generator:** `.agents` and `.claude` copies are byte-identical.
+  The reusable `start-sf-projects` template now generates the same modular,
+  report-first architecture and its related workflows no longer cite the old
+  hardcoded step 6.
+- **Validation:** skill-creator validation, `org-status:test`, repository
+  snapshot, mirror validation and Python compilation pass. The stricter
+  build-state validator correctly exposes two pre-existing undefined refs,
+  `QUO-01` and `QUO-06`; this skill-only update did not rewrite the requirements
+  register. No live org snapshot, deployment, retrieve, data write, test run,
+  Notion write, commit or push was performed.
+
 ## 2026-08-26 — claude — requirement-trace: the `sales` batch, 9 → 19 of 167
 
 - **Batch:** `sales` (`SAL`), 23 requirements. **Five notes mapped, ten
@@ -1310,3 +1366,21 @@ servizio`**, exists in Elena's client-facing doc and in no version of
   [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) are now marked
   **unverified in both directions**; open that thread in a mail client before
   chasing the client again. Read full bodies next run, not snippets.
+
+---
+
+## 2026-08-26 — codex — org-status Slack delivery expanded
+
+- **Did:** verified the existing `Pienissimo devs` Slack group DM by exact
+  conversation id and membership, then updated both the canonical and Claude
+  `org-status-check` skills so every completed result is sent independently to
+  Aurel's personal DM and the project group DM.
+- **Destination:** `Pienissimo devs` contains Aurel Mrruku, Rexhina Hysi, Sara
+  Aga and Anita Aga. The completed 26 August org-status report was forwarded to
+  the group immediately.
+- **Validation:** both skill trees remain byte-for-byte identical; both pass
+  the skill validator in UTF-8; all five org-status behavioral tests pass; the
+  changed Markdown files pass Prettier verification.
+- **Watch:** Slack delivery is independent per destination. If one send fails,
+  deliver to the other, report the partial failure in chat and never guess a
+  replacement conversation.

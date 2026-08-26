@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-08-24
+updated: 2026-08-26
 depends_on: [OI-58]
 source: meetings/open-items.md row 58
 ---
@@ -116,3 +116,56 @@ This integration is configured on top of
 `Integration_Configuration__c`, `Integration_Log__c` and `API_Callout_Engine`,
 committed in early August. The scaffolding is house pattern; the Mexal-specific
 configuration on top of it is the project requirement.
+
+## 2026-08-26 - the Postman collection was read, and it gives the real paths
+
+[The collection](../The%20Mexal%20Postman%20collection.md) — nine requests, sent
+by Andrea Di Cicco on 25 August — was decoded on 26 August. It is the first
+artifact showing the **actual HTTP calls** rather than a plan for them.
+
+**Every call is a `POST` to a `/ricerca` sub-resource** under
+`https://services.passepartout.cloud/webapi/risorse/…`, with a JSON filter body
+of the form `{"filtri":[{"campo","condizione","valore"}]}`. The delta key is
+`data_ult_mod` and the timestamp format is **`YYYYMMDD HHMMSS`**.
+
+| Entity                  | Path                               |
+| ----------------------- | ---------------------------------- |
+| Clienti                 | `clienti/ricerca`                  |
+| Agenti                  | `fornitori/ricerca`                |
+| Condizioni di pagamento | `dati-generali/pagamenti/ricerca`  |
+| Prodotti                | `articoli/ricerca`                 |
+| Scadenziario            | `scadenzario/ricerca`              |
+| Ordini clienti          | `documenti/ordini-clienti/ricerca` |
+
+`fornitori/ricerca` for agents **confirms the mastro-610 design** on the wire.
+`dati-generali/pagamenti/ricerca` is **new** — the workbook gave that call a
+manual page and no path.
+
+### ⚠ Two corrections to what is written above
+
+🔴 **The `Method` column in the workbook table above is wrong as an HTTP verb.**
+It lists _condizioni pagamento_, _destinazioni_, _fatture_, _prodotti_, _ordini_
+and _scoperto cliente_ as **GET**; every real call is a **POST** to `/ricerca`.
+The column describes a read, not a verb. Configuring
+`Integration_Configuration__c.HTTP_Method__c` from it would be wrong on six
+calls.
+
+🔴 **The two-step `Get Fatture` is not in the collection.** Mirko Merendi
+specified `documenti/movimenti-magazzino` then one call per document;
+`movimenti-magazzino` appears **nowhere**. Both requests named _Fatture_ call
+`documenti/ordini-clienti/ricerca`, which is the customer-orders resource. So
+the N+1 invoice retrieval described above — the one on the critical path for
+[ticket availability](../items/OI-75%20Ticket%20availability%20rule.md) — is
+**untested and unshown**.
+
+### What the collection still does not give
+
+**No saved responses**, so no payloads and no field lists — it says nothing
+about whether the invoice call returns the **numero riga d'ordine**. **No
+pagination** parameter of any kind, against the 6 MB / 12 MB limits recorded
+above. **No write calls**, so `Creazione Cliente` and `Creazione ordini` are
+untested. And the delta watermark is **hard-coded to 16 July 2026** rather than
+rolling.
+
+⚠ The file carries **live, enabled credentials** and must never be committed —
+detail and handling in [the collection note](../The%20Mexal%20Postman%20collection.md).
