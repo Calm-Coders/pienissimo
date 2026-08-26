@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-08-25
+updated: 2026-08-26
 source: meetings/open-items.md row 59
 ---
 
@@ -172,3 +172,70 @@ anything other than the 5-day default.
 
 The 🔴 contradiction above — whether "Da ricontattare" generates a task — is
 **not** touched by this and still needs Elena Spini or Aurel Mrruku.
+
+## 2026-08-26 - org check: the quote states are configured, and the data was left behind
+
+Verified read-only against **Pienissimo UAT**. 🟢 **This reverses the finding
+directly above, which is one day old.** `Quote.Status` no longer holds the stock
+Salesforce values. It holds the agreed lifecycle, in order:
+
+**`Bozza · Nuovo Preventivo · In Trattativa · In Attesa Accettazione ·
+Accettato · Rifiutato`**
+
+`Bozza` is the default. The eight stock English values — `Draft`, `Needs
+Review`, `In Review`, `Approved`, `Rejected`, `Presented`, `Accepted`, `Denied`
+— are **deactivated, not deleted**. This is exactly the set this item records as
+agreed, `In Attesa Accettazione` included, and it is now tracked in
+`force-app/main/default/standardValueSets/QuoteStatus.standardValueSet-meta.xml`
+(Anita Aga, `38dc7b6`, merged 2026-08-26 in PR #12).
+
+So the sentence above — _"`Bozza` is not a value `Quote.Status` can hold"_ — is
+superseded. It can.
+
+### 🔴 The value set was swapped without migrating the records
+
+Three of the four quotes in UAT still sit on **deactivated** values:
+
+| Quote      | `Status`       | `ExpirationDate` |
+| ---------- | -------------- | ---------------- |
+| `00000001` | `Accepted`     | null             |
+| `00000002` | `Accepted`     | null             |
+| `00000003` | `Needs Review` | 2026-08-27       |
+| `00000004` | `Bozza`        | 2026-08-31       |
+
+A record holding a deactivated picklist value keeps displaying it and **cannot
+be saved again without being moved to an active value**. In UAT that is four
+development records and costs nothing. It is recorded because it is the same
+operation, on a far larger table, that the migration will perform on
+`Biglietto__c.Status__c` — where **37 records** sit on values the agreed design
+deletes ([OI-74](OI-74%20Asset%20state%20machine.md)). The pattern is worth
+fixing here, cheaply, before it is repeated there.
+
+### What is still not built
+
+The picklist is the whole of it. **No behaviour was configured with it:**
+
+- **No validation rules on `Quote`** — the org has two validation rules in
+  total and both are on `BundleComponent__c`. So the 24 August constraint
+  _"products and tranches may only be edited while the quote is in `Bozza`"_ is
+  **still unenforced**, and the tranche UI still ships without it.
+- **No Flow, no workflow rule, no approval process** anywhere in the org. The
+  5-day validity, the mandatory expiry date at send, the day-2 alert and the
+  expiry alert have nothing behind them. `ExpirationDate` is null on two of the
+  four quotes, which is what "mandatory at send" not being enforced looks like.
+- 🔴 **Zero `EmailTemplate` records in the org.** Marco Montesi's reminder copy,
+  delivered 25 August and recorded in the section above, has not been built into
+  anything.
+- 🔴 **Zero `CustomNotificationType` records.** The _"configurare notifiche
+  reminder"_ action from the 24 August session has nothing behind it either.
+
+The 🔴 contradiction over whether "Da ricontattare" generates a task is
+**untouched by this check and still needs Elena Spini or Aurel Mrruku**. Note
+that it is now the only thing blocking that part of the build: the state it
+hangs off exists at last.
+
+⚠ The register's `state_machines.quote.states` still carries the older
+DGM-derived labels (`In trattativa (Prev inviato)`, `In attesa di accettazione`,
+`Accettato - Copia Contabile Ricevuta`, `Rifiutata`) and now disagrees with both
+this note and the org. **The register is not amended from an org check** — this
+is flagged for a human to reconcile, not corrected here.

@@ -1,8 +1,8 @@
 # ROMI-PIENISSIMO — Recap di Sviluppo Salesforce
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
-> ⚠ **Precedenza, dal più recente: §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
-> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08; il §15 la scelta dell'Asset standard; il §16 le quattro riunioni recuperate il 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.** **Il §17 è una verifica dello stato del build sull'org UAT del 25/08: dove contraddice una sezione precedente su ciò che _esiste_, vince il §17; dove una sezione precedente registra ciò che è stato _concordato_, quella sezione resta valida.**
+> ⚠ **Precedenza, dal più recente: §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
+> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08; il §15 la scelta dell'Asset standard; il §16 le quattro riunioni recuperate il 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.** **Il §17 e il §19 sono verifiche dello stato del build sull'org UAT, del 25/08 e del 26/08: dove contraddicono una sezione precedente su ciò che _esiste_, vince la più recente; dove una sezione precedente registra ciò che è stato _concordato_, quella sezione resta valida. Il §19 corregge integralmente una constatazione del §17.** Il §18 è la call tecnica Anticipay del 25/08.
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
 ---
@@ -763,7 +763,6 @@ costruito; non riscrive un documento contrattuale. Le decisioni ancora dovute da
 §16 — #46 (`Anno_Solare__c`), #53 (generazione asset enunciata in due modi) e #59
 ("Da ricontattare") — **non sono toccate da questa verifica e restano dovute**.
 
-
 ---
 
 ## 18. Aggiornamento 25/08/2026 — la call tecnica Anticipay
@@ -791,15 +790,15 @@ Due motivazioni, entrambe accolte in riunione:
 
 ### 18.2 Il contratto, per quanto concordato
 
-| Elemento | Concordato |
-| -------- | ---------- |
-| Chiamante → chiamato | Salesforce → **middleware Pienissimo**, non Anticipay |
-| Innesco | il **primo Ordine inserito per un Account** — confermato, invariato |
-| Autenticazione | un **token nell'header della richiesta HTTP** |
-| Errori | `404` P.IVA non trovata · `500` generico — **codice e messaggio entrambi restituiti** |
-| Conservazione errori | **salvati su Salesforce per tre mesi**, usati per generare notifiche interne |
-| Discrepanze | il valore restituito **sovrascrive** Salesforce |
-| Payload | **ridotto** ai soli campi necessari — vedi §18.3 |
+| Elemento             | Concordato                                                                            |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| Chiamante → chiamato | Salesforce → **middleware Pienissimo**, non Anticipay                                 |
+| Innesco              | il **primo Ordine inserito per un Account** — confermato, invariato                   |
+| Autenticazione       | un **token nell'header della richiesta HTTP**                                         |
+| Errori               | `404` P.IVA non trovata · `500` generico — **codice e messaggio entrambi restituiti** |
+| Conservazione errori | **salvati su Salesforce per tre mesi**, usati per generare notifiche interne          |
+| Discrepanze          | il valore restituito **sovrascrive** Salesforce                                       |
+| Payload              | **ridotto** ai soli campi necessari — vedi §18.3                                      |
 
 ### 18.3 Quali campi è ora un punto aperto a sé
 
@@ -831,7 +830,7 @@ sviluppo.
 
 ### 18.5 ⚠ Un'azione è assegnata in modo errato nell'invito inviato al cliente
 
-Il verbale Gemini assegna *«creare un ambiente di test dedicato»* ad **Aurel
+Il verbale Gemini assegna _«creare un ambiente di test dedicato»_ ad **Aurel
 Mrruku**. Non è quanto concordato. Elena Spini gli ha sottoposto la lista su
 Slack alle 15:03 CEST e lui ha corretto: l'ambiente di test di ROMI esiste già —
 è UAT — e quello che serve è **il loro, su cui ROMI deve puntare**. Elena Spini
@@ -856,9 +855,9 @@ dentro una decisione tecnica**, e nessuno in riunione lo ha detto.
 ### 18.7 Il diagramma master ora si contraddice
 
 `Flows & Objects.drawio` è stato modificato **durante la call**, alle 08:23 UTC.
-La pagina **LEAD-OPTY** riporta ora *«chiamata API **al middleware Pienissimo**
-per check P.IVA Account»*. La pagina **Ordini** riporta ancora *«chiamata API
-**Anticipay**»*. La formulazione corretta e più recente è quella della pagina
+La pagina **LEAD-OPTY** riporta ora _«chiamata API **al middleware Pienissimo**
+per check P.IVA Account»_. La pagina **Ordini** riporta ancora _«chiamata API
+**Anticipay**»_. La formulazione corretta e più recente è quella della pagina
 LEAD-OPTY.
 
 ### 18.8 Arrivato sempre il 25/08, ma da Slack e non da una riunione
@@ -868,8 +867,8 @@ LEAD-OPTY.
   e lo dice lui stesso.** (#58)
 - 🟢 **Il collegamento fattura → riga d'ordine ha una risposta.** La singola
   fattura Mexal porta la lista dei suoi item, quindi lo stato di pagamento per
-  riga è raggiungibile — *«quindi per le trance sappiamo come capire quando sono
-  state pagate»*. È l'input di cui ha bisogno l'aggregazione delle tranche. È una
+  riga è raggiungibile — _«quindi per le trance sappiamo come capire quando sono
+  state pagate»_. È l'input di cui ha bisogno l'aggregazione delle tranche. È una
   lettura del dato, non una chiamata costruita, e **come si creano le tranche
   lato Mexal resta ignoto**. (#50, #58)
 - 🟢 **È arrivato il copy della mail di reminder di Marco Montesi**, atteso dal
@@ -884,3 +883,144 @@ invariati. Il §18.1 incide direttamente sul testo firmato dell'integrazione —
 controparte di un'integrazione di Fase 1 non è un dettaglio — ma riscrivere un
 documento contrattuale sulla base di uno sweep notturno è una decisione umana.
 Segnalato, non fatto.
+
+---
+
+## 19. Aggiornamento 26/08/2026 — verifica sull'org UAT Pienissimo
+
+Seconda **verifica in sola lettura dell'org UAT Pienissimo**
+(`a.mrruku@pienissimo.uat`), a un giorno dal §17, confrontata con `force-app/`
+su `DevMain` al commit `dc513c6`. Prevale sul §17 quanto allo stato del build.
+
+⚠ **Questa sezione registra soltanto lo stato del build.** Nessun requisito si
+sposta, nessuna decisione di design si sposta, e nulla qui riapre un punto già
+chiuso. Dove contraddice una sezione precedente su ciò che **esiste**, vince il
+§19; dove una sezione precedente registra ciò che è stato **concordato**, quella
+sezione resta valida. Tabella completa: il blocco di verifica in org del
+26/08/2026 in `open-items.md`.
+
+### 19.1 ❌ Il §17.4 era errato, e la colpa è dello strumento
+
+Il §17.4 riportava `OrderItem.Tranche__c` come _«presente in `force-app/` e
+assente dall'org»_. **Il campo è in org.** È stato creato il 24/08 alle 15:18Z,
+un minuto dopo il gemello lato Preventivo.
+
+`sf sobject describe` — lo strumento usato nel §17 — **filtra l'elenco dei campi
+in base alla field-level security dell'utente corrente**. Questo campo non è
+concesso a nessun profilo né a nessun permission set di progetto: è quindi
+invisibile a ogni utente, Amministratore di Sistema compreso, e `describe` lo
+ha omesso esattamente come avrebbe omesso un campo mai creato. Tutti i confronti
+sui campi del §17 sono stati rifatti con `FieldDefinition` (Tooling API), che
+non è filtrato. **È cambiata solo questa constatazione.**
+
+La conseguenza tratta dal §17.4 resta valida, per motivi diversi: **la
+propagazione non può funzionare.** Nessun utente può leggere il campo, e nulla
+in `force-app/` lo scrive — né le classi, né i trigger, né la LWC. Il permission
+set `Tranche_Management` concede lettura e scrittura sul gemello
+`QuoteLineItem` e omette del tutto il lato `OrderItem`.
+
+### 19.2 🟢 La prima macchina a stati concordata è arrivata in org
+
+`Quote.Status` contiene ora **`Bozza · Nuovo Preventivo · In Trattativa · In
+Attesa Accettazione · Accettato · Rifiutato`**, con gli otto valori standard
+inglesi disattivati. È il ciclo di vita specificato il 24/08 (#59),
+`In Attesa Accettazione` compreso — la rinomina che quel punto indica come la
+più rilevante.
+
+Il §17.3 diceva che ogni macchina a stati era ancora quella standard. **Resta
+vero per Ordine, Lead e Opportunità, e non è più vero per il Preventivo.**
+
+🔴 Una precisazione: **i record sono rimasti sui vecchi valori.** Tre dei
+quattro preventivi in UAT sono ancora su valori standard disattivati. Quattro
+record di sviluppo non sono nulla — ma sono la prova generale della stessa
+operazione sui **37 biglietti** fermi al punto #74, ed è andata nel modo
+sbagliato.
+
+### 19.3 🟢 Il recupero in source control è avvenuto in un giorno
+
+Il §17.4 registrava lo stack di creazione tranche come presente solo in org. La
+PR #12 (`dc513c6`, integrata il 26/08) ha portato in `force-app/`
+`QuoteTrancheController`, la LWC `quoteCreateTranche`, `Quote.Crea_Tranche`, due
+campi di `Tranche__c` e il permission set `Tranche_Management`. Il controller
+committato è **identico byte per byte alla copia in org**.
+
+**Un componente resta solo in org: il layout `Tranche__c-Tranche Layout`.** E lo
+stack Biglietto non si muove dal 22/07 — anzi è **più ampio di tre componenti**
+rispetto a quanto registrato, perché la pagina Visualforce `BigliettoPdf`, la
+named credential `DocuSign` e il tab `BundleComponent__c` non erano nell'elenco.
+Senza la pagina e la credential lo stack non funzionerebbe in un'org nuova
+nemmeno recuperando le sei classi.
+
+### 19.4 🔴 Il §17.2 sottostimava l'assenza
+
+Non esiste ancora un solo Flow. La verifica è stata estesa, e anche il resto è
+vuoto: **zero** `WorkflowRule`, `ApprovalProcess`, `EmailTemplate`,
+`CustomNotificationType`, e **nessun Apex schedulato**. In tutta l'org esistono
+due validation rule, entrambe su `BundleComponent__c`.
+
+Non c'è quindi alcuna automazione dichiarativa, **nessun canale di notifica,
+nessun template email e nessun temporizzatore**. Tre comportamenti già progettati
+non hanno su cosa poggiare: il copy del reminder di Marco Montesi (#59,
+consegnato il 25/08), le notifiche reminder specificate il 24/08, e
+l'automatismo che porta a «non utilizzato» i biglietti non scansionati tre
+giorni dopo l'evento.
+
+### 19.5 🔴 Lo scaffolding di integrazione non è mai stato configurato
+
+Constatazione nuova, assente dal §17. `Integration_Configuration__c` e
+`Integration_Log__c` contengono **zero record**, l'org ha **una** sola named
+credential (`DocuSign`) e nessun remote site setting.
+
+Nessuna integrazione in uscita — Mexal (#58), WooCommerce (#49), IVA tramite il
+middleware (#73, #94) — ha quindi un endpoint definito in org.
+`API_Callout_Engine` è in repository, funzionante, e collegato a nulla. Il
+motore non è l'integrazione; lo è la riga di configurazione.
+
+DocuSign è l'eccezione e la prova: è l'unica integrazione con una credential ed
+è dimostrabilmente in esercizio — `DocuSign_Envelope_Id__c` è valorizzato su
+**19 biglietti su 37** — e non usa questo scaffolding. Gira sulle classi
+presenti solo in org citate sopra.
+
+### 19.6 🔴 La chiave di ordinamento delle tranche non è affidabile
+
+`Tranche__c.Sequenza__c` è ciò che il rilascio del biglietto (#75) legge per
+dire «tutte le tranche che precedono questa». Vale **1, 4, 3** su un preventivo
+— con un salto e fuori ordine di creazione — ed è **vuoto** sui tre record più
+vecchi. Nessuna validation rule, nessun Flow, nulla che imponga presenza,
+unicità o continuità.
+
+Una tranche è inoltre passata a `Parzialmente Pagata` **a mano**: non esiste
+automazione che possa averlo fatto. L'aggregazione dei pagamenti resta non
+dimostrata, come già diceva il §17.1.
+
+### 19.7 Invariato rispetto al §17
+
+Lo stallo dei biglietti (§17.5): sempre **37 biglietti**, 30 in `In attesa
+firma`, **0** mai arrivati a `Disponibile`, **0** QR generati. L'**Asset**
+standard ha sempre zero campi personalizzati — confermato con `FieldDefinition`,
+quindi non è un effetto della field-level security — e contiene un record
+chiamato `Test`. `Campaign` e `CampaignMember` hanno entrambi ancora zero campi
+personalizzati: il modello padre/figlio del §16.2 resta interamente da
+realizzare.
+
+Rilasciabilità (§17.6): copertura **0%**, ora **1069** righe non coperte sulle
+stesse 24 classi. L'aumento da 1028 è tutto di `QuoteTrancheController`, il cui
+corpo non cambia dal 25/08 alle 12:50Z: è lo snapshot ad aver recepito il
+rilascio, non il codice a essere cresciuto.
+
+L'apparato di classificazione (§17.7) è invariato, con un dato da aggiungere:
+`Tipologia__c` risulta valorizzato su **249 prodotti su 280**, cosa che nessuna
+verifica precedente aveva registrato.
+
+### 19.8 Non fatto, deliberatamente
+
+**Nessun requisito è stato modificato.** `pienissimo-requirements.yaml`,
+`REQUIREMENTS.md` e `REQUISITI.it.md` non ricevono da questa verifica alcuna
+modifica oltre al blocco `build_state` del registro, che esiste proprio per
+registrare questo.
+
+Due cose sono **segnalate a un umano, non corrette**: il registro, in
+`state_machines.quote.states`, porta ancora le etichette più vecchie derivate da
+DGM e ora è in disaccordo sia con l'org sia con il #59; e le decisioni dovute dal
+§16 — #46, #53 e la contraddizione del #59 su «Da ricontattare» — non sono
+toccate da una verifica in org e **restano dovute**.

@@ -5,13 +5,19 @@
 > page in [site/](site/), which is sanitized to different rules
 > ([docs/publishing.md](docs/publishing.md)).
 
-**Last regenerated: 2026-08-25 (second pass — nightly requirements-check)** ·
+**Last regenerated: 2026-08-26 (org-status-check)** ·
 **Basis: a live, read-only check of the Pienissimo UAT org**
-(`a.mrruku@pienissimo.uat`), compared against the repository, the notes and the
-requirements register, plus the external sweep of 25 August. This supersedes the
-2026-08-03 verification, which was stale in both directions. Everything below
-marked as built or not built was **observed in the org today**, unless the row
-says otherwise.
+(`a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`) run on **2026-08-26**,
+compared against `force-app/` on `DevMain` at `dc513c6`, the notes and the
+requirements register. This supersedes the 2026-08-25 check. Everything below
+marked as built or not built was **observed in the org on 26 August**, unless
+the row says otherwise.
+
+⚠ **One finding of the 25 August check did not survive re-checking.**
+`sf sobject describe` filters its field list by the running user's field-level
+security, so a deployed field granted to nobody reads as missing. Every field
+comparison was re-run against Tooling `FieldDefinition`, which is not filtered —
+see [the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
 
 Generated from [notes/](notes/), which is the source of record. If this page and
 a note disagree, the note wins — regenerate this page rather than editing facts
@@ -36,14 +42,16 @@ live in a private workbook — describe a field, never a value. See
 
 |                                                                               |                                                                                                           |
 | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| 🔴 **Nothing can deploy today**                                               | Apex coverage is **0%** against a 75% floor — 24 classes and triggers, 1028 uncovered lines, zero covered |
+| 🔴 **Nothing can deploy today**                                               | Apex coverage is **0%** against a 75% floor — 24 classes and triggers, 1069 uncovered lines, zero covered |
 | 🔴 **Fase 1 development ends 10 September, not 6 October**                    | ROMI's own project plan. With the team back ~24–26 August that is **two weeks of build**                  |
 | 🔴 **There is not one Flow in the org**                                       | Every declarative automation designed since June is absent. All automation is three Apex triggers         |
 | 🔴 **37 tickets are parked in a state deleted on 6 August**                   | 30 await a signature step the design removed. **None has ever reached `Disponibile`**                     |
-| ✅ **The tranche is built** — the record said it existed nowhere              | Object, Quote-side creation UI and controller are live. Propagation and tests are not                     |
-| **The repository is ahead of the trackers, and now ahead of the org too**     | `OrderItem.Tranche__c` is committed and **never deployed** — it reads as done and cannot run              |
+| ✅ **The tranche is built, and now in source control** — retrieved in PR #12  | Object, Quote-side creation UI and controller are live and tracked. Propagation and tests are not         |
+| ✅ **The first agreed state machine reached the org**                         | `Quote.Status` now carries `Bozza → Nuovo Preventivo → In Trattativa → In Attesa Accettazione → …`        |
+| 🔴 **`OrderItem.Tranche__c` is deployed and invisible to everyone**           | Granted to no profile and no permission set — admin included. Propagation still cannot run                |
+| 🔴 **No outbound integration has an endpoint**                                | `Integration_Configuration__c` holds **zero rows**. Mexal, WooCommerce and the VAT middleware are unwired |
 | ✅ **The client's product registry finally arrived — and was read 24 August** | Sent 7 August, unopened for seventeen days. It broke more of the record than it closed                    |
-| 🔴 **A Fase 1 integration now depends on the disputed entity**                | Anticipay is called through a **Pienissimo Software** middleware, agreed 25 August. Nobody said so         |
+| 🔴 **A Fase 1 integration now depends on the disputed entity**                | Anticipay is called through a **Pienissimo Software** middleware, agreed 25 August. Nobody said so        |
 | **Zoho expires 31 October 2026**                                              | Go-live Fase 1 **6 October**, Fase 2 **9 November**, data import ~1 September                             |
 
 ---
@@ -64,26 +72,27 @@ four meetings without reaching the person who decides.
 
 ## What is built
 
-**Verified against the Pienissimo UAT org on 2026-08-25**, read-only, and
-cross-checked against `force-app/` on `DevMain`. Where the two differ the row
+**Verified against the Pienissimo UAT org on 2026-08-26**, read-only, and
+cross-checked against `force-app/` on `DevMain` at `dc513c6`. Where the two differ the row
 says so. Detail:
 [the build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md).
 
-| Area                      | State                                                                                                                                                                                                             |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Custom objects**        | `Biglietto__c` (legacy UAT ticket implementation; standard Asset is the decided target), `BundleComponent__c`, plus extensions to Account, Lead, Opportunity, OrderItem, Product2, Quote                          |
-| **Bundle composition**    | `BundleComponent__c` — a Product2↔Product2 junction carrying a per-bundle `Spread_Price__c`. Replaced `Product2.Parent__c` on 2026-07-16                                                                          |
-| **Bundle reconciliation** | `Bundle_Selling_Price__c`, `Spread_Total__c`, `Spread_Variance__c` — maintained by `BundleComponentTriggerHandler`, since Product2 takes no roll-ups                                                              |
-| **Ticket generation**     | `OrderBigliettoTriggerHandler` creates a `Biglietto__c` from an Order. No equivalent standard Asset generation or migration is built                                                                              |
-| **Product flags**         | `Genera_Biglietto__c` — true on **4 of 280** products. `Solo_Bundle__c` — true on **0 of 280**, and no automation reads it                                                                                        |
-| **Classification fields** | `Anno_Solare__c`, `Evento__c`, `Bundle_Type__c` on Product2 — all three **populated on 1 of 280 products**                                                                                                        |
-| **Tranche**               | ✅ `Tranche__c` with state, due date, planned amount, sequence and Quote lookup; `QuoteLineItem.Tranche__c`. Six records, all open. ⚠ The creation UI — quick action, LWC and controller — is **org-only**        |
-| **WooCommerce keys**      | `Product2.WooCommerce_Product_Id__c` (**populated on 0 records**), `Opportunity.WooCommerce_Order_Id__c`. Nothing else on the build list exists                                                                   |
-| **Integration framework** | `Integration_Configuration__c`, `Integration_Log__c`, `API_Callout_Engine` — [standard ROMI scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md), not a Pienissimo requirement |
-| **UI**                    | `bundleProductAssignment` LWC + controller; `quoteCreateTranche` LWC — the latter **org-only**                                                                                                                    |
-| **Automation**            | Three Apex triggers: `BigliettoTrigger`, `BundleComponentTrigger`, `OrderBigliettoTrigger`. 🔴 **No Flow exists in the org at all**                                                                               |
+| Area                      | State                                                                                                                                                                                                                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Custom objects**        | `Biglietto__c` (legacy UAT ticket implementation; standard Asset is the decided target), `BundleComponent__c`, plus extensions to Account, Lead, Opportunity, OrderItem, Product2, Quote                                                                               |
+| **Bundle composition**    | `BundleComponent__c` — a Product2↔Product2 junction carrying a per-bundle `Spread_Price__c`. Replaced `Product2.Parent__c` on 2026-07-16                                                                                                                               |
+| **Bundle reconciliation** | `Bundle_Selling_Price__c`, `Spread_Total__c`, `Spread_Variance__c` — maintained by `BundleComponentTriggerHandler`, since Product2 takes no roll-ups                                                                                                                   |
+| **Ticket generation**     | `OrderBigliettoTriggerHandler` creates a `Biglietto__c` from an Order. No equivalent standard Asset generation or migration is built                                                                                                                                   |
+| **Product flags**         | `Genera_Biglietto__c` — true on **4 of 280** products. `Solo_Bundle__c` — true on **0 of 280**, and no automation reads it                                                                                                                                             |
+| **Classification fields** | `Anno_Solare__c`, `Evento__c`, `Bundle_Type__c` on Product2 — all three **populated on 1 of 280 products**                                                                                                                                                             |
+| **Tranche**               | ✅ `Tranche__c` with state, due date, planned amount, sequence and Quote lookup; `QuoteLineItem.Tranche__c`. Six records. ✅ The creation UI — quick action, LWC and controller — is now **in source control** (PR #12)                                                |
+| **WooCommerce keys**      | `Product2.WooCommerce_Product_Id__c` (**populated on 0 records**), `Opportunity.WooCommerce_Order_Id__c`. Nothing else on the build list exists                                                                                                                        |
+| **Integration framework** | `Integration_Configuration__c`, `Integration_Log__c`, `API_Callout_Engine` — [standard ROMI scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md). 🔴 **Zero configuration rows and zero log rows — the engine has never run**       |
+| **Quote lifecycle**       | ✅ `Quote.Status` = `Bozza · Nuovo Preventivo · In Trattativa · In Attesa Accettazione · Accettato · Rifiutato`, stock English values deactivated. ⚠ The picklist only — **no rule, alert or template enforces it**, and 3 of 4 quotes were left on deactivated values |
+| **UI**                    | `bundleProductAssignment` LWC + controller; `quoteCreateTranche` LWC — both now in source control                                                                                                                                                                      |
+| **Automation**            | Three Apex triggers: `BigliettoTrigger`, `BundleComponentTrigger`, `OrderBigliettoTrigger`. 🔴 **No Flow, workflow rule, approval process, email template, notification type or scheduled job exists in the org**                                                      |
 
-135 files under `force-app/`. Written by the
+154 files under `force-app/`. Written by the
 [Calm-Coders developers working for ROMI](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md)
 — Anita Aga, Sara Aga and Rexhina Hysi — whose commits land **ahead of every
 tracker**, which is why the written record repeatedly understates what exists.
@@ -92,53 +101,61 @@ tracker**, which is why the written record repeatedly understates what exists.
 
 ## What is not built
 
-| Gap                                                                                                                                                                            | Item                                                                                                                                                                          |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Standard Asset migration** — target decided 24 Aug, but fields, relationships and six Apex classes still sit on custom `Biglietto__c`; effort unestimated                    | [OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md), [risk](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md) |
-| 🔴 **Not a single Flow exists in the org.** Asset generation, quote alerts, the participant funnel, campaign members and the Lead/Opty validation all have nothing behind them | [the flow](notes/flows/The%20quote%20to%20order%20flow.md)                                                                                                                    |
-| 🔴 **Every state machine is still stock Salesforce** — Order, Quote, Lead and Opportunity carry the out-of-the-box picklists; not one agreed value is configured               | [OI-69](notes/items/OI-69%20Order%20state%20model.md), [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)                                                       |
-| 🔴 **`OrderItem.Tranche__c` is committed to `force-app/` and absent from the org** — tranche-to-order propagation cannot run, while the repository reads as done               | [risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20in%20the%20repository%20but%20not%20in%20the%20org.md)                                                               |
-| **The tranche remainder** — payment aggregation is unverified, the creation controller and LWC are org-only, and neither has a test                                            | [OI-50](notes/items/OI-50%20Tranche%20object.md)                                                                                                                              |
-| **The campaign parent/child model** — `Campaign` has zero custom fields, no record types and no validation rules. It is what carries the event edition                         | [the model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)                                                                                                   |
-| **Any Apex coverage at all** — **0%** org-wide against a 75% deploy floor                                                                                                      | [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md), [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)         |
-| **Seven Biglietto components and the whole tranche creation stack are not in source control** — they exist only in the UAT org                                                 | [risk](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                                                                           |
-| Participant data collection, and who hosts the landing page                                                                                                                    | [OI-78](notes/items/OI-78%20Participant%20data%20collection.md), [OI-86](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                             |
-| The WooCommerce checkout-link flow — credentials expected 26 August                                                                                                            | [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)                                                                                                            |
-| VAT validation moving into Salesforce — provider unconfirmed                                                                                                                   | [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)                                                                                                  |
-| The Zoho import template ROMI owes the client, ahead of the ~1 September import                                                                                                | [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)                                                                                             |
-| The whole phase 2 scope — no estimate exists and the decision-maker was never told                                                                                             | [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                                                                                     |
+| Gap                                                                                                                                                                                                                                             | Item                                                                                                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Standard Asset migration** — target decided 24 Aug, but fields, relationships and six Apex classes still sit on custom `Biglietto__c`; effort unestimated                                                                                     | [OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md), [risk](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md) |
+| 🔴 **No declarative automation at all** — zero Flows, and also zero workflow rules, approval processes, email templates, notification types and scheduled jobs. So the reminder copy delivered 25 Aug has nothing to sit on                     | [the flow](notes/flows/The%20quote%20to%20order%20flow.md)                                                                                                                    |
+| 🔴 **No outbound integration is configured** — `Integration_Configuration__c` and `Integration_Log__c` hold zero rows and the org has one named credential. Mexal, WooCommerce and the VAT middleware have no endpoint                          | [the scaffolding](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)                                                                         |
+| 🔴 **Order, Lead and Opportunity state machines are still stock Salesforce** — not one agreed value configured. **Quote is now the exception**: its picklist landed 26 Aug                                                                      | [OI-69](notes/items/OI-69%20Order%20state%20model.md), [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)                                                       |
+| 🔴 **`OrderItem.Tranche__c` is deployed and granted to nobody** — no profile, no permission set, admin included. Nothing in `force-app/` writes it either, so propagation cannot run                                                            | [risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md)                                                                                    |
+| **The tranche remainder** — payment aggregation is unverified and untested, and `Sequenza__c` has no uniqueness or contiguity control though ticket release reads it as an order                                                                | [OI-50](notes/items/OI-50%20Tranche%20object.md), [risk](notes/risks/Risk%20-%20the%20tranche%20sequence%20has%20no%20integrity%20control.md)                                 |
+| **The campaign parent/child model** — `Campaign` **and `CampaignMember`** both have zero custom fields, no record types and no validation rules. It is what carries the event edition                                                           | [the model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)                                                                                                   |
+| **Any Apex coverage at all** — **0%** org-wide against a 75% deploy floor                                                                                                                                                                       | [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md), [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)         |
+| **The Biglietto stack is still not in source control** — unmoved since 22 July, and three components larger than recorded: the `BigliettoPdf` page, the `DocuSign` named credential and a custom tab. ✅ The tranche stack was retrieved 26 Aug | [risk](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                                                                           |
+| Participant data collection, and who hosts the landing page                                                                                                                                                                                     | [OI-78](notes/items/OI-78%20Participant%20data%20collection.md), [OI-86](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                             |
+| The WooCommerce checkout-link flow — credentials expected 26 August                                                                                                                                                                             | [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)                                                                                                            |
+| VAT validation moving into Salesforce — provider unconfirmed                                                                                                                                                                                    | [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)                                                                                                  |
+| The Zoho import template ROMI owes the client, ahead of the ~1 September import                                                                                                                                                                 | [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)                                                                                             |
+| The whole phase 2 scope — no estimate exists and the decision-maker was never told                                                                                                                                                              | [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                                                                                     |
 
 ---
 
 ## Blocking now, in order
 
 1. **Apex coverage — nothing ships until it clears 75%, and it now reads 0%.**
-   _Aurel Mrruku._ Measured 2026-08-25: 24 classes and triggers, 1028 uncovered
-   lines, **zero covered**. Three causes: making `Product2.Code__c` required
+   _Aurel Mrruku._ Measured 2026-08-26: 24 classes and triggers, **1069**
+   uncovered lines, **zero covered**. Three causes: making `Product2.Code__c` required
    broke nine of ten bundle tests
    ([OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md)),
    the Biglietto stack has no tests
    ([OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)),
-   and `QuoteTrancheController` shipped on 25 Aug with none — 144 lines, the
-   largest uncovered class in the org.
+   and `QuoteTrancheController` shipped on 25 Aug with none — **185 lines**, the
+   largest uncovered class in the org. (It read 144 on 25 Aug; the class has not
+   changed, the coverage snapshot caught up with the deploy.)
    ⚠ **This is handled as one deliberate task, requested separately before the
    production deploy — it is not to be picked up mid-flight.** The records stay
    current so that task has a brief when it comes.
 2. **Build the automation layer — there is none.** _ROMI._ The org contains
    **zero Flows**. Asset generation, the quote validity and alert rules, the
    participant funnel, campaign member handling and the Lead/Opty validation
-   specified on 24 August are all designed and none is implemented. Every state
-   machine — Order, Quote, Lead, Opportunity — is still stock Salesforce. This
-   is the single largest gap against the **10 September** development end date
+   specified on 24 August are all designed and none is implemented. There is also
+   **no email template, no notification type and no scheduled job**, so the
+   reminder copy delivered on 25 August has nothing to sit on. Order, Lead and
+   Opportunity are still stock Salesforce; **Quote is the one exception** and its
+   picklist landed without any rule to enforce it. This is the single largest gap
+   against the **10 September** development end date
    ([the flow](notes/flows/The%20quote%20to%20order%20flow.md)).
-3. **Finish and deploy the tranche.** _ROMI._ The object and the Quote-side
-   creation UI now exist — built between 24 and 25 August, ahead of every
-   tracker. Three things remain: **`OrderItem.Tranche__c` is committed and never
-   deployed**, so propagation to the order cannot run
-   ([risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20in%20the%20repository%20but%20not%20in%20the%20org.md));
-   the payment aggregation from Mexal lines is unverified; and the controller,
-   LWC and quick action exist **only in the org**, so a sandbox refresh loses
-   them ([OI-50](notes/items/OI-50%20Tranche%20object.md)).
+3. **Finish the tranche.** _ROMI._ The object and the Quote-side creation UI
+   exist and, since 26 August, are **in source control** — that gap is closed.
+   Three remain: **`OrderItem.Tranche__c` is deployed but granted to no profile
+   and no permission set**, so no user or FLS-respecting code can touch it, and
+   nothing in `force-app/` writes it either — propagation cannot run
+   ([risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md));
+   the payment aggregation from Mexal lines is still unverified; and
+   **`Sequenza__c` has no integrity control** — 1, 4, 3 on one quote and null on
+   three records, while ticket release reads it as a total order
+   ([OI-50](notes/items/OI-50%20Tranche%20object.md),
+   [risk](notes/risks/Risk%20-%20the%20tranche%20sequence%20has%20no%20integrity%20control.md)).
 4. **Plan and build the move from `Biglietto__c` to standard Asset.** _ROMI._
    The object decision is closed; implementation has not started — **`Asset`
    carries zero custom fields** and holds one record, against 37 on
@@ -170,8 +187,8 @@ tracker**, which is why the written record repeatedly understates what exists.
    struck it from the Order; the legacy tranche design still uses the name.
    ✅ The tranche half is settled in the build: `Tranche__c.Stato__c` uses
    `Aperta / Parzialmente Pagata / Pagata`, not `CHIUSO/ACQUISITO`. What remains
-   blocked is the **Order** state machine, which is still stock `Draft` /
-   `Activated` — so nothing has been configured twice
+   blocked is the **Order** state machine, still stock `Draft` / `Activated`
+   with zero custom fields — so nothing has been configured twice
    ([OI-69](notes/items/OI-69%20Order%20state%20model.md)).
 8. **Send Pienissimo the Zoho import template.** _ROMI._ Owed before the
    ~1 September import
@@ -246,32 +263,33 @@ the anagrafica prodotti**. The file arrived; the meeting has not happened.
 
 ## Open risks
 
-Ten recorded. Severity is the note's own.
+Eleven recorded. Severity is the note's own.
 
 | Risk                                                                                       | Severity |
 | ------------------------------------------------------------------------------------------ | -------- |
 | Production deploy is blocked by Apex coverage — **0%** against a 75% floor                 | high     |
 | The Biglietto Apex stack is not in source control — and the tranche stack repeated it      | high     |
-| `OrderItem.Tranche__c` is committed but never deployed — propagation cannot run in UAT     | high     |
+| `OrderItem.Tranche__c` is deployed and granted to no user — propagation cannot run in UAT  | high     |
 | The whole remaining build lands after Ferragosto — two weeks for everything                | high     |
 | The phase 2 scope dispute is unresolved, and the decision-maker was never told             | high     |
 | Placeholder prices could reach the client — every UAT price is a ROMI invention            | high     |
 | Normalising an article code merges two products — bites at the ~1 September import         | high     |
 | Standard Asset is decided, but UAT still runs on custom Biglietto — migration unestimated  | medium   |
 | The ticket lifecycle has never run end to end — 0 of 37 tickets have reached `Disponibile` | high     |
+| The tranche sequence has no integrity control — release reads it as a total order          | medium   |
 | No coherence control on bundle composition                                                 | medium   |
 
 ---
 
 ## Register coverage
 
-|                                     |                                                            |
-| ----------------------------------- | ---------------------------------------------------------- |
-| Atomic notes                        | 112                                                        |
-| Item notes in `notes/items/`        | 54 — of which **7 gating**, 42 open, 8 in progress         |
-| Numbered rows in the client tracker | ~86                                                        |
-| Requirements reachable from a note  | **9 of 163**                                               |
-| Org components verified 2026-08-25  | 6 custom objects, 34 Apex classes, 3 triggers, **0 Flows** |
+|                                     |                                                                   |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| Atomic notes                        | 119                                                               |
+| Item notes in `notes/items/`        | 54 — of which **7 gating**, 42 open, 8 in progress                |
+| Numbered rows in the client tracker | ~86                                                               |
+| Requirements reachable from a note  | **9 of 167**                                                      |
+| Org components verified 2026-08-26  | 6 custom objects, 34 Apex classes, 3 triggers, 2 LWC, **0 Flows** |
 
 ⚠ **Two honest gaps in the record itself.** The tracker carries roughly 86
 numbered rows and only 54 have atomic notes behind them, so this page's item
@@ -284,6 +302,12 @@ that produced them
 a partial sandbox with no source tracking, so repository-vs-org divergence has to
 be established component by component. Any future check that skips that step will
 silently miss org-only work — which is how the tranche controller went unrecorded.
+
+⚠ **And do not use `sf sobject describe` for that comparison.** It is filtered by
+the running user's field-level security, so a deployed field granted to nobody
+reads as never deployed. That produced a false finding on 25 August. Use Tooling
+`FieldDefinition` for existence and `FieldPermissions` for visibility —
+[the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
 
 ---
 

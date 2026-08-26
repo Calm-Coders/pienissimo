@@ -10,6 +10,67 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-26 — claude — org-status-check: one finding of the 25 Aug check was a false negative
+
+- **Org:** Pienissimo UAT (`a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`),
+  read-only, against `DevMain` at `dc513c6`. Second check in two days.
+- **The thing to carry forward:** ❌ **the 2026-08-25 finding that
+  `OrderItem.Tranche__c` was "committed but never deployed" is wrong.** The
+  field is in the org, created 24/08 15:18Z. `sf sobject describe` **filters by
+  the running user's field-level security**, and that field is granted to no
+  profile and no project permission set — invisible even to System
+  Administrator. Every field comparison was re-run against Tooling
+  `FieldDefinition`; only this one finding changed. Method note written so this
+  does not recur:
+  [How to read the org schema without a false negative](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
+  The old risk note was renamed to
+  [OrderItem Tranche is invisible to every user](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md);
+  its conclusion survives, its diagnosis did not.
+- **Two green findings.** 🟢 PR #12 (`dc513c6`) **retrieved the tranche creation
+  stack into source control** one day after it was deployed — controller (byte
+  identical to the org copy), LWC, quick action, two fields, permission set.
+  Only the Tranche layout is still org-only. 🟢 **`Quote.Status` now carries the
+  agreed lifecycle** `Bozza → Nuovo Preventivo → In Trattativa → In Attesa
+Accettazione → Accettato / Rifiutato` — the first agreed state machine on this
+  project to reach the org. [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)
+  reversed on that point one day after it was written.
+- **New findings.** 🔴 The **integration scaffolding has never been configured**
+  — `Integration_Configuration__c` and `Integration_Log__c` hold zero rows, one
+  named credential (`DocuSign`), so Mexal / WooCommerce / the VAT middleware
+  have no endpoint
+  ([note](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)).
+  🔴 **`Tranche__c.Sequenza__c` has no integrity control** — 1, 4, 3 on one
+  quote, null on three records, and ticket release reads it as a total order
+  ([risk](notes/risks/Risk%20-%20the%20tranche%20sequence%20has%20no%20integrity%20control.md)).
+  🔴 The **Quote value set was swapped without migrating the records** — 3 of 4
+  quotes sit on deactivated values; a rehearsal for the same operation on 37
+  tickets. 🔴 §17.2's "no Flow" is wider than recorded: also zero
+  `WorkflowRule`, `ApprovalProcess`, `EmailTemplate`, `CustomNotificationType`
+  and no scheduled Apex — so Marco Montesi's reminder copy and the 24/08
+  notifications have nothing to sit on. The Biglietto stack is **three
+  components larger** than recorded (`BigliettoPdf` page, `DocuSign` named
+  credential, `BundleComponent__c` tab).
+- **Unchanged:** 37 tickets, 30 in `In attesa firma`, 0 ever `Disponibile`, 0 QR
+  codes; Asset still zero custom fields; Campaign and CampaignMember still zero;
+  Order/Lead/Opportunity still stock. Coverage **0%**, **1069** uncovered lines
+  (1028 on 25/08 — the whole rise is `QuoteTrancheController`'s snapshot
+  catching up, not new code).
+- **Wrote:** 3 new notes, 11 updated, the renamed risk; `MAP.md`, `INDEX.md`
+  (119 notes), the 26/08 org-verification block in `open-items.md` **and**
+  `.it.md`, `§19` in `DEVELOPMENT-RECAP.md` **and** `.it.md` with the precedence
+  line extended to name §18 and §19 (it was stale at §17), the register's
+  `build_state` block (DIV-04 … DIV-07 added; nothing else in the register
+  touched), `STATUS.md` and `site/`.
+- **Did not do, deliberately:** no deploy, no retrieve, no data write, no test
+  run. **No Apex test class written or offered** — that is a separate task on
+  request. No requirement amended: the register's
+  `state_machines.quote.states` now disagrees with the org and with OI-59 and is
+  **flagged for a human** as DIV-07, not corrected.
+- **Still owed by a human, untouched by an org check:** #46
+  (`Anno_Solare__c`), #53 (asset generation stated two ways), #59 ("Da
+  ricontattare" task vs banner), #69 (is `Incassato` `CHIUSO/ACQUISITO`
+  renamed?), #74 (`Rinuncia`).
+
 ## 2026-08-25 — claude — Nightly requirements-check: the Anticipay call reversed the integration design
 
 - **Watermark used:** 2026-08-24, from

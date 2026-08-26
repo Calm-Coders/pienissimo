@@ -6,7 +6,7 @@ owner: ROMI
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-08-26
 depends_on: [OI-50]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -80,3 +80,29 @@ instalment is booked against the wrong invoice — see
 The ordering constraint is the part most likely to be missed in implementation:
 it makes availability a function of the whole payment history of the order, not
 of one tranche's status.
+
+## 2026-08-26 - org check: the ordering key exists and cannot be trusted
+
+Verified read-only against **Pienissimo UAT**. This rule releases a ticket when
+its tranche **and every tranche before it** is paid in full, so it needs a
+reliable order over the tranches of one quote. `Tranche__c.Sequenza__c` is that
+field and it was added on 2026-08-25.
+
+**It is not constrained.** The six tranches in UAT run `1, 4, 3` on one quote —
+a gap, out of creation order — and carry **no sequence at all** on the other
+three records, which predate the field. There is no validation rule on
+`Tranche__c` and no Flow, so nothing enforces presence, uniqueness or
+contiguity. Detail and consequences:
+[the sequence risk](../risks/Risk%20-%20the%20tranche%20sequence%20has%20no%20integrity%20control.md).
+
+Two other preconditions are also still absent, both recorded elsewhere and
+neither improved: the tranche payment roll-up is unbuilt
+(`Completamente_Pagata__c` is a checkbox nothing computes), and the Order-side
+half of the propagation this rule reads from —
+`OrderItem.Tranche__c` — is
+[readable by no user](../risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md)
+and referenced by nothing in `force-app/`.
+
+The mapping gap recorded above — no order **line** number in the Get Fatture
+structure — is untouched by this check and is still the thing to raise at the
+Mexal call.

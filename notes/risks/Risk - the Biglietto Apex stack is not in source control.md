@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-14
-updated: 2026-08-25
+updated: 2026-08-26
 source: force-app/main/default/classes vs org verification 2026-08-03
 ---
 
@@ -67,3 +67,45 @@ manifest — deliberately not run by this check, which is read-only.
 UAT is a partial sandbox without source tracking and the command errors with
 `NonSourceTrackedOrgError`. The comparison above was done component by
 component against `sf org list metadata`.
+
+## 2026-08-26 - the tranche half is fixed; the Biglietto half is not, and it is bigger than recorded
+
+Verified read-only against **Pienissimo UAT**.
+
+🟢 **The tranche instance recorded above is closed.** PR #12 (`dc513c6`, merged
+2026-08-26) brought `QuoteTrancheController`, the `quoteCreateTranche` LWC,
+`Quote.Crea_Tranche`, `Tranche__c.Importo_Previsto__c`,
+`Tranche__c.Sequenza__c` and the `Tranche_Management` permission set into
+`force-app/`. The committed controller is byte-identical to the org copy. **One
+component from that list is still org-only: the `Tranche__c-Tranche Layout`.**
+
+That is the pattern working as it should — deployed 25 August, retrieved and
+committed 26 August, one day of exposure.
+
+🔴 **The Biglietto stack has not moved since 22 July.** Still org-only:
+`BigliettoTrigger`, `BigliettoTriggerHandler`, `BigliettoDocuSignService`,
+`BigliettoDocuSignQueueable`, `BigliettoPdfService`, `BigliettoPdfQueueable`,
+`BigliettoPdfBatch`, `Biglietto__c.DocuSign_Envelope_Id__c`, the `Biglietto__c`
+custom tab and the `Biglietto Layout`.
+
+**Three components belong on that list and were never recorded:**
+
+| Component                       | What it is                                                  |
+| ------------------------------- | ----------------------------------------------------------- |
+| `BigliettoPdf` Visualforce page | the actual PDF template `BigliettoPdfService` renders       |
+| `DocuSign` named credential     | the only named credential in the org; the DocuSign endpoint |
+| `BundleComponent__c` custom tab | org-only alongside the `Biglietto__c` tab already recorded  |
+
+Without the page and the named credential, the six classes could not run in a
+fresh org even if they were retrieved — the stack is not self-contained without
+them.
+
+**This code has demonstrably run.** `DocuSign_Envelope_Id__c` is populated on
+**19 of the 37** `Biglietto__c` records. This is not dormant scaffolding whose
+loss would be theoretical; it is the only integration on the project with a live
+endpoint and a history of successful calls, and it exists in exactly one place.
+
+The `DocuSign`, `Full_Permission` and `Sales_User` permission sets remain
+org-only, unchanged.
+
+**The fix is unchanged and is still a retrieve, not a decision.**
