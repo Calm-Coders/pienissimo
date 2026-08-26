@@ -10,6 +10,269 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-25 — claude — Nightly requirements-check: the Anticipay call reversed the integration design
+
+- **Watermark used:** 2026-08-24, from
+  [that day's trace](notes/traces/Source%20trace%202026-08-24.md), selected by
+  `updated:`. **New watermark: 2026-08-25**,
+  [Source trace 2026-08-25](notes/traces/Source%20trace%202026-08-25.md).
+- **Did:** swept Gmail, Slack (channel, canvas, workspace, DMs), Drive and
+  Fathom. Six findings; the sweep was not dry.
+- **The headline:** the **25 August client Anticipay call ran and changed the
+  counterparty**. Salesforce will **not** call Anticipay — it calls a middleware
+  **built and hosted by Pienissimo Software Srl**. Token in the HTTP header,
+  `404`/`500` error codes returned with their messages and stored in Salesforce
+  for three months, returned values overwrite Salesforce, payload trimmed to
+  fields nobody has chosen yet. New
+  [OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)
+  and [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md),
+  session at
+  [2026-08-25 Integrazione Anticipay](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md).
+- **The thing that actually needs a human:** a **Fase 1** integration now has a
+  hard build dependency on **the entity at the centre of the phase 2 scope
+  dispute**. Fase 1 cannot go live unless Pienissimo Software writes the service,
+  hosts it and keeps it running. Who pays and who owns uptime was never raised.
+  Recorded in
+  [the risk note](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
+- **Two accuracy problems to know about.** The Gemini minute assigns "create the
+  test environment" to Aurel Mrruku — wrong; he corrected it on Slack (_"serve un
+  loro ambiente di test dove noi dobbiamo puntare"_) and Elena Spini accepted,
+  but **the client-facing calendar invitation still carries the error**. And
+  `Flows & Objects.drawio` moved a **fifth** time, during the call, updating only
+  the LEAD-OPTY page — so **the master now contradicts itself**, Ordini still
+  naming Anticipay.
+- **Also closed, all from Slack DMs:** the Postman collection (partial), the
+  invoice-to-order-line link (a Mexal invoice carries its item list — the input
+  the tranche aggregation needs), and Marco Montesi's reminder-email copy.
+- **State:** three notes created, seven updated, `MAP.md`, `INDEX.md`, both
+  trackers (rows 50, 58, 59, 73 + new 94, 95) and both recaps (§18) regenerated.
+  `npm run vault:check` green.
+- **Next:** the **26 August** client Mexal review is the venue for the WEBAPI
+  credentials, `Get Fatture`'s missing order-line number, listino 1 vs 2, the
+  Mexal test company and #93. Chase Andrea Parmeggiani's API example ahead of
+  **1 September**.
+- **Watch:** **no requirement document was touched.** OI-94 bears directly on
+  signed integration text and a human has to decide whether `REQUISITI.it.md`
+  moves. Do not read the **Ordini** page of the design file for the VAT rule —
+  it is stale.
+
+---
+
+## 2026-08-25 — codex — Teammate code-intelligence bootstrap added
+
+- **Did:** added the repository-local `setup-code-intelligence` skill under
+  `.agents/skills/`, mirrored it to `.claude/skills/`, and added
+  `npm run intelligence:setup` plus a read-only
+  `npm run intelligence:setup:check`. The installer checks the system
+  prerequisites, installs or reuses the exact lockfile-matched Node tree,
+  installs the pinned Graphify/MCP Python requirements, pulls the Ollama
+  embedding model, builds both indexes, and verifies the Git hooks and live
+  Graphify watcher.
+- **Windows fix found while testing:** Git Bash can be installed without `sh`
+  being on PowerShell's PATH. Added `scripts/run-with-git-sh.mjs`, which finds
+  Git's bundled shell, and routed `npm run intelligence:verify` through it.
+  Also handled the native Open Codebase Index module being locked by an active
+  agent: an already lockfile-matched dependency tree is reused; if dependencies
+  really changed, the installer tells the developer to restart and run once
+  from a terminal.
+- **Why setup is explicit:** a pull delivers the skill, installer, configs and
+  hooks, but pulls and branch switches never download packages or models. Once
+  the one-time setup succeeds, the existing hooks and MCP wrapper own graph
+  freshness.
+- **Verified:** the complete `npm run intelligence:setup` succeeds on Windows,
+  including both index builds, its final health check, and the refresh verifier
+  at 8/8.
+
+---
+
+## 2026-08-25 — claude — Architecture documented
+
+- **Did:** wrote [docs/architecture.md](docs/architecture.md) - the four-kinds
+  model (authority / preserved / derived-for-humans / derived-for-machines), the
+  Obsidian vault rules and its committed `.obsidian/` config, the two MCP indexes
+  and their two different freshness models, the DX build, the publication chain
+  and the agent layer, plus ten invariants and three Mermaid diagrams. Added a
+  condensed **Architecture** section carrying the top-level schema to
+  [README.md](README.md), and routed both from [INDEX.md](INDEX.md). Then closed
+  a second gap: the README named no technologies and carried no install steps at
+  all - the only ones in the repository were the optional code-intelligence block
+  in [docs/code-intelligence.md](docs/code-intelligence.md). Added a **Stack and
+  setup** section - the eleven-row stack table, first-run commands, the optional
+  code-intelligence and Obsidian steps, and the five check commands.
+- **Then closed the two regeneration gaps that audit exposed.** The 25/08 org
+  check had updated the notes, both trackers, `STATUS.md` and Notion, but **two
+  rendered surfaces were left behind**: `DEVELOPMENT-RECAP` (last touched 24/08 -
+  step 5 named only `open-items`) and `site/` (last touched 14/08 - old step 6f
+  excluded it, and no other procedure claimed it, so nothing owned it at all).
+  - **The recap:** appended **§17 - build-state check against the UAT org**, EN
+    and IT, covering the tranche being built, zero Flows in the org, stock state
+    machines, the repository being ahead of and behind the org at once, the 37
+    parked tickets, 0% coverage and the empty classification fields. The
+    precedence line in both headers was itself stale - it stopped at §14 while
+    §15 and §16 existed - and now runs to §17 with the rule that §17 wins on what
+    _exists_ and earlier sections still govern what was _agreed_.
+  - **The procedure:** `org-status-check` step 5 now requires the recap in both
+    languages (append the next section, extend the precedence line, build state
+    only); step 6f no longer says `site/` is out of scope but **owns** it -
+    re-derive from `notes/`, never move a sentence from `STATUS.md` or Notion,
+    keep the anonymised vocabulary, run the leak check, and say in the report
+    that the page is refreshed but not deployed. Mirrored to `.claude/skills/`.
+  - **The page:** `site/` refreshed to 25/08 - 6 wk remaining, tranche
+    `not started` -> `partly built`, marketing funnels `blocked on client review`
+    -> `model agreed, build not started`, a new `Record status models` row, the
+    milestone table put in date order, and the four owner counts replaced with
+    counts derived from the item notes (50 open, 7 gating, 11 awaiting client,
+    1 commercial). Leak check clean. [docs/publishing.md](docs/publishing.md)
+    now records who refreshes it.
+- **Also added a viewer for the Salesforce graph.** `graphify-out/graph.json`
+  (179 nodes, 184 edges) had no graphic representation at all - it was reachable
+  only as text through the MCP tools. `scripts/graph-view.mjs` renders it to
+  `graphify-out/graph.html`: dependency-free, offline, force-directed, filterable
+  by node kind and relation, searchable, with a per-node panel listing every
+  connection and the `file:line` it came from. Inferred edges dashed, governor
+  violations red - deliberately, so it reads as leads to check rather than
+  findings. Wired as `npm run intelligence:view`.
+  - **It strips the Apex `source` text** the graph carries on every node - the
+    page keeps the file path instead, so it stays 86 KB and is not a way to
+    forward source code.
+  - **Output lands in `graphify-out/`, which is gitignored.** The page is
+    generated data like the graph itself; nothing regenerates it automatically,
+    so re-run the command after a graph rebuild.
+- **State:** documentation, rendered views and one new script. **No note,
+  requirement, tracker or metadata was touched** - §17 records build state
+  already established by the 25/08 org check, it does not re-run it.
+  `npm run vault:check` passes.
+- **Next:** nothing pending. The recap and `site/` are now regenerated by step 5
+  and step 6f of `org-status-check`; revisit only when the routing rules in `AGENTS.md`,
+  the MCP wiring or the publication chain actually change.
+- **Watch:** the per-folder note counts in that file are stamped 2026-08-25 and
+  will drift - `vault:check` prints the live total. The INDEX row for
+  [README.md](README.md) had been stale at ~2k and is now ~6k.
+
+---
+
+## 2026-08-25 — claude — Graphify snapshot staleness closed
+
+- **Did:** the Graphify-SFDX graph was a manual snapshot that went silently
+  stale after any branch switch, merge or metadata retrieve. Added
+  `scripts/refresh-sf-graph.sh` and wired it to `.husky/post-checkout`,
+  `post-merge` and `post-rewrite`, plus a `retrieve` / `postretrieve` npm script
+  pair for `sf project retrieve start`. Updated
+  [docs/code-intelligence.md](docs/code-intelligence.md) and the routing bullet
+  in [AGENTS.md](AGENTS.md).
+- **Why rebuild rather than detect:** the extract is **deterministic** —
+  byte-identical across runs on unchanged input — and takes **0.67 s**. Cheaper
+  to rebuild unconditionally than to maintain a staleness check.
+- **Verified live:** `graphify.serve` calls `_maybe_reload()` in both
+  `call_tool` and `read_resource`, keyed on graph.json's `(mtime_ns, size)`.
+  Proved it end-to-end by injecting a probe node — the running MCP server
+  reported 180 nodes with **no session restart**, then 179 again after a
+  rebuild. **Refreshing the file is enough; no client restart is needed.**
+- **The hook degrades silently.** The Python toolchain is a per-machine opt-in,
+  so the script no-ops when `graphify` is unimportable and never fails the git
+  operation. DevAnita / DevSara / DevRexhina_* branches are unaffected if they
+  never install it — but they also get no graph.
+- **Both remaining gaps are now closed as well.** Both clients launch Graphify
+  through `scripts/graphify_serve_fresh.py` (wired in `.mcp.json` and
+  `.codex/config.toml`). It rebuilds at session start and watches `force-app/`
+  on a 2 s poll for the life of the session, which covers the two cases no git
+  hook can see: metadata edited in place, and `sf project retrieve start` run
+  directly. Verified end to end — touched a class, graph rebuilt ~2 s later,
+  stdout still 0 bytes.
+- **How to check it still works:** `npm run intelligence:verify`
+  (`scripts/verify-graph-refresh.sh`, ~20 s). Eight assertions covering the
+  hook, its silent degradation without the Python toolchain, the wrapper's
+  startup rebuild and MCP handshake, the live watcher, and that stdout stays
+  empty. Currently 8/8. Run it after touching anything in the refresh path.
+- **The one real trap, worth not re-learning.** A child process of an MCP stdio
+  server must not inherit fd 0. `graphify.serve` swaps stdin for an OS pipe
+  (`_filter_blank_stdin`), and the rebuild subprocess inherited it and **hung**
+  — measured 20 s timeout inherited against 0.25 s with `stdin=DEVNULL`. The
+  same class of bug applies to git hooks, which receive rewritten-commit data
+  on stdin for `post-rewrite`, so `scripts/refresh-sf-graph.sh` detaches stdin
+  too. **Do not remove either redirect.** Both are commented in place.
+- **Note, unrelated to the fix:** `sf_violations` reports two HIGH SOQL-in-loop
+  findings on `BundleComponentTriggerHandler` and
+  `BundleProductAssignmentController`. Both are **false positives** — they are
+  SOQL-_for_ loops, the bulkified idiom. This is exactly the heuristic caveat
+  AGENTS.md already warns about; the caveat is correctly worded and needs no
+  change.
+
+## 2026-08-25 — codex — shared code and Salesforce intelligence layer
+
+- **Did:** added project-scoped MCP configuration for both Codex
+  (`.codex/config.toml`) and Claude Code (`.mcp.json`). Both clients launch Open
+  Codebase Index for semantic/code navigation and Graphify-SFDX for
+  Salesforce-specific graph queries.
+- **Pinned tooling:** `open-codebase-index@0.25.1` is a development dependency;
+  `requirements-code-intelligence.txt` pins `graphify-sfdx==0.1.1` and the
+  compatible `mcp==1.29.1`. MCP 2.x is currently incompatible with Graphify's
+  `AnyUrl` import. The local Codex CLI was upgraded from 0.116.0 to 0.149.1 so
+  it can read the current project MCP configuration.
+- **Indexes:** local Ollama `nomic-embed-text` embeddings produced 686 chunks
+  across 156 code/metadata files in `.codebase-index/index/`. Graphify produced
+  179 nodes and 184 edges from `force-app/` in `graphify-out/graph.json`.
+  Generated outputs are ignored; configuration and refresh commands are
+  committed.
+- **Important correction:** Graphify was first pointed at the repository root
+  and crawled `.sfdx` standard Apex libraries, creating a polluted 8,884-node
+  graph. Extraction is now deliberately rooted at `force-app/`.
+- **Verified:** both servers completed a real MCP initialize/list-tools/tool-call
+  handshake. Open Codebase Index returned index status and a representative
+  bundle search; Graphify returned graph statistics, Salesforce impact, and an
+  18-step order-of-execution chain. Claude Code sees both project servers and
+  will require its normal one-time project approval.
+- **Watch:** Graphify's two HIGH `SOQL-in-loop` results appear to be its static
+  heuristic interpreting Apex SOQL-for loops. Treat graph confidence and
+  violation output as leads and inspect the cited source before making a claim.
+
+---
+
+## 2026-08-25 — claude — org-status-check against Pienissimo UAT
+
+- **Did:** ran the three-way comparison — requirements register vs `force-app/`
+  vs the live **Pienissimo UAT** org (`a.mrruku@pienissimo.uat`,
+  `00DMA000004nMMr2AM`), read-only. Metadata inventories, sObject describes,
+  picklist extraction, record counts and `ApexCodeCoverageAggregate`.
+- **Biggest correction:** the record said **`Tranche__c` exists in neither the
+  org nor the repository**. It exists in **both**, and the Quote-side creation
+  UI (`Quote.Crea_Tranche` + `quoteCreateTranche` LWC + `QuoteTrancheController`)
+  went into the org on **2026-08-25**, hours before the check. OI-50 rewritten.
+- **Four findings that change the plan:**
+  1. 🔴 **Zero Flows in the org** — confirmed three ways (`Flow` and
+     `FlowDefinition` metadata lists, Tooling query). Every declarative
+     automation designed since June is absent; all automation is three Apex
+     triggers.
+  2. 🔴 **`OrderItem.Tranche__c` is committed and never deployed** — a new
+     divergence direction, repository ahead of org. New risk note.
+  3. 🔴 **Coverage is 0%, not 1%** — 24 classes/triggers, 1028 uncovered lines,
+     zero covered. `QuoteTrancheController` (144 lines) shipped the same day
+     with no test.
+  4. 🔴 **30 of 37 tickets sit in `In attesa firma`**, a state struck on
+     2026-08-06. None has ever reached `Disponibile`. Standard `Asset` carries
+     zero custom fields.
+- **State:** updated OI-41, OI-44, OI-46, OI-47, OI-49, OI-50, OI-59, OI-64,
+  OI-66, OI-69, OI-74; the Biglietto build, build-ahead-of-record, campaign
+  parent/child and quote-to-order notes; the coverage, source-control and
+  ticket-lifecycle risks. Added two notes — the `OrderItem.Tranche__c` risk and
+  `Unrequested implementation in the org`. Rewrote the register's `build_state`
+  block (`checked: 2026-08-25`, with new `divergent:` entries); no requirement
+  text touched. Inserted a 2026-08-25 org-verification block into
+  `meetings/open-items.md` **and** `.it.md`. Refreshed MAP.md, INDEX.md,
+  STATUS.md. Pushed the Notion mirror: Status page, Flows page (diagrams
+  unchanged, build-state text rewritten) and **13 tracker rows reconciled on
+  `Ref`** — all 13 were stale from earlier sessions, not from this check.
+- **Watch out:** `sf project retrieve preview` **cannot be used on this org** —
+  partial sandbox, no source tracking, `NonSourceTrackedOrgError`. Divergence
+  has to be found component by component. Also: `sf` subcommands other than
+  `org list` fail under the Bash tool on this machine (`'C:\Program' is not
+recognized`); use the PowerShell tool for them.
+- **Next:** the org-only tranche components need retrieving into source control,
+  and `OrderItem.Tranche__c` needs deploying or an explicit deferral. Both are
+  write actions this check deliberately did not take.
+
+---
+
 ## 2026-08-24 — codex — tranche and standard Asset decisions recorded
 
 - **Did:** recorded Aurel Mrruku's direct decision that payment tranches are
@@ -256,7 +519,7 @@ date: 2026-08-03`, but the file was last written **2026-08-20** by the nightly
 - ✅ **Settled:** [OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)
   — ticket type is a **manually maintained Salesforce field owned by
   amministrazione**, because Mexal carries at most three classifications; this
-  **reverses** the standing instruction to ask for a tier *column* on 26/08.
+  **reverses** the standing instruction to ask for a tier _column_ on 26/08.
   [OI-50](notes/items/OI-50%20Tranche%20object.md) — tranche created by hand on
   the Quote, before the order, editable only in `Bozza`.
   [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) — availability

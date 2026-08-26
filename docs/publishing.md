@@ -20,6 +20,17 @@ deliberate, because the page is meant to be readable by people and by AI agents
 that have no GitHub or Cloudflare credentials. Treat `site/` as a public folder
 inside a private repository.
 
+## Who refreshes it
+
+**Step 6f of [org-status-check](../.agents/skills/org-status-check/SKILL.md).**
+That is the only procedure that touches `site/`, and it re-derives every row from
+`notes/` — never from `STATUS.md` or the Notion mirror, which are the internal
+surface. Before 2026-08-25 nothing owned the page at all and it silently went
+eleven days stale, which is the failure this rule exists to prevent.
+
+Refreshing the page is **not** deploying it: `site/` is uploaded by hand, so a
+refreshed file and a live URL are two different things.
+
 ## What may go in `site/`
 
 **Permitted:** delivery phase, milestone dates, item counts, workstream status,

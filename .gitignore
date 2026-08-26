@@ -42,6 +42,11 @@ $RECYCLE.BIN/
 # Local environment variables
 .env
 
+# Generated local code-intelligence indexes
+.codebase-index/*
+!.codebase-index/config.json
+graphify-out/
+
 # Obsidian: the vault config is committed so every machine reads the graph the
 # same way; only per-machine UI state is ignored.
 .obsidian/workspace.json

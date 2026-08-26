@@ -4,6 +4,8 @@ Salesforce DX project for the Pienissimo CRM migration (Zoho → Salesforce, con
 
 ## Start here
 
+- **[docs/architecture.md](docs/architecture.md)** — how the whole thing fits together: the Obsidian vault, the two MCP indexes, the DX build and the publication surfaces, with diagrams. Summarized below.
+- **[docs/code-intelligence.md](docs/code-intelligence.md)** — shared Open Codebase Index + Graphify-SFDX setup for Codex and Claude Code.
 - **[MAP.md](MAP.md)** — where the project stands right now, under 5 KB. Read this first, always.
 - **[INDEX.md](INDEX.md)** — the router: one line per artifact with its read cost, so you can budget before opening anything.
 - **[notes/](notes/)** — the knowledge vault. One fact per note, stable ids (`OI-NN` matches the tracker row number). This is the source of truth for open items, risks, people and what is actually built; the big documents in `meetings/` are rendered views.
@@ -16,6 +18,119 @@ Salesforce DX project for the Pienissimo CRM migration (Zoho → Salesforce, con
 ⚠ **Two rules, both easy to breach by accident.** [site/](site/) is **public** and sanitized to [docs/publishing.md](docs/publishing.md) — never copy text from `STATUS.md` or the mirror into it. And **no catalogue prices or article-code values on any published surface, internal included** — describe a field, never a value.
 
 Run `npm run vault:check` before committing knowledge changes. ⚠ `meetings/open-items.md` is ~50k tokens and `meetings/*-transcript.it.md` ~207k — never load them whole; see the read costs in [INDEX.md](INDEX.md).
+
+## Architecture
+
+One Git repository carrying four planes: an **Obsidian knowledge vault**, two generated **machine indexes** served over MCP, the **Salesforce DX build**, and the **publication surfaces**. Full write-up with all the diagrams and invariants: **[docs/architecture.md](docs/architecture.md)**.
+
+The idea that holds it together — **every file is exactly one of four kinds**, and most of the ways this project goes wrong are someone treating a file as the wrong kind:
+
+| Kind                       | Rule                                | Where                                                                               |
+| -------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------- |
+| ① **Authority**            | Edit here. Everything else follows. | `requirements/*.yaml`, `notes/`, `force-app/` + the org                             |
+| ② **Preserved record**     | Never edit, ever.                   | `meetings/*-transcript.it.md`, `meetings/results/*.md`                              |
+| ③ **Derived for humans**   | Regenerate from ①. Never author.    | `meetings/DEVELOPMENT-RECAP*`, `meetings/open-items*`, `STATUS.md`, Notion, `site/` |
+| ④ **Derived for machines** | Rebuild. Never a source of truth.   | `.codebase-index/index/`, `graphify-out/graph.json`                                 |
+
+```mermaid
+flowchart LR
+    subgraph A["1. Authority - edit here"]
+        Y["requirements/*.yaml<br/>ids - picklists - state machines"]
+        N["notes/<br/>112 atomic notes, one fact each"]
+        B["force-app/ + the org<br/>what is actually built"]
+    end
+
+    P["2. Preserved<br/>transcripts - meetings/results"] --> N
+
+    subgraph M["4. Machine indexes - MCP"]
+        O["open-codebase-index<br/>semantic - callers - impact"]
+        G["graphify-sfdx<br/>objects - perms - Flows - OOE"]
+    end
+
+    subgraph H["3. Human surfaces - regenerated"]
+        R["meetings/ recaps + trackers<br/>EN and IT"]
+        S["STATUS.md then Notion<br/>ROMI internal"]
+        W["site/<br/>PUBLIC, sanitized"]
+    end
+
+    B --> M
+    N --> R --> S
+    N --> W
+    Y --> Q["REQUISITI.it.md signed<br/>REQUIREMENTS.md mirror"]
+    S -.->|"no text crosses"| W
+    M -.->|"leads, not findings"| A
+
+    OBS["Obsidian"] --> N
+    AGT["Claude Code - Codex<br/>via AGENTS.md + skills"] --> A
+    AGT --> M
+```
+
+The two dotted edges are the rules easiest to breach by accident: **no text crosses from the internal surface to the public one**, and a generated index is **evidence to check, never a finding to report**. `npm run vault:check` enforces the vault side of this; the Graphify snapshot is rebuilt by git hooks and by the session wrapper so it never lags `force-app/`.
+
+## Stack and setup
+
+Three toolchains, and **only the first is required**. [docs/architecture.md](docs/architecture.md) says what each one is _for_; this says how to get it.
+
+| Layer             | Technology                                                                                | Configured in                                                                                               | Required              |
+| ----------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------- |
+| Build             | Salesforce DX + the `sf` CLI, source API **66.0**                                         | [sfdx-project.json](sfdx-project.json), `config/`, `manifest/`                                              | **yes**               |
+| Runtime           | Node.js 20+ and npm (documented, not pinned by an `engines` field)                        | [package.json](package.json)                                                                                | **yes**               |
+| Front-end tests   | Jest via `@salesforce/sfdx-lwc-jest` 7                                                    | [jest.config.js](jest.config.js)                                                                            | **yes**               |
+| Lint and format   | ESLint 9 + Salesforce configs · Prettier 3 + the Apex and XML plugins                     | [eslint.config.js](eslint.config.js), [.prettierrc](.prettierrc)                                            | **yes**               |
+| Git hooks         | Husky 9 + lint-staged 16                                                                  | [.husky/](.husky/), `package.json`                                                                          | installed by `npm ci` |
+| Knowledge vault   | Obsidian — plain Markdown, **no community plugins**                                       | [.obsidian/](.obsidian/) (committed)                                                                        | optional              |
+| Code intelligence | `open-codebase-index` 0.25 + Ollama (`nomic-embed-text`)                                  | [.codebase-index/config.json](.codebase-index/config.json)                                                  | optional, per machine |
+| Code intelligence | Graphify-SFDX 0.1.1 + MCP 1.29.1 on Python 3.10+                                          | [requirements-code-intelligence.txt](requirements-code-intelligence.txt), `scripts/graphify_serve_fresh.py` | optional, per machine |
+| Agent clients     | Claude Code · Codex (both reach the same two MCP servers)                                 | [.mcp.json](.mcp.json), [.codex/config.toml](.codex/config.toml)                                            | —                     |
+| Editor            | VS Code + recommended extensions (SalesforceDX, XML, ESLint, Prettier, Apex Log Analyzer) | [.vscode/extensions.json](.vscode/extensions.json)                                                          | optional              |
+
+### First run — enough to build, lint, test and deploy
+
+```powershell
+npm install --global @salesforce/cli   # the sf CLI, if you do not already have it
+npm ci                                 # dependencies + Husky git hooks, via the prepare script
+sf org login web                       # authorize an org
+```
+
+### Code intelligence — optional, per machine
+
+Adds the two MCP servers that Claude Code and Codex query instead of walking `force-app/`. Prerequisites are Python 3.10+ and Ollama.
+
+After cloning or pulling the repository, start or restart the agent so it
+discovers the repository-local skill, then ask it to run
+`$setup-code-intelligence`, or use the equivalent terminal command:
+
+```powershell
+npm run intelligence:setup
+```
+
+The installer checks Node.js, Python, Git, Ollama and Git Bash; installs the
+locked Node dependencies when they do not already match `package-lock.json`;
+installs the pinned Graphify requirements; pulls `nomic-embed-text`; builds both
+indexes; activates the Husky hooks; and runs the end-to-end refresh test. Use
+`npm run intelligence:setup:check` for a read-only health check.
+
+Ollama must be running while the semantic index builds or is searched — `ollama serve` on Windows if the desktop service is not already up. Restart the client, or open a new session, after first setup or an MCP configuration change.
+
+**Skipping this costs nothing else.** The git hooks detect the missing Python toolchain and no-op silently, so no Git operation ever fails because of it. Refresh commands, the freshness model and the wrapper's constraints: [docs/code-intelligence.md](docs/code-intelligence.md).
+
+`npm run intelligence:view` renders the Salesforce graph into `graphify-out/graph.html` — a self-contained, offline page: objects, fields, Apex, LWC, rules and order-of-execution steps as a filterable map, with the `file:line` behind every edge. Generated and gitignored; re-run it after a graph rebuild.
+
+### The knowledge vault — optional
+
+Open the **repository root** as an Obsidian vault. The config is committed (`.obsidian/`, minus per-machine UI state), so the graph colours, ignore filters and Markdown-link mode are identical on every machine. No community plugins are used, and `notes/` is plain Markdown that reads correctly in VS Code, on GitHub and in any agent CLI without Obsidian at all.
+
+### Checks
+
+| Command                       | Checks                                                                                          |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `npm run vault:check`         | Frontmatter, ids, filenames and links across `notes/` — **before committing knowledge changes** |
+| `npm run prettier:verify`     | Formatting                                                                                      |
+| `npm run lint`                | ESLint on `aura` and `lwc`                                                                      |
+| `npm run test:unit`           | LWC Jest                                                                                        |
+| `npm run intelligence:verify` | The Graphify refresh still works end to end (~20 s)                                             |
+
+Because `npm ci` installs the Husky hooks, a commit already runs Prettier, ESLint and the related LWC tests through lint-staged. Day-to-day `sf` commands are at the end of this file.
 
 ## Requirements
 
@@ -102,9 +217,12 @@ Two things to remember:
 
 Metadata lives in [force-app/main/default/](force-app/main/default/); scratch-org definitions in [config/](config/); project manifest in [sfdx-project.json](sfdx-project.json).
 
-```
+```bash
 sf org login web            # authorize an org
 sf project deploy start     # deploy metadata
 sf project retrieve start   # retrieve metadata
 sf apex run test            # run Apex tests
+npm run retrieve            # retrieve, then rebuild the Graphify snapshot behind it
 ```
+
+Setup and the full toolchain: [Stack and setup](#stack-and-setup).

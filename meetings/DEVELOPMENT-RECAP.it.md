@@ -1,8 +1,8 @@
 # ROMI-PIENISSIMO — Recap di Sviluppo Salesforce
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
-> ⚠ **Precedenza, dal più recente: §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
-> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.**
+> ⚠ **Precedenza, dal più recente: §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
+> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08; il §15 la scelta dell'Asset standard; il §16 le quattro riunioni recuperate il 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.** **Il §17 è una verifica dello stato del build sull'org UAT del 25/08: dove contraddice una sezione precedente su ciò che _esiste_, vince il §17; dove una sezione precedente registra ciò che è stato _concordato_, quella sezione resta valida.**
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
 ---
@@ -524,12 +524,12 @@ Due di esse — 19 e 20 agosto — erano state segnalate come mancanti da tre sw
 consecutivi e ora sono interamente verbalizzate. Fonti: voci di canvas aggiunte
 tra il 21 e il 24 agosto e la minuta di Elena Spini inoltrata il 24 agosto.
 
-| Data | Sessione | Natura | Peso |
-| ---- | -------- | ------ | ---- |
-| 19/08 | Flussi MKT Biglietti | Cliente + marketing ROMI | Appunti Gemini + trascrizione |
-| 20/08 | Flusso Asset/Biglietti | Cliente, voluta da Elisa Migliano | **Minuta di Elena Spini, inviata al cliente la sera stessa** |
-| 24/08 | Interna per update flusso Lead/Opty | Interna ROMI (Elena + Aurel) | Appunti Gemini + trascrizione |
-| 24/08 | Follow-up Interno | Interna ROMI (Elena, Aurel, Andrea Di Cicco, Fabrizio Mastracci) | Appunti Gemini + trascrizione |
+| Data  | Sessione                            | Natura                                                           | Peso                                                         |
+| ----- | ----------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| 19/08 | Flussi MKT Biglietti                | Cliente + marketing ROMI                                         | Appunti Gemini + trascrizione                                |
+| 20/08 | Flusso Asset/Biglietti              | Cliente, voluta da Elisa Migliano                                | **Minuta di Elena Spini, inviata al cliente la sera stessa** |
+| 24/08 | Interna per update flusso Lead/Opty | Interna ROMI (Elena + Aurel)                                     | Appunti Gemini + trascrizione                                |
+| 24/08 | Follow-up Interno                   | Interna ROMI (Elena, Aurel, Andrea Di Cicco, Fabrizio Mastracci) | Appunti Gemini + trascrizione                                |
 
 ⚠ **Aurel Mrruku non era in nessuna delle due sessioni con il cliente.** Le
 decisioni tecniche del 20/08 sono state prese senza il referente tecnico ROMI, e
@@ -589,7 +589,7 @@ volte l'anno, senza alcun controllo verbalizzato che intercetti un campo vuoto.
   con reminder periodici di verifica; l'**aggiornamento massivo una tantum
   all'avvio è di ROMI**. Non può arrivare da Mexal — vedi il limite delle tre
   classificazioni al §16.1. Questo ribalta l'indicazione corrente di chiedere una
-  *colonna* tipologia: chiedere invece la **lista dei valori** concordata.
+  _colonna_ tipologia: chiedere invece la **lista dei valori** concordata.
 - **#50 — la tranche si crea e si gestisce manualmente sul Preventivo**, prima
   dell'ordine; **prodotti e tranche sono modificabili solo in `Bozza`**.
 - **#75 — la disponibilità del biglietto segue la tranche in ordine
@@ -603,7 +603,7 @@ volte l'anno, senza alcun controllo verbalizzato che intercetti un campo vuoto.
 - **#59 — il ciclo di vita del preventivo è specificato integralmente**, e i
   **valori delle picklist ora esistono** (nel diagramma, non nel registro):
   `Motivazione da Ricontattare` e `Motivazione da Ricontattare - Preventivo
-  Inviato`.
+Inviato`.
 - **#58 — esiste per la prima volta una mappatura Mexal a livello di campo**
   (`Integrazioni pienissimo.xlsx`, Andrea Di Cicco, 24/08): entità, metodi,
   cadenza, payload cliente campo per campo. Pattern di sandbox fissato —
@@ -626,7 +626,7 @@ volte l'anno, senza alcun controllo verbalizzato che intercetti un campo vuoto.
    decidere.
 
 Ancora senza decisione e ora più netta: **#74 — `Rinuncia`.** La minuta del 19/08
-descrive la *rinuncia* come tag di marketing e uscita dal funnel valida per
+descrive la _rinuncia_ come tag di marketing e uscita dal funnel valida per
 l'**intera partecipazione**, e non la elenca fra gli stati dell'asset; il
 diagramma master continua a disegnarla come box di stato. Diagramma e minuta ora
 si contraddicono.
@@ -643,7 +643,7 @@ PERSA`) e `Anticipay`.
 
 ⚠ Le ultime due **non sono databili** al 24/08: sono presenti ora e assenti dal
 resoconto in prosa del 20/08, ma la prosa non è un record byte a byte.
-Registrate come *presenti, non precedentemente censite*.
+Registrate come _presenti, non precedentemente censite_.
 
 ### 16.6 Non fatto, deliberatamente
 
@@ -659,3 +659,228 @@ sociale, indirizzo, partita IVA, email personale, telefono. Ne sono registrate
 esistenza e copertura; **in questo repository non è finito alcun valore**. È il
 terzo artefatto con questo problema, dopo il diagramma master e
 `anar_PIE_ricla.xlsx`.
+
+## 17. Aggiornamento 25/08/2026 — verifica sull'org UAT Pienissimo
+
+Una **verifica in sola lettura sull'org UAT Pienissimo** (`a.mrruku@pienissimo.uat`),
+confrontata con `force-app/` sul ramo `DevMain`. Sostituisce la verifica del
+03/08/2026, che era disallineata in entrambe le direzioni.
+
+⚠ **Questa sezione registra solo lo stato del build.** Nessun requisito si è
+mosso, nessuna decisione di design si è mossa e nulla qui riapre un punto già
+chiuso. Dove contraddice una sezione precedente su **ciò che esiste**, vince il
+§17; dove una sezione precedente registra **ciò che è stato concordato**, quella
+sezione resta valida. Tabella completa degli scostamenti: il blocco di verifica
+org in `open-items.it.md`.
+
+### 17.1 ✅ La tranche è costruita — il record la dava inesistente
+
+`Tranche__c` è attivo, con stato, data di scadenza, importo previsto, sequenza e
+lookup al Preventivo, insieme a `QuoteLineItem.Tranche__c`. Sei record, tutti
+aperti. Il percorso di creazione manuale concordato al §14 — quick action, LWC e
+controller — **esiste e funziona**.
+
+⚠ Due precisazioni, entrambe sostanziali:
+
+- L'interfaccia di creazione (`quoteCreateTranche` e il suo controller) è **solo
+  in org**: non è in controllo di versione e non ha test.
+- **La propagazione alle righe d'Ordine e l'aggregazione dei pagamenti non sono
+  costruite.**
+
+Quindi la #50 passa da "non iniziata" a **parzialmente costruita**, e ciò che
+resta è più circoscritto e più chiaro di quanto il tracker riportasse.
+
+### 17.2 🔴 Nell'org non esiste un solo Flow
+
+**Tutta l'automazione dichiarativa progettata da giugno in poi è assente.**
+L'unica automazione presente nell'org sono tre trigger Apex —
+`BigliettoTrigger`, `BundleComponentTrigger`, `OrderBigliettoTrigger`.
+
+Non c'è nulla dietro: la generazione dell'asset (#53), gli alert e i solleciti
+sul preventivo (#59), il funnel partecipanti (#78), i membri di campagna (§16.2 —
+`Campaign` non ha alcun campo custom, né record type, né regole di validazione),
+né la validazione Lead/Opty specificata il 24/08.
+
+I flussi dei §3 e §11 sono quindi **progetti senza implementazione**, non build
+parziali.
+
+### 17.3 🔴 Tutte le macchine a stati sono ancora quelle standard
+
+Ordine, Preventivo, Lead e Opportunità portano le **picklist predefinite di
+Salesforce**. Non è configurato un solo valore concordato. Il vocabolario degli
+ordini deciso il 06/08 (#69) e il ciclo di vita del preventivo specificato il
+24/08 (#59) — valori di picklist inclusi — esistono solo sulla carta.
+
+### 17.4 🔴 Il repository è insieme avanti e indietro rispetto all'org
+
+Entrambe le direzioni contemporaneamente: per questo un'affermazione su "cosa è
+costruito" deve dire da quale lato è stata letta.
+
+- **`OrderItem.Tranche__c` è committato in `force-app/` e assente dall'org.** La
+  propagazione tranche → ordine non può funzionare, mentre il repository risulta
+  completo.
+- **Sette componenti `Biglietto` e l'intero stack di creazione tranche esistono
+  solo nell'org** e non sono in controllo di versione: una scratch org o un
+  refresh li perde.
+
+### 17.5 🔴 Trentasette biglietti sono fermi in uno stato eliminato il 6 agosto
+
+Nessuno ha mai raggiunto `Disponibile`; trenta attendono un passaggio di firma
+che il design ha rimosso. Il ciclo di vita del biglietto **non è mai stato
+percorso da capo a fondo**.
+
+Nel frattempo l'oggetto di destinazione deciso — l'**Asset** standard — non ha
+**alcun campo custom**: l'oggetto target della #41 è vuoto e la mappatura non è
+stimata. Questo rende la #74 più netta, non la chiude.
+
+### 17.6 🔴 Oggi non è possibile alcun deploy
+
+La copertura Apex è allo **0%** contro la soglia di piattaforma del 75% — 24
+classi e trigger, 1028 righe non coperte, zero coperte, misurate il 25/08/2026.
+Le #64 e #66 bloccano ogni altra voce di questo elenco. La suite di test è
+trattata come **un unico task, richiesto separatamente prima del deploy in
+produzione**, e non va avviata come effetto collaterale di altro lavoro.
+
+### 17.7 L'apparato di classificazione non è solo controverso: è vuoto
+
+Misurato sui 280 prodotti presenti nell'org:
+
+| Campo                                             | Valorizzato                                          |
+| ------------------------------------------------- | ---------------------------------------------------- |
+| `Genera_Biglietto__c`                             | vero su **4 di 280**                                 |
+| `Solo_Bundle__c`                                  | vero su **0 di 280**, e nessuna automazione lo legge |
+| `Anno_Solare__c` · `Evento__c` · `Bundle_Type__c` | **1 di 280**                                         |
+| `WooCommerce_Product_Id__c`                       | **0 record**                                         |
+
+Quindi la domanda su `Anno_Solare__c` sollevata al §16.1 — se il campo debba
+esistere — costa quasi nulla in entrambe le direzioni: non c'è alcun dato
+valorizzato da migrare altrove.
+
+### 17.8 Non fatto, deliberatamente
+
+**Nessun requisito è stato modificato.** Una verifica sull'org registra ciò che è
+costruito; non riscrive un documento contrattuale. Le decisioni ancora dovute dal
+§16 — #46 (`Anno_Solare__c`), #53 (generazione asset enunciata in due modi) e #59
+("Da ricontattare") — **non sono toccate da questa verifica e restano dovute**.
+
+
+---
+
+## 18. Aggiornamento 25/08/2026 — la call tecnica Anticipay
+
+Fonte:
+[2026-08-25 Integrazione Anticipay](../notes/meetings/2026-08-25%20Integrazione%20Anticipay.md).
+Sessione con il cliente, ore 10:00 CEST. Per ROMI Elena Spini, Aurel Mrruku,
+Andrea Di Cicco; per Pienissimo Andrea Parmeggiani (Pienissimo Software),
+Fabrizio Paganelli ed Elisa Migliano. Esistono appunti Gemini, trascrizione e
+registrazione. È la call che il #73 attendeva dal 6 agosto.
+
+### 18.1 🔴 Salesforce non chiamerà Anticipay
+
+**È cambiata la controparte.** Salesforce chiamerà un'API **realizzata e ospitata
+da Pienissimo Software Srl**, che si mette davanti ad Anticipay, memorizza i dati
+e restituisce un payload standardizzato. Nuovo punto **#94**.
+
+Due motivazioni, entrambe accolte in riunione:
+
+- **Costi** — argomento di Andrea Parmeggiani. Anticipay fattura a chiamata e
+  Pienissimo ha già gran parte del dato, quindi il middleware evita di pagare due
+  volte la stessa partita IVA.
+- **Isolamento** — aggiunta di Aurel Mrruku. Se Anticipay cambia i propri
+  endpoint, si muove solo il middleware.
+
+### 18.2 Il contratto, per quanto concordato
+
+| Elemento | Concordato |
+| -------- | ---------- |
+| Chiamante → chiamato | Salesforce → **middleware Pienissimo**, non Anticipay |
+| Innesco | il **primo Ordine inserito per un Account** — confermato, invariato |
+| Autenticazione | un **token nell'header della richiesta HTTP** |
+| Errori | `404` P.IVA non trovata · `500` generico — **codice e messaggio entrambi restituiti** |
+| Conservazione errori | **salvati su Salesforce per tre mesi**, usati per generare notifiche interne |
+| Discrepanze | il valore restituito **sovrascrive** Salesforce |
+| Payload | **ridotto** ai soli campi necessari — vedi §18.3 |
+
+### 18.3 Quali campi è ora un punto aperto a sé
+
+Il payload viene ridotto di proposito, e **nessuno ha detto cosa tenere**. Nuovo
+punto **#95**, in carico a Fabrizio Paganelli ed Elisa Migliano. Candidati
+emersi e nessuno deciso: ragione sociale, rappresentante fiscale, legale
+rappresentante, lo **scoring di affidabilità Anticipay** e la **gestione della
+fattura elettronica via PEC**. Fabrizio Paganelli lo ha impostato come occasione
+per rivedere anche i campi dell'anagrafica Mexal.
+
+⚠ Due di questi non sono dati anagrafici. Uno scoring di affidabilità è un
+giudizio commerciale sul cliente; la PEC è configurazione di fatturazione. La
+conservazione a tre mesi concordata per i **codici di errore** **non** è stata
+dichiarata valida anche per i **dati** restituiti, e nessuno ha chiesto per
+quanto tempo si conservano i dati aziendali.
+
+### 18.4 Non è ancora costruibile nulla, e le date sono strette
+
+Nessun endpoint, nessuno schema, nessun token, nessun ambiente di test. **Andrea
+Parmeggiani deve l'esempio della struttura della chiamata entro venerdì 4
+settembre** — impegno preso come «entro la fine della settimana prossima» — più
+un esempio di tutti i campi restituiti da Anticipay. È fissata una call di
+follow-up per **martedì 1 settembre, ore 10:00 CEST**, annullabile se il
+materiale arriva prima.
+
+Rispetto al **10 settembre** come fine dello sviluppo di Fase 1, restano circa
+quattro giorni lavorativi fra l'arrivo della specifica e la chiusura dello
+sviluppo.
+
+### 18.5 ⚠ Un'azione è assegnata in modo errato nell'invito inviato al cliente
+
+Il verbale Gemini assegna *«creare un ambiente di test dedicato»* ad **Aurel
+Mrruku**. Non è quanto concordato. Elena Spini gli ha sottoposto la lista su
+Slack alle 15:03 CEST e lui ha corretto: l'ambiente di test di ROMI esiste già —
+è UAT — e quello che serve è **il loro, su cui ROMI deve puntare**. Elena Spini
+ha accettato la correzione.
+
+**L'invito di calendario inviato al cliente alle 13:17 UTC riporta ancora la
+formulazione non corretta e non è stato reinviato.**
+
+### 18.6 🔴 Un'integrazione di Fase 1 dipende ora dall'entità contesa
+
+Anticipay → SFDC è in **Fase 1** nel project plan di ROMI. Da questa sessione, la
+Fase 1 non può andare in go-live se **Pienissimo Software Srl** — l'entità legale
+distinta che ROMI sostiene non essere il cliente di questo progetto, e che sta al
+centro della disputa sulla fase 2 — non realizza un servizio, non predispone un
+ambiente di test e non ne garantisce l'esercizio.
+
+Chi paga quel lavoro, e chi ne garantisce la continuità dopo il go-live, non è
+stato sollevato. La decisione è stata presa nel merito tecnico e le due
+motivazioni sono buone; il punto è che **un confine commerciale si è spostato
+dentro una decisione tecnica**, e nessuno in riunione lo ha detto.
+
+### 18.7 Il diagramma master ora si contraddice
+
+`Flows & Objects.drawio` è stato modificato **durante la call**, alle 08:23 UTC.
+La pagina **LEAD-OPTY** riporta ora *«chiamata API **al middleware Pienissimo**
+per check P.IVA Account»*. La pagina **Ordini** riporta ancora *«chiamata API
+**Anticipay**»*. La formulazione corretta e più recente è quella della pagina
+LEAD-OPTY.
+
+### 18.8 Arrivato sempre il 25/08, ma da Slack e non da una riunione
+
+- 🟢 **La collection Postman** — `Mexal Dev.postman_collection.json`, inviata da
+  Andrea Di Cicco alle 11:52 CEST, che chiude un'azione del 24/08. **Incompleta,
+  e lo dice lui stesso.** (#58)
+- 🟢 **Il collegamento fattura → riga d'ordine ha una risposta.** La singola
+  fattura Mexal porta la lista dei suoi item, quindi lo stato di pagamento per
+  riga è raggiungibile — *«quindi per le trance sappiamo come capire quando sono
+  state pagate»*. È l'input di cui ha bisogno l'aggregazione delle tranche. È una
+  lettura del dato, non una chiamata costruita, e **come si creano le tranche
+  lato Mexal resta ignoto**. (#50, #58)
+- 🟢 **È arrivato il copy della mail di reminder di Marco Montesi**, atteso dal
+  20/08. È un promemoria di scadenza preventivo costruito su campi di unione. Le
+  **tempistiche di scadenza preimpostate** che deve ancora restano aperte. (#59)
+
+### 18.9 Non fatto, deliberatamente
+
+**Nessun documento di requisiti è stato toccato.**
+`pienissimo-requirements.yaml`, `REQUIREMENTS.md` e `REQUISITI.it.md` sono
+invariati. Il §18.1 incide direttamente sul testo firmato dell'integrazione — la
+controparte di un'integrazione di Fase 1 non è un dettaglio — ma riscrivere un
+documento contrattuale sulla base di uno sweep notturno è una decisione umana.
+Segnalato, non fatto.

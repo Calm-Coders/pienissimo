@@ -10,6 +10,17 @@
     "test:unit:watch": "sfdx-lwc-jest --watch",
     "test:unit:debug": "sfdx-lwc-jest --debug",
     "test:unit:coverage": "sfdx-lwc-jest --coverage",
+    "intelligence:graph": "python -X utf8 -m graphify.salesforce extract force-app --output-dir graphify-out",
+    "intelligence:index": "open-codebase-index-mcp index --project . --host codex --config .codebase-index/config.json --verbose",
+    "intelligence:index:dry-run": "open-codebase-index-mcp index --project . --host codex --config .codebase-index/config.json --dry-run --verbose",
+    "intelligence:refresh": "npm run intelligence:graph && npm run intelligence:index",
+    "intelligence:setup": "node scripts/setup-code-intelligence.mjs",
+    "intelligence:setup:check": "node scripts/setup-code-intelligence.mjs --check",
+    "intelligence:status": "cbi status --project . --host codex",
+    "intelligence:view": "node scripts/graph-view.mjs",
+    "intelligence:verify": "node scripts/run-with-git-sh.mjs scripts/verify-graph-refresh.sh",
+    "retrieve": "sf project retrieve start",
+    "postretrieve": "npm run intelligence:graph",
     "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "prepare": "husky || true",
@@ -28,6 +39,7 @@
     "eslint-plugin-jest": "^28.14.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
+    "open-codebase-index": "^0.25.1",
     "prettier": "^3.5.3",
     "prettier-plugin-apex": "^2.2.6"
   },
@@ -39,7 +51,7 @@
       "eslint"
     ],
     "**/lwc/**": [
-        "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
+      "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
     ]
   }
 }

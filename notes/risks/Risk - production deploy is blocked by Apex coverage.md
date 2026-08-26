@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-14
+updated: 2026-08-25
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -42,3 +42,16 @@ done first, since those classes are not in the repository.
 `API_Callout_Engine` has no test class either; check whether the
 [house scaffolding](../Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md)
 ships with one.
+
+## 2026-08-25 - org check: the floor is further away, not nearer
+
+Verified read-only against **Pienissimo UAT**. Coverage is **0%**, not the 1%
+this risk has carried since 2026-08-03: 24 classes and triggers, 1028 uncovered
+lines, **zero covered**. Meanwhile `QuoteTrancheController` (144 lines) was
+deployed on 2026-08-25 with no test, so the gap to the 75% floor widened on the
+same day it was measured.
+
+The risk is unchanged in kind and worse in degree. It stays **high** and
+**gating**, and it stays a single late task at Aurel Mrruku's request — see
+[OI-64](../items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md) and
+[OI-66](../items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md).

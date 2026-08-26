@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-14
+updated: 2026-08-25
 blocks: [go-live]
 depends_on: [risk-biglietto-not-in-scm]
 severity: gating
@@ -34,3 +34,23 @@ the design deleted would be worse than leaving it uncovered.
 
 The `OrderBigliettoTriggerHandler` committed on 4 August **does** ship with a
 test class.
+
+## 2026-08-25 - org check: the uncovered surface grew
+
+Verified read-only against **Pienissimo UAT**. The six Biglietto classes remain
+at zero coverage, and **a seventh uncovered class joined them**:
+`QuoteTrancheController` (144 uncovered lines), deployed to the org on
+2026-08-25 with no test class — it is now the single largest uncovered class in
+the org, ahead of `BundleProductAssignmentController`.
+
+Uncovered lines in the project's own Apex, largest first:
+`QuoteTrancheController` 144, `BundleProductAssignmentController` 132,
+`OrderBigliettoTriggerHandler` 123, `API_Callout_Engine` 109,
+`BigliettoDocuSignService` 94, `BundleComponentTriggerHandler` 65,
+`BigliettoPdfService` 53, `BigliettoDocuSignQueueable` 50,
+`BigliettoTriggerHandler` 49, `BigliettoPdfQueueable` 15, `BigliettoPdfBatch` 9,
+plus the three triggers at 22 between them.
+
+Scope for the suite when it is commissioned has therefore widened from the
+Biglietto stack to **the tranche stack as well**. See
+[OI-50](OI-50%20Tranche%20object.md).

@@ -1877,8 +1877,14 @@ acceptance_criteria:
 
 # =============================================================================
 build_state:
-  checked: 2026-08-03
+  checked: 2026-08-25
   org: a.mrruku@pienissimo.uat
+  org_id: 00DMA000004nMMr2AM
+  method: read-only; sf org list metadata + sf sobject describe + Tooling queries
+  note: >-
+    sf project retrieve preview is unusable here — Pienissimo UAT is a partial
+    sandbox without source tracking (NonSourceTrackedOrgError). Repository-vs-org
+    divergence below was established component by component.
   built:
     - {
         component: BundleComponent__c junction with spread formulas and active trigger,
@@ -1889,7 +1895,7 @@ build_state:
         refs: [BUN-02]
       }
     - {
-        component: "Classification picklists anno solare, evento, bundle type — populated on zero bundles",
+        component: "Classification picklists anno solare, evento, bundle type — populated on 1 of 280 products",
         refs: [BUN-08]
       }
     - { component: Bundle configurator controller and LWC, refs: [BUN-10] }
@@ -1898,33 +1904,88 @@ build_state:
         refs: [DM-22, BIG-01]
       }
     - {
-        component: "Genera_Biglietto__c field — true on zero products",
+        component: "Genera_Biglietto__c field — true on 4 of 280 products",
         refs: [BUN-12]
       }
-  not_built:
     - {
-        component: Tranche object; Order and OrderItem have no custom fields,
-        refs: [DM-17, ORD-01]
+        component: "Solo_Bundle__c field — true on 0 of 280 products",
+        refs: [BUN-13]
       }
     - {
-        component: WooCommerce id fields on Product and Opportunity,
+        component: "WooCommerce id fields on Product2 and Opportunity — populated on 0 records",
         refs: [INT-13]
       }
     - {
-        component: Any active Flow; nothing creates a ticket from an order,
-        refs: [BIG-02, BIG-19]
+        component: "Tranche__c object with Stato__c (Aperta, Parzialmente Pagata, Pagata), due date, planned amount, sequence and Quote lookup; 6 records, all Aperta",
+        refs: [DM-17, ORD-01]
       }
-    - { component: Solo_Bundle__c field, refs: [BUN-13] }
+    - {
+        component: "QuoteLineItem.Tranche__c and QuoteLineItem.Data_Scadenza__c — the Quote-side tranche reference",
+        refs: [DM-17, ORD-01]
+      }
+    - {
+        component: "Quote-side tranche creation: QuoteTrancheController, quoteCreateTranche LWC, Quote.Crea_Tranche quick action — org only, not in force-app",
+        refs: [DM-17, ORD-01]
+      }
+    - {
+        component: "OrderBigliettoTrigger creates tickets from an order in Apex",
+        refs: [BIG-02]
+      }
+  not_built:
+    - {
+        component: "Any Flow at all — zero Flow and zero FlowDefinition metadata in the org, no flows directory in force-app",
+        refs: [BIG-02, BIG-19, QUO-06, ORD-04]
+      }
+    - {
+        component: "Order state machine — Order.Status is stock Draft/Activated; Order carries zero custom fields",
+        refs: [ORD-01]
+      }
+    - {
+        component: "Quote lifecycle — Quote.Status is stock Salesforce; no agreed value present, In Attesa Accettazione included",
+        refs: [QUO-01]
+      }
+    - {
+        component: "Lead and Opportunity state machines — both stock Salesforce picklists",
+        refs: [DGM-1, DGM-2]
+      }
+    - {
+        component: "Standard Asset as the ticket object — Asset carries zero custom fields, stock Status picklist, 1 record",
+        refs: [DM-22, BIG-01]
+      }
+    - {
+        component: "Campaign parent/child model — Campaign carries zero custom fields, no record types, no validation rules",
+        refs: [BIG-19]
+      }
+    - {
+        component: "OrderItem.Tranche__c — committed to force-app, absent from the org, so tranche-to-order propagation cannot run",
+        refs: [DM-17, ORD-01]
+      }
     - {
         component: Contract auto-generation,
         scheduled reports,
         credit-note flow,
         refs: [ORD-05, ORD-07, ORD-08, ORD-15]
       }
+  divergent:
+    - {
+        id: DIV-01,
+        issue: "Biglietto__c.Status__c holds nine values including In attesa firma and Firmato, struck on 2026-08-06; agreed set Ordinato/Disponibile/Assegnato/Utilizzato is not configured",
+        refs: [BIG-01]
+      }
+    - {
+        id: DIV-02,
+        issue: "Product2.Evento__c has no Happy Team value, though the client workbook prices it and places it in the Academy bundle",
+        refs: [BUN-08]
+      }
+    - {
+        id: DIV-03,
+        issue: "Opportunity carries a stock Loss_Reason__c alongside the built Motivazione_Chiusa_Persa__c — two loss-reason fields on one object",
+        refs: [DGM-2]
+      }
   regressions:
     - {
         id: REG-01,
-        issue: "Product2.Code__c became required; 9 of 10 bundle tests fail; org coverage 1%",
+        issue: "Product2.Code__c became required; 9 of 10 bundle tests fail; org coverage 0% — 24 classes and triggers, 1028 uncovered lines, zero covered",
         refs: [NFR-06]
       }
     - {
@@ -1932,9 +1993,17 @@ build_state:
         issue: "ACADEMY 2026 bundle variance -1422 across four components",
         refs: [BUN-17]
       }
+    - {
+        id: REG-03,
+        issue: "QuoteTrancheController deployed 2026-08-25 with no test class; 144 uncovered lines, now the largest uncovered class in the org",
+        refs: [NFR-06]
+      }
   lifecycle_evidence:
-    tickets: 29
-    awaiting_signature: 28
-    docusign_envelopes_sent: 17
-    signatures_recorded: 0
+    checked: 2026-08-25
+    tickets: 37
+    awaiting_signature: 30
+    loaded_not_released: 7
+    reached_disponibile: 0
     qr_generated: 0
+    tranches: 6
+    tranches_fully_paid: 0

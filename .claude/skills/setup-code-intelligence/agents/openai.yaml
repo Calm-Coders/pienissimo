@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Code Intelligence"
+  short_description: "Install and verify repository code indexes"
+  default_prompt: "Use $setup-code-intelligence to install and verify this repository's local code-intelligence environment."

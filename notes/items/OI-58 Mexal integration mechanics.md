@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
 raised: 2026-07-14
-updated: 2026-08-24
+updated: 2026-08-25
 source: meetings/open-items.md row 58
 ---
 
@@ -77,3 +77,41 @@ Until now this item rested on meeting narration. It now has an artifact.
 ⚠ The **Mexal WEBAPI credentials** promised since July have still not arrived,
 and Mirko Merendi's technical mail to Fabrizio Paganelli is still unanswered —
 Fabrizio Paganelli was asked on 20 August to reply before the 26 August review.
+
+## 2026-08-25 - the Postman collection landed, and the hard part got an answer
+
+**The Postman collection arrived.** Andrea Di Cicco sent
+`Mexal Dev.postman_collection.json` (13.9 KB) to Aurel Mrruku on Slack at
+**11:52 CEST**, after Aurel Mrruku chased it that morning. It closes the action
+carried from
+[the 24 August Follow-up Interno](../meetings/2026-08-24%20Follow-up%20Interno.md).
+
+⚠ **It is incomplete and Andrea Di Cicco says so** — _"devo ancora aggiungere
+quella parte che dicevamo ieri sera"_. Treat it as a starting point, not the
+integration contract. **It is a Slack file, not in the repository or in Drive**;
+whether it should be committed has not been decided, and it may carry endpoint
+or credential material, so check before moving it.
+
+🟢 **The invoice-to-order-line link — named as the hard part on 24 August — is
+answered.** Working through the Mexal data with Aurel Mrruku on Slack at 17:56
+CEST, Andrea Di Cicco established that **a single invoice carries the list of its
+items**, and concluded: _"quindi per le trance sappiamo come capire quando sono
+state pagate"_. That is the mechanism
+[OI-50](OI-50%20Tranche%20object.md) needs for payment aggregation and
+[OI-92](OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)
+needs to reverse an asset.
+
+**It is a reading of the data, not a built or tested call.** Nothing has been
+implemented, and the call structure is still to be worked out — Aurel Mrruku's
+reply was _"poi capiamo come strutturare le chiamate"_. Andrea Di Cicco's own
+next unknown is **how tranches are created** on the Mexal side.
+
+**Still open and untouched:** the missing order-line number on `Get Fatture`,
+listino 1 vs listino 2, the absent Mexal test company, and agent-vs-supplier
+filtering. All four are natural questions for the **26 August** client review.
+
+**One registry detail settled in passing.** Andrea Di Cicco thought the price of
+an individual theatre performance was missing from the catalogue; on checking he
+withdrew it — `Performance` carries **`prices` as a related object** and a
+**`Rate` field**, which holds IDs rather than values. Recorded so the same alarm
+is not raised twice.

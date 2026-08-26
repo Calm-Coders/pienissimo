@@ -5,8 +5,8 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-24
-updated: 2026-08-24
-source: published 2026-08-24 from STATUS.md and notes/items/; Status, Flows and OI-41 refreshed after the standard Asset decision and verified at 16:07 CEST
+updated: 2026-08-25
+source: refreshed 2026-08-25 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status and Flows pages and 13 tracker rows updated and re-fetched to verify
 ---
 
 # The Notion mirror of the project status
@@ -53,11 +53,25 @@ Openable links, the same ones quoted in [STATUS.md](../STATUS.md) and
 [open-items tracker](https://app.notion.com/p/04cc8a62d28a40419d7916271f6cae11) ·
 [flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150).
 
-**The Notion Status page, Flows page and OI-41 tracker row are current as of
-16:07 CEST on 2026-08-24.** Flows first received Aurel's Quote-side tranche
-decision at 13:47 CEST. After the later standard Asset decision, Status and
-Flows were refreshed, OI-41 moved from `Superseded` to `Resolved` with
-requirement `DM-22`, and all three were fetched again to verify the saved state.
+**The Notion Status page, Flows page and the tracker are current as of
+2026-08-25**, refreshed by the `org-status-check` run against the live
+Pienissimo UAT org. The Status page carries the new basis line, the 0% coverage
+figure, the zero-Flow finding and the tranche correction; the Flows page keeps
+every diagram unchanged — no state machine moved — but its build-state text and
+the tranche section were rewritten. Both were re-fetched and verified.
+
+⚠ **Notion mangled one span on the way in**, exactly as the procedure warns:
+`**text `code`**` round-tripped as `****` visible on the page. **Never wrap
+inline code in bold** — say "the available state" rather than bolding a span
+that ends in a backticked value. It was caught by re-fetching and corrected.
+
+**Thirteen tracker rows were reconciled on `Ref`**, all of them stale from
+earlier sessions rather than from this check: OI-46, OI-47 and OI-53 were
+showing `In progress` against notes that read `open`; OI-50, OI-59, OI-68,
+OI-73, OI-77, OI-80, OI-84, OI-91 and OI-92 were showing `Open` against notes
+that read `in-progress`; and OI-82 was still `Open` after being resolved on
+24 August. **The database drifts whenever a session updates a note without
+running step 6d** — check all 54 rows, not only the ones the session touched.
 
 ⚠ **Three files quote these URLs.** If a page is ever replaced rather than
 updated in place, all three go stale at once — which is the reason step 6c

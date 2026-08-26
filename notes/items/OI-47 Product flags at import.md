@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-07-23
-updated: 2026-08-24
+updated: 2026-08-25
 source: meetings/open-items.md row 47
 ---
 
@@ -58,3 +58,25 @@ classification that Mexal cannot carry is maintained in Salesforce by
 amministrazione. Whether the **event flag** falls on the Mexal side or the
 Salesforce side of that line has not been stated, and it is the flag
 [OI-53](OI-53%20Asset%20generation%20rule.md) keys on.
+
+## 2026-08-25 - org check: both flags exist, one is used
+
+Verified read-only against **Pienissimo UAT**, across 280 `Product2` records.
+
+| Flag                  | Requirement | True on      |
+| --------------------- | ----------- | ------------ |
+| `Genera_Biglietto__c` | BUN-12      | **4** of 280 |
+| `Solo_Bundle__c`      | BUN-13      | **0** of 280 |
+
+`Solo_Bundle__c` was committed on 4 August to close this item and **has never
+been set on a single product**. The field satisfies the requirement's letter;
+the behaviour it is supposed to drive — hiding an article from tutors in direct
+sales — cannot be observed, because nothing is flagged and there is no
+automation reading the flag.
+
+`Genera_Biglietto__c` has moved: the register's `build_state` recorded it as
+"true on zero products" on 2026-08-03, and four products now carry it. Those
+four are what `OrderBigliettoTrigger` acts on.
+
+Import-time population of both flags is still owed and depends on
+[the Zoho workbook](OI-24%20Data%20model%20workbook.md).

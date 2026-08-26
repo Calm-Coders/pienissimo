@@ -2,8 +2,8 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **Precedence, newest first: §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
-> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta; §11 the 06/08 closing session; §12 the 14/08 document sweep; §13 the 24/08 product workbook. **§14 is Aurel Mrruku's direct tranche decision and overrides every earlier statement that tranches are created from Order Items or imported from `BLO-` codes.**
+> ⚠ **Precedence, newest first: §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
+> §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta; §11 the 06/08 closing session; §12 the 14/08 document sweep; §13 the 24/08 product workbook; §15 the standard-Asset selection; §16 the four meetings recovered on 24/08. **§14 is Aurel Mrruku's direct tranche decision and overrides every earlier statement that tranches are created from Order Items or imported from `BLO-` codes.** **§17 is a build-state check against the live UAT org on 25/08 — where it contradicts an earlier section on what _exists_, §17 wins; where an earlier section records what was _agreed_, that section still governs.**
 
 ---
 
@@ -524,12 +524,12 @@ sessions**. Two of them — 19 and 20 August — had been reported missing by th
 consecutive sweeps and are now fully minuted. Sources: canvas entries added
 between 21 and 24 August, and Elena Spini's own minute forwarded on 24 August.
 
-| Date | Session | Nature | Weight |
-| ---- | ------- | ------ | ------ |
-| 19/08 | Flussi MKT Biglietti | Client + ROMI marketing | Gemini notes + transcript |
-| 20/08 | Flusso Asset/Biglietti | Client, called by Elisa Migliano | **Elena Spini's minute, sent to the client the same evening** |
-| 24/08 | Interna per update flusso Lead/Opty | ROMI-internal (Elena + Aurel) | Gemini notes + transcript |
-| 24/08 | Follow-up Interno | ROMI-internal (Elena, Aurel, Andrea Di Cicco, Fabrizio Mastracci) | Gemini notes + transcript |
+| Date  | Session                             | Nature                                                            | Weight                                                        |
+| ----- | ----------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------- |
+| 19/08 | Flussi MKT Biglietti                | Client + ROMI marketing                                           | Gemini notes + transcript                                     |
+| 20/08 | Flusso Asset/Biglietti              | Client, called by Elisa Migliano                                  | **Elena Spini's minute, sent to the client the same evening** |
+| 24/08 | Interna per update flusso Lead/Opty | ROMI-internal (Elena + Aurel)                                     | Gemini notes + transcript                                     |
+| 24/08 | Follow-up Interno                   | ROMI-internal (Elena, Aurel, Andrea Di Cicco, Fabrizio Mastracci) | Gemini notes + transcript                                     |
 
 ⚠ **Aurel Mrruku was in neither client session.** The 20/08 technical decisions
 were taken without ROMI's technical lead, and the minute reached him four days
@@ -585,7 +585,7 @@ control that catches an empty one.
   **amministrazione (Fabrizio Paganelli + Elisa Migliano)** with periodic
   verification reminders; the **one-off mass update at go-live is ROMI's**. It
   cannot come from Mexal — hence 16.1's three-classification limit. This
-  reverses the standing instruction to ask for a tier *column*: ask for the
+  reverses the standing instruction to ask for a tier _column_: ask for the
   agreed **value list** instead.
 - **#50 — the tranche is created and managed manually on the Quote**, before the
   order; **products and tranches are editable only in `Bozza`**.
@@ -597,7 +597,7 @@ control that catches an empty one.
 - **#82 — resolved.** The dedicated asset-flow review is the 20/08 session.
 - **#59 — the quote lifecycle is fully specified**, and the **picklist values now
   exist** (in the design diagram, not the register): `Motivazione da
-  Ricontattare` and `Motivazione da Ricontattare - Preventivo Inviato`.
+Ricontattare` and `Motivazione da Ricontattare - Preventivo Inviato`.
 - **#58 — a field-level Mexal mapping exists** for the first time
   (`Integrazioni pienissimo.xlsx`, Andrea Di Cicco, 24/08): entities, methods,
   cadence, per-field customer payload. Sandbox pattern fixed — **code 501 for
@@ -618,7 +618,7 @@ control that catches an empty one.
    **or quote**". Prefer the Dettagli, but get it ruled on.
 
 Still unruled and now sharper: **#74 — `Rinuncia`.** The 19/08 minute describes
-*rinuncia* as a marketing tag and funnel opt-out applying to the **whole
+_rinuncia_ as a marketing tag and funnel opt-out applying to the **whole
 participation**, and does not list it among the asset states; the master diagram
 still draws it as a state box. Diagram and minute now disagree.
 
@@ -633,7 +633,7 @@ reason list (`Motivazioni CHIUSA PERSA`), and `Anticipay`.
 
 ⚠ The last two **cannot be dated** to 24/08 — they are present now and absent
 from the 20/08 prose write-up, but prose is not a byte-level record. Recorded as
-*present, not previously registered*.
+_present, not previously registered_.
 
 ### 16.6 Not done, deliberately
 
@@ -647,3 +647,219 @@ nightly sweep is not the right instrument for rewriting a contractual document.
 address, VAT number, personal email, telephone. Existence and coverage are
 recorded; **no value from it is in this repository**. It is the third artifact
 with this problem, after the master diagram and `anar_PIE_ricla.xlsx`.
+
+## 17. Update 2026-08-25 — org check against the Pienissimo UAT org
+
+A **read-only check of the live Pienissimo UAT org** (`a.mrruku@pienissimo.uat`),
+cross-checked against `force-app/` on `DevMain`. It supersedes the 2026-08-03
+verification, which was stale in both directions.
+
+⚠ **This section records build state only.** No requirement moved, no design
+decision moved, and nothing here reopens a settled point. Where it contradicts
+an earlier section on **what exists**, §17 wins; where an earlier section records
+**what was agreed**, that section still governs. Full gap table: the
+org-verification block in `open-items.md`.
+
+### 17.1 ✅ The tranche is built — the record said it existed nowhere
+
+`Tranche__c` is live, with state, due date, planned amount, sequence and a Quote
+lookup, plus `QuoteLineItem.Tranche__c`. Six records, all open. The manual
+creation path agreed in §14 — quick action, LWC and controller — **exists and
+works**.
+
+⚠ Two qualifications, both material:
+
+- The creation UI (`quoteCreateTranche` and its controller) is **org-only** — it
+  is not in source control and has no test.
+- **Propagation to Order Item and payment aggregation are not built.**
+
+So #50 moves from "not started" to **partly built**, and its remainder is
+narrower and better understood than the tracker had it.
+
+### 17.2 🔴 There is not one Flow in the org
+
+**Every declarative automation designed since June is absent.** All automation in
+the org is three Apex triggers — `BigliettoTrigger`, `BundleComponentTrigger`,
+`OrderBigliettoTrigger`.
+
+Nothing stands behind: asset generation (#53), the quote alerts and reminders
+(#59), the participant funnel (#78), campaign members (§16.2 — `Campaign` has
+zero custom fields, no record types and no validation rules), or the Lead/Opty
+validation specified on 24/08.
+
+The flows in §3 and §11 are therefore **designs with no implementation**, not
+partial builds.
+
+### 17.3 🔴 Every state machine is still stock Salesforce
+
+Order, Quote, Lead and Opportunity carry the **out-of-the-box picklists**. Not
+one agreed value is configured. The order vocabulary settled on 06/08 (#69) and
+the quote lifecycle specified on 24/08 (#59) — picklist values included — exist
+on paper only.
+
+### 17.4 🔴 The repository is now ahead of the org, and behind it, at the same time
+
+Both directions at once, which is why a claim about "what is built" has to name
+which side it was read from:
+
+- **`OrderItem.Tranche__c` is committed to `force-app/` and absent from the
+  org.** Tranche-to-order propagation cannot run, while the repository reads as
+  done.
+- **Seven `Biglietto` components and the whole tranche creation stack exist only
+  in the org** and are not in source control — so a scratch org or a refresh
+  loses them.
+
+### 17.5 🔴 Thirty-seven tickets are parked in a state deleted on 6 August
+
+None has ever reached `Disponibile`; thirty await a signature step the design
+removed. The ticket lifecycle has still **never run end to end**.
+
+Meanwhile the decided migration target — standard **Asset** — carries **zero
+custom fields**, so #41's target object is empty and the mapping is unestimated.
+This sharpens #74 rather than settling it.
+
+### 17.6 🔴 Nothing can deploy today
+
+Apex coverage is **0%** against the 75% platform floor — 24 classes and triggers,
+1028 uncovered lines, zero covered, measured 2026-08-25. #64 and #66 gate every
+other item on this list. The suite is written as **one task, requested
+separately before the production deploy**, and is not to be started as a side
+effect of other work.
+
+### 17.7 The classification apparatus is not merely disputed — it is empty
+
+Measured across the 280 products in the org:
+
+| Field                                             | Populated                                        |
+| ------------------------------------------------- | ------------------------------------------------ |
+| `Genera_Biglietto__c`                             | true on **4 of 280**                             |
+| `Solo_Bundle__c`                                  | true on **0 of 280**, and no automation reads it |
+| `Anno_Solare__c` · `Evento__c` · `Bundle_Type__c` | **1 of 280**                                     |
+| `WooCommerce_Product_Id__c`                       | **0 records**                                    |
+
+So the `Anno_Solare__c` question raised in §16.1 — whether the field should exist
+at all — costs almost nothing to answer either way. There is no populated data to
+migrate off it.
+
+### 17.8 Not done, deliberately
+
+**No requirement was changed.** An org check records what is built; it does not
+rewrite a contractual document. The rulings still owed from §16 — #46
+(`Anno_Solare__c`), #53 (asset generation stated two ways) and #59 ("Da
+ricontattare") — are **unaffected by this check and still owed**.
+
+
+---
+
+## 18. Update 2026-08-25 — the Anticipay technical call
+
+Source:
+[2026-08-25 Integrazione Anticipay](../notes/meetings/2026-08-25%20Integrazione%20Anticipay.md).
+Client-facing, 10:00 CEST. Elena Spini, Aurel Mrruku, Andrea Di Cicco for ROMI;
+Andrea Parmeggiani (Pienissimo Software), Fabrizio Paganelli and Elisa Migliano
+for Pienissimo. Gemini notes, transcript and recording exist. This is the call
+#73 had been waiting for since 6 August.
+
+### 18.1 🔴 Salesforce will not call Anticipay
+
+**The counterparty changed.** Salesforce calls an API **built and hosted by
+Pienissimo Software Srl**, which fronts Anticipay, caches lookups and returns a
+standardised payload. New item **#94**.
+
+Two reasons, both accepted in the room:
+
+- **Cost** — Andrea Parmeggiani's argument. Anticipay charges per lookup, and
+  Pienissimo already holds much of the data, so the middleware stops the same VAT
+  number being paid for twice.
+- **Insulation** — Aurel Mrruku's addition. If Anticipay changes its endpoints,
+  only the middleware moves.
+
+### 18.2 The contract as far as it is agreed
+
+| Element | Agreed |
+| ------- | ------ |
+| Caller → callee | Salesforce → **Pienissimo middleware**, not Anticipay |
+| Trigger | the **first Order inserted for an Account** — confirmed, unchanged |
+| Authentication | a **token in the HTTP request header** |
+| Errors | `404` VAT not found · `500` generic — **code and message both returned** |
+| Error storage | **saved in Salesforce, kept three months**, used to raise internal notifications |
+| Conflicts | the returned value **overwrites** Salesforce |
+| Payload | **trimmed** to the needed fields — see §18.3 |
+
+### 18.3 Which fields is now its own open item
+
+The payload is deliberately trimmed, and **nobody has said what to keep**. New
+item **#95**, owned by Fabrizio Paganelli and Elisa Migliano. Candidates raised
+and none decided: ragione sociale, rappresentante fiscale, legale rappresentante,
+the **Anticipay reliability score**, and **e-invoice routing via PEC**. Fabrizio
+Paganelli framed it as a chance to revisit the Mexal registry fields too.
+
+⚠ Two of those are not registry data. A reliability score is a commercial
+judgement about a customer; PEC routing is invoicing configuration. The
+three-month retention agreed for **error codes** was **not** stated to cover the
+returned **data**, and nobody asked how long the company details are kept.
+
+### 18.4 Nothing is buildable yet, and the dates are tight
+
+No endpoint, no schema, no token, no test environment. **Andrea Parmeggiani owes
+the API structure example by Friday 4 September** — committed as "end of next
+week" — plus an example of every field Anticipay returns. A follow-up call is
+booked for **Tuesday 1 September, 10:00 CEST**, cancellable if the material
+arrives first.
+
+Set against the **10 September** end of Fase 1 development, that leaves roughly
+four working days between the specification arriving and development closing.
+
+### 18.5 ⚠ One action is wrongly assigned in the client-facing invitation
+
+The Gemini minute assigns *"create a dedicated test environment"* to **Aurel
+Mrruku**. That is not what was agreed. Elena Spini put the list to him on Slack
+at 15:03 CEST and he corrected it: ROMI's test environment already exists — it is
+UAT — and what is needed is **Pienissimo's, for ROMI to point at**. Elena Spini
+accepted the correction.
+
+**The calendar invitation sent to the client at 13:17 UTC carries the
+uncorrected wording and has not been re-sent.**
+
+### 18.6 🔴 A Fase 1 integration now depends on the disputed entity
+
+Anticipay → SFDC is **Fase 1** in ROMI's own project plan. As of this session,
+Fase 1 cannot go live unless **Pienissimo Software Srl** — the separate legal
+entity ROMI argues is not this project's client, and the entity at the centre of
+the phase 2 scope dispute — writes a service, stands up a test environment for
+it, and keeps it running.
+
+Who pays for that work, and who owns the middleware's uptime after go-live, was
+not raised. The decision was taken on technical merit and both arguments are
+good ones; the point is that a **commercial boundary moved inside a technical
+decision**, and nobody in the session said so.
+
+### 18.7 The master diagram now contradicts itself
+
+`Flows & Objects.drawio` was edited **during the call**, at 08:23 UTC. The
+**LEAD-OPTY** page now reads *"chiamata API **al middleware Pienissimo** per
+check P.IVA Account"*. The **Ordini** page still reads *"chiamata API
+**Anticipay**"*. The LEAD-OPTY wording is the later and correct one.
+
+### 18.8 Also landed on 25 August, from Slack rather than a meeting
+
+- 🟢 **The Postman collection** — `Mexal Dev.postman_collection.json`, sent by
+  Andrea Di Cicco at 11:52 CEST, closing an action from 24 August. **Incomplete
+  and he says so.** (#58)
+- 🟢 **The invoice-to-order-line link is answered.** A single Mexal invoice
+  carries the list of its items, so per-line payment status is reachable —
+  *"quindi per le trance sappiamo come capire quando sono state pagate"*. That is
+  the input the tranche aggregation needs. It is a reading of the data, not a
+  built call, and **how tranches are created on the Mexal side is still
+  unknown**. (#50, #58)
+- 🟢 **Marco Montesi's reminder-email copy arrived**, owed since 20 August. A
+  quote-expiry reminder built from merge fields. The **preset expiry timings** he
+  also owes are still outstanding. (#59)
+
+### 18.9 Not done, deliberately
+
+**No requirement document was touched.** `pienissimo-requirements.yaml`,
+`REQUIREMENTS.md` and `REQUISITI.it.md` are unchanged. §18.1 bears directly on
+the signed integration text — the counterparty in a Fase 1 integration is not a
+detail — but rewriting a contractual document off a nightly sweep is a human's
+call. Flagged, not done.

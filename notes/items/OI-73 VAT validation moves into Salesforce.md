@@ -6,7 +6,8 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-08-25
+depends_on: [OI-94, OI-95]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -38,10 +39,12 @@ _Integrazione Anticipay_ and describes the service as CreditSafe in its body.
 Either name may be used in a requirement, but prefer **Anticipay** and note the
 former name once.
 
-📅 **The technical call is scheduled: Tuesday 25 August 2026, 10:00–11:00.**
-Invited: Aurel Mrruku, Elisa Migliano (`amministrazione@`), **Andrea
-Parmeggiani** (`andrea.p@pienissimo.pro`) and Sabatino Rinaldi, cc Andrea Di
-Cicco. It is the **first** of the post-Ferragosto restart meetings.
+✅ **The technical call ran: Tuesday 25 August 2026, 10:00 CEST.** Minuted at
+[2026-08-25 Integrazione Anticipay](../meetings/2026-08-25%20Integrazione%20Anticipay.md).
+Present: Elena Spini, Aurel Mrruku, Andrea Di Cicco, **Andrea Parmeggiani**
+(`andrea.p@pienissimo.pro`), Fabrizio Paganelli and Elisa Migliano
+(`amministrazione@`); Sabatino Rinaldi optional. See the 25 August section at
+the foot of this note.
 
 A third independent confirmation: `Pienissimo_Project Plan.pptx` (10 July) lists
 **"Anticipay (ex CreditSafe) → SFDC"** among the **Fase 1** integrations.
@@ -82,3 +85,40 @@ either new or long-standing.
 Still open: whether Anticipay is contracted, what the API costs, and what
 "unhappy path" means operationally — an email to amministrazione is a
 notification, not a decision about whether the order proceeds.
+
+## 2026-08-25 - the call ran, and the counterparty changed
+
+The [technical session](../meetings/2026-08-25%20Integrazione%20Anticipay.md)
+settled the mechanics. **The business rule in this note is unchanged** — the
+check still fires at the first order of an Account, still writes back, still
+notifies administration on failure. What changed is who Salesforce talks to.
+
+🔴 **Salesforce will not call Anticipay.** It calls a **Pienissimo Software
+middleware** that fronts Anticipay, caches lookups and returns a standard
+payload. Full contract, and why it is a commercial question as much as a
+technical one, at
+[OI-94](OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md).
+
+Settled with it:
+
+- **Auth** — a token in the HTTP request header.
+- **Errors** — `404` VAT not found, `500` generic; **code and message both
+  returned, stored in Salesforce for three months**, and used to raise internal
+  notifications. This is the first concrete answer to what the "unhappy path"
+  does: it is a stored record plus a notification, and it still does **not** say
+  whether the order proceeds.
+- **Conflicts** — the returned value **overwrites** what Salesforce holds.
+- **Payload** — trimmed to the needed fields; which ones is
+  [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md), owned by
+  Fabrizio Paganelli and Elisa Migliano.
+- **Trigger** — confirmed aloud as the first order per Account, matching what the
+  diagram already drew.
+
+**Still open, unchanged by this session:** whether Anticipay is contracted and
+what the API costs — neither was raised, and the middleware makes the cost
+Pienissimo's problem rather than answering it. The **administration address** for
+failure notifications is still not supplied. Credentials do not yet exist,
+because the middleware endpoint does not yet exist.
+
+Next: **Follow-up Integrazione Anticipay, Tuesday 1 September 2026, 10:00 CEST**,
+cancellable if Andrea Parmeggiani's payload example lands first.
