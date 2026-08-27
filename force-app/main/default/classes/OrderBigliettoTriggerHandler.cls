@@ -1,23 +1,25 @@
 public with sharing class OrderBigliettoTriggerHandler {
-  private static final String ACTIVATED_STATUS = 'Activated';
-  private static final String INITIAL_TICKET_STATUS = 'Caricato';
+  private static final String CONFIRMED_STATUS = 'Incassato';
+  private static final String INITIAL_TICKET_STATUS = 'Ordinato';
+  private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
+  private static Id ticketRecordTypeId;
 
   public static void afterInsert(List<Order> newOrders) {
-    createTicketsForActivatedOrders(newOrders, null);
+    createTicketsForConfirmedOrders(newOrders, null);
   }
 
   public static void afterUpdate(
     List<Order> newOrders,
     Map<Id, Order> oldOrderMap
   ) {
-    createTicketsForActivatedOrders(newOrders, oldOrderMap);
+    createTicketsForConfirmedOrders(newOrders, oldOrderMap);
   }
 
-  private static void createTicketsForActivatedOrders(
+  private static void createTicketsForConfirmedOrders(
     List<Order> orders,
     Map<Id, Order> oldOrderMap
   ) {
-    Set<Id> activatedOrderIds = new Set<Id>();
+    Set<Id> confirmedOrderIds = new Set<Id>();
 
     for (Order orderRecord : orders) {
       Order oldOrder = oldOrderMap == null
@@ -25,14 +27,15 @@ public with sharing class OrderBigliettoTriggerHandler {
         : oldOrderMap.get(orderRecord.Id);
 
       if (
-        orderRecord.Status == ACTIVATED_STATUS &&
-        (oldOrder == null || oldOrder.Status != ACTIVATED_STATUS)
+        orderRecord.Status == CONFIRMED_STATUS &&
+        (oldOrder == null ||
+        oldOrder.Status != CONFIRMED_STATUS)
       ) {
-        activatedOrderIds.add(orderRecord.Id);
+        confirmedOrderIds.add(orderRecord.Id);
       }
     }
 
-    if (activatedOrderIds.isEmpty()) {
+    if (confirmedOrderIds.isEmpty()) {
       return;
     }
 
@@ -43,9 +46,10 @@ public with sharing class OrderBigliettoTriggerHandler {
         Quantity,
         Product2Id,
         Product2.Name,
-        Product2.Genera_Biglietto__c
+        Product2.Genera_Biglietto__c,
+        Order.AccountId
       FROM OrderItem
-      WHERE OrderId IN :activatedOrderIds
+      WHERE OrderId IN :confirmedOrderIds
     ];
 
     if (orderLines.isEmpty()) {
@@ -73,27 +77,30 @@ public with sharing class OrderBigliettoTriggerHandler {
 
     Map<String, Integer> existingTicketCounts = new Map<String, Integer>();
     for (AggregateResult result : [
-      SELECT Order_Product__c orderLineId, Product__c productId, COUNT(Id) ticketCount
-      FROM Biglietto__c
-      WHERE Order_Product__c IN :orderItemIds AND Product__c IN :productIds
-      GROUP BY Order_Product__c, Product__c
+      SELECT
+        Order_Product__c orderLineId,
+        Product2Id productId,
+        COUNT(Id) ticketCount
+      FROM Asset
+      WHERE Order_Product__c IN :orderItemIds AND Product2Id IN :productIds
+      GROUP BY Order_Product__c, Product2Id
     ]) {
       existingTicketCounts.put(
-        ticketKey(
-          (Id) result.get('orderLineId'),
-          (Id) result.get('productId')
-        ),
+        ticketKey((Id) result.get('orderLineId'), (Id) result.get('productId')),
         (Integer) result.get('ticketCount')
       );
     }
 
-    List<Biglietto__c> ticketsToInsert = new List<Biglietto__c>();
+    List<Asset> ticketsToInsert = new List<Asset>();
+    Id assetTicketRecordTypeId = getTicketRecordTypeId();
 
     for (TicketSource source : ticketSources) {
       Integer existingTicketCount = existingTicketCounts.containsKey(
           ticketKey(source.orderItemId, source.productId)
         )
-        ? existingTicketCounts.get(ticketKey(source.orderItemId, source.productId))
+        ? existingTicketCounts.get(
+            ticketKey(source.orderItemId, source.productId)
+          )
         : 0;
 
       for (
@@ -102,10 +109,12 @@ public with sharing class OrderBigliettoTriggerHandler {
         sequence++
       ) {
         ticketsToInsert.add(
-          new Biglietto__c(
+          new Asset(
             Name = buildTicketName(source.productName, sequence),
-            Status__c = INITIAL_TICKET_STATUS,
-            Product__c = source.productId,
+            RecordTypeId = assetTicketRecordTypeId,
+            Status = INITIAL_TICKET_STATUS,
+            AccountId = source.accountId,
+            Product2Id = source.productId,
             Order_Product__c = source.orderItemId,
             Fattura_Pagata__c = false
           )
@@ -164,7 +173,12 @@ public with sharing class OrderBigliettoTriggerHandler {
 
     for (OrderItem line : orderLines) {
       Integer orderQuantity = wholeNumber(line.Quantity);
-      if (orderQuantity <= 0 || line.Product2Id == null) {
+      if (
+        orderQuantity <= 0 ||
+        line.Product2Id == null ||
+        line.Order == null ||
+        line.Order.AccountId == null
+      ) {
         continue;
       }
 
@@ -190,6 +204,7 @@ public with sharing class OrderBigliettoTriggerHandler {
           sources.add(
             new TicketSource(
               line.Id,
+              line.Order.AccountId,
               component.Product__c,
               component.Product__r.Name,
               orderQuantity * componentQuantity
@@ -204,6 +219,7 @@ public with sharing class OrderBigliettoTriggerHandler {
         sources.add(
           new TicketSource(
             line.Id,
+            line.Order.AccountId,
             line.Product2Id,
             line.Product2.Name,
             orderQuantity
@@ -225,17 +241,20 @@ public with sharing class OrderBigliettoTriggerHandler {
 
   private class TicketSource {
     private Id orderItemId;
+    private Id accountId;
     private Id productId;
     private String productName;
     private Integer quantity;
 
     private TicketSource(
       Id orderItemId,
+      Id accountId,
       Id productId,
       String productName,
       Integer quantity
     ) {
       this.orderItemId = orderItemId;
+      this.accountId = accountId;
       this.productId = productId;
       this.productName = productName;
       this.quantity = quantity;
@@ -243,9 +262,28 @@ public with sharing class OrderBigliettoTriggerHandler {
   }
 
   private static String buildTicketName(String productName, Integer sequence) {
-    String safeProductName = String.isBlank(productName) ? 'Biglietto' : productName;
+    String safeProductName = String.isBlank(productName)
+      ? 'Biglietto'
+      : productName;
 
     String name = safeProductName + ' #' + String.valueOf(sequence);
     return name.length() > 80 ? name.substring(0, 80) : name;
+  }
+
+  private static Id getTicketRecordTypeId() {
+    if (ticketRecordTypeId == null) {
+      List<RecordType> recordTypes = [
+        SELECT Id
+        FROM RecordType
+        WHERE
+          SObjectType = 'Asset'
+          AND DeveloperName = :TICKET_RECORD_TYPE_DEVELOPER_NAME
+        LIMIT 1
+      ];
+
+      ticketRecordTypeId = recordTypes.isEmpty() ? null : recordTypes[0].Id;
+    }
+
+    return ticketRecordTypeId;
   }
 }

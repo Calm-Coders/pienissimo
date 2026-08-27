@@ -41,6 +41,16 @@ private class OrderBigliettoTriggerHandlerTest {
     .Id;
   }
 
+  private static Id assetTicketRecordTypeId() {
+    return [
+      SELECT Id
+      FROM RecordType
+      WHERE SObjectType = 'Asset' AND DeveloperName = 'Ticket'
+      LIMIT 1
+    ]
+    .Id;
+  }
+
   private static PricebookEntry makePricebookEntry(Product2 product) {
     Id pricebookId = Test.getStandardPricebookId();
 
@@ -81,7 +91,7 @@ private class OrderBigliettoTriggerHandlerTest {
   }
 
   @isTest
-  static void activatingOrderCreatesTicketsForFlaggedProducts() {
+  static void incassatoOrderCreatesTicketsForFlaggedProducts() {
     Account account = makeAccount();
     Product2 eventProduct = makeProduct('Pienissimo Live', true);
     Product2 ordinaryProduct = makeProduct('Manuale Operativo', false);
@@ -92,13 +102,18 @@ private class OrderBigliettoTriggerHandlerTest {
     OrderItem ordinaryLine = makeOrderItem(orderRecord, ordinaryEntry, 2);
 
     Test.startTest();
-    orderRecord.Status = 'Activated';
+    orderRecord.Status = 'Incassato';
     update orderRecord;
     Test.stopTest();
 
-    List<Biglietto__c> tickets = [
-      SELECT Status__c, Product__c, Order_Product__c, Fattura_Pagata__c
-      FROM Biglietto__c
+    List<Asset> tickets = [
+      SELECT
+        Status,
+        RecordTypeId,
+        Product2Id,
+        Order_Product__c,
+        Fattura_Pagata__c
+      FROM Asset
       WHERE Order_Product__c IN (:eventLine.Id, :ordinaryLine.Id)
       ORDER BY Name
     ];
@@ -109,23 +124,24 @@ private class OrderBigliettoTriggerHandlerTest {
       'Only the flagged event product line should generate tickets'
     );
 
-    for (Biglietto__c ticket : tickets) {
-      System.assertEquals('Caricato', ticket.Status__c);
-      System.assertEquals(eventProduct.Id, ticket.Product__c);
+    for (Asset ticket : tickets) {
+      System.assertEquals('Ordinato', ticket.Status);
+      System.assertEquals(assetTicketRecordTypeId(), ticket.RecordTypeId);
+      System.assertEquals(eventProduct.Id, ticket.Product2Id);
       System.assertEquals(eventLine.Id, ticket.Order_Product__c);
       System.assertEquals(false, ticket.Fattura_Pagata__c);
     }
   }
 
   @isTest
-  static void repeatedActivationDoesNotCreateDuplicates() {
+  static void repeatedIncassatoDoesNotCreateDuplicates() {
     Account account = makeAccount();
     Product2 eventProduct = makeProduct('Food Marketing Festival', true);
     PricebookEntry eventEntry = makePricebookEntry(eventProduct);
     Order orderRecord = makeDraftOrder(account);
     OrderItem eventLine = makeOrderItem(orderRecord, eventEntry, 2);
 
-    orderRecord.Status = 'Activated';
+    orderRecord.Status = 'Incassato';
     update orderRecord;
 
     Test.startTest();
@@ -136,30 +152,32 @@ private class OrderBigliettoTriggerHandlerTest {
       2,
       [
         SELECT COUNT()
-        FROM Biglietto__c
+        FROM Asset
         WHERE Order_Product__c = :eventLine.Id
       ],
-      'Updating an already activated order must not create duplicate tickets'
+      'Updating an already Incassato order must not create duplicate tickets'
     );
   }
 
   @isTest
-  static void activationTopsUpOnlyMissingTickets() {
+  static void incassatoTopsUpOnlyMissingTickets() {
     Account account = makeAccount();
     Product2 eventProduct = makeProduct('Academy', true);
     PricebookEntry eventEntry = makePricebookEntry(eventProduct);
     Order orderRecord = makeDraftOrder(account);
     OrderItem eventLine = makeOrderItem(orderRecord, eventEntry, 2);
 
-    insert new Biglietto__c(
+    insert new Asset(
       Name = 'Existing ticket',
-      Status__c = 'Caricato',
-      Product__c = eventProduct.Id,
+      RecordTypeId = assetTicketRecordTypeId(),
+      Status = 'Ordinato',
+      AccountId = account.Id,
+      Product2Id = eventProduct.Id,
       Order_Product__c = eventLine.Id
     );
 
     Test.startTest();
-    orderRecord.Status = 'Activated';
+    orderRecord.Status = 'Incassato';
     update orderRecord;
     Test.stopTest();
 
@@ -167,10 +185,10 @@ private class OrderBigliettoTriggerHandlerTest {
       2,
       [
         SELECT COUNT()
-        FROM Biglietto__c
+        FROM Asset
         WHERE Order_Product__c = :eventLine.Id
       ],
-      'Activation should create only the missing tickets for the order line'
+      'Incassato should create only the missing tickets for the order line'
     );
   }
 
@@ -179,7 +197,11 @@ private class OrderBigliettoTriggerHandlerTest {
     Account account = makeAccount();
     Product2 bundle = makeProduct('Anno con Pienissimo', false, 'Bundle');
     Product2 eventComponent = makeProduct('Pienissimo Live', true, 'Item');
-    Product2 nonEventComponent = makeProduct('Manuale Operativo', false, 'Item');
+    Product2 nonEventComponent = makeProduct(
+      'Manuale Operativo',
+      false,
+      'Item'
+    );
 
     insert new List<BundleComponent__c>{
       new BundleComponent__c(
@@ -201,13 +223,13 @@ private class OrderBigliettoTriggerHandlerTest {
     OrderItem bundleLine = makeOrderItem(orderRecord, bundleEntry, 1);
 
     Test.startTest();
-    orderRecord.Status = 'Activated';
+    orderRecord.Status = 'Incassato';
     update orderRecord;
     Test.stopTest();
 
-    List<Biglietto__c> tickets = [
-      SELECT Product__c, Order_Product__c
-      FROM Biglietto__c
+    List<Asset> tickets = [
+      SELECT RecordTypeId, Product2Id, Order_Product__c
+      FROM Asset
       WHERE Order_Product__c = :bundleLine.Id
     ];
 
@@ -217,10 +239,15 @@ private class OrderBigliettoTriggerHandlerTest {
       'The bundle should create tickets only for flagged event components'
     );
 
-    for (Biglietto__c ticket : tickets) {
+    for (Asset ticket : tickets) {
+      System.assertEquals(
+        assetTicketRecordTypeId(),
+        ticket.RecordTypeId,
+        'Generated Assets should use the Ticket record type'
+      );
       System.assertEquals(
         eventComponent.Id,
-        ticket.Product__c,
+        ticket.Product2Id,
         'Ticket product should be the flagged bundle component'
       );
       System.assertEquals(
