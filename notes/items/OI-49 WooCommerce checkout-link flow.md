@@ -6,7 +6,8 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-07-31
-updated: 2026-08-25
+updated: 2026-08-27
+requirement: [INT-12, INT-13, INT-14, ORD-12]
 source: meetings/open-items.md row 49
 ---
 
@@ -88,3 +89,63 @@ _downstream_ attribution is ready for a channel that cannot yet transact.
 Credentials are due at the **27 August** WooCommerce session. This check finds
 nothing that would be blocked by anything other than those credentials and the
 build time.
+
+
+## 2026-08-27 - both sessions ran, and the client side is built
+
+Two sessions the same day:
+[the 10:00 design session](../meetings/2026-08-27%20Integrazione%20WooCommerce.md)
+(Elena Spini, Aurel Mrruku, Andrea Di Cicco, Sabatino Rinaldi, Fabrizio
+Paganelli, Elisa Migliano) and
+[the 16:00 test session](../meetings/2026-08-27%20Test%20Integrazione%20WooCommerce.md)
+(Aurel Mrruku and Sabatino Rinaldi only). The return leg — how a WooCommerce
+order becomes a Salesforce order — now has its own note:
+[the WooCommerce order integration](../flows/The%20WooCommerce%20order%20integration.md).
+
+🟢 **The checkout-link flow was confirmed end to end and approved aloud by Elena
+Spini.** Salesforce creates the opportunity → it emits an email with a tracked
+link carrying the opportunity id → the customer lands on the WooCommerce cart →
+on the order reaching the trigger state the plugin pushes it back to Salesforce
+with that id. The same mechanism serves the unknown-customer and known-customer
+cases, minus the first leg.
+
+### The five points, re-scored
+
+| Point to agree              | State on 2026-08-27                                                          |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| Pull vs webhook             | ✅ closed — **neither**: a custom plugin on a PHP order-status action hook    |
+| Price source of truth       | ✅ closed — coupons excluded from phase 1                                     |
+| ID in clear vs signed token | 🔴 **still open, and drifting** — the delivered plugin appears to pass it in clear; nobody said so aloud. `INT-16` still recommends a signed token |
+| URL parameter name          | 🔴 open in the record — **fixed in practice** by the delivered plugin; the value is in the payload file nobody has opened |
+| ID format                   | 🔴 same                                                                       |
+
+⚠ The last three are now being decided **by the implementation** rather than by
+the two sides agreeing. That is the failure mode this table was written to
+prevent.
+
+### What changed in the design
+
+- 🔴 **The mu-plugin is superseded.** `sf-opportunity-tracker.php` from
+  `Integrazione_Salesforce_WooCommerce.docx` is not what runs. Sabatino Rinaldi
+  wrote his **own WooCommerce plugin, v1.3, permanently active**, and Pienissimo
+  owns it. ROMI does not maintain client-side code here.
+- 🔴 **The URL anatomy shrinks.** Carts are built with **Funnel Kit**, and the
+  funnel URL already contains the product — so no `add-to-cart`, no `quantity`.
+  The link Salesforce generates carries the **opportunity id alone**. The
+  link-generator button therefore needs no product or quantity pickers, which
+  removes work from the INT-13 build list.
+- 🟢 **A manual re-send button** exists on the WooCommerce order.
+- 🔴 **Credentials were not exchanged**, despite the invitation promising it.
+  The blocking credential has reversed direction and is now ROMI's —
+  [OI-102](OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md).
+
+### Still to do on the Salesforce side
+
+Unchanged from the 25 August org check, and now urgent: the link-generator
+button, the pre-filled email template, the inbound endpoint, the Woo-keyed order
+type, the `SC` product match, the customer-create path. **None of it exists.**
+The one thing that moved is that the client side is real and waiting.
+
+Also open: [OI-101](OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md)
+(stage sales untested) and
+[OI-103](OI-103%20WooCommerce%20and%20Mexal%20field%20overlap.md) (field merge).

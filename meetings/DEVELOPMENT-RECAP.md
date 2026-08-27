@@ -1222,3 +1222,68 @@ written against a design that is finished.
 
 The rulings owed since §16 — #46, #53 and #59's "Da ricontattare" contradiction —
 are unchanged by this session. #46 is now decidable; the other two are not.
+---
+
+## 21. Update 2026-08-27 — the WooCommerce integration is built, on the client side
+
+Source: two client sessions the same day, both with Gemini notes, a **full transcript** and a recording — [Integrazione WooCommerce](results/2026-08-27-integrazione-woocommerce.md) (10:00–10:48 CEST, 48m20s, Elena Spini chairing, six present) and [Test Integrazione WooCommerce](results/2026-08-27-test-integrazione-woocommerce.md) (15:59–16:16 CEST, 17m13s, **two people**). Found by the nightly `requirements-check` sweep of 2026-08-27.
+
+### 21.1 🟢 The integration direction is settled, and more specifically than "webhook"
+
+**WooCommerce writes into Salesforce.** Standard WooCommerce webhooks were evaluated on screen and **rejected** — one topic per webhook, no multi-select, no control of the body; they would push every order in every state and could not carry the customer structure. The agreed mechanism is a **custom WooCommerce plugin using a PHP action hook on the order status transition**, composing one JSON body.
+
+`INT-14` moves **open → agreed**. The pre-existing design was the opposite shape: Sabatino Rinaldi's own platform **polling** WooCommerce on a cron, which Aurel Mrruku identified as both asynchronous and pointing the wrong way for Salesforce. Full contract: [the WooCommerce order integration](../notes/flows/The%20WooCommerce%20order%20integration.md).
+
+### 21.2 🟢 The client side is built and demonstrated working
+
+Sabatino Rinaldi wrote the plugin **between the two sessions** and drove it live against the production shop: **version 1.3, always active, HTTP 200 on the wire**, with a manual re-send button on the order. Trigger verified live: order status `in lavorazione` **or** `completato`, **any payment method** — bank transfer, card, PayPal.
+
+Payload observed: order key, totals, traffic source · customer with nome, ragione sociale and partita IVA · lines with the **`SC` product code**, name, quantity, subtotal, total. The authoritative copy is a text file mailed at 14:20Z that **no connected tool can open**.
+
+### 21.3 🔴 `ORD-12` is corrected
+
+The register and the design diagram said a WooCommerce order is **invisible in Salesforce until COMPLETATO**. The delivered plugin fires on **processing as well**, verified live. Later evidence wins: the rule is **IN LAVORAZIONE or COMPLETATO**, both dates cited in the register. The bank-transfer half stands — administration still flips the order manually on receipt.
+
+Consequence: **every line arriving from WooCommerce is already paid**, and the payload carries no line-level status.
+
+### 21.4 🔴 The mu-plugin and the link anatomy both shrink
+
+Carts are built with **Funnel Kit**, which ROMI did not know. The funnel URL already contains the product, so the checkout link Salesforce generates carries the **opportunity id alone** — no `add-to-cart`, no `quantity`. The link-generator button therefore needs **no product or quantity pickers**, which removes work from the `INT-13` build list. And the client-side component is **Sabatino Rinaldi's plugin, owned by Pienissimo**, not the ROMI-specified mu-plugin.
+
+⚠ The three spec points still open — id in clear vs signed token, URL parameter name, id format — are now being **decided by the implementation** rather than agreed. `INT-16` still recommends a signed token; the demo URL appeared to carry the id in clear.
+
+### 21.5 🔴 The credential owed has reversed direction
+
+`INT-11` has recorded **WooCommerce CK/CS owed by Sabatino Rinaldi** since 14 July, promised again for this session's invitation — _"comprensiva dello scambio di credenziali"_ — and never raised. With WooCommerce pushing, the blocking credential is **ROMI's: a Salesforce endpoint and a header token**, which Aurel Mrruku committed to and which blocks the integration tests set for the **week of 31 August** ([OI-102](../notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+
+Whether Salesforce still reads orders back over the WooCommerce REST API — and so whether CK/CS are needed at all — was **not decided**. Report them neither as owed nor as closed.
+
+### 21.6 🔴 A VAT rule moved in a two-person room
+
+**No P.IVA check fires on an inbound WooCommerce order**; validation stays on the Salesforce → Mexal leg. Aurel Mrruku corrected himself into this mid-exchange and Sabatino Rinaldi agreed.
+
+⚠ [OI-73](../notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) is a **client decision of 6 August** — proposed by Elisa Migliano, approved by Elena Spini — that the check fires **at the first order of an Account**. That is Account-scoped and once-only; this is per-order, and a WooCommerce order that never reaches Mexal would never be checked. **Neither Elisa Migliano nor Elena Spini was in the room.** Have it restated.
+
+### 21.7 🔴 Stage sales are the money, and they are untested
+
+Fabrizio Paganelli, unprompted at the close of the design session: WooCommerce is used *heavily* for **vendite da palco** — customer in the room, QR code, **€8,900–9,000 and up** against ~€97 for a book or a stream — and a stage sale **triggers downstream mechanisms, contract generation among them**. He asked for both cases in the tests. The afternoon session ran **one €50 product through the happy path**; stage sales were deferred to the Salesforce-connected round. [OI-101](../notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md).
+
+### 21.8 🔴 Two things nobody owns
+
+- **The WooCommerce and Mexal field sets will collide.** Andrea Di Cicco raised it early — _"onde evitare di creare 12.000 campi"_ — and nobody picked it up. It is in neither session's next steps. [OI-103](../notes/items/OI-103%20WooCommerce%20and%20Mexal%20field%20overlap.md).
+- **There is no WooCommerce test lane.** Testing runs on the production shop; during the tests **real customer orders reached a throwaway third-party endpoint** before Sabatino Rinaldi deactivated the plugin. Same shape as Mexal's serie 10. [The risk](../notes/risks/Risk%20-%20real%20WooCommerce%20orders%20reached%20a%20third-party%20test%20server.md).
+
+### 21.9 🔴 Off the meetings: Lead conversion is broken in the sandbox
+
+Not from either session. A Salesforce error mail at **15:08:13Z** reports `LeadConversionQueueable` failing in the Pienissimo **partial sandbox**: _"No such column 'Servizio_Interesse__c' on entity 'Lead'"_ at line 22. **The repository's copy of that class does not select that field**, and the field's metadata **is** in `force-app/`. So the org runs a different version of the class, and the sandbox is missing a field the repository has. **Lead conversion does not complete there.** [The risk](../notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md).
+
+### 21.10 Status of the WooCommerce build
+
+| Side | State |
+| ---- | ----- |
+| **Pienissimo — plugin, trigger, payload, re-send** | 🟢 **built and demonstrated** |
+| **ROMI — endpoint, token** | 🔴 not created |
+| **ROMI — link-generator button, email template, order type, `SC` match, customer-create** | 🔴 nothing exists |
+| Org configuration | 🔴 no Flow, no named credential, no integration configuration row (26/08 org check) |
+
+The client side is real and waiting on ROMI, eleven working days from the **10 September** end of Fase 1 development.

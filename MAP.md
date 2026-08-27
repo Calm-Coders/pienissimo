@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-26 (nightly requirements-check — the Mexal review) · Source of record: [notes/](notes/)
+Last updated: 2026-08-27 (nightly requirements-check — the WooCommerce sessions) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -95,6 +95,48 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   ([OI-99](notes/items/OI-99%20Customer%20registry%20deep%20mapping%20session.md),
   booked for **2 Sept** but titled for the article registry).
 
+- 🟢 **2026-08-27 — the WooCommerce integration is settled and half of it is built.**
+  Two client sessions the same day, both fully minuted
+  ([design, 10:00](notes/meetings/2026-08-27%20Integrazione%20WooCommerce.md) ·
+  [test, 16:00](notes/meetings/2026-08-27%20Test%20Integrazione%20WooCommerce.md)).
+  **WooCommerce writes into Salesforce** — stock webhooks were evaluated live and
+  **rejected**, and the mechanism is a **custom WooCommerce plugin on a PHP
+  order-status action hook**
+  ([the flow](notes/flows/The%20WooCommerce%20order%20integration.md), `INT-14`
+  open → agreed). 🟢 **Sabatino Rinaldi built it between the two meetings** —
+  v1.3, always active, HTTP 200 on the wire against the production shop, with a
+  manual re-send button. 🔴 **`ORD-12` is corrected**: an order reaches Salesforce
+  at **`in lavorazione` OR `completato`**, any payment method — not only
+  COMPLETATO — so every line arrives paid. 🔴 **Carts are Funnel Kit funnels**, so
+  the checkout link carries the **opportunity id alone** and the link generator
+  needs no product pickers; the mu-plugin in the 31 July spec is superseded
+  ([OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)).
+  🔴 **The owed credential reversed direction — ROMI now owes Pienissimo the
+  Salesforce endpoint and token**
+  ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)),
+  and it blocks the integration tests set for the **week of 31 August**. Nothing
+  of the Salesforce side exists.
+  🔴 **Fabrizio Paganelli: the €8,900+ "vendita da palco" is untested**, and it
+  triggers contract generation downstream
+  ([OI-101](notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md)).
+  🔴 **Andrea Di Cicco's WooCommerce/Mexal field merge has no owner**
+  ([OI-103](notes/items/OI-103%20WooCommerce%20and%20Mexal%20field%20overlap.md)).
+  ⚠ The afternoon session had **two participants and no minute but Gemini's**, and
+  it moved a **client-agreed VAT rule**: no P.IVA check on an inbound Woo order,
+  validation stays on the Salesforce → Mexal leg
+  ([OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)).
+  Restate it with Elisa Migliano.
+
+- 🔴 **2026-08-27 — Lead conversion is failing in the Pienissimo partial
+  sandbox.** Not from a meeting: a Salesforce error mail at 15:08Z reports
+  `LeadConversionQueueable` throwing _"No such column 'Servizio_Interesse__c' on
+  entity 'Lead'"_. **The repo's copy of that class does not select that field**,
+  and the field's metadata **is** in `force-app/` — so the org runs a different
+  version and the sandbox lacks a field the repository has
+  ([the risk](notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md)).
+  It blocks testing
+  [OI-100](notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md).
+
 - The repo still runs ahead of the trackers and the org still holds Apex the
   repo does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
   [missing stack](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
@@ -149,8 +191,10 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   document** ([OI-53](notes/items/OI-53%20Asset%20generation%20rule.md)).
 
 - **Calendar: 25 Aug** Anticipay ✅ ran · **26 Aug** Review Temi
-  Integrazione Mexal ✅ ran, 1h25m, fully minuted · **27 Aug** WooCommerce (Elisa Migliano and Fabrizio Paganelli added
-  25 Aug) · **1 Sept 10:00** [ROMI-PIENISSIMO] Follow-up Integrazione Anticipay,
+  Integrazione Mexal ✅ ran, 1h25m, fully minuted · **27 Aug** WooCommerce ✅ **two sessions ran**, both fully
+  minuted · **w/c 31 Aug** WooCommerce integration tests on Salesforce, blocked on
+  [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+  · **1 Sept 10:00** [ROMI-PIENISSIMO] Follow-up Integrazione Anticipay,
   client-facing · **2 Sept 10:00–11:30** [ROMI-PIENISSIMO] Follow-up Anagrafica
   Articoli, client-facing, **new — invited 26 Aug 16:40Z** ·
   [PIENISSIMO] Follow-up Interno is now a **weekly Monday 17:00 slot**.
@@ -201,7 +245,8 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    payment aggregation and tests are not),
    [participants](notes/items/OI-78%20Participant%20data%20collection.md),
    [WooCommerce](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)
-   (credentials 26 Aug),
+   (🟢 client side built 27 Aug; **the whole Salesforce side is unstarted** and
+   waits on [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)),
    [VAT](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
    (**architecture settled 25 Aug — via the Pienissimo middleware, not Anticipay
    directly**; no endpoint, schema, token or test environment yet), and now

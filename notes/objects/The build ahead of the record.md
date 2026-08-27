@@ -4,7 +4,7 @@ type: object
 status: active
 owner: Aurel Mrruku
 org: ROMI
-updated: 2026-08-26
+updated: 2026-08-27
 source: git log 2026-08-03..2026-08-13 + force-app/main/default
 evidence: repository working tree on DevMain, commit 8712344
 ---
@@ -115,3 +115,29 @@ credential and the `BundleComponent__c` custom tab all belong on the list.
 
 The corrective action is now narrow and nameable: **retrieve the Biglietto
 stack and the Tranche layout.** Everything else is committed.
+
+
+## 2026-08-27 - a third divergence, and this one is failing in the org
+
+🔴 **The org runs a version of `LeadConversionQueueable` that is not in
+`force-app/`, and it throws.** A Salesforce error mail at 15:08:13Z reports the
+queueable failing in the Pienissimo **partial sandbox** with
+_"No such column 'Servizio_Interesse__c' on entity 'Lead'"_ at
+`LeadConversionQueueable.execute` line 22 — which is exactly the SOQL statement
+in the repository copy, except that the repository copy **does not select that
+field**.
+
+The field's metadata **is** in `force-app/`
+(`objects/Lead/fields/Servizio_Interesse__c.field-meta.xml`, committed in
+`225b172 Added logic for Lead flux`), and the sandbox says it is not there. So
+the divergence runs in both directions on a single feature: class ahead in the
+org, field ahead in the repository.
+
+This widens the corrective list from "retrieve the Biglietto stack and the
+Tranche layout" to include **reconciling the Lead conversion stack**. Full
+detail and the alternatives not yet ruled out:
+[the risk note](../risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md).
+
+⚠ Unlike the earlier entries in this note, which are bookkeeping problems, this
+one is **breaking a running feature**. Lead conversion does not complete in that
+sandbox.

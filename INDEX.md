@@ -38,6 +38,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [The ticket lifecycle](notes/flows/The%20ticket%20lifecycle.md)           | designed 06/08, never run     |
 | [The quote to order flow](notes/flows/The%20quote%20to%20order%20flow.md) | designed 06/08, build pending |
 | [The Mexal integration](notes/flows/The%20Mexal%20integration.md)         | unblocked, in build           |
+| [The WooCommerce order integration](notes/flows/The%20WooCommerce%20order%20integration.md) | **client side built 27/08**, Salesforce side unstarted |
 
 ### Risks
 
@@ -136,13 +137,16 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 ### Meetings
 
-Minuted sessions, newest first. The 26 August Mexal review was recovered by the
-nightly sweep the same evening, with its full transcript. The four from 19–24
+Minuted sessions, newest first. The two 27 August WooCommerce sessions and the
+26 August Mexal review were each recovered by the nightly sweep the same evening,
+with their full transcripts. The four from 19–24
 August were all recovered on 2026-08-24; before that the record said the 19 and
 20 August sessions had left no minute.
 
 | Note                                                                                                                         | Weight                                                                                                       |
 | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [2026-08-27 Integrazione WooCommerce](notes/meetings/2026-08-27%20Integrazione%20WooCommerce.md)                             | **Client-facing** · full transcript · the integration direction settled; stock webhooks evaluated and rejected |
+| [2026-08-27 Test Integrazione WooCommerce](notes/meetings/2026-08-27%20Test%20Integrazione%20WooCommerce.md)                 | Working session, **two people** · full transcript · the plugin demonstrated live · ⚠ decisions unminuted outside Gemini |
 | [2026-08-26 Review Temi Integrazione Mexal](notes/meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)             | **Client-facing** · full transcript · the edition mechanism changes again · first Mexal session since 14 Jul |
 | [2026-08-25 Integrazione Anticipay](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md)                                 | **Client-facing** · the VAT call moves behind a Pienissimo middleware · Gemini notes                         |
 | [2026-08-24 Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md)                                           | ROMI-internal · Mexal mapping + campaign configuration · Gemini notes                                        |
@@ -172,7 +176,9 @@ August were all recovered on 2026-08-24; before that the record said the 19 and
 
 | Note                                                                                                                                            | What it holds                                                                                                                                                                 |
 | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Source trace 2026-08-26](notes/traces/Source%20trace%202026-08-26.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-26 · **dry sweep**; four marketing commitments went overdue, design file unmoved                                |
+| [Source trace 2026-08-27](notes/traces/Source%20trace%202026-08-27.md)                                                                          | **Watermark for the next `requirements-check` run** — 2026-08-27T22:00Z · two WooCommerce sessions, the integration direction settled, a broken queueable in the sandbox      |
+| [Source trace 2026-08-26 nightly](notes/traces/Source%20trace%202026-08-26%20nightly.md)                                                        | Previous watermark — 2026-08-26T21:40Z · the Mexal review; the edition mechanism changed                                                                                      |
+| [Source trace 2026-08-26](notes/traces/Source%20trace%202026-08-26.md)                                                                          | Earlier same-day trace — 2026-08-26 · **dry sweep**; four marketing commitments went overdue, design file unmoved                                |
 | [Source trace 2026-08-25](notes/traces/Source%20trace%202026-08-25.md)                                                                          | Previous watermark — 2026-08-25 · the Anticipay session, the middleware decision, master re-decoded a fifth time                                                              |
 | [Source trace 2026-08-24](notes/traces/Source%20trace%202026-08-24.md)                                                                          | Previous watermark — 2026-08-24 · four meetings recovered, master re-decoded again                                                                                            |
 | [meetings/open-items.md, 2026-08-26 org verification block](meetings/open-items.md)                                                             | **Newest three-way gap table** — requirements vs `force-app/` vs Pienissimo UAT · grep `## Org verification`, do not load the file                                            |
@@ -224,13 +230,15 @@ rg -l "^uncertain:"        notes/         # what is explicitly unverified
 | ~6k   | [README.md](README.md)                                                                                                         | Stack and setup, published artifacts, the design diagrams    |
 | ~4-5k | [meetings/proposals/](meetings/proposals/)                                                                                     | The asset data model or the bundle demo                      |
 | ~5k   | [meetings/results/2026-08-26-review-temi-integrazione-mexal.md](meetings/results/2026-08-26-review-temi-integrazione-mexal.md) | The Mexal classification contract and the edition mechanism  |
+| ~4k   | [meetings/results/2026-08-27-integrazione-woocommerce.md](meetings/results/2026-08-27-integrazione-woocommerce.md)             | The WooCommerce integration direction and the three scenarios |
+| ~3k   | [meetings/results/2026-08-27-test-integrazione-woocommerce.md](meetings/results/2026-08-27-test-integrazione-woocommerce.md)   | The delivered plugin, the payload and the trigger states     |
 | ~1-3k | other files in [meetings/results/](meetings/results/)                                                                          | A specific earlier meeting                                   |
 
 ## Never — grep, do not load
 
 | Cost      | Pattern                               | Instead                                           |
 | --------- | ------------------------------------- | ------------------------------------------------- |
-| ~229k     | `meetings/*-transcript.it.md`         | `rg "term" meetings/`, then read that line range  |
+| ~239k     | `meetings/*-transcript.it.md`         | `rg "term" meetings/`, then read that line range  |
 | ~56k/~50k | `meetings/open-items.it.md` / `.md`   | Read `notes/items/`                               |
 | ~21k/~20k | `REQUISITI.it.md` / `REQUIREMENTS.md` | `rg` for the requirement id                       |
 | ~20k/~18k | `meetings/DEVELOPMENT-RECAP*.md`      | Read the relevant notes                           |

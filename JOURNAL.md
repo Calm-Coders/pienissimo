@@ -10,6 +10,67 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-27 — claude — nightly requirements-check: the WooCommerce integration is settled, and half of it is already built
+
+- **Did:** swept Gmail, Slack, Drive and Fathom against the **2026-08-26T21:40Z**
+  watermark (the 26 Aug nightly trace, selected by `updated:`). Found **both
+  27 August WooCommerce sessions** — Gemini notes, **full transcripts** and
+  recordings for each — and drilled them per `drill-meeting`. Also found a live
+  Apex failure in the Pienissimo partial sandbox that came from no meeting at all.
+- **State:** transcripts preserved verbatim at
+  `meetings/2026-08-27-integrazione-woocommerce-transcript.it.md` (48m20s) and
+  `meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md` (17m13s),
+  each read once in full. Bilingual recaps for both in `meetings/results/`.
+  **Eight notes created, six updated**, both trackers (rows 49 and 73 touched,
+  100–103 added), both recaps (§21), `MAP.md`, `INDEX.md`. Full audit:
+  [the trace](notes/traces/Source%20trace%202026-08-27.md).
+- **The headline:** 🟢 **the integration direction is settled — WooCommerce writes
+  into Salesforce**, and not via a stock webhook: those were evaluated on screen
+  and **rejected** (one topic per webhook, no multi-select, no control of the
+  body). The mechanism is a **custom WooCommerce plugin on a PHP order-status
+  action hook** sending one JSON body with order, customer and lines —
+  [the flow](notes/flows/The%20WooCommerce%20order%20integration.md). 🟢 **And
+  Sabatino Rinaldi had already built it** by the afternoon session: v1.3, always
+  active, HTTP 200 on the wire against the production shop, with a manual re-send
+  button.
+- **Requirements moved, for the first time in three sweeps.** `INT-14` open →
+  agreed · `INT-13` mu-plugin superseded and the link generator's product/quantity
+  pickers dropped, because carts are **Funnel Kit** funnels that already carry the
+  product · `INT-11` credential direction **reversed** · 🔴 **`ORD-12` corrected**
+  — an order reaches Salesforce at **`in lavorazione` OR `completato`**, any
+  payment method, not only COMPLETATO, so every line arrives paid. All landed in
+  the YAML register, `REQUIREMENTS.md` and `REQUISITI.it.md` in the same session,
+  with `tracked_by` wired back.
+- **Next:** 🔴
+  [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+  — **ROMI owes Pienissimo the Salesforce endpoint and header token.** It is the
+  only thing between a working client-side plugin and a real test, and it blocks
+  the integration tests set for the **week of 31 August**. Nothing of the
+  Salesforce side exists. Also: **download the `Payload woo-salesforce`
+  attachment** from Sabatino Rinaldi's 14:20Z mail — it is the authoritative
+  field list and no connected tool can open a Gmail attachment.
+- **Watch:** 🔴
+  [the sandbox failure](notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md)
+  — `LeadConversionQueueable` threw _"No such column 'Servizio_Interesse__c' on
+  entity 'Lead'"_ at 15:08Z. **The repo's copy of that class does not select that
+  field** and the field's metadata **is** in `force-app/`, so the org runs a
+  different version and the sandbox lacks a field the repository has. Lead
+  conversion does not complete there, which also blocks testing
+  [OI-100](notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md).
+  Written **without org access** — confirm before acting. ⚠ Also: the afternoon
+  session had **two participants and no minute but Gemini's**, and it relocated
+  the **client-agreed P.IVA check** ([OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md))
+  with neither Elisa Migliano, who proposed it, nor Elena Spini, who approved it,
+  in the room. Prefer the 6 August client rule until someone restates it.
+- **Not done, deliberately:** no Apex test class written or proposed — coverage is
+  Aurel Mrruku's separate task before the production deploy. `STATUS.md`, the
+  Notion mirror and `site/` were not regenerated: they carry **build state**,
+  refreshed by the 26 Aug org check, and this sweep moved decisions. A note landed
+  in `notes/flows/`, so **step 6a-bis applies on the next org-status run** —
+  flagged, not done.
+
+---
+
 ## 2026-08-26 — claude — nightly requirements-check: the Mexal review, and the edition mechanism changes again
 
 - **Did:** swept Gmail, Slack, Drive and Fathom against the **2026-08-26**
