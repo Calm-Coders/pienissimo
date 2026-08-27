@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ticket</fullName>
+    <active>true</active>
+    <label>Ticket</label>
+    <picklistValues>
+        <picklist>Status</picklist>
+        <values>
+            <fullName>Ordinato</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Disponibile</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Assegnato</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Utilizzato</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Non utilizzato</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Annullato</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

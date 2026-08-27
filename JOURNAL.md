@@ -44,7 +44,7 @@ Keep the twenty most recent entries here; archive older ones to
   [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md).
 - **Next:** 🔴 **[OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)
   was the question this meeting existed to answer and was never asked** — the
-  word *scadenziario* is not in the transcript, and it now has no forum. Put it
+  word _scadenziario_ is not in the transcript, and it now has no forum. Put it
   on the **2 September** agenda explicitly, together with the customer-registry
   items, because that invitation is titled for the **article** registry only.
 - **Watch:** 🔴
@@ -62,7 +62,7 @@ Keep the twenty most recent entries here; archive older ones to
   unfinished. `STATUS.md`, the Notion mirror and `site/` were not regenerated:
   they carry build state, refreshed by the same day's org check, and this sweep
   moved decisions. **The Flows page is flagged** — `notes/flows/The Mexal
-  integration.md` changed, so step 6a-bis applies on the next org-status run.
+integration.md` changed, so step 6a-bis applies on the next org-status run.
 
 ---
 
@@ -1440,3 +1440,18 @@ servizio`**, exists in Elena's client-facing doc and in no version of
 - **Watch:** Slack delivery is independent per destination. If one send fails,
   deliver to the other, report the partial failure in chat and never guess a
   replacement conversation.
+
+---
+
+## 2026-08-27 — codex — traced Lead duplicate VAT question
+
+- **Did:** created
+  [OI-100](notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md)
+  for the unresolved Lead conversion scenario where two Leads share the same
+  email but have different VAT / Partita IVA values.
+- **Decision needed:** Aurel must choose whether email identity wins, VAT/company
+  identity wins, or the conflict should block conversion and ask the user to
+  choose the correct Account/Contact.
+- **Current build note:** the manual Lead conversion Apex matches by Contact
+  email and does not evaluate VAT, so no further change should be made there
+  until this question is answered.

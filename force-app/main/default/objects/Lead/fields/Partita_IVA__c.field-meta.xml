@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Partita_IVA__c</fullName>
+    <description
+  >Partita IVA raccolta sul Lead per identificare l'azienda e supportare la conversione verso Account e Contact.</description>
+    <externalId>false</externalId>
+    <label>Partita IVA</label>
+    <length>32</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

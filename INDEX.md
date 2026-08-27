@@ -6,7 +6,7 @@ any agent can budget before opening anything. Start at [MAP.md](MAP.md).
 Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 **Costly** = justify it. **Never** = do not load whole; grep instead.
 
-120 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
+121 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
 `#75` is `OI-75`.
 
 ## Cheap — load freely
@@ -74,6 +74,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-97 fiscal residence on the customer registry](notes/items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)                               | open · new 26 Aug · blocks customer creation       | Andrea Di Cicco    |
 | [OI-98 the Mexal article registry is being re-created](notes/items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)                   | open · new 26 Aug · client-owned                   | Fabrizio Paganelli |
 | [OI-99 customer registry deep mapping session](notes/items/OI-99%20Customer%20registry%20deep%20mapping%20session.md)                                       | open · new 26 Aug · unscheduled                    | Fabrizio Paganelli |
+| [OI-100 same lead email with different VAT](notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md)                     | open · new 27 Aug · waiting for Aurel              | Aurel Mrruku       |
 | [OI-04 scope against the go-live date](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md)                                                       | open · gating                                      | Elena Spini        |
 
 ### Open items — client inputs owed
@@ -140,14 +141,14 @@ nightly sweep the same evening, with its full transcript. The four from 19–24
 August were all recovered on 2026-08-24; before that the record said the 19 and
 20 August sessions had left no minute.
 
-| Note                                                                                                                         | Weight                                                                                        |
-| ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Note                                                                                                                         | Weight                                                                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | [2026-08-26 Review Temi Integrazione Mexal](notes/meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)             | **Client-facing** · full transcript · the edition mechanism changes again · first Mexal session since 14 Jul |
-| [2026-08-25 Integrazione Anticipay](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md)                                 | **Client-facing** · the VAT call moves behind a Pienissimo middleware · Gemini notes          |
-| [2026-08-24 Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md)                                           | ROMI-internal · Mexal mapping + campaign configuration · Gemini notes                         |
-| [2026-08-24 Interna per update flusso Lead-Opty](notes/meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md) | ROMI-internal · 15 Lead/Quote decisions · Gemini notes · **conflicts with the 20 Aug minute** |
-| [2026-08-20 Flusso Asset Biglietti](notes/meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md)                               | **Strongest evidence in the record** — Elena's own minute, sent to the client                 |
-| [2026-08-19 Flussi MKT Biglietti](notes/meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md)                                   | Marketing funnel · Gemini notes · the asset-rule wording conflict lives here                  |
+| [2026-08-25 Integrazione Anticipay](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md)                                 | **Client-facing** · the VAT call moves behind a Pienissimo middleware · Gemini notes                         |
+| [2026-08-24 Follow-up Interno](notes/meetings/2026-08-24%20Follow-up%20Interno.md)                                           | ROMI-internal · Mexal mapping + campaign configuration · Gemini notes                                        |
+| [2026-08-24 Interna per update flusso Lead-Opty](notes/meetings/2026-08-24%20Interna%20per%20update%20flusso%20Lead-Opty.md) | ROMI-internal · 15 Lead/Quote decisions · Gemini notes · **conflicts with the 20 Aug minute**                |
+| [2026-08-20 Flusso Asset Biglietti](notes/meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md)                               | **Strongest evidence in the record** — Elena's own minute, sent to the client                                |
+| [2026-08-19 Flussi MKT Biglietti](notes/meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md)                                   | Marketing funnel · Gemini notes · the asset-rule wording conflict lives here                                 |
 
 ### People
 
@@ -215,15 +216,15 @@ rg -l "^uncertain:"        notes/         # what is explicitly unverified
 
 ## Costly — justify before loading
 
-| Cost  | File                                                                                                         | When it is worth it                                          |
-| ----- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
-| ~14k  | [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml)                       | **Authority for requirement ids** — grep it, don't load it   |
-| ~8k   | [meetings/results/2026-08-06-chiusura-punti-aperti.md](meetings/results/2026-08-06-chiusura-punti-aperti.md) | The decisive session, in full                                |
-| ~6k   | [docs/architecture.md](docs/architecture.md)                                                                 | How the vault, the MCP indexes and the surfaces fit together |
-| ~6k   | [README.md](README.md)                                                                                       | Stack and setup, published artifacts, the design diagrams    |
-| ~4-5k | [meetings/proposals/](meetings/proposals/)                                                                   | The asset data model or the bundle demo                      |
-| ~5k   | [meetings/results/2026-08-26-review-temi-integrazione-mexal.md](meetings/results/2026-08-26-review-temi-integrazione-mexal.md) | The Mexal classification contract and the edition mechanism |
-| ~1-3k | other files in [meetings/results/](meetings/results/)                                                        | A specific earlier meeting                                   |
+| Cost  | File                                                                                                                           | When it is worth it                                          |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| ~14k  | [requirements/pienissimo-requirements.yaml](requirements/pienissimo-requirements.yaml)                                         | **Authority for requirement ids** — grep it, don't load it   |
+| ~8k   | [meetings/results/2026-08-06-chiusura-punti-aperti.md](meetings/results/2026-08-06-chiusura-punti-aperti.md)                   | The decisive session, in full                                |
+| ~6k   | [docs/architecture.md](docs/architecture.md)                                                                                   | How the vault, the MCP indexes and the surfaces fit together |
+| ~6k   | [README.md](README.md)                                                                                                         | Stack and setup, published artifacts, the design diagrams    |
+| ~4-5k | [meetings/proposals/](meetings/proposals/)                                                                                     | The asset data model or the bundle demo                      |
+| ~5k   | [meetings/results/2026-08-26-review-temi-integrazione-mexal.md](meetings/results/2026-08-26-review-temi-integrazione-mexal.md) | The Mexal classification contract and the edition mechanism  |
+| ~1-3k | other files in [meetings/results/](meetings/results/)                                                                          | A specific earlier meeting                                   |
 
 ## Never — grep, do not load
 
