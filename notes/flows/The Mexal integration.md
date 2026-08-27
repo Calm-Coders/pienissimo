@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-08-24
+updated: 2026-08-26
 depends_on: [OI-58]
 source: meetings/open-items.md row 58
 ---
@@ -116,3 +116,113 @@ This integration is configured on top of
 `Integration_Configuration__c`, `Integration_Log__c` and `API_Callout_Engine`,
 committed in early August. The scaffolding is house pattern; the Mexal-specific
 configuration on top of it is the project requirement.
+
+## 2026-08-26 - the Postman collection was read, and it gives the real paths
+
+[The collection](../The%20Mexal%20Postman%20collection.md) — nine requests, sent
+by Andrea Di Cicco on 25 August — was decoded on 26 August. It is the first
+artifact showing the **actual HTTP calls** rather than a plan for them.
+
+**Every call is a `POST` to a `/ricerca` sub-resource** under
+`https://services.passepartout.cloud/webapi/risorse/…`, with a JSON filter body
+of the form `{"filtri":[{"campo","condizione","valore"}]}`. The delta key is
+`data_ult_mod` and the timestamp format is **`YYYYMMDD HHMMSS`**.
+
+| Entity                  | Path                               |
+| ----------------------- | ---------------------------------- |
+| Clienti                 | `clienti/ricerca`                  |
+| Agenti                  | `fornitori/ricerca`                |
+| Condizioni di pagamento | `dati-generali/pagamenti/ricerca`  |
+| Prodotti                | `articoli/ricerca`                 |
+| Scadenziario            | `scadenzario/ricerca`              |
+| Ordini clienti          | `documenti/ordini-clienti/ricerca` |
+
+`fornitori/ricerca` for agents **confirms the mastro-610 design** on the wire.
+`dati-generali/pagamenti/ricerca` is **new** — the workbook gave that call a
+manual page and no path.
+
+### ⚠ Two corrections to what is written above
+
+🔴 **The `Method` column in the workbook table above is wrong as an HTTP verb.**
+It lists _condizioni pagamento_, _destinazioni_, _fatture_, _prodotti_, _ordini_
+and _scoperto cliente_ as **GET**; every real call is a **POST** to `/ricerca`.
+The column describes a read, not a verb. Configuring
+`Integration_Configuration__c.HTTP_Method__c` from it would be wrong on six
+calls.
+
+🔴 **The two-step `Get Fatture` is not in the collection.** Mirko Merendi
+specified `documenti/movimenti-magazzino` then one call per document;
+`movimenti-magazzino` appears **nowhere**. Both requests named _Fatture_ call
+`documenti/ordini-clienti/ricerca`, which is the customer-orders resource. So
+the N+1 invoice retrieval described above — the one on the critical path for
+[ticket availability](../items/OI-75%20Ticket%20availability%20rule.md) — is
+**untested and unshown**.
+
+### What the collection still does not give
+
+**No saved responses**, so no payloads and no field lists — it says nothing
+about whether the invoice call returns the **numero riga d'ordine**. **No
+pagination** parameter of any kind, against the 6 MB / 12 MB limits recorded
+above. **No write calls**, so `Creazione Cliente` and `Creazione ordini` are
+untested. And the delta watermark is **hard-coded to 16 July 2026** rather than
+rolling.
+
+⚠ The file carries **live, enabled credentials** and must never be committed —
+detail and handling in [the collection note](../The%20Mexal%20Postman%20collection.md).
+
+## 2026-08-26 - the first write calls succeed, and the classification contract lands
+
+At the [26 August review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+Andrea Di Cicco exercised the two untested write calls live, **against
+production**, and both worked:
+
+- `Creazione Cliente` → customer **`501.08721`**, "Test Roni"
+- `Creazione ordini` → order **`OC11`** on **serie 10**
+
+Fabrizio Paganelli confirmed both on his own Mexal screen. The new order shows
+status `S` (*sospeso*), which he explained is normal and flips when the order is
+transformed into an invoice.
+
+### Which Mexal fields carry which project concept
+
+Settled in this session, each verified by editing in Mexal and watching the API
+response change:
+
+| Mexal field            | API name                           | Carries                        | Notes                                                   |
+| ---------------------- | ---------------------------------- | ------------------------------ | ------------------------------------------------------- |
+| `natura`               | `COD_Natura`                       | genera biglietto sì/no         | Lookup to a managed base table, **not free text**       |
+| `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | the event (Campagna Padre)     | **Splits into two API fields**                          |
+| `gruppo merceologico`  | `GRP merch`                        | candidate for tipo biglietto   | Hierarchical in Mexal; **the level did not come over**  |
+| `Gest. annullato`      | `Gest. annullato`                  | product disabled in Salesforce | `n` = active, `S` = cancelled                           |
+
+**Mexal offers at most three classification fields on an article**, and they were
+entirely unused before this session. That constraint is why ticket type and
+bundle-only visibility keep being pushed onto the Salesforce side.
+
+**The values themselves are not chosen.** Fabrizio Paganelli takes the scheme to
+Pienissimo's direction on 31 August.
+
+### Invoicing stays Mexal-driven
+
+Andrea Di Cicco had worked out the JSON to create an invoice from Salesforce.
+Fabrizio Paganelli declined it for now — _"per il momento preferisco che venga
+pilotata solo da Mexal la fatturazione"_ — and put a revisit at roughly **six
+months** after go-live. Salesforce reads invoices; it does not create them.
+
+### 🔴 The documentation is not the contract
+
+Andrea Di Cicco hit several **mandatory fields absent from the documentation**:
+_"tutti sti campi non c'erano sulla documentazione."_ Two are recorded:
+
+- `tipo nazionalità` — mandatory, and it is *residenza fiscale*. See
+  [OI-97](../items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md).
+- `valuta` — set to `1` by trial. **Nobody knows whether `1` is euro.**
+
+`codice listino` was answered: **only listino 1 is used**, though products carry
+two.
+
+⚠ Still unexplained: the **one-to-many relationship between a tranche and the
+order rows** implied by Mexal's row identifiers. Andrea Di Cicco described the
+row-id structure as what makes per-tranche invoicing of a bundle possible; Aurel
+Mrruku asked him to explain it — _"mi devi spiegare sta roba"_ — and the call
+ended first. It bears on [OI-50](../items/OI-50%20Tranche%20object.md).

@@ -83,8 +83,8 @@ append a dated reconciliation entry for accepted, modified, or rejected items.
 ## 5. Close out
 
 1. If the meeting moved the live position, refresh
-   [STATUS.md](../../../STATUS.md) and its Notion mirror - step 6 of
-   `org-status-check` is the procedure and the same rules apply here. A missing
+   [STATUS.md](../../../STATUS.md) and its Notion mirror using the reconciliation
+   and publishing references under `org-status-check`. A missing
    Notion connector is not a failure: regenerate `STATUS.md` and report the
    mirror as stale. **Never** put anything from `STATUS.md` into `site/`, which
    is public and sanitized to different rules.

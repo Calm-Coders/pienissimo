@@ -4,9 +4,9 @@ type: reference
 status: active
 owner: Elena Spini
 org: ROMI
-updated: 2026-08-25
-source: Drive - Flows & Objects.drawio, modified 2026-08-25T08:23:31Z
-decoded_at_version: 2026-08-25T08:23:31Z
+updated: 2026-08-26
+source: Drive - Flows & Objects.drawio, modified 2026-08-26T14:06:48Z
+decoded_at_version: 2026-08-26T14:06:48Z
 supersedes_in_register: DGM-2
 ---
 
@@ -230,3 +230,46 @@ The client's own [`Workflow Pienissimo 23-7-26.drawio`](The%20client%20Lead-Opty
 (`DGM-1`, Marco Montesi) was modified **68 minutes before** this file on the
 same afternoon. Both register source diagrams moved on 20 August; neither
 change is minuted.
+
+## 2026-08-26 - a sixth edit, made during the Mexal call, changing nothing tracked
+
+`Flows & Objects.drawio` moved again to **2026-08-26T14:06:48Z** — 16:06 CEST,
+**six minutes into
+[the Mexal review](meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)**,
+which Elena Spini was chairing. Sixth edit in eight days.
+
+**Re-decoded at that version.** 130 KB, three pages, still plain uncompressed
+mxfile XML. **Every text cell this note tracks is unchanged, word for word.**
+
+⚠ **What changed is therefore not in the labels.** Geometry, style or cell
+position were not compared — only text content was. Do not report this as "an
+edit with no changes"; report it as an edit that **did not move any wording the
+record depends on**. The likeliest explanation is an autosave from opening the
+file during the call.
+
+### 🔴 Two cells are now stale against meetings, not one
+
+The 25 August section above records the LEAD-OPTY / Ordini split on the Anticipay
+middleware. **It is unfixed after a sixth edit** — the Ordini page still reads
+_"chiamata API Anticipay"_ while LEAD-OPTY reads _"al middleware Pienissimo"_.
+
+**A second cell joined it today.** The `IMPORTANTE` block on the *Flusso
+Biglietti* page still reads:
+
+> _"Sulle campagne figlie deve esserci logica solo una campagna attiva"_
+
+That rule was **abandoned in the 26 August session**, by Elena Spini, who wrote
+it — a bundle spanning two events cannot resolve to one active edition. It is
+replaced by [OI-96](items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md),
+the order-date mapping table. The same cell's other half — _"Prodotto creazione
+di un campo lookup campagna codice campagna padre… messo manuale post creazione
+campagna"_ — is also superseded: the event now descends from Mexal's `categoria
+statistica`.
+
+⚠ **`AGENTS.md` treats this file as the authority for state machines.** On the
+campaign model it is now behind the minutes by one meeting, and behind them on a
+page the client's own designers read. **Prefer
+[the meeting note](meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+over the diagram on campaigns and editions until someone reconciles the file.**
+Nothing on any page mentions Mexal's `natura`, `categoria statistica`,
+`gruppo merceologico` or `Gest. annullato`.

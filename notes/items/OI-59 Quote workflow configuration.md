@@ -7,6 +7,7 @@ with: Marco Montesi
 org: both
 raised: 2026-07-31
 updated: 2026-08-26
+requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
 source: meetings/open-items.md row 59
 ---
 

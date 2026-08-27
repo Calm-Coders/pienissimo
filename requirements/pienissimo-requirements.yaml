@@ -657,7 +657,8 @@ requirements:
       area: sales,
       pri: M,
       status: agreed,
-      text: "Marketing converts leads; tutors handle recalls; qualified contacts bypass early stages"
+      text: "Marketing converts leads; tutors handle recalls; qualified contacts bypass early stages",
+      tracked_by: [OI-80]
     }
   - {
       id: SAL-05,
@@ -671,28 +672,32 @@ requirements:
       area: sales,
       pri: M,
       status: agreed,
-      text: "Qualificato da ricontattare state with 48h parking task"
+      text: "Qualificato da ricontattare state with 48h parking task",
+      tracked_by: [OI-59]
     }
   - {
       id: SAL-07,
       area: sales,
       pri: M,
       status: agreed,
-      text: "Manual quote-creation button"
+      text: "Manual quote-creation button",
+      tracked_by: [OI-59]
     }
   - {
       id: SAL-08,
       area: sales,
       pri: M,
       status: agreed,
-      text: "Quote expiry date mandatory at send"
+      text: "Quote expiry date mandatory at send",
+      tracked_by: [OI-59]
     }
   - {
       id: SAL-09,
       area: sales,
       pri: M,
       status: agreed,
-      text: "Automatic alerts on day 2 after send and at expiry, to tutor and client"
+      text: "Automatic alerts on day 2 after send and at expiry, to tutor and client",
+      tracked_by: [OI-59]
     }
   - {
       id: SAL-10,
@@ -700,7 +705,8 @@ requirements:
       pri: M,
       status: open,
       text: "Preset validity times per product category and business line",
-      owner: Marco Montesi
+      owner: Marco Montesi,
+      tracked_by: [OI-59]
     }
   - {
       id: SAL-11,
@@ -743,7 +749,8 @@ requirements:
       area: sales,
       pri: C,
       status: to_confirm,
-      text: "Accept/reject buttons inside the quote email"
+      text: "Accept/reject buttons inside the quote email",
+      tracked_by: [OI-68]
     }
   - {
       id: SAL-17,
@@ -752,7 +759,8 @@ requirements:
       status: open,
       text: "Order-acceptance and contract procedure",
       owner: "Marco Montesi + Elisa Migliano",
-      due: 2026-08-06
+      due: 2026-08-06,
+      tracked_by: [flow-quote-to-order]
     }
   - {
       id: SAL-18,
@@ -760,7 +768,8 @@ requirements:
       pri: S,
       status: open,
       source: DGM-1,
-      text: "Leads land in a queue named CODE for custom assignment; open questions on manual assignment by the sales manager and on mass assignment by parameter"
+      text: "Leads land in a queue named CODE for custom assignment; open questions on manual assignment by the sales manager and on mass assignment by parameter",
+      tracked_by: [OI-80]
     }
   - {
       id: SAL-19,
@@ -785,7 +794,8 @@ requirements:
       status: to_confirm,
       source: DGM-2,
       text: "Opportunity type field with values Vendita da tutor and Recall tutor",
-      picklists: [opportunity_type]
+      picklists: [opportunity_type],
+      tracked_by: [OI-70]
     }
   - {
       id: SAL-22,
@@ -1728,7 +1738,53 @@ reconciliation:
     default_if_undecided: "The register keeps describing a signature step that 06/08 cancelled"
     impact_on: build — a whole signature stage in the ticket flow, and the signed scope
 
-# =============================================================================
+  # =============================================================================
+
+  - id: RC-07
+    kind: superseded_requirement
+    topic: Accept/reject buttons in the quote email were rejected, not deferred
+    requirement: SAL-16
+    register_says: "Accept/reject buttons inside the quote email [status: to_confirm, pri: C]"
+    minutes_say: >
+      The 2026-08-06 closing session replaced them with a link to a landing page showing
+      preventivo + contratto + condizioni generali as a single PDF, with Accetto / Rifiuto.
+      The stated reason is that buttons in an email would have let an external client mutate
+      CRM data directly.
+    evidence_grade: minuted
+    honest_framing: >
+      SAL-16 is not an open question waiting for confirmation. It was decided against, and the
+      replacement is designed and owned. Leaving it as to_confirm reads to anyone planning the
+      build as though the email-button option is still on the table, which it is not.
+    proposed: "Set SAL-16 status to rejected and cite OI-68 as the superseding decision."
+    default_if_undecided: >
+      A reader of the register plans for a control that the design deliberately removed. Harmless
+      today because nothing is built; misleading at sign-off, because SAL-16 is a C-priority item
+      that will read as descoped-by-omission rather than rejected-on-security-grounds.
+    impact_on: OI-68, SAL-17, flow-quote-to-order
+
+  - id: RC-08
+    kind: incomplete_requirement
+    topic: The opportunity type field carries two different vocabularies
+    requirement: SAL-21
+    register_says: "Opportunity type field with values Vendita da tutor and Recall tutor [DGM-2]"
+    minutes_say: >
+      The 2026-08-06 session requires the same field to be typed attivazione versus rinnovo for
+      Performance Plus, because contract auto-generation depends on it, and used opportunity
+      typing to carry the stage-sale versus tutor-recall split as well.
+    evidence_grade: minuted
+    honest_framing: >
+      These are not alternatives and not a contradiction — the built field
+      Opportunity.Tipo_Opportunita__c is being asked to do two jobs, and the register documents
+      only one of them. OI-70 states this in as many words. Nobody has said whether one picklist
+      carries all four values, or whether attivazione/rinnovo belongs on a second field.
+    proposed: >
+      Decide one field or two, then extend SAL-21 or add a sibling requirement for the
+      attivazione/rinnovo typing that drives contract generation.
+    default_if_undecided: >
+      The builder configures the two DGM-2 values, and Performance Plus contract auto-generation
+      (OI-51) has no field to key on.
+    impact_on: OI-70, OI-51, DM-15, RC-04
+
 open_points:
   due_2026_08_06:
     - { ref: BIG-13, point: Signature collection method, owner: Sabatino }

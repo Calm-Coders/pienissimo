@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "description": "Executable structural checks for org-status-check. This maps requirement IDs to evidence targets; it does not replace or restate the requirements register.",
+  "assertions": [
+    {
+      "id": "BUN-03-object",
+      "kind": "component",
+      "requirements": ["BUN-03"],
+      "component": "object:BundleComponent__c",
+      "expect_repo": "present",
+      "expect_org": "present",
+      "notes": [
+        "Structural presence only; bundle behaviour still needs source and runtime evidence."
+      ]
+    },
+    {
+      "id": "BUN-03-trigger",
+      "kind": "component",
+      "requirements": ["BUN-03"],
+      "component": "apex-trigger:BundleComponentTrigger",
+      "expect_repo": "present",
+      "expect_org": "present"
+    },
+    {
+      "id": "ORD-01-tranche-object",
+      "kind": "component",
+      "requirements": ["ORD-01", "DM-17"],
+      "component": "object:Tranche__c",
+      "expect_repo": "present",
+      "expect_org": "present"
+    },
+    {
+      "id": "ORD-01-quote-line-tranche",
+      "kind": "component",
+      "requirements": ["ORD-01", "DM-17"],
+      "component": "field:QuoteLineItem.Tranche__c",
+      "expect_repo": "present",
+      "expect_org": "present",
+      "permission": "edit"
+    },
+    {
+      "id": "ORD-01-order-item-tranche",
+      "kind": "component",
+      "requirements": ["ORD-01", "DM-17"],
+      "component": "field:OrderItem.Tranche__c",
+      "expect_repo": "present",
+      "expect_org": "present",
+      "permission": "edit",
+      "notes": [
+        "Field existence and FLS are independent; no grant must classify permission-blocked, not missing."
+      ]
+    },
+    {
+      "id": "ORD-01-tranche-controller",
+      "kind": "component",
+      "requirements": ["ORD-01", "DM-17"],
+      "component": "apex-class:QuoteTrancheController",
+      "expect_repo": "present",
+      "expect_org": "present"
+    },
+    {
+      "id": "ORD-01-tranche-ui",
+      "kind": "component",
+      "requirements": ["ORD-01", "DM-17"],
+      "component": "lwc:quoteCreateTranche",
+      "expect_repo": "present",
+      "expect_org": "present"
+    },
+    {
+      "id": "ORD-01-tranche-permission-set",
+      "kind": "component",
+      "requirements": ["ORD-01", "DM-17"],
+      "component": "permission-set:Tranche_Management",
+      "expect_repo": "present",
+      "expect_org": "present"
+    },
+    {
+      "id": "NFR-06-apex-coverage",
+      "kind": "coverage",
+      "requirements": ["NFR-06"],
+      "minimum_percent": 75,
+      "notes": [
+        "Measure the aggregate only. Do not run or write tests during org-status-check."
+      ]
+    }
+  ]
+}

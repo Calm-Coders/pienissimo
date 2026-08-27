@@ -111,7 +111,7 @@ Install generalized project skills, not the customer-specific Pienissimo version
 - `drill-meeting` must preserve raw transcripts, extract facts into atomic notes under `notes/`, then regenerate the bilingual recaps, open-item trackers and development recaps from those notes, reconcile proposals, and report decisions, actions, risks, reversals, and TBDs.
 - `drill-me` must load `MAP.md`, select candidates by grepping note frontmatter rather than reading the large documents, rank the current blockers, ask the user concrete adaptive questions, then write decisions back into the notes and regenerate both languages without renumbering historical tracker rows.
 - `requirements-check` sweeps email, chat and Drive for anything new since the last watermark, drills any new meeting through `drill-meeting`, and writes a trace note that becomes the next run's watermark. It is read-only on every external source.
-- `org-status-check` compares the live Salesforce org against the recorded requirements, reports the gap both ways, aligns the notes, then regenerates `STATUS.md` and pushes the Notion mirror. It is read-only against the org.
+- `org-status-check` compares expected requirements, committed source and the live Salesforce org on separate compliance, drift and operability axes. Reporting is the default; reconciling notes and publishing `STATUS.md` or Notion are explicit modes. It is read-only against the org and supports opt-in Slack DM delivery to a verified recipient.
 
 Keep `.agents/skills/` and `.claude/skills/` semantically identical. Do not add Pienissimo names, known people, archive gaps, deadlines, prior decisions, or meeting history to another project.
 

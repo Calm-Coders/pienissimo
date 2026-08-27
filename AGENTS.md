@@ -82,7 +82,7 @@ records**. Never edit either.
 
 | Path pattern                          | Size      | Cost     | Instead                              |
 | ------------------------------------- | --------- | -------- | ------------------------------------ |
-| `meetings/*-transcript.it.md`         | ~830 KB   | ~207k    | `rg` for the line, read a range      |
+| `meetings/*-transcript.it.md`         | ~918 KB   | ~229k    | `rg` for the line, read a range      |
 | `meetings/open-items.it.md`           | ~224 KB   | ~56k     | Read the note, or the EN twin's rows |
 | `meetings/open-items.md`              | ~200 KB   | ~50k     | Read `notes/items/`                  |
 | `REQUISITI.it.md` / `REQUIREMENTS.md` | ~86/80 KB | ~21k/20k | `rg` for the requirement id          |

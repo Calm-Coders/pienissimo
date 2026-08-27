@@ -47,6 +47,9 @@ $RECYCLE.BIN/
 !.codebase-index/config.json
 graphify-out/
 
+# Generated org-status evidence
+.org-status-cache/
+
 # Obsidian: the vault config is committed so every machine reads the graph the
 # same way; only per-machine UI state is ignored.
 .obsidian/workspace.json

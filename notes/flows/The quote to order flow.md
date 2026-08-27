@@ -5,6 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 updated: 2026-08-26
+requirement: SAL-17
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 

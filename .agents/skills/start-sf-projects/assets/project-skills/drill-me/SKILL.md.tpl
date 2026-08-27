@@ -73,7 +73,7 @@ Answers land in the **notes**, which are the source of truth:
    note's frontmatter and replace the ambiguous passage in the body with the
    settled fact, citing who decided it and when. An ambiguity is only closed
    when the marker is gone — leaving it means the next sweep raises it again.
-   If the user could not settle one, keep `uncertain:` and record *why* it is
+   If the user could not settle one, keep `uncertain:` and record _why_ it is
    still open and who can answer it, so the next session does not re-ask blind.
 1. Update the relevant note(s) in `notes/`: change `status:`, append the
    decision with its date, bump `updated:`. Create new notes for new facts,
@@ -88,8 +88,8 @@ Answers land in the **notes**, which are the source of truth:
 4. Update [MAP.md](../../../MAP.md) if the live chain or the blocker changed.
 5. **A drill-me session almost always moves an item's `status:`**, which is
    what the Notion tracker mirrors. Refresh [STATUS.md](../../../STATUS.md) and
-   its mirror - step 6 of `org-status-check`, same rules. Reconcile the tracker
-   rows on `Ref`, never on the title. A missing connector is not a failure:
+   its mirror using the reconciliation and publishing references under
+   `org-status-check`. Reconcile tracker rows on `Ref`, never on the title. A missing connector is not a failure:
    regenerate the file and report the mirror as stale. Nothing from it ever
    reaches `site/`.
 6. Append an entry to [JOURNAL.md](../../../JOURNAL.md) in the

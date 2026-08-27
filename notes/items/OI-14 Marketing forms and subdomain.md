@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-08-24
+updated: 2026-08-26
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -54,3 +54,32 @@ being entered or the screenshots arriving. The forms date is **two days away**.
 That is an absence of evidence, not evidence of absence — but this is the item
 that has been blocked longest on the client side, and the marketing build cannot
 start without the screenshots.
+
+## 🔴 2026-08-26 - both dates have now passed, and nothing confirms either
+
+An external sweep on 2026-08-26 (Gmail, Slack channel + canvas + DMs, Drive,
+Fathom, Calendar) found **no evidence of any of it**:
+
+| Owed                                     | Owner            | Due        | State on 26 Aug             |
+| ---------------------------------------- | ---------------- | ---------- | --------------------------- |
+| DNS records entered in the control panel | Matteo Distaso   | Fri 21 Aug | 🔴 **five days overdue**    |
+| Forms finished                           | Matteo Distaso   | Wed 26 Aug | 🔴 **due today, no signal** |
+| Current funnel screenshots               | Rebecca Marmo    | Thu 20 Aug | 🔴 **six days overdue**     |
+| Newsletter and header graphics           | Rebecca / Matteo | Thu 20 Aug | 🔴 **six days overdue**     |
+
+No mail, no Slack message, no Drive file and no meeting records any of the four
+being delivered. The 19 August session is still the last time any of them was
+discussed.
+
+**This is now the clearest broken commitment in the project.** The item has been
+open since **23 June — nine weeks** — it is the oldest live blocker, it acquired
+named dates and a named owner for the first time on 19 August, and **every one of
+those dates has now passed with no delivery and no follow-up on any channel this
+sweep can see**.
+
+⚠ Still an absence of evidence rather than evidence of absence: Matteo Distaso
+and Rebecca Marmo correspond with
+[Fabrizio Mastracci](../people/Fabrizio%20Mastracci%20-%20marketing%20automation%20ROMI.md)
+on marketing channels this sweep does not reach. **Ask him before escalating** —
+but ask, because [the 60-day event funnel](OI-81%20Event%20communication%20funnel.md)
+is being designed on top of it and the first ticketed event is **7 September**.

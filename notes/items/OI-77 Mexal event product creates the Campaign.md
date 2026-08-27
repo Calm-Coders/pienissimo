@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-08-26
 depends_on: [OI-76]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-02
@@ -64,3 +64,34 @@ one-active-child rule are all unbuilt.
 
 **Reword this item's scope when the tracker is next regenerated** — the number
 stays, but "creates the Campaign" is no longer accurate.
+
+## 🔴 2026-08-26 - the mechanism is replaced again
+
+This item's 24 August section records the campaign-attachment mechanism as
+**a parent campaign code in a lookup on Product, plus a one-active-child rule**.
+The [26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+**abandoned both halves**.
+
+- The **event (Campagna Padre)** comes from Mexal's `categoria statistica`, not
+  from a hand-populated Salesforce lookup.
+- The **edition (Campagna Figlio)** comes from
+  [a date-range mapping table](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md),
+  resolved per **order line** against the order date.
+- The **one-active-child rule is dead.** Elena Spini said so in the session: it
+  cannot survive a bundle spanning two events. Aurel Mrruku accepted the
+  replacement — _"non mettono il flag campagna attiva… mettono solo le date."_
+
+What survives from this item unchanged: campaigns are **created manually**, about
+ten a year, and `Product2.Genera_Biglietto__c` remains the flag that decides an
+order line generates a ticket — now fed from Mexal's `natura`
+([OI-47](OI-47%20Product%20flags%20at%20import.md)).
+
+**New requirement from the same session:** when administration manually reassigns
+a no-show's ticket to the next edition as a goodwill ticket, **the Asset must be
+linked to the next Campagna Figlio by hand**, or the no-show reminder automation
+never fires again for that ticket. Aurel Mrruku raised it, Elena Spini agreed
+before leaving. There is no control that catches an unlinked reassignment.
+
+The item's title is now wrong twice over — a Mexal event product creates neither
+the campaign nor, any longer, the link to it. **Reword when the tracker is next
+regenerated; the number stays.**
