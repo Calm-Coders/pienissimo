@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-25
+updated: 2026-08-27
 depends_on: [OI-94, OI-95]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -122,3 +122,43 @@ because the middleware endpoint does not yet exist.
 
 Next: **Follow-up Integrazione Anticipay, Tuesday 1 September 2026, 10:00 CEST**,
 cancellable if Andrea Parmeggiani's payload example lands first.
+
+
+## 2026-08-27 - the check is placed on the outbound leg, by two engineers
+
+⚠ **Needs confirming by the people who agreed the rule.**
+
+In the
+[27 August WooCommerce test session](../meetings/2026-08-27%20Test%20Integrazione%20WooCommerce.md)
+Aurel Mrruku first argued that an order arriving from WooCommerce needs its own
+P.IVA check, then corrected himself inside the same exchange:
+
+> _"Quando l'ordine viene inviato poi a Mexal si fa il check là. È facile...
+> non c'è bisogno che ci facciamo la testa in questo punto del flusso."_
+
+So **no check fires when a WooCommerce order lands in Salesforce**; the
+validation stays on the **Salesforce → Mexal** leg. Sabatino Rinaldi confirmed
+the client side does no check either — _"questo check sulla partita IVA non
+viene fatto in questa fase"_ — and named the exposure before agreeing:
+_"altrimenti poi in fatturazione Fabrizio ha lo stesso problema"_.
+
+**Why this is flagged rather than simply recorded.** The rule in this note is a
+**client decision of 6 August**: proposed by Elisa Migliano, approved by Elena
+Spini, with the stated purpose that _"the data pushed to Mexal is already
+clean"_, firing **at the first order of an Account**. Placing the check on the
+send-to-Mexal leg serves that purpose for orders that reach Mexal. But the two
+formulations are not identical, and:
+
+- **Neither Elisa Migliano nor Elena Spini was in the room** — the session had
+  two participants and no minute but Gemini's.
+- "First order of an Account" is an **Account-scoped, once-only** rule with a
+  `consolidato` flag; "when the order is sent to Mexal" is **per-order**. Which
+  one governs a WooCommerce order for an account already consolidated is
+  unstated.
+- A WooCommerce order that never reaches Mexal would never be checked at all.
+
+Take it to the **2 September** session or the weekly internal, and have Elisa
+Migliano restate it. Nothing here changes
+[OI-94](OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)
+or [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) — the
+middleware contract is untouched; only the firing point is in question.

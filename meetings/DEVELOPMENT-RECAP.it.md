@@ -1276,3 +1276,68 @@ sia scritto su un disegno concluso.
 Le decisioni dovute dal §16 — #46, #53 e la contraddizione del #59 su
 «Da ricontattare» — non sono cambiate con questa sessione. Il #46 è ora
 decidibile; le altre due no.
+---
+
+## 21. Aggiornamento 27/08/2026 — l'integrazione WooCommerce è costruita, lato cliente
+
+Fonte: due sessioni con il cliente nello stesso giorno, entrambe con appunti Gemini, **trascrizione completa** e registrazione — [Integrazione WooCommerce](results/2026-08-27-integrazione-woocommerce.it.md) (10:00–10:48 CEST, 48m20s, conduce Elena Spini, sei presenti) e [Test Integrazione WooCommerce](results/2026-08-27-test-integrazione-woocommerce.it.md) (15:59–16:16 CEST, 17m13s, **due persone**). Individuate dallo sweep notturno `requirements-check` del 27/08/2026.
+
+### 21.1 🟢 La direzione dell'integrazione è decisa, e in modo più preciso di "webhook"
+
+**È WooCommerce a scrivere su Salesforce.** I webhook standard di WooCommerce sono stati valutati a schermo e **scartati** — un solo argomento per webhook, nessuna selezione multipla, nessun controllo sul body; invierebbero ogni ordine in ogni stato e non potrebbero portare la struttura del cliente. Il meccanismo concordato è un **plugin WooCommerce personalizzato con action hook PHP sul cambio di stato dell'ordine**, che compone un unico JSON.
+
+`INT-14` passa da **aperto ad accordato**. Il disegno preesistente aveva la forma opposta: la piattaforma di Sabatino Rinaldi che **interroga** WooCommerce con un cron, cosa che Aurel Mrruku ha identificato come asincrona e orientata nel verso sbagliato per Salesforce. Contratto completo: [l'integrazione ordini WooCommerce](../notes/flows/The%20WooCommerce%20order%20integration.md).
+
+### 21.2 🟢 Il lato cliente è costruito e dimostrato funzionante
+
+Sabatino Rinaldi ha scritto il plugin **fra le due sessioni** e l'ha guidato in diretta sullo shop di produzione: **versione 1.3, sempre attivo, HTTP 200 sul filo**, con un pulsante di reinvio manuale sull'ordine. Trigger verificato in diretta: stato ordine `in lavorazione` **oppure** `completato`, **con qualsiasi metodo di pagamento** — bonifico, carta, PayPal.
+
+Payload osservato: order key, totali, sorgente di tracciamento · cliente con nome, ragione sociale e partita IVA · righe con il **codice prodotto `SC`**, nome, quantità, subtotale, totale. La copia autorevole è un file di testo inviato per mail alle 14:20Z che **nessuno strumento collegato è in grado di aprire**.
+
+### 21.3 🔴 `ORD-12` viene corretto
+
+Il registro e il diagramma di disegno dicevano che un ordine WooCommerce è **invisibile su Salesforce finché non è COMPLETATO**. Il plugin consegnato scatta **anche su in lavorazione**, verificato in diretta. Vince l'evidenza più recente: la regola è **IN LAVORAZIONE oppure COMPLETATO**, con entrambe le date citate nel registro. La parte sui bonifici resta valida — l'amministrazione cambia ancora lo stato a mano alla ricezione.
+
+Conseguenza: **ogni riga che arriva da WooCommerce è già pagata**, e il payload non porta stato a livello di riga.
+
+### 21.4 🔴 Si accorciano sia il mu-plugin sia l'anatomia del link
+
+I carrelli sono costruiti con **Funnel Kit**, cosa che ROMI non sapeva. L'URL del funnel contiene già il prodotto, quindi il link di checkout generato da Salesforce porta **solo l'ID opportunità** — niente `add-to-cart`, niente `quantity`. Il pulsante generatore del link non ha quindi bisogno di **selezione prodotto o quantità**, il che toglie lavoro dalla build list di `INT-13`. E il componente lato cliente è il **plugin di Sabatino Rinaldi, di proprietà Pienissimo**, non il mu-plugin specificato da ROMI.
+
+⚠ I tre punti di specifica ancora aperti — ID in chiaro o token firmato, nome del parametro URL, formato dell'ID — vengono ora **decisi dall'implementazione** anziché concordati. `INT-16` raccomanda ancora un token firmato; l'URL della demo sembrava portare l'ID in chiaro.
+
+### 21.5 🔴 La credenziale attesa ha invertito direzione
+
+`INT-11` registra dal 14 luglio le **CK/CS WooCommerce attese da Sabatino Rinaldi**, ripromesse nell'invito di questa sessione — _"comprensiva dello scambio di credenziali"_ — e mai nominate. Poiché è WooCommerce a scrivere, la credenziale bloccante è **di ROMI: un endpoint Salesforce e un token di header**, cosa a cui Aurel Mrruku si è impegnato e che blocca i test di integrazione fissati per la **settimana del 31 agosto** ([OI-102](../notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+
+Se Salesforce continui a rileggere gli ordini via API REST di WooCommerce — e quindi se le CK/CS servano ancora — **non è stato deciso**. Non riportarle né come attese né come chiuse.
+
+### 21.6 🔴 Una regola IVA si è spostata in una stanza da due persone
+
+**Nessun check P.IVA scatta su un ordine WooCommerce in ingresso**; la validazione resta sulla tratta Salesforce → Mexal. Aurel Mrruku si è corretto in questo senso a metà scambio e Sabatino Rinaldi ha concordato.
+
+⚠ [OI-73](../notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) è una **decisione cliente del 6 agosto** — proposta da Elisa Migliano, approvata da Elena Spini — secondo cui il check scatta **al primo ordine di un Account**. Quella è per Account e una tantum; questa è per ordine, e un ordine WooCommerce che non arrivasse mai a Mexal non verrebbe mai verificato. **Né Elisa Migliano né Elena Spini erano presenti.** Farla riconfermare.
+
+### 21.7 🔴 Le vendite da palco sono il fatturato, e non sono testate
+
+Fabrizio Paganelli, spontaneamente in chiusura della sessione di design: WooCommerce è usato *pesantemente* per le **vendite da palco** — cliente in sala, QR code, **€8.900–9.000 e oltre** contro i ~€97 di un libro o di uno stream — e una vendita da palco **innesca meccanismi a valle, tra cui l'invio del contratto**. Ha chiesto entrambe le casistiche nei test. La sessione pomeridiana ha portato **un solo prodotto da €50 sul percorso felice**; le vendite da palco sono state rimandate al giro collegato a Salesforce. [OI-101](../notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md).
+
+### 21.8 🔴 Due cose senza proprietario
+
+- **I set di campi WooCommerce e Mexal si scontreranno.** Andrea Di Cicco l'ha sollevato all'inizio — _"onde evitare di creare 12.000 campi"_ — e nessuno l'ha ripreso. Non compare nei next step di nessuna delle due sessioni. [OI-103](../notes/items/OI-103%20WooCommerce%20and%20Mexal%20field%20overlap.md).
+- **Non esiste un ambiente di test WooCommerce.** Si prova sullo shop di produzione; durante i test **ordini di clienti reali sono finiti su un endpoint di terzi usa-e-getta** prima che Sabatino Rinaldi disattivasse il plugin. Stessa forma della serie 10 di Mexal. [Il rischio](../notes/risks/Risk%20-%20real%20WooCommerce%20orders%20reached%20a%20third-party%20test%20server.md).
+
+### 21.9 🔴 Fuori dalle riunioni: la conversione dei Lead è rotta in sandbox
+
+Non viene da nessuna delle due sessioni. Una mail di errore Salesforce delle **15:08:13Z** segnala `LeadConversionQueueable` in errore nella **partial sandbox** Pienissimo: _"No such column 'Servizio_Interesse__c' on entity 'Lead'"_ alla riga 22. **La copia della classe nel repository non seleziona quel campo**, e i metadati del campo **sono** in `force-app/`. Quindi l'org esegue una versione diversa della classe, e alla sandbox manca un campo che il repository ha. **Lì la conversione dei Lead non si completa.** [Il rischio](../notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md).
+
+### 21.10 Stato della build WooCommerce
+
+| Lato | Stato |
+| ---- | ----- |
+| **Pienissimo — plugin, trigger, payload, reinvio** | 🟢 **costruito e dimostrato** |
+| **ROMI — endpoint, token** | 🔴 non creati |
+| **ROMI — pulsante generatore link, template email, tipologia ordine, match `SC`, creazione cliente** | 🔴 non esiste nulla |
+| Configurazione org | 🔴 nessun Flow, nessuna named credential, nessuna riga di configurazione integrazione (verifica org 26/08) |
+
+Il lato cliente è reale e in attesa di ROMI, a undici giorni lavorativi dalla fine dello sviluppo di Fase 1 del **10 settembre**.
