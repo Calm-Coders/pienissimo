@@ -13,5 +13,5 @@
 )</errorConditionFormula>
     <errorDisplayField>Status</errorDisplayField>
     <errorMessage
-  >Seleziona Motivazione Uscita e Dettaglio Motivazione Uscita prima di impostare il Lead come Non qualificato.</errorMessage>
+  >Select Exit Reason and Exit Reason Detail before setting the Lead to Non qualificato.</errorMessage>
 </ValidationRule>
