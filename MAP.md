@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-27 (nightly requirements-check — the WooCommerce sessions) · Source of record: [notes/](notes/)
+Last updated: 2026-08-28 (the WooCommerce payload attachment was opened) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -83,7 +83,7 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   the 280 UAT products provisional, eleven days before Fase 1 development ends.
   🔴 **[OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)
   was the question this meeting existed to answer and was never asked** — the
-  word *scadenziario* is not in the transcript. It now has no forum.
+  word _scadenziario_ is not in the transcript. It now has no forum.
   Also: a **bundle twin needs its own article code**, not just a flag
   ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)); **only listino 1
   is used**; **invoicing stays Mexal-driven for ~6 months**; and
@@ -126,6 +126,24 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   validation stays on the Salesforce → Mexal leg
   ([OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)).
   Restate it with Elisa Migliano.
+
+- 🟢 **2026-08-28 — the WooCommerce payload was finally read.** Aurel Mrruku
+  downloaded Sabatino Rinaldi's 27 Aug attachment, which the record had been
+  carrying as unreadable. Preserved as `Payload woo-salesforce.json`; decoded in
+  [the payload contract](notes/The%20WooCommerce%20payload%20contract.md).
+  ⚠ **It is one example order** — authoritative on the payload's structure and on
+  nothing else, so nothing here rests on which fields it happened to fill in.
+  🟢 **Two of OI-49's five open points close** — the parameter is
+  `sf_opportunity_id`, the id is the **15-character** form. 🔴 **A third is
+  answered against the register**: the id travels **in clear** and the envelope has
+  no signature field at all, so the header token ROMI owes is the **entire**
+  authentication, while `INT-16` still recommends a signed token.
+  🔴 **The envelope also has no idempotency key**, beside a plugin with a manual
+  re-send button and a trigger that fires on two states
+  ([OI-104](notes/items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md)).
+  Still to ask Sabatino Rinaldi: the full `event` value set, whether `sku` carries
+  the article code on the real catalogue, how a bundle line arrives and how a
+  taxable order looks.
 
 - 🔴 **2026-08-27 — Lead conversion is failing in the Pienissimo partial
   sandbox.** Not from a meeting: a Salesforce error mail at 15:08Z reports

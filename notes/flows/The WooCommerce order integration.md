@@ -5,8 +5,8 @@ status: in-progress
 owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
-updated: 2026-08-27
-depends_on: [OI-49, OI-102]
+updated: 2026-08-28
+depends_on: [OI-49, OI-102, OI-104]
 requirement: INT-14
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
 ---
@@ -19,7 +19,7 @@ sessions of **27 August 2026**:
 and
 [the 16:00 test session](../meetings/2026-08-27%20Test%20Integrazione%20WooCommerce.md).
 
-The **checkout-link** half of the story — how the opportunity id gets *into* the
+The **checkout-link** half of the story — how the opportunity id gets _into_ the
 cart — is [OI-49](../items/OI-49%20WooCommerce%20checkout-link%20flow.md). This
 note is the return leg.
 
@@ -32,11 +32,11 @@ vostro, inbound lato sales force"_.
 This closes `INT-14`, open since the requirements went out, and it closes it
 more specifically than the standing recommendation of "webhook":
 
-| Option | Outcome |
-| ------ | ------- |
-| Salesforce scheduled pull | ❌ rejected — Salesforce has no order to poll for |
-| Stock WooCommerce webhook | ❌ **evaluated live 27/08 and rejected** — one topic per webhook, no multi-select, no control of the body; would push every order in every state and cannot carry the customer structure |
-| **Custom plugin, PHP action hook on order status transition** | ✅ **agreed and built** |
+| Option                                                        | Outcome                                                                                                                                                                                  |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Salesforce scheduled pull                                     | ❌ rejected — Salesforce has no order to poll for                                                                                                                                        |
+| Stock WooCommerce webhook                                     | ❌ **evaluated live 27/08 and rejected** — one topic per webhook, no multi-select, no control of the body; would push every order in every state and cannot carry the customer structure |
+| **Custom plugin, PHP action hook on order status transition** | ✅ **agreed and built**                                                                                                                                                                  |
 
 ## The trigger
 
@@ -78,23 +78,40 @@ the URL anatomy recorded in
 
 ## The payload
 
-One JSON body carrying three sub-structures — **order**, **customer**, **order
-lines**. Aurel Mrruku maps them to Salesforce wrappers.
+🟢 **The payload file was downloaded and decoded on 2026-08-28.** The full field
+list and the parsing hazards are in
+[the WooCommerce payload contract](../The%20WooCommerce%20payload%20contract.md);
+the artifact is preserved in the repository root as `Payload woo-salesforce.json`,
+verified identical to the copy Sabatino Rinaldi mailed to Aurel Mrruku on
+**2026-08-27 at 14:20:18Z** (subject _"Integrazione woo commerce - salesforce"_,
+cc Andrea Di Cicco and Elena Spini).
 
-Observed on screen 27/08 (an observation of the demo, not a schema):
+⚠ **It is one example order.** It is authoritative on the **structure** of the
+body — the keys, their nesting and their types — and on nothing else. Which
+fields a production order actually populates is not settled by it.
 
-- **Order** — WooCommerce order key, status/event, totals, traffic/tracking
-  source.
-- **Customer** — nome, ragione sociale, partita IVA. Carried **twice**, once
-  WooCommerce-native and once in the Funnel Kit shape; kept as-is by agreement,
-  ROMI reads the WooCommerce-native copy.
-- **Line** — **`SC` product code**, product name, quantity, subtotal, total.
+One JSON object with **14 top-level keys**. The three sub-structures observed on
+screen on 27 August are all there, and the shape is wider than the demo suggested:
 
-The authoritative copy is the text file Sabatino Rinaldi mailed to Aurel Mrruku
-at **2026-08-27 14:20Z** (subject _"Integrazione woo commerce - salesforce"_, cc
-Andrea Di Cicco and Elena Spini, attachment `Payload woo-salesforce`).
-⚠ **No connected tool can read a Gmail attachment**, so the field list above is
-what the record holds until someone downloads it.
+- **`sf_opportunity_id` sits at the top level** of the body, and again inside
+  `meta_data` as `_sf_opportunity_id`. It is the **15-character** Salesforce id.
+- **Order** — `order` (id, number, order key, status, currency, dates),
+  `totals`, `payment`, plus an `event` name identifying the trigger.
+- **Customer** — `customer`, `billing`, `shipping`, `fiscal` (company, venue,
+  VAT, tax code, SDI, PEC) and `profile`. ROMI reads these structured blocks; the
+  `meta_data` array carries the same information again as raw WordPress form rows
+  and should be ignored, because it is un-normalised and moves whenever the
+  checkout form is edited.
+- **Line** — `item_id`, `product_id`, `variation_id`, `sku`, `name`, `quantity`
+  and the money fields. `sku` is the natural place for the article code the
+  product match needs.
+- Also in the contract: `funnel`, `tracking`, `shipping_lines`, `coupons`,
+  `tax_lines`, `fee_lines`, `refunds`.
+
+🔴 **The envelope carries no idempotency key, no signature and no send
+timestamp** — next to a plugin that has a manual re-send button and a trigger
+that fires on two states
+([OI-104](../items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md)).
 
 ## The Salesforce side — stated, not built
 
@@ -104,11 +121,18 @@ what the record holds until someone downloads it.
   [the article code namespace](../objects/The%20article%20code%20namespace.md), and
   therefore exposed to
   [OI-98](../items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md).
+  The payload's `sku` on the order line is where it would arrive; confirm with
+  Sabatino Rinaldi that the real catalogue populates it.
 - **Create the customer** when the payload's customer is not found. Scenario 1
   of the three the client stated.
 - **No P.IVA check on arrival.** Validation stays on the Salesforce → Mexal leg
   — see [OI-73](../items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
   for why that needs confirming with Elisa Migliano and Elena Spini.
+- **Idempotent on the WooCommerce order key**, because the plugin can re-send and
+  the trigger fires on two states —
+  [OI-104](../items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md).
+  Not stated in either session; it follows from the envelope having no dedupe
+  field of its own.
 
 **Nothing of this exists in the org.** As of the 2026-08-26 org check there is
 no Flow, no named credential and no `Integration_Configuration__c` row for
@@ -125,11 +149,19 @@ products —
   it decides whether the WooCommerce credentials are still needed at all.**
 - **Two WooCommerce instances.** `INT-11` records two; both sessions dealt with
   one shop. Never revisited.
-- **Whether the opportunity id travels signed** (`INT-16`). The delivered plugin
-  appears to pass it in clear — the demo URL carried a literal opportunity
-  value — but this was not stated aloud, so treat it as **uncertain** and decide
-  it explicitly.
+- **Whether the opportunity id travels signed** (`INT-16`). 🔴 **No longer
+  uncertain: it does not.** The decoded payload carries the 15-character
+  opportunity id in clear, with no signature, nonce or timestamp anywhere in the
+  body. `INT-16` still recommends a signed token, so the register and the
+  implementation now disagree. The **header token is the whole authentication** —
+  decide and record whether that is accepted for phase 1
+  ([OI-104](../items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md)).
 - **Field overlap with Mexal** —
   [OI-103](../items/OI-103%20WooCommerce%20and%20Mexal%20field%20overlap.md).
 - **Stage sales are untested** —
   [OI-101](../items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md).
+- **What Salesforce does with a refund.** `refunds` and `totals.total_refunded`
+  are in the contract; no behaviour has ever been specified, and a refund
+  plausibly has to reverse an asset — which is
+  [OI-92](../items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md),
+  the item with no forum.

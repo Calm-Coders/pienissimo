@@ -123,7 +123,6 @@ because the middleware endpoint does not yet exist.
 Next: **Follow-up Integrazione Anticipay, Tuesday 1 September 2026, 10:00 CEST**,
 cancellable if Andrea Parmeggiani's payload example lands first.
 
-
 ## 2026-08-27 - the check is placed on the outbound leg, by two engineers
 
 ⚠ **Needs confirming by the people who agreed the rule.**

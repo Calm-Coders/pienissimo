@@ -26,11 +26,11 @@ Two inbound integrations carry **overlapping descriptions of the same customer
 and the same order**, and they are being specified separately, weeks apart, by
 different people:
 
-| | WooCommerce | Mexal |
-| - | ----------- | ----- |
+|          | WooCommerce                                                                                    | Mexal                                                                                                                                       |
+| -------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | Customer | nome, ragione sociale, partita IVA — and a **second, duplicated copy** in the Funnel Kit shape | full anagrafica clienti, plus `tipo nazionalità` fiscal residence ([OI-97](OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)) |
-| Order | order key, totals, traffic source | serie, numero, righe, scadenziario |
-| Line | `SC` product code, name, qty, subtotal, total | article code, natura, categoria statistica, gruppo merceologico |
+| Order    | order key, totals, traffic source                                                              | serie, numero, righe, scadenziario                                                                                                          |
+| Line     | `SC` product code, name, qty, subtotal, total                                                  | article code, natura, categoria statistica, gruppo merceologico                                                                             |
 
 Left alone, each side lands its own field on the same Salesforce object. The
 concrete risk Andrea Di Cicco named is field sprawl on Account, Order and

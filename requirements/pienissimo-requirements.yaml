@@ -1254,14 +1254,17 @@ requirements:
       pri: M,
       status: agreed,
       source: [DGM-2, MTG-2026-08-27-woocommerce-test],
-      text: "A WooCommerce order reaches Salesforce when its WooCommerce status becomes
+      text:
+        "A WooCommerce order reaches Salesforce when its WooCommerce status becomes
         IN LAVORAZIONE (processing) OR COMPLETATO (completed), for any payment method —
         bank transfer, card or PayPal. Verified live 2026-08-27 against the delivered
         plugin. This SUPERSEDES the DGM-2 rule of 'not visible until COMPLETATO', which
         was never confirmed. The bank-transfer half stands: administration still flips
         the order manually on receipt of the transfer. Consequence: every line arriving
-        from WooCommerce is already paid, and the payload carries no line-level status",
-      tracked_by: [OI-49]
+        from WooCommerce is already paid, and the payload carries no line-level status.
+        2026-08-28: confirmed from the payload itself — the sample is the processing
+        transition and the order is already paid at that point",
+      tracked_by: [OI-49, REF-woo-payload]
     }
   - {
       id: ORD-13,
@@ -1365,14 +1368,19 @@ requirements:
       area: integrations,
       pri: M,
       status: open,
-      text: "WooCommerce over API, two instances; CK/CS credentials owed. 2026-08-27
+      text:
+        "WooCommerce over API, two instances; CK/CS credentials owed. 2026-08-27
         reverses the direction of the outstanding credential: with the integration
         pushing from WooCommerce, ROMI owes Pienissimo a Salesforce endpoint and a
         header token. Whether Salesforce still reads orders back over the WooCommerce
         REST API — and therefore whether CK/CS are needed at all — was not decided.
-        The two instances were not revisited",
+        The two instances were not revisited. 2026-08-28: Sabatino's half is
+        delivered — the payload attachment of 27/08 was downloaded and decoded, so
+        the inbound contract is known and only ROMI's endpoint and token remain
+        outstanding. The example carries no top-level shop identifier, so how the
+        endpoint would tell the two instances apart is still unanswered",
       owner: "Aurel (endpoint + token) / Sabatino (CK/CS, if still needed)",
-      tracked_by: [OI-102]
+      tracked_by: [OI-102, OI-104, REF-woo-payload]
     }
   - {
       id: INT-12,
@@ -1388,7 +1396,8 @@ requirements:
       area: integrations,
       pri: M,
       status: agreed,
-      text: "Build list: product and opportunity WooCommerce id fields, link generator
+      text:
+        "Build list: product and opportunity WooCommerce id fields, link generator
         button, mu-plugin, REST credentials, email template. 2026-08-27 supersedes the
         mu-plugin: the client-side component is a WooCommerce plugin written and owned
         by Sabatino Rinaldi (v1.3), not a ROMI-specified snippet. The link generator no
@@ -1410,7 +1419,7 @@ requirements:
         hook on the order status transition, composing one JSON body carrying order,
         customer and order lines",
       recommendation: webhook,
-      tracked_by: [OI-49, flow-woocommerce]
+      tracked_by: [OI-49, OI-104, flow-woocommerce, REF-woo-payload]
     }
   - {
       id: INT-15,
@@ -1424,8 +1433,17 @@ requirements:
       area: integrations,
       pri: S,
       status: open,
-      text: "Id in clear vs signed token in the checkout link",
-      recommendation: signed_token
+      source: REF-woo-payload,
+      text:
+        "Id in clear vs signed token in the checkout link. 2026-08-28: answered
+        in practice and against this recommendation — the delivered plugin sends the
+        15-character Opportunity id in clear, at the top level of the payload and
+        again in meta_data, with no signature, nonce or send timestamp anywhere in
+        the body. The header token ROMI owes is therefore the entire authentication
+        of the integration. Kept open because no one has accepted that trade aloud;
+        it needs a decision, not a re-statement of the recommendation",
+      recommendation: signed_token,
+      tracked_by: [OI-104, REF-woo-payload]
     }
   - {
       id: INT-17,
@@ -1835,13 +1853,15 @@ open_points:
     - { ref: MKT-01, input: Form inventory review, owner: Pienissimo marketing }
     - {
         ref: INT-11,
-        input: "WooCommerce REST credentials (CK/CS) - still owed, but 2026-08-27 left it
+        input:
+          "WooCommerce REST credentials (CK/CS) - still owed, but 2026-08-27 left it
           undecided whether Salesforce calls WooCommerce at all",
         owner: Sabatino
       }
     - {
         ref: INT-11,
-        input: "Salesforce inbound endpoint + header token for the WooCommerce plugin -
+        input:
+          "Salesforce inbound endpoint + header token for the WooCommerce plugin -
           ROMI owes Pienissimo, blocks the 31/08 integration tests",
         owner: Aurel,
         outstanding_since: 2026-08-27

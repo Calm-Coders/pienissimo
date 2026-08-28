@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-07-31
-updated: 2026-08-27
+updated: 2026-08-28
 requirement: [INT-12, INT-13, INT-14, ORD-12]
 source: meetings/open-items.md row 49
 ---
@@ -90,7 +90,6 @@ Credentials are due at the **27 August** WooCommerce session. This check finds
 nothing that would be blocked by anything other than those credentials and the
 build time.
 
-
 ## 2026-08-27 - both sessions ran, and the client side is built
 
 Two sessions the same day:
@@ -111,17 +110,20 @@ cases, minus the first leg.
 
 ### The five points, re-scored
 
-| Point to agree              | State on 2026-08-27                                                          |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| Pull vs webhook             | ✅ closed — **neither**: a custom plugin on a PHP order-status action hook    |
-| Price source of truth       | ✅ closed — coupons excluded from phase 1                                     |
-| ID in clear vs signed token | 🔴 **still open, and drifting** — the delivered plugin appears to pass it in clear; nobody said so aloud. `INT-16` still recommends a signed token |
-| URL parameter name          | 🔴 open in the record — **fixed in practice** by the delivered plugin; the value is in the payload file nobody has opened |
-| ID format                   | 🔴 same                                                                       |
+| Point to agree              | State on 2026-08-27                                                                                                                                                                                |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pull vs webhook             | ✅ closed — **neither**: a custom plugin on a PHP order-status action hook                                                                                                                         |
+| Price source of truth       | ✅ closed — coupons excluded from phase 1                                                                                                                                                          |
+| ID in clear vs signed token | 🔴 **answered by the payload, 28/08: in clear.** No signature, nonce or timestamp anywhere in the body. `INT-16` still recommends a signed token, so register and implementation now disagree      |
+| URL parameter name          | 🟢 **answered: `sf_opportunity_id`**, at the top level of the payload and again as `_sf_opportunity_id` in `meta_data`. The record's `sf_opp_id` was only the snippet default and is not what runs |
+| ID format                   | 🟢 **answered: the 15-character Salesforce id**, case-sensitive                                                                                                                                    |
 
-⚠ The last three are now being decided **by the implementation** rather than by
-the two sides agreeing. That is the failure mode this table was written to
-prevent.
+⚠ The last three were decided **by the implementation** rather than by the two
+sides agreeing. That is the failure mode this table was written to prevent, and
+it happened. The payload file settles what the values _are_
+([the payload contract](../The%20WooCommerce%20payload%20contract.md), decoded
+28/08); it does not settle whether anyone **accepts** them — in particular the
+clear-text id, which contradicts `INT-16`.
 
 ### What changed in the design
 
@@ -149,3 +151,16 @@ The one thing that moved is that the client side is real and waiting.
 Also open: [OI-101](OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md)
 (stage sales untested) and
 [OI-103](OI-103%20WooCommerce%20and%20Mexal%20field%20overlap.md) (field merge).
+
+## 2026-08-28 - the payload file was opened
+
+Aurel Mrruku downloaded Sabatino Rinaldi's 27/08 attachment and it was decoded
+into [the WooCommerce payload contract](../The%20WooCommerce%20payload%20contract.md);
+the artifact is preserved at `Payload woo-salesforce.json` in the repository
+root. ⚠ It is **one example order**, so it is authoritative on the payload's
+_structure_ and not on what any particular field will contain in production.
+
+On structure it closed two of the five points above and answered the third
+against the register's recommendation. It also showed that the envelope carries
+**no idempotency key and nothing signed** —
+[OI-104](OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md).

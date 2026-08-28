@@ -10,6 +10,53 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-28 — claude — the WooCommerce payload attachment was opened
+
+- **Did:** Aurel Mrruku supplied the file Sabatino Rinaldi mailed on **27/08 at
+  14:20:18Z** (subject _"Integrazione woo commerce - salesforce"_, cc Andrea Di
+  Cicco and Elena Spini, body _"Ecco il payload:"_). Provenance confirmed against
+  Gmail. Not a meeting and not a sweep — a single artifact, decoded and folded in.
+- **State:** preserved at `Payload woo-salesforce.json` in the repository root,
+  verified identical to the mailed original. Decoded in
+  [the WooCommerce payload contract](notes/The%20WooCommerce%20payload%20contract.md).
+  **Two notes created** (the contract, OI-104), **three updated** (the flow,
+  OI-49, OI-102), both trackers (rows 49 and 102 touched, **104** added), the
+  register (`INT-11`, `INT-16`) and both prose mirrors, `MAP.md`, `INDEX.md`.
+- ⚠ **Read the contract note's "How to read it" section before using any of
+  this.** Aurel Mrruku's own instruction, given during the session: the file is
+  **one example order** and is authoritative on the payload's **structure only**.
+  Do not raise findings about which of its fields were empty or duplicated — the
+  sample is a €50 test product through a test funnel. An earlier pass of this
+  session did exactly that and produced three items off the sample values; they
+  were withdrawn before anything left the repository. **Ask Sabatino Rinaldi
+  instead** — the open questions are listed at the foot of the contract note.
+- **What it closed:** 🟢 two of the five points OI-49 has carried since 31 July —
+  the parameter is **`sf_opportunity_id`** (top level, and again in `meta_data`;
+  the recorded `sf_opp_id` was only the snippet default), and the id is the
+  **15-character** Salesforce form, case-sensitive. Both are structural, so the
+  example does settle them.
+- **What it cost:** 🔴 **the id travels in clear** — the envelope has no
+  signature, nonce or send-timestamp field — so the header token ROMI owes is the
+  _entire_ authentication of this integration, while `INT-16` still recommends a
+  signed token. 🔴 **No idempotency key either**, beside a plugin that has a
+  manual re-send button and a trigger that fires on two states. Both are one item,
+  [OI-104](notes/items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md).
+- **Worth reading before anyone writes the endpoint:** `meta_data[].value` is
+  string, object _and_ array across rows, so a typed Apex wrapper throws;
+  `tracking.first_click` is not ISO 8601 and `Datetime.valueOf` fails on it; every
+  money value is a string with inconsistent decimals; `order.id` is a number while
+  `order.number` is a string. Full list in the contract note.
+- **Next:** the endpoint under
+  [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+  now has a contract to build against and the client half is delivered. Before the
+  **week of 31 August** tests it needs a dedupe rule (OI-104), a decision on the
+  clear-text id (`INT-16`), and Sabatino Rinaldi's answers on `event` values and
+  `sku`. Fase 1 development ends **10 September**.
+- **Not touched:** Apex tests — still Aurel's separate task, unprompted work
+  forbidden.
+
+---
+
 ## 2026-08-27 — claude — nightly requirements-check: the WooCommerce integration is settled, and half of it is already built
 
 - **Did:** swept Gmail, Slack, Drive and Fathom against the **2026-08-26T21:40Z**
