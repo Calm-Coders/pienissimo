@@ -4,6 +4,11 @@
   >Access to Pienissimo Lead qualification and follow-up fields.</description>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Account.Lead_Email__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Lead.Data_Ricontatto__c</field>
         <readable>true</readable>
     </fieldPermissions>

@@ -41,10 +41,18 @@ public with sharing class LeadConversionQueueable implements Queueable {
       return;
     }
 
-    Map<String, Contact> contactsByEmail = getContactsByEmail(leadsToConvert);
+    Set<String> emails = getNormalizedEmails(leadsToConvert);
+    Map<String, Contact> contactsByEmail = getContactsByEmail(emails);
+    Map<String, Account> accountsByLeadEmail = getAccountsByLeadEmail(emails);
     List<Database.LeadConvert> conversionRequests = new List<Database.LeadConvert>();
+    Map<Id, String> leadEmailById = new Map<Id, String>();
 
     for (Lead leadRecord : leadsToConvert) {
+      String normalizedEmail = normalizeEmail(leadRecord.Email);
+      if (normalizedEmail != null) {
+        leadEmailById.put(leadRecord.Id, normalizedEmail);
+      }
+
       Database.LeadConvert conversionRequest = new Database.LeadConvert();
       conversionRequest.setLeadId(leadRecord.Id);
       conversionRequest.setConvertedStatus(CONVERTED_STATUS);
@@ -57,20 +65,25 @@ public with sharing class LeadConversionQueueable implements Queueable {
         conversionRequest.setOwnerId(conversionOwnerId);
       }
 
-      Contact matchingContact = contactsByEmail.get(
-        normalizeEmail(leadRecord.Email)
+      applyExistingEmailMatch(
+        conversionRequest,
+        contactsByEmail.get(normalizedEmail),
+        accountsByLeadEmail.get(normalizedEmail)
       );
-      applyExistingContactMatch(conversionRequest, matchingContact);
 
       conversionRequests.add(conversionRequest);
     }
 
-    convertLeads(conversionRequests);
+    List<Database.LeadConvertResult> conversionResults = convertLeads(
+      conversionRequests
+    );
+    updateConvertedAccountLeadEmails(conversionResults, leadEmailById);
   }
 
-  private static void convertLeads(
+  private static List<Database.LeadConvertResult> convertLeads(
     List<Database.LeadConvert> conversionRequests
   ) {
+    List<Database.LeadConvertResult> conversionResults = new List<Database.LeadConvertResult>();
     for (
       Integer startIndex = 0;
       startIndex < conversionRequests.size();
@@ -85,8 +98,11 @@ public with sharing class LeadConversionQueueable implements Queueable {
         conversionBatch.add(conversionRequests[index]);
       }
 
-      logConversionFailures(Database.convertLead(conversionBatch, false));
+      conversionResults.addAll(Database.convertLead(conversionBatch, false));
     }
+
+    logConversionFailures(conversionResults);
+    return conversionResults;
   }
 
   private static void logConversionFailures(
@@ -111,19 +127,23 @@ public with sharing class LeadConversionQueueable implements Queueable {
     }
   }
 
-  private static void applyExistingContactMatch(
+  private static void applyExistingEmailMatch(
     Database.LeadConvert conversionRequest,
-    Contact matchingContact
+    Contact matchingContact,
+    Account matchingAccount
   ) {
-    if (matchingContact == null || matchingContact.AccountId == null) {
+    if (matchingContact != null && matchingContact.AccountId != null) {
+      conversionRequest.setAccountId(matchingContact.AccountId);
+      conversionRequest.setContactId(matchingContact.Id);
       return;
     }
 
-    conversionRequest.setAccountId(matchingContact.AccountId);
-    conversionRequest.setContactId(matchingContact.Id);
+    if (matchingAccount != null) {
+      conversionRequest.setAccountId(matchingAccount.Id);
+    }
   }
 
-  private static Map<String, Contact> getContactsByEmail(List<Lead> leads) {
+  private static Set<String> getNormalizedEmails(List<Lead> leads) {
     Set<String> emails = new Set<String>();
     for (Lead leadRecord : leads) {
       String email = normalizeEmail(leadRecord.Email);
@@ -132,6 +152,10 @@ public with sharing class LeadConversionQueueable implements Queueable {
       }
     }
 
+    return emails;
+  }
+
+  private static Map<String, Contact> getContactsByEmail(Set<String> emails) {
     Map<String, Contact> contactsByEmail = new Map<String, Contact>();
     if (emails.isEmpty()) {
       return contactsByEmail;
@@ -159,6 +183,74 @@ public with sharing class LeadConversionQueueable implements Queueable {
     }
 
     return contactsByEmail;
+  }
+
+  private static Map<String, Account> getAccountsByLeadEmail(
+    Set<String> emails
+  ) {
+    Map<String, Account> accountsByLeadEmail = new Map<String, Account>();
+    if (emails.isEmpty()) {
+      return accountsByLeadEmail;
+    }
+
+    for (Account accountRecord : [
+      SELECT Id, Lead_Email__c
+      FROM Account
+      WHERE Lead_Email__c IN :emails
+      ORDER BY CreatedDate, Id
+    ]) {
+      String email = normalizeEmail(accountRecord.Lead_Email__c);
+      if (email != null && !accountsByLeadEmail.containsKey(email)) {
+        accountsByLeadEmail.put(email, accountRecord);
+      }
+    }
+
+    return accountsByLeadEmail;
+  }
+
+  private static void updateConvertedAccountLeadEmails(
+    List<Database.LeadConvertResult> conversionResults,
+    Map<Id, String> leadEmailById
+  ) {
+    Set<Id> accountIds = new Set<Id>();
+    Map<Id, String> leadEmailByAccountId = new Map<Id, String>();
+    for (Database.LeadConvertResult result : conversionResults) {
+      if (!result.isSuccess() || result.getAccountId() == null) {
+        continue;
+      }
+
+      String email = leadEmailById.get(result.getLeadId());
+      if (email == null) {
+        continue;
+      }
+
+      accountIds.add(result.getAccountId());
+      leadEmailByAccountId.put(result.getAccountId(), email);
+    }
+
+    if (accountIds.isEmpty()) {
+      return;
+    }
+
+    List<Account> accountsToUpdate = new List<Account>();
+    for (Account accountRecord : [
+      SELECT Id, Lead_Email__c
+      FROM Account
+      WHERE Id IN :accountIds
+    ]) {
+      if (String.isBlank(accountRecord.Lead_Email__c)) {
+        accountsToUpdate.add(
+          new Account(
+            Id = accountRecord.Id,
+            Lead_Email__c = leadEmailByAccountId.get(accountRecord.Id)
+          )
+        );
+      }
+    }
+
+    if (!accountsToUpdate.isEmpty()) {
+      update accountsToUpdate;
+    }
   }
 
   private static String normalizeEmail(String email) {
