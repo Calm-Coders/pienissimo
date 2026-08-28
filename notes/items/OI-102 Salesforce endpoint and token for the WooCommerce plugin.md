@@ -6,8 +6,8 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-08-27
-blocks: [OI-49, OI-101]
+updated: 2026-08-28
+blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
 ---
@@ -27,11 +27,11 @@ Aurel Mrruku committed to it in the
 
 ## What has to be delivered
 
-| Item | State |
-| ---- | ----- |
-| The Salesforce **endpoint URL** the plugin posts to | 🔴 not created |
-| An **authentication token**, sent in the HTTP header | 🔴 not issued |
-| A reply on Sabatino Rinaldi's payload mail carrying both | 🔴 not sent |
+| Item                                                     | State          |
+| -------------------------------------------------------- | -------------- |
+| The Salesforce **endpoint URL** the plugin posts to      | 🔴 not created |
+| An **authentication token**, sent in the HTTP header     | 🔴 not issued  |
+| A reply on Sabatino Rinaldi's payload mail carrying both | 🔴 not sent    |
 
 Sabatino Rinaldi's side is ready and waiting: the plugin currently points at a
 throwaway test server, he needs only to change the target and add the header,
@@ -56,6 +56,30 @@ stating plainly:
   needed if Salesforce still reads orders back over the WooCommerce REST API, as
   the original spec had it. Nobody said whether that leg survives. Until someone
   decides, do not report the CK/CS as owed **or** as closed.
+
+## 2026-08-28 - the endpoint now has a contract to build against
+
+🟢 **The payload landed and was decoded.** Aurel Mrruku downloaded the 27/08
+attachment; the field-by-field decode is
+[the WooCommerce payload contract](../The%20WooCommerce%20payload%20contract.md)
+and the artifact is preserved at `Payload woo-salesforce.json`. The half of this
+item that was waiting on Sabatino Rinaldi is **done** — what remains is entirely
+ROMI's.
+
+That removes the excuse for the endpoint not existing, and it adds two structural
+requirements to what the endpoint must do on day one:
+
+- **Be idempotent on the WooCommerce order key** — the envelope has no dedupe
+  field and the plugin has a re-send button
+  ([OI-104](OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md)).
+- **Deserialize `meta_data` untyped**, and parse the tracking date defensively —
+  both throw otherwise. The hazard list is in the contract note.
+
+🔴 **The header token is now the entire authentication of this integration.**
+Nothing in the body is signed, so the token ROMI issues is the only thing between
+the endpoint and an arbitrary posted order. `INT-16` recommends the opposite and
+has not been closed. Weigh that when choosing what the token is and how it is
+scoped.
 
 ## Blocking
 

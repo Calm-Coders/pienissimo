@@ -1,0 +1,254 @@
+{
+  "event": "order_processing",
+  "sf_opportunity_id": "006Pd00000TEST1",
+  "order": {
+    "id": 9677,
+    "number": "9677",
+    "order_key": "wc_order_VzkilOlQAX1B3",
+    "status": "processing",
+    "currency": "EUR",
+    "prices_include_tax": false,
+    "created_via": "checkout",
+    "date_created": "2026-08-27T16:06:29+00:00",
+    "date_modified": "2026-08-27T16:07:15+00:00",
+    "date_paid": "2026-08-27T16:07:15+00:00",
+    "date_completed": null
+  },
+  "totals": {
+    "subtotal": "50.00",
+    "discount_total": "0.00",
+    "discount_tax": "0.00",
+    "shipping_total": "0.00",
+    "shipping_tax": "0.00",
+    "cart_tax": "0.00",
+    "total_tax": "0.00",
+    "total": "50.00",
+    "total_refunded": "0.00"
+  },
+  "payment": {
+    "method": "bacs",
+    "method_title": "Bonifico bancario",
+    "transaction_id": ""
+  },
+  "customer": {
+    "wc_customer_id": 0,
+    "is_guest": true,
+    "ip_address": "194.183.87.177",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+    "customer_note": ""
+  },
+  "billing": {
+    "first_name": "Saba",
+    "last_name": "Rinaldi",
+    "company": "",
+    "email": "sabatinopienissimo@gmail.com",
+    "phone": "3291351771",
+    "address_1": "Strada Rovereta n. 6",
+    "address_2": "",
+    "city": "Falciano",
+    "state": "Salerno",
+    "postcode": "47891",
+    "country": "SM"
+  },
+  "shipping": {
+    "first_name": "Saba",
+    "last_name": "Rinaldi",
+    "company": "",
+    "phone": "3291351771",
+    "address_1": "Strada Rovereta n. 6",
+    "address_2": "",
+    "city": "Falciano",
+    "state": "Salerno",
+    "postcode": "47891",
+    "country": "SM"
+  },
+  "fiscal": {
+    "company_name": "Pienissimo SRL",
+    "venue_name": "Marketing Pienissimo",
+    "vat_number": "123456716373",
+    "tax_code": "",
+    "sdi_code": "",
+    "pec_email": ""
+  },
+  "profile": {
+    "business_type": "ristorante-specialita-pesce",
+    "marketing_consent": "",
+    "terms_accepted": ""
+  },
+  "funnel": {
+    "source_url": "https://shop.pienissimo.com/checkouts/test-salesforce/",
+    "checkout_page_id": "9661",
+    "funnel_id": "96"
+  },
+  "tracking": {
+    "utm_source": "",
+    "utm_medium": "",
+    "utm_campaign": "",
+    "utm_term": "",
+    "utm_content": "",
+    "referrer": "",
+    "first_landing_url": "/checkout/",
+    "first_click": "2026-8-27 14:53:14",
+    "device": "desktop",
+    "browser": "Chrome"
+  },
+  "line_items": [
+    {
+      "item_id": 12835,
+      "product_id": 9660,
+      "variation_id": 0,
+      "sku": "",
+      "name": "TEST SALESFORCE",
+      "quantity": 1,
+      "subtotal": "50",
+      "subtotal_tax": "0",
+      "total": "50",
+      "total_tax": "0",
+      "tax_class": "",
+      "meta": []
+    }
+  ],
+  "shipping_lines": [
+    {
+      "method_id": "free_shipping",
+      "method_title": "Spedizione gratuita",
+      "total": "0",
+      "total_tax": "0"
+    }
+  ],
+  "coupons": [],
+  "tax_lines": [],
+  "fee_lines": [],
+  "refunds": [],
+  "meta_data": [
+    {
+      "key": "is_vat_exempt",
+      "value": "no"
+    },
+    {
+      "key": "_sf_opportunity_id",
+      "value": "006Pd00000TEST1"
+    },
+    {
+      "key": "_wfob_report_data",
+      "value": []
+    },
+    {
+      "key": "_wfacp_report_data",
+      "value": {
+        "wfacp_total": "50.00",
+        "funnel_id": "96"
+      }
+    },
+    {
+      "key": "wpml_language",
+      "value": "it"
+    },
+    {
+      "key": "_wffn_tracking_data",
+      "value": {
+        "utm_source": "",
+        "utm_medium": "",
+        "utm_campaign": "",
+        "utm_term": "",
+        "utm_content": "",
+        "first_landing_url": "/checkout/",
+        "browser": "Chrome",
+        "first_click": "2026-8-27 14:53:14",
+        "device": "desktop",
+        "click_id": "",
+        "referrer": "",
+        "journey": "",
+        "source_id": 0
+      }
+    },
+    {
+      "key": "marketing_status",
+      "value": "1"
+    },
+    {
+      "key": "_woofunnel_cid",
+      "value": "629"
+    },
+    {
+      "key": "bwfan_cart_id",
+      "value": "11295"
+    },
+    {
+      "key": "_wfacp_post_id",
+      "value": "9661"
+    },
+    {
+      "key": "_wfacp_source",
+      "value": "https://shop.pienissimo.com/checkouts/test-salesforce/"
+    },
+    {
+      "key": "_wfacp_timezone",
+      "value": "Europe/Rome"
+    },
+    {
+      "key": "nome_locale",
+      "value": "Marketing Pienissimo"
+    },
+    {
+      "key": "ragione_sociale",
+      "value": "Pienissimo SRL"
+    },
+    {
+      "key": "partita_iva",
+      "value": "123456716373"
+    },
+    {
+      "key": "codice_fiscale",
+      "value": ""
+    },
+    {
+      "key": "pec",
+      "value": ""
+    },
+    {
+      "key": "termini-e-condizioni",
+      "value": ""
+    },
+    {
+      "key": "tipologia_di_attivita",
+      "value": "ristorante-specialita-pesce"
+    },
+    {
+      "key": "marketing",
+      "value": ""
+    },
+    {
+      "key": "_bwfan_order_total_base",
+      "value": "50.00"
+    },
+    {
+      "key": "_wpml_word_count",
+      "value": "5"
+    },
+    {
+      "key": "_ga_tracked",
+      "value": "1"
+    },
+    {
+      "key": "_wffn_need_normalize",
+      "value": "yes"
+    },
+    {
+      "key": "_wfacp_report_needs_normalization",
+      "value": "yes"
+    },
+    {
+      "key": "_wfob_report_needs_normalization",
+      "value": "yes"
+    },
+    {
+      "key": "_billing_wc_custom_field",
+      "value": ""
+    },
+    {
+      "key": "_shipping_wc_custom_field",
+      "value": ""
+    }
+  ]
+}

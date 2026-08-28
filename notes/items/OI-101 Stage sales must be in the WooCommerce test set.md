@@ -20,10 +20,10 @@ source: meetings/2026-08-27-integrazione-woocommerce-transcript.it.md
 WooCommerce is used for two very different things, and the integration has so
 far only been reasoned about as the small one:
 
-| Case | Typical value | How the order starts |
-| ---- | ------------- | -------------------- |
-| Book / video course / stream | ~€97 | customer buys online unaided |
-| **Vendita da palco** | **€8,900–9,000 and up** | customer **in the room** scans a QR code and buys on the spot |
+| Case                         | Typical value           | How the order starts                                          |
+| ---------------------------- | ----------------------- | ------------------------------------------------------------- |
+| Book / video course / stream | ~€97                    | customer buys online unaided                                  |
+| **Vendita da palco**         | **€8,900–9,000 and up** | customer **in the room** scans a QR code and buys on the spot |
 
 > _"se ci blocchiamo su una vendita di un libro o di uno stream che costa €97,
 > pazienza. Ma se ci blocchiamo su una vendita da palco che magari sono in gioco
