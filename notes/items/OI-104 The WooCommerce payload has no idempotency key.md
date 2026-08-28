@@ -1,7 +1,7 @@
 ---
 id: OI-104
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
@@ -76,3 +76,52 @@ and close `INT-16` either way.
 
 ⚠ Do not record the token itself here or anywhere in the repository — see
 [docs/publishing.md](../../docs/publishing.md).
+
+## 2026-08-28 - the dedupe half is already built; the security half is not
+
+The `org-status-check` run of **2026-08-28, 14:45–14:56Z** inspected the
+endpoint. **The statement at the top of this note is still exactly true — the
+payload carries no key — but the conclusion drawn from it was too pessimistic:
+the implementation derives one.**
+
+🟢 **The fix prescribed above exists in the org.**
+`Order.WooCommerce_Order_Key__c` is **unique** and an **external id**, checked
+before insert, returning **409** on a duplicate. That is, line for line, the
+"make it unique and update rather than insert" recommendation — built before
+this note proposed it.
+
+🟢 **And it is exercised, not merely present.** The run found **5 inbound
+integration log rows** (3×200, 1×409, 1×500) and **2 Orders** carrying a
+WooCommerce key. The 409 is a real duplicate that the endpoint actually
+rejected.
+
+🔴 **One residual defect, and it is genuine.** The check is
+**SOQL-then-insert**, so two concurrent deliveries of the same order both read
+"absent" and then race onto the unique index; the loser surfaces as a **500**,
+not a clean 409. The single 500 observed has that shape — but **causation is not
+established**, and the run says so. Two states firing plus a manual re-send
+button is precisely the traffic that produces concurrency, so this is worth
+closing properly rather than waiting to see.
+
+🔴 **The security half is untouched and is now verified, not inferred.**
+`INT-16`: the endpoint is `@RestResource`, `global without sharing`, and an
+exhaustive search of the class found **no token and no signature check
+anywhere** — only a `Content-Type` response header. So the reading above is
+confirmed from the code, not just from the envelope: **authentication rests
+entirely on the Salesforce session**, and the header token owed under
+[OI-102](OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+is the whole of it.
+
+**What is left of this item**, therefore, is narrower than when it was raised
+and is all ROMI-side:
+
+1. Close the SOQL-then-insert race (upsert on the external id, or catch the
+   duplicate-value exception and convert it to the 409 the caller expects).
+2. Decide what a re-send may overwrite once the order has moved on in
+   Salesforce — **still open, still the real design question**, and untouched by
+   any of the above.
+3. Settle `INT-16` in one direction or the other, with OI-102.
+
+**Basis: the org, inspected 2026-08-28.** This sweep did not open the org
+itself; it is recording a run that did. The tracker row and the register entry
+both still describe the pre-28-August reading.

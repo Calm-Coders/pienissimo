@@ -1277,6 +1277,8 @@ Fabrizio Paganelli, unprompted at the close of the design session: WooCommerce i
 
 Not from either session. A Salesforce error mail at **15:08:13Z** reports `LeadConversionQueueable` failing in the Pienissimo **partial sandbox**: _"No such column 'Servizio_Interesse__c' on entity 'Lead'"_ at line 22. **The repository's copy of that class does not select that field**, and the field's metadata **is** in `force-app/`. So the org runs a different version of the class, and the sandbox is missing a field the repository has. **Lead conversion does not complete there.** [The risk](../notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md).
 
+✅ **Resolved on 2026-08-28, and the reading above was wrong.** The paragraph stands as the record of what was believed on 27 August, written **without org access**. An org check on **28 August (14:45–14:56Z)** found `Lead.Servizio_Interesse__c` **present** in the org and **neither** the deployed class **nor** the repository's copy selecting it — the only org-vs-repo difference in that class is Prettier line-wrapping. The failure at 15:08:13Z was real, but it recorded a **transient state on 27 August**, not a standing divergence; nothing in the record shows what changed between the two observations, so it is not attributed. 🟢 It no longer blocks testing [OI-100](../notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md).
+
 ### 21.10 Status of the WooCommerce build
 
 | Side | State |

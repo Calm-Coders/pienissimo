@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-07-10
-updated: 2026-08-25
+updated: 2026-08-28
 depends_on: [OI-37, OI-38, OI-83, OI-94]
 source: meetings/open-items.md status updates 2026-08-03 and 2026-08-06
 ---
@@ -125,3 +125,41 @@ the software is owned by Pienissimo Software Srl. It is the clearest statement o
 the relationship in the record.
 
 **This needs Elena Spini before the middleware is built against, not after.**
+
+## 2026-08-28 - a fifth status post carries the same paragraph, unchanged
+
+Elena Spini posted the weekly status to `#tproj-pienissimo` at **12:13:32Z**,
+breaking a **seven-week silence** in that channel (the previous post was
+07 August). Her **Red flags** block is **copied verbatim** from the 24 July,
+31 July and 07 August posts — the same sentences about GLS, Teachable, the Zoho
+flow for Pienissimo Pro orders, the separate legal entity, the agreement with
+Andrea G., and _"ne avrebbero discusso anche con Daniela e ci riaggiorneranno
+settimana prossima."_
+
+**One sentence is new, and it is prefixed to that paragraph:**
+
+> _"Non ho ancora avuto aggiornamenti su questo vedo di smarcare settimana
+> prossima"_
+
+So the position on 28 August is: **Pienissimo has still not come back.**
+_"Ci riaggiorneranno settimana prossima"_ was first written on **24 July** and
+has now been carried forward, word for word, through **five** weekly status
+posts without the promised update arriving.
+
+What this does and does not add:
+
+- It does **not** move the substance. No new argument, no new evidence, no
+  decision. Nothing here changes the reading above.
+- It **does** date the silence precisely, from ROMI's own PM, in writing:
+  **thirty-five days** since the escalation to Daniela Morgese was promised, and
+  Elena Spini has committed to _smarcare_ it in the week of **31 August**.
+
+That matters now for a reason it did not in July: since 25 August a **Fase 1**
+integration depends on Pienissimo Software Srl building and hosting the
+Anticipay middleware (the section above). The commercial boundary is being
+crossed by the build while the boundary itself is still unagreed, and the
+person who has to close it has just said, in writing, that she has nothing.
+
+⚠ **The 28 August post is not a new source for the dispute's merits** — it is
+the same paragraph. Cite the 2026-08-06 session and the project plan for the
+substance; cite this post only for the fact that nothing has moved.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-08-28
 blocks: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-06
@@ -76,3 +76,27 @@ The [19 August MKT session](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md
 The master diagram's `A 30-60 giorni dall'evento` and `A XX giorni dall'evento`
 boxes match this exactly — the `XX` is genuinely undecided, not a placeholder
 someone forgot.
+
+## 2026-08-28 - the two flows are confirmed, and the build has started
+
+Elena Spini's weekly status in `#tproj-pienissimo` (**12:13:32Z**) records the
+approval: _"sono stati confermati i 2 flussi lato MKT (ci sta lavorando
+Fabrizio)"_ — the two-flow design above is **confirmed**, and
+[Fabrizio Mastracci](../people/Fabrizio%20Mastracci%20-%20marketing%20automation%20ROMI.md)
+is building it.
+
+🔴 **`30 vs 60` is still not settled by this.** The status confirms *two flows*;
+it says nothing about the number, and no source since 19 August records Elisa
+Migliano or Rebecca Marmo confirming it with Matteo Distaso. The first flow's
+trigger point remains **undecided while it is being built** — that is the thing
+to close first, and it is one question to one person.
+
+⚠ The style constraint above (plain text, no header, no images, no buttons,
+written as if from Giuliano personally) has **never been restated to whoever is
+building it**. It is easy to lose in a Marketing Cloud build and expensive to
+retrofit. Put it in front of Fabrizio Mastracci.
+
+The funnel screenshots owed under
+[OI-14](OI-14%20Marketing%20forms%20and%20subdomain.md) are still unconfirmed on
+every source this sweep reaches, and the 100+ form review is confirmed by the
+same post as **still outstanding**.

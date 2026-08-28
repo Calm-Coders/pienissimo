@@ -10,6 +10,48 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-28 — claude — nightly requirements-check: a quiet night externally, five false claims corrected internally
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-08-27T22:00Z**
+  (from [the 27 Aug trace](notes/traces/Source%20trace%202026-08-27.md), by
+  `updated:`). The earlier 28 Aug entry below was the payload ingest — a single
+  artifact, not a sweep — so it moved no watermark.
+- **State:** **no client sent anything and no meeting ran.** Gmail returned zero
+  Pienissimo items after the watermark across three query shapes; Drive zero,
+  fully paged; Fathom zero; the canvas unchanged and still four sessions behind.
+  Both findings were ROMI-side, both on Slack.
+- **Finding 1 — the record was materially out of date.** An `org-status-check`
+  ran on 28/08 14:45–14:56Z, verified five `MAP.md` claims **false**, and
+  **published nothing** ("no note or requirement mutated"). Its results were
+  sitting in a group DM. Folded in: 2 Flows exist, Asset has 8 custom fields, the
+  WooCommerce endpoint is deployed and taking live traffic, `OrderItem.Tranche__c`
+  is granted to `Tranche_Management`, and the Lead-conversion break is
+  **resolved** — the 27/08 note that inferred it was written without org access
+  and was wrong. OI-104's dedupe turns out to be **already built**
+  (`WooCommerce_Order_Key__c`, unique + external id, 409, exercised); what remains
+  is a SOQL-then-insert race and `INT-16`, now verified from the code as having
+  **no auth at all**.
+- **Finding 2 — the phase 2 red flag is five weeks old and unchanged.** Elena
+  Spini's status post broke a seven-week silence in `#tproj-pienissimo`, but its
+  red-flag paragraph is **verbatim** from 24/07, 31/07 and 07/08. The one new
+  sentence says she still has no update. Also new and genuinely positive: the
+  **2 MKT flows are confirmed and Fabrizio Mastracci is building them** — while
+  the 100+ form review is confirmed **still owed after nine weeks** and the funnel
+  screenshots he needs have never been confirmed delivered.
+- **Next:** OI-102's token is the whole of the WooCommerce authentication and the
+  tests are the week of 31 Aug — that is the one thing with a deadline. Settle
+  OI-81's `30 vs 60` before the flow is finished. `STATUS.md`, the Notion mirror
+  and the Flows page are still owed by `org-status-check` — **second trace
+  running**.
+- **Watch:** ⚠ this sweep **did not open the org**; every build-state assertion
+  written tonight is attributed to the 28/08 run and dated. ⚠ Do not cite Elena
+  Spini's 28/08 post for the *merits* of the phase 2 dispute — it adds no
+  argument, only a date for the silence. ⚠ "Fabrizio" in that post is **Mastracci
+  (ROMI)**, not Paganelli (Pienissimo).
+- **Cost:** 5 notes updated, 0 created; both trackers (rows 14, 81, 104), both
+  recaps, MAP, INDEX, trace. **No requirement changed**, so the register and both
+  prose documents are untouched.
+
 ## 2026-08-28 — claude — the WooCommerce payload attachment was opened
 
 - **Did:** Aurel Mrruku supplied the file Sabatino Rinaldi mailed on **27/08 at
