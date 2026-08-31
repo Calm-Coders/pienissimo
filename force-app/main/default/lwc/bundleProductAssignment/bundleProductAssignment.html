@@ -1,0 +1,181 @@
+<template>
+  <lightning-quick-action-panel header={panelHeader}>
+    <div class="content">
+      <template if:true={showInitialLoader}>
+        <div class="initial-loader">
+          <lightning-spinner
+            alternative-text="Loading"
+            size="medium"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:true={showMainView}>
+        <template if:true={hasLoaded}>
+          <template if:true={isLoading}>
+            <lightning-spinner
+              alternative-text="Loading"
+              size="small"
+            ></lightning-spinner>
+          </template>
+
+          <div class="reconciliation">
+            <div class="figures">
+            <div class="figure">
+              <span class="figure-label">Bundle selling price</span>
+              <lightning-formatted-number
+                value={fixedPrice}
+                format-style="currency"
+                  currency-code="EUR"
+                  class="figure-value"
+                ></lightning-formatted-number>
+              </div>
+              <div class="figure">
+                <span class="figure-label">Calculated Bundle Price</span>
+                <lightning-formatted-number
+                  value={calculatedBundlePrice}
+                  format-style="currency"
+                  currency-code="EUR"
+                  class="figure-value"
+                ></lightning-formatted-number>
+              </div>
+              <div class="figure">
+                <span class="figure-label">Variance</span>
+                <lightning-formatted-number
+                  value={variance}
+                  format-style="currency"
+                  currency-code="EUR"
+                  class="figure-value"
+                ></lightning-formatted-number>
+              </div>
+            </div>
+            <div class={varianceClass}>{varianceMessage}</div>
+          </div>
+
+          <div class="section-header">
+            <h3 class="section-heading">Components</h3>
+            <lightning-button
+              label="Aggiungi"
+              onclick={handleAddComponent}
+            ></lightning-button>
+          </div>
+          <template if:true={hasRows}>
+            <lightning-datatable
+              data-id="components"
+              key-field="key"
+              data={rows}
+              columns={componentColumns}
+              hide-checkbox-column
+              oncellchange={handleCellChange}
+              onrowaction={handleRowAction}
+            ></lightning-datatable>
+          </template>
+          <template if:false={hasRows}>
+            <div class="empty-state">
+              No components yet.
+            </div>
+          </template>
+        </template>
+      </template>
+
+      <template if:true={showCreateView}>
+        <template if:true={isLoading}>
+          <lightning-spinner
+            alternative-text="Loading"
+            size="small"
+          ></lightning-spinner>
+        </template>
+
+        <div class="required-note">* = Required Information</div>
+
+        <div class="info-card">
+          <div class="info-card__title">Information</div>
+
+          <lightning-record-edit-form
+            object-api-name="BundleComponent__c"
+            onsubmit={handleCreateSubmit}
+            onsuccess={handleCreateSuccess}
+            onerror={handleCreateError}
+          >
+            <template if:true={createFormError}>
+              <div class="form-error">{createFormError}</div>
+            </template>
+
+            <lightning-input-field
+              field-name="Bundle__c"
+              value={recordId}
+              class="hidden-field"
+            ></lightning-input-field>
+
+            <div class="form-grid">
+              <div class="field-label">Bundle</div>
+              <div class="field-value bundle-pill">{bundleName}</div>
+
+              <div class="field-label required">Product</div>
+              <div class="field-value">
+                <lightning-input-field
+                  field-name="Product__c"
+                  variant="label-hidden"
+                  onchange={handleProductFieldChange}
+                ></lightning-input-field>
+                <template if:true={createProductError}>
+                  <div class="field-error">{createProductError}</div>
+                </template>
+              </div>
+
+              <div class="field-label required">Quantity</div>
+              <div class="field-value">
+                <lightning-input-field
+                  field-name="Quantity__c"
+                  value="1"
+                  variant="label-hidden"
+                ></lightning-input-field>
+              </div>
+
+              <div class="field-label required">Spread Price</div>
+              <div class="field-value">
+                <lightning-input-field
+                  field-name="Spread_Price__c"
+                  variant="label-hidden"
+                ></lightning-input-field>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <lightning-button
+                label="Back"
+                onclick={handleCloseCreateModal}
+              ></lightning-button>
+              <lightning-button
+                label="Save & New"
+                variant="neutral"
+                type="submit"
+                onclick={handleSaveAndNew}
+                class="slds-m-left_small"
+              ></lightning-button>
+              <lightning-button
+                type="submit"
+                variant="brand"
+                label="Save"
+                class="slds-m-left_small"
+              ></lightning-button>
+            </div>
+          </lightning-record-edit-form>
+        </div>
+      </template>
+    </div>
+
+    <div slot="footer" if:true={showFooter}>
+      <lightning-button
+        label="Cancel"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label="Save"
+        onclick={handleSave}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>

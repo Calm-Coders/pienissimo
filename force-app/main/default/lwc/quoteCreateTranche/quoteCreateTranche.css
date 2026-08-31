@@ -1,0 +1,256 @@
+.content {
+  min-height: 18rem;
+}
+
+.initial-loader {
+  min-height: 18rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  background: #f3f6f9;
+  margin-bottom: 1rem;
+}
+
+.summary-label {
+  color: #5c6973;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.summary-value {
+  font-weight: 700;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0 0.6rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+}
+
+.status.editable {
+  color: #2e844a;
+  background: #eaf5ee;
+}
+
+.status.locked {
+  color: #8c4b02;
+  background: #fff4df;
+}
+
+.message {
+  padding: 0.75rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  background: #fff;
+  color: #5c6973;
+}
+
+.message.warning {
+  border-color: #f3c65b;
+  background: #fff8e5;
+  color: #8c4b02;
+  margin-bottom: 1rem;
+}
+
+.message.error {
+  border-color: #ba0517;
+  background: #fef1f2;
+  color: #8e030f;
+  margin-bottom: 1rem;
+}
+
+.delete-page-actions {
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.count-row {
+  max-width: 14rem;
+}
+
+.edit-selector-header {
+  margin-top: 0.25rem;
+}
+
+.edit-tranche-list {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.edit-tranche-card {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.edit-tranche-card:hover:not(:disabled),
+.edit-tranche-card:focus {
+  border-color: #1b96ff;
+  box-shadow: 0 0 0 1px #1b96ff inset;
+  outline: none;
+}
+
+.edit-tranche-card.selected {
+  border-color: #1b96ff;
+  background: #eef4ff;
+}
+
+.edit-tranche-card:disabled {
+  cursor: not-allowed;
+}
+
+.edit-tranche-main {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.edit-tranche-title {
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.edit-tranche-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  color: #5c6973;
+  font-size: 0.75rem;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.pager-label {
+  min-width: 8rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.tranche-card {
+  padding: 0.75rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  background: #fff;
+}
+
+.tranche-row {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) minmax(0, 12rem);
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.sequence-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  min-height: 2rem;
+  border-radius: 0.25rem;
+  background: #eef4ff;
+  color: #1b4d89;
+  font-weight: 700;
+}
+
+.section-header {
+  margin: 1.25rem 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-header.assigned {
+  margin-top: 1.5rem;
+}
+
+.section-heading {
+  margin: 0;
+  font-weight: 700;
+}
+
+.quote-line-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.line-group + .line-group {
+  margin-top: 1rem;
+}
+
+.line-group-title {
+  margin-bottom: 0.5rem;
+  color: #5c6973;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.quote-line-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 4rem;
+  padding: 0.75rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  background: #f8fafc;
+}
+
+.quote-line-card.selected {
+  border-color: #1b96ff;
+  background: #eef4ff;
+}
+
+.line-main {
+  min-width: 0;
+}
+
+.line-title {
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.line-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.25rem;
+  color: #5c6973;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 40rem) {
+  .tranche-row {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+
+  .tranche-row lightning-input:last-child {
+    grid-column: 2;
+  }
+}

@@ -1,0 +1,150 @@
+.content {
+  min-height: 18rem;
+}
+
+.initial-loader {
+  min-height: 18rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-header {
+  margin: 1.25rem 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-heading {
+  margin: 0;
+  font-weight: 700;
+}
+
+.reconciliation {
+  padding: 0.75rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  background: #f3f6f9;
+}
+
+.figures {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+}
+
+.figure-label {
+  color: #5c6973;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.figure-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.variance {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.variance.reconciled {
+  color: #2e844a;
+}
+
+.variance.drifted {
+  color: #ba0517;
+  font-weight: 600;
+}
+
+.empty-state {
+  margin-top: 1rem;
+  color: #5c6973;
+}
+
+.required-note {
+  display: flex;
+  justify-content: flex-end;
+  color: #5c6973;
+  margin-bottom: 1rem;
+}
+
+.info-card {
+  border: 1px solid #d8dde6;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.info-card__title {
+  padding: 0.75rem 1rem;
+  background: #f3f2f2;
+  border-radius: 0.5rem 0.5rem 0 0;
+  font-size: 1.25rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 26rem);
+  row-gap: 1rem;
+  column-gap: 1.5rem;
+  padding: 1.5rem 1.5rem 0;
+  align-items: start;
+}
+
+.field-label {
+  padding-top: 0.6rem;
+  font-weight: 700;
+  color: #181818;
+}
+
+.field-label.required::before {
+  content: "*";
+  color: #ba0517;
+  margin-right: 0.2rem;
+}
+
+.field-value {
+  min-width: 0;
+}
+
+.field-error {
+  margin-top: 0.35rem;
+  color: #ba0517;
+  font-size: 0.875rem;
+}
+
+.form-error {
+  margin: 1rem 1.5rem 0;
+  color: #ba0517;
+  font-size: 0.875rem;
+}
+
+.bundle-pill {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.875rem;
+  border: 1px solid #c9c9c9;
+  border-radius: 0.5rem;
+  background: #f8f8f8;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  border-top: 1px solid #d8dde6;
+  margin-top: 1.5rem;
+}
+
+.hidden-field {
+  display: none;
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Ordinato</fullName>
+        <default>true</default>
+        <label>Ordinato</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Disponibile</fullName>
+        <default>false</default>
+        <label>Disponibile</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Assegnato</fullName>
+        <default>false</default>
+        <label>Assegnato</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Utilizzato</fullName>
+        <default>false</default>
+        <label>Utilizzato</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Non utilizzato</fullName>
+        <default>false</default>
+        <label>Non utilizzato</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Annullato</fullName>
+        <default>false</default>
+        <label>Annullato</label>
+    </standardValue>
+</StandardValueSet>
