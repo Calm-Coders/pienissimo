@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Fattura_Pagata__c</fullName>
-    <defaultValue>false</defaultValue>
-    <description>Set when the payment/invoice confirmation arrives from the accounting flow.</description>
-    <label>Fattura Pagata</label>
-    <trackTrending>false</trackTrending>
-    <type>Checkbox</type>
-</CustomField>
