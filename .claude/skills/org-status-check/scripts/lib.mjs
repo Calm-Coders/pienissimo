@@ -29,6 +29,16 @@ export const METADATA_TYPES = Object.freeze({
   CustomTab: "custom-tab"
 });
 
+// Detail objects inherit object-level access from their master and expose no
+// ObjectPermissions rows of their own, so field operability must be judged
+// against the master's grants.
+export const OBJECT_ACCESS_PARENT = Object.freeze({
+  OrderItem: "Order",
+  QuoteLineItem: "Quote",
+  OpportunityLineItem: "Opportunity",
+  ContractLineItem: "Contract"
+});
+
 export function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
 }
@@ -347,6 +357,36 @@ function sfExecutable() {
   return process.platform === "win32" ? "sf.cmd" : "sf";
 }
 
+// `sf` ships as `sf.cmd` on Windows, and Node refuses to spawn a .cmd without a
+// shell, so the arguments go through cmd.exe. cmd.exe does not receive an argv
+// array: it re-parses one command line and splits on whitespace. An unquoted
+// SOQL string is therefore torn into fragments and the CLI rejects it with
+// "Unexpected arguments" — which is how every field, FLS and coverage query in
+// this snapshot silently degraded to "unavailable". Quote every argument.
+export function quoteWindowsArg(value) {
+  const text = String(value);
+  if (text === "") return '""';
+  // CommandLineToArgvW rules: a double quote is escaped as \", and any run of
+  // backslashes immediately before one must itself be doubled. A trailing run
+  // is doubled too so it cannot escape the closing quote we add.
+  const escaped = text.replace(/(\\*)"/g, '$1$1\\"').replace(/(\\+)$/, "$1$1");
+  return `"${escaped}"`;
+}
+
+// cmd.exe expands %NAME% before the target program ever sees the command line,
+// and does so even inside double quotes. There is no command-line escape for
+// it, so refuse the argument rather than run a silently rewritten query.
+function assertWindowsSafe(args) {
+  const offender = args.find((arg) => String(arg).includes("%"));
+  if (offender === undefined) return;
+  throw new Error(
+    "Salesforce CLI argument contains '%', which cmd.exe would expand as an " +
+      "environment variable before the CLI sees it. Rewrite the query to " +
+      "avoid '%' (for a SOQL LIKE, pass the pattern through a bind or run the " +
+      "query from a file with `sf data query --file`)."
+  );
+}
+
 function sanitizeMessage(message) {
   return String(message || "unknown Salesforce CLI error")
     .replace(/https?:\/\/\S+/gi, "[url]")
@@ -358,14 +398,21 @@ export function runSfJson(
   args,
   { projectRoot, allowFailure = false, timeout = 180000 } = {}
 ) {
-  const result = spawnSync(sfExecutable(), [...args, "--json"], {
-    cwd: projectRoot,
-    encoding: "utf8",
-    windowsHide: true,
-    shell: process.platform === "win32",
-    timeout,
-    maxBuffer: 20 * 1024 * 1024
-  });
+  const onWindows = process.platform === "win32";
+  const fullArgs = [...args, "--json"];
+  if (onWindows) assertWindowsSafe(fullArgs);
+  const result = spawnSync(
+    sfExecutable(),
+    onWindows ? fullArgs.map(quoteWindowsArg) : fullArgs,
+    {
+      cwd: projectRoot,
+      encoding: "utf8",
+      windowsHide: true,
+      shell: onWindows,
+      timeout,
+      maxBuffer: 20 * 1024 * 1024
+    }
+  );
   let payload;
   try {
     payload = JSON.parse((result.stdout || "").replace(/^\uFEFF/, "").trim());
@@ -531,8 +578,16 @@ export function compareSnapshots(
     if (assertion.permission) {
       const grants = orgSnapshot.field_permissions?.[assertion.component] || [];
       const objectName = /^field:([^.]+)\./.exec(assertion.component)?.[1];
-      const objectGrants =
+      // A detail object carries no ObjectPermissions rows of its own: access is
+      // granted on its master. Resolve against the master, or a usable field on
+      // OrderItem/QuoteLineItem reads as permission-blocked.
+      const accessObject = OBJECT_ACCESS_PARENT[objectName] || objectName;
+      let objectGrants =
         orgSnapshot.object_permissions?.[`object:${objectName}`] || [];
+      if (objectGrants.length === 0 && accessObject !== objectName) {
+        objectGrants =
+          orgSnapshot.object_permissions?.[`object:${accessObject}`] || [];
+      }
       const unavailable = permissionEvidenceUnavailable(
         assertion.component,
         orgSnapshot
@@ -563,10 +618,28 @@ export function compareSnapshots(
       if (unavailable) {
         operability = "not-assessed";
         confidence = "inferred";
+      } else if (human.length > 0 && objectGrants.length === 0) {
+        // The field is granted to a real principal, but no object-access
+        // evidence exists either way — the master was never inventoried.
+        // Absence of evidence is not a denial. A field granted to nobody
+        // (human.length === 0) is still blocked and falls through below.
+        operability = "not-assessed";
+        confidence = "inferred";
+      } else if (usable) {
+        operability = "usable";
+      } else if (human.length === 0) {
+        // Nothing human grants the field at all. This is the real denial —
+        // the deployed-but-invisible field the 25 Aug run reported as missing.
+        operability = "permission-blocked";
+        if (orgPresent && compliance === "matches") compliance = "partial";
       } else {
-        operability = usable ? "usable" : "permission-blocked";
-        if (!usable && orgPresent && compliance === "matches")
-          compliance = "partial";
+        // A human principal grants the field, but no single principal grants
+        // both it and the object. Salesforce combines a user's one profile with
+        // their permission sets, so this is very often usable in practice —
+        // proving it needs PermissionSetAssignment. Failing to prove usability
+        // is not the same as proving a blockage, so do not claim one.
+        operability = "unproven";
+        if (orgPresent && compliance === "matches") compliance = "partial";
       }
     }
 
