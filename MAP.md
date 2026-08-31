@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-28 (the WooCommerce payload attachment was opened) · Source of record: [notes/](notes/)
+Last updated: 2026-08-28 (nightly requirements-check; an org check corrected five claims here) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -34,15 +34,16 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   fields the running user cannot see and this one is granted to **nobody**
   ([risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md),
   [method](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md)).
-  Propagation still cannot run. 🔴 **Still not one Flow** — nor workflow rule,
-  approval process, email template, notification or scheduled job
-  ([the flow](notes/flows/The%20quote%20to%20order%20flow.md)). 🔴 **The
+  ~~Propagation still cannot run.~~ ~~🔴 **Still not one Flow**~~ 🔴 **The
   integration scaffolding holds zero configuration rows**, so no outbound
   integration has an endpoint
   ([note](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)).
   🔴 **37 tickets still parked in states deleted on 6 August**
-  ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)); **Asset** still has
-  zero custom fields; coverage **0%**, 1069 uncovered lines.
+  ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)); ~~**Asset** still has
+  zero custom fields~~; coverage **0%**.
+  ⚠ **The struck-through claims above were true on 26 August and are false on
+  28 August** — see the 28 August org check below. The rest of this block still
+  holds.
 - 🔴 **2026-08-25 — the Anticipay integration changed counterparty.** The
   technical call ran and agreed that **Salesforce will not call Anticipay**: it
   calls a **middleware built and hosted by Pienissimo Software Srl**, which
@@ -114,8 +115,9 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   🔴 **The owed credential reversed direction — ROMI now owes Pienissimo the
   Salesforce endpoint and token**
   ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)),
-  and it blocks the integration tests set for the **week of 31 August**. Nothing
-  of the Salesforce side exists.
+  and it blocks the integration tests set for the **week of 31 August**.
+  ~~Nothing of the Salesforce side exists.~~ ⚠ **False as of 28 August** — the
+  endpoint is deployed and taking live traffic; see below.
   🔴 **Fabrizio Paganelli: the €8,900+ "vendita da palco" is untested**, and it
   triggers contract generation downstream
   ([OI-101](notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md)).
@@ -145,15 +147,47 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   the article code on the real catalogue, how a bundle line arrives and how a
   taxable order looks.
 
-- 🔴 **2026-08-27 — Lead conversion is failing in the Pienissimo partial
-  sandbox.** Not from a meeting: a Salesforce error mail at 15:08Z reports
+- ✅ **2026-08-27 — the Lead-conversion failure is closed, and the 27 Aug
+  reading of it was wrong.** A Salesforce error mail at 15:08Z reported
   `LeadConversionQueueable` throwing _"No such column 'Servizio_Interesse__c' on
-  entity 'Lead'"_. **The repo's copy of that class does not select that field**,
-  and the field's metadata **is** in `force-app/` — so the org runs a different
-  version and the sandbox lacks a field the repository has
-  ([the risk](notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md)).
-  It blocks testing
-  [OI-100](notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md).
+  entity 'Lead'"_, and the note written from it — **without org access** —
+  inferred a two-way org/repo divergence. The 28 August org check found the
+  field **present** and **neither** class selecting it
+  ([the risk, now resolved](notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md)).
+  🟢 It no longer blocks
+  [OI-100](notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md),
+  which still needs Aurel Mrruku on its own merits.
+
+- 🟢 **2026-08-28 — an org check found the record materially out of date, and
+  the build well ahead of it.** Run 14:45–14:56Z against `00DMA000004nMMr2AM`
+  (partial sandbox, API 67.0) at repo `89e9bac`; 541 org components vs 169 in
+  the repo. **Five claims in this file were verified false** and are struck
+  through above: there are **2 Flows** (`Lead_Non_Risponde_Follow_Up` active),
+  **Asset has 8 custom fields** and a Ticket record type, the **WooCommerce
+  endpoint is deployed and taking live traffic**, `OrderItem.Tranche__c` is
+  **granted to `Tranche_Management`**, and the Lead-conversion break is
+  **resolved**. 🟢 **All four state machines** (Order, Quote, Asset, Lead) are
+  active and byte-aligned with the repo, and **everything in the repo is
+  deployed** — no repository-only drift for the first time in the record.
+  🔴 Still gating: **coverage 0% of 1,769 lines across 28 classes** — the
+  deficit is *growing* as code lands (1,028 on 25 Aug), and the register's
+  `current: "1%"` is stale. 🔴 **`Integration_Configuration__c` has 0 rows *and*
+  0 object permissions** — nobody at all can read it, so Anticipay
+  ([OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md))
+  and Mexal have neither endpoint nor principal. 🔴 **`INT-16`: the WooCommerce
+  endpoint has no application-level auth** — `global without sharing`, no token
+  or signature check anywhere in the class — so the token owed under
+  [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+  is the **entire** authentication. 🟢 **[OI-104](notes/items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md)
+  is better than recorded** — the payload has no key but the code derives one
+  (`Order.WooCommerce_Order_Key__c`, unique + external id, 409 on duplicate,
+  exercised in 5 logged calls); the residual is a SOQL-then-insert race.
+  🔴 **Permission sets reach one user each** against 8 active users, so business
+  users cannot exercise UAT before the 31 Aug tests. ⚠ **That run published
+  nothing** — no note or requirement was mutated by it. The corrections above
+  were folded in by the 28 Aug requirements-check, which **did not itself open
+  the org**; `STATUS.md`, its Notion mirror and the Flows page remain
+  `org-status-check`'s to regenerate.
 
 - The repo still runs ahead of the trackers and the org still holds Apex the
   repo does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
@@ -276,7 +310,21 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    [phase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)
    has run four meetings, and
    [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md) records that the
-   decision-maker was never told.
+   decision-maker was never told. 🔴 **2026-08-28: still nothing.** Elena Spini's
+   status post carries the same red-flag paragraph **verbatim for the fifth
+   week** — _"ci riaggiorneranno settimana prossima"_ unchanged since 24 July —
+   prefixed with _"Non ho ancora avuto aggiornamenti su questo vedo di smarcare
+   settimana prossima"_. **Thirty-five days** since the escalation to Daniela
+   Morgese was promised, while a **Fase 1** integration now depends on the
+   disputed entity.
+5. **Marketing** — 🟢 **the two MKT flows are confirmed and Fabrizio Mastracci
+   is building them** (Elena Spini, 28 Aug), the first movement on this stream
+   since 19 August. 🔴 But the **100+ form review is confirmed still outstanding
+   after nine weeks**, and the DNS records, funnel screenshots and graphics owed
+   on 20–26 August remain unconfirmed on every source
+   ([OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md)). The
+   `30 vs 60` day trigger for the first flow is **still undecided while it is
+   being built** ([OI-81](notes/items/OI-81%20Event%20communication%20funnel.md)).
 
 ## Map of the territory
 

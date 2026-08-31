@@ -1331,6 +1331,8 @@ Fabrizio Paganelli, spontaneamente in chiusura della sessione di design: WooComm
 
 Non viene da nessuna delle due sessioni. Una mail di errore Salesforce delle **15:08:13Z** segnala `LeadConversionQueueable` in errore nella **partial sandbox** Pienissimo: _"No such column 'Servizio_Interesse__c' on entity 'Lead'"_ alla riga 22. **La copia della classe nel repository non seleziona quel campo**, e i metadati del campo **sono** in `force-app/`. Quindi l'org esegue una versione diversa della classe, e alla sandbox manca un campo che il repository ha. **Lì la conversione dei Lead non si completa.** [Il rischio](../notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md).
 
+✅ **Risolto il 2026-08-28, e la lettura qui sopra era errata.** Il paragrafo resta come registrazione di ciò che si riteneva il 27 agosto, scritto **senza accesso all'org**. Una verifica sull'org del **28 agosto (14:45–14:56Z)** ha trovato `Lead.Servizio_Interesse__c` **presente** nell'org e **né** la classe distribuita **né** la copia nel repository che lo selezionano: l'unica differenza org-repo su quella classe è l'andata a capo di Prettier. L'errore delle 15:08:13Z è reale, ma registra uno **stato transitorio del 27 agosto**, non una divergenza stabile; nulla agli atti mostra cosa sia cambiato fra le due osservazioni, quindi non viene attribuito. 🟢 Non blocca più il test di [OI-100](../notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md).
+
 ### 21.10 Stato della build WooCommerce
 
 | Lato | Stato |
