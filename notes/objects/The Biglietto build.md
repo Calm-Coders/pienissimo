@@ -1,10 +1,10 @@
 ---
 id: obj-biglietto
 type: object
-status: in-progress
+status: superseded
 owner: ROMI
 org: ROMI
-updated: 2026-08-25
+updated: 2026-08-31
 source: meetings/open-items.md org verification 2026-08-03
 requirement: BIG-03
 ---
@@ -79,3 +79,33 @@ UAT implementation of a superseded design, holding 37 records that would all
 have to be re-stated under the four agreed states before they could migrate to
 standard Asset — which itself carries
 [zero custom fields](../items/OI-41%20Asset%20and%20ticket%20data%20model.md).
+
+## 2026-08-31 - the object no longer exists
+
+**Everything above is now history.** `Biglietto__c` was deleted from Pienissimo
+UAT by a destructive deploy on **28 August**, together with its 37 records, its
+twelve fields, its tab, layout and list view, and the seven Apex components that
+made it work. The repository deleted its half in commit `5d8cdb3` the same
+evening. The 31 August `org-status-check` confirmed the object is gone: Tooling
+`EntityDefinition` returns zero rows and SOQL against it no longer parses.
+
+This note is kept as the record of what the object **was**, because it is now the
+only description of it that survives anywhere. Read it as history, not as the
+state of the org.
+
+Two consequences are tracked separately and both are open:
+
+- 🔴 **The 37 records were not migrated** — Asset went from 4 to 5, not to 41.
+  [The dataset risk](../risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md).
+- 🔴 **Seven of the eight deleted Apex components were never in source control**,
+  verified against the whole of git history, so the DocuSign and PDF stack is
+  gone with no copy anywhere.
+  [The code risk](../risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
+
+⚠ **The replacement does not exist.** The 24 August decision was standard Asset;
+Asset today holds **5 records, 8 custom fields and a Ticket record type**, and no
+migration, no mapping and none of the agreed
+[lifecycle](../flows/The%20ticket%20lifecycle.md) has been built onto it. So the
+project currently has **neither** implementation of the ticket — the old one has
+been removed and the new one has not been started — eleven days before Fase 1
+development is due to end.

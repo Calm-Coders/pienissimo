@@ -1284,8 +1284,149 @@ Not from either session. A Salesforce error mail at **15:08:13Z** reports `LeadC
 | Side | State |
 | ---- | ----- |
 | **Pienissimo — plugin, trigger, payload, re-send** | 🟢 **built and demonstrated** |
-| **ROMI — endpoint, token** | 🔴 not created |
+| **ROMI — endpoint, token** | ⚠ **corrected 31/08** — the endpoint **is deployed and taking live traffic** (`WoocommerceOrderService`, unversioned); the **token is still not created**, and the endpoint has no authentication of any kind (§22.3, §22.5) |
 | **ROMI — link-generator button, email template, order type, `SC` match, customer-create** | 🔴 nothing exists |
-| Org configuration | 🔴 no Flow, no named credential, no integration configuration row (26/08 org check) |
+| Org configuration | 🔴 no Flow, no named credential, no integration configuration row (26/08 org check; `Integration_Configuration__c` still 0 rows and 0 object permissions on 31/08) |
 
 The client side is real and waiting on ROMI, eleven working days from the **10 September** end of Fase 1 development.
+
+
+## 22. Update 2026-08-31 — a destructive deploy, and the first client commitment met early
+
+Neither of these came from a meeting. Both come from an `org-status-check` run at
+**09:36–09:52Z** which, for the **second consecutive run**, published nothing to
+the record, and from a client mail that evening.
+
+### 22.1 🔴🔴 `Biglietto__c` was deleted from the org, with all 37 records
+
+Tooling `EntityDefinition` returns zero rows and SOQL against the object no
+longer parses. **The records were not migrated**: Asset held 4 on 28 August and
+holds 5 today — one was added, not thirty-seven.
+
+The deletion was **deliberate and is in the repository**. Commit `5d8cdb3`
+(28 August 18:10 CEST) removes the object from `force-app/` and adds
+`manifest/biglietto-cleanup-destructiveChangesPost.xml`, a destructive-changes
+manifest naming the object, its tab, layout and list view, six Apex classes, a
+trigger and a Visualforce page. It follows the 24 August decision to adopt
+standard Asset, so it is a planned cleanup — **but nothing anywhere records that
+an export was taken first**, and that is the whole of the recovery decision.
+
+Salesforce retains a deleted custom object and its rows for roughly **15 days**,
+so the window closes around **12 September** — one day after Fase 1 development
+is due to end. This is the only item in this document that **decays if nobody
+acts**. [The risk](../notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md).
+
+### 22.2 🔴🔴 Seven Apex components went with it, and none was in source control
+
+`BigliettoTriggerHandler`, `BigliettoDocuSignService`,
+`BigliettoDocuSignQueueable`, `BigliettoPdfService`, `BigliettoPdfQueueable`,
+`BigliettoPdfBatch`, `BigliettoTrigger` and the `BigliettoPdf` page are gone from
+the org — 31 Apex classes now against 37 on 28 August.
+
+**Verified against the whole of git history: not one of them ever existed in this
+repository, on any branch.** So roughly **270 lines of the DocuSign send path and
+the PDF generation stack** are gone from the only copy that existed. That code had
+demonstrably run — **19 of the 37 deleted records carried a populated
+`DocuSign_Envelope_Id__c`**, the only evidence on this project that the DocuSign
+leg ever worked.
+
+⚠ The org check reported this as _"the Biglietto Apex source-control drift is
+resolved, albeit by deletion from both sides."_ **There were never two sides.** The
+drift is not resolved; the unversioned half was destroyed. A deleted object can be
+undeleted from the recycle bin; **deleted Apex has no equivalent user-facing
+restore**, so the code is the harder half, not the same problem.
+[The risk](../notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
+
+⚠ **The project now has neither ticket implementation** — the old one removed, and
+standard Asset carrying 8 custom fields, 5 records and none of the agreed
+lifecycle. §3.4 and the Asset row in §1 should be read with that in mind.
+
+### 22.3 🔴 The same pattern is live again, on WooCommerce
+
+| | In `force-app/` | In the org |
+| --- | --- | --- |
+| Class | `WooCommerceOrderEndpoint` (16,789 chars) | `WoocommerceOrderService` (23,087 chars) |
+| `urlMapping` | `/woocommerce/orders/*` | `/woocommerce/orders/*` |
+| Deployed | no | **yes, modified 31 August** |
+| Versioned | yes | **no** |
+
+A clean deploy from this repository would **publish a second class on a route
+that already has one** and orphan the class currently serving the plugin. The org
+copy is live and busy — 16 inbound integration logs and 7 Woo-keyed orders — and
+it is the largest single uncovered class at 396 lines. **Retrieving it is one
+command and nobody has run it.**
+[The risk](../notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md).
+
+### 22.4 🔴 The duplicate-order contract changed without telling the counterparty
+
+A duplicate delivery now returns **HTTP 200 with `duplicate: true`** and updates
+the Opportunity, where on 28 August it returned **409**. Idempotent-success is a
+defensible choice; changing it silently on a live integration is not. Sabatino
+Rinaldi's plugin can no longer distinguish "created" from "already existed" by
+status code, and the integration tests run **this week**. §21.10 and
+[OI-104](../notes/items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md)
+both still say 409; the org is right.
+
+### 22.5 🔴 `INT-16` survived a full rewrite, still unauthenticated
+
+The rewritten service is still `global without sharing` with **no token and no
+signature check anywhere**. Its only handling of `Authorization` redacts the
+header for logging (lines 418–427) — proof it is received and stored safely, and
+none that it is verified. The endpoint has been taking **real production traffic
+with no application-level authentication for four days**, and the token owed under
+[OI-102](../notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+remains the entire authentication.
+
+### 22.6 Coverage: the number fell, and it is not progress
+
+**0% of 1,571 lines across 21 classes**, down from 1,769 across 28. ⚠ **The whole
+of the decrease is the deleted Biglietto code. No test was written.** Largest
+uncovered: `WoocommerceOrderService` 396, `QuoteTrancheController` 386,
+`LeadConversionQueueable` 148 — and the largest of the three cannot be read from
+the repository. The register still records `current: "1%"`; it has been 0% on
+every measurement since 25 August.
+
+### 22.7 Also verified, unchanged since 28 August
+
+`Integration_Configuration__c` still holds **0 rows and 0 object permissions**, so
+Anticipay and Mexal still have neither an endpoint nor a principal that can read
+one. Permission sets still reach **one user each against 8 active users**, so
+business users still cannot exercise UAT. `OrderItem.Tranche__c` is null on
+**15 of 15** order lines, up from 10 of 10 — five new lines arrived with no
+tranche. A **half-deployed bundle-price feature** silently displays the spread
+total instead of the calculated price, with no error. And the register's
+`build_state` cites **`QUO-01` and `QUO-06`, which are not among the 154
+requirement ids**.
+
+### 22.8 🟢 The Anticipay API documentation arrived, four days early
+
+Andrea Parmeggiani sent `Documentazione API – Salesforce.pdf` at **16:15Z** to
+Aurel Mrruku, cc Elena Spini, amministrazione, Fabrizio Paganelli and Sabatino
+Rinaldi. It was owed by **4 September** — the first client commitment on this
+project delivered ahead of its date, and it turns the 1 September follow-up into a
+review rather than a chase.
+
+⚠ **The PDF has not been read.** The nightly sweep cannot open a Gmail attachment,
+so the API contract is still not in the record.
+
+🔴 **The mail body alone changes something.** For the test period the middleware
+**serves only from the Pienissimo cache and does not call Anticipay**: _"l'API
+ritorna i dati solamente se già presenti sul nostro database … alla fine del test
+invece inoltreremo le chiamate ad Anticipay e per voi sarà trasparente."_ So an
+uncached P.IVA returns nothing, and a test-period **`404` cannot be distinguished
+from a genuine not-found** — the agreed error semantics give `404` one meaning and
+during testing it carries two. Do not read test-period 404 rates as a measure of
+Anticipay's coverage. The switch to pass-through is Pienissimo Software's to flip,
+on **no named date**, with no signal to ROMI when it happens.
+[OI-94](../notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md) ·
+[OI-95](../notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md).
+
+### 22.9 🟢 A marketing session is booked at last
+
+`[PIENISSIMO]- Interna Flussi MKT`, **Monday 7 September 10:00–11:00 CEST**
+(invitation 31 August 16:07Z): Elena Spini, Aurel Mrruku, Fabrizio Mastracci —
+ROMI-internal, no client. First marketing session since 19 August, and the natural
+forum for `30 vs 60` and the plain-text style constraint. ⚠ Both have a
+client-side dependency an internal meeting cannot discharge; deciding `30 vs 60`
+internally is ROMI choosing on the client's behalf and should be minuted as such.
+No agenda was published.
