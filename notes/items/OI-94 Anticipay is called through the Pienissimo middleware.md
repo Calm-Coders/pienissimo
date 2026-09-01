@@ -6,7 +6,7 @@ owner: Andrea Parmeggiani
 with: Aurel Mrruku
 org: both
 raised: 2026-08-25
-updated: 2026-08-25
+updated: 2026-08-31
 depends_on: [OI-73]
 blocks: [OI-73]
 source: notes/meetings/2026-08-25 Integrazione Anticipay.md
@@ -87,6 +87,59 @@ the VAT check still fires at the first order of an Account, still writes back to
 the account, still notifies administration on failure. Only the counterparty on
 the wire changed. The `consolidato` flag, the manual re-check button and the
 administration address Pienissimo still owes all stay as recorded there.
+
+## 2026-08-31 - the documentation arrived, four days early
+
+🟢 **Andrea Parmeggiani delivered.** Mail _"Pienissimo - Documentazione API per
+chiamata informazioni aziende"_, **31 August 16:15Z**, to Aurel Mrruku, cc Elena
+Spini, `amministrazione@pienissimo.com`, Fabrizio Paganelli and Sabatino
+Rinaldi, carrying one attachment: **`Documentazione API – Salesforce.pdf`**.
+
+He owed this by **Friday 4 September** and sent it on Monday 31 August — the
+first client commitment on this project delivered ahead of its date. The
+follow-up call booked for **1 September 10:00 CEST** was made cancellable
+precisely on this condition; it is now the meeting's own decision whether to run.
+
+⚠ **The attachment has not been read.** This sweep can see that the PDF exists
+and who it went to; it cannot open a Gmail attachment. Everything below comes
+from the **mail body**, which is short and substantive. The PDF is the API
+contract and it remains unread — the same shape of gap as the WooCommerce
+payload attachment on 27 August, which sat unopened for a day until Aurel Mrruku
+downloaded it by hand. **It should be opened before the 1 September call**, and
+the contract folded into [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)
+and into this table.
+
+### 🔴 The test period has different semantics from production, and nobody has recorded that until now
+
+Andrea Parmeggiani's own words: _"Per il momento l'API ritorna i dati solamente
+se già presenti sul nostro database, evitiamo di fare richieste ad Anticipay per
+questo periodo di test, alla fine del test invece inoltreremo le chiamate ad
+Anticipay e per voi sarà trasparente."_
+
+| | During the test period | After it |
+| --- | --- | --- |
+| Middleware behaviour | serves **only from the Pienissimo cache** | forwards a miss on to Anticipay |
+| A VAT number they do not already hold | **returns nothing** | returns Anticipay's answer |
+| Change required on the ROMI side | none — the switch is theirs | none, _"per voi sarà trasparente"_ |
+
+This is new. The 25 August contract in the table above describes the **production**
+behaviour and says nothing about a cache-only test mode. Two consequences follow
+and neither has been discussed:
+
+- 🔴 **A test that queries an unknown VAT number will look like a `404`
+  when it is really "not cached yet".** The agreed error semantics give `404` a
+  single meaning — _VAT number not found_ — and during the test period it will
+  carry two. Any test evidence gathered before the switch cannot distinguish a
+  genuine unknown company from a cold cache, so **do not treat test-period `404`
+  rates as a measure of Anticipay's coverage.**
+- The switch from cache-only to pass-through is **Pienissimo Software's to
+  flip**, on a date nobody has named. ROMI has no signal for when it happens and
+  no way to detect it from the outside. Ask for the date, and ask to be told when
+  it is done.
+
+Neither point invalidates anything already agreed — the counterparty, the
+trigger, the header token, the three-month error retention and the overwrite rule
+all stand as recorded. It narrows what the **first round of testing can prove**.
 
 ## The design file records the change on one page and not the other
 

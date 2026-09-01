@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-08-28
+updated: 2026-08-31
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -100,3 +100,29 @@ Flow, no named credential and no integration configuration row for WooCommerce
 ⚠ **Do not put the token, the endpoint or any header value in this repository**
 when it is issued. Record that it exists and where it was sent — see
 [docs/publishing.md](../../docs/publishing.md).
+
+## 2026-08-31 - the tests are this week and the token still does not exist
+
+The `org-status-check` of **2026-08-31, 09:36–09:52Z** re-verified `INT-16`
+against a **rewritten** endpoint (`WoocommerceOrderService`, modified that day)
+and the finding survived the rewrite unchanged: `global without sharing`, **no
+token check and no signature check anywhere in the class**. Its only handling of
+`Authorization` redacts the header when logging — the header is received and
+stored safely, and never verified.
+
+So the position is now sharper than on 28 August in one specific way: **the
+endpoint is not merely unauthenticated, it has been rewritten once since the
+finding and still is.** Whoever rewrote it did not add auth, which suggests
+nobody has been told this is outstanding.
+
+Meanwhile the integration is live and busy — 16 inbound calls logged, 7 orders
+created — so the endpoint is **taking real traffic from the production shop with
+no application-level authentication at all**, and has been for four days.
+
+⚠ **The tests this item blocks are happening now.** The week of 31 August began
+today. The token has not been issued.
+
+🔴 And the class that would carry the token check
+[is not in source control](../risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md),
+so the fix has to be made in the org and retrieved, or it will be lost the way
+the Biglietto stack was.

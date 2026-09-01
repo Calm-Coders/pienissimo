@@ -993,7 +993,7 @@ requirements:
       pri: M,
       status: agreed,
       text: "The Asset is the record; the QR is a value inside it",
-      tracked_by: [obj-biglietto]
+      tracked_by: [obj-biglietto, risk-biglietto-dataset-deleted]
     }
   - {
       id: BIG-04,
@@ -1419,7 +1419,7 @@ requirements:
         hook on the order status transition, composing one JSON body carrying order,
         customer and order lines",
       recommendation: webhook,
-      tracked_by: [OI-49, OI-104, flow-woocommerce, REF-woo-payload]
+      tracked_by: [OI-49, OI-104, flow-woocommerce, REF-woo-payload, risk-woo-endpoint-orphan]
     }
   - {
       id: INT-15,
@@ -1443,7 +1443,7 @@ requirements:
         of the integration. Kept open because no one has accepted that trade aloud;
         it needs a decision, not a re-statement of the recommendation",
       recommendation: signed_token,
-      tracked_by: [OI-104, REF-woo-payload]
+      tracked_by: [OI-104, REF-woo-payload, risk-woo-endpoint-orphan]
     }
   - {
       id: INT-17,

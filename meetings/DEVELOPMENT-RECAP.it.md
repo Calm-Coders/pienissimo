@@ -1338,8 +1338,158 @@ Non viene da nessuna delle due sessioni. Una mail di errore Salesforce delle **1
 | Lato | Stato |
 | ---- | ----- |
 | **Pienissimo — plugin, trigger, payload, reinvio** | 🟢 **costruito e dimostrato** |
-| **ROMI — endpoint, token** | 🔴 non creati |
+| **ROMI — endpoint, token** | ⚠ **corretto il 31/08** — l'endpoint **è distribuito e riceve traffico reale** (`WoocommerceOrderService`, non versionato); il **token non è ancora stato creato**, e l'endpoint non ha alcuna autenticazione (§22.3, §22.5) |
 | **ROMI — pulsante generatore link, template email, tipologia ordine, match `SC`, creazione cliente** | 🔴 non esiste nulla |
-| Configurazione org | 🔴 nessun Flow, nessuna named credential, nessuna riga di configurazione integrazione (verifica org 26/08) |
+| Configurazione org | 🔴 nessun Flow, nessuna named credential, nessuna riga di configurazione integrazione (verifica org 26/08; `Integration_Configuration__c` ancora 0 righe e 0 permessi oggetto al 31/08) |
 
 Il lato cliente è reale e in attesa di ROMI, a undici giorni lavorativi dalla fine dello sviluppo di Fase 1 del **10 settembre**.
+
+
+## 22. Aggiornamento 31/08/2026 — un deploy distruttivo, e il primo impegno del cliente rispettato in anticipo
+
+Nessuno dei due punti nasce da una riunione. Entrambi derivano da un
+`org-status-check` delle **09:36–09:52Z** che, per la **seconda esecuzione
+consecutiva**, non ha pubblicato nulla agli atti, e da una mail del cliente in
+serata.
+
+### 22.1 🔴🔴 `Biglietto__c` è stato eliminato dall'org, con tutti i 37 record
+
+`EntityDefinition` via Tooling restituisce zero righe e le query SOQL
+sull'oggetto non vengono più interpretate. **I record non sono stati migrati**:
+Asset ne conteneva 4 il 28 agosto e ne contiene 5 oggi — uno aggiunto, non
+trentasette.
+
+L'eliminazione è stata **deliberata ed è nel repository**. Il commit `5d8cdb3`
+(28 agosto 18:10 CEST) rimuove l'oggetto da `force-app/` e aggiunge
+`manifest/biglietto-cleanup-destructiveChangesPost.xml`, un manifest di modifiche
+distruttive che nomina l'oggetto, la sua tab, il layout, la list view, sei classi
+Apex, un trigger e una pagina Visualforce. Segue la decisione del 24 agosto di
+adottare Asset standard, quindi è una pulizia pianificata — **ma da nessuna parte
+risulta che sia stato fatto prima un export**, ed è questo il nodo dell'intera
+decisione di recupero.
+
+Salesforce conserva un oggetto personalizzato eliminato e le sue righe per circa
+**15 giorni**, quindi la finestra si chiude intorno al **12 settembre** — un
+giorno dopo la fine prevista dello sviluppo di Fase 1. È l'unico punto di questo
+documento che **decade se nessuno interviene**.
+[Il rischio](../notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md).
+
+### 22.2 🔴🔴 Sette componenti Apex sono spariti con esso, e nessuno era sotto controllo di versione
+
+`BigliettoTriggerHandler`, `BigliettoDocuSignService`,
+`BigliettoDocuSignQueueable`, `BigliettoPdfService`, `BigliettoPdfQueueable`,
+`BigliettoPdfBatch`, `BigliettoTrigger` e la pagina `BigliettoPdf` non sono più
+nell'org — 31 classi Apex oggi contro 37 il 28 agosto.
+
+**Verificato sull'intera storia git: nessuno di essi è mai esistito in questo
+repository, su alcun branch.** Circa **270 righe del percorso di invio DocuSign e
+dello stack di generazione PDF** sono quindi perse dall'unica copia esistente. Quel
+codice aveva dimostrabilmente funzionato: **19 dei 37 record eliminati avevano
+`DocuSign_Envelope_Id__c` valorizzato**, l'unica prova su questo progetto che la
+tratta DocuSign abbia mai funzionato.
+
+⚠ La verifica sull'org lo ha riportato come _"drift del controllo di versione
+Biglietto risolto, seppure per eliminazione da entrambi i lati"_. **I lati non
+sono mai stati due.** Il drift non è risolto: la metà non versionata è stata
+distrutta. Un oggetto eliminato può essere ripristinato dal cestino; **il codice
+Apex eliminato non ha un ripristino equivalente per l'utente**, quindi il codice è
+la metà più difficile, non lo stesso problema.
+[Il rischio](../notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
+
+⚠ **Il progetto ora non ha nessuna delle due implementazioni del biglietto** — la
+vecchia rimossa, e Asset standard con 8 campi personalizzati, 5 record e nessuno
+dei cicli di vita concordati. Il §3.4 e la riga Asset del §1 vanno letti tenendone
+conto.
+
+### 22.3 🔴 Lo stesso schema è di nuovo in atto, su WooCommerce
+
+| | In `force-app/` | Nell'org |
+| --- | --- | --- |
+| Classe | `WooCommerceOrderEndpoint` (16.789 car.) | `WoocommerceOrderService` (23.087 car.) |
+| `urlMapping` | `/woocommerce/orders/*` | `/woocommerce/orders/*` |
+| Distribuita | no | **sì, modificata il 31 agosto** |
+| Versionata | sì | **no** |
+
+Un deploy pulito da questo repository **pubblicherebbe una seconda classe su una
+rotta che ne ha già una** e lascerebbe orfana quella che serve attualmente il
+plugin. La copia nell'org è attiva e trafficata — 16 log di integrazione in
+ingresso e 7 ordini con chiave Woo — ed è la singola classe più scoperta, con 396
+righe. **Recuperarla è un comando e nessuno lo ha eseguito.**
+[Il rischio](../notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md).
+
+### 22.4 🔴 Il contratto sugli ordini duplicati è cambiato senza avvisare la controparte
+
+Una consegna duplicata ora restituisce **HTTP 200 con `duplicate: true`** e
+aggiorna l'Opportunity, dove il 28 agosto restituiva **409**. Il successo
+idempotente è una scelta difendibile; cambiarlo in silenzio su un'integrazione
+attiva no. Il plugin di Sabatino Rinaldi non può più distinguere "creato" da "già
+esistente" dal codice di stato, e i test di integrazione si svolgono **questa
+settimana**. Il §21.10 e
+[OI-104](../notes/items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md)
+riportano ancora 409: l'org ha ragione.
+
+### 22.5 🔴 `INT-16` è sopravvissuto a una riscrittura completa, ancora senza autenticazione
+
+Il servizio riscritto è ancora `global without sharing` **senza alcun controllo di
+token né di firma**. L'unica gestione di `Authorization` oscura l'header per il
+logging (righe 418–427) — prova che viene ricevuto e conservato in sicurezza, e
+nessuna che venga verificato. L'endpoint riceve **traffico reale di produzione
+senza alcuna autenticazione applicativa da quattro giorni**, e il token dovuto ai
+sensi di
+[OI-102](../notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+resta l'intera autenticazione.
+
+### 22.6 Copertura: il numero è sceso, e non è un progresso
+
+**0% di 1.571 righe su 21 classi**, da 1.769 su 28. ⚠ **L'intera diminuzione è il
+codice Biglietto eliminato. Nessun test è stato scritto.** Le più scoperte:
+`WoocommerceOrderService` 396, `QuoteTrancheController` 386,
+`LeadConversionQueueable` 148 — e la maggiore delle tre non è leggibile dal
+repository. Il register riporta ancora `current: "1%"`; è 0% in ogni misurazione
+dal 25 agosto.
+
+### 22.7 Verificato anche questo, invariato dal 28 agosto
+
+`Integration_Configuration__c` ha ancora **0 righe e 0 permessi oggetto**, quindi
+Anticipay e Mexal non hanno né endpoint né un principal in grado di leggerne uno.
+I permission set raggiungono ancora **un utente ciascuno contro 8 utenti attivi**,
+quindi gli utenti di business non possono ancora esercitare la UAT.
+`OrderItem.Tranche__c` è nullo su **15 righe d'ordine su 15**, da 10 su 10 —
+cinque nuove righe sono arrivate senza tranche. Una **funzionalità di prezzo
+bundle distribuita a metà** mostra silenziosamente il totale spread invece del
+prezzo calcolato, senza errore. E il `build_state` del register cita **`QUO-01` e
+`QUO-06`, che non figurano fra i 154 id di requisito**.
+
+### 22.8 🟢 La documentazione API Anticipay è arrivata, con quattro giorni di anticipo
+
+Andrea Parmeggiani ha inviato `Documentazione API – Salesforce.pdf` alle
+**16:15Z** ad Aurel Mrruku, in cc Elena Spini, amministrazione, Fabrizio
+Paganelli e Sabatino Rinaldi. Era dovuta entro il **4 settembre**: è il primo
+impegno del cliente su questo progetto consegnato in anticipo, e trasforma il
+follow-up del 1° settembre in una revisione anziché in un sollecito.
+
+⚠ **Il PDF non è stato letto.** Lo sweep notturno non può aprire un allegato
+Gmail, quindi il contratto API non è ancora agli atti.
+
+🔴 **Il solo corpo della mail cambia qualcosa.** Per il periodo di test il
+middleware **risponde solo dalla cache Pienissimo e non chiama Anticipay**:
+_"l'API ritorna i dati solamente se già presenti sul nostro database … alla fine
+del test invece inoltreremo le chiamate ad Anticipay e per voi sarà
+trasparente."_ Una P.IVA non in cache non restituisce quindi nulla, e un **`404`
+in fase di test non è distinguibile da un vero non trovato**: la semantica
+d'errore concordata attribuisce al `404` un solo significato e durante i test ne
+porta due. Non leggere i tassi di 404 del periodo di test come misura della
+copertura Anticipay. Il passaggio al pass-through spetta a Pienissimo Software,
+**senza data indicata** e senza alcun segnale a ROMI quando avverrà.
+[OI-94](../notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md) ·
+[OI-95](../notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md).
+
+### 22.9 🟢 Finalmente è fissata una sessione marketing
+
+`[PIENISSIMO]- Interna Flussi MKT`, **lunedì 7 settembre 10:00–11:00 CEST**
+(invito 31 agosto 16:07Z): Elena Spini, Aurel Mrruku, Fabrizio Mastracci —
+interna ROMI, senza cliente. Prima sessione marketing dal 19 agosto, e sede
+naturale per `30 vs 60` e per il vincolo di stile testo semplice. ⚠ Entrambi i
+punti hanno una dipendenza lato cliente che una riunione interna non può
+sciogliere; decidere `30 vs 60` internamente significa che ROMI sceglie al posto
+del cliente e va messo a verbale come tale. Non è stata pubblicata alcuna agenda.

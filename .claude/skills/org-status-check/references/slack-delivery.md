@@ -1,24 +1,26 @@
 # Slack result delivery
 
 This project has standing user authorization to send every completed
-`org-status-check` result to both verified Slack destinations below.
+`org-status-check` result to the one verified Slack destination below.
 
-## Verified destinations
+## Verified destination
 
-| Setting          | Value                                                                                               |
-| ---------------- | --------------------------------------------------------------------------------------------------- |
-| Workspace        | `Romi` — `T8MJ1KWJ2`                                                                                |
-| Personal DM      | Aurel Mrruku — `U0A3Y0N8YG3`                                                                        |
-| Project group DM | `Pienissimo devs` — `C0BQD34LLF4` — Aurel Mrruku, Rexhina Hysi, Sara Aga and Anita Aga              |
-| Verified         | Personal DM on 2026-08-26 by exact user lookup; group DM on 2026-08-26 by exact name and membership |
+| Setting          | Value                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| Workspace        | `Romi` — `T8MJ1KWJ2`                                                                   |
+| Project group DM | `Pienissimo devs` — `C0BQD34LLF4` — Aurel Mrruku, Rexhina Hysi, Sara Aga and Anita Aga |
+| Verified         | Group DM on 2026-08-26 by exact name and membership                                    |
 
-Use Slack's send-message action twice: once with `channel_id: U0A3Y0N8YG3`,
-which opens or reuses Aurel's personal DM, and once with
-`channel_id: C0BQD34LLF4` for the existing `Pienissimo devs` group DM. Send the
-same substantive report independently to both destinations. Do not search
-again during ordinary runs, create a channel or group, or substitute another
-conversation. If one destination is unreachable, deliver to the other and
-report the partial failure in chat instead of guessing a replacement.
+Use Slack's send-message action once, with `channel_id: C0BQD34LLF4` for the
+existing `Pienissimo devs` group DM. Do not search again during ordinary runs,
+create a channel or group, or substitute another conversation. If the
+destination is unreachable, report the failure in chat instead of guessing a
+replacement.
+
+**Do not send a personal DM.** Aurel asked on 2026-08-31 for the personal-DM
+copy to stop; he is a member of the group DM and receives the result there. A
+second copy is duplication, not redundancy. Send to the group DM only, even
+when a run is started from his own session.
 
 ## Message content
 
@@ -39,7 +41,7 @@ message below 4,500 characters. If the complete result is longer, send the
 summary first and put numbered continuation messages in its thread; do not omit
 findings merely to fit one message.
 
-After sending, return both Slack message links in chat. Do not retry an
-ambiguous send failure because that can duplicate a message. A run-specific
-instruction from Aurel not to send overrides this standing preference for that
-run only.
+After sending, return the Slack message link (and any thread links) in chat. Do
+not retry an ambiguous send failure because that can duplicate a message. A
+run-specific instruction from Aurel not to send overrides this standing
+preference for that run only.

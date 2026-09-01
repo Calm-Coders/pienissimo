@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Elisa Migliano
 org: Pienissimo
 raised: 2026-08-25
-updated: 2026-08-25
+updated: 2026-08-31
 depends_on: [OI-94]
 blocks: [OI-73]
 source: notes/meetings/2026-08-25 Integrazione Anticipay.md
@@ -59,3 +59,32 @@ The three-month retention agreed for **error** codes in
 was not stated to cover the returned **data**. Nobody asked how long the
 retrieved company details are kept, or under what basis. That question is
 unraised, not answered.
+
+## 2026-08-31 - the prerequisite arrived; the item still cannot move
+
+🟢 **The blocker on Andrea Parmeggiani's side is discharged.** He sent
+`Documentazione API – Salesforce.pdf` on **31 August 16:15Z**, four days inside
+his commitment — see
+[OI-94](OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md).
+The "example of every field Anticipay returns" that this item has waited on since
+25 August is presumably in that document.
+
+🔴 **But the item does not move yet, for two separate reasons.**
+
+1. **The document has not been read.** This sweep cannot open a Gmail attachment.
+   Until somebody does, the candidate field list below is still the only one the
+   record holds, and it is a list of things people said out loud in a meeting.
+2. **The decision was never Andrea Parmeggiani's to make.** The action sits with
+   **Fabrizio Paganelli and Elisa Migliano** — they choose which fields are worth
+   integrating. Both are on the cc line of the 31 August mail, so they now have
+   what they asked for. No date was ever set for their answer and none was set
+   on 31 August either. **That is the ask to put to them at the 1 September
+   call.**
+
+⚠ The `status:` here stays `open` deliberately. The prerequisite arriving is not
+the decision being taken, and the two have been conflated in this project before.
+
+The privacy question above is **unaffected and still unraised**: a document
+listing available fields does not decide how long retrieved company data is kept
+or on what basis. If the PDF turns out to include the reliability score or PEC
+routing among the returnable fields, that question gets sharper, not softer.

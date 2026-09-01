@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-28 (nightly requirements-check; an org check corrected five claims here) · Source of record: [notes/](notes/)
+Last updated: 2026-08-31 (nightly requirements-check; a second unpublished org check, and the Anticipay API doc landed) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,60 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 - 🔴 **Development on Fase 1 must end 10 September**, per ROMI's own project
   plan — not 6 October, which is go-live. With the team back ~24–26 August that
   is **two weeks of build** for everything below.
+
+- 🔴🔴 **2026-08-31 — `Biglietto__c` was deleted from the org with all 37 records,
+  and seven Apex components went with it that were never in source control.**
+  Found by an org check at 09:36–09:52Z that, for the **second run in a row**,
+  **published nothing**. The deletion was deliberate — commit `5d8cdb3`
+  (Anita Aga, 28 Aug 18:10 CEST) carries a destructive-changes manifest — but
+  **nothing anywhere says an export was taken first**.
+  🔴 **The records were not migrated**: Asset went 4 → 5, not 4 → 41
+  ([the dataset risk](notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md)).
+  Recycle-bin recovery is ~15 days, so the window closes about **12 September** —
+  **the only finding in this file that decays if nobody acts.**
+  🔴 **The code is worse and is not recoverable the same way.** `git log --all`
+  proves not one of `BigliettoTriggerHandler`, `BigliettoDocuSignService`,
+  `BigliettoDocuSignQueueable`, `BigliettoPdfService`, `BigliettoPdfQueueable`,
+  `BigliettoPdfBatch`, `BigliettoTrigger` or `BigliettoPdf` **ever existed in
+  this repository on any branch** — ~270 lines of the DocuSign and PDF stack,
+  which had demonstrably run (19 of the 37 records carried an envelope id), gone
+  from its only copy. The org check called this "drift resolved by deletion from
+  both sides"; **there were never two sides**
+  ([the code risk](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)).
+  ⚠ The project now has **neither** ticket implementation — the old one removed,
+  standard Asset unbuilt — eleven days before Fase 1 development ends.
+  🔴 **The same pattern is live again**: the deployed WooCommerce class
+  `WoocommerceOrderService` (23,087 chars, modified 31 Aug, taking real traffic)
+  **is not in source control**, while the repo's unshipped
+  `WooCommerceOrderEndpoint` claims the same `urlMapping` — so a clean deploy
+  would publish a second class on a live route and orphan the working one
+  ([the deploy risk](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)).
+  Also 31 Aug: the **duplicate-order contract changed silently** from `409` to
+  `200 + duplicate: true`, and Sabatino Rinaldi has not been told
+  ([OI-104](notes/items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md));
+  `INT-16` **survived a full rewrite still unauthenticated**
+  ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md));
+  coverage **0% of 1,571 lines across 21 classes** — the fall from 1,769 is
+  **only** the deleted code, no test was written; a **half-deployed bundle-price
+  feature silently shows the spread total** instead of the calculated price; and
+  the register's `build_state` cites **`QUO-01` and `QUO-06`, which are not among
+  the 154 requirement ids**.
+
+- 🟢 **2026-08-31 — the Anticipay API documentation arrived four days early.**
+  Andrea Parmeggiani sent `Documentazione API – Salesforce.pdf` at 16:15Z to
+  Aurel Mrruku, cc Elena Spini, amministrazione, Fabrizio Paganelli and Sabatino
+  Rinaldi — owed by **4 September**, delivered on the 31st. The first client
+  commitment on this project met ahead of its date.
+  ⚠ **The PDF is unread** — this sweep cannot open a Gmail attachment, so the
+  contract itself is still not in the record. Open it before the **1 September
+  10:00** follow-up.
+  🔴 **The mail body alone changes something**: during the test period the
+  middleware **serves only from the Pienissimo cache and does not call
+  Anticipay** — so an uncached VAT number returns nothing, and a test-period
+  `404` cannot be told apart from a genuine "not found". The switch to
+  pass-through is Pienissimo Software's to flip, on **no named date**
+  ([OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md),
+  [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)).
 
 - **2026-08-06 settled the last open designs** — DocuSign in for
   quotes/contracts, out for tickets; order states
@@ -193,10 +247,14 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   repo does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
   [missing stack](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
 - **Nothing can deploy today.** Apex coverage is **0%** against a 75% floor —
-  measured 2026-08-25, 24 classes and triggers, 1028 uncovered lines, zero
-  covered ([OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
-  [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)).
-  The suite is written as one task, requested separately before the deploy.
+  measured 2026-08-31, **21 classes, 1,571 uncovered lines, zero covered**
+  ([OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
+  [the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)).
+  ⚠ The fall from 1,769 is **entirely the deleted Biglietto classes** — no test
+  was written, so it is not progress.
+  [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)
+  is **superseded**: its subject was deleted, not covered. The suite is written
+  as one task, requested separately before the deploy.
 - 🟢 **2026-08-24: four meetings came out of the dark at once.** The 19 and
   20 Aug sessions **did run and are fully minuted** — recovered on 24 Aug from a
   canvas update and a forwarded mail, after three sweeps reported them missing.
@@ -244,12 +302,18 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 
 - **Calendar: 25 Aug** Anticipay ✅ ran · **26 Aug** Review Temi
   Integrazione Mexal ✅ ran, 1h25m, fully minuted · **27 Aug** WooCommerce ✅ **two sessions ran**, both fully
-  minuted · **w/c 31 Aug** WooCommerce integration tests on Salesforce, blocked on
+  minuted · **w/c 31 Aug** WooCommerce integration tests on Salesforce, **now
+  live and still blocked** on
   [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
   · **1 Sept 10:00** [ROMI-PIENISSIMO] Follow-up Integrazione Anticipay,
-  client-facing · **2 Sept 10:00–11:30** [ROMI-PIENISSIMO] Follow-up Anagrafica
-  Articoli, client-facing, **new — invited 26 Aug 16:40Z** ·
-  [PIENISSIMO] Follow-up Interno is now a **weekly Monday 17:00 slot**.
+  client-facing — 🟢 its material **arrived 31 Aug**, so the call is now a
+  review, not a chase · **2 Sept 10:00–11:30** [ROMI-PIENISSIMO] Follow-up
+  Anagrafica Articoli, client-facing · **7 Sept 10:00–11:00** [PIENISSIMO] Interna
+  Flussi MKT, ROMI-internal (Elena Spini, Aurel Mrruku, Fabrizio Mastracci),
+  **new — invited 31 Aug 16:07Z**, first marketing session since 19 Aug and the
+  forum for [OI-81](notes/items/OI-81%20Event%20communication%20funnel.md)'s
+  undecided `30 vs 60` · [PIENISSIMO] Follow-up Interno is a **weekly Monday
+  17:00 slot**.
   [The compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)
   still governs.
 
@@ -291,7 +355,10 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    — both must carry the rule that
    [`_ARCOD` is an opaque string](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
 3. **Dated but unbuilt** — the
-   [standard Asset migration](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md),
+   [standard Asset migration](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md)
+   (🔴 **and now there is nothing to migrate from** — the source object was
+   deleted on 28 Aug with its 37 records, so this is a build from scratch, not a
+   mapping exercise),
    the [tranche](notes/items/OI-50%20Tranche%20object.md) **remainder**
    (object and Quote-side creation now built; propagation to Order Item,
    payment aggregation and tests are not),

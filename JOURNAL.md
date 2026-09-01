@@ -10,6 +10,55 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-08-31 — claude — nightly requirements-check: a destructive deploy took 37 records and 270 lines of unversioned code
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-08-28T22:00Z**
+  (from [the 28 Aug trace](notes/traces/Source%20trace%202026-08-28.md), by
+  `updated:`). Window 29–31 Aug; the 29th and 30th were a weekend and are empty
+  everywhere.
+- **State:** **one client mail, no meeting, and a second consecutive stranded org
+  check.** Drive zero, Fathom zero, `#tproj-pienissimo` silent since 28/08, canvas
+  unchanged and now five sessions behind.
+- **Finding 1 — 🔴🔴 `Biglietto__c` was deleted from the org with all 37 records,
+  and seven Apex components went with it that were never in source control.** An
+  `org-status-check` at 31/08 09:36–09:52Z found it and, for the second run
+  running, **published nothing**. The mechanism it said it could not establish was
+  one `git show` away: commit **`5d8cdb3`** (Anita Aga, 28/08 18:10 CEST) carries a
+  destructive-changes manifest. `git log --all` proves **none of the eight deleted
+  components ever existed in this repository on any branch** — so ~270 lines of the
+  DocuSign and PDF stack are gone from their only copy, code that had run (19 of
+  37 records carried an envelope id). The org check called this "drift resolved by
+  deletion from both sides"; **there were never two sides**, and I corrected that
+  reading in the record. Records were **not** migrated: Asset went 4 → 5. Recycle-bin
+  recovery closes about **12 September**.
+- **Finding 2 — 🟢 the Anticipay API documentation arrived four days early.** Andrea
+  Parmeggiani, 31/08 16:15Z, `Documentazione API – Salesforce.pdf`. Owed by 04/09.
+  First client commitment on this project met ahead of its date. **The PDF is
+  unread** — a sweep cannot open a Gmail attachment. Its mail body alone adds a new
+  contract fact: during the test period the middleware **serves only from the
+  Pienissimo cache and does not call Anticipay**, so a test-period `404` cannot be
+  told from a genuine not-found.
+- **Finding 3 — the same unversioned-code pattern is live on WooCommerce.** The
+  deployed `WoocommerceOrderService` is not in source control and the repo's
+  unshipped `WooCommerceOrderEndpoint` claims the same `urlMapping`; the duplicate
+  contract silently changed 409 → 200 + `duplicate: true` without telling Sabatino
+  Rinaldi; `INT-16` survived a full rewrite still unauthenticated.
+- **Next:** three things have dates. **Open the Anticipay PDF before the 01/09
+  10:00 call.** **Ask Anita Aga whether an export was taken** before ~12 Sept.
+  **Retrieve `WoocommerceOrderService` into `force-app/`** — one command, and it is
+  the largest uncovered class as well as the live endpoint.
+- **Watch:** ⚠ this sweep **did not open the org**; every build-state assertion is
+  attributed to the 31/08 run and dated. ⚠ **Coverage fell 1,769 → 1,571 and that
+  is not progress** — the whole difference is deleted code, no test was written;
+  never quote the improvement without that clause. ⚠ OI-66 is **superseded, not
+  done**. ⚠ The Biglietto deletion is a **ROMI-side incident** and was deliberately
+  **not** given a client-facing tracker row — whether it is disclosed is a human's
+  call, not a sweep's.
+- **Cost:** 9 notes updated, 3 created; both trackers (rows 66, 81, 94, 95, 102,
+  104), a new §22 in both recaps plus the §21.10 table corrected, MAP, INDEX,
+  trace. **No requirement changed**, so the register and both prose documents are
+  untouched.
+
 ## 2026-08-28 — claude — nightly requirements-check: a quiet night externally, five false claims corrected internally
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-08-27T22:00Z**

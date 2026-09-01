@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-26
+updated: 2026-08-31
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -70,3 +70,31 @@ first complete measurement of the tranche stack rather than as a regression.
 
 Nothing else moved. The floor is 75%; the org is at 0%. This stays **high**,
 stays **gating**, and stays one late task at Aurel Mrruku's request.
+
+## 2026-08-31 - org check: 1571 uncovered lines, still zero covered, and the drop is not progress
+
+Re-measured read-only against **Pienissimo UAT** by the `org-status-check` of
+09:36–09:52Z. **0 lines covered of 1,571, across 21 classes** — down from 1,769
+across 28.
+
+⚠ **Read the decrease correctly.** The whole of it is the seven Biglietto classes
+[deleted from the org on 28 August](Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
+**No test was written.** Coverage did not improve; the denominator shrank because
+code was destroyed. A summary that reports "1,769 → 1,571" as movement toward the
+floor would be wrong in the most misleading possible direction.
+
+Largest uncovered, first: `WoocommerceOrderService` **396**,
+`QuoteTrancheController` **386**, `LeadConversionQueueable` **148**.
+
+🔴 **The largest target is unversioned.** `WoocommerceOrderService` is the live
+WooCommerce endpoint and exists only in the org —
+[the deploy risk](Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md).
+It cannot be read from `force-app/`, so it cannot be tested from `force-app/`
+either. Retrieving it is a prerequisite of the test task, and it is a one-command
+prerequisite that nobody has run.
+
+⚠ The register still records `current: "1%"`. It has been 0% on every measurement
+since 25 August.
+
+The floor is 75%; the org is at 0%. This stays **high**, stays **gating**, and
+stays one late task at Aurel Mrruku's request. Nothing here proposes writing it.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-08-28
+updated: 2026-08-31
 blocks: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-06
@@ -100,3 +100,30 @@ The funnel screenshots owed under
 [OI-14](OI-14%20Marketing%20forms%20and%20subdomain.md) are still unconfirmed on
 every source this sweep reaches, and the 100+ form review is confirmed by the
 same post as **still outstanding**.
+
+## 2026-08-31 - a forum finally exists for both open questions
+
+🟢 Elena Spini scheduled **`[PIENISSIMO]- Interna Flussi MKT`** for **Monday 7
+September, 10:00–11:00 CEST** (invitation sent 31 August 16:07Z). Attendees:
+**Elena Spini, Aurel Mrruku and Fabrizio Mastracci** — ROMI-internal, no client
+present.
+
+This is the first marketing-flow session since **19 August**, and it is the
+natural place to close the two things this note has been carrying:
+
+1. **`30 vs 60`** — undecided while the flow is being built. One question to one
+   person, and it decides the trigger point of a flow already under construction.
+2. **The style constraint** — plain text, no header, no images, no buttons,
+   written as if from Giuliano personally. Never restated to the builder, and
+   Fabrizio Mastracci will be in the room.
+
+⚠ Both questions have a **client-side** dependency that this internal meeting
+cannot discharge: `30 vs 60` was Elisa Migliano's and Rebecca Marmo's to confirm
+with Matteo Distaso, and no source since 19 August records that happening. An
+internal decision on 7 September would be ROMI choosing on the client's behalf.
+That may be the right call this late — but it should be taken knowingly and
+minuted as such, not slipped in.
+
+⚠ Recorded from the calendar invitation alone. **No agenda was published**, so
+what this meeting will actually cover is not known — the two items above are what
+the record says *should* be on it, not what is.

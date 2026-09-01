@@ -6,7 +6,7 @@ any agent can budget before opening anything. Start at [MAP.md](MAP.md).
 Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 **Costly** = justify it. **Never** = do not load whole; grep instead.
 
-121 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
+143 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
 `#75` is `OI-75`.
 
 ## Cheap — load freely
@@ -27,7 +27,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
 | [The build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md)                                                   | **read this before any build claim** |
 | [The BundleComponent junction](notes/objects/The%20BundleComponent%20junction.md)                                                           | built, approved, in source control   |
-| [The Biglietto build](notes/objects/The%20Biglietto%20build.md)                                                                             | built, partly outside source control |
+| [The Biglietto build](notes/objects/The%20Biglietto%20build.md)                                                                             | **deleted from the org 28/08** - history only |
 | [Unrequested implementation in the org](notes/objects/Unrequested%20implementation%20in%20the%20org.md)                                     | stock scaffolding — do not re-flag   |
 | [The integration scaffolding has never been configured](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md) | deployed, zero configuration rows    |
 
@@ -44,8 +44,10 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 | Note                                                                                                                                                         | Severity          |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| [The Biglietto UAT ticket dataset was deleted](notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md)                           | **critical**      |
+| [The Biglietto Apex stack is not in source control](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)             | **critical**      |
+| [A clean deploy would orphan the live WooCommerce endpoint](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md) | high          |
 | [Production deploy is blocked by Apex coverage](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)                         | high              |
-| [The Biglietto Apex stack is not in source control](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)             | high              |
 | [The whole remaining build lands after Ferragosto](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)                   | high              |
 | [The ticket lifecycle has never run end to end](notes/risks/Risk%20-%20the%20ticket%20lifecycle%20has%20never%20run%20end%20to%20end.md)                     | high              |
 | [The phase 2 scope dispute is unresolved](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)                                     | high              |
@@ -60,7 +62,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | Note                                                                                                                                                        | Status                                             | Owner              |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------ |
 | [OI-64 bundle Apex suite broken](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md)                                                   | open · gating                                      | Aurel Mrruku       |
-| [OI-66 no tests on the Biglietto stack](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)                                         | open · gating                                      | ROMI               |
+| [OI-66 no tests on the Biglietto stack](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)                                         | **superseded 31/08** - the stack was deleted, not covered | ROMI        |
 | [OI-50 tranche object](notes/items/OI-50%20Tranche%20object.md)                                                                                             | open · gating                                      | ROMI               |
 | [OI-24 data model workbook](notes/items/OI-24%20Data%20model%20workbook.md)                                                                                 | open · gating                                      | Sabatino Rinaldi   |
 | [OI-79 migration volumes and mapping](notes/items/OI-79%20Migration%20volumes%20and%20mapping%20method.md)                                                  | open · gating                                      | Elisa Migliano     |
@@ -69,8 +71,8 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-90 whether to introduce a Prospect state](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md)                                       | open · 2 months silent                             | Sabatino Rinaldi   |
 | [OI-91 Aggiornamento Incasso button](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md)                                                               | open · new 19 Aug · reverses the state machine     | ROMI               |
 | [OI-92 Mexal Scadenziario as the trigger to reverse an asset](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md) | open · new 20 Aug · due at the 26 Aug Mexal review | Andrea Di Cicco    |
-| [OI-94 Anticipay is called through the Pienissimo middleware](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)     | open · new 25 Aug · blocks the VAT build           | Andrea Parmeggiani |
-| [OI-95 which Anticipay fields land in Salesforce](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)                               | open · new 25 Aug · client-owned                   | Fabrizio Paganelli |
+| [OI-94 Anticipay is called through the Pienissimo middleware](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)     | open · **API doc arrived 31/08, unread**           | Andrea Parmeggiani |
+| [OI-95 which Anticipay fields land in Salesforce](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)                               | open · prerequisite met 31/08 · client-owned       | Fabrizio Paganelli |
 | [OI-96 edition mapping table on Salesforce](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)                                             | open · new 26 Aug · replaces the active-child rule | Aurel Mrruku       |
 | [OI-97 fiscal residence on the customer registry](notes/items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)                               | open · new 26 Aug · blocks customer creation       | Andrea Di Cicco    |
 | [OI-98 the Mexal article registry is being re-created](notes/items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)                   | open · new 26 Aug · client-owned                   | Fabrizio Paganelli |

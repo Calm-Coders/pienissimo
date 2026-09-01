@@ -20,8 +20,13 @@ if (args.help) {
   process.exit(0);
 }
 if (!args["target-org"]) throw new Error("--target-org is required");
-if (!/^[A-Za-z0-9._@+-]+$/.test(args["target-org"])) {
-  throw new Error("--target-org must be a Salesforce alias or username");
+// Salesforce aliases may contain spaces — this project's own is "Pienissimo
+// UAT" — so the guard rejects shell metacharacters rather than whitespace.
+if (!/^[A-Za-z0-9._@+ -]+$/.test(args["target-org"])) {
+  throw new Error(
+    "--target-org must be a Salesforce alias or username (letters, digits, " +
+      "space, and . _ @ + -)"
+  );
 }
 
 const projectRoot = process.cwd();
@@ -82,8 +87,12 @@ const objects = inferObjects(repository, verification);
 const unavailableFieldObjects = [];
 const checkedFieldObjects = [];
 for (const object of objects) {
+  // FieldDefinition exposes no IsUnique or IsExternalId column; selecting them
+  // makes the whole query fail with INVALID_FIELD, which is how field
+  // inventory for every object degraded to "unavailable". Uniqueness needs
+  // EntityParticle or a describe, so it is deliberately not claimed here.
   const query =
-    "SELECT EntityDefinition.QualifiedApiName, QualifiedApiName, DataType, IsNillable, IsUnique, IsExternalId " +
+    "SELECT EntityDefinition.QualifiedApiName, QualifiedApiName, DataType, IsNillable, IsIndexed, IsCalculated " +
     `FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = '${object}' ORDER BY QualifiedApiName`;
   const response = runSfJson(
     [
@@ -123,8 +132,8 @@ for (const object of objects) {
       facts: {
         type: record.DataType || null,
         nillable: record.IsNillable ?? null,
-        unique: record.IsUnique ?? null,
-        external_id: record.IsExternalId ?? null
+        indexed: record.IsIndexed ?? null,
+        calculated: record.IsCalculated ?? null
       }
     });
   }
@@ -147,16 +156,11 @@ for (let index = 0; index < customFields.length; index += 40) {
   const query =
     "SELECT Field, ParentId, Parent.Name, Parent.Profile.Name, PermissionsRead, PermissionsEdit " +
     `FROM FieldPermissions WHERE Field IN (${quoted})`;
+  // FieldPermissions is a standard object on the Data API. Querying it through
+  // --use-tooling-api fails with "sObject type not supported", which silently
+  // emptied every FLS grant and made operability unassessable.
   const response = runSfJson(
-    [
-      "data",
-      "query",
-      "--use-tooling-api",
-      "--target-org",
-      targetOrg,
-      "--query",
-      query
-    ],
+    ["data", "query", "--target-org", targetOrg, "--query", query],
     { projectRoot, allowFailure: true }
   );
   if (!response.ok) {
@@ -191,16 +195,9 @@ for (let index = 0; index < objects.length; index += 40) {
   const query =
     "SELECT SobjectType, ParentId, Parent.Name, Parent.Profile.Name, PermissionsRead, PermissionsCreate, PermissionsEdit, PermissionsDelete " +
     `FROM ObjectPermissions WHERE SobjectType IN (${quoted})`;
+  // ObjectPermissions is likewise a Data API object, not a Tooling one.
   const response = runSfJson(
-    [
-      "data",
-      "query",
-      "--use-tooling-api",
-      "--target-org",
-      targetOrg,
-      "--query",
-      query
-    ],
+    ["data", "query", "--target-org", targetOrg, "--query", query],
     { projectRoot, allowFailure: true }
   );
   if (!response.ok) {
@@ -318,3 +315,25 @@ console.log(
     coverage_percent: coverage?.percent ?? null
   })
 );
+
+// A snapshot that reached the org but answered none of its field or coverage
+// questions still exits 0, and every dependent row degrades to "unverifiable"
+// rather than failing. That is the correct verdict but a poor signal, so say so
+// loudly: wholesale unavailability means a broken instrument, not a bare org.
+if (
+  checkedFieldObjects.length &&
+  !checkedFieldObjects.some((object) =>
+    unavailableFieldObjects.every((entry) => entry.object !== object)
+  )
+) {
+  console.warn(
+    `warning: every FieldDefinition query failed (${unavailableFieldObjects.length} objects). ` +
+      "Field existence, FLS and drift cannot be judged from this snapshot — " +
+      "treat those rows as unverifiable and fix the instrument before reporting."
+  );
+}
+if (!coverageResponse.ok) {
+  console.warn(
+    "warning: Apex coverage query failed; NFR-06 cannot be judged from this snapshot."
+  );
+}

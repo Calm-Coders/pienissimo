@@ -34,11 +34,15 @@ Use Tooling API instead:
 
 ```sql
 SELECT EntityDefinition.QualifiedApiName, QualifiedApiName, DataType,
-       IsNillable, IsUnique, IsExternalId
+       IsNillable, IsIndexed, IsCalculated
 FROM FieldDefinition
 WHERE EntityDefinition.QualifiedApiName = '<Object>'
 ORDER BY QualifiedApiName
 ```
+
+`FieldDefinition` has no `IsUnique` or `IsExternalId` column; selecting either
+fails the whole query with `INVALID_FIELD`. Read uniqueness from
+`EntityParticle` or a describe when a requirement actually turns on it.
 
 Then query field visibility and the matching object's access for the same
 permission principal:
