@@ -105,3 +105,57 @@ the integration slips past the **10 September** end of Fase 1 development.
 `STATUS.md` or [site/](../../site/) — see
 [the publishing rules](../../docs/publishing.md) and
 [the contract](../The%20Anticipay%20middleware%20API%20contract.md).
+
+## 2026-09-01 - the decision went the other way, and this note was never in the room
+
+**The [1 September call](../meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
+decided the field selection and took all five legal-representative fields onto
+the Account** — see
+[OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md).
+
+⚠ **Be precise about what happened: this was not a rejection.** The
+recommendation above was written the same day and the personal-data question was
+**never raised by anyone in the twenty minutes**. The room was mapping fields,
+not weighing a processing decision. Recording it as "the client considered and
+declined" would be a fabrication.
+
+### 🟢 One of the five questions now has an answer
+
+_"What is each personal field for?"_ has its first real answer on the record.
+**Elisa Migliano: the legal representative's details are _"fondamentale per la
+firma dei contratti"_** — contract signature. That is a legitimate, specific
+purpose, it is the operational authority on administration saying it, and it
+plainly justifies **the name**.
+
+🔴 **It does not, on its face, justify the other four.** Signing a contract needs
+to identify the signatory; it is not obvious why it needs the signatory's
+**date of birth, place of birth, codice fiscale and home address**, and no one
+gave a reason for those individually. That is now the sharpened question — not
+"why any of this", but **"why these four"**.
+
+### What is still entirely unaddressed
+
+Unchanged and unmentioned in the call:
+
+- **Retention.** Still nothing. The three-month rule covers error codes only.
+- **Lawful basis**, and whether Pienissimo's own basis extends to ROMI's copy.
+- **Field-level security.** The fields are now confirmed to be going **onto the
+  Account**, which Pienissimo administration reads routinely — the exact exposure
+  this note flagged — and the meeting discussed layout not once.
+- **Erasure** under the `consolidato` freeze.
+
+### The ask, revised
+
+The build should proceed — this was never a reason to stall it, and OI-95 is now
+resolved. But **the four unjustified fields are cheap to revisit before they are
+created and expensive afterwards**, because a populated field is a processing
+record and an empty one is a decision.
+
+**Elena Spini**: this needs five minutes at the **data-model call** Elena Spini
+herself agreed to organise at the same meeting — which is the natural forum,
+already exists as an action, and has no date. Ask for one purpose sentence per
+personal field, and a retention. If the answer for a field is "in case it is
+useful", that is the answer OI-108 exists to catch.
+
+Status stays `open`. The field selection is resolved; the processing question it
+raised is not.

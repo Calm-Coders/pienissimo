@@ -202,3 +202,53 @@ September session or the weekly internal.
 plan and the 25 August session all place Anticipay in **Fase 1**. Not corrected
 today: it is a signed document and changing it means moving `REQUIREMENTS.md` and
 `REQUISITI.it.md` together. Raise with Elena Spini.
+
+## 2026-09-01 - one blocker discharged, and a requirement question answered sideways
+
+**The [1 September follow-up](../meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
+moved two of the three rows in the table above.**
+
+🟢 **The write-back row is closed.** All eleven fields are decided and land on the
+Account — [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)
+is `resolved`. The undated client action that has blocked this since 25 August is
+gone.
+
+🔴 **The unhappy-path row is unchanged and is now the only technical blocker.**
+The error response bodies were **not discussed at the call at all**; only the
+`200` happy path was confirmed. Everything in
+[OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)
+stands.
+
+⚠ **The manual re-check row is unchanged.** Cache TTL and bypass were not raised.
+The one adjacent fact gained is that **the test environment is free and
+uncapped** — _"non ci sono costi, possiamo fare chiamate a piacere"_ — which says
+nothing about production, where the cost argument that created the middleware
+still applies.
+
+### 🔴 Foreign VAT numbers cannot be validated at all, and this settles half of INT-18
+
+Andrea Parmeggiani, unprompted and in passing:
+
+> _"Diamo per scontato che la richiesta facciamo solo per aziende italiane perché
+> Anticipay dà i dati solo per aziende italiane. Quindi la nazione non l'ho
+> inserita perché è scontato che sia Italia, altrimenti torna sempre non
+> trovato."_
+
+Three consequences, none of them discussed in the room:
+
+1. **`nazione` is deliberately absent from the payload.** It is not an omission to
+   query.
+2. **A non-Italian VAT number returns `404`** — the same code as an unknown
+   Italian company, and (during the test period) the same code as a cold cache.
+   That is now **three distinct meanings on one status code**, and the agreed
+   design puts all of them in one notification bucket.
+3. ⚠ **`INT-18` is _"Anticipay VAT check timing and foreign-VAT handling"_.** The
+   foreign-VAT half is not deferred to phase 2 — **it is not deliverable through
+   this integration in any phase.** Whatever Pienissimo does with a foreign
+   customer today, it will keep doing manually.
+
+**Nobody connected the remark to the requirement.** This sharpens the register
+contradiction noted above rather than replacing it: `INT-18` now needs its
+*scope* corrected as well as its *phase*, and both are changes to a signed
+document. **Still Elena Spini's to raise** — not corrected here, for the same
+reason as before.

@@ -287,3 +287,48 @@ mostly personal data. OI-95 already recorded the retention question as
 [the Mexal mapping workbook](The%20Mexal%20integration%20mapping%20workbook.md)
 and [the WooCommerce payload](The%20WooCommerce%20payload%20contract.md). This note
 describes fields only.
+
+## What the 1 September call added to the document
+
+The [follow-up session](meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
+ran the same morning this note was written, and settles four things the document
+left open or silent. **Where the two disagree, the call is later.**
+
+| Point                     | The document                              | The call                                                                                   |
+| ------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Happy-path status         | `200`                                     | ✅ confirmed out loud by Andrea Parmeggiani                                                 |
+| `:env` split              | a path parameter, provenance unexplained  | 🟢 **agreed in this call**, proposed by Aurel Mrruku; v2 mailed 2.5 h later                 |
+| One token, both envs      | stated, unexplained                       | 🟢 **deliberate** — asked outright, answered _"sì, sì"_ ([OI-106](items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md)) |
+| Test-mode cost and limits | not mentioned                             | 🟢 **free, no call limit** — _"non ci sono costi, possiamo fare chiamate a piacere"_        |
+| Production config         | not mentioned                             | **identical to test**, save that the middleware then forwards to Anticipay                  |
+
+### 🔴 The scope limit the document never states
+
+**Anticipay returns data for Italian companies only.** Andrea Parmeggiani:
+_"la nazione non l'ho inserita perché è scontato che sia Italia, altrimenti torna
+sempre non trovato."_
+
+So the absent `nazione` field is a **deliberate design fact, not an omission**,
+and `404` now carries **three distinct meanings** on this endpoint:
+
+1. the company is genuinely unknown to Anticipay;
+2. the company is not yet in the Pienissimo cache (test period only);
+3. **the VAT number is not Italian**, and never will be resolvable.
+
+The agreed error protocol gives `404` one meaning and one notification. Recorded
+against [OI-73](items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md),
+where it also answers the foreign-VAT half of `INT-18` in the negative.
+
+### Every field now has a landing place
+
+The _"nine of eleven fields have nowhere to land"_ gap recorded above is closed as
+a **decision**, not as built metadata:
+[OI-95](items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) takes
+all eleven onto `Account` — PEC and the five legal-representative fields as new
+custom fields, the representative's address as **one free-text field**. None of
+them exist in the org yet.
+
+⚠ **Still undocumented and still unasked after the call:** the error response
+body, production rate limits and timeouts, the cache TTL, how the manual re-check
+bypasses the cache, and the date `env=test` starts forwarding. The call did not
+touch any of them.

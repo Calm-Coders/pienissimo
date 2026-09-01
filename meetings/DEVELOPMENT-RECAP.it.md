@@ -1734,3 +1734,187 @@ lavorativi da adesso, e i punti 1 e 2 sono ciò che la build aspetta.
 🔴 **Il passo successivo è analizzare il verbale del 1 settembre**, non inviare
 domande. Finché la registrazione e gli appunti Gemini non sono letti, nessuno sa
 quali dei sei punti siano ancora aperti.
+
+## 24. Aggiornamento 01/09/2026 (sera) — la call di follow-up, analizzata la sera stessa
+
+L'indicazione con cui si chiudeva il §23 era di analizzare il verbale del
+1 settembre prima di sollecitare qualsiasi cosa. **È stato fatto.** Appunti
+Gemini, trascrizione integrale e registrazione sono stati letti tutti la sera del
+1 settembre. La call è durata ~20 minuti dalle 10:02 CEST con Elena Spini, Aurel
+Mrruku (ROMI), Andrea Parmeggiani (Pienissimo Software) ed Elisa Migliano.
+Fabrizio Paganelli era invitato e viene interpellato due volte in riunione ma non
+interviene mai; la sua presenza resta incerta.
+
+### 24.1 🟢 La selezione dei campi è decisa, e la risposta è "tutti"
+
+**Il #95 è risolto.** L'azione che Fabrizio Paganelli ed Elisa Migliano
+detenevano **senza data dal 25 agosto** — per la quale tre sweep consecutivi
+raccomandavano di sollecitare una data — è stata assolta in riunione. Aurel
+Mrruku ha percorso il punto 6 della documentazione campo per campo e **tutti e
+undici i campi sono stati presi**.
+
+| Campo                                    | Destinazione                                                  |
+| ---------------------------------------- | ------------------------------------------------------------- |
+| `ragione_sociale`                        | `Account.Name`                                                |
+| `indirizzo`, `citta`, `provincia`, `cap` | il blocco indirizzo di fatturazione standard                  |
+| `pec`                                    | **un nuovo campo dedicato sull'Account**                      |
+| `nome_legale_rappresentante`             | **un nuovo campo di testo sull'Account**                      |
+| `codice_fiscale_legale_rappresentante`   | **un nuovo campo sull'Account**                               |
+| `data_di_dascita_legale_rappresentante`  | **un nuovo campo sull'Account**, refuso della chiave incluso  |
+| `luogo_nascita_legale_rappresentante`    | **un nuovo campo sull'Account**                               |
+| `indirizzo_legale_rappresentante`        | **un unico campo di testo**, non un indirizzo strutturato     |
+
+Dentro quella decisione stanno due scelte di struttura:
+
+- **Il legale rappresentante va sull'Account, non su un Contact.** Aurel Mrruku
+  aveva proposto un record Contact tipizzato; Elisa Migliano ha deciso
+  diversamente, perché il dato è _"fondamentale per la firma dei contratti"_. Lui
+  ha accettato mettendo però a verbale una riserva: campi piatti sull'Account non
+  conservano storico, e il cambio di un amministratore è un evento ordinario.
+- **L'indirizzo della persona è un unico campo di testo.** Andrea Parmeggiani:
+  _"non è importante che salviamo il CAP del legale rappresentante"_. Si noti
+  l'asimmetria: l'indirizzo **aziendale** è strutturato, quello **personale** no.
+
+🔴 **Questo sblocca la build della verifica P.IVA (#73) e insieme impegna sei
+campi di lavoro non stimato** — creazione, layout e field-level security — a nove
+giorni dalla fine dello sviluppo Fase 1 del 10 settembre.
+
+### 24.2 🟢 La suddivisione degli ambienti è nata in questa call, e il token unico è deliberato
+
+Aurel Mrruku ha proposto **due path distinti**, così che il test continuativo non
+tocchi mai la produzione. Andrea Parmeggiani ha acconsentito seduta stante —
+_"facciamo due path diversi"_ — e ha inviato i path definitivi **2,5 ore dopo**.
+Quella è la v2 della documentazione, e chiude la domanda aperta nel §23: il
+parametro `:env` è un **esito** di questa sessione, confermato e non più dedotto.
+
+Sul token, la domanda del **#106** è stata posta esplicitamente e ha avuto
+risposta:
+
+> **Aurel Mrruku:** _"si può usare anche lo stesso token perché praticamente
+> l'ambiente è lo stesso?"_ — **Andrea Parmeggiani:** _"sì, sì."_
+
+**Due path, un token, per scelta.** La motivazione è coerente — i due ambienti
+condividono il database — e trasforma il #106 da lacuna non notata in una
+decisione presa consapevolmente da entrambe le parti. Assolve inoltre l'azione
+sull'ambiente di test del 25 agosto nel modo più esplicito che questo progetto
+otterrà. 🔴 Resta aperto, in forma più circoscritta: **la rotazione prima del
+go-live**, nel presupposto che un valore inviato a sei indirizzi sia già
+divulgato. Rotazione e scadenza non sono state discusse affatto.
+
+Definiti anche: l'**ambiente di test è gratuito e senza limiti** (_"non ci sono
+costi, possiamo fare chiamate a piacere"_), la **produzione ha configurazione
+identica** salvo l'inoltro ad Anticipay, e l'**happy path è `200`**, confermato a
+voce.
+
+### 24.3 🔴 Anticipay copre solo aziende italiane — e questo risponde a un requisito
+
+Andrea Parmeggiani, spontaneamente e di sfuggita:
+
+> _"Diamo per scontato che la richiesta facciamo solo per aziende italiane perché
+> Anticipay dà i dati solo per aziende italiane. Quindi la nazione non l'ho
+> inserita perché è scontato che sia Italia, altrimenti torna sempre non
+> trovato."_
+
+Dunque `nazione` è **deliberatamente assente** dal payload, e **una P.IVA non
+italiana restituisce sempre `404`** — lo stesso codice di un'azienda italiana
+sconosciuta e, durante il periodo di test, lo stesso codice di una cache fredda.
+**Tre significati distinti su un solo status code**, contro un protocollo
+concordato che al `404` assegna un significato e una notifica.
+
+⚠ `INT-18` recita _"Anticipay VAT check timing and **foreign-VAT handling**"_. La
+parte sulle P.IVA estere non è rinviata alla fase 2 — **non è realizzabile
+attraverso questa integrazione in nessuna fase**. Nessuno in riunione ha collegato
+l'osservazione al requisito. Questo acuisce la contraddizione già registrata nel
+§23: `INT-18` necessita ora di una correzione di **ambito** oltre che di **fase**,
+ed entrambe sono modifiche a un documento firmato. Resta a Elena Spini sollevarla.
+
+### 24.4 Ciò che la call non ha toccato
+
+Quattro delle sei domande derivate nel §23 **non sono mai state poste**:
+
+| Domanda                               | Dopo la call                                                        |
+| ------------------------------------- | ------------------------------------------------------------------- |
+| Il **body delle risposte di errore**  | 🔴 ancora aperto — l'ultimo blocco tecnico alla build               |
+| Quali campi, e con che data           | 🟢 chiusa — tutti e undici, sopra                                   |
+| Il token — uno o due                  | 🟢 chiusa — uno, deliberatamente                                    |
+| La data in cui `env=test` inoltra     | 🔴 ancora aperta, mai menzionata                                    |
+| Il refuso `dascita` (#105)            | 🔴 ancora aperto — e la sua via d'uscita si è chiusa                |
+| Limiti di chiamata, timeout, TTL      | ⚠ a metà — il test è gratuito e illimitato; **la produzione no**    |
+
+**Sollecitare tre cose, non sei.** Riproporre le due chiuse costerebbe
+credibilità.
+
+Sul **#105**: la nota sosteneva che il refuso potesse chiudersi da sé se la data
+di nascita fosse stata scartata. Viene memorizzata, e nessuno ha guardato i nomi
+delle chiavi — quindi il punto resta, più urgente di quando è stato scritto.
+Indicazione pratica nel frattempo: **sviluppare sulla chiave errata come
+documentata, mantenendo corretto il nome del campo Salesforce**, così che una
+correzione futura costi una riga di mappatura e non una rinomina in org.
+
+### 24.5 🔴 La questione dei dati personali non è stata sollevata, e la decisione è andata in senso opposto
+
+Il **#108** raccomandava di conservare il blocco aziendale e scartare quello
+personale. La riunione ha portato tutti e cinque i campi del legale
+rappresentante sull'Account.
+
+⚠ **Non è un rifiuto.** La domanda non è mai stata posta nei venti minuti;
+registrarla come "valutata e respinta" sarebbe falso.
+
+🟢 **Un campo ha ora una finalità a verbale** — la prima che il record possieda.
+Elisa Migliano: il legale rappresentante è _"fondamentale per la firma dei
+contratti"_. Questo giustifica chiaramente **il nome**.
+
+🔴 **Non giustifica gli altri quattro.** Firmare un contratto richiede di
+identificare il firmatario; non è evidente perché richieda **data di nascita,
+luogo di nascita, codice fiscale e indirizzo di residenza** del firmatario, e
+nessuno di questi ha avuto una motivazione puntuale. Conservazione, base
+giuridica, **field-level security** — i campi vanno sull'Account, letto
+abitualmente dall'amministrazione Pienissimo, esattamente l'esposizione segnalata
+dal #108 — e cancellazione non sono stati menzionati.
+
+La richiesta rivista è piccola: **cinque minuti alla call sul data model**, una
+frase di finalità per ogni campo personale, e un tempo di conservazione.
+
+### 24.6 Novità emerse dalla call
+
+- **#109 — il codice destinatario SDI.** Elisa Migliano ha chiesto se il
+  middleware possa restituirlo: un **dodicesimo** campo, non presente nel
+  contratto documentato. Ha detto lei stessa che non è critico (le fatture vanno
+  via PEC), ma su Mexal c'è _"una valanga di clienti dove lo SDI non è
+  valorizzato"_, il che ne fa un guadagno di qualità del dato sull'anagrafica
+  as-is. ⚠ La prima impressione di Andrea Parmeggiani è che **non sia
+  disponibile**. Non deve ritardare gli undici.
+- **Una call sul data model, dovuta da Elena Spini, senza data.** L'ha chiesta
+  esplicitamente — _"ancora non abbiamo ricevuto niente"_ — ed Elisa Migliano vi
+  ha subito rinviato altro materiale, nominando il **tipo fatturazione
+  elettronica**. È la sede naturale per il workbook dovuto da luglio e per il
+  §24.5.
+- 🔴 **Un'azione senza collocazione: spegnere la chiamata di test al go-live.**
+  L'ha sollevata Aurel Mrruku stesso, poiché due configurazioni identiche
+  rischiano di far partire lookup di produzione a pagamento dalla corsia di test.
+  _"Lo mettiamo nei punti da tracciare."_ È tracciata nella nota di riunione e in
+  nessun altro luogo.
+
+### 24.7 L'anagrafica articoli si è mossa, e il materiale non è stato letto
+
+Indipendentemente dalla call, **Fabrizio Paganelli ha inviato `Anagrafica
+Articoli.xlsx` il 01/09 alle 14:04Z** a Elena Spini, Aurel Mrruku e Andrea Di
+Cicco, per la sessione **2 settembre** _Follow-up Anagrafica Articoli_: un
+estratto dell'anagrafica articoli **con i soli corsi**, più _"una ipotesi di
+nuovi codici da gestire solo nei bundle"_ e _"un paio di domande"_ rivolte a ROMI
+per un parere.
+
+🟢 È il primo materiale lato cliente sul **#48** dal 26 agosto e il primo esito
+tangibile della ricreazione dell'anagrafica (**#98**).
+
+🔴 **Non è stato letto** — una scansione automatica non può aprire un allegato
+Gmail — quindi non si conosce nulla oltre il corpo della mail: né il numero di
+codici, né la convenzione, né se corrisponda allo schema gemello A/B che
+Fabrizio Paganelli stesso aveva nominato, né quali siano le sue domande. ⚠ È un
+**estratto**, e la formulazione non dice se si tratti dei codici **nuovi** o di
+quelli **attuali** in revisione.
+
+**È la terza volta che questa stessa lacuna costa una giornata**, dopo il payload
+WooCommerce del 27 agosto e il PDF delle API del 31 agosto — entrambi i quali,
+una volta aperti a mano, hanno prodotto scoperte che nessuna inferenza aveva
+generato. **Serve prima della riunione del 2 settembre, non dopo.**

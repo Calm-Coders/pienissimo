@@ -263,3 +263,47 @@ send questions. The recording and Gemini notes are on the calendar event
 (`2j4tg4tglt9iei6285jfn8i62s`); until they are read, nobody knows which of the six
 are still open — and a chase for something already settled in the room costs more
 credibility than it saves time.
+
+## 2026-09-01 (evening) - the minute was drilled; two of the six are closed
+
+✅ **The instruction directly above is discharged.** The Gemini notes, the full
+transcript and the recording of the
+[1 September follow-up](../meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
+were all read the same night. The call ran ~20 minutes from 10:02 CEST with Elena
+Spini, Aurel Mrruku, Andrea Parmeggiani and Elisa Migliano.
+
+**Score against the six questions:**
+
+| #   | Question                            | Outcome                                                                                                                                  |
+| --- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | The error response body             | 🔴 **still open, and never mentioned.** Only the `200` happy path was confirmed. This is now the single technical blocker on the build.  |
+| 2   | Which fields, and a date            | 🟢 **closed — all eleven, decided in the room.** [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) is resolved.    |
+| 3   | The token — one or two              | 🟢 **closed: one, deliberately.** Asked outright and confirmed — [OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md). |
+| 4   | The date `env=test` goes pass-through | 🔴 **still open, never mentioned.**                                                                                                    |
+| 5   | The `dascita` typo                  | 🔴 **still open** — nobody noticed it, and the field is now being built against the misspelled key.                                      |
+| 6   | Rate limits, timeout, cache TTL     | ⚠ **half.** Test is free and unlimited; **production was not discussed at all.**                                                        |
+
+**So chase three things, not six** — the error bodies, the pass-through date, and
+the typo. Questions 2 and 3 are settled and re-asking them would cost credibility.
+
+### What the call added that no document had
+
+- 🔴 **Anticipay serves Italian companies only.** `nazione` is deliberately absent
+  and a foreign VAT always returns "not found". That answers the foreign-VAT half
+  of `INT-18` in the negative and nobody in the room noticed the connection —
+  recorded in [OI-73](OI-73%20VAT%20validation%20moves%20into%20Salesforce.md).
+- 🟢 **The `:env` split was invented in this call**, by Aurel Mrruku, and Andrea
+  Parmeggiani mailed the paths 2.5 hours later. The 31 August/1 September reading
+  that v2 was an *outcome* of the session is **confirmed**, not inferred.
+- ⚠ **A new field candidate**: the codice destinatario SDI,
+  [OI-109](OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md).
+- ⚠ **A new meeting owed**: Elena Spini agreed to organise a dedicated data-model
+  call — _"ancora non abbiamo ricevuto niente"_ — with **no date set**.
+- 🔴 **An action with no home**: switching the test-environment call off at
+  go-live. Aurel Mrruku raised it and said _"lo mettiamo nei punti da tracciare"_;
+  this note and the meeting note are the only places it is tracked.
+
+⚠ **The entity question remains untouched by all of this** — see the section
+above. A Fase 1 integration still depends on Pienissimo Software Srl building,
+hosting and running a service, and twenty minutes of field mapping did not go
+near who owns its uptime after the project closes.

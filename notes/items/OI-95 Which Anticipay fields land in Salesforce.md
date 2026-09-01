@@ -1,7 +1,7 @@
 ---
 id: OI-95
 type: open-item
-status: open
+status: resolved
 owner: Fabrizio Paganelli
 with: Elisa Migliano
 org: Pienissimo
@@ -9,7 +9,7 @@ raised: 2026-08-25
 updated: 2026-09-01
 depends_on: [OI-94, OI-108]
 blocks: [OI-73]
-source: notes/meetings/2026-08-25 Integrazione Anticipay.md
+source: notes/meetings/2026-09-01 Follow-up Integrazione Anticipay.md
 ---
 
 # OI-95 - Which Anticipay fields land in Salesforce
@@ -162,3 +162,69 @@ the action since 25 August with **no date on it**, and who have had the field
 list since 31 August. Both are on the mail thread.
 
 **Get a date at the 1 September call.** That is the entire ask.
+
+## ✅ 2026-09-01 - resolved in the room, and the answer is "all of them"
+
+**The [1 September follow-up](../meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
+took the decision.** The advice one section above was to get a *date*; the call
+produced the *decision* instead. Aurel Mrruku walked point 6 of the
+documentation field by field with Elisa Migliano and Andrea Parmeggiani, and
+**every one of the eleven fields is taken.**
+
+| Field                                    | Lands on                                                          |
+| ---------------------------------------- | ----------------------------------------------------------------- |
+| `ragione_sociale`                        | `Account.Name`                                                    |
+| `indirizzo`, `citta`, `provincia`, `cap` | the standard billing address block                                |
+| `pec`                                    | **a new dedicated field on Account**                              |
+| `nome_legale_rappresentante`             | **a new text field on Account**                                   |
+| `codice_fiscale_legale_rappresentante`   | **a new field on Account**                                        |
+| `data_di_dascita_legale_rappresentante`  | **a new field on Account** — still carrying the [misspelled key](OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md) |
+| `luogo_nascita_legale_rappresentante`    | **a new field on Account**                                        |
+| `indirizzo_legale_rappresentante`        | **one single free-text field**, not a structured address          |
+
+### The two shape rulings
+
+- **On the Account, not on a Contact.** Aurel Mrruku proposed a typed Contact
+  record for the legal representative. **Elisa Migliano overruled it** — the data
+  _"andrebbero messe all'interno dell'account… perché poi dopo il tema del legale
+  rappresentante è fondamentale per la firma dei contratti."_ Aurel Mrruku
+  accepted while recording a reservation: _"lo vedo come una struttura più
+  complessa dei semplicemente dei campi sull'account, ma fa niente, **per il
+  momento**."_ The reservation is worth keeping — a director changing is a
+  perfectly ordinary event and flat Account fields have no history.
+- **The person's address is one text field.** Andrea Parmeggiani: _"non è
+  importante che salviamo il CAP del legale rappresentante. Va bene un testo
+  tutto completo."_ Note the asymmetry: the **company** address is structured,
+  the **person's** is not.
+
+### 🔴 The recommendation in OI-108 was not taken, and it was never discussed
+
+[OI-108](OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md)
+recommended **storing the company block and dropping the person block**. The room
+took the person block in full. The personal-data question **was not raised by
+anyone** in the twenty minutes.
+
+⚠ It is not accurate to call that a rejection. Elisa Migliano supplied, for the
+first time in the record, **a stated business purpose** — contract signature —
+which is exactly what OI-108 asked for (_"if a field has no stated purpose, the
+answer is to not store it"_). One field now has a purpose on the record. **Four
+still do not**: codice fiscale, date of birth, place of birth and home address
+were never individually justified, and retention, lawful basis, field-level
+security and erasure were not mentioned. See OI-108 for what remains.
+
+### What this unblocks, and what it now costs to build
+
+🟢 **The build can start.** This item has blocked
+[OI-73](OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) since 25 August
+and no longer does.
+
+🔴 **But the "unestimated work" flagged above is now committed work.** Account
+carries three custom fields today; this decision adds **six more** —
+PEC plus five legal-representative fields — each needing creation, page-layout
+placement and field-level security, on top of the callout itself. That was true
+of any outcome except the OI-108 recommendation, but it is now real and it lands
+with **nine days** before Fase 1 development ends on 10 September.
+
+⚠ A **twelfth** field may yet arrive:
+[OI-109](OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md),
+the codice destinatario SDI. Do not wait for it — build the eleven.

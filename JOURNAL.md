@@ -10,6 +10,46 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-01 — claude — nightly requirements-check: the Anticipay follow-up drilled, and OI-95 is resolved
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark
+  **2026-08-31T22:00Z**. ⚠ **Not** from the newer
+  [01/09 Anticipay drill trace](notes/traces/Source%20trace%202026-09-01%20Anticipay%20API%20drill.md),
+  which is newest by `updated:` but **disclaims itself as a watermark in its own
+  first line**. Selecting mechanically by frontmatter would have skipped the
+  31/08 → 01/09 window entirely. Then drilled the **01/09 Anticipay follow-up** —
+  Gemini notes, notes document and **the full 19m49s transcript**.
+- **State:** the meeting the last trace called _"the single most valuable thing
+  outstanding"_ is in the record
+  ([the minute](notes/meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)),
+  and it **resolved [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)**:
+  all eleven middleware fields land on `Account`, the legal representative on the
+  Account rather than a Contact, his address as one free-text field. The `:env`
+  split was **invented in that call** (v2-as-outcome now confirmed, not
+  inferred); the **shared token is deliberate** (OI-106, asked outright);
+  **Anticipay serves Italian companies only**, which answers the foreign-VAT half
+  of `INT-18` in the negative and which nobody in the room noticed (OI-73). Four
+  of six open questions were **never raised**. New: **OI-109** (codice
+  destinatario SDI) and a
+  [risk note on org access](notes/risks/Risk%20-%20the%20team%20lost%20access%20to%20the%20Pienissimo%20orgs%20on%201%20September.md).
+  Eight notes updated, three created; rows 48/94/95/98/105/106/108 + new 109 in
+  both trackers; §24 in both recaps. **No requirement changed.**
+- **Next:** ⚠ **`Anagrafica Articoli.xlsx`** — Fabrizio Paganelli's 01/09 14:04Z
+  attachment carrying the bundle-only code proposal and questions addressed to
+  ROMI — **is unread and the meeting it was prepared for is 2 September.**
+  Somebody has to download it by hand, as with the WooCommerce payload and the
+  API PDF. Then chase **three** Anticipay questions, not six: the error response
+  bodies, the pass-through date, the `dascita` typo.
+- **Watch:** 🔴 **Do not record OI-108 as "the client considered and declined".**
+  The personal-data question was **never raised** in the call; the room took all
+  five person fields without it being asked. One field now has a stated purpose
+  (contract signature), four do not. ⚠ Also: **org access failed for both Aurel
+  Mrruku and Elena Spini on the morning of 01/09 and nothing written says it was
+  restored** — the two decaying findings (Biglietto recycle bin ~12 Sept, the
+  unversioned `WoocommerceOrderService`) can only be worked from inside that org.
+  ⚠ Housekeeping: the 01/09 drill's own entry sits at the **bottom** of this file
+  rather than the top, against the newest-first rule. Left in place, not moved.
+
 ## 2026-08-31 — claude — nightly requirements-check: a destructive deploy took 37 records and 270 lines of unversioned code
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-08-28T22:00Z**

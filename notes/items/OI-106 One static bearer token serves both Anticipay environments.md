@@ -87,6 +87,45 @@ For **Aurel Mrruku**:
 - Distinguish `401` from the data errors in whatever notification the error store
   raises — do not let an auth failure page the same channel as a missing company.
 
+## 2026-09-01 - asked and answered: one token, on purpose
+
+**The first question in "The ask" above was put to Andrea Parmeggiani in the
+[1 September call](../meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
+and answered.**
+
+> **Aurel Mrruku:** _"ma si può usare anche lo stesso token perché praticamente
+> l'ambiente è lo stesso?"_
+> **Andrea Parmeggiani:** _"sì, sì."_
+
+Then, agreeing the split: _"facciamo due path diversi… due endpoint diversi"_ —
+**two paths, one token**, which is exactly what v2 of the documentation delivered
+2.5 hours later.
+
+⚠ **This changes what kind of item this is.** It was written as a gap someone had
+not noticed. It is now **a decision both sides took knowingly**, on a stated
+rationale — the environments share a database, so the credential is not
+separating anything that is actually separate. That rationale is coherent.
+
+🔴 **What it does not answer is point 2 of "Why this is an item".** The shared
+token still means a value leaked from a ROMI sandbox can call `env=prod` and
+spend money at Anticipay once the switch is flipped. Nobody weighed that in the
+room; the question asked was _"can we use the same token"_, not _"what happens if
+it leaks"_. Rotation and expiry were **not discussed at all**.
+
+### Where this leaves the item
+
+- The **environment question is closed.** Do not re-ask it — Aurel Mrruku already
+  decided, on the record, that `:env` on the shared host is acceptable for a
+  cache-read lookup. That also **discharges the 25 August test-environment
+  action** as explicitly as this project is going to manage.
+- The **credential-hygiene question stays open** and is now narrower: given one
+  token, deliberately, **can it be rotated before go-live**, on the assumption
+  that a value mailed to six addresses is already public? That is the only thing
+  left to ask Andrea Parmeggiani here.
+- The **`401` distinction stays open** and is Aurel Mrruku's, unchanged.
+
+Status stays `open` for those two. The headline question is settled.
+
 ## The other side of the same problem
 
 ROMI owes Pienissimo a token in the opposite direction, for the WooCommerce

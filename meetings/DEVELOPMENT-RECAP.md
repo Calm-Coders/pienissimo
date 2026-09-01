@@ -1655,3 +1655,178 @@ items 1 and 2 are what the build waits on.
 🔴 **The next step is to drill the 1 September minute**, not to send questions.
 Until the recording and Gemini notes are read, nobody knows which of the six are
 still open.
+
+## 24. Update 2026-09-01 (evening) — the follow-up call, drilled the same night
+
+The instruction closing §23 was to drill the 1 September minute before chasing
+anything. **That has been done.** The Gemini notes, the full transcript and the
+recording were all read on the night of 1 September. The call ran ~20 minutes
+from 10:02 CEST with Elena Spini, Aurel Mrruku (ROMI), Andrea Parmeggiani
+(Pienissimo Software) and Elisa Migliano. Fabrizio Paganelli was invited and is
+addressed twice in the room but never speaks; whether he attended is uncertain.
+
+### 24.1 🟢 The field selection is decided, and the answer is every field
+
+**#95 is resolved.** The action Fabrizio Paganelli and Elisa Migliano had held
+**undated since 25 August** — which three consecutive sweeps recommended chasing
+a date for — was discharged in the room. Aurel Mrruku walked point 6 of the
+documentation field by field and **all eleven fields are taken**.
+
+| Field                                    | Lands on                                                 |
+| ---------------------------------------- | -------------------------------------------------------- |
+| `ragione_sociale`                        | `Account.Name`                                           |
+| `indirizzo`, `citta`, `provincia`, `cap` | the standard billing address block                       |
+| `pec`                                    | **a new dedicated field on Account**                     |
+| `nome_legale_rappresentante`             | **a new text field on Account**                          |
+| `codice_fiscale_legale_rappresentante`   | **a new field on Account**                               |
+| `data_di_dascita_legale_rappresentante`  | **a new field on Account**, misspelled key and all       |
+| `luogo_nascita_legale_rappresentante`    | **a new field on Account**                               |
+| `indirizzo_legale_rappresentante`        | **one single free-text field**, not a structured address |
+
+Two shape rulings sit inside that decision:
+
+- **The legal representative goes on the Account, not on a Contact.** Aurel
+  Mrruku proposed a typed Contact record; Elisa Migliano overruled it, because
+  the data is _"fondamentale per la firma dei contratti"_. He accepted while
+  recording a reservation — flat Account fields carry no history, and a company
+  changing its director is an ordinary event.
+- **The person's address is one text field.** Andrea Parmeggiani: _"non è
+  importante che salviamo il CAP del legale rappresentante"_. Note the
+  asymmetry — the **company** address is structured, the **person's** is not.
+
+🔴 **This unblocks the VAT build (#73) and simultaneously commits six fields of
+unestimated work** — creation, page layout and field-level security — with nine
+days to the 10 September end of Fase 1 development.
+
+### 24.2 🟢 The environment split was invented in this call, and the shared token is deliberate
+
+Aurel Mrruku proposed **two distinct paths** so that continuous testing never
+touches production. Andrea Parmeggiani agreed on the spot — _"facciamo due path
+diversi"_ — and mailed the final paths **2.5 hours later**. That is v2 of the
+documentation, and it settles the open question from §23: the `:env` parameter
+is an **outcome** of this session, confirmed rather than inferred.
+
+On the token, the question in **#106** was put outright and answered:
+
+> **Aurel Mrruku:** _"si può usare anche lo stesso token perché praticamente
+> l'ambiente è lo stesso?"_ — **Andrea Parmeggiani:** _"sì, sì."_
+
+**Two paths, one token, on purpose.** The rationale is coherent — the two
+environments share a database — and it converts #106 from an unnoticed gap into
+a decision both sides took knowingly. It also discharges the 25 August
+test-environment action as explicitly as this project is going to manage.
+🔴 What remains is narrower and still open: **rotation before go-live**, on the
+assumption that a value mailed to six addresses is already public. Rotation and
+expiry were not discussed at all.
+
+Also settled: the **test environment is free and uncapped** (_"non ci sono costi,
+possiamo fare chiamate a piacere"_), **production is configured identically**
+save that the middleware then forwards to Anticipay, and the **happy path is
+`200`**, confirmed out loud.
+
+### 24.3 🔴 Anticipay serves Italian companies only — and that answers a requirement
+
+Andrea Parmeggiani, unprompted and in passing:
+
+> _"Diamo per scontato che la richiesta facciamo solo per aziende italiane perché
+> Anticipay dà i dati solo per aziende italiane. Quindi la nazione non l'ho
+> inserita perché è scontato che sia Italia, altrimenti torna sempre non
+> trovato."_
+
+So `nazione` is **deliberately absent** from the payload, and **a non-Italian VAT
+number always returns `404`** — the same code as an unknown Italian company and,
+during the test period, the same code as a cold cache. **Three distinct meanings
+on one status code**, against an agreed protocol that gives `404` one meaning and
+one notification.
+
+⚠ `INT-18` is _"Anticipay VAT check timing and **foreign-VAT handling**"_. The
+foreign-VAT half is not deferred to phase 2 — **it is not deliverable through
+this integration in any phase**. Nobody in the room connected the remark to the
+requirement. This sharpens the register contradiction §23 already recorded:
+`INT-18` now needs its **scope** corrected as well as its **phase**, and both are
+changes to a signed document. Still Elena Spini's to raise.
+
+### 24.4 What the call did not touch
+
+Four of the six questions §23 derived from the document were **never raised**:
+
+| Question                            | After the call                                                    |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| The **error response body**         | 🔴 still open — the last technical blocker on the build           |
+| Which fields, and a date            | 🟢 closed — all eleven, above                                     |
+| The token — one or two              | 🟢 closed — one, deliberately                                     |
+| The date `env=test` goes pass-through | 🔴 still open, never mentioned                                  |
+| The `dascita` typo (#105)           | 🔴 still open — and its escape hatch closed                       |
+| Rate limits, timeout, cache TTL     | ⚠ half — test is free and uncapped; **production was not raised** |
+
+**Chase three things, not six.** Re-asking the two that closed would cost
+credibility.
+
+On **#105**: the note argued the typo might close itself if the date of birth
+were dropped. It is being stored, and nobody looked at the key names — so the
+item stands and is more urgent than when written. Practical guidance meanwhile:
+**build against the misspelled key as documented and keep the Salesforce field
+name correctly spelled**, so a later fix costs one mapping line rather than an
+org rename.
+
+### 24.5 🔴 The personal-data question was never raised, and the decision went the other way
+
+**#108** recommended storing the company block and dropping the person block. The
+room took all five legal-representative fields onto the Account.
+
+⚠ **That is not a rejection.** The question was never put in the twenty minutes;
+recording it as "considered and declined" would be false.
+
+🟢 **One field now has a purpose on the record** — the first the record holds.
+Elisa Migliano: the legal representative is _"fondamentale per la firma dei
+contratti"_. That plainly justifies **the name**.
+
+🔴 **It does not justify the other four.** Signing a contract needs to identify
+the signatory; it is not obvious why it needs the signatory's **date of birth,
+place of birth, codice fiscale and home address**, and none of those was reasoned
+for individually. Retention, lawful basis, **field-level security** — the fields
+go on the Account, which Pienissimo administration reads routinely, the exact
+exposure #108 flagged — and erasure were all unmentioned.
+
+The revised ask is small: **five minutes at the data-model call**, one purpose
+sentence per personal field, and a retention.
+
+### 24.6 New from the call
+
+- **#109 — the codice destinatario SDI.** Elisa Migliano asked whether the
+  middleware can return it: a **twelfth** field, not in the documented contract.
+  She said herself it is not critical (invoices route by PEC), but Mexal has
+  _"una valanga di clienti dove lo SDI non è valorizzato"_, which makes it a
+  data-quality win on the as-is registry. ⚠ Andrea Parmeggiani's first
+  impression was that it is **not available**. Must not delay the eleven.
+- **A data-model call, owed by Elena Spini, with no date.** She asked for it
+  plainly — _"ancora non abbiamo ricevuto niente"_ — and Elisa Migliano
+  immediately parked further material into it, naming **tipo fatturazione
+  elettronica**. It is the natural forum for the workbook owed since July, and
+  for §24.5.
+- 🔴 **An action with no home: switch off the test-environment call at go-live.**
+  Aurel Mrruku raised it himself, since two identical configurations risk the
+  test lane firing paid production lookups. _"Lo mettiamo nei punti da
+  tracciare."_ It is tracked in the meeting note and nowhere else.
+
+### 24.7 The article registry moved, and the material is unread
+
+Separately from the call, **Fabrizio Paganelli mailed `Anagrafica Articoli.xlsx`
+at 01/09 14:04Z** to Elena Spini, Aurel Mrruku and Andrea Di Cicco, for the
+**2 September** _Follow-up Anagrafica Articoli_ session: an article-registry
+extract **covering the courses only**, plus _"una ipotesi di nuovi codici da
+gestire solo nei bundle"_ and _"un paio di domande"_ put to ROMI for an opinion.
+
+🟢 It is the first client-side material on **#48** since 26 August and the first
+tangible output of the registry re-creation (**#98**).
+
+🔴 **It has not been read** — a sweep cannot open a Gmail attachment — so nothing
+beyond the mail body is known: not the number of codes, not the convention, not
+whether it matches the A/B twin scheme Fabrizio Paganelli named himself, and not
+what his questions are. ⚠ It is an **extract**, and the wording does not say
+whether these are the **new** codes or the **current** ones under review.
+
+**This is the third time the same gap has cost a day**, after the WooCommerce
+payload on 27 August and the API PDF on 31 August — both of which, once opened by
+hand, carried findings no inference had produced. **It is needed before the
+2 September meeting, not after it.**
