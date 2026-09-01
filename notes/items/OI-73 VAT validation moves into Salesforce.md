@@ -6,8 +6,8 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-27
-depends_on: [OI-94, OI-95]
+updated: 2026-09-01
+depends_on: [OI-94, OI-95, OI-107, OI-108]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -161,3 +161,44 @@ Migliano restate it. Nothing here changes
 [OI-94](OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)
 or [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) — the
 middleware contract is untouched; only the firing point is in question.
+
+## 2026-09-01 - the API exists on paper
+
+**The middleware is specified.** `Documentazione API - Salesforce.pdf` was read
+and decoded at
+[the Anticipay middleware API contract](../The%20Anticipay%20middleware%20API%20contract.md).
+There is now an endpoint, an auth scheme, a response and a set of error codes.
+
+🟢 **Two long-standing lines in this note are answered.**
+
+- _"Credentials do not yet exist, because the middleware endpoint does not yet
+  exist."_ Both now do — one static bearer token, mailed
+  ([OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md)).
+- The service returns **exactly** what this note records the as-is Mexal lookup
+  returning: _"ragione sociale, address, PEC and legal representative"_. Elisa
+  Migliano's description from 6 August matches the wire format field for field.
+  Her _"corretta al 99,5%"_ rating applies to the same data ROMI will now read.
+
+🔴 **What still blocks the build is unchanged in shape, and now has names.**
+
+| Blocked                                                        | By                                                                                                                                                                                                                                                                                  |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| the **unhappy path** — the notification, not the stored record | [OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md): 🟢 the store is `Integration_Log__c` and already works, but `Is_Error__c` is **never set for an HTTP error**, so a notification built on it is silent for every `404` |
+| the **write-back** — which fields land on the Account          | [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md), still undated, now sharpened by [OI-108](OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md)                                                           |
+| the **manual re-check button**                                 | the contract documents **no cache-bypass**, so a re-check may return the same cached answer it was pressed to escape                                                                                                                                                                |
+
+⚠ **The administration address for failure notifications is still not supplied.**
+Owed since 6 August, unaffected by the document, and now the last input the
+unhappy path needs that is purely Pienissimo's to give.
+
+⚠ **The 27 August question above is untouched.** Whether the check fires at the
+first order per Account or on the send-to-Mexal leg is still unconfirmed by
+Elisa Migliano and Elena Spini. The document does not address the trigger — it is
+a caller concern — so reading it changed nothing here. Still owed to the 2
+September session or the weekly internal.
+
+⚠ **The register still contradicts the record.** `INT-18` reads
+`status: open, recommendation: phase_2`, while this note, the 10 July project
+plan and the 25 August session all place Anticipay in **Fase 1**. Not corrected
+today: it is a signed document and changing it means moving `REQUIREMENTS.md` and
+`REQUISITI.it.md` together. Raise with Elena Spini.

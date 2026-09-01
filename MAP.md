@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-08-31 (nightly requirements-check; a second unpublished org check, and the Anticipay API doc landed) · Source of record: [notes/](notes/)
+Last updated: 2026-09-01 (the Anticipay API doc was downloaded and drilled) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -52,21 +52,52 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   the register's `build_state` cites **`QUO-01` and `QUO-06`, which are not among
   the 154 requirement ids**.
 
-- 🟢 **2026-08-31 — the Anticipay API documentation arrived four days early.**
-  Andrea Parmeggiani sent `Documentazione API – Salesforce.pdf` at 16:15Z to
-  Aurel Mrruku, cc Elena Spini, amministrazione, Fabrizio Paganelli and Sabatino
-  Rinaldi — owed by **4 September**, delivered on the 31st. The first client
-  commitment on this project met ahead of its date.
-  ⚠ **The PDF is unread** — this sweep cannot open a Gmail attachment, so the
-  contract itself is still not in the record. Open it before the **1 September
-  10:00** follow-up.
-  🔴 **The mail body alone changes something**: during the test period the
-  middleware **serves only from the Pienissimo cache and does not call
-  Anticipay** — so an uncached VAT number returns nothing, and a test-period
-  `404` cannot be told apart from a genuine "not found". The switch to
-  pass-through is Pienissimo Software's to flip, on **no named date**
+- 🟢 **2026-08-31 → 09-01 — the Anticipay API contract arrived early, and has now
+  been read.** Andrea Parmeggiani sent `Documentazione API - Salesforce.pdf` at
+  31 Aug 16:15Z — owed by **4 September**, the first client commitment on this
+  project met ahead of its date — then **a second version at 1 Sep 10:46Z**
+  adding a `:env` path parameter (`test` | `prod`). Downloaded by hand and
+  drilled the same morning:
+  [the contract](notes/The%20Anticipay%20middleware%20API%20contract.md).
+  `GET https://integration.pienissimo.com/salesforce/account/:env/:piva`, bearer
+  token in the header, **eleven response fields**, four error codes.
+  🟢 **The eleven fields exactly match the as-is Mexal lookup** Elisa Migliano
+  described on 6 August, so accuracy is a known quantity — and the **reliability
+  score Fabrizio Paganelli asked for is not among them.**
+  🔴 **The real blocker is in ROMI's own code, not in the document.** The house
+  `API_Callout_Engine` **cannot pass a path parameter at all** — for a `GET` it
+  discards the caller's argument, and `Endpoint_Path__c` is a static custom-setting
+  field — so `:piva`, which changes on every call, has nowhere to go. Either the
+  shared engine gets extended or Anticipay needs its own client
+  ([the contract](notes/The%20Anticipay%20middleware%20API%20contract.md)).
+  🟢 **The error store is NOT a problem** — it is `Integration_Log__c`, already
+  committed, already logging status code and raw body. But
+  **[OI-107](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)**
+  finds two defects in that engine: `Is_Error__c` is **never set for an HTTP
+  error**, so the agreed internal notification would be silent for every `404`;
+  and an error body that does not match the `200` wrapper throws, landing in a
+  `catch` that **drops `Response_State__c`** — losing the HTTP code the whole
+  agreement was about. Both are generic and affect Mexal too.
+  [OI-108](notes/items/OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md)
+  — **six of the eleven fields identify a private individual** (name, codice
+  fiscale, date and place of birth, home address), which is not what "trimmed to
+  the needed fields" was understood to mean.
+  [OI-106](notes/items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md)
+  — **one static token for both environments**, mailed twice to six addresses.
+  [OI-105](notes/items/OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)
+  — `data_di_dascita` is a typo **in the wire format**; fix or freeze it before
+  anyone codes against it.
+  🟢 The **cache-only test mode** inferred from the 31 Aug mail body is confirmed
+  in writing, and the **test environment Pienissimo Software owed since 25 August
+  turns out to be `:env=test` on the same host, same token** — close that action
+  explicitly or restate what is wanted.
+  ⚠ Also undiscussed: **`400` and `401` are new error codes** meaning _our call
+  is broken_, bucketed with _company unknown_; and there is **no rate limit,
+  timeout, retry policy or cache TTL**, so the agreed manual re-check button has
+  no documented way to escape a stale answer
   ([OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md),
-  [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)).
+  [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md),
+  [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)).
 
 - **2026-08-06 settled the last open designs** — DocuSign in for
   quotes/contracts, out for tickets; order states
@@ -224,8 +255,8 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   active and byte-aligned with the repo, and **everything in the repo is
   deployed** — no repository-only drift for the first time in the record.
   🔴 Still gating: **coverage 0% of 1,769 lines across 28 classes** — the
-  deficit is *growing* as code lands (1,028 on 25 Aug), and the register's
-  `current: "1%"` is stale. 🔴 **`Integration_Configuration__c` has 0 rows *and*
+  deficit is _growing_ as code lands (1,028 on 25 Aug), and the register's
+  `current: "1%"` is stale. 🔴 **`Integration_Configuration__c` has 0 rows _and_
   0 object permissions** — nobody at all can read it, so Anticipay
   ([OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md))
   and Mexal have neither endpoint nor principal. 🔴 **`INT-16`: the WooCommerce
@@ -306,8 +337,15 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   live and still blocked** on
   [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
   · **1 Sept 10:00** [ROMI-PIENISSIMO] Follow-up Integrazione Anticipay,
-  client-facing — 🟢 its material **arrived 31 Aug**, so the call is now a
-  review, not a chase · **2 Sept 10:00–11:30** [ROMI-PIENISSIMO] Follow-up
+  client-facing — ✅ **ran** (recording `10:02 CEST` + Gemini notes on the event).
+  🔴 **Not drilled** — the API PDF was read the same day but **this session did
+  not open the minute**. The `:env` v2 mail arrived **12:46 CEST, after the call
+  ended**, so it is plausibly an outcome of it. Six questions were derived from
+  the document and are listed in
+  [OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md);
+  **check them against the minute before chasing any of them.** Top two: **the
+  error response body**, and **a date from Fabrizio Paganelli and Elisa Migliano**
+  on the field selection they have held undated since 25 Aug · **2 Sept 10:00–11:30** [ROMI-PIENISSIMO] Follow-up
   Anagrafica Articoli, client-facing · **7 Sept 10:00–11:00** [PIENISSIMO] Interna
   Flussi MKT, ROMI-internal (Elena Spini, Aurel Mrruku, Fabrizio Mastracci),
   **new — invited 31 Aug 16:07Z**, first marketing session since 19 Aug and the

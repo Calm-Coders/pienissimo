@@ -6,13 +6,20 @@ owner: Andrea Parmeggiani
 with: Aurel Mrruku
 org: both
 raised: 2026-08-25
-updated: 2026-08-31
+updated: 2026-09-01
 depends_on: [OI-73]
-blocks: [OI-73]
+blocks: [OI-73, OI-105, OI-106, OI-107, OI-108]
 source: notes/meetings/2026-08-25 Integrazione Anticipay.md
 ---
 
 # OI-94 - Anticipay is called through the Pienissimo middleware
+
+> 🟢 **The technical contract is now in the record.**
+> `Documentazione API - Salesforce.pdf` was read on **2026-09-01** and decoded at
+> [the Anticipay middleware API contract](../The%20Anticipay%20middleware%20API%20contract.md).
+> Read that note for the endpoint, the field list and the errors; this item keeps
+> the decision and its consequences. The 1 September section at the foot records
+> what the document changed.
 
 **Decided 2026-08-25, with the client.** Salesforce does **not** call Anticipay.
 It calls an API exposed by **Pienissimo Software Srl**, which sits in front of
@@ -28,17 +35,25 @@ Two reasons were given and both were accepted:
 
 ## The contract, as far as it is agreed
 
-| Element | Agreed |
-| ------- | ------ |
-| Caller | Salesforce |
-| Callee | Pienissimo Software middleware — **not Anticipay** |
-| Trigger | first Order inserted for an Account |
-| Auth | a **token in the HTTP request header** |
-| Errors | `404` = VAT number not found · `500` = generic; **code and descriptive message both returned** |
-| Error storage | codes and messages **saved in Salesforce and kept for three months** |
-| Error use | raise **internal notifications** from the stored record |
-| Conflicts | the value returned **overwrites** what Salesforce holds |
-| Payload | trimmed to the needed fields — see [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) |
+Everything in this table still holds. The **Documented 2026-09-01** column adds
+what the API specification says, and marks the two rows where the document goes
+further than the session did.
+
+| Element       | Agreed 2026-08-25                                                                                          | Documented 2026-09-01                                                                                                                                                                                        |
+| ------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Caller        | Salesforce                                                                                                 | unchanged                                                                                                                                                                                                    |
+| Callee        | Pienissimo Software middleware — **not Anticipay**                                                         | `GET https://integration.pienissimo.com/salesforce/account/:env/:piva`                                                                                                                                       |
+| Trigger       | first Order inserted for an Account                                                                        | not addressed — a caller concern                                                                                                                                                                             |
+| Auth          | a **token in the HTTP request header**                                                                     | `Authorization: Bearer <token>`, **one static token for both environments** ([OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md))                                 |
+| Errors        | `404` = VAT number not found · `500` = generic; **code and descriptive message both returned**             | ⚠ **also `400` and `401`, neither ever discussed**; and **no error body is specified at all** ([OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)) |
+| Error storage | codes and messages **saved in Salesforce and kept for three months**                                       | not addressed — a ROMI concern                                                                                                                                                                               |
+| Error use     | raise **internal notifications** from the stored record                                                    | not addressed — a ROMI concern                                                                                                                                                                               |
+| Conflicts     | the value returned **overwrites** what Salesforce holds                                                    | not addressed — a ROMI concern                                                                                                                                                                               |
+| Payload       | trimmed to the needed fields — see [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) | **eleven fields, fixed**; six of them personal data ([OI-108](OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md))                                       |
+| Environments  | a dedicated test environment would be created                                                              | ⚠ delivered as **`:env=test` on the same host, same token**                                                                                                                                                  |
+
+Field-level detail is in
+[the contract](../The%20Anticipay%20middleware%20API%20contract.md), not here.
 
 ## What is owed, and by whom
 
@@ -100,6 +115,11 @@ first client commitment on this project delivered ahead of its date. The
 follow-up call booked for **1 September 10:00 CEST** was made cancellable
 precisely on this condition; it is now the meeting's own decision whether to run.
 
+⚠ ~~**The attachment has not been read.**~~ **Superseded 2026-09-01 — it has now
+been read**, and a second, updated version arrived the same morning. See the
+1 September section below. The paragraph is kept because it records what the
+31 August sweep could and could not see.
+
 ⚠ **The attachment has not been read.** This sweep can see that the PDF exists
 and who it went to; it cannot open a Gmail attachment. Everything below comes
 from the **mail body**, which is short and substantive. The PDF is the API
@@ -116,11 +136,11 @@ se già presenti sul nostro database, evitiamo di fare richieste ad Anticipay pe
 questo periodo di test, alla fine del test invece inoltreremo le chiamate ad
 Anticipay e per voi sarà trasparente."_
 
-| | During the test period | After it |
-| --- | --- | --- |
-| Middleware behaviour | serves **only from the Pienissimo cache** | forwards a miss on to Anticipay |
-| A VAT number they do not already hold | **returns nothing** | returns Anticipay's answer |
-| Change required on the ROMI side | none — the switch is theirs | none, _"per voi sarà trasparente"_ |
+|                                       | During the test period                    | After it                           |
+| ------------------------------------- | ----------------------------------------- | ---------------------------------- |
+| Middleware behaviour                  | serves **only from the Pienissimo cache** | forwards a miss on to Anticipay    |
+| A VAT number they do not already hold | **returns nothing**                       | returns Anticipay's answer         |
+| Change required on the ROMI side      | none — the switch is theirs               | none, _"per voi sarà trasparente"_ |
 
 This is new. The 25 August contract in the table above describes the **production**
 behaviour and says nothing about a cache-only test mode. Two consequences follow
@@ -150,3 +170,96 @@ _"chiamata API **Anticipay**"_. See
 [the newest design diagram](../The%20newest%20design%20diagram.md). The master
 now contradicts itself on this rule; the LEAD-OPTY wording is the later and
 correct one.
+
+## 2026-09-01 - the document was read, and a second version arrived the same morning
+
+🟢 **The API contract is in the record.** Aurel Mrruku downloaded the PDF at
+**12:51 CEST** and it was decoded the same session into
+[the Anticipay middleware API contract](../The%20Anticipay%20middleware%20API%20contract.md).
+The blocker that has stood since 25 August — _"nothing can be built against this
+until the payload example arrives"_ — **is discharged on the happy path.**
+
+**Andrea Parmeggiani sent a second version at 10:46:38Z**, in the same thread:
+
+> _"Ho aggiunto un parametro `:env` nel path, prevede un valore tra 'test' e
+> 'prod', in allegato la documentazione aggiornata."_
+
+So the contract moved **twice in seventeen hours**, and the version ROMI holds is
+the second. Nothing has been built yet, so no rework — but it is a reminder that
+this specification is being written as it is read, and that **the endpoint is not
+frozen**. Ask at the call whether further changes are expected before build.
+
+### What the document settles
+
+- **The endpoint exists**, with a shape, an auth scheme and a documented `200`.
+- **The field list is fixed at eleven** — which converts
+  [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) from
+  "choose from Anticipay's full response" to "choose from these eleven". 🟢 The
+  eleven **exactly match** the as-is Mexal lookup Elisa Migliano described on
+  6 August — ragione sociale, address, PEC, legal representative.
+- **The cache-only test mode is now written into the contract**, not just the
+  mail body: `env=test` returns `404` for anything not already in the Pienissimo
+  database, and makes no Anticipay call. The 31 August section above stands
+  unchanged and is now specification rather than inference.
+- 🟢 **The `env=test` mechanism appears to be the "dedicated test environment"**
+  owed by Pienissimo Software from 25 August. If so, that action is discharged —
+  but as a path parameter on the production host behind the production token,
+  which is not what the phrase normally means. **Close it explicitly or restate
+  what is wanted**: [OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md).
+
+### What it does not settle, and what it newly breaks open
+
+|                                                                                                                     |                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🔴 [OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)     | 🟢 **The three-month error store is `Integration_Log__c` and already works** — an earlier draft of this row wrongly said it could not be built. 🔴 But `Is_Error__c` is **never set for an HTTP error**, so the **internal notification agreed in this item is silent for every `404`**; and a non-matching error body makes the engine drop `Response_State__c`. Both are ROMI-side. |
+| 🔴 [OI-108](OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md) | **Six of the eleven fields identify a private individual** — name, codice fiscale, date and place of birth, home address. Not what "trimmed to the needed fields" was understood to mean.                                                                                                                                                                                             |
+| 🔴 [OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md)                   | **One static token for both environments**, printed in a PDF mailed twice to six addresses including a shared mailbox.                                                                                                                                                                                                                                                                |
+| ⚠ [OI-105](OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)                        | `data_di_dascita_legale_rappresentante` — a typo in the wire format. Decide whether it gets fixed **before** anyone codes against it.                                                                                                                                                                                                                                                 |
+| ⚠                                                                                                                   | **`400` and `401` are new error codes**, never discussed, and they mean _our call is broken_ rather than _the company is unknown_. The agreed design puts all four in one bucket with one notification.                                                                                                                                                                               |
+| ⚠                                                                                                                   | **No rate limit, timeout, retry policy or cache TTL.** The agreed **manual re-check button** in [OI-73](OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) has no documented way to bypass the cache — so a re-check may return the same stale answer.                                                                                                                          |
+
+⚠ **The entity question in the section above is untouched by any of this.** A
+Fase 1 integration still depends on Pienissimo Software Srl building, hosting and
+running a service, and the document — which is theirs — does not say who owns its
+uptime after the project closes. Reading a specification is not the same as
+having a commitment.
+
+### The six questions the document raises
+
+⚠ **The 1 September call ran, and this session did not read its minute.** The
+calendar event carries a **recording timed 10:02 CEST** and a Gemini notes doc,
+so the follow-up went ahead rather than being cancelled. Note also that **v2 of
+the documentation arrived at 12:46 CEST — after the call ended at 11:00** — which
+makes the `:env` addition plausibly an outcome of the session rather than
+something the session had in front of it.
+
+**So treat the list below as questions raised by the document, not as an agenda.**
+Every one of them may already have been answered in the room. **Check each against
+the minute first; chase only what is genuinely still open.** The recording and the
+Gemini notes are attached to the calendar event and neither has been drilled.
+
+In priority order:
+
+1. **The error response body** — one example of each, exactly as emitted
+   ([OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)).
+2. **Which fields Salesforce stores, and a date for that decision** — Fabrizio
+   Paganelli and Elisa Migliano have held it since 25 August with no date, and
+   have had the list since 31 August
+   ([OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md),
+   [OI-108](OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md)).
+3. **The token** — one or two, does it rotate, can it be rotated before go-live
+   ([OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md)).
+4. **The date `env=test` becomes pass-through**, and how ROMI is told.
+5. **The `dascita` typo** — fix or freeze
+   ([OI-105](OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)).
+6. **Rate limits, timeout and cache TTL**, including how the manual re-check
+   button forces a refresh.
+
+🔴 **Development on Fase 1 must end 10 September** — seven working days away, and
+the answers to items 1 and 2 are what the build waits on.
+
+🔴 **The next action on this item is to drill the 1 September minute**, not to
+send questions. The recording and Gemini notes are on the calendar event
+(`2j4tg4tglt9iei6285jfn8i62s`); until they are read, nobody knows which of the six
+are still open — and a chase for something already settled in the room costs more
+credibility than it saves time.
