@@ -1,0 +1,74 @@
+<template>
+  <lightning-quick-action-panel header="Send Checkout Email">
+    <div class="content">
+      <template if:true={isOpportunityLoading}>
+        <div class="initial-loader">
+          <lightning-spinner
+            alternative-text="Loading"
+            size="medium"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:false={isOpportunityLoading}>
+        <template if:true={opportunityErrorMessage}>
+          <div class="message error">{opportunityErrorMessage}</div>
+        </template>
+
+        <template if:false={opportunityErrorMessage}>
+          <div class="summary">
+            <div>
+              <div class="summary-label">Opportunity</div>
+              <div class="summary-value">{opportunityName}</div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <lightning-input
+              type="url"
+              label="Funnel URL"
+              value={funnelUrl}
+              onchange={handleFunnelUrlChange}
+              required
+            ></lightning-input>
+          </div>
+
+          <div class="email-summary">
+            <div>
+              <div class="summary-label">Subject</div>
+              <div class="summary-value">{emailSubject}</div>
+            </div>
+            <div>
+              <div class="summary-label">Recipient</div>
+              <div class="summary-value">Choose in the email composer</div>
+            </div>
+          </div>
+
+          <lightning-textarea
+            label="Checkout Link"
+            value={checkoutLink}
+            readonly
+          ></lightning-textarea>
+
+          <template if:true={validationMessage}>
+            <div class="message error">{validationMessage}</div>
+          </template>
+        </template>
+      </template>
+    </div>
+
+    <div slot="footer">
+      <lightning-button
+        label="Cancel"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label="Open Email Composer"
+        disabled={isOpenEmailDisabled}
+        onclick={handleOpenEmailComposer}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>
