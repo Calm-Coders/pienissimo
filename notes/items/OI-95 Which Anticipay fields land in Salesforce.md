@@ -1,15 +1,15 @@
 ---
 id: OI-95
 type: open-item
-status: open
+status: resolved
 owner: Fabrizio Paganelli
 with: Elisa Migliano
 org: Pienissimo
 raised: 2026-08-25
-updated: 2026-08-31
-depends_on: [OI-94]
+updated: 2026-09-01
+depends_on: [OI-94, OI-108]
 blocks: [OI-73]
-source: notes/meetings/2026-08-25 Integrazione Anticipay.md
+source: notes/meetings/2026-09-01 Follow-up Integrazione Anticipay.md
 ---
 
 # OI-95 - Which Anticipay fields land in Salesforce
@@ -50,7 +50,7 @@ Two of the candidates are not registry data. **A reliability score is a
 commercial judgement about a customer**, and **PEC routing is invoicing
 configuration**. Both would put data in Salesforce that nothing in the signed
 requirements asks for, on an object the client's own administration reads. Decide
-what the field is *for* before agreeing to store it — and check it against
+what the field is _for_ before agreeing to store it — and check it against
 [the publishing rules](../../docs/publishing.md) before any of it reaches the
 recaps or [site/](../../site/).
 
@@ -88,3 +88,143 @@ The privacy question above is **unaffected and still unraised**: a document
 listing available fields does not decide how long retrieved company data is kept
 or on what basis. If the PDF turns out to include the reliability score or PEC
 routing among the returnable fields, that question gets sharper, not softer.
+
+## 2026-09-01 - the list is real, and it is shorter than anyone expected
+
+**The document was read.** Full decode at
+[the Anticipay middleware API contract](../The%20Anticipay%20middleware%20API%20contract.md).
+The candidate list above was a list of things people said out loud in a meeting;
+this replaces it with the wire format.
+
+**The middleware returns eleven fields and no more.** There is no larger response
+to trim.
+
+| Field                                    | Serves the stated purpose?                                                                                                                             |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ragione_sociale`                        | ✅ yes — the obvious minimum, and named in the session                                                                                                 |
+| `indirizzo`, `citta`, `provincia`, `cap` | ✅ yes — the registered-office address block                                                                                                           |
+| `pec`                                    | ✅ yes — and it is the **electronic-invoice routing** candidate, present as predicted                                                                  |
+| `nome_legale_rappresentante`             | ⚠ named in the session; personal data                                                                                                                  |
+| `codice_fiscale_legale_rappresentante`   | ⚠ personal data, not raised by anyone                                                                                                                  |
+| `data_di_dascita_legale_rappresentante`  | ⚠ personal data, not raised by anyone; **and misspelled** ([OI-105](OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)) |
+| `luogo_nascita_legale_rappresentante`    | ⚠ personal data, not raised by anyone                                                                                                                  |
+| `indirizzo_legale_rappresentante`        | 🔴 a private individual's **home address**, not raised by anyone                                                                                       |
+
+### Two of the session's candidates are simply not available
+
+- 🔴 **The Anticipay reliability score is not returned.** Fabrizio Paganelli
+  asked specifically whether the scoring could come across; the answer, on the
+  documented contract, is **no**. If he still wants it, it is a change request to
+  Pienissimo Software, not a field-selection choice — and it would make this a
+  credit-risk feed rather than a registry lookup, which is a bigger conversation
+  than the one that has been had.
+- **`rappresentante fiscale` is not returned either.** The document returns
+  `legale rappresentante`, which is a different role. Andrea Parmeggiani and
+  Aurel Mrruku both named _rappresentante fiscale_ in the session as part of the
+  obvious minimum. Worth checking whether they meant the legal representative and
+  used the terms loosely, or whether something is genuinely missing.
+
+### 🟢 The list matches the as-is Mexal lookup exactly
+
+[OI-73](OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) records Elisa
+Migliano describing the existing pre-invoicing service as returning _"ragione
+sociale, address, PEC and legal representative"_ — which is precisely these
+eleven fields. **The middleware is not a trimmed view of Anticipay; it is the
+service Pienissimo already uses, re-exposed.** That is reassuring on accuracy
+(Elisa Migliano rates that registry _"corretta al 99,5%"_) and it means the
+selection question is smaller than it looked.
+
+### 🔴 The privacy question is no longer theoretical
+
+The prediction at the end of the 31 August section was half right: PEC is there,
+the score is not — **and six of the eleven fields identify a natural person**.
+Raised in full as
+[OI-108](OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md),
+which recommends storing the company block and dropping the person block. That is
+a recommendation for this item's owners to accept or reject, not a decision taken
+for them.
+
+### ⚠ Whatever is chosen has to be built, and none of it exists
+
+Account carries **three custom fields in total** — `Partita_IVA__c`,
+`Lead_Email__c`, `Nome_Locale__c`. `ragione_sociale` maps to `Name` and the
+address block to the standard billing address, so those are free. **PEC and all
+five legal-representative fields have no landing place in the org**, and creating
+them, exposing them and granting FLS is unestimated work that starts only once
+this item is decided. With Fase 1 development ending **10 September**, the
+decision date matters as much as the decision.
+
+### The item still does not move — but the reason has changed
+
+It is no longer waiting on Andrea Parmeggiani; he has delivered everything he
+owed. **It is waiting on Fabrizio Paganelli and Elisa Migliano**, who have held
+the action since 25 August with **no date on it**, and who have had the field
+list since 31 August. Both are on the mail thread.
+
+**Get a date at the 1 September call.** That is the entire ask.
+
+## ✅ 2026-09-01 - resolved in the room, and the answer is "all of them"
+
+**The [1 September follow-up](../meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
+took the decision.** The advice one section above was to get a *date*; the call
+produced the *decision* instead. Aurel Mrruku walked point 6 of the
+documentation field by field with Elisa Migliano and Andrea Parmeggiani, and
+**every one of the eleven fields is taken.**
+
+| Field                                    | Lands on                                                          |
+| ---------------------------------------- | ----------------------------------------------------------------- |
+| `ragione_sociale`                        | `Account.Name`                                                    |
+| `indirizzo`, `citta`, `provincia`, `cap` | the standard billing address block                                |
+| `pec`                                    | **a new dedicated field on Account**                              |
+| `nome_legale_rappresentante`             | **a new text field on Account**                                   |
+| `codice_fiscale_legale_rappresentante`   | **a new field on Account**                                        |
+| `data_di_dascita_legale_rappresentante`  | **a new field on Account** — still carrying the [misspelled key](OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md) |
+| `luogo_nascita_legale_rappresentante`    | **a new field on Account**                                        |
+| `indirizzo_legale_rappresentante`        | **one single free-text field**, not a structured address          |
+
+### The two shape rulings
+
+- **On the Account, not on a Contact.** Aurel Mrruku proposed a typed Contact
+  record for the legal representative. **Elisa Migliano overruled it** — the data
+  _"andrebbero messe all'interno dell'account… perché poi dopo il tema del legale
+  rappresentante è fondamentale per la firma dei contratti."_ Aurel Mrruku
+  accepted while recording a reservation: _"lo vedo come una struttura più
+  complessa dei semplicemente dei campi sull'account, ma fa niente, **per il
+  momento**."_ The reservation is worth keeping — a director changing is a
+  perfectly ordinary event and flat Account fields have no history.
+- **The person's address is one text field.** Andrea Parmeggiani: _"non è
+  importante che salviamo il CAP del legale rappresentante. Va bene un testo
+  tutto completo."_ Note the asymmetry: the **company** address is structured,
+  the **person's** is not.
+
+### 🔴 The recommendation in OI-108 was not taken, and it was never discussed
+
+[OI-108](OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md)
+recommended **storing the company block and dropping the person block**. The room
+took the person block in full. The personal-data question **was not raised by
+anyone** in the twenty minutes.
+
+⚠ It is not accurate to call that a rejection. Elisa Migliano supplied, for the
+first time in the record, **a stated business purpose** — contract signature —
+which is exactly what OI-108 asked for (_"if a field has no stated purpose, the
+answer is to not store it"_). One field now has a purpose on the record. **Four
+still do not**: codice fiscale, date of birth, place of birth and home address
+were never individually justified, and retention, lawful basis, field-level
+security and erasure were not mentioned. See OI-108 for what remains.
+
+### What this unblocks, and what it now costs to build
+
+🟢 **The build can start.** This item has blocked
+[OI-73](OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) since 25 August
+and no longer does.
+
+🔴 **But the "unestimated work" flagged above is now committed work.** Account
+carries three custom fields today; this decision adds **six more** —
+PEC plus five legal-representative fields — each needing creation, page-layout
+placement and field-level security, on top of the callout itself. That was true
+of any outcome except the OI-108 recommendation, but it is now real and it lands
+with **nine days** before Fase 1 development ends on 10 September.
+
+⚠ A **twelfth** field may yet arrive:
+[OI-109](OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md),
+the codice destinatario SDI. Do not wait for it — build the eleven.

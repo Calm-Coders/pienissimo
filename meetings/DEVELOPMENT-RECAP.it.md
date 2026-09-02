@@ -1080,7 +1080,7 @@ post-evento dei no-show.
 
 Registrato come **#96**. ⚠ **Concordato nel principio ed esplicitamente non
 concluso.** Le decisioni Gemini classificano la mappatura riga d'ordine → campagna
-sotto *"Da approfondire"*, unico punto in quella sezione, e Aurel Mrruku ha
+sotto _"Da approfondire"_, unico punto in quella sezione, e Aurel Mrruku ha
 chiesto prima un'ora dedicata di esempi concreti. **Quella sessione non è
 fissata.**
 
@@ -1110,12 +1110,12 @@ Ogni assegnazione qui sotto è stata dimostrata durante la sessione, con Fabrizi
 Paganelli che modificava su Mexal e Andrea Di Cicco che confrontava la risposta
 API in tempo reale.
 
-| Campo Mexal | Nome API | Porta | Verificato |
-| --- | --- | --- | --- |
-| `natura` | `COD_Natura` | genera biglietto sì/no | ✅ impostato su `CS_00154`, visto via API |
-| `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | l'evento (Campagna Padre) | ✅ `C01` poi `P02`. **Due campi API** |
-| `gruppo merceologico` | `GRP merch` | candidato per il tipo biglietto | ⚠ gerarchico; **è arrivato solo il codice, non il livello** |
-| `Gest. annullato` | `Gest. annullato` — `n`/`S` | prodotto disattivato su Salesforce | ✅ `CS58` annullato e ripristinato in diretta |
+| Campo Mexal            | Nome API                           | Porta                              | Verificato                                                  |
+| ---------------------- | ---------------------------------- | ---------------------------------- | ----------------------------------------------------------- |
+| `natura`               | `COD_Natura`                       | genera biglietto sì/no             | ✅ impostato su `CS_00154`, visto via API                   |
+| `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | l'evento (Campagna Padre)          | ✅ `C01` poi `P02`. **Due campi API**                       |
+| `gruppo merceologico`  | `GRP merch`                        | candidato per il tipo biglietto    | ⚠ gerarchico; **è arrivato solo il codice, non il livello** |
+| `Gest. annullato`      | `Gest. annullato` — `n`/`S`        | prodotto disattivato su Salesforce | ✅ `CS58` annullato e ripristinato in diretta               |
 
 `natura` è collegato a una tabella di base gestita, **non è campo libero** — il
 che risponde all'obiezione di Andrea Di Cicco che un operatore potesse scriverci
@@ -1199,7 +1199,7 @@ valori. **Nessuno ha collegato la cosa alla fine dello sviluppo Fase 1 del
   da Mirko Merendi a Fabrizio Paganelli — ora risposto (#58).
 - **Le tipologie di biglietto sono Executive, Gold e Diamond**, pronunciate da
   Fabrizio Paganelli e coincidenti con l'anagrafica. `Silver` e `Dinamond` sono
-  entrambi da scartare (#76). ⚠ *Dove* risieda la tipologia si è riaperto e non
+  entrambi da scartare (#76). ⚠ _Dove_ risieda la tipologia si è riaperto e non
   si è chiuso — vedi §20.10.
 - 🟢 **La fatturazione resta pilotata da Mexal per circa sei mesi.** Andrea Di
   Cicco aveva il JSON; Fabrizio Paganelli ha declinato — _"per il momento
@@ -1216,10 +1216,10 @@ valori. **Nessuno ha collegato la cosa alla fine dello sviluppo Fase 1 del
 
 ### 20.9 🔴 Il #92 era la domanda per cui questa riunione esisteva, e non è stata posta
 
-La domanda sullo scadenziario — una fattura Mexal *non* pagata può riportare un
+La domanda sullo scadenziario — una fattura Mexal _non_ pagata può riportare un
 Asset allo stato precedente? — era verbalizzata il 20 agosto come azione per
 questa sede. Il proponente (Fabrizio Paganelli) e il responsabile (Andrea Di
-Cicco) sono stati entrambi in riunione per 1h25m. **La parola *scadenziario* non
+Cicco) sono stati entrambi in riunione per 1h25m. **La parola _scadenziario_ non
 compare nemmeno una volta** nella trascrizione, negli appunti, nelle decisioni o
 nei passaggi successivi.
 
@@ -1257,8 +1257,8 @@ articoli. Metterlo esplicitamente a ordine del giorno.
   14:06Z — sei minuti dopo l'inizio di questa riunione — e **nessuna cella di
   testo tracciata è cambiata**. Riporta ancora _"Sulle campagne figlie deve
   esserci logica solo una campagna attiva"_ e il lookup manuale prodotto→padre,
-  entrambi superati qui, e la pagina Ordini legge ancora *Anticipay* contro il
-  *middleware Pienissimo* di LEAD-OPTY (§18.7), non riconciliato dopo altre due
+  entrambi superati qui, e la pagina Ordini legge ancora _Anticipay_ contro il
+  _middleware Pienissimo_ di LEAD-OPTY (§18.7), non riconciliato dopo altre due
   modifiche.
 
 ### 20.11 Non fatto, deliberatamente
@@ -1320,7 +1320,7 @@ Se Salesforce continui a rileggere gli ordini via API REST di WooCommerce — e 
 
 ### 21.7 🔴 Le vendite da palco sono il fatturato, e non sono testate
 
-Fabrizio Paganelli, spontaneamente in chiusura della sessione di design: WooCommerce è usato *pesantemente* per le **vendite da palco** — cliente in sala, QR code, **€8.900–9.000 e oltre** contro i ~€97 di un libro o di uno stream — e una vendita da palco **innesca meccanismi a valle, tra cui l'invio del contratto**. Ha chiesto entrambe le casistiche nei test. La sessione pomeridiana ha portato **un solo prodotto da €50 sul percorso felice**; le vendite da palco sono state rimandate al giro collegato a Salesforce. [OI-101](../notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md).
+Fabrizio Paganelli, spontaneamente in chiusura della sessione di design: WooCommerce è usato _pesantemente_ per le **vendite da palco** — cliente in sala, QR code, **€8.900–9.000 e oltre** contro i ~€97 di un libro o di uno stream — e una vendita da palco **innesca meccanismi a valle, tra cui l'invio del contratto**. Ha chiesto entrambe le casistiche nei test. La sessione pomeridiana ha portato **un solo prodotto da €50 sul percorso felice**; le vendite da palco sono state rimandate al giro collegato a Salesforce. [OI-101](../notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md).
 
 ### 21.8 🔴 Due cose senza proprietario
 
@@ -1335,15 +1335,14 @@ Non viene da nessuna delle due sessioni. Una mail di errore Salesforce delle **1
 
 ### 21.10 Stato della build WooCommerce
 
-| Lato | Stato |
-| ---- | ----- |
-| **Pienissimo — plugin, trigger, payload, reinvio** | 🟢 **costruito e dimostrato** |
-| **ROMI — endpoint, token** | ⚠ **corretto il 31/08** — l'endpoint **è distribuito e riceve traffico reale** (`WoocommerceOrderService`, non versionato); il **token non è ancora stato creato**, e l'endpoint non ha alcuna autenticazione (§22.3, §22.5) |
-| **ROMI — pulsante generatore link, template email, tipologia ordine, match `SC`, creazione cliente** | 🔴 non esiste nulla |
-| Configurazione org | 🔴 nessun Flow, nessuna named credential, nessuna riga di configurazione integrazione (verifica org 26/08; `Integration_Configuration__c` ancora 0 righe e 0 permessi oggetto al 31/08) |
+| Lato                                                                                                 | Stato                                                                                                                                                                                                                        |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Pienissimo — plugin, trigger, payload, reinvio**                                                   | 🟢 **costruito e dimostrato**                                                                                                                                                                                                |
+| **ROMI — endpoint, token**                                                                           | ⚠ **corretto il 31/08** — l'endpoint **è distribuito e riceve traffico reale** (`WoocommerceOrderService`, non versionato); il **token non è ancora stato creato**, e l'endpoint non ha alcuna autenticazione (§22.3, §22.5) |
+| **ROMI — pulsante generatore link, template email, tipologia ordine, match `SC`, creazione cliente** | 🔴 non esiste nulla                                                                                                                                                                                                          |
+| Configurazione org                                                                                   | 🔴 nessun Flow, nessuna named credential, nessuna riga di configurazione integrazione (verifica org 26/08; `Integration_Configuration__c` ancora 0 righe e 0 permessi oggetto al 31/08)                                      |
 
 Il lato cliente è reale e in attesa di ROMI, a undici giorni lavorativi dalla fine dello sviluppo di Fase 1 del **10 settembre**.
-
 
 ## 22. Aggiornamento 31/08/2026 — un deploy distruttivo, e il primo impegno del cliente rispettato in anticipo
 
@@ -1403,12 +1402,12 @@ conto.
 
 ### 22.3 🔴 Lo stesso schema è di nuovo in atto, su WooCommerce
 
-| | In `force-app/` | Nell'org |
-| --- | --- | --- |
-| Classe | `WooCommerceOrderEndpoint` (16.789 car.) | `WoocommerceOrderService` (23.087 car.) |
-| `urlMapping` | `/woocommerce/orders/*` | `/woocommerce/orders/*` |
-| Distribuita | no | **sì, modificata il 31 agosto** |
-| Versionata | sì | **no** |
+|              | In `force-app/`                          | Nell'org                                |
+| ------------ | ---------------------------------------- | --------------------------------------- |
+| Classe       | `WooCommerceOrderEndpoint` (16.789 car.) | `WoocommerceOrderService` (23.087 car.) |
+| `urlMapping` | `/woocommerce/orders/*`                  | `/woocommerce/orders/*`                 |
+| Distribuita  | no                                       | **sì, modificata il 31 agosto**         |
+| Versionata   | sì                                       | **no**                                  |
 
 Un deploy pulito da questo repository **pubblicherebbe una seconda classe su una
 rotta che ne ha già una** e lascerebbe orfana quella che serve attualmente il
@@ -1493,3 +1492,429 @@ naturale per `30 vs 60` e per il vincolo di stile testo semplice. ⚠ Entrambi i
 punti hanno una dipendenza lato cliente che una riunione interna non può
 sciogliere; decidere `30 vs 60` internamente significa che ROMI sceglie al posto
 del cliente e va messo a verbale come tale. Non è stata pubblicata alcuna agenda.
+
+## 23. Aggiornamento 01/09/2026 — il contratto API Anticipay, finalmente letto
+
+Nessuna riunione. Aurel Mrruku ha scaricato a mano
+`Documentazione API - Salesforce.pdf` alle **12:51 CEST** ed è stato analizzato la
+mattina stessa — la richiesta che il §22 indicava come _"la più economica del
+registro e la più preziosa"_. Decodifica completa in
+[il contratto](../notes/The%20Anticipay%20middleware%20API%20contract.md).
+
+### 23.1 🟢 Ci sono state due versioni, a diciassette ore di distanza
+
+| Versione | Inviata              | Differenza                                                                          |
+| -------- | -------------------- | ----------------------------------------------------------------------------------- |
+| v1       | **31 ago 16:15:00Z** | il contratto nella prima stesura                                                    |
+| v2       | **1 set 10:46:38Z**  | _"Ho aggiunto un parametro `:env` nel path, prevede un valore tra 'test' e 'prod'"_ |
+
+Entrambe da Andrea Parmeggiani, stessi destinatari. **ROMI ha la v2.** Non è
+stato costruito nulla, quindi non c'è rilavorazione — ma una specifica che si
+muove due volte in diciassette ore, la seconda la mattina stessa della call per
+cui era stata scritta, **non è congelata**. Chiedere se sono attese altre
+modifiche prima che uno sviluppatore inizi.
+
+### 23.2 Il contratto
+
+`GET https://integration.pienissimo.com/salesforce/account/:env/:piva`, con un
+**bearer token nell'header `Authorization`** e nessun corpo nella richiesta.
+`:env` accetta `test` o `prod` e precede la partita IVA. Un `200` restituisce
+`{ success, status, info }`, dove `info` porta **undici campi stringa**.
+
+🟢 **Gli undici campi coincidono esattamente con il lookup Mexal di
+pre-fatturazione as-is** descritto da Elisa Migliano il 6 agosto — ragione
+sociale, il blocco indirizzo della sede legale, PEC e il legale rappresentante.
+Il middleware **non** è una vista ridotta di una risposta Anticipay più ampia: è
+**il servizio che Pienissimo già usa, ri-esposto**. La sua valutazione di quella
+banca dati, _"corretta al 99,5%"_, vale quindi sugli stessi dati che Salesforce
+leggerà.
+
+### 23.3 🟢 Due cose che il 31 agosto erano deduzioni ora sono specifica
+
+- **La modalità test solo-cache è scritta nel contratto.** Con `env=test` il
+  middleware **non effettua alcuna chiamata ad Anticipay** e restituisce `404`
+  per ogni azienda non già presente nel database Pienissimo. La lettura tratta
+  dal corpo della mail il 31 agosto era corretta, e `404` porta dimostrabilmente
+  due significati durante i test — _azienda sconosciuta_ e _non ancora in cache_
+  — senza nulla nella risposta che permetta di distinguerli.
+- **L'ambiente di test che Pienissimo Software deve dal 25 agosto sembra essere
+  `:env`.** Non un deployment separato: un parametro di percorso sullo stesso
+  host, dietro lo stesso token, sullo stesso database. Può bastare per una
+  lettura da cache. Non è ciò che quella formula significa di norma, e **nessuno
+  ha detto che l'azione è chiusa** — chiuderla esplicitamente o ridichiarare cosa
+  serve.
+
+### 23.4 🟢 Lo storico errori funziona già — ma due difetti del motore rompono la notifica
+
+La sessione del 25 agosto aveva concordato che il middleware restituisce i codici
+di errore **insieme ai loro messaggi descrittivi**, che codice e messaggio vengono
+**entrambi conservati in Salesforce per tre mesi** e che il record memorizzato
+genera notifiche interne — Aurel Mrruku aveva chiesto esattamente questo perché
+esistesse uno storico verificabile.
+
+🟢 **Quello storico esiste e non richiede alcuna progettazione.** È
+`Integration_Log__c`, la traccia di audit standard ROMI per le callout, già a
+repository: `API_Callout_Engine` scrive lo stato HTTP in `Response_State__c` e il
+**corpo grezzo della risposta** in `Response_Body__c` (`LongTextArea(131072)`).
+Qualunque forma abbia il corpo di errore, codice e messaggio arrivano entrambi.
+⚠ **Una stesura precedente di questa sezione diceva che lo storico non era
+costruibile. Era sbagliato** — leggeva l'assenza della specifica del corpo di
+errore come un problema di archiviazione, mentre l'archiviazione era già risolta
+dallo scaffolding.
+
+🔴 **I difetti veri sono in quel motore, e sono di ROMI.**
+
+1. **`Is_Error__c` non viene mai impostato per un errore HTTP.** Il flag si imposta
+   solo se manca il record di configurazione o se viene lanciata un'eccezione
+   Apex. Un `404`, `401` o `500` dal middleware è un invio HTTP **riuscito**,
+   quindi la riga viene scritta con `Is_Error__c = false` — **la notifica interna
+   concordata, costruita nel modo ovvio, resta muta proprio nel caso per cui
+   questa integrazione esiste**, e le righe di errore non sono filtrabili.
+2. **Un corpo di errore non conforme fa perdere il codice di stato.** Il motore
+   deserializza nel wrapper del `200` **prima di controllare lo stato**; se il
+   corpo di errore ha una forma diversa la deserializzazione lancia, e il `catch`
+   ricostruisce la riga di log **senza `Response_State__c`**. Così un `404` può
+   essere registrato come eccezione Apex senza codice HTTP — esattamente l'esito
+   che l'accordo del 25 agosto voleva evitare.
+
+Entrambi sono comportamenti generici dello scaffolding, quindi riguardano **anche
+Mexal e ogni altra callout in uscita**. Correggerli una volta li corregge ovunque.
+
+⚠ **È per questo che il corpo di errore mancante conta ancora** — per un motivo
+molto più circoscritto di "manca lo storico". Un esempio di ciascuna risposta di
+errore permette di scrivere il wrapper in modo che tolleri la forma d'errore senza
+lanciare. Richiesta piccola, che vale ancora la pena fare ad Andrea Parmeggiani.
+
+⚠ **E i tre mesi di conservazione non hanno alcuna implementazione.** Lo
+scaffolding non prevede alcun job di purge. Qualcuno deve scrivere una
+cancellazione schedulata, altrimenti "tre mesi" diventa "per sempre" — il che si
+intreccia con il §23.5: una lookup **riuscita** registra l'intero corpo della
+risposta, quindi i dati personali del legale rappresentante restano in
+`Response_Body__c` a prescindere da quali campi vengano mappati sull'Account.
+
+⚠ **Due dei quattro codici sono anche nuovi.** `400` (partita IVA malformata) e
+`401` (token non valido) non facevano parte del protocollo del 25 agosto. Sono un
+genere diverso di errore — `404` e `500` descrivono l'azienda cercata, `400` e
+`401` descrivono **un difetto della chiamata di ROMI**. Il disegno concordato li
+mette tutti e quattro in un unico secchio dietro un'unica notifica, quindi **un
+deploy rotto o un token ruotato si presenterebbero come una serie di partite IVA
+sconosciute**.
+[OI-107](../notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md).
+
+### 23.5 🔴 Sei degli undici campi identificano una persona fisica
+
+Del legale rappresentante: **nome e cognome, codice fiscale, data di nascita,
+luogo di nascita e indirizzo di residenza**, più una PEC che in una ditta
+individuale è spesso l'indirizzo della persona stessa.
+
+Nessuno ha nascosto nulla. La sessione del 25 agosto aveva concordato un payload
+_"ridotto ai campi necessari"_ perché Anticipay ne restituisce molti più del
+voluto, e tutti i presenti immaginavano ragionevolmente **dati camerali
+d'impresa**. L'insieme ridotto risulta essere **in prevalenza dati personali di
+qualcuno che non è il contatto cliente e non ha mai interagito con ROMI o
+Salesforce**.
+
+Lo scopo dichiarato dell'intera integrazione è _dati puliti spinti verso Mexal_.
+`ragione_sociale`, il blocco indirizzo e `pec` lo servono; la data di nascita e
+l'indirizzo di casa di un amministratore no. I tre mesi di conservazione
+concordati il 25 agosto coprono i **codici di errore**, e per i dati restituiti
+non è mai stata dichiarata alcuna conservazione. **Raccomandazione: conservare il
+blocco azienda e lasciare non mappati i cinque campi del legale rappresentante** —
+offerta perché la scelta dei campi sia fatta con questo in vista, non imposta.
+[OI-108](../notes/items/OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md).
+
+### 23.6 🔴 Un unico token statico serve entrambi gli ambienti, ed è stato inviato due volte
+
+Non esiste un secondo token per `test`. Un host, una credenziale, nessuna
+rotazione, scadenza o scope descritti da nessuna parte — ed è stato inviato a
+**sei indirizzi in due occasioni**, inclusa la casella condivisa
+`amministrazione@` e Sabatino Rinaldi, che in questa integrazione non ha alcun
+ruolo.
+
+Inviare un token per mail è prassi ordinaria e l'autenticazione volutamente
+semplice era stata accettata il 25 agosto; nessuno ha sbagliato. L'unica
+conseguenza è che **il token va considerato già divulgato** nel decidere se
+ruotarlo prima del go-live — e che con una sola credenziale non esiste
+compartimentazione: un token trafugato da una sandbox chiama `env=prod`, che dopo
+lo switch al pass-through **spende denaro da Anticipay a ogni lookup**, proprio
+il controllo dei costi che era l'argomento fondativo di Andrea Parmeggiani per il
+middleware.
+[OI-106](../notes/items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md).
+
+⚠ ROMI deve a Pienissimo un token nella direzione opposta per l'endpoint
+WooCommerce ([OI-102](../notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)),
+dove il §22 ha trovato che la classe ricevente non ha alcuna autenticazione
+applicativa. Due integrazioni, due segreti statici condivisi, entrambi
+distribuiti per mail — merita **una** decisione su come questo progetto gestisce
+le credenziali.
+
+### 23.7 ⚠ Un refuso nel formato del filo, e due risposte che il #95 non si aspettava
+
+La data di nascita viene restituita come
+**`data_di_dascita_legale_rappresentante`** — `dascita`, non `nascita` — identica
+sia nell'esempio sia nella tabella dei campi, quindi è il formato del filo e non
+un refuso del documento. Se Pienissimo lo corregge senza dirlo dopo che ROMI ci
+ha scritto codice contro, **la data di nascita diventa silenziosamente null su un
+`200 OK`**, senza errore e senza notifica, e con la regola di sovrascrittura
+concordata un null può sovrascrivere un valore buono. Correggerlo subito o
+congelarlo per iscritto.
+[OI-105](../notes/items/OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md).
+
+Due candidati nominati il 25 agosto **non sono affatto disponibili**:
+
+- lo **score di affidabilità Anticipay** su cui aveva chiesto Fabrizio Paganelli
+  **non viene restituito** — volerlo è ora una change request a Pienissimo
+  Software, e farebbe di questo un flusso di rischio di credito e non una visura;
+- nemmeno **`rappresentante fiscale`** viene restituito. Il documento restituisce
+  `legale rappresentante`, che è un ruolo diverso. Verificare se quel giorno i
+  termini fossero stati usati in modo approssimativo.
+
+**`pec` invece c'è**, come il §22 aveva previsto.
+
+### 23.8 ⚠ Non è costruito nulla, e nove degli undici campi non hanno dove atterrare
+
+`force-app/` non contiene **alcun client Anticipay, alcuna callout e alcun flusso
+di verifica P.IVA** — solo `Account.Partita_IVA__c` e `Lead.Partita_IVA__c`,
+entrambi `Text(32)`, **né univoci né external id**.
+`Integration_Configuration__c` ha la forma giusta (`Endpoint_Host__c`,
+`Endpoint_Path__c`, `Token__c`, `Timeout__c`) ma **zero record e zero permessi di
+oggetto**; e la sua separazione `Named_Credential_Prod__c` / `_Sandbox__c`
+presuppone due host, mentre questa API ha un host e un segmento di percorso.
+`:env` va in `Endpoint_Path__c`.
+
+Account ha **tre campi custom in tutto**. `ragione_sociale` si mappa su `Name` e
+il blocco indirizzo sull'indirizzo di fatturazione standard, quindi quelli sono
+gratis — ma **la PEC e tutti e cinque i campi del legale rappresentante non hanno
+casa nell'org**, e crearli, esporli e proteggerli è lavoro non stimato che segue
+la decisione del #95 anziché precederla.
+
+Non documentati e mai chiesti da nessuno: **rate limit, timeout, politica di
+retry e TTL della cache**. Il pulsante di riverifica manuale concordato in
+[OI-73](../notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
+**non ha alcun bypass documentato della cache**, quindi potrebbe restituire la
+stessa risposta obsoleta da cui lo si premeva per uscire.
+
+### 23.9 ⚠ La call del 1 settembre si è tenuta, e questo recap non ne ha letto il verbale
+
+Il follow-up **si è svolto**: l'evento a calendario porta una **registrazione
+delle 10:02 CEST** e un documento di appunti Gemini. Era stato fissato come
+annullabile se il materiale non avesse sollevato domande.
+
+⚠ Si noti l'ordine: **la v2 della documentazione è arrivata alle 12:46 CEST, dopo
+la fine della call alle 11:00.** Il parametro `:env` è quindi plausibilmente un
+esito della sessione, non qualcosa che la sessione aveva davanti.
+
+**Tutto il §23 deriva dal documento, non da quella riunione.** Le sei domande qui
+sotto sono ciò che la specifica solleva; **diverse potrebbero già aver avuto
+risposta in riunione.** Sono registrate perché il verbale possa essere verificato
+rispetto ad esse — non come agenda, e non come elenco da inviare a qualcuno:
+
+1. **Il corpo della risposta di errore** — un esempio per codice, esattamente
+   come emesso. ⚠ Non è più un blocco (§23.4): serve a far tollerare al wrapper
+   la forma d'errore, non a sbloccare lo storico.
+2. **Una data da Fabrizio Paganelli ed Elisa Migliano** su quali campi Salesforce
+   conserva. Il punto è loro dal 25 agosto senza una data; hanno l'elenco dal 31
+   agosto e sono entrambi sul thread.
+3. **Il token** — uno o due, ruota, si può ruotare prima del go-live.
+4. **La data in cui `env=test` diventa pass-through**, e come ROMI ne viene
+   informata.
+5. **Il refuso `dascita`** — correggere o congelare.
+6. **Rate limit, timeout e TTL della cache**, incluso come il pulsante di
+   riverifica forza un aggiornamento.
+
+⚠ **La questione societaria non è toccata da nulla di tutto ciò.** Un'integrazione
+di Fase 1 dipende ancora dal fatto che Pienissimo Software Srl costruisca, ospiti
+e mantenga un servizio, e il documento — che è loro — non dice chi ne possiede
+l'uptime dopo la chiusura del progetto. **Leggere una specifica non equivale ad
+avere un impegno.**
+
+🔴 **Lo sviluppo della Fase 1 deve chiudersi il 10 settembre** — sette giorni
+lavorativi da adesso, e i punti 1 e 2 sono ciò che la build aspetta.
+
+🔴 **Il passo successivo è analizzare il verbale del 1 settembre**, non inviare
+domande. Finché la registrazione e gli appunti Gemini non sono letti, nessuno sa
+quali dei sei punti siano ancora aperti.
+
+## 24. Aggiornamento 01/09/2026 (sera) — la call di follow-up, analizzata la sera stessa
+
+L'indicazione con cui si chiudeva il §23 era di analizzare il verbale del
+1 settembre prima di sollecitare qualsiasi cosa. **È stato fatto.** Appunti
+Gemini, trascrizione integrale e registrazione sono stati letti tutti la sera del
+1 settembre. La call è durata ~20 minuti dalle 10:02 CEST con Elena Spini, Aurel
+Mrruku (ROMI), Andrea Parmeggiani (Pienissimo Software) ed Elisa Migliano.
+Fabrizio Paganelli era invitato e viene interpellato due volte in riunione ma non
+interviene mai; la sua presenza resta incerta.
+
+### 24.1 🟢 La selezione dei campi è decisa, e la risposta è "tutti"
+
+**Il #95 è risolto.** L'azione che Fabrizio Paganelli ed Elisa Migliano
+detenevano **senza data dal 25 agosto** — per la quale tre sweep consecutivi
+raccomandavano di sollecitare una data — è stata assolta in riunione. Aurel
+Mrruku ha percorso il punto 6 della documentazione campo per campo e **tutti e
+undici i campi sono stati presi**.
+
+| Campo                                    | Destinazione                                                  |
+| ---------------------------------------- | ------------------------------------------------------------- |
+| `ragione_sociale`                        | `Account.Name`                                                |
+| `indirizzo`, `citta`, `provincia`, `cap` | il blocco indirizzo di fatturazione standard                  |
+| `pec`                                    | **un nuovo campo dedicato sull'Account**                      |
+| `nome_legale_rappresentante`             | **un nuovo campo di testo sull'Account**                      |
+| `codice_fiscale_legale_rappresentante`   | **un nuovo campo sull'Account**                               |
+| `data_di_dascita_legale_rappresentante`  | **un nuovo campo sull'Account**, refuso della chiave incluso  |
+| `luogo_nascita_legale_rappresentante`    | **un nuovo campo sull'Account**                               |
+| `indirizzo_legale_rappresentante`        | **un unico campo di testo**, non un indirizzo strutturato     |
+
+Dentro quella decisione stanno due scelte di struttura:
+
+- **Il legale rappresentante va sull'Account, non su un Contact.** Aurel Mrruku
+  aveva proposto un record Contact tipizzato; Elisa Migliano ha deciso
+  diversamente, perché il dato è _"fondamentale per la firma dei contratti"_. Lui
+  ha accettato mettendo però a verbale una riserva: campi piatti sull'Account non
+  conservano storico, e il cambio di un amministratore è un evento ordinario.
+- **L'indirizzo della persona è un unico campo di testo.** Andrea Parmeggiani:
+  _"non è importante che salviamo il CAP del legale rappresentante"_. Si noti
+  l'asimmetria: l'indirizzo **aziendale** è strutturato, quello **personale** no.
+
+🔴 **Questo sblocca la build della verifica P.IVA (#73) e insieme impegna sei
+campi di lavoro non stimato** — creazione, layout e field-level security — a nove
+giorni dalla fine dello sviluppo Fase 1 del 10 settembre.
+
+### 24.2 🟢 La suddivisione degli ambienti è nata in questa call, e il token unico è deliberato
+
+Aurel Mrruku ha proposto **due path distinti**, così che il test continuativo non
+tocchi mai la produzione. Andrea Parmeggiani ha acconsentito seduta stante —
+_"facciamo due path diversi"_ — e ha inviato i path definitivi **2,5 ore dopo**.
+Quella è la v2 della documentazione, e chiude la domanda aperta nel §23: il
+parametro `:env` è un **esito** di questa sessione, confermato e non più dedotto.
+
+Sul token, la domanda del **#106** è stata posta esplicitamente e ha avuto
+risposta:
+
+> **Aurel Mrruku:** _"si può usare anche lo stesso token perché praticamente
+> l'ambiente è lo stesso?"_ — **Andrea Parmeggiani:** _"sì, sì."_
+
+**Due path, un token, per scelta.** La motivazione è coerente — i due ambienti
+condividono il database — e trasforma il #106 da lacuna non notata in una
+decisione presa consapevolmente da entrambe le parti. Assolve inoltre l'azione
+sull'ambiente di test del 25 agosto nel modo più esplicito che questo progetto
+otterrà. 🔴 Resta aperto, in forma più circoscritta: **la rotazione prima del
+go-live**, nel presupposto che un valore inviato a sei indirizzi sia già
+divulgato. Rotazione e scadenza non sono state discusse affatto.
+
+Definiti anche: l'**ambiente di test è gratuito e senza limiti** (_"non ci sono
+costi, possiamo fare chiamate a piacere"_), la **produzione ha configurazione
+identica** salvo l'inoltro ad Anticipay, e l'**happy path è `200`**, confermato a
+voce.
+
+### 24.3 🔴 Anticipay copre solo aziende italiane — e questo risponde a un requisito
+
+Andrea Parmeggiani, spontaneamente e di sfuggita:
+
+> _"Diamo per scontato che la richiesta facciamo solo per aziende italiane perché
+> Anticipay dà i dati solo per aziende italiane. Quindi la nazione non l'ho
+> inserita perché è scontato che sia Italia, altrimenti torna sempre non
+> trovato."_
+
+Dunque `nazione` è **deliberatamente assente** dal payload, e **una P.IVA non
+italiana restituisce sempre `404`** — lo stesso codice di un'azienda italiana
+sconosciuta e, durante il periodo di test, lo stesso codice di una cache fredda.
+**Tre significati distinti su un solo status code**, contro un protocollo
+concordato che al `404` assegna un significato e una notifica.
+
+⚠ `INT-18` recita _"Anticipay VAT check timing and **foreign-VAT handling**"_. La
+parte sulle P.IVA estere non è rinviata alla fase 2 — **non è realizzabile
+attraverso questa integrazione in nessuna fase**. Nessuno in riunione ha collegato
+l'osservazione al requisito. Questo acuisce la contraddizione già registrata nel
+§23: `INT-18` necessita ora di una correzione di **ambito** oltre che di **fase**,
+ed entrambe sono modifiche a un documento firmato. Resta a Elena Spini sollevarla.
+
+### 24.4 Ciò che la call non ha toccato
+
+Quattro delle sei domande derivate nel §23 **non sono mai state poste**:
+
+| Domanda                               | Dopo la call                                                        |
+| ------------------------------------- | ------------------------------------------------------------------- |
+| Il **body delle risposte di errore**  | 🔴 ancora aperto — l'ultimo blocco tecnico alla build               |
+| Quali campi, e con che data           | 🟢 chiusa — tutti e undici, sopra                                   |
+| Il token — uno o due                  | 🟢 chiusa — uno, deliberatamente                                    |
+| La data in cui `env=test` inoltra     | 🔴 ancora aperta, mai menzionata                                    |
+| Il refuso `dascita` (#105)            | 🔴 ancora aperto — e la sua via d'uscita si è chiusa                |
+| Limiti di chiamata, timeout, TTL      | ⚠ a metà — il test è gratuito e illimitato; **la produzione no**    |
+
+**Sollecitare tre cose, non sei.** Riproporre le due chiuse costerebbe
+credibilità.
+
+Sul **#105**: la nota sosteneva che il refuso potesse chiudersi da sé se la data
+di nascita fosse stata scartata. Viene memorizzata, e nessuno ha guardato i nomi
+delle chiavi — quindi il punto resta, più urgente di quando è stato scritto.
+Indicazione pratica nel frattempo: **sviluppare sulla chiave errata come
+documentata, mantenendo corretto il nome del campo Salesforce**, così che una
+correzione futura costi una riga di mappatura e non una rinomina in org.
+
+### 24.5 🔴 La questione dei dati personali non è stata sollevata, e la decisione è andata in senso opposto
+
+Il **#108** raccomandava di conservare il blocco aziendale e scartare quello
+personale. La riunione ha portato tutti e cinque i campi del legale
+rappresentante sull'Account.
+
+⚠ **Non è un rifiuto.** La domanda non è mai stata posta nei venti minuti;
+registrarla come "valutata e respinta" sarebbe falso.
+
+🟢 **Un campo ha ora una finalità a verbale** — la prima che il record possieda.
+Elisa Migliano: il legale rappresentante è _"fondamentale per la firma dei
+contratti"_. Questo giustifica chiaramente **il nome**.
+
+🔴 **Non giustifica gli altri quattro.** Firmare un contratto richiede di
+identificare il firmatario; non è evidente perché richieda **data di nascita,
+luogo di nascita, codice fiscale e indirizzo di residenza** del firmatario, e
+nessuno di questi ha avuto una motivazione puntuale. Conservazione, base
+giuridica, **field-level security** — i campi vanno sull'Account, letto
+abitualmente dall'amministrazione Pienissimo, esattamente l'esposizione segnalata
+dal #108 — e cancellazione non sono stati menzionati.
+
+La richiesta rivista è piccola: **cinque minuti alla call sul data model**, una
+frase di finalità per ogni campo personale, e un tempo di conservazione.
+
+### 24.6 Novità emerse dalla call
+
+- **#109 — il codice destinatario SDI.** Elisa Migliano ha chiesto se il
+  middleware possa restituirlo: un **dodicesimo** campo, non presente nel
+  contratto documentato. Ha detto lei stessa che non è critico (le fatture vanno
+  via PEC), ma su Mexal c'è _"una valanga di clienti dove lo SDI non è
+  valorizzato"_, il che ne fa un guadagno di qualità del dato sull'anagrafica
+  as-is. ⚠ La prima impressione di Andrea Parmeggiani è che **non sia
+  disponibile**. Non deve ritardare gli undici.
+- **Una call sul data model, dovuta da Elena Spini, senza data.** L'ha chiesta
+  esplicitamente — _"ancora non abbiamo ricevuto niente"_ — ed Elisa Migliano vi
+  ha subito rinviato altro materiale, nominando il **tipo fatturazione
+  elettronica**. È la sede naturale per il workbook dovuto da luglio e per il
+  §24.5.
+- 🔴 **Un'azione senza collocazione: spegnere la chiamata di test al go-live.**
+  L'ha sollevata Aurel Mrruku stesso, poiché due configurazioni identiche
+  rischiano di far partire lookup di produzione a pagamento dalla corsia di test.
+  _"Lo mettiamo nei punti da tracciare."_ È tracciata nella nota di riunione e in
+  nessun altro luogo.
+
+### 24.7 L'anagrafica articoli si è mossa, e il materiale non è stato letto
+
+Indipendentemente dalla call, **Fabrizio Paganelli ha inviato `Anagrafica
+Articoli.xlsx` il 01/09 alle 14:04Z** a Elena Spini, Aurel Mrruku e Andrea Di
+Cicco, per la sessione **2 settembre** _Follow-up Anagrafica Articoli_: un
+estratto dell'anagrafica articoli **con i soli corsi**, più _"una ipotesi di
+nuovi codici da gestire solo nei bundle"_ e _"un paio di domande"_ rivolte a ROMI
+per un parere.
+
+🟢 È il primo materiale lato cliente sul **#48** dal 26 agosto e il primo esito
+tangibile della ricreazione dell'anagrafica (**#98**).
+
+🔴 **Non è stato letto** — una scansione automatica non può aprire un allegato
+Gmail — quindi non si conosce nulla oltre il corpo della mail: né il numero di
+codici, né la convenzione, né se corrisponda allo schema gemello A/B che
+Fabrizio Paganelli stesso aveva nominato, né quali siano le sue domande. ⚠ È un
+**estratto**, e la formulazione non dice se si tratti dei codici **nuovi** o di
+quelli **attuali** in revisione.
+
+**È la terza volta che questa stessa lacuna costa una giornata**, dopo il payload
+WooCommerce del 27 agosto e il PDF delle API del 31 agosto — entrambi i quali,
+una volta aperti a mano, hanno prodotto scoperte che nessuna inferenza aveva
+generato. **Serve prima della riunione del 2 settembre, non dopo.**

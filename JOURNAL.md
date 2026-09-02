@@ -10,6 +10,46 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-01 — claude — nightly requirements-check: the Anticipay follow-up drilled, and OI-95 is resolved
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark
+  **2026-08-31T22:00Z**. ⚠ **Not** from the newer
+  [01/09 Anticipay drill trace](notes/traces/Source%20trace%202026-09-01%20Anticipay%20API%20drill.md),
+  which is newest by `updated:` but **disclaims itself as a watermark in its own
+  first line**. Selecting mechanically by frontmatter would have skipped the
+  31/08 → 01/09 window entirely. Then drilled the **01/09 Anticipay follow-up** —
+  Gemini notes, notes document and **the full 19m49s transcript**.
+- **State:** the meeting the last trace called _"the single most valuable thing
+  outstanding"_ is in the record
+  ([the minute](notes/meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)),
+  and it **resolved [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)**:
+  all eleven middleware fields land on `Account`, the legal representative on the
+  Account rather than a Contact, his address as one free-text field. The `:env`
+  split was **invented in that call** (v2-as-outcome now confirmed, not
+  inferred); the **shared token is deliberate** (OI-106, asked outright);
+  **Anticipay serves Italian companies only**, which answers the foreign-VAT half
+  of `INT-18` in the negative and which nobody in the room noticed (OI-73). Four
+  of six open questions were **never raised**. New: **OI-109** (codice
+  destinatario SDI) and a
+  [risk note on org access](notes/risks/Risk%20-%20the%20team%20lost%20access%20to%20the%20Pienissimo%20orgs%20on%201%20September.md).
+  Eight notes updated, three created; rows 48/94/95/98/105/106/108 + new 109 in
+  both trackers; §24 in both recaps. **No requirement changed.**
+- **Next:** ⚠ **`Anagrafica Articoli.xlsx`** — Fabrizio Paganelli's 01/09 14:04Z
+  attachment carrying the bundle-only code proposal and questions addressed to
+  ROMI — **is unread and the meeting it was prepared for is 2 September.**
+  Somebody has to download it by hand, as with the WooCommerce payload and the
+  API PDF. Then chase **three** Anticipay questions, not six: the error response
+  bodies, the pass-through date, the `dascita` typo.
+- **Watch:** 🔴 **Do not record OI-108 as "the client considered and declined".**
+  The personal-data question was **never raised** in the call; the room took all
+  five person fields without it being asked. One field now has a stated purpose
+  (contract signature), four do not. ⚠ Also: **org access failed for both Aurel
+  Mrruku and Elena Spini on the morning of 01/09 and nothing written says it was
+  restored** — the two decaying findings (Biglietto recycle bin ~12 Sept, the
+  unversioned `WoocommerceOrderService`) can only be worked from inside that org.
+  ⚠ Housekeeping: the 01/09 drill's own entry sits at the **bottom** of this file
+  rather than the top, against the newest-first rule. Left in place, not moved.
+
 ## 2026-08-31 — claude — nightly requirements-check: a destructive deploy took 37 records and 270 lines of unversioned code
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-08-28T22:00Z**
@@ -1671,3 +1711,81 @@ servizio`**, exists in Elena's client-facing doc and in no version of
 - **Follow-up:** after deployment, the quick-action UI was adjusted to hide the
   internal template name and show an example checkout link containing the current
   Opportunity id.
+## 2026-09-01 — claude — drilled the Anticipay middleware API documentation
+
+- **Did:** Aurel Mrruku downloaded `Documentazione API - Salesforce.pdf` by hand
+  and asked for it to be drilled — the outstanding ask the 31 August trace listed
+  first. Extracted with `pdftotext -layout` (the `Read` tool needs poppler's
+  `pdftoppm`, which is not installed; `/mingw64/bin/pdftotext` is). Decoded in
+  full into
+  [the Anticipay middleware API contract](notes/The%20Anticipay%20middleware%20API%20contract.md).
+- **Provenance:** Gmail thread `1a0589a4a85b5bdf`, **two** messages from Andrea
+  Parmeggiani — v1 **31 Aug 16:15:00Z**, v2 **1 Sep 10:46:38Z** adding the `:env`
+  path parameter. The downloaded file is **v2**. Only one Gmail query was run,
+  for provenance; **this was not a sweep**.
+- **Created:** the contract note, `OI-105`–`OI-108`, and
+  [a trace](notes/traces/Source%20trace%202026-09-01%20Anticipay%20API%20drill.md).
+  **Updated:** `OI-73`, `OI-94`, `OI-95`, `MAP.md`, `INDEX.md`, both trackers
+  (rows 105–108 new; 73, 94, 95 extended) and a new §23 in both recaps.
+- **Corrected same session, on Aurel's steer.** `OI-107` was first written as
+  _"the error response body is undocumented, so the three-month error store cannot
+  be built"_. **Wrong** — the store is `Integration_Log__c`, ROMI's standard
+  callout audit trail, already committed and already logging `Response_State__c`
+  plus the raw body. Renamed to
+  [OI-107 The Anticipay error path does not reach the integration log intact](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)
+  and rewritten around what reading `API_Callout_Engine` actually shows:
+  🔴 **`Is_Error__c` is never set for an HTTP error** (so the agreed notification
+  is silent for every `404`), and 🔴 **the `catch` rebuilds the log row without
+  `Response_State__c`** (so a non-matching error body loses the HTTP code). Both
+  generic — they affect Mexal too. Corrected across MAP, INDEX, both recaps, both
+  trackers, OI-73, the contract note and the trace.
+- 🔴 **The harder blocker, found in the same pass:** `API_Callout_Engine` **cannot
+  pass a path parameter**. For a `GET` it discards the caller's argument
+  (`buildRequest` sets a body only when the method is not `GET`) and
+  `Endpoint_Path__c` is a static custom-setting field — so `:piva`, which differs
+  on every call, has nowhere to go. Extend the shared engine, or give Anticipay
+  its own client. Recorded in the contract note; **not yet an item, because the
+  choice is Aurel's.**
+- **Also corrected:** the token does **not** belong in
+  `Integration_Configuration__c.Token__c` — `buildEndpoint` uses
+  `callout:<NamedCredential>`, so it goes in a Named Credential. 🟢 And the engine
+  never populates `Request_Headers__c`, so the bearer token is not written to the
+  log.
+- **Also new:** six of eleven response fields identify a private individual
+  ([OI-108](notes/items/OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md));
+  one static bearer token for both `test` and `prod`, mailed twice to six
+  addresses
+  ([OI-106](notes/items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md));
+  and `data_di_dascita_legale_rappresentante` is misspelled **in the wire format**
+  ([OI-105](notes/items/OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)).
+- 🔴 **The PDF was deliberately NOT committed**, breaking the precedent set by
+  `Payload woo-salesforce.json`. It carries a **live bearer token** and a real
+  individual's full personal data; committing it would put a working credential
+  into git history where deleting the file does not remove it. The contract note
+  is the record — structure only, no values. **Do not add the PDF later.**
+- **Watermark untouched.** The next `requirements-check` still uses
+  **2026-08-31T22:00Z** from
+  [the 31 August trace](notes/traces/Source%20trace%202026-08-31.md). Slack, Drive
+  and Fathom were not searched today.
+- **Fixed in passing:** `INDEX.md` had never listed the 31 August trace and still
+  named the **28 August** one as the current watermark. Both corrected.
+- **Left alone, deliberately:** `INT-18` still reads
+  `status: open, recommendation: phase_2` while the whole record treats Anticipay
+  as **Fase 1**. Real contradiction, predates today, and fixing it means moving a
+  signed document in both languages — raise with Elena Spini rather than change
+  it from a note.
+- 🔴 **Caught late, and it matters: the 1 September follow-up call ALREADY RAN.**
+  The calendar event `2j4tg4tglt9iei6285jfn8i62s` carries a **recording timed
+  10:02 CEST** and Gemini notes `1CiCRPuxOoZvqmlUTRahWyewjAuDw4n0wgOMzs4vK0dU`.
+  ⚠ **v2 of the documentation arrived 12:46 CEST, after the call ended**, so
+  `:env` is plausibly an **outcome** of that session. The first pass of today's
+  notes framed the six questions as an agenda for an upcoming call; **corrected
+  across `MAP.md`, `OI-94`, both recaps, both trackers and the trace** to read as
+  questions raised by the document, to be checked against the minute first.
+- **Next action on this whole area: drill the 1 September meeting.** It was not
+  done today — it is `drill-meeting`'s job and much larger than what was asked —
+  and it may already answer several of `OI-105`–`OI-108`. **Do not chase Andrea
+  Parmeggiani for anything before reading it.**
+- **Watch:** `MAP.md` is now **~34 KB** against its own "keep under 5 KB"
+  instruction. Not restructured today; it needs a deliberate pass that moves the
+  dated incident blocks into notes.

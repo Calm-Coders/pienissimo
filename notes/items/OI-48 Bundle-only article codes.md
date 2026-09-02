@@ -112,3 +112,36 @@ chase `(B)` specifically.**
 
 Fabrizio Paganelli will **configure two such articles as a test next week**, which
 is the 3–5 examples this item asked for, arriving by a different route.
+
+## 🟢 2026-09-01 - the examples were sent, and this sweep cannot read them
+
+**Fabrizio Paganelli mailed `Anagrafica Articoli.xlsx` on 1 September at 14:04Z**
+to Elena Spini, Aurel Mrruku and Andrea Di Cicco, ahead of the 2 September
+session. His own description of the attachment, in full:
+
+> _"per l'incontro di domani vi invio un estratto di anagrafica articoli con solo
+> i corsi — ho aggiunto anche **una ipotesi di nuovi codici da gestire solo nei
+> bundle** — poi ho un paio di domande da valutare anche in base ad un vostro
+> parere."_
+
+**"Una ipotesi di nuovi codici da gestire solo nei bundle" is this item.** It is
+the first client-side material on bundle-only codes since the 26 August session,
+and it arrived as a proposal to react to rather than as a fait accompli — which
+is what _"anche in base ad un vostro parere"_ invites.
+
+🔴 **The workbook has not been read.** This sweep cannot open a Gmail attachment.
+The mail body is the whole of what the record holds, so **nothing below the body
+is known**: not how many codes, not the naming convention, not whether it matches
+the `A`/`B` twin scheme Fabrizio Paganelli named himself on 26 August, and not
+what his _"paio di domande"_ are.
+
+This is the **third time** the same gap has cost this project a day — the
+WooCommerce payload on 27 August, `Documentazione API - Salesforce.pdf` on
+31 August, and now this. Both previous ones were closed by Aurel Mrruku
+downloading the file by hand, and both turned out to carry findings no inference
+had produced.
+
+⚠ **It is needed before the 2 September meeting, not after it.** The questions in
+it are addressed to ROMI and the meeting is the forum for answering them; walking
+in having not opened the attachment wastes the session Fabrizio Paganelli
+prepared it for. **This is the cheapest outstanding ask in the record.**
