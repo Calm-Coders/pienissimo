@@ -1,8 +1,7 @@
 import { createElement } from "lwc";
-import { NavigationMixin } from "lightning/navigation";
-import { encodeDefaultFieldValues } from "lightning/pageReferenceUtils";
 import WooCheckoutEmail from "c/wooCheckoutEmail";
 import getContext from "@salesforce/apex/WooCheckoutEmailController.getContext";
+import sendCheckoutEmail from "@salesforce/apex/WooCheckoutEmailController.sendCheckoutEmail";
 
 jest.mock(
   "@salesforce/apex/WooCheckoutEmailController.getContext",
@@ -12,6 +11,13 @@ jest.mock(
       default: createApexTestWireAdapter(jest.fn())
     };
   },
+  { virtual: true }
+);
+jest.mock(
+  "@salesforce/apex/WooCheckoutEmailController.sendCheckoutEmail",
+  () => ({
+    default: jest.fn()
+  }),
   { virtual: true }
 );
 jest.mock(
@@ -27,6 +33,7 @@ jest.mock(
 );
 
 const OPPORTUNITY_ID = "006MA00000QJduNYAT";
+const RECIPIENT_EMAIL = "cliente@example.com";
 
 function buildComponent() {
   const element = createElement("c-woo-checkout-email", {
@@ -42,14 +49,8 @@ async function flush() {
 }
 
 describe("c-woo-checkout-email", () => {
-  let navigate;
-
   beforeEach(() => {
-    navigate = jest.fn();
-    WooCheckoutEmail.prototype[NavigationMixin.Navigate] = navigate;
-    encodeDefaultFieldValues.mockImplementation((values) =>
-      JSON.stringify(values)
-    );
+    sendCheckoutEmail.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -59,47 +60,40 @@ describe("c-woo-checkout-email", () => {
     jest.clearAllMocks();
   });
 
-  it("opens the email composer without preselecting a recipient", async () => {
+  it("sends the shared template to the entered recipient", async () => {
     const element = buildComponent();
-    element.context = { opportunityName: "Academy 2026" };
-    getContext.emit(element.context);
+    getContext.emit({ opportunityName: "Academy 2026" });
     await flush();
     await flush();
 
-    const openComposer = Array.from(
+    expect(element.shadowRoot.textContent).not.toContain("Template");
+    expect(element.shadowRoot.textContent).toContain(
+      `sf_opportunity_id=${OPPORTUNITY_ID}`
+    );
+
+    const emailInput = element.shadowRoot.querySelector("lightning-input");
+    emailInput.value = RECIPIENT_EMAIL;
+    emailInput.reportValidity = jest.fn().mockReturnValue(true);
+    emailInput.dispatchEvent(
+      new CustomEvent("change", {
+        detail: { value: RECIPIENT_EMAIL }
+      })
+    );
+    await flush();
+
+    const sendButton = Array.from(
       element.shadowRoot.querySelectorAll("lightning-button")
-    ).find((button) => button.label === "Open Email Composer");
-    element.shadowRoot.querySelector("lightning-input").reportValidity = jest
-      .fn()
-      .mockReturnValue(true);
-
-    expect(openComposer.disabled).toBe(false);
-    openComposer.dispatchEvent(
+    ).find((button) => button.label === "Send Email");
+    expect(sendButton.disabled).toBe(false);
+    sendButton.dispatchEvent(
       new MouseEvent("click", { bubbles: true, composed: true })
     );
     await flush();
+    await flush();
 
-    expect(encodeDefaultFieldValues).toHaveBeenCalledWith({
-      Subject: "Completa il tuo ordine Pienissimo",
-      HTMLBody: expect.stringContaining(
-        `sf_opportunity_id=${OPPORTUNITY_ID.substring(0, 15)}`
-      ),
-      RelatedToId: OPPORTUNITY_ID
-    });
-    expect(encodeDefaultFieldValues.mock.calls[0][0]).not.toHaveProperty(
-      "ToAddress"
-    );
-    expect(navigate).toHaveBeenCalledWith({
-      type: "standard__quickAction",
-      attributes: {
-        apiName: "Global.SendEmail"
-      },
-      state: {
-        recordId: OPPORTUNITY_ID,
-        defaultFieldValues: JSON.stringify(
-          encodeDefaultFieldValues.mock.calls[0][0]
-        )
-      }
+    expect(sendCheckoutEmail).toHaveBeenCalledWith({
+      opportunityId: OPPORTUNITY_ID,
+      recipientEmail: RECIPIENT_EMAIL
     });
   });
 });

@@ -94,7 +94,7 @@ Keep the twenty most recent entries here; archive older ones to
   running**.
 - **Watch:** ⚠ this sweep **did not open the org**; every build-state assertion
   written tonight is attributed to the 28/08 run and dated. ⚠ Do not cite Elena
-  Spini's 28/08 post for the *merits* of the phase 2 dispute — it adds no
+  Spini's 28/08 post for the _merits_ of the phase 2 dispute — it adds no
   argument, only a date for the silence. ⚠ "Fabrizio" in that post is **Mastracci
   (ROMI)**, not Paganelli (Pienissimo).
 - **Cost:** 5 notes updated, 0 created; both trackers (rows 14, 81, 104), both
@@ -1654,3 +1654,20 @@ servizio`**, exists in Elena's client-facing doc and in no version of
 - **Current build note:** the manual Lead conversion Apex matches by Contact
   email and does not evaluate VAT, so no further change should be made there
   until this question is answered.
+
+---
+
+## 2026-09-02 - codex - checkout email action uses shared template
+
+- **Did:** changed the Opportunity `Send Checkout Email` quick action from a
+  hardcoded email composer draft to a direct Apex send using the shared
+  `WooCommerce_Checkout_Link` Salesforce email template.
+- **UI:** `wooCheckoutEmail` now asks for a recipient email address and sends the
+  template to that address; the checkout link is supplied by the template from
+  the current Opportunity id.
+- **Validation:** the focused LWC behavior is covered by the updated Jest test.
+  No Apex test class was added, per the standing instruction to leave Apex test
+  work for its separate pass.
+- **Follow-up:** after deployment, the quick-action UI was adjusted to hide the
+  internal template name and show an example checkout link containing the current
+  Opportunity id.

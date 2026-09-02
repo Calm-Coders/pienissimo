@@ -1,19 +1,17 @@
 import { api, LightningElement, wire } from "lwc";
 import { CloseActionScreenEvent } from "lightning/actions";
-import { NavigationMixin } from "lightning/navigation";
-import { encodeDefaultFieldValues } from "lightning/pageReferenceUtils";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getContext from "@salesforce/apex/WooCheckoutEmailController.getContext";
+import sendCheckoutEmail from "@salesforce/apex/WooCheckoutEmailController.sendCheckoutEmail";
 
-const DEFAULT_FUNNEL_URL = "https://www.pienissimo.it/checkout";
-const EMAIL_SUBJECT = "Completa il tuo ordine Pienissimo";
+const CHECKOUT_BASE_URL = "https://www.pienissimo.it/checkout";
 
-export default class WooCheckoutEmail extends NavigationMixin(
-  LightningElement
-) {
+export default class WooCheckoutEmail extends LightningElement {
   @api recordId;
 
-  funnelUrl = DEFAULT_FUNNEL_URL;
+  recipientEmail = "";
   validationMessage = "";
+  isSending = false;
   context;
   contextError;
 
@@ -25,18 +23,6 @@ export default class WooCheckoutEmail extends NavigationMixin(
 
   get opportunityName() {
     return this.context?.opportunityName || "";
-  }
-
-  get checkoutLink() {
-    return this.buildCheckoutLink();
-  }
-
-  get emailSubject() {
-    return EMAIL_SUBJECT;
-  }
-
-  get emailBody() {
-    return this.buildEmailBody();
   }
 
   get isOpportunityLoading() {
@@ -53,18 +39,31 @@ export default class WooCheckoutEmail extends NavigationMixin(
   get isOpenEmailDisabled() {
     return (
       this.isOpportunityLoading ||
+      this.isSending ||
       !!this.opportunityErrorMessage ||
-      !this.funnelUrl ||
-      !this.checkoutLink
+      !this.recipientEmail
     );
   }
 
-  handleFunnelUrlChange(event) {
-    this.funnelUrl = event.detail.value || "";
+  get sendButtonLabel() {
+    return this.isSending ? "Sending" : "Send Email";
+  }
+
+  get exampleCheckoutLink() {
+    if (!this.recordId) {
+      return "";
+    }
+    return `${CHECKOUT_BASE_URL}?sf_opportunity_id=${encodeURIComponent(
+      this.recordId
+    )}`;
+  }
+
+  handleRecipientEmailChange(event) {
+    this.recipientEmail = event.detail.value || "";
     this.validationMessage = "";
   }
 
-  handleOpenEmailComposer() {
+  async handleSendEmail() {
     const inputs = [...this.template.querySelectorAll("lightning-input")];
     const isValid = inputs
       .map((input) => input.reportValidity())
@@ -73,53 +72,27 @@ export default class WooCheckoutEmail extends NavigationMixin(
     if (!isValid) {
       return;
     }
-    if (!this.checkoutLink) {
-      this.validationMessage = "The checkout link could not be generated.";
-      return;
+
+    this.isSending = true;
+    this.validationMessage = "";
+    try {
+      await sendCheckoutEmail({
+        opportunityId: this.recordId,
+        recipientEmail: this.recipientEmail
+      });
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "Checkout email sent",
+          message: `The checkout email was sent to ${this.recipientEmail}.`,
+          variant: "success"
+        })
+      );
+      this.handleCancel();
+    } catch (error) {
+      this.validationMessage = this.reduceError(error);
+    } finally {
+      this.isSending = false;
     }
-
-    const defaultFieldValues = encodeDefaultFieldValues({
-      Subject: EMAIL_SUBJECT,
-      HTMLBody: this.emailBody,
-      RelatedToId: this.recordId
-    });
-
-    this[NavigationMixin.Navigate]({
-      type: "standard__quickAction",
-      attributes: {
-        apiName: "Global.SendEmail"
-      },
-      state: {
-        recordId: this.recordId,
-        defaultFieldValues
-      }
-    });
-
-    this.handleCancel();
-  }
-
-  buildCheckoutLink() {
-    const baseUrl = (this.funnelUrl || "").trim();
-    if (!baseUrl || !this.recordId) {
-      return "";
-    }
-
-    const opportunityId = this.recordId.substring(0, 15);
-    const separator = baseUrl.includes("?") ? "&" : "?";
-    return `${baseUrl}${separator}sf_opportunity_id=${encodeURIComponent(
-      opportunityId
-    )}`;
-  }
-
-  buildEmailBody() {
-    const escapedLink = this.escapeHtml(this.checkoutLink);
-
-    return [
-      "<p>Gentile cliente,</p>",
-      "<p>puoi completare l&apos;ordine Pienissimo dal link qui sotto:</p>",
-      `<p><a href="${escapedLink}">Completa l&apos;ordine</a></p>`,
-      "<p>Grazie.</p>"
-    ].join("");
   }
 
   handleCancel() {
@@ -171,14 +144,5 @@ export default class WooCheckoutEmail extends NavigationMixin(
     return messages.length
       ? messages.join(" | ")
       : JSON.stringify(error).slice(0, 255);
-  }
-
-  escapeHtml(value) {
-    return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
   }
 }

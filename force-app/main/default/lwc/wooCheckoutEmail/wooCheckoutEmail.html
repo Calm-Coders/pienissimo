@@ -25,30 +25,20 @@
 
           <div class="form-grid">
             <lightning-input
-              type="url"
-              label="Funnel URL"
-              value={funnelUrl}
-              onchange={handleFunnelUrlChange}
+              type="email"
+              label="Recipient Email"
+              value={recipientEmail}
+              onchange={handleRecipientEmailChange}
               required
             ></lightning-input>
           </div>
 
           <div class="email-summary">
             <div>
-              <div class="summary-label">Subject</div>
-              <div class="summary-value">{emailSubject}</div>
-            </div>
-            <div>
-              <div class="summary-label">Recipient</div>
-              <div class="summary-value">Choose in the email composer</div>
+              <div class="summary-label">Checkout Link</div>
+              <div class="summary-value">{exampleCheckoutLink}</div>
             </div>
           </div>
-
-          <lightning-textarea
-            label="Checkout Link"
-            value={checkoutLink}
-            readonly
-          ></lightning-textarea>
 
           <template if:true={validationMessage}>
             <div class="message error">{validationMessage}</div>
@@ -64,9 +54,9 @@
       ></lightning-button>
       <lightning-button
         variant="brand"
-        label="Open Email Composer"
+        label={sendButtonLabel}
         disabled={isOpenEmailDisabled}
-        onclick={handleOpenEmailComposer}
+        onclick={handleSendEmail}
         class="slds-m-left_small"
       ></lightning-button>
     </div>
