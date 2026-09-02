@@ -2,7 +2,13 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **Precedence, newest first: §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
+> ⚠ **Precedence, newest first: §25 → §24 → §23 → §22 → §21 → §20 → §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
+>
+> §17, §19, §22 and §25 are **build-state checks** against the Pienissimo UAT
+> org, on 25/08, 26/08, 31/08 and 02/09. Where one contradicts an earlier
+> section about what **exists**, the most recent wins. Where an earlier section
+> records what was **agreed**, that section stands. §25 withdraws §19's claim
+> that the org held no email templates — the instrument could not see them.
 > §1–§9 are current to 2026-07-23. §10 carries the 07/24 → 08/03 delta; §11 the 06/08 closing session; §12 the 14/08 document sweep; §13 the 24/08 product workbook; §15 the standard-Asset selection; §16 the four meetings recovered on 24/08. **§14 is Aurel Mrruku's direct tranche decision and overrides every earlier statement that tranches are created from Order Items or imported from `BLO-` codes.** **§17 and §19 are build-state checks against the live UAT org, on 25/08 and 26/08 — where they contradict an earlier section on what _exists_, the newer wins; where an earlier section records what was _agreed_, that section still governs. §19 corrects one finding of §17 outright.** §18 is the 25/08 Anticipay call.
 
 ---
@@ -1750,14 +1756,14 @@ changes to a signed document. Still Elena Spini's to raise.
 
 Four of the six questions §23 derived from the document were **never raised**:
 
-| Question                            | After the call                                                    |
-| ----------------------------------- | ----------------------------------------------------------------- |
-| The **error response body**         | 🔴 still open — the last technical blocker on the build           |
-| Which fields, and a date            | 🟢 closed — all eleven, above                                     |
-| The token — one or two              | 🟢 closed — one, deliberately                                     |
-| The date `env=test` goes pass-through | 🔴 still open, never mentioned                                  |
-| The `dascita` typo (#105)           | 🔴 still open — and its escape hatch closed                       |
-| Rate limits, timeout, cache TTL     | ⚠ half — test is free and uncapped; **production was not raised** |
+| Question                              | After the call                                                    |
+| ------------------------------------- | ----------------------------------------------------------------- |
+| The **error response body**           | 🔴 still open — the last technical blocker on the build           |
+| Which fields, and a date              | 🟢 closed — all eleven, above                                     |
+| The token — one or two                | 🟢 closed — one, deliberately                                     |
+| The date `env=test` goes pass-through | 🔴 still open, never mentioned                                    |
+| The `dascita` typo (#105)             | 🔴 still open — and its escape hatch closed                       |
+| Rate limits, timeout, cache TTL       | ⚠ half — test is free and uncapped; **production was not raised** |
 
 **Chase three things, not six.** Re-asking the two that closed would cost
 credibility.
@@ -1830,3 +1836,158 @@ whether these are the **new** codes or the **current** ones under review.
 payload on 27 August and the API PDF on 31 August — both of which, once opened by
 hand, carried findings no inference had produced. **It is needed before the
 2 September meeting, not after it.**
+
+## 25. Update 2026-09-02 — org check against the Pienissimo UAT org
+
+> ⚠ **This section records BUILD STATE only.** It supersedes earlier sections'
+> claims about what **exists** in the org. It does **not** supersede any earlier
+> section's record of what was **agreed** — a decision stays decided even where
+> the implementation contradicts it.
+
+Read-only check of **Pienissimo UAT** (`00DMA000004nMMr2AM`, partial sandbox,
+API 68.0) on **2026-09-02, 08:05–08:14Z**, against `force-app/` on `DevMain` at
+`4a49376`. 165 repository components compared with 1,072 org components.
+Method: Metadata API listing across 20 component types, Tooling
+`FieldDefinition`, `FieldPermissions`, `ObjectPermissions`,
+`ApexCodeCoverageAggregate`, `ApexTestRunResult`, `FlowDefinitionView`,
+`PermissionSetAssignment` and targeted SOQL aggregates.
+
+It supersedes §22 and §19 on build state.
+
+### 25.1 🟢 Everything in the repository is deployed, and the WooCommerce collision is gone
+
+**All 30 project components in `force-app/` exist in the org.** No
+repository-only drift for project metadata.
+
+The route collision §22 raised is **resolved on both sides**:
+
+|                            | 31 August                           | 2 September                 |
+| -------------------------- | ----------------------------------- | --------------------------- |
+| `WooCommerceOrderEndpoint` | in the repository, undeployed       | **removed from both sides** |
+| `WoocommerceOrderService`  | deployed, **not** in source control | **deployed and committed**  |
+| REST routes claimed        | 2 classes, 1 route                  | **1 class, 1 route**        |
+
+The deployed class body was read back and compared with the committed file:
+after normalising line endings the two are **identical**. The 848-character size
+difference is exactly the CRLF-versus-LF difference across the file's ~848 lines.
+A clean deploy now publishes the class that is already running.
+
+⚠ It is safe from the _deploy_, not otherwise finished — **`INT-16` is still
+unauthenticated**, so the header token ROMI owes remains the entire
+authentication.
+
+### 25.2 🔴 The eleven Anticipay fields are not built
+
+`OI-95` was resolved on 1 September precisely so this could start. `Account`
+carries **three** custom fields — `Lead_Email__c`, `Nome_Locale__c`,
+`Partita_IVA__c`. **No PEC, none of the five legal-representative fields, no
+representative address.** Proven absent by Tooling `FieldDefinition`, which is
+not filtered by field-level security.
+
+**Fase 1 development ends 10 September.** The fields themselves are buildable
+today — they need no endpoint, no token and no further client answer. What is
+blocked is the callout and the error path, not the schema.
+
+### 25.3 🔴 The org has zero project Flows, and one of them was never versioned
+
+Verified two independent ways, because one empty listing is not proof: the
+Metadata API `Flow` list is empty, and `FlowDefinitionView` returns **79** flows
+of which **none is non-namespaced**.
+
+`Lead_Non_Risponde_Follow_Up` was added on 27 August and deleted on 31 August
+with its own commit message saying so — deliberate, and **recoverable from
+git**. But §22's predecessor run recorded **two** Flows on 28 August, and
+`git log --all` proves only **one** flow file has ever existed in this
+repository. The second was org-only and is gone, and **no surviving record names
+it**.
+
+Nothing is known to have been lost with it. The point is that the project cannot
+tell — the third org-only loss in six days.
+
+### 25.4 🔴 Two named credentials exist only in the org
+
+`Anticipay` and `DocuSign` are configured in the org and exist in **no branch**
+of this repository, as do the permission sets `DocuSign`, `Full_Permission` and
+`Sales_User`.
+
+A named credential is where the endpoint and the authentication live. Losing one
+produces no compile error and no missing-component message — the callout simply
+fails at runtime. A sandbox refresh takes both the credential and the only record
+of how it was configured.
+
+### 25.5 The integration scaffolding is unchanged, and now blocks a dated build
+
+|                                     | 26 August | 2 September |
+| ----------------------------------- | --------- | ----------- |
+| `Integration_Configuration__c` rows | 0         | **0**       |
+| its object permissions              | 0         | **0**       |
+| `Integration_Log__c` rows           | 0         | **21**      |
+| Remote site settings                | 0         | **0**       |
+
+The log rows are real traffic, but they come from the **inbound** WooCommerce
+endpoint, which uses none of this scaffolding. **Nothing outbound has run.**
+`Integration_Configuration__c` still has zero object permissions, so no user can
+read it even once a row exists.
+
+### 25.6 Coverage: the number is unmeasured, not measured at zero
+
+`ApexCodeCoverageAggregate` reports **0 covered, 1,646 uncovered, 0%**, up from
+1,571 on 31 August as code lands. Against the 75% floor, **nothing can ship —
+unchanged and still gating.**
+
+But the figure has been read too literally. **The last Apex test run in this org
+is 2026-08-04** — 10 methods, **0 failed** — while classes changed continuously
+through 31 August. The aggregate is populated only by a test run and is
+invalidated when classes recompile, so the stored 0% measures nothing about the
+current code.
+
+**Three project test classes are deployed**, and on their last recorded run they
+passed. That does not mean coverage is secretly adequate — three test classes
+against 1,646 lines will not reach 75%. It means **nobody currently knows the
+real figure**. No test was run, written or offered.
+
+### 25.7 🟢 Org access is fixed, and 🔴 UAT still cannot be exercised
+
+The 1 September lockout no longer reproduces: the check authenticated and
+completed a full inventory with no authentication failure, and Aurel Mrruku
+confirmed it directly — _"yes its working, we have fixed it"_.
+
+But **every project permission set still reaches exactly one active user**
+against **8** active users, unchanged since 28 August. Business users cannot
+exercise UAT.
+
+### 25.8 Also verified
+
+- **`Biglietto__c` is confirmed absent.** Asset holds **5** records, not 41, so
+  the 37-record dataset was **not migrated**. Asset carries 8 custom fields and
+  a Ticket record type; the rebuild has not started.
+- 🟢 **`OrderItem.Tranche__c` is now granted** read and edit to
+  `Tranche_Management`, closing the 26 August blockage. **Propagation is still
+  unbuilt** — 0 of 18 order items carry a tranche.
+- 🟢 **The order lifecycle is live and in use** — `Incassato` on 12 of 15 orders,
+  and `Order` carries 3 custom fields. This corrects §19's record that the order
+  state machine was stock and the object had no custom fields.
+- ⚠ **Records stranded on deactivated values, on two objects now**: 3 of 10
+  quotes (`Accepted` ×2, `Needs Review` ×1) and 3 of 15 orders (`Activated` ×2,
+  `Draft` ×1). A record on a deactivated value cannot be re-saved without being
+  moved first.
+
+### 25.9 Two defects in the record itself, both corrected
+
+**The register cited requirement ids that do not exist.** The build-state block
+referenced `QUO-01` (four times) and `QUO-06` — there is no `QUO-` prefix among
+the 154 requirement ids; the sales area uses `SAL-`. Where the entry text names
+a requirement directly it now cites `SAL-08` and `SAL-09`; the entries that
+observe the quote **state machine** carry `state_machine: quote` and no
+requirement ref, because the register has no id for it. Strict validation now
+passes.
+
+**The check's own inventory reported zero email templates, and was wrong.**
+Metadata API `listMetadata` cannot enumerate folder-scoped types without being
+given a folder, so it returned an empty `EmailTemplate` list and recorded no
+unavailability. SOQL proves **88** templates, including the project's active
+`WooCommerce_Checkout_Link`. §19's claim that the org held "zero …
+EmailTemplate" rested on this artefact and is **withdrawn**.
+
+> An empty result from an instrument that cannot enumerate the thing is not
+> absence. It is silence.

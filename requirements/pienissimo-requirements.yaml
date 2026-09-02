@@ -1419,7 +1419,14 @@ requirements:
         hook on the order status transition, composing one JSON body carrying order,
         customer and order lines",
       recommendation: webhook,
-      tracked_by: [OI-49, OI-104, flow-woocommerce, REF-woo-payload, risk-woo-endpoint-orphan]
+      tracked_by:
+        [
+          OI-49,
+          OI-104,
+          flow-woocommerce,
+          REF-woo-payload,
+          risk-woo-endpoint-orphan
+        ]
     }
   - {
       id: INT-15,
@@ -2000,20 +2007,24 @@ acceptance_criteria:
 
 # =============================================================================
 build_state:
-  checked: 2026-08-26
-  supersedes: 2026-08-25
+  checked: 2026-09-02
+  supersedes: 2026-08-26
   org: a.mrruku@pienissimo.uat
   org_id: 00DMA000004nMMr2AM
-  repo_commit: dc513c6
+  repo_commit: 4a49376
   method: >-
-    read-only; sf org list metadata + Tooling FieldDefinition, FieldPermissions,
-    CustomField and ApexCodeCoverageAggregate, plus SOQL counts.
+    read-only; Metadata API list across 20 component types, Tooling
+    FieldDefinition, FieldPermissions, ObjectPermissions and
+    ApexCodeCoverageAggregate, FlowDefinitionView, ApexTestRunResult,
+    PermissionSetAssignment and targeted SOQL aggregates. Snapshots produced by
+    npm run org-status:snapshot:repo and :snapshot:org, compared by
+    npm run org-status:compare.
   note: >-
     sf project retrieve preview is unusable here — Pienissimo UAT is a partial
     sandbox without source tracking (NonSourceTrackedOrgError). Repository-vs-org
     divergence below was established component by component.
   method_correction: >-
-    The 2026-08-25 check compared `sf sobject describe` output against the
+    The 2026-08-25 check compared sf sobject describe output against the
     force-app field directories. describe is FILTERED BY THE RUNNING USER'S
     FIELD-LEVEL SECURITY, so a deployed field granted to nobody is reported as
     missing and is indistinguishable from a field that was never created. That
@@ -2021,55 +2032,101 @@ build_state:
     re-run against Tooling FieldDefinition, which is not filtered; only that one
     finding changed. Use FieldDefinition for existence and FieldPermissions for
     visibility. See notes/How to read the org schema without a false negative.md
+  instrument_limitations:
+    - id: LIM-01
+      issue: >-
+        Metadata API listMetadata returns ZERO EmailTemplates for this org and
+        records no unavailability, because folder-scoped types cannot be
+        enumerated without naming a folder. SOQL against EmailTemplate proves 88
+        templates exist, including the project's active WooCommerce_Checkout_Link.
+        The 2026-08-26 not_built entry asserting "zero ... EmailTemplate" rested
+        on this artefact and is withdrawn. Never read an empty EmailTemplate
+        listing as absence; query the object.
+    - id: LIM-02
+      issue: >-
+        ListView, FlexiPage, StandardValueSet and PathAssistant are not in the
+        inventoried type list, so the 15 keys the comparison reports as
+        repository-only for those types are UNVERIFIABLE, not absent.
+    - id: LIM-03
+      issue: >-
+        Component totals are not comparable across runs. This run inventories
+        1072 org components against 541 recorded on 2026-08-28; the type list
+        differs and no growth of that size occurred.
+    - id: LIM-04
+      issue: >-
+        ApexCodeCoverageAggregate is populated only by a test run. The last
+        ApexTestRunResult in this org is 2026-08-04, while classes changed
+        through 2026-08-31, so the stored 0% measures NOTHING about current code.
+        Read it as unmeasured, not as measured-at-zero. No test was run: the Apex
+        suite is a separate task requested before the production deploy.
+  unmapped_observations: >-
+    The quote state machine has no requirement id in this register; its authority
+    is state_machines.quote. Entries below that observe it carry
+    state_machine: quote and no refs. The 2026-08-26 block cited QUO-01 and
+    QUO-06, which have never existed among the 154 requirement ids — the sales
+    area uses the SAL- prefix. Those refs are corrected or removed here; where the
+    entry text names a requirement directly (expiry date, day-2 alert) it now
+    cites SAL-08 and SAL-09.
   built:
     - {
-        component: BundleComponent__c junction with spread formulas and active trigger,
+        component: "BundleComponent__c junction with spread formulas and active trigger; 19 component records",
         refs: [BUN-03]
       }
     - {
-        component: "Product2 bundle fields: selling price, spread total, spread variance",
+        component: "Product2 bundle fields — 24 custom fields including selling price, spread total and spread variance; 8 of 281 products carry the Bundle record type",
         refs: [BUN-02]
-      }
-    - {
-        component: "Classification picklists anno solare, evento, bundle type — populated on 1 of 280 products; Tipologia__c populated on 249 of 280",
-        refs: [BUN-08]
       }
     - { component: Bundle configurator controller and LWC, refs: [BUN-10] }
     - {
-        component: "Biglietto__c custom object with six Apex classes for DocuSign and PDF; DocuSign has run — envelope id populated on 19 of 37 tickets",
-        refs: [DM-22, BIG-01]
-      }
-    - {
-        component: "Genera_Biglietto__c field — true on 4 of 280 products",
+        component: "Genera_Biglietto__c — true on 4 of 281 products",
         refs: [BUN-12]
       }
     - {
-        component: "Solo_Bundle__c field — true on 0 of 280 products",
+        component: "Solo_Bundle__c — true on 0 of 281 products",
         refs: [BUN-13]
       }
     - {
-        component: "WooCommerce id fields on Product2 and Opportunity — populated on 0 records",
-        refs: [INT-13]
-      }
-    - {
-        component: "Tranche__c object with Stato__c (Aperta, Parzialmente Pagata, Pagata), due date, planned amount, sequence and Quote lookup; 6 records, 5 Aperta and 1 Parzialmente Pagata set by hand",
+        component: "Tranche__c object with Stato__c, due date, planned amount, sequence and Quote lookup; 19 records, none fully paid",
         refs: [DM-17, ORD-01]
       }
     - {
-        component: "QuoteLineItem.Tranche__c and QuoteLineItem.Data_Scadenza__c — the Quote-side tranche reference; 8 quote lines carry a tranche",
+        component: "QuoteLineItem.Tranche__c and QuoteLineItem.Data_Scadenza__c — 31 quote lines carry a tranche",
         refs: [DM-17, ORD-01]
       }
     - {
-        component: "Quote-side tranche creation: QuoteTrancheController, quoteCreateTranche LWC, Quote.Crea_Tranche quick action — retrieved into force-app 2026-08-26 in PR #12, byte-identical to the org copy",
+        component: "Quote-side tranche creation: QuoteTrancheController, quoteCreateTranche LWC and the Quote.Crea_Tranche quick action — all three deployed and in source control",
         refs: [DM-17, ORD-01]
       }
     - {
-        component: "OrderItem.Tranche__c EXISTS in the org (created 2026-08-24) — see divergent DIV-04: it is granted to no profile and no permission set, and nothing in force-app writes it",
-        refs: [DM-17, ORD-01]
+        component: "OrderItem.Tranche__c is deployed AND granted read/edit to Tranche_Management — the field is no longer invisible to every user",
+        refs: [DM-17, ORD-01],
+        supersedes: "DIV-04 of the 2026-08-26 block"
       }
     - {
-        component: "Quote.Status carries the agreed lifecycle: Bozza, Nuovo Preventivo, In Trattativa, In Attesa Accettazione, Accettato, Rifiutato — the eight stock English values deactivated. First agreed state machine to reach the org",
-        refs: [QUO-01]
+        component: "Quote.Status carries the agreed lifecycle: Bozza, Nuovo Preventivo, In Trattativa, In Attesa Accettazione, Accettato, Rifiutato; 7 of 10 quotes now sit on Bozza",
+        state_machine: quote
+      }
+    - {
+        component: "Order.Status carries the agreed Italian lifecycle and is IN USE — Incassato on 12 of 15 orders; Order carries 3 custom fields (Origine__c, Quote__c, WooCommerce_Order_Key__c)",
+        refs: [ORD-01],
+        supersedes: "the 2026-08-26 not_built entry claiming stock Draft/Activated and zero custom fields"
+      }
+    - {
+        component: "WooCommerce inbound endpoint — WoocommerceOrderService deployed, now IN SOURCE CONTROL and byte-identical to the deployed class; exactly one REST route; the duplicate WooCommerceOrderEndpoint is removed from both sides; 21 Integration_Log__c rows show real traffic",
+        refs: [INT-13, INT-14]
+      }
+    - {
+        component: "WooCommerce checkout email — WooCheckoutEmailController, the wooCheckoutEmail LWC, the Opportunity quick action and the WooCommerce_Checkout_Link template, which is ACTIVE in the org (see LIM-01)",
+        refs: [INT-12]
+      }
+    - {
+        component: "Standard Asset as the ticket object — 8 custom fields and a Ticket record type; 5 records, 4 on Ordinato",
+        refs: [DM-22, BIG-01],
+        supersedes: "the 2026-08-26 not_built entry claiming Asset carried zero custom fields"
+      }
+    - {
+        component: "Lead conversion stack — LeadConversionTrigger, LeadConversionTriggerHandler and LeadConversionQueueable deployed; Lead carries 6 custom fields and a Require_Non_Qualificato_Exit_Reason validation rule",
+        refs: [SAL-04]
       }
     - {
         component: "OrderBigliettoTrigger creates tickets from an order in Apex",
@@ -2077,49 +2134,61 @@ build_state:
       }
   not_built:
     - {
-        component: "Any declarative automation at all — zero Flow, FlowDefinition, WorkflowRule, ApprovalProcess, EmailTemplate, CustomNotificationType and no scheduled Apex. Two validation rules exist org-wide, both on BundleComponent__c",
-        refs: [BIG-02, BIG-19, QUO-06, ORD-04]
+        component: "The eleven Anticipay fields agreed 2026-09-01 — Account carries only Lead_Email__c, Nome_Locale__c and Partita_IVA__c. No PEC, none of the five legale-rappresentante fields, no representative address. Proven absent by Tooling FieldDefinition",
+        refs: [INT-18]
       }
     - {
-        component: "Quote lifecycle BEHAVIOUR — the picklist is configured but nothing enforces it: no validation rule on Quote, so the Bozza-only edit constraint is unenforced; ExpirationDate null on 2 of 4 quotes; no email template for the day-2 reminder copy delivered 2026-08-25",
-        refs: [QUO-01]
+        component: "Any declarative automation at all — ZERO project Flows, verified twice: an empty Metadata API Flow list, and FlowDefinitionView returning 79 flows of which none is non-namespaced. No WorkflowRule, ApprovalProcess, CustomNotificationType, RemoteSiteSetting or scheduled Apex. Three validation rules exist: two on BundleComponent__c, one on Lead",
+        refs: [BIG-02, BIG-19, SAL-09, ORD-04]
       }
     - {
-        component: "Order state machine — Order.Status is stock Draft/Activated; Order carries zero custom fields",
-        refs: [ORD-01]
+        component: "Quote lifecycle BEHAVIOUR — the picklist is configured but nothing enforces it: no validation rule on Quote, and no email template for the day-2 reminder copy delivered 2026-08-25",
+        refs: [SAL-08, SAL-09],
+        state_machine: quote
+      }
+    - {
+        component: "Tranche-to-order propagation and payment roll-up — 0 of 18 OrderItem records carry a tranche, Completamente_Pagata__c is true on none of the 19 tranches, and nothing in force-app writes either",
+        refs: [DM-17, ORD-01]
+      }
+    - {
+        component: "Outbound integration configuration — Integration_Configuration__c holds ZERO rows and ZERO ObjectPermissions rows, so nobody can read it. Mexal and the Anticipay middleware have neither endpoint nor principal. API_Callout_Engine cannot pass a path parameter",
+        refs: [INT-01, INT-18]
+      }
+    - {
+        component: "Campaign parent/child model — Campaign and CampaignMember carry no custom fields, no record types and no validation rules",
+        refs: [BIG-19]
       }
     - {
         component: "Lead and Opportunity state machines — both stock Salesforce picklists",
         refs: [DGM-1, DGM-2]
       }
     - {
-        component: "Standard Asset as the ticket object — Asset carries zero custom fields (confirmed via FieldDefinition), stock Status picklist, 1 record named Test",
-        refs: [DM-22, BIG-01]
-      }
-    - {
-        component: "Campaign parent/child model — Campaign AND CampaignMember both carry zero custom fields, no record types, no validation rules",
-        refs: [BIG-19]
-      }
-    - {
-        component: "Tranche-to-order propagation and payment roll-up — Completamente_Pagata__c is a checkbox nothing computes; no Apex, trigger or flow writes OrderItem.Tranche__c",
-        refs: [DM-17, ORD-01]
-      }
-    - {
-        component: "Outbound integration configuration — Integration_Configuration__c and Integration_Log__c hold zero records; one named credential (DocuSign); no remote site settings. So Mexal, WooCommerce and the VAT middleware have no endpoint defined. API_Callout_Engine has never run",
-        refs: [INT-13]
-      }
-    - {
         component: Contract auto-generation,
         scheduled reports,
         credit-note flow,
-        note: "all ~170 reports in the org are stock Salesforce samples; CronTrigger holds platform jobs only",
+        note: "no ApprovalProcess and no scheduled Apex in the org",
         refs: [ORD-05, ORD-07, ORD-08, ORD-15]
       }
   divergent:
     - {
-        id: DIV-01,
-        issue: "Biglietto__c.Status__c holds nine values including In attesa firma and Firmato, struck on 2026-08-06; agreed set Ordinato/Disponibile/Assegnato/Utilizzato is not configured",
-        refs: [BIG-01]
+        id: DIV-08,
+        issue: "Named credentials Anticipay and DocuSign exist ONLY in the org, as do the permission sets DocuSign, Full_Permission and Sales_User. Absent from force-app on every branch. Third instance of the org-only pattern after the Biglietto stack and WoocommerceOrderService; lost if the sandbox is refreshed",
+        refs: [INT-18, INT-19]
+      }
+    - {
+        id: DIV-09,
+        issue: "Every project permission set reaches exactly ONE active user against 8 active users — Bundle_Demo, Integration_Management, Lead_Management, Opportunity_Management, Ticket_Asset_Management and Tranche_Management. Business users cannot exercise UAT",
+        refs: [NFR-06]
+      }
+    - {
+        id: DIV-10,
+        issue: "The 2026-08-28 check recorded TWO Flows in this org, one of them the active Lead_Non_Risponde_Follow_Up. That file was added in 225b172 and deleted in 158c2d0 and is recoverable from git, but git log --all proves only ONE flow file has ever existed in this repository. The second Flow was org-only and is now gone with no versioned copy and no surviving record of its name",
+        refs: [BIG-19]
+      }
+    - {
+        id: DIV-11,
+        issue: "Order.Status holds 3 of 15 records on stock English values (Activated x2, Draft x1) alongside the agreed Italian lifecycle — the same unmigrated-records pattern as DIV-05, on a second object",
+        refs: [ORD-01]
       }
     - {
         id: DIV-02,
@@ -2132,87 +2201,71 @@ build_state:
         refs: [DGM-2]
       }
     - {
-        id: DIV-04,
-        issue: "OrderItem.Tranche__c is deployed but granted to no profile and no project permission set — its only FieldPermissions row is the Salesforce-internal sfdc_a360_sfcrm_data_extract. Invisible to every user including System Administrator, and unreadable from SOQL. Tranche_Management grants the QuoteLineItem twin and omits the OrderItem side",
-        refs: [DM-17, ORD-01],
-        supersedes: "the 2026-08-25 not_built entry claiming the field was absent from the org"
-      }
-    - {
         id: DIV-05,
-        issue: "Quote.Status was replaced with the agreed Italian values without migrating the records — 3 of 4 quotes still sit on deactivated stock values (Accepted x2, Needs Review x1). A record on a deactivated value cannot be re-saved without being moved",
-        refs: [QUO-01]
+        issue: "Quote.Status was replaced with the agreed Italian values without migrating the records — 3 of 10 quotes still sit on deactivated stock values (Accepted x2, Needs Review x1). A record on a deactivated value cannot be re-saved without being moved. Unchanged since 2026-08-26",
+        state_machine: quote
       }
     - {
         id: DIV-06,
-        issue: "Tranche__c.Sequenza__c has no integrity control — values run 1, 4, 3 on one quote (a gap, out of creation order) and are null on the three older records. Nothing enforces presence, uniqueness or contiguity, and BIG-18 ticket release reads it as a total order",
+        issue: "Tranche__c.Sequenza__c has no integrity control — nothing enforces presence, uniqueness or contiguity, and BIG-18 ticket release reads it as a total order",
         refs: [DM-17]
       }
     - {
         id: DIV-07,
-        issue: "state_machines.quote.states in this register still carries the older DGM-derived labels (In trattativa (Prev inviato), In attesa di accettazione, Accettato - Copia Contabile Ricevuta, Rifiutata) and now disagrees with BOTH the org and OI-59. Flagged for a human; an org check does not amend the register",
-        refs: [QUO-01]
+        issue: "state_machines.quote.states in this register still carries the older DGM-derived labels and disagrees with BOTH the org and OI-59. Flagged for a human; an org check does not amend the register",
+        state_machine: quote
       }
   regressions:
     - {
-        id: REG-01,
-        issue: "Product2.Code__c became required; 9 of 10 bundle tests fail; org coverage 0% — 24 classes and triggers, 1069 uncovered lines, zero covered",
+        id: REG-04,
+        issue: "Apex coverage reads 0% of 1646 lines across the org, up from 1571 on 2026-08-31 as code lands. Three project test classes are deployed — BundleComponentTriggerHandlerTest, BundleProductAssignmentControllerTest and OrderBigliettoTriggerHandlerTest — but the last test run is 2026-08-04, so see LIM-04. The 75% production floor cannot be evidenced today",
         refs: [NFR-06]
       }
     - {
-        id: REG-02,
-        issue: "Bundle spread variance non-zero on 3 of the 7 Bundle-record-type products",
-        refs: [BUN-17]
-      }
-    - {
-        id: REG-03,
-        issue: "QuoteTrancheController still has no test class; 185 uncovered lines (144 recorded on 2026-08-25 — the class body is unchanged since 2026-08-25T12:50:07Z, the coverage snapshot caught up), the largest uncovered class in the org",
-        refs: [NFR-06]
+        id: REG-05,
+        issue: "Biglietto__c and its 37 records were deleted from the org on 2026-08-28 by commit 5d8cdb3. Confirmed absent. Asset holds 5 records, not 41, so the dataset was NOT migrated; and seven Apex components that went with it were never in source control on any branch",
+        refs: [BIG-01, DM-22]
       }
   out_of_source_control:
     note: >-
-      Present in the org and absent from force-app. Lost if the sandbox is
-      refreshed. The tranche stack was retrieved on 2026-08-26; the Biglietto
-      stack has not moved since 2026-07-22 and is three components larger than
-      previously recorded.
+      Present in the org and absent from force-app on every branch. Lost if the
+      sandbox is refreshed. The 2026-08-26 list is superseded: the Biglietto
+      components on it were deleted from the org on 2026-08-28, and
+      WoocommerceOrderService has since been committed.
     components:
-      - BigliettoTrigger
-      - BigliettoTriggerHandler
-      - BigliettoDocuSignService
-      - BigliettoDocuSignQueueable
-      - BigliettoPdfService
-      - BigliettoPdfQueueable
-      - BigliettoPdfBatch
-      - Biglietto__c.DocuSign_Envelope_Id__c
-      - BigliettoPdf (Visualforce page — newly identified)
-      - DocuSign (named credential — newly identified)
-      - Biglietto__c custom tab
-      - BundleComponent__c custom tab # newly identified
-      - Biglietto Layout
-      - Tranche__c-Tranche Layout
+      - Anticipay (named credential)
+      - DocuSign (named credential)
       - DocuSign / Full_Permission / Sales_User permission sets
+      - one unidentifiable Flow, present 2026-08-28, absent 2026-09-02 (see DIV-10)
   lifecycle_evidence:
-    checked: 2026-08-26
-    tickets: 37
-    awaiting_signature: 30
-    loaded_not_released: 7
-    reached_disponibile: 0
-    qr_generated: 0
-    docusign_envelopes: 19
-    tranches: 6
+    checked: 2026-09-02
+    assets: 5
+    assets_ordinato: 4
+    assets_blank_status: 1
+    tranches: 19
     tranches_fully_paid: 0
+    quote_lines_with_tranche: 31
+    order_items_with_tranche: 0
+    integration_log_rows: 21
+    integration_configuration_rows: 0
+    note: >-
+      Biglietto__c is gone, so the 2026-08-26 ticket lifecycle counters have no
+      successor. The Asset rebuild has not started.
   data_volumes:
-    checked: 2026-08-26
-    products: 280
-    products_bundle_record_type: 7
-    opportunities: 52
-    leads: 9
-    accounts: 5
+    checked: 2026-09-02
+    products: 281
+    products_bundle_record_type: 8
+    opportunities: 56
+    leads: 18
+    accounts: 11
     campaigns: 3
     campaign_members: 15
-    orders: 3
-    order_items: 6
-    quotes: 4
-    quote_lines_with_tranche: 8
-    bundle_components: 16
-    assets: 1
+    orders: 15
+    order_items: 18
+    quotes: 10
+    quote_lines_with_tranche: 31
+    bundle_components: 19
+    tranches: 19
+    assets: 5
+    active_users: 8
     note: still a development dataset; the migration has not started

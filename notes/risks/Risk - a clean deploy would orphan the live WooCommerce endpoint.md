@@ -1,32 +1,39 @@
 ---
 id: risk-woo-endpoint-orphan
 type: risk
-status: open
+status: resolved
 severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-31
-updated: 2026-08-31
+updated: 2026-09-02
 depends_on: [OI-102]
 blocks: [OI-49]
 requirement: [INT-14, INT-16]
 source: org-status-check 2026-08-31 09:36-09:52Z
+resolved_by: org-status-check 2026-09-02 08:05-08:14Z
 ---
 
 # Risk - a clean deploy would orphan the live WooCommerce endpoint
+
+> ✅ **Resolved 2026-09-02.** Both halves of the collision are gone: the
+> unversioned class is now committed and byte-identical to the deployed one,
+> and the duplicate has been removed. Read
+> [the resolution](#2026-09-02---resolved) before acting on anything below.
+> The 31 August account is kept intact.
 
 **Two different Apex classes claim the same REST route, and only one of them is
 in source control — the other is the one actually taking live traffic.**
 
 Found by the `org-status-check` of **2026-08-31, 09:36–09:52Z**:
 
-| | In `force-app/` | In the org |
-| --- | --- | --- |
-| Class | `WooCommerceOrderEndpoint` | `WoocommerceOrderService` |
-| Size | 16,789 chars | 23,087 chars |
-| `urlMapping` | `/woocommerce/orders/*` | `/woocommerce/orders/*` |
-| Deployed | **no** | **yes, and modified 31 August** |
-| Versioned | yes | **no** |
+|              | In `force-app/`            | In the org                      |
+| ------------ | -------------------------- | ------------------------------- |
+| Class        | `WooCommerceOrderEndpoint` | `WoocommerceOrderService`       |
+| Size         | 16,789 chars               | 23,087 chars                    |
+| `urlMapping` | `/woocommerce/orders/*`    | `/woocommerce/orders/*`         |
+| Deployed     | **no**                     | **yes, and modified 31 August** |
+| Versioned    | yes                        | **no**                          |
 
 **A `sf project deploy start` from this repository would publish a second class
 on a route that already has one**, and orphan the class that is currently
@@ -71,3 +78,33 @@ Related: [the WooCommerce order integration](../flows/The%20WooCommerce%20order%
 [OI-102](../items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md),
 [OI-104](../items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md),
 [the build ahead of the record](../objects/The%20build%20ahead%20of%20the%20record.md).
+
+## 2026-09-02 - Resolved
+
+**The route collision no longer exists.** Verified against Pienissimo UAT on
+2026-09-02, 08:05-08:14Z:
+
+|                                          | 2026-08-31                  | 2026-09-02                  |
+| ---------------------------------------- | --------------------------- | --------------------------- |
+| `WooCommerceOrderEndpoint`               | in `force-app/`, undeployed | **removed from both sides** |
+| `WoocommerceOrderService`                | deployed, unversioned       | **deployed AND committed**  |
+| `@RestResource` mappings in `force-app/` | 2 classes, 1 route          | **1 class, 1 route**        |
+
+The fix landed in `158c2d0` (31 Aug, Anita Aga). The deployed class body was
+read back through the Tooling API and compared to
+`force-app/main/default/classes/WoocommerceOrderService.cls`: after normalising
+line endings the two are **identical**. The raw sizes differ by 848 characters,
+which is exactly the CRLF-versus-LF difference across the file's ~848 lines —
+not a content difference.
+
+So a clean deploy now publishes the class that is already running, on the route
+it is already serving. Nothing is orphaned.
+
+### What this does not resolve
+
+The class is safe from the _deploy_; it is not otherwise finished.
+**`INT-16` is still unauthenticated** — the endpoint remains `global without
+sharing` with no token or signature check, so the header token ROMI owes under
+[OI-102](../items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+is still the entire authentication. That is a separate open item and this
+resolution says nothing about it.

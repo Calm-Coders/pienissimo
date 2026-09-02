@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-26
+updated: 2026-09-02
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -65,3 +65,31 @@ class changing — the snapshot caught up with the 25 August deploy.
 
 No test run has succeeded in this org since. The suite remains a single task,
 requested separately before the production deploy.
+
+## 2026-09-02 - still gating, and the coverage figure needs reading correctly
+
+Verified against Pienissimo UAT, 08:05-08:14Z. Org coverage: **0 covered, 1,646
+uncovered, 0%**. Still gating; the item does not move.
+
+Two facts this run adds:
+
+- **Both test classes named above are deployed in the org** —
+  `BundleComponentTriggerHandlerTest` (6,235 chars) and
+  `BundleProductAssignmentControllerTest` (10,320 chars), alongside
+  `OrderBigliettoTriggerHandlerTest` (7,151). So the suite exists; the question
+  is whether it passes.
+- **It has not been run since `2026-08-04`.** That run enqueued 10 methods,
+  completed 10 and failed **0**. The 9-of-10 failure recorded on 2026-08-03 was
+  the day before.
+
+So the evidence that `Code__c` still breaks the suite is **a month old and was
+superseded the next day by a clean run**. Whether the regression was fixed,
+whether it returned as classes changed through 31 August, and what coverage
+those tests actually produce are all **unknown** — the stored 0% is an
+unmeasured aggregate, not a result. See
+[the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+**Nothing here changes what to do**: the suite is written as one task before the
+production deploy, on request. This check ran no tests and wrote none. But when
+that task is called, **start by running what exists** — the brief may be smaller
+than the record implies.

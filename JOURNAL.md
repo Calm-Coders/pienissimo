@@ -1711,6 +1711,7 @@ servizio`**, exists in Elena's client-facing doc and in no version of
 - **Follow-up:** after deployment, the quick-action UI was adjusted to hide the
   internal template name and show an example checkout link containing the current
   Opportunity id.
+
 ## 2026-09-01 — claude — drilled the Anticipay middleware API documentation
 
 - **Did:** Aurel Mrruku downloaded `Documentazione API - Salesforce.pdf` by hand
@@ -1789,3 +1790,147 @@ servizio`**, exists in Elena's client-facing doc and in no version of
 - **Watch:** `MAP.md` is now **~34 KB** against its own "keep under 5 KB"
   instruction. Not restructured today; it needs a deliberate pass that moves the
   dated incident blocks into notes.
+
+## 2026-09-02 — claude — org-status check, and org access confirmed fixed
+
+- **Ran `org-status-check`, full scope, report mode**, against `Pienissimo UAT`
+  (`00DMA000004nMMr2AM`, partial sandbox, API 68.0) at repo `4a49376`.
+  165 repository components vs 1,072 org components; 9 deterministic assertions;
+  `org-status:validate` passes with one warning. Result delivered to the
+  `Pienissimo devs` group DM, summary plus one threaded continuation.
+- 🟢 **Org access is fixed, and this session is what wrote it down.** Aurel
+  Mrruku, asked directly: _"yes its working, we have fixed it"_. The org check
+  the same morning corroborates it independently — full inventory, no auth
+  failure. [The access risk](notes/risks/Risk%20-%20the%20team%20lost%20access%20to%20the%20Pienissimo%20orgs%20on%201%20September.md)
+  is **resolved**; `MAP.md` and `INDEX.md` updated. **Two things it does not
+  settle** and the note says so: which PROD Elena Spini meant, and why it broke.
+- **Findings the run produced** — the run itself was report mode, so nothing was
+  mutated by it. ✅ **All of the following were reconciled and published later the
+  same day** — see the next entry:
+  - 🔴 **The eleven Anticipay fields agreed 1 September are unbuilt.** Account
+    carries three custom fields, none of them PEC, the legal-representative
+    fields or the rep address. Eight days before Fase 1 development ends.
+  - 🔴 **Zero project Flows in the org**, verified twice (Metadata API list, and
+    `FlowDefinitionView` — 79 flows, none non-namespaced).
+    `Lead_Non_Risponde_Follow_Up` was deleted in `158c2d0` and is recoverable
+    from git, but the 28 August run recorded **two** flows and git history holds
+    only ever one flow file. The second is unidentifiable.
+  - 🔴 **Named credentials `Anticipay` and `DocuSign` exist only in the org**, as
+    do permission sets `DocuSign`, `Full_Permission`, `Sales_User`. Third
+    instance of the org-only pattern.
+  - 🔴 **The register misstates build state in three places**: `build_state` cites
+    `QUO-01`/`QUO-06` which are not among the 154 ids; `NFR-06` carries
+    `current: "1%"`; the `ORD-01` `not_built` entry says Order has stock status
+    and zero custom fields, against `Incassato` on 12 of 15 orders and 3 custom
+    fields.
+  - 🟢 **The WooCommerce orphan-route risk is closable.**
+    `WoocommerceOrderService` is now committed and **byte-identical** to the
+    deployed class (the size gap is line endings alone), the duplicate endpoint
+    class is gone from both sides, one REST route remains.
+    [The deploy risk](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)
+    was **left open** — it needs its own pass, not a side effect of this one.
+- ⚠ **The coverage number is being read wrongly across the record.** The org
+  reports 0% of 1,646 lines, but the last Apex test run is **2026-08-04**, while
+  classes changed through 31 August. The aggregate is not measuring current code;
+  0% means _unmeasured_, not _measured at zero_. Still a deploy blocker either
+  way. No test was run, written or offered.
+- ⚠ **`org-status-check` has a silent false negative.** Its Metadata API listing
+  returns **0 EmailTemplates** with nothing recorded in
+  `unavailable_metadata_types`, because folder-scoped types cannot be enumerated
+  without a folder. SOQL proves 88 templates, including the project's active
+  `WooCommerce_Checkout_Link`. The negative-evidence rule was violated silently.
+  The skill's inventory reference needs this caveat; **not fixed today**.
+- **Unrelated, same session:** `.codebase-index/config.json` had `autoIndex:
+false` since it was first committed in `3618d96` (25 August) — the package's
+  own default, never a decision. Set to `true` at Aurel's request; **uncommitted**
+  and needs a session restart to take effect. Reading the shipped MCP server
+  showed the watcher reindexes regardless of that flag, so the practical effect
+  is the startup pass, not mid-session edits.
+- **Watermark untouched.** The next `requirements-check` still uses
+  **2026-09-01T22:00Z**. No mail, Slack, Drive or Fathom sweep was run today.
+
+## 2026-09-02 — claude — org-status reconcile + publish
+
+Second half of the same session. Aurel Mrruku authorised `reconcile + publish`
+after the report-mode run above; this entry records what was written.
+
+**Register.** The whole `build_state` block was rewritten from the 2026-09-02
+evidence, `supersedes: 2026-08-26`. 16 built, 8 not-built, 9 divergent, 2
+regression entries, plus three new keys: `instrument_limitations` (LIM-01..04),
+`unmapped_observations`, and a corrected `out_of_source_control` list.
+✅ **The `QUO-01`/`QUO-06` defect is fixed.** Those ids have never existed among
+the 154 requirements — the sales area uses `SAL-`. Entries whose text names a
+requirement now cite `SAL-08` and `SAL-09`; entries observing the quote **state
+machine** carry a new `state_machine: quote` key and no ref, because the register
+has no id for it. `org-status:validate:strict` passes with
+`unknown_build_state_refs: []`. ⚠ **That mapping is the one judgment call in this
+pass and is reversible** — nothing else in the register was touched, and no
+requirement text moved.
+
+**Three new notes**, one per new divergent finding:
+
+- [integration credentials exist only in the org](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)
+  — `Anticipay` and `DocuSign` named credentials plus three permission sets,
+  org-only. Asks for a targeted retrieve; warns explicitly not to commit secrets.
+- [a second Flow was deleted with no source copy](notes/risks/Risk%20-%20a%20second%20Flow%20was%20deleted%20with%20no%20source%20copy.md)
+  — severity medium, deliberately: nothing is known to have been lost, and the
+  finding is that the project cannot tell. **Asks Anita Aga, and says explicitly
+  not to reconstruct a flow from inference.**
+- [the Anticipay field build has not started](notes/risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)
+  — the sharpest date on the project. Records that the fields are buildable
+  _today_, unblocked by the outstanding client answer.
+
+**Two risks resolved**, both with the evidence kept intact rather than rewritten:
+[the WooCommerce orphan route](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)
+(byte-identical after normalising line endings; the 848-char gap is CRLF) and
+[OrderItem Tranche invisibility](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md)
+(granted to `Tranche_Management`; **propagation still unbuilt**, 0 of 18).
+
+**Three notes corrected**: the coverage risk and `OI-64` both now carry the
+LIM-04 reading — 0% is **unmeasured**, not measured at zero, because no test has
+run since 4 August;
+[the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md)
+gained the EmailTemplate case and a generalised rule with an instrument table.
+
+**Rendered views**: `§25` appended to `DEVELOPMENT-RECAP.md` **and** `.it.md` in
+the same session, both precedence lines extended (they had been stale since
+`§19` and now name every section through `§25`); a `2026-09-02` org-verification
+block added to `open-items.md` **and** `.it.md`; `MAP.md`, `INDEX.md` and
+`STATUS.md` regenerated.
+
+**Checks**: `vault:check` OK — 156 notes, 156 unique ids, all links resolve.
+`validate:strict` passes.
+
+⚠ **Prettier was NOT run repo-wide, deliberately.** `npm run prettier:verify`
+fails on **324 files** and has clearly been failing for a long time; reformatting
+would have produced a diff that buried this reconcile. Only the three new notes
+were formatted. **The repo-wide prettier drift is pre-existing and still owed.**
+
+⚠ **The trace backfill is owed.** `vault:check` now warns that **10** notes cite
+a requirement that does not name them back, up from 6 — the three new notes carry
+`requirement:` and the register has no matching `tracked_by:`. That is
+`requirement-trace`'s job, not this skill's, and was not attempted here.
+
+**Published.** Notion identity verified by **workspace id**, which matched — the
+**name** had changed (`Aurel mrruku's Space` → `Romi Projects's Space`); a rename,
+not a different workspace, and now recorded in
+[the mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
+Status page updated in place by id; Flows page build-state callouts rewritten with
+**every diagram untouched**; tracker reconciled on `Ref` — **14 rows added**
+(`OI-96`–`OI-109`), **2 statuses corrected** (`OI-66` Superseded, `OI-95`
+Resolved), all **70** rows re-queried and matched. `site/index.html` re-derived;
+**the leak check returns nothing**.
+
+⚠ **A trap worth recording.** Small targeted replacements leave untouched every
+sentence they contradict. The first Status-page pass left the page asserting both
+that the Order Item grant was resolved and, four sections later, that it was
+granted to nobody — caught only by re-fetching and reading the whole page.
+`STATUS.md` had the same defect and was fixed alongside. **Re-read the whole
+surface after writing, not just the parts you changed.**
+
+⚠ **`site/` is refreshed, not deployed.** It has never been deployed; there is no
+public URL. Deployment is a manual upload with credentials this session does not
+hold.
+
+**Watermark untouched** — still **2026-09-01T22:00Z**. No mail, Slack, Drive or
+Fathom sweep ran today.

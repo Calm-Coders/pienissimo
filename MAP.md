@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-01 (nightly sweep: the 01/09 Anticipay minute drilled, OI-95 resolved) · Source of record: [notes/](notes/)
+Last updated: 2026-09-02 (org-status-check, full scope, reconciled and published) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,45 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 - 🔴 **Development on Fase 1 must end 10 September**, per ROMI's own project
   plan — not 6 October, which is go-live. With the team back ~24–26 August that
   is **two weeks of build** for everything below.
+
+- 🟢🔴 **2026-09-02 — an org check ran, published everything, and the picture
+  moved in both directions.** Read-only against `00DMA000004nMMr2AM` at repo
+  `4a49376`, 08:05–08:14Z; 165 repository components vs 1,072 org components.
+  Full gap table in
+  [the tracker's org-verification block](meetings/open-items.md) and
+  [§25 of the recap](meetings/DEVELOPMENT-RECAP.md); the register's
+  `build_state` is rewritten and `validate:strict` passes.
+  🟢 **Everything in `force-app/` is deployed**, and **the WooCommerce
+  orphan-route risk is closed** — `WoocommerceOrderService` is committed and
+  **byte-identical** to the deployed class, the duplicate endpoint is gone, one
+  class serves one route
+  ([resolved](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)).
+  🟢 **`OrderItem.Tranche__c` is granted at last**
+  ([resolved](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md))
+  — though **0 of 18 order items carry a tranche**, so propagation is still
+  unbuilt. 🟢 **The order lifecycle is live and in use**, `Incassato` on 12 of 15.
+  🔴 **The eleven Anticipay fields agreed 1 September are NOT built** — Account
+  carries three custom fields, no PEC, no legal-rep fields
+  ([the risk](notes/risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)).
+  **Eight days to the Fase 1 deadline, and they need no endpoint or token to
+  build.**
+  🔴 **Zero project Flows**, verified twice — and one of the two present on
+  28 August **was never in this repository**, so it is gone unnamed
+  ([the risk](notes/risks/Risk%20-%20a%20second%20Flow%20was%20deleted%20with%20no%20source%20copy.md)).
+  🔴 **Named credentials `Anticipay` and `DocuSign` exist only in the org**,
+  with three permission sets — the org-only pattern's third instance in six days
+  ([the risk](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
+  ⚠ **Coverage is 0% of 1,646 lines and still gates every deploy — but it is
+  UNMEASURED, not measured at zero.** The last Apex test run is **4 August**,
+  before most of the current code; three test classes are deployed and passed
+  then. Nobody currently knows the real figure
+  ([the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)).
+  ⚠ **Two record defects fixed**: the register cited `QUO-01`/`QUO-06`, ids that
+  never existed, and the check's own tooling reported zero email templates when
+  the org holds 88 — folder-scoped types cannot be listed without a folder
+  ([the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md)).
+  🔴 **Permission sets still reach one user each** against 8 active; **Asset holds
+  5 records, not 41** — the Biglietto dataset was never migrated.
 
 - 🔴🔴 **2026-08-31 — `Biglietto__c` was deleted from the org with all 37 records,
   and seven Apex components went with it that were never in source control.**
@@ -103,13 +142,19 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   findings no inference produced. **It is needed before tomorrow's meeting, not
   after it.**
 
-- 🔴 **2026-09-01 — org access failed for both the technical lead and the PM.**
-  Aurel Mrruku at 09:37 CEST: _"non posso accedere alla sandbox di pienissimo"_;
-  Elena Spini at 10:22: _"anche io non accedo a PROD"_, alongside _"quella rottura
-  di 1password"_. They moved to a call and **nothing written says it was fixed**
-  ([the access risk](notes/risks/Risk%20-%20the%20team%20lost%20access%20to%20the%20Pienissimo%20orgs%20on%201%20September.md)).
-  ⚠ Two decaying findings — the Biglietto recycle-bin window and the unversioned
-  `WoocommerceOrderService` — **can only be worked from inside that org**.
+- 🟢 **2026-09-01 → 09-02 — org access failed for both the technical lead and
+  the PM, and is fixed.** Aurel Mrruku at 09:37 CEST: _"non posso accedere alla
+  sandbox di pienissimo"_; Elena Spini at 10:22: _"anche io non accedo a PROD"_,
+  alongside _"quella rottura di 1password"_. They moved to a call and nothing
+  written said it was fixed for a day.
+  🟢 **2026-09-02 — Aurel Mrruku: _"yes its working, we have fixed it"_**, and an
+  org check the same morning authenticated and inventoried 1,072 components with
+  no auth failure
+  ([the access risk](notes/risks/Risk%20-%20the%20team%20lost%20access%20to%20the%20Pienissimo%20orgs%20on%201%20September.md),
+  now resolved). ⚠ **Two things it did not settle**: which PROD Elena Spini
+  meant — she never named the org — and **why** it broke; 1Password is still
+  neither confirmed nor excluded. The Biglietto recycle-bin window is workable
+  again and still closes about **12 September**.
 
 - 🟢 **2026-08-31 → 09-01 — the Anticipay API contract arrived early, and has now
   been read.** Andrea Parmeggiani sent `Documentazione API - Salesforce.pdf` at
