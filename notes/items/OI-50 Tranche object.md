@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-08-26
+updated: 2026-09-02
 blocks: [OI-75, go-live]
 severity: gating
 source: Aurel Mrruku direct decision, 2026-08-24; meetings/open-items.md row 50
@@ -229,3 +229,34 @@ records, with nothing enforcing uniqueness or contiguity —
 the largest uncovered class in the org, against 144 recorded on 25 August; the
 class body has not changed since 2026-08-25T12:50:07Z, so the figure moved with
 the coverage snapshot rather than the code.
+
+## 2026-09-02 — the tranche reaches the Mexal order line
+
+**Every order line pushed to Mexal must carry a `data di scadenza`, and it is the
+tranche due date.** Stated at the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+by Elisa Migliano while reading the Mexal order screen:
+
+> _"ogni riga ordine dovrà avere la data di scadenza… su Mexal sarebbe la data di
+> scadenza della tranche. Oggi noi non la gestiamo, però un domani andrà messa."_
+
+Andrea Di Cicco confirmed the purpose in one word — _"è per le tranche"_ — and
+said he already has the field on his side. Elena Spini checked that it was not
+something else: _"mi stavo preoccupando che fosse un'altra cosa."_
+
+### Why this matters to the remainder
+
+This note already records that the object and the Quote-side creation are built
+and that **propagation to Order Item and payment aggregation are not**. That
+remainder now has a **second consumer**: it is not only Salesforce reporting that
+needs the tranche on the order line, it is the ERP tracciato. A tranche that
+never reaches `OrderItem` cannot reach Mexal either.
+
+⚠ Note also that `OrderItem.Tranche__c` exists and is deployed, and that **no
+Apex in `force-app/` writes it**
+([the build](../objects/The%20build%20ahead%20of%20the%20record.md)). So the field
+the Mexal line date would be derived from is, today, always empty.
+
+⚠ _"Oggi noi non la gestiamo"_ — Pienissimo does not manage line due dates in
+Mexal today either. This is new behaviour on **both** sides of the integration,
+agreed eight days before the end of Fase 1 development and **unestimated**.

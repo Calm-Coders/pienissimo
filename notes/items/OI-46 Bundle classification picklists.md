@@ -284,3 +284,32 @@ data that exists**, not just for a design.
 
 ⚠ **`Tour` was kept.** It has no articles in the workbook, but the workbook is
 course articles only and Tour was a live free event on 7 August.
+
+## 2026-09-02 — the division of labour between Mexal and Salesforce is fixed
+
+The [2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+settled which system owns which classification, in Elisa Migliano's own summary:
+
+> _"gestirei su Mexal il campo genera biglietto oppure il discorso solo bundle.
+> Poi gestiamo su Mexal il campo evento. A quel punto abbiamo finito. E poi il
+> tipo biglietto lo andiamo a completare solo su Sales Force."_
+
+| Field                            | Owner                                     |
+| -------------------------------- | ----------------------------------------- |
+| `genera biglietto` / `solo bundle` | **Mexal** (`natura`)                     |
+| `evento`                         | **Mexal** (`categoria statistica`)         |
+| `tipo biglietto`                 | **Salesforce only**, administrators only   |
+
+🔴 **`Anno Solare` was never mentioned in the session.** This item questions
+whether the field should exist at all, and the ten bundle-only records loaded on
+2 September all carry `Anno Solare 2026` **on ROMI's assumption alone** — because
+`Evento__c` is a dependent picklist and will not take a value without its
+controlling field. An hour and a half of the client's product people, with the
+registry on screen, and the one open question about the registry's own structure
+went unasked. **Put it on Data Model Parte 1.**
+
+⚠ The workbook's `Articoli (anagrafica)` sheet carries a `Nuovi Campi` column
+listing `Categoria statistica → evento (da mexal)`, `Gruppo Merceologico`,
+`Natura → genera biglietto SI/NO (mexal)`, `Tipo Biglietto` — and then
+**`LIVELLO_0` through `LIVELLO_6`**, a seven-level product hierarchy that appears
+in no meeting, no requirement and no other note. **Nobody has asked what it is.**

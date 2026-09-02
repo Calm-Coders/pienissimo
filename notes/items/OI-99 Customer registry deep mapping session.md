@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Andrea Di Cicco
 org: both
 raised: 2026-08-26
-updated: 2026-08-26
+updated: 2026-09-02
 depends_on: [OI-58]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
 ---
@@ -104,3 +104,39 @@ Aurel Mrruku asked Andrea Di Cicco to explain the **one-to-many mapping between
 tranche and product** implied by Mexal's order-row identifiers —
 _"mi devi spiegare sta roba"_ — and got no answer before the call ended. It bears
 on [OI-50](OI-50%20Tranche%20object.md).
+
+## 2026-09-02 — the sessions exist, and the client asked for them
+
+🟢 **This item's session ran on 2 September, and produced a series rather than an
+answer.** Elisa Migliano raised the problem herself, with the number that makes
+it a problem:
+
+> _"l'anagrafica clienti estrapolata oggi da Zoho ha 150 campi… ho detto qui
+> andiamo in confusione, sicuro. Sono andata in confusione io da sola con me
+> stessa, su un'anagrafica che conosco."_
+
+Her proposal — accepted by Andrea Di Cicco and Aurel Mrruku — is **half-hour
+calls, one table at a time**, deciding for each Zoho field whether Salesforce
+needs it, what it holds and how it should be fed. Andrea Di Cicco added the
+integration's constraint: whatever survives must cover what Mexal needs, without
+creating `piva` and `partita IVA` as two fields.
+
+**Three sessions were booked the same morning** (Elena Spini, invitations sent
+09:08-09:19Z), client-facing, with Elisa Migliano, Fabrizio Paganelli, Andrea Di
+Cicco and Aurel Mrruku, Sabatino Rinaldi optional:
+
+| Session                   | When                                |
+| ------------------------- | ----------------------------------- |
+| `Data Model: Parte 1`     | **3 September 11:00-12:00 CEST**    |
+| `Data Model: Parte 2`     | **4 September 16:00-17:00 CEST**    |
+| `Data Model: Parte 3`     | **7 September 11:00-12:00 CEST**    |
+
+🟢 **The material for them landed the same day**: Elisa Migliano filled ROMI's
+shared workbook straight after the call and Fabrizio Paganelli mailed
+_"abbiamo aggiornato la tabella condivisa"_ at 14:06Z —
+[OI-24](OI-24%20Data%20model%20workbook.md).
+
+⚠ **Do not read this as the deep mapping being done.** The three sessions are
+where the 150 fields get decided; the workbook is the input to them, not the
+output. And they run **3, 4 and 7 September**, with Fase 1 development ending on
+the **10th** and ROMI at a company event **9-11 September**.

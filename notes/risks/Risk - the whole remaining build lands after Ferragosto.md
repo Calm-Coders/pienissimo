@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-09-02
 blocks: [go-live]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -74,3 +74,39 @@ dati tempi ahaha."_
 
 Both **internal follow-ups on 10 and 17 August were cancelled** on 7 August, so
 there is no ROMI-side checkpoint between the break and the 19 August restart.
+
+## 2026-09-02 — ROMI is away 9-11 September, and Fase 1 development ends on the 10th
+
+Stated by Elena Spini in the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md),
+while the group was picking dates:
+
+> _"noi dal 9 all'11 siamo a un evento aziendale, quindi 9 10 11 anche noi non ci
+> saremo."_
+
+🔴 **The end of Fase 1 development, 10 September, falls in the middle of it** —
+and nobody in the room connected the two. The date was not renegotiated, and the
+project plan was not mentioned.
+
+Read against the calendar this leaves, from tonight:
+
+| Day                    | What is on it                                              |
+| ---------------------- | ---------------------------------------------------------- |
+| **3 Sept**             | Data Model Parte 1, client-facing                          |
+| **4 Sept**             | Data Model Parte 2, client-facing                          |
+| **5 Sept**             | free                                                       |
+| **7 Sept**             | Data Model Parte 3, plus the internal MKT flows session     |
+| **8 Sept**             | free                                                       |
+| **9-11 Sept**          | 🔴 **ROMI company event** — and Pienissimo is on tour 9-10 |
+
+So **four working days remain before the deadline**, three of which carry a
+client session, and the deadline itself is inside a company offsite. Against that
+sit the eleven Anticipay fields (unbuilt), the Asset build from scratch
+(unstarted), the whole Salesforce side of WooCommerce (unstarted), the campaign
+parent/child model (unbuilt), the tranche remainder, and now the Mexal order
+tracciato agreed on 2 September.
+
+⚠ **This is not a claim that the date will move or that it will be missed.** It
+is that the plan and the calendar have never been laid over each other in
+writing, and the person who owns the plan said the words in passing while
+scheduling something else.

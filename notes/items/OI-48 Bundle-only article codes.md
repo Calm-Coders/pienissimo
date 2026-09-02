@@ -204,3 +204,33 @@ should be asked before anyone sells against these codes.
 
 Build detail in
 [the workbook note](../The%20Anagrafica%20Articoli%20workbook.md).
+
+## 2026-09-02 — the pricing question is answered, and the author is corrected
+
+**The ten bundle-only codes are priced normally.** Elisa Migliano asked whether
+to put zero on them — _"prezzo di listino sui ci metto zero, dico bene?"_ — and
+Aurel Mrruku answered against it at the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md):
+
+> _"volendo tu puoi mettere un prezzo di listino, ma quando lo agganci a quel
+> bundle che stai formando, hai il diritto di specificare qual è il prezzo di
+> quel prodotto in quel bundle… così sai anche il prezzo originale."_
+
+She accepted. So the workbook's blank price column is **not** the specification:
+each of the ten carries its real list price, and the bundle-specific value is set
+on the association. That is the same mechanism
+[OI-93](OI-93%20Bundle%20components%20should%20be%20priced%20articles.md) asks for,
+which makes the two consistent for the first time.
+
+🟢 **This closes the first of the three cheap questions this note left open for
+Fabrizio Paganelli.** The other two — `SFPL0001` named `PIENISSIMO LIVE LIVE`,
+and Pienissimo Intensive having no bundle twin — **were not raised**, because the
+workbook was decoded after the meeting.
+
+⚠ **Authorship correction.** The mail came from `fabrizio.p@pienissimo.com` and
+the record has read the workbook as Fabrizio Paganelli's. On the recording
+**Elisa Migliano says she made it**: _"ieri vi ho mandato quel file"_, _"questo
+qui è un file che ho fatto io a mano, ci ho aggiunto anche i campi che avevamo
+definito insieme l'altro giorno."_ They were sitting in the same room and share
+the mailbox in practice; the correction is about who to ask, not about who owns
+the registry. **Ask Elisa Migliano about the file's contents.**

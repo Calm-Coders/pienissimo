@@ -2391,3 +2391,80 @@ External_Product_Code__c duplicates value on record with id: ...` - which is
   3/4 September sessions need tracker rows; the meeting's mapping file, data
   model file and JSON not looked for; the workbook still not in the repository;
   Notion unpushed; **nothing committed**.
+
+## 2026-09-02 — claude — nightly requirements-check: the 02/09 transcript, and the shared workbook
+
+**Watermark used: 2026-09-01T22:00Z. Next watermark: 2026-09-02T22:00Z.**
+Full trace: [notes/traces/Source trace 2026-09-02 nightly.md](notes/traces/Source%20trace%202026-09-02%20nightly.md).
+
+Read-only on every external source; the only thing sent anywhere was the nightly
+report to the `C0BQD34LLF4` group DM.
+
+### What made this run worth it
+
+**The Gemini document for the 2 September client session picked up its full
+transcript at 10:36Z** — after the morning session had written the meeting note
+from the summary mail and flagged that the drill was still owed. Read in full
+(1h16m37s). The meeting is much larger than its summary, and it moved five open
+items.
+
+- 🟢 **The client's two unwritten questions were asked verbally and both
+  answered.** `tipo biglietto` does not get a Mexal field (OI-76); the ten
+  bundle-only codes keep their real list price with the bundle price set on the
+  association (OI-48, OI-93).
+- 🟢 **OI-97 resolved** — fiscal residence derived automatically from the country
+  code, five values. **OI-109 resolved by withdrawal** — Elisa Migliano dropped
+  the SDI field herself the day after asking for it.
+- 🔴 **OI-73 reversed**: Anticipay is called for **every** account, foreign ones
+  included, because a bad VAT returning an error **is** the validation. On
+  failure a mail goes to `amministrazione@pienissimo.com` with a direct link to
+  the Salesforce record — which closes the administration-address gap open since
+  6 August, and lands on **OI-107**, because `Is_Error__c` is never set on an
+  HTTP error so that mail would be silent.
+- 🟢 **The Mexal order tracciato is written down for the first time** — `OC`/`BC`,
+  causali 1-3 / 4-6, warehouse, cost centre, exemption codes, and a **`data di
+  scadenza` per line that is the tranche due date** (OI-50). New **OI-110**:
+  `codice agente`, `zona`, `classificatore rete` are needed on the header and
+  Andrea Di Cicco cannot find them in the call's field set.
+- 🟢 **OI-24, gating since 2 July, substantially arrived** — Elisa Migliano filled
+  the shared workbook straight after the call (14:05:38Z, mail 14:06:38Z). Zoho
+  field lists for six objects, the Account sheet sectioned including a large
+  `NON UTILIZZATO O OBSOLETO` block. Ordine, Utenti, Profili and the load plan
+  are still empty, and 🔴 the legal representative's residence is already split
+  into five Zoho fields while OI-95 agreed to store it as one free-text field.
+- 🔴 New **OI-111**: nobody has confirmed Pienissimo owns DocuSign. Elena Spini —
+  _"richiedo conferma, ma mi aspetto di sì"_.
+- 🔴 **ROMI is at a company event 9-11 September and Fase 1 development ends on
+  the 10th.** Said in passing while booking meetings; nobody connected the two.
+
+### Housekeeping worth knowing next session
+
+- **Attendance and authorship corrections**: Fabrizio Paganelli was in the room
+  with Elisa Migliano on 2 September and does not speak; the `Anagrafica
+  Articoli` workbook is **hers**, sent from his mailbox.
+- **`Product2.Stato_Bundle__c`'s PROVISIONAL description is retired** — the
+  transcript confirms the values and the host object. The transition logic is
+  still unbuilt and the session never chose between a button and a manual change.
+- **Rexhina Hysi's Notion access is not an oversight** — she was removed on cost
+  while Aurel Mrruku reorganised the workspace. Stop chasing it.
+- ⚠ **The 02/09 Anticipay endpoint trace says the last real sweep was 31 August.
+  It is wrong** — the 01/09 nightly ran and set the 01/09T22:00Z watermark.
+  Harmless here, but it would cost a 24-hour double-sweep.
+- 🔴 **Fathom was not searched this run.** Cover it next time.
+- **`STATUS.md`, its Notion mirror and the Flows page are owed by
+  `org-status-check` for a fifth run.** This sweep did not open the org.
+
+### Do next
+
+1. **Data Model Parte 1 is at 11:00 CEST tomorrow.** Two things belong on it and
+   neither is on anyone's list: the **split-versus-free-text legal-rep address**,
+   and **whether `Anno Solare` should exist at all** (OI-46) — ten loaded records
+   carry `Anno Solare 2026` on ROMI's assumption alone.
+2. **Ask Andrea Parmeggiani what the middleware returns for a non-Italian VAT**,
+   and how it differs from an unknown one. It is now the last technical blocker
+   on an agreed feature, not a documentation nicety. Same mail as the `dascita`
+   typo.
+3. **Ask Aurel Mrruku which community Rexhina Hysi is building.** OI-86 is open,
+   and there are three candidates.
+4. **Build the eleven Anticipay fields.** Still unstarted, still needs no
+   endpoint and no token, and there are four working days left.

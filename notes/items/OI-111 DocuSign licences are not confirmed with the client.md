@@ -1,0 +1,72 @@
+---
+id: OI-111
+type: open-item
+status: open
+owner: Elena Spini
+with: Sabatino Rinaldi
+org: both
+raised: 2026-09-02
+updated: 2026-09-02
+blocks: [OI-68]
+requirement: INT-19
+source: Slack DM Aurel Mrruku / Elena Spini, 2026-09-02 15:47-15:49 CEST
+---
+
+# OI-111 - DocuSign licences are not confirmed with the client
+
+**Nobody at ROMI knows whether Pienissimo has actually bought DocuSign**, and the
+quote-signature design assumes they have.
+
+Aurel Mrruku asked Elena Spini directly on Slack, 2 September:
+
+> _"alla fine con docusign hanno parlato? si sono messi d'accordo?"_
+> — _"hanno già un contratto con loro?"_
+
+Elena Spini's answer separates the two things cleanly, and only one of them is
+settled:
+
+> _"si DocuSign per la firma del preventivo lo vogliono"_ … **_"richiedo
+> conferma, ma mi aspetto di sì"_**
+
+So **the want is confirmed and the contract is not.** She holds the action to
+ask. No date.
+
+## Why this is not a detail
+
+Aurel Mrruku named the risk in the same exchange: _"per l'ambiente di test non ci
+sono problemi ma quando andiamo in prod"_. A DocuSign developer sandbox costs
+nothing and needs no client involvement; **the production tenant needs a
+commercial agreement Pienissimo has to sign**, and go-live is 6 October.
+
+The design that depends on it is already committed:
+
+- **DocuSign is in for quotes and contracts and out for tickets**, settled
+  6 August, and the quote lifecycle flips to _Accettato_ on signature
+  ([OI-68](OI-68%20Quote%20acceptance%20landing%20page.md),
+  [the quote to order flow](../flows/The%20quote%20to%20order%20flow.md)).
+- The org already carries a **`DocuSign` named credential and a `DocuSign`
+  permission set, both org-only**
+  ([the credential risk](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)) —
+  so somebody has already wired something to an account nobody can name.
+
+## ⚠ This has wobbled before, twice
+
+The record shows the client changing direction on DocuSign without telling ROMI,
+which is why "I expect so" is not good enough:
+
+- **24 July**, Elena Spini's status post: _"in settimana hanno detto che forse non
+  vogliono DocuSign (ad inizio settimana Sabatino invece mi aveva confermato
+  telefonicamente che stavano procedendo con l'acquisto delle licenze -.-)"._
+- **6 August** settled it the other way, for quotes and contracts only.
+
+**A licence purchase was claimed in July and has never been confirmed since.**
+`BIG-13` still carries `status: open` in the register, and its Option A says in
+as many words: _"Requires purchasing licences; negotiation still open."_
+
+## The ask
+
+One question to Sabatino Rinaldi, and it is a yes/no: **does Pienissimo hold a
+DocuSign account today, on what plan, and who administers it.** If the answer is
+no, `BIG-13`'s fallback is already written — Option C, paper as-is, with digital
+signature deferred to an evolutiva — and the sooner that is said the less is
+built against an account that does not exist.

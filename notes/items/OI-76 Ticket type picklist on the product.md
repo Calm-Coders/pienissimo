@@ -209,3 +209,34 @@ transcript is drilled.
 ⚠ The 13 workbook rows that carry a tier are **not** all loaded - only the four
 bundle-only ones are. The other nine are Mexal articles, most of which are not in
 the org at all.
+
+## 2026-09-02 — confirmed from the transcript, with the access rule attached
+
+This item was resolved from the Gemini summary of the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md).
+The transcript adds three things the summary did not carry:
+
+- **Why it left Mexal.** Elisa Migliano's own question opened the call — _"vale
+  la pena di impegnare un campo di mexal per solo 15 codici articolo?"_ — and the
+  answer is no. That also **retires the double-coding trick** agreed on
+  26 August, where one scarce Mexal field was to carry _genera biglietto_ and
+  _bundle_ packed together: freeing `tipo biglietto` frees the field.
+- **The access rule is stricter than "administrators".** Elisa Migliano:
+  _"questo menù dell'anagrafica prodotti deve essere visibile esclusivamente
+  all'account amministrazione@pienissimo.com."_ The built
+  `Product_Registry_Admin` permission set carries the rule; **whether it is
+  granted to that account alone has not been checked.**
+- 🔴 **There is no validation and both sides know it.** Aurel Mrruku said so
+  plainly: _"non c'è automatismo per beccare quella problematica… se metti su un
+  prodotto una tipologia di biglietto che non c'entra niente con quel prodotto,
+  lì non ti posso aiutare."_ The mitigation is access control, and the exposure
+  is a wrong ticket type on a live product with nothing to catch it.
+
+**Volume**: about 15 codes carry a value, out of a course registry of 40-50 rows,
+so roughly twenty manual updates a year. Aurel Mrruku drew the line at scale —
+fine at 13, not at 100-200 — and if the format ever changes (_"la mastery
+facciamo Gold e Diamond"_) the field can be moved back to Mexal and mapped.
+
+⚠ **Elisa Migliano also asked for _"ulteriori cinque sei campi"_ on Salesforce
+only**, decoupled from Mexal, for free mapping. They were not named and they are
+not in any tracker row.

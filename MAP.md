@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-02 (org-status-check; the Anticipay endpoint moved; two owner decisions retired the UAT-data and coverage findings; then the Anagrafica Articoli workbook was drilled, its build shipped, the registry reloaded and Code__c retired for a trigger-enforced ProductCode) · Source of record: [notes/](notes/)
+Last updated: 2026-09-02 (nightly requirements-check: the 02/09 session was drilled from its transcript, the shared data-model workbook arrived, and three client sessions were booked) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,98 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 - 🔴 **Development on Fase 1 must end 10 September**, per ROMI's own project
   plan — not 6 October, which is go-live. With the team back ~24–26 August that
   is **two weeks of build** for everything below.
+  🔴 **And ROMI is at a company event 9–11 September**, said in passing by Elena
+  Spini while booking meetings on 2 September. **The deadline falls inside the
+  offsite**, nobody in the room connected the two, and that leaves **four working
+  days**, three of them carrying a client session
+  ([the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)).
+
+- 🟢🔴 **2026-09-02 — the Anagrafica Articoli session was drilled from its
+  transcript, and it is a much bigger meeting than the morning's action list
+  said.** The Gemini document became readable at 10:36Z carrying the **full
+  1h16m37s transcript**; the note is now
+  [a minute, not an action list](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md).
+  Present: Elisa Migliano **and Fabrizio Paganelli in one room**, Andrea Di
+  Cicco, Aurel Mrruku, Elena Spini.
+  🟢 **The client's two unwritten questions were asked verbally and both
+  answered**: `tipo biglietto` does **not** get a Mexal field
+  ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)),
+  and the ten bundle-only codes **keep their real list price**, with the bundle
+  price set on the association
+  ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md),
+  [OI-93](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md)).
+  ⚠ **The workbook is Elisa Migliano's, not Fabrizio Paganelli's** — sent from
+  his mailbox, written by her; ask her about it.
+  🟢 **[OI-97](notes/items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)
+  is resolved** — fiscal residence is **derived automatically from the country
+  code** into five values. 🟢 **[OI-109](notes/items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)
+  is resolved by withdrawal** — Elisa Migliano dropped the SDI field herself the
+  next day, _"comunque non ci serve"_.
+  🔴 **Anticipay is called for EVERY account, foreign ones included** — the
+  opposite of what the 1 September reading implied, and chosen deliberately
+  because a foreign or mistyped VAT returning an error **is** the validation. On
+  failure a mail goes to `amministrazione@pienissimo.com` **carrying a direct
+  link to the Salesforce record** ([OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)).
+  🔴 **That design cannot fire as the code stands**: `Is_Error__c` is never set on
+  an HTTP error, so the agreed mail would be silent for exactly the `404` it is
+  built on — and **the foreign-company error body is not in the documentation**,
+  found live by Elena Spini: _"la cosa estera in effetti non c'è negli errori"_
+  ([OI-107 §3](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)).
+  🟢 **The Mexal order tracciato is written down for the first time** —
+  `OC` services / **`BC` books**, causali 1–3 and 4–6 by fiscal residence,
+  warehouse 1/2, cost centre 3/1, and 🔴 **a `data di scadenza` on every order
+  line that is the tranche due date**, managed by neither side today
+  ([the integration](notes/flows/The%20Mexal%20integration.md),
+  [OI-50](notes/items/OI-50%20Tranche%20object.md)).
+  🔴 New: [OI-110](notes/items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)
+  — `codice agente`, `zona` and `classificatore rete` are needed on the order
+  header and Andrea Di Cicco **cannot find them** in the Mexal call's field set.
+  🟢 `Stato_Bundle__c`'s **PROVISIONAL caveat is retired** — the transcript
+  confirms the values and the host object; the transition logic is still unbuilt
+  and the session never chose between a button and a manual change.
+
+- 🟢🔴 **2026-09-02 — the shared data-model workbook was filled in by the client
+  and read.** `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`,
+  modified **14:05:38Z**, mailed a minute later — _"Abbiamo aggiornata la tabella
+  condivisa. A domani"_. **[OI-24](notes/items/OI-24%20Data%20model%20workbook.md),
+  open since 2 July and gating, has substantially arrived**: Zoho field lists for
+  Lead, Account, Referente, Opportunità, Offerta and Articoli, with the **Account
+  sheet sectioned** — including a large **`NON UTILIZZATO O OBSOLETO`** block,
+  which is the client saying what not to migrate.
+  🔴 **Still missing: the Ordine field list, Utenti, Profili and the initial-load
+  plan**, all empty; `Flussi` carries only F-1 and F-2.
+  🔴 **It contradicts a decision taken on 1 September**: the legal
+  representative's residence is **already split into street/town/province/postcode/country
+  in Zoho**, while [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)
+  agreed to model it as **one free-text field** on Account. Migrating structured
+  into unstructured is lossy. **Raise it at Parte 1.**
+  ⚠ **The file is populated with live customer records** — a real company with
+  VAT, PEC and IBAN, a named legal representative with codice fiscale and date of
+  birth, a named lead and contact. **Recorded, never copied.** ⚠ Nothing says
+  which sheets arrived yesterday: ROMI last opened it on 3 August and no earlier
+  extract exists, so this is a state, not a diff.
+
+- 🟢 **2026-09-02 — the deep customer-registry mapping finally has a forum, and
+  three dates.** Elisa Migliano asked for it herself — the Zoho customer registry
+  has **150 fields** and _"sono andata in confusione io da sola con me stessa, su
+  un'anagrafica che conosco"_ — and Elena Spini sent the invitations the same
+  morning: **`Data Model: Parte 1` 3 Sept 11:00**, **`Parte 2` 4 Sept 16:00**,
+  **`Parte 3` 7 Sept 11:00**, client-facing
+  ([OI-99](notes/items/OI-99%20Customer%20registry%20deep%20mapping%20session.md)).
+  ⚠ **Three ROMI-internal `PIENISSIMO - DM TBD` holds sit on the same three
+  slots** with different event ids, so they are duplicates rather than the same
+  events renamed — somebody should clear them. ⚠ **`Parte 3` carries no Google
+  Meet link** while Parte 1 and 2 do.
+
+- 🔴 **2026-09-02 — nobody has confirmed the client owns DocuSign.** Aurel Mrruku
+  asked Elena Spini outright; she answered _"si DocuSign per la firma del
+  preventivo lo vogliono"_ and, on whether there is a contract, **_"richiedo
+  conferma, ma mi aspetto di sì"_**
+  ([OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)).
+  A licence purchase was claimed in July and never confirmed; `BIG-13` is still
+  `open` in the register, the org already carries an org-only `DocuSign` named
+  credential, and **the sandbox is free while production needs a signed
+  agreement** — five weeks before go-live.
 
 - 🟢🔴 **2026-09-02 — an org check ran, published everything, and the picture
   moved in both directions.** Read-only against `00DMA000004nMMr2AM` at repo
@@ -624,14 +716,23 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   the pass-through date, the `dascita` typo · **2 Sept 10:00–11:30**
   [ROMI-PIENISSIMO] Follow-up Anagrafica Articoli, client-facing — ✅ **ran; the
   material was read the same day** and the session is noted from Gemini notes
-  only ([the note](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md),
-  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)) · **3 and 4 Sept**
-  follow-up sessions were to be invited on 2 Sept and are **unconfirmed** · **7 Sept 10:00–11:00** [PIENISSIMO] Interna
+  only ~~([the note](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md),~~
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)) — ⚠ **superseded:
+  the transcript was read the same night and
+  [the minute is complete](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)**
+  · **3 Sept 11:00–12:00** [ROMI-PIENISSIMO] Data Model: Parte 1 · **4 Sept
+  16:00–17:00** Parte 2 · **7 Sept 11:00–12:00** Parte 3 — all three
+  **client-facing and confirmed**, invited 2 Sept 09:08–09:19Z (Elena Spini,
+  Elisa Migliano, Fabrizio Paganelli, Andrea Di Cicco, Aurel Mrruku optional,
+  Sabatino Rinaldi optional); ⚠ three internal `PIENISSIMO - DM TBD` holds
+  duplicate the same slots and Parte 3 has no Meet link · **7 Sept 10:00–11:00** [PIENISSIMO] Interna
   Flussi MKT, ROMI-internal (Elena Spini, Aurel Mrruku, Fabrizio Mastracci),
   **new — invited 31 Aug 16:07Z**, first marketing session since 19 Aug and the
   forum for [OI-81](notes/items/OI-81%20Event%20communication%20funnel.md)'s
-  undecided `30 vs 60` · [PIENISSIMO] Follow-up Interno is a **weekly Monday
-  17:00 slot**.
+  undecided `30 vs 60` · 🔴 **9–11 Sept ROMI company event** — the Fase 1
+  development deadline of **10 September falls inside it**, and Pienissimo is on
+  tour 9–10 · **17 Sept 09:00–13:00** Elisa Migliano is on a first-aid course ·
+  [PIENISSIMO] Follow-up Interno is a **weekly Monday 17:00 slot**.
   [The compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)
   still governs.
 

@@ -2087,3 +2087,199 @@ Two small asks are now overdue and belong in **one** mail to Andrea Parmeggiani:
 **an example of each error response**, and **the `dascita` typo** — fix or freeze.
 He has revised the documentation three times in three days; there is no reason to
 think a fourth is hard.
+
+## 27. Update 2026-09-02 (evening) — the Anagrafica Articoli session, drilled from the transcript
+
+The 2 September client session was noted the same morning from the Gemini summary
+mail, and that note said in its own first line that the full drill was still
+owed. **The Gemini document, carrying the complete 1h16m37s transcript, became
+readable in Drive at 10:36Z.** It was read in full by the nightly sweep. This
+section is what the transcript adds.
+
+Present: **Elisa Migliano and Fabrizio Paganelli together in one room** — he
+attended and does not speak on the recording — with Andrea Di Cicco, Aurel
+Mrruku, and Elena Spini a few minutes late.
+
+### 27.1 The two questions the client came with
+
+The 1 September mail promised _"un paio di domande"_ that were in neither the
+mail nor the workbook, and the record has been carrying them as unknown. **They
+were asked verbally at the top of this call and both were answered.**
+
+1. **_"vale la pena di impegnare un campo di mexal per solo 15 codici
+   articolo?"_** — **No.** `Tipo biglietto` becomes a Salesforce-only field,
+   editable by system administrators only, and the product-registry menu is to be
+   visible _"esclusivamente all'account amministrazione@pienissimo.com"_. That
+   also retires the double-coding trick agreed on 26 August, where one scarce
+   Mexal field was to carry two classifications packed together.
+2. **_"prezzo di listino sui ci metto zero, dico bene?"_** — **No.** The
+   bundle-only codes keep their real list price; the bundle-specific price is set
+   when the article is attached to the bundle. That is the same mechanism the
+   open change request `OI-93` asks for, which makes the two consistent for the
+   first time — though nobody in the room appeared to know that request existed.
+
+⚠ **Authorship correction.** The workbook was mailed from Fabrizio Paganelli's
+address and the record has been treating it as his. On the recording **Elisa
+Migliano says she wrote it**: _"questo qui è un file che ho fatto io a mano."_
+Ask her about its contents.
+
+🔴 **`Tipo biglietto` has no validation and both sides know it.** Aurel Mrruku
+said so plainly — _"se metti su un prodotto una tipologia di biglietto che non
+c'entra niente con quel prodotto, lì non ti posso aiutare"_ — and the mitigation
+agreed is access control, not logic. About 15 codes carry a value out of a course
+registry of 40-50 rows, so roughly twenty manual updates a year.
+
+### 27.2 Anticipay is called for every account, including foreign ones
+
+**This is the reversal of the section.** The 1 September call established that
+Anticipay serves Italian companies only and that a foreign VAT always returns
+`404`; §24 read that as answering the foreign half of `INT-18` in the negative.
+
+Andrea Di Cicco proposed the economy — _"secondo me non la facciamo proprio la
+chiamata se estera"_ — and Aurel Mrruku offered to gate the call on a country
+field. **Elisa Migliano argued for calling every time**, on a ground that is not
+about Anticipay at all:
+
+> _"nelle partite IVA estere soprattutto ci sono dei caratteri speciali… a
+> prescindere secondo me è bene che ci arrivi comunque una sorta di errore per
+> controllare che non abbiano scritto cose inusuali."_
+
+Tutors type these by hand and some arrive from public web forms. So the call is
+**also input validation**, and the error is the product rather than a failure.
+Agreed: _"quindi io lo farei sempre la chiamata verso anticipay."_
+
+**The failure path was designed in the room**, and it closes a gap open since
+6 August — the administration address nobody had supplied. On a failed lookup a
+mail goes to `amministrazione@pienissimo.com`, and Aurel Mrruku added the detail
+that makes it usable: _"nella mail mettiamo proprio il link del dato su
+salesforce, così se cliccate entrate e controllate."_ The account is created in
+Salesforce either way; Anticipay is a check on it, never a gate.
+
+🔴 **Two things this now rests on, and neither exists.**
+
+First, **the error body for a foreign company is not documented.** Elena Spini
+went looking for it during the call and did not find it: _"la cosa estera in
+effetti non c'è negli errori. Non so cosa può rispondere."_ Aurel Mrruku's
+reading is that it falls into the generic `404`, which would make it the
+**fourth** meaning on that one status code after _VAT unknown_, _not cached under
+`env=test`_ and _wrong hostname_. That is an inference, not a contract.
+
+Second, **the notification cannot fire as the code stands.** `Is_Error__c` is
+never set for an HTTP error, so the agreed mail would be silent for exactly the
+`404` the design is built on — the defect §23 recorded as generic now has a
+client-agreed feature sitting on top of it.
+
+**The outstanding ask to Andrea Parmeggiani has therefore changed shape.** It is
+no longer "an example of each error body": it is _what does the middleware return
+for a non-Italian VAT, and how is that distinguishable from a VAT that is simply
+unknown?_ Without the distinction the notification cannot say which happened and
+administration has to open every one.
+
+### 27.3 The Mexal order tracciato, written down for the first time
+
+The second half of the call is Elisa Migliano reading her Mexal screens aloud
+while Andrea Di Cicco maps them. Everything written before today assumed one
+order type; there are two.
+
+| Rule                    | Services            | Books                  |
+| ----------------------- | ------------------- | ---------------------- |
+| **sigla**               | `OC`                | **`BC`**               |
+| **causale**             | 1 IT · 2 SM · 3 else | 4 IT · 5 SM · 6 else  |
+| **magazzino di uscita** | 1                   | 2                      |
+| **costi ricavi**        | 3 (servizi)         | 1 (materie prime)      |
+| **IVA**                 | exempt, `E01`       | exempt, `E10`          |
+
+Books never share an order with services. `BC` was a late catch — _"questa c'era
+sfuggita effettivamente"_ — and the cost-centre values were recalled rather than
+read (_"se non ricordo male"_), so both want confirming against a real document.
+
+🔴 **Every order line must carry a `data di scadenza`, and it is the tranche due
+date.** Andrea Di Cicco: _"è per le tranche."_ Elisa Migliano: _"oggi noi non la
+gestiamo, però un domani andrà messa."_ So the tranche stops being a
+Salesforce-only concept and becomes part of the ERP tracciato — new behaviour on
+**both** sides, agreed eight days before the end of Fase 1 development, and
+unestimated. Note that `OrderItem.Tranche__c` exists, is deployed, and **no Apex
+in the repository writes it**.
+
+🔴 **New: `OI-110`.** Elisa Migliano needs `codice agente`, `zona` and
+`classificatore rete` on the order header, and Andrea Di Cicco could not find
+them in the field set his integration reads. The three fields are how commission
+is calculated: the tutors are the sales network, all have CRM access, some are
+employees and **two work under agency contracts and are paid commission**.
+
+On the customer side: fiscal residence is **derived automatically from the
+country code** into five values, closing `OI-97`; `tipo fattura elettronica` is
+the B2B value for Italian companies and blank for everyone else — **the blank was
+verified against a real record and the B2B code was guessed** (_"potrebbe essere
+S"_); PEC drives electronic invoicing; the currency is **Euro only**, which
+retires the 26 August unknown about `valuta = 1`; and only listino 1 is used.
+
+`OI-109` closes by withdrawal: Elisa Migliano dropped the codice destinatario SDI
+herself — _"comunque non ci serve"_ — a day after asking for it.
+
+### 27.4 The customer registry gets a series, and the client asked for it
+
+Elisa Migliano raised it, with the number that makes it a problem: the Zoho
+customer registry has **150 fields**, and _"sono andata in confusione io da sola
+con me stessa, su un'anagrafica che conosco."_ Her proposal — half-hour calls,
+one table at a time, deciding for each Zoho field whether Salesforce needs it —
+was accepted.
+
+**Three client-facing sessions were booked the same morning**: `Data Model`
+Parte 1 on **3 September 11:00**, Parte 2 on **4 September 16:00**, Parte 3 on
+**7 September 11:00**.
+
+🟢 **And the input to them arrived the same afternoon.** Elisa Migliano filled
+ROMI's shared workbook straight after the call — Drive modification 14:05:38Z,
+Fabrizio Paganelli's mail _"Abbiamo aggiornata la tabella condivisa. A domani"_
+at 14:06:38Z. `OI-24`, open since 2 July and gating, has substantially arrived:
+Zoho field lists for Lead, Account, Referente, Opportunità, Offerta and Articoli,
+with the **Account sheet grouped into sections** — `Dati Anagrafici`, `Dati
+Tecnici`, `LEGALE RAPPRESENTANTE`, `MEXAL`, `MEXAL - DATI PER PROVVIGIONI`,
+`UTILIZZATO PER PERFORMANCE` and a large **`NON UTILIZZATO O OBSOLETO`**, which
+is the client saying field by field what not to migrate.
+
+🔴 **Still empty: the Ordine field list, Utenti, Profili, and the initial-load
+plan.** The `Flussi` sheet carries only F-1 (Salesforce → ERP account upsert,
+realtime, _"scatta alla prima opty won"_) and F-2 (ERP → Salesforce, nightly
+batch); F-3 to F-7 are blank, so every other integration has a slot and no
+content.
+
+🔴 **One sheet contradicts a decision taken the day before.** The
+`LEGALE RAPPRESENTANTE` section shows the representative's residence already
+**split into street, town, province, postcode and country** in Zoho, while the
+1 September room agreed to model it on Account as **one free-text field**.
+Migrating structured data into unstructured is lossy and irreversible. **Raise it
+at Parte 1.**
+
+⚠ **The workbook is populated with live records** — a real company with its VAT,
+PEC and IBAN, a named legal representative with codice fiscale and date and place
+of birth, a named lead and a named contact. That it exists is recorded here; none
+of it is reproduced, and none of it may be.
+
+### 27.5 The calendar nobody laid over the plan
+
+Elena Spini, while picking dates: _"noi dal 9 all'11 siamo a un evento aziendale,
+quindi 9 10 11 anche noi non ci saremo."_
+
+🔴 **Fase 1 development is supposed to end on 10 September, inside that offsite.**
+Nobody in the room connected the two, the date was not renegotiated, and the
+project plan was not mentioned. Counting from tonight that leaves **four working
+days**, three of which carry a client session — against the eleven Anticipay
+fields (unbuilt), the Asset build from scratch (unstarted), the whole Salesforce
+side of WooCommerce (unstarted), the campaign parent/child model (unbuilt), the
+tranche remainder, and now the order tracciato agreed today.
+
+Elisa Migliano is also unavailable on **17 September, 09:00-13:00**.
+
+### 27.6 One thing outside the meeting
+
+🔴 **Nobody has confirmed that Pienissimo owns DocuSign.** Aurel Mrruku asked
+Elena Spini directly the same afternoon: _"hanno già un contratto con loro?"_ Her
+answer separates the want from the contract, and only the want is settled — _"si
+DocuSign per la firma del preventivo lo vogliono"_ … _"richiedo conferma, ma mi
+aspetto di sì."_ A developer sandbox is free; the production tenant needs a signed
+commercial agreement, go-live is 6 October, and a licence purchase was claimed by
+telephone in July and never confirmed since. `BIG-13` is still `open` in the
+register, and the org already carries an org-only `DocuSign` named credential —
+so something is wired to an account nobody can name. New row `OI-111`.

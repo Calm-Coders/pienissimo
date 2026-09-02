@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-01
-updated: 2026-09-01
+updated: 2026-09-02
 depends_on: [OI-94]
 blocks: [OI-73]
 requirement: INT-18
@@ -196,3 +196,43 @@ engine or handle it in the Anticipay flow.
 at all, and Anticipay needs two (`:env` and `:piva`). That is recorded in
 [the contract](../The%20Anticipay%20middleware%20API%20contract.md) under "Where it
 lands in the org" and is a bigger question than anything on this item.
+
+## §3 — 2026-09-02: a client-agreed feature now sits on top of both defects
+
+**This stopped being a code-quality finding and became a delivery dependency.**
+
+At the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+the room agreed that Salesforce calls Anticipay for **every** account, foreign
+ones included, and that a failed lookup sends **a mail to
+`amministrazione@pienissimo.com` carrying a direct link to the Salesforce
+record** ([OI-73](OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)).
+
+So the error path is no longer a diagnostic nobody looks at. **It is the
+mechanism of an agreed business process**, and both defects in this note now
+break a client-visible feature rather than a log:
+
+- **Defect 1 (`Is_Error__c` never set on an HTTP error)** means the agreed
+  notification would **never be sent** for the `404` the whole design is built
+  around. Silent, with no failed record anywhere.
+- **Defect 2 (the `catch` drops `Response_State__c`)** means that when the mail
+  does not arrive, the row left behind does not say what the API answered.
+
+### 🔴 And the response itself is undocumented
+
+Elena Spini went looking for the foreign-company case in the API documentation
+during the call and did not find it:
+
+> _"la cosa estera in effetti non c'è negli errori. Non so cosa può rispondere."_
+
+Aurel Mrruku's reading is that a foreign VAT falls into the generic `404` —
+_"404 è quando tu non hai nessuna informazione per quella partita IVA"_ — which
+would make it the **fourth** meaning on that one status code, after _VAT
+unknown_, _not cached under `env=test`_ and _wrong hostname_. **That is an
+inference, not a documented behaviour.**
+
+**This raises the priority of the outstanding ask to Andrea Parmeggiani.** It is
+no longer "send an example of each error body": it is _what exactly does the
+middleware return for a non-Italian VAT, and how is it distinguishable from a
+VAT that is simply unknown?_ Without that distinction the notification mail
+cannot say which of the two happened, and administration has to open every one.

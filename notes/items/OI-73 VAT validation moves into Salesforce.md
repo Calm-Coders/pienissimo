@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-09-01
+updated: 2026-09-02
 depends_on: [OI-94, OI-95, OI-107, OI-108]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -252,3 +252,59 @@ contradiction noted above rather than replacing it: `INT-18` now needs its
 *scope* corrected as well as its *phase*, and both are changes to a signed
 document. **Still Elena Spini's to raise** — not corrected here, for the same
 reason as before.
+
+## 2026-09-02 — the foreign-VAT case is decided, and not by exclusion
+
+**The 1 September call established that Anticipay serves Italian companies only
+and that a foreign VAT always returns `404`.** The record read that as answering
+the foreign half of `INT-18` in the negative. **The 2 September session decided
+the opposite of what that implied**, and deliberately.
+
+Andrea Di Cicco proposed the obvious economy — _"secondo me non la facciamo
+proprio la chiamata se estera"_ — and Aurel Mrruku offered to gate it on a
+country field. **Elisa Migliano argued for calling every time**, on a ground that
+has nothing to do with Anticipay:
+
+> _"nelle partite IVA estere soprattutto ci sono dei caratteri speciali
+> all'interno della partita IVA, quindi a prescindere secondo me è bene che ci
+> arrivi comunque una sorta di errore per controllare che non abbiano scritto
+> cose inusuali."_
+
+Accepted: _"quindi io lo farei sempre la chiamata verso anticipay"_ (Aurel
+Mrruku).
+
+**So the rule is: call Anticipay for every account, keyed on the VAT number
+alone.** The error is not a failure to be suppressed — for a foreign or
+mistyped VAT it **is** the output, and it doubles as validation on a
+hand-entered field. Tutors type these, and some arrive from public web forms.
+
+### The failure path, designed in the room
+
+🟢 **This fills the gap this note has carried since 6 August** — _"failures email
+an administration address Pienissimo must still supply"_. The address is
+`amministrazione@pienissimo.com`, and the mail has a defined payload:
+
+> Elena Spini: _"questa informazione deve essere girata con una mail
+> all'amministrazione, quindi voi verrete notificati, poi sistemate a mano."_
+> Aurel Mrruku: _"e nella mail mettiamo proprio il link del dato su salesforce,
+> così se cliccate entrate e controllate."_
+
+**A notification mail carrying a direct link to the Salesforce record**, for
+manual correction. The account is created in Salesforce either way; Anticipay is
+a check on it, never a gate.
+
+### 🔴 Two things this now depends on
+
+1. **The error body for a foreign company is not documented.** Elena Spini looked
+   for it live and did not find it: _"la cosa estera in effetti non c'è negli
+   errori. Non so cosa può rispondere."_ A design whose entire mechanism is the
+   error response rests on a response nobody has seen —
+   [OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md).
+2. **The notification cannot fire as the engine stands.** `Is_Error__c` is never
+   set for an HTTP error, so the agreed mail would be silent for exactly the
+   `404` this design is built on. That defect was recorded on 1 September as a
+   general one; **it now has a client-agreed feature sitting on top of it.**
+
+⚠ `INT-18`'s scope needs restating on both counts: the call is **not** limited to
+Italian customers, and its foreign behaviour is a notification, not a validation
+result.

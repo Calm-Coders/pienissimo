@@ -1,19 +1,23 @@
 ---
 id: OI-109
 type: open-item
-status: open
-owner: Andrea Parmeggiani
-with: Elisa Migliano
+status: resolved
+owner: Elisa Migliano
+with: Andrea Parmeggiani
 org: both
 raised: 2026-09-01
-updated: 2026-09-01
+updated: 2026-09-02
 depends_on: [OI-94]
-blocks: [OI-95]
 requirement: INT-18
-source: notes/meetings/2026-09-01 Follow-up Integrazione Anticipay.md
+source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
 
 # OI-109 - Codice destinatario SDI as a twelfth Anticipay field
+
+✅ **Resolved 2026-09-02 — withdrawn by the person who asked for it**, one day
+later and in a different meeting. Nothing to build and nothing to chase; Andrea
+Parmeggiani's action falls away. See [the withdrawal](#the-withdrawal-2026-09-02)
+at the foot of this note.
 
 **Raised by Elisa Migliano at the
 [1 September call](../meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md).**
@@ -65,3 +69,38 @@ resolved and buildable as it stands; a twelfth field, if it arrives, is an
 additive change to a mapping that will already exist. With Fase 1 development
 ending **10 September**, build the eleven and add the twelfth if and when Andrea
 Parmeggiani confirms it.
+
+## The withdrawal, 2026-09-02
+
+At the
+[2 September Anagrafica Articoli session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md),
+reading the Mexal customer screen aloud, **Elisa Migliano dropped it herself**:
+
+> _"potevamo portarci dentro il codice destinatario SDI nel caso delle cose
+> italiane, ma non lo andiamo a recuperare mi sa dalla da anticipay, comunque
+> **non ci serve**."_
+
+Nobody prompted her; it came up while listing the fields the integration must
+carry, and she moved straight past it. So the item closes as **not wanted**,
+rather than as _not available_ — which is the outcome Andrea Parmeggiani's first
+impression was pointing at anyway.
+
+## ⚠ What the withdrawal did not address
+
+Her 1 September argument for the field was **not** about Salesforce needing it.
+It was a repair argument about Mexal:
+
+> _"noi adesso nell'anagrafica di Mexal abbiamo una valanga di clienti dove lo
+> SDI non è valorizzato."_
+
+**That reason was never re-examined.** On 2 September she is looking at the
+integration contract, where the field genuinely is not needed because invoicing
+runs on PEC; the empty SDI values in the existing registry are still empty, and
+the migration will still carry them across empty.
+
+That is not a reason to reopen this item — the client has said what it wants —
+but it is a live data-quality fact for
+[the migration mapping](OI-79%20Migration%20volumes%20and%20mapping%20method.md)
+and for the registry re-creation
+([OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)).
+**Record it there, do not chase it here.**

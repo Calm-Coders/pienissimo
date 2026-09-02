@@ -2,7 +2,7 @@
 id: ref-anagrafica-articoli-workbook
 type: reference
 status: active
-owner: Fabrizio Paganelli
+owner: Elisa Migliano
 org: Pienissimo
 raised: 2026-09-01
 updated: 2026-09-02
@@ -259,3 +259,36 @@ to `Code__c` alone when the registry is reloaded.
 
 ⚠ **The load also cost an hour to a trap now written down** -
 [how to add a picklist value that records can actually use](How%20to%20add%20a%20picklist%20value%20that%20records%20can%20actually%20use.md).
+
+## 2026-09-02 — who wrote it, and what the "paio di domande" were
+
+⚠ **Elisa Migliano wrote this workbook, not Fabrizio Paganelli.** It was sent
+from his mailbox and this note attributed it to him. On the recording of the
+[2 September session](meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+she says so twice — _"ieri vi ho mandato quel file"_ and _"questo qui è un file
+che ho fatto io a mano, ci ho aggiunto anche i campi che avevamo definito insieme
+l'altro giorno"_. They attended that session from the same room. **Ask her about
+its contents.**
+
+🟢 **The _"paio di domande"_ that were in neither the mail nor the file were asked
+verbally, at the top of that call, and both were answered.** This note recorded
+them as unknown; they are:
+
+1. **_"vale la pena di impegnare un campo di mexal per solo 15 codici
+   articolo?"_** — is `tipo biglietto` worth a scarce Mexal field for ~15 codes?
+   **Answered no**; it becomes Salesforce-only and administrator-editable
+   ([OI-76](items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)).
+2. **_"prezzo di listino sui ci metto zero, dico bene?"_** — do the bundle-only
+   codes carry a zero list price? **Answered no**; they keep their real price and
+   the bundle price is set on the association
+   ([OI-48](items/OI-48%20Bundle-only%20article%20codes.md)).
+
+So the blank price column in the red rows is **a question in the file, not a
+specification** — the reading this note took as provisional turns out to be the
+right one, and it is now settled.
+
+⚠ Her own description of the colour coding, from the call: **blue rows are
+today's article codes usable only on tutor orders and never in a bundle**; **red
+rows are the hypothesis for new codes usable only inside bundles**. This note
+decoded the red set correctly; the blue set's _"utilizzabile solo ordini no
+bundle"_ meaning had not been stated anywhere before.
