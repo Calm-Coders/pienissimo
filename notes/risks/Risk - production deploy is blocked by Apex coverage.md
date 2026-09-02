@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-31
+updated: 2026-09-02
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -98,3 +98,42 @@ since 25 August.
 
 The floor is 75%; the org is at 0%. This stays **high**, stays **gating**, and
 stays one late task at Aurel Mrruku's request. Nothing here proposes writing it.
+
+## 2026-09-02 - the number is real, but it is not a measurement
+
+Verified against Pienissimo UAT, 08:05-08:14Z. `ApexCodeCoverageAggregate`
+reports **0 covered, 1,646 uncovered, 0%** — up from 1,571 lines on 31 August as
+code lands. Against a 75% floor, nothing can ship. **That part is unchanged and
+still gating.**
+
+But the figure has been read too literally across the record, and the correction
+matters when the suite is finally written:
+
+**The last Apex test run in this org is `2026-08-04T08:53Z`** — 10 methods
+enqueued, 10 completed, **0 failed**. Project classes have changed continuously
+since, through 31 August. `ApexCodeCoverageAggregate` is populated only _by a
+test run_ and is invalidated when classes recompile, so the stored 0% is
+measuring **nothing about the current code**.
+
+> Read it as **unmeasured**, not as **measured at zero**.
+
+The practical difference: "0% coverage" has been cited as evidence that the
+tests are broken or absent. Neither is established. **Three project test classes
+are deployed** — `BundleComponentTriggerHandlerTest` (6,235 chars),
+`BundleProductAssignmentControllerTest` (10,320) and
+`OrderBigliettoTriggerHandlerTest` (7,151) — and on their last recorded run they
+passed.
+
+⚠ **This does not mean coverage is secretly fine.** Three test classes against
+twelve project classes and 1,646 lines will not reach 75%, and the deploy gate
+computes coverage at deploy time regardless of what is stored. The honest
+position is that **nobody currently knows the real figure**, and the only way to
+learn it is to run the suite.
+
+**No test was run by this check, and none was written or offered.** The suite
+remains one task, requested separately before the production deploy.
+
+⚠ [OI-66](../items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md) is
+**superseded, not fixed** — its ~270 lines were deleted with the Biglietto stack
+on 28 August rather than covered. The fall from 1,769 lines is that deletion, not
+progress.

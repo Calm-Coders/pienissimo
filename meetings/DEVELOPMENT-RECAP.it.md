@@ -2,7 +2,7 @@
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
 > ⚠ **Precedenza, dal più recente: §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
-> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08; il §15 la scelta dell'Asset standard; il §16 le quattro riunioni recuperate il 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.** **Il §17 e il §19 sono verifiche dello stato del build sull'org UAT, del 25/08 e del 26/08: dove contraddicono una sezione precedente su ciò che _esiste_, vince la più recente; dove una sezione precedente registra ciò che è stato _concordato_, quella sezione resta valida. Il §19 corregge integralmente una constatazione del §17.** Il §18 è la call tecnica Anticipay del 25/08.
+> I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08; il §15 la scelta dell'Asset standard; il §16 le quattro riunioni recuperate il 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.** **Il §17, il §19, il §22 e il §25 sono verifiche dello stato del build sull'org UAT, del 25/08, 26/08, 31/08 e 02/09: dove contraddicono una sezione precedente su ciò che _esiste_, vince la più recente; dove una sezione precedente registra ciò che è stato _concordato_, quella sezione resta valida. Il §19 corregge integralmente una constatazione del §17; il §25 ritira l'affermazione del §19 secondo cui l'org non aveva template email — lo strumento non era in grado di vederli.** Il §18 è la call tecnica Anticipay del 25/08; il §20 la review Mexal del 26/08; il §21 l'integrazione WooCommerce del 27/08; il §23 e il §24 il contratto API Anticipay e la call di follow-up del 01/09.
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
 ---
@@ -1753,16 +1753,16 @@ raccomandavano di sollecitare una data — è stata assolta in riunione. Aurel
 Mrruku ha percorso il punto 6 della documentazione campo per campo e **tutti e
 undici i campi sono stati presi**.
 
-| Campo                                    | Destinazione                                                  |
-| ---------------------------------------- | ------------------------------------------------------------- |
-| `ragione_sociale`                        | `Account.Name`                                                |
-| `indirizzo`, `citta`, `provincia`, `cap` | il blocco indirizzo di fatturazione standard                  |
-| `pec`                                    | **un nuovo campo dedicato sull'Account**                      |
-| `nome_legale_rappresentante`             | **un nuovo campo di testo sull'Account**                      |
-| `codice_fiscale_legale_rappresentante`   | **un nuovo campo sull'Account**                               |
-| `data_di_dascita_legale_rappresentante`  | **un nuovo campo sull'Account**, refuso della chiave incluso  |
-| `luogo_nascita_legale_rappresentante`    | **un nuovo campo sull'Account**                               |
-| `indirizzo_legale_rappresentante`        | **un unico campo di testo**, non un indirizzo strutturato     |
+| Campo                                    | Destinazione                                                 |
+| ---------------------------------------- | ------------------------------------------------------------ |
+| `ragione_sociale`                        | `Account.Name`                                               |
+| `indirizzo`, `citta`, `provincia`, `cap` | il blocco indirizzo di fatturazione standard                 |
+| `pec`                                    | **un nuovo campo dedicato sull'Account**                     |
+| `nome_legale_rappresentante`             | **un nuovo campo di testo sull'Account**                     |
+| `codice_fiscale_legale_rappresentante`   | **un nuovo campo sull'Account**                              |
+| `data_di_dascita_legale_rappresentante`  | **un nuovo campo sull'Account**, refuso della chiave incluso |
+| `luogo_nascita_legale_rappresentante`    | **un nuovo campo sull'Account**                              |
+| `indirizzo_legale_rappresentante`        | **un unico campo di testo**, non un indirizzo strutturato    |
 
 Dentro quella decisione stanno due scelte di struttura:
 
@@ -1832,14 +1832,14 @@ ed entrambe sono modifiche a un documento firmato. Resta a Elena Spini sollevarl
 
 Quattro delle sei domande derivate nel §23 **non sono mai state poste**:
 
-| Domanda                               | Dopo la call                                                        |
-| ------------------------------------- | ------------------------------------------------------------------- |
-| Il **body delle risposte di errore**  | 🔴 ancora aperto — l'ultimo blocco tecnico alla build               |
-| Quali campi, e con che data           | 🟢 chiusa — tutti e undici, sopra                                   |
-| Il token — uno o due                  | 🟢 chiusa — uno, deliberatamente                                    |
-| La data in cui `env=test` inoltra     | 🔴 ancora aperta, mai menzionata                                    |
-| Il refuso `dascita` (#105)            | 🔴 ancora aperto — e la sua via d'uscita si è chiusa                |
-| Limiti di chiamata, timeout, TTL      | ⚠ a metà — il test è gratuito e illimitato; **la produzione no**    |
+| Domanda                              | Dopo la call                                                     |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| Il **body delle risposte di errore** | 🔴 ancora aperto — l'ultimo blocco tecnico alla build            |
+| Quali campi, e con che data          | 🟢 chiusa — tutti e undici, sopra                                |
+| Il token — uno o due                 | 🟢 chiusa — uno, deliberatamente                                 |
+| La data in cui `env=test` inoltra    | 🔴 ancora aperta, mai menzionata                                 |
+| Il refuso `dascita` (#105)           | 🔴 ancora aperto — e la sua via d'uscita si è chiusa             |
+| Limiti di chiamata, timeout, TTL     | ⚠ a metà — il test è gratuito e illimitato; **la produzione no** |
 
 **Sollecitare tre cose, non sei.** Riproporre le due chiuse costerebbe
 credibilità.
@@ -1918,3 +1918,162 @@ quelli **attuali** in revisione.
 WooCommerce del 27 agosto e il PDF delle API del 31 agosto — entrambi i quali,
 una volta aperti a mano, hanno prodotto scoperte che nessuna inferenza aveva
 generato. **Serve prima della riunione del 2 settembre, non dopo.**
+
+## 25. Aggiornamento 02/09/2026 — verifica sull'org UAT Pienissimo
+
+> ⚠ **Questa sezione registra soltanto lo STATO DEL BUILD.** Supera le
+> affermazioni delle sezioni precedenti su ciò che **esiste** nell'org. Non
+> supera il record di ciò che è stato **concordato**: una decisione resta presa
+> anche dove l'implementazione la contraddice.
+
+Verifica in sola lettura sull'org **Pienissimo UAT** (`00DMA000004nMMr2AM`,
+sandbox parziale, API 68.0) del **02/09/2026, 08:05–08:14Z**, confrontata con
+`force-app/` su `DevMain` al commit `4a49376`. 165 componenti del repository
+contro 1.072 componenti dell'org. Metodo: listing Metadata API su 20 tipi di
+componente, Tooling `FieldDefinition`, `FieldPermissions`, `ObjectPermissions`,
+`ApexCodeCoverageAggregate`, `ApexTestRunResult`, `FlowDefinitionView`,
+`PermissionSetAssignment` e query aggregate mirate.
+
+Supera il §22 e il §19 sullo stato del build.
+
+### 25.1 🟢 Tutto ciò che è nel repository è deployato, e la collisione WooCommerce è risolta
+
+**Tutti e 30 i componenti di progetto presenti in `force-app/` esistono
+nell'org.** Nessuna divergenza "solo repository" sui metadati di progetto.
+
+La collisione di rotta segnalata al §22 è **risolta su entrambi i lati**:
+
+|                            | 31 agosto                                   | 2 settembre                    |
+| -------------------------- | ------------------------------------------- | ------------------------------ |
+| `WooCommerceOrderEndpoint` | nel repository, non deployata               | **rimossa da entrambi i lati** |
+| `WoocommerceOrderService`  | deployata, **non** in controllo di versione | **deployata e committata**     |
+| Rotte REST dichiarate      | 2 classi, 1 rotta                           | **1 classe, 1 rotta**          |
+
+Il corpo della classe deployata è stato riletto e confrontato con il file
+committato: normalizzando i fine riga, i due sono **identici**. La differenza di
+848 caratteri corrisponde esattamente allo scarto CRLF/LF sulle ~848 righe del
+file. Un deploy pulito ora pubblica la classe che è già in esecuzione.
+
+⚠ È al sicuro dal _deploy_, non per il resto completa: **`INT-16` è ancora priva
+di autenticazione**, quindi il token di header che ROMI deve fornire resta
+l'unica autenticazione.
+
+### 25.2 🔴 Gli undici campi Anticipay non sono costruiti
+
+`OI-95` è stato chiuso il 1º settembre proprio perché questo lavoro potesse
+partire. `Account` porta **tre** campi personalizzati — `Lead_Email__c`,
+`Nome_Locale__c`, `Partita_IVA__c`. **Nessuna PEC, nessuno dei cinque campi del
+legale rappresentante, nessun indirizzo del rappresentante.** Assenza dimostrata
+con Tooling `FieldDefinition`, che non è filtrata dalla field-level security.
+
+**Lo sviluppo di Fase 1 termina il 10 settembre.** I campi sono costruibili
+oggi: non richiedono endpoint, token né altre risposte dal cliente. Ciò che è
+bloccato è la chiamata e la gestione degli errori, non lo schema.
+
+### 25.3 🔴 L'org non ha alcun Flow di progetto, e uno di essi non è mai stato versionato
+
+Verificato in due modi indipendenti, perché un elenco vuoto non è una prova: la
+lista `Flow` della Metadata API è vuota, e `FlowDefinitionView` restituisce
+**79** flow, **nessuno dei quali privo di namespace**.
+
+`Lead_Non_Risponde_Follow_Up` è stato aggiunto il 27 agosto ed eliminato il
+31 agosto, con un messaggio di commit che lo dichiara: scelta deliberata e
+**recuperabile da git**. Ma la verifica del 28 agosto registrava **due** Flow, e
+`git log --all` dimostra che in questo repository è esistito **un solo** file di
+flow. Il secondo era presente solo nell'org, ora non c'è più, e **nessun
+documento superstite ne riporta il nome**.
+
+Non risulta che sia andato perso nulla di valore. Il punto è che il progetto non
+può saperlo: è la terza perdita "solo org" in sei giorni.
+
+### 25.4 🔴 Due named credential esistono solo nell'org
+
+`Anticipay` e `DocuSign` sono configurate nell'org e non esistono in **nessun
+branch** di questo repository, così come i permission set `DocuSign`,
+`Full_Permission` e `Sales_User`.
+
+Una named credential è il luogo in cui risiedono l'endpoint e l'autenticazione.
+Perderne una non produce errori di compilazione né segnalazioni di componente
+mancante: la chiamata semplicemente fallisce a runtime. Un refresh della sandbox
+porta via sia la credenziale sia l'unica traccia di come era configurata.
+
+### 25.5 L'impianto di integrazione è invariato, e ora blocca un lavoro con una data
+
+|                                         | 26 agosto | 2 settembre |
+| --------------------------------------- | --------- | ----------- |
+| Righe di `Integration_Configuration__c` | 0         | **0**       |
+| Suoi permessi di oggetto                | 0         | **0**       |
+| Righe di `Integration_Log__c`           | 0         | **21**      |
+| Remote site setting                     | 0         | **0**       |
+
+Le righe di log sono traffico reale, ma provengono dall'endpoint WooCommerce
+**in ingresso**, che non usa questo impianto. **Nulla in uscita è mai stato
+eseguito.** `Integration_Configuration__c` ha ancora zero permessi di oggetto:
+nessun utente potrà leggerlo nemmeno quando esisterà una riga.
+
+### 25.6 Copertura: il dato non è misurato, non è misurato a zero
+
+`ApexCodeCoverageAggregate` riporta **0 coperte, 1.646 non coperte, 0%**, in
+crescita dalle 1.571 del 31 agosto man mano che il codice arriva. Contro la
+soglia del 75%, **nulla può andare in produzione: invariato e ancora
+bloccante.**
+
+Ma il dato è stato letto troppo alla lettera. **L'ultima esecuzione dei test
+Apex in questo org è del 04/08/2026** — 10 metodi, **0 falliti** — mentre le
+classi sono cambiate di continuo fino al 31 agosto. L'aggregato viene popolato
+solo da un'esecuzione dei test e viene invalidato quando le classi vengono
+ricompilate: lo 0% memorizzato non misura nulla del codice attuale.
+
+**Tre classi di test di progetto sono deployate** e all'ultima esecuzione
+registrata passavano. Questo non significa che la copertura sia adeguata — tre
+classi di test contro 1.646 righe non raggiungono il 75%. Significa che **oggi
+nessuno conosce il valore reale**. Nessun test è stato eseguito, scritto o
+proposto.
+
+### 25.7 🟢 L'accesso all'org è ripristinato, e 🔴 l'UAT resta inutilizzabile
+
+Il blocco del 1º settembre non si ripresenta: la verifica si è autenticata e ha
+completato l'inventario senza alcun errore di autenticazione, e Aurel Mrruku lo
+ha confermato direttamente.
+
+Ma **ogni permission set di progetto raggiunge esattamente un utente attivo** su
+**8** utenti attivi, invariato dal 28 agosto. Gli utenti di business non possono
+eseguire l'UAT.
+
+### 25.8 Verificato inoltre
+
+- **`Biglietto__c` è confermato assente.** Asset contiene **5** record, non 41:
+  il set di 37 record **non è stato migrato**. Asset porta 8 campi
+  personalizzati e un record type Ticket; la ricostruzione non è iniziata.
+- 🟢 **`OrderItem.Tranche__c` è ora concesso** in lettura e scrittura a
+  `Tranche_Management`, chiudendo il blocco del 26 agosto. **La propagazione
+  resta non costruita**: 0 righe d'ordine su 18 portano una tranche.
+- 🟢 **Il ciclo di vita dell'ordine è attivo e in uso** — `Incassato` su 12
+  ordini su 15, e `Order` porta 3 campi personalizzati. Questo corregge il §19,
+  che registrava lo stato ordine come standard e l'oggetto senza campi
+  personalizzati.
+- ⚠ **Record fermi su valori disattivati, ora su due oggetti**: 3 preventivi su
+  10 (`Accepted` ×2, `Needs Review` ×1) e 3 ordini su 15 (`Activated` ×2,
+  `Draft` ×1). Un record su un valore disattivato non può essere risalvato senza
+  essere prima spostato.
+
+### 25.9 Due difetti nel record stesso, entrambi corretti
+
+**Il registro citava id di requisito inesistenti.** Il blocco dello stato del
+build faceva riferimento a `QUO-01` (quattro volte) e `QUO-06`: fra i 154 id di
+requisito non esiste alcun prefisso `QUO-`, l'area commerciale usa `SAL-`. Dove
+il testo della voce nomina direttamente un requisito ora si cita `SAL-08` e
+`SAL-09`; le voci che osservano la **macchina a stati** del preventivo portano
+`state_machine: quote` e nessun riferimento, perché il registro non ha un id per
+essa. La validazione stretta ora passa.
+
+**L'inventario della verifica stessa riportava zero template email, e
+sbagliava.** `listMetadata` della Metadata API non può enumerare i tipi
+organizzati in cartelle senza che se ne indichi una: ha quindi restituito una
+lista `EmailTemplate` vuota senza segnalare alcuna indisponibilità. Una query
+SOQL dimostra che esistono **88** template, incluso `WooCommerce_Checkout_Link`
+del progetto, attivo. L'affermazione del §19 secondo cui l'org aveva "zero …
+EmailTemplate" si fondava su questo artefatto ed è **ritirata**.
+
+> Un risultato vuoto restituito da uno strumento che non è in grado di enumerare
+> ciò che si cerca non è un'assenza. È un silenzio.

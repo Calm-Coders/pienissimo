@@ -5,7 +5,7 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-26
-updated: 2026-08-26
+updated: 2026-09-02
 depends_on: [OI-58, OI-49, OI-73, OI-94]
 source: org-status-check against Pienissimo UAT, 2026-08-26
 evidence: SOQL counts on Integration_Configuration__c and Integration_Log__c, NamedCredential listing
@@ -67,3 +67,42 @@ describes, one level down.
 
 Do **not** re-flag the scaffolding itself as unrequested implementation — that
 is already recorded and settled.
+
+## 2026-09-02 - unchanged, and now it blocks a dated build
+
+Re-verified against Pienissimo UAT, 08:05-08:14Z. Seven days on, nothing has
+moved:
+
+|                                                   | 2026-08-26   | 2026-09-02                  |
+| ------------------------------------------------- | ------------ | --------------------------- |
+| `Integration_Configuration__c` rows               | 0            | **0**                       |
+| `Integration_Configuration__c` object permissions | 0            | **0**                       |
+| `Integration_Log__c` rows                         | 0            | **21**                      |
+| Named credentials                                 | 1 (DocuSign) | **2 (DocuSign, Anticipay)** |
+| Remote site settings                              | 0            | **0**                       |
+
+Two of those numbers moved and both are worth reading carefully.
+
+**The log is being written.** 21 `Integration_Log__c` rows, up from 0 — but they
+come from the **inbound** WooCommerce endpoint, which does not use this
+scaffolding at all. `WoocommerceOrderService` is a `@RestResource` that
+WooCommerce calls; it needs no configuration row and no named credential.
+**Nothing outbound has run.**
+
+**A second named credential appeared, and it is org-only.** `Anticipay` now
+exists in the org and in no branch of this repository — see
+[the credentials risk](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md).
+Its existence does **not** configure anything here: the house
+`API_Callout_Engine` reads its endpoint from `Integration_Configuration__c`,
+which still has no rows.
+
+### The object nobody can read
+
+`Integration_Configuration__c` still returns **zero `ObjectPermissions` rows** —
+against 6 to 102 for every other project object. No profile and no permission
+set grants read on it. So even once a configuration row exists, no running user
+can see it.
+
+That is now blocking a dated deliverable rather than a hypothetical one: the
+[Anticipay field build](../risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)
+is due inside Fase 1, which ends **10 September**.

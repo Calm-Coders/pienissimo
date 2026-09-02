@@ -26,7 +26,7 @@
     "package-lock.json"
   ],
   "indexing": {
-    "autoIndex": false,
+    "autoIndex": true,
     "watchFiles": true,
     "maxFileSize": 1048576,
     "maxChunksPerFile": 100,

@@ -1,0 +1,78 @@
+---
+id: risk-anticipay-fields-unbuilt
+type: risk
+status: open
+severity: high
+owner: Aurel Mrruku
+org: ROMI
+raised: 2026-09-02
+updated: 2026-09-02
+depends_on: [OI-95, OI-107]
+blocks: [OI-73, go-live]
+requirement: [INT-18]
+source: org-status-check against Pienissimo UAT, 2026-09-02 08:05-08:14Z
+evidence: Tooling FieldDefinition on Account, Pienissimo UAT
+---
+
+# Risk - the Anticipay field build has not started
+
+**[OI-95](../items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) was
+resolved on 1 September specifically so this build could start. On 2 September
+the org shows it has not.**
+
+`Account` carries **three** custom fields:
+
+- `Lead_Email__c`
+- `Nome_Locale__c`
+- `Partita_IVA__c`
+
+None of them is PEC. None is one of the five legal-representative fields. There
+is no free-text field for the representative's address. Proven absent by Tooling
+`FieldDefinition`, which is not filtered by field-level security — so this is
+not [the false negative that caught the 25 August run](../How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
+
+## Why this is the sharpest date on the project
+
+**Fase 1 development ends 10 September** — ROMI's own project plan, not the
+6 October go-live. That is **eight days**, and the eleven fields are only the
+data-model half of the work. The rest of the Anticipay leg is also unstarted and
+some of it is blocked:
+
+| Piece                                          | State on 2026-09-02                                                                                                                                 |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The eleven `Account` fields                    | **not built**                                                                                                                                       |
+| `Integration_Configuration__c` endpoint row    | **zero rows**, and zero object permissions — see [the scaffolding](../objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md) |
+| Path-parameter support in `API_Callout_Engine` | **not built** — the engine cannot pass `:piva` at all, see [the contract](../The%20Anticipay%20middleware%20API%20contract.md)                      |
+| Error-path handling                            | **defective** — see [OI-107](../items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)           |
+| Error response bodies from Pienissimo Software | **still owed**, the last technical blocker                                                                                                          |
+
+So "the VAT build can start" — the closing line of the 1 September minute — is
+true and has not been acted on.
+
+## What is not blocked
+
+**The eleven fields are buildable today.** They need no endpoint, no token and
+no answer from Andrea Parmeggiani: the field list was settled in the room on
+1 September and is written down. The blocked pieces are the callout and the
+error path, not the schema.
+
+That matters because it means the schema work can proceed in parallel with the
+outstanding client answer instead of queuing behind it.
+
+## Two things to decide while building, not after
+
+- **`data_di_dascita_legale_rappresentante` is misspelled in the wire format**
+  ([OI-105](../items/OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)).
+  The Salesforce field name does not have to inherit the typo, but the mapping
+  has to know about it. Decide the spelling once, here, rather than twice.
+- **Six of the eleven fields identify a private individual**
+  ([OI-108](../items/OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md)),
+  and the 1 September room took all five legal-representative fields without the
+  personal-data question being raised. Building them makes that concrete. It is
+  still worth asking before, not after.
+
+## The ask
+
+**Start the eleven fields.** If they are not going to land before 10 September,
+that is a Fase 1 scope decision and belongs to Elena Spini, not to a build
+queue — say so explicitly rather than letting the date arrive.
