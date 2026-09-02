@@ -1516,7 +1516,7 @@ modifiche prima che uno sviluppatore inizi.
 
 ### 23.2 Il contratto
 
-`GET https://integration.pienissimo.com/salesforce/account/:env/:piva`, con un
+`GET https://romi.pienissimo.com/salesforce/account/:env/:piva`, con un
 **bearer token nell'header `Authorization`** e nessun corpo nella richiesta.
 `:env` accetta `test` o `prod` e precede la partita IVA. Un `200` restituisce
 `{ success, status, info }`, dove `info` porta **undici campi stringa**.
@@ -2077,3 +2077,100 @@ EmailTemplate" si fondava su questo artefatto ed è **ritirata**.
 
 > Un risultato vuoto restituito da uno strumento che non è in grado di enumerare
 > ciò che si cerca non è un'assenza. È un silenzio.
+
+## 26. Aggiornamento 02/09/2026 — l'endpoint Anticipay è cambiato, e ora funziona
+
+La terza revisione della documentazione API in tre giorni, e la prima volta che
+qualcosa su questa integrazione viene **dimostrato anziché letto**.
+
+### 26.1 🟢 Cosa è successo, in due ore
+
+| Ora (UTC)    | Evento                                                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| **08:21:59** | Aurel Mrruku segnala che l'host **non si risolve**: `HTTP/1.1 404 Not Found`, `Content-Type: text/html; charset=iso-8859-1` |
+| **10:18:26** | Andrea Parmeggiani: _"Ho impostato un nuovo terzo livello: romi.pienissimo.com"_ — **v3** in allegato                       |
+| **10:40:45** | Aurel Mrruku: _"Confermo che adesso funziona."_                                                                             |
+
+Quindi **`integration.pienissimo.com`, l'host della v1 e della v2, non ha mai
+funzionato.** Tutto ciò che è stato scritto su questa API prima di oggi si
+basava su un documento che descriveva un endpoint inesistente. Il nuovo host è
+**`romi.pienissimo.com`** ed è stato provato da ROMI.
+
+Due ore dalla segnalazione alla correzione confermata. È la seconda volta che
+questa controparte chiude qualcosa in una mattinata, e va registrato accanto ai
+fallimenti.
+
+### 26.2 La v3 cambia l'host e nient'altro
+
+Verificato confrontando con un diff il testo estratto della v2 e della v3 — non
+dedotto dal corpo della mail. **Differiscono due righe**, entrambe con
+l'hostname. Tutto il resto è identico byte per byte, il che significa che quanto
+segue **è sopravvissuto a una terza revisione senza modifiche**:
+
+- il **refuso `data_di_dascita_legale_rappresentante`** (§23.7, OI-105) — tre
+  revisioni, ancora lì, perché **nessuno l'ha chiesto**
+- il **corpo della risposta di errore, del tutto assente** (§23.4, OI-107)
+- la descrizione del `404` che nomina ancora **Salesforce** come sistema cercato
+- **il bearer token** — la stessa stringa dal 31 agosto, ora inviata quattro volte
+
+### 26.3 🔴 La raggiungibilità non è il contratto
+
+Una chiamata confermata non è un'integrazione funzionante. **Nessuna lookup è
+mai stata eseguita**: nessuno ha mai osservato un `200`, un `404` o un corpo di
+errore. Ciò che è dimostrato è che l'hostname si risolve e il TLS termina. Tutto
+ciò che riguarda il payload resta una lettura di un PDF.
+
+### 26.4 🔴 L'host morto ha prodotto un rilievo che vale più della correzione
+
+Il guasto che Aurel Mrruku ha incontrato a mano è esattamente quello che il
+motore di callout di casa gestisce peggio.
+
+Un `404` in HTML da un hostname sbagliato dà al `404` un **terzo significato**,
+oltre a _P.IVA sconosciuta_ e _non in cache con `env=test`_:
+
+| `404` perché                              | Corpo                                        | Distinguibile da           |
+| ----------------------------------------- | -------------------------------------------- | -------------------------- |
+| la P.IVA è davvero sconosciuta            | la forma d'errore dell'API (non documentata) | —                          |
+| `env=test` e l'azienda non è in cache     | come sopra                                   | **nulla**                  |
+| **l'endpoint è sbagliato o l'host è giù** | `text/html`                                  | **solo il `Content-Type`** |
+
+Seguendolo dentro `API_Callout_Engine`: l'invio riesce, `Is_Error__c` non viene
+mai impostato (§23.4 difetto 1), `deserializeResponse` prova a interpretare
+**HTML come JSON**, lancia, e il `catch` ricostruisce la riga di log **senza
+`Response_State__c`** (difetto 2). **Un endpoint completamente morto verrebbe
+registrato come un errore di parsing Apex senza stato HTTP e senza flag di
+errore** — qualcosa che somiglia a un bug di codice Salesforce, non a
+un'interruzione.
+
+Aurel Mrruku l'ha diagnosticato in pochi secondi perché era in un client di
+posta. Attraverso il motore così com'è, sarebbe stato invisibile. **Questo alza
+la priorità della correzione "controllare lo stato prima di deserializzare"**,
+che finora era codice difensivo contro una forma che nessuno aveva visto.
+
+### 26.5 ⚠ Il named credential `Anticipay` nell'org precede lo spostamento
+
+La verifica org del 2 settembre (§25) ha trovato un named credential `Anticipay`
+configurato nell'org e in **nessun branch di questo repository** — alle
+**08:05–08:14Z**, cioè _prima_ che il nuovo host esistesse e _prima_ che Aurel
+Mrruku avesse persino segnalato morto il vecchio.
+
+È stato quindi creato contro l'unico hostname disponibile: quello che non ha mai
+funzionato. **Con ogni probabilità contiene `integration.pienissimo.com`.**
+Essendo solo nell'org non esiste diff, revisione o deploy che lo farebbe
+emergere; fallisce semplicemente a runtime, con il `404` in HTML descritto sopra.
+
+**Verificarlo in Setup prima di collegarci qualsiasi cosa**, e correggere l'host
+nell'ambito del retrieve che il §25 già richiede. ⚠ Leggere solo l'endpoint — il
+token non va copiato da nessuna parte.
+
+### 26.6 Dove lascia la build
+
+🔴 **Restano otto giorni al 10 settembre, e gli undici campi concordati il
+1 settembre non sono ancora costruiti.** Il funzionamento dell'endpoint toglie
+una scusa, non un blocco — la costruzione dei campi non ha mai avuto bisogno di
+un endpoint o di un token. Resta il lavoro sbloccato più economico del progetto.
+
+Due piccole richieste sono ormai in ritardo e vanno in **una sola** mail ad
+Andrea Parmeggiani: **un esempio di ciascuna risposta di errore** e **il refuso
+`dascita`** — correggere o congelare. Ha revisionato la documentazione tre volte
+in tre giorni; non c'è motivo di pensare che una quarta sia difficile.

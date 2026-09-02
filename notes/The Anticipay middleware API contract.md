@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-08-31
-updated: 2026-09-01
+updated: 2026-09-02
 depends_on: [OI-94]
 blocks: [OI-95, OI-73]
 requirement: INT-18
@@ -24,18 +24,49 @@ the business rule it serves is
 
 ## Provenance
 
-Two mails from **Andrea Parmeggiani** (`andrea.p@pienissimo.pro`), one Gmail
-thread `1a0589a4a85b5bdf`, both to Aurel Mrruku, cc Elena Spini,
+**Three** versions from **Andrea Parmeggiani** (`andrea.p@pienissimo.pro`), one
+Gmail thread `1a0589a4a85b5bdf`, all to Aurel Mrruku, cc Elena Spini,
 `amministrazione@pienissimo.com`, Fabrizio Paganelli and Sabatino Rinaldi:
 
-| Version | Sent                     | Body                                                                                                                          | What it carried                                    |
-| ------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| v1      | **2026-08-31 16:15:00Z** | _"In allegato la documentazione della chiamata API per la lettura dei dati da Anticipay"_                                     | the contract, **without** `:env`                   |
-| v2      | **2026-09-01 10:46:38Z** | _"Ho aggiunto un parametro `:env` nel path, prevede un valore tra 'test' e 'prod', in allegato la documentazione aggiornata"_ | the same contract **plus the `:env` path segment** |
+| Version | Sent                     | Body                                                                                      | What changed                     |
+| ------- | ------------------------ | ----------------------------------------------------------------------------------------- | -------------------------------- |
+| v1      | **2026-08-31 16:15:00Z** | _"In allegato la documentazione della chiamata API per la lettura dei dati da Anticipay"_ | the contract, **without** `:env` |
+| v2      | **2026-09-01 10:46:38Z** | _"Ho aggiunto un parametro `:env` nel path, prevede un valore tra 'test' e 'prod'"_       | **plus the `:env` path segment** |
+| v3      | **2026-09-02 10:18:26Z** | _"Ho impostato un nuovo terzo livello: romi.pienissimo.com"_                              | **the host, and nothing else**   |
 
-**This note decodes v2**, downloaded by Aurel Mrruku on 2026-09-01 at 12:51 CEST
-and read the same session. v1 was never opened; the only recorded difference is
-the one Andrea Parmeggiani names himself, so nothing below is attributed to v1.
+**This note decodes v3**, downloaded by Aurel Mrruku on 2026-09-02 at 12:47 CEST.
+v2 was decoded on 1 September and **v3 is byte-identical to it apart from the two
+lines carrying the host** — verified by diffing the extracted text, not assumed
+from the mail body. Every field name, error code, defect and omission recorded
+below survived the change unaltered. v1 was never opened.
+
+### 🟢 The endpoint is confirmed working — the first time anything here has been
+
+This is the whole point of v3, and it is not visible in the document itself.
+
+**`integration.pienissimo.com` never resolved.** Aurel Mrruku tried it and
+reported back at **2026-09-02 08:21:59Z**:
+
+> _"il server al momento non risulta raggiungibile. Durante il tentativo di
+> connessione ricevo il seguente errore: `HTTP/1.1 404 Not Found`
+> `Content-Type: text/html; charset=iso-8859-1`"_
+
+Andrea Parmeggiani stood up a new third-level domain and sent v3 within two
+hours. Aurel Mrruku confirmed at **10:40:45Z**: _"Confermo che adesso
+funziona."_
+
+So **`romi.pienissimo.com` is reachable and has been exercised by ROMI.** Until
+this morning every statement in this note was a reading of a PDF; the transport
+is now tested. 🔴 **What has still never been exercised is a real lookup** — no
+`200`, no `404`, no error body has been seen. Reachability is not the contract.
+
+⚠ **Nothing else in v3 was fixed.** The `data_di_dascita` typo
+([OI-105](items/OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)),
+the `404` description naming Salesforce, and the **entirely absent error body**
+([OI-107](items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md))
+are all still there, unchanged, in the third revision. **The token is also
+unchanged across all three versions** — same string since 31 August, now sent
+four times.
 
 ⚠ **The PDF is deliberately not preserved in this repository.** Every other
 client attachment has been — `Payload woo-salesforce.json` sits in the repository
@@ -48,12 +79,12 @@ of values.
 
 ## Endpoint
 
-|        |                                                                    |
-| ------ | ------------------------------------------------------------------ |
-| Method | `GET`                                                              |
-| URL    | `https://integration.pienissimo.com/salesforce/account/:env/:piva` |
-| Body   | **none** — the documentation states the request takes no body      |
-| Auth   | `Authorization: Bearer <token>`                                    |
+|        |                                                               |
+| ------ | ------------------------------------------------------------- |
+| Method | `GET`                                                         |
+| URL    | `https://romi.pienissimo.com/salesforce/account/:env/:piva`   |
+| Body   | **none** — the documentation states the request takes no body |
+| Auth   | `Authorization: Bearer <token>`                               |
 
 ### Path parameters
 
@@ -156,6 +187,38 @@ and neither has been discussed. `401` matters most: it is the failure mode of a
 static shared token, and under the agreed design an expired or rotated token
 produces the same stored-error-plus-notification path as a genuinely unknown
 company.
+
+### 🔴 `404` now has a third meaning, and this one is not in the table
+
+The 2 September host move demonstrated it rather than predicted it. Pointed at a
+hostname that does not serve the API, the call returns:
+
+```
+HTTP/1.1 404 Not Found
+Content-Type: text/html; charset=iso-8859-1
+```
+
+That is **a web server saying the path does not exist**, not the middleware
+saying the company was not found. So `404` can now mean any of three things:
+
+| `404` because                                 | Body                                 | Distinguishable by      |
+| --------------------------------------------- | ------------------------------------ | ----------------------- |
+| the VAT number is genuinely unknown           | the API's error shape (undocumented) | —                       |
+| `env=test` and the company is not cached      | same as above                        | **nothing**             |
+| **the endpoint is wrong or the host is down** | `text/html`                          | **`Content-Type` only** |
+
+🔴 **This is the concrete case that breaks
+[OI-107](items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)'s
+second defect**, and it is no longer hypothetical. `API_Callout_Engine`
+deserialises into the `200` wrapper before checking the status; **HTML is not
+JSON**, so the deserialise throws, the `catch` rebuilds the log row without
+`Response_State__c`, and a total outage is recorded as an Apex parse error with
+no HTTP code attached. Aurel Mrruku found this by hand in a mail client. Through
+the house engine it would have been **invisible**.
+
+**Whatever consumes this API must check the status code, and ideally the
+`Content-Type`, before parsing.** A misconfigured endpoint must not look like a
+company that does not exist.
 
 ⚠ **No error response body is documented.** The document gives HTTP codes and
 Italian prose in a table; it does not show the JSON an error actually returns —
@@ -294,13 +357,13 @@ The [follow-up session](meetings/2026-09-01%20Follow-up%20Integrazione%20Anticip
 ran the same morning this note was written, and settles four things the document
 left open or silent. **Where the two disagree, the call is later.**
 
-| Point                     | The document                              | The call                                                                                   |
-| ------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Happy-path status         | `200`                                     | ✅ confirmed out loud by Andrea Parmeggiani                                                 |
-| `:env` split              | a path parameter, provenance unexplained  | 🟢 **agreed in this call**, proposed by Aurel Mrruku; v2 mailed 2.5 h later                 |
-| One token, both envs      | stated, unexplained                       | 🟢 **deliberate** — asked outright, answered _"sì, sì"_ ([OI-106](items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md)) |
-| Test-mode cost and limits | not mentioned                             | 🟢 **free, no call limit** — _"non ci sono costi, possiamo fare chiamate a piacere"_        |
-| Production config         | not mentioned                             | **identical to test**, save that the middleware then forwards to Anticipay                  |
+| Point                     | The document                             | The call                                                                                                                                                       |
+| ------------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Happy-path status         | `200`                                    | ✅ confirmed out loud by Andrea Parmeggiani                                                                                                                    |
+| `:env` split              | a path parameter, provenance unexplained | 🟢 **agreed in this call**, proposed by Aurel Mrruku; v2 mailed 2.5 h later                                                                                    |
+| One token, both envs      | stated, unexplained                      | 🟢 **deliberate** — asked outright, answered _"sì, sì"_ ([OI-106](items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md)) |
+| Test-mode cost and limits | not mentioned                            | 🟢 **free, no call limit** — _"non ci sono costi, possiamo fare chiamate a piacere"_                                                                           |
+| Production config         | not mentioned                            | **identical to test**, save that the middleware then forwards to Anticipay                                                                                     |
 
 ### 🔴 The scope limit the document never states
 

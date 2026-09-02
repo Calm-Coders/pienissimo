@@ -22,7 +22,7 @@ one.
 
 So, as documented:
 
-- **one host** — `integration.pienissimo.com`
+- **one host** — `romi.pienissimo.com` (moved from `integration.pienissimo.com` on 2 September; the token did **not** change with it)
 - **one token** — the same string for `env=test` and `env=prod`
 - **no rotation, no expiry, no scope** described anywhere
 

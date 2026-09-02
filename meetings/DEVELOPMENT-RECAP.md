@@ -1457,7 +1457,7 @@ seventeen hours, the second time on the morning of the call it was written for,
 
 ### 23.2 The contract
 
-`GET https://integration.pienissimo.com/salesforce/account/:env/:piva`, with a
+`GET https://romi.pienissimo.com/salesforce/account/:env/:piva`, with a
 **bearer token in the `Authorization` header** and no request body. `:env` takes
 `test` or `prod` and precedes the VAT number. A `200` returns
 `{ success, status, info }`, where `info` carries **eleven string fields**.
@@ -1991,3 +1991,99 @@ EmailTemplate" rested on this artefact and is **withdrawn**.
 
 > An empty result from an instrument that cannot enumerate the thing is not
 > absence. It is silence.
+
+## 26. Update 2026-09-02 — the Anticipay endpoint moved, and now works
+
+The third revision of the API documentation in three days, and the first time
+anything on this integration has been **proven rather than read**.
+
+### 26.1 🟢 What happened, in two hours
+
+| Time (UTC)   | Event                                                                                                                       |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| **08:21:59** | Aurel Mrruku reports the host **does not resolve**: `HTTP/1.1 404 Not Found`, `Content-Type: text/html; charset=iso-8859-1` |
+| **10:18:26** | Andrea Parmeggiani: _"Ho impostato un nuovo terzo livello: romi.pienissimo.com"_ — **v3** attached                          |
+| **10:40:45** | Aurel Mrruku: _"Confermo che adesso funziona."_                                                                             |
+
+So **`integration.pienissimo.com`, the host in v1 and v2, never worked at all.**
+Every statement written about this API before today rested on a document
+describing an endpoint that did not exist. The new host is
+**`romi.pienissimo.com`** and it has been exercised by ROMI.
+
+Two hours from report to confirmed fix. That is the second time this counterparty
+has turned something around inside a morning, and it is worth recording next to
+the failures.
+
+### 26.2 v3 changes the host and nothing else
+
+Verified by diffing the extracted text of v2 against v3 — not inferred from the
+mail body. **Two lines differ**, both carrying the hostname. Everything else is
+byte-identical, which means all of the following **survived a third revision
+unchanged**:
+
+- the **`data_di_dascita_legale_rappresentante` typo** (§23.7, OI-105) — three
+  revisions, still there, because **nobody has asked**
+- the **entirely absent error response body** (§23.4, OI-107)
+- the `404` description still naming **Salesforce** as the system searched
+- **the bearer token** — the same string since 31 August, now sent four times
+
+### 26.3 🔴 Reachability is not the contract
+
+A confirmed call is not a working integration. **No lookup has ever run**: no
+`200`, no `404`, no error body has been observed by anyone. What is proven is
+that the hostname resolves and TLS terminates. Everything about the payload is
+still a reading of a PDF.
+
+### 26.4 🔴 The dead host produced a finding worth more than the fix
+
+The failure Aurel Mrruku hit by hand is precisely the one the house callout
+engine handles worst.
+
+An HTML `404` from a wrong hostname gives `404` a **third meaning**, on top of
+_VAT number unknown_ and _not cached under `env=test`_:
+
+| `404` because                                 | Body                                 | Distinguishable by      |
+| --------------------------------------------- | ------------------------------------ | ----------------------- |
+| the VAT number is genuinely unknown           | the API's error shape (undocumented) | —                       |
+| `env=test` and the company is not cached      | same as above                        | **nothing**             |
+| **the endpoint is wrong or the host is down** | `text/html`                          | **`Content-Type` only** |
+
+Trace it through `API_Callout_Engine`: the send succeeds, `Is_Error__c` is never
+set (§23.4 defect 1), `deserializeResponse` tries to parse **HTML as JSON**,
+throws, and the `catch` rebuilds the log row **without `Response_State__c`**
+(defect 2). **A completely dead endpoint would be recorded as an Apex parse
+error with no HTTP status and no error flag** — something that reads like a
+Salesforce code bug, not an outage.
+
+Aurel Mrruku diagnosed it in seconds because he was in a mail client. Through
+the engine as it stands, it would have been invisible. **This raises the priority
+of the status-check-before-deserialise fix**, which was previously defensive
+coding against a shape nobody had seen.
+
+### 26.5 ⚠ The org's `Anticipay` named credential predates the move
+
+The 2 September org check (§25) found a named credential `Anticipay` configured
+in the org and in **no branch of this repository** — at **08:05–08:14Z**, which
+is _before_ the new host existed and _before_ Aurel Mrruku had even reported the
+old one dead.
+
+So it was created against the only hostname anyone had: the one that never
+worked. **It very probably carries `integration.pienissimo.com`.** Because it is
+org-only there is no diff, no review and no deploy that would surface it; it
+simply fails at runtime, as the HTML `404` described above.
+
+**Check it in Setup before anything is wired to it**, and correct the host as
+part of the retrieve §25 already asks for. ⚠ Read the endpoint only — the token
+must not be copied anywhere.
+
+### 26.6 Where this leaves the build
+
+🔴 **Still eight days to 10 September, and the eleven fields agreed on
+1 September are still not built.** The endpoint working removes an excuse, not a
+blocker — the field build never needed an endpoint or a token. It remains the
+cheapest unblocked work on the project.
+
+Two small asks are now overdue and belong in **one** mail to Andrea Parmeggiani:
+**an example of each error response**, and **the `dascita` typo** — fix or freeze.
+He has revised the documentation three times in three days; there is no reason to
+think a fourth is hard.

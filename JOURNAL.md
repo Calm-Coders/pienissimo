@@ -1934,3 +1934,49 @@ hold.
 
 **Watermark untouched** — still **2026-09-01T22:00Z**. No mail, Slack, Drive or
 Fathom sweep ran today.
+
+---
+
+## 2026-09-02 — claude — Anticipay v3: the endpoint moved and now works
+
+- **Did:** drilled a **third** revision of `Documentazione API - Salesforce.pdf`
+  (`(1).pdf` in Downloads, 12:47 CEST). Extracted with `pdftotext -layout` and
+  **diffed against the v2 extraction** rather than trusting the mail body.
+- **The change is two lines.** Host `integration.pienissimo.com` →
+  **`romi.pienissimo.com`**. Nothing else differs.
+- 🟢 **The endpoint works for the first time.** Thread `1a0589a4a85b5bdf` now has
+  5 messages: Aurel Mrruku reported the old host dead at **08:21:59Z**
+  (`HTTP/1.1 404`, `Content-Type: text/html`), Andrea Parmeggiani stood up the new
+  third-level domain and sent v3 at **10:18:26Z**, Aurel Mrruku confirmed at
+  **10:40:45Z**. **So v1 and v2 documented a host that never resolved.**
+- 🔴 **Best finding of the session, and it came from the outage, not the fix.** An
+  HTML `404` from a wrong hostname is a **third meaning** for `404` (alongside
+  _VAT unknown_ and _not cached under `env=test`_), separable only by
+  `Content-Type`. It is the concrete case that breaks
+  [OI-107](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)
+  defect 2: `API_Callout_Engine` parses HTML into the `200` wrapper, throws, and
+  the `catch` drops `Response_State__c` — **a dead endpoint logged as an Apex
+  parse error with no status and no error flag.** Written up as §2b.
+- ⚠ **The org's `Anticipay` named credential predates the move** — today's org
+  check found it 08:05–08:14Z, before the new host existed. Very probably carries
+  the dead host. Folded into
+  [the credential risk](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md).
+  **Not verified** — nobody opened Setup; it is stated as a timing inference.
+- ⚠ **Three revisions, and the `data_di_dascita` typo and the missing error body
+  survive all three** — because neither ask has ever been made. Both belong in one
+  mail to Andrea Parmeggiani, who has now revised the doc three times in three
+  days.
+- 🔴 **Reachability is not the contract.** No lookup has run — no `200`, no `404`,
+  no error body observed. **The eleven fields agreed 1 September are still not
+  built**, eight days from the 10 September deadline, and that work never needed
+  an endpoint or a token.
+- **Written:** the trace, plus the contract note, `OI-94`, `OI-105`, `OI-107`, the
+  credential risk, `MAP.md`, row 94 in both trackers and a new **§26** in both
+  recaps. The v3 PDF was **not** committed — live token and real personal data,
+  same as v1–v2.
+- **Method note worth keeping:** a document can be perfectly specified and still
+  describe nothing. Three sessions of analysis went into a contract whose host had
+  never resolved. **Curl an endpoint before drilling its documentation** — it is
+  seconds and it bounds everything else.
+- **Still not done:** Notion is unpushed and now further behind; today's work and
+  the org check's output are both uncommitted.

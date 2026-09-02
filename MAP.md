@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-02 (org-status-check, full scope, reconciled and published) · Source of record: [notes/](notes/)
+Last updated: 2026-09-02 (org-status-check; then the Anticipay endpoint moved and now works) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -91,6 +91,29 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   the register's `build_state` cites **`QUO-01` and `QUO-06`, which are not among
   the 154 requirement ids**.
 
+- 🟢 **2026-09-02 — the Anticipay endpoint moved, and for the first time it
+  works.** `integration.pienissimo.com` **never resolved**: Aurel Mrruku tried it
+  at 08:21Z and got `HTTP/1.1 404` with `Content-Type: text/html`. Andrea
+  Parmeggiani stood up **`romi.pienissimo.com`**, sent a **v3** of the
+  documentation at 10:18Z, and Aurel Mrruku confirmed at 10:40Z —
+  _"adesso funziona"_. **v3 changes the host and nothing else**, verified by diff
+  ([the contract](notes/The%20Anticipay%20middleware%20API%20contract.md)).
+  🔴 **Reachability is not the contract** — no lookup has ever run, so no `200`,
+  no `404` and no error body has been seen.
+  🔴 **The dead host handed us a finding worth more than the fix.** An HTML `404`
+  from a wrong hostname is a **third meaning** for `404`, on top of _VAT unknown_
+  and _not cached under `env=test`_ — and `API_Callout_Engine` would parse the
+  HTML into the `200` wrapper, throw, and log **an Apex parse error with no
+  status code**. A total outage recorded as a code bug
+  ([OI-107 §2b](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)).
+  ⚠ **The org's `Anticipay` named credential predates the move** — found at
+  08:05–08:14Z, before the new host existed, so it very probably carries the dead
+  one ([the credential risk](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
+  ⚠ **Three revisions in three days and the `data_di_dascita` typo survived all
+  of them**, because nobody has asked
+  ([OI-105](notes/items/OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)).
+  The token is also unchanged since 31 August.
+
 - 🟢 **2026-09-01 — the follow-up call ran, was drilled the same night, and it
   closed the item three sweeps could not.**
   [The minute](notes/meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
@@ -163,7 +186,7 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   adding a `:env` path parameter (`test` | `prod`). Downloaded by hand and
   drilled the same morning:
   [the contract](notes/The%20Anticipay%20middleware%20API%20contract.md).
-  `GET https://integration.pienissimo.com/salesforce/account/:env/:piva`, bearer
+  `GET https://romi.pienissimo.com/salesforce/account/:env/:piva`, bearer
   token in the header, **eleven response fields**, four error codes.
   🟢 **The eleven fields exactly match the as-is Mexal lookup** Elisa Migliano
   described on 6 August, so accuracy is a known quantity — and the **reliability

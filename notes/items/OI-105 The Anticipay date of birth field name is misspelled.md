@@ -82,7 +82,7 @@ whoever builds it will code against `data_di_dascita_legale_rappresentante`
 because that is what the wire sends.
 
 ⚠ **Practical guidance, since the decision has not been taken:** build against
-the misspelled key as documented, and keep the *Salesforce* field name correctly
+the misspelled key as documented, and keep the _Salesforce_ field name correctly
 spelled. A rename on Pienissimo Software's side then costs one line in the
 mapping rather than a field rename in the org. Do not let the typo propagate into
 Salesforce metadata.
@@ -92,3 +92,25 @@ Parmeggiani** — most naturally the same mail that chases the error response
 bodies, which is the one genuinely blocking thing left
 ([OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)).
 Ask both in one message rather than two.
+
+## 2026-09-02 - a third revision, and the typo is still there
+
+**v3 of the documentation arrived at 10:18:26Z** (the host move to
+`romi.pienissimo.com`). Diffed against v2: **the only change is the two lines
+carrying the hostname.** `data_di_dascita_legale_rappresentante` is unchanged, in
+both the sample and the field table.
+
+That is now **three revisions in three days** — 31 August, 1 September,
+2 September — and the typo has survived all of them, because **nobody has asked**.
+The ask recorded above has still not been made.
+
+🔴 **This is the cheapest possible moment to fix it and that window is closing.**
+Andrea Parmeggiani has demonstrably been willing to revise and redeploy inside
+two hours, twice. The eleven-field mapping is now committed work
+([OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)) with
+**eight days to 10 September**. Once ROMI has written the mapping the cost of a
+rename moves onto ROMI.
+
+**Put it in the same mail as the error-response examples**
+([OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)).
+One message, two asks, both small.

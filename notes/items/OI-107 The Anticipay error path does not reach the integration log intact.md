@@ -104,6 +104,41 @@ exclusive:
 2. **Check the status code before deserializing**, and carry `Response_State__c`
    into the `catch`. This is the durable fix and it does not wait on anyone.
 
+### 2b. 🔴 Defect 2 stopped being hypothetical on 2 September
+
+**It has now happened, in the real world, and a human caught it only because he
+was using a mail client rather than the engine.**
+
+`integration.pienissimo.com` — the host in v1 and v2 of the documentation —
+**never resolved.** Aurel Mrruku tried it and reported at
+**2026-09-02 08:21:59Z**:
+
+> _"il server al momento non risulta raggiungibile… `HTTP/1.1 404 Not Found`
+> `Content-Type: text/html; charset=iso-8859-1`"_
+
+Trace that through `API_Callout_Engine`:
+
+1. `new Http().send(req)` succeeds — a `404` is a successful send.
+2. `Response_State__c` is set to `404`, `Response_Body__c` to the HTML.
+3. `Is_Error__c` is **not** set (defect 1).
+4. `deserializeResponse` runs anyway and tries to parse **HTML as JSON**.
+5. It throws. The `catch` builds a **new** log row — **without
+   `Response_State__c`** (defect 2).
+
+**Result: a completely dead endpoint is logged as an Apex parse exception with
+no HTTP status, no error flag and no notification.** Not "the middleware is
+unreachable" — something that reads like a code bug in Salesforce.
+
+🔴 And note what it does to the `404` semantics: on top of _VAT unknown_
+and _not cached under `env=test`_, `404` now also means **the endpoint is
+wrong**. Three meanings, and the only thing separating the third is
+`Content-Type: text/html`. See
+[the contract](../The%20Anticipay%20middleware%20API%20contract.md).
+
+**This raises the priority of fix 2 below.** It is no longer defensive coding
+against a shape nobody has seen — it is the difference between diagnosing an
+outage in seconds and hunting a phantom Apex bug.
+
 ### 3. Nothing purges the log after three months
 
 The retention agreed on 25 August is **a policy with no implementation**. The
@@ -137,7 +172,9 @@ first written:
 1. **Set `Is_Error__c` from the status code** on the success path. One line, and
    it unblocks the agreed notification for every integration, not just this one.
 2. **Status-check before deserializing**, and carry `Response_State__c` into the
-   `catch` so a malformed error body cannot erase the code.
+   `catch` so a malformed error body cannot erase the code. 🔴 **Raised in
+   priority 2 September** — §2b shows this exact failure already occurring against
+   a dead host. Check `Content-Type` too: HTML is the signature of a wrong endpoint.
 3. **Route the notification on `Response_State__c`**, so `401` does not read as
    `404`.
 4. **Write the three-month purge**, and decide what it means for the personal
