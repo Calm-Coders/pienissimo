@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Indirizzo_Legale_Rappresentante__c</fullName>
+    <description
+  >Free-text residential address of the legal representative returned by the Anticipay middleware.</description>
+    <label>Indirizzo Legale Rappresentante</label>
+    <length>32768</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>
