@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Anticipay_Consolidato__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >Marks an Account whose data has already been successfully refreshed from the Anticipay middleware, so automatic checks do not run again.</description>
+    <label>Anticipay Consolidato</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>
