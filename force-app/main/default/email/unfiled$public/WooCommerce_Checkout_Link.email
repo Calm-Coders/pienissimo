@@ -1,0 +1,29 @@
+<messaging:emailTemplate
+  subject="Completa il tuo ordine Pienissimo"
+  recipientType="User"
+  relatedToType="Opportunity"
+>
+  <messaging:htmlEmailBody>
+    <p>Gentile cliente,</p>
+
+    <p>puoi completare il tuo ordine Pienissimo dal link qui sotto:</p>
+
+    <p>
+      <a
+        href="https://www.pienissimo.it/checkout?sf_opportunity_id={!relatedTo.Id}"
+        >Completa l'ordine</a
+      >
+    </p>
+
+    <p>Grazie.</p>
+  </messaging:htmlEmailBody>
+  <messaging:plainTextEmailBody>
+Gentile cliente,
+
+puoi completare il tuo ordine Pienissimo dal link qui sotto:
+
+https://www.pienissimo.it/checkout?sf_opportunity_id={!relatedTo.Id}
+
+Grazie.
+  </messaging:plainTextEmailBody>
+</messaging:emailTemplate>

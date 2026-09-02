@@ -1697,6 +1697,20 @@ servizio`**, exists in Elena's client-facing doc and in no version of
 
 ---
 
+## 2026-09-02 - codex - checkout email action uses shared template
+
+- **Did:** changed the Opportunity `Send Checkout Email` quick action from a
+  hardcoded email composer draft to a direct Apex send using the shared
+  `WooCommerce_Checkout_Link` Salesforce email template.
+- **UI:** `wooCheckoutEmail` now asks for a recipient email address and sends the
+  template to that address; the checkout link is supplied by the template from
+  the current Opportunity id.
+- **Validation:** the focused LWC behavior is covered by the updated Jest test.
+  No Apex test class was added, per the standing instruction to leave Apex test
+  work for its separate pass.
+- **Follow-up:** after deployment, the quick-action UI was adjusted to hide the
+  internal template name and show an example checkout link containing the current
+  Opportunity id.
 ## 2026-09-01 — claude — drilled the Anticipay middleware API documentation
 
 - **Did:** Aurel Mrruku downloaded `Documentazione API - Salesforce.pdf` by hand
