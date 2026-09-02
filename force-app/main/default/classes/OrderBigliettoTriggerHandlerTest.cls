@@ -17,7 +17,6 @@ private class OrderBigliettoTriggerHandlerTest {
   ) {
     Product2 product = new Product2(
       Name = name,
-      Code__c = 'TEST-' + name.replace(' ', '-'),
       ProductCode = 'TEST-' + name.replace(' ', '-'),
       IsActive = true,
       Genera_Biglietto__c = generatesTicket

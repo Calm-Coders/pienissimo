@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-07-23
-updated: 2026-08-26
+updated: 2026-09-02
 blocks: [OI-13]
 source: meetings/open-items.md row 48
 ---
@@ -145,3 +145,62 @@ had produced.
 it are addressed to ROMI and the meeting is the forum for answering them; walking
 in having not opened the attachment wastes the session Fabrizio Paganelli
 prepared it for. **This is the cheapest outstanding ask in the record.**
+
+## 2026-09-02 - the codes arrived, and the convention is a third one
+
+`Anagrafica Articoli.xlsx` was read on 2026-09-02 -
+[the decode](../The%20Anagrafica%20Articoli%20workbook.md). **This item's
+deliverable is in it.**
+
+**Ten bundle-only codes**, one per event except Food Marketing Festival which
+gets three (one per tier): `SFAC0001`, `SFCV0001`, `SFFM0001`, `SFFM0002`,
+`SFFM0003`, `SFHT0001`, `SFMS0001`, `SFOD0001`, `SFPL0001`, `SFSO0001`. All ten
+are flagged `Utilizzabile solo in bundle`, which is `Product2.Solo_Bundle__c`.
+
+Ten codes is the number this item asked for, and they arrived four days after
+Fabrizio Paganelli's "next week" commitment of 26 August.
+
+The mechanism is exactly what was agreed on 26 August - a twin article per
+sellable ticket, the flag distinguishing them.
+
+The naming is neither convention that was agreed. Not the `(B)` suffix of
+23 July, not the `codice A` / `codice B` Fabrizio Paganelli named himself on
+26 August. It is `SF` + two letters for the event + four digits. **Do not search
+the registry for a `B` code** - it does not exist. The `SF` prefix is evidently
+"Salesforce", and it is the right instinct: these codes are not in Mexal and
+cannot be, which is the whole point of them.
+
+**They are unpriced.** All ten have an empty `Prezzo Listino`, against 33 priced
+non-bundle rows. Whether a bundle-only article is meant to carry no price at all,
+or a price that was simply not filled in, decides how
+[the bundle spread](OI-43%20Spread%20variance%20does%20not%20block%20saving.md)
+computes, and it is **not stated anywhere**. Ask before loading.
+
+`SFPL0001` is named `PIENISSIMO LIVE LIVE` - a probable typo, and the name is
+seller-facing.
+
+Pienissimo Intensive has **no bundle twin** despite carrying 8 articles, the
+largest event block in the sheet. Either it is excluded from bundles on purpose
+or the list is incomplete. Unasked.
+
+**This item is not closed by the delivery**, because those three questions
+remain and all three are cheap: the price rule, the `LIVE LIVE` name, and
+whether Intensive is deliberately out. One mail to Fabrizio Paganelli covers all
+three.
+
+## 2026-09-02 - the ten codes are in the org
+
+Loaded into Pienissimo UAT the same day they were read, as `RecordType = Item`
+with `Solo_Bundle__c` and `Genera_Biglietto__c` both true, and
+`Tipo_Biglietto__c` set on the four that carry a tier. `Code__c` and
+`ProductCode` both hold the `SF` code. Verified by query after insert; all ten
+present.
+
+**This closes the delivery half of the item.** What keeps it open is unchanged
+and is entirely questions for Fabrizio Paganelli: the ten are **unpriced** with
+no stated rule, `SFPL0001` is named `PIENISSIMO LIVE LIVE`, and **Pienissimo
+Intensive has no bundle twin**. None of the three blocked the load; all three
+should be asked before anyone sells against these codes.
+
+Build detail in
+[the workbook note](../The%20Anagrafica%20Articoli%20workbook.md).

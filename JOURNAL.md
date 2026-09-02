@@ -1980,3 +1980,414 @@ Fathom sweep ran today.
   seconds and it bounds everything else.
 - **Still not done:** Notion is unpushed and now further behind; today's work and
   the org check's output are both uncommitted.
+
+---
+
+## 2026-09-02 — claude — two owner decisions retired the project's only decaying deadline
+
+- **Asked** what most needed doing ASAP. Answered from `MAP.md`, the risk
+  frontmatter, the item frontmatter and `docs/task-status.md` — no big document
+  opened. Working tree was clean at `326d362`, so the previous entry's "today's
+  work is uncommitted" no longer holds.
+- 🟢 **Aurel Mrruku killed the recycle-bin deadline.** The deleted 37
+  `Biglietto__c` records — carried as the single finding that decayed if nobody
+  acted, window closing ~12 September — **do not need recovering**: _"here we are
+  in test environment and we dont care about the data if we delete them, same on
+  the tranche"_. So the question this record has been holding for Anita Aga —
+  was an export taken before `5d8cdb3`? — **need never be asked**.
+  [The decision](notes/decisions/Decision%20-%20UAT%20data%20is%20disposable%20in%20Fase%201.md),
+  [the risk, now resolved](notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md).
+  **Nothing in the current record now decays on a date.**
+- 🟢 **And deferred coverage explicitly**: _"in this faase we dont care about the
+  coverage too"_. Recorded as
+  [a decision](notes/decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+  ⚠ **The deploy risk stays open and stays gating** — the standing instruction in
+  `AGENTS.md` requires it, and the 75% floor is computed at the production
+  deploy regardless of what the phase is called. What changed is the _reporting_:
+  0% is no longer a live blocker on Fase 1 work. **No test was written, proposed
+  or offered.**
+- 🔴 **The two decisions do not travel as far as they look.** Kept separate and
+  written down as such:
+  - **Code is not data.** The seven Biglietto Apex components deleted in the same
+    28 August deploy were never in this repository on any branch, and deleted
+    Apex is not in a recycle bin.
+    [That risk stays open.](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)
+  - **Empty data is not evidence of missing code.** `MAP.md` had been citing
+    "0 of 18 order items carry a tranche" as proof that propagation is unbuilt.
+    Once the data is disposable that inference dies, so the claim was **re-based
+    on source**: no Apex in `force-app/` writes `OrderItem.Tranche__c` —
+    `QuoteTrancheController` touches only `QuoteLineItem` and `Tranche__c`, and
+    the two classes that do touch `OrderItem` never mention tranche. Verified at
+    `326d362`. The conclusion survived; its evidence did not.
+- **Wrote:** two notes in `notes/decisions/` — previously an empty folder, so
+  these are the first of their type — plus dated sections on both risks, **seven
+  blocks in `MAP.md`**, and `D1` on the action board for the data purge Aurel
+  will request later.
+- ⚠ **Followed the trap recorded on 2026-09-01**: after editing, re-grepped
+  `MAP.md` for every remaining mention of coverage, "decays", "12 September" and
+  "Nothing can deploy" rather than trusting the targeted replacements. That
+  caught three further contradicting sentences — the live-chain "Deployability"
+  entry, "Nothing can deploy today", and the Asset-migration framing — which the
+  first pass had left standing.
+- **Method note.** A finding can be perfectly evidenced and still not be a
+  problem, because urgency is a property of what the owner values, not of the
+  data. Three sessions carried the recycle-bin window as the sharpest date on the
+  project; one sentence from Aurel Mrruku retired it. **Ask the owner what the
+  data is worth before costing its recovery.**
+- **Still not done:** the trackers and recaps in `meetings/` are rendered views
+  and still carry the old framing — neither was regenerated. Notion is unpushed
+  and now further behind. This session's changes are uncommitted.
+
+---
+
+## 2026-09-02 - claude - the Anagrafica Articoli workbook, drilled
+
+- **Given** `Anagrafica Articoli.xlsx` by hand (Downloads), with "drill it and if
+  its needed store them in the org". The record had been carrying it as unread
+  since 1 September, flagged as needed **before** the 2 September meeting.
+- **The file is small and dense.** One sheet, 43 course articles, 7 columns,
+  built **five minutes before it was sent**. Full decode:
+  [the note](notes/The%20Anagrafica%20Articoli%20workbook.md).
+- **OI-48's deliverable is in it** - ten bundle-only codes, `SFAC0001` through
+  `SFSO0001`. The **mechanism** is what was agreed on 26 August; the **naming is
+  a third convention**, neither the `(B)` suffix nor the `codice A`/`codice B`
+  Fabrizio Paganelli named himself. Anyone grepping for a `B` code will find
+  nothing.
+- **The best finding came from checking the file against the org rather than
+  reading it.** 17 of the 43 rows name an event `Product2.Evento__c` cannot
+  accept, and **org and repository agree exactly**, so it is a specification gap
+  and not drift. The known Happy Team defect turns out to be **one of five**, and
+  the largest is new: `Pienissimo Intensive` had no articles on 7 August and now
+  has eight. **Fixing it is free** - `Evento__c` is populated on **3 of 281
+  products**, so a picklist argued over for weeks is essentially unused.
+- **The article-code risk stopped being theoretical.** The sheet holds **three**
+  code pairs that collapse under the obvious normalisation - `CS-00003`/`CS000003`
+  and `CS-00061`/`CS-0061` **across different events**, and `CS000058`/`CS-00058`
+  **merging a paid ticket with its free twin**. Salesforce will not do this by
+  itself, but `Code__c` is an **external id**, so a normalising upsert
+  **overwrites silently**. From a 43-row extract; the full registry is ~1000
+  codes.
+- **The meeting had already run.** A Gemini-notes mail arrived at 09:21Z that
+  nothing in the record knew about. Two build actions landed on Aurel Mrruku -
+  **`Tipo Biglietto`** (admin-editable only, which is exactly the field the
+  workbook needs and which does not exist) and **`Stato Bundle`**, a state
+  machine that is **in no tracker at all**.
+  [The meeting note](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+  is written from those notes **alone** and says so - no transcript, no
+  recording, so it is an action list and not a minute. **The full drill is still
+  owed**, and no OI ids were minted outside it.
+- **Did not write to the org, and said why.** The ask was conditional on need.
+  The ten `SF` codes are the genuinely Salesforce-native ones - Mexal will never
+  send them - but **3 of the 10 fail on the event picklist**, 4 carry a
+  `Tipo Biglietto` with no field to receive it, all 10 are **unpriced** with no
+  stated rule, and one is named `PIENISSIMO LIVE LIVE`. Loading now would bake
+  four defects into a unique external id. The blocking decisions are
+  **client-facing** (whose event spelling wins) and **assigned to Aurel by today's
+  meeting** (the two fields), so they are not an agent's to make.
+- **Wrote:** the workbook decode, the meeting note, dated sections on OI-48,
+  OI-46, OI-76 and the normalisation risk, and two rewritten blocks plus the
+  calendar line in `MAP.md`.
+- **Method note.** The mail promised _"un paio di domande"_ and the record had
+  been carrying them as pending client input. **They are not in the file** - no
+  comment, note or question anywhere in it. They were asked out loud in a meeting
+  nobody had noticed had happened. **A promised artifact and the thing it
+  promises are separate facts; verify the second, not the first.**
+- **Still not done:** the trackers and recaps still carry the pre-drill framing;
+  `Stato Bundle` and the 3/4 September sessions need tracker rows; the mapping
+  file, data model file and JSON promised in the meeting have **not been looked
+  for**; Notion is unpushed; nothing is committed.
+
+## 2026-09-02 - claude - and then the build shipped
+
+Continues the entry above. Aurel Mrruku chose **the client's event spellings**
+and **fields plus the ten bundle codes**, so the drill turned into a build.
+
+- **Shipped, deployed and committed** (no new org-only drift): `Evento__c`
+  corrected to 11 values on the client's own names; **`Tipo_Biglietto__c`**
+  (`Executive`/`Diamond`/`Gold`); **`Stato_Bundle__c`**; a
+  **`Product_Registry_Admin`** permission set; **the ten bundle-only articles**,
+  verified by query after insert.
+- **"Administrators only" was built as a permission set, not a profile edit.**
+  It grants edit on the two new fields and nothing else. The rule is then
+  enforced by who it is assigned to, and it lives in `force-app/` instead of
+  being a fourth instance of the org-only pattern.
+- 🔴 **The one thing I invented, and flagged everywhere:**
+  `Anno_Solare__c = 'Anno Solare 2026'` on all ten. The workbook has **no year
+  column**, but `Evento__c` is a dependent picklist and will not accept a value
+  without its controlling field. So the field OI-46 asks whether to keep is now
+  **load-bearing for records that exist**. That is worse than it was this
+  morning, and it is written into OI-46 rather than left in a commit.
+- **Loaded `PIENISSIMO LIVE LIVE` as written.** Silently correcting a client's
+  data is worse than carrying a visible typo. Flagged for Fabrizio Paganelli.
+- 🔴 **The load found three things nobody was looking for.** `Code__c` - the
+  declared `required`/`unique`/`externalId` article key - is **empty on all 281
+  pre-existing products**, which use `ProductCode`; so an upsert on `Code__c`
+  matches nothing today, and it decides which field the collision risk actually
+  bites. **Only 9 of the workbook's 33 Mexal articles are in the org.** And
+  **`Genera_Biglietto__c` is false on all 9** despite the workbook saying `SI`
+  for all 43. **None of the three was corrected** - they touch records this
+  session did not create, against a registry that is being re-created anyway.
+- ⚠ **`Stato_Bundle__c` is provisional and says so in its own `description`.**
+  Its value set and its host object are inferred from a Gemini summary. The
+  transition logic the meeting also asked for was **not** built, because
+  inventing a state machine from a summary is exactly what the write protocol
+  forbids.
+- **An hour went into one error, and the write-up is the deliverable:**
+  [adding a picklist value is not the same as making it usable](notes/How%20to%20add%20a%20picklist%20value%20that%20records%20can%20actually%20use.md).
+  Three inserts failed on values that the deploy, `sobject describe`, the
+  `CustomField` retrieve and the dependency bitmap **all four** said were valid.
+  The cause was record-type value assignment - and a `RecordType` retrieve
+  **omits the picklist block entirely** when it thinks the assignment is
+  implicit, so the retrieved file looks identical whether all values are assigned
+  or none are. **Four checks agreed with each other and were wrong; one
+  throwaway insert settled it.** Both record types were fixed, not just the one
+  being loaded into.
+- **Method note.** When every diagnostic agrees the value is fine and the API
+  says it is not, stop reading metadata and **write one record**. The cheapest
+  test exercises the only path that matters.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions still need tracker rows; the mapping file, data model
+  file and JSON from the meeting have not been looked for; the workbook itself is
+  **not** in the repository (the copy was blocked); Notion unpushed; nothing
+  committed.
+
+### Correction, same day - the `Code__c` finding above was wrong
+
+The entry above reports that `Code__c` is empty on all 281 pre-existing
+products, that only 9 of the workbook's 33 Mexal articles are in the org, and
+that `Genera_Biglietto__c` is false on all 9. **All three are wrong**, and they
+share one cause: I sampled **four** records, saw `Code__c` blank on all four, and
+generalised to 281 without counting.
+
+Counted properly:
+
+- **`Code__c` is populated on 259 of 291 products**, null on 32. It is the
+  article key in use. `ProductCode` and `Code__c` hold **disjoint** populations,
+  and my four samples all landed in the smaller one.
+- **29 of the 33 workbook articles are in the org**, matched on `Code__c`. My
+  original query matched on `ProductCode` - the wrong field - which is why it
+  found 9.
+- **`Genera_Biglietto__c` is true on 3 of those 29**, not 0 of 9. The underlying
+  point survives: the flag is unset on most of them.
+
+One real finding came out of the correction that the wrong version had buried:
+**`CS-00115` in the client's workbook is `CS000115` in the org** - the same
+article, spelled differently. That is the normalisation risk as a **live**
+mismatch between the client's file and the org.
+
+🔴 **It also reverses the conclusion.** The wrong version made `Code__c` look
+redundant. It is the opposite: it holds the article code for 259 products and is
+the match key in `WoocommerceOrderService`, the class taking live WooCommerce
+traffic. `MAP.md` and the workbook note are corrected.
+
+**Method note.** Four samples are not a population. `COUNT()` costs one query and
+would have cost nothing to run first - and the wrong version of this finding was
+already shaping a decision about deleting the field by the time it was caught.
+
+## 2026-09-02 - claude - the registry cleanout ran
+
+Continues the two entries above. Aurel Mrruku left auto mode so the deletes could
+be approved, and the whole sequence ran.
+
+- **Result:** `Product2` **291 -> 236**. **95 deleted**, **40 loaded**, **3 kept
+  and updated in place**. End state is exactly the workbook: **43** products with
+  `Genera_Biglietto__c`, **10** `Solo_Bundle__c`, **13** with a
+  `Tipo_Biglietto__c`, **0** `-B` records.
+- 🟢 **Widened the sweep on purpose.** The computed set had 30 `-B` twins
+  of workbook articles; **19 more** existed for Tour, Golden Numbers and
+  Intensive - same convention, same inactive/flag-unset shape. Deleting half a
+  generation leaves the next person the same confusion, so all **49** went.
+- 🔴 **Narrowed it on purpose too, and this is the one worth reading.**
+  Six of seven OrderItems refused to delete - _"unable to modify activated
+  order"_. Forcing it meant deactivating live orders and rewriting the
+  order-lifecycle evidence. So I checked the three Academy products the deletion
+  was for, and **they already had `Genera_Biglietto__c` true and were active** -
+  identical to what the reload would produce, minus `Evento__c`. **Updated in
+  place instead**, and excluded `CS-00115` from the load so the org keeps one
+  Academy Omaggio rather than two.
+- ⚠ **I deleted 4 Assets and 1 OrderItem before working that out**, clearing
+  a path to a deletion that then did not happen. Recoverable from the Recycle Bin
+  for ~15 days. Disposable UAT data by decision, but avoidable: **the check that
+  made the deletion unnecessary cost one query and came second.**
+- 🟢 **Fixed my own inconsistency from the morning.** The first pass set both
+  `Code__c` and `ProductCode` on the 10 SF records, matching neither population.
+  The reload sets **`Code__c` only**, matching the 249-record majority. Prices
+  loaded from the workbook for the 30 priced articles; the 10 bundle-only codes
+  stay unpriced as the client sent them.
+- **Two Bulk API traps, both silent.** `sf data delete bulk` created a job,
+  reported `UploadComplete`, exited non-zero and **deleted nothing** - the CSV
+  had a **UTF-8 BOM** from PowerShell's `-Encoding utf8`, so the header parsed as
+  `\ufeffId` and the job failed with _"the 'delete' batch must contain only
+  ids"_. Bulk also requires **CRLF**. Write these files with
+  `UTF8Encoding($false)` and explicit `\r\n`, and **verify by counting rows
+  afterwards** - the command's own exit status is not sufficient evidence.
+- **Method note.** Two of today's three biggest findings came from inventorying
+  the object rather than reading the request: the `-B` generation nobody had
+  recorded, and the fact that the records I was told to delete did not need
+  deleting. **When the instruction is "delete X", the first query should be
+  "what is X, actually?"** - and it should come before the first delete, not
+  after the fifth.
+- **Written:** the three-generations note (now `resolved`) with the departures
+  and their reasons, the `Full_Permission` note, and two new blocks in `MAP.md`.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions still need tracker rows; the meeting's mapping file,
+  data model file and JSON have not been looked for; the workbook is still not in
+  the repository; Notion unpushed; **nothing committed**.
+
+## 2026-09-02 - claude - Code__c is deleted
+
+Aurel Mrruku asked for `Product2.Code__c` to be deleted earlier in the session. I
+pushed back with evidence, he reaffirmed, so it is his call and it is done.
+[The note](notes/objects/The%20article%20code%20moved%20from%20Code__c%20to%20ProductCode.md).
+
+- **It could not be a straight delete.** The field held the article code for
+  **207 of 230** products and was the key `WoocommerceOrderService` - the class
+  taking live traffic - matched incoming orders against. Salesforce also refuses
+  to drop a field referenced in Apex.
+- **Sequence:** delete 6 stale duplicates -> copy 207 codes to `ProductCode` ->
+  repoint the WooCommerce class and 3 test classes -> strip it from 2 layouts,
+  2 flexipages and `Bundle_Demo` -> destructive deploy. Verified: field absent by
+  Tooling `FieldDefinition`, **228 of 230 products still carry a code, none
+  lost**, and lookups resolve.
+- 🟢 **Merging the namespaces surfaced a hidden conflict.** `Code__c` and
+  `ProductCode` were **disjoint** populations, which concealed six codes naming
+  **two different articles each** (`CS-00007`, `CS-00129`, `CS-00132`,
+  `CS-00133`, `CS-00156`, `CS-00157`). In every pair the `Code__c` side was
+  inactive and the `ProductCode` side active, so the six inactive ones went. That
+  conflict existed all along and only became visible because the two fields were
+  being merged.
+- **The test classes already set `ProductCode`.** All three assigned both fields,
+  so repointing produced `Duplicate field initialization` and the real change was
+  a **de-duplication**. Worth noting because it means the tests were already
+  half-migrated and nobody had said so.
+- 🔴 **The cost, stated once and then left alone.** `Code__c` was `unique`
+  - `externalId` + case-insensitive; `ProductCode` is a plain standard field.
+    **The org has lost its only structural guard against duplicate article codes.**
+    There are zero duplicates today - checked - but nothing prevents the next
+    import from creating one, against a risk with three proven instances and ~1000
+    codes about to be re-created. Recorded in the note as the thing to revisit
+    before the registry reload; not acted on, because it was not asked for.
+- **Method note.** I was right that the field was load-bearing and wrong to treat
+  that as a reason not to proceed. The useful output of pushing back was not the
+  delay - it was the **migration plan**, which is what stopped the deletion from
+  breaking the WooCommerce endpoint. State the cost, then do the work.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions need tracker rows; the meeting's mapping file, data
+  model file and JSON not looked for; the workbook still not in the repository;
+  Notion unpushed; **nothing committed**.
+
+## 2026-09-02 - claude - ProductCode uniqueness, by trigger
+
+Follows the `Code__c` deletion. Aurel Mrruku asked what protection `ProductCode`
+had, then asked for a duplicate rule, then for a trigger when the rule proved
+impossible.
+[The note](notes/objects/ProductCode%20is%20kept%20in%20step%20with%20the%20external%20product%20code.md).
+
+- **The answer to the question was: none.** `ProductCode` describes as
+  `unique: False`, `externalId: False`, **`idLookup: False`**, `nillable: True`,
+  and Product2 had **0 validation rules, 0 duplicate rules, 0 triggers**. The
+  `idLookup: False` is the part I had got wrong earlier - I said a normalising
+  upsert "would silently overwrite one product with another", but you **cannot
+  upsert on `ProductCode` at all**. That is a capability `Code__c` had and its
+  replacement does not, and it matters for the ~1000-article Mexal reload.
+- **The declarative route is not available.** A matching-rule deploy is refused:
+  _"The Product2 object is invalid"_. Salesforce Duplicate Management supports
+  Account, Contact, Lead, Person Account and custom objects only. Files removed
+  rather than left as dead metadata; written up so nobody retries.
+- **Built `ProductCodeTrigger` + `ProductCodeTriggerHandler`**, matching the
+  project's thin-trigger / static-handler idiom. Case-insensitive, skips blanks,
+  re-checks only a changed code on update.
+- **Proven in the org rather than asserted** - exact duplicate blocked,
+  case-variant blocked, **in-batch duplicate blocked**, clean and blank codes
+  allowed, and 3 of 5 rows still loading on a partial-failure bulk import. All
+  throwaway records deleted afterwards.
+- \u26a0 **Caught my own bug before deploying it for real.** The first version had
+  `WITH SECURITY_ENFORCED` on the uniqueness query. That throws for any user who
+  cannot read `ProductCode` - and this org's FLS is demonstrably patchy, since
+  `Full_Permission` was granting 6 of 26 Product2 fields the same afternoon.
+  Worse, enforcing sharing would let a duplicate the user cannot see slip
+  through. Changed to `without sharing` with no FLS enforcement, and the
+  reasoning is in the code as a comment rather than only in a note.
+- \U0001f534 **The honest limit, recorded rather than glossed:** Bulk API batches run
+  in **parallel** can each query before the other commits, so a duplicate split
+  across them lands twice. **No trigger can close that** - it is a read-then-write
+  race. A unique custom field is strictly stronger, and choosing the trigger is
+  what gives that up.
+- \u26a0 **One product is unaccounted for.** `Atest` / "Test boundle with same
+  products" (inactive) is gone and was in none of the delete sets. `Parent__c`
+  is `deleteConstraint: SetNull`, so it was not a cascade. Total is 229, not the
+  230 predicted; the 43 workbook articles are intact. **Cause unknown and stated
+  as unknown** - it is disposable test data, but the discrepancy is real and
+  inventing an explanation would be worse than carrying it.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions need tracker rows; the meeting's mapping file, data
+  model file and JSON not looked for; the workbook still not in the repository;
+  Notion unpushed; **nothing committed** - and this is now a large body of
+  uncommitted work across `force-app/` and the vault.
+
+### Same day - the guarantee went back to being a field
+
+Aurel Mrruku asked the right question: **would a unique field have had the
+parallel-batch problem?** No - a unique field is a database index enforced at
+commit, with no read-then-write window. That answer reversed the design.
+
+- **Built `Product2.External_Product_Code__c`** - Text(255), unique,
+  case-insensitive, `externalId`, **not required**. Migrated all **227** coded
+  products from `ProductCode`, **zero mismatches**, verified.
+- \U0001f7e2 **Three things came back at once:** atomic uniqueness across parallel
+  batches, **upsert by article code** (`idLookup: True`, which `ProductCode`
+  cannot do and the ~1000-article Mexal reload needs), and a field that can
+  carry FLS - `Code__c` was universally required, which is exactly why it could
+  not.
+- **Repointed the trigger** to the new field and rewrote its header to say what
+  it now is: **a usability layer, not the guarantee**. The index enforces
+  uniqueness; the trigger turns `DUPLICATE_VALUE` into a message naming the
+  offending row in a bulk load. Recorded that removing it would cost only error
+  quality and return ~45 lines to the coverage deficit.
+- \u26a0 **Hit the FLS trap a second time in one session** - the new field deployed
+  fine and then described as absent, because a newly created field is granted to
+  nobody. Same shape as `Tipo_Biglietto__c` this morning. It is now in
+  `Full_Permission`.
+- **Method note.** I had written "no trigger can close this - it is a
+  read-then-write race" and left it there as a limitation. That was true and
+  incomplete: the race only existed _because_ the constraint had been moved out
+  of the database. **When a limitation looks fundamental, check whether it is a
+  property of the problem or of the design you just chose.** The user caught it;
+  I had accepted it.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions need tracker rows; the meeting's mapping file, data
+  model file and JSON not looked for; the workbook still not in the repository;
+  Notion unpushed; **nothing committed**.
+
+### Same day - the trigger stopped checking and started copying
+
+Aurel Mrruku: no duplicate check in the trigger; just populate `ProductCode`
+from `External_Product_Code__c`. Correct call - the check was redundant the
+moment the unique field existed.
+
+- **Rewrote `ProductCodeTriggerHandler` as a one-way copy.** Before-insert and
+  before-update, `ProductCode = External_Product_Code__c` when the external code
+  is set. **No SOQL, no DML, no duplicate logic** - trivially bulk-safe, and it
+  removes the last reason the class needed a governor-limit argument.
+- **A blank external code leaves `ProductCode` untouched** rather than clearing
+  it - a copy, not a mirror, so it cannot destroy a hand-entered value. Two
+  products carry neither field and are unaffected.
+- **Verified in the org**: insert with `ProductCode` omitted populated it;
+  changing the external code moved it; a duplicate was rejected **by the index**
+  with the platform's own `duplicate value found:
+External_Product_Code__c duplicates value on record with id: ...` - which is
+  the proof that uniqueness no longer depends on Apex at all.
+- **Renamed the note** to match what the thing now does, and repointed the two
+  links that pointed at the old filename. `vault:check` passes at 166 notes.
+- **Data unchanged:** 229 products, 227 carrying both fields, **0** with an
+  external code and no `ProductCode`.
+- **Method note.** Three designs in one afternoon - declarative rule, checking
+  trigger, unique field plus copy trigger - and only the last is simple. The
+  simplification came from removing work, not adding it: once the constraint was
+  back in the database, roughly 45 lines of careful bulk-safe Apex became dead
+  weight. **Worth asking what a piece of code is still for after the thing
+  around it changes.**
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions need tracker rows; the meeting's mapping file, data
+  model file and JSON not looked for; the workbook still not in the repository;
+  Notion unpushed; **nothing committed**.

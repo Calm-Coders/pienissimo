@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description
+  >Campi dell'anagrafica articoli mantenuti a mano su Salesforce e non provenienti da Mexal. Assegnare esclusivamente agli amministratori di sistema, come deciso nel follow-up Anagrafica Articoli del 2026-09-02.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Product Registry Admin</label>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.Tipo_Biglietto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.Stato_Bundle__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+</PermissionSet>

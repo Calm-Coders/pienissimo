@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-24
-updated: 2026-08-24
+updated: 2026-09-02
 depends_on: [OI-24]
 blocks: [OI-13]
 source: Prodotti e Bundle.xlsx, sheet "Lista Prodotti"
@@ -58,3 +58,40 @@ carry it in a **separate** field and never key on it.
 This binds the [Zoho import template](../items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
 and the [data model workbook](../items/OI-24%20Data%20model%20workbook.md), both
 of which are still being written and can still get this right cheaply.
+
+## 2026-09-02 - the first live instances, and there are three
+
+This risk has been theoretical since 24 August. `Anagrafica Articoli.xlsx`, read
+2026-09-02, contains **three real pairs** that collapse onto one another under
+the obvious normalisation - strip non-alphanumerics, drop the leading zeros of
+the numeric tail:
+
+| Normalised | The two real codes                                                        |
+| ---------- | ------------------------------------------------------------------------- |
+| `CS3`      | `CS-00003` Camerieri Venditori Executive / `CS000003` Sold Out Aggiuntivo |
+| `CS58`     | `CS000058` FMF Gold / `CS-00058` FMF Gold (OMAGGIO)                       |
+| `CS61`     | `CS-00061` FMF Gold Aggiuntivo / `CS-0061` O.D.B. Live Omaggio            |
+
+**Two of the three cross different events entirely.** The third is worse in kind
+than it looks: it merges a **paid** ticket with its **free** twin, which is a
+revenue error rather than a reporting one.
+
+And this is from a **43-row extract of the course articles alone**. The full
+registry is ~1000 codes and
+[is being re-created](../items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md).
+
+**Salesforce will not do this to us by itself.** `Product2.Code__c` is unique and
+case-insensitive, but the hyphen and the leading zeros are ordinary characters to
+it, so all 43 codes coexist happily. Verified against the deployed field on
+2026-09-02.
+
+**The exposure is entirely in ROMI's own mapping code, and it is sharper than
+this note previously said.** `Code__c` is an **external id**. An upsert keyed on
+a normalised code does not error and does not create a duplicate - it **silently
+overwrites one product with the other**. The failure is invisible at the moment
+it happens.
+
+**The rule to carry into the import template and the Zoho workbook is unchanged
+and now has evidence behind it:** `_ARCOD` is an opaque string. Never trim it,
+never strip its punctuation, never re-pad it, and never compare two codes by
+anything but exact string equality.

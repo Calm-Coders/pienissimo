@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stato_Bundle__c</fullName>
+    <description
+  >Working state of a bundle. PROVISIONAL: created from the Gemini summary of the 2026-09-02 Follow-up Anagrafica Articoli, which records only the &quot;in lavorazione&quot; state and a transition on completed confirmation. The value set, and the choice of Product2 as the host object, are inferred and have not been confirmed against a transcript. Confirm before building the transition logic.</description>
+    <label>Stato Bundle</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>In lavorazione</fullName>
+                <default>true</default>
+                <label>In lavorazione</label>
+            </value>
+            <value>
+                <fullName>Confermato</fullName>
+                <default>false</default>
+                <label>Confermato</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
