@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Participant Registration Page</masterLabel>
+    <description
+  >Collects one participant for each eligible ticket Asset.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+        name="heading"
+        type="String"
+        label="Page heading"
+        default="Registrazione partecipanti"
+      />
+            <property
+        name="servicePath"
+        type="String"
+        label="Participant API path"
+        default="/services/apexrest/participant-registration"
+        description="Same-origin Apex REST endpoint used to load and submit participant data."
+      />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
