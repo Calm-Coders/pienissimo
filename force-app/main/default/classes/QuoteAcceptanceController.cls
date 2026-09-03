@@ -14,48 +14,52 @@ public without sharing class QuoteAcceptanceController {
 
   public class QuoteLineRow {
     @AuraEnabled
-    public Id id;
+    public Id id { get; set; }
     @AuraEnabled
-    public String productName;
+    public String productName { get; set; }
     @AuraEnabled
-    public String productCode;
+    public String productCode { get; set; }
     @AuraEnabled
-    public Decimal quantity;
+    public Decimal quantity { get; set; }
     @AuraEnabled
-    public Decimal unitPrice;
+    public Decimal unitPrice { get; set; }
     @AuraEnabled
-    public Decimal totalPrice;
+    public Decimal totalPrice { get; set; }
   }
 
   public class PageResponse {
     @AuraEnabled
-    public String state;
+    public String state { get; set; }
     @AuraEnabled
-    public String message;
+    public String message { get; set; }
     @AuraEnabled
-    public Boolean canAct;
+    public Boolean canAct { get; set; }
     @AuraEnabled
-    public String quoteId;
+    public String quoteId { get; set; }
     @AuraEnabled
-    public String quoteName;
+    public String quoteName { get; set; }
     @AuraEnabled
-    public String quoteNumber;
+    public String quoteNumber { get; set; }
     @AuraEnabled
-    public String status;
+    public String status { get; set; }
     @AuraEnabled
-    public String accountName;
+    public String accountName { get; set; }
     @AuraEnabled
-    public String opportunityName;
+    public String opportunityName { get; set; }
     @AuraEnabled
-    public Date expirationDate;
+    public Date expirationDate { get; set; }
     @AuraEnabled
-    public Decimal subtotal;
+    public Decimal subtotal { get; set; }
     @AuraEnabled
-    public Decimal totalPrice;
+    public Decimal totalPrice { get; set; }
     @AuraEnabled
-    public Decimal grandTotal;
+    public Decimal grandTotal { get; set; }
     @AuraEnabled
-    public List<QuoteLineRow> lines = new List<QuoteLineRow>();
+    public List<QuoteLineRow> lines { get; set; }
+
+    public PageResponse() {
+      lines = new List<QuoteLineRow>();
+    }
   }
 
   private class RequestException extends Exception {

@@ -10,72 +10,80 @@ public without sharing class ParticipantRegistrationController {
 
   public class TicketRow {
     @AuraEnabled
-    public Id assetId;
+    public Id assetId { get; set; }
     @AuraEnabled
-    public String ticketName;
+    public String ticketName { get; set; }
     @AuraEnabled
-    public String productName;
+    public String productName { get; set; }
     @AuraEnabled
-    public String campaignName;
+    public String campaignName { get; set; }
     @AuraEnabled
-    public Date eventStartDate;
+    public Date eventStartDate { get; set; }
     @AuraEnabled
-    public Boolean editable;
+    public Boolean editable { get; set; }
     @AuraEnabled
-    public Boolean assigned;
+    public Boolean assigned { get; set; }
     @AuraEnabled
-    public String firstName;
+    public String firstName { get; set; }
     @AuraEnabled
-    public String lastName;
+    public String lastName { get; set; }
     @AuraEnabled
-    public String email;
+    public String email { get; set; }
     @AuraEnabled
-    public String phone;
+    public String phone { get; set; }
   }
 
   public class PageResponse {
     @AuraEnabled
-    public String state;
+    public String state { get; set; }
     @AuraEnabled
-    public String message;
+    public String message { get; set; }
     @AuraEnabled
-    public String accountId;
+    public String accountId { get; set; }
     @AuraEnabled
-    public String accountName;
+    public String accountName { get; set; }
     @AuraEnabled
-    public String campaignId;
+    public String campaignId { get; set; }
     @AuraEnabled
-    public String campaignName;
+    public String campaignName { get; set; }
     @AuraEnabled
-    public Date eventStartDate;
+    public Date eventStartDate { get; set; }
     @AuraEnabled
-    public Date eventEndDate;
+    public Date eventEndDate { get; set; }
     @AuraEnabled
-    public List<TicketRow> tickets = new List<TicketRow>();
+    public List<TicketRow> tickets { get; set; }
+
+    public PageResponse() {
+      tickets = new List<TicketRow>();
+    }
   }
 
   public class ContactResponse {
     @AuraEnabled
-    public Boolean found = false;
+    public Boolean found { get; set; }
     @AuraEnabled
-    public String firstName;
+    public String firstName { get; set; }
     @AuraEnabled
-    public String lastName;
+    public String lastName { get; set; }
     @AuraEnabled
-    public String phone;
+    public String phone { get; set; }
+
+    public ContactResponse() {
+      found = false;
+    }
   }
 
   public class ParticipantInput {
     @AuraEnabled
-    public String assetId;
+    public String assetId { get; set; }
     @AuraEnabled
-    public String firstName;
+    public String firstName { get; set; }
     @AuraEnabled
-    public String lastName;
+    public String lastName { get; set; }
     @AuraEnabled
-    public String email;
+    public String email { get; set; }
     @AuraEnabled
-    public String phone;
+    public String phone { get; set; }
   }
 
   private class AccessContext {
