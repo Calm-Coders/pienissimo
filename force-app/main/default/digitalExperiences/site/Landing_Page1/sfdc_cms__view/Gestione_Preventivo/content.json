@@ -11,6 +11,7 @@
                 "backgroundImageConfig": "",
                 "backgroundImageOverlay": "rgba(0,0,0,0)",
                 "componentSpacerSize": "",
+                "dxpStyle": {},
                 "layoutDirectionDesktop": "row",
                 "layoutDirectionMobile": "column",
                 "layoutDirectionTablet": "column",
@@ -25,6 +26,7 @@
                   "children": [
                     {
                       "attributes": {
+                        "dxpStyle": {},
                         "heading": "Gestione preventivo"
                       },
                       "definition": "c:quoteAcceptancePage",
@@ -54,6 +56,7 @@
               "attributes": {
                 "customHeadTags": "",
                 "description": "",
+                "dxpStyle": {},
                 "pageTitle": "Gestione Preventivo",
                 "recordId": "{!recordId}"
               },

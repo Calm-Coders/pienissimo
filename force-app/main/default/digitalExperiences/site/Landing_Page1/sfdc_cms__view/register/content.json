@@ -11,6 +11,7 @@
                 "backgroundImageConfig": "",
                 "backgroundImageOverlay": "rgba(0,0,0,0)",
                 "componentSpacerSize": "",
+                "dxpStyle": {},
                 "layoutDirectionDesktop": "row",
                 "layoutDirectionMobile": "column",
                 "layoutDirectionTablet": "column",
@@ -26,6 +27,7 @@
                     {
                       "attributes": {
                         "alignment": "left",
+                        "dxpStyle": {},
                         "imageInfo": "",
                         "imageInfoMobile": "",
                         "logoWidth": 250
@@ -38,6 +40,7 @@
                       "attributes": {
                         "cancelLinkLabel": "Already have an account?",
                         "confirmPasswordLabel": "Confirm Password",
+                        "dxpStyle": {},
                         "emailLabel": "Email",
                         "firstnameLabel": "First Name",
                         "includePasswordField": true,
@@ -73,6 +76,7 @@
               "attributes": {
                 "customHeadTags": "",
                 "description": "",
+                "dxpStyle": {},
                 "pageTitle": "Register",
                 "recordId": "{!recordId}"
               },

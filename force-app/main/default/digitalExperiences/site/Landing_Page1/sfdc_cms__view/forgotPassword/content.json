@@ -11,6 +11,7 @@
                 "backgroundImageConfig": "",
                 "backgroundImageOverlay": "rgba(0,0,0,0)",
                 "componentSpacerSize": "",
+                "dxpStyle": {},
                 "layoutDirectionDesktop": "row",
                 "layoutDirectionMobile": "column",
                 "layoutDirectionTablet": "column",
@@ -26,6 +27,7 @@
                     {
                       "attributes": {
                         "alignment": "left",
+                        "dxpStyle": {},
                         "imageInfo": "",
                         "imageInfoMobile": "",
                         "logoWidth": 250
@@ -38,6 +40,7 @@
                       "attributes": {
                         "cancelButtonLabel": "Cancel",
                         "checkEmailUrl": "./CheckPasswordResetEmail",
+                        "dxpStyle": {},
                         "instructionsLabel": "To reset your password, enter your username. We'll send a reset-password link to the email address associated with your account.",
                         "submitButtonLabel": "Reset",
                         "titleLabel": "Forgot your password?",
@@ -70,6 +73,7 @@
               "attributes": {
                 "customHeadTags": "",
                 "description": "",
+                "dxpStyle": {},
                 "pageTitle": "Forgot Password",
                 "recordId": "{!recordId}"
               },
