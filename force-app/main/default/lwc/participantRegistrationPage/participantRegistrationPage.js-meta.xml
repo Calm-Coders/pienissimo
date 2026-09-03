@@ -4,7 +4,7 @@
     <isExposed>true</isExposed>
     <masterLabel>Participant Registration Page</masterLabel>
     <description
-  >Collects one participant for each eligible ticket Asset.</description>
+  >Collects participants for unassigned ticket Assets.</description>
     <targets>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>

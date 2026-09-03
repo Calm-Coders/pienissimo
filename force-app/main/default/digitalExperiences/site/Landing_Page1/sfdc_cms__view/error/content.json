@@ -1,0 +1,81 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Error",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"22814886-2935-4a7e-943b-e026a5b457ce\",\"columns\":[{\"UUID\":\"a48471ae-d7c8-45d3-ad1b-98348802914c\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "imageInfos": "",
+                        "richTextValue": "<h1 style=\"text-align: center;\">Invalid Page</h1>"
+                      },
+                      "definition": "community_builder:richTextEditor",
+                      "id": "3394e32c-2ee5-4755-8de6-d1fc4e012185",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "a48471ae-d7c8-45d3-ad1b-98348802914c",
+                  "name": "col1",
+                  "title": "Column 1",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "22814886-2935-4a7e-943b-e026a5b457ce",
+              "type": "component"
+            }
+          ],
+          "id": "3f7e28c6-4351-47a5-b3ca-d0969bf20af6",
+          "name": "content",
+          "title": "Content",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "customHeadTags": "",
+                "description": "",
+                "pageTitle": "Error",
+                "recordId": "{!recordId}"
+              },
+              "definition": "community_builder:seoAssistant",
+              "id": "48cc5118-9a57-4eae-b15d-8e47923633bb",
+              "type": "component"
+            }
+          ],
+          "id": "b2eb212f-01f6-40e7-8f39-67953198a291",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region"
+        }
+      ],
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "bbb430dd-c4ed-4ba0-ab3d-29772426c70d",
+      "type": "component"
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "error"
+  },
+  "urlName": "error"
+}

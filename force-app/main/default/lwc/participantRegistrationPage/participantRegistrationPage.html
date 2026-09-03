@@ -5,8 +5,9 @@
         <p class="brand">Pienissimo</p>
         <h1 id="page-heading">{heading}</h1>
         <p class="introduction">
-          Inserisci i dati della persona che utilizzerà ciascun biglietto. I
-          campi contrassegnati con un asterisco sono obbligatori.
+          Inserisci i dati della persona che utilizzerà ciascun biglietto. Tutti
+          i biglietti non ancora assegnati devono essere compilati prima del
+          salvataggio.
         </p>
       </header>
 
@@ -60,9 +61,7 @@
                     </p>
                     <h2>{ticket.productName}</h2>
                   </div>
-                  <template if:false={ticket.editable}>
-                    <span class="status-badge">Già assegnato</span>
-                  </template>
+                  <span class={ticket.badgeClass}>{ticket.badgeLabel}</span>
                 </header>
 
                 <template if:true={ticket.editable}>
@@ -72,7 +71,7 @@
                       data-field="firstName"
                       label="Nome"
                       value={ticket.firstName}
-                      required
+                      required={ticket.rowRequiresFields}
                       autocomplete="given-name"
                       onchange={handleInput}
                     ></lightning-input>
@@ -81,7 +80,7 @@
                       data-field="lastName"
                       label="Cognome"
                       value={ticket.lastName}
-                      required
+                      required={ticket.rowRequiresFields}
                       autocomplete="family-name"
                       onchange={handleInput}
                     ></lightning-input>
@@ -92,7 +91,7 @@
                         type="email"
                         label="Email"
                         value={ticket.email}
-                        required
+                        required={ticket.rowRequiresFields}
                         autocomplete="email"
                         onchange={handleInput}
                         onblur={handleEmailBlur}
@@ -110,7 +109,7 @@
                       type="tel"
                       label="Telefono"
                       value={ticket.phone}
-                      required
+                      required={ticket.rowRequiresFields}
                       autocomplete="tel"
                       onchange={handleInput}
                     ></lightning-input>
@@ -118,6 +117,11 @@
                   <template if:true={ticket.contactRecognized}>
                     <p class="contact-match" role="status">
                       Contatto esistente riconosciuto tramite email.
+                    </p>
+                  </template>
+                  <template if:true={ticket.hasPartialInput}>
+                    <p class="row-warning" role="alert">
+                      Completa questa riga oppure svuotala prima di salvare.
                     </p>
                   </template>
                 </template>
@@ -152,9 +156,12 @@
 
         <template if:true={showFormActions}>
           <footer class="form-actions">
-            <p>Verifica con attenzione i dati inseriti prima di confermare.</p>
+            <p>
+              Righe completate:
+              {completedSubmissionCount}/{requiredSubmissionCount}
+            </p>
             <lightning-button
-              label="Conferma partecipanti"
+              label="Salva tutti i partecipanti"
               variant="brand"
               disabled={submitDisabled}
               onclick={openConfirmation}
@@ -176,9 +183,7 @@
     >
       <div class="confirmation-card">
         <h2 id="confirmation-heading">Conferma i partecipanti</h2>
-        <p>
-          Confermi che i dati inseriti per questi partecipanti sono corretti?
-        </p>
+        <p>{confirmationMessage}</p>
         <div class="confirmation-actions">
           <lightning-button
             label="Annulla"

@@ -106,6 +106,14 @@ h2 {
   background: #f7f9fc;
 }
 
+.ticket-card.incomplete {
+  border-color: #f79009;
+}
+
+.ticket-card.ready-to-save {
+  border-color: var(--page-primary);
+}
+
 .ticket-header {
   align-items: flex-start;
   display: flex;
@@ -119,13 +127,31 @@ h2 {
 }
 
 .status-badge {
-  background: #e8f5ed;
   border-radius: 999px;
-  color: #207a45;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.3rem 0.65rem;
   white-space: nowrap;
+}
+
+.assigned-badge {
+  background: #e8f5ed;
+  color: #207a45;
+}
+
+.open-badge {
+  background: #eef2f6;
+  color: #475467;
+}
+
+.draft-badge {
+  background: #fff6e9;
+  color: #b54708;
+}
+
+.save-badge {
+  background: #e8f1fb;
+  color: #175cd3;
 }
 
 .field-grid,
@@ -142,6 +168,12 @@ h2 {
 
 .contact-match {
   color: #207a45;
+  font-size: 0.875rem;
+  margin: 0.75rem 0 0;
+}
+
+.row-warning {
+  color: #b54708;
   font-size: 0.875rem;
   margin: 0.75rem 0 0;
 }
