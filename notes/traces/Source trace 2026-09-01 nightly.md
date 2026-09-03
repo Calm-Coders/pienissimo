@@ -30,17 +30,17 @@ client attachment, and an access failure.
 All read-only. **Nothing was sent, replied to, drafted, shared, modified or
 marked read**, with the single carve-out of the nightly report to `C0BQD34LLF4`.
 
-| Source     | Query / scope                                                              | Result                                                                                                             |
-| ---------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **Gmail**  | `pienissimo after:2026/08/31`                                              | 11 threads, **3 new** — the Gemini minute, the Anagrafica Articoli mail, a Notion access request                    |
+| Source     | Query / scope                                                              | Result                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gmail**  | `pienissimo after:2026/08/31`                                              | 11 threads, **3 new** — the Gemini minute, the Anagrafica Articoli mail, a Notion access request                                                        |
 | **Gmail**  | all mail `after:2026/08/31 -in:draft`, full bodies on every Pienissimo hit | 35 threads. Only the same 3 are Pienissimo; the rest is LIFE365, Permo, Daze, Interstudio Viaggi, 247.it, TFP, bitmobility and Salesforce admin traffic |
-| **Drive**  | `modifiedTime > 2026-08-31T20:00:00Z`, paged                              | 5 items, **1 Pienissimo** — the 01/09 meeting folder                                                                |
-| **Drive**  | `title contains 'Pienissimo' and modifiedTime > 2026-08-25`               | 5 items, **1 new** — the 01/09 Anticipay folder with its recording and Gemini notes shortcuts                       |
-| **Drive**  | Gemini notes doc `1CiCRPuxOoZvqmlUTRahWyewjAuDw4n0wgOMzs4vK0dU`           | **read in full** — summary, decisions, next steps **and the complete 19m49s transcript**                            |
-| **Slack**  | workspace-wide incl. private channels, DMs and group DMs, `pienissimo`     | 4 hits, **3 new** — all in the Aurel Mrruku / Elena Spini DM                                                        |
-| **Slack**  | `#tproj-pienissimo` (`C0B5T3RB4FM`), read directly, 10 messages back      | **Silent for a fifth day.** Newest post still Elena Spini's 28/08 status, already held                              |
-| **Slack**  | Canvas _Link utili Pienissimo_ (`F0BD2H5A9HT`), re-read in full           | **Unchanged.** Newest entry still **20.08** — now **six** client sessions behind                                    |
-| **Fathom** | all meetings created after 2026-08-28                                     | **0 recordings.** Unchanged since 06 Aug — recordings still land in Drive, not Fathom                                |
+| **Drive**  | `modifiedTime > 2026-08-31T20:00:00Z`, paged                               | 5 items, **1 Pienissimo** — the 01/09 meeting folder                                                                                                    |
+| **Drive**  | `title contains 'Pienissimo' and modifiedTime > 2026-08-25`                | 5 items, **1 new** — the 01/09 Anticipay folder with its recording and Gemini notes shortcuts                                                           |
+| **Drive**  | Gemini notes doc `1CiCRPuxOoZvqmlUTRahWyewjAuDw4n0wgOMzs4vK0dU`            | **read in full** — summary, decisions, next steps **and the complete 19m49s transcript**                                                                |
+| **Slack**  | workspace-wide incl. private channels, DMs and group DMs, `pienissimo`     | 4 hits, **3 new** — all in the Aurel Mrruku / Elena Spini DM                                                                                            |
+| **Slack**  | `#tproj-pienissimo` (`C0B5T3RB4FM`), read directly, 10 messages back       | **Silent for a fifth day.** Newest post still Elena Spini's 28/08 status, already held                                                                  |
+| **Slack**  | Canvas _Link utili Pienissimo_ (`F0BD2H5A9HT`), re-read in full            | **Unchanged.** Newest entry still **20.08** — now **six** client sessions behind                                                                        |
+| **Fathom** | all meetings created after 2026-08-28                                      | **0 recordings.** Unchanged since 06 Aug — recordings still land in Drive, not Fathom                                                                   |
 
 ## Found
 
@@ -145,20 +145,20 @@ org**.
 register and both prose requirement documents are untouched, so nothing the
 client has signed moved tonight.
 
-| Written                                                | Because                                                                                     |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| `2026-09-01 Follow-up Integrazione Anticipay`          | **new** — the drilled minute, decisions, actions and what the call did not touch            |
-| `OI-109 Codice destinatario SDI…`                      | **new** — Elisa Migliano's twelfth-field request                                            |
-| `Risk - the team lost access to the Pienissimo orgs…`  | **new** — 1 September access failure, resolution unrecorded                                 |
-| `OI-95`                                                | status → **resolved**; the field selection, both shape rulings, the six new fields it costs |
-| `OI-94`                                                | the minute drilled; 2 of 6 questions closed, 4 never raised                                 |
-| `OI-106`                                               | the shared token is **deliberate**, asked and answered; only rotation is left               |
-| `OI-108`                                               | the decision went the other way; one field justified, four not; never a rejection           |
-| `OI-105`                                               | the escape hatch closed — the date of birth **is** stored, and nobody raised the typo       |
-| `OI-73`                                                | the write-back blocker discharged; **Italy-only answers the `INT-18` foreign-VAT half**     |
-| `OI-48`, `OI-98`                                       | the `Anagrafica Articoli.xlsx` mail, and precisely what is and is not known from it          |
-| `The Anticipay middleware API contract`                | what the call added to the document; the Italy-only scope limit                             |
-| `MAP.md`, `INDEX.md`                                   | the three 01/09 blocks, the corrected calendar line, four new artifacts                     |
+| Written                                               | Because                                                                                     |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `2026-09-01 Follow-up Integrazione Anticipay`         | **new** — the drilled minute, decisions, actions and what the call did not touch            |
+| `OI-109 Codice destinatario SDI…`                     | **new** — Elisa Migliano's twelfth-field request                                            |
+| `Risk - the team lost access to the Pienissimo orgs…` | **new** — 1 September access failure, resolution unrecorded                                 |
+| `OI-95`                                               | status → **resolved**; the field selection, both shape rulings, the six new fields it costs |
+| `OI-94`                                               | the minute drilled; 2 of 6 questions closed, 4 never raised                                 |
+| `OI-106`                                              | the shared token is **deliberate**, asked and answered; only rotation is left               |
+| `OI-108`                                              | the decision went the other way; one field justified, four not; never a rejection           |
+| `OI-105`                                              | the escape hatch closed — the date of birth **is** stored, and nobody raised the typo       |
+| `OI-73`                                               | the write-back blocker discharged; **Italy-only answers the `INT-18` foreign-VAT half**     |
+| `OI-48`, `OI-98`                                      | the `Anagrafica Articoli.xlsx` mail, and precisely what is and is not known from it         |
+| `The Anticipay middleware API contract`               | what the call added to the document; the Italy-only scope limit                             |
+| `MAP.md`, `INDEX.md`                                  | the three 01/09 blocks, the corrected calendar line, four new artifacts                     |
 
 Also: `open-items.md` **and** `.it.md` — rows **48, 94, 95, 98, 105, 106, 108**
 plus a **new row 109** and a status block; a new **§24** in

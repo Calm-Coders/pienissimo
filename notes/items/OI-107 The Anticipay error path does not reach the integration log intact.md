@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-01
-updated: 2026-09-01
+updated: 2026-09-02
 depends_on: [OI-94]
 blocks: [OI-73]
 requirement: INT-18
@@ -104,6 +104,41 @@ exclusive:
 2. **Check the status code before deserializing**, and carry `Response_State__c`
    into the `catch`. This is the durable fix and it does not wait on anyone.
 
+### 2b. 🔴 Defect 2 stopped being hypothetical on 2 September
+
+**It has now happened, in the real world, and a human caught it only because he
+was using a mail client rather than the engine.**
+
+`integration.pienissimo.com` — the host in v1 and v2 of the documentation —
+**never resolved.** Aurel Mrruku tried it and reported at
+**2026-09-02 08:21:59Z**:
+
+> _"il server al momento non risulta raggiungibile… `HTTP/1.1 404 Not Found`
+> `Content-Type: text/html; charset=iso-8859-1`"_
+
+Trace that through `API_Callout_Engine`:
+
+1. `new Http().send(req)` succeeds — a `404` is a successful send.
+2. `Response_State__c` is set to `404`, `Response_Body__c` to the HTML.
+3. `Is_Error__c` is **not** set (defect 1).
+4. `deserializeResponse` runs anyway and tries to parse **HTML as JSON**.
+5. It throws. The `catch` builds a **new** log row — **without
+   `Response_State__c`** (defect 2).
+
+**Result: a completely dead endpoint is logged as an Apex parse exception with
+no HTTP status, no error flag and no notification.** Not "the middleware is
+unreachable" — something that reads like a code bug in Salesforce.
+
+🔴 And note what it does to the `404` semantics: on top of _VAT unknown_
+and _not cached under `env=test`_, `404` now also means **the endpoint is
+wrong**. Three meanings, and the only thing separating the third is
+`Content-Type: text/html`. See
+[the contract](../The%20Anticipay%20middleware%20API%20contract.md).
+
+**This raises the priority of fix 2 below.** It is no longer defensive coding
+against a shape nobody has seen — it is the difference between diagnosing an
+outage in seconds and hunting a phantom Apex bug.
+
 ### 3. Nothing purges the log after three months
 
 The retention agreed on 25 August is **a policy with no implementation**. The
@@ -137,7 +172,9 @@ first written:
 1. **Set `Is_Error__c` from the status code** on the success path. One line, and
    it unblocks the agreed notification for every integration, not just this one.
 2. **Status-check before deserializing**, and carry `Response_State__c` into the
-   `catch` so a malformed error body cannot erase the code.
+   `catch` so a malformed error body cannot erase the code. 🔴 **Raised in
+   priority 2 September** — §2b shows this exact failure already occurring against
+   a dead host. Check `Content-Type` too: HTML is the signature of a wrong endpoint.
 3. **Route the notification on `Response_State__c`**, so `401` does not read as
    `404`.
 4. **Write the three-month purge**, and decide what it means for the personal
@@ -159,3 +196,43 @@ engine or handle it in the Anticipay flow.
 at all, and Anticipay needs two (`:env` and `:piva`). That is recorded in
 [the contract](../The%20Anticipay%20middleware%20API%20contract.md) under "Where it
 lands in the org" and is a bigger question than anything on this item.
+
+## §3 — 2026-09-02: a client-agreed feature now sits on top of both defects
+
+**This stopped being a code-quality finding and became a delivery dependency.**
+
+At the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+the room agreed that Salesforce calls Anticipay for **every** account, foreign
+ones included, and that a failed lookup sends **a mail to
+`amministrazione@pienissimo.com` carrying a direct link to the Salesforce
+record** ([OI-73](OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)).
+
+So the error path is no longer a diagnostic nobody looks at. **It is the
+mechanism of an agreed business process**, and both defects in this note now
+break a client-visible feature rather than a log:
+
+- **Defect 1 (`Is_Error__c` never set on an HTTP error)** means the agreed
+  notification would **never be sent** for the `404` the whole design is built
+  around. Silent, with no failed record anywhere.
+- **Defect 2 (the `catch` drops `Response_State__c`)** means that when the mail
+  does not arrive, the row left behind does not say what the API answered.
+
+### 🔴 And the response itself is undocumented
+
+Elena Spini went looking for the foreign-company case in the API documentation
+during the call and did not find it:
+
+> _"la cosa estera in effetti non c'è negli errori. Non so cosa può rispondere."_
+
+Aurel Mrruku's reading is that a foreign VAT falls into the generic `404` —
+_"404 è quando tu non hai nessuna informazione per quella partita IVA"_ — which
+would make it the **fourth** meaning on that one status code, after _VAT
+unknown_, _not cached under `env=test`_ and _wrong hostname_. **That is an
+inference, not a documented behaviour.**
+
+**This raises the priority of the outstanding ask to Andrea Parmeggiani.** It is
+no longer "send an example of each error body": it is _what exactly does the
+middleware return for a non-Italian VAT, and how is it distinguishable from a
+VAT that is simply unknown?_ Without that distinction the notification mail
+cannot say which of the two happened, and administration has to open every one.

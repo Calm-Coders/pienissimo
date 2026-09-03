@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-01
-updated: 2026-09-01
+updated: 2026-09-02
 depends_on: [OI-94]
 blocks: [OI-73]
 requirement: INT-18
@@ -22,7 +22,7 @@ one.
 
 So, as documented:
 
-- **one host** — `integration.pienissimo.com`
+- **one host** — `romi.pienissimo.com` (moved from `integration.pienissimo.com` on 2 September; the token did **not** change with it)
 - **one token** — the same string for `env=test` and `env=prod`
 - **no rotation, no expiry, no scope** described anywhere
 
@@ -135,3 +135,26 @@ endpoint, under
 application-level auth at all**, making that token the entire defence. Two
 integrations, two static shared secrets, both distributed by mail. Worth one
 decision about how this project handles credentials rather than two.
+
+## 2026-09-02 — the token's blast radius grew again
+
+The token has now been **pasted into a Slack direct message**. Aurel Mrruku sent
+Anita Aga a ready-to-run call against the new host at **12:39 CEST**, bearer
+header included, as part of handing her the Anticipay work — alongside the Notion
+project page and the open-items view.
+
+**The value is not reproduced here, and must never be written into this
+repository.** What is recorded is that it happened and where, so that a rotation
+knows what it has to invalidate.
+
+Running total of places this one static credential is known to sit: **two mails
+to six addresses**, **three PDF revisions**, **a Slack DM**, and **the org's
+`Anticipay` named credential**, which is org-only and unreviewable
+([the credential risk](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
+
+⚠ This is normal working behaviour under time pressure and the point is not the
+paste. It is that **one token serves test and production by deliberate client
+choice**, so every convenience copy of it is also a production credential. The
+ask this note already carries — **rotate before go-live** — is now the only
+control left, and it needs to be a real, dated action rather than a
+recommendation.

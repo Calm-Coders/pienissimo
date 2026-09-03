@@ -57,6 +57,33 @@ Nor does it mean somebody did something wrong. A named credential is created in
 Setup by hand; nothing in the normal workflow prompts you to retrieve it into
 source. That is precisely why it keeps happening.
 
+## 🔴 2026-09-02 - the Anticipay credential is probably pointing at a dead host
+
+**Timing puts this beyond doubt as a question, even though the value has not been
+read.**
+
+| Time (2026-09-02) | Event                                                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 08:05–08:14Z      | the org check finds a named credential `Anticipay` already configured                                              |
+| 08:21:59Z         | Aurel Mrruku reports `integration.pienissimo.com` **does not resolve** — `HTTP/1.1 404`, `Content-Type: text/html` |
+| 10:18:26Z         | Andrea Parmeggiani moves the API to **`romi.pienissimo.com`** and sends v3                                         |
+| 10:40:45Z         | Aurel Mrruku confirms _"adesso funziona"_                                                                          |
+
+So the credential was created **before the host existed**, against the only
+hostname anyone had — the one that never worked. **It almost certainly carries
+`integration.pienissimo.com`.**
+
+This sharpens the risk in a way nobody planned: the argument above was that a
+named credential is dangerous because it holds the endpoint and nothing in
+`force-app/` records it. Here the endpoint it holds is **known to be wrong**, and
+because it is org-only there is no diff, no review and no deploy that would
+surface it. It fails at runtime, as an HTML `404`, which
+[OI-107](../items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)
+shows the house engine would log as an **Apex parse error with no status code**.
+
+**Check it in Setup before anything is wired to it**, and fix the host as part of
+the same retrieve. ⚠ Read the endpoint only — do not copy the token anywhere.
+
 ## The ask
 
 **Retrieve both named credentials and the three permission sets into

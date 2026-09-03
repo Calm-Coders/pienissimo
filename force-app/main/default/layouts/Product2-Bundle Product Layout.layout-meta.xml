@@ -32,10 +32,6 @@
                 <field>Spread_Variance__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>Code__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Price_1__c</field>
             </layoutItems>

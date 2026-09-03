@@ -6,7 +6,7 @@ owner: Andrea Parmeggiani
 with: Aurel Mrruku
 org: both
 raised: 2026-08-25
-updated: 2026-09-01
+updated: 2026-09-02
 depends_on: [OI-73]
 blocks: [OI-73, OI-105, OI-106, OI-107, OI-108]
 source: notes/meetings/2026-08-25 Integrazione Anticipay.md
@@ -42,7 +42,7 @@ further than the session did.
 | Element       | Agreed 2026-08-25                                                                                          | Documented 2026-09-01                                                                                                                                                                                        |
 | ------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Caller        | Salesforce                                                                                                 | unchanged                                                                                                                                                                                                    |
-| Callee        | Pienissimo Software middleware — **not Anticipay**                                                         | `GET https://integration.pienissimo.com/salesforce/account/:env/:piva`                                                                                                                                       |
+| Callee        | Pienissimo Software middleware — **not Anticipay**                                                         | `GET https://romi.pienissimo.com/salesforce/account/:env/:piva`                                                                                                                                              |
 | Trigger       | first Order inserted for an Account                                                                        | not addressed — a caller concern                                                                                                                                                                             |
 | Auth          | a **token in the HTTP request header**                                                                     | `Authorization: Bearer <token>`, **one static token for both environments** ([OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md))                                 |
 | Errors        | `404` = VAT number not found · `500` = generic; **code and descriptive message both returned**             | ⚠ **also `400` and `401`, neither ever discussed**; and **no error body is specified at all** ([OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)) |
@@ -274,14 +274,14 @@ Spini, Aurel Mrruku, Andrea Parmeggiani and Elisa Migliano.
 
 **Score against the six questions:**
 
-| #   | Question                            | Outcome                                                                                                                                  |
-| --- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | The error response body             | 🔴 **still open, and never mentioned.** Only the `200` happy path was confirmed. This is now the single technical blocker on the build.  |
-| 2   | Which fields, and a date            | 🟢 **closed — all eleven, decided in the room.** [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) is resolved.    |
-| 3   | The token — one or two              | 🟢 **closed: one, deliberately.** Asked outright and confirmed — [OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md). |
-| 4   | The date `env=test` goes pass-through | 🔴 **still open, never mentioned.**                                                                                                    |
-| 5   | The `dascita` typo                  | 🔴 **still open** — nobody noticed it, and the field is now being built against the misspelled key.                                      |
-| 6   | Rate limits, timeout, cache TTL     | ⚠ **half.** Test is free and unlimited; **production was not discussed at all.**                                                        |
+| #   | Question                              | Outcome                                                                                                                                                          |
+| --- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | The error response body               | 🔴 **still open, and never mentioned.** Only the `200` happy path was confirmed. This is now the single technical blocker on the build.                          |
+| 2   | Which fields, and a date              | 🟢 **closed — all eleven, decided in the room.** [OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md) is resolved.                            |
+| 3   | The token — one or two                | 🟢 **closed: one, deliberately.** Asked outright and confirmed — [OI-106](OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md). |
+| 4   | The date `env=test` goes pass-through | 🔴 **still open, never mentioned.**                                                                                                                              |
+| 5   | The `dascita` typo                    | 🔴 **still open** — nobody noticed it, and the field is now being built against the misspelled key.                                                              |
+| 6   | Rate limits, timeout, cache TTL       | ⚠ **half.** Test is free and unlimited; **production was not discussed at all.**                                                                                 |
 
 **So chase three things, not six** — the error bodies, the pass-through date, and
 the typo. Questions 2 and 3 are settled and re-asking them would cost credibility.
@@ -294,7 +294,7 @@ the typo. Questions 2 and 3 are settled and re-asking them would cost credibilit
   recorded in [OI-73](OI-73%20VAT%20validation%20moves%20into%20Salesforce.md).
 - 🟢 **The `:env` split was invented in this call**, by Aurel Mrruku, and Andrea
   Parmeggiani mailed the paths 2.5 hours later. The 31 August/1 September reading
-  that v2 was an *outcome* of the session is **confirmed**, not inferred.
+  that v2 was an _outcome_ of the session is **confirmed**, not inferred.
 - ⚠ **A new field candidate**: the codice destinatario SDI,
   [OI-109](OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md).
 - ⚠ **A new meeting owed**: Elena Spini agreed to organise a dedicated data-model
@@ -307,3 +307,45 @@ the typo. Questions 2 and 3 are settled and re-asking them would cost credibilit
 above. A Fase 1 integration still depends on Pienissimo Software Srl building,
 hosting and running a service, and twenty minutes of field mapping did not go
 near who owns its uptime after the project closes.
+
+## 2026-09-02 - v3, and the endpoint works for the first time
+
+🟢 **The transport is proven.** `integration.pienissimo.com` — the host in
+v1 and v2 — **never resolved.** Aurel Mrruku tried it (**08:21:59Z**) and got
+`HTTP/1.1 404 Not Found`, `Content-Type: text/html`. Andrea Parmeggiani stood up
+**`romi.pienissimo.com`** and sent **v3 at 10:18:26Z**; Aurel Mrruku confirmed at
+**10:40:45Z**: _"Confermo che adesso funziona."_
+
+Two hours, end to end. That is the third revision in three days and the second
+time this counterparty has turned something around inside a morning.
+
+**v3 changes the host and nothing else** — diffed, not assumed. Every field name,
+error code and defect recorded on 1 September survives unchanged, **including the
+`data_di_dascita` typo and the missing error body**, and **including the token**,
+which has been the same string since 31 August.
+
+### What is now true, and what still is not
+
+|                                                        |                                                                                                               |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| 🟢 The endpoint is **reachable and exercised by ROMI** | first thing on this integration ever proven rather than read                                                  |
+| 🔴 **No lookup has ever run**                          | no `200`, no `404`, no error body has been seen. Reachability is not the contract                             |
+| 🔴 The **error body is still unspecified**             | [OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)  |
+| ⚠ The **typo is still there**, through three revisions | [OI-105](OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md) — nobody has asked |
+| 🔴 The **eleven fields are still not built**           | Account carries three custom fields; **eight days to 10 September**                                           |
+
+### 🔴 The dead host produced a finding worth more than the fix
+
+The failure mode Aurel Mrruku hit by hand is exactly the one the house callout
+engine handles worst. An HTML `404` from a wrong hostname is a **third meaning**
+for `404`, on top of _VAT unknown_ and _not cached under `env=test`_ — and
+`API_Callout_Engine` would have deserialised the HTML into the `200` wrapper,
+thrown, and logged **an Apex parse error with no status code**. A total outage,
+recorded as a code bug. See
+[OI-107 §2b](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md).
+
+⚠ **And the org's `Anticipay` named credential predates the move.** Today's org
+check found it at 08:05–08:14Z, before the new host existed, so it is very
+probably configured with the dead one —
+[the credential risk](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md).
+Check it in Setup before anything is wired to it.

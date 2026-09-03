@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-08-07
-updated: 2026-08-24
+updated: 2026-09-02
 depends_on: [OI-50]
 blocks: [OI-13]
 source: Prodotti e Bundle.xlsx, sheet "Esempio di Bundle"
@@ -80,3 +80,26 @@ being delivered, then close or keep this open on that answer.
 Raise at the **2026-08-26 Mexal review** — Fabrizio Paganelli is an invitee, it
 is the first client-facing session since the workbook arrived, and this is his
 document.
+
+## 2026-09-02 — answered in the client's favour, without the item being named
+
+At the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+Aurel Mrruku set out the mechanism this item asks for, and Elisa Migliano
+accepted it: **a bundle component keeps its own list price, and the
+bundle-specific price is set when the article is attached to the bundle.**
+
+> _"quando tu scegli quel prodotto che è usabile in un bundle, lo agganci a quel
+> bundle che stai formando, hai il diritto di specificare qual è il prezzo di
+> quel prodotto in quel bundle… così sai anche il prezzo originale."_
+
+⚠ **The change request was never mentioned by name**, and nobody in the room
+appears to have known it existed as a tracker row. The behaviour agreed matches
+what it asked for, so treat it as satisfied by design rather than as a decision
+taken on the request. **Confirm it against the built bundle screen before closing
+the row.**
+
+Volumes were also settled and they are small: 9 events a year, ~6 carrying
+bundles, ~4 bundles each, plus up to seven marketing campaign bundles —
+**24-30 bundles a year**, all created by hand by Elisa Migliano and Fabrizio
+Paganelli, never by tutors.

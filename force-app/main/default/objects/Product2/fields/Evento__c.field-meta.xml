@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Evento__c</fullName>
     <label>Evento</label>
@@ -36,19 +36,29 @@
                 <label>Sold Out</label>
             </value>
             <value>
-                <fullName>Odb Live</fullName>
+                <fullName>Odb</fullName>
                 <default>false</default>
-                <label>Odb Live</label>
+                <label>Odb</label>
             </value>
             <value>
-                <fullName>Camerieri</fullName>
+                <fullName>Camerieri Venditori</fullName>
                 <default>false</default>
-                <label>Camerieri</label>
+                <label>Camerieri Venditori</label>
             </value>
             <value>
                 <fullName>Mastery</fullName>
                 <default>false</default>
                 <label>Mastery</label>
+            </value>
+            <value>
+                <fullName>Happy Team</fullName>
+                <default>false</default>
+                <label>Happy Team</label>
+            </value>
+            <value>
+                <fullName>Pienissimo Intensive</fullName>
+                <default>false</default>
+                <label>Pienissimo Intensive</label>
             </value>
             <value>
                 <fullName>ND</fullName>
@@ -82,17 +92,25 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
-            <valueName>Odb Live</valueName>
+            <valueName>Odb</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
             <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
-            <valueName>Camerieri</valueName>
+            <valueName>Camerieri Venditori</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
             <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
             <valueName>Mastery</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <valueName>Happy Team</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <valueName>Pienissimo Intensive</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>

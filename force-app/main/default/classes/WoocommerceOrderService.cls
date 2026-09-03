@@ -239,11 +239,11 @@ global without sharing class WoocommerceOrderService {
 
     Map<String, Product2> productsByScCode = new Map<String, Product2>();
     for (Product2 productRec : [
-      SELECT Id, Code__c
+      SELECT Id, ProductCode
       FROM Product2
-      WHERE Code__c IN :scCodes
+      WHERE ProductCode IN :scCodes
     ]) {
-      productsByScCode.put(productRec.Code__c, productRec);
+      productsByScCode.put(productRec.ProductCode, productRec);
     }
 
     List<String> missingScCodes = new List<String>();
@@ -254,7 +254,7 @@ global without sharing class WoocommerceOrderService {
     }
     if (!missingScCodes.isEmpty()) {
       throw new WooCommerceOrderException(
-        'No Salesforce Product2.Code__c match for SC code(s): ' +
+        'No Salesforce Product2.ProductCode match for SC code(s): ' +
         String.join(missingScCodes, ', ')
       );
     }
@@ -284,7 +284,7 @@ global without sharing class WoocommerceOrderService {
     Map<Id, String> productIdToScCode = new Map<Id, String>();
     for (Product2 productRec : products) {
       productIds.add(productRec.Id);
-      productIdToScCode.put(productRec.Id, productRec.Code__c);
+      productIdToScCode.put(productRec.Id, productRec.ProductCode);
     }
 
     Map<Id, PricebookEntry> entriesByProductId = new Map<Id, PricebookEntry>();

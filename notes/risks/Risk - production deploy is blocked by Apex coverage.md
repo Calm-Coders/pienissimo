@@ -137,3 +137,30 @@ remains one task, requested separately before the production deploy.
 **superseded, not fixed** — its ~270 lines were deleted with the Biglietto stack
 on 28 August rather than covered. The fall from 1,769 lines is that deletion, not
 progress.
+
+## 2026-09-02 - deferred by explicit decision, and still gating
+
+Aurel Mrruku, the same day: _"in this faase we dont care about the coverage
+too"_. Recorded as
+[a decision](../decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+
+**What changes:** coverage stops being reported as a live blocker on Fase 1
+build work. It is a known, accepted, dated deferral, not a finding.
+
+**What does not change:** this risk **stays open, stays high and stays gating**,
+per the standing instruction in [AGENTS.md](../../AGENTS.md) that the coverage
+records remain current as the brief for the test task. The 75% floor is computed
+by Salesforce **at the production deploy** and is indifferent to what phase the
+project calls itself. Deferring costs nothing in a sandbox and everything on the
+day of the deploy, and the window in which the suite must be written and pass —
+between the **10 September** end of Fase 1 development and the **6 October**
+go-live — is still not scheduled and still not estimated.
+
+🟢 One thing genuinely improved: **`WoocommerceOrderService` is now committed**
+and byte-identical to the deployed class
+([the orphan-route risk, resolved](Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)).
+The largest single uncovered target — 396 lines — could not be tested from
+`force-app/` before, and now can. The one-command prerequisite this note flagged
+on 31 August is met.
+
+Nothing here writes, proposes or offers a test.

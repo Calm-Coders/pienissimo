@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-02 (org-status-check, full scope, reconciled and published) · Source of record: [notes/](notes/)
+Last updated: 2026-09-02 (nightly requirements-check: the 02/09 session was drilled from its transcript, the shared data-model workbook arrived, and three client sessions were booked) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,98 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 - 🔴 **Development on Fase 1 must end 10 September**, per ROMI's own project
   plan — not 6 October, which is go-live. With the team back ~24–26 August that
   is **two weeks of build** for everything below.
+  🔴 **And ROMI is at a company event 9–11 September**, said in passing by Elena
+  Spini while booking meetings on 2 September. **The deadline falls inside the
+  offsite**, nobody in the room connected the two, and that leaves **four working
+  days**, three of them carrying a client session
+  ([the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)).
+
+- 🟢🔴 **2026-09-02 — the Anagrafica Articoli session was drilled from its
+  transcript, and it is a much bigger meeting than the morning's action list
+  said.** The Gemini document became readable at 10:36Z carrying the **full
+  1h16m37s transcript**; the note is now
+  [a minute, not an action list](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md).
+  Present: Elisa Migliano **and Fabrizio Paganelli in one room**, Andrea Di
+  Cicco, Aurel Mrruku, Elena Spini.
+  🟢 **The client's two unwritten questions were asked verbally and both
+  answered**: `tipo biglietto` does **not** get a Mexal field
+  ([OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)),
+  and the ten bundle-only codes **keep their real list price**, with the bundle
+  price set on the association
+  ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md),
+  [OI-93](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md)).
+  ⚠ **The workbook is Elisa Migliano's, not Fabrizio Paganelli's** — sent from
+  his mailbox, written by her; ask her about it.
+  🟢 **[OI-97](notes/items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)
+  is resolved** — fiscal residence is **derived automatically from the country
+  code** into five values. 🟢 **[OI-109](notes/items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)
+  is resolved by withdrawal** — Elisa Migliano dropped the SDI field herself the
+  next day, _"comunque non ci serve"_.
+  🔴 **Anticipay is called for EVERY account, foreign ones included** — the
+  opposite of what the 1 September reading implied, and chosen deliberately
+  because a foreign or mistyped VAT returning an error **is** the validation. On
+  failure a mail goes to `amministrazione@pienissimo.com` **carrying a direct
+  link to the Salesforce record** ([OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)).
+  🔴 **That design cannot fire as the code stands**: `Is_Error__c` is never set on
+  an HTTP error, so the agreed mail would be silent for exactly the `404` it is
+  built on — and **the foreign-company error body is not in the documentation**,
+  found live by Elena Spini: _"la cosa estera in effetti non c'è negli errori"_
+  ([OI-107 §3](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)).
+  🟢 **The Mexal order tracciato is written down for the first time** —
+  `OC` services / **`BC` books**, causali 1–3 and 4–6 by fiscal residence,
+  warehouse 1/2, cost centre 3/1, and 🔴 **a `data di scadenza` on every order
+  line that is the tranche due date**, managed by neither side today
+  ([the integration](notes/flows/The%20Mexal%20integration.md),
+  [OI-50](notes/items/OI-50%20Tranche%20object.md)).
+  🔴 New: [OI-110](notes/items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)
+  — `codice agente`, `zona` and `classificatore rete` are needed on the order
+  header and Andrea Di Cicco **cannot find them** in the Mexal call's field set.
+  🟢 `Stato_Bundle__c`'s **PROVISIONAL caveat is retired** — the transcript
+  confirms the values and the host object; the transition logic is still unbuilt
+  and the session never chose between a button and a manual change.
+
+- 🟢🔴 **2026-09-02 — the shared data-model workbook was filled in by the client
+  and read.** `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`,
+  modified **14:05:38Z**, mailed a minute later — _"Abbiamo aggiornata la tabella
+  condivisa. A domani"_. **[OI-24](notes/items/OI-24%20Data%20model%20workbook.md),
+  open since 2 July and gating, has substantially arrived**: Zoho field lists for
+  Lead, Account, Referente, Opportunità, Offerta and Articoli, with the **Account
+  sheet sectioned** — including a large **`NON UTILIZZATO O OBSOLETO`** block,
+  which is the client saying what not to migrate.
+  🔴 **Still missing: the Ordine field list, Utenti, Profili and the initial-load
+  plan**, all empty; `Flussi` carries only F-1 and F-2.
+  🔴 **It contradicts a decision taken on 1 September**: the legal
+  representative's residence is **already split into street/town/province/postcode/country
+  in Zoho**, while [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)
+  agreed to model it as **one free-text field** on Account. Migrating structured
+  into unstructured is lossy. **Raise it at Parte 1.**
+  ⚠ **The file is populated with live customer records** — a real company with
+  VAT, PEC and IBAN, a named legal representative with codice fiscale and date of
+  birth, a named lead and contact. **Recorded, never copied.** ⚠ Nothing says
+  which sheets arrived yesterday: ROMI last opened it on 3 August and no earlier
+  extract exists, so this is a state, not a diff.
+
+- 🟢 **2026-09-02 — the deep customer-registry mapping finally has a forum, and
+  three dates.** Elisa Migliano asked for it herself — the Zoho customer registry
+  has **150 fields** and _"sono andata in confusione io da sola con me stessa, su
+  un'anagrafica che conosco"_ — and Elena Spini sent the invitations the same
+  morning: **`Data Model: Parte 1` 3 Sept 11:00**, **`Parte 2` 4 Sept 16:00**,
+  **`Parte 3` 7 Sept 11:00**, client-facing
+  ([OI-99](notes/items/OI-99%20Customer%20registry%20deep%20mapping%20session.md)).
+  ⚠ **Three ROMI-internal `PIENISSIMO - DM TBD` holds sit on the same three
+  slots** with different event ids, so they are duplicates rather than the same
+  events renamed — somebody should clear them. ⚠ **`Parte 3` carries no Google
+  Meet link** while Parte 1 and 2 do.
+
+- 🔴 **2026-09-02 — nobody has confirmed the client owns DocuSign.** Aurel Mrruku
+  asked Elena Spini outright; she answered _"si DocuSign per la firma del
+  preventivo lo vogliono"_ and, on whether there is a contract, **_"richiedo
+  conferma, ma mi aspetto di sì"_**
+  ([OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)).
+  A licence purchase was claimed in July and never confirmed; `BIG-13` is still
+  `open` in the register, the org already carries an org-only `DocuSign` named
+  credential, and **the sandbox is free while production needs a signed
+  agreement** — five weeks before go-live.
 
 - 🟢🔴 **2026-09-02 — an org check ran, published everything, and the picture
   moved in both directions.** Read-only against `00DMA000004nMMr2AM` at repo
@@ -28,8 +120,9 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   ([resolved](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)).
   🟢 **`OrderItem.Tranche__c` is granted at last**
   ([resolved](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md))
-  — though **0 of 18 order items carry a tranche**, so propagation is still
-  unbuilt. 🟢 **The order lifecycle is live and in use**, `Incassato` on 12 of 15.
+  — though **no Apex in `force-app/` writes it**, so propagation is still
+  unbuilt. (The empty rows are no longer the evidence:
+  [UAT data is disposable](notes/decisions/Decision%20-%20UAT%20data%20is%20disposable%20in%20Fase%201.md).) 🟢 **The order lifecycle is live and in use**, `Incassato` on 12 of 15.
   🔴 **The eleven Anticipay fields agreed 1 September are NOT built** — Account
   carries three custom fields, no PEC, no legal-rep fields
   ([the risk](notes/risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)).
@@ -41,11 +134,13 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   🔴 **Named credentials `Anticipay` and `DocuSign` exist only in the org**,
   with three permission sets — the org-only pattern's third instance in six days
   ([the risk](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
-  ⚠ **Coverage is 0% of 1,646 lines and still gates every deploy — but it is
-  UNMEASURED, not measured at zero.** The last Apex test run is **4 August**,
-  before most of the current code; three test classes are deployed and passed
-  then. Nobody currently knows the real figure
-  ([the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)).
+  ⏸ **Coverage is 0% of 1,646 lines and is deliberately deferred** — Aurel
+  Mrruku, 2 September:
+  [not a Fase 1 concern](notes/decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+  It still gates the **production** deploy and the suite is still unscheduled
+  ([the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md),
+  which stays gating). ⚠ The figure is **UNMEASURED, not measured at zero** — the
+  last Apex test run is **4 August**, before most of the current code.
   ⚠ **Two record defects fixed**: the register cited `QUO-01`/`QUO-06`, ids that
   never existed, and the check's own tooling reported zero email templates when
   the org holds 88 — folder-scoped types cannot be listed without a folder
@@ -59,10 +154,14 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   **published nothing**. The deletion was deliberate — commit `5d8cdb3`
   (Anita Aga, 28 Aug 18:10 CEST) carries a destructive-changes manifest — but
   **nothing anywhere says an export was taken first**.
-  🔴 **The records were not migrated**: Asset went 4 → 5, not 4 → 41
-  ([the dataset risk](notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md)).
-  Recycle-bin recovery is ~15 days, so the window closes about **12 September** —
-  **the only finding in this file that decays if nobody acts.**
+  ✅ **The records were not migrated, and that is now settled as fine** — Asset
+  went 4 → 5, not 4 → 41, but
+  [UAT data is disposable](notes/decisions/Decision%20-%20UAT%20data%20is%20disposable%20in%20Fase%201.md)
+  (Aurel Mrruku, 2 September), so the dataset needs no recovery and nobody need
+  ask whether an export was taken
+  ([the dataset risk, resolved](notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md)).
+  **Biglietto__c → Asset is a build from scratch, not a migration.** ⚠ Nothing in
+  this file decays on a date any more.
   🔴 **The code is worse and is not recoverable the same way.** `git log --all`
   proves not one of `BigliettoTriggerHandler`, `BigliettoDocuSignService`,
   `BigliettoDocuSignQueueable`, `BigliettoPdfService`, `BigliettoPdfQueueable`,
@@ -90,6 +189,29 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   feature silently shows the spread total** instead of the calculated price; and
   the register's `build_state` cites **`QUO-01` and `QUO-06`, which are not among
   the 154 requirement ids**.
+
+- 🟢 **2026-09-02 — the Anticipay endpoint moved, and for the first time it
+  works.** `integration.pienissimo.com` **never resolved**: Aurel Mrruku tried it
+  at 08:21Z and got `HTTP/1.1 404` with `Content-Type: text/html`. Andrea
+  Parmeggiani stood up **`romi.pienissimo.com`**, sent a **v3** of the
+  documentation at 10:18Z, and Aurel Mrruku confirmed at 10:40Z —
+  _"adesso funziona"_. **v3 changes the host and nothing else**, verified by diff
+  ([the contract](notes/The%20Anticipay%20middleware%20API%20contract.md)).
+  🔴 **Reachability is not the contract** — no lookup has ever run, so no `200`,
+  no `404` and no error body has been seen.
+  🔴 **The dead host handed us a finding worth more than the fix.** An HTML `404`
+  from a wrong hostname is a **third meaning** for `404`, on top of _VAT unknown_
+  and _not cached under `env=test`_ — and `API_Callout_Engine` would parse the
+  HTML into the `200` wrapper, throw, and log **an Apex parse error with no
+  status code**. A total outage recorded as a code bug
+  ([OI-107 §2b](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)).
+  ⚠ **The org's `Anticipay` named credential predates the move** — found at
+  08:05–08:14Z, before the new host existed, so it very probably carries the dead
+  one ([the credential risk](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
+  ⚠ **Three revisions in three days and the `data_di_dascita` typo survived all
+  of them**, because nobody has asked
+  ([OI-105](notes/items/OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)).
+  The token is also unchanged since 31 August.
 
 - 🟢 **2026-09-01 — the follow-up call ran, was drilled the same night, and it
   closed the item three sweeps could not.**
@@ -129,18 +251,155 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   **data-model call Elena Spini owes with no date**, and an untracked go-live
   action to switch the test call off.
 
-- 🟢 **2026-09-01 — Fabrizio Paganelli sent the bundle-only code proposal, and it
-  is unread.** `Anagrafica Articoli.xlsx`, 14:04Z to Elena Spini, Aurel Mrruku and
-  Andrea Di Cicco for the **2 September** session: an article-registry extract
-  **covering the courses only**, plus _"una ipotesi di nuovi codici da gestire solo
-  nei bundle"_ and _"un paio di domande"_ addressed to ROMI. First client material
-  on [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) since 26 August
-  and the first artifact out of
-  [OI-98](notes/items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md).
-  🔴 **The attachment cannot be opened by a sweep** — the third time this has cost
-  a day, after the WooCommerce payload and the API PDF, both of which carried
-  findings no inference produced. **It is needed before tomorrow's meeting, not
-  after it.**
+- 🟢 **2026-09-01 → 09-02 — the bundle-only codes arrived, were read, and do
+  not fit the org.** `Anagrafica Articoli.xlsx`, 14:04Z to Elena Spini, Aurel
+  Mrruku and Andrea Di Cicco, **read 2 September** —
+  [the decode](notes/The%20Anagrafica%20Articoli%20workbook.md). One sheet, 43
+  course articles, built five minutes before it was sent.
+  🟢 **[OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)'s deliverable
+  is in it** — **ten bundle-only codes**, `SFAC0001` through `SFSO0001`, flagged
+  `Utilizzabile solo in bundle`. The mechanism is the one agreed on 26 August;
+  🔴 **the naming is a third convention** — not the `(B)` suffix, not the
+  `codice A`/`codice B` Fabrizio Paganelli named himself. **Nobody should search
+  for a `B` code.**
+  ✅ **Both org blockers are now fixed and the ten codes are loaded** — see the
+  build bullet below. On arrival, **17 of the 43 rows named an event the picklist
+  could not accept** and org and repository agreed exactly, so it was a
+  specification gap and not drift
+  ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)): the Happy
+  Team defect was **one of five**, the largest being **`Pienissimo Intensive`**,
+  which had no articles on 7 August and now has eight.
+  🔴 **The article-code risk stopped being theoretical** — the sheet holds
+  **three code pairs** that a normalising upsert would merge, two of them across
+  different events and one merging a paid ticket with its free twin. `Code__c` is
+  an external id, so such an upsert **overwrites silently**
+  ([the risk](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)).
+  ⚠ **The "paio di domande" are not in the file** — no comment, note or question
+  anywhere in it. They were put verbally in the meeting.
+  ⚠ Three cheap questions are open for Fabrizio Paganelli: the ten codes are
+  **unpriced**, `SFPL0001` is named `PIENISSIMO LIVE LIVE`, and **Pienissimo
+  Intensive has no bundle twin** despite being the largest event block.
+
+- ✅ **2026-09-02 — the article-registry build landed the same day it was
+  specified.** Deployed to Pienissimo UAT **and committed**, so it adds no
+  org-only drift: `Evento__c` corrected to the client's own event names (**11
+  values**; `Happy Team` and `Pienissimo Intensive` added, `Camerieri` →
+  `Camerieri Venditori`, `Odb Live` → `Odb`), the new **`Tipo_Biglietto__c`**
+  (`Executive`/`Diamond`/`Gold`) and **`Stato_Bundle__c`**, a
+  **`Product_Registry_Admin`** permission set carrying the "administrators only"
+  rule in source control, and **the ten bundle-only articles**
+  ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) delivery closed,
+  [OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)
+  resolved).
+  ⚠ **`Stato_Bundle__c` is provisional** — its values and its host object are
+  inferred from a Gemini summary, and the field's own description says so.
+  🔴 **All ten records carry `Anno Solare 2026` on ROMI's assumption alone.**
+  The workbook has no year column, but `Evento__c` is a dependent picklist and
+  will not take a value without its controlling field. So the field
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) questions the
+  existence of is now **load-bearing for data that exists**.
+  🔴 **The load exposed a live code mismatch — and an earlier reading of it
+  here was wrong and is corrected.** `Code__c` is **not** unused: it is populated
+  on **259 of 291** products and is the key `WoocommerceOrderService` matches
+  incoming orders against. **29 of the workbook's 33 Mexal articles are already
+  in the org**, matched on it. 🔴 **`CS-00115` in the client's file is
+  `CS000115` in the org** — the same article, spelled differently, which is
+  [the normalisation risk](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)
+  as a live defect rather than a hypothesis. ⚠ **`Genera_Biglietto__c` is true on
+  only 3 of the 29** though the workbook says `SI` for all 43 — not corrected,
+  because it touches records this session did not create.
+  ⚠ A new trap is written down:
+  [adding a picklist value is not the same as making it usable](notes/How%20to%20add%20a%20picklist%20value%20that%20records%20can%20actually%20use.md)
+  — a value must be assigned to **every record type**, and a metadata retrieve
+  cannot tell you whether it is.
+
+- ✅ **2026-09-02 — the article code has a unique external id again:
+  `Product2.External_Product_Code__c`.** Text(255), **unique**,
+  **case-insensitive**, **`externalId`**, and — unlike `Code__c` — **not
+  required**, so it can carry field-level security. **All 227 coded products
+  migrated from `ProductCode`, zero mismatches**; `ProductCode` stays as the
+  human-facing code
+  ([the note](notes/objects/ProductCode%20is%20kept%20in%20step%20with%20the%20external%20product%20code.md)).
+  🟢 **This closes the parallel-batch hole.** A unique field is a database
+  index enforced at commit, so two concurrent Bulk API batches cannot both write
+  the same code — something **no trigger can guarantee**.
+  🟢 **Upsert by article code works again** (`idLookup: True`), which
+  `ProductCode` cannot do. The ~1000-article Mexal reload can be a keyed upsert.
+  🔴 **The declarative duplicate rule remains impossible** — a matching-rule
+  deploy is refused with _"The Product2 object is invalid"_; Salesforce Duplicate
+  Management does not support `Product2`. Recorded so nobody retries.
+  🟢 **`ProductCodeTrigger` no longer checks for duplicates** — that was
+  redundant once the unique field existed. It now does one thing: **copies
+  `External_Product_Code__c` into `ProductCode`** on before-insert and
+  before-update, so the key and the human-facing code cannot drift. No SOQL, no
+  DML. A blank external code leaves `ProductCode` alone, so it is a copy and not
+  a mirror. ⚠ Still ~35 uncovered Apex lines against
+  [the coverage deficit](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+- ✅ **2026-09-02 — `Product2.Code__c` is deleted; the article code is now the
+  standard `ProductCode`.** Asked for, questioned, confirmed, done
+  ([the note](notes/objects/The%20article%20code%20moved%20from%20Code__c%20to%20ProductCode.md)).
+  It was **not** a straight delete: the field held the code for **207 of 230**
+  products and was the key **`WoocommerceOrderService` matches live orders
+  against**. So 207 codes were copied to `ProductCode` (**228 of 230 carry a
+  code, none lost**), the WooCommerce class and three test classes were
+  repointed, and it was removed from two layouts, two flexipages and
+  `Bundle_Demo` before the destructive deploy.
+  🟢 **Merging the two namespaces surfaced six codes that named two different
+  articles each** — invisible while the fields were separate. In every pair the
+  `Code__c` side was inactive; those six were deleted.
+  🔴 **The uniqueness guard is gone.** `Code__c` was `unique` + `externalId`;
+  `ProductCode` is a plain field. There are **zero duplicate codes today**, and
+  **nothing now prevents one** — which matters against
+  [the collision risk](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)
+  and the ~1000 codes about to be re-created. Worth restoring a constraint before
+  the registry reload.
+
+- ✅ **2026-09-02 — the article registry was cleaned out and reloaded from the
+  client's workbook.** `Product2` **291 → 236**: **95 records deleted**, **40
+  loaded**, three kept and updated in place. The end state is exactly the
+  workbook — **43 products carry `Genera_Biglietto__c`**, **10** are
+  `Solo_Bundle__c`, **13** carry a `Tipo_Biglietto__c`
+  ([the detail](notes/objects/The%20three%20generations%20of%20bundle%20article%20code.md)).
+  🟢 **A whole superseded generation is gone** — 49 `-B` records, the
+  `codice A`/`codice B` convention built in the org and **never recorded in any
+  note**. It was found only by inventorying the object.
+  🟢 **The three Academy articles were kept, not destroyed** — they sit on
+  **activated orders**, and checking them showed they already matched what the
+  reload would produce. Updated in place instead.
+  🟢 **The load follows the org's own key convention** (`Code__c`, not
+  `ProductCode`), retiring the inconsistency the first pass introduced.
+  ⚠ **All 40 still carry `Anno Solare 2026` on ROMI's assumption** — the
+  workbook has no year and `Evento__c` cannot be set without its controlling
+  field ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)).
+  ⚠ **Four Assets and one OrderItem were deleted unnecessarily** before the
+  activated-order constraint was understood; recoverable from the Recycle Bin
+  for ~15 days.
+
+- ✅ **2026-09-02 — `Full_Permission` granted 6 of Product2's 26 custom fields**,
+  which is why an administrator could not see the article registry. Nineteen
+  grants added, deployed, verified at **26 of 26**
+  ([the note](notes/objects/Full%20Permission%20granted%20six%20of%20twenty-six%20product%20fields.md)).
+  🟢 **It was org-only and is now in source control**, closing one of the three
+  org-only permission sets; `DocuSign` and `Sales_User` remain.
+
+- 🟢 **2026-09-02 — the Follow-up Anagrafica Articoli ran, and two build
+  actions landed on Aurel Mrruku.**
+  [The note](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md) is
+  written from **Gemini notes alone** — no transcript or recording was read, so
+  it is an action list, not a minute, and the full drill is still owed.
+  🟢 **Manual management of article codes on Salesforce was defined**, and the
+  **fiscal-residence mapping was approved**
+  ([OI-97](notes/items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md)) —
+  though the summary records **that** each was decided, not **what**.
+  🔴 **`Tipo Biglietto` is now an assigned build action**, admin-editable only.
+  🔴 **`Stato Bundle` is new and is in no tracker** — a bundle state "in
+  lavorazione" with a transition on confirmation, a state machine nobody has
+  specified. It needs a row.
+  ⚠ **Three follow-up sessions were to be invited for 3, 4 and 7 September** and
+  only the 7th is in the calendar below. ⚠ **Three of the eight actions produce
+  files** — a mapping file, a data model file due "immediately after the call",
+  and the JSON. **None has been looked for.**
 
 - 🟢 **2026-09-01 → 09-02 — org access failed for both the technical lead and
   the PM, and is fixed.** Aurel Mrruku at 09:37 CEST: _"non posso accedere alla
@@ -153,8 +412,9 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   ([the access risk](notes/risks/Risk%20-%20the%20team%20lost%20access%20to%20the%20Pienissimo%20orgs%20on%201%20September.md),
   now resolved). ⚠ **Two things it did not settle**: which PROD Elena Spini
   meant — she never named the org — and **why** it broke; 1Password is still
-  neither confirmed nor excluded. The Biglietto recycle-bin window is workable
-  again and still closes about **12 September**.
+  neither confirmed nor excluded. ~~The Biglietto recycle-bin window is workable
+  again and still closes about **12 September**.~~ **Moot** — the dataset is
+  disposable, see above.
 
 - 🟢 **2026-08-31 → 09-01 — the Anticipay API contract arrived early, and has now
   been read.** Andrea Parmeggiani sent `Documentazione API - Salesforce.pdf` at
@@ -163,7 +423,7 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   adding a `:env` path parameter (`test` | `prod`). Downloaded by hand and
   drilled the same morning:
   [the contract](notes/The%20Anticipay%20middleware%20API%20contract.md).
-  `GET https://integration.pienissimo.com/salesforce/account/:env/:piva`, bearer
+  `GET https://romi.pienissimo.com/salesforce/account/:env/:piva`, bearer
   token in the header, **eleven response fields**, four error codes.
   🟢 **The eleven fields exactly match the as-is Mexal lookup** Elisa Migliano
   described on 6 August, so accuracy is a known quantity — and the **reliability
@@ -381,8 +641,13 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 - The repo still runs ahead of the trackers and the org still holds Apex the
   repo does not — [build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md),
   [missing stack](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
-- **Nothing can deploy today.** Apex coverage is **0%** against a 75% floor —
-  measured 2026-08-31, **21 classes, 1,571 uncovered lines, zero covered**
+- **Nothing can deploy to production today, and that is accepted.** Apex
+  coverage is **0%** against a 75% floor —
+  [deliberately deferred out of Fase 1](notes/decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md)
+  (Aurel Mrruku, 2 September), so it is **not** a blocker on current build work
+  and should not be reported as one. It still gates the production deploy, and
+  the suite is still unscheduled. Last measured 2026-08-31 at **21 classes,
+  1,571 uncovered lines, zero covered**
   ([OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),
   [the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)).
   ⚠ The fall from 1,769 is **entirely the deleted Biglietto classes** — no test
@@ -449,14 +714,25 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   token) and **four were never raised**. The `:env` v2 mail at 12:46 CEST is
   **confirmed** an outcome of the call. Chase three: the **error response bodies**,
   the pass-through date, the `dascita` typo · **2 Sept 10:00–11:30**
-  [ROMI-PIENISSIMO] Follow-up Anagrafica Articoli, client-facing — 🔴 **the
-  material for it arrived 1 Sept 14:04Z and is unread**
-  ([OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)) · **7 Sept 10:00–11:00** [PIENISSIMO] Interna
+  [ROMI-PIENISSIMO] Follow-up Anagrafica Articoli, client-facing — ✅ **ran; the
+  material was read the same day** and the session is noted from Gemini notes
+  only ~~([the note](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md),~~
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)) — ⚠ **superseded:
+  the transcript was read the same night and
+  [the minute is complete](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)**
+  · **3 Sept 11:00–12:00** [ROMI-PIENISSIMO] Data Model: Parte 1 · **4 Sept
+  16:00–17:00** Parte 2 · **7 Sept 11:00–12:00** Parte 3 — all three
+  **client-facing and confirmed**, invited 2 Sept 09:08–09:19Z (Elena Spini,
+  Elisa Migliano, Fabrizio Paganelli, Andrea Di Cicco, Aurel Mrruku optional,
+  Sabatino Rinaldi optional); ⚠ three internal `PIENISSIMO - DM TBD` holds
+  duplicate the same slots and Parte 3 has no Meet link · **7 Sept 10:00–11:00** [PIENISSIMO] Interna
   Flussi MKT, ROMI-internal (Elena Spini, Aurel Mrruku, Fabrizio Mastracci),
   **new — invited 31 Aug 16:07Z**, first marketing session since 19 Aug and the
   forum for [OI-81](notes/items/OI-81%20Event%20communication%20funnel.md)'s
-  undecided `30 vs 60` · [PIENISSIMO] Follow-up Interno is a **weekly Monday
-  17:00 slot**.
+  undecided `30 vs 60` · 🔴 **9–11 Sept ROMI company event** — the Fase 1
+  development deadline of **10 September falls inside it**, and Pienissimo is on
+  tour 9–10 · **17 Sept 09:00–13:00** Elisa Migliano is on a first-aid course ·
+  [PIENISSIMO] Follow-up Interno is a **weekly Monday 17:00 slot**.
   [The compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)
   still governs.
 
@@ -474,8 +750,12 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
 
 ## The live chain
 
-1. **Deployability** — the two coverage items above gate every other, and are
-   handled as one late task on Aurel's request.
+1. **Deployability** — ⏸ **deferred by decision, not a Fase 1 gate.** The
+   coverage items gate the **production** deploy only, and are handled as one
+   late task on Aurel's request:
+   [not a Fase 1 concern](notes/decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+   ⚠ Unscheduled, between the 10 September end of build and the 6 October
+   go-live.
 2. **Client inputs owed** — 🟢 **the biggest one landed and was read on 24 Aug.**
    [`Prodotti e Bundle.xlsx`](notes/The%20Prodotti%20e%20Bundle%20workbook.md),
    sent 7 Aug and unopened for seventeen days, delivered **real catalogue
@@ -499,9 +779,10 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
    [`_ARCOD` is an opaque string](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
 3. **Dated but unbuilt** — the
    [standard Asset migration](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md)
-   (🔴 **and now there is nothing to migrate from** — the source object was
-   deleted on 28 Aug with its 37 records, so this is a build from scratch, not a
-   mapping exercise),
+   (**a build from scratch, not a mapping exercise** — the source object was
+   deleted on 28 Aug with its 37 records, and
+   [that data is disposable by decision](notes/decisions/Decision%20-%20UAT%20data%20is%20disposable%20in%20Fase%201.md),
+   so the scope is the Asset build itself),
    the [tranche](notes/items/OI-50%20Tranche%20object.md) **remainder**
    (object and Quote-side creation now built; propagation to Order Item,
    payment aggregation and tests are not),

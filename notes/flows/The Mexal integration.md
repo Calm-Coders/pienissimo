@@ -5,9 +5,9 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-08-26
+updated: 2026-09-02
 depends_on: [OI-58]
-source: meetings/open-items.md row 58
+source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
 
 # The Mexal integration
@@ -226,3 +226,97 @@ order rows** implied by Mexal's row identifiers. Andrea Di Cicco described the
 row-id structure as what makes per-tranche invoicing of a bundle possible; Aurel
 Mrruku asked him to explain it — _"mi devi spiegare sta roba"_ — and the call
 ended first. It bears on [OI-50](../items/OI-50%20Tranche%20object.md).
+
+## The document rules, dictated 2026-09-02
+
+**The second half of the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+is Elisa Migliano reading her own Mexal screens aloud while Andrea Di Cicco maps
+them.** This is the first time the order tracciato has been written down. Treat
+it as the client's own statement of the contract — and note that several values
+were recalled rather than read, which is flagged where it happened.
+
+### Order header
+
+| Field                     | Rule                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------- |
+| `codice conto`            | the customer code                                                                     |
+| `data documento`          | the date the order is created                                                          |
+| `sigla` / `serie` / `numero` | fixed except `numero`; send **0** and Mexal assigns the next value                 |
+| **`sigla`**               | **`OC` for services, `BC` for books** — never mixed in one order                      |
+| **`causale`**             | derived from sigla × fiscal residence — see the table below                            |
+| **magazzino di uscita**   | **1** for `OC`, **2** for `BC`                                                        |
+| **`costi ricavi`**        | **3** (servizi) for `OC`, **1** (materie prime) for `BC`                              |
+| `agente`                  | on the order header                                                                   |
+| `origine`                 | today the Zoho order number; after go-live the Salesforce one                          |
+
+**Causale by document type and fiscal residence:**
+
+| Causale | Sigla | Applies to                    |
+| ------- | ----- | ----------------------------- |
+| 1       | `OC`  | services, Italy               |
+| 2       | `OC`  | services, San Marino          |
+| 3       | `OC`  | services, everywhere else     |
+| 4       | `BC`  | books, Italy                  |
+| 5       | `BC`  | books, San Marino             |
+| 6       | `BC`  | books, abroad                 |
+
+Elisa Migliano restated it herself to be sure: _"nel caso che l'ordine sia di
+tipo OC, la causale può essere 1 2 o 3… nel caso in cui l'ordine è di tipo BC, la
+causale può essere 4 5 o 6, sempre in base alla nazionalità del cliente."_
+
+⚠ **`BC` was a late catch** — _"quando facciamo la vendita del libro, la sigla
+dell'ordine non è OC, è BC. Questa c'era sfuggita effettivamente."_ Everything
+written before 2 September assumed one order type.
+
+⚠ **The cost-centre values were recalled, not read**: _"l'uno, se non ricordo
+male, vero?"_ Confirm both against a real document before coding.
+
+### Order lines
+
+`codice articolo`, `descrizione`, `unità di misura`, `quantità`, `prezzo`,
+`sconti`, `importo`, `IVA` — and:
+
+🔴 **`data di scadenza` on every line, and it is the tranche due date.** Andrea Di
+Cicco: _"è per le tranche."_ Elisa Migliano: _"su Mexal sarebbe la data di
+scadenza della tranche… oggi noi non la gestiamo, però un domani andrà messa."_
+So the tranche stops being a Salesforce-only concept and becomes part of the
+order tracciato — see [OI-50](../items/OI-50%20Tranche%20object.md).
+
+**VAT is exempt on both types**, with different exemption codes. Elisa Migliano
+gave them, corrected herself once, and the correction is what stands: **`E01` for
+`OC`, `E10` for `BC`** — _"per gli ordini BC non è E01, è E10. Ho invertito i
+due."_ ⚠ Read off memory mid-sentence; verify before use.
+
+🔴 **`codice agente`, `zona` and `classificatore rete` are wanted on the header
+and Andrea Di Cicco could not find them** in the field set the read call returns
+— [OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md).
+
+### Customer registry
+
+| Field                      | Rule                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------- |
+| `codice paese`             | full country list; a `paese` table in the API holds the codes — **identified, unread**   |
+| `residenza fiscale` / `tipo nazionalità` | **derived from the country code**, five values — [OI-97](../items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md) |
+| `tipo fattura elettronica` | B2B for Italian companies, **blank** (_"non gestita"_) for all others                     |
+| `PEC`                      | _"fondamentale… è quello che guida la fatturazione elettronica"_                          |
+| `codice agente`            | on **every** customer, for the commission run                                             |
+| `valuta`                   | **Euro only**, fixed — this retires the 26 August _"non so se 1 è euro"_ unknown          |
+| listino                    | **listino 1 only**, confirming 26 August                                                  |
+| `tipo società`, `pubblico` | not used — _"non ci interessa, non la gestiamo"_                                          |
+
+⚠ **The B2B code was guessed on the call, not read**: _"Potrebbe essere S." —
+"Potrebbe essere S. Sì, esatto."_ They then verified the **other** half properly,
+looking up a real non-managed customer and confirming the field is blank. So the
+blank is evidence and **`S` is a guess** — confirm it.
+
+### The sales network, and why the agent code matters
+
+Pienissimo's sellers are the **tutors**. All of them have CRM access; some are
+employees paid through payroll, and **two work under an agency contract and are
+paid commission**. Every customer therefore carries an agent code, _"anche se non
+è codice agente, per avere una pulizia generale"_ — that is, the code is assigned
+to every tutor whether or not commission is actually calculated for them.
+
+This is the same population as the agents already known to live in Mexal as
+**suppliers under mastro 610**.

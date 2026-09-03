@@ -64,6 +64,10 @@ Full decode:
 `GET https://integration.pienissimo.com/salesforce/account/:env/:piva`, bearer
 token in the header, eleven response fields, four error codes.
 
+⚠ **Superseded 2026-09-02.** That host **never resolved** — Aurel Mrruku got an
+HTML `404` from it. The endpoint moved to `romi.pienissimo.com` in a v3 of the
+documentation and is now confirmed working. The line above records what v2 said.
+
 ### 2. 🟢 Two things the 31 August sweep could only infer are now specification
 
 - **The cache-only test mode is written into the contract**, not just the mail

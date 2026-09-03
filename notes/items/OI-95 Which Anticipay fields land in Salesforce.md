@@ -166,21 +166,21 @@ list since 31 August. Both are on the mail thread.
 ## ✅ 2026-09-01 - resolved in the room, and the answer is "all of them"
 
 **The [1 September follow-up](../meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)
-took the decision.** The advice one section above was to get a *date*; the call
-produced the *decision* instead. Aurel Mrruku walked point 6 of the
+took the decision.** The advice one section above was to get a _date_; the call
+produced the _decision_ instead. Aurel Mrruku walked point 6 of the
 documentation field by field with Elisa Migliano and Andrea Parmeggiani, and
 **every one of the eleven fields is taken.**
 
-| Field                                    | Lands on                                                          |
-| ---------------------------------------- | ----------------------------------------------------------------- |
-| `ragione_sociale`                        | `Account.Name`                                                    |
-| `indirizzo`, `citta`, `provincia`, `cap` | the standard billing address block                                |
-| `pec`                                    | **a new dedicated field on Account**                              |
-| `nome_legale_rappresentante`             | **a new text field on Account**                                   |
-| `codice_fiscale_legale_rappresentante`   | **a new field on Account**                                        |
+| Field                                    | Lands on                                                                                                                                           |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ragione_sociale`                        | `Account.Name`                                                                                                                                     |
+| `indirizzo`, `citta`, `provincia`, `cap` | the standard billing address block                                                                                                                 |
+| `pec`                                    | **a new dedicated field on Account**                                                                                                               |
+| `nome_legale_rappresentante`             | **a new text field on Account**                                                                                                                    |
+| `codice_fiscale_legale_rappresentante`   | **a new field on Account**                                                                                                                         |
 | `data_di_dascita_legale_rappresentante`  | **a new field on Account** — still carrying the [misspelled key](OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md) |
-| `luogo_nascita_legale_rappresentante`    | **a new field on Account**                                        |
-| `indirizzo_legale_rappresentante`        | **one single free-text field**, not a structured address          |
+| `luogo_nascita_legale_rappresentante`    | **a new field on Account**                                                                                                                         |
+| `indirizzo_legale_rappresentante`        | **one single free-text field**, not a structured address                                                                                           |
 
 ### The two shape rulings
 

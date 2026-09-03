@@ -1516,7 +1516,7 @@ modifiche prima che uno sviluppatore inizi.
 
 ### 23.2 Il contratto
 
-`GET https://integration.pienissimo.com/salesforce/account/:env/:piva`, con un
+`GET https://romi.pienissimo.com/salesforce/account/:env/:piva`, con un
 **bearer token nell'header `Authorization`** e nessun corpo nella richiesta.
 `:env` accetta `test` o `prod` e precede la partita IVA. Un `200` restituisce
 `{ success, status, info }`, dove `info` porta **undici campi stringa**.
@@ -2077,3 +2077,307 @@ EmailTemplate" si fondava su questo artefatto ed è **ritirata**.
 
 > Un risultato vuoto restituito da uno strumento che non è in grado di enumerare
 > ciò che si cerca non è un'assenza. È un silenzio.
+
+## 26. Aggiornamento 02/09/2026 — l'endpoint Anticipay è cambiato, e ora funziona
+
+La terza revisione della documentazione API in tre giorni, e la prima volta che
+qualcosa su questa integrazione viene **dimostrato anziché letto**.
+
+### 26.1 🟢 Cosa è successo, in due ore
+
+| Ora (UTC)    | Evento                                                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| **08:21:59** | Aurel Mrruku segnala che l'host **non si risolve**: `HTTP/1.1 404 Not Found`, `Content-Type: text/html; charset=iso-8859-1` |
+| **10:18:26** | Andrea Parmeggiani: _"Ho impostato un nuovo terzo livello: romi.pienissimo.com"_ — **v3** in allegato                       |
+| **10:40:45** | Aurel Mrruku: _"Confermo che adesso funziona."_                                                                             |
+
+Quindi **`integration.pienissimo.com`, l'host della v1 e della v2, non ha mai
+funzionato.** Tutto ciò che è stato scritto su questa API prima di oggi si
+basava su un documento che descriveva un endpoint inesistente. Il nuovo host è
+**`romi.pienissimo.com`** ed è stato provato da ROMI.
+
+Due ore dalla segnalazione alla correzione confermata. È la seconda volta che
+questa controparte chiude qualcosa in una mattinata, e va registrato accanto ai
+fallimenti.
+
+### 26.2 La v3 cambia l'host e nient'altro
+
+Verificato confrontando con un diff il testo estratto della v2 e della v3 — non
+dedotto dal corpo della mail. **Differiscono due righe**, entrambe con
+l'hostname. Tutto il resto è identico byte per byte, il che significa che quanto
+segue **è sopravvissuto a una terza revisione senza modifiche**:
+
+- il **refuso `data_di_dascita_legale_rappresentante`** (§23.7, OI-105) — tre
+  revisioni, ancora lì, perché **nessuno l'ha chiesto**
+- il **corpo della risposta di errore, del tutto assente** (§23.4, OI-107)
+- la descrizione del `404` che nomina ancora **Salesforce** come sistema cercato
+- **il bearer token** — la stessa stringa dal 31 agosto, ora inviata quattro volte
+
+### 26.3 🔴 La raggiungibilità non è il contratto
+
+Una chiamata confermata non è un'integrazione funzionante. **Nessuna lookup è
+mai stata eseguita**: nessuno ha mai osservato un `200`, un `404` o un corpo di
+errore. Ciò che è dimostrato è che l'hostname si risolve e il TLS termina. Tutto
+ciò che riguarda il payload resta una lettura di un PDF.
+
+### 26.4 🔴 L'host morto ha prodotto un rilievo che vale più della correzione
+
+Il guasto che Aurel Mrruku ha incontrato a mano è esattamente quello che il
+motore di callout di casa gestisce peggio.
+
+Un `404` in HTML da un hostname sbagliato dà al `404` un **terzo significato**,
+oltre a _P.IVA sconosciuta_ e _non in cache con `env=test`_:
+
+| `404` perché                              | Corpo                                        | Distinguibile da           |
+| ----------------------------------------- | -------------------------------------------- | -------------------------- |
+| la P.IVA è davvero sconosciuta            | la forma d'errore dell'API (non documentata) | —                          |
+| `env=test` e l'azienda non è in cache     | come sopra                                   | **nulla**                  |
+| **l'endpoint è sbagliato o l'host è giù** | `text/html`                                  | **solo il `Content-Type`** |
+
+Seguendolo dentro `API_Callout_Engine`: l'invio riesce, `Is_Error__c` non viene
+mai impostato (§23.4 difetto 1), `deserializeResponse` prova a interpretare
+**HTML come JSON**, lancia, e il `catch` ricostruisce la riga di log **senza
+`Response_State__c`** (difetto 2). **Un endpoint completamente morto verrebbe
+registrato come un errore di parsing Apex senza stato HTTP e senza flag di
+errore** — qualcosa che somiglia a un bug di codice Salesforce, non a
+un'interruzione.
+
+Aurel Mrruku l'ha diagnosticato in pochi secondi perché era in un client di
+posta. Attraverso il motore così com'è, sarebbe stato invisibile. **Questo alza
+la priorità della correzione "controllare lo stato prima di deserializzare"**,
+che finora era codice difensivo contro una forma che nessuno aveva visto.
+
+### 26.5 ⚠ Il named credential `Anticipay` nell'org precede lo spostamento
+
+La verifica org del 2 settembre (§25) ha trovato un named credential `Anticipay`
+configurato nell'org e in **nessun branch di questo repository** — alle
+**08:05–08:14Z**, cioè _prima_ che il nuovo host esistesse e _prima_ che Aurel
+Mrruku avesse persino segnalato morto il vecchio.
+
+È stato quindi creato contro l'unico hostname disponibile: quello che non ha mai
+funzionato. **Con ogni probabilità contiene `integration.pienissimo.com`.**
+Essendo solo nell'org non esiste diff, revisione o deploy che lo farebbe
+emergere; fallisce semplicemente a runtime, con il `404` in HTML descritto sopra.
+
+**Verificarlo in Setup prima di collegarci qualsiasi cosa**, e correggere l'host
+nell'ambito del retrieve che il §25 già richiede. ⚠ Leggere solo l'endpoint — il
+token non va copiato da nessuna parte.
+
+### 26.6 Dove lascia la build
+
+🔴 **Restano otto giorni al 10 settembre, e gli undici campi concordati il
+1 settembre non sono ancora costruiti.** Il funzionamento dell'endpoint toglie
+una scusa, non un blocco — la costruzione dei campi non ha mai avuto bisogno di
+un endpoint o di un token. Resta il lavoro sbloccato più economico del progetto.
+
+Due piccole richieste sono ormai in ritardo e vanno in **una sola** mail ad
+Andrea Parmeggiani: **un esempio di ciascuna risposta di errore** e **il refuso
+`dascita`** — correggere o congelare. Ha revisionato la documentazione tre volte
+in tre giorni; non c'è motivo di pensare che una quarta sia difficile.
+
+## 27. Aggiornamento 02/09/2026 (sera) — la sessione Anagrafica Articoli, analizzata dalla trascrizione
+
+La sessione cliente del 2 settembre era stata annotata la mattina stessa dalle
+sole note Gemini, e quella nota dichiarava già nella prima riga che l'analisi
+completa restava da fare. **Il documento Gemini, con la trascrizione integrale di
+1h16m37s, è diventato leggibile su Drive alle 10:36Z** ed è stato letto per
+intero dallo sweep notturno. Questa sezione è ciò che la trascrizione aggiunge.
+
+Presenti: **Elisa Migliano e Fabrizio Paganelli insieme nella stessa stanza** —
+lui partecipa e non parla nella registrazione — con Andrea Di Cicco, Aurel
+Mrruku ed Elena Spini, collegatasi qualche minuto dopo.
+
+### 27.1 Le due domande con cui il cliente si è presentato
+
+La mail del 1 settembre annunciava _"un paio di domande"_ che non erano né nella
+mail né nel file, e il registro le portava come ignote. **Sono state poste a voce
+all'inizio della call ed entrambe hanno avuto risposta.**
+
+1. **_"vale la pena di impegnare un campo di mexal per solo 15 codici
+   articolo?"_** — **No.** `Tipo biglietto` diventa un campo solo Salesforce,
+   modificabile dai soli amministratori di sistema, e il menù dell'anagrafica
+   prodotti deve essere visibile _"esclusivamente all'account
+   amministrazione@pienissimo.com"_. Cade così anche la doppia codifica
+   concordata il 26 agosto, che avrebbe compresso due classificazioni in un solo
+   campo Mexal.
+2. **_"prezzo di listino sui ci metto zero, dico bene?"_** — **No.** I codici
+   solo-bundle mantengono il prezzo di listino reale; il prezzo specifico si
+   definisce quando l'articolo viene agganciato al bundle. È lo stesso meccanismo
+   chiesto dalla richiesta di modifica aperta `OI-93`, che risulta così allineata
+   per la prima volta — anche se nessuno in riunione sembrava sapere che quella
+   richiesta esistesse.
+
+⚠ **Correzione di paternità.** Il file è arrivato dall'indirizzo di Fabrizio
+Paganelli e il registro lo attribuiva a lui. Nella registrazione **Elisa Migliano
+dice di averlo fatto lei**: _"questo qui è un file che ho fatto io a mano."_ È a
+lei che vanno rivolte le domande sul contenuto.
+
+🔴 **`Tipo biglietto` non ha alcun controllo e lo sanno entrambe le parti.** Aurel
+Mrruku lo ha detto chiaramente — _"se metti su un prodotto una tipologia di
+biglietto che non c'entra niente con quel prodotto, lì non ti posso aiutare"_ — e
+la mitigazione concordata è il controllo degli accessi, non la logica. Circa 15
+codici hanno un valore su un'anagrafica corsi di 40-50 righe, quindi una
+ventina di aggiornamenti manuali l'anno.
+
+### 27.2 Anticipay viene chiamato per ogni anagrafica, estere comprese
+
+**È il ribaltamento della sezione.** La call del 1 settembre aveva stabilito che
+Anticipay serve solo aziende italiane e che una partita IVA estera ritorna sempre
+`404`; il §24 lo aveva letto come risposta negativa alla metà estera di `INT-18`.
+
+Andrea Di Cicco aveva proposto l'economia — _"secondo me non la facciamo proprio
+la chiamata se estera"_ — e Aurel Mrruku si era offerto di condizionare la
+chiamata a un campo nazione. **Elisa Migliano ha argomentato per chiamare
+sempre**, su un terreno che non riguarda affatto Anticipay:
+
+> _"nelle partite IVA estere soprattutto ci sono dei caratteri speciali… a
+> prescindere secondo me è bene che ci arrivi comunque una sorta di errore per
+> controllare che non abbiano scritto cose inusuali."_
+
+Le partite IVA le digitano i tutor a mano e alcune arrivano da form pubblici.
+Quindi la chiamata è **anche un controllo di input**, e l'errore è il prodotto,
+non un guasto. Concordato: _"quindi io lo farei sempre la chiamata verso
+anticipay."_
+
+**Il percorso d'errore è stato progettato in riunione**, e colma una lacuna
+aperta dal 6 agosto — l'indirizzo di amministrazione che nessuno aveva fornito.
+In caso di lookup fallito parte una mail ad `amministrazione@pienissimo.com`, con
+il dettaglio che la rende utilizzabile, aggiunto da Aurel Mrruku: _"nella mail
+mettiamo proprio il link del dato su salesforce, così se cliccate entrate e
+controllate."_ L'anagrafica viene creata su Salesforce in ogni caso: Anticipay è
+un controllo, mai un blocco.
+
+🔴 **Due cose su cui questo si regge, e nessuna delle due esiste.**
+
+Primo, **il corpo d'errore per un'azienda estera non è documentato.** Elena Spini
+lo ha cercato durante la call e non lo ha trovato: _"la cosa estera in effetti
+non c'è negli errori. Non so cosa può rispondere."_ Per Aurel Mrruku ricade nel
+`404` generico, il che ne farebbe il **quarto** significato dello stesso codice
+di stato, dopo _partita IVA sconosciuta_, _non in cache con `env=test`_ e
+_hostname sbagliato_. È una deduzione, non un contratto.
+
+Secondo, **la notifica non può scattare con il codice attuale.** `Is_Error__c`
+non viene mai valorizzato su errore HTTP, quindi la mail concordata resterebbe
+muta proprio sul `404` su cui è costruita: il difetto che il §23 registrava come
+generico ha ora sopra di sé una funzionalità concordata con il cliente.
+
+**La richiesta pendente ad Andrea Parmeggiani cambia quindi forma.** Non è più
+"un esempio di ogni corpo d'errore": è _che cosa ritorna il middleware per una
+partita IVA non italiana, e come si distingue da una partita IVA semplicemente
+sconosciuta?_ Senza quella distinzione la mail non può dire quale dei due casi
+sia successo e l'amministrazione deve aprirli tutti.
+
+### 27.3 Il tracciato ordini Mexal, per iscritto per la prima volta
+
+La seconda metà della call è Elisa Migliano che legge ad alta voce le proprie
+schermate Mexal mentre Andrea Di Cicco mappa. Tutto ciò che era stato scritto
+finora presupponeva un solo tipo di ordine; i tipi sono due.
+
+| Regola                  | Servizi              | Libri                  |
+| ----------------------- | -------------------- | ---------------------- |
+| **sigla**               | `OC`                 | **`BC`**               |
+| **causale**             | 1 IT · 2 SM · 3 altro | 4 IT · 5 SM · 6 altro |
+| **magazzino di uscita** | 1                    | 2                      |
+| **costi ricavi**        | 3 (servizi)          | 1 (materie prime)      |
+| **IVA**                 | esente, `E01`        | esente, `E10`          |
+
+I libri non stanno mai nello stesso ordine dei servizi. `BC` è emerso tardi —
+_"questa c'era sfuggita effettivamente"_ — e i valori del centro di costo sono
+stati richiamati a memoria (_"se non ricordo male"_): entrambi vanno verificati
+su un documento reale.
+
+🔴 **Ogni riga ordine deve portare una `data di scadenza`, che è la scadenza della
+tranche.** Andrea Di Cicco: _"è per le tranche."_ Elisa Migliano: _"oggi noi non
+la gestiamo, però un domani andrà messa."_ La tranche smette così di essere un
+concetto solo Salesforce ed entra nel tracciato ERP — comportamento nuovo su
+**entrambi** i lati, concordato otto giorni prima della fine dello sviluppo di
+Fase 1, e non stimato. Si noti che `OrderItem.Tranche__c` esiste, è deployato, e
+**nessun Apex in repository lo scrive**.
+
+🔴 **Nuovo: `OI-110`.** Elisa Migliano ha bisogno di `codice agente`, `zona` e
+`classificatore rete` in testata ordine, e Andrea Di Cicco non li ha trovati nel
+set di campi che la sua integrazione legge. I tre campi servono al calcolo delle
+provvigioni: i tutor sono la rete vendita, tutti hanno accesso al CRM, alcuni
+sono dipendenti e **due hanno un contratto di agenzia e vengono pagati a
+provvigione**.
+
+Sul lato cliente: la residenza fiscale è **derivata automaticamente dal codice
+paese** su cinque valori, il che chiude `OI-97`; `tipo fattura elettronica` è il
+valore B2B per le aziende italiane e vuoto per tutte le altre — **il vuoto è
+stato verificato su un record reale, il codice B2B è stato ipotizzato**
+(_"potrebbe essere S"_); la PEC guida la fatturazione elettronica; la valuta è
+**solo Euro**, il che chiude l'incognita del 26 agosto su `valuta = 1`; e si usa
+solo il listino 1.
+
+`OI-109` si chiude per ritiro: Elisa Migliano ha lasciato cadere il codice
+destinatario SDI — _"comunque non ci serve"_ — il giorno dopo averlo chiesto.
+
+### 27.4 L'anagrafica clienti ottiene una serie di sessioni, chieste dal cliente
+
+Lo ha sollevato Elisa Migliano, con il numero che ne fa un problema: l'anagrafica
+clienti Zoho ha **150 campi**, e _"sono andata in confusione io da sola con me
+stessa, su un'anagrafica che conosco."_ La sua proposta — call di mezz'ora, una
+tabella alla volta, decidendo per ogni campo Zoho se serve su Salesforce — è
+stata accettata.
+
+**Tre sessioni con il cliente sono state fissate la mattina stessa**: `Data
+Model` Parte 1 il **3 settembre alle 11:00**, Parte 2 il **4 settembre alle
+16:00**, Parte 3 il **7 settembre alle 11:00**.
+
+🟢 **E il materiale per prepararle è arrivato lo stesso pomeriggio.** Elisa
+Migliano ha compilato il file condiviso di ROMI subito dopo la call — modifica su
+Drive alle 14:05:38Z, mail di Fabrizio Paganelli _"Abbiamo aggiornata la tabella
+condivisa. A domani"_ alle 14:06:38Z. `OI-24`, aperto dal 2 luglio e bloccante, è
+in larga parte arrivato: elenchi dei campi Zoho per Lead, Account, Referente,
+Opportunità, Offerta e Articoli, con il **foglio Account suddiviso in sezioni** —
+`Dati Anagrafici`, `Dati Tecnici`, `LEGALE RAPPRESENTANTE`, `MEXAL`, `MEXAL -
+DATI PER PROVVIGIONI`, `UTILIZZATO PER PERFORMANCE` e un ampio **`NON UTILIZZATO
+O OBSOLETO`**, che è il cliente che dichiara campo per campo che cosa non
+migrare.
+
+🔴 **Restano vuoti: l'elenco campi Ordine, Utenti, Profili e il piano dei
+caricamenti iniziali.** Il foglio `Flussi` porta solo F-1 (upsert anagrafiche
+Salesforce → ERP, realtime, _"scatta alla prima opty won"_) e F-2 (ERP →
+Salesforce, batch notturno); da F-3 a F-7 è vuoto, quindi ogni altra integrazione
+ha una casella e nessun contenuto.
+
+🔴 **Un foglio contraddice una decisione presa il giorno prima.** La sezione
+`LEGALE RAPPRESENTANTE` mostra che la residenza del rappresentante è già
+**suddivisa in via, città, provincia, CAP e paese** su Zoho, mentre la riunione
+del 1 settembre ha deciso di modellarla su Account come **un unico campo di testo
+libero**. Migrare un dato strutturato in uno non strutturato è una perdita
+irreversibile. **Da sollevare alla Parte 1.**
+
+⚠ **Il file è popolato con record reali** — un'azienda vera con partita IVA, PEC
+e IBAN, un legale rappresentante con nome, codice fiscale, data e luogo di
+nascita, un lead e un contatto con nome e cognome. Qui si registra che esiste;
+nulla di quel contenuto è riprodotto, e nulla può esserlo.
+
+### 27.5 Il calendario che nessuno ha sovrapposto al piano
+
+Elena Spini, mentre si fissavano le date: _"noi dal 9 all'11 siamo a un evento
+aziendale, quindi 9 10 11 anche noi non ci saremo."_
+
+🔴 **Lo sviluppo di Fase 1 dovrebbe finire il 10 settembre, dentro quell'evento.**
+Nessuno in riunione ha collegato le due cose, la data non è stata rinegoziata e
+il piano di progetto non è stato nominato. Da stasera restano **quattro giorni
+lavorativi**, tre dei quali con una sessione cliente — a fronte degli undici
+campi Anticipay (non costruiti), della build Asset da zero (non iniziata), di
+tutto il lato Salesforce di WooCommerce (non iniziato), del modello campagne
+padre/figlio (non costruito), del resto delle tranche e ora del tracciato ordini
+concordato oggi.
+
+Elisa Migliano è inoltre indisponibile il **17 settembre dalle 09:00 alle 13:00**.
+
+### 27.6 Una cosa fuori dalla riunione
+
+🔴 **Nessuno ha confermato che Pienissimo abbia DocuSign.** Aurel Mrruku lo ha
+chiesto direttamente a Elena Spini lo stesso pomeriggio: _"hanno già un contratto
+con loro?"_ La risposta separa la volontà dal contratto, e solo la volontà è
+acquisita — _"si DocuSign per la firma del preventivo lo vogliono"_ … _"richiedo
+conferma, ma mi aspetto di sì."_ La sandbox per sviluppatori è gratuita; il
+tenant di produzione richiede un accordo commerciale firmato, il go-live è il
+6 ottobre, e un acquisto di licenze era stato dichiarato per telefono a luglio e
+mai più confermato. `BIG-13` è ancora `open` nel registro, e in org esiste già
+una named credential `DocuSign` presente **solo in org**: qualcosa è collegato a
+un account che nessuno sa nominare. Nuova riga `OI-111`.

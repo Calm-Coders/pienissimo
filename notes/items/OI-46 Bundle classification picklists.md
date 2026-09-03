@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-07-23
-updated: 2026-08-26
+updated: 2026-09-02
 source: meetings/open-items.md row 46
 ---
 
@@ -222,3 +222,94 @@ them, taking it to direction on 31 August. The event list this item measures the
 picklist against is derived from the workbook extract of the registry he is about
 to replace. `Happy Team` being absent is still a real defect; the rest of the
 value list is provisional until the new registry arrives.
+
+## 2026-09-02 - the Evento picklist is wrong in five places, not one
+
+[The Anagrafica Articoli workbook](../The%20Anagrafica%20Articoli%20workbook.md),
+read 2026-09-02, names its events in **eleven spellings for nine events**.
+Checked against **Pienissimo UAT** (`00DMA000004nMMr2AM`) the same day and
+against `force-app/` at `326d362` - **org and repository agree exactly**, so this
+is a specification gap, not drift.
+
+The deployed values are `Tour`, `Food Marketing Festival`, `Pienissimo Live`,
+`Academy`, `Sold Out`, `Odb Live`, `Camerieri`, `Mastery`, `ND`.
+
+**17 of the workbook's 43 rows name an event the picklist cannot accept:**
+
+| Workbook               | Rows | Against the picklist                       |
+| ---------------------- | ---- | ------------------------------------------ |
+| `Pienissimo Intensive` | 8    | absent entirely                            |
+| `Camerieri Venditori`  | 3    | the picklist says `Camerieri`              |
+| `Happy Team`           | 3    | absent entirely                            |
+| `Odb`                  | 2    | the picklist says `Odb Live`               |
+| `Camerieri venditori`  | 1    | absent, and inconsistent with its own twin |
+| `ODB Live`             | 1    | case-only mismatch                         |
+
+So the **Happy Team defect recorded on 24 August is one of five**, and the
+largest is new: `Pienissimo Intensive` was an event "in fase di ridefinizione"
+with no articles on 7 August and now has eight.
+
+**Correcting it costs nothing.** `Evento__c` is populated on **3 of 281
+products** in UAT - one each on `Pienissimo Live`, `Academy` and `Tour`, blank on 278. There is no migration cost and no reason to keep a spelling the client does
+not use.
+
+`Tour` is in the picklist and has no articles in the workbook, though it was a
+live free event on 7 August. **Do not delete the value on that evidence** - the
+sheet is course articles only.
+
+**The decision this needs is whose spelling wins**, and it is client-facing: the
+built picklist or Fabrizio Paganelli's registry. The registry is the system of
+record for article data, which argues for the registry.
+
+## 2026-09-02 - corrected in the org, on the client's spellings
+
+Aurel Mrruku chose the registry over the built picklist. `Product2.Evento__c` now
+carries **11 values**: `Happy Team` and `Pienissimo Intensive` added,
+`Camerieri` renamed to `Camerieri Venditori`, `Odb Live` renamed to `Odb`. The
+dependency mappings on `Anno_Solare__c` were extended to match, and the values
+were assigned to **both** record types - which is the step that actually makes
+them usable, see
+[the method note](../How%20to%20add%20a%20picklist%20value%20that%20records%20can%20actually%20use.md).
+
+Deployed and in `force-app/`, so no new org-only drift. The rename cost nothing:
+`Evento__c` was populated on 3 of 281 products and none used a renamed value.
+
+🔴 **This does not settle `Anno_Solare__c`, and it deepens the problem.** Loading
+the ten bundle codes required inventing a year - the workbook has no year column,
+and a dependent picklist will not take a value without its controlling field, so
+all ten carry `Anno Solare 2026` **on ROMI's assumption alone**. The open
+question this item records - whether `Anno_Solare__c` should exist at all, given
+the client says the edition comes from the order date - is now **load-bearing for
+data that exists**, not just for a design.
+
+⚠ **`Tour` was kept.** It has no articles in the workbook, but the workbook is
+course articles only and Tour was a live free event on 7 August.
+
+## 2026-09-02 — the division of labour between Mexal and Salesforce is fixed
+
+The [2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+settled which system owns which classification, in Elisa Migliano's own summary:
+
+> _"gestirei su Mexal il campo genera biglietto oppure il discorso solo bundle.
+> Poi gestiamo su Mexal il campo evento. A quel punto abbiamo finito. E poi il
+> tipo biglietto lo andiamo a completare solo su Sales Force."_
+
+| Field                            | Owner                                     |
+| -------------------------------- | ----------------------------------------- |
+| `genera biglietto` / `solo bundle` | **Mexal** (`natura`)                     |
+| `evento`                         | **Mexal** (`categoria statistica`)         |
+| `tipo biglietto`                 | **Salesforce only**, administrators only   |
+
+🔴 **`Anno Solare` was never mentioned in the session.** This item questions
+whether the field should exist at all, and the ten bundle-only records loaded on
+2 September all carry `Anno Solare 2026` **on ROMI's assumption alone** — because
+`Evento__c` is a dependent picklist and will not take a value without its
+controlling field. An hour and a half of the client's product people, with the
+registry on screen, and the one open question about the registry's own structure
+went unasked. **Put it on Data Model Parte 1.**
+
+⚠ The workbook's `Articoli (anagrafica)` sheet carries a `Nuovi Campi` column
+listing `Categoria statistica → evento (da mexal)`, `Gruppo Merceologico`,
+`Natura → genera biglietto SI/NO (mexal)`, `Tipo Biglietto` — and then
+**`LIVELLO_0` through `LIVELLO_6`**, a seven-level product hierarchy that appears
+in no meeting, no requirement and no other note. **Nobody has asked what it is.**
