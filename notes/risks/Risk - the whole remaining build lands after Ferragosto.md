@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-08-06
-updated: 2026-09-02
+updated: 2026-09-03
 blocks: [go-live]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -110,3 +110,32 @@ tracciato agreed on 2 September.
 is that the plan and the calendar have never been laid over each other in
 writing, and the person who owns the plan said the words in passing while
 scheduling something else.
+
+## 2026-09-03 - the offsite is confirmed in writing, and a second absence appears
+
+🔴 **The 9-11 September ROMI company event is now corroborated in writing.**
+The record carried it only from Elena Spini's passing remark on 2 September.
+Gianpaolo Motta, mailing an external contact at 14:00Z on an unrelated subject:
+
+> _"hai spazio lunedì o martedì per una call per le attività Salesforce? (da
+> mercoledì a venerdì saremo out)"_
+
+Wednesday to Friday of next week is **9-11 September**. **The Fase 1 development
+deadline of 10 September falls inside it**, and the fact that ROMI's COO is
+routing external calls around it while nobody has moved the deadline is the whole
+problem in one sentence.
+
+⚠ **Elena Spini is also off 14 and 15 September.** She moved the internal
+follow-up on 3 September at 15:30Z with the note _"Aggiorno il ns follow-up per il
+progetto perché il 14 e 15 sarò off"_ — the 14 September occurrence goes to
+**Thursday 17 September, 14:15-15:15 CEST**, and the slot is now an hour rather
+than 45 minutes because _"andiamo sempre lunghi"_.
+
+So the week after the deadline opens with the project manager away for two days
+and the first internal checkpoint on the 17th. **Between 9 and 17 September there
+is one working day with the full team available.**
+
+⚠ Meanwhile the 3 September session put **sixteen more actions** into the pipe,
+nine of them build or integration work on Aurel Mrruku and Andrea Di Cicco
+([the minute](../meetings/2026-09-03%20Data%20Model%20Parte%201.md)), and two
+further client sessions are booked for 4 and 7 September.

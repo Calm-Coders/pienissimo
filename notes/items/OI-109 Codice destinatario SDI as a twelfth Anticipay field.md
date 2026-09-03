@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-01
-updated: 2026-09-02
+updated: 2026-09-03
 depends_on: [OI-94]
 requirement: INT-18
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
@@ -104,3 +104,32 @@ but it is a live data-quality fact for
 and for the registry re-creation
 ([OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)).
 **Record it there, do not chase it here.**
+
+## ⚠ 2026-09-03 - the field is back, from a different source
+
+This item was closed on 2 September because Elisa Migliano withdrew the request —
+_"comunque non ci serve"_. That withdrawal stands and **this item stays
+resolved**, because it was about getting the SDI **from Anticipay**.
+
+But at [Data Model Parte 1](../meetings/2026-09-03%20Data%20Model%20Parte%201.md)
+the next day, **Fabrizio Paganelli asked to keep the SDI field and to have the
+Mexal integration populate it**:
+
+> _"di far sì che nell'integrazione anticipay porti anche lo sd. Non si sa mai che
+> un domani possa cambiare qualcosa nella normativa e se dopo non ce l'abbiamo
+> alimentato e non abbiamo il campo... Se non serve lo lasci vuoto. Se serve
+> almeno ce l'abbiamo."_
+
+The field is present in the client's workbook under the MEXAL section, and Andrea
+Di Cicco left the session owing _"Includere il campo Codice Destinatario
+nell'integrazione tra Salesforce e Mexal"_.
+
+⚠ **Two people asked for the same field within 24 hours, for opposite reasons,
+and neither knew about the other.** Elisa Migliano dropped it as unnecessary;
+Fabrizio Paganelli kept it as insurance against a regulatory change. Both are
+recorded. **Nobody has reconciled them, and the transcript is ambiguous about
+which integration he means** — he says _"integrazione anticipay"_ while the action
+list and the field's placement both say Mexal.
+
+**Worth one sentence at Parte 2**: is the SDI fed from Mexal, from Anticipay, or
+by hand? Do not treat the build as decided.

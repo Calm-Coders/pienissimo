@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-24
+updated: 2026-09-03
 depends_on: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-18
@@ -95,3 +95,40 @@ Not settled here: who hosts the page —
 [OI-86](OI-86%20Who%20hosts%20the%20participant%20landing%20page.md) — and
 whether it is the same surface as the quote landing page in
 [OI-68](OI-68%20Quote%20acceptance%20landing%20page.md).
+
+## 2026-09-03 - built
+
+`lwc/participantRegistrationPage` and `ParticipantRegistrationController` (576
+lines) merged to `DevMain` in PR **#31**, written by Rexhina Hysi, published to
+the UAT sandbox the same day —
+[the Landing Page community](../objects/The%20Landing%20Page%20community.md).
+
+The controller matches this note's specification closely: it is entered with an
+**account id and a campaign id**, returns the account, campaign and event dates
+with **one `TicketRow` per visible Asset**, and looks a contact up by email
+before creating one — the autocompletion Rebecca Marmo demonstrated on 19 August.
+Assets are filtered to statuses `Disponibile` and `Assegnato`.
+
+🟢 **The field divergence this note flagged has been resolved by the build.**
+`TicketRow` carries `firstName`, `lastName`, `email` **and `phone`** — the
+6 August field list, not the 19 August diagram's three. That is a defensible
+choice and it was made silently; **confirm it rather than discover it later.**
+
+⚠ **Still not visible in the code**, so still open on the design:
+
+- **Campaign Member creation** — this note's core mechanism. The controller reads
+  the Campaign but nothing in it adds members.
+- **The QR document and its mail.** The QR is supposed to carry the campaign
+  member id ([OI-84](OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md)).
+- **The name-change-before-the-event path** and its regenerated QR.
+
+So the data-entry surface exists and the downstream half does not.
+
+🔴 **It is reachable with an account id and a campaign id and nothing else** —
+and this note's own mechanism is a marketing mail carrying the account id in the
+link. See
+[the authentication risk](../risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md).
+
+⚠ **[OI-86](OI-86%20Who%20hosts%20the%20participant%20landing%20page.md) — the
+blocker this note has waited on since 6 August — was never answered.** It was
+overtaken.

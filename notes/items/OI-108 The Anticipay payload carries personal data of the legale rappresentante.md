@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli, Elisa Migliano
 org: both
 raised: 2026-09-01
-updated: 2026-09-01
+updated: 2026-09-03
 depends_on: [OI-94]
 blocks: [OI-95, OI-73]
 requirement: INT-18
@@ -159,3 +159,26 @@ useful", that is the answer OI-108 exists to catch.
 
 Status stays `open`. The field selection is resolved; the processing question it
 raised is not.
+
+## 2026-09-03 - the field list is now response-driven, which narrows this
+
+At [Data Model Parte 1](../meetings/2026-09-03%20Data%20Model%20Parte%201.md) the
+legal-representative block was removed from the client's template, with Aurel
+Mrruku to map only what the Anticipay call actually returns
+([OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)).
+
+🟢 **That is a better starting point for this item than the one it had.** Instead
+of six identifying fields agreed into a template and then justified afterwards,
+nothing is stored until someone decides to store it — and the decision is now a
+build decision with a named owner, taken field by field.
+
+🔴 **It does not resolve anything on its own.** The purpose question is unchanged:
+**one** of the six has a stated use (the signature on contracts, which is why
+Elisa Migliano put the legal representative on the Account rather than a Contact);
+the codice fiscale, date and place of birth and home address still have none. A
+mapping exercise with no purpose test will simply reproduce the payload.
+
+**The moment to ask is when the mapping is written, not after.** Aurel Mrruku
+owns both. ⚠ Nobody raised data protection in this session either — that is now
+three consecutive sessions in which six identifying fields about a private
+individual were discussed as a schema problem.

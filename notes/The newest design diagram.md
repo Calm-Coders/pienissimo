@@ -4,7 +4,7 @@ type: reference
 status: active
 owner: Elena Spini
 org: ROMI
-updated: 2026-08-26
+updated: 2026-09-03
 source: Drive - Flows & Objects.drawio, modified 2026-08-26T14:06:48Z
 decoded_at_version: 2026-08-26T14:06:48Z
 supersedes_in_register: DGM-2
@@ -273,3 +273,19 @@ page the client's own designers read. **Prefer
 over the diagram on campaigns and editions until someone reconciles the file.**
 Nothing on any page mentions Mexal's `natura`, `categoria statistica`,
 `gruppo merceologico` or `Gest. annullato`.
+
+## ⚠ 2026-09-03 - the file moved a fifth time, and was not decoded
+
+`Flows & Objects.drawio` was modified at **09:20:01Z on 3 September** by Elena
+Spini — about 100 minutes before
+[Data Model Parte 1](meetings/2026-09-03%20Data%20Model%20Parte%201.md) started,
+so almost certainly preparation for it rather than an outcome of it.
+
+**This session did not decode it.** The Drive text reader cannot render
+`application/vnd.jgraph.mxfile`; every previous decode in this note was done by
+hand from the XML. **What changed on 3 September is unknown**, and that is a
+statement of what was not done, not a claim that nothing changed.
+
+The decode is cheap for anyone with the file open and should be taken before
+Parte 2 on 4 September, because the earlier unminuted edits in this note show the
+diagram is where design changes land before they reach a minute.

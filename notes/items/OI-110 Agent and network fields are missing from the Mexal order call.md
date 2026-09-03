@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Elisa Migliano
 org: both
 raised: 2026-09-02
-updated: 2026-09-02
+updated: 2026-09-03
 depends_on: [OI-58]
 requirement: INT-01
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
@@ -68,3 +68,50 @@ Treat the Mexal WEBAPI documentation as a partial description of the contract an
 Andrea Di Cicco left the call owing a **JSON update plus a test send** covering
 every field agreed in the session. This one cannot be closed by that update
 alone - it needs an answer from Mexal's side first. **No date was set.**
+
+## 🟢 2026-09-03 - half answered, and from the other direction
+
+[Data Model Parte 1](../meetings/2026-09-03%20Data%20Model%20Parte%201.md) settled
+where the three values come from, and it is not Mexal.
+
+**`Classificatore rete`, `Codice agente` and `Zona` are inherited from the
+Salesforce user — the tutor — assigned to the account.** Fabrizio Paganelli
+demonstrated the existing behaviour on screen: change the account's owner and the
+agent code, zone and network data follow automatically. They are properties of
+the user record, not data to be read back from Mexal.
+
+**On the order they freeze.** Fabrizio Paganelli:
+
+> _"Se io sono un tutor e oggi ho generato un ordine, su quell'ordine le
+> provvigioni le devo prendere io come tutor."_
+
+Aurel Mrruku's restatement, confirmed in the room: _"tu puoi cambiare l'agente a
+livello di account, ma a livello di ordine deve rimanere quello precedente."_
+
+**And Mexal reconciles the mismatch by itself.** On receiving an order whose agent
+differs from its own customer registry, Mexal **updates its registry** and returns
+the new pairing overnight on the flow that is now
+[OI-116](OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md).
+Salesforce notifies nothing — Aurel Mrruku asked explicitly whether a button or a
+notification was needed and the answer was no.
+
+### What this changes
+
+The item's framing — _"the Mexal call ROMI is building against does not appear to
+carry them"_ — was looking in the wrong place for the **source**. That half is
+answered: the values originate on the ROMI side.
+
+### 🔴 What is still open
+
+**Whether the Mexal order-creation call can carry the three fields on the wire.**
+The session established provenance, not transport. Nobody tested a create call
+with `codice agente`, `zona` and `classificatore rete` on the header, and Andrea
+Di Cicco's JSON update plus test send from 2 September are **still outstanding
+and have appeared on no source**.
+
+Until that runs, the commission attribution has a designed source and an untested
+destination. **Keep this item open**; it is now one question, not two.
+
+⚠ The requirement to carry the three fields is written into the client's own
+workbook, on the Ordine sheet, in free text — not as a field list
+([OI-24](OI-24%20Data%20model%20workbook.md)).

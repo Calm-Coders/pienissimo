@@ -4,7 +4,7 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-24
+updated: 2026-09-03
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-01
 ---
@@ -63,3 +63,20 @@ instruction did not identify the decision-maker. The current UAT automation is
 built against [`Biglietto__c`](../objects/The%20Biglietto%20build.md), which must
 be migrated or rebuilt on Asset. The states above are not yet configured, and
 [none of it has ever run end to end](../risks/Risk%20-%20the%20ticket%20lifecycle%20has%20never%20run%20end%20to%20end.md).
+
+## 2026-09-03 - the participant entry point exists, the downstream does not
+
+`participantRegistrationPage` was built and merged —
+[the Landing Page community](../objects/The%20Landing%20Page%20community.md),
+[OI-78](../items/OI-78%20Participant%20data%20collection.md).
+
+🟢 The buyer-facing surface is real: account + campaign in, one row per visible
+Asset, contact lookup by email, name / surname / email / phone captured per
+participant.
+
+🔴 **Nothing downstream of it is built.** No Campaign Member creation, no QR
+document, no mail. And the lifecycle's own object problem is unchanged — the
+target is standard **Asset**, `Biglietto__c` was deleted with its 37 records on
+28 August, and the Asset build is still from scratch.
+
+So the lifecycle now has a data-entry page and no ticket.

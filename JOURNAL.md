@@ -2468,3 +2468,56 @@ items.
    and there are three candidates.
 4. **Build the eleven Anticipay fields.** Still unstarted, still needs no
    endpoint and no token, and there are four working days left.
+
+---
+
+## 2026-09-03 — claude — nightly requirements-check: Data Model Parte 1, and a community merged in silence
+
+- **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
+  **2026-09-02T22:00Z**, taken from the first line of
+  [the 02/09 nightly trace](notes/traces/Source%20trace%202026-09-02%20nightly.md)
+  — the first run in three where frontmatter and text agreed and no
+  disambiguation was needed. Drilled the **03/09 `Data Model: Parte 1`** client
+  session from its **full 2h08m transcript**, read the rebuilt shared workbook,
+  and read the two Apex controllers merged in **PR #31**.
+- **State:** two large things, unconnected.
+  **(1) The session settled who owns the customer registry**, which was nowhere
+  in the record: Salesforce creates the account and pushes it to Mexal before the
+  order, **Mexal then owns the anagrafica**, a **nightly batch** returns its
+  changes (`OI-116`), and Salesforce **locks its administrative fields** on
+  `Codice Cliente Mexal` (`OI-117`). Both unbuilt. `OI-110` is **half answered
+  from the opposite direction** — the commission fields come from the tutor, not
+  from Mexal — and `OI-95` improved sharply: the client struck the whole
+  legal-representative block and Aurel Mrruku will map the live response. Seven
+  new rows, `OI-112`–`OI-118`.
+  **(2) PR #31 merged an entire Experience Cloud community to `DevMain`** — 82
+  files, +4,402 lines, written by Rexhina Hysi one day after a one-line Slack
+  assignment, merged 41 minutes after opening, **published to the UAT sandbox
+  before it was merged**, and **announced nowhere but a bare link in a DM**. It
+  builds `OI-68` and `OI-78` on one site, **answers `OI-86` by build while
+  `OI-86` is still open**, **skips DocuSign** on the quote page, and **neither
+  page has application-level authentication**
+  ([the risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md),
+  gating).
+- **Next:** (a) **ask Aurel Mrruku whether the missing DocuSign step is a first
+  pass or a design change** — it decides whether `OI-111` is urgent or moot;
+  (b) **decode `Flows & Objects.drawio`**, which moved a fifth time on 03/09 and
+  which this session could not render, **before Parte 2 on 4 September**;
+  (c) **name Utenti, Profili, the Ordine field list and the initial-load plan as
+  the agenda for Parte 2 or Parte 3** — Parte 1 spent two hours and did not reach
+  them; (d) send Andrea Parmeggiani **one** mail with the four queued questions.
+- **Watch:** **`OI-86` stays open even though the page exists.** A build is
+  evidence of what happened, not a record of a decision, and Rebecca Marmo has
+  not been told. ⚠ **The SDI is back** (`OI-109` stays resolved — it was withdrawn
+  as an *Anticipay* field, and Fabrizio Paganelli kept it as a *Mexal*-fed one;
+  keep both facts). ⚠ **Every Salesforce label and state is to be translated into
+  Italian**, agreed and unpriced, touching every layout and state machine already
+  built. ⚠ **+844 uncovered Apex lines** — recorded against the coverage records
+  as the brief, **not acted on**. ⚠ **Between 9 and 17 September there is one
+  working day with the full team available**: the offsite is 9–11 (now
+  corroborated in writing by Gianpaolo Motta), Fase 1 development ends on the
+  10th, and Elena Spini is off the 14th and 15th.
+- **Method:** **a pull request is a source.** This sweep found more in one PR than
+  in the mailbox, and the PR announced itself nowhere. From here, **diff `DevMain`
+  against the previous trace's commit before writing the report** — it costs one
+  command.

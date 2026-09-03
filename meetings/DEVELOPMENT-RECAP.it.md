@@ -2381,3 +2381,210 @@ tenant di produzione richiede un accordo commerciale firmato, il go-live è il
 mai più confermato. `BIG-13` è ancora `open` nel registro, e in org esiste già
 una named credential `DocuSign` presente **solo in org**: qualcosa è collegato a
 un account che nessuno sa nominare. Nuova riga `OI-111`.
+
+## 28. Aggiornamento 03/09/2026 — Data Model Parte 1, e una community arrivata da sé
+
+Il 3 settembre sono successe due cose scollegate. La prima era pianificata; la
+seconda non era in nessun tracker.
+
+### 28.1 La sessione
+
+**`[ROMI-PIENISSIMO] - Data Model: Parte 1`, con il cliente, 10:59 CEST, fissata
+per un'ora e durata 2h08m.** Presenti: Elena Spini, Aurel Mrruku, Andrea Di
+Cicco, Elisa Migliano, Fabrizio Paganelli. Sabatino Rinaldi era invitato come
+opzionale e non ha partecipato. Analizzata dalla trascrizione integrale: quindici
+decisioni registrate come concordate, una formalmente rinviata, sedici azioni in
+uscita.
+
+È la prima delle tre sessioni chieste da Elisa Migliano dopo aver detto di
+essersi confusa su un'anagrafica che conosce — _"sono andata in confusione io da
+sola con me stessa"_ — e ha coperto **l'oggetto Account e nient'altro**.
+
+### 28.2 Chi possiede l'anagrafica clienti, e da quando
+
+La cosa più grande decisa dalla sessione, e non era nel record:
+
+1. **Salesforce crea l'anagrafica** e la porta su Mexal **immediatamente prima
+   della creazione dell'ordine**.
+2. **Da quel momento è Mexal a possederla.** Le modifiche successive si fanno
+   solo su Mexal.
+3. **Un batch notturno le restituisce a Salesforce** — l'`F-2` del cliente, il
+   _"get notturno"_ di Aurel Mrruku. **Non esiste**: nuova riga `OI-116`.
+4. **Salesforce blocca i propri campi amministrativi e contabili** quando
+   `Codice Cliente Mexal` è valorizzato, modificabili solo dall'amministrazione,
+   con una regola di validazione. **Nemmeno questo esiste**: nuova riga `OI-117`.
+
+I campi commerciali restano fuori dal blocco. L'ora spesa dalla sessione a
+smistare 150 campi in **Dati Commerciali / Dati Tecnici / MEXAL / MEXAL - DATI
+PER PROVVIGIONI** non era riordino: quelle sezioni **sono** il confine del blocco.
+
+### 28.3 I campi provvigionali, risolti dalla direzione opposta
+
+`OI-110` chiedeva perché `codice agente`, `zona` e `classificatore rete` non si
+trovassero nella chiamata ordini di Mexal. Non devono arrivare da lì.
+
+**Sono ereditati dall'utente Salesforce — il tutor — assegnato all'anagrafica.**
+Fabrizio Paganelli ha mostrato dal vivo il comportamento attuale: cambiando il
+proprietario dell'account, tutti e tre seguono. **Sull'ordine si congelano**,
+perché la provvigione spetta a chi teneva il cliente quando l'ordine è stato
+accettato — _"tu puoi cambiare l'agente a livello di account, ma a livello di
+ordine deve rimanere quello precedente,"_ confermato in riunione.
+
+**Il resto lo riconcilia Mexal da sé.** Ricevendo un ordine con agente diverso
+dalla propria anagrafica, riscrive l'anagrafica e restituisce l'abbinamento sul
+flusso notturno. Aurel Mrruku ha chiesto se Salesforce dovesse notificare
+qualcosa; la risposta è stata no.
+
+🔴 Di `OI-110` resta una domanda sola, non due: **se la chiamata di creazione
+ordine di Mexal possa portare i tre campi sul filo.** L'aggiornamento JSON e
+l'invio di prova di Andrea Di Cicco, dovuti dal 2 settembre, non sono comparsi su
+alcuna fonte.
+
+### 28.4 Continuità della ragione sociale
+
+Tre meccanismi, concordati, nessuno costruito (`OI-118`): un **inner lookup** su
+Account etichettato **`Azienda Precedente`** che risale **cinque** predecessori;
+**History Tracking** sui campi critici entro il limite Salesforce di **10 campi**;
+e il codice del predecessore passato al **`codice alternativo`** di Mexal.
+
+🔴 **Percorrere non è aggregare.** Un lookup profondo cinque permette a una
+persona di risalire; non fa sommare a un report gli ordini dei predecessori, e i
+roll-up non attraversano questo tipo di lookup. Fabrizio Paganelli ha chiesto
+statistiche.
+
+### 28.5 La passata campo per campo
+
+**Rinominati** — `codice cliente esterno` → **`Codice Cliente Mexal`**;
+`Ultima Verifica Credit Safe` → **`Ultima Verifica Anticipay`** (⚠ **Credit Safe
+era il fornitore di verifica P.IVA precedente**, mai nominato prima nel record).
+
+**Aggiunti** — `Azienda obsoleta`; **`Azienda Test`**, perché le prove di vendita
+interne siano escluse dalle statistiche commerciali; i tre campi ATECO, la cui
+fonte è `OI-112`.
+
+**Eliminati** — email marketing e telefono commerciale a livello azienda
+(entrambi gestiti sul contatto; il telefono amministrativo resta e diventa
+obbligatorio); `Livello`; `Stato cliente`; i campi RID e quelli legacy della
+firma contratti; e **l'intero blocco del legale rappresentante**, che è la cosa
+migliore capitata a `OI-95`: Fabrizio Paganelli _"per me li potete eliminare
+tutti"_, Aurel Mrruku _"Li toglierei tutte in base a quello che ci restituisce.
+Faccio io il mapping."_ La lista campi Salesforce diventa una conseguenza della
+risposta reale di Anticipay invece di una lista concordata da un PDF.
+
+**Spostati** — `Tipologia Attività` lascia l'anagrafica per il **Preventivo**
+come picklist non restrittiva; Elisa Migliano deve i valori (`OI-115`).
+
+**Mantenuti deliberatamente** — l'**SDI**, che Fabrizio Paganelli vuole
+alimentato in previsione di un cambio normativo anche se tra San Marino e Italia
+si usa la PEC. ⚠ **`OI-109` registrava l'SDI come ritirato il 2 settembre**,
+perché Elisa Migliano non ne aveva bisogno *da Anticipay*. Qui lo stesso campo è
+mantenuto e alimentato *da Mexal*. Due persone, ragioni opposte, 24 ore di
+distanza, nessuna delle due al corrente dell'altra.
+
+**Rinviati** — se Mexal richieda sia l'indirizzo di fatturazione sia quello di
+spedizione (`OI-113`), unico rinvio formale della sessione; e se lo
+`Stato Azienda` RFM vada migrato (`OI-114`).
+
+### 28.6 Una decisione di sistema presa di passaggio
+
+🔴 **Tutte le label e tutti gli stati su Salesforce saranno tradotti in
+italiano** — offerte e ordini inclusi. Registrata come concordata da tutti i
+partecipanti. Tocca ogni layout, picklist e state machine già costruita, e
+**nella sessione nessuno l'ha stimata.**
+
+### 28.7 Ciò che la sessione non ha raggiunto
+
+🔴 La **tabella Lead è stata saltata deliberatamente** perché Sabatino Rinaldi
+possa esserci, e **Utenti, Profili, la lista campi Ordine e il piano di
+caricamento iniziale non sono stati aperti affatto** — le stesse quattro lacune
+che `OI-24` registrava il 2 settembre. **Due ore hanno prodotto un oggetto.**
+Parte 2 (4 settembre, 16:00) e Parte 3 (7 settembre, 11:00) hanno un'ora ciascuna
+per tutto il resto, più una sessione Lead che richiede un partecipante che non
+sta partecipando.
+
+🟢 Elena Spini ha eseguito le proprie azioni sul template entro quattro minuti: il
+workbook condiviso è stato modificato alle 11:11:04Z. Il blocco `NON UTILIZZATO O
+OBSOLETO` non c'è più e il foglio Account porta ora le sezioni, le rinomine e le
+aggiunte concordate in riunione.
+
+### 28.8 Un'intera community Experience Cloud mergiata lo stesso pomeriggio
+
+**PR #31, branch `DevMain_RexhinaPien`, aperta da Rexhina Hysi alle 14:21Z e
+mergiata su `DevMain` da Aurel Mrruku alle 15:02:59Z — 41 minuti dopo. 82 file,
++4.402 righe.** Contiene un sito Experience `Landing Page`, la sua network e il
+suo profilo, un experience bundle da 67 file e due LWC con i relativi controller
+Apex: **`participantRegistrationPage`** / `ParticipantRegistrationController`
+(576 righe) e **`quoteAcceptancePage`** / `QuoteAcceptanceController` (268
+righe). È stata pubblicata sulla sandbox UAT Pienissimo alle 13:48Z e di nuovo
+alle 14:10Z — **prima del merge**.
+
+🟢 **Costruisce `OI-78` e `OI-68` su un'unica superficie condivisa**, il che
+risponde alla domanda che entrambe le righe lasciavano aperta: sì, la pagina
+partecipanti e la pagina preventivi sono lo stesso sito.
+
+🟢 **La pagina preventivi usa il ciclo di vita concordato** — `In Trattativa` e
+`In Attesa Accettazione` azionabili, `Accettato` / `Rifiutato` come esiti. È la
+prima volta che il codice costruito rispecchia ciò per cui `OI-59` ha insistito.
+⚠ È codice, non configurazione: se la picklist in org non ha ancora quei valori,
+il controller fallisce a runtime.
+
+🔴 **`OI-86` ha una risposta nella build e resta aperta nel record.** La domanda
+era community Salesforce o landing page della piattaforma di marketing; la call
+decisiva con Rebecca Marmo non è mai stata fissata oltre _"dopo il 17 agosto"_;
+nessuna sessione l'ha verbalizzato e la PR non ha descrizione. A una
+sviluppatrice è stato detto di lavorare sulla _"community di Pienissimo"_ in un
+DM Slack il 2 settembre e la community è stata mergiata il giorno dopo. **Una
+build è prova di cosa è successo, non registrazione di una decisione** — e
+Rebecca Marmo non è stata informata.
+
+🔴 **La pagina preventivi salta del tutto DocuSign.** Il flusso concordato è
+accetto → DocuSign → alla firma il preventivo cambia stato e l'ordine viene
+generato. Il `submitAction` costruito imposta `Quote.Status` al click; non c'è
+envelope e non c'è generazione ordine. È arrivata il giorno dopo che `OI-111`
+registrava che nessuno ha confermato che il cliente possieda DocuSign, e **nulla
+da nessuna parte collega le due cose** — è altrettanto compatibile con un primo
+passaggio che non è arrivato alla firma. **Chiedere, invece di inferire.**
+
+🔴 **Nessuna delle due pagine ha autenticazione applicativa.** Entrambi i
+controller sono `without sharing`; il `submitAction` della pagina preventivi
+accetta un **id preventivo** nudo e scrive, e `loadPage` e `findContact` della
+pagina partecipanti accettano **id account e id campagna** nudi. Tutto il
+controllo di accesso è che gli id siano parsabili e i record esistano. Gli id
+Salesforce non sono segreti — questo progetto li spedisce deliberatamente, nel
+link di marketing e nel link di checkout WooCommerce. **Terza occorrenza dello
+stesso pattern**, dopo l'endpoint WooCommerce non autenticato di `INT-16` e il
+link di checkout che porta l'id opportunità in chiaro. Conviene risolverlo una
+volta sola con un token firmato e con scadenza, invece che tre.
+
+⚠ **+844 righe Apex non coperte in un giorno**, su un deficit misurato l'ultima
+volta a 1.571 righe e zero coperte. Registrato perché i dati di copertura sono il
+brief per la suite di test; **non si agisce**, secondo l'istruzione permanente per
+cui la suite si scrive una volta sola, come attività a sé, prima del deploy in
+produzione.
+
+### 28.9 Due fatti di calendario
+
+⚠ **L'evento aziendale ROMI del 9–11 settembre è ora confermato per iscritto.**
+Gianpaolo Motta, scrivendo a un contatto esterno su tutt'altro tema: _"(da
+mercoledì a venerdì saremo out)"_. **Lo sviluppo di Fase 1 finisce il 10
+settembre**, dentro quella finestra.
+
+⚠ **Elena Spini è assente il 14 e il 15 settembre.** Ha spostato il follow-up
+interno del 14 a **giovedì 17 settembre, 14:15–15:15 CEST**, allungando lo slot
+ricorrente a un'ora perché _"andiamo sempre lunghi"_. Tra il 9 e il 17 settembre
+c'è **un solo giorno lavorativo** con il team al completo.
+
+### 28.10 Altre annotazioni
+
+⚠ **Il My Domain di produzione `pienissimo.my.salesforce.com` è predisposto e
+"pronto per il deploy"** (notifica Salesforce, 08:06Z). Non è stato deployato. È
+il primo movimento sull'org di produzione nel record.
+
+⚠ **`Flows & Objects.drawio` si è mosso per la quinta volta** alle 09:20:01Z,
+circa 100 minuti prima della sessione — quindi probabilmente in preparazione.
+**Non è stato decodificato**: il lettore testuale di Drive non rende quel
+formato, e ogni decodifica precedente è stata fatta a mano dall'XML. Conviene
+farla prima di Parte 2.
+
+⚠ **Il canvas Slack è ormai indietro di otto sessioni cliente** — riletto
+direttamente in questo giro, la voce più recente è ancora quella del 20 agosto.

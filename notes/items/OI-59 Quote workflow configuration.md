@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-08-26
+updated: 2026-09-03
 requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
 source: meetings/open-items.md row 59
 ---
@@ -240,3 +240,27 @@ DGM-derived labels (`In trattativa (Prev inviato)`, `In attesa di accettazione`,
 `Accettato - Copia Contabile Ricevuta`, `Rifiutata`) and now disagrees with both
 this note and the org. **The register is not amended from an org check** — this
 is flagged for a human to reconcile, not corrected here.
+
+## 🟢 2026-09-03 - the agreed values reached built code for the first time
+
+`QuoteAcceptanceController`, merged to `DevMain` in PR #31, hard-codes exactly the
+lifecycle this item has been fighting for:
+
+```apex
+ACTIONABLE_STATUSES = { 'In Trattativa', 'In Attesa Accettazione' }
+ACCEPTED_STATUS = 'Accettato';  REJECTED_STATUS = 'Rifiutato';
+```
+
+**`In Attesa Accettazione` — the rename this item singles out as mattering — is
+in it.** That is the first time the agreed vocabulary appears in code rather than
+in a minute.
+
+⚠ **It is code, not configuration.** The org's `Quote.Status` picklist was last
+checked on 2 September and the disagreement recorded above still stands until an
+`org-status-check` says otherwise. **A controller that writes a picklist value the
+picklist does not carry fails at run time**, so this raises the cost of the
+outstanding picklist work rather than closing it.
+
+⚠ Separately,
+[OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)
+adds a `Tipologia Attività` field to this same object on 3 September.

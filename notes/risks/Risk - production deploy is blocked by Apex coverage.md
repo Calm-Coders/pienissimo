@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-02
+updated: 2026-09-03
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -164,3 +164,31 @@ The largest single uncovered target — 396 lines — could not be tested from
 on 31 August is met.
 
 Nothing here writes, proposes or offers a test.
+
+## 2026-09-03 - the deficit grew by 844 lines in one day
+
+PR **#31** added two Apex controllers to `DevMain` with no tests:
+`ParticipantRegistrationController` (**576 lines**) and
+`QuoteAcceptanceController` (**268 lines**) —
+[the Landing Page community](../objects/The%20Landing%20Page%20community.md).
+
+Against the last measurement of **1,571 uncovered lines across 21 classes, zero
+covered** (31 August, from the org), the repository now carries roughly **844 more
+uncovered lines**. ⚠ That figure is arithmetic on the repository, **not a
+measurement** — the org has not been opened since 2 September and the last actual
+Apex test run remains **4 August**.
+
+The deficit continues to grow as code lands, which is the pattern this risk has
+recorded since 25 August (1,028 → 1,769 → 1,571 → ~2,415).
+
+**Unchanged in substance:** coverage is
+[deliberately deferred out of Fase 1](../decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md)
+and is **not** a blocker on current build work. It still gates the production
+deploy, and the suite is still unscheduled between the 10 September end of build
+and the 6 October go-live. **Recorded, not acted on** — the suite is written once,
+as its own task, when Aurel Mrruku asks for it.
+
+⚠ The two new classes are the first uncovered code that sits on an
+**internet-facing write path**
+([the authentication risk](Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)),
+which changes what the eventual test suite has to cover, not when it is written.
