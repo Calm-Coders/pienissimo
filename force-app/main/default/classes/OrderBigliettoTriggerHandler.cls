@@ -5,6 +5,7 @@ public with sharing class OrderBigliettoTriggerHandler {
   private static Id ticketRecordTypeId;
 
   public static void afterInsert(List<Order> newOrders) {
+    AnticipayOrderAutomation.enqueueForFirstOrders(newOrders);
     createTicketsForConfirmedOrders(newOrders, null);
   }
 
