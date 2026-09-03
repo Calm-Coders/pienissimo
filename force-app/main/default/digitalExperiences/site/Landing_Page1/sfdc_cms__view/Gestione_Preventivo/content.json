@@ -1,0 +1,83 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Gestione Preventivo",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"1a6292d4-894f-4a3a-b3f3-793c8ff85f51\",\"columns\":[{\"UUID\":\"1ab19fee-8c57-4e3d-96c6-26d5e0fb5ce7\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "dxpStyle": {},
+                        "heading": "Gestione preventivo"
+                      },
+                      "definition": "c:quoteAcceptancePage",
+                      "id": "8c9160b5-6f28-4f29-9076-2e2994a6c48d",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "1ab19fee-8c57-4e3d-96c6-26d5e0fb5ce7",
+                  "name": "col1",
+                  "title": "Column 1",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "1a6292d4-894f-4a3a-b3f3-793c8ff85f51",
+              "type": "component"
+            }
+          ],
+          "id": "567542ee-b307-4957-b40d-a161ccd0afbd",
+          "name": "content",
+          "title": "Content",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "customHeadTags": "",
+                "description": "",
+                "dxpStyle": {},
+                "pageTitle": "Gestione Preventivo",
+                "recordId": "{!recordId}"
+              },
+              "definition": "community_builder:seoAssistant",
+              "id": "b9d603bb-801e-48f9-a006-f12b0dfb3f8f",
+              "type": "component"
+            }
+          ],
+          "id": "08e37e61-d0ac-4622-86c3-384b387f53d1",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region"
+        }
+      ],
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "02271dd6-c0b1-4199-8c46-a7c27e270c3e",
+      "type": "component"
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "custom-gestione-preventivo"
+  },
+  "urlName": "gestione-preventivo"
+}

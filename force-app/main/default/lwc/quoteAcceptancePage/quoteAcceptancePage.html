@@ -1,0 +1,188 @@
+<template>
+  <main class="page-shell">
+    <section class="quote-panel" aria-labelledby="page-heading">
+      <header class="page-header">
+        <p class="brand">Pienissimo</p>
+        <h1 id="page-heading">{heading}</h1>
+      </header>
+
+      <template if:true={isLoading}>
+        <div class="loading-panel" role="status" aria-live="polite">
+          <lightning-spinner
+            alternative-text="Caricamento preventivo"
+            size="medium"
+          ></lightning-spinner>
+          <p>Caricamento preventivo...</p>
+        </div>
+      </template>
+
+      <template if:true={errorMessage}>
+        <div class="message message-error" role="alert">{errorMessage}</div>
+      </template>
+
+      <template if:true={showPageContent}>
+        <section class="quote-summary" aria-labelledby="quote-heading">
+          <div>
+            <p class="eyebrow">Preventivo {page.quoteNumber}</p>
+            <h2 id="quote-heading">{quoteLabel}</h2>
+          </div>
+          <div class="total-box">
+            <span>Totale</span>
+            <strong>
+              <lightning-formatted-number
+                value={page.grandTotal}
+                format-style="currency"
+                currency-code="EUR"
+              ></lightning-formatted-number>
+            </strong>
+          </div>
+        </section>
+
+        <div class="context-grid">
+          <div>
+            <span class="context-label">Azienda</span>
+            <strong>{accountLabel}</strong>
+          </div>
+          <div>
+            <span class="context-label">Opportunita</span>
+            <strong>{opportunityLabel}</strong>
+          </div>
+          <div>
+            <span class="context-label">Stato</span>
+            <strong class={statusClass}>{page.status}</strong>
+          </div>
+          <template if:true={page.expirationDate}>
+            <div>
+              <span class="context-label">Scadenza</span>
+              <strong>
+                <lightning-formatted-date-time
+                  value={page.expirationDate}
+                  day="2-digit"
+                  month="long"
+                  year="numeric"
+                ></lightning-formatted-date-time>
+              </strong>
+            </div>
+          </template>
+        </div>
+
+        <section class="line-section" aria-labelledby="lines-heading">
+          <h2 id="lines-heading">Righe preventivo</h2>
+
+          <template if:true={showLines}>
+            <div class="line-list">
+              <template for:each={lines} for:item="line">
+                <article class="line-card" key={line.id}>
+                  <div>
+                    <p class="line-number">Riga {line.displayNumber}</p>
+                    <h3>{line.productName}</h3>
+                    <p>{line.productCode}</p>
+                  </div>
+                  <dl>
+                    <div>
+                      <dt>Quantita</dt>
+                      <dd>
+                        <lightning-formatted-number
+                          value={line.quantity}
+                        ></lightning-formatted-number>
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Prezzo</dt>
+                      <dd>
+                        <lightning-formatted-number
+                          value={line.unitPrice}
+                          format-style="currency"
+                          currency-code="EUR"
+                        ></lightning-formatted-number>
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Totale</dt>
+                      <dd>
+                        <lightning-formatted-number
+                          value={line.totalPrice}
+                          format-style="currency"
+                          currency-code="EUR"
+                        ></lightning-formatted-number>
+                      </dd>
+                    </div>
+                  </dl>
+                </article>
+              </template>
+            </div>
+          </template>
+
+          <template if:false={showLines}>
+            <div class="message message-neutral">
+              Nessuna riga preventivo disponibile.
+            </div>
+          </template>
+        </section>
+
+        <template if:true={showStatusMessage}>
+          <div class="message message-success" role="status">
+            {page.message}
+          </div>
+        </template>
+
+        <template if:true={showActions}>
+          <footer class="action-bar">
+            <lightning-button
+              label="Annulla preventivo"
+              icon-name="utility:close"
+              variant="destructive"
+              disabled={actionDisabled}
+              onclick={openRejectConfirmation}
+            ></lightning-button>
+            <lightning-button
+              label="Conferma preventivo"
+              icon-name="utility:success"
+              variant="brand"
+              disabled={actionDisabled}
+              onclick={openAcceptConfirmation}
+            ></lightning-button>
+          </footer>
+        </template>
+      </template>
+    </section>
+  </main>
+
+  <template if:true={showConfirmation}>
+    <section
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirmation-heading"
+      tabindex="-1"
+      onkeydown={handleModalKeydown}
+    >
+      <div class="confirmation-card">
+        <h2 id="confirmation-heading">{confirmTitle}</h2>
+        <p>{confirmMessage}</p>
+        <div class="confirmation-actions">
+          <lightning-button
+            label="Indietro"
+            onclick={closeConfirmation}
+          ></lightning-button>
+          <lightning-button
+            label={confirmButtonLabel}
+            variant={confirmButtonVariant}
+            onclick={confirmAction}
+          ></lightning-button>
+        </div>
+      </div>
+    </section>
+    <div class="backdrop"></div>
+  </template>
+
+  <template if:true={isSubmitting}>
+    <div class="submission-overlay" role="status" aria-live="assertive">
+      <lightning-spinner
+        alternative-text="Aggiornamento preventivo"
+        size="large"
+      ></lightning-spinner>
+      <p>Aggiornamento in corso...</p>
+    </div>
+  </template>
+</template>
