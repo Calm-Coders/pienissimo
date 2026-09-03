@@ -4,7 +4,7 @@
   "contentBody": {
     "activeViewId": "Participant_Registration",
     "configurationTags": [],
-    "pageAccess": "UseParent",
+    "pageAccess": "Public",
     "routeType": "custom-participant-registration",
     "urlPrefix": "participant-registration"
   },

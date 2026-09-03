@@ -25,8 +25,7 @@
                   "children": [
                     {
                       "attributes": {
-                        "heading": "Registrazione partecipanti",
-                        "servicePath": "/services/apexrest/participant-registration"
+                        "heading": "Registrazione partecipanti"
                       },
                       "definition": "c:participantRegistrationPage",
                       "id": "c58701c9-2202-47b3-821e-6d97fa42b094",

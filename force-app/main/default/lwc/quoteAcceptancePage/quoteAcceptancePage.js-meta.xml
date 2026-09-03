@@ -2,9 +2,9 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>Participant Registration Page</masterLabel>
+    <masterLabel>Quote Acceptance Page</masterLabel>
     <description
-  >Collects participants for unassigned ticket Assets.</description>
+  >Shows a Quote on an Experience Cloud page and accepts or rejects it.</description>
     <targets>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
@@ -15,7 +15,7 @@
         name="heading"
         type="String"
         label="Page heading"
-        default="Registrazione partecipanti"
+        default="Gestione preventivo"
       />
             <property
         name="servicePath"

@@ -1,5 +1,4 @@
-@RestResource(urlMapping='/participant-registration/*')
-global without sharing class ParticipantRegistrationController {
+public without sharing class ParticipantRegistrationController {
   private static final String COMPLETED_STATE = 'COMPLETED';
   private static final String READY_STATE = 'READY';
   private static final String ASSIGNED_STATUS = 'Assegnato';
@@ -9,58 +8,73 @@ global without sharing class ParticipantRegistrationController {
     'Assegnato'
   };
 
-  // =========================================================
-  // RESPONSE / REQUEST CLASSES
-  // =========================================================
-
-  global class TicketRow {
+  public class TicketRow {
+    @AuraEnabled
     public Id assetId;
+    @AuraEnabled
     public String ticketName;
+    @AuraEnabled
     public String productName;
+    @AuraEnabled
     public String campaignName;
+    @AuraEnabled
     public Date eventStartDate;
+    @AuraEnabled
     public Boolean editable;
+    @AuraEnabled
     public Boolean assigned;
+    @AuraEnabled
     public String firstName;
+    @AuraEnabled
     public String lastName;
+    @AuraEnabled
     public String email;
+    @AuraEnabled
     public String phone;
   }
 
-  global class PageResponse {
+  public class PageResponse {
+    @AuraEnabled
     public String state;
+    @AuraEnabled
     public String message;
-
+    @AuraEnabled
     public String accountId;
+    @AuraEnabled
     public String accountName;
-
+    @AuraEnabled
     public String campaignId;
+    @AuraEnabled
     public String campaignName;
-
+    @AuraEnabled
     public Date eventStartDate;
+    @AuraEnabled
     public Date eventEndDate;
-
+    @AuraEnabled
     public List<TicketRow> tickets = new List<TicketRow>();
   }
 
-  global class ContactResponse {
+  public class ContactResponse {
+    @AuraEnabled
     public Boolean found = false;
+    @AuraEnabled
     public String firstName;
+    @AuraEnabled
     public String lastName;
+    @AuraEnabled
     public String phone;
   }
 
-  global class SubmissionRequest {
-    public String accountId;
-    public String campaignId;
-    public List<ParticipantInput> participants;
-  }
-
-  global class ParticipantInput {
+  public class ParticipantInput {
+    @AuraEnabled
     public String assetId;
+    @AuraEnabled
     public String firstName;
+    @AuraEnabled
     public String lastName;
+    @AuraEnabled
     public String email;
+    @AuraEnabled
     public String phone;
   }
 
@@ -69,207 +83,98 @@ global without sharing class ParticipantRegistrationController {
     public Campaign campaign;
   }
 
-  private class ErrorResponse {
-    public String state;
-    public String message;
-
-    private ErrorResponse(String state, String message) {
-      this.state = state;
-      this.message = message;
-    }
-  }
-
   private class RequestException extends Exception {
-    public Integer httpStatus;
-    public String responseCode;
-
-    private RequestException(
-      Integer httpStatus,
-      String responseCode,
-      String message
-    ) {
-      this.httpStatus = httpStatus;
-      this.responseCode = responseCode;
-      this.setMessage(message);
-    }
   }
 
-  // =========================================================
-  // GET
-  // =========================================================
-
-  @HttpGet
-  global static void doGet() {
-    configureResponse();
-
+  @AuraEnabled(cacheable=true)
+  public static PageResponse loadPage(String accountId, String campaignId) {
     try {
-      if (RestContext.request.requestURI.endsWith('/contact')) {
-        handleContactLookup();
-      } else {
-        handlePageLoad();
-      }
+      return buildPage(resolveAccess(accountId, campaignId));
     } catch (RequestException requestError) {
-      System.debug(
-        LoggingLevel.ERROR,
-        'ParticipantRegistrationController GET RequestException: ' +
-        requestError.getMessage()
-      );
-
-      writeError(requestError);
+      throw handled(requestError.getMessage());
     } catch (Exception unexpectedError) {
-      System.debug(
-        LoggingLevel.ERROR,
-        'ParticipantRegistrationController GET unexpected error: ' +
-        unexpectedError.getMessage()
+      throw handled(
+        'Non e stato possibile completare la richiesta. Riprova piu tardi.'
       );
-
-      System.debug(LoggingLevel.ERROR, unexpectedError.getStackTraceString());
-
-      writeUnexpectedError();
     }
   }
 
-  // =========================================================
-  // POST
-  // =========================================================
+  @AuraEnabled(cacheable=true)
+  public static ContactResponse findContact(
+    String accountId,
+    String campaignId,
+    String email
+  ) {
+    try {
+      AccessContext access = resolveAccess(accountId, campaignId);
+      String normalizedEmail = normalizeEmail(email);
 
-  @HttpPost
-  global static void doPost() {
-    configureResponse();
+      if (!isValidEmail(normalizedEmail)) {
+        throw new RequestException('Inserisci un indirizzo email valido.');
+      }
 
+      List<Contact> contacts = [
+        SELECT Id, FirstName, LastName, Phone, Email
+        FROM Contact
+        WHERE AccountId = :access.account.Id AND Email = :normalizedEmail
+        ORDER BY CreatedDate ASC
+        LIMIT 2
+      ];
+
+      if (contacts.size() > 1) {
+        throw new RequestException(
+          'Esistono piu contatti con questa email. Contatta il tuo referente.'
+        );
+      }
+
+      ContactResponse response = new ContactResponse();
+
+      if (!contacts.isEmpty()) {
+        response.found = true;
+        response.firstName = contacts[0].FirstName;
+        response.lastName = contacts[0].LastName;
+        response.phone = contacts[0].Phone;
+      }
+
+      return response;
+    } catch (RequestException requestError) {
+      throw handled(requestError.getMessage());
+    } catch (Exception unexpectedError) {
+      throw handled(
+        'Non e stato possibile completare la richiesta. Riprova piu tardi.'
+      );
+    }
+  }
+
+  @AuraEnabled
+  public static PageResponse savePage(
+    String accountId,
+    String campaignId,
+    List<ParticipantInput> participants
+  ) {
     Savepoint savepoint = Database.setSavepoint();
 
     try {
-      System.debug(LoggingLevel.INFO, 'Participant Registration POST started');
-
-      SubmissionRequest request = parseSubmission();
-
-      System.debug(LoggingLevel.INFO, 'POST accountId: ' + request.accountId);
-
-      System.debug(LoggingLevel.INFO, 'POST campaignId: ' + request.campaignId);
-
-      System.debug(
-        LoggingLevel.INFO,
-        'POST participant count: ' +
-        (request.participants == null ? 0 : request.participants.size())
-      );
-
-      AccessContext access = resolveAccess(
-        request.accountId,
-        request.campaignId
-      );
-
-      PageResponse response = saveParticipants(access, request.participants);
-
-      writeJson(200, response);
+      AccessContext access = resolveAccess(accountId, campaignId);
+      PageResponse response = saveParticipants(access, participants);
+      response.message = 'I dati dei partecipanti sono stati salvati.';
+      return response;
     } catch (RequestException requestError) {
       Database.rollback(savepoint);
-
-      System.debug(
-        LoggingLevel.ERROR,
-        'POST RequestException: ' +
-          requestError.responseCode +
-          ' - ' +
-          requestError.getMessage()
-      );
-
-      writeError(requestError);
+      throw handled(requestError.getMessage());
     } catch (Exception unexpectedError) {
       Database.rollback(savepoint);
-
-      System.debug(
-        LoggingLevel.ERROR,
-        'POST unexpected error: ' + unexpectedError.getMessage()
-      );
-
-      System.debug(LoggingLevel.ERROR, unexpectedError.getStackTraceString());
-
-      writeUnexpectedError();
-    }
-  }
-
-  // =========================================================
-  // PAGE LOAD
-  // =========================================================
-
-  private static void handlePageLoad() {
-    String accountId = RestContext.request.params.get('accountId');
-
-    String campaignId = RestContext.request.params.get('campaignId');
-
-    System.debug(LoggingLevel.INFO, 'Page load accountId: ' + accountId);
-
-    System.debug(LoggingLevel.INFO, 'Page load campaignId: ' + campaignId);
-
-    AccessContext access = resolveAccess(accountId, campaignId);
-
-    writeJson(200, buildPage(access));
-  }
-
-  // =========================================================
-  // CONTACT LOOKUP
-  // =========================================================
-
-  private static void handleContactLookup() {
-    AccessContext access = resolveAccess(
-      RestContext.request.params.get('accountId'),
-      RestContext.request.params.get('campaignId')
-    );
-
-    String email = normalizeEmail(RestContext.request.params.get('email'));
-
-    System.debug(LoggingLevel.INFO, 'Contact lookup email: ' + email);
-
-    if (!isValidEmail(email)) {
-      throw new RequestException(
-        400,
-        'INVALID_EMAIL',
-        'Inserisci un indirizzo email valido.'
+      throw handled(
+        'Non e stato possibile completare la richiesta. Riprova piu tardi.'
       );
     }
-
-    List<Contact> contacts = [
-      SELECT Id, FirstName, LastName, Phone, Email
-      FROM Contact
-      WHERE AccountId = :access.account.Id AND Email = :email
-      ORDER BY CreatedDate ASC
-      LIMIT 2
-    ];
-
-    System.debug(LoggingLevel.INFO, 'Contacts found: ' + contacts.size());
-
-    if (contacts.size() > 1) {
-      throw new RequestException(
-        409,
-        'AMBIGUOUS_CONTACT',
-        'Esistono più contatti con questa email. Contatta il tuo referente.'
-      );
-    }
-
-    ContactResponse response = new ContactResponse();
-
-    if (!contacts.isEmpty()) {
-      response.found = true;
-      response.firstName = contacts[0].FirstName;
-
-      response.lastName = contacts[0].LastName;
-
-      response.phone = contacts[0].Phone;
-    }
-
-    writeJson(200, response);
   }
-
-  // =========================================================
-  // ACCESS VALIDATION
-  // =========================================================
 
   private static AccessContext resolveAccess(
     String rawAccountId,
     String rawCampaignId
   ) {
     Id accountId = parseAccountId(rawAccountId);
-
     Id campaignId = parseCampaignId(rawCampaignId);
 
     if (accountId == null || campaignId == null) {
@@ -283,10 +188,6 @@ global without sharing class ParticipantRegistrationController {
       LIMIT 1
     ];
 
-    if (accounts.isEmpty()) {
-      throw invalidLink();
-    }
-
     List<Campaign> campaigns = [
       SELECT Id, Name, StartDate, EndDate
       FROM Campaign
@@ -294,36 +195,23 @@ global without sharing class ParticipantRegistrationController {
       LIMIT 1
     ];
 
-    if (campaigns.isEmpty()) {
+    if (accounts.isEmpty() || campaigns.isEmpty()) {
       throw invalidLink();
     }
 
     AccessContext result = new AccessContext();
-
     result.account = accounts[0];
-
     result.campaign = campaigns[0];
-
     return result;
   }
 
-  // =========================================================
-  // BUILD PAGE RESPONSE
-  // =========================================================
-
   private static PageResponse buildPage(AccessContext access) {
     PageResponse response = new PageResponse();
-
     response.accountId = access.account.Id;
-
     response.accountName = access.account.Name;
-
     response.campaignId = access.campaign.Id;
-
     response.campaignName = access.campaign.Name;
-
     response.eventStartDate = access.campaign.StartDate;
-
     response.eventEndDate = access.campaign.EndDate;
 
     List<Asset> tickets = queryVisibleAssets(
@@ -336,23 +224,16 @@ global without sharing class ParticipantRegistrationController {
 
     for (Asset ticket : tickets) {
       TicketRow row = new TicketRow();
-
       row.assetId = ticket.Id;
-
       row.ticketName = ticket.Name;
-
       row.productName = ticket.Product2 == null ? null : ticket.Product2.Name;
-
       row.campaignName = ticket.Campaign__r == null
         ? null
         : ticket.Campaign__r.Name;
-
       row.eventStartDate = ticket.Campaign__r == null
         ? null
         : ticket.Campaign__r.StartDate;
-
       row.assigned = ticket.ContactId != null;
-
       row.editable = !row.assigned && VISIBLE_STATUSES.contains(ticket.Status);
 
       if (row.editable) {
@@ -361,11 +242,8 @@ global without sharing class ParticipantRegistrationController {
 
       if (ticket.Contact != null) {
         row.firstName = ticket.Contact.FirstName;
-
         row.lastName = ticket.Contact.LastName;
-
         row.email = ticket.Contact.Email;
-
         row.phone = ticket.Contact.Phone;
       }
 
@@ -374,57 +252,34 @@ global without sharing class ParticipantRegistrationController {
 
     if (tickets.isEmpty()) {
       response.state = 'NO_TICKETS';
-
       response.message = 'Non ci sono biglietti disponibili per questo account.';
-
       return response;
     }
 
     response.state = requiredParticipantCount > 0
       ? READY_STATE
       : COMPLETED_STATE;
-
     response.message = requiredParticipantCount > 0
       ? null
-      : 'La lista dei partecipanti è già stata inviata.';
+      : 'La lista dei partecipanti e gia stata inviata.';
 
     return response;
   }
-
-  // =========================================================
-  // SAVE PARTICIPANTS
-  // =========================================================
 
   private static PageResponse saveParticipants(
     AccessContext access,
     List<ParticipantInput> inputs
   ) {
-    System.debug(LoggingLevel.INFO, 'saveParticipants started');
-
     if (inputs == null || inputs.isEmpty()) {
       throw new RequestException(
-        400,
-        'EMPTY_LIST',
         'Completa tutti i biglietti prima di salvare.'
       );
     }
 
-    /*
-     * IMPORTANT:
-     * lockRecords = TRUE here.
-     *
-     * queryVisibleAssets() therefore uses FOR UPDATE
-     * WITHOUT ORDER BY.
-     */
     List<Asset> visibleAssets = queryVisibleAssets(
       access.account.Id,
       access.campaign.Id,
       true
-    );
-
-    System.debug(
-      LoggingLevel.INFO,
-      'Visible locked Assets found: ' + visibleAssets.size()
     );
 
     Map<Id, Asset> eligibleAssets = new Map<Id, Asset>();
@@ -435,22 +290,11 @@ global without sharing class ParticipantRegistrationController {
       }
     }
 
-    System.debug(
-      LoggingLevel.INFO,
-      'Eligible Assets: ' + eligibleAssets.size()
-    );
-
-    System.debug(
-      LoggingLevel.INFO,
-      'Submitted participant count: ' + inputs.size()
-    );
-
     if (inputs.size() != eligibleAssets.size()) {
       throw staleTickets();
     }
 
     Set<Id> submittedAssetIds = new Set<Id>();
-
     Map<String, ParticipantInput> participantByEmail = new Map<String, ParticipantInput>();
 
     for (ParticipantInput input : inputs) {
@@ -482,56 +326,28 @@ global without sharing class ParticipantRegistrationController {
         );
 
         contactsToCreate.add(participant);
-
-        /*
-         * Put the unsaved Contact into
-         * the map.
-         *
-         * After insert, Salesforce populates
-         * participant.Id automatically.
-         */
         contactByEmail.put(email, participant);
       }
     }
 
-    System.debug(
-      LoggingLevel.INFO,
-      'Contacts to create: ' + contactsToCreate.size()
-    );
-
     if (!contactsToCreate.isEmpty()) {
       insert contactsToCreate;
-
-      System.debug(LoggingLevel.INFO, 'Contacts inserted successfully');
     }
 
     List<Asset> assetsToUpdate = new List<Asset>();
+    Set<Id> participantContactIds = new Set<Id>();
 
     for (ParticipantInput input : inputs) {
       Id assetId = parseAssetId(input.assetId);
-
-      String normalizedEmail = normalizeEmail(input.email);
-
-      Contact participant = contactByEmail.get(normalizedEmail);
+      Contact participant = contactByEmail.get(normalizeEmail(input.email));
 
       if (participant == null || participant.Id == null) {
-        System.debug(
-          LoggingLevel.ERROR,
-          'No Contact found for email: ' + normalizedEmail
-        );
-
         throw new RequestException(
-          500,
-          'CONTACT_NOT_FOUND',
-          'Non è stato possibile associare il partecipante al biglietto.'
+          'Non e stato possibile associare il partecipante al biglietto.'
         );
       }
 
-      System.debug(
-        LoggingLevel.INFO,
-        'Updating Asset ' + assetId + ' with Contact ' + participant.Id
-      );
-
+      participantContactIds.add(participant.Id);
       assetsToUpdate.add(
         new Asset(
           Id = assetId,
@@ -541,34 +357,53 @@ global without sharing class ParticipantRegistrationController {
       );
     }
 
+    insertMissingCampaignMembers(access.campaign.Id, participantContactIds);
+
     if (!assetsToUpdate.isEmpty()) {
       update assetsToUpdate;
-
-      System.debug(
-        LoggingLevel.INFO,
-        'Assets updated successfully: ' + assetsToUpdate.size()
-      );
     }
 
-    PageResponse response = buildPage(access);
-
-    response.message = 'I dati dei partecipanti sono stati salvati.';
-
-    System.debug(LoggingLevel.INFO, 'saveParticipants completed successfully');
-
-    return response;
+    return buildPage(access);
   }
 
-  // =========================================================
-  // FIND EXISTING CONTACTS
-  // =========================================================
+  private static void insertMissingCampaignMembers(
+    Id campaignId,
+    Set<Id> contactIds
+  ) {
+    if (contactIds == null || contactIds.isEmpty()) {
+      return;
+    }
+
+    Set<Id> existingContactIds = new Set<Id>();
+
+    for (CampaignMember member : [
+      SELECT ContactId
+      FROM CampaignMember
+      WHERE CampaignId = :campaignId AND ContactId IN :contactIds
+    ]) {
+      existingContactIds.add(member.ContactId);
+    }
+
+    List<CampaignMember> membersToCreate = new List<CampaignMember>();
+
+    for (Id contactId : contactIds) {
+      if (!existingContactIds.contains(contactId)) {
+        membersToCreate.add(
+          new CampaignMember(CampaignId = campaignId, ContactId = contactId)
+        );
+      }
+    }
+
+    if (!membersToCreate.isEmpty()) {
+      insert membersToCreate;
+    }
+  }
 
   private static Map<String, Contact> findExistingContacts(
     Id accountId,
     Set<String> emails
   ) {
     Map<String, Contact> result = new Map<String, Contact>();
-
     Set<String> duplicateEmails = new Set<String>();
 
     if (emails == null || emails.isEmpty()) {
@@ -592,18 +427,12 @@ global without sharing class ParticipantRegistrationController {
 
     if (!duplicateEmails.isEmpty()) {
       throw new RequestException(
-        409,
-        'AMBIGUOUS_CONTACT',
-        'Esistono più contatti con la stessa email. Contatta il tuo referente.'
+        'Esistono piu contatti con la stessa email. Contatta il tuo referente.'
       );
     }
 
     return result;
   }
-
-  // =========================================================
-  // QUERY ASSETS
-  // =========================================================
 
   private static List<Asset> queryVisibleAssets(
     Id accountId,
@@ -611,61 +440,20 @@ global without sharing class ParticipantRegistrationController {
     Boolean lockRecords
   ) {
     String queryText =
-      'SELECT ' +
-      'Id, ' +
-      'Name, ' +
-      'Status, ' +
-      'ContactId, ' +
-      'Campaign__c, ' +
-      'Campaign__r.Name, ' +
-      'Campaign__r.StartDate, ' +
-      'Campaign__r.EndDate, ' +
-      'Contact.FirstName, ' +
-      'Contact.LastName, ' +
-      'Contact.Email, ' +
-      'Contact.Phone, ' +
-      'Product2.Name ' +
-      'FROM Asset ' +
-      'WHERE AccountId = :accountId ' +
-      'AND Campaign__c = :campaignId ' +
+      'SELECT Id, Name, Status, ContactId, Campaign__c, Campaign__r.Name, ' +
+      'Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
+      'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name ' +
+      'FROM Asset WHERE AccountId = :accountId AND Campaign__c = :campaignId ' +
       'AND Status IN :VISIBLE_STATUSES ';
 
-    /*
-     * Salesforce does NOT allow our explicit
-     * ORDER BY when using FOR UPDATE here.
-     *
-     * SAVE:
-     *      FOR UPDATE
-     *
-     * PAGE LOAD:
-     *      ORDER BY
-     */
     if (lockRecords) {
       queryText += 'FOR UPDATE';
     } else {
-      queryText +=
-        'ORDER BY ' +
-        'Campaign__r.StartDate, ' +
-        'Campaign__r.Name, ' +
-        'Product2.Name, ' +
-        'Name';
+      queryText += 'ORDER BY Campaign__r.StartDate, Campaign__r.Name, Product2.Name, Name';
     }
 
-    System.debug(LoggingLevel.INFO, 'queryVisibleAssets query: ' + queryText);
-
-    List<Asset> assets = Database.query(queryText);
-
-    System.debug(
-      LoggingLevel.INFO,
-      'queryVisibleAssets rows: ' + assets.size()
-    );
-
-    return assets;
+    return Database.query(queryText);
   }
-
-  // =========================================================
-  // PARTICIPANT VALIDATION
-  // =========================================================
 
   private static void validateParticipant(
     ParticipantInput input,
@@ -704,22 +492,17 @@ global without sharing class ParticipantRegistrationController {
 
     if (participantByEmail.containsKey(email)) {
       ParticipantInput previous = participantByEmail.get(email);
-
       Boolean sameFirstName = previous.firstName
         .trim()
         .equalsIgnoreCase(input.firstName.trim());
-
       Boolean sameLastName = previous.lastName
         .trim()
         .equalsIgnoreCase(input.lastName.trim());
-
       Boolean samePhone = previous.phone.trim() == input.phone.trim();
 
       if (!sameFirstName || !sameLastName || !samePhone) {
         throw new RequestException(
-          400,
-          'CONFLICTING_DUPLICATE_EMAIL',
-          'La stessa email contiene dati diversi in più righe.'
+          'La stessa email contiene dati diversi in piu righe.'
         );
       }
     } else {
@@ -729,103 +512,30 @@ global without sharing class ParticipantRegistrationController {
     submittedAssetIds.add(assetId);
   }
 
-  // =========================================================
-  // PARSE REQUEST
-  // =========================================================
-
-  private static SubmissionRequest parseSubmission() {
-    if (
-      RestContext.request.requestBody == null ||
-      RestContext.request.requestBody.size() == 0
-    ) {
-      throw new RequestException(
-        400,
-        'INVALID_REQUEST',
-        'La richiesta è vuota.'
-      );
-    }
-
-    try {
-      String requestBody = RestContext.request.requestBody.toString();
-
-      System.debug(
-        LoggingLevel.INFO,
-        'Participant registration request body: ' + requestBody
-      );
-
-      return (SubmissionRequest) JSON.deserializeStrict(
-        requestBody,
-        SubmissionRequest.class
-      );
-    } catch (RequestException requestError) {
-      throw requestError;
-    } catch (Exception invalidJson) {
-      System.debug(
-        LoggingLevel.ERROR,
-        'Invalid request JSON: ' + invalidJson.getMessage()
-      );
-
-      throw new RequestException(
-        400,
-        'INVALID_REQUEST',
-        'La richiesta non è valida.'
-      );
-    }
-  }
-
-  // =========================================================
-  // ID PARSERS
-  // =========================================================
-
   private static Id parseAccountId(String rawId) {
-    if (String.isBlank(rawId)) {
-      return null;
-    }
-
-    try {
-      Id recordId = (Id) rawId;
-
-      return (recordId.getSObjectType() == Account.SObjectType)
-        ? recordId
-        : null;
-    } catch (Exception invalidId) {
-      return null;
-    }
+    return parseId(rawId, Account.SObjectType);
   }
 
   private static Id parseCampaignId(String rawId) {
-    if (String.isBlank(rawId)) {
-      return null;
-    }
-
-    try {
-      Id recordId = (Id) rawId;
-
-      return (recordId.getSObjectType() == Campaign.SObjectType)
-        ? recordId
-        : null;
-    } catch (Exception invalidId) {
-      return null;
-    }
+    return parseId(rawId, Campaign.SObjectType);
   }
 
   private static Id parseAssetId(String rawId) {
+    return parseId(rawId, Asset.SObjectType);
+  }
+
+  private static Id parseId(String rawId, Schema.SObjectType expectedType) {
     if (String.isBlank(rawId)) {
       return null;
     }
 
     try {
       Id recordId = (Id) rawId;
-
-      return (recordId.getSObjectType() == Asset.SObjectType) ? recordId : null;
+      return recordId.getSObjectType() == expectedType ? recordId : null;
     } catch (Exception invalidId) {
       return null;
     }
   }
-
-  // =========================================================
-  // EMAIL
-  // =========================================================
 
   private static String normalizeEmail(String email) {
     return email == null ? null : email.trim().toLowerCase();
@@ -836,68 +546,23 @@ global without sharing class ParticipantRegistrationController {
     Pattern.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$', email));
   }
 
-  // =========================================================
-  // ERRORS
-  // =========================================================
-
   private static RequestException invalidLink() {
-    return new RequestException(
-      404,
-      'INVALID',
-      'Questo collegamento non è valido.'
-    );
+    return new RequestException('Questo collegamento non e valido.');
   }
 
   private static RequestException invalidParticipant() {
     return new RequestException(
-      400,
-      'INVALID_PARTICIPANT',
       'Completa nome, cognome, email e telefono per ogni partecipante.'
     );
   }
 
   private static RequestException staleTickets() {
     return new RequestException(
-      409,
-      'TICKET_LIST_CHANGED',
-      'La lista dei biglietti è cambiata. Ricarica la pagina prima di continuare.'
+      'La lista dei biglietti e cambiata. Ricarica la pagina prima di continuare.'
     );
   }
 
-  // =========================================================
-  // HTTP RESPONSE
-  // =========================================================
-
-  private static void configureResponse() {
-    RestContext.response.addHeader('Cache-Control', 'no-store, private');
-
-    RestContext.response.addHeader('Pragma', 'no-cache');
-
-    RestContext.response.addHeader('X-Content-Type-Options', 'nosniff');
-  }
-
-  private static void writeError(RequestException error) {
-    writeJson(
-      error.httpStatus,
-      new ErrorResponse(error.responseCode, error.getMessage())
-    );
-  }
-
-  private static void writeUnexpectedError() {
-    writeJson(
-      500,
-      new ErrorResponse(
-        'SERVER_ERROR',
-        'Non è stato possibile completare la richiesta. Riprova più tardi.'
-      )
-    );
-  }
-
-  private static void writeJson(Integer statusCode, Object body) {
-    RestContext.response.statusCode = statusCode;
-
-    RestContext.response.addHeader('Content-Type', 'application/json');
-
-    RestContext.response.responseBody = Blob.valueOf(JSON.serialize(body));
+  private static AuraHandledException handled(String message) {
+    return new AuraHandledException(message);
   }
 }
