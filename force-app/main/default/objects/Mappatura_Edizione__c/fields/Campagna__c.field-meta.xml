@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campagna__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description
+  >Campagna figlia dell&apos;edizione da associare ai biglietti generati nella finestra indicata.</description>
+    <label>Campagna</label>
+    <lookupFilter>
+        <active>true</active>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <errorMessage
+    >Seleziona una Campagna Figlio attiva per la mappatura edizione.</errorMessage>
+        <filterItems>
+            <field>Campaign.RecordType.DeveloperName</field>
+            <operation>equals</operation>
+            <value>Campagna_Figlio</value>
+        </filterItems>
+        <filterItems>
+            <field>Campaign.IsActive</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Campaign</referenceTo>
+    <relationshipLabel>Mappature Edizione</relationshipLabel>
+    <relationshipName>Mappature_Edizione</relationshipName>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

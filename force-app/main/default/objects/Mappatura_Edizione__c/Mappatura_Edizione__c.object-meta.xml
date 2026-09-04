@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment
+    >Action override created for the Mappatura Edizione Lightning record page.</comment>
+        <content>Mappatura_Edizione_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment
+    >Action override created for the Mappatura Edizione Lightning record page.</comment>
+        <content>Mappatura_Edizione_Record_Page</content>
+        <formFactor>Small</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description
+  >Mappatura manuale che associa un prodotto evento e una finestra di data ordine alla campagna figlia dell'edizione.</description>
+    <enableActivities>false</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Mappatura Edizione</label>
+    <nameField>
+        <displayFormat>ME-{0000}</displayFormat>
+        <label>Numero Mappatura</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Mappature Edizione</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

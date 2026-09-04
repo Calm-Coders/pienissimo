@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Data_Inizio__c</fullName>
+    <description
+  >Prima data ordine inclusa nella finestra di validita della mappatura.</description>
+    <label>Data Inizio</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>Date</type>
+</CustomField>

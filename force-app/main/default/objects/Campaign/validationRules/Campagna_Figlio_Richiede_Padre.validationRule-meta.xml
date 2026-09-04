@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campagna_Figlio_Richiede_Padre</fullName>
+    <active>true</active>
+    <description
+  >Una Campagna Figlio deve essere collegata a una Campagna Padre.</description>
+    <errorConditionFormula>AND(
+  RecordType.DeveloperName = "Campagna_Figlio",
+  ISBLANK(ParentId)
+)</errorConditionFormula>
+    <errorDisplayField>ParentId</errorDisplayField>
+    <errorMessage
+  >Una Campagna Figlio deve avere una Campagna Padre.</errorMessage>
+</ValidationRule>
