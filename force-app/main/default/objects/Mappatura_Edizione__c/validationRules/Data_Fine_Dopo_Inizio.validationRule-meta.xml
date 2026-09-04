@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Data_Fine_Dopo_Inizio</fullName>
+    <active>true</active>
+    <description>La data fine non puo precedere la data inizio.</description>
+    <errorConditionFormula
+  >Data_Fine__c &lt; Data_Inizio__c</errorConditionFormula>
+    <errorMessage>La Data Fine non puo precedere la Data Inizio.</errorMessage>
+</ValidationRule>

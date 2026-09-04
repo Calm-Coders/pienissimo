@@ -4,6 +4,9 @@ public with sharing class OrderBigliettoTriggerHandler {
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
   private static Id ticketRecordTypeId;
 
+  private class TicketGenerationException extends Exception {
+  }
+
   public static void afterInsert(List<Order> newOrders) {
     AnticipayOrderAutomation.enqueueForFirstOrders(newOrders);
     createTicketsForConfirmedOrders(newOrders, null);
@@ -48,7 +51,8 @@ public with sharing class OrderBigliettoTriggerHandler {
         Product2Id,
         Product2.Name,
         Product2.Genera_Biglietto__c,
-        Order.AccountId
+        Order.AccountId,
+        Order.EffectiveDate
       FROM OrderItem
       WHERE OrderId IN :confirmedOrderIds
     ];
@@ -68,6 +72,8 @@ public with sharing class OrderBigliettoTriggerHandler {
     if (ticketSources.isEmpty()) {
       return;
     }
+
+    assignCampaigns(ticketSources);
 
     Set<Id> orderItemIds = new Set<Id>();
     Set<Id> productIds = new Set<Id>();
@@ -116,6 +122,7 @@ public with sharing class OrderBigliettoTriggerHandler {
             Status = INITIAL_TICKET_STATUS,
             AccountId = source.accountId,
             Product2Id = source.productId,
+            Campaign__c = source.campaignId,
             Order_Product__c = source.orderItemId,
             Fattura_Pagata__c = false
           )
@@ -206,6 +213,7 @@ public with sharing class OrderBigliettoTriggerHandler {
             new TicketSource(
               line.Id,
               line.Order.AccountId,
+              line.Order.EffectiveDate,
               component.Product__c,
               component.Product__r.Name,
               orderQuantity * componentQuantity
@@ -221,6 +229,7 @@ public with sharing class OrderBigliettoTriggerHandler {
           new TicketSource(
             line.Id,
             line.Order.AccountId,
+            line.Order.EffectiveDate,
             line.Product2Id,
             line.Product2.Name,
             orderQuantity
@@ -230,6 +239,83 @@ public with sharing class OrderBigliettoTriggerHandler {
     }
 
     return sources;
+  }
+
+  private static void assignCampaigns(List<TicketSource> ticketSources) {
+    Set<Id> productIds = new Set<Id>();
+    Date minOrderDate;
+    Date maxOrderDate;
+
+    for (TicketSource source : ticketSources) {
+      if (source.productId != null) {
+        productIds.add(source.productId);
+      }
+
+      if (source.orderDate == null) {
+        throw new TicketGenerationException(
+          'Data ordine mancante: impossibile determinare la campagna del biglietto.'
+        );
+      }
+
+      minOrderDate = minOrderDate == null ||
+        source.orderDate < minOrderDate
+        ? source.orderDate
+        : minOrderDate;
+      maxOrderDate = maxOrderDate == null ||
+        source.orderDate > maxOrderDate
+        ? source.orderDate
+        : maxOrderDate;
+    }
+
+    if (productIds.isEmpty()) {
+      return;
+    }
+
+    List<Mappatura_Edizione__c> mappings = [
+      SELECT Prodotto__c, Data_Inizio__c, Data_Fine__c, Campagna__c
+      FROM Mappatura_Edizione__c
+      WHERE
+        Attiva__c = TRUE
+        AND Prodotto__c IN :productIds
+        AND Data_Inizio__c <= :maxOrderDate
+        AND Data_Fine__c >= :minOrderDate
+    ];
+
+    for (TicketSource source : ticketSources) {
+      List<Mappatura_Edizione__c> matches = new List<Mappatura_Edizione__c>();
+
+      for (Mappatura_Edizione__c mapping : mappings) {
+        if (
+          mapping.Prodotto__c == source.productId &&
+          mapping.Data_Inizio__c <= source.orderDate &&
+          mapping.Data_Fine__c >= source.orderDate
+        ) {
+          matches.add(mapping);
+        }
+      }
+
+      if (matches.isEmpty()) {
+        throw new TicketGenerationException(
+          'Nessuna mappatura edizione trovata per il prodotto ' +
+            source.productName +
+            ' alla data ordine ' +
+            String.valueOf(source.orderDate) +
+            '.'
+        );
+      }
+
+      if (matches.size() > 1) {
+        throw new TicketGenerationException(
+          'Mappature edizione sovrapposte per il prodotto ' +
+            source.productName +
+            ' alla data ordine ' +
+            String.valueOf(source.orderDate) +
+            '.'
+        );
+      }
+
+      source.campaignId = matches[0].Campagna__c;
+    }
   }
 
   private static Integer wholeNumber(Decimal value) {
@@ -243,19 +329,23 @@ public with sharing class OrderBigliettoTriggerHandler {
   private class TicketSource {
     private Id orderItemId;
     private Id accountId;
+    private Date orderDate;
     private Id productId;
     private String productName;
     private Integer quantity;
+    private Id campaignId;
 
     private TicketSource(
       Id orderItemId,
       Id accountId,
+      Date orderDate,
       Id productId,
       String productName,
       Integer quantity
     ) {
       this.orderItemId = orderItemId;
       this.accountId = accountId;
+      this.orderDate = orderDate;
       this.productId = productId;
       this.productName = productName;
       this.quantity = quantity;

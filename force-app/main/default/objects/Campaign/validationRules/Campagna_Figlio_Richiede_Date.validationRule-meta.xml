@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campagna_Figlio_Richiede_Date</fullName>
+    <active>true</active>
+    <description
+  >Una Campagna Figlio deve avere data inizio, data fine e una data fine non precedente alla data inizio.</description>
+    <errorConditionFormula>AND(
+  RecordType.DeveloperName = "Campagna_Figlio",
+  OR(
+    ISBLANK(StartDate),
+    ISBLANK(EndDate),
+    EndDate &lt; StartDate
+  )
+)</errorConditionFormula>
+    <errorMessage
+  >Una Campagna Figlio deve avere Data Inizio, Data Fine e Data Fine non precedente a Data Inizio.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Data_Fine__c</fullName>
+    <description
+  >Ultima data ordine inclusa nella finestra di validita della mappatura.</description>
+    <label>Data Fine</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>Date</type>
+</CustomField>
