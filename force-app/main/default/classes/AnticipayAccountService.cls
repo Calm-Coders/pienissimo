@@ -20,6 +20,10 @@ public with sharing class AnticipayAccountService {
     @AuraEnabled
     public Id accountId;
     @AuraEnabled
+    public Id sourceRecordId;
+    @AuraEnabled
+    public String sourceRecordObjectApiName;
+    @AuraEnabled
     public List<Integration_Log__c> integrationLogs;
 
     public Result() {
@@ -67,12 +71,63 @@ public with sharing class AnticipayAccountService {
   }
 
   @AuraEnabled
+  public static Result refreshRecord(Id recordId) {
+    Result result = new Result();
+
+    if (recordId == null) {
+      result.message = 'L\'ID record e obbligatorio.';
+      return result;
+    }
+
+    result.sourceRecordId = recordId;
+    result.sourceRecordObjectApiName = String.valueOf(
+      recordId.getSObjectType()
+    );
+
+    if (recordId.getSObjectType() == Account.SObjectType) {
+      return refreshAccount(recordId, recordId);
+    }
+
+    if (recordId.getSObjectType() == Order.SObjectType) {
+      Order orderRecord = [
+        SELECT Id, AccountId
+        FROM Order
+        WHERE Id = :recordId
+        LIMIT 1
+      ];
+
+      if (orderRecord.AccountId == null) {
+        result.httpStatus = 400;
+        result.message = 'L\'ordine non ha un Account associato.';
+        return result;
+      }
+
+      return refreshAccount(orderRecord.AccountId, recordId);
+    }
+
+    result.httpStatus = 400;
+    result.message = 'Record non supportato per Anticipay.';
+    return result;
+  }
+
+  @AuraEnabled
   public static Result refreshAccount(Id accountId) {
+    return refreshAccount(accountId, accountId);
+  }
+
+  public static Result refreshAccount(Id accountId, Id sourceRecordId) {
     Result result = new Result();
     result.accountId = accountId;
+    result.sourceRecordId = sourceRecordId;
+
+    if (sourceRecordId != null) {
+      result.sourceRecordObjectApiName = String.valueOf(
+        sourceRecordId.getSObjectType()
+      );
+    }
 
     if (accountId == null) {
-      result.message = 'Account Id is required.';
+      result.message = 'L\'ID account e obbligatorio.';
       return result;
     }
 
@@ -85,18 +140,21 @@ public with sharing class AnticipayAccountService {
 
     if (accountRecord.Anticipay_Consolidato__c) {
       result.success = true;
-      result.message = 'Account already consolidated by Anticipay.';
+      result.message = 'Account gia consolidato da Anticipay.';
       return result;
     }
 
     if (String.isBlank(accountRecord.Partita_IVA__c)) {
-      result.message = 'Account Partita IVA is required.';
+      result.httpStatus = 400;
+      result.message = 'La Partita IVA e obbligatoria.';
       return result;
     }
 
+    String partitaIva = accountRecord.Partita_IVA__c.trim();
+
     Map<String, String> pathParams = new Map<String, String>{
       'env' => IS_SANDBOX ? ENV_SANDBOX : ENV_PRODUCTION,
-      'piva' => accountRecord.Partita_IVA__c
+      'piva' => partitaIva
     };
 
     API_Callout_Engine.Result engineResult = API_Callout_Engine.callApi(
@@ -111,6 +169,7 @@ public with sharing class AnticipayAccountService {
 
     if (engineResult.payload == null) {
       result.message = buildFailureMessage(result.httpStatus);
+      AnticipayErrorNotificationService.sendIfError(result);
       return result;
     }
 
@@ -126,13 +185,14 @@ public with sharing class AnticipayAccountService {
         response.error,
         buildFailureMessage(result.httpStatus)
       );
+      AnticipayErrorNotificationService.sendIfError(result);
       return result;
     }
 
     update mapResponseToAccount(accountId, response.info);
 
     result.success = true;
-    result.message = 'Anticipay Account data refreshed.';
+    result.message = 'Dati Account aggiornati da Anticipay.';
     return result;
   }
 
@@ -234,18 +294,18 @@ public with sharing class AnticipayAccountService {
 
   private static String buildFailureMessage(Integer httpStatus) {
     if (httpStatus == 400) {
-      return 'Anticipay rejected the VAT number.';
+      return 'Anticipay ha rifiutato la Partita IVA.';
     }
     if (httpStatus == 401) {
-      return 'Anticipay authorization failed.';
+      return 'Autorizzazione Anticipay fallita.';
     }
     if (httpStatus == 404) {
-      return 'Anticipay did not find the company.';
+      return 'Anticipay non ha trovato l\'azienda.';
     }
     if (httpStatus == 500) {
-      return 'Anticipay middleware returned an internal error.';
+      return 'Il middleware Anticipay ha restituito un errore interno.';
     }
-    return 'Anticipay Account refresh failed.';
+    return 'Aggiornamento Account da Anticipay fallito.';
   }
 
   private static String firstNonBlank(
