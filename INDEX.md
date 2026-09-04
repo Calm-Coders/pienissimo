@@ -30,6 +30,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [The Biglietto build](notes/objects/The%20Biglietto%20build.md)                                                                             | **deleted from the org 28/08** - history only |
 | [Unrequested implementation in the org](notes/objects/Unrequested%20implementation%20in%20the%20org.md)                                     | stock scaffolding — do not re-flag            |
 | [The integration scaffolding has never been configured](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md) | deployed, zero configuration rows             |
+| [The Landing Page community](notes/objects/The%20Landing%20Page%20community.md) | **built 03/09, PR #31** — one Experience site serving both external pages; no application-level auth | ~2k |
 
 ### Flows
 
@@ -48,6 +49,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [The Biglietto Apex stack is not in source control](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                       | **critical**      |
 | [The Anticipay field build has not started](notes/risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)                                           | **high**          |
 | [Integration credentials exist only in the org](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)                                   | **high**          |
+| [The community pages have no application-level authentication](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md) | **new 03/09** · gating · a bare record id accepts or rejects a quote — third instance of the pattern | ~2k |
 | [A clean deploy would orphan the live WooCommerce endpoint](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)       | high (resolved)   |
 | [Production deploy is blocked by Apex coverage](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)                                   | high              |
 | [The whole remaining build lands after Ferragosto](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)                             | high              |
@@ -86,9 +88,16 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-106 one static bearer token for both Anticipay environments](notes/items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md)                          | open · new 01/09 · **treat the token as disclosed**                         | Aurel Mrruku       |
 | [OI-107 the Anticipay error path does not reach the integration log intact](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md) | open · new 01/09 · **two defects in `API_Callout_Engine`**, generic         | Aurel Mrruku       |
 | [OI-108 the Anticipay payload carries personal data](notes/items/OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md)                    | open · new 01/09 · all 5 person fields **taken 01/09**; 4 still unjustified | Elena Spini        |
-| [OI-109 codice destinatario SDI as a twelfth Anticipay field](notes/items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)                                   | **resolved 02/09** · withdrawn by Elisa Migliano - _"non ci serve"_        | Elisa Migliano     |
-| [OI-110 agent and network fields are missing from the Mexal order call](notes/items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)     | open · new 02/09 · codice agente/zona/classificatore rete not in the field set | Andrea Di Cicco    |
-| [OI-111 DocuSign licences are not confirmed with the client](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)                                 | open · new 02/09 · _"mi aspetto di sì"_ is the whole evidence               | Elena Spini        |
+| [OI-109 codice destinatario SDI as a twelfth Anticipay field](notes/items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)                                   | **resolved 02/09** · withdrawn from Anticipay · ⚠ **the field is back 03/09, fed from Mexal** | Elisa Migliano     |
+| [OI-110 agent and network fields are missing from the Mexal order call](notes/items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)     | open · **half answered 03/09** — the fields come from the tutor; only the wire question is left | Andrea Di Cicco    |
+| [OI-111 DocuSign licences are not confirmed with the client](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)                                 | open · ⚠ **03/09 a quote acceptance page shipped without DocuSign in it** | Elena Spini        |
+| [OI-112 whether Anticipay returns the ATECO code](notes/items/OI-112%20Whether%20Anticipay%20returns%20the%20ATECO%20code.md) | open · new 03/09 · ATECO is not among the eleven documented fields | Fabrizio Paganelli |
+| [OI-113 whether Mexal requires both addresses to create an account](notes/items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md) | open · new 03/09 · the session’s only formal deferral | Andrea Di Cicco |
+| [OI-114 whether the RFM company state migrates](notes/items/OI-114%20Whether%20the%20RFM%20company%20state%20migrates.md) | open · new 03/09 · value or calculation, nobody said which | Elisa Migliano |
+| [OI-115 Tipologia Attivita values and its move to the quote](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md) | open · new 03/09 · values owed by the client | Elisa Migliano |
+| [OI-116 nightly Mexal to Salesforce anagrafica sync](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md) | open · new 03/09 · **agreed, unbuilt, unestimated** — the F-2 flow | Aurel Mrruku |
+| [OI-117 administrative fields lock once the Mexal customer code is set](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md) | open · new 03/09 · unbuilt · no principal named | Aurel Mrruku |
+| [OI-118 ragione sociale continuity on the customer registry](notes/items/OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md) | open · new 03/09 · inner lookup 5 deep + History Tracking | Aurel Mrruku |
 | [OI-04 scope against the go-live date](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md)                                                                                       | open · gating                                                               | Elena Spini        |
 
 ### Open items — client inputs owed
@@ -108,11 +117,11 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 
 | Note                                                                                                          |
 | ------------------------------------------------------------------------------------------------------------- |
-| [OI-68 quote acceptance landing page](notes/items/OI-68%20Quote%20acceptance%20landing%20page.md)             |
+| [OI-68 quote acceptance landing page](notes/items/OI-68%20Quote%20acceptance%20landing%20page.md)             | in-progress · 🟢 **built 03/09** (PR #31) · 🔴 **skips DocuSign and order generation** 
 | [OI-69 order state model](notes/items/OI-69%20Order%20state%20model.md)                                       |
 | [OI-74 asset state machine](notes/items/OI-74%20Asset%20state%20machine.md)                                   |
 | [OI-75 ticket availability rule](notes/items/OI-75%20Ticket%20availability%20rule.md)                         |
-| [OI-78 participant data collection](notes/items/OI-78%20Participant%20data%20collection.md)                   |
+| [OI-78 participant data collection](notes/items/OI-78%20Participant%20data%20collection.md)                   | open · 🟢 **built 03/09** (PR #31) · Campaign Member, QR and mail still absent 
 | [OI-73 VAT validation into Salesforce](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)   |
 | [OI-71 service start date](notes/items/OI-71%20Service%20start%20date%20owned%20by%20the%20Strategist.md)     |
 | [OI-70 Performance Plus opportunity typing](notes/items/OI-70%20Performance%20Plus%20opportunity%20typing.md) |
@@ -146,7 +155,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-83 no phase 2 estimate](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                              |
 | [OI-84 Campaign Member on manual check-in](notes/items/OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md)                  |
 | [OI-85 order state set may be incomplete](notes/items/OI-85%20Order%20state%20set%20may%20be%20incomplete.md)                              |
-| [OI-86 who hosts the participant landing page](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                    |
+| [OI-86 who hosts the participant landing page](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                    | open · 🔴 **overtaken 03/09 by a build, not answered** — the community was merged 
 
 ### Meetings
 
@@ -159,6 +168,7 @@ August were all recovered on 2026-08-24; before that the record said the 19 and
 | Note                                                                                                                         | Weight                                                                                                                       |
 | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [2026-09-02 Follow-up Anagrafica Articoli](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)                 | **Client-facing** · 1h16m · full transcript · tipo biglietto leaves Mexal; **Anticipay called for every account**; the Mexal order tracciato |
+| [2026-09-03 Data Model Parte 1](notes/meetings/2026-09-03%20Data%20Model%20Parte%201.md) | **Client-facing** · 2h08m · full transcript · the customer registry gets an owner; 15 decisions, 7 new rows | ~4k |
 | [2026-09-01 Follow-up Integrazione Anticipay](notes/meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)           | **Client-facing** · ~20 min · full transcript + Gemini notes · **OI-95 decided in the room**; Italy-only; `:env` agreed here |
 | [2026-08-27 Integrazione WooCommerce](notes/meetings/2026-08-27%20Integrazione%20WooCommerce.md)                             | **Client-facing** · full transcript · the integration direction settled; stock webhooks evaluated and rejected               |
 | [2026-08-27 Test Integrazione WooCommerce](notes/meetings/2026-08-27%20Test%20Integrazione%20WooCommerce.md)                 | Working session, **two people** · full transcript · the plugin demonstrated live · ⚠ decisions unminuted outside Gemini      |

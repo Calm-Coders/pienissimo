@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-09-02
+updated: 2026-09-03
 depends_on: [OI-58]
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
@@ -320,3 +320,50 @@ to every tutor whether or not commission is actually calculated for them.
 
 This is the same population as the agents already known to live in Mexal as
 **suppliers under mastro 610**.
+
+## 2026-09-03 - the customer registry leg, from Data Model Parte 1
+
+[The session](../meetings/2026-09-03%20Data%20Model%20Parte%201.md) specified the
+anagrafica side of this integration for the first time. Four rules:
+
+1. **Salesforce creates the account**, and pushes it to Mexal **immediately before
+   the order is created**. The client's own `Flussi` sheet calls this `F-1` and
+   dates it differently — _"scatta alla prima opty won"_ — which is
+   [an unreconciled discrepancy](../items/OI-24%20Data%20model%20workbook.md).
+2. **Mexal owns the registry thereafter.** Post-creation changes are made on
+   Mexal only.
+3. **A nightly batch returns them** — `F-2`, Aurel Mrruku's _"get notturno"_. It
+   is unbuilt:
+   [OI-116](../items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md).
+4. **Salesforce locks its administrative fields** once `Codice Cliente Mexal` is
+   populated:
+   [OI-117](../items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md).
+
+### Agent reconciliation on the order
+
+Mexal, on receiving an order, compares the order's `codice agente` against its own
+customer registry. If they differ it **rewrites its registry** and returns the new
+customer-agent pairing on the nightly flow. Nothing has to be pushed or notified
+from Salesforce. The three commission fields themselves originate from the
+Salesforce user assigned as tutor —
+[OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md).
+
+### Two new Mexal-side fields named for the first time
+
+- **`codice alternativo`** — where Mexal stores the code of a customer's previous
+  ragione sociale, fed from Salesforce's `Azienda Precedente` lookup
+  ([OI-118](../items/OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md)).
+- **The SDI / codice destinatario**, which Fabrizio Paganelli asked the
+  integration to populate even though San Marino ↔ Italy traffic uses the PEC
+  ([OI-109](../items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)).
+
+### One behaviour replicated deliberately
+
+**Codice fiscale is pre-populated from the partita IVA** on creation in
+Salesforce, because that is what Mexal does. Fabrizio Paganelli noted the two
+**can diverge after a change of ragione sociale**, so it is a default and not a
+mirror — which matters to any matching rule keyed on either field.
+
+⚠ **Whether Mexal requires both the billing and the shipping address to create a
+customer is untested** and is the session's only formally deferred question:
+[OI-113](../items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md).

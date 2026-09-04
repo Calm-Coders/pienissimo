@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-02 (nightly requirements-check: the 02/09 session was drilled from its transcript, the shared data-model workbook arrived, and three client sessions were booked) · Source of record: [notes/](notes/)
+Last updated: 2026-09-03 (nightly requirements-check: Data Model Parte 1 was drilled from its transcript, and an entire Experience Cloud community was merged to DevMain) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -18,6 +18,96 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   offsite**, nobody in the room connected the two, and that leaves **four working
   days**, three of them carrying a client session
   ([the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)).
+
+- 🟢🔴 **2026-09-03 — Data Model Parte 1 ran, and the customer registry finally has
+  an owner.** Client-facing, 10:59 CEST, **booked for one hour and run to 2h08m**;
+  drilled from the full transcript
+  ([the minute](notes/meetings/2026-09-03%20Data%20Model%20Parte%201.md)). Present:
+  Elena Spini, Aurel Mrruku, Andrea Di Cicco, Elisa Migliano, Fabrizio Paganelli.
+  🟢 **The ownership model is settled and was not in the record before**:
+  Salesforce creates the account and pushes it to Mexal **immediately before the
+  order**; **Mexal then owns the anagrafica**; a **nightly batch** returns its
+  changes ([OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md));
+  and Salesforce **locks its administrative fields** once `Codice Cliente Mexal`
+  is populated ([OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)).
+  **Both are unbuilt, unestimated, and Fase 1 development ends 10 September.**
+  🟢 **[OI-110](notes/items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)
+  is half answered from the opposite direction** — `codice agente`, `zona` and
+  `classificatore rete` are **inherited from the tutor**, freeze on the order for
+  commission attribution, and **Mexal reconciles mismatches itself**. Only the
+  wire question is left.
+  🟢 **[OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)
+  improves sharply**: the client struck the **whole legal-representative block**
+  from their template and Aurel Mrruku will map **whatever the live Anticipay
+  response returns** — the field list stops being a guess.
+  🔴 **A whole-system decision passed unpriced: every label and state on
+  Salesforce will be translated into Italian.**
+  🔴 **Two hours produced one object.** The **Lead table was deliberately
+  skipped** for Sabatino Rinaldi, and Utenti, Profili, the Ordine field list and
+  the initial-load plan were not opened at all
+  ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)) — the same four gaps as
+  2 September. Parte 2 (4 Sept) and Parte 3 (7 Sept) have an hour each.
+  New rows: [OI-112](notes/items/OI-112%20Whether%20Anticipay%20returns%20the%20ATECO%20code.md)
+  · [OI-113](notes/items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md)
+  · [OI-114](notes/items/OI-114%20Whether%20the%20RFM%20company%20state%20migrates.md)
+  · [OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)
+  · [OI-118](notes/items/OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md).
+  ⚠ **The SDI is back**, kept and fed from **Mexal** the day after
+  [OI-109](notes/items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)
+  was withdrawn as an **Anticipay** field — two people, opposite reasons, neither
+  aware of the other. ⚠ **Credit Safe was the predecessor VAT provider**, named
+  for the first time. 🟢 Elena Spini rebuilt the shared workbook **four minutes
+  after the call ended**.
+
+- 🔴🟢 **2026-09-03 — an entire Experience Cloud community was merged to
+  `DevMain`, and it is in no tracker.** PR **#31**, written by **Rexhina Hysi**
+  one day after a one-line Slack assignment, opened 14:21Z and **merged by Aurel
+  Mrruku 41 minutes later**: **82 files, +4,402 lines** — a `Landing Page` site,
+  its network and profile, a 67-file experience bundle, and two LWCs with their
+  controllers, `participantRegistrationPage` / `ParticipantRegistrationController`
+  (576 lines) and `quoteAcceptancePage` / `QuoteAcceptanceController` (268 lines)
+  ([the build](notes/objects/The%20Landing%20Page%20community.md)). **Published to
+  the UAT sandbox at 13:48Z and 14:10Z — before it was merged.**
+  🟢 **It builds [OI-68](notes/items/OI-68%20Quote%20acceptance%20landing%20page.md)
+  and [OI-78](notes/items/OI-78%20Participant%20data%20collection.md) on one shared
+  site**, answering the question both rows left open, and the quote page carries
+  the **agreed** `In Trattativa` / `In Attesa Accettazione` → `Accettato` /
+  `Rifiutato` lifecycle — the first time built code has matched
+  [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md).
+  🔴 **[OI-86](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)
+  is answered by build and still open in the record** — Rebecca Marmo’s deciding
+  call was never scheduled, nothing minuted it, the PR has no description, and
+  **Rebecca Marmo has not been told**.
+  🔴 **The quote page skips DocuSign entirely** — `submitAction` sets the status
+  on the click; no envelope, no order generation, where the agreed design has
+  both. It landed the day after
+  [OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md),
+  and **nothing anywhere connects the two. Ask, do not infer.**
+  🔴 **Neither page has application-level authentication** — a bare quote id
+  accepts or rejects a quote; a bare account id lists a customer’s tickets and
+  their holders’ personal data. The whole check is that the ids parse and the
+  records exist. **Third instance of the pattern** after `INT-16` and the
+  checkout link that carries the opportunity id in clear
+  ([the risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)).
+  ⚠ **+844 uncovered Apex lines in one day** — recorded, not acted on.
+
+- 🔴 **2026-09-03 — the 9–11 September offsite is corroborated in writing, and
+  a second absence appears.** Gianpaolo Motta, mailing an external contact on an
+  unrelated subject: _"(da mercoledì a venerdì saremo out)"_ — the record had the
+  offsite only from Elena Spini’s passing remark. **Fase 1 development ends
+  10 September, inside it.** ⚠ **Elena Spini is also off 14 and 15 September**;
+  she moved the internal follow-up to **Thu 17 Sept 14:15–15:15 CEST** and
+  lengthened it to an hour. **Between 9 and 17 September there is one working day
+  with the full team available**
+  ([the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)).
+
+- ⚠ **2026-09-03 — three smaller things.** The **production My Domain
+  `pienissimo.my.salesforce.com` is provisioned and "ready to be deployed"**
+  (08:06Z) and has not been — first movement on the production org in the record.
+  **`Flows & Objects.drawio` moved a fifth time** at 09:20Z, ~100 minutes before
+  the session, and **was not decoded** — the Drive reader cannot render the
+  format ([the master](notes/The%20newest%20design%20diagram.md)). And the **Slack
+  canvas is now eight client sessions behind**, re-read directly this run.
 
 - 🟢🔴 **2026-09-02 — the Anagrafica Articoli session was drilled from its
   transcript, and it is a much bigger meeting than the morning's action list
@@ -720,7 +810,7 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)) — ⚠ **superseded:
   the transcript was read the same night and
   [the minute is complete](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)**
-  · **3 Sept 11:00–12:00** [ROMI-PIENISSIMO] Data Model: Parte 1 · **4 Sept
+  · **3 Sept 11:00–12:00** [ROMI-PIENISSIMO] Data Model: Parte 1 — ✅ **ran, overran to 2h08m, fully drilled** ([the minute](notes/meetings/2026-09-03%20Data%20Model%20Parte%201.md)); it covered **Account only** — the Lead table was held for a session with Sabatino Rinaldi, and Utenti, Profili, the Ordine field list and the initial-load plan were not opened · **4 Sept
   16:00–17:00** Parte 2 · **7 Sept 11:00–12:00** Parte 3 — all three
   **client-facing and confirmed**, invited 2 Sept 09:08–09:19Z (Elena Spini,
   Elisa Migliano, Fabrizio Paganelli, Andrea Di Cicco, Aurel Mrruku optional,
@@ -732,7 +822,7 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   undecided `30 vs 60` · 🔴 **9–11 Sept ROMI company event** — the Fase 1
   development deadline of **10 September falls inside it**, and Pienissimo is on
   tour 9–10 · **17 Sept 09:00–13:00** Elisa Migliano is on a first-aid course ·
-  [PIENISSIMO] Follow-up Interno is a **weekly Monday 17:00 slot**.
+  [PIENISSIMO] Follow-up Interno is a **weekly Monday 17:00 slot**, ⚠ **now an hour rather than 45 minutes**, and its **14 Sept occurrence moved to Thu 17 Sept 14:15–15:15 CEST** because **Elena Spini is off 14–15 September**.
   [The compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)
   still governs.
 

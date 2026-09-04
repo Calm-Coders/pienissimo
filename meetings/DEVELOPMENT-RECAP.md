@@ -2283,3 +2283,201 @@ commercial agreement, go-live is 6 October, and a licence purchase was claimed b
 telephone in July and never confirmed since. `BIG-13` is still `open` in the
 register, and the org already carries an org-only `DocuSign` named credential —
 so something is wired to an account nobody can name. New row `OI-111`.
+
+## 28. Update 2026-09-03 — Data Model Parte 1, and a community that arrived on its own
+
+Two unrelated things happened on 3 September. The first was planned; the second
+was not in any tracker.
+
+### 28.1 The session
+
+**`[ROMI-PIENISSIMO] - Data Model: Parte 1`, client-facing, 10:59 CEST, booked
+for one hour and run to 2h08m.** Present: Elena Spini, Aurel Mrruku, Andrea Di
+Cicco, Elisa Migliano, Fabrizio Paganelli. Sabatino Rinaldi was invited optional
+and did not attend. Drilled from the full transcript; fifteen decisions recorded
+as agreed, one formally deferred, sixteen actions out.
+
+This is the first of the three sessions Elisa Migliano asked for after saying she
+had confused herself on a registry she knows — _"sono andata in confusione io da
+sola con me stessa"_ — and it covered **the Account object and nothing else**.
+
+### 28.2 Who owns the customer registry, and when
+
+The largest thing the session settled, and it was not in the record before:
+
+1. **Salesforce creates the account** and pushes it to Mexal **immediately before
+   the order is created**.
+2. **From then on Mexal owns the anagrafica.** Later changes are made on Mexal
+   only.
+3. **A nightly batch returns them to Salesforce** — the client's own `F-2`, and
+   Aurel Mrruku's _"get notturno"_. **It does not exist**: new row `OI-116`.
+4. **Salesforce locks its administrative and accounting fields** once
+   `Codice Cliente Mexal` is populated, editable only by amministrazione, by
+   validation rule. **Also does not exist**: new row `OI-117`.
+
+Commercial fields sit outside the lock. The hour the session spent sorting 150
+fields into **Dati Commerciali / Dati Tecnici / MEXAL / MEXAL - DATI PER
+PROVVIGIONI** was not tidying: those sections **are** the lock's boundary.
+
+### 28.3 The commission fields, answered from the other direction
+
+`OI-110` asked why `codice agente`, `zona` and `classificatore rete` could not be
+found in the Mexal order call. They are not supposed to come from there.
+
+**They are inherited from the Salesforce user — the tutor — assigned to the
+account.** Fabrizio Paganelli demonstrated the existing behaviour live: change
+the account's owner and all three follow. **On the order they freeze**, because
+commission belongs to whoever held the customer when the order was accepted —
+_"tu puoi cambiare l'agente a livello di account, ma a livello di ordine deve
+rimanere quello precedente,"_ confirmed in the room.
+
+**Mexal reconciles the rest by itself.** Receiving an order whose agent differs
+from its own registry, it rewrites the registry and returns the pairing on the
+nightly flow. Aurel Mrruku asked whether Salesforce had to notify anything; the
+answer was no.
+
+🔴 What remains of `OI-110` is one question, not two: **whether the Mexal
+order-creation call can carry the three fields on the wire.** Andrea Di Cicco's
+JSON update and test send, owed since 2 September, have appeared on no source.
+
+### 28.4 Ragione sociale continuity
+
+Three mechanisms, agreed, none built (`OI-118`): an **inner lookup** on Account
+labelled **`Azienda Precedente`** chaining back **five** predecessors;
+**History Tracking** on the critical fields within Salesforce's **10-field**
+limit; and the predecessor's code passed to Mexal's **`codice alternativo`**.
+
+🔴 **Traversal is not aggregation.** A five-deep lookup lets a person click
+backwards; it does not make a report sum orders across predecessors, and roll-ups
+do not cross this kind of lookup. Fabrizio Paganelli asked for statistics.
+
+### 28.5 The field-by-field pass
+
+**Renamed** — `codice cliente esterno` → **`Codice Cliente Mexal`**;
+`Ultima Verifica Credit Safe` → **`Ultima Verifica Anticipay`** (⚠ **Credit Safe
+was the predecessor VAT-lookup provider**, never before named in the record).
+
+**Added** — `Azienda obsoleta`; **`Azienda Test`**, so internal sales rehearsals
+can be excluded from the commercial statistics; the three ATECO fields, whose
+source is `OI-112`.
+
+**Deleted** — company-level marketing email and commercial phone (both are
+contact-level; the administrative phone stays and becomes mandatory); `Livello`;
+`Stato cliente`; the RID and legacy contract-signature fields; and **the whole
+legal-representative block**, which is the best thing to happen to `OI-95`:
+Fabrizio Paganelli _"per me li potete eliminare tutti"_, Aurel Mrruku _"Li
+toglierei tutte in base a quello che ci restituisce. Faccio io il mapping."_ The
+Salesforce field list becomes a consequence of the live Anticipay response
+instead of a list agreed from a PDF.
+
+**Moved** — `Tipologia Attività` leaves the Account for the **Preventivo** as a
+non-restrictive picklist; Elisa Migliano owes the values (`OI-115`).
+
+**Kept deliberately** — the **SDI**, which Fabrizio Paganelli wants populated
+against a future change in the rules even though San Marino ↔ Italy uses the PEC.
+⚠ **`OI-109` recorded the SDI as withdrawn on 2 September**, because Elisa
+Migliano did not need it *from Anticipay*. Here the same field is kept and fed
+*from Mexal*. Two people, opposite reasons, 24 hours apart, neither aware of the
+other.
+
+**Deferred** — whether Mexal needs both the billing and the shipping address
+(`OI-113`), the session's only formal deferral; and whether the RFM
+`Stato Azienda` migrates at all (`OI-114`).
+
+### 28.6 A whole-system decision taken in passing
+
+🔴 **Every label and every state on Salesforce will be translated into Italian** —
+offers and orders included. Recorded as agreed, by all participants. It touches
+every layout, picklist and state machine already built, and **nothing in the
+session estimated it.**
+
+### 28.7 What the session did not reach
+
+🔴 The **Lead table was deliberately skipped** so Sabatino Rinaldi can be present,
+and **Utenti, Profili, the Ordine field list and the initial-load plan were not
+opened at all** — the same four gaps `OI-24` recorded on 2 September. **Two hours
+produced one object.** Parte 2 (4 September, 16:00) and Parte 3 (7 September,
+11:00) have one hour each for the remainder, plus a Lead session needing a
+participant who has not been attending.
+
+🟢 Elena Spini acted on her own template actions within four minutes: the shared
+workbook was modified at 11:11:04Z. The `NON UTILIZZATO O OBSOLETO` block is gone
+and the Account sheet now carries the sections, renames and additions agreed in
+the room.
+
+### 28.8 An entire Experience Cloud community merged the same afternoon
+
+**PR #31, branch `DevMain_RexhinaPien`, opened by Rexhina Hysi at 14:21Z and
+merged to `DevMain` by Aurel Mrruku at 15:02:59Z — 41 minutes later. 82 files,
++4,402 lines.** It contains a `Landing Page` Experience site, its network and
+profile, a 67-file experience bundle, and two LWCs with their Apex controllers:
+**`participantRegistrationPage`** / `ParticipantRegistrationController` (576
+lines) and **`quoteAcceptancePage`** / `QuoteAcceptanceController` (268 lines).
+It was published to the Pienissimo UAT sandbox at 13:48Z and again at 14:10Z —
+**before it was merged**.
+
+🟢 **It builds `OI-78` and `OI-68` on one shared surface**, which answers the
+question both rows left open: yes, the participant page and the quote page are
+the same site.
+
+🟢 **The quote page uses the agreed lifecycle** — `In Trattativa` and `In Attesa
+Accettazione` actionable, `Accettato` / `Rifiutato` as outcomes. The first time
+built code has matched what `OI-59` fought for. ⚠ It is code, not configuration:
+if the org picklist still lacks those values, the controller fails at run time.
+
+🔴 **`OI-86` is answered by build and still open in the record.** The question was
+Salesforce community versus the marketing platform's own page; the deciding call
+with Rebecca Marmo has never been scheduled beyond _"after 17 August"_; no
+session minuted it and the PR has no description. A developer was told to work on
+_"the Pienissimo community"_ in a Slack DM on 2 September and the community
+merged the next day. **A build is evidence of what happened, not a record of a
+decision** — and Rebecca Marmo has not been told.
+
+🔴 **The quote page skips DocuSign entirely.** The agreed flow is accept →
+DocuSign → on signature the quote flips and the order is generated. The built
+`submitAction` sets `Quote.Status` on the click; there is no envelope and no
+order generation. It arrived the day after `OI-111` recorded that nobody has
+confirmed the client owns DocuSign, and **nothing anywhere connects the two** —
+equally consistent with a first pass that has not reached the signature step.
+**Ask, rather than infer.**
+
+🔴 **Neither page has application-level authentication.** Both controllers are
+`without sharing`; the quote page's `submitAction` takes a bare **quote id** and
+writes, and the participant page's `loadPage` and `findContact` take a bare
+**account id and campaign id**. The whole access check is that the ids parse and
+the records exist. Salesforce ids are not secret — this project mails them out
+deliberately, in the marketing link and in the WooCommerce checkout link. **Third
+instance of the same pattern**, after `INT-16`'s unauthenticated WooCommerce
+endpoint and the checkout link that carries the opportunity id in clear. Worth
+fixing once as a signed, expiring token rather than three times.
+
+⚠ **+844 uncovered Apex lines in one day**, against a deficit last measured at
+1,571 lines and zero covered. Recorded because the coverage records are the brief
+for the test suite; **not acted on**, per the standing instruction that the suite
+is written once, as its own task, before the production deploy.
+
+### 28.9 Two calendar facts
+
+⚠ **The 9–11 September ROMI company event is now corroborated in writing.**
+Gianpaolo Motta, mailing an external contact on an unrelated subject: _"(da
+mercoledì a venerdì saremo out)"_. **Fase 1 development ends on 10 September**,
+inside it.
+
+⚠ **Elena Spini is off on 14 and 15 September.** She moved the 14 September
+internal follow-up to **Thursday 17 September, 14:15–15:15 CEST**, and lengthened
+the recurring slot to an hour because _"andiamo sempre lunghi"_. Between 9 and
+17 September there is **one working day** with the full team available.
+
+### 28.10 Also noted
+
+⚠ **The production My Domain `pienissimo.my.salesforce.com` is provisioned and
+"ready to be deployed"** (Salesforce notice, 08:06Z). Not deployed. First
+movement on the production org in the record.
+
+⚠ **`Flows & Objects.drawio` moved a fifth time** at 09:20:01Z, about 100 minutes
+before the session — so probably preparation for it. **It was not decoded**: the
+Drive text reader cannot render the format, and every previous decode was done by
+hand from the XML. Worth taking before Parte 2.
+
+⚠ **The Slack canvas is now eight client sessions behind** — re-read directly
+this run, and its newest entry is still 20 August.

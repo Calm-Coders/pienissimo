@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-09-02
-updated: 2026-09-02
+updated: 2026-09-03
 blocks: [OI-68]
 requirement: INT-19
 source: Slack DM Aurel Mrruku / Elena Spini, 2026-09-02 15:47-15:49 CEST
@@ -70,3 +70,32 @@ DocuSign account today, on what plan, and who administers it.** If the answer is
 no, `BIG-13`'s fallback is already written — Option C, paper as-is, with digital
 signature deferred to an evolutiva — and the sooner that is said the less is
 built against an account that does not exist.
+
+## ⚠ 2026-09-03 - a quote acceptance page shipped without DocuSign in it
+
+`quoteAcceptancePage` and `QuoteAcceptanceController` merged to `DevMain` at
+15:02:59Z —
+[the Landing Page community](../objects/The%20Landing%20Page%20community.md). The
+accept action sets `Quote.Status` to `Accettato` directly. **There is no DocuSign
+envelope in the class**, where
+[OI-68](OI-68%20Quote%20acceptance%20landing%20page.md)'s agreed design has
+acceptance send the documents for signature and the status flip follow the
+signature.
+
+**Read this carefully, because two readings are open and they point opposite
+ways:**
+
+1. **A first pass that has not reached the signature step.** The same PR is
+   missing order generation too, which is also part of the agreed flow. On this
+   reading DocuSign is still needed and this item is as urgent as it was.
+2. **A quiet substitution** — a click-through acceptance replacing a signature,
+   in which case the licence question is moot and `BIG-13` needs rewriting.
+
+**Nothing distinguishes them.** No commit message, PR description, mail or Slack
+message mentions DocuSign at all. Elena Spini's answer of 2 September —
+_"richiedo conferma, ma mi aspetto di sì"_ — has produced no follow-up on any
+source.
+
+🔴 **Ask Aurel Mrruku directly.** This is now a question about ROMI's own build,
+not only about the client's procurement, and it is cheaper to answer than the
+licence question it depends on.

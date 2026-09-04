@@ -1,0 +1,5 @@
+{
+  "apiName": "Gestione_Preventivo__c",
+  "type": "sfdc_cms__route",
+  "path": "routes"
+}

@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Elisa Migliano
 org: Pienissimo
 raised: 2026-08-25
-updated: 2026-09-01
+updated: 2026-09-03
 depends_on: [OI-94, OI-108]
 blocks: [OI-73]
 source: notes/meetings/2026-09-01 Follow-up Integrazione Anticipay.md
@@ -228,3 +228,37 @@ with **nine days** before Fase 1 development ends on 10 September.
 ⚠ A **twelfth** field may yet arrive:
 [OI-109](OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md),
 the codice destinatario SDI. Do not wait for it — build the eleven.
+
+## 🟢 2026-09-03 - the field list stops being a guess
+
+At [Data Model Parte 1](../meetings/2026-09-03%20Data%20Model%20Parte%201.md) the
+client struck the whole legal-representative block from their own template and
+handed the mapping to ROMI. Fabrizio Paganelli:
+
+> _"per me li potete eliminare tutti e poi li mettete su voi in base a come
+> servono."_
+
+Aurel Mrruku took it:
+
+> _"Li toglierei tutte in base a quello che ci restituisce. Faccio io il mapping."_
+
+**This is the cleanest possible resolution of the field-selection problem**: the
+Salesforce field list becomes a consequence of the live Anticipay response rather
+than a list agreed in advance from a PDF. It also means the eleven-field
+agreement of 1 September is no longer load-bearing — what the call actually
+returns is.
+
+⚠ **The contradiction flagged on 2 September was never raised.** Zoho already
+holds the legal representative's residence split into street, town, province,
+postcode and country, while this item agreed to model it as **one free-text
+field**. The record said to raise it at Parte 1; it was not raised. Dropping the
+block arguably makes it moot — the structure will follow the response — but
+**that is an inference, not a decision.** Confirm at Parte 2.
+
+⚠ **Still nothing has run.** No lookup has ever been executed against Anticipay,
+so "what it returns" is not yet knowable. The mapping cannot start until it does,
+and [the field build has still not started](../risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md).
+
+⚠ One incidental discovery: the Zoho field `Ultima Verifica Credit Safe` is being
+renamed `Ultima Verifica Anticipay`. **Credit Safe was the predecessor
+VAT-lookup provider**, which the record has never named.

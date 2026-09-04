@@ -4,7 +4,7 @@ type: person
 status: active
 org: ROMI
 team: Calm-Coders
-updated: 2026-09-02
+updated: 2026-09-03
 ---
 
 # Rexhina Hysi - Salesforce developer ROMI
@@ -47,3 +47,28 @@ rregullime… i kishte me lek membersat"_, the members were costing money. Her
 deliberate cost decision**. ⚠ He did not say so in those words, and the two facts
 are a day apart; but the sweeps carrying "Rexhina's Notion access is pending" as
 an open ask should stop treating it as an oversight to chase.
+
+## 2026-09-03 - first delivery on Pienissimo, one day after being assigned
+
+Assigned to _"the Pienissimo community"_ in a Slack DM on 2 September at 11:04
+CEST. On **3 September** she opened PR **#31** at 14:21Z and it was merged by
+Aurel Mrruku at 15:02Z: **82 files, +4,402 lines** — an Experience Cloud site with
+the participant registration page, the quote acceptance page and their two Apex
+controllers
+([the build](../objects/The%20Landing%20Page%20community.md)). She posted the PR
+link to Aurel Mrruku in their DM at 16:24 CEST.
+
+That is a substantial delivery inside 24 hours of assignment, and it lands two
+external-facing pages the project has been designing since 6 August.
+
+⚠ Two things about it belong on the work, not on her:
+
+- **The scope was never decided.**
+  [OI-86](../items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md) is
+  still open, and she was given a one-line instruction in a DM.
+- **The pages have no application-level authentication**, which is
+  [the third instance of the same project-wide pattern](../risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)
+  and not a new habit of hers.
+
+⚠ The Notion access question is settled and should stop being carried as an
+oversight — Aurel Mrruku removed her while reorganising it, on cost.

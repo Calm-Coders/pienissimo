@@ -1,0 +1,212 @@
+<template>
+  <main class="page-shell">
+    <section class="registration-card" aria-labelledby="page-heading">
+      <header class="page-header">
+        <p class="brand">Pienissimo</p>
+        <h1 id="page-heading">{heading}</h1>
+        <p class="introduction">
+          Inserisci i dati della persona che utilizzerà ciascun biglietto. Tutti
+          i biglietti non ancora assegnati devono essere compilati prima del
+          salvataggio.
+        </p>
+      </header>
+
+      <template if:true={isLoading}>
+        <div class="loading-panel" role="status" aria-live="polite">
+          <lightning-spinner
+            alternative-text="Caricamento dei biglietti"
+            size="medium"
+          ></lightning-spinner>
+          <p>Caricamento dei biglietti…</p>
+        </div>
+      </template>
+
+      <template if:true={errorMessage}>
+        <div class="message message-error" role="alert">{errorMessage}</div>
+      </template>
+
+      <template if:true={showPageContent}>
+        <div class="context-grid">
+          <div>
+            <span class="context-label">Azienda</span>
+            <strong>{accountLabel}</strong>
+          </div>
+          <div>
+            <span class="context-label">Evento</span>
+            <strong>{campaignLabel}</strong>
+          </div>
+          <template if:true={page.eventStartDate}>
+            <div>
+              <span class="context-label">Data evento</span>
+              <strong>
+                <lightning-formatted-date-time
+                  value={page.eventStartDate}
+                  day="2-digit"
+                  month="long"
+                  year="numeric"
+                ></lightning-formatted-date-time>
+              </strong>
+            </div>
+          </template>
+        </div>
+
+        <template if:true={showTickets}>
+          <div class="ticket-list">
+            <template for:each={tickets} for:item="ticket">
+              <article class={ticket.cardClass} key={ticket.assetId}>
+                <header class="ticket-header">
+                  <div>
+                    <p class="ticket-number">
+                      Biglietto {ticket.displayNumber}
+                    </p>
+                    <h2>{ticket.productName}</h2>
+                  </div>
+                  <span class={ticket.badgeClass}>{ticket.badgeLabel}</span>
+                </header>
+
+                <template if:true={ticket.editable}>
+                  <div class="field-grid">
+                    <lightning-input
+                      data-asset-id={ticket.assetId}
+                      data-field="firstName"
+                      label="Nome"
+                      value={ticket.firstName}
+                      required={ticket.rowRequiresFields}
+                      autocomplete="given-name"
+                      onchange={handleInput}
+                    ></lightning-input>
+                    <lightning-input
+                      data-asset-id={ticket.assetId}
+                      data-field="lastName"
+                      label="Cognome"
+                      value={ticket.lastName}
+                      required={ticket.rowRequiresFields}
+                      autocomplete="family-name"
+                      onchange={handleInput}
+                    ></lightning-input>
+                    <div class="field-with-status">
+                      <lightning-input
+                        data-asset-id={ticket.assetId}
+                        data-field="email"
+                        type="email"
+                        label="Email"
+                        value={ticket.email}
+                        required={ticket.rowRequiresFields}
+                        autocomplete="email"
+                        onchange={handleInput}
+                        onblur={handleEmailBlur}
+                      ></lightning-input>
+                      <template if:true={ticket.isLookingUp}>
+                        <lightning-spinner
+                          alternative-text="Ricerca del contatto"
+                          size="small"
+                        ></lightning-spinner>
+                      </template>
+                    </div>
+                    <lightning-input
+                      data-asset-id={ticket.assetId}
+                      data-field="phone"
+                      type="tel"
+                      label="Telefono"
+                      value={ticket.phone}
+                      required={ticket.rowRequiresFields}
+                      autocomplete="tel"
+                      onchange={handleInput}
+                    ></lightning-input>
+                  </div>
+                  <template if:true={ticket.contactRecognized}>
+                    <p class="contact-match" role="status">
+                      Contatto esistente riconosciuto tramite email.
+                    </p>
+                  </template>
+                  <template if:true={ticket.hasPartialInput}>
+                    <p class="row-warning" role="alert">
+                      Completa questa riga oppure svuotala prima di salvare.
+                    </p>
+                  </template>
+                </template>
+
+                <template if:false={ticket.editable}>
+                  <dl class="assigned-details">
+                    <div>
+                      <dt>Partecipante</dt>
+                      <dd>{ticket.firstName} {ticket.lastName}</dd>
+                    </div>
+                    <div>
+                      <dt>Email</dt>
+                      <dd>{ticket.email}</dd>
+                    </div>
+                    <div>
+                      <dt>Telefono</dt>
+                      <dd>{ticket.phone}</dd>
+                    </div>
+                  </dl>
+                </template>
+              </article>
+            </template>
+          </div>
+        </template>
+
+        <template if:true={showFinalMessage}>
+          <div class="message message-success" role="status">
+            <h2>Partecipanti confermati</h2>
+            <p>{page.message}</p>
+          </div>
+        </template>
+
+        <template if:true={showFormActions}>
+          <footer class="form-actions">
+            <p>
+              Righe completate:
+              {completedSubmissionCount}/{requiredSubmissionCount}
+            </p>
+            <lightning-button
+              label="Salva tutti i partecipanti"
+              variant="brand"
+              disabled={submitDisabled}
+              onclick={openConfirmation}
+            ></lightning-button>
+          </footer>
+        </template>
+      </template>
+    </section>
+  </main>
+
+  <template if:true={showConfirmation}>
+    <section
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirmation-heading"
+      tabindex="-1"
+      onkeydown={handleModalKeydown}
+    >
+      <div class="confirmation-card">
+        <h2 id="confirmation-heading">Conferma i partecipanti</h2>
+        <p>{confirmationMessage}</p>
+        <div class="confirmation-actions">
+          <lightning-button
+            label="Annulla"
+            onclick={closeConfirmation}
+          ></lightning-button>
+          <lightning-button
+            label="Conferma"
+            variant="brand"
+            onclick={confirmSubmission}
+          ></lightning-button>
+        </div>
+      </div>
+    </section>
+    <div class="backdrop"></div>
+  </template>
+
+  <template if:true={isSubmitting}>
+    <div class="submission-overlay" role="status" aria-live="assertive">
+      <lightning-spinner
+        alternative-text="Salvataggio dei partecipanti"
+        size="large"
+      ></lightning-spinner>
+      <p>Salvataggio in corso…</p>
+    </div>
+  </template>
+</template>

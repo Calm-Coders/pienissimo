@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Andrea Di Cicco
 org: both
 raised: 2026-08-26
-updated: 2026-09-02
+updated: 2026-09-03
 depends_on: [OI-58]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
 ---
@@ -140,3 +140,27 @@ _"abbiamo aggiornato la tabella condivisa"_ at 14:06Z —
 where the 150 fields get decided; the workbook is the input to them, not the
 output. And they run **3, 4 and 7 September**, with Fase 1 development ending on
 the **10th** and ROMI at a company event **9-11 September**.
+
+## 2026-09-03 - Parte 1 ran
+
+**The first of the three sessions ran on 3 September, 10:59 CEST, and overran its
+hour to 2h08m** —
+[the minute](../meetings/2026-09-03%20Data%20Model%20Parte%201.md). Present:
+Elena Spini, Aurel Mrruku, Andrea Di Cicco, Elisa Migliano, Fabrizio Paganelli.
+Sabatino Rinaldi was optional and did not attend.
+
+🟢 **It did what Elisa Migliano asked for.** Fifteen decisions recorded as
+_Concordato_, one formally deferred, sixteen actions out. The Account object was
+sectioned, pruned and re-scoped field by field.
+
+🔴 **It did not get through the agenda.** The **Lead table was deliberately
+skipped** so Sabatino Rinaldi can be present for it, and Utenti, Profili, the
+Ordine field list and the initial-load plan were not opened at all
+([OI-24](OI-24%20Data%20model%20workbook.md)). **Two hours produced one object.**
+Parte 2 (4 Sept 16:00) and Parte 3 (7 Sept 11:00) have one hour each and now
+carry the whole remainder plus a Lead session that needs a participant who has
+not been attending.
+
+⚠ **Parte 3 still has no Google Meet link**, and the three ROMI-internal
+`PIENISSIMO - DM TBD` holds on the same three slots are still in the calendar.
+Neither was cleared today.
