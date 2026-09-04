@@ -2588,3 +2588,186 @@ farla prima di Parte 2.
 
 ⚠ **Il canvas Slack è ormai indietro di otto sessioni cliente** — riletto
 direttamente in questo giro, la voce più recente è ancora quella del 20 agosto.
+
+## 29. Aggiornamento 04/09/2026 — Data Model Parte 2, una tabella edizioni che nasce vuota, e due record sbagliati
+
+Il 4 settembre sono successe quattro cose e solo una è arrivata tramite un
+messaggio. La sessione è stata analizzata dalla trascrizione integrale; tutto il
+resto viene dal repository, da un file Postman e da una notifica Notion.
+
+### 29.1 Data Model Parte 2 — l'anagrafica contatti, chiusa dentro la sua ora
+
+Sessione cliente, **16:04 CEST, 1h01m33s**. Presenti: Elena Spini, Aurel Mrruku,
+Andrea Di Cicco, Elisa Migliano. A differenza della Parte 1, che aveva sforato
+del 108%, è rimasta nello slot e ha completato quanto aperto —
+[il verbale](../notes/meetings/2026-09-04%20Data%20Model%20Parte%202.md).
+
+**L'indirizzo di spedizione diventa uno specchio nascosto della fatturazione.**
+Entrambi i set esistono nel data model, quello di spedizione è popolato
+automaticamente con i valori di fatturazione, nascosto nelle schermate
+Salesforce, ed entrambi sono passati a Mexal. La motivazione dichiarata è
+impedire che Mexal rifiuti un ordine per un indirizzo mancante.
+
+È una soluzione adottata **prima che `#113` avesse risposta**, e vale la pena
+essere precisi su cosa compra e cosa costa. Toglie otto campi dal percorso
+critico, il che è un sollievo reale a quattro giorni lavorativi dalla scadenza di
+Fase 1. Ma se Mexal richiede davvero un indirizzo di spedizione *distinto* per
+qualche cliente, un indirizzo di fatturazione specchiato è un **valore sbagliato
+anziché mancante** — e un indirizzo sbagliato che supera la validazione è peggio
+di un rifiuto, perché nulla lo segnala. Il guasto si sposta dalla creazione
+dell'ordine alla consegna.
+
+**I contatti hanno una picklist di ruolo invece di record duplicati** —
+`commerciale`, `amministrativo`, `amministrativo e commerciale` — e la
+distinzione pesa, perché **i contatti commerciali sono i destinatari dei
+biglietti**. 🔴 Il workbook del cliente, salvato alle 15:03:03Z **durante la
+stessa call**, indica come terzo valore `Piattaforma`. Due su tre coincidono;
+quello che differisce è proprio il valore combinato che fa funzionare l'intero
+disegno (`#120`).
+
+**Il referente diventa modificabile dentro il preventivo**, con un flag
+`contatto principale` che si disattiva da solo — il caso di Aurel Mrruku erano
+catene e franchising in cui ogni sede fa capo a un referente diverso.
+
+**Cinque campi escono dal Contatto**: `Origine lead`, `Telefono abitazione`,
+`Segreteria`, `Tipologia attività` e `Contatto obsoleto`. ⚠ L'eliminazione di
+`Tipologia attività` riguarda il campo sul **Contatto** e **non** annulla `#115`,
+che sposta il campo di Account sul preventivo. Il nome compare ora su tre oggetti
+ed è stato deciso in modo diverso su ciascuno.
+
+**`#112` è risolto, e la risposta è sì.** Elisa Migliano si è rivolta
+direttamente ad Andrea Parmeggiani invece di attendere la mail in coda: Anticipay
+restituirà il **codice ATECO, la sua descrizione e il codice fiscale**, nella
+stessa chiamata. La risposta documentata a undici campi è quindi incompleta — la
+seconda volta che la documentazione è incompleta anziché sbagliata. ⚠ **Le due
+mail che lo confermano non sono nella casella analizzata**, quindi il punto
+poggia sul verbale e chi mapperà la risposta dovrà ritrovarle.
+
+**DocuSign si è mosso, verbalmente.** Elena Spini: _"comunque tutto confermato…
+ha detto che Massimo settimana prossima ci fa sapere."_ Il ritardo è attribuito
+al team commerciale DocuSign in ferie e non al silenzio del cliente, e per la
+prima volta c'è un contatto con un nome. Nulla è messo per iscritto, e la
+finestra si stringe: il tour del cliente inizia martedì 8 settembre e Sabatino
+Rinaldi non risponde più al telefono.
+
+🔴 **Il calendario non coincide con quanto deciso in riunione.** Il gruppo ha
+concordato di spostare a martedì. Ciò che è stato prenotato è una **nuova
+`Parte 4`** (mar 8 set 12:00–13:00) mentre la **`Parte 3` resta lunedì 7 set
+11:00, con Andrea Di Cicco invitato a uno slot in cui ha detto di non poter
+esserci.** Nessuna cancellazione su alcuna fonte. Entrambe le letture sono
+coerenti — un'ora il lunedì con partecipanti ridotti è esattamente ciò che Elena
+Spini aveva proposto per prima — e un messaggio risolve. Contro la scadenza del
+10 settembre, la differenza è uno dei quattro giorni lavorativi rimasti.
+
+🔴 **Le stesse quattro lacune sopravvivono alla terza sessione**: Utenti,
+Profili, il piano di caricamento iniziale e la mappatura campi dell'Ordine. Il
+foglio Ordine ha guadagnato un requisito — _"Codice Agente, Classificatore Rete,
+Codice Zona"_ (`#110`) — ma nessuna mappatura. Nemmeno la tabella Lead è stata
+aperta, e Sabatino Rinaldi, per il quale era stata rinviata, non è disponibile da
+martedì.
+
+### 29.2 La tabella di mappatura edizione è stata rilasciata, ed è vuota
+
+**La PR #34 costruisce `Mappatura_Edizione__c`** —
+[`#96`](../notes/objects/The%20Mappatura%20Edizione%20object.md), e fedelmente.
+Tutte e tre le proprietà che il record segnalava come facili da sbagliare sono
+rispettate: la risoluzione è **per riga d'ordine e per componente di bundle**
+(il caso che il 26 agosto ha fatto cadere la regola della singola campagna figlia
+attiva), le finestre si confrontano con `Order.EffectiveDate`, e la _colonna G_
+esiste come `Data_Evento__c`, con la sua funzione scritta nella descrizione del
+campo.
+
+🟢 **Sono state costruite due cose che nessuno aveva specificato, ed entrambe
+sono migliorie.** La chiave prodotto è una **lookup a `Product2`** anziché un
+codice articolo testuale, quindi non può divergere dall'anagrafica né essere
+rotta dal rischio di normalizzazione dei codici. E le **finestre attive
+sovrapposte sono rifiutate** da un trigger before-save, con una sola query
+limitata — senza il quale l'edizione di una riga d'ordine sarebbe ambigua.
+Nessuna delle due era stata chiesta.
+
+🟢 **Con essa sono arrivati i record type Campagna `Campagna_Padre` e
+`Campagna_Figlio`**, con regole di validazione — la prima volta che il modello
+padre/figlio esiste come metadato e non come nota di design.
+
+🔴 **Ma `assignCampaigns` solleva un'eccezione invece di degradare**, e gira
+quando un Ordine passa a **`Incassato`** — stato in cui al check del 2 settembre
+si trovavano già 12 ordini su 15. Quindi un prodotto non mappato che genera
+biglietti non blocca la creazione dell'ordine; **blocca il passaggio a
+`Incassato`, annullando l'aggiornamento**. La tabella si mantiene a mano, non ha
+righe in source control, e **nessuno è stato incaricato di popolarla** (`#121`).
+Va inoltre sequenziata con `#98`, perché ricreare i ~1000 articoli Mexal
+orfanerebbe le righe inserite prima.
+
+### 29.3 Un `git diff` ha trovato due record sbagliati da due sweep
+
+Entrambi corretti il **2 settembre** nel commit `9b38d1a`, ed entrambi già
+presenti in `DevMain` al commit della trace del 3 settembre.
+
+✅ **I tre difetti di codice di `#107` sono tutti corretti.** `Is_Error__c` è ora
+impostato dallo stato HTTP sul percorso di successo; `Response_State__c` è
+impostato **prima** della deserializzazione e il `catch` riusa la stessa riga di
+log, quindi lo stato sopravvive a un errore di parsing; e un corpo non-JSON — il
+`404` HTML da un hostname sbagliato — esce con un log pulito invece di sollevare
+un'eccezione. Resta solo la metà lato cliente: i corpi di errore sono ancora
+dovuti e nessuna lookup è mai stata eseguita.
+
+✅ **Il rischio sul mancato build dei campi Anticipay è risolto.** `Account` ha
+**dieci** campi custom, tra cui `PEC__c` e tutti e cinque i campi del legale
+rappresentante — esattamente il disegno di `#95`. L'org check che ha aperto il
+rischio è girato alle 08:05–08:14Z del 2 settembre, **ore prima del commit**: era
+corretto quando è stato preso e vecchio entro sera.
+
+⚠ **La lezione di metodo è quella del 3 settembre vista dall'altro lato.** Quel
+giro aveva concluso che una pull request è una fonte. Questo aggiunge: **un org
+check è la fotografia di un ramo in movimento**, e un `git diff` rispetto al
+watermark precedente avrebbe trovato entrambi i casi con un solo comando.
+
+### 29.4 L'endpoint WooCommerce esiste, e con lui due credenziali in giro
+
+Anita Aga ha inviato ad Aurel Mrruku una collection Postman via mail (16:23,
+16:37 CEST) e via DM Slack (17:08), con una chiamata funzionante verso la rotta
+Apex REST in ingresso.
+
+🟢 **L'autenticazione è più solida di quanto il record temesse** — **OAuth 2.0
+JWT bearer**, un'assertion firmata scambiata all'endpoint token di Salesforce per
+una sessione usata come bearer, non il segreto statico condiviso contro cui
+`INT-16` mette in guardia.
+
+🔴 **A Sabatino Rinaldi non sono stati consegnati né l'endpoint né la
+credenziale.** Il suo lato è pronto dal 27 agosto e i test di integrazione erano
+fissati per la settimana del 31 agosto (`#102`).
+
+🔴 **Entrambe le credenziali sono circolate in chiaro su due sistemi, e la
+scadenza dell'assertion JWT è a circa sessant'anni** — di fatto una credenziale
+permanente per un utente di integrazione su UAT
+([il rischio](../notes/risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+Vanno ruotate, e il pattern non va portato in produzione — che è più vicina di
+prima, dato che `pienissimo.my.salesforce.com` è stato predisposto il 3
+settembre.
+
+⚠ `INT-16` **non** è chiuso da questo. L'autenticazione di piattaforma è una
+garanzia diversa dalla classe che verifica il proprio chiamante, e in questo giro
+l'org non è stata aperta.
+
+### 29.5 Tre cose minori
+
+⚠ **La mail di errore Anticipay è costruita ed è indirizzata allo sviluppatore.**
+`AnticipayErrorNotificationService` fa esattamente quanto concordato — filtra le
+righe di log su `Is_Error__c` e invia — ma a un **indirizzo ROMI cablato nel
+codice**, mentre il destinatario concordato è `amministrazione@pienissimo.com`
+con un link al record (`#119`). Sembra un segnaposto ed è in merge senza alcuna
+marcatura.
+
+⚠ **Un indirizzo Gmail esterno ha chiesto accesso alla pagina Notion di stato
+interna**, e la richiesta è senza risposta (`#122`). Quella pagina nomina persone
+e contiene linguaggio interno sui rischi; `site/` è la superficie sanificata.
+L'identità è sconosciuta al record e non va dedotta dal nome.
+
+⚠ **`#tproj-pienissimo` ha rotto una settimana di silenzio, ripetendosi quasi
+del tutto.** Elena Spini ha pubblicato uno status alle 19:48 CEST — ma il suo
+**blocco red flag è copiato alla lettera dal 28 agosto e da cinque post
+precedenti**, quindi la disputa sul perimetro di fase 2 che descrive **non** è un
+movimento nuovo. L'unica novità è che le sessioni data model sono l'attività
+corrente e che **Sabatino Rinaldi non risponde più al telefono** perché il
+cliente è impegnato con un evento. Il canvas è invariato e ora è indietro di
+**nove sessioni cliente**.

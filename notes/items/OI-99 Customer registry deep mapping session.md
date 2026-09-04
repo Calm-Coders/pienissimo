@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Andrea Di Cicco
 org: both
 raised: 2026-08-26
-updated: 2026-09-03
+updated: 2026-09-04
 depends_on: [OI-58]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
 ---
@@ -164,3 +164,51 @@ not been attending.
 ⚠ **Parte 3 still has no Google Meet link**, and the three ROMI-internal
 `PIENISSIMO - DM TBD` holds on the same three slots are still in the calendar.
 Neither was cleared today.
+
+## 2026-09-04 — Parte 2 ran to plan, and a Parte 4 appeared
+
+🟢 **[Parte 2](../meetings/2026-09-04%20Data%20Model%20Parte%202.md) kept to its
+hour** — 16:04 CEST, 1h01m33s — where Parte 1 overran by 108%. It completed the
+Account cleanup and walked the **Referente (Contact)** object field by field.
+Present: Elena Spini, Aurel Mrruku, Andrea Di Cicco, Elisa Migliano. Fabrizio
+Paganelli was invited and does not appear.
+
+🔴 **The four gaps are unchanged.** Utenti, Profili and the initial-load plan
+(`C-1`–`C-6`) are still empty rows in the workbook; the Ordine sheet has gained a
+requirement line but no field mapping. `Flussi` still holds only F-1 and F-2. The
+**Lead table**, deferred from Parte 1 so Sabatino Rinaldi could attend, was not
+opened either — **and he is unavailable from Tuesday 8 September**, when the
+client's tour starts.
+
+## 🔴 The calendar now disagrees with the room
+
+In session the group agreed that Monday 11:00–12:00 was not enough, that Andrea
+Di Cicco was unavailable Monday, and that the work would **move to Tuesday** with
+only Elisa Migliano and Fabrizio Paganelli attending.
+
+What was actually booked, at 15:05Z:
+
+| Session     | When                          | Invited                                                | Status              |
+| ----------- | ----------------------------- | ------------------------------------------------------ | ------------------- |
+| **Parte 3** | Mon 7 Sept 11:00–12:00 CEST   | Aurel Mrruku, Elisa Migliano, Andrea Di Cicco, Fabrizio Paganelli, cc Sabatino Rinaldi | **still on the calendar** |
+| **Parte 4** | Tue 8 Sept 12:00–13:00 CEST   | Aurel Mrruku, Elisa Migliano, Fabrizio Paganelli        | **new**             |
+
+So the session was **added, not moved**. Parte 3 remains booked for Monday with
+**Andrea Di Cicco invited to a slot he said he cannot attend**, and no
+cancellation or update for it appeared on any source through the end of
+4 September.
+
+**Two readings, and they lead to different weeks.** Either Parte 3 stands and
+Monday is a working hour with a reduced cast, or it should have been cancelled
+and was not. ⚠ **Do not assume the second.** Elena Spini explicitly proposed
+adding an hour with only Aurel Mrruku before proposing Tuesday, so a Monday
+session with a different cast is a coherent outcome — it is just not what the
+invitation reflects.
+
+**Somebody should say which**, and it costs one message. Against a Fase 1
+development deadline of 10 September, the difference is one of the four remaining
+working days.
+
+⚠ **Three ROMI-internal `PIENISSIMO - DM TBD` holds** were noted on 2 September as
+duplicates on the original three slots. Nobody has cleared them, and there are now
+four real sessions.

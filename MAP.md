@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-03 (nightly requirements-check: Data Model Parte 1 was drilled from its transcript, and an entire Experience Cloud community was merged to DevMain) · Source of record: [notes/](notes/)
+Last updated: 2026-09-04 (nightly requirements-check: Data Model Parte 2 drilled, the edition mapping table shipped, and two records were found stale by a git diff) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -18,6 +18,116 @@ data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
   offsite**, nobody in the room connected the two, and that leaves **four working
   days**, three of them carrying a client session
   ([the compressed calendar](notes/risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)).
+
+- 🟢🔴 **2026-09-04 — Data Model Parte 2 ran, kept to its hour, and finished the
+  contact registry.** Client-facing, 16:04 CEST, **1h01m33s**; drilled from the
+  full transcript
+  ([the minute](notes/meetings/2026-09-04%20Data%20Model%20Parte%202.md)).
+  Present: Elena Spini, Aurel Mrruku, Andrea Di Cicco, Elisa Migliano.
+  🟢 **The shipping address becomes a hidden mirror of billing** — both sets in
+  the data model, shipping auto-populated and hidden on screen, both passed to
+  Mexal. That is a workaround adopted **before**
+  [OI-113](notes/items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md)
+  was answered; a mirrored address that is genuinely wrong now passes validation
+  silently.
+  🟢 **Contacts get a role picklist instead of duplicate records** —
+  `commerciale` / `amministrativo` / `amministrativo e commerciale`, and
+  **commercial contacts are the ticket recipients**. 🔴 **The workbook, saved
+  during the same call, says `Amministrativo/Commerciale/Piattaforma` instead**
+  ([OI-120](notes/items/OI-120%20The%20contact%20role%20picklist%20values%20disagree%20between%20the%20workbook%20and%20the%20session.md)).
+  🟢 **The reference contact becomes editable on the quote**, with a
+  self-deactivating `contatto principale` flag — Aurel Mrruku's case was chains
+  and franchises. 🟢 `Origine lead`, `Telefono abitazione`, `Segreteria`,
+  `Tipologia attività` and `Contatto obsoleto` are deleted from the Contact; the
+  `Tipologia attività` deletion is the **Contact** field and does **not** reverse
+  [OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md).
+  🟢 **[OI-112](notes/items/OI-112%20Whether%20Anticipay%20returns%20the%20ATECO%20code.md)
+  is resolved and the answer is yes** — Anticipay will return the ATECO code, its
+  description **and** the codice fiscale, in the same call. Elisa Migliano asked
+  Andrea Parmeggiani herself. ⚠ **The two mails confirming it are not in the
+  swept mailbox.**
+  🟢 **DocuSign moved verbally**: _"tutto confermato"_, the delay was DocuSign's
+  own sales team on holiday, and **Massimo** owes an update next week
+  ([OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)).
+  Still nothing written.
+  🔴 **The calendar disagrees with the room.** The group agreed to move to
+  Tuesday; what was booked is a **new `Parte 4`** (Tue 8 Sept 12:00) while
+  **`Parte 3` stays on Monday 7 Sept 11:00 with Andrea Di Cicco invited to a slot
+  he said he cannot attend**. No cancellation on any source
+  ([OI-99](notes/items/OI-99%20Customer%20registry%20deep%20mapping%20session.md)).
+  🔴 **The same four gaps survive a third session** — Utenti, Profili, the
+  initial-load plan and the Ordine field mapping; `Flussi` still holds F-1 and
+  F-2 only. The **Lead table was not opened** and Sabatino Rinaldi is unavailable
+  from Tuesday, when the client's tour starts.
+
+- 🟢🔴 **2026-09-04 — the edition mapping table shipped, and it is empty.**
+  PR **#34** (Anita Aga, merged 16:06 CEST) builds
+  **`Mappatura_Edizione__c`** — [OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)
+  as specified, and better ([the build](notes/objects/The%20Mappatura%20Edizione%20object.md)).
+  🟢 **All three properties OI-96 called easy to get wrong are honoured**:
+  resolution is **per order line and per bundle component**, the windows match
+  `Order.EffectiveDate`, and _colonna G_ exists as `Data_Evento__c`. 🟢 **Two
+  unspecified improvements**: the product key is a **lookup to `Product2`**, not a
+  text article code, and **overlapping active windows are refused** by a
+  before-save trigger.
+  🟢 **Campaign record types `Campagna_Padre` / `Campagna_Figlio` exist at last**
+  ([the model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)),
+  with validation rules, and the mapping's lookup is filtered to active children.
+  🔴 **`assignCampaigns` throws when no mapping matches**, and it runs when an
+  Order moves to **`Incassato`** — a state 12 of 15 orders were already in. The
+  table is hand-maintained, has **no rows and no named owner**, and the ~1000
+  article codes are about to be re-created underneath it
+  ([OI-121](notes/items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)).
+
+- ✅🔴 **2026-09-04 — a `git diff` found two records that had been wrong for two
+  sweeps.** Both were fixed on **2 September** in commit `9b38d1a` and were
+  already in `DevMain` at the 3 September trace's own commit.
+  ✅ **[OI-107](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)'s
+  three code defects are all fixed.** `Is_Error__c` is now set from the HTTP
+  status; `Response_State__c` is set **before** the deserialize so the catch
+  keeps it; and a non-JSON body — **the HTML `404` from a wrong hostname** —
+  short-circuits to a clean log instead of throwing. Only the client-side half
+  remains: the **error bodies are still owed** and no lookup has ever run.
+  ✅ **[The Anticipay field build risk is resolved](notes/risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)** —
+  `Account` carries **ten** custom fields including PEC and all five
+  legal-representative fields, exactly the
+  [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)
+  design. The 02/09 org check that raised it ran **hours before the commit** and
+  was stale by that evening.
+  ⚠ **The method lesson is the 03/09 one again, from the other side**: an org
+  check is a photograph of a moving branch. **Diff `DevMain` before trusting any
+  build claim.**
+
+- 🟢🔴 **2026-09-04 — the WooCommerce endpoint and its authentication exist, and
+  the client has not been given them.** Anita Aga sent Aurel Mrruku a Postman
+  collection by mail (16:23, 16:37) and Slack DM (17:08) carrying a working call
+  against the inbound Apex REST route.
+  🟢 **The authentication is stronger than the record feared** — **OAuth 2.0 JWT
+  bearer**, not the static shared secret `INT-16` warns about
+  ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+  🔴 **Sabatino Rinaldi still has neither.** His side has been ready since
+  27 August and the integration tests were set for the week of 31 August.
+  🔴 **Both credentials were circulated in plaintext on two channels, and the JWT
+  assertion's `exp` is roughly sixty years out** — effectively a permanent
+  credential for a UAT integration user
+  ([the risk](notes/risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+  Rotate before this pattern reaches production, which is now closer:
+  `pienissimo.my.salesforce.com` was provisioned 3 September.
+  ⚠ `INT-16` is **not** closed by this — platform authentication is not the
+  class checking its caller, and the org was not opened this run.
+
+- ⚠ **2026-09-04 — three smaller things.** The **Anticipay failure mail is built
+  and addressed to a hardcoded ROMI developer address**, where the agreed design
+  sends it to `amministrazione@pienissimo.com`
+  ([OI-119](notes/items/OI-119%20The%20Anticipay%20error%20notification%20goes%20to%20a%20hardcoded%20ROMI%20address.md)).
+  An **external Gmail address requested access to the internal Notion status
+  page** and the request is unanswered
+  ([OI-122](notes/items/OI-122%20An%20external%20address%20requested%20access%20to%20the%20internal%20status%20page.md)).
+  And **`#tproj-pienissimo` broke its silence** after a week — but its red-flag
+  block is **copied verbatim from 28/08 and five earlier posts**, so the only new
+  content is that the data-model sessions are the current activity and **Sabatino
+  Rinaldi has stopped answering his phone** because of the client's event. The
+  **canvas is unchanged and now nine client sessions behind**.
 
 - 🟢🔴 **2026-09-03 — Data Model Parte 1 ran, and the customer registry finally has
   an owner.** Client-facing, 10:59 CEST, **booked for one hour and run to 2h08m**;

@@ -10,6 +10,64 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-04 — claude — nightly requirements-check: Data Model Parte 2, an edition table that ships empty, and two records that were wrong
+
+- **Did:** swept Gmail, Slack, Drive, Fathom **and `git diff`** from watermark
+  **2026-09-03T22:00Z** (from
+  [the 03/09 trace](notes/traces/Source%20trace%202026-09-03%20nightly.md), by
+  `updated:`; frontmatter and text agreed). Drilled the **04/09 `Data Model:
+  Parte 2`** client session from its **full 1h01m33s transcript**, read the
+  rebuilt workbook in full, and read the 40-file diff of PRs #32/#33/#34.
+  ⚠ **The clone arrived single-branch on `main` with no vault** — `git fetch
+  origin && git checkout -B DevMain origin/DevMain` recovers it. A future run
+  that finds `AGENTS.md` missing is on the wrong branch.
+- **State:** four things, only one of which arrived through a message.
+  **(1) Parte 2 finished the contact registry inside its hour** — the shipping
+  address becomes a **hidden mirror of billing** (a workaround adopted before
+  `#113` was answered), contacts get a **role picklist** instead of duplicate
+  records, the reference contact becomes **editable on the quote**, and five
+  Contact fields are deleted. **`#112` is resolved and the answer is yes**:
+  Anticipay returns the ATECO code, its description and the codice fiscale in the
+  same call. **DocuSign moved verbally** — _"tutto confermato"_, a named contact
+  (**Massimo**), an update promised next week, nothing written.
+  **(2) PR #34 shipped `Mappatura_Edizione__c`** — `#96` built faithfully, and
+  improved on twice unasked (a `Product2` lookup instead of a text code, and a
+  guard refusing overlapping windows). 🔴 **But the table is empty, hand-
+  maintained and has no owner, and the matching code throws** — so an unmapped
+  product now blocks an order reaching `Incassato` (`#121`).
+  **(3) A `git diff` corrected two records that had been wrong for two sweeps** —
+  `#107`'s three code defects are all fixed, and the Anticipay field-build risk
+  is resolved. Both landed **02/09** in `9b38d1a`, before the last watermark.
+  **(4) The WooCommerce endpoint and its authentication exist** (OAuth JWT
+  bearer, stronger than feared) — but the client has neither, and **both
+  credentials were circulated in plaintext**, the assertion expiring ~60 years
+  out. New rows `#119`–`#122`; new gating risk.
+- **Next:** (a) **ask Aurel Mrruku which mailbox holds Andrea Parmeggiani's two
+  04/09 mails** — they carry the authoritative ATECO field list and are in
+  neither this account nor any search; (b) **settle Parte 3 vs Parte 4** — one
+  message, and against the 10/09 deadline it is worth one of four remaining
+  working days; (c) **name an owner for the edition mapping rows**, sequenced
+  against `#98`; (d) **rotate the two credentials** before the pattern reaches
+  production.
+- **Watch:** 🔴 **Do not report `#107` or the Anticipay field risk as movement in
+  this window.** They are **stale-record corrections** — the code was already
+  fixed at the last trace's own commit. ⚠ **The `#tproj-pienissimo` status post
+  is a recycled template**: its red-flag block is byte-identical to 28/08 and five
+  earlier posts, so the phase-2 scope dispute it describes is **not** new. The
+  only new content is that **Sabatino Rinaldi has stopped answering his phone**
+  because of the client's event — which matters, because he owes the WooCommerce
+  answers and the marketing form review, and the client's tour starts Tue 08/09.
+  ⚠ **`INT-16` was deliberately left open**: platform OAuth is not the class
+  checking its caller, and the org was not opened. ⚠ **~600 more uncovered Apex
+  lines** — recorded against the coverage records, **not acted on**.
+- **Method:** **an org check is a photograph of a moving branch.** The 03/09 run
+  concluded that a pull request is a source; the other half is that **`git diff`
+  against the previous trace's commit must run before any build claim is
+  reported**, not only to find new work. It cost one command and corrected two
+  gating records. And **a recurring status post is not news until it is diffed.**
+
+---
+
 ## 2026-09-01 — claude — nightly requirements-check: the Anticipay follow-up drilled, and OI-95 is resolved
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from watermark

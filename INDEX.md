@@ -6,7 +6,7 @@ any agent can budget before opening anything. Start at [MAP.md](MAP.md).
 Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 **Costly** = justify it. **Never** = do not load whole; grep instead.
 
-143 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
+188 notes, per `npm run vault:check`. Item ids are the tracker's own row numbers —
 `#75` is `OI-75`.
 
 ## Cheap — load freely
@@ -31,6 +31,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [Unrequested implementation in the org](notes/objects/Unrequested%20implementation%20in%20the%20org.md)                                     | stock scaffolding — do not re-flag            |
 | [The integration scaffolding has never been configured](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md) | deployed, zero configuration rows             |
 | [The Landing Page community](notes/objects/The%20Landing%20Page%20community.md) | **built 03/09, PR #31** — one Experience site serving both external pages; no application-level auth | ~2k |
+| [The Mappatura Edizione object](notes/objects/The%20Mappatura%20Edizione%20object.md) | **built 04/09, PR #34** — OI-96 as specified; per-line resolution, overlap guard, and no rows | ~2k |
 
 ### Flows
 
@@ -47,7 +48,8 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
 | [The Biglietto UAT ticket dataset was deleted](notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md)                                     | **critical**      |
 | [The Biglietto Apex stack is not in source control](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                       | **critical**      |
-| [The Anticipay field build has not started](notes/risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)                                           | **high**          |
+| [The Anticipay field build has not started](notes/risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)                                           | high (resolved 04/09) |
+| [Salesforce integration credentials were circulated in plaintext](notes/risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md) | **new 04/09** · gating |
 | [Integration credentials exist only in the org](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)                                   | **high**          |
 | [The community pages have no application-level authentication](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md) | **new 03/09** · gating · a bare record id accepts or rejects a quote — third instance of the pattern | ~2k |
 | [A clean deploy would orphan the live WooCommerce endpoint](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)       | high (resolved)   |
@@ -98,6 +100,10 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [OI-116 nightly Mexal to Salesforce anagrafica sync](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md) | open · new 03/09 · **agreed, unbuilt, unestimated** — the F-2 flow | Aurel Mrruku |
 | [OI-117 administrative fields lock once the Mexal customer code is set](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md) | open · new 03/09 · unbuilt · no principal named | Aurel Mrruku |
 | [OI-118 ragione sociale continuity on the customer registry](notes/items/OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md) | open · new 03/09 · inner lookup 5 deep + History Tracking | Aurel Mrruku |
+| [OI-119 the Anticipay error notification goes to a hardcoded ROMI address](notes/items/OI-119%20The%20Anticipay%20error%20notification%20goes%20to%20a%20hardcoded%20ROMI%20address.md) | open · new 04/09 · built, wrong recipient | Anita Aga |
+| [OI-120 the contact role picklist values disagree between the workbook and the session](notes/items/OI-120%20The%20contact%20role%20picklist%20values%20disagree%20between%20the%20workbook%20and%20the%20session.md) | open · new 04/09 · one question to Elisa Migliano | Elisa Migliano |
+| [OI-121 the edition mapping table has no rows and no owner](notes/items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md) | open · new 04/09 · blocks orders reaching Incassato | Aurel Mrruku |
+| [OI-122 an external address requested access to the internal status page](notes/items/OI-122%20An%20external%20address%20requested%20access%20to%20the%20internal%20status%20page.md) | open · new 04/09 · unanswered access request | Aurel Mrruku |
 | [OI-04 scope against the go-live date](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md)                                                                                       | open · gating                                                               | Elena Spini        |
 
 ### Open items — client inputs owed
@@ -169,6 +175,7 @@ August were all recovered on 2026-08-24; before that the record said the 19 and
 | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [2026-09-02 Follow-up Anagrafica Articoli](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)                 | **Client-facing** · 1h16m · full transcript · tipo biglietto leaves Mexal; **Anticipay called for every account**; the Mexal order tracciato |
 | [2026-09-03 Data Model Parte 1](notes/meetings/2026-09-03%20Data%20Model%20Parte%201.md) | **Client-facing** · 2h08m · full transcript · the customer registry gets an owner; 15 decisions, 7 new rows | ~4k |
+| [2026-09-04 Data Model Parte 2](notes/meetings/2026-09-04%20Data%20Model%20Parte%202.md) | **Client-facing** · 1h01m · full transcript · the contact registry finished; ATECO answered, DocuSign moved, the calendar diverged | ~3k |
 | [2026-09-01 Follow-up Integrazione Anticipay](notes/meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)           | **Client-facing** · ~20 min · full transcript + Gemini notes · **OI-95 decided in the room**; Italy-only; `:env` agreed here |
 | [2026-08-27 Integrazione WooCommerce](notes/meetings/2026-08-27%20Integrazione%20WooCommerce.md)                             | **Client-facing** · full transcript · the integration direction settled; stock webhooks evaluated and rejected               |
 | [2026-08-27 Test Integrazione WooCommerce](notes/meetings/2026-08-27%20Test%20Integrazione%20WooCommerce.md)                 | Working session, **two people** · full transcript · the plugin demonstrated live · ⚠ decisions unminuted outside Gemini      |

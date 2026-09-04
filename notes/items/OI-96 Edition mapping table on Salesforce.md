@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-08-26
+updated: 2026-09-04
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -88,3 +88,29 @@ Also unstated:
   and there is no control against either.
 
 **Entirely unbuilt.** Nothing in `force-app/` implements it.
+
+
+## ✅ 2026-09-04 — built, and faithfully
+
+**`Mappatura_Edizione__c` exists**, merged to `DevMain` in PR #34 (commit
+`68c4342`, Anita Aga). The field-by-field decode, the matching logic and what was
+added beyond the specification are in
+[the build note](../objects/The%20Mappatura%20Edizione%20object.md).
+
+🟢 **All three properties this note flagged as easy to get wrong are honoured** —
+resolution is per order line **and per bundle component**, the windows are
+order-date windows matched on `Order.EffectiveDate`, and _colonna G_ exists as
+`Data_Evento__c` with its purpose written into the field description.
+
+🟢 **Two things were built that nobody specified**: the product key is a
+**lookup to `Product2`** rather than a text article code, and **overlapping
+active windows are refused** by a before-save trigger. Both are improvements on
+what this note described.
+
+🔴 **The table is empty and has no maintainer** — and because the matching code
+throws rather than degrading, an unmapped product now blocks an order's move to
+`Incassato`. That is
+[OI-121](OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md).
+
+**This item stays open until the rows exist.** The mechanism is delivered; the
+mapping it exists to hold is not.

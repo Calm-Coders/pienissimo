@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elisa Migliano
 org: both
 raised: 2026-07-02
-updated: 2026-09-03
+updated: 2026-09-04
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 24
@@ -215,3 +215,46 @@ quote with values. **Recorded, never copied.** Unchanged rule.
 upsert _"scatta alla prima opty won"_; the session said the account is pushed to
 Mexal **immediately before the order is created**. Those are different moments.
 Confirm at Parte 2.
+
+## 2026-09-04 — rebuilt again, during Parte 2
+
+`Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`, modified
+**15:03:03Z** — during the session, as on 3 September when it was rebuilt four
+minutes after the call ended. Read in full.
+
+**What moved:**
+
+- 🟢 **The `Referente` sheet is now the detailed one**, carrying the Contact work
+  from [Parte 2](../meetings/2026-09-04%20Data%20Model%20Parte%202.md): a
+  `Contatto principale — isPrimary` flag, `Ruolo — Vedi nota`, `Keap Id Esterno`,
+  `E-mail secondaria — otherEmail`, `Nome Locale`, and
+  `Modalita iscrizione annullata` sourced from `Zoho campaigns`.
+- 🟢 **The `Ordine` sheet gained a requirement**, though not a field list:
+  _"Nell'ordine e importante che ci siano le seguenti informazioni: Codice
+  Agente, Classificatore Rete, Codice Zona"_
+  ([OI-110](OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)).
+- 🟢 **The Account sheet carries `Azienda Precedente — Lookup (con se stessa)`**,
+  the self-lookup agreed for
+  [OI-118](OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md),
+  and the empty shipping-address fields the mirroring decision needs.
+
+**What did not move — the same four gaps, third session running:**
+
+| Gap                                 | State                                    |
+| ----------------------------------- | ---------------------------------------- |
+| **Utenti**                          | header row only, still empty             |
+| **Profili**                         | header row only, still empty             |
+| **Initial-load plan** `C-1`–`C-6`   | six empty rows                           |
+| **Ordine** field mapping            | standard Salesforce fields + one note    |
+| `Flussi`                            | still only **F-1** and **F-2**           |
+
+🔴 **`Ruolo` carries `Amministrativo/Commerciale/Piattaforma`**, which is not the
+value set agreed in the session hours earlier —
+[OI-120](OI-120%20The%20contact%20role%20picklist%20values%20disagree%20between%20the%20workbook%20and%20the%20session.md).
+
+⚠ **`LIVELLO_0` through `LIVELLO_6` are still in the Articoli sheet's `Nuovi
+Campi` column**, unexplained and in no minuted session for a second day.
+
+⚠ **The file still holds live customer records** — real companies with VAT, PEC
+and IBAN, and named individuals with contact details, on the Account, Referente
+and Preventivo sheets. **Recorded; nothing copied.**

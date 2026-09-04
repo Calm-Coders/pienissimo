@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-09-02
-updated: 2026-09-03
+updated: 2026-09-04
 blocks: [OI-68]
 requirement: INT-19
 source: Slack DM Aurel Mrruku / Elena Spini, 2026-09-02 15:47-15:49 CEST
@@ -99,3 +99,46 @@ source.
 🔴 **Ask Aurel Mrruku directly.** This is now a question about ROMI's own build,
 not only about the client's procurement, and it is cheaper to answer than the
 licence question it depends on.
+
+## 2026-09-04 — reconfirmed verbally, with a named contact and a date of sorts
+
+Aurel Mrruku asked again at the close of
+[Data Model Parte 2](../meetings/2026-09-04%20Data%20Model%20Parte%202.md) —
+_"ma DocuSign alla fine abbiamo…"_ — and Elena Spini answered with the first
+substantive update since 2 September:
+
+> _"Io ho parlato con Sabatino, quando poi e sparito, mi ha risposto e poi e
+> sparito. E sono presi da questo evento. Comunque **tutto confermato**. In
+> realta poi li hanno anche rimbalzati a loro stessi perche poi sono andati in
+> ferie quelli commerciale DocuSign. Comunque tutto confermato, ha detto che
+> **Massimo settimana prossima ci fa sapere**."_
+
+🟢 **Three things are new.**
+
+- **The delay has an explanation that is not the client's silence.** It is
+  attributed to **DocuSign's own commercial team** being on holiday and bouncing
+  the request internally — a different failure from the one this item assumed.
+- **There is a named person on the DocuSign side: `Massimo`.** First appearance
+  in the record. No surname, no company role stated; treat as uncertain.
+- **There is a promised update: "next week"** — the week beginning 7 September.
+
+🔴 **And nothing has actually changed.**
+
+_"Tutto confermato"_ is Sabatino Rinaldi's assurance relayed by Elena Spini, one
+step further from evidence than her own 2 September _"richiedo conferma, ma mi
+aspetto di si"_. **Still nothing written names a plan, a tenant or an
+administrator**, which is exactly what this item asks for. The same phrasing has
+been recorded before and did not hold: a licence purchase was reported by phone
+in July and reversed within a week.
+
+⚠ **Sabatino Rinaldi is now harder to reach, not easier.** Elena Spini's Slack
+status the same evening records that he has stopped answering his phone because
+of the client's event, and Elisa Migliano confirmed in the session that **the
+tour starts Tuesday 8 September** and neither he nor Matteo will be available.
+The window for a written confirmation before Fase 1 development ends on
+**10 September** is effectively **Monday 7 September**.
+
+⚠ **The build question this item picked up on 3 September is untouched.** The
+quote acceptance page still sets `Quote.Status` on the click with no envelope, and
+nobody has said whether that is a first pass or a design change. **That question
+does not depend on the licence and is still the cheaper one to answer.**

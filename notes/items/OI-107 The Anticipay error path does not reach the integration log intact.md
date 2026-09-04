@@ -236,3 +236,67 @@ no longer "send an example of each error body": it is _what exactly does the
 middleware return for a non-Italian VAT, and how is it distinguishable from a
 VAT that is simply unknown?_ Without that distinction the notification mail
 cannot say which of the two happened, and administration has to open every one.
+
+## ✅ 2026-09-04 — both code defects are fixed, and the record was two sweeps stale
+
+**Defects 1 and 2 are resolved in `API_Callout_Engine`, and 2b with them.** Read
+directly from `force-app/` on 4 September.
+
+⚠ **The fix is older than this sweep.** It landed in commit `9b38d1a`
+(**2026-09-02**, Anita Aga, _"Added Anticipay fields on Account, added Anticipay
+integration logic"_) and was already present in `DevMain` at the 3 September
+trace's own commit. **The 02/09 and 03/09 sweeps both missed it**, and this item
+has been describing fixed code as broken since then. Recorded as a method
+failure, not just a correction — see
+[the trace](../traces/Source%20trace%202026-09-04.md).
+
+**Defect 1 — fixed.** On the success path, immediately after `send`:
+
+```apex
+logRow.Response_State__c = String.valueOf(res.getStatusCode());
+logRow.Is_Error__c = isErrorStatusCode(res.getStatusCode());
+```
+
+A `404`, `401` or `500` now writes `Is_Error__c = true`. Error rows can be
+filtered, and a notification keyed on the flag fires — which is exactly what
+[OI-119](OI-119%20The%20Anticipay%20error%20notification%20goes%20to%20a%20hardcoded%20ROMI%20address.md)
+now does.
+
+**Defect 2 — fixed, by ordering.** `Response_State__c` is set at that same point,
+**before** `deserializeResponse` runs. The `catch` block only builds a fresh
+`Integration_Log__c` when `logRow` is still `null`; otherwise it reuses the row
+that already carries the status code. So a body that fails to deserialize now
+lands as _"404, plus an Apex exception"_ rather than _"an Apex exception"_.
+
+**Defect 2b — fixed, by a guard.** Before deserializing:
+
+```apex
+if (!hasJsonResponse(respJson) || String.isBlank(config.Response_Wrapper_Class__c)) {
+    saveLog(logRow, result, insertLog);
+    return result;
+}
+```
+
+A non-JSON response — **the HTML `404` from a wrong hostname**, which is how the
+dead `integration.pienissimo.com` presented on 2 September — is now logged with
+its status code and its raw body and returns cleanly, instead of throwing inside
+the parser. A total outage would now be recorded as a `404`, not as a code bug.
+
+🟢 **The fix is generic**, as the defect was: Mexal and every other outbound
+callout get it too.
+
+## What is still open on this item
+
+**Only the client-side half.** The three code defects are closed; what remains is
+what it always depended on:
+
+- 🔴 **The error response bodies are still undocumented and still owed** by
+  Andrea Parmeggiani — including the foreign-company case Elena Spini could not
+  find. The engine now records faithfully whatever arrives; it still cannot tell
+  _VAT unknown_ from _foreign company_ from _not cached under `env=test`_,
+  because they share a status code and nobody has seen the bodies.
+- 🔴 **No lookup has ever run**, so none of this is confirmed against a real
+  response.
+
+**This item stays `open` for that reason and no other.** Do not re-raise the code
+defects.

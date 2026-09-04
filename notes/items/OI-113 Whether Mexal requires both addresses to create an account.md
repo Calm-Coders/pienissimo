@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 depends_on: [OI-58]
 requirement: INT-01
 source: notes/meetings/2026-09-03 Data Model Parte 1.md
@@ -51,3 +51,29 @@ Failing that, **Mirko Merendi at Kreosoft** answers this class of question — h
 cleared eight of them in one pass on 11 August.
 
 **No date was set.**
+
+
+## 2026-09-04 — a workaround was adopted before the question was answered
+
+[Data Model Parte 2](../meetings/2026-09-04%20Data%20Model%20Parte%202.md) settled
+the address duplication by **mirroring**: both the billing and the shipping sets
+exist in the Salesforce data model, the shipping set is **populated
+automatically with the billing values**, it is **hidden on the Salesforce user
+screens**, and both are passed to Mexal.
+
+The stated reason is precisely this item — avoiding a Mexal rejection for a
+missing address.
+
+🟢 **It defuses the schedule risk.** Eight address fields no longer wait on a
+test call, and the client's four-field template is not contradicted on screen.
+
+🔴 **It does not answer the question, and it can be wrong in a new way.** If
+Mexal genuinely requires a *distinct* shipping address for some customers, a
+mirrored billing address is a **wrong value rather than a missing one** — and a
+wrong address that passes validation is worse than a rejection, because nothing
+reports it. The failure moves from order creation to delivery.
+
+⚠ **The test call is still worth making**, and it is now cheaper than it was: it
+no longer blocks the build, so it can be a verification instead of a gate. It
+still sits behind Andrea Di Cicco's JSON update and test send, outstanding since
+2 September.

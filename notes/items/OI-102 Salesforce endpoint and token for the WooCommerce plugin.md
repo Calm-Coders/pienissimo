@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-08-31
+updated: 2026-09-04
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -126,3 +126,57 @@ today. The token has not been issued.
 [is not in source control](../risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md),
 so the fix has to be made in the org and retrieved, or it will be lost the way
 the Biglietto stack was.
+
+## 2026-09-04 — the endpoint and the authentication exist, and Sabatino Rinaldi has not been given them
+
+**Both halves of the deliverable were built and circulated inside ROMI on
+4 September.** Anita Aga sent Aurel Mrruku a Postman collection — by mail at
+16:23 and 16:37 CEST, and again as a Slack DM at 17:08 — containing a working
+call against the inbound route.
+
+| Deliverable                                  | State on 2026-09-04                                        |
+| -------------------------------------------- | ---------------------------------------------------------- |
+| The Salesforce **endpoint URL**              | 🟢 exists — an Apex REST route on the UAT sandbox          |
+| An **authentication** mechanism              | 🟢 exists — **OAuth 2.0 JWT bearer**, session in the header |
+| A reply to Sabatino Rinaldi carrying both    | 🔴 **still not sent**                                       |
+
+🟢 **The authentication is better than this item feared.** The record has been
+carrying the expectation of a **static shared token in a header**, which
+`INT-16` recommends against and which the payload's lack of any signature made
+the entire authentication. What was actually built is a **platform OAuth flow**:
+a signed assertion is exchanged at the Salesforce token endpoint for a session,
+and that session is the bearer. Salesforce authenticates the caller, so the
+route is not open.
+
+🔴 **It has not been delivered, and delivery is the item.** Everything so far is
+internal — a developer to a technical lead, on two channels, neither of which
+includes Sabatino Rinaldi. His side has been ready since 27 August and needs only
+a target and a header. **The integration tests this blocks were set for the week
+of 31 August and that week has passed.**
+
+🔴 **The credentials in that collection must not be the ones he receives.** They
+were circulated in plaintext and one of them is effectively permanent —
+[the risk](../risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md).
+Whatever is sent to Pienissimo should be issued for them, scoped to them, and
+revocable independently.
+
+⚠ **`INT-16` is not closed by this.** The recorded finding is that
+`WoocommerceOrderService` performs **no token or signature check of its own**;
+platform authentication is a different guarantee, and the class was not
+re-read against the org this sweep. Leave `INT-16` open until an
+`org-status-check` settles what the route actually enforces.
+
+⚠ **The test payload in the collection matches
+[the recorded contract](../The%20WooCommerce%20payload%20contract.md) exactly** —
+same 14 top-level keys, the 15-character `sf_opportunity_id`, `event` set to
+`woocommerce_order_status_processing`. **No contract change**, and one small
+confirmation: `processing` is a real value of the `event` set, consistent with the
+27 August correction that an order arrives at `in lavorazione` **or**
+`completato`.
+
+⚠ Its `line_items[0].sku` is `CS-00111` — the **hyphenated** form, where the org
+holds codes such as `CS000115` unhyphenated. That is
+[the normalisation risk](../risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)
+appearing in a test fixture. It proves nothing about the production catalogue —
+the values are invented — but whoever writes the `sku` match should not assume
+one spelling.

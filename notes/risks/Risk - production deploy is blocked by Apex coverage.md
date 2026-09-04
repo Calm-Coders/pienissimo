@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-03
+updated: 2026-09-04
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -192,3 +192,36 @@ as its own task, when Aurel Mrruku asks for it.
 **internet-facing write path**
 ([the authentication risk](Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)),
 which changes what the eventual test suite has to cover, not when it is written.
+
+## 2026-09-04 — a second large uncovered increment, four days after the first
+
+Two merges on 4 September add roughly **another 600 uncovered lines** to
+`DevMain`, on top of the +844 recorded on 3 September:
+
+| Class                                      | Lines added | From                                    |
+| ------------------------------------------ | ----------- | --------------------------------------- |
+| `AnticipayErrorNotificationService`        | 188         | PR #32 — the Anticipay failure mail     |
+| `MappaturaEdizioneTriggerHandler`          | 132         | PR #34 — edition mapping overlap guard  |
+| `OrderBigliettoTriggerHandler` (additions) | ~93         | PR #34 — campaign assignment            |
+| `AnticipayAccountService` (additions)      | ~80         | PR #32                                  |
+| `AnticipayOrderAutomation`                 | 63          | PR #32                                  |
+| `AnticipayAccountRefreshQueueable`         | 38          | PR #32                                  |
+| `anticipayAccountRefreshAction` (LWC JS)   | 112         | PR #32                                  |
+
+**Recorded, not acted on**, per the standing instruction: the test suite is
+Aurel Mrruku's to request as its own task before the production deploy, and
+[Apex coverage is not a Fase 1 concern](../decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+
+⚠ **Two of the new classes are branch-heavy in ways that will make the eventual
+suite larger than the line count suggests** — worth knowing when the task is
+scoped, not now. `MappaturaEdizioneTriggerHandler` has an in-transaction path and
+an against-existing path with an insert/update distinction; `assignCampaigns` has
+three distinct throw conditions on a trigger path that rolls back a business
+state transition. **Both are exactly the kind of code where an untested edge
+becomes a production incident**, and `assignCampaigns` in particular now sits
+between a live order lifecycle and a table with no rows
+([OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)).
+
+⚠ **The last measured figure is still 4 August.** Everything since is a line
+count from `git diff`, not a coverage run — the number remains **unmeasured, not
+measured at zero**.

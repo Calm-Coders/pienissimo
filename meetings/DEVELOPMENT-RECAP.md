@@ -2481,3 +2481,174 @@ hand from the XML. Worth taking before Parte 2.
 
 ⚠ **The Slack canvas is now eight client sessions behind** — re-read directly
 this run, and its newest entry is still 20 August.
+
+## 29. Update 2026-09-04 — Data Model Parte 2, an edition table that ships empty, and two records that were wrong
+
+Four things happened on 4 September and only one of them arrived through a
+message. The session was drilled from its full transcript; everything else came
+from the repository, a Postman file and a Notion notification.
+
+### 29.1 Data Model Parte 2 — the contact registry, finished inside its hour
+
+Client-facing, **16:04 CEST, 1h01m33s**. Present: Elena Spini, Aurel Mrruku,
+Andrea Di Cicco, Elisa Migliano. Unlike Parte 1, which overran by 108%, it kept
+to its slot and completed what it opened —
+[the minute](../notes/meetings/2026-09-04%20Data%20Model%20Parte%202.md).
+
+**The shipping address becomes a hidden mirror of billing.** Both sets exist in
+the data model, the shipping set is populated automatically from the billing
+values, hidden on the Salesforce screens, and both are passed to Mexal. The
+stated reason is to stop Mexal rejecting an order for a missing address.
+
+That is a workaround adopted **before `#113` was answered**, and it is worth
+being precise about what it buys and what it costs. It removes eight fields from
+the critical path, which is real relief four working days from the Fase 1
+deadline. But if Mexal genuinely requires a *distinct* shipping address for some
+customer, a mirrored billing address is a **wrong value rather than a missing
+one** — and a wrong address that passes validation is worse than a rejection,
+because nothing reports it. The failure moves from order creation to delivery.
+
+**Contacts get a role picklist instead of duplicate records** — `commerciale`,
+`amministrativo`, `amministrativo e commerciale` — and the distinction is
+load-bearing, because **commercial contacts are the recipients of event
+tickets**. 🔴 The client's own workbook, saved at 15:03:03Z **during the same
+call**, gives the third value as `Piattaforma` instead. Two of three match; the
+one that differs is precisely the combination value that makes the whole design
+work (`#120`).
+
+**The reference contact becomes editable inside the quote**, with a
+self-deactivating `contatto principale` flag — Aurel Mrruku's case was chains and
+franchises where each site answers to a different referent.
+
+**Five fields leave the Contact**: `Origine lead`, `Telefono abitazione`,
+`Segreteria`, `Tipologia attività` and `Contatto obsoleto`. ⚠ The
+`Tipologia attività` deletion is the **Contact** field and does **not** reverse
+`#115`, which moves the Account-level field onto the quote. The name now appears
+on three objects and has been decided differently on each.
+
+**`#112` is resolved, and the answer is yes.** Elisa Migliano went to Andrea
+Parmeggiani herself rather than waiting for the queued mail: Anticipay will
+return the **ATECO code, its description and the codice fiscale**, in the same
+call. The documented eleven-field response is therefore incomplete — the second
+time it has been wrong by omission rather than wrong. ⚠ **The two mails
+confirming it are not in the swept mailbox**, so this rests on the meeting record
+and whoever maps the response will need to find them.
+
+**DocuSign moved, verbally.** Elena Spini: _"comunque tutto confermato… ha detto
+che Massimo settimana prossima ci fa sapere."_ The delay is attributed to
+DocuSign's own sales team being on holiday rather than to the client's silence,
+and there is a named contact for the first time. Nothing is written down, and the
+window is narrowing: the client's tour starts Tuesday 8 September and Sabatino
+Rinaldi has stopped answering his phone.
+
+🔴 **The calendar does not match what the room agreed.** The group agreed to move
+to Tuesday. What was booked is a **new `Parte 4`** (Tue 8 Sept 12:00–13:00) while
+**`Parte 3` remains on Monday 7 Sept 11:00, with Andrea Di Cicco invited to a
+slot he said he could not attend.** No cancellation appeared on any source. Both
+readings are coherent — a Monday hour with a reduced cast is exactly what Elena
+Spini proposed first — and one message settles it. Against a 10 September
+deadline the difference is one of four remaining working days.
+
+🔴 **The same four gaps survive a third session**: Utenti, Profili, the
+initial-load plan and the Ordine field mapping. The Ordine sheet did gain a
+requirement — _"Codice Agente, Classificatore Rete, Codice Zona"_ (`#110`) — but
+no mapping. The Lead table was not opened either, and Sabatino Rinaldi, for whom
+it was deferred, is unavailable from Tuesday.
+
+### 29.2 The edition mapping table shipped, and it is empty
+
+**PR #34 builds `Mappatura_Edizione__c`** —
+[`#96`](../notes/objects/The%20Mappatura%20Edizione%20object.md), and faithfully.
+All three properties the record called easy to get wrong are honoured:
+resolution is **per order line and per bundle component** (which is the case that
+killed the one-active-child-campaign rule on 26 August), the windows match
+`Order.EffectiveDate`, and _colonna G_ exists as `Data_Evento__c` with its
+purpose written into the field description.
+
+🟢 **Two things were built that nobody specified, and both are improvements.**
+The product key is a **lookup to `Product2`** rather than a text article code, so
+it cannot drift from the registry or be broken by the code-normalisation hazard.
+And **overlapping active windows are refused** by a before-save trigger, in one
+bounded query — without which the edition of an order line would be ambiguous.
+Neither was asked for.
+
+🟢 **Campaign record types `Campagna_Padre` and `Campagna_Figlio` arrived with
+it**, with validation rules — the first time the parent/child campaign model
+exists as metadata rather than as a design note.
+
+🔴 **But `assignCampaigns` throws rather than degrading**, and it runs when an
+Order transitions into **`Incassato`** — a state 12 of 15 orders were already in
+at the 2 September check. So an unmapped ticket-generating product does not block
+order creation; it **blocks the order reaching `Incassato`, and rolls the update
+back**. The table is hand-maintained, has no rows in source control, and **nobody
+has been asked to populate it** (`#121`). It should also be sequenced against
+`#98`, since re-creating the ~1000 Mexal articles would orphan rows entered
+first.
+
+### 29.3 A `git diff` found two records that had been wrong for two sweeps
+
+Both were fixed on **2 September** in commit `9b38d1a` and were already present
+in `DevMain` at the 3 September trace's own commit.
+
+✅ **`#107`'s three code defects are all fixed.** `Is_Error__c` is now set from
+the HTTP status on the success path; `Response_State__c` is set **before** the
+deserialize and the `catch` reuses the same log row, so the status survives a
+parse failure; and a non-JSON body — the HTML `404` from a wrong hostname —
+short-circuits to a clean log instead of throwing. Only the client-side half
+remains: the error bodies are still owed and no lookup has ever run.
+
+✅ **The Anticipay field-build risk is resolved.** `Account` carries **ten**
+custom fields, including `PEC__c` and all five legal-representative fields —
+exactly the `#95` design. The org check that raised the risk ran at 08:05–08:14Z
+on 2 September, **hours before the commit**; it was correct when taken and stale
+by that evening.
+
+⚠ **The method lesson is the 3 September one from the other side.** That run
+concluded that a pull request is a source. This one adds: **an org check is a
+photograph of a moving branch**, and a `git diff` against the previous watermark
+would have caught both of these in one command.
+
+### 29.4 The WooCommerce endpoint exists, and so do two loose credentials
+
+Anita Aga sent Aurel Mrruku a Postman collection by mail (16:23, 16:37 CEST) and
+Slack DM (17:08) carrying a working call against the inbound Apex REST route.
+
+🟢 **The authentication is stronger than the record feared** — **OAuth 2.0 JWT
+bearer**, a signed assertion exchanged at the Salesforce token endpoint for a
+session used as the bearer, not the static shared secret `INT-16` warns against.
+
+🔴 **Sabatino Rinaldi has been given neither the endpoint nor the credential.**
+His side has been ready since 27 August and the integration tests were set for
+the week of 31 August (`#102`).
+
+🔴 **Both credentials were circulated in plaintext across two systems, and the
+JWT assertion's expiry is roughly sixty years out** — effectively a permanent
+credential for a UAT integration user
+([the risk](../notes/risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+Rotate them, and do not carry the pattern to production — which is closer than it
+was, since `pienissimo.my.salesforce.com` was provisioned on 3 September.
+
+⚠ `INT-16` is **not** closed by this. Platform authentication is a different
+guarantee from the class verifying its caller, and the org was not opened this
+run.
+
+### 29.5 Three smaller things
+
+⚠ **The Anticipay failure mail is built and addressed to the developer.**
+`AnticipayErrorNotificationService` does exactly what was agreed — it filters the
+log rows on `Is_Error__c` and sends — but to a **hardcoded ROMI address**, where
+the agreed recipient is `amministrazione@pienissimo.com` with a link to the
+record (`#119`). It reads like a placeholder and is merged unmarked.
+
+⚠ **An external Gmail address requested access to the internal Notion status
+page**, and the request is unanswered (`#122`). That page names people and
+carries internal risk language; `site/` is the sanitised surface. The identity is
+unknown to the record and should not be inferred from the name.
+
+⚠ **`#tproj-pienissimo` broke a week's silence, and mostly repeated itself.**
+Elena Spini posted a status at 19:48 CEST — but its **red-flag block is copied
+verbatim from 28 August and five earlier posts**, so the phase-2 scope dispute it
+describes is **not** new movement. The only new content is that the data-model
+sessions are the current activity and that **Sabatino Rinaldi has stopped
+answering his phone** because the client is busy with an event. The canvas is
+unchanged and now **nine client sessions behind**.

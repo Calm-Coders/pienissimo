@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Elisa Migliano
 org: both
 raised: 2026-09-02
-updated: 2026-09-03
+updated: 2026-09-04
 depends_on: [OI-58]
 requirement: INT-01
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
@@ -115,3 +115,29 @@ destination. **Keep this item open**; it is now one question, not two.
 ⚠ The requirement to carry the three fields is written into the client's own
 workbook, on the Ordine sheet, in free text — not as a field list
 ([OI-24](OI-24%20Data%20model%20workbook.md)).
+
+
+## 2026-09-04 — the requirement is now written in the client's own workbook
+
+The workbook's **Ordine** sheet, rebuilt at 15:03:03Z during
+[Data Model Parte 2](../meetings/2026-09-04%20Data%20Model%20Parte%202.md), now
+carries the line:
+
+> _"Nell'ordine e importante che ci siano le seguenti informazioni: **Codice
+> Agente, Classificatore Rete, Codice Zona**."_
+
+🟢 **The three fields are now a stated client requirement on the order**, not
+just a gap Andrea Di Cicco noticed in the Mexal call's field set. That is the
+first time the requirement exists in an artefact the client maintains.
+
+🟢 It is consistent with the 3 September answer from the opposite direction — the
+values are inherited from the tutor and freeze on the order for commission
+attribution.
+
+🔴 **The wire question is unchanged.** Naming the fields on the order does not
+tell anyone which Mexal call carries them or under what names, and **Andrea Di
+Cicco's JSON update and test send are still outstanding**, now since 2 September.
+
+⚠ Note the workbook's third name is **`Codice Zona`** where the Account sheet
+calls the field **`Zona`** and this item calls it `zona`. Same field, three
+spellings; do not let the mapping inherit the ambiguity.
