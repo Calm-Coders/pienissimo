@@ -2,13 +2,21 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-04 (nightly requirements-check: Data Model Parte 2 drilled, the edition mapping table shipped, and two records were found stale by a git diff) · Source of record: [notes/](notes/)
+Last updated: 2026-09-07 (invitation foundation implemented in local source; Marketing Cloud Growth confirmed) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
 ROMI is migrating Pienissimo from **Zoho CRM to Salesforce**. Zoho expires
 **31 October 2026**; go-live Fase 1 is **6 October**, Fase 2 **9 November**;
 data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
+
+- **2026-09-07 — local source:** [event invitations](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md)
+  now have Account-Campaign storage, runtime community URL resolution and a Flow
+  refresh action. Check-only validation passed; not deployed, no sends activated.
+  [Marketing Cloud Growth and Digital Engagement for Facebook/WhatsApp](notes/The%20confirmed%20Salesforce%20and%20marketing%20products.md)
+  are user-confirmed. The earlier Journey Builder assumption is superseded.
+  Production coverage remains gating in OI-64/OI-66 and the deploy risk; the
+  brief now includes the three new invitation classes and trigger.
 
 - 🔴 **Development on Fase 1 must end 10 September**, per ROMI's own project
   plan — not 6 October, which is go-live. With the team back ~24–26 August that

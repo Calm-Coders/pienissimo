@@ -1,4 +1,4 @@
-public with sharing class OrderBigliettoTriggerHandler {
+public with sharing class OrderTriggerHandler {
   private static final String CONFIRMED_STATUS = 'Incassato';
   private static final String INITIAL_TICKET_STATUS = 'Ordinato';
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
@@ -132,6 +132,7 @@ public with sharing class OrderBigliettoTriggerHandler {
 
     if (!ticketsToInsert.isEmpty()) {
       insert ticketsToInsert;
+      EventInvitationService.ensureForAssets(ticketsToInsert);
     }
   }
 

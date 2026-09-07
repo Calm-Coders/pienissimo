@@ -5,7 +5,7 @@ status: superseded
 owner: ROMI
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-31
+updated: 2026-09-07
 blocks: [go-live]
 depends_on: [risk-biglietto-not-in-scm]
 severity: gating
@@ -13,6 +13,18 @@ source: meetings/open-items.md row 66
 ---
 
 # OI-66 - No test classes for the Biglietto stack
+
+## 2026-09-07 - current invitation coverage brief
+
+The historical custom Biglietto stack below remains superseded. The current
+standard-Asset work now includes ParticipantCommunityUrl,
+EventInvitationService, EventInvitationUrlJob and EventInvitationTrigger in
+local source; see [the implementation](../flows/Proposed%20event%20invitations%20for%20participant%20registration.md).
+The future suite needs community discovery failures and org-specific URLs,
+bulk creation/reuse, lookup-change invalidation, queue-capacity deferral,
+Flow output alignment, and URL refresh failures and validation rules.
+No tests were written or run and no coverage was measured; production coverage
+remains gating. Check-only deployment confirms compilation, not runtime coverage.
 
 `BigliettoTriggerHandler`, `BigliettoDocuSignService`,
 `BigliettoDocuSignQueueable`, `BigliettoPdfService`, `BigliettoPdfQueueable`
@@ -79,7 +91,7 @@ is why this item depends on
 August `org-status-check` counts 31 Apex classes where 28 August counted 37.
 
 So this item closes without a line of test code being written, and **that is not
-a good outcome** — the ~270 lines it tracked were never covered *and* are now
+a good outcome** — the ~270 lines it tracked were never covered _and_ are now
 gone entirely, with
 [no copy in source control anywhere](../risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
 Nothing was tested; the subject was removed.

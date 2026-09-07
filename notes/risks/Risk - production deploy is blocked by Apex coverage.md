@@ -6,13 +6,23 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-04
+updated: 2026-09-07
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
 ---
 
 # Risk - production deploy is blocked by Apex coverage
+
+## 2026-09-07 - invitation source extends the production coverage brief
+
+Three new Apex classes and EventInvitationTrigger, plus an order-handler call,
+implement [the invitation foundation](../flows/Proposed%20event%20invitations%20for%20participant%20registration.md)
+in local source only. Salesforce check-only validation with NoTestRun passed;
+no tests were added, no live coverage changed or was measured, and this is not
+production readiness. OI-64 and OI-66 carry the added scenarios for the separate
+suite task. Production coverage remains gating; it is not a Phase 1 feature-work
+blocker under the existing user decision.
 
 Org-wide Apex coverage in UAT was **1%** on 2026-08-03. Salesforce requires
 **75%** to deploy to production. Until that gap closes, nothing in this project
@@ -198,15 +208,15 @@ which changes what the eventual test suite has to cover, not when it is written.
 Two merges on 4 September add roughly **another 600 uncovered lines** to
 `DevMain`, on top of the +844 recorded on 3 September:
 
-| Class                                      | Lines added | From                                    |
-| ------------------------------------------ | ----------- | --------------------------------------- |
-| `AnticipayErrorNotificationService`        | 188         | PR #32 — the Anticipay failure mail     |
-| `MappaturaEdizioneTriggerHandler`          | 132         | PR #34 — edition mapping overlap guard  |
-| `OrderBigliettoTriggerHandler` (additions) | ~93         | PR #34 — campaign assignment            |
-| `AnticipayAccountService` (additions)      | ~80         | PR #32                                  |
-| `AnticipayOrderAutomation`                 | 63          | PR #32                                  |
-| `AnticipayAccountRefreshQueueable`         | 38          | PR #32                                  |
-| `anticipayAccountRefreshAction` (LWC JS)   | 112         | PR #32                                  |
+| Class                                      | Lines added | From                                   |
+| ------------------------------------------ | ----------- | -------------------------------------- |
+| `AnticipayErrorNotificationService`        | 188         | PR #32 — the Anticipay failure mail    |
+| `MappaturaEdizioneTriggerHandler`          | 132         | PR #34 — edition mapping overlap guard |
+| `OrderBigliettoTriggerHandler` (additions) | ~93         | PR #34 — campaign assignment           |
+| `AnticipayAccountService` (additions)      | ~80         | PR #32                                 |
+| `AnticipayOrderAutomation`                 | 63          | PR #32                                 |
+| `AnticipayAccountRefreshQueueable`         | 38          | PR #32                                 |
+| `anticipayAccountRefreshAction` (LWC JS)   | 112         | PR #32                                 |
 
 **Recorded, not acted on**, per the standing instruction: the test suite is
 Aurel Mrruku's to request as its own task before the production deploy, and

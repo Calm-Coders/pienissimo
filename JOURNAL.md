@@ -10,16 +10,80 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-07 - claude - invitation access folded into Full Permission
+
+- **Did:** on the user's instruction, deleted the `Event_Invitation_Management` permission set Codex had drafted and merged its entitlements into the existing `Full_Permission` set - object permissions, 8 field permissions, the two Apex class grants and the tab setting, relocated unchanged. Recorded [the decision](notes/decisions/Decision%20-%20invitation%20access%20uses%20Full%20Permission.md).
+- **Nothing was lost in the move:** `Account__c` and `Campaign__c` carry no field entry because both are `required: true` and Salesforce rejects field permissions on required fields - Codex had already omitted them for that reason. `EventInvitationService` needs no class grant; it runs only from triggers, while `EventInvitationUrlJob` exposes the `@InvocableMethod` a Flow calls.
+- **Org state:** neither the drafted permission set nor `Event_Invitation__c` had ever been deployed - both confirmed absent from UAT by query. No assignment to revoke, no user affected. Source-only.
+- **Verified:** check-only dry-run against Pienissimo UAT with NoTestRun, job `0AfMA00000Ce9Qh0AJ`, 22 of 22 components, zero errors, nothing persisted. A first attempt failed on one thing only - the merged `Full_Permission` description exceeded the Salesforce 255 character limit at 425 characters; shortened to 242 and it passed.
+- **Checks:** vault:check OK for 192 notes with the 4 pre-existing trace warnings; Prettier clean on the permission set and the new note; INDEX.md note count 191 to 192.
+- **Next:** the set still has to be assigned to whoever operates invitations - unassigned by design, and never to a guest user.
+- **Watch:** the merged posture allows create, read, edit and view-all-records on `Event_Invitation__c`, which is more permissive than the `BundleComponent__c` entry in the same set. That is the posture drafted with the object, kept deliberately rather than redesigned.
+
+---
+
+## 2026-09-07 - claude - the Order trigger is renamed off Biglietto
+
+- **Did:** at the user's request, renamed `OrderBigliettoTrigger` to `OrderTrigger`, `OrderBigliettoTriggerHandler` to `OrderTriggerHandler` and `OrderBigliettoTriggerHandlerTest` to `OrderTriggerHandlerTest`. Six files moved with `git mv` so history follows; identifiers rewritten. Recorded [the decision](notes/decisions/Decision%20-%20the%20Order%20trigger%20is%20renamed%20off%20Biglietto.md).
+- **Why:** `Biglietto__c` was superseded by standard Asset on 2026-08-24 and the handler builds `List<Asset>`, so the old name named a retired object. It was also narrower than the behaviour - the single Order trigger already dispatches Anticipay automation and now invitation creation. Only `Product2.Genera_Biglietto__c` keeps the Italian term, correctly.
+- **Deploy is destructive, not additive:** UAT still carries `OrderBigliettoTrigger` Active - confirmed by Tooling query, exactly one Order trigger. Deploying the renamed components alone would leave two triggers on Order both creating tickets from the same confirmed order. Added `manifest/order-trigger-rename-destructiveChanges.xml` and its empty package to delete the three old components in the same deployment.
+- **Verified:** check-only dry-run against Pienissimo UAT with NoTestRun passed for the renamed trio plus the invitation dependencies - 26 components, zero errors. Nothing was persisted; the post-run Tooling query still shows only the old trigger. A first dry-run of the trio alone failed only on `EventInvitationService` not existing in the org yet, which is Codex's uncommitted class, not a rename defect.
+- **Checks:** vault:check OK for 191 notes with the 4 pre-existing trace warnings; Prettier clean on the renamed Apex, the new manifests and the new note; INDEX.md note count 190 to 191.
+- **Not changed:** historical records keep the old name because it was true on their date - past journal entries, org coverage tables in OI-64/OI-66 and the deploy risk, the commit citation in OI-53, `STATUS.md`, and the preserved `.org-status-cache/` snapshots. The broken source link in the invitation proposal note was repointed.
+- **Next:** deploy the rename and the destructive manifest together when requested. Nothing is committed yet - Codex's invitation work and this rename both sit in the working tree.
+- **Watch:** no Apex tests were written or run and no coverage was measured; production coverage stays gating. `OrderTriggerHandlerTest` was renamed, not repaired - it is still subject to the OI-64 breakage.
+
+---
+
+## 2026-09-07 - codex - invitation source and Marketing Cloud Growth design
+
+- **Did:** the user confirmed Sales Cloud, Digital Engagement for Facebook/WhatsApp and Marketing Cloud Growth, then explicitly requested Salesforce source. Recorded [the product context](notes/The%20confirmed%20Salesforce%20and%20marketing%20products.md) and rewrote [the invitation design](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md) for Growth related-record marketing flows and content variables.
+- **Built locally:** Event_Invitation__c, internal permission set/layout/tab, three Apex classes and a trigger. The paid-order ticket insertion path ensures one invitation per Account-Campaign, then prepares plain links asynchronously using ConnectApi.Communities.getCommunity(networkId).siteUrl. Flow can explicitly refresh URLs before sending.
+- **Verified:** the read-only Connect-in-Apex probe returned the correct published UAT URL. Check-only deployment 0AfMA00000CeBPF0A3 succeeded with NoTestRun; no org metadata was persisted and no messages were sent. Coverage briefs updated without writing tests.
+- **Checks:** 21 components validated with zero component errors and zero tests run; targeted source/new-note Prettier checks passed, vault:check passed for 190 notes with existing trace warnings, intelligence:verify passed 8 checks, and git diff --check passed.
+- **Next:** deploy when requested, assign the internal permission set, configure recipient/send timing and the Growth marketing flow, then verify the complete journey. Current source does not backfill existing Assets, schedule sends, track delivery or auto-complete/reopen invitations.
+- **Watch:** URL_Status__c Ready means the URL was prepared, not that a marketing send is due. If a transaction has exhausted its queueable allowance, URL preparation stays Pending until the Flow refresh action runs. The Growth product is confirmed; its provisioning/trigger availability has not been inspected.
+
+---
+
+## 2026-09-07 - codex - participant link matched to the live community
+
+- **Did:** updated [the invitation proposal](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md) with the exact UAT domain-root participant route, existing `c__accountId` / `c__campaignId` parameters and a proposed Salesforce Text formula for the invitation URL.
+- **Evidence:** read-only Connect communities API returns the Landing Page community as Live at the domain root; unauthenticated GET of `/participant-registration` returns HTTP 200. SiteDetail's `/vforcesite` prefix is not the published community entry address. The separate marketing community is `/lp`.
+- **State:** documentation only, no metadata deployed. Browser automation was unavailable; HTTP page-shell availability and source parameter handling were verified, not a rendered registration or submission.
+- **Next:** use actual invitation Account/Campaign IDs in the documented formula when implementing the object and dispatcher.
+
+---
+
+## 2026-09-07 - codex - invitation proposal uses plain links for now
+
+- **Did:** revised [the invitation proposal](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md) and its index entry following the user's explicit request to omit tokens for now.
+- **State:** use `c__accountId` and `c__campaignId` in a calculated invitation URL, available from creation and passed to Marketing Cloud when due. Removed token fields, expiry, rotation and token-access implementation work. Existing controller filters remain the proposed page behaviour; no application code changed.
+- **Next:** confirm Marketing Cloud setup, recipient selection, email timing and dispatch/reminder rules. The previous journal entry's token-lifecycle next step is superseded by this direction.
+- **Watch:** this temporary choice does not resolve the existing community access finding or approve the rest of the proposal.
+
+---
+
+## 2026-09-07 - codex - participant invitation proposal documented
+
+- **Did:** created [the event invitation proposal](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md) at the user's request and linked it from INDEX.md. Covers one Account-Campaign invitation, creation with campaign-assigned Assets, sending when due, token access, Marketing Cloud API entry data, synchronization and reminder handling.
+- **State:** proposal only; no metadata or requirement changed. Marketing Cloud Engagement is an explicit unconfirmed assumption. No live-org or Marketing Cloud configuration check was performed. The proposal records that current participant-controller code already creates Campaign Members, contrary to older OI-78 prose.
+- **Next:** confirm the Marketing Cloud product/connection, recipient selection, timing, token lifecycle and dispatch retry rules before implementation.
+- **Watch:** documentation is not client approval; 30 versus 60 days and the meaning of rinuncia remain open. No client-facing rendered section is changed by this standalone technical proposal.
+- **Validation:** vault:check passed for 189 notes with existing non-blocking requirement-trace warnings; the new note passes Prettier and the diff passes whitespace checks.
+
+---
+
 ## 2026-09-04 — claude — nightly requirements-check: Data Model Parte 2, an edition table that ships empty, and two records that were wrong
 
 - **Did:** swept Gmail, Slack, Drive, Fathom **and `git diff`** from watermark
   **2026-09-03T22:00Z** (from
   [the 03/09 trace](notes/traces/Source%20trace%202026-09-03%20nightly.md), by
   `updated:`; frontmatter and text agreed). Drilled the **04/09 `Data Model:
-  Parte 2`** client session from its **full 1h01m33s transcript**, read the
+Parte 2`** client session from its **full 1h01m33s transcript**, read the
   rebuilt workbook in full, and read the 40-file diff of PRs #32/#33/#34.
   ⚠ **The clone arrived single-branch on `main` with no vault** — `git fetch
-  origin && git checkout -B DevMain origin/DevMain` recovers it. A future run
+origin && git checkout -B DevMain origin/DevMain` recovers it. A future run
   that finds `AGENTS.md` missing is on the wrong branch.
 - **State:** four things, only one of which arrived through a message.
   **(1) Parte 2 finished the contact registry inside its hour** — the shipping
@@ -2481,7 +2545,7 @@ items.
   HTTP error so that mail would be silent.
 - 🟢 **The Mexal order tracciato is written down for the first time** — `OC`/`BC`,
   causali 1-3 / 4-6, warehouse, cost centre, exemption codes, and a **`data di
-  scadenza` per line that is the tranche due date** (OI-50). New **OI-110**:
+scadenza` per line that is the tranche due date** (OI-50). New **OI-110**:
   `codice agente`, `zona`, `classificatore rete` are needed on the header and
   Andrea Di Cicco cannot find them in the call's field set.
 - 🟢 **OI-24, gating since 2 July, substantially arrived** — Elisa Migliano filled
@@ -2499,7 +2563,7 @@ items.
 
 - **Attendance and authorship corrections**: Fabrizio Paganelli was in the room
   with Elisa Migliano on 2 September and does not speak; the `Anagrafica
-  Articoli` workbook is **hers**, sent from his mailbox.
+Articoli` workbook is **hers**, sent from his mailbox.
 - **`Product2.Stato_Bundle__c`'s PROVISIONAL description is retired** — the
   transcript confirms the values and the host object. The transition logic is
   still unbuilt and the session never chose between a button and a manual change.
@@ -2567,7 +2631,7 @@ items.
 - **Watch:** **`OI-86` stays open even though the page exists.** A build is
   evidence of what happened, not a record of a decision, and Rebecca Marmo has
   not been told. ⚠ **The SDI is back** (`OI-109` stays resolved — it was withdrawn
-  as an *Anticipay* field, and Fabrizio Paganelli kept it as a *Mexal*-fed one;
+  as an _Anticipay_ field, and Fabrizio Paganelli kept it as a _Mexal_-fed one;
   keep both facts). ⚠ **Every Salesforce label and state is to be translated into
   Italian**, agreed and unpriced, touching every layout and state machine already
   built. ⚠ **+844 uncovered Apex lines** — recorded against the coverage records

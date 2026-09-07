@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-02
+updated: 2026-09-07
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -13,6 +13,16 @@ evidence: test run against Pienissimo UAT, 2026-08-03
 ---
 
 # OI-64 - The bundle Apex test suite is broken
+
+## 2026-09-07 - invitation source added to the future suite brief
+
+The [invitation foundation](../flows/Proposed%20event%20invitations%20for%20participant%20registration.md)
+adds three Apex classes and EventInvitationTrigger, and changes the order
+handler after Asset insertion. Include repeated bundle purchases, multi-event
+grouping, concurrent Account-Campaign creation and preservation of existing
+invitations in the later suite. Source only; check-only compilation passed,
+no coverage measured and no test classes written. Existing production gate and
+the separately requested suite policy remain unchanged.
 
 `Product2.Code__c` was made **required** (`IsNillable = false`) at some point
 after 16 July. Every test that inserts a `Product2` without a code now dies with

@@ -1,5 +1,5 @@
 @isTest
-private class OrderBigliettoTriggerHandlerTest {
+private class OrderTriggerHandlerTest {
   private static Account makeAccount() {
     Account account = new Account(Name = 'Test Account');
     insert account;
