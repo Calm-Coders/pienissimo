@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-03
-updated: 2026-09-04
+updated: 2026-09-07
 depends_on: [OI-58]
 requirement: INT-01
 source: notes/meetings/2026-09-03 Data Model Parte 1.md
@@ -77,3 +77,24 @@ reports it. The failure moves from order creation to delivery.
 no longer blocks the build, so it can be a verification instead of a gate. It
 still sits behind Andrea Di Cicco's JSON update and test send, outstanding since
 2 September.
+
+## 2026-09-07 - the mirror is one-directional by decision
+
+The [internal follow-up](../meetings/2026-09-07%20Follow-up%20Interno.md) agreed,
+under `Concordato`:
+
+> **The shipping address is not retrieved from Mexal.** Salesforce sends it at
+> account or order creation and owns changes to it.
+
+That is the missing half of the Parte 2 *hidden shipping mirror*. The mirror is
+**one-directional by design**: Salesforce writes, Mexal never writes back.
+
+🔴 **Which makes the Parte 2 concern sharper, not softer.** Shipping is
+auto-populated from billing and hidden on screen, so a mirrored address that is
+genuinely wrong is now wrong on **both** systems, with **no return path** that
+could ever correct it. The books bought through WooCommerce ship to it.
+
+⚠ **The underlying question this row asks is still unanswered.** Nobody has
+established whether Mexal *requires* both addresses to create an account — the
+design has simply been settled around always sending both. The workaround has
+outlived the question.

@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Andrea Di Cicco
 org: both
 raised: 2026-08-26
-updated: 2026-09-04
+updated: 2026-09-07
 depends_on: [OI-58]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
 ---
@@ -212,3 +212,57 @@ working days.
 ⚠ **Three ROMI-internal `PIENISSIMO - DM TBD` holds** were noted on 2 September as
 duplicates on the original three slots. Nobody has cleared them, and there are now
 four real sessions.
+
+## 2026-09-07 - Parte 3 ran on Monday, and the ambiguity resolves the first way
+
+🟢 **[Parte 3 ran](../meetings/2026-09-07%20Data%20Model%20Parte%203.md)** —
+7 September 11:06 CEST, **1h12m02s**, so it overran its hour by twelve minutes.
+Present: **Elena Spini**, **Aurel Mrruku**, **Elisa Migliano**, plus **Rebecca
+Marmo** by telephone for about two minutes.
+
+**That settles the calendar question this note raised on 4 September.** Of the two
+readings — Parte 3 stands with a reduced cast, or it should have been cancelled
+and was not — **the first is what happened**. It was not cancelled; it was held
+without Andrea Di Cicco, who said so himself in the ROMI group DM at 09:12:53
+CEST: _"Ragazzi io non ci sono con pienissimo oggi che ho il kick off di un altro
+progetto"_. Elena Spini also sent an **updated invitation** at 09:05:50Z, so the
+slot was actively reconfirmed rather than left to run.
+
+⚠ **Fabrizio Paganelli was invited and does not speak anywhere in the
+transcript.** Elisa Migliano opened with _"E Fabri ha detto che intanto possiamo
+iniziare"_. Sabatino Rinaldi was cc'd and does not appear. So the session ran with
+**three** of the five people Fabrizio Paganelli originally named.
+
+🟢 **It finished the Referente object.** Elena Spini's closing count was
+_"Siamo a 35"_ — thirty-five fields disposed of, one object completed, where Parte
+1 took two hours to do one and Parte 2 started this one. Consents, the tag
+vocabulary, the address block, the Google Ads block and the primary-contact rule
+all landed
+([the decision](../decisions/Decision%20-%20consents%20live%20on%20the%20contact%20and%20editions%20on%20the%20campaign.md)).
+
+🔴 **The four gaps survive a fourth session.** Utenti, Profili, the Ordine field
+list and the initial-load plan were **not opened at all**, and neither was the
+Lead table that Parte 1 deferred for Sabatino Rinaldi
+([OI-24](OI-24%20Data%20model%20workbook.md)). Four sessions have now produced
+**two objects**.
+
+🔴 **A new block came out of it with nowhere to go** —
+[OI-123](OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md). About a
+dozen Contact fields are a verbal tutor questionnaire whose natural owner is a
+*locale*, an object that does not exist in this data model. They were deleted with
+no destination and no date on the conversation that decides one.
+
+## The calendar from here
+
+| Session       | When                              | Invited                                              |
+| ------------- | --------------------------------- | ---------------------------------------------------- |
+| **Parte 3**   | ✅ ran Mon 7 Sept 11:06 CEST      | Elena Spini, Aurel Mrruku, Elisa Migliano (+ Rebecca Marmo briefly) |
+| **Parte 4**   | Tue 8 Sept 12:00-13:00 CEST       | Aurel Mrruku, Elisa Migliano, Fabrizio Paganelli      |
+
+Elisa Migliano closed with _"A posto, ci vediamo domani"_, so Parte 4 is expected
+to run. ⚠ **Andrea Di Cicco is not on the Parte 4 invitation either**, and the
+Ordine field mapping — which is his — is one of the four things still unopened.
+
+⚠ Sabatino Rinaldi was said on 4 September to be unavailable from Tuesday 8
+September when the client's tour starts. **The Lead table still needs him** and
+Parte 4 is the last booked session.

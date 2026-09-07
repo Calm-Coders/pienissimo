@@ -2771,3 +2771,234 @@ movimento nuovo. L'unica novità è che le sessioni data model sono l'attività
 corrente e che **Sabatino Rinaldi non risponde più al telefono** perché il
 cliente è impegnato con un evento. Il canvas è invariato e ora è indietro di
 **nove sessioni cliente**.
+
+
+---
+
+## 30. Aggiornamento 07/09/2026 — tre sessioni, un go-live contestato e la Fase 2 accantonata
+
+Il 7 settembre si sono tenute tre sessioni Pienissimo: `[PIENISSIMO]- Interna
+Flussi MKT` (interna ROMI, 10:00 CEST), `[ROMI-PIENISSIMO] - Data Model: Parte 3`
+(con il cliente, 11:06 CEST) e `[PIENISSIMO] - Follow-up Interno` (interna ROMI,
+17:01 CEST). Le prime due sono state analizzate sulle trascrizioni complete; la
+terza non ha trascrizione ed è letta dagli appunti Gemini.
+
+### 30.1 Il go-live si sposta al 21 settembre, in una stanza senza il cliente
+
+Il follow-up interno ha concordato, sotto `Concordato`, **go-live 21 settembre
+2026 con approvazione entro il 13 settembre**, con il rilascio in produzione
+precedente al go-live.
+
+🔴 **Tutti i documenti che governano questo progetto dicono 6 ottobre 2026** —
+`CTX-02` in entrambi i testi, entrambe le tabelle delle milestone, la definizione
+di priorità `M`, la regola di escalation alla Fase 2 e il §10.1 qui sopra. Il 21
+settembre è **quindici giorni prima**, eppure la sessione lo descrive come uno
+*slittamento* che **aggiunge** settimane di sviluppo e test, cosa che ha senso
+solo rispetto a un piano il cui go-live era anteriore al 21 settembre e che **non
+è in questo repository**.
+
+O il piano interno ROMI è divergente dai requisiti firmati, o la data è stata
+davvero anticipata. Le due letture hanno conseguenze opposte e le note non le
+distinguono. **Nulla è stato modificato nel registro**: `REQUISITI.it.md` è il
+testo presentato per la firma, e nessuna fonte mostra che a Pienissimo sia stato
+chiesto. La voce **#124** porta il conflitto.
+
+Collide con la scadenza di sviluppo Fase 1 del 10 settembre che cade dentro un
+offsite **9-12 settembre** (quattro giorni, da mercoledì a sabato mattina, come
+descritto in questa sessione), con l'assenza di Elena Spini il 14-15 settembre,
+con la finestra di mappatura edizioni collocata "immediatamente prima del
+go-live" (#121), con la suite di test Apex non pianificata, e con le sessioni
+dimostrative al cliente organizzate **dal 24 settembre** — dopo il go-live
+proposto.
+
+### 30.2 La Fase 2 è accantonata, e ci si sta rimandando dentro del lavoro
+
+**La Fase 2 è trattenuta fino a conferma di pagamento da parte del cliente.**
+Elena Spini ha ribadito l'obiettivo di farla quotare per coprire il fuori
+perimetro accumulato. È il primo movimento sulla disputa Fase 2 dal 24 luglio, ed
+è una **posizione ROMI, non una risposta del cliente** — Daniela Morgese non è
+ancora stata contattata (#83).
+
+🔴 **Nella stessa sessione la correzione dello scadenzario Mexal è stata rimandata
+alla Fase 2.** Fabrizio Paganelli aveva chiesto che lo stato degli asset seguisse
+le fatture non pagate e che incassi ed errori sulle tranche fossero correggibili;
+Andrea Di Cicco l'ha valutata come richiedente una sequenza di chiamate che
+cancellano e ricreano ordini e fatture. Quindi perimetro rivolto al cliente si è
+spostato in una fase senza quotazione, senza data e senza pagamento, e le note non
+collegano le due decisioni.
+
+La sessione si è anche aperta sul **ritardo accumulato**, attribuito al carico di
+lavoro e a requisiti di marketing imprevisti — il pulsante di rinuncia è citato
+come esempio — con Aurel Mrruku che ha sollevato il fatto che i requisiti
+continuano a cambiare e Andrea Di Cicco che ha proposto di **preallertare
+Gianpaolo Motta**.
+
+### 30.3 Sei decisioni Mexal che rendono realizzabile l'integrazione
+
+- **Le coordinate in header sono statiche**: `azienda = PE`, `anno = 2025`,
+  impostate nel codice. L'autorizzazione è basic — una coppia utente e password in
+  base64. 🔴 **`anno = 2025` è cablato contro un go-live 2026 e nessuno l'ha
+  rilevato.**
+- **La POST dei clienti modificati riceve un filtro sui campi**, perché la
+  risposta non filtrata rischia di sforare i limiti di dimensione del JSON; la
+  paginazione è da valutare.
+- 🔴 **Serve PUT o PATCH per l'aggiornamento cliente** — la POST su un account
+  esistente fallisce per partita IVA duplicata. E **il cliente viene inviato a
+  ogni creazione ordine**, come aggiornamento vuoto quando nulla è cambiato,
+  quindi ogni ordine successivo al primo di un cliente colpisce il percorso rotto
+  (**#125**).
+- **Le fatture sono generate manualmente** su Mexal da Fabrizio Paganelli.
+  Salesforce recupera l'avanzamento delle fatture non definitive con una GET sui
+  documenti modificati nelle ultime 24 ore.
+- **La ricerca agente è manuale**, scelta per aggirare i problemi di licenze e
+  permessi utente su Salesforce (#110).
+- **L'indirizzo di spedizione non viene mai riletto da Mexal** — lo invia
+  Salesforce, che ne possiede le modifiche. Quindi il mirror nascosto della Parte
+  2 è **unidirezionale per scelta**, e un indirizzo sbagliato è sbagliato su
+  entrambi i sistemi senza percorso di ritorno (#113).
+
+🟢 **La mappatura prodotto-campagna ha finalmente un *quando***: prima il
+caricamento prodotti da Excel, poi la mappatura inserita a mano nei giorni
+immediatamente precedenti il go-live — la prima indicazione di quando
+`Mappatura_Edizione__c` verrà popolata, anche se ancora **non da chi** (#121).
+**Gli ordini in corso vanno chiusi direttamente da Salesforce**; la migrazione più
+ampia di clienti storici, account e ordini ha sollevato preoccupazioni e non ha
+prodotto un piano.
+
+### 30.4 Data Model Parte 3 ha chiuso l'anagrafica contatti
+
+Con il cliente, 11:06 CEST, **1h12m02s**. Presenti: Elena Spini, Aurel Mrruku,
+Elisa Migliano, con **Rebecca Marmo al telefono per due minuti**. **Andrea Di
+Cicco non ha partecipato** — l'ha detto nella group DM ROMI alle 09:12:53 CEST —
+il che risolve l'ambiguità di calendario del 4 settembre nel primo modo: la Parte
+3 **non è stata annullata**, si è tenuta con una formazione ridotta, ed Elena
+Spini ha inviato un invito aggiornato quella mattina.
+
+🟢 **I consensi restano sul Contatto; la partecipazione alle edizioni passa a
+Campagna e CampaignMember.** `Consenso finalità commerciali` e `Consenso
+profilazione` diventano picklist con `Autorizzo` / `Non autorizzo` e **default
+vuoto**. Rebecca Marmo ha confermato il comportamento Zoho che questo risolve: il
+consenso si riporta automaticamente sui biglietti successivi e **viene
+sovrascritta solo l'edizione**, perché Zoho tiene un unico blocco `ultima
+iscrizione` per contatto.
+
+⚠ **Una conseguenza sulla migrazione che nessuno in riunione ha sollevato**:
+Salesforce vuole un CampaignMember per ogni edizione a cui si è partecipato, e
+Zoho conserva solo l'ultima, perché ogni iscrizione ha sovrascritto la precedente.
+**Lo storico delle edizioni non è migrabile da quel campo.**
+
+🟢 **Il vocabolario dei tag Zoho è decodificato e dismesso.** `<EVENTO>_I`
+significa *iscritto* e `<EVENTO>CP` *contatto principale* — `FMF_I`, `FMFCP` per
+il Food Marketing Festival. Diventano valori di stato del CampaignMember, e
+l'intero blocco dei tag è stato cancellato dal Contatto in sessione.
+
+🟢 **La regola del contatto principale è precisata.** Il link per i dati
+partecipanti va a chi è intestato il **preventivo** — possibilmente un assistente,
+non il titolare — e il flag `contatto principale` è messo a mano dai tutor e **a
+volte manca**. Concordato: il campo contatto sul form è **obbligatorio,
+liberamente selezionabile tra i contatti dell'account, precompilato con il
+contatto principale dove esiste, e modificabile**.
+
+**Cancellati dal Contatto**: l'intero blocco del secondo indirizzo, il blocco
+Google Ads, `Nome campagna di annunci`, i campi `Invio email contatto principale`,
+`Contatto con telefono duplicato`, `Spesa marketing`, `Tipologia contatto`,
+`Tipologia locale`, `Ufficio di competenza`, `Punteggio visitatore di campagna` e
+tutti i campi di merge `CF*` delle mail biglietti. **Mantenuti**: le tre caselle
+di ruolo del contatto (necessarie per i solleciti), `Auto marketer` — un **flag
+bloccante**, perché Pienissimo non si interfaccia con i marketer per privacy
+aziendale — `Ruolo iscrizione` (`titolare` / `collaboratore`, compilato dal
+cliente e non modificabile da Pienissimo) e `Tutor`.
+
+⏸ **I campi UTM sono rimossi in attesa di una decisione sulla reportistica**: un
+Contatto o un Account creati da conversione lead mantengono il legame con il Lead,
+quindi i valori si possono leggere da lì invece di duplicarli. Da definire durante
+il test dei flussi.
+
+🔴 **Una dozzina di campi del Contatto si sono rivelati un questionario verbale dei
+tutor** — `Coperto medio`, `Apertura locale`, posizione TripAdvisor, numero di
+collaboratori e coperti, e il resto. Il loro proprietario naturale è il singolo
+**locale**, un oggetto che non esiste da nessuna parte in questo progetto, e sono
+stati cancellati senza destinazione e senza una data per la conversazione che la
+deciderà (**#123**).
+
+🔴 **Le quattro lacune sopravvivono a una quarta sessione** — Utenti, Profili,
+l'elenco campi Ordine e il piano di caricamento iniziale, più la tabella Lead
+(#24). **Quattro sessioni hanno prodotto due oggetti.** La Parte 4, martedì 8
+settembre alle 12:00, è l'ultima in calendario, e nemmeno lì c'è Andrea Di Cicco.
+
+### 30.5 La sessione marketing, e la rinuncia che esce dall'email
+
+Interna ROMI, 10:00 CEST: Elena Spini, Aurel Mrruku, Fabrizio Mastracci — la prima
+sessione sui flussi marketing dal 19 agosto.
+
+🟢 **`30 vs 60` è definito come finestra**: le comunicazioni girano **da 30 a 60
+giorni prima dell'evento**, e la mail di raccolta dati parte **circa 60 giorni**
+prima. È corroborato dal recap del **20 agosto** scritto da Fabrizio Mastracci al
+cliente, che dice che il flusso di nurturing è _"avviato 30-60 giorni prima
+dell'evento"_ e arriva fino a **10-11 comunicazioni** finché non viene inserito un
+nominativo o cliccata Rinuncia. ⚠ **Il numero singolo resta ROMI che sceglie per
+il cliente**, esattamente come #81 aveva avvertito: la conferma spettava a Elisa
+Migliano e Rebecca Marmo con Matteo Distaso, e nessuna fonte la registra.
+
+🔴 **La rinuncia esce dalla mail marketing e passa sulla pagina community.**
+Gestirla a livello di intero ordine o bundle dentro Marketing Cloud è troppo
+complesso e rischia di invalidare la struttura delle campagne figlie; sulla pagina
+community il sistema sa esattamente quali asset sono in gioco e il problema delle
+compilazioni parziali sparisce. È **lavoro non realizzato su una pagina rilasciata
+il 3 settembre** (#78).
+
+Nuovi: **#126**, un flag Salesforce per i biglietti i cui dati partecipante non
+sono compilati, così che Marketing Cloud possa interrogarlo semplicemente — ⚠
+verificare prima `Event_Invitation__c`, committato lo stesso giorno, prima di
+aggiungere un secondo campo di stato sovrapposto. E **#127**, cosa comporta una
+rinuncia totale per l'ordine e per il credito citato da Elena Spini. ⚠ **La metà
+relativa ai biglietti di #127 era già risposta per iscritto** il 20 agosto — la
+rinuncia _"annulla tutti i biglietti, non è parziale"_ — ed è stata trattata come
+aperta in una stanza che conteneva l'autore di quella frase.
+
+⚠ **Il vincolo di stile a solo testo non è stato ribadito.** La regola di Matteo
+Distaso — niente header, niente immagini, niente pulsanti, scritta come se venisse
+da Giuliano personalmente — non compare da nessuna parte nella sessione, mentre
+Fabrizio Mastracci sta iniziando a configurare la prima email. È almeno presente
+nel suo stesso testo del 20 agosto.
+
+### 30.6 Il recap del 20 agosto, e ciò che il cliente deve ancora
+
+Elena Spini l'ha inoltrato nella casella ROMI alle 08:48Z con il corpo _"FYI"_.
+**Il suo testo non era in questo record.** Elenca consegne con date ormai in
+ritardo di due-tre settimane: **record DNS** da Matteo Distaso e **logiche dei
+segmenti, criteri e dettaglio delle mail** da Rebecca Marmo, entrambi attesi per
+il 21 agosto; un **documento landing page e campi nascosti** atteso per il 26
+agosto su un Google Sheet indicato. Ancora aperti oltre a questi: screenshot dei
+segmenti e dei flussi, i testi delle altre comunicazioni email e WhatsApp, loghi e
+immagini (#14).
+
+⚠ Il link al foglio è **corrotto in transito** e il file **non è stato aperto in
+questo giro**. È la specifica dei campi nascosti su una pagina già realizzata.
+
+### 30.7 Un org check che non ha pubblicato nulla, e che corregge due record
+
+Riportato da Aurel Mrruku nella group DM Salesforce ROMI alle 10:04 CEST, in sola
+lettura contro Pienissimo UAT al commit `012d49d`, esplicitamente in **modalità
+report — nessuna riconciliazione, nessuna pubblicazione**.
+
+🔴 **`Mappatura_Edizione__c` non è vuota**: **4 righe, 3 attive, che coprono 3
+prodotti distinti** — contro **226 prodotti su 229 non mappati** e **17 ordini su
+22 già su `Incassato`**, in crescita da 12 su 15. La lettura "nessuna riga" in
+#121 è corretta e **la sostanza è peggiore, non migliore**.
+
+🔴 **La copertura Apex misura 0 su 2.741 righe**, con l'ultima esecuzione dei test
+ancora al **4 agosto**; le righe sono cresciute di 1.095 dal 2 settembre. ⚠ Il
+conteggio **precede `d562af0`**, che ne ha aggiunte circa 290 lo stesso giorno.
+**Registrato, non agito.**
+
+Riportati e non ancora riversati nel registro: `Account.Partita_IVA__c` non ha
+alcun permesso di modifica per nessun principal, System Administrator incluso; la
+propagazione tranche-ordine è a 0 su 24 OrderItem; non esiste alcun flow
+dichiarativo; sei componenti vivono solo nell'org; ogni permission set di progetto
+raggiunge esattamente 1 utente su 9 attivi; `Product2` è sceso da 281 a 229; e
+`Integration_Log__c` ha 32 errori su 57 righe.
+
+⚠ **Questo sweep non ha aperto l'org.** Ogni cifra qui sopra viene dal check di
+ROMI così come pubblicato su Slack, e `STATUS.md`, il mirror Notion e il
+`build_state` del registro non ne portano nulla.

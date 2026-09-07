@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-07
 depends_on: [OI-96, OI-98]
 blocks: [OI-53, OI-84]
 source: notes/objects/The Mappatura Edizione object.md
@@ -81,3 +81,45 @@ rather than corrected afterwards.
 September**, three of whose four remaining working days fall inside ROMI's 9–11
 September offsite
 ([the compressed calendar](../risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)).
+
+## 2026-09-07 - the table has rows, and the picture is worse
+
+**Correction: the table is not empty.** An `org-status-check` run against
+Pienissimo UAT, reported by **Aurel Mrruku in the ROMI Salesforce group DM at
+10:04 CEST**, found **4 mapping rows, 3 of them active, covering 3 distinct
+products**.
+
+🔴 **That makes the exposure sharper, not smaller.** The same report puts it at
+**226 of 229 products with no active mapping**, against **17 of 22 orders already
+on `Incassato`** — up from 12 of 15 at the 2 September check. A throwing code path
+now covers 99% of the catalogue.
+
+⚠ **This run did not open the org.** The numbers above are from ROMI's own check
+as posted to Slack, not from an inspection performed here, and that check ran at
+repo commit `012d49d` — **before** `d562af0` landed. The org check's own caveat
+applies: it ran in report mode and reconciled nothing, so `STATUS.md`, the Notion
+mirror and the register's `build_state` do not carry any of it.
+
+🟢 **When the rows get entered is now on the record.** The
+[7 September internal follow-up](../meetings/2026-09-07%20Follow-up%20Interno.md)
+agreed the sequence: **initial product load by Excel, then manual
+product-to-campaign mapping with start and end dates, planned for the days
+immediately before go-live.** That is the first statement anywhere of *when*.
+
+🔴 **It still names nobody**, which is the half of this item that has not moved.
+And two things now press on it:
+
+- **Go-live may have moved to 21 September**
+  ([OI-124](OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)).
+  "The days immediately before go-live" is a moving target that has just moved
+  two weeks earlier, into a week that also contains the approval gate.
+- **The sequencing warning above is now the plan.** This note flagged that a
+  `Product2` reload replacing records would orphan mapping rows entered first
+  ([OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)).
+  The agreed order — **load products first, map afterwards** — is the safe one.
+  🟢 Recorded as resolved by design rather than by luck.
+
+⚠ **`Product2` fell from 281 to 229** between the 2 and 7 September org checks,
+consistent with [OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
+and **unrecorded until now**. Whatever rows exist were entered against that
+smaller set.

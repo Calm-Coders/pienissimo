@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Elisa Migliano
 org: both
 raised: 2026-09-02
-updated: 2026-09-04
+updated: 2026-09-07
 depends_on: [OI-58]
 requirement: INT-01
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
@@ -141,3 +141,20 @@ Cicco's JSON update and test send are still outstanding**, now since 2 September
 ⚠ Note the workbook's third name is **`Codice Zona`** where the Account sheet
 calls the field **`Zona`** and this item calls it `zona`. Same field, three
 spellings; do not let the mapping inherit the ambiguity.
+
+## 2026-09-07 - the agent lookup is deliberately manual
+
+The [internal follow-up](../meetings/2026-09-07%20Follow-up%20Interno.md) weighed
+automating the agent search against doing it by hand and **chose manual**, to
+avoid Salesforce **user licence and permission problems**.
+
+⚠ **That is a design decision taken to route around a defect.** Permission
+coverage is the thing every org check keeps finding — the 7 September run reports
+**every project permission set reaching exactly one of nine active users**, and
+`Full_Permission` reaching two. Manual agent lookup is cheaper than fixing that
+before go-live, and it is worth recording that this is *why*, not a preference.
+
+It does not answer this row. `codice agente`, `zona` and `classificatore rete` are
+still needed on the Mexal order header and Andrea Di Cicco still cannot find them
+in the call\'s field set. **Manual lookup is how the value gets found; the wire
+question is where it goes.**

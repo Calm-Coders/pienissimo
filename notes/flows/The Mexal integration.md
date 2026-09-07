@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-09-03
+updated: 2026-09-07
 depends_on: [OI-58]
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
@@ -367,3 +367,70 @@ mirror — which matters to any matching rule keyed on either field.
 ⚠ **Whether Mexal requires both the billing and the shipping address to create a
 customer is untested** and is the session's only formally deferred question:
 [OI-113](../items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md).
+
+## 2026-09-07 - six decisions that make this buildable
+
+From [the internal follow-up](../meetings/2026-09-07%20Follow-up%20Interno.md),
+7 September, all recorded by Gemini under `Concordato`. Present: Elena Spini,
+Aurel Mrruku, Andrea Di Cicco, Fabrizio Mastracci.
+
+### Authentication and management coordinates
+
+The *coordinate gestionali* go in the request header as **`azienda = PE`** and
+**`anno = 2025`**, set **statically in code**. Authorization is **basic**: a
+base64 encoding of user then password. Andrea Di Cicco owes Aurel Mrruku the
+documentation fragment.
+
+🔴 **`anno = 2025` is hardcoded and this project goes live in 2026.** Whether that
+is a Mexal fiscal-year selector that must roll over, and what happens at the
+boundary, was **not raised by anyone**.
+
+⚠ **No credential value is recorded in this repository**, and none may be.
+
+### Customer search is filtered
+
+The lookup is a **POST returning customers modified in the last 24 hours**. Aurel
+Mrruku raised that the volume of unneeded fields in the response risks **breaching
+JSON size limits**. Agreed: **apply a field filter on retrieval**, and evaluate
+**pagination** for large volumes.
+
+### Customer update requires PUT
+
+🔴 **POST on an existing account fails** with a *partita IVA already exists* error.
+**PUT or PATCH is required**, and Andrea Di Cicco is to implement it —
+[OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md).
+
+Agreed with it: **the customer is sent to Mexal on every order creation**, as an
+**empty update** when nothing changed commercially. So the push is unconditional,
+and every order after a customer\'s first hits the path that does not work.
+
+### Orders, invoices and agents
+
+- Customer orders are created through a **key-value mapping**, so the number of
+  products and lines can vary.
+- 🔴 **Invoice generation and line fulfilment are manual**, done by Fabrizio
+  Paganelli on Mexal. Salesforce retrieves the progress of non-final invoices with
+  a **GET over documents modified in the last 24 hours**.
+- 🔴 **Agent lookup is manual**, chosen to avoid Salesforce user licence and
+  permission problems ([OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)).
+
+### Shipping address is write-only
+
+**Salesforce sends the shipping address to Mexal** at account or order creation and
+owns changes; it is **never retrieved from Mexal**
+([OI-113](../items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md)).
+
+### Deferred to Fase 2 — the scadenzario correction path
+
+Asset status following unpaid invoices, and correcting incassi and tranche errors
+through the scadenzario API, needs a **sequence of calls deleting and recreating
+orders and invoices**. **Deferred**, into a phase that is itself parked pending
+payment ([the dispute](../risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)).
+It touches [OI-50](../items/OI-50%20Tranche%20object.md).
+
+### Migration, unsettled
+
+**In-flight orders must be closed directly from Salesforce.** Migration of
+historical customers, accounts and orders raised concerns and produced no plan;
+whether migration precedes user acceptance testing was asked by Andrea Di Cicco
+and not answered.

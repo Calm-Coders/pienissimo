@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elisa Migliano
 org: both
 raised: 2026-07-02
-updated: 2026-09-04
+updated: 2026-09-07
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 24
@@ -258,3 +258,30 @@ Campi` column**, unexplained and in no minuted session for a second day.
 ⚠ **The file still holds live customer records** — real companies with VAT, PEC
 and IBAN, and named individuals with contact details, on the Account, Referente
 and Preventivo sheets. **Recorded; nothing copied.**
+
+## 2026-09-07 - a fourth session, and the same four gaps
+
+The workbook was **rebuilt again at 10:08:27Z**, two minutes after
+[Data Model Parte 3](../meetings/2026-09-07%20Data%20Model%20Parte%203.md) ended —
+the same pattern as Parte 1 and Parte 2, Elena Spini saving straight out of the
+session.
+
+🔴 **Utenti, Profili, the Ordine field list and the initial-load plan are
+unchanged after four client sessions.** Parte 3 spent its hour and twelve minutes
+entirely on the Referente object and did not open any of them. Neither did it open
+the **Lead** table, deferred from Parte 1 so Sabatino Rinaldi could attend, and he
+is unavailable from 8 September.
+
+Four sessions, **two objects**: Account and Referente.
+
+⚠ **The content of this run\'s save was not read.** The file was identified by its
+modification time; the sheets were not opened, because the session transcript
+covers the same ground at higher fidelity. If the Ordine or Utenti sheets gained
+rows outside the session, this run would not have seen it.
+
+⚠ **The file still carries live customer records** — a real company with VAT, PEC
+and IBAN, a named legal representative with codice fiscale and date of birth.
+Recorded, never copied.
+
+**Parte 4 is Tuesday 8 September 12:00–13:00** and is the last booked session. On
+the current rate it holds one object, and four gaps plus the Lead table need it.

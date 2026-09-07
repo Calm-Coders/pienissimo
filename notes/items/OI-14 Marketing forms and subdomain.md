@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-08-28
+updated: 2026-09-07
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -135,3 +135,31 @@ Elena Spini's own 24 July status records the marketing handover to Mastracci —
 _"ho fatto passaggio di consegna con Fabrizio che ora seguirà questa parte"_ —
 and the surrounding clause here is about the ROMI-side build. Paganelli owns the
 **product registry**, not marketing.
+
+## 2026-09-07 - the owed list is now itemised, in ROMI\'s own words, and it is overdue
+
+Elena Spini forwarded **Fabrizio Mastracci\'s 20 August recap** to Aurel Mrruku at
+08:48:04Z with the body _"FYI"_. It was originally sent to **Marco Montesi**,
+**Matteo Distaso** and **Rebecca Marmo**, cc Elena Spini. **Its text has not been
+in this record before**, and it itemises what the client owes with dates attached:
+
+| Owed | By | Due in the mail | Status |
+| ---- | -- | --------------- | ------ |
+| **DNS records** | Matteo Distaso | _"entro venerdì"_ — 21 August | unconfirmed |
+| **Segment logic, criteria and mail detail** | Rebecca Marmo | _"entro venerdì"_ — 21 August | unconfirmed |
+| **Landing-page document and hidden-field list** | Pienissimo | _"mercoledì prossimo"_ — 26 August | unconfirmed |
+| Segment/criteria screenshots, flow screenshots, other email and WhatsApp texts, logos and images | Rebecca Marmo / Matteo Distaso | open-ended | unconfirmed |
+
+🔴 **All of it is between two and three weeks overdue**, and none of it appears on
+any source this sweep reached. The DNS records are the item that has been open
+longest under this row.
+
+🟢 **The landing-page document has a location for the first time**: a Google Sheet
+at file id `1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`, named in the mail as the place for
+_"documento per la landing page e campi nascosti da compilare"_. ⚠ **The link in
+the mail body is corrupted in transit** — the `gid` fragment carries a control
+character where a digit belongs — and **the file was not opened this run**. It is
+not otherwise in the record, and it is the specification for the hidden fields on
+a page that is already built.
+
+⚠ **The 100+ form review** remains unmentioned by any source since 28 August.

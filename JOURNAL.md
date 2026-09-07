@@ -10,6 +10,82 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-07 — claude — nightly requirements-check: three sessions, and a go-live date that moved without the client
+
+- **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
+  **2026-09-04T22:00Z**, taken from the `external_watermark` of
+  [the 04/09 trace](notes/traces/Source%20trace%202026-09-04.md), which is also the
+  newest note in `notes/traces/` by `updated:` — frontmatter and text agreed. The
+  weekend is empty on every source; everything below is 7 September. Drilled
+  **three** sessions: `Data Model: Parte 3` (client-facing, 11:06 CEST) from its
+  **full 1h12m02s transcript**, `Interna Flussi MKT` (ROMI-internal, 10:00 CEST)
+  from notes and decisions, and `Follow-up Interno` (ROMI-internal, 17:01 CEST)
+  from Gemini notes — **that one has no transcript section**.
+- **State:** four things.
+  **(1) 🔴 The go-live date moved and the register does not know.** The internal
+  follow-up agreed **21 September 2026 with approval by 13 September**, where
+  `CTX-02`, both milestone tables, the `M` priority definition and the Fase 2
+  escalation rule all say **6 October**. Fifteen days **earlier**, yet described as
+  a *slittamento* adding development weeks — which only fits a plan this repository
+  does not hold. **Nothing was changed in the register**
+  ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)).
+  The same session **parked Fase 2 pending client payment** — first movement on
+  that dispute since 24/07 — while **deferring the Mexal scadenzario path into that
+  parked phase**, and settled **six Mexal decisions**
+  ([the flow](notes/flows/The%20Mexal%20integration.md)), including 🔴 **PUT/PATCH
+  required because POST on an existing account fails on a duplicate partita IVA**
+  ([OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md))
+  and 🔴 a **hardcoded `anno = 2025`** against a 2026 go-live that nobody raised.
+  **(2) 🟢 Parte 3 ran on Monday and finished the contact registry** — which
+  resolves the 04/09 calendar ambiguity the first way: not cancelled, held without
+  Andrea Di Cicco. **Consents stay on the Contact, editions move to CampaignMember**
+  ([the decision](notes/decisions/Decision%20-%20consents%20live%20on%20the%20contact%20and%20editions%20on%20the%20campaign.md)),
+  the **Zoho tag scheme is decoded and retired**, and the **primary-contact rule is
+  sharpened**. New
+  [OI-123](notes/items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md):
+  a dozen fields whose natural owner is a *locale* object that does not exist.
+  **(3) 🟢🔴 The marketing session closed `30 vs 60` as a 30–60 day window** —
+  ⚠ still ROMI choosing for the client — and **moved rinuncia off the email onto
+  the community page**
+  ([the decision](notes/decisions/Decision%20-%20rinuncia%20moves%20from%20the%20marketing%20email%20to%20the%20community.md)),
+  which is unbuilt work on a page merged 03/09. New
+  [OI-126](notes/items/OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md)
+  and [OI-127](notes/items/OI-127%20What%20a%20total%20rinuncia%20does%20to%20orders%20and%20assets.md).
+  **(4) ⚠ An org check ran at 10:04 CEST, published nothing, and corrects two
+  records** — `Mappatura_Edizione__c` holds **4 rows, 3 active, against 226 of 229
+  products unmapped and 17 of 22 orders on `Incassato`**, and Apex coverage measures
+  **0 of 2,741 lines** with the last run still 4 August.
+- **Next:** (a) **get a human to say which go-live date governs** — if 21 September
+  is real, `CTX-02` and both milestone tables change in **both languages in one
+  session** and the client has to be told; (b) **check the `Follow-up Interno`
+  recording** (553 MB, exists) before anyone acts on the 21 September figure, since
+  that session has **no transcript** and every quotation of it is Gemini's
+  paraphrase; (c) **send the WooCommerce endpoint and token to Sabatino Rinaldi** —
+  now an assigned action on Aurel Mrruku and still unsent, and **rotate first**;
+  (d) open the landing-page/hidden-field spreadsheet `1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`,
+  which specifies a page already built.
+- **Watch:** ⚠ **Fase 1 development ends 10 September, inside a 9–12 September
+  offsite** — described this run as four days, Wednesday to Saturday morning, where
+  the record had 9–11 — and the proposed **approval date of 13 September is the
+  first day after it**, with Elena Spini off 14–15. ⚠ **The 20 August marketing
+  recap answers half of OI-127 in a parenthesis** and was treated as an open
+  question the same morning in a room containing its author. ⚠ **`d562af0` is
+  authored `Aurel Mrruku <slazzaretti@deloitte.it>`** — right name, an address from
+  another organisation; reads like a misconfigured git identity and is **not
+  interpreted here**, but it is permanent on that commit. ⚠ **The `.drawio` moved a
+  sixth time** (10:34:37Z) and still cannot be rendered. ⏸ **~290 further uncovered
+  Apex lines** from `d562af0`, recorded against the coverage records as the brief,
+  **not acted on**.
+- **Method:** **read the window\'s mail before its minutes.** The 20/08 recap landed
+  at 08:48Z and answers a question a 10:00 session raised as open, with the author
+  of the answer in the room. And **read the `Decisioni` block of every internal
+  session in full** — the go-live change is one line in a seven-line list, under a
+  summary that reads _"Riunione tecnica con pianificazione e organizzazione
+  eventi"_. ⚠ **`JOURNAL.md` entries are prepended, not appended**; a `tail` looks
+  like a missing handoff.
+
+---
+
 ## 2026-09-07 - claude - invitation access folded into Full Permission
 
 - **Did:** on the user's instruction, deleted the `Event_Invitation_Management` permission set Codex had drafted and merged its entitlements into the existing `Full_Permission` set - object permissions, 8 field permissions, the two Apex class grants and the tab setting, relocated unchanged. Recorded [the decision](notes/decisions/Decision%20-%20invitation%20access%20uses%20Full%20Permission.md).

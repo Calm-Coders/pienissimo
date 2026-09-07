@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-04
+updated: 2026-09-07
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -180,3 +180,26 @@ holds codes such as `CS000115` unhyphenated. That is
 appearing in a test fixture. It proves nothing about the production catalogue —
 the values are invented — but whoever writes the `sku` match should not assume
 one spelling.
+
+## 2026-09-07 - the mail is finally an assigned action, and still unsent
+
+🟢 **"Inviare mail integrazione: Inviare la comunicazione necessaria per
+l\'integrazione Woocommerce"** — an action on **Aurel Mrruku** out of
+[the internal follow-up](../meetings/2026-09-07%20Follow-up%20Interno.md).
+
+This row has recorded since 4 September that the endpoint and its OAuth JWT-bearer
+authentication exist, work, and have never been given to **Sabatino Rinaldi**,
+whose side has been ready since 27 August. It is the first time sending them has
+an owner.
+
+🔴 **It was still unsent at the end of 7 September.** No mail to `pienissimo.pro`
+or `pienissimo.com` on the subject appears in the mailbox, and the newest message
+from Sabatino Rinaldi\'s side is unchanged.
+
+⚠ **Rotate before sending.** Both credentials were circulated in plaintext across
+mail and Slack and the JWT assertion\'s `exp` is roughly sixty years out
+([the risk](../risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+A mail to the client is the moment that pattern leaves ROMI.
+
+⚠ **`INT-16` is still not closed.** What the endpoint class enforces on its caller
+was not re-verified this run either.

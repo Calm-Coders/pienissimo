@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-08-31
+updated: 2026-09-07
 blocks: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-06
@@ -127,3 +127,66 @@ minuted as such, not slipped in.
 ⚠ Recorded from the calendar invitation alone. **No agenda was published**, so
 what this meeting will actually cover is not known — the two items above are what
 the record says *should* be on it, not what is.
+
+## 2026-09-07 - the session ran, and the number is settled without the client
+
+🟢 **[The session ran](../meetings/2026-09-07%20Interna%20Flussi%20MKT.md)** —
+7 September 10:00 CEST, Elena Spini, Aurel Mrruku, Fabrizio Mastracci, about an
+hour, ROMI-internal as booked.
+
+🟢 **`30 vs 60` is now stated as a window, not a choice**: communications run
+**between 30 and 60 days before the event** to cut no-show, and the
+**data-collection mail goes roughly 60 days before**. That is the trigger point
+the build needed.
+
+🟢 **It is corroborated in the client's own copy.** Fabrizio Mastracci's **20
+August recap**, written to Marco Montesi, Matteo Distaso and Rebecca Marmo and
+forwarded into ROMI's mailbox at 08:48Z the same morning, says the nurturing flow
+is _"avviato 30-60 giorni prima dell'evento"_ and adds detail this note did not
+hold: the reminders run to **10–11 communications** until the recipient either
+enters a name or clicks Rinuncia, and the second flow fires on data entry, tags
+the contact `iscritto` and sends the ticket and QR code by **email and WhatsApp**.
+
+🔴 **The single figure is still ROMI's own.** This note warned on 31 August that
+an internal decision would be ROMI choosing on the client's behalf, because the
+confirmation was Elisa Migliano's and Rebecca Marmo's to get from Matteo Distaso.
+**No source records that happening.** The window is documented to the client; the
+trigger point inside it is not. Taken knowingly is fine — but it is taken.
+
+🔴 **The style constraint was still not restated.** This note has flagged since 24
+August that Matteo Distaso's plain-text rule — no header, no images, no buttons,
+written as if from Giuliano personally — has never been put in front of whoever
+builds the flow. **Fabrizio Mastracci was in the room, is now starting the first
+email's configuration, and nothing in the summary, decisions or details mentions
+it.** The 20 August recap does carry it in writing —
+_"solo testo, senza header/immagini/pulsanti, per restare personali"_ — and he
+wrote that himself, so the risk is lower than it was. It is still not confirmed
+as an instruction to the build.
+
+🟢 **The tag machinery this funnel drives off is being retired underneath it.**
+Fabrizio Mastracci proposed keying flow entry off **CampaignMember creation or
+ticket state** rather than the inherited Zoho tags; three hours later
+[Data Model Parte 3](../meetings/2026-09-07%20Data%20Model%20Parte%203.md) deleted
+the tag fields and moved the states to CampaignMember
+([the decision](../decisions/Decision%20-%20consents%20live%20on%20the%20contact%20and%20editions%20on%20the%20campaign.md)).
+Both sides reached it independently on the same day. The `Rinuncia`, `Iscritto`
+and `Presente` vocabulary survives as **status values**, not as tags.
+
+🔴 **Rinuncia leaves the email.** Agreed in the same session — the option is
+removed from the marketing mail and handled on the community page instead
+([the decision](../decisions/Decision%20-%20rinuncia%20moves%20from%20the%20marketing%20email%20to%20the%20community.md)).
+The mail still has to link there.
+
+**Two new rows out of it**:
+[OI-126](OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md) — a
+Salesforce flag marking tickets whose participant data is not filled in, so
+Marketing Cloud can query it simply; and
+[OI-127](OI-127%20What%20a%20total%20rinuncia%20does%20to%20orders%20and%20assets.md) —
+what a total rinuncia does to the order and to the credit Elena Spini mentioned.
+
+⚠ **Rebecca Marmo is owed a call for the third time.** Fabrizio Mastracci is to
+contact her and the group is to schedule a session. She joined Parte 3 by phone
+the same morning for two minutes and settled a consent question on the spot.
+
+**Follow-up booked: `[PIENISSIMO] - Flussi MKT Parte 2`, Tuesday 8 September
+14:30–15:30 CEST**, Aurel Mrruku and Fabrizio Mastracci, invited 09:02:42Z.

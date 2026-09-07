@@ -235,3 +235,37 @@ between a live order lifecycle and a table with no rows
 ⚠ **The last measured figure is still 4 August.** Everything since is a line
 count from `git diff`, not a coverage run — the number remains **unmeasured, not
 measured at zero**.
+
+## 2026-09-07 - the org puts a number on it: 0 of 2,741 lines
+
+An `org-status-check` run against Pienissimo UAT, reported by **Aurel Mrruku in
+the ROMI Salesforce group DM at 10:04 CEST**, measured the org rather than the
+diff:
+
+- **0 of 2,741 covered lines.**
+- **Lines grew 1,646 → 2,741 (+1,095) since 2 September.**
+- **The last Apex test run is still 2026-08-04**, while code landed through
+  4 September.
+- Its own verdict: _"The 75% production floor cannot be evidenced today."_
+  Classified `partial / aligned / uncovered`.
+
+🟢 **This confirms the standing caveat rather than overturning it**: the figure is
+**unmeasured, not measured at zero**. Nothing has run since 4 August.
+
+⚠ **And it predates the largest single addition.** The check ran at repo commit
+`012d49d`; commit **`d562af0`** landed later the same day carrying
+`EventInvitationService` (107 lines), `EventInvitationUrlJob` (110),
+`ParticipantCommunityUrl` (60) and `EventInvitationTrigger` (12) — roughly **290
+further uncovered lines** on top of the 2,741.
+
+**Recorded, not acted on.** The suite remains Aurel Mrruku\'s to request as its own
+task before the production deploy.
+
+🔴 **The window for it just narrowed.** This risk has been scheduled against
+"between the 10 September end of build and the 6 October go-live". The
+7 September internal follow-up agreed **go-live 21 September with approval by
+13 September**
+([OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)).
+If that date holds, the unscheduled test task has to fit **between 10 and 13
+September**, three of which are the company offsite. **Nobody has connected the
+two.**

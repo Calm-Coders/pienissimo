@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-03
+updated: 2026-09-07
 depends_on: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-18
@@ -132,3 +132,44 @@ link. See
 ⚠ **[OI-86](OI-86%20Who%20hosts%20the%20participant%20landing%20page.md) — the
 blocker this note has waited on since 6 August — was never answered.** It was
 overtaken.
+
+## 2026-09-07 - rinuncia joins this page, and the flow around it is specified
+
+🔴 **The community page has to grow a rinuncia path.** Agreed ROMI-internally at
+[the marketing session](../meetings/2026-09-07%20Interna%20Flussi%20MKT.md): the
+option is removed from the marketing email and handled on the community instead,
+because Marketing Cloud cannot resolve *which assets* an email button refers to,
+and a guided path can
+([the decision](../decisions/Decision%20-%20rinuncia%20moves%20from%20the%20marketing%20email%20to%20the%20community.md)).
+This is unbuilt work on a page that merged on 3 September, arriving after the
+Fase 1 development deadline.
+
+⚠ **What the button does is unspecified beyond the tickets** —
+[OI-127](OI-127%20What%20a%20total%20rinuncia%20does%20to%20orders%20and%20assets.md).
+Rinuncia cancels **all** tickets and is never partial, in writing since 20 August.
+The order behind them and the credit toward future events are open.
+
+🟢 **The collection mechanism was walked through and matches what is built**: the
+buyer receives a link by email, enters participants against the tickets bought,
+and that generates the QR code, the contact and the CampaignMember tied to the
+product and the event date. Asset states named in session: `disponibile`,
+`utilizzato`, `annullato`.
+
+🔴 **Who the link goes to is now settled, and it is not the titolare.**
+[Data Model Parte 3](../meetings/2026-09-07%20Data%20Model%20Parte%203.md) settled
+that the recipient is whoever the **preventivo** was made out to — possibly an
+assistant — and that the `contatto principale` flag is set manually by tutors and
+**is sometimes absent**. Agreed shape for the form\'s contact field: **mandatory,
+free selection among the account\'s contacts, pre-filled with the contatto
+principale where one exists, editable**. ⚠ Aurel Mrruku added that the address the
+link is sent to lives on the **Account** and _"non è detto che la stessa mail sarà
+la mail del contatto principale"_ — which bears on
+[the invitation build](../flows/Proposed%20event%20invitations%20for%20participant%20registration.md),
+where a recipient contact is resolved.
+
+🔴 **`Ruolo iscrizione` must exist on the form.** `titolare` / `collaboratore`,
+chosen by the customer at ticket compilation and **not editable by Pienissimo**.
+
+**New**: [OI-126](OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md)
+— a Salesforce flag marking tickets whose participant data is not yet filled in,
+so the nurturing flow can key off it.

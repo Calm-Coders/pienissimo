@@ -1017,7 +1017,7 @@ requirements:
       status: conflict,
       text: "Reminder funnel cadence",
       conflict: RC-03,
-      tracked_by: [OI-81]
+      tracked_by: [OI-81, OI-126]
     }
   - {
       id: BIG-07,

@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-07-10
-updated: 2026-08-28
+updated: 2026-09-07
 depends_on: [OI-37, OI-38, OI-83, OI-94]
 source: meetings/open-items.md status updates 2026-08-03 and 2026-08-06
 ---
@@ -163,3 +163,39 @@ person who has to close it has just said, in writing, that she has nothing.
 ⚠ **The 28 August post is not a new source for the dispute's merits** — it is
 the same paragraph. Cite the 2026-08-06 session and the project plan for the
 substance; cite this post only for the fact that nothing has moved.
+
+## 2026-09-07 - ROMI decides what it does while waiting
+
+🟢 **First movement in the record since 24 July**, and it is a ROMI-side posture
+rather than a client answer. From
+[the internal follow-up](../meetings/2026-09-07%20Follow-up%20Interno.md), under
+`Concordato`:
+
+> _"È stato deciso di mantenere accantonata la fase due del progetto fino a
+> eventuale conferma di pagamento da parte del cliente."_
+
+**Fase 2 is parked until Pienissimo confirms payment.** Elena Spini restated the
+aim of getting Fase 2 quoted to cover the accumulated out-of-scope work.
+
+🔴 **Nothing has changed on the client side.** Daniela Morgese has still not been
+approached; [OI-83](../items/OI-83%20No%20phase%202%20estimate.md) still records that
+the decision-maker was never told. **Forty-five days** since the escalation to her
+was promised. What is new is only that ROMI has stopped waiting *actively*.
+
+🔴 **And work is being moved into the parked phase in the same session.** The
+Mexal **scadenzario correction path** — asset status following unpaid invoices,
+and correcting incassi and tranche errors — was assessed by Andrea Di Cicco as
+needing a sequence of calls that delete and recreate orders and invoices, and was
+**deferred to Fase 2**. It was **Fabrizio Paganelli\'s ask**, so it is client-facing
+scope now sitting in a phase with no quote, no date and no payment.
+
+⚠ **The two decisions were taken in the same meeting and the notes do not connect
+them.** "Park Fase 2" and "defer this into Fase 2" read as unrelated lines in the
+same summary.
+
+⚠ **The delay narrative also hardened.** The session opened on accumulated project
+delay caused by workload and by **unforeseen marketing requirements** — the
+rinuncia button is named as the example — with Aurel Mrruku raising that
+requirements keep changing and Andrea Di Cicco proposing that **Gianpaolo Motta be
+pre-warned**. That is the out-of-scope argument being made internally, in a
+meeting, for the first time in the record.

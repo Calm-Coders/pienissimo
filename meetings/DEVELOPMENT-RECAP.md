@@ -2652,3 +2652,217 @@ describes is **not** new movement. The only new content is that the data-model
 sessions are the current activity and that **Sabatino Rinaldi has stopped
 answering his phone** because the client is busy with an event. The canvas is
 unchanged and now **nine client sessions behind**.
+
+
+---
+
+## 30. Update 2026-09-07 — three sessions, a contested go-live, and Fase 2 parked
+
+Three Pienissimo sessions ran on 7 September: `[PIENISSIMO]- Interna Flussi MKT`
+(ROMI-internal, 10:00 CEST), `[ROMI-PIENISSIMO] - Data Model: Parte 3`
+(client-facing, 11:06 CEST) and `[PIENISSIMO] - Follow-up Interno` (ROMI-internal,
+17:01 CEST). The first two were drilled from their full transcripts; the third has
+no transcript and is read from its Gemini notes.
+
+### 30.1 Go-live moved to 21 September, in a room with no client in it
+
+The internal follow-up agreed, under `Concordato`, **go-live 21 September 2026
+with approval by 13 September**, release to production preceding go-live.
+
+🔴 **Every governing document in this project says 6 October 2026** — `CTX-02` in
+both prose documents, both milestone tables, the `M` priority definition, the
+Fase 2 escalation rule, and §10.1 above. 21 September is **fifteen days earlier**,
+yet the session describes it as a *slittamento* that **adds** development and test
+weeks, which only makes sense against a plan whose go-live was earlier than 21
+September and which **is not in this repository**.
+
+Either ROMI's internal plan has diverged from the signed requirements, or the date
+has genuinely been pulled forward. The two readings have opposite consequences and
+the notes do not distinguish them. **Nothing has been changed in the register**:
+`REQUISITI.it.md` is the text presented for signature, and no source shows
+Pienissimo being asked. Item **#124** carries the conflict.
+
+It collides with the Fase 1 development deadline of 10 September falling inside a
+**9–12 September** offsite (four days, Wednesday to Saturday morning, as described
+in this session), with Elena Spini being off 14–15 September, with the edition
+mapping window that sits "immediately before go-live" (#121), with the unscheduled
+Apex test suite, and with client demonstration sessions being organised **from 24
+September** — after the proposed go-live.
+
+### 30.2 Fase 2 is parked, and work is being deferred into it
+
+**Fase 2 is held back until the client confirms payment.** Elena Spini restated
+the aim of getting it quoted to cover the accumulated out-of-scope work. That is
+the first movement on the phase-2 dispute since 24 July, and it is a **ROMI
+posture, not a client answer** — Daniela Morgese has still not been approached
+(#83).
+
+🔴 **In the same session, the Mexal scadenzario correction path was deferred to
+Fase 2.** Fabrizio Paganelli had asked for asset status to follow unpaid invoices
+and for incassi and tranche errors to be correctable; Andrea Di Cicco assessed it
+as needing a sequence of calls deleting and recreating orders and invoices. So
+client-facing scope moved into a phase with no quote, no date and no payment, and
+the notes do not connect the two decisions.
+
+The session also opened on **accumulated project delay**, attributed to workload
+and to unforeseen marketing requirements — the rinuncia button is named as the
+example — with Aurel Mrruku raising that requirements keep changing and Andrea Di
+Cicco proposing that **Gianpaolo Motta be pre-warned**.
+
+### 30.3 Six Mexal decisions that make the integration buildable
+
+- **Header coordinates are static**: `azienda = PE`, `anno = 2025`, set in code.
+  Authorization is basic — a base64 user-and-password pair. 🔴 **`anno = 2025` is
+  hardcoded against a 2026 go-live and nobody raised it.**
+- **The modified-customers POST gets a field filter**, because the unfiltered
+  response risks breaching JSON size limits; pagination is to be evaluated.
+- 🔴 **PUT or PATCH is required for customer update** — POST on an existing account
+  fails on a duplicate partita IVA. And **the customer is pushed on every order
+  creation**, as an empty update when nothing changed, so every order after a
+  customer's first hits the broken path (**#125**).
+- **Invoices are generated manually** on Mexal by Fabrizio Paganelli. Salesforce
+  retrieves the progress of non-final invoices with a GET over documents modified
+  in the last 24 hours.
+- **Agent lookup is manual**, chosen to route around Salesforce user licence and
+  permission problems (#110).
+- **The shipping address is never read back from Mexal** — Salesforce sends it and
+  owns changes. So the Parte 2 hidden mirror is **one-directional by design**, and
+  a wrong address is wrong on both systems with no return path (#113).
+
+🟢 **Product-to-campaign mapping now has a *when***: products loaded from Excel
+first, mapping entered by hand in the days immediately before go-live — the first
+statement anywhere of when `Mappatura_Edizione__c` gets populated, though still
+**not by whom** (#121). **In-flight orders must be closed directly from
+Salesforce**; the wider migration of historical customers, accounts and orders
+raised concerns and produced no plan.
+
+### 30.4 Data Model Parte 3 finished the contact registry
+
+Client-facing, 11:06 CEST, **1h12m02s**. Present: Elena Spini, Aurel Mrruku, Elisa
+Migliano, with **Rebecca Marmo by telephone for two minutes**. **Andrea Di Cicco
+did not attend** — he said so in the ROMI group DM at 09:12:53 CEST — which
+resolves the 4 September calendar ambiguity the first way: Parte 3 was **not
+cancelled**, it was held with a reduced cast, and Elena Spini sent an updated
+invitation that morning.
+
+🟢 **Consents stay on the Contact; edition participation moves to Campaign and
+CampaignMember.** `Consenso finalità commerciali` and `Consenso profilazione`
+become picklists with `Autorizzo` / `Non autorizzo` and a **blank default**.
+Rebecca Marmo confirmed the Zoho behaviour this fixes: consent carries forward
+automatically to later tickets and **only the edition is overwritten**, because
+Zoho holds a single `ultima iscrizione` block per contact.
+
+⚠ **A migration consequence nobody in the room raised**: Salesforce wants one
+CampaignMember per edition attended, and Zoho holds only the latest, because each
+registration overwrote the last. **Historical edition participation is not
+migratable from that field.**
+
+🟢 **The Zoho tag vocabulary is decoded and retired.** `<EVENT>_I` means
+*iscritto* and `<EVENT>CP` means *contatto principale* — `FMF_I`, `FMFCP` for the
+Food Marketing Festival. These become CampaignMember status values, and the whole
+tag block was deleted from the Contact in session.
+
+🟢 **The primary-contact rule is sharpened.** The participant-data link goes to
+whoever the **preventivo** was made out to — possibly an assistant, not the
+titolare — and the `contatto principale` flag is set by hand by tutors and **is
+sometimes absent**. Agreed: the form's contact field is **mandatory, freely
+selectable among the account's contacts, pre-filled with the contatto principale
+where one exists, and editable**.
+
+**Deleted from the Contact**: the whole second-address block, the Google Ads
+block, `Nome campagna di annunci`, the `Invio email contatto principale` fields,
+`Contatto con telefono duplicato`, `Spesa marketing`, `Tipologia contatto`,
+`Tipologia locale`, `Ufficio di competenza`, `Punteggio visitatore di campagna`
+and all the `CF*` ticket-mail merge fields. **Kept**: the three contact-role
+checkboxes (needed for the solleciti), `Auto marketer` — a **blocking flag**,
+because Pienissimo does not deal with marketers as a matter of company privacy
+policy — `Ruolo iscrizione` (`titolare` / `collaboratore`, filled by the customer
+and not editable by Pienissimo) and `Tutor`.
+
+⏸ **The UTM fields are removed pending a reporting decision**: a Contact or
+Account created by lead conversion keeps its link to the Lead, so the values can
+be read from there rather than duplicated. To be settled during flow testing.
+
+🔴 **A dozen Contact fields turned out to be a verbal tutor questionnaire** —
+`Coperto medio`, `Apertura locale`, TripAdvisor position, staff and cover counts,
+and the rest. Their natural owner is an individual **locale**, an object that does
+not exist anywhere in this project, and they were deleted with no destination and
+no date on the conversation that decides one (**#123**).
+
+🔴 **The four gaps survive a fourth session** — Utenti, Profili, the Ordine field
+list and the initial-load plan, plus the Lead table (#24). **Four sessions have
+produced two objects.** Parte 4, Tuesday 8 September 12:00, is the last one
+booked, and Andrea Di Cicco is not on it either.
+
+### 30.5 The marketing session, and rinuncia leaving the email
+
+ROMI-internal, 10:00 CEST: Elena Spini, Aurel Mrruku, Fabrizio Mastracci — the
+first marketing-flow session since 19 August.
+
+🟢 **`30 vs 60` is settled as a window**: communications run **30 to 60 days
+before the event**, and the data-collection mail goes **roughly 60 days** out.
+It is corroborated by Fabrizio Mastracci's own **20 August recap to the client**,
+which says the nurturing flow is _"avviato 30-60 giorni prima dell'evento"_ and
+runs to **10–11 communications** until a name is entered or Rinuncia is clicked.
+⚠ **The single figure is still ROMI choosing for the client**, exactly as #81
+warned: the confirmation was Elisa Migliano's and Rebecca Marmo's to obtain from
+Matteo Distaso, and no source records it happening.
+
+🔴 **Rinuncia moves off the marketing email onto the community page.** Handling it
+at whole-order or bundle level inside Marketing Cloud is too complex and risks
+invalidating the child-campaign structure; on the community page the system knows
+exactly which assets are in scope and the partial-completion problem disappears.
+That is **unbuilt work on a page merged on 3 September** (#78).
+
+New: **#126**, a Salesforce flag for tickets whose participant data is not filled
+in, so Marketing Cloud can query it simply — ⚠ check `Event_Invitation__c` first,
+committed the same day, before adding a second overlapping status field. And
+**#127**, what a total rinuncia does to the order and to the credit Elena Spini
+mentioned. ⚠ **The ticket half of #127 was already answered in writing** on 20
+August — rinuncia _"annulla tutti i biglietti, non è parziale"_ — and was treated
+as open in a room containing the author of that sentence.
+
+⚠ **The plain-text style constraint was still not restated.** Matteo Distaso's
+rule — no header, no images, no buttons, written as if from Giuliano personally —
+appears nowhere in the session, while Fabrizio Mastracci is now starting the first
+email's configuration. It is at least in his own 20 August text.
+
+### 30.6 The 20 August recap, and what the client still owes
+
+Elena Spini forwarded that recap into ROMI's mailbox at 08:48Z with the body
+_"FYI"_. **Its text was not in this record before.** It itemises deliverables with
+dates now two to three weeks past: **DNS records** from Matteo Distaso and
+**segment logic, criteria and mail detail** from Rebecca Marmo, both due 21
+August; a **landing-page and hidden-field document** due 26 August at a named
+Google Sheet. Still outstanding beyond those: segment and flow screenshots, the
+text of the other email and WhatsApp communications, logos and images (#14).
+
+⚠ The spreadsheet link is **corrupted in transit** and the file was **not opened
+this run**. It is the specification for the hidden fields on a page that is
+already built.
+
+### 30.7 An org check that published nothing, and corrects two records
+
+Reported by Aurel Mrruku in the ROMI Salesforce group DM at 10:04 CEST,
+read-only against Pienissimo UAT at repo `012d49d`, explicitly **report mode — no
+reconciliation, no publication**.
+
+🔴 **`Mappatura_Edizione__c` is not empty**: **4 rows, 3 active, covering 3
+distinct products** — against **226 of 229 products unmapped** and **17 of 22
+orders already on `Incassato`**, up from 12 of 15. The "no rows" reading in #121
+is corrected and **the substance is worse, not better**.
+
+🔴 **Apex coverage measures 0 of 2,741 lines**, with the last test run still **4
+August**; lines grew by 1,095 since 2 September. ⚠ The count **predates
+`d562af0`**, which added roughly 290 more the same day. **Recorded, not acted on.**
+
+Also reported and not yet folded into the register: `Account.Partita_IVA__c` has
+no edit grant for any principal, including System Administrator; tranche-to-order
+propagation is at 0 of 24 OrderItem; there are zero declarative flows; six
+components live only in the org; every project permission set reaches exactly one
+of nine active users; `Product2` fell 281 → 229; and `Integration_Log__c` holds 32
+errors in 57 rows.
+
+⚠ **This sweep did not open the org.** Every figure above is ROMI's own check as
+posted to Slack, and `STATUS.md`, the Notion mirror and the register's
+`build_state` carry none of it.
