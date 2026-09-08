@@ -27,7 +27,10 @@ global without sharing class WoocommerceOrderService {
         return;
       }
 
-      Id accountId = getOrCreateAccount(payload);
+      Id payloadOpportunityId = opportunityId(payload);
+      Id accountId = CommercialAccountResolver.resolve(
+        getOrCreateAccount(payload)
+      );
       Id pricebookId = getStandardPricebookId();
       Map<String, Product2> productsByScCode = getProductsByScCode(
         payload.orderLines()
@@ -43,6 +46,7 @@ global without sharing class WoocommerceOrderService {
         Status = INITIAL_STATUS,
         Pricebook2Id = pricebookId,
         Origine__c = 'WooCommerce',
+        OpportunityId = payloadOpportunityId,
         WooCommerce_Order_Key__c = payload.orderKey()
       );
       insert orderRec;

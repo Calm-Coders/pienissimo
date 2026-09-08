@@ -59,6 +59,14 @@ public with sharing class AnticipayAccountService {
     @AuraEnabled
     public String pec;
     @AuraEnabled
+    public String codice_ateco;
+    @AuraEnabled
+    public String descrizione_ateco;
+    @AuraEnabled
+    public String ateco_desc;
+    @AuraEnabled
+    public String codice_fiscale;
+    @AuraEnabled
     public String nome_legale_rappresentante;
     @AuraEnabled
     public String codice_fiscale_legale_rappresentante;
@@ -205,6 +213,13 @@ public with sharing class AnticipayAccountService {
     putString(accountRecord, Account.BillingState, info.provincia);
     putString(accountRecord, Account.BillingPostalCode, info.cap);
     putString(accountRecord, Account.PEC__c, info.pec);
+    putString(accountRecord, Account.Codice_ATECO__c, info.codice_ateco);
+    putString(
+      accountRecord,
+      Account.Descrizione_ATECO__c,
+      firstNonBlank(info.descrizione_ateco, info.ateco_desc)
+    );
+    putString(accountRecord, Account.Codice_Fiscale__c, info.codice_fiscale);
     putString(
       accountRecord,
       Account.Nome_Legale_Rappresentante__c,
@@ -232,6 +247,7 @@ public with sharing class AnticipayAccountService {
     }
 
     accountRecord.Anticipay_Consolidato__c = true;
+    accountRecord.Ultima_Verifica_Anticipay__c = System.now();
 
     return accountRecord;
   }
@@ -320,5 +336,9 @@ public with sharing class AnticipayAccountService {
       return secondValue;
     }
     return fallback;
+  }
+
+  private static String firstNonBlank(String firstValue, String secondValue) {
+    return firstNonBlank(firstValue, secondValue, null);
   }
 }

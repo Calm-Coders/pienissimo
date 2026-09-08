@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Partita_IVA__c</fullName>
+    <fullName>Codice_ATECO__c</fullName>
     <description
-  >Partita IVA usata per identificare e riutilizzare gli Account, inclusa la corrispondenza dei clienti WooCommerce.</description>
+  >Codice ATECO dell'azienda restituito dal middleware Anticipay.</description>
     <externalId>false</externalId>
-    <label>Partita IVA</label>
-    <length>32</length>
+    <label>Codice ATECO</label>
+    <length>16</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Text</type>
