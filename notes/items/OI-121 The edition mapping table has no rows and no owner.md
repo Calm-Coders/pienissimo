@@ -110,7 +110,7 @@ immediately before go-live.** That is the first statement anywhere of *when*.
 And two things now press on it:
 
 - **Go-live may have moved to 21 September**
-  ([OI-124](OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)).
+  ([OI-124](OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
   "The days immediately before go-live" is a moving target that has just moved
   two weeks earlier, into a week that also contains the approval gate.
 - **The sequencing warning above is now the plan.** This note flagged that a

@@ -1,14 +1,14 @@
 ---
 id: OI-123
 type: open-item
-status: open
+status: resolved
 owner: Elisa Migliano
 with: Marco Montesi
 org: Pienissimo
 raised: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-08
 depends_on: [OI-24]
-source: notes/meetings/2026-09-07 Data Model Parte 3.md
+source: notes/meetings/2026-09-08 Data Model Parte 4.md
 ---
 
 # OI-123 - The Zoho questionnaire fields have no home
@@ -69,14 +69,47 @@ with two questions, in her own framing:
 Only after that does the placement question have an answer worth building
 against.
 
-## Why it matters now
+## ✅ Resolved the next day - the locale is an Account record type
 
-- The fields are **deleted from the working model**, so the default outcome is
-  that they do not migrate. If the tutors are using them, that is data loss at
-  cutover.
-- If the answer is a **locale object**, that is a new object, its relationships,
-  its layouts and its migration — arriving after the Fase 1 development deadline
-  of 10 September, against a go-live that
-  [OI-124](OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)
-  has just moved to 21 September.
-- ⚠ **Nobody put a date on the conversation with Marco Montesi.**
+**[Data Model Parte 4](../meetings/2026-09-08%20Data%20Model%20Parte%204.md), 8
+September**, answered it. Elisa Migliano brought Marco Montesi's response: the
+questionnaire holds **2022 operating data** — coperti medi, tipo di attivita,
+stagionalita — and **one company can own several locali on different terms**,
+which is exactly the objection she raised in Parte 3.
+
+Agreed, under `Concordato`:
+
+- **`Locale` records are Account children of the billing company.**
+- **Only parent companies are sent to Mexal.** Locali exist on Salesforce only.
+- **Quotes carry a lookup to the specific locale** of that company.
+
+So the questionnaire's owner is a **record type on an object that already
+exists**, not a new object
+([the decision](../decisions/Decision%20-%20Account%20record%20types%20split%20Azienda%20and%20Locale.md)).
+
+**It was built the same evening.** Commit `c877631` (Anita Aga, PR #35, merged
+18:21 CEST) adds the `Azienda` and `Locale` record types, two validation rules
+enforcing that a `Locale` has a parent and that the parent is an `Azienda`,
+`AccountTriggerHandler`, `CommercialAccountResolver` and ten Account fields.
+
+⚠ **This note predicted the expensive outcome and got the cheap one.** It warned
+that a locale object would mean "a new object, its relationships, its layouts and
+its migration, arriving after the Fase 1 development deadline". The record-type
+answer costs almost none of that — the hierarchy is the standard `ParentId`.
+
+## What is still open, as a separate row
+
+Answering *where* the fields go did not answer *which* fields, or how the data
+gets there. Both are
+[OI-129](OI-129%20The%20locale%20questionnaire%20field%20list%20and%20the%20locale%20API.md):
+
+- Marco Montesi's actual field list — **the dozen names above are the Zoho set as
+  Elisa Migliano recited them**, and may not be what he asks for.
+- Whether an **API exists for the locale anagrafica** at all. Locali are in no
+  migration plan, because until 8 September they were not in the model.
+
+⚠ **The tutors' side of the original question was never answered.** Parte 3 sent
+Elisa Migliano to Marco Montesi with two questions — are the tutors using these
+fields, and how should they be managed. Parte 4 answered the second. **Whether
+the tutors actually use them is still not on the record**, and it is the question
+that decides whether any of this migrates.

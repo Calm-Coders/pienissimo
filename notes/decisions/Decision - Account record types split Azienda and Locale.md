@@ -1,12 +1,13 @@
 ---
 id: DEC-2026-09-08-account-record-types
 type: decision
-status: in-progress
+status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-08
 updated: 2026-09-08
-source: user instruction in Codex session, 2026-09-08
+source: notes/meetings/2026-09-08 Data Model Parte 4.md
+depends_on: [OI-123]
 ---
 
 # Decision - Account record types split Azienda and Locale
@@ -68,3 +69,62 @@ This decision likely requires:
 
 This note records the decision only. It does not claim the metadata has already
 been built.
+
+
+## 2026-09-08 - the client agreed the same thing, in the same hours
+
+This note was written from an internal instruction. **The client session of the
+same day reached the same model independently**, which is worth recording because
+it is the rare case where an internal design decision and a client decision
+corroborate each other rather than one being reconstructed from the other.
+
+[Data Model Parte 4](../meetings/2026-09-08%20Data%20Model%20Parte%204.md), 12:01
+CEST, under `Concordato`:
+
+> _"I locali vengono configurati come account figli dell'azienda di fatturazione
+> su Salesforce, mentre a Mexal vengono inviate unicamente le aziende padri."_
+
+The client session adds three things this note did not have:
+
+1. 🟢 **The Mexal boundary.** **Only parent `Azienda` records are sent to Mexal.**
+   Locali are a Salesforce-only construct. That is a hard integration rule and it
+   was not in the internal framing.
+2. 🟢 **The reason the model is needed.** The `locale` is the natural owner of the
+   tutor questionnaire that Parte 3 deleted from the Contact with nowhere to put
+   it — this **resolves
+   [OI-123](../items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md)**.
+   Elisa Migliano's constraint was that one company can own several locali on
+   different terms.
+3. 🟢 **Quotes get a lookup to the specific locale** of that company, and each
+   child account **initially inherits the parent's principal contact**.
+
+## ✅ Built and committed the same evening
+
+**Commit `c877631`** (Anita Aga, PR **#35**, merged by Aurel Mrruku **18:21
+CEST**) implements it:
+
+- `Account/recordTypes/Azienda` and `Account/recordTypes/Locale`
+- `locale_requires_parent_azienda` and `parent_must_be_azienda` validation rules —
+  the two hierarchy guards this note asked for
+- `AccountTriggerHandler` (53 lines) with company-delete protection — the deletion
+  restriction
+- `CommercialAccountResolver` (66 lines) — the Locale-to-parent normalisation
+- ten Account fields, and `WoocommerceOrderService` and `LeadConversionQueueable`
+  updated to resolve through the parent
+
+**The closing sentence of this note is now out of date**: the metadata *has* been
+built. Left in place above as the record of what was true when it was written.
+
+⚠ **The 8 September org check called these components org-only drift.** It ran
+**16:31-16:39 CEST**, ninety minutes before the merge, and reported
+`AccountTriggerHandler`, `CommercialAccountResolver`, `AccountTrigger`, the record
+types and ten Account fields as present in UAT and absent from the checkout. They
+were committed at 17:53 and merged at 18:21. **The drift closed itself; the check
+was a photograph of a moving branch** — the same lesson as 4 September, from the
+same direction. **Diff `DevMain` before trusting any drift claim.**
+
+⚠ **What the check found and the commit does *not* close**: the live
+`WoocommerceOrderService` also sets `Order.OpportunityId` from the payload, and
+`AnticipayAccountService` gained ATECO, description, tax-code and
+refresh-timestamp mapping. Both classes are touched by `c877631` — **whether the
+committed versions match what UAT is running was not re-verified after the merge.**

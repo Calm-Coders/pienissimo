@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-09-07
+updated: 2026-09-08
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -163,3 +163,33 @@ not otherwise in the record, and it is the specification for the hidden fields o
 a page that is already built.
 
 ⚠ **The 100+ form review** remains unmentioned by any source since 28 August.
+
+## 2026-09-08 - the form review is now a named client blocker
+
+The status mail to Pienissimo lists it among the four urgent items:
+
+> _"**Form Marketing:** Siamo in attesa della vostra review finale per poter
+> procedere, sul tema form (quali ha senso tenere o meno)."_
+
+🟢 **The 100+ form review has an owner and a channel again** after being
+unmentioned since 28 August. It is asked of the client as a whole rather than of
+Matteo Distaso or Rebecca Marmo by name.
+
+🔴 **The DNS records are not in the mail.** They have been owed by **Matteo
+Distaso since 21 August** and are the longest-open thing under this row — and
+they became sharper the same day: Marketing Cloud **cannot send from the sandbox
+because no authenticated domain exists**
+([OI-134](OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md)).
+The DNS work is a prerequisite for the UAT window that starts **23 September**,
+and the escalation mail does not mention it.
+
+⚠ **The landing-page and hidden-field sheet was not opened again this run**
+(`1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`). Its link is still corrupted in the mail
+body. It is now **eighteen days** past its 26 August due date.
+
+🟢 **Three funnel documents and two email previews did arrive**, collected by
+Elena Spini into a new Drive folder `02 Marketing` during
+[Flussi MKT Parte 2](../meetings/2026-09-08%20Flussi%20MKT%20Parte%202.md). ⚠ Two
+of the three are effectively empty as text — the logic sits in screenshots — and
+the WhatsApp templates are absent altogether
+([OI-133](OI-133%20The%20WhatsApp%20templates%20are%20missing%20from%20the%20marketing%20material.md)).

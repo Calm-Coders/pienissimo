@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-07
+updated: 2026-09-08
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -265,7 +265,39 @@ task before the production deploy.
 "between the 10 September end of build and the 6 October go-live". The
 7 September internal follow-up agreed **go-live 21 September with approval by
 13 September**
-([OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)).
+([OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
 If that date holds, the unscheduled test task has to fit **between 10 and 13
 September**, three of which are the company offsite. **Nobody has connected the
 two.**
+
+## 2026-09-08 - 0 of 2,957 lines, and the deploy window is now dated
+
+The org check of 8 September, 16:31-16:39 CEST, reports the stored aggregate as
+**0 covered / 2,957 uncovered lines (0%, 42 entries)** against live UAT — up from
+**2,741** the day before, which is the invitation stack and now `c877631`'s
+`AccountTriggerHandler`, `CommercialAccountResolver` and the `AnticipayAccountService`
+additions.
+
+| Date | Uncovered lines | Source |
+| ---- | --------------- | ------ |
+| 31/08 | 1,571 | org check |
+| 02/09 | 1,646 | org check |
+| 07/09 | 2,741 | ROMI org check, posted to the dev group |
+| **08/09** | **2,957** | **ROMI org check, posted to the dev group** |
+
+🔴 **The window is no longer open-ended.** The client has been told go-live is
+**21 October** with production release preceding it, and a first production deploy
+was estimated the same day at **"almeno un paio di settimane"**
+([OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+Salesforce requires 75% org-wide coverage to deploy to production. **At 0% the
+deploy fails, whatever else is ready.**
+
+⚠ **The last actual Apex test run is still 4 August.** The figure remains
+**UNMEASURED, not measured at zero**, and it predates almost all current code.
+
+⏸ **Nothing was done about it and nothing should be.** Coverage remains
+[deliberately deferred in Fase 1](../decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md),
+and the test suite is a separate task Aurel Mrruku requests in one pass before the
+production deploy. **This record stays current as the brief for that task and is
+not acted on.** The brief now additionally covers `AccountTriggerHandler`,
+`CommercialAccountResolver` and the Account record-type validation rules.

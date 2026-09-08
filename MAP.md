@@ -2,16 +2,111 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-07 (nightly requirements-check: three 07/09 sessions; go-live contested) · Source of record: [notes/](notes/)
+Last updated: 2026-09-08 (nightly requirements-check: go-live 21 October sent to the client; Parte 4; Flussi MKT Parte 2) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
 ROMI is migrating Pienissimo from **Zoho CRM to Salesforce**. Zoho expires
-**31 October 2026**; go-live Fase 1 is **6 October** in the register, Fase 2
-**9 November**; data import ~1 Sept. Requirements went to sign-off on 2026-08-06.
-🔴 **The 6 October date is contested** — an internal session on 7 September agreed
-**21 September** ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md));
-the register has not been changed and a human must say which governs.
+**31 October 2026**. 🔴 **Go-live Fase 1 is now 21 October** — sent to the client
+in writing on 8 September, against a register that still says **6 October** in
+nine places ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+**UAT 23 September – 13 October**, approval by 13 October. Requirements went to
+sign-off on 2026-08-06.
+
+- 🔴 **2026-09-08 — the go-live moved to 21 October, the client was told, and the
+  answer to yesterday's puzzle is that Gemini dropped the months.** Elena Spini's
+  `[ROMI-PIENISSIMO] - Stato Avanzamento Progetto` (14:15Z, to Sabatino Rinaldi,
+  Fabrizio Paganelli, Elisa Migliano and Marco Montesi) sets **go-live 21 October**,
+  **UAT ready 23 September**, **UAT 23/09–13/10**, **approval by 13/10**
+  ([the decision](notes/decisions/Decision%20-%20go-live%20moves%20to%2021%20October%20and%20Fase%202%20is%20declared%20out%20of%20perimeter.md)).
+  ✅ **This corrects the 07/09 record**: the internal session's "21 September /
+  13 September" were **21 and 13 October** with the month dropped from Gemini's
+  paraphrase — a *slittamento* adding development weeks now fits.
+  🔴 **The register is unchanged and was left unchanged deliberately** — the client
+  has been asked for written acknowledgement and has not replied
+  ([OI-128](notes/items/OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
+  🔴 **Fase 2 is declared out of perimeter in writing** — Slide 4 names **GLS**,
+  **Teachable** and **Ordini Pienissimo Pro → Zoho**, the last being exactly what
+  the client disputed and escalated to Daniela Morgese, **who is not a recipient**
+  ([the dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)).
+  🔴 **The Zoho margin halves to ten days**, and 🔴 **UAT starts in fifteen days on
+  a build that has never been UAT-tested** — Aurel Mrruku, the same afternoon:
+  *"non abbiamo ancora fatto dei UAT noi"*, production release *"almeno un paio di
+  settimane"* ([OI-134](notes/items/OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md)).
+  Four blockers were put to the client: **DocuSign licences**, the **form review**,
+  the **data model**, and **data migration held in stand-by**.
+
+- 🟢 **2026-09-08 — the locale got a home, the client agreed it, and it was built
+  the same evening.** [Data Model Parte 4](notes/meetings/2026-09-08%20Data%20Model%20Parte%204.md)
+  (client-facing, 12:01 CEST, **1h25m58s**; Elena Spini, Elisa Migliano, Aurel
+  Mrruku — **Andrea Di Cicco absent for the second session**) agreed **locali are
+  Account children of the billing company, and only parent companies go to Mexal**.
+  That **resolves [OI-123](notes/items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md)**
+  — and cheaply: a record type on an existing object, not the new object the row
+  feared. **PR #35 / `c877631`** (Anita Aga, merged 18:21 CEST) shipped
+  `Azienda`/`Locale` record types, both hierarchy validation rules,
+  `AccountTriggerHandler`, `CommercialAccountResolver` and ten Account fields
+  ([the decision](notes/decisions/Decision%20-%20Account%20record%20types%20split%20Azienda%20and%20Locale.md)).
+  🟢 Also settled: **contracts and tickets go only to the billing company's
+  contatto principale**, **duplicate control moves to the Lead on email AND phone
+  in combo**, and the **Opportunity field list is cleaned**. 🟢 **Parte 5 (16/09,
+  Prodotti/Preventivi/Ordini) and Parte 6 (18/09, Campagne/Lead, with Rebecca
+  Marmo)** are booked at two hours each.
+  🔴 **The Lead table is deferred a fifth time**; **Utenti, Profili and the
+  initial-load plan are in no booked session**
+  ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)). Five sessions, **three
+  objects**.
+
+- 🔴 **2026-09-08 — a sandbox password was read aloud into a Gemini transcript,
+  and a shared login was handed over.** In
+  [Flussi MKT Parte 2](notes/meetings/2026-09-08%20Flussi%20MKT%20Parte%202.md)
+  (ROMI-internal, 14:32 CEST, 42m21s) Elena Spini spoke Aurel Mrruku's **UAT
+  sandbox password** to unblock One Password, and Fabrizio Mastracci signed in
+  **as Aurel Mrruku**. It is transcribed verbatim on Drive and in the recording
+  ([the risk](notes/risks/Risk%20-%20a%20sandbox%20password%20was%20spoken%20aloud%20and%20preserved%20in%20a%20meeting%20transcript.md)).
+  **The value is not in this repository.** Second credential disclosure in five
+  days, fourth authentication finding in six. The durable half is that Fabrizio
+  Mastracci **has no user of his own** — and Utenti/Profili is the workbook section
+  nobody has opened in five sessions.
+  🟢 The session also settled the marketing contract: **`data evento` and `data
+  invio` go on the invitation record**, so Marketing Cloud never queries the
+  Campaign ([the flow](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md)).
+  🔴 The cost Aurel Mrruku named himself — **triggers to propagate a changed
+  Campaign date onto every invitation** — is unbuilt and unestimated.
+  🟢 **The tag vocabulary is complete**: `<EVENT>`, `<EVENT>_I`, `<EVENT>CP` and a
+  fourth, **`<EVENT>_R` for rinuncia**; only `_R` is a real tag, the rest are CRM-written
+  contact properties. 🔴 **The exit rule is a contact-level aggregate, not an asset
+  flag** — a holder of three tickets who fills one leaves the funnel
+  ([OI-126](notes/items/OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md)).
+  🔴 **The WhatsApp templates are not in Rebecca Marmo's material**
+  ([OI-133](notes/items/OI-133%20The%20WhatsApp%20templates%20are%20missing%20from%20the%20marketing%20material.md)).
+
+- ✅ **2026-09-08 — the WooCommerce endpoint finally reached the client.** Aurel
+  Mrruku mailed Sabatino Rinaldi the Postman collection at 14:17Z, twelve days
+  after the client's side was ready and after a Slack reminder from Elena Spini
+  that morning ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+  🔴 **The credentials were not rotated first**, as this record twice asked —
+  the sixty-year JWT went to the client unchanged. ⚠ **A newer collection exists
+  and this is not it**: forty minutes after sending, Aurel Mrruku asked Andrea Di
+  Cicco for the updated one, still missing its filters.
+
+- ⚠ **2026-09-08 — a full-scope org check ran, published nothing, and was
+  overtaken by a merge ninety minutes later.** Posted to the dev group 16:31–16:39
+  CEST against live UAT versus `c81578f`, **report mode**. Its org-only drift
+  findings — `AccountTriggerHandler`, `CommercialAccountResolver`, the record types,
+  ten Account fields — **were committed at 17:53 and merged at 18:21**. *An org
+  check is a photograph of a moving branch; diff `DevMain` first.* What stands:
+  🔴 **40 of 43 ticket-generating products have no active edition mapping** (this
+  corrects the older 226/229 denominator), **22 of 27 orders on `Incassato`**
+  ([OI-121](notes/items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md));
+  🔴 **0 of 32 order lines carry a tranche** against 34 quote lines, no writer found
+  ([OI-50](notes/items/OI-50%20Tranche%20object.md)); 🔴 **0 Assets carry a QR
+  value**, 15 Assets, and neither controller invokes signature processing;
+  🔴 **the Anticipay failure mail still goes to a hardcoded ROMI address**, 36
+  error-flagged logs ([OI-119](notes/items/OI-119%20The%20Anticipay%20error%20notification%20goes%20to%20a%20hardcoded%20ROMI%20address.md));
+  🔴 **coverage 0 of 2,957 lines**, last test run still 4 August
+  ([the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md));
+  and **zero Flows**, confirmed three ways.
 
 - 🔴 **2026-09-07 — the go-live date moved in a room with no client in it, and
   Fase 2 was parked.** The ROMI-internal
@@ -1062,7 +1157,7 @@ the register has not been changed and a human must say which governs.
   people, where the record had it as 9–11. The Fase 1 development deadline of
   **10 September falls inside it**, Pienissimo is on tour 9–10, and **13 September
   is the approval date the same session proposed**
-  ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md))
+  ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md))
   · **24 Sept** sales training and client demonstration meetings, Elena Spini to
   organise — ⚠ **after** the proposed 21 September go-live · **17 Sept 09:00–13:00** Elisa Migliano is on a first-aid course ·
   [PIENISSIMO] Follow-up Interno is a **weekly Monday 17:00 slot**, ⚠ **now an hour rather than 45 minutes**, and its **14 Sept occurrence moved to Thu 17 Sept 14:15–15:15 CEST** because **Elena Spini is off 14–15 September**.

@@ -3002,3 +3002,212 @@ raggiunge esattamente 1 utente su 9 attivi; `Product2` è sceso da 281 a 229; e
 ⚠ **Questo sweep non ha aperto l'org.** Ogni cifra qui sopra viene dal check di
 ROMI così come pubblicato su Slack, e `STATUS.md`, il mirror Notion e il
 `build_state` del registro non ne portano nulla.
+
+---
+
+## 31. Aggiornamento 08/09/2026 — go-live 21 ottobre, il locale trova casa, e una password finisce in una trascrizione
+
+`requirements-check` notturno dal watermark **2026-09-07T22:00Z**. Due sessioni
+analizzate dalle trascrizioni integrali, una mail al cliente che ridefinisce il
+piano, una PR in merge e un check org pubblicato su Slack.
+
+### 31.1 🔴 Il go-live è il 21 ottobre, e il record del 07/09 era sbagliato
+
+Alle **14:15Z** Elena Spini ha inviato `[ROMI-PIENISSIMO] - Stato Avanzamento
+Progetto` a Sabatino Rinaldi, Fabrizio Paganelli, amministrazione@ e Marco
+Montesi, cc Aurel Mrruku e Andrea Di Cicco:
+
+| Milestone | Data |
+| --------- | ---- |
+| **UAT ready, Fase 1** | 23 settembre |
+| **UAT e test** | 23 settembre – 13 ottobre |
+| **Approvazione soluzione** | 13 ottobre |
+| **Go-live Fase 1** | **21 ottobre 2026** |
+
+La causa dichiarata è _"diversi temi ancora pending e i lavori stanno procedendo
+a rilento"_ — il data model ancora aperto e le ripetute revisioni ai flussi di
+analisi. Il piano è `Pienissimo_Project Plan 2.pptx`, salvato alle 14:08:27Z.
+
+✅ **Questo corregge il §30.** Il _"21 settembre … entro il 13 dello stesso mese"_
+della sessione interna del 07/09 erano **21 e 13 ottobre**, con il mese caduto
+dalla parafrasi di Gemini. Il §30 registrava una data quindici giorni *prima* del
+registro eppure descritta come uno *slittamento* che aggiunge settimane di
+sviluppo, definiva la combinazione irriconciliabile e si rifiutava di agire. Quel
+rifiuto era corretto: un elenco di decisioni di Gemini ha perso il mese da due
+date producendo una lettura in apparenza coerente ma sbagliata nella direzione
+oltre che nel valore.
+
+🔴 **Il registro è invariato, deliberatamente.** `CTX-02`, la definizione di
+priorità `M`, entrambe le tabelle delle milestone, la regola di escalation alla
+Fase 2 e `go_live: 2026-10-06` dicono ancora 6 ottobre. `REQUISITI.it.md` è il
+testo presentato per la firma, e al cliente è stata chiesta la presa visione ma
+non ha risposto (**#128**). ⚠ La regola di escalation recita _"salvo diverso
+accordo esplicito sulla data di go-live"_ — ora l'accordo esplicito c'è stato, e
+la regola non è stata riesaminata.
+
+🔴 **La Fase 2 è dichiarata fuori perimetro per iscritto.** La Slide 4 indica
+**GLS**, **Teachable** e **Ordini Pienissimo Pro → Zoho Pienissimo Software SRL**
+come `FUORI PERIMETRO DA QUOTARE`. L'ultimo è esattamente ciò che Pienissimo ha
+contestato ed escalato a Daniela Morgese — **che non è tra i destinatari di questa
+mail**. Un perimetro dichiarato non è un perimetro concordato, e la _"presa
+visione"_ non è un'accettazione.
+
+🟢 Il deck conferma inoltre, in un artefatto rivolto al cliente, che Anticipay è
+**"ex CreditSafe"**, finora nominato solo in un inciso di trascrizione.
+
+🔴 **Il margine su Zoho si dimezza.** Zoho scade il 31 ottobre: la sovrapposizione
+passa da venticinque giorni a **dieci**.
+
+🔴 **L'UAT parte fra quindici giorni su una build mai sottoposta a UAT.** Due ore
+prima della mail Aurel Mrruku ha detto _"non abbiamo ancora fatto dei UAT noi"_ e
+che un primo rilascio in produzione richiede _"almeno un paio di settimane"_
+(**#134**). I nove flussi elencati per l'UAT includono diversi elementi che il
+record dà per non realizzati o non provati.
+
+Elena Spini ha verificato i quattro blocchi con il team in DM 32 minuti prima di
+inviare e ha ricevuto da Aurel Mrruku **"OK da parte mia"** alle 16:03:59 CEST.
+⚠ **Andrea Di Cicco era in quella DM e non ha risposto**; l'integrazione Mexal è
+sua ed è uno dei nove flussi UAT.
+
+### 31.2 🟢 Data Model Parte 4 — il locale diventa un record type dell'Account
+
+Con il cliente, **12:01 CEST**, **1h25m58s**, analizzata dalla trascrizione
+integrale. Elena Spini, Elisa Migliano, Aurel Mrruku. **Andrea Di Cicco assente
+per la seconda sessione consecutiva**; Fabrizio Paganelli invitato e silente.
+
+**Concordato:** _"I locali vengono configurati come account figli dell'azienda di
+fatturazione su Salesforce, mentre a Mexal vengono inviate unicamente le aziende
+padri."_ I preventivi portano un lookup allo specifico locale.
+
+✅ **Questo risolve #123.** Elisa Migliano ha portato la risposta di Marco
+Montesi — il questionario contiene **dati operativi del 2022** e una sola azienda
+può possedere più locali con condizioni diverse. La risposta è un **record type
+su un oggetto che esiste già**, non il nuovo oggetto che #123 temeva con
+relazioni, layout e migrazione.
+
+🟢 **Realizzato la stessa sera.** PR **#35** / commit `c877631` (Anita Aga, merge
+di Aurel Mrruku alle 18:21 CEST): record type `Azienda` e `Locale`, le regole di
+validazione `locale_requires_parent_azienda` e `parent_must_be_azienda`,
+`AccountTriggerHandler` con protezione dalla cancellazione,
+`CommercialAccountResolver`, dieci campi Account, e `WoocommerceOrderService` e
+`LeadConversionQueueable` aggiornati per risolvere sul padre.
+
+Concordato anche:
+
+- **Contratti, preventivi e biglietti vanno solo al `contatto principale`
+  dell'azienda di fatturazione** — per ragioni legali, mai al singolo locale. Gli
+  invii DocuSign consentiranno indirizzi aggiuntivi in CC. I tutor vanno istruiti.
+- **L'invio dei biglietti è una decisione di calendario marketing, non un trigger
+  di pagamento.** Non esiste una regola fissa che leghi l'invio al pagamento delle
+  tranche.
+- **Il controllo duplicati si sposta sul Lead, su email E telefono in combo** —
+  scelto rispetto all'"o l'uno o l'altro" perché un cliente può avere più
+  indirizzi email. I campi di controllo telefonico ereditati da Zoho sono
+  cancellati dall'opportunità.
+- **La lista campi dell'opportunità è ripulita**: custom che duplicano lo
+  standard, dettaglio indirizzo, durata del ciclo di vendita e tempo di
+  conversione rimossi; motivazione di chiusura persa mantenuta; importo guidato
+  dal preventivo principale; le checkbox di passaggio a Pienissimo Software/Zoho
+  rimosse finché quel flusso di Fase 2 non sarà analizzato.
+- **La denominazione delle opportunità da QR code e moduli web** è standardizzata
+  da Marketing Cloud più un trigger di backend, in base alla provenienza.
+
+🟢 **Parte 5 (mer 16/09) e Parte 6 (ven 18/09), due ore ciascuna** — prodotti,
+preventivi e ordini, poi campagne e lead **con Rebecca Marmo**. Prima i prodotti,
+su richiesta di Aurel Mrruku, in quanto propedeutici.
+
+🔴 **La tabella Lead è rinviata per la quinta volta**, e **Utenti, Profili e il
+piano di caricamento iniziale non sono in nessuna sessione in calendario**
+(**#24**). Cinque sessioni, tre oggetti. Dalla sessione escono quattro nuove
+consegne cliente — **#129, #130, #131** — più il controllo tecnico di Aurel
+Mrruku **#132**.
+
+### 31.3 🔴 Flussi MKT Parte 2 — una password letta a voce, e flussi non testabili
+
+Interna ROMI, **14:32 CEST**, **42m21s**. Elena Spini, Aurel Mrruku, Fabrizio
+Mastracci; Aurel Mrruku è uscito verso 00:26.
+
+🟢 **Il record di invito porta le date.** Concordato: mettere **`data evento`** e
+**`data invio`** direttamente su `Event_Invitation__c`, insieme alla mail
+dell'account, così il flusso Marketing Cloud parte su `data invio = oggi` e **non
+interroga mai la Campagna**. Questo supera sia il controllo notturno a 60 giorni
+sulle campagne sia la controproposta di Fabrizio Mastracci con campo formula e
+checkbox. 🔴 Il costo, nominato da Aurel Mrruku stesso — **trigger per propagare
+una data modificata su tutti i record di invito già generati** — non è realizzato
+né stimato, e restano due design aperti.
+
+🔴 **Una password della sandbox UAT Salesforce è stata letta a voce** per aggirare
+un problema di One Password, e **Fabrizio Mastracci è entrato come Aurel Mrruku**
+invece che con un'utenza propria. Gemini l'ha trascritta alla lettera in un
+documento Drive condiviso e collegato all'evento di calendario. **Il valore non è
+riportato in questo repository.** Il rilievo che dura è l'utenza condivisa: tutto
+ciò che Fabrizio Mastracci fa in UAT è attribuito ad Aurel Mrruku, il che corrompe
+`LastModifiedBy` come evidenza — e **Utenti e Profili è la sezione del workbook
+che nessuno ha aperto in cinque sessioni**. Seconda divulgazione di credenziali in
+cinque giorni, quarto rilievo su autenticazione in sei.
+
+🔴 **I flussi marketing non sono testabili end to end** (**#134**): nessun dominio
+autenticato in sandbox, nessuna community in produzione, e un primo rilascio in
+produzione a due settimane.
+
+🟢 **Il vocabolario dei tag è completo.** `SEGMENTI FUNNEL BIGLIETTI.docx`
+aggiunge due membri ai due decodificati alla Parte 3: `<EVENT>` per il contatto
+principale che possiede almeno un biglietto, e **`<EVENT>_R` per la rinuncia**.
+⚠ Solo `_R` è un vero valore in Tag Associati; gli altri tre sono proprietà di
+contatto scritte dal CRM.
+
+🔴 **La regola di uscita dal funnel è un aggregato a livello di contatto, non un
+flag sull'asset** — _"un contatto avente 3 biglietti può decidere di partecipare
+anche solo con 1 biglietto e … esce dal funnel"_. Un booleano per Asset non può
+esprimerla (**#126**).
+
+🔴 **I template WhatsApp non ci sono** tra i quattro allegati di Rebecca Marmo,
+verificato dal vivo; Elena Spini ha confermato che esistono lato cliente
+(**#133**). ⚠ Due dei tre documenti di funnel sono di fatto vuoti come testo, con
+la logica dentro screenshot che **non** sono stati letti in questo record.
+
+### 31.4 ✅ L'endpoint WooCommerce è arrivato al cliente
+
+Aurel Mrruku ha inviato a Sabatino Rinaldi la **collection Postman** alle 14:17Z,
+dopo un sollecito su Slack di Elena Spini quella mattina — dodici giorni dopo che
+il lato cliente era pronto (**#102**).
+
+🔴 **Le credenziali non sono state ruotate prima**, come questo record ha chiesto
+due volte: l'assertion JWT il cui `exp` è a circa sessant'anni è andata al cliente
+invariata. **Quel pattern ha ora lasciato ROMI.**
+
+⚠ **Esiste una collection più recente e non è questa.** Quaranta minuti *dopo*
+l'invio, Aurel Mrruku ha chiesto ad Andrea Di Cicco in DM la collection
+aggiornata; Andrea Di Cicco ha risposto _"Devo mettere i filtri ancora"_. Sabatino
+Rinaldi ha la versione senza filtri, e a fine giornata non aveva risposto.
+
+### 31.5 ⚠ Un check org è girato, non ha pubblicato nulla, ed è stato superato da un merge
+
+Scope completo, modalità report, **16:31–16:39 CEST**, UAT live contro `c81578f`,
+pubblicato solo nel gruppo di sviluppo.
+
+⚠ **I suoi rilievi di drift org-only si sono chiusi da soli.**
+`AccountTriggerHandler`, `CommercialAccountResolver`, `AccountTrigger`, i record
+type Account e dieci campi Account risultavano presenti in UAT e assenti dal
+checkout — e sono stati **committati alle 17:53 e mergiati alle 18:21**, novanta
+minuti dopo. *Un check org è una fotografia di un ramo in movimento: fare il diff
+di `DevMain` prima di credere a qualunque affermazione di drift.* È la seconda
+volta che la lezione arriva, dopo il 04/09.
+
+Ciò che resta:
+
+| Rilievo | Dettaglio |
+| ------- | --------- |
+| **Mappatura edizioni** | **40 su 43** prodotti che generano biglietti non hanno mappatura attiva; 3 righe attive coprono 3 prodotti; **22 su 27** ordini su `Incassato`. Corregge il denominatore 226/229 su tutti i prodotti (**#121**) |
+| **Propagazione tranche** | 34 righe di preventivo collegate, **0 su 32 righe d'ordine**; nessuno scrittore nell'Apex ispezionato, nessun Flow attivo (**#50**) |
+| **Inviti** | 3 record con URL Ready e raccolta Pending, nessuno con destinatario o `Send_After` |
+| **Biglietti** | **0 Asset con valore QR**; 15 Asset, 14 Ordinato, 1 Assegnato; nessuno dei due controller invoca la firma (**#68/#78**) |
+| **Notifica Anticipay** | ancora compilata verso una casella di uno sviluppatore ROMI; 36 log su 65 marcati come errore (**#119**) |
+| **Auth community** | i controller accettano ancora identificatori di record senza stabilire l'identità del chiamante |
+| **Flow** | zero, confermato per tre vie — listing Metadata, `FlowDefinition` via Tooling, query sui Flow attivi |
+| **Coverage** | **0 su 2.957 righe**, 42 voci, ultima esecuzione dei test ancora 4 agosto (**NFR-06**) |
+| **Accesso tranche** | i campi esistono con permessi di modifica; un assegnatario attivo, un System Administrator — **non** un rilievo del tipo "nessuno può accedervi" |
+
+⚠ **Questo sweep non ha aperto l'org.** Ogni cifra qui sopra viene dal check di
+ROMI così come pubblicato su Slack. `STATUS.md`, il mirror Notion e il
+`build_state` del registro non ne portano nulla, per la nona esecuzione.

@@ -4,7 +4,7 @@ type: reference
 status: open
 org: ROMI
 raised: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-08
 depends_on: [OI-78, OI-81, OI-121]
 source: User conversation with Codex on 2026-09-07
 uncertain: Invitation foundation implemented in local source only; Growth provisioning and flow configuration were not inspected; email timing remains open.
@@ -268,3 +268,45 @@ rename). The read-only Connect-in-Apex probe compiled and returned
 the correct UAT siteUrl. This validates metadata/Apex compilation, not the full
 runtime ticket-to-email workflow or measured Apex coverage. No org metadata was
 persisted by the check-only validation.
+
+## 2026-09-08 - two dates move onto the invitation record
+
+[Flussi MKT Parte 2](../meetings/2026-09-08%20Flussi%20MKT%20Parte%202.md) settled
+the Marketing Cloud contract for this object. Aurel Mrruku calls it _"event"_ or
+_"event link"_ in the room; in source it is `Event_Invitation__c`.
+
+**Agreed, under `Concordato`:** the invitation record carries
+
+- **`data evento`** — the event date
+- **`data invio`** — the send date
+
+alongside the link and the account's email, which is already there.
+
+🟢 **The point is that Marketing Cloud never queries the Campaign.** Fabrizio
+Mastracci's flow selects on `data invio = today` and reads everything it needs off
+one record. Aurel Mrruku's earlier design — a nightly job checking which campaigns
+start in 60 days — is **superseded**, as is Fabrizio Mastracci's counter-proposal
+of a Campaign formula field plus a checkbox tier.
+
+The reason the interval cannot be a constant: the client confirmed that morning
+that the 30–60 day window **varies by event and by the holiday calendar**
+([OI-81](../items/OI-81%20Event%20communication%20funnel.md)).
+
+🔴 **The unbuilt half is propagation.** Aurel Mrruku named it in the call: the
+dates are editable on the Campaign, so **triggers must push a changed date onto
+every invitation record already generated**. Unbuilt, unestimated, and it is the
+kind of fan-out update that meets governor limits at volume.
+
+⚠ **Fabrizio Mastracci may build the check on the Campaign after all.** He asked
+to keep the option open — _"magari faccio pure qualche test io da un flow, vedo
+chi la sblocca prima"_ — and Aurel Mrruku encouraged it precisely because it would
+make the propagation triggers unnecessary. **Two designs are live; nobody has
+closed one.**
+
+### Org state, 8 September
+
+The ROMI org check reports **three invitation records with URL Ready but
+collection Pending, all lacking recipient and `Send_After`**. URL preparation is
+live; **dispatch, scheduling and completion tracking are unfinished and
+unverified**, and no send has ever run
+([OI-134](../items/OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md)).

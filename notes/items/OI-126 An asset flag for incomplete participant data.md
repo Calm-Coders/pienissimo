@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-08
 depends_on: [OI-78]
 requirement: BIG-06
 source: notes/meetings/2026-09-07 Interna Flussi MKT.md
@@ -68,3 +68,34 @@ project keeps finding.
   tickets and the community form allows some to be filled and others not. The
   same partial-completion problem is why
   [rinuncia moved into the community](../decisions/Decision%20-%20rinuncia%20moves%20from%20the%20marketing%20email%20to%20the%20community.md).
+
+## 2026-09-08 - the client's own segment rule is stricter than a flag
+
+`SEGMENTI FUNNEL BIGLIETTI.docx`, read this run
+([OI-81](OI-81%20Event%20communication%20funnel.md)), states the exit criterion the
+flag has to serve:
+
+> _"un contatto avente 3 biglietti può decidere di partecipare anche solo con 1
+> biglietto e in questo modo, una volta inseriti i dati, esce dal funnel e non
+> riceve più comunicazioni."_
+
+🔴 **This is a contact-level aggregate, not an asset-level boolean.** The segment
+compares *iscrizioni effettuate* against **tickets held by that contact for that
+event**. A per-Asset "data incomplete" flag does not express it: a holder of three
+tickets with one completed has two incomplete assets and **must still leave the
+funnel**.
+
+So the deliverable is at least one of:
+
+- a **contact- or account-level** roll-up per campaign — tickets held versus
+  tickets completed — which is what Marketing Cloud can actually segment on; or
+- the per-asset flag **plus** the aggregation done in Marketing Cloud, which
+  pushes the logic into the flow the design was trying to keep simple.
+
+⚠ **Nobody has chosen.** The 8 September org check confirms the starting point is
+unchanged: **Asset still carries eight custom fields with no completeness flag**,
+and the participant controller has no withdrawal action. The check explicitly
+declined to invent a field name, and so does this row.
+
+⚠ It interacts with the tag scheme: `<EVENT>_I` is set **per contact on first
+completion**, which is the same aggregate seen from the marketing side.

@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-08-06
-updated: 2026-09-03
+updated: 2026-09-08
 blocks: [go-live]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -139,3 +139,40 @@ is one working day with the full team available.**
 nine of them build or integration work on Aurel Mrruku and Andrea Di Cicco
 ([the minute](../meetings/2026-09-03%20Data%20Model%20Parte%201.md)), and two
 further client sessions are booked for 4 and 7 September.
+
+## 2026-09-08 - the calendar was re-cut, and the pressure moved rather than eased
+
+The client was given a new plan
+([the decision](../decisions/Decision%20-%20go-live%20moves%20to%2021%20October%20and%20Fase%202%20is%20declared%20out%20of%20perimeter.md)):
+
+| Milestone | New date |
+| --------- | -------- |
+| **UAT ready, Fase 1** | **23 September** |
+| **UAT and test window** | 23 September – 13 October |
+| **Solution approval** | 13 October |
+| **Go-live Fase 1** | **21 October** |
+
+🟢 **Fifteen more days of build than the 6 October plan allowed**, and the
+internal "Fase 1 development ends 10 September" deadline is superseded by a
+client-facing schedule that no longer depends on it.
+
+🔴 **What replaces it is tighter where it counts.** The build must be **UAT-ready
+in fifteen days**, and on the same afternoon Aurel Mrruku said _"non abbiamo
+ancora fatto dei UAT noi"_ and that a first production release needs _"almeno un
+paio di settimane"_
+([OI-134](../items/OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md)).
+Those two estimates consume the whole window.
+
+🔴 **The absences fall inside it, unchanged.** The **9–11 September offsite** and
+**Elena Spini off 14 and 15 September** both sit between now and UAT-ready. The
+data-model sessions that gate migration are **16 and 18 September** — *after* the
+UAT-ready date, and the workstream they gate is in stand-by until they close.
+
+🔴 **The Zoho margin halves.** Zoho CRM expires **31 October 2026**. 6 October left
+twenty-five days of dual-run; **21 October leaves ten**, with only
+_"supporto post go-live"_ after it.
+
+⚠ **The nine flows named for UAT include several the record shows as unbuilt or
+unproven** — Mexal, tranche propagation on orders (0 of 32 order lines), the
+DocuSign signature-to-QR chain (0 Assets with QR values), and the Marketing Cloud
+flows. **A UAT window is not the same as a testable build.**
