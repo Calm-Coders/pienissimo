@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Partita_IVA__c</fullName>
+    <fullName>Codice_Cliente_Mexal__c</fullName>
     <description
-  >Partita IVA usata per identificare e riutilizzare gli Account, inclusa la corrispondenza dei clienti WooCommerce.</description>
-    <externalId>false</externalId>
-    <label>Partita IVA</label>
-    <length>32</length>
+  >Codice cliente assegnato da Mexal e usato come identificativo esterno del cliente.</description>
+    <externalId>true</externalId>
+    <label>Codice Cliente Mexal</label>
+    <length>50</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Text</type>

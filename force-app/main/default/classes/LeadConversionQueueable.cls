@@ -133,13 +133,17 @@ public with sharing class LeadConversionQueueable implements Queueable {
     Account matchingAccount
   ) {
     if (matchingContact != null && matchingContact.AccountId != null) {
-      conversionRequest.setAccountId(matchingContact.AccountId);
+      conversionRequest.setAccountId(
+        CommercialAccountResolver.resolve(matchingContact.AccountId)
+      );
       conversionRequest.setContactId(matchingContact.Id);
       return;
     }
 
     if (matchingAccount != null) {
-      conversionRequest.setAccountId(matchingAccount.Id);
+      conversionRequest.setAccountId(
+        CommercialAccountResolver.resolve(matchingAccount.Id)
+      );
     }
   }
 

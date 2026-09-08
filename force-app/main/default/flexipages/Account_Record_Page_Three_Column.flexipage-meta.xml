@@ -245,6 +245,16 @@
                 <identifier>RecordAnticipay_Consolidato__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Ultima_Verifica_Anticipay__c</fieldItem>
+                <identifier>RecordUltima_Verifica_Anticipay_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-9317228b-9000-4df5-9218-7d1560529bcc</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -257,6 +267,36 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.ParentId</fieldItem>
                 <identifier>RecordParentIdField2</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Azienda_Precedente__c</fieldItem>
+                <identifier>RecordAzienda_Precedente_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Azienda_Obsoleta__c</fieldItem>
+                <identifier>RecordAzienda_Obsoleta_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Azienda_Test__c</fieldItem>
+                <identifier>RecordAzienda_Test_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -287,6 +327,66 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.PEC__c</fieldItem>
                 <identifier>RecordPEC_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Codice_Fiscale__c</fieldItem>
+                <identifier>RecordCodice_Fiscale_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Codice_Cliente_Mexal__c</fieldItem>
+                <identifier>RecordCodice_Cliente_Mexal_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Id_Zoho__c</fieldItem>
+                <identifier>RecordId_Zoho_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.IBAN__c</fieldItem>
+                <identifier>RecordIBAN_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Codice_ATECO__c</fieldItem>
+                <identifier>RecordCodice_ATECO_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Descrizione_ATECO__c</fieldItem>
+                <identifier>RecordDescrizione_ATECO_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-7694101d-91be-4643-bfaa-6b6ef83dbb25</name>
