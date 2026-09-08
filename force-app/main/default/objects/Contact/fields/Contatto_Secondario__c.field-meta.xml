@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contatto_Secondario__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >Indica un contatto secondario, incluso un partecipante creato dalla landing page.</description>
+    <label>Contatto Secondario</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

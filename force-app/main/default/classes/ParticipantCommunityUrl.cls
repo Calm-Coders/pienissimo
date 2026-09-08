@@ -40,21 +40,12 @@ public with sharing class ParticipantCommunityUrl {
     return cachedPageUrl;
   }
 
-  public static String registrationUrl(Id accountId, Id campaignId) {
-    if (
-      accountId == null ||
-      accountId.getSObjectType() != Account.SObjectType ||
-      campaignId == null ||
-      campaignId.getSObjectType() != Campaign.SObjectType
-    ) {
-      throw new ResolutionException(
-        'Account e campagna evento sono obbligatori.'
-      );
+  public static String registrationUrl(String token) {
+    if (String.isBlank(token)) {
+      throw new ResolutionException('Token invito obbligatorio.');
     }
     return pageUrl() +
-      '?c__accountId=' +
-      EncodingUtil.urlEncode(String.valueOf(accountId), 'UTF-8') +
-      '&c__campaignId=' +
-      EncodingUtil.urlEncode(String.valueOf(campaignId), 'UTF-8');
+      '?c__token=' +
+      EncodingUtil.urlEncode(token.trim(), 'UTF-8');
   }
 }

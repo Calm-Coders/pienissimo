@@ -12,8 +12,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
   @api heading = "Registrazione partecipanti";
   @api servicePath;
 
-  accountId;
-  campaignId;
+  token;
   page;
   tickets = [];
   isLoading = true;
@@ -29,10 +28,9 @@ export default class ParticipantRegistrationPage extends LightningElement {
     }
 
     const state = pageReference.state || {};
-    this.accountId = state.c__accountId || state.accountId;
-    this.campaignId = state.c__campaignId || state.campaignId;
+    this.token = state.c__token || state.token;
 
-    const initializationKey = `${this.accountId || ""}-${this.campaignId || ""}`;
+    const initializationKey = this.token || "";
     if (initializationKey !== this.initializedFor) {
       this.initializedFor = initializationKey;
       this.loadParticipants();
@@ -93,7 +91,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
     this.page = null;
     this.tickets = [];
 
-    if (!this.accountId || !this.campaignId) {
+    if (!this.token) {
       this.isLoading = false;
       this.errorMessage =
         "Il link non e completo. Apri il collegamento ricevuto via email oppure contatta il tuo referente.";
@@ -104,8 +102,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
     try {
       const payload = await loadPage({
-        accountId: this.accountId,
-        campaignId: this.campaignId
+        token: this.token
       });
       this.applyPage(payload);
     } catch (error) {
@@ -219,8 +216,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
     try {
       const match = await findContact({
-        accountId: this.accountId,
-        campaignId: this.campaignId,
+        token: this.token,
         email
       });
 
@@ -303,8 +299,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
     try {
       const payload = await savePage({
-        accountId: this.accountId,
-        campaignId: this.campaignId,
+        token: this.token,
         participants
       });
       this.applyPage(payload);

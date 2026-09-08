@@ -3,7 +3,7 @@
     <fullName>Ready_Requires_Preparation</fullName>
     <active>true</active>
     <errorConditionFormula
-  >AND(ISPICKVAL(Status__c, "Ready"), OR(ISBLANK(Recipient_Contact__c), ISBLANK(Send_After__c), NOT(ISPICKVAL(URL_Status__c, "Ready")), ISBLANK(Registration_Url__c)))</errorConditionFormula>
+  >AND(ISPICKVAL(Status__c, "Ready"), OR(ISBLANK(Recipient_Contact__c), ISBLANK(Send_After__c), ISBLANK(Token__c), NOT(ISPICKVAL(URL_Status__c, "Ready")), ISBLANK(Registration_Url__c)))</errorConditionFormula>
     <errorMessage
   >Prima di rendere pronto l invito indicare referente e data invio e preparare il link.</errorMessage>
 </ValidationRule>

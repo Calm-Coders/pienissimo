@@ -87,6 +87,7 @@ public without sharing class ParticipantRegistrationController {
   }
 
   private class AccessContext {
+    public Event_Invitation__c invitation;
     public Account account;
     public Campaign campaign;
   }
@@ -95,9 +96,9 @@ public without sharing class ParticipantRegistrationController {
   }
 
   @AuraEnabled(cacheable=true)
-  public static PageResponse loadPage(String accountId, String campaignId) {
+  public static PageResponse loadPage(String token) {
     try {
-      return buildPage(resolveAccess(accountId, campaignId));
+      return buildPage(resolveAccess(token));
     } catch (RequestException requestError) {
       throw handled(requestError.getMessage());
     } catch (Exception unexpectedError) {
@@ -108,13 +109,9 @@ public without sharing class ParticipantRegistrationController {
   }
 
   @AuraEnabled(cacheable=true)
-  public static ContactResponse findContact(
-    String accountId,
-    String campaignId,
-    String email
-  ) {
+  public static ContactResponse findContact(String token, String email) {
     try {
-      AccessContext access = resolveAccess(accountId, campaignId);
+      AccessContext access = resolveAccess(token);
       String normalizedEmail = normalizeEmail(email);
 
       if (!isValidEmail(normalizedEmail)) {
@@ -156,14 +153,13 @@ public without sharing class ParticipantRegistrationController {
 
   @AuraEnabled
   public static PageResponse savePage(
-    String accountId,
-    String campaignId,
+    String token,
     List<ParticipantInput> participants
   ) {
     Savepoint savepoint = Database.setSavepoint();
 
     try {
-      AccessContext access = resolveAccess(accountId, campaignId);
+      AccessContext access = resolveAccess(token);
       PageResponse response = saveParticipants(access, participants);
       response.message = 'I dati dei partecipanti sono stati salvati.';
       return response;
@@ -178,38 +174,57 @@ public without sharing class ParticipantRegistrationController {
     }
   }
 
-  private static AccessContext resolveAccess(
-    String rawAccountId,
-    String rawCampaignId
-  ) {
-    Id accountId = parseAccountId(rawAccountId);
-    Id campaignId = parseCampaignId(rawCampaignId);
+  private static AccessContext resolveAccess(String rawToken) {
+    String token = normalizeToken(rawToken);
 
-    if (accountId == null || campaignId == null) {
+    if (!isValidToken(token)) {
       throw invalidLink();
     }
 
-    List<Account> accounts = [
-      SELECT Id, Name
-      FROM Account
-      WHERE Id = :accountId
-      LIMIT 1
+    List<Event_Invitation__c> invitations = [
+      SELECT
+        Id,
+        Status__c,
+        Account__c,
+        Account__r.Name,
+        Campaign__c,
+        Campaign__r.Name,
+        Campaign__r.Data_Evento__c,
+        Campaign__r.StartDate,
+        Campaign__r.EndDate
+      FROM Event_Invitation__c
+      WHERE Token__c = :token
+      LIMIT 2
     ];
 
-    List<Campaign> campaigns = [
-      SELECT Id, Name, StartDate, EndDate
-      FROM Campaign
-      WHERE Id = :campaignId
-      LIMIT 1
-    ];
+    if (invitations.size() != 1) {
+      throw invalidLink();
+    }
 
-    if (accounts.isEmpty() || campaigns.isEmpty()) {
+    Event_Invitation__c invitation = invitations[0];
+    if (
+      invitation.Account__c == null ||
+      invitation.Account__r == null ||
+      invitation.Campaign__c == null ||
+      invitation.Campaign__r == null ||
+      invitation.Status__c == 'Cancelled'
+    ) {
       throw invalidLink();
     }
 
     AccessContext result = new AccessContext();
-    result.account = accounts[0];
-    result.campaign = campaigns[0];
+    result.invitation = invitation;
+    result.account = new Account(
+      Id = invitation.Account__c,
+      Name = invitation.Account__r.Name
+    );
+    result.campaign = new Campaign(
+      Id = invitation.Campaign__c,
+      Name = invitation.Campaign__r.Name,
+      Data_Evento__c = invitation.Campaign__r.Data_Evento__c,
+      StartDate = invitation.Campaign__r.StartDate,
+      EndDate = invitation.Campaign__r.EndDate
+    );
     return result;
   }
 
@@ -219,7 +234,7 @@ public without sharing class ParticipantRegistrationController {
     response.accountName = access.account.Name;
     response.campaignId = access.campaign.Id;
     response.campaignName = access.campaign.Name;
-    response.eventStartDate = access.campaign.StartDate;
+    response.eventStartDate = displayEventDate(access.campaign);
     response.eventEndDate = access.campaign.EndDate;
 
     List<Asset> tickets = queryVisibleAssets(
@@ -240,7 +255,7 @@ public without sharing class ParticipantRegistrationController {
         : ticket.Campaign__r.Name;
       row.eventStartDate = ticket.Campaign__r == null
         ? null
-        : ticket.Campaign__r.StartDate;
+        : displayEventDate(ticket.Campaign__r);
       row.assigned = ticket.ContactId != null;
       row.editable = !row.assigned && VISIBLE_STATUSES.contains(ticket.Status);
 
@@ -330,7 +345,8 @@ public without sharing class ParticipantRegistrationController {
           FirstName = input.firstName.trim(),
           LastName = input.lastName.trim(),
           Email = input.email.trim(),
-          Phone = input.phone.trim()
+          Phone = input.phone.trim(),
+          Contatto_Secondario__c = true
         );
 
         contactsToCreate.add(participant);
@@ -449,7 +465,7 @@ public without sharing class ParticipantRegistrationController {
   ) {
     String queryText =
       'SELECT Id, Name, Status, ContactId, Campaign__c, Campaign__r.Name, ' +
-      'Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
+      'Campaign__r.Data_Evento__c, Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
       'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name ' +
       'FROM Asset WHERE AccountId = :accountId AND Campaign__c = :campaignId ' +
       'AND Status IN :VISIBLE_STATUSES ';
@@ -520,14 +536,6 @@ public without sharing class ParticipantRegistrationController {
     submittedAssetIds.add(assetId);
   }
 
-  private static Id parseAccountId(String rawId) {
-    return parseId(rawId, Account.SObjectType);
-  }
-
-  private static Id parseCampaignId(String rawId) {
-    return parseId(rawId, Campaign.SObjectType);
-  }
-
   private static Id parseAssetId(String rawId) {
     return parseId(rawId, Asset.SObjectType);
   }
@@ -549,9 +557,26 @@ public without sharing class ParticipantRegistrationController {
     return email == null ? null : email.trim().toLowerCase();
   }
 
+  private static Date displayEventDate(Campaign campaign) {
+    if (campaign == null) {
+      return null;
+    }
+    return campaign.Data_Evento__c == null
+      ? campaign.StartDate
+      : campaign.Data_Evento__c;
+  }
+
+  private static String normalizeToken(String token) {
+    return token == null ? null : token.trim().toLowerCase();
+  }
+
   private static Boolean isValidEmail(String email) {
     return (!String.isBlank(email) &&
     Pattern.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$', email));
+  }
+
+  private static Boolean isValidToken(String token) {
+    return !String.isBlank(token) && Pattern.matches('^[0-9a-f]{64}$', token);
   }
 
   private static RequestException invalidLink() {

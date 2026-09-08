@@ -4,6 +4,16 @@
   >Access to create and maintain Pienissimo event campaign parent and child records.</description>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Campaign.Data_Evento__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Campaign.Data_Invio_Biglietto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Mappatura_Edizione__c.Attiva__c</field>
         <readable>true</readable>
     </fieldPermissions>

@@ -65,6 +65,10 @@
                 <behavior>Edit</behavior>
                 <field>PEC__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Email_Contatto_Principale__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>

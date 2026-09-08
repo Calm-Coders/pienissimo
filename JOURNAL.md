@@ -10,6 +10,24 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-08 - codex - Event Invitation principal email formula
+
+- **Did:** changed `Event_Invitation__c.Email_Contatto_Principale__c` from a
+  stored Email field to a formula reading
+  `Account__r.Email_Contatto_Principale__c`. Added
+  `Account.Email_Contatto_Principale__c` as the maintained Account email field.
+- **Contact automation:** added `ContactTrigger` and `ContactTriggerHandler`.
+  When a Contact marked `Contatto_Principale__c` is inserted, updated, moved,
+  deleted or undeleted, the handler recomputes the linked Account's principal
+  email. When a new principal Contact is marked for an Account, older principal
+  flags on that same Account are cleared.
+- **Verified:** check-only deploy to `a.mrruku@pienissimo.uat` passed with
+  NoTestRun, job `0AfMA00000CeyeT0AR`, nothing persisted. Targeted Prettier check
+  passed. `git diff --check` has only normal CRLF warnings.
+- **Not done:** no Apex test classes were written; no deploy or commit.
+
+---
+
 ## 2026-09-07 — claude — nightly requirements-check: three sessions, and a go-live date that moved without the client
 
 - **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
@@ -26,7 +44,7 @@ Keep the twenty most recent entries here; archive older ones to
   follow-up agreed **21 September 2026 with approval by 13 September**, where
   `CTX-02`, both milestone tables, the `M` priority definition and the Fase 2
   escalation rule all say **6 October**. Fifteen days **earlier**, yet described as
-  a *slittamento* adding development weeks — which only fits a plan this repository
+  a _slittamento_ adding development weeks — which only fits a plan this repository
   does not hold. **Nothing was changed in the register**
   ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)).
   The same session **parked Fase 2 pending client payment** — first movement on
@@ -43,7 +61,7 @@ Keep the twenty most recent entries here; archive older ones to
   the **Zoho tag scheme is decoded and retired**, and the **primary-contact rule is
   sharpened**. New
   [OI-123](notes/items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md):
-  a dozen fields whose natural owner is a *locale* object that does not exist.
+  a dozen fields whose natural owner is a _locale_ object that does not exist.
   **(3) 🟢🔴 The marketing session closed `30 vs 60` as a 30–60 day window** —
   ⚠ still ROMI choosing for the client — and **moved rinuncia off the email onto
   the community page**

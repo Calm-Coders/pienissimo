@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Contatto_Principale__c</fullName>
+    <description
+  >Formula che legge dall account l email del contatto principale.</description>
+    <formula>Account__r.Email_Contatto_Principale__c</formula>
+    <formulaTreatBlanksAs>BlankAsBlank</formulaTreatBlanksAs>
+    <label>Email Contatto Principale</label>
+    <required>false</required>
+    <type>Text</type>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Data_Invio_Biglietto__c</fullName>
+    <description
+  >Data in cui inviare la richiesta di compilazione dei partecipanti.</description>
+    <label>Data Invio Biglietto</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

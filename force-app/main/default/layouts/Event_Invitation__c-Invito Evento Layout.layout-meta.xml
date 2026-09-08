@@ -13,10 +13,18 @@
         >Campaign__c</field></layoutItems>
             <layoutItems><behavior>Edit</behavior><field
         >Recipient_Contact__c</field></layoutItems>
+            <layoutItems><behavior>Readonly</behavior><field
+        >Email_Contatto_Principale__c</field></layoutItems>
+            <layoutItems><behavior>Readonly</behavior><field
+        >Data_Evento__c</field></layoutItems>
+            <layoutItems><behavior>Readonly</behavior><field
+        >Data_Invio_Biglietto__c</field></layoutItems>
             <layoutItems><behavior>Edit</behavior><field
         >Send_After__c</field></layoutItems>
             <layoutItems><behavior>Edit</behavior><field
         >Status__c</field></layoutItems>
+            <layoutItems><behavior>Readonly</behavior><field
+        >Token__c</field></layoutItems>
             <layoutItems><behavior>Readonly</behavior><field
         >Registration_Url__c</field></layoutItems>
             <layoutItems><behavior>Readonly</behavior><field

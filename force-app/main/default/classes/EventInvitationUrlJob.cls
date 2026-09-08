@@ -45,7 +45,7 @@ public with sharing class EventInvitationUrlJob implements Queueable {
     // be overwritten with a link built from stale Account/Campaign IDs.
     Map<Id, Event_Invitation__c> invitations = new Map<Id, Event_Invitation__c>(
       [
-        SELECT Id, Account__c, Campaign__c, Status__c
+        SELECT Id, Account__c, Campaign__c, Status__c, Token__c
         FROM Event_Invitation__c
         WHERE Id IN :ids
         FOR UPDATE
@@ -58,15 +58,14 @@ public with sharing class EventInvitationUrlJob implements Queueable {
       if (errorMessage == null) {
         try {
           registrationUrl = ParticipantCommunityUrl.registrationUrl(
-            invitation.Account__c,
-            invitation.Campaign__c
+            invitation.Token__c
           );
           if (registrationUrl.length() > 255) {
             errorMessage = 'Il link supera la lunghezza massima del campo URL.';
             registrationUrl = null;
           }
         } catch (Exception e) {
-          errorMessage = 'Account o campagna non validi per la registrazione.';
+          errorMessage = 'Invito non valido per la registrazione.';
         }
       }
       errors.put(invitation.Id, errorMessage);

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contatto_Principale_Non_Secondario</fullName>
+    <active>true</active>
+    <description
+  >Un contatto non puo essere marcato sia principale sia secondario.</description>
+    <errorConditionFormula
+  >AND(Contatto_Principale__c, Contatto_Secondario__c)</errorConditionFormula>
+    <errorMessage
+  >Un contatto non puo essere contemporaneamente principale e secondario.</errorMessage>
+</ValidationRule>
