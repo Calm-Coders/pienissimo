@@ -44,7 +44,7 @@ priority definition of `M`, the Fase 2 escalation rule, `MAP.md` and the recaps.
 **Nothing has been changed in the register on the strength of this.** A
 contractually operative date, in the document the client signs, does not move on
 an internal ROMI meeting summary that nobody has reconciled with the published
-plan — [OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)
+plan — [OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)
 carries the question.
 
 ⚠ Aurel Mrruku is recorded as sceptical about the timing and the remaining

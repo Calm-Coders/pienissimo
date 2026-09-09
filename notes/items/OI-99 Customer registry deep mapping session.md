@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Andrea Di Cicco
 org: both
 raised: 2026-08-26
-updated: 2026-09-07
+updated: 2026-09-08
 depends_on: [OI-58]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
 ---
@@ -266,3 +266,32 @@ Ordine field mapping — which is his — is one of the four things still unopen
 ⚠ Sabatino Rinaldi was said on 4 September to be unavailable from Tuesday 8
 September when the client's tour starts. **The Lead table still needs him** and
 Parte 4 is the last booked session.
+
+## 2026-09-08 - Parte 4 ran; the series continues to Parte 6
+
+| Session | When | Who was actually there |
+| ------- | ---- | ---------------------- |
+| **Parte 4** | ✅ ran Tue 8 Sept **12:01 CEST**, 1h25m58s | Elena Spini, Elisa Migliano, Aurel Mrruku |
+| **Parte 5** | Wed 16 Sept 11:00-13:00 CEST | + amministrazione@, Fabrizio Paganelli, cc Sabatino Rinaldi |
+| **Parte 6** | Fri 18 Sept 11:00-13:00 CEST | + **Rebecca Marmo** |
+
+**Fabrizio Paganelli was invited to Parte 4 and did not speak** in the
+transcript; **Andrea Di Cicco was not invited**, for the second session running,
+and the Ordine field mapping that is his is the focus of Parte 5.
+
+⚠ **Parte 5 was sent twice** — an invitation at 11:23:13Z and an *updated*
+invitation at 11:27:42Z, three minutes apart, the change being the description.
+Both carry a Google Meet link, so the `Parte 3` defect does not repeat.
+
+🟢 **Rebecca Marmo is formally invited to a working session for the first time.**
+Three separate things are owed by her — the segment logic and mail detail due
+21 August ([OI-14](OI-14%20Marketing%20forms%20and%20subdomain.md)), the
+landing-page hosting call that was never scheduled
+([OI-86](OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)), and the
+missing WhatsApp templates
+([OI-133](OI-133%20The%20WhatsApp%20templates%20are%20missing%20from%20the%20marketing%20material.md)).
+**Parte 6 is the first forum where all three could be put to her at once.**
+
+⚠ **Sabatino Rinaldi is cc'd on Parte 5 and 6 but not a required attendee**, and
+he has been on the client's tour since 8 September. The Lead table — Parte 6 —
+is the part the record says needs him.

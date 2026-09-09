@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-09-02
-updated: 2026-09-04
+updated: 2026-09-08
 blocks: [OI-68]
 requirement: INT-19
 source: Slack DM Aurel Mrruku / Elena Spini, 2026-09-02 15:47-15:49 CEST
@@ -142,3 +142,31 @@ The window for a written confirmation before Fase 1 development ends on
 quote acceptance page still sets `Quote.Status` on the click with no envelope, and
 nobody has said whether that is a first pass or a design change. **That question
 does not depend on the licence and is still the cheaper one to answer.**
+
+## 2026-09-08 - escalated to the client in writing, named as blocking
+
+The status mail to Pienissimo lists DocuSign **first** among four urgent blocking
+decisions:
+
+> _"**DocuSign:** La definizione di questo punto è prioritaria, poiché blocca il
+> completamento del flusso preventivi. Ci sono novità in merito all'acquisto
+> delle licenze?"_
+
+🟢 **This is the first time the question has been put to the client in writing.**
+Every prior attempt was verbal — the July phone report, Elena Spini's _"richiedo
+conferma, ma mi aspetto di sì"_ on 2 September, and the _"tutto confermato"_ with
+Massimo owing an update on 4 September. It is now on the record, addressed to four
+client recipients, with a stated consequence.
+
+⚠ **It asks about the purchase, not the contract.** The distinction that matters
+is that **the sandbox is free while production needs a signed agreement**, and
+the mail does not draw it. An answer of _"sì, le abbiamo comprate"_ would not
+settle whether production can send an envelope on 21 October.
+
+⚠ **Massimo's promised update did not arrive.** It was owed "next week" as of
+4 September; nothing on any source this sweep reached carries it.
+
+⚠ **The build question is still the cheaper one and is still unanswered.** The
+quote acceptance page sets `Quote.Status` on the click with no envelope. The
+8 September org check confirms it again — the quote controller "does not invoke
+signature processing" and **0 Assets carry QR values**.

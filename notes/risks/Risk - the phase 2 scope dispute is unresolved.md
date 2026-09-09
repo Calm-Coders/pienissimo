@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-07-10
-updated: 2026-09-07
+updated: 2026-09-08
 depends_on: [OI-37, OI-38, OI-83, OI-94]
 source: meetings/open-items.md status updates 2026-08-03 and 2026-08-06
 ---
@@ -199,3 +199,39 @@ rinuncia button is named as the example — with Aurel Mrruku raising that
 requirements keep changing and Andrea Di Cicco proposing that **Gianpaolo Motta be
 pre-warned**. That is the out-of-scope argument being made internally, in a
 meeting, for the first time in the record.
+
+## 2026-09-08 - stated to the client in writing for the first time
+
+ROMI put the perimeter to Pienissimo in a mail and a plan deck
+([the decision](../decisions/Decision%20-%20go-live%20moves%20to%2021%20October%20and%20Fase%202%20is%20declared%20out%20of%20perimeter.md)).
+Slide 4 of `Pienissimo_Project Plan 2.pptx` lists three items as
+`FUORI PERIMETRO DA QUOTARE` — **GLS**, **Teachable**, and **Ordini Pienissimo
+Pro (SFDC → Zoho Pienissimo Software SRL)** — and the mail asks the client to
+take note of _"il perimetro di progetto"_.
+
+🟢 **This is real movement.** The dispute has been carried verbally through four
+meetings and three weekly statuses since July. It is now a written position,
+addressed to Sabatino Rinaldi, Fabrizio Paganelli, Elisa Migliano and Marco
+Montesi, with a request for acknowledgement.
+
+🔴 **It is not resolved, and it should not be recorded as resolved on a reply.**
+Three reasons:
+
+1. **The disputed item is the one on the slide.** `Ordini Pienissimo Pro` is
+   [OI-38](../items/OI-38%20Salesforce%20to%20Zoho%20for%20Pienissimo%20Pro.md) —
+   precisely what Pienissimo said was in scope and escalated to Daniela Morgese.
+2. **The mail asks for "presa visione", not agreement**, and bundles it with the
+   date change. A one-line acknowledgement would cover both and settle neither
+   ([OI-128](../items/OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
+3. **Daniela Morgese is not a recipient.** The escalation went to her; the
+   perimeter statement did not.
+
+⚠ **Still no quotation.** [OI-83](../items/OI-83%20No%20phase%202%20estimate.md)
+remains open: the mail promises a separate valuation in the future tense, five
+weeks after the estimate was due "after the holidays".
+
+⚠ **The parking decision of 7 September is not in the mail.** The internal session
+held Fase 2 *pending client payment* and deferred the **Mexal scadenzario
+correction path** into it — Fabrizio Paganelli's own request. He is a recipient of
+this mail; neither the parking nor his deferred item appears in it or on Slide 4.
+**Whether he can tell his request has moved out of scope is not established.**

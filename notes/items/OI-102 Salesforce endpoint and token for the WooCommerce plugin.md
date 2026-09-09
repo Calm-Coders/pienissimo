@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-07
+updated: 2026-09-08
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -203,3 +203,40 @@ A mail to the client is the moment that pattern leaves ROMI.
 
 ⚠ **`INT-16` is still not closed.** What the endpoint class enforces on its caller
 was not re-verified this run either.
+
+## ✅ 2026-09-08 - it was sent
+
+**Aurel Mrruku mailed Sabatino Rinaldi at 14:17Z**, replying on the
+`Integrazione woo commerce - salesforce` thread he opened on 27 August, cc Andrea
+Di Cicco and Elena Spini. Attached: **`Pienissimo.postman_collection.json`**.
+
+> _"Abbiamo messo in piedi l'endpoint. Ti passo qui sotto la collection per
+> testare direttamente su Postman. Prima si deve fare una chiamata per ricevere
+> il token, poi il token viene usato sulla seconda chiamata. Per fare diverse
+> chiamate e per evitare i duplicati, basta cambiare l'id dell'order."_
+
+**Twelve days after Sabatino Rinaldi's side was ready**, and after a direct Slack
+reminder from Elena Spini that morning at 09:17 CEST — _"reminder PIENISSIMO per
+Woocommerce mail"_ — to which Aurel Mrruku answered _"grz"_ five hours before
+sending.
+
+🟢 **The duplicate contract is explained in the mail body**, which
+[OI-104](OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md)
+has wanted since the `409` → `200 + duplicate: true` change went in silently on
+31 August. It is explained as a *testing* instruction — change the order id to
+avoid duplicates — not as a contract statement, so **OI-104 is not closed by it**.
+
+🔴 **The credentials were not rotated first.** This row and
+[the plaintext-credential risk](../risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)
+both said to rotate before sending, because the JWT assertion's `exp` is roughly
+sixty years out. The collection went to the client unchanged. **That pattern has
+now left ROMI.**
+
+⚠ **A newer collection exists and this is not it.** At 14:58 CEST — forty minutes
+*after* sending — Aurel Mrruku asked Andrea Di Cicco in DM for _"la collection
+aggiornata su pienissimo"_; Andrea Di Cicco answered _"Devo mettere i filtri
+ancora"_ and promised it between 17:00 and 18:00. **What Sabatino Rinaldi holds
+is the pre-filter version.**
+
+⚠ **No test result yet.** Sabatino Rinaldi had not replied by the end of
+8 September, and he is on the client's tour from that day.

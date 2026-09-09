@@ -10,6 +10,61 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-08 — claude — nightly requirements-check: go-live 21 October, the locale gets a home, and a password in a transcript
+
+- **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
+  **2026-09-07T22:00Z**, taken from the `external_watermark` of
+  [the 07/09 trace](notes/traces/Source%20trace%202026-09-07.md), which is also the
+  newest note in `notes/traces/` by `updated:`. The window is 8 September. Drilled
+  **two** sessions from full transcripts: `Data Model: Parte 4` (client-facing,
+  12:01 CEST, **1h25m58s**) and `Flussi MKT Parte 2` (ROMI-internal, 14:32 CEST,
+  **42m21s**). Read the client status mail and the new plan deck in full.
+- **State:** five things.
+  **(1) ✅🔴 The go-live is 21 October, and it corrects yesterday's record.** Elena
+  Spini told the client in writing at 14:15Z: go-live **21 October**, UAT ready
+  **23/09**, UAT **23/09–13/10**, approval **13/10**, and **Fase 2 out of
+  perimeter** with a request for written acknowledgement
+  ([the decision](notes/decisions/Decision%20-%20go-live%20moves%20to%2021%20October%20and%20Fase%202%20is%20declared%20out%20of%20perimeter.md)).
+  The 07/09 session's "21 September / 13 September" were **21 and 13 October** —
+  Gemini's paraphrase dropped the month.
+  [OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)
+  is **renamed and rewritten**; inbound links fixed in eight files. **The register
+  was left at 6 October deliberately** — the date is proposed, not accepted
+  ([OI-128](notes/items/OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
+  **(2) 🟢 Parte 4 gave the locale a home and it was built the same evening.**
+  Locali are **Account children of the billing company; only parents go to
+  Mexal** — which **resolves
+  [OI-123](notes/items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md)**
+  with a record type, not the new object it feared. PR **#35** / `c877631` shipped
+  it at 18:21 CEST. Also: duplicate control moves to the Lead on **email AND phone
+  in combo**; contracts and tickets go to the billing company's principal only;
+  the Opportunity field list is cleaned; **Parte 5 (16/09) and Parte 6 (18/09)**
+  booked at two hours.
+  **(3) 🔴 A UAT sandbox password was read aloud and Gemini transcribed it**, and
+  Fabrizio Mastracci signed in **as Aurel Mrruku**
+  ([the risk](notes/risks/Risk%20-%20a%20sandbox%20password%20was%20spoken%20aloud%20and%20preserved%20in%20a%20meeting%20transcript.md)).
+  **The value is not in this repository.** The durable half is the shared login —
+  and Utenti/Profili is the workbook section nobody has opened in five sessions.
+  **(4) ✅ The WooCommerce collection reached Sabatino Rinaldi** at 14:17Z
+  ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)) —
+  🔴 **without the rotation this record twice asked for**.
+  **(5) ⚠ An org check ran at 16:31 CEST and its org-only drift findings were
+  merged ninety minutes later.**
+- **Next:** the register decision is the one that matters —
+  **OI-128 gates OI-124**. If the client acknowledges, `CTX-02`, the `M`
+  definition, both milestone tables, the Fase 2 escalation rule and `go_live:`
+  change in **both languages in the same session**, and the escalation rule's
+  _"unless explicitly renegotiated"_ premise needs re-examining. `STATUS.md`, the
+  Notion mirror and the Flows page are owed for a **ninth** run and remain
+  `org-status-check`'s.
+- **Watch:** ⚠ **`MAP.md` is 93 KB against its own stated 5 KB budget** and
+  `INDEX.md` still prices it at ~1.1k. It has been over budget for weeks; a run
+  should split it. ⚠ **Diff `DevMain` before believing any org-check drift claim** —
+  second instance in five days. ⚠ **A machine paraphrase can drop a unit and stay
+  plausible**: the 07/09 run was right to flag an unreconcilable date rather than
+  act on it. ⚠ The funnel specification lives in **screenshots nobody has read**,
+  this run included.
+
 ## 2026-09-07 — claude — nightly requirements-check: three sessions, and a go-live date that moved without the client
 
 - **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
@@ -28,7 +83,7 @@ Keep the twenty most recent entries here; archive older ones to
   escalation rule all say **6 October**. Fifteen days **earlier**, yet described as
   a *slittamento* adding development weeks — which only fits a plan this repository
   does not hold. **Nothing was changed in the register**
-  ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)).
+  ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
   The same session **parked Fase 2 pending client payment** — first movement on
   that dispute since 24/07 — while **deferring the Mexal scadenzario path into that
   parked phase**, and settled **six Mexal decisions**

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-09-07
+updated: 2026-09-08
 blocks: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-06
@@ -190,3 +190,56 @@ the same morning for two minutes and settled a consent question on the spot.
 
 **Follow-up booked: `[PIENISSIMO] - Flussi MKT Parte 2`, Tuesday 8 September
 14:30–15:30 CEST**, Aurel Mrruku and Fabrizio Mastracci, invited 09:02:42Z.
+
+## 2026-09-08 - the tag vocabulary is complete, and the send timing has a home
+
+[Flussi MKT Parte 2](../meetings/2026-09-08%20Flussi%20MKT%20Parte%202.md) ran
+14:32 CEST for 42m21s. Elena Spini collected the client's funnel material into a
+new Drive folder `02 Marketing` during the call.
+
+### 🟢 The tag scheme has four members, not two
+
+`SEGMENTI FUNNEL BIGLIETTI.docx` completes the vocabulary Parte 3 half-decoded.
+Using `FMF_2026` as the worked example:
+
+| Tag | Meaning |
+| --- | ------- |
+| `<EVENT>` | the **contatto principale holding at least one ticket** for the event |
+| `<EVENT>_I` | the contact — principal or not — **once participant data is entered** on the ticket |
+| `<EVENT>CP` | the **contatto principale** once *their own* participant data is entered |
+| `<EVENT>_R` | the contact who **renounces** the event |
+
+⚠ **Only `_R` is a Tag Associati value.** The other three are written by the CRM
+into Automation's **contact properties** — so three of the four are integration
+outputs, not tags a person sets, and the split matters for whoever builds the
+Salesforce side.
+
+### 🟢 The exit rule is written down
+
+> _"un contatto avente 3 biglietti può decidere di partecipare anche solo con 1
+> biglietto e in questo modo, una volta inseriti i dati, esce dal funnel e non
+> riceve più comunicazioni."_
+
+**Partial completion exits the funnel.** That is the operative criterion behind
+[OI-126](OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md) and
+it is stricter than a per-ticket flag: the segment turns on *iscrizioni
+effettuate* against tickets held, not on any one ticket's state.
+
+### 🟢 The 60-day question is answered by data, not by a flow
+
+The window stays **30–60 days**, but the interval is no longer computed. Agreed:
+put **`data evento`** and **`data invio`** directly on the invitation record, so
+the Marketing Cloud flow fires on `data invio = today` and never queries the
+Campaign. 🔴 Aurel Mrruku named the cost — **triggers to propagate a changed
+Campaign date onto every invitation record**, unbuilt and unestimated.
+
+⚠ **Reminders were deliberately parked.** Build to Rebecca Marmo's example flows
+as given; raise the cadence question at a follow-up. Whether reminders also vary
+per campaign is unanswered, and it is the same "ROMI choosing for the client"
+pattern this row has carried since August.
+
+🔴 **None of it can be tested end to end** —
+[OI-134](OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md).
+
+⚠ **The plain-text style constraint was still not restated** to Fabrizio
+Mastracci, for the second session running.

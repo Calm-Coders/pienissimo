@@ -2866,3 +2866,202 @@ errors in 57 rows.
 ⚠ **This sweep did not open the org.** Every figure above is ROMI's own check as
 posted to Slack, and `STATUS.md`, the Notion mirror and the register's
 `build_state` carry none of it.
+
+---
+
+## 31. Update 2026-09-08 — go-live 21 October, the locale gets a home, and a password goes into a transcript
+
+Nightly `requirements-check` from watermark **2026-09-07T22:00Z**. Two sessions
+drilled from full transcripts, one client mail that resets the plan, one merged
+PR, and one org check posted to Slack.
+
+### 31.1 🔴 The go-live is 21 October, and the 07/09 record was wrong
+
+At **14:15Z** Elena Spini sent `[ROMI-PIENISSIMO] - Stato Avanzamento Progetto`
+to Sabatino Rinaldi, Fabrizio Paganelli, amministrazione@ and Marco Montesi, cc
+Aurel Mrruku and Andrea Di Cicco:
+
+| Milestone | Date |
+| --------- | ---- |
+| **UAT ready, Fase 1** | 23 September |
+| **UAT and test** | 23 September – 13 October |
+| **Solution approval** | 13 October |
+| **Go-live Fase 1** | **21 October 2026** |
+
+The stated cause is _"diversi temi ancora pending e i lavori stanno procedendo a
+rilento"_ — the data model still open, and repeated revisions to the analysis
+flows. The plan is `Pienissimo_Project Plan 2.pptx`, saved 14:08:27Z.
+
+✅ **This corrects §30.** The 07/09 internal session's _"21 settembre … entro il
+13 dello stesso mese"_ were **21 and 13 October** with the month dropped from
+Gemini's paraphrase. §30 recorded a date fifteen days *earlier* than the register
+yet described as a *slittamento* adding development weeks, called the combination
+impossible to reconcile, and refused to act on it. That refusal was correct: a
+Gemini decision list dropped the month from two dates and produced a
+coherent-looking reading that was wrong in direction as well as value.
+
+🔴 **The register is unchanged, deliberately.** `CTX-02`, the `M` priority
+definition, both milestone tables, the Fase 2 escalation rule and
+`go_live: 2026-10-06` all still say 6 October. `REQUISITI.it.md` is the text
+presented for signature, and the client has been asked for acknowledgement but
+has not replied (**#128**). ⚠ The escalation rule reads _"unless the go-live date
+is explicitly renegotiated"_ — it now has been, and the rule has not been
+re-examined.
+
+🔴 **Fase 2 is declared out of perimeter in writing.** Slide 4 names **GLS**,
+**Teachable** and **Ordini Pienissimo Pro → Zoho Pienissimo Software SRL** as
+`FUORI PERIMETRO DA QUOTARE`. The last is exactly what Pienissimo disputed and
+escalated to Daniela Morgese — **who is not a recipient of this mail**. A stated
+perimeter is not an agreed perimeter, and _"presa visione"_ is not agreement.
+
+🟢 The deck also confirms in a client-facing artifact that Anticipay is
+**"ex CreditSafe"**, named until now only from a transcript aside.
+
+🔴 **The Zoho margin halves.** Zoho expires 31 October: overlap falls from
+twenty-five days to **ten**.
+
+🔴 **UAT starts in fifteen days on a build that has never been UAT-tested.** Two
+hours before the mail, Aurel Mrruku said _"non abbiamo ancora fatto dei UAT
+noi"_ and that a first production release needs _"almeno un paio di settimane"_
+(**#134**). The nine flows listed for UAT include several the record shows
+unbuilt or unproven.
+
+Elena Spini checked the four blockers with the delivery team in DM 32 minutes
+before sending and had Aurel Mrruku's **"OK da parte mia"** at 16:03:59 CEST.
+⚠ **Andrea Di Cicco was in that DM and did not answer**; the Mexal integration is
+his and it is one of the nine UAT flows.
+
+### 31.2 🟢 Data Model Parte 4 — the locale becomes an Account record type
+
+Client-facing, **12:01 CEST**, **1h25m58s**, drilled from the full transcript.
+Elena Spini, Elisa Migliano, Aurel Mrruku. **Andrea Di Cicco absent for the
+second session running**; Fabrizio Paganelli invited and silent.
+
+**Agreed, under `Concordato`:** _"I locali vengono configurati come account figli
+dell'azienda di fatturazione su Salesforce, mentre a Mexal vengono inviate
+unicamente le aziende padri."_ Quotes carry a lookup to the specific locale.
+
+✅ **This resolves #123.** Elisa Migliano brought Marco Montesi's answer — the
+questionnaire holds **2022 operating data** and one company can own several
+locali on different terms. The answer is a **record type on an object that
+already exists**, not the new object #123 feared with its relationships, layouts
+and migration.
+
+🟢 **Built the same evening.** PR **#35** / commit `c877631` (Anita Aga, merged by
+Aurel Mrruku 18:21 CEST): `Azienda` and `Locale` record types, the
+`locale_requires_parent_azienda` and `parent_must_be_azienda` validation rules,
+`AccountTriggerHandler` with delete protection, `CommercialAccountResolver`, ten
+Account fields, and `WoocommerceOrderService` and `LeadConversionQueueable`
+updated to resolve through the parent.
+
+Also settled:
+
+- **Contracts, quotes and tickets go only to the billing company's `contatto
+  principale`** — for legal reasons, never to an individual locale. DocuSign
+  sends will allow additional CC addresses. Tutors must be instructed.
+- **Ticket dispatch is a marketing-calendar decision, not a payment trigger.**
+  There is no fixed rule tying dispatch to tranche payment.
+- **Duplicate control moves to the Lead, on email AND phone in combo** — chosen
+  over either-or because a customer may hold several email addresses. The
+  Zoho-inherited phone-check fields are deleted from the Opportunity.
+- **The Opportunity field list is cleaned**: standard-duplicating customs,
+  address detail, sales-cycle duration and conversion time removed; closed-lost
+  reason kept; amount driven from the primary quote; the Pienissimo Software /
+  Zoho hand-off checkboxes removed until that Fase 2 flow is analysed.
+- **Opportunity naming from QR codes and web forms** is standardised by Marketing
+  Cloud plus a back-end trigger, keyed to provenance.
+
+🟢 **Parte 5 (Wed 16/09) and Parte 6 (Fri 18/09), two hours each** — products,
+quotes and orders, then campaigns and leads **with Rebecca Marmo**. Products
+first, at Aurel Mrruku's request, as propedeutico.
+
+🔴 **The Lead table is deferred a fifth time**, and **Utenti, Profili and the
+initial-load plan are in no booked session** (**#24**). Five sessions, three
+objects. Four new client deliverables came out of the session: **#129, #130,
+#131**, plus Aurel Mrruku's own technical check **#132**.
+
+### 31.3 🔴 Flussi MKT Parte 2 — a password read aloud, and flows that cannot be tested
+
+ROMI-internal, **14:32 CEST**, **42m21s**. Elena Spini, Aurel Mrruku, Fabrizio
+Mastracci; Aurel Mrruku left at ~00:26.
+
+🟢 **The invitation record carries the dates.** Agreed: put **`data evento`** and
+**`data invio`** directly on `Event_Invitation__c`, with the account email, so
+the Marketing Cloud flow fires on `data invio = today` and **never queries the
+Campaign**. This supersedes both the nightly 60-day campaign check and Fabrizio
+Mastracci's Campaign formula-plus-checkbox counter-proposal. 🔴 The cost Aurel
+Mrruku named himself — **triggers to propagate a changed Campaign date onto every
+invitation record** — is unbuilt and unestimated, and two designs are still live.
+
+🔴 **A Salesforce UAT sandbox password was spoken aloud** to work around a One
+Password failure, and **Fabrizio Mastracci signed in as Aurel Mrruku** rather
+than under his own user. Gemini transcribed it verbatim into a Drive document
+that is shared and linked from the calendar event. **The value is not recorded in
+this repository.** The durable finding is the shared login: everything Fabrizio
+Mastracci does in UAT is attributed to Aurel Mrruku, which corrupts
+`LastModifiedBy` as evidence — and **Utenti and Profili is the workbook section
+nobody has opened in five sessions**. Second credential disclosure in five days,
+fourth authentication finding in six.
+
+🔴 **The marketing flows cannot be tested end to end** (**#134**): no
+authenticated domain in the sandbox, no community in production, and a first
+production release two weeks out.
+
+🟢 **The tag vocabulary is complete.** `SEGMENTI FUNNEL BIGLIETTI.docx` adds two
+members to the two decoded at Parte 3: `<EVENT>` for the principal contact
+holding at least one ticket, and **`<EVENT>_R` for rinuncia**. ⚠ Only `_R` is a
+real Tag Associati value; the other three are CRM-written contact properties.
+
+🔴 **The funnel exit rule is a contact-level aggregate, not an asset flag** —
+_"un contatto avente 3 biglietti può decidere di partecipare anche solo con 1
+biglietto e … esce dal funnel"_. A per-Asset boolean cannot express it (**#126**).
+
+🔴 **The WhatsApp templates are absent** from Rebecca Marmo's four attachments,
+confirmed live; Elena Spini confirmed they exist client-side (**#133**). ⚠ Two of
+the three funnel documents are effectively empty as text, their logic sitting in
+screenshots that have **not** been read into this record.
+
+### 31.4 ✅ The WooCommerce endpoint reached the client
+
+Aurel Mrruku mailed Sabatino Rinaldi the **Postman collection** at 14:17Z, after a
+Slack reminder from Elena Spini that morning — twelve days after the client's
+side was ready (**#102**).
+
+🔴 **The credentials were not rotated first**, as this record twice asked: the JWT
+assertion whose `exp` is roughly sixty years out went to the client unchanged.
+**That pattern has now left ROMI.**
+
+⚠ **A newer collection exists and this is not it.** Forty minutes *after* sending,
+Aurel Mrruku asked Andrea Di Cicco in DM for the updated collection; Andrea Di
+Cicco answered _"Devo mettere i filtri ancora"_. Sabatino Rinaldi holds the
+pre-filter version, and had not replied by end of day.
+
+### 31.5 ⚠ An org check ran, published nothing, and was overtaken by a merge
+
+Full scope, report mode, **16:31–16:39 CEST**, live UAT versus `c81578f`, posted
+to the dev group only.
+
+⚠ **Its org-only drift findings closed themselves.** `AccountTriggerHandler`,
+`CommercialAccountResolver`, `AccountTrigger`, the Account record types and ten
+Account fields were reported present in UAT and absent from the checkout — and
+were **committed at 17:53 and merged at 18:21**, ninety minutes later. *An org
+check is a photograph of a moving branch; diff `DevMain` before trusting any
+drift claim.* This is the second time the lesson has landed, after 04/09.
+
+What stands:
+
+| Finding | Detail |
+| ------- | ------ |
+| **Edition mapping** | **40 of 43** ticket-generating products have no active mapping; 3 active rows cover 3 products; **22 of 27** orders on `Incassato`. Corrects the older 226/229 all-product denominator (**#121**) |
+| **Tranche propagation** | 34 quote lines linked, **0 of 32 order lines**; no writer in inspected Apex, no active Flow (**#50**) |
+| **Invitations** | 3 records URL Ready, collection Pending, none with recipient or `Send_After` |
+| **Tickets** | **0 Assets carry a QR value**; 15 Assets, 14 Ordinato, 1 Assegnato; neither controller invokes signature processing (**#68/#78**) |
+| **Anticipay notification** | still compiled-in to a ROMI developer mailbox; 36 error-flagged of 65 integration logs (**#119**) |
+| **Community auth** | controllers still accept record identifiers without establishing caller identity |
+| **Flows** | zero, confirmed three ways — Metadata listing, Tooling `FlowDefinition`, active-Flow query |
+| **Coverage** | **0 of 2,957 lines**, 42 entries, last test run still 4 August (**NFR-06**) |
+| **Tranche access** | fields exist with edit grants; one active assignee, a System Administrator — **not** a "nobody can access it" finding |
+
+⚠ **This sweep did not open the org.** Every figure above is ROMI's own check as
+posted to Slack. `STATUS.md`, the Notion mirror and the register's `build_state`
+carry none of it, for a ninth run.

@@ -75,7 +75,7 @@ September and which **is not in this repository**.
 🔴 **Nothing was changed in the register.** `REQUISITI.it.md` is the text
 presented for signature; a date in it does not move on an internal meeting
 summary, and no source shows Pienissimo being asked. The conflict is
-[OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md).
+[OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md).
 
 ### 2. 🔴 Fase 2 is parked, and work was deferred into it in the same hour
 
@@ -235,7 +235,7 @@ Also: rows **123**–**127** plus a sweep blockquote in `open-items.md` **and**
 go-live date, and the 07/09 session moved it. It was left alone deliberately: the
 Italian is the contractually operative text, the decision was taken with no client
 in the room, and the direction of the change contradicts its own justification.
-That is [OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20September%20in%20an%20internal%20session.md)'s
+That is [OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)'s
 question for a human, not a sweep's to answer.
 
 ## Deliberately not done

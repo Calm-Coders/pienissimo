@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elisa Migliano
 org: both
 raised: 2026-07-02
-updated: 2026-09-07
+updated: 2026-09-08
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 24
@@ -285,3 +285,50 @@ Recorded, never copied.
 
 **Parte 4 is Tuesday 8 September 12:00–13:00** and is the last booked session. On
 the current rate it holds one object, and four gaps plus the Lead table need it.
+
+## 2026-09-08 - Parte 4 ran, and two more sessions were booked
+
+[Parte 4](../meetings/2026-09-08%20Data%20Model%20Parte%204.md) ran 12:01 CEST for
+**1h25m58s** — Elena Spini, Elisa Migliano, Aurel Mrruku. **Andrea Di Cicco did
+not attend**, for the second session running. It **cleared the Opportunity field
+list** and settled duplicate control, category/subcategory picklists and the lead
+origin field.
+
+The workbook itself was **saved at 11:18:29Z**, during the session's closing
+minutes. ⚠ **Its content was not read this run** — the transcript covers the same
+ground at higher fidelity — so a change made outside the session would not have
+been seen.
+
+🟢 **The sessions are no longer the last one booked**, and they got longer:
+
+| Session | When | Focus |
+| ------- | ---- | ----- |
+| **Parte 5** | Wed **16 September** 11:00-13:00 CEST | Prodotti, Preventivi, Ordini |
+| **Parte 6** | Fri **18 September** 11:00-13:00 CEST | Campagne, Lead — **with Rebecca Marmo** |
+
+Elena Spini proposed two-hour slots to stop losing time; Aurel Mrruku asked for
+**products first** as propedeutico to quotes and orders.
+
+🔴 **The four gaps are now three, and the Lead table has been deferred a fifth
+time.** After five sessions:
+
+| Gap | Status |
+| --- | ------ |
+| **Ordine field list** | booked at last — Parte 5, 16 September |
+| **Lead table** | deferred from Parte 1, 2, 3 and 4 → **Parte 6, 18 September** |
+| **Utenti** | **in no booked session** |
+| **Profili** | **in no booked session** |
+| **Initial-load plan** | **in no booked session**, and now formally in stand-by |
+
+🔴 **Data migration is now explicitly held.** The client status mail of the same
+afternoon says _"L'attività resta temporaneamente in stand-by in attesa della
+chiusura definitiva del Data Model"_ — so this row is the thing gating migration,
+in writing, to the client
+([OI-128](OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
+
+⚠ **Utenti and Profili being unbooked stopped being an abstraction on 8
+September**: a person with no user of their own signed into UAT under someone
+else's login
+([the risk](../risks/Risk%20-%20a%20sandbox%20password%20was%20spoken%20aloud%20and%20preserved%20in%20a%20meeting%20transcript.md)).
+
+Five sessions, **three objects**: Account, Referente, Opportunità.
