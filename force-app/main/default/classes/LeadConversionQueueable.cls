@@ -1,6 +1,7 @@
 public with sharing class LeadConversionQueueable implements Queueable {
   private static final String QUALIFIED_STATUS = 'Qualificato';
   private static final String CONVERTED_STATUS = 'Convertito';
+  private static final String AZIENDA_RECORD_TYPE = 'Azienda';
   private static final Integer OPPORTUNITY_NAME_LIMIT = 120;
   private static final Integer LEAD_CONVERT_BATCH_SIZE = 100;
   private static final String USER_ID_PREFIX = '005';
@@ -26,6 +27,8 @@ public with sharing class LeadConversionQueueable implements Queueable {
         LastName,
         Company,
         Email,
+        Phone,
+        Partita_IVA__c,
         OwnerId,
         Status,
         IsConverted
@@ -41,9 +44,11 @@ public with sharing class LeadConversionQueueable implements Queueable {
       return;
     }
 
-    Set<String> emails = getNormalizedEmails(leadsToConvert);
-    Map<String, Contact> contactsByEmail = getContactsByEmail(emails);
-    Map<String, Account> accountsByLeadEmail = getAccountsByLeadEmail(emails);
+    Map<Id, Id> accountIdsByLeadId = resolveConversionAccounts(leadsToConvert);
+    Map<String, Contact> contactsByAccountAndPersonKey = getContactsByAccountAndPersonKey(
+      leadsToConvert,
+      new Set<Id>(accountIdsByLeadId.values())
+    );
     List<Database.LeadConvert> conversionRequests = new List<Database.LeadConvert>();
     Map<Id, String> leadEmailById = new Map<Id, String>();
 
@@ -65,11 +70,21 @@ public with sharing class LeadConversionQueueable implements Queueable {
         conversionRequest.setOwnerId(conversionOwnerId);
       }
 
-      applyExistingEmailMatch(
-        conversionRequest,
-        contactsByEmail.get(normalizedEmail),
-        accountsByLeadEmail.get(normalizedEmail)
-      );
+      Id accountId = accountIdsByLeadId.get(leadRecord.Id);
+      if (accountId != null) {
+        conversionRequest.setAccountId(accountId);
+
+        Contact matchingContact = contactsByAccountAndPersonKey.get(
+          buildAccountPersonKey(
+            accountId,
+            normalizeEmail(leadRecord.Email),
+            normalizePhone(leadRecord.Phone)
+          )
+        );
+        if (matchingContact != null) {
+          conversionRequest.setContactId(matchingContact.Id);
+        }
+      }
 
       conversionRequests.add(conversionRequest);
     }
@@ -127,24 +142,145 @@ public with sharing class LeadConversionQueueable implements Queueable {
     }
   }
 
-  private static void applyExistingEmailMatch(
-    Database.LeadConvert conversionRequest,
-    Contact matchingContact,
-    Account matchingAccount
-  ) {
-    if (matchingContact != null && matchingContact.AccountId != null) {
-      conversionRequest.setAccountId(
-        CommercialAccountResolver.resolve(matchingContact.AccountId)
+  private static Map<Id, Id> resolveConversionAccounts(List<Lead> leads) {
+    Map<Id, Id> accountIdsByLeadId = new Map<Id, Id>();
+    Set<String> vatNumbers = getNormalizedVatNumbers(leads);
+    Map<String, Account> accountsByVat = getAccountsByVat(vatNumbers);
+    Map<Id, Id> commercialAccountIdsByAccountId = resolveAccountIds(
+      accountsByVat.values()
+    );
+
+    for (Lead leadRecord : leads) {
+      Account matchingAccount = accountsByVat.get(
+        normalizeVat(leadRecord.Partita_IVA__c)
       );
-      conversionRequest.setContactId(matchingContact.Id);
+      if (matchingAccount != null) {
+        accountIdsByLeadId.put(
+          leadRecord.Id,
+          commercialAccountIdsByAccountId.get(matchingAccount.Id)
+        );
+      }
+    }
+
+    createMissingAziendaAccounts(leads, accountIdsByLeadId);
+    return accountIdsByLeadId;
+  }
+
+  private static void createMissingAziendaAccounts(
+    List<Lead> leads,
+    Map<Id, Id> accountIdsByLeadId
+  ) {
+    Id aziendaRecordTypeId = getAziendaAccountRecordTypeId();
+    List<Account> accountsToInsert = new List<Account>();
+    Map<Integer, Id> leadIdByAccountIndex = new Map<Integer, Id>();
+
+    for (Lead leadRecord : leads) {
+      if (accountIdsByLeadId.containsKey(leadRecord.Id)) {
+        continue;
+      }
+
+      leadIdByAccountIndex.put(accountsToInsert.size(), leadRecord.Id);
+      accountsToInsert.add(
+        new Account(
+          Name = buildAccountName(leadRecord),
+          RecordTypeId = aziendaRecordTypeId,
+          Lead_Email__c = normalizeEmail(leadRecord.Email),
+          Partita_IVA__c = normalizeVat(leadRecord.Partita_IVA__c),
+          Phone = leadRecord.Phone
+        )
+      );
+    }
+
+    if (accountsToInsert.isEmpty()) {
       return;
     }
 
-    if (matchingAccount != null) {
-      conversionRequest.setAccountId(
-        CommercialAccountResolver.resolve(matchingAccount.Id)
+    insert accountsToInsert;
+
+    for (Integer index = 0; index < accountsToInsert.size(); index++) {
+      accountIdsByLeadId.put(
+        leadIdByAccountIndex.get(index),
+        accountsToInsert[index].Id
       );
     }
+  }
+
+  private static Set<String> getNormalizedVatNumbers(List<Lead> leads) {
+    Set<String> vatNumbers = new Set<String>();
+    for (Lead leadRecord : leads) {
+      String vatNumber = normalizeVat(leadRecord.Partita_IVA__c);
+      if (vatNumber != null) {
+        vatNumbers.add(vatNumber);
+      }
+    }
+
+    return vatNumbers;
+  }
+
+  private static Map<String, Account> getAccountsByVat(Set<String> vatNumbers) {
+    Map<String, Account> accountsByVat = new Map<String, Account>();
+    if (vatNumbers.isEmpty()) {
+      return accountsByVat;
+    }
+
+    for (Account accountRecord : [
+      SELECT Id, Partita_IVA__c
+      FROM Account
+      WHERE Partita_IVA__c IN :vatNumbers
+      ORDER BY CreatedDate, Id
+    ]) {
+      String vatNumber = normalizeVat(accountRecord.Partita_IVA__c);
+      if (vatNumber != null && !accountsByVat.containsKey(vatNumber)) {
+        accountsByVat.put(vatNumber, accountRecord);
+      }
+    }
+
+    return accountsByVat;
+  }
+
+  private static Map<Id, Id> resolveAccountIds(List<Account> accountRecords) {
+    Set<Id> accountIds = new Set<Id>();
+    for (Account accountRecord : accountRecords) {
+      accountIds.add(accountRecord.Id);
+    }
+
+    return CommercialAccountResolver.resolveAll(accountIds);
+  }
+
+  private static Map<String, Contact> getContactsByAccountAndPersonKey(
+    List<Lead> leads,
+    Set<Id> accountIds
+  ) {
+    Map<String, Contact> contactsByAccountAndPersonKey = new Map<String, Contact>();
+    if (accountIds.isEmpty()) {
+      return contactsByAccountAndPersonKey;
+    }
+
+    Set<String> emails = getNormalizedEmails(leads);
+    if (emails.isEmpty()) {
+      return contactsByAccountAndPersonKey;
+    }
+
+    for (Contact contactRecord : [
+      SELECT Id, AccountId, Email, Phone
+      FROM Contact
+      WHERE AccountId IN :accountIds AND Email IN :emails
+      ORDER BY CreatedDate, Id
+    ]) {
+      String contactKey = buildAccountPersonKey(
+        contactRecord.AccountId,
+        normalizeEmail(contactRecord.Email),
+        normalizePhone(contactRecord.Phone)
+      );
+      if (
+        contactKey != null &&
+        !contactsByAccountAndPersonKey.containsKey(contactKey)
+      ) {
+        contactsByAccountAndPersonKey.put(contactKey, contactRecord);
+      }
+    }
+
+    return contactsByAccountAndPersonKey;
   }
 
   private static Set<String> getNormalizedEmails(List<Lead> leads) {
@@ -157,59 +293,6 @@ public with sharing class LeadConversionQueueable implements Queueable {
     }
 
     return emails;
-  }
-
-  private static Map<String, Contact> getContactsByEmail(Set<String> emails) {
-    Map<String, Contact> contactsByEmail = new Map<String, Contact>();
-    if (emails.isEmpty()) {
-      return contactsByEmail;
-    }
-
-    for (Contact contactRecord : [
-      SELECT Id, AccountId, Email
-      FROM Contact
-      WHERE Email IN :emails
-      ORDER BY CreatedDate, Id
-    ]) {
-      String email = normalizeEmail(contactRecord.Email);
-      if (email == null) {
-        continue;
-      }
-
-      Contact existingContact = contactsByEmail.get(email);
-      if (
-        existingContact == null ||
-        (existingContact.AccountId == null &&
-        contactRecord.AccountId != null)
-      ) {
-        contactsByEmail.put(email, contactRecord);
-      }
-    }
-
-    return contactsByEmail;
-  }
-
-  private static Map<String, Account> getAccountsByLeadEmail(
-    Set<String> emails
-  ) {
-    Map<String, Account> accountsByLeadEmail = new Map<String, Account>();
-    if (emails.isEmpty()) {
-      return accountsByLeadEmail;
-    }
-
-    for (Account accountRecord : [
-      SELECT Id, Lead_Email__c
-      FROM Account
-      WHERE Lead_Email__c IN :emails
-      ORDER BY CreatedDate, Id
-    ]) {
-      String email = normalizeEmail(accountRecord.Lead_Email__c);
-      if (email != null && !accountsByLeadEmail.containsKey(email)) {
-        accountsByLeadEmail.put(email, accountRecord);
-      }
-    }
-
-    return accountsByLeadEmail;
   }
 
   private static void updateConvertedAccountLeadEmails(
@@ -261,6 +344,31 @@ public with sharing class LeadConversionQueueable implements Queueable {
     return String.isBlank(email) ? null : email.trim().toLowerCase();
   }
 
+  private static String normalizePhone(String phone) {
+    if (String.isBlank(phone)) {
+      return null;
+    }
+
+    String normalizedPhone = phone.replaceAll('[^0-9]', '');
+    return String.isBlank(normalizedPhone) ? null : normalizedPhone;
+  }
+
+  private static String normalizeVat(String vatNumber) {
+    return String.isBlank(vatNumber) ? null : vatNumber.trim().toUpperCase();
+  }
+
+  private static String buildAccountPersonKey(
+    Id accountId,
+    String email,
+    String phone
+  ) {
+    if (accountId == null || email == null || phone == null) {
+      return null;
+    }
+
+    return String.valueOf(accountId) + '|' + email + '|' + phone;
+  }
+
   private static Id resolveConversionOwnerId(Id leadOwnerId) {
     return String.valueOf(leadOwnerId).startsWith(USER_ID_PREFIX)
       ? null
@@ -289,5 +397,31 @@ public with sharing class LeadConversionQueueable implements Queueable {
     return nameParts.isEmpty()
       ? 'Lead qualificato'
       : String.join(nameParts, ' ');
+  }
+
+  private static String buildAccountName(Lead leadRecord) {
+    return String.isBlank(leadRecord.Company)
+      ? buildLeadName(leadRecord)
+      : leadRecord.Company.trim();
+  }
+
+  private static Id getAziendaAccountRecordTypeId() {
+    List<RecordType> recordTypes = [
+      SELECT Id
+      FROM RecordType
+      WHERE SObjectType = 'Account' AND DeveloperName = :AZIENDA_RECORD_TYPE
+      LIMIT 1
+    ];
+
+    if (recordTypes.isEmpty()) {
+      throw new LeadConversionException(
+        'Account record type Azienda was not found'
+      );
+    }
+
+    return recordTypes[0].Id;
+  }
+
+  public class LeadConversionException extends Exception {
   }
 }

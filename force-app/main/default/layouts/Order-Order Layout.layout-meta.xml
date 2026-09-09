@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <excludeButtons>GenerateKnowledge</excludeButtons>
+    <excludeButtons>Change</excludeButtons>
+    <excludeButtons>CreateContractFromOrder</excludeButtons>
+    <excludeButtons>DeepCloneAction</excludeButtons>
+    <excludeButtons>OpenSlackRecordChannel</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -19,6 +22,14 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>OpportunityId</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Quote__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Locale__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
@@ -42,6 +53,10 @@
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ContractId</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>TotalAmount</field>
@@ -147,6 +162,8 @@
         <fields>ProductCode</fields>
         <fields>Quantity</fields>
         <fields>UnitPrice</fields>
+        <fields>Tranche__c</fields>
+        <fields>Data_Scadenza__c</fields>
         <fields>TotalPrice</fields>
         <fields>Description</fields>
         <relatedList>RelatedOrderItemList</relatedList>
@@ -187,7 +204,10 @@
         <fields>TASK.LAST_UPDATE</fields>
         <relatedList>RelatedHistoryList</relatedList>
     </relatedLists>
+    <relatedObjects>ContractId</relatedObjects>
     <relatedObjects>AccountId</relatedObjects>
+    <relatedObjects>Quote__c</relatedObjects>
+    <relatedObjects>Locale__c</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>

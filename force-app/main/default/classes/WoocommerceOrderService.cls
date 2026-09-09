@@ -1,6 +1,7 @@
 @RestResource(urlMapping='/woocommerce/orders/*')
 global without sharing class WoocommerceOrderService {
   private static final String FLOW_NAME = 'WoocommerceOrderService.createOrder';
+  private static final String AZIENDA_RECORD_TYPE = 'Azienda';
   private static final String CREATED_STATUS = 'Incassato';
   private static final String INITIAL_STATUS = 'Ordinato';
 
@@ -142,6 +143,7 @@ global without sharing class WoocommerceOrderService {
 
     Account accountRec = new Account(
       Name = limitLength(accountName(payload), 255),
+      RecordTypeId = getAziendaAccountRecordTypeId(),
       BillingStreet = payload.billingStreet(),
       BillingCity = payload.billingCity(),
       BillingState = payload.billingState(),
@@ -448,6 +450,23 @@ global without sharing class WoocommerceOrderService {
     return Account.SObjectType.getDescribe()
       .fields.getMap()
       .containsKey(fieldName);
+  }
+
+  private static Id getAziendaAccountRecordTypeId() {
+    List<RecordType> recordTypes = [
+      SELECT Id
+      FROM RecordType
+      WHERE SObjectType = 'Account' AND DeveloperName = :AZIENDA_RECORD_TYPE
+      LIMIT 1
+    ];
+
+    if (recordTypes.isEmpty()) {
+      throw new WooCommerceOrderException(
+        'Account record type Azienda was not found'
+      );
+    }
+
+    return recordTypes[0].Id;
   }
 
   private static Boolean hasOpportunityField(String fieldName) {

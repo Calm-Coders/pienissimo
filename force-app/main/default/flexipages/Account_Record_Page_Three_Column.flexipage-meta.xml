@@ -209,6 +209,16 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RecordTypeId</fieldItem>
+                <identifier>RecordRecordTypeIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Phone</fieldItem>
@@ -233,6 +243,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Partita_IVA__c</fieldItem>
                 <identifier>RecordPartita_IVA__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Lead_Email__c</fieldItem>
+                <identifier>RecordLead_Email_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

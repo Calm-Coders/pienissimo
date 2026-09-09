@@ -1,0 +1,93 @@
+<template>
+  <section class="path-shell" aria-label="Opportunity path">
+    <div class="stage-list" role="listbox" aria-label="Opportunity stages">
+      <template for:each={stageItems} for:item="stage">
+        <button
+          key={stage.value}
+          class={stage.className}
+          data-stage={stage.value}
+          disabled={isSaving}
+          onclick={handleStageSelect}
+          type="button"
+        >
+          <span class="stage-label">{stage.label}</span>
+        </button>
+      </template>
+    </div>
+
+    <div class="action-row">
+      <p class={statusClass}>{statusText}</p>
+      <lightning-button
+        disabled={markDisabled}
+        label="Mark as Current Stage"
+        onclick={handleMarkCurrent}
+        variant="brand"
+      ></lightning-button>
+    </div>
+  </section>
+
+  <template if:true={showReasonModal}>
+    <section
+      aria-labelledby="reason-heading"
+      aria-modal="true"
+      class="slds-modal slds-fade-in-open"
+      role="dialog"
+    >
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close"
+            onclick={closeModal}
+            title="Close"
+            type="button"
+          >
+            <lightning-icon
+              alternative-text="Close"
+              icon-name="utility:close"
+              size="small"
+              variant="inverse"
+            ></lightning-icon>
+          </button>
+          <h2 class="slds-modal__title slds-hyphenate" id="reason-heading">
+            {modalTitle}
+          </h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+          <div class="warning-line">
+            <lightning-icon
+              alternative-text="Required"
+              icon-name="utility:warning"
+              size="small"
+              variant="warning"
+            ></lightning-icon>
+            <span>{modalGuidance}</span>
+          </div>
+          <lightning-combobox
+            class="reason-field"
+            label={reasonLabel}
+            message-when-value-missing={reasonMissingMessage}
+            options={reasonOptions}
+            required
+            value={reasonValue}
+            onchange={handleReasonChange}
+          ></lightning-combobox>
+        </div>
+        <footer class="slds-modal__footer">
+          <lightning-button
+            disabled={isSaving}
+            label="Cancel"
+            onclick={closeModal}
+          ></lightning-button>
+          <lightning-button
+            class="slds-m-left_small"
+            disabled={isSaving}
+            label="Save"
+            onclick={handleReasonSave}
+            variant="brand"
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>
