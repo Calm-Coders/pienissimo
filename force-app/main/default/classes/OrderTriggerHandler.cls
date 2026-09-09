@@ -1,6 +1,7 @@
 public with sharing class OrderTriggerHandler {
   private static final String CONFIRMED_STATUS = 'Incassato';
   private static final String INITIAL_TICKET_STATUS = 'Ordinato';
+  private static final String OPPORTUNITY_WON_STAGE = 'Chiusa/Vinta';
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
   private static Id ticketRecordTypeId;
 
@@ -9,6 +10,7 @@ public with sharing class OrderTriggerHandler {
 
   public static void afterInsert(List<Order> newOrders) {
     AnticipayOrderAutomation.enqueueForFirstOrders(newOrders);
+    closeWonOpportunitiesForConfirmedOrders(newOrders, null);
     createTicketsForConfirmedOrders(newOrders, null);
   }
 
@@ -16,7 +18,52 @@ public with sharing class OrderTriggerHandler {
     List<Order> newOrders,
     Map<Id, Order> oldOrderMap
   ) {
+    closeWonOpportunitiesForConfirmedOrders(newOrders, oldOrderMap);
     createTicketsForConfirmedOrders(newOrders, oldOrderMap);
+  }
+
+  private static void closeWonOpportunitiesForConfirmedOrders(
+    List<Order> orders,
+    Map<Id, Order> oldOrderMap
+  ) {
+    Set<Id> opportunityIds = new Set<Id>();
+
+    for (Order orderRecord : orders) {
+      Order oldOrder = oldOrderMap == null
+        ? null
+        : oldOrderMap.get(orderRecord.Id);
+
+      if (
+        orderRecord.OpportunityId != null &&
+        orderRecord.Status == CONFIRMED_STATUS &&
+        (oldOrder == null ||
+        oldOrder.Status != CONFIRMED_STATUS)
+      ) {
+        opportunityIds.add(orderRecord.OpportunityId);
+      }
+    }
+
+    if (opportunityIds.isEmpty()) {
+      return;
+    }
+
+    List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+    for (Opportunity opportunityRecord : [
+      SELECT Id, StageName
+      FROM Opportunity
+      WHERE Id IN :opportunityIds AND StageName != :OPPORTUNITY_WON_STAGE
+    ]) {
+      opportunitiesToUpdate.add(
+        new Opportunity(
+          Id = opportunityRecord.Id,
+          StageName = OPPORTUNITY_WON_STAGE
+        )
+      );
+    }
+
+    if (!opportunitiesToUpdate.isEmpty()) {
+      update opportunitiesToUpdate;
+    }
   }
 
   private static void createTicketsForConfirmedOrders(

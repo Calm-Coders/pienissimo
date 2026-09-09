@@ -16,6 +16,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>Locale__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>CampaignId</field>
             </layoutItems>
             <layoutItems>
@@ -33,6 +37,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Loss_Reason__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Motivazione_Chiusa_Persa__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
