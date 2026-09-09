@@ -265,7 +265,7 @@ task before the production deploy.
 "between the 10 September end of build and the 6 October go-live". The
 7 September internal follow-up agreed **go-live 21 September with approval by
 13 September**
-([OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+([OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
 If that date holds, the unscheduled test task has to fit **between 10 and 13
 September**, three of which are the company offsite. **Nobody has connected the
 two.**
@@ -278,17 +278,17 @@ The org check of 8 September, 16:31-16:39 CEST, reports the stored aggregate as
 `AccountTriggerHandler`, `CommercialAccountResolver` and the `AnticipayAccountService`
 additions.
 
-| Date | Uncovered lines | Source |
-| ---- | --------------- | ------ |
-| 31/08 | 1,571 | org check |
-| 02/09 | 1,646 | org check |
-| 07/09 | 2,741 | ROMI org check, posted to the dev group |
-| **08/09** | **2,957** | **ROMI org check, posted to the dev group** |
+| Date      | Uncovered lines | Source                                      |
+| --------- | --------------- | ------------------------------------------- |
+| 31/08     | 1,571           | org check                                   |
+| 02/09     | 1,646           | org check                                   |
+| 07/09     | 2,741           | ROMI org check, posted to the dev group     |
+| **08/09** | **2,957**       | **ROMI org check, posted to the dev group** |
 
 🔴 **The window is no longer open-ended.** The client has been told go-live is
 **21 October** with production release preceding it, and a first production deploy
 was estimated the same day at **"almeno un paio di settimane"**
-([OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+([OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
 Salesforce requires 75% org-wide coverage to deploy to production. **At 0% the
 deploy fails, whatever else is ready.**
 

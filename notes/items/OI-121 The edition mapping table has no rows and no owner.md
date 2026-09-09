@@ -104,13 +104,13 @@ mirror and the register's `build_state` do not carry any of it.
 [7 September internal follow-up](../meetings/2026-09-07%20Follow-up%20Interno.md)
 agreed the sequence: **initial product load by Excel, then manual
 product-to-campaign mapping with start and end dates, planned for the days
-immediately before go-live.** That is the first statement anywhere of *when*.
+immediately before go-live.** That is the first statement anywhere of _when_.
 
 🔴 **It still names nobody**, which is the half of this item that has not moved.
 And two things now press on it:
 
 - **Go-live may have moved to 21 September**
-  ([OI-124](OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+  ([OI-124](OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
   "The days immediately before go-live" is a moving target that has just moved
   two weeks earlier, into a week that also contains the approval gate.
 - **The sequencing warning above is now the plan.** This note flagged that a

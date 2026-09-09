@@ -29,28 +29,28 @@ an incident.** A run that finds `AGENTS.md` missing is on the wrong branch.
 All read-only. **Nothing was sent, replied to, drafted, shared, modified or marked
 read**, with the single carve-out of the nightly report to `C0BQD34LLF4`.
 
-| Source | Query / scope | Result |
-| ------ | ------------- | ------ |
-| **Gmail** | `pienissimo after:2026/09/07 -in:draft`, 50-thread page | 16 threads, **9 new** |
-| **Gmail** | all mail `after:2026/09/07 -in:draft`, 50-thread page | 36 threads. The rest are Permo/Zucchetti, Interstudio Viaggi, BIT MOBILITY, a Workspace 2FA notice, a Salesforce certificate-expiry alert, Teatro Franco Parenti and marketing spam |
-| **Gmail** | thread `1a0815f9a43d3b87` — `Stato Avanzamento Progetto` | **read in full — the run's headline** |
-| **Gmail** | thread `1a043980228178d5` — `Integrazione woo commerce - salesforce` | **read in full**; the 08/09 sent message and its Postman attachment |
-| **Gmail** | threads `1a080cb4676a4dc5`, `1a0812d2ace0e7df` — Gemini notes for Parte 4 and Flussi MKT Parte 2 | identified; content read from the Drive documents instead |
-| **Gmail** | `1a080c204a545af7`, `1a080c61ffc65778`, `1a080c6dd7758f9b` — Parte 5 and Parte 6 invitations | read from search metadata: dates, times, focus, invitee lists |
-| **Gmail** | `1a0811c06b71004b`, `1a0811b35555a77a` — the two `[TEST]` email forwards | identified; **the PDFs were not opened** |
-| **Drive** | `modifiedTime > 2026-09-07T22:00:00Z`, paged twice | 33 items, **13 Pienissimo** |
-| **Drive** | `Pienissimo_Project Plan 2.pptx` `1tIjf-PQNgqIxnzJxsb5cTcDcPdfFuISE` | **read in full — the timeline and Slide 4's Fase 1/Fase 2 split** |
-| **Drive** | Gemini doc `1yH35OnOYKOCN7I6Z4o4GjDeIwcAkOaLPVgS9XHZkRao` (Parte 4) | **read in full — summary, 6 `Concordato` + 1 `Da approfondire`, 13 next steps, 13 detail bullets and the complete 1h25m58s transcript** |
-| **Drive** | Gemini doc `1_1hR-qPfRbLk8Bgx7bKvcoP5linsOa0R36D8RK4sMVk` (Flussi MKT Parte 2) | **read in full — notes and the complete 42m21s transcript** |
-| **Drive** | `SEGMENTI FUNNEL BIGLIETTI.docx`, `FUNNEL RICHIESTA ISCRIZIONE TITOLARE.docx`, `FUNNEL INVIO BIGLIETTO COMPILATO.docx` | **all three read**; two are effectively empty as text |
-| **Slack** | workspace-wide incl. private channels, DMs and group DMs, `pienissimo after:2026-09-07` | 6 hits, **all new** |
-| **Slack** | `#tproj-pienissimo`, `after:2026-09-06` | **0 results** — silent for a second week |
-| **Slack** | group DM `C0BQD34LLF4` — the org-status-check post of 16:31–16:39 CEST and its thread continuation | **read in full** from the search result |
-| **Slack** | group DM `C0BFDNXQKAS` (Aurel Mrruku, Andrea Di Cicco, Elena Spini) | **read in full** — the pre-send check of the client mail |
-| **Slack** | DMs `D0B5QHS2T7H` (Elena Spini) and `D0AQ0FMHFM1` (Andrea Di Cicco) | **read in full** — the WooCommerce reminder and the collection request |
-| **Git** | `git log`, `git show --stat` on `DevMain` | one new commit + merge, **`c877631`** / PR **#35**, 34 files |
-| **Repo** | `AGENTS.md`, `MAP.md`, `INDEX.md`, the write protocol, the 07/09 trace, the skill, OI-123/124, the register's go-live references | read directly |
-| **Fathom** | `list_meetings` from 07/09, 3 pages | **0 meetings.** Consistent with 03/09, 04/09 and 07/09 — an absence, not a gap |
+| Source     | Query / scope                                                                                                                    | Result                                                                                                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gmail**  | `pienissimo after:2026/09/07 -in:draft`, 50-thread page                                                                          | 16 threads, **9 new**                                                                                                                                                               |
+| **Gmail**  | all mail `after:2026/09/07 -in:draft`, 50-thread page                                                                            | 36 threads. The rest are Permo/Zucchetti, Interstudio Viaggi, BIT MOBILITY, a Workspace 2FA notice, a Salesforce certificate-expiry alert, Teatro Franco Parenti and marketing spam |
+| **Gmail**  | thread `1a0815f9a43d3b87` — `Stato Avanzamento Progetto`                                                                         | **read in full — the run's headline**                                                                                                                                               |
+| **Gmail**  | thread `1a043980228178d5` — `Integrazione woo commerce - salesforce`                                                             | **read in full**; the 08/09 sent message and its Postman attachment                                                                                                                 |
+| **Gmail**  | threads `1a080cb4676a4dc5`, `1a0812d2ace0e7df` — Gemini notes for Parte 4 and Flussi MKT Parte 2                                 | identified; content read from the Drive documents instead                                                                                                                           |
+| **Gmail**  | `1a080c204a545af7`, `1a080c61ffc65778`, `1a080c6dd7758f9b` — Parte 5 and Parte 6 invitations                                     | read from search metadata: dates, times, focus, invitee lists                                                                                                                       |
+| **Gmail**  | `1a0811c06b71004b`, `1a0811b35555a77a` — the two `[TEST]` email forwards                                                         | identified; **the PDFs were not opened**                                                                                                                                            |
+| **Drive**  | `modifiedTime > 2026-09-07T22:00:00Z`, paged twice                                                                               | 33 items, **13 Pienissimo**                                                                                                                                                         |
+| **Drive**  | `Pienissimo_Project Plan 2.pptx` `1tIjf-PQNgqIxnzJxsb5cTcDcPdfFuISE`                                                             | **read in full — the timeline and Slide 4's Fase 1/Fase 2 split**                                                                                                                   |
+| **Drive**  | Gemini doc `1yH35OnOYKOCN7I6Z4o4GjDeIwcAkOaLPVgS9XHZkRao` (Parte 4)                                                              | **read in full — summary, 6 `Concordato` + 1 `Da approfondire`, 13 next steps, 13 detail bullets and the complete 1h25m58s transcript**                                             |
+| **Drive**  | Gemini doc `1_1hR-qPfRbLk8Bgx7bKvcoP5linsOa0R36D8RK4sMVk` (Flussi MKT Parte 2)                                                   | **read in full — notes and the complete 42m21s transcript**                                                                                                                         |
+| **Drive**  | `SEGMENTI FUNNEL BIGLIETTI.docx`, `FUNNEL RICHIESTA ISCRIZIONE TITOLARE.docx`, `FUNNEL INVIO BIGLIETTO COMPILATO.docx`           | **all three read**; two are effectively empty as text                                                                                                                               |
+| **Slack**  | workspace-wide incl. private channels, DMs and group DMs, `pienissimo after:2026-09-07`                                          | 6 hits, **all new**                                                                                                                                                                 |
+| **Slack**  | `#tproj-pienissimo`, `after:2026-09-06`                                                                                          | **0 results** — silent for a second week                                                                                                                                            |
+| **Slack**  | group DM `C0BQD34LLF4` — the org-status-check post of 16:31–16:39 CEST and its thread continuation                               | **read in full** from the search result                                                                                                                                             |
+| **Slack**  | group DM `C0BFDNXQKAS` (Aurel Mrruku, Andrea Di Cicco, Elena Spini)                                                              | **read in full** — the pre-send check of the client mail                                                                                                                            |
+| **Slack**  | DMs `D0B5QHS2T7H` (Elena Spini) and `D0AQ0FMHFM1` (Andrea Di Cicco)                                                              | **read in full** — the WooCommerce reminder and the collection request                                                                                                              |
+| **Git**    | `git log`, `git show --stat` on `DevMain`                                                                                        | one new commit + merge, **`c877631`** / PR **#35**, 34 files                                                                                                                        |
+| **Repo**   | `AGENTS.md`, `MAP.md`, `INDEX.md`, the write protocol, the 07/09 trace, the skill, OI-123/124, the register's go-live references | read directly                                                                                                                                                                       |
+| **Fathom** | `list_meetings` from 07/09, 3 pages                                                                                              | **0 meetings.** Consistent with 03/09, 04/09 and 07/09 — an absence, not a gap                                                                                                      |
 
 ## Found
 
@@ -64,7 +64,7 @@ request for written acknowledgement
 
 ✅ **The 07/09 "21 September / 13 September" were 21 and 13 October** with the
 month dropped from Gemini's `Concordato` paraphrase.
-[OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)
+[OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)
 is rewritten and renamed; the 07/09 note's refusal to act on an unreconcilable
 reading was correct.
 
@@ -114,7 +114,7 @@ this is not it.
 
 16:31–16:39 CEST, full scope, report mode, live UAT versus `c81578f`. Its
 **org-only drift findings were committed at 17:53 and merged at 18:21** — `c877631`
-/ PR #35. *An org check is a photograph of a moving branch.* Second time this
+/ PR #35. _An org check is a photograph of a moving branch._ Second time this
 lesson has landed, after 04/09.
 
 Standing findings folded in: **40 of 43** products without an active edition
@@ -127,7 +127,7 @@ coverage at **0 of 2,957 lines**.
 - **Permo / Zucchetti** — a long thread on search-key columns, two Gemini docs,
   and two sessions. **Not ingested.**
 - **Interstudio Viaggi**, **BIT MOBILITY**, **Teatro Franco Parenti** (`[TFP] Data
-  Model CRM`, 10:01 CEST), **Daze**, **ROMI BE.MA onboarding**, a **Workspace 2FA
+Model CRM`, 10:01 CEST), **Daze**, **ROMI BE.MA onboarding**, a **Workspace 2FA
   notice** effective 8 September, a **Salesforce certificate-expiry alert** for a
   BIT MOBILITY sandbox, and marketing spam. **None ingested.**
 - ⚠ **`Stima Task`** (`d.losco@romicompany.com`, modified 12:40Z) — **not opened,
@@ -137,27 +137,27 @@ coverage at **0 of 2,957 lines**.
 
 **Eleven notes created, thirteen updated, one renamed.**
 
-| Written | Because |
-| ------- | ------- |
-| `Source trace 2026-09-08` | **new** — this note |
-| `2026-09-08 Data Model Parte 4` | **new** — the minute, from the full transcript |
-| `2026-09-08 Flussi MKT Parte 2` | **new** — the minute, from the full transcript |
-| `Decision - go-live moves to 21 October and Fase 2 is declared out of perimeter` | **new** |
-| `Risk - a sandbox password was spoken aloud and preserved in a meeting transcript` | **new** |
-| `OI-128` … `OI-134` | **new** — seven rows |
-| `OI-124` | **renamed and rewritten** — 21 October, not 21 September |
-| `OI-123` | **resolved** — the locale is an Account record type |
-| `OI-102` | the mail was sent, unrotated |
-| `OI-111`, `OI-14` | escalated to the client as blocking |
-| `OI-24`, `OI-99` | Parte 4 ran; Parte 5 and 6 booked; migration in stand-by |
-| `OI-81`, `OI-126` | the tag vocabulary and the funnel exit rule |
-| `OI-83` | the perimeter is stated; the estimate still is not |
-| `Decision - Account record types split Azienda and Locale` | client corroboration, and built |
-| `Proposed event invitations for participant registration` | two date fields agreed |
-| `Risk - the phase 2 scope dispute is unresolved` | stated to the client in writing |
-| `Risk - the whole remaining build lands after Ferragosto` | the calendar was re-cut |
-| `Risk - production deploy is blocked by Apex coverage` | 0 of 2,957 |
-| `MAP.md`, `INDEX.md` | the live position and the new notes |
+| Written                                                                            | Because                                                  |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `Source trace 2026-09-08`                                                          | **new** — this note                                      |
+| `2026-09-08 Data Model Parte 4`                                                    | **new** — the minute, from the full transcript           |
+| `2026-09-08 Flussi MKT Parte 2`                                                    | **new** — the minute, from the full transcript           |
+| `Decision - go-live moves to 21 October and Fase 2 is declared out of perimeter`   | **new**                                                  |
+| `Risk - a sandbox password was spoken aloud and preserved in a meeting transcript` | **new**                                                  |
+| `OI-128` … `OI-134`                                                                | **new** — seven rows                                     |
+| `OI-124`                                                                           | **renamed and rewritten** — 21 October, not 21 September |
+| `OI-123`                                                                           | **resolved** — the locale is an Account record type      |
+| `OI-102`                                                                           | the mail was sent, unrotated                             |
+| `OI-111`, `OI-14`                                                                  | escalated to the client as blocking                      |
+| `OI-24`, `OI-99`                                                                   | Parte 4 ran; Parte 5 and 6 booked; migration in stand-by |
+| `OI-81`, `OI-126`                                                                  | the tag vocabulary and the funnel exit rule              |
+| `OI-83`                                                                            | the perimeter is stated; the estimate still is not       |
+| `Decision - Account record types split Azienda and Locale`                         | client corroboration, and built                          |
+| `Proposed event invitations for participant registration`                          | two date fields agreed                                   |
+| `Risk - the phase 2 scope dispute is unresolved`                                   | stated to the client in writing                          |
+| `Risk - the whole remaining build lands after Ferragosto`                          | the calendar was re-cut                                  |
+| `Risk - production deploy is blocked by Apex coverage`                             | 0 of 2,957                                               |
+| `MAP.md`, `INDEX.md`                                                               | the live position and the new notes                      |
 
 Also: rows **128**–**134** plus corrected rows **123** and **124** in
 `open-items.md` **and** `.it.md`; a new **§31** in `DEVELOPMENT-RECAP.md` **and**
@@ -223,7 +223,7 @@ reporting drift.**
 list rendered "21 ottobre" and "13 ottobre" as "21 settembre" and "13 dello stesso
 mese", producing a reading that was internally consistent, contradicted the
 register, and pointed the wrong way. The 07/09 run caught the contradiction
-without being able to resolve it, and wrote *ask, do not infer*. **That is the
+without being able to resolve it, and wrote _ask, do not infer_. **That is the
 behaviour to repeat: a paraphrase that cannot be reconciled is a flag, not a
 fact.**
 

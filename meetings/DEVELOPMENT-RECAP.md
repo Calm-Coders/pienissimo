@@ -2181,13 +2181,13 @@ The second half of the call is Elisa Migliano reading her Mexal screens aloud
 while Andrea Di Cicco maps them. Everything written before today assumed one
 order type; there are two.
 
-| Rule                    | Services            | Books                  |
-| ----------------------- | ------------------- | ---------------------- |
-| **sigla**               | `OC`                | **`BC`**               |
-| **causale**             | 1 IT · 2 SM · 3 else | 4 IT · 5 SM · 6 else  |
-| **magazzino di uscita** | 1                   | 2                      |
-| **costi ricavi**        | 3 (servizi)         | 1 (materie prime)      |
-| **IVA**                 | exempt, `E01`       | exempt, `E10`          |
+| Rule                    | Services             | Books                |
+| ----------------------- | -------------------- | -------------------- |
+| **sigla**               | `OC`                 | **`BC`**             |
+| **causale**             | 1 IT · 2 SM · 3 else | 4 IT · 5 SM · 6 else |
+| **magazzino di uscita** | 1                    | 2                    |
+| **costi ricavi**        | 3 (servizi)          | 1 (materie prime)    |
+| **IVA**                 | exempt, `E01`        | exempt, `E10`        |
 
 Books never share an order with services. `BC` was a late catch — _"questa c'era
 sfuggita effettivamente"_ — and the cost-centre values were recalled rather than
@@ -2376,8 +2376,8 @@ non-restrictive picklist; Elisa Migliano owes the values (`OI-115`).
 **Kept deliberately** — the **SDI**, which Fabrizio Paganelli wants populated
 against a future change in the rules even though San Marino ↔ Italy uses the PEC.
 ⚠ **`OI-109` recorded the SDI as withdrawn on 2 September**, because Elisa
-Migliano did not need it *from Anticipay*. Here the same field is kept and fed
-*from Mexal*. Two people, opposite reasons, 24 hours apart, neither aware of the
+Migliano did not need it _from Anticipay_. Here the same field is kept and fed
+_from Mexal_. Two people, opposite reasons, 24 hours apart, neither aware of the
 other.
 
 **Deferred** — whether Mexal needs both the billing and the shipping address
@@ -2503,7 +2503,7 @@ stated reason is to stop Mexal rejecting an order for a missing address.
 That is a workaround adopted **before `#113` was answered**, and it is worth
 being precise about what it buys and what it costs. It removes eight fields from
 the critical path, which is real relief four working days from the Fase 1
-deadline. But if Mexal genuinely requires a *distinct* shipping address for some
+deadline. But if Mexal genuinely requires a _distinct_ shipping address for some
 customer, a mirrored billing address is a **wrong value rather than a missing
 one** — and a wrong address that passes validation is worse than a rejection,
 because nothing reports it. The failure moves from order creation to delivery.
@@ -2653,7 +2653,6 @@ sessions are the current activity and that **Sabatino Rinaldi has stopped
 answering his phone** because the client is busy with an event. The canvas is
 unchanged and now **nine client sessions behind**.
 
-
 ---
 
 ## 30. Update 2026-09-07 — three sessions, a contested go-live, and Fase 2 parked
@@ -2672,7 +2671,7 @@ with approval by 13 September**, release to production preceding go-live.
 🔴 **Every governing document in this project says 6 October 2026** — `CTX-02` in
 both prose documents, both milestone tables, the `M` priority definition, the
 Fase 2 escalation rule, and §10.1 above. 21 September is **fifteen days earlier**,
-yet the session describes it as a *slittamento* that **adds** development and test
+yet the session describes it as a _slittamento_ that **adds** development and test
 weeks, which only makes sense against a plan whose go-live was earlier than 21
 September and which **is not in this repository**.
 
@@ -2729,7 +2728,7 @@ Cicco proposing that **Gianpaolo Motta be pre-warned**.
   owns changes. So the Parte 2 hidden mirror is **one-directional by design**, and
   a wrong address is wrong on both systems with no return path (#113).
 
-🟢 **Product-to-campaign mapping now has a *when***: products loaded from Excel
+🟢 **Product-to-campaign mapping now has a _when_**: products loaded from Excel
 first, mapping entered by hand in the days immediately before go-live — the first
 statement anywhere of when `Mappatura_Edizione__c` gets populated, though still
 **not by whom** (#121). **In-flight orders must be closed directly from
@@ -2758,7 +2757,7 @@ registration overwrote the last. **Historical edition participation is not
 migratable from that field.**
 
 🟢 **The Zoho tag vocabulary is decoded and retired.** `<EVENT>_I` means
-*iscritto* and `<EVENT>CP` means *contatto principale* — `FMF_I`, `FMFCP` for the
+_iscritto_ and `<EVENT>CP` means _contatto principale_ — `FMF_I`, `FMFCP` for the
 Food Marketing Festival. These become CampaignMember status values, and the whole
 tag block was deleted from the Contact in session.
 
@@ -2881,12 +2880,12 @@ At **14:15Z** Elena Spini sent `[ROMI-PIENISSIMO] - Stato Avanzamento Progetto`
 to Sabatino Rinaldi, Fabrizio Paganelli, amministrazione@ and Marco Montesi, cc
 Aurel Mrruku and Andrea Di Cicco:
 
-| Milestone | Date |
-| --------- | ---- |
-| **UAT ready, Fase 1** | 23 September |
-| **UAT and test** | 23 September – 13 October |
-| **Solution approval** | 13 October |
-| **Go-live Fase 1** | **21 October 2026** |
+| Milestone             | Date                      |
+| --------------------- | ------------------------- |
+| **UAT ready, Fase 1** | 23 September              |
+| **UAT and test**      | 23 September – 13 October |
+| **Solution approval** | 13 October                |
+| **Go-live Fase 1**    | **21 October 2026**       |
 
 The stated cause is _"diversi temi ancora pending e i lavori stanno procedendo a
 rilento"_ — the data model still open, and repeated revisions to the analysis
@@ -2894,8 +2893,8 @@ flows. The plan is `Pienissimo_Project Plan 2.pptx`, saved 14:08:27Z.
 
 ✅ **This corrects §30.** The 07/09 internal session's _"21 settembre … entro il
 13 dello stesso mese"_ were **21 and 13 October** with the month dropped from
-Gemini's paraphrase. §30 recorded a date fifteen days *earlier* than the register
-yet described as a *slittamento* adding development weeks, called the combination
+Gemini's paraphrase. §30 recorded a date fifteen days _earlier_ than the register
+yet described as a _slittamento_ adding development weeks, called the combination
 impossible to reconcile, and refused to act on it. That refusal was correct: a
 Gemini decision list dropped the month from two dates and produced a
 coherent-looking reading that was wrong in direction as well as value.
@@ -2957,7 +2956,7 @@ updated to resolve through the parent.
 Also settled:
 
 - **Contracts, quotes and tickets go only to the billing company's `contatto
-  principale`** — for legal reasons, never to an individual locale. DocuSign
+principale`** — for legal reasons, never to an individual locale. DocuSign
   sends will allow additional CC addresses. Tutors must be instructed.
 - **Ticket dispatch is a marketing-calendar decision, not a payment trigger.**
   There is no fixed rule tying dispatch to tranche payment.
@@ -3031,7 +3030,7 @@ side was ready (**#102**).
 assertion whose `exp` is roughly sixty years out went to the client unchanged.
 **That pattern has now left ROMI.**
 
-⚠ **A newer collection exists and this is not it.** Forty minutes *after* sending,
+⚠ **A newer collection exists and this is not it.** Forty minutes _after_ sending,
 Aurel Mrruku asked Andrea Di Cicco in DM for the updated collection; Andrea Di
 Cicco answered _"Devo mettere i filtri ancora"_. Sabatino Rinaldi holds the
 pre-filter version, and had not replied by end of day.
@@ -3044,24 +3043,137 @@ to the dev group only.
 ⚠ **Its org-only drift findings closed themselves.** `AccountTriggerHandler`,
 `CommercialAccountResolver`, `AccountTrigger`, the Account record types and ten
 Account fields were reported present in UAT and absent from the checkout — and
-were **committed at 17:53 and merged at 18:21**, ninety minutes later. *An org
+were **committed at 17:53 and merged at 18:21**, ninety minutes later. _An org
 check is a photograph of a moving branch; diff `DevMain` before trusting any
-drift claim.* This is the second time the lesson has landed, after 04/09.
+drift claim._ This is the second time the lesson has landed, after 04/09.
 
 What stands:
 
-| Finding | Detail |
-| ------- | ------ |
-| **Edition mapping** | **40 of 43** ticket-generating products have no active mapping; 3 active rows cover 3 products; **22 of 27** orders on `Incassato`. Corrects the older 226/229 all-product denominator (**#121**) |
-| **Tranche propagation** | 34 quote lines linked, **0 of 32 order lines**; no writer in inspected Apex, no active Flow (**#50**) |
-| **Invitations** | 3 records URL Ready, collection Pending, none with recipient or `Send_After` |
-| **Tickets** | **0 Assets carry a QR value**; 15 Assets, 14 Ordinato, 1 Assegnato; neither controller invokes signature processing (**#68/#78**) |
-| **Anticipay notification** | still compiled-in to a ROMI developer mailbox; 36 error-flagged of 65 integration logs (**#119**) |
-| **Community auth** | controllers still accept record identifiers without establishing caller identity |
-| **Flows** | zero, confirmed three ways — Metadata listing, Tooling `FlowDefinition`, active-Flow query |
-| **Coverage** | **0 of 2,957 lines**, 42 entries, last test run still 4 August (**NFR-06**) |
-| **Tranche access** | fields exist with edit grants; one active assignee, a System Administrator — **not** a "nobody can access it" finding |
+| Finding                    | Detail                                                                                                                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Edition mapping**        | **40 of 43** ticket-generating products have no active mapping; 3 active rows cover 3 products; **22 of 27** orders on `Incassato`. Corrects the older 226/229 all-product denominator (**#121**) |
+| **Tranche propagation**    | 34 quote lines linked, **0 of 32 order lines**; no writer in inspected Apex, no active Flow (**#50**)                                                                                             |
+| **Invitations**            | 3 records URL Ready, collection Pending, none with recipient or `Send_After`                                                                                                                      |
+| **Tickets**                | **0 Assets carry a QR value**; 15 Assets, 14 Ordinato, 1 Assegnato; neither controller invokes signature processing (**#68/#78**)                                                                 |
+| **Anticipay notification** | still compiled-in to a ROMI developer mailbox; 36 error-flagged of 65 integration logs (**#119**)                                                                                                 |
+| **Community auth**         | controllers still accept record identifiers without establishing caller identity                                                                                                                  |
+| **Flows**                  | zero, confirmed three ways — Metadata listing, Tooling `FlowDefinition`, active-Flow query                                                                                                        |
+| **Coverage**               | **0 of 2,957 lines**, 42 entries, last test run still 4 August (**NFR-06**)                                                                                                                       |
+| **Tranche access**         | fields exist with edit grants; one active assignee, a System Administrator — **not** a "nobody can access it" finding                                                                             |
 
 ⚠ **This sweep did not open the org.** Every figure above is ROMI's own check as
 posted to Slack. `STATUS.md`, the Notion mirror and the register's `build_state`
 carry none of it, for a ninth run.
+
+---
+
+## 32. Update 2026-09-09 — the client acknowledged, and the register moved for the first time since v1.4
+
+Interactive `requirements-check` from watermark **2026-09-08T22:00Z**. A thin day:
+**one** Pienissimo message in the whole window, no meetings, no commits, no Drive
+activity on this project. That one message does three things.
+
+### 32.1 ✅ "Presa visione" — and the go-live date is now 21 October in the register
+
+At **07:08:22Z** **Fabrizio Paganelli** replied into
+`[ROMI-PIENISSIMO] - Stato Avanzamento Progetto`, to Elena Spini and the three
+other client addressees, cc Aurel Mrruku, Andrea Di Cicco and — newly —
+`daniela@pienissimo.com`:
+
+> _"Ciao Elena, presa visione e aggiungo Daniela in cc, per sua conoscenza.
+> Fabrizio"_
+
+_"Presa visione"_ is verbatim the phrase Elena Spini asked for on 08/09:
+_"conferma di avvenuta lettura e di **presa visione delle nuove tempistiche** e
+del perimetro di progetto."_ For the **date**, that is the acknowledgement §31 was
+waiting on.
+
+**The register moved the same day**, in both languages in one session — the first
+requirement change since `version: "1.4"` on 2026-08-24:
+
+| File                                        | Changed                                                                                               |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `requirements/pienissimo-requirements.yaml` | `go_live: 2026-10-21`, `CTX-02` text, `version: "1.5"`, `date: 2026-09-09`, plus a provenance comment |
+| `REQUIREMENTS.md`                           | `CTX-02`, the `M` priority definition, the §1.1 milestone table, the §14 Fase 2 rule                  |
+| `REQUISITI.it.md`                           | `CTX-02`, the `M` priority definition, the §1.1 milestone table, the §14 Fase 2 rule                  |
+
+⚠ **One mention of 6 October was left deliberately**, in §2.2 of both prose
+documents — _"do not count toward the 6 October date"_ / _"non concorrono alla
+data del 6 ottobre"_. That paragraph is prefaced _"To be settled in this
+session"_ and records the **06/08 sign-off session**. Editing the date inside it
+would misquote the session; it is a quotation, not a live rule.
+
+⚠ **The §14 escalation rule was re-dated, not re-examined.** It now reads
+_"requests that endanger the 21 October 2026 date are automatically candidates for
+Phase 2, unless the go-live date is explicitly renegotiated"_ — and the date has
+just been renegotiated once, which is the precedent the rule exists to constrain.
+
+### 32.2 🟢 Daniela Morgese is on the thread, and the client put her there
+
+The most consequential thing in the reply is the half nobody asked for. Fabrizio
+Paganelli added Pienissimo's decision-maker to the thread **himself, unprompted,
+in his first sentence**.
+
+**This is the first movement on the Fase 2 scope dispute in sixty-one days.**
+Since 10 July the record's own diagnosis has been that the dispute cannot close
+because it has never reached her — in Sabatino Rinaldi's words on 06/08,
+_"Daniela non sapeva questa informazione qui."_ She is now on a thread carrying
+the written perimeter, the plan-deck link and the instruction to read **Slide 4**,
+where `Ordini Pienissimo Pro (SFDC → Zoho Pienissimo Software SRL)` is listed
+`FUORI PERIMETRO DA QUOTARE`.
+
+⚠ **Do not overread it.** She is **cc, not addressee**; _"per sua conoscenza"_ is
+for information; nothing is asked of her; she has not replied; and **there is
+still no Fase 2 quotation** for her to accept or refuse — §11's `#83` does not
+move, and it is now five weeks past _"dopo le ferie"_. What she has been sent
+presents the perimeter as settled and does not mention that her own company has
+contested part of it since July.
+
+⚠ `daniela@pienissimo.com` had **never appeared in the record before today**.
+
+### 32.3 🔴 The perimeter was not accepted, and three of four never replied
+
+The 08/09 record predicted this outcome in writing: _"If the reply is a bare
+acknowledgement, the scope dispute is not closed by it — and it should not be
+recorded here as closed."_
+
+It is a bare acknowledgement. Four words of substance. It does not mention Slide
+4, Fase 2, GLS, Teachable, `Ordini Pienissimo Pro`, or the quotation. **The scope
+dispute stays open, unchanged in substance from 6 August.**
+
+| Addressee                                     | Replied         |
+| --------------------------------------------- | --------------- |
+| **Fabrizio Paganelli** — product and registry | ✅ 09/09 07:08Z |
+| **Sabatino Rinaldi** — project lead           | 🔴 no           |
+| **Elisa Migliano** — `amministrazione@`       | 🔴 no           |
+| **Marco Montesi** — sales                     | 🔴 no           |
+
+⚠ **Sabatino Rinaldi's silence is the one that matters.** He is the client's
+project lead, he carried the dispute to Daniela Morgese, and on 06/08 he admitted
+he had not read the minuta that flagged it — _"Io non l'ho nemmeno letto quello,
+ho preso direttamente il link."_ A perimeter he has not acknowledged is a
+perimeter he can say he did not see.
+
+⚠ **The Mexal scadenzario item is still invisible to its own requester.** The
+07/09 session deferred the scadenzario correction path into Fase 2. It was
+**Fabrizio Paganelli's own ask**. He has now written _"presa visione"_ against a
+perimeter that silently contains it, and neither the mail nor Slide 4 names it.
+
+### 32.4 🔴 The four blocking decisions got no answer at all
+
+Nothing in the reply addresses any of them:
+
+| Topic                             | Status after 09/09                               |
+| --------------------------------- | ------------------------------------------------ |
+| **DocuSign licences** (`#111`)    | 🔴 unanswered — named as blocking the quote flow |
+| **Marketing form review** (`#14`) | 🔴 unanswered                                    |
+| **Data model** (`#24`)            | 🔴 WIP; Parte 5 on 16/09, Parte 6 on 18/09       |
+| **Data migration** (`#79`)        | 🔴 formally in stand-by                          |
+
+**UAT begins on 23 September — fourteen days — and `Preventivi, Contratti e Firme
+Digitali (DocuSign)` is on its list.** Aurel Mrruku's 08/09 statement is
+unreconciled and one day older: _"non abbiamo ancora fatto dei UAT noi"_,
+production release _"almeno un paio di settimane"_.
+
+⚠ **This sweep did not open the org.** `STATUS.md`, the Notion mirror and the
+Flows page are owed by `org-status-check` for a **tenth** run.

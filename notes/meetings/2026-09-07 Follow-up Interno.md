@@ -44,7 +44,7 @@ priority definition of `M`, the Fase 2 escalation rule, `MAP.md` and the recaps.
 **Nothing has been changed in the register on the strength of this.** A
 contractually operative date, in the document the client signs, does not move on
 an internal ROMI meeting summary that nobody has reconciled with the published
-plan — [OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)
+plan — [OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)
 carries the question.
 
 ⚠ Aurel Mrruku is recorded as sceptical about the timing and the remaining
@@ -96,7 +96,7 @@ Six decisions, all of which sharpen
 
 ### Authentication and static management coordinates
 
-The *coordinate gestionali* go in the API call header as **`azienda = PE`** and
+The _coordinate gestionali_ go in the API call header as **`azienda = PE`** and
 **`anno = 2025`**, set **statically in code**. Authorization is a **base64 string
 of user then password**. Andrea Di Cicco owes Aurel Mrruku the documentation
 fragment for it.
@@ -118,8 +118,8 @@ confirmed the filters will be applied.
 
 ### Customer update needs PUT, not POST
 
-🔴 **Sending an existing account by POST fails** — Mexal returns a *partita IVA
-already exists* error. **PUT or PATCH is required.** Andrea Di Cicco is to study
+🔴 **Sending an existing account by POST fails** — Mexal returns a _partita IVA
+already exists_ error. **PUT or PATCH is required.** Andrea Di Cicco is to study
 and implement PUT. New row —
 [OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md).
 
@@ -148,7 +148,7 @@ the permission problem the org checks keep finding, and it bears on
 **Salesforce sends the shipping address to Mexal** at account or order creation
 and **owns changes to it**; it is never retrieved from Mexal. Aurel Mrruku agreed.
 
-That is the missing half of the Parte 2 *hidden shipping mirror*
+That is the missing half of the Parte 2 _hidden shipping mirror_
 ([OI-113](../items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md)):
 the mirror is one-directional by decision, so a mirrored address that is wrong is
 wrong on **both** systems and no return path corrects it.
@@ -184,20 +184,20 @@ notes do not connect them. It touches
 
 ## Passaggi successivi
 
-| Owner            | Action                                                                |
-| ---------------- | --------------------------------------------------------------------- |
-| Andrea Di Cicco  | Study and configure the PUT method for customer modification           |
-| Andrea Di Cicco  | Send the authentication documentation fragment                         |
-| Andrea Di Cicco  | Update the order fields and share the revised file                     |
-| Andrea Di Cicco  | Verify the technical changes made in the production environment        |
-| Aurel Mrruku     | Publish the documentation links on Slack                               |
-| Aurel Mrruku     | Send the WooCommerce integration mail                                  |
-| Aurel Mrruku     | Prepare the end-to-end tests                                           |
-| Elena Spini      | Ask Sabatino Rinaldi what the product ID field is to contain           |
-| Elena Spini      | Organise the sales training meetings set for **24 September**          |
-| Elena Spini      | Mail the client for information on the event and data availability     |
-| The group        | Configure users and access permissions for the bundles                 |
-| The group        | Define the agenda for the first sales meeting                          |
+| Owner           | Action                                                             |
+| --------------- | ------------------------------------------------------------------ |
+| Andrea Di Cicco | Study and configure the PUT method for customer modification       |
+| Andrea Di Cicco | Send the authentication documentation fragment                     |
+| Andrea Di Cicco | Update the order fields and share the revised file                 |
+| Andrea Di Cicco | Verify the technical changes made in the production environment    |
+| Aurel Mrruku    | Publish the documentation links on Slack                           |
+| Aurel Mrruku    | Send the WooCommerce integration mail                              |
+| Aurel Mrruku    | Prepare the end-to-end tests                                       |
+| Elena Spini     | Ask Sabatino Rinaldi what the product ID field is to contain       |
+| Elena Spini     | Organise the sales training meetings set for **24 September**      |
+| Elena Spini     | Mail the client for information on the event and data availability |
+| The group       | Configure users and access permissions for the bundles             |
+| The group       | Define the agenda for the first sales meeting                      |
 
 🟢 **The WooCommerce integration mail is finally an assigned action with an
 owner** — [OI-102](../items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)

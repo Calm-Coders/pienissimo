@@ -2273,13 +2273,13 @@ La seconda metà della call è Elisa Migliano che legge ad alta voce le proprie
 schermate Mexal mentre Andrea Di Cicco mappa. Tutto ciò che era stato scritto
 finora presupponeva un solo tipo di ordine; i tipi sono due.
 
-| Regola                  | Servizi              | Libri                  |
-| ----------------------- | -------------------- | ---------------------- |
-| **sigla**               | `OC`                 | **`BC`**               |
+| Regola                  | Servizi               | Libri                 |
+| ----------------------- | --------------------- | --------------------- |
+| **sigla**               | `OC`                  | **`BC`**              |
 | **causale**             | 1 IT · 2 SM · 3 altro | 4 IT · 5 SM · 6 altro |
-| **magazzino di uscita** | 1                    | 2                      |
-| **costi ricavi**        | 3 (servizi)          | 1 (materie prime)      |
-| **IVA**                 | esente, `E01`        | esente, `E10`          |
+| **magazzino di uscita** | 1                     | 2                     |
+| **costi ricavi**        | 3 (servizi)           | 1 (materie prime)     |
+| **IVA**                 | esente, `E01`         | esente, `E10`         |
 
 I libri non stanno mai nello stesso ordine dei servizi. `BC` è emerso tardi —
 _"questa c'era sfuggita effettivamente"_ — e i valori del centro di costo sono
@@ -2477,8 +2477,8 @@ come picklist non restrittiva; Elisa Migliano deve i valori (`OI-115`).
 **Mantenuti deliberatamente** — l'**SDI**, che Fabrizio Paganelli vuole
 alimentato in previsione di un cambio normativo anche se tra San Marino e Italia
 si usa la PEC. ⚠ **`OI-109` registrava l'SDI come ritirato il 2 settembre**,
-perché Elisa Migliano non ne aveva bisogno *da Anticipay*. Qui lo stesso campo è
-mantenuto e alimentato *da Mexal*. Due persone, ragioni opposte, 24 ore di
+perché Elisa Migliano non ne aveva bisogno _da Anticipay_. Qui lo stesso campo è
+mantenuto e alimentato _da Mexal_. Due persone, ragioni opposte, 24 ore di
 distanza, nessuna delle due al corrente dell'altra.
 
 **Rinviati** — se Mexal richieda sia l'indirizzo di fatturazione sia quello di
@@ -2611,7 +2611,7 @@ impedire che Mexal rifiuti un ordine per un indirizzo mancante.
 È una soluzione adottata **prima che `#113` avesse risposta**, e vale la pena
 essere precisi su cosa compra e cosa costa. Toglie otto campi dal percorso
 critico, il che è un sollievo reale a quattro giorni lavorativi dalla scadenza di
-Fase 1. Ma se Mexal richiede davvero un indirizzo di spedizione *distinto* per
+Fase 1. Ma se Mexal richiede davvero un indirizzo di spedizione _distinto_ per
 qualche cliente, un indirizzo di fatturazione specchiato è un **valore sbagliato
 anziché mancante** — e un indirizzo sbagliato che supera la validazione è peggio
 di un rifiuto, perché nulla lo segnala. Il guasto si sposta dalla creazione
@@ -2772,7 +2772,6 @@ corrente e che **Sabatino Rinaldi non risponde più al telefono** perché il
 cliente è impegnato con un evento. Il canvas è invariato e ora è indietro di
 **nove sessioni cliente**.
 
-
 ---
 
 ## 30. Aggiornamento 07/09/2026 — tre sessioni, un go-live contestato e la Fase 2 accantonata
@@ -2793,7 +2792,7 @@ precedente al go-live.
 `CTX-02` in entrambi i testi, entrambe le tabelle delle milestone, la definizione
 di priorità `M`, la regola di escalation alla Fase 2 e il §10.1 qui sopra. Il 21
 settembre è **quindici giorni prima**, eppure la sessione lo descrive come uno
-*slittamento* che **aggiunge** settimane di sviluppo e test, cosa che ha senso
+_slittamento_ che **aggiunge** settimane di sviluppo e test, cosa che ha senso
 solo rispetto a un piano il cui go-live era anteriore al 21 settembre e che **non
 è in questo repository**.
 
@@ -2857,7 +2856,7 @@ Gianpaolo Motta**.
   2 è **unidirezionale per scelta**, e un indirizzo sbagliato è sbagliato su
   entrambi i sistemi senza percorso di ritorno (#113).
 
-🟢 **La mappatura prodotto-campagna ha finalmente un *quando***: prima il
+🟢 **La mappatura prodotto-campagna ha finalmente un _quando_**: prima il
 caricamento prodotti da Excel, poi la mappatura inserita a mano nei giorni
 immediatamente precedenti il go-live — la prima indicazione di quando
 `Mappatura_Edizione__c` verrà popolata, anche se ancora **non da chi** (#121).
@@ -2888,7 +2887,7 @@ Zoho conserva solo l'ultima, perché ogni iscrizione ha sovrascritto la preceden
 **Lo storico delle edizioni non è migrabile da quel campo.**
 
 🟢 **Il vocabolario dei tag Zoho è decodificato e dismesso.** `<EVENTO>_I`
-significa *iscritto* e `<EVENTO>CP` *contatto principale* — `FMF_I`, `FMFCP` per
+significa _iscritto_ e `<EVENTO>CP` _contatto principale_ — `FMF_I`, `FMFCP` per
 il Food Marketing Festival. Diventano valori di stato del CampaignMember, e
 l'intero blocco dei tag è stato cancellato dal Contatto in sessione.
 
@@ -3017,12 +3016,12 @@ Alle **14:15Z** Elena Spini ha inviato `[ROMI-PIENISSIMO] - Stato Avanzamento
 Progetto` a Sabatino Rinaldi, Fabrizio Paganelli, amministrazione@ e Marco
 Montesi, cc Aurel Mrruku e Andrea Di Cicco:
 
-| Milestone | Data |
-| --------- | ---- |
-| **UAT ready, Fase 1** | 23 settembre |
-| **UAT e test** | 23 settembre – 13 ottobre |
-| **Approvazione soluzione** | 13 ottobre |
-| **Go-live Fase 1** | **21 ottobre 2026** |
+| Milestone                  | Data                      |
+| -------------------------- | ------------------------- |
+| **UAT ready, Fase 1**      | 23 settembre              |
+| **UAT e test**             | 23 settembre – 13 ottobre |
+| **Approvazione soluzione** | 13 ottobre                |
+| **Go-live Fase 1**         | **21 ottobre 2026**       |
 
 La causa dichiarata è _"diversi temi ancora pending e i lavori stanno procedendo
 a rilento"_ — il data model ancora aperto e le ripetute revisioni ai flussi di
@@ -3030,8 +3029,8 @@ analisi. Il piano è `Pienissimo_Project Plan 2.pptx`, salvato alle 14:08:27Z.
 
 ✅ **Questo corregge il §30.** Il _"21 settembre … entro il 13 dello stesso mese"_
 della sessione interna del 07/09 erano **21 e 13 ottobre**, con il mese caduto
-dalla parafrasi di Gemini. Il §30 registrava una data quindici giorni *prima* del
-registro eppure descritta come uno *slittamento* che aggiunge settimane di
+dalla parafrasi di Gemini. Il §30 registrava una data quindici giorni _prima_ del
+registro eppure descritta come uno _slittamento_ che aggiunge settimane di
 sviluppo, definiva la combinazione irriconciliabile e si rifiutava di agire. Quel
 rifiuto era corretto: un elenco di decisioni di Gemini ha perso il mese da due
 date producendo una lettura in apparenza coerente ma sbagliata nella direzione
@@ -3176,7 +3175,7 @@ il lato cliente era pronto (**#102**).
 due volte: l'assertion JWT il cui `exp` è a circa sessant'anni è andata al cliente
 invariata. **Quel pattern ha ora lasciato ROMI.**
 
-⚠ **Esiste una collection più recente e non è questa.** Quaranta minuti *dopo*
+⚠ **Esiste una collection più recente e non è questa.** Quaranta minuti _dopo_
 l'invio, Aurel Mrruku ha chiesto ad Andrea Di Cicco in DM la collection
 aggiornata; Andrea Di Cicco ha risposto _"Devo mettere i filtri ancora"_. Sabatino
 Rinaldi ha la versione senza filtri, e a fine giornata non aveva risposto.
@@ -3190,24 +3189,139 @@ pubblicato solo nel gruppo di sviluppo.
 `AccountTriggerHandler`, `CommercialAccountResolver`, `AccountTrigger`, i record
 type Account e dieci campi Account risultavano presenti in UAT e assenti dal
 checkout — e sono stati **committati alle 17:53 e mergiati alle 18:21**, novanta
-minuti dopo. *Un check org è una fotografia di un ramo in movimento: fare il diff
-di `DevMain` prima di credere a qualunque affermazione di drift.* È la seconda
+minuti dopo. _Un check org è una fotografia di un ramo in movimento: fare il diff
+di `DevMain` prima di credere a qualunque affermazione di drift._ È la seconda
 volta che la lezione arriva, dopo il 04/09.
 
 Ciò che resta:
 
-| Rilievo | Dettaglio |
-| ------- | --------- |
-| **Mappatura edizioni** | **40 su 43** prodotti che generano biglietti non hanno mappatura attiva; 3 righe attive coprono 3 prodotti; **22 su 27** ordini su `Incassato`. Corregge il denominatore 226/229 su tutti i prodotti (**#121**) |
-| **Propagazione tranche** | 34 righe di preventivo collegate, **0 su 32 righe d'ordine**; nessuno scrittore nell'Apex ispezionato, nessun Flow attivo (**#50**) |
-| **Inviti** | 3 record con URL Ready e raccolta Pending, nessuno con destinatario o `Send_After` |
-| **Biglietti** | **0 Asset con valore QR**; 15 Asset, 14 Ordinato, 1 Assegnato; nessuno dei due controller invoca la firma (**#68/#78**) |
-| **Notifica Anticipay** | ancora compilata verso una casella di uno sviluppatore ROMI; 36 log su 65 marcati come errore (**#119**) |
-| **Auth community** | i controller accettano ancora identificatori di record senza stabilire l'identità del chiamante |
-| **Flow** | zero, confermato per tre vie — listing Metadata, `FlowDefinition` via Tooling, query sui Flow attivi |
-| **Coverage** | **0 su 2.957 righe**, 42 voci, ultima esecuzione dei test ancora 4 agosto (**NFR-06**) |
-| **Accesso tranche** | i campi esistono con permessi di modifica; un assegnatario attivo, un System Administrator — **non** un rilievo del tipo "nessuno può accedervi" |
+| Rilievo                  | Dettaglio                                                                                                                                                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Mappatura edizioni**   | **40 su 43** prodotti che generano biglietti non hanno mappatura attiva; 3 righe attive coprono 3 prodotti; **22 su 27** ordini su `Incassato`. Corregge il denominatore 226/229 su tutti i prodotti (**#121**) |
+| **Propagazione tranche** | 34 righe di preventivo collegate, **0 su 32 righe d'ordine**; nessuno scrittore nell'Apex ispezionato, nessun Flow attivo (**#50**)                                                                             |
+| **Inviti**               | 3 record con URL Ready e raccolta Pending, nessuno con destinatario o `Send_After`                                                                                                                              |
+| **Biglietti**            | **0 Asset con valore QR**; 15 Asset, 14 Ordinato, 1 Assegnato; nessuno dei due controller invoca la firma (**#68/#78**)                                                                                         |
+| **Notifica Anticipay**   | ancora compilata verso una casella di uno sviluppatore ROMI; 36 log su 65 marcati come errore (**#119**)                                                                                                        |
+| **Auth community**       | i controller accettano ancora identificatori di record senza stabilire l'identità del chiamante                                                                                                                 |
+| **Flow**                 | zero, confermato per tre vie — listing Metadata, `FlowDefinition` via Tooling, query sui Flow attivi                                                                                                            |
+| **Coverage**             | **0 su 2.957 righe**, 42 voci, ultima esecuzione dei test ancora 4 agosto (**NFR-06**)                                                                                                                          |
+| **Accesso tranche**      | i campi esistono con permessi di modifica; un assegnatario attivo, un System Administrator — **non** un rilievo del tipo "nessuno può accedervi"                                                                |
 
 ⚠ **Questo sweep non ha aperto l'org.** Ogni cifra qui sopra viene dal check di
 ROMI così come pubblicato su Slack. `STATUS.md`, il mirror Notion e il
 `build_state` del registro non ne portano nulla, per la nona esecuzione.
+
+---
+
+## 32. Aggiornamento 09/09/2026 — il cliente ha preso visione, e il registro si è mosso per la prima volta da v1.4
+
+`requirements-check` interattivo dal watermark **2026-09-08T22:00Z**. Giornata
+magra: **un solo** messaggio Pienissimo in tutta la finestra, nessuna riunione,
+nessun commit, nessuna attività su Drive per questo progetto. Quell'unico
+messaggio fa tre cose.
+
+### 32.1 ✅ "Presa visione" — e la data di go-live è ora il 21 ottobre nel registro
+
+Alle **07:08:22Z** **Fabrizio Paganelli** ha risposto nel thread
+`[ROMI-PIENISSIMO] - Stato Avanzamento Progetto`, a Elena Spini e agli altri tre
+destinatari lato cliente, cc Aurel Mrruku, Andrea Di Cicco e — novità —
+`daniela@pienissimo.com`:
+
+> _"Ciao Elena, presa visione e aggiungo Daniela in cc, per sua conoscenza.
+> Fabrizio"_
+
+_"Presa visione"_ è testualmente la formula richiesta da Elena Spini l'08/09:
+_"conferma di avvenuta lettura e di **presa visione delle nuove tempistiche** e
+del perimetro di progetto."_ Per la **data**, è la conferma che il §31 attendeva.
+
+**Il registro è stato aggiornato lo stesso giorno**, in entrambe le lingue nella
+stessa sessione — la prima modifica ai requisiti da `version: "1.4"` del
+2026-08-24:
+
+| File                                        | Modifiche                                                                                                      |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `requirements/pienissimo-requirements.yaml` | `go_live: 2026-10-21`, testo di `CTX-02`, `version: "1.5"`, `date: 2026-09-09`, più un commento di provenienza |
+| `REQUIREMENTS.md`                           | `CTX-02`, la definizione di priorità `M`, la tabella milestone del §1.1, la regola Fase 2 del §14              |
+| `REQUISITI.it.md`                           | `CTX-02`, la definizione di priorità `M`, la tabella milestone del §1.1, la regola Fase 2 del §14              |
+
+⚠ **Un riferimento al 6 ottobre è stato lasciato di proposito**, al §2.2 di
+entrambi i testi — _"non concorrono alla data del 6 ottobre"_. Quel paragrafo è
+introdotto da _"Punto da dirimere in questa sessione"_ e registra la **sessione di
+sign-off del 06/08**. Modificarne la data significherebbe citare la sessione in
+modo errato: è una citazione, non una regola viva.
+
+⚠ **La regola di escalation del §14 è stata ri-datata, non riesaminata.** Ora
+recita _"le richieste che mettono a rischio la data del 21 ottobre 2026 sono
+automaticamente candidate alla Fase 2, salvo diverso accordo esplicito sulla data
+di go-live"_ — e la data è appena stata rinegoziata una volta, che è esattamente
+il precedente che la regola esiste per contenere.
+
+### 32.2 🟢 Daniela Morgese è nel thread, e ce l'ha messa il cliente
+
+La cosa più significativa della risposta è la metà che nessuno aveva chiesto.
+Fabrizio Paganelli ha aggiunto la decisore di Pienissimo al thread
+**spontaneamente, nella prima frase**.
+
+**È il primo movimento sulla controversia di perimetro Fase 2 da sessantuno
+giorni.** Dal 10 luglio la diagnosi costante del progetto è che la controversia
+non si chiude perché non è mai arrivata a lei — nelle parole di Sabatino Rinaldi
+il 06/08, _"Daniela non sapeva questa informazione qui."_ Ora è su un thread che
+contiene il perimetro scritto, il link al piano e l'invito a leggere la **Slide
+4**, dove gli `Ordini Pienissimo Pro (SFDC → Zoho Pienissimo Software SRL)` sono
+elencati `FUORI PERIMETRO DA QUOTARE`.
+
+⚠ **Da non sopravvalutare.** È **in cc, non fra i destinatari**; _"per sua
+conoscenza"_ è informativo; non le viene chiesto nulla; non ha risposto; e **non
+esiste ancora una quotazione Fase 2** che possa accettare o rifiutare — il `#83`
+non si muove, ed è ormai a cinque settimane dal _"dopo le ferie"_. Quello che le è
+stato inviato presenta il perimetro come acquisito e non menziona che la sua
+stessa azienda ne contesta una parte da luglio.
+
+⚠ `daniela@pienissimo.com` **non era mai comparso nel record prima di oggi**.
+
+### 32.3 🔴 Il perimetro non è stato accettato, e tre destinatari su quattro non hanno risposto
+
+Il record dell'08/09 aveva previsto per iscritto questo esito: _"se la risposta è
+una presa visione secca, la controversia di perimetro non è chiusa da essa e non
+va registrata come chiusa."_
+
+È una presa visione secca. Quattro parole di sostanza. Non nomina la Slide 4, la
+Fase 2, GLS, Teachable, gli `Ordini Pienissimo Pro` o la quotazione. **La
+controversia resta aperta, immutata nella sostanza dal 6 agosto.**
+
+| Destinatario                                    | Ha risposto     |
+| ----------------------------------------------- | --------------- |
+| **Fabrizio Paganelli** — prodotto e anagrafiche | ✅ 09/09 07:08Z |
+| **Sabatino Rinaldi** — project lead             | 🔴 no           |
+| **Elisa Migliano** — `amministrazione@`         | 🔴 no           |
+| **Marco Montesi** — vendite                     | 🔴 no           |
+
+⚠ **Il silenzio di Sabatino Rinaldi è quello che pesa.** È il project lead del
+cliente, ha portato la controversia a Daniela Morgese, e il 06/08 ha ammesso di
+non aver letto la minuta che la segnalava — _"Io non l'ho nemmeno letto quello, ho
+preso direttamente il link."_ Un perimetro che non ha preso in carico è un
+perimetro di cui può dire di non aver avuto notizia.
+
+⚠ **Il tema scadenzario Mexal resta invisibile a chi l'ha chiesto.** La sessione
+del 07/09 ha rinviato alla Fase 2 il percorso di correzione dello scadenzario. Era
+**una richiesta di Fabrizio Paganelli stesso**. Ha ora scritto _"presa visione"_ su
+un perimetro che la contiene tacitamente, e né la mail né la Slide 4 la nominano.
+
+### 32.4 🔴 Le quattro decisioni bloccanti non hanno avuto alcuna risposta
+
+Nulla nella risposta le affronta:
+
+| Tema                              | Stato dopo il 09/09                                                  |
+| --------------------------------- | -------------------------------------------------------------------- |
+| **Licenze DocuSign** (`#111`)     | 🔴 senza risposta — indicata come bloccante per il flusso preventivi |
+| **Review form marketing** (`#14`) | 🔴 senza risposta                                                    |
+| **Data model** (`#24`)            | 🔴 WIP; Parte 5 il 16/09, Parte 6 il 18/09                           |
+| **Data migration** (`#79`)        | 🔴 formalmente in stand-by                                           |
+
+**L'UAT inizia il 23 settembre — fra quattordici giorni — e `Preventivi, Contratti
+e Firme Digitali (DocuSign)` è nella sua lista.** La dichiarazione di Aurel Mrruku
+dell'08/09 resta non riconciliata e di un giorno più vecchia: _"non abbiamo ancora
+fatto dei UAT noi"_, rilascio in produzione _"almeno un paio di settimane"_.
+
+⚠ **Questo sweep non ha aperto l'org.** `STATUS.md`, il mirror Notion e la pagina
+Flows sono dovuti da `org-status-check` per la **decima** volta.

@@ -27,7 +27,7 @@ Keep the twenty most recent entries here; archive older ones to
   ([the decision](notes/decisions/Decision%20-%20go-live%20moves%20to%2021%20October%20and%20Fase%202%20is%20declared%20out%20of%20perimeter.md)).
   The 07/09 session's "21 September / 13 September" were **21 and 13 October** —
   Gemini's paraphrase dropped the month.
-  [OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)
+  [OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)
   is **renamed and rewritten**; inbound links fixed in eight files. **The register
   was left at 6 October deliberately** — the date is proposed, not accepted
   ([OI-128](notes/items/OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
@@ -81,9 +81,9 @@ Keep the twenty most recent entries here; archive older ones to
   follow-up agreed **21 September 2026 with approval by 13 September**, where
   `CTX-02`, both milestone tables, the `M` priority definition and the Fase 2
   escalation rule all say **6 October**. Fifteen days **earlier**, yet described as
-  a *slittamento* adding development weeks — which only fits a plan this repository
+  a _slittamento_ adding development weeks — which only fits a plan this repository
   does not hold. **Nothing was changed in the register**
-  ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+  ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
   The same session **parked Fase 2 pending client payment** — first movement on
   that dispute since 24/07 — while **deferring the Mexal scadenzario path into that
   parked phase**, and settled **six Mexal decisions**
@@ -98,7 +98,7 @@ Keep the twenty most recent entries here; archive older ones to
   the **Zoho tag scheme is decoded and retired**, and the **primary-contact rule is
   sharpened**. New
   [OI-123](notes/items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md):
-  a dozen fields whose natural owner is a *locale* object that does not exist.
+  a dozen fields whose natural owner is a _locale_ object that does not exist.
   **(3) 🟢🔴 The marketing session closed `30 vs 60` as a 30–60 day window** —
   ⚠ still ROMI choosing for the client — and **moved rinuncia off the email onto
   the community page**
@@ -2774,3 +2774,66 @@ Articoli` workbook is **hers**, sent from his mailbox.
   in the mailbox, and the PR announced itself nowhere. From here, **diff `DevMain`
   against the previous trace's commit before writing the report** — it costs one
   command.
+
+---
+
+## 2026-09-09 — claude — requirements-check: the client acknowledged, and the register finally moved
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  **2026-09-08T22:00Z**, taken from the `external_watermark` of
+  [the 08/09 trace](notes/traces/Source%20trace%202026-09-08.md), which is also the
+  newest note in that folder by `updated:` — frontmatter and text agreed, no
+  disambiguation needed. **A thin window with one consequential message.** Slack
+  returned zero Pienissimo hits, Drive zero Pienissimo files, Fathom zero
+  meetings, `git log` zero new commits. `#tproj-pienissimo` is silent for a third
+  week.
+- **State:** **Fabrizio Paganelli replied to the perimeter mail at 07:08:22Z** —
+  _"presa visione e aggiungo Daniela in cc, per sua conoscenza"_ — and four words
+  did three things.
+  **(1) The date is acknowledged**, in verbatim the phrase Elena Spini asked for,
+  so **the register moved to 21 October**: `go_live: 2026-10-21`, `CTX-02`, the
+  `M` priority definition, both milestone tables and the §14 Fase 2 rule, across
+  the YAML, `REQUIREMENTS.md` and `REQUISITI.it.md`, in both languages in one
+  session, register **`v1.5`**. First requirement change since 2026-08-24.
+  `OI-124` is **resolved** and renamed to
+  [OI-124 Go-live moved from 6 to 21 October](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md).
+  **This was put to Aurel Mrruku as a decision and he authorised it** — it changes
+  the document presented for signature, so it was not taken unilaterally.
+  **(2) 🟢 Daniela Morgese is on the thread, and the client put her there**,
+  unprompted. **First movement on
+  [the Fase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)
+  in sixty-one days** — the standing diagnosis since 10 July has been that it
+  cannot close because it never reached her. ⚠ But she is **cc, not addressee**,
+  _"per sua conoscenza"_, no reply, and **still no quotation**, so
+  [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md) does not move.
+  **(3) 🔴 The perimeter was not accepted**, exactly as the 08/09 record predicted
+  in writing. Three of four addressees never replied, and **the four blocking
+  decisions got no answer at all**.
+- **Next:** (a) **chase Sabatino Rinaldi specifically** — he is the client's
+  project lead, he carried the dispute to Daniela Morgese, and a perimeter he has
+  not acknowledged is one he can say he did not see; (b) **get the Fase 2
+  quotation written**, now that the decision-maker can finally read it — reach
+  without a number is the same standstill with a wider audience; (c) **answer the
+  DocuSign licence question**, which blocks the quote flow and is on the UAT list
+  for **23 September**; (d) **reconcile the 23 September UAT start** with _"non
+  abbiamo ancora fatto dei UAT noi"_ — fourteen days out and nobody has addressed
+  it in two runs.
+- **Watch:** ⚠ **A "presa visione" is not agreement to a perimeter**, and the
+  record should keep saying so — the mail bundled a date, a scope boundary and
+  four decisions into one request for acknowledgement, and got the cheapest of the
+  three back. ⚠ **Fabrizio Paganelli's own Mexal scadenzario request now sits
+  inside the perimeter he acknowledged**, unnamed by the mail and unnamed by Slide
+  4; he cannot tell from what he signed off that it moved out of scope. ⚠ **The
+  §14 escalation rule was re-dated, not re-examined** — it still permits exactly
+  the renegotiation that just happened. ⚠ **One "6 October" was deliberately left
+  in §2.2 of both prose texts**: it quotes the 06/08 sign-off session, and editing
+  it would misquote the session. ⚠ **`MAP.md` is ~98 KB against its own stated
+  5 KB budget**, flagged on 08/09 and again here, still priced at ~1.1k in
+  `INDEX.md`. ⚠ **`STATUS.md`, the Notion mirror and the Flows page are owed by
+  `org-status-check` for a tenth run.** This sweep did not open the org.
+- **Method:** **write the trigger, not just the reason, when you decline to act.**
+  The 08/09 run could not decide whether the register should move, so it recorded
+  the exact condition and enumerated the ten places. When the condition fired the
+  next morning the change took one pass and needed no re-derivation. The converse
+  lesson is in the same message: **read a short reply for what it does, not for
+  how much it says** — the sixty-one-day blocker moved in a subordinate clause.
