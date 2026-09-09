@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-02
+updated: 2026-09-09
 blocks: [OI-75, go-live]
 severity: gating
 source: Aurel Mrruku direct decision, 2026-08-24; meetings/open-items.md row 50
@@ -260,3 +260,48 @@ the Mexal line date would be derived from is, today, always empty.
 ⚠ _"Oggi noi non la gestiamo"_ — Pienissimo does not manage line due dates in
 Mexal today either. This is new behaviour on **both** sides of the integration,
 agreed eight days before the end of Fase 1 development and **unestimated**.
+
+## 2026-09-09 - 🟢 the propagation is built, and the standing gap closes
+
+**`OrderItem.Tranche__c` finally has a writer.** Commit **`a53345a`** (Anita Aga,
+PR **#37**, merged 18:41 CEST) adds
+`QuoteTriggerHandler.createOrdersForAcceptedQuotes`, which fires on a Quote
+transition into `Accettato` and copies every `QuoteLineItem` to an `OrderItem`
+carrying **`Tranche__c` and `Data_Scadenza__c`** alongside the price, quantity
+and description
+([the build](../objects/The%20commercial%20process%20automation.md)).
+
+That is precisely the mechanic this note has described since 24 August —
+_"When an accepted quote generates the Order, the tranche reference and payment
+date propagate to the corresponding Order Items"_ — and the **first code that
+performs it**. It also supplies the `data di scadenza` the 2 September Mexal
+tracciato requires on every order line.
+
+**Two of the three 25 August gaps are now closed or superseded:**
+
+- **Gap 1 — propagation cannot run.** ✅ **Closed in the repository.** The field
+  was already deployed and its visibility was granted on 2 September
+  ([the resolved risk](../risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md));
+  the missing half was that _"no Apex in `force-app/` writes it"_. It does now.
+- **Gap 3 — no coverage.** Unchanged and larger; the same commit adds **+729
+  uncovered Apex lines**. Recorded in
+  [the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md),
+  **not acted on**.
+
+**Gap 2 — the aggregation — is untouched.** `Completamente_Pagata__c` is still a
+checkbox nothing computes, and nothing in `a53345a` recalculates a parent tranche
+from its lines. **This is now the only gap of the three that is genuinely
+unbuilt**, and it is the one Mexal's per-line payment status feeds.
+
+🔴 **Three things this does not do, and they keep the item open:**
+
+1. **Only quote-born orders carry a tranche.** WooCommerce orders and
+   hand-created orders get no `Tranche__c` and no `Data_Scadenza__c`. The Mexal
+   tracciato requires the date on **every** order line.
+2. **Nothing was verified against the org.** This is a repository reading at
+   `0fe07f6`. Whether UAT runs the same code was not checked, and the last org
+   check (08/09) predates the merge.
+3. **`OrderItem.Tranche__c` field-level security was granted; the writer runs in
+   `with sharing` Apex** — but no test has exercised the path and **no
+   `Tranche__c` record has ever reached an order line** in any observation this
+   record holds.

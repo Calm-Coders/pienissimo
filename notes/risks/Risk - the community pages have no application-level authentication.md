@@ -7,7 +7,7 @@ owner: Aurel Mrruku
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-09
 depends_on: [OI-68, OI-78, OI-102]
 requirement: INT-16
 source: force-app/main/default/classes/QuoteAcceptanceController.cls, force-app/main/default/classes/ParticipantRegistrationController.cls, read at DevMain after PR #31
@@ -102,3 +102,35 @@ parameter. That covers all three surfaces.
 a read, raised for a human to schedule. It is marked `gating` because it is a
 write path on commercial records, reachable from a link, five weeks before
 go-live.
+
+## 🔴 2026-09-09 - the blast radius grew, and nobody reconsidered the risk
+
+Commit **`a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) did not touch
+either community controller. It changed what one of them **causes**
+([the build](../objects/The%20commercial%20process%20automation.md)).
+
+`QuoteAcceptanceController.act()` still ends in one statement —
+`update new Quote(Id = quoteRecord.Id, Status = 'Accettato')` — on a quote
+identified by a **bare id, from an unauthenticated page**. The new
+`QuoteTriggerHandler.afterUpdate` fires on exactly that transition. So the same
+anonymous click that previously flipped a picklist now:
+
+1. **inserts an `Order`** — account, opportunity, pricebook, locale, effective
+   date today, `Origine__c = 'Salesforce'`;
+2. **inserts an `OrderItem` for every quote line**, carrying price, quantity,
+   tranche and due date;
+3. **advances the `Opportunity`** into `In trattativa (Prev inviato)` if it was
+   `Qualificato`.
+
+**A guessed or leaked quote id is now a commercial record-creation primitive, not
+a status change.** The double-generation guard prevents a second order for the
+same quote; it does nothing about the first one being unauthorised. And because
+the order lands in `Ordinato` rather than `Incassato`, it does **not** trip the
+[OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)
+exception that would otherwise have rolled it back — it persists quietly.
+
+⚠ **Nothing in the commit, the PR or any message shows this being considered.**
+The severity of this note was set on 3 September against a status write. The
+write is now three inserts and an update across four objects, and the note's
+`gating` severity is, if anything, understated. **The fix is unchanged** — the
+signed, expiring token above — and the cost of not having it went up.

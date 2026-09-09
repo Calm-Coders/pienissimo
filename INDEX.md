@@ -33,6 +33,7 @@ Costs are approximate tokens (~4 characters per token). **Cheap** = load freely.
 | [The Landing Page community](notes/objects/The%20Landing%20Page%20community.md)                                                             | **built 03/09, PR #31** — one Experience site serving both external pages; no application-level auth                    | ~2k |
 | [Account record types Azienda and Locale](notes/decisions/Decision%20-%20Account%20record%20types%20split%20Azienda%20and%20Locale.md)      | **built 08/09, PR #35** — record types, two hierarchy validation rules, `CommercialAccountResolver`, ten Account fields | ~2k |
 | [The Mappatura Edizione object](notes/objects/The%20Mappatura%20Edizione%20object.md)                                                       | **built 04/09, PR #34** — OI-96 as specified; per-line resolution, overlap guard, and no rows                           | ~2k |
+| [The commercial process automation](notes/objects/The%20commercial%20process%20automation.md)                                               | **built 09/09, PR #37** — quote-to-order generation, tranche propagation, Opportunity stages, Locale normalisation; no DocuSign | ~3k |
 
 ### Flows
 

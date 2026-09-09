@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-04
-updated: 2026-09-07
+updated: 2026-09-09
 depends_on: [OI-96, OI-98]
 blocks: [OI-53, OI-84]
 source: notes/objects/The Mappatura Edizione object.md
@@ -123,3 +123,34 @@ And two things now press on it:
 consistent with [OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
 and **unrecorded until now**. Whatever rows exist were entered against that
 smaller set.
+
+## 2026-09-09 - a second source of orders, and the throw is unchanged
+
+Commit **`a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) builds
+quote-to-order generation
+([the build](../objects/The%20commercial%20process%20automation.md)). The
+`assignCampaigns` exception this note is built on is **not modified** — same
+message, same unhandled throw, still called from the transition into
+`Incassato`.
+
+What changed is the population of orders that will eventually meet it:
+
+- 🟢 **Not immediately worse.** Orders created from an accepted quote are born in
+  **`Ordinato`**, not `Incassato`, so generation itself does not trip the
+  exception. The failure stays where it was — at the moment somebody marks an
+  order paid.
+- 🔴 **But orders now arrive from a third direction.** WooCommerce traffic,
+  hand-creation, and now **any quote reaching `Accettato`** — including from the
+  unauthenticated community page
+  ([the auth risk](../risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)).
+  Every one of them is an order that cannot be collected until a mapping row
+  covers its product and date.
+- 🔴 **The Order also now closes its Opportunity won** on the same
+  `Incassato` transition. The `assignCampaigns` throw rolls the whole
+  transaction back, so **a missing mapping row now also blocks the opportunity
+  from closing** — the failure is visible in the sales pipeline, not just in
+  ticketing.
+
+**The item is unchanged in substance and more urgent in effect. Still nobody owns
+the rows, and there is still no date for entering them beyond "the days
+immediately before go-live".**

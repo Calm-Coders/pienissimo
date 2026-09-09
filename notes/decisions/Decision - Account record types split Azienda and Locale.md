@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-08
-updated: 2026-09-08
+updated: 2026-09-09
 source: notes/meetings/2026-09-08 Data Model Parte 4.md
 depends_on: [OI-123]
 ---
@@ -128,3 +128,45 @@ same direction. **Diff `DevMain` before trusting any drift claim.**
 `AnticipayAccountService` gained ATECO, description, tax-code and
 refresh-timestamp mapping. Both classes are touched by `c877631` — **whether the
 committed versions match what UAT is running was not re-verified after the merge.**
+
+## ✅ 2026-09-09 - the process-ownership half is built too
+
+**Commit `a53345a`** (Anita Aga, PR **#37**, merged by Aurel Mrruku **18:41
+CEST**) implements the section this note headed **Process Ownership** — the part
+`c877631` left undone
+([the build](../objects/The%20commercial%20process%20automation.md)):
+
+- **`Locale__c` lookups on Opportunity, Order and Quote**, so the venue is
+  recorded without owning the commercial relationship.
+- **`OpportunityTriggerHandler` normalises the account.** An Opportunity booked
+  against a `Locale` is rewritten before save: the locale moves into `Locale__c`,
+  `AccountId` becomes the parent Azienda, resolved through
+  `CommercialAccountResolver`. That is verbatim what this note asked for —
+  _"If a process is initiated from a `Locale`, the implementation should resolve
+  and store the parent `Azienda` as the Account used by the process."_
+- **`QuoteTriggerHandler` inherits the locale from the Opportunity** and raises a
+  field error when the two disagree — which is also the point 3 the client
+  session added, _"Quotes get a lookup to the specific locale of that company."_
+- **Validation rule `Opportunity.Locale_must_belong_to_azienda`** requires the
+  chosen locale to be of record type `Locale` **and** a child of the
+  opportunity's own Account.
+- **`WoocommerceOrderService` stamps `RecordTypeId = Azienda`** on the accounts
+  it creates.
+
+**Both halves of this decision are now built.** What remains unverified is
+whether the org runs the same code: no `org-status-check` has run since
+**08/09 16:31–16:39 CEST**, which predates both merges.
+
+🔴 **One new failure mode arrived with it.** `WoocommerceOrderService` now
+**throws when the `Azienda` record type is not found**, on a live inbound route.
+UAT has the record type; **production has never been deployed to and does not**.
+The first production deploy therefore has an ordering constraint nobody has
+written down: the record types must land before, or with, the WooCommerce class.
+
+⚠ **The Order side is normalised only by inheritance.** Orders born from an
+accepted quote copy `Locale__c` and `AccountId` from the quote, which was itself
+normalised. **An Order created directly against a `Locale` account is not
+rewritten** — there is no `OrderTriggerHandler` equivalent of
+`normalizeCommercialAccounts`, and `Order` has no validation rule pairing it with
+the Opportunity one. Whether that matters depends on whether orders are ever
+created outside the quote and WooCommerce paths. **Nobody has said.**

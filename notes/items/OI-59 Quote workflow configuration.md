@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-09-03
+updated: 2026-09-09
 requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
 source: meetings/open-items.md row 59
 ---
@@ -264,3 +264,61 @@ outstanding picklist work rather than closing it.
 ⚠ Separately,
 [OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)
 adds a `Tipologia Attività` field to this same object on 3 September.
+
+## 🟢🔴 2026-09-09 - the Opportunity half is built, and its labels do not match the diagram
+
+Commit **`a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) checks an
+`OpportunityStage` standard value set into source control and drives it from Apex
+([the build](../objects/The%20commercial%20process%20automation.md)).
+
+🟢 **Two transitions are automated**, and both are ones this item asked for:
+creating a Quote moves a `Qualificato` Opportunity into negotiation, and an Order
+reaching `Incassato` closes it won.
+
+🟢 **The five values match the register exactly**, character for character, at
+`state_machines.opportunity.states` in
+[the register](../../requirements/pienissimo-requirements.yaml) — including the
+parenthetical in `In trattativa (Prev inviato)` and the lower-case `ricontattare`.
+**The build is right and the table at the head of this note is the stale copy**:
+it was transcribed from the 6 August diagram's bracketed renames, which use the
+looser spelling. The register governs. _Corrected here rather than in the table
+above, which is left as the record of what the diagram says._
+
+🟢 **The close-won rule is implemented as written**, too. The register's
+_"Chiusa/Vinta requires at least one quote sent; payment confirms the win"_ is
+exactly `OrderTriggerHandler.closeWonOpportunitiesForConfirmedOrders` — the
+opportunity closes when its Order reaches `Incassato`.
+
+🔴 **The Quote side is the one that disagrees, and this commit deepens it.** The
+register's `state_machines.quote.states` and the built code have never matched:
+
+| Register (`state_machines.quote`)  | Built code                             |
+| ---------------------------------- | -------------------------------------- |
+| `Bozza`                            | `Bozza`                                |
+| — _(absent)_                       | `Nuovo Preventivo`                     |
+| `In trattativa (Prev inviato)`     | `In Trattativa`                        |
+| `In attesa di accettazione`        | `In Attesa Accettazione`               |
+| `Accettato - Copia Contabile Ricevuta` | `Accettato`                        |
+| `Rifiutata`                        | `Rifiutato`                            |
+
+⚠ **The register disagrees with itself here**: its `build_state` block records the
+org picklist as _"Bozza, Nuovo Preventivo, In Trattativa, In Attesa Accettazione,
+Accettato, Rifiutato"_ — the code spelling — while its contract-bound
+`state_machines` block carries the other. `a53345a` adds a **third** class
+(`QuoteTriggerHandler`) hard-coding the code spelling, after
+`QuoteAcceptanceController` and `QuoteTrancheController`.
+
+**Not corrected here.** `REQUISITI.it.md` is the text the client signs, so
+reconciling the quote states is a requirement change needing the YAML and both
+prose documents in one session — and somebody has to decide **which spelling is
+canonical** first. Salesforce picklist API names are case-sensitive, so this is a
+run-time failure waiting on whichever side is wrong.
+
+🔴 **Still unbuilt after this commit:** the **5-day validity**, the mandatory
+expiry date at send, the **day-2 and expiry alerts**, the 3-day owner email, the
+manual quote-creation button, and the ability to revive an expired quote. Nothing
+moves an Opportunity to `Chiusa/Persa` or into `Da ricontattare - Prev. inviato`
+automatically; both are hand-set.
+
+🔴 **Marco Montesi still owes the preset expiry timings.** Unchanged since
+31 July, and he did not reply to the 8 September status mail either.

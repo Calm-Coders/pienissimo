@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-08
+updated: 2026-09-09
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -301,3 +301,47 @@ and the test suite is a separate task Aurel Mrruku requests in one pass before t
 production deploy. **This record stays current as the brief for that task and is
 not acted on.** The brief now additionally covers `AccountTriggerHandler`,
 `CommercialAccountResolver` and the Account record-type validation rules.
+
+## 2026-09-09 - the brief grows by 729 Apex lines in one merge
+
+Commit **`a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) adds **+729 net
+Apex lines** across six classes
+([the build](../objects/The%20commercial%20process%20automation.md)):
+
+| Class                          | Net lines | New?                 |
+| ------------------------------ | --------- | -------------------- |
+| `LeadConversionTriggerHandler` | +248      | new (extract)        |
+| `QuoteTriggerHandler`          | +219      | **new**              |
+| `LeadConversionQueueable`      | +134      | refactored           |
+| `OpportunityTriggerHandler`    | +62       | **new**              |
+| `OrderTriggerHandler`          | +47       | existing             |
+| `WoocommerceOrderService`      | +19       | existing             |
+
+⚠ **This is arithmetic on the repository, not an org measurement.** The last
+measured figure is **0 of 2,957** from the 08/09 ROMI org check, which ran
+16:31–16:39 CEST on **8** September and therefore predates both `c877631`'s merge
+and this one. Read the two together as _"at least 2,957 + 729, still zero
+covered"_ — and the last actual Apex test run is **still 4 August**.
+
+| Date      | Uncovered lines           | Source                                  |
+| --------- | ------------------------- | --------------------------------------- |
+| 31/08     | 1,571                     | org check                               |
+| 02/09     | 1,646                     | org check                               |
+| 07/09     | 2,741                     | ROMI org check, posted to the dev group |
+| 08/09     | 2,957                     | ROMI org check, posted to the dev group |
+| **09/09** | **≥ 3,686** _(estimated)_ | **repository arithmetic on `a53345a`**  |
+
+🔴 **Two new classes carry commercial write paths and have no tests at all** —
+`QuoteTriggerHandler` inserts Orders and OrderItems, `OpportunityTriggerHandler`
+rewrites `AccountId` before save. Both are the kind of code where an untested
+edge case corrupts data rather than throwing.
+
+⚠ Note the repository does contain three test classes —
+`OrderTriggerHandlerTest`, `BundleComponentTriggerHandlerTest`,
+`BundleProductAssignmentControllerTest`. `OrderTriggerHandlerTest` **was not
+updated** for the opportunity-closing behaviour added to the class it covers, so
+whatever it asserted about `OrderTriggerHandler` is now incomplete. **Whether it
+still compiles was not checked, and checking it is part of the suite task, not
+this run.**
+
+⏸ **Recorded, not acted on. No test class was written or proposed.**

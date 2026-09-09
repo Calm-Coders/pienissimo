@@ -3325,3 +3325,153 @@ fatto dei UAT noi"_, rilascio in produzione _"almeno un paio di settimane"_.
 
 ⚠ **Questo sweep non ha aperto l'org.** `STATUS.md`, il mirror Notion e la pagina
 Flows sono dovuti da `org-status-check` per la **decima** volta.
+
+## 33. Aggiornamento 09/09/2026 (sera) — le automazioni dei processi commerciali sono state rilasciate
+
+**PR #37 / `a53345a`** (Anita Aga, _"Added automations for opportunity, order and
+relating commercial processes to Azienda record type"_), merged su `DevMain` da
+Aurel Mrruku alle **18:41 CEST** come `0fe07f6`. **30 file, +1.499 / −74 righe,
++729 righe Apex nette.** È arrivata dopo lo sweep interattivo della mattina,
+quindi nessuna sezione precedente di questo documento la contiene. Nota di build
+completa:
+[le automazioni dei processi commerciali](../notes/objects/The%20commercial%20process%20automation.md).
+
+⚠ **Letto dal repository a `0fe07f6`, non dall'org.** L'ultimo controllo org è
+dell'**08/09 16:31–16:39 CEST** e precede sia questo merge sia `c877631`.
+
+### 33.1 🟢 Un preventivo accettato genera il suo ordine — il primo codice che lo abbia mai fatto
+
+`QuoteTriggerHandler.createOrdersForAcceptedQuotes` scatta sulla transizione di un
+preventivo verso `Accettato` e crea un `Order` per preventivo (`Status =
+'Ordinato'`, `EffectiveDate = OGGI`, `Origine__c = 'Salesforce'`, con account,
+opportunità, listino e locale), poi copia ogni `QuoteLineItem` in un `OrderItem`.
+Una query di guardia su `Order.Quote__c` impedisce la doppia generazione.
+
+🟢 **Le righe ordine portano `Tranche__c` e `Data_Scadenza__c`.** Questo chiude la
+lacuna che il [#50](open-items.it.md) porta dal 25 agosto — `OrderItem.Tranche__c`
+ha finalmente uno scrittore — e fornisce la `data di scadenza` che il tracciato
+ordini Mexal richiede su ogni riga.
+
+🔴 **Solo gli ordini nati da preventivo la ricevono.** Gli ordini WooCommerce e
+quelli creati a mano restano senza tranche e senza data di scadenza, e il
+tracciato la vuole su **ogni** riga. 🔴 **L'aggregazione dei pagamenti della
+tranche è ora l'unica lacuna davvero non costruita** delle tre registrate il
+25 agosto: `Completamente_Pagata__c` resta una casella che nessuno calcola.
+
+### 33.2 🔴 DocuSign è assente dall'intero diff
+
+Il disegno concordato prevede che un preventivo accettato produca una busta
+firmata e **poi** l'ordine. Qui è costruita la metà ordine e nessuna busta. Arriva
+sette giorni dopo che il [#111](open-items.it.md) ha registrato che **nessuno ha
+confermato che il cliente possieda DocuSign**, e nulla nel commit, nella PR o in
+alcun messaggio collega le due cose.
+
+**Se l'ordine delle due fasi sia una decisione o una dimenticanza non è registrato
+da nessuna parte. Chiedere, non dedurre.** `Preventivi, Contratti e Firme Digitali
+(DocuSign)` è nella lista UAT del 23 settembre.
+
+### 33.3 🟢 Il ciclo di vita dell'Opportunità esiste, e coincide esattamente con il registro
+
+`standardValueSets/OpportunityStage` è ora in source control con cinque valori —
+`Qualificato` (default, 10%), `In trattativa (Prev inviato)` (75%),
+`Da ricontattare - Prev. inviato` (35%), `Chiusa/Vinta` (100%, vinta),
+`Chiusa/Persa` (0%) — resi da una nuova LWC `opportunityCustomPath`. Due
+transizioni sono automatiche: la creazione di un preventivo porta in trattativa
+un'opportunità `Qualificato`, e un ordine che raggiunge `Incassato` la chiude
+vinta.
+
+🟢 **I cinque valori coincidono con il registro carattere per carattere** in
+`state_machines.opportunity.states`, e la regola di chiusura vinta è implementata
+come scritta — il _"Chiusa/Vinta requires at least one quote sent; payment confirms
+the win"_ del registro **è** `closeWonOpportunitiesForConfirmedOrders`. È una
+build fedele, non uno scostamento.
+
+🔴 **Sono gli stati del Preventivo a divergere, e questo commit approfondisce la
+divergenza.** Gli `state_machines.quote.states` del registro (`In trattativa (Prev
+inviato)`, `In attesa di accettazione`, `Accettato - Copia Contabile Ricevuta`,
+`Rifiutata`, senza `Nuovo Preventivo`) non hanno mai coinciso con il codice
+costruito (`In Trattativa`, `In Attesa Accettazione`, `Accettato`, `Rifiutato`,
+`Nuovo Preventivo`). ⚠ Il registro **è in disaccordo con se stesso** — il suo
+blocco `build_state` riporta la grafia del codice. `a53345a` aggiunge una **terza**
+classe che cabla quella grafia. Riconciliare è una modifica di requisito che tocca
+lo YAML e entrambi i documenti in prosa, e qualcuno deve prima decidere quale
+grafia sia canonica ([#59](open-items.it.md)).
+
+🔴 Nulla automatizza `Chiusa/Persa` né `Da ricontattare - Prev. inviato`, e
+restano non costruiti la validità di 5 giorni, la scadenza obbligatoria all'invio,
+gli alert al giorno 2 e alla scadenza, la mail al titolare dopo 3 giorni, il
+pulsante di creazione manuale e il ripristino dei preventivi scaduti
+([#59](open-items.it.md)).
+
+### 33.4 🟢 La separazione Azienda/Locale è ora costruita da capo a fondo
+
+`c877631` ha costruito i record type; questo commit li porta attraverso il
+processo commerciale, che è esattamente quanto
+[la decisione](../notes/decisions/Decision%20-%20Account%20record%20types%20split%20Azienda%20and%20Locale.md)
+elencava sotto **Process Ownership** e lasciava da fare:
+
+- lookup `Locale__c` verso Account su **Opportunità, Ordine e Preventivo**;
+- `OpportunityTriggerHandler.normalizeCommercialAccounts` riscrive
+  un'opportunità aperta su un `Locale`: il locale passa in `Locale__c`,
+  `AccountId` diventa l'Azienda padre tramite `CommercialAccountResolver`;
+- `QuoteTriggerHandler.copyLocaleFromOpportunity` eredita il locale e solleva un
+  errore di campo quando preventivo e opportunità divergono;
+- regola di validazione `Opportunity.Locale_must_belong_to_azienda`;
+- `WoocommerceOrderService` imposta `RecordTypeId = Azienda` sugli account che crea.
+
+🔴 **Una nuova modalità di errore su una rotta inbound attiva.**
+`WoocommerceOrderService` ora **solleva un'eccezione quando il record type
+`Azienda` non viene trovato**. L'UAT ce l'ha; **la produzione non ha mai ricevuto
+un deploy e non ce l'ha**. Il primo rilascio in produzione ha quindi un vincolo di
+sequenza che nessuno ha messo per iscritto.
+
+⚠ **L'Ordine è normalizzato solo per ereditarietà** — un ordine creato
+direttamente su un account `Locale` non viene riscritto, e `Order` non ha una
+regola di validazione corrispondente a quella sull'Opportunità.
+
+### 33.5 🔴 La pagina community non autenticata ora crea record commerciali
+
+`QuoteAcceptanceController.act()` non è stato modificato. È cambiato ciò che
+**provoca**.
+
+La pagina imposta ancora `Status = 'Accettato'` su un preventivo identificato da
+un **id nudo, senza autenticazione applicativa**. Il nuovo trigger scatta
+esattamente su quella transizione. Quindi lo stesso click anonimo che prima
+cambiava un picklist ora **inserisce un Ordine, inserisce un OrderItem per ogni
+riga del preventivo e fa avanzare l'Opportunità**.
+
+Poiché l'ordine nasce in `Ordinato` e non in `Incassato`, **non** fa scattare
+l'eccezione del [#121](open-items.it.md) che lo avrebbe annullato: resta,
+silenziosamente. **Nulla mostra che la cosa sia stata considerata.** Vedi
+[il rischio](../notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md).
+
+### 33.6 🔴 +729 righe Apex non coperte, e un test esistente rimasto indietro
+
+| Classe                         | Righe nette | Nuova?           |
+| ------------------------------ | ----------- | ---------------- |
+| `LeadConversionTriggerHandler` | +248        | nuova (estratta) |
+| `QuoteTriggerHandler`          | +219        | **nuova**        |
+| `LeadConversionQueueable`      | +134        | rifattorizzata   |
+| `OpportunityTriggerHandler`    | +62         | **nuova**        |
+| `OrderTriggerHandler`          | +47         | esistente        |
+| `WoocommerceOrderService`      | +19         | esistente        |
+
+L'ultimo dato **misurato** è **0 su 2.957** (controllo org ROMI dell'08/09), che
+precede questo merge. Letti insieme: **almeno 3.686 righe, ancora zero coperte**, e
+l'ultima esecuzione reale dei test Apex è **ancora il 4 agosto**.
+
+🔴 `OrderTriggerHandlerTest` **non è stato aggiornato** per il comportamento di
+chiusura opportunità aggiunto alla classe che copre. Se compili ancora non è stato
+verificato.
+
+⏸ **Registrato, non agito.** La suite di test è un'attività separata che Aurel
+Mrruku richiede in un'unica passata prima del rilascio in produzione.
+
+### 33.7 ⚠ La collection WooCommerce con i filtri è stata sollecitata di nuovo e non è arrivata
+
+Andrea Di Cicco l'aveva promessa tra le 17:00 e le 18:00 dell'08/09. Aurel Mrruku
+ha sollecitato in DM alle **12:26 CEST** — _"alla fine non mhai passato la
+collectioon"_ — **senza risposta undici ore dopo**. Sabatino Rinaldi ha ancora la
+collection **pre-filtri**, **il JWT a sessant'anni non è stato ruotato**, e non è
+tornato alcun esito di test ([#102](open-items.it.md)). ⚠ Il 9–11 settembre è
+l'offsite ROMI, spiegazione sufficiente per un giorno di silenzio.

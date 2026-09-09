@@ -3177,3 +3177,145 @@ production release _"almeno un paio di settimane"_.
 
 ⚠ **This sweep did not open the org.** `STATUS.md`, the Notion mirror and the
 Flows page are owed by `org-status-check` for a **tenth** run.
+
+## 33. Update 2026-09-09 (evening) — the commercial process automation shipped
+
+**PR #37 / `a53345a`** (Anita Aga, _"Added automations for opportunity, order and
+relating commercial processes to Azienda record type"_), merged to `DevMain` by
+Aurel Mrruku at **18:41 CEST** as `0fe07f6`. **30 files, +1,499 / −74 lines,
++729 net Apex lines.** It landed after the morning's interactive sweep, so no
+earlier section of this document holds it. Full build note:
+[the commercial process automation](../notes/objects/The%20commercial%20process%20automation.md).
+
+⚠ **Read from the repository at `0fe07f6`, not from the org.** The last org check
+ran **08/09 16:31–16:39 CEST** and predates both this merge and `c877631`.
+
+### 33.1 🟢 An accepted quote generates its order — the first code that has ever done this
+
+`QuoteTriggerHandler.createOrdersForAcceptedQuotes` fires on a Quote transition
+into `Accettato` and creates one `Order` per quote (`Status = 'Ordinato'`,
+`EffectiveDate = TODAY`, `Origine__c = 'Salesforce'`, carrying account,
+opportunity, pricebook and locale), then copies every `QuoteLineItem` to an
+`OrderItem`. A guard query on `Order.Quote__c` prevents double generation.
+
+🟢 **The order lines carry `Tranche__c` and `Data_Scadenza__c`.** That closes the
+gap [#50](open-items.md) has carried since 25 August — `OrderItem.Tranche__c`
+finally has a writer — and supplies the `data di scadenza` the Mexal order
+tracciato requires on every line.
+
+🔴 **Only quote-born orders get one.** WooCommerce orders and hand-created orders
+still carry no tranche and no due date, and the tracciato wants it on **every**
+line. 🔴 **Tranche payment aggregation is now the only genuinely unbuilt gap** of
+the three recorded on 25 August: `Completamente_Pagata__c` is still a checkbox
+nothing computes.
+
+### 33.2 🔴 DocuSign is absent from the entire diff
+
+The agreed design has an accepted quote produce a signed envelope and **then** the
+order. This builds the order half and no envelope. It lands seven days after
+[#111](open-items.md) recorded that **nobody has confirmed the client owns
+DocuSign**, and nothing in the commit, the PR or any message connects the two.
+
+**Whether the ordering was a decision or an omission is recorded nowhere. Ask, do
+not infer.** `Preventivi, Contratti e Firme Digitali (DocuSign)` is on the UAT
+list for 23 September.
+
+### 33.3 🟢 The Opportunity lifecycle exists, and it matches the register exactly
+
+`standardValueSets/OpportunityStage` is now in source control with five values —
+`Qualificato` (default, 10%), `In trattativa (Prev inviato)` (75%),
+`Da ricontattare - Prev. inviato` (35%), `Chiusa/Vinta` (100%, won),
+`Chiusa/Persa` (0%) — rendered by a new `opportunityCustomPath` LWC. Two
+transitions are automated: creating a Quote moves a `Qualificato` opportunity
+into negotiation, and an Order reaching `Incassato` closes it won.
+
+🟢 **The five values match the register character for character** at
+`state_machines.opportunity.states`, and the close-won rule is implemented as
+written — the register's _"Chiusa/Vinta requires at least one quote sent; payment
+confirms the win"_ **is** `closeWonOpportunitiesForConfirmedOrders`. This is a
+faithful build, not a drift.
+
+🔴 **The Quote states are the ones that disagree, and this commit deepens it.**
+The register's `state_machines.quote.states` (`In trattativa (Prev inviato)`,
+`In attesa di accettazione`, `Accettato - Copia Contabile Ricevuta`, `Rifiutata`,
+with no `Nuovo Preventivo`) has never matched the built code (`In Trattativa`,
+`In Attesa Accettazione`, `Accettato`, `Rifiutato`, `Nuovo Preventivo`). ⚠ The
+register **disagrees with itself** — its `build_state` block records the code
+spelling. `a53345a` adds a **third** class hard-coding that spelling. Reconciling
+it is a requirement change touching the YAML and both prose documents, and
+somebody must first decide which spelling is canonical ([#59](open-items.md)).
+
+🔴 Nothing automates `Chiusa/Persa` or `Da ricontattare - Prev. inviato`, and the
+5-day validity, the mandatory expiry at send, the day-2 and expiry alerts, the
+3-day owner email, the manual creation button and quote revival are all still
+unbuilt ([#59](open-items.md)).
+
+### 33.4 🟢 The Azienda/Locale split is now built end to end
+
+`c877631` built the record types; this commit carries them through the commercial
+process, which is exactly what
+[the decision](../notes/decisions/Decision%20-%20Account%20record%20types%20split%20Azienda%20and%20Locale.md)
+listed under **Process Ownership** and left undone:
+
+- `Locale__c` lookups to Account on **Opportunity, Order and Quote**.
+- `OpportunityTriggerHandler.normalizeCommercialAccounts` rewrites an Opportunity
+  booked against a `Locale`: the locale moves to `Locale__c`, `AccountId` becomes
+  the parent Azienda via `CommercialAccountResolver`.
+- `QuoteTriggerHandler.copyLocaleFromOpportunity` inherits the locale and raises a
+  field error when quote and opportunity disagree.
+- Validation rule `Opportunity.Locale_must_belong_to_azienda`.
+- `WoocommerceOrderService` stamps `RecordTypeId = Azienda` on accounts it creates.
+
+🔴 **A new failure mode on a live inbound route.** `WoocommerceOrderService` now
+**throws when the `Azienda` record type is not found**. UAT has it; **production
+has never been deployed to and does not**. The first production deploy therefore
+has an ordering constraint nobody has written down.
+
+⚠ **The Order is normalised only by inheritance** — an Order created directly
+against a `Locale` account is not rewritten, and `Order` has no counterpart to the
+Opportunity validation rule.
+
+### 33.5 🔴 The unauthenticated community page now creates commercial records
+
+`QuoteAcceptanceController.act()` was not changed. What it **causes** was.
+
+The page still sets `Status = 'Accettato'` on a quote identified by a **bare id,
+with no application-level authentication**. The new trigger fires on exactly that
+transition. So the same anonymous click that previously flipped a picklist now
+**inserts an Order, inserts an OrderItem for every quote line, and advances the
+Opportunity**.
+
+Because the order lands in `Ordinato` rather than `Incassato`, it does **not**
+trip the [#121](open-items.md) exception that would have rolled it back — it
+persists quietly. **Nothing shows this being considered.** See
+[the risk](../notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md).
+
+### 33.6 🔴 +729 uncovered Apex lines, and one existing test left behind
+
+| Class                          | Net lines | New?          |
+| ------------------------------ | --------- | ------------- |
+| `LeadConversionTriggerHandler` | +248      | new (extract) |
+| `QuoteTriggerHandler`          | +219      | **new**       |
+| `LeadConversionQueueable`      | +134      | refactored    |
+| `OpportunityTriggerHandler`    | +62       | **new**       |
+| `OrderTriggerHandler`          | +47       | existing      |
+| `WoocommerceOrderService`      | +19       | existing      |
+
+The last **measured** figure is **0 of 2,957** (08/09 ROMI org check), which
+predates this merge. Read together: **at least 3,686 lines, still zero covered**,
+and the last actual Apex test run is **still 4 August**.
+
+🔴 `OrderTriggerHandlerTest` **was not updated** for the opportunity-closing
+behaviour added to the class it covers. Whether it still compiles was not checked.
+
+⏸ **Recorded, not acted on.** The test suite is a separate task Aurel Mrruku
+requests in one pass before the production deploy.
+
+### 33.7 ⚠ The filtered WooCommerce collection was chased again and did not come
+
+Andrea Di Cicco promised it 17:00–18:00 on 08/09. Aurel Mrruku chased in DM at
+**12:26 CEST** — _"alla fine non mhai passato la collectioon"_ — and **had no
+reply eleven hours later**. Sabatino Rinaldi still holds the **pre-filter**
+collection, **the sixty-year JWT is still unrotated**, and no test result has come
+back ([#102](open-items.md)). ⚠ 9–11 September is the ROMI offsite, which is a
+sufficient explanation for one day's silence.

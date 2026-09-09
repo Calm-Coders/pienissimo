@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-09 (requirements-check: the client acknowledged the 21 October plan and the register moved) · Source of record: [notes/](notes/)
+Last updated: 2026-09-09 (nightly requirements-check: PR #37 built the commercial process automation) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,54 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🟢🔴 **2026-09-09 evening — the commercial process automation shipped, and an
+  accepted quote finally generates its order.** PR **#37** / **`a53345a`**
+  (Anita Aga, merged by Aurel Mrruku **18:41 CEST**): **30 files, +1,499 lines,
+  +729 net Apex** ([the build](notes/objects/The%20commercial%20process%20automation.md)).
+  It landed **after** the morning's interactive sweep, so no earlier record holds it.
+  🟢 **[OI-50](notes/items/OI-50%20Tranche%20object.md)'s central gap since 25 August
+  closes**: `QuoteTriggerHandler` copies `Tranche__c` **and** `Data_Scadenza__c`
+  from quote line to order line, so `OrderItem.Tranche__c` has a writer at last —
+  and the Mexal tracciato gets the `data di scadenza` it demands. **Only
+  quote-born orders get one**; WooCommerce and hand-made orders still carry none,
+  and **tranche payment aggregation is still the one genuinely unbuilt gap**.
+  🟢 **The Opportunity lifecycle exists** — `Qualificato` → `In trattativa (Prev
+  inviato)` on quote creation, → `Chiusa/Vinta` when the Order hits `Incassato`,
+  with an `opportunityCustomPath` LWC. 🟢 **The five values match the register
+  character for character** and the close-won rule is the register's own — the
+  looser spelling in OI-59's table came from the 06/08 diagram and is the stale
+  copy. 🔴 **The Quote states are the disagreement**: the register has never
+  matched the built code, **disagrees with itself** (`build_state` carries the code
+  spelling), and this commit hard-codes that spelling in a third class
+  ([OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)).
+  🟢 **[The Azienda/Locale decision](notes/decisions/Decision%20-%20Account%20record%20types%20split%20Azienda%20and%20Locale.md)
+  is now built end to end** — `Locale__c` on Opportunity/Quote/Order, the parent
+  normalisation before save, a hierarchy validation rule, and WooCommerce stamping
+  the `Azienda` record type.
+  🔴 **DocuSign is absent from the entire diff.** The agreed design signs, then
+  orders; this orders with no envelope, seven days after
+  [OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)
+  found nobody has confirmed the client owns DocuSign. **Ask, do not infer.**
+  🔴 **The unauthenticated community page now creates commercial records.** The
+  same anonymous click on a bare quote id that used to flip a picklist now inserts
+  an Order and its lines and moves the Opportunity
+  ([the auth risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)).
+  Nothing shows this being considered.
+  🔴 **+729 uncovered Apex lines**, taking the estimate past **3,686**; two new
+  classes carry commercial write paths with no tests, and `OrderTriggerHandlerTest`
+  was not updated for the class it covers
+  ([the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md),
+  brief only). ⚠ **Read from the repository, not the org** — the last org check
+  (08/09 16:31Z) predates both this merge and `c877631`.
+
+- ⚠ **2026-09-09 — the filtered WooCommerce collection was chased again and did not
+  come.** Aurel Mrruku, 12:26 CEST: _"alla fine non mhai passato la collectioon"_.
+  **Andrea Di Cicco has not replied ~11 hours later**, having promised it
+  17:00–18:00 the day before. Sabatino Rinaldi still holds the **pre-filter**
+  version and **the sixty-year JWT is still unrotated**
+  ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+  The 9–11 September offsite is a sufficient explanation for one day's silence.
 
 - 🟢 **2026-09-09 — the client acknowledged the 21 October plan, the register
   finally moved, and Daniela Morgese is on the thread.** Fabrizio Paganelli replied

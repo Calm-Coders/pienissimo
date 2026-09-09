@@ -10,6 +10,66 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-09 — claude — nightly requirements-check: PR #37 built the commercial process automation
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository across **the whole
+  of 9 September**, deduplicating against
+  [the 09/09 interactive trace](notes/traces/Source%20trace%202026-09-09.md).
+  New trace: [Source trace 2026-09-09 nightly](notes/traces/Source%20trace%202026-09-09%20nightly.md).
+  **Two findings, one large.**
+
+- **⚠ Watermark caveat, read this before trusting the last trace.** The 09/09
+  interactive trace declares `external_watermark: 2026-09-09T22:00Z` but was
+  committed at **10:28Z** (`2dbcdca`). It never swept the eleven hours it claimed,
+  and **two commits landed inside them**. I swept from 10:28Z. **Prefer a trace's
+  actual run time to its declared end-of-day value when the two differ.** That run
+  also left **no JOURNAL entry** — this is the first handoff since 08/09.
+
+- **State — the headline.** **PR #37 / `a53345a`** (Anita Aga, merged by Aurel
+  Mrruku 18:41 CEST as `0fe07f6`): 30 files, +1,499/−74, **+729 net Apex**.
+  [The build note](notes/objects/The%20commercial%20process%20automation.md).
+  - 🟢 **An accepted quote now generates its Order and lines, carrying `Tranche__c`
+    and `Data_Scadenza__c`.** That closes
+    [OI-50](notes/items/OI-50%20Tranche%20object.md)'s standing gap since 25 August
+    — `OrderItem.Tranche__c` has a writer at last. **Aggregation is now the only
+    genuinely unbuilt gap of the three.** Only quote-born orders get a tranche.
+  - 🟢 **The Opportunity lifecycle exists and matches the register exactly**;
+    Azienda/Locale is now built end to end (`Locale__c` on Opportunity/Quote/Order,
+    parent normalisation, validation rule, WooCommerce record-type stamp).
+  - 🔴 **DocuSign is absent from the whole diff.** The design signs then orders;
+    this orders with no envelope, seven days after
+    [OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md).
+  - 🔴 **The unauthenticated community page now creates commercial records** — the
+    controller is unchanged, what it *causes* is not
+    ([the risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)).
+  - 🔴 **+729 uncovered lines**, estimate past 3,686, zero covered, last test run
+    still 4 August. Brief only, per the standing instruction.
+
+- **State — the smaller one.** Aurel Mrruku chased Andrea Di Cicco for the filtered
+  WooCommerce Postman collection at **12:26 CEST** and **had no reply eleven hours
+  later**. Sabatino Rinaldi still holds the pre-filter version; the sixty-year JWT
+  is still unrotated ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+  9–11/09 is the ROMI offsite, corroborated a third time by a Drive folder.
+
+- **⚠ Correction made mid-run — do not reinstate the first reading.** I initially
+  recorded the new `OpportunityStage` values as disagreeing with the design
+  diagram. **They match `state_machines.opportunity.states` character for
+  character.** It is [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)'s
+  own table, transcribed from the 6 August diagram, that is stale. **The real
+  disagreement is the _Quote_ states**, where the register has never matched the
+  built code and **disagrees with itself** — `build_state` carries the code
+  spelling. `a53345a` hard-codes that spelling in a third class.
+
+- **Next:** the Quote-state reconciliation needs **a human to name the canonical
+  spelling** before anything moves; the trigger and the exact edit list are written
+  into the trace note's *"The register was deliberately not changed"* section.
+  Then: ask about DocuSign vs the new order path — **ask, do not infer**;
+  `org-status-check` is owed for an **eleventh** run and is now behind **two**
+  merges.
+
+- **Watch:** the register was **not** touched this run and no requirement changed.
+  `MAP.md` is still far over its 5 KB budget and this run added to it.
+
 ## 2026-09-08 — claude — nightly requirements-check: go-live 21 October, the locale gets a home, and a password in a transcript
 
 - **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
