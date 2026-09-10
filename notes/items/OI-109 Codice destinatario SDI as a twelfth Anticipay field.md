@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-01
-updated: 2026-09-03
+updated: 2026-09-10
 depends_on: [OI-94]
 requirement: INT-18
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
@@ -133,3 +133,42 @@ list and the field's placement both say Mexal.
 
 **Worth one sentence at Parte 2**: is the SDI fed from Mexal, from Anticipay, or
 by hand? Do not treat the build as decided.
+
+## 🟢 2026-09-10 - the ambiguity is settled by build, and Mexal wins
+
+The 3 September entry above left one question open: **is the SDI fed from Mexal,
+from Anticipay, or by hand?** Two people had asked for the same field within
+24 hours for opposite reasons, and the transcript was ambiguous — Fabrizio
+Paganelli said _"integrazione anticipay"_ while the action list and the workbook
+both said Mexal.
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, **open and unmerged**) builds it, and the
+field's own description settles the direction:
+
+> `Account.Codice_Destinatario_SDI__c` — Text(7), not required, not unique.
+> _"Codice destinatario SDI restituito da **Mexal** per l'instradamento della
+> fatturazione elettronica."_
+
+And `MexalCustomerSearchService` maps `codice_sdi → Codice_Destinatario_SDI__c`
+in the customer-search response
+([the build](../objects/The%20first%20Mexal%20integration%20Apex.md)). The field is
+also in the `Ricerca Clienti` field filter in the Postman collection, so it is
+genuinely returned.
+
+🟢 **So: fed from Mexal, on the inbound anagrafica read.** That is Fabrizio
+Paganelli's request as the action list recorded it, and it is consistent with
+Elisa Migliano's withdrawal — nothing was asked of Anticipay, and Andrea
+Parmeggiani's action stays fallen away.
+
+**This item stays `resolved`.** It was about getting the SDI from *Anticipay* and
+that answer has not changed. Recorded here because this is where a reader looks.
+
+⚠ **The build is on an open pull request, not on `DevMain`**, and it is `Text(7)`
+— check that against the SDI's real format before merge if anyone cares to.
+
+⚠ **The data-quality argument is still unaddressed**, a second time. Elisa
+Migliano's reason for wanting the field was that Mexal's own registry has _"una
+valanga di clienti dove lo SDI non è valorizzato"_. Reading an empty Mexal field
+into a new empty Salesforce field repairs nothing. That belongs to
+[the migration mapping](OI-79%20Migration%20volumes%20and%20mapping%20method.md),
+still.

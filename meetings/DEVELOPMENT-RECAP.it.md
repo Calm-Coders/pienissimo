@@ -3475,3 +3475,150 @@ collectioon"_ — **senza risposta undici ore dopo**. Sabatino Rinaldi ha ancora
 collection **pre-filtri**, **il JWT a sessant'anni non è stato ruotato**, e non è
 tornato alcun esito di test ([#102](open-items.it.md)). ⚠ Il 9–11 settembre è
 l'offsite ROMI, spiegazione sufficiente per un giorno di silenzio.
+
+## 34. Aggiornamento 10/09/2026 — il primo Apex Mexal, su una pull request che nessuno ha aperto
+
+**Lo sviluppo della Fase 1 doveva chiudersi oggi.** Si chiude con il primo codice
+dell'integrazione Mexal fermo su una pull request non revisionata, una credenziale
+incollata su Slack e cinque record mossi da un file Postman.
+
+### 34.1 🟢🔴 PR #39 — il primo trasporto Mexal, **aperta e non mergiata**
+
+**`bc2ed5d`** (Anita Aga, _"Edited Create Tranch Lwc, and opportunity custom path,
+added logic for Mexal Integration"_), spinto alle **17:58 CEST**, aperto come PR
+**#39** due minuti dopo verso `DevMain`. **17 file, +682 / −94 righe, +496 righe
+Apex nuove.** 🔴 **Non è mergiata**: `DevMain` finisce ancora a `9113453`.
+
+⚠ **Letto dal repository, non dall'org.** Nessun test è stato eseguito.
+
+**`MexalSearchCalloutService` (260 righe)** — un wrapper di callout guidato dalla
+configurazione, che legge `Integration_Configuration__c`.
+
+- 🟢 **Autenticato tramite Named Credential** (`callout:Mexal<path>`, righe
+  separate per sandbox e produzione), e la riga `Integration_Log__c` scrive
+  deliberatamente `Authorization=<managed by Named Credential>`. **Il segreto non
+  arriva mai al log.** Dopo il JWT a sessant'anni, è la prima integrazione del
+  progetto costruita come il record chiedeva da tempo.
+- 🟢 **Vincolato in sola lettura** da tre controlli indipendenti: una allow-list
+  di due azioni, il rifiuto di qualsiasi path che non finisca in `/ricerca` e il
+  rifiuto di qualsiasi metodo diverso da `POST`. **Per costruzione non può
+  scrivere su Mexal.**
+- 🔴 **La named credential e la sua external credential esistono solo nell'org.**
+  Il repository **non ha alcuna cartella `namedCredentials/`**, eppure
+  `Full_Permission` concede ora `Mexal_External_Credential-Mexal_Principal`. Un
+  permission set che nomina un principal assente **fallisce il deploy**: lo schema
+  delle credenziali solo-org ha smesso di essere un'assenza e ha iniziato a
+  bloccare i rilasci.
+- 🔴 **`Integration_Configuration__c` ha ancora zero righe**, e ora ne servono due
+  con nome esatto — `Mexal_Clienti_Ricerca` e `Mexal_Articoli_Ricerca`. Seconda
+  tabella a manutenzione manuale in una settimana da cui dipende del codice, senza
+  nessun titolare assegnato.
+
+**`MexalCustomerSearchService` (236 righe)** — la lettura dell'anagrafica.
+
+- 🟢 Costruisce il filtro delta `data_ult_mod >=` concordato e mappa
+  **quattordici** campi cliente Mexal su `Account`, inclusi `codice_sdi`, `pec` e
+  un IBAN ricostruito.
+- 🔴 **Nulla viene salvato.** I record `Account` mappati tornano in memoria.
+  **Nessuna DML, nessuna upsert, nessun match su `Codice_Cliente_Mexal__c`.**
+  Il [#116](open-items.it.md) ottiene una lettura, non una sincronizzazione.
+- 🔴 **Il job notturno è commentato per scelta**, e il codice dichiara il proprio
+  blocco: _"Automatic daily search is intentionally paused while the Mexal sync
+  schedule and date window are finalized."_ Quella finestra è senza specifica dal
+  03/09.
+- 🔴 Il payload di riassegnazione agente non è mappato; il blocco del
+  [#117](open-items.it.md) è intatto.
+- ⚠ **Una mappatura da verificare prima del merge:** `IBAN__c` preferisce
+  `banca_appoggio` all'IBAN ricostruito, quindi nel campo IBAN potrebbe finire il
+  *nome* di una banca. Letto dal codice, non confermato su una risposta reale.
+
+**Il resto del commit.** 🟢 **La decisione non prezzata del 03/09 sulla
+traduzione in italiano** viene eseguita: tutte le stringhe visibili di
+`opportunityCustomPath`, `quoteCreateTranche`, la quick action `Crea Tranche` e
+due eccezioni Apex. 🟢 Due correzioni funzionali sull'editor delle tranche: le
+tranche in cancellazione non fanno più scattare il controllo "già assegnata", e
+una tranche vuota è cancellabile anche in modifica. 🔴 **Nessun valore di stato
+di Opportunity o Quote è cambiato** — solo le etichette intorno: il disaccordo
+sugli stati Quote del [#59](open-items.it.md) resta intatto.
+
+### 34.2 🔑🔴 La credenziale WEBAPI Mexal è finita in una DM Slack
+
+Aurel Mrruku ha inviato ad Anita Aga **`Mexal Dev v.2.postman_collection`** alle
+**14:45:51 CEST**. **Tutte e quattordici le richieste portano l'header
+`Authorization` Passepartout attivo.** **Terza credenziale circolata in chiaro in
+sette giorni**, dopo il JWT WooCommerce (04/09) e la password di sandbox
+pronunciata in una trascrizione Gemini (08/09) — tre segreti, tre canali, tre
+persone. Il fattore comune è che il progetto **non ha un posto concordato dove
+metterne uno**.
+
+⚠ **Il valore non è in questo repository e non deve mai esserci.** È registrato:
+che esiste, di che tipo è, dove è finito e quando.
+
+🟢 Il codice scritto da essa tre ore dopo fa la cosa giusta — vedi 34.1. Quindi la
+credenziale non avrebbe avuto bisogno di viaggiare.
+
+### 34.3 Che cosa risolve la collection
+
+È la prima formulazione leggibile del contratto Mexal, e muove cinque righe.
+
+- ✅ **`azienda` è `PIE`, non `PE`.** Il verbale del 07/09 conteneva una svista di
+  trascrizione; la voce del 15 luglio delle note diceva `PIE` da sempre. Ora i due
+  artefatti concordano.
+- 🔴 **`anno` è sbagliato in due direzioni.** La collection fissa `Anno=2025`; il
+  codice invia `Date.today().year()`, quindi `2026`. Sono usciti a tre ore di
+  distanza e **nessuno ha deciso**. La domanda originaria — è un selettore di anno
+  fiscale, e che succede al confine — resta non posta.
+- 🟢 **Il [#125](open-items.it.md) ha risposta**: `Modifica Cliente` è
+  **`PUT /clienti/{codice}`** con il corpo completo, chiavato sul codice cliente
+  Mexal. 🔴 Resta aperto: il codice costruito è vincolato a POST su `/ricerca` e
+  **non può emettere una PUT**.
+- 🔴 **Il [#110](open-items.it.md) ha risposta negativa**: il corpo di creazione
+  `ordini-clienti` porta `sigla`, `serie`, `numero`, `cod_conto`,
+  `data_documento` e cinque array di riga — **nessun `cod_agente`, nessuna `zona`,
+  nessun `classificatore rete`**. Il codice agente lo porta solo il *cliente*.
+  **Questo contraddice la regola di congelamento delle provvigioni sull'ordine
+  concordata il 03/09**: una riassegnazione successiva riattribuirebbe
+  retroattivamente ogni ordine passato. ⚠ È la lettura di una collection, non una
+  dichiarazione di Mexal — **chiedere a Mirko Merendi di Kreosoft.**
+- 🟢🔴 **[#50](open-items.it.md) — la tranche ha finalmente un meccanismo Mexal.**
+  Una rata è un'**evasione `FT`** di righe d'ordine indicate a una data, con dieci
+  riferimenti all'`OC` di origine. 🔴 **Ma il corpo dell'ordine non porta alcuna
+  `data di scadenza` di riga** — proprio il campo che la PR #37 aveva propagato su
+  `OrderItem` il giorno prima. Non riconciliato.
+- 🟢 **L'ambiguità di 24 ore del [#109](open-items.it.md) è sciolta dalla build** —
+  `Account.Codice_Destinatario_SDI__c`, Testo(7), _"restituito da Mexal"_. Mexal,
+  non Anticipay.
+- 🟢 Corroborati anche: gli agenti sono `POST /risorse/fornitori/ricerca`; la
+  lettura fatture è il doppio passo N+1; `scadenzario/ricerca` esiste ed è
+  filtrabile per codice cliente. ⚠ `serie: 10` ovunque — la serie di **test**.
+
+### 34.4 🔴 Copertura: +496, e la prima classe di callout nel brief
+
+| Classe                       | Righe nuove | Test    |
+| ---------------------------- | ----------- | ------- |
+| `MexalSearchCalloutService`  | 260         | nessuno |
+| `MexalCustomerSearchService` | 236         | nessuno |
+
+Stima oltre le **4.182 righe, ancora zero coperte**, ultima esecuzione reale dei
+test Apex **ancora il 4 agosto**. 🔴 `MexalSearchCalloutService` è una classe di
+**callout HTTP** — la categoria che richiede `HttpCalloutMock`, o il percorso
+`Use_Mock__c` dello scaffolding di casa. ⏸ **Registrato, non agito. Nessuna classe
+di test scritta né proposta.**
+
+### 34.5 ⚠ Secondo giorno di silenzio sulla collection WooCommerce
+
+Il sollecito del 09/09 è **ancora senza risposta**, e la trasferta aziendale non
+lo spiega più da sola: **il 10/09 Andrea Di Cicco è stato attivo nella stessa DM
+alle 14:44–14:47 CEST**, su altri clienti. Sabatino Rinaldi ha ancora la
+collection **pre-filtro**, **il JWT a sessant'anni non è stato ruotato**, non è
+tornato alcun esito di test ([#102](open-items.it.md)), e **gli UAT iniziano fra
+tredici giorni**. ⚠ Quel pomeriggio si è mossa una collection *Mexal*: non è
+questa.
+
+### 34.6 Tutto il resto nella finestra
+
+**Niente.** Nessun messaggio Pienissimo su Gmail; l'elemento Pienissimo più
+recente su Drive è ancora dell'08/09 e né il `.drawio` né il workbook si sono
+mossi; Fathom non ha registrato riunioni; `#tproj-pienissimo` tace dal 04/09 e il
+suo blocco di stato riporta ancora **go-live 6 ottobre**, tre giorni dopo lo
+spostamento del registro al 21 ottobre.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-10
 depends_on: [OI-58]
 blocks: [go-live]
 requirement: INT-01
@@ -61,3 +61,48 @@ sessions, and they should not be assumed to be the same job:
 
 **Fase 1 development ends 10 September.** This was agreed on the 3rd, is unbuilt,
 and has no estimate.
+
+## 🟢🔴 2026-09-10 - the read half is written, on an open PR
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, **open and unmerged** against `DevMain`)
+adds `MexalCustomerSearchService` and `MexalSearchCalloutService` —
+**the first Mexal Apex this repository has ever held**
+([the build](../objects/The%20first%20Mexal%20integration%20Apex.md)).
+
+🟢 **Three of the four "nothing is built" bullets above are now answered.** The
+callout exists, it is authenticated by Named Credential rather than a pasted
+secret, it builds the agreed `data_ult_mod >=` delta filter, and it maps
+**fourteen Mexal customer fields onto `Account`** — including `codice_sdi`, `pec`
+and a reconstructed IBAN.
+
+🔴 **But this is a read, not a sync, and three gaps are unmoved:**
+
+1. **Nothing persists.** The mapped `Account` objects are returned in memory.
+   **No DML, no upsert, no matching on `Codice_Cliente_Mexal__c`** exists in
+   either class. Mexal's changes reach Salesforce's heap and stop there.
+2. **The nightly job is deliberately not built**, and the code says why:
+   _"Automatic daily search is intentionally paused while the Mexal sync schedule
+   and date window are finalized."_ The `Schedulable` and the `0 0 2 * * ?` cron
+   are written out **as comments**. **That blocker is this note's own** — "no
+   window, no volume, no failure path" has been the specification since
+   3 September, and the developer has now hit it in code.
+3. **Payload 2 — agent reassignment — is not handled.** `cod_agente` is not among
+   the fourteen mapped fields, and nothing reads the returned pairing.
+
+🔴 **`Integration_Configuration__c` still holds zero rows**, so even the read
+throws on its first call
+([the scaffolding note](../objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)).
+Two configuration rows are now needed by name: **`Mexal_Clienti_Ricerca`** and
+**`Mexal_Articoli_Ricerca`**. Nobody owns creating them.
+
+🔴 **[OI-117](OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+is untouched**, and this note has always said the two are one design. If the
+persistence half is added before the lock, a user edit is overwritten silently —
+exactly the failure this row warned of.
+
+⚠ **Fase 1 development ends today, 10 September.** This was agreed on the 3rd. It
+has a read, no writer, no schedule, no configuration rows, and its lock is
+unbuilt — on a pull request nobody has reviewed.
+
+**What a person must decide:** the sync window and watermark. The code is
+blocked on it and says so.

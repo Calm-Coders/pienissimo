@@ -5,7 +5,7 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-26
-updated: 2026-09-02
+updated: 2026-09-10
 depends_on: [OI-58, OI-49, OI-73, OI-94]
 source: org-status-check against Pienissimo UAT, 2026-08-26
 evidence: SOQL counts on Integration_Configuration__c and Integration_Log__c, NamedCredential listing
@@ -106,3 +106,33 @@ can see it.
 That is now blocking a dated deliverable rather than a hypothetical one: the
 [Anticipay field build](../risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)
 is due inside Fase 1, which ends **10 September**.
+
+## 2026-09-10 - the empty table now has two rows waiting by name
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, open) is the first code in this project to
+call Mexal, and it reads its endpoint from this custom setting
+([the build](The%20first%20Mexal%20integration%20Apex.md)).
+
+Two `Integration_Configuration__c` rows are now required **by exact
+`Azione__c` value**, or every call throws _"Configurazione Mexal non trovata per
+azione"_ before it leaves the org:
+
+| `Azione__c`             | Needs                                                                                                    |
+| ----------------------- | -------------------------------------------------------------------------------------------------------- |
+| `Mexal_Clienti_Ricerca` | `Endpoint_Path__c` ending `/ricerca`, `HTTP_Method__c` = `POST`, `Named_Credential_Sandbox__c` / `_Prod__c` |
+| `Mexal_Articoli_Ricerca` | same shape; declared in the allow-list, not yet called by any service class                              |
+
+🔴 **The table still holds zero rows and still has no named owner.** This is the
+same shape as
+[OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)
+— a hand-maintained table that code now depends on, with nobody assigned to fill
+it — and it is the second instance in a week.
+
+🔴 **The `Mexal` named credential and `Mexal_External_Credential` do not exist in
+`force-app/` either**
+([the org-only risk](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)),
+so the row would point at a principal the repository cannot deploy.
+
+⚠ **This is a repository reading.** Whether anyone created the rows or the
+credential in UAT during the day was **not checked** — the org was not opened this
+run, and the last org check (08/09 16:31Z) predates three commits.

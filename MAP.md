@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-09 (nightly requirements-check: PR #37 built the commercial process automation) · Source of record: [notes/](notes/)
+Last updated: 2026-09-10 (nightly requirements-check: the first Mexal Apex, on an open PR) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,79 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🟢🔴 **2026-09-10 — Fase 1 development was due to end today, and it ends with
+  the first Mexal Apex sitting unreviewed on an open pull request.** **PR #39**
+  / **`bc2ed5d`** (Anita Aga, pushed 17:58 CEST, PR opened 18:00): **17 files,
+  +682 lines, +496 new Apex** — and **it is not merged**; `DevMain` still ends at
+  last night's `9113453`
+  ([the build](notes/objects/The%20first%20Mexal%20integration%20Apex.md)).
+  🟢 **The first Mexal transport this repository has ever held.**
+  `MexalSearchCalloutService` is authenticated by **Named Credential**, keeps the
+  secret out of `Integration_Log__c` on purpose, and is **hard-guarded read-only**
+  by three independent checks — an action allow-list, a `/ricerca`-suffix refusal
+  and POST-only. It cannot write to Mexal by construction. After the sixty-year
+  JWT, the first integration built the right way round.
+  🟢🔴 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+  gets a read, not a sync.** Fourteen customer fields map onto `Account`, but
+  there is **no DML anywhere** — the mapped records are returned in memory and
+  stop there — and **the nightly job is commented out by design**, with the code
+  naming its own blocker: _"paused while the Mexal sync schedule and date window
+  are finalized."_ That window has been unspecified since 3 September.
+  🔴 **A permission set now ships a reference to an org-only credential.**
+  `Full_Permission` grants `Mexal_External_Credential-Mexal_Principal` and the
+  repo has **no `namedCredentials/` directory at all** — so the org-only pattern
+  has stopped being an absence and started **breaking deploys**
+  ([the risk](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
+  🔴 **`Integration_Configuration__c` still holds zero rows**, and two are now
+  needed by exact name. Second OI-121-shaped table in a week.
+  🟢 **The unpriced Italianisation decision of 3 September is being built** — every
+  user-facing string in the two LWCs, the quick action and two Apex exceptions.
+  🔴 **+496 uncovered Apex lines**, estimate past **4,182**, last test run still
+  **4 August**, and the brief now includes an **HTTP callout class** for the first
+  time (brief only).
+
+- 🔑🔴 **2026-09-10 — the Mexal WEBAPI credential was pasted into Slack, and three
+  hours later the code that uses it did the right thing.** Aurel Mrruku sent Anita
+  Aga **`Mexal Dev v.2.postman_collection`** by DM at **14:45:51 CEST**; **all
+  fourteen requests carry the live Passepartout `Authorization` header**
+  ([the risk](notes/risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+  **Third credential circulated in plaintext in seven days**, after the WooCommerce
+  JWT (04/09) and the sandbox password spoken into a transcript (08/09) — three
+  secrets, three channels, three people. **The value is not in this repository and
+  must never be.** ⚠ The collection is also the first readable statement of the
+  Mexal contract, and it moves five records:
+  ✅ **`azienda` is `PIE`, not `PE`** — the 07/09 minute was a transcription slip,
+  and this file said `PIE` all along in its 15 July line.
+  🔴 **`anno` is now wrong in two directions**: the collection hardcodes
+  **`Anno=2025`**, the code sends **`Date.today().year()`** — so `2026` — and
+  **nobody has decided**; the original question, whether it is a fiscal-year
+  selector, is still unasked.
+  🟢 **[OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)
+  is answered**: `PUT /clienti/{codice}`, full body, keyed on the Mexal code. It
+  stays open — the built code is guarded to POST-on-`/ricerca` and **cannot issue
+  it**.
+  🔴 **[OI-110](notes/items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)
+  is answered negatively**: the order header carries **no `cod_agente`, `zona` or
+  `classificatore rete`** — only the customer does. That **contradicts the
+  freeze-on-order commission rule** agreed 3 September. **Ask Mirko Merendi.**
+  🟢 **The tranche has a Mexal mechanism at last** — instalments are `FT`
+  *evasioni* of named order rows on a date, not a due-date field, 🔴 and the order
+  body carries **no per-line `data di scadenza`**, which is what PR #37 just built
+  ([OI-50](notes/items/OI-50%20Tranche%20object.md)).
+  🟢 **[OI-109](notes/items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)'s
+  24-hour ambiguity is settled by build** — `Account.Codice_Destinatario_SDI__c`,
+  described as _"restituito da Mexal"_. Mexal, not Anticipay.
+
+- ⚠ **2026-09-10 — a second day of silence on the WooCommerce collection, and this
+  time he was in the room.** Andrea Di Cicco was active in the same DM at
+  **14:44–14:47 CEST** on other clients and did not answer Aurel Mrruku's 09/09
+  chase. Sabatino Rinaldi still holds the **pre-filter** collection, **the
+  sixty-year JWT is still unrotated**, no test result has come back, and **UAT
+  begins in thirteen days**
+  ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+  ⚠ A different collection did move that afternoon — the Mexal one. Do not confuse
+  them.
 
 - 🟢🔴 **2026-09-09 evening — the commercial process automation shipped, and an
   accepted quote finally generates its order.** PR **#37** / **`a53345a`**

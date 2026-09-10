@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Elisa Migliano
 org: both
 raised: 2026-09-02
-updated: 2026-09-07
+updated: 2026-09-10
 depends_on: [OI-58]
 requirement: INT-01
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
@@ -158,3 +158,42 @@ It does not answer this row. `codice agente`, `zona` and `classificatore rete` a
 still needed on the Mexal order header and Andrea Di Cicco still cannot find them
 in the call\'s field set. **Manual lookup is how the value gets found; the wire
 question is where it goes.**
+
+## 🔴 2026-09-10 - the wire question is answered, and the answer is no
+
+`Mexal Dev v.2.postman_collection` reached ROMI's developers on 10 September
+([the wire facts](../flows/The%20Mexal%20integration.md#2026-09-10---the-wire-facts-arrive-and-the-first-apex-is-written)).
+Its `Creazione Ordine cliente` body is:
+
+`sigla`, `serie`, `numero`, `cod_conto`, `data_documento`, and five parallel line
+arrays — `id_riga`, `tp_riga`, `codice_articolo`, `quantita`, `cod_iva`.
+
+**There is no `cod_agente`, no `zona` and no `classificatore rete` on the order
+header.** The one remaining question in this row — *can the create call carry
+them on the wire* — is answered **negatively** by the artefact ROMI is building
+against.
+
+🟢 **`cod_agente` is on the customer**, in `Creazione Cliente`, in `Modifica
+Cliente` and in the `Ricerca Clienti` field filter. So the commission code exists
+in the integration; it travels with the **anagrafica**, not with the order.
+
+🔴 **That breaks the freeze agreed on 3 September.** Fabrizio Paganelli's rule is
+that the agent on an order is the tutor who generated it, permanently — _"su
+quell'ordine le provvigioni le devo prendere io come tutor"_ — while the account's
+agent may change later. If the code only ever travels on the customer record,
+**Mexal has nothing order-scoped to attribute against**, and a later reassignment
+retro-attributes every past order. The design and the transport now contradict
+each other in writing.
+
+⚠ **This is a reading of one Postman collection, not a statement from Mexal.**
+The header may accept fields this export does not exercise, and Andrea Di Cicco
+raised that possibility himself on 2 September. But the two candidate
+explanations he offered — a strange technical name, or a second detail call —
+are both now checkable, and neither appears here.
+
+**What a person must do:** ask **Mirko Merendi at Kreosoft** the sharpened
+question — *can the `ordini-clienti` create call carry `cod_agente`, `zona` and
+`classificatore rete` on the header, and under what names?* He answered eight
+questions of exactly this kind in one pass on 11 August. **Nobody has asked, and
+Andrea Di Cicco's JSON update and test send are outstanding since 2 September** —
+nine days.

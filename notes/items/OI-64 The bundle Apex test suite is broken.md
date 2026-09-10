@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-09
+updated: 2026-09-10
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -132,3 +132,30 @@ fails to assert are both **unknown — not checked this run**.
 **Nothing was run and nothing was written.** This is brief maintenance only, per
 the standing instruction; the suite stays Aurel Mrruku's to request in one pass
 before the production deploy.
+
+## 2026-09-10 - two more classes on the brief, and a new category
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, **open**) adds `MexalSearchCalloutService`
+(260 lines) and `MexalCustomerSearchService` (236 lines). **+496 lines, no
+tests.**
+
+🔴 **The brief now includes an HTTP callout class for the first time on the Mexal
+side.** `MexalSearchCalloutService` cannot reach any coverage without an
+`HttpCalloutMock` — or without the house scaffolding's own mock path, since
+`Integration_Configuration__c` already carries `Use_Mock__c`,
+`Mock_API_Scenario__c` and `Mock_Apex_Class__c`. **Whoever writes the suite should
+check that path first rather than hand-rolling mocks.**
+
+Worth testing when the suite is commissioned, listed so the brief is complete:
+
+- the three read-only guards in `MexalSearchCalloutService` — the action
+  allow-list, the `/ricerca` suffix check and the POST-only check — each of which
+  throws a distinct message;
+- `chooseHierarchyConfiguration`'s user → profile → org precedence;
+- `MexalCustomerSearchService.mapCustomerToAccount`, all fourteen assignments,
+  including the **IBAN reconstruction** and the `banca_appoggio` precedence that
+  [the build note](../objects/The%20first%20Mexal%20integration%20Apex.md) flags
+  as a probable defect;
+- the untyped-JSON paths that return silently on an unexpected shape.
+
+⏸ **Brief only. Nothing was acted on; no test class was written or proposed.**

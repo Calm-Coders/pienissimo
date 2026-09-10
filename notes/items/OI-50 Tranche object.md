@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-09
+updated: 2026-09-10
 blocks: [OI-75, go-live]
 severity: gating
 source: Aurel Mrruku direct decision, 2026-08-24; meetings/open-items.md row 50
@@ -305,3 +305,41 @@ unbuilt**, and it is the one Mexal's per-line payment status feeds.
    `with sharing` Apex** — but no test has exercised the path and **no
    `Tranche__c` record has ever reached an order line** in any observation this
    record holds.
+
+## 🟢🔴 2026-09-10 - the Mexal end of the tranche has a wire shape at last
+
+`Mexal Dev v.2.postman_collection` shows how an instalment is actually settled on
+Mexal, and it is not what this row assumed
+([the wire facts](../flows/The%20Mexal%20integration.md#2026-09-10---the-wire-facts-arrive-and-the-first-apex-is-written)).
+
+**A tranche is a partial fulfilment of named order rows on a date.** One `OC`
+order is created with all its lines; each instalment is then a separate **`FT`**
+document posting only that instalment's rows with `tipo_stato_riga: "E"` and ten
+back-reference fields to the originating order. The collection's own request
+names are explicit: _"Evasione Riga 1 e 2 il 30 Settembre"_, _"Evasione Riga 3 e 4
+il 31 Ottobre"_.
+
+🟢 **That is a buildable mechanism**, and it matches the model this row has
+carried since 14 July — the tranche is a grouping of order lines, Mexal updates
+payment status per line, Salesforce aggregates upward.
+
+🔴 **But the order-creation body carries no per-line `data di scadenza`.** The
+2 September tracciato said every order line must carry one, and it is why
+`Data_Scadenza__c` was propagated to `OrderItem` by PR #37 on 9 September. In the
+collection the due date is not a field on the order at all — it is the
+`data_documento` of the fulfilment call, sent later.
+
+**Unreconciled, and it matters to what was just built.** Either the collection is
+an incomplete export, or the tracciato described the *fulfilment* date rather than
+an order-line field, in which case `Data_Scadenza__c` is populated for a wire
+field that does not exist. **Ask before building the outbound leg.**
+
+⚠ **`serie: 10` throughout the collection** — the test series. Production is
+`serie 1`.
+
+**Gap 2, the aggregation, is still the one genuinely unbuilt gap.**
+`Completamente_Pagata__c` remains a checkbox nothing computes, and nothing in
+`bc2ed5d` touches it — that commit is inbound-read only. What it *does* add is
+the first evidence of how the per-line payment status will arrive:
+`POST /risorse/scadenzario/ricerca`, filterable **by customer code**, exists and
+is reachable.
