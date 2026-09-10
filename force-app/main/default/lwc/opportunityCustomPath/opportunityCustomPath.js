@@ -22,19 +22,19 @@ const STAGES = [
 const REASON_BY_STAGE = {
   "Da ricontattare - Prev. inviato": {
     field: RECALL_REASON_FIELD,
-    label: "Motivazione Da Ricontattare",
-    title: "Move to Da ricontattare",
+    label: "Motivazione da ricontattare",
+    title: "Sposta a Da ricontattare",
     guidance:
-      "Fill in the recall reason before moving the Opportunity to Da ricontattare.",
-    missingMessage: "Select Motivazione Da Ricontattare."
+      "Compila la motivazione prima di spostare l'opportunità a Da ricontattare.",
+    missingMessage: "Seleziona la motivazione da ricontattare."
   },
   "Chiusa/Persa": {
     field: LOST_REASON_FIELD,
-    label: "Motivazione Chiusa Persa",
-    title: "Close Opportunity as lost",
+    label: "Motivazione chiusa persa",
+    title: "Chiudi l'opportunità come persa",
     guidance:
-      "Fill in the lost reason before closing the Opportunity as Chiusa/Persa.",
-    missingMessage: "Select Motivazione Chiusa Persa."
+      "Compila la motivazione prima di chiudere l'opportunità come Chiusa/Persa.",
+    missingMessage: "Seleziona la motivazione chiusa persa."
   }
 };
 
@@ -226,10 +226,14 @@ export default class OpportunityCustomPath extends LightningElement {
       this.currentStage = this.selectedStage;
       this.showReasonModal = false;
       this.dispatchEvent(new RefreshEvent());
-      this.showToast("Stage updated", "Opportunity stage updated.", "success");
+      this.showToast(
+        "Fase aggiornata",
+        "La fase dell'opportunità è stata aggiornata.",
+        "success"
+      );
     } catch (error) {
       this.showToast(
-        "Unable to update stage",
+        "Impossibile aggiornare la fase",
         this.errorMessage(error),
         "error"
       );
@@ -246,7 +250,7 @@ export default class OpportunityCustomPath extends LightningElement {
     return (
       error?.body?.output?.errors?.[0]?.message ||
       error?.body?.message ||
-      "An unexpected error occurred."
+      "Si è verificato un errore imprevisto."
     );
   }
 }

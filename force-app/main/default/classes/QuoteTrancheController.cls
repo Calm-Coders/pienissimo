@@ -284,10 +284,11 @@ public with sharing class QuoteTrancheController {
     for (QuoteLineItem selectedLine : selectedLinesById.values()) {
       if (
         selectedLine.Tranche__c != null &&
-        !inputTrancheIds.contains(selectedLine.Tranche__c)
+        !inputTrancheIds.contains(selectedLine.Tranche__c) &&
+        !deletedTrancheIds.contains(selectedLine.Tranche__c)
       ) {
         throw new AuraHandledException(
-          'One or more selected lines are already assigned to a tranche. Reload and try again.'
+          'Una o piu righe selezionate sono gia assegnate a una tranche. Ricarica e riprova.'
         );
       }
     }

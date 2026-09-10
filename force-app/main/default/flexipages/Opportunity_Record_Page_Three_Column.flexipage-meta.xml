@@ -270,6 +270,27 @@
                 <identifier>RecordTipo_Opportunita_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Motivazione_Da_Ricontattare__c</fieldItem>
+                <identifier
+        >RecordMotivazione_Da_Ricontattare_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Motivazione_Chiusa_Persa__c</fieldItem>
+                <identifier>RecordMotivazione_Chiusa_Persa_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-dac64c49-7ca4-4dd8-9dde-aca45489bcc5</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -618,7 +639,7 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>c:opportunityCustomPath</componentName>
+                <componentName>opportunityCustomPath</componentName>
                 <identifier>c_opportunityCustomPath</identifier>
             </componentInstance>
         </itemInstances>

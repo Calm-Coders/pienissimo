@@ -46,11 +46,11 @@ export default class QuoteCreateTranche extends LightningElement {
   }
 
   get saveButtonLabel() {
-    return this.isEditMode ? "Edit Tranche" : "Create Tranche";
+    return this.isEditMode ? "Modifica tranche" : "Crea tranche";
   }
 
   get panelHeader() {
-    return this.isEditMode ? "Edit Tranche" : "Create Tranche";
+    return this.isEditMode ? "Modifica tranche" : "Crea tranche";
   }
 
   get hasPlannedTranches() {
@@ -67,10 +67,12 @@ export default class QuoteCreateTranche extends LightningElement {
             ? "edit-tranche-card selected"
             : "edit-tranche-card",
         dueDateLabel: tranche.dueDate
-          ? `Due ${tranche.dueDate}`
-          : "No due date",
+          ? `Scadenza ${tranche.dueDate}`
+          : "Nessuna scadenza",
         lineCountLabel:
-          lineCount === 1 ? "1 quote line" : `${lineCount} quote lines`
+          lineCount === 1
+            ? "1 riga preventivo"
+            : `${lineCount} righe preventivo`
       };
     });
   }
@@ -86,7 +88,7 @@ export default class QuoteCreateTranche extends LightningElement {
   get currentTrancheLabel() {
     return `${this.ordinalLabel(
       this.currentTrancheIndex + 1
-    )} Tranche (${this.currentTrancheIndex + 1} of ${
+    )} tranche (${this.currentTrancheIndex + 1} di ${
       this.plannedTranches.length
     })`;
   }
@@ -142,7 +144,7 @@ export default class QuoteCreateTranche extends LightningElement {
 
   get currentSelectionLabel() {
     const count = this.currentSelectedLineIds.length;
-    return count === 1 ? "1 line selected" : `${count} lines selected`;
+    return count === 1 ? "1 riga selezionata" : `${count} righe selezionate`;
   }
 
   get isPreviousDisabled() {
@@ -161,6 +163,15 @@ export default class QuoteCreateTranche extends LightningElement {
   }
 
   get showDeleteCurrentPage() {
+    if (
+      this.isEditMode &&
+      this.hasPlannedTranches &&
+      this.currentTranche.id &&
+      !this.hasCurrentSelectedLines
+    ) {
+      return true;
+    }
+
     return (
       !this.isEditMode &&
       this.hasPlannedTranches &&
@@ -196,7 +207,7 @@ export default class QuoteCreateTranche extends LightningElement {
     try {
       this.applyContext(await getContext({ quoteId: this.recordId }));
     } catch (error) {
-      this.showToast("Error", this.reduceError(error), "error");
+      this.showToast("Errore", this.reduceError(error), "error");
     } finally {
       this.hasLoaded = true;
       this.isLoading = false;
@@ -347,7 +358,7 @@ export default class QuoteCreateTranche extends LightningElement {
     const isValid = inputs.every((input) => input.reportValidity());
     this.pageValidationMessage = isValid
       ? ""
-      : "Complete the due date before moving to another tranche.";
+      : "Completa la data di scadenza prima di passare a un'altra tranche.";
     return isValid;
   }
 
@@ -407,18 +418,18 @@ export default class QuoteCreateTranche extends LightningElement {
 
   ordinalLabel(numberValue) {
     const labels = [
-      "First",
-      "Second",
-      "Third",
-      "Fourth",
-      "Fifth",
-      "Sixth",
-      "Seventh",
-      "Eighth",
-      "Ninth",
-      "Tenth"
+      "Prima",
+      "Seconda",
+      "Terza",
+      "Quarta",
+      "Quinta",
+      "Sesta",
+      "Settima",
+      "Ottava",
+      "Nona",
+      "Decima"
     ];
-    return labels[numberValue - 1] || `${numberValue}th`;
+    return labels[numberValue - 1] || `${numberValue}a`;
   }
 
   formatAmount(value) {
@@ -434,8 +445,8 @@ export default class QuoteCreateTranche extends LightningElement {
   decorateQuoteLine(line) {
     return {
       ...line,
-      productCode: line.productCode || "No code",
-      productName: line.productName || "Unnamed product",
+      productCode: line.productCode || "Nessun codice",
+      productName: line.productName || "Prodotto senza nome",
       totalLabel: this.formatAmount(line.totalPrice)
     };
   }
@@ -447,8 +458,8 @@ export default class QuoteCreateTranche extends LightningElement {
     }
     if (this.hasUnassignedQuoteLines) {
       this.pageValidationMessage =
-        "Assign every quote line to a tranche before saving.";
-      this.showToast("Error", this.pageValidationMessage, "error");
+        "Assegna ogni riga preventivo a una tranche prima di salvare.";
+      this.showToast("Errore", this.pageValidationMessage, "error");
       return;
     }
 
@@ -471,13 +482,13 @@ export default class QuoteCreateTranche extends LightningElement {
         })
       );
       this.showToast(
-        "Success",
-        wasEditMode ? "Tranches updated." : "Tranches created.",
+        "Successo",
+        wasEditMode ? "Tranche aggiornate." : "Tranche create correttamente.",
         "success"
       );
       this.closeAndRefresh();
     } catch (error) {
-      this.showToast("Error", this.reduceError(error), "error");
+      this.showToast("Errore", this.reduceError(error), "error");
     } finally {
       this.isLoading = false;
     }
@@ -500,7 +511,7 @@ export default class QuoteCreateTranche extends LightningElement {
     console.error("quoteCreateTranche error", error);
 
     if (!error) {
-      return "Unknown error";
+      return "Errore sconosciuto";
     }
     if (typeof error === "string") {
       return error;

@@ -1,6 +1,6 @@
 <template>
-  <section class="path-shell" aria-label="Opportunity path">
-    <div class="stage-list" role="listbox" aria-label="Opportunity stages">
+  <section class="path-shell" aria-label="Percorso opportunità">
+    <div class="stage-list" role="listbox" aria-label="Fasi opportunità">
       <template for:each={stageItems} for:item="stage">
         <button
           key={stage.value}
@@ -38,11 +38,11 @@
           <button
             class="slds-button slds-button_icon slds-modal__close"
             onclick={closeModal}
-            title="Close"
+            title="Chiudi"
             type="button"
           >
             <lightning-icon
-              alternative-text="Close"
+              alternative-text="Chiudi"
               icon-name="utility:close"
               size="small"
               variant="inverse"
@@ -55,7 +55,7 @@
         <div class="slds-modal__content slds-p-around_medium">
           <div class="warning-line">
             <lightning-icon
-              alternative-text="Required"
+              alternative-text="Obbligatorio"
               icon-name="utility:warning"
               size="small"
               variant="warning"
@@ -75,13 +75,13 @@
         <footer class="slds-modal__footer">
           <lightning-button
             disabled={isSaving}
-            label="Cancel"
+            label="Annulla"
             onclick={closeModal}
           ></lightning-button>
           <lightning-button
             class="slds-m-left_small"
             disabled={isSaving}
-            label="Save"
+            label="Salva"
             onclick={handleReasonSave}
             variant="brand"
           ></lightning-button>

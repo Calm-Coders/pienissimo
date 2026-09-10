@@ -3,7 +3,7 @@ public with sharing class LeadConversionTriggerHandler {
   private static final String DUPLICATE_LEAD_ERROR = 'Esiste gia un Lead aperto con la stessa email e lo stesso telefono.';
   private static final String CONTACT_ACCOUNT_CONFLICT_ERROR = 'La Partita IVA del Lead appartiene a una Azienda diversa dal Contact trovato con la stessa email e lo stesso telefono.';
   private static final String FOLLOW_UP_TASK_SUBJECT = 'Ricontattare Lead - Non Risponde';
-  private static final String FOLLOW_UP_TASK_DESCRIPTION = 'Lead moved to Non Risponde. Follow up with the prospect.';
+  private static final String FOLLOW_UP_TASK_DESCRIPTION = 'Il Lead e stato spostato in Non Risponde. Ricontattare il prospect.';
   private static final String TASK_STATUS_OPEN = 'Open';
   private static final String TASK_PRIORITY_NORMAL = 'Normal';
   private static final String QUALIFIED_STATUS = 'Qualificato';
@@ -205,8 +205,10 @@ public with sharing class LeadConversionTriggerHandler {
           new Task(
             ActivityDate = Date.today().addDays(2),
             Description = FOLLOW_UP_TASK_DESCRIPTION,
+            IsReminderSet = true,
             OwnerId = leadRecord.OwnerId,
             Priority = TASK_PRIORITY_NORMAL,
+            ReminderDateTime = System.now().addHours(48),
             Status = TASK_STATUS_OPEN,
             Subject = FOLLOW_UP_TASK_SUBJECT,
             WhoId = leadRecord.Id
