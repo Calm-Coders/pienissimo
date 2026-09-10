@@ -22,13 +22,13 @@ perimeter. `status: in-progress` because the client has not replied.**
 `[ROMI-PIENISSIMO] - Stato Avanzamento Progetto`, 8 September 14:15Z, Elena Spini
 to the client, cc Aurel Mrruku and Andrea Di Cicco.
 
-| | |
-| --- | --- |
-| **Go-live Fase 1** | **21 October 2026** (was 6 October) |
-| **UAT ready** | by **23 September** |
-| **UAT and test window** | **23 September – 13 October** |
-| **Solution approval** | by **13 October** |
-| **Fase 2** | **out of perimeter**, needs separate valuation and quotation |
+|                         |                                                              |
+| ----------------------- | ------------------------------------------------------------ |
+| **Go-live Fase 1**      | **21 October 2026** (was 6 October)                          |
+| **UAT ready**           | by **23 September**                                          |
+| **UAT and test window** | **23 September – 13 October**                                |
+| **Solution approval**   | by **13 October**                                            |
+| **Fase 2**              | **out of perimeter**, needs separate valuation and quotation |
 
 The stated cause is _"diversi temi ancora pending e i lavori stanno procedendo a
 rilento"_ — the data model still open, and repeated revisions to the analysis
@@ -76,7 +76,7 @@ his and it is one of the nine flows scheduled for UAT.
 🟢 **It supersedes the 7 September internal reading.** The "21 September" and
 "13 September" in that session's Gemini summary were **21 and 13 October** with
 the month dropped
-([OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+([OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
 
 🔴 **It does not change the register.** `CTX-02`, the `M` priority definition,
 both milestone tables, the Fase 2 escalation rule and `go_live:` still say

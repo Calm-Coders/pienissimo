@@ -6,7 +6,7 @@ owner: Rexhina Hysi
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-09
 source: git PR #31 (Calm-Coders/pienissimo), merged to DevMain 2026-09-03T15:02:59Z; Salesforce site-publication notices 2026-09-03
 ---
 
@@ -118,3 +118,31 @@ before the production deploy.
 The repository at `DevMain` after the merge, read directly. **The org was not
 opened this session**, so what is deployed beyond the two publication notices is
 `org-status-check`'s to confirm.
+
+## 2026-09-09 - the order-generation half arrived, from the other side
+
+This note recorded of the quote page: _"No envelope, no signature, no order
+generation."_ **One of those three is no longer true.**
+
+Commit **`a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) adds
+`QuoteTriggerHandler.createOrdersForAcceptedQuotes`, which fires on the
+`Accettato` transition this page performs and creates the Order and its
+OrderItems
+([the build](../objects/The%20commercial%20process%20automation.md)). **The page
+was not changed** — `submitAction` still just writes the status; the order now
+follows from a trigger behind it.
+
+- ✅ **Order generation: built**, server-side, for every route into `Accettato`
+  rather than only this page.
+- 🔴 **Envelope and signature: still absent.** Nothing in `a53345a` touches
+  DocuSign, and
+  [OI-111](../items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)
+  is still open with no written confirmation the client owns it. The agreed
+  design has the signature **before** the order; what now exists produces the
+  order with no signature step at all. **Whether that ordering was a decision or
+  an omission is not recorded anywhere. Ask, do not infer.**
+
+🔴 **And the page's missing authentication now matters more.** An anonymous click
+on a bare quote id creates commercial records —
+[the auth risk](../risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)
+carries the detail.

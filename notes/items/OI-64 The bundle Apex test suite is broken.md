@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-07
+updated: 2026-09-09
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -103,3 +103,32 @@ unmeasured aggregate, not a result. See
 production deploy, on request. This check ran no tests and wrote none. But when
 that task is called, **start by running what exists** — the brief may be smaller
 than the record implies.
+
+## 2026-09-09 - the commercial automation joins the brief, and one existing test is now stale
+
+**Commit `a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) adds **+729 net
+Apex lines** across six classes
+([the build](../objects/The%20commercial%20process%20automation.md)). Added to the
+brief for the separately requested suite:
+
+- **`QuoteTriggerHandler`** (219 lines, new) — quote-to-order generation, locale
+  inheritance and mismatch error, opportunity stage advance. Cases worth naming:
+  a quote accepted twice, a quote with no lines, a quote whose opportunity is not
+  `Qualificato`, a line carrying a tranche, and the double-generation guard.
+- **`OpportunityTriggerHandler`** (62 lines, new) — the `Locale` → parent
+  `Azienda` rewrite before save. Cases: an opportunity on an `Azienda` already,
+  a `Locale` with no resolvable parent, a bulk insert mixing both.
+- **`LeadConversionTriggerHandler`** (248 lines, new) and the reworked
+  `LeadConversionQueueable` (+134).
+- **`OrderTriggerHandler`** (+47) — opportunity close-won on `Incassato`.
+- **`WoocommerceOrderService`** (+19) — the `Azienda` record type stamp, and the
+  new throw when that record type is absent.
+
+🔴 **`OrderTriggerHandlerTest` is now behind the class it covers.** The commit
+adds `closeWonOpportunitiesForConfirmedOrders` to `OrderTriggerHandler` and
+**does not touch its test**. Whether the test still compiles and what it now
+fails to assert are both **unknown — not checked this run**.
+
+**Nothing was run and nothing was written.** This is brief maintenance only, per
+the standing instruction; the suite stays Aurel Mrruku's to request in one pass
+before the production deploy.

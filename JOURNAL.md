@@ -10,6 +10,66 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-09 — claude — nightly requirements-check: PR #37 built the commercial process automation
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository across **the whole
+  of 9 September**, deduplicating against
+  [the 09/09 interactive trace](notes/traces/Source%20trace%202026-09-09.md).
+  New trace: [Source trace 2026-09-09 nightly](notes/traces/Source%20trace%202026-09-09%20nightly.md).
+  **Two findings, one large.**
+
+- **⚠ Watermark caveat, read this before trusting the last trace.** The 09/09
+  interactive trace declares `external_watermark: 2026-09-09T22:00Z` but was
+  committed at **10:28Z** (`2dbcdca`). It never swept the eleven hours it claimed,
+  and **two commits landed inside them**. I swept from 10:28Z. **Prefer a trace's
+  actual run time to its declared end-of-day value when the two differ.** That run
+  also left **no JOURNAL entry** — this is the first handoff since 08/09.
+
+- **State — the headline.** **PR #37 / `a53345a`** (Anita Aga, merged by Aurel
+  Mrruku 18:41 CEST as `0fe07f6`): 30 files, +1,499/−74, **+729 net Apex**.
+  [The build note](notes/objects/The%20commercial%20process%20automation.md).
+  - 🟢 **An accepted quote now generates its Order and lines, carrying `Tranche__c`
+    and `Data_Scadenza__c`.** That closes
+    [OI-50](notes/items/OI-50%20Tranche%20object.md)'s standing gap since 25 August
+    — `OrderItem.Tranche__c` has a writer at last. **Aggregation is now the only
+    genuinely unbuilt gap of the three.** Only quote-born orders get a tranche.
+  - 🟢 **The Opportunity lifecycle exists and matches the register exactly**;
+    Azienda/Locale is now built end to end (`Locale__c` on Opportunity/Quote/Order,
+    parent normalisation, validation rule, WooCommerce record-type stamp).
+  - 🔴 **DocuSign is absent from the whole diff.** The design signs then orders;
+    this orders with no envelope, seven days after
+    [OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md).
+  - 🔴 **The unauthenticated community page now creates commercial records** — the
+    controller is unchanged, what it *causes* is not
+    ([the risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)).
+  - 🔴 **+729 uncovered lines**, estimate past 3,686, zero covered, last test run
+    still 4 August. Brief only, per the standing instruction.
+
+- **State — the smaller one.** Aurel Mrruku chased Andrea Di Cicco for the filtered
+  WooCommerce Postman collection at **12:26 CEST** and **had no reply eleven hours
+  later**. Sabatino Rinaldi still holds the pre-filter version; the sixty-year JWT
+  is still unrotated ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+  9–11/09 is the ROMI offsite, corroborated a third time by a Drive folder.
+
+- **⚠ Correction made mid-run — do not reinstate the first reading.** I initially
+  recorded the new `OpportunityStage` values as disagreeing with the design
+  diagram. **They match `state_machines.opportunity.states` character for
+  character.** It is [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)'s
+  own table, transcribed from the 6 August diagram, that is stale. **The real
+  disagreement is the _Quote_ states**, where the register has never matched the
+  built code and **disagrees with itself** — `build_state` carries the code
+  spelling. `a53345a` hard-codes that spelling in a third class.
+
+- **Next:** the Quote-state reconciliation needs **a human to name the canonical
+  spelling** before anything moves; the trigger and the exact edit list are written
+  into the trace note's *"The register was deliberately not changed"* section.
+  Then: ask about DocuSign vs the new order path — **ask, do not infer**;
+  `org-status-check` is owed for an **eleventh** run and is now behind **two**
+  merges.
+
+- **Watch:** the register was **not** touched this run and no requirement changed.
+  `MAP.md` is still far over its 5 KB budget and this run added to it.
+
 ## 2026-09-08 — claude — nightly requirements-check: go-live 21 October, the locale gets a home, and a password in a transcript
 
 - **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
@@ -27,7 +87,7 @@ Keep the twenty most recent entries here; archive older ones to
   ([the decision](notes/decisions/Decision%20-%20go-live%20moves%20to%2021%20October%20and%20Fase%202%20is%20declared%20out%20of%20perimeter.md)).
   The 07/09 session's "21 September / 13 September" were **21 and 13 October** —
   Gemini's paraphrase dropped the month.
-  [OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)
+  [OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)
   is **renamed and rewritten**; inbound links fixed in eight files. **The register
   was left at 6 October deliberately** — the date is proposed, not accepted
   ([OI-128](notes/items/OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
@@ -81,9 +141,9 @@ Keep the twenty most recent entries here; archive older ones to
   follow-up agreed **21 September 2026 with approval by 13 September**, where
   `CTX-02`, both milestone tables, the `M` priority definition and the Fase 2
   escalation rule all say **6 October**. Fifteen days **earlier**, yet described as
-  a *slittamento* adding development weeks — which only fits a plan this repository
+  a _slittamento_ adding development weeks — which only fits a plan this repository
   does not hold. **Nothing was changed in the register**
-  ([OI-124](notes/items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+  ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
   The same session **parked Fase 2 pending client payment** — first movement on
   that dispute since 24/07 — while **deferring the Mexal scadenzario path into that
   parked phase**, and settled **six Mexal decisions**
@@ -98,7 +158,7 @@ Keep the twenty most recent entries here; archive older ones to
   the **Zoho tag scheme is decoded and retired**, and the **primary-contact rule is
   sharpened**. New
   [OI-123](notes/items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md):
-  a dozen fields whose natural owner is a *locale* object that does not exist.
+  a dozen fields whose natural owner is a _locale_ object that does not exist.
   **(3) 🟢🔴 The marketing session closed `30 vs 60` as a 30–60 day window** —
   ⚠ still ROMI choosing for the client — and **moved rinuncia off the email onto
   the community page**
@@ -2774,3 +2834,66 @@ Articoli` workbook is **hers**, sent from his mailbox.
   in the mailbox, and the PR announced itself nowhere. From here, **diff `DevMain`
   against the previous trace's commit before writing the report** — it costs one
   command.
+
+---
+
+## 2026-09-09 — claude — requirements-check: the client acknowledged, and the register finally moved
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  **2026-09-08T22:00Z**, taken from the `external_watermark` of
+  [the 08/09 trace](notes/traces/Source%20trace%202026-09-08.md), which is also the
+  newest note in that folder by `updated:` — frontmatter and text agreed, no
+  disambiguation needed. **A thin window with one consequential message.** Slack
+  returned zero Pienissimo hits, Drive zero Pienissimo files, Fathom zero
+  meetings, `git log` zero new commits. `#tproj-pienissimo` is silent for a third
+  week.
+- **State:** **Fabrizio Paganelli replied to the perimeter mail at 07:08:22Z** —
+  _"presa visione e aggiungo Daniela in cc, per sua conoscenza"_ — and four words
+  did three things.
+  **(1) The date is acknowledged**, in verbatim the phrase Elena Spini asked for,
+  so **the register moved to 21 October**: `go_live: 2026-10-21`, `CTX-02`, the
+  `M` priority definition, both milestone tables and the §14 Fase 2 rule, across
+  the YAML, `REQUIREMENTS.md` and `REQUISITI.it.md`, in both languages in one
+  session, register **`v1.5`**. First requirement change since 2026-08-24.
+  `OI-124` is **resolved** and renamed to
+  [OI-124 Go-live moved from 6 to 21 October](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md).
+  **This was put to Aurel Mrruku as a decision and he authorised it** — it changes
+  the document presented for signature, so it was not taken unilaterally.
+  **(2) 🟢 Daniela Morgese is on the thread, and the client put her there**,
+  unprompted. **First movement on
+  [the Fase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)
+  in sixty-one days** — the standing diagnosis since 10 July has been that it
+  cannot close because it never reached her. ⚠ But she is **cc, not addressee**,
+  _"per sua conoscenza"_, no reply, and **still no quotation**, so
+  [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md) does not move.
+  **(3) 🔴 The perimeter was not accepted**, exactly as the 08/09 record predicted
+  in writing. Three of four addressees never replied, and **the four blocking
+  decisions got no answer at all**.
+- **Next:** (a) **chase Sabatino Rinaldi specifically** — he is the client's
+  project lead, he carried the dispute to Daniela Morgese, and a perimeter he has
+  not acknowledged is one he can say he did not see; (b) **get the Fase 2
+  quotation written**, now that the decision-maker can finally read it — reach
+  without a number is the same standstill with a wider audience; (c) **answer the
+  DocuSign licence question**, which blocks the quote flow and is on the UAT list
+  for **23 September**; (d) **reconcile the 23 September UAT start** with _"non
+  abbiamo ancora fatto dei UAT noi"_ — fourteen days out and nobody has addressed
+  it in two runs.
+- **Watch:** ⚠ **A "presa visione" is not agreement to a perimeter**, and the
+  record should keep saying so — the mail bundled a date, a scope boundary and
+  four decisions into one request for acknowledgement, and got the cheapest of the
+  three back. ⚠ **Fabrizio Paganelli's own Mexal scadenzario request now sits
+  inside the perimeter he acknowledged**, unnamed by the mail and unnamed by Slide
+  4; he cannot tell from what he signed off that it moved out of scope. ⚠ **The
+  §14 escalation rule was re-dated, not re-examined** — it still permits exactly
+  the renegotiation that just happened. ⚠ **One "6 October" was deliberately left
+  in §2.2 of both prose texts**: it quotes the 06/08 sign-off session, and editing
+  it would misquote the session. ⚠ **`MAP.md` is ~98 KB against its own stated
+  5 KB budget**, flagged on 08/09 and again here, still priced at ~1.1k in
+  `INDEX.md`. ⚠ **`STATUS.md`, the Notion mirror and the Flows page are owed by
+  `org-status-check` for a tenth run.** This sweep did not open the org.
+- **Method:** **write the trigger, not just the reason, when you decline to act.**
+  The 08/09 run could not decide whether the register should move, so it recorded
+  the exact condition and enumerated the ten places. When the condition fired the
+  next morning the change took one pass and needed no re-derivation. The converse
+  lesson is in the same message: **read a short reply for what it does, not for
+  how much it says** — the sixty-one-day blocker moved in a subordinate clause.

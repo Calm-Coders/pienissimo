@@ -36,26 +36,26 @@ future run think a sweep never wrote its handoff.
 All read-only. **Nothing was sent, replied to, drafted, shared, modified or marked
 read**, with the single carve-out of the nightly report to `C0BQD34LLF4`.
 
-| Source     | Query / scope                                                          | Result                                                                                                     |
-| ---------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Gmail**  | `pienissimo after:2026/09/04 -in:draft`, 50-thread page                 | 12 threads, **7 new**                                                                                      |
-| **Gmail**  | all mail `after:2026/09/04 -in:draft`, 50-thread page                   | 37 threads. The rest are Permo (×3), Daze, Interstudio Viaggi, 247, LIFE365, a Workspace 2FA notice, a Salesforce health-check alert for Twentyfourseven, and marketing spam |
-| **Gmail**  | `from:/to:/cc:pienissimo.pro newer_than:5d`                            | **1 thread, newest message still 02/09 10:18Z** — Andrea Parmeggiani has not written since               |
-| **Gmail**  | thread `1a07b6486788f4d0` — Data Model Parte 3 Gemini notes             | **read in full**                                                                                           |
-| **Gmail**  | thread `1a07b1f8586c6a02` — Interna Flussi MKT Gemini notes             | **read in full**                                                                                           |
-| **Gmail**  | thread `1a07cbdedf25b22f` — Follow-up Interno Gemini notes              | **read in full**                                                                                           |
-| **Gmail**  | thread `1a07b0dc6352abb5` — _"Fwd: Recap: Flussi MKT Biglietti"_        | **read in full** — the 20/08 recap, new to the record                                                      |
-| **Gmail**  | thread `1a07b310d8c6ca90` — _"ultima iscrizione"_                       | **read in full**; body is a signature only, six PNG attachments **not opened**                              |
-| **Drive**  | `modifiedTime > 2026-09-04T22:00:00Z`, paged twice                     | 27 items, **9 Pienissimo**                                                                                 |
-| **Drive**  | `title contains 'Appunti di Gemini' and modifiedTime > watermark`      | 5 docs, **3 Pienissimo** — one per session                                                                 |
-| **Drive**  | Gemini doc `1_9dgnxNCu_RhCAt1cu6sKvdw0DYr5pVItdAzZNhfA4g` (Parte 3)     | **read in full — summary, Decisioni, 9 detail bullets and the complete 1h12m02s transcript**               |
-| **Drive**  | Gemini doc `1pZVnudmZHZFVAyh13vBWASH4XOV3kxvoJSt0P68lDDY` (Flussi MKT)  | **read in full — summary, Decisioni, 8 detail bullets**; transcript present and not needed                 |
-| **Drive**  | Gemini doc `1-r2hUv-NG9_QSwL2ijHsHaTjKwRHTXU7lLyiRpWckkY` (Follow-up)   | **read in full — 7 `Concordato` decisions, 12 next steps, 15 detail bullets. No transcript section exists** |
-| **Slack**  | workspace-wide incl. private channels, DMs and group DMs, `pienissimo after:2026-09-04` | 4 hits, **all new**                                                                        |
-| **Slack**  | group DM `C0BQD34LLF4` — the org-status-check post of 10:04 CEST        | **read in full** from the search result                                                                    |
-| **Git**    | `git log`, `git show --stat` on `DevMain`                               | one new commit, **`d562af0`**, 43 files                                                                    |
-| **Repo**   | `MAP.md`, `INDEX.md`, `AGENTS.md`, the write protocol, the 04/09 trace, OI-81/99/121 | read directly                                                                                |
-| **Fathom** | `list_meetings` from 04/09, 3 pages                                    | **0 meetings.** Consistent with 03/09 and 04/09 — an absence, not a gap                                     |
+| Source     | Query / scope                                                                           | Result                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gmail**  | `pienissimo after:2026/09/04 -in:draft`, 50-thread page                                 | 12 threads, **7 new**                                                                                                                                                        |
+| **Gmail**  | all mail `after:2026/09/04 -in:draft`, 50-thread page                                   | 37 threads. The rest are Permo (×3), Daze, Interstudio Viaggi, 247, LIFE365, a Workspace 2FA notice, a Salesforce health-check alert for Twentyfourseven, and marketing spam |
+| **Gmail**  | `from:/to:/cc:pienissimo.pro newer_than:5d`                                             | **1 thread, newest message still 02/09 10:18Z** — Andrea Parmeggiani has not written since                                                                                   |
+| **Gmail**  | thread `1a07b6486788f4d0` — Data Model Parte 3 Gemini notes                             | **read in full**                                                                                                                                                             |
+| **Gmail**  | thread `1a07b1f8586c6a02` — Interna Flussi MKT Gemini notes                             | **read in full**                                                                                                                                                             |
+| **Gmail**  | thread `1a07cbdedf25b22f` — Follow-up Interno Gemini notes                              | **read in full**                                                                                                                                                             |
+| **Gmail**  | thread `1a07b0dc6352abb5` — _"Fwd: Recap: Flussi MKT Biglietti"_                        | **read in full** — the 20/08 recap, new to the record                                                                                                                        |
+| **Gmail**  | thread `1a07b310d8c6ca90` — _"ultima iscrizione"_                                       | **read in full**; body is a signature only, six PNG attachments **not opened**                                                                                               |
+| **Drive**  | `modifiedTime > 2026-09-04T22:00:00Z`, paged twice                                      | 27 items, **9 Pienissimo**                                                                                                                                                   |
+| **Drive**  | `title contains 'Appunti di Gemini' and modifiedTime > watermark`                       | 5 docs, **3 Pienissimo** — one per session                                                                                                                                   |
+| **Drive**  | Gemini doc `1_9dgnxNCu_RhCAt1cu6sKvdw0DYr5pVItdAzZNhfA4g` (Parte 3)                     | **read in full — summary, Decisioni, 9 detail bullets and the complete 1h12m02s transcript**                                                                                 |
+| **Drive**  | Gemini doc `1pZVnudmZHZFVAyh13vBWASH4XOV3kxvoJSt0P68lDDY` (Flussi MKT)                  | **read in full — summary, Decisioni, 8 detail bullets**; transcript present and not needed                                                                                   |
+| **Drive**  | Gemini doc `1-r2hUv-NG9_QSwL2ijHsHaTjKwRHTXU7lLyiRpWckkY` (Follow-up)                   | **read in full — 7 `Concordato` decisions, 12 next steps, 15 detail bullets. No transcript section exists**                                                                  |
+| **Slack**  | workspace-wide incl. private channels, DMs and group DMs, `pienissimo after:2026-09-04` | 4 hits, **all new**                                                                                                                                                          |
+| **Slack**  | group DM `C0BQD34LLF4` — the org-status-check post of 10:04 CEST                        | **read in full** from the search result                                                                                                                                      |
+| **Git**    | `git log`, `git show --stat` on `DevMain`                                               | one new commit, **`d562af0`**, 43 files                                                                                                                                      |
+| **Repo**   | `MAP.md`, `INDEX.md`, `AGENTS.md`, the write protocol, the 04/09 trace, OI-81/99/121    | read directly                                                                                                                                                                |
+| **Fathom** | `list_meetings` from 04/09, 3 pages                                                     | **0 meetings.** Consistent with 03/09 and 04/09 — an absence, not a gap                                                                                                      |
 
 ## Found
 
@@ -68,14 +68,14 @@ document says **6 October** — `CTX-02` in both prose texts, both milestone tab
 the `M` priority definition, the Fase 2 escalation rule, `MAP.md` and §10.1 of both
 recaps.
 
-**Fifteen days earlier**, yet described as a *slittamento* that **adds**
+**Fifteen days earlier**, yet described as a _slittamento_ that **adds**
 development and test weeks — which only fits a plan whose go-live was before 21
 September and which **is not in this repository**.
 
 🔴 **Nothing was changed in the register.** `REQUISITI.it.md` is the text
 presented for signature; a date in it does not move on an internal meeting
 summary, and no source shows Pienissimo being asked. The conflict is
-[OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md).
+[OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md).
 
 ### 2. 🔴 Fase 2 is parked, and work was deferred into it in the same hour
 
@@ -99,7 +99,7 @@ read back from Mexal
 
 🔴 **`anno = 2025` is hardcoded against a 2026 go-live and nobody raised it.**
 
-🟢 **The edition mapping finally has a *when*** — products loaded from Excel
+🟢 **The edition mapping finally has a _when_** — products loaded from Excel
 first, mapping entered by hand in the days immediately before go-live. Still **not
 by whom** ([OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)),
 and those days just moved two weeks earlier.
@@ -205,28 +205,28 @@ permanently. Worth one message.
 
 **Eleven notes created, twelve updated.**
 
-| Written                                              | Because                                            |
-| ---------------------------------------------------- | -------------------------------------------------- |
-| `Source trace 2026-09-07`                            | **new** — this note                                |
-| `2026-09-07 Data Model Parte 3`                      | **new** — the minute, from the full transcript     |
-| `2026-09-07 Interna Flussi MKT`                      | **new** — the minute                               |
-| `2026-09-07 Follow-up Interno`                       | **new** — a decision list; no transcript exists    |
-| `Decision - consents live on the contact and editions on the campaign` | **new**                          |
-| `Decision - rinuncia moves from the marketing email to the community`  | **new**                          |
-| `OI-123` … `OI-127`                                  | **new** — five rows                                |
-| `OI-81`                                              | `30 vs 60` closed; the style constraint still not restated |
-| `OI-99`                                              | Parte 3 ran; the calendar ambiguity resolved       |
-| `OI-121`                                             | **corrected** — the table has rows, and a *when*   |
-| `OI-24`                                              | a fourth session, the same four gaps               |
-| `OI-78`                                              | rinuncia joins the page; the recipient rule settled |
-| `OI-14`                                              | the owed list itemised and overdue                 |
-| `OI-102`                                             | the WooCommerce mail has an owner, and is unsent   |
-| `OI-110`                                             | agent lookup deliberately manual                   |
-| `OI-113`                                             | the shipping mirror is one-directional by decision |
-| `The Mexal integration`                              | six decisions                                      |
-| `Risk - the phase 2 scope dispute is unresolved`     | parked pending payment                             |
-| `Risk - production deploy is blocked by Apex coverage` | 0 of 2,741, and the window narrowed              |
-| `MAP.md`, `INDEX.md`                                 | the live position and the new notes                |
+| Written                                                                | Because                                                    |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `Source trace 2026-09-07`                                              | **new** — this note                                        |
+| `2026-09-07 Data Model Parte 3`                                        | **new** — the minute, from the full transcript             |
+| `2026-09-07 Interna Flussi MKT`                                        | **new** — the minute                                       |
+| `2026-09-07 Follow-up Interno`                                         | **new** — a decision list; no transcript exists            |
+| `Decision - consents live on the contact and editions on the campaign` | **new**                                                    |
+| `Decision - rinuncia moves from the marketing email to the community`  | **new**                                                    |
+| `OI-123` … `OI-127`                                                    | **new** — five rows                                        |
+| `OI-81`                                                                | `30 vs 60` closed; the style constraint still not restated |
+| `OI-99`                                                                | Parte 3 ran; the calendar ambiguity resolved               |
+| `OI-121`                                                               | **corrected** — the table has rows, and a _when_           |
+| `OI-24`                                                                | a fourth session, the same four gaps                       |
+| `OI-78`                                                                | rinuncia joins the page; the recipient rule settled        |
+| `OI-14`                                                                | the owed list itemised and overdue                         |
+| `OI-102`                                                               | the WooCommerce mail has an owner, and is unsent           |
+| `OI-110`                                                               | agent lookup deliberately manual                           |
+| `OI-113`                                                               | the shipping mirror is one-directional by decision         |
+| `The Mexal integration`                                                | six decisions                                              |
+| `Risk - the phase 2 scope dispute is unresolved`                       | parked pending payment                                     |
+| `Risk - production deploy is blocked by Apex coverage`                 | 0 of 2,741, and the window narrowed                        |
+| `MAP.md`, `INDEX.md`                                                   | the live position and the new notes                        |
 
 Also: rows **123**–**127** plus a sweep blockquote in `open-items.md` **and**
 `.it.md`; a new **§30** in `DEVELOPMENT-RECAP.md` **and** `.it.md`.
@@ -235,7 +235,7 @@ Also: rows **123**–**127** plus a sweep blockquote in `open-items.md` **and**
 go-live date, and the 07/09 session moved it. It was left alone deliberately: the
 Italian is the contractually operative text, the decision was taken with no client
 in the room, and the direction of the change contradicts its own justification.
-That is [OI-124](../items/OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)'s
+That is [OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)'s
 question for a human, not a sweep's to answer.
 
 ## Deliberately not done

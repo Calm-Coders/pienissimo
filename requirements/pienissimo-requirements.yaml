@@ -8,10 +8,13 @@ meta:
   project: Pienissimo — Zoho CRM to Salesforce migration
   client: Pienissimo
   supplier: ROMI S.r.l.
-  version: "1.4"
-  date: 2026-08-24
+  version: "1.5"
+  date: 2026-09-09
   signoff_session: 2026-08-06T15:00:00+02:00
-  go_live: 2026-10-06
+  # Go-live renegotiated 6 -> 21 October by ROMI in writing on 2026-09-08
+  # (Gmail 1a0815f9a43d3b87); "presa visione" from Fabrizio Paganelli 2026-09-09.
+  # See notes/items/OI-124. Original signed date: 2026-10-06.
+  go_live: 2026-10-21
   zoho_expiry: 2026-10-31
   prose_documents:
     it: REQUISITI.it.md # authoritative, client-facing
@@ -424,7 +427,7 @@ requirements:
       area: context,
       pri: M,
       status: agreed,
-      text: "Go-live 6 October 2026, focused on WooCommerce and Mexal"
+      text: "Go-live 21 October 2026, focused on WooCommerce and Mexal"
     }
   - {
       id: CTX-03,

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-08
+updated: 2026-09-09
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -240,3 +240,26 @@ is the pre-filter version.**
 
 ⚠ **No test result yet.** Sabatino Rinaldi had not replied by the end of
 8 September, and he is on the client's tour from that day.
+
+## 2026-09-09 - the filtered collection was chased again and did not arrive
+
+Andrea Di Cicco promised the filtered collection _"tra le 5 e le 6"_ on
+8 September. It did not come. Aurel Mrruku chased it in the same DM at **12:26
+CEST on 9 September**:
+
+> _"ciao"_ / _"alla fine non mhai passato la collectioon :="_
+
+**Andrea Di Cicco has not replied** — read at 23:35 CEST, roughly eleven hours
+later, and the DM shows no message after Aurel Mrruku's.
+
+So the position is unchanged and one day older: **Sabatino Rinaldi holds the
+pre-filter collection**, the filtered one exists on Andrea Di Cicco's machine
+only, and **the sixty-year JWT still has not been rotated**. ⚠ Sabatino Rinaldi
+has still sent no test result; he has been on the client's tour since 8
+September.
+
+⚠ **Neither man is described here as unresponsive on purpose** — 9–11 September
+is the ROMI company offsite
+([the compressed calendar](../risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)),
+which is a sufficient explanation for a same-day silence and is not evidence of
+anything more.

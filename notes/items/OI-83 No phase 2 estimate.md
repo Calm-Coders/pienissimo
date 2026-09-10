@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-08
+updated: 2026-09-09
 depends_on: [OI-37, OI-38]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -63,3 +63,22 @@ The perimeter has been stated to everyone except the decision-maker it concerns.
 12:40Z on 8 September) were **not opened and remain unattributed**, for the second
 run. If they are this project's estimates they are the first estimate artifacts in
 the record.
+
+## 2026-09-09 - she is on the thread; there is still nothing for her to decide
+
+Fabrizio Paganelli added `daniela@pienissimo.com` in cc when he acknowledged the
+perimeter mail — _"per sua conoscenza"_
+([OI-128](OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
+
+The half of this row about **reach** has moved: the decision-maker is no longer
+being briefed second-hand through Sabatino Rinaldi, and she can read the Fase 2
+boundary herself.
+
+🔴 **The half that matters has not.** This row is about a **number**, and there is
+still no number. The 8 September mail promises separate valuation and quotation in
+the future tense; the internal session of 7 September parked Fase 2 pending client
+payment. So the sequence is now: work is out of scope, the client is told it is
+out of scope, the decision-maker is copied — and nobody can price it, accept it or
+refuse it.
+
+**Five weeks past _"dopo le ferie"_. Still open, still unowned by a date.**

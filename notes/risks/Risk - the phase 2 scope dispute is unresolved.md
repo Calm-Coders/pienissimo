@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-07-10
-updated: 2026-09-08
+updated: 2026-09-09
 depends_on: [OI-37, OI-38, OI-83, OI-94]
 source: meetings/open-items.md status updates 2026-08-03 and 2026-08-06
 ---
@@ -83,7 +83,7 @@ questions to ROMI**:
 - **Question 11** asks how to route Pienissimo Pro renewals to the software team
 
 **This does not decide the dispute, and it should not be presented as if it
-does.** 11 June is *after* the 27 May kickoff, so it is not evidence about the
+does.** 11 June is _after_ the 27 May kickoff, so it is not evidence about the
 pre-sale conversation, which is what ROMI's position rests on. What it does show
 is that the client raised all three formally and in writing, early, and got as
 far as putting them to ROMI as numbered questions. That is why Sabatino Rinaldi
@@ -106,7 +106,7 @@ built and hosted by Pienissimo Software Srl**, acting as middleware
 Anticipay → SFDC is a **Fase 1** integration in ROMI's own project plan, quoted
 above.
 
-So Fase 1 cannot go live unless the entity ROMI argues is *not* this project's
+So Fase 1 cannot go live unless the entity ROMI argues is _not_ this project's
 client **writes a service, stands up a test environment for it, and keeps it
 running**. Until 25 August the crossover was only that its maintenance manager
 was the named technical contact. It is now a build dependency.
@@ -180,7 +180,7 @@ aim of getting Fase 2 quoted to cover the accumulated out-of-scope work.
 🔴 **Nothing has changed on the client side.** Daniela Morgese has still not been
 approached; [OI-83](../items/OI-83%20No%20phase%202%20estimate.md) still records that
 the decision-maker was never told. **Forty-five days** since the escalation to her
-was promised. What is new is only that ROMI has stopped waiting *actively*.
+was promised. What is new is only that ROMI has stopped waiting _actively_.
 
 🔴 **And work is being moved into the parked phase in the same session.** The
 Mexal **scadenzario correction path** — asset status following unpaid invoices,
@@ -231,7 +231,56 @@ remains open: the mail promises a separate valuation in the future tense, five
 weeks after the estimate was due "after the holidays".
 
 ⚠ **The parking decision of 7 September is not in the mail.** The internal session
-held Fase 2 *pending client payment* and deferred the **Mexal scadenzario
+held Fase 2 _pending client payment_ and deferred the **Mexal scadenzario
 correction path** into it — Fabrizio Paganelli's own request. He is a recipient of
 this mail; neither the parking nor his deferred item appears in it or on Slide 4.
 **Whether he can tell his request has moved out of scope is not established.**
+
+## 2026-09-09 - the decision-maker is finally on the thread, put there by the client
+
+**Fabrizio Paganelli replied to the perimeter mail at 07:08:22Z and added
+`daniela@pienissimo.com` in cc "per sua conoscenza".**
+
+> _"Ciao Elena, presa visione e aggiungo Daniela in cc, per sua conoscenza.
+> Fabrizio"_
+
+🟢 **This is the first real movement on this risk since 10 July.** For sixty-one
+days the record's own diagnosis has been that the dispute cannot close because it
+has never reached
+[Daniela Morgese](../people/Daniela%20Morgese%20-%20Pienissimo%20direction.md) —
+[OI-83](../items/OI-83%20No%20phase%202%20estimate.md) states it outright, in
+Sabatino Rinaldi's words: _"Daniela non sapeva questa informazione qui."_
+Elena Spini's mail did not copy her; the client did. She is now on a thread that
+carries the written perimeter, the link to `Pienissimo_Project Plan 2.pptx` and
+the instruction to read **Slide 4**, where `Ordini Pienissimo Pro (SFDC → Zoho
+Pienissimo Software SRL)` is listed `FUORI PERIMETRO DA QUOTARE`.
+
+⚠ **Do not overread it.** Four qualifications, and each one matters:
+
+1. **"Per sua conoscenza" is for information.** She is cc, not an addressee.
+   Nothing is asked of her, and no reply is requested from her.
+2. **Nothing was conceded.** Fabrizio Paganelli acknowledged reading. He did not
+   accept the exclusions, withdraw the July position, or mention the dispute. The
+   two sides' positions are exactly where they were on 6 August.
+3. 🔴 **There is still no quotation.** This risk and `OI-83` both turn on a number
+   that does not exist. Putting the decision-maker in front of a perimeter with
+   no price attached does not let her decide anything — it lets her see the
+   boundary ROMI is asserting. **`OI-83` does not move on this**, and it is now
+   five weeks past _"dopo le ferie"_.
+4. ⚠ **What she is being shown is ROMI's boundary, not the disagreement.** The
+   mail presents Fase 2 as settled fact. It does not tell her that Pienissimo has
+   contested the Zoho item since July, that the escalation to her was promised in
+   five consecutive weekly statuses and never made, or that ROMI parked Fase 2 on
+   7 September pending payment. **If she reads only this thread she will not know
+   there is a dispute.**
+
+⚠ **The Mexal scadenzario item is still invisible to its own requester.** The
+7 September session deferred the scadenzario correction path — asset status after
+unpaid invoices, correcting incassi and tranche errors — into Fase 2. It was
+**Fabrizio Paganelli's ask**. He has now written _"presa visione"_ against a
+perimeter that silently contains his own request, and neither the mail nor Slide 4
+names it. **He cannot tell from what he acknowledged that his request has moved
+out of scope.**
+
+**Status unchanged: open, high.** What changed is reach, not agreement — and
+reach without a quotation is the same standstill with a wider audience.

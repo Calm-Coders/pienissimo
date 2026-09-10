@@ -24,7 +24,7 @@ Ogni requisito ha un identificativo stabile (es. `SAL-04`), una priorità e uno 
 
 | Priorità | Significato                                                    |
 | :------: | -------------------------------------------------------------- |
-|  **M**   | _Must_ — indispensabile al go-live del 6 ottobre 2026.         |
+|  **M**   | _Must_ — indispensabile al go-live del 21 ottobre 2026.        |
 |  **S**   | _Should_ — importante, ma il go-live può avvenire senza.       |
 |  **C**   | _Could_ — desiderabile, realizzabile se i tempi lo consentono. |
 |  **F2**  | Rinviato esplicitamente alla **Fase 2**, post go-live.         |
@@ -38,7 +38,7 @@ Ogni requisito ha un identificativo stabile (es. `SAL-04`), una priorità e uno 
 | ID     | Requisito                                                                                                                                                                                   | Pri. | Stato |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :---: |
 | CTX-01 | Sostituire Zoho CRM con Salesforce come unico CRM operativo di Pienissimo.                                                                                                                  |  M   |  ✅   |
-| CTX-02 | **Data di go-live: 6 ottobre 2026**, con focus sulle integrazioni WooCommerce e Mexal. Le integrazioni minori sono rinviate alla Fase 2.                                                    |  M   |  ✅   |
+| CTX-02 | **Data di go-live: 21 ottobre 2026**, con focus sulle integrazioni WooCommerce e Mexal. Le integrazioni minori sono rinviate alla Fase 2.                                                   |  M   |  ✅   |
 | CTX-03 | Il contratto Zoho scade il **31 ottobre 2026**. La finestra di funzionamento in parallelo (dual-run) è quindi di circa tre settimane e non è prorogabile.                                   |  M   |  ✅   |
 | CTX-04 | Durante il dual-run i biglietti sono inseriti in doppio (Zoho + Salesforce) e la fatturazione delle vendite da palco resta su Zoho fino al Food Marketing Festival del 29 settembre.        |  M   |  ✅   |
 | CTX-05 | Principio guida: **nessun "accrocchio"**. I processi vengono ridisegnati per Salesforce, non replicati da Zoho. Si parte semplici e manuali, si automatizza ciò che si dimostra ripetitivo. |  M   |  ✅   |
@@ -53,7 +53,7 @@ Ogni requisito ha un identificativo stabile (es. `SAL-04`), una priorità e uno 
 | ~1 settembre 2026   | Import dati in Salesforce                | Preceduto dalla bonifica: ~6.000 lead/account contro ~7.500 clienti paganti |
 | 7–19 settembre 2026 | Tour (eventi gratuiti)                   | ~90% pubblico nuovo, dati digitati dal cliente                              |
 | 29 settembre 2026   | Food Marketing Festival                  | Picchi di 100–150 fatture al giorno                                         |
-| **6 ottobre 2026**  | **Go-live**                              | WooCommerce + Mexal operativi                                               |
+| **21 ottobre 2026** | **Go-live**                              | WooCommerce + Mexal operativi                                               |
 | 29 ottobre 2026     | Evento di lancio, 1.500+ partecipanti    | Primo evento a pieno regime su Salesforce                                   |
 | 31 ottobre 2026     | Scadenza contratto Zoho                  | Fine del dual-run                                                           |
 | 3 novembre 2026 🔴  | Camerieri Venditori — o rinvio ad aprile | Data da confermare                                                          |
@@ -376,7 +376,7 @@ Il progetto si considera conforme ai requisiti quando tutte le condizioni seguen
 1. Ogni richiesta di modifica successiva alla firma è formalizzata per iscritto a ROMI.
 2. ROMI risponde con una valutazione di impatto su **perimetro, tempi e costi** entro cinque giorni lavorativi.
 3. La modifica entra in lavorazione **solo dopo approvazione scritta** di Pienissimo.
-4. Le richieste che mettono a rischio la data del 6 ottobre 2026 sono automaticamente candidate alla Fase 2, salvo diverso accordo esplicito sulla data di go-live.
+4. Le richieste che mettono a rischio la data del 21 ottobre 2026 sono automaticamente candidate alla Fase 2, salvo diverso accordo esplicito sulla data di go-live.
 5. Gli elementi elencati al §2.2 restano fuori perimetro fino a quotazione e accettazione separata.
 
 ---

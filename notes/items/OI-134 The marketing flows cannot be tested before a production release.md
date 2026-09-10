@@ -40,7 +40,7 @@ checked in the org during the session:
 
 **Said roughly two hours before Elena Spini told the client that UAT begins on
 23 September** and runs to 13 October across nine named flows
-([OI-124](OI-124%20Go-live%20moved%20to%2021%20October%20and%20the%20register%20still%20says%206%20October.md)).
+([OI-124](OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
 `Flussi Marketing Cloud` is one of the nine. Nobody in either room connected the
 two statements.
 
