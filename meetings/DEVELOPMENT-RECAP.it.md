@@ -3622,3 +3622,112 @@ recente su Drive è ancora dell'08/09 e né il `.drawio` né il workbook si sono
 mossi; Fathom non ha registrato riunioni; `#tproj-pienissimo` tace dal 04/09 e il
 suo blocco di stato riporta ancora **go-live 6 ottobre**, tre giorni dopo lo
 spostamento del registro al 21 ottobre.
+
+## 35. Aggiornamento 11/09/2026 — l'integrazione Mexal inizia a scrivere
+
+Fonte: `DevMain` a `c9a0b7e`, letto direttamente. **Tutte le fonti esterne non
+hanno restituito nulla**: nessuna mail Pienissimo, nessun movimento su Drive,
+nessuna registrazione Fathom, nessun messaggio Slack su questo progetto. L'intera
+sezione proviene dal repository e da GitHub.
+
+### 35.1 Due merge, e il secondo supera una soglia
+
+**La PR #39 è stata unita alle 10:27 CEST** (`b9cfc1b`), portando sul branch di
+lavoro l'Apex di lettura Mexal del giorno precedente. Poi la **PR #41** /
+**`80420cf`** (Anita Aga, _"Added logic for API calls (Ricerca,Creazione,Modifica)
+rebuilt the Integration Configuration object."_) è stata pushata alle **17:57**,
+aperta alle **17:58** e **unita alle 18:05 CEST** — **sette minuti, nessuna
+descrizione, nessuna revisione**. **32 file, +1.326 / −193 righe.**
+
+**È il primo codice del progetto che scrive su Mexal.**
+
+### 35.2 🟢 Il blocco di sola lettura è stato esteso, non rimosso
+
+`MexalSearchCalloutService` ha ora due allow-list anziché una: `READ_ONLY_ACTIONS`
+(`Mexal_Clienti_Ricerca`, `Mexal_Articoli_Ricerca`), che continua a rifiutare ogni
+path non terminante in `/ricerca` e ogni metodo diverso da `POST`; e la nuova
+`WRITE_ACTIONS` (`Mexal_Clienti_Creazione`, `Mexal_Clienti_Modifica`) con una
+propria validazione. Un'azione di lettura non può raggiungere un endpoint di
+scrittura, e la superficie di scrittura è esattamente due azioni nominate.
+L'autenticazione tramite Named Credential è invariata e il segreto continua a non
+finire in `Integration_Log__c`.
+
+### 35.3 🟢 `MexalCustomerCreateService` — il percorso di creazione
+
+`createForAccount` è raggiungibile da una nuova azione rapida
+**`Crea_Cliente_Mexal`** sull'Account. Invia `codice = '501.AUTO'`, quindi **è
+Mexal ad assegnare il numero cliente**; il codice generato viene poi recuperato
+dagli header della risposta (qualsiasi header che contenga `codice`, `cliente` o
+`customer`, altrimenti l'ultimo segmento di path di `Location`), con fallback sul
+body, e **scritto su `Account.Codice_Cliente_Mexal__c`**.
+
+🟢 **L'errore di `partita IVA` duplicata registrato il 7 settembre è gestito**: il
+dettaglio dell'errore viene interpretato e viene restituito **il codice Mexal del
+cliente in conflitto**, con un messaggio in italiano, anziché un'eccezione opaca.
+
+### 35.4 🟢🔴 OI-116 ottiene la DML e mantiene il suo blocco
+
+La lettura anagrafica ora **persiste**: `Database.update` e `Database.insert` su
+`Account` a successo parziale, errori raccolti riga per riga, record type
+**`Azienda`** sugli insert, **corrispondenze ambigue saltate anziché indovinate** e
+`Name` vuoto rifiutato.
+
+🔴 **Il job notturno resta commentato**, con lo stesso identico blocco nel codice:
+_"paused while the Mexal sync schedule and date window are finalized."_ La riga
+passa quindi da _una lettura, non una sincronizzazione_ a **una sincronizzazione
+senza schedulazione**: ciò che manca non è più codice ma la **finestra di
+sincronizzazione e il watermark**, non specificati dal 3 settembre.
+
+### 35.5 🔴 OI-125 costruita, OI-117 esposta
+
+**OI-125: `PUT /clienti/{codice}` esiste e nessuno la chiama.** Un Account già
+collegato solleva un'eccezione, e la chiamata di aggiornamento resta subito sopra
+come blocco commentato intitolato _"Future Modifica Cliente path"_.
+
+**OI-117 è l'esposizione reale della giornata.** Due scrittori popolano ora il
+codice Mexal, e **il blocco che questa riga esiste per specificare non è ancora
+stato costruito** — nessuna regola di validazione, nessun controllo a livello di
+campo. Una modifica utente effettuata dopo l'arrivo del codice Mexal può essere
+sovrascritta dalla sincronizzazione senza lasciare traccia.
+
+### 35.6 🔴 L'oggetto di configurazione è stato rinominato e cambiato di tipo
+
+`Integration_Configuration__c` è diventato **`Integration_Configuration2__c`**, e
+una custom setting di tipo **Hierarchy** è diventata di tipo **List**; la
+risoluzione `SetupOwnerId` per utente/profilo/organizzazione è stata eliminata a
+favore di `ORDER BY Name LIMIT 1`. La rinomina è con ogni probabilità obbligata —
+Salesforce non consente la conversione tra i due tipi — ma il **suffisso `2` è
+ormai permanente** in ogni classe, nel permission set e nei layout.
+
+🔴 **Ancora zero righe, ancora nessun referente, e ora ne servono quattro con nome
+esatto.** Che fine abbia fatto l'oggetto originale nell'org non è registrato da
+nessuna parte.
+
+### 35.7 🔴 Il riferimento alla credenziale non distribuibile è arrivato su `DevMain`
+
+`Full_Permission` concede `Mexal_External_Credential-Mexal_Principal` e il
+repository continua a non avere **alcuna directory `namedCredentials/` o
+`externalCredentials/`**. Ieri la cosa era su un branch non unito; **ora è sul
+branch di lavoro**, quindi un deploy pulito di `DevMain` su un'org nuova fallisce
+su quel permission set. **A dodici giorni dallo UAT, è il difetto aperto meno
+costoso del progetto.**
+
+### 35.8 ⚠ Una decisione arrivata fuori dalla sweep
+
+`80420cf` ha anche committato direttamente una nota di decisione: il **primo
+Ordine di un Account esegue una chiamata Anticipay in coda, poi l'aggiornamento
+dell'Account, poi la creazione del cliente su Mexal, poi l'Ordine**; gli Ordini
+successivi saltano Anticipay e prendono il percorso `Modifica`. La fonte
+dichiarata è un'istruzione diretta a una sessione agent, e **nessuna fonte
+analizzata la corrobora**.
+
+🔴 **Ciò che è stato rilasciato non la segue**: un pulsante sincrono sull'Account,
+senza passaggio Anticipay, senza coda e senza trigger sull'Ordine. La nota stessa
+dichiara di non attivare il flusso. **La regola è registrata; non è costruita.**
+
+### 35.9 🔴 Copertura
+
+**30 classi Apex, 8.193 righe**, misurate dal repository. **L'ultima esecuzione
+dei test Apex resta il 4 agosto**, trentotto giorni e quattro merge fa — e il
+perimetro include ora una classe che **crea record in un ERP esterno**. Registrato
+come perimetro; nessuna azione intrapresa.

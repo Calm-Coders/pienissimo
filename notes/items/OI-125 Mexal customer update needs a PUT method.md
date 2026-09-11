@@ -5,7 +5,7 @@ status: open
 owner: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-07
-updated: 2026-09-10
+updated: 2026-09-11
 depends_on: [OI-116]
 source: notes/meetings/2026-09-07 Follow-up Interno.md
 ---
@@ -103,3 +103,30 @@ said `PIE` all along. The `PE` spelling was a transcription slip in the
 The `anno = 2025` flag is **not** corrected, only complicated: the collection
 sends `Anno=2025` statically while the code sends the **current year**. Nobody
 chose. See the flow note.
+
+## 2026-09-11 — the PUT is built, and nothing calls it
+
+`80420cf` (PR #41, merged 18:05 CEST) adds
+`MexalSearchCalloutService.updateCustomer(customerCode, body)`:
+**`PUT /clienti/{codice}`**, the path parameter substituted from
+`Account.Codice_Cliente_Mexal__c`, a blank code refused before any callout, and
+`Mexal_Clienti_Modifica` added to a new `WRITE_ACTIONS` allow-list. 🟢 **The
+transport this row asked for exists.**
+
+🔴 **It has no caller.** In `MexalCustomerCreateService.createForAccount`, an
+Account that already carries a Mexal code **throws**
+_"Account gia collegato a Mexal"_ — and the six lines that would call
+`updateCustomer` sit directly above it **as a block comment** headed _"Future
+Modifica Cliente path"_.
+
+🟢 **The duplicate `partita IVA` failure this row is really about is now
+handled.** `findDuplicatePartitaIvaCustomerCode` parses _"partita iva esiste
+gia"_ out of the Mexal error detail and returns **the existing customer code**,
+with an Italian message naming it. The failure mode that made the PUT necessary
+is no longer opaque — it now tells you which customer you collided with.
+
+**The row stays open**, and the reason has moved: yesterday nothing could issue a
+PUT; today something can and nothing does. **What is missing is the caller**, and
+[the sequencing decision of the same day](../decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+says where it belongs — the queued chain on any Order after an Account's first,
+not the manual button that shipped.

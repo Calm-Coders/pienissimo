@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-10
+updated: 2026-09-11
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -295,3 +295,30 @@ collection with its filters.
 
 **What a person must do:** ask Andrea Di Cicco directly for the filtered
 WooCommerce collection, and rotate the JWT before it goes any further.
+
+## 2026-09-11 — third day, still nothing
+
+The DM `D0AQ0FMHFM1` has **not moved since 10 September 14:47 CEST**. Aurel
+Mrruku's chase of 9 September is now **unanswered for a third day**, and the
+filtered WooCommerce collection has survived a promise (08/09), a chase (09/09),
+a demonstrated presence (10/09) and now a silent day.
+
+**Sabatino Rinaldi still holds the pre-filter collection. The sixty-year JWT is
+still unrotated. No test result has come back.** The client's side has been ready
+since 27 August, and **UAT begins in twelve days.**
+
+### ✅ A correction to the 10 September record
+
+The 10/09 trace read Andrea Di Cicco's 14:44 message in that DM as part of the
+Teatro Franco Parenti / Sapimed exchange around it. It was not: **the 14:44:05
+message is the file `Mexal Dev v.2.postman_collection` itself.** Andrea Di Cicco
+sent it to Aurel Mrruku, who forwarded it to Anita Aga at 14:45:51 — so the
+collection that produced the whole Mexal build **originated with Andrea Di
+Cicco**, not with Aurel Mrruku as
+[the build note](../objects/The%20first%20Mexal%20integration%20Apex.md) and the
+10/09 trace both say.
+
+⚠ **It does not soften this row.** He delivered the **Mexal** collection that day
+and still has not delivered the **WooCommerce** one. If anything it sharpens the
+reading: he was in the DM, sending a different file, on the day the chase went
+unanswered.

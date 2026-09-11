@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-10
+updated: 2026-09-11
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -375,3 +375,29 @@ writes the suite should look at whether the house mock path can be used rather
 than hand-rolling `HttpCalloutMock`.
 
 ⏸ **Recorded, not acted on. No test class was written or proposed.**
+
+## 2026-09-11 — two merges in one day, and the brief now includes an ERP writer
+
+`b9cfc1b` (PR #39, 10:27 CEST) and `80420cf` (PR #41, 18:05 CEST) both landed on
+`DevMain` today. Counted from the repository, `force-app/` now holds **30 Apex
+classes and 8,193 lines**. `MexalCustomerCreateService` is 363 new lines;
+`MexalCustomerSearchService` gained 277.
+
+⚠ **That total is a fresh whole-repository count and is not the same basis as the
+running "+N uncovered lines" estimate carried in earlier entries** — it includes
+comments and blanks across every class. It is recorded as a measured figure, not
+as a reconciliation of the estimate.
+
+🔴 **Last Apex test run is still 4 August**, now thirty-eight days ago and four
+merges behind.
+
+🔴 **The brief crosses a line today.** Until now the untested classes read, mapped
+and wrote to Salesforce. `MexalCustomerCreateService` **creates records in an
+external ERP** and writes the returned key back onto `Account`, and
+`MexalCustomerSearchService` now **inserts and updates Accounts**. Untested code
+whose failure mode is a wrong or duplicated customer in the billing system is a
+different class of exposure from untested code that renders a page.
+
+**Brief only. Nothing acted on; no test class written, proposed or scheduled** —
+the suite is requested separately before the production deploy, and this record
+exists to be complete when it is.

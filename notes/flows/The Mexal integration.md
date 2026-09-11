@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-09-10
+updated: 2026-09-11
 depends_on: [OI-58]
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
@@ -568,3 +568,47 @@ They exist and are reachable; nobody has asked to un-park the work.
   11 August.
 - ⚠ The customer create/update bodies use an obviously **synthetic test record**
   (`test romi Elena`, a ROMI address). **Not a real customer; nothing copied.**
+
+## 2026-09-11 — the integration becomes bidirectional
+
+Two merges landed on `DevMain` today — `b9cfc1b` (PR #39, 10:27 CEST), which
+merged yesterday's read-only Apex, and `80420cf` (PR #41, 18:05 CEST), which
+**made the integration write**. Full detail in
+[the create and update path](../objects/The%20Mexal%20customer%20create%20and%20update%20path.md).
+
+Three things change in this flow's picture:
+
+🟢 **Salesforce → Mexal customer creation exists.** `POST /clienti` with
+`codice = '501.AUTO'`, the generated code read back from the response headers
+(falling back to the body) and written onto `Account.Codice_Cliente_Mexal__c`.
+The 3 September ownership model — Salesforce creates, Mexal then owns the
+anagrafica — has its first working half.
+
+🟢 **Mexal → Salesforce now persists.** The anagrafica read inserts and updates
+`Account` with partial-success DML, stamping the `Azienda` record type and
+skipping ambiguous matches. 🔴 The **nightly schedule is still commented out**,
+still blocked on the sync window unspecified since 3 September
+([OI-116](../items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)).
+
+🟢 **`PUT /clienti/{codice}` is implemented** and **has no caller**
+([OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)).
+
+🟢 **The duplicate `partita IVA` failure recorded here on 7 September is now
+parsed**, returning the colliding customer's existing Mexal code rather than an
+opaque error.
+
+🔴 **The `anno` contradiction is untouched.** The collection sends `Anno=2025`
+statically, the code sends `Date.today().year()` — so `2026` — and **nobody has
+chosen**, a second day on. The original question, whether it is a fiscal-year
+selector, is still unasked. Go-live is 21 October 2026.
+
+🔴 **The order leg is still unbuilt.** Everything above is the customer registry.
+`ordini-clienti`, the `data di scadenza` per line, and
+[OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)'s
+agent/zone/network question remain exactly where the collection left them on
+10 September. **Mirko Merendi at Kreosoft has still not been asked.**
+
+⚠ **The sequencing is now written down and not yet built.**
+[The decision of the same day](../decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+requires Anticipay → Account update → Mexal create → Order, all queued off the
+first Order of an Account. What shipped is a manual button on the Account.

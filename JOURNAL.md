@@ -2969,3 +2969,69 @@ Articoli` workbook is **hers**, sent from his mailbox.
   today, and the whole run came from two Slack direct messages and
   `git log --all` — a sweep that stopped at the inbox would have reported a quiet
   night on the day the Mexal integration started.
+
+## 2026-09-11 — claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive and Fathom against watermark
+  **2026-09-10T22:00Z**. **Every external source returned nothing.** The entire
+  run came from `git` and GitHub — see
+  [the trace](notes/traces/Source%20trace%202026-09-11.md).
+- **State:** **The Mexal integration started writing, and both pull requests were
+  merged the same day.** **PR #39** merged 10:27 CEST; **PR #41** / **`80420cf`**
+  (Anita Aga) was pushed 17:57, opened 17:58 and **merged 18:05 — seven minutes,
+  no description, no review**: 32 files, +1,326 / −193
+  ([the build](notes/objects/The%20Mexal%20customer%20create%20and%20update%20path.md)).
+  🟢 **The read-only guard was extended, not removed** — a second allow-list of
+  exactly two write actions, separately validated, beside the untouched read one.
+  Named Credential auth unchanged, the secret still out of the log. 🟢 `POST
+  /clienti` with `codice = '501.AUTO'` so **Mexal assigns the number**, read back
+  from the response headers and written onto `Account.Codice_Cliente_Mexal__c`;
+  🟢 the **duplicate `partita IVA` error is parsed at last**, returning the
+  colliding customer's code.
+  🟢🔴 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+  gains its DML** — partial-success `insert`/`update`, `Azienda` record type,
+  ambiguous matches skipped — **but the nightly job is still commented out with
+  the identical blocker**. It moves from *a read, not a sync* to **a sync with no
+  schedule**.
+  🔴 **[OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)
+  is built and uncalled**; 🔴
+  **[OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+  is the day's real exposure** — two writers now set the Mexal code and the lock
+  is still unbuilt.
+  🔴 **`Integration_Configuration__c` → `Integration_Configuration2__c`**, Hierarchy
+  → List, `SetupOwnerId` resolution deleted; the **`2` suffix is permanent**, the
+  table still holds **zero rows** and **four are now needed by exact name**.
+  🔴 **The undeployable `Mexal_External_Credential` reference reached `DevMain`** —
+  yesterday on a branch, today on the mainline, with still **no
+  `namedCredentials/` directory in the repository**.
+  ⚠ **A decision arrived outside the sweep**, committed straight into the repo:
+  [Anticipay before Mexal customer creation](notes/decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md).
+  **The shipped code does not follow it** — a synchronous Account button, no
+  Anticipay step, no queueing.
+- **Next:** (a) **retrieve the `Mexal`, `Anticipay` and `DocuSign` named
+  credentials into `force-app/`** — this now breaks a clean deploy of `DevMain`
+  and is the cheapest open defect; (b) **build OI-117's lock before the `Modifica`
+  caller is uncommented or the nightly scheduler switched on**, because at that
+  point the registry can silently lose a user edit; (c) **create the four
+  `Integration_Configuration2__c` rows** and name an owner; (d) **decide the Mexal
+  sync window and watermark** — nine days open and now the only thing between
+  OI-116 and a running job; (e) **ask Mirko Merendi at Kreosoft** the
+  `cod_agente` / `zona` / `classificatore rete` question, unasked for a second
+  day; (f) **chase Andrea Di Cicco for the filtered WooCommerce collection**,
+  third day, and rotate the JWT.
+- **Watch:** ⚠ **Two findings written twenty-four hours ago were false by the time
+  this run started** — *"cannot write by construction"* and *"no DML anywhere"*.
+  Both are marked superseded in place. **Re-read the most recent build note
+  against the code, not only the sources.** ⚠ **The `2` in
+  `Integration_Configuration2__c` is permanent unless someone decides otherwise
+  now** — renaming later is a second migration. ⚠ **`anno` is still wrong in two
+  directions**, second day, nobody has chosen. ⚠ **The org was not opened**;
+  `STATUS.md`, the Notion mirror and the Flows page are owed for a **thirteenth**
+  run and now sit behind four merges. ⚠ **`MAP.md` is ~44k tokens against a stated
+  5 KB budget** — raised on 08/09, 09/09, 10/09 and here, **four consecutive runs
+  with no authorisation to act on it.**
+- **Method:** **when every external source is empty, the record itself is the
+  source.** Two consecutive days now where nothing arrived by mail, chat, Drive or
+  Fathom and the entire finding came from `git log --all` and two diffs. A sweep
+  that treats yesterday's note as current state, on a project where merges land at
+  18:05, reports the opposite of the truth.

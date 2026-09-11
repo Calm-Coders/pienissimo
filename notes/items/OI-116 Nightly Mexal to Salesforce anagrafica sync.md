@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-10
+updated: 2026-09-11
 depends_on: [OI-58]
 blocks: [go-live]
 requirement: INT-01
@@ -106,3 +106,41 @@ unbuilt — on a pull request nobody has reviewed.
 
 **What a person must decide:** the sync window and watermark. The code is
 blocked on it and says so.
+
+## 2026-09-11 — the writer arrived; the schedule did not
+
+`80420cf` (PR #41, merged 18:05 CEST) gives this row **the DML it lacked
+yesterday**. `MexalCustomerSearchService` now ends in
+
+```
+applySaveResults(Database.update(accountsToUpdate, false), true, result);
+applySaveResults(Database.insert(accountsToInsert, false), false, result);
+```
+
+🟢 Partial-success DML, per-row errors collected, inserts stamped with the
+**`Azienda`** record type, ambiguous matches **skipped rather than guessed**, and
+a blank `Name` refused instead of inserted. That is a careful writer, not a
+hurried one.
+
+🔴 **The nightly job is still commented out, and the blocker is word-for-word the
+one this row has carried since 3 September** — _"paused while the Mexal sync
+schedule and date window are finalized."_ `MexalCustomerSearchScheduler` remains
+a comment with its cron.
+
+**So this row's diagnosis changes shape: it is no longer "a read, not a sync" but
+"a sync with no schedule."** The remaining half is not code. It is the **sync
+window and watermark**, unspecified for nine days, and it is now the only thing
+between this and a running nightly job.
+
+🔴 **Four configuration rows are now needed by exact name**, not two —
+`Mexal_Clienti_Ricerca`, `Mexal_Articoli_Ricerca`, `Mexal_Clienti_Creazione`,
+`Mexal_Clienti_Modifica` — and the table they live in **was renamed to
+`Integration_Configuration2__c`** the same day. Still zero rows, still no owner.
+
+🔴 **[OI-117](OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+is still unbuilt, and the warning above is now live rather than hypothetical.**
+This row has always said that persistence without the lock lets a user edit be
+overwritten silently. The persistence half shipped today. The lock did not.
+
+**What a person must still decide:** the sync window and watermark. Unchanged for
+nine days, and now the single blocker.

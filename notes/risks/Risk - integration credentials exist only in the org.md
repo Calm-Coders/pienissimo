@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-02
-updated: 2026-09-10
+updated: 2026-09-11
 depends_on: [OI-94, OI-102]
 blocks: [go-live]
 requirement: [INT-18, INT-19]
@@ -131,3 +131,24 @@ day Fase 1 development was due to end.
 `Mexal` — the named credentials, the external credential and its principal — into
 `force-app/` and commit them, **before PR #39 merges**. Endpoint and principal
 configuration only; the secret comes back masked and must stay that way.
+
+## 2026-09-11 — the undeployable reference is now on `DevMain`
+
+Yesterday this risk had just changed character: `Full_Permission` began granting
+`Mexal_External_Credential-Mexal_Principal` while the repository holds **no
+`namedCredentials/` or `externalCredentials/` directory at all**, so the pattern
+stopped being an absence and started breaking deploys. It was then on an
+unmerged pull request.
+
+🔴 **PR #39 merged at 10:27 CEST and PR #41 at 18:05 CEST. It is now in the
+working branch.** `Full_Permission` on `DevMain` names a principal the metadata
+does not contain, and **a clean deploy of `DevMain` to a fresh org fails on that
+permission set** — not on a branch somebody might reject, but on the line
+everything else is built from.
+
+The whole fix is to retrieve the `Mexal`, `Anticipay` and `DocuSign` named
+credentials and their external credentials into `force-app/`. **It is the
+cheapest item on the current risk list and it now blocks the production path
+outright**, with UAT twelve days away and the production org
+(`pienissimo.my.salesforce.com`) provisioned since 3 September and never
+deployed to.

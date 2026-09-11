@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-11
 depends_on: [OI-116]
 requirement: INT-01
 source: notes/meetings/2026-09-03 Data Model Parte 1.md
@@ -54,3 +54,29 @@ The mechanics as stated in the room:
 Unbuilt. Assigned to Aurel Mrruku by implication rather than by name — the
 session's action list gives him the surrounding registry work but does not
 itemise the validation rule. **Confirm the owner before scheduling it.**
+
+## 2026-09-11 — the trigger condition now has a writer, and the lock still does not
+
+This row locks the administrative fields **once `Codice_Cliente_Mexal__c` is
+populated**. Until today nothing in the repository populated it.
+
+🔴 **Two things now do.** `80420cf` (PR #41, merged 18:05 CEST) both
+**writes the code back after a Mexal create** — `update new Account(Id = ...,
+Codice_Cliente_Mexal__c = result.generatedCustomerCode)` — and **inserts and
+updates Accounts from the nightly anagrafica read**
+([OI-116](OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)).
+
+🔴 **No validation rule, no lock, no field-level enforcement was added.** The
+condition that this row's whole design keys off is now reachable in the running
+system, and the protection is still nowhere.
+
+⚠ **This is the divergence the row predicted, arrived.** The two are one design:
+Mexal's ownership of the anagrafica is only safe because the lock stops a
+Salesforce user editing underneath it. The ownership half shipped; the safety
+half did not. A user edit made after the Mexal code lands can now be overwritten
+by the sync without trace — and the sync is one configuration decision away from
+running nightly.
+
+**Still unowned.** The owner was inferred, never named, and this note has asked
+for that to be confirmed since 3 September. **Confirm it and schedule the rule
+before the nightly job is switched on, not after.**
