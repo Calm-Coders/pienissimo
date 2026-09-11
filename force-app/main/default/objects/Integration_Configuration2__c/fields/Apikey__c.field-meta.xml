@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Response_Wrapper_Class__c</fullName>
+    <fullName>Apikey__c</fullName>
     <externalId>false</externalId>
-    <label>Response Wrapper Class</label>
+    <label>Apikey</label>
     <length>255</length>
     <required>false</required>
     <trackTrending>false</trackTrending>

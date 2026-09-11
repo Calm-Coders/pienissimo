@@ -13,6 +13,9 @@
                             <value>Account.Aggiorna_Anticipay</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>Account.Crea_Cliente_Mexal</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Delete</value>
                         </valueListItems>
                     </valueList>
@@ -253,6 +256,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Lead_Email__c</fieldItem>
                 <identifier>RecordLead_Email_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Email__c</fieldItem>
+                <identifier>RecordEmail_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
