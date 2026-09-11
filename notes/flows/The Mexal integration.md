@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-09-07
+updated: 2026-09-10
 depends_on: [OI-58]
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
@@ -381,9 +381,14 @@ The *coordinate gestionali* go in the request header as **`azienda = PE`** and
 base64 encoding of user then password. Andrea Di Cicco owes Aurel Mrruku the
 documentation fragment.
 
+⚠ **`azienda = PE` is wrong and was corrected on 2026-09-10** — the value is
+**`PIE`**. See [the wire facts](#2026-09-10---the-wire-facts-arrive-and-the-first-apex-is-written)
+below. This paragraph is left as the session recorded it.
+
 🔴 **`anno = 2025` is hardcoded and this project goes live in 2026.** Whether that
 is a Mexal fiscal-year selector that must roll over, and what happens at the
-boundary, was **not raised by anyone**.
+boundary, was **not raised by anyone**. ⚠ **Still unresolved on 2026-09-10, and
+now resolved two ways at once** — see below.
 
 ⚠ **No credential value is recorded in this repository**, and none may be.
 
@@ -434,3 +439,132 @@ It touches [OI-50](../items/OI-50%20Tranche%20object.md).
 historical customers, accounts and orders raised concerns and produced no plan;
 whether migration precedes user acceptance testing was asked by Andrea Di Cicco
 and not answered.
+
+## 2026-09-10 - the wire facts arrive, and the first Apex is written
+
+Two things landed on the same afternoon and they are one story. Aurel Mrruku sent
+Anita Aga **`Mexal Dev v.2.postman_collection`** in their Slack DM at **14:45:51
+CEST**; Anita Aga pushed the project's **first Mexal Apex** at **17:58 CEST**
+([the build](../objects/The%20first%20Mexal%20integration%20Apex.md), PR #39,
+**open, not merged**).
+
+The collection is a working export against `services.passepartout.cloud/webapi`
+with fourteen requests. It is the first time the Mexal contract has been readable
+as calls rather than as minutes. 🔴 **It carries the WEBAPI credential in
+plaintext in every request's `Authorization` header**
+([the risk](../risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+**No credential value is recorded in this repository, and none may be.**
+
+### ✅ The management coordinates are `PIE`, not `PE`
+
+The header is `Coordinate-Gestionale: Azienda=PIE Anno=2025` in all fourteen
+requests, and the built code sets `MEXAL_COMPANY = 'PIE'`. **The 7 September
+record's `azienda = PE` was a transcription slip**, and this note's own
+2026-07-15 line already said _"azienda PIE"_ — the two halves of this file
+disagreed for three days. **`PIE` is correct.** Later evidence wins and both
+sources now agree.
+
+### 🔴 `anno` is answered in one direction and reopened in the other
+
+The 7 September flag — _"`anno = 2025` is hardcoded against a 2026 go-live"_ —
+has been acted on **without anyone raising it**, and in the opposite direction
+from the collection:
+
+- **The collection** sends `Anno=2025`, statically, in all fourteen requests.
+- **The code** sends `Anno=` + `Date.today().year()`, so from this build it sends
+  **`2026`**.
+
+🔴 **Nobody has decided which is right, and the two shipped three hours apart.**
+If `Anno` selects a Mexal fiscal-year archive, a dynamic value points the
+integration at an archive that may hold nothing on 1 January; if it is
+informational, the hardcode was harmless. **The original question — is this a
+fiscal-year selector, and what happens at the boundary — is still unasked**, and
+it now has a wrong answer available in each of two artefacts.
+
+### 🟢 The customer update is `PUT`, and it is keyed on the Mexal code
+
+`Modifica Cliente` is **`PUT /webapi/risorse/clienti/{codice}`** carrying the
+**full body** — the same field set as creation, minus `codice`. That settles both
+questions [OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)
+left open: **PUT, not PATCH**, and the customer is identified by its **Mexal
+customer code** in the path, which is `Codice_Cliente_Mexal__c` on the Salesforce
+side. The "empty update on every order" pattern fits PUT exactly.
+
+🔴 **The item does not close.** Knowing the call is not making it: the built code
+is hard-guarded to `POST /ricerca` only and **cannot issue a PUT**. Nothing in
+`force-app/` sends a customer to Mexal at all.
+
+### 🟢 The customer search field filter is now a concrete list
+
+The agreed retrieval filter exists as a query parameter, and this is its content:
+
+`codice, cod_alternativo, cod_paese, codice_fiscale, partita_iva,
+ragione_sociale, indirizzo, cap, localita, provincia, telefono, fax, email, pec,
+codice_sdi, cod_agente, tp_nazionalita, cod_listino, valuta, gest_fatt_el`
+
+Twenty fields. The built mapping consumes fourteen of them and adds `url`,
+`denominazione`, `cognome`, `banca_appoggio` and the three IBAN parts, which are
+**not in the filter** — so those five would come back empty against this exact
+query. Worth reconciling before the sync is switched on.
+
+### 🔴 The order call does not carry the agent fields
+
+The `Creazione Ordine cliente` body is `sigla`, `serie`, `numero`, `cod_conto`,
+`data_documento` and five parallel line arrays (`id_riga`, `tp_riga`,
+`codice_articolo`, `quantita`, `cod_iva`). **There is no `cod_agente`, no `zona`
+and no `classificatore rete` on the header.**
+
+That answers [OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)'s
+one remaining question — the wire question — **negatively**, from the artefact
+rather than from Kreosoft. `cod_agente` is on the **customer**, in both the create
+and the update bodies and in the search filter. So the commission attribution
+travels with the anagrafica, not with the order, and the freeze-on-order
+behaviour agreed on 3 September has no field to freeze into.
+
+⚠ **This is a reading of one Postman collection, not a statement from Mexal.**
+The header may accept fields the collection does not exercise. **Mirko Merendi at
+Kreosoft is still the person to ask**, and the question is now sharper: _can the
+order header carry `cod_agente`, `zona` and `classificatore rete`, and under what
+names?_
+
+### 🟢 Tranche fulfilment has a wire shape for the first time
+
+Three requests together demonstrate the instalment mechanism, and the names are
+the author's own: **`Creazione Ordine cliente`** creates an `OC` with four lines,
+then **`Evasione Riga 1 e 2 il 30 Settembre`** and **`Evasione Riga 3 e 4 il 31
+Ottobre`** each post an **`FT`** carrying `tipo_stato_riga: "E"` and back-references
+to the originating order (`sigla_doc_orig`, `serie_doc_orig`, `numero_doc_orig`,
+`data_doc_orig`, `sigla_ordine`, `serie_ordine`, `numero_ordine`, `data_ordine`,
+`id_rif_testata`, `dt_ult_mod_orig`).
+
+**So a tranche is invoiced as a partial fulfilment of specific order rows on a
+date**, not as a due-date field. 🔴 **And the order-creation body has no
+per-line `data di scadenza`** — which is what
+[the 2 September tracciato](../items/OI-50%20Tranche%20object.md) said every order
+line must carry. Either the collection is incomplete or the tracciato described
+the fulfilment date rather than a field. **Unreconciled; ask before building.**
+
+⚠ Note `serie: 10` throughout — the **test** series. Production is `serie 1`,
+settled by Mirko Merendi on 11 August.
+
+### 🟢 Scadenzario and pagamenti endpoints exist
+
+`POST /risorse/scadenzario/ricerca`, filterable by `data_ult_mod` **or by
+customer `codice`**, and `POST /risorse/dati-generali/pagamenti/ricerca`. These
+are the calls Fabrizio Paganelli's scadenzario correction path would need — the
+path **deferred into the parked Fase 2** on 7 September
+([the dispute](../risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)).
+They exist and are reachable; nobody has asked to un-park the work.
+
+### Also in the collection
+
+- **Agents are `POST /risorse/fornitori/ricerca`** — corroborating Mirko
+  Merendi's 11 August answer that Get Agenti is Get Fornitori.
+- `Ricerca Indirizzo di spedizione` and `Creazione Indirizzo di Spedizione` on
+  `/risorse/indirizzi-spedizione`, consistent with the write-only shipping
+  address.
+- The invoice two-step is present as `movimenti-magazzino/ricerca` then
+  `movimenti-magazzino/{sigla+serie+numero}`, exactly the N+1 recorded on
+  11 August.
+- ⚠ The customer create/update bodies use an obviously **synthetic test record**
+  (`test romi Elena`, a ROMI address). **Not a real customer; nothing copied.**

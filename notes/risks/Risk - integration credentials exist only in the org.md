@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-02
-updated: 2026-09-02
+updated: 2026-09-10
 depends_on: [OI-94, OI-102]
 blocks: [go-live]
 requirement: [INT-18, INT-19]
@@ -97,3 +97,37 @@ masked, and it must stay that way. If a retrieve ever produces a live secret in
 plain text, stop and treat it as
 [the publishing rules](../../docs/publishing.md) require — the repository is
 private, but git history is forever.
+
+## 🔴 2026-09-10 - the pattern's fourth instance, and this one breaks a deploy
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, open) adds to `Full_Permission`:
+
+```xml
+<externalCredentialPrincipalAccesses>
+    <enabled>true</enabled>
+    <externalCredentialPrincipal>Mexal_External_Credential-Mexal_Principal</externalCredentialPrincipal>
+</externalCredentialPrincipalAccesses>
+```
+
+and `MexalSearchCalloutService` calls `callout:Mexal<path>`, defaulting to a
+named credential literally called **`Mexal`**.
+
+🔴 **The repository has no `namedCredentials/` directory at all**, and no
+`externalCredentials/`. So a **third** named credential now exists only in the
+org, after `Anticipay` and `DocuSign`.
+
+🔴 **This instance is worse than the pattern, because it ships in a file.** The
+previous three were absences — components in the org with no source counterpart,
+which a deploy simply fails to update. This one is a **reference**: a permission
+set in `force-app/` names a principal, and deploying `Full_Permission` into any
+org that does not already hold `Mexal_External_Credential` **fails**. Production
+does not hold it. Neither does a scratch org, nor a fresh sandbox.
+
+**So the org-only pattern has stopped being invisible and started blocking
+deploys** — which is exactly the mechanism this risk predicted, arriving on the
+day Fase 1 development was due to end.
+
+**The ask is unchanged and now urgent:** retrieve `Anticipay`, `DocuSign` and
+`Mexal` — the named credentials, the external credential and its principal — into
+`force-app/` and commit them, **before PR #39 merges**. Endpoint and principal
+configuration only; the secret comes back masked and must stay that way.

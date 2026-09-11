@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-09
+updated: 2026-09-10
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -330,6 +330,7 @@ covered"_ — and the last actual Apex test run is **still 4 August**.
 | 07/09     | 2,741                     | ROMI org check, posted to the dev group |
 | 08/09     | 2,957                     | ROMI org check, posted to the dev group |
 | **09/09** | **≥ 3,686** _(estimated)_ | **repository arithmetic on `a53345a`**  |
+| **10/09** | **≥ 4,182** _(estimated)_ | **repository arithmetic on `bc2ed5d`, PR #39 open** |
 
 🔴 **Two new classes carry commercial write paths and have no tests at all** —
 `QuoteTriggerHandler` inserts Orders and OrderItems, `OpportunityTriggerHandler`
@@ -343,5 +344,34 @@ updated** for the opportunity-closing behaviour added to the class it covers, so
 whatever it asserted about `OrderTriggerHandler` is now incomplete. **Whether it
 still compiles was not checked, and checking it is part of the suite task, not
 this run.**
+
+⏸ **Recorded, not acted on. No test class was written or proposed.**
+
+## 2026-09-10 - +496 more, and the first of them is a callout class
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, **open, not merged**) adds two new Apex
+classes and **496 new lines** with no test of any kind:
+
+- **`MexalSearchCalloutService`** — 260 lines. An **HTTP callout** class, which is
+  the category that cannot be covered at all without `HttpCalloutMock`. The suite
+  task now needs mock classes, not only assertions.
+- **`MexalCustomerSearchService`** — 236 lines, of which the response mapper is
+  the part worth testing: fourteen field assignments, a three-way
+  `chooseFirstPopulated`, an IBAN reconstruction with a `leftPad`, and untyped
+  JSON deserialisation that silently returns on any shape it does not expect.
+
+That takes the estimate past **4,182 lines**, with the **last Apex test run still
+4 August** — five weeks and roughly 2,500 lines ago.
+
+⚠ **The estimate is repository arithmetic, not a measurement**, and it now counts
+lines on a branch that has not merged. If PR #39 is rejected the figure falls
+back to ~3,686.
+
+🟢 One thing in this commit helps the eventual suite: the callout service is
+**configuration-driven**, reading endpoint and method from
+`Integration_Configuration__c`, and the scaffolding it uses already carries
+`Use_Mock__c`, `Mock_API_Scenario__c` and `Mock_Apex_Class__c` fields. Whoever
+writes the suite should look at whether the house mock path can be used rather
+than hand-rolling `HttpCalloutMock`.
 
 ⏸ **Recorded, not acted on. No test class was written or proposed.**

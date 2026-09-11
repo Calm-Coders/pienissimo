@@ -2897,3 +2897,75 @@ Articoli` workbook is **hers**, sent from his mailbox.
   next morning the change took one pass and needed no re-derivation. The converse
   lesson is in the same message: **read a short reply for what it does, not for
   how much it says** — the sixty-one-day blocker moved in a subordinate clause.
+
+## 2026-09-10 — claude — requirements-check: the first Mexal Apex, and a credential in a DM
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, GitHub and the repository from
+  watermark **2026-09-09T22:00Z**, taken from the `external_watermark` of
+  [the 09/09 nightly trace](notes/traces/Source%20trace%202026-09-09%20nightly.md).
+  🟢 **The 09/09 method note was acted on, not just noted**: that trace warned a
+  declared watermark is only as good as the moment the sweep ran, so this run
+  checked — `9113453` is timestamped **21:50:20Z** against a declared `22:00Z`,
+  and `git log --all` confirms nothing landed in the ten-minute gap. **No blind
+  spot.** Gmail returned zero Pienissimo messages, Drive zero Pienissimo files,
+  Fathom zero meetings, `#tproj-pienissimo` silent since 04/09. **Everything this
+  run found came from Slack DMs and from `git`.**
+- **State:** **Two findings, and they are one story three hours apart.**
+  **(1) 🔑 At 14:45:51 CEST Aurel Mrruku sent Anita Aga
+  `Mexal Dev v.2.postman_collection` in a DM, and all fourteen requests carry the
+  live Passepartout `Authorization` header** — **third credential circulated in
+  plaintext in seven days**, after the WooCommerce JWT (04/09) and the sandbox
+  password spoken into a transcript (08/09). Three secrets, three channels, three
+  people; the common factor is that the project has no agreed place to put one.
+  **No value copied.** The collection is also the first readable statement of the
+  Mexal contract and it moved five records — see the trace.
+  **(2) 🟢🔴 At 17:58 CEST Anita Aga pushed `bc2ed5d`, the first Mexal Apex this
+  repository has ever held**, opened as **PR #39 — which is OPEN and unmerged**;
+  `DevMain` still ends at last night's commit
+  ([the build](notes/objects/The%20first%20Mexal%20integration%20Apex.md)).
+  🟢 It is genuinely well built: **Named Credential auth** with the secret kept
+  out of `Integration_Log__c` on purpose, and **hard-guarded read-only** by three
+  independent checks. After the sixty-year JWT that is the first integration built
+  the right way round. 🔴 But
+  [OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+  gets **a read, not a sync**: fourteen fields map onto `Account` and **there is no
+  DML anywhere**, while the nightly job is **commented out by design** with the
+  code naming its own blocker — the sync window unspecified since 03/09.
+  🔴 **`Full_Permission` now ships a reference to `Mexal_External_Credential`,
+  which exists in no repository file**, so the org-only credential pattern has
+  stopped being an absence and started **breaking deploys**.
+  🟢 The unpriced Italianisation decision of 03/09 is finally being built.
+  **Fase 1 development was due to end today.**
+- **Next:** (a) **decide the Mexal sync window and watermark** — the code is
+  blocked on it and says so in a comment; (b) **retrieve the `Mexal`, `Anticipay`
+  and `DocuSign` named credentials into `force-app/` before PR #39 merges**, or
+  the permission set will not deploy; (c) **create the two
+  `Integration_Configuration__c` rows** — `Mexal_Clienti_Ricerca` and
+  `Mexal_Articoli_Ricerca` — and name an owner; (d) **ask Mirko Merendi at
+  Kreosoft** whether the `ordini-clienti` create call can carry `cod_agente`,
+  `zona` and `classificatore rete`, because the collection says it cannot and that
+  contradicts the 03/09 commission freeze; (e) **chase Andrea Di Cicco for the
+  filtered WooCommerce collection** and rotate the JWT — two days now, and he was
+  active in the same DM on 10/09 without answering.
+- **Watch:** ⚠ **`anno` is now wrong in two directions** — the collection hardcodes
+  `2025`, the code sends the current year, they shipped three hours apart and
+  **nobody chose**. The 07/09 flag was answered by accident, in one artefact only.
+  ⚠ **The order body has no per-line `data di scadenza`**, which is exactly the
+  field PR #37 propagated to `OrderItem` the day before — either the collection is
+  incomplete or the 02/09 tracciato described the fulfilment date. Ask before
+  building the outbound leg. ⚠ **`IBAN__c` prefers `banca_appoggio` over the
+  assembled IBAN** — flagged from the code, not confirmed against a live response;
+  worth one look before merge. ⚠ **Everything above is repository arithmetic on an
+  unmerged branch**; the org was not opened and `STATUS.md`, the Notion mirror and
+  the Flows page are owed for a twelfth run. ⚠ `#tproj-pienissimo` still says
+  **go-live 6 October** three days after the register moved to 21 October.
+  ⚠ **`MAP.md` is still far over its 5 KB budget** and this run added to it again.
+- **Method:** **check the watermark, do not inherit it.** The 09/09 note said a
+  declared watermark is only as good as the moment the sweep ran; this run spent
+  one `git log` proving the claim rather than repeating it, and could then say "no
+  blind spot" as a fact instead of an assumption. The second lesson is the
+  opposite of last night's: **when nothing is in the mail, read the DMs and the
+  branch heads.** Every source that usually carries this project returned zero
+  today, and the whole run came from two Slack direct messages and
+  `git log --all` — a sweep that stopped at the inbox would have reported a quiet
+  night on the day the Mexal integration started.

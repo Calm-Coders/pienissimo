@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-09
+updated: 2026-09-10
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -263,3 +263,35 @@ is the ROMI company offsite
 ([the compressed calendar](../risks/Risk%20-%20the%20whole%20remaining%20build%20lands%20after%20Ferragosto.md)),
 which is a sufficient explanation for a same-day silence and is not evidence of
 anything more.
+
+## 2026-09-10 - a second day of silence, and this time he was in the DM
+
+The chase of 9 September is **still unanswered at the end of 10 September**, and
+the offsite is no longer a sufficient explanation on its own: **Andrea Di Cicco
+was active in the same direct message on 10 September**, between **14:44 and
+14:47 CEST**, on other subjects — Teatro Franco Parenti, Sapimed, _"sto
+rispondendo a qualche email"_, _"ora abbiamo pausa fino alle 3"_. He scrolled past
+Aurel Mrruku's request without answering it.
+
+So, unchanged and now two days old:
+
+- 🔴 **Sabatino Rinaldi still holds the pre-filter collection.**
+- 🔴 **The sixty-year JWT is still unrotated**, twice asked for on this row.
+- 🔴 **No test result has come back** from the client's side, which has been ready
+  since 27 August.
+
+⚠ **Read as a dropped ball inside a busy offsite week, not as refusal.** Nothing
+suggests the request was declined; it was not answered. But the pattern has now
+persisted through a promise (08/09), a chase (09/09) and a demonstrated presence
+(10/09), and **UAT begins in thirteen days**.
+
+⚠ **A different Postman collection did move on 10 September** — Aurel Mrruku sent
+Anita Aga `Mexal Dev v.2.postman_collection` at 14:45:51 CEST, one minute before
+asking Andrea Di Cicco whether he was working. **That is the Mexal collection,
+not this one**
+([the wire facts](../flows/The%20Mexal%20integration.md#2026-09-10---the-wire-facts-arrive-and-the-first-apex-is-written)).
+Do not let the two be confused: this row is still owed a **WooCommerce**
+collection with its filters.
+
+**What a person must do:** ask Andrea Di Cicco directly for the filtered
+WooCommerce collection, and rotate the JWT before it goes any further.

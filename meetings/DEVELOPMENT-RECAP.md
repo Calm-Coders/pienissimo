@@ -3319,3 +3319,143 @@ reply eleven hours later**. Sabatino Rinaldi still holds the **pre-filter**
 collection, **the sixty-year JWT is still unrotated**, and no test result has come
 back ([#102](open-items.md)). ⚠ 9–11 September is the ROMI offsite, which is a
 sufficient explanation for one day's silence.
+
+## 34. Update 2026-09-10 — the first Mexal Apex, on a pull request nobody has opened
+
+**Fase 1 development was due to end today.** It ends with the Mexal integration's
+first code sitting unreviewed on an open pull request, a credential pasted into
+Slack, and five records moved by a Postman file.
+
+### 34.1 🟢🔴 PR #39 — the first Mexal transport, **open and unmerged**
+
+**`bc2ed5d`** (Anita Aga, _"Edited Create Tranch Lwc, and opportunity custom path,
+added logic for Mexal Integration"_), pushed **17:58 CEST**, opened as PR **#39**
+two minutes later against `DevMain`. **17 files, +682 / −94 lines, +496 new
+Apex.** 🔴 **It is not merged**; `DevMain` still ends at `9113453`.
+
+⚠ **Read from the repository, not from the org.** No test was run.
+
+**`MexalSearchCalloutService` (260 lines)** — a configuration-driven callout
+wrapper reading `Integration_Configuration__c`.
+
+- 🟢 **Authenticated by Named Credential** (`callout:Mexal<path>`, sandbox and
+  production rows separate), and the `Integration_Log__c` row deliberately writes
+  `Authorization=<managed by Named Credential>`. **The secret never reaches the
+  log.** After the sixty-year JWT, this is the first integration in the project
+  built the way the record has been asking for.
+- 🟢 **Hard-guarded read-only** by three independent checks: an allow-list of two
+  actions, a refusal of any path not ending `/ricerca`, and a refusal of any
+  method but `POST`. **It cannot write to Mexal by construction.**
+- 🔴 **The named credential and its external credential are org-only.** The
+  repository has **no `namedCredentials/` directory at all**, yet
+  `Full_Permission` now grants `Mexal_External_Credential-Mexal_Principal`. A
+  permission set that names a principal an org does not hold **fails to deploy**
+  — so the org-only pattern has stopped being an absence and started blocking
+  deploys.
+- 🔴 **`Integration_Configuration__c` still holds zero rows**, and two are now
+  needed by exact name — `Mexal_Clienti_Ricerca` and `Mexal_Articoli_Ricerca`.
+  Second hand-maintained table in a week with code depending on it and nobody
+  assigned to fill it.
+
+**`MexalCustomerSearchService` (236 lines)** — the anagrafica read.
+
+- 🟢 Builds the agreed `data_ult_mod >=` delta filter and maps **fourteen** Mexal
+  customer fields onto `Account`, including `codice_sdi`, `pec` and a
+  reconstructed IBAN.
+- 🔴 **Nothing persists.** The mapped `Account` records are returned in memory.
+  **No DML, no upsert, no matching on `Codice_Cliente_Mexal__c`.** [#116](open-items.md)
+  gets a read, not a sync.
+- 🔴 **The nightly job is commented out by design**, and the code names its own
+  blocker: _"Automatic daily search is intentionally paused while the Mexal sync
+  schedule and date window are finalized."_ That window has been unspecified since
+  03/09.
+- 🔴 The agent-reassignment payload is unmapped; [#117](open-items.md)'s lock is
+  untouched.
+- ⚠ **One mapping to check before merge:** `IBAN__c` prefers `banca_appoggio` over
+  the assembled IBAN, so a bank *name* may land in the IBAN field. Read from the
+  code, not confirmed against a live response.
+
+**The rest of the commit.** 🟢 The **unpriced Italianisation decision of 03/09** is
+being executed — every user-facing string in `opportunityCustomPath`,
+`quoteCreateTranche`, the `Crea Tranche` quick action and two Apex exceptions.
+🟢 Two functional fixes on the tranche editor: deleted tranches no longer trip the
+"already assigned" guard, and an empty tranche can be deleted in edit mode.
+🔴 **No Opportunity or Quote state value changed** — only the labels around them,
+so [#59](open-items.md)'s Quote-state disagreement survives untouched.
+
+### 34.2 🔑🔴 The Mexal WEBAPI credential went into a Slack DM
+
+Aurel Mrruku sent Anita Aga **`Mexal Dev v.2.postman_collection`** at **14:45:51
+CEST**. **All fourteen requests carry the live Passepartout `Authorization`
+header.** **Third credential circulated in plaintext in seven days**, after the
+WooCommerce JWT (04/09) and the sandbox password spoken into a Gemini transcript
+(08/09) — three secrets, three channels, three people. The common factor is that
+the project has **no agreed place to put one**.
+
+⚠ **The value is not in this repository and must never be.** Recorded: that it
+exists, what kind of credential it is, where it went, and when.
+
+🟢 The code written from it three hours later does the right thing — see 34.1.
+So the credential should not have needed to travel at all.
+
+### 34.3 What the collection settles
+
+It is the first readable statement of the Mexal contract, and it moves five rows.
+
+- ✅ **`azienda` is `PIE`, not `PE`.** The 07/09 minute was a transcription slip;
+  the notes' own 15 July entry said `PIE` all along. Both artefacts now agree.
+- 🔴 **`anno` is wrong in two directions.** The collection hardcodes `Anno=2025`;
+  the code sends `Date.today().year()`, so `2026`. They shipped three hours apart
+  and **nobody has decided**. The original question — is this a fiscal-year
+  selector, and what happens at the boundary — is still unasked.
+- 🟢 **[#125](open-items.md) is answered**: `Modifica Cliente` is
+  **`PUT /clienti/{codice}`** with the full body, keyed on the Mexal customer
+  code. 🔴 It stays open — the built code is guarded to POST-on-`/ricerca` and
+  **cannot issue a PUT**.
+- 🔴 **[#110](open-items.md) is answered negatively**: the `ordini-clienti` create
+  body carries `sigla`, `serie`, `numero`, `cod_conto`, `data_documento` and five
+  line arrays — **no `cod_agente`, no `zona`, no `classificatore rete`**. Only the
+  *customer* carries the agent code. **That contradicts the freeze-on-order
+  commission rule agreed 03/09**: a later reassignment would retro-attribute every
+  past order. ⚠ A reading of one collection, not a statement from Mexal —
+  **ask Mirko Merendi at Kreosoft.**
+- 🟢🔴 **[#50](open-items.md) — the tranche has a Mexal mechanism at last.** An
+  instalment is an **`FT` *evasione*** of named order rows on a date, with ten
+  back-references to the originating `OC`. 🔴 **But the order body carries no
+  per-line `data di scadenza`** — exactly the field PR #37 propagated to
+  `OrderItem` the day before. Unreconciled.
+- 🟢 **[#109](open-items.md)'s 24-hour ambiguity is settled by build** —
+  `Account.Codice_Destinatario_SDI__c`, Text(7), _"restituito da Mexal"_. Mexal,
+  not Anticipay.
+- 🟢 Also corroborated: agents are `POST /risorse/fornitori/ricerca`; the invoice
+  read is the two-step N+1; `scadenzario/ricerca` exists and is filterable by
+  customer code. ⚠ `serie: 10` throughout — the **test** series.
+
+### 34.4 🔴 Coverage: +496, and the first callout class on the brief
+
+| Class                       | New lines | Tests |
+| --------------------------- | --------- | ----- |
+| `MexalSearchCalloutService`  | 260       | none  |
+| `MexalCustomerSearchService` | 236       | none  |
+
+Estimate past **4,182 lines, still zero covered**, last actual Apex test run
+**still 4 August**. 🔴 `MexalSearchCalloutService` is an **HTTP callout** class —
+the category that needs `HttpCalloutMock`, or the house scaffolding's own
+`Use_Mock__c` path. ⏸ **Recorded, not acted on. No test class written or
+proposed.**
+
+### 34.5 ⚠ A second day of silence on the WooCommerce collection
+
+The 09/09 chase is **still unanswered**, and the offsite no longer explains it
+alone: **Andrea Di Cicco was active in the same DM at 14:44–14:47 CEST on
+10/09**, on other clients. Sabatino Rinaldi still holds the **pre-filter**
+collection, **the sixty-year JWT is still unrotated**, no test result has come
+back ([#102](open-items.md)), and **UAT begins in thirteen days**. ⚠ A *Mexal*
+collection did move that afternoon; it is not this one.
+
+### 34.6 Everything else in the window
+
+**Nothing.** Gmail carried no Pienissimo message; Drive's newest Pienissimo item
+is still 08/09 and neither the `.drawio` nor the workbook moved; Fathom recorded
+no meeting; `#tproj-pienissimo` is silent since 04/09 and its status block still
+says **go-live 6 October**, three days after the register moved to 21 October.
