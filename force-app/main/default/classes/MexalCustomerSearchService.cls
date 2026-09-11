@@ -19,6 +19,22 @@ public with sharing class MexalCustomerSearchService {
     @AuraEnabled
     public Integer customersReturned;
     @AuraEnabled
+    public Integer matchedByMexalCode;
+    @AuraEnabled
+    public Integer matchedByPartitaIva;
+    @AuraEnabled
+    public Integer unmatchedAccounts;
+    @AuraEnabled
+    public Integer ambiguousMatches;
+    @AuraEnabled
+    public Integer insertedAccounts;
+    @AuraEnabled
+    public Integer updatedAccounts;
+    @AuraEnabled
+    public Integer failedSaves;
+    @AuraEnabled
+    public List<String> saveErrors;
+    @AuraEnabled
     public List<Account> mappedAccounts;
     @AuraEnabled
     public String message;
@@ -27,11 +43,23 @@ public with sharing class MexalCustomerSearchService {
       success = false;
       bodyLength = 0;
       customersReturned = 0;
+      matchedByMexalCode = 0;
+      matchedByPartitaIva = 0;
+      unmatchedAccounts = 0;
+      ambiguousMatches = 0;
+      insertedAccounts = 0;
+      updatedAccounts = 0;
+      failedSaves = 0;
+      saveErrors = new List<String>();
       mappedAccounts = new List<Account>();
     }
   }
 
   public class MexalCustomerSearchException extends Exception {
+  }
+
+  private class MatchResolution {
+    Set<Integer> ambiguousIndexes = new Set<Integer>();
   }
 
   // Automatic daily search is intentionally paused while the Mexal sync
@@ -76,6 +104,23 @@ public with sharing class MexalCustomerSearchService {
     return buildResult(httpResult, mexalDateTime);
   }
 
+  @AuraEnabled
+  public static Result searchByCustomerCode(String codiceClienteMexal) {
+    if (String.isBlank(codiceClienteMexal)) {
+      throw new MexalCustomerSearchException(
+        'Il codice cliente Mexal e obbligatorio.'
+      );
+    }
+
+    String normalizedCode = codiceClienteMexal.trim();
+    MexalSearchCalloutService.Result httpResult = MexalSearchCalloutService.search(
+      ACTION_NAME,
+      buildCustomerCodeRequest(normalizedCode)
+    );
+
+    return buildResult(httpResult, normalizedCode);
+  }
+
   private static Map<String, Object> buildModifiedSinceRequest(
     String mexalDateTime
   ) {
@@ -85,6 +130,20 @@ public with sharing class MexalCustomerSearchService {
           'campo' => 'data_ult_mod',
           'condizione' => '>=',
           'valore' => mexalDateTime
+        }
+      }
+    };
+  }
+
+  private static Map<String, Object> buildCustomerCodeRequest(
+    String codiceClienteMexal
+  ) {
+    return new Map<String, Object>{
+      'filtri' => new List<Object>{
+        new Map<String, Object>{
+          'campo' => 'codice',
+          'condizione' => '=',
+          'valore' => codiceClienteMexal
         }
       }
     };
@@ -152,6 +211,240 @@ public with sharing class MexalCustomerSearchService {
         );
       }
     }
+
+    MatchResolution matchResolution = resolveAccountMatches(result);
+    saveMatchedAccounts(result, matchResolution);
+  }
+
+  private static MatchResolution resolveAccountMatches(Result result) {
+    MatchResolution matchResolution = new MatchResolution();
+
+    if (result.mappedAccounts.isEmpty()) {
+      return matchResolution;
+    }
+
+    Set<String> mexalCodes = new Set<String>();
+    Set<String> partitaIvaValues = new Set<String>();
+
+    for (Account account : result.mappedAccounts) {
+      if (!String.isBlank(account.Codice_Cliente_Mexal__c)) {
+        mexalCodes.add(normalizeMatchKey(account.Codice_Cliente_Mexal__c));
+      }
+      if (!String.isBlank(account.Partita_IVA__c)) {
+        partitaIvaValues.add(normalizeMatchKey(account.Partita_IVA__c));
+      }
+    }
+
+    if (mexalCodes.isEmpty() && partitaIvaValues.isEmpty()) {
+      result.unmatchedAccounts = result.mappedAccounts.size();
+      return matchResolution;
+    }
+
+    Map<String, List<Account>> accountsByMexalCode = new Map<String, List<Account>>();
+    Map<String, List<Account>> accountsByPartitaIva = new Map<String, List<Account>>();
+
+    for (Account existingAccount : [
+      SELECT Id, Name, Codice_Cliente_Mexal__c, Partita_IVA__c
+      FROM Account
+      WHERE
+        RecordType.DeveloperName = 'Azienda'
+        AND (Codice_Cliente_Mexal__c IN :mexalCodes
+        OR Partita_IVA__c IN :partitaIvaValues)
+    ]) {
+      addAccountByKey(
+        accountsByMexalCode,
+        existingAccount.Codice_Cliente_Mexal__c,
+        existingAccount
+      );
+      addAccountByKey(
+        accountsByPartitaIva,
+        existingAccount.Partita_IVA__c,
+        existingAccount
+      );
+    }
+
+    for (Integer index = 0; index < result.mappedAccounts.size(); index++) {
+      Account mappedAccount = result.mappedAccounts[index];
+      if (
+        tryAssignSingleMatch(
+          mappedAccount,
+          accountsByMexalCode,
+          mappedAccount.Codice_Cliente_Mexal__c
+        )
+      ) {
+        result.matchedByMexalCode++;
+        continue;
+      }
+
+      if (
+        hasAmbiguousMatch(
+          accountsByMexalCode,
+          mappedAccount.Codice_Cliente_Mexal__c
+        )
+      ) {
+        result.ambiguousMatches++;
+        matchResolution.ambiguousIndexes.add(index);
+        continue;
+      }
+
+      if (
+        tryAssignSingleMatch(
+          mappedAccount,
+          accountsByPartitaIva,
+          mappedAccount.Partita_IVA__c
+        )
+      ) {
+        result.matchedByPartitaIva++;
+        continue;
+      }
+
+      if (
+        hasAmbiguousMatch(accountsByPartitaIva, mappedAccount.Partita_IVA__c)
+      ) {
+        result.ambiguousMatches++;
+        matchResolution.ambiguousIndexes.add(index);
+      } else {
+        result.unmatchedAccounts++;
+      }
+    }
+
+    return matchResolution;
+  }
+
+  private static void saveMatchedAccounts(
+    Result result,
+    MatchResolution matchResolution
+  ) {
+    if (result.mappedAccounts.isEmpty()) {
+      return;
+    }
+
+    List<Account> accountsToInsert = new List<Account>();
+    List<Account> accountsToUpdate = new List<Account>();
+    Id aziendaRecordTypeId = getAziendaRecordTypeId();
+
+    for (Integer index = 0; index < result.mappedAccounts.size(); index++) {
+      if (matchResolution.ambiguousIndexes.contains(index)) {
+        continue;
+      }
+
+      Account account = result.mappedAccounts[index];
+      if (String.isBlank(account.Name)) {
+        result.failedSaves++;
+        result.saveErrors.add(
+          buildSaveError(account, 'Account Name mancante.')
+        );
+        continue;
+      }
+
+      if (account.Id == null) {
+        account.RecordTypeId = aziendaRecordTypeId;
+        accountsToInsert.add(account);
+      } else {
+        accountsToUpdate.add(account);
+      }
+    }
+
+    applySaveResults(Database.update(accountsToUpdate, false), true, result);
+    applySaveResults(Database.insert(accountsToInsert, false), false, result);
+  }
+
+  private static void applySaveResults(
+    List<Database.SaveResult> saveResults,
+    Boolean isUpdate,
+    Result result
+  ) {
+    for (Database.SaveResult saveResult : saveResults) {
+      if (saveResult.isSuccess()) {
+        if (isUpdate) {
+          result.updatedAccounts++;
+        } else {
+          result.insertedAccounts++;
+        }
+        continue;
+      }
+
+      result.failedSaves++;
+      result.saveErrors.add(buildSaveError(saveResult));
+    }
+  }
+
+  private static String buildSaveError(Database.SaveResult saveResult) {
+    List<String> messages = new List<String>();
+    for (Database.Error error : saveResult.getErrors()) {
+      messages.add(error.getStatusCode() + ': ' + error.getMessage());
+    }
+    return String.join(messages, ' | ');
+  }
+
+  private static String buildSaveError(Account account, String message) {
+    return message +
+      ' Codice Cliente Mexal=' +
+      emptyIfBlank(account.Codice_Cliente_Mexal__c) +
+      ', Partita IVA=' +
+      emptyIfBlank(account.Partita_IVA__c);
+  }
+
+  private static Id getAziendaRecordTypeId() {
+    Schema.RecordTypeInfo recordTypeInfo = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName()
+      .get('Azienda');
+
+    if (recordTypeInfo == null) {
+      throw new MexalCustomerSearchException(
+        'Record Type Account Azienda non trovato.'
+      );
+    }
+
+    return recordTypeInfo.getRecordTypeId();
+  }
+
+  private static void addAccountByKey(
+    Map<String, List<Account>> accountsByKey,
+    String rawKey,
+    Account account
+  ) {
+    String key = normalizeMatchKey(rawKey);
+    if (String.isBlank(key)) {
+      return;
+    }
+
+    if (!accountsByKey.containsKey(key)) {
+      accountsByKey.put(key, new List<Account>());
+    }
+    accountsByKey.get(key).add(account);
+  }
+
+  private static Boolean tryAssignSingleMatch(
+    Account mappedAccount,
+    Map<String, List<Account>> accountsByKey,
+    String rawKey
+  ) {
+    List<Account> matches = accountsByKey.get(normalizeMatchKey(rawKey));
+    if (matches == null || matches.size() != 1) {
+      return false;
+    }
+
+    mappedAccount.Id = matches[0].Id;
+    if (String.isBlank(mappedAccount.Name)) {
+      mappedAccount.Name = matches[0].Name;
+    }
+    return true;
+  }
+
+  private static Boolean hasAmbiguousMatch(
+    Map<String, List<Account>> accountsByKey,
+    String rawKey
+  ) {
+    List<Account> matches = accountsByKey.get(normalizeMatchKey(rawKey));
+    return matches != null && matches.size() > 1;
+  }
+
+  private static String normalizeMatchKey(String value) {
+    return String.isBlank(value) ? null : value.trim().toUpperCase();
+  }
+
+  private static String emptyIfBlank(String value) {
+    return String.isBlank(value) ? '' : value;
   }
 
   private static Account mapCustomerToAccount(Map<String, Object> customer) {
@@ -161,8 +454,7 @@ public with sharing class MexalCustomerSearchService {
     account.Codice_Fiscale__c = getString(customer, 'codice_fiscale');
     account.Name = chooseFirstPopulated(
       getString(customer, 'ragione_sociale'),
-      getString(customer, 'denominazione'),
-      getString(customer, 'cognome')
+      getString(customer, 'codice')
     );
     account.BillingStreet = getString(customer, 'indirizzo');
     account.BillingPostalCode = getString(customer, 'cap');
@@ -170,30 +462,11 @@ public with sharing class MexalCustomerSearchService {
     account.BillingState = getString(customer, 'provincia');
     account.BillingCountry = getString(customer, 'cod_paese');
     account.Phone = getString(customer, 'telefono');
-    account.Website = getString(customer, 'url');
-    account.PEC__c = getString(customer, 'pec');
-    account.IBAN__c = chooseFirstPopulated(
-      getString(customer, 'banca_appoggio'),
-      buildIban(customer)
-    );
+    account.Fax = getString(customer, 'fax');
+    account.Email__c = normalizeEmail(getString(customer, 'email'));
+    account.PEC__c = normalizeEmail(getString(customer, 'pec'));
     account.Codice_Destinatario_SDI__c = getString(customer, 'codice_sdi');
     return account;
-  }
-
-  private static String buildIban(Map<String, Object> customer) {
-    String country = getString(customer, 'pae_iban');
-    String checkDigits = getString(customer, 'cin_iban');
-    String ibanBody = getString(customer, 'iban_libero');
-
-    if (
-      String.isBlank(country) ||
-      String.isBlank(checkDigits) ||
-      String.isBlank(ibanBody)
-    ) {
-      return null;
-    }
-
-    return country + checkDigits.leftPad(2, '0') + ibanBody;
   }
 
   private static String chooseFirstPopulated(
@@ -224,6 +497,10 @@ public with sharing class MexalCustomerSearchService {
 
     Object value = source.get(fieldName);
     return value == null ? null : String.valueOf(value);
+  }
+
+  private static String normalizeEmail(String value) {
+    return String.isBlank(value) ? null : value.trim().toLowerCase();
   }
 
   private static Id getLastLogId(List<Integration_Log__c> integrationLogs) {

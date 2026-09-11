@@ -3,7 +3,7 @@
  **/
 public without sharing class API_Callout_Engine {
   /* Method to be used to call a REST API, with JSON input/output and Named Credential for authentication,
-   defined in a record of the Integration_Configuration__c custom setting*/
+   defined in a record of the Integration_Configuration2__c custom setting*/
   private static final Boolean isSandBox = [
     SELECT IsSandbox
     FROM Organization
@@ -64,7 +64,7 @@ public without sharing class API_Callout_Engine {
 
     try {
       // Retrieve Config, Create Log
-      Integration_Configuration__c config = resolveIntegrationConfiguration(
+      Integration_Configuration2__c config = resolveIntegrationConfiguration(
         apiName
       );
       String reqJson = JSON.serialize(request);
@@ -74,7 +74,7 @@ public without sharing class API_Callout_Engine {
       if (config == null) {
         logRow.Is_Error__c = true;
         logRow.Response_Body__c = abbreviate(
-          'ERROR: The system could not find an Integration_Configuration__c custom setting record having name or Azione__c ' +
+          'ERROR: The system could not find an Integration_Configuration2__c custom setting record having name or Azione__c ' +
           apiName
         );
         saveLog(logRow, result, insertLog);
@@ -138,7 +138,7 @@ public without sharing class API_Callout_Engine {
   }
 
   @AuraEnabled
-  public static Integration_Configuration__c getIntegrationConfiguration(
+  public static Integration_Configuration2__c getIntegrationConfiguration(
     String datasetName
   ) {
     return resolveIntegrationConfiguration(datasetName);
@@ -174,43 +174,43 @@ public without sharing class API_Callout_Engine {
     );
   }
 
-  private static Integration_Configuration__c resolveIntegrationConfiguration(
+  private static Integration_Configuration2__c resolveIntegrationConfiguration(
     String apiName
   ) {
-    Integration_Configuration__c config = getConfigurationBySetupOwner(apiName);
+    Integration_Configuration2__c config = getConfigurationByName(apiName);
 
     if (hasCallableConfiguration(config)) {
       return config;
     }
 
-    Integration_Configuration__c actionConfig = getConfigurationByAction(
+    Integration_Configuration2__c actionConfig = getConfigurationByAction(
       apiName
     );
     return actionConfig == null ? config : actionConfig;
   }
 
-  private static Integration_Configuration__c getConfigurationBySetupOwner(
-    String setupOwnerId
+  private static Integration_Configuration2__c getConfigurationByName(
+    String apiName
   ) {
     try {
-      return Integration_Configuration__c.getValues(setupOwnerId);
+      return Integration_Configuration2__c.getValues(apiName);
     } catch (System.InvalidParameterValueException ignored) {
       return null;
     }
   }
 
   private static Boolean hasCallableConfiguration(
-    Integration_Configuration__c config
+    Integration_Configuration2__c config
   ) {
     return config != null &&
       !String.isBlank(config.HTTP_Method__c) &&
       !String.isBlank(config.Endpoint_Path__c);
   }
 
-  private static Integration_Configuration__c getConfigurationByAction(
+  private static Integration_Configuration2__c getConfigurationByAction(
     String apiName
   ) {
-    List<Integration_Configuration__c> configs = [
+    List<Integration_Configuration2__c> configs = [
       SELECT
         Apikey__c,
         Azione__c,
@@ -226,55 +226,27 @@ public without sharing class API_Callout_Engine {
         Named_Credential_Sandbox__c,
         Request_Wrapper_Class__c,
         Response_Wrapper_Class__c,
-        SetupOwnerId,
         Timeout__c,
         Token__c,
         Use_Mock__c
-      FROM Integration_Configuration__c
-      WHERE Azione__c = :apiName AND SetupOwnerId IN :getHierarchyOwnerIds()
+      FROM Integration_Configuration2__c
+      WHERE Azione__c = :apiName
+      ORDER BY Name
+      LIMIT 1
     ];
 
-    return chooseHierarchyConfiguration(configs);
-  }
-
-  private static Set<Id> getHierarchyOwnerIds() {
-    return new Set<Id>{
-      UserInfo.getUserId(),
-      UserInfo.getProfileId(),
-      UserInfo.getOrganizationId()
-    };
-  }
-
-  private static Integration_Configuration__c chooseHierarchyConfiguration(
-    List<Integration_Configuration__c> configs
-  ) {
-    Integration_Configuration__c profileConfig;
-    Integration_Configuration__c orgConfig;
-
-    for (Integration_Configuration__c config : configs) {
-      if (config.SetupOwnerId == UserInfo.getUserId()) {
-        return config;
-      }
-      if (config.SetupOwnerId == UserInfo.getProfileId()) {
-        profileConfig = config;
-      }
-      if (config.SetupOwnerId == UserInfo.getOrganizationId()) {
-        orgConfig = config;
-      }
-    }
-
-    return profileConfig == null ? orgConfig : profileConfig;
+    return configs.isEmpty() ? null : configs[0];
   }
 
   private static HttpRequest buildRequest(
-    Integration_Configuration__c config,
+    Integration_Configuration2__c config,
     String reqJson
   ) {
     return buildRequest(config, reqJson, null);
   }
 
   private static HttpRequest buildRequest(
-    Integration_Configuration__c config,
+    Integration_Configuration2__c config,
     String reqJson,
     Map<String, String> pathParams
   ) {
@@ -291,12 +263,12 @@ public without sharing class API_Callout_Engine {
     return req;
   }
 
-  private static String buildEndpoint(Integration_Configuration__c config) {
+  private static String buildEndpoint(Integration_Configuration2__c config) {
     return buildEndpoint(config, null);
   }
 
   private static String buildEndpoint(
-    Integration_Configuration__c config,
+    Integration_Configuration2__c config,
     Map<String, String> pathParams
   ) {
     String namedCredential = isSandBox
@@ -334,7 +306,7 @@ public without sharing class API_Callout_Engine {
     return EncodingUtil.urlEncode(value, 'UTF-8').replace('+', '%20');
   }
 
-  private static String getHttpMethod(Integration_Configuration__c config) {
+  private static String getHttpMethod(Integration_Configuration2__c config) {
     return config.HTTP_Method__c;
   }
 
@@ -351,13 +323,13 @@ public without sharing class API_Callout_Engine {
     return trimmedResponse.startsWith('{') || trimmedResponse.startsWith('[');
   }
 
-  private static Integer getTimeout(Integration_Configuration__c config) {
+  private static Integer getTimeout(Integration_Configuration2__c config) {
     return config.Timeout__c.intValue();
   }
 
   private static void setHeaders(
     HttpRequest req,
-    Integration_Configuration__c config
+    Integration_Configuration2__c config
   ) {
     if (config.Content_Type_JSON__c) {
       req.setHeader('Content-Type', 'application/json');
@@ -368,7 +340,7 @@ public without sharing class API_Callout_Engine {
   }
 
   private static HttpResponse runMock(
-    Integration_Configuration__c config,
+    Integration_Configuration2__c config,
     HttpRequest req
   ) {
     Type mockClass = Type.forName(config.Mock_Apex_Class__c);
@@ -378,7 +350,7 @@ public without sharing class API_Callout_Engine {
   }
 
   private static Object deserializeResponse(
-    Integration_Configuration__c config,
+    Integration_Configuration2__c config,
     String respJson
   ) {
     Type respClass = Type.forName(config.Response_Wrapper_Class__c);

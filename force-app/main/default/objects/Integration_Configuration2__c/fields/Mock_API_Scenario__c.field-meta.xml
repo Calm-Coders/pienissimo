@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Timeout__c</fullName>
+    <fullName>Mock_API_Scenario__c</fullName>
     <externalId>false</externalId>
-    <label>Timeout</label>
-    <precision>18</precision>
+    <label>Mock API Scenario</label>
+    <length>255</length>
     <required>false</required>
-    <scale>0</scale>
     <trackTrending>false</trackTrending>
-    <type>Number</type>
+    <type>Text</type>
     <unique>false</unique>
 </CustomField>
