@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Codice_Destinatario_SDI__c</fullName>
+    <description
+  >Codice destinatario SDI restituito da Mexal per l'instradamento della fatturazione elettronica.</description>
+    <externalId>false</externalId>
+    <label>Codice Destinatario SDI</label>
+    <length>7</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
