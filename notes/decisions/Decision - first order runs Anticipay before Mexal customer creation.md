@@ -63,3 +63,35 @@ the first customer creation sent to Mexal uses the refreshed Account data.
 This decision does not activate the Mexal update button or the Order-to-Mexal
 flow by itself. It records the sequencing rule that the later implementation
 must follow.
+
+## Build state as at 2026-09-11 evening
+
+Recorded by the nightly `requirements-check` on the same day this decision was
+written, reading `DevMain` at `c9a0b7e`.
+
+🔴 **Nothing in the repository implements the sequencing rule.** What shipped in
+`80420cf` (PR #41, merged 18:05 CEST) is a **synchronous `@AuraEnabled` quick
+action on Account** — `MexalCustomerCreateService.createForAccount` behind the
+`Crea_Cliente_Mexal` button. Against the rule above:
+
+| This decision requires            | What is built                              |
+| --------------------------------- | ------------------------------------------ |
+| Triggered by the first Order      | A button a user presses on the Account      |
+| Anticipay called first, then wait | **No Anticipay step at all in the path**    |
+| Queued / asynchronous throughout  | Synchronous, inline in the Aura call        |
+| Later orders take `Modifica`      | Throws _"Account gia collegato a Mexal"_    |
+| Chain continues into Order → Mexal| No order leg exists                         |
+
+🟢 **One half is built**: step 8, writing the returned Mexal code onto
+`Account.Codice_Cliente_Mexal__c`, happens exactly as described.
+
+⚠ **This is a gap, not a contradiction** — the decision says itself that it does
+not activate the button or the Order-to-Mexal flow, and records a sequencing rule
+for a later implementation. It is recorded here so the next agent does not read
+the button as evidence that the rule is in place.
+
+⚠ **The decision reached the repository outside the sweep**, committed directly
+in `80420cf` with `source: Aurel Mrruku, direct instruction to the agent session,
+2026-09-11`. **No mail, Slack message, meeting or transcript in any swept source
+corroborates it**, and none is expected to — it was given to an agent session
+directly. Recorded as attributed, not independently verified.

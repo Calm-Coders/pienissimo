@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-10
+updated: 2026-09-11
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -159,3 +159,28 @@ Worth testing when the suite is commissioned, listed so the brief is complete:
 - the untyped-JSON paths that return silently on an unexpected shape.
 
 ⏸ **Brief only. Nothing was acted on; no test class was written or proposed.**
+
+## 2026-09-11 — two merges, and the first ERP-writing class on the brief
+
+`b9cfc1b` (PR #39) and `80420cf` (PR #41) both merged to `DevMain` today.
+Measured from the repository, `force-app/` now holds **30 Apex classes, 8,193
+lines**, with the **last test run still 4 August**.
+
+New on the brief since yesterday:
+
+- **`MexalCustomerCreateService`** (363 lines) — builds a Mexal customer payload,
+  **POSTs it to the ERP**, parses the generated customer code out of the response
+  headers or body, and **writes it back to `Account.Codice_Cliente_Mexal__c`**.
+  Also parses the duplicate-`partita IVA` error. **The first class on this brief
+  that creates records in an external system.**
+- **`MexalSearchCalloutService`** (422 lines) — two allow-lists now, read and
+  write, plus path-parameter substitution for `PUT /clienti/{codice}`.
+- **`MexalCustomerSearchService`** (513 lines) — gained partial-success
+  `Database.insert` / `Database.update` on `Account`, ambiguous-match skipping and
+  record-type stamping.
+
+⚠ The 8,193 figure is a whole-repository line count, not a continuation of the
+earlier running estimate; recorded as measured.
+
+**Brief only, as this row has been since it opened. No test class was written,
+proposed or scheduled.**

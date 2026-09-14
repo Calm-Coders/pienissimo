@@ -5,7 +5,7 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-26
-updated: 2026-09-10
+updated: 2026-09-11
 depends_on: [OI-58, OI-49, OI-73, OI-94]
 source: org-status-check against Pienissimo UAT, 2026-08-26
 evidence: SOQL counts on Integration_Configuration__c and Integration_Log__c, NamedCredential listing
@@ -136,3 +136,36 @@ so the row would point at a principal the repository cannot deploy.
 ⚠ **This is a repository reading.** Whether anyone created the rows or the
 credential in UAT during the day was **not checked** — the org was not opened this
 run, and the last org check (08/09 16:31Z) predates three commits.
+
+## 2026-09-11 — the object was renamed and retyped, and now four rows are needed
+
+`80420cf` (PR #41, merged 18:05 CEST) **renamed
+`Integration_Configuration__c` to `Integration_Configuration2__c`** and changed
+its type from a **Hierarchy** custom setting to a **List** custom setting. The
+per-user → per-profile → per-org `SetupOwnerId` resolution was deleted outright
+and replaced with `ORDER BY Name LIMIT 1`. All seventeen fields moved; the old
+directory is gone and no reference to the old API name survives in `force-app/`.
+
+⚠ **The rename is almost certainly forced, not careless** — Salesforce cannot
+convert a custom setting between Hierarchy and List in place. 🔴 **But the `2`
+suffix is now permanent**, baked into every class, the permission set and the
+layouts. Renaming it later is a second migration. **Decide deliberately now or
+accept it on the record.**
+
+⚠ **What happened to the original object in the org is unknown.** No destructive
+change and no data move is recorded anywhere, and a repository reading cannot
+see whether the old object still exists or still holds rows.
+
+🔴 **Four rows are now required by exact name**, up from two yesterday:
+
+| `Azione__c`                | Used by                                    |
+| -------------------------- | ------------------------------------------ |
+| `Mexal_Clienti_Ricerca`    | customer search, and the nightly sync      |
+| `Mexal_Articoli_Ricerca`   | article search                             |
+| `Mexal_Clienti_Creazione`  | **customer create — writes to Mexal**      |
+| `Mexal_Clienti_Modifica`   | customer update (built, no caller yet)     |
+
+**Zero rows, no named owner, and now on the critical path of a write
+integration.** Every call throws _"Configurazione Mexal non trovata per azione"_
+until somebody creates them. Third table in eight days with this exact shape,
+after [OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md).

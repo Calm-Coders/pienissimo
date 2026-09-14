@@ -5,13 +5,34 @@ status: active
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-10
-updated: 2026-09-10
+updated: 2026-09-11
 depends_on: [OI-58, OI-116]
 blocks: [OI-109, OI-110, OI-117, OI-125]
-source: git DevAnita bc2ed5d (PR #39, open), Apex and metadata read directly 2026-09-10
+source: git DevMain b9cfc1b (PR #39, merged 2026-09-11), Apex and metadata read directly 2026-09-10 and 2026-09-11
 ---
 
 # The first Mexal integration Apex
+
+> ## 2026-09-11 — merged, and then superseded the same day
+>
+> ✅ **PR #39 merged at 08:27Z (10:27 CEST)** as `b9cfc1b`. Everything below,
+> written while it was an open branch, is now the state of `DevMain`.
+>
+> 🔴 **But two of its central claims no longer hold.** Nine and a half hours
+> later `80420cf` (PR #41) added a Mexal **write** path and gave the search
+> service **DML**, so:
+>
+> - _"This code cannot create or modify a Mexal record, by construction"_ —
+>   **superseded.** The read-only guard still stands for the read actions, but a
+>   second, separately allow-listed write path now exists beside it.
+> - _"Nothing is written to Salesforce … OI-116 is a read, not yet a sync"_ —
+>   **superseded.** `MexalCustomerSearchService` now inserts and updates
+>   `Account`.
+>
+> Both are recorded in
+> [the Mexal customer create and update path](The%20Mexal%20customer%20create%20and%20update%20path.md),
+> which is the current build note. **This note describes `bc2ed5d` as it was on
+> 10 September and is kept for the record.** Read it as history, not as state.
 
 **Commit `bc2ed5d`** (Anita Aga, _"Edited Create Tranch Lwc, and opportunity
 custom path, added logic for Mexal Integration"_), pushed **2026-09-10 17:58

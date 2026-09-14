@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-10 (nightly requirements-check: the first Mexal Apex, on an open PR) · Source of record: [notes/](notes/)
+Last updated: 2026-09-11 (nightly requirements-check: the Mexal integration starts writing) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -14,12 +14,55 @@ register now says 21 October in both languages
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
 
+- 🟢🔴 **2026-09-11 — the Mexal integration started writing, and both pull
+  requests were merged the same day.** **PR #39** merged 10:27 CEST, then
+  **PR #41** / **`80420cf`** (Anita Aga) opened 17:58 and **merged 18:05** —
+  **seven minutes, no description, no review**: **32 files, +1,326 / −193**
+  ([the build](notes/objects/The%20Mexal%20customer%20create%20and%20update%20path.md)).
+  🟢 **The first code in the project that writes to Mexal.** `POST /clienti` with
+  `codice = '501.AUTO'`, the generated code read back from the response headers
+  and **written onto `Account.Codice_Cliente_Mexal__c`**.
+  🟢 **The read-only guard was extended, not removed** — `READ_ONLY_ACTIONS` still
+  refuses write endpoints, and a separate `WRITE_ACTIONS` allow-list holds exactly
+  two named actions. Named Credential auth unchanged; the secret still never
+  reaches the log.
+  🟢 **The duplicate `partita IVA` failure is parsed at last** — the error now
+  returns the colliding customer's existing Mexal code instead of an opaque throw.
+  🟢🔴 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+  gets its DML** — partial-success `insert`/`update` on `Account`, `Azienda` record
+  type stamped, ambiguous matches skipped — but **the nightly job is still
+  commented out with the identical blocker**. It moves from _"a read, not a sync"_
+  to **"a sync with no schedule"**; the sync window has been unspecified since
+  3 September and is now the only thing left.
+  🔴 **[OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md):
+  the PUT is built and nothing calls it** — an already-linked Account throws, and
+  the update call sits above it as a block comment.
+  🔴 **[OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+  is the day's real exposure.** Two writers now set the Mexal code and **the lock
+  is still unbuilt** — the divergence that row predicted, arrived.
+  🔴 **`Integration_Configuration__c` → `Integration_Configuration2__c`**, Hierarchy
+  → List custom setting, the `SetupOwnerId` resolution deleted. **The `2` suffix is
+  permanent**, still **zero rows**, and **four are now needed by exact name**.
+  🔴 **The undeployable credential reference reached `DevMain`.**
+  `Full_Permission` grants `Mexal_External_Credential-Mexal_Principal` and the repo
+  still has **no `namedCredentials/` directory** — yesterday on a branch, today on
+  the line everything is built from
+  ([the risk](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
+  ⚠ **A decision arrived outside the sweep**, committed straight into the repo:
+  [Anticipay before Mexal customer creation](notes/decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+  — first Order runs a **queued** Anticipay → Account update → Mexal create chain.
+  **What shipped is a synchronous button on the Account with no Anticipay step**;
+  the rule is recorded, not built.
+  🔴 **30 Apex classes, 8,193 lines, last test run still 4 August** — and the brief
+  now includes a class that **creates records in an external ERP** (brief only).
+
 - 🟢🔴 **2026-09-10 — Fase 1 development was due to end today, and it ends with
   the first Mexal Apex sitting unreviewed on an open pull request.** **PR #39**
   / **`bc2ed5d`** (Anita Aga, pushed 17:58 CEST, PR opened 18:00): **17 files,
-  +682 lines, +496 new Apex** — and **it is not merged**; `DevMain` still ends at
-  last night's `9113453`
+  +682 lines, +496 new Apex** — and, as at that evening, **not merged**
   ([the build](notes/objects/The%20first%20Mexal%20integration%20Apex.md)).
+  ✅ **It merged at 10:27 CEST the next morning**, and the read-only and no-DML
+  readings below were **superseded the same day** — see the 11 September entry.
   🟢 **The first Mexal transport this repository has ever held.**
   `MexalSearchCalloutService` is authenticated by **Named Credential**, keeps the
   secret out of `Integration_Log__c` on purpose, and is **hard-guarded read-only**

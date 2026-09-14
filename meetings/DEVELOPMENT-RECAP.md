@@ -3459,3 +3459,110 @@ collection did move that afternoon; it is not this one.
 is still 08/09 and neither the `.drawio` nor the workbook moved; Fathom recorded
 no meeting; `#tproj-pienissimo` is silent since 04/09 and its status block still
 says **go-live 6 October**, three days after the register moved to 21 October.
+
+## 35. Update 2026-09-11 — the Mexal integration starts writing
+
+Source: `DevMain` at `c9a0b7e`, read directly. **Every external source returned
+nothing**: no Pienissimo mail, no Drive movement, no Fathom recording, no Slack
+message about this project. The whole of this section is repository and GitHub.
+
+### 35.1 Two merges, and the second one crosses a line
+
+**PR #39 merged at 10:27 CEST** (`b9cfc1b`), putting the previous day's Mexal
+read Apex onto the working branch. Then **PR #41** / **`80420cf`** (Anita Aga,
+_"Added logic for API calls (Ricerca,Creazione,Modifica) rebuilt the Integration
+Configuration object."_) was pushed **17:57**, opened **17:58** and **merged
+18:05 CEST** — **seven minutes, no description, no review**. **32 files,
++1,326 / −193 lines.**
+
+**This is the first code in the project that writes to Mexal.**
+[Full detail](../notes/objects/The%20Mexal%20customer%20create%20and%20update%20path.md).
+
+### 35.2 🟢 The read-only guard was extended, not removed
+
+`MexalSearchCalloutService` now carries two allow-lists, not one:
+`READ_ONLY_ACTIONS` (`Mexal_Clienti_Ricerca`, `Mexal_Articoli_Ricerca`), still
+refusing any path that does not end `/ricerca` and any method but `POST`; and a
+new `WRITE_ACTIONS` (`Mexal_Clienti_Creazione`, `Mexal_Clienti_Modifica`) behind
+its own validation. A read action still cannot reach a write endpoint, and the
+write surface is exactly two named actions. Named Credential authentication is
+unchanged and the secret still never reaches `Integration_Log__c`.
+
+### 35.3 🟢 `MexalCustomerCreateService` — the create path
+
+`createForAccount` is reachable from a new **`Crea_Cliente_Mexal`** quick action
+on Account. It sends `codice = '501.AUTO'`, so **Mexal assigns the customer
+number**, then recovers the generated code from the response headers (any header
+naming `codice`, `cliente` or `customer`, else the last path segment of
+`Location`), falling back to the body, and **writes it onto
+`Account.Codice_Cliente_Mexal__c`**.
+
+🟢 **The duplicate `partita IVA` failure recorded on 7 September is handled**: the
+error detail is parsed and **the colliding customer's existing Mexal code** is
+returned with an Italian message, instead of an opaque throw.
+
+### 35.4 🟢🔴 OI-116 gains its DML and keeps its blocker
+
+The anagrafica read now **persists**: partial-success `Database.update` and
+`Database.insert` on `Account`, per-row errors collected, the **`Azienda`** record
+type stamped on inserts, **ambiguous matches skipped rather than guessed**, and a
+blank `Name` refused.
+
+🔴 **The nightly job is still commented out**, with the identical blocker in the
+code: _"paused while the Mexal sync schedule and date window are finalized."_ So
+the row moves from _a read, not a sync_ to **a sync with no schedule** — and what
+is missing is no longer code but the **sync window and watermark**, unspecified
+since 3 September.
+
+### 35.5 🔴 OI-125 built, OI-117 exposed
+
+**[OI-125](../notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md):
+`PUT /clienti/{codice}` exists and nothing calls it.** An already-linked Account
+throws, and the update call sits directly above as a block comment headed
+_"Future Modifica Cliente path"_.
+
+**[OI-117](../notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+is the day's real exposure.** Two writers now populate the Mexal code, and **the
+lock that this row exists to specify is still unbuilt** — no validation rule, no
+field-level enforcement. A user edit made after the Mexal code lands can be
+overwritten by the sync without trace.
+
+### 35.6 🔴 The configuration object was renamed and retyped
+
+`Integration_Configuration__c` became **`Integration_Configuration2__c`**, and a
+**Hierarchy** custom setting became a **List** one; the per-user/profile/org
+`SetupOwnerId` resolution was deleted for `ORDER BY Name LIMIT 1`. The rename is
+very likely forced — Salesforce cannot convert between the two in place — but the
+**`2` suffix is now permanent** across every class, the permission set and the
+layouts.
+
+🔴 **Still zero rows, still no owner, and four are now needed by exact name.**
+What happened to the original object in the org is unrecorded.
+
+### 35.7 🔴 The undeployable credential reference reached `DevMain`
+
+`Full_Permission` grants `Mexal_External_Credential-Mexal_Principal` and the
+repository still has **no `namedCredentials/` or `externalCredentials/` directory
+at all**. Yesterday this sat on an unmerged branch; **it is now on the working
+branch**, so a clean deploy of `DevMain` to a fresh org fails on that permission
+set. **Twelve days before UAT, this is the cheapest open defect on the project.**
+
+### 35.8 ⚠ A decision arrived outside the sweep
+
+`80420cf` also committed
+[a decision note](../notes/decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+directly: the **first Order of an Account runs a queued Anticipay call, then the
+Account update, then the Mexal customer creation, then the Order**; later Orders
+skip Anticipay and take the `Modifica` path. Its stated source is a direct
+instruction to an agent session, and **no swept source corroborates it**.
+
+🔴 **What shipped does not follow it**: a synchronous button on the Account, with
+no Anticipay step, no queueing and no Order trigger. The note says itself that it
+does not activate the flow. **The rule is recorded; it is not built.**
+
+### 35.9 🔴 Coverage
+
+**30 Apex classes, 8,193 lines**, measured from the repository. **Last Apex test
+run is still 4 August**, thirty-eight days and four merges ago — and the brief now
+includes a class that **creates records in an external ERP**. Recorded as brief;
+nothing acted on.
