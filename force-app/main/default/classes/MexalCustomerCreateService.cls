@@ -47,22 +47,6 @@ public with sharing class MexalCustomerCreateService {
 
     Account account = loadAccount(accountId);
     if (!String.isBlank(account.Codice_Cliente_Mexal__c)) {
-      /*
-       * Future Modifica Cliente path:
-       *
-       * Map<String, Object> payload = buildUpdatePayload(account);
-       * MexalSearchCalloutService.Result calloutResult = MexalSearchCalloutService.updateCustomer(
-       *   account.Codice_Cliente_Mexal__c,
-       *   payload
-       * );
-       *
-       * Result result = buildResult(account.Id, payload, calloutResult);
-       * result.generatedCustomerCode = account.Codice_Cliente_Mexal__c;
-       * result.message = result.success
-       *   ? 'Modifica cliente Mexal completata.'
-       *   : 'Modifica cliente Mexal fallita.';
-       * return result;
-       */
       throw new MexalCustomerCreateException(
         'Account gia collegato a Mexal: ' + account.Codice_Cliente_Mexal__c
       );
@@ -75,6 +59,32 @@ public with sharing class MexalCustomerCreateService {
 
     Result result = buildResult(account.Id, payload, calloutResult);
     updateAccountWithGeneratedCode(account, result);
+    return result;
+  }
+
+  public static Result updateForAccount(Id accountId) {
+    if (accountId == null) {
+      throw new MexalCustomerCreateException('Account obbligatorio.');
+    }
+
+    Account account = loadAccount(accountId);
+    if (String.isBlank(account.Codice_Cliente_Mexal__c)) {
+      throw new MexalCustomerCreateException(
+        'Codice cliente Mexal obbligatorio per modifica Account.'
+      );
+    }
+
+    Map<String, Object> payload = buildUpdatePayload(account);
+    MexalSearchCalloutService.Result calloutResult = MexalSearchCalloutService.updateCustomer(
+      account.Codice_Cliente_Mexal__c,
+      payload
+    );
+
+    Result result = buildResult(account.Id, payload, calloutResult);
+    result.generatedCustomerCode = account.Codice_Cliente_Mexal__c;
+    result.message = result.success
+      ? 'Modifica cliente Mexal completata.'
+      : 'Modifica cliente Mexal fallita.';
     return result;
   }
 
