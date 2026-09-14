@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-11 (nightly requirements-check: the Mexal integration starts writing) · Source of record: [notes/](notes/)
+Last updated: 2026-09-14 (org-status-check against Pienissimo UAT: the order-to-Mexal chain exists, in the org only) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,47 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🔴🟢 **2026-09-14 — an org-status-check found the entire
+  order-to-Mexal integration built in the org and in no branch of this
+  repository.** **Nine Apex classes**, roughly **28,000 characters**, created
+  between **09:12 and 10:33 UTC** that morning by Aurel Mrruku, plus two `Order`
+  fields ([the build](notes/objects/The%20order%20to%20Mexal%20integration%20chain.md),
+  [the risk](notes/risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)).
+  🟢 **The chain implements the agreed sequence exactly** — Mark Running →
+  Anticipay (first order only) → Mexal Customer → Mexal Order. "First order" is
+  resolved by query, the Anticipay failure is non-blocking, and every step logs.
+  [The 11 September sequencing decision](notes/decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+  is built.
+  🟢 **[OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)
+  has its caller** — `updateForAccount`, the PUT, fires for an already-linked
+  Account. The block comment is gone.
+  🟢 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+  got its batch, its scheduler AND its watermark** — `MexalCustomerSyncBatch`,
+  `MexalCustomerSyncScheduler`, `MexalSyncCursorService`. The window it was
+  blocked on since 3 September is answered in code.
+  🟢 **`Integration_Configuration2__c` holds SIX rows, not zero** — all four
+  needed by exact name, plus two more. **Every "zero rows" line in this file
+  before today was stale**; the scaffolding note is superseded.
+  🔴 **Nothing is scheduled.** All **7** `CronTrigger` rows are Salesforce
+  platform jobs. OI-116 keeps its diagnosis: **a sync with no schedule** — but it
+  is now one `System.schedule` call, not a decision.
+  🔴 **The chain has never run.** All **30** Orders carry an empty
+  `Mexal_Integration_Status__c`; **2** Accounts have a Mexal code.
+  🔴 **A deploy from `DevMain` today would silently revert it.** The repository's
+  `OrderTriggerHandler` still calls `AnticipayOrderAutomation`; the org's calls
+  the Mexal chain. Nine classes would be orphaned.
+  🔴 **[OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+  was answered by building the opposite.** Agreed 3 September as a **lock**; the
+  org **pushes** admin edits to Mexal instead. Defensible, unminuted, and it
+  leaves two writers on the same fields with no conflict rule.
+  🔴 **Coverage: 0 covered, 4,737 uncovered, 0%** — up from 2,957 six days ago,
+  the steepest rise recorded. Last test run still 4 August (brief only).
+  🔴 **Two permission sets now reference credentials absent from the repo**, not
+  one — `Full_Permission` and `Integration_Management`. A clean deploy fails twice.
+  ⚠ **Unchanged:** 40 of 43 ticket-generating products still unmapped
+  ([OI-121](notes/items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)),
+  3 invitations still without a recipient, 15 Assets still without a QR.
 
 - 🟢🔴 **2026-09-11 — the Mexal integration started writing, and both pull
   requests were merged the same day.** **PR #39** merged 10:27 CEST, then
@@ -113,7 +154,7 @@ sign-off on 2026-08-06.
   `classificatore rete`** — only the customer does. That **contradicts the
   freeze-on-order commission rule** agreed 3 September. **Ask Mirko Merendi.**
   🟢 **The tranche has a Mexal mechanism at last** — instalments are `FT`
-  *evasioni* of named order rows on a date, not a due-date field, 🔴 and the order
+  _evasioni_ of named order rows on a date, not a due-date field, 🔴 and the order
   body carries **no per-line `data di scadenza`**, which is what PR #37 just built
   ([OI-50](notes/items/OI-50%20Tranche%20object.md)).
   🟢 **[OI-109](notes/items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)'s
@@ -142,7 +183,7 @@ sign-off on 2026-08-06.
   quote-born orders get one**; WooCommerce and hand-made orders still carry none,
   and **tranche payment aggregation is still the one genuinely unbuilt gap**.
   🟢 **The Opportunity lifecycle exists** — `Qualificato` → `In trattativa (Prev
-  inviato)` on quote creation, → `Chiusa/Vinta` when the Order hits `Incassato`,
+inviato)` on quote creation, → `Chiusa/Vinta` when the Order hits `Incassato`,
   with an `opportunityCustomPath` LWC. 🟢 **The five values match the register
   character for character** and the close-won rule is the register's own — the
   looser spelling in OI-59's table came from the 06/08 diagram and is the stale

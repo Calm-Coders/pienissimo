@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-11
+updated: 2026-09-14
 depends_on: [OI-58]
 blocks: [go-live]
 requirement: INT-01
@@ -144,3 +144,50 @@ overwritten silently. The persistence half shipped today. The lock did not.
 
 **What a person must still decide:** the sync window and watermark. Unchanged for
 nine days, and now the single blocker.
+
+## 2026-09-14 — the batch, the scheduler and the watermark all exist, in the org only
+
+The org-status-check against Pienissimo UAT found three classes created that
+morning at **09:44 UTC** that answer almost everything this row has asked for —
+and **none of them is in this repository**
+([the build](../objects/The%20order%20to%20Mexal%20integration%20chain.md),
+[the risk](../risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)):
+
+- `MexalCustomerSyncBatch` — the nightly batch itself, no longer a comment;
+- `MexalCustomerSyncScheduler` — its `Schedulable`;
+- `MexalSyncCursorService` — **the watermark**, the thing this row has been
+  blocked on since 3 September.
+
+🟢 **Four of the blockers this note has carried are cleared.** The read has a
+writer, the writer has a batch, the batch has a scheduler, and the delta has a
+cursor rather than a hardcoded window.
+
+🟢 **The configuration rows exist.** `Integration_Configuration2__c` holds **six
+rows**, not zero: `Mexal_Clienti_Ricerca`, `Mexal_Clienti_Creazione`,
+`Mexal_Clienti_Modifica`, `Mexal_Articoli_Ricerca`, `Mexal_Ordini_Creazione` and
+`Anticipay_Account_Check`. **All four rows this row said were needed by exact
+name are present.** The "zero rows, no owner" reading carried since 26 August is
+superseded — see
+[the scaffolding note](../objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md).
+
+🔴 **Nothing is scheduled.** The org holds **seven `CronTrigger` rows and every
+one is a Salesforce platform job** — comm sitemap, SRT, ReportType, Metalytics.
+`MexalCustomerSyncScheduler` has never been scheduled against them.
+
+**So the diagnosis of 11 September stands word for word: a sync with no
+schedule.** What has changed is that it is no longer blocked on a decision. The
+watermark exists in code. **Someone has to run `System.schedule` and choose the
+hour** — that is now the whole remaining task, and it is minutes of work.
+
+🔴 **Payload 2 — agent reassignment — is still not handled.** `cod_agente` is
+still not among the mapped fields, unchanged since 10 September.
+
+🔴 **The conflict with [OI-117](OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+is now live in both directions.** The org also gained
+`MexalCustomerUpdateQueueable`, which pushes Salesforce admin edits **out** to
+Mexal. This inbound batch writes the same fields **in**. Two writers, opposite
+directions, **no conflict rule and no minute**. The silent-overwrite failure this
+row has warned of since 3 September now has a second way to happen.
+
+**What a person must still decide:** the schedule hour, and which side wins when
+the nightly read and the outbound push disagree.

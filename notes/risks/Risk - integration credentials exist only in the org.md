@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-02
-updated: 2026-09-11
+updated: 2026-09-14
 depends_on: [OI-94, OI-102]
 blocks: [go-live]
 requirement: [INT-18, INT-19]
@@ -105,7 +105,8 @@ private, but git history is forever.
 ```xml
 <externalCredentialPrincipalAccesses>
     <enabled>true</enabled>
-    <externalCredentialPrincipal>Mexal_External_Credential-Mexal_Principal</externalCredentialPrincipal>
+    <externalCredentialPrincipal
+  >Mexal_External_Credential-Mexal_Principal</externalCredentialPrincipal>
 </externalCredentialPrincipalAccesses>
 ```
 
@@ -152,3 +153,28 @@ cheapest item on the current risk list and it now blocks the production path
 outright**, with UAT twelve days away and the production org
 (`pienissimo.my.salesforce.com`) provisioned since 3 September and never
 deployed to.
+
+## 2026-09-14 — a third credential, and a second undeployable permission set
+
+The org-status-check against Pienissimo UAT found the pattern widened on both
+sides.
+
+🔴 **Three named credentials are now org-only**, not two: `Anticipay`,
+`DocuSign` and **`Mexal`** (created 2026-09-10). `force-app/` still has **no
+`namedCredentials/` and no `externalCredentials/` directory at all**.
+
+🔴 **Two permission sets now reference an external credential principal that has
+no metadata in this repository**, not one:
+
+| Permission set           | References                                          |
+| ------------------------ | --------------------------------------------------- |
+| `Full_Permission`        | `Mexal_External_Credential-Mexal_Principal`         |
+| `Integration_Management` | `Anticipay_External_Credential-Anticipay Principal` |
+
+Both are on `DevMain`. **A clean deploy of this repository into an empty org
+fails twice**, not once — each permission set names a principal that the deploy
+never creates.
+
+**The fix is unchanged and still nobody's**: retrieve the three external
+credentials and named credentials into source, with their secrets left in the
+org. Until then the repository cannot rebuild the org it describes.

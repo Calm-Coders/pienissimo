@@ -40,7 +40,7 @@ Keep the twenty most recent entries here; archive older ones to
     this orders with no envelope, seven days after
     [OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md).
   - 🔴 **The unauthenticated community page now creates commercial records** — the
-    controller is unchanged, what it *causes* is not
+    controller is unchanged, what it _causes_ is not
     ([the risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)).
   - 🔴 **+729 uncovered lines**, estimate past 3,686, zero covered, last test run
     still 4 August. Brief only, per the standing instruction.
@@ -62,7 +62,7 @@ Keep the twenty most recent entries here; archive older ones to
 
 - **Next:** the Quote-state reconciliation needs **a human to name the canonical
   spelling** before anything moves; the trigger and the exact edit list are written
-  into the trace note's *"The register was deliberately not changed"* section.
+  into the trace note's _"The register was deliberately not changed"_ section.
   Then: ask about DocuSign vs the new order path — **ask, do not infer**;
   `org-status-check` is owed for an **eleventh** run and is now behind **two**
   merges.
@@ -2984,14 +2984,14 @@ Articoli` workbook is **hers**, sent from his mailbox.
   🟢 **The read-only guard was extended, not removed** — a second allow-list of
   exactly two write actions, separately validated, beside the untouched read one.
   Named Credential auth unchanged, the secret still out of the log. 🟢 `POST
-  /clienti` with `codice = '501.AUTO'` so **Mexal assigns the number**, read back
+/clienti` with `codice = '501.AUTO'` so **Mexal assigns the number**, read back
   from the response headers and written onto `Account.Codice_Cliente_Mexal__c`;
   🟢 the **duplicate `partita IVA` error is parsed at last**, returning the
   colliding customer's code.
   🟢🔴 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
   gains its DML** — partial-success `insert`/`update`, `Azienda` record type,
   ambiguous matches skipped — **but the nightly job is still commented out with
-  the identical blocker**. It moves from *a read, not a sync* to **a sync with no
+  the identical blocker**. It moves from _a read, not a sync_ to **a sync with no
   schedule**.
   🔴 **[OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)
   is built and uncalled**; 🔴
@@ -3020,7 +3020,7 @@ Articoli` workbook is **hers**, sent from his mailbox.
   day; (f) **chase Andrea Di Cicco for the filtered WooCommerce collection**,
   third day, and rotate the JWT.
 - **Watch:** ⚠ **Two findings written twenty-four hours ago were false by the time
-  this run started** — *"cannot write by construction"* and *"no DML anywhere"*.
+  this run started** — _"cannot write by construction"_ and _"no DML anywhere"_.
   Both are marked superseded in place. **Re-read the most recent build note
   against the code, not only the sources.** ⚠ **The `2` in
   `Integration_Configuration2__c` is permanent unless someone decides otherwise
@@ -3035,3 +3035,76 @@ Articoli` workbook is **hers**, sent from his mailbox.
   Fathom and the entire finding came from `git log --all` and two diffs. A sweep
   that treats yesterday's note as current state, on a project where merges land at
   18:05, reports the opposite of the truth.
+
+## 2026-09-14 — claude — org-status-check: full scope, reconciled and published
+
+**Org:** Pienissimo UAT, `a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`,
+partial sandbox, API 68.0, connected. **Repository:** `DevMain` at `cc3c571`,
+worktree clean at start, in sync with `origin/DevMain`. **Evidence collected
+2026-09-14 10:51Z.** Read-only: nothing deployed, no org data modified, no
+anonymous Apex, no tests run, no source-format retrieve into `force-app/`.
+
+**Method.** `org-status:snapshot:repo` (335 keys) and `:snapshot:org`
+(1,218 components, no unavailable types) then `:compare`; Tooling
+`FieldDefinition`, `FieldPermissions`, `ApexCodeCoverageAggregate`,
+`ApexClass.Body` and `ApexTrigger.Body` for all 76 unmanaged classes and
+triggers; `CronTrigger`, `AsyncApexJob`, `FlowDefinitionView`; targeted SOQL
+aggregates. Graphify (599 nodes) and Open Codebase Index (2,122 chunks) both
+ready and used only as leads. ⚠ **`npm run org-status:snapshot:org -- --target-org`
+loses the flag under PowerShell**; the script was run directly with `node`. Same
+Windows argument-forwarding issue recorded on 8 September.
+
+**The finding.** **Nine Apex classes implementing the entire order-to-Mexal
+integration exist in the org and in no branch** — created 09:12–10:33Z that
+morning by Aurel Mrruku, ~28,000 characters, plus `Order.Mexal_Integration_Status__c`
+and `Order.Mexal_Order_Number__c`. The chain is **correct**: Mark Running →
+Anticipay (first order only, resolved by query, non-blocking on failure) → Mexal
+Customer → Mexal Order. It builds
+[the 11 September sequencing decision](notes/decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+and supplies [OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)'s
+missing caller. **A deploy from `DevMain` reverts it** — the repository's
+`OrderTriggerHandler` still calls `AnticipayOrderAutomation` — and would orphan
+all nine.
+
+**Other findings.** `Integration_Configuration2__c` holds **6 rows**, so every
+"zero rows" claim since 26 August is withdrawn and
+[the scaffolding note](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)
+is `superseded`. **Nothing is scheduled** — all 7 `CronTrigger` rows are platform
+jobs — so OI-116 keeps its diagnosis but is now one `System.schedule` call.
+**OI-117 was answered by building the opposite**: the org pushes admin edits to
+Mexal instead of locking them, unminuted, leaving two writers on the same fields
+with no conflict rule. Coverage **0/4,737, 0%, 60 entries**, up from 2,957/42.
+Source drift **12 of 76 mismatched, 8 at token level**, up from 4. **Two**
+permission sets now reference credential principals absent from the repository.
+Repository-only is **zero** in the twelve kinds compared both ways. Unchanged:
+40 of 43 ticket products unmapped, 3 invitations without recipients, 0 of 15
+Assets with a QR, OI-119's hardcoded mailbox, zero project-authored Flows.
+
+**Written.** Two new notes —
+[the build](notes/objects/The%20order%20to%20Mexal%20integration%20chain.md) and
+[the risk](notes/risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md).
+Updated OI-116, OI-117, OI-125, the scaffolding note (superseded), the
+credentials risk, the coverage risk and the Notion mirror note. `build_state` in
+the register rewritten to `checked: 2026-09-14` with DIV-13…DIV-18, LIM-05,
+LIM-06 and the new built / not-built / out-of-source-control entries. `MAP.md`,
+`INDEX.md`, both `open-items` trackers (rows 116, 117, 125), `DEVELOPMENT-RECAP`
+**§36 EN + IT** with precedence lines extended, `STATUS.md` regenerated, and
+`site/index.html` re-derived.
+
+**Published.** Notion Status page **replaced whole** (it was twelve days stale
+and the 8 September run published nothing); re-fetched and verified — no
+mangling. Flows page: **every diagram unchanged, no state machine moved**;
+build-state callouts rewritten, new red callout on flow 8. Tracker: **25 rows
+added (`OI-110`–`OI-134`)**, 3 statuses and 1 owner corrected; now **95 rows,
+95 distinct refs, no missing `Note` URL**, matching `notes/items/` exactly.
+
+**Deliberate non-actions.** No Apex tests written or offered — coverage is
+measured only, per the standing instruction. Nothing retrieved into `force-app/`.
+No requirement text changed; the OI-117 divergence is **recorded, not resolved**.
+No commit, no push. The nine org-only classes were **not** retrieved — that is a
+write to the repository and belongs to a deliberate task.
+
+**Next step.** **Retrieve the nine Mexal classes, the two `Order` fields and the
+three org-edited classes onto a branch, before anything is deployed to this
+org.** Then schedule the nightly sync, and settle whether OI-117 is a lock or a
+two-way sync with Elisa Migliano.

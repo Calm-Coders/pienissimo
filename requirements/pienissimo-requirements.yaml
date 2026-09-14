@@ -2010,11 +2010,11 @@ acceptance_criteria:
 
 # =============================================================================
 build_state:
-  checked: 2026-09-02
-  supersedes: 2026-08-26
+  checked: 2026-09-14
+  supersedes: 2026-09-02
   org: a.mrruku@pienissimo.uat
   org_id: 00DMA000004nMMr2AM
-  repo_commit: 4a49376
+  repo_commit: cc3c571
   method: >-
     read-only; Metadata API list across 20 component types, Tooling
     FieldDefinition, FieldPermissions, ObjectPermissions and
@@ -2062,6 +2062,23 @@ build_state:
         through 2026-08-31, so the stored 0% measures NOTHING about current code.
         Read it as unmeasured, not as measured-at-zero. No test was run: the Apex
         suite is a separate task requested before the production deploy.
+    - id: LIM-05
+      issue: >-
+        The org inventory does not enumerate ListView, FlexiPage, StandardValueSet,
+        PathAssistant, DigitalExperience, EmailTemplate files, Site or Network. The
+        88 keys reported repository-only on 2026-09-14 are ALL of those kinds, so
+        they are UNVERIFIABLE, not absent. In the twelve kinds that ARE compared
+        both ways (apex-class, apex-trigger, custom-tab, field, layout, lwc,
+        object, permission-set, profile, quick-action, record-type,
+        validation-rule) repository-only is ZERO: everything in force-app is
+        deployed.
+    - id: LIM-06
+      issue: >-
+        LIM-04 said the stored 0% coverage measures nothing because no test had
+        run since 2026-08-04. That remains true on 2026-09-14 and the uncovered
+        LINE COUNT is still evidence: it is derived from compiled classes, not
+        from a test run, and it rose from 2,957 across 42 entries to 4,737 across
+        60. Read the percentage as unmeasured and the uncovered count as real.
   unmapped_observations: >-
     The quote state machine has no requirement id in this register; its authority
     is state_machines.quote. Entries below that observe it carry
@@ -2071,6 +2088,26 @@ build_state:
     entry text names a requirement directly (expiry date, day-2 alert) it now
     cites SAL-08 and SAL-09.
   built:
+    - {
+        component: "Order-to-Mexal queued chain in the ORG ONLY - OrderMexalIntegrationService and OrderMexalIntegrationQueueable run Mark Running -> Anticipay (first order only) -> Mexal Customer -> Mexal Order, implementing the 2026-09-11 sequencing decision; created 2026-09-14 09:12Z, absent from force-app at cc3c571",
+        refs: [INT-01, INT-05]
+      }
+    - {
+        component: "Mexal customer UPDATE (PUT) caller in the ORG ONLY - runMexalCustomerStep calls MexalCustomerCreateService.updateForAccount for an already-linked Account, closing the OI-125 caller gap; never executed, all 30 Orders carry an empty Mexal_Integration_Status__c",
+        refs: [INT-01]
+      }
+    - {
+        component: "Nightly Mexal anagrafica batch, scheduler and watermark in the ORG ONLY - MexalCustomerSyncBatch, MexalCustomerSyncScheduler, MexalSyncCursorService, created 2026-09-14 09:44Z; NOT scheduled, all 7 CronTrigger rows are Salesforce platform jobs",
+        refs: [INT-01]
+      }
+    - {
+        component: "Integration_Configuration2__c is CONFIGURED: 6 rows - Anticipay_Account_Check, Mexal_Clienti_Ricerca, Mexal_Clienti_Creazione, Mexal_Clienti_Modifica, Mexal_Articoli_Ricerca, Mexal_Ordini_Creazione. Supersedes every zero-rows entry through 2026-09-11. Integration_Log__c holds 85 rows (45 error, 40 not)",
+        refs: [INT-18, INT-19]
+      }
+    - {
+        component: "OrderItem tranche propagation has STARTED - 3 of 36 order lines carry Tranche__c, against 0 of 32 on 2026-09-08; 40 quote lines linked",
+        refs: [ORD-02, ORD-03]
+      }
     - {
         component: "BundleComponent__c junction with spread formulas and active trigger; 19 component records",
         refs: [BUN-03]
@@ -2137,6 +2174,18 @@ build_state:
       }
   not_built:
     - {
+        component: "No schedule for the nightly Mexal sync. MexalCustomerSyncScheduler exists as a class; the org holds 7 CronTrigger rows and every one is a Salesforce platform job. One System.schedule call is the whole remaining task",
+        refs: [INT-01]
+      }
+    - {
+        component: "The OI-117 administrative-field LOCK. No validation rule and no field-level enforcement exists. The org instead pushes admin edits OUT to Mexal (see DIV-14), which is the opposite of the 2026-09-03 agreement",
+        refs: [INT-01]
+      }
+    - {
+        component: "Edition mapping coverage - 43 ticket-generating products (Genera_Biglietto__c), only 3 carry an active Mappatura_Edizione__c row. 40 unmapped, unchanged since 2026-09-08",
+        refs: [BIG-02, BIG-04]
+      }
+    - {
         component: "The eleven Anticipay fields agreed 2026-09-01 — Account carries only Lead_Email__c, Nome_Locale__c and Partita_IVA__c. No PEC, none of the five legale-rappresentante fields, no representative address. Proven absent by Tooling FieldDefinition",
         refs: [INT-18]
       }
@@ -2173,6 +2222,36 @@ build_state:
         refs: [ORD-05, ORD-07, ORD-08, ORD-15]
       }
   divergent:
+    - {
+        id: DIV-13,
+        issue: "force-app OrderTriggerHandler.afterInsert calls AnticipayOrderAutomation.enqueueForFirstOrders; the ORG calls OrderMexalIntegrationService.enqueueForCreatedOrders. A deploy from DevMain silently REVERTS the Mexal chain and orphans nine org-only classes",
+        refs: [INT-01, INT-05]
+      }
+    - {
+        id: DIV-14,
+        issue: "OI-117 was agreed 2026-09-03 as a read-only LOCK on administrative fields once Codice_Cliente_Mexal__c is set. The org's AccountTriggerHandler.afterUpdate instead enqueues MexalCustomerUpdateQueueable to PUSH edits of Email__c, Phone, Partita_IVA__c and Name to Mexal. Opposite design, no minute, no decision note; the inbound nightly batch writes the same fields with no conflict rule",
+        refs: [INT-01]
+      }
+    - {
+        id: DIV-15,
+        issue: "Nine org-only Apex classes plus Order.Mexal_Integration_Status__c and Order.Mexal_Order_Number__c, roughly 28,000 characters created 2026-09-14 09:12-10:33Z by Aurel Mrruku. Largest body of unversioned work on the project; fourth instance of the org-only pattern",
+        refs: [INT-01, INT-05]
+      }
+    - {
+        id: DIV-16,
+        issue: "TWO permission sets now reference an external credential principal with no metadata in the repository - Full_Permission (Mexal_External_Credential-Mexal_Principal) and Integration_Management (Anticipay_External_Credential-Anticipay Principal). A clean deploy fails twice; force-app has no namedCredentials or externalCredentials directory",
+        refs: [INT-18, INT-19]
+      }
+    - {
+        id: DIV-17,
+        issue: "Apex body comparison of all 76 unmanaged classes and triggers: 27 equal, 12 mismatched. Eight differ at TOKEN level - ParticipantRegistrationController, EventInvitationService, OrderTriggerHandler, AccountTriggerHandler, MexalCustomerSearchService, MexalSearchCalloutService, MexalCustomerCreateService, AccountTrigger. Four differ only in formatting. Drift grew from 4 mismatches on 2026-09-08",
+        refs: [NFR-06]
+      }
+    - {
+        id: DIV-18,
+        issue: "AnticipayErrorNotificationService still addresses the hardcoded ROMI developer mailbox rather than a client administration role. Unchanged since 2026-09-08; org body identical to repository",
+        refs: [INT-18]
+      }
     - {
         id: DIV-08,
         issue: "Named credentials Anticipay and DocuSign exist ONLY in the org, as do the permission sets DocuSign, Full_Permission and Sales_User. Absent from force-app on every branch. Third instance of the org-only pattern after the Biglietto stack and WoocommerceOrderService; lost if the sandbox is refreshed",
@@ -2238,8 +2317,13 @@ build_state:
     components:
       - Anticipay (named credential)
       - DocuSign (named credential)
+      - Mexal (named credential, created 2026-09-10)
       - DocuSign / Full_Permission / Sales_User permission sets
       - one unidentifiable Flow, present 2026-08-28, absent 2026-09-02 (see DIV-10)
+      - "2026-09-14: OrderMexalIntegrationService, OrderMexalIntegrationQueueable, MexalOrderSendService, MexalHttpClient, MexalIntegrationLogger, MexalCustomerSyncBatch, MexalCustomerSyncScheduler, MexalSyncCursorService, MexalCustomerUpdateQueueable (9 Apex classes)"
+      - "2026-09-14: Order.Mexal_Integration_Status__c and Order.Mexal_Order_Number__c"
+      - "ContactTriggerHandler and ContactTrigger (2026-09-08), Account.Email_Contatto_Principale__c"
+      - anticipayAccountRefresh (LWC)
   lifecycle_evidence:
     checked: 2026-09-02
     assets: 5

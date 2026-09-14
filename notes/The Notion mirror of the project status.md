@@ -5,8 +5,8 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-24
-updated: 2026-09-02
-source: refreshed 2026-09-02 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status and Flows pages updated in place, 14 tracker rows added, 2 statuses corrected, all 70 rows verified against their notes
+updated: 2026-09-14
+source: refreshed 2026-09-14 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status page replaced whole, Flows build-state callouts rewritten, 25 tracker rows added, 3 statuses and 1 owner corrected, all 95 rows verified against their notes
 ---
 
 # The Notion mirror of the project status
@@ -198,3 +198,49 @@ a decision.
 documents and signatures, and Performance Plus contracts. The development recap
 names them as core flows, but none has an atomic note, so drawing them would
 mean inventing the detail. The page says so rather than leaving a silent gap.
+
+## 2026-09-14 — refreshed after the org-status-check, and the tracker is whole again
+
+**All three artifacts were refreshed** by the `org-status-check` run against the
+live Pienissimo UAT org. Identity was confirmed as `a.mrruku@romicompany.com`
+and every page was reached **by id**, never by title.
+
+**The Status page was replaced whole rather than patched.** It had gone twelve
+days stale — still dated 2 September, still saying go-live 6 October, still
+claiming zero configuration rows — and the 8 September run was report-only, so
+it published nothing. A whole-page replacement was used deliberately **because
+the stale-content trap above is exactly what small targeted edits cause**; the
+call was made without `allow_deleting_content`, so it would have failed rather
+than remove a child page, and it did not. Re-fetched afterwards: **no `****`
+mangling, no surviving contradictions.**
+
+**The tracker is now complete for the first time.** It held **70** rows against
+**95** item notes — everything from `OI-110` to `OI-134` had never been mirrored,
+twenty-five rows covering the whole Mexal, locale, marketing and go-live body of
+work written between 2 and 8 September. All twenty-five were added; the
+database now holds **95 rows, 95 distinct `Ref` values, and no row without a
+`Note` URL**. `DevMain` was verified in sync with `origin/DevMain` first, so
+every link resolves.
+
+**Three rows had drifted and were corrected** — `OI-76`, `OI-97` and `OI-109`
+all read `Open` against notes that read `resolved`; `OI-109` also carried the
+wrong owner (Andrea Parmeggiani, where the note says Elisa Migliano). That is
+the drift this note predicts: **it happens whenever a session updates a note
+without running the publish step**, and three of the twelve days since the last
+refresh produced it.
+
+**The Flows page keeps every diagram unchanged — no state machine moved.** Its
+build-state text did move, and substantially: flow 8's call sequence is now
+**built and org-only**, so a new red callout records the nine classes, the
+queued Anticipay → Mexal chain, and the fact that nothing has run and nothing is
+scheduled. The tranche callout records the first propagation the project has
+ever measured, 3 of 36 order lines. The zero-project-Flows callout was re-verified
+and restated: **66 active flows, every one Salesforce stock or a managed
+template**.
+
+⚠ **A counting convention changed and the page says so.** The tracker used to
+be the smaller view — 56 rows against ~86 tracker rows. It is now the **larger**
+one: 95 notes against roughly 86 numbered tracker rows, because the last three
+weeks produced notes faster than the client-facing tracker gained rows. **The
+two no longer correspond one to one**, and nobody should read a row count as a
+tracker count in either direction any more.

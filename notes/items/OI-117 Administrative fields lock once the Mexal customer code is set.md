@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-09-03
-updated: 2026-09-11
+updated: 2026-09-14
 depends_on: [OI-116]
 requirement: INT-01
 source: notes/meetings/2026-09-03 Data Model Parte 1.md
@@ -80,3 +80,54 @@ running nightly.
 **Still unowned.** The owner was inferred, never named, and this note has asked
 for that to be confirmed since 3 September. **Confirm it and schedule the rule
 before the nightly job is switched on, not after.**
+
+## 2026-09-14 — the org answered this row by building the opposite, and nobody minuted it
+
+The org-status-check against Pienissimo UAT found `AccountTriggerHandler`
+rewritten in the org that morning (**10:33 UTC**, org-only — it differs from the
+committed source) with a new `afterUpdate`:
+
+```apex
+if (!String.isBlank(accountRecord.Codice_Cliente_Mexal__c) &&
+    hasMexalUpdateTriggerFieldChanged(accountRecord, oldAccount)) {
+  accountIdsToSync.add(accountRecord.Id);
+}
+// ... System.enqueueJob(new MexalCustomerUpdateQueueable(accountIdsToSync));
+```
+
+The watched fields are `Email__c`, `Phone`, `Partita_IVA__c` and `Name`.
+
+⚠ **This row asked for a lock. What was built is a sync.** Once the Mexal code
+is set, an administrative edit on Salesforce is not refused — it is **pushed to
+Mexal**. The trigger condition is exactly the one this row specified;
+the response is the opposite of the one agreed.
+
+**It is a defensible design.** Keeping both systems in step is arguably better
+than freezing one, and it avoids needing an amministrazione principal that
+[does not exist in the org](#what-is-not-specified). But:
+
+- 🔴 **It was agreed as _Concordato_ on 3 September and changed in code on
+  14 September with no minute, no decision note and no client conversation.**
+  Elisa Migliano agreed to a read-only field set. That is not what the system
+  now does.
+- 🔴 **The silent-overwrite exposure is not closed, it is doubled.** The nightly
+  inbound batch
+  ([OI-116](OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md))
+  writes these fields **in**; this queueable writes them **out**. Two writers,
+  opposite directions, no conflict rule. A user edit and a Mexal edit in the same
+  night have no defined winner.
+- 🔴 **Commercial fields were the whole point of the boundary.** The session sorted
+  150 fields into four sections precisely so the lock would have an edge. The
+  four watched fields are not that boundary — `tipologia attivita` and its class
+  are untouched, which is correct, but nothing else was considered either.
+- 🔴 **None of it is in source control**
+  ([the risk](../risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)).
+  A deploy from `DevMain` reverts `AccountTriggerHandler` to a version with no
+  `afterUpdate` at all, silently removing the sync.
+
+**The row stays open and its question has changed.** It is no longer "when will
+the lock be built". It is: **is the lock still the agreed design, or has it been
+replaced by a two-way sync?** That is a client-facing question — Elisa Migliano
+agreed to the lock — and it needs a decision note either way.
+
+**Still unowned**, unchanged since 3 September.

@@ -2,7 +2,7 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **Precedence, newest first: §25 → §24 → §23 → §22 → §21 → §20 → §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.**
+> ⚠ **Precedence, newest first: §36 → §35 → §34 → §33 → §32 → §31 → §30 → §29 → §28 → §27 → §26 → §25 → §24 → §23 → §22 → §21 → §20 → §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.** §36 is the newest BUILD-STATE section (14/09, Pienissimo UAT); §17, §19, §22, §25, §31 and §36 are all build-state checks and the most recent wins on what **exists**, never on what was **agreed**.
 >
 > §17, §19, §22 and §25 are **build-state checks** against the Pienissimo UAT
 > org, on 25/08, 26/08, 31/08 and 02/09. Where one contradicts an earlier
@@ -3372,7 +3372,7 @@ wrapper reading `Integration_Configuration__c`.
 - 🔴 The agent-reassignment payload is unmapped; [#117](open-items.md)'s lock is
   untouched.
 - ⚠ **One mapping to check before merge:** `IBAN__c` prefers `banca_appoggio` over
-  the assembled IBAN, so a bank *name* may land in the IBAN field. Read from the
+  the assembled IBAN, so a bank _name_ may land in the IBAN field. Read from the
   code, not confirmed against a live response.
 
 **The rest of the commit.** 🟢 The **unpriced Italianisation decision of 03/09** is
@@ -3415,12 +3415,12 @@ It is the first readable statement of the Mexal contract, and it moves five rows
 - 🔴 **[#110](open-items.md) is answered negatively**: the `ordini-clienti` create
   body carries `sigla`, `serie`, `numero`, `cod_conto`, `data_documento` and five
   line arrays — **no `cod_agente`, no `zona`, no `classificatore rete`**. Only the
-  *customer* carries the agent code. **That contradicts the freeze-on-order
+  _customer_ carries the agent code. **That contradicts the freeze-on-order
   commission rule agreed 03/09**: a later reassignment would retro-attribute every
   past order. ⚠ A reading of one collection, not a statement from Mexal —
   **ask Mirko Merendi at Kreosoft.**
 - 🟢🔴 **[#50](open-items.md) — the tranche has a Mexal mechanism at last.** An
-  instalment is an **`FT` *evasione*** of named order rows on a date, with ten
+  instalment is an **`FT` _evasione_** of named order rows on a date, with ten
   back-references to the originating `OC`. 🔴 **But the order body carries no
   per-line `data di scadenza`** — exactly the field PR #37 propagated to
   `OrderItem` the day before. Unreconciled.
@@ -3433,8 +3433,8 @@ It is the first readable statement of the Mexal contract, and it moves five rows
 
 ### 34.4 🔴 Coverage: +496, and the first callout class on the brief
 
-| Class                       | New lines | Tests |
-| --------------------------- | --------- | ----- |
+| Class                        | New lines | Tests |
+| ---------------------------- | --------- | ----- |
 | `MexalSearchCalloutService`  | 260       | none  |
 | `MexalCustomerSearchService` | 236       | none  |
 
@@ -3450,7 +3450,7 @@ The 09/09 chase is **still unanswered**, and the offsite no longer explains it
 alone: **Andrea Di Cicco was active in the same DM at 14:44–14:47 CEST on
 10/09**, on other clients. Sabatino Rinaldi still holds the **pre-filter**
 collection, **the sixty-year JWT is still unrotated**, no test result has come
-back ([#102](open-items.md)), and **UAT begins in thirteen days**. ⚠ A *Mexal*
+back ([#102](open-items.md)), and **UAT begins in thirteen days**. ⚠ A _Mexal_
 collection did move that afternoon; it is not this one.
 
 ### 34.6 Everything else in the window
@@ -3566,3 +3566,137 @@ does not activate the flow. **The rule is recorded; it is not built.**
 run is still 4 August**, thirty-eight days and four merges ago — and the brief now
 includes a class that **creates records in an external ERP**. Recorded as brief;
 nothing acted on.
+
+## 36. Update 2026-09-14 — org check: the order-to-Mexal chain exists, in the org only
+
+> ⚠ **This section records BUILD STATE only.** It supersedes earlier sections'
+> claims about what **exists** in the org. It does **not** supersede any earlier
+> section's record of what was **agreed** — a decision stays decided even where
+> the implementation contradicts it.
+
+Read-only check of **Pienissimo UAT** (`00DMA000004nMMr2AM`, partial sandbox,
+API 68.0) on **2026-09-14, 10:51Z**, against `force-app/` on `DevMain` at
+`cc3c571`, clean worktree. **335** repository component keys compared with
+**1,218** org components. Method: Metadata API listing, Tooling
+`FieldDefinition` / `FieldPermissions` / `ObjectPermissions` /
+`ApexCodeCoverageAggregate` / `ApexClass.Body`, `CronTrigger`, `AsyncApexJob`,
+`FlowDefinitionView` and targeted SOQL aggregates. No test was run, nothing was
+deployed and no org data was modified.
+
+### 36.1 🔴 The headline: nine Apex classes exist in the org and in no branch
+
+Between **09:12 and 10:33 UTC that morning**, **nine Apex classes** totalling
+roughly **28,000 characters** were created in the org by Aurel Mrruku, together
+with two `Order` fields. **None of it is in this repository.**
+
+| Class                            | Created (UTC) | Role                               |
+| -------------------------------- | ------------- | ---------------------------------- |
+| `OrderMexalIntegrationService`   | 09:12         | Orchestrates the chain             |
+| `OrderMexalIntegrationQueueable` | 09:12         | One queueable per step             |
+| `MexalOrderSendService`          | 09:12         | Sends the order to Mexal           |
+| `MexalHttpClient`                | 09:44         | The transport                      |
+| `MexalIntegrationLogger`         | 09:44         | Writes `Integration_Log__c`        |
+| `MexalCustomerSyncBatch`         | 09:44         | The nightly anagrafica batch       |
+| `MexalCustomerSyncScheduler`     | 09:44         | Its `Schedulable`                  |
+| `MexalSyncCursorService`         | 09:44         | The sync watermark                 |
+| `MexalCustomerUpdateQueueable`   | 10:33         | Pushes an admin edit back to Mexal |
+
+`Order.Mexal_Integration_Status__c` and `Order.Mexal_Order_Number__c` are
+org-only with them. This is the **fourth** instance of the org-only pattern and
+by far the largest.
+
+### 36.2 🟢 What was built is right, and it answers three open rows
+
+`OrderTriggerHandler.afterInsert` in the org enqueues the chain, which runs one
+step per job:
+
+```
+Mark Running → [Anticipay, first order only] → Mexal Customer → Mexal Order
+```
+
+- **The 11/09 sequencing decision is built.** "First order" is resolved by
+  querying for earlier Orders on the Account, not assumed. The Anticipay step is
+  skipped when the Account is already consolidated and **its failure is
+  non-blocking** — it logs and Mexal continues.
+- **#125 has its caller.** An already-linked Account now takes
+  `updateForAccount` — **the PUT**. The block comment of 11/09 is gone. A
+  non-first order with no Mexal code throws rather than duplicating.
+- **#116 got its batch, its scheduler and its watermark.** `MexalSyncCursorService`
+  is the delta cursor that row has been blocked on since 03/09.
+- Failures are caught per step, logged with the step name, and **the remaining
+  orders still run**.
+
+### 36.3 🟢 The integration scaffolding is configured — every "zero rows" claim is withdrawn
+
+`Integration_Configuration2__c` holds **six rows**: `Anticipay_Account_Check`,
+`Mexal_Clienti_Ricerca`, `Mexal_Clienti_Creazione`, `Mexal_Clienti_Modifica`,
+`Mexal_Articoli_Ricerca`, `Mexal_Ordini_Creazione`. **All four that #116 said
+were needed by exact name are present.** `Integration_Log__c` holds **85** rows
+(45 error-flagged, 40 not). The org has **three** named credentials.
+
+**Every "zero rows" statement in §25 through §35 is superseded.** Row values were
+deliberately not read — they carry endpoints and principals.
+
+### 36.4 🔴 Nothing is scheduled, and nothing has run
+
+- The org holds **seven `CronTrigger` rows and every one is a Salesforce platform
+  job**. `MexalCustomerSyncScheduler` has never been scheduled. **#116 keeps its
+  diagnosis — a sync with no schedule — but it is now one `System.schedule`
+  call, not a decision.**
+- **All 30 Orders carry an empty `Mexal_Integration_Status__c`** and no
+  `OrderMexalIntegrationQueueable` appears in seven days of `AsyncApexJob`. Only
+  `MexalCustomerUpdateQueueable` has run, **once**. **Two** Accounts have a Mexal
+  code.
+
+### 36.5 🔴 A deploy from `DevMain` would silently revert the chain
+
+The repository's `OrderTriggerHandler.afterInsert` calls
+`AnticipayOrderAutomation.enqueueForFirstOrders`; the org's calls
+`OrderMexalIntegrationService.enqueueForCreatedOrders`. **Deploying `DevMain`
+into this org today reverts the chain to the old behaviour and orphans nine
+classes.** Three repository classes were also edited in the org on top of it —
+`MexalCustomerCreateService` was repointed to `MexalHttpClient`, a class that
+does not exist in git.
+
+### 36.6 🔴 #117 was answered by building the opposite
+
+`AccountTriggerHandler.afterUpdate` in the org watches `Email__c`, `Phone`,
+`Partita_IVA__c` and `Name` on an Account carrying a Mexal code and **pushes the
+edit to Mexal**. #117 was recorded as _Concordato_ on 03/09 as a **read-only
+lock**. The trigger condition matches; the response is the opposite. **No minute,
+no decision note.** The silent-overwrite exposure is **doubled, not closed**:
+the inbound nightly batch and this outbound push write the same fields with no
+conflict rule.
+
+### 36.7 🔴 Source drift has more than doubled
+
+All **76** unmanaged classes and triggers were body-compared: **27 equal, 12
+mismatched** — against 4 mismatches on 08/09. **Eight differ at token level**:
+`ParticipantRegistrationController`, `EventInvitationService`,
+`OrderTriggerHandler`, `AccountTriggerHandler`, `MexalCustomerSearchService`,
+`MexalSearchCalloutService`, `MexalCustomerCreateService`, `AccountTrigger`.
+Four differ only in formatting. **Repository-only is zero** in the twelve kinds
+compared both ways: everything in `force-app/` is deployed.
+
+### 36.8 🔴 Two permission sets now break a clean deploy
+
+`Full_Permission` grants `Mexal_External_Credential-Mexal_Principal` and
+`Integration_Management` grants `Anticipay_External_Credential-Anticipay
+Principal`. `force-app/` has **no `namedCredentials/` and no
+`externalCredentials/` directory**. A clean deploy fails **twice**.
+
+### 36.9 🔴 Coverage
+
+`ApexCodeCoverageAggregate`: **0 covered, 4,737 uncovered, 0%, 60 entries** — up
+from **2,957 across 42** on 08/09. **+1,780 uncovered lines in six days**, the
+steepest rise recorded, and the new members are callout classes that write to an
+external ERP. Last test run still **4 August**. Recorded as brief; nothing acted
+on.
+
+### 36.10 ⚠ Unchanged since 08/09
+
+**43** ticket-generating products, **3** with an active edition mapping — **40
+unmapped** (#121). **3** invitations, all Pending/Ready, **all without a
+recipient**. **15** Assets, **0** with a QR id. `AnticipayErrorNotificationService`
+still addresses a hardcoded ROMI developer mailbox (#119). **Zero project-authored
+Flows** — all 66 active flows are Salesforce stock or managed templates.
