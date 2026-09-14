@@ -191,3 +191,43 @@ row has warned of since 3 September now has a second way to happen.
 
 **What a person must still decide:** the schedule hour, and which side wins when
 the nightly read and the outbound push disagree.
+
+## 2026-09-14 evening — the batch reaches source control, and gains a sibling
+
+`e06a1b4` (Anita Aga, 18:05 CEST, **PR #43, open and unmerged**) puts the three
+classes this row depends on into `force-app/` for the first time:
+`MexalCustomerSyncBatch`, `MexalCustomerSyncScheduler` and
+`MexalSyncCursorService`. Until tonight they existed only in the org
+([the risk](../risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)).
+
+🟢 **The watermark now has storage.** Four fields were added to
+`Integration_Configuration2__c`: `Last_Successful_Sync__c` (DateTime),
+`Last_Sync_Status__c`, `Last_Sync_Error__c` and `Initial_Sync_Lookback_Hours__c`
+(Number). `MexalSyncCursorService.getLastSuccessfulSync` reads the first and falls
+back to the lookback hours on a cold start, and `markSuccessful` / `markFailed`
+write the cursor per action name. **The delta window this row has been blocked on
+since 3 September is a configuration row, not a decision.**
+
+🟢 **The conflict question is half answered.** `AccountTriggerHandler` gained
+`setBypassMexalCustomerUpdate`, and `MexalCustomerSearchService` sets it around
+the inbound sync's DML — so the nightly read **cannot** bounce back out through
+`MexalCustomerUpdateQueueable`. The echo loop is closed; see
+[OI-117](OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md).
+⚠ What is still undecided is the **substantive** winner: if a user edits `Phone`
+at 17:00 and Mexal holds a different value at 02:00, the inbound batch overwrites
+the user silently. The guard prevents a loop, not a loss.
+
+🟢 **A second sync arrived with it** — `MexalArticleSyncBatch` and
+`MexalArticleSyncService` (534 lines), action `Mexal_Articoli_Ricerca`, upserting
+Mexal articles onto `Product2` by `External_Product_Code__c`
+([the build](../objects/The%20Mexal%20article%20sync%20to%20Product2.md)). It
+shares this row's cursor service, so the same schedule question applies to it.
+
+🔴 **Nothing is scheduled, and that is unchanged.** Committing a `Schedulable`
+does not schedule it. The morning org check found all seven `CronTrigger` rows to
+be Salesforce platform jobs, and no source commit can alter that. **The remaining
+task is still one `System.schedule` call and one chosen hour** — now for two
+batches rather than one.
+
+🔴 **Payload 2 — agent reassignment — is still not handled.** `cod_agente`
+remains unmapped, unchanged since 10 September.

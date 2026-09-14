@@ -100,3 +100,32 @@ step — but **it is not the design that was agreed on 3 September, and no minut
 records the change**. It also does not remove the silent-overwrite exposure
 OI-117 exists for: the nightly inbound batch and this outbound push now write
 the same fields in opposite directions, and no conflict rule has been chosen.
+
+## 2026-09-14 evening — the chain reaches source control
+
+`e06a1b4` (Anita Aga, 18:05 CEST, **PR #43 — open, unmerged, no description**)
+commits this chain into `force-app/` for the first time: eight of the nine
+classes, both `Order` fields, and the rewritten `OrderTriggerHandler.afterInsert`
+that calls `OrderMexalIntegrationService.enqueueForCreatedOrders`.
+`AnticipayOrderAutomation.cls` is deleted.
+
+Three things arrived with it that the morning org reading did not contain:
+
+- 🟢 **The [OI-117](../items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+  lock** — an active `Lock_Mexal_Synced_Admin_Fields` validation rule on Account.
+- 🟢 **A re-entrancy guard** — `AccountTriggerHandler.setBypassMexalCustomerUpdate`,
+  set by `MexalCustomerSearchService` around the inbound sync's DML, so the
+  nightly read cannot bounce back out through the outbound push.
+- 🟢 **An article sync sharing the same cursor service**
+  ([the build](The%20Mexal%20article%20sync%20to%20Product2.md)).
+
+🔴 **`MexalHttpClient` is neither committed nor referenced.** The org holds it and
+`MexalCustomerCreateService` was repointed onto it that morning; the committed
+class names it nowhere. **What landed is a reconciled version, not a raw
+retrieve** — ⚠ inferred from two records, with **no org inspection tonight**. The
+next `org-status-check` should establish whether an orphaned `MexalHttpClient` is
+still live in UAT.
+
+🔴 **Still never executed.** The 14/09 org check found all 30 Orders carrying an
+empty `Mexal_Integration_Status__c`. Committing the chain does not run it, and
+**nothing is scheduled**.

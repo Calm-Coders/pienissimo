@@ -184,3 +184,39 @@ earlier running estimate; recorded as measured.
 
 **Brief only, as this row has been since it opened. No test class was written,
 proposed or scheduled.**
+
+## 2026-09-14 evening — the brief grows by another 2,057 lines
+
+`e06a1b4` (PR #43, open) adds **40 files, +2,057 / −143** to `DevAnita`, of which
+the Apex is eight new classes and five modified ones. The classes now in the brief
+for the first time:
+
+| Class                            | New lines | Why it matters to the suite                       |
+| -------------------------------- | --------- | -------------------------------------------------- |
+| `MexalArticleSyncService`        | 534       | upserts `Product2` from an external system         |
+| `OrderMexalIntegrationService`   | 270       | the order → Mexal orchestration entry point        |
+| `MexalOrderSendService`          | 291       | **creates orders in the live ERP**                 |
+| `OrderMexalIntegrationQueueable` | 130       | async chain, needs `Test.startTest` discipline     |
+| `MexalArticleSyncBatch`          | 110       | `Database.Batchable` + `AllowsCallouts`            |
+| `MexalCustomerSyncBatch`         | 107       | batch, callouts, partial-success DML               |
+| `MexalSyncCursorService`         | 89        | watermark state — needs its own boundary cases     |
+| `MexalCustomerUpdateQueueable`   | 38        | outbound push on Account edits                     |
+| `MexalIntegrationLogger`         | 40        | logging used by every branch above                 |
+
+`AnticipayOrderAutomation` (63 lines) was **deleted**, and
+`AccountTriggerHandler`, `AccountTrigger`, `OrderTriggerHandler`,
+`MexalCustomerCreateService`, `MexalCustomerSearchService` and
+`MexalSearchCalloutService` were modified.
+
+🔴 **The suite now needs `HttpCalloutMock` coverage for two batchables, two
+queueables and a trigger-driven async path**, and an Account validation rule
+(`Lock_Mexal_Synced_Admin_Fields`) that will **cause existing tests to fail** if
+any of them updates an Account carrying a Mexal code as a non-admin user. That is
+a new, specific hazard for whoever writes the suite.
+
+🔴 **Last actual test run is still 2026-08-04.** The morning org check measured
+**0 covered / 4,737 uncovered / 0%**; this commit is not yet in that figure.
+
+**Brief only.** Per the standing instruction, no test class was written, proposed
+or scaffolded in this run. Recorded so the suite task has a current inventory when
+Aurel Mrruku asks for it.

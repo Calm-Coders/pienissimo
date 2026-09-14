@@ -10,6 +10,78 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-14 — claude — nightly requirements-check: the org-only chain reached source control, with OI-117's lock
+
+- **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark
+  **2026-09-11T22:00Z**, the `external_watermark` of
+  [the 11/09 trace](notes/traces/Source%20trace%202026-09-11.md), which is the
+  newest note in `notes/traces/` by `updated:`. **The window is three days** —
+  12 and 13 September have no trace note and no JOURNAL entry, so whether a run
+  fired on those days cannot be established from the repository; nothing inside
+  the window was assumed held. New trace:
+  [Source trace 2026-09-14](notes/traces/Source%20trace%202026-09-14.md).
+
+- **🔴 Read this before trusting the next watermark — it is split.** **Gmail was
+  unreachable this run**: the MCP server returned _"requires re-authorization
+  (token expired)"_ on both queries and **zero mail queries ran**. The trace
+  therefore carries `external_watermark: 2026-09-14T22:00Z` **and**
+  `mail_watermark: 2026-09-11T22:00Z`. **Do not collapse them** — mail is where
+  the go-live change, the Fase 2 perimeter and the plan deck all arrived, and
+  three days of it are unread. **A human must reconnect the connector** (claude.ai
+  → Settings → Connectors); a session cannot.
+
+- **State — the headline.** **`e06a1b4`** (Anita Aga, 18:05 CEST, `DevAnita`) —
+  **PR #43, opened 16:06Z, OPEN and unmerged**: 40 files, **+2,057 / −143**.
+  Seven hours after the morning org-status-check reported the whole order-to-Mexal
+  integration as org-only, **the retrieve happened**.
+  - 🟢 **Eight of the nine org-only classes, both `Order` fields, and a rewritten
+    `OrderTriggerHandler`** calling the Mexal chain; `AnticipayOrderAutomation`
+    deleted. The "a `DevMain` deploy silently reverts the chain" failure ends when
+    PR #43 merges — **not before**.
+  - 🟢 **[OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)'s
+    lock exists** — active `Lock_Mexal_Synced_Admin_Fields` on thirteen fields —
+    **and** a re-entrancy guard (`setBypassMexalCustomerUpdate`) closing the echo
+    loop with the inbound sync.
+  - 🟢 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+    has watermark storage** (four `Integration_Configuration2__c` fields) and a
+    twin, an [article sync onto `Product2`](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+  - 🟢 **`namedCredentials/` exists at last**, `Mexal` + `Anticipay`, **with the
+    secrets left in the org as merge-field references**. `DocuSign` still org-only.
+  - 🔴 **Still nothing scheduled**; **`MexalHttpClient` is in neither the commit
+    nor any reference in it** while the org has it; **no description, no review**
+    on PR #43; **+2,057 uncovered lines** (brief only).
+
+- **⚠ The morning org check was superseded by the evening, and the record now says
+  so — do not reinstate the first reading.** It concluded OI-117 had been
+  "answered by building the opposite", a push instead of a lock. **Both were
+  built.** That was true of the org at 10:51Z and false of the project by 18:05.
+
+- **State — the second finding.** Slack DM Aurel Mrruku ↔ Andrea Di Cicco, 14/09:
+  the Mexal customer **PUT was executed from Salesforce and worked** (12:07:44),
+  returns **204 with no body** (data in the headers), and **there is no PATCH**
+  (_"Non c'è la patch"_, 15:18:38) — so every update is a full-body replace and
+  Aurel's own objection about Mexal's auto-populated fields is unanswered
+  ([OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)).
+  🔑 **It ran against Mexal production** — _"ricordati che è sempre produzione"_,
+  after a customer record had been created there from Salesforce
+  ([new risk](notes/risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md)).
+  And _"per la creazione di un ordine chi devo avvisare?"_ went unanswered — new
+  [OI-135](notes/items/OI-135%20Who%20must%20be%20told%20when%20Salesforce%20starts%20creating%20Mexal%20orders.md).
+
+- **Next:** the **schedule hour** is now the whole of OI-116 and it covers two
+  batches — but **do not switch it on against production** until the Mexal
+  test-environment question is answered. Then: OI-117's principal is a literal
+  profile name, and the lock covers thirteen fields while the push covers four —
+  nine can still diverge silently. **Ask Kreosoft OI-110 and OI-135 together**;
+  same counterpart, five days unasked.
+
+- **Watch:** the register was **not** touched and no requirement changed; the
+  11/09 pre-committed trigger **fired but its premise failed** — the lock now
+  exists — and is **re-armed in sharper form** in the trace. **The decision note
+  edited by `e06a1b4` was deliberately not touched on `DevMain`** to avoid a merge
+  conflict with PR #43. `MAP.md` is still far over its 5 KB budget and this run
+  added to it, fifth consecutive flag.
+
 ## 2026-09-09 — claude — nightly requirements-check: PR #37 built the commercial process automation
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository across **the whole

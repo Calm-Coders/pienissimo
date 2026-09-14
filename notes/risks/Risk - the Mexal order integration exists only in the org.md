@@ -1,7 +1,7 @@
 ---
 id: risk-mexal-chain-org-only
 type: risk
-status: open
+status: in-progress
 severity: high
 owner: Aurel Mrruku
 org: ROMI
@@ -63,3 +63,48 @@ between `force-app/` and the org grows and the retrieve gets harder to review.
 
 ⚠ **Do not deploy `DevMain` to this org before the retrieve.** That is the
 specific action that destroys the work.
+
+## 2026-09-14 evening — the retrieve happened, on a branch, seven hours later
+
+`e06a1b4` (Anita Aga, pushed 18:05 CEST to `DevAnita`, **PR #43 opened 16:06Z and
+still open**) is the retrieve this risk asked for. **40 files, +2,057 / −143.**
+
+🟢 **Eight of the nine org-only classes are now in `force-app/`** —
+`OrderMexalIntegrationService`, `OrderMexalIntegrationQueueable`,
+`MexalOrderSendService`, `MexalCustomerSyncBatch`, `MexalCustomerSyncScheduler`,
+`MexalSyncCursorService`, `MexalCustomerUpdateQueueable`, `MexalIntegrationLogger`
+— together with `Order.Mexal_Integration_Status__c` and
+`Order.Mexal_Order_Number__c`.
+
+🟢 **The contradiction is resolved in the right direction.**
+`OrderTriggerHandler.afterInsert` now calls
+`OrderMexalIntegrationService.enqueueForCreatedOrders`, and
+`AnticipayOrderAutomation.cls` is **deleted**. The "a deploy from `DevMain`
+silently reverts the chain" failure mode ends when this merges.
+
+🟢 **More arrived than was org-only this morning** — an active Account validation
+rule ([OI-117](../items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)'s
+lock), a second batch pair for articles, four watermark fields on
+`Integration_Configuration2__c`, and both named credentials
+([the credentials risk](Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
+
+### What this does not close
+
+- 🔴 **`MexalHttpClient` is in neither the commit nor any reference in it.** The
+  morning check recorded that class in the org and recorded
+  `MexalCustomerCreateService` repointed onto it. The committed
+  `MexalCustomerCreateService` names no `MexalHttpClient` at all, so **what was
+  committed is not byte-identical to what is running** — it is a reconciled
+  version, not a raw retrieve. ⚠ Inferred by comparing the 14/09 org record with
+  this commit; **the org was not re-opened tonight** and the next
+  `org-status-check` should confirm whether an orphaned `MexalHttpClient` is still
+  live in UAT.
+- 🔴 **It is unmerged.** `DevMain` at `dc0c824` still carries the old
+  `OrderTriggerHandler` and none of the nine classes. **Until PR #43 merges, every
+  sentence of this risk still holds for `DevMain`.**
+- 🔴 **No review.** PR #43 was opened 53 seconds after the push, with the title
+  "Dev anita" and no description — the third consecutive Mexal PR with no
+  description. It is, at least, the first not merged within seven minutes.
+
+**Status moves to in-progress.** It closes when PR #43 merges and an
+`org-status-check` confirms `force-app/` and the org agree.

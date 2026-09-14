@@ -427,3 +427,25 @@ org-only today — they cannot be tested from a checkout until they are retrieve
 Coverage remains **gating for production** and, per the standing user decision,
 **not a blocker on Fase 1 feature work**. No tests were written, offered or run
 by this check; the figure above is the stored measurement.
+
+## 2026-09-14 evening — +2,057 lines on an open PR, none of it covered
+
+`e06a1b4` (PR #43, open and unmerged) adds **eight Apex classes and modifies six
+more**, +2,057 / −143 across 40 files. The morning org check measured **0 covered
+/ 4,737 uncovered / 0%** — the steepest rise recorded — and **this commit is on
+top of that figure**, not inside it.
+
+Two things make the gap qualitatively worse rather than only larger:
+
+- 🔴 **The uncovered surface now includes two `Database.Batchable` classes with
+  `AllowsCallouts`, two `Queueable` chains and a trigger-driven async path.**
+  These are the hardest things in Apex to cover, and they are the last to be
+  written.
+- 🔴 **`MexalOrderSendService` creates orders in Pienissimo's live ERP**
+  ([the risk](Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md)).
+  Running an uncovered write path against production is a different class of
+  exposure from running one against sandbox data.
+
+**Unchanged:** the 75% production floor cannot be evidenced, the last test run is
+**2026-08-04**, and **UAT opens on 23 September — nine days away.** Recorded as
+brief only; no test was written or offered.

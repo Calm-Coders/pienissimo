@@ -178,3 +178,45 @@ never creates.
 **The fix is unchanged and still nobody's**: retrieve the three external
 credentials and named credentials into source, with their secrets left in the
 org. Until then the repository cannot rebuild the org it describes.
+
+## 2026-09-14 evening — two of the three land in source, with the secrets left behind
+
+`e06a1b4` (PR #43, open and unmerged) creates the two directories this risk has
+asked for since 2 September:
+
+| New file                                                              | Kind                |
+| --------------------------------------------------------------------- | ------------------- |
+| `namedCredentials/Mexal.namedCredential-meta.xml`                     | Named Credential    |
+| `namedCredentials/Anticipay.namedCredential-meta.xml`                 | Named Credential    |
+| `externalCredentials/Mexal_External_Credential...-meta.xml`           | External Credential |
+| `externalCredentials/Anticipay_External_Credential...-meta.xml`       | External Credential |
+
+🟢 **It is done correctly.** Both external credentials declare their auth header
+as a **merge-field reference** — `$Credential.<credential>.<parameter>` — so the
+header is assembled at call time from a value held in the org. **No token, no
+password and no bearer value entered the repository**, which is exactly the shape
+this risk asked for: the metadata in source, the secret in the org.
+
+🟢 **`Full_Permission` is no longer undeployable.** The same commit extends the
+permission set alongside the credential metadata it references, so the principal
+the deploy needs is now created by the deploy.
+
+### What is still open
+
+- 🔴 **`DocuSign` is still org-only.** Two of the three named credentials are now
+  in source; the third is not, and it is the one the signature-to-QR chain
+  depends on.
+- 🔴 **`Integration_Management` was not touched.** It still grants
+  `Anticipay_External_Credential-Anticipay Principal`; the external credential
+  that defines that principal now exists in source, so the second deploy failure
+  should resolve with it — ⚠ **unverified, no deploy was attempted.**
+- 🔴 **None of it is on `DevMain`.** PR #43 is open. A clean deploy of `DevMain`
+  today still fails.
+- ⚠ The Mexal auth header carries a literal `Dominio=PIENISSIMO` and the endpoints
+  `https://services.passepartout.cloud` and `https://romi.pienissimo.com` are now
+  in source. Those are endpoint and tenant identifiers, not secrets, and are
+  already in the record; **the Passepartout token itself is not in the
+  repository and must never be**
+  ([the plaintext-circulation risk](Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+
+**Severity drops from high to medium** once PR #43 merges. Until then, unchanged.

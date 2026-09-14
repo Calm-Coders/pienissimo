@@ -3869,3 +3869,99 @@ destinatario**. **15** Asset, **0** con QR id. `AnticipayErrorNotificationServic
 indirizza ancora una casella di sviluppo ROMI hardcoded (#119). **Nessun Flow
 scritto dal progetto**: tutti i 66 flow attivi sono standard Salesforce o
 template gestiti.
+
+## 37. Aggiornamento 14/09/2026 (sera) — la catena che esisteva solo nell'org arriva in source control, insieme al blocco
+
+Sette ore dopo che la verifica org del mattino aveva segnalato l'intera
+integrazione ordine-Mexal presente nell'org e in nessun branch, **`e06a1b4`**
+(Anita Aga, push alle 18:05 CEST su `DevAnita`) l'ha portata in source control.
+**La PR #43 è stata aperta alle 16:06Z ed è aperta e non mergiata** alla data di
+questa verifica. **40 file, +2.057 / −143.**
+
+Letto solo dal commit. **L'org non è stata aperta questa sera**: ogni affermazione
+qui sotto è evidenza di repository, salvo dove cita la verifica del mattino.
+
+### 37.1 🟢 Otto delle nove classi presenti solo nell'org sono ora committate
+
+`OrderMexalIntegrationService` · `OrderMexalIntegrationQueueable` ·
+`MexalOrderSendService` · `MexalCustomerSyncBatch` · `MexalCustomerSyncScheduler` ·
+`MexalSyncCursorService` · `MexalCustomerUpdateQueueable` ·
+`MexalIntegrationLogger` — più `Order.Mexal_Integration_Status__c` e
+`Order.Mexal_Order_Number__c`.
+
+### 37.2 🟢 Il repository non contraddice più l'org
+
+`OrderTriggerHandler.afterInsert` chiama ora
+`OrderMexalIntegrationService.enqueueForCreatedOrders` e
+`AnticipayOrderAutomation.cls` è **eliminata**. Il rischio «un deploy da `DevMain`
+riporta indietro la catena e lascia orfane nove classi» finisce quando la PR #43
+viene mergiata — e **non prima**.
+
+### 37.3 🟢 Il blocco di OI-117 esiste, e con esso una regola di conflitto
+
+Una regola di validazione **attiva** su Account, `Lock_Mexal_Synced_Admin_Fields`,
+rifiuta tredici campi amministrativi agli utenti non amministratori una volta
+valorizzato `Codice_Cliente_Mexal__c`, con un messaggio in italiano che rimanda
+all'amministrazione. I campi commerciali restano fuori, come richiesto dalla
+sessione del 3 settembre.
+
+Separatamente, `AccountTriggerHandler.setBypassMexalCustomerUpdate` è un flag di
+soppressione impostato da `MexalCustomerSearchService` attorno alla DML della
+sincronizzazione in entrata: la lettura notturna **non può** rimbalzare in uscita
+attraverso la push. Il ciclo di eco è chiuso.
+
+🔴 **Restano due lacune.** Il principal è `$Profile.Name <> "System
+Administrator"` — un nome di profilo letterale, non il raggruppamento
+amministrazione richiesto dalla sessione. E **il blocco copre tredici campi
+mentre la push ne copre quattro**: un amministratore che modifica
+`Codice_Fiscale__c`, `PEC__c`, `Codice_Destinatario_SDI__c` o l'indirizzo di
+fatturazione cambia Salesforce e non Mexal, in silenzio.
+
+### 37.4 🟢 Il watermark di OI-116 ha una memoria, e un gemello per gli articoli
+
+Quattro campi su `Integration_Configuration2__c` — `Last_Successful_Sync__c`,
+`Last_Sync_Status__c`, `Last_Sync_Error__c`, `Initial_Sync_Lookback_Hours__c`.
+`MexalSyncCursorService` legge il primo e ripiega sulle ore di lookback a freddo.
+**La finestra di sincronizzazione non specificata dal 3 settembre è ora una riga
+di configurazione.**
+
+Con esso sono arrivati `MexalArticleSyncBatch` e `MexalArticleSyncService` (534
+righe), azione `Mexal_Articoli_Ricerca`, che fanno upsert degli articoli Mexal su
+`Product2` per `External_Product_Code__c` e **scartano — senza fondere** — un
+codice che collide con un prodotto non Item. 🔴 **Non è la mappatura edizioni**:
+40 dei 43 prodotti che generano biglietti restano non mappati (#121).
+
+🔴 **Nulla è schedulato.** Committare uno `Schedulable` non lo schedula.
+
+### 37.5 🟢 Le named credential arrivano in source, senza i loro segreti
+
+`namedCredentials/Mexal` e `Anticipay`, e le due external credential. Gli header
+di autenticazione sono **riferimenti a merge field**
+(`$Credential.<nome>.<parametro>`): il token resta nell'org — esattamente la forma
+che il rischio chiedeva. 🔴 **`DocuSign` è ancora solo nell'org**, e nulla di
+tutto questo è su `DevMain`.
+
+### 37.6 🟢 La PUT è stata eseguita contro Mexal, e la PATCH non esiste
+
+DM Slack, 14/09: Aurel Mrruku ha eseguito un aggiornamento cliente **da
+Salesforce** ed è andato a buon fine (12:07:44); `PUT /clienti/{codice}`
+restituisce **204 No Content** con i dati utili negli header; e Andrea Di Cicco ha
+confermato alle 15:18:38 che **la PATCH non esiste**. 🔴 L'obiezione dello stesso
+Aurel — una PUT a corpo pieno può sovrascrivere i campi che Mexal compila da sé —
+**resta senza risposta**.
+
+🔴 **Il test è stato eseguito su Mexal in produzione.** _"ricordati che è sempre
+produzione"_ (Andrea Di Cicco, 12:07:03), dopo che Aurel aveva già creato lì un
+record cliente da Salesforce. In tutto questo record non esiste alcun ambiente di
+test Mexal.
+
+### 37.7 🔴 Ciò che il commit non risolve
+
+`MexalHttpClient` **non è committata né referenziata** in nessun punto del diff,
+mentre la verifica del mattino l'aveva trovata nell'org con
+`MexalCustomerCreateService` ripuntata su di essa. Quello che è arrivato è una
+versione **riconciliata**, non un retrieve grezzo — ⚠ dedotto da due registrazioni,
+non verificato contro l'org. La PR #43 non ha **né descrizione né review**, terza
+PR Mexal consecutiva. E la **copertura**: +2.057 righe sopra lo 0 coperte / 4.737
+non coperte / 0% del mattino, ora comprensive di due batchable, due queueable e un
+percorso asincrono guidato da trigger. Solo registrazione.

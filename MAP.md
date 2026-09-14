@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-14 (org-status-check against Pienissimo UAT: the order-to-Mexal chain exists, in the org only) · Source of record: [notes/](notes/)
+Last updated: 2026-09-14 (nightly requirements-check: the org-only chain reached source control on an open PR) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,55 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🟢🔴 **2026-09-14 evening — the whole org-only chain reached source control
+  seven hours later, and brought the missing lock with it.** **`e06a1b4`**
+  (Anita Aga, 18:05 CEST, `DevAnita`) — **PR #43, open and unmerged**: **40 files,
+  +2,057 / −143**
+  ([the build](notes/objects/The%20order%20to%20Mexal%20integration%20chain.md),
+  [the risk](notes/risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)).
+  🟢 **Eight of the nine org-only classes, both `Order` fields, and a rewritten
+  `OrderTriggerHandler` that calls the Mexal chain** — `AnticipayOrderAutomation`
+  deleted. The "a `DevMain` deploy silently reverts the chain" failure ends when
+  this merges.
+  🟢 **[OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)'s
+  lock exists after all** — an active `Lock_Mexal_Synced_Admin_Fields` validation
+  rule on thirteen administrative fields, **and** a re-entrancy guard
+  (`setBypassMexalCustomerUpdate`) so the nightly read cannot bounce back out.
+  The morning's "they built the opposite" reading is **superseded: they built
+  both.** 🔴 But the principal is a literal profile name, not amministrazione, and
+  the lock covers thirteen fields while the push covers four — **nine can still
+  diverge silently by the admin path.**
+  🟢 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+  has its watermark storage** — four new `Integration_Configuration2__c` fields —
+  **and a twin**: an article sync upserting Mexal articles onto `Product2`
+  ([the build](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md)).
+  🔴 **Still nothing scheduled.** Committing a `Schedulable` does not schedule it.
+  🟢 **`namedCredentials/` exists at last** — `Mexal` and `Anticipay`, with the
+  secrets left in the org as merge-field references. 🔴 `DocuSign` still org-only.
+  🔴 **`MexalHttpClient` is in neither the commit nor any reference in it**, while
+  the org has it — so what landed is a reconciled version, not a raw retrieve.
+  ⚠ Inferred from two records; **the org was not opened this evening**.
+  🔴 **None of it is on `DevMain`**, and PR #43 has no description and no review.
+
+- 🟢🔴 **2026-09-14 — the Mexal customer PUT was executed from Salesforce, and
+  there is no PATCH.** Slack DM Aurel Mrruku ↔ Andrea Di Cicco
+  ([OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)).
+  🟢 _"ho testato direttamente da SF e va todos bien"_ (12:07:44) — the update
+  works; `PUT /clienti/{codice}` returns **204 No Content** with the data in the
+  headers, exactly as the built code assumes.
+  🔴 **_"Non c'è la patch"_** (15:18:38) — every update is a full-body replace, and
+  Aurel's own objection, that a full PUT may overwrite Mexal's auto-populated
+  fields, **is unanswered**.
+  🔑🔴 **It was run against Mexal production.** _"ricordati che è sempre
+  produzione"_ (12:07:03), after a customer record had already been created there
+  from Salesforce
+  ([the risk](notes/risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md)).
+  **No Mexal test environment appears anywhere in this record**, and the nightly
+  scheduler is one `System.schedule` call from running against it.
+  🔴 **_"poi per la creazione di un ordine chi devo avvisare ?"_ (12:08) went
+  unanswered** — new
+  [OI-135](notes/items/OI-135%20Who%20must%20be%20told%20when%20Salesforce%20starts%20creating%20Mexal%20orders.md).
 
 - 🔴🟢 **2026-09-14 — an org-status-check found the entire
   order-to-Mexal integration built in the org and in no branch of this

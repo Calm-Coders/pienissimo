@@ -131,3 +131,72 @@ replaced by a two-way sync?** That is a client-facing question — Elisa Miglian
 agreed to the lock — and it needs a decision note either way.
 
 **Still unowned**, unchanged since 3 September.
+
+## 2026-09-14 evening — the lock exists after all, and so does a conflict rule
+
+The section above was written from the morning org inspection and read the
+outbound push as _instead of_ the lock. **Seven hours later the answer turned out
+to be both.** `e06a1b4` (Anita Aga, pushed 18:05 CEST, **PR #43, open and
+unmerged**) adds an **active Account validation rule**,
+`Lock_Mexal_Synced_Admin_Fields`:
+
+```
+AND($Profile.Name <> "System Administrator",
+    NOT(ISBLANK(Codice_Cliente_Mexal__c)),
+    OR(ISCHANGED(Name), ISCHANGED(Partita_IVA__c), ...))
+```
+
+🟢 **The lock agreed on 3 September is built.** Thirteen administrative fields —
+`Name`, `Partita_IVA__c`, `Codice_Fiscale__c`, `Phone`, `Fax`, `Email__c`,
+`PEC__c`, `Codice_Destinatario_SDI__c` and the five `Billing*` fields — are
+refused to non-admin users once `Codice_Cliente_Mexal__c` is populated, with an
+Italian error message pointing the user at amministrazione. The trigger condition
+is exactly the one this row specified.
+
+🟢 **Commercial fields are outside it**, as the 3 September session required.
+`tipologia attivita` and its class are untouched.
+
+🟢 **The two-writer exposure now has a conflict rule.**
+`AccountTriggerHandler.setBypassMexalCustomerUpdate` is a static suppression flag,
+and `MexalCustomerSearchService` sets it around the inbound sync's DML. The
+nightly read therefore **cannot** re-trigger the outbound push. The infinite-echo
+half of the divergence this row and
+[OI-116](OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md) have
+warned about since 3 September is closed in code.
+
+### What is still not right
+
+- 🔴 **The principal is a profile name, not amministrazione.** The row asked for
+  "editable only by amministrazione"; what shipped is _editable only by System
+  Administrator_. `$Profile.Name <> "System Administrator"` is a literal string
+  comparison — it breaks if the profile is renamed or cloned, and it grants
+  nothing to an amministrazione permission set. **The missing principal this note
+  has flagged since 3 September is narrowed, not resolved.**
+- 🔴 **The lock covers thirteen fields; the outbound push covers four.** An admin
+  may still edit `Codice_Fiscale__c`, `PEC__c`, `Codice_Destinatario_SDI__c` and
+  the whole billing address, and **none of those changes reaches Mexal** — only
+  `Email__c`, `Phone`, `Partita_IVA__c` and `Name` enqueue
+  `MexalCustomerUpdateQueueable`. So for nine of the thirteen locked fields the
+  two systems can still silently diverge, now by the admin path rather than the
+  user path.
+- 🔴 **Still no minute and no client conversation.** The lock is built and so is
+  the push; Elisa Migliano agreed only to the first. The two-way behaviour is
+  recorded in a decision note committed on `DevAnita` (below), **not agreed with
+  the client**.
+- 🔴 **It is on an open PR.** Nothing above is on `DevMain`. PR #43 was opened
+  2026-09-14 16:06Z and is unmerged as at this sweep.
+
+### The decision that narrowed the trigger list
+
+`e06a1b4` also edits
+[the Anticipay-before-Mexal decision note](../decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+to record that **Aurel Mrruku decided on 2026-09-14** that edits to exactly
+`Email__c`, `Phone`, `Partita_IVA__c` and `Name` on an Account already carrying a
+Mexal code must trigger the `Modifica Cliente` PUT. ⚠ **That decision arrived
+inside a code commit, not through any swept source**, and its attribution is
+recorded as given by the commit, not independently corroborated. The text lives on
+`DevAnita` and reaches `DevMain` only when PR #43 merges.
+
+**The row stays open.** The build question is now answered; what remains is the
+principal, the nine unpushed fields, and whether the client is told that the
+agreed lock is also a push.
