@@ -2,6 +2,8 @@ import { api, LightningElement, wire } from "lwc";
 import { CurrentPageReference } from "lightning/navigation";
 import findContact from "@salesforce/apex/ParticipantRegistrationController.findContact";
 import loadPage from "@salesforce/apex/ParticipantRegistrationController.loadPage";
+import markOrderIncassato from "@salesforce/apex/ParticipantRegistrationController.markOrderIncassato";
+import markTicketRinuncia from "@salesforce/apex/ParticipantRegistrationController.markTicketRinuncia";
 import savePage from "@salesforce/apex/ParticipantRegistrationController.savePage";
 
 const READY = "READY";
@@ -12,11 +14,12 @@ export default class ParticipantRegistrationPage extends LightningElement {
   @api heading = "Registrazione partecipanti";
   @api servicePath;
 
-  accountId;
-  campaignId;
+  token;
   page;
   tickets = [];
   isLoading = true;
+  isMarkingOrder = false;
+  rinunciaAssetId;
   isSubmitting = false;
   showConfirmation = false;
   errorMessage;
@@ -29,10 +32,9 @@ export default class ParticipantRegistrationPage extends LightningElement {
     }
 
     const state = pageReference.state || {};
-    this.accountId = state.c__accountId || state.accountId;
-    this.campaignId = state.c__campaignId || state.campaignId;
+    this.token = state.c__token || state.token;
 
-    const initializationKey = `${this.accountId || ""}-${this.campaignId || ""}`;
+    const initializationKey = this.token || "";
     if (initializationKey !== this.initializedFor) {
       this.initializedFor = initializationKey;
       this.loadParticipants();
@@ -51,6 +53,14 @@ export default class ParticipantRegistrationPage extends LightningElement {
     return (
       this.page?.state === READY && this.tickets.some((row) => row.editable)
     );
+  }
+
+  get showPageActions() {
+    return this.showFormActions || this.showOrderAction;
+  }
+
+  get showOrderAction() {
+    return this.page?.canMarkOrderIncassato === true;
   }
 
   get showFinalMessage() {
@@ -75,8 +85,16 @@ export default class ParticipantRegistrationPage extends LightningElement {
   get submitDisabled() {
     return (
       this.isSubmitting ||
+      this.isMarkingOrder ||
+      Boolean(this.rinunciaAssetId) ||
       this.requiredSubmissionCount === 0 ||
       this.completedSubmissionCount !== this.requiredSubmissionCount
+    );
+  }
+
+  get orderActionDisabled() {
+    return (
+      this.isSubmitting || this.isMarkingOrder || Boolean(this.rinunciaAssetId)
     );
   }
 
@@ -93,7 +111,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
     this.page = null;
     this.tickets = [];
 
-    if (!this.accountId || !this.campaignId) {
+    if (!this.token) {
       this.isLoading = false;
       this.errorMessage =
         "Il link non e completo. Apri il collegamento ricevuto via email oppure contatta il tuo referente.";
@@ -104,8 +122,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
     try {
       const payload = await loadPage({
-        accountId: this.accountId,
-        campaignId: this.campaignId
+        token: this.token
       });
       this.applyPage(payload);
     } catch (error) {
@@ -162,6 +179,9 @@ export default class ParticipantRegistrationPage extends LightningElement {
     } else if (assigned) {
       badgeLabel = "Assegnato";
       badgeClass = "status-badge assigned-badge";
+    } else if (ticket.status === "Rinuncia") {
+      badgeLabel = "Rinuncia";
+      badgeClass = "status-badge rinuncia-badge";
     } else if (hasAnyParticipantValue) {
       badgeLabel = "In compilazione";
       badgeClass = "status-badge draft-badge";
@@ -186,8 +206,15 @@ export default class ParticipantRegistrationPage extends LightningElement {
       badgeLabel,
       cardClass: cardClasses.join(" "),
       contactRecognized: Boolean(ticket.contactRecognized),
+      canRinuncia:
+        Boolean(ticket.canRinuncia) &&
+        !this.isSubmitting &&
+        !this.isMarkingOrder &&
+        !this.rinunciaAssetId,
       editable,
       hasPartialInput,
+      isRinuncia: ticket.status === "Rinuncia",
+      isSavingRinuncia: this.rinunciaAssetId === ticket.assetId,
       pendingSave,
       rowRequiresFields: editable
     };
@@ -219,8 +246,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
     try {
       const match = await findContact({
-        accountId: this.accountId,
-        campaignId: this.campaignId,
+        token: this.token,
         email
       });
 
@@ -303,8 +329,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
     try {
       const payload = await savePage({
-        accountId: this.accountId,
-        campaignId: this.campaignId,
+        token: this.token,
         participants
       });
       this.applyPage(payload);
@@ -313,6 +338,50 @@ export default class ParticipantRegistrationPage extends LightningElement {
     } finally {
       this.isSubmitting = false;
     }
+  }
+
+  async handleMarkOrderIncassato() {
+    this.isMarkingOrder = true;
+    this.errorMessage = null;
+
+    try {
+      const payload = await markOrderIncassato({
+        token: this.token
+      });
+      this.applyPage(payload);
+    } catch (error) {
+      this.errorMessage = this.normalizeError(error);
+    } finally {
+      this.isMarkingOrder = false;
+    }
+  }
+
+  async handleMarkTicketRinuncia(event) {
+    const assetId = event.target.dataset.assetId;
+    if (!assetId) {
+      return;
+    }
+
+    this.rinunciaAssetId = assetId;
+    this.errorMessage = null;
+    this.refreshTicketDecorations();
+
+    try {
+      const payload = await markTicketRinuncia({
+        token: this.token,
+        assetId
+      });
+      this.applyPage(payload);
+    } catch (error) {
+      this.errorMessage = this.normalizeError(error);
+    } finally {
+      this.rinunciaAssetId = null;
+      this.refreshTicketDecorations();
+    }
+  }
+
+  refreshTicketDecorations() {
+    this.tickets = this.tickets.map((ticket) => this.decorateTicket(ticket));
   }
 
   handleModalKeydown(event) {
