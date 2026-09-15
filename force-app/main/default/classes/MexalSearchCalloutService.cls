@@ -7,14 +7,17 @@ public with sharing class MexalSearchCalloutService {
   private static final String ARTICLE_SEARCH_ACTION = 'Mexal_Articoli_Ricerca';
   private static final String CUSTOMER_CREATE_ACTION = 'Mexal_Clienti_Creazione';
   private static final String CUSTOMER_UPDATE_ACTION = 'Mexal_Clienti_Modifica';
+  private static final String ORDER_CREATE_ACTION = 'Mexal_Ordini_Creazione';
   private static final String CUSTOMER_SEARCH_FIELDS = 'codice,cod_alternativo,cod_paese,codice_fiscale,partita_iva,ragione_sociale,indirizzo,cap,localita,provincia,telefono,fax,email,pec,codice_sdi,cod_agente,tp_nazionalita,cod_listino,valuta,gest_fatt_el';
+  private static final String ARTICLE_SEARCH_FIELDS = 'codice,nr_record,tipologia,descrizione,descr_estesa,descrizione_agg,descr_completa,cod_alternativo,alq_iva,um_principale,dt_creazione,dt_mod,dt_mod_sistema,gest_precanc,gest_annullato,prz_listino,gest_attiva,data_ult_mod';
   private static final Set<String> READ_ONLY_ACTIONS = new Set<String>{
     CUSTOMER_SEARCH_ACTION,
     ARTICLE_SEARCH_ACTION
   };
   private static final Set<String> WRITE_ACTIONS = new Set<String>{
     CUSTOMER_CREATE_ACTION,
-    CUSTOMER_UPDATE_ACTION
+    CUSTOMER_UPDATE_ACTION,
+    ORDER_CREATE_ACTION
   };
 
   private static final Boolean IS_SANDBOX = [
@@ -52,6 +55,10 @@ public with sharing class MexalSearchCalloutService {
 
   public static Result createCustomer(Object requestBody) {
     return sendWrite(CUSTOMER_CREATE_ACTION, requestBody, true);
+  }
+
+  public static Result createOrder(Object requestBody) {
+    return sendWrite(ORDER_CREATE_ACTION, requestBody, true);
   }
 
   public static Result updateCustomer(String customerCode, Object requestBody) {
@@ -272,6 +279,11 @@ public with sharing class MexalSearchCalloutService {
         'La modifica cliente Mexal deve usare HTTP PUT.'
       );
     }
+    if (actionName == ORDER_CREATE_ACTION && getHttpMethod(config) != 'POST') {
+      throw new MexalSearchCalloutException(
+        'La creazione ordine Mexal deve usare HTTP POST.'
+      );
+    }
   }
 
   private static HttpRequest buildRequest(
@@ -316,16 +328,25 @@ public with sharing class MexalSearchCalloutService {
     String actionName,
     String endpointPath
   ) {
-    if (
-      actionName != CUSTOMER_SEARCH_ACTION || endpointPath.contains('fields=')
-    ) {
+    if (endpointPath.contains('fields=')) {
+      return endpointPath;
+    }
+
+    String fields = null;
+    if (actionName == CUSTOMER_SEARCH_ACTION) {
+      fields = CUSTOMER_SEARCH_FIELDS;
+    } else if (actionName == ARTICLE_SEARCH_ACTION) {
+      fields = ARTICLE_SEARCH_FIELDS;
+    }
+
+    if (String.isBlank(fields)) {
       return endpointPath;
     }
 
     return endpointPath +
       (endpointPath.contains('?') ? '&' : '?') +
       'fields=' +
-      CUSTOMER_SEARCH_FIELDS;
+      fields;
   }
 
   private static String pathWithoutQueryString(String endpointPath) {
