@@ -41,7 +41,11 @@ acceptance or production readiness.
   Campaign and the Account's unique principal Contact when available.
 - The participant registration page updated to load, search Contacts and save
   participants by invitation token.
-- A per-ticket `Rinuncia` button on the participant registration page.
+- A single page-level `Rinuncia` button on the participant registration page,
+  shown only when the invitation has exactly one ticket in total and that ticket
+  is still `Ordinato`; the Apex method enforces the same condition before
+  setting the ticket to `Rinuncia`. Completed/hidden tickets block the action
+  because they still count as existing tickets.
 - Layout and permission updates for Account, Campaign, Contact,
   `Event_Invitation__c`, Order, `Campaign_Management` and `Full_Permission`.
 
@@ -109,10 +113,13 @@ page must show the form again instead of empty read-only participant details.
 - `force-app/main/default/standardValueSets/AssetStatus.standardValueSet-meta.xml`
 - `force-app/main/default/objects/Asset/recordTypes/Ticket.recordType-meta.xml`
 
-The participant registration LWC now shows a per-ticket **Rinuncia** button for
-any visible ticket that is not already in `Rinuncia`. The button calls
+The participant registration LWC now shows one page-level **Rinuncia** button
+only when there is exactly one ticket in total on the invitation and that ticket
+is still `Ordinato`. Completed or otherwise hidden tickets block the action
+because they still count as tickets. The button calls
 `ParticipantRegistrationController.markTicketRinuncia(token, assetId)`, which
-verifies the invitation token and ticket ownership before setting:
+verifies the invitation token, confirms the same single-ticket-in-total and
+`Ordinato` condition server-side, and then sets:
 
 ```apex
 Asset.Status = 'Rinuncia';

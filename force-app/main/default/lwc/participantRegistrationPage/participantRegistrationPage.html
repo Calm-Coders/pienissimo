@@ -50,6 +50,17 @@
           </template>
         </div>
 
+        <template if:true={showRinunciaAction}>
+          <div class="top-actions">
+            <lightning-button
+              label="Rinuncia"
+              variant="destructive"
+              disabled={rinunciaActionDisabled}
+              onclick={handleMarkTicketRinuncia}
+            ></lightning-button>
+          </div>
+        </template>
+
         <template if:true={showTickets}>
           <div class="ticket-list">
             <template for:each={tickets} for:item="ticket">
@@ -123,17 +134,6 @@
                     <p class="row-warning" role="alert">
                       Completa questa riga oppure svuotala prima di salvare.
                     </p>
-                  </template>
-                  <template if:true={ticket.canRinuncia}>
-                    <div class="row-actions">
-                      <lightning-button
-                        data-asset-id={ticket.assetId}
-                        label="Rinuncia"
-                        variant="destructive-text"
-                        disabled={ticket.isSavingRinuncia}
-                        onclick={handleMarkTicketRinuncia}
-                      ></lightning-button>
-                    </div>
                   </template>
                 </template>
 

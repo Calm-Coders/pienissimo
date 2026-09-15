@@ -1,11 +1,12 @@
 public without sharing class ParticipantRegistrationController {
   private static final String COMPLETED_STATE = 'COMPLETED';
   private static final String READY_STATE = 'READY';
+  private static final String ORDERED_STATUS = 'Ordinato';
   private static final String ASSIGNED_STATUS = 'Assegnato';
   private static final String WAIVED_STATUS = 'Rinuncia';
 
   private static final Set<String> VISIBLE_STATUSES = new Set<String>{
-    'Ordinato',
+    ORDERED_STATUS,
     'Disponibile',
     'Assegnato',
     WAIVED_STATUS
@@ -248,25 +249,34 @@ public without sharing class ParticipantRegistrationController {
         throw staleTickets();
       }
 
-      Asset ticketToUpdate;
-      for (
-        Asset ticket : queryVisibleAssets(
-          access.account.Id,
-          access.campaign.Id,
-          true
-        )
-      ) {
-        if (ticket.Id == parsedAssetId) {
-          ticketToUpdate = ticket;
-          break;
-        }
-      }
+      List<Asset> invitationTickets = queryInvitationAssets(
+        access.account.Id,
+        access.campaign.Id,
+        true,
+        false
+      );
 
-      if (ticketToUpdate == null || ticketToUpdate.Status == WAIVED_STATUS) {
+      if (invitationTickets.isEmpty()) {
         throw staleTickets();
       }
 
-      update new Asset(Id = ticketToUpdate.Id, Status = WAIVED_STATUS);
+      Boolean requestedTicketBelongsToInvitation = false;
+      List<Asset> ticketsToUpdate = new List<Asset>();
+      for (Asset ticket : invitationTickets) {
+        if (ticket.Id == parsedAssetId) {
+          requestedTicketBelongsToInvitation = true;
+        }
+        if (ticket.Status != ORDERED_STATUS) {
+          throw staleTickets();
+        }
+        ticketsToUpdate.add(new Asset(Id = ticket.Id, Status = WAIVED_STATUS));
+      }
+
+      if (!requestedTicketBelongsToInvitation) {
+        throw staleTickets();
+      }
+
+      update ticketsToUpdate;
 
       PageResponse response = buildPage(access);
       response.message = 'Rinuncia registrata.';
@@ -350,6 +360,10 @@ public without sharing class ParticipantRegistrationController {
       access.campaign.Id,
       false
     );
+    Boolean allInvitationTicketsAreOrdered = allInvitationTicketsAreOrdered(
+      access.account.Id,
+      access.campaign.Id
+    );
 
     Integer requiredParticipantCount = 0;
 
@@ -377,7 +391,8 @@ public without sharing class ParticipantRegistrationController {
       row.assigned = ticket.ContactId != null;
       row.editable =
         !row.assigned && PARTICIPANT_EDITABLE_STATUSES.contains(ticket.Status);
-      row.canRinuncia = ticket.Status != WAIVED_STATUS;
+      row.canRinuncia =
+        allInvitationTicketsAreOrdered && ticket.Status == ORDERED_STATUS;
 
       if (row.editable) {
         requiredParticipantCount++;
@@ -600,13 +615,25 @@ public without sharing class ParticipantRegistrationController {
     Id campaignId,
     Boolean lockRecords
   ) {
+    return queryInvitationAssets(accountId, campaignId, lockRecords, true);
+  }
+
+  private static List<Asset> queryInvitationAssets(
+    Id accountId,
+    Id campaignId,
+    Boolean lockRecords,
+    Boolean visibleOnly
+  ) {
     String queryText =
       'SELECT Id, Name, Status, ContactId, Campaign__c, Campaign__r.Name, ' +
       'Campaign__r.Data_Evento__c, Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
       'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name, ' +
       'Order_Product__r.OrderId, Order_Product__r.Order.Status ' +
-      'FROM Asset WHERE AccountId = :accountId AND Campaign__c = :campaignId ' +
-      'AND Status IN :VISIBLE_STATUSES ';
+      'FROM Asset WHERE AccountId = :accountId AND Campaign__c = :campaignId ';
+
+    if (visibleOnly) {
+      queryText += 'AND Status IN :VISIBLE_STATUSES ';
+    }
 
     if (lockRecords) {
       queryText += 'FOR UPDATE';
@@ -615,6 +642,27 @@ public without sharing class ParticipantRegistrationController {
     }
 
     return Database.query(queryText);
+  }
+
+  private static Boolean allInvitationTicketsAreOrdered(
+    Id accountId,
+    Id campaignId
+  ) {
+    Integer totalTickets = [
+      SELECT COUNT()
+      FROM Asset
+      WHERE AccountId = :accountId AND Campaign__c = :campaignId
+    ];
+    Integer nonOrderedTickets = [
+      SELECT COUNT()
+      FROM Asset
+      WHERE
+        AccountId = :accountId
+        AND Campaign__c = :campaignId
+        AND Status != :ORDERED_STATUS
+    ];
+
+    return totalTickets > 0 && nonOrderedTickets == 0;
   }
 
   private static void validateParticipant(

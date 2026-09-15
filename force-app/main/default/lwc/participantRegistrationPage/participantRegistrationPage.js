@@ -56,11 +56,21 @@ export default class ParticipantRegistrationPage extends LightningElement {
   }
 
   get showPageActions() {
-    return this.showFormActions || this.showOrderAction;
+    return (
+      this.showFormActions || this.showOrderAction || this.showRinunciaAction
+    );
   }
 
   get showOrderAction() {
     return this.page?.canMarkOrderIncassato === true;
+  }
+
+  get showRinunciaAction() {
+    return this.rinunciaTicket !== null;
+  }
+
+  get rinunciaTicket() {
+    return this.tickets.find((ticket) => ticket.canRinuncia) || null;
   }
 
   get showFinalMessage() {
@@ -96,6 +106,10 @@ export default class ParticipantRegistrationPage extends LightningElement {
     return (
       this.isSubmitting || this.isMarkingOrder || Boolean(this.rinunciaAssetId)
     );
+  }
+
+  get rinunciaActionDisabled() {
+    return this.orderActionDisabled;
   }
 
   get accountLabel() {
@@ -160,6 +174,8 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
     const assigned = Boolean(ticket.assigned);
     const editable = Boolean(ticket.editable);
+    const serverCanRinuncia =
+      ticket.serverCanRinuncia ?? Boolean(ticket.canRinuncia);
     const hasAnyParticipantValue = FIELD_NAMES.some((fieldName) =>
       Boolean(this.normalizeValue(currentValues[fieldName]))
     );
@@ -206,11 +222,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
       badgeLabel,
       cardClass: cardClasses.join(" "),
       contactRecognized: Boolean(ticket.contactRecognized),
-      canRinuncia:
-        Boolean(ticket.canRinuncia) &&
-        !this.isSubmitting &&
-        !this.isMarkingOrder &&
-        !this.rinunciaAssetId,
+      canRinuncia: serverCanRinuncia,
       editable,
       hasPartialInput,
       isRinuncia: ticket.status === "Rinuncia",
@@ -356,8 +368,8 @@ export default class ParticipantRegistrationPage extends LightningElement {
     }
   }
 
-  async handleMarkTicketRinuncia(event) {
-    const assetId = event.target.dataset.assetId;
+  async handleMarkTicketRinuncia() {
+    const assetId = this.rinunciaTicket?.assetId;
     if (!assetId) {
       return;
     }
