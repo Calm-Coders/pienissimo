@@ -9,14 +9,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>MexalArticleSyncBatch</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>MexalArticleSyncService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>MexalCustomerCreateService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -48,12 +40,16 @@
         <apexClass>ParticipantCommunityUrl</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description
-  >Read and edit on all custom objects and fields in this project; calculated fields read-only. Product2 done 2026-09-02, article code now in standard ProductCode. Event_Invitation__c added 2026-09-07. Internal only: never assign to guest users.</description>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Edit_Mexal_Synced_Admin_Fields</name>
+    </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>
         <name>Integration_Configuration2__c</name>
     </customSettingAccesses>
+    <description
+  >Read and edit on all custom objects and fields in this project; calculated fields read-only. Product2 done 2026-09-02, article code now in standard ProductCode. Event_Invitation__c added 2026-09-07. Internal only: never assign to guest users.</description>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
         <externalCredentialPrincipal
@@ -97,6 +93,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.Descrizione_ATECO__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Email_Contatto_Principale__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -150,8 +151,38 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Campaign.Data_Evento__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Campaign.Data_Invio_Biglietto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Contact.Contatto_Principale__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Event_Invitation__c.Account_Campaign_Key__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Event_Invitation__c.Data_Evento__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Event_Invitation__c.Data_Invio_Biglietto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Event_Invitation__c.Email_Contatto_Principale__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -181,6 +212,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Event_Invitation__c.Token__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Event_Invitation__c.URL_Refreshed_At__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -201,6 +237,26 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Order.Mexal_Customer_Code__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Order.Mexal_Document_Number__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Order.Mexal_Document_Serie__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Order.Mexal_Document_Sigla__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Order.Mexal_Integration_Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -212,6 +268,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Order.OpportunityId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>OrderItem.Mexal_Line_Number__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>OrderItem.Mexal_Payment_Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

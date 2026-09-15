@@ -3,9 +3,9 @@
     <fullName>Lock_Mexal_Synced_Admin_Fields</fullName>
     <active>true</active>
     <description
-  >Blocks non-admin edits to administrative Account fields once the Account is linked to Mexal.</description>
+  >Blocks edits to administrative Account fields once the Account is linked to Mexal unless the user has the Edit Mexal Synced Admin Fields custom permission.</description>
     <errorConditionFormula>AND(
-  $Profile.Name &lt;&gt; "System Administrator",
+  NOT($Permission.Edit_Mexal_Synced_Admin_Fields),
   NOT(ISBLANK(Codice_Cliente_Mexal__c)),
   OR(
     ISCHANGED(Name),

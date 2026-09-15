@@ -136,6 +136,7 @@ public with sharing class OrderMexalIntegrationService {
     MexalOrderSendService.Result result = MexalOrderSendService.sendOrder(
       orderId
     );
+    MexalOrderMappingService.saveCreatedOrderMapping(orderId, result);
     updateOrderIntegrationFields(
       orderId,
       STATUS_SENT,

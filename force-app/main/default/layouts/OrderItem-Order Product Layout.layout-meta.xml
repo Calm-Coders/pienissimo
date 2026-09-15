@@ -33,6 +33,12 @@
                 <field>Quantity</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>TotalPrice</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Tranche__c</field>
             </layoutItems>
@@ -40,11 +46,9 @@
                 <behavior>Edit</behavior>
                 <field>Data_Scadenza__c</field>
             </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalPrice</field>
+                <field>Mexal_Payment_Status__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>

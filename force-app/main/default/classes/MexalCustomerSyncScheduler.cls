@@ -5,6 +5,7 @@ public with sharing class MexalCustomerSyncScheduler implements Schedulable {
   public void execute(SchedulableContext context) {
     Database.executeBatch(new MexalCustomerSyncBatch(), 1);
     Database.executeBatch(new MexalArticleSyncBatch(), 1);
+    Database.executeBatch(new MexalMaggazinoSyncBatch(), 1);
   }
 
   public static Id scheduleNightly() {
