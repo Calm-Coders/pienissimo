@@ -1,5 +1,5 @@
 public with sharing class MexalCustomerSearchService {
-  private static final String ACTION_NAME = 'Mexal_Clienti_Ricerca';
+  public static final String ACTION_NAME = 'Mexal_Clienti_Ricerca';
 
   public class Result {
     @AuraEnabled
@@ -61,31 +61,6 @@ public with sharing class MexalCustomerSearchService {
   private class MatchResolution {
     Set<Integer> ambiguousIndexes = new Set<Integer>();
   }
-
-  // Automatic daily search is intentionally paused while the Mexal sync
-  // schedule and date window are finalized. Use searchModifiedSince(...) for
-  // controlled testing, then re-enable this helper for the nightly job.
-  // @AuraEnabled
-  // public static Result searchModifiedToday() {
-  //   return searchModifiedSince(startOfToday());
-  // }
-  //
-  // Future nightly schedule, still inactive by design:
-  // 1. Re-enable searchModifiedToday() above, or replace it with a persisted
-  //    watermark once the final sync window is decided.
-  // 2. Create a small Schedulable class that calls this service once per night.
-  // 3. Schedule it with this cron expression for 02:00 every day:
-  //    System.schedule(
-  //      'Mexal Customer Search - Nightly',
-  //      '0 0 2 * * ?',
-  //      new MexalCustomerSearchScheduler()
-  //    );
-  //
-  // public with sharing class MexalCustomerSearchScheduler implements Schedulable {
-  //   public void execute(SchedulableContext context) {
-  //     MexalCustomerSearchService.searchModifiedToday();
-  //   }
-  // }
 
   @AuraEnabled
   public static Result searchModifiedSince(Datetime modifiedSince) {
@@ -152,10 +127,6 @@ public with sharing class MexalCustomerSearchService {
   private static String formatMexalDateTime(Datetime value) {
     return value.format('yyyyMMdd HHmmss');
   }
-
-  // private static Datetime startOfToday() {
-  //   return Datetime.newInstance(Date.today(), Time.newInstance(0, 0, 0, 0));
-  // }
 
   private static Result buildResult(
     MexalSearchCalloutService.Result httpResult,
@@ -319,9 +290,7 @@ public with sharing class MexalCustomerSearchService {
       return;
     }
 
-    List<Account> accountsToInsert = new List<Account>();
     List<Account> accountsToUpdate = new List<Account>();
-    Id aziendaRecordTypeId = getAziendaRecordTypeId();
 
     for (Integer index = 0; index < result.mappedAccounts.size(); index++) {
       if (matchResolution.ambiguousIndexes.contains(index)) {
@@ -338,15 +307,24 @@ public with sharing class MexalCustomerSearchService {
       }
 
       if (account.Id == null) {
-        account.RecordTypeId = aziendaRecordTypeId;
-        accountsToInsert.add(account);
+        result.unmatchedAccounts++;
+        result.saveErrors.add(
+          buildSaveError(
+            account,
+            'Cliente Mexal non abbinato ad Account Salesforce esistente.'
+          )
+        );
       } else {
         accountsToUpdate.add(account);
       }
     }
 
-    applySaveResults(Database.update(accountsToUpdate, false), true, result);
-    applySaveResults(Database.insert(accountsToInsert, false), false, result);
+    try {
+      AccountTriggerHandler.setBypassMexalCustomerUpdate(true);
+      applySaveResults(Database.update(accountsToUpdate, false), true, result);
+    } finally {
+      AccountTriggerHandler.setBypassMexalCustomerUpdate(false);
+    }
   }
 
   private static void applySaveResults(
@@ -383,19 +361,6 @@ public with sharing class MexalCustomerSearchService {
       emptyIfBlank(account.Codice_Cliente_Mexal__c) +
       ', Partita IVA=' +
       emptyIfBlank(account.Partita_IVA__c);
-  }
-
-  private static Id getAziendaRecordTypeId() {
-    Schema.RecordTypeInfo recordTypeInfo = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName()
-      .get('Azienda');
-
-    if (recordTypeInfo == null) {
-      throw new MexalCustomerSearchException(
-        'Record Type Account Azienda non trovato.'
-      );
-    }
-
-    return recordTypeInfo.getRecordTypeId();
   }
 
   private static void addAccountByKey(

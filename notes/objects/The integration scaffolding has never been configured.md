@@ -1,11 +1,11 @@
 ---
 id: obj-integration-scaffolding-empty
 type: object
-status: active
+status: superseded
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-26
-updated: 2026-09-11
+updated: 2026-09-14
 depends_on: [OI-58, OI-49, OI-73, OI-94]
 source: org-status-check against Pienissimo UAT, 2026-08-26
 evidence: SOQL counts on Integration_Configuration__c and Integration_Log__c, NamedCredential listing
@@ -117,10 +117,10 @@ Two `Integration_Configuration__c` rows are now required **by exact
 `Azione__c` value**, or every call throws _"Configurazione Mexal non trovata per
 azione"_ before it leaves the org:
 
-| `Azione__c`             | Needs                                                                                                    |
-| ----------------------- | -------------------------------------------------------------------------------------------------------- |
-| `Mexal_Clienti_Ricerca` | `Endpoint_Path__c` ending `/ricerca`, `HTTP_Method__c` = `POST`, `Named_Credential_Sandbox__c` / `_Prod__c` |
-| `Mexal_Articoli_Ricerca` | same shape; declared in the allow-list, not yet called by any service class                              |
+| `Azione__c`              | Needs                                                                                                       |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `Mexal_Clienti_Ricerca`  | `Endpoint_Path__c` ending `/ricerca`, `HTTP_Method__c` = `POST`, `Named_Credential_Sandbox__c` / `_Prod__c` |
+| `Mexal_Articoli_Ricerca` | same shape; declared in the allow-list, not yet called by any service class                                 |
 
 🔴 **The table still holds zero rows and still has no named owner.** This is the
 same shape as
@@ -158,14 +158,46 @@ see whether the old object still exists or still holds rows.
 
 🔴 **Four rows are now required by exact name**, up from two yesterday:
 
-| `Azione__c`                | Used by                                    |
-| -------------------------- | ------------------------------------------ |
-| `Mexal_Clienti_Ricerca`    | customer search, and the nightly sync      |
-| `Mexal_Articoli_Ricerca`   | article search                             |
-| `Mexal_Clienti_Creazione`  | **customer create — writes to Mexal**      |
-| `Mexal_Clienti_Modifica`   | customer update (built, no caller yet)     |
+| `Azione__c`               | Used by                                |
+| ------------------------- | -------------------------------------- |
+| `Mexal_Clienti_Ricerca`   | customer search, and the nightly sync  |
+| `Mexal_Articoli_Ricerca`  | article search                         |
+| `Mexal_Clienti_Creazione` | **customer create — writes to Mexal**  |
+| `Mexal_Clienti_Modifica`  | customer update (built, no caller yet) |
 
 **Zero rows, no named owner, and now on the critical path of a write
 integration.** Every call throws _"Configurazione Mexal non trovata per azione"_
 until somebody creates them. Third table in eight days with this exact shape,
 after [OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md).
+
+## 2026-09-14 — superseded: the scaffolding is configured
+
+**This note's central claim is no longer true.** The org-status-check against
+Pienissimo UAT found `Integration_Configuration2__c` holding **six rows**:
+
+| Row name                  | Serves                   |
+| ------------------------- | ------------------------ |
+| `Anticipay_Account_Check` | The Anticipay VAT lookup |
+| `Mexal_Clienti_Ricerca`   | Customer search          |
+| `Mexal_Clienti_Creazione` | Customer create (POST)   |
+| `Mexal_Clienti_Modifica`  | Customer update (PUT)    |
+| `Mexal_Articoli_Ricerca`  | Article registry search  |
+| `Mexal_Ordini_Creazione`  | Order create             |
+
+`Integration_Log__c` holds **85 rows** — 45 flagged as errors, 40 not. The org
+has **three** named credentials (`Anticipay`, `DocuSign`, `Mexal`), not one.
+
+**So every "zero rows" statement above is stale**, including the ones quoted
+into [OI-116](../items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+and MAP.md through 11 September. The engine has an endpoint for every action the
+built code names, and the logs prove it has been called.
+
+⚠ **What the correction does not say.** Rows existing is not the same as the
+integrations working: the log's error rows outnumber its successes, and the
+order-to-Mexal chain
+([the build](The%20order%20to%20Mexal%20integration%20chain.md)) has never run at
+all. This note is superseded on **configuration**, not on **operability**.
+
+⚠ **The row values were deliberately not read.** They carry endpoints and
+principals, which do not belong in this repository. Only the row names and the
+count were taken.

@@ -322,3 +322,22 @@ Cicco**, not with Aurel Mrruku as
 and still has not delivered the **WooCommerce** one. If anything it sharpens the
 reading: he was in the DM, sending a different file, on the day the chase went
 unanswered.
+
+## 2026-09-14 — a sixth day, and this time the DM was busy
+
+Aurel Mrruku and Andrea Di Cicco exchanged **twenty-nine messages** in
+`D0AQ0FMHFM1` on 14 September, from 11:34 to 17:29 CEST, and spoke by call at
+17:30. The subjects were the **Mexal** customer PUT, a Teatro Franco Parenti
+hand-off and a patch question.
+
+🔴 **The filtered WooCommerce Postman collection was not mentioned once.** The
+09/09 chase — _"alla fine non mhai passato la collectioon"_ — is now **unanswered
+for six days** through a window in which the same two people talked at length
+about a different integration.
+
+Unchanged and still true: **Sabatino Rinaldi holds the pre-filter collection**,
+**the sixty-year JWT has not been rotated**, and no test result has come back from
+the client side.
+
+⚠ **UAT opens on 23 September — nine days.** This row is the only WooCommerce item
+on the critical path and it has had no movement since 08/09.

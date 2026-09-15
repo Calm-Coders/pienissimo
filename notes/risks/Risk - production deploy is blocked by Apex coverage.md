@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-11
+updated: 2026-09-14
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -308,14 +308,14 @@ Commit **`a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) adds **+729 net
 Apex lines** across six classes
 ([the build](../objects/The%20commercial%20process%20automation.md)):
 
-| Class                          | Net lines | New?                 |
-| ------------------------------ | --------- | -------------------- |
-| `LeadConversionTriggerHandler` | +248      | new (extract)        |
-| `QuoteTriggerHandler`          | +219      | **new**              |
-| `LeadConversionQueueable`      | +134      | refactored           |
-| `OpportunityTriggerHandler`    | +62       | **new**              |
-| `OrderTriggerHandler`          | +47       | existing             |
-| `WoocommerceOrderService`      | +19       | existing             |
+| Class                          | Net lines | New?          |
+| ------------------------------ | --------- | ------------- |
+| `LeadConversionTriggerHandler` | +248      | new (extract) |
+| `QuoteTriggerHandler`          | +219      | **new**       |
+| `LeadConversionQueueable`      | +134      | refactored    |
+| `OpportunityTriggerHandler`    | +62       | **new**       |
+| `OrderTriggerHandler`          | +47       | existing      |
+| `WoocommerceOrderService`      | +19       | existing      |
 
 ⚠ **This is arithmetic on the repository, not an org measurement.** The last
 measured figure is **0 of 2,957** from the 08/09 ROMI org check, which ran
@@ -323,13 +323,13 @@ measured figure is **0 of 2,957** from the 08/09 ROMI org check, which ran
 and this one. Read the two together as _"at least 2,957 + 729, still zero
 covered"_ — and the last actual Apex test run is **still 4 August**.
 
-| Date      | Uncovered lines           | Source                                  |
-| --------- | ------------------------- | --------------------------------------- |
-| 31/08     | 1,571                     | org check                               |
-| 02/09     | 1,646                     | org check                               |
-| 07/09     | 2,741                     | ROMI org check, posted to the dev group |
-| 08/09     | 2,957                     | ROMI org check, posted to the dev group |
-| **09/09** | **≥ 3,686** _(estimated)_ | **repository arithmetic on `a53345a`**  |
+| Date      | Uncovered lines           | Source                                              |
+| --------- | ------------------------- | --------------------------------------------------- |
+| 31/08     | 1,571                     | org check                                           |
+| 02/09     | 1,646                     | org check                                           |
+| 07/09     | 2,741                     | ROMI org check, posted to the dev group             |
+| 08/09     | 2,957                     | ROMI org check, posted to the dev group             |
+| **09/09** | **≥ 3,686** _(estimated)_ | **repository arithmetic on `a53345a`**              |
 | **10/09** | **≥ 4,182** _(estimated)_ | **repository arithmetic on `bc2ed5d`, PR #39 open** |
 
 🔴 **Two new classes carry commercial write paths and have no tests at all** —
@@ -401,3 +401,51 @@ different class of exposure from untested code that renders a page.
 **Brief only. Nothing acted on; no test class written, proposed or scheduled** —
 the suite is requested separately before the production deploy, and this record
 exists to be complete when it is.
+
+## 2026-09-14 — the uncovered estimate is now measured at 4,737 lines
+
+The org-status-check against Pienissimo UAT read
+`ApexCodeCoverageAggregate` directly: **0 lines covered, 4,737 uncovered, 0%,
+across 60 entries.**
+
+That is up from **2,957 uncovered across 42 entries** on 8 September — **+1,780
+uncovered lines and 18 new entries in six days**, the steepest rise the project
+has recorded. Most of it is
+[the order-to-Mexal chain](../objects/The%20order%20to%20Mexal%20integration%20chain.md),
+nine classes written on 14 September.
+
+Salesforce requires **75%** to deploy to production. At 0% the gap is now
+**~3,553 covered lines** that do not exist.
+
+⚠ **The brief for the separate test task keeps growing, and its newest members
+are the riskiest.** The suite must now cover a queueable chain that **creates
+and updates customers in an external ERP** and a batch that **writes to the
+customer registry**. Both are callout classes, so they need mocks, and both are
+org-only today — they cannot be tested from a checkout until they are retrieved
+([the risk](Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)).
+
+Coverage remains **gating for production** and, per the standing user decision,
+**not a blocker on Fase 1 feature work**. No tests were written, offered or run
+by this check; the figure above is the stored measurement.
+
+## 2026-09-14 evening — +2,057 lines on an open PR, none of it covered
+
+`e06a1b4` (PR #43, open and unmerged) adds **eight Apex classes and modifies six
+more**, +2,057 / −143 across 40 files. The morning org check measured **0 covered
+/ 4,737 uncovered / 0%** — the steepest rise recorded — and **this commit is on
+top of that figure**, not inside it.
+
+Two things make the gap qualitatively worse rather than only larger:
+
+- 🔴 **The uncovered surface now includes two `Database.Batchable` classes with
+  `AllowsCallouts`, two `Queueable` chains and a trigger-driven async path.**
+  These are the hardest things in Apex to cover, and they are the last to be
+  written.
+- 🔴 **`MexalOrderSendService` creates orders in Pienissimo's live ERP**
+  ([the risk](Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md)).
+  Running an uncovered write path against production is a different class of
+  exposure from running one against sandbox data.
+
+**Unchanged:** the 75% production floor cannot be evidenced, the last test run is
+**2026-08-04**, and **UAT opens on 23 September — nine days away.** Recorded as
+brief only; no test was written or offered.

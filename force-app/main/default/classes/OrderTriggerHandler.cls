@@ -9,7 +9,7 @@ public with sharing class OrderTriggerHandler {
   }
 
   public static void afterInsert(List<Order> newOrders) {
-    AnticipayOrderAutomation.enqueueForFirstOrders(newOrders);
+    OrderMexalIntegrationService.enqueueForCreatedOrders(newOrders);
     closeWonOpportunitiesForConfirmedOrders(newOrders, null);
     createTicketsForConfirmedOrders(newOrders, null);
   }

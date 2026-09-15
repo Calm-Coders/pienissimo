@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-11
-updated: 2026-09-11
+updated: 2026-09-14
 depends_on: [OI-73, OI-94, OI-95, OI-116, OI-125]
 source: Aurel Mrruku, direct instruction to the agent session, 2026-09-11
 ---
@@ -36,6 +36,18 @@ No Mexal update call is needed in this first-order path, because the decision
 assumes this is the Account's first Order and the customer is not already created
 in Mexal.
 
+## Anticipay Failure Is Non-Blocking
+
+The Anticipay step runs before Mexal, but a failed Anticipay response does not
+stop the rest of the queued chain. If Anticipay fails, Salesforce records an
+integration error saying that the Anticipay sync did not complete, leaves
+`Account.Anticipay_Consolidato__c` false, and continues with the Mexal customer
+and order steps.
+
+This makes Anticipay a best-effort enrichment before Mexal rather than a hard
+gate. The manual Anticipay refresh can still be run later after the Account data
+is corrected.
+
 ## Later Orders For The Same Account
 
 When an Order is created for an Account that already has at least one previous
@@ -47,6 +59,22 @@ Order:
 4. The update is the `Modifica Cliente` path, keyed by
    `Account.Codice_Cliente_Mexal__c`.
 5. The same queued integration chain then creates/sends the Order to Mexal.
+
+## Manual Account Edits That Trigger Modifica Cliente
+
+Aurel Mrruku decided on 2026-09-14 that editing any of the following Account
+fields on an Account that already has `Account.Codice_Cliente_Mexal__c`
+populated must trigger the `Modifica Cliente` path, i.e. the Mexal customer
+`PUT`:
+
+- `Email__c`
+- `Phone`
+- `Partita_IVA__c`
+- `Name` (`ragione_sociale` in the Mexal payload)
+
+This narrows the automatic Account-edit trigger list to those four fields. Other
+fields may still be included in the PUT payload when the update runs, but they
+do not by themselves trigger the update under this decision.
 
 ## Queue Rule
 
@@ -74,13 +102,13 @@ written, reading `DevMain` at `c9a0b7e`.
 action on Account** — `MexalCustomerCreateService.createForAccount` behind the
 `Crea_Cliente_Mexal` button. Against the rule above:
 
-| This decision requires            | What is built                              |
-| --------------------------------- | ------------------------------------------ |
-| Triggered by the first Order      | A button a user presses on the Account      |
-| Anticipay called first, then wait | **No Anticipay step at all in the path**    |
-| Queued / asynchronous throughout  | Synchronous, inline in the Aura call        |
-| Later orders take `Modifica`      | Throws _"Account gia collegato a Mexal"_    |
-| Chain continues into Order → Mexal| No order leg exists                         |
+| This decision requires             | What is built                            |
+| ---------------------------------- | ---------------------------------------- |
+| Triggered by the first Order       | A button a user presses on the Account   |
+| Anticipay called first, then wait  | **No Anticipay step at all in the path** |
+| Queued / asynchronous throughout   | Synchronous, inline in the Aura call     |
+| Later orders take `Modifica`       | Throws _"Account gia collegato a Mexal"_ |
+| Chain continues into Order → Mexal | No order leg exists                      |
 
 🟢 **One half is built**: step 8, writing the returned Mexal code onto
 `Account.Codice_Cliente_Mexal__c`, happens exactly as described.
