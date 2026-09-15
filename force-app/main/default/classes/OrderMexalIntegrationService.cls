@@ -10,6 +10,10 @@ public with sharing class OrderMexalIntegrationService {
   }
 
   public static void enqueueForCreatedOrders(List<Order> newOrders) {
+    if (isSandbox()) {
+      return;
+    }
+
     if (newOrders == null || newOrders.isEmpty()) {
       return;
     }
@@ -248,6 +252,10 @@ public with sharing class OrderMexalIntegrationService {
     }
 
     return accountsWithEarlierOrders;
+  }
+
+  private static Boolean isSandbox() {
+    return [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox;
   }
 
   private static Order loadOrderWithAccount(Id orderId) {
