@@ -12,6 +12,11 @@
         <label>Disponibile</label>
     </standardValue>
     <standardValue>
+        <fullName>Rinuncia</fullName>
+        <default>false</default>
+        <label>Rinuncia</label>
+    </standardValue>
+    <standardValue>
         <fullName>Assegnato</fullName>
         <default>false</default>
         <label>Assegnato</label>

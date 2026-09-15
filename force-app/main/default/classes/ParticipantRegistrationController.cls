@@ -2,8 +2,16 @@ public without sharing class ParticipantRegistrationController {
   private static final String COMPLETED_STATE = 'COMPLETED';
   private static final String READY_STATE = 'READY';
   private static final String ASSIGNED_STATUS = 'Assegnato';
+  private static final String WAIVED_STATUS = 'Rinuncia';
 
   private static final Set<String> VISIBLE_STATUSES = new Set<String>{
+    'Ordinato',
+    'Disponibile',
+    'Assegnato',
+    WAIVED_STATUS
+  };
+  private static final Set<String> PARTICIPANT_EDITABLE_STATUSES = new Set<String>{
+    'Ordinato',
     'Disponibile',
     'Assegnato'
   };
@@ -20,9 +28,13 @@ public without sharing class ParticipantRegistrationController {
     @AuraEnabled
     public Date eventStartDate { get; set; }
     @AuraEnabled
+    public String status { get; set; }
+    @AuraEnabled
     public Boolean editable { get; set; }
     @AuraEnabled
     public Boolean assigned { get; set; }
+    @AuraEnabled
+    public Boolean canRinuncia { get; set; }
     @AuraEnabled
     public String firstName { get; set; }
     @AuraEnabled
@@ -51,9 +63,12 @@ public without sharing class ParticipantRegistrationController {
     @AuraEnabled
     public Date eventEndDate { get; set; }
     @AuraEnabled
+    public Boolean canMarkOrderIncassato { get; set; }
+    @AuraEnabled
     public List<TicketRow> tickets { get; set; }
 
     public PageResponse() {
+      canMarkOrderIncassato = false;
       tickets = new List<TicketRow>();
     }
   }
@@ -87,6 +102,7 @@ public without sharing class ParticipantRegistrationController {
   }
 
   private class AccessContext {
+    public Event_Invitation__c invitation;
     public Account account;
     public Campaign campaign;
   }
@@ -95,9 +111,9 @@ public without sharing class ParticipantRegistrationController {
   }
 
   @AuraEnabled(cacheable=true)
-  public static PageResponse loadPage(String accountId, String campaignId) {
+  public static PageResponse loadPage(String token) {
     try {
-      return buildPage(resolveAccess(accountId, campaignId));
+      return buildPage(resolveAccess(token));
     } catch (RequestException requestError) {
       throw handled(requestError.getMessage());
     } catch (Exception unexpectedError) {
@@ -108,13 +124,9 @@ public without sharing class ParticipantRegistrationController {
   }
 
   @AuraEnabled(cacheable=true)
-  public static ContactResponse findContact(
-    String accountId,
-    String campaignId,
-    String email
-  ) {
+  public static ContactResponse findContact(String token, String email) {
     try {
-      AccessContext access = resolveAccess(accountId, campaignId);
+      AccessContext access = resolveAccess(token);
       String normalizedEmail = normalizeEmail(email);
 
       if (!isValidEmail(normalizedEmail)) {
@@ -156,14 +168,13 @@ public without sharing class ParticipantRegistrationController {
 
   @AuraEnabled
   public static PageResponse savePage(
-    String accountId,
-    String campaignId,
+    String token,
     List<ParticipantInput> participants
   ) {
     Savepoint savepoint = Database.setSavepoint();
 
     try {
-      AccessContext access = resolveAccess(accountId, campaignId);
+      AccessContext access = resolveAccess(token);
       PageResponse response = saveParticipants(access, participants);
       response.message = 'I dati dei partecipanti sono stati salvati.';
       return response;
@@ -178,38 +189,150 @@ public without sharing class ParticipantRegistrationController {
     }
   }
 
-  private static AccessContext resolveAccess(
-    String rawAccountId,
-    String rawCampaignId
-  ) {
-    Id accountId = parseAccountId(rawAccountId);
-    Id campaignId = parseCampaignId(rawCampaignId);
+  @AuraEnabled
+  public static PageResponse markOrderIncassato(String token) {
+    Savepoint savepoint = Database.setSavepoint();
 
-    if (accountId == null || campaignId == null) {
+    try {
+      AccessContext access = resolveAccess(token);
+      Set<Id> orderIds = collectLinkedOrderIds(
+        queryVisibleAssets(access.account.Id, access.campaign.Id, false)
+      );
+
+      if (orderIds.isEmpty()) {
+        throw new RequestException(
+          'Nessun ordine collegato ai biglietti di questo invito.'
+        );
+      }
+
+      List<Order> ordersToUpdate = new List<Order>();
+      for (Order orderRecord : [
+        SELECT Id, Status
+        FROM Order
+        WHERE Id IN :orderIds
+        FOR UPDATE
+      ]) {
+        if (orderRecord.Status != 'Incassato') {
+          ordersToUpdate.add(
+            new Order(Id = orderRecord.Id, Status = 'Incassato')
+          );
+        }
+      }
+
+      if (!ordersToUpdate.isEmpty()) {
+        update ordersToUpdate;
+      }
+
+      PageResponse response = buildPage(access);
+      response.message = 'Ordine passato a Incassato.';
+      return response;
+    } catch (RequestException requestError) {
+      Database.rollback(savepoint);
+      throw handled(requestError.getMessage());
+    } catch (Exception unexpectedError) {
+      Database.rollback(savepoint);
+      throw handled(
+        'Non e stato possibile passare l ordine a Incassato. Riprova piu tardi.'
+      );
+    }
+  }
+
+  @AuraEnabled
+  public static PageResponse markTicketRinuncia(String token, String assetId) {
+    Savepoint savepoint = Database.setSavepoint();
+
+    try {
+      AccessContext access = resolveAccess(token);
+      Id parsedAssetId = parseAssetId(assetId);
+      if (parsedAssetId == null) {
+        throw staleTickets();
+      }
+
+      Asset ticketToUpdate;
+      for (
+        Asset ticket : queryVisibleAssets(
+          access.account.Id,
+          access.campaign.Id,
+          true
+        )
+      ) {
+        if (ticket.Id == parsedAssetId) {
+          ticketToUpdate = ticket;
+          break;
+        }
+      }
+
+      if (ticketToUpdate == null || ticketToUpdate.Status == WAIVED_STATUS) {
+        throw staleTickets();
+      }
+
+      update new Asset(Id = ticketToUpdate.Id, Status = WAIVED_STATUS);
+
+      PageResponse response = buildPage(access);
+      response.message = 'Rinuncia registrata.';
+      return response;
+    } catch (RequestException requestError) {
+      Database.rollback(savepoint);
+      throw handled(requestError.getMessage());
+    } catch (Exception unexpectedError) {
+      Database.rollback(savepoint);
+      throw handled(
+        'Non e stato possibile registrare la rinuncia. Riprova piu tardi.'
+      );
+    }
+  }
+
+  private static AccessContext resolveAccess(String rawToken) {
+    String token = normalizeToken(rawToken);
+
+    if (!isValidToken(token)) {
       throw invalidLink();
     }
 
-    List<Account> accounts = [
-      SELECT Id, Name
-      FROM Account
-      WHERE Id = :accountId
-      LIMIT 1
+    List<Event_Invitation__c> invitations = [
+      SELECT
+        Id,
+        Status__c,
+        Account__c,
+        Account__r.Name,
+        Campaign__c,
+        Campaign__r.Name,
+        Campaign__r.Data_Evento__c,
+        Campaign__r.StartDate,
+        Campaign__r.EndDate
+      FROM Event_Invitation__c
+      WHERE Token__c = :token
+      LIMIT 2
     ];
 
-    List<Campaign> campaigns = [
-      SELECT Id, Name, StartDate, EndDate
-      FROM Campaign
-      WHERE Id = :campaignId
-      LIMIT 1
-    ];
+    if (invitations.size() != 1) {
+      throw invalidLink();
+    }
 
-    if (accounts.isEmpty() || campaigns.isEmpty()) {
+    Event_Invitation__c invitation = invitations[0];
+    if (
+      invitation.Account__c == null ||
+      invitation.Account__r == null ||
+      invitation.Campaign__c == null ||
+      invitation.Campaign__r == null ||
+      invitation.Status__c == 'Cancelled'
+    ) {
       throw invalidLink();
     }
 
     AccessContext result = new AccessContext();
-    result.account = accounts[0];
-    result.campaign = campaigns[0];
+    result.invitation = invitation;
+    result.account = new Account(
+      Id = invitation.Account__c,
+      Name = invitation.Account__r.Name
+    );
+    result.campaign = new Campaign(
+      Id = invitation.Campaign__c,
+      Name = invitation.Campaign__r.Name,
+      Data_Evento__c = invitation.Campaign__r.Data_Evento__c,
+      StartDate = invitation.Campaign__r.StartDate,
+      EndDate = invitation.Campaign__r.EndDate
+    );
     return result;
   }
 
@@ -219,7 +342,7 @@ public without sharing class ParticipantRegistrationController {
     response.accountName = access.account.Name;
     response.campaignId = access.campaign.Id;
     response.campaignName = access.campaign.Name;
-    response.eventStartDate = access.campaign.StartDate;
+    response.eventStartDate = displayEventDate(access.campaign);
     response.eventEndDate = access.campaign.EndDate;
 
     List<Asset> tickets = queryVisibleAssets(
@@ -231,18 +354,30 @@ public without sharing class ParticipantRegistrationController {
     Integer requiredParticipantCount = 0;
 
     for (Asset ticket : tickets) {
+      if (
+        ticket.Order_Product__r != null &&
+        ticket.Order_Product__r.OrderId != null &&
+        ticket.Order_Product__r.Order != null &&
+        ticket.Order_Product__r.Order.Status != 'Incassato'
+      ) {
+        response.canMarkOrderIncassato = true;
+      }
+
       TicketRow row = new TicketRow();
       row.assetId = ticket.Id;
       row.ticketName = ticket.Name;
       row.productName = ticket.Product2 == null ? null : ticket.Product2.Name;
+      row.status = ticket.Status;
       row.campaignName = ticket.Campaign__r == null
         ? null
         : ticket.Campaign__r.Name;
       row.eventStartDate = ticket.Campaign__r == null
         ? null
-        : ticket.Campaign__r.StartDate;
+        : displayEventDate(ticket.Campaign__r);
       row.assigned = ticket.ContactId != null;
-      row.editable = !row.assigned && VISIBLE_STATUSES.contains(ticket.Status);
+      row.editable =
+        !row.assigned && PARTICIPANT_EDITABLE_STATUSES.contains(ticket.Status);
+      row.canRinuncia = ticket.Status != WAIVED_STATUS;
 
       if (row.editable) {
         requiredParticipantCount++;
@@ -293,7 +428,10 @@ public without sharing class ParticipantRegistrationController {
     Map<Id, Asset> eligibleAssets = new Map<Id, Asset>();
 
     for (Asset ticket : visibleAssets) {
-      if (ticket.ContactId == null) {
+      if (
+        ticket.ContactId == null &&
+        PARTICIPANT_EDITABLE_STATUSES.contains(ticket.Status)
+      ) {
         eligibleAssets.put(ticket.Id, ticket);
       }
     }
@@ -407,6 +545,21 @@ public without sharing class ParticipantRegistrationController {
     }
   }
 
+  private static Set<Id> collectLinkedOrderIds(List<Asset> tickets) {
+    Set<Id> orderIds = new Set<Id>();
+
+    for (Asset ticket : tickets) {
+      if (
+        ticket.Order_Product__r != null &&
+        ticket.Order_Product__r.OrderId != null
+      ) {
+        orderIds.add(ticket.Order_Product__r.OrderId);
+      }
+    }
+
+    return orderIds;
+  }
+
   private static Map<String, Contact> findExistingContacts(
     Id accountId,
     Set<String> emails
@@ -449,8 +602,9 @@ public without sharing class ParticipantRegistrationController {
   ) {
     String queryText =
       'SELECT Id, Name, Status, ContactId, Campaign__c, Campaign__r.Name, ' +
-      'Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
-      'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name ' +
+      'Campaign__r.Data_Evento__c, Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
+      'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name, ' +
+      'Order_Product__r.OrderId, Order_Product__r.Order.Status ' +
       'FROM Asset WHERE AccountId = :accountId AND Campaign__c = :campaignId ' +
       'AND Status IN :VISIBLE_STATUSES ';
 
@@ -520,14 +674,6 @@ public without sharing class ParticipantRegistrationController {
     submittedAssetIds.add(assetId);
   }
 
-  private static Id parseAccountId(String rawId) {
-    return parseId(rawId, Account.SObjectType);
-  }
-
-  private static Id parseCampaignId(String rawId) {
-    return parseId(rawId, Campaign.SObjectType);
-  }
-
   private static Id parseAssetId(String rawId) {
     return parseId(rawId, Asset.SObjectType);
   }
@@ -549,9 +695,26 @@ public without sharing class ParticipantRegistrationController {
     return email == null ? null : email.trim().toLowerCase();
   }
 
+  private static Date displayEventDate(Campaign campaign) {
+    if (campaign == null) {
+      return null;
+    }
+    return campaign.Data_Evento__c == null
+      ? campaign.StartDate
+      : campaign.Data_Evento__c;
+  }
+
+  private static String normalizeToken(String token) {
+    return token == null ? null : token.trim().toLowerCase();
+  }
+
   private static Boolean isValidEmail(String email) {
     return (!String.isBlank(email) &&
     Pattern.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$', email));
+  }
+
+  private static Boolean isValidToken(String token) {
+    return !String.isBlank(token) && Pattern.matches('^[0-9a-f]{64}$', token);
   }
 
   private static RequestException invalidLink() {
