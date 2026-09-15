@@ -3965,3 +3965,114 @@ non verificato contro l'org. La PR #43 non ha **né descrizione né review**, te
 PR Mexal consecutiva. E la **copertura**: +2.057 righe sopra lo 0 coperte / 4.737
 non coperte / 0% del mattino, ora comprensive di due batchable, due queueable e un
 percorso asincrono guidato da trigger. Solo registrazione.
+
+## 38. Aggiornamento 15/09/2026 — tre pull request in un giorno, e l'integrazione viene spenta in UAT
+
+La giornata di rilascio più consistente del progetto, e il giorno in cui la sua
+integrazione centrale ha smesso di essere eseguibile nell'ambiente che dovrebbe
+accettarla.
+
+### 38.1 🟢 PR #43 mergiata — il rischio di custodia è chiuso
+
+`23f1375`, **08:07:04Z**. L'intera catena ordine → Mexal, la regola di validazione
+dell'OI-117, la sincronizzazione articoli ed entrambe le named credential sono su
+`DevMain`. L'`org-status-check` del 15/09 lo conferma dall'altro lato: **tutte le
+48 classi e trigger Apex del repository sono deployate, 44 equivalenti a livello
+di token rispetto a UAT**, e `MexalHttpClient` è assente da entrambi i lati —
+quindi la questione della classe orfana del 14/09 si risolve con **nessun orfano**.
+Il rischio «un deploy da `DevMain` annulla silenziosamente la catena» è finito.
+
+Finisce anche il **fallimento di deploy sul permission set**: `Full_Permission` e
+`Integration_Management` referenziano la external credential Mexal, e ora
+`namedCredentials/` esiste nel sorgente con i segreti lasciati nell'org come
+riferimenti a merge field. 🔴 **DocuSign resta solo nell'org.**
+
+### 38.2 🔴 `1830fce` — e la catena non gira in UAT
+
+Cinque minuti prima di quel merge sono entrate otto righe, con il messaggio
+_"Added an check to not do the callout on order creation"_:
+
+```apex
+public static void enqueueForCreatedOrders(List<Order> newOrders) {
+  if (isSandbox()) { return; }
+```
+
+**La UAT è una sandbox.** Il trigger scatta e a valle non succede nulla: nessun
+passaggio Anticipay, nessuna creazione cliente, nessuna creazione ordine, nessun
+campo di stato, nessuna riga di log. Spiega esattamente il _«tutti i 31 Order
+hanno lo stato integrazione Mexal vuoto»_ del controllo org: è comportamento
+voluto.
+
+🟢 Letto come risposta al **rischio dell'ERP di produzione** registrato la sera
+prima, è la cosa responsabile da rilasciare: un ordine in UAT non può più creare
+un ordine vero nel sistema di fatturazione di Pienissimo. ⚠ **Questa lettura è
+dedotta** — il messaggio di commit non lo dice, la PR #43 non ha descrizione, e
+nessun messaggio su alcun canale ne parla.
+
+🔴 **La UAT va dal 23 settembre al 13 ottobre; il go-live è il 21 ottobre.** La
+prima esecuzione end-to-end della catena a partire da un ordine avverrebbe quindi
+**in produzione, dopo l'accettazione**. Un meccanismo più fine esisteva già e non
+è stato usato — `buildEndpoint` sceglie tra una named credential di sandbox e una
+di produzione dal 10 settembre, e lo stesso custom setting porta `Use_Mock__c`. E
+il guard è asimmetrico: una sandbox può ancora scrivere **clienti** su Mexal in
+produzione, che è proprio ciò che è già successo il 14 settembre.
+
+### 38.3 🟢🔴 PR #44 mergiata — la pagina partecipanti passa ai token, e acquisisce una scrittura pubblica
+
+`f51365b`, **13:43:52Z**, Rexhina Hysi. **+2.487 righe.** Il lavoro su inviti e
+partecipanti che il controllo org del 15/09 segnalava come divergente dal sorgente
+è ora **nel** sorgente: `ContactTriggerHandler`, un
+`ParticipantRegistrationController` riscritto, `Event_Invitation__c.Token__c`, le
+date evento su Campaign, una record page Campaign e una Contact, e `Rinuncia` come
+stato Asset reale. Il commit porta con sé anche la propria nota di recap in
+`notes/objects/` — la **terza** volta che una decisione arriva in questo
+repository attraverso un commit di codice.
+
+🟢 **Il link di invito è ora un token opaco per invito** — 64 caratteri
+esadecimali da `Crypto.generateAesKey(256)` — al posto degli id Account e Campaign
+in chiaro. Questo **supera di fatto BIG-18**, e ora lo dicono sia i due documenti
+in prosa sia il registro.
+
+🔴 **La stessa pagina può portare un ordine a `Incassato`.**
+`ParticipantRegistrationController` è `public without sharing` ed espone
+`markOrderIncassato(String token)`, reso come pulsante **«Segna ordine
+incassato»** sulla landing pubblica. Il token è robusto; il problema è che cosa
+autorizza — uno stato di pagamento, impostato da un utente guest, senza scadenza,
+senza revoca se non invalidando il link già inviato, e senza traccia di chi sia
+stato. **Nessun requisito lo autorizza e nessuno ne ha parlato.** Nuova riga
+**#136**.
+
+### 38.4 🟢 PR #45 aperta — finalmente il roll-up delle tranche
+
+`400c195`, **16:07:59Z**, Anita Aga, **aperta**. **+2.290 righe, sette classi Apex
+nuove.** `OrderItemTriggerHandler` ricalcola una tranche ogni volta che cambia la
+tranche o lo stato di pagamento Mexal di una riga e la porta a `Pagata` **solo
+quando tutte le righe sono `Paid`** — `ORD-03` e `AC-06` alla lettera, ed è
+proprio lo scrittore che quella mattina il controllo org dava per mancante. Lo
+stato per riga arriva da Mexal tramite `MexalScadenzarioSearchService` e
+`MexalInvoiceOrderLineMappingService`; `MexalOrderMappingService` riscrive sulle
+coordinate del documento Mexal sull'Order e sulle sue righe.
+
+🟢 **Il principal dell'OI-117 è corretto** — la regola di validazione passa da un
+nome di profilo letterale a `NOT($Permission.Edit_Mexal_Synced_Admin_Fields)`
+contro un nuovo custom permission, che è ciò di cui «modificabili solo
+dall'amministrazione» ha bisogno. 🔴 **Nessun permission set lo concede ancora**,
+il che blocca i campi per tutti, amministrazione compresa.
+
+🔴 **Un terzo batch non schedulato.** `MexalMaggazinoSyncBatch` si aggiunge ai
+batch clienti e articoli su uno scheduler che **ancora nessuno invoca**. Esistono
+sei righe `Integration_Configuration2__c`; **nessuno dei 7 job schedulati
+nell'org è Mexal.** La finestra di sincronizzazione è non specificata da dodici
+giorni.
+
+### 38.5 🔴 Copertura, e la prima esecuzione dei test in quarantadue giorni
+
+Il controllo org del 15/09 registra un'esecuzione su UAT: **37 passati, 4
+falliti** — tutti e quattro metodi di `OrderTriggerHandlerTest`, **bloccati dalle
+mappature edizione mancanti del #121**, dove 40 prodotti su 43 che generano
+biglietti sono ancora non mappati. Copertura **0 coperte / 5.095 non coperte /
+0%**, e quello snapshot **precede entrambe le pull request della giornata**. Il
+repository contiene ora **40 classi Apex, tre delle quali di test**, e la
+superficie non testata comprende ora una scrittura sullo stato Ordine
+raggiungibile da utente guest. **Solo brief — nessun test scritto, proposto o
+abbozzato.**

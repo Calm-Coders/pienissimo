@@ -7,7 +7,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 depends_on: [OI-125]
 requirement: [INT-01, INT-05]
 source: Slack DM D0AQ0FMHFM1, Aurel Mrruku and Andrea Di Cicco, 2026-09-14 12:07 CEST
@@ -71,3 +71,51 @@ response to the reminder confirms a customer record was created.
 reminder between colleagues, not an escalation, and both parties were plainly
 aware. It is recorded because the project record did not say it anywhere, and the
 next person to point the integration at a scheduler needs to know.
+
+## 2026-09-15 — a correction, and a blunt mitigation
+
+### Correction to the 14/09 reading
+
+The sentence above — _"Nothing distinguishes a test target from a live one, so
+there is no configuration a developer could switch even if they wanted to"_ — is
+**wrong, and was already wrong when it was written**.
+
+`MexalSearchCalloutService.buildEndpoint` has selected between
+`Integration_Configuration2__c.Named_Credential_Sandbox__c` and
+`Named_Credential_Prod__c` on `Organization.IsSandbox` since **`bc2ed5d`,
+10 September** (PR #39), falling back to a default credential when the chosen
+field is blank. The same custom setting also carries `Use_Mock__c`,
+`Mock_API_Scenario__c` and `Mock_Apex_Class__c`.
+
+**So the switch exists. What is unestablished is whether anything is behind it.**
+Only one `Mexal` named credential is in `force-app/main/default/namedCredentials/`,
+and **the org was not opened on this run**, so whether
+`Named_Credential_Sandbox__c` is populated with a genuinely different target — a
+Mexal test company — is unknown. If it is blank or points at the same host, the
+fallback sends sandbox traffic to production exactly as described.
+
+⚠ **Question 1 below is therefore sharper, not answered**: the configuration
+point exists; what it points at has never been checked. The next
+`org-status-check` should read the six `Integration_Configuration2__c` rows and
+say.
+
+### The mitigation that did ship
+
+`1830fce` (2026-09-15, merged to `DevMain` in PR #43) makes
+`OrderMexalIntegrationService.enqueueForCreatedOrders` return immediately when
+`Organization.IsSandbox` is true. **A UAT order can no longer create an order in
+Mexal production.** That is a real reduction of this risk and it arrived the
+morning after this note was written.
+
+🔴 **It is asymmetric and it costs something.** Only the order path is guarded —
+the customer create and update path, the manual Account button and the sync
+batches are not, so a sandbox can still write customer records to production
+Mexal, which is the exact thing that already happened on 14 September. And the
+guard switches the chain off rather than redirecting it, so the integration
+cannot be exercised in UAT at all:
+[OI-137](../items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md).
+
+**Questions 1 and 2 remain unanswered, and nobody has been asked.** Andrea Di
+Cicco's DM has carried no message since 14/09 17:28 CEST. Question 3 — do not
+schedule against production — is now **three** batches, not two
+([the payment return](../objects/The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md)).

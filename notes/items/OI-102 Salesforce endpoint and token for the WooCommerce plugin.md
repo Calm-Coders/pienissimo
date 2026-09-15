@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-11
+updated: 2026-09-15
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -341,3 +341,17 @@ the client side.
 
 ⚠ **UAT opens on 23 September — nine days.** This row is the only WooCommerce item
 on the critical path and it has had no movement since 08/09.
+
+## 2026-09-15 — seventh day, and the DM went quiet entirely
+
+`D0AQ0FMHFM1` (Aurel Mrruku ↔ Andrea Di Cicco) carried **no message at all on
+15 September**; its last is 14/09 17:28 CEST. The 09/09 chase is unanswered for
+**seven days**, and the window now includes a day in which neither party wrote to
+the other.
+
+**Mail is where an answer would most plausibly have arrived, and Gmail has been
+unreachable for two consecutive nightly runs** — so this negative is weaker than
+it looks. Absence of an answer in Slack is not absence of an answer.
+
+⚠ **UAT opens 23 September.** The whole Salesforce side of
+[OI-49](OI-49%20WooCommerce%20checkout-link%20flow.md) waits on this.

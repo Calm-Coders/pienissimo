@@ -5,11 +5,11 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-11
+updated: 2026-09-15
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
-evidence: test run against Pienissimo UAT, 2026-08-03
+evidence: test runs against Pienissimo UAT, 2026-08-03 and 2026-09-15
 ---
 
 # OI-64 - The bundle Apex test suite is broken
@@ -220,3 +220,50 @@ a new, specific hazard for whoever writes the suite.
 **Brief only.** Per the standing instruction, no test class was written, proposed
 or scaffolded in this run. Recorded so the suite task has a current inventory when
 Aurel Mrruku asks for it.
+
+## 2026-09-15 - the suite ran for the first time since 4 August, and failed
+
+The 2026-09-15 `org-status-check` reports a test run against Pienissimo UAT
+earlier that day: **37 pass, 4 fail**. All four failures are
+`OrderTriggerHandlerTest` methods, **blocked by missing edition mappings** —
+that is [OI-121](OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md),
+where 40 of 43 ticket-generating products are still unmapped, surfacing as a red
+test rather than as a data gap.
+
+**This is the first recorded execution of the suite in forty-two days.** It does
+not change the diagnosis; it confirms it, and it adds a second cause: the suite
+depends on reference data nobody owns.
+
+### Coverage position
+
+| Date       | Covered | Uncovered | Org-wide |
+| ---------- | ------- | --------- | -------- |
+| 2026-09-08 | 0       | 2,957     | 0%       |
+| 2026-09-14 | 0       | 4,737     | 0%       |
+| 2026-09-15 | 0       | **5,095** | **0%**   |
+
+**And that figure predates today's two pull requests.** PR #44 merged at
+13:43:52Z (+2,487 lines, including `ContactTriggerHandler` and a rewritten
+`ParticipantRegistrationController`) and PR #45 is open (+2,290 lines, seven new
+classes). The repository now holds **40 Apex classes, three of which are tests**.
+
+### What the brief has gained today
+
+- `OrderItemTriggerHandler` — the tranche roll-up, a state machine over
+  `Aperta` / `Parzialmente Pagata` / `Pagata`
+  ([the build](../objects/The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md)).
+- `ContactTriggerHandler` — the one-principal-contact-per-Account invariant.
+- `ParticipantRegistrationController.markOrderIncassato` — a **guest-reachable
+  write to Order status**, which is the highest-consequence untested path on the
+  project ([OI-136](OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md)).
+- `MexalMaggazinoSyncBatch`, `MexalScadenzarioSearchService`,
+  `MexalInvoiceOrderLineMappingService` — batch and callout classes.
+- ⚠ **The `Lock_Mexal_Synced_Admin_Fields` validation rule will fail any test
+  that updates a Mexal-linked Account without the new
+  `Edit_Mexal_Synced_Admin_Fields` custom permission.** Carried over from 14/09
+  and now more specific: the principal is a custom permission, so the fix in a
+  future suite is `System.runAs` with a permission-set assignment, not a profile.
+
+**Brief only. No test class was written, proposed or scaffolded on this run**, per
+the standing instruction. These records exist so the suite can be written
+properly in one pass when Aurel Mrruku asks for it.

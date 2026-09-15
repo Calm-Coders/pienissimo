@@ -10,6 +10,60 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-15 — claude — nightly requirements-check: three PRs in one day, and the chain is switched off in UAT
+
+- **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark
+  **2026-09-14T22:00Z**, the `external_watermark` of
+  [the 14/09 trace](notes/traces/Source%20trace%202026-09-14.md), the newest note
+  in `notes/traces/` by `updated:`. 🔴 **Gmail was unreachable for the second
+  consecutive run** (sign-in required, connector then disconnected, **zero mail
+  queries ran**), so the **mail watermark stays at 2026-09-11T22:00Z** and four
+  days of the project's primary client channel are unread. Trace:
+  [Source trace 2026-09-15](notes/traces/Source%20trace%202026-09-15.md).
+- **State:** the busiest delivery day on the project. **PR #43 merged 08:07:04Z** —
+  the whole order-to-Mexal chain, the OI-117 lock, the article sync and both named
+  credentials are on `DevMain`;
+  [the org-only chain risk is resolved](notes/risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)
+  and `MexalHttpClient` turns out to be absent from both sides, so no orphan.
+  **PR #44 merged 13:43:52Z** (Rexhina Hysi, +2,487) brought the invitation and
+  participant stack into source and moved the public link to a 64-hex
+  per-invitation token, **superseding `BIG-18` in practice** — register and both
+  prose documents updated. **PR #45 opened 16:07:59Z** (Anita Aga, +2,290, still
+  open) is the **tranche roll-up** `ORD-03`/`AC-06` asked for, and it fixes
+  OI-117's principal to a custom permission.
+- **Two findings a cold agent must not lose:**
+  1. **`1830fce` disables the order-to-Mexal chain in every sandbox** — an
+     unconditional `if (isSandbox()) return;`, merged inside PR #43. **UAT is a
+     sandbox, UAT opens 23 September, acceptance is due 13 October**, so the first
+     end-to-end order run would be in production. It is a real answer to the
+     production-ERP risk and its reason is stated nowhere.
+     [OI-137](notes/items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md).
+  2. **The public participant page can set `Order.Status = 'Incassato'`** —
+     `ParticipantRegistrationController` is `public without sharing` and the guest
+     page renders a "Segna ordine incassato" button. Strong token, unbounded
+     authority, no requirement authorises it, **no human has discussed it**.
+     [OI-136](notes/items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md).
+- **Next:** (a) get Gmail reconnected — it is the highest-value human action
+  available; (b) put OI-136 to a person, Elisa Migliano being the operational
+  authority on invoicing; (c) decide how `INT-01`/`INT-05` are accepted if not in
+  UAT; (d) check whether any permission set grants
+  `Edit_Mexal_Synced_Admin_Fields` — if PR #45 merges without one, amministrazione
+  is locked out of the thirteen fields the 03/09 session promised them; (e) a run
+  with context to spare should **decode `Flows & Objects.drawio`**, which moved an
+  eighth time at 15/09 08:29:51Z and is the `source:` of the `BIG-18` the build
+  just superseded — undecoded for four runs now.
+- **Watch:** two corrections this run made. The production-ERP risk's claim that
+  no sandbox/production switch existed was **wrong when written** — it has existed
+  since `bc2ed5d` on 10 September; what is unknown is what
+  `Named_Credential_Sandbox__c` points at. And "all 31 Orders have a blank Mexal
+  integration status" is **no longer evidence of an unexercised chain** — in a
+  sandbox it is the designed behaviour. Do not reinstate either reading.
+- **Did not:** write, propose or scaffold any Apex test (37 pass / 4 fail and
+  5,095 uncovered lines are recorded as brief only); open the org; touch PR #45;
+  rewrite the developer-authored note that arrived inside PR #44.
+
+---
+
 ## 2026-09-14 — claude — nightly requirements-check: the org-only chain reached source control, with OI-117's lock
 
 - **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark

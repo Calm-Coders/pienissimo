@@ -5,7 +5,7 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 depends_on: [OI-116, OI-117, OI-125]
 blocks: [go-live]
 requirement: INT-01
@@ -129,3 +129,40 @@ still live in UAT.
 🔴 **Still never executed.** The 14/09 org check found all 30 Orders carrying an
 empty `Mexal_Integration_Status__c`. Committing the chain does not run it, and
 **nothing is scheduled**.
+
+## 2026-09-15 — merged to `DevMain`, and switched off in every sandbox
+
+**PR #43 merged at 08:07:04Z (`23f1375`).** The chain is on the line everything is
+built from; its custody risk is
+[closed](../risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md).
+The 2026-09-15 `org-status-check` confirms all 48 repository Apex classes and
+triggers are deployed and 44 are token-equivalent to UAT, and finds
+`MexalHttpClient` in **neither** side — so the orphan question of 14/09 resolves
+as no orphan.
+
+🔴 **`1830fce` gates the entry point on `Organization.IsSandbox`.** Pushed
+10:02:54 CEST, merged five minutes later inside PR #43:
+
+```apex
+public static void enqueueForCreatedOrders(List<Order> newOrders) {
+  if (isSandbox()) { return; }
+  ...
+}
+```
+
+**In UAT the trigger fires and the chain does nothing** — no Anticipay step, no
+customer create, no order create, no status field, no log row. Full reading:
+[OI-137](../items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md).
+It explains, exactly, the org check's "all 31 Orders have blank Mexal
+integration status": that is now the designed behaviour, not a symptom.
+
+🟢 **The return leg was added the same evening.** `400c195` (PR #45, open) makes
+`sendOrder` call `MexalOrderMappingService.saveCreatedOrderMapping`, writing the
+Mexal document sigla, serie, number and customer code back onto the Order and the
+Mexal line number onto each Order Item — the coordinates the payment return needs
+([the build](The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md)).
+
+**What the chain still lacks:** a schedule (three batches now wait on one
+`System.schedule` call), an answer on the Mexal environment it targets, and an
+answer to [OI-135](../items/OI-135%20Who%20must%20be%20told%20when%20Salesforce%20starts%20creating%20Mexal%20orders.md)
+— who is told before Salesforce starts creating orders in Mexal.

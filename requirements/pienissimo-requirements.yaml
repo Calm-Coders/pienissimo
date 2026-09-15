@@ -1114,8 +1114,20 @@ requirements:
       pri: M,
       status: to_confirm,
       source: DGM-2,
-      text: "Participant landing page reached by a link carrying the Account ID; if the account bought several events the referent picks the event first, then fills one row per purchased ticket",
-      tracked_by: [OI-78, OI-86]
+      text:
+        "Participant landing page reached by a link carrying the Account ID; if
+        the account bought several events the referent picks the event first,
+        then fills one row per purchased ticket. 2026-09-15: superseded in
+        practice by the build — PR #44 replaced the Account/Campaign id
+        parameters with a per-invitation opaque token
+        (Event_Invitation__c.Token__c, 64 hex characters from Crypto), and one
+        invitation is exactly one Account and one Campaign, so the event is
+        chosen by which link is opened rather than on the page. The new
+        mechanism is better than the text it replaces and nobody has confirmed
+        it; the token does not expire, and the same page also exposes a
+        guest-reachable write to Order.Status = Incassato, which no requirement
+        authorises. Kept to_confirm pending a decision on both",
+      tracked_by: [OI-78, OI-86, OI-136]
     }
   - {
       id: BIG-19,
@@ -1453,7 +1465,7 @@ requirements:
         of the integration. Kept open because no one has accepted that trade aloud;
         it needs a decision, not a re-statement of the recommendation",
       recommendation: signed_token,
-      tracked_by: [OI-104, REF-woo-payload, risk-woo-endpoint-orphan]
+      tracked_by: [OI-104, OI-136, REF-woo-payload, risk-woo-endpoint-orphan, RISK-community-auth, RISK-credentials-in-plaintext]
     }
   - {
       id: INT-17,

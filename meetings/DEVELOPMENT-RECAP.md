@@ -3792,3 +3792,107 @@ description and no review**, the third consecutive Mexal PR to do so. And
 **coverage**: +2,057 lines on top of the morning's 0 covered / 4,737 uncovered /
 0%, now including two batchables, two queueables and a trigger-driven async path.
 Brief only.
+
+## 38. Update 2026-09-15 — three pull requests in one day, and the integration is switched off in UAT
+
+The largest single day of delivery on this project, and the day its central
+integration stopped being runnable in the environment that is meant to accept it.
+
+### 38.1 🟢 PR #43 merged — the custody risk is closed
+
+`23f1375`, **08:07:04Z**. The entire order-to-Mexal chain, the OI-117 validation
+rule, the article sync and both named credentials are on `DevMain`. The
+2026-09-15 `org-status-check` confirms it from the other side: **all 48
+repository Apex classes and triggers are deployed, 44 token-equivalent to UAT**,
+and `MexalHttpClient` is absent from both sides — so the orphaned-class question
+of 14/09 resolves as **no orphan**. The "a deploy from `DevMain` silently reverts
+the chain" failure mode is over.
+
+The **permission-set deploy failure** is over too: `Full_Permission` and
+`Integration_Management` reference the Mexal external credential, and
+`namedCredentials/` now exists in source with the secrets left in the org as
+merge-field references. 🔴 **DocuSign is still org-only.**
+
+### 38.2 🔴 `1830fce` — and the chain does not run in UAT
+
+Five minutes before that merge, eight lines went in under the message _"Added an
+check to not do the callout on order creation"_:
+
+```apex
+public static void enqueueForCreatedOrders(List<Order> newOrders) {
+  if (isSandbox()) { return; }
+```
+
+**UAT is a sandbox.** The trigger fires and nothing downstream runs — no
+Anticipay step, no customer create, no order create, no status field, no log row.
+It explains the org check's _"all 31 Orders have blank Mexal integration status"_
+exactly: that is now designed behaviour.
+
+🟢 Read as a response to the **production-ERP risk** recorded the night before, it
+is the responsible thing to have shipped: a UAT order can no longer create a real
+order in Pienissimo's live billing system. ⚠ **That reading is inferred** — the
+commit message does not say it, PR #43 has no description, and no message on any
+channel discusses it.
+
+🔴 **UAT runs 23 September – 13 October; go-live is 21 October.** So the first
+end-to-end execution of the chain from an order would be **in production, after
+acceptance**. A finer mechanism already existed and was not used —
+`buildEndpoint` has chosen between a sandbox and a production named credential
+since 10 September, and the same custom setting carries `Use_Mock__c`. And the
+guard is asymmetric: a sandbox can still write **customers** to Mexal production,
+which is the thing that already happened on 14 September.
+
+### 38.3 🟢🔴 PR #44 merged — the participant page moves to tokens, and gains a public write
+
+`f51365b`, **13:43:52Z**, Rexhina Hysi. **+2,487 lines.** The invitation and
+participant work that the 15/09 org check reported as diverging from source is now
+**in** source: `ContactTriggerHandler`, a rewritten
+`ParticipantRegistrationController`, `Event_Invitation__c.Token__c`, Campaign
+event dates, a Campaign and a Contact record page, and `Rinuncia` as a real Asset
+status. The commit also carries its own recap note into `notes/objects/` — the
+**third** time a decision has reached this repository through a code commit.
+
+🟢 **The invitation link is now an opaque per-invitation token** — 64 hex
+characters from `Crypto.generateAesKey(256)` — instead of the raw Account and
+Campaign ids. That **supersedes BIG-18 in practice**, and both prose documents
+and the register now say so.
+
+🔴 **The same page can set an order to `Incassato`.**
+`ParticipantRegistrationController` is `public without sharing` and exposes
+`markOrderIncassato(String token)`, rendered as a **"Segna ordine incassato"**
+button on the public landing page. The token is strong; what it authorises is the
+problem — a payment state, set by a guest user, with no expiry, no revocation
+short of invalidating the link already sent, and no attribution. **No requirement
+authorises it and nobody has discussed it.** New row **#136**.
+
+### 38.4 🟢 PR #45 opened — the tranche roll-up, at last
+
+`400c195`, **16:07:59Z**, Anita Aga, **open**. **+2,290 lines, seven new Apex
+classes.** `OrderItemTriggerHandler` recalculates a tranche whenever a line's
+tranche or Mexal payment status changes and marks it `Pagata` **only when every
+line is `Paid`** — `ORD-03` and `AC-06` as written, and the writer the org check
+had reported missing that morning. The per-line status comes from Mexal through
+`MexalScadenzarioSearchService` and `MexalInvoiceOrderLineMappingService`;
+`MexalOrderMappingService` writes the Mexal document coordinates back onto the
+Order and its lines.
+
+🟢 **OI-117's principal is fixed** — the validation rule moves from a literal
+profile name to `NOT($Permission.Edit_Mexal_Synced_Admin_Fields)` against a new
+custom permission, which is what "editable only by amministrazione" needs. 🔴 **No
+permission set grants it yet**, which locks the fields for everyone including
+amministrazione.
+
+🔴 **A third unscheduled batch.** `MexalMaggazinoSyncBatch` joins the customer and
+article batches on one scheduler that **still nothing calls**. Six
+`Integration_Configuration2__c` rows exist; **none of the org's 7 scheduled jobs
+is Mexal.** The sync window has been unspecified for twelve days.
+
+### 38.5 🔴 Coverage, and the first test run in forty-two days
+
+The 15/09 org check records a run against UAT: **37 pass, 4 fail** — all four
+`OrderTriggerHandlerTest` methods, **blocked by the missing edition mappings of
+#121**, where 40 of 43 ticket-generating products are still unmapped. Coverage
+**0 covered / 5,095 uncovered / 0%**, and that snapshot **predates both of the
+day's pull requests**. The repository now holds **40 Apex classes, three of them
+tests**, and the untested surface now includes a guest-reachable write to Order
+status. **Brief only — no test was written, proposed or scaffolded.**

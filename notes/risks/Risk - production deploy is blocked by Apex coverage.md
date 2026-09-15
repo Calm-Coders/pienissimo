@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-14
+updated: 2026-09-15
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -449,3 +449,24 @@ Two things make the gap qualitatively worse rather than only larger:
 **Unchanged:** the 75% production floor cannot be evidenced, the last test run is
 **2026-08-04**, and **UAT opens on 23 September — nine days away.** Recorded as
 brief only; no test was written or offered.
+
+## 2026-09-15 — 5,095 uncovered before today's 4,777 new lines
+
+The 2026-09-15 `org-status-check` reads UAT at **0 covered / 5,095 uncovered /
+0% org-wide**, and records the **first test run since 4 August**: 37 pass,
+**4 fail**, all four `OrderTriggerHandlerTest` methods blocked by the missing
+edition mappings of
+[OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md).
+
+That snapshot was taken at 08:47Z. Since then **PR #44 merged (+2,487)** and
+**PR #45 opened (+2,290)**. The repository holds **40 Apex classes, three of
+which are tests**.
+
+🔴 **The newly uncovered surface now includes a guest-reachable write to Order
+status** — `ParticipantRegistrationController.markOrderIncassato`
+([OI-136](../items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md)) —
+and a payment-state machine over tranches. The 75% production floor is further
+away than on any previous reading.
+
+⚠ **UAT opens 23 September — eight days.** Recorded as brief only; **no test was
+written, proposed or scaffolded.**

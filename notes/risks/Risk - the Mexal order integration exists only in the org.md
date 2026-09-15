@@ -1,12 +1,12 @@
 ---
 id: risk-mexal-chain-org-only
 type: risk
-status: in-progress
+status: resolved
 severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 depends_on: [OI-116, OI-125]
 blocks: [go-live]
 requirement: [INT-01, INT-05]
@@ -108,3 +108,35 @@ lock), a second batch pair for articles, four watermark fields on
 
 **Status moves to in-progress.** It closes when PR #43 merges and an
 `org-status-check` confirms `force-app/` and the org agree.
+
+## 2026-09-15 — PR #43 merged. This risk is closed.
+
+**`23f1375`, 2026-09-15 08:07:04Z**, merged PR #43 into `DevMain`. Every sentence
+above that was qualified with "until PR #43 merges" is now discharged:
+
+- 🟢 **`DevMain` carries the chain.** `OrderTriggerHandler.afterInsert` calls
+  `OrderMexalIntegrationService.enqueueForCreatedOrders` on the line everything is
+  built from. `AnticipayOrderAutomation.cls` is gone. **The "a deploy from
+  `DevMain` silently reverts the chain" failure mode no longer exists.**
+- 🟢 **The 2026-09-15 `org-status-check` confirms it from the other side**: all 48
+  repository Apex classes and triggers are deployed, and 44 of them are
+  token-equivalent to UAT. That is the confirmation this note said it needed.
+- 🟢 **`MexalHttpClient` is absent from both sides.** The same check reports it in
+  neither the repository nor UAT, so the orphaned-class question raised on 14/09
+  resolves as **no orphan** — it was a transient the reconciliation removed.
+
+⚠ **One commit rode in with the merge and is a finding of its own.** `1830fce`
+(Anita Aga, 10:02:54 CEST, five minutes before the merge) adds an
+`isSandbox()` early return to `enqueueForCreatedOrders`, so the chain this risk
+fought to preserve **does not execute in UAT at all** —
+[OI-137](../items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md).
+Custody is solved; exercisability is now the open question.
+
+⚠ **The pattern this note tracks is not closed, only this instance.** The
+2026-09-15 check still finds org-only metadata in UAT: a `ContactTriggerHandler`
+and `ContactTrigger`, one Account field and four invitation fields — though PR #44,
+merged the same afternoon, brought the Contact automation and the invitation
+fields into source. The DocuSign credentials remain org-only
+([the credentials risk](Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)).
+
+**Status: resolved.**

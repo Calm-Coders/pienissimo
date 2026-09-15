@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-10
+updated: 2026-09-15
 blocks: [OI-75, go-live]
 severity: gating
 source: Aurel Mrruku direct decision, 2026-08-24; meetings/open-items.md row 50
@@ -343,3 +343,25 @@ field that does not exist. **Ask before building the outbound leg.**
 the first evidence of how the per-line payment status will arrive:
 `POST /risorse/scadenzario/ricerca`, filterable **by customer code**, exists and
 is reachable.
+
+## 2026-09-15 - gap 2 is built, on an open PR
+
+`400c195` (Anita Aga, PR #45, **open**) adds `OrderItemTriggerHandler` and
+`OrderItem.Mexal_Payment_Status__c`, and the aggregation this note has called the
+one genuinely unbuilt gap now exists
+([the build](../objects/The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md)).
+
+A tranche recalculates whenever a line's `Tranche__c` or
+`Mexal_Payment_Status__c` changes — on the old tranche and the new one, so a line
+moved between tranches fixes both — and it reaches `Pagata` **only when every
+line on it is `Paid`**. That is `ORD-03` and `AC-06` as written. The per-line
+status arrives from Mexal through `MexalScadenzarioSearchService` and
+`MexalInvoiceOrderLineMappingService`, which is the mechanism `bc2ed5d` had only
+shown to be reachable.
+
+🔴 **Not merged**, so `DevMain` at `f51365b` still has nothing that computes it.
+🔴 **Nothing schedules the invoice/payment pass.** The nightly scheduler runs the
+customer, article and warehouse batches; how the scadenzario read is triggered is
+not visible in the commit.
+⚠ The 2026-09-15 `org-status-check` still reads the org as it was this morning:
+**29 tranches, 5 of 38 Order Items carrying tranche and due date, 0 fully paid.**

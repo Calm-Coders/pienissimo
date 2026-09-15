@@ -1,12 +1,12 @@
 ---
 id: risk-named-credentials-org-only
 type: risk
-status: open
+status: in-progress
 severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-02
-updated: 2026-09-14
+updated: 2026-09-15
 depends_on: [OI-94, OI-102]
 blocks: [go-live]
 requirement: [INT-18, INT-19]
@@ -220,3 +220,27 @@ the deploy needs is now created by the deploy.
   ([the plaintext-circulation risk](Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
 
 **Severity drops from high to medium** once PR #43 merges. Until then, unchanged.
+
+## 2026-09-15 — two of three reached `DevMain`; DocuSign did not
+
+PR #43 merged at 08:07:04Z, so `force-app/main/default/namedCredentials/` and
+`externalCredentials/` are on `DevMain` at last, carrying `Mexal` and
+`Anticipay` with their auth headers as merge-field references — **no secret value
+entered the repository**, which is the shape this note asked for.
+
+🟢 **The undeployable-permission-set failure ends.** `Full_Permission` and
+`Integration_Management` reference
+`Mexal_External_Credential-Mexal_Principal`, and the credential now exists in
+source, so a clean deploy no longer fails on it.
+
+🔴 **`DocuSign` is still org-only.** The 2026-09-15 `org-status-check` lists it
+under INT-19 as named and external credential present in UAT and absent from
+source, with the provider requirement itself still open. A rebuild from source
+into a fresh org still loses it.
+
+⚠ **The secrets themselves remain in the org only**, by design. That is correct
+and it is also a single point of failure nobody has written down as a recovery
+procedure. Who can re-enter the Mexal and Anticipay principals if the org is
+rebuilt is not recorded anywhere in this repository.
+
+**Status: in-progress.** It closes when DocuSign is in source too.

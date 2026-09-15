@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-09-03
-updated: 2026-09-14
+updated: 2026-09-15
 depends_on: [OI-116]
 requirement: INT-01
 source: notes/meetings/2026-09-03 Data Model Parte 1.md
@@ -200,3 +200,36 @@ recorded as given by the commit, not independently corroborated. The text lives 
 **The row stays open.** The build question is now answered; what remains is the
 principal, the nine unpushed fields, and whether the client is told that the
 agreed lock is also a push.
+
+## 2026-09-15 — the principal is fixed, on an open PR
+
+`400c195` (Anita Aga, PR #45, **open**) replaces the validation rule's principal:
+
+```diff
+-  $Profile.Name <> "System Administrator",
++  NOT($Permission.Edit_Mexal_Synced_Admin_Fields),
+```
+
+against a new custom permission `Edit_Mexal_Synced_Admin_Fields`, described as
+_"Allows editing administrative Account fields after the Account is linked to
+Mexal."_
+
+🟢 **This answers the red flag of 14 September.** The 3 September session agreed
+the fields stay editable **by amministrazione**; a literal profile name could not
+express a business grouping, a custom permission can. Assign it to Elisa
+Migliano's people and the rule says what the meeting said.
+
+🔴 **Three things still stand:**
+
+1. **Nobody has assigned it.** A custom permission with no assignment locks the
+   thirteen fields for everyone including amministrazione — the opposite failure.
+   The permission is in `force-app/`; no permission set in this commit grants it.
+2. **The lock and the outbound push still cover different field sets** —
+   thirteen locked, **four** pushed (`Email__c`, `Phone`, `Partita_IVA__c`,
+   `Name`). A holder of the new permission editing `Codice_Fiscale__c`,
+   `PEC__c`, `Codice_Destinatario_SDI__c` or the billing address changes
+   Salesforce and not Mexal. **Nine fields can still diverge silently**, now by
+   the amministrazione path specifically — which is the path the meeting
+   intended to keep open.
+3. **It is unmerged.** `DevMain` at `f51365b` still carries the profile-name
+   formula.

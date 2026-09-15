@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-14 (nightly requirements-check: the org-only chain reached source control on an open PR) · Source of record: [notes/](notes/)
+Last updated: 2026-09-15 (nightly requirements-check: three PRs in one day; the chain merged and is switched off in UAT) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,44 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🟢🔴 **2026-09-15 — three pull requests in one day, and the integration stopped
+  being runnable in the environment meant to accept it.**
+  🟢 **PR #43 merged 08:07:04Z (`23f1375`)** — the whole order-to-Mexal chain, the
+  OI-117 lock, the article sync and both named credentials are on `DevMain`. The
+  same morning's org check reports **all 48 repository Apex classes deployed, 44
+  token-equivalent to UAT**, and `MexalHttpClient` absent from both sides, so the
+  14/09 orphan question resolves as **no orphan**.
+  [The custody risk is closed](notes/risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md);
+  🔴 DocuSign credentials remain org-only.
+  🔴 **`1830fce` switches the chain off in every sandbox** — an unconditional
+  `if (isSandbox()) return;` at the entry point, merged five minutes before PR #43.
+  **UAT is a sandbox, UAT opens 23 September, acceptance is due 13 October** — so
+  the first end-to-end order run would be **in production, after acceptance**
+  ([OI-137](notes/items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md)).
+  🟢 It is a real answer to the production-ERP risk; ⚠ the reason is **inferred** —
+  no commit message, PR description or message says so. 🔴 It is asymmetric: a
+  sandbox can still write **customers** to Mexal production.
+  🟢🔴 **PR #44 merged 13:43:52Z (`f51365b`, Rexhina Hysi, +2,487)** — the
+  invitation and participant stack reaches source, and the public link moves from
+  raw Account/Campaign ids to a **64-hex per-invitation token**, superseding
+  **BIG-18** in practice (register and both prose documents updated).
+  🔑🔴 **But the same public page can set `Order.Status = 'Incassato'`** —
+  `ParticipantRegistrationController` is `public without sharing` and the guest
+  page renders a "Segna ordine incassato" button. Strong token, unbounded
+  authority: no expiry, no revocation, no attribution, **no requirement authorises
+  it and nobody has discussed it**
+  ([OI-136](notes/items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md)).
+  🟢 **PR #45 opened 16:07:59Z (`400c195`, Anita Aga, +2,290, still open)** — the
+  **tranche roll-up exists at last**: `Pagata` only when every line is `Paid`,
+  which is `ORD-03`/`AC-06` verbatim, fed by the Mexal scadenzario
+  ([the build](notes/objects/The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md)).
+  🟢 It also fixes **OI-117's principal** — a custom permission instead of a
+  literal profile name — 🔴 which nothing yet grants.
+  🔴 **A third unscheduled batch** joins the scheduler nobody has called.
+  🔴 **First test run in 42 days: 37 pass, 4 fail**, all four blocked by OI-121's
+  missing edition mappings; **0 covered / 5,095 uncovered / 0%**, measured before
+  the day's 4,777 new lines.
 
 - 🟢🔴 **2026-09-14 evening — the whole org-only chain reached source control
   seven hours later, and brought the missing lock with it.** **`e06a1b4`**

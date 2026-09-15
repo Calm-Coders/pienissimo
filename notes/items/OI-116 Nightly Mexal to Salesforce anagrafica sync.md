@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-14
+updated: 2026-09-15
 depends_on: [OI-58]
 blocks: [go-live]
 requirement: INT-01
@@ -231,3 +231,31 @@ batches rather than one.
 
 🔴 **Payload 2 — agent reassignment — is still not handled.** `cod_agente`
 remains unmapped, unchanged since 10 September.
+
+## 2026-09-15 — three batches now, still nothing scheduled
+
+PR #43 merged at 08:07:04Z, so the batch, the scheduler and the cursor service
+are on `DevMain`. Then `400c195` (PR #45, open) added a **third** batch to the
+same scheduler:
+
+```apex
+Database.executeBatch(new MexalCustomerSyncBatch(), 1);
+Database.executeBatch(new MexalArticleSyncBatch(), 1);
+Database.executeBatch(new MexalMaggazinoSyncBatch(), 1);   // new
+```
+
+🔴 **The 2026-09-15 `org-status-check` confirms it from the org:** six
+`Integration_Configuration2__c` rows exist, **none of the 7 scheduled jobs is
+Mexal**, and all 31 Orders carry a blank Mexal integration status. _Built but
+dormant_ is its wording.
+
+**The remaining task has not changed since 11 September and has not grown harder:
+one `System.schedule` call and one chosen hour.** What has changed is the
+consequence — three batches now ride on it, one of them
+([magazzino](../objects/The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md))
+with no requirement id and no minuted request, and the target is still the
+production ERP
+([the risk](../risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md)).
+
+⚠ **The sync window is unspecified for the twelfth day.** Raised 3 September;
+never answered by any source since.
