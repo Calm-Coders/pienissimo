@@ -11,6 +11,30 @@
                         </valueListItems>
                         <valueListItems>
                             <value>Quote.Invia_Per_Accettazione</value>
+                            <visibilityRule>
+                                <booleanFilter>1 OR 2</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>In Trattativa</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue
+                  >In Attesa Accettazione</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Quote.Genera_PDF</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Bozza</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -51,7 +75,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>hideUpdateButton</name>
-                    <value>false</value>
+                    <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>variant</name>

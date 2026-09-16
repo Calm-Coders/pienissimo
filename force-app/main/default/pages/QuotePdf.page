@@ -1,0 +1,249 @@
+<apex:page
+  controller="QuotePdfController"
+  renderAs="pdf"
+  showHeader="false"
+  sidebar="false"
+  standardStylesheets="false"
+  applyHtmlTag="false"
+  applyBodyTag="false"
+  readOnly="true"
+  cache="false"
+  language="it"
+>
+  <html>
+    <head>
+      <style type="text/css">
+        @page {
+          size: A4;
+          margin: 12mm 10mm 16mm;
+          @bottom-right {
+            content: "Pagina " counter(page) " / " counter(pages);
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+            color: #666;
+          }
+        }
+        body {
+          font-family: Arial, sans-serif;
+          color: #161616;
+          font-size: 10pt;
+        }
+        .contract-page {
+          page-break-after: always;
+        }
+        .contract-text {
+          white-space: pre-line;
+          font-size: 9pt;
+          line-height: 1.16;
+        }
+        .header {
+          width: 100%;
+          margin-bottom: 24px;
+        }
+        .header td {
+          width: 50%;
+          vertical-align: top;
+        }
+        h1 {
+          font-size: 15pt;
+          margin: 0 0 6px;
+        }
+        .summary {
+          margin: 18px 0 12px;
+        }
+        .lines {
+          width: 100%;
+          border-collapse: collapse;
+          table-layout: fixed;
+          -fs-table-paginate: paginate;
+          font-size: 8pt;
+        }
+        .lines th,
+        .lines td {
+          border: 1px solid #d9d4c2;
+          padding: 6px 4px;
+          vertical-align: top;
+          word-wrap: break-word;
+        }
+        .lines th {
+          background: #efefef;
+          text-align: center;
+        }
+        .lines thead {
+          display: table-header-group;
+        }
+        .lines tr {
+          page-break-inside: avoid;
+        }
+        .number {
+          text-align: right;
+        }
+        .date {
+          text-align: center;
+        }
+        .description {
+          white-space: pre-line;
+          margin-top: 4px;
+        }
+        .totals {
+          width: 48%;
+          margin-top: 14px;
+          margin-left: auto;
+          page-break-inside: avoid;
+        }
+        .totals td {
+          padding: 3px;
+        }
+        .grand-total {
+          font-weight: bold;
+        }
+        .notes {
+          white-space: pre-line;
+        }
+        .section-title {
+          font-weight: bold;
+          margin-top: 18px;
+          page-break-after: avoid;
+        }
+      </style>
+    </head>
+    <body>
+      <c:QuotePdfContract
+        customer="{!quoteRecord.Account}"
+        customerName="{!customerName}"
+        legalAddress="{!legalAddress}"
+      />
+      <table class="header">
+        <tr>
+          <td>
+            <apex:image
+              url="{!$Resource.QuotePdfLogo}"
+              width="255"
+              height="58"
+              alt="Pienissimo - Strategie per locali di successo"
+            />
+          </td>
+          <td>
+            Pienissimo s.r.l.<br />Strada Rovereta, 6<br />47891 Falciano,<br />San
+            Marino
+          </td>
+        </tr>
+      </table>
+      <table class="header">
+        <tr>
+          <td>
+            <h1>
+              PREVENTIVO <apex:outputText value="{!quoteRecord.QuoteNumber}" />
+            </h1>
+            <apex:outputText value="{!generatedDate}" />
+          </td>
+          <td>
+            <strong>Fattura a:</strong><br /><apex:outputText
+              value="{!customerName}"
+            /><br /><apex:outputText
+              value="{!quoteRecord.Account.Nome_Legale_Rappresentante__c}"
+            /><br /><apex:outputText value="{!billingAddress}" /><br />P.IVA
+            <apex:outputText value="{!quoteRecord.Account.Partita_IVA__c}" />
+          </td>
+        </tr>
+      </table>
+      <div class="summary">
+        <apex:outputPanel
+          layout="block"
+          rendered="{!NOT(ISBLANK(quoteRecord.ExpirationDate))}"
+          >Il preventivo è valido fino al
+          <strong><apex:outputText value="{!expirationDate}" /></strong
+        ></apex:outputPanel>
+        <div>
+          Tutor commerciale di riferimento
+          <strong><apex:outputText value="{!tutor}" /></strong>
+        </div>
+        <div>
+          Importo <apex:outputText value="{!currencyCode}" />
+          <apex:outputText value="{!totalPrice}" />
+        </div>
+      </div>
+      <table class="lines">
+        <thead>
+          <tr>
+            <th style="width: 28%">Articolo e Descrizione</th>
+            <th style="width: 7%">Quantità</th>
+            <th style="width: 13%">Prezzo Listino</th>
+            <th style="width: 13%">Importo</th>
+            <th style="width: 11%">Sconto</th>
+            <th style="width: 14%">Totale Netto</th>
+            <th style="width: 14%">Scadenza Pagamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <apex:repeat value="{!lines}" var="line">
+            <tr>
+              <td>
+                <apex:outputText value="{!line.name}" />
+                <div class="description">
+                  <apex:outputText value="{!line.description}" />
+                </div>
+              </td>
+              <td class="number">
+                <apex:outputText value="{!line.quantity}" />
+              </td>
+              <td class="number">
+                <apex:outputText value="{!line.listPrice}" />
+              </td>
+              <td class="number"><apex:outputText value="{!line.amount}" /></td>
+              <td class="number">
+                <apex:outputText value="{!line.discount}" />
+              </td>
+              <td class="number"><apex:outputText value="{!line.total}" /></td>
+              <td class="date"><apex:outputText value="{!line.dueDate}" /></td>
+            </tr>
+          </apex:repeat>
+        </tbody>
+      </table>
+      <table class="totals">
+        <tr>
+          <td>Valuta</td>
+          <td class="number"><apex:outputText value="{!currencyCode}" /></td>
+        </tr>
+        <tr>
+          <td>Subtotale</td>
+          <td class="number"><apex:outputText value="{!subtotal}" /></td>
+        </tr>
+        <tr>
+          <td>Totale netto</td>
+          <td class="number"><apex:outputText value="{!totalPrice}" /></td>
+        </tr>
+        <apex:outputPanel layout="none" rendered="{!hasTax}"
+          ><tr>
+            <td>Imposte</td>
+            <td class="number"><apex:outputText value="{!tax}" /></td></tr
+        ></apex:outputPanel>
+        <apex:outputPanel layout="none" rendered="{!hasShipping}"
+          ><tr>
+            <td>Spese di spedizione</td>
+            <td class="number"><apex:outputText value="{!shipping}" /></td></tr
+        ></apex:outputPanel>
+        <tr class="grand-total">
+          <td>Totale complessivo</td>
+          <td class="number"><apex:outputText value="{!grandTotal}" /></td>
+        </tr>
+      </table>
+      <apex:outputPanel
+        layout="block"
+        rendered="{!NOT(ISBLANK(quoteRecord.Modalita_Pagamento_PDF__c))}"
+        ><div class="section-title">MODALITÀ PAGAMENTO</div>
+        <div class="notes">
+          <apex:outputText
+            value="{!quoteRecord.Modalita_Pagamento_PDF__c}"
+          /></div
+      ></apex:outputPanel>
+      <apex:outputPanel
+        layout="block"
+        rendered="{!NOT(ISBLANK(quoteRecord.Description))}"
+        ><div class="section-title">NOTE</div>
+        <div class="notes">
+          <apex:outputText value="{!quoteRecord.Description}" /></div
+      ></apex:outputPanel>
+    </body>
+  </html>
+</apex:page>
