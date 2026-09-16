@@ -7,8 +7,8 @@ owner: Aurel Mrruku
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-09
-depends_on: [OI-68, OI-78, OI-102]
+updated: 2026-09-15
+depends_on: [OI-68, OI-78, OI-102, OI-136]
 requirement: INT-16
 source: force-app/main/default/classes/QuoteAcceptanceController.cls, force-app/main/default/classes/ParticipantRegistrationController.cls, read at DevMain after PR #31
 ---
@@ -134,3 +134,56 @@ The severity of this note was set on 3 September against a status write. The
 write is now three inserts and an update across four objects, and the note's
 `gating` severity is, if anything, understated. **The fix is unchanged** — the
 signed, expiring token above — and the cost of not having it went up.
+
+## 🟢🔴 2026-09-15 - one surface half-fixed, and widened in the same commit
+
+**PR #44** (`f51365b`, Rexhina Hysi, merged 13:43:52Z) rewrote
+`ParticipantRegistrationController`. All five of its `@AuraEnabled` entry points
+now take a **token** instead of raw ids:
+
+```apex
+loadPage(String token)
+findContact(String token, String email)
+savePage(...)
+markOrderIncassato(String token)
+markTicketRinuncia(String token, String assetId)
+```
+
+🟢 **This is a real improvement on the id-only authorisation above.**
+`Event_Invitation__c.Token__c` is 64 hex characters from
+`Crypto.generateAesKey(256)` — not a value the project hands out for other
+purposes, not enumerable, and not derivable from a customer's Account id. The
+"an id mailed to customers is a bearer token" objection no longer applies to this
+page: **the bearer token is now an actual bearer token**.
+
+🔴 **It is still not the fix this note asked for.** The recommendation was a
+**signed, expiring** token verified server-side. What shipped is random, opaque,
+**permanent and unrevocable** — revoking means regenerating `Token__c`, which
+invalidates the link already mailed. `without sharing` is unchanged. So the
+exposure narrows from _anyone who learns a record id_ to _anyone who ever sees the
+link_, which includes browser history, referrer headers, proxy logs and every
+forward of the invitation mail.
+
+🔑🔴 **And the same commit added a write this note had not contemplated.**
+`markOrderIncassato` sets `Order.Status = 'Incassato'` on **every** Order behind
+the invitation's visible Assets, rendered as a **"Segna ordine incassato"** button
+on the guest page. The 3 September severity was set against a quote status write;
+9 September raised it to three inserts and an update; **15 September adds a
+customer-triggerable assertion that an order has been paid.** Full reading:
+[OI-136](../items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md).
+
+🔴 **The quote page is untouched.** `QuoteAcceptanceController` is still
+`public without sharing` with `loadPage(String quoteId)` and
+`submitAction(String quoteId, String action)` on a bare record id — which since
+`a53345a` creates an Order and its lines. **The worse of the two surfaces is the
+one that did not change.**
+
+⚠ **The guest-profile question of 3 September is now answered, and badly.** The
+2026-09-15 `org-status-check` reports that **the active Landing Page guest profile
+can execute the `without sharing` controller** and that five populated token/URL
+records exist. The narrowing hypothesis — "if the guest profile denies access, this
+is about horizontal privilege" — **fails**. It is anonymous access.
+
+**Severity stays `gating`. The fix is still one fix for all the surfaces: a
+signed, expiring token verified before any read or write.** Four instances now;
+nothing built so far has a signature.

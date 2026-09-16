@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-11
+updated: 2026-09-15
 depends_on: [OI-58]
 blocks: [go-live]
 requirement: INT-01
@@ -144,3 +144,118 @@ overwritten silently. The persistence half shipped today. The lock did not.
 
 **What a person must still decide:** the sync window and watermark. Unchanged for
 nine days, and now the single blocker.
+
+## 2026-09-14 — the batch, the scheduler and the watermark all exist, in the org only
+
+The org-status-check against Pienissimo UAT found three classes created that
+morning at **09:44 UTC** that answer almost everything this row has asked for —
+and **none of them is in this repository**
+([the build](../objects/The%20order%20to%20Mexal%20integration%20chain.md),
+[the risk](../risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)):
+
+- `MexalCustomerSyncBatch` — the nightly batch itself, no longer a comment;
+- `MexalCustomerSyncScheduler` — its `Schedulable`;
+- `MexalSyncCursorService` — **the watermark**, the thing this row has been
+  blocked on since 3 September.
+
+🟢 **Four of the blockers this note has carried are cleared.** The read has a
+writer, the writer has a batch, the batch has a scheduler, and the delta has a
+cursor rather than a hardcoded window.
+
+🟢 **The configuration rows exist.** `Integration_Configuration2__c` holds **six
+rows**, not zero: `Mexal_Clienti_Ricerca`, `Mexal_Clienti_Creazione`,
+`Mexal_Clienti_Modifica`, `Mexal_Articoli_Ricerca`, `Mexal_Ordini_Creazione` and
+`Anticipay_Account_Check`. **All four rows this row said were needed by exact
+name are present.** The "zero rows, no owner" reading carried since 26 August is
+superseded — see
+[the scaffolding note](../objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md).
+
+🔴 **Nothing is scheduled.** The org holds **seven `CronTrigger` rows and every
+one is a Salesforce platform job** — comm sitemap, SRT, ReportType, Metalytics.
+`MexalCustomerSyncScheduler` has never been scheduled against them.
+
+**So the diagnosis of 11 September stands word for word: a sync with no
+schedule.** What has changed is that it is no longer blocked on a decision. The
+watermark exists in code. **Someone has to run `System.schedule` and choose the
+hour** — that is now the whole remaining task, and it is minutes of work.
+
+🔴 **Payload 2 — agent reassignment — is still not handled.** `cod_agente` is
+still not among the mapped fields, unchanged since 10 September.
+
+🔴 **The conflict with [OI-117](OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+is now live in both directions.** The org also gained
+`MexalCustomerUpdateQueueable`, which pushes Salesforce admin edits **out** to
+Mexal. This inbound batch writes the same fields **in**. Two writers, opposite
+directions, **no conflict rule and no minute**. The silent-overwrite failure this
+row has warned of since 3 September now has a second way to happen.
+
+**What a person must still decide:** the schedule hour, and which side wins when
+the nightly read and the outbound push disagree.
+
+## 2026-09-14 evening — the batch reaches source control, and gains a sibling
+
+`e06a1b4` (Anita Aga, 18:05 CEST, **PR #43, open and unmerged**) puts the three
+classes this row depends on into `force-app/` for the first time:
+`MexalCustomerSyncBatch`, `MexalCustomerSyncScheduler` and
+`MexalSyncCursorService`. Until tonight they existed only in the org
+([the risk](../risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)).
+
+🟢 **The watermark now has storage.** Four fields were added to
+`Integration_Configuration2__c`: `Last_Successful_Sync__c` (DateTime),
+`Last_Sync_Status__c`, `Last_Sync_Error__c` and `Initial_Sync_Lookback_Hours__c`
+(Number). `MexalSyncCursorService.getLastSuccessfulSync` reads the first and falls
+back to the lookback hours on a cold start, and `markSuccessful` / `markFailed`
+write the cursor per action name. **The delta window this row has been blocked on
+since 3 September is a configuration row, not a decision.**
+
+🟢 **The conflict question is half answered.** `AccountTriggerHandler` gained
+`setBypassMexalCustomerUpdate`, and `MexalCustomerSearchService` sets it around
+the inbound sync's DML — so the nightly read **cannot** bounce back out through
+`MexalCustomerUpdateQueueable`. The echo loop is closed; see
+[OI-117](OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md).
+⚠ What is still undecided is the **substantive** winner: if a user edits `Phone`
+at 17:00 and Mexal holds a different value at 02:00, the inbound batch overwrites
+the user silently. The guard prevents a loop, not a loss.
+
+🟢 **A second sync arrived with it** — `MexalArticleSyncBatch` and
+`MexalArticleSyncService` (534 lines), action `Mexal_Articoli_Ricerca`, upserting
+Mexal articles onto `Product2` by `External_Product_Code__c`
+([the build](../objects/The%20Mexal%20article%20sync%20to%20Product2.md)). It
+shares this row's cursor service, so the same schedule question applies to it.
+
+🔴 **Nothing is scheduled, and that is unchanged.** Committing a `Schedulable`
+does not schedule it. The morning org check found all seven `CronTrigger` rows to
+be Salesforce platform jobs, and no source commit can alter that. **The remaining
+task is still one `System.schedule` call and one chosen hour** — now for two
+batches rather than one.
+
+🔴 **Payload 2 — agent reassignment — is still not handled.** `cod_agente`
+remains unmapped, unchanged since 10 September.
+
+## 2026-09-15 — three batches now, still nothing scheduled
+
+PR #43 merged at 08:07:04Z, so the batch, the scheduler and the cursor service
+are on `DevMain`. Then `400c195` (PR #45, open) added a **third** batch to the
+same scheduler:
+
+```apex
+Database.executeBatch(new MexalCustomerSyncBatch(), 1);
+Database.executeBatch(new MexalArticleSyncBatch(), 1);
+Database.executeBatch(new MexalMaggazinoSyncBatch(), 1);   // new
+```
+
+🔴 **The 2026-09-15 `org-status-check` confirms it from the org:** six
+`Integration_Configuration2__c` rows exist, **none of the 7 scheduled jobs is
+Mexal**, and all 31 Orders carry a blank Mexal integration status. _Built but
+dormant_ is its wording.
+
+**The remaining task has not changed since 11 September and has not grown harder:
+one `System.schedule` call and one chosen hour.** What has changed is the
+consequence — three batches now ride on it, one of them
+([magazzino](../objects/The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md))
+with no requirement id and no minuted request, and the target is still the
+production ERP
+([the risk](../risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md)).
+
+⚠ **The sync window is unspecified for the twelfth day.** Raised 3 September;
+never answered by any source since.

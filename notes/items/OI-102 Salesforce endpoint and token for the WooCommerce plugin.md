@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-11
+updated: 2026-09-15
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -322,3 +322,36 @@ Cicco**, not with Aurel Mrruku as
 and still has not delivered the **WooCommerce** one. If anything it sharpens the
 reading: he was in the DM, sending a different file, on the day the chase went
 unanswered.
+
+## 2026-09-14 — a sixth day, and this time the DM was busy
+
+Aurel Mrruku and Andrea Di Cicco exchanged **twenty-nine messages** in
+`D0AQ0FMHFM1` on 14 September, from 11:34 to 17:29 CEST, and spoke by call at
+17:30. The subjects were the **Mexal** customer PUT, a Teatro Franco Parenti
+hand-off and a patch question.
+
+🔴 **The filtered WooCommerce Postman collection was not mentioned once.** The
+09/09 chase — _"alla fine non mhai passato la collectioon"_ — is now **unanswered
+for six days** through a window in which the same two people talked at length
+about a different integration.
+
+Unchanged and still true: **Sabatino Rinaldi holds the pre-filter collection**,
+**the sixty-year JWT has not been rotated**, and no test result has come back from
+the client side.
+
+⚠ **UAT opens on 23 September — nine days.** This row is the only WooCommerce item
+on the critical path and it has had no movement since 08/09.
+
+## 2026-09-15 — seventh day, and the DM went quiet entirely
+
+`D0AQ0FMHFM1` (Aurel Mrruku ↔ Andrea Di Cicco) carried **no message at all on
+15 September**; its last is 14/09 17:28 CEST. The 09/09 chase is unanswered for
+**seven days**, and the window now includes a day in which neither party wrote to
+the other.
+
+**Mail is where an answer would most plausibly have arrived, and Gmail has been
+unreachable for two consecutive nightly runs** — so this negative is weaker than
+it looks. Absence of an answer in Slack is not absence of an answer.
+
+⚠ **UAT opens 23 September.** The whole Salesforce side of
+[OI-49](OI-49%20WooCommerce%20checkout-link%20flow.md) waits on this.

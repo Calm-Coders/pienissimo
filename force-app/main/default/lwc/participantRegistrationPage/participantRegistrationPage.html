@@ -124,6 +124,17 @@
                       Completa questa riga oppure svuotala prima di salvare.
                     </p>
                   </template>
+                  <template if:true={ticket.canRinuncia}>
+                    <div class="row-actions">
+                      <lightning-button
+                        data-asset-id={ticket.assetId}
+                        label="Rinuncia"
+                        variant="destructive-text"
+                        disabled={ticket.isSavingRinuncia}
+                        onclick={handleMarkTicketRinuncia}
+                      ></lightning-button>
+                    </div>
+                  </template>
                 </template>
 
                 <template if:false={ticket.editable}>
@@ -154,18 +165,28 @@
           </div>
         </template>
 
-        <template if:true={showFormActions}>
+        <template if:true={showPageActions}>
           <footer class="form-actions">
-            <p>
-              Righe completate:
-              {completedSubmissionCount}/{requiredSubmissionCount}
-            </p>
-            <lightning-button
-              label="Salva tutti i partecipanti"
-              variant="brand"
-              disabled={submitDisabled}
-              onclick={openConfirmation}
-            ></lightning-button>
+            <template if:true={showFormActions}>
+              <p>
+                Righe completate:
+                {completedSubmissionCount}/{requiredSubmissionCount}
+              </p>
+              <lightning-button
+                label="Salva tutti i partecipanti"
+                variant="brand"
+                disabled={submitDisabled}
+                onclick={openConfirmation}
+              ></lightning-button>
+            </template>
+            <template if:true={showOrderAction}>
+              <lightning-button
+                label="Segna ordine incassato"
+                variant="brand-outline"
+                disabled={orderActionDisabled}
+                onclick={handleMarkOrderIncassato}
+              ></lightning-button>
+            </template>
           </footer>
         </template>
       </template>

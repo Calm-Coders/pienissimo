@@ -154,11 +154,22 @@ h2 {
   color: #175cd3;
 }
 
+.rinuncia-badge {
+  background: #fef3f2;
+  color: #b42318;
+}
+
 .field-grid,
 .assigned-details {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
 
 .field-with-status {

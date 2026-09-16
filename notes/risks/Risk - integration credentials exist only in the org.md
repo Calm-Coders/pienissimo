@@ -1,12 +1,12 @@
 ---
 id: risk-named-credentials-org-only
 type: risk
-status: open
+status: in-progress
 severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-02
-updated: 2026-09-11
+updated: 2026-09-15
 depends_on: [OI-94, OI-102]
 blocks: [go-live]
 requirement: [INT-18, INT-19]
@@ -105,7 +105,8 @@ private, but git history is forever.
 ```xml
 <externalCredentialPrincipalAccesses>
     <enabled>true</enabled>
-    <externalCredentialPrincipal>Mexal_External_Credential-Mexal_Principal</externalCredentialPrincipal>
+    <externalCredentialPrincipal
+  >Mexal_External_Credential-Mexal_Principal</externalCredentialPrincipal>
 </externalCredentialPrincipalAccesses>
 ```
 
@@ -152,3 +153,94 @@ cheapest item on the current risk list and it now blocks the production path
 outright**, with UAT twelve days away and the production org
 (`pienissimo.my.salesforce.com`) provisioned since 3 September and never
 deployed to.
+
+## 2026-09-14 — a third credential, and a second undeployable permission set
+
+The org-status-check against Pienissimo UAT found the pattern widened on both
+sides.
+
+🔴 **Three named credentials are now org-only**, not two: `Anticipay`,
+`DocuSign` and **`Mexal`** (created 2026-09-10). `force-app/` still has **no
+`namedCredentials/` and no `externalCredentials/` directory at all**.
+
+🔴 **Two permission sets now reference an external credential principal that has
+no metadata in this repository**, not one:
+
+| Permission set           | References                                          |
+| ------------------------ | --------------------------------------------------- |
+| `Full_Permission`        | `Mexal_External_Credential-Mexal_Principal`         |
+| `Integration_Management` | `Anticipay_External_Credential-Anticipay Principal` |
+
+Both are on `DevMain`. **A clean deploy of this repository into an empty org
+fails twice**, not once — each permission set names a principal that the deploy
+never creates.
+
+**The fix is unchanged and still nobody's**: retrieve the three external
+credentials and named credentials into source, with their secrets left in the
+org. Until then the repository cannot rebuild the org it describes.
+
+## 2026-09-14 evening — two of the three land in source, with the secrets left behind
+
+`e06a1b4` (PR #43, open and unmerged) creates the two directories this risk has
+asked for since 2 September:
+
+| New file                                                              | Kind                |
+| --------------------------------------------------------------------- | ------------------- |
+| `namedCredentials/Mexal.namedCredential-meta.xml`                     | Named Credential    |
+| `namedCredentials/Anticipay.namedCredential-meta.xml`                 | Named Credential    |
+| `externalCredentials/Mexal_External_Credential...-meta.xml`           | External Credential |
+| `externalCredentials/Anticipay_External_Credential...-meta.xml`       | External Credential |
+
+🟢 **It is done correctly.** Both external credentials declare their auth header
+as a **merge-field reference** — `$Credential.<credential>.<parameter>` — so the
+header is assembled at call time from a value held in the org. **No token, no
+password and no bearer value entered the repository**, which is exactly the shape
+this risk asked for: the metadata in source, the secret in the org.
+
+🟢 **`Full_Permission` is no longer undeployable.** The same commit extends the
+permission set alongside the credential metadata it references, so the principal
+the deploy needs is now created by the deploy.
+
+### What is still open
+
+- 🔴 **`DocuSign` is still org-only.** Two of the three named credentials are now
+  in source; the third is not, and it is the one the signature-to-QR chain
+  depends on.
+- 🔴 **`Integration_Management` was not touched.** It still grants
+  `Anticipay_External_Credential-Anticipay Principal`; the external credential
+  that defines that principal now exists in source, so the second deploy failure
+  should resolve with it — ⚠ **unverified, no deploy was attempted.**
+- 🔴 **None of it is on `DevMain`.** PR #43 is open. A clean deploy of `DevMain`
+  today still fails.
+- ⚠ The Mexal auth header carries a literal `Dominio=PIENISSIMO` and the endpoints
+  `https://services.passepartout.cloud` and `https://romi.pienissimo.com` are now
+  in source. Those are endpoint and tenant identifiers, not secrets, and are
+  already in the record; **the Passepartout token itself is not in the
+  repository and must never be**
+  ([the plaintext-circulation risk](Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+
+**Severity drops from high to medium** once PR #43 merges. Until then, unchanged.
+
+## 2026-09-15 — two of three reached `DevMain`; DocuSign did not
+
+PR #43 merged at 08:07:04Z, so `force-app/main/default/namedCredentials/` and
+`externalCredentials/` are on `DevMain` at last, carrying `Mexal` and
+`Anticipay` with their auth headers as merge-field references — **no secret value
+entered the repository**, which is the shape this note asked for.
+
+🟢 **The undeployable-permission-set failure ends.** `Full_Permission` and
+`Integration_Management` reference
+`Mexal_External_Credential-Mexal_Principal`, and the credential now exists in
+source, so a clean deploy no longer fails on it.
+
+🔴 **`DocuSign` is still org-only.** The 2026-09-15 `org-status-check` lists it
+under INT-19 as named and external credential present in UAT and absent from
+source, with the provider requirement itself still open. A rebuild from source
+into a fresh org still loses it.
+
+⚠ **The secrets themselves remain in the org only**, by design. That is correct
+and it is also a single point of failure nobody has written down as a recovery
+procedure. Who can re-enter the Mexal and Anticipay principals if the org is
+rebuilt is not recorded anywhere in this repository.
+
+**Status: in-progress.** It closes when DocuSign is in source too.
