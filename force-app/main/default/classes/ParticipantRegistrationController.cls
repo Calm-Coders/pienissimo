@@ -64,12 +64,9 @@ public without sharing class ParticipantRegistrationController {
     @AuraEnabled
     public Date eventEndDate { get; set; }
     @AuraEnabled
-    public Boolean canMarkOrderIncassato { get; set; }
-    @AuraEnabled
     public List<TicketRow> tickets { get; set; }
 
     public PageResponse() {
-      canMarkOrderIncassato = false;
       tickets = new List<TicketRow>();
     }
   }
@@ -186,54 +183,6 @@ public without sharing class ParticipantRegistrationController {
       Database.rollback(savepoint);
       throw handled(
         'Non e stato possibile completare la richiesta. Riprova piu tardi.'
-      );
-    }
-  }
-
-  @AuraEnabled
-  public static PageResponse markOrderIncassato(String token) {
-    Savepoint savepoint = Database.setSavepoint();
-
-    try {
-      AccessContext access = resolveAccess(token);
-      Set<Id> orderIds = collectLinkedOrderIds(
-        queryVisibleAssets(access.account.Id, access.campaign.Id, false)
-      );
-
-      if (orderIds.isEmpty()) {
-        throw new RequestException(
-          'Nessun ordine collegato ai biglietti di questo invito.'
-        );
-      }
-
-      List<Order> ordersToUpdate = new List<Order>();
-      for (Order orderRecord : [
-        SELECT Id, Status
-        FROM Order
-        WHERE Id IN :orderIds
-        FOR UPDATE
-      ]) {
-        if (orderRecord.Status != 'Incassato') {
-          ordersToUpdate.add(
-            new Order(Id = orderRecord.Id, Status = 'Incassato')
-          );
-        }
-      }
-
-      if (!ordersToUpdate.isEmpty()) {
-        update ordersToUpdate;
-      }
-
-      PageResponse response = buildPage(access);
-      response.message = 'Ordine passato a Incassato.';
-      return response;
-    } catch (RequestException requestError) {
-      Database.rollback(savepoint);
-      throw handled(requestError.getMessage());
-    } catch (Exception unexpectedError) {
-      Database.rollback(savepoint);
-      throw handled(
-        'Non e stato possibile passare l ordine a Incassato. Riprova piu tardi.'
       );
     }
   }
@@ -368,15 +317,6 @@ public without sharing class ParticipantRegistrationController {
     Integer requiredParticipantCount = 0;
 
     for (Asset ticket : tickets) {
-      if (
-        ticket.Order_Product__r != null &&
-        ticket.Order_Product__r.OrderId != null &&
-        ticket.Order_Product__r.Order != null &&
-        ticket.Order_Product__r.Order.Status != 'Incassato'
-      ) {
-        response.canMarkOrderIncassato = true;
-      }
-
       TicketRow row = new TicketRow();
       row.assetId = ticket.Id;
       row.ticketName = ticket.Name;
@@ -560,21 +500,6 @@ public without sharing class ParticipantRegistrationController {
     }
   }
 
-  private static Set<Id> collectLinkedOrderIds(List<Asset> tickets) {
-    Set<Id> orderIds = new Set<Id>();
-
-    for (Asset ticket : tickets) {
-      if (
-        ticket.Order_Product__r != null &&
-        ticket.Order_Product__r.OrderId != null
-      ) {
-        orderIds.add(ticket.Order_Product__r.OrderId);
-      }
-    }
-
-    return orderIds;
-  }
-
   private static Map<String, Contact> findExistingContacts(
     Id accountId,
     Set<String> emails
@@ -627,8 +552,7 @@ public without sharing class ParticipantRegistrationController {
     String queryText =
       'SELECT Id, Name, Status, ContactId, Campaign__c, Campaign__r.Name, ' +
       'Campaign__r.Data_Evento__c, Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
-      'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name, ' +
-      'Order_Product__r.OrderId, Order_Product__r.Order.Status ' +
+      'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name ' +
       'FROM Asset WHERE AccountId = :accountId AND Campaign__c = :campaignId ';
 
     if (visibleOnly) {

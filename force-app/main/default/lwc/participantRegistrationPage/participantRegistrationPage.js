@@ -2,7 +2,6 @@ import { api, LightningElement, wire } from "lwc";
 import { CurrentPageReference } from "lightning/navigation";
 import findContact from "@salesforce/apex/ParticipantRegistrationController.findContact";
 import loadPage from "@salesforce/apex/ParticipantRegistrationController.loadPage";
-import markOrderIncassato from "@salesforce/apex/ParticipantRegistrationController.markOrderIncassato";
 import markTicketRinuncia from "@salesforce/apex/ParticipantRegistrationController.markTicketRinuncia";
 import savePage from "@salesforce/apex/ParticipantRegistrationController.savePage";
 
@@ -18,7 +17,6 @@ export default class ParticipantRegistrationPage extends LightningElement {
   page;
   tickets = [];
   isLoading = true;
-  isMarkingOrder = false;
   rinunciaAssetId;
   isSubmitting = false;
   showConfirmation = false;
@@ -55,16 +53,6 @@ export default class ParticipantRegistrationPage extends LightningElement {
     );
   }
 
-  get showPageActions() {
-    return (
-      this.showFormActions || this.showOrderAction || this.showRinunciaAction
-    );
-  }
-
-  get showOrderAction() {
-    return this.page?.canMarkOrderIncassato === true;
-  }
-
   get showRinunciaAction() {
     return this.rinunciaTicket !== null;
   }
@@ -95,21 +83,14 @@ export default class ParticipantRegistrationPage extends LightningElement {
   get submitDisabled() {
     return (
       this.isSubmitting ||
-      this.isMarkingOrder ||
       Boolean(this.rinunciaAssetId) ||
       this.requiredSubmissionCount === 0 ||
       this.completedSubmissionCount !== this.requiredSubmissionCount
     );
   }
 
-  get orderActionDisabled() {
-    return (
-      this.isSubmitting || this.isMarkingOrder || Boolean(this.rinunciaAssetId)
-    );
-  }
-
   get rinunciaActionDisabled() {
-    return this.orderActionDisabled;
+    return this.isSubmitting || Boolean(this.rinunciaAssetId);
   }
 
   get accountLabel() {
@@ -349,22 +330,6 @@ export default class ParticipantRegistrationPage extends LightningElement {
       this.errorMessage = this.normalizeError(error);
     } finally {
       this.isSubmitting = false;
-    }
-  }
-
-  async handleMarkOrderIncassato() {
-    this.isMarkingOrder = true;
-    this.errorMessage = null;
-
-    try {
-      const payload = await markOrderIncassato({
-        token: this.token
-      });
-      this.applyPage(payload);
-    } catch (error) {
-      this.errorMessage = this.normalizeError(error);
-    } finally {
-      this.isMarkingOrder = false;
     }
   }
 
