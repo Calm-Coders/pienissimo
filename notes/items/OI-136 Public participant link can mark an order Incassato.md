@@ -1,11 +1,11 @@
 ---
 id: OI-136
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-15
-updated: 2026-09-15
+updated: 2026-09-16
 depends_on: [OI-78, OI-86]
 blocks: [go-live]
 requirement: [BIG-18, INT-16, ORD-01]
@@ -105,3 +105,76 @@ decision is recorded either way.
   opaque token — **not a signed one** — while the checkout link still sends the
   Opportunity id in clear. The same trade-off is now live in two places and has
   been decided aloud in neither.
+
+## 🟢 2026-09-16 - the button was removed, on a branch, by nobody's stated decision
+
+**`4132dab` (Rexhina Hysi, 16/09 09:24:55 CEST, `DEV_ComponentBundle`),
+commit message `remove incasato button`.** 78 lines out of the controller, 37
+out of the LWC JavaScript, 10 out of its template — **3 insertions, 122
+deletions**.
+
+It is a **complete** removal of the write path, not a hidden one:
+
+- `@AuraEnabled markOrderIncassato(String token)` — deleted in full, with its
+  savepoint, its `FOR UPDATE` query and its `update ordersToUpdate`.
+- `collectLinkedOrderIds` — the helper that gathered *every* Order behind the
+  invitation, the multiple-order problem of point 4 above — deleted.
+- `PageResponse.canMarkOrderIncassato` and the loop in `buildPage` that set it —
+  deleted, so the flag no longer reaches the page at all.
+- The **"Segna ordine incassato"** button and its handler — deleted from the
+  template and the controller.
+
+No `Order` DML of any kind remains in `ParticipantRegistrationController`. The
+page keeps what it was for: participant details and `Rinuncia`.
+
+### 🔴 But it is not on `DevMain`, and no pull request proposes it
+
+`4132dab` is on **`DEV_ComponentBundle` only**. As at 16/09 22:00 CEST GitHub
+lists **no pull request** from that branch — the open PR is **#47**, from
+`DevAnita`, unrelated. The branch has since taken three more commits
+(`b834c51`, `65818d0`, `01c40e6`, `46d22c5`) on bundles, the quote acceptance
+email and quote PDF generation, so the fix now travels with unrelated work.
+
+**The guest-reachable write to `Order.Status` is still on `DevMain` and still in
+UAT tonight.** This row stays open until the removal merges.
+
+⚠ The branch is behind `DevMain` — it does not yet carry PR #45 or the 15/09
+knowledge commit. That is an ordinary base merge, not a loss: a pull-request
+merge is three-way and will not delete the notes it lacks. It does mean
+**somebody must merge `DevMain` in before this can be reviewed cleanly.**
+
+### ⚠ Why it happened is not recorded anywhere
+
+The sequence is: this row and the 15/09 `requirements-check` report were written
+at **23:51 CEST on 15/09**, into the dev group `C0BQD34LLF4`; the removal
+commit is **09:24 CEST the next morning**, nine and a half hours later. That
+ordering is suggestive and **it is all there is**. Nobody replied to the report,
+no message on any swept channel mentions the button, the commit has no
+description, and there is no pull request to carry one.
+
+**So the second 15/09 trigger has half fired.** It asked for any source showing a
+human *discussing* the button — approving it, questioning it, or using it. What
+arrived is a human **acting** on it, silently. The engineering problem is
+answered; **the question this row actually asked is not**:
+
+- Nobody decided whether a customer-facing actor should ever assert that an
+  order is collected. The capability was removed, not ruled on.
+- **Elisa Migliano still has not been asked**, and she is the operational
+  authority on invoicing.
+- If the intent was ever _"the referent confirms they have paid"_, that need is
+  now unserved and unrecorded, and will come back as a change request.
+
+⚠ **Attribution:** the removal is Rexhina Hysi's, from the commit. **That the
+report caused it is inference from timing and from nothing else.** Do not record
+it as cause.
+
+### Unchanged
+
+🔴 **`QuoteAcceptanceController` is still `public without sharing` on a bare
+`quoteId`**, and a live URL of exactly that shape — `/gestione-preventivo?quoteId=…`
+with a raw 18-character Quote id — was pasted into Slack on 16/09 at 14:21 CEST.
+The token pattern was applied to the participant page and **not** to the quote
+page. The asymmetry this row and
+[the authentication risk](../risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)
+describe is unchanged, and is now demonstrable from a link anybody in that DM can
+click.

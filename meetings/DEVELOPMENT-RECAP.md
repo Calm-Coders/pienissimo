@@ -3896,3 +3896,142 @@ The 15/09 org check records a run against UAT: **37 pass, 4 fail** — all four
 day's pull requests**. The repository now holds **40 Apex classes, three of them
 tests**, and the untested surface now includes a guest-reachable write to Order
 status. **Brief only — no test was written, proposed or scaffolded.**
+
+## 39. Update 2026-09-16 — the client opened the product and quote registries, and a button disappeared without a decision
+
+The fifth data-model session ran for **2h21m30s** against a two-hour booking and
+covered more ground than any before it. On the delivery side, PR #45 merged, one
+pull request opened, and the most severe finding of 15 September was removed
+from the code by somebody who left no record of why.
+
+### 39.1 🟢 Data Model Parte 5 — ten rulings on products, quotes and order headers
+
+**16 September, 11:00 CEST, client-facing.** Elena Spini, Elisa Migliano and
+Aurel Mrruku throughout; **Fabrizio Paganelli joined, greeted the room and
+dropped off at ~00:06**; **Sabatino Rinaldi did not attend**. Full minute:
+[the session note](../notes/meetings/2026-09-16%20Data%20Model%20Parte%205.md).
+
+**Product registry.** Superfluous fields deleted (`tassabile`, commission cost,
+quantities, sales dates) — under **San Marino** rules VAT does not apply and the
+Mexal article registry uses fixed exemption codes. Unit of measure is **`NR`,
+whole numbers**. **Product active state is owned by Salesforce**: products are
+always created active, deactivation is manual, and Mexal never overwrites it; a
+deactivated product leaves new quotes and bundles but stays on historical
+orders. **Mexal's `natura` maps to two Salesforce checkboxes** — `genera
+biglietto` and `is bundle` — through a custom transformation. `tipo biglietto`
+takes `Executive` / `Gold` / `Diamond`, **not mandatory**; `Academy` belongs to
+`categoria statistica`. `gruppo merceologico` survives as an empty picklist.
+Reclassification **`livelli 0–6`** become picklists.
+
+**Quote and order.** 🔑 **A won quote and its accepted order are frozen** — no
+line added or removed, no price or article code changed, editing only at
+opportunity and quote stage
+([OI-138](../notes/items/OI-138%20Quotes%20and%20orders%20freeze%20once%20the%20order%20is%20accepted.md),
+unbuilt). **`Tipologia attività` is created on the Locale-record-type Account**
+as a global non-restrictive picklist and pre-fills the quote, which makes
+selecting a locale mandatory there. Quote name = quote number + partita IVA;
+the quote number is the same code Mexal invoices against. **Quote expiry five
+days** from entering *trattativa*, tutor-editable. A lost primary quote closes
+its opportunity as lost with the same reason. 🔑 **`Codice agente`,
+`classificatore rete` and `codice zona` are historicised on the quote and the
+order** — a later reassignment on the Account does not reach existing records.
+The order header takes the quote's field structure; **order lines were
+deferred**.
+
+**Left open.** Post-event tutor sales may be **bundles only**, pending Sabatino
+Rinaldi. **Complex tutor quotes have no tranche mechanism** — tutors build
+multi-line quotes whose per-line due dates do not match Mexal's monthly
+invoices and explain the instalments by hand in the quote PDF's notes field;
+Elisa Migliano asked for a summary table, Aurel Mrruku named the structural
+limit, Elena Spini raised a ~€20,000 contract split into tranches, and it was
+deferred to Friday. **WooCommerce links for multi-product, non-bundle offers**
+are untested; the links actually sent to attendees carry predefined bundle ids.
+
+🔴 **Utenti, Profili, the initial-load plan and the Lead table were not opened —
+a sixth consecutive session** ([OI-24](../notes/items/OI-24%20Data%20model%20workbook.md)).
+🔴 **A calendar conflict needs resolving**: Parte 4 booked Parte 6 for 18/09 on
+Campagne/Lead with Rebecca Marmo; Parte 5 booked Friday 18/09 for order lines.
+
+### 39.2 🟢 PR #45 merged — the tranche roll-up reaches `DevMain`
+
+`0d2b779`, **08:21:19Z**. `OrderItemTriggerHandler` — `Tranche__c.Pagata__c`
+true only when every line is `Paid`, which is `ORD-03` and `AC-06` verbatim — is
+on the main line. It has never run.
+
+✅ **And a correction to the 15 September record.** That night's reading said the
+new custom permission `Edit_Mexal_Synced_Admin_Fields` was granted by nothing.
+It was granted in the same commit that created it, in
+`Full_Permission.permissionset-meta.xml` lines 43–46; the claim came from that
+file's **diff hunks**, which do not include the `customPermissions` block.
+
+🔴 **What is genuinely wrong is narrower and real.** `Full_Permission` is the
+only permission set in `force-app/` that grants it, and it is the all-access
+developer set. Honouring what 3 September promised amministrazione means either
+granting the permission from an **amministrazione** permission set — which does
+not exist in this repository — or assigning amministrazione `Full_Permission`,
+which would be a security regression dressed as a fix
+([OI-117](../notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)).
+
+### 39.3 🟢🔴 The `Incassato` button was removed, on a branch, with no decision behind it
+
+`4132dab` (Rexhina Hysi, **09:24:55 CEST**, `DEV_ComponentBundle`) —
+**3 insertions, 122 deletions**. `markOrderIncassato`, `collectLinkedOrderIds`,
+the `canMarkOrderIncassato` flag and the loop that set it, and the LWC button
+are all gone. **No `Order` DML of any kind remains in
+`ParticipantRegistrationController`.**
+
+🔴 **It is not on `DevMain` and no pull request proposes it.** The branch has
+since taken four further commits on unrelated work, so the fix now travels with
+them. The guest-reachable write to `Order.Status` is still on `DevMain` and
+still in UAT.
+
+⚠ **Why it happened is recorded nowhere.** The 15 September report reached the
+dev group at 23:51 CEST and the commit is 09:24 the next morning; that ordering
+is all the evidence there is. Nobody replied to the report, no channel mentions
+the button, and the commit has no description. **A person acted; no person
+ruled** — and **Elisa Migliano, the operational authority on invoicing, still
+has not been asked** whether a customer-facing actor should ever assert that an
+order is collected
+([OI-136](../notes/items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md)).
+
+🔴 **`QuoteAcceptanceController` is unchanged** — still `public without sharing`
+on a bare `quoteId`, and a working `/gestione-preventivo?quoteId=…` URL was
+pasted into Slack at 14:21 CEST the same day.
+
+### 39.4 🔴 Both integration counterparts went off the board on the same day
+
+**Andrea Di Cicco was released from the project at 18:04 CEST** — Elena Spini,
+_"per ora ti puoi lentamente staccare"_ — with four questions behind him:
+OI-110's JSON update and test send (**14 days**), OI-102's filtered WooCommerce
+collection (**8 days**), OI-125's unanswered PUT objection and OI-135's
+unanswered "who must be told". Three of the four are not answerable by anyone
+else at ROMI
+([OI-139](../notes/items/OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md)).
+
+**Sabatino Rinaldi is unreachable too** — on tour with the client's direction,
+no WhatsApp reply the previous week, per Elisa Migliano at Parte 5. He owes the
+two new WooCommerce answers and is owed the filtered collection.
+
+**UAT opens on 23 September, seven days out.**
+
+### 39.5 ⚠ Work in flight, unmerged
+
+**PR #47** (`7cabe51`, Anita Aga, opened 16:03:27Z, **open**, no description) —
+an `Indirizzo Spedizione` endpoint on `MexalCustomerCreateService`, an
+`OpportunityQuoteDefaultsController` with a **Nuovo Preventivo** screen action,
+`Order.Tipo_Ordine__c` and layout changes: **+883 lines across 13 files.**
+
+**`DEV_ComponentBundle`** (Rexhina Hysi) — besides the button removal, quote PDF
+generation for `Bozza` quotes with a `Modalita_Pagamento_PDF__c` payment-
+instructions field, a **Invia per accettazione** email action, bundle work in
+products, and `Rinuncia` levelling. 🔴 **Two more classes hard-code quote status
+spellings** (`Bozza`, `In Attesa Accettazione`), making four since 09/09, while
+[OI-59](../notes/items/OI-59%20Quote%20workflow%20configuration.md)'s canonical
+spelling has gone unruled for a seventh day.
+
+⚠ **Two further developer-authored notes arrived inside those commits** —
+`How the Quote acceptance email action works.md` and
+`Quote PDF generation for Bozza quotes.md`. Both are honest about their own
+limits ("not deployed or verified", "no Apex test classes"). They are the fourth
+and fifth notes to reach this repository through a code commit rather than a
+meeting. Indexed as they stand, not rewritten.

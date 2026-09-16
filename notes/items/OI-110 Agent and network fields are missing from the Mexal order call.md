@@ -6,7 +6,7 @@ owner: Andrea Di Cicco
 with: Elisa Migliano
 org: both
 raised: 2026-09-02
-updated: 2026-09-10
+updated: 2026-09-16
 depends_on: [OI-58]
 requirement: INT-01
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
@@ -197,3 +197,49 @@ question — *can the `ordini-clienti` create call carry `cod_agente`, `zona` an
 questions of exactly this kind in one pass on 11 August. **Nobody has asked, and
 Andrea Di Cicco's JSON update and test send are outstanding since 2 September** —
 nine days.
+
+
+## 🔴 2026-09-16 - the client restated the freeze rule, and the transport is still absent
+
+[Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md) put the
+rule a **third** time, from the third different mouth. Elisa Migliano, at
+02:18:55:
+
+> _"ogni cliente è associato ad un agente. Nel momento in cui viene inserito
+> l'ordine su quel cliente devono essere riportati nell'ordine quegli elementi
+> lì. Quindi ogni ordine deve avere il codice agente, il codice classificatore
+> rete e il codice di zona dell'azienda associata nel momento in cui viene
+> immesso l'ordine [/] il preventivo."_
+
+Aurel Mrruku checked the consequence out loud — _"se si modifica il lato account
+non verrà portata la modifica a livello di ordine"_ — and Elisa Migliano
+confirmed it with a worked example: an order entered today under Fabrizio stays
+Fabrizio's; if the commercial manager reassigns the customer to Elisa tomorrow,
+only the **next** order is hers.
+
+The rule is now stated by **Fabrizio Paganelli (03/09)**, **the client's own
+workbook (04/09)** and **Elisa Migliano (16/09)**, and it was extended: it binds
+the **preventivo** as well as the order.
+
+🟢 **It also acquired a mechanism on the Salesforce side.** The same session
+agreed the three codes are layout values on the quote, carried onto the order
+with the quote's field structure, and [OI-138](OI-138%20Quotes%20and%20orders%20freeze%20once%20the%20order%20is%20accepted.md)
+seals both records at acceptance — so on the Salesforce side the historicisation
+now has somewhere to live and something to hold it still.
+
+🔴 **The wire question is untouched and is now the whole of this row.** The
+10 September reading stands: `Creazione Ordine cliente` carries `sigla`, `serie`,
+`numero`, `cod_conto`, `data_documento` and five line arrays, and **no
+`cod_agente`, no `zona`, no `classificatore rete`**. Three statements of a
+requirement do not create a field on somebody else's API.
+
+🔴 **And the person who could answer it was released from the project the same
+evening.** Andrea Di Cicco was told he could _"lentamente staccare"_ at
+18:04 CEST on 16 September — see
+[OI-139](OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md).
+His JSON update and test send are **outstanding since 2 September, fourteen
+days**, and the sharpened Kreosoft question is **unasked for a seventh day**.
+
+**The action is unchanged and is now urgent: ask Mirko Merendi at Kreosoft
+whether the `ordini-clienti` create call can carry the three fields on the
+header, and under what names.** It is one message. UAT opens on 23 September.

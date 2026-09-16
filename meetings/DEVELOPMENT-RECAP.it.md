@@ -4076,3 +4076,153 @@ repository contiene ora **40 classi Apex, tre delle quali di test**, e la
 superficie non testata comprende ora una scrittura sullo stato Ordine
 raggiungibile da utente guest. **Solo brief — nessun test scritto, proposto o
 abbozzato.**
+
+## 39. Aggiornamento 16/09/2026 — il cliente ha aperto anagrafica prodotti e preventivi, e un pulsante è sparito senza una decisione
+
+La quinta sessione di data model è durata **2h21m30s** contro una prenotazione
+di due ore e ha coperto più terreno di ogni precedente. Sul fronte delivery: PR
+#45 mergiata, una pull request aperta, e l'evidenza più grave del 15 settembre
+rimossa dal codice da qualcuno che non ha lasciato traccia del perché.
+
+### 39.1 🟢 Data Model Parte 5 — dieci decisioni su prodotti, preventivi e testate ordine
+
+**16 settembre, 11:00 CEST, con il cliente.** Elena Spini, Elisa Migliano e
+Aurel Mrruku per tutta la durata; **Fabrizio Paganelli è entrato, ha salutato ed
+è uscito verso 00:06**; **Sabatino Rinaldi non ha partecipato**. Verbale
+completo: [la nota di sessione](../notes/meetings/2026-09-16%20Data%20Model%20Parte%205.md).
+
+**Anagrafica prodotti.** Eliminati i campi superflui (`tassabile`, costo
+commissione, quantità, date di vendita) — secondo la normativa di **San Marino**
+l'IVA non si applica e l'anagrafica articoli Mexal usa codici di esenzione
+fissi. Unità di misura **`NR`, numeri interi**. **Lo stato attivo del prodotto è
+di Salesforce**: i prodotti nascono sempre attivi, la disattivazione è manuale e
+Mexal non la sovrascrive mai; un prodotto disattivato sparisce da nuovi
+preventivi e bundle ma resta sugli ordini storici. **La `natura` di Mexal si
+mappa su due checkbox Salesforce** — `genera biglietto` e `is bundle` — tramite
+una trasformazione custom. `tipo biglietto` assume `Executive` / `Gold` /
+`Diamond`, **non obbligatorio**; `Academy` ricade in `categoria statistica`.
+`gruppo merceologico` resta come picklist vuota. I **`livelli 0–6`** di
+riclassificazione diventano picklist.
+
+**Preventivo e ordine.** 🔑 **Un'offerta vinta e il suo ordine accettato sono
+congelati** — nessuna riga aggiunta o rimossa, nessun prezzo o codice articolo
+modificato, si modifica solo in fase di opportunità e preventivo
+([OI-138](../notes/items/OI-138%20Quotes%20and%20orders%20freeze%20once%20the%20order%20is%20accepted.md),
+non costruito). **`Tipologia attività` viene creata sull'Account di tipo Locale**
+come picklist globale non restrittiva e pre-popola il preventivo, il che rende
+obbligatoria lì la selezione del locale. Nome preventivo = numero preventivo +
+partita IVA; il numero preventivo è lo stesso codice con cui Mexal fattura.
+**Scadenza preventivo a cinque giorni** dall'ingresso in *trattativa*,
+modificabile dal tutor. Un preventivo principale perso chiude l'opportunità come
+persa con la stessa motivazione. 🔑 **`Codice agente`, `classificatore rete` e
+`codice zona` sono storicizzati su preventivo e ordine** — una riassegnazione
+successiva sull'Account non raggiunge i record esistenti. La testata ordine
+adotta la struttura campi del preventivo; **le righe ordine sono state
+rinviate**.
+
+**Rimasto aperto.** Le vendite post-evento dei tutor potrebbero essere **solo
+bundle**, in attesa di Sabatino Rinaldi. **I preventivi complessi dei tutor non
+hanno un meccanismo per le tranche** — i tutor costruiscono preventivi a più
+righe le cui scadenze non coincidono con le fatture mensili Mexal e spiegano le
+rate a mano nel campo note del PDF; Elisa Migliano ha chiesto una tabella di
+sintesi, Aurel Mrruku ha indicato il limite strutturale, Elena Spini ha portato
+il caso di un contratto da ~20.000 € suddiviso in tranche, e si è rinviato a
+venerdì. **I link WooCommerce per offerte multiprodotto non in bundle** non sono
+testati; i link effettivamente inviati ai partecipanti portano id di bundle
+predefiniti.
+
+🔴 **Utenti, Profili, il piano di caricamento iniziale e la tabella Lead non
+sono stati aperti — sesta sessione consecutiva**
+([OI-24](../notes/items/OI-24%20Data%20model%20workbook.md)).
+🔴 **Va sciolto un conflitto di calendario**: la Parte 4 aveva fissato la Parte 6
+il 18/09 su Campagne/Lead con Rebecca Marmo; la Parte 5 ha fissato venerdì 18/09
+per le righe ordine.
+
+### 39.2 🟢 PR #45 mergiata — il roll-up delle tranche arriva su `DevMain`
+
+`0d2b779`, **08:21:19Z**. `OrderItemTriggerHandler` — `Tranche__c.Pagata__c` vero
+solo quando ogni riga è `Paid`, che è `ORD-03` e `AC-06` alla lettera — è sulla
+linea principale. Non è mai stato eseguito.
+
+✅ **E una correzione al record del 15 settembre.** La lettura di quella notte
+diceva che il nuovo permesso personalizzato `Edit_Mexal_Synced_Admin_Fields` non
+era concesso da nulla. Era concesso nello stesso commit che lo creava, in
+`Full_Permission.permissionset-meta.xml` righe 43–46; l'affermazione derivava
+dagli **hunk di diff** di quel file, che non includono il blocco
+`customPermissions`.
+
+🔴 **Il difetto reale è più stretto ed è concreto.** `Full_Permission` è l'unico
+permission set in `force-app/` che lo concede, ed è il set sviluppatore ad
+accesso totale. Onorare ciò che il 3 settembre è stato promesso
+all'amministrazione significa o concedere il permesso da un permission set
+**amministrazione** — che in questo repository non esiste — o assegnare
+`Full_Permission` all'amministrazione, che sarebbe una regressione di sicurezza
+travestita da correzione
+([OI-117](../notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)).
+
+### 39.3 🟢🔴 Il pulsante `Incassato` è stato rimosso, su un branch, senza alcuna decisione alle spalle
+
+`4132dab` (Rexhina Hysi, **09:24:55 CEST**, `DEV_ComponentBundle`) — **3
+inserimenti, 122 cancellazioni**. `markOrderIncassato`,
+`collectLinkedOrderIds`, il flag `canMarkOrderIncassato` e il ciclo che lo
+impostava, e il pulsante nella LWC: tutto eliminato. **Nel
+`ParticipantRegistrationController` non resta alcuna DML su `Order`.**
+
+🔴 **Non è su `DevMain` e nessuna pull request lo propone.** Il branch ha nel
+frattempo accolto altri quattro commit di lavoro non correlato, quindi la
+correzione viaggia con loro. La scrittura su `Order.Status` raggiungibile da
+guest è ancora su `DevMain` e ancora in UAT.
+
+⚠ **Il perché non è registrato da nessuna parte.** Il report del 15 settembre è
+arrivato al gruppo dev alle 23:51 CEST e il commit è delle 09:24 del mattino
+dopo; quell'ordine temporale è tutta l'evidenza disponibile. Nessuno ha risposto
+al report, nessun canale nomina il pulsante, il commit non ha descrizione. **Una
+persona ha agito; nessuna ha deciso** — e **a Elisa Migliano, autorità operativa
+sulla fatturazione, non è ancora stato chiesto** se un attore lato cliente debba
+mai poter dichiarare incassato un ordine
+([OI-136](../notes/items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md)).
+
+🔴 **`QuoteAcceptanceController` è invariato** — ancora `public without sharing`
+su un `quoteId` nudo, e lo stesso giorno alle 14:21 CEST è stato incollato in
+Slack un URL `/gestione-preventivo?quoteId=…` funzionante.
+
+### 39.4 🔴 Entrambi gli interlocutori dell'integrazione sono usciti di scena lo stesso giorno
+
+**Andrea Di Cicco è stato sollevato dal progetto alle 18:04 CEST** — Elena
+Spini, _"per ora ti puoi lentamente staccare"_ — con quattro domande alle
+spalle: l'aggiornamento JSON e il test send di OI-110 (**14 giorni**), la
+collection WooCommerce filtrata di OI-102 (**8 giorni**), l'obiezione senza
+risposta sulla PUT di OI-125 e il "chi devo avvisare" senza risposta di OI-135.
+Tre delle quattro non sono rispondibili da nessun altro in ROMI
+([OI-139](../notes/items/OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md)).
+
+**Anche Sabatino Rinaldi è irraggiungibile** — in tour con la direzione del
+cliente, nessuna risposta su WhatsApp la settimana precedente, secondo Elisa
+Migliano alla Parte 5. Deve le due nuove risposte su WooCommerce ed è in attesa
+della collection filtrata.
+
+**La UAT apre il 23 settembre, fra sette giorni.**
+
+### 39.5 ⚠ Lavoro in corso, non mergiato
+
+**PR #47** (`7cabe51`, Anita Aga, aperta 16:03:27Z, **aperta**, senza
+descrizione) — un endpoint `Indirizzo Spedizione` su
+`MexalCustomerCreateService`, un `OpportunityQuoteDefaultsController` con
+un'azione a schermo **Nuovo Preventivo**, `Order.Tipo_Ordine__c` e modifiche di
+layout: **+883 righe su 13 file.**
+
+**`DEV_ComponentBundle`** (Rexhina Hysi) — oltre alla rimozione del pulsante,
+generazione del PDF preventivo per i preventivi in `Bozza` con un campo di
+istruzioni di pagamento `Modalita_Pagamento_PDF__c`, un'azione email **Invia per
+accettazione**, lavoro sui bundle nei prodotti e il livellamento di `Rinuncia`.
+🔴 **Altre due classi fissano a codice le grafie di stato del preventivo**
+(`Bozza`, `In Attesa Accettazione`), quattro dal 09/09, mentre la grafia
+canonica di [OI-59](../notes/items/OI-59%20Quote%20workflow%20configuration.md)
+resta senza decisione da sette giorni.
+
+⚠ **Dentro quei commit sono arrivate altre due note scritte da sviluppatori** —
+`How the Quote acceptance email action works.md` e
+`Quote PDF generation for Bozza quotes.md`. Entrambe sono oneste sui propri
+limiti ("non deployato né verificato", "nessuna classe di test Apex"). Sono la
+quarta e la quinta nota ad arrivare in questo repository tramite un commit di
+codice anziché tramite una riunione. Indicizzate come sono, non riscritte.

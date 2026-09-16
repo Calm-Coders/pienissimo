@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-04
-updated: 2026-09-09
+updated: 2026-09-16
 depends_on: [OI-96, OI-98]
 blocks: [OI-53, OI-84]
 source: notes/objects/The Mappatura Edizione object.md
@@ -154,3 +154,39 @@ What changed is the population of orders that will eventually meet it:
 **The item is unchanged in substance and more urgent in effect. Still nobody owns
 the rows, and there is still no date for entering them beyond "the days
 immediately before go-live".**
+
+
+## ⚠ 2026-09-16 - the ticket-generating flag gets a mechanism, and the table still has no rows
+
+[Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md)
+settled **how a product comes to be ticket-generating**: Mexal's **`natura`**
+field maps, through a custom transformation Aurel Mrruku owns, onto two
+Salesforce checkboxes — **`genera biglietto`** and **`is bundle`**. Elisa
+Migliano has already identified the source codes and will send them with
+descriptions so the mapping logic is traceable.
+
+🟢 **That is a real improvement on this row's provenance problem.** Until today,
+"43 products generate tickets" was a property somebody had set by hand; it now
+has a stated derivation from the system that is master of the article.
+
+🔴 **It does not touch what this row is about.** `Mappatura_Edizione__c` maps a
+ticket-generating product to an **edition and a date window**. Knowing *which*
+products generate tickets does not say *which edition* a given one belongs to,
+and that is still hand-entered, still **40 of 43 unmapped**, still **without a
+named owner**, and still the direct cause of the four `OrderTriggerHandlerTest`
+failures recorded on 15/09.
+
+⚠ **It may make the row worse before it makes it better.** If the `natura`
+transformation runs over the catalogue, the set of ticket-generating products is
+re-derived from Mexal rather than curated — so the denominator can move, and the
+three existing active mappings were built against the old set. **Nobody has said
+what happens to them.**
+
+⚠ The session also fixed `tipo biglietto` at **`Executive` / `Gold` /
+`Diamond`**, explicitly **not mandatory**, with `Academy` belonging to
+`categoria statistica` instead. That is a ticket attribute, not an edition, and
+it does not feed this table.
+
+**The 07/09 answer to *when* still stands — by hand, in the days immediately
+before go-live — and still nobody has been named to do it.** Those days are now
+the week of 21 October.

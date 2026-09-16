@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elisa Migliano
 org: both
 raised: 2026-07-02
-updated: 2026-09-08
+updated: 2026-09-16
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 24
@@ -332,3 +332,31 @@ else's login
 ([the risk](../risks/Risk%20-%20a%20sandbox%20password%20was%20spoken%20aloud%20and%20preserved%20in%20a%20meeting%20transcript.md)).
 
 Five sessions, **three objects**: Account, Referente, Opportunità.
+
+
+## 🔴 2026-09-16 - a sixth session, and the same four gaps
+
+[Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md)
+(2h21m30s against a two-hour booking) covered the **product registry**, the
+**quote** and the **order header**, field by field, and pruned both layouts
+hard.
+
+🟢 **Three more sheets are now specified**, which is the most any single session
+has delivered.
+
+🔴 **Utenti, Profili, the initial-load plan and the Lead table were not opened.**
+Six sessions, and the four gaps this row has carried since Parte 2 are
+untouched. Order **lines** were deferred as well, so the Ordine sheet is half
+done.
+
+⚠ The workbook itself was **saved at 2026-09-16T11:20:06Z**, during the session,
+as it was during Parte 2. **This sweep did not open it** — the file is 68 KB of
+`.xlsx` and the session's own notes are the cheaper source for what was decided.
+What actually changed inside it is therefore **unread, not unchanged**.
+
+🔴 **A calendar conflict needs resolving before Friday.**
+[Parte 4](../meetings/2026-09-08%20Data%20Model%20Parte%204.md) recorded **Parte 6
+booked 18/09 for Campagne/Lead with Rebecca Marmo**. Parte 5 booked **Friday
+18/09 for order lines**. No source says whether Friday holds one session or two.
+**If order lines take the slot, the Lead table is deferred a sixth time** — ask
+Elena Spini.

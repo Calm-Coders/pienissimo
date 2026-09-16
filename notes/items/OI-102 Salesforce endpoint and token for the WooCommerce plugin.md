@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-15
+updated: 2026-09-16
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -355,3 +355,29 @@ it looks. Absence of an answer in Slack is not absence of an answer.
 
 ⚠ **UAT opens 23 September.** The whole Salesforce side of
 [OI-49](OI-49%20WooCommerce%20checkout-link%20flow.md) waits on this.
+
+
+## 🔴 2026-09-16 - eighth day, and both counterparts are off the board
+
+**Nothing arrived.** Andrea Di Cicco's DM with Aurel Mrruku has carried no
+message since **14/09 17:28 CEST**; the filtered collection he promised on 08/09
+for _"17:00–18:00"_ is **eight days late**; Sabatino Rinaldi still holds the
+**pre-filter** version; **the sixty-year JWT is still unrotated**; and no test
+result has come back from the client side, ready since 27 August.
+
+Two things changed, and both make it harder rather than easier.
+
+🔴 **Andrea Di Cicco was released from the project at 18:04 CEST** — Elena Spini,
+_"per ora ti puoi lentamente staccare"_ — with this collection still owed. See
+[OI-139](OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md).
+
+🔴 **Sabatino Rinaldi is unreachable too.** At
+[Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md) Elisa
+Migliano reported him on tour with the client's direction, and Elena Spini and
+Aurel Mrruku confirmed they had **no WhatsApp reply the previous week**. Elena
+Spini's action from the session is to chase him on WhatsApp again.
+
+⚠ So on 16 September the person who owes the artefact and the person waiting for
+it are **both** unavailable, and neither ROMI voice connected the two facts in
+the same conversation. **UAT opens on 23 September**, seven days out, on an
+integration whose end-to-end test has never run with the filtered payload.

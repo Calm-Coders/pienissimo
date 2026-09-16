@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-09-03
-updated: 2026-09-15
+updated: 2026-09-16
 depends_on: [OI-116]
 requirement: INT-01
 source: notes/meetings/2026-09-03 Data Model Parte 1.md
@@ -233,3 +233,47 @@ Migliano's people and the rule says what the meeting said.
    intended to keep open.
 3. **It is unmerged.** `DevMain` at `f51365b` still carries the profile-name
    formula.
+
+## ✅ 2026-09-16 - PR #45 merged, and point 1 above was wrong when written
+
+**`0d2b779`, merged 08:21:19Z (10:21 CEST).** The custom permission principal is
+on `DevMain`. Point 3 is closed.
+
+✅ **Point 1 is a correction, not a change.** `400c195` **did** grant the
+permission — in the same commit that created it:
+
+```xml
+<customPermissions>
+    <enabled>true</enabled>
+    <name>Edit_Mexal_Synced_Admin_Fields</name>
+</customPermissions>
+```
+
+in `Full_Permission.permissionset-meta.xml`, lines 43–46. The 15 September
+reading — _"no permission set in this commit grants it"_ — was drawn from the
+commit's **diff of that file**, which shows only the `MexalArticleSync*` class
+removals and the `OrderItem.Mexal_Payment_Status__c` field grant; the
+`customPermissions` block sits outside the diff hunks. `git log -S` on the
+permission-set directory returns `400c195` itself. **The claim should have been
+checked against the file, not the hunk.**
+
+### 🔴 What is genuinely wrong is narrower, and it is a real problem
+
+`Full_Permission` is the **only** permission set in `force-app/` that grants it —
+verified across all nine. And `Full_Permission` is the all-access developer set:
+the 7 September org check found it reaching **two** of nine active users.
+
+So the grant exists, but it is attached to the wrong principal. To satisfy what
+the **3 September session** promised — that amministrazione keeps editing these
+fields — somebody must either:
+
+- grant `Edit_Mexal_Synced_Admin_Fields` from an **amministrazione** permission
+  set, which does not exist in this repository; or
+- assign amministrazione users `Full_Permission`, which grants them everything
+  else in the org as well.
+
+⚠ **Neither has happened, and the second would be a security regression dressed
+as a fix.** This is now a permission-design question, not a missing line.
+
+🔴 **Point 2 is unchanged.** Thirteen fields locked, four pushed, nine able to
+diverge silently by the amministrazione path.

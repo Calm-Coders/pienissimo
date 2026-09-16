@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-15 (nightly requirements-check: three PRs in one day; the chain merged and is switched off in UAT) · Source of record: [notes/](notes/)
+Last updated: 2026-09-16 (nightly requirements-check: Data Model Parte 5; the Incassato button removed on a branch; both integration counterparts off the board) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,79 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🟢🔴 **2026-09-16 — the client opened the product and quote registries, and the
+  most severe finding of the night before disappeared from the code without a
+  decision.**
+  🟢 **[Data Model Parte 5](notes/meetings/2026-09-16%20Data%20Model%20Parte%205.md)**
+  (client-facing, 11:00 CEST, **2h21m30s** against a two-hour booking; Elena
+  Spini, Elisa Migliano, Aurel Mrruku throughout — **Fabrizio Paganelli left at
+  ~00:06**, **Sabatino Rinaldi absent**) produced **ten rulings**, the most any
+  single session has. Products: superfluous fields deleted (**San Marino has no
+  VAT** and Mexal uses fixed exemption codes), unit of measure `NR` whole
+  numbers, **product active state owned by Salesforce and never overwritten by
+  Mexal**, and **`natura` mapping to `genera biglietto` + `is bundle`** through
+  a custom transformation.
+  🔑 **A won quote and its accepted order freeze** — no line, price or article
+  code changes after acceptance
+  ([OI-138](notes/items/OI-138%20Quotes%20and%20orders%20freeze%20once%20the%20order%20is%20accepted.md)).
+  **Nothing builds it, no register row says it**, and it cannot be a blanket
+  lock: the tranche roll-up that merged the same morning must keep writing.
+  🔑 **`Codice agente`, `classificatore rete` and `codice zona` are historicised
+  on the quote and the order** — the **third** independent statement of the
+  freeze rule, now binding the preventivo too — while `Creazione Ordine cliente`
+  still has **nowhere on the wire to put them**
+  ([OI-110](notes/items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)).
+  🟢 **`Tipologia attività` gets a source at last** — a global picklist on the
+  **Locale** Account, pre-filling the quote
+  ([OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md));
+  🔴 selecting a locale becomes mandatory on the quote and most Accounts have no
+  child yet.
+  🔴 **Complex tutor quotes have no tranche mechanism.** Elisa Migliano: tutors
+  build multi-line quotes whose due dates do not match Mexal's monthly invoices
+  and **explain the instalments by hand in the quote PDF's notes field**. The
+  record had been assuming tranches are a bundle property; the client corrected
+  it. Deferred to Friday ([OI-50](notes/items/OI-50%20Tranche%20object.md)).
+  🔴 **Sixth session with no Utenti, no Profili, no initial-load plan and no Lead
+  table** ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)); order
+  **lines** deferred. ⚠ **Friday 18/09 is double-booked** — Parte 4 put
+  Campagne/Lead with Rebecca Marmo there, Parte 5 put order lines.
+  🟢 **PR #45 merged 08:21:19Z (`0d2b779`)** — the ORD-03/AC-06 tranche roll-up is
+  on `DevMain`. ✅ **And the 15/09 claim that nothing granted
+  `Edit_Mexal_Synced_Admin_Fields` was wrong**: `400c195` granted it in the same
+  commit, outside the diff hunks that were read. 🔴 The real defect is narrower —
+  **only `Full_Permission` grants it**, the all-access developer set, so
+  amministrazione is served by neither option available
+  ([OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)).
+  🟢🔴 **The `Incassato` button is gone — `4132dab` (Rexhina Hysi, 09:24:55 CEST),
+  3 insertions / 122 deletions, a complete removal of the write path.** 🔴 **It is
+  on `DEV_ComponentBundle` only, with no pull request**, so the guest-reachable
+  write to `Order.Status` is still on `DevMain` and still in UAT. ⚠ **Why is
+  recorded nowhere**: the 15/09 report landed 23:51 CEST, the commit is 09:24 the
+  next morning, and **that ordering is the whole of the evidence**. A person
+  acted; **no person ruled**, and Elisa Migliano still has not been asked
+  ([OI-136](notes/items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md)).
+  🔴 **`QuoteAcceptanceController` is untouched** — a working
+  `/gestione-preventivo?quoteId=…` URL on a raw record id was pasted into Slack
+  at 14:21 CEST.
+  🔴 **Both integration counterparts went off the board the same day.** Andrea Di
+  Cicco was told he could _"lentamente staccare"_ at 18:04 CEST with **four**
+  questions behind him — OI-110 (14 days), OI-102 (8 days), OI-125, OI-135, three
+  of them answerable by nobody else at ROMI
+  ([OI-139](notes/items/OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md)).
+  **Sabatino Rinaldi is on tour and not answering WhatsApp** — and he owes two new
+  answers on the checkout link
+  ([OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)). **UAT opens
+  in seven days.**
+  ⚠ **PR #47 open** (`7cabe51`, Anita Aga, +883, no description) — Indirizzo
+  Spedizione endpoint and a Nuovo Preventivo action. `DEV_ComponentBundle` adds
+  quote PDF generation and an acceptance-email action, **hard-coding quote status
+  spellings in two more classes** — four since 09/09, and
+  [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md) is unruled for
+  a seventh day.
+  🔴 **Gmail unreachable for a third consecutive run** — the mail watermark stays
+  at **2026-09-11T22:00Z**, now a **five-day** unswept window on the channel every
+  substantive client event has arrived through.
 
 - 🟢🔴 **2026-09-15 — three pull requests in one day, and the integration stopped
   being runnable in the environment meant to accept it.**

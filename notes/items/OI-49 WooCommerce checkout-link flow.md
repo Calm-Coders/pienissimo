@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-07-31
-updated: 2026-08-28
+updated: 2026-09-16
 requirement: [INT-12, INT-13, INT-14, ORD-12]
 source: meetings/open-items.md row 49
 ---
@@ -164,3 +164,78 @@ On structure it closed two of the five points above and answered the third
 against the register's recommendation. It also showed that the envelope carries
 **no idempotency key and nothing signed** —
 [OI-104](OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md).
+
+
+## 🔴 2026-09-16 - two new open points, and the person who settles them is unreachable
+
+Two sources moved this row on the same day, and they meet in the middle.
+
+### The session
+
+At [Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md)
+Aurel Mrruku raised a case the spec does not cover: **an offer carrying several
+products that are not wrapped in a single bundle.** The URL anatomy supports it —
+`?add-to-cart=[IDs]` takes comma-separated ids — but nobody has tested whether
+the shop, the mu-plugin and the reconciliation behave when it does.
+
+What the room could establish is that **the links actually sent to event
+attendees carry predefined bundle ids** — _bundle 1_, _bundle 2_ — not product
+ids composed per offer. So the mechanism in daily use is narrower than the
+mechanism in the spec.
+
+That produced the session's one explicit `Da approfondire`: **post-event tutor
+sales may be bundles only**, pending Sabatino Rinaldi. And a named action for
+Elena Spini and Elisa Migliano: **ask him whether the product id in the
+Salesforce-generated link is always the bundle id.**
+
+### The Notebook summary
+
+That evening (18:51–19:04 CEST) Elena Spini pasted into her DM with Aurel Mrruku
+a long restatement of the id mechanism, prefaced _"from Notebook"_ — the project
+**NotebookLM** notebook linked from the `#tproj-pienissimo` canvas. It attributes
+its content to the **Business Review of 31/07** and the **bundle demo of
+16/07**, both already sources for this row.
+
+⚠ **It is an AI restatement of meetings this record already holds, not a new
+statement by anyone.** Nothing in it is a fresh decision, and no participant
+confirmed it. Read as such, three of its points are worth keeping because they
+name things this row has never named:
+
+1. **The WooCommerce product id and the SKU are different keys, deliberately.**
+   The numeric WooCommerce id (the summary's example: `247`) drives `add-to-cart`;
+   amministrazione keeps invoicing on Mexal article codes. The summary attributes
+   the reassurance to Sabatino Rinaldi answering **Fabrizio Paganelli's** worry
+   about having to realign codes across three systems by hand.
+2. **A cron is proposed to sync the WooCommerce catalogue into Salesforce**, so
+   every Salesforce product already knows its WooCommerce id and the tutor never
+   types one — the "Crea link" button offers a product-name search instead.
+   🔴 **Nothing of this exists.** The register's `INT-13` build list names
+   "product and opportunity WooCommerce id fields, link generator"; the
+   25/08 org check found none of it, and no sweep since has found it either.
+   **The cron has no owner, no date and no requirement row of its own.**
+3. **Why the opportunity id and not the VAT number or the email** — a customer
+   with two open deals would be ambiguous; the opportunity id closes exactly the
+   one the recall belongs to.
+
+Elena Spini's own conclusion, 18:58:47 — _"a quanto pare Sabatino aveva
+ragione.........però capiamo meglio domani quando ci sentiamo"_ — points at the
+**internal meeting of 17/09**, where this is expected to be picked up.
+
+### Where that leaves the five points
+
+| Point to agree              | State                                                                 |
+| --------------------------- | --------------------------------------------------------------------- |
+| Pull vs webhook             | ✅ closed — webhooks                                                  |
+| Price source of truth       | ✅ closed — coupons excluded from phase 1                             |
+| ID in clear vs signed token | 🔴 open — and now decided *differently* on the participant page, which took an opaque token on 15/09 while this link still sends the id in clear |
+| URL parameter name          | ✅ closed 28/08 — `sf_opportunity_id`                                 |
+| ID format                   | ✅ closed 28/08 — the 15-character form                               |
+| **Is the product id always a bundle id?** | 🔴 **new, 16/09** — owed by Sabatino Rinaldi              |
+| **Multi-product offers with no single bundle** | 🔴 **new, 16/09** — untested, unowned            |
+
+🔴 **Both new points need Sabatino Rinaldi, and he is not answering.** Elisa
+Migliano reported him on tour with the client's direction; Elena Spini and Aurel
+Mrruku confirmed **no WhatsApp reply the previous week**. The same is true of
+[OI-102](OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md),
+where he has been waiting for a filtered collection since 08/09 — so he is
+simultaneously the person owed something and the person owing two answers.

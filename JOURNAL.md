@@ -10,6 +10,50 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-16 — claude — nightly requirements-check: Data Model Parte 5, and the Incassato button removed without a decision
+
+- **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark
+  **2026-09-15T22:00Z**. 🔴 **Gmail unreachable for the third consecutive run** —
+  sign-in required, connector disconnected, **zero mail queries ran**; the mail
+  watermark stays at **2026-09-11T22:00Z**, a five-day split. Drilled
+  **[Data Model Parte 5](notes/meetings/2026-09-16%20Data%20Model%20Parte%205.md)**
+  (16/09, client-facing, 2h21m30s) from the Gemini notes in full.
+- **State:** three notes created — the Parte 5 minute, **OI-138** (a won quote and
+  its accepted order freeze; agreed, unbuilt, no register row) and **OI-139**
+  (Andrea Di Cicco released from the project owing OI-110, OI-102, OI-125,
+  OI-135). Ten notes updated. Trackers rows 24/49/50/59/102/110/115/117/121/136
+  touched plus new rows 138/139, `DEVELOPMENT-RECAP` §39, **all in both
+  languages**. `MAP.md` and `INDEX.md` carry the new position. **The register was
+  not touched** — nothing in it became false. `vault:check` green; committed to
+  `DevMain`.
+- **Next:** the **17/09 internal meeting** is where Elena Spini said the
+  WooCommerce product-id question would be picked up — drill anything it
+  produces. **Friday 18/09 is double-booked** (Parte 6 Campagne/Lead with Rebecca
+  Marmo vs order lines); whichever runs, drill it and correct OI-24.
+- **Watch:**
+  - 🔴 **`4132dab` removes the `Incassato` button completely but sits on
+    `DEV_ComponentBundle` with no pull request.** `DevMain` and UAT are still
+    exposed. **Record the merge when it happens** — and note that the *decision*
+    OI-136 asked for was never made; a person acted, no person ruled, and Elisa
+    Migliano still has not been asked.
+  - ✅ **A correction: the 15/09 claim that nothing granted
+    `Edit_Mexal_Synced_Admin_Fields` was wrong.** `400c195` granted it in the same
+    commit, in `Full_Permission` lines 43–46, outside the diff hunks that were
+    read. The real defect is that **`Full_Permission` is the only set granting
+    it** — do not restate the old version.
+  - 🔴 **Both integration counterparts are unavailable at once** — Andrea Di Cicco
+    winding down, Sabatino Rinaldi on tour and not answering WhatsApp — with UAT
+    opening 23/09. **Mirko Merendi at Kreosoft is the untried route** for OI-110
+    and OI-135.
+  - ⚠ **The workbook moved at 11:20:06Z during Parte 5 and was not opened**;
+    `Flows & Objects.drawio` moved a **ninth** time and was **not decoded**, fifth
+    run. Both are absences, not nothings.
+  - ⚠ **A live invitation token and a raw Quote id were pasted into Slack** on
+    16/09 at 14:21 CEST. **Neither value is in this repository and neither must
+    be.**
+
+---
+
 ## 2026-09-15 — claude — nightly requirements-check: three PRs in one day, and the chain is switched off in UAT
 
 - **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark

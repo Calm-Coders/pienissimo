@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-09-09
+updated: 2026-09-16
 requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
 source: meetings/open-items.md row 59
 ---
@@ -322,3 +322,34 @@ automatically; both are hand-set.
 
 🔴 **Marco Montesi still owes the preset expiry timings.** Unchanged since
 31 July, and he did not reply to the 8 September status mail either.
+
+
+## 🔴 2026-09-16 - the code spelling reaches two more classes, on a branch
+
+`DEV_ComponentBundle` adds two quote features that each key on a **literal quote
+status string**:
+
+- `QuoteAcceptanceEmailController` — the **Invia per accettazione** quick action
+  loads and sends only when `Quote.Status` is exactly **`In Attesa
+  Accettazione`**, checked twice, once on load and once on send.
+- The **Genera PDF** action and its Visualforce controller — available only when
+  `Quote.Status = `**`Bozza`**, enforced independently in both.
+
+Both are documented in developer-authored notes committed alongside the code
+(`notes/How the Quote acceptance email action works.md`,
+`notes/Quote PDF generation for Bozza quotes.md`), neither is deployed, and
+**neither is on `DevMain`**.
+
+🔴 **That is four independent hard-codings of the code spelling**, after the
+three `a53345a` introduced on 09/09 — and the register still disagrees with
+itself, its `build_state` carrying the code spelling while its requirement text
+carries another.
+
+⚠ **The cost is now concrete rather than theoretical.** Reconciling the register
+to the code means one edit; reconciling the code to the register means finding
+every literal in Apex, in two Visualforce controllers and in two quick actions,
+and any one missed leaves an action that silently never appears.
+
+**The 09/09 trigger has not fired for a seventh day: nobody has ruled on the
+canonical spelling.** Each day it stays open, it gets more expensive in exactly
+this way.

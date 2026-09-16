@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-15
+updated: 2026-09-16
 blocks: [OI-75, go-live]
 severity: gating
 source: Aurel Mrruku direct decision, 2026-08-24; meetings/open-items.md row 50
@@ -365,3 +365,53 @@ customer, article and warehouse batches; how the scadenzario read is triggered i
 not visible in the commit.
 ⚠ The 2026-09-15 `org-status-check` still reads the org as it was this morning:
 **29 tranches, 5 of 38 Order Items carrying tranche and due date, 0 fully paid.**
+
+
+## 🔴 2026-09-16 - the roll-up merged, and the client named a gap it does not cover
+
+**PR #45 merged at 08:21:19Z (`0d2b779`).** The `OrderItemTriggerHandler`
+roll-up — `Tranche__c.Pagata__c` true only when every line is `Paid`, fed by the
+Mexal scadenzario — is on `DevMain`
+([the build](../objects/The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md)).
+**Gap 2, the aggregation, is closed in source.** It has never run.
+
+🔴 **[Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md)
+then opened a gap the tranche object does not address: quotes that are not
+bundles.**
+
+Elisa Migliano's case is the ordinary one, not an edge:
+
+- Tutors build **standard multi-line quotes** whose per-line due dates **do not
+  line up with the monthly invoices Mexal issues**.
+- Today they explain the instalments to the customer **in the notes field of the
+  quote PDF**, by hand, because the payment terms are not otherwise legible.
+- She asked for a **summary table on the quote screen** — due dates against
+  amounts — so the tutor stops recalculating by hand.
+
+Aurel Mrruku named the structural reason it is hard: **the due date hangs off
+the individual product line**, which is exactly what PR #37 built on 09/09 and
+what the Mexal tracciato requires. Elena Spini put the concrete case: a **~€20,000
+contract** (_Performance Plus_ / _anno con Pienissimo_) that tutors routinely
+split into tranches.
+
+Elisa Migliano's proposal was to **pre-configure standard bundles** for generic
+tutor sales, valid year-round — i.e. to force the non-bundle case back into the
+bundle machinery rather than build a second mechanism.
+
+**Deferred to Friday 18/09** for Aurel Mrruku and Elena Spini to review bundles
+and complex tutor payments.
+
+### What this row should hold on to
+
+⚠ **The record has assumed tranches are a bundle property.** Both ROMI voices
+said so in the room — _"le tranche sono presenti nei bundle"_ — and Elisa
+Migliano corrected it: tutors produce complex instalment plans **outside**
+bundles, routinely, and have been doing it in free text. That is a requirement
+this project has been carrying in a notes field.
+
+⚠ A **payment-instructions field for the quote PDF**
+(`Quote.Modalita_Pagamento_PDF__c`) was built on a branch the same day —
+`DEV_ComponentBundle`, unmerged, see
+[the quote PDF note on that branch](../traces/Source%20trace%202026-09-16.md).
+It automates the free-text workaround; it does not give the tranches structure.
+The two efforts have not met.
