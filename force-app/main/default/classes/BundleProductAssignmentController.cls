@@ -10,6 +10,8 @@ public with sharing class BundleProductAssignmentController {
     public String productCode;
     @AuraEnabled
     public Decimal productPrice;
+    @AuraEnabled
+    public Boolean bundleOnly;
 
     public ItemOption(Product2 product) {
       id = product.Id;
@@ -17,6 +19,61 @@ public with sharing class BundleProductAssignmentController {
       productCode = product.ProductCode;
       productPrice = product.Product_Price__c;
     }
+  }
+
+  public class ProductSearchPage {
+    @AuraEnabled
+    public List<ItemOption> items = new List<ItemOption>();
+    @AuraEnabled
+    public Boolean hasMore;
+    @AuraEnabled
+    public Id nextCursor;
+  }
+
+  // Keyset pagination keeps every matching item reachable without an OFFSET cap.
+  // Exclusions come from the draft, so removed memberships can be selected again.
+  @AuraEnabled
+  public static ProductSearchPage searchProducts(
+    String searchTerm,
+    Boolean bundleOnly,
+    Boolean generatesTicket,
+    List<Id> excludedProductIds,
+    Id afterId
+  ) {
+    Set<Id> excludedIds = excludedProductIds == null
+      ? new Set<Id>()
+      : new Set<Id>(excludedProductIds);
+    String term =
+      '%' +
+      (String.isBlank(searchTerm) ? '' : searchTerm.trim()) +
+      '%';
+    String queryText =
+      'SELECT Id, Name, ProductCode, Product_Price__c, ' +
+      'Solo_Bundle__c, Genera_Biglietto__c FROM Product2 ' +
+      'WHERE RecordType.DeveloperName = \'Item\' AND IsActive = TRUE ' +
+      'AND Id NOT IN :excludedIds AND ProductCode LIKE :term';
+    if (bundleOnly != null) {
+      queryText += ' AND Solo_Bundle__c = :bundleOnly';
+    }
+    if (generatesTicket != null) {
+      queryText += ' AND Genera_Biglietto__c = :generatesTicket';
+    }
+    if (afterId != null) {
+      queryText += ' AND Id > :afterId';
+    }
+    queryText += ' ORDER BY Id LIMIT 51';
+    List<Product2> products = Database.query(queryText);
+    ProductSearchPage result = new ProductSearchPage();
+    result.hasMore = products.size() > 50;
+    for (Integer index = 0; index < Math.min(products.size(), 50); index++) {
+      Product2 product = products[index];
+      ItemOption option = new ItemOption(product);
+      option.bundleOnly = product.Solo_Bundle__c;
+      option.generatesTicket = product.Genera_Biglietto__c;
+      result.items.add(option);
+      result.nextCursor = product.Id;
+    }
+    return result;
   }
 
   public class ComponentRow {
@@ -224,6 +281,15 @@ public with sharing class BundleProductAssignmentController {
         input.quantity < 1)
         ? 1
         : input.quantity;
+      if (
+        quantity != quantity.setScale(0) ||
+        spread < 0 ||
+        spread != spread.setScale(2)
+      ) {
+        throw new AuraHandledException(
+          'Inserisci una quantita intera positiva e un importo non negativo con massimo due decimali.'
+        );
+      }
       Id componentId = String.isBlank(input.id) ? null : (Id) input.id;
       Id productId = String.isBlank(input.productId)
         ? null
@@ -233,6 +299,11 @@ public with sharing class BundleProductAssignmentController {
       // whose message gives no clue which row is at fault. Say so precisely instead.
       Boolean isExisting =
         componentId != null && existingById.containsKey(componentId);
+      if (componentId != null && !isExisting) {
+        throw new AuraHandledException(
+          'Una riga non appartiene a questo bundle. Ricarica la pagina.'
+        );
+      }
       if (!isExisting && productId == null) {
         throw new AuraHandledException(
           'A component row arrived without a product (id=' +
