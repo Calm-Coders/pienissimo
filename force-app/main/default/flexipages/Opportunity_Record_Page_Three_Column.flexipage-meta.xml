@@ -10,6 +10,9 @@
                             <value
               >Opportunity.Send_WooCommerce_Checkout_Email</value>
                         </valueListItems>
+                        <valueListItems>
+                            <value>Opportunity.Nuovo_Preventivo_Standard</value>
+                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>

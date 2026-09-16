@@ -23,7 +23,15 @@ public with sharing class MexalCustomerCreateService {
     @AuraEnabled
     public Boolean accountUpdated;
     @AuraEnabled
+    public Boolean shippingAddressSynced;
+    @AuraEnabled
+    public Id shippingAddressIntegrationLogId;
+    @AuraEnabled
+    public String shippingAddressMessage;
+    @AuraEnabled
     public Map<String, Object> requestPayload;
+    @AuraEnabled
+    public Map<String, Object> shippingAddressPayload;
     @AuraEnabled
     public String message;
 
@@ -32,7 +40,9 @@ public with sharing class MexalCustomerCreateService {
       responseHeaders = new List<String>();
       duplicatePartitaIva = false;
       accountUpdated = false;
+      shippingAddressSynced = false;
       requestPayload = new Map<String, Object>();
+      shippingAddressPayload = new Map<String, Object>();
     }
   }
 
@@ -59,6 +69,7 @@ public with sharing class MexalCustomerCreateService {
 
     Result result = buildResult(account.Id, payload, calloutResult);
     updateAccountWithGeneratedCode(account, result);
+    syncShippingAddress(account, result);
     return result;
   }
 
@@ -85,6 +96,7 @@ public with sharing class MexalCustomerCreateService {
     result.message = result.success
       ? 'Modifica cliente Mexal completata.'
       : 'Modifica cliente Mexal fallita.';
+    syncShippingAddress(account, result);
     return result;
   }
 
@@ -101,6 +113,11 @@ public with sharing class MexalCustomerCreateService {
         BillingCity,
         BillingState,
         BillingCountry,
+        ShippingStreet,
+        ShippingPostalCode,
+        ShippingCity,
+        ShippingState,
+        ShippingCountry,
         Phone,
         Fax,
         Email__c,
@@ -152,6 +169,46 @@ public with sharing class MexalCustomerCreateService {
     return payload;
   }
 
+  private static Map<String, Object> buildShippingAddressPayload(
+    Account account,
+    String customerCode
+  ) {
+    Map<String, Object> payload = new Map<String, Object>();
+    putValue(payload, 'cod_conto', customerCode);
+    putValue(payload, 'descrizione', buildShippingAddressDescription(account));
+    putValue(
+      payload,
+      'indirizzo',
+      firstNonBlank(account.ShippingStreet, account.BillingStreet)
+    );
+    putValue(
+      payload,
+      'cap',
+      firstNonBlank(account.ShippingPostalCode, account.BillingPostalCode)
+    );
+    putValue(
+      payload,
+      'localita',
+      firstNonBlank(account.ShippingCity, account.BillingCity)
+    );
+    putValue(
+      payload,
+      'provincia',
+      firstNonBlank(account.ShippingState, account.BillingState)
+    );
+    putValue(payload, 'telefono', account.Phone);
+    putValue(payload, 'email', account.Email__c);
+    putValue(payload, 'riferimento', null);
+    putValue(payload, 'cell_rif', null);
+    putValue(payload, 'nota', null);
+    return payload;
+  }
+
+  private static String buildShippingAddressDescription(Account account) {
+    String city = firstNonBlank(account.ShippingCity, account.BillingCity);
+    return String.isBlank(city) ? 'Sede operativa' : 'Sede operativa ' + city;
+  }
+
   private static String deriveFiscalResidenceCode(Account account) {
     String country = normalizeCountry(account.BillingCountry);
     if (country == 'IT' || country == 'ITALIA' || country == 'ITALY') {
@@ -166,6 +223,14 @@ public with sharing class MexalCustomerCreateService {
 
   private static String normalizeCountry(String value) {
     return String.isBlank(value) ? null : value.trim().toUpperCase();
+  }
+
+  private static String firstNonBlank(String firstValue, String secondValue) {
+    if (!String.isBlank(firstValue)) {
+      return firstValue.trim();
+    }
+
+    return String.isBlank(secondValue) ? null : secondValue.trim();
   }
 
   private static void putValue(
@@ -222,6 +287,44 @@ public with sharing class MexalCustomerCreateService {
       Codice_Cliente_Mexal__c = result.generatedCustomerCode
     );
     result.accountUpdated = true;
+  }
+
+  private static void syncShippingAddress(Account account, Result result) {
+    if (
+      account == null ||
+      result == null ||
+      (result.success != true &&
+      result.accountUpdated != true) ||
+      String.isBlank(result.generatedCustomerCode)
+    ) {
+      return;
+    }
+
+    Map<String, Object> payload = buildShippingAddressPayload(
+      account,
+      result.generatedCustomerCode
+    );
+    result.shippingAddressPayload = payload;
+
+    MexalSearchCalloutService.Result calloutResult = MexalSearchCalloutService.createShippingAddress(
+      payload
+    );
+    if (calloutResult == null) {
+      result.shippingAddressMessage = 'Nessuna risposta dal servizio Mexal per indirizzo di spedizione.';
+      throw new MexalCustomerCreateException(result.shippingAddressMessage);
+    }
+
+    result.shippingAddressSynced = calloutResult.success == true;
+    result.shippingAddressIntegrationLogId = getLastLogId(
+      calloutResult.integrationLogs
+    );
+    result.shippingAddressMessage = result.shippingAddressSynced
+      ? 'Creazione indirizzo di spedizione Mexal completata.'
+      : 'Creazione indirizzo di spedizione Mexal fallita.';
+
+    if (result.shippingAddressSynced != true) {
+      throw new MexalCustomerCreateException(result.shippingAddressMessage);
+    }
   }
 
   private static String buildFailureMessage(Result result) {

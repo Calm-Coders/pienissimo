@@ -1,0 +1,172 @@
+<template>
+  <lightning-quick-action-panel header="Nuovo Preventivo">
+    <div class="content">
+      <template if:true={isLoading}>
+        <div class="loader">
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="medium"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:false={isLoading}>
+        <template if:true={errorMessage}>
+          <div class="message error">{errorMessage}</div>
+        </template>
+
+        <template if:false={errorMessage}>
+          <section class="section">
+            <div class="section-title">Dati Preventivo</div>
+            <div class="grid">
+              <lightning-input
+                label="Quote Name"
+                value={form.quoteName}
+                data-field="quoteName"
+                onchange={handleInputChange}
+                required
+              ></lightning-input>
+              <lightning-input
+                label="Opportunity Name"
+                value={form.opportunityName}
+                disabled
+              ></lightning-input>
+              <lightning-input
+                label="Account Name"
+                value={form.accountName}
+                disabled
+              ></lightning-input>
+              <lightning-input
+                type="date"
+                label="Expiration Date"
+                value={form.expirationDate}
+                data-field="expirationDate"
+                onchange={handleInputChange}
+                required
+              ></lightning-input>
+              <lightning-combobox
+                label="Status"
+                value={form.status}
+                options={statusOptions}
+                data-field="status"
+                onchange={handleInputChange}
+              ></lightning-combobox>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title">Contatto</div>
+            <div class="grid">
+              <lightning-record-picker
+                label="Contact Name"
+                object-api-name="Contact"
+                value={form.contactId}
+                onchange={handleContactChange}
+              ></lightning-record-picker>
+              <lightning-input
+                type="email"
+                label="Email"
+                value={form.email}
+                data-field="email"
+                onchange={handleInputChange}
+              ></lightning-input>
+              <lightning-input
+                type="tel"
+                label="Phone"
+                value={form.phone}
+                data-field="phone"
+                onchange={handleInputChange}
+              ></lightning-input>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title">Indirizzo Fatturazione</div>
+            <div class="grid">
+              <lightning-textarea
+                label="Street"
+                value={form.billingStreet}
+                data-field="billingStreet"
+                onchange={handleInputChange}
+              ></lightning-textarea>
+              <lightning-input
+                label="City"
+                value={form.billingCity}
+                data-field="billingCity"
+                onchange={handleInputChange}
+              ></lightning-input>
+              <lightning-input
+                label="State/Province"
+                value={form.billingState}
+                data-field="billingState"
+                onchange={handleInputChange}
+              ></lightning-input>
+              <lightning-input
+                label="Postal Code"
+                value={form.billingPostalCode}
+                data-field="billingPostalCode"
+                onchange={handleInputChange}
+              ></lightning-input>
+              <lightning-input
+                label="Country"
+                value={form.billingCountry}
+                data-field="billingCountry"
+                onchange={handleInputChange}
+              ></lightning-input>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title">Indirizzo Spedizione</div>
+            <div class="grid">
+              <lightning-textarea
+                label="Street"
+                value={form.shippingStreet}
+                data-field="shippingStreet"
+                onchange={handleInputChange}
+              ></lightning-textarea>
+              <lightning-input
+                label="City"
+                value={form.shippingCity}
+                data-field="shippingCity"
+                onchange={handleInputChange}
+              ></lightning-input>
+              <lightning-input
+                label="State/Province"
+                value={form.shippingState}
+                data-field="shippingState"
+                onchange={handleInputChange}
+              ></lightning-input>
+              <lightning-input
+                label="Postal Code"
+                value={form.shippingPostalCode}
+                data-field="shippingPostalCode"
+                onchange={handleInputChange}
+              ></lightning-input>
+              <lightning-input
+                label="Country"
+                value={form.shippingCountry}
+                data-field="shippingCountry"
+                onchange={handleInputChange}
+              ></lightning-input>
+            </div>
+          </section>
+        </template>
+      </template>
+    </div>
+
+    <div slot="footer">
+      <lightning-button
+        label="Cancel"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label={saveButtonLabel}
+        disabled={isSaveDisabled}
+        onclick={handleSave}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>

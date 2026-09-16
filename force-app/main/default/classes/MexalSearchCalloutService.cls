@@ -11,6 +11,7 @@ public with sharing class MexalSearchCalloutService {
   private static final String CUSTOMER_CREATE_ACTION = 'Mexal_Clienti_Creazione';
   private static final String CUSTOMER_UPDATE_ACTION = 'Mexal_Clienti_Modifica';
   private static final String ORDER_CREATE_ACTION = 'Mexal_Ordini_Creazione';
+  private static final String SHIPPING_ADDRESS_CREATE_ACTION = 'Mexal_Indirizzi_Spedizione_Creazione';
   private static final String CUSTOMER_SEARCH_FIELDS = 'codice,cod_alternativo,cod_paese,codice_fiscale,partita_iva,ragione_sociale,indirizzo,cap,localita,provincia,telefono,fax,email,pec,codice_sdi,cod_agente,tp_nazionalita,cod_listino,valuta,gest_fatt_el';
   private static final String ARTICLE_SEARCH_FIELDS = 'codice,nr_record,tipologia,descrizione,descr_estesa,descrizione_agg,descr_completa,cod_alternativo,alq_iva,um_principale,dt_creazione,dt_mod,dt_mod_sistema,gest_precanc,gest_annullato,prz_listino,gest_attiva,data_ult_mod';
   private static final Set<String> READ_ONLY_ACTIONS = new Set<String>{
@@ -23,7 +24,8 @@ public with sharing class MexalSearchCalloutService {
   private static final Set<String> WRITE_ACTIONS = new Set<String>{
     CUSTOMER_CREATE_ACTION,
     CUSTOMER_UPDATE_ACTION,
-    ORDER_CREATE_ACTION
+    ORDER_CREATE_ACTION,
+    SHIPPING_ADDRESS_CREATE_ACTION
   };
 
   private static final Boolean IS_SANDBOX = [
@@ -65,6 +67,10 @@ public with sharing class MexalSearchCalloutService {
 
   public static Result createOrder(Object requestBody) {
     return sendWrite(ORDER_CREATE_ACTION, requestBody, true);
+  }
+
+  public static Result createShippingAddress(Object requestBody) {
+    return sendWrite(SHIPPING_ADDRESS_CREATE_ACTION, requestBody, true);
   }
 
   public static Result getMovementDetail(
@@ -375,6 +381,14 @@ public with sharing class MexalSearchCalloutService {
     if (actionName == ORDER_CREATE_ACTION && getHttpMethod(config) != 'POST') {
       throw new MexalSearchCalloutException(
         'La creazione ordine Mexal deve usare HTTP POST.'
+      );
+    }
+    if (
+      actionName == SHIPPING_ADDRESS_CREATE_ACTION &&
+      getHttpMethod(config) != 'POST'
+    ) {
+      throw new MexalSearchCalloutException(
+        'La creazione indirizzo di spedizione Mexal deve usare HTTP POST.'
       );
     }
   }
