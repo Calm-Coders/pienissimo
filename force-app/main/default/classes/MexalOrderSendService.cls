@@ -13,11 +13,17 @@ public with sharing class MexalOrderSendService {
     public Id integrationLogId;
     public Id orderId;
     public String mexalOrderNumber;
+    public String mexalDocumentSigla;
+    public Integer mexalDocumentSerie;
+    public Integer mexalDocumentNumber;
+    public String mexalCustomerCode;
+    public Map<Id, Integer> lineNumbersByOrderItemId;
     public Map<String, Object> requestPayload;
     public String message;
 
     public Result() {
       success = false;
+      lineNumbersByOrderItemId = new Map<Id, Integer>();
       requestPayload = new Map<String, Object>();
     }
   }
@@ -38,7 +44,7 @@ public with sharing class MexalOrderSendService {
       payload
     );
 
-    Result result = buildResult(orderRecord.Id, payload, calloutResult);
+    Result result = buildResult(orderRecord, payload, calloutResult);
     if (result.success != true) {
       throw new MexalOrderSendException(result.message);
     }
@@ -146,6 +152,20 @@ public with sharing class MexalOrderSendService {
     payload.put('cod_iva', vatCodes);
   }
 
+  private static Map<Id, Integer> buildLineNumberMap(
+    List<OrderItem> orderLines
+  ) {
+    Map<Id, Integer> lineNumbersByOrderItemId = new Map<Id, Integer>();
+    Integer lineNumber = 1;
+
+    for (OrderItem line : orderLines) {
+      lineNumbersByOrderItemId.put(line.Id, lineNumber);
+      lineNumber++;
+    }
+
+    return lineNumbersByOrderItemId;
+  }
+
   private static String resolveProductCode(OrderItem line) {
     if (line.Product2 != null) {
       String productCode = firstNonBlank(
@@ -168,12 +188,18 @@ public with sharing class MexalOrderSendService {
   }
 
   private static Result buildResult(
-    Id orderId,
+    Order orderRecord,
     Map<String, Object> payload,
     MexalSearchCalloutService.Result calloutResult
   ) {
     Result result = new Result();
-    result.orderId = orderId;
+    result.orderId = orderRecord.Id;
+    result.mexalDocumentSigla = DEFAULT_DOCUMENT_TYPE;
+    result.mexalDocumentSerie = DEFAULT_SERIES;
+    result.mexalCustomerCode = orderRecord.Account.Codice_Cliente_Mexal__c;
+    result.lineNumbersByOrderItemId = buildLineNumberMap(
+      orderRecord.OrderItems
+    );
     result.requestPayload = payload;
 
     if (calloutResult == null) {
@@ -186,6 +212,7 @@ public with sharing class MexalOrderSendService {
     result.body = calloutResult.body;
     result.integrationLogId = getLastLogId(calloutResult.integrationLogs);
     result.mexalOrderNumber = findMexalOrderNumber(calloutResult);
+    result.mexalDocumentNumber = parseInteger(result.mexalOrderNumber);
     result.message = result.success
       ? 'Creazione ordine Mexal completata.'
       : 'Creazione ordine Mexal fallita.';
@@ -279,6 +306,18 @@ public with sharing class MexalOrderSendService {
     }
 
     return String.isBlank(secondValue) ? null : secondValue.trim();
+  }
+
+  private static Integer parseInteger(String value) {
+    if (String.isBlank(value)) {
+      return null;
+    }
+
+    try {
+      return Integer.valueOf(value.trim());
+    } catch (Exception ignored) {
+      return null;
+    }
   }
 
   private static Id getLastLogId(List<Integration_Log__c> integrationLogs) {

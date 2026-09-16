@@ -5,6 +5,9 @@ public with sharing class MexalSearchCalloutService {
   private static final String MEXAL_COMPANY = 'PIE';
   private static final String CUSTOMER_SEARCH_ACTION = 'Mexal_Clienti_Ricerca';
   private static final String ARTICLE_SEARCH_ACTION = 'Mexal_Articoli_Ricerca';
+  private static final String MOVEMENT_SEARCH_ACTION = 'Mexal_Movimenti_Magazzino_Ricerca';
+  private static final String MOVEMENT_DETAIL_ACTION = 'Mexal_Movimenti_Magazzino_Dettaglio';
+  private static final String SCADENZARIO_SEARCH_ACTION = 'Mexal_Scadenzario_Ricerca';
   private static final String CUSTOMER_CREATE_ACTION = 'Mexal_Clienti_Creazione';
   private static final String CUSTOMER_UPDATE_ACTION = 'Mexal_Clienti_Modifica';
   private static final String ORDER_CREATE_ACTION = 'Mexal_Ordini_Creazione';
@@ -12,7 +15,10 @@ public with sharing class MexalSearchCalloutService {
   private static final String ARTICLE_SEARCH_FIELDS = 'codice,nr_record,tipologia,descrizione,descr_estesa,descrizione_agg,descr_completa,cod_alternativo,alq_iva,um_principale,dt_creazione,dt_mod,dt_mod_sistema,gest_precanc,gest_annullato,prz_listino,gest_attiva,data_ult_mod';
   private static final Set<String> READ_ONLY_ACTIONS = new Set<String>{
     CUSTOMER_SEARCH_ACTION,
-    ARTICLE_SEARCH_ACTION
+    ARTICLE_SEARCH_ACTION,
+    MOVEMENT_SEARCH_ACTION,
+    MOVEMENT_DETAIL_ACTION,
+    SCADENZARIO_SEARCH_ACTION
   };
   private static final Set<String> WRITE_ACTIONS = new Set<String>{
     CUSTOMER_CREATE_ACTION,
@@ -59,6 +65,41 @@ public with sharing class MexalSearchCalloutService {
 
   public static Result createOrder(Object requestBody) {
     return sendWrite(ORDER_CREATE_ACTION, requestBody, true);
+  }
+
+  public static Result getMovementDetail(
+    String sigla,
+    Integer serie,
+    Integer numero,
+    String customerCode
+  ) {
+    validateMovementDetailKey(sigla, serie, numero, customerCode);
+
+    Integration_Configuration2__c config = resolveConfiguration(
+      MOVEMENT_DETAIL_ACTION
+    );
+    validateMovementDetailConfiguration(MOVEMENT_DETAIL_ACTION, config);
+    config.Endpoint_Path__c = replacePathParam(
+      config.Endpoint_Path__c,
+      'sigla',
+      sigla.trim()
+    );
+    config.Endpoint_Path__c = replacePathParam(
+      config.Endpoint_Path__c,
+      'serie',
+      String.valueOf(serie)
+    );
+    config.Endpoint_Path__c = replacePathParam(
+      config.Endpoint_Path__c,
+      'numero',
+      String.valueOf(numero)
+    );
+    config.Endpoint_Path__c = replacePathParam(
+      config.Endpoint_Path__c,
+      'cod_conto',
+      customerCode.trim()
+    );
+    return send(MOVEMENT_DETAIL_ACTION, config, null, true);
   }
 
   public static Result updateCustomer(String customerCode, Object requestBody) {
@@ -244,6 +285,58 @@ public with sharing class MexalSearchCalloutService {
     }
   }
 
+  private static void validateMovementDetailKey(
+    String sigla,
+    Integer serie,
+    Integer numero,
+    String customerCode
+  ) {
+    if (
+      String.isBlank(sigla) ||
+      serie == null ||
+      numero == null ||
+      String.isBlank(customerCode)
+    ) {
+      throw new MexalSearchCalloutException(
+        'Chiave documento movimenti magazzino Mexal incompleta.'
+      );
+    }
+  }
+
+  private static void validateMovementDetailConfiguration(
+    String actionName,
+    Integration_Configuration2__c config
+  ) {
+    if (config == null) {
+      throw new MexalSearchCalloutException(
+        'Configurazione Mexal non trovata per azione: ' + actionName
+      );
+    }
+    if (String.isBlank(config.Endpoint_Path__c)) {
+      throw new MexalSearchCalloutException(
+        'Endpoint Path obbligatorio per azione Mexal: ' + actionName
+      );
+    }
+    if (
+      !pathWithoutQueryString(config.Endpoint_Path__c)
+        .startsWith('/webapi/risorse/documenti/movimenti-magazzino/')
+    ) {
+      throw new MexalSearchCalloutException(
+        'Endpoint dettaglio movimenti magazzino Mexal non consentito.'
+      );
+    }
+    if (pathWithoutQueryString(config.Endpoint_Path__c).endsWith('/ricerca')) {
+      throw new MexalSearchCalloutException(
+        'Il dettaglio movimenti magazzino Mexal non deve usare /ricerca.'
+      );
+    }
+    if (getHttpMethod(config) != 'GET') {
+      throw new MexalSearchCalloutException(
+        'Il dettaglio movimenti magazzino Mexal deve usare HTTP GET.'
+      );
+    }
+  }
+
   private static void validateWriteConfiguration(
     String actionName,
     Integration_Configuration2__c config
@@ -292,8 +385,9 @@ public with sharing class MexalSearchCalloutService {
     String requestJson
   ) {
     HttpRequest request = new HttpRequest();
+    String httpMethod = getHttpMethod(config);
     request.setEndpoint(buildEndpoint(actionName, config));
-    request.setMethod(getHttpMethod(config));
+    request.setMethod(httpMethod);
     request.setTimeout(getTimeout(config));
     request.setHeader('Content-Type', CONTENT_TYPE_JSON);
     request.setHeader(
@@ -303,7 +397,9 @@ public with sharing class MexalSearchCalloutService {
         ' Anno=' +
         String.valueOf(Date.today().year())
     );
-    request.setBody(requestJson);
+    if (httpMethod != 'GET') {
+      request.setBody(requestJson);
+    }
     return request;
   }
 
