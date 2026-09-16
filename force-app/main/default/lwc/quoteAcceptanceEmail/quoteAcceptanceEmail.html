@@ -1,0 +1,75 @@
+<template>
+  <lightning-quick-action-panel header="Invia preventivo per accettazione">
+    <template lwc:if={busy}>
+      <lightning-spinner
+        alternative-text="Operazione in corso"
+        size="small"
+      ></lightning-spinner>
+    </template>
+    <template lwc:if={errorMessage}>
+      <div role="alert" class="slds-text-color_error slds-m-bottom_small">
+        {errorMessage}
+      </div>
+    </template>
+    <template lwc:if={loaded}>
+      <template lwc:if={missingRecipient}>
+        <p class="slds-m-bottom_small">
+          Email del contatto principale non disponibile. Inserisci il
+          destinatario.
+        </p>
+      </template>
+      <lightning-input
+        type="email"
+        name="recipient"
+        label="Destinatario"
+        value={recipient}
+        onchange={handleChange}
+        required
+        maxlength="254"
+        disabled={busy}
+      ></lightning-input>
+      <lightning-input
+        type="text"
+        name="subject"
+        label="Oggetto"
+        value={subject}
+        onchange={handleChange}
+        required
+        maxlength="255"
+        disabled={busy}
+      ></lightning-input>
+      <lightning-textarea
+        name="body"
+        label="Messaggio"
+        value={body}
+        onchange={handleChange}
+        required
+        maxlength="32000"
+        disabled={busy}
+      ></lightning-textarea>
+      <p class="slds-m-top_small">
+        Puoi modificare il testo mantenendo il link per accettare o rifiutare il
+        preventivo:
+      </p>
+      <lightning-formatted-url
+        value={acceptanceUrl}
+        label={acceptanceUrl}
+        target="_blank"
+      ></lightning-formatted-url>
+    </template>
+    <div slot="footer">
+      <lightning-button
+        label="Annulla"
+        onclick={handleCancel}
+        disabled={isSending}
+      ></lightning-button>
+      <lightning-button
+        class="slds-m-left_small"
+        label="Invia email"
+        variant="brand"
+        onclick={handleSend}
+        disabled={sendDisabled}
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>
