@@ -1,0 +1,181 @@
+<apex:component access="public">
+  <apex:attribute
+    name="customer"
+    type="Account"
+    description="Cliente del preventivo"
+  />
+  <apex:attribute
+    name="customerName"
+    type="String"
+    description="Ragione sociale"
+  />
+  <apex:attribute
+    name="legalAddress"
+    type="String"
+    description="Sede del cliente"
+  />
+
+  <div class="plus-terms">
+    <div class="plus-logo-centered">
+      <apex:image
+        url="{!$Resource.QuotePdfLogo}"
+        width="255"
+        height="58"
+        alt="Pienissimo - Strategie per locali di successo"
+      />
+    </div>
+
+    <h1>
+      CONDIZIONI GENERALI CHE REGOLANO L'ATTIVAZIONE E IL RINNOVO DEI SERVIZI
+    </h1>
+
+    <h2>1. Oggetto della prestazione offerta da Pienissimo</h2>
+    <p>
+      L'oggetto del presente contratto e l'attivazione e/o il rinnovo dei
+      servizi erogati da Pienissimo S.r.l. a favore del Cliente indicato nella
+      scheda d'ordine. Il servizio comprende le attivita, gli accessi, le
+      sessioni, i materiali e gli eventuali servizi collegati descritti
+      nell'offerta commerciale e nella scheda d'ordine allegata.
+    </p>
+    <p>
+      Il Cliente dichiara di acquistare il servizio per finalita connesse alla
+      propria attivita nel settore ristorazione, somministrazione, banqueting,
+      catering o ambiti collegati. Resta escluso ogni utilizzo dei contenuti e
+      del know-how Pienissimo per attivita in concorrenza diretta o indiretta.
+    </p>
+
+    <h2>2. Quota di partecipazione e corrispettivo</h2>
+    <p>
+      Il corrispettivo dovuto dal Cliente e quello indicato nella scheda
+      d'ordine. L'obbligazione di pagamento nasce con la sottoscrizione del
+      contratto e permane anche in caso di mancata fruizione totale o parziale
+      dei servizi acquistati, salvo diverso accordo scritto tra le parti.
+    </p>
+    <p>
+      Eventuali dilazioni di pagamento non modificano il valore complessivo del
+      contratto. Il mancato pagamento anche di una sola rata comporta la
+      decadenza dal beneficio del termine e legittima Pienissimo S.r.l. a
+      richiedere l'intero importo residuo, oltre agli interessi e agli eventuali
+      costi di recupero del credito.
+    </p>
+
+    <h2>3. Promozioni, esclusioni e servizi non compresi</h2>
+    <p>
+      Eventuali promozioni, sconti o agevolazioni sono applicabili solo alle
+      condizioni indicate nell'offerta commerciale. Sono esclusi tutti i servizi
+      non espressamente indicati nella scheda d'ordine o negli allegati
+      contrattuali.
+    </p>
+
+    <h2>4. Esecuzione, rinvio e variazioni del servizio</h2>
+    <p>
+      Pienissimo S.r.l. potra modificare date, modalita, sede o canale di
+      erogazione dei servizi, dandone comunicazione al Cliente. In caso di
+      rinvio, il Cliente sara iscritto automaticamente alla nuova data o alla
+      nuova modalita di fruizione compatibile con il calendario Pienissimo.
+    </p>
+
+    <h2>5. Rinvio, disdetta e recesso del Cliente</h2>
+    <p>
+      Eventuali richieste di rinvio dovranno essere comunicate con adeguato
+      preavviso e saranno accolte compatibilmente con il calendario e con la
+      disponibilita dei servizi. Il recesso, ove consentito dalla legge o
+      dall'accordo sottoscritto, dovra essere comunicato per iscritto agli
+      indirizzi indicati da Pienissimo.
+    </p>
+
+    <h2>6. Patto di riservatezza</h2>
+    <p>
+      Il Cliente si impegna a non divulgare a terzi informazioni, materiali,
+      contenuti, metodi, strumenti, procedure e know-how appresi durante
+      l'esecuzione del servizio. Ogni materiale fornito da Pienissimo resta di
+      proprieta di Pienissimo S.r.l. e potra essere utilizzato esclusivamente
+      per finalita interne del Cliente.
+    </p>
+
+    <h2>7. Patto di non concorrenza</h2>
+    <p>
+      Per la durata del contratto e per il periodo indicato nella proposta
+      commerciale, il Cliente si impegna a non utilizzare il know-how acquisito
+      per organizzare, gestire o promuovere servizi formativi o consulenziali in
+      concorrenza con Pienissimo S.r.l., salvo autorizzazione scritta.
+    </p>
+
+    <h2>8. Responsabilita, limitazioni e forza maggiore</h2>
+    <p>
+      Pienissimo S.r.l. si impegna a svolgere le attivita con diligenza
+      professionale. Salvo dolo o colpa grave, non risponde di danni indiretti,
+      perdita di profitti, mancato raggiungimento di risultati commerciali,
+      interruzioni dovute a piattaforme terze o cause di forza maggiore.
+    </p>
+
+    <h2>9. Trattamento dei dati e comunicazioni</h2>
+    <p>
+      Le parti dichiarano di essersi reciprocamente comunicate le informazioni
+      relative al trattamento dei dati personali. Ogni comunicazione relativa al
+      presente contratto dovra essere effettuata in forma scritta agli indirizzi
+      indicati nella scheda d'ordine o nei dati anagrafici del Cliente.
+    </p>
+
+    <h2>10. Legge applicabile e foro competente</h2>
+    <p>
+      Il presente contratto e regolato dalla legge italiana. Per ogni
+      controversia le parti convengono di tentare una soluzione bonaria; in
+      mancanza di accordo sara competente il foro indicato nelle condizioni
+      contrattuali Pienissimo.
+    </p>
+
+    <div class="plus-signature-block">
+      <p>In fede,</p>
+      <p>data:</p>
+      <table>
+        <tr>
+          <td>
+            <strong>Pienissimo</strong><br /> PIENISSIMO S.r.l.<br /> il legale
+            rappresentante pro tempore<br />
+            Sig. Giuliano Lanzetti
+          </td>
+          <td>
+            <strong>Il Cliente</strong><br />
+            <apex:outputText value="{!customerName}" /><br /> il legale
+            rappresentante pro tempore<br />
+            <apex:outputText
+              value="{!customer.Nome_Legale_Rappresentante__c}"
+            />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="plus-annex">
+      <h2>ALLEGATO B</h2>
+      <h3>
+        DICHIARAZIONE DI AVVENUTA TRATTATIVA SPECIFICA DELLE CLAUSOLE OGGETTO
+        DELLA PRESTAZIONE OFFERTA DA PIENISSIMO
+      </h3>
+      <p>
+        Le Parti dichiarano che le clausole del presente contratto sono state
+        oggetto di lettura, trattativa e specifica approvazione. La
+        sottoscrizione avviene in segno di piena consapevolezza, libera volonta
+        e reciproca accettazione dei termini pattuiti.
+      </p>
+      <table>
+        <tr>
+          <td>
+            <strong>Pienissimo</strong><br /> PIENISSIMO S.r.l.<br /> il legale
+            rappresentante pro tempore<br />
+            Sig. Giuliano Lanzetti
+          </td>
+          <td>
+            <strong>Il Cliente</strong><br />
+            <apex:outputText value="{!customerName}" /><br /> il legale
+            rappresentante pro tempore<br />
+            <apex:outputText
+              value="{!customer.Nome_Legale_Rappresentante__c}"
+            />
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</apex:component>
