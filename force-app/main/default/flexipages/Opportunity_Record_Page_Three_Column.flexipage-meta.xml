@@ -7,8 +7,14 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
+                            <value>Opportunity.Genera_Link</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value
               >Opportunity.Send_WooCommerce_Checkout_Email</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Opportunity.Nuovo_Preventivo_Standard</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>

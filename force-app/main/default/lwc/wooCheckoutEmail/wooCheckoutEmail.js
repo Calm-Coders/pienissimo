@@ -4,8 +4,6 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getContext from "@salesforce/apex/WooCheckoutEmailController.getContext";
 import sendCheckoutEmail from "@salesforce/apex/WooCheckoutEmailController.sendCheckoutEmail";
 
-const CHECKOUT_BASE_URL = "https://www.pienissimo.it/checkout";
-
 export default class WooCheckoutEmail extends LightningElement {
   @api recordId;
 
@@ -41,6 +39,7 @@ export default class WooCheckoutEmail extends LightningElement {
       this.isOpportunityLoading ||
       this.isSending ||
       !!this.opportunityErrorMessage ||
+      !this.checkoutLink ||
       !this.recipientEmail
     );
   }
@@ -49,13 +48,12 @@ export default class WooCheckoutEmail extends LightningElement {
     return this.isSending ? "Sending" : "Send Email";
   }
 
-  get exampleCheckoutLink() {
-    if (!this.recordId) {
-      return "";
-    }
-    return `${CHECKOUT_BASE_URL}?sf_opportunity_id=${encodeURIComponent(
-      this.recordId
-    )}`;
+  get checkoutLink() {
+    return this.context?.checkoutLink || "";
+  }
+
+  get hasCheckoutLink() {
+    return !!this.checkoutLink;
   }
 
   handleRecipientEmailChange(event) {

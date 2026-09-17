@@ -8,7 +8,7 @@ public with sharing class WooCheckoutEmailController {
     }
 
     Opportunity opportunityRecord = [
-      SELECT Name
+      SELECT Name, Checkout_Link__c
       FROM Opportunity
       WHERE Id = :opportunityId
       WITH USER_MODE
@@ -17,6 +17,7 @@ public with sharing class WooCheckoutEmailController {
 
     CheckoutEmailContext context = new CheckoutEmailContext();
     context.opportunityName = opportunityRecord.Name;
+    context.checkoutLink = opportunityRecord.Checkout_Link__c;
     return context;
   }
 
@@ -38,12 +39,17 @@ public with sharing class WooCheckoutEmailController {
     }
 
     Opportunity opportunityRecord = [
-      SELECT Id
+      SELECT Id, Checkout_Link__c
       FROM Opportunity
       WHERE Id = :opportunityId
       WITH USER_MODE
       LIMIT 1
     ];
+    if (String.isBlank(opportunityRecord.Checkout_Link__c)) {
+      throw new AuraHandledException(
+        'Generate and save the checkout link before sending the email.'
+      );
+    }
 
     List<EmailTemplate> checkoutTemplates = [
       SELECT Id
@@ -79,5 +85,7 @@ public with sharing class WooCheckoutEmailController {
   public class CheckoutEmailContext {
     @AuraEnabled
     public String opportunityName;
+    @AuraEnabled
+    public String checkoutLink;
   }
 }

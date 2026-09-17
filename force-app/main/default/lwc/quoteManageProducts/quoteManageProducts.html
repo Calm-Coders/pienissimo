@@ -1,0 +1,153 @@
+<template>
+  <lightning-quick-action-panel header="Gestisci Prodotti">
+    <div class="content">
+      <template if:true={showInitialLoader}>
+        <div class="loader">
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="medium"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:true={hasLoaded}>
+        <template if:true={isLoading}>
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="small"
+          ></lightning-spinner>
+        </template>
+
+        <div class="summary">
+          <div>
+            <div class="summary-label">Preventivo</div>
+            <div class="summary-value">{quoteName}</div>
+          </div>
+          <div>
+            <div class="summary-label">Stato</div>
+            <div class={statusClass}>{quoteStatus}</div>
+          </div>
+        </div>
+
+        <template if:true={hasExistingBundle}>
+          <div class="message error">
+            Il preventivo contiene gia un bundle. Non puoi aggiungerne un altro.
+          </div>
+          <div class="existing-box">
+            <div class="section-label">Bundle esistente</div>
+            <div class="product-title">{existingBundleLine.productName}</div>
+            <div class="product-meta">
+              <span>{existingBundleLine.productCode}</span>
+            </div>
+          </div>
+        </template>
+
+        <template if:false={hasExistingBundle}>
+          <template if:true={hasItemLines}>
+            <div class="message">
+              Questo preventivo contiene prodotti Item. Puoi aggiungere solo
+              altri prodotti Item.
+            </div>
+          </template>
+
+          <template if:true={showTypeHelp}>
+            <div class="message">
+              Se selezioni un bundle, il preventivo non potra contenere prodotti
+              Item.
+            </div>
+          </template>
+
+          <div class="form">
+            <lightning-input
+              type="search"
+              label="Cerca prodotto per codice o nome"
+              value={searchTerm}
+              disabled={isSearchDisabled}
+              onchange={handleSearchChange}
+            ></lightning-input>
+
+            <template if:true={hasProductOptions}>
+              <div class="options">
+                <template for:each={productOptions} for:item="option">
+                  <button
+                    key={option.pricebookEntryId}
+                    type="button"
+                    class={option.buttonClass}
+                    data-id={option.pricebookEntryId}
+                    disabled={option.isDisabled}
+                    onclick={handleSelectProduct}
+                  >
+                    <span class="product-title">{option.productName}</span>
+                    <span class="product-meta">
+                      <span>{option.productCode}</span>
+                      <span>{option.typeLabel}</span>
+                      <span>{option.unitPrice}</span>
+                    </span>
+                  </button>
+                </template>
+              </div>
+            </template>
+
+            <template if:true={showNoResultsMessage}>
+              <div class="message">Nessun prodotto trovato.</div>
+            </template>
+
+            <template if:true={hasSelectedProducts}>
+              <div>
+                <div class="section-label">Prodotti selezionati</div>
+                <div class="selected-list">
+                  <template for:each={selectedProducts} for:item="product">
+                    <div class="selected-row" key={product.pricebookEntryId}>
+                      <div class="selected-main">
+                        <div class="product-title">{product.productName}</div>
+                        <div class="product-meta">
+                          <span>{product.productCode}</span>
+                          <span>{product.typeLabel}</span>
+                          <span>Prezzo {product.unitPrice}</span>
+                        </div>
+                      </div>
+                      <lightning-input
+                        class="quantity-input"
+                        type="number"
+                        label="Quantita"
+                        value={product.quantity}
+                        min="0.01"
+                        step="0.01"
+                        data-id={product.pricebookEntryId}
+                        disabled={product.quantityDisabled}
+                        required
+                        onchange={handleQuantityChange}
+                      ></lightning-input>
+                      <lightning-button-icon
+                        icon-name="utility:delete"
+                        alternative-text="Rimuovi"
+                        title="Rimuovi"
+                        variant="bare"
+                        data-id={product.pricebookEntryId}
+                        onclick={handleRemoveProduct}
+                      ></lightning-button-icon>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </template>
+      </template>
+    </div>
+
+    <div slot="footer">
+      <lightning-button
+        label="Annulla"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label="Salva"
+        disabled={isPrimaryDisabled}
+        onclick={handleSave}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>
