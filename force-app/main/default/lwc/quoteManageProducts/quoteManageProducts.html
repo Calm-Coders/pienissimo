@@ -43,18 +43,14 @@
         </template>
 
         <template if:false={hasExistingBundle}>
-          <template if:true={hasItemLines}>
-            <div class="message">
-              Questo preventivo contiene prodotti Item. Puoi aggiungere solo
-              altri prodotti Item.
+          <template if:true={showPlusLineMessage}>
+            <div class="message error">
+              Questo preventivo puo contenere un solo prodotto Plus.
             </div>
           </template>
 
-          <template if:true={showTypeHelp}>
-            <div class="message">
-              Se selezioni un bundle, il preventivo non potra contenere prodotti
-              Item.
-            </div>
+          <template if:true={hasModeMessage}>
+            <div class="message">{modeMessage}</div>
           </template>
 
           <div class="form">

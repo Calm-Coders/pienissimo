@@ -9,10 +9,13 @@ import searchProducts from "@salesforce/apex/QuoteManageProductsController.searc
 
 const BUNDLE_TYPE = "Bundle";
 const ITEM_TYPE = "Item";
+const PLUS_OPPORTUNITY_RECORD_TYPE = "Plus_Attivazione_Rinnovo";
+const STANDARD_OPPORTUNITY_RECORD_TYPE = "Standart";
 
 export default class QuoteManageProducts extends LightningElement {
   _recordId;
   searchRequestId = 0;
+  saveInProgress = false;
 
   isLoading = false;
   isSearching = false;
@@ -21,6 +24,8 @@ export default class QuoteManageProducts extends LightningElement {
   quoteStatus = "";
   isEditable = false;
   hasItemLines = false;
+  opportunityRecordTypeDeveloperName = "";
+  hasPlusLine = false;
   existingBundleLine;
   productOptions = [];
   selectedProducts = [];
@@ -55,7 +60,11 @@ export default class QuoteManageProducts extends LightningElement {
   }
 
   get isFormDisabled() {
-    return !this.isEditable || this.hasExistingBundle;
+    return (
+      !this.isEditable ||
+      this.hasExistingBundle ||
+      (this.isPlusOpportunity && this.hasPlusLine)
+    );
   }
 
   get isSearchDisabled() {
@@ -65,6 +74,8 @@ export default class QuoteManageProducts extends LightningElement {
   get isPrimaryDisabled() {
     return (
       this.isFormDisabled ||
+      this.isLoading ||
+      this.saveInProgress ||
       !this.hasSelectedProducts ||
       this.selectedProducts.some(
         (product) => !product.quantity || Number(product.quantity) <= 0
@@ -73,7 +84,47 @@ export default class QuoteManageProducts extends LightningElement {
   }
 
   get showTypeHelp() {
-    return !this.hasExistingBundle && !this.hasItemLines;
+    return (
+      !this.isPlusOpportunity && !this.hasExistingBundle && !this.hasItemLines
+    );
+  }
+
+  get isPlusOpportunity() {
+    return (
+      this.opportunityRecordTypeDeveloperName === PLUS_OPPORTUNITY_RECORD_TYPE
+    );
+  }
+
+  get isStandardOpportunity() {
+    return (
+      this.opportunityRecordTypeDeveloperName ===
+      STANDARD_OPPORTUNITY_RECORD_TYPE
+    );
+  }
+
+  get showPlusLineMessage() {
+    return this.isPlusOpportunity && this.hasPlusLine;
+  }
+
+  get showItemLinesHelp() {
+    return !this.isPlusOpportunity && this.hasItemLines;
+  }
+
+  get modeMessage() {
+    if (this.isPlusOpportunity) {
+      return "Questo preventivo puo contenere un solo prodotto Plus.";
+    }
+    if (this.hasItemLines) {
+      return "Questo preventivo contiene prodotti Item. Puoi aggiungere solo altri prodotti Item.";
+    }
+    if (!this.hasExistingBundle) {
+      return "Se selezioni un bundle, il preventivo non potra contenere prodotti Item.";
+    }
+    return "";
+  }
+
+  get hasModeMessage() {
+    return !!this.modeMessage && !this.showPlusLineMessage;
   }
 
   get showNoResultsMessage() {
@@ -98,6 +149,9 @@ export default class QuoteManageProducts extends LightningElement {
       this.quoteStatus = context.quoteStatus || "";
       this.isEditable = context.isEditable === true;
       this.hasItemLines = context.hasItemLines === true;
+      this.opportunityRecordTypeDeveloperName =
+        context.opportunityRecordTypeDeveloperName || "";
+      this.hasPlusLine = context.hasPlusLine === true;
       this.existingBundleLine = context.existingBundleLine || null;
     } catch (error) {
       this.showError(error);
@@ -149,7 +203,15 @@ export default class QuoteManageProducts extends LightningElement {
       return;
     }
 
-    if (option.productType === BUNDLE_TYPE) {
+    if (this.isPlusOpportunity) {
+      this.selectedProducts = [
+        {
+          ...option,
+          quantity: 1,
+          quantityDisabled: true
+        }
+      ];
+    } else if (option.productType === BUNDLE_TYPE) {
       this.selectedProducts = [
         {
           ...option,
@@ -191,10 +253,11 @@ export default class QuoteManageProducts extends LightningElement {
   }
 
   async handleSave() {
-    if (this.isPrimaryDisabled) {
+    if (this.isPrimaryDisabled || this.saveInProgress) {
       return;
     }
 
+    this.saveInProgress = true;
     this.isLoading = true;
     try {
       await saveProducts({
@@ -219,6 +282,7 @@ export default class QuoteManageProducts extends LightningElement {
       this.showError(error);
     } finally {
       this.isLoading = false;
+      this.saveInProgress = false;
     }
   }
 
@@ -236,6 +300,9 @@ export default class QuoteManageProducts extends LightningElement {
     const hasSelectedItems = this.selectedProducts.some(
       (product) => product.productType === ITEM_TYPE
     );
+    const hasSelectedPlus = this.selectedProducts.some(
+      (product) => product.isPlus === true
+    );
     const selectedPricebook2Id = this.selectedProducts[0]?.pricebook2Id;
 
     return options.map((option) => {
@@ -243,13 +310,20 @@ export default class QuoteManageProducts extends LightningElement {
       const typeConflict =
         (hasSelectedBundle && option.productType === ITEM_TYPE) ||
         (hasSelectedItems && option.productType === BUNDLE_TYPE);
+      const plusConflict = this.isPlusOpportunity && hasSelectedPlus;
       const pricebookConflict =
         selectedPricebook2Id && option.pricebook2Id !== selectedPricebook2Id;
-      const isDisabled = isSelected || typeConflict || pricebookConflict;
+      const isDisabled =
+        isSelected || typeConflict || plusConflict || pricebookConflict;
       return {
         ...option,
         isDisabled,
-        typeLabel: option.productType === BUNDLE_TYPE ? "Bundle" : "Item",
+        typeLabel:
+          option.isPlus === true
+            ? "Plus"
+            : option.productType === BUNDLE_TYPE
+              ? "Bundle"
+              : "Item",
         buttonClass: isSelected ? "option selected" : "option"
       };
     });
