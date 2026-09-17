@@ -1,0 +1,49 @@
+<template>
+  <lightning-quick-action-panel header="Genera Link">
+    <div class="content">
+      <lightning-input
+        type="text"
+        label="Product WooCommerce Id"
+        value={productWooCommerceId}
+        onchange={handleProductIdChange}
+        required
+      ></lightning-input>
+
+      <template if:true={hasExistingCheckoutLink}>
+        <div class="link-preview">
+          <div class="summary-label">Existing Link</div>
+          <lightning-formatted-url
+            value={existingCheckoutLink}
+            label={existingCheckoutLink}
+            target="_blank"
+          ></lightning-formatted-url>
+        </div>
+      </template>
+
+      <template if:true={newCheckoutLink}>
+        <div class="link-preview">
+          <div class="summary-label">New Link</div>
+          <lightning-formatted-url
+            value={newCheckoutLink}
+            label={newCheckoutLink}
+            target="_blank"
+          ></lightning-formatted-url>
+        </div>
+      </template>
+    </div>
+
+    <div slot="footer">
+      <lightning-button
+        label="Cancel"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label={saveButtonLabel}
+        disabled={isSaveDisabled}
+        onclick={handleSave}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>

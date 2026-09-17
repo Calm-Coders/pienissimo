@@ -36,7 +36,14 @@
           <div class="email-summary">
             <div>
               <div class="summary-label">Checkout Link</div>
-              <div class="summary-value">{exampleCheckoutLink}</div>
+              <template if:true={hasCheckoutLink}>
+                <div class="summary-value">{checkoutLink}</div>
+              </template>
+              <template if:false={hasCheckoutLink}>
+                <div class="message error">
+                  Generate and save the checkout link before sending this email.
+                </div>
+              </template>
             </div>
           </div>
 

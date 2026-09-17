@@ -34,6 +34,8 @@ jest.mock(
 
 const OPPORTUNITY_ID = "006MA00000QJduNYAT";
 const RECIPIENT_EMAIL = "cliente@example.com";
+const CHECKOUT_LINK =
+  "https://www.pienissimo.it/checkout?add-to-cart=123&sf_opportunity_id=006MA00000QJduNYAT";
 
 function buildComponent() {
   const element = createElement("c-woo-checkout-email", {
@@ -62,14 +64,15 @@ describe("c-woo-checkout-email", () => {
 
   it("sends the shared template to the entered recipient", async () => {
     const element = buildComponent();
-    getContext.emit({ opportunityName: "Academy 2026" });
+    getContext.emit({
+      opportunityName: "Academy 2026",
+      checkoutLink: CHECKOUT_LINK
+    });
     await flush();
     await flush();
 
     expect(element.shadowRoot.textContent).not.toContain("Template");
-    expect(element.shadowRoot.textContent).toContain(
-      `sf_opportunity_id=${OPPORTUNITY_ID}`
-    );
+    expect(element.shadowRoot.textContent).toContain(CHECKOUT_LINK);
 
     const emailInput = element.shadowRoot.querySelector("lightning-input");
     emailInput.value = RECIPIENT_EMAIL;

@@ -1,0 +1,187 @@
+public with sharing class QuoteLineItemTriggerHandler {
+  private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
+  private static final String INVALID_QUOTE_MIX_ERROR = 'Il Preventivo puo contenere un solo Bundle oppure prodotti Item, non entrambi. Rimuovi le righe esistenti prima di cambiare tipologia.';
+
+  public static void beforeSave(
+    List<QuoteLineItem> newLines,
+    Map<Id, QuoteLineItem> oldLineMap
+  ) {
+    if (newLines == null || newLines.isEmpty()) {
+      return;
+    }
+
+    Set<Id> quoteIds = new Set<Id>();
+    Set<Id> replacedLineIds = new Set<Id>();
+    Set<Id> pricebookEntryIds = new Set<Id>();
+    Map<Id, List<QuoteLineItem>> pendingLinesByQuoteId = new Map<Id, List<QuoteLineItem>>();
+
+    for (QuoteLineItem line : newLines) {
+      if (line.QuoteId != null) {
+        quoteIds.add(line.QuoteId);
+        if (!pendingLinesByQuoteId.containsKey(line.QuoteId)) {
+          pendingLinesByQuoteId.put(line.QuoteId, new List<QuoteLineItem>());
+        }
+        pendingLinesByQuoteId.get(line.QuoteId).add(line);
+      }
+
+      if (line.PricebookEntryId != null) {
+        pricebookEntryIds.add(line.PricebookEntryId);
+      }
+
+      QuoteLineItem oldLine = oldLineMap == null
+        ? null
+        : oldLineMap.get(line.Id);
+      if (oldLine == null) {
+        continue;
+      }
+
+      replacedLineIds.add(oldLine.Id);
+      if (oldLine.QuoteId != null) {
+        quoteIds.add(oldLine.QuoteId);
+      }
+    }
+
+    if (quoteIds.isEmpty()) {
+      return;
+    }
+
+    Map<Id, Boolean> bundleByPricebookEntryId = loadBundleFlags(
+      pricebookEntryIds
+    );
+    Map<Id, QuoteProductMix> mixByQuoteId = initializeMixes(quoteIds);
+
+    addExistingLines(mixByQuoteId, replacedLineIds);
+    addPendingLines(
+      mixByQuoteId,
+      pendingLinesByQuoteId,
+      bundleByPricebookEntryId
+    );
+
+    for (Id quoteId : pendingLinesByQuoteId.keySet()) {
+      QuoteProductMix mix = mixByQuoteId.get(quoteId);
+      if (mix == null || mix.isValid()) {
+        continue;
+      }
+
+      for (QuoteLineItem line : pendingLinesByQuoteId.get(quoteId)) {
+        line.addError(INVALID_QUOTE_MIX_ERROR);
+      }
+    }
+  }
+
+  private static Map<Id, QuoteProductMix> initializeMixes(Set<Id> quoteIds) {
+    Map<Id, QuoteProductMix> mixByQuoteId = new Map<Id, QuoteProductMix>();
+    for (Id quoteId : quoteIds) {
+      mixByQuoteId.put(quoteId, new QuoteProductMix());
+    }
+    return mixByQuoteId;
+  }
+
+  private static Map<Id, Boolean> loadBundleFlags(Set<Id> pricebookEntryIds) {
+    Map<Id, Boolean> bundleByPricebookEntryId = new Map<Id, Boolean>();
+    if (pricebookEntryIds == null || pricebookEntryIds.isEmpty()) {
+      return bundleByPricebookEntryId;
+    }
+
+    for (PricebookEntry entry : [
+      SELECT Id, Product2.RecordType.DeveloperName
+      FROM PricebookEntry
+      WHERE Id IN :pricebookEntryIds
+    ]) {
+      bundleByPricebookEntryId.put(entry.Id, isBundle(entry));
+    }
+
+    return bundleByPricebookEntryId;
+  }
+
+  private static void addExistingLines(
+    Map<Id, QuoteProductMix> mixByQuoteId,
+    Set<Id> replacedLineIds
+  ) {
+    Set<Id> quoteIds = mixByQuoteId.keySet();
+    if (quoteIds.isEmpty()) {
+      return;
+    }
+
+    List<QuoteLineItem> existingLines = replacedLineIds == null ||
+      replacedLineIds.isEmpty()
+      ? [
+          SELECT Id, QuoteId, PricebookEntry.Product2.RecordType.DeveloperName
+          FROM QuoteLineItem
+          WHERE QuoteId IN :quoteIds
+        ]
+      : [
+          SELECT Id, QuoteId, PricebookEntry.Product2.RecordType.DeveloperName
+          FROM QuoteLineItem
+          WHERE QuoteId IN :quoteIds AND Id NOT IN :replacedLineIds
+        ];
+
+    for (QuoteLineItem line : existingLines) {
+      QuoteProductMix mix = mixByQuoteId.get(line.QuoteId);
+      if (mix != null) {
+        mix.addLine(isBundle(line));
+      }
+    }
+  }
+
+  private static void addPendingLines(
+    Map<Id, QuoteProductMix> mixByQuoteId,
+    Map<Id, List<QuoteLineItem>> pendingLinesByQuoteId,
+    Map<Id, Boolean> bundleByPricebookEntryId
+  ) {
+    for (Id quoteId : pendingLinesByQuoteId.keySet()) {
+      QuoteProductMix mix = mixByQuoteId.get(quoteId);
+      if (mix == null) {
+        continue;
+      }
+
+      for (QuoteLineItem line : pendingLinesByQuoteId.get(quoteId)) {
+        mix.addLine(
+          bundleByPricebookEntryId.get(line.PricebookEntryId) == true
+        );
+      }
+    }
+  }
+
+  private static Boolean isBundle(QuoteLineItem line) {
+    if (
+      line.PricebookEntry == null ||
+      line.PricebookEntry.Product2 == null ||
+      line.PricebookEntry.Product2.RecordType == null
+    ) {
+      return false;
+    }
+
+    return line.PricebookEntry.Product2.RecordType.DeveloperName ==
+      BUNDLE_RECORD_TYPE_DEVELOPER_NAME;
+  }
+
+  private static Boolean isBundle(PricebookEntry entry) {
+    if (entry.Product2 == null || entry.Product2.RecordType == null) {
+      return false;
+    }
+
+    return entry.Product2.RecordType.DeveloperName ==
+      BUNDLE_RECORD_TYPE_DEVELOPER_NAME;
+  }
+
+  private class QuoteProductMix {
+    Integer bundleLineCount = 0;
+    Integer itemLineCount = 0;
+
+    void addLine(Boolean isBundle) {
+      if (isBundle == true) {
+        bundleLineCount++;
+        return;
+      }
+
+      itemLineCount++;
+    }
+
+    Boolean isValid() {
+      return bundleLineCount <= 1 &&
+        (bundleLineCount == 0 ||
+        itemLineCount == 0);
+    }
+  }
+}
