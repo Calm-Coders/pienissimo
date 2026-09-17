@@ -4180,3 +4180,91 @@ Andrea` sticky asking whether an unpaid invoice can return an Asset to its
 previous state, which governs whether the admin-only `Aggiornamento Incasso`
 button can work at all. He declined today's internal meeting, and was active on
 Slack this morning for another client: he is not unavailable, he is unassigned.
+
+## 41. Update 2026-09-17 (nightly) — a second cited source turns out to document a retired design
+
+The nightly run swept a **ninety-minute window** — the interactive run of the
+same day closed at 11:00Z and committed at 12:17Z; this one fired at 12:27Z. A
+thin result was the expected result. It produced one finding, and that finding
+is the same shape as the morning's.
+
+### 🔑 The 31/07 WooCommerce specification was edited, and nothing in it was answered
+
+`Integrazione_Salesforce_WooCommerce.docx` — Sabatino Rinaldi's specification of
+31 July, the document this project's checkout-link flow was designed from —
+carries `modifiedTime` **2026-09-17T07:40:42Z**.
+
+⚠ **No trace note before tonight records that change**, although the timestamp
+falls inside the window the 11:00Z run swept: that run's Drive query began at
+2026-09-16T21:00:00Z and reported five items, _"all modified before the
+watermark"_. The file was missed or mis-triaged there. It is recorded here as a
+defect in that run, not as an edit made tonight.
+
+**The document was read in full. Nothing in it moved.**
+
+- Its closing section still lists the **same five points for the two teams to
+  agree** — the URL parameter name, the ID format, price handling, the direction
+  of the integration, and whether the opportunity id travels in clear or as a
+  signed token. The record has tracked those five since the external sweep of
+  14 August. **None is resolved.**
+- It still specifies the **mu-plugin `sf-opportunity-tracker.php` v1.0.0**, which
+  the session of 27 August superseded: the client-side component is Sabatino
+  Rinaldi's own plugin, v1.3, which he wrote and maintains.
+- It still specifies the **long URL** — comma-concatenated product ids with a
+  per-id quantity — which the same session superseded when the link shrank to
+  **the opportunity id alone**, because the Funnel Kit carts already contain the
+  product.
+- **Neither of the two answers owed by Sabatino Rinaldi since 16 September is in
+  it:** whether the product id in the Salesforce-generated link is always a
+  bundle id, and what becomes of multi-product offers not wrapped in a single
+  bundle.
+
+⚠ **The document is not an answer to those two questions.** Its _Esempio 2_ is
+exactly a multi-product offer, three product ids concatenated with commas plus a
+per-id quantity — the mechanism 27 August replaced. What the file records is the
+design the build moved away from.
+
+⚠ **One visible corruption.** The sample REST response now reads
+`"line_items": [ciao`, a stray word inside a JSON code sample. It **cannot be
+dated from this repository** — no note quotes that block verbatim — and Drive
+returns the file's owner but **no last-modifying user**. **Who made this
+morning's edit is unknown, and is not inferred here.**
+
+### 🔴 Two cited sources now describe superseded mechanisms
+
+This is the defect found in
+[the design diagram](../notes/The%20newest%20design%20diagram.md) that same
+morning, occurring
+a second time in a second client-owned document. Both
+`Integrazione_Salesforce_WooCommerce.docx` and the `Flows & Objects.drawio`
+known as `DGM-2` are cited as `source:` — the first in `REQUIREMENTS.md`, in
+`REQUISITI.it.md` and on tracker row 49, the second on several register rows —
+and both document mechanisms the build has left behind.
+
+The difference matters: **the diagram has absorbed nothing in three weeks, while
+this document is still being touched.** It is live rather than abandoned, and a
+reader who follows the citation is handed the retired design.
+
+**Reconciling a client's own document is not a sweep's to do**, but the citation
+practice is now a question for sign-off rather than a filing detail.
+
+### ⚠ Everything else was quiet, and one meeting was still running
+
+Across the window, Slack workspace-wide returned twenty results and **none was
+Pienissimo**; Gmail returned no client mail; Fathom's only meeting belongs to
+another client; and the build produced **one commit, the interactive run's own**.
+**#47 is still open and untouched**, and 🔴 **`4132dab` — the `Incassato`
+removal — still has no pull request**, so the guest-reachable write to order
+payment state remains on `DevMain` and in UAT for a second day.
+
+⚠ **`[PIENISSIMO] - Follow-up Interno`, 17/09 14:15–15:15 CEST, began twelve
+minutes before this sweep started.** Drive holds no notes, no recording and no
+document for it and Fathom holds no meeting — **which is the expected state for a
+session in progress, not evidence that it produced nothing.** It is the venue for
+the two WooCommerce points, and the next run is the first able to see an artifact
+from it.
+
+Standing negatives, each a day worse: the client is silent by mail an **eighth**
+day with four artifacts owed; `#tproj-pienissimo` has had no status post for
+**fourteen** days and still states a go-live of 6 October; and order lines still
+have **no booking** with Parte 6 tomorrow and UAT on 23 September.

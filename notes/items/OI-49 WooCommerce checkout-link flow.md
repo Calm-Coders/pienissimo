@@ -272,3 +272,44 @@ CEST**, organiser Elena Spini, with Aurel Mrruku and Federico Mastracci invited.
 [OI-139](OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md).
 It was moved from 14/09 to today on 16/09 at 16:05Z. **If it produces notes or a
 recording, drill it** — it is the first movement on this row's two open points.
+
+## 🔑 2026-09-17 (nightly) - the 31/07 spec was edited this morning and still documents the superseded mechanism
+
+`Integrazione_Salesforce_WooCommerce.docx` (`1LYXxqKldoJeLRdjbZdfurZaRFxf2hsIC`,
+owner `sabatinopienissimo@gmail.com`) carries `modifiedTime`
+**2026-09-17T07:40:42Z**. **No trace note before this one records the change**,
+although that timestamp falls inside the window the 11:00Z run swept — so it was
+either missed or mis-triaged there.
+
+**Read in full on the nightly run. Nothing in it was answered.**
+
+- Its closing section still lists the **same five points to agree**, none of them
+  resolved: URL parameter name, ID format, price handling, integration
+  direction, and ID in clear versus signed token.
+- It still specifies the **mu-plugin** `sf-opportunity-tracker.php` **v1.0.0** —
+  superseded on 27/08 by Sabatino Rinaldi's own plugin (v1.3, always active).
+- It still specifies the **long URL**,
+  `?add-to-cart=247,312,485&quantity[485]=2&coupon=…&sf_opp_id=…` — superseded on
+  27/08, when the link shrank to **the opportunity id alone** because the Funnel
+  Kit carts already carry the product.
+- **Neither of the two answers owed by Sabatino Rinaldi since 16/09 is in it:**
+  whether the product id in the Salesforce-generated link is always a bundle id,
+  and what becomes of multi-product offers not wrapped in a single bundle.
+
+⚠ **The document is not an answer to those two questions — it is a record of the
+design the build moved away from.** Its _Esempio 2_ is precisely a multi-product
+offer, three product ids concatenated with commas plus a per-id quantity, which
+is the mechanism the 27/08 session replaced.
+
+⚠ **One visible corruption.** The sample REST response now reads
+`"line_items": [ciao` — a stray word inside the JSON array of a code sample. It
+**cannot be dated from this repository**: no note quotes that block verbatim.
+Drive returns the file's `owner` but **no last-modifying user**, so **who made
+this morning's edit is unknown and is not inferred here.**
+
+🔑 **This is the `DGM-2` defect a second time.** The document is cited as a source
+in [REQUIREMENTS.md](../../REQUIREMENTS.md), in
+[REQUISITI.it.md](../../REQUISITI.it.md) and at the head of this note, and it
+documents a mechanism the build superseded three weeks ago. Unlike the diagram,
+**this file is still being touched** — so it is live rather than abandoned, and a
+reader who follows the citation is handed the retired design.

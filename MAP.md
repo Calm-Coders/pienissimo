@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-17 (requirements-check: Gmail reconnected and the five-day mail gap swept clean; the workbook and the design diagram both decoded) · Source of record: [notes/](notes/)
+Last updated: 2026-09-17 (nightly requirements-check: the 31/07 WooCommerce spec was edited this morning and still documents the superseded mechanism) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,29 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🔑 **2026-09-17 (nightly) — a second cited source turns out to document a
+  design the build left behind.**
+  🔑 **[`Integrazione_Salesforce_WooCommerce.docx`](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)
+  was edited this morning at 07:40Z** and no run had recorded it — the timestamp
+  sat inside the window the 11:00Z run swept. Read in full: **nothing in it was
+  answered.** The same **five points to agree** are still open, it still
+  specifies the **mu-plugin v1.0.0** and the **long comma-concatenated URL** that
+  27/08 superseded, and **neither answer owed by Sabatino Rinaldi since 16/09 is
+  in it**. Its _Esempio 2_ is a multi-product offer built the old way, so the
+  file is a record of the abandoned design, not an answer. Who edited it is
+  **unknown** — Drive returns no last-modifying user.
+  🔴 **So two cited `source:` documents now describe superseded mechanisms** —
+  this one and [the design diagram](notes/The%20newest%20design%20diagram.md)
+  (`DGM-2`). The difference: **this one is still being touched.**
+  🟢 Everything else is quiet. **Zero Pienissimo across Slack, Gmail, Fathom and
+  the build** in the ninety minutes swept; **one commit, the interactive run's
+  own.** ⚠ **`[PIENISSIMO] - Follow-up Interno` was still running** as this
+  sweep executed, so its artifact — if any — belongs to the next run.
+  🔴 Standing and a day worse: client silent by mail an **eighth** day,
+  `#tproj-pienissimo` **fourteen** days stale and still saying 6 October,
+  `4132dab` still PR-less, order lines still unbooked with Parte 6 tomorrow.
+  — [trace](notes/traces/Source%20trace%202026-09-17%20nightly.md)
 
 - 🟢 **2026-09-17 — the mail gap closed with nothing in it, and two sources
   that had gone unread for weeks were finally read.**

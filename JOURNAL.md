@@ -10,6 +10,58 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-17 (nightly) — claude — nightly requirements-check: a second cited source documents a retired design
+
+- **Did:** scheduled nightly `requirements-check` from watermark
+  **2026-09-17T11:00Z**, the single value left by the interactive run earlier the
+  same day. **A ninety-minute window** — that run closed at 11:00Z and committed
+  `a1a4584` at 12:17Z; this one fired at 12:27Z. Gmail, Slack, Drive, Fathom, git
+  and GitHub all swept; **the split watermark stayed closed.**
+- **Found:** 🔑 **`Integrazione_Salesforce_WooCommerce.docx` was edited at
+  2026-09-17T07:40:42Z and no trace note recorded it**, although that timestamp
+  fell inside the window the 11:00Z run swept — its Drive query started at
+  2026-09-16T21:00:00Z and reported five items "all modified before the
+  watermark". Missed or mis-triaged there; recorded as a defect in that run.
+  **Read in full: nothing in the document was answered.** The same **five points
+  to agree** are still open, it still specifies the **mu-plugin v1.0.0** and the
+  **long comma-concatenated URL** that 27/08 superseded, and **neither of the two
+  answers owed by Sabatino Rinaldi since 16/09 is in it**. ⚠ It is not an answer
+  to them — its _Esempio 2_ is a multi-product offer built the old way, so the
+  file records the design the build left behind. ⚠ A stray `ciao` now sits inside
+  the `line_items` JSON of its sample response; **not datable from this
+  repository**, and Drive gives the owner but **no last-modifying user**, so
+  **who edited it is unknown and was not inferred.**
+- **Why it matters:** 🔴 **this is the `DGM-2` defect a second time.** Two
+  documents cited as `source:` — this one in `REQUIREMENTS.md`, `REQUISITI.it.md`
+  and tracker row 49, the diagram on several register rows — now describe
+  mechanisms the build has abandoned. The difference is that **this one is still
+  being touched**, so it is live rather than abandoned.
+- **Found, everything else:** nothing. **Zero Pienissimo** across workspace-wide
+  Slack (20 results, newest 12:26Z), Gmail, Fathom (1 meeting, and it is 247) and
+  the build (**1 commit, the interactive run's own**). #47 open and untouched;
+  🔴 **`4132dab` still has no PR**, second day. ⚠ **`[PIENISSIMO] - Follow-up
+  Interno` began twelve minutes before this sweep** and has produced no artifact
+  yet — **the expected state for a session in progress, not proof it produced
+  nothing.** The next run is the first that can drill it.
+- **Written.** **No note created, one updated.** `OI-49` carries the finding;
+  `MAP.md` and `INDEX.md` take the live position and the trace row; **tracker row
+  49 and `DEVELOPMENT-RECAP` §41 regenerated in both languages**; trace note at
+  [Source trace 2026-09-17 nightly](notes/traces/Source%20trace%202026-09-17%20nightly.md).
+  **The register was not touched** — nothing in it became false; `INT-12`–`INT-14`
+  and `ORD-12` already record the 27/08 supersession.
+- **Deliberate non-actions.** No Apex test written, proposed or scaffolded.
+  `STATUS.md` not regenerated — its basis is a live org check and this run has no
+  org evidence. The org was not opened. PR #47 not reviewed or merged. **No
+  price, article code, credential, token or personal datum entered the
+  repository** — the spec read tonight carries a product/price table and a
+  billing block with a name, email and phone number in its sample JSON, and none
+  of it was copied.
+- **Next step.** **Drill `[PIENISSIMO] - Follow-up Interno` as soon as it
+  produces notes or a recording** — it is the first movement on OI-49's two open
+  points. Then: the client's mail silence reaches **nine days** tomorrow, which
+  the armed trigger says to raise as a delivery risk rather than a gap; and
+  **order lines still have no booking** with Parte 6 tomorrow.
+
 ## 2026-09-17 — claude — requirements-check: Gmail reconnected, and two long-unread sources decoded
 
 - **Did:** interactive (not nightly) `requirements-check` from watermark

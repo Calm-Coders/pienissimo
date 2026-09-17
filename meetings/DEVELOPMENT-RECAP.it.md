@@ -4381,3 +4381,96 @@ allo stato precedente, il che determina se il pulsante `Aggiornamento Incasso`
 riservato all'amministrazione possa funzionare. Ha declinato la riunione interna
 di oggi ed era attivo su Slack stamattina per un altro cliente: non è
 indisponibile, è non assegnato.
+
+## 41. Aggiornamento 17/09/2026 (nightly) — una seconda fonte citata documenta un disegno ormai superato
+
+La run notturna ha spazzato una finestra di **novanta minuti**: la run
+interattiva dello stesso giorno si è chiusa alle 11:00Z e ha committato alle
+12:17Z, questa è partita alle 12:27Z. Un risultato scarno era il risultato
+atteso. Ha prodotto un solo rilievo, e quel rilievo ha la stessa forma di quello
+del mattino.
+
+### 🔑 La specifica WooCommerce del 31/07 è stata modificata, e nulla al suo interno ha ricevuto risposta
+
+`Integrazione_Salesforce_WooCommerce.docx` — la specifica di Sabatino Rinaldi del
+31 luglio, il documento da cui è stato disegnato il flusso del link di checkout
+di questo progetto — riporta `modifiedTime` **2026-09-17T07:40:42Z**.
+
+⚠ **Nessuna nota di trace precedente a stanotte registra quella modifica**,
+benché il timestamp cada dentro la finestra spazzata dalla run delle 11:00Z: la
+query Drive di quella run partiva da 2026-09-16T21:00:00Z e riportava cinque
+elementi, _"tutti modificati prima del watermark"_. Il file è stato mancato o
+classificato male in quella sede. Viene registrato qui come difetto di quella
+run, non come una modifica avvenuta stanotte.
+
+**Il documento è stato letto integralmente. Nulla al suo interno si è mosso.**
+
+- La sezione finale elenca ancora gli **stessi cinque punti da concordare tra i
+  due team** — il nome del parametro URL, il formato dell'ID, la gestione dei
+  prezzi, la direzione dell'integrazione e se l'id opportunità viaggi in chiaro o
+  come token firmato. Il record segue quei cinque punti dallo sweep esterno del
+  14 agosto. **Nessuno è risolto.**
+- Specifica ancora il **mu-plugin `sf-opportunity-tracker.php` v1.0.0**, superato
+  dalla sessione del 27 agosto: il componente lato cliente è il plugin di
+  Sabatino Rinaldi, v1.3, che lui stesso ha scritto e mantiene.
+- Specifica ancora l'**URL lungo** — id prodotto concatenati da virgole con
+  quantità per singolo id — superato dalla stessa sessione, quando il link si è
+  ridotto al **solo id opportunità**, perché i carrelli Funnel Kit contengono già
+  il prodotto.
+- **Nessuna delle due risposte dovute da Sabatino Rinaldi dal 16 settembre è
+  presente:** se l'id prodotto nel link generato da Salesforce sia sempre un id
+  di bundle, e che cosa avvenga delle offerte multiprodotto non racchiuse in un
+  unico bundle.
+
+⚠ **Il documento non è una risposta a quelle due domande.** Il suo _Esempio 2_ è
+proprio un'offerta multiprodotto: tre id prodotto concatenati da virgole più una
+quantità per id — il meccanismo che il 27 agosto ha sostituito. Ciò che il file
+documenta è il disegno da cui la build si è allontanata.
+
+⚠ **Una corruzione visibile.** La risposta REST di esempio riporta ora
+`"line_items": [ciao`, una parola spuria dentro un blocco di codice JSON. **Non è
+databile da questo repository** — nessuna nota cita quel blocco alla lettera — e
+Drive restituisce il proprietario del file ma **nessun ultimo autore della
+modifica**. **Chi ha effettuato la modifica di stamattina è ignoto e qui non
+viene inferito.**
+
+### 🔴 Due fonti citate descrivono ora meccanismi superati
+
+È il difetto rilevato nel
+[diagramma di design](../notes/The%20newest%20design%20diagram.md) quella stessa
+mattina, che si ripresenta una seconda volta in un secondo documento di
+proprietà del cliente. Sia `Integrazione_Salesforce_WooCommerce.docx` sia il
+`Flows & Objects.drawio` noto come `DGM-2` sono citati come `source:` — il primo
+in `REQUIREMENTS.md`, in `REQUISITI.it.md` e nella riga 49 del tracker, il
+secondo in diverse righe del register — ed entrambi documentano meccanismi che la
+build ha abbandonato.
+
+La differenza conta: **il diagramma non ha assorbito nulla in tre settimane,
+mentre questo documento viene ancora toccato.** È vivo, non abbandonato, e chi
+segue la citazione si trova in mano il disegno superato.
+
+**Riconciliare un documento del cliente non spetta a uno sweep**, ma la pratica
+di citazione è ormai una questione da sign-off, non un dettaglio di archiviazione.
+
+### ⚠ Tutto il resto era fermo, e una riunione era ancora in corso
+
+Nella finestra, Slack a livello di workspace ha restituito venti risultati e
+**nessuno era Pienissimo**; Gmail non ha restituito posta del cliente; l'unica
+riunione su Fathom appartiene a un altro cliente; e la build ha prodotto **un
+solo commit, quello della run interattiva**. **La #47 è ancora aperta e
+intoccata**, e 🔴 **`4132dab` — la rimozione di `Incassato` — non ha ancora una
+pull request**, quindi la scrittura raggiungibile da ospite sullo stato di
+pagamento dell'ordine resta su `DevMain` e in UAT per il secondo giorno.
+
+⚠ **`[PIENISSIMO] - Follow-up Interno`, 17/09 14:15–15:15 CEST, è iniziata dodici
+minuti prima dell'avvio di questo sweep.** Drive non contiene note, registrazioni
+né documenti per essa e Fathom non contiene la riunione — **che è lo stato atteso
+per una sessione in corso, non la prova che non abbia prodotto nulla.** È la sede
+dei due punti WooCommerce, e la prossima run è la prima in grado di vederne un
+artefatto.
+
+Negativi ricorrenti, ciascuno peggiore di un giorno: il cliente tace via posta da
+un **ottavo** giorno con quattro artefatti dovuti; `#tproj-pienissimo` non ha uno
+status da **quattordici** giorni e indica ancora un go-live del 6 ottobre; e le
+righe d'ordine non hanno **ancora alcuna prenotazione**, con la Parte 6 domani e
+l'UAT il 23 settembre.
