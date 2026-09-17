@@ -1,181 +1,305 @@
 <template>
   <lightning-quick-action-panel header={panelHeader}>
     <div class="content">
-      <template if:true={showInitialLoader}>
-        <div class="initial-loader">
-          <lightning-spinner
-            alternative-text="Loading"
-            size="medium"
-          ></lightning-spinner>
+      <template lwc:if={isLoading}>
+        <lightning-spinner
+          alternative-text="Caricamento"
+          size="small"
+        ></lightning-spinner>
+      </template>
+      <template lwc:if={errorMessage}>
+        <div class="error" role="alert">{errorMessage}</div>
+        <lightning-button
+          label="Riprova"
+          onclick={loadContext}
+          disabled={isLoading}
+        ></lightning-button>
+      </template>
+      <template lwc:if={hasLoaded}>
+        <div class="bundle-heading">
+          <span class="eyebrow">CONFIGURAZIONE BUNDLE</span>
+          <h2>{bundleName}</h2>
+          <p>Le modifiche saranno applicate solo con Salva bundle.</p>
         </div>
-      </template>
-
-      <template if:true={showMainView}>
-        <template if:true={hasLoaded}>
-          <template if:true={isLoading}>
-            <lightning-spinner
-              alternative-text="Loading"
-              size="small"
-            ></lightning-spinner>
-          </template>
-
-          <div class="reconciliation">
-            <div class="figures">
+        <div class="reconciliation">
+          <div class="figures">
             <div class="figure">
-              <span class="figure-label">Bundle selling price</span>
-              <lightning-formatted-number
+              <span class="figure-label">Prezzo del bundle</span>
+              <lightning-input
+                data-id="fixed-price"
+                variant="label-hidden"
+                type="number"
+                label="Prezzo del bundle"
                 value={fixedPrice}
+                min="0"
+                step="0.01"
+                formatter="currency"
+                required
+                onchange={handleFixedPriceChange}
+                disabled={isLoading}
+              ></lightning-input>
+            </div>
+            <div class="figure">
+              <span class="figure-label">Totale assegnato</span>
+              <lightning-formatted-number
+                data-id="total"
+                value={spreadTotal}
                 format-style="currency"
-                  currency-code="EUR"
-                  class="figure-value"
-                ></lightning-formatted-number>
-              </div>
-              <div class="figure">
-                <span class="figure-label">Calculated Bundle Price</span>
-                <lightning-formatted-number
-                  value={calculatedBundlePrice}
-                  format-style="currency"
-                  currency-code="EUR"
-                  class="figure-value"
-                ></lightning-formatted-number>
-              </div>
-              <div class="figure">
-                <span class="figure-label">Variance</span>
-                <lightning-formatted-number
-                  value={variance}
-                  format-style="currency"
-                  currency-code="EUR"
-                  class="figure-value"
-                ></lightning-formatted-number>
-              </div>
+                currency-code="EUR"
+                class="figure-value"
+              ></lightning-formatted-number>
             </div>
-            <div class={varianceClass}>{varianceMessage}</div>
+            <div class="figure">
+              <span class="figure-label">{varianceLabel}</span>
+              <lightning-formatted-number
+                value={absoluteVariance}
+                format-style="currency"
+                currency-code="EUR"
+                class="figure-value"
+              ></lightning-formatted-number>
+            </div>
           </div>
-
+          <p class={varianceClass} role="status">{varianceMessage}</p>
+        </div>
+        <template lwc:if={showMainView}>
           <div class="section-header">
-            <h3 class="section-heading">Components</h3>
-            <lightning-button
-              label="Aggiungi"
-              onclick={handleAddComponent}
-            ></lightning-button>
+            <h3>{componentLabel}</h3>
+            <div class="actions">
+              <lightning-button
+                data-id="add"
+                label="Aggiungi prodotti"
+                icon-name="utility:add"
+                variant="brand-outline"
+                onclick={handleAddComponent}
+                disabled={saveDisabled}
+              ></lightning-button>
+            </div>
           </div>
-          <template if:true={hasRows}>
-            <lightning-datatable
-              data-id="components"
-              key-field="key"
-              data={rows}
-              columns={componentColumns}
-              hide-checkbox-column
-              oncellchange={handleCellChange}
-              onrowaction={handleRowAction}
-            ></lightning-datatable>
-          </template>
-          <template if:false={hasRows}>
-            <div class="empty-state">
-              No components yet.
+          <p class="help">
+            L'importo assegnato comprende tutta la riga. Cambiare la quantita
+            mantiene lo stesso importo e modifica il valore per unita.
+          </p>
+          <template lwc:if={hasRows}>
+            <div class="table-container">
+              <lightning-datatable
+                data-id="components"
+                key-field="key"
+                data={rows}
+                columns={componentColumns}
+                hide-checkbox-column
+                suppress-bottom-bar
+                oncellchange={handleCellChange}
+                onrowaction={handleRowAction}
+              ></lightning-datatable>
             </div>
           </template>
+          <template lwc:else>
+            <div class="empty-state">
+              <lightning-icon
+                icon-name="utility:package"
+                size="medium"
+              ></lightning-icon>
+              <h3>Componi il tuo bundle</h3>
+              <p>
+                Aggiungi piu prodotti insieme, poi imposta quantita e importi.
+              </p>
+            </div>
+          </template>
+          <p class="pending" role="status">{pendingLabel}</p>
         </template>
-      </template>
-
-      <template if:true={showCreateView}>
-        <template if:true={isLoading}>
-          <lightning-spinner
-            alternative-text="Loading"
-            size="small"
-          ></lightning-spinner>
-        </template>
-
-        <div class="required-note">* = Required Information</div>
-
-        <div class="info-card">
-          <div class="info-card__title">Information</div>
-
-          <lightning-record-edit-form
-            object-api-name="BundleComponent__c"
-            onsubmit={handleCreateSubmit}
-            onsuccess={handleCreateSuccess}
-            onerror={handleCreateError}
-          >
-            <template if:true={createFormError}>
-              <div class="form-error">{createFormError}</div>
+        <template lwc:else>
+          <div class="picker-intro">
+            <span class="eyebrow">COMPONI IL TUO BUNDLE</span>
+            <h3>Scegli un prodotto, poi imposta quantita e prezzo</h3>
+            <p>Aggiungi altre righe oppure salva tutti i prodotti insieme.</p>
+          </div>
+          <template lwc:if={hasSelection}>
+            <section
+              class="pending-products"
+              aria-label="Prodotti da aggiungere"
+            >
+              <h3 class="selection-summary" role="status">{selectedLabel}</h3>
+              <template for:each={selectedProducts} for:item="row">
+                <article class="product-card" key={row.key}>
+                  <div class="product-card-heading">
+                    <div>
+                      <h3>{row.name}</h3>
+                      <p>Codice: {row.productCode}</p>
+                    </div>
+                    <lightning-button-icon
+                      icon-name="utility:delete"
+                      alternative-text="Rimuovi prodotto"
+                      title="Rimuovi prodotto"
+                      data-key={row.key}
+                      onclick={handleRemovePending}
+                      disabled={isLoading}
+                    ></lightning-button-icon>
+                  </div>
+                  <p class="reference-price">
+                    Listino unitario:
+                    <lightning-formatted-number
+                      value={row.listPrice}
+                      format-style="currency"
+                      currency-code="EUR"
+                    ></lightning-formatted-number>
+                  </p>
+                  <div class="row-inputs">
+                    <lightning-input
+                      data-pending="true"
+                      data-key={row.key}
+                      data-field="quantity"
+                      type="number"
+                      label="Quantita"
+                      value={row.quantity}
+                      min="1"
+                      step="1"
+                      required
+                      onchange={handlePendingChange}
+                      disabled={isLoading}
+                    ></lightning-input>
+                    <lightning-input
+                      data-pending="true"
+                      data-key={row.key}
+                      data-field="spreadPrice"
+                      type="number"
+                      label="Prezzo totale della riga"
+                      value={row.spreadPrice}
+                      min="0"
+                      step="0.01"
+                      formatter="currency"
+                      required
+                      onchange={handlePendingChange}
+                      disabled={isLoading}
+                      field-level-help="Importo assegnato a tutte le unita di questa riga, non alla singola unita."
+                    ></lightning-input>
+                  </div>
+                  <p class="help">
+                    Il prezzo comprende tutta la quantita indicata. Inserisci 0
+                    per un omaggio.
+                  </p>
+                </article>
+              </template>
+            </section>
+            <template lwc:if={isChoosingProduct}></template>
+            <template lwc:else>
+              <lightning-button
+                class="add-another"
+                data-id="add-another"
+                label="Aggiungi un altro prodotto"
+                icon-name="utility:add"
+                variant="brand-outline"
+                onclick={handleAddAnother}
+                disabled={isLoading}
+              ></lightning-button>
             </template>
-
-            <lightning-input-field
-              field-name="Bundle__c"
-              value={recordId}
-              class="hidden-field"
-            ></lightning-input-field>
-
-            <div class="form-grid">
-              <div class="field-label">Bundle</div>
-              <div class="field-value bundle-pill">{bundleName}</div>
-
-              <div class="field-label required">Product</div>
-              <div class="field-value">
-                <lightning-input-field
-                  field-name="Product__c"
-                  variant="label-hidden"
-                  onchange={handleProductFieldChange}
-                ></lightning-input-field>
-                <template if:true={createProductError}>
-                  <div class="field-error">{createProductError}</div>
+          </template>
+          <template lwc:if={isChoosingProduct}>
+            <section class="product-search" aria-label="Cerca un prodotto">
+              <div class="filters">
+                <lightning-input
+                  data-id="search"
+                  type="search"
+                  label="Cerca per codice prodotto o nome"
+                  placeholder="Inserisci un codice, un nome o parte del testo"
+                  value={searchTerm}
+                  onchange={handleSearchInput}
+                  disabled={isLoading}
+                ></lightning-input>
+              </div>
+              <div class="search-results">
+                <template lwc:if={isSearching}
+                  ><lightning-spinner
+                    alternative-text="Ricerca prodotti"
+                    size="small"
+                  ></lightning-spinner
+                ></template>
+                <template lwc:if={searchError}>
+                  <div class="error" role="alert">{searchError}</div>
+                  <lightning-button
+                    label="Riprova ricerca"
+                    onclick={handleRetrySearch}
+                    disabled={isSearching}
+                  ></lightning-button>
+                </template>
+                <template lwc:if={hasProducts}>
+                  <lightning-datatable
+                    data-id="products"
+                    key-field="id"
+                    data={products}
+                    columns={productColumns}
+                    hide-checkbox-column
+                    onrowaction={handleChooseProduct}
+                  ></lightning-datatable>
+                </template>
+                <template lwc:if={showNoProducts}>
+                  <div class="empty-state">
+                    <h3>Nessun prodotto trovato</h3>
+                    <p>
+                      Prova un altro codice o nome. I prodotti gia presenti o
+                      selezionati sono esclusi.
+                    </p>
+                  </div>
                 </template>
               </div>
-
-              <div class="field-label required">Quantity</div>
-              <div class="field-value">
-                <lightning-input-field
-                  field-name="Quantity__c"
-                  value="1"
-                  variant="label-hidden"
-                ></lightning-input-field>
+              <div class="result-footer">
+                <span>{resultLabel}</span>
+                <template lwc:if={hasMore}
+                  ><lightning-button
+                    data-id="more"
+                    label="Carica altri"
+                    onclick={handleLoadMore}
+                    disabled={isSearching}
+                  ></lightning-button
+                ></template>
               </div>
-
-              <div class="field-label required">Spread Price</div>
-              <div class="field-value">
-                <lightning-input-field
-                  field-name="Spread_Price__c"
-                  variant="label-hidden"
-                ></lightning-input-field>
-              </div>
-            </div>
-
-            <div class="modal-actions">
-              <lightning-button
-                label="Back"
-                onclick={handleCloseCreateModal}
-              ></lightning-button>
-              <lightning-button
-                label="Save & New"
-                variant="neutral"
-                type="submit"
-                onclick={handleSaveAndNew}
-                class="slds-m-left_small"
-              ></lightning-button>
-              <lightning-button
-                type="submit"
-                variant="brand"
-                label="Save"
-                class="slds-m-left_small"
-              ></lightning-button>
-            </div>
-          </lightning-record-edit-form>
-        </div>
+            </section>
+          </template>
+          <p class="help">
+            Aggiungi tutti riporta le righe nel riepilogo. Salva bundle salva
+            tutte le modifiche e chiude la finestra.
+          </p>
+        </template>
       </template>
     </div>
-
-    <div slot="footer" if:true={showFooter}>
-      <lightning-button
-        label="Cancel"
-        onclick={handleCancel}
-      ></lightning-button>
-      <lightning-button
-        variant="brand"
-        label="Save"
-        onclick={handleSave}
-        class="slds-m-left_small"
-      ></lightning-button>
+    <div slot="footer">
+      <template lwc:if={showMainView}>
+        <lightning-button
+          label="Annulla"
+          onclick={handleCancel}
+          disabled={isLoading}
+        ></lightning-button>
+        <lightning-button
+          data-id="save"
+          class="slds-m-left_small"
+          label="Salva bundle"
+          variant="brand"
+          onclick={handleSave}
+          disabled={saveDisabled}
+        ></lightning-button>
+      </template>
+      <template lwc:else>
+        <lightning-button
+          label="Indietro"
+          onclick={handleBack}
+          disabled={isLoading}
+        ></lightning-button>
+        <lightning-button
+          data-id="add-selected"
+          class="slds-m-left_small"
+          label={selectionLabel}
+          variant="neutral"
+          onclick={handleAddSelected}
+          disabled={addSelectionDisabled}
+        ></lightning-button>
+        <lightning-button
+          data-id="save-selected"
+          class="slds-m-left_small"
+          label="Salva bundle"
+          variant="brand"
+          onclick={handleSaveSelected}
+          disabled={addSelectionDisabled}
+        ></lightning-button>
+      </template>
     </div>
   </lightning-quick-action-panel>
 </template>

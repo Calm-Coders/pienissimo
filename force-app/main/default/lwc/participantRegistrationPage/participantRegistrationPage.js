@@ -2,7 +2,6 @@ import { api, LightningElement, wire } from "lwc";
 import { CurrentPageReference } from "lightning/navigation";
 import findContact from "@salesforce/apex/ParticipantRegistrationController.findContact";
 import loadPage from "@salesforce/apex/ParticipantRegistrationController.loadPage";
-import markOrderIncassato from "@salesforce/apex/ParticipantRegistrationController.markOrderIncassato";
 import markTicketRinuncia from "@salesforce/apex/ParticipantRegistrationController.markTicketRinuncia";
 import savePage from "@salesforce/apex/ParticipantRegistrationController.savePage";
 
@@ -18,7 +17,6 @@ export default class ParticipantRegistrationPage extends LightningElement {
   page;
   tickets = [];
   isLoading = true;
-  isMarkingOrder = false;
   rinunciaAssetId;
   isSubmitting = false;
   showConfirmation = false;
@@ -55,12 +53,12 @@ export default class ParticipantRegistrationPage extends LightningElement {
     );
   }
 
-  get showPageActions() {
-    return this.showFormActions || this.showOrderAction;
+  get showRinunciaAction() {
+    return this.rinunciaTicket !== null;
   }
 
-  get showOrderAction() {
-    return this.page?.canMarkOrderIncassato === true;
+  get rinunciaTicket() {
+    return this.tickets.find((ticket) => ticket.canRinuncia) || null;
   }
 
   get showFinalMessage() {
@@ -85,17 +83,14 @@ export default class ParticipantRegistrationPage extends LightningElement {
   get submitDisabled() {
     return (
       this.isSubmitting ||
-      this.isMarkingOrder ||
       Boolean(this.rinunciaAssetId) ||
       this.requiredSubmissionCount === 0 ||
       this.completedSubmissionCount !== this.requiredSubmissionCount
     );
   }
 
-  get orderActionDisabled() {
-    return (
-      this.isSubmitting || this.isMarkingOrder || Boolean(this.rinunciaAssetId)
-    );
+  get rinunciaActionDisabled() {
+    return this.isSubmitting || Boolean(this.rinunciaAssetId);
   }
 
   get accountLabel() {
@@ -160,6 +155,8 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
     const assigned = Boolean(ticket.assigned);
     const editable = Boolean(ticket.editable);
+    const serverCanRinuncia =
+      ticket.serverCanRinuncia ?? Boolean(ticket.canRinuncia);
     const hasAnyParticipantValue = FIELD_NAMES.some((fieldName) =>
       Boolean(this.normalizeValue(currentValues[fieldName]))
     );
@@ -206,11 +203,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
       badgeLabel,
       cardClass: cardClasses.join(" "),
       contactRecognized: Boolean(ticket.contactRecognized),
-      canRinuncia:
-        Boolean(ticket.canRinuncia) &&
-        !this.isSubmitting &&
-        !this.isMarkingOrder &&
-        !this.rinunciaAssetId,
+      canRinuncia: serverCanRinuncia,
       editable,
       hasPartialInput,
       isRinuncia: ticket.status === "Rinuncia",
@@ -340,24 +333,8 @@ export default class ParticipantRegistrationPage extends LightningElement {
     }
   }
 
-  async handleMarkOrderIncassato() {
-    this.isMarkingOrder = true;
-    this.errorMessage = null;
-
-    try {
-      const payload = await markOrderIncassato({
-        token: this.token
-      });
-      this.applyPage(payload);
-    } catch (error) {
-      this.errorMessage = this.normalizeError(error);
-    } finally {
-      this.isMarkingOrder = false;
-    }
-  }
-
-  async handleMarkTicketRinuncia(event) {
-    const assetId = event.target.dataset.assetId;
+  async handleMarkTicketRinuncia() {
+    const assetId = this.rinunciaTicket?.assetId;
     if (!assetId) {
       return;
     }

@@ -1,0 +1,36 @@
+<template>
+  <lightning-quick-action-panel header="Genera PDF preventivo">
+    <template lwc:if={busy}>
+      <lightning-spinner
+        alternative-text="Generazione PDF in corso"
+        size="small"
+      ></lightning-spinner>
+    </template>
+    <p>
+      Il PDF include il contratto Performance Plus, i dati del cliente e le
+      righe del preventivo. Il documento viene salvato nei File del preventivo.
+    </p>
+    <template lwc:if={error}
+      ><p class="slds-text-color_error slds-m-top_medium" role="alert">
+        {error}
+      </p></template
+    >
+    <template lwc:if={documentId}>
+      <p class="slds-m-top_medium" role="status">PDF generato e salvato.</p>
+    </template>
+    <div slot="footer">
+      <lightning-button
+        label="Chiudi"
+        onclick={close}
+        disabled={busy}
+      ></lightning-button>
+      <lightning-button
+        class="slds-m-left_small"
+        variant="brand"
+        label="Genera PDF"
+        onclick={generate}
+        disabled={disabled}
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>

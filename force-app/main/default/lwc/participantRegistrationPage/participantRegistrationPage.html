@@ -50,6 +50,17 @@
           </template>
         </div>
 
+        <template if:true={showRinunciaAction}>
+          <div class="top-actions">
+            <lightning-button
+              label="Rinuncia"
+              variant="destructive"
+              disabled={rinunciaActionDisabled}
+              onclick={handleMarkTicketRinuncia}
+            ></lightning-button>
+          </div>
+        </template>
+
         <template if:true={showTickets}>
           <div class="ticket-list">
             <template for:each={tickets} for:item="ticket">
@@ -124,17 +135,6 @@
                       Completa questa riga oppure svuotala prima di salvare.
                     </p>
                   </template>
-                  <template if:true={ticket.canRinuncia}>
-                    <div class="row-actions">
-                      <lightning-button
-                        data-asset-id={ticket.assetId}
-                        label="Rinuncia"
-                        variant="destructive-text"
-                        disabled={ticket.isSavingRinuncia}
-                        onclick={handleMarkTicketRinuncia}
-                      ></lightning-button>
-                    </div>
-                  </template>
                 </template>
 
                 <template if:false={ticket.editable}>
@@ -165,7 +165,7 @@
           </div>
         </template>
 
-        <template if:true={showPageActions}>
+        <template if:true={showFormActions}>
           <footer class="form-actions">
             <template if:true={showFormActions}>
               <p>
@@ -177,14 +177,6 @@
                 variant="brand"
                 disabled={submitDisabled}
                 onclick={openConfirmation}
-              ></lightning-button>
-            </template>
-            <template if:true={showOrderAction}>
-              <lightning-button
-                label="Segna ordine incassato"
-                variant="brand-outline"
-                disabled={orderActionDisabled}
-                onclick={handleMarkOrderIncassato}
               ></lightning-button>
             </template>
           </footer>

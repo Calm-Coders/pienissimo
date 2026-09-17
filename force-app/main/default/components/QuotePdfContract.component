@@ -1,0 +1,900 @@
+<apex:component access="public">
+  <apex:attribute
+    name="customer"
+    type="Account"
+    description="Cliente del preventivo"
+  />
+
+  <apex:attribute
+    name="customerName"
+    type="String"
+    description="Ragione sociale"
+  />
+
+  <apex:attribute
+    name="legalAddress"
+    type="String"
+    description="Sede del cliente"
+  />
+
+  <!-- ========================================================= -->
+  <!-- CONTRACT -->
+  <!-- ========================================================= -->
+
+  <div
+    style="
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11px;
+      line-height: 1.28;
+      color: #000000;
+      text-align: left;
+    "
+  >
+    <!-- TITLE -->
+
+    <div
+      style="
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 18px;
+      "
+    >
+      CONTRATTO DI SERVIZIO PERFORMANCE PLUS
+    </div>
+
+    <!-- PARTIES -->
+
+    <p style="margin: 0 0 8px 0">Tra</p>
+
+    <p style="margin: 0 0 12px 0">
+      <strong>Pienissimo S.r.l</strong>, con sede legale in Strada Rovereta 6,
+      Falciano San Marino, C.O.E. SM27049, iscritta al nr. 9754 del Registro
+      delle Imprese, nella persona del suo Rappresentante Legale Giuliano
+      Lanzetti, (di seguito “Pienissimo”)
+    </p>
+
+    <p style="margin: 0 0 8px 0">E</p>
+
+    <p style="margin: 0 0 14px 0">
+      <strong>
+        <apex:outputText value="{!customerName}" />
+      </strong>
+      con sede legale in
+      <apex:outputText value="{!legalAddress}" />
+      P.IVA
+      <apex:outputText value="{!customer.Partita_IVA__c}" />
+      rappresentata da
+      <apex:outputText value="{!customer.Nome_Legale_Rappresentante__c}" />
+      (di seguito &quot;Cliente&quot;).
+    </p>
+
+    <!-- PREMESSO CHE -->
+
+    <div
+      style="
+        font-weight: bold;
+        font-size: 11px;
+        margin-top: 10px;
+        margin-bottom: 5px;
+      "
+    >
+      PREMESSO CHE:
+    </div>
+
+    <ul style="margin-top: 4px; margin-bottom: 12px; padding-left: 25px">
+      <li style="margin-bottom: 3px">
+        Pienissimo è attivo nel settore del marketing e della consulenza per la
+        ristorazione e il circuito Ho.Re.Ca. e offre, tra gli altri, il servizio
+        denominato Performance Plus, il quale prevede attività di
+        accompagnamento strategico, analisi dei dati economici e gestionali del
+        ristorante, formazione del personale, campagne marketing personalizzate
+        e affiancamento continuativo di promozione attraverso i social media
+        (es. Facebook, Instagram, Google);
+      </li>
+
+      <li style="margin-bottom: 3px">
+        il Cliente, operante nel settore della ristorazione, intende usufruire
+        del servizio Performance Plus per sviluppare e ottimizzare il proprio
+        business;
+      </li>
+
+      <li>
+        le parti convengono di instaurare un rapporto contrattuale regolato dai
+        seguenti articoli.
+      </li>
+    </ul>
+
+    <!-- ART. 1 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 1 – Premesse
+    </div>
+
+    <p style="margin: 0 0 8px 0">
+      Le premesse fanno parte integrante e sostanziale del presente Contratto.
+    </p>
+
+    <!-- ART. 2 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 2 – Oggetto del Contratto
+    </div>
+
+    <p style="margin: 0 0 7px 0">
+      Il presente Contratto ha per oggetto l'erogazione, da parte di Pienissimo,
+      del servizio Performance Plus (compiutamente descritto nell’allegato A –
+      unica fonte vincolante di descrizione delle attività), che consiste in
+      attività di marketing, realizzazione e ottimizzazione del sito web e
+      consulenza specializzati nel settore della ristorazione e dell'ospitalità.
+      Tale servizio può comprendere, ma non si limita a:
+    </p>
+
+    <ul style="margin-top: 4px; margin-bottom: 8px; padding-left: 25px">
+      <li>
+        la progettazione e gestione di campagne pubblicitarie su piattaforme
+        digitali quali Facebook, Instagram, Google;
+      </li>
+
+      <li>la realizzazione e l’ottimizzazione del sito Web;</li>
+
+      <li>l'analisi e l'ottimizzazione delle performance delle campagne;</li>
+
+      <li>
+        la consulenza strategica per l'incremento della visibilità e della
+        clientela del Cliente;
+      </li>
+
+      <li>
+        l'utilizzo, previo consenso, dei marchi e dei loghi del Cliente per
+        finalità promozionali;
+      </li>
+    </ul>
+
+    <p style="margin: 0 0 8px 0">
+      Il Cliente si impegna a fornire tutte le informazioni e gli accessi
+      necessari per l'esecuzione dei servizi sopra descritti.
+    </p>
+
+    <!-- ART. 3 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 3 – Durata del Contratto
+    </div>
+
+    <p style="margin: 0 0 8px 0">
+      Il presente Contratto ha durata di 12 (dodici) mesi, con decorrenza dalla
+      data di attivazione. Al termine del periodo, il Contratto si rinnoverà
+      tacitamente per ulteriori 12 mesi, salvo disdetta comunicata, a mezzo PEC,
+      da una delle parti con preavviso di almeno 60 (sessanta) giorni rispetto
+      alla scadenza.
+    </p>
+
+    <!-- ART. 4 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 4 – Facoltà e modalità di esecuzione
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Pienissimo potrà proporre e realizzare ulteriori iniziative di
+      comunicazione e marketing, previa consultazione e consenso scritto del
+      Cliente.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      2. Pienissimo potrà ricorrere al subappalto per specifiche attività.
+      Rimane comunque Pienissimo unico responsabile nei confronti del Cliente
+      per l’esecuzione integrale dei servizi.
+    </p>
+
+    <!-- ART. 5 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 5 – Corrispettivo e modalità di pagamento
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Il corrispettivo per l’erogazione del servizio Performance Plus viene
+      indicato nell’Allegato A.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      2. Tutti i pagamenti dovranno essere effettuati mediante RID Bancario o
+      un’altra modalità, indicata al momento della sottoscrizione del Contratto,
+      individuata tra bonifico bancario, RIBA.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      3. Restano a carico esclusivo del Cliente i costi, le spese e gli oneri
+      sostenuti per le campagne pubblicitarie, nei limiti delle autorizzazioni
+      preventivamente concordate, da intendersi esclusi dal corrispettivo sopra
+      indicato.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      4. In caso di ritardo nei pagamenti oltre 45 (quarantacinque) giorni dalla
+      scadenza, Pienissimo potrà sospendere i servizi previo sollecito scritto e
+      concessione di un ulteriore termine di 15 (quindici) giorni per la
+      regolarizzazione, prima di procedere ad una eventuale risoluzione del
+      Contratto.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      5. Le Parti convengono che, in caso di mancato o ritardato pagamento delle
+      somme dovute nei termini pattuiti, troveranno applicazione gli interessi
+      moratori previsti dal Decreto Legislativo 9 ottobre 2002, n. 231 e
+      successive modifiche ed integrazioni. Gli interessi decorrono
+      automaticamente, senza necessità di costituzione in mora, dal giorno
+      successivo alla scadenza del termine di pagamento concordato.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      6. Il mancato o ritardato pagamento comporterà a carico del Cliente un
+      ulteriore addebito per rimborsare Pienissimo gli eventuali costi sostenuti
+      per il sollecito del pagamento o il recupero del credito tramite
+      intervento legale o per qualsiasi altra attività correlata all’incasso
+      dovuto.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      7. Il Cliente non avrà diritto a rimborsi o decurtazioni del prezzo
+      pattuito nel caso in cui, per propria volontà o negligenza, non abbia
+      usufruito in tutto o in parte dei servizi oggetto di Contratto.
+    </p>
+
+    <!-- ART. 6 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 6 – Clausola di tolleranza
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. La tolleranza, anche reiterata, di una delle parti per comportamenti
+      attivi od omissivi in violazione degli obblighi assunti col presente
+      Contratto non costituisce precedente, né infirma comunque la validità
+      della clausola violata o derogata.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      2. Eventuali ritardi od omissioni di una delle parti nel far valere un
+      diritto o nell'esercitare un potere derivanti dal presente Contratto non
+      potranno essere interpretati quale rinuncia al relativo diritto, né al
+      potere di esercitarlo in un qualsiasi tempo successivo.
+    </p>
+
+    <!-- ART. 7 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 7 – Clausola solve et repete
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Il Cliente si obbliga a corrispondere integralmente e tempestivamente i
+      compensi pattuiti a Pienissimo, secondo quanto previsto dal Contratto,
+      anche in presenza di contestazione sull’esecuzione delle attività (es.
+      creatività, campagne, report).
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      2. Eventuali contestazioni relative alla prestazione potranno essere
+      sollevate dal Cliente solo dopo il completo pagamento.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      3. Una volta eseguito il pagamento, il Cliente potrà proporre domanda
+      giudiziale per l’eventuale restituzione delle somme ritenute versate in
+      eccesso o indebitamente o proporre domanda riconvenzionale nel medesimo
+      giudizio.
+    </p>
+
+    <!-- ART. 8 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 8 – Riservatezza e sicurezza dei dati
+    </div>
+
+    <p style="margin: 0 0 5px 0">
+      1. Pienissimo si impegna a mantenere la massima riservatezza su tutte le
+      informazioni e credenziali di accesso fornite dal Cliente, a tal fine
+      Pienissimo si impegna a:
+    </p>
+
+    <ul style="margin-top: 4px; margin-bottom: 8px; padding-left: 25px">
+      <li style="margin-bottom: 4px">
+        considerare strettamente riservate e, pertanto, a non divulgare e/o
+        comunque a non rendere note a soggetti terzi le informazioni considerate
+        riservate. Non sono considerati soggetti terzi, ai fini del presente
+        Contratto, i dipendenti ed i collaboratori tutti di Pienissimo, ivi
+        comprese eventuali società terze di cui all’ultimo capoverso dell’art.
+        4.;
+      </li>
+
+      <li>
+        adottare tutte le cautele e le misure di sicurezza necessarie e
+        opportune, secondo i migliori standards professionali, al fine di
+        mantenere riservate le informazioni, nonché al fine di prevenire accessi
+        non autorizzati, sottrazione e manipolazione delle stesse;
+      </li>
+    </ul>
+
+    <p style="margin: 0 0 6px 0">
+      2. Pienissimo adotterà tutte le misure tecniche e organizzative necessarie
+      per garantire la sicurezza dei dati, in conformità al GDPR e alle
+      normative applicabili. Le Parti dichiarano di essersi reciprocamente
+      comunicate le informazioni di cui al Regolamento UE 679/2016 ed alla Legge
+      RSM n. 171/2018 circa il trattamento dei dati personali conferiti per la
+      sottoscrizione e l’esecuzione del presente Contratto e di essere a
+      conoscenza dei diritti che spettano loro in virtù della citata normativa.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      3. Le informazioni saranno utilizzate esclusivamente per l’esecuzione del
+      presente Contratto e non potranno essere comunicate a soggetti terzi,
+      salvo quanto previsto dall’art. 4 per il subappalto.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      4. Si precisa che Pienissimo in nessun caso assume il ruolo di titolare
+      del trattamento dei dati con riferimento ai contenuti delle campagne di
+      marketing e di tutte le iniziative di marketing del Cliente. Resta
+      pertanto il Cliente l’unico titolare del trattamento dei propri dati e,
+      come tale, resta a suo carico ogni obbligo correlato come, a titolo
+      esemplificativo e non esaustivo, quello di raccogliere i tutti i consensi
+      necessari per le pubblicazioni.
+    </p>
+
+    <!-- ART. 9 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 9 – Garanzie e limitazioni di responsabilità
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. La responsabilità di Pienissimo è esclusa nei limiti consentiti dalla
+      legge e la stessa risponde per eventuali danni, solo in caso di dolo o
+      grave negligenza.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      2. Le responsabilità per la pubblicità effettuata, per le azioni di
+      marketing e remarketing, per il suo contenuto o comunque per i suoi
+      effetti diretti e indiretti gravano esclusivamente sul Cliente.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      3. In particolare, Pienissimo non è in alcun modo responsabile per
+      eventuali danni conseguenti e/o per mancato raggiungimento degli obiettivi
+      commerciali (come mancato guadagno, perdite di profitti o simili) subiti
+      dalla Cliente in conseguenza dei servizi erogati attesa la natura di
+      obbligazione di mezzi e non di risultato assunta con il presente
+      Contratto.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      4. Pienissimo non è in alcun modo responsabile per eventuali interruzioni
+      alla diffusione dei messaggi pubblicitari e delle azioni realizzate quando
+      ciò sia dovuto a cause indipendenti dalla propria volontà, come danni agli
+      impianti tecnici causati da eventi elettrici, atmosferici, dolosi ecc. ed
+      in ogni caso quando le piattaforme Facebook/Instagram, Google dovessero
+      avere problemi di tipo tecnico. A titolo esemplificativo e non esaustivo:
+      down tecnici, sospensione del servizio, fenomeni di crash ecc..
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      5. Pienissimo non è in alcun modo responsabile per qualsivoglia danno
+      derivante da intrusioni informatiche illecite su qualsivoglia sistema
+      informatico sia proprio che di terzi.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      6. Il Cliente si obbliga a garantire, manlevare e tenere indenne
+      Pienissimo da ogni conseguenza pregiudizievole (perdite, danni,
+      responsabilità, costi, oneri e spese, ivi comprese le eventuali spese
+      legali e/o di consulenza) che dovesse essere subita o sostenuta da
+      Pienissimo quale conseguenza di qualsivoglia inadempimento e/o violazione
+      degli obblighi assunti e/o delle garanzie prestate dal Cliente con la
+      sottoscrizione del Contratto e, comunque, connesse all’utilizzo e/o al
+      mancato utilizzo dei servizi prestati in esecuzione del Contratto, alla
+      natura e/o al contenuto dei dati e/o delle informazioni immessi e/o
+      trasmessi e/o pubblicati e/o comunque trattati mediante i servizi,
+      comprese violazione dei precetti previsti dalla normativa sulla privacy,
+      anche in ipotesi di risarcimento danni pretesi da terzi a qualunque
+      titolo.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      7. In nessun caso Pienissimo potrà essere ritenuta responsabile per
+      qualsivoglia danno, diretto o indiretto, di qualsiasi natura, sia
+      contrattuale che extracontrattuale, comunque derivante dall’attivazione o
+      dall’impiego dei servizi e/o dall’interruzione dei servizi forniti al
+      Cliente, anche successivamente alla cessazione degli effetti del
+      Contratto, a qualsiasi causa dovuta.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      8. Non sono attribuibili a Pienissimo malfunzionamenti dei servizi,
+      perdite di dati, diffusione accidentale di dati personali o sensibili, e
+      qualsiasi altro tipo di danno verificatosi a seguito di attacchi da parte
+      di pirati informatici, ladri, hacker, cracker, virus, ecc.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      9. Pienissimo non assume alcuna responsabilità per disservizi,
+      interruzioni dei servizi e/o danni imputabili a causa di forza maggiore
+      quali incidenti, incendi, esplosioni, scioperi, serrate, terremoti,
+      disastri, alluvioni, sommosse, ed altri eventi di difficile o impossibile
+      previsione che impedisca di fornire i servizi concordati.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      10. In ogni caso il Cliente conviene ed accetta espressamente che, fermo
+      quanto previsto ai punti precedenti, la responsabilità di Pienissimo è
+      limitata esclusivamente al risarcimento del danno comprovato e subito dal
+      Cliente, escluso ogni danno da perdita di guadagno e comunque per un
+      importo massimo pari al valore del presente Contratto.
+    </p>
+
+    <!-- ART. 10 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 10 – Obblighi e Responsabilità della Cliente
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Il Cliente garantisce la liceità e la correttezza di tutti i dati e
+      contenuti forniti a Pienissimo, assumendosi ogni responsabilità civile,
+      penale e amministrativa in caso di inadempienza alle normative vigenti.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      2. Il Cliente si impegna a non intervenire direttamente sulle campagne in
+      esecuzione da Pienissimo. Eventuali modifiche o interventi dovranno essere
+      preventivamente comunicati e autorizzati per iscritto.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      3. In caso di violazione dei propri obblighi, il Cliente riconosce che
+      Pienissimo potrà sospendere i servizi, previa comunicazione e concessione
+      di un termine per regolarizzazione.
+    </p>
+
+    <!-- ART. 11 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 11 – Clausola di non sollecitazione
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Il Cliente si impegna a non sollecitare, assumere o comunque instaurare
+      rapporti di collaborazione, a qualsiasi titolo, con dipendenti o
+      collaboratori di Pienissimo coinvolti nell'esecuzione dei servizi oggetto
+      del presente Contratto, sia direttamente che indirettamente, per tutta la
+      durata del Contratto e per un periodo di 12 mesi successivi alla sua
+      cessazione, per qualsiasi causa intervenuta.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      2. Ai fini della presente clausola, per "sollecitazione" si intende
+      qualsiasi azione volta a indurre un dipendente o collaboratore del
+      Fornitore a cessare il proprio rapporto con quest'ultimo per intraprendere
+      un nuovo rapporto lavorativo o di collaborazione con il Cliente o con
+      terzi.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      3. In caso di violazione della presente clausola, il Cliente si impegna a
+      corrispondere a Pienissimo, a titolo di penale, una somma pari a
+      €35.000,00 per ciascun dipendente o collaboratore coinvolto, fatto salvo
+      il diritto del Fornitore al risarcimento dell'eventuale maggior danno
+      subito.
+    </p>
+
+    <!-- ART. 12 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 12 - Clausola risolutiva espressa
+    </div>
+
+    <p style="margin: 0 0 8px 0">
+      1. Nei casi previsti dall’art. 5 del presente Contratto e dopo aver dato
+      alla Cliente la possibilità di regolarizzare la propria posizione, così
+      come in ogni caso di inadempimento da parte della Cliente delle proprie
+      obbligazioni, Pienissimo potrà risolvere di diritto il presente Contratto,
+      mediante semplice comunicazione alla Cliente della volontà di avvalersi
+      della presente clausola.
+    </p>
+
+    <!-- ART. 13 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 13 – Comunicazioni tra le parti del presente Contratto
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Tutte le comunicazioni previste dal presente Contratto o ad esso
+      relative dovranno essere effettuate in forma scritta e recapitate a mezzo
+      PEC, salvo quando il Contratto prevede espressamente l’utilizzo di altri
+      modi, ai seguenti indirizzi:
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      Per Pienissimo:<br />
+      PEC: Pienissimo@pec.it
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      Per la Cliente:<br />
+      PEC:
+      <apex:outputText value="{!customer.PEC__c}" />
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      2. Le comunicazioni si intenderanno effettuate alla data del loro
+      effettivo invio da parte del mittente.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      3. Qualsiasi modificazione nella denominazione di una parte o della sua
+      sede dovrà essere comunicata con raccomandata a mezzo PEC all'altra parte
+      entro 20 (venti) giorni dalla avvenuta variazione e sarà efficace dalla
+      data della sua ricezione.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      4. A tutti gli effetti di legge, ivi compreso il caso di contenzioso, le
+      parti eleggono domicilio all’indirizzo PEC sopra indicato.
+    </p>
+
+    <!-- ART. 14 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 14 – Legge applicabile e Foro competente
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Il presente Contratto è regolato dalla legge italiana.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      2. Per ogni controversia derivante dal presente Contratto le parti
+      convengono di tentare una soluzione bonaria mediante mediazione. In
+      mancanza di accordo, sarà competente il Foro di Rimini, fatta salva la
+      possibilità di ricorrere ad una procedura arbitrale se concordato tra le
+      parti.
+    </p>
+
+    <!-- ART. 15 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 15 – Cessione del Contratto
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Pienissimo potrà cedere il presente Contratto a qualsiasi soggetto
+      fisico, organizzazione, partnership o società che fornisca servizi
+      analoghi o intenda fornire, a seguito di tale cessione, servizi analoghi.
+    </p>
+
+    <p style="margin: 0 0 8px 0">
+      2. La cessione del presente Contratto a terzi da parte del Cliente potrà
+      avvenire soltanto previo consenso scritto di Pienissimo. L’inosservanza di
+      tale obbligo potrà comportare la risoluzione del Contratto.
+    </p>
+
+    <!-- ART. 16 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      Art. 16 – Clausole finali
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      1. Le premesse e gli allegati fanno parte integrante del presente
+      Contratto. Le parti confermano la veridicità e l’essenzialità, anche ai
+      fini dell’interpretazione del presente Contratto, di quanto dichiarato
+      nelle Premesse.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      2. Eventuali modifiche al presente Contratto dovranno essere effettuate
+      per iscritto e sottoscritte da entrambe le parti.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      3. Il presente Contratto sostituisce ogni precedente pattuizione fra le
+      Parti contenuta in documenti, corrispondenza o comunicazioni precedenti.
+    </p>
+
+    <p style="margin: 0 0 6px 0">
+      4. Se una o più clausole del presente Contratto vengono colpite da nullità
+      o se vengono rese inapplicabili dall’effetto della legge o da una
+      decisione che si impone alle parti, questo non avrà l’effetto di causare
+      la nullità dell’insieme del presente Contratto, né di alterare la validità
+      ed il carattere obbligatorio dell’insieme delle altre clausole. Le parti
+      si accorderanno per apportare al presente Contratto gli emendamenti
+      necessari affinché lo stesso possa portare un effetto che si avvicini il
+      più possibile alla volontà iniziale delle stesse.
+    </p>
+
+    <p style="margin: 0 0 10px 0">
+      5. Il Contratto potrà essere registrato in caso d’uso, a cura e spese
+      della PARTE interessata. La registrazione avverrà in misura fissa, in base
+      alle disposizioni vigenti, essendo tutti i corrispettivi soggetti ad IVA.”
+    </p>
+
+    <!-- SIGNATURE -->
+
+    <p style="margin: 15px 0 5px 0">In fede,</p>
+
+    <p style="margin: 0 0 18px 0">data:</p>
+
+    <table
+      style="
+        width: 100%;
+        border-collapse: collapse;
+        border: none;
+        margin-bottom: 25px;
+      "
+    >
+      <tr>
+        <td style="width: 50%; border: none; font-weight: bold">Pienissimo</td>
+
+        <td
+          style="width: 50%; border: none; text-align: right; font-weight: bold"
+        >
+          Il Cliente
+        </td>
+      </tr>
+    </table>
+
+    <!-- ================================================= -->
+    <!-- SPECIFIC APPROVAL -->
+    <!-- ================================================= -->
+
+    <p style="margin: 0 0 10px 0">
+      Ai sensi degli artt. 1341 e 1342 c.c., la Cliente dichiara di aver letto e
+      approvato specificatamente le clausole relative agli articoli: 3 (Durata
+      del Contratto); 4 (Facoltà e modalità di esecuzione); 5 (Corrispettivo e
+      modalità di pagamento); 6 (Clausola di tolleranza); 7 (Clausola solve et
+      repete); 8 (Riservatezza e sicurezza dei dati); 9 (Garanzie e limitazioni
+      di responsabilità); 11 (Clausola di non sollecitazione); 12 (Clausola
+      risolutiva espressa); 14 (Legge applicabile e Foro competente); 15
+      (Cessione del Contratto); 16 (Clausole finali).
+    </p>
+
+    <p style="margin: 15px 0 5px 0">In fede,</p>
+
+    <p style="margin: 0 0 18px 0">data:</p>
+
+    <table
+      style="
+        width: 100%;
+        border-collapse: collapse;
+        border: none;
+        margin-bottom: 30px;
+      "
+    >
+      <tr>
+        <td style="width: 50%; border: none; font-weight: bold">Pienissimo</td>
+
+        <td
+          style="width: 50%; border: none; text-align: right; font-weight: bold"
+        >
+          Il Cliente
+        </td>
+      </tr>
+    </table>
+
+    <!-- ================================================= -->
+    <!-- ALLEGATO A -->
+    <!-- ================================================= -->
+
+    <div
+      style="
+        text-align: center;
+        font-weight: bold;
+        font-size: 13px;
+        margin-top: 18px;
+        margin-bottom: 12px;
+      "
+    >
+      ALLEGATO A – DESCRIZIONE DEL SERVIZIO &quot;PERFORMANCE PLUS&quot;
+    </div>
+
+    <!-- ALLEGATO 1 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      1. Premessa
+    </div>
+
+    <p style="margin: 0 0 8px 0">
+      Il presente Allegato A definisce le aree di intervento e le attività
+      potenzialmente incluse nel servizio "Performance Plus", erogato da
+      Pienissimo S.r.l. Tale servizio è concepito come un percorso modulare e
+      personalizzabile, adattato alle specifiche esigenze e caratteristiche del
+      Cliente, e sarà definito congiuntamente tra le Parti in fase di avvio e
+      durante l'esecuzione del Contratto.
+    </p>
+
+    <!-- ALLEGATO 2 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      2. Natura del Servizio
+    </div>
+
+    <p style="margin: 0 0 8px 0">
+      Il servizio "Performance Plus" si configura come un'obbligazione di mezzi.
+      Pienissimo S.r.l. si impegna a fornire la propria competenza, esperienza e
+      professionalità per supportare il Cliente nello sviluppo e
+      nell'ottimizzazione delle proprie attività di marketing e comunicazione.
+      Non è garantito il raggiungimento di risultati specifici.
+    </p>
+
+    <!-- ALLEGATO 3 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      3. Aree di Intervento
+    </div>
+
+    <p style="margin: 0 0 8px 0">
+      Il servizio può comprendere, a titolo esemplificativo e non esaustivo, le
+      seguenti macro-aree:
+    </p>
+
+    <!-- 3.1 -->
+
+    <div style="font-weight: bold; margin-top: 10px; margin-bottom: 2px">
+      3.1 Analisi e Strategia
+    </div>
+
+    <ul style="margin-top: 4px; margin-bottom: 8px; padding-left: 25px">
+      <li>
+        Valutazione del posizionamento del Cliente nel mercato di riferimento.
+      </li>
+      <li>Analisi dei punti di forza e dei prodotti/servizi chiave.</li>
+      <li>Definizione degli obiettivi di crescita e sviluppo.</li>
+    </ul>
+
+    <!-- 3.2 -->
+
+    <div style="font-weight: bold; margin-top: 10px; margin-bottom: 2px">
+      3.2 Marketing e Pubblicità
+    </div>
+
+    <ul style="margin-top: 4px; margin-bottom: 8px; padding-left: 25px">
+      <li>
+        Creazione e gestione di campagne pubblicitarie su piattaforme digitali
+        (es. Facebook, Instagram).
+      </li>
+      <li>
+        Segmentazione del pubblico e targeting avanzato su indicazione del
+        target fornita dal cliente.
+      </li>
+      <li>Implementazione di strategie di remarketing e retargeting.</li>
+    </ul>
+
+    <!-- 3.3 -->
+
+    <div style="font-weight: bold; margin-top: 10px; margin-bottom: 2px">
+      3.3 Comunicazione e Contenuti
+    </div>
+
+    <ul style="margin-top: 4px; margin-bottom: 8px; padding-left: 25px">
+      <li>
+        Elaborazione di piani editoriali per la pubblicazione di contenuti sui
+        canali social.
+      </li>
+      <li>
+        Produzione di contenuti multimediali, quali interviste e video
+        promozionali.
+      </li>
+    </ul>
+
+    <!-- 3.4 -->
+
+    <div style="font-weight: bold; margin-top: 10px; margin-bottom: 2px">
+      3.4 Automazione e CRM
+    </div>
+
+    <ul style="margin-top: 4px; margin-bottom: 8px; padding-left: 25px">
+      <li>
+        Sviluppo di funnel di marketing e automazione dei processi di
+        comunicazione.
+      </li>
+      <li>Integrazione di strumenti per il monitoraggio delle performance.</li>
+      <li>
+        Gestione della comunicazione multicanale (es. WhatsApp, e-mail, SMS).
+      </li>
+    </ul>
+
+    <!-- 3.5 -->
+
+    <div style="font-weight: bold; margin-top: 10px; margin-bottom: 2px">
+      3.5 Presenza Online e Reputazione
+    </div>
+
+    <ul style="margin-top: 4px; margin-bottom: 8px; padding-left: 25px">
+      <li>Ottimizzazione e gestione del profilo Google Business.</li>
+      <li>Strategie per l'incremento delle recensioni positive online.</li>
+      <li>
+        Sviluppo e ottimizzazione del sito web (esclusivamente su piattaforma
+        CMS Wordpress) e attività SEO.
+      </li>
+    </ul>
+
+    <!-- 3.6 -->
+
+    <div style="font-weight: bold; margin-top: 10px; margin-bottom: 2px">
+      3.6 Strumenti Off-line
+    </div>
+
+    <ul style="margin-top: 4px; margin-bottom: 8px; padding-left: 25px">
+      <li>
+        Creazione di materiali promozionali cartacei, quali flyer e brochure.
+      </li>
+      <li>
+        Progettazione di cartellonistica e altri strumenti di comunicazione
+        tradizionale.
+      </li>
+    </ul>
+
+    <!-- 3.7 -->
+
+    <div style="font-weight: bold; margin-top: 10px; margin-bottom: 2px">
+      3.7 Servizio Menu engineering:
+    </div>
+
+    <p style="margin: 0 0 6px 0">
+      Analisi strategica delle performance dei singoli prodotti presenti in
+      menu, attraverso lo studio del food cost e dello storico delle vendite,
+      con l’obiettivo di ottimizzare la redditività complessiva dell’offerta.
+    </p>
+
+    <p style="margin: 0 0 10px 0">
+      Bilanciare in modo efficace le aspettative del cliente finale con le
+      esigenze economiche dell’azienda, al fine di massimizzare il Margine
+      Operativo.
+    </p>
+
+    <!-- ADDRESS -->
+
+    <div style="margin-top: 20px; margin-bottom: 12px">
+      <strong>Pienissimo S.r.l.</strong><br /> Strada Rovereta, 6, Falciano,<br />
+      San Marino, 47891
+    </div>
+
+    <!-- ALLEGATO 4 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      4. Personalizzazione del Servizio
+    </div>
+
+    <p style="margin: 0 0 8px 0">
+      Le attività effettivamente svolte saranno determinate in base alle
+      esigenze specifiche del Cliente, identificate attraverso un'analisi
+      congiunta tra le Parti. Non tutte le attività sopra elencate saranno
+      necessariamente incluse; la selezione sarà effettuata considerando la
+      strategia più idonea per il raggiungimento degli obiettivi del Cliente.
+    </p>
+
+    <!-- ALLEGATO 5 -->
+
+    <div style="font-weight: bold; margin-top: 12px; margin-bottom: 2px">
+      5. Limitazioni di Responsabilità
+    </div>
+
+    <p style="margin: 0 0 10px 0">
+      Pienissimo S.r.l. si impegna a svolgere le attività concordate con la
+      massima diligenza e professionalità. Tuttavia, non garantisce il
+      raggiungimento di risultati specifici, in quanto questi possono dipendere
+      da variabili esterne non controllabili. Pertanto, la responsabilità di
+      Pienissimo S.r.l. è limitata all'adempimento diligente delle attività
+      concordate, conformemente alla natura di obbligazione di mezzi del
+      presente Contratto.
+    </p>
+
+    <p style="margin: 18px 0 8px 0">data:</p>
+
+    <p>Per la Cliente</p>
+  </div>
+</apex:component>

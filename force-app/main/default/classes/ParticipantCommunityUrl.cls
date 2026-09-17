@@ -1,4 +1,4 @@
-public with sharing class ParticipantCommunityUrl {
+public without sharing class ParticipantCommunityUrl {
   private static final String COMMUNITY_NAME = 'Landing Page';
   private static String cachedPageUrl;
 
