@@ -60,8 +60,17 @@ private class BundleProductAssignmentControllerTest {
     Id bundleId,
     List<BundleProductAssignmentController.ComponentInput> components
   ) {
+    return save(bundleId, null, components);
+  }
+
+  private static BundleProductAssignmentController.BundleContext save(
+    Id bundleId,
+    Decimal fixedPrice,
+    List<BundleProductAssignmentController.ComponentInput> components
+  ) {
     return BundleProductAssignmentController.saveComponents(
       bundleId,
+      fixedPrice,
       components == null ? null : JSON.serialize(components)
     );
   }
@@ -237,6 +246,80 @@ private class BundleProductAssignmentControllerTest {
       'Code search should match one product'
     );
     System.assertEquals('TEST-FMF', byCode[0].productCode);
+  }
+
+  @isTest
+  static void pagedSearchProductsFiltersByNameOrCode() {
+    Product2 bundle = makeBundle('Stage bundle', 1000);
+    insert bundle;
+    insert new List<Product2>{
+      makeItem('Pienissimo Live', 'TEST-LIVE', 600),
+      makeItem('Food Marketing Festival', 'TEST-FMF', 300)
+    };
+
+    Test.startTest();
+    BundleProductAssignmentController.ProductSearchPage byName = BundleProductAssignmentController.searchProducts(
+      'Pienissimo',
+      null,
+      null,
+      null,
+      null
+    );
+    BundleProductAssignmentController.ProductSearchPage byCode = BundleProductAssignmentController.searchProducts(
+      'TEST-FMF',
+      null,
+      null,
+      null,
+      null
+    );
+    Test.stopTest();
+
+    System.assertEquals(
+      1,
+      byName.items.size(),
+      'Name search should match one product'
+    );
+    System.assertEquals('Pienissimo Live', byName.items[0].name);
+    System.assertEquals(
+      1,
+      byCode.items.size(),
+      'Code search should match one product'
+    );
+    System.assertEquals('TEST-FMF', byCode.items[0].productCode);
+  }
+
+  @isTest
+  static void saveComponentsCanUpdateBundleSellingPrice() {
+    Product2 bundle = makeBundle('Stage bundle', 1000);
+    insert bundle;
+    Product2 item = makeItem('Item A', 'TEST-A', 600);
+    insert item;
+
+    Test.startTest();
+    BundleProductAssignmentController.BundleContext context = save(
+      bundle.Id,
+      1200,
+      new List<BundleProductAssignmentController.ComponentInput>{
+        input(null, item.Id, 600)
+      }
+    );
+    Test.stopTest();
+
+    System.assertEquals(1200, context.fixedPrice);
+    System.assertEquals(
+      1200,
+      [
+        SELECT Bundle_Selling_Price__c
+        FROM Product2
+        WHERE Id = :bundle.Id
+      ]
+      .Bundle_Selling_Price__c
+    );
+    System.assertEquals(
+      600,
+      context.variance,
+      'Variance should use the edited bundle selling price'
+    );
   }
 
   @isTest

@@ -66,7 +66,7 @@ export default class QuoteAcceptanceEmail extends LightningElement {
     this.errorMessage = "";
     if (!this.body.includes(this.acceptanceUrl)) {
       this.errorMessage =
-        "Mantieni nel messaggio il link di questo preventivo mostrato sotto.";
+        "Mantieni nel messaggio il link di questo preventivo.";
       return;
     }
     this.isSending = true;

@@ -12,6 +12,8 @@ public with sharing class BundleProductAssignmentController {
     public Decimal productPrice;
     @AuraEnabled
     public Boolean bundleOnly;
+    @AuraEnabled
+    public Boolean generatesTicket;
 
     public ItemOption(Product2 product) {
       id = product.Id;
@@ -51,7 +53,8 @@ public with sharing class BundleProductAssignmentController {
       'SELECT Id, Name, ProductCode, Product_Price__c, ' +
       'Solo_Bundle__c, Genera_Biglietto__c FROM Product2 ' +
       'WHERE RecordType.DeveloperName = \'Item\' AND IsActive = TRUE ' +
-      'AND Id NOT IN :excludedIds AND ProductCode LIKE :term';
+      'AND Id NOT IN :excludedIds ' +
+      'AND (ProductCode LIKE :term OR Name LIKE :term)';
     if (bundleOnly != null) {
       queryText += ' AND Solo_Bundle__c = :bundleOnly';
     }
@@ -237,6 +240,7 @@ public with sharing class BundleProductAssignmentController {
   @AuraEnabled
   public static BundleContext saveComponents(
     Id bundleId,
+    Decimal fixedPrice,
     String componentsJson
   ) {
     if (bundleId == null) {
@@ -355,6 +359,14 @@ public with sharing class BundleProductAssignmentController {
     }
     if (!toUpsert.isEmpty()) {
       upsert toUpsert;
+    }
+    if (fixedPrice != null) {
+      if (fixedPrice < 0 || fixedPrice != fixedPrice.setScale(2)) {
+        throw new AuraHandledException(
+          'Inserisci un prezzo bundle non negativo con massimo due decimali.'
+        );
+      }
+      update new Product2(Id = bundleId, Bundle_Selling_Price__c = fixedPrice);
     }
 
     return getBundleContext(bundleId);

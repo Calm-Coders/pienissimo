@@ -2,13 +2,13 @@
 id: ref-bundleproductassignment-logic
 type: reference
 status: active
-updated: 2026-09-16
+updated: 2026-09-17
 source: force-app/main/default/lwc/bundleProductAssignment/bundleProductAssignment.js
 ---
 
 # How bundleProductAssignment works
 
-This explains the local source inspected on 16 September 2026, including
+This explains the local source inspected on 17 September 2026, including
 uncommitted changes. It is not a verification of the deployed Salesforce org.
 
 ## Purpose and product types
@@ -44,8 +44,8 @@ The component keeps three collections:
 
 ## Adding products
 
-1. **Aggiungi** opens the picker and calls Apex `searchProducts`.
-2. Search matches `ProductCode`, not the product name. It always passes
+1. **Aggiungi prodotti** opens the picker and calls Apex `searchProducts`.
+2. Search matches either `ProductCode` or product `Name`. It always passes
    `bundleOnly: true` and no ticket-generation filter. Apex returns up to 50
    matches per page, ordered by Id; the next page uses the last Id as a cursor.
 3. **Scegli** creates a pending card with quantity 1 and a blank required row
@@ -63,9 +63,10 @@ newer search or repopulate a closed picker. Search errors have a retry path.
 
 ## Prices and quantities
 
-The bundle selling price comes from `Bundle_Selling_Price__c` and is read-only
+The bundle selling price comes from `Bundle_Selling_Price__c` and is editable
 in this action. The user manually assigns component amounts; there is no
-automatic proportional allocation.
+automatic proportional allocation. The bundle price itself must be a nonnegative
+amount with at most two decimals.
 
 | Display                             | Calculation                                                                     |
 | ----------------------------------- | ------------------------------------------------------------------------------- |
@@ -87,29 +88,35 @@ The delete icon removes a row from the draft only. These actions mark the draft
 as dirty; they do not call Apex to persist changes.
 
 `pricing.js` requires a positive integer quantity and a finite, nonnegative row
-amount with at most two decimal places. Every submitted row must have a Product.
-Zero is an allowed amount; a blank pending-card amount is not.
+amount with at most two decimal places. `bundleProductAssignment.js` applies the
+same nonnegative, two-decimal rule to the bundle selling price. Every submitted
+row must have a Product. Zero is an allowed amount; a blank pending-card amount
+is not.
 
 If the assigned total differs from the selling price, Save asks whether to
 continue. A difference is a warning, not a mandatory balancing rule.
 
-On confirmation, `handleSave` sends the complete draft to `saveComponents` as
-JSON containing each row's Id, Product Id, quantity and assigned amount. Apex:
+On confirmation, `handleSave` sends the editable bundle price and the complete
+row draft to `saveComponents` as JSON containing each row's Id, Product Id,
+quantity and assigned amount. Apex:
 
 1. Loads the parent's existing components and validates the submitted rows.
 2. Rejects an existing component Id belonging to a different bundle.
 3. Updates quantity and amount on changed existing rows and inserts new rows.
 4. Deletes existing components omitted from the submitted list. An empty list
    therefore removes all components when the save is allowed to proceed.
-5. Returns fresh bundle context, which replaces the local saved snapshot.
+5. Updates `Product2.Bundle_Selling_Price__c` when the caller supplied a bundle
+   price.
+6. Returns fresh bundle context, which replaces the local saved snapshot.
 
 The server performs deletes before upserts in the same Apex transaction.
 Salesforce lookup filters and other component automation also apply at save.
 The LWC's picker filters should not be confused with server-side validation of
 every possible API caller.
 
-A successful save shows a toast, closes the quick action and dispatches a
-record refresh. If saving fails, an error toast appears and the draft remains
+A successful save shows a toast, notifies Lightning Data Service that the
+Product record changed, dispatches a record-page refresh event and then closes
+the quick action. If saving fails, an error toast appears and the draft remains
 available for correction. A save started from the Add view leaves its staged
 cards in the main table if the save fails or the variance confirmation is declined.
 
@@ -117,7 +124,7 @@ cards in the main table if the save fails or the variance confirmation is declin
 
 **Indietro** asks before discarding pending cards, then returns to the main
 table. Existing main-table draft edits remain. **Annulla** asks before discarding
-a dirty main draft, then closes and refreshes the action. Neither action saves.
+a dirty main draft, then closes the action. Neither action saves.
 
 ## Source files
 

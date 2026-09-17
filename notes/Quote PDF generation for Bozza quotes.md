@@ -4,7 +4,7 @@ type: reference
 status: in-progress
 org: ROMI
 raised: 2026-09-16
-updated: 2026-09-16
+updated: 2026-09-17
 source: User request and locally supplied seven-page sample PDF, 2026-09-16
 ---
 
@@ -18,17 +18,22 @@ no edits to existing Markdown files; this new note is the session handoff.
 
 - **Genera PDF** appears on the Quote record page only for `Status = Bozza`.
   The action and Visualforce controller independently enforce that status.
-- The action allows optional payment instructions. Changed instructions are
-  saved to `Quote.Modalita_Pagamento_PDF__c` in a separate UI API transaction,
-  with a last-modified check, before rendering. They remain saved if rendering
-  subsequently fails. No status change is performed by the generator.
+- The action no longer asks for payment instructions. Any existing
+  `Quote.Modalita_Pagamento_PDF__c` value can still render in the PDF, but it is
+  not edited in this UI.
 - Apex renders the Visualforce page and creates a new Salesforce File linked
-  to the Quote. The action shows success and an **Apri PDF** preview button.
-  Each intentional subsequent generation creates a separate file; earlier
-  documents remain available. Repeated clicks during generation are disabled.
+  to the Quote. The file title includes `da firmare`. Before saving the new
+  document, the service deletes existing Quote files whose title contains
+  `da firmare`, so regeneration replaces the current signing copy. Repeated
+  clicks during generation are disabled.
 - The service checks and locks the Quote after rendering and before saving,
-  rejecting a Quote that has left Bozza. Queries and the File insert run in
-  user mode; record sharing, object access and field permissions apply.
+  rejecting a Quote that has left Bozza. After saving the File, it moves the
+  Quote to `In Trattativa`. Queries, File creation, file deletion and the Quote
+  update run in user mode; record sharing, object access and field permissions
+  apply.
+- After a successful generation, the quick action notifies Lightning Data
+  Service that the Quote changed, dispatches a record-page refresh event and
+  closes the modal, so the user returns to the refreshed Quote page.
 - Empty Quotes and Quotes with more than 500 lines are rejected. Missing
   optional values remain blank. Missing permissions produce an error, not a
   partially populated customer document.
@@ -59,7 +64,7 @@ No sample customer identity, catalogue prices or article codes are recorded here
 | Payment deadline                    | Line `Data_Scadenza__c`, otherwise tranche `Data_Scadenza__c`             |
 | Totals                              | Quote `Subtotal`, `TotalPrice`, `Tax`, `ShippingHandling`, `GrandTotal`   |
 | Currency                            | Quote currency when multi-currency is enabled, otherwise default currency |
-| Payment instructions                | `Quote.Modalita_Pagamento_PDF__c`, editable in the action                 |
+| Payment instructions                | `Quote.Modalita_Pagamento_PDF__c`, rendered if already populated          |
 | Notes                               | `Quote.Description`                                                       |
 
 Lines preserve Salesforce sort order, with creation time and ID as deterministic
@@ -83,16 +88,13 @@ layout, not a pixel-identical copy or a signature integration.
 - [Fixed contract](../force-app/main/default/components/QuotePdfContract.component)
 - [Lightning action](../force-app/main/default/lwc/quoteGeneratePdf/quoteGeneratePdf.js)
 - [Quote record page](../force-app/main/default/flexipages/Quote_Record_Page.flexipage-meta.xml)
-- [Permission set](../force-app/main/default/permissionsets/Quote_PDF_Generation.permissionset-meta.xml)
 
-After a separately authorized deployment, assign **Quote PDF Generation** to
-users who already have commercial access to Quotes, line items, Products,
-Accounts and Opportunities, and permission to create Salesforce Files. This
-additive permission set grants the new Apex classes, Visualforce page, custom
-fields used by the PDF and read access to tranches. Record sharing still applies.
-The action is wired to `Quote_Record_Page`; other assigned record pages would
-need the same action. Payment instructions are editable directly in the action,
-so no existing Quote page layout was changed.
+After a separately authorized deployment, grant intended users access to the PDF
+service, Visualforce page, Lightning action and the required Quote, line item,
+Product, Account, Opportunity, tranche and Salesforce File permissions through
+the chosen permission model. No dedicated permission set exists in this
+checkout. Record sharing still applies. The action is wired to
+`Quote_Record_Page`; other assigned record pages would need the same action.
 
 ## Validation and remaining checks
 
@@ -102,17 +104,17 @@ passed. Contract extraction replaced the sample customer and PEC, and a source
 scan checked for the sample customer's identifiers. These are local checks,
 not Salesforce compilation or an execution test.
 
-`vault:check` was run and is blocked by an existing broken link in
-`notes/How the Quote acceptance email action works.md`, pointing to the absent
-`Quote_Acceptance_Email.permissionset-meta.xml`. The new note's links passed;
-the existing note was not edited. Five non-blocking trace warnings also remain.
+`vault:check` was rerun on 17 September after the source behavior changed; links
+passed, with only the repository's existing non-blocking trace warnings
+remaining.
 
-Live rendering, pagination, actual permission assignments and File preview
-remain to be checked after an authorized deployment. Check a discounted Quote,
-multiple pages of lines, an empty Quote, missing dates, insufficient permissions,
-and a status change during generation. The new Apex has no test classes or
-measured coverage; the existing coverage records were left unchanged under the
-user's explicit restriction on editing existing Markdown.
+Live rendering, pagination and actual permission assignments remain to be checked
+after an authorized deployment. Check a discounted Quote, multiple pages of
+lines, an empty Quote, missing dates, insufficient permissions, deletion of an
+older `da firmare` file, and a status change during generation. The new Apex has
+no test classes or measured coverage; the existing coverage records were left
+unchanged under the user instruction not to write Apex tests unless separately
+requested.
 
 The code index could not answer because its Ollama provider was unavailable.
 The requested intelligence refresh also failed because Python is not installed;

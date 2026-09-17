@@ -25,12 +25,19 @@
           <div class="figures">
             <div class="figure">
               <span class="figure-label">Prezzo del bundle</span>
-              <lightning-formatted-number
+              <lightning-input
+                data-id="fixed-price"
+                variant="label-hidden"
+                type="number"
+                label="Prezzo del bundle"
                 value={fixedPrice}
-                format-style="currency"
-                currency-code="EUR"
-                class="figure-value"
-              ></lightning-formatted-number>
+                min="0"
+                step="0.01"
+                formatter="currency"
+                required
+                onchange={handleFixedPriceChange}
+                disabled={isLoading}
+              ></lightning-input>
             </div>
             <div class="figure">
               <span class="figure-label">Totale assegnato</span>
@@ -192,8 +199,8 @@
                 <lightning-input
                   data-id="search"
                   type="search"
-                  label="Cerca per codice prodotto"
-                  placeholder="Inserisci un codice o parte del codice"
+                  label="Cerca per codice prodotto o nome"
+                  placeholder="Inserisci un codice, un nome o parte del testo"
                   value={searchTerm}
                   onchange={handleSearchInput}
                   disabled={isLoading}
@@ -228,7 +235,7 @@
                   <div class="empty-state">
                     <h3>Nessun prodotto trovato</h3>
                     <p>
-                      Prova un altro codice. I prodotti gia presenti o
+                      Prova un altro codice o nome. I prodotti gia presenti o
                       selezionati sono esclusi.
                     </p>
                   </div>

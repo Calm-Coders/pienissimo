@@ -1,5 +1,8 @@
 public with sharing class QuoteAcceptanceEmailController {
-  private static final String SENDABLE_STATUS = 'In Trattativa';
+  private static final Set<String> SENDABLE_STATUSES = new Set<String>{
+    'In Trattativa',
+    'In Attesa Accettazione'
+  };
   private static final String ACCEPTANCE_URL = 'https://ability-customization-52152--partial.sandbox.my.site.com/gestione-preventivo?quoteId=';
 
   public class EmailDraft {
@@ -78,10 +81,13 @@ public with sharing class QuoteAcceptanceEmailController {
       );
     }
     Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+    email.setTargetObjectId(UserInfo.getUserId());
+    email.setTreatTargetObjectAsRecipient(false);
     email.setToAddresses(new List<String>{ recipient.trim() });
+    email.setWhatId(quoteRecord.Id);
     email.setSubject(subject.trim());
     email.setPlainTextBody(body);
-    email.setSaveAsActivity(false);
+    email.setSaveAsActivity(true);
     Messaging.SendEmailResult[] results = Messaging.sendEmail(
       new List<Messaging.SingleEmailMessage>{ email }
     );
@@ -111,9 +117,9 @@ public with sharing class QuoteAcceptanceEmailController {
       throw new AuraHandledException('Preventivo non disponibile.');
     }
     Quote quoteRecord = records[0];
-    if (quoteRecord.Status != SENDABLE_STATUS) {
+    if (!SENDABLE_STATUSES.contains(quoteRecord.Status)) {
       throw new AuraHandledException(
-        'Invio consentito solo per preventivi in stato In Trattativa.'
+        'Invio consentito solo per preventivi in stato In Trattativa o In Attesa Accettazione.'
       );
     }
     if (quoteRecord.AccountId == null) {

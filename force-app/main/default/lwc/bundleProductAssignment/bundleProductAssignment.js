@@ -2,6 +2,7 @@ import { api, LightningElement } from "lwc";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
+import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
 import LightningConfirm from "lightning/confirm";
 import getBundleContext from "@salesforce/apex/BundleProductAssignmentController.getBundleContext";
 import searchProducts from "@salesforce/apex/BundleProductAssignmentController.searchProducts";
@@ -136,9 +137,7 @@ export default class BundleProductAssignment extends LightningElement {
     return !this.isPickerOpen;
   }
   get panelHeader() {
-    return this.isPickerOpen
-      ? "Aggiungi prodotti"
-      : "Configura componenti bundle";
+    return this.isPickerOpen ? "Aggiungi prodotti" : "Configura bundle";
   }
   get saveDisabled() {
     return this.isLoading || !this.hasLoaded;
@@ -224,6 +223,11 @@ export default class BundleProductAssignment extends LightningElement {
     this.isDirty = true;
     const table = this.template.querySelector('[data-id="components"]');
     if (table) table.draftValues = [];
+  }
+  handleFixedPriceChange(event) {
+    this.fixedPrice =
+      event.target.value === "" ? null : Number(event.target.value);
+    this.isDirty = true;
   }
   handleRowAction(event) {
     if (event.detail.action.name === "remove") {
@@ -353,6 +357,16 @@ export default class BundleProductAssignment extends LightningElement {
     );
     return validInputs && validRows(this.selectedProducts);
   }
+  validateFixedPrice() {
+    const input = this.template.querySelector('[data-id="fixed-price"]');
+    return (
+      (!input || input.reportValidity()) &&
+      Number.isFinite(this.fixedPrice) &&
+      this.fixedPrice >= 0 &&
+      Math.abs(this.fixedPrice * 100 - Math.round(this.fixedPrice * 100)) <
+        0.00001
+    );
+  }
   handleAddAnother() {
     if (this.isLoading || !this.validateSelection()) return;
     this.isChoosingProduct = true;
@@ -377,6 +391,14 @@ export default class BundleProductAssignment extends LightningElement {
   }
   async handleSave() {
     if (this.saveDisabled) return;
+    if (!this.validateFixedPrice()) {
+      this.showToast(
+        "Controlla il prezzo",
+        "Il prezzo del bundle deve essere un importo non negativo con massimo due decimali.",
+        "error"
+      );
+      return;
+    }
     if (!validRows(this.rows) || this.rows.some((row) => !row.productId)) {
       this.showToast(
         "Controlla le righe",
@@ -402,6 +424,7 @@ export default class BundleProductAssignment extends LightningElement {
       this.applyContext(
         await saveComponents({
           bundleId: this.recordId,
+          fixedPrice: this.fixedPrice,
           componentsJson: JSON.stringify(
             this.rows.map((row) => ({
               id: row.id,
@@ -421,7 +444,7 @@ export default class BundleProductAssignment extends LightningElement {
               ".",
         this.isReconciled ? "success" : "warning"
       );
-      this.closeAndRefresh();
+      await this.refreshAndClose();
     } catch (error) {
       this.showToast(
         "Salvataggio non riuscito",
@@ -448,11 +471,15 @@ export default class BundleProductAssignment extends LightningElement {
         this.isLoading = false;
       }
     }
-    this.closeAndRefresh();
+    this.closeWithoutRefresh();
   }
-  closeAndRefresh() {
-    this.dispatchEvent(new CloseActionScreenEvent());
+  async refreshAndClose() {
+    await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
     this.dispatchEvent(new RefreshEvent());
+    this.closeWithoutRefresh();
+  }
+  closeWithoutRefresh() {
+    this.dispatchEvent(new CloseActionScreenEvent());
   }
   formatCurrency(value) {
     return new Intl.NumberFormat("it-IT", {
