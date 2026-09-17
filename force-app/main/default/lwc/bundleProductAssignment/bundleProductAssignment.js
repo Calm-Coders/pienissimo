@@ -109,21 +109,39 @@ export default class BundleProductAssignment extends LightningElement {
     );
   }
   get variance() {
+    if (!this.hasFixedPrice) {
+      return null;
+    }
     return Math.round((this.fixedPrice - this.spreadTotal) * 100) / 100;
   }
   get absoluteVariance() {
+    if (!this.hasFixedPrice) {
+      return null;
+    }
     return Math.abs(this.variance);
   }
   get isReconciled() {
+    if (!this.hasFixedPrice) {
+      return true;
+    }
     return this.variance === 0;
   }
+  get hasFixedPrice() {
+    return this.fixedPrice !== null && this.fixedPrice !== undefined;
+  }
   get varianceLabel() {
+    if (!this.hasFixedPrice) {
+      return "Differenza";
+    }
     return this.variance < 0 ? "Assegnato in eccesso" : "Da assegnare";
   }
   get varianceClass() {
     return this.isReconciled ? "variance reconciled" : "variance drifted";
   }
   get varianceMessage() {
+    if (!this.hasFixedPrice) {
+      return "Il prezzo del bundle non e impostato.";
+    }
     if (this.isReconciled)
       return "Il totale assegnato corrisponde al prezzo del bundle.";
     return this.variance > 0
@@ -191,7 +209,10 @@ export default class BundleProductAssignment extends LightningElement {
   }
   applyContext(context) {
     this.bundleName = context.bundleName;
-    this.fixedPrice = Number(context.fixedPrice) || 0;
+    this.fixedPrice =
+      context.fixedPrice === null || context.fixedPrice === undefined
+        ? null
+        : Number(context.fixedPrice);
     this.rows = (context.components || []).map((row) => this.decorate(row));
     this.savedRows = this.rows.map((row) => ({ ...row }));
     this.isDirty = false;
@@ -361,10 +382,11 @@ export default class BundleProductAssignment extends LightningElement {
     const input = this.template.querySelector('[data-id="fixed-price"]');
     return (
       (!input || input.reportValidity()) &&
-      Number.isFinite(this.fixedPrice) &&
-      this.fixedPrice >= 0 &&
-      Math.abs(this.fixedPrice * 100 - Math.round(this.fixedPrice * 100)) <
-        0.00001
+      (!this.hasFixedPrice ||
+        (Number.isFinite(this.fixedPrice) &&
+          this.fixedPrice >= 0 &&
+          Math.abs(this.fixedPrice * 100 - Math.round(this.fixedPrice * 100)) <
+            0.00001))
     );
   }
   handleAddAnother() {
