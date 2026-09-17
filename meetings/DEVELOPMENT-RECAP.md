@@ -4268,3 +4268,97 @@ Standing negatives, each a day worse: the client is silent by mail an **eighth**
 day with four artifacts owed; `#tproj-pienissimo` has had no status post for
 **fourteen** days and still states a go-live of 6 October; and order lines still
 have **no booking** with Parte 6 tomorrow and UAT on 23 September.
+
+## 42. Update 2026-09-17 (evening) — six rulings from an internal session, and five merges in one afternoon
+
+The largest single day of build movement on the project, and the session that
+drove most of it was **ROMI-internal with no client in the room.**
+
+### The session
+
+[`[PIENISSIMO] - Follow-up Interno`](../notes/meetings/2026-09-17%20Follow-up%20Interno.md),
+17 September 14:15 CEST, booked for one hour and running at least 1h22m.
+**Aurel Mrruku** (388 turns), **Elena Spini** (381) and **Fabrizio Mastracci**
+(83); **Andrea Di Cicco was invited and declined.** No Pienissimo attendee.
+
+Six rulings, from the notes' own `Concordato` block:
+
+1. **Data Cloud is bypassed** for the ticket flows — flows are fed directly from
+   the `event invitation` object, because Data Cloud duplicates records for
+   unified persons and slows the path (`00:12:10`).
+2. **Rinuncia is blocked once an asset has been filled in.** Selecting rinuncia
+   otherwise cancels every associated event (`00:14:41`).
+3. **Three Opportunity record types**, chosen at creation (`00:25:26`) — §42.1.
+4. **A bundle product locks the rest of the order** (`00:28:26`, `00:33:19`);
+   WooCommerce orders must transmit their type via API (`00:29:31`).
+   ⚠ Explicitly held for client validation on Friday's call (`00:31:21`).
+5. **Fractional product records** for instalment-paying high-value courses
+   (`00:34:58`, approved `00:38:21`) — OI-142.
+6. **A Contract record created automatically** for Performance Plus and
+   attivazione/rinnovo orders, at the moment the order reaches Mexal
+   (`00:40:30`, `00:47:16`) — OI-141.
+
+⚠ **All six are ROMI positions.** None has been put to Pienissimo.
+
+### 42.1 What was built and merged
+
+Five commits reached `DevMain` between 14:29Z and 15:01Z.
+
+| PR  | Merged     | What it carries                                                        |
+| --- | ---------- | ---------------------------------------------------------------------- |
+| #48 | 14:29:39Z  | `4132dab` — **the `Incassato` removal**, with five unrelated commits    |
+| #47 | 15:01:32Z  | `af8a42b` — **the WooCommerce link generator and three record types**   |
+
+🟢 **OI-136 is closed on the build side.** `4132dab` is an ancestor of
+`DevMain`; `markOrderIncassato`, `canMarkOrderIncassato` and the "Segna ordine
+incassato" button are absent from `force-app/` entirely. 🔴 **The question is
+not closed** — nobody ruled, and Elisa Migliano still has not been asked.
+🔴 `QuoteAcceptanceController` remains `public without sharing` on a bare
+`quoteId`.
+
+🟢 **The three record types exist**: `Recall_Tutor`, `Standart` (*Vendita
+Standart*) and `Plus_Attivazione_Rinnovo`, on a new `Sales_Process` business
+process. 🔴 **`Standart` is misspelt in both the API name and the label**, and
+the API name is effectively permanent once records carry it. The same commit
+adds `QuoteLineItemTriggerHandler`, enforcing one Bundle **or** Item products on
+a quote — ⚠ the meeting decided that for the *order*.
+
+### 42.2 🔴 The link generator contradicts the recorded design
+
+`wooGenerateLink` emits
+`https://www.pienissimo.it/checkout?add-to-cart=<woo id>&sf_opportunity_id=<Opportunity id>`,
+and the WooCommerce product id is **typed by hand** into a free-text input.
+
+The record holds the opposite on both counts. The 27 August design session
+shrank the link to **the opportunity id alone** — carts are built with Funnel
+Kit, so no `add-to-cart`, no `quantity` — and drew the explicit conclusion that
+the button needed no product picker. Sabatino Rinaldi's own explanation, as
+restated on 16/09, is that the tutor must never know or type a WooCommerce id,
+and depends on a catalogue-sync cron that **does not exist**.
+
+🔑 **And it closes Sabatino Rinaldi's two open questions by implementation.** One
+product id, no concatenation: it behaves as if every link carried a bundle
+without enforcing it, and has no answer for a multi-product offer. **This is the
+second time this workstream has had a decision made by code rather than by its
+owner** — the failure the five-point table in OI-49 exists to prevent.
+
+### 42.3 The calendar
+
+🟢 **Monday 21/09 16:00–18:00 — `[ROMI-PIENISSIMO] - Test Interni Pre-UAT`**,
+with Aurel Mrruku, Rexhina Hysi and Anita Aga. The first internal pre-UAT test
+session on the record, **two days before UAT opens**. It displaced the recurring
+`Follow-up Interno`, cancelled with the note _"Annullo per altro meeting"_.
+
+🟢 **Friday 18/09 is not double-booked.** `[PIENISSIMO] - Temi Mexal`
+10:00–11:00 with **Andrea Di Cicco** — the Mexal API session OI-141 needs and
+the first booking to put OI-139's counterpart back in a room — then **Parte 6**
+11:00–13:00 on Campagne/Lead. 🔴 **Order lines still have no booking.**
+
+### 42.4 What did not move
+
+🔴 The client has now been **silent by mail for eight days**; the Mexal
+credentials, the event list, the article codes and the catalogue prices are all
+still owed. 🔴 `#tproj-pienissimo` has had no status post since 4 September and
+still states go-live 6 October. ⚠ `Flows & Objects.drawio` was edited a tenth
+time at 17:20:06Z and **was not re-read**. The register was not changed: nothing
+in it became false.

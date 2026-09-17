@@ -313,3 +313,66 @@ in [REQUIREMENTS.md](../../REQUIREMENTS.md), in
 documents a mechanism the build superseded three weeks ago. Unlike the diagram,
 **this file is still being touched** — so it is live rather than abandoned, and a
 reader who follows the citation is handed the retired design.
+
+## 🔑 2026-09-17 (evening) - the link generator was built, and it is the design the 27/08 session replaced
+
+`af8a42b` (Anita Aga, 16:50:57 CEST, `DevAnita`), merged to `DevMain` in **PR
+#47** at **15:01:32Z** as `d779109`. It adds the `Genera_Link` quick action on
+the Opportunity, the `wooGenerateLink` LWC, an `Opportunity.Checkout_Link__c`
+URL field, and rewrites the `WooCommerce_Checkout_Link` email template and its
+controller. **This is the link-generator button that had been outstanding since
+the 25 August org check.**
+
+### What it emits
+
+```
+https://www.pienissimo.it/checkout?add-to-cart=<woo product id>&sf_opportunity_id=<15/18-char Opportunity id>
+```
+
+🔴 **That is the pre-27/08 URL anatomy.** The 27/08 design session recorded, in
+this note's own words, that carts are built with **Funnel Kit**, the funnel URL
+already contains the product, so there is **no `add-to-cart`, no `quantity`**,
+and _"the link Salesforce generates carries the opportunity id alone"_ — with
+the explicit consequence that _"the link-generator button therefore needs no
+product or quantity pickers"_. The built button does carry `add-to-cart`, and
+its only input **is** a product picker.
+
+🔴 **And the tutor types the WooCommerce product id by hand.** `wooGenerateLink`
+renders a single free-text `lightning-input` bound to `productWooCommerceId`;
+there is no catalogue lookup, no `Product2` query, no dropdown. That is the
+opposite of what the record holds on both sides:
+
+- Sabatino Rinaldi and Aurel Mrruku, 31/07 and 16/07, as restated by Elena Spini
+  on 16/09: _"il tutor non dovrà mai conoscere o digitare a memoria gli ID
+  numerici di WooCommerce… gli apparirà una finestra con un menù a tendina a
+  ricerca guidata per nome prodotto"_;
+- the same source's proposed **cron to sync the WooCommerce catalogue into
+  Salesforce** so every Salesforce product already knows its Woo id. That cron
+  does not exist, has no owner and no date — and this build is what depends on it.
+
+⚠ **Aurel Mrruku disputed the searchable-dropdown detail on 16/09** (§ above),
+so the record already carried a contradiction there. What is new is that **the
+build has now taken a side**, and it took the manual-entry side without anyone
+recording a decision.
+
+### On the two questions Sabatino Rinaldi owes
+
+- **Is the product id in the link always a bundle id?** The build emits exactly
+  **one** `add-to-cart` value, so it behaves as if the answer were yes — but it
+  does not enforce it, and nothing validates that the typed id is a bundle.
+- **What happens to multi-product offers not wrapped in one bundle?** The build
+  has **no answer**: one id, one field, no concatenation. The related constraint
+  landed in the same commit —
+  [OI-140](OI-140%20Three%20Opportunity%20record%20types.md)'s
+  `QuoteLineItemTriggerHandler` refuses a quote that mixes a Bundle with Item
+  products. **So the question is being closed by implementation rather than by
+  the person who owns it**, which is the failure mode the five-point table in
+  this note exists to prevent — for the second time.
+
+### Not verified
+
+The base URL `https://www.pienissimo.it/checkout` is hardcoded in the LWC. **No
+swept source states that this is the Funnel Kit checkout path**, and the 27/08
+session said the funnel URL carries the product. Whether the built link resolves
+to anything on the client's site is **unknown and was not tested** — the org was
+not opened tonight.

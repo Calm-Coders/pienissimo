@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-17 (nightly requirements-check: the 31/07 WooCommerce spec was edited this morning and still documents the superseded mechanism) · Source of record: [notes/](notes/)
+Last updated: 2026-09-17 (evening requirements-check: the internal follow-up produced six rulings, and five merges put the checkout-link button and three Opportunity record types on DevMain) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,39 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🔑 **2026-09-17 (evening) — the busiest build day of the project, and the
+  internal session that drove it.**
+  🔑 **[`[PIENISSIMO] - Follow-up Interno`](notes/meetings/2026-09-17%20Follow-up%20Interno.md)**
+  (17/09 14:15 CEST, **ROMI only**, ~1h22m against a one-hour booking; Aurel
+  Mrruku, Elena Spini, Fabrizio Mastracci — **Andrea Di Cicco declined**)
+  produced **six agreed rulings**: Data Cloud bypassed in favour of the
+  `event invitation` object, rinuncia blocked once an asset is filled in,
+  **three Opportunity record types**, **a bundle product locks the rest of the
+  order**, **fractional product records** for instalment-paying high-value
+  courses, and **a Contract record created automatically for Performance Plus
+  and attivazione/rinnovo orders**. ⚠ **No Pienissimo attendee** — the
+  constraints are explicitly held for client validation on Friday's call.
+  🟢🔴 **The build moved further in one afternoon than in any previous day.**
+  **PR #48 merged 14:29Z** — `4132dab` is on `DevMain`, so the
+  **guest-reachable `Incassato` write is gone from source**
+  ([OI-136](notes/items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md));
+  the *question* nobody answered is not. **PR #47 merged 15:01Z** — the
+  **WooCommerce link generator** and the **three record types**
+  ([OI-140](notes/items/OI-140%20Three%20Opportunity%20record%20types.md)) landed.
+  🔴 **But the link generator emits the anatomy the 27/08 session replaced** —
+  `?add-to-cart=…&sf_opportunity_id=…` with the Woo product id **typed by hand**,
+  where the record says the link carries the opportunity id alone and the tutor
+  never types an id
+  ([OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)).
+  🔴 `Standart` is misspelt in both the API name and the label, before UAT.
+  🟢 **Friday is not double-booked and Monday has a pre-UAT test session** —
+  `Temi Mexal` 10:00 with Andrea Di Cicco, Parte 6 11:00, and
+  `Test Interni Pre-UAT` Mon 16:00–18:00
+  ([OI-24](notes/items/OI-24%20Data%20model%20workbook.md)).
+  🔴 Order lines **still have no booking**; the design diagram moved a **tenth**
+  time at 17:20Z and was not re-read.
+  — [trace](notes/traces/Source%20trace%202026-09-17%20evening.md)
 
 - 🔑 **2026-09-17 (nightly) — a second cited source turns out to document a
   design the build left behind.**

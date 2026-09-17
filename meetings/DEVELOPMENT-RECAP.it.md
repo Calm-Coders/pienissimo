@@ -4474,3 +4474,106 @@ un **ottavo** giorno con quattro artefatti dovuti; `#tproj-pienissimo` non ha un
 status da **quattordici** giorni e indica ancora un go-live del 6 ottobre; e le
 righe d'ordine non hanno **ancora alcuna prenotazione**, con la Parte 6 domani e
 l'UAT il 23 settembre.
+
+## 42. Aggiornamento 17/09/2026 (sera) — sei decisioni da una sessione interna, e cinque merge in un pomeriggio
+
+Il maggiore movimento di build in una sola giornata di progetto, e la sessione
+che ne ha guidato la maggior parte era **interna a ROMI, senza cliente in
+sala.**
+
+### La sessione
+
+[`[PIENISSIMO] - Follow-up Interno`](../notes/meetings/2026-09-17%20Follow-up%20Interno.md),
+17 settembre ore 14:15 CEST, prenotata per un'ora e durata almeno 1h22m.
+**Aurel Mrruku** (388 turni), **Elena Spini** (381) e **Fabrizio Mastracci**
+(83); **Andrea Di Cicco è stato invitato e ha declinato.** Nessun partecipante
+Pienissimo.
+
+Sei decisioni, dal blocco `Concordato` delle note stesse:
+
+1. **Data Cloud viene bypassato** per i flussi biglietti — i flussi si alimentano
+   direttamente dall'oggetto `event invitation`, perché Data Cloud duplica i
+   record per le persone unificate e rallenta il percorso (`00:12:10`).
+2. **La rinuncia è bloccata una volta compilato un asset.** Altrimenti
+   selezionare la rinuncia annulla tutti gli eventi associati (`00:14:41`).
+3. **Tre record type per l'Opportunità**, scelti alla creazione (`00:25:26`) —
+   §42.1.
+4. **Un prodotto bundle blocca il resto dell'ordine** (`00:28:26`, `00:33:19`);
+   gli ordini WooCommerce devono trasmettere la propria tipologia via API
+   (`00:29:31`). ⚠ Esplicitamente in attesa di validazione con il cliente nella
+   call di venerdì (`00:31:21`).
+5. **Anagrafiche prodotto frazionate** per rateizzare i corsi ad alto costo
+   (`00:34:58`, approvato `00:38:21`) — OI-142.
+6. **Un record Contract creato automaticamente** per gli ordini Performance Plus
+   e attivazione/rinnovo, nel momento in cui l'ordine arriva a Mexal
+   (`00:40:30`, `00:47:16`) — OI-141.
+
+⚠ **Tutte e sei sono posizioni ROMI.** Nessuna è stata portata a Pienissimo.
+
+### 42.1 Che cosa è stato realizzato e mergiato
+
+Cinque commit sono arrivati su `DevMain` tra le 14:29Z e le 15:01Z.
+
+| PR  | Mergiata   | Che cosa porta                                                          |
+| --- | ---------- | ----------------------------------------------------------------------- |
+| #48 | 14:29:39Z  | `4132dab` — **la rimozione di `Incassato`**, con cinque commit estranei  |
+| #47 | 15:01:32Z  | `af8a42b` — **il generatore di link WooCommerce e i tre record type**    |
+
+🟢 **OI-136 è chiuso sul lato build.** `4132dab` è un antenato di `DevMain`;
+`markOrderIncassato`, `canMarkOrderIncassato` e il pulsante «Segna ordine
+incassato» sono del tutto assenti da `force-app/`. 🔴 **La domanda non è
+chiusa** — nessuno ha deciso, e a Elisa Migliano non è ancora stato chiesto.
+🔴 `QuoteAcceptanceController` resta `public without sharing` su un `quoteId`
+nudo.
+
+🟢 **I tre record type esistono**: `Recall_Tutor`, `Standart` (*Vendita
+Standart*) e `Plus_Attivazione_Rinnovo`, su un nuovo business process
+`Sales_Process`. 🔴 **`Standart` è scritto male sia nel nome API sia
+nell'etichetta**, e il nome API è di fatto permanente una volta che dei record
+lo portano. Lo stesso commit aggiunge `QuoteLineItemTriggerHandler`, che impone
+un solo Bundle **oppure** prodotti Item su un preventivo — ⚠ la riunione lo
+aveva deciso per l'*ordine*.
+
+### 42.2 🔴 Il generatore di link contraddice il disegno a registro
+
+`wooGenerateLink` emette
+`https://www.pienissimo.it/checkout?add-to-cart=<id woo>&sf_opportunity_id=<id Opportunità>`,
+e l'ID prodotto WooCommerce si **digita a mano** in un campo di testo libero.
+
+Il record dice l'opposto su entrambi i punti. La sessione di disegno del 27
+agosto ha ridotto il link al **solo ID opportunità** — i carrelli si costruiscono
+con Funnel Kit, quindi niente `add-to-cart` e niente `quantity` — traendone la
+conclusione esplicita che il pulsante non avrebbe avuto bisogno di alcun
+selettore prodotto. La spiegazione dello stesso Sabatino Rinaldi, come ribadita
+il 16/09, è che il tutor non deve mai conoscere né digitare un ID WooCommerce, e
+si appoggia a un cron di sincronizzazione del catalogo che **non esiste**.
+
+🔑 **E chiude per via implementativa le due domande aperte di Sabatino
+Rinaldi.** Un solo ID prodotto, nessuna concatenazione: si comporta come se ogni
+link portasse un bundle senza imporlo, e non ha risposta per un'offerta
+multiprodotto. **È la seconda volta che questo filone vede una decisione presa
+dal codice invece che da chi la possiede** — esattamente il fallimento che la
+tabella dei cinque punti in OI-49 esiste per prevenire.
+
+### 42.3 Il calendario
+
+🟢 **Lunedì 21/09 16:00–18:00 — `[ROMI-PIENISSIMO] - Test Interni Pre-UAT`**,
+con Aurel Mrruku, Rexhina Hysi e Anita Aga. La prima sessione interna di test
+pre-UAT a registro, **due giorni prima dell'apertura dell'UAT**. Ha soppiantato
+il `Follow-up Interno` ricorrente, annullato con la nota _«Annullo per altro
+meeting»_.
+
+🟢 **Venerdì 18/09 non è sovrapposto.** `[PIENISSIMO] - Temi Mexal` 10:00–11:00
+con **Andrea Di Cicco** — la sessione sulle API Mexal che serve a OI-141 e la
+prima prenotazione che rimette in sala il referente di OI-139 — e poi **Parte 6**
+11:00–13:00 su Campagne/Lead. 🔴 **Le righe d'ordine restano senza
+prenotazione.**
+
+### 42.4 Che cosa non si è mosso
+
+🔴 Il cliente è ora **in silenzio via mail da otto giorni**; credenziali Mexal,
+elenco eventi, codici articolo e prezzi di listino sono tutti ancora dovuti.
+🔴 `#tproj-pienissimo` non ha uno status dal 4 settembre e continua a indicare il
+go-live al 6 ottobre. ⚠ `Flows & Objects.drawio` è stato modificato una decima
+volta alle 17:20:06Z e **non è stato riletto**. Il registro non è stato
+modificato: nulla al suo interno è diventato falso.
