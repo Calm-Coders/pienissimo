@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-07-31
-updated: 2026-09-16
+updated: 2026-09-17
 requirement: [INT-12, INT-13, INT-14, ORD-12]
 source: meetings/open-items.md row 49
 ---
@@ -165,7 +165,6 @@ against the register's recommendation. It also showed that the envelope carries
 **no idempotency key and nothing signed** —
 [OI-104](OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md).
 
-
 ## 🔴 2026-09-16 - two new open points, and the person who settles them is unreachable
 
 Two sources moved this row on the same day, and they meet in the middle.
@@ -223,15 +222,15 @@ ragione.........però capiamo meglio domani quando ci sentiamo"_ — points at t
 
 ### Where that leaves the five points
 
-| Point to agree              | State                                                                 |
-| --------------------------- | --------------------------------------------------------------------- |
-| Pull vs webhook             | ✅ closed — webhooks                                                  |
-| Price source of truth       | ✅ closed — coupons excluded from phase 1                             |
-| ID in clear vs signed token | 🔴 open — and now decided *differently* on the participant page, which took an opaque token on 15/09 while this link still sends the id in clear |
-| URL parameter name          | ✅ closed 28/08 — `sf_opportunity_id`                                 |
-| ID format                   | ✅ closed 28/08 — the 15-character form                               |
-| **Is the product id always a bundle id?** | 🔴 **new, 16/09** — owed by Sabatino Rinaldi              |
-| **Multi-product offers with no single bundle** | 🔴 **new, 16/09** — untested, unowned            |
+| Point to agree                                 | State                                                                                                                                            |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Pull vs webhook                                | ✅ closed — webhooks                                                                                                                             |
+| Price source of truth                          | ✅ closed — coupons excluded from phase 1                                                                                                        |
+| ID in clear vs signed token                    | 🔴 open — and now decided _differently_ on the participant page, which took an opaque token on 15/09 while this link still sends the id in clear |
+| URL parameter name                             | ✅ closed 28/08 — `sf_opportunity_id`                                                                                                            |
+| ID format                                      | ✅ closed 28/08 — the 15-character form                                                                                                          |
+| **Is the product id always a bundle id?**      | 🔴 **new, 16/09** — owed by Sabatino Rinaldi                                                                                                     |
+| **Multi-product offers with no single bundle** | 🔴 **new, 16/09** — untested, unowned                                                                                                            |
 
 🔴 **Both new points need Sabatino Rinaldi, and he is not answering.** Elisa
 Migliano reported him on tour with the client's direction; Elena Spini and Aurel
@@ -239,3 +238,37 @@ Mrruku confirmed **no WhatsApp reply the previous week**. The same is true of
 [OI-102](OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md),
 where he has been waiting for a filtered collection since 08/09 — so he is
 simultaneously the person owed something and the person owing two answers.
+
+## ⚠ 2026-09-17 - Aurel Mrruku disputed the mechanism before the NotebookLM paste
+
+The 16 September run recorded Elena Spini's NotebookLM restatement (18:51–19:04
+CEST) but not what preceded it. **Three messages from Aurel Mrruku at
+15:55–15:56 CEST, nearly three hours earlier, are the reason she went and
+checked:**
+
+> _"nella call con lui ci siamo detti che viene generato l'opp in SF e viene
+> associato il prodotto sulla opp e generato il link. **non mi pare di aver
+> parlato di menu a tendina**"_
+
+> _"poi anche sta cosa che è uscito oggi dei boundle noon boundle noon mi torna"_
+
+> _"mai sentito e disegnato un caso del genere"_
+
+So the sequence is: **Aurel Mrruku contests the product-selection mechanism and
+the bundle/non-bundle split → Elena Spini queries NotebookLM → pastes the result
+→ concludes _"a quanto pare Sabatino aveva ragione"_.**
+
+⚠ **This matters for how the NotebookLM output is weighed.** It is not a
+spontaneous restatement; it is an AI summary produced to settle a disagreement
+between two people who were both in the meetings, and **the participant who
+disputed it has not agreed with it**. It remains an AI summary of records this
+repository already holds, and the searchable-dropdown detail is contradicted by
+a named participant.
+
+🔑 **The venue is today.** Elena Spini's _"capiamo meglio domani quando ci
+sentiamo"_ points at `[PIENISSIMO] - Follow-up Interno`, **17/09 14:15–15:15
+CEST**, organiser Elena Spini, with Aurel Mrruku and Federico Mastracci invited.
+⚠ **Andrea Di Cicco has declined it** — see
+[OI-139](OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md).
+It was moved from 14/09 to today on 16/09 at 16:05Z. **If it produces notes or a
+recording, drill it** — it is the first movement on this row's two open points.

@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Elena Spini
 org: both
 raised: 2026-09-03
-updated: 2026-09-16
+updated: 2026-09-17
 depends_on: [OI-59]
 relates_to: [OI-123]
 requirement: SAL-16
@@ -53,7 +53,6 @@ still renders.**
 
 **No date was set for the values.**
 
-
 ## 🟢 2026-09-16 - it gets a source, and the source is the locale
 
 [Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md)
@@ -65,7 +64,7 @@ the value comes from.**
 associated with the account**, staying manually editable.
 
 🟢 **This is better than what 03/09 decided, and it repairs a real gap.** The
-earlier reading was that the field simply *moves* Account → Quote, which left
+earlier reading was that the field simply _moves_ Account → Quote, which left
 the account carrying no classification at all and every report reaching through
 quotes. It now lives in both places with a stated direction of travel: the
 locale is the master, the quote takes a snapshot, a tutor may override it for a
@@ -73,7 +72,7 @@ particular deal.
 
 🟢 It also lands the field on the object
 [OI-123](OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md) created
-for exactly this kind of orphan — the *locale* is the natural owner of "what
+for exactly this kind of orphan — the _locale_ is the natural owner of "what
 kind of business is this", and as of 08/09 it exists as a record type.
 
 🔴 **One consequence was agreed in passing and is worth stating plainly:
@@ -87,3 +86,24 @@ re-committed to sending them by email at Parte 5; **no date was given**, and
 five of her six outstanding deliverables from that session are picklist values
 that block field creation. This row cannot close on a design; it closes on a
 list.
+
+## 🔴 2026-09-17 - the field went mandatory and the reminder was deleted
+
+The workbook was read at its `2026-09-16T11:20:06Z` version
+([OI-24](OI-24%20Data%20model%20workbook.md)). On the **Preventivo** sheet,
+`Tipologia Attività` is now marked **`TRUE` mandatory** and typed
+**`Global picklist`**.
+
+On 3 September the same cell read _"Picklist non restrittiva >> **PIENISSIMO
+TO DO: Inserire i valori esistenti**"_.
+
+🔴 **The TO-DO text is gone and no values replaced it.** The field is now
+specified as mandatory, global and empty. The client deleted the marker that
+tracked their own debt without paying it, and the only remaining record that the
+values are owed is this note.
+
+**Fourteenth day.** The change also raises the cost of the gap: a _mandatory_
+global picklist with no values cannot be deployed at all, where a non-restrictive
+one could have shipped and been populated later. Nothing in
+[the design diagram](../The%20newest%20design%20diagram.md) mentions the field —
+searched, zero occurrences — so the workbook is its only source.

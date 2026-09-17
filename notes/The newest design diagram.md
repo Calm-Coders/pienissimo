@@ -4,9 +4,9 @@ type: reference
 status: active
 owner: Elena Spini
 org: ROMI
-updated: 2026-09-03
-source: Drive - Flows & Objects.drawio, modified 2026-08-26T14:06:48Z
-decoded_at_version: 2026-08-26T14:06:48Z
+updated: 2026-09-17
+source: Drive - Flows & Objects.drawio, modified 2026-09-16T08:42:38Z
+decoded_at_version: 2026-09-16T08:42:38Z
 supersedes_in_register: DGM-2
 ---
 
@@ -21,8 +21,8 @@ uncompressed mxfile XML, read in full. Three pages.
 
 > ⚠ **The file has now moved five times in seven days** — 19 Aug 16:33 UTC,
 > 20 Aug 15:36 UTC, 24 Aug 16:34 UTC and 25 Aug 08:23 UTC. The 19 August version
-> was never decoded, so pre-20-August changes are dated only as *"after the
-> 06 August version that was decoded on 14 August"*.
+> was never decoded, so pre-20-August changes are dated only as _"after the
+> 06 August version that was decoded on 14 August"_.
 >
 > 🟢 **The 24 and 25 August edits are both minuted**, which no earlier one was.
 > The 24 August edit lands the same afternoon as Elena Spini's action _"Inviare i
@@ -200,8 +200,9 @@ reading is what OI-74 has reopened. Build nothing until it is ruled on.
 
 Asset states `Ordinato → Disponibile → Assegnato → Utilizzato / Non utilizzato /
 Annullato` (plus the unruled `Rinuncia`), with `Disponibile` on _"Fattura pagata
+
 - a livello di tranche/rate"_. Tranche: first to `CHIUSO/ACQUISITO` on deposit,
-subsequent to `CREATO`. Quote `Bozza → Nuovo Preventivo → In Trattativa → In
+  subsequent to `CREATO`. Quote `Bozza → Nuovo Preventivo → In Trattativa → In
 Attesa Accettazione → Accettato / Rifiutato`. All already in the register.
 
 **Loss reasons.** `PERSO`: non interessato · prezzo alto · sceglie concorrenza
@@ -253,8 +254,8 @@ The 25 August section above records the LEAD-OPTY / Ordini split on the Anticipa
 middleware. **It is unfixed after a sixth edit** — the Ordini page still reads
 _"chiamata API Anticipay"_ while LEAD-OPTY reads _"al middleware Pienissimo"_.
 
-**A second cell joined it today.** The `IMPORTANTE` block on the *Flusso
-Biglietti* page still reads:
+**A second cell joined it today.** The `IMPORTANTE` block on the _Flusso
+Biglietti_ page still reads:
 
 > _"Sulle campagne figlie deve esserci logica solo una campagna attiva"_
 
@@ -289,3 +290,115 @@ statement of what was not done, not a claim that nothing changed.
 The decode is cheap for anyone with the file open and should be taken before
 Parte 2 on 4 September, because the earlier unminuted edits in this note show the
 diagram is where design changes land before they reach a minute.
+
+## 🟢 2026-09-17 - decoded again after five undecoded edits, and it has not moved
+
+**Decoded at the `2026-09-16T08:42:38Z` version** — 133,644 bytes, plain
+uncompressed mxfile XML, three pages, every text cell extracted and compared
+against this note's 26 August record.
+
+🟢 **The decode barrier is gone.** Four previous runs recorded this file as
+unreadable because the Drive tool returns ~178 KB of base64 into context. The
+tool now spills a result that size to a file on disk instead, so the content can
+be base64-decoded and parsed **without ever entering context**. There is no
+longer a reason to skip this file. See
+[the retrieval protocol](Retrieval%20and%20write%20protocol.md).
+
+**Five edits went undecoded before this one** — 03/09, 08/09, 15/09 and 16/09 at
+08:42:38Z, eighteen minutes before
+[Data Model Parte 5](meetings/2026-09-16%20Data%20Model%20Parte%205.md) began.
+
+### 🔴 The headline: three weeks of rulings are not in the file
+
+**Every stale cell this note identified on 26 August is still stale, and nothing
+from Data Model Parte 1 through Parte 5 has landed.** Searched over the whole
+raw XML, not over a summary:
+
+| Term searched                                           | Occurrences                                                                  |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `natura`, `categoria statistica`, `gruppo merceologico` | **0**                                                                        |
+| `LIVELLO_0`…`LIVELLO_6`                                 | **0** (the six `livello` hits are all the Italian idiom _"a livello di"_)    |
+| `Executive`, `Diamond`                                  | **0** (`Dinamond` still present, once)                                       |
+| `Codice_agente`, `classificatore`, `Zona` as a field    | **0** (the one `zona` is _"zona geografica non coperta"_ in the ERRATO list) |
+| `Tipologia Attività`                                    | **0**                                                                        |
+| freeze / `sigill` / `blocc`                             | **0**                                                                        |
+
+So the **ten Parte 5 rulings are absent in their entirety** — the product
+registry, the quote header and the order header — from the file edited eighteen
+minutes before that session. The edit was preparation for the meeting, not a
+record of it, and no later edit has folded the outcome back in.
+
+⚠ **This is a text-cell comparison, as the 26 August decode was.** Geometry,
+style and position were not compared. It is not a claim that the bytes are
+identical; it is a claim that **no wording the record depends on has changed**,
+and that the new rulings are absent.
+
+### 🔴 The participant link still carries the Account ID
+
+The `Flusso Biglietti` page still reads, verbatim and unedited:
+
+> _"Invio comunicazione con: Link (**con Account ID nel link**) >> con redirect
+> su Landing Page dove il referente che ha acquistato i biglietti dovrà
+> comunicare la lista dei partecipanti"_
+
+**`token` appears nowhere in the file.** PR #44 merged on 15 September replaced
+the raw Account + Campaign ids with a 64-hex per-invitation token, and the
+15 September run superseded **`BIG-18`** in the register and in both prose
+documents on exactly that ground.
+
+🔴 **`DGM-2` is the `source:` of several register rows, and on this mechanism it
+now documents the superseded design.** Anyone checking the register against its
+own cited source will find the source agreeing with the text that was retired.
+This is the question this note has owed for five runs, and the answer is **no —
+neither the 15/09 nor the 16/09 edit touched the participant landing flow.**
+
+### 🔴 The two cells stale since 26 August are still stale
+
+1. **The Anticipay / middleware split is unfixed after five more edits.**
+   LEAD-OPTY still reads _"chiamata API **al middleware Pienissimo**"_; Ordini
+   still reads _"chiamata API **Anticipay**"_. Three weeks and eleven edits since
+   the session that superseded the direct call
+   ([OI-94](items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)).
+2. **The `IMPORTANTE` campaign cell is unchanged**, still requiring _"solo una
+   campagna attiva"_ on child campaigns and the manual parent-campaign lookup —
+   both abandoned in the 26 August session and replaced by
+   [OI-96](items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md).
+
+### ⚠ The file contradicts itself on the order status spelling
+
+`Incasato` (one `s`) appears **twice**, as the status box on both the LEAD-OPTY
+and Ordini pages. `Incassato` (two) appears **once**, in the `RULES + FLOW TASK
+OPTY` block: _"Status Order == Incassato >> Aggiornamento dell' Opty in Chiusa
+Vinta"_.
+
+The deployed Apex uses `Incassato`. This is the same defect class as
+[OI-59](items/OI-59%20Quote%20workflow%20configuration.md)'s four hard-coded
+quote-status spellings, one object over: **the design source spells a status two
+ways and the code picks one.** Nobody has ruled on the canonical set for Order.
+
+### 🟢 What the diagram is still good for
+
+Unchanged and still the fullest statement anywhere of the **Lead and Opportunity
+design** — and [Parte 6 on Friday 18/09 is Campagne/Lead](items/OI-24%20Data%20model%20workbook.md).
+Whoever runs that session should read this page first, because it already
+specifies:
+
+- Lead states `New → In Lavorazione → Non Risponde → Primo Contatto →
+Qualificato / Non qualificato`, with the qualification and disqualification
+  criteria written out;
+- a **48-hour automatic task** with a red reminder after a Lead goes to
+  `Non Risponde`;
+- the `CODE` queue for assignment, with ROMI's two answered feasibility
+  questions (custom assignment: yes; mass assignment by parameter: yes);
+- the **`LEAD SOURCE: Diretta`** branch — a lead asking for information during a
+  live event self-qualifies through a form and becomes Account + Contact +
+  Opportunity, with the no-show and attended-but-silent paths both returning to
+  `New`;
+- the full `PERSO`, `ERRATO` and `CHIUSA PERSA` reason lists.
+
+⚠ It also still uses a **real customer order as its worked example**, with a
+company name and VAT number, and the ticket tier is still the misspelt
+`Dinamond` — now doubly wrong, since Parte 5 ruled the set
+`Executive / Gold / Diamond` and the diagram carries neither `Executive` nor a
+correctly spelt `Diamond`. **Do not propagate either into a picklist**
+([OI-76](items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)).

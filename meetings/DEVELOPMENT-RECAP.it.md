@@ -4112,7 +4112,7 @@ non costruito). **`Tipologia attività` viene creata sull'Account di tipo Locale
 come picklist globale non restrittiva e pre-popola il preventivo, il che rende
 obbligatoria lì la selezione del locale. Nome preventivo = numero preventivo +
 partita IVA; il numero preventivo è lo stesso codice con cui Mexal fattura.
-**Scadenza preventivo a cinque giorni** dall'ingresso in *trattativa*,
+**Scadenza preventivo a cinque giorni** dall'ingresso in _trattativa_,
 modificabile dal tutor. Un preventivo principale perso chiude l'opportunità come
 persa con la stessa motivazione. 🔑 **`Codice agente`, `classificatore rete` e
 `codice zona` sono storicizzati su preventivo e ordine** — una riassegnazione
@@ -4226,3 +4226,158 @@ resta senza decisione da sette giorni.
 limiti ("non deployato né verificato", "nessuna classe di test Apex"). Sono la
 quarta e la quinta nota ad arrivare in questo repository tramite un commit di
 codice anziché tramite una riunione. Indicizzate come sono, non riscritte.
+
+## 40. Aggiornamento 17/09/2026 — la lacuna sulla posta si chiude senza nulla dentro, e due fonti mai lette vengono finalmente aperte
+
+**Gmail è stato riconnesso** all'inizio di questa sessione, dopo tre run
+consecutivi in cui rispondeva _"needs you to sign in again"_ e nessuna query di
+posta veniva eseguita. Il watermark della posta era fermo a
+**2026-09-11T22:00Z** da cinque giorni: ora è stato spazzato e **il watermark
+doppio è chiuso**.
+
+### 🟢 I cinque giorni non controllati non contengono posta del cliente
+
+Una ricerca esplicita per mittente/destinatario sul dominio del cliente
+nell'intervallo **11/09 → 17/09** restituisce **zero thread**. L'ultimo messaggio
+da chiunque su `@pienissimo.com` è di **Fabrizio Paganelli, 09/09 alle 07:08Z**,
+che dava riscontro alla mail di stato di Elena Spini dell'08/09 aggiungendo
+Daniela Morgese in copia.
+
+Quindi il rischio che i tre run falliti si portavano dietro — una risposta del
+cliente alle quattro decisioni bloccanti dell'08/09 rimasta non letta — **non si
+è materializzato**. Il dato è più semplice e peggiore: **il cliente tace via mail
+da otto giorni**, e nessuno dei quattro artefatti dovuti per posta è arrivato —
+le credenziali WEBAPI Mexal, la lista eventi, i codici articolo solo-bundle, i
+prezzi di listino. 🔴 **Nella casella non esiste alcuna mail da Kreosoft**: il
+consiglio ricorrente di "chiedere a Mirko Merendi" significa aprire un contatto a
+freddo, non rispondere a un thread.
+
+### 🟢 Il workbook del data model è stato letto nella versione di Parte 5
+
+`Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`, salvato alle
+**11:20:06Z durante Parte 5** e lasciato non letto dal run precedente, è stato
+aperto.
+
+**Le decisioni sui prodotti ci sono** — `NR` come unità di misura a numeri
+interi, `Categoria statistica` e `Gruppo Merceologico` come picklist di
+provenienza Mexal, `Natura` annotata _"genera biglietto SI/NO"_, `Tipo Biglietto`
+come `Executive / Gold / Diamond`. 🔑 **`LIVELLO_0` ha finalmente dei valori** —
+Eventi, Consulenze, Prodotti, Software, Addebiti — mentre il 03/09 i sette campi
+livello risultavano assenti da ogni nota e da ogni sessione verbalizzata. Il
+foglio **Preventivo** ha acquisito `Codice_agente`, `Classificatore_rete` e
+`Zona`, i campi provvigionali storicizzati.
+
+🔴 **Ma `Tipologia Attività` è diventata obbligatoria e il suo promemoria è stato
+cancellato.** La cella è ora marcata `TRUE` obbligatoria e tipizzata `Global
+picklist`; il 03/09 riportava _"Picklist non restrittiva >> PIENISSIMO TO DO:
+Inserire i valori esistenti"_. Il testo TO-DO non c'è più e **nessun valore lo ha
+sostituito**. Il cliente ha rimosso il segnalibro che tracciava il proprio debito
+senza saldarlo, e il costo è salito: una picklist globale obbligatoria senza
+valori non è nemmeno distribuibile. Quattordicesimo giorno.
+
+🔴 **Le quattro lacune sopravvivono a una sesta sessione.** Il foglio Ordine
+contiene ancora solo i campi standard Salesforce più la nota di tre righe secondo
+cui l'ordine deve portare `Codice Agente`, `Classificatore Rete` e `Codice Zona`;
+`Utenti` e `Profili` non contengono altro che la riga di intestazione, e sono
+metà del titolo del file; gli slot di flusso `F-3`–`F-7` e tutte le righe di
+caricamento iniziale `C-1`–`C-6` sono ancora vuoti.
+
+### 🔴 Il diagramma di design è stato decodificato dopo cinque run saltati — e non ha assorbito nulla
+
+`Flows & Objects.drawio` risultava non decodificabile da cinque run consecutivi,
+sulla base corretta che il lettore Drive restituisce ~178 KB di base64 in
+contesto. **Quel vincolo non vale più** — i risultati troppo grandi vengono ora
+scritti su file — e il file si è decodificato in tre comandi.
+
+Decodificato nella versione **`2026-09-16T08:42:38Z`**, diciotto minuti prima
+dell'inizio di Parte 5: 133.644 byte, tre pagine, tutte le celle di testo
+confrontate con il rilievo del 26 agosto.
+
+🔴 **Non una sola decisione da Parte 1 a Parte 5 è presente.** Ricerca condotta
+sull'XML grezzo e non su un riassunto: `natura`, `categoria statistica`, `gruppo
+merceologico`, `LIVELLO_0`–`LIVELLO_6`, `Executive`, `Diamond`, `Codice_agente`,
+`classificatore`, `Tipologia Attività` e ogni termine di congelamento
+restituiscono **zero occorrenze**. La modifica del 16/09 era preparazione alla
+sessione, non un suo verbale, e nessuna modifica successiva ne ha riportato
+dentro l'esito.
+
+🔴 **Il link partecipanti riporta ancora _"Link (con Account ID nel link)"_** e
+`token` non compare da nessuna parte nel file. La PR #44 ha sostituito quel
+meccanismo il 15/09 con un token a 64 caratteri esadecimali per invito, e la riga
+di registro **`BIG-18`** è stata superata esattamente su quella base. **`DGM-2` è
+la `source:` citata di diverse righe del registro e ora documenta il design
+ritirato**: chi verifica il registro rispetto alla sua stessa fonte troverà la
+fonte concorde con il testo ritirato.
+
+Entrambe le celle obsolete dal 26 agosto sono **ancora obsolete**: lo scarto fra
+`middleware Pienissimo` e `Anticipay` sulle due pagine, e la regola abbandonata
+_"solo una campagna attiva"_. ⚠ Il file inoltre **si contraddice sullo stato
+dell'ordine**: `Incasato` (una `s`) è il box di stato su entrambe le pagine,
+`Incassato` compare una volta nel blocco delle regole, e l'Apex distribuito usa
+`Incassato`. È la stessa classe di difetto di
+[OI-59](../notes/items/OI-59%20Quote%20workflow%20configuration.md), un oggetto
+più in là.
+
+🟢 **Resta la formulazione più completa del design dei Lead che esista** — la
+macchina a stati, i criteri di qualifica e squalifica, il task automatico a 48 ore
+dopo `Non Risponde`, la coda di assegnazione `CODE` e il ramo di
+autoqualificazione `LEAD SOURCE: Diretta`. **Chi conduce Parte 6 venerdì dovrebbe
+leggere quella pagina per prima.**
+
+### 🟢 Venerdì non è sovrapposto, e il trigger era invertito
+
+Il run precedente segnalava venerdì 18/09 come conteso fra Parte 6
+(Campagne/Lead) e le righe d'ordine, chiedendo a Elena Spini di dirimere. Il
+calendario lo risolve senza che nessuno debba essere interpellato: **venerdì
+ospita un solo evento Pienissimo**, ` [ROMI-PIENISSIMO] - Data Model: Parte 6`,
+11:00–13:00 CEST, focus Campagne e Lead, con Rebecca Marmo invitata.
+
+🔴 **Il rinvio cade quindi dal lato opposto a quello temuto.** La tabella Lead non
+viene rinviata una sesta volta: ottiene finalmente la sua sessione. **Le righe
+d'ordine, rinviate da Parte 5, non hanno alcuna prenotazione**, e il foglio Ordine
+non ha alcuna strada per essere completato con lo UAT a sei giorni.
+
+### ⚠ Un allineamento interno del 16/09 che nessun run aveva visto
+
+`Sync flussi Pienissimo`, 16/09 15:00–16:00 CEST, organizzato da Aurel Mrruku con
+Rexhina Hysi e Anita Aga. Non ha prodotto note né registrazione, e la sua unica
+traccia è la mail di accettazione del calendario — motivo per cui era invisibile
+mentre Gmail era fuori uso.
+
+⚠ Corregge una frase del recap precedente. Sulla rimozione del pulsante
+`Incassato`, il §39 concludeva _"la sequenza è il report del 15/09 alle 23:51 e il
+commit alle 09:24 del mattino dopo — questa è tutta l'evidenza"_. Non lo era: fra
+il commit e la sera c'è stata una riunione dei tre sviluppatori. **Questo non
+dimostra che il pulsante sia stato discusso**, non esistendo alcun artefatto della
+riunione, ma l'affermazione che il record contenesse tutta l'evidenza era
+sbagliata.
+
+### ⚠ La ricostruzione su WooCommerce è stata prodotta per dirimere una discussione
+
+Il §39 riportava il testo NotebookLM incollato da Elena Spini il 16/09 fra le
+18:51 e le 19:04, ma non ciò che lo precedeva. **Tre messaggi di Aurel Mrruku
+alle 15:55–15:56 CEST** contestano direttamente il meccanismo — _"non mi pare di
+aver parlato di menu a tendina"_, _"sta cosa che è uscito oggi dei boundle noon
+boundle noon mi torna"_, _"mai sentito e disegnato un caso del genere"_.
+
+La sequenza è dunque: **un partecipante contesta il design → viene interrogato
+NotebookLM → il riassunto viene incollato → Elena Spini conclude _"a quanto pare
+Sabatino aveva ragione"_**. L'output è stato prodotto per dirimere un disaccordo,
+e **il partecipante che lo ha contestato non lo ha accettato**. Resta un riassunto
+AI di riunioni già presenti in questo record.
+
+### Il build è fermo, e due cose restano in attesa
+
+Un solo commit dal run precedente, quello della procedura notturna. **La PR #47 è
+ancora aperta e intatta** dal 16/09 16:03Z, ancora priva di descrizione. 🔴
+**`4132dab`, la rimozione di `Incassato`, non ha ancora alcuna pull request**:
+la scrittura sullo stato di pagamento dell'ordine raggiungibile da ospite resta
+su `DevMain` e in UAT.
+
+🔴 **Dietro Andrea Di Cicco ci sono ora cinque domande**, non quattro. La quinta è
+disegnata sul file di design dal 20 agosto — il post-it `Scadenziario MEXAL -
+Check con Andrea` che chiede se una fattura non pagata possa riportare un Asset
+allo stato precedente, il che determina se il pulsante `Aggiornamento Incasso`
+riservato all'amministrazione possa funzionare. Ha declinato la riunione interna
+di oggi ed era attivo su Slack stamattina per un altro cliente: non è
+indisponibile, è non assegnato.

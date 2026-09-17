@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-16 (nightly requirements-check: Data Model Parte 5; the Incassato button removed on a branch; both integration counterparts off the board) · Source of record: [notes/](notes/)
+Last updated: 2026-09-17 (requirements-check: Gmail reconnected and the five-day mail gap swept clean; the workbook and the design diagram both decoded) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,37 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🟢 **2026-09-17 — the mail gap closed with nothing in it, and two sources
+  that had gone unread for weeks were finally read.**
+  🟢 **Gmail was reconnected**, and the five unswept days (11–17/09) contain
+  **zero client mail** — the last message from `@pienissimo.com` is 09/09. The
+  feared unread answer to the four blocking decisions of 08/09 does not exist;
+  the client has simply been **silent for eight days**, with the Mexal
+  credentials, the event list, the article codes and the prices all still owed.
+  🟢 **The data-model workbook was read** at its Parte 5 version: the product
+  rulings are in it and `LIVELLO_0` has values at last, but
+  [`Tipologia Attività`](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)
+  is now **mandatory, global and empty**, its TO-DO marker deleted without the
+  values arriving. **The four gaps — Ordine, Utenti, Profili, the initial-load
+  plan — are untouched for a sixth session.**
+  🔴 **[The design diagram](notes/The%20newest%20design%20diagram.md) was decoded
+  after five skipped runs, and it has absorbed nothing in three weeks.** Not one
+  ruling from Parte 1–Parte 5 is in it, the participant link still carries the
+  **Account ID** that `BIG-18` was superseded for, and both cells stale since
+  26/08 are still stale. It is still cited as `DGM-2`, the `source:` of several
+  register rows.
+  🟢 **Friday is not double-booked** — Parte 6 (Campagne/Lead) holds the slot
+  alone, so the Lead table finally gets its session and **order lines have no
+  booking at all**.
+  ⚠ An **internal dev sync on 16/09 15:00** surfaced only from the calendar mail,
+  so the previous run's "that is the entire evidence" on the `Incassato` removal
+  was wrong — a venue existed, though no artifact from it does.
+  🔴 Still open: `4132dab` has **no PR**, so the guest-reachable write stays on
+  `DevMain`; **five** questions now sit behind
+  [Andrea Di Cicco](notes/items/OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md),
+  who declined today's internal.
+  — [trace](notes/traces/Source%20trace%202026-09-17.md)
 
 - 🟢🔴 **2026-09-16 — the client opened the product and quote registries, and the
   most severe finding of the night before disappeared from the code without a

@@ -3931,7 +3931,7 @@ unbuilt). **`Tipologia attività` is created on the Locale-record-type Account**
 as a global non-restrictive picklist and pre-fills the quote, which makes
 selecting a locale mandatory there. Quote name = quote number + partita IVA;
 the quote number is the same code Mexal invoices against. **Quote expiry five
-days** from entering *trattativa*, tutor-editable. A lost primary quote closes
+days** from entering _trattativa_, tutor-editable. A lost primary quote closes
 its opportunity as lost with the same reason. 🔑 **`Codice agente`,
 `classificatore rete` and `codice zona` are historicised on the quote and the
 order** — a later reassignment on the Account does not reach existing records.
@@ -4035,3 +4035,148 @@ spelling has gone unruled for a seventh day.
 limits ("not deployed or verified", "no Apex test classes"). They are the fourth
 and fifth notes to reach this repository through a code commit rather than a
 meeting. Indexed as they stand, not rewritten.
+
+## 40. Update 2026-09-17 — the mail gap closed with nothing in it, and two unread sources were finally read
+
+**Gmail was reconnected** at the start of this session, after three consecutive
+runs in which it answered _"needs you to sign in again"_ and no mail query ran at
+all. The mail watermark had been frozen at **2026-09-11T22:00Z** for five days;
+it has now been swept and **the split watermark is closed**.
+
+### 🟢 The five unswept days contain no client mail
+
+An explicit sender/recipient search on the client's domain across
+**11/09 → 17/09** returns **zero threads**. The last message from anyone at
+`@pienissimo.com` is **Fabrizio Paganelli on 09/09 at 07:08Z**, acknowledging
+Elena Spini's status mail of 08/09 and adding Daniela Morgese in copy.
+
+So the risk the three failed runs carried — that a client answer to the four
+blocking decisions of 08/09 was sitting unread — **did not materialise**. The
+finding is simpler and worse: **the client has been silent by mail for eight
+days**, and none of the four artifacts owed by mail has arrived — the Mexal
+WEBAPI credentials, the event list, the bundle-only article codes, the catalogue
+prices. 🔴 **No mail from Kreosoft exists in the mailbox at all**, so the standing
+advice to "just ask Mirko Merendi" means opening a cold approach, not replying to
+a thread.
+
+### 🟢 The data-model workbook was read at its Parte 5 version
+
+`Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`, saved at
+**11:20:06Z during Parte 5** and left unread by the previous run, has been read.
+
+**The product rulings are in it** — `NR` as the whole-number unit, `Categoria
+statistica` and `Gruppo Merceologico` as Mexal-sourced picklists, `Natura`
+annotated _"genera biglietto SI/NO"_, `Tipo Biglietto` as `Executive / Gold /
+Diamond`. 🔑 **`LIVELLO_0` finally carries values** — Eventi, Consulenze,
+Prodotti, Software, Addebiti — where on 03/09 the seven level fields were
+recorded as being in no note and no minuted session. The **Preventivo** sheet has
+gained `Codice_agente`, `Classificatore_rete` and `Zona`, the historicised
+commission fields.
+
+🔴 **But `Tipologia Attività` went mandatory and its reminder was deleted.** The
+cell is now marked `TRUE` mandatory and typed `Global picklist`; on 03/09 it read
+_"Picklist non restrittiva >> PIENISSIMO TO DO: Inserire i valori esistenti"_.
+The TO-DO text is gone and **no values replaced it**. The client removed the
+marker tracking their own debt without paying it, and the cost has risen: a
+mandatory global picklist with no values cannot be deployed at all. Fourteenth
+day.
+
+🔴 **The four gaps survive a sixth session.** The Ordine sheet still carries only
+standard Salesforce fields plus the three-line note that the order must hold
+`Codice Agente`, `Classificatore Rete` and `Codice Zona`; `Utenti` and `Profili`
+still hold nothing but a header row, and they are half the file's title; the
+flow slots `F-3`–`F-7` and every initial-load row `C-1`–`C-6` are still empty.
+
+### 🔴 The design diagram was decoded after five skipped runs — and it has absorbed nothing
+
+`Flows & Objects.drawio` had been recorded as undecodable for five consecutive
+runs, on the correct ground that the Drive reader returns ~178 KB of base64 into
+context. **That constraint no longer holds** — oversized results now spill to a
+file on disk — and the file decoded in three commands.
+
+Decoded at its **`2026-09-16T08:42:38Z`** version, eighteen minutes before Parte
+5 began: 133,644 bytes, three pages, all text cells compared against the
+26 August record.
+
+🔴 **Not one ruling from Parte 1 through Parte 5 is in it.** Searched over the
+raw XML rather than a summary: `natura`, `categoria statistica`, `gruppo
+merceologico`, `LIVELLO_0`–`LIVELLO_6`, `Executive`, `Diamond`, `Codice_agente`,
+`classificatore`, `Tipologia Attività` and every freeze term return **zero
+occurrences**. The 16/09 edit was preparation for the session, not a record of
+it, and no later edit folded the outcome back in.
+
+🔴 **The participant link still reads _"Link (con Account ID nel link)"_**, and
+`token` appears nowhere in the file. PR #44 replaced that mechanism on 15/09 with
+a 64-hex per-invitation token, and the register row **`BIG-18`** was superseded on
+exactly that ground. **`DGM-2` is the cited `source:` of several register rows and
+now documents the retired design** — anyone auditing the register against its own
+source will find the source agreeing with the text that was withdrawn.
+
+Both cells stale since 26 August are **still stale**: the `middleware Pienissimo`
+versus `Anticipay` split across two pages, and the abandoned _"solo una campagna
+attiva"_ rule. ⚠ The file also **contradicts itself on the order status** —
+`Incasato` (one `s`) is the status box on both pages, `Incassato` appears once in
+the rules block, and the deployed Apex uses `Incassato`. That is
+[OI-59](../notes/items/OI-59%20Quote%20workflow%20configuration.md)'s defect class
+one object over.
+
+🟢 **It is still the fullest statement of the Lead design anywhere** — the state
+machine, the qualification and disqualification criteria, the 48-hour automatic
+task after `Non Risponde`, the `CODE` assignment queue and the `LEAD SOURCE:
+Diretta` self-qualification branch. **Whoever runs Parte 6 on Friday should read
+that page first.**
+
+### 🟢 Friday is not double-booked, and the trigger was backwards
+
+The previous run flagged Friday 18/09 as contested between Parte 6
+(Campagne/Lead) and order lines, and asked Elena Spini to rule. The calendar
+settles it without anyone being asked: **Friday holds one Pienissimo event**,
+` [ROMI-PIENISSIMO] - Data Model: Parte 6`, 11:00–13:00 CEST, focus Campagne and
+Lead, with Rebecca Marmo invited.
+
+🔴 **So the deferral falls the other way than feared.** The Lead table is not
+deferred a sixth time — it finally gets its session. **Order lines, deferred out
+of Parte 5, have no booking at all**, and the Ordine sheet has no route to
+completion with UAT six days out.
+
+### ⚠ An internal sync on 16/09 that no run had seen
+
+`Sync flussi Pienissimo`, 16/09 15:00–16:00 CEST, organised by Aurel Mrruku with
+Rexhina Hysi and Anita Aga. It produced no notes and no recording, and its only
+trace anywhere is the calendar acceptance mail — which is why it was invisible
+while Gmail was down.
+
+⚠ It corrects one sentence of the previous recap. On the `Incassato` button
+removal, §39 concluded _"the sequence is the 15/09 report at 23:51 and the commit
+at 09:24 the next morning — that is the entire evidence."_ It was not: a meeting
+of the three developers sat between the commit and the evening. **This does not
+show the button was discussed**, since no artifact from the meeting exists, but
+the claim that the record held all the evidence was wrong.
+
+### ⚠ The WooCommerce restatement was produced to settle an argument
+
+§39 recorded Elena Spini's NotebookLM paste of 16/09 18:51–19:04 but not what
+preceded it. **Three messages from Aurel Mrruku at 15:55–15:56 CEST** dispute the
+mechanism directly — _"non mi pare di aver parlato di menu a tendina"_, _"sta cosa
+che è uscito oggi dei boundle noon boundle noon mi torna"_, _"mai sentito e
+disegnato un caso del genere"_.
+
+So the sequence is: **a named participant contests the design → NotebookLM is
+queried → the summary is pasted → Elena Spini concludes _"a quanto pare Sabatino
+aveva ragione"_**. The output was produced to settle a disagreement, and **the
+participant who disputed it has not agreed with it**. It remains an AI summary of
+meetings this record already holds.
+
+### The build is quiet, and two things are still waiting
+
+One commit since the last run, the nightly's own. **PR #47 is still open and
+untouched** since 16/09 16:03Z, still with no description. 🔴 **`4132dab`, the
+`Incassato` removal, still has no pull request**, so the guest-reachable write to
+order payment state remains on `DevMain` and in UAT.
+
+🔴 **Five questions now sit behind Andrea Di Cicco**, not four. The fifth has been
+drawn on the design file since 20 August — the `Scadenziario MEXAL - Check con
+Andrea` sticky asking whether an unpaid invoice can return an Asset to its
+previous state, which governs whether the admin-only `Aggiornamento Incasso`
+button can work at all. He declined today's internal meeting, and was active on
+Slack this morning for another client: he is not unavailable, he is unassigned.

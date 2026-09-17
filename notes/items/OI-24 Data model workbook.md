@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elisa Migliano
 org: both
 raised: 2026-07-02
-updated: 2026-09-16
+updated: 2026-09-17
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 24
@@ -61,20 +61,20 @@ on the recording. That is strong, but it is inference, not a statement.
 
 Zoho field lists, by sheet:
 
-| Sheet                  | Zoho list                                                                 |
-| ---------------------- | ------------------------------------------------------------------------- |
-| Lead                   | ✅ present                                                                |
-| **Account**            | ✅ present, and **grouped into sections** — see below                     |
-| Referente              | ✅ present                                                                |
-| Opportunità            | ✅ present                                                                |
-| Offerta (Quote)        | ✅ present                                                                |
-| Articoli (anagrafica)  | ✅ present, plus a **`Nuovi Campi`** column                               |
-| **Ordine**             | 🔴 **absent** — standard Salesforce fields only, plus a three-line note   |
-| Asset                  | 🔴 four fields and an `F-14` marker                                       |
-| Articoli opportunità, Voci offerta, Pricebook, Pricebook entry | standard Salesforce only                  |
-| **Utenti**, **Profili** | 🔴 **headers only, empty**                                               |
-| Flussi                 | 🟡 **F-1 and F-2 filled, F-3 to F-7 empty**                              |
-| Caricamenti iniziali   | 🔴 **C-1 to C-6 all empty**                                              |
+| Sheet                                                          | Zoho list                                                               |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Lead                                                           | ✅ present                                                              |
+| **Account**                                                    | ✅ present, and **grouped into sections** — see below                   |
+| Referente                                                      | ✅ present                                                              |
+| Opportunità                                                    | ✅ present                                                              |
+| Offerta (Quote)                                                | ✅ present                                                              |
+| Articoli (anagrafica)                                          | ✅ present, plus a **`Nuovi Campi`** column                             |
+| **Ordine**                                                     | 🔴 **absent** — standard Salesforce fields only, plus a three-line note |
+| Asset                                                          | 🔴 four fields and an `F-14` marker                                     |
+| Articoli opportunità, Voci offerta, Pricebook, Pricebook entry | standard Salesforce only                                                |
+| **Utenti**, **Profili**                                        | 🔴 **headers only, empty**                                              |
+| Flussi                                                         | 🟡 **F-1 and F-2 filled, F-3 to F-7 empty**                             |
+| Caricamenti iniziali                                           | 🔴 **C-1 to C-6 all empty**                                             |
 
 So the six field lists this item asked for — Account, Referente, Opportunity,
 Offerta, Ordine, Articoli — are **five delivered and one missing**, with Lead
@@ -111,10 +111,10 @@ eliminate."_
 
 ### The `Flussi` sheet: two integration flows, numbered
 
-| # | Flow                | Source → target      | Object  | Frequency         | Operation       | Returns  | Note                                                    |
-| - | ------------------- | -------------------- | ------- | ----------------- | --------------- | -------- | ------------------------------------------------------- |
-| **F-1** | upsert anagrafiche | Salesforce → ERP | account | realtime          | update + insert | ERP id   | _"scatta alla prima opty won"_                           |
-| **F-2** | update            | ERP → Salesforce  | account | **nightly batch** | update          | —        | overnight realignment of accounts from ERP-side edits    |
+| #       | Flow               | Source → target  | Object  | Frequency         | Operation       | Returns | Note                                                  |
+| ------- | ------------------ | ---------------- | ------- | ----------------- | --------------- | ------- | ----------------------------------------------------- |
+| **F-1** | upsert anagrafiche | Salesforce → ERP | account | realtime          | update + insert | ERP id  | _"scatta alla prima opty won"_                        |
+| **F-2** | update             | ERP → Salesforce | account | **nightly batch** | update          | —       | overnight realignment of accounts from ERP-side edits |
 
 Both restate what [the Mexal integration](../flows/The%20Mexal%20integration.md)
 already holds; the value is that **the client has numbered them**, and the Account
@@ -165,12 +165,12 @@ file, not merely minuted.
 Name SFDC · Modifica da SFDC · Mandatory · Tipo Campo · Esempio`, and four
 sections that match the meeting exactly:
 
-| Section                       | Holds                                                        |
-| ----------------------------- | ------------------------------------------------------------ |
-| `Dati Commerciali`            | the three ATECO fields, `Azienda obsoleta`, owner/tutor, `E-mail Commerciale`, `Stato Azienda` |
-| `Dati Tecnici`                | `Azienda Test`, `Id Zoho`, `Ultima Verifica Anticipay`       |
-| `MEXAL`                       | addresses, ragione sociale, the admin phone and mail, `Azienda Precedente`, `Codice Cliente Mexal`, codice fiscale, IBAN, partita IVA, PEC, SDI |
-| `MEXAL - DATI PER PROVVIGIONI`| `Classificatore_rete`, `Codice_agente`, `Zona`               |
+| Section                        | Holds                                                                                                                                           |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Dati Commerciali`             | the three ATECO fields, `Azienda obsoleta`, owner/tutor, `E-mail Commerciale`, `Stato Azienda`                                                  |
+| `Dati Tecnici`                 | `Azienda Test`, `Id Zoho`, `Ultima Verifica Anticipay`                                                                                          |
+| `MEXAL`                        | addresses, ragione sociale, the admin phone and mail, `Azienda Precedente`, `Codice Cliente Mexal`, codice fiscale, IBAN, partita IVA, PEC, SDI |
+| `MEXAL - DATI PER PROVVIGIONI` | `Classificatore_rete`, `Codice_agente`, `Zona`                                                                                                  |
 
 The sections are not cosmetic — they are the boundary of the field lock in
 [OI-117](OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md).
@@ -178,8 +178,8 @@ The sections are not cosmetic — they are the boundary of the field lock in
 **Also new in this version**
 
 - The **Preventivo** sheet carries `Tipologia Attività — Picklist non restrittiva
-  >> PIENISSIMO TO DO: Inserire i valori esistenti`
-  ([OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)).
+  > > PIENISSIMO TO DO: Inserire i valori esistenti`
+  > > ([OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)).
 - **`Azienda Precedente`** appears, typed `Lookup (con se stessa)`
   ([OI-118](OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md)).
 - **`Codice Cliente Mexal`** — the rename agreed in the session, already applied.
@@ -240,13 +240,13 @@ minutes after the call ended. Read in full.
 
 **What did not move — the same four gaps, third session running:**
 
-| Gap                                 | State                                    |
-| ----------------------------------- | ---------------------------------------- |
-| **Utenti**                          | header row only, still empty             |
-| **Profili**                         | header row only, still empty             |
-| **Initial-load plan** `C-1`–`C-6`   | six empty rows                           |
-| **Ordine** field mapping            | standard Salesforce fields + one note    |
-| `Flussi`                            | still only **F-1** and **F-2**           |
+| Gap                               | State                                 |
+| --------------------------------- | ------------------------------------- |
+| **Utenti**                        | header row only, still empty          |
+| **Profili**                       | header row only, still empty          |
+| **Initial-load plan** `C-1`–`C-6` | six empty rows                        |
+| **Ordine** field mapping          | standard Salesforce fields + one note |
+| `Flussi`                          | still only **F-1** and **F-2**        |
 
 🔴 **`Ruolo` carries `Amministrativo/Commerciale/Piattaforma`**, which is not the
 value set agreed in the session hours earlier —
@@ -301,9 +301,9 @@ been seen.
 
 🟢 **The sessions are no longer the last one booked**, and they got longer:
 
-| Session | When | Focus |
-| ------- | ---- | ----- |
-| **Parte 5** | Wed **16 September** 11:00-13:00 CEST | Prodotti, Preventivi, Ordini |
+| Session     | When                                  | Focus                                   |
+| ----------- | ------------------------------------- | --------------------------------------- |
+| **Parte 5** | Wed **16 September** 11:00-13:00 CEST | Prodotti, Preventivi, Ordini            |
 | **Parte 6** | Fri **18 September** 11:00-13:00 CEST | Campagne, Lead — **with Rebecca Marmo** |
 
 Elena Spini proposed two-hour slots to stop losing time; Aurel Mrruku asked for
@@ -312,13 +312,13 @@ Elena Spini proposed two-hour slots to stop losing time; Aurel Mrruku asked for
 🔴 **The four gaps are now three, and the Lead table has been deferred a fifth
 time.** After five sessions:
 
-| Gap | Status |
-| --- | ------ |
-| **Ordine field list** | booked at last — Parte 5, 16 September |
-| **Lead table** | deferred from Parte 1, 2, 3 and 4 → **Parte 6, 18 September** |
-| **Utenti** | **in no booked session** |
-| **Profili** | **in no booked session** |
-| **Initial-load plan** | **in no booked session**, and now formally in stand-by |
+| Gap                   | Status                                                        |
+| --------------------- | ------------------------------------------------------------- |
+| **Ordine field list** | booked at last — Parte 5, 16 September                        |
+| **Lead table**        | deferred from Parte 1, 2, 3 and 4 → **Parte 6, 18 September** |
+| **Utenti**            | **in no booked session**                                      |
+| **Profili**           | **in no booked session**                                      |
+| **Initial-load plan** | **in no booked session**, and now formally in stand-by        |
 
 🔴 **Data migration is now explicitly held.** The client status mail of the same
 afternoon says _"L'attività resta temporaneamente in stand-by in attesa della
@@ -332,7 +332,6 @@ else's login
 ([the risk](../risks/Risk%20-%20a%20sandbox%20password%20was%20spoken%20aloud%20and%20preserved%20in%20a%20meeting%20transcript.md)).
 
 Five sessions, **three objects**: Account, Referente, Opportunità.
-
 
 ## 🔴 2026-09-16 - a sixth session, and the same four gaps
 
@@ -360,3 +359,88 @@ booked 18/09 for Campagne/Lead with Rebecca Marmo**. Parte 5 booked **Friday
 18/09 for order lines**. No source says whether Friday holds one session or two.
 **If order lines take the slot, the Lead table is deferred a sixth time** — ask
 Elena Spini.
+
+## 🟢 2026-09-17 - the workbook was opened at its Parte 5 version
+
+Read at the **`2026-09-16T11:20:06Z`** version — the save made _during_ Parte 5
+that the 16 September run recorded as "unread, not unchanged". It is now read.
+
+### 🟢 The Articoli sheet carries the Parte 5 product rulings
+
+The product registry agreed on 16 September is **in the file**, field for field:
+`Unità di misura` = `NR`, `Prodotto attivo` mapped to `isActive`,
+`Categoria statistica` and `Gruppo Merceologico` as picklists annotated
+_"da mexal"_, `Natura` annotated _"genera biglietto SI/NO (mexal)"_, and
+`Tipo Biglietto` as a picklist. This is the first time the client's own workbook
+and a session minute agree on the product registry in the same week.
+
+🔑 **`LIVELLO_0` now has values** — `Eventi`, `Consulenze`, `Prodotti`,
+`Software`, `Addebiti`. `LIVELLO_1` through `LIVELLO_6` are present and still
+`null`. On 3 September this note recorded the seven level fields as being _"in no
+note and not discussed in any minuted session"_; Parte 5 ruled them picklists
+0–6, and the top level now carries a real list. **One of the six lists owed by
+Elisa Migliano has partially arrived** — in the workbook, not by mail.
+
+⚠ `Tipo Biglietto` reads `null, Executive, Gold, Diamond` — which matches Parte 5
+and **contradicts the design diagram**, still carrying the misspelt `Dinamond`
+and no `Executive`
+([the diagram](../The%20newest%20design%20diagram.md)).
+
+### 🟢 The Preventivo sheet carries the historicised commission fields
+
+`Codice_agente`, `Classificatore_rete` and `Zona` are now **on the quote sheet**,
+which is the workbook catching up with the rule Parte 5 stated for the third
+time. The sheet also gained `Condizioni` and `Condizione di Pagamento` as
+picklists, `Data attivazione Piattaforma`, `Causa Opportunità Persa`,
+`Causa Opportunità Errata` and `Motivazione Chiuso Perso`.
+
+🔴 **`Tipologia Attività` changed in a way that loses a tracker.** It is now
+marked `TRUE` mandatory and typed `Global picklist`. On 3 September it read
+_"Picklist non restrittiva >> PIENISSIMO TO DO: Inserire i valori esistenti"_.
+**The TO-DO text is gone and no values have replaced it** — the field is now
+mandatory, global, and empty. The marker that tracked the debt was deleted
+without the debt being paid
+([OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)).
+
+### 🔴 The four gaps are untouched, sixth session running
+
+| Sheet                    | State at 2026-09-16                                                                                                                                                                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Ordine**               | 🔴 standard Salesforce fields only, plus the same three-line note that the order must carry `Codice Agente`, `Classificatore Rete`, `Codice Zona` ([OI-110](OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)) |
+| **Utenti**               | 🔴 header row only — `Nome · Cognome · Email · Ruolo · Visibilità`                                                                                                                                                                                           |
+| **Profili**              | 🔴 header row only — `Profilo · Visibilità`                                                                                                                                                                                                                  |
+| **Flussi**               | 🟡 `F-1` and `F-2` filled; **`F-3` to `F-7` still empty**                                                                                                                                                                                                    |
+| **Caricamenti iniziali** | 🔴 `C-1` to `C-6` **all still empty**                                                                                                                                                                                                                        |
+
+Unchanged since 2 September, through four further client sessions. **Utenti and
+Profili are half this file's title** and have never held a row.
+
+### 🟢 The Friday conflict is resolved — and not the way the trigger expected
+
+The 16 September run armed a trigger on Friday 18/09 being double-booked between
+Parte 6 (Campagne/Lead) and order lines, and asked Elena Spini to rule.
+**The calendar answers it without anyone being asked.**
+
+Friday 18/09 holds **one** Pienissimo event:
+` [ROMI-PIENISSIMO] - Data Model: Parte 6`, **11:00–13:00 CEST**, organiser Elena
+Spini, focus **`Campagne` / `Lead`**, with `rebecca.m@pienissimo.com` invited and
+Sabatino Rinaldi optional. **No order-lines session exists on any calendar.**
+
+So the trigger's stated risk was backwards: the Lead table is **not** deferred a
+sixth time — it finally gets its session. **Order lines, deferred out of Parte 5,
+have no booking at all**, and the Ordine sheet stays half done with nothing
+scheduled to finish it.
+
+⚠ **Whoever runs Parte 6 should read the LEAD-OPTY page of
+[the design diagram](../The%20newest%20design%20diagram.md) first.** It already
+carries a complete Lead state machine, the qualification criteria, the 48-hour
+task automation, the `CODE` assignment queue and three reason lists — none of
+which is in this workbook's Lead sheet, which holds only the Zoho field mapping.
+
+### 🔴 Personal and commercial data: unchanged rule
+
+The workbook is still populated with **live examples** — a real company with VAT,
+PEC and IBAN, a named contact with personal email and mobile, a real quote with
+its line values and a real customer code. **None of it is reproduced here and
+none of it may be.** Describe a field, never a value —
+[the publishing policy](../../docs/publishing.md).

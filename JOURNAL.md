@@ -10,6 +10,72 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-17 — claude — requirements-check: Gmail reconnected, and two long-unread sources decoded
+
+- **Did:** interactive (not nightly) `requirements-check` from watermark
+  **2026-09-16T22:00Z**, mail from the frozen **2026-09-11T22:00Z**. 🟢 **Gmail
+  was reconnected by the user mid-session and answered normally**, so the
+  five-day mail gap carried by the runs of 14, 15 and 16 September has been
+  swept. **The split watermark is closed — the next run uses a single value,
+  2026-09-17T11:00Z.**
+- **Found, mail:** 🟢 **the five unswept days contain zero client mail.** An
+  explicit domain search returns nothing; the last message from `@pienissimo.com`
+  is Fabrizio Paganelli, 09/09 07:08Z. The feared unread answer to the 08/09
+  blocking decisions does not exist — **the client has simply been silent for
+  eight days**, with the Mexal credentials, event list, article codes and prices
+  all still owed. **No Kreosoft mail exists in the mailbox at all.**
+  🔴 **The skill names the wrong client domain** — `@pienissimo.pro` belongs to
+  Andrea Parmeggiani alone; the client is on `@pienissimo.com`.
+- **Found, workbook:** 🟢 read at its Parte 5 version (`2026-09-16T11:20:06Z`),
+  two runs after it moved. The product rulings are in it and **`LIVELLO_0` now
+  carries five values**. 🔴 **`Tipologia Attività` is now mandatory and global
+  with no values, and the `PIENISSIMO TO DO` marker that tracked the debt was
+  deleted.** 🔴 The four gaps — Ordine, `Utenti`, `Profili`, the initial-load
+  plan — survive a sixth session.
+- **Found, diagram:** 🟢 **`Flows & Objects.drawio` decoded after five skipped
+  runs.** The blocker had been that the Drive reader returns ~178 KB of base64
+  into context; **oversized results now spill to disk**, so it decoded in three
+  commands. 🔴 **Not one ruling from Parte 1–Parte 5 is in the file** (searched
+  over the raw XML, zero occurrences for every term), the participant link still
+  carries the **Account ID** that `BIG-18` was superseded for, both cells stale
+  since 26/08 are still stale, and the file **contradicts itself on the order
+  status** (`Incasato` ×2 as the box, `Incassato` ×1 in the rules; the Apex uses
+  `Incassato`).
+- **Found, calendar:** 🟢 **Friday 18/09 is not double-booked** — Parte 6
+  (Campagne/Lead, Rebecca Marmo) holds the slot alone, so the Lead table gets its
+  session and **order lines have no booking at all**. ⚠ An **internal dev sync on
+  16/09 15:00** (Aurel, Rexhina Hysi, Anita Aga) surfaced only from calendar
+  mail, so §39's _"that is the entire evidence"_ on the `Incassato` removal was
+  wrong — a venue existed, though no artifact from it does. 🔴 Andrea Di Cicco
+  **declined today's Follow-up Interno** and was active on Slack for another
+  client: not unavailable, unassigned — and there is a **fifth** question behind
+  him, drawn on the design file since 20/08 (OI-92).
+- **Found, chat:** ⚠ **Aurel Mrruku disputed the WooCommerce mechanism at
+  16/09 15:55–15:56**, ~3 hours _before_ Elena Spini's NotebookLM paste. The AI
+  summary was produced to settle a disagreement and **the participant who
+  disputed it never agreed with it**.
+- **Build:** quiet. One commit (the nightly's own), no new PR, #47 still open and
+  undescribed, 🔴 **`4132dab` still has no PR** so the guest-reachable write stays
+  on `DevMain`.
+- **Written:** no note created; **six updated** — the diagram note, OI-24, OI-49,
+  OI-59, OI-115, OI-139 — plus `MAP.md`, `INDEX.md`, both `open-items` trackers
+  (rows 24, 49, 59, 115, 139) and `DEVELOPMENT-RECAP` **§40 EN + IT**. Trace:
+  [Source trace 2026-09-17](notes/traces/Source%20trace%202026-09-17.md).
+  **The register was not touched** — nothing in it became false.
+- **Deliberate non-actions.** **No Slack message was sent**: the carve-out is the
+  nightly job's, and this was interactive. Nothing was replied to, shared,
+  modified or marked read. No Apex test written or offered. The org was not
+  opened. PR #47 not reviewed; `4132dab` not merged. No credential, token, price,
+  article code, VAT number, IBAN or personal datum entered the repository,
+  although both sources read today are full of them.
+- **Next step.** 🔴 **Open a PR for `4132dab`** — the fix is complete and sitting
+  where it protects nobody. Then **reconcile `DGM-2` or stop citing it**: it is a
+  register `source:` that documents a superseded mechanism and has absorbed
+  nothing in three weeks. Before Friday, **book an order-lines session** and read
+  the diagram's LEAD-OPTY page ahead of Parte 6.
+
+---
+
 ## 2026-09-16 — claude — nightly requirements-check: Data Model Parte 5, and the Incassato button removed without a decision
 
 - **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark
@@ -33,7 +99,7 @@ Keep the twenty most recent entries here; archive older ones to
 - **Watch:**
   - 🔴 **`4132dab` removes the `Incassato` button completely but sits on
     `DEV_ComponentBundle` with no pull request.** `DevMain` and UAT are still
-    exposed. **Record the merge when it happens** — and note that the *decision*
+    exposed. **Record the merge when it happens** — and note that the _decision_
     OI-136 asked for was never made; a person acted, no person ruled, and Elisa
     Migliano still has not been asked.
   - ✅ **A correction: the 15/09 claim that nothing granted

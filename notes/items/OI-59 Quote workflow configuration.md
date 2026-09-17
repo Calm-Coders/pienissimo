@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-09-16
+updated: 2026-09-17
 requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
 source: meetings/open-items.md row 59
 ---
@@ -292,14 +292,14 @@ opportunity closes when its Order reaches `Incassato`.
 🔴 **The Quote side is the one that disagrees, and this commit deepens it.** The
 register's `state_machines.quote.states` and the built code have never matched:
 
-| Register (`state_machines.quote`)  | Built code                             |
-| ---------------------------------- | -------------------------------------- |
-| `Bozza`                            | `Bozza`                                |
-| — _(absent)_                       | `Nuovo Preventivo`                     |
-| `In trattativa (Prev inviato)`     | `In Trattativa`                        |
-| `In attesa di accettazione`        | `In Attesa Accettazione`               |
-| `Accettato - Copia Contabile Ricevuta` | `Accettato`                        |
-| `Rifiutata`                        | `Rifiutato`                            |
+| Register (`state_machines.quote`)      | Built code               |
+| -------------------------------------- | ------------------------ |
+| `Bozza`                                | `Bozza`                  |
+| — _(absent)_                           | `Nuovo Preventivo`       |
+| `In trattativa (Prev inviato)`         | `In Trattativa`          |
+| `In attesa di accettazione`            | `In Attesa Accettazione` |
+| `Accettato - Copia Contabile Ricevuta` | `Accettato`              |
+| `Rifiutata`                            | `Rifiutato`              |
 
 ⚠ **The register disagrees with itself here**: its `build_state` block records the
 org picklist as _"Bozza, Nuovo Preventivo, In Trattativa, In Attesa Accettazione,
@@ -323,7 +323,6 @@ automatically; both are hand-set.
 🔴 **Marco Montesi still owes the preset expiry timings.** Unchanged since
 31 July, and he did not reply to the 8 September status mail either.
 
-
 ## 🔴 2026-09-16 - the code spelling reaches two more classes, on a branch
 
 `DEV_ComponentBundle` adds two quote features that each key on a **literal quote
@@ -331,7 +330,7 @@ status string**:
 
 - `QuoteAcceptanceEmailController` — the **Invia per accettazione** quick action
   loads and sends only when `Quote.Status` is exactly **`In Attesa
-  Accettazione`**, checked twice, once on load and once on send.
+Accettazione`**, checked twice, once on load and once on send.
 - The **Genera PDF** action and its Visualforce controller — available only when
   `Quote.Status = `**`Bozza`**, enforced independently in both.
 
@@ -353,3 +352,29 @@ and any one missed leaves an action that silently never appears.
 **The 09/09 trigger has not fired for a seventh day: nobody has ruled on the
 canonical spelling.** Each day it stays open, it gets more expensive in exactly
 this way.
+
+## ⚠ 2026-09-17 - the diagram holds the canonical spellings, and disagrees with itself
+
+[The design diagram](../The%20newest%20design%20diagram.md) was decoded at its
+16/09 version. Its quote state machine reads
+`Bozza → Nuovo Preventivo → In Trattativa → In Attesa Accettazione →
+Accettato / Rifiutato`, with `In Attesa Accettazione` explicitly annotated as the
+rename of `Scaduto` and the five-day validity written into the `In Trattativa`
+box — matching Parte 5's five-day expiry.
+
+🟢 **The four spellings hard-coded in Apex since 09/09 — `Bozza` and
+`In Attesa Accettazione`, each enforced twice — match the diagram exactly.** That
+is worth knowing: the literals in the code are not invented, they track the
+design file. **It is still not a ruling.** `DGM-2` is a drawing, not the
+register, and this row closes when someone states the canonical set in a place
+the build can cite.
+
+🔴 **On Order, the same file spells the status two ways.** `Incasato` (one `s`)
+is the status box on **both** the LEAD-OPTY and Ordini pages; `Incassato` (two)
+appears once, inside the `RULES + FLOW TASK OPTY` block — _"Status Order ==
+Incassato >> Aggiornamento dell' Opty in Chiusa Vinta"_. The deployed Apex uses
+`Incassato`.
+
+**Eighth day with no ruling**, and the surface has grown: it is no longer only
+the Quote picklist, it is Order too, and the design source is now a witness
+against itself on both.
