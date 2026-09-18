@@ -127,6 +127,46 @@
                 </div>
               </div>
             </template>
+
+            <template if:true={showTranchePlanner}>
+              <div class="tranche-planner">
+                <lightning-input
+                  type="number"
+                  label="Numero tranche"
+                  value={trancheCount}
+                  min="1"
+                  max="20"
+                  step="1"
+                  required
+                  onchange={handleTrancheCountChange}
+                ></lightning-input>
+
+                <template if:true={hasPlannedTranches}>
+                  <div class="tranche-list">
+                    <template for:each={plannedTranches} for:item="tranche">
+                      <div class="tranche-row" key={tranche.key}>
+                        <div class="tranche-sequence">
+                          Tranche {tranche.sequence}
+                        </div>
+                        <div class="amount-box">
+                          <span class="box-label">Prezzo</span>
+                          <span>{tranche.amountLabel}</span>
+                        </div>
+                        <lightning-input
+                          class="due-date-input"
+                          type="date"
+                          label="Data scadenza"
+                          value={tranche.dueDate}
+                          data-index={tranche.index}
+                          required
+                          onchange={handleTrancheDueDateChange}
+                        ></lightning-input>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </template>
           </div>
         </template>
       </template>
