@@ -45,7 +45,7 @@ public with sharing class QuoteLineItemTriggerHandler {
       return;
     }
 
-    Map<Id, Boolean> bundleByPricebookEntryId = loadBundleFlags(
+    Map<Id, ProductLineKind> kindByPricebookEntryId = loadProductLineKinds(
       pricebookEntryIds
     );
     Map<Id, QuoteProductMix> mixByQuoteId = initializeMixes(quoteIds);
@@ -54,7 +54,7 @@ public with sharing class QuoteLineItemTriggerHandler {
     addPendingLines(
       mixByQuoteId,
       pendingLinesByQuoteId,
-      bundleByPricebookEntryId
+      kindByPricebookEntryId
     );
 
     for (Id quoteId : pendingLinesByQuoteId.keySet()) {
@@ -69,6 +69,41 @@ public with sharing class QuoteLineItemTriggerHandler {
     }
   }
 
+  public static void afterDelete(List<QuoteLineItem> oldLines) {
+    if (oldLines == null || oldLines.isEmpty()) {
+      return;
+    }
+
+    Set<Id> trancheIds = new Set<Id>();
+    for (QuoteLineItem line : oldLines) {
+      if (line.Tranche__c != null) {
+        trancheIds.add(line.Tranche__c);
+      }
+    }
+
+    if (trancheIds.isEmpty()) {
+      return;
+    }
+
+    for (QuoteLineItem remainingLine : [
+      SELECT Tranche__c
+      FROM QuoteLineItem
+      WHERE Tranche__c IN :trancheIds
+    ]) {
+      trancheIds.remove(remainingLine.Tranche__c);
+    }
+
+    if (trancheIds.isEmpty()) {
+      return;
+    }
+
+    delete [
+      SELECT Id
+      FROM Tranche__c
+      WHERE Id IN :trancheIds
+    ];
+  }
+
   private static Map<Id, QuoteProductMix> initializeMixes(Set<Id> quoteIds) {
     Map<Id, QuoteProductMix> mixByQuoteId = new Map<Id, QuoteProductMix>();
     for (Id quoteId : quoteIds) {
@@ -77,21 +112,23 @@ public with sharing class QuoteLineItemTriggerHandler {
     return mixByQuoteId;
   }
 
-  private static Map<Id, Boolean> loadBundleFlags(Set<Id> pricebookEntryIds) {
-    Map<Id, Boolean> bundleByPricebookEntryId = new Map<Id, Boolean>();
+  private static Map<Id, ProductLineKind> loadProductLineKinds(
+    Set<Id> pricebookEntryIds
+  ) {
+    Map<Id, ProductLineKind> kindByPricebookEntryId = new Map<Id, ProductLineKind>();
     if (pricebookEntryIds == null || pricebookEntryIds.isEmpty()) {
-      return bundleByPricebookEntryId;
+      return kindByPricebookEntryId;
     }
 
     for (PricebookEntry entry : [
-      SELECT Id, Product2.RecordType.DeveloperName
+      SELECT Id, Product2.Is_Plus__c, Product2.RecordType.DeveloperName
       FROM PricebookEntry
       WHERE Id IN :pricebookEntryIds
     ]) {
-      bundleByPricebookEntryId.put(entry.Id, isBundle(entry));
+      kindByPricebookEntryId.put(entry.Id, new ProductLineKind(entry));
     }
 
-    return bundleByPricebookEntryId;
+    return kindByPricebookEntryId;
   }
 
   private static void addExistingLines(
@@ -106,12 +143,20 @@ public with sharing class QuoteLineItemTriggerHandler {
     List<QuoteLineItem> existingLines = replacedLineIds == null ||
       replacedLineIds.isEmpty()
       ? [
-          SELECT Id, QuoteId, PricebookEntry.Product2.RecordType.DeveloperName
+          SELECT
+            Id,
+            QuoteId,
+            PricebookEntry.Product2.RecordType.DeveloperName,
+            PricebookEntry.Product2.Is_Plus__c
           FROM QuoteLineItem
           WHERE QuoteId IN :quoteIds
         ]
       : [
-          SELECT Id, QuoteId, PricebookEntry.Product2.RecordType.DeveloperName
+          SELECT
+            Id,
+            QuoteId,
+            PricebookEntry.Product2.RecordType.DeveloperName,
+            PricebookEntry.Product2.Is_Plus__c
           FROM QuoteLineItem
           WHERE QuoteId IN :quoteIds AND Id NOT IN :replacedLineIds
         ];
@@ -119,7 +164,7 @@ public with sharing class QuoteLineItemTriggerHandler {
     for (QuoteLineItem line : existingLines) {
       QuoteProductMix mix = mixByQuoteId.get(line.QuoteId);
       if (mix != null) {
-        mix.addLine(isBundle(line));
+        mix.addLine(new ProductLineKind(line));
       }
     }
   }
@@ -127,7 +172,7 @@ public with sharing class QuoteLineItemTriggerHandler {
   private static void addPendingLines(
     Map<Id, QuoteProductMix> mixByQuoteId,
     Map<Id, List<QuoteLineItem>> pendingLinesByQuoteId,
-    Map<Id, Boolean> bundleByPricebookEntryId
+    Map<Id, ProductLineKind> kindByPricebookEntryId
   ) {
     for (Id quoteId : pendingLinesByQuoteId.keySet()) {
       QuoteProductMix mix = mixByQuoteId.get(quoteId);
@@ -136,9 +181,7 @@ public with sharing class QuoteLineItemTriggerHandler {
       }
 
       for (QuoteLineItem line : pendingLinesByQuoteId.get(quoteId)) {
-        mix.addLine(
-          bundleByPricebookEntryId.get(line.PricebookEntryId) == true
-        );
+        mix.addLine(kindByPricebookEntryId.get(line.PricebookEntryId));
       }
     }
   }
@@ -168,9 +211,20 @@ public with sharing class QuoteLineItemTriggerHandler {
   private class QuoteProductMix {
     Integer bundleLineCount = 0;
     Integer itemLineCount = 0;
+    Integer plusBundleLineCount = 0;
 
-    void addLine(Boolean isBundle) {
-      if (isBundle == true) {
+    void addLine(ProductLineKind kind) {
+      if (kind == null) {
+        itemLineCount++;
+        return;
+      }
+
+      if (kind.isPlusBundle) {
+        plusBundleLineCount++;
+        return;
+      }
+
+      if (kind.isBundle) {
         bundleLineCount++;
         return;
       }
@@ -179,9 +233,34 @@ public with sharing class QuoteLineItemTriggerHandler {
     }
 
     Boolean isValid() {
+      if (plusBundleLineCount > 0) {
+        return bundleLineCount == 0 && itemLineCount == 0;
+      }
+
       return bundleLineCount <= 1 &&
         (bundleLineCount == 0 ||
         itemLineCount == 0);
+    }
+  }
+
+  private class ProductLineKind {
+    Boolean isBundle;
+    Boolean isPlusBundle;
+
+    ProductLineKind(PricebookEntry entry) {
+      isBundle = isBundle(entry);
+      isPlusBundle =
+        isBundle &&
+        entry.Product2 != null &&
+        entry.Product2.Is_Plus__c == true;
+    }
+
+    ProductLineKind(QuoteLineItem line) {
+      isBundle = isBundle(line);
+      isPlusBundle =
+        isBundle &&
+        line.PricebookEntry.Product2 != null &&
+        line.PricebookEntry.Product2.Is_Plus__c == true;
     }
   }
 }

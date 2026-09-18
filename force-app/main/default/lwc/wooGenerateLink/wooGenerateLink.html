@@ -3,15 +3,17 @@
     <div class="content">
       <lightning-input
         type="text"
-        label="Product WooCommerce Id"
-        value={productWooCommerceId}
+        label="Funnel WooCommerce"
+        placeholder="Metti il funnel WooCommerce"
+        message-when-value-missing="Inserisci il funnel WooCommerce."
+        value={funnelWooCommerce}
         onchange={handleProductIdChange}
         required
       ></lightning-input>
 
       <template if:true={hasExistingCheckoutLink}>
         <div class="link-preview">
-          <div class="summary-label">Existing Link</div>
+          <div class="summary-label">Link esistente</div>
           <lightning-formatted-url
             value={existingCheckoutLink}
             label={existingCheckoutLink}
@@ -22,7 +24,7 @@
 
       <template if:true={newCheckoutLink}>
         <div class="link-preview">
-          <div class="summary-label">New Link</div>
+          <div class="summary-label">Nuovo link</div>
           <lightning-formatted-url
             value={newCheckoutLink}
             label={newCheckoutLink}
@@ -34,7 +36,7 @@
 
     <div slot="footer">
       <lightning-button
-        label="Cancel"
+        label="Annulla"
         onclick={handleCancel}
       ></lightning-button>
       <lightning-button
