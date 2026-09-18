@@ -8,13 +8,37 @@
                     <valueList>
                         <valueListItems>
                             <value>Opportunity.Genera_Link</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue
+                  >{!Record.RecordType.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Recall tutor</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                         <valueListItems>
                             <value
               >Opportunity.Send_WooCommerce_Checkout_Email</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue
+                  >{!Record.RecordType.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Recall tutor</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                         <valueListItems>
                             <value>Opportunity.Nuovo_Preventivo_Standard</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue
+                  >{!Record.RecordType.Name}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Recall tutor</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -319,6 +343,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.CampaignId</fieldItem>
                 <identifier>RecordCampaignIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Checkout_Link__c</fieldItem>
+                <identifier>RecordCheckout_Link_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-47986c8a-b34b-4c9b-be5e-d1fd2883fa4b</name>

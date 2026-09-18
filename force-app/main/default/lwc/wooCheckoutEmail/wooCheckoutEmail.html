@@ -1,10 +1,10 @@
 <template>
-  <lightning-quick-action-panel header="Send Checkout Email">
+  <lightning-quick-action-panel header="Invia email checkout">
     <div class="content">
       <template if:true={isOpportunityLoading}>
         <div class="initial-loader">
           <lightning-spinner
-            alternative-text="Loading"
+            alternative-text="Caricamento"
             size="medium"
           ></lightning-spinner>
         </div>
@@ -18,7 +18,7 @@
         <template if:false={opportunityErrorMessage}>
           <div class="summary">
             <div>
-              <div class="summary-label">Opportunity</div>
+              <div class="summary-label">Opportunita</div>
               <div class="summary-value">{opportunityName}</div>
             </div>
           </div>
@@ -26,7 +26,9 @@
           <div class="form-grid">
             <lightning-input
               type="email"
-              label="Recipient Email"
+              label="Email destinatario"
+              message-when-value-missing="Inserisci l'email del destinatario."
+              message-when-type-mismatch="Inserisci un indirizzo email valido."
               value={recipientEmail}
               onchange={handleRecipientEmailChange}
               required
@@ -35,13 +37,13 @@
 
           <div class="email-summary">
             <div>
-              <div class="summary-label">Checkout Link</div>
+              <div class="summary-label">Link checkout</div>
               <template if:true={hasCheckoutLink}>
                 <div class="summary-value">{checkoutLink}</div>
               </template>
               <template if:false={hasCheckoutLink}>
                 <div class="message error">
-                  Generate and save the checkout link before sending this email.
+                  Genera e salva il link checkout prima di inviare questa email.
                 </div>
               </template>
             </div>
@@ -56,7 +58,7 @@
 
     <div slot="footer">
       <lightning-button
-        label="Cancel"
+        label="Annulla"
         onclick={handleCancel}
       ></lightning-button>
       <lightning-button
