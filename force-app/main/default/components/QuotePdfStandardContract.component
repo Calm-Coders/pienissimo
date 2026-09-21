@@ -1,0 +1,1010 @@
+<apex:component>
+  <apex:attribute
+    name="customer"
+    type="Account"
+    description="Cliente del preventivo"
+    required="true"
+  />
+
+  <apex:attribute
+    name="customerName"
+    type="String"
+    description="Ragione sociale"
+    required="true"
+  />
+
+  <apex:attribute
+    name="legalAddress"
+    type="String"
+    description="Sede del cliente"
+    required="false"
+  />
+
+  <div class="plus-terms">
+    <!-- =====================================================
+             LOGO
+             ===================================================== -->
+
+    <div class="plus-logo-centered">
+      <apex:image
+        url="{!$Resource.QuotePdfLogo}"
+        width="255"
+        height="58"
+        alt="Pienissimo - Strategie per locali di successo"
+      />
+    </div>
+
+    <!-- =====================================================
+             TITLE
+             ===================================================== -->
+
+    <h1>
+      CONDIZIONI GENERALI CHE REGOLANO L’ISCRIZIONE E LA PARTECIPAZIONE AI CORSI
+    </h1>
+
+    <h1>UN ANNO CON PIENISSIMO</h1>
+
+    <!-- =====================================================
+             1
+             ===================================================== -->
+
+    <h2>1. Oggetto della prestazione offerta da Pienissimo</h2>
+
+    <p>
+      L’oggetto del presente contratto è la partecipazione ai corsi organizzati
+      da Pienissimo S.r.l.
+    </p>
+
+    <p>
+      La partecipazione ai corsi è aperta unicamente a
+      titolari/esercenti/addetti del settore ristorazione inclusi loro
+      dipendenti, titolari/esercenti/addetti di servizi di banqueting e/o
+      catering legati rispettivamente a produzione e distribuzione di pasti
+      pronti per la clientela, inclusi loro dipendenti nonché
+      titolari/esercenti/addetti di servizi di somministrazione di alimenti e
+      bevande in genere, inclusi loro dipendenti. Non è richiesta alcuna
+      qualifica accademica e/o professionale per la frequentazione dei corsi.
+    </p>
+
+    <p>
+      L’eventuale iscrizione di minori richiede in ogni caso la firma del
+      genitore o di chi ne esercita la genitorialità. È espressamente esclusa la
+      frequentazione dei corsi per esercenti/titolari/professionisti/addetti del
+      settore marketing-comunicazione-web marketing-consulenza attinenti al
+      settore ristorazione o esercenti altre attività comunque in concorrenza
+      con Pienissimo S.r.l. e società ad essa collegate, e per chiunque svolga
+      attività di formazione in tale settore, anche se esercitate per via
+      indiretta.
+    </p>
+
+    <p>
+      In caso di aggiramento delle presenti condizioni/restrizioni per
+      l’iscrizione ai corsi e/o comunque con l’iscrizione abusiva ai predetti da
+      parte di privati, Enti e/o Società, realizzata in qualunque forma, il
+      Cliente iscritto sarà tenuto al pagamento di una penale ex art. 1382 c.c.
+      pari a € 100.000,00 (euro centomila/00), oltre al risarcimento degli
+      eventuali ed ulteriori danni accertati.
+    </p>
+
+    <!-- =====================================================
+             2
+             ===================================================== -->
+
+    <h2>2. Quota di partecipazione</h2>
+
+    <p>
+      Il corrispettivo dovuto dall'Utente per la partecipazione al corso è
+      fissato nell’importo indicato nella scheda d’ordine. Il pagamento dovrà
+      essere effettuato entro i termini e nelle modalità indicate nella scheda
+      d’ordine.
+    </p>
+
+    <p>
+      In ogni caso l’obbligazione di pagamento del corrispettivo per il corso o
+      per il pacchetto di corsi oggetto di contratto sorge al momento della
+      sottoscrizione del contratto e, pertanto, trattasi di pagamento per sua
+      natura anticipato.
+    </p>
+
+    <p>
+      L’eventuale concessione di dilazione di pagamento in nessun caso potrà
+      esonerare il Cliente dall’obbligo di pagamento, neppure in caso di mancata
+      fruizione dei corsi acquistati.
+    </p>
+
+    <p>
+      Con l’iscrizione regolata dal presente contratto, il Cliente si impegna a
+      pagare l’intera quota come individuata nel modulo/e-mail di conferma
+      iscrizione, al netto di eventuali acconti versati in caso di prenotazione.
+    </p>
+
+    <p>
+      Solo il versamento integrale di quanto stabilito come quota di
+      partecipazione garantisce il diritto alla frequentazione delle giornate di
+      formazione ed alla consegna del materiale didattico, ove previsto. In caso
+      di mancato pagamento entro i termini, la Società si riserva il diritto di
+      sospendere l'erogazione dei servizi formativi.
+    </p>
+
+    <p>
+      In caso di dilazione di pagamento solo il rispetto delle scadenze
+      concordate garantisce il diritto alla frequentazione delle giornate di
+      formazione ed alla consegna del materiale didattico, ove previsto.
+    </p>
+
+    <p>
+      Il mancato pagamento anche di una sola rata di corrispettivo conferisce il
+      diritto a Pienissimo S.r.l. di risolvere il contratto mediante semplice
+      comunicazione all’Utente senza pregiudizio del diritto di ottenere il
+      pagamento di quanto interamente dovuto.
+    </p>
+
+    <p>
+      In caso di pagamento rateale, il mancato pagamento anche di una sola rata
+      produrrà la decadenza automatica del Cliente dal beneficio del termine e
+      la Società sarà legittimata a richiedere l’intero prezzo previsto per i
+      servizi di formazione acquistati dal Cliente.
+    </p>
+
+    <p>
+      Le Parti convengono che, in caso di mancato o ritardato pagamento delle
+      somme dovute nei termini pattuiti, troveranno applicazione gli interessi
+      moratori previsti dal Decreto Legislativo 9 ottobre 2002, n. 231 e
+      successive modifiche ed integrazioni. Gli interessi decorrono
+      automaticamente, senza necessità di costituzione in mora, dal giorno
+      successivo alla scadenza del termine di pagamento concordato.
+    </p>
+
+    <p>
+      Il mancato o ritardato pagamento comporterà a carico del Cliente un
+      ulteriore addebito per rimborsare Pienissimo S.r.l. degli eventuali costi
+      sostenuti per il sollecito del pagamento o il recupero del credito tramite
+      intervento legale o per qualsiasi altra attività correlata all’incasso
+      dovuto.
+    </p>
+
+    <p>
+      Il Cliente non avrà diritto a rimborsi o decurtazioni del prezzo pattuito
+      nel caso in cui, per propria volontà o negligenza, non abbia usufruito in
+      tutto o in parte dei corsi o in generale dei servizi oggetto di Contratto.
+    </p>
+
+    <p>
+      In caso di assenza ad uno o più corsi durante il tempo di validità del
+      presente contratto individuato nella scheda d’ordine è riconosciuto al
+      Cliente il diritto alla partecipazione esclusivamente dell’edizione
+      dell’anno successivo.
+    </p>
+
+    <!-- =====================================================
+             3
+             ===================================================== -->
+
+    <h2>3. Promozioni ed Esclusioni</h2>
+
+    <p>
+      Eventuali promozioni che prevedano sconti o dilazioni di pagamento sono
+      applicabili e condizionati al rispetto dei termini contrattuali da parte
+      del Cliente. Pienissimo S.r.l. potrà esigere immediatamente l’intero
+      importo residuo a fronte della mancata osservanza di uno o più termini del
+      presente contratto a suo insindacabile giudizio.
+    </p>
+
+    <p>
+      È escluso dalla quota di partecipazione ogni e qualsiasi servizio non
+      compreso nell’offerta commerciale debitamente sottoscritta.
+    </p>
+
+    <!-- =====================================================
+             4
+             ===================================================== -->
+
+    <h2>4. Rinvio e annullamento dei corsi</h2>
+
+    <p>
+      Pienissimo S.r.l. si riserva il diritto di erogare i corsi secondo le
+      modalità di volta in volta indicate che potranno prevedere, a proprio
+      insindacabile giudizio, sia modalità in presenza che on line, attraverso
+      canali digitali/partecipazione da remoto o comunque altra forma che
+      consenta la partecipazione a distanza del corso da parte dell’Iscritto,
+      garantendo in ogni caso standards qualitativi di livello adeguato.
+    </p>
+
+    <p>
+      Pienissimo S.r.l. si riserva di modificare e/o variare le date e la sede
+      del corso previa comunicazione agli aderenti al corso. In tal caso il
+      Cliente sarà iscritto automaticamente alla nuova data o presso la nuova
+      sede.
+    </p>
+
+    <p>
+      In caso di rinvio e/o annullamento definitivo del corso, Pienissimo S.r.l.
+      si riserva il diritto di utilizzare le somme percepite per esso, come
+      acconto a credito del cliente per altro e diverso corso o servizio.
+    </p>
+
+    <p>
+      Pienissimo S.r.l., qualora per condizioni cogenti o circostanze di natura
+      eccezionale non sia possibile effettuare il corso in presenza, si riserva
+      di organizzare lo stesso corso on line.
+    </p>
+
+    <!-- =====================================================
+             5
+             ===================================================== -->
+
+    <h2>5. Rinvio/Disdetta/Recesso del Cliente</h2>
+
+    <p>
+      Per comprovata giusta causa il Cliente potrà chiedere di iscriversi ad
+      altro corso o servizio in diversa data compatibilmente con il calendario
+      formativo di Pienissimo S.r.l.
+    </p>
+
+    <p>
+      Fuori dei casi di cui sopra, il Cliente potrà rinviare le date di uno
+      specifico corso purché ne dia comunicazione con adeguato preavviso di
+      almeno 15 giorni di calendario prima del corso per cui intende rinviare la
+      presenza. La nuova partecipazione al medesimo corso dovrà essere
+      compatibile con il calendario formativo di Pienissimo S.r.l.
+    </p>
+
+    <p>
+      In caso di recesso, da esercitarsi tramite raccomandata A.R. o tramite
+      e-mail, i termini per l’esercizio dello stesso decorrono dalla conclusione
+      del contratto e la comunicazione DOVRA’ pervenire entro 14 giorni di
+      calendario dalla sottoscrizione del presente contratto a
+      amministrazione@pienissimo.com.
+    </p>
+
+    <p>
+      Entro questi termini è possibile recedere senza incorrere in alcuna
+      penale, in caso contrario Pienissimo S.r.l. riserva il diritto di
+      trattenere la quota versata.
+    </p>
+
+    <!-- =====================================================
+             6
+             ===================================================== -->
+
+    <h2>6. Patto di riservatezza</h2>
+
+    <p>
+      Il Cliente si impegna a non effettuare registrazioni audio-video del corso
+      e a non divulgare a terzi i contenuti dello stesso, inclusa la mera
+      visione di materiale informativo a titolo anche solo gratuito.
+    </p>
+
+    <p>
+      Il Cliente si impegna a non divulgare le informazioni, nozioni e il
+      materiale didattico di cui sia venuto a conoscenza o in possesso durante
+      il corso, mantenendole riservate e facendone uso strettamente personale.
+    </p>
+
+    <p>
+      Nel caso il Cliente commettesse anche una sola delle violazioni sopra
+      menzionate Pienissimo S.r.l. avrà il diritto a ritirare e/o far
+      distruggere le copie, le registrazioni, le fotografie e le riprese
+      illecite, così come ad allontanare e/o non ammettere più all’evento il
+      Cliente responsabile delle suddette violazioni, salvo, in ogni caso, il
+      diritto di procedere legalmente, anche per danni, contro il menzionato
+      responsabile.
+    </p>
+
+    <p>
+      Per quanto riguarda imprenditori e manager del settore ristorazione che
+      partecipano al corso, è consentito l’uso di materiale del corso
+      all’interno della propria azienda, per la formazione, gestione e
+      addestramento della propria rete vendita.
+    </p>
+
+    <!-- =====================================================
+             7
+             ===================================================== -->
+
+    <h2>7. Patto di non concorrenza</h2>
+
+    <p>
+      Le Parti convengono che, per un periodo di 5 anni dalla data del corso, il
+      Partecipante si impegna a non svolgere, direttamente o indirettamente,
+      attività di formazione (ad esempio organizzare e gestire seminari o corsi,
+      anche via web o formati digitali) in materia di marketing e comunicazione
+      per la ristorazione nell’ambito dell’intero territorio nazionale, salvo
+      espressa autorizzazione scritta di Pienissimo S.r.l.
+    </p>
+
+    <p>
+      La presente clausola è stata oggetto di specifica trattativa tra le Parti,
+      come da dichiarazione allegata. In caso di violazione, il Partecipante
+      sarà tenuto a corrispondere una penale di euro 100.000,00, salvo il
+      risarcimento del maggior danno dimostrato.
+    </p>
+
+    <p>
+      La presente clausola di non concorrenza è pattuita tra le Parti in quanto,
+      durante la partecipazione ai corsi e nell’ambito del rapporto
+      contrattuale, il Cliente entra in possesso di know-how, informazioni
+      riservate, strategie commerciali, materiali didattici e tecniche operative
+      di Pienissimo S.r.l., specificamente sviluppate e dotate di elevato valore
+      competitivo nel settore della ristorazione e del marketing per la
+      ristorazione.
+    </p>
+
+    <p>
+      Al fine di tutelare l’investimento formativo, la reputazione e il
+      vantaggio competitivo di Pienissimo S.r.l. e di evitare che tali
+      conoscenze vengano impiegate a detrimento dei legittimi interessi della
+      Società, le Parti riconoscono la necessità di un vincolo di non
+      concorrenza.
+    </p>
+
+    <p>
+      La durata di 5 (cinque) anni è ritenuta congrua e proporzionata rispetto
+      al tempo in cui le informazioni acquisite mantengono rilevanza e attualità
+      nel mercato di riferimento, anche in considerazione della natura
+      specialistica e dell’innovatività dei contenuti trasmessi.
+    </p>
+
+    <p>
+      L’estensione territoriale al territorio nazionale si giustifica in ragione
+      dell’operatività di Pienissimo S.r.l., che svolge la propria attività di
+      formazione e consulenza su scala nazionale, nonché della natura dei
+      servizi e dei corsi, accessibili e replicabili in tutto il territorio
+      italiano, anche attraverso piattaforme digitali e modalità online.
+    </p>
+
+    <p>
+      La presente clausola è stata oggetto di specifica trattativa tra le Parti
+      ed è ritenuta essenziale per la tutela dell’interesse economico e
+      professionale di Pienissimo S.r.l.
+    </p>
+
+    <!-- =====================================================
+             8
+             ===================================================== -->
+
+    <h2>8. Cessione del Contratto</h2>
+
+    <p>
+      Pienissimo S.r.l. ha facoltà di cedere in ogni momento il contratto a
+      terzi, senza necessità di consenso da parte del Cliente, ma semplicemente
+      informando il Cliente stesso a mezzo posta elettronica.
+    </p>
+
+    <!-- =====================================================
+             9
+             ===================================================== -->
+
+    <h2>9. Clausola di tolleranza</h2>
+
+    <p>
+      La tolleranza, anche reiterata, di una delle parti per comportamenti
+      attivi od omissivi in violazione degli obblighi assunti con il presente
+      Contratto non costituisce precedente, né infirma comunque la validità
+      della clausola violata o derogata.
+    </p>
+
+    <p>
+      Eventuali ritardi od omissioni di una delle parti nel far valere un
+      diritto o nell'esercitare un potere derivanti dal presente Contratto non
+      potranno essere interpretati quale rinuncia al relativo diritto, né al
+      potere di esercitarlo in un qualsiasi tempo successivo.
+    </p>
+
+    <!-- =====================================================
+             10
+             ===================================================== -->
+
+    <h2>10. Clausola “solve et repete”</h2>
+
+    <p>
+      Il Cliente si obbliga a corrispondere integralmente e tempestivamente i
+      compensi pattuiti, secondo quanto previsto dal Contratto, anche in
+      presenza di contestazione sull’esecuzione delle attività.
+    </p>
+
+    <p>
+      Eventuali contestazioni relative alla prestazione potranno essere
+      sollevate dal Cliente solo dopo il completo pagamento.
+    </p>
+
+    <!-- =====================================================
+             11
+             ===================================================== -->
+
+    <h2>11. Responsabilità</h2>
+
+    <p>
+      I corsi organizzati da Pienissimo S.r.l. hanno finalità formativa, con
+      espressa esclusione di ogni altra valenza.
+    </p>
+
+    <p>
+      Il Cliente prende atto e accetta che il corso e tutto il materiale ad esso
+      relativo (comprese le eventuali registrazioni audio/video, così come
+      l’eventuale materiale didattico e/o informativo che sarà distribuito) sono
+      di esclusiva proprietà di Pienissimo S.r.l. e sono pertanto riservati e
+      protetti da diritto d’autore.
+    </p>
+
+    <p>Il Cliente si impegna, inoltre:</p>
+
+    <p>
+      a) utilizzare materiali ed attrezzature messe a disposizione da Pienissimo
+      S.r.l. con la massima cura e diligenza;
+    </p>
+
+    <p>
+      b) attenersi alle regole di sicurezza e di condotta previste da Pienissimo
+      S.r.l.
+    </p>
+
+    <p>
+      Il Cliente espressamente conviene la rinuncia a qualunque eventuale
+      risarcimento del danno che possa derivargli dalla frequentazione del
+      corso, sia esso personale o patrimoniale.
+    </p>
+
+    <p>
+      Il Cliente pertanto libera, solleva ed esonera Pienissimo S.r.l., i
+      Collaboratori, i Partner, gli Sponsor da qualunque responsabilità in
+      relazione a danni alla persona o a cose che dovessero essere subiti e/o
+      provocati in prima persona durante lo svolgimento del corso di formazione,
+      anche in relazione allo smarrimento o furto di effetti personali e al
+      rischio di infortuni durante il corso anzidetto.
+    </p>
+
+    <p>
+      In ogni caso il Cliente conviene e accetta espressamente che, fermo quanto
+      previsto ai punti precedenti, qualora dovesse insorgere la responsabilità
+      per legge di Pienissimo, questa sarà limitata solo al dolo e a colpa grave
+      è sarà altresì limitata esclusivamente al risarcimento del danno
+      comprovato e subito dal Cliente, escluso ogni danno da perdita di guadagno
+      e comunque per un importo massimo pari al valore del presente Contratto.
+    </p>
+
+    <!-- =====================================================
+             12
+             ===================================================== -->
+
+    <h2>12. Trattamento dei dati personali</h2>
+
+    <p>Si rimanda ad apposita rubrica sub Allegato A.</p>
+
+    <!-- =====================================================
+             13
+             ===================================================== -->
+
+    <h2>13. Legge applicabile e Foro competente</h2>
+
+    <p>
+      Il presente contratto sarà disciplinato ed interpretato secondo la legge
+      vigente nella Repubblica italiana. Qualsiasi controversia che dovesse
+      insorgere relativamente alla validità, all’interpretazione o
+      all’esecuzione del presente contratto sarà sottoposta per espressa
+      pattuizione tra le parti alla normativa italiana ed alla competenza
+      esclusiva del Foro di Rimini.
+    </p>
+
+    <!-- =====================================================
+             14
+             ===================================================== -->
+
+    <h2>14. Clausole finali</h2>
+
+    <p>Gli allegati fanno parte integrante del presente Contratto.</p>
+
+    <p>
+      Eventuali modifiche al presente Contratto dovranno essere effettuate per
+      iscritto e sottoscritte da entrambe le parti.
+    </p>
+
+    <p>
+      Il presente Contratto sostituisce ogni precedente pattuizione fra le Parti
+      contenuta in documenti, corrispondenza o comunicazioni precedenti.
+    </p>
+
+    <p>
+      Se una o più clausole del presente Contratto vengono colpite da nullità o
+      se vengono rese inapplicabili dall’effetto della legge o da una decisione
+      che si impone alle parti, questo non avrà l’effetto di causare la nullità
+      dell’insieme del presente Contratto, né di alterare la validità ed il
+      carattere obbligatorio dell’insieme delle altre clausole.
+    </p>
+
+    <p>
+      Le parti si accorderanno per apportare al presente Contratto gli
+      emendamenti necessari affinché lo stesso possa portare un effetto che si
+      avvicini il più possibile alla volontà iniziale delle stesse.
+    </p>
+
+    <!-- =====================================================
+             SIGNATURE BLOCK 1
+             ===================================================== -->
+
+    <div class="plus-signature-block">
+      <table
+        class="plus-signature-table"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+      >
+        <tr>
+          <td valign="top">
+            <strong>Pienissimo</strong>
+            <br /> PIENISSIMO S.r.l. <br /> il legale rappresentante pro tempore
+            <br /> Sig. Giuliano Lanzetti
+          </td>
+
+          <td valign="top">
+            <strong>Il Cliente</strong>
+            <br />
+
+            <apex:outputText value="{!customerName}" />
+            <br /> il legale rappresentante pro tempore
+            <br />
+
+            <apex:outputText
+              value="{!customer.Nome_Legale_Rappresentante__c}"
+            />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- =====================================================
+             APPROVAZIONE SPECIFICA
+             ===================================================== -->
+
+    <div class="plus-specific-approval">
+      <p>
+        Ai sensi degli artt. 1341 e 1342 c.c. il sottoscritto dichiara di aver
+        letto ed approvato specificatamente le clausole contrattuali riportate
+        qui di seguito e in particolare gli artt.: 1. Oggetto della prestazione
+        offerta da Pienissimo 2. Quota di partecipazione; 4. Rinvio e
+        annullamento dei corsi; 6. Patto di riservatezza; 7. Patto di non
+        concorrenza, 8. Cessione del contratto; 10. Clausola “solve et repete”;
+        11. Responsabilità, 13. Legge applicabile e Foro competente.
+      </p>
+
+      <p>Falciano, lì ____________________</p>
+
+      <table
+        class="plus-signature-table"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+      >
+        <tr>
+          <td valign="top">
+            <strong>Pienissimo</strong>
+            <br /> PIENISSIMO S.r.l. <br /> il legale rappresentante pro tempore
+            <br /> Sig. Giuliano Lanzetti
+          </td>
+
+          <td valign="top">
+            <strong>Il Cliente</strong>
+            <br />
+
+            <apex:outputText value="{!customerName}" />
+            <br /> il legale rappresentante pro tempore
+            <br />
+
+            <apex:outputText
+              value="{!customer.Nome_Legale_Rappresentante__c}"
+            />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- =====================================================
+             ALLEGATO A
+             ===================================================== -->
+
+    <div class="plus-page-break"></div>
+
+    <div class="plus-annex">
+      <h2>ALLEGATO A</h2>
+
+      <h2>INFORMATIVA PER IL TRATTAMENTO DEI DATI PERSONALI</h2>
+
+      <h3>
+        ai sensi degli artt. 13 e 14 del Regolamento UE n. 679/2016 e della
+        legge RSM n. 171/2018
+      </h3>
+
+      <p>Gentile Cliente,</p>
+
+      <p>
+        la informiamo che il trattamento dei suoi dati personali avverrà con
+        correttezza e trasparenza, per fini leciti, tutelando la sua
+        riservatezza ed i suoi diritti in conformità alla normativa vigente.
+      </p>
+
+      <p>
+        Ai sensi degli artt. 13 e 14 del Regolamento Europeo n. 679/2016 in
+        materia di protezione dei dati personali (di seguito solo GDPR) e degli
+        artt. 13 e 14 della legge sammarinese n. 171/2018 (di seguito solo legge
+        RSM) provvediamo pertanto a fornirle le seguenti informazioni:
+      </p>
+
+      <h2>1. Acquisizione dei dati</h2>
+
+      <p>
+        I suoi dati personali oggetto di trattamento sono acquisiti da
+        PIENISSIMO SOFTWARE S.R.L., con sede nel territorio della Repubblica di
+        San Marino, ai fini dell’attivazione del servizio di accesso alla
+        Piattaforma “Pienissimo” per la promozione della sua attività
+        commerciale.
+      </p>
+
+      <h2>2. Dati oggetto del trattamento</h2>
+
+      <p>
+        I dati personali che saranno trattati sono i suoi dati identificativi,
+        quali a titolo esemplificativo: cognome, nome, luogo di nascita,
+        c.f./p.iva, numero di telefono, indirizzo e-mail, residenza, modalità di
+        pagamento e/o coordinate bancarie oltre ad ogni altro dato personale,
+        funzionale al soddisfacimento del rapporto tra noi posto in essere.
+      </p>
+
+      <h2>3. Modalità di trattamento</h2>
+
+      <p>
+        Il trattamento sarà effettuato anche, ma non solo, con l’ausilio di
+        mezzi informatici e/o automatizzati, con modalità idonee a garantire la
+        sicurezza, la protezione e la riservatezza dei dati ed a prevenire e
+        limitare il rischio di perdita, deterioramento, sottrazione dei dati e
+        ad assicurarne in tempi ragionevoli il ripristino in caso di “data
+        breach”.
+      </p>
+
+      <p>
+        Il trattamento avrà luogo mediante operazioni di: raccolta,
+        registrazione, organizzazione, strutturazione, conservazione,
+        adattamento o modifica, estrazione, consultazione, uso, comunicazione,
+        raffronto o interconnessione, limitazione, cancellazione e distruzione
+        dei dati.
+      </p>
+
+      <h2>4. Finalità del trattamento</h2>
+
+      <p>
+        I suoi dati personali saranno trattati per scopi connessi o strumentali
+        al servizio di accesso alla Piattaforma “Pienissimo”.
+      </p>
+
+      <p>Le operazioni sopra indicate verranno infatti attuate:</p>
+
+      <p>
+        <strong>
+          - senza il suo consenso espresso per il perseguimento delle seguenti
+          finalità:
+        </strong>
+      </p>
+
+      <p>
+        a) adempiere agli obblighi derivanti dal contratto di licenza d’uso, di
+        cui lei è parte, disciplinante l’accesso alla Piattaforma “Pienissimo”,
+        o, per adempiere, prima della conclusione del contratto, a sue
+        specifiche richieste. In tal caso non è necessario il suo consenso,
+        poiché il trattamento dei dati è funzionale alla gestione del servizio o
+        alla esecuzione delle sue richieste;
+      </p>
+
+      <p>
+        b) adempiere agli obblighi previsti dalla legge, da un regolamento,
+        dalla normativa dell’Unione Europea nonché da disposizioni di Autorità a
+        ciò legittimate o da competenti Organi di vigilanza o di controllo (ad
+        esempio obblighi relativi alle normative fiscali o per i registri
+        antiriciclaggio). In tal caso il suo consenso non è necessario in quanto
+        il trattamento dei dati è correlato al rispetto di tali
+        obblighi/disposizioni;
+      </p>
+
+      <p>
+        c) gestire l’eventuale contenzioso (inadempimenti contrattuali, diffide,
+        transazioni, recupero crediti, arbitrati ecc). In tal caso il suo
+        consenso non è necessario poiché il trattamento dei dati è funzionale al
+        diritto di far valere in giudizio gli interessi del Titolare oltre che
+        al diritto di difesa;
+      </p>
+
+      <p>
+        d) adempiere agli obblighi correlati alla tutela dell’ordine pubblico,
+        all’accertamento ed alla repressione dei reati. In tal caso il suo
+        consenso non è necessario in virtù del prevalente interesse pubblico.
+      </p>
+
+      <p>
+        <strong>
+          - solo previo consenso espresso per la seguente finalità:
+        </strong>
+      </p>
+
+      <p>
+        e) per finalità commerciali dirette, ossia per fornirle informazioni e
+        materiale commerciale e pubblicitario (anche mediante tecniche di
+        comunicazione a distanza quali sms, messaggi di posta elettronica e di
+        altro tipo) su prodotti, servizi o iniziative aziendali, per promuovere
+        gli stessi;
+      </p>
+
+      <p>
+        f) di profilazione ovvero per la creazione di profili (individuali e/o
+        aggregati) sulla base del suo profilo e delle sue preferenze, per
+        elaborare analisi di mercato e statistiche e per la trasmissione di
+        comunicazioni personalizzate;
+      </p>
+
+      <p>
+        g) per finalità commerciali indirette, ossia per comunicare i suoi dati
+        a soggetti terzi affinché svolgano proprie autonome attività commerciali
+        e pubblicitarie ossia per fornirle informazioni e materiale
+        commerciale/promozionale (anche mediante tecniche di comunicazione a
+        distanza quali ad esempio newsletter) su propri prodotti, servizi o
+        iniziative, per promuovere gli stessi, per realizzare ricerche
+        statistiche e di mercato, per verificare la qualità dei servizi, per
+        applicarle uno o più profili.
+      </p>
+
+      <h2>5. Base giuridica del trattamento.</h2>
+
+      <p>Il trattamento dei suoi dati personali si fonda:</p>
+
+      <p>
+        a) sull’esecuzione del contratto di licenza d’uso tra noi in essere;
+      </p>
+
+      <p>b) sul consenso da lei liberamente e regolarmente prestato;</p>
+
+      <p>c) sull’adempimento di un obbligo previsto dalla normativa vigente;</p>
+
+      <p>
+        d) sul perseguimento di legittimi interessi del Titolare. Più in
+        dettaglio:
+      </p>
+
+      <p>
+        la base giuridica per la finalità sub a) di cui all’art. 4 è l’art. 6.1
+        b del GDPR (art. 5.1 b della legge RSM), per la finalità sub b) è
+        rappresentata dall’art. 6.1 c (art. 5.1. c della legge RSM), per la
+        finalità sub c) è rappresentata dall’art. 6.1 f (5.1 f della legge RSM),
+        per la finalità sub d) è rappresentata dall’art. 6.1 e (5.1. e della
+        legge RSM) e per le finalità sub e) f) e g) è rappresentata dall’art.
+        6.1 a (5.1 a della legge RSM).
+      </p>
+
+      <h2>6. Natura obbligatoria o facoltativa del trattamento</h2>
+
+      <p>
+        Il conferimento dei suoi dati per le finalità dettagliate al precedente
+        punto 4 “Finalità del trattamento” lettere a), b), c) e d) è
+        obbligatorio; pertanto, il suo eventuale rifiuto comporterà
+        l’impossibilità di erogarle i nostri servizi.
+      </p>
+
+      <p>
+        E’ fatto salvo comunque il suo diritto di revocare il consenso in
+        qualsiasi momento opponendosi al trattamento. Il rilascio dei dati per
+        le altre finalità sopra indicate è invece facoltativo, può quindi
+        decidere di non fornire alcun dato senza pregiudicare il mantenimento
+        dei rapporti con la nostra società.
+      </p>
+
+      <h2>7. Destinatari dei dati personali</h2>
+
+      <p>
+        I dati personali raccolti saranno trattati all’interno della società ad
+        opera di nostri dipendenti strettamente autorizzati ed opportunamente
+        istruiti (ex art. 29 del GDPR ed ex art. 30 della legge RSM) nell’ambito
+        delle relative mansioni.
+      </p>
+
+      <p>
+        All’esterno della società i dati potranno invece essere comunicati e
+        trattati da tutte quelle persone fisiche e/o giuridiche impegnate a
+        svolgere, per conto della nostra società, attività necessarie e/o
+        strumentali a garantire l’operatività della stessa.
+      </p>
+
+      <p>
+        I suoi dati non saranno oggetto di diffusione ma potranno essere
+        comunicati ad organi ispettivi preposti a verifiche e controlli inerenti
+        alla regolarità degli adempimenti di legge.
+      </p>
+
+      <p>
+        L’elenco completo dei Responsabili è archiviato presso la nostra sede ed
+        è disponibile e visionabile dietro richiesta.
+      </p>
+
+      <h2>8. Trasferimento dati ad un paese terzo</h2>
+
+      <p>
+        Per quanto concerne l’eventuale trasferimento dei dati verso Paesi
+        Terzi, tra cui Paesi che potrebbero non garantire il medesimo livello di
+        tutela previsto dal Regolamento e dalla legge RSM, il trattamento
+        avverrà comunque sulla base di una delle condizioni definite dal
+        Regolamento in ossequio agli artt. 44 e seguenti (45 e seguenti legge
+        RSM), operando in conformità alle disposizioni di legge applicabili.
+      </p>
+
+      <h2>9. Periodo di conservazione dei dati</h2>
+
+      <p>
+        I suoi dati personali saranno trattati per il tempo strettamente
+        necessario a garantire l’adempimento di tutte le obbligazioni assunte in
+        forza del rapporto contrattuale tra noi in essere, salvo il caso di
+        espresso e specifico consenso anche in relazione alle operazioni di cui
+        al punto 4 lettere e) f) e g), nel qual caso i dati verranno trattati
+        fino a successiva revoca del consenso e comunque non oltre due anni da
+        quando è stato rilasciato o rinnovato il consenso per i dati forniti per
+        attività commerciali, non oltre un anno per i dati utilizzati per
+        offerte commerciali personalizzate.
+      </p>
+
+      <p>
+        I suoi dati saranno inoltre conservati dal Titolare, per il tempo
+        necessario a garantire la reciproca tutela in sede giudiziaria dei
+        diritti nonché per ottemperare agli obblighi di legge, fra cui quelli di
+        natura tributaria.
+      </p>
+
+      <h2>10. Diritti dell’interessato</h2>
+
+      <p>
+        La informiamo che, in qualsiasi momento, ai sensi degli artt. 15-22 del
+        Regolamento UE n. 679/2016 e della legge RSM potrà esercitare i seguenti
+        diritti:
+      </p>
+
+      <p>
+        1) avere conferma dell’esistenza o meno di un trattamento di dati
+        personali che la riguardano e, in tal caso, ottenere l’accesso ai
+        medesimi dati ed a tutte le informazioni relative al trattamento stesso
+        (diritto di accesso ex art. 15 GDPR e legge RSM);
+      </p>
+
+      <p>
+        2) ottenere la rettifica dei dati personali inesatti, senza
+        ingiustificato ritardo e l’integrazione di quelli incompleti anche
+        mediante dichiarazione integrativa (diritto di rettifica ex art. 16 GDPR
+        e legge RSM);
+      </p>
+
+      <p>
+        3) ottenere la cancellazione dei suoi dati personali senza
+        ingiustificato ritardo se: i dati non sono più necessari rispetto alle
+        finalità per le quali sono stati raccolti o trattati; sono stati
+        trattati illecitamente; devono essere cancellati per adempiere ad un
+        obbligo legale; ha revocato il consenso o si oppone al trattamento
+        (diritto all’oblio ex art. 17 GDPR e legge RSM);
+      </p>
+
+      <p>
+        4) ottenere la limitazione del trattamento quando ricorre una delle
+        seguenti ipotesi: se contesta l’esattezza dei dati personali, per il
+        periodo necessario al Titolare del trattamento per verificare detta
+        esattezza; se il trattamento è illecito e lei si oppone alla
+        cancellazione dei dati e chiede invece che ne sia limitato l’utilizzo;
+        benché il Titolare del trattamento non ne abbia più bisogno ai fini del
+        trattamento, i dati personali le siano necessari per l’accertamento o
+        l’esercizio di un diritto in sede giudiziaria; se lei si è opposto al
+        trattamento, in attesa della verifica in merito all’eventuale prevalenza
+        dei motivi legittimi del Titolare del trattamento rispetto ai suoi
+        (diritto di limitazione ex art. 18 GDPR e legge RSM);
+      </p>
+
+      <p>
+        5) di ricevere in un formato strutturato, di uso comune e leggibile da
+        dispositivo automatico i dati personali che la riguardano e di
+        trasmettere tali dati ad un altro Titolare del trattamento, senza
+        impedimenti da parte del Titolare del trattamento cui li ha forniti
+        (diritto alla portabilità ex art. 20 GDPR e legge RSM);
+      </p>
+
+      <p>
+        6) di opporsi, in tutto o in parte, al trattamento. Qualora i dati
+        personali siano trattati per finalità di marketing diretto, lei ha il
+        diritto di opporsi in qualsiasi momento al trattamento, compresa la
+        profilazione nella misura in cui sia connessa a tale marketing diretto.
+        Qualora i dati personali siano trattati a fini di ricerca scientifica o
+        storica o a fini statistici, per motivi connessi alla sua situazione
+        particolare, ha il diritto di opporsi al trattamento, salvo che il
+        trattamento sia necessario per l’esecuzione di un compito di interesse
+        pubblico (diritto di opposizione ex art. 21 GDPR e legge RSM);
+      </p>
+
+      <p>7) di revocare in qualsiasi momento il consenso prestato;</p>
+
+      <p>
+        8) di proporre reclamo all’Autorità Garante per la protezione dei dati
+        personali.
+      </p>
+
+      <h2>
+        11. Titolare del trattamento e suo rappresentante nell’Unione Europea
+      </h2>
+
+      <p>
+        Per far valere i diritti sopra descritti potrà rivolgersi, in qualsiasi
+        momento, al Titolare del trattamento PIENISSIMO S.r.l. mediante
+        comunicazione da trasmettersi, a mezzo e-mail, al seguente indirizzo di
+        posta elettronica pienissimo@pec.it o, a mezzo raccomandata r.r., al
+        seguente indirizzo: Strada Rovereta n. 6 – 47891 Falciano, San Marino –
+        RSM o, al suo rappresentante nell’Unione Europea, Dott. Nathaniel
+        Casadei reperibile, al seguente indirizzo di posta elettronica
+        pienissimo@novapoesis.it o, a mezzo raccomandata r.r., al seguente
+        indirizzo: Via Pomposa n. 43/I, 47924 Rimini (RN).
+      </p>
+    </div>
+
+    <!-- =====================================================
+             ALLEGATO B
+             ===================================================== -->
+
+    <div class="plus-page-break"></div>
+
+    <div class="plus-annex">
+      <h2>ALLEGATO B</h2>
+
+      <h3>
+        DICHIARAZIONE DI AVVENUTA TRATTATIVA SPECIFICA DELLE CLAUSOLE OGGETTO
+        DELLA PRESTAZIONE OFFERTA DA PIENISSIMO
+      </h3>
+
+      <p>
+        Le Parti, a integrazione e corredo del contratto stipulato in data
+        ____________________, dichiarano espressamente che le clausole oggetto
+        della prestazione offerta da Pienissimo, così come formulate nel
+        contratto (PUNTO 1, PUNTO 2, PUNTO 4, PUNTO 5, PUNTO 6 PUNTO 7, PUNTO
+        10, PUNTO 13), sono state oggetto di specifica trattativa, discussione e
+        negoziazione tra loro prima della sottoscrizione del contratto stesso.
+      </p>
+
+      <p>
+        In particolare, le Parti confermano di aver esaminato congiuntamente il
+        contenuto e l’oggetto di suddette clausole, e di averne compreso
+        pienamente portata, effetti e limiti.
+      </p>
+
+      <p>
+        La sottoscrizione della presente dichiarazione avviene in segno di piena
+        consapevolezza, libera volontà e reciproca accettazione dei termini
+        pattuiti.
+      </p>
+
+      <div class="plus-signature-block">
+        <table
+          class="plus-signature-table"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
+        >
+          <tr>
+            <td valign="top">
+              <strong>Pienissimo</strong>
+              <br /> PIENISSIMO S.r.l. <br /> il legale rappresentante pro
+              tempore <br /> Sig. Giuliano Lanzetti
+            </td>
+
+            <td valign="top">
+              <strong>Il Cliente</strong>
+              <br />
+
+              <apex:outputText value="{!customerName}" />
+              <br /> il legale rappresentante pro tempore
+              <br />
+
+              <apex:outputText
+                value="{!customer.Nome_Legale_Rappresentante__c}"
+              />
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</apex:component>

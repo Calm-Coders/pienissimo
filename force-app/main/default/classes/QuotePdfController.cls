@@ -1,5 +1,6 @@
 public without sharing class QuotePdfController {
   private static final Integer MAX_LINES = 500;
+  private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
   public Quote quoteRecord { get; private set; }
   public List<LineRow> lines { get; private set; }
   public String currencyCode { get; private set; }
@@ -22,7 +23,8 @@ public without sharing class QuotePdfController {
       'Subtotal, TotalPrice, Tax, ShippingHandling, GrandTotal, Modalita_Pagamento_PDF__c, ' +
       'Account.Name, Account.BillingStreet, Account.BillingPostalCode, Account.BillingCity, ' +
       'Account.BillingState, Account.BillingCountry, Account.Partita_IVA__c, ' +
-      'Account.Nome_Legale_Rappresentante__c, Account.PEC__c, Opportunity.Owner.Name' +
+      'Account.Nome_Legale_Rappresentante__c, Account.PEC__c, Opportunity.Owner.Name, ' +
+      'Opportunity.RecordType.DeveloperName' +
       (multiCurrency ? ', CurrencyIsoCode' : '') +
       ' FROM Quote WHERE Id = :quoteId';
     quoteRecord = (Quote) Database.queryWithBinds(
@@ -147,6 +149,12 @@ public without sharing class QuotePdfController {
     return quoteRecord.Opportunity == null
       ? ''
       : quoteRecord.Opportunity.Owner.Name;
+  }
+  public Boolean getIsPlusOpportunity() {
+    return quoteRecord.Opportunity != null &&
+      quoteRecord.Opportunity.RecordType != null &&
+      quoteRecord.Opportunity.RecordType.DeveloperName ==
+      PLUS_OPPORTUNITY_RECORD_TYPE;
   }
 
   private static String address(

@@ -366,8 +366,8 @@ public with sharing class BundleProductAssignmentController {
           'Inserisci un prezzo bundle non negativo con massimo due decimali.'
         );
       }
-      update new Product2(Id = bundleId, Bundle_Selling_Price__c = fixedPrice);
     }
+    update new Product2(Id = bundleId, Bundle_Selling_Price__c = fixedPrice);
 
     return getBundleContext(bundleId);
   }
