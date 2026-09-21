@@ -50,6 +50,16 @@ private class OrderTriggerHandlerTest {
     .Id;
   }
 
+  private static Id campaignRecordTypeId(String developerName) {
+    return [
+      SELECT Id
+      FROM RecordType
+      WHERE SObjectType = 'Campaign' AND DeveloperName = :developerName
+      LIMIT 1
+    ]
+    .Id;
+  }
+
   private static PricebookEntry makePricebookEntry(Product2 product) {
     Id pricebookId = Test.getStandardPricebookId();
 
@@ -89,11 +99,44 @@ private class OrderTriggerHandlerTest {
     return line;
   }
 
+  private static Campaign makeCampaign(String name) {
+    Campaign parentCampaign = new Campaign(
+      Name = name + ' Parent',
+      IsActive = true,
+      RecordTypeId = campaignRecordTypeId('Campagna_Padre')
+    );
+    insert parentCampaign;
+
+    Campaign campaign = new Campaign(
+      Name = name,
+      IsActive = true,
+      RecordTypeId = campaignRecordTypeId('Campagna_Figlio'),
+      ParentId = parentCampaign.Id,
+      StartDate = Date.today().addDays(-1),
+      EndDate = Date.today().addDays(1),
+      Data_Evento__c = Date.today().addDays(1),
+      Data_Invio_Biglietto__c = Date.today()
+    );
+    insert campaign;
+    return campaign;
+  }
+
+  private static void makeMapping(Product2 product, Campaign campaign) {
+    insert new Mappatura_Edizione__c(
+      Prodotto__c = product.Id,
+      Campagna__c = campaign.Id,
+      Data_Inizio__c = Date.today().addDays(-1),
+      Data_Fine__c = Date.today().addDays(1),
+      Attiva__c = true
+    );
+  }
+
   @isTest
   static void incassatoOrderCreatesTicketsForFlaggedProducts() {
     Account account = makeAccount();
     Product2 eventProduct = makeProduct('Pienissimo Live', true);
     Product2 ordinaryProduct = makeProduct('Manuale Operativo', false);
+    makeMapping(eventProduct, makeCampaign('Pienissimo Live Edition'));
     PricebookEntry eventEntry = makePricebookEntry(eventProduct);
     PricebookEntry ordinaryEntry = makePricebookEntry(ordinaryProduct);
     Order orderRecord = makeDraftOrder(account);
@@ -136,6 +179,7 @@ private class OrderTriggerHandlerTest {
   static void repeatedIncassatoDoesNotCreateDuplicates() {
     Account account = makeAccount();
     Product2 eventProduct = makeProduct('Food Marketing Festival', true);
+    makeMapping(eventProduct, makeCampaign('Food Marketing Festival Edition'));
     PricebookEntry eventEntry = makePricebookEntry(eventProduct);
     Order orderRecord = makeDraftOrder(account);
     OrderItem eventLine = makeOrderItem(orderRecord, eventEntry, 2);
@@ -162,6 +206,7 @@ private class OrderTriggerHandlerTest {
   static void incassatoTopsUpOnlyMissingTickets() {
     Account account = makeAccount();
     Product2 eventProduct = makeProduct('Academy', true);
+    makeMapping(eventProduct, makeCampaign('Academy Edition'));
     PricebookEntry eventEntry = makePricebookEntry(eventProduct);
     Order orderRecord = makeDraftOrder(account);
     OrderItem eventLine = makeOrderItem(orderRecord, eventEntry, 2);
@@ -201,6 +246,7 @@ private class OrderTriggerHandlerTest {
       false,
       'Item'
     );
+    makeMapping(eventComponent, makeCampaign('Pienissimo Live Edition'));
 
     insert new List<BundleComponent__c>{
       new BundleComponent__c(
@@ -248,6 +294,60 @@ private class OrderTriggerHandlerTest {
         eventComponent.Id,
         ticket.Product2Id,
         'Ticket product should be the flagged bundle component'
+      );
+      System.assertEquals(
+        bundleLine.Id,
+        ticket.Order_Product__c,
+        'Ticket should keep the sold bundle order line as its commercial origin'
+      );
+    }
+  }
+
+  @isTest
+  static void ticketGeneratingBundleCreatesBundleTicketsByQuantity() {
+    Account account = makeAccount();
+    Product2 bundle = makeProduct('Academy Bundle', true, 'Bundle');
+    Product2 eventComponent = makeProduct('Academy Event', true, 'Item');
+    makeMapping(bundle, makeCampaign('Academy Bundle Edition'));
+
+    insert new BundleComponent__c(
+      Bundle__c = bundle.Id,
+      Product__c = eventComponent.Id,
+      Quantity__c = 2,
+      Spread_Price__c = 1000
+    );
+
+    PricebookEntry bundleEntry = makePricebookEntry(bundle);
+    Order orderRecord = makeDraftOrder(account);
+    OrderItem bundleLine = makeOrderItem(orderRecord, bundleEntry, 3);
+
+    Test.startTest();
+    orderRecord.Status = 'Incassato';
+    update orderRecord;
+    Test.stopTest();
+
+    List<Asset> tickets = [
+      SELECT RecordTypeId, Product2Id, Order_Product__c
+      FROM Asset
+      WHERE Order_Product__c = :bundleLine.Id
+    ];
+
+    System.assertEquals(
+      3,
+      tickets.size(),
+      'A ticket-generating bundle should create one ticket per sold bundle quantity'
+    );
+
+    for (Asset ticket : tickets) {
+      System.assertEquals(
+        assetTicketRecordTypeId(),
+        ticket.RecordTypeId,
+        'Generated Assets should use the Ticket record type'
+      );
+      System.assertEquals(
+        bundle.Id,
+        ticket.Product2Id,
+        'Ticket product should be the sold bundle when the bundle generates tickets'
       );
       System.assertEquals(
         bundleLine.Id,

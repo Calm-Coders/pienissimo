@@ -242,6 +242,21 @@ public with sharing class OrderTriggerHandler {
         line.Product2Id
       );
 
+      if (line.Product2.Genera_Biglietto__c == true) {
+        sources.add(
+          new TicketSource(
+            line.Id,
+            line.Order.AccountId,
+            line.Order.EffectiveDate,
+            line.Product2Id,
+            line.Product2.Name,
+            orderQuantity
+          )
+        );
+
+        continue;
+      }
+
       if (components != null && !components.isEmpty()) {
         for (BundleComponent__c component : components) {
           if (
@@ -270,19 +285,6 @@ public with sharing class OrderTriggerHandler {
         }
 
         continue;
-      }
-
-      if (line.Product2.Genera_Biglietto__c == true) {
-        sources.add(
-          new TicketSource(
-            line.Id,
-            line.Order.AccountId,
-            line.Order.EffectiveDate,
-            line.Product2Id,
-            line.Product2.Name,
-            orderQuantity
-          )
-        );
       }
     }
 
