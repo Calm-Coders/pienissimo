@@ -112,3 +112,27 @@ button can work at all.
 **So the count is five, not four**, and the cheapest route to three of them is
 still Mirko Merendi at Kreosoft, who answered eight questions of the same shape
 in one pass on 11 August.
+
+## 🟢 2026-09-17 (evening) - a Mexal session with him is booked for Friday morning
+
+`[PIENISSIMO] - Temi Mexal`, **Friday 18 September 2026, 10:00–11:00 CEST**,
+organised by Elena Spini, invitation sent **13:17:39Z**. Invited: **Aurel
+Mrruku and Andrea Di Cicco** — nobody else.
+
+This is the _"check sulle api mexal … più in avanti"_ Aurel Mrruku named on
+16/09 when he said Andrea Di Cicco was not needed at the internal, and it is
+the venue [the 17/09 internal follow-up](../meetings/2026-09-17%20Follow-up%20Interno.md)
+deferred the contract-financials API to (`00:51:43`, `00:57:12`).
+
+🔴 **One hour now carries six questions.** OI-110 (agent and network fields on
+the Mexal order call), OI-102 (Salesforce endpoint and token for the WooCommerce
+plugin), OI-125, OI-135 (who to notify before Salesforce creates a Mexal order),
+the twenty-eight-day one named above, and now
+[OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md)'s
+`scoperto clienti` / `scadenziario` contract. **Only the last is on the
+invitation's subject line**, and the older five have no agenda anywhere.
+
+⚠ **Nothing shows anyone has listed them for him.** He was active and
+responsive elsewhere today — a 11:03 CEST DM asking Aurel Mrruku to share a
+vault with a colleague, and unrelated posts in `#gen-chat-cazzeggio` at 17:55
+CEST — so the silence on these six is not unavailability.

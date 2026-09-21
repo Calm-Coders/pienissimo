@@ -150,10 +150,67 @@
   min-width: 0;
 }
 
+.tranche-planner {
+  border-top: 1px solid #d8dde6;
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+}
+
+.tranche-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tranche-row {
+  align-items: end;
+  border: 1px solid #d8dde6;
+  border-radius: 4px;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 6rem minmax(7rem, 0.5fr) minmax(10rem, 1fr);
+  padding: 0.65rem 0.75rem;
+}
+
+.tranche-sequence {
+  color: var(--lwc-colorTextWeak, #706e6b);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.amount-box {
+  border: 1px solid #d8dde6;
+  border-radius: 4px;
+  display: grid;
+  font-weight: 700;
+  gap: 0.15rem;
+  min-height: 3.25rem;
+  padding: 0.45rem 0.55rem;
+}
+
+.box-label {
+  color: var(--lwc-colorTextWeak, #706e6b);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.due-date-input {
+  min-width: 0;
+}
+
 @media (max-width: 520px) {
   .summary,
   .input-grid,
-  .selected-row {
+  .selected-row,
+  .tranche-row {
     grid-template-columns: 1fr;
+  }
+
+  .tranche-sequence {
+    padding-bottom: 0;
   }
 }

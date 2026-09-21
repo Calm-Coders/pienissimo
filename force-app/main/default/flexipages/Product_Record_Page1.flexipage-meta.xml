@@ -7,9 +7,6 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
-                            <value>Edit</value>
-                        </valueListItems>
-                        <valueListItems>
                             <value>Product2.Add_Products</value>
                             <visibilityRule>
                                 <criteria>
@@ -19,12 +16,6 @@
                                     <rightValue>Bundle</rightValue>
                                 </criteria>
                             </visibilityRule>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Delete</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Clone</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -169,6 +160,20 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Is_Plus__c</fieldItem>
+                <identifier>RecordIs_Plus__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Solo_Bundle__c</fieldItem>
                 <identifier>RecordSolo_Bundle__cField</identifier>
             </fieldInstance>

@@ -5,7 +5,7 @@ status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-15
-updated: 2026-09-16
+updated: 2026-09-17
 depends_on: [OI-78, OI-86]
 blocks: [go-live]
 requirement: [BIG-18, INT-16, ORD-01]
@@ -178,3 +178,36 @@ page. The asymmetry this row and
 [the authentication risk](../risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)
 describe is unchanged, and is now demonstrable from a link anybody in that DM can
 click.
+
+## 🟢 2026-09-17 - the removal reached `DevMain`, and the guest-reachable write is gone
+
+**PR #48** (`Dev component bundle`, Rexhina Hysi, `DEV_ComponentBundle` →
+`DevMain`) was opened at **12:54:26Z** and **merged at 14:29:39Z** as `f3b3837`.
+It carries `4132dab` — the removal — together with five other commits of
+unrelated bundle, quote-PDF and rinuncia work, exactly as this row predicted it
+would.
+
+Verified on `origin/DevMain`:
+
+- `4132dab` is an ancestor of `DevMain`;
+- **no `markOrderIncassato` or `canMarkOrderIncassato` anywhere in
+  `force-app/`**;
+- **no `"Segna ordine incassato"` button** remains in source — the only
+  surviving occurrences are in this repository's own notes and recaps;
+- `Incassato` survives only where it belongs: the `OrderStatus` standard value
+  set, `OrderTriggerHandler`'s `CONFIRMED_STATUS`, `WoocommerceOrderService`'s
+  `CREATED_STATUS`, and the trigger tests.
+
+🔴 **What is closed is the code path, not the question.** Nobody has ruled on
+whether a customer-facing actor may ever assert that an order is collected.
+**Elisa Migliano still has not been asked**, and if the intent was ever _"the
+referent confirms they have paid"_, that need is now unserved and unrecorded. A
+merge is not a decision.
+
+🔴 **`QuoteAcceptanceController` is still `public without sharing`** on a bare
+`quoteId`, unchanged by any of today's five merges. The asymmetry this row
+describes survives the fix.
+
+⚠ **UAT still has the old code.** This is repository arithmetic against
+`origin/DevMain`; **the org was not opened**, and the last org record is
+2026-09-14. Nothing here shows the removal deployed.

@@ -8,11 +8,26 @@
                     <valueList>
                         <valueListItems>
                             <value>Quote.Crea_Tranche</value>
+                            <visibilityRule>
+                                <booleanFilter>1 AND 2</booleanFilter>
+                                <criteria>
+                                    <leftValue
+                  >{!Record.Opportunity.RecordType.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Vendita Standard</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Bozza</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                         <valueListItems>
                             <value>Quote.Invia_Per_Accettazione</value>
                             <visibilityRule>
-                                <booleanFilter>1 OR 2</booleanFilter>
+                                <booleanFilter
+                >(1 OR 2) AND (3 OR 4)</booleanFilter>
                                 <criteria>
                                     <leftValue>{!Record.Status}</leftValue>
                                     <operator>EQUAL</operator>
@@ -24,15 +39,58 @@
                                     <rightValue
                   >In Attesa Accettazione</rightValue>
                                 </criteria>
+                                <criteria>
+                                    <leftValue
+                  >{!Record.Opportunity.RecordType.DeveloperName}</leftValue>
+                                    <operator>CONTAINS</operator>
+                                    <rightValue>Standart</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue
+                  >{!Record.Opportunity.RecordType.DeveloperName}</leftValue>
+                                    <operator>CONTAINS</operator>
+                                    <rightValue
+                  >Plus_Attivazione_Rinnovo</rightValue>
+                                </criteria>
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
                             <value>Quote.Genera_PDF</value>
                             <visibilityRule>
+                                <booleanFilter>1 AND (2 OR 3)</booleanFilter>
                                 <criteria>
                                     <leftValue>{!Record.Status}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>Bozza</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue
+                  >{!Record.Opportunity.RecordType.DeveloperName}</leftValue>
+                                    <operator>CONTAINS</operator>
+                                    <rightValue>Standart</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue
+                  >{!Record.Opportunity.RecordType.DeveloperName}</leftValue>
+                                    <operator>CONTAINS</operator>
+                                    <rightValue
+                  >Plus_Attivazione_Rinnovo</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Quote.Manage_Products</value>
+                            <visibilityRule>
+                                <booleanFilter>1 OR 2</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Bozza</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>In Trattativa</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
@@ -105,9 +163,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>adminFilters</name>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>maxRecordsToDisplay</name>

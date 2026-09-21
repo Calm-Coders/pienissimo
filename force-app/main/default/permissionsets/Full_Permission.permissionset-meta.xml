@@ -44,6 +44,10 @@
         <apexClass>ParticipantCommunityUrl</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>QuoteManageProductsController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <customPermissions>
         <enabled>true</enabled>
         <name>Edit_Mexal_Synced_Admin_Fields</name>
@@ -381,6 +385,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.Checkout_Link__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Opportunity.Locale__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -482,6 +491,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Genera_Biglietto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.Is_Plus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -827,6 +841,18 @@
     </recordTypeVisibilities>
     <recordTypeVisibilities>
         <recordType>Account.Locale</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Opportunity.Plus_Attivazione_Rinnovo</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Opportunity.Recall_Tutor</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Opportunity.Standart</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <tabSettings>

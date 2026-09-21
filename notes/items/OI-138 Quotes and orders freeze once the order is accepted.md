@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-09-16
-updated: 2026-09-16
+updated: 2026-09-17
 depends_on: [OI-59]
 blocks: [go-live]
 requirement: [ORD-01, SAL-17]
@@ -101,3 +101,23 @@ session did not go near that distinction.
    they can act on.
 
 ⚠ **Not estimated.** It arrived on 16 September, seven days before UAT opens.
+
+## 2026-09-17 - stated a fourth time, internally, and the contract model behind it is still undefined
+
+At [the 17/09 internal follow-up](../meetings/2026-09-17%20Follow-up%20Interno.md)
+(`01:11:11`) the rule was restated in the same terms: after acceptance **both
+the quote and the order are frozen and no longer modifiable**.
+
+⚠ **This is a ROMI-internal restatement, not a new client statement** — no
+Pienissimo attendee was present. It adds no authority to the rule; it shows the
+rule has been absorbed by the team that has to build it.
+
+🔴 **What the same passage adds is a gap.** The contract data model and its
+activation field _"restano da definire completamente"_ — and the freeze now has
+to coexist with a Contract record that is created automatically at order
+transmission and then updated from Mexal with invoiced and collected amounts
+([OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md)).
+**That is a second writer after acceptance**, alongside the tranche roll-up this
+row already names. The seal cannot be a blanket record lock, and the list of
+legitimate post-acceptance writers is now two and growing, with nobody
+maintaining it.

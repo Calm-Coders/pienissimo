@@ -1,4 +1,4 @@
-public with sharing class QuoteTriggerHandler {
+public without sharing class QuoteTriggerHandler {
   private static final String ACCEPTED_STATUS = 'Accettato';
   private static final String AWAITING_ACCEPTANCE_STATUS = 'In Attesa Accettazione';
   private static final String DRAFT_STATUS = 'Bozza';

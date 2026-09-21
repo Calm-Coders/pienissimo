@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-16
+updated: 2026-09-17
 blocks: [OI-75, go-live]
 severity: gating
 source: Aurel Mrruku direct decision, 2026-08-24; meetings/open-items.md row 50
@@ -415,3 +415,38 @@ this project has been carrying in a notes field.
 [the quote PDF note on that branch](../traces/Source%20trace%202026-09-16.md).
 It automates the free-text workaround; it does not give the tranches structure.
 The two efforts have not met.
+
+## 🔑 2026-09-17 - ROMI settled a line-level shape internally, and proposed a second, different mechanism
+
+At [the 17/09 internal follow-up](../meetings/2026-09-17%20Follow-up%20Interno.md)
+— **ROMI only, no Pienissimo attendee** — two answers were given to the gap
+Elisa Migliano opened the day before, and they are not the same answer.
+
+### The line-level shape (`01:15:36`)
+
+Tranches are represented as **separate order lines carrying the same product
+code with the price divided**, with **start and end dates entered by hand for
+each tranche**, for the calculation and for the send to Mexal. That is the first
+time the record holds a concrete shape for the multi-line tutor quote.
+
+### The product-registry shape (`00:34:58`, approved `00:38:21`)
+
+Separately, **fractional product records** in the anagrafica — halves, thirds,
+quarters of the parent course — each tied to its own Mexal invoice.
+→ [OI-142](OI-142%20Fractional%20product%20records%20for%20tranche%20payment.md)
+
+⚠ **The session carries both and reconciles neither.** One splits the product
+registry; the other splits order lines under a single product code. The notes'
+own `Da approfondire` block records that instalments-as-order-lines and their
+transmission to Mexal still need _"una verifica congiunta con i referenti"_ —
+so ROMI does not treat the line shape as settled either.
+
+🔴 **Aurel Mrruku owns building it**: the minuted action is to create the Plus
+order template and _"integrare la logica per la suddivisione delle tranche nel
+sistema di gestione preventivi"_, and he flagged the complexity himself
+(`01:21:47`).
+
+⚠ **Friday 18/09 was where 16/09 deferred this.** That slot now holds
+`[PIENISSIMO] - Temi Mexal` at 10:00 and Data Model Parte 6 at 11:00, and
+**neither is booked for tranches or order lines** — see
+[OI-24](OI-24%20Data%20model%20workbook.md).

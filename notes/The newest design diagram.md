@@ -402,3 +402,27 @@ company name and VAT number, and the ticket tier is still the misspelt
 `Executive / Gold / Diamond` and the diagram carries neither `Executive` nor a
 correctly spelt `Diamond`. **Do not propagate either into a picklist**
 ([OI-76](items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)).
+
+## ⚠ 2026-09-17 (evening) - a tenth edit, hours after the decode, not re-read
+
+`Flows & Objects.drawio` (`11ly3iGQc1smlY8IybSnUMQBGXbZ-ddbx`, Elena Spini)
+carries `modifiedTime` **2026-09-17T17:20:06Z** — **the second edit of the same
+day**, and the first since this note's decode, which was made against the
+**2026-09-16T08:42:38Z** version (see `decoded_at_version` in the frontmatter).
+Current size **197,850 bytes**.
+
+**It was not decoded again tonight**, so nothing here says what changed. That is
+a limit of this run, not a finding about the file.
+
+⚠ **The timing is suggestive and is not evidence.** The edit falls about two
+hours after [the internal follow-up](meetings/2026-09-17%20Follow-up%20Interno.md)
+ended, whose minuted actions include Aurel Mrruku sending Elena Spini _"i file e
+i link aggiornati necessari per la creazione del blueprint"_ and her drafting
+from them. **No source connects the edit to that action**, and no last-modifying
+user is returned by Drive, so the author of this edit is **unknown and is not
+inferred**.
+
+🔴 **The `DGM-2` problem is unchanged until someone reads it.** This file is
+still the cited `source:` of several register rows, and this morning's decode
+found it carrying no ruling later than 26/08. Whether tonight's edit closes that
+gap or widens it is **the first question for the next run with room.**

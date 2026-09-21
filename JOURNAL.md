@@ -10,6 +10,36 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-17 (evening) — claude — requirements-check: the internal follow-up drilled, and five merges in one afternoon
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-17T12:30Z** to **21:40Z** — a nine-hour window and the busiest this
+  job has had. Drilled `[PIENISSIMO] - Follow-up Interno` (17/09 14:15 CEST,
+  **ROMI-internal, no client**, ~1h22m) from its Gemini notes read in full
+  (~23k tokens). Read the five commits that reached `DevMain` and the metadata
+  they carry.
+- **State:** **4 notes new** — the meeting minute, `OI-140` (three Opportunity
+  record types), `OI-141` (auto-created Contract for Performance Plus orders),
+  `OI-142` (fractional product records for tranches). **7 updated** — `OI-49`,
+  `OI-136`, `OI-50`, `OI-138`, `OI-139`, `OI-24`, the design-diagram note. MAP,
+  INDEX, tracker rows 24/49/50/136/138/139 + **new rows 140–142**, and
+  **RECAP §42 in both languages**. `vault:check` green. **The register was not
+  touched** — the three new rulings are ROMI-internal scope with no client
+  agreement, and allocating a requirement id is a human's call.
+- **Next:** decode `Flows & Objects.drawio` — it moved a **tenth** time at
+  17:20:06Z and this run did not open it. Then check whether Friday's client
+  call validated the record types and the bundle-lock constraint.
+- **Watch:** 🔴 **the merged WooCommerce link generator emits the URL anatomy the
+  27/08 session replaced** (`?add-to-cart=…&sf_opportunity_id=…`, Woo product id
+  **typed by hand**), and in doing so closes both of Sabatino Rinaldi's open
+  questions by implementation. Do **not** record that as "the button was finally
+  built" — the finding is the collision with OI-49's 27/08 section.
+  🔴 `Standart` is misspelt in an Opportunity record-type **API name and label**;
+  fix before records exist. 🔴 **PR #49 targets `main`** with the same head as
+  #50 — do not merge it. 🟢 `4132dab` is on `DevMain`: the guest-reachable
+  `Incassato` write is gone from source, **but nobody ruled**, and Elisa
+  Migliano still has not been asked.
+
 ## 2026-09-17 (nightly) — claude — nightly requirements-check: a second cited source documents a retired design
 
 - **Did:** scheduled nightly `requirements-check` from watermark

@@ -444,3 +444,42 @@ PEC and IBAN, a named contact with personal email and mobile, a real quote with
 its line values and a real customer code. **None of it is reproduced here and
 none of it may be.** Describe a field, never a value —
 [the publishing policy](../../docs/publishing.md).
+
+## 2026-09-17 (evening) - Friday gained a second event, and Monday gained a pre-UAT test session
+
+Three calendar actions from Elena Spini on the afternoon of 17/09, all after
+[the internal follow-up](../meetings/2026-09-17%20Follow-up%20Interno.md):
+
+| Event                                      | When                            | Invited                               | Sent      |
+| ------------------------------------------ | ------------------------------- | ------------------------------------- | --------- |
+| `[ROMI-PIENISSIMO] - Test Interni Pre-UAT` | **Mon 21/09 16:00–18:00 CEST**  | Aurel Mrruku, Rexhina Hysi, Anita Aga | 12:44:35Z |
+| `[PIENISSIMO] - Follow-up Interno`         | Mon 21/09 17:00–18:00 — **cancelled**, note _"Annullo per altro meeting"_ | — | 12:44:56Z |
+| `[PIENISSIMO] - Temi Mexal`                | **Fri 18/09 10:00–11:00 CEST**  | Aurel Mrruku, Andrea Di Cicco         | 13:17:39Z |
+
+🟢 **Monday is the first internal pre-UAT test session on the record**, and it
+lands **two days before UAT opens on 23/09**. It is the minuted _"riunione
+operativa … per lunedì dalle 16 alle 18"_ with Anita Aga and Rexhina Hysi, and
+it displaced the recurring internal follow-up rather than sitting beside it.
+
+### Friday 18/09 now holds two Pienissimo events
+
+| Slot          | Event                          | Focus                          |
+| ------------- | ------------------------------ | ------------------------------ |
+| 10:00–11:00   | `[PIENISSIMO] - Temi Mexal`    | Mexal APIs, with Andrea Di Cicco |
+| 11:00–13:00   | Data Model **Parte 6**         | `Campagne` / `Lead`, with Rebecca Marmo |
+
+🟢 **They do not clash** — back to back, not overlapping, and the 16/09
+double-booking question is answered by the schedule rather than by anyone
+ruling: Parte 6 keeps the 11:00 slot and the Lead table finally gets its
+session.
+
+🔴 **Order lines still have no booking** — seventh session's worth of deferral,
+and now with `Temi Mexal` occupying the only other Friday slot. The 17/09
+internal added **tranche order-line shape** to what needs that session
+([OI-50](OI-50%20Tranche%20object.md)).
+
+⚠ **The client-facing "call di venerdì"** the internal session repeatedly refers
+to — where the order-type constraints and the record types get client validation
+(`00:31:21`) — is **not identified**. Parte 6 is the only client-facing Friday
+event on the record, and its subject is Campagne/Lead. **No source says the two
+are the same meeting**, and it is not inferred here.
