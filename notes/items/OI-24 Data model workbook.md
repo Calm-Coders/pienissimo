@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elisa Migliano
 org: both
 raised: 2026-07-02
-updated: 2026-09-17
+updated: 2026-09-21
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 24
@@ -483,3 +483,57 @@ to — where the order-type constraints and the record types get client validati
 (`00:31:21`) — is **not identified**. Parte 6 is the only client-facing Friday
 event on the record, and its subject is Campagne/Lead. **No source says the two
 are the same meeting**, and it is not inferred here.
+
+## 🟢 2026-09-18 / 2026-09-21 - the data model is declared complete, and the client data arrived
+
+**Parte 6 was the last Data Model session.** Elena Spini's 21/09 status post:
+_"Definizione del Data Model completata con successo a valle delle sessioni di
+analisi."_ [Data Model Parte 6](../meetings/2026-09-18%20Data%20Model%20Parte%206.md)
+covered campaigns, events and discounts — the Campagne/Lead material this row had
+been waiting six sessions for.
+
+🟢 **The four standing gaps are answered, and not by the workbook.**
+[OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+records what Fabrizio Paganelli delivered on 21/09: a Drive folder with one
+subfolder per table — `ACCOUNT` · `ARTICOLI` · `CAMPAGNE` · **`LEAD`** · **`LOCALI`**
+· `OPPORTUNITA` · `PREVENTIVI` · `REFERENTI`. The **Lead** table and the **Locale**
+children are both in it. 🔴 **The `ARTICOLI` classification is empty**, so the
+delivery is partial.
+
+🟢 The ordering question this row carried is also answered: at Parte 6 the group
+confirmed **orders are not managed in Zoho at all**, so there is nothing to map —
+_"noi oggi sul Zoho gli ordini non li gestiamo"_ (Fabrizio Paganelli, `00:03:03`).
+Standard order fields plus what carries over from the quote is the whole of it.
+
+## The calendar, as of 2026-09-21T22:00Z
+
+| When              | What                                                    | Who beyond ROMI                        |
+| ----------------- | ------------------------------------------------------- | -------------------------------------- |
+| Tue 22/09 10:30   | `Temi QR Code Biglietti`                                | **Andrea Parmeggiani**, Elisa, Fabrizio |
+| Tue 22/09 11:00   | `Logiche Spacchettamento Righe`                          | Elisa, Fabrizio                        |
+| Tue 22/09 15:00   | `Test Mexal`                                             | **Mirko Merendi**, Elisa, Fabrizio     |
+| Tue 22/09 17:00   | `Test Interni Pre-UAT - Parte 2`                         | ROMI only                              |
+| Thu 24/09 15:00   | **UAT: Lead e Opportunità**                              | Marco Montesi, Elisa, Fabrizio         |
+| Fri 25/09 10:30   | **UAT: Preventivi**                                      | Marco Montesi, Elisa, Fabrizio         |
+| Mon 28–Tue 29/09  | 🔴 **Food event at Riccione** — client unavailable        | —                                      |
+| Wed 30/09 14:00   | **UAT: Biglietti (Asset), Campagne ed Eventi**            | Rebecca Marmo, Elisa, Fabrizio         |
+| Fri 02/10 10:00   | **UAT: Flussi MKT Biglietti**                             | Rebecca, Fabrizio Mastracci, Elisa, Fabrizio |
+| Mon 05/10 15:00   | **UAT: Performance Plus + Gestione date pagamento**       | Elisa, Fabrizio                        |
+| Tue 06/10 10:00   | **UAT: Integrazione Mexal ↔ Salesforce**                  | Elisa, Fabrizio                        |
+| 06–13/10          | Client credentials, autonomous testing, **approval by 13/10** | —                                  |
+| Wed 21/10         | **Go-live Fase 1**                                       | —                                      |
+
+🔴 **Order lines finally have a booking** — `Logiche Spacchettamento Righe`, 22/09
+11:00, the dedicated session Parte 6 deferred the tranche agreement to. The trigger
+armed on 17/09 is discharged.
+
+🔴 **No UAT session covers WooCommerce and the checkout link**, which was the
+seventh topic of the proposal →
+[OI-158](OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md).
+
+⚠ **28 and 29 September are both the Riccione event**, per Elisa Migliano at Parte
+6. The UAT proposal accounted only for the 29th; no session falls on the 28th
+either way.
+
+⚠ **UAT opens 24 September, not 23.** The client chose the later of the two slots
+offered for Lead e Opportunità.

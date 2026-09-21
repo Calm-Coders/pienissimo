@@ -1,12 +1,12 @@
 ---
 id: OI-49
 type: open-item
-status: in-progress
+status: resolved
 owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-07-31
-updated: 2026-09-17
+updated: 2026-09-21
 requirement: [INT-12, INT-13, INT-14, ORD-12]
 source: meetings/open-items.md row 49
 ---
@@ -376,3 +376,137 @@ swept source states that this is the Funnel Kit checkout path**, and the 27/08
 session said the funnel URL carries the product. Whether the built link resolves
 to anything on the client's site is **unknown and was not tested** — the org was
 not opened tonight.
+
+## 🟢🔑 2026-09-18 / 2026-09-21 - RESOLVED. The link carries the funnel name, and it works end to end
+
+**This row is closed on its mechanism.** Two client-facing sessions four days
+apart settled the anatomy and then proved it, and they did so **against both of
+the shapes this note previously held.**
+
+### 18/09 - Sabatino Rinaldi rejected the built link and gave the real anatomy
+
+At [Flusso Recall Tutor SFDC-WooCommerce](../meetings/2026-09-18%20Flusso%20Recall%20Tutor%20SFDC-WooCommerce.md)
+(18/09 10:32 CEST, brought forward at his request) Aurel Mrruku demoed the
+generator merged the previous afternoon. Sabatino Rinaldi identified it as wrong:
+**the platform builds every cart and checkout page with Funnel Kit**, so
+`…/checkout/?add-to-cart=<id>` opens a static page, not a cart (`00:15:39`).
+
+**Agreed anatomy:** the leading portion of the URL is **static**, the **funnel
+name is dynamic** — typed by the user in Salesforce while generating the link —
+and the opportunity id travels as a query parameter (`00:19:02`, `00:22:01`).
+Aurel Mrruku: _"invece di chiamarlo prodotto WooCommerce, lo chiamo funnel
+WooCommerce."_
+
+**And the two questions this row had been carrying since 16/09 are answered — by
+removing their premise:**
+
+| Question owed by Sabatino Rinaldi              | Answer, 18/09                                                  |
+| ---------------------------------------------- | -------------------------------------------------------------- |
+| Is the product id always a bundle id?          | **Moot.** The link carries no product id at all.               |
+| What about multi-product offers with no bundle? | **_"è impossibile che debba inserire due prodotti"_** — one product or bundle per link; concatenation deferred (`00:05:21`, `00:07:42`) |
+
+On WooCommerce a bundle behaves as a single product, and his stage-sale example —
+the tour pack sold with a deposit — is exactly that shape. ⚠ **So the 17/09
+report's reading, that these questions were being "closed by implementation", is
+superseded.** They were closed by their owner, one day later, in a session booked
+for the purpose.
+
+His original constraint — **a tutor must never type an id** — is honoured: a
+funnel name is not an id, and marketing supplies it. 🟢 **The catalogue-sync cron
+this design was said to rest on is not needed under this anatomy**, which removes
+a dependency that had no owner and no date.
+
+### The same morning, it was rebuilt
+
+`479d076` (Anita Aga, **18/09 12:39:33 CEST**, ~2h after the session), merged to
+`DevMain` in **PR #50** on 21/09 11:00:06Z:
+
+```diff
+-const CHECKOUT_BASE_URL = "https://www.pienissimo.it/checkout";
++const CHECKOUT_BASE_URL = "https://shop.pienissimo.com/checkouts/";
+-  productWooCommerceId = "";
++  funnelWooCommerce = "";
+-      "add-to-cart": productId,
+-      sf_opportunity_id: this.recordId
++      sf_opp_id: this.recordId
+-    return `${CHECKOUT_BASE_URL}?${params.toString()}`;
++    return `${CHECKOUT_BASE_URL}${funnelPath}/?${params.toString()}`;
+```
+
+So the built link is now `https://shop.pienissimo.com/checkouts/<funnel>/?sf_opp_id=<opportunityId>`,
+the `add-to-cart` parameter is gone, and the UI strings are Italian. Aurel Mrruku
+posted the before and after in DM the same morning (10:42 and 10:57 CEST).
+
+⚠ **The URL parameter is `sf_opp_id`**, not the `sf_opportunity_id` the payload
+contract carries. Those are different legs — a URL query parameter versus a
+payload field — and the 21/09 test passed, so `sf_opp_id` is what the plugin
+reads. ⚠ The path segment is `checkouts/` (plural); Sabatino Rinaldi queried the
+spelling on 18/09 and **the 21/09 test resolved it in favour of `checkouts/`**.
+
+### 21/09 - the order flow was proved with the client in the room
+
+At [Test WooCommerce e Temi Mexal](../meetings/2026-09-21%20Test%20WooCommerce%20e%20Temi%20Mexal.md)
+(21/09 16:00 CEST, with Elisa Migliano and Fabrizio Paganelli present) an order
+was created on WooCommerce, transmitted to Salesforce, and **linked to its
+Opportunity** (`00:25:51`).
+
+**Decision, recorded in the session's own decisions block:** _"I link dei carrelli
+per le attività commerciali vengono associati direttamente alle opportunità di
+Salesforce anziché ai singoli codici prodotto."_
+
+🔴 **The failures on the way are the finding.** The order would not send: the
+cause was **products with no SKU, and SKUs that do not exist in the Salesforce
+instance** — the plugin reported _"Salesforce ordine non inviato. Prodotti senza
+SKU"_ (`00:18:33`). It succeeded only after Aurel Mrruku supplied a code that
+exists on both sides. ⚠ The article that worked is a **zero-price gift record**,
+so the green path ran on a giveaway, not a priced article.
+
+⚠ At `00:27:18` Aurel Mrruku suspected the plugin was sending a **stale
+opportunity id**, then compared ids and confirmed they matched. **Checked and
+cleared in-session.**
+
+🟢 Sabatino Rinaldi explained the operational gain to the rest of the client team
+(`00:29:31`): the link binds the **cart**, so a tutor can put any products into
+it at any time, and last year's ODP Live streaming problem disappears.
+
+### What is still open, and it is no longer the anatomy
+
+- 🔴 **The recall list has no owner.** Fabrizio Paganelli asked how the call list
+  is produced — of 50 in the room, two bought, 48 need calling (`00:31:05`).
+  **Sabatino Rinaldi: that is separate contact management, unrelated to the cart.**
+  Nothing builds it and nobody owns it.
+- 🔴 **The order type still does not travel.** An order arriving from WooCommerce
+  has no Lead, so
+  [OI-150](OI-150%20Opportunity%20type%20comes%20from%20a%20Lead%20picklist.md)
+  does not cover it, and
+  [the payload contract](../The%20WooCommerce%20payload%20contract.md) carries no
+  order type. **Third question owed by the same counterpart, three weeks old,
+  still unasked.**
+- 🔴 **SKU hygiene is now a live migration problem** — Fabrizio Paganelli wants the
+  superfluous codes cleaned, but historical movements would lose their reference
+  (`00:20:35`). See
+  [OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+  and [the article-code risk](../risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
+- 🔴 **No UAT session is booked for this flow** —
+  [OI-158](OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md).
+- 🔴 **The endpoint Sabatino Rinaldi uses is the test environment**, and Aurel
+  Mrruku confirmed the credentials must be swapped for production. **No owner, no
+  date.** → [OI-102](OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+- ⚠ **`INT-16`'s signed-token recommendation is still contradicted** by a
+  clear-text id, and the register still says otherwise. Unchanged by this window.
+- ⚠ **The 31/07 spec `Integrazione_Salesforce_WooCommerce.docx` is now wrong in a
+  third way** — it specifies the mu-plugin v1.0.0 and the comma-concatenated URL,
+  and Sabatino Rinaldi has since built **his own WordPress plugin** with a
+  Salesforce connection test (`00:17:02`). It remains a cited `source:` in
+  `REQUIREMENTS.md`, `REQUISITI.it.md` and tracker row 49.
+
+### Why the record was wrong twice
+
+Worth keeping, because this row has now mis-stated the same mechanism twice in
+three weeks. The 27/08 entry above records the link as carrying **the opportunity
+id alone**, on the reasoning that Funnel Kit already knows the product. That was
+half right: Funnel Kit does carry the product — **but the funnel has to be named
+in the URL**, and no one had checked what a Funnel Kit URL looks like. The build
+then guessed `add-to-cart`, which is stock WooCommerce and not this shop. **The
+agreed anatomy was in neither the record nor the first build**, and it took
+fifteen minutes of a client call to surface once the link was actually clicked.

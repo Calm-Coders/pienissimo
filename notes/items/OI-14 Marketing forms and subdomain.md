@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-09-08
+updated: 2026-09-21
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -193,3 +193,29 @@ Elena Spini into a new Drive folder `02 Marketing` during
 of the three are effectively empty as text — the logic sits in screenshots — and
 the WhatsApp templates are absent altogether
 ([OI-133](OI-133%20The%20WhatsApp%20templates%20are%20missing%20from%20the%20marketing%20material.md)).
+
+## 🟡 2026-09-18 - the first movement in nine weeks, and it has not landed
+
+At [Flusso Recall Tutor SFDC-WooCommerce](../meetings/2026-09-18%20Flusso%20Recall%20Tutor%20SFDC-WooCommerce.md)
+(`00:13:07`, `00:14:38`) Elena Spini asked Sabatino Rinaldi to **send by email the
+Zoho form links that are absolutely indispensable**, out of the ~100, so the flows
+can be configured with Fabrizio Mastracci. He agreed, unprompted and specifically:
+
+> _"ti mando i link di Zoho, dei form che in assoluto dobbiamo avere subito"_
+
+🔴 **No such mail has arrived as of 2026-09-21T22:00Z** — three days, and Gmail was
+swept for his address across both client domains.
+
+🔑 **He named Matteo again, and offered to route around him.** _"se non riusciamo
+subito a darvi quella roba lì da parte di Matteo"_ — that is
+[Matteo Distaso](../people/Matteo%20Distaso%20-%20Pienissimo%20marketing%20lead.md),
+Responsabile Marketing, the same person this row has named since **23 June**.
+Thirteen weeks. Sabatino Rinaldi's offer to send the indispensable links himself is
+an explicit workaround for Matteo Distaso not delivering, which is the first time
+anyone has proposed one.
+
+🟢 Elena Spini's 21/09 status post confirms the split of work: still waiting on
+Sabatino Rinaldi's web-form validation **with priority agreed on the core forms**,
+while the ticket flows are being configured by Fabrizio Mastracci and Aurel Mrruku.
+
+⚠ **Marketing Cloud UAT is 2 October**, and the forms are its input.

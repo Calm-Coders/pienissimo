@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-24
-updated: 2026-09-02
+updated: 2026-09-21
 depends_on: [OI-24]
 blocks: [OI-13]
 source: Prodotti e Bundle.xlsx, sheet "Lista Prodotti"
@@ -95,3 +95,36 @@ it happens.
 and now has evidence behind it:** `_ARCOD` is an opaque string. Never trim it,
 never strip its punctuation, never re-pad it, and never compare two codes by
 anything but exact string equality.
+
+## 🔴 2026-09-19 / 2026-09-21 - observed in the client's own tooling, twice
+
+**This risk stopped being hypothetical in this window.** It was demonstrated inside
+the import template ROMI supplied, and then again on the live WooCommerce leg.
+
+**1. The template converted a text code to a number.** Fabrizio Paganelli, by mail
+19/09 17:02Z, explaining why he abandoned Elena Spini's shared sheet:
+
+> _"in alcuni casi mi dava delle anomalie dovute probabilmente ad un tema di formato
+> dati. Esempio il codice cliente (formato testo) mi diventa un numero quando vado ad
+> incollare i dati nella tabella"_
+
+Aurel Mrruku confirmed the mechanism independently at
+[the 21/09 Mexal internal](../meetings/2026-09-21%20Interna%20Temi%20Mexal.md):
+_"quando diventa numero fa un arrotondamento sull'Excel"_. **A rounding, on an
+identifier.** → [OI-88](../items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
+
+**2. Codes did not match across the two systems on the live test.** At
+[the 21/09 client call](../meetings/2026-09-21%20Test%20WooCommerce%20e%20Temi%20Mexal.md)
+the WooCommerce order would not reach Salesforce: **products with no SKU, and SKUs
+that do not exist in the Salesforce instance** (`00:18:33`). It took several
+attempts and an explicit hand-off of a code that exists on both sides to get one
+order through. Aurel Mrruku's remark while doing it — that his copy carries a
+separator the other side's does not — is this risk in miniature.
+
+**3. And the mitigation now has a cost.** Fabrizio Paganelli wants the superfluous
+codes cleaned out of the registry, **but if historical movements are imported they
+would have no code to reference** (`00:20:35`, `00:22:25`). So the registry cannot
+simply be tidied.
+
+⚠ The import template was supposed to be the place this rule was carried. It was
+delivered, and **the rule was not carried — it was triggered.**

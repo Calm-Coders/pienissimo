@@ -1,12 +1,12 @@
 ---
 id: OI-102
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-08-27
-updated: 2026-09-16
+updated: 2026-09-21
 blocks: [OI-49, OI-101, OI-104]
 requirement: INT-11
 source: meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md
@@ -381,3 +381,31 @@ Spini's action from the session is to chase him on WhatsApp again.
 it are **both** unavailable, and neither ROMI voice connected the two facts in
 the same conversation. **UAT opens on 23 September**, seven days out, on an
 integration whose end-to-end test has never run with the filtered payload.
+
+## 🟢 2026-09-18 / 2026-09-21 - delivered, integrated and tested
+
+**Closed on delivery.** The eight-day silence had a mundane cause: **Sabatino
+Rinaldi never opened the 8 September mail** — _"non l'ho proprio aperta. Io ero in
+tour"_ ([18/09 session](../meetings/2026-09-18%20Flusso%20Recall%20Tutor%20SFDC-WooCommerce.md),
+`00:26:54`). Aurel Mrruku re-pinged the same thread at 18/09 08:59:18Z; Sabatino
+Rinaldi replied 09:51:42Z: _"Fatto tutto. Dovrebbe funzionare. Ho lanciato 3 ordine
+di test."_
+
+- **Token mechanics on record**: a static token obtains an access token valid **up
+  to 24 hours**, used per call (`00:29:37`).
+- **He integrated the collection's JSON into his own WordPress plugin**, which
+  carries a _"verifica connessione a Salesforce"_ button — connection succeeded,
+  token obtained, demonstrated on 21/09 (`00:17:02`).
+- ✅ **End-to-end order transmission proved 21/09** — see
+  [OI-49](OI-49%20WooCommerce%20checkout-link%20flow.md).
+
+🔴 **What replaces it: a production credential rotation with no owner and no
+date.** Aurel Mrruku confirmed in the same session that the endpoint Sabatino
+Rinaldi now holds is **the test environment**, and that the credentials **must be
+swapped when Salesforce goes into production** — _"Questo è ambiente di test…
+quando il SF sarà operativo la dovremmo cambiare"_. Go-live is 21 October.
+
+⚠ He also asked him not to over-test, because each call creates an order and
+duplicates accumulate — relevant to
+[OI-104](OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md),
+which is still open.

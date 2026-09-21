@@ -5,9 +5,10 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-17
+updated: 2026-09-21
 blocks: [OI-75, go-live]
 severity: gating
+requirement: [ORD-02, ORD-03]
 source: Aurel Mrruku direct decision, 2026-08-24; meetings/open-items.md row 50
 ---
 
@@ -450,3 +451,44 @@ sistema di gestione preventivi"_, and he flagged the complexity himself
 `[PIENISSIMO] - Temi Mexal` at 10:00 and Data Model Parte 6 at 11:00, and
 **neither is booked for tranches or order lines** — see
 [OI-24](OI-24%20Data%20model%20workbook.md).
+
+## 🔴 2026-09-21 - the Mexal side cannot receive the tranche date
+
+**The mechanism this row describes works on the Salesforce side and has no
+counterpart on the Mexal side.** Established at
+[the 21/09 Mexal internal](../meetings/2026-09-21%20Interna%20Temi%20Mexal.md).
+
+Mexal exposes **no field through which Salesforce can set an invoice due date**.
+`data scadenza riga` (order line, sent by Salesforce) and `Data scadenza PG`
+(scadenziario / invoice, computed by Mexal from the payment method) are **not
+related one-to-one**. Because Fabrizio Paganelli ruled that invoices are created
+by hand, **the invoice due date does not exist until a person types it** — and the
+tranche date is the only key that joins an invoice back to a tranche.
+
+So the design stands, and the **reconciliation it exists to enable now depends on
+manual re-keying**:
+→ [OI-143](OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md)
+
+🔴 **And a bundle cannot carry its tranches at all as one line**, so bundles must
+be split into n order lines, changing how the bundle total is computed:
+→ [OI-144](OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)
+
+### 2026-09-18 - Elisa Migliano proposed exactly this, and it is defeated
+
+At [Data Model Parte 6](../meetings/2026-09-18%20Data%20Model%20Parte%206.md)
+(`02:21:11`) Elisa Migliano proposed **dedicated Salesforce fields for the
+instalments and their invoice dates**, mirroring what tutors type by hand today, so
+that Mexal could receive the payment plan. Aurel Mrruku confirmed it was feasible
+on the Salesforce side and left the Mexal-side verification open. **That
+verification came back negative three days later, and she has not been told.**
+
+The same session also recorded her objection to child products for high-value
+instalment courses — they would alter the structure of the accounting movements
+(`02:12:47`) — which cuts against
+[OI-142](OI-142%20Fractional%20product%20records%20for%20tranche%20payment.md).
+**Later evidence, and a client objection to a ROMI position.**
+
+⚠ **The definitive tranche agreement was deferred to a dedicated session**, which
+became `Logiche Spacchettamento Righe`, **22/09 11:00–12:00**, with Elisa Migliano
+and Fabrizio Paganelli invited. It is followed at 15:00 by `Test Mexal` with Mirko
+Merendi. **Those two hours are where this row is decided.**

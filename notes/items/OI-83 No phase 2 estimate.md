@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-09
+updated: 2026-09-21
 depends_on: [OI-37, OI-38]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -82,3 +82,35 @@ out of scope, the decision-maker is copied — and nobody can price it, accept i
 refuse it.
 
 **Five weeks past _"dopo le ferie"_. Still open, still unowned by a date.**
+
+## 🟢 2026-09-21 - the client confirmed interest, and the budget signal is explicit
+
+Elena Spini's `#tproj-pienissimo` status post, **21/09 09:52:45 CEST** — the first
+in seventeen days — moves this row for the first time since the escalation was
+promised:
+
+> _"**Notizie positive:** Confermato l'interesse del cliente per la quotazione della
+> Fase 2; data la forte sensibilità emersa sul budget, la definizione della
+> proposition economica richiederà una valutazione accurata (NON voglio spendere)."_
+
+🟢 **Two things are now on record that were not**: the client **wants a Fase 2
+quotation**, and ROMI has read their budget posture — the parenthetical is Elena
+Spini's gloss on the client's own position, not a quote from them.
+
+🟢 The same post states that **the Fase 1 / Fase 2 distinction has been formalised**
+— _"Formalizzata la distinzione tra Fase 1 e Fase 2"_ — which is what the dispute
+was about.
+
+🔴 **There is still no estimate**, and this row's core finding stands: the
+decision-maker was never told the original perimeter excluded Fase 2. **Daniela
+Morgese** signs commercially, and
+[OI-124](OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md) now records that
+even the go-live change reached her only through Fabrizio Paganelli's say-so.
+
+⚠ The five-week-verbatim red-flag paragraph is **gone** from the 21/09 post,
+replaced by _"siamo agli sgoccioli + dismissione Zoho 31.10"_. So the old text
+stopped being carried — but nothing says the dispute was resolved, only that it
+left the status report.
+
+⚠ Also new in the same post: **`Stima giornate a finire: 30`**. Whether that is
+person-days or calendar days is not stated.

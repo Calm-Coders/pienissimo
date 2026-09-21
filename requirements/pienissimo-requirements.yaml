@@ -1194,7 +1194,8 @@ requirements:
       pri: M,
       status: agreed,
       source: AUREL-2026-08-24-TRANCHE,
-      text: "Tranche reference and due date propagate from Quote Line Item to Order Item; the whole order then goes to Mexal with both values at line level"
+      text: "Tranche reference and due date propagate from Quote Line Item to Order Item; the whole order then goes to Mexal with both values at line level",
+      tracked_by: [OI-50, OI-143, OI-144]
     }
   - {
       id: ORD-03,
@@ -1202,7 +1203,8 @@ requirements:
       pri: M,
       status: agreed,
       source: AUREL-2026-08-24-TRANCHE,
-      text: "Mexal updates payment per order line; Salesforce recalculates the tranche and marks it fully paid only when every included line is fully paid"
+      text: "Mexal updates payment per order line; Salesforce recalculates the tranche and marks it fully paid only when every included line is fully paid",
+      tracked_by: [OI-50, OI-143]
     }
   - {
       id: ORD-04,

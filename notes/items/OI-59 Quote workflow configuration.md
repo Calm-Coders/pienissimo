@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-09-17
+updated: 2026-09-21
 requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
 source: meetings/open-items.md row 59
 ---
@@ -378,3 +378,34 @@ Incassato >> Aggiornamento dell' Opty in Chiusa Vinta"_. The deployed Apex uses
 **Eighth day with no ruling**, and the surface has grown: it is no longer only
 the Quote picklist, it is Order too, and the design source is now a witness
 against itself on both.
+
+## 🔑 2026-09-21 - a state was added, and the handler's sharing model was widened
+
+Two changes reached this row in this window, neither of them minuted as a workflow
+decision.
+
+**A signature state was added.** At
+[the 21/09 pre-UAT session](../meetings/2026-09-21%20Test%20Interni%20Pre-UAT.md)
+(`00:45:34`) Aurel Mrruku established that acceptance in the community is **not
+enough** to conclude the contract: a **`firmato` flag and a `signed by` field** come
+between acceptance and order generation. The effective flow becomes
+
+`Bozza → In Attesa Accettazione → Accettato → firmato → order`
+
+where `QuoteTriggerHandler`'s own constants stop at `Accettato`.
+→ [OI-151](OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)
+
+**And a quote expiry pair is on record**: expiry at **5 days**, with an **automatic
+task after two days** if the quote has not been accepted (`00:50:28`). Anita Aga and
+Rexhina Hysi own the task logic. Not contradictory — a nudge at two, expiry at five
+— but neither number has a requirement behind it.
+
+🔴 **`QuoteTriggerHandler` is now `without sharing`**, merged to `DevMain` in PR
+#50 →
+[OI-156](OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md). That is a
+change to who can drive this workflow, made in a one-line diff inside a commit about
+something else.
+
+⚠ **This row has been unruled for eleven days** while four classes hard-code the
+status spellings and a fifth state is now added on top. **Quote UAT is 25
+September.**

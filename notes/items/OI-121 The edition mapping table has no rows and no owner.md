@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-04
-updated: 2026-09-16
+updated: 2026-09-21
 depends_on: [OI-96, OI-98]
 blocks: [OI-53, OI-84]
 source: notes/objects/The Mappatura Edizione object.md
@@ -190,3 +190,20 @@ it does not feed this table.
 **The 07/09 answer to *when* still stands — by hand, in the days immediately
 before go-live — and still nobody has been named to do it.** Those days are now
 the week of 21 October.
+
+## 🔴 2026-09-21 - the input arrived unpopulated
+
+The client's `ARTICOLI` extraction landed on 21/09 and **the ticket flag this row
+needs is not in it.** Aurel Mrruku reviewed it live at
+[the 21/09 Mexal internal](../meetings/2026-09-21%20Interna%20Temi%20Mexal.md):
+**_"Non ha fatto niente, praticamente."_** Neither *generates a ticket* nor
+*included in bundles* is populated, and the bundle classification is absent
+altogether.
+
+The 16/09 ruling was that **`natura` maps to `genera biglietto` + `is bundle`**
+through a custom transformation. A transformation over an unpopulated column
+produces nothing, so **40 of 43 ticket-generating products stay unmapped** and the
+four `OrderTriggerHandlerTest` failures of 15/09 keep their cause.
+
+**Ticket and campaign UAT is 30 September.**
+→ [OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)

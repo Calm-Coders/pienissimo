@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Elena Spini
 org: both
 raised: 2026-09-03
-updated: 2026-09-17
+updated: 2026-09-21
 depends_on: [OI-59]
 relates_to: [OI-123]
 requirement: SAL-16
@@ -107,3 +107,22 @@ global picklist with no values cannot be deployed at all, where a non-restrictiv
 one could have shipped and been populated later. Nothing in
 [the design diagram](../The%20newest%20design%20diagram.md) mentions the field —
 searched, zero occurrences — so the workbook is its only source.
+
+## 🟢 2026-09-21 - the Locale record type reached source
+
+`08b97cc` (Anita Aga, 21/09 18:24 CEST, `DevAnitaRecheckAutomations`, **PR #54
+open**) adds the UI this row needs: an `Account_Locale_Record_Page` flexipage (+504
+lines), an `Account-Locale Layout` (+177), and changes to the Account three-column
+page. So the **Locale** Account the 16/09 ruling put `Tipologia attività` on now has
+a page and a layout.
+
+🔴 **The values are still not delivered**, and the field is still mandatory and
+global. Nothing in this window changed that.
+
+⚠ **The same failure is being set up again.** At
+[Data Model Parte 6](../meetings/2026-09-18%20Data%20Model%20Parte%206.md)
+(`01:22:51`) a **`tipologia evento`** field was made **mandatory at event creation**
+with only an "initial" value set agreed verbally —
+[OI-148](OI-148%20Tipologia%20evento%20is%20mandatory%20at%20event%20creation.md).
+A mandatory picklist with no values blocks record creation, which is precisely what
+this row records happening once already.

@@ -10,6 +10,62 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-21 — claude — nightly requirements-check: the client returned, UAT is booked, and Mexal cannot receive a tranche date
+
+- **Did:** swept the four-day window 18–21/09 from watermark **2026-09-17T21:40Z** and
+  **drilled six meetings** — Data Model Parte 6, Flusso Recall Tutor, two Mexal
+  internals, the client WooCommerce/Mexal test and the internal pre-UAT session. Read
+  ~25 Gmail threads (four in full), the `#tproj-pienissimo` status post, three Slack
+  DMs, two paged Drive sweeps, all nine branch heads and PRs #47–#54.
+- **State:** committed on `DevMain`, `vault:check` green.
+  **Six meeting notes new. `OI-143`–`OI-158` new (sixteen).** Updated OI-14, OI-24,
+  OI-49, OI-50, OI-59, OI-83, OI-88, OI-102, OI-115, OI-121, OI-124, OI-136, OI-139,
+  OI-140, OI-142, two risks, the design-diagram note and three people notes.
+  MAP/INDEX, **tracker rows 143–158 new plus fifteen updated, and RECAP §43 — both
+  languages.** The register was **not** touched: nothing in it became false.
+- **The headline:** 🔑🔴 **`OI-143` — Mexal exposes no field through which Salesforce
+  can set an invoice due date.** `data scadenza riga` and `Data scadenza PG` are not
+  related one-to-one; `Scad PG` derives from the payment method. Because Fabrizio
+  Paganelli ruled invoices are created **by hand**, the invoice date does not exist
+  until a person types it — so administration must **read tranche dates in Salesforce
+  and re-key them into every Mexal invoice**, and that date is the only key joining
+  invoice to tranche. **It was put to him at 16:00 on 21/09 and cut off after two
+  minutes** when Daniela Morgese pulled him out. **The client has agreed manual
+  invoicing and has not been told what it costs.** And a bundle cannot carry n tranche
+  dates as one line → `OI-144`, bundles must be split, changing the bundle total.
+- **Correction to my own 17/09 report:** it called the merged checkout link a case of
+  "closing a client's question by implementation". **Superseded within 24 hours.** On
+  18/09 Sabatino Rinaldi rejected the `add-to-cart` link (the shop uses **Funnel Kit**),
+  gave the real anatomy — **the funnel name, not a product id** — and **answered both
+  questions he had been owing since 16/09 by removing their premise**. Rebuilt two hours
+  later, merged in PR #50, and **proved end to end with the client on 21/09**. `OI-49`
+  is resolved on its mechanism.
+- **Also new:** UAT booked and confirmed (six invitations, 24/09→06/10, approval 13/10,
+  go-live 21/10) 🔴 **but the seventh topic, WooCommerce/checkout, was never booked**
+  (`OI-158`) · 🔴 **there is no full UAT sandbox** — everything called UAT is a Partial
+  Copy (`OI-153`) · 🟢🔴 the client delivered eight migration tables including **Lead**
+  and **Locali** and **`ARTICOLI` is unclassified** (`OI-154`) · 🔴
+  **`QuoteTriggerHandler` is now `public without sharing` on `DevMain`** (`OI-156`) ·
+  🟢 **DocuSign metadata reached source with no secret** (PR #54, open) · 🔑 **the
+  referent moved from Sabatino Rinaldi to Fabrizio Paganelli** · 🟢 the client confirmed
+  interest in a **Fase 2 quotation** · 🔴 a **RID mandate form is promised to customers
+  and does not exist** (`OI-152`).
+- **Next:** the 22/09 sessions decide the two biggest open questions —
+  `Logiche Spacchettamento Righe` at 11:00 (tranches) and `Test Mexal` with Mirko
+  Merendi at 15:00 (the Mexal side, the bundle split, the causali, the discount
+  fields). Drill both. Then `Temi QR Code Biglietti` at 10:30 with Andrea Parmeggiani,
+  and `Test Interni Pre-UAT - Parte 2` at 17:00.
+- **Watch:** 🔴 **`Standart` is still misspelt in six places on `DevMain` and UAT opens
+  24/09** — three days. 🔴 The `ingressi` structure is **agreed with the client and
+  suspended by Elena Spini internally**; Monday passed without the promised review.
+  🔴 **Elisa Migliano still has not been asked** about OI-136, and the 18/09 internal
+  now shows the administrative need being dropped without her. ⚠ Two PRs (#49, #53)
+  were opened against `main` and closed — the repo's default target is `main`, so
+  expect a third. ⚠ `0099aea` **is** on `origin/DevMain`, so the 17/09 push blocker is
+  discharged. ⚠ `Stima Task` is a **Vision** file, not Pienissimo — that twelve-run
+  unknown is closed. ⚠ The org record is ~7 days old and `STATUS.md` was not
+  regenerated: no org evidence in this run.
+
 ## 2026-09-17 (evening) — claude — requirements-check: the internal follow-up drilled, and five merges in one afternoon
 
 - **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark

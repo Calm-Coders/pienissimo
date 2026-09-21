@@ -4577,3 +4577,137 @@ elenco eventi, codici articolo e prezzi di listino sono tutti ancora dovuti.
 go-live al 6 ottobre. ⚠ `Flows & Objects.drawio` è stato modificato una decima
 volta alle 17:20:06Z e **non è stato riletto**. Il registro non è stato
 modificato: nulla al suo interno è diventato falso.
+
+## 43. Aggiornamento 21/09/2026 — il cliente è tornato, l'UAT è in calendario, e il legame tranche-Mexal si rivela impossibile
+
+Quattro giorni spazzolati (18–21/09) e **sei riunioni drillate** — la finestra più densa
+del progetto. Fonti: [Data Model Parte 6](../notes/meetings/2026-09-18%20Data%20Model%20Parte%206.md),
+[Flusso Recall Tutor SFDC-WooCommerce](../notes/meetings/2026-09-18%20Flusso%20Recall%20Tutor%20SFDC-WooCommerce.md),
+[l'interna del 18/09](../notes/meetings/2026-09-18%20Interna%20Temi%20Mexal.md),
+[l'interna Mexal del 21/09](../notes/meetings/2026-09-21%20Interna%20Temi%20Mexal.md),
+[Test WooCommerce e Temi Mexal](../notes/meetings/2026-09-21%20Test%20WooCommerce%20e%20Temi%20Mexal.md),
+[Test Interni Pre-UAT](../notes/meetings/2026-09-21%20Test%20Interni%20Pre-UAT.md).
+
+### 🔑🔴 Mexal non può ricevere una data di scadenza fattura, e il cliente non lo sa
+
+**Il rilievo della finestra.** Mexal **non espone alcun campo attraverso cui Salesforce
+possa impostare una data di scadenza fattura.** `data scadenza riga` (riga d'ordine,
+inviata da Salesforce) e **`Data scadenza PG`** (scadenziario/fattura) **non sono in
+relazione uno a uno**: `Scad PG` è calcolata da Mexal in base alla modalità di
+pagamento. Aurel Mrruku ha dimostrato che il campo indicato nell'Excel condiviso su
+`scoperto clienti` non esiste; Andrea Di Cicco ha confermato.
+
+**Esistono solo due API in uscita** — cliente e ordine. Un'API `evasione riga`
+creerebbe le fatture per riga, ma **Fabrizio Paganelli ha stabilito che le fatture si
+creano a mano su Mexal**, quindi non viene usata. Di conseguenza **la data di scadenza
+della fattura non esiste finché una persona non la digita**, e un utente
+dell'amministrazione deve **leggere le date delle tranche su Salesforce e reinserirle in
+ogni fattura Mexal**, per ogni ordine bundle e Performance Plus. **Quella data è
+l'unica chiave che lega fattura e tranche.**
+
+🔴 **È stato posto a Fabrizio Paganelli alle 16:00 del 21/09 e interrotto dopo due
+minuti**, quando Daniela Morgese lo ha chiamato in un'altra riunione. Il cliente ha
+confermato la fatturazione manuale e **non è stato informato di quanto gli costa.** →
+[OI-143](../notes/items/OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md)
+
+🔴 E **un bundle non può portare n date di tranche come riga unica**, quindi i bundle
+vanno spacchettati in n righe d'ordine — cambiando il calcolo del totale e
+contraddicendo la regola vigente dell'elemento unico. →
+[OI-144](../notes/items/OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)
+
+⚠ **Entrambi i meccanismi prima sul tavolo sono ora esclusi da qualcuno**: Elisa
+Migliano ha obiettato ai prodotti frazionati il 18/09, e la sua stessa controproposta è
+sconfitta da questo rilievo il 21/09. La sessione `Logiche Spacchettamento Righe` del
+22/09 si apre senza alcuna proposta in piedi.
+
+### 🟢🔑 Il link di checkout è risolto, e il rilievo del 17/09 è superato
+
+Il **18/09** Sabatino Rinaldi ha respinto il link `add-to-cart` mergiato — lo shop
+costruisce i carrelli con **Funnel Kit** — e ha dato l'anatomia reale: **il nome del
+funnel, non un id prodotto**. Ha inoltre **risposto a entrambe le domande che doveva dal
+16/09 eliminandone il presupposto**: un prodotto o bundle per link, multiprodotto
+rinviato.
+
+Ricostruito due ore dopo (`479d076`, mergiato nella PR #50) come
+`https://shop.pienissimo.com/checkouts/<funnel>/?sf_opp_id=<id>`, e **provato
+end-to-end con il cliente il 21/09**: ordine trasmesso, id ordine restituito,
+Opportunità collegata. 🔴 I fallimenti lungo il percorso sono il rilievo — **prodotti
+senza SKU e SKU inesistenti su Salesforce** — e il percorso verde è passato su un
+**articolo omaggio a prezzo zero**. 🔴 La lista di recall non ha titolare, e la
+tipologia d'ordine non viaggia ancora. →
+[OI-49](../notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)
+
+### 🔑 L'UAT è fissato e confermato — con un tema mancante
+
+Proposta 18/09, conferma del cliente 21/09, **sei inviti inviati**: 24/09 Lead e
+Opportunità · 25/09 Preventivi · 30/09 Biglietti, Campagne ed Eventi · 02/10 Flussi MKT
+· 05/10 Performance Plus + date pagamento · 06/10 Integrazione Mexal. **Approvazione
+entro il 13/10, go-live 21/10.** Il 1 ottobre è stato escluso come festività
+sammarinese e il 3–4 ottobre perché fine settimana; ⚠ il cliente ha chiesto per
+iscritto il 3 o il 4 ottobre e **non ha ricevuto risposta scritta**.
+
+🔴 **Il settimo tema proposto — WooCommerce e il link di checkout — non è mai stato
+fissato.** →
+[OI-158](../notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)
+
+🔴 **Non esiste un ambiente UAT full.** Aurel Mrruku, 18/09: _«non abbiamo una full»_ —
+tutto ciò che si chiama UAT è una **Partial Copy**, e la catena ordine→Mexal è spenta in
+ogni sandbox. →
+[OI-153](../notes/items/OI-153%20There%20is%20no%20full%20UAT%20sandbox.md)
+
+### 🟢🔴 Il cliente ha consegnato i dati di migrazione, senza classificazione
+
+Otto tabelle il 21/09, tra cui **Lead** e **Locali**, le lacune aperte da sei sessioni —
+e **`ARTICOLI` non ha né il flag biglietto né il flag bundle**. Aurel Mrruku:
+_«Non ha fatto niente, praticamente.»_ 40 dei 43 prodotti biglietto restano non mappati,
+con l'UAT biglietti il 30/09. →
+[OI-154](../notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+
+### Data Model Parte 6 — l'ultima sessione
+
+Sconti **solo sulle righe articolo**, sconto di testata eliminato
+([OI-145](../notes/items/OI-145%20Order%20header%20discounts%20are%20removed.md)) ·
+**campagne padre/figlio** con date di competenza e controllo di sovrapposizione · una
+nuova entità **`ingressi`** per gli eventi plurigiornalieri, **sospesa da Elena Spini la
+sera stessa** ([OI-146](../notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)) ·
+**i biglietti non scansionati si chiudono tre giorni dopo l'evento**
+([OI-147](../notes/items/OI-147%20Unused%20tickets%20close%20three%20days%20after%20the%20event.md)) ·
+**`tipologia evento` obbligatoria alla creazione**
+([OI-148](../notes/items/OI-148%20Tipologia%20evento%20is%20mandatory%20at%20event%20creation.md)) ·
+la **suddivisione dei ricavi San Marino**
+([OI-155](../notes/items/OI-155%20San%20Marino%20revenue%20split%20and%20warehouse%20causale.md)).
+
+### La sessione interna pre-UAT
+
+**Due record type per il Lead** ([OI-149](../notes/items/OI-149%20Two%20Lead%20record%20types.md)) ·
+**tipologia Opportunità da una picklist sul Lead**, il meccanismo che mancava a OI-140
+([OI-150](../notes/items/OI-150%20Opportunity%20type%20comes%20from%20a%20Lead%20picklist.md)) ·
+**uno step di firma sul preventivo** prima della generazione dell'ordine, con il set
+documentale finalmente noto
+([OI-151](../notes/items/OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)).
+🔴 Una lacuna di permessi è stata aggirata **condividendo l'utenza di Aurel Mrruku**,
+cosa impraticabile in UAT. Le due mail di eccezione su `QuoteTrigger` dalla sandbox
+partial sono spiegate da questa sessione: un **trigger rilasciato senza il metodo del
+proprio handler**, corretto in sessione.
+
+### 🔴 Sicurezza e governance
+
+- **`QuoteTriggerHandler` è ora `public without sharing` su `DevMain`** — una riga
+  dentro un commit di 1.068 righe intitolato ad altro, senza requisito, senza
+  descrizione, e adiacente a un errore di permessi guest che nessuno ha collegato.
+  → [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)
+- 🟢 **I metadati DocuSign sono arrivati in source** (PR #54, aperta) **senza alcun
+  segreto** — verso l'ambiente demo, quindi è dovuto uno switch di produzione. Il
+  contratto DocuSign del cliente è arrivato il 21/09; le credenziali sono ancora dovute.
+- 🔑 **Il referente di progetto è passato da Sabatino Rinaldi a Fabrizio Paganelli**,
+  dallo status di Elena Spini del 21/09 — il primo in diciassette giorni, e il primo che
+  riporta `21.10`.
+- 🟢 **Il cliente ha confermato l'interesse per una quotazione di Fase 2**, primo
+  movimento su [OI-83](../notes/items/OI-83%20No%20phase%202%20estimate.md) da settimane.
+- 🔴 **`Standart` è ancora scritto male** in sei punti su `DevMain`. **L'UAT apre fra tre
+  giorni.**
+- 🔴 **Un modulo RID rivolto al cliente finale è promesso nel copy delle email
+  contrattuali e non esiste.**
+  → [OI-152](../notes/items/OI-152%20The%20RID%20mandate%20form%20promised%20to%20customers%20does%20not%20exist.md)
+- 🔴 **Note di credito e storni sono usciti dal piano senza una decisione.**
+  → [OI-157](../notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)

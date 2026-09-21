@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-17
-updated: 2026-09-17
+updated: 2026-09-21
 depends_on: [OI-50]
 source: notes/meetings/2026-09-17 Follow-up Interno.md
 ---
@@ -60,3 +60,36 @@ _"una verifica congiunta con i referenti"_.
   roll-up, not a split product registry.
 - ⚠ **Not put to the client.** Elena Spini proposed doing so; Friday's call is
   the first opportunity.
+
+## 🔴 2026-09-18 - the client's operational authority objected
+
+**One day after ROMI took this position internally, Elisa Migliano argued against
+it in a client-facing session.**
+
+At [Data Model Parte 6](../meetings/2026-09-18%20Data%20Model%20Parte%206.md)
+(`02:12:47`) Elena Spini, Elisa Migliano and Aurel Mrruku discussed exactly the
+case this note was written for: a high-value course the customer pays in
+instalments. Elisa Migliano's position:
+
+- **Splitting the order into sub-orders or multiple products creates complex
+  movement problems in both Salesforce and Mexal**, affecting invoice issuance and
+  ticket availability.
+- When Elena Spini and Aurel Mrruku floated child products explicitly, **she
+  objected that it would alter the structure of the accounting movements.**
+
+🔑 **Her counter-proposal** (`02:21:11`): **dedicated Salesforce fields for the
+instalments and their invoice dates**, mirroring what tutors already type by hand,
+so Mexal receives the payment plan. Aurel Mrruku confirmed that is feasible on the
+Salesforce side. → [OI-50](OI-50%20Tranche%20object.md)
+
+**Later evidence wins, and this is a client objection to a ROMI position.** The
+"which mechanism wins" question this note already carried is now answered in one
+direction on the client's side: **not fractional products**, because of the
+accounting movements.
+
+⚠ **And her alternative is defeated on the Mexal side three days later.** Mexal
+exposes no field for an invoice due date, so the payment plan cannot be transmitted
+at all — see
+[OI-143](OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md).
+**So both mechanisms on the table have now been ruled out by someone**, and the
+22/09 `Logiche Spacchettamento Righe` session opens with no surviving proposal.

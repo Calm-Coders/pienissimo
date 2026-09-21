@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-09-16
-updated: 2026-09-17
+updated: 2026-09-21
 depends_on: [OI-102, OI-110, OI-125, OI-135]
 blocks: [go-live]
 requirement: [INT-01, INT-05, INT-13]
@@ -136,3 +136,46 @@ invitation's subject line**, and the older five have no agenda anywhere.
 responsive elsewhere today — a 11:03 CEST DM asking Aurel Mrruku to share a
 vault with a colleague, and unrelated posts in `#gen-chat-cazzeggio` at 17:55
 CEST — so the silence on these six is not unavailability.
+
+## ⚠ 2026-09-21 - the premise has weakened: he has not detached
+
+Andrea Di Cicco attended **two Pienissimo sessions in the 18–21/09 window** and is
+on the invitation for a third:
+
+- [the 21/09 Mexal internal](../meetings/2026-09-21%20Interna%20Temi%20Mexal.md),
+  45 minutes, where he supplied the answers this row says were owed;
+- [the 21/09 client call](../meetings/2026-09-21%20Test%20WooCommerce%20e%20Temi%20Mexal.md),
+  where Elena Spini kept him specifically for the Mexal topics;
+- **`Test Mexal`, 22/09 15:00–17:00**, with Mirko Merendi and Kreosoft.
+
+So _"lentamente staccare"_ has not happened, and the Mexal questions are being
+worked rather than abandoned.
+
+🟢 **What he answered on 21/09:**
+
+- The scadenziario field is **`Data scadenza PG`**, and it is **not** linked to the
+  order-line due date — it derives from the payment method. → the whole of
+  [OI-143](OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md).
+- **Only two outbound APIs exist**: customer and order. An `evasione riga` API
+  would create per-line invoices but is **not used**, because invoices are created
+  manually.
+- **A tranche, to Mexal, is the beginning of an invoice** — _"sarebbe l'incipit
+  della fattura"_.
+
+🔴 **What is still owed by him or through him:**
+
+- [OI-110](OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md) —
+  `cod_agente` / `zona` / `classificatore rete` have nowhere on the wire. **Not
+  touched in either session**, now 19 days.
+- [OI-135](OI-135%20Who%20must%20be%20told%20when%20Salesforce%20starts%20creating%20Mexal%20orders.md) —
+  unanswered.
+- **Whether Mexal accepts n lines for one bundle article**
+  ([OI-144](OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)) —
+  new, and the 22/09 session is the venue.
+- Whether the discount fields travel on the order API
+  ([OI-145](OI-145%20Order%20header%20discounts%20are%20removed.md)) — new.
+
+⚠ **A source-custody commitment was made and needs holding.** He may build a
+**custom LWC** for the Mexal filtered call; Aurel Mrruku asked him to record which
+components so they can be taken into git, and observed that _"in teoria si parte
+dalla sandbox e va in produzione e invece qua in Romi non sempre succede."_

@@ -4,7 +4,7 @@ type: reference
 status: active
 owner: Elena Spini
 org: ROMI
-updated: 2026-09-17
+updated: 2026-09-21
 source: Drive - Flows & Objects.drawio, modified 2026-09-16T08:42:38Z
 decoded_at_version: 2026-09-16T08:42:38Z
 supersedes_in_register: DGM-2
@@ -426,3 +426,27 @@ inferred**.
 still the cited `source:` of several register rows, and this morning's decode
 found it carrying no ruling later than 26/08. Whether tonight's edit closes that
 gap or widens it is **the first question for the next run with room.**
+
+## ⚠ 2026-09-18 - an eleventh edit, still not decoded
+
+`Flows & Objects.drawio` (`11ly3iGQc1smlY8IybSnUMQBGXbZ-ddbx`, owner Elena Spini)
+carries `modifiedTime` **2026-09-18T09:33:46Z**, size **198,085 bytes** — up from
+197,850 at the 17/09 evening sweep. **An eleventh edit, and the sixth consecutive
+run that has not opened it.**
+
+The limitation is the same one and it is a tool limitation, not a judgement about
+the file: the Drive reader cannot render `.drawio`, and the base64 cannot be piped
+to a shell from this session.
+
+🔴 **It is still the cited `source:` of several register rows**, and it is now
+**further** out of date than when it was last decoded (against the 16/09 version):
+this window added the funnel-based checkout anatomy
+([OI-49](items/OI-49%20WooCommerce%20checkout-link%20flow.md)), the parent/child
+campaign model with its competenza dating, the `ingressi` entity, two Lead record
+types and a quote signature state. **None of it can be in a file last touched on
+18/09 at 09:33Z**, before most of those decisions existed.
+
+⚠ The edit landed **during** the 18/09 sessions — between the 10:01 internal and
+the 11:08 Parte 6 — which is consistent with Elena Spini editing it herself for the
+blueprint. Drive still returns no last-modifying user, so **the author is not
+inferred.**

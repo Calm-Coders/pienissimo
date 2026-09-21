@@ -5,7 +5,7 @@ status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-15
-updated: 2026-09-17
+updated: 2026-09-21
 depends_on: [OI-78, OI-86]
 blocks: [go-live]
 requirement: [BIG-18, INT-16, ORD-01]
@@ -211,3 +211,37 @@ describes survives the fix.
 ⚠ **UAT still has the old code.** This is repository arithmetic against
 `origin/DevMain`; **the org was not opened**, and the last org record is
 2026-09-14. Nothing here shows the removal deployed.
+
+## 🔑 2026-09-18 - the administrative need was scoped once and dropped
+
+**The underlying need has a name now, and it was abandoned in the same breath.**
+
+At [the 18/09 internal](../meetings/2026-09-18%20Interna%20Temi%20Mexal.md) Elena
+Spini walked Aurel Mrruku through her earlier design for it: **a button on the
+Asset, visible only once the asset is available and only to amministrazione
+users**, to correct an incasso booked against the wrong tranche — _"serve per
+correggere loro sbaglio di una fattura pagata in relazione a una trancia
+errata"_. Stated frequency: **20–30 times a year**.
+
+Aurel Mrruku objected on two grounds: **the asset is not always a product** (a
+Performance Plus order is one product paid in x instalments, so there may be no
+asset at all), and **the asset hangs off the offer, not the order**, so reaching
+the tranches from it means a detour.
+
+Elena Spini then dropped it: _"lo lascerei… se lo devono fare a mano, cioè punto"_
+and _"lo lascio perdere, lo cancello."_
+
+🔴 **So the record now holds a complete account of this need being designed,
+costed, objected to and set aside — with no client in the room and no client
+decision.** Elisa Migliano is the operational authority on invoicing and **still
+has not been asked**, six days after the code that did it in the wrong place was
+deleted. The trigger stands: *the code is gone; nobody ruled.*
+
+⚠ And the concept is not going away. At
+[the 21/09 pre-UAT session](../meetings/2026-09-21%20Test%20Interni%20Pre-UAT.md)
+Elena Spini restated that **an order reaches `chiusa vinta` once payment is
+received (`incassato`)** (`00:48:40`). The state matters; only the guest-facing
+button is gone.
+
+⚠ The adjacent reversal case — credit notes and storni — is in the same condition:
+→ [OI-157](OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)

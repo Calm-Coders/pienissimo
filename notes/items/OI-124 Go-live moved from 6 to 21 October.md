@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Pienissimo
 org: both
 raised: 2026-09-07
-updated: 2026-09-09
+updated: 2026-09-21
 blocks: [go-live]
 requirement: CTX-02
 source: Gmail thread 1a0815f9a43d3b87, 2026-09-08 14:15Z and 2026-09-09 07:08Z
@@ -186,3 +186,28 @@ a historical quotation, not a live rule.
 
 **This row is resolved as a register conflict. It is not evidence that the plan
 is agreed.**
+
+## ⚠ 2026-09-18 - the client acknowledgement is Fabrizio Paganelli's claim, not Daniela Morgese's
+
+Elena Spini restated the move to Sabatino Rinaldi at
+[the 18/09 session](../meetings/2026-09-18%20Flusso%20Recall%20Tutor%20SFDC-WooCommerce.md)
+(`00:11:49`) and **flagged her own uncertainty about whether the decision-maker
+knows**:
+
+> _"Fabrizio ha detto che l'ha letta e aveva allineato Daniela, poi non so se è
+> successo."_ … _"spero perché ha detto aggiungo Daniela per conoscenza, quindi
+> penso che poi dopo abbiano parlato."_
+
+Sabatino Rinaldi's reply: _"L'importante è che Fabrizio ha allineato Daniela."_
+
+🔴 **So the acknowledgement this row records rests on Fabrizio Paganelli saying he
+aligned Daniela Morgese, and on her having been cc'd.** Nobody has confirmation
+from her. **Daniela Morgese signs commercially**, and she is the same person
+[OI-83](OI-83%20No%20phase%202%20estimate.md) records as never having been told
+about the Fase 2 perimeter.
+
+🟢 The dates were restated unchanged and are consistent everywhere in this window:
+**UAT 24/25 September → 6 October guided, credentials 6–13 October, approval by 13
+October, go-live 21 October.** Elena Spini's 21/09 `#tproj-pienissimo` post finally
+carries `21.10` too, ending seventeen days in which the team channel still said 6
+October.

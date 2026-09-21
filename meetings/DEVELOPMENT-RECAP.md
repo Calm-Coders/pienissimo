@@ -4362,3 +4362,132 @@ still owed. 🔴 `#tproj-pienissimo` has had no status post since 4 September an
 still states go-live 6 October. ⚠ `Flows & Objects.drawio` was edited a tenth
 time at 17:20:06Z and **was not re-read**. The register was not changed: nothing
 in it became false.
+
+## 43. Update 2026-09-21 — the client came back, UAT is booked, and the tranche-to-Mexal link turns out to be impossible
+
+Four days swept (18–21/09) and **six meetings drilled** — the busiest window on this
+project. Sources: [Data Model Parte 6](../notes/meetings/2026-09-18%20Data%20Model%20Parte%206.md),
+[Flusso Recall Tutor SFDC-WooCommerce](../notes/meetings/2026-09-18%20Flusso%20Recall%20Tutor%20SFDC-WooCommerce.md),
+[the 18/09 internal](../notes/meetings/2026-09-18%20Interna%20Temi%20Mexal.md),
+[the 21/09 Mexal internal](../notes/meetings/2026-09-21%20Interna%20Temi%20Mexal.md),
+[Test WooCommerce e Temi Mexal](../notes/meetings/2026-09-21%20Test%20WooCommerce%20e%20Temi%20Mexal.md),
+[Test Interni Pre-UAT](../notes/meetings/2026-09-21%20Test%20Interni%20Pre-UAT.md).
+
+### 🔑🔴 Mexal cannot receive a tranche invoice date, and the client has not been told
+
+**The finding of the window.** Mexal exposes **no field through which Salesforce can
+set an invoice due date.** `data scadenza riga` (order line, sent by Salesforce) and
+**`Data scadenza PG`** (scadenziario/invoice) are **not related one-to-one**: `Scad
+PG` is computed by Mexal from the payment method. Aurel Mrruku proved the field named
+in the shared `scoperto clienti` Excel does not exist; Andrea Di Cicco confirmed.
+
+**Only two outbound APIs exist** — customer and order. An `evasione riga` API would
+create per-line invoices, but **Fabrizio Paganelli ruled invoices are created by hand
+on Mexal**, so it is not used. Consequently **the invoice due date does not exist
+until a person types it**, and an administration user must **read the tranche dates in
+Salesforce and re-key them into every Mexal invoice**, on every bundle and Performance
+Plus order. **That date is the only key joining invoice to tranche.**
+
+🔴 **It was put to Fabrizio Paganelli at 16:00 on 21/09 and cut off after two minutes**
+when Daniela Morgese pulled him into another meeting. The client has confirmed manual
+invoicing and **has not been told what it costs them.** →
+[OI-143](../notes/items/OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md)
+
+🔴 And **a bundle cannot carry n tranche dates as one line**, so bundles must be split
+into n order lines — changing the bundle total calculation and contradicting the
+standing single-element ruling. →
+[OI-144](../notes/items/OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)
+
+⚠ **Both mechanisms previously on the table are now ruled out by someone**: Elisa
+Migliano objected to fractional products on 18/09, and her own counter-proposal is
+defeated by this finding on 21/09. The 22/09 `Logiche Spacchettamento Righe` session
+opens with no surviving proposal.
+
+### 🟢🔑 The checkout link is resolved, and the 17/09 finding is superseded
+
+On **18/09** Sabatino Rinaldi rejected the merged `add-to-cart` link — the shop builds
+carts with **Funnel Kit** — and gave the real anatomy: **the funnel name, not a product
+id**. He also **answered both questions he had been owing since 16/09 by removing their
+premise**: one product or bundle per link, multi-product deferred.
+
+Rebuilt two hours later (`479d076`, merged in PR #50) as
+`https://shop.pienissimo.com/checkouts/<funnel>/?sf_opp_id=<id>`, and **proved end to
+end with the client on 21/09**: order transmitted, order id returned, Opportunity
+linked. 🔴 The failures on the way are the finding — **products with no SKU and SKUs
+absent from Salesforce** — and the green path ran on a **zero-price gift article**.
+🔴 The recall list has no owner, and the order type still does not travel. →
+[OI-49](../notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)
+
+### 🔑 UAT is booked and confirmed — with one topic missing
+
+Proposal 18/09, client confirmation 21/09, **six invitations sent**: 24/09 Lead e
+Opportunità · 25/09 Preventivi · 30/09 Biglietti, Campagne ed Eventi · 02/10 Flussi MKT
+· 05/10 Performance Plus + date pagamento · 06/10 Integrazione Mexal. **Approval by
+13/10, go-live 21/10.** 1 October was rejected as a San Marino holiday and 3–4 October
+as a weekend; ⚠ the client asked in writing for 3 or 4 October and **received no
+written answer**.
+
+🔴 **The seventh proposed topic — WooCommerce and the checkout link — was never
+booked.** →
+[OI-158](../notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)
+
+🔴 **There is no full UAT sandbox.** Aurel Mrruku, 18/09: _"non abbiamo una full"_ —
+everything called UAT is a **Partial Copy**, and the order-to-Mexal chain is switched
+off in every sandbox. →
+[OI-153](../notes/items/OI-153%20There%20is%20no%20full%20UAT%20sandbox.md)
+
+### 🟢🔴 The client delivered the migration data, unclassified
+
+Eight tables on 21/09 including **Lead** and **Locali**, the gaps six sessions had left
+open — and **`ARTICOLI` has no ticket flag and no bundle flag**. Aurel Mrruku:
+_"Non ha fatto niente, praticamente."_ 40 of 43 ticket products stay unmapped with
+ticket UAT on 30/09. →
+[OI-154](../notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+
+### Data Model Parte 6 — the last session
+
+Discounts **only on article lines**, header discounting removed
+([OI-145](../notes/items/OI-145%20Order%20header%20discounts%20are%20removed.md)) ·
+**parent/child campaigns** with competenza dating and an overlap check · a new
+**`ingressi`** entity for multi-day events, **suspended by Elena Spini the same
+evening** ([OI-146](../notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)) ·
+**unscanned tickets close three days after the event**
+([OI-147](../notes/items/OI-147%20Unused%20tickets%20close%20three%20days%20after%20the%20event.md)) ·
+**`tipologia evento` mandatory at creation**
+([OI-148](../notes/items/OI-148%20Tipologia%20evento%20is%20mandatory%20at%20event%20creation.md)) ·
+the **San Marino revenue split**
+([OI-155](../notes/items/OI-155%20San%20Marino%20revenue%20split%20and%20warehouse%20causale.md)).
+
+### The internal pre-UAT session
+
+**Two Lead record types** ([OI-149](../notes/items/OI-149%20Two%20Lead%20record%20types.md)) ·
+**Opportunity type from a Lead picklist**, the mechanism OI-140 lacked
+([OI-150](../notes/items/OI-150%20Opportunity%20type%20comes%20from%20a%20Lead%20picklist.md)) ·
+**a quote signature step** before order generation, with the document set finally known
+([OI-151](../notes/items/OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)).
+🔴 A permissions gap was worked around by **sharing Aurel Mrruku's own login**, which
+cannot be done in UAT. The two `QuoteTrigger` exception mails from the partial sandbox
+are explained by this session: a **trigger deployed without its handler method**, fixed
+in-session.
+
+### 🔴 Security and governance
+
+- **`QuoteTriggerHandler` is now `public without sharing` on `DevMain`** — one line
+  inside a 1,068-line commit about something else, no requirement, no description, and
+  adjacent to a guest-user permission failure nobody connected to it.
+  → [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)
+- 🟢 **DocuSign metadata reached source** (PR #54, open) with **no secret** — against
+  the demo environment, so a production swap is owed. The client's DocuSign contract
+  arrived 21/09; credentials still owed.
+- 🔑 **The project referent moved from Sabatino Rinaldi to Fabrizio Paganelli**, per
+  Elena Spini's 21/09 status post — the first in seventeen days, and the first to carry
+  `21.10`.
+- 🟢 **The client confirmed interest in a Fase 2 quotation**, first movement on
+  [OI-83](../notes/items/OI-83%20No%20phase%202%20estimate.md) in weeks.
+- 🔴 **`Standart` is still misspelt** in six places on `DevMain`. **UAT opens in three
+  days.**
+- 🔴 **A customer-facing RID mandate form is promised in the contract email copy and
+  does not exist.**
+  → [OI-152](../notes/items/OI-152%20The%20RID%20mandate%20form%20promised%20to%20customers%20does%20not%20exist.md)
+- 🔴 **Credit notes and storni left the plan without a decision.**
+  → [OI-157](../notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)

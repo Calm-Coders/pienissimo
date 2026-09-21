@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-02
-updated: 2026-09-15
+updated: 2026-09-21
 depends_on: [OI-94, OI-102]
 blocks: [go-live]
 requirement: [INT-18, INT-19]
@@ -244,3 +244,51 @@ procedure. Who can re-enter the Mexal and Anticipay principals if the org is
 rebuilt is not recorded anywhere in this repository.
 
 **Status: in-progress.** It closes when DocuSign is in source too.
+
+## 🟢 2026-09-21 - DocuSign metadata reached source control
+
+**The last org-only credential set is now in the repository**, closing the gap this
+risk has carried since 2 September.
+
+`08b97cc` (Anita Aga, 21/09 18:24:26 CEST, `DevAnitaRecheckAutomations`, **PR #54
+open against `DevMain`**) adds four DocuSign files:
+
+| File                                                     | What it is                          |
+| -------------------------------------------------------- | ----------------------------------- |
+| `authproviders/DocuSign.authprovider-meta.xml`           | OpenIdConnect auth provider, PKCE on |
+| `externalCredentials/DocuSign_External_Credential.externalCredential-meta.xml` | OAuth, named principal |
+| `namedCredentials/DocuSign.namedCredential-meta.xml`     | secured endpoint                    |
+| `permissionsets/DocuSign.permissionset-meta.xml`          | plus a `Full_Permission` addition  |
+
+✅ **No secret entered the repository.** The `consumerSecret` is the literal
+`Placeholder_Value`, following the merge-field-reference pattern established for
+Mexal and Anticipay on 14/09. Checked by reading the diff.
+
+⚠ **One judgement call for a human.** The auth provider carries a **real DocuSign
+`consumerKey` in cleartext**. A consumer key is an identifier rather than a secret,
+and PKCE is enabled, so it is not a credential leak — but the repository rule is
+categorical about credentials, so **whether it should be a placeholder too is a
+decision, not a defect.** The value is deliberately not reproduced in this note.
+
+⚠ **The endpoints are the DocuSign demo environment** — `account-d.docusign.com`
+and `demo.docusign.net`. So this is pre-provisioning, and **a production endpoint
+and credential swap is owed before 21 October**, with no owner and no date. That is
+the second such rotation in this window: the WooCommerce token is in the same state
+([OI-102](../items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+
+🔴 **The client's own DocuSign credentials are still owed.** Procurement moved on
+21/09 — Elisa Migliano wrote that **the DocuSign contract had arrived** and asked
+for the Salesforce account id to put in it, and Elena Spini supplied the production
+technical user's id and username by mail. Aurel Mrruku is to chase the credentials
+on 22/09
+([the pre-UAT session](../meetings/2026-09-21%20Test%20Interni%20Pre-UAT.md)).
+
+⚠ **A production Salesforce technical user's id and username were circulated by
+mail** on 21/09 11:16Z, to the client and cc the client's own staff. No password was
+sent. **The values are not recorded here.** Noting it because it is the second time
+this project has moved production access details over mail — compare
+[the plaintext-credential risk](Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md).
+
+⚠ This risk stays open, not resolved: PR #54 is **unmerged**, so `DevMain` does not
+carry the DocuSign metadata yet, and the deployed org still holds whatever it holds.
+**The org was not opened in this run.**

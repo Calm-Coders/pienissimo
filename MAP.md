@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-17 (evening requirements-check: the internal follow-up produced six rulings, and five merges put the checkout-link button and three Opportunity record types on DevMain) · Source of record: [notes/](notes/)
+Last updated: 2026-09-21 (nightly requirements-check: the client came back, UAT is booked, the checkout link is resolved, and the tranche-to-Mexal link turns out to be impossible) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,72 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 23 September – 13 October**, approval by 13 October. Requirements went to
 sign-off on 2026-08-06.
+
+- 🔑 **2026-09-21 — the client came back, UAT is on the calendar, and the one
+  integration everyone assumed was solved turns out to have no automated path.**
+  **Four days swept (18–21/09), six meetings drilled, the busiest window of the
+  project.**
+  🟢 **The eight-day client silence ended on 18/09 and has not resumed.** Fabrizio
+  Paganelli, Elisa Migliano and Sabatino Rinaldi all wrote or attended;
+  **Fabrizio Paganelli is now the project referent** in place of Sabatino Rinaldi
+  ([the change](notes/people/Sabatino%20Rinaldi%20-%20Pienissimo%20project%20lead.md)).
+  🔑🔴 **[OI-143](notes/items/OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md)
+  — Mexal exposes no field through which Salesforce can set an invoice due date.**
+  `data scadenza riga` and `Data scadenza PG` are not related one-to-one; `Scad PG`
+  derives from the payment method. Because Fabrizio Paganelli ruled that **invoices
+  are created by hand**, the invoice date does not exist until a person types it —
+  so an administration user must **read the tranche dates in Salesforce and re-key
+  them into Mexal on every bundle and Performance Plus order**, and the date is the
+  only key joining invoice to tranche. Andrea Di Cicco: _"se è un processo manuale
+  ci stanno possibilità di errori"_. 🔴 **Put to Fabrizio Paganelli at 16:00 on
+  21/09 and cut off after two minutes** when Daniela Morgese pulled him out. **The
+  client has confirmed manual invoicing and has not been told what it costs them.**
+  🔴 And a bundle cannot carry n tranche dates as one line, so **bundles must be
+  split into n order lines**, changing the bundle total calculation
+  ([OI-144](notes/items/OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)).
+  🟢🔑 **[OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md) is
+  RESOLVED, and the 17/09 finding is superseded.** On 18/09 Sabatino Rinaldi
+  rejected the merged `add-to-cart` link — the shop builds carts with **Funnel
+  Kit** — and gave the real anatomy: **the funnel name, not a product id**. He also
+  answered both questions he had been owing since 16/09 by removing their premise
+  (**one product or bundle per link**; multi-product deferred). Rebuilt two hours
+  later in `479d076`, merged in PR #50, and **proved end to end with the client on
+  21/09**: an order reached Salesforce and linked to its Opportunity. 🔴 The
+  failures on the way are the finding — **products with no SKU and SKUs absent from
+  Salesforce**, and the green path ran on a zero-price gift article.
+  🔑 **UAT is booked and confirmed.** Proposal 18/09, client confirmation 21/09,
+  **six invitations sent 21/09 16:43–16:53Z**: 24/09 Lead e Opportunità · 25/09
+  Preventivi · 30/09 Biglietti, Campagne ed Eventi · 02/10 Flussi MKT · 05/10
+  Performance Plus + date pagamento · 06/10 Integrazione Mexal. **Approval by
+  13/10, go-live 21/10.** 🔴 **The seventh topic — WooCommerce and the checkout
+  link — was never booked**
+  ([OI-158](notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)).
+  🔴 **There is no full UAT sandbox.** Aurel Mrruku, 18/09: _"non abbiamo una
+  full"_ — everything called UAT is a **Partial Copy**, and the order-to-Mexal
+  chain is switched off in every sandbox
+  ([OI-153](notes/items/OI-153%20There%20is%20no%20full%20UAT%20sandbox.md),
+  [OI-137](notes/items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md)).
+  🟢🔴 **The client delivered the Zoho migration data** on 21/09 — eight tables
+  including **Lead** and **Locali**, the gaps six sessions had left open — **and
+  the `ARTICOLI` classification is empty**: no ticket flag, no bundle flag. Aurel
+  Mrruku: _"Non ha fatto niente, praticamente."_ 40 of 43 ticket products stay
+  unmapped with ticket UAT on 30/09
+  ([OI-154](notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)).
+  🔴 **`QuoteTriggerHandler` is now `public without sharing` on `DevMain`** — one
+  line inside a 1,068-line commit about something else, no requirement, no
+  description, adjacent to a guest-user permission failure nobody connected to it
+  ([OI-156](notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)).
+  🟢 **DocuSign metadata reached source** (PR #54, open) with **no secret** — and
+  against the demo environment, so a production swap is owed. The client's DocuSign
+  contract arrived 21/09; credentials still owed.
+  🔴 **`Standart` is still misspelt** in six places on `DevMain` including the
+  record-type API name. **UAT opens in three days.**
+  🟢 **Order lines finally have a booking** — `Logiche Spacchettamento Righe`,
+  22/09 11:00 — and `Test Mexal` with Mirko Merendi follows at 15:00. **Those two
+  hours decide the tranche design.**
+  🟢 **PR #49 was closed unmerged**, so `main` stays clean; ⚠ **PR #53 repeated the
+  mistake** on 21/09 and was closed seconds later.
+  — [trace](notes/traces/Source%20trace%202026-09-21.md)
 
 - 🔑 **2026-09-17 (evening) — the busiest build day of the project, and the
   internal session that drove it.**
@@ -1735,8 +1801,9 @@ invio` go on the invitation record**, so Marketing Cloud never queries the
 
 ## Standing constraints
 
-- **Daniela Morgese** decides and signs commercially; **Sabatino Rinaldi** leads
-  day-to-day; **Elisa Migliano** is the operational authority on administration,
+- **Daniela Morgese** decides and signs commercially; **Fabrizio Paganelli** is
+  the day-to-day project referent **since 2026-09-21**, in place of **Sabatino
+  Rinaldi**, who keeps the WooCommerce and marketing-forms workstreams; **Elisa Migliano** is the operational authority on administration,
   invoicing and the infopoint; **Fabrizio Paganelli** owns the product registry;
   **Marco Montesi** sales. **Elena Spini** chairs for ROMI, **Aurel Mrruku** is
   technical lead. Full list: [notes/people/](notes/people/).
