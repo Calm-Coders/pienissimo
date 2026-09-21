@@ -45,7 +45,7 @@ export default class WooCheckoutEmail extends LightningElement {
   }
 
   get sendButtonLabel() {
-    return this.isSending ? "Sending" : "Send Email";
+    return this.isSending ? "Invio..." : "Invia email";
   }
 
   get checkoutLink() {
@@ -80,8 +80,8 @@ export default class WooCheckoutEmail extends LightningElement {
       });
       this.dispatchEvent(
         new ShowToastEvent({
-          title: "Checkout email sent",
-          message: `The checkout email was sent to ${this.recipientEmail}.`,
+          title: "Email checkout inviata",
+          message: `L'email di checkout e stata inviata a ${this.recipientEmail}.`,
           variant: "success"
         })
       );
@@ -101,7 +101,7 @@ export default class WooCheckoutEmail extends LightningElement {
     console.error("wooCheckoutEmail error", error);
 
     if (!error) {
-      return "Unknown error";
+      return "Errore sconosciuto";
     }
     if (typeof error === "string") {
       return error;

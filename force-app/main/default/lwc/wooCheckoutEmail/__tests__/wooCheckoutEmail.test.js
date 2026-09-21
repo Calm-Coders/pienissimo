@@ -35,7 +35,7 @@ jest.mock(
 const OPPORTUNITY_ID = "006MA00000QJduNYAT";
 const RECIPIENT_EMAIL = "cliente@example.com";
 const CHECKOUT_LINK =
-  "https://www.pienissimo.it/checkout?add-to-cart=123&sf_opportunity_id=006MA00000QJduNYAT";
+  "https://shop.pienissimo.com/checkouts/test-salesforce/?sf_opp_id=006MA00000QJduNYAT";
 
 function buildComponent() {
   const element = createElement("c-woo-checkout-email", {
@@ -86,7 +86,7 @@ describe("c-woo-checkout-email", () => {
 
     const sendButton = Array.from(
       element.shadowRoot.querySelectorAll("lightning-button")
-    ).find((button) => button.label === "Send Email");
+    ).find((button) => button.label === "Invia email");
     expect(sendButton.disabled).toBe(false);
     sendButton.dispatchEvent(
       new MouseEvent("click", { bubbles: true, composed: true })

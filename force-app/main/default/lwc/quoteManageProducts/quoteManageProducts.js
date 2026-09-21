@@ -9,10 +9,13 @@ import searchProducts from "@salesforce/apex/QuoteManageProductsController.searc
 
 const BUNDLE_TYPE = "Bundle";
 const ITEM_TYPE = "Item";
+const PLUS_OPPORTUNITY_RECORD_TYPE = "Plus_Attivazione_Rinnovo";
+const STANDARD_OPPORTUNITY_RECORD_TYPE = "Standart";
 
 export default class QuoteManageProducts extends LightningElement {
   _recordId;
   searchRequestId = 0;
+  saveInProgress = false;
 
   isLoading = false;
   isSearching = false;
@@ -21,9 +24,13 @@ export default class QuoteManageProducts extends LightningElement {
   quoteStatus = "";
   isEditable = false;
   hasItemLines = false;
+  opportunityRecordTypeDeveloperName = "";
+  hasPlusLine = false;
   existingBundleLine;
   productOptions = [];
   selectedProducts = [];
+  trancheCount = "";
+  plannedTranches = [];
   searchTerm = "";
 
   @api
@@ -55,7 +62,11 @@ export default class QuoteManageProducts extends LightningElement {
   }
 
   get isFormDisabled() {
-    return !this.isEditable || this.hasExistingBundle;
+    return (
+      !this.isEditable ||
+      this.hasExistingBundle ||
+      (this.isPlusOpportunity && this.hasPlusLine)
+    );
   }
 
   get isSearchDisabled() {
@@ -65,7 +76,10 @@ export default class QuoteManageProducts extends LightningElement {
   get isPrimaryDisabled() {
     return (
       this.isFormDisabled ||
+      this.isLoading ||
+      this.saveInProgress ||
       !this.hasSelectedProducts ||
+      (this.isPlusOpportunity && !this.hasValidPlannedTranches) ||
       this.selectedProducts.some(
         (product) => !product.quantity || Number(product.quantity) <= 0
       )
@@ -73,7 +87,66 @@ export default class QuoteManageProducts extends LightningElement {
   }
 
   get showTypeHelp() {
-    return !this.hasExistingBundle && !this.hasItemLines;
+    return (
+      !this.isPlusOpportunity && !this.hasExistingBundle && !this.hasItemLines
+    );
+  }
+
+  get isPlusOpportunity() {
+    return (
+      this.opportunityRecordTypeDeveloperName === PLUS_OPPORTUNITY_RECORD_TYPE
+    );
+  }
+
+  get isStandardOpportunity() {
+    return (
+      this.opportunityRecordTypeDeveloperName ===
+      STANDARD_OPPORTUNITY_RECORD_TYPE
+    );
+  }
+
+  get showPlusLineMessage() {
+    return this.isPlusOpportunity && this.hasPlusLine;
+  }
+
+  get showItemLinesHelp() {
+    return !this.isPlusOpportunity && this.hasItemLines;
+  }
+
+  get modeMessage() {
+    if (this.isPlusOpportunity) {
+      return "Questo preventivo puo contenere un solo prodotto Item Plus con tranche pianificate.";
+    }
+    if (this.hasItemLines) {
+      return "Questo preventivo contiene prodotti Item. Puoi aggiungere solo altri prodotti Item.";
+    }
+    if (!this.hasExistingBundle) {
+      return "Se selezioni un bundle, il preventivo non potra contenere prodotti Item.";
+    }
+    return "";
+  }
+
+  get hasModeMessage() {
+    return !!this.modeMessage && !this.showPlusLineMessage;
+  }
+
+  get showTranchePlanner() {
+    return this.isPlusOpportunity && this.hasSelectedProducts;
+  }
+
+  get hasPlannedTranches() {
+    return this.plannedTranches.length > 0;
+  }
+
+  get hasValidPlannedTranches() {
+    const count = Number(this.trancheCount);
+    return (
+      Number.isInteger(count) &&
+      count > 0 &&
+      count <= 20 &&
+      this.plannedTranches.length === count &&
+      this.plannedTranches.every((tranche) => !!tranche.dueDate)
+    );
   }
 
   get showNoResultsMessage() {
@@ -98,6 +171,9 @@ export default class QuoteManageProducts extends LightningElement {
       this.quoteStatus = context.quoteStatus || "";
       this.isEditable = context.isEditable === true;
       this.hasItemLines = context.hasItemLines === true;
+      this.opportunityRecordTypeDeveloperName =
+        context.opportunityRecordTypeDeveloperName || "";
+      this.hasPlusLine = context.hasPlusLine === true;
       this.existingBundleLine = context.existingBundleLine || null;
     } catch (error) {
       this.showError(error);
@@ -149,7 +225,16 @@ export default class QuoteManageProducts extends LightningElement {
       return;
     }
 
-    if (option.productType === BUNDLE_TYPE) {
+    if (this.isPlusOpportunity) {
+      this.selectedProducts = [
+        {
+          ...option,
+          quantity: 1,
+          quantityDisabled: true
+        }
+      ];
+      this.rebuildPlannedTranches();
+    } else if (option.productType === BUNDLE_TYPE) {
       this.selectedProducts = [
         {
           ...option,
@@ -187,14 +272,39 @@ export default class QuoteManageProducts extends LightningElement {
     this.selectedProducts = this.selectedProducts.filter(
       (product) => product.pricebookEntryId !== pricebookEntryId
     );
+    if (this.isPlusOpportunity) {
+      this.trancheCount = "";
+      this.plannedTranches = [];
+    }
     this.productOptions = this.decorateOptions(this.productOptions);
   }
 
+  handleTrancheCountChange(event) {
+    this.trancheCount = event.detail.value;
+    this.rebuildPlannedTranches();
+  }
+
+  handleTrancheDueDateChange(event) {
+    const index = Number(event.target.dataset.index);
+    this.plannedTranches = this.plannedTranches.map((tranche) => {
+      if (tranche.index === index) {
+        return { ...tranche, dueDate: event.detail.value };
+      }
+      return tranche;
+    });
+  }
+
   async handleSave() {
-    if (this.isPrimaryDisabled) {
+    if (this.isPrimaryDisabled || this.saveInProgress) {
       return;
     }
 
+    const inputs = [...this.template.querySelectorAll("lightning-input")];
+    if (!inputs.every((input) => input.reportValidity())) {
+      return;
+    }
+
+    this.saveInProgress = true;
     this.isLoading = true;
     try {
       await saveProducts({
@@ -202,7 +312,12 @@ export default class QuoteManageProducts extends LightningElement {
         products: this.selectedProducts.map((product) => ({
           pricebookEntryId: product.pricebookEntryId,
           quantity: Number(product.quantity)
-        }))
+        })),
+        tranches: this.isPlusOpportunity
+          ? this.plannedTranches.map((tranche) => ({
+              dueDate: tranche.dueDate
+            }))
+          : null
       });
 
       this.dispatchEvent(
@@ -219,6 +334,7 @@ export default class QuoteManageProducts extends LightningElement {
       this.showError(error);
     } finally {
       this.isLoading = false;
+      this.saveInProgress = false;
     }
   }
 
@@ -236,6 +352,9 @@ export default class QuoteManageProducts extends LightningElement {
     const hasSelectedItems = this.selectedProducts.some(
       (product) => product.productType === ITEM_TYPE
     );
+    const hasSelectedPlus = this.selectedProducts.some(
+      (product) => product.isPlus === true
+    );
     const selectedPricebook2Id = this.selectedProducts[0]?.pricebook2Id;
 
     return options.map((option) => {
@@ -243,16 +362,67 @@ export default class QuoteManageProducts extends LightningElement {
       const typeConflict =
         (hasSelectedBundle && option.productType === ITEM_TYPE) ||
         (hasSelectedItems && option.productType === BUNDLE_TYPE);
+      const plusConflict = this.isPlusOpportunity && hasSelectedPlus;
       const pricebookConflict =
         selectedPricebook2Id && option.pricebook2Id !== selectedPricebook2Id;
-      const isDisabled = isSelected || typeConflict || pricebookConflict;
+      const isDisabled =
+        isSelected || typeConflict || plusConflict || pricebookConflict;
       return {
         ...option,
         isDisabled,
-        typeLabel: option.productType === BUNDLE_TYPE ? "Bundle" : "Item",
+        typeLabel:
+          option.isPlus === true
+            ? "Plus"
+            : option.productType === BUNDLE_TYPE
+              ? "Bundle"
+              : "Item",
         buttonClass: isSelected ? "option selected" : "option"
       };
     });
+  }
+
+  rebuildPlannedTranches() {
+    const count = Number(this.trancheCount);
+    if (!Number.isInteger(count) || count < 1 || count > 20) {
+      this.plannedTranches = [];
+      return;
+    }
+
+    const existingByIndex = new Map(
+      this.plannedTranches.map((tranche) => [tranche.index, tranche])
+    );
+    const amounts = this.splitSelectedProductTotal(count);
+    this.plannedTranches = Array.from({ length: count }, (_, index) => {
+      const sequence = index + 1;
+      return {
+        key: `plus-tranche-${sequence}`,
+        index,
+        sequence,
+        amount: amounts[index],
+        amountLabel: this.formatAmount(amounts[index]),
+        dueDate: existingByIndex.get(index)?.dueDate || ""
+      };
+    });
+  }
+
+  splitSelectedProductTotal(count) {
+    const total = Number(this.selectedProducts[0]?.unitPrice || 0);
+    const totalCents = Math.round(total * 100);
+    const baseCents = Math.floor(totalCents / count);
+    const amounts = [];
+    for (let index = 0; index < count; index += 1) {
+      const cents =
+        index === count - 1 ? totalCents - baseCents * (count - 1) : baseCents;
+      amounts.push(cents / 100);
+    }
+    return amounts;
+  }
+
+  formatAmount(value) {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: "EUR"
+    }).format(value || 0);
   }
 
   showError(error) {
@@ -266,9 +436,61 @@ export default class QuoteManageProducts extends LightningElement {
   }
 
   reduceError(error) {
-    if (Array.isArray(error?.body)) {
-      return error.body.map((entry) => entry.message).join(", ");
+    if (!error) {
+      return "Errore sconosciuto";
     }
-    return error?.body?.message || error?.message || "Errore inatteso";
+
+    if (typeof error === "string") {
+      return error;
+    }
+
+    const messages = [];
+    const body = error.body ?? error;
+
+    if (Array.isArray(body)) {
+      messages.push(...body.map((entry) => entry?.message).filter(Boolean));
+    }
+
+    if (body?.message) {
+      messages.push(body.message);
+    }
+
+    if (Array.isArray(body?.pageErrors)) {
+      messages.push(
+        ...body.pageErrors.map((entry) => entry?.message).filter(Boolean)
+      );
+    }
+
+    if (body?.fieldErrors) {
+      for (const fieldName of Object.keys(body.fieldErrors)) {
+        messages.push(
+          ...body.fieldErrors[fieldName]
+            .map((entry) => entry?.message)
+            .filter(Boolean)
+        );
+      }
+    }
+
+    if (Array.isArray(body?.output?.errors)) {
+      messages.push(
+        ...body.output.errors.map((entry) => entry?.message).filter(Boolean)
+      );
+    }
+
+    if (body?.output?.fieldErrors) {
+      for (const fieldName of Object.keys(body.output.fieldErrors)) {
+        messages.push(
+          ...body.output.fieldErrors[fieldName]
+            .map((entry) => entry?.message)
+            .filter(Boolean)
+        );
+      }
+    }
+
+    if (error.message) {
+      messages.push(error.message);
+    }
+
+    return messages.filter(Boolean).join(" | ") || "Errore inatteso";
   }
 }
