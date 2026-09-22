@@ -1,4 +1,4 @@
-public with sharing class QuoteAcceptanceEmailController {
+public without sharing class QuoteAcceptanceEmailController {
   private static final Set<String> SENDABLE_STATUSES = new Set<String>{
     'In Trattativa',
     'In Attesa Accettazione'

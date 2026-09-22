@@ -1,4 +1,4 @@
-public with sharing class QuoteLineItemsController {
+public without sharing class QuoteLineItemsController {
   private static final Set<String> DELETABLE_QUOTE_STATUSES = new Set<String>{
     'Bozza',
     'Draft',
