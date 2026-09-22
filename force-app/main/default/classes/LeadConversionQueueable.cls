@@ -2,6 +2,7 @@ public with sharing class LeadConversionQueueable implements Queueable {
   private static final String QUALIFIED_STATUS = 'Qualificato';
   private static final String CONVERTED_STATUS = 'Convertito';
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
+  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Standart';
   private static final Integer OPPORTUNITY_NAME_LIMIT = 120;
   private static final Integer LEAD_CONVERT_BATCH_SIZE = 100;
   private static final String USER_ID_PREFIX = '005';
@@ -92,6 +93,7 @@ public with sharing class LeadConversionQueueable implements Queueable {
     List<Database.LeadConvertResult> conversionResults = convertLeads(
       conversionRequests
     );
+    setConvertedOpportunitiesToStandard(conversionResults);
     updateConvertedAccountLeadEmails(conversionResults, leadEmailById);
   }
 
@@ -118,6 +120,33 @@ public with sharing class LeadConversionQueueable implements Queueable {
 
     logConversionFailures(conversionResults);
     return conversionResults;
+  }
+
+  private static void setConvertedOpportunitiesToStandard(
+    List<Database.LeadConvertResult> conversionResults
+  ) {
+    Set<Id> opportunityIds = new Set<Id>();
+    for (Database.LeadConvertResult result : conversionResults) {
+      if (!result.isSuccess() || result.getOpportunityId() == null) {
+        continue;
+      }
+
+      opportunityIds.add(result.getOpportunityId());
+    }
+
+    if (opportunityIds.isEmpty()) {
+      return;
+    }
+
+    Id standardRecordTypeId = getStandardOpportunityRecordTypeId();
+    List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+    for (Id opportunityId : opportunityIds) {
+      opportunitiesToUpdate.add(
+        new Opportunity(Id = opportunityId, RecordTypeId = standardRecordTypeId)
+      );
+    }
+
+    update opportunitiesToUpdate;
   }
 
   private static void logConversionFailures(
@@ -416,6 +445,25 @@ public with sharing class LeadConversionQueueable implements Queueable {
     if (recordTypes.isEmpty()) {
       throw new LeadConversionException(
         'Account record type Azienda was not found'
+      );
+    }
+
+    return recordTypes[0].Id;
+  }
+
+  private static Id getStandardOpportunityRecordTypeId() {
+    List<RecordType> recordTypes = [
+      SELECT Id
+      FROM RecordType
+      WHERE
+        SObjectType = 'Opportunity'
+        AND DeveloperName = :STANDARD_OPPORTUNITY_RECORD_TYPE
+      LIMIT 1
+    ];
+
+    if (recordTypes.isEmpty()) {
+      throw new LeadConversionException(
+        'Opportunity record type Vendita Standard was not found'
       );
     }
 
