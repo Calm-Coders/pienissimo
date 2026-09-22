@@ -1,13 +1,14 @@
 ---
 id: OI-158
 type: open-item
-status: open
+status: resolved
 owner: Elena Spini
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-21
+updated: 2026-09-22
 depends_on: [OI-49]
 source: Gmail thread 1a0b563a6c15098c and the six UAT invitations of 2026-09-21
+resolution_source: notes/meetings/2026-09-22 Update Interno Aurel Elena.md
 ---
 
 # OI-158 - No UAT session is booked for the checkout-link flow
@@ -54,3 +55,46 @@ that Elena Spini considered it accepted and dropped the session.
   is not, the slot is 2 October afternoon and it is still free.
 - ⚠ **The 2 October morning session clashes for Elisa Migliano**, who told the
   21/09 call _"io il due non ci sono"_.
+
+## 🟢 RESOLVED 2026-09-22 — it was an oversight, and it was booked the same day
+
+Named as an oversight by Elena Spini at
+[the internal update](../meetings/2026-09-22%20Update%20Interno%20Aurel%20Elena.md),
+22/09 14:31 CEST:
+
+> _"quando ho mandato gli inviti dei meeting mi sono persa, perché mi hanno fatto
+> cambiare le date, mi sono persa quello di WooCommerce."_
+
+So the seventh topic was **lost when the dates were rewritten**, not dropped on
+purpose. Aurel Mrruku's first reaction was that the session was unnecessary —
+_"non serve più, abbiamo già fatto l'ordine"_ — and Elena Spini overrode it: the client
+wants to see it, **Marco Montesi included**, because he is the tutor who will use it.
+_"quello che serve a lui è: per WooCommerce devi avere il bottone, devi sapere cos'è che
+si chiamano funnel."_ They agreed to attach it to **Friday 25/09** and reuse the funnel
+from the 21/09 test.
+
+🟢 **Done at 16:34–16:35Z.** Two updated invitations went out, and the 25/09 session was
+renamed:
+
+| Session | Now covers |
+| ------- | ---------- |
+| **Thu 24/09 15:00–17:00** `UAT: Lead e Opportunità` | Lead diretta/standard · Opportunità vendita standard + preventivo with DocuSign |
+| **Fri 25/09 10:30–12:30** `UAT: Recall Tutor + Bundle` | 🟢 **Opportunità recall tutor >> WooCommerce e Link di Checkout (da Opty SFDC a ordine WooCommerce) + Ordine su SFDC** · vendita standard with Bundle products + preventivo with DocuSign |
+
+Elena Spini posted the **client-validated calendar** to `#tproj-pienissimo` at
+22/09 18:37 CEST. The 6 October Mexal session also picks up **Anticipay (per check
+P.Iva)**, and per the 11:22 client call it stretches to **10:00–13:00** to fold in a
+WooCommerce walk-through as well.
+
+⚠ **The 1 October slot is gone**, as Fabrizio Paganelli asked on 21/09 — it is a public
+holiday in San Marino. His written request for **3 or 4 October** was not taken up (both
+are a weekend) and, as of this sweep, **still has no written answer**; the calendar
+simply omits 1 October. The remaining dates are unchanged: 30/09 Biglietti, 02/10 Flussi
+MKT, 05/10 Performance Plus + date pagamento + **Contratto**, 06/10 Mexal + Anticipay.
+
+🔴 **What the booking does not fix**: the flow reaching UAT is the one proved on 21/09
+against **a zero-price gift article**, with products lacking a SKU and SKUs absent from
+Salesforce still unresolved
+([OI-49](OI-49%20WooCommerce%20checkout-link%20flow.md)). And **Contratto is on 5 October
+with nothing built** —
+[OI-168](OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md).

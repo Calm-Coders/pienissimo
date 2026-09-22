@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-21
+updated: 2026-09-22
 blocks: [OI-75, go-live]
 severity: gating
 requirement: [ORD-02, ORD-03]
@@ -492,3 +492,32 @@ instalment courses — they would alter the structure of the accounting movement
 became `Logiche Spacchettamento Righe`, **22/09 11:00–12:00**, with Elisa Migliano
 and Fabrizio Paganelli invited. It is followed at 15:00 by `Test Mexal` with Mirko
 Merendi. **Those two hours are where this row is decided.**
+
+## 🟢 2026-09-22 — the roll-up's input is defined, and it is not the date
+
+Two client sessions on 22/09 settled how a payment is matched back to a tranche, and it
+is **not** by comparing due dates:
+
+**scadenziario** (codice cliente, serie documento, numero documento, data documento) →
+**invoice** → **order** (Mexal's own sigla + progressive number, returned on save) →
+**order line**.
+
+Mirko Merendi named those fields at
+[Test Mexal](../meetings/2026-09-22%20Test%20Mexal.md). Aurel Mrruku will extract the
+scadenziario **in bulk every evening** to refresh Salesforce, with **two calls across a
+year boundary** because orders and warehouse movements filter by header year while the
+scadenziario is ultra-annual.
+
+🔴 **Matching on the due date is now explicitly forbidden**, not merely unnecessary:
+scadenziario dates move when a Ri.Ba. comes back unpaid or a recovery plan is agreed.
+Fabrizio Paganelli: _"sulle date di scadenza è bene non fare nessun tipo di automatismo
+di programma perché è un casino."_
+
+🔴 **The one hop still open is the last one** — which Salesforce order *line* a payment
+settles, given a Plus order is n lines of the same article code distinguished only by due
+date. See
+[OI-166](OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md).
+
+⚠ This supersedes the premise of
+[OI-143](OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md);
+cite 21/09 and 22/09 together.

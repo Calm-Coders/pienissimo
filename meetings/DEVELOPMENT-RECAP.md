@@ -4491,3 +4491,206 @@ in-session.
   → [OI-152](../notes/items/OI-152%20The%20RID%20mandate%20form%20promised%20to%20customers%20does%20not%20exist.md)
 - 🔴 **Credit notes and storni left the plan without a decision.**
   → [OI-157](../notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)
+
+## 44. Update 2026-09-22 — five sessions in one day, and §43's headline was wrong
+
+One day swept and **five meetings drilled**. Sources:
+[Temi QR Code Biglietti](../notes/meetings/2026-09-22%20Temi%20QR%20Code%20Biglietti.md),
+[Logiche Spacchettamento Righe](../notes/meetings/2026-09-22%20Logiche%20Spacchettamento%20Righe.md),
+[Update Interno Aurel Elena](../notes/meetings/2026-09-22%20Update%20Interno%20Aurel%20Elena.md),
+[Test Mexal](../notes/meetings/2026-09-22%20Test%20Mexal.md),
+[Test Interni Pre-UAT Parte 2](../notes/meetings/2026-09-22%20Test%20Interni%20Pre-UAT%20Parte%202.md).
+
+### 🟢🔑 The correction: no tranche date has to be re-keyed by hand
+
+**§43 said an administration user must read the tranche dates in Salesforce and re-key
+them into every Mexal invoice, and that the date is the only join key. Both claims are
+wrong.** Two client sessions on 22/09 established why.
+
+1. 🟢 **The dates already travel.** A Performance Plus sale is **n order lines carrying
+   the same article code**, each with its own `data scadenza`, and the order
+   _"passa paro paro su Mexal"_ — Fabrizio Paganelli demonstrated it live on Mexal, and
+   this is how the client has worked for years.
+2. 🟢 **Invoice date and due date are not meant to coincide.** The 21/09 reading that
+   they must was the error. The line date is **commercial** — when the customer must pay
+   — and administration **translates** it: a line due 30/06 is invoiced **01/06**.
+   _"ai tutor non li possiamo far ragionare con la testa amministrativa."_
+3. 🟢 **The join key is structural.** Fabrizio Paganelli: _"lavorare sulla data di
+   scadenza ci creerà dei casini in futuro. Noi dobbiamo lavorare su elementi
+   strutturali delle tabelle."_ Mirko Merendi named the fields: the invoice carries the
+   order's **sigla + numero ordine**, and the scadenziario carries **codice cliente,
+   serie documento, numero documento, data documento**.
+4. 🔴 **Matching on the date would have been actively wrong.** Scadenziario due dates
+   move: a Ri.Ba. returned unpaid **regenerates** the due date, and recovery plans are
+   agreed case by case. _"sulle date di scadenza è bene non fare nessun tipo di
+   automatismo di programma perché è un casino."_
+
+Aurel Mrruku, three hours later: _"tutte le complicazioni che avevo previsto non
+succedono più… Non so perché l'hanno complicato all'inizio."_ →
+[OI-143](../notes/items/OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md)
+(superseded, kept as the 21/09 record)
+
+🟢 **`ORD-02` is no longer contradicted by the date argument.** _"the whole order then
+goes to Mexal with both values at line level"_ is precisely what the client does. The
+register text is still not rewritten here, because one mechanical hop is open:
+
+🔴 **What survives is the identifier.** Salesforce's 18-character id cannot travel;
+Fabrizio Paganelli asked for a **`numero riga ordine`** field on the order, and the
+afternoon session settled on **Mexal's own order number** instead. Mexal's invoice
+references the *order*, the scadenziario references the *invoice* — so **which
+Salesforce order *line* a payment settles is still not established from either end**,
+and that is exactly the case that matters for n lines of one article code. →
+[OI-166](../notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)
+
+### 🟢 The agreed tranche mechanism, built the same day
+
+A **numeric field on the product** holds the tranche count; the product entered once
+generates **n order lines** with a date grid, named `1 di n`, `2 di n`. Cadences in use
+are **5, 10 and 12**, and the mechanism is dynamic. Agreed at 11:22, confirmed with the
+vendor at 15:00, **demonstrated working at 17:00**. →
+[OI-167](../notes/items/OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md)
+
+⚠ It supersedes the *shape* of
+[OI-142](../notes/items/OI-142%20Fractional%20product%20records%20for%20tranche%20payment.md):
+the fractional records exist, but as one code repeated n times. **Elisa Migliano's 18/09
+objection is moot and she has not been told.**
+
+### 🟢 Bundles were never a problem
+
+Fabrizio Paganelli demonstrated a bundle order reaching Mexal as its **component
+articles**, each with its own due date. The total is spread over the components
+**weighted by listino value and quantity**, with a **manual per-line override** — his
+case is zeroing a free event inside the bundle. He declined anything cleverer; bundles
+are built _"8-10 volte all'anno"_. →
+[OI-144](../notes/items/OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)
+(resolved)
+
+🔴 **Residual build work**: no `PricebookEntry` is created for a bundle product
+(_"I have missed this one"_), the header needs `totale bundle` and `totale listino
+prodotti`, and selecting a second bundle silently replaces the first.
+
+### 🔴 Line-level payment conditions are impossible, and the business will change instead
+
+Mirko Merendi: the payment condition exists **only on the order header**, **the only
+field available on a line is the due date**, and Mexal has **no hidden fields**. The
+group decided **unanimously** not to force the system and to **adapt commercial
+behaviour**; Fabrizio Paganelli will clean the obsolete payment-condition codes and
+create new structured ones for Salesforce. 🔴 **Nobody has defined what the behaviour
+change is**, and no tutor was in either session. 🔴 **The Mastery has no mechanism at
+all**: one high-value ticket, no split into lines, no per-line condition. →
+[OI-160](../notes/items/OI-160%20Payment%20conditions%20cannot%20vary%20by%20order%20line.md)
+
+### 🔑 A whole integration surfaced: the event check-in app
+
+Everything held about QR codes concerns *generating* them. Nothing established what
+*reads* them. Andrea Parmeggiani runs a **custom Android application** over REST to
+Zoho, distributed via TestFlight and APK packages, refreshed about every ninety days.
+
+🟢 Agreed for Fase 1: the app calls Salesforce, the asset moves to **`utilizzato`**,
+**validity is checked against the child campaign's dates**, **one check-in per event**
+not per day, and the campaign member state follows from the asset by formula. →
+[OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)
+
+🟢 **Infopoint is deferred to Fase 2** by Elena Spini and Elisa Migliano — it creates
+tickets with no order, which Aurel Mrruku showed corrupts the statistics, and would need
+four endpoints. ⚠ **The deferral removes the integration, not the situation**: walk-ins
+and on-site payments happen in Fase 1 too. →
+[OI-162](../notes/items/OI-162%20Infopoint%20and%20orphan%20tickets%20are%20deferred%20to%20Fase%202.md)
+
+⚠ Elena Spini named how it was missed: _"di questa app non ne hanno mai parlato"_, and
+she had read _"QR code fatto"_ as including the scan and the asset update.
+
+🔴 It is the **second Fase 1 deliverable owned by Pienissimo Software Srl**, alongside
+the Anticipay middleware — the entity ROMI argues is not this project's client.
+
+### 🟢 The article classification was there all along
+
+`natura articolo` carries the whole classification as a **four-way code** — genera
+biglietto / solo bundle and their negations — not as two separately populated flags.
+Fabrizio Paganelli stated it in the session, and Aurel Mrruku confirmed it on the same
+file. 🔴 **The legend arrived as two screenshot-only mails** (14:21Z and 14:23Z) that no
+tool available to this job can read, and `Articoli Salesforce.xlsx` was updated at
+14:36Z. →
+[OI-154](../notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+
+Also settled on the registry: `categoria statistica` **stored and shown combined**
+(`C10 Performance Plus` style), `tipo articolo` dropped as Mexal-only, article `livelli`
+as a picklist on the exact level-zero text including the `A`/`B`/`C`/`D` sort prefixes.
+
+### 🔴 Two days before Lead UAT, the Lead path has three open problems
+
+- **Leads land with no record type.** Elena Spini's Web-to-Lead test at 18:18 CEST: the
+  parameter is sent and not applied. →
+  [OI-164](../notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+- **Conversion has no duplicate rule.** Raised by the developers; the direction is
+  dedupe on P.IVA alone, undecided, never put to the client. →
+  [OI-163](../notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)
+- **A conversion-blocking `agente` rule is being built while the client thinks about
+  it** — _"he said he's going to think about it, but I'm putting it right now"_. The
+  agreement was only that the agent belongs to the customer. →
+  [OI-169](../notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+
+And the spelling is now inconsistent with itself: the new Lead record type is
+**`Standard`**, the Opportunity one is still **`Standart`**, in six places on `DevMain`.
+→ [OI-140](../notes/items/OI-140%20Three%20Opportunity%20record%20types.md)
+
+### 🟢 The quote-to-order chain ran end to end
+
+Quote → PDF → DocuSign → signed document → quote `Accettato` → **order created
+automatically**, verified in the integration log. ⚠ The mail arrives from the
+developer's own user on the demo DocuSign account, both a signed and an unsigned
+preventivo survive (the unsigned one is to be deleted), and **the contract body has not
+been touched**. 🔴 **Anticipay is built and switched off**, with the P.IVA check still to
+be made mandatory on account creation.
+
+### 🔴 Contract logic has not been started, and it is on the 5 October UAT
+
+Aurel Mrruku: _"we haven't even started with it… I haven't even started thinking about
+it."_ `Contratto` is on the client-validated agenda for **5 October**, approval is due
+13 October, and the questions he needs answered are not written down anywhere. →
+[OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)
+
+### 🔴 Data migration was never planned or estimated
+
+_"non avevo calcolato il tempo per la migrazione dei dati. Non sarà una cosa che si farà
+in un giorno."_ Go-live is 21 October, Zoho expires 31 October, the client data is not
+clean, and production means moving structures, migrating data and then granting access,
+in that order, with no slot for it. 🟢 `Check Data Import` is booked 23/09 10:00–12:00.
+→ [OI-165](../notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)
+
+### The build
+
+- 🟢 **PR #54 merged at 07:38Z** — the DocuSign metadata is on `DevMain` (`cf9b6b6`).
+- 🔴 **`ab47b42` flips three more classes to `without sharing`** and creates a fourth
+  that way, in a commit whose subject says so. Five in the quote stack now; **eleven on
+  `DevMain` already.** Open in PR #55. →
+  [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)
+- 🟢 **The same commit automates the 5-day quote ageing** (`QuoteNegotiationAgingBatch`,
+  cron `0 0 3 * * ?`, new `In_Trattativa_Dal__c`), implementing the register's agreed
+  _"Validity 5 days"_ rule — the first movement on the quote state machine in fifteen
+  days. ⚠ The register's day-2 and expiry alerts are still not built.
+- 🟢 **Both open PRs target `DevMain`**, so the `main`-as-target pattern did not recur.
+- ⚠ **`54e0be1` also edits two notes** (OI-149, OI-150) on `DEV_leadDiagnose`. The
+  edits are clean, with proper frontmatter and bumped `updated:` — **the second time
+  developers have maintained `notes/` themselves.** This sweep deliberately left both
+  notes alone on `DevMain` so PR #55 does not land on a conflict.
+
+### 🔴 The `ingressi` suspension is five days old and the client extended it
+
+Fabrizio Paganelli asked by mail at 15:05Z for **a conversion factor on the product to
+determine the number of ingressi**. Aurel Mrruku deferred to the next day without
+mentioning that the structure is suspended. 🔴 And the check-in app's agreed scope is
+**one check-in per event**, where `ingressi` was designed to record each entry — a
+direct collision nobody discussed. Ticket UAT is 30 September. →
+[OI-146](../notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)
+
+### 🟢 UAT is re-validated, and the missing session was an oversight
+
+The WooCommerce topic was **lost when the dates were rewritten**, not dropped. It is now
+folded into **Fri 25/09 `UAT: Recall Tutor + Bundle`** with Marco Montesi, invitations
+updated at 16:34–16:35Z, and Elena Spini posted the **client-validated calendar** at
+18:37 CEST. **1 October is gone** (San Marino holiday), 6 October now also covers
+**Anticipay** and runs 10:00–13:00. ⚠ Fabrizio Paganelli's written request for 3 or 4
+October still has no written answer. →
+[OI-158](../notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)
+(resolved)

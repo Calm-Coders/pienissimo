@@ -4711,3 +4711,219 @@ proprio handler**, corretto in sessione.
   → [OI-152](../notes/items/OI-152%20The%20RID%20mandate%20form%20promised%20to%20customers%20does%20not%20exist.md)
 - 🔴 **Note di credito e storni sono usciti dal piano senza una decisione.**
   → [OI-157](../notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)
+
+## 44. Aggiornamento 22/09/2026 — cinque sessioni in un giorno, e il titolo del §43 era sbagliato
+
+Un giorno analizzato e **cinque riunioni approfondite**. Fonti:
+[Temi QR Code Biglietti](../notes/meetings/2026-09-22%20Temi%20QR%20Code%20Biglietti.md),
+[Logiche Spacchettamento Righe](../notes/meetings/2026-09-22%20Logiche%20Spacchettamento%20Righe.md),
+[Update Interno Aurel Elena](../notes/meetings/2026-09-22%20Update%20Interno%20Aurel%20Elena.md),
+[Test Mexal](../notes/meetings/2026-09-22%20Test%20Mexal.md),
+[Test Interni Pre-UAT Parte 2](../notes/meetings/2026-09-22%20Test%20Interni%20Pre-UAT%20Parte%202.md).
+
+### 🟢🔑 La correzione: nessuna data di tranche va reinserita a mano
+
+**Il §43 affermava che un utente dell'amministrazione deve leggere le date delle tranche
+su Salesforce e reinserirle in ogni fattura Mexal, e che quella data è l'unica chiave di
+collegamento. Entrambe le affermazioni sono sbagliate.** Due sessioni cliente del 22/09
+hanno stabilito il perché.
+
+1. 🟢 **Le date viaggiano già.** Una vendita Performance Plus è **n righe d'ordine con
+   lo stesso codice articolo**, ciascuna con la propria `data scadenza`, e l'ordine
+   _«passa paro paro su Mexal»_ — Fabrizio Paganelli l'ha dimostrato dal vivo su Mexal,
+   ed è così che il cliente lavora da anni.
+2. 🟢 **Data fattura e data scadenza non devono coincidere.** La lettura del 21/09 che lo
+   pretendeva era l'errore. La data di riga è **commerciale** — quando il cliente deve
+   pagare — e l'amministrazione la **traduce**: una riga in scadenza il 30/06 si fattura
+   il **01/06**. _«ai tutor non li possiamo far ragionare con la testa amministrativa.»_
+3. 🟢 **La chiave di collegamento è strutturale.** Fabrizio Paganelli: _«lavorare sulla
+   data di scadenza ci creerà dei casini in futuro. Noi dobbiamo lavorare su elementi
+   strutturali delle tabelle.»_ Mirko Merendi ha nominato i campi: la fattura porta
+   **sigla + numero ordine** dell'ordine, e lo scadenziario porta **codice cliente, serie
+   documento, numero documento, data documento**.
+4. 🔴 **Agganciarsi alla data sarebbe stato attivamente sbagliato.** Le date di scadenza
+   dello scadenziario si spostano: una Ri.Ba. insoluta **rigenera** la data, e i piani di
+   rientro si concordano caso per caso. _«sulle date di scadenza è bene non fare nessun
+   tipo di automatismo di programma perché è un casino.»_
+
+Aurel Mrruku, tre ore dopo: _«tutte le complicazioni che avevo previsto non succedono
+più… Non so perché l'hanno complicato all'inizio.»_ →
+[OI-143](../notes/items/OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md)
+(superata, conservata come registrazione del 21/09)
+
+🟢 **`ORD-02` non è più contraddetta dall'argomento della data.** _«tutto l'ordine passa
+poi a Mexal con entrambi i valori a livello di riga»_ è esattamente ciò che il cliente
+fa. Il testo del registro non viene riscritto qui, perché resta aperto un passaggio
+meccanico:
+
+🔴 **Ciò che sopravvive è l'identificativo.** L'id Salesforce da 18 caratteri non può
+viaggiare; Fabrizio Paganelli ha chiesto un campo **`numero riga ordine`** sull'ordine, e
+la sessione del pomeriggio ha scelto invece **il numero d'ordine di Mexal**. La fattura
+Mexal referenzia l'*ordine*, lo scadenziario referenzia la *fattura* — quindi **quale
+*riga* d'ordine Salesforce venga saldata non è ancora stabilito da nessuno dei due
+capi**, ed è esattamente il caso che conta per n righe di un solo codice articolo. →
+[OI-166](../notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)
+
+### 🟢 Il meccanismo delle tranche concordato, costruito lo stesso giorno
+
+Un **campo numerico sul prodotto** porta il numero di tranche; il prodotto inserito una
+volta genera **n righe d'ordine** con una griglia di date, nominate `1 di n`, `2 di n`.
+Le cadenze in uso sono **5, 10 e 12**, e il meccanismo è dinamico. Concordato alle 11:22,
+confermato col fornitore alle 15:00, **dimostrato funzionante alle 17:00**. →
+[OI-167](../notes/items/OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md)
+
+⚠ Supera la *forma* della
+[OI-142](../notes/items/OI-142%20Fractional%20product%20records%20for%20tranche%20payment.md):
+i record frazionari esistono, ma come un codice ripetuto n volte. **L'obiezione di Elisa
+Migliano del 18/09 è superata e lei non ne è stata informata.**
+
+### 🟢 I bundle non sono mai stati un problema
+
+Fabrizio Paganelli ha mostrato un ordine bundle che arriva a Mexal come **articoli
+componenti**, ciascuno con la propria data di scadenza. Il totale viene spalmato sui
+componenti **in modo ponderato sul valore di listino e sulle quantità**, con **modifica
+manuale riga per riga** — il suo caso è azzerare un evento gratuito dentro il bundle. Ha
+rifiutato qualcosa di più sofisticato; i bundle si costruiscono _«8-10 volte all'anno»_.
+→ [OI-144](../notes/items/OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)
+(risolta)
+
+🔴 **Residuo di sviluppo**: non viene creato alcun `PricebookEntry` per il prodotto
+bundle (_«I have missed this one»_), la testata richiede `totale bundle` e `totale
+listino prodotti`, e selezionare un secondo bundle sostituisce silenziosamente il primo.
+
+### 🔴 Le condizioni di pagamento per riga sono impossibili, e cambierà il comportamento commerciale
+
+Mirko Merendi: la condizione di pagamento esiste **solo nella testata dell'ordine**,
+**l'unico campo disponibile sulla riga è la data di scadenza**, e Mexal **non ha campi
+nascosti**. Il gruppo ha deciso **all'unanimità** di non forzare il sistema e di
+**adattare i comportamenti commerciali**; Fabrizio Paganelli ripulirà i codici di
+pagamento obsoleti e ne creerà di nuovi strutturati per Salesforce. 🔴 **Nessuno ha
+definito quale sia il cambiamento di comportamento**, e nessun tutor era presente in
+nessuna delle due sessioni. 🔴 **La Mastery non ha alcun meccanismo**: un biglietto di
+valore alto, nessuna suddivisione in righe, nessuna condizione per riga. →
+[OI-160](../notes/items/OI-160%20Payment%20conditions%20cannot%20vary%20by%20order%20line.md)
+
+### 🔑 È emersa un'intera integrazione: l'app di check-in eventi
+
+Tutto ciò che è registrato sui QR code riguarda la loro *generazione*. Nulla stabiliva
+che cosa li *legge*. Andrea Parmeggiani gestisce un'**applicazione Android custom** su
+REST verso Zoho, distribuita con TestFlight e pacchetti APK, aggiornata circa ogni
+novanta giorni.
+
+🟢 Concordato per la Fase 1: l'app chiama Salesforce, l'asset passa a **`utilizzato`**,
+**la validità si verifica sulle date della campagna figlia**, **un check-in per evento**
+e non per giornata, e lo stato del campaign member deriva dall'asset via formula. →
+[OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)
+
+🟢 **Infopoint è rinviato alla Fase 2** da Elena Spini ed Elisa Migliano — crea biglietti
+senza ordine, cosa che Aurel Mrruku ha mostrato falsare le statistiche, e richiederebbe
+quattro endpoint. ⚠ **Il rinvio toglie l'integrazione, non la situazione**: gli ingressi
+last-minute e i pagamenti in loco avvengono anche in Fase 1. →
+[OI-162](../notes/items/OI-162%20Infopoint%20and%20orphan%20tickets%20are%20deferred%20to%20Fase%202.md)
+
+⚠ Elena Spini ha nominato come è sfuggito: _«di questa app non ne hanno mai parlato»_, e
+aveva letto _«QR code fatto»_ come comprensivo di scansione e aggiornamento asset.
+
+🔴 È il **secondo deliverable di Fase 1 in capo a Pienissimo Software Srl**, accanto al
+middleware Anticipay — l'entità che ROMI sostiene non essere il cliente di questo
+progetto.
+
+### 🟢 La classificazione degli articoli c'era da sempre
+
+`natura articolo` porta l'intera classificazione come **codice a quattro valori** —
+genera biglietto / solo bundle e le loro negazioni — e non come due flag popolati
+separatamente. Fabrizio Paganelli l'ha dichiarato in sessione, e Aurel Mrruku l'ha
+confermato sullo stesso file. 🔴 **La legenda è arrivata come due mail di soli
+screenshot** (14:21Z e 14:23Z) che nessuno strumento a disposizione di questo job può
+leggere, e `Articoli Salesforce.xlsx` è stato aggiornato alle 14:36Z. →
+[OI-154](../notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+
+Deciso anche sull'anagrafica: `categoria statistica` **memorizzata e mostrata combinata**
+(stile `C10 Performance Plus`), `tipo articolo` eliminato perché solo-Mexal, `livelli`
+articolo come picklist sul testo esatto dei valori di livello zero, prefissi di
+ordinamento `A`/`B`/`C`/`D` compresi.
+
+### 🔴 A due giorni dagli UAT Lead, il percorso Lead ha tre problemi aperti
+
+- **I Lead arrivano senza record type.** Il test Web-to-Lead di Elena Spini alle 18:18
+  CEST: il parametro viene inviato e non applicato. →
+  [OI-164](../notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+- **La conversione non ha una regola sui duplicati.** Sollevata dagli sviluppatori; la
+  direzione è deduplicare sulla sola P.IVA, non decisa, mai posta al cliente. →
+  [OI-163](../notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)
+- **Una regola `agente` che blocca la conversione è in costruzione mentre il cliente ci
+  sta pensando** — _«he said he's going to think about it, but I'm putting it right
+  now»_. L'accordo diceva soltanto che l'agente appartiene al cliente. →
+  [OI-169](../notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+
+E l'ortografia è ora incoerente con se stessa: il nuovo record type del Lead è
+**`Standard`**, quello dell'Opportunità è ancora **`Standart`**, in sei punti su
+`DevMain`. → [OI-140](../notes/items/OI-140%20Three%20Opportunity%20record%20types.md)
+
+### 🟢 La catena preventivo-ordine ha girato end to end
+
+Preventivo → PDF → DocuSign → documento firmato → preventivo `Accettato` → **ordine
+creato automaticamente**, verificato nel log di integrazione. ⚠ La mail arriva
+dall'utenza della sviluppatrice sull'account DocuSign demo, sopravvivono sia il
+preventivo firmato sia quello non firmato (il non firmato va eliminato), e **il corpo del
+contratto non è stato toccato**. 🔴 **Anticipay è costruito e disattivato**, con il
+controllo P.IVA ancora da rendere obbligatorio alla creazione dell'account.
+
+### 🔴 La logica del contratto non è iniziata, ed è negli UAT del 5 ottobre
+
+Aurel Mrruku: _«we haven't even started with it… I haven't even started thinking about
+it.»_ `Contratto` è nell'agenda validata dal cliente per il **5 ottobre**, l'approvazione
+è attesa entro il 13 ottobre, e le domande a cui ha bisogno di risposta non sono scritte
+da nessuna parte. →
+[OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)
+
+### 🔴 La migrazione dati non è mai stata pianificata né stimata
+
+_«non avevo calcolato il tempo per la migrazione dei dati. Non sarà una cosa che si farà
+in un giorno.»_ Il go-live è il 21 ottobre, Zoho scade il 31 ottobre, i dati del cliente
+non sono puliti, e la produzione significa portare le strutture, migrare i dati e poi
+dare gli accessi, in quest'ordine, senza uno slot dedicato. 🟢 `Check Data Import` è
+fissato per il 23/09 10:00–12:00. →
+[OI-165](../notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)
+
+### Lo sviluppo
+
+- 🟢 **PR #54 mergiata alle 07:38Z** — i metadati DocuSign sono su `DevMain`
+  (`cf9b6b6`).
+- 🔴 **`ab47b42` porta altre tre classi a `without sharing`** e ne crea una quarta già
+  così, in un commit il cui oggetto lo dichiara. Cinque nello stack preventivi ora;
+  **undici già su `DevMain`.** Aperta nella PR #55. →
+  [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)
+- 🟢 **Lo stesso commit automatizza l'invecchiamento a 5 giorni del preventivo**
+  (`QuoteNegotiationAgingBatch`, cron `0 0 3 * * ?`, nuovo `In_Trattativa_Dal__c`),
+  realizzando la regola concordata _«Validità 5 giorni»_ del registro — il primo
+  movimento su quella macchina a stati in quindici giorni. ⚠ Gli alert del registro al
+  secondo giorno e alla scadenza non sono ancora realizzati.
+- 🟢 **Entrambe le PR aperte puntano a `DevMain`**, quindi lo schema del target `main`
+  non si è ripetuto.
+- ⚠ **`54e0be1` modifica anche due note** (OI-149, OI-150) su `DEV_leadDiagnose`. Le
+  modifiche sono pulite, con frontmatter corretto e `updated:` aggiornato — **la seconda
+  volta che gli sviluppatori mantengono `notes/` da sé.** Questo passaggio ha
+  deliberatamente lasciato intatte entrambe le note su `DevMain`, perché la PR #55 non
+  trovi un conflitto.
+
+### 🔴 La sospensione degli `ingressi` ha cinque giorni e il cliente l'ha estesa
+
+Fabrizio Paganelli ha chiesto per mail alle 15:05Z **un fattore di conversione sul
+prodotto per determinare il numero di ingressi**. Aurel Mrruku ha rinviato al giorno dopo
+senza menzionare che la struttura è sospesa. 🔴 E il perimetro concordato dell'app di
+check-in è **un check-in per evento**, dove gli `ingressi` erano pensati per registrare
+ogni ingresso — una collisione diretta di cui nessuno ha parlato. Gli UAT biglietti sono
+il 30 settembre. →
+[OI-146](../notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)
+
+### 🟢 Gli UAT sono ri-validati, e la sessione mancante era una dimenticanza
+
+Il tema WooCommerce era stato **perso nella riscrittura delle date**, non eliminato. Ora
+è incluso in **ven 25/09 `UAT: Recall Tutor + Bundle`** con Marco Montesi, inviti
+aggiornati alle 16:34–16:35Z, ed Elena Spini ha pubblicato il **calendario validato dal
+cliente** alle 18:37 CEST. **Il 1 ottobre è sparito** (festivo a San Marino), il 6
+ottobre copre ora anche **Anticipay** e va dalle 10:00 alle 13:00. ⚠ La richiesta scritta
+di Fabrizio Paganelli per il 3 o 4 ottobre è ancora senza risposta scritta. →
+[OI-158](../notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)
+(risolta)

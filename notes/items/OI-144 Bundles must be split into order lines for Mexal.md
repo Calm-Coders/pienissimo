@@ -1,15 +1,16 @@
 ---
 id: OI-144
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-21
+updated: 2026-09-22
 depends_on: [OI-143]
 blocks: [go-live]
 requirement: [ORD-02]
 source: notes/meetings/2026-09-21 Interna Temi Mexal.md
+resolution_source: notes/meetings/2026-09-22 Logiche Spacchettamento Righe.md
 ---
 
 # OI-144 - Bundles must be split into order lines for Mexal
@@ -64,3 +65,45 @@ anche in quel modo là."_
   side, and what it does to the accounting movements.
 - 🔴 Record the new bundle-total calculation before it is built.
 - ⚠ Reconcile with the single-element ruling, citing both dates.
+
+## 🟢 RESOLVED 2026-09-22 — the client confirmed it, and it was never in doubt for them
+
+At [Logiche Spacchettamento Righe](../meetings/2026-09-22%20Logiche%20Spacchettamento%20Righe.md)
+(22/09 11:22 CEST), Fabrizio Paganelli demonstrated a bundle order on Mexal: articles
+`A B C D E` as **separate lines**, each with its own due date, and
+_"quando da qui passa di là, passa così."_ **Bundles already reach Mexal as their
+component articles.** Aurel Mrruku confirmed the design intent in the same exchange —
+_"quando facciamo passare l'ordine a Mexal, mandiamo questi n prodotti che compongono
+il bundle, vero?"_ — and Fabrizio Paganelli: _"Sì."_
+
+🟢 **And the bundle-total question is answered.** The total is spread over the
+components **weighted by listino value and quantity**, with a **manual per-line
+override**. Fabrizio Paganelli's own use case: zero a free event inside the bundle and
+push the difference onto the other lines. He declined anything cleverer —
+_"una volta che tu mi fai la regola che mi spalma il valore totale del bundle in modo
+ponderato rispetto al valore di listino, io sono a posto. L'importante è che poi… sia
+modificabile manualmente"_ — noting that bundles are built by administration
+_"8-10 volte all'anno"_. Aurel Mrruku, who had feared a spreading algorithm:
+_"per me è tutto chiaro."_
+
+⚠ **So the "contradicts the standing ruling" concern above was a misreading of the
+ruling**, not a real conflict: a bundle is one *sellable product* in Salesforce and
+n *order lines* outbound. Both are true at once.
+
+## What remains, and it is build work not design
+
+- 🔴 **No `PricebookEntry` is created for a bundle product** — found at
+  [the 17:00 pre-UAT session](../meetings/2026-09-22%20Test%20Interni%20Pre-UAT%20Parte%202.md);
+  Aurel Mrruku: _"I have missed this one"_, and he will automate it. Without it a quote
+  cannot price the bundle.
+- 🔴 The bundle header must carry **`totale bundle` and `totale listino prodotti`**;
+  the components carry prezzo listino, prezzo unitario and **prezzo manuale**; the
+  parent price is hidden from the client.
+- ⚠ A filter currently **prevents adding the same product twice** to a bundle, to be
+  lifted — in practice a line is sometimes repeated at price zero.
+- ⚠ Selecting a second bundle **silently replaces the first**.
+- ⚠ **Mirko Merendi was not asked** whether n lines per bundle article disturbs the
+  warehouse movements — the topic did not come up at
+  [Test Mexal](../meetings/2026-09-22%20Test%20Mexal.md). It is adjacent to
+  [OI-155](OI-155%20San%20Marino%20revenue%20split%20and%20warehouse%20causale.md),
+  whose mechanism that session did name: contropartita di riga plus tipo merce.

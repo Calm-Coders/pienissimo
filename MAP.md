@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-21 (nightly requirements-check: the client came back, UAT is booked, the checkout link is resolved, and the tranche-to-Mexal link turns out to be impossible) · Source of record: [notes/](notes/)
+Last updated: 2026-09-22 (nightly requirements-check: five sessions in one day settled the tranche design, and last night's headline was wrong) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -11,8 +11,72 @@ ROMI is migrating Pienissimo from **Zoho CRM to Salesforce**. Zoho expires
 on 8 September, acknowledged by Fabrizio Paganelli on 9 September, and the
 register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
-**UAT 23 September – 13 October**, approval by 13 October. Requirements went to
+**UAT 24 September – 6 October**, approval by 13 October. The calendar was re-validated by the client on 22/09. Requirements went to
 sign-off on 2026-08-06.
+
+- 🔑 **2026-09-22 — five sessions in one day, and the correction matters more than
+  any of them.**
+  🟢🔑 **Last night's headline was wrong, and the record is now right.**
+  [OI-143](notes/items/OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md)
+  said an administration user must re-key tranche dates by hand into Mexal. **No
+  re-keying is required.** Fabrizio Paganelli demonstrated on Mexal that a Plus sale
+  is **already n order lines of the same article code, each with its own `data
+  scadenza`**, and the order _"passa paro paro su Mexal"_. Invoice date and due date
+  **are not meant to coincide** — the line date is commercial, administration invoices
+  on the 1st for a line due at month end. **The join key is structural, not the date**:
+  Mirko Merendi named the fields (invoice ← sigla + numero ordine; scadenziario ←
+  codice cliente, serie, numero, data documento). And 🔴 **matching on the date would
+  have been actively wrong** — a Ri.Ba. returned unpaid regenerates the due date.
+  Aurel Mrruku: _"tutte le complicazioni che avevo previsto non succedono più."_
+  **The manual-re-keying trigger is discharged by the premise dissolving, not by an
+  artifact.**
+  🟢 **[OI-144](notes/items/OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)
+  is RESOLVED** — bundles already reach Mexal as their component lines; the total is
+  spread weighted by listino and quantity with a manual per-line override. 🟢 **The
+  agreed Plus mechanism is a tranche count on the product**
+  ([OI-167](notes/items/OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md)),
+  **demonstrated working the same evening.** 🔴 What survives is one hop:
+  **which order *line* a payment settles**
+  ([OI-166](notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)).
+  🟢 **[OI-154](notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+  corrected too — `natura articolo` IS the classification**, a four-way code
+  (genera biglietto / solo bundle, and their negations). 🔴 The legend arrived as
+  **two screenshot-only mails** no tool here can read.
+  🔴 **A whole integration surfaced that the record did not contain: the event
+  check-in app.** Andrea Parmeggiani runs a **custom Android scanner** over REST to
+  Zoho; nothing establishes what reads a QR code. Asset update agreed, **Infopoint
+  deferred to Fase 2**, nothing built, **ticket UAT 30/09**
+  ([OI-161](notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md),
+  [OI-162](notes/items/OI-162%20Infopoint%20and%20orphan%20tickets%20are%20deferred%20to%20Fase%202.md)).
+  Elena Spini: _"di questa app non ne hanno mai parlato."_
+  🔴 **Two days before Lead UAT, leads land with no record type** — Elena Spini's
+  form test at 18:18 CEST
+  ([OI-164](notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)) —
+  and **Lead conversion still has no duplicate rule**
+  ([OI-163](notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)).
+  🔴 **Contract logic has not been started at all** and `Contratto` is on the
+  client-validated **5 October** UAT agenda
+  ([OI-168](notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)).
+  🔴 **Data migration was never planned or estimated**
+  ([OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)),
+  with go-live 21/10 and Zoho expiring 31/10.
+  🔴 **Four more classes flipped to `without sharing`** in a commit that says so
+  (`ab47b42`, PR #55) — five in the quote stack now
+  ([OI-156](notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)).
+  🟢 The same commit **automates the 5-day quote ageing**, the first movement on the
+  quote state machine in fifteen days.
+  🟢 **[OI-158](notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)
+  is RESOLVED** — it was an oversight when the dates were rewritten; WooCommerce is
+  folded into **Fri 25/09**, and the client re-validated the calendar. 1 October is
+  gone (San Marino holiday); 6 October now also covers **Anticipay**.
+  🔴 **`Standart` is now inconsistent with itself**: the new Lead record type is
+  `Standard`, the Opportunity one is still `Standart`. **UAT opens in two days.**
+  🔴 **The `ingressi` suspension is five days old, and the client asked in writing for
+  an ingressi conversion factor on the product**
+  ([OI-146](notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)).
+  🟢 **DocuSign metadata reached `DevMain`** (PR #54 merged 07:38Z) and the
+  quote → DocuSign → signed → order chain **ran end to end** in the pre-UAT session.
+  — [trace](notes/traces/Source%20trace%202026-09-22.md)
 
 - 🔑 **2026-09-21 — the client came back, UAT is on the calendar, and the one
   integration everyone assumed was solved turns out to have no automated path.**

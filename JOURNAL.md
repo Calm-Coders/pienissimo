@@ -10,6 +10,49 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-22 — claude — nightly requirements-check: five sessions in a day, and last night's headline was wrong
+
+- **Did:** swept the one-day window from watermark **2026-09-21T22:00Z** and **drilled
+  five meetings** — `Temi QR Code Biglietti` (client, with Andrea Parmeggiani),
+  `Logiche Spacchettamento Righe` (client), `Update Interno Aurel/Elena` (ROMI),
+  `Test Mexal` (client + **Mirko Merendi of Kreosoft**) and `Test Interni Pre-UAT Parte 2`
+  (ROMI). Read 11 Gmail threads (four in full), Elena Spini's DM in full, the
+  `#tproj-pienissimo` calendar post, the dev group, two paged Drive sweeps, five Drive
+  documents, eleven branch heads and PRs #54–#56. Fathom: zero meetings.
+- **State:** committed on `DevMain`, `vault:check` green (290 notes, 290 unique ids, all links resolve).
+- **🔑 The headline is a correction to my own previous run.** `OI-143` said an
+  administration user must re-key tranche dates by hand into Mexal, and that the date is
+  the only join key. **Both are false.** A Plus order is already **n lines of one article
+  code, each with its own `data scadenza`**, the order passes to Mexal unchanged, invoice
+  date and due date are **not meant to coincide**, and the join is **structural** (invoice
+  ← sigla + numero ordine; scadenziario ← codice cliente, serie, numero, data documento).
+  Matching on the date would have been **actively wrong** — a Ri.Ba. insoluto regenerates
+  it. `OI-143` is **superseded with its 21/09 body kept verbatim**; the real residue is
+  `OI-166`, the order-**line** identifier, which neither 22/09 session closed.
+- **Next:** (1) **the Lead path, before UAT on 24/09** — `OI-164` leads land with no record
+  type, `OI-163` no duplicate rule, `OI-169` a conversion-blocking `agente` rule built
+  while the client is still deciding. (2) `OI-168` contract logic not started, on the 5/10
+  agenda. (3) `OI-165` migration unestimated. (4) `OI-161` the check-in app, nothing built,
+  ticket UAT 30/09. (5) `OI-159` nobody has answered Mirko Merendi's field-split mail.
+- **Watch:**
+  - **`notes/items/OI-149` and `OI-150` were deliberately left alone.** PR #55 (`54e0be1`)
+    carries clean, developer-authored edits to exactly those two files. Editing them on
+    `DevMain` would have landed a merge conflict on Rexhina Hysi. Their 22/09 facts are in
+    the new items and the trace instead — **this was a choice, not an omission.**
+  - `ORD-02` is **no longer contradicted** by the date argument; the 21/09 judgement is
+    withdrawn. The register's prose is still unedited because `OI-166` is open and the
+    Italian is the signed text. Only `ORD-02.tracked_by` changed (gained `OI-167`).
+  - 🔴 `ab47b42` flips three classes to `without sharing` and creates a fourth that way —
+    **five in the quote stack, eleven already on `DevMain`.** Treat it as a house style on
+    guest-reachable paths, not an isolated line.
+  - 🟢 The same commit **automates the 5-day quote ageing**, implementing the register's
+    agreed rule; the code's labels confirm the register's are the stale ones.
+  - 🔴 `Standart` is now **inconsistent with itself** — `Lead.Standard` beside
+    `Opportunity.Standart`. Two days to UAT.
+  - The two `natura articolo` / `categoria statistica` legends arrived as
+    **screenshot-only mails no tool here can read**. Not a skipped source — a tool limit.
+  - **STATUS.md not regenerated**, no org evidence; the org record is ~8 days old.
+
 ## 2026-09-21 — claude — nightly requirements-check: the client returned, UAT is booked, and Mexal cannot receive a tranche date
 
 - **Did:** swept the four-day window 18–21/09 from watermark **2026-09-17T21:40Z** and

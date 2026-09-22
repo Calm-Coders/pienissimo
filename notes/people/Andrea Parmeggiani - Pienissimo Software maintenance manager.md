@@ -3,7 +3,7 @@ id: person-andrea-parmeggiani
 type: person
 status: active
 org: Pienissimo Software
-updated: 2026-09-21
+updated: 2026-09-22
 source: Drive - Organigrammi Pienissimo (EV - SW) (APRILE 26).pdf
 ---
 
@@ -71,3 +71,36 @@ Parmeggiani (Pienissimo Software), and the "Andrea G." of the July and August st
 posts. The auto-transcripts garble them freely and the 17/09 notes produced a bare
 "Andre". **Attribution here rests on the calendar invitations, which carry
 addresses.**
+
+## 🔑 2026-09-22 - he attended, and he owns a second Fase 1 integration
+
+He joined
+[Temi QR Code Biglietti](../meetings/2026-09-22%20Temi%20QR%20Code%20Biglietti.md)
+(22/09 10:32 CEST) and it turned out he owns more than a slot in the ticket flow:
+**the check-in application itself.**
+
+What he described: a **custom Android app** — his own, not a Zoho product — talking to
+Zoho over **REST**, distributed via TestFlight and APK packages on Drive, **refreshed
+about every ninety days**, carrying a dropdown of events, editions and ticket types, and
+an **Infopoint** desk mode he and Elisa Migliano use to hand-register attendees.
+
+He now owes ROMI **credentials, an endpoint and a payload definition**; Aurel Mrruku
+owes him **payload examples and a Postman collection**, committed for the end of week
+22–26/09.
+→ [OI-161](../items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)
+
+🔴 **So the crossover flagged on 25 August is now two Fase 1 deliverables, not one.**
+Pienissimo Software Srl — the entity ROMI argues is not this project's client — owns the
+Anticipay middleware *and* the application that reads every ticket at the door. Neither
+has an owner on the ROMI side and **nobody has flagged the crossover in any session
+yet.**
+
+⚠ He was direct about priorities in the session: presence must be recorded in real time
+and the administrative correction can wait for the next day. His Infopoint requirement
+was **deferred to Fase 2** by Elena Spini and Elisa Migliano
+([OI-162](../items/OI-162%20Infopoint%20and%20orphan%20tickets%20are%20deferred%20to%20Fase%202.md)) —
+a decision taken with him in the room.
+
+⚠ **A second `.pro` address appeared the same day**: `direzione@pienissimo.pro` sent the
+`Natura Articoli` screenshot at 14:21:22Z. **Whose mailbox it is was not stated and is
+not inferred here** — it is not attributed to him.

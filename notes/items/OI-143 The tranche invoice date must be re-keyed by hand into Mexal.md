@@ -1,20 +1,78 @@
 ---
 id: OI-143
 type: open-item
-status: open
+status: superseded
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-21
-updated: 2026-09-21
+updated: 2026-09-22
 depends_on: [OI-50, OI-144]
+superseded_by: [OI-166, OI-167]
 blocks: [go-live]
-severity: gating
+severity: resolved-premise
 requirement: [ORD-02, ORD-03]
 source: notes/meetings/2026-09-21 Interna Temi Mexal.md
+supersession_source: notes/meetings/2026-09-22 Logiche Spacchettamento Righe.md
 ---
 
 # OI-143 - The tranche invoice date must be re-keyed by hand into Mexal
+
+> 🔴 **SUPERSEDED on 2026-09-22. The premise below is wrong and this note's own
+> conclusion was wrong.** Two client sessions on 22/09 —
+> [Logiche Spacchettamento Righe](../meetings/2026-09-22%20Logiche%20Spacchettamento%20Righe.md)
+> at 11:22 with Fabrizio Paganelli, and
+> [Test Mexal](../meetings/2026-09-22%20Test%20Mexal.md) at 15:00 with Mirko Merendi of
+> Kreosoft — established that **no manual re-keying of tranche dates is required.**
+> The body is kept unedited below as the record of what was believed on 21/09.
+> **Later evidence wins; cite both dates.**
+>
+> **What is actually true, as of 2026-09-22:**
+>
+> 1. 🟢 **The tranche due dates do travel.** A Plus order is already **n lines with the
+>    same article code**, each carrying its own `data scadenza riga`, and the order
+>    _"passa paro paro su Mexal"_. Administration invoices each line at its period. The
+>    client has worked this way for years; Fabrizio Paganelli demonstrated it live.
+> 2. 🟢 **Invoice date and due date are not meant to coincide**, and the 21/09 reading
+>    that they must was the error. The line date is **commercial** — when the customer
+>    must pay; administration **translates** it, invoicing on the 1st for a line due at
+>    month end.
+> 3. 🟢 **The join key is structural, not the date.** Fabrizio Paganelli:
+>    _"lavorare sulla data di scadenza ci creerà dei casini in futuro. Noi dobbiamo
+>    lavorare su elementi strutturali delle tabelle."_ Mirko Merendi named the fields:
+>    the invoice carries the order's **sigla + numero ordine**, and the scadenziario
+>    carries **codice cliente, serie documento, numero documento, data documento**.
+> 4. 🔴 **Matching on the date would have been actively wrong.** Scadenziario due dates
+>    move: a Ri.Ba. returned unpaid **regenerates a new due date**, and piani di rientro
+>    are agreed case by case. _"sulle date di scadenza è bene non fare nessun tipo di
+>    automatismo di programma perché è un casino."_
+> 5. 🟢 Aurel Mrruku, three hours later: _"tutte le complicazioni che avevo previsto non
+>    succedono più… Non so perché l'hanno complicato all'inizio."_ And
+>    _"non devo fare nessuna logica customizzata in base alla data di scadenza."_
+>
+> **What survives as work:**
+> [OI-166](OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)
+> — the order/order-line identifier both systems must hold, which is the real
+> unresolved hop —
+> and [OI-167](OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md),
+> the agreed mechanism.
+>
+> **What this changes for `ORD-02`:** the row is **no longer contradicted by the date
+> argument**. _"the whole order then goes to Mexal with both values at line level"_ is
+> what the client actually does. The bundle clause is also answered — bundles reach
+> Mexal as their component lines
+> ([OI-144](OI-144%20Bundles%20must%20be%20split%20into%20order%20lines%20for%20Mexal.md)).
+> ⚠ The register text is still **not edited by this sweep**: what remains open is the
+> line-level identifier, and the Italian is the text the client signs. But the reason for
+> not editing has changed from "the client has not been asked" to "one mechanical detail
+> is still open".
+>
+> 🟢 **The armed trigger of 2026-09-21 — _"if no artifact shows Fabrizio Paganelli or
+> Elisa Migliano being told that tranche dates must be re-keyed by hand"_ — is
+> DISCHARGED, not by an artifact but by the premise dissolving.** Nobody needed to be
+> told, because it was never true.
+
+## The 21/09 record, unedited
 
 **Established at [the 21/09 Mexal internal](../meetings/2026-09-21%20Interna%20Temi%20Mexal.md)
 and not yet agreed with the client.** The most consequential finding of the

@@ -1,15 +1,16 @@
 ---
 id: OI-154
 type: open-item
-status: open
+status: in-progress
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-09-21
-updated: 2026-09-21
+updated: 2026-09-22
 depends_on: [OI-24]
 blocks: [OI-121, go-live]
-severity: gating
+severity: downgraded 2026-09-22
 source: notes/meetings/2026-09-21 Interna Temi Mexal.md
+update_source: notes/meetings/2026-09-22 Logiche Spacchettamento Righe.md
 ---
 
 # OI-154 - The client import extraction is missing the article classification
@@ -93,3 +94,59 @@ further doubts arose during the extraction.
   reference — raised at
   [the 21/09 client call](../meetings/2026-09-21%20Test%20WooCommerce%20e%20Temi%20Mexal.md)
   and unresolved.
+
+## 🟢 CORRECTED 2026-09-22 — the classification is there, encoded
+
+⚠ **The 21/09 reading above was wrong about the substance, right about the confusion.**
+
+At [Logiche Spacchettamento Righe](../meetings/2026-09-22%20Logiche%20Spacchettamento%20Righe.md)
+Elena Spini queried the Mexal technical columns and Fabrizio Paganelli answered:
+
+> _"Natura è genera biglietto, solo bundle / non genera biglietto, solo bundle /
+> genera biglietto, altri ordini / non genera biglietto, altri ordini. Era quella cosa
+> che avevamo condiviso con Aurel."_
+
+**`natura articolo` carries the whole classification as a four-way code** — the exact
+pairing the 16/09 ruling needs — rather than as two separately populated flags. That is
+why the added columns looked empty: the information is in the Mexal field the 21/09
+review read as _"short codes"_.
+
+Aurel Mrruku, on the same file in the same session: _"Ho visto già che ci sono i campi
+per capire se devi generare un biglietto e fa parte di un bundle."_ He still wants a
+joint pass over the product registry — _"è la parte che mi preoccupa di più"_ — plus a
+clean-up of what is not needed.
+
+🟢 **The transcodifica arrived the same day.** Fabrizio Paganelli's action at
+[Test Mexal](../meetings/2026-09-22%20Test%20Mexal.md) was to mail the transcoding
+tables for `natura articolo` and `categoria statistica`, cc Elena Spini. **Two mails
+landed at 14:21:22Z and 14:23:34Z** — subjects `Natura Articoli` (from
+`direzione@pienissimo.pro`) and `Categoria Statistica Articoli` (from
+`fabrizio.p@pienissimo.com`).
+
+🔴 **Both are screenshots and nothing else.** Each message body is a single embedded
+`image001.png` with no text, so **the legend cannot be read by any tool available to
+this job**, and it cannot be diffed against the extraction or turned into a picklist
+without a person transcribing it. ⚠ `direzione@pienissimo.pro` is a **sender not
+previously in this record**; whose mailbox it is was not stated and **has not been
+inferred**.
+
+🟢 **And the `ARTICOLI` extraction was updated.** `Articoli Salesforce.xlsx` in the
+client's `ARTICOLI` folder has `modifiedTime` **2026-09-22T14:36:37Z**, thirteen minutes
+after the second screenshot — so Fabrizio Paganelli reworked it after the session. **Not
+opened; it carries real customer and catalogue data.**
+
+## What this changes
+
+- 🟢 **`OI-121` is no longer blocked on a missing field**, only on the mapping work
+  itself: the ticket flag exists.
+- 🔴 **Still owed, and now the narrow gap: the legend as data.** A screenshot is not a
+  transcodifica table. Either someone types the values out, or the client re-sends them
+  as text.
+- ⚠ **`categoria statistica` decisions from 22/09 must land with it**: it is two Mexal
+  fields, alphabetic + numeric, to be **stored and shown combined** in Salesforce
+  (`C10 Performance Plus` style). `tipo articolo` is dropped as Mexal-only. Article
+  `livelli` become a picklist using the exact level-zero text including the `A`/`B`/`C`/`D`
+  sort prefixes.
+- ⚠ **`Check Data Import` on 23/09 10:00–12:00** is where the field list gets walked.
+- ⚠ The gating concern about **starting UAT on incomplete article data** stands, but it
+  is now about registry clean-up and the unread legend, not a missing classification.

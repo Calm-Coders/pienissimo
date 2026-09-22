@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elisa Migliano
 org: both
 raised: 2026-07-02
-updated: 2026-09-21
+updated: 2026-09-22
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 24
@@ -537,3 +537,36 @@ either way.
 
 ⚠ **UAT opens 24 September, not 23.** The client chose the later of the two slots
 offered for Lead e Opportunità.
+
+## 2026-09-22 — the import review finally has a slot
+
+🟢 **`Check Data Import` is booked for 23/09 10:00–12:00** — Aurel Mrruku, Elena Spini,
+Fabrizio Paganelli, Elisa Migliano — agreed inside
+[the 11:22 client session](../meetings/2026-09-22%20Logiche%20Spacchettamento%20Righe.md)
+and invited at 22/09 10:12Z. Its purpose is to walk the field list object by object and
+decide what travels.
+
+Elena Spini's objection is what produced it: she cannot verify the extraction field by
+field — _"io non la posso controllare una per uno"_ — and asked Fabrizio Paganelli to
+pre-clean what ROMI does not need. He declined on a concrete ground: the **full product
+and customer registries must travel**, because a historical order portfolio cannot be
+imported if its article codes were filtered out — _"se non ci metto il codice articolo,
+come faccio a portarmi dentro i dati?"_ He kept the Zoho field names deliberately, so a
+re-extraction stays cheap, and offered as many sessions as needed:
+_"possiamo fare anche 10 call su questo argomento, perché se scaziamo qui scaziamo
+tutto."_
+
+⚠ **Two fields the extraction cannot contain were agreed the same day**: the product
+**tranche count**
+([OI-167](OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md))
+and the client's requested **ingressi conversion factor**
+([OI-146](OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)). Both are
+Salesforce-only derived fields, so the mapping is still moving.
+
+🟢 `natura articolo` **does** carry the ticket and bundle classification, encoded —
+[OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+— which closes the gap this note has carried for six sessions. ⚠ `tipo articolo` (`ACZZ`)
+is Mexal-only and need not travel.
+
+🔴 **And the migration itself was never estimated** —
+[OI-165](OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md).

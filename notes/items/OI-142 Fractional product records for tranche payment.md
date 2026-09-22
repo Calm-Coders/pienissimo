@@ -1,11 +1,11 @@
 ---
 id: OI-142
 type: open-item
-status: open
+status: superseded
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-17
-updated: 2026-09-21
+updated: 2026-09-22
 depends_on: [OI-50]
 source: notes/meetings/2026-09-17 Follow-up Interno.md
 ---
@@ -93,3 +93,29 @@ at all — see
 [OI-143](OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md).
 **So both mechanisms on the table have now been ruled out by someone**, and the
 22/09 `Logiche Spacchettamento Righe` session opens with no surviving proposal.
+
+## ⚠ SUPERSEDED 2026-09-22 — the shape exists, but as one code repeated
+
+The 22/09 client sessions settled the mechanism, and it is **not** separate
+half/third/quarter product records. It is **one article code entered once, exploded into
+n order lines** from a tranche count held on the product —
+[OI-167](OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md).
+
+Aurel Mrruku, at
+[the internal update](../meetings/2026-09-22%20Update%20Interno%20Aurel%20Elena.md), on
+finding the client's own extraction already labelled `frazione 1`, `frazione 2`,
+`frazione 3`: the fractional idea was **their historical practice**, and the current
+practice replaced it with a single `PLUS…` code used n times. Fabrizio Paganelli, at
+[the 11:22 session](../meetings/2026-09-22%20Logiche%20Spacchettamento%20Righe.md), on the
+old `1 di 5` / `2 di 5` codes: _"sono codici articolo in qualche modo vecchi. Adesso noi
+tendiamo ad utilizzare il plus."_ They are being flagged `annullato`.
+
+🔴 **One case survives and has no mechanism at all**: a single high-value ticket such as
+the Mastery (~€6,0xx) that the customer pays in instalments. It cannot be split into
+several product lines — _"non posso mettere più righe per lo stesso biglietto"_ — and
+per-line payment conditions are impossible on Mexal. Fabrizio Paganelli deferred it:
+_"ragioniamoci."_ Carried in
+[OI-160](OI-160%20Payment%20conditions%20cannot%20vary%20by%20order%20line.md).
+
+⚠ **Elisa Migliano's 18/09 objection to fractional products is therefore moot**, and she
+has not been told — the design she objected to is not the one being built.

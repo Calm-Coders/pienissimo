@@ -1195,7 +1195,7 @@ requirements:
       status: agreed,
       source: AUREL-2026-08-24-TRANCHE,
       text: "Tranche reference and due date propagate from Quote Line Item to Order Item; the whole order then goes to Mexal with both values at line level",
-      tracked_by: [OI-50, OI-143, OI-144]
+      tracked_by: [OI-50, OI-143, OI-144, OI-167]
     }
   - {
       id: ORD-03,

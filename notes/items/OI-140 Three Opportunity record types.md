@@ -5,7 +5,7 @@ status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-17
-updated: 2026-09-17
+updated: 2026-09-22
 depends_on: [OI-49]
 blocks: [OI-141]
 source: notes/meetings/2026-09-17 Follow-up Interno.md
@@ -89,3 +89,26 @@ weaker source.**
   (`f4deb96`, _"logic for products that should be visible based on Opportunity
   Type"_) — **#49 targets `main`, #50 targets `DevMain`**, created 32 seconds
   apart. Merging #49 would put in-flight development straight onto `main`.
+
+## 🔴 2026-09-22 — the misspelling is now inconsistent with itself
+
+`Standart` survives in **six places on `origin/DevMain`** at `cf9b6b6`:
+`LeadConversionQueueable.cls` · `QuoteManageProductsController.cls` ·
+`Quote_Record_Page.flexipage` (×2) · `quoteManageProducts.js` ·
+`Opportunity/recordTypes/Standart.recordType-meta.xml` ·
+`permissionsets/Full_Permission.permissionset-meta.xml`.
+
+🔴 **And the Lead record types added the same day are spelt correctly.** `54e0be1`
+(Rexhina Hysi, 22/09 17:57 CEST, `DEV_leadDiagnose`, PR #55) adds
+`Lead/recordTypes/Diretta.recordType-meta.xml` and
+**`Lead/recordTypes/Standard.recordType-meta.xml`**.
+
+So the org is heading for **`Lead.Standard` and `Opportunity.Standart` side by side**,
+for the same commercial concept, with
+[OI-150](OI-150%20Opportunity%20type%20comes%20from%20a%20Lead%20picklist.md) mapping one
+onto the other. That is worse than a consistent typo: anyone writing a query, a report
+filter or a validation rule now has to remember which object spells it which way.
+
+⚠ **UAT opens 24 September** — in two days — and record-type API names are effectively
+permanent once records reference them. The rename is still free today and will not be
+tomorrow. **This is the fifth consecutive run reporting it.**
