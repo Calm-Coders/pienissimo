@@ -538,6 +538,7 @@
 
           <td valign="top">
             <strong>Il Cliente</strong>
+            <span style="color: #ffffff; font-size: 1px">/sig1/</span>
             <br />
 
             <apex:outputText value="{!customerName}" />

@@ -1,11 +1,11 @@
 ---
 id: OI-150
 type: open-item
-status: open
+status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-21
+updated: 2026-09-22
 depends_on: [OI-140, OI-149]
 source: notes/meetings/2026-09-21 Test Interni Pre-UAT.md
 ---
@@ -32,10 +32,16 @@ question on the same counterpart, now three weeks old.
 
 ## Open
 
-- 🔴 **Nothing builds it** — no picklist, no conversion mapping in `force-app/`.
-- 🔴 **The picklist values are unstated.** They must map onto `Standart`,
-  `Plus_Attivazione_Rinnovo` and `Recall_Tutor`, and nobody has written the mapping
-  down.
+- ⚠ **The Lead conversion path is now built in source.**
+  `Lead.Tipo_Opportunita__c` carries the same four values as
+  `Opportunity.Tipo_Opportunita__c`, and `LeadConversionQueueable` maps converted
+  Opportunities to `Standart`, `Plus_Attivazione_Rinnovo` or `Recall_Tutor`.
+  Blank Lead values default to `Vendita da tutor` / `Standart`, preserving the
+  previous behavior. The change passed a check-only Salesforce deploy on
+  2026-09-22 (`0AfMA00000Cl1rN0AR`).
+- ⚠ **The picklist values were inferred from the existing Opportunity field.**
+  No client sentence has explicitly confirmed that this is the final Lead value
+  set.
 - 🔴 **`Standart` is still misspelt** in the API name and the label on `DevMain`
   — see [OI-140](OI-140%20Three%20Opportunity%20record%20types.md). A Lead picklist
   that resolves to a misspelt developer name inherits the misspelling.

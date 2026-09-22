@@ -2,6 +2,8 @@ public without sharing class QuotePdfService {
   private static final String DRAFT_STATUS = 'Bozza';
   private static final String NEGOTIATION_STATUS = 'In Trattativa';
   private static final String SIGNATURE_TITLE_TOKEN = 'da firmare';
+  private static final String FILE_SHARE_TYPE_VIEWER = 'V';
+  private static final String FILE_VISIBILITY_ALL_USERS = 'AllUsers';
 
   @AuraEnabled
   public static Id generatePdf(Id quoteId) {
@@ -48,6 +50,7 @@ public without sharing class QuotePdfService {
         WITH USER_MODE
       ]
       .ContentDocumentId;
+      shareWithAllUsers(documentId, quoteId);
       update as user new Quote(Id = quoteId, Status = NEGOTIATION_STATUS);
       return documentId;
     } catch (QuotePdfController.QuotePdfException e) {
@@ -78,5 +81,25 @@ public without sharing class QuotePdfService {
     if (!documentsToDelete.isEmpty()) {
       delete as user documentsToDelete;
     }
+  }
+
+  private static void shareWithAllUsers(Id documentId, Id quoteId) {
+    List<ContentDocumentLink> links = [
+      SELECT Id, ShareType, Visibility
+      FROM ContentDocumentLink
+      WHERE ContentDocumentId = :documentId AND LinkedEntityId = :quoteId
+      WITH USER_MODE
+      LIMIT 1
+    ];
+
+    if (links.isEmpty()) {
+      return;
+    }
+
+    update as user new ContentDocumentLink(
+      Id = links[0].Id,
+      ShareType = FILE_SHARE_TYPE_VIEWER,
+      Visibility = FILE_VISIBILITY_ALL_USERS
+    );
   }
 }

@@ -32,11 +32,22 @@
                         <valueListItems>
                             <value>Opportunity.Nuovo_Preventivo_Standard</value>
                             <visibilityRule>
+                                <booleanFilter>1 AND 2 AND 3</booleanFilter>
                                 <criteria>
                                     <leftValue
                   >{!Record.RecordType.Name}</leftValue>
                                     <operator>NE</operator>
                                     <rightValue>Recall tutor</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.StageName}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Chiusa/Vinta</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.StageName}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Chiusa/Persa</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
@@ -78,7 +89,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListApiName</name>
-                    <value>OpportunityContactRoles</value>
+                    <value>Orders</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListComponentOverride</name>
@@ -184,32 +195,6 @@
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>parentFieldApiName</name>
-                    <value>Opportunity.Id</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>relatedListApiName</name>
-                    <value>OpportunityPartnersFrom</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>relatedListComponentOverride</name>
-                    <value>NONE</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>rowsToDisplay</name>
-                    <value>10</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>showActionBar</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentName>force:relatedListSingleContainer</componentName>
-                <identifier>force_relatedListSingleContainer2</identifier>
-            </componentInstance>
-        </itemInstances>
         <name>leftsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
@@ -244,36 +229,6 @@
                 <identifier>RecordNameField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Amount</fieldItem>
-                <identifier>RecordAmountField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.CloseDate</fieldItem>
-                <identifier>RecordCloseDateField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.StageName</fieldItem>
-                <identifier>RecordStageNameField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-bda0868e-f60d-43d1-bc15-da4b2cf8d682</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -292,10 +247,20 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.CloseDate</fieldItem>
+                <identifier>RecordCloseDateField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.NextStep</fieldItem>
-                <identifier>RecordNextStepField2</identifier>
+                <fieldItem>Record.Amount</fieldItem>
+                <identifier>RecordAmountField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-f31cfb4a-cff9-4183-ab78-8e77ec6894f0</name>
@@ -737,17 +702,6 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>hideHeader</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentName
-        >force:relatedListQuickLinksContainer</componentName>
-                <identifier>force_relatedListQuickLinksContainer</identifier>
-            </componentInstance>
-        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
