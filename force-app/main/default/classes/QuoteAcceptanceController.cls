@@ -3,10 +3,13 @@ public without sharing class QuoteAcceptanceController {
   private static final String ACCEPTED_STATE = 'ACCEPTED';
   private static final String REJECTED_STATE = 'REJECTED';
   private static final String LOCKED_STATE = 'LOCKED';
+  private static final String SIGNING_STATE = 'SIGNING';
   private static final String ACCEPT_ACTION = 'accept';
   private static final String REJECT_ACTION = 'reject';
   private static final String ACCEPTED_STATUS = 'Accettato';
   private static final String REJECTED_STATUS = 'Rifiutato';
+  private static final String DOCUSIGN_STATUS_SENT = 'Sent';
+  private static final String DOCUSIGN_STATUS_COMPLETED = 'Completed';
   private static final Set<String> ACTIONABLE_STATUSES = new Set<String>{
     'In Trattativa',
     'In Attesa Accettazione'
@@ -42,6 +45,8 @@ public without sharing class QuoteAcceptanceController {
     public String quoteNumber { get; set; }
     @AuraEnabled
     public String status { get; set; }
+    @AuraEnabled
+    public String docusignStatus { get; set; }
     @AuraEnabled
     public String accountName { get; set; }
     @AuraEnabled
@@ -106,13 +111,20 @@ public without sharing class QuoteAcceptanceController {
         );
       }
 
-      String nextStatus = normalizedAction == ACCEPT_ACTION
-        ? ACCEPTED_STATUS
-        : REJECTED_STATUS;
-      update new Quote(Id = quoteRecord.Id, Status = nextStatus);
+      if (normalizedAction == ACCEPT_ACTION) {
+        ensureCanSendDocuSign(quoteRecord);
+        update new Quote(
+          Id = quoteRecord.Id,
+          Status = ACCEPTED_STATUS,
+          DocuSign_Status__c = DOCUSIGN_STATUS_SENT
+        );
+        DocuSignQuoteEnvelopeService.enqueue(quoteRecord.Id);
+      } else {
+        update new Quote(Id = quoteRecord.Id, Status = REJECTED_STATUS);
+      }
 
       String message = normalizedAction == ACCEPT_ACTION
-        ? 'Il preventivo e stato confermato.'
+        ? 'Il preventivo e stato confermato. La richiesta di firma e stata inviata al contatto principale.'
         : 'Il preventivo e stato annullato.';
       return buildPage(parsedQuoteId, message);
     } catch (RequestException requestError) {
@@ -135,6 +147,7 @@ public without sharing class QuoteAcceptanceController {
       : quoteRecord.Name;
     response.quoteNumber = quoteRecord.QuoteNumber;
     response.status = quoteRecord.Status;
+    response.docusignStatus = quoteRecord.DocuSign_Status__c;
     response.accountName = quoteRecord.Account == null
       ? null
       : quoteRecord.Account.Name;
@@ -145,8 +158,8 @@ public without sharing class QuoteAcceptanceController {
     response.subtotal = quoteRecord.Subtotal;
     response.totalPrice = quoteRecord.TotalPrice;
     response.grandTotal = quoteRecord.GrandTotal;
-    response.canAct = ACTIONABLE_STATUSES.contains(quoteRecord.Status);
-    response.state = stateForStatus(quoteRecord.Status);
+    response.canAct = canSubmitAction(quoteRecord);
+    response.state = stateForStatus(quoteRecord);
     response.message = String.isBlank(actionMessage)
       ? defaultMessage(response.state)
       : actionMessage;
@@ -181,7 +194,8 @@ public without sharing class QuoteAcceptanceController {
   private static Quote queryQuote(Id quoteId, Boolean lockRecord) {
     String queryText =
       'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, Subtotal, ' +
-      'TotalPrice, GrandTotal, Account.Name, Opportunity.Name ' +
+      'TotalPrice, GrandTotal, DocuSign_Status__c, DocuSign_Envelope_Id__c, ' +
+      'Account.Name, Account.Email_Contatto_Principale__c, Opportunity.Name ' +
       'FROM Quote WHERE Id = :quoteId LIMIT 1';
 
     if (lockRecord) {
@@ -208,7 +222,26 @@ public without sharing class QuoteAcceptanceController {
     return LOCKED_STATE;
   }
 
+  private static Boolean canSubmitAction(Quote quoteRecord) {
+    return ACTIONABLE_STATUSES.contains(quoteRecord.Status) &&
+      quoteRecord.DocuSign_Status__c != DOCUSIGN_STATUS_SENT &&
+      quoteRecord.DocuSign_Status__c != DOCUSIGN_STATUS_COMPLETED;
+  }
+
+  private static String stateForStatus(Quote quoteRecord) {
+    if (
+      ACTIONABLE_STATUSES.contains(quoteRecord.Status) &&
+      quoteRecord.DocuSign_Status__c == DOCUSIGN_STATUS_SENT
+    ) {
+      return SIGNING_STATE;
+    }
+    return stateForStatus(quoteRecord.Status);
+  }
+
   private static String defaultMessage(String state) {
+    if (state == SIGNING_STATE) {
+      return 'La richiesta di firma e gia stata inviata.';
+    }
     if (state == ACCEPTED_STATE) {
       return 'Il preventivo e gia stato confermato.';
     }
@@ -219,6 +252,25 @@ public without sharing class QuoteAcceptanceController {
       return 'Il preventivo non e disponibile per una azione da questo collegamento.';
     }
     return null;
+  }
+
+  private static void ensureCanSendDocuSign(Quote quoteRecord) {
+    if (
+      quoteRecord.DocuSign_Status__c == DOCUSIGN_STATUS_SENT ||
+      quoteRecord.DocuSign_Status__c == DOCUSIGN_STATUS_COMPLETED
+    ) {
+      throw new RequestException(
+        'La richiesta di firma DocuSign e gia stata inviata.'
+      );
+    }
+    if (
+      quoteRecord.Account == null ||
+      String.isBlank(quoteRecord.Account.Email_Contatto_Principale__c)
+    ) {
+      throw new RequestException(
+        'Email contatto principale mancante. Contatta il referente Pienissimo.'
+      );
+    }
   }
 
   private static String normalizeAction(String action) {

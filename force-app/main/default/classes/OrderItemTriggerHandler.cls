@@ -6,6 +6,10 @@ public with sharing class OrderItemTriggerHandler {
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
   private static final String TICKET_STATUS_AVAILABLE = 'Disponibile';
 
+  public static void afterInsert(List<OrderItem> newLines) {
+    OrderTriggerHandler.createTicketsForOrderLines(newLines);
+  }
+
   public static void afterUpdate(
     List<OrderItem> newLines,
     Map<Id, OrderItem> oldLineMap

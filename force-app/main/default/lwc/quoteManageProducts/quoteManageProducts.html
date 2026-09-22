@@ -82,7 +82,10 @@
                           <div class="product-meta">
                             <span>{product.productCode}</span>
                             <span>{product.typeLabel}</span>
-                            <span>Prezzo {product.unitPrice}</span>
+                            <template if:true={product.hasTranche}>
+                              <span>{product.trancheLabel}</span>
+                            </template>
+                            <span>Prezzo {product.unitPriceLabel}</span>
                           </div>
                         </div>
                         <template if:true={product.isExisting}>
@@ -95,6 +98,38 @@
                       </div>
                     </template>
                   </div>
+                </div>
+              </div>
+            </template>
+
+            <template if:true={hasExistingTranches}>
+              <div class="tranche-panel">
+                <div class="section-label">Tranche generate</div>
+                <div class="tranche-summary">
+                  <template for:each={existingTranches} for:item="tranche">
+                    <button
+                      class="tranche-summary-row tranche-summary-button"
+                      data-id={tranche.id}
+                      key={tranche.key}
+                      onclick={handleOpenTranche}
+                      type="button"
+                    >
+                      <span class="tranche-summary-main">
+                        <div class="tranche-summary-title">{tranche.label}</div>
+                        <div class="product-meta">
+                          <span>{tranche.productName}</span>
+                        </div>
+                      </span>
+                      <span class="tranche-summary-value">
+                        <span class="box-label">Prezzo</span>
+                        <span>{tranche.amountLabel}</span>
+                      </span>
+                      <span class="tranche-summary-value">
+                        <span class="box-label">Scadenza</span>
+                        <span>{tranche.dueDateLabel}</span>
+                      </span>
+                    </button>
+                  </template>
                 </div>
               </div>
             </template>
@@ -146,6 +181,55 @@
                     </template>
                   </div>
                 </div>
+              </div>
+            </template>
+
+            <template if:true={showSelectedTranchePreview}>
+              <div class="tranche-panel">
+                <div class="section-label">Tranche da creare</div>
+                <div class="tranche-count-box">
+                  <span class="box-label">Numero tranche</span>
+                  <span>{selectedTrancheCountLabel}</span>
+                </div>
+
+                <template if:true={hasValidSelectedTrancheCount}>
+                  <div class="tranche-summary">
+                    <template
+                      for:each={selectedTranchePreviewRows}
+                      for:item="tranche"
+                    >
+                      <div class="tranche-summary-row" key={tranche.key}>
+                        <div class="tranche-summary-main">
+                          <div class="tranche-summary-title">
+                            {tranche.label}
+                          </div>
+                          <div class="product-meta">
+                            <span>{tranche.productName}</span>
+                          </div>
+                        </div>
+                        <div class="tranche-summary-value">
+                          <span class="box-label">Prezzo</span>
+                          <span>{tranche.amountLabel}</span>
+                        </div>
+                        <lightning-input
+                          class="due-date-input"
+                          type="date"
+                          label="Scadenza"
+                          value={tranche.dueDate}
+                          data-index={tranche.index}
+                          required
+                          onchange={handleSelectedTrancheDueDateChange}
+                        ></lightning-input>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+
+                <template if:false={hasValidSelectedTrancheCount}>
+                  <div class="message error">
+                    Numero Tranche non configurato sul prodotto Plus.
+                  </div>
+                </template>
               </div>
             </template>
           </template>
@@ -219,46 +303,6 @@
 
               <template if:true={showNoResultsMessage}>
                 <div class="message">Nessun prodotto disponibile.</div>
-              </template>
-            </div>
-          </template>
-
-          <template if:true={showTranchePlanner}>
-            <div class="tranche-planner">
-              <lightning-input
-                type="number"
-                label="Numero tranche"
-                value={trancheCount}
-                min="1"
-                max="20"
-                step="1"
-                required
-                onchange={handleTrancheCountChange}
-              ></lightning-input>
-
-              <template if:true={hasPlannedTranches}>
-                <div class="tranche-list">
-                  <template for:each={plannedTranches} for:item="tranche">
-                    <div class="tranche-row" key={tranche.key}>
-                      <div class="tranche-sequence">
-                        Tranche {tranche.sequence}
-                      </div>
-                      <div class="amount-box">
-                        <span class="box-label">Prezzo</span>
-                        <span>{tranche.amountLabel}</span>
-                      </div>
-                      <lightning-input
-                        class="due-date-input"
-                        type="date"
-                        label="Data scadenza"
-                        value={tranche.dueDate}
-                        data-index={tranche.index}
-                        required
-                        onchange={handleTrancheDueDateChange}
-                      ></lightning-input>
-                    </div>
-                  </template>
-                </div>
               </template>
             </div>
           </template>
