@@ -19,6 +19,7 @@ export default class QuoteManageProducts extends LightningElement {
 
   isLoading = false;
   isSearching = false;
+  isPickerOpen = false;
   hasLoaded = false;
   quoteName = "";
   quoteStatus = "";
@@ -27,6 +28,7 @@ export default class QuoteManageProducts extends LightningElement {
   opportunityRecordTypeDeveloperName = "";
   hasPlusLine = false;
   existingBundleLine;
+  existingProducts = [];
   productOptions = [];
   selectedProducts = [];
   trancheCount = "";
@@ -59,6 +61,18 @@ export default class QuoteManageProducts extends LightningElement {
 
   get hasSelectedProducts() {
     return this.selectedProducts.length > 0;
+  }
+
+  get hasExistingProducts() {
+    return this.existingProducts.length > 0;
+  }
+
+  get showExistingProducts() {
+    return !this.isPickerOpen && this.hasExistingProducts;
+  }
+
+  get showNewSelection() {
+    return !this.isPickerOpen && this.hasSelectedProducts;
   }
 
   get isFormDisabled() {
@@ -131,7 +145,9 @@ export default class QuoteManageProducts extends LightningElement {
   }
 
   get showTranchePlanner() {
-    return this.isPlusOpportunity && this.hasSelectedProducts;
+    return (
+      this.isPlusOpportunity && !this.isPickerOpen && this.hasSelectedProducts
+    );
   }
 
   get hasPlannedTranches() {
@@ -154,9 +170,13 @@ export default class QuoteManageProducts extends LightningElement {
       this.hasLoaded &&
       !this.isSearching &&
       !this.hasProductOptions &&
-      this.searchTerm.trim().length >= 2 &&
+      this.isPickerOpen &&
       !this.isFormDisabled
     );
+  }
+
+  get addProductsDisabled() {
+    return this.isFormDisabled || this.isLoading || this.saveInProgress;
   }
 
   get statusClass() {
@@ -175,6 +195,9 @@ export default class QuoteManageProducts extends LightningElement {
         context.opportunityRecordTypeDeveloperName || "";
       this.hasPlusLine = context.hasPlusLine === true;
       this.existingBundleLine = context.existingBundleLine || null;
+      this.existingProducts = this.decorateExistingProducts(
+        context.existingLines || []
+      );
     } catch (error) {
       this.showError(error);
     } finally {
@@ -188,11 +211,25 @@ export default class QuoteManageProducts extends LightningElement {
     this.runSearch();
   }
 
+  handleOpenPicker() {
+    if (this.addProductsDisabled) {
+      return;
+    }
+    this.isPickerOpen = true;
+    this.searchTerm = "";
+    this.runSearch();
+  }
+
+  handleClosePicker() {
+    this.isPickerOpen = false;
+    this.closeProductList();
+  }
+
   async runSearch() {
     const currentSearchTerm = this.searchTerm.trim();
     const currentRequestId = ++this.searchRequestId;
 
-    if (this.isSearchDisabled || currentSearchTerm.length < 2) {
+    if (this.isSearchDisabled) {
       this.productOptions = [];
       return;
     }
@@ -206,7 +243,9 @@ export default class QuoteManageProducts extends LightningElement {
       if (currentRequestId !== this.searchRequestId) {
         return;
       }
-      this.productOptions = this.decorateOptions(results || []);
+      this.productOptions = this.decorateOptions(
+        this.excludeExistingProducts(results || [])
+      );
     } catch (error) {
       this.showError(error);
     } finally {
@@ -221,7 +260,17 @@ export default class QuoteManageProducts extends LightningElement {
     const option = this.productOptions.find(
       (candidate) => candidate.pricebookEntryId === pricebookEntryId
     );
-    if (!option || option.isDisabled) {
+    if (!option) {
+      return;
+    }
+
+    if (option.isSelected) {
+      this.removeSelectedProduct(pricebookEntryId);
+      this.productOptions = this.decorateOptions(this.productOptions);
+      return;
+    }
+
+    if (option.isDisabled) {
       return;
     }
 
@@ -229,6 +278,9 @@ export default class QuoteManageProducts extends LightningElement {
       this.selectedProducts = [
         {
           ...option,
+          rowKey: option.pricebookEntryId,
+          isExisting: false,
+          rowStatus: "Da aggiungere",
           quantity: 1,
           quantityDisabled: true
         }
@@ -238,6 +290,9 @@ export default class QuoteManageProducts extends LightningElement {
       this.selectedProducts = [
         {
           ...option,
+          rowKey: option.pricebookEntryId,
+          isExisting: false,
+          rowStatus: "Da aggiungere",
           quantity: 1,
           quantityDisabled: true
         }
@@ -247,6 +302,9 @@ export default class QuoteManageProducts extends LightningElement {
         ...this.selectedProducts,
         {
           ...option,
+          rowKey: option.pricebookEntryId,
+          isExisting: false,
+          rowStatus: "Da aggiungere",
           quantity: 1,
           quantityDisabled: false
         }
@@ -269,13 +327,7 @@ export default class QuoteManageProducts extends LightningElement {
 
   handleRemoveProduct(event) {
     const pricebookEntryId = event.currentTarget.dataset.id;
-    this.selectedProducts = this.selectedProducts.filter(
-      (product) => product.pricebookEntryId !== pricebookEntryId
-    );
-    if (this.isPlusOpportunity) {
-      this.trancheCount = "";
-      this.plannedTranches = [];
-    }
+    this.removeSelectedProduct(pricebookEntryId);
     this.productOptions = this.decorateOptions(this.productOptions);
   }
 
@@ -342,6 +394,55 @@ export default class QuoteManageProducts extends LightningElement {
     this.dispatchEvent(new CloseActionScreenEvent());
   }
 
+  closeProductList() {
+    this.searchRequestId += 1;
+    this.searchTerm = "";
+    this.productOptions = [];
+    this.isSearching = false;
+  }
+
+  removeSelectedProduct(pricebookEntryId) {
+    this.selectedProducts = this.selectedProducts.filter(
+      (product) => product.pricebookEntryId !== pricebookEntryId
+    );
+    if (this.isPlusOpportunity) {
+      this.trancheCount = "";
+      this.plannedTranches = [];
+    }
+  }
+
+  excludeExistingProducts(options) {
+    const selectedIds = new Set(
+      this.existingProducts.map((product) => product.pricebookEntryId)
+    );
+    return options.filter(
+      (option) => !selectedIds.has(option.pricebookEntryId)
+    );
+  }
+
+  decorateExistingProducts(lines) {
+    return lines.map((line) => ({
+      pricebookEntryId: line.pricebookEntryId,
+      quoteLineItemId: line.quoteLineItemId,
+      rowKey: line.quoteLineItemId,
+      productName: line.productName || "Prodotto senza nome",
+      productCode: line.productCode || "Nessun codice",
+      productType: line.productType,
+      typeLabel:
+        line.isPlus === true
+          ? "Plus"
+          : line.productType === BUNDLE_TYPE
+            ? "Bundle"
+            : "Item",
+      isPlus: line.isPlus === true,
+      unitPrice: line.unitPrice,
+      quantity: line.quantity,
+      quantityDisabled: true,
+      isExisting: true,
+      rowStatus: "Gia nel preventivo"
+    }));
+  }
+
   decorateOptions(options) {
     const selectedIds = new Set(
       this.selectedProducts.map((product) => product.pricebookEntryId)
@@ -366,9 +467,10 @@ export default class QuoteManageProducts extends LightningElement {
       const pricebookConflict =
         selectedPricebook2Id && option.pricebook2Id !== selectedPricebook2Id;
       const isDisabled =
-        isSelected || typeConflict || plusConflict || pricebookConflict;
+        !isSelected && (typeConflict || plusConflict || pricebookConflict);
       return {
         ...option,
+        isSelected,
         isDisabled,
         typeLabel:
           option.isPlus === true
@@ -376,7 +478,7 @@ export default class QuoteManageProducts extends LightningElement {
             : option.productType === BUNDLE_TYPE
               ? "Bundle"
               : "Item",
-        buttonClass: isSelected ? "option selected" : "option"
+        buttonClass: isSelected ? "option selected removable" : "option"
       };
     });
   }

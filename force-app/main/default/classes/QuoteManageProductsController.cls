@@ -52,6 +52,40 @@ public with sharing class QuoteManageProductsController {
     }
   }
 
+  public class ExistingQuoteLine {
+    @AuraEnabled
+    public Id quoteLineItemId;
+    @AuraEnabled
+    public Id pricebookEntryId;
+    @AuraEnabled
+    public String productName;
+    @AuraEnabled
+    public String productCode;
+    @AuraEnabled
+    public String productType;
+    @AuraEnabled
+    public Boolean isPlus;
+    @AuraEnabled
+    public Decimal quantity;
+    @AuraEnabled
+    public Decimal unitPrice;
+
+    public ExistingQuoteLine(QuoteLineItem line) {
+      quoteLineItemId = line.Id;
+      pricebookEntryId = line.PricebookEntryId;
+      productName = line.Product2 == null ? null : line.Product2.Name;
+      productCode = line.Product2 == null ? null : line.Product2.ProductCode;
+      productType = line.PricebookEntry == null ||
+        line.PricebookEntry.Product2 == null ||
+        line.PricebookEntry.Product2.RecordType == null
+        ? null
+        : line.PricebookEntry.Product2.RecordType.DeveloperName;
+      isPlus = line.Product2 != null && line.Product2.Is_Plus__c == true;
+      quantity = line.Quantity;
+      unitPrice = line.UnitPrice;
+    }
+  }
+
   public class QuoteProductsContext {
     @AuraEnabled
     public String quoteName;
@@ -71,6 +105,8 @@ public with sharing class QuoteManageProductsController {
     public Boolean hasPlusLine;
     @AuraEnabled
     public ExistingBundleLine existingBundleLine;
+    @AuraEnabled
+    public List<ExistingQuoteLine> existingLines;
   }
 
   public class ProductSelection {
@@ -110,10 +146,14 @@ public with sharing class QuoteManageProductsController {
     context.isPlusOpportunity = isPlusOpportunity(quoteRecord);
     context.isStandardOpportunity = isStandardOpportunity(quoteRecord);
     context.hasPlusLine = false;
+    context.existingLines = new List<ExistingQuoteLine>();
 
     for (QuoteLineItem line : [
       SELECT
         Id,
+        PricebookEntryId,
+        Quantity,
+        UnitPrice,
         Product2.Name,
         Product2.ProductCode,
         Product2.Is_Plus__c,
@@ -128,12 +168,15 @@ public with sharing class QuoteManageProductsController {
 
       if (isBundleLine(line) && context.existingBundleLine == null) {
         context.existingBundleLine = new ExistingBundleLine(line);
+        context.existingLines.add(new ExistingQuoteLine(line));
         continue;
       }
 
       if (!isBundleLine(line)) {
         context.hasItemLines = true;
       }
+
+      context.existingLines.add(new ExistingQuoteLine(line));
     }
 
     return context;
@@ -146,10 +189,6 @@ public with sharing class QuoteManageProductsController {
   ) {
     validateQuoteId(quoteId);
     requireReadAccess();
-
-    if (String.isBlank(searchTerm)) {
-      return new List<ProductOption>();
-    }
 
     Quote quoteRecord = [
       SELECT
@@ -186,7 +225,7 @@ public with sharing class QuoteManageProductsController {
       allowedTypes,
       context.isPlusOpportunity,
       context.isStandardOpportunity,
-      5
+      String.isBlank(searchTerm) ? 50 : 10
     );
   }
 
@@ -371,7 +410,7 @@ public with sharing class QuoteManageProductsController {
   ) {
     String normalizedSearchTerm =
       '%' +
-      String.escapeSingleQuotes(searchTerm.trim()) +
+      String.escapeSingleQuotes((searchTerm == null ? '' : searchTerm).trim()) +
       '%';
 
     List<PricebookEntry> entries;
