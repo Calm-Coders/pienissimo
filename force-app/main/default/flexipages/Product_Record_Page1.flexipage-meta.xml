@@ -122,6 +122,40 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.IsActive</fieldItem>
+                <identifier>RecordIsActiveField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-218fea7c-3e45-425f-ab12-664779e19118</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Family</fieldItem>
+                <identifier>RecordFamilyField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Price_1__c</fieldItem>
+                <identifier>RecordPrice_1_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Bundle_Type__c</fieldItem>
@@ -155,61 +189,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Genera_Biglietto__c</fieldItem>
-                <identifier>RecordGenera_Biglietto__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Is_Plus__c</fieldItem>
-                <identifier>RecordIs_Plus__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Solo_Bundle__c</fieldItem>
-                <identifier>RecordSolo_Bundle__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-218fea7c-3e45-425f-ab12-664779e19118</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Family</fieldItem>
-                <identifier>RecordFamilyField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Price_1__c</fieldItem>
-                <identifier>RecordPrice_1_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.IsActive</fieldItem>
-                <identifier>RecordIsActiveField</identifier>
+                <identifier>RecordGenera_Biglietto_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-4062bce0-fd1c-4500-ac7e-ccfc8e7334a3</name>

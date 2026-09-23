@@ -22,6 +22,10 @@ public without sharing class ProductCodeTriggerHandler {
     syncProductCode(newProducts);
   }
 
+  public static void afterInsert(List<Product2> newProducts) {
+    createStandardPricebookEntries(newProducts);
+  }
+
   private static void syncProductCode(List<Product2> newProducts) {
     for (Product2 productRec : newProducts) {
       String externalCode = productRec.External_Product_Code__c;
@@ -36,6 +40,52 @@ public without sharing class ProductCodeTriggerHandler {
       if (productRec.ProductCode != externalCode) {
         productRec.ProductCode = externalCode;
       }
+    }
+  }
+
+  private static void createStandardPricebookEntries(
+    List<Product2> newProducts
+  ) {
+    if (newProducts.isEmpty()) {
+      return;
+    }
+
+    Id standardPricebookId = [
+      SELECT Id
+      FROM Pricebook2
+      WHERE IsStandard = TRUE
+      LIMIT 1
+    ]
+    .Id;
+
+    Set<Id> productIds = new Map<Id, Product2>(newProducts).keySet();
+    Set<Id> productsWithStandardEntry = new Set<Id>();
+    for (PricebookEntry existingEntry : [
+      SELECT Product2Id
+      FROM PricebookEntry
+      WHERE Pricebook2Id = :standardPricebookId AND Product2Id IN :productIds
+    ]) {
+      productsWithStandardEntry.add(existingEntry.Product2Id);
+    }
+
+    List<PricebookEntry> entriesToInsert = new List<PricebookEntry>();
+    for (Product2 productRec : newProducts) {
+      if (productsWithStandardEntry.contains(productRec.Id)) {
+        continue;
+      }
+
+      entriesToInsert.add(
+        new PricebookEntry(
+          Pricebook2Id = standardPricebookId,
+          Product2Id = productRec.Id,
+          UnitPrice = 0,
+          IsActive = true
+        )
+      );
+    }
+
+    if (!entriesToInsert.isEmpty()) {
+      insert entriesToInsert;
     }
   }
 }
