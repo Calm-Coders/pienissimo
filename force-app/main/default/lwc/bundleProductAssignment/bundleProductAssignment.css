@@ -28,7 +28,7 @@ p,
   font-size: 0.8rem;
   line-height: 1.5;
 }
-.reconciliation {
+.totals {
   border: 1px solid #d8e5f0;
   border-radius: 0.75rem;
   background: #f5f9fd;
@@ -36,7 +36,7 @@ p,
 }
 .figures {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 .figure {
@@ -51,18 +51,6 @@ p,
 .figure-value {
   font-size: 1.35rem;
   font-weight: 700;
-}
-.variance {
-  margin-top: 0.85rem;
-  padding-top: 0.65rem;
-  border-top: 1px solid #d8e5f0;
-}
-.reconciled {
-  color: #25683e;
-}
-.drifted {
-  color: #8c4b02;
-  font-weight: 600;
 }
 .section-header {
   display: flex;
@@ -153,7 +141,7 @@ p,
 }
 .row-inputs {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 1fr 2fr;
   gap: 1rem;
 }
 .add-another {

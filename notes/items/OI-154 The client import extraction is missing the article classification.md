@@ -5,7 +5,7 @@ status: in-progress
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-09-21
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-24]
 blocks: [OI-121, go-live]
 severity: downgraded 2026-09-22
@@ -150,3 +150,34 @@ opened; it carries real customer and catalogue data.**
 - ⚠ **`Check Data Import` on 23/09 10:00–12:00** is where the field list gets walked.
 - ⚠ The gating concern about **starting UAT on incomplete article data** stands, but it
   is now about registry clean-up and the unread legend, not a missing classification.
+
+## 2026-09-23 import update
+
+Aurel Mrruku supplied the code mapping directly for the local `Articoli Salesforce.xlsx`
+workbook: `BB` sets both `Genera_Biglietto__c` and `Solo_Bundle__c`; `BO` sets only
+`Genera_Biglietto__c`; `NO` clears both. He specified that cancelled (`S`) rows be
+loaded as inactive, and authorised the connected Partial Copy sandbox.
+
+The `ANAGRAFICA` sheet contained 1,010 unique articles (10 `BB`, 160 `BO`, 840 `NO`;
+197 active, 813 inactive). On 23/09, a Salesforce Bulk API upsert by
+`External_Product_Code__c` loaded all 1,010 with zero failures. A second pass loaded
+1,004 whole-number `Product_Price__c` values and 13 ticket types. All 197 active
+articles received their exact list price in the Standard Price Book (190 entries
+created, seven updated). Six fractional source prices belong to inactive articles;
+`Product_Price__c` has no decimal scale, so those six were left out of that field
+instead of rounded. Row-by-row verification of imported fields and active list
+prices found zero differences.
+
+The registry clean-up decision and category-statistic field work remain open;
+this import does not close those questions.
+
+### Standard Price Book completion
+
+The first price pass covered only the 197 active articles. Aurel then clarified
+that he expected Standard Price Book entries for **all** imported articles.
+On 23/09, 810 missing entries were created for inactive products with
+`PricebookEntry.IsActive = false`; the three inactive entries already present
+were updated to the workbook price. Verification now finds exact list prices
+and matching active states for all 1,010 articles: 197 active entries and
+813 inactive entries, with zero differences. The six fractional prices are
+preserved exactly in these inactive Standard Price Book entries.

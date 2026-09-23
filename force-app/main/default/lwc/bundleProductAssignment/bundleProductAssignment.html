@@ -21,22 +21,16 @@
           <h2>{bundleName}</h2>
           <p>Le modifiche saranno applicate solo con Salva bundle.</p>
         </div>
-        <div class="reconciliation">
+        <div class="totals">
           <div class="figures">
             <div class="figure">
-              <span class="figure-label">Prezzo del bundle</span>
-              <lightning-input
-                data-id="fixed-price"
-                variant="label-hidden"
-                type="number"
-                label="Prezzo del bundle"
-                value={fixedPrice}
-                min="0"
-                step="0.01"
-                formatter="currency"
-                onchange={handleFixedPriceChange}
-                disabled={isLoading}
-              ></lightning-input>
+              <span class="figure-label">Prezzo listino</span>
+              <lightning-formatted-number
+                value={listTotal}
+                format-style="currency"
+                currency-code="EUR"
+                class="figure-value"
+              ></lightning-formatted-number>
             </div>
             <div class="figure">
               <span class="figure-label">Totale assegnato</span>
@@ -48,17 +42,13 @@
                 class="figure-value"
               ></lightning-formatted-number>
             </div>
-            <div class="figure">
-              <span class="figure-label">{varianceLabel}</span>
-              <lightning-formatted-number
-                value={absoluteVariance}
-                format-style="currency"
-                currency-code="EUR"
-                class="figure-value"
-              ></lightning-formatted-number>
-            </div>
           </div>
-          <p class={varianceClass} role="status">{varianceMessage}</p>
+          <template lwc:if={hasMissingListPrices}>
+            <p class="help" role="status">
+              Prezzo listino parziale: almeno un prodotto non ha un prezzo nel
+              listino standard.
+            </p>
+          </template>
         </div>
         <template lwc:if={showMainView}>
           <div class="section-header">
@@ -134,14 +124,23 @@
                       disabled={isLoading}
                     ></lightning-button-icon>
                   </div>
-                  <p class="reference-price">
-                    Listino unitario:
-                    <lightning-formatted-number
-                      value={row.listPrice}
-                      format-style="currency"
-                      currency-code="EUR"
-                    ></lightning-formatted-number>
-                  </p>
+                  <div class="reference-price">
+                    <template lwc:if={row.hasListPrice}>
+                      <lightning-input
+                        type="number"
+                        label="Listino unitario"
+                        value={row.listPrice}
+                        formatter="currency"
+                        read-only
+                      ></lightning-input>
+                    </template>
+                    <template lwc:else>
+                      <span
+                        >Listino unitario: non disponibile nel listino
+                        standard</span
+                      >
+                    </template>
+                  </div>
                   <div class="row-inputs">
                     <lightning-input
                       data-pending="true"
@@ -159,6 +158,20 @@
                     <lightning-input
                       data-pending="true"
                       data-key={row.key}
+                      data-field="discountPercent"
+                      type="number"
+                      label="Sconto %"
+                      value={row.discountPercent}
+                      min="0.01"
+                      max="100"
+                      step="0.01"
+                      required={row.discountRequired}
+                      onchange={handlePendingChange}
+                      disabled={row.discountDisabled}
+                    ></lightning-input>
+                    <lightning-input
+                      data-pending="true"
+                      data-key={row.key}
                       data-field="spreadPrice"
                       type="number"
                       label="Prezzo totale della riga"
@@ -166,15 +179,17 @@
                       min="0"
                       step="0.01"
                       formatter="currency"
-                      required
+                      required={row.rowPriceRequired}
                       onchange={handlePendingChange}
                       disabled={isLoading}
                       field-level-help="Importo assegnato a tutte le unita di questa riga, non alla singola unita."
                     ></lightning-input>
                   </div>
                   <p class="help">
-                    Il prezzo comprende tutta la quantita indicata. Inserisci 0
-                    per un omaggio.
+                    Inserisci lo sconto sul listino o il prezzo totale della
+                    riga. Il prezzo comprende tutta la quantita; inserisci 0 per
+                    un omaggio. Se manca il listino, inserisci il prezzo della
+                    riga.
                   </p>
                 </article>
               </template>

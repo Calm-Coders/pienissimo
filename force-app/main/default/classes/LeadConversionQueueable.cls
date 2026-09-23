@@ -2,13 +2,16 @@ public without sharing class LeadConversionQueueable implements Queueable {
   private static final String QUALIFIED_STATUS = 'Qualificato';
   private static final String CONVERTED_STATUS = 'Convertito';
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
+
   private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Standart';
   private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
   private static final String RECALL_OPPORTUNITY_RECORD_TYPE = 'Recall_Tutor';
+
   private static final String STANDARD_OPPORTUNITY_TYPE = 'Vendita da tutor';
   private static final String PLUS_ACTIVATION_OPPORTUNITY_TYPE = 'Performance Plus - Attivazione';
   private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
   private static final String RECALL_OPPORTUNITY_TYPE = 'Recall tutor';
+
   private static final Integer OPPORTUNITY_NAME_LIMIT = 120;
   private static final Integer LEAD_CONVERT_BATCH_SIZE = 100;
   private static final String USER_ID_PREFIX = '005';
@@ -17,6 +20,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
   public LeadConversionQueueable(List<Id> leadIds) {
     this.leadIds = new List<Id>();
+
     if (leadIds != null) {
       this.leadIds.addAll(leadIds);
     }
@@ -39,7 +43,8 @@ public without sharing class LeadConversionQueueable implements Queueable {
         OwnerId,
         Status,
         IsConverted,
-        Tipo_Opportunita__c
+        Tipo_Opportunita__c,
+        Agente__c
       FROM Lead
       WHERE
         Id IN :leadIds
@@ -53,37 +58,50 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     Map<Id, Id> accountIdsByLeadId = resolveConversionAccounts(leadsToConvert);
+
     Map<String, Contact> contactsByAccountAndPersonKey = getContactsByAccountAndPersonKey(
       leadsToConvert,
       new Set<Id>(accountIdsByLeadId.values())
     );
+
     List<Database.LeadConvert> conversionRequests = new List<Database.LeadConvert>();
+
     Map<Id, String> leadEmailById = new Map<Id, String>();
+
     Map<Id, String> leadOpportunityTypeById = new Map<Id, String>();
 
     for (Lead leadRecord : leadsToConvert) {
       String normalizedEmail = normalizeEmail(leadRecord.Email);
+
       if (normalizedEmail != null) {
         leadEmailById.put(leadRecord.Id, normalizedEmail);
       }
+
       leadOpportunityTypeById.put(
         leadRecord.Id,
         normalizeOpportunityType(leadRecord.Tipo_Opportunita__c)
       );
 
       Database.LeadConvert conversionRequest = new Database.LeadConvert();
+
       conversionRequest.setLeadId(leadRecord.Id);
+
       conversionRequest.setConvertedStatus(CONVERTED_STATUS);
+
       conversionRequest.setDoNotCreateOpportunity(false);
+
       conversionRequest.setOpportunityName(buildOpportunityName(leadRecord));
+
       conversionRequest.setSendNotificationEmail(false);
 
       Id conversionOwnerId = resolveConversionOwnerId(leadRecord.OwnerId);
+
       if (conversionOwnerId != null) {
         conversionRequest.setOwnerId(conversionOwnerId);
       }
 
       Id accountId = accountIdsByLeadId.get(leadRecord.Id);
+
       if (accountId != null) {
         conversionRequest.setAccountId(accountId);
 
@@ -94,6 +112,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
             normalizePhone(leadRecord.Phone)
           )
         );
+
         if (matchingContact != null) {
           conversionRequest.setContactId(matchingContact.Id);
         }
@@ -105,7 +124,23 @@ public without sharing class LeadConversionQueueable implements Queueable {
     List<Database.LeadConvertResult> conversionResults = convertLeads(
       conversionRequests
     );
+
+    /*
+     * NEW LOGIC
+     *
+     * If Lead conversion created a new Contact,
+     * set Contatto_Principale__c = true.
+     *
+     * Existing Contacts used during conversion
+     * are not modified.
+     */
+    setPrimaryContactOnNewContacts(
+      conversionResults,
+      contactsByAccountAndPersonKey
+    );
+
     setConvertedOpportunityTypes(conversionResults, leadOpportunityTypeById);
+
     updateConvertedAccountLeadEmails(conversionResults, leadEmailById);
   }
 
@@ -113,6 +148,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
     List<Database.LeadConvert> conversionRequests
   ) {
     List<Database.LeadConvertResult> conversionResults = new List<Database.LeadConvertResult>();
+
     for (
       Integer startIndex = 0;
       startIndex < conversionRequests.size();
@@ -122,7 +158,9 @@ public without sharing class LeadConversionQueueable implements Queueable {
         startIndex + LEAD_CONVERT_BATCH_SIZE,
         conversionRequests.size()
       );
+
       List<Database.LeadConvert> conversionBatch = new List<Database.LeadConvert>();
+
       for (Integer index = startIndex; index < endIndex; index++) {
         conversionBatch.add(conversionRequests[index]);
       }
@@ -131,7 +169,56 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     logConversionFailures(conversionResults);
+
     return conversionResults;
+  }
+
+  /*
+   * NEW METHOD
+   *
+   * Sets Contatto_Principale__c = true only
+   * on Contacts created by Lead conversion.
+   *
+   * Contacts that existed before conversion
+   * remain unchanged.
+   */
+  private static void setPrimaryContactOnNewContacts(
+    List<Database.LeadConvertResult> conversionResults,
+    Map<String, Contact> existingContacts
+  ) {
+    Set<Id> existingContactIds = new Set<Id>();
+
+    if (existingContacts != null) {
+      for (Contact contactRecord : existingContacts.values()) {
+        if (contactRecord != null) {
+          existingContactIds.add(contactRecord.Id);
+        }
+      }
+    }
+
+    List<Contact> contactsToUpdate = new List<Contact>();
+
+    for (Database.LeadConvertResult result : conversionResults) {
+      if (!result.isSuccess() || result.getContactId() == null) {
+        continue;
+      }
+
+      /*
+       * If this Contact already existed
+       * before conversion, don't modify it.
+       */
+      if (existingContactIds.contains(result.getContactId())) {
+        continue;
+      }
+
+      contactsToUpdate.add(
+        new Contact(Id = result.getContactId(), Contatto_Principale__c = true)
+      );
+    }
+
+    if (!contactsToUpdate.isEmpty()) {
+      update contactsToUpdate;
+    }
   }
 
   private static void setConvertedOpportunityTypes(
@@ -139,19 +226,25 @@ public without sharing class LeadConversionQueueable implements Queueable {
     Map<Id, String> leadOpportunityTypeById
   ) {
     Set<Id> opportunityIds = new Set<Id>();
+
     Set<String> recordTypeDeveloperNames = new Set<String>();
+
     Map<Id, String> opportunityTypeByOpportunityId = new Map<Id, String>();
+
     for (Database.LeadConvertResult result : conversionResults) {
       if (!result.isSuccess() || result.getOpportunityId() == null) {
         continue;
       }
 
       opportunityIds.add(result.getOpportunityId());
+
       String opportunityType = leadOpportunityTypeById.get(result.getLeadId());
+
       opportunityTypeByOpportunityId.put(
         result.getOpportunityId(),
         opportunityType
       );
+
       recordTypeDeveloperNames.add(
         getOpportunityRecordTypeDeveloperName(opportunityType)
       );
@@ -164,14 +257,18 @@ public without sharing class LeadConversionQueueable implements Queueable {
     Map<String, Id> recordTypeIdsByDeveloperName = getOpportunityRecordTypeIds(
       recordTypeDeveloperNames
     );
+
     List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+
     for (Id opportunityId : opportunityIds) {
       String opportunityType = opportunityTypeByOpportunityId.get(
         opportunityId
       );
+
       String recordTypeDeveloperName = getOpportunityRecordTypeDeveloperName(
         opportunityType
       );
+
       opportunitiesToUpdate.add(
         new Opportunity(
           Id = opportunityId,
@@ -210,8 +307,11 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
   private static Map<Id, Id> resolveConversionAccounts(List<Lead> leads) {
     Map<Id, Id> accountIdsByLeadId = new Map<Id, Id>();
+
     Set<String> vatNumbers = getNormalizedVatNumbers(leads);
+
     Map<String, Account> accountsByVat = getAccountsByVat(vatNumbers);
+
     Map<Id, Id> commercialAccountIdsByAccountId = resolveAccountIds(
       accountsByVat.values()
     );
@@ -220,6 +320,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
       Account matchingAccount = accountsByVat.get(
         normalizeVat(leadRecord.Partita_IVA__c)
       );
+
       if (matchingAccount != null) {
         accountIdsByLeadId.put(
           leadRecord.Id,
@@ -229,6 +330,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     createMissingAziendaAccounts(leads, accountIdsByLeadId);
+
     return accountIdsByLeadId;
   }
 
@@ -237,7 +339,9 @@ public without sharing class LeadConversionQueueable implements Queueable {
     Map<Id, Id> accountIdsByLeadId
   ) {
     Id aziendaRecordTypeId = getAziendaAccountRecordTypeId();
+
     List<Account> accountsToInsert = new List<Account>();
+
     Map<Integer, Id> leadIdByAccountIndex = new Map<Integer, Id>();
 
     for (Lead leadRecord : leads) {
@@ -246,13 +350,15 @@ public without sharing class LeadConversionQueueable implements Queueable {
       }
 
       leadIdByAccountIndex.put(accountsToInsert.size(), leadRecord.Id);
+
       accountsToInsert.add(
         new Account(
           Name = buildAccountName(leadRecord),
           RecordTypeId = aziendaRecordTypeId,
           Lead_Email__c = normalizeEmail(leadRecord.Email),
           Partita_IVA__c = normalizeVat(leadRecord.Partita_IVA__c),
-          Phone = leadRecord.Phone
+          Phone = leadRecord.Phone,
+          Agente__c = leadRecord.Agente__c
         )
       );
     }
@@ -273,8 +379,10 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
   private static Set<String> getNormalizedVatNumbers(List<Lead> leads) {
     Set<String> vatNumbers = new Set<String>();
+
     for (Lead leadRecord : leads) {
       String vatNumber = normalizeVat(leadRecord.Partita_IVA__c);
+
       if (vatNumber != null) {
         vatNumbers.add(vatNumber);
       }
@@ -285,6 +393,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
   private static Map<String, Account> getAccountsByVat(Set<String> vatNumbers) {
     Map<String, Account> accountsByVat = new Map<String, Account>();
+
     if (vatNumbers.isEmpty()) {
       return accountsByVat;
     }
@@ -296,6 +405,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
       ORDER BY CreatedDate, Id
     ]) {
       String vatNumber = normalizeVat(accountRecord.Partita_IVA__c);
+
       if (vatNumber != null && !accountsByVat.containsKey(vatNumber)) {
         accountsByVat.put(vatNumber, accountRecord);
       }
@@ -306,6 +416,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
   private static Map<Id, Id> resolveAccountIds(List<Account> accountRecords) {
     Set<Id> accountIds = new Set<Id>();
+
     for (Account accountRecord : accountRecords) {
       accountIds.add(accountRecord.Id);
     }
@@ -318,11 +429,13 @@ public without sharing class LeadConversionQueueable implements Queueable {
     Set<Id> accountIds
   ) {
     Map<String, Contact> contactsByAccountAndPersonKey = new Map<String, Contact>();
+
     if (accountIds.isEmpty()) {
       return contactsByAccountAndPersonKey;
     }
 
     Set<String> emails = getNormalizedEmails(leads);
+
     if (emails.isEmpty()) {
       return contactsByAccountAndPersonKey;
     }
@@ -338,6 +451,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
         normalizeEmail(contactRecord.Email),
         normalizePhone(contactRecord.Phone)
       );
+
       if (
         contactKey != null &&
         !contactsByAccountAndPersonKey.containsKey(contactKey)
@@ -351,8 +465,10 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
   private static Set<String> getNormalizedEmails(List<Lead> leads) {
     Set<String> emails = new Set<String>();
+
     for (Lead leadRecord : leads) {
       String email = normalizeEmail(leadRecord.Email);
+
       if (email != null) {
         emails.add(email);
       }
@@ -366,18 +482,22 @@ public without sharing class LeadConversionQueueable implements Queueable {
     Map<Id, String> leadEmailById
   ) {
     Set<Id> accountIds = new Set<Id>();
+
     Map<Id, String> leadEmailByAccountId = new Map<Id, String>();
+
     for (Database.LeadConvertResult result : conversionResults) {
       if (!result.isSuccess() || result.getAccountId() == null) {
         continue;
       }
 
       String email = leadEmailById.get(result.getLeadId());
+
       if (email == null) {
         continue;
       }
 
       accountIds.add(result.getAccountId());
+
       leadEmailByAccountId.put(result.getAccountId(), email);
     }
 
@@ -386,6 +506,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     List<Account> accountsToUpdate = new List<Account>();
+
     for (Account accountRecord : [
       SELECT Id, Lead_Email__c
       FROM Account
@@ -416,6 +537,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     String normalizedPhone = phone.replaceAll('[^0-9]', '');
+
     return String.isBlank(normalizedPhone) ? null : normalizedPhone;
   }
 
@@ -453,9 +575,11 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
   private static String buildLeadName(Lead leadRecord) {
     List<String> nameParts = new List<String>();
+
     if (!String.isBlank(leadRecord.FirstName)) {
       nameParts.add(leadRecord.FirstName.trim());
     }
+
     if (!String.isBlank(leadRecord.LastName)) {
       nameParts.add(leadRecord.LastName.trim());
     }
@@ -492,6 +616,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
     Set<String> recordTypeDeveloperNames
   ) {
     Map<String, Id> recordTypeIdsByDeveloperName = new Map<String, Id>();
+
     for (RecordType recordType : [
       SELECT Id, DeveloperName
       FROM RecordType
