@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-159]
 blocks: [go-live]
 source: notes/meetings/2026-09-22 Test Mexal.md
@@ -62,3 +62,10 @@ lands on the Lead path whose UAT is **24 September**.
 - ⚠ It interacts with
   [OI-163](OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md): both
   add conditions to the same conversion path, and neither is client-agreed.
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🟢🔴 **Nothing of this item is built, in the org or in `force-app/`.** Tooling `FieldDefinition` shows **no agent, zona or provvigione field** on `User`, `Account`, `Lead` or `Order`. There is **no Lead validation rule** apart from `Require_Non_Qualificato_Exit_Reason`. `force-app/` mentions `agente` only in the two Mexal callout classes. (verified)
+- ⚠ **Correction to the 22/09 record.** It said a conversion-blocking Lead validation _"was built"_. It was **announced** at the 17:00 session (_"I'm putting it right now"_) and **has not reached the org or any branch**. So nothing blocks conversion at the 24/09 Lead UAT. The rule agreed at `Test Mexal`, that the agent comes from the customer record, is also unbuilt.

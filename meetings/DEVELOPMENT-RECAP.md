@@ -2,7 +2,7 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **Precedence, newest first: §36 → §35 → §34 → §33 → §32 → §31 → §30 → §29 → §28 → §27 → §26 → §25 → §24 → §23 → §22 → §21 → §20 → §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.** §36 is the newest BUILD-STATE section (14/09, Pienissimo UAT); §17, §19, §22, §25, §31 and §36 are all build-state checks and the most recent wins on what **exists**, never on what was **agreed**.
+> ⚠ **Precedence, newest first: §45 → §44 → §43 → §42 → §41 → §40 → §39 → §38 → §37 → §36 → §35 → §34 → §33 → §32 → §31 → §30 → §29 → §28 → §27 → §26 → §25 → §24 → §23 → §22 → §21 → §20 → §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.** §45 is the newest BUILD-STATE section (23/09, Pienissimo UAT); §17, §19, §22, §25, §31, §36 and §45 are all build-state checks and the most recent wins on what **exists**, never on what was **agreed**.
 >
 > §17, §19, §22 and §25 are **build-state checks** against the Pienissimo UAT
 > org, on 25/08, 26/08, 31/08 and 02/09. Where one contradicts an earlier
@@ -4304,10 +4304,10 @@ Six rulings, from the notes' own `Concordato` block:
 
 Five commits reached `DevMain` between 14:29Z and 15:01Z.
 
-| PR  | Merged     | What it carries                                                        |
-| --- | ---------- | ---------------------------------------------------------------------- |
-| #48 | 14:29:39Z  | `4132dab` — **the `Incassato` removal**, with five unrelated commits    |
-| #47 | 15:01:32Z  | `af8a42b` — **the WooCommerce link generator and three record types**   |
+| PR  | Merged    | What it carries                                                       |
+| --- | --------- | --------------------------------------------------------------------- |
+| #48 | 14:29:39Z | `4132dab` — **the `Incassato` removal**, with five unrelated commits  |
+| #47 | 15:01:32Z | `af8a42b` — **the WooCommerce link generator and three record types** |
 
 🟢 **OI-136 is closed on the build side.** `4132dab` is an ancestor of
 `DevMain`; `markOrderIncassato`, `canMarkOrderIncassato` and the "Segna ordine
@@ -4316,12 +4316,12 @@ not closed** — nobody ruled, and Elisa Migliano still has not been asked.
 🔴 `QuoteAcceptanceController` remains `public without sharing` on a bare
 `quoteId`.
 
-🟢 **The three record types exist**: `Recall_Tutor`, `Standart` (*Vendita
-Standart*) and `Plus_Attivazione_Rinnovo`, on a new `Sales_Process` business
+🟢 **The three record types exist**: `Recall_Tutor`, `Standart` (_Vendita
+Standart_) and `Plus_Attivazione_Rinnovo`, on a new `Sales_Process` business
 process. 🔴 **`Standart` is misspelt in both the API name and the label**, and
 the API name is effectively permanent once records carry it. The same commit
 adds `QuoteLineItemTriggerHandler`, enforcing one Bundle **or** Item products on
-a quote — ⚠ the meeting decided that for the *order*.
+a quote — ⚠ the meeting decided that for the _order_.
 
 ### 42.2 🔴 The link generator contradicts the recorded design
 
@@ -4537,8 +4537,8 @@ register text is still not rewritten here, because one mechanical hop is open:
 🔴 **What survives is the identifier.** Salesforce's 18-character id cannot travel;
 Fabrizio Paganelli asked for a **`numero riga ordine`** field on the order, and the
 afternoon session settled on **Mexal's own order number** instead. Mexal's invoice
-references the *order*, the scadenziario references the *invoice* — so **which
-Salesforce order *line* a payment settles is still not established from either end**,
+references the _order_, the scadenziario references the _invoice_ — so **which
+Salesforce order _line_ a payment settles is still not established from either end**,
 and that is exactly the case that matters for n lines of one article code. →
 [OI-166](../notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)
 
@@ -4550,7 +4550,7 @@ are **5, 10 and 12**, and the mechanism is dynamic. Agreed at 11:22, confirmed w
 vendor at 15:00, **demonstrated working at 17:00**. →
 [OI-167](../notes/items/OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md)
 
-⚠ It supersedes the *shape* of
+⚠ It supersedes the _shape_ of
 [OI-142](../notes/items/OI-142%20Fractional%20product%20records%20for%20tranche%20payment.md):
 the fractional records exist, but as one code repeated n times. **Elisa Migliano's 18/09
 objection is moot and she has not been told.**
@@ -4582,8 +4582,8 @@ all**: one high-value ticket, no split into lines, no per-line condition. →
 
 ### 🔑 A whole integration surfaced: the event check-in app
 
-Everything held about QR codes concerns *generating* them. Nothing established what
-*reads* them. Andrea Parmeggiani runs a **custom Android application** over REST to
+Everything held about QR codes concerns _generating_ them. Nothing established what
+_reads_ them. Andrea Parmeggiani runs a **custom Android application** over REST to
 Zoho, distributed via TestFlight and APK packages, refreshed about every ninety days.
 
 🟢 Agreed for Fase 1: the app calls Salesforce, the asset moves to **`utilizzato`**,
@@ -4694,3 +4694,93 @@ updated at 16:34–16:35Z, and Elena Spini posted the **client-validated calenda
 October still has no written answer. →
 [OI-158](../notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)
 (resolved)
+
+## 45. Update 2026-09-23 — org check the day before UAT: what the client will test is not what `DevMain` holds
+
+> ⚠ **This section records BUILD STATE only.** It supersedes earlier sections'
+> claims about what **exists** in the org. It does **not** supersede any earlier
+> section's record of what was **agreed** — a decision stays decided even where
+> the implementation contradicts it.
+
+Read-only check of **Pienissimo UAT** (`00DMA000004nMMr2AM`, partial sandbox,
+API 68.0) on **2026-09-23, 08:01–08:40Z**, against `force-app/` on `DevMain` at
+`61f2a53`, clean worktree. **442** repository component keys compared with
+**1,382** org components, with no unavailable types. Every unmanaged Apex class,
+trigger and LWC body was compared token by token, and each mismatching body was
+matched against every commit on every remote branch. No test was run, nothing
+was deployed and no org data was modified.
+
+### 45.1 🔑 Why Web-to-Lead leads have no record type (OI-164)
+
+All **four** leads that arrived through the web form on 22/09 have no record type.
+They are created by the default lead creator, **`Amministratore Pienissimo`**, on
+the **System Administrator** profile. A reference retrieve shows that profile with
+**`Lead.Diretta` and `Lead.Standard` both `visible=false` and no default**. The only
+grant of either record type is the `Full_Permission` permission set, and **that
+user is not assigned it**. The form sends a record type the creating user cannot
+use, and the lead lands on Master.
+
+**The fix is configuration, not code**, and it has to be made before the 24/09
+session. It was not applied: the check is read-only.
+
+### 45.2 🔴 Merged work that never reached UAT (OI-170)
+
+| Component                                              | UAT runs                    | `DevMain` has      | Effect in UAT                                                                  |
+| ------------------------------------------------------ | --------------------------- | ------------------ | ------------------------------------------------------------------------------ |
+| `LeadConversionQueueable`                              | `08b97cc` (21/09)           | `54e0be1` (PR #55) | **Every converted Opportunity becomes `Standart`**; the Lead's type is ignored |
+| `QuoteLineItemTrigger` + `QuoteLineItemTriggerHandler` | `2d31ebe` (18/09)           | `ab47b42`          | No reopen to `Bozza` when a line is added                                      |
+| `QuoteLineItemsController`                             | `e992e6a` (17/09)           | `ab47b42`          | Still `with sharing`                                                           |
+| `QuoteNegotiationAgingBatch`                           | a 21/09 version, same logic | `ab47b42`          | Still `with sharing`; the daily schedule is live                               |
+
+[OI-150](../notes/items/OI-150%20Opportunity%20type%20comes%20from%20a%20Lead%20picklist.md)
+records a _"check-only deploy"_ of the mapping on 22/09. **A check-only deploy
+changes nothing in the org.** The field and both record types are deployed, so the
+picklist appears to work in UAT and does nothing at conversion.
+
+### 45.3 🔴 Work deployed that no commit holds (OI-171)
+
+At **07:59–08:00 UTC today**, the shared `ROMI COMPANY` admin user changed
+`QuoteManageProductsController` and the `quoteManageProducts` LWC in UAT. The change
+adds a **bundle-only percentage discount or manual price** to Manage Products. **The
+content matches no commit on any branch.** This is the fifth time work has been
+found in the org and not in source control.
+
+**Order matters:** a `DevMain` deploy to fix §45.2 would overwrite this, so it must
+be committed first. That deploy would also bring the four `without sharing`
+changes of
+[OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)
+into UAT: 19 such classes on `DevMain`, 15 in the org.
+
+### 45.4 What has changed since §36
+
+| Since 14/09                                    | 23/09                                                                                         |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Mexal chain org-only (9 classes)               | 🟢 **In source control and deployed**; org equals `DevMain` except for formatting             |
+| Credentials org-only, clean deploy fails twice | 🟢 3 named + 3 external credentials in `force-app/`                                           |
+| Edition mapping 3 of 43                        | 🟢 **13 of 51**, with 38 still unmapped                                                       |
+| `Happy Team` missing from `Evento__c`          | 🟢 Present                                                                                    |
+| Quote ageing unbuilt                           | 🟢 Scheduled daily at 01:00 UTC, three completed runs                                         |
+| DocuSign                                       | 🟢 15 envelope jobs in seven days; log shows 11 ok and 4 errors                               |
+| Tranche on order lines 3 of 36                 | 🟢 **15 of 60**; 58 of 76 quote lines                                                         |
+| Nightly Mexal sync unscheduled                 | 🔴 Still unscheduled                                                                          |
+| Mexal chain never ran                          | 🔴 **0 of 45** orders with a Mexal status; the `isSandbox()` guard is still in place (OI-137) |
+| Coverage 0 of 4,737                            | 🔴 **0 of 7,756**, 79 entries; last test run 04/08                                            |
+
+### 45.5 Not built, with a UAT date
+
+- **Contract** — `Contract` has zero custom fields and nothing writes it. **UAT 5/10.**
+  [OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)
+- **Check-in** — 0 of 31 Assets carry a QR id and there is no check-in endpoint.
+  **Ticket UAT 30/09.**
+  [OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)
+- **Agent from the customer record** — no field on any of the four objects.
+  **Correction:** the conversion-blocking validation recorded on 22/09 as built was
+  announced, not built.
+  [OI-169](../notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+- **Lead duplicate rule** — only the five stock rules.
+  [OI-163](../notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)
+- **Declarative automation** — zero project Flows, unchanged.
+
+⚠ The org has **three active human users, all System Administrators**, one of them
+the shared `ROMI COMPANY` login. No client tester account exists yet (promised for
+6–13 October).

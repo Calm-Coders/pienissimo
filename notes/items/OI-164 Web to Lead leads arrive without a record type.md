@@ -6,7 +6,7 @@ owner: Rexhina Hysi
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-149]
 blocks: [go-live]
 severity: gating
@@ -53,3 +53,36 @@ the test address) are **deliberately not reproduced here**; the environment is t
   from that profile in the same commit that adds the record types. **Not diagnosed
   in this sweep; the org was not opened.**
 - ⚠ **No answer from Aurel Mrruku is in any source** as at this sweep.
+
+## 🔑 2026-09-23 — diagnosed against the org: the default lead creator cannot see either Lead record type
+
+The 23/09 org-status check (read-only, Pienissimo UAT, 08:01–08:40Z) **confirms the
+defect at runtime and finds the cause.** Nothing was changed in the org.
+
+- **Runtime:** all **four** `LeadSource = Web` leads created on 22/09, between 15:10 and
+  16:16Z, have **no record type**. Two of them carry `Tipo_Opportunita__c`, so the
+  form's hidden fields do arrive. The two leads with a record type (`Diretta` 08:44Z,
+  `Standard` 09:22Z) were created **by hand inside Salesforce**. (verified, SOQL aggregate)
+- **The creator:** Web-to-Lead leads are created as **`Amministratore Pienissimo`**,
+  profile **System Administrator**. (verified)
+- 🔑 **The cause:** a reference retrieve of that profile shows `Lead.Diretta` and
+  `Lead.Standard` both **`visible=false`, and neither is the default**. The only grant
+  of either record type anywhere is the **`Full_Permission`** permission set, and
+  **`Amministratore Pienissimo` is not assigned it**. It holds only its profile,
+  `Sales_User`, `PipelineInspectionUser` and `SalesEngagementBasicUser`. (verified)
+  The record type the form sends is **not available to the creating user**, so the
+  platform drops it and the Lead lands on Master. (inferred from platform behaviour, but
+  consistent with every observed lead)
+- This rules out the other two candidates listed above: the conversion trigger does not
+  overwrite the value, and the guest `Landing Page Profile` is not the creating context.
+  ⚠ That profile has both Lead record types `visible=false` too, which matters only if
+  the form's creating user changes.
+- ⚠ The **System Administrator profile also sees none of the three Opportunity record
+  types.** Only `Full_Permission` grants them, and **two** active users hold it. See
+  [OI-153](OI-153%20There%20is%20no%20full%20UAT%20sandbox.md) for the client UAT
+  users, who do not exist yet.
+
+**The fix is a configuration change, not code.** Either make both Lead record types
+visible on the creating user's profile with the right default, or assign
+`Full_Permission` (or a narrower set) to `Amministratore Pienissimo`. **Decide which
+before 24/09.** It was not applied: this check is read-only.

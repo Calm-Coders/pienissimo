@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-74]
 blocks: [go-live]
 severity: gating
@@ -56,3 +56,9 @@ and she had read "QR code done" as including the scan and the asset update. See
   call.**
 - ⚠ The app also draws ticket allocation down from a **company giacenza** by event,
   edition and ticket type. Whether Salesforce owns that allocation is unestablished.
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🔴 **No ticket in UAT has a QR:** **0 of 31** Assets carry `QR_Id__c` (23 `Ordinato`, 4 `Assegnato`, 3 `Rinuncia`, 1 `Disponibile`). `Asset.Data_CheckIn__c` and `QR_Id__c` exist, but nothing fills either, and no inbound check-in endpoint exists. `BIG-11` (check-in by QR scan) cannot be shown. **Ticket UAT is 30/09.** (verified)

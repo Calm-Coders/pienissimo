@@ -5,7 +5,7 @@ status: open
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-18
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-136]
 blocks: [go-live]
 severity: gating
@@ -117,3 +117,9 @@ quote stack running without sharing enforcement**, plus a scheduled batch.
   this and says an org check does not amend the register — **so a human still owns it.**
 - 🔴 **The register's other quote rules are not implemented here**: no day-2 alert to
   tutor and client, and no alert at expiry. The batch only advances the state.
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- ⚠ **The 22/09 changes are on `DevMain` but not in UAT.** `force-app/` has **19** classes declared `without sharing`. The org has **15**: `LeadConversionQueueable`, `QuoteLineItemTriggerHandler`, `QuoteLineItemsController` and `QuoteNegotiationAgingBatch` still run `with sharing` in UAT. So what the client tests is not what `DevMain` would deploy. **Whether those four should change is still undecided.** Deploying `DevMain` for [OI-170](OI-170%20DevMain%20is%20ahead%20of%20UAT%20on%20the%20Lead%20conversion%20and%20quote-line%20paths.md) makes that decision by default. (verified)

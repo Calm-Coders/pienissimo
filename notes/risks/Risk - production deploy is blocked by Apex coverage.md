@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-15
+updated: 2026-09-23
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -470,3 +470,10 @@ away than on any previous reading.
 
 ⚠ **UAT opens 23 September — eight days.** Recorded as brief only; **no test was
 written, proposed or scaffolded.**
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- **0 of 7,756 lines, 0%, 79 entries**, against 4,737 across 60 on 14/09: **+3,019 uncovered lines in nine days.** Three test classes against 57 Apex classes in `force-app/`. The last `ApexTestRunResult` row is still **2026-08-04**. Read the percentage as unmeasured and the uncovered count as real.
+- ⚠ **Go-live is 21 October.** The production deploy needs this task done first, and it has **no slot on the calendar**. UAT runs until 13 October. Recorded as the brief only. **No test was written, proposed or run.**

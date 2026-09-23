@@ -1,7 +1,7 @@
 # ROMI-PIENISSIMO — Recap di Sviluppo Salesforce
 
 > Consolidato dalle 8 riunioni tracciate (27/05/2026 → 23/07/2026), **vince la decisione più recente**. Ogni voce cita la riunione di origine. Legenda stato: ✅ DECISO · 🟡 CONDIZIONATO (deciso, in attesa di una verifica) · 🔴 APERTO (blocca la build — vedi §9).
-> ⚠ **Precedenza, dal più recente: §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.**
+> ⚠ **Precedenza, dal più recente: §45 → §44 → §43 → §42 → §41 → §40 → §39 → §38 → §37 → §36 → §35 → §34 → §33 → §32 → §31 → §30 → §29 → §28 → §27 → §26 → §25 → §24 → §23 → §22 → §21 → §20 → §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-aggiornamento-06082026--sessione-di-chiusura-dei-punti-aperti) → [§10](#10-aggiornamento-03082026--sweep-multi-sorgente) → §1–§9.** §45 è la sezione di STATO DELLA BUILD più recente (23/09, Pienissimo UAT); §17, §19, §22, §25, §31, §36 e §45 sono tutte verifiche di stato della build e la più recente prevale su ciò che **esiste**, mai su ciò che è stato **concordato**.
 > I §1–§9 sono aggiornati al 23/07/2026; il §10 porta il delta 24/07 → 03/08; il §11 la sessione del 06/08; il §12 lo sweep del 14/08; il §13 il file prodotti del 24/08; il §15 la scelta dell'Asset standard; il §16 le quattro riunioni recuperate il 24/08. **Il §14 è la decisione diretta di Aurel Mrruku sulle tranche e supera ogni formulazione precedente che le faceva nascere dalle righe d'Ordine o dai codici `BLO-`.** **Il §17, il §19, il §22 e il §25 sono verifiche dello stato del build sull'org UAT, del 25/08, 26/08, 31/08 e 02/09: dove contraddicono una sezione precedente su ciò che _esiste_, vince la più recente; dove una sezione precedente registra ciò che è stato _concordato_, quella sezione resta valida. Il §19 corregge integralmente una constatazione del §17; il §25 ritira l'affermazione del §19 secondo cui l'org non aveva template email — lo strumento non era in grado di vederli.** Il §18 è la call tecnica Anticipay del 25/08; il §20 la review Mexal del 26/08; il §21 l'integrazione WooCommerce del 27/08; il §23 e il §24 il contratto API Anticipay e la call di follow-up del 01/09. **Il §36 (14/09) è la verifica dello stato del build più recente: dove contraddice una sezione precedente su ciò che _esiste_, vince il §36; ritira ogni affermazione “zero righe” su `Integration_Configuration2__c` dal §25 al §35.** Il §26 e il §27 sono l'endpoint Anticipay e la sessione Anagrafica Articoli del 02/09; il §28 e il §29 il Data Model Parte 1 e 2; il §30 le tre sessioni del 07/09; il §31 la verifica org dell'08/09; il §32 e il §33 il 09/09; il §34 e il §35 il primo Apex Mexal del 10/09 e la scrittura Mexal dell'11/09.
 > File collegati: recap per riunione in `results/`, tracker in `open-items.md`.
 
@@ -4514,10 +4514,10 @@ Sei decisioni, dal blocco `Concordato` delle note stesse:
 
 Cinque commit sono arrivati su `DevMain` tra le 14:29Z e le 15:01Z.
 
-| PR  | Mergiata   | Che cosa porta                                                          |
-| --- | ---------- | ----------------------------------------------------------------------- |
-| #48 | 14:29:39Z  | `4132dab` — **la rimozione di `Incassato`**, con cinque commit estranei  |
-| #47 | 15:01:32Z  | `af8a42b` — **il generatore di link WooCommerce e i tre record type**    |
+| PR  | Mergiata  | Che cosa porta                                                          |
+| --- | --------- | ----------------------------------------------------------------------- |
+| #48 | 14:29:39Z | `4132dab` — **la rimozione di `Incassato`**, con cinque commit estranei |
+| #47 | 15:01:32Z | `af8a42b` — **il generatore di link WooCommerce e i tre record type**   |
 
 🟢 **OI-136 è chiuso sul lato build.** `4132dab` è un antenato di `DevMain`;
 `markOrderIncassato`, `canMarkOrderIncassato` e il pulsante «Segna ordine
@@ -4526,13 +4526,13 @@ chiusa** — nessuno ha deciso, e a Elisa Migliano non è ancora stato chiesto.
 🔴 `QuoteAcceptanceController` resta `public without sharing` su un `quoteId`
 nudo.
 
-🟢 **I tre record type esistono**: `Recall_Tutor`, `Standart` (*Vendita
-Standart*) e `Plus_Attivazione_Rinnovo`, su un nuovo business process
+🟢 **I tre record type esistono**: `Recall_Tutor`, `Standart` (_Vendita
+Standart_) e `Plus_Attivazione_Rinnovo`, su un nuovo business process
 `Sales_Process`. 🔴 **`Standart` è scritto male sia nel nome API sia
 nell'etichetta**, e il nome API è di fatto permanente una volta che dei record
 lo portano. Lo stesso commit aggiunge `QuoteLineItemTriggerHandler`, che impone
 un solo Bundle **oppure** prodotti Item su un preventivo — ⚠ la riunione lo
-aveva deciso per l'*ordine*.
+aveva deciso per l'_ordine_.
 
 ### 42.2 🔴 Il generatore di link contraddice il disegno a registro
 
@@ -4759,8 +4759,8 @@ meccanico:
 🔴 **Ciò che sopravvive è l'identificativo.** L'id Salesforce da 18 caratteri non può
 viaggiare; Fabrizio Paganelli ha chiesto un campo **`numero riga ordine`** sull'ordine, e
 la sessione del pomeriggio ha scelto invece **il numero d'ordine di Mexal**. La fattura
-Mexal referenzia l'*ordine*, lo scadenziario referenzia la *fattura* — quindi **quale
-*riga* d'ordine Salesforce venga saldata non è ancora stabilito da nessuno dei due
+Mexal referenzia l'_ordine_, lo scadenziario referenzia la _fattura_ — quindi **quale
+_riga_ d'ordine Salesforce venga saldata non è ancora stabilito da nessuno dei due
 capi**, ed è esattamente il caso che conta per n righe di un solo codice articolo. →
 [OI-166](../notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)
 
@@ -4772,7 +4772,7 @@ Le cadenze in uso sono **5, 10 e 12**, e il meccanismo è dinamico. Concordato a
 confermato col fornitore alle 15:00, **dimostrato funzionante alle 17:00**. →
 [OI-167](../notes/items/OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md)
 
-⚠ Supera la *forma* della
+⚠ Supera la _forma_ della
 [OI-142](../notes/items/OI-142%20Fractional%20product%20records%20for%20tranche%20payment.md):
 i record frazionari esistono, ma come un codice ripetuto n volte. **L'obiezione di Elisa
 Migliano del 18/09 è superata e lei non ne è stata informata.**
@@ -4805,8 +4805,8 @@ valore alto, nessuna suddivisione in righe, nessuna condizione per riga. →
 
 ### 🔑 È emersa un'intera integrazione: l'app di check-in eventi
 
-Tutto ciò che è registrato sui QR code riguarda la loro *generazione*. Nulla stabiliva
-che cosa li *legge*. Andrea Parmeggiani gestisce un'**applicazione Android custom** su
+Tutto ciò che è registrato sui QR code riguarda la loro _generazione_. Nulla stabiliva
+che cosa li _legge_. Andrea Parmeggiani gestisce un'**applicazione Android custom** su
 REST verso Zoho, distribuita con TestFlight e pacchetti APK, aggiornata circa ogni
 novanta giorni.
 
@@ -4927,3 +4927,93 @@ ottobre copre ora anche **Anticipay** e va dalle 10:00 alle 13:00. ⚠ La richie
 di Fabrizio Paganelli per il 3 o 4 ottobre è ancora senza risposta scritta. →
 [OI-158](../notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)
 (risolta)
+
+## 45. Aggiornamento 23/09/2026 — verifica org alla vigilia dell'UAT: ciò che il cliente testerà non è ciò che contiene `DevMain`
+
+> ⚠ **Questa sezione registra SOLO lo STATO DELLA BUILD.** Sostituisce le
+> affermazioni delle sezioni precedenti su ciò che **esiste** nell'org. **Non**
+> sostituisce quanto le sezioni precedenti registrano come **concordato**: una
+> decisione resta presa anche dove l'implementazione la contraddice.
+
+Verifica in sola lettura di **Pienissimo UAT** (`00DMA000004nMMr2AM`, sandbox
+parziale, API 68.0) il **23/09/2026, 08:01–08:40Z**, rispetto a `force-app/` su
+`DevMain` al commit `61f2a53`, worktree pulito. **442** chiavi di componente del
+repository confrontate con **1.382** componenti dell'org, nessun tipo non disponibile.
+Ogni classe Apex, trigger e LWC non gestito è stato confrontato token per token, e
+ogni corpo diverso è stato confrontato con ogni commit di ogni branch remoto. Nessun
+test eseguito, nessun deploy, nessun dato dell'org modificato.
+
+### 45.1 🔑 Perché i Lead da Web-to-Lead non hanno record type (OI-164)
+
+Tutti e **quattro** i Lead arrivati dal form web il 22/09 sono senza record type.
+Vengono creati dal creatore predefinito dei Lead, **`Amministratore Pienissimo`**, con
+profilo **System Administrator**. Un retrieve di riferimento mostra quel profilo con
+**`Lead.Diretta` e `Lead.Standard` entrambi `visible=false` e nessun default**. L'unica
+concessione di questi record type è il permission set `Full_Permission`, e **quell'utente
+non ce l'ha**. Il form invia un record type che l'utente creatore non può usare, e il
+Lead finisce su Master.
+
+**La correzione è di configurazione, non di codice**, e va fatta prima della sessione
+del 24/09. Non è stata applicata: il controllo è in sola lettura.
+
+### 45.2 🔴 Lavoro in merge mai arrivato in UAT (OI-170)
+
+| Componente                                             | In UAT                                | Su `DevMain`       | Effetto in UAT                                                                       |
+| ------------------------------------------------------ | ------------------------------------- | ------------------ | ------------------------------------------------------------------------------------ |
+| `LeadConversionQueueable`                              | `08b97cc` (21/09)                     | `54e0be1` (PR #55) | **Ogni Opportunità convertita diventa `Standart`**; la tipologia del Lead è ignorata |
+| `QuoteLineItemTrigger` + `QuoteLineItemTriggerHandler` | `2d31ebe` (18/09)                     | `ab47b42`          | Nessun ritorno in `Bozza` quando si aggiunge una riga                                |
+| `QuoteLineItemsController`                             | `e992e6a` (17/09)                     | `ab47b42`          | Ancora `with sharing`                                                                |
+| `QuoteNegotiationAgingBatch`                           | una versione del 21/09, stessa logica | `ab47b42`          | Ancora `with sharing`; la pianificazione giornaliera è attiva                        |
+
+[OI-150](../notes/items/OI-150%20Opportunity%20type%20comes%20from%20a%20Lead%20picklist.md)
+registra un _«deploy check-only»_ della mappatura il 22/09. **Un deploy check-only
+non cambia nulla nell'org.** Campo e record type sono deployati, quindi in UAT la
+picklist sembra funzionare ma alla conversione non fa nulla.
+
+### 45.3 🔴 Lavoro deployato che nessun commit contiene (OI-171)
+
+Alle **07:59–08:00 UTC di oggi** l'utente amministratore condiviso `ROMI COMPANY` ha
+modificato in UAT `QuoteManageProductsController` e l'LWC `quoteManageProducts`. La
+modifica aggiunge a Gestisci Prodotti uno **sconto percentuale o un prezzo manuale solo
+per i bundle**. **Il contenuto non corrisponde ad alcun commit su alcun branch.** È la
+quinta volta che si trova lavoro nell'org e non nel controllo sorgente.
+
+**L'ordine conta:** un deploy di `DevMain` per risolvere il §45.2 lo sovrascriverebbe,
+quindi va prima fatto il commit. Quel deploy porterebbe in UAT anche le quattro
+modifiche `without sharing` di
+[OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md):
+19 classi di questo tipo su `DevMain`, 15 nell'org.
+
+### 45.4 Cosa è cambiato dal §36
+
+| Al 14/09                                                    | 23/09                                                                                          |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Catena Mexal solo nell'org (9 classi)                       | 🟢 **Nel controllo sorgente e deployata**; l'org coincide con `DevMain` salvo la formattazione |
+| Credenziali solo nell'org, deploy pulito fallisce due volte | 🟢 3 named credential e 3 external credential in `force-app/`                                  |
+| Mappatura edizione 3 su 43                                  | 🟢 **13 su 51**, 38 ancora senza mappatura                                                     |
+| `Happy Team` assente da `Evento__c`                         | 🟢 Presente                                                                                    |
+| Invecchiamento preventivi non costruito                     | 🟢 Pianificato ogni giorno alle 01:00 UTC, tre esecuzioni completate                           |
+| DocuSign                                                    | 🟢 15 job di busta in sette giorni; il log mostra 11 riusciti e 4 errori                       |
+| Tranche sulle righe ordine 3 su 36                          | 🟢 **15 su 60**; 58 su 76 righe preventivo                                                     |
+| Sincronizzazione notturna Mexal non pianificata             | 🔴 Ancora non pianificata                                                                      |
+| La catena Mexal non è mai partita                           | 🔴 **0 su 45** ordini con stato Mexal; la guardia `isSandbox()` è ancora presente (OI-137)     |
+| Copertura 0 su 4.737                                        | 🔴 **0 su 7.756**, 79 voci; ultima esecuzione di test il 04/08                                 |
+
+### 45.5 Non costruito, con una data di UAT
+
+- **Contratto** — `Contract` ha zero campi custom e nulla lo scrive. **UAT 5/10.**
+  [OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)
+- **Check-in** — 0 su 31 Asset hanno un id QR e non esiste un endpoint di check-in.
+  **UAT biglietti 30/09.**
+  [OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)
+- **Agente dall'anagrafica cliente** — nessun campo su nessuno dei quattro oggetti.
+  **Correzione:** la validazione che blocca la conversione, registrata il 22/09 come
+  costruita, è stata annunciata, non costruita.
+  [OI-169](../notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+- **Regola duplicati Lead** — solo le cinque regole standard.
+  [OI-163](../notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)
+- **Automazione dichiarativa** — zero Flow di progetto, invariato.
+
+⚠ L'org ha **tre utenti umani attivi, tutti System Administrator**, uno dei quali è il
+login condiviso `ROMI COMPANY`. Non esiste ancora alcun account di test del cliente
+(promessi per il 6–13 ottobre).

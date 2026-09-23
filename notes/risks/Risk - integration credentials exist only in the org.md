@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-02
-updated: 2026-09-21
+updated: 2026-09-23
 depends_on: [OI-94, OI-102]
 blocks: [go-live]
 requirement: [INT-18, INT-19]
@@ -184,12 +184,12 @@ org. Until then the repository cannot rebuild the org it describes.
 `e06a1b4` (PR #43, open and unmerged) creates the two directories this risk has
 asked for since 2 September:
 
-| New file                                                              | Kind                |
-| --------------------------------------------------------------------- | ------------------- |
-| `namedCredentials/Mexal.namedCredential-meta.xml`                     | Named Credential    |
-| `namedCredentials/Anticipay.namedCredential-meta.xml`                 | Named Credential    |
-| `externalCredentials/Mexal_External_Credential...-meta.xml`           | External Credential |
-| `externalCredentials/Anticipay_External_Credential...-meta.xml`       | External Credential |
+| New file                                                        | Kind                |
+| --------------------------------------------------------------- | ------------------- |
+| `namedCredentials/Mexal.namedCredential-meta.xml`               | Named Credential    |
+| `namedCredentials/Anticipay.namedCredential-meta.xml`           | Named Credential    |
+| `externalCredentials/Mexal_External_Credential...-meta.xml`     | External Credential |
+| `externalCredentials/Anticipay_External_Credential...-meta.xml` | External Credential |
 
 🟢 **It is done correctly.** Both external credentials declare their auth header
 as a **merge-field reference** — `$Credential.<credential>.<parameter>` — so the
@@ -253,12 +253,12 @@ risk has carried since 2 September.
 `08b97cc` (Anita Aga, 21/09 18:24:26 CEST, `DevAnitaRecheckAutomations`, **PR #54
 open against `DevMain`**) adds four DocuSign files:
 
-| File                                                     | What it is                          |
-| -------------------------------------------------------- | ----------------------------------- |
-| `authproviders/DocuSign.authprovider-meta.xml`           | OpenIdConnect auth provider, PKCE on |
-| `externalCredentials/DocuSign_External_Credential.externalCredential-meta.xml` | OAuth, named principal |
-| `namedCredentials/DocuSign.namedCredential-meta.xml`     | secured endpoint                    |
-| `permissionsets/DocuSign.permissionset-meta.xml`          | plus a `Full_Permission` addition  |
+| File                                                                           | What it is                           |
+| ------------------------------------------------------------------------------ | ------------------------------------ |
+| `authproviders/DocuSign.authprovider-meta.xml`                                 | OpenIdConnect auth provider, PKCE on |
+| `externalCredentials/DocuSign_External_Credential.externalCredential-meta.xml` | OAuth, named principal               |
+| `namedCredentials/DocuSign.namedCredential-meta.xml`                           | secured endpoint                     |
+| `permissionsets/DocuSign.permissionset-meta.xml`                               | plus a `Full_Permission` addition    |
 
 ✅ **No secret entered the repository.** The `consumerSecret` is the literal
 `Placeholder_Value`, following the merge-field-reference pattern established for
@@ -292,3 +292,10 @@ this project has moved production access details over mail — compare
 ⚠ This risk stays open, not resolved: PR #54 is **unmerged**, so `DevMain` does not
 carry the DocuSign metadata yet, and the deployed org still holds whatever it holds.
 **The org was not opened in this run.**
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🟢 **The metadata part of this risk is closed.** `force-app/` now holds all **three** named credentials and all **three** external credentials (Anticipay, DocuSign, Mexal), and the org has exactly those three named credentials. The `DocuSign` and `Full_Permission` permission sets are on `DevMain` (PR #54 merged). The principals referenced by `Full_Permission` and `Integration_Management` now have metadata in the repository, so the reason a clean deploy failed twice is gone. (inferred: no deploy was run) `Sales_User` is the only project-looking permission set still found only in the org. It was created on 2026-05-13, the day the org was created, so it is probably a platform-provisioned set rather than project work. (inferred)
+- 🔴 **Still open: the production swap.** DocuSign points at the demo environment and WooCommerce at the test token. The client's DocuSign credentials are still owed.

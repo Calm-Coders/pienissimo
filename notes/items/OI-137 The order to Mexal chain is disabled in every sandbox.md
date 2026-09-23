@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-09-15
-updated: 2026-09-15
+updated: 2026-09-23
 depends_on: [OI-116, OI-135]
 blocks: [go-live]
 requirement: [INT-01, INT-05, NFR-06]
@@ -93,3 +93,11 @@ no message on any channel discusses it.
 3. **Who removes it before go-live, and how is that verified?** Name the person
    and the check. A forgotten `isSandbox()` is invisible in production only in the
    sense that the integration simply never runs.
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🔴 **The guard is still there.** `OrderMexalIntegrationService.enqueueForCreatedOrders` still returns early when `isSandbox()` is true, in both the org and `DevMain` (the org body matches the repository).
+- 🔴 **The chain has never run in UAT:** all **45** Orders carry an empty `Mexal_Integration_Status__c`, up from 30 on 14/09. (verified, SOQL aggregate)
+- 🔴 **Mexal UAT is booked for 6 October.** Unless the guard is replaced by configuration (`Use_Mock__c`, the sandbox named credential) or the session is told how the integration will be accepted, that session has nothing to exercise.
