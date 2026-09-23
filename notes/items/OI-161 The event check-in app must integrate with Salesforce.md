@@ -62,3 +62,34 @@ and she had read "QR code done" as including the scan and the asset update. See
 Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
 
 - 🔴 **No ticket in UAT has a QR:** **0 of 31** Assets carry `QR_Id__c` (23 `Ordinato`, 4 `Assegnato`, 3 `Rinuncia`, 1 `Disponibile`). `Asset.Data_CheckIn__c` and `QR_Id__c` exist, but nothing fills either, and no inbound check-in endpoint exists. `BIG-11` (check-in by QR scan) cannot be shown. **Ticket UAT is 30/09.** (verified)
+
+
+## 2026-09-23 — the first statement of what the integration is *for*
+
+**[Check Data Import](../meetings/2026-09-23%20Check%20Data%20Import.md), `01:56:20`–`02:01:26`.**
+
+🔑 **The scan calls Salesforce, and Salesforce answers.** Aurel Mrruku described the
+scanner app as making an API call on scan, with Salesforce returning a **speaking error**
+when the entry rules are not satisfied — his example: the holder used only one of three
+entries in the previous block and is presenting for the second block.
+
+> _"io gli devo restituire un errore parlante […] guarda, non hai effettuato tutti gli
+> ingressi."_
+
+**Everything this record previously held described the integration as one-way** — the app
+updating the asset. This is the first evidence it is a **request/response validation
+endpoint**, which is a materially larger build.
+
+⚠ **It is Fase 2, and the auto-summary says otherwise.** The Gemini notes list
+_"\[Aurel Mrruku\] Implementare errori QR"_ under *Passaggi successivi*, as though it
+were in flight. The transcript does not support that: Elena Spini closed the topic as
+Fase 2 and Aurel Mrruku himself said the data model for it is missing. **Fase 1 scope is
+unchanged — the asset update only** — and
+[the decision](../decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md)
+records the boundary.
+
+🟢 **Andrea Parmeggiani is confirmed as the counterpart** — Aurel Mrruku reached for the
+name and Elena Spini supplied it. The 23/09 Pienissimo org chart places him as
+**Maintenance Manager at Pienissimo Software Srl**.
+
+🔴 **Unchanged and still gating: nothing is built, and ticket UAT is 30/09.**

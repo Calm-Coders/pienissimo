@@ -5017,3 +5017,107 @@ modifiche `without sharing` di
 ⚠ L'org ha **tre utenti umani attivi, tutti System Administrator**, uno dei quali è il
 login condiviso `ROMI COMPANY`. Non esiste ancora alcun account di test del cliente
 (promessi per il 6–13 ottobre).
+
+## 46. Aggiornamento 23/09/2026 — la migrazione ottiene un perimetro, la sospensione ingressi si scioglie, e il record type del Lead è ancora vuoto
+
+Passaggio esterno, watermark **2026-09-22T22:00Z**. Due riunioni drillate:
+[Check Data Import](../notes/meetings/2026-09-23%20Check%20Data%20Import.md) (cliente,
+2h29m — la sessione più lunga del progetto) e
+[Test Pre Demo](../notes/meetings/2026-09-23%20Test%20Pre%20Demo.md) (interna, 1h33m,
+⚠ trascrizione deformata dalla macchina e non utilizzabile come evidenza).
+
+### 🟢 La sospensione degli ingressi si scioglie — perché il cliente è stato informato
+
+[OI-146](../notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md) è
+**risolta**. Fabrizio Paganelli ha posto al gruppo, di persona, la sua stessa richiesta
+scritta del 22/09: un fattore di conversione sull'anagrafica prodotto. Aurel Mrruku ha
+risposto _«di anagrafica articolo, no. Di anagrafica campagna»_: i record di ingresso
+stanno sull'**edizione di campagna**, come blocchi di date copiati sul biglietto alla
+generazione. Elena Spini ha stabilito che l'intero meccanismo è **Fase 2**. Fabrizio
+Paganelli ha ripetuto il meccanismo due volte e l'ha accettato.
+
+🟢 **Il comportamento di Fase 1, enunciato dal cliente stesso:** _«Oggi facciamo che un
+biglietto è un ingresso, anche se viene 6 giorni diversi.»_ **Un biglietto, un ingresso —
+Mastery di sei giorni compresa.** Vedi
+[la decisione](../notes/decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md).
+
+🔑 **E l'integrazione del check-in trova il suo scopo.** La scansione è una **chiamata API
+in ingresso verso Salesforce**, che deve restituire un *errore parlante* quando gli
+ingressi del blocco precedente non sono completi — non l'aggiornamento unidirezionale
+dell'asset che questo record porta dal 22/09. Anche questo è Fase 2, **benché il riepilogo
+automatico della sessione lo elenchi tra i passaggi successivi**; la trascrizione non
+sostiene quella lettura
+([OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)).
+
+### 🟢 La migrazione ha un perimetro, per la prima volta
+
+> **Elena Spini** (`02:04:53`): _«Una cosa super importante. Tutto ciò che è preventivi non
+> verrà \[portato\] su Salesforce […] Verrà portato su Salesforce tutto ciò che deve finire
+> su Mexal, che è già su Mexal per storico.»_
+
+**Si migrano solo gli ordini storici.** Preventivi, offerte e opportunità nascono **ex
+novo** →
+[OI-172](../notes/items/OI-172%20Historical%20quotes%20and%20offers%20are%20not%20migrated.md).
+🔴 **I tutor dovranno quindi reinserire a mano ogni preventivo pendente, e Marco Montesi
+non era presente.**
+
+Deciso nella stessa sessione e confluito in
+[OI-165](../notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md):
+la chiave di aggancio dell'account è il `codice cliente esterno`; si importano solo i
+contatti con un nome azienda, gli altri in attesa delle indicazioni della direzione **dal
+1° ottobre**; i dati di test sono filtrati a mano sui record con P.IVA. 🟢 **Lo stesso
+giorno 1.010 articoli sono stati caricati via Bulk API senza errori**, con voci di Listino
+Standard per tutti — registrato dagli sviluppatori stessi su `DEV_LeadAgenteBundle`.
+🔴 **Restano assenti stima, sequenza di produzione e responsabile del cut-over.**
+
+### Modifiche al modello dati concordate col cliente
+
+L'`IBAN` è **rimosso** dal modello dei locali e sostituito da un testo libero
+**`Categoria statistica Mexal`**; `tipologia attività` diventa **multi-selezione** e vive
+sul locale, non sull'account; i campi di stato cliente complessi sono **eliminati**
+anziché nascosti per una fase futura; lo stato attività ATECO diventa una **picklist
+ristretta**; `codice fiscale`, `codice SDI` e ATECO arrivano tutti dalla **chiamata
+Anticipay**, con il codice fiscale posto uguale alla P.IVA **solo** quando Anticipay non
+restituisce nulla. `classificatore rete` è rinominato **`categoria provvigioni cliente`** e
+la **`zona` passa dall'utente tutor all'account**.
+
+### 🟢 OI-159 risposta in venti ore
+
+Fabrizio Paganelli ha annotato riga per riga l'elenco di campi di Mirko Merendi il **23/09
+alle 12:16:50Z**. **Salesforce deve `Tipologia pagamento` e `Agente`**; cinque campi
+appartengono alla procedura Mexal; **`Gestione ratei di riga`** — l'unica voce che questo
+record non copriva — è **spazio di progetto senza casistiche attuali**. Una riga è stata
+trattenuta di proposito, il ramo italiano della fatturazione elettronica, ed è diventata
+[OI-173](../notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md), in scadenza
+alla **call del 24/09 alle 10:00 con Mirko Merendi** — lo slot liberato dal rinvio della
+sessione ordini/migrazione.
+
+### 🔴 Il percorso Lead, la sera prima del test
+
+- **[OI-164](../notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+  è ancora aperta.** La causa è stata pubblicata nel gruppo dev alle 10:26 CEST; Elena Spini
+  ha sollecitato alle 12:51; alle **18:28:13** ha scritto **_«il rt è sempre blank»_**. La
+  correzione è ora prevista per **la mattina del giorno dell'UAT**. Nello stesso messaggio
+  ha aggiunto una seconda aspettativa: dal record type `Diretta` si attende **solo `New` e
+  `Qualificato`**.
+- 🔴 **NUOVA —
+  [OI-174](../notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md):
+  il gateway di posta ROMI blocca le buste DocuSign** verso Aurel Mrruku e Rexhina Hysi.
+  DocuSign è la **seconda metà della sessione del 24/09**, e **nessuno ha verificato se un
+  destinatario del dominio cliente sia coinvolto.**
+- 🟢 **[OI-169](../notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+  è costruita dopotutto**, superando la correzione della mattina: `7eab757` alle 18:47 CEST
+  crea `Agente__c` su Account, Lead, Quote e User più la validation rule che blocca la
+  conversione. ⚠ **Su un branch senza pull request**, senza `zona` né `categoria provvigioni
+  cliente`, **e la regola blocca ancora la conversione mentre il cliente sta valutando.**
+
+### La build
+
+Due merge su `DevMain` alle 09:41 CEST (PR #55 `DEV_leadDiagnose`, PR #56
+`DevAnitaDocuSign`), poi due push serali che **non** sono su `DevMain`: `7d0f990` di Anita
+Aga (**PR #57, aperta** — branding set e tema Pienissimo, automazione delle voci di
+listino, `Quote.Is_Primary__c`, `Opportunity.Preventivo_Primario__c`, `ProductCodeTrigger`,
++212 righe su `QuoteTriggerHandler`) e `7eab757` di Rexhina Hysi (**nessuna PR**).
+🔴 **`Standart` è invariato**, al quinto passaggio;
+[OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) è
+invariata; la copertura è **0 su 7.756**.

@@ -10,6 +10,54 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-23 — claude — nightly requirements-check: migration gets a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-22T22:00Z**. Drilled two meetings: `Check Data Import` (client, 2h29m — the
+  longest session of the project, notes+transcript 165,114 chars) and `Test Pre Demo`
+  (internal, 1h33m, ⚠ transcript machine-garbled, **not used as evidence**). Wrote 2
+  meeting notes, 1 decision note, 4 new items (`OI-172`–`OI-175`), updated 7 items, both
+  trackers, both recaps (§46), MAP, INDEX, and the trace.
+- **State:**
+  - 🟢 **`OI-146` RESOLVED.** Fabrizio Paganelli put his own 22/09 written request — an
+    ingressi conversion factor on the product — to the group in person; Aurel Mrruku put
+    the structure on the **campaign edition** and Elena Spini ruled it **Fase 2**. **Fase 1
+    is one ticket, one entry**, six-day Mastery included. The four-run-old suspension
+    trigger is discharged because the client was told, not because anything was built.
+  - 🟢 **`OI-159` answered** in twenty hours: Salesforce owes `Tipologia pagamento` and
+    `Agente`; five fields are Mexal's own procedure; `Gestione ratei di riga` is headroom
+    with no current case. The Italian e-invoicing branch was held back → **`OI-173`**, due
+    at the 24/09 10:00 Mirko Merendi call.
+  - 🟢 **Migration has a perimeter** (`OI-172`): only historic orders migrate, quotes and
+    offers start ex novo. 🔴 **The tutors re-key every pending quote by hand and Marco
+    Montesi was not in the room.** 1,010 articles loaded by Bulk API the same day, zero
+    failures (recorded by the developers on `DEV_LeadAgenteBundle`).
+  - 🔴 **`OI-164` still open at 18:28 CEST** — Elena Spini: _"il rt è sempre blank"_ — with
+    the fix scheduled for the **morning of the UAT day**, and a second expectation added
+    the same evening (only `New`/`Qualificato` on the `Diretta` record type).
+  - 🔴 **NEW `OI-174`: ROMI's mail gateway blocks DocuSign envelopes** to Aurel Mrruku and
+    Rexhina Hysi, and DocuSign is the second half of the 24/09 session.
+  - 🟢 **`OI-169` is built after all** — `7eab757`, 18:47 CEST: `Agente__c` on Account,
+    Lead, Quote, User plus the conversion-blocking validation rule. ⚠ **This supersedes the
+    correction the morning's org check wrote**, which was accurate at 08:40Z.
+- **Next:** the 24/09 UAT day is the due date of three armed triggers at once — the Lead
+  path (`OI-163`/`OI-164`/`OI-169`), DocuSign delivery (`OI-174`), and `Standart` becoming
+  permanent as UAT records are created. **Report those before anything else.**
+- **Watch:**
+  - **`OI-154` was deliberately not edited on `DevMain`.** `7eab757` carries a clean
+    developer-authored 33-line addition to exactly that file on `DEV_LeadAgenteBundle`;
+    editing it here would hand Rexhina Hysi a merge conflict. The facts are in the tracker
+    row and the trace. **Do not treat it as missed.**
+  - **`DEV_LeadAgenteBundle` has no pull request**, so the agent metadata is on neither
+    `DevMain` nor UAT, and the conversion block it contains is unresolved with the client.
+  - **`STATUS.md` was not regenerated** — the 23/09 org check did it ten hours earlier from
+    live org evidence, and this run has none. Do not overwrite live evidence with inference.
+  - **The `Check Data Import` Gemini summary lists `Implementare errori QR` as an action
+    item; the transcript puts it in Fase 2.** The 22/09 lesson caught it. Do not reinstate
+    it from the summary.
+  - `matteo.d@pienissimo.com` is a **new, unattributed** client address — the second after
+    `direzione@pienissimo.pro`. Not guessed.
+
 ## 2026-09-23 — claude — org-status-check: full scope, reconciled and published, the day before UAT
 
 **Org:** Pienissimo UAT, `a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`, partial

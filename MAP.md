@@ -2,7 +2,7 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-23 (org-status-check, full scope: UAT runs older Lead code than DevMain, one uncommitted deploy, and the Web-to-Lead record-type cause found) · Source of record: [notes/](notes/)
+Last updated: 2026-09-23 (nightly requirements-check: migration got a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank the night before UAT) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
@@ -13,6 +13,44 @@ register now says 21 October in both languages
 ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md), register `v1.5`).
 **UAT 24 September – 6 October**, approval by 13 October. The calendar was re-validated by the client on 22/09. Requirements went to
 sign-off on 2026-08-06.
+
+- 🔑 **2026-09-23 — the night before UAT: the client settled what migration means, and
+  the defect that opens UAT is still open.** External sweep, watermark 2026-09-22T22:00Z.
+  🟢🔑 **[OI-146](notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)
+  is RESOLVED, and the six-day-old trigger is discharged.** Fabrizio Paganelli put his own
+  written request — an ingressi conversion factor on the product — to the group in person at
+  [Check Data Import](notes/meetings/2026-09-23%20Check%20Data%20Import.md); Aurel Mrruku
+  answered _"di anagrafica articolo, no, di anagrafica campagna"_ and Elena Spini ruled the
+  whole mechanism **Fase 2**. **Fase 1 is one ticket, one entry, six-day Mastery included**
+  ([the decision](notes/decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md)).
+  ROMI's suspension and the client's expectation finally agree.
+  🟢🔑 **Migration has a perimeter for the first time
+  ([OI-172](notes/items/OI-172%20Historical%20quotes%20and%20offers%20are%20not%20migrated.md)).**
+  Elena Spini: _"Una cosa super importante… tutto ciò che non è un ordine non verrà portato
+  su Salesforce."_ **Only historic orders migrate**; quotes and offers start ex novo — so
+  🔴 **the tutors must re-key every pending quote by hand, and Marco Montesi was not in the
+  room.** 🟢 1,010 articles loaded by Bulk API the same day, zero failures.
+  🟢 **[OI-159](notes/items/OI-159%20Mexal%20order%20fields%20Salesforce%20does%20not%20populate.md)
+  answered in 20 hours** — Fabrizio Paganelli annotated Mirko Merendi's list field by field:
+  Salesforce owes **tipologia pagamento** and **agente**, Mexal's own procedure fills five,
+  and `ratei di riga` is headroom with no current case. The Italian e-invoicing branch was
+  held over to **24/09 10:00 with Mirko Merendi**
+  ([OI-173](notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md)).
+  🔴 **[OI-164](notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+  is still live.** The cause was published to the dev group at 10:26 CEST; at **18:28 CEST**
+  Elena Spini wrote _"il rt è sempre blank"_. The fix is now scheduled for **the morning of
+  the UAT day**, and she added a second expectation the same evening — the `Diretta` record
+  type should show only `New` and `Qualificato`.
+  🔴 **NEW — [OI-174](notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md):
+  ROMI's mail gateway is blocking DocuSign envelopes** to Aurel Mrruku and Rexhina Hysi,
+  found in the internal dress rehearsal. **DocuSign is the second half of the 24/09 session**
+  and nobody has tested whether a client-domain recipient is affected.
+  🟢 **[OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+  is built after all** — `Agente__c` on Account, Lead, Quote and User plus the
+  conversion-blocking validation rule, `7eab757` at 18:47 CEST. ⚠ **On a branch with no PR**,
+  without `zona` or `categoria provvigioni cliente`, and the rule still blocks conversion
+  while the client considers it.
+  — [trace](notes/traces/Source%20trace%202026-09-23.md)
 
 - 🔑 **2026-09-23 — org check the day before UAT: the client will test something
   other than what `DevMain` holds.** Read-only, Pienissimo UAT, 08:01–08:40Z,

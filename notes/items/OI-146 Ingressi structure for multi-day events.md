@@ -1,11 +1,11 @@
 ---
 id: OI-146
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-24]
 source: notes/meetings/2026-09-18 Data Model Parte 6.md
 ---
@@ -101,3 +101,31 @@ extraction being reviewed on 23/09 does not carry either field.
 
 🔴 **The armed trigger of 21/09 fires again, harder**: the suspension is now five days
 old, unlifted, and the client has been allowed to build on top of it in writing.
+
+
+## 🟢 2026-09-23 — RESOLVED: the client asked, and was answered in the room
+
+**[Check Data Import](../meetings/2026-09-23%20Check%20Data%20Import.md), `01:54:56`–`02:01:26`.**
+Fabrizio Paganelli put his own 22/09 written request to the group in person. See
+[the decision](../decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md).
+
+- 🟢 **The conversion factor does not go on the product.** Aurel Mrruku: _"Di anagrafica
+  articolo, no. Di anagrafica campagna."_ It goes on the **campaign edition**, as an
+  entry record per block of dates, copied onto the ticket at generation.
+- 🟢 **All of it is Fase 2.** Elena Spini: _"questa cosa qua è appunto la fase due […]
+  secondo me è inutile parlare adesso."_
+- 🟢 **Fase 1 is one ticket, one entry** — Fabrizio Paganelli, unprompted: _"Oggi
+  facciamo che un biglietto è un ingresso, anche se viene 6 giorni diversi."_
+- 🟢 **Fabrizio Paganelli accepted it**, restating the mechanism back twice and closing
+  with _"Ok, perfetto."_
+
+**Why this closes the row rather than deferring it.** The open question on this note was
+never the design — it was that ROMI had suspended a structure the client had agreed to,
+and had then let him extend it in writing without being told. **He has now been told, by
+ROMI, in a client-facing session, and agreed.** The suspension and the client's
+expectation match for the first time since 18/09.
+
+🔴 **What survives is a scope fact, not an item:** a six-day Mastery records **one**
+entry in Fase 1, and **ticket UAT is 30/09**. That belongs to the Fase 2 perimeter and to
+[OI-162](OI-162%20Infopoint%20and%20orphan%20tickets%20are%20deferred%20to%20Fase%202.md),
+which already carries the deferral, not to this row.

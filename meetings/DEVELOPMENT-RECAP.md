@@ -4784,3 +4784,104 @@ into UAT: 19 such classes on `DevMain`, 15 in the org.
 ⚠ The org has **three active human users, all System Administrators**, one of them
 the shared `ROMI COMPANY` login. No client tester account exists yet (promised for
 6–13 October).
+
+## 46. Update 2026-09-23 — migration gets a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank
+
+External sweep, watermark **2026-09-22T22:00Z**. Two meetings drilled:
+[Check Data Import](../notes/meetings/2026-09-23%20Check%20Data%20Import.md) (client,
+2h29m — the longest session of the project) and
+[Test Pre Demo](../notes/meetings/2026-09-23%20Test%20Pre%20Demo.md) (internal, 1h33m,
+⚠ transcript machine-garbled and not usable as evidence).
+
+### 🟢 The ingressi suspension is discharged — by the client being told
+
+[OI-146](../notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md) is
+**resolved**. Fabrizio Paganelli put his own 22/09 written request — a conversion factor
+on the product registry — to the group in person. Aurel Mrruku answered _"di anagrafica
+articolo, no. Di anagrafica campagna"_: entry records live on the **campaign edition**,
+as blocks of dates copied onto the ticket at generation. Elena Spini ruled the whole
+mechanism **Fase 2**. Fabrizio Paganelli restated it back twice and accepted.
+
+🟢 **Fase 1 behaviour, stated by the client himself:** _"Oggi facciamo che un biglietto è
+un ingresso, anche se viene 6 giorni diversi."_ **One ticket, one entry — six-day Mastery
+included.** See
+[the decision](../notes/decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md).
+
+🔑 **And the check-in integration gets its purpose.** The scan is an **inbound API call to
+Salesforce** that must return a *speaking error* when the previous block's entries are
+incomplete — not the one-way asset update this record has carried since 22/09. That is
+Fase 2 as well, **although the session's own auto-summary lists it as an action item**;
+the transcript does not support that reading
+([OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)).
+
+### 🟢 Migration has a perimeter for the first time
+
+> **Elena Spini** (`02:04:53`): _"Una cosa super importante. Tutto ciò che è preventivi
+> non verrà \[portato\] su Salesforce […] Verrà portato su Salesforce tutto ciò che deve
+> finire su Mexal, che è già su Mexal per storico."_
+
+**Only historic orders migrate.** Quotes, offers and opportunities start **ex novo** →
+[OI-172](../notes/items/OI-172%20Historical%20quotes%20and%20offers%20are%20not%20migrated.md).
+🔴 **The tutors therefore re-key every pending quote by hand, and Marco Montesi was not in
+the room.**
+
+Also settled at the same session and folded into
+[OI-165](../notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md):
+the account join key is `codice cliente esterno`; only contacts with a company name
+import, the rest awaiting the direzione **from 1 October**; test data is hand-filtered to
+records with P.IVA. 🟢 **1,010 articles were loaded by Bulk API the same day with zero
+failures**, with Standard Price Book entries for all of them — recorded by the developers
+themselves on `DEV_LeadAgenteBundle`. 🔴 **No estimate, no production sequence and no
+cut-over owner still.**
+
+### Data model changes agreed with the client
+
+`IBAN` is **removed** from the locali model and replaced by a free-text
+**`Categoria statistica Mexal`**; `tipologia attività` becomes a **multi-select** and
+lives on the locale, not the account; the complex customer-state fields are **deleted**
+rather than hidden for a future phase; ATECO activity state becomes a **restricted
+picklist**; `codice fiscale`, `codice SDI` and ATECO all come from the **Anticipay call**,
+with codice fiscale set equal to the P.IVA **only** when Anticipay returns nothing.
+`classificatore rete` is renamed **`categoria provvigioni cliente`** and **`zona` moves
+off the tutor user onto the account**.
+
+### 🟢 OI-159 answered in twenty hours
+
+Fabrizio Paganelli annotated Mirko Merendi's field list line by line on **23/09
+12:16:50Z**. **Salesforce owes `Tipologia pagamento` and `Agente`**; five fields belong to
+the Mexal procedure; **`Gestione ratei di riga`** — the one item this record could not
+account for — is **design headroom with no current case**. One line was held back on
+purpose, the Italian e-invoicing branch, and became
+[OI-173](../notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md), due at the
+**24/09 10:00 call with Mirko Merendi** — the slot vacated when the orders/migration
+session was postponed.
+
+### 🔴 The Lead path, the night before it is tested
+
+- **[OI-164](../notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+  is still live.** The cause was published to the dev group at 10:26 CEST; Elena Spini
+  chased at 12:51; at **18:28:13** she wrote **_"il rt è sempre blank"_**. The fix is now
+  scheduled for **the morning of the UAT day**. She added a second expectation in the same
+  message: the `Diretta` record type should show **only `New` and `Qualificato`**.
+- 🔴 **NEW —
+  [OI-174](../notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md):
+  ROMI's mail gateway blocks DocuSign envelopes** to Aurel Mrruku and Rexhina Hysi. DocuSign
+  is the **second half of the 24/09 session**, and **nobody has tested whether a
+  client-domain recipient is affected.**
+- 🟢 **[OI-169](../notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+  is built after all**, superseding that morning's correction: `7eab757` at 18:47 CEST
+  creates `Agente__c` on Account, Lead, Quote and User plus the conversion-blocking
+  validation rule. ⚠ **On a branch with no pull request**, without `zona` or `categoria
+  provvigioni cliente`, **and the rule still blocks conversion while the client considers
+  it.**
+
+### The build
+
+Two merges to `DevMain` at 09:41 CEST (PR #55 `DEV_leadDiagnose`, PR #56
+`DevAnitaDocuSign`), then two evening pushes that are **not** on `DevMain`: Anita Aga's
+`7d0f990` (**PR #57, open** — Pienissimo branding set and theme, pricebook-entry
+automation, `Quote.Is_Primary__c`, `Opportunity.Preventivo_Primario__c`,
+`ProductCodeTrigger`, +212 lines on `QuoteTriggerHandler`) and Rexhina Hysi's `7eab757`
+(**no PR**). 🔴 **`Standart` is unchanged**, five runs on;
+[OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) is
+unchanged; coverage is **0 of 7,756**.

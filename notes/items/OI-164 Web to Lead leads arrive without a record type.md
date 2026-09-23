@@ -86,3 +86,40 @@ defect at runtime and finds the cause.** Nothing was changed in the org.
 visible on the creating user's profile with the right default, or assign
 `Full_Permission` (or a narrower set) to `Amministratore Pienissimo`. **Decide which
 before 24/09.** It was not applied: this check is read-only.
+
+
+## 🔴 2026-09-23 — the root cause was published at 10:26 CEST and the defect was still live at 18:28
+
+**The fix did not happen today.** The morning org check named the cause and the
+configuration change; the evening found the symptom unchanged.
+
+| Time (CEST) | Event |
+| ----------- | ----- |
+| 08:01–08:40Z | Org check finds the cause: `Amministratore Pienissimo` sees neither Lead record type and lacks `Full_Permission` |
+| 10:26:46 | Posted to the dev group as step 1 of three, _"before tomorrow's Lead UAT"_ |
+| 12:51:05 | Elena Spini, DM: _"questo per caso avete fatto il check? domani vorrei far vedere il lead diretta"_ |
+| 16:35–18:09 | Internal dress rehearsal ([Test Pre Demo](../meetings/2026-09-23%20Test%20Pre%20Demo.md)) |
+| **18:28:13** | 🔴 **Elena Spini, DM: _"il rt è sempre blank"_** |
+| 18:47:45 | Aurel Mrruku: _"domani in mattinata fanno le ragazze che mi stavo occupando di docusign."_ |
+
+🔴 **The fix is now scheduled for the morning of the UAT day**, hours before the client
+session at 15:00 CEST, and it is delegated because Aurel Mrruku spent the evening on
+[OI-174](OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md).
+
+### A second requirement arrived with the same message
+
+Elena Spini, same DM, **18:28:13 CEST**:
+
+> _"dal rt Diretta mi aspetto solo 2 status (new/qualificato) del lead (avevamo detto
+> possiamo togliere anche il path e ciao)"_
+
+🔑 **The `Diretta` record type should expose only two lead statuses** — `New` and
+`Qualificato` — and she is content to drop the path assistant on that record type
+entirely. ⚠ This is a **new expectation about an existing build**, stated the evening
+before the session that tests it, and **nothing in the record says it was accepted**.
+`7eab757` (18:47 CEST, `DEV_LeadAgenteBundle`, unmerged) touches
+`Default.pathAssistant-meta.xml` and the Lead layout, but whether it narrows the status
+picklist per record type is not established here.
+
+🟢 She also confirmed the cosmetic work landed: _"grazie per aver messo i colori e resto
+tutto + carino"_ — Anita Aga's branding set and Lightning theme, `7d0f990` / PR #57.
