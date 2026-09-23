@@ -1,5 +1,6 @@
 import { api, LightningElement } from "lwc";
 import { CloseActionScreenEvent } from "lightning/actions";
+import { NavigationMixin } from "lightning/navigation";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
 import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
@@ -12,13 +13,16 @@ const ITEM_TYPE = "Item";
 const PLUS_OPPORTUNITY_RECORD_TYPE = "Plus_Attivazione_Rinnovo";
 const STANDARD_OPPORTUNITY_RECORD_TYPE = "Standart";
 
-export default class QuoteManageProducts extends LightningElement {
+export default class QuoteManageProducts extends NavigationMixin(
+  LightningElement
+) {
   _recordId;
   searchRequestId = 0;
   saveInProgress = false;
 
   isLoading = false;
   isSearching = false;
+  isPickerOpen = false;
   hasLoaded = false;
   quoteName = "";
   quoteStatus = "";
@@ -27,10 +31,11 @@ export default class QuoteManageProducts extends LightningElement {
   opportunityRecordTypeDeveloperName = "";
   hasPlusLine = false;
   existingBundleLine;
+  existingProducts = [];
+  existingTranches = [];
   productOptions = [];
   selectedProducts = [];
-  trancheCount = "";
-  plannedTranches = [];
+  selectedTrancheDates = {};
   searchTerm = "";
 
   @api
@@ -61,6 +66,72 @@ export default class QuoteManageProducts extends LightningElement {
     return this.selectedProducts.length > 0;
   }
 
+  get hasExistingProducts() {
+    return this.existingProducts.length > 0;
+  }
+
+  get hasExistingTranches() {
+    return this.existingTranches.length > 0;
+  }
+
+  get selectedPlusProduct() {
+    return this.isPlusOpportunity && this.hasSelectedProducts
+      ? this.selectedProducts[0]
+      : null;
+  }
+
+  get selectedTrancheCount() {
+    const count = Number(this.selectedPlusProduct?.trancheCount);
+    return Number.isInteger(count) && count > 0 && count <= 20 ? count : 0;
+  }
+
+  get selectedTrancheCountLabel() {
+    return this.selectedTrancheCount ? String(this.selectedTrancheCount) : "-";
+  }
+
+  get showSelectedTranchePreview() {
+    return !!this.selectedPlusProduct;
+  }
+
+  get hasValidSelectedTrancheCount() {
+    return this.selectedTrancheCount > 0;
+  }
+
+  get selectedTranchePreviewRows() {
+    const product = this.selectedPlusProduct;
+    if (!product || !this.selectedTrancheCount) {
+      return [];
+    }
+
+    return Array.from({ length: this.selectedTrancheCount }, (_, index) => {
+      const sequence = index + 1;
+      return {
+        key: `selected-tranche-${sequence}`,
+        label: `Tranche ${sequence}`,
+        index,
+        productName: product.productName,
+        amountLabel: this.formatAmount(product.unitPrice),
+        dueDate: this.selectedTrancheDates[index] || ""
+      };
+    });
+  }
+
+  get hasValidSelectedTrancheDates() {
+    if (!this.showSelectedTranchePreview || !this.selectedTrancheCount) {
+      return true;
+    }
+
+    return this.selectedTranchePreviewRows.every((tranche) => tranche.dueDate);
+  }
+
+  get showExistingProducts() {
+    return !this.isPickerOpen && this.hasExistingProducts;
+  }
+
+  get showNewSelection() {
+    return !this.isPickerOpen && this.hasSelectedProducts;
+  }
+
   get isFormDisabled() {
     return (
       !this.isEditable ||
@@ -79,7 +150,8 @@ export default class QuoteManageProducts extends LightningElement {
       this.isLoading ||
       this.saveInProgress ||
       !this.hasSelectedProducts ||
-      (this.isPlusOpportunity && !this.hasValidPlannedTranches) ||
+      (this.showSelectedTranchePreview && !this.hasValidSelectedTrancheCount) ||
+      !this.hasValidSelectedTrancheDates ||
       this.selectedProducts.some(
         (product) => !product.quantity || Number(product.quantity) <= 0
       )
@@ -130,33 +202,18 @@ export default class QuoteManageProducts extends LightningElement {
     return !!this.modeMessage && !this.showPlusLineMessage;
   }
 
-  get showTranchePlanner() {
-    return this.isPlusOpportunity && this.hasSelectedProducts;
-  }
-
-  get hasPlannedTranches() {
-    return this.plannedTranches.length > 0;
-  }
-
-  get hasValidPlannedTranches() {
-    const count = Number(this.trancheCount);
-    return (
-      Number.isInteger(count) &&
-      count > 0 &&
-      count <= 20 &&
-      this.plannedTranches.length === count &&
-      this.plannedTranches.every((tranche) => !!tranche.dueDate)
-    );
-  }
-
   get showNoResultsMessage() {
     return (
       this.hasLoaded &&
       !this.isSearching &&
       !this.hasProductOptions &&
-      this.searchTerm.trim().length >= 2 &&
+      this.isPickerOpen &&
       !this.isFormDisabled
     );
+  }
+
+  get addProductsDisabled() {
+    return this.isFormDisabled || this.isLoading || this.saveInProgress;
   }
 
   get statusClass() {
@@ -175,6 +232,12 @@ export default class QuoteManageProducts extends LightningElement {
         context.opportunityRecordTypeDeveloperName || "";
       this.hasPlusLine = context.hasPlusLine === true;
       this.existingBundleLine = context.existingBundleLine || null;
+      this.existingProducts = this.decorateExistingProducts(
+        context.existingLines || []
+      );
+      this.existingTranches = this.decorateExistingTranches(
+        this.existingProducts
+      );
     } catch (error) {
       this.showError(error);
     } finally {
@@ -188,11 +251,25 @@ export default class QuoteManageProducts extends LightningElement {
     this.runSearch();
   }
 
+  handleOpenPicker() {
+    if (this.addProductsDisabled) {
+      return;
+    }
+    this.isPickerOpen = true;
+    this.searchTerm = "";
+    this.runSearch();
+  }
+
+  handleClosePicker() {
+    this.isPickerOpen = false;
+    this.closeProductList();
+  }
+
   async runSearch() {
     const currentSearchTerm = this.searchTerm.trim();
     const currentRequestId = ++this.searchRequestId;
 
-    if (this.isSearchDisabled || currentSearchTerm.length < 2) {
+    if (this.isSearchDisabled) {
       this.productOptions = [];
       return;
     }
@@ -206,7 +283,9 @@ export default class QuoteManageProducts extends LightningElement {
       if (currentRequestId !== this.searchRequestId) {
         return;
       }
-      this.productOptions = this.decorateOptions(results || []);
+      this.productOptions = this.decorateOptions(
+        this.excludeExistingProducts(results || [])
+      );
     } catch (error) {
       this.showError(error);
     } finally {
@@ -221,7 +300,17 @@ export default class QuoteManageProducts extends LightningElement {
     const option = this.productOptions.find(
       (candidate) => candidate.pricebookEntryId === pricebookEntryId
     );
-    if (!option || option.isDisabled) {
+    if (!option) {
+      return;
+    }
+
+    if (option.isSelected) {
+      this.removeSelectedProduct(pricebookEntryId);
+      this.productOptions = this.decorateOptions(this.productOptions);
+      return;
+    }
+
+    if (option.isDisabled) {
       return;
     }
 
@@ -229,15 +318,23 @@ export default class QuoteManageProducts extends LightningElement {
       this.selectedProducts = [
         {
           ...option,
+          rowKey: option.pricebookEntryId,
+          isExisting: false,
+          rowStatus: "Da aggiungere",
           quantity: 1,
           quantityDisabled: true
         }
       ];
-      this.rebuildPlannedTranches();
+      this.selectedTrancheDates = {};
+      this.isPickerOpen = false;
+      this.closeProductList();
     } else if (option.productType === BUNDLE_TYPE) {
       this.selectedProducts = [
         {
           ...option,
+          rowKey: option.pricebookEntryId,
+          isExisting: false,
+          rowStatus: "Da aggiungere",
           quantity: 1,
           quantityDisabled: true
         }
@@ -247,6 +344,9 @@ export default class QuoteManageProducts extends LightningElement {
         ...this.selectedProducts,
         {
           ...option,
+          rowKey: option.pricebookEntryId,
+          isExisting: false,
+          rowStatus: "Da aggiungere",
           quantity: 1,
           quantityDisabled: false
         }
@@ -267,31 +367,18 @@ export default class QuoteManageProducts extends LightningElement {
     });
   }
 
+  handleSelectedTrancheDueDateChange(event) {
+    const index = Number(event.target.dataset.index);
+    this.selectedTrancheDates = {
+      ...this.selectedTrancheDates,
+      [index]: event.detail.value
+    };
+  }
+
   handleRemoveProduct(event) {
     const pricebookEntryId = event.currentTarget.dataset.id;
-    this.selectedProducts = this.selectedProducts.filter(
-      (product) => product.pricebookEntryId !== pricebookEntryId
-    );
-    if (this.isPlusOpportunity) {
-      this.trancheCount = "";
-      this.plannedTranches = [];
-    }
+    this.removeSelectedProduct(pricebookEntryId);
     this.productOptions = this.decorateOptions(this.productOptions);
-  }
-
-  handleTrancheCountChange(event) {
-    this.trancheCount = event.detail.value;
-    this.rebuildPlannedTranches();
-  }
-
-  handleTrancheDueDateChange(event) {
-    const index = Number(event.target.dataset.index);
-    this.plannedTranches = this.plannedTranches.map((tranche) => {
-      if (tranche.index === index) {
-        return { ...tranche, dueDate: event.detail.value };
-      }
-      return tranche;
-    });
   }
 
   async handleSave() {
@@ -313,8 +400,8 @@ export default class QuoteManageProducts extends LightningElement {
           pricebookEntryId: product.pricebookEntryId,
           quantity: Number(product.quantity)
         })),
-        tranches: this.isPlusOpportunity
-          ? this.plannedTranches.map((tranche) => ({
+        tranches: this.showSelectedTranchePreview
+          ? this.selectedTranchePreviewRows.map((tranche) => ({
               dueDate: tranche.dueDate
             }))
           : null
@@ -342,6 +429,93 @@ export default class QuoteManageProducts extends LightningElement {
     this.dispatchEvent(new CloseActionScreenEvent());
   }
 
+  closeProductList() {
+    this.searchRequestId += 1;
+    this.searchTerm = "";
+    this.productOptions = [];
+    this.isSearching = false;
+  }
+
+  removeSelectedProduct(pricebookEntryId) {
+    this.selectedProducts = this.selectedProducts.filter(
+      (product) => product.pricebookEntryId !== pricebookEntryId
+    );
+    this.selectedTrancheDates = {};
+  }
+
+  excludeExistingProducts(options) {
+    const selectedIds = new Set(
+      this.existingProducts.map((product) => product.pricebookEntryId)
+    );
+    return options.filter(
+      (option) => !selectedIds.has(option.pricebookEntryId)
+    );
+  }
+
+  decorateExistingProducts(lines) {
+    return lines.map((line) => ({
+      pricebookEntryId: line.pricebookEntryId,
+      quoteLineItemId: line.quoteLineItemId,
+      rowKey: line.quoteLineItemId,
+      productName: line.productName || "Prodotto senza nome",
+      productCode: line.productCode || "Nessun codice",
+      productType: line.productType,
+      typeLabel:
+        line.isPlus === true
+          ? "Plus"
+          : line.productType === BUNDLE_TYPE
+            ? "Bundle"
+            : "Item",
+      isPlus: line.isPlus === true,
+      unitPrice: line.unitPrice,
+      unitPriceLabel: this.formatAmount(line.unitPrice),
+      quantity: line.quantity,
+      quantityDisabled: true,
+      trancheId: line.trancheId,
+      trancheName: line.trancheName,
+      trancheSequence: line.trancheSequence,
+      trancheDueDate: line.trancheDueDate,
+      trancheDueDateLabel: this.formatDate(line.trancheDueDate),
+      trancheAmount: line.trancheAmount,
+      trancheAmountLabel:
+        line.trancheAmount == null ? "" : this.formatAmount(line.trancheAmount),
+      hasTranche: !!line.trancheId,
+      trancheLabel: this.formatTrancheLabel(line),
+      isExisting: true,
+      rowStatus: "Gia nel preventivo"
+    }));
+  }
+
+  decorateExistingTranches(products) {
+    return products
+      .filter((product) => product.hasTranche)
+      .map((product) => ({
+        key: product.trancheId || product.quoteLineItemId,
+        id: product.trancheId,
+        sequence: product.trancheSequence,
+        label: product.trancheLabel,
+        productName: product.productName,
+        amountLabel: product.trancheAmountLabel || product.unitPriceLabel,
+        dueDateLabel: product.trancheDueDateLabel || "Da definire"
+      }));
+  }
+
+  handleOpenTranche(event) {
+    const recordId = event.currentTarget.dataset.id;
+    if (!recordId) {
+      return;
+    }
+
+    this[NavigationMixin.Navigate]({
+      type: "standard__recordPage",
+      attributes: {
+        recordId,
+        objectApiName: "Tranche__c",
+        actionName: "view"
+      }
+    });
+  }
+
   decorateOptions(options) {
     const selectedIds = new Set(
       this.selectedProducts.map((product) => product.pricebookEntryId)
@@ -366,9 +540,10 @@ export default class QuoteManageProducts extends LightningElement {
       const pricebookConflict =
         selectedPricebook2Id && option.pricebook2Id !== selectedPricebook2Id;
       const isDisabled =
-        isSelected || typeConflict || plusConflict || pricebookConflict;
+        !isSelected && (typeConflict || plusConflict || pricebookConflict);
       return {
         ...option,
+        isSelected,
         isDisabled,
         typeLabel:
           option.isPlus === true
@@ -376,46 +551,9 @@ export default class QuoteManageProducts extends LightningElement {
             : option.productType === BUNDLE_TYPE
               ? "Bundle"
               : "Item",
-        buttonClass: isSelected ? "option selected" : "option"
+        buttonClass: isSelected ? "option selected removable" : "option"
       };
     });
-  }
-
-  rebuildPlannedTranches() {
-    const count = Number(this.trancheCount);
-    if (!Number.isInteger(count) || count < 1 || count > 20) {
-      this.plannedTranches = [];
-      return;
-    }
-
-    const existingByIndex = new Map(
-      this.plannedTranches.map((tranche) => [tranche.index, tranche])
-    );
-    const amounts = this.splitSelectedProductTotal(count);
-    this.plannedTranches = Array.from({ length: count }, (_, index) => {
-      const sequence = index + 1;
-      return {
-        key: `plus-tranche-${sequence}`,
-        index,
-        sequence,
-        amount: amounts[index],
-        amountLabel: this.formatAmount(amounts[index]),
-        dueDate: existingByIndex.get(index)?.dueDate || ""
-      };
-    });
-  }
-
-  splitSelectedProductTotal(count) {
-    const total = Number(this.selectedProducts[0]?.unitPrice || 0);
-    const totalCents = Math.round(total * 100);
-    const baseCents = Math.floor(totalCents / count);
-    const amounts = [];
-    for (let index = 0; index < count; index += 1) {
-      const cents =
-        index === count - 1 ? totalCents - baseCents * (count - 1) : baseCents;
-      amounts.push(cents / 100);
-    }
-    return amounts;
   }
 
   formatAmount(value) {
@@ -423,6 +561,23 @@ export default class QuoteManageProducts extends LightningElement {
       style: "currency",
       currency: "EUR"
     }).format(value || 0);
+  }
+
+  formatDate(value) {
+    if (!value) {
+      return "";
+    }
+
+    const [year, month, day] = value.split("-");
+    return `${day}/${month}/${year}`;
+  }
+
+  formatTrancheLabel(line) {
+    if (line.trancheSequence) {
+      return `Tranche ${line.trancheSequence}`;
+    }
+
+    return line.trancheName || "Tranche";
   }
 
   showError(error) {

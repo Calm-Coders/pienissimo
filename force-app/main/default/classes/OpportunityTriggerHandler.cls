@@ -1,8 +1,21 @@
 public with sharing class OpportunityTriggerHandler {
   private static final String LOCALE_RECORD_TYPE = 'Locale';
+  private static final String QUALIFIED_STAGE = 'Qualificato';
+
+  public static void beforeInsert(List<Opportunity> opportunities) {
+    defaultStage(opportunities);
+  }
 
   public static void beforeSave(List<Opportunity> opportunities) {
     normalizeCommercialAccounts(opportunities);
+  }
+
+  private static void defaultStage(List<Opportunity> opportunities) {
+    for (Opportunity opportunityRecord : opportunities) {
+      if (String.isBlank(opportunityRecord.StageName)) {
+        opportunityRecord.StageName = QUALIFIED_STAGE;
+      }
+    }
   }
 
   private static void normalizeCommercialAccounts(

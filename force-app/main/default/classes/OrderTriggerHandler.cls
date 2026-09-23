@@ -11,7 +11,6 @@ public with sharing class OrderTriggerHandler {
   public static void afterInsert(List<Order> newOrders) {
     OrderMexalIntegrationService.enqueueForCreatedOrders(newOrders);
     closeWonOpportunitiesForConfirmedOrders(newOrders, null);
-    createTicketsForConfirmedOrders(newOrders, null);
   }
 
   public static void afterUpdate(
@@ -19,7 +18,6 @@ public with sharing class OrderTriggerHandler {
     Map<Id, Order> oldOrderMap
   ) {
     closeWonOpportunitiesForConfirmedOrders(newOrders, oldOrderMap);
-    createTicketsForConfirmedOrders(newOrders, oldOrderMap);
   }
 
   private static void closeWonOpportunitiesForConfirmedOrders(
@@ -66,31 +64,19 @@ public with sharing class OrderTriggerHandler {
     }
   }
 
-  private static void createTicketsForConfirmedOrders(
-    List<Order> orders,
-    Map<Id, Order> oldOrderMap
-  ) {
-    Set<Id> confirmedOrderIds = new Set<Id>();
-
-    for (Order orderRecord : orders) {
-      Order oldOrder = oldOrderMap == null
-        ? null
-        : oldOrderMap.get(orderRecord.Id);
-
-      if (
-        orderRecord.Status == CONFIRMED_STATUS &&
-        (oldOrder == null ||
-        oldOrder.Status != CONFIRMED_STATUS)
-      ) {
-        confirmedOrderIds.add(orderRecord.Id);
+  public static void createTicketsForOrderLines(List<OrderItem> orderLines) {
+    Set<Id> orderLineIds = new Set<Id>();
+    for (OrderItem line : orderLines) {
+      if (line.Id != null) {
+        orderLineIds.add(line.Id);
       }
     }
 
-    if (confirmedOrderIds.isEmpty()) {
+    if (orderLineIds.isEmpty()) {
       return;
     }
 
-    List<OrderItem> orderLines = [
+    List<OrderItem> sourceOrderLines = [
       SELECT
         Id,
         OrderId,
@@ -101,18 +87,18 @@ public with sharing class OrderTriggerHandler {
         Order.AccountId,
         Order.EffectiveDate
       FROM OrderItem
-      WHERE OrderId IN :confirmedOrderIds
+      WHERE Id IN :orderLineIds
     ];
 
-    if (orderLines.isEmpty()) {
+    if (sourceOrderLines.isEmpty()) {
       return;
     }
 
     Map<Id, List<BundleComponent__c>> componentsByBundleId = getComponentsByBundleId(
-      orderLines
+      sourceOrderLines
     );
     List<TicketSource> ticketSources = buildTicketSources(
-      orderLines,
+      sourceOrderLines,
       componentsByBundleId
     );
 

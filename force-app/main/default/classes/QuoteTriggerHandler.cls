@@ -2,6 +2,7 @@ public without sharing class QuoteTriggerHandler {
   private static final String ACCEPTED_STATUS = 'Accettato';
   private static final String AWAITING_ACCEPTANCE_STATUS = 'In Attesa Accettazione';
   private static final String DRAFT_STATUS = 'Bozza';
+  private static final String DOCUSIGN_COMPLETED_STATUS = 'Completed';
   private static final String NEGOTIATION_QUOTE_STATUS = 'In Trattativa';
   private static final String NEW_QUOTE_STATUS = 'Nuovo Preventivo';
   private static final String OPPORTUNITY_QUALIFIED_STAGE = 'Qualificato';
@@ -20,6 +21,7 @@ public without sharing class QuoteTriggerHandler {
 
   public static void beforeSave(List<Quote> quotes) {
     copyLocaleFromOpportunity(quotes);
+    markCompletedDocuSignQuotesAsSigned(quotes);
   }
 
   public static void afterInsert(List<Quote> quotes) {
@@ -73,6 +75,17 @@ public without sharing class QuoteTriggerHandler {
     }
   }
 
+  private static void markCompletedDocuSignQuotesAsSigned(List<Quote> quotes) {
+    for (Quote quoteRecord : quotes) {
+      if (
+        quoteRecord.DocuSign_Status__c == DOCUSIGN_COMPLETED_STATUS &&
+        quoteRecord.Is_Signed__c != true
+      ) {
+        quoteRecord.Is_Signed__c = true;
+      }
+    }
+  }
+
   private static void createOrdersForAcceptedQuotes(
     List<Quote> quotes,
     Map<Id, Quote> oldQuoteMap
@@ -82,8 +95,9 @@ public without sharing class QuoteTriggerHandler {
       Quote oldQuote = oldQuoteMap.get(quoteRecord.Id);
       if (
         quoteRecord.Status == ACCEPTED_STATUS &&
+        quoteRecord.Is_Signed__c == true &&
         oldQuote != null &&
-        oldQuote.Status != ACCEPTED_STATUS
+        oldQuote.Is_Signed__c != true
       ) {
         acceptedQuoteIds.add(quoteRecord.Id);
       }

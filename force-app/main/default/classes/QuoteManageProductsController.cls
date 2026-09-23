@@ -20,6 +20,8 @@ public with sharing class QuoteManageProductsController {
     @AuraEnabled
     public Boolean isPlus;
     @AuraEnabled
+    public Decimal trancheCount;
+    @AuraEnabled
     public Decimal unitPrice;
 
     public ProductOption(PricebookEntry entry) {
@@ -33,6 +35,9 @@ public with sharing class QuoteManageProductsController {
         ? null
         : entry.Product2.RecordType.DeveloperName;
       isPlus = entry.Product2 != null && entry.Product2.Is_Plus__c == true;
+      trancheCount = entry.Product2 == null
+        ? null
+        : entry.Product2.Numero_Tranche__c;
       unitPrice = salesUnitPrice(entry);
     }
   }
@@ -49,6 +54,59 @@ public with sharing class QuoteManageProductsController {
       quoteLineItemId = line.Id;
       productName = line.Product2 == null ? null : line.Product2.Name;
       productCode = line.Product2 == null ? null : line.Product2.ProductCode;
+    }
+  }
+
+  public class ExistingQuoteLine {
+    @AuraEnabled
+    public Id quoteLineItemId;
+    @AuraEnabled
+    public Id pricebookEntryId;
+    @AuraEnabled
+    public String productName;
+    @AuraEnabled
+    public String productCode;
+    @AuraEnabled
+    public String productType;
+    @AuraEnabled
+    public Boolean isPlus;
+    @AuraEnabled
+    public Decimal quantity;
+    @AuraEnabled
+    public Decimal unitPrice;
+    @AuraEnabled
+    public Id trancheId;
+    @AuraEnabled
+    public String trancheName;
+    @AuraEnabled
+    public Decimal trancheSequence;
+    @AuraEnabled
+    public Date trancheDueDate;
+    @AuraEnabled
+    public Decimal trancheAmount;
+
+    public ExistingQuoteLine(QuoteLineItem line) {
+      quoteLineItemId = line.Id;
+      pricebookEntryId = line.PricebookEntryId;
+      productName = line.Product2 == null ? null : line.Product2.Name;
+      productCode = line.Product2 == null ? null : line.Product2.ProductCode;
+      productType = line.PricebookEntry == null ||
+        line.PricebookEntry.Product2 == null ||
+        line.PricebookEntry.Product2.RecordType == null
+        ? null
+        : line.PricebookEntry.Product2.RecordType.DeveloperName;
+      isPlus = line.Product2 != null && line.Product2.Is_Plus__c == true;
+      quantity = line.Quantity;
+      unitPrice = line.UnitPrice;
+      trancheId = line.Tranche__c;
+      trancheName = line.Tranche__r == null ? null : line.Tranche__r.Name;
+      trancheSequence = line.Tranche__r == null
+        ? null
+        : line.Tranche__r.Sequenza__c;
+      trancheDueDate = line.Data_Scadenza__c;
+      trancheAmount = line.Tranche__r == null
+        ? null
+        : line.Tranche__r.Importo_Previsto__c;
     }
   }
 
@@ -71,6 +129,8 @@ public with sharing class QuoteManageProductsController {
     public Boolean hasPlusLine;
     @AuraEnabled
     public ExistingBundleLine existingBundleLine;
+    @AuraEnabled
+    public List<ExistingQuoteLine> existingLines;
   }
 
   public class ProductSelection {
@@ -110,17 +170,26 @@ public with sharing class QuoteManageProductsController {
     context.isPlusOpportunity = isPlusOpportunity(quoteRecord);
     context.isStandardOpportunity = isStandardOpportunity(quoteRecord);
     context.hasPlusLine = false;
+    context.existingLines = new List<ExistingQuoteLine>();
 
     for (QuoteLineItem line : [
       SELECT
         Id,
+        PricebookEntryId,
+        Quantity,
+        UnitPrice,
         Product2.Name,
         Product2.ProductCode,
         Product2.Is_Plus__c,
-        PricebookEntry.Product2.RecordType.DeveloperName
+        PricebookEntry.Product2.RecordType.DeveloperName,
+        Tranche__c,
+        Tranche__r.Name,
+        Tranche__r.Sequenza__c,
+        Tranche__r.Importo_Previsto__c,
+        Data_Scadenza__c
       FROM QuoteLineItem
       WHERE QuoteId = :quoteId
-      ORDER BY CreatedDate, Id
+      ORDER BY Tranche__r.Sequenza__c NULLS LAST, CreatedDate, Id
     ]) {
       if (line.Product2 != null && line.Product2.Is_Plus__c == true) {
         context.hasPlusLine = true;
@@ -128,12 +197,15 @@ public with sharing class QuoteManageProductsController {
 
       if (isBundleLine(line) && context.existingBundleLine == null) {
         context.existingBundleLine = new ExistingBundleLine(line);
+        context.existingLines.add(new ExistingQuoteLine(line));
         continue;
       }
 
       if (!isBundleLine(line)) {
         context.hasItemLines = true;
       }
+
+      context.existingLines.add(new ExistingQuoteLine(line));
     }
 
     return context;
@@ -146,10 +218,6 @@ public with sharing class QuoteManageProductsController {
   ) {
     validateQuoteId(quoteId);
     requireReadAccess();
-
-    if (String.isBlank(searchTerm)) {
-      return new List<ProductOption>();
-    }
 
     Quote quoteRecord = [
       SELECT
@@ -186,7 +254,7 @@ public with sharing class QuoteManageProductsController {
       allowedTypes,
       context.isPlusOpportunity,
       context.isStandardOpportunity,
-      5
+      String.isBlank(searchTerm) ? 50 : 10
     );
   }
 
@@ -240,6 +308,7 @@ public with sharing class QuoteManageProductsController {
           UnitPrice,
           Product2.Bundle_Selling_Price__c,
           Product2.Is_Plus__c,
+          Product2.Numero_Tranche__c,
           Product2.RecordType.DeveloperName
         FROM PricebookEntry
         WHERE
@@ -295,7 +364,7 @@ public with sharing class QuoteManageProductsController {
 
     if (context.isPlusOpportunity) {
       requireTrancheCreateAccess();
-      validatePlusTranches(quoteId, tranches);
+      validateNoExistingPlusTranches(quoteId);
       if (context.hasPlusLine || plusCount != 1 || entriesById.size() > 1) {
         throw new AuraHandledException(
           'Questo preventivo puo contenere un solo prodotto Plus.'
@@ -325,6 +394,8 @@ public with sharing class QuoteManageProductsController {
     if (context.isPlusOpportunity) {
       PricebookEntry plusEntry = entriesById.values()[0];
       Decimal plusUnitPrice = requireSalesUnitPrice(plusEntry);
+      Integer configuredTrancheCount = requirePlusTrancheCount(plusEntry);
+      validatePlusTrancheDates(tranches, configuredTrancheCount);
       List<Tranche__c> plusTranches = buildPlusTranches(
         quoteRecord,
         tranches,
@@ -371,7 +442,7 @@ public with sharing class QuoteManageProductsController {
   ) {
     String normalizedSearchTerm =
       '%' +
-      String.escapeSingleQuotes(searchTerm.trim()) +
+      String.escapeSingleQuotes((searchTerm == null ? '' : searchTerm).trim()) +
       '%';
 
     List<PricebookEntry> entries;
@@ -384,6 +455,7 @@ public with sharing class QuoteManageProductsController {
           Product2.Name,
           Product2.ProductCode,
           Product2.Is_Plus__c,
+          Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
@@ -407,6 +479,7 @@ public with sharing class QuoteManageProductsController {
           Product2.Name,
           Product2.ProductCode,
           Product2.Is_Plus__c,
+          Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
@@ -431,6 +504,7 @@ public with sharing class QuoteManageProductsController {
           Product2.Name,
           Product2.ProductCode,
           Product2.Is_Plus__c,
+          Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
@@ -454,6 +528,7 @@ public with sharing class QuoteManageProductsController {
           Product2.Name,
           Product2.ProductCode,
           Product2.Is_Plus__c,
+          Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
@@ -478,6 +553,7 @@ public with sharing class QuoteManageProductsController {
           Product2.Name,
           Product2.ProductCode,
           Product2.Is_Plus__c,
+          Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
@@ -500,6 +576,7 @@ public with sharing class QuoteManageProductsController {
           Product2.Name,
           Product2.ProductCode,
           Product2.Is_Plus__c,
+          Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
@@ -618,28 +695,31 @@ public with sharing class QuoteManageProductsController {
     return unitPrice;
   }
 
-  private static void validatePlusTranches(
-    Id quoteId,
-    List<TrancheSelection> tranches
-  ) {
-    if (tranches == null || tranches.isEmpty()) {
+  private static Integer requirePlusTrancheCount(PricebookEntry entry) {
+    Decimal configuredCount = entry.Product2 == null
+      ? null
+      : entry.Product2.Numero_Tranche__c;
+    if (configuredCount == null) {
       throw new AuraHandledException(
-        'Inserisci il numero di tranche e la data di scadenza di ogni tranche.'
+        'Configura il Numero Tranche sul prodotto Plus prima di aggiungerlo al preventivo.'
       );
-    }
-    if (tranches.size() > 20) {
-      throw new AuraHandledException(
-        'Crea al massimo 20 tranche per questo prodotto.'
-      );
-    }
-    for (TrancheSelection tranche : tranches) {
-      if (tranche == null || tranche.dueDate == null) {
-        throw new AuraHandledException(
-          'Inserisci la data di scadenza di ogni tranche.'
-        );
-      }
     }
 
+    Integer count = configuredCount.intValue();
+    if (
+      count <= 0 ||
+      count > 20 ||
+      configuredCount != Decimal.valueOf(String.valueOf(count))
+    ) {
+      throw new AuraHandledException(
+        'Il Numero Tranche del prodotto Plus deve essere un numero intero tra 1 e 20.'
+      );
+    }
+
+    return count;
+  }
+
+  private static void validateNoExistingPlusTranches(Id quoteId) {
     Integer existingTranches = [
       SELECT COUNT()
       FROM Tranche__c
@@ -652,27 +732,41 @@ public with sharing class QuoteManageProductsController {
     }
   }
 
+  private static void validatePlusTrancheDates(
+    List<TrancheSelection> tranches,
+    Integer expectedCount
+  ) {
+    if (tranches == null || tranches.size() != expectedCount) {
+      throw new AuraHandledException(
+        'Inserisci la data di scadenza per ogni tranche del prodotto Plus.'
+      );
+    }
+
+    for (TrancheSelection tranche : tranches) {
+      if (tranche == null || tranche.dueDate == null) {
+        throw new AuraHandledException(
+          'Inserisci la data di scadenza per ogni tranche del prodotto Plus.'
+        );
+      }
+    }
+  }
+
   private static List<Tranche__c> buildPlusTranches(
     Quote quoteRecord,
     List<TrancheSelection> tranches,
-    Decimal totalAmount
+    Decimal trancheAmount
   ) {
     Integer trancheCount = tranches.size();
-    Decimal normalizedTotal = (totalAmount == null ? 0 : totalAmount)
+    Decimal normalizedTrancheAmount = (trancheAmount == null
+        ? 0
+        : trancheAmount)
       .setScale(2);
-    Decimal baseAmount = (normalizedTotal / trancheCount)
-      .setScale(2, RoundingMode.DOWN);
-    Decimal assignedAmount = 0;
     String quoteName = String.isBlank(quoteRecord.Name)
       ? quoteRecord.QuoteNumber
       : quoteRecord.Name;
     List<Tranche__c> records = new List<Tranche__c>();
 
     for (Integer i = 0; i < trancheCount; i++) {
-      Decimal trancheAmount = i == trancheCount - 1
-        ? normalizedTotal - assignedAmount
-        : baseAmount;
-      assignedAmount += trancheAmount;
       Integer sequence = i + 1;
       records.add(
         new Tranche__c(
@@ -680,7 +774,7 @@ public with sharing class QuoteManageProductsController {
           Name = 'T' + sequence + ' - ' + quoteName,
           Data_Scadenza__c = tranches[i].dueDate,
           Sequenza__c = sequence,
-          Importo_Previsto__c = trancheAmount,
+          Importo_Previsto__c = normalizedTrancheAmount,
           Stato__c = 'Aperta',
           Completamente_Pagata__c = false
         )

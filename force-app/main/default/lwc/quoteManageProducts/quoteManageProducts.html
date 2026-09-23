@@ -53,121 +53,259 @@
             <div class="message">{modeMessage}</div>
           </template>
 
-          <div class="form">
-            <lightning-input
-              type="search"
-              label="Cerca prodotto per codice o nome"
-              value={searchTerm}
-              disabled={isSearchDisabled}
-              onchange={handleSearchChange}
-            ></lightning-input>
+          <template if:false={isPickerOpen}>
+            <div class="overview-actions">
+              <lightning-button
+                variant="brand"
+                label="Aggiungi prodotti"
+                icon-name="utility:add"
+                disabled={addProductsDisabled}
+                onclick={handleOpenPicker}
+              ></lightning-button>
+            </div>
 
-            <template if:true={hasProductOptions}>
-              <div class="options">
-                <template for:each={productOptions} for:item="option">
-                  <button
-                    key={option.pricebookEntryId}
-                    type="button"
-                    class={option.buttonClass}
-                    data-id={option.pricebookEntryId}
-                    disabled={option.isDisabled}
-                    onclick={handleSelectProduct}
-                  >
-                    <span class="product-title">{option.productName}</span>
-                    <span class="product-meta">
-                      <span>{option.productCode}</span>
-                      <span>{option.typeLabel}</span>
-                      <span>{option.unitPrice}</span>
-                    </span>
-                  </button>
-                </template>
+            <template if:true={showExistingProducts}>
+              <div class="selected-panel">
+                <div class="section-label">Righe gia nel preventivo</div>
+                <div class="selected-table">
+                  <div class="selected-header">
+                    <span>Prodotto</span>
+                    <span>Qta</span>
+                    <span>Stato</span>
+                    <span></span>
+                  </div>
+                  <div class="selected-body">
+                    <template for:each={existingProducts} for:item="product">
+                      <div class="selected-row" key={product.rowKey}>
+                        <div class="selected-main">
+                          <div class="product-title">{product.productName}</div>
+                          <div class="product-meta">
+                            <span>{product.productCode}</span>
+                            <span>{product.typeLabel}</span>
+                            <template if:true={product.hasTranche}>
+                              <span>{product.trancheLabel}</span>
+                            </template>
+                            <span>Prezzo {product.unitPriceLabel}</span>
+                          </div>
+                        </div>
+                        <template if:true={product.isExisting}>
+                          <span class="quantity-static"
+                            >{product.quantity}</span
+                          >
+                        </template>
+                        <span class="row-status">{product.rowStatus}</span>
+                        <span></span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
               </div>
             </template>
 
-            <template if:true={showNoResultsMessage}>
-              <div class="message">Nessun prodotto trovato.</div>
-            </template>
-
-            <template if:true={hasSelectedProducts}>
-              <div>
-                <div class="section-label">Prodotti selezionati</div>
-                <div class="selected-list">
-                  <template for:each={selectedProducts} for:item="product">
-                    <div class="selected-row" key={product.pricebookEntryId}>
-                      <div class="selected-main">
-                        <div class="product-title">{product.productName}</div>
+            <template if:true={hasExistingTranches}>
+              <div class="tranche-panel">
+                <div class="section-label">Tranche generate</div>
+                <div class="tranche-summary">
+                  <template for:each={existingTranches} for:item="tranche">
+                    <button
+                      class="tranche-summary-row tranche-summary-button"
+                      data-id={tranche.id}
+                      key={tranche.key}
+                      onclick={handleOpenTranche}
+                      type="button"
+                    >
+                      <span class="tranche-summary-main">
+                        <div class="tranche-summary-title">{tranche.label}</div>
                         <div class="product-meta">
-                          <span>{product.productCode}</span>
-                          <span>{product.typeLabel}</span>
-                          <span>Prezzo {product.unitPrice}</span>
+                          <span>{tranche.productName}</span>
                         </div>
-                      </div>
-                      <lightning-input
-                        class="quantity-input"
-                        type="number"
-                        label="Quantita"
-                        value={product.quantity}
-                        min="0.01"
-                        step="0.01"
-                        data-id={product.pricebookEntryId}
-                        disabled={product.quantityDisabled}
-                        required
-                        onchange={handleQuantityChange}
-                      ></lightning-input>
-                      <lightning-button-icon
-                        icon-name="utility:delete"
-                        alternative-text="Rimuovi"
-                        title="Rimuovi"
-                        variant="bare"
-                        data-id={product.pricebookEntryId}
-                        onclick={handleRemoveProduct}
-                      ></lightning-button-icon>
-                    </div>
+                      </span>
+                      <span class="tranche-summary-value">
+                        <span class="box-label">Prezzo</span>
+                        <span>{tranche.amountLabel}</span>
+                      </span>
+                      <span class="tranche-summary-value">
+                        <span class="box-label">Scadenza</span>
+                        <span>{tranche.dueDateLabel}</span>
+                      </span>
+                    </button>
                   </template>
                 </div>
               </div>
             </template>
 
-            <template if:true={showTranchePlanner}>
-              <div class="tranche-planner">
-                <lightning-input
-                  type="number"
-                  label="Numero tranche"
-                  value={trancheCount}
-                  min="1"
-                  max="20"
-                  step="1"
-                  required
-                  onchange={handleTrancheCountChange}
-                ></lightning-input>
-
-                <template if:true={hasPlannedTranches}>
-                  <div class="tranche-list">
-                    <template for:each={plannedTranches} for:item="tranche">
-                      <div class="tranche-row" key={tranche.key}>
-                        <div class="tranche-sequence">
-                          Tranche {tranche.sequence}
+            <template if:true={showNewSelection}>
+              <div class="selected-panel new-selection-panel">
+                <div class="section-label">Prodotti scelti da aggiungere</div>
+                <div class="selected-table">
+                  <div class="selected-header">
+                    <span>Prodotto</span>
+                    <span>Qta</span>
+                    <span>Stato</span>
+                    <span></span>
+                  </div>
+                  <div class="selected-body">
+                    <template for:each={selectedProducts} for:item="product">
+                      <div class="selected-row" key={product.rowKey}>
+                        <div class="selected-main">
+                          <div class="product-title">{product.productName}</div>
+                          <div class="product-meta">
+                            <span>{product.productCode}</span>
+                            <span>{product.typeLabel}</span>
+                            <span>Prezzo {product.unitPrice}</span>
+                          </div>
                         </div>
-                        <div class="amount-box">
+                        <lightning-input
+                          class="quantity-input"
+                          type="number"
+                          label="Quantita"
+                          value={product.quantity}
+                          min="0.01"
+                          step="0.01"
+                          data-id={product.pricebookEntryId}
+                          variant="label-hidden"
+                          disabled={product.quantityDisabled}
+                          required
+                          onchange={handleQuantityChange}
+                        ></lightning-input>
+                        <span class="row-status">{product.rowStatus}</span>
+                        <lightning-button-icon
+                          icon-name="utility:delete"
+                          alternative-text="Rimuovi"
+                          title="Rimuovi"
+                          variant="bare"
+                          data-id={product.pricebookEntryId}
+                          onclick={handleRemoveProduct}
+                        ></lightning-button-icon>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <template if:true={showSelectedTranchePreview}>
+              <div class="tranche-panel">
+                <div class="section-label">Tranche da creare</div>
+                <div class="tranche-count-box">
+                  <span class="box-label">Numero tranche</span>
+                  <span>{selectedTrancheCountLabel}</span>
+                </div>
+
+                <template if:true={hasValidSelectedTrancheCount}>
+                  <div class="tranche-summary">
+                    <template
+                      for:each={selectedTranchePreviewRows}
+                      for:item="tranche"
+                    >
+                      <div class="tranche-summary-row" key={tranche.key}>
+                        <div class="tranche-summary-main">
+                          <div class="tranche-summary-title">
+                            {tranche.label}
+                          </div>
+                          <div class="product-meta">
+                            <span>{tranche.productName}</span>
+                          </div>
+                        </div>
+                        <div class="tranche-summary-value">
                           <span class="box-label">Prezzo</span>
                           <span>{tranche.amountLabel}</span>
                         </div>
                         <lightning-input
                           class="due-date-input"
                           type="date"
-                          label="Data scadenza"
+                          label="Scadenza"
                           value={tranche.dueDate}
                           data-index={tranche.index}
                           required
-                          onchange={handleTrancheDueDateChange}
+                          onchange={handleSelectedTrancheDueDateChange}
                         ></lightning-input>
                       </div>
                     </template>
                   </div>
                 </template>
+
+                <template if:false={hasValidSelectedTrancheCount}>
+                  <div class="message error">
+                    Numero Tranche non configurato sul prodotto Plus.
+                  </div>
+                </template>
               </div>
             </template>
-          </div>
+          </template>
+
+          <template if:true={isPickerOpen}>
+            <div class="selector-panel">
+              <div class="selector-heading">
+                <div>
+                  <div class="section-label">Selezione prodotti</div>
+                  <div class="selector-title">Prodotti disponibili</div>
+                </div>
+                <lightning-button
+                  label="Torna indietro"
+                  icon-name="utility:back"
+                  onclick={handleClosePicker}
+                ></lightning-button>
+              </div>
+
+              <lightning-input
+                type="search"
+                label="Filtra per codice o nome"
+                value={searchTerm}
+                disabled={isSearchDisabled}
+                onchange={handleSearchChange}
+              ></lightning-input>
+
+              <template if:true={hasProductOptions}>
+                <div class="available-table">
+                  <div class="available-header">
+                    <span>Prodotto disponibile</span>
+                    <span>Azione</span>
+                  </div>
+                  <div class="options">
+                    <template for:each={productOptions} for:item="option">
+                      <button
+                        key={option.pricebookEntryId}
+                        type="button"
+                        class={option.buttonClass}
+                        data-id={option.pricebookEntryId}
+                        disabled={option.isDisabled}
+                        onclick={handleSelectProduct}
+                      >
+                        <span class="option-main">
+                          <span class="product-title"
+                            >{option.productName}</span
+                          >
+                          <span class="product-meta">
+                            <span>{option.productCode}</span>
+                            <span>{option.typeLabel}</span>
+                            <span>{option.unitPrice}</span>
+                          </span>
+                        </span>
+                        <template if:true={option.isSelected}>
+                          <span class="remove-marker">
+                            <lightning-icon
+                              icon-name="utility:close"
+                              size="xx-small"
+                              alternative-text="Rimuovi"
+                            ></lightning-icon>
+                            <span>Rimuovi</span>
+                          </span>
+                        </template>
+                        <template if:false={option.isSelected}>
+                          <span class="choose-marker">Scegli</span>
+                        </template>
+                      </button>
+                    </template>
+                  </div>
+                </div>
+              </template>
+
+              <template if:true={showNoResultsMessage}>
+                <div class="message">Nessun prodotto disponibile.</div>
+              </template>
+            </div>
+          </template>
         </template>
       </template>
     </div>
