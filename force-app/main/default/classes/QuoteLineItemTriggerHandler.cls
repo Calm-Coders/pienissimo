@@ -1,5 +1,6 @@
-public with sharing class QuoteLineItemTriggerHandler {
+public without sharing class QuoteLineItemTriggerHandler {
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
+  private static final String DRAFT_QUOTE_STATUS = 'Bozza';
   private static final String INVALID_QUOTE_MIX_ERROR = 'Il Preventivo puo contenere un solo Bundle oppure prodotti Item, non entrambi. Rimuovi le righe esistenti prima di cambiare tipologia.';
 
   public static void beforeSave(
@@ -66,6 +67,38 @@ public with sharing class QuoteLineItemTriggerHandler {
       for (QuoteLineItem line : pendingLinesByQuoteId.get(quoteId)) {
         line.addError(INVALID_QUOTE_MIX_ERROR);
       }
+    }
+  }
+
+  public static void afterInsert(List<QuoteLineItem> newLines) {
+    if (newLines == null || newLines.isEmpty()) {
+      return;
+    }
+
+    Set<Id> quoteIds = new Set<Id>();
+    for (QuoteLineItem line : newLines) {
+      if (line.QuoteId != null) {
+        quoteIds.add(line.QuoteId);
+      }
+    }
+
+    if (quoteIds.isEmpty()) {
+      return;
+    }
+
+    List<Quote> quotesToUpdate = new List<Quote>();
+    for (Quote quoteRecord : [
+      SELECT Id, Status
+      FROM Quote
+      WHERE Id IN :quoteIds AND Status != :DRAFT_QUOTE_STATUS
+    ]) {
+      quotesToUpdate.add(
+        new Quote(Id = quoteRecord.Id, Status = DRAFT_QUOTE_STATUS)
+      );
+    }
+
+    if (!quotesToUpdate.isEmpty()) {
+      update quotesToUpdate;
     }
   }
 

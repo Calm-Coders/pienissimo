@@ -44,7 +44,7 @@ export default class QuoteAcceptanceEmail extends LightningElement {
       if (quoteId !== this.recordId) return;
       this.recipient = draft.recipient || "";
       this.subject = draft.subject;
-      this.body = draft.body;
+      this.body = draft.body || "";
       this.acceptanceUrl = draft.acceptanceUrl;
       this.loaded = true;
     } catch (error) {
@@ -58,24 +58,16 @@ export default class QuoteAcceptanceEmail extends LightningElement {
   }
   async handleSend() {
     if (this.sendDisabled) return;
-    const inputs = [
-      ...this.template.querySelectorAll("lightning-input, lightning-textarea")
-    ];
+    const inputs = [...this.template.querySelectorAll("lightning-input")];
     if (!inputs.reduce((valid, input) => input.reportValidity() && valid, true))
       return;
     this.errorMessage = "";
-    if (!this.body.includes(this.acceptanceUrl)) {
-      this.errorMessage =
-        "Mantieni nel messaggio il link di questo preventivo.";
-      return;
-    }
     this.isSending = true;
     try {
       await sendEmail({
         quoteId: this.recordId,
         recipient: this.recipient,
-        subject: this.subject,
-        body: this.body
+        subject: this.subject
       });
       this.dispatchEvent(
         new ShowToastEvent({

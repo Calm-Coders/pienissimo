@@ -5,7 +5,7 @@ status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-21
+updated: 2026-09-22
 blocks: [OI-150]
 source: notes/meetings/2026-09-21 Test Interni Pre-UAT.md
 ---
@@ -17,7 +17,7 @@ Agreed at
 (`00:06:24`): **two Lead record types, `diretta` and `standard`**, to simplify the
 working path.
 
-`diretta` exists because of leads arriving from live events (*diretta*) and from
+`diretta` exists because of leads arriving from live events (_diretta_) and from
 HTML forms handled through Marketing Cloud — the problem Elena Spini raised at
 `00:03:48`, with Fabrizio Mastracci supporting the form side.
 
@@ -26,11 +26,18 @@ HTML forms handled through Marketing Cloud — the problem Elena Spini raised at
 ⚠ **Partially present.** `08b97cc` (Anita Aga, 21/09 18:24 CEST,
 `DevAnitaRecheckAutomations`) adds a `Lead_Record_Page_Three_Column` flexipage
 (+200 lines) and a `LeadConversionQueueable` class. **It is in PR #54, open,
-against `DevMain`.** No Lead record-type metadata is in `force-app/` yet.
+against `DevMain`.**
+
+2026-09-22: `force-app/` now adds the two Lead record types `Diretta` and
+`Standard`. `Diretta` uses a dedicated Lead business process whose user-facing
+open statuses are `New` and `Qualificato`; the process also includes the
+converted status `Convertito`, because Salesforce `Database.convertLead` rejects
+conversion when the target converted status is absent from the record type's
+business process. `Standard` keeps the full current Lead status set. The change
+passed a check-only Salesforce deploy (`0AfMA00000Cl1rN0AR`).
 
 ## Open
 
-- 🔴 **The record types themselves are not in source.**
 - 🔴 **Lead conversion breaks when an existing P.IVA is reused on the same
   account** (`01:19:19`) — discussed at the same session, unresolved. Conversion
   uses **custom trigger logic with deduplication**, not the standard component, so

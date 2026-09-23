@@ -643,6 +643,7 @@
           style="width: 50%; border: none; text-align: right; font-weight: bold"
         >
           Il Cliente
+          <span style="color: #ffffff; font-size: 1px">/sig1/</span>
         </td>
       </tr>
     </table>

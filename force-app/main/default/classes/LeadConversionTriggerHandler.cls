@@ -1,6 +1,6 @@
-public with sharing class LeadConversionTriggerHandler {
+public without sharing class LeadConversionTriggerHandler {
   private static final String NON_RISPONDE_STATUS = 'Non Risponde';
-  private static final String DUPLICATE_LEAD_ERROR = 'Esiste gia un Lead aperto con la stessa email e lo stesso telefono.';
+  private static final String DUPLICATE_LEAD_ERROR = 'Esiste gia un Lead aperto con la stessa email, lo stesso telefono e la stessa Partita IVA.';
   private static final String CONTACT_ACCOUNT_CONFLICT_ERROR = 'La Partita IVA del Lead appartiene a una Azienda diversa dal Contact trovato con la stessa email e lo stesso telefono.';
   private static final String FOLLOW_UP_TASK_SUBJECT = 'Ricontattare Lead - Non Risponde';
   private static final String FOLLOW_UP_TASK_DESCRIPTION = 'Il Lead e stato spostato in Non Risponde. Ricontattare il prospect.';
@@ -42,11 +42,12 @@ public with sharing class LeadConversionTriggerHandler {
 
       String email = normalizeEmail(leadRecord.Email);
       String phone = normalizePhone(leadRecord.Phone);
-      if (email == null || phone == null) {
+      String vatNumber = normalizeVat(leadRecord.Partita_IVA__c);
+      if (email == null || phone == null || vatNumber == null) {
         continue;
       }
 
-      String leadKey = buildPersonKey(email, phone);
+      String leadKey = buildLeadDuplicateKey(email, phone, vatNumber);
       if (leadKeys.contains(leadKey)) {
         duplicateKeysInBatch.add(leadKey);
       }
@@ -61,22 +62,38 @@ public with sharing class LeadConversionTriggerHandler {
     Set<String> duplicateKeys = new Set<String>();
     duplicateKeys.addAll(duplicateKeysInBatch);
 
-    for (Lead existingLead : [
-      SELECT Id, Email, Phone
-      FROM Lead
-      WHERE IsConverted = FALSE AND Email IN :emails
-    ]) {
+    Map<String, Object> queryBinds = new Map<String, Object>{
+      'emailValues' => emails
+    };
+    List<Lead> existingOpenLeads = Database.queryWithBinds(
+      'SELECT Id, Email, Phone, Partita_IVA__c ' +
+        'FROM Lead ' +
+        'WHERE IsConverted = false AND Email IN :emailValues',
+      queryBinds,
+      AccessLevel.SYSTEM_MODE
+    );
+
+    for (Lead existingLead : existingOpenLeads) {
       if (currentLeadIds.contains(existingLead.Id)) {
         continue;
       }
 
       String existingEmail = normalizeEmail(existingLead.Email);
       String existingPhone = normalizePhone(existingLead.Phone);
-      if (existingEmail == null || existingPhone == null) {
+      String existingVatNumber = normalizeVat(existingLead.Partita_IVA__c);
+      if (
+        existingEmail == null ||
+        existingPhone == null ||
+        existingVatNumber == null
+      ) {
         continue;
       }
 
-      String existingKey = buildPersonKey(existingEmail, existingPhone);
+      String existingKey = buildLeadDuplicateKey(
+        existingEmail,
+        existingPhone,
+        existingVatNumber
+      );
       if (leadKeys.contains(existingKey)) {
         duplicateKeys.add(existingKey);
       }
@@ -87,12 +104,13 @@ public with sharing class LeadConversionTriggerHandler {
     }
 
     for (Lead leadRecord : newLeads) {
-      String leadKey = buildPersonKey(
+      String leadKey = buildLeadDuplicateKey(
         normalizeEmail(leadRecord.Email),
-        normalizePhone(leadRecord.Phone)
+        normalizePhone(leadRecord.Phone),
+        normalizeVat(leadRecord.Partita_IVA__c)
       );
       if (duplicateKeys.contains(leadKey)) {
-        leadRecord.Email.addError(DUPLICATE_LEAD_ERROR);
+        leadRecord.addError(DUPLICATE_LEAD_ERROR);
       }
     }
   }
@@ -308,6 +326,18 @@ public with sharing class LeadConversionTriggerHandler {
 
   private static String buildPersonKey(String email, String phone) {
     return email == null || phone == null ? null : email + '|' + phone;
+  }
+
+  private static String buildLeadDuplicateKey(
+    String email,
+    String phone,
+    String vatNumber
+  ) {
+    return email == null ||
+      phone == null ||
+      vatNumber == null
+      ? null
+      : email + '|' + phone + '|' + vatNumber;
   }
 
   private static String normalizeEmail(String email) {

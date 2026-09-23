@@ -17,8 +17,13 @@
         <fieldNames>Motivazione_Uscita__c</fieldNames>
         <fieldNames>Dettaglio_Motivazione_Uscita__c</fieldNames>
         <info
-    >&lt;p&gt;&lt;span style=&quot;color: #f5b400; font-size: 14pt;&quot;&gt;&#9888;&lt;/span&gt; &lt;b style=&quot;font-family: Arial; font-size: 10pt;&quot;&gt;Fill in the exit reason before closing the Lead as Non qualificato.&lt;/b&gt;&lt;/p&gt;</info>
+    >&lt;p&gt;&lt;span style=&quot;color: #f5b400; font-size: 14pt;&quot;&gt;⚠&lt;/span&gt; &lt;b style=&quot;font-family: Arial; font-size: 10pt;&quot;&gt;Fill in the exit reason before closing the Lead as Non qualificato.&lt;/b&gt;&lt;/p&gt;</info>
         <picklistValueName>Non qualificato</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info
+    >&lt;p&gt;&lt;strong&gt;Nota:&lt;/strong&gt; impostando il Lead come &lt;strong&gt;“Qualificato”&lt;/strong&gt;, verrà avviata automaticamente la conversione del Lead.&lt;/p&gt;</info>
+        <picklistValueName>Qualificato</picklistValueName>
     </pathAssistantSteps>
     <recordTypeName>__MASTER__</recordTypeName>
 </PathAssistant>

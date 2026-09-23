@@ -1,8 +1,14 @@
-public with sharing class LeadConversionQueueable implements Queueable {
+public without sharing class LeadConversionQueueable implements Queueable {
   private static final String QUALIFIED_STATUS = 'Qualificato';
   private static final String CONVERTED_STATUS = 'Convertito';
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
   private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Standart';
+  private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
+  private static final String RECALL_OPPORTUNITY_RECORD_TYPE = 'Recall_Tutor';
+  private static final String STANDARD_OPPORTUNITY_TYPE = 'Vendita da tutor';
+  private static final String PLUS_ACTIVATION_OPPORTUNITY_TYPE = 'Performance Plus - Attivazione';
+  private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
+  private static final String RECALL_OPPORTUNITY_TYPE = 'Recall tutor';
   private static final Integer OPPORTUNITY_NAME_LIMIT = 120;
   private static final Integer LEAD_CONVERT_BATCH_SIZE = 100;
   private static final String USER_ID_PREFIX = '005';
@@ -32,7 +38,8 @@ public with sharing class LeadConversionQueueable implements Queueable {
         Partita_IVA__c,
         OwnerId,
         Status,
-        IsConverted
+        IsConverted,
+        Tipo_Opportunita__c
       FROM Lead
       WHERE
         Id IN :leadIds
@@ -52,12 +59,17 @@ public with sharing class LeadConversionQueueable implements Queueable {
     );
     List<Database.LeadConvert> conversionRequests = new List<Database.LeadConvert>();
     Map<Id, String> leadEmailById = new Map<Id, String>();
+    Map<Id, String> leadOpportunityTypeById = new Map<Id, String>();
 
     for (Lead leadRecord : leadsToConvert) {
       String normalizedEmail = normalizeEmail(leadRecord.Email);
       if (normalizedEmail != null) {
         leadEmailById.put(leadRecord.Id, normalizedEmail);
       }
+      leadOpportunityTypeById.put(
+        leadRecord.Id,
+        normalizeOpportunityType(leadRecord.Tipo_Opportunita__c)
+      );
 
       Database.LeadConvert conversionRequest = new Database.LeadConvert();
       conversionRequest.setLeadId(leadRecord.Id);
@@ -93,7 +105,7 @@ public with sharing class LeadConversionQueueable implements Queueable {
     List<Database.LeadConvertResult> conversionResults = convertLeads(
       conversionRequests
     );
-    setConvertedOpportunitiesToStandard(conversionResults);
+    setConvertedOpportunityTypes(conversionResults, leadOpportunityTypeById);
     updateConvertedAccountLeadEmails(conversionResults, leadEmailById);
   }
 
@@ -122,27 +134,52 @@ public with sharing class LeadConversionQueueable implements Queueable {
     return conversionResults;
   }
 
-  private static void setConvertedOpportunitiesToStandard(
-    List<Database.LeadConvertResult> conversionResults
+  private static void setConvertedOpportunityTypes(
+    List<Database.LeadConvertResult> conversionResults,
+    Map<Id, String> leadOpportunityTypeById
   ) {
     Set<Id> opportunityIds = new Set<Id>();
+    Set<String> recordTypeDeveloperNames = new Set<String>();
+    Map<Id, String> opportunityTypeByOpportunityId = new Map<Id, String>();
     for (Database.LeadConvertResult result : conversionResults) {
       if (!result.isSuccess() || result.getOpportunityId() == null) {
         continue;
       }
 
       opportunityIds.add(result.getOpportunityId());
+      String opportunityType = leadOpportunityTypeById.get(result.getLeadId());
+      opportunityTypeByOpportunityId.put(
+        result.getOpportunityId(),
+        opportunityType
+      );
+      recordTypeDeveloperNames.add(
+        getOpportunityRecordTypeDeveloperName(opportunityType)
+      );
     }
 
     if (opportunityIds.isEmpty()) {
       return;
     }
 
-    Id standardRecordTypeId = getStandardOpportunityRecordTypeId();
+    Map<String, Id> recordTypeIdsByDeveloperName = getOpportunityRecordTypeIds(
+      recordTypeDeveloperNames
+    );
     List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
     for (Id opportunityId : opportunityIds) {
+      String opportunityType = opportunityTypeByOpportunityId.get(
+        opportunityId
+      );
+      String recordTypeDeveloperName = getOpportunityRecordTypeDeveloperName(
+        opportunityType
+      );
       opportunitiesToUpdate.add(
-        new Opportunity(Id = opportunityId, RecordTypeId = standardRecordTypeId)
+        new Opportunity(
+          Id = opportunityId,
+          RecordTypeId = recordTypeIdsByDeveloperName.get(
+            recordTypeDeveloperName
+          ),
+          Tipo_Opportunita__c = opportunityType
+        )
       );
     }
 
@@ -451,23 +488,54 @@ public with sharing class LeadConversionQueueable implements Queueable {
     return recordTypes[0].Id;
   }
 
-  private static Id getStandardOpportunityRecordTypeId() {
-    List<RecordType> recordTypes = [
-      SELECT Id
+  private static Map<String, Id> getOpportunityRecordTypeIds(
+    Set<String> recordTypeDeveloperNames
+  ) {
+    Map<String, Id> recordTypeIdsByDeveloperName = new Map<String, Id>();
+    for (RecordType recordType : [
+      SELECT Id, DeveloperName
       FROM RecordType
       WHERE
         SObjectType = 'Opportunity'
-        AND DeveloperName = :STANDARD_OPPORTUNITY_RECORD_TYPE
-      LIMIT 1
-    ];
-
-    if (recordTypes.isEmpty()) {
-      throw new LeadConversionException(
-        'Opportunity record type Vendita Standard was not found'
-      );
+        AND DeveloperName IN :recordTypeDeveloperNames
+    ]) {
+      recordTypeIdsByDeveloperName.put(recordType.DeveloperName, recordType.Id);
     }
 
-    return recordTypes[0].Id;
+    for (String recordTypeDeveloperName : recordTypeDeveloperNames) {
+      if (!recordTypeIdsByDeveloperName.containsKey(recordTypeDeveloperName)) {
+        throw new LeadConversionException(
+          'Opportunity record type ' +
+            recordTypeDeveloperName +
+            ' was not found'
+        );
+      }
+    }
+
+    return recordTypeIdsByDeveloperName;
+  }
+
+  private static String normalizeOpportunityType(String opportunityType) {
+    return String.isBlank(opportunityType)
+      ? STANDARD_OPPORTUNITY_TYPE
+      : opportunityType.trim();
+  }
+
+  private static String getOpportunityRecordTypeDeveloperName(
+    String opportunityType
+  ) {
+    if (opportunityType == RECALL_OPPORTUNITY_TYPE) {
+      return RECALL_OPPORTUNITY_RECORD_TYPE;
+    }
+
+    if (
+      opportunityType == PLUS_ACTIVATION_OPPORTUNITY_TYPE ||
+      opportunityType == PLUS_RENEWAL_OPPORTUNITY_TYPE
+    ) {
+      return PLUS_OPPORTUNITY_RECORD_TYPE;
+    }
+
+    return STANDARD_OPPORTUNITY_RECORD_TYPE;
   }
 
   public class LeadConversionException extends Exception {
