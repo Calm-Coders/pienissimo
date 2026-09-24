@@ -22,7 +22,9 @@ public without sharing class QuoteAcceptanceEmailController {
     Quote quoteRecord = loadSendableQuote(quoteId);
     EmailDraft draft = new EmailDraft();
     EmailTemplate template = getTemplate();
-    draft.recipient = quoteRecord.Account.Email_Contatto_Principale__c;
+    draft.recipient = String.isBlank(quoteRecord.Email)
+      ? quoteRecord.Account.Email_Contatto_Principale__c
+      : quoteRecord.Email;
     draft.acceptanceUrl = ACCEPTANCE_URL + quoteRecord.Id;
     draft.subject = applyQuoteTokens(getSubject(template), quoteRecord);
     draft.body = buildPlainTextBody(quoteRecord, draft.acceptanceUrl);
@@ -32,12 +34,13 @@ public without sharing class QuoteAcceptanceEmailController {
   @AuraEnabled
   public static void sendEmail(Id quoteId, String recipient, String subject) {
     Quote quoteRecord = loadSendableQuote(quoteId);
+    String normalizedRecipient = recipient == null ? null : recipient.trim();
     if (
-      String.isBlank(recipient) ||
-      recipient.length() > 254 ||
+      String.isBlank(normalizedRecipient) ||
+      normalizedRecipient.length() > 254 ||
       !Pattern.matches(
         '^[^\\s@,;<>]+@[^\\s@,;<>]+\\.[^\\s@,;<>]+$',
-        recipient.trim()
+        normalizedRecipient
       )
     ) {
       throw new AuraHandledException(
@@ -59,7 +62,7 @@ public without sharing class QuoteAcceptanceEmailController {
     Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
     email.setTargetObjectId(UserInfo.getUserId());
     email.setTreatTargetObjectAsRecipient(false);
-    email.setToAddresses(new List<String>{ recipient.trim() });
+    email.setToAddresses(new List<String>{ normalizedRecipient });
     email.setWhatId(quoteRecord.Id);
     email.setSubject(subject.trim());
     email.setPlainTextBody(buildPlainTextBody(quoteRecord, link));
@@ -70,6 +73,9 @@ public without sharing class QuoteAcceptanceEmailController {
     );
     if (!results[0].isSuccess()) {
       throw new AuraHandledException(results[0].getErrors()[0].getMessage());
+    }
+    if (quoteRecord.Email != normalizedRecipient) {
+      update new Quote(Id = quoteRecord.Id, Email = normalizedRecipient);
     }
   }
 
@@ -82,6 +88,7 @@ public without sharing class QuoteAcceptanceEmailController {
         Id,
         Name,
         QuoteNumber,
+        Email,
         Status,
         AccountId,
         Account.Email_Contatto_Principale__c

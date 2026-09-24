@@ -82,24 +82,7 @@ public without sharing class QuoteLineItemTriggerHandler {
       }
     }
 
-    if (quoteIds.isEmpty()) {
-      return;
-    }
-
-    List<Quote> quotesToUpdate = new List<Quote>();
-    for (Quote quoteRecord : [
-      SELECT Id, Status
-      FROM Quote
-      WHERE Id IN :quoteIds AND Status != :DRAFT_QUOTE_STATUS
-    ]) {
-      quotesToUpdate.add(
-        new Quote(Id = quoteRecord.Id, Status = DRAFT_QUOTE_STATUS)
-      );
-    }
-
-    if (!quotesToUpdate.isEmpty()) {
-      update quotesToUpdate;
-    }
+    resetQuotesToDraft(quoteIds);
   }
 
   public static void afterDelete(List<QuoteLineItem> oldLines) {
@@ -107,12 +90,18 @@ public without sharing class QuoteLineItemTriggerHandler {
       return;
     }
 
+    Set<Id> quoteIds = new Set<Id>();
     Set<Id> trancheIds = new Set<Id>();
     for (QuoteLineItem line : oldLines) {
+      if (line.QuoteId != null) {
+        quoteIds.add(line.QuoteId);
+      }
       if (line.Tranche__c != null) {
         trancheIds.add(line.Tranche__c);
       }
     }
+
+    resetQuotesToDraft(quoteIds);
 
     if (trancheIds.isEmpty()) {
       return;
@@ -135,6 +124,27 @@ public without sharing class QuoteLineItemTriggerHandler {
       FROM Tranche__c
       WHERE Id IN :trancheIds
     ];
+  }
+
+  private static void resetQuotesToDraft(Set<Id> quoteIds) {
+    if (quoteIds == null || quoteIds.isEmpty()) {
+      return;
+    }
+
+    List<Quote> quotesToUpdate = new List<Quote>();
+    for (Quote quoteRecord : [
+      SELECT Id, Status
+      FROM Quote
+      WHERE Id IN :quoteIds AND Status != :DRAFT_QUOTE_STATUS
+    ]) {
+      quotesToUpdate.add(
+        new Quote(Id = quoteRecord.Id, Status = DRAFT_QUOTE_STATUS)
+      );
+    }
+
+    if (!quotesToUpdate.isEmpty()) {
+      update quotesToUpdate;
+    }
   }
 
   private static Map<Id, QuoteProductMix> initializeMixes(Set<Id> quoteIds) {
