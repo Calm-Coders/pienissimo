@@ -159,6 +159,9 @@
                             <span>Qta {line.quantity}</span>
                             <span>Totale {line.totalLabel}</span>
                           </div>
+                          <template if:true={line.hasBundle}>
+                            <div class="line-bundle">{line.bundleLabel}</div>
+                          </template>
                         </div>
                         <lightning-button-icon
                           icon-name="utility:delete"
@@ -190,6 +193,9 @@
                             <span>Qta {line.quantity}</span>
                             <span>Totale {line.totalLabel}</span>
                           </div>
+                          <template if:true={line.hasBundle}>
+                            <div class="line-bundle">{line.bundleLabel}</div>
+                          </template>
                         </div>
                         <lightning-button
                           label="Assegna a questa tranche"

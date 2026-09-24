@@ -305,8 +305,12 @@ public with sharing class QuoteManageProductsController {
         SELECT
           Id,
           Pricebook2Id,
+          Product2Id,
           UnitPrice,
+          Product2.Name,
           Product2.Bundle_Selling_Price__c,
+          Product2.Calculated_Bundle_Price__c,
+          Product2.Spread_Total__c,
           Product2.Is_Plus__c,
           Product2.Numero_Tranche__c,
           Product2.RecordType.DeveloperName
@@ -406,6 +410,23 @@ public with sharing class QuoteManageProductsController {
       return;
     }
 
+    if (context.isStandardOpportunity && bundleCount > 0) {
+      PricebookEntry bundleEntry;
+      for (PricebookEntry entry : entriesById.values()) {
+        if (isBundleEntry(entry)) {
+          bundleEntry = entry;
+          break;
+        }
+      }
+
+      insert buildStandardBundleQuoteLines(
+        quoteId,
+        bundleEntry,
+        selectedPricebook2Id
+      );
+      return;
+    }
+
     List<QuoteLineItem> linesToInsert = new List<QuoteLineItem>();
     for (Id entryId : selectionByEntryId.keySet()) {
       PricebookEntry entry = entriesById.get(entryId);
@@ -430,6 +451,84 @@ public with sharing class QuoteManageProductsController {
     }
 
     insert linesToInsert;
+  }
+
+  private static List<QuoteLineItem> buildStandardBundleQuoteLines(
+    Id quoteId,
+    PricebookEntry bundleEntry,
+    Id pricebook2Id
+  ) {
+    if (bundleEntry == null || bundleEntry.Product2Id == null) {
+      throw new AuraHandledException('Seleziona un bundle valido.');
+    }
+
+    List<BundleComponent__c> components = [
+      SELECT Id, Product__c, Product__r.Name, Quantity__c, Unit_Spread__c
+      FROM BundleComponent__c
+      WHERE Bundle__c = :bundleEntry.Product2Id
+      ORDER BY Product__r.Name, Id
+    ];
+    if (components.isEmpty()) {
+      throw new AuraHandledException(
+        'Configura i prodotti del bundle prima di aggiungerlo al preventivo.'
+      );
+    }
+
+    Set<Id> productIds = new Set<Id>();
+    for (BundleComponent__c component : components) {
+      if (component.Product__c != null) {
+        productIds.add(component.Product__c);
+      }
+    }
+
+    Map<Id, PricebookEntry> entryByProductId = new Map<Id, PricebookEntry>();
+    for (PricebookEntry componentEntry : [
+      SELECT Id, Product2Id
+      FROM PricebookEntry
+      WHERE
+        Pricebook2Id = :pricebook2Id
+        AND Product2Id IN :productIds
+        AND IsActive = TRUE
+        AND Product2.IsActive = TRUE
+    ]) {
+      entryByProductId.put(componentEntry.Product2Id, componentEntry);
+    }
+
+    List<QuoteLineItem> lines = new List<QuoteLineItem>();
+    for (BundleComponent__c component : components) {
+      PricebookEntry componentEntry = entryByProductId.get(
+        component.Product__c
+      );
+      if (componentEntry == null) {
+        throw new AuraHandledException(
+          'Il prodotto ' +
+            component.Product__r.Name +
+            ' non ha una voce attiva nel listino prezzi del preventivo.'
+        );
+      }
+      if (component.Quantity__c == null || component.Quantity__c <= 0) {
+        throw new AuraHandledException(
+          'Configura una quantita maggiore di zero per ogni prodotto del bundle.'
+        );
+      }
+      if (component.Unit_Spread__c == null || component.Unit_Spread__c < 0) {
+        throw new AuraHandledException(
+          'Configura gli importi dei prodotti del bundle prima di aggiungerlo al preventivo.'
+        );
+      }
+
+      lines.add(
+        new QuoteLineItem(
+          QuoteId = quoteId,
+          PricebookEntryId = componentEntry.Id,
+          Quantity = component.Quantity__c,
+          UnitPrice = component.Unit_Spread__c,
+          Description = 'Bundle: ' + bundleEntry.Product2.Name
+        )
+      );
+    }
+
+    return lines;
   }
 
   private static List<ProductOption> findProductOptions(
@@ -457,6 +556,8 @@ public with sharing class QuoteManageProductsController {
           Product2.Is_Plus__c,
           Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
+          Product2.Calculated_Bundle_Price__c,
+          Product2.Spread_Total__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
         FROM PricebookEntry
@@ -481,6 +582,8 @@ public with sharing class QuoteManageProductsController {
           Product2.Is_Plus__c,
           Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
+          Product2.Calculated_Bundle_Price__c,
+          Product2.Spread_Total__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
         FROM PricebookEntry
@@ -506,6 +609,8 @@ public with sharing class QuoteManageProductsController {
           Product2.Is_Plus__c,
           Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
+          Product2.Calculated_Bundle_Price__c,
+          Product2.Spread_Total__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
         FROM PricebookEntry
@@ -530,6 +635,8 @@ public with sharing class QuoteManageProductsController {
           Product2.Is_Plus__c,
           Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
+          Product2.Calculated_Bundle_Price__c,
+          Product2.Spread_Total__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
         FROM PricebookEntry
@@ -555,6 +662,8 @@ public with sharing class QuoteManageProductsController {
           Product2.Is_Plus__c,
           Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
+          Product2.Calculated_Bundle_Price__c,
+          Product2.Spread_Total__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
         FROM PricebookEntry
@@ -578,6 +687,8 @@ public with sharing class QuoteManageProductsController {
           Product2.Is_Plus__c,
           Product2.Numero_Tranche__c,
           Product2.Bundle_Selling_Price__c,
+          Product2.Calculated_Bundle_Price__c,
+          Product2.Spread_Total__c,
           Product2.RecordType.DeveloperName,
           UnitPrice
         FROM PricebookEntry
@@ -676,7 +787,13 @@ public with sharing class QuoteManageProductsController {
 
   private static Decimal salesUnitPrice(PricebookEntry entry) {
     if (isBundleEntry(entry)) {
-      return entry.Product2.Bundle_Selling_Price__c;
+      if (entry.Product2.Bundle_Selling_Price__c != null) {
+        return entry.Product2.Bundle_Selling_Price__c;
+      }
+      if (entry.Product2.Calculated_Bundle_Price__c != null) {
+        return entry.Product2.Calculated_Bundle_Price__c;
+      }
+      return entry.Product2.Spread_Total__c;
     }
 
     return entry.UnitPrice;
@@ -684,7 +801,7 @@ public with sharing class QuoteManageProductsController {
 
   private static Decimal requireSalesUnitPrice(PricebookEntry entry) {
     Decimal unitPrice = salesUnitPrice(entry);
-    if (unitPrice == null || unitPrice <= 0) {
+    if (unitPrice == null || unitPrice < 0) {
       throw new AuraHandledException(
         isBundleEntry(entry)
           ? 'Configura il prezzo di vendita del bundle prima di aggiungerlo al preventivo.'

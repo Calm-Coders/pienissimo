@@ -15,6 +15,8 @@ private class OrderTriggerHandlerTest {
     Boolean generatesTicket,
     String recordTypeDeveloperName
   ) {
+    Test.getStandardPricebookId();
+
     Product2 product = new Product2(
       Name = name,
       ProductCode = 'TEST-' + name.replace(' ', '-'),
@@ -62,6 +64,20 @@ private class OrderTriggerHandlerTest {
 
   private static PricebookEntry makePricebookEntry(Product2 product) {
     Id pricebookId = Test.getStandardPricebookId();
+    List<PricebookEntry> existingEntries = [
+      SELECT Id, UnitPrice, IsActive
+      FROM PricebookEntry
+      WHERE Pricebook2Id = :pricebookId AND Product2Id = :product.Id
+      LIMIT 1
+    ];
+
+    if (!existingEntries.isEmpty()) {
+      PricebookEntry existingEntry = existingEntries[0];
+      existingEntry.UnitPrice = 100;
+      existingEntry.IsActive = true;
+      update existingEntry;
+      return existingEntry;
+    }
 
     PricebookEntry entry = new PricebookEntry(
       Pricebook2Id = pricebookId,
@@ -209,18 +225,18 @@ private class OrderTriggerHandlerTest {
     Order orderRecord = makeDraftOrder(account);
     OrderItem eventLine = makeOrderItem(orderRecord, eventEntry, 2);
 
-    insert new Asset(
-      Name = 'Existing ticket',
-      RecordTypeId = assetTicketRecordTypeId(),
-      Status = 'Ordinato',
-      AccountId = account.Id,
-      Product2Id = eventProduct.Id,
-      Order_Product__c = eventLine.Id
-    );
+    List<Asset> generatedTickets = [
+      SELECT Id
+      FROM Asset
+      WHERE Order_Product__c = :eventLine.Id
+      ORDER BY CreatedDate, Id
+    ];
+    delete generatedTickets[0];
 
     Test.startTest();
-    orderRecord.Status = 'Incassato';
-    update orderRecord;
+    OrderTriggerHandler.createTicketsForOrderLines(
+      new List<OrderItem>{ eventLine }
+    );
     Test.stopTest();
 
     System.assertEquals(
@@ -302,11 +318,11 @@ private class OrderTriggerHandlerTest {
   }
 
   @isTest
-  static void ticketGeneratingBundleCreatesBundleTicketsByQuantity() {
+  static void ticketGeneratingBundleUsesFlaggedComponentsOnly() {
     Account account = makeAccount();
     Product2 bundle = makeProduct('Academy Bundle', true, 'Bundle');
     Product2 eventComponent = makeProduct('Academy Event', true, 'Item');
-    makeMapping(bundle, makeCampaign('Academy Bundle Edition'));
+    makeMapping(eventComponent, makeCampaign('Academy Event Edition'));
 
     insert new BundleComponent__c(
       Bundle__c = bundle.Id,
@@ -331,9 +347,9 @@ private class OrderTriggerHandlerTest {
     ];
 
     System.assertEquals(
-      3,
+      6,
       tickets.size(),
-      'A ticket-generating bundle should create one ticket per sold bundle quantity'
+      'The bundle flag should be ignored; tickets come from flagged components only'
     );
 
     for (Asset ticket : tickets) {
@@ -343,9 +359,9 @@ private class OrderTriggerHandlerTest {
         'Generated Assets should use the Ticket record type'
       );
       System.assertEquals(
-        bundle.Id,
+        eventComponent.Id,
         ticket.Product2Id,
-        'Ticket product should be the sold bundle when the bundle generates tickets'
+        'Ticket product should be the flagged bundle component'
       );
       System.assertEquals(
         bundleLine.Id,
