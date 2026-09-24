@@ -10,6 +10,66 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-24 — claude — nightly requirements-check: the first UAT session, and a Business Blueprint nobody had mentioned
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-23T22:00Z**. Drilled two meetings: `UAT: Lead e Opportunità` (client, ~2h08m,
+  **the first acceptance session of the project**, notes+transcript 155,961 chars) and
+  `Temi Mexal Anagrafiche/Indirizzi` (Kreosoft, 22m45s). Read
+  `Business_Blueprint_Pienissimo.docx` in full (49,165 chars). Wrote 2 meeting notes, 5
+  new items (`OI-176`–`OI-180`), updated 14 items, both trackers, both recaps (§47), MAP,
+  INDEX, and the trace.
+- **State:**
+  - 🟢 **The commercial chain ran end to end in front of the client and nothing was
+    rejected.** Twelve rulings, including 🔑 **a new quote state `Firmato`** at which the
+    order is generated. ⚠ One reopened: the word `rifiutato`, which both Fabrizio
+    Paganelli and Marco Montesi object to.
+  - 🟢 **All three triggers that came due today are discharged.** `OI-164` **RESOLVED**
+    (record types present; Elena Spini's two-state `Diretta` path delivered exactly);
+    `OI-163`'s duplicate rule **fired in front of the client and they approved it**;
+    `OI-174` answered — **a client-domain recipient received and signed**, so the mail
+    block is ROMI-side only. 🔑 And the same passage explains the missing DocuSign
+    credentials: Elisa Migliano _"non sapevo dovessi darvi le credenziali"_.
+  - 🟢 **`OI-173` RESOLVED in 22 minutes** — the fiscal rule keys on `residenza fiscale`
+    from the two-letter ISO on the **ragione sociale, not the billing address**; both
+    `.xlsx` transcoding tables arrived by 10:08:51Z. 🟢 Mexal API field names supplied,
+    with **`valuta` and `cod_listino` mandatory on create**, fixed to `1`.
+  - 🔴 **Two defects live in front of the client**: **every form lead is typed `Diretta`**
+    (`OI-176`), and the first DocuSign send died on the edition mapping — the same fault
+    as the 11:13Z sandbox Apex exception. The matching code **throws rather than
+    degrading**, so an unmapped product aborts the whole chain (`OI-96`).
+  - 🔑 **NEW `OI-179`: a ten-chapter Business Blueprint with its own signature block**,
+    created 18:10Z, due to the client 25/09, carrying **seven `● Check con Aurel`
+    markers** and **omitting `Firmato` from its own quote-state table**.
+  - 🔴 **NEW `OI-180`: the client has no UAT logins** until Daniela Morgese reviews the
+    product — indicatively 6 October, the day the UAT window closes.
+  - 🔴 **NEW `OI-177`: the marketing UAT needs production**, and the Aurel Mrruku ↔
+    Fabrizio Mastracci hand-off is stalled with each waiting on the other.
+  - 🔴 **NEW `OI-178`: two agent fields on two branches** — `Codice_Agente_Esterno__c` on
+    `DevMain` with 8,140 accounts carrying it, `Agente__c` on `DEV_LeadAgenteBundle`, and
+    **the client was shown the second**. 🟢 That branch now has PR #59.
+- **Next:** **Quote UAT is 25/09 at 10:30 (WooCommerce) and after (Preventivi), and
+  `Firmato` does not exist yet.** The BBP goes to the client the same day. Check both
+  before anything else.
+- **Watch:**
+  - **The register was deliberately not amended, and a human owes the reconciliation.**
+    `Firmato` is a sixth quote state the client agreed; `state_machines.quote` already
+    carries a flag saying it disagrees with the org's five values. Adding a sixth to a
+    list wrong in five places makes it worse. **It is now six values behind, not five.**
+  - ⚠ **`notes/items/OI-154` was edited here, reversing the 23/09 call.** `7eab757` is
+    still unmerged (PR #59) and carries a developer-authored addition to the same file, so
+    **this will conflict when #59 merges — keep both, developers' block first.**
+  - ⚠ **`64b2843` contradicts its own JOURNAL entry**, which says _"No commit or push was
+    made"_. The commit exists on `DevMain` and contains that sentence. Not corrected.
+  - **`STATUS.md` was not regenerated** — this run has no org evidence; every build claim
+    is repository arithmetic against `64b2843` plus one sandbox exception mail.
+  - 🟢 **`Flows & Objects.drawio` moved at 17:43:57Z — the first movement in nine runs.**
+    Still unreadable here. **Ask for an export.**
+  - **No human has answered a nightly report in eight nights**, and the dev-group channel
+    had no human post at all in this window.
+
+---
+
 ## 2026-09-24 — codex — Account_NEW import into Pienissimo UAT
 
 - **Did:** Inspected the supplied Excel snapshot; deployed Account external CRM ID

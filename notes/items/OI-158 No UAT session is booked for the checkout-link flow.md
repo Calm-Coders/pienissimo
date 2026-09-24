@@ -5,7 +5,7 @@ status: resolved
 owner: Elena Spini
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-22
+updated: 2026-09-24
 depends_on: [OI-49]
 source: Gmail thread 1a0b563a6c15098c and the six UAT invitations of 2026-09-21
 resolution_source: notes/meetings/2026-09-22 Update Interno Aurel Elena.md
@@ -98,3 +98,16 @@ Salesforce still unresolved
 ([OI-49](OI-49%20WooCommerce%20checkout-link%20flow.md)). And **Contratto is on 5 October
 with nothing built** —
 [OI-168](OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md).
+
+## 🟢 2026-09-24 — the WooCommerce test has a time, and the client asked for it
+
+Booked in the session itself (`01:03:46`, `02:07:22`): **Friday 25/09 at 10:30 CEST**,
+with Sabatino Rinaldi and Elisa Migliano, to verify orders descending from WooCommerce
+into Salesforce — **ahead of** the `Preventivi` UAT the same day. **Marco Montesi is to be
+shown how the checkout link is generated**, which was the gap this note recorded.
+
+Elena Spini owes Sabatino Rinaldi the calendar invitation; the session's action items
+carry it. ⚠ **No invitation for it appeared in the mailbox in this window.**
+
+🟢 Sabatino Rinaldi, `02:06:19`, on the integration as it stands: the best one delivered so
+far, proved in twenty minutes of testing after a week of checks.

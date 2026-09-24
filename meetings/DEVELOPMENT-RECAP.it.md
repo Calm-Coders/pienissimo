@@ -5121,3 +5121,123 @@ listino, `Quote.Is_Primary__c`, `Opportunity.Preventivo_Primario__c`, `ProductCo
 🔴 **`Standart` è invariato**, al quinto passaggio;
 [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) è
 invariata; la copertura è **0 su 7.756**.
+
+## 47. Aggiornamento 24/09/2026 — il cliente ha accettato l'intera catena commerciale al primo giorno di UAT, ed è comparso dal nulla un Business Blueprint
+
+Passaggio esterno, watermark **2026-09-23T22:00Z**. Due riunioni drillate:
+[UAT: Lead e Opportunità](../notes/meetings/2026-09-24%20UAT%20Lead%20e%20Opportunita.md)
+(cliente, ~2h08m — **la prima sessione di accettazione del progetto**) e
+[Temi Mexal Anagrafiche/Indirizzi](../notes/meetings/2026-09-24%20Temi%20Mexal%20Anagrafiche%20Indirizzi.md)
+(Kreosoft, 22m45s — la più breve e tra le più produttive).
+
+### 🟢 La prima sessione di accettazione, e nulla è stato respinto
+
+Lead da form, conversione, opportunità, preventivo, tranche, PDF, accettazione sulla
+Community, firma DocuSign, ordine — la catena ha girato end-to-end davanti a Marco
+Montesi, Fabrizio Paganelli e Sabatino Rinaldi. **Dodici decisioni concordate**, tra cui:
+l'agente è **obbligatorio per arrivare a `Qualificato`** (e Fabrizio Paganelli ha fissato
+che _"agente"_ e _"tutor"_ sono la stessa cosa); i lead si assegnano a **una persona
+nominata**, non a una coda; un **preventivo primario** riporta il proprio valore
+sull'opportunità; l'opportunità si chiude vinta **solo a incasso**; e 🔑 **un nuovo stato
+del preventivo, `Firmato`**, distinto da `Accettato`, al quale **si genera l'ordine**
+([OI-151](../notes/items/OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)).
+
+🟢 Tre incognite di lunga data si sono chiuse per via della sessione più che per
+decisione: **una regola sui duplicati esiste e il cliente l'ha approvata** — nome ed email
+su Lead, Contatti e Account, unisci-o-crea
+([OI-163](../notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md));
+**i lead ora portano un record type**
+([OI-164](../notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+**risolta**, e il path `Diretta` a due stati consegnato esattamente come richiesto); e
+**una busta DocuSign è arrivata a un destinatario del dominio cliente**, quindi la
+[OI-174](../notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md)
+è una scocciatura per gli sviluppatori, non un blocco alla demo.
+
+⚠ Una cosa è stata riaperta: **la parola `rifiutato`**. Il meccanismo — accettando un
+preventivo gli altri decadono — è concordato; sia Fabrizio Paganelli sia Marco Montesi
+hanno contestato l'etichetta, perché quei preventivi sono lavoro svolto, non un rifiuto
+del cliente. Nessuna alternativa è stata scelta.
+
+### 🔴 Due difetti, dal vivo davanti al cliente
+
+**Ogni lead creato dal form viene tipizzato `Diretta`**, compresi quelli che dovrebbero
+essere `Standard` — Elena Spini, a sessione in corso: _"nulla mette solo rt diretta"_. Il
+difetto del record type vuoto è chiuso e ne prende il posto quello del record type
+sbagliato
+([OI-176](../notes/items/OI-176%20Web%20to%20Lead%20assigns%20every%20lead%20the%20Diretta%20record%20type.md)).
+
+**Il primo invio DocuSign non è mai partito**, perché i prodotti inseriti non erano nella
+mappatura edizione — lo stesso guasto che alle 11:13Z ha generato un'eccezione Apex in
+sandbox (`Nessuna mappatura edizione trovata per il prodotto ACADEMY`). 🔑 Il codice di
+matching **solleva un'eccezione anziché degradare**, quindi un prodotto non mappato
+annulla l'insert della riga d'ordine e con essa l'intera catena. Anita Aga ha iniziato a
+riscrivere l'handler lo stesso pomeriggio (`bfd0fd3`, **PR #60, aperta**) — ma la
+mappatura era a **13 su 51** e un handler riscritto non aggiunge righe, con l'UAT
+Biglietti il **30 settembre**
+([OI-96](../notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)).
+
+### 🟢 La call Mexal ha chiuso la tabella fiscale, e gli allegati sono arrivati la mattina stessa
+
+La [OI-173](../notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md) è
+**risolta** in 22 minuti. La regola si aggancia alla **`residenza fiscale` derivata dal
+codice ISO a due lettere sulla `ragione sociale`, non dall'indirizzo di fatturazione**;
+tre campi Mexal (`gest_fatt_el`, `serie_fatt_el` = 3, `cod_modu_allega` = `FT`) si
+valorizzano per i clienti italiani e, in futuro, sanmarinesi; le righe extra-UE restano
+vuote. Vive come tabella Salesforce manutenuta dall'amministrazione, con un trigger che
+popola il resto. **`Nazioni e Residenza Fiscale.xlsx` e `Codici Pagamento.xlsx` sono
+arrivati entro le 10:08:51Z.**
+
+🟢 Mirko Merendi ha fornito i **nomi dei campi API Mexal** necessari all'integrazione,
+compresi 🔑 **due vincoli obbligatori in creazione nuovi agli atti — `valuta` e
+`cod_listino`, entrambi fissi a `1`**
+([OI-159](../notes/items/OI-159%20Mexal%20order%20fields%20Salesforce%20does%20not%20populate.md)).
+🟢 E il cliente ha confermato **per iscritto i codici natura degli articoli**, quindi
+l'import dei 1.010 articoli poggia su una mappatura avallata — benché la legenda sia
+arrivata come screenshot per la terza volta
+([OI-154](../notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)).
+
+### 🔑 È comparso un Business Blueprint, e domani va al cliente
+
+`Business_Blueprint_Pienissimo.docx`, creato il 24/09 alle 18:10:03Z, dieci capitoli,
+**con blocco firme per ROMI Srl e Pienissimo Srl**. Elena Spini: _"Habemus BPP signori"_,
+e lo vuole al cliente il 25/09
+([OI-179](../notes/items/OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md)).
+
+🔴 **Porta sette marcatori `● Check con Aurel` e tre `[Open Points]`.** Introduce materia
+nuova agli atti — **due istanze WooCommerce**, **i QR code legacy che muoiono con Zoho** a
+carico del cliente, **i PDF firmati su storage esterno**, **20 ore di formazione**, **un
+mese di supporto post go-live**. **Omette `Firmato`** dalla propria tabella degli stati
+del preventivo, lo stato concordato poche ore prima. E dà per chiuse due cose che gli atti
+tengono aperte: l'**aggancio tranche-Mexal sul numero di riga d'ordine**
+([OI-166](../notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md))
+e l'intera specifica del **Contratto**
+([OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)),
+che resta da costruire a undici giorni dal suo UAT.
+
+### 🔴 Tre nuovi rilievi strutturali
+
+**Il cliente non ha utenze UAT**, e non le avrà finché Daniela Morgese non avrà rivisto il
+prodotto — indicativamente il **6 ottobre**, il giorno in cui la finestra UAT si chiude
+([OI-180](../notes/items/OI-180%20Client%20UAT%20users%20are%20withheld%20until%20a%20director%20review.md)).
+
+**L'UAT marketing richiede la produzione.** Elena Spini, 20:18 CEST: _"per fare gli UAT a
+Fabrizio servono le cose in PROD"_ — e un passaggio di consegne tra Aurel Mrruku e
+Fabrizio Mastracci è fermo, ciascuno in attesa dell'altro, a otto giorni dalla sessione
+([OI-177](../notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+
+**Esistono ora due campi agente su due branch** — `Codice_Agente_Esterno__c` su `DevMain`
+con 8.140 account che già lo portano, e `Agente__c` su `DEV_LeadAgenteBundle`, che è
+quello mostrato e accettato dal cliente
+([OI-178](../notes/items/OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md)).
+
+### La build
+
+Le PR **#57 e #58 unite** alle 07:12 e 07:15Z; `64b2843` (**"Inserted accounts"**, Aurel
+Mrruku 13:03 CEST) è la testa di `DevMain` e porta i metadati e lo script dell'import
+Account. 🟢 **`DEV_LeadAgenteBundle` ha ora una pull request — la #59, aperta** — il che
+scioglie la segnalazione del 23/09; **la PR #60** (`DevAnita`) è stata aperta alle 13:49Z
+con la riscrittura della Mappatura Edizione e la logica bundle. 🔴 **`Standart` è
+invariato**, al sesto passaggio, in sette punti su sei file — e i record UAT si stanno
+creando adesso. La
+[OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) è
+invariata a 19 classi; la copertura è **0 su 7.756**.

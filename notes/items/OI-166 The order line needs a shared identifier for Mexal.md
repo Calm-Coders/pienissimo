@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Mirko Merendi
 org: both
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-09-24
 depends_on: [OI-143]
 blocks: [OI-50]
 source: notes/meetings/2026-09-22 Logiche Spacchettamento Righe.md
@@ -68,3 +68,23 @@ exactly the case that matters.
   Mexal as at `cf9b6b6`.
 - ⚠ Once settled, `ORD-02` and `ORD-03` need rewording — see
   [OI-143](OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md).
+
+## ⚠ 2026-09-24 — the Business Blueprint states this as settled
+
+`Business_Blueprint_Pienissimo.docx` §6.3, written 24/09 and due to the client on 25/09
+([OI-179](OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md)):
+
+> _"Aggancio Tranche ↔ Fattura Mexal. L'aggancio con il sistema Mexal è basato sul numero
+> di riga d'ordine."_
+
+and, on the return leg: Mexal updates payment status **per line**, and Salesforce marks a
+tranche paid only when every line in it is paid in full.
+
+⚠ **That is this note's open question, answered in a document rather than in a meeting.**
+Nothing in the swept sources records the client, Mirko Merendi or Kreosoft agreeing that
+the order line number is the shared key — and Mirko Merendi's 22/09 field list named the
+invoice join as `sigla + numero ordine` and the scadenzario join as
+`codice cliente, serie, numero, data documento`, neither of which is a line number.
+
+🔴 **A statement in a client-facing blueprint is not the same as an agreement**, and the
+section carries the author's own `● Check con Aurel` marker. **This row stays open.**

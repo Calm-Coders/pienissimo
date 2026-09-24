@@ -119,3 +119,50 @@ agent name had two distinct codes, the user directed us to preserve each row's
 This supplies the customer-to-agent lookup for UAT Account data. It does not
 resolve the outstanding Lead conversion rule, zona, commission category, or
 Mexal order payload described above.
+
+## 🟢 2026-09-24 — the client accepted the agent obligation, and named the anomalies in the data
+
+**At [UAT: Lead e Opportunità](../meetings/2026-09-24%20UAT%20Lead%20e%20Opportunita.md)
+the conversion-blocking rule stopped being a ROMI decision the client was "still
+considering".** The Gemini notes record it under **Concordato**:
+
+> _"Obbligatorietà dell'agente o tutor sui lead — La specificazione dell'agente o tutor è
+> resa obbligatoria sul lead per poter procedere allo stato di qualificazione."_
+
+Demonstrated live at `00:46:49`, Aurel Mrruku: _"Per andare in qualificato mi dirà manca
+l'agente."_ 🔑 **The block is on `Qualificato`, not on conversion** — which matches the
+rule's own name, `Require_Agente_When_Qualificato`, and is narrower than the 23/09 record
+suggested.
+
+🔑 **Fabrizio Paganelli settled the vocabulary** (`00:20:38`): **"agente" and "tutor" are
+synonyms**, and the value is customer-master data that goes to Mexal. That is this note's
+premise, stated by the client.
+
+### 🔴 The loaded agent codes do not reconcile
+
+Aurel Mrruku raised this before the session and again at `00:23:28`, from the
+`Account_NEW` import:
+
+- **one tutor appears on two accounts carrying two different agent codes**;
+- **another tutor's agent code is empty.**
+
+Fabrizio Paganelli offered two explanations — a pending overnight alignment, or private
+customers who are never invoiced. Agreed: **Aurel Mrruku merges the duplicate record**,
+**Fabrizio Paganelli verifies the agent codes on Mexal**, because they have to match the
+codes on the orders.
+
+⚠ The codes and the individuals' names are **deliberately not reproduced here.**
+
+### 🔴 There are now two agent fields
+
+`Account.Codice_Agente_Esterno__c` on `DevMain` (`64b2843`, and 8,140 accounts carry it)
+and `Agente__c` on Account/Lead/Quote/User on `DEV_LeadAgenteBundle` (`7eab757`, PR #59,
+open). **What the client was shown is the second.** →
+[OI-178](OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md)
+
+🟢 `DEV_LeadAgenteBundle` **now has a pull request** — #59, opened 24/09 08:06Z. The 23/09
+"no PR" flag is discharged; the branch is still unmerged.
+
+🔑 **`zona` and `categoria provvigioni cliente` now have Mexal API names.** Mirko Merendi,
+24/09 08:46:51Z: customer `cod_agente`, **`cod_zona`**, **`cod_cat_pr`**; order
+`codice_agente`. Neither branch carries the two missing fields.

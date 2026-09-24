@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-09-04
+updated: 2026-09-24
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -114,3 +114,37 @@ throws rather than degrading, an unmapped product now blocks an order's move to
 
 **This item stays open until the rows exist.** The mechanism is delivered; the
 mapping it exists to hold is not.
+
+## 🔴 2026-09-24 — the empty mapping broke order creation twice, once in front of the client
+
+**The consequence this note and
+[OI-121](OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)
+predicted arrived, on the first day of client acceptance.**
+
+1. **11:13:00Z — a sandbox Apex exception mail**, Pienissimo srl partial sandbox:
+
+   > `OrderItemTrigger: execution of AfterInsert caused by:`
+   > `OrderTriggerHandler.TicketGenerationException: Nessuna mappatura edizione trovata`
+   > `per il prodotto ACADEMY alla data ordine 2026-09-24.`
+   > `Class.OrderTriggerHandler.assignCampaigns: line 334`
+   > `Class.OrderTriggerHandler.createTicketsForOrderLines: line 109`
+
+2. **In the 15:00 CEST client session**, the first DocuSign send never left. Aurel
+   Mrruku, `01:26:58`: _"non ti arriverà mai DocuSign perché ho messo dei prodotti che non
+   sono sulla mappatura."_ He named the cause at `01:39:14`: ticket-type products with **no
+   link to a child campaign**. He recovered by switching to a correctly configured
+   product, and the chain then ran end to end.
+
+🔑 **This confirms the failure mode the note describes**: the matching code **throws rather
+than degrading**, so an unmapped product does not merely skip ticket generation — it
+aborts the order-item insert, and with it the quote-to-order-to-DocuSign chain.
+
+🟢 **Work started the same afternoon.** `bfd0fd3` (`DevAnita`, 24/09 15:47 CEST, Anita
+Aga, **PR #60, open**) — _"Changed the logic form Mapatura Edizione"_ — rewrites
+`MappaturaEdizioneTriggerHandler` (+119/−… lines), extends `Mappatura_Edizione__c` by
+~142 lines of object metadata, and touches `Attiva__c`, `Data_Evento__c`, `Data_Fine__c`
+and `Data_Inizio__c`. ⚠ **Not read line by line here**, and not on `DevMain`.
+⚠ The same commit removes two lines from `OrderTriggerHandlerTest.cls`.
+
+🔴 **Ticket UAT is 30 September** and the mapping stood at **13 of 51** at the 23/09 org
+check. A rewritten handler does not add rows.

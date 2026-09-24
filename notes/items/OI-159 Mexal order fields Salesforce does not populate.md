@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Mirko Merendi
 org: both
 raised: 2026-09-22
-updated: 2026-09-23
+updated: 2026-09-24
 depends_on: [OI-169]
 blocks: [go-live]
 source: notes/meetings/2026-09-22 Test Mexal.md
@@ -112,3 +112,69 @@ _"di questo punto ne parliamo domani insieme"_ →
   correct order is not the same as Mexal receiving a complete one.
 - ⚠ `Causale` is now answered at the level of *who fills it* (Mexal), which leaves the
   11/08 value question (`1` vs `10`) moot for Salesforce.
+
+## 🟢 2026-09-24 — the API field names arrived, and the last open line got a label
+
+**Mirko Merendi, 24/09 08:46:51Z**, on the `Ordine cliente` thread, _"come concordato al
+telefono ti invio elenco dei campi che troverai su api"_ — the names Aurel Mrruku needs to
+map the integration:
+
+| Salesforce owes, on the **order** | Mexal API field |
+| --------------------------------- | --------------- |
+| Tipologia pagamento | `id_pagamento` |
+| Agente | `codice_agente` |
+| Gestione ratei di riga | `dt_inizio_rateo`, `dt_fine_rateo` |
+
+| On the **customer** | Mexal API field |
+| ------------------- | --------------- |
+| Agente | `cod_agente` |
+| Zona | `cod_zona` |
+| Categoria provvigionale | `cod_cat_pr` |
+| Paese | `cod_paese` |
+| Residenza fiscale | `tp_nazionalita` |
+| Fatturazione elettronica | `gest_fatt_el` |
+| Sezionale IVA | `serie_fatt_el` |
+| Inclusione allegato PDF | `cod_modu_allega` |
+| Valuta | `valuta` — **mandatory on create, fixed to 1** |
+| Listino | `cod_listino` — **mandatory on create, fixed to 1** |
+
+🔑 **Two mandatory-on-create constraints are new.** `valuta` and `cod_listino` must be sent
+on every customer creation, both fixed to `1`. Nothing in the record previously said the
+Mexal customer create had required fields Salesforce does not otherwise hold.
+
+Aurel Mrruku acknowledged at 09:16:35Z: _"Presa visione"_.
+
+### `Gestione ratei di riga` — from headroom to a named field pair
+
+At [Temi Mexal Anagrafiche/Indirizzi](../meetings/2026-09-24%20Temi%20Mexal%20Anagrafiche%20Indirizzi.md)
+`00:15:51` Fabrizio Paganelli asked for the two dates on the order-line track and
+explained where they come from: a **software platform product Pienissimo no longer
+sells**, invoiced for a year, whose accruals were computed from an activation start and
+end date. Selling only courses, the case does not arise.
+
+> _"ad oggi possiamo lasciarlo non gestito"_
+
+Agreed label: **`data inizio competenza contabile`** / **`data fine competenza
+contabile`**, chosen to be distinct from the other date fields already on the order.
+🟢 **Still headroom, not Fase 1 build work** — but now with field names, an agreed label,
+and a stated reason to exist.
+
+### Payment types: a synchronisation constraint with no owner
+
+Mexal accounting carries roughly **700** payment methods; Fabrizio Paganelli undertook to
+filter to the ones actually used — _"anziché dartene 150 te ne do cinque"_ — and sent
+**`Codici Pagamento.xlsx`** at 10:08:51Z with the note _"sono solo 4"_. ⚠ Five in the
+call, four in the mail; not reconciled.
+
+🔴 **Aurel Mrruku, `00:21:35`: if a payment type is added in Mexal it must be added in
+Salesforce by hand, with the same nomenclature.** Mirko Merendi's reason is that the
+values belong to the client, so no automated refresh can own them. **Nothing records who
+watches for drift.**
+
+### Who fills what, restated by Mexal
+
+Mirko Merendi confirmed the five _"non previsto"_ lines are Mexal's own: the **causale** is
+derived from customer type and whether products or services are sold; **contropartita di
+riga** and the **agent commission** he calculates; **tipologia merce** comes from the
+article master; **riferimento amministrazione PA** lives on the customer record.
+Fabrizio Paganelli said he would audit the article master for gaps while he was in there.

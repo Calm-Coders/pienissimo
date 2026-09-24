@@ -1,12 +1,12 @@
 ---
 id: OI-164
 type: open-item
-status: open
+status: resolved
 owner: Rexhina Hysi
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-23
+updated: 2026-09-24
 depends_on: [OI-149]
 blocks: [go-live]
 severity: gating
@@ -123,3 +123,39 @@ picklist per record type is not established here.
 
 🟢 She also confirmed the cosmetic work landed: _"grazie per aver messo i colori e resto
 tutto + carino"_ — Anita Aga's branding set and Lightning theme, `7d0f990` / PR #57.
+
+## 🟢 2026-09-24 — RESOLVED. Leads now carry a record type; they carry the wrong one
+
+**The fix landed on the morning of the UAT day, as scheduled.** `ec2dcfe`
+(`DEV_LeadAgenteBundle`, 24/09 10:02 CEST, Rexhina Hysi, **PR #59**) adds
+`Lead_Diretta.pathAssistant`, `Lead_Standard.pathAssistant` and a
+`Require_Tipo_Opp_When_Qualificato` validation rule.
+
+🟢 **In the 15:00 CEST client session both record types were present and selectable.**
+Aurel Mrruku at `00:44:08`: _"Qua hai le due record type"_, creating a `Standard` lead by
+hand. The created leads carry a record type. **The defect this note records — a Lead
+landing with none — is closed.**
+
+🟢 **Elena Spini's second expectation is met exactly.** She asked on 23/09 for the
+`Diretta` record type to expose only `New` and `Qualificato`. The delivered
+`Lead_Diretta.pathAssistant` has precisely two steps:
+
+| Step | Field prompted |
+| ---- | -------------- |
+| `New` | `Company` |
+| `Qualificato` | `Agente__c` |
+
+⚠ She had said she was content to **drop** the path assistant on `Diretta`; what was built
+is a two-step path rather than no path. The states are as she asked.
+
+### 🔴 The defect that replaces it
+
+Every lead the form creates is typed **`Diretta`**, including those that should be
+`Standard`. Elena Spini in session (`00:41:46`): _"Sono tutti record type diretta… quindi
+è sbagliato"_, and in the DM at 15:43:58 CEST: _"nulla mette solo rt diretta"_. That is a
+different fact with a different cause and it has its own row →
+[OI-176](OI-176%20Web%20to%20Lead%20assigns%20every%20lead%20the%20Diretta%20record%20type.md).
+
+⚠ **`ec2dcfe` is on a branch, not on `DevMain`.** PR #59 was open as at this sweep, so the
+path assistants and the new validation rule are in neither `DevMain` nor, by this
+repository's arithmetic, UAT. The session ran against the org, which had them.
