@@ -10,6 +10,134 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-23 — claude — nightly requirements-check: migration gets a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-22T22:00Z**. Drilled two meetings: `Check Data Import` (client, 2h29m — the
+  longest session of the project, notes+transcript 165,114 chars) and `Test Pre Demo`
+  (internal, 1h33m, ⚠ transcript machine-garbled, **not used as evidence**). Wrote 2
+  meeting notes, 1 decision note, 4 new items (`OI-172`–`OI-175`), updated 7 items, both
+  trackers, both recaps (§46), MAP, INDEX, and the trace.
+- **State:**
+  - 🟢 **`OI-146` RESOLVED.** Fabrizio Paganelli put his own 22/09 written request — an
+    ingressi conversion factor on the product — to the group in person; Aurel Mrruku put
+    the structure on the **campaign edition** and Elena Spini ruled it **Fase 2**. **Fase 1
+    is one ticket, one entry**, six-day Mastery included. The four-run-old suspension
+    trigger is discharged because the client was told, not because anything was built.
+  - 🟢 **`OI-159` answered** in twenty hours: Salesforce owes `Tipologia pagamento` and
+    `Agente`; five fields are Mexal's own procedure; `Gestione ratei di riga` is headroom
+    with no current case. The Italian e-invoicing branch was held back → **`OI-173`**, due
+    at the 24/09 10:00 Mirko Merendi call.
+  - 🟢 **Migration has a perimeter** (`OI-172`): only historic orders migrate, quotes and
+    offers start ex novo. 🔴 **The tutors re-key every pending quote by hand and Marco
+    Montesi was not in the room.** 1,010 articles loaded by Bulk API the same day, zero
+    failures (recorded by the developers on `DEV_LeadAgenteBundle`).
+  - 🔴 **`OI-164` still open at 18:28 CEST** — Elena Spini: _"il rt è sempre blank"_ — with
+    the fix scheduled for the **morning of the UAT day**, and a second expectation added
+    the same evening (only `New`/`Qualificato` on the `Diretta` record type).
+  - 🔴 **NEW `OI-174`: ROMI's mail gateway blocks DocuSign envelopes** to Aurel Mrruku and
+    Rexhina Hysi, and DocuSign is the second half of the 24/09 session.
+  - 🟢 **`OI-169` is built after all** — `7eab757`, 18:47 CEST: `Agente__c` on Account,
+    Lead, Quote, User plus the conversion-blocking validation rule. ⚠ **This supersedes the
+    correction the morning's org check wrote**, which was accurate at 08:40Z.
+- **Next:** the 24/09 UAT day is the due date of three armed triggers at once — the Lead
+  path (`OI-163`/`OI-164`/`OI-169`), DocuSign delivery (`OI-174`), and `Standart` becoming
+  permanent as UAT records are created. **Report those before anything else.**
+- **Watch:**
+  - **`OI-154` was deliberately not edited on `DevMain`.** `7eab757` carries a clean
+    developer-authored 33-line addition to exactly that file on `DEV_LeadAgenteBundle`;
+    editing it here would hand Rexhina Hysi a merge conflict. The facts are in the tracker
+    row and the trace. **Do not treat it as missed.**
+  - **`DEV_LeadAgenteBundle` has no pull request**, so the agent metadata is on neither
+    `DevMain` nor UAT, and the conversion block it contains is unresolved with the client.
+  - **`STATUS.md` was not regenerated** — the 23/09 org check did it ten hours earlier from
+    live org evidence, and this run has none. Do not overwrite live evidence with inference.
+  - **The `Check Data Import` Gemini summary lists `Implementare errori QR` as an action
+    item; the transcript puts it in Fase 2.** The 22/09 lesson caught it. Do not reinstate
+    it from the summary.
+  - `matteo.d@pienissimo.com` is a **new, unattributed** client address — the second after
+    `direzione@pienissimo.pro`. Not guessed.
+
+## 2026-09-23 — claude — org-status-check: full scope, reconciled and published, the day before UAT
+
+**Org:** Pienissimo UAT, `a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`, partial
+sandbox, API 68.0, connected. **Repository:** `DevMain` at `61f2a53`, clean, in sync
+with `origin/DevMain`. **Evidence collected 2026-09-23 08:01–08:40Z.** Read-only:
+nothing deployed, no org data modified, no anonymous Apex, no tests run, no
+source-format retrieve into `force-app/`.
+
+**Method.** `repo-snapshot.mjs` (442 keys) and `org-snapshot.mjs` (1,382 components,
+no unavailable types; run with `node` directly, the npm wrapper still loses the flag
+on Windows) then `compare.mjs` (9 assertions: 7 matches, 2 partial). On top of that,
+**every unmanaged `ApexClass.Body`, `ApexTrigger.Body` and `LightningComponentResource.Source`
+was compared token by token, and each mismatching org body was matched against every
+commit on every remote branch**. That is what separated _merged but never deployed_
+from _deployed but never committed_. Also run: `CronTrigger`, `AsyncApexJob`,
+`PicklistValueInfo`, `DuplicateRule`, `PermissionSetAssignment`, `User`, `ValidationRule`,
+`FieldDefinition` and aggregates. There was **one reference retrieve** (Profile `Admin`,
+Profile `Landing Page Profile`, five record types) into
+`.org-status-cache/run-2026-09-23/mdapi` only. Graphify (867 nodes) and Open Codebase
+Index (3,415 chunks) were both ready. ⚠ `sf` from Git Bash failed on the long retrieve
+command (`'C:\Program' is not recognized`), so it was run from PowerShell.
+
+**Findings, most severe first.**
+
+1. 🔑 **OI-164 root cause.** The Web-to-Lead creator `Amministratore Pienissimo`
+   (System Administrator) has `Lead.Diretta` and `Lead.Standard` **`visible=false`, no
+   default**. The only grant is `Full_Permission`, and that user does not hold it. All 4
+   web leads of 22/09 are untyped. **This is a configuration fix.**
+2. 🔴 **OI-170 (new): `DevMain` is ahead of UAT.** The org runs `LeadConversionQueueable`
+   of `08b97cc`, so every converted Opportunity becomes `Standart`. The
+   `QuoteLineItemTrigger`/`Handler` reopen-to-Bozza rule of `ab47b42` is not deployed,
+   and three quote classes are still `with sharing`. OI-150's _"check-only deploy"_
+   changed nothing.
+3. 🔴 **OI-171 (new): an uncommitted deploy.** `QuoteManageProductsController` and the
+   `quoteManageProducts` LWC (bundle discount / manual price) were changed at
+   07:59–08:00Z by the shared `ROMI COMPANY` user. The content is **in no commit on any
+   branch**. A `DevMain` deploy would overwrite it.
+4. 🟢 **Closed since 14/09:** the Mexal chain and the two Order fields are in source
+   (DIV-13/15), the credential metadata is in source (DIV-08/16), and `Happy Team` is
+   present (DIV-02). Edition mapping is 13 of 51. Quote ageing is scheduled. DocuSign
+   ran 15 jobs in 7 days.
+5. 🔴 **Unchanged or worse:** 0 of 45 orders have a Mexal status (`isSandbox()` guard,
+   OI-137). The nightly sync is unscheduled. `Contract` has zero fields (OI-168). 0 of 31
+   Assets have a QR (OI-161). No agent field exists anywhere (OI-169). **Correction:**
+   the 22/09 record that a conversion-blocking validation "was built" is wrong; it was
+   announced. Coverage is 0 of 7,756 across 79 entries.
+
+**Written.** New notes `OI-170` and `OI-171`. Dated org sections were added to OI-164,
+OI-150, OI-169, OI-137, OI-116, OI-168, OI-161, OI-156, OI-153, OI-121, OI-140 and OI-64,
+to the coverage risk and the credentials risk (whose metadata part is now closed), and
+to the Notion-mirror note. The `build_state` in the register was rewritten to
+`checked: 2026-09-23` with DIV-19…21, REG-06, LIM-07, LIM-08 and new built / not-built
+entries. One unrelated Prettier reflow of a requirement row was reverted so the
+requirement text stays byte-identical. Also updated: `MAP.md` (new top entry, last-updated
+line), `INDEX.md` (OI-170/171 added; OI-164, OI-169, the Mexal chain and the scaffolding
+rows corrected), both `open-items` trackers (rows 170–171 new, ten rows updated), and
+**`DEVELOPMENT-RECAP` §45 EN + IT**. Both precedence lines now name every section from
+§45 down. The IT line had been stuck at §19. `STATUS.md` was regenerated and
+`site/index.html` re-derived. The leak check returns nothing.
+
+**Published.** Notion Status page **replaced whole** (no child pages, checked first),
+then re-fetched and verified with no mangling. Tracker: **37 rows added (OI-135–OI-171),
+3 statuses corrected (OI-49, OI-88, OI-102 → Resolved)**. It now has **132 rows and 132
+distinct refs**, matching `notes/items/`. OI-170/171 have no `Note` URL until `DevMain`
+is pushed. The Flows page was not touched: no flow note or state machine changed.
+`site/` changed on disk and **was not deployed**. The public URL did not move.
+
+**Deliberate non-actions.** No Apex tests were written or offered. Nothing was deployed
+or fixed. OI-164's configuration change was **not** applied. The uncommitted OI-171 code
+was **not** retrieved into the repository. No requirement text was changed. No commit,
+no push. `MAP.md` is ~145 KB against its 5 KB budget; it was not restructured, and that
+needs its own task.
+
+**Next step.** **Before the 24/09 session:** (1) fix Lead record-type visibility for the
+Web-to-Lead creator and re-run the form test. (2) The OI-171 author commits the bundle
+discount. (3) **Then** deploy `LeadConversionQueueable`. A targeted deploy avoids making
+the OI-156 sharing decision by accident. (4) Name who deploys merged PRs to UAT. After
+that: check-in and mappings for 30/09, Contract for 5/10, and the Mexal sandbox guard for
+6/10. After the push, fill in the Notion `Note` URLs for OI-170 and OI-171.
+
 ## 2026-09-22 — claude — nightly requirements-check: five sessions in a day, and last night's headline was wrong
 
 - **Did:** swept the one-day window from watermark **2026-09-21T22:00Z** and **drilled
@@ -169,7 +297,7 @@ Keep the twenty most recent entries here; archive older ones to
   Slack (20 results, newest 12:26Z), Gmail, Fathom (1 meeting, and it is 247) and
   the build (**1 commit, the interactive run's own**). #47 open and untouched;
   🔴 **`4132dab` still has no PR**, second day. ⚠ **`[PIENISSIMO] - Follow-up
-  Interno` began twelve minutes before this sweep** and has produced no artifact
+Interno` began twelve minutes before this sweep** and has produced no artifact
   yet — **the expected state for a session in progress, not proof it produced
   nothing.** The next run is the first that can drill it.
 - **Written.** **No note created, one updated.** `OI-49` carries the finding;

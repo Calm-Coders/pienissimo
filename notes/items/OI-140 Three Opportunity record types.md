@@ -5,7 +5,7 @@ status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-17
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-49]
 blocks: [OI-141]
 source: notes/meetings/2026-09-17 Follow-up Interno.md
@@ -41,11 +41,11 @@ di venerdì"_.
 `af8a42b` (Anita Aga, 17/09 16:50:57 CEST, `DevAnita`), merged to `DevMain` in
 **PR #47** at **15:01:32Z** as `d779109`.
 
-| Record type API name       | Label                      | Business process |
-| -------------------------- | -------------------------- | ---------------- |
-| `Recall_Tutor`             | Recall tutor               | `Sales_Process`  |
-| `Standart`                 | **Vendita Standart**       | `Sales_Process`  |
-| `Plus_Attivazione_Rinnovo` | Plus Attivazione/Rinnovo   | `Sales_Process`  |
+| Record type API name       | Label                    | Business process |
+| -------------------------- | ------------------------ | ---------------- |
+| `Recall_Tutor`             | Recall tutor             | `Sales_Process`  |
+| `Standart`                 | **Vendita Standart**     | `Sales_Process`  |
+| `Plus_Attivazione_Rinnovo` | Plus Attivazione/Rinnovo | `Sales_Process`  |
 
 All three are active and share a new `Sales_Process` business process:
 `Qualificato` → `In trattativa (Prev inviato)` → `Da ricontattare - Prev.
@@ -112,3 +112,9 @@ filter or a validation rule now has to remember which object spells it which way
 ⚠ **UAT opens 24 September** — in two days — and record-type API names are effectively
 permanent once records reference them. The rename is still free today and will not be
 tomorrow. **This is the fifth consecutive run reporting it.**
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- ✅ All three are deployed and active: `Standart`, `Plus_Attivazione_Rinnovo`, `Recall_Tutor`. Opportunities created in the last seven days: 15 `Standart`, 5 Plus, 3 Recall, 1 with none. 🔴 **`Standart` is still misspelt** in the org, and UAT opens tomorrow. ⚠ The System Administrator profile sees **none** of the three. Only `Full_Permission` grants them. (verified)

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-03
-updated: 2026-09-15
+updated: 2026-09-23
 depends_on: [OI-58]
 blocks: [go-live]
 requirement: INT-01
@@ -259,3 +259,9 @@ production ERP
 
 ⚠ **The sync window is unspecified for the twelfth day.** Raised 3 September;
 never answered by any source since.
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🔴 **Still not scheduled.** The org has 8 `CronTrigger` rows. Seven are platform jobs, and the eighth is the **quote-ageing batch** (`Quote Negotiation Aging - Daily`, 01:00 UTC). None is the Mexal sync. The scheduler class is deployed and matches source. (verified)

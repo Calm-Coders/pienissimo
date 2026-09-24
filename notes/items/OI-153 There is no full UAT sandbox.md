@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-18
-updated: 2026-09-21
+updated: 2026-09-23
 depends_on: [OI-137]
 blocks: [go-live]
 severity: gating
@@ -55,3 +55,10 @@ across Slack and every Salesforce exception mail in this window names
 - ⚠ Aurel Mrruku needs **a final record list and a couple of days** to load it.
   The client's extraction arrived 21/09 and is incomplete
   ([OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)).
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- ⚠ **The org has three active human users, all System Administrators**: Aurel Mrruku, `ROMI COMPANY` and `Amministratore Pienissimo`. The other three active users are integration users. **No client tester account exists yet.** Only **two** users hold `Full_Permission`, the only set that grants the Lead and Opportunity record types. Neither the System Administrator profile nor the guest profile sees them. The client accounts were promised for 6–13 October, so this is not a defect for 24/09. It does mean every session before then runs on ROMI admin logins. (verified)
+- ⚠ **`ROMI COMPANY` is shared.** This morning it deployed code that is in no commit ([OI-171](OI-171%20A%20bundle%20discount%20was%20deployed%20to%20UAT%20from%20no%20commit.md)), and the org cannot say which person did it.

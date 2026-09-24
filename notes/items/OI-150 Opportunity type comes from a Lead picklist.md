@@ -5,7 +5,7 @@ status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-140, OI-149]
 source: notes/meetings/2026-09-21 Test Interni Pre-UAT.md
 ---
@@ -46,3 +46,12 @@ question on the same counterpart, now three weeks old.
   — see [OI-140](OI-140%20Three%20Opportunity%20record%20types.md). A Lead picklist
   that resolves to a misspelt developer name inherits the misspelling.
 - ⚠ Lead and Opportunity UAT is **24 September**.
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🔴 **The mapping is not in UAT.** The org runs `LeadConversionQueueable` as of `08b97cc` (21/09). It still **forces every converted Opportunity to `Standart`** and never reads `Lead.Tipo_Opportunita__c`. **A check-only deploy validates and changes nothing**, and nobody deployed the 22/09 version afterwards. (verified, token comparison of the org body against every commit)
+- 🟢 The rest is deployed: `Lead.Tipo_Opportunita__c` (read/edit through `Full_Permission`), both Lead record types and the three Opportunity record types.
+- ⚠ So the **24/09 session would show a picklist that does nothing at conversion**. See [OI-170](OI-170%20DevMain%20is%20ahead%20of%20UAT%20on%20the%20Lead%20conversion%20and%20quote-line%20paths.md).
+- ⚠ `Standart` is still the Opportunity record type's developer name in the org.

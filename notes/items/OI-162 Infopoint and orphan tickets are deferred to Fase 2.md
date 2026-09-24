@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Elisa Migliano
 org: both
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-161]
 source: notes/meetings/2026-09-22 Temi QR Code Biglietti.md
 ---
@@ -58,3 +58,19 @@ ticket.
   The deferral removes the integration, not the situation.
 - ⚠ The deferral is a **ROMI-and-administration decision**; no Fase 2 scope line
   carries it yet.
+
+
+## 2026-09-23 — the infopoint link survives the deferral
+
+**[Check Data Import](../meetings/2026-09-23%20Check%20Data%20Import.md), `01:26:45`,
+`01:29:03`.** Reviewing the child-campaign fields, Elena Spini and Aurel Mrruku **removed
+the registration-form block field** and **confirmed the infopoint registration link is
+present** on the edition.
+
+⚠ So the **link** stays in Fase 1 while the **desk mode behind it** is deferred. Nothing
+in the session says what the link does at a Fase 1 event, and this note's open question —
+what happens when someone arrives without a ticket — is untouched.
+
+🟢 Reinforced from the same session: the multi-entry logic this deferral sits beside is
+now explicitly Fase 2 →
+[the decision](../decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md).

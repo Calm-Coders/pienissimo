@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-15
+updated: 2026-09-23
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -191,17 +191,17 @@ proposed or scheduled.**
 the Apex is eight new classes and five modified ones. The classes now in the brief
 for the first time:
 
-| Class                            | New lines | Why it matters to the suite                       |
-| -------------------------------- | --------- | -------------------------------------------------- |
-| `MexalArticleSyncService`        | 534       | upserts `Product2` from an external system         |
-| `OrderMexalIntegrationService`   | 270       | the order → Mexal orchestration entry point        |
-| `MexalOrderSendService`          | 291       | **creates orders in the live ERP**                 |
-| `OrderMexalIntegrationQueueable` | 130       | async chain, needs `Test.startTest` discipline     |
-| `MexalArticleSyncBatch`          | 110       | `Database.Batchable` + `AllowsCallouts`            |
-| `MexalCustomerSyncBatch`         | 107       | batch, callouts, partial-success DML               |
-| `MexalSyncCursorService`         | 89        | watermark state — needs its own boundary cases     |
-| `MexalCustomerUpdateQueueable`   | 38        | outbound push on Account edits                     |
-| `MexalIntegrationLogger`         | 40        | logging used by every branch above                 |
+| Class                            | New lines | Why it matters to the suite                    |
+| -------------------------------- | --------- | ---------------------------------------------- |
+| `MexalArticleSyncService`        | 534       | upserts `Product2` from an external system     |
+| `OrderMexalIntegrationService`   | 270       | the order → Mexal orchestration entry point    |
+| `MexalOrderSendService`          | 291       | **creates orders in the live ERP**             |
+| `OrderMexalIntegrationQueueable` | 130       | async chain, needs `Test.startTest` discipline |
+| `MexalArticleSyncBatch`          | 110       | `Database.Batchable` + `AllowsCallouts`        |
+| `MexalCustomerSyncBatch`         | 107       | batch, callouts, partial-success DML           |
+| `MexalSyncCursorService`         | 89        | watermark state — needs its own boundary cases |
+| `MexalCustomerUpdateQueueable`   | 38        | outbound push on Account edits                 |
+| `MexalIntegrationLogger`         | 40        | logging used by every branch above             |
 
 `AnticipayOrderAutomation` (63 lines) was **deleted**, and
 `AccountTriggerHandler`, `AccountTrigger`, `OrderTriggerHandler`,
@@ -267,3 +267,9 @@ classes). The repository now holds **40 Apex classes, three of which are tests**
 **Brief only. No test class was written, proposed or scaffolded on this run**, per
 the standing instruction. These records exist so the suite can be written
 properly in one pass when Aurel Mrruku asks for it.
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- **Coverage in UAT: 0 covered, 7,756 uncovered, 0% across 79 entries**, up from 4,737 across 60 on 14/09. `force-app/` holds **57** Apex classes, **3** of them tests. The last `ApexTestRunResult` row in the org is **2026-08-04**. Recorded as the brief only. **No test was written, proposed or run.** (verified)

@@ -1,12 +1,12 @@
 ---
 id: OI-165
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-154, OI-24]
 blocks: [go-live]
 severity: gating
@@ -66,3 +66,44 @@ ones**, per
 - 🔴 **Decide the production sequence and who does it.**
 - ⚠ The 2026 extraction is a **Saturday snapshot** from Zoho, re-extractable by design,
   so a cut-over refresh is possible — but not planned.
+
+
+## 2026-09-23 — the perimeter exists now; the plan still does not
+
+**[Check Data Import](../meetings/2026-09-23%20Check%20Data%20Import.md), 2h29m with the
+client.** This is the first session that treats migration as its own subject.
+
+### 🟢 What is now decided
+
+- **The perimeter.** Orders only; quotes, offers and opportunities start ex novo →
+  [OI-172](OI-172%20Historical%20quotes%20and%20offers%20are%20not%20migrated.md).
+- **The account join key** is `codice cliente esterno`, not the system id.
+- **Contacts import only where a company name exists**; the rest await the direzione
+  **from 1 October**, and load as both lead and contact for testing only.
+- **Test data is hand-filtered** to records carrying P.IVA and a valid company id,
+  rather than loading the unstructured block.
+- 🟢 **A real load ran the same day.** 1,010 articles were upserted by Bulk API with
+  zero failures, with Standard Price Book entries for all of them. Recorded by the
+  developers on `DEV_LeadAgenteBundle`, in the
+  [OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+  note; **that note was not edited on `DevMain`** — see the 23/09 trace.
+
+### 🔴 What the session exposed
+
+- **The locali extraction is broken**: every row carries the same id except row 20.
+  Fabrizio Paganelli owes a corrected **V1** file.
+- **The account key field overran the 40-character limit** — it held an HTTP address plus
+  an identifier — and was patched in Excel with a `RIGHT()` of the last 15 characters.
+  ⚠ A join key produced by a spreadsheet formula on the client's side is a **cut-over
+  fragility**, not a fix.
+- **The migration/orders session was postponed**, at Aurel Mrruku's request, because he
+  was fielding questions from the developers. Its 24/09 10:00 slot went to
+  [OI-173](OI-173%20San%20Marino%20fiscal%20transcoding%20table.md) instead, and **no new
+  date was set for it** in this window.
+
+### 🔴 Unchanged
+
+**There is still no estimate, no production sequence and no owner for the cut-over.**
+Go-live is **21/10** and Zoho stops **31/10**. Everything above is UAT test data, which
+[the standing decision](../decisions/Decision%20-%20UAT%20data%20is%20disposable%20in%20Fase%201.md)
+says is disposable — **none of it is the production migration.**

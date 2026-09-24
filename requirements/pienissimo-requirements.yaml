@@ -1467,7 +1467,15 @@ requirements:
         of the integration. Kept open because no one has accepted that trade aloud;
         it needs a decision, not a re-statement of the recommendation",
       recommendation: signed_token,
-      tracked_by: [OI-104, OI-136, REF-woo-payload, risk-woo-endpoint-orphan, RISK-community-auth, RISK-credentials-in-plaintext]
+      tracked_by:
+        [
+          OI-104,
+          OI-136,
+          REF-woo-payload,
+          risk-woo-endpoint-orphan,
+          RISK-community-auth,
+          RISK-credentials-in-plaintext
+        ]
     }
   - {
       id: INT-17,
@@ -2024,18 +2032,23 @@ acceptance_criteria:
 
 # =============================================================================
 build_state:
-  checked: 2026-09-14
-  supersedes: 2026-09-02
+  checked: 2026-09-23
+  supersedes: 2026-09-14
   org: a.mrruku@pienissimo.uat
   org_id: 00DMA000004nMMr2AM
-  repo_commit: cc3c571
+  repo_commit: 61f2a53
+  observed_at: "2026-09-23T08:01Z-08:40Z"
   method: >-
-    read-only; Metadata API list across 20 component types, Tooling
-    FieldDefinition, FieldPermissions, ObjectPermissions and
-    ApexCodeCoverageAggregate, FlowDefinitionView, ApexTestRunResult,
-    PermissionSetAssignment and targeted SOQL aggregates. Snapshots produced by
-    npm run org-status:snapshot:repo and :snapshot:org, compared by
-    npm run org-status:compare.
+    read-only; npm run org-status:snapshot:repo (442 keys) and :snapshot:org
+    (1,382 components, no unavailable types) then :compare; Tooling
+    FieldDefinition, FieldPermissions, ApexCodeCoverageAggregate,
+    ApexTestRunResult, ApexClass.Body, ApexTrigger.Body and
+    LightningComponentResource.Source for every unmanaged class, trigger and LWC,
+    each mismatching body matched token by token against every commit on every
+    remote branch; CronTrigger, AsyncApexJob, PicklistValueInfo, DuplicateRule,
+    PermissionSetAssignment, User and targeted SOQL aggregates; one reference
+    retrieve of Profile Admin, Profile Landing Page Profile and five record types
+    into .org-status-cache only. Nothing deployed, no data written, no test run.
   note: >-
     sf project retrieve preview is unusable here — Pienissimo UAT is a partial
     sandbox without source tracking (NonSourceTrackedOrgError). Repository-vs-org
@@ -2093,94 +2106,99 @@ build_state:
         LINE COUNT is still evidence: it is derived from compiled classes, not
         from a test run, and it rose from 2,957 across 42 entries to 4,737 across
         60. Read the percentage as unmeasured and the uncovered count as real.
+    - id: LIM-07
+      issue: >-
+        Presence of a component proves nothing about WHICH version is deployed.
+        On 2026-09-23 every repository key was present in the org, yet eight Apex
+        or LWC files differed at token level, in both directions. Only a body
+        comparison, with the org body matched against git history, can tell
+        "merged but never deployed" from "deployed but never committed". A
+        structural comparison alone would have reported this org as aligned.
+    - id: LIM-08
+      issue: >-
+        Org LastModifiedBy cannot attribute work to a person when the modifying
+        user is the shared System Administrator account ROMI COMPANY. The
+        2026-09-23 uncommitted deploy (DIV-20) is recorded without an author for
+        that reason.
   unmapped_observations: >-
     The quote state machine has no requirement id in this register; its authority
     is state_machines.quote. Entries below that observe it carry
-    state_machine: quote and no refs. The 2026-08-26 block cited QUO-01 and
-    QUO-06, which have never existed among the 154 requirement ids — the sales
-    area uses the SAL- prefix. Those refs are corrected or removed here; where the
-    entry text names a requirement directly (expiry date, day-2 alert) it now
-    cites SAL-08 and SAL-09.
+    state_machine: quote and no refs. Lead record types (OI-149), the Lead-type to
+    Opportunity-record-type mapping (OI-150), the three Opportunity record types
+    (OI-140), the agent rule (OI-169) and the check-in app (OI-161) have no
+    requirement id of their own; entries cite the nearest register id and say so.
   built:
     - {
-        component: "Order-to-Mexal queued chain in the ORG ONLY - OrderMexalIntegrationService and OrderMexalIntegrationQueueable run Mark Running -> Anticipay (first order only) -> Mexal Customer -> Mexal Order, implementing the 2026-09-11 sequencing decision; created 2026-09-14 09:12Z, absent from force-app at cc3c571",
+        component: "Order-to-Mexal queued chain IN SOURCE CONTROL AND DEPLOYED — OrderMexalIntegrationService, OrderMexalIntegrationQueueable, MexalOrderSendService, MexalHttpClient, MexalIntegrationLogger and the customer update/sync classes; every org body equals force-app except for formatting. Supersedes DIV-13 and DIV-15 of 2026-09-14. Still never executed in UAT: see DIV-19",
         refs: [INT-01, INT-05]
       }
     - {
-        component: "Mexal customer UPDATE (PUT) caller in the ORG ONLY - runMexalCustomerStep calls MexalCustomerCreateService.updateForAccount for an already-linked Account, closing the OI-125 caller gap; never executed, all 30 Orders carry an empty Mexal_Integration_Status__c",
-        refs: [INT-01]
-      }
-    - {
-        component: "Nightly Mexal anagrafica batch, scheduler and watermark in the ORG ONLY - MexalCustomerSyncBatch, MexalCustomerSyncScheduler, MexalSyncCursorService, created 2026-09-14 09:44Z; NOT scheduled, all 7 CronTrigger rows are Salesforce platform jobs",
-        refs: [INT-01]
-      }
-    - {
-        component: "Integration_Configuration2__c is CONFIGURED: 6 rows - Anticipay_Account_Check, Mexal_Clienti_Ricerca, Mexal_Clienti_Creazione, Mexal_Clienti_Modifica, Mexal_Articoli_Ricerca, Mexal_Ordini_Creazione. Supersedes every zero-rows entry through 2026-09-11. Integration_Log__c holds 85 rows (45 error, 40 not)",
+        component: "Credential metadata in source control — three named credentials and three external credentials (Anticipay, DocuSign, Mexal) in force-app; the org holds exactly those three named credentials. Supersedes DIV-08 and DIV-16",
         refs: [INT-18, INT-19]
       }
     - {
-        component: "OrderItem tranche propagation has STARTED - 3 of 36 order lines carry Tranche__c, against 0 of 32 on 2026-09-08; 40 quote lines linked",
-        refs: [ORD-02, ORD-03]
+        component: "Integration_Configuration2__c holds 11 rows, up from 6. Integration_Log__c holds 113 rows; in the last seven days DocuSign_Create_Envelope 11 ok / 4 error, WoocommerceOrderService.createOrder 4 ok / 5 error, Anticipay_Account_Check 1 ok / 1 error",
+        refs: [INT-18, INT-19]
       }
     - {
-        component: "BundleComponent__c junction with spread formulas and active trigger; 19 component records",
+        component: "DocuSign envelope creation runs in UAT — DocuSignQuoteEnvelopeQueueable completed 15 times in seven days; DocuSignQuoteEnvelopeService in source and deployed (formatting-only difference)",
+        refs: [BIG-13]
+      }
+    - {
+        component: "Quote ageing is automated and scheduled — QuoteNegotiationAgingBatch runs daily at 01:00 UTC as 'Quote Negotiation Aging - Daily' and has completed three times. The org body is the with-sharing variant; see DIV-19",
+        state_machine: quote
+      }
+    - {
+        component: "Lead record types Standard and Diretta, Lead.Tipo_Opportunita__c (read/edit via Full_Permission) and the updated LeadConversionTriggerHandler are deployed. Nearest requirement SAL-04; OI-149 and OI-150 carry no register id",
+        refs: [SAL-04]
+      }
+    - {
+        component: "Opportunity record types Standart, Plus_Attivazione_Rinnovo and Recall_Tutor are deployed and active; 15 / 5 / 3 of the Opportunities created in the last seven days. The developer name Standart is still misspelt (OI-140)",
+        refs: [SAL-04]
+      }
+    - {
+        component: "Product2.Numero_Tranche__c deployed 2026-09-22 — the tranche count that drives the Plus order explosion agreed the same day (OI-167)",
+        refs: [ORD-02]
+      }
+    - {
+        component: "Tranche propagation is in use — 50 tranches; 58 of 76 quote lines and 15 of 60 order lines carry Tranche__c, against 40 quote lines and 3 order lines on 2026-09-14",
+        refs: [DM-17, ORD-01, ORD-02, ORD-03]
+      }
+    - {
+        component: "Administrative-field lock — Account validation rule Lock_Mexal_Synced_Admin_Fields is active since 2026-09-15; see DIV-14 for what it does not cover",
+        refs: [INT-01]
+      }
+    - {
+        component: "Edition mapping has moved — 13 active Mappatura_Edizione__c rows; 13 of 51 ticket-generating products mapped, against 3 of 43 on 2026-09-14",
+        refs: [BIG-02, BIG-04]
+      }
+    - {
+        component: "Product2.Evento__c now carries Happy Team among 11 values. Supersedes DIV-02",
+        refs: [BUN-08]
+      }
+    - {
+        component: "Quote.Status carries five active values — Bozza, In Trattativa, In Attesa Accettazione, Accettato, Rifiutato. Nuovo Preventivo, listed on 2026-09-14, is no longer an active value",
+        state_machine: quote
+      }
+    - {
+        component: "Order.Status carries the agreed Italian lifecycle and is IN USE — 32 Incassato, 9 Ordinato, 1 Fatturato of 45 orders",
+        refs: [ORD-01]
+      }
+    - {
+        component: "BundleComponent__c junction with spread formulas and active trigger; 21 component records",
         refs: [BUN-03]
-      }
-    - {
-        component: "Product2 bundle fields — 24 custom fields including selling price, spread total and spread variance; 8 of 281 products carry the Bundle record type",
-        refs: [BUN-02]
-      }
-    - { component: Bundle configurator controller and LWC, refs: [BUN-10] }
-    - {
-        component: "Genera_Biglietto__c — true on 4 of 281 products",
-        refs: [BUN-12]
-      }
-    - {
-        component: "Solo_Bundle__c — true on 0 of 281 products",
-        refs: [BUN-13]
-      }
-    - {
-        component: "Tranche__c object with Stato__c, due date, planned amount, sequence and Quote lookup; 19 records, none fully paid",
-        refs: [DM-17, ORD-01]
-      }
-    - {
-        component: "QuoteLineItem.Tranche__c and QuoteLineItem.Data_Scadenza__c — 31 quote lines carry a tranche",
-        refs: [DM-17, ORD-01]
       }
     - {
         component: "Quote-side tranche creation: QuoteTrancheController, quoteCreateTranche LWC and the Quote.Crea_Tranche quick action — all three deployed and in source control",
         refs: [DM-17, ORD-01]
       }
     - {
-        component: "OrderItem.Tranche__c is deployed AND granted read/edit to Tranche_Management — the field is no longer invisible to every user",
-        refs: [DM-17, ORD-01],
-        supersedes: "DIV-04 of the 2026-08-26 block"
+        component: "WooCommerce inbound endpoint and checkout link — WoocommerceOrderService, WooCheckoutEmailController, the wooCheckoutEmail LWC and the WooCommerce_Checkout_Link template, all in source and deployed",
+        refs: [INT-12, INT-13, INT-14]
       }
     - {
-        component: "Quote.Status carries the agreed lifecycle: Bozza, Nuovo Preventivo, In Trattativa, In Attesa Accettazione, Accettato, Rifiutato; 7 of 10 quotes now sit on Bozza",
-        state_machine: quote
-      }
-    - {
-        component: "Order.Status carries the agreed Italian lifecycle and is IN USE — Incassato on 12 of 15 orders; Order carries 3 custom fields (Origine__c, Quote__c, WooCommerce_Order_Key__c)",
-        refs: [ORD-01],
-        supersedes: "the 2026-08-26 not_built entry claiming stock Draft/Activated and zero custom fields"
-      }
-    - {
-        component: "WooCommerce inbound endpoint — WoocommerceOrderService deployed, now IN SOURCE CONTROL and byte-identical to the deployed class; exactly one REST route; the duplicate WooCommerceOrderEndpoint is removed from both sides; 21 Integration_Log__c rows show real traffic",
-        refs: [INT-13, INT-14]
-      }
-    - {
-        component: "WooCommerce checkout email — WooCheckoutEmailController, the wooCheckoutEmail LWC, the Opportunity quick action and the WooCommerce_Checkout_Link template, which is ACTIVE in the org (see LIM-01)",
-        refs: [INT-12]
-      }
-    - {
-        component: "Standard Asset as the ticket object — 8 custom fields and a Ticket record type; 5 records, 4 on Ordinato",
-        refs: [DM-22, BIG-01],
-        supersedes: "the 2026-08-26 not_built entry claiming Asset carried zero custom fields"
-      }
-    - {
-        component: "Lead conversion stack — LeadConversionTrigger, LeadConversionTriggerHandler and LeadConversionQueueable deployed; Lead carries 6 custom fields and a Require_Non_Qualificato_Exit_Reason validation rule",
-        refs: [SAL-04]
+        component: "Standard Asset as the ticket object — Ticket record type, QR_Id__c and Data_CheckIn__c among its fields; 31 records (23 Ordinato, 4 Assegnato, 3 Rinuncia, 1 Disponibile)",
+        refs: [DM-22, BIG-01, BIG-03]
       }
     - {
         component: "OrderBigliettoTrigger creates tickets from an order in Apex",
@@ -2188,185 +2206,167 @@ build_state:
       }
   not_built:
     - {
-        component: "No schedule for the nightly Mexal sync. MexalCustomerSyncScheduler exists as a class; the org holds 7 CronTrigger rows and every one is a Salesforce platform job. One System.schedule call is the whole remaining task",
+        component: "Web-to-Lead record type — the default lead creator (Amministratore Pienissimo, System Administrator profile) sees NEITHER Lead record type: Profile Admin has Lead.Diretta and Lead.Standard visible=false with no default, and the only grant, Full_Permission, is not assigned to that user. All 4 Web leads of 2026-09-22 have no record type. Configuration, not code (OI-164). Nearest requirement SAL-01",
+        refs: [SAL-01]
+      }
+    - {
+        component: "Contract logic — the standard Contract object carries ZERO custom fields and no Apex writes it; on the client-validated 5 October UAT agenda (OI-168)",
+        refs: [ORD-05]
+      }
+    - {
+        component: "Event check-in — 0 of 31 Assets carry QR_Id__c, nothing writes Data_CheckIn__c, no inbound check-in endpoint exists; ticket UAT 30/09 (OI-161)",
+        refs: [BIG-11, BIG-12]
+      }
+    - {
+        component: "Agent from the customer record — no agent, zona or provvigione field on User, Account, Lead or Order in the org or in force-app, and no conversion-blocking Lead validation (OI-169). The 2026-09-22 record that such a validation was built is corrected",
         refs: [INT-01]
       }
     - {
-        component: "The OI-117 administrative-field LOCK. No validation rule and no field-level enforcement exists. The org instead pushes admin edits OUT to Mexal (see DIV-14), which is the opposite of the 2026-09-03 agreement",
+        component: "No schedule for the nightly Mexal sync — of 8 CronTrigger rows, 7 are platform jobs and 1 is the quote-ageing batch (OI-116)",
         refs: [INT-01]
       }
     - {
-        component: "Edition mapping coverage - 43 ticket-generating products (Genera_Biglietto__c), only 3 carry an active Mappatura_Edizione__c row. 40 unmapped, unchanged since 2026-09-08",
+        component: "Edition mapping coverage — 38 of 51 ticket-generating products still unmapped; an order for one of them rolls back its ticket step (OI-121)",
         refs: [BIG-02, BIG-04]
       }
     - {
-        component: "The eleven Anticipay fields agreed 2026-09-01 — Account carries only Lead_Email__c, Nome_Locale__c and Partita_IVA__c. No PEC, none of the five legale-rappresentante fields, no representative address. Proven absent by Tooling FieldDefinition",
-        refs: [INT-18]
+        component: "Any declarative automation — ZERO non-namespaced Flows in FlowDefinitionView, unchanged",
+        refs: [BIG-19, SAL-09, ORD-04]
       }
     - {
-        component: "Any declarative automation at all — ZERO project Flows, verified twice: an empty Metadata API Flow list, and FlowDefinitionView returning 79 flows of which none is non-namespaced. No WorkflowRule, ApprovalProcess, CustomNotificationType, RemoteSiteSetting or scheduled Apex. Three validation rules exist: two on BundleComponent__c, one on Lead",
-        refs: [BIG-02, BIG-19, SAL-09, ORD-04]
+        component: "Lead conversion duplicate rule — only the five stock DuplicateRules are active; no agreed P.IVA rule exists and the case table of OI-163 is undecided",
+        refs: [SAL-04]
       }
     - {
-        component: "Quote lifecycle BEHAVIOUR — the picklist is configured but nothing enforces it: no validation rule on Quote, and no email template for the day-2 reminder copy delivered 2026-08-25",
-        refs: [SAL-08, SAL-09],
-        state_machine: quote
-      }
-    - {
-        component: "Tranche-to-order propagation and payment roll-up — 0 of 18 OrderItem records carry a tranche, Completamente_Pagata__c is true on none of the 19 tranches, and nothing in force-app writes either",
-        refs: [DM-17, ORD-01]
-      }
-    - {
-        component: "Outbound integration configuration — Integration_Configuration__c holds ZERO rows and ZERO ObjectPermissions rows, so nobody can read it. Mexal and the Anticipay middleware have neither endpoint nor principal. API_Callout_Engine cannot pass a path parameter",
-        refs: [INT-01, INT-18]
-      }
-    - {
-        component: "Campaign parent/child model — Campaign and CampaignMember carry no custom fields, no record types and no validation rules",
+        component: "Campaign parent/child model — record types Campagna_Padre and Campagna_Figlio exist; the product lookup and one-active-child rule were not re-verified in this run",
         refs: [BIG-19]
       }
     - {
-        component: "Lead and Opportunity state machines — both stock Salesforce picklists",
-        refs: [DGM-1, DGM-2]
+        component: "Tranche payment roll-up — Completamente_Pagata__c exists; nothing observed writes it from a Mexal payment, and OI-166 (the order-line identifier) is open",
+        refs: [DM-17, ORD-01]
       }
     - {
-        component: Contract auto-generation,
-        scheduled reports,
-        credit-note flow,
-        note: "no ApprovalProcess and no scheduled Apex in the org",
-        refs: [ORD-05, ORD-07, ORD-08, ORD-15]
+        component: "Scheduled reports and credit-note flow — no ApprovalProcess, no scheduled report job",
+        refs: [ORD-07, ORD-08, ORD-15]
       }
   divergent:
     - {
-        id: DIV-13,
-        issue: "force-app OrderTriggerHandler.afterInsert calls AnticipayOrderAutomation.enqueueForFirstOrders; the ORG calls OrderMexalIntegrationService.enqueueForCreatedOrders. A deploy from DevMain silently REVERTS the Mexal chain and orphans nine org-only classes",
-        refs: [INT-01, INT-05]
+        id: DIV-19,
+        issue: "DevMain is AHEAD of UAT (OI-170). The org runs LeadConversionQueueable of 08b97cc (21/09), not 54e0be1 (22/09, PR #55): every converted Opportunity is forced to Standart and Lead.Tipo_Opportunita__c is ignored at conversion, though the field and record types ARE deployed. QuoteLineItemTrigger and QuoteLineItemTriggerHandler run 2d31ebe (18/09), missing the after-insert reopen-to-Bozza rule of ab47b42; QuoteLineItemsController (e992e6a) and QuoteNegotiationAgingBatch still run with sharing. OI-150's 'check-only deploy' changed nothing in the org",
+        refs: [SAL-04]
       }
     - {
-        id: DIV-14,
-        issue: "OI-117 was agreed 2026-09-03 as a read-only LOCK on administrative fields once Codice_Cliente_Mexal__c is set. The org's AccountTriggerHandler.afterUpdate instead enqueues MexalCustomerUpdateQueueable to PUSH edits of Email__c, Phone, Partita_IVA__c and Name to Mexal. Opposite design, no minute, no decision note; the inbound nightly batch writes the same fields with no conflict rule",
-        refs: [INT-01]
+        id: DIV-20,
+        issue: "UNCOMMITTED WORK IN UAT (OI-171). QuoteManageProductsController and all three quoteManageProducts LWC source files were modified 2026-09-23 07:59-08:00Z by the shared ROMI COMPANY admin user; the content matches NO commit on any remote branch. It adds a bundle-only percentage discount and manual price. A deploy of DevMain to fix DIV-19 overwrites it. Fifth instance of the org-only pattern"
       }
     - {
-        id: DIV-15,
-        issue: "Nine org-only Apex classes plus Order.Mexal_Integration_Status__c and Order.Mexal_Order_Number__c, roughly 28,000 characters created 2026-09-14 09:12-10:33Z by Aurel Mrruku. Largest body of unversioned work on the project; fourth instance of the org-only pattern",
-        refs: [INT-01, INT-05]
-      }
-    - {
-        id: DIV-16,
-        issue: "TWO permission sets now reference an external credential principal with no metadata in the repository - Full_Permission (Mexal_External_Credential-Mexal_Principal) and Integration_Management (Anticipay_External_Credential-Anticipay Principal). A clean deploy fails twice; force-app has no namedCredentials or externalCredentials directory",
-        refs: [INT-18, INT-19]
-      }
-    - {
-        id: DIV-17,
-        issue: "Apex body comparison of all 76 unmanaged classes and triggers: 27 equal, 12 mismatched. Eight differ at TOKEN level - ParticipantRegistrationController, EventInvitationService, OrderTriggerHandler, AccountTriggerHandler, MexalCustomerSearchService, MexalSearchCalloutService, MexalCustomerCreateService, AccountTrigger. Four differ only in formatting. Drift grew from 4 mismatches on 2026-09-08",
+        id: DIV-21,
+        issue: "Apex and LWC body comparison of 69 project classes and triggers plus 15 LWC bundles: 50 classes/triggers identical, 12 differ only in formatting or comments, 7 differ at token level (6 repository-ahead, 1 org-ahead); 3 LWC files of 1 bundle differ (org-ahead) and anticipayAccountRefresh is org-only. Supersedes DIV-17's 12-of-76. The 26 other org-only classes are stock Experience Cloud controllers created with the community",
         refs: [NFR-06]
       }
     - {
+        id: DIV-14,
+        issue: "OI-117 was agreed 2026-09-03 as a read-only LOCK on administrative fields once Codice_Cliente_Mexal__c is set. The lock now exists (Lock_Mexal_Synced_Admin_Fields, 13 fields) AND AccountTriggerHandler still enqueues MexalCustomerUpdateQueueable to push edits of four fields to Mexal. Narrowed from the 2026-09-14 entry, still unminuted with the client",
+        refs: [INT-01]
+      }
+    - {
         id: DIV-18,
-        issue: "AnticipayErrorNotificationService still addresses the hardcoded ROMI developer mailbox rather than a client administration role. Unchanged since 2026-09-08; org body identical to repository",
+        issue: "AnticipayErrorNotificationService still addresses a hardcoded ROMI developer mailbox rather than a client administration role. Unchanged since its first commit on 2026-09-03; org body identical to repository (OI-119)",
         refs: [INT-18]
       }
     - {
-        id: DIV-08,
-        issue: "Named credentials Anticipay and DocuSign exist ONLY in the org, as do the permission sets DocuSign, Full_Permission and Sales_User. Absent from force-app on every branch. Third instance of the org-only pattern after the Biglietto stack and WoocommerceOrderService; lost if the sandbox is refreshed",
-        refs: [INT-18, INT-19]
-      }
-    - {
         id: DIV-09,
-        issue: "Every project permission set reaches exactly ONE active user against 8 active users — Bundle_Demo, Integration_Management, Lead_Management, Opportunity_Management, Ticket_Asset_Management and Tranche_Management. Business users cannot exercise UAT",
+        issue: "The org has 3 active human users, all System Administrators (one of them the shared ROMI COMPANY login), plus 3 integration users. Only 2 hold Full_Permission, the only grant of the Lead and Opportunity record types; the System Administrator profile sees none of them. No client tester account exists; they are promised for 6-13 October (OI-153)",
         refs: [NFR-06]
       }
     - {
         id: DIV-10,
-        issue: "The 2026-08-28 check recorded TWO Flows in this org, one of them the active Lead_Non_Risponde_Follow_Up. That file was added in 225b172 and deleted in 158c2d0 and is recoverable from git, but git log --all proves only ONE flow file has ever existed in this repository. The second Flow was org-only and is now gone with no versioned copy and no surviving record of its name",
+        issue: "The 2026-08-28 check recorded TWO Flows in this org, one of them the active Lead_Non_Risponde_Follow_Up. git log --all proves only ONE flow file has ever existed in this repository. The second Flow was org-only and is gone with no versioned copy",
         refs: [BIG-19]
       }
     - {
         id: DIV-11,
-        issue: "Order.Status holds 3 of 15 records on stock English values (Activated x2, Draft x1) alongside the agreed Italian lifecycle — the same unmigrated-records pattern as DIV-05, on a second object",
+        issue: "Order.Status holds 3 of 45 records on stock English values (Activated x2, Draft x1) alongside the agreed Italian lifecycle — unchanged records, the same unmigrated pattern as DIV-05",
         refs: [ORD-01]
       }
     - {
-        id: DIV-02,
-        issue: "Product2.Evento__c has no Happy Team value, though the client workbook prices it and places it in the Academy bundle",
-        refs: [BUN-08]
-      }
-    - {
         id: DIV-03,
-        issue: "Opportunity carries a stock Loss_Reason__c alongside the built Motivazione_Chiusa_Persa__c — two loss-reason fields on one object",
+        issue: "Opportunity carries a stock Loss_Reason__c alongside the built Motivazione_Chiusa_Persa__c — two loss-reason fields on one object. Budget_Confirmed__c, Discovery_Completed__c and ROI_Analysis_Completed__c are the same stock set and also absent from force-app",
         refs: [DGM-2]
       }
     - {
         id: DIV-05,
-        issue: "Quote.Status was replaced with the agreed Italian values without migrating the records — 3 of 10 quotes still sit on deactivated stock values (Accepted x2, Needs Review x1). A record on a deactivated value cannot be re-saved without being moved. Unchanged since 2026-08-26",
+        issue: "Quote.Status: 2 of 38 quotes still sit on deactivated stock values (Accepted x1, Needs Review x1). A record on a deactivated value cannot be re-saved without being moved",
         state_machine: quote
       }
     - {
         id: DIV-06,
-        issue: "Tranche__c.Sequenza__c has no integrity control — nothing enforces presence, uniqueness or contiguity, and BIG-18 ticket release reads it as a total order",
+        issue: "Tranche__c.Sequenza__c has no integrity control — nothing enforces presence, uniqueness or contiguity, and BIG-18 ticket release reads it as a total order. Not re-verified in this run",
         refs: [DM-17]
       }
     - {
         id: DIV-07,
-        issue: "state_machines.quote.states in this register still carries the older DGM-derived labels and disagrees with BOTH the org and OI-59. Flagged for a human; an org check does not amend the register",
+        issue: "state_machines.quote.states in this register still carries the older DGM-derived labels and disagrees with the org's five values. Flagged for a human; an org check does not amend the register",
         state_machine: quote
       }
   regressions:
     - {
         id: REG-04,
-        issue: "Apex coverage reads 0% of 1646 lines across the org, up from 1571 on 2026-08-31 as code lands. Three project test classes are deployed — BundleComponentTriggerHandlerTest, BundleProductAssignmentControllerTest and OrderBigliettoTriggerHandlerTest — but the last test run is 2026-08-04, so see LIM-04. The 75% production floor cannot be evidenced today",
+        issue: "Apex coverage reads 0 of 7,756 lines across 79 entries, up from 4,737 across 60 on 2026-09-14. force-app holds 57 Apex classes, 3 of them tests; the last ApexTestRunResult is 2026-08-04 (LIM-04, LIM-06). The 75% production floor cannot be evidenced",
         refs: [NFR-06]
       }
     - {
         id: REG-05,
-        issue: "Biglietto__c and its 37 records were deleted from the org on 2026-08-28 by commit 5d8cdb3. Confirmed absent. Asset holds 5 records, not 41, so the dataset was NOT migrated; and seven Apex components that went with it were never in source control on any branch",
+        issue: "Biglietto__c and its 37 records were deleted from the org on 2026-08-28 by commit 5d8cdb3. Confirmed absent; the seven Apex components that went with it were never in source control on any branch",
         refs: [BIG-01, DM-22]
+      }
+    - {
+        id: REG-06,
+        issue: "The order-to-Mexal chain cannot run in any sandbox — OrderMexalIntegrationService returns early on isSandbox(); all 45 Orders carry an empty Mexal_Integration_Status__c. Mexal UAT is booked for 6 October (OI-137)",
+        refs: [INT-01, INT-05]
       }
   out_of_source_control:
     note: >-
       Present in the org and absent from force-app on every branch. Lost if the
-      sandbox is refreshed. The 2026-08-26 list is superseded: the Biglietto
-      components on it were deleted from the org on 2026-08-28, and
-      WoocommerceOrderService has since been committed.
+      sandbox is refreshed. The 2026-09-14 list is superseded: the Mexal classes,
+      the Order Mexal fields, the Contact trigger, the named credentials and the
+      DocuSign and Full_Permission permission sets are all in source control now.
     components:
-      - Anticipay (named credential)
-      - DocuSign (named credential)
-      - Mexal (named credential, created 2026-09-10)
-      - DocuSign / Full_Permission / Sales_User permission sets
+      - "2026-09-23: QuoteManageProductsController and quoteManageProducts (LWC) — bundle discount version, uncommitted (DIV-20)"
+      - anticipayAccountRefresh (LWC, since 2026-09-03)
+      - "Sales_User permission set — created 2026-05-13 with the org; probably platform-provisioned (inferred)"
       - one unidentifiable Flow, present 2026-08-28, absent 2026-09-02 (see DIV-10)
-      - "2026-09-14: OrderMexalIntegrationService, OrderMexalIntegrationQueueable, MexalOrderSendService, MexalHttpClient, MexalIntegrationLogger, MexalCustomerSyncBatch, MexalCustomerSyncScheduler, MexalSyncCursorService, MexalCustomerUpdateQueueable (9 Apex classes)"
-      - "2026-09-14: Order.Mexal_Integration_Status__c and Order.Mexal_Order_Number__c"
-      - "ContactTriggerHandler and ContactTrigger (2026-09-08), Account.Email_Contatto_Principale__c"
-      - anticipayAccountRefresh (LWC)
   lifecycle_evidence:
-    checked: 2026-09-02
-    assets: 5
-    assets_ordinato: 4
-    assets_blank_status: 1
-    tranches: 19
-    tranches_fully_paid: 0
-    quote_lines_with_tranche: 31
-    order_items_with_tranche: 0
-    integration_log_rows: 21
-    integration_configuration_rows: 0
-    note: >-
-      Biglietto__c is gone, so the 2026-08-26 ticket lifecycle counters have no
-      successor. The Asset rebuild has not started.
+    checked: 2026-09-23
+    assets: 31
+    assets_ordinato: 23
+    assets_assegnato: 4
+    assets_rinuncia: 3
+    assets_disponibile: 1
+    assets_with_qr: 0
+    tranches: 50
+    quote_lines_with_tranche: 58
+    order_items_with_tranche: 15
+    orders_with_mexal_status: 0
+    integration_log_rows: 113
+    integration_configuration_rows: 11
+    web_leads_without_record_type_2026_09_22: 4
   data_volumes:
-    checked: 2026-09-02
-    products: 281
-    products_bundle_record_type: 8
-    opportunities: 56
-    leads: 18
-    accounts: 11
-    campaigns: 3
-    campaign_members: 15
-    orders: 15
-    order_items: 18
-    quotes: 10
-    quote_lines_with_tranche: 31
-    bundle_components: 19
-    tranches: 19
-    assets: 5
-    active_users: 8
-    note: still a development dataset; the migration has not started
+    checked: 2026-09-23
+    products: 231
+    products_ticket_generating: 51
+    opportunities: 88
+    leads: 34
+    accounts: 33
+    campaigns: 8
+    campaign_members: 20
+    orders: 45
+    order_items: 60
+    quotes: 38
+    quote_lines: 76
+    bundle_components: 21
+    tranches: 50
+    assets: 31
+    contracts: 4
+    active_human_users: 3
+    note: still a development dataset; the migration has not started (OI-165)

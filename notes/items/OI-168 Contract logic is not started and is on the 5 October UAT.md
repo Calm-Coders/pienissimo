@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-09-23
 depends_on: [OI-141, OI-151]
 blocks: [go-live]
 severity: gating
@@ -56,3 +56,9 @@ can build: _"I even need some answers on contratto."_
 - ⚠ The RID mandate form promised to customers
   ([OI-152](OI-152%20The%20RID%20mandate%20form%20promised%20to%20customers%20does%20not%20exist.md))
   is part of the same document set and still does not exist.
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🔴 **Confirmed against the org:** the standard `Contract` object carries **zero custom fields** (Tooling `FieldDefinition`), and no Apex class in the org or `force-app/` writes it. The object has 4 records, all stock. `ORD-05` (contract auto-generation keyed to the product code) is **missing**. **UAT is 5 October, twelve days away.** (verified)
