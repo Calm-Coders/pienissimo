@@ -7,7 +7,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-14
-updated: 2026-09-15
+updated: 2026-09-24
 depends_on: [OI-125]
 requirement: [INT-01, INT-05]
 source: Slack DM D0AQ0FMHFM1, Aurel Mrruku and Andrea Di Cicco, 2026-09-14 12:07 CEST
@@ -24,12 +24,12 @@ September, and the person who said so was told afterwards.**
 Slack DM `D0AQ0FMHFM1`, 14 September, in a thread about the customer-update PUT
 ([OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)):
 
-| Time (CEST) | Who              | What                                            |
-| ----------- | ---------------- | ----------------------------------------------- |
-| 12:06:50    | Aurel Mrruku     | _"ho appena testato e va bene"_                 |
-| **12:07:03**| **Andrea Di Cicco** | **_"ricordati che è sempre produzione"_**   |
-| 12:07:17    | Aurel Mrruku     | _"si ho creato un mio cliente"_                 |
-| 12:07:44    | Aurel Mrruku     | _"ho testato direttamente da SF e va todos bien"_ |
+| Time (CEST)  | Who                 | What                                              |
+| ------------ | ------------------- | ------------------------------------------------- |
+| 12:06:50     | Aurel Mrruku        | _"ho appena testato e va bene"_                   |
+| **12:07:03** | **Andrea Di Cicco** | **_"ricordati che è sempre produzione"_**         |
+| 12:07:17     | Aurel Mrruku        | _"si ho creato un mio cliente"_                   |
+| 12:07:44     | Aurel Mrruku        | _"ho testato direttamente da SF e va todos bien"_ |
 
 Read in order: the test had already run when the reminder arrived, and the
 response to the reminder confirms a customer record was created.
@@ -119,3 +119,20 @@ cannot be exercised in UAT at all:
 Cicco's DM has carried no message since 14/09 17:28 CEST. Question 3 — do not
 schedule against production — is now **three** batches, not two
 ([the payment return](../objects/The%20Mexal%20payment%20return%20and%20tranche%20roll-up.md)).
+
+## 2026-09-24 — UAT Account import triggered a Mexal customer update
+
+During the user-directed UAT import, two existing Accounts were updated. The
+Account trigger started `MexalCustomerUpdateQueueable`. An integration log at
+10:37:59 UTC recorded `Mexal_Clienti_Modifica` with HTTP 204 and no error.
+Another log from the same run recorded a shipping-address creation failure:
+`System.CalloutException: You have uncommitted work pending`. The latter callout
+did not leave Salesforce; the customer update did receive a successful HTTP
+response. The exact ERP-side record state has not been inspected.
+
+The UAT integration configuration selects the `Mexal` named credential for
+both sandbox and production and has `Use_Mock__c = false`. Metadata retrieved
+from the UAT org on 24 September confirms its endpoint is
+`https://services.passepartout.cloud`. The order-specific sandbox guard did
+not prevent the Account-triggered customer update. The affected customer
+record should be reconciled in Mexal before further Account updates in UAT.

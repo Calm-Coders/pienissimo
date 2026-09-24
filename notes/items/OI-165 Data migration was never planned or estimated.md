@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-23
+updated: 2026-09-24
 depends_on: [OI-154, OI-24]
 blocks: [go-live]
 severity: gating
@@ -67,7 +67,6 @@ ones**, per
 - ⚠ The 2026 extraction is a **Saturday snapshot** from Zoho, re-extractable by design,
   so a cut-over refresh is possible — but not planned.
 
-
 ## 2026-09-23 — the perimeter exists now; the plan still does not
 
 **[Check Data Import](../meetings/2026-09-23%20Check%20Data%20Import.md), 2h29m with the
@@ -107,3 +106,27 @@ client.** This is the first session that treats migration as its own subject.
 Go-live is **21/10** and Zoho stops **31/10**. Everything above is UAT test data, which
 [the standing decision](../decisions/Decision%20-%20UAT%20data%20is%20disposable%20in%20Fase%201.md)
 says is disposable — **none of it is the production migration.**
+
+## 2026-09-24 — Account_NEW loaded into UAT
+
+At the user's direction, the `Account_NEW` sheet of the supplied Excel snapshot
+(SHA-256 `e264a2e656a0c43641754f8be18d10011b9953f34b4453c95f68a9b0b6c84d1f`)
+was mapped and loaded into **Pienissimo UAT**. Of 8,597 source rows, 457 without
+Partita IVA were excluded and 8,140 qualified Accounts were imported: 8,138
+new records and 2 updates to existing Accounts. The final UAT query found
+8,140 Accounts with the new external CRM ID, all with Partita IVA, Mexal code,
+`Agente__c`, the `Azienda` record type and an inactive Agent user. The two
+existing Account owners were preserved; new Accounts belong to the active
+`Amministratore Pienissimo` user. The row's original `Codice_agente` is in
+`Codice_Agente_Esterno__c` on 8,139 Accounts; one source value was blank.
+
+The load had 59 duplicate-rule alerts and one invalid PEC. All 60 rows were
+recovered by individual REST upserts using the rule's `Allow` action; the
+invalid PEC was left blank. No source customer rows or values are committed
+to the repository. The local preparation script is
+`scripts/prepare_account_new_import.py`.
+
+**This is UAT test data, not the production migration.** Production cut-over,
+historical orders, and the migration estimate remain open. The two existing
+Account updates also triggered a Mexal customer update; see
+[the ERP risk](../risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md).

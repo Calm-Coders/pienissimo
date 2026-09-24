@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-22
-updated: 2026-09-23
+updated: 2026-09-24
 depends_on: [OI-159]
 blocks: [go-live]
 source: notes/meetings/2026-09-22 Test Mexal.md
@@ -70,7 +70,6 @@ Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothi
 - 🟢🔴 **Nothing of this item is built, in the org or in `force-app/`.** Tooling `FieldDefinition` shows **no agent, zona or provvigione field** on `User`, `Account`, `Lead` or `Order`. There is **no Lead validation rule** apart from `Require_Non_Qualificato_Exit_Reason`. `force-app/` mentions `agente` only in the two Mexal callout classes. (verified)
 - ⚠ **Correction to the 22/09 record.** It said a conversion-blocking Lead validation _"was built"_. It was **announced** at the 17:00 session (_"I'm putting it right now"_) and **has not reached the org or any branch**. So nothing blocks conversion at the 24/09 Lead UAT. The rule agreed at `Test Mexal`, that the agent comes from the customer record, is also unbuilt.
 
-
 ## 🟢 2026-09-23 18:47 CEST — it is built now, on a branch
 
 ⚠ **This supersedes the correction recorded twelve hours earlier on this note.** That
@@ -78,13 +77,13 @@ correction was accurate when written: at 08:40Z the org and every branch held no
 field. **Rexhina Hysi's `7eab757` (23/09 18:47:58 CEST, `DEV_LeadAgenteBundle`) creates
 them.**
 
-| Metadata in `7eab757` | |
-| --------------------- | - |
-| `Agente__c` | on **Account**, **Lead**, **Quote** and **User** — four objects |
-| `..._Agente_When_Qualificato.validationRule` | the **conversion-blocking rule**, by its filename |
-| `LeadConversionQueueable.cls` | +129 lines |
-| `BundleProductAssignmentController.cls` + LWC | reworked |
-| Account, Lead, Quote and **User** layouts | the fields surfaced |
+| Metadata in `7eab757`                         |                                                                 |
+| --------------------------------------------- | --------------------------------------------------------------- |
+| `Agente__c`                                   | on **Account**, **Lead**, **Quote** and **User** — four objects |
+| `..._Agente_When_Qualificato.validationRule`  | the **conversion-blocking rule**, by its filename               |
+| `LeadConversionQueueable.cls`                 | +129 lines                                                      |
+| `BundleProductAssignmentController.cls` + LWC | reworked                                                        |
+| Account, Lead, Quote and **User** layouts     | the fields surfaced                                             |
 
 🟢 This is Aurel Mrruku's dev-group instruction of 22/09 15:51 CEST built as specified —
 the User carries the `agente`, the Account links to it, the order reads it from the
@@ -106,3 +105,17 @@ Account — and it is what Fabrizio Paganelli's 23/09 mail confirms Salesforce o
    deploys before then, the first client acceptance session meets a conversion block
    nobody agreed to; if it does not, the agent field the client was shown does not exist.
    **Neither outcome has been chosen by anyone.**
+
+## 2026-09-24 — Account data loaded in UAT
+
+The `Account_NEW` import linked all 8,140 qualified Accounts to one of nine
+new inactive Agent-profile users via `Account.Agente__c`. Each of the nine has
+the `Agente` permission set. User accounts have reserved invalid-domain email
+addresses; new Accounts remain owned by an active UAT user. Because five
+source rows differed from the prevailing code for a given agent name, and one
+agent name had two distinct codes, the user directed us to preserve each row's
+`Codice_agente` on Account in `Codice_Agente_Esterno__c`. One row had no code.
+
+This supplies the customer-to-agent lookup for UAT Account data. It does not
+resolve the outstanding Lead conversion rule, zona, commission category, or
+Mexal order payload described above.

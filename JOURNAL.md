@@ -10,6 +10,30 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-24 — codex — Account_NEW import into Pienissimo UAT
+
+- **Did:** Inspected the supplied Excel snapshot; deployed Account external CRM ID
+  and per-row agent code fields, the Agente profile and permission set, and a
+  narrow UAT import permission set. Created nine inactive Agent users with
+  reserved invalid-domain email addresses. Imported 8,140 VAT-bearing Accounts
+  from `Account_NEW` (8,138 new, 2 existing); excluded 457 without VAT. Linked
+  each Account to its agent; new Accounts owned by the active client admin and
+  existing owners preserved. Recovered 59 duplicate-rule alerts with the rule's
+  Allow action and one invalid PEC by leaving it blank. Final aggregate UAT
+  query confirmed all 8,140 imported, VAT-bearing, with external IDs and Agent
+  lookups; source customer values were kept out of git.
+- **Incident:** The two existing Account updates invoked
+  `MexalCustomerUpdateQueueable`; a customer update returned HTTP 204 from the
+  UAT named credential, which points to `services.passepartout.cloud` with mocks
+  disabled. A following shipping-address callout failed before send because
+  of pending DML. The ERP-side result needs reconciliation. See the Mexal
+  production ERP risk note.
+- **Next:** Production migration and cut-over are still unplanned. Reconcile
+  the Mexal customer update before more UAT Account updates. No commit or push
+  was made.
+
+---
+
 ## 2026-09-23 — claude — nightly requirements-check: migration gets a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank
 
 - **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark

@@ -2,9 +2,18 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-23 (nightly requirements-check: migration got a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank the night before UAT) · Source of record: [notes/](notes/)
+Last updated: 2026-09-24 (Account_NEW UAT import and Mexal callout finding) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- **2026-09-24 — Account_NEW UAT import:** 8,140 VAT-bearing Accounts loaded,
+  457 source rows without VAT excluded; nine inactive Agent users linked through
+  `Account.Agente__c`. See [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)
+  and [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md).
+  **The update of existing Accounts triggered a Mexal customer callout (HTTP 204)
+  from UAT to the live endpoint; ERP reconciliation is needed.** See
+  [the risk](notes/risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md).
+  Production migration remains open.
 
 ROMI is migrating Pienissimo from **Zoho CRM to Salesforce**. Zoho expires
 **31 October 2026**. **Go-live Fase 1 is 21 October** — moved by ROMI in writing
