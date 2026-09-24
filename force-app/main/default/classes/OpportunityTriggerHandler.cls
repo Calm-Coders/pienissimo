@@ -4,6 +4,7 @@ public with sharing class OpportunityTriggerHandler {
 
   public static void beforeInsert(List<Opportunity> opportunities) {
     defaultStage(opportunities);
+    defaultCloseDate(opportunities);
   }
 
   public static void beforeSave(List<Opportunity> opportunities) {
@@ -14,6 +15,15 @@ public with sharing class OpportunityTriggerHandler {
     for (Opportunity opportunityRecord : opportunities) {
       if (String.isBlank(opportunityRecord.StageName)) {
         opportunityRecord.StageName = QUALIFIED_STAGE;
+      }
+    }
+  }
+
+  private static void defaultCloseDate(List<Opportunity> opportunities) {
+    Date nextYearEnd = Date.newInstance(Date.today().year() + 1, 12, 31);
+    for (Opportunity opportunityRecord : opportunities) {
+      if (opportunityRecord.CloseDate == null) {
+        opportunityRecord.CloseDate = nextYearEnd;
       }
     }
   }

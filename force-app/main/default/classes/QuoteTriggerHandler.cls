@@ -22,10 +22,13 @@ public without sharing class QuoteTriggerHandler {
   public static void beforeSave(List<Quote> quotes) {
     copyLocaleFromOpportunity(quotes);
     markCompletedDocuSignQuotesAsSigned(quotes);
+    markFirstQuotesAsPrimary(quotes);
   }
 
   public static void afterInsert(List<Quote> quotes) {
     moveQualifiedOpportunitiesToNegotiation(quotes, null);
+    keepOnePrimaryQuotePerOpportunity(quotes, null);
+    updatePrimaryQuoteLookups(quotes, null);
   }
 
   public static void afterUpdate(
@@ -33,6 +36,9 @@ public without sharing class QuoteTriggerHandler {
     Map<Id, Quote> oldQuoteMap
   ) {
     moveQualifiedOpportunitiesToNegotiation(quotes, oldQuoteMap);
+    keepOnePrimaryQuotePerOpportunity(quotes, oldQuoteMap);
+    updatePrimaryQuoteLookups(quotes, oldQuoteMap);
+    updateOpportunityAmountsFromAcceptedPrimaryQuotes(quotes, oldQuoteMap);
     createOrdersForAcceptedQuotes(quotes, oldQuoteMap);
   }
 
@@ -83,6 +89,46 @@ public without sharing class QuoteTriggerHandler {
       ) {
         quoteRecord.Is_Signed__c = true;
       }
+    }
+  }
+
+  private static void markFirstQuotesAsPrimary(List<Quote> quotes) {
+    Set<Id> opportunityIds = new Set<Id>();
+    for (Quote quoteRecord : quotes) {
+      if (quoteRecord.Id == null && quoteRecord.OpportunityId != null) {
+        opportunityIds.add(quoteRecord.OpportunityId);
+      }
+    }
+
+    if (opportunityIds.isEmpty()) {
+      return;
+    }
+
+    Set<Id> opportunityIdsWithExistingQuotes = new Set<Id>();
+    for (AggregateResult result : [
+      SELECT OpportunityId
+      FROM Quote
+      WHERE OpportunityId IN :opportunityIds
+      GROUP BY OpportunityId
+    ]) {
+      opportunityIdsWithExistingQuotes.add((Id) result.get('OpportunityId'));
+    }
+
+    Set<Id> opportunityIdsMarkedInThisTransaction = new Set<Id>();
+    for (Quote quoteRecord : quotes) {
+      if (
+        quoteRecord.Id != null ||
+        quoteRecord.OpportunityId == null ||
+        opportunityIdsWithExistingQuotes.contains(quoteRecord.OpportunityId) ||
+        opportunityIdsMarkedInThisTransaction.contains(
+          quoteRecord.OpportunityId
+        )
+      ) {
+        continue;
+      }
+
+      quoteRecord.Is_Primary__c = true;
+      opportunityIdsMarkedInThisTransaction.add(quoteRecord.OpportunityId);
     }
   }
 
@@ -182,6 +228,172 @@ public without sharing class QuoteTriggerHandler {
 
     if (!orderItemsToInsert.isEmpty()) {
       insert orderItemsToInsert;
+    }
+  }
+
+  private static void keepOnePrimaryQuotePerOpportunity(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    Map<Id, Id> primaryQuoteIdByOpportunityId = new Map<Id, Id>();
+    for (Quote quoteRecord : quotes) {
+      if (
+        quoteRecord.OpportunityId == null ||
+        quoteRecord.Is_Primary__c != true
+      ) {
+        continue;
+      }
+
+      Quote oldQuote = oldQuoteMap == null
+        ? null
+        : oldQuoteMap.get(quoteRecord.Id);
+      if (oldQuote != null && oldQuote.Is_Primary__c == true) {
+        continue;
+      }
+
+      primaryQuoteIdByOpportunityId.put(
+        quoteRecord.OpportunityId,
+        quoteRecord.Id
+      );
+    }
+
+    if (primaryQuoteIdByOpportunityId.isEmpty()) {
+      return;
+    }
+
+    List<Quote> quotesToUpdate = new List<Quote>();
+    for (Quote quoteRecord : [
+      SELECT Id, OpportunityId, Is_Primary__c
+      FROM Quote
+      WHERE
+        OpportunityId IN :primaryQuoteIdByOpportunityId.keySet()
+        AND Is_Primary__c = TRUE
+        AND Id NOT IN :primaryQuoteIdByOpportunityId.values()
+    ]) {
+      quotesToUpdate.add(new Quote(Id = quoteRecord.Id, Is_Primary__c = false));
+    }
+
+    if (!quotesToUpdate.isEmpty()) {
+      update quotesToUpdate;
+    }
+  }
+
+  private static void updateOpportunityAmountsFromAcceptedPrimaryQuotes(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    Map<Id, Id> quoteIdByOpportunityId = new Map<Id, Id>();
+    for (Quote quoteRecord : quotes) {
+      Quote oldQuote = oldQuoteMap == null
+        ? null
+        : oldQuoteMap.get(quoteRecord.Id);
+      if (
+        oldQuote == null ||
+        quoteRecord.OpportunityId == null ||
+        quoteRecord.Status != ACCEPTED_STATUS ||
+        oldQuote.Status == ACCEPTED_STATUS ||
+        quoteRecord.Is_Primary__c != true
+      ) {
+        continue;
+      }
+
+      quoteIdByOpportunityId.put(quoteRecord.OpportunityId, quoteRecord.Id);
+    }
+
+    if (quoteIdByOpportunityId.isEmpty()) {
+      return;
+    }
+
+    Map<Id, Decimal> grandTotalByOpportunityId = new Map<Id, Decimal>();
+    for (Quote quoteRecord : [
+      SELECT Id, OpportunityId, GrandTotal
+      FROM Quote
+      WHERE Id IN :quoteIdByOpportunityId.values()
+    ]) {
+      grandTotalByOpportunityId.put(
+        quoteRecord.OpportunityId,
+        quoteRecord.GrandTotal
+      );
+    }
+
+    List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+    for (Opportunity opportunityRecord : [
+      SELECT Id, Amount
+      FROM Opportunity
+      WHERE Id IN :grandTotalByOpportunityId.keySet()
+    ]) {
+      Decimal grandTotal = grandTotalByOpportunityId.get(opportunityRecord.Id);
+      if (opportunityRecord.Amount == grandTotal) {
+        continue;
+      }
+
+      opportunitiesToUpdate.add(
+        new Opportunity(Id = opportunityRecord.Id, Amount = grandTotal)
+      );
+    }
+
+    if (!opportunitiesToUpdate.isEmpty()) {
+      update opportunitiesToUpdate;
+    }
+  }
+
+  private static void updatePrimaryQuoteLookups(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    Map<Id, Id> primaryQuoteIdByOpportunityId = new Map<Id, Id>();
+    for (Quote quoteRecord : quotes) {
+      if (
+        quoteRecord.OpportunityId == null ||
+        quoteRecord.Is_Primary__c != true
+      ) {
+        continue;
+      }
+
+      Quote oldQuote = oldQuoteMap == null
+        ? null
+        : oldQuoteMap.get(quoteRecord.Id);
+      if (
+        oldQuote != null &&
+        oldQuote.Is_Primary__c == true &&
+        oldQuote.OpportunityId == quoteRecord.OpportunityId
+      ) {
+        continue;
+      }
+
+      primaryQuoteIdByOpportunityId.put(
+        quoteRecord.OpportunityId,
+        quoteRecord.Id
+      );
+    }
+
+    if (primaryQuoteIdByOpportunityId.isEmpty()) {
+      return;
+    }
+
+    List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+    for (Opportunity opportunityRecord : [
+      SELECT Id, Preventivo_Primario__c
+      FROM Opportunity
+      WHERE Id IN :primaryQuoteIdByOpportunityId.keySet()
+    ]) {
+      Id primaryQuoteId = primaryQuoteIdByOpportunityId.get(
+        opportunityRecord.Id
+      );
+      if (opportunityRecord.Preventivo_Primario__c == primaryQuoteId) {
+        continue;
+      }
+
+      opportunitiesToUpdate.add(
+        new Opportunity(
+          Id = opportunityRecord.Id,
+          Preventivo_Primario__c = primaryQuoteId
+        )
+      );
+    }
+
+    if (!opportunitiesToUpdate.isEmpty()) {
+      update opportunitiesToUpdate;
     }
   }
 

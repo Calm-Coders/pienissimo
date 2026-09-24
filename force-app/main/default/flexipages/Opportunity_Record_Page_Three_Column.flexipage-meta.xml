@@ -263,6 +263,16 @@
                 <identifier>RecordAmountField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Preventivo_Primario__c</fieldItem>
+                <identifier>RecordPreventivo_Primario_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-f31cfb4a-cff9-4183-ab78-8e77ec6894f0</name>
         <type>Facet</type>
     </flexiPageRegions>

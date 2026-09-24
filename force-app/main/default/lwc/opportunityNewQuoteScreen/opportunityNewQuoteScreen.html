@@ -37,6 +37,11 @@
                 disabled
               ></lightning-input>
               <lightning-input
+                label="Status"
+                value={form.status}
+                disabled
+              ></lightning-input>
+              <lightning-input
                 type="date"
                 label="Expiration Date"
                 value={form.expirationDate}
@@ -44,38 +49,13 @@
                 onchange={handleInputChange}
                 required
               ></lightning-input>
-              <lightning-combobox
-                label="Status"
-                value={form.status}
-                options={statusOptions}
-                data-field="status"
-                onchange={handleInputChange}
-              ></lightning-combobox>
-            </div>
-          </section>
-
-          <section class="section">
-            <div class="section-title">Contatto</div>
-            <div class="grid">
-              <lightning-record-picker
-                label="Contact Name"
-                object-api-name="Contact"
-                value={form.contactId}
-                onchange={handleContactChange}
-              ></lightning-record-picker>
               <lightning-input
-                type="email"
-                label="Email"
-                value={form.email}
-                data-field="email"
+                type="checkbox"
+                label="Primario"
+                checked={form.isPrimary}
+                data-field="isPrimary"
                 onchange={handleInputChange}
-              ></lightning-input>
-              <lightning-input
-                type="tel"
-                label="Phone"
-                value={form.phone}
-                data-field="phone"
-                onchange={handleInputChange}
+                class="primary-checkbox"
               ></lightning-input>
             </div>
           </section>
