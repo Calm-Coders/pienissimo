@@ -125,8 +125,6 @@ private class OrderTriggerHandlerTest {
     insert new Mappatura_Edizione__c(
       Prodotto__c = product.Id,
       Campagna__c = campaign.Id,
-      Data_Inizio__c = Date.today().addDays(-1),
-      Data_Fine__c = Date.today().addDays(1),
       Attiva__c = true
     );
   }
