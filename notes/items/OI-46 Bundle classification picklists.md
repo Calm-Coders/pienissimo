@@ -6,7 +6,8 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-07-23
-updated: 2026-09-02
+updated: 2026-09-25
+requirement: BUN-08
 source: meetings/open-items.md row 46
 ---
 
@@ -294,11 +295,11 @@ settled which system owns which classification, in Elisa Migliano's own summary:
 > Poi gestiamo su Mexal il campo evento. A quel punto abbiamo finito. E poi il
 > tipo biglietto lo andiamo a completare solo su Sales Force."_
 
-| Field                            | Owner                                     |
-| -------------------------------- | ----------------------------------------- |
+| Field                              | Owner                                    |
+| ---------------------------------- | ---------------------------------------- |
 | `genera biglietto` / `solo bundle` | **Mexal** (`natura`)                     |
-| `evento`                         | **Mexal** (`categoria statistica`)         |
-| `tipo biglietto`                 | **Salesforce only**, administrators only   |
+| `evento`                           | **Mexal** (`categoria statistica`)       |
+| `tipo biglietto`                   | **Salesforce only**, administrators only |
 
 🔴 **`Anno Solare` was never mentioned in the session.** This item questions
 whether the field should exist at all, and the ten bundle-only records loaded on
@@ -313,3 +314,38 @@ listing `Categoria statistica → evento (da mexal)`, `Gruppo Merceologico`,
 `Natura → genera biglietto SI/NO (mexal)`, `Tipo Biglietto` — and then
 **`LIVELLO_0` through `LIVELLO_6`**, a seven-level product hierarchy that appears
 in no meeting, no requirement and no other note. **Nobody has asked what it is.**
+
+## 🔑 2026-09-25 — reversed: the bundle's year is the academic year
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md) (`01:06:33`), while Aurel Mrruku filled in a
+bundle live, Fabrizio Paganelli corrected the label: _"Qui non sarebbe proprio l'anno
+solare, sarebbe l'anno accademico."_ Aurel Mrruku agreed to rename it **`Anno
+accademico`**, with the client adding a value each year.
+
+🔴 **This reverses the 23/07 rule above** (_"Use 'anno solare', never 'anno
+accademico'"_) and register glossary `ANNO_SOLARE` and `BUN-08`. The 26/08 ruling (the
+**ticket edition** is derived from the order date via [OI-96](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md))
+still holds. **Both are compatible:** the bundle is labelled with the academic year it
+sells, and the edition of each ticket is still derived per line.
+
+Same session, two more bundle fields:
+
+- `Evento` is relabelled **`Evento di origine`**: the event at which the bundle was
+  **proposed**, not the event of its contents. A bundle sold at one Food Marketing
+  Festival holds articles for the **next** year's Academy, Camerieri Venditori and so on,
+  so it cannot be tied to one campaign (`01:07:51`–`01:09:19`). Aurel Mrruku to Anita
+  Aga, Slack DM 11:41 CEST: _"Evento = evento di origine sul order"_.
+- New checkbox **`Presenza piattaforma`**: whether the bundle gives the software platform
+  free (`01:10:50`). Slack 11:42 CEST, to Anita Aga: _"nei boundle flag presenza piataforma
+  checkbox"_.
+- `Tipologia bundle` values confirmed: _Anno con Pienissimo_ / _Anno con Pienissimo
+  ripetente_.
+
+⚠ **The register was not amended** (`BUN-08` still says anno solare). Human call.
+
+## ✅ 2026-09-25 — register amended (v1.6)
+
+`BUN-08` now reads anno accademico + evento di origine + tipologia + `Presenza
+piattaforma`, and the glossary `ANNO_SOLARE` is replaced by `ANNO_ACCADEMICO_BUNDLE`.
+Drill-me decision by Aurel Mrruku; it goes to the client with the rest of v1.6
+([OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)).

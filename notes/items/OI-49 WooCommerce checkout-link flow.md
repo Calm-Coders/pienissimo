@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-07-31
-updated: 2026-09-21
+updated: 2026-09-25
 requirement: [INT-12, INT-13, INT-14, ORD-12]
 source: meetings/open-items.md row 49
 ---
@@ -400,9 +400,9 @@ WooCommerce."_
 **And the two questions this row had been carrying since 16/09 are answered — by
 removing their premise:**
 
-| Question owed by Sabatino Rinaldi              | Answer, 18/09                                                  |
-| ---------------------------------------------- | -------------------------------------------------------------- |
-| Is the product id always a bundle id?          | **Moot.** The link carries no product id at all.               |
+| Question owed by Sabatino Rinaldi               | Answer, 18/09                                                                                                                           |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Is the product id always a bundle id?           | **Moot.** The link carries no product id at all.                                                                                        |
 | What about multi-product offers with no bundle? | **_"è impossibile che debba inserire due prodotti"_** — one product or bundle per link; concatenation deferred (`00:05:21`, `00:07:42`) |
 
 On WooCommerce a bundle behaves as a single product, and his stage-sale example —
@@ -510,3 +510,13 @@ in the URL**, and no one had checked what a Funnel Kit URL looks like. The build
 then guessed `add-to-cart`, which is stock WooCommerce and not this shop. **The
 agreed anatomy was in neither the record nor the first build**, and it took
 fifteen minutes of a client call to surface once the link was actually clicked.
+
+## 2026-09-25 — shown to the client, re-scoped, and re-run on 2 October
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md) the link generation, the link test, the checkout
+email and the order landing under the opportunity were all demonstrated. Agreed changes:
+a **button** instead of the raw link, the **primary contact's email** prefilled, and the
+**tutor's name** as sender ([OI-183](OI-183%20The%20checkout%20email%20template%20choice%20is%20with%20the%20client.md)). The flow widens from recall only to
+**Recall Tutor + Pack Tutor** ([OI-182](OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md)). **Tailored tutor sales never go
+through WooCommerce.** In operation, **Matteo Distaso supplies the funnel names**. Marco
+Montesi asked for part of the session to be redone. It is re-run on **2 October**.

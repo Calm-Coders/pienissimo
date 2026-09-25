@@ -10,6 +10,45 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-25 — claude — on-demand requirements-check + drill-me: tranches belong on the bundle too, and the register moves to v1.6
+
+- **Did:** Aurel Mrruku asked for the nightly job on demand. Swept Fathom, Drive, Gmail,
+  Slack, git and GitHub from watermark **2026-09-24T22:00Z** to **13:00Z**. Drilled
+  `UAT: Recall Tutor + Bundle` (client, 2h13m50s, notes + transcript, 154,062 chars, read
+  once). Wrote the meeting note, a decision (single products from Mexal only, confirming
+  `BUN-06`), four new items (`OI-181`–`OI-184`), and updated `OI-46/49/50/96/101/140/151/177/178`.
+  Also both trackers, recap §48 in EN and IT, MAP, INDEX and the trace. Then ran a
+  drill-me round of four questions.
+- **Decided (drill-me):**
+  1. The week of 28/09 goes to **bundle-level tranches**, and the partial PROD deploy
+     moves to the week of 5/10. **Elena Spini has not been told yet.**
+  2. **The register was amended to v1.6** in the YAML and both prose documents: `Firmato`,
+     `ORD-01/02`, `DM-17`, `BUN-08`, `SAL-21`, glossary, and order opportunity types. It
+     goes to the client as **one change set at UAT close** (`OI-184`).
+  3. **Both agent fields stay, with a sync** (`OI-178`): lookup for people, code for Mexal.
+  4. **New clean `Standard` / `WooCommerce` record types**; `Standart` and `Recall_Tutor`
+     are retired (`OI-182`).
+- **State:** 🔴 **`OI-181` (gating):** stage sales have no quote, so tranches must also
+  live on the bundle (~1 week, re-test 02/10). 🔑 Anno solare → **anno accademico**
+  reverses the 23/07 rule. Marketing UAT moved to **07/10**, after the window closes.
+  **PR #59 merged**, so both agent fields are on `DevMain`. `Firmato` is still not in
+  `force-app`.
+- **Next:** tell Elena Spini about the deploy move; design the agent-field sync (direction
+  and conflict rule); build `OI-181` before 02/10. Ticket UAT is 30/09 and the edition
+  mapping is still thin.
+- **Watch:**
+  - **Tonight's nightly run should use watermark 2026-09-25T13:00Z** (the new trace), or
+    it will re-drill this meeting.
+  - Not posted to Slack. Only the scheduled run may post there.
+  - **The Italian §47 of `DEVELOPMENT-RECAP.it.md` is missing** (24/09 run). Flagged, not
+    backfilled.
+  - The prose register documents said 1.4 while the YAML said 1.5; all three now say 1.6.
+  - No transcript copy in `meetings/` and no `meetings/results/` recap, as on every run
+    since 27/08. `STATUS.md` was not regenerated, because no org evidence was taken.
+  - No commit or push was made.
+
+---
+
 ## 2026-09-24 — codex — Account ATECO state and User commission category in UAT
 
 - **Did:** Checked the latest client Account model workbook. Account ATECO

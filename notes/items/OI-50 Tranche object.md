@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-22
+updated: 2026-09-25
 blocks: [OI-75, go-live]
 severity: gating
 requirement: [ORD-02, ORD-03]
@@ -331,7 +331,7 @@ collection the due date is not a field on the order at all — it is the
 `data_documento` of the fulfilment call, sent later.
 
 **Unreconciled, and it matters to what was just built.** Either the collection is
-an incomplete export, or the tracciato described the *fulfilment* date rather than
+an incomplete export, or the tracciato described the _fulfilment_ date rather than
 an order-line field, in which case `Data_Scadenza__c` is populated for a wire
 field that does not exist. **Ask before building the outbound leg.**
 
@@ -340,7 +340,7 @@ field that does not exist. **Ask before building the outbound leg.**
 
 **Gap 2, the aggregation, is still the one genuinely unbuilt gap.**
 `Completamente_Pagata__c` remains a checkbox nothing computes, and nothing in
-`bc2ed5d` touches it — that commit is inbound-read only. What it *does* add is
+`bc2ed5d` touches it — that commit is inbound-read only. What it _does_ add is
 the first evidence of how the per-line payment status will arrive:
 `POST /risorse/scadenzario/ricerca`, filterable **by customer code**, exists and
 is reachable.
@@ -366,7 +366,6 @@ customer, article and warehouse batches; how the scadenzario read is triggered i
 not visible in the commit.
 ⚠ The 2026-09-15 `org-status-check` still reads the org as it was this morning:
 **29 tranches, 5 of 38 Order Items carrying tranche and due date, 0 fully paid.**
-
 
 ## 🔴 2026-09-16 - the roll-up merged, and the client named a gap it does not cover
 
@@ -513,7 +512,7 @@ scadenziario dates move when a Ri.Ba. comes back unpaid or a recovery plan is ag
 Fabrizio Paganelli: _"sulle date di scadenza è bene non fare nessun tipo di automatismo
 di programma perché è un casino."_
 
-🔴 **The one hop still open is the last one** — which Salesforce order *line* a payment
+🔴 **The one hop still open is the last one** — which Salesforce order _line_ a payment
 settles, given a Plus order is n lines of the same article code distinguished only by due
 date. See
 [OI-166](OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md).
@@ -521,3 +520,11 @@ date. See
 ⚠ This supersedes the premise of
 [OI-143](OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md);
 cite 21/09 and 22/09 together.
+
+## 🔴 2026-09-25 — tranches also need to exist on the bundle
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md): a **stage sale has no quote**, so the quote-only
+creation point decided on 24/08 cannot give a WooCommerce order its tranches. Agreed:
+tranches can also be **defined at bundle creation** and are inherited, editable, by any
+quote that uses the bundle. About one week of work. Tracked as [OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md). The
+quote-side mechanism shown on 24/09 is unchanged and was accepted.

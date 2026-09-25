@@ -5018,3 +5018,67 @@ bundle logic. 🔴 **`Standart` is unchanged**, sixth run, in seven places acros
 and UAT records are being created now.
 [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) is
 unchanged at 19 classes; coverage is **0 of 7,756**.
+
+## 48. Update 2026-09-25 — the recall flow works, but the stage-sale bundle rests on a premise nobody built
+
+On-demand sweep, watermark **2026-09-24T22:00Z**. One meeting drilled:
+[UAT: Recall Tutor + Bundle](../notes/meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md) (client, 2h13m50s — the second acceptance session).
+
+### 🟢 What worked
+
+The Recall Tutor opportunity, the checkout link, the checkout email and a WooCommerce order
+landing under the opportunity were all demonstrated. Agreed on the spot: a **button**
+instead of the raw link; the **primary contact's email** prefilled; the **customer's
+name** and **tutor's name** instead of _"gentile cliente"_ / _"team Pienissimo"_. 🟢
+**Configura Bundle** blocks saving when the lines do not add up to the bundle price, which
+is the check Fabrizio Paganelli asked for. 🟢 **Single products come only from Mexal;
+only Fabrizio Paganelli creates bundles in Salesforce** ([decision](../notes/decisions/Decision%20-%20single%20products%20come%20only%20from%20Mexal%20and%20only%20bundles%20are%20built%20in%20Salesforce.md), confirming
+`BUN-06`).
+
+### 🔴 The finding: tranches must exist on the bundle, not only on the quote
+
+A stage sale works like this: Fabrizio Paganelli builds the bundle **with a due date on
+every line**, and Sabatino Rinaldi puts the bundle code and the first-tranche amount on
+WooCommerce. **Salesforce must then receive the whole bundle order.** ROMI built tranches
+only on the Quote, and **a stage sale has no quote**. Aurel Mrruku: _"questo peso proprio
+mi mancava"_. Agreed: tranches can also be defined at bundle creation and are inherited,
+editable, by quotes. **About one week of work, re-tested live on 2 October**
+([OI-181](../notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)). ⚠ Register `ORD-02` still says Quote only; not amended.
+
+### Also decided
+
+- **Four kinds of sale**: stage direct (no opportunity), Recall Tutor, Pack Tutor (both
+  WooCommerce), and tailored quotes, which **never** go through WooCommerce.
+- **The `Recall Tutor` type becomes `WooCommerce`**, with a mandatory Recall Tutor / Pack
+  Tutor origin ([OI-182](../notes/items/OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md)).
+- 🔑 **The bundle's year is the `Anno accademico`**, reversing the 23/07 anno-solare rule;
+  `Evento` → `Evento di origine`; new flag `Presenza piattaforma` ([OI-46](../notes/items/OI-46%20Bundle%20classification%20picklists.md)).
+- The email template (code vs admin-editable) is **the client's call**, after review with
+  the direction ([OI-183](../notes/items/OI-183%20The%20checkout%20email%20template%20choice%20is%20with%20the%20client.md)).
+
+### 🔴 Calendar
+
+**02/10 becomes the WooCommerce re-test; marketing moves to 07/10**, a day after the UAT
+window closes, because marketing can only be tested in production. The 28–29/09 partial
+production deploy Elena Spini proposed was left open ([OI-177](../notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)). Marco Montesi:
+_"una parte di questa riunione… la dobbiamo rifare"_. The client does not consider the
+recall flow accepted.
+
+### The build
+
+PRs **#59, #60 and #61 merged** on 25/09. 🔴 **#59 put `Account.Agente__c` onto `DevMain`
+beside `Codice_Agente_Esterno__c`**, so the two-field conflict is now on the main line
+([OI-178](../notes/items/OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md)). 🔴 `Firmato` is still not in `force-app`, and `Standart` is unchanged
+(seventh run).
+
+### ✅ Decided via drill-me (2026-09-25)
+
+- **The week of 28/09 goes to bundle-level tranches**; the partial production deploy moves
+  to the week of 5/10 (Elena Spini to be asked) (drill-me 2026-09-25).
+- **The register is amended now, as v1.6**, in the YAML and both prose documents
+  (`Firmato`; `ORD-01/02`, `DM-17`; `BUN-08`; `SAL-21`), and **sent to the client as one
+  change set at UAT close** ([OI-184](../notes/items/OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)).
+- **Both agent fields stay**, with a sync: the lookup for people and validation, the code
+  for Mexal (drill-me 2026-09-25).
+- **New clean `Standard` and `WooCommerce` record types**; `Standart` and `Recall_Tutor`
+  are retired after the UAT records are remapped (drill-me 2026-09-25).

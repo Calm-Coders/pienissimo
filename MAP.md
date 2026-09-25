@@ -2,9 +2,27 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-24 (Account ATECO state and User commission category backfilled in UAT) · Source of record: [notes/](notes/)
+Last updated: 2026-09-25 (on-demand sweep + drill-me — second UAT session, tranches on the bundle) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🔴🔑 **2026-09-25 — second UAT session: the recall flow works, but stage-sale bundles
+  need tranches on the bundle, and nobody built that.**
+  [UAT Recall Tutor e Bundle](notes/meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md)
+  (2h13m50s). A stage sale has no quote, so ROMI's quote-only tranches cannot give a
+  WooCommerce order its tranches. The agreed fix is to define tranches at bundle creation,
+  estimated at **about a week**
+  ([OI-181](notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md), gating).
+  `Recall Tutor` becomes a `WooCommerce` type with a Recall/Pack Tutor origin
+  ([OI-182](notes/items/OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md)).
+  The bundle's year is now the **anno accademico** (a reversal,
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)). **02/10 becomes
+  the WooCommerce re-test and marketing moves to 07/10**
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+  Marco Montesi asked for part of the session to be redone. PR #59 put **both agent
+  fields on `DevMain`**
+  ([OI-178](notes/items/OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md)).
+  — [trace](notes/traces/Source%20trace%202026-09-25.md)
 
 - **2026-09-24 — ATECO and Agent commission category in UAT:** the third
   Account ATECO field (`Ateco Stato Attivita`) was deployed and 377 source

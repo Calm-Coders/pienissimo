@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-09-24
+updated: 2026-09-25
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -61,3 +61,29 @@ anti no-show, and participant collection
 - 🔴 **Unblock the Aurel Mrruku → Fabrizio Mastracci hand-off.** It is two people waiting
   on each other, which no amount of waiting resolves.
 - ⚠ No register row covers a UAT environment constraint.
+
+## 2026-09-25 — the marketing session moves to 7 October
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md) (`02:05:08`–`02:11:52`) Elena Spini confirmed to the
+client that **the marketing environment is only reachable in production**. So:
+
+- **Fri 2 October** is no longer Flussi MKT. It becomes the re-run of the WooCommerce flow
+  ([OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)).
+- **Marketing moves to 7 October**, with Rebecca Marmo. Sabatino Rinaldi is to tell her.
+- **Wed 30 September stays** on campaigns and tickets in Salesforce, no marketing.
+- Elena Spini: _"per te hai lunedì e martedì per fare il deploy"_ (28–29/09), meaning a
+  partial production deploy (_"deploy Fabrizio"_). Aurel Mrruku: a deploy also needs its
+  records, and the Account load alone took a day and a half. **Left for the two of them to
+  settle afterwards.** Nothing records the outcome. An unrecorded internal call followed at
+  12:30 CEST.
+
+🔴 **7 October is one day after the UAT window closes (6/10)** and six before approval
+(13/10). The pre-UAT check `Check giro MKT` on 29/09 still stands. Whether the Aurel
+Mrruku ↔ Fabrizio Mastracci hand-off was unblocked is not recorded.
+
+## ✅ 2026-09-25 — decided via drill-me: the deploy moves after 2/10
+
+Aurel Mrruku will not use 28–29/09 for the production deploy; the week goes to
+[OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md).
+**Ask Elena Spini to move the partial production deploy to the week of 5/10**, ahead of
+the 7/10 marketing session. 🔴 Not yet communicated to her; nothing records her agreement.

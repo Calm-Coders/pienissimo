@@ -5121,3 +5121,71 @@ listino, `Quote.Is_Primary__c`, `Opportunity.Preventivo_Primario__c`, `ProductCo
 🔴 **`Standart` è invariato**, al quinto passaggio;
 [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) è
 invariata; la copertura è **0 su 7.756**.
+
+## 48. Aggiornamento 25/09/2026 — il flusso di recall funziona, ma il bundle da palco poggia su un presupposto che nessuno ha costruito
+
+Sweep su richiesta, watermark **2026-09-24T22:00Z**. Una riunione analizzata:
+[UAT: Recall Tutor + Bundle](../notes/meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md) (cliente, 2h13m50s — la seconda sessione di collaudo).
+
+### 🟢 Cosa ha funzionato
+
+Sono stati mostrati l'opportunità Recall Tutor, il link di checkout, l'email di checkout e
+un ordine WooCommerce agganciato all'opportunità. Concordato seduta stante: un **pulsante**
+al posto del link in chiaro; l'**email del contatto principale** precompilata; il **nome
+del cliente** e il **nome del tutor** al posto di _"gentile cliente"_ / _"team
+Pienissimo"_. 🟢 **Configura Bundle** blocca il salvataggio se le righe non tornano con il
+prezzo del bundle, il controllo che Fabrizio Paganelli aveva chiesto. 🟢 **I prodotti
+singoli arrivano solo da Mexal; solo Fabrizio Paganelli crea i bundle in Salesforce**
+([decisione](../notes/decisions/Decision%20-%20single%20products%20come%20only%20from%20Mexal%20and%20only%20bundles%20are%20built%20in%20Salesforce.md), conferma di `BUN-06`).
+
+### 🔴 La scoperta: le tranche devono esistere sul bundle, non solo sul preventivo
+
+Una vendita da palco funziona così: Fabrizio Paganelli crea il bundle **con una data di
+scadenza su ogni riga**, e Sabatino Rinaldi mette su WooCommerce il codice del bundle e
+l'importo della prima tranche. **Salesforce deve poi ricevere l'intero ordine del bundle.**
+ROMI ha costruito le tranche solo sul Preventivo, e **una vendita da palco non ha
+preventivo**. Aurel Mrruku: _"questo peso proprio mi mancava"_. Concordato: le tranche si
+potranno definire anche alla creazione del bundle, ereditate e modificabili dai preventivi.
+**Circa una settimana di lavoro, re-test dal vivo il 2 ottobre** ([OI-181](../notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)).
+⚠ `ORD-02` del registro dice ancora solo Preventivo; non modificato.
+
+### Altre decisioni
+
+- **Quattro tipi di vendita**: palco diretta (nessuna opportunità), Recall Tutor, Pack
+  Tutor (entrambe via WooCommerce), e preventivi personalizzati, che **non** passano mai da
+  WooCommerce.
+- **Il tipo `Recall Tutor` diventa `WooCommerce`**, con origine obbligatoria Recall Tutor /
+  Pack Tutor ([OI-182](../notes/items/OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md)).
+- 🔑 **L'anno del bundle è l'`Anno accademico`**, ribaltando la regola dell'anno solare del
+  23/07; `Evento` → `Evento di origine`; nuovo flag `Presenza piattaforma` ([OI-46](../notes/items/OI-46%20Bundle%20classification%20picklists.md)).
+- Il template email (codice oppure modificabile da admin) è **una scelta del cliente**,
+  dopo revisione con la direzione ([OI-183](../notes/items/OI-183%20The%20checkout%20email%20template%20choice%20is%20with%20the%20client.md)).
+
+### 🔴 Calendario
+
+**Il 02/10 diventa il re-test WooCommerce; il marketing slitta al 07/10**, un giorno dopo
+la chiusura della finestra UAT, perché il marketing si può collaudare solo in produzione. Il
+deploy parziale in produzione del 28–29/09 proposto da Elena Spini è rimasto aperto
+([OI-177](../notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)). Marco Montesi: _"una parte di questa riunione… la dobbiamo rifare"_.
+Il cliente non considera accettato il flusso di recall.
+
+### La build
+
+Le PR **#59, #60 e #61 sono in merge** il 25/09. 🔴 **La #59 ha portato `Account.Agente__c`
+su `DevMain` accanto a `Codice_Agente_Esterno__c`**, quindi il conflitto tra i due campi è
+ora sulla linea principale ([OI-178](../notes/items/OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md)). 🔴 `Firmato` non è ancora in `force-app`, e
+`Standart` è invariato (settimo passaggio).
+
+### ✅ Deciso via sessione drill-me (25/09/2026)
+
+- **La settimana del 28/09 va alle tranche a livello di bundle**; il deploy parziale in
+  produzione slitta alla settimana del 5/10 (da chiedere a Elena Spini) (drill-me 25/09/2026).
+- **Il registro viene aggiornato subito, come v1.6**, nello YAML e in entrambi i documenti
+  (`Firmato`; `ORD-01/02`, `DM-17`; `BUN-08`; `SAL-21`), e **inviato al cliente come unico
+  insieme di modifiche alla chiusura dell'UAT** ([OI-184](../notes/items/OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)).
+- **Restano entrambi i campi agente**, con una sincronizzazione: il lookup per persone e
+  validazione, il codice per Mexal (drill-me 25/09/2026).
+- **Nuovi record type puliti `Standard` e `WooCommerce`**; `Standart` e `Recall_Tutor`
+  vengono ritirati dopo la rimappatura dei record UAT (drill-me 25/09/2026).
+
+⚠ Il §47 (24/09) non è mai stato scritto in italiano; va recuperato.

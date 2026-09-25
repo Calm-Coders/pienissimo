@@ -8,8 +8,12 @@ meta:
   project: Pienissimo — Zoho CRM to Salesforce migration
   client: Pienissimo
   supplier: ROMI S.r.l.
-  version: "1.5"
-  date: 2026-09-09
+  version: "1.6"
+  date: 2026-09-25
+  # v1.6 (2026-09-25, drill-me decision by Aurel Mrruku): folds in changes the client agreed
+  # during UAT - quote state Firmato (UAT 2026-09-24); tranches also defined at bundle
+  # creation, bundle year = anno accademico, WooCommerce opportunity type (UAT 2026-09-25).
+  # To be sent to the client for signature as one change set at UAT close (~2026-10-13).
   signoff_session: 2026-08-06T15:00:00+02:00
   # Go-live renegotiated 6 -> 21 October by ROMI in writing on 2026-09-08
   # (Gmail 1a0815f9a43d3b87); "presa visione" from Fabrizio Paganelli 2026-09-09.
@@ -133,9 +137,9 @@ glossary:
   OPPORTUNITA: Si apre quando il contatto manifesta un interesse economico. [DGM-1]
   LEAD_QUALIFICATO: Interessato a un appuntamento, richiede una demo, o richiede preventivo. [DGM-1]
   LEAD_NON_QUALIFICATO: Fuori target, non titolare di ristorante, ha compilato il form per curiosità. [DGM-1]
-  TRANCHE: Piano di pagamento definito nel Preventivo selezionando righe e data di scadenza; riferimento e data passano poi alle righe d'ordine. [AUREL-2026-08-24-TRANCHE]
+  TRANCHE: Piano di pagamento definito nel Preventivo selezionando righe e data di scadenza, oppure alla creazione del bundle (ereditato e modificabile dal preventivo; usato tal quale dagli ordini WooCommerce); riferimento e data passano poi alle righe d'ordine. [AUREL-2026-08-24-TRANCHE, UAT 25/09]
   ASSET_vs_QR: L'Asset è il record; il QR è un valore contenuto in esso e porta l'ID del campaign member. [22/07, DGM-2]
-  ANNO_SOLARE: Classificazione dei bundle. Distinto da ANNO_ACCADEMICO (maggio-settembre) usato per la generazione biglietti. [23/07]
+  ANNO_ACCADEMICO_BUNDLE: Classificazione dei bundle per anno accademico, valori aggiunti ogni anno dal cliente. Sostituisce ANNO_SOLARE (23/07). L'edizione del singolo biglietto resta derivata dalla data ordine tramite la Mappatura Edizione. [UAT 25/09]
 
 # Words that mean different things on different objects. When one of these is said aloud in a
 # meeting, the record type must be named too, or nobody knows which object is being discussed.
@@ -248,6 +252,7 @@ state_machines:
         "In trattativa (Prev inviato)",
         "In attesa di accettazione",
         "Accettato - Copia Contabile Ricevuta",
+        Firmato,
         Rifiutata
       ]
     rules:
@@ -257,6 +262,8 @@ state_machines:
       - Alert to tutor and client on day 2 after sending, and again at expiry
       - "Accettato and Rifiutata are manual tutor actions"
       - New quote created manually via a button
+      - "Accettato = confirmed by the client on the Community; Firmato = the signed document returned from DocuSign (UAT 2026-09-24, v1.6)"
+      - "The Order is generated automatically when the quote reaches Firmato (UAT 2026-09-24, v1.6)"
 
   order:
     source: [DGM-2]
@@ -293,8 +300,8 @@ state_machines:
       - "Card payment: completes automatically"
       - "CHIUSO/ACQUISITO is set manually by administration within max 5 days of confirmed payment"
     opportunity_types:
-      - "Vendita da tutor"
-      - "Recall tutor"
+      - "Standard" # was "Vendita da tutor"; tailored quote-based sales, never via WooCommerce
+      - "WooCommerce" # replaces "Recall tutor" (UAT 2026-09-25, v1.6); mandatory origin Recall Tutor / Pack Tutor
       - "Plus + Attivazione o Rinnovo" # added 2026-08-14 from DGM-2; drives contract generation
 
   tranche:
@@ -593,7 +600,7 @@ requirements:
       pri: M,
       status: agreed,
       source: AUREL-2026-08-24-TRANCHE,
-      text: "Tranche custom object created on the Quote through guided selection of Quote Line Items and a planned payment due date",
+      text: "Tranche custom object created on the Quote through guided selection of Quote Line Items and a planned payment due date, or at bundle creation on the bundle components (v1.6, UAT 2026-09-25)",
       state_machine: tranche
     }
   - {
@@ -797,7 +804,7 @@ requirements:
       pri: S,
       status: to_confirm,
       source: DGM-2,
-      text: "Opportunity type field with values Vendita da tutor and Recall tutor",
+      text: "Opportunity type: Standard, WooCommerce (mandatory origin Recall Tutor or Pack Tutor) and Plus Attivazione/Rinnovo (v1.6, UAT 2026-09-25)",
       picklists: [opportunity_type],
       tracked_by: [OI-70]
     }
@@ -862,7 +869,8 @@ requirements:
       area: bundles,
       pri: M,
       status: agreed,
-      text: "Bundles created by administration only; products stay configured in Mexal"
+      text: "Bundles created by administration only; products stay configured in Mexal",
+      tracked_by: [decision-products-from-mexal-bundles-in-salesforce]
     }
   - {
       id: BUN-07,
@@ -876,7 +884,8 @@ requirements:
       area: bundles,
       pri: M,
       status: agreed,
-      text: "Classification anno solare to evento (dependent) plus bundle typology",
+      text: "Bundle classification: anno accademico, evento di origine (the event where the bundle is proposed), bundle typology, and a Presenza piattaforma flag (v1.6, UAT 2026-09-25; replaces anno solare to evento)",
+      tracked_by: [OI-46],
       built: fields_only
     }
   - {
@@ -1185,7 +1194,7 @@ requirements:
       pri: M,
       status: agreed,
       source: AUREL-2026-08-24-TRANCHE,
-      text: "After Quote products are selected, the user creates each tranche by choosing its Quote Line Items and payment due date",
+      text: "After Quote products are selected, the user creates each tranche by choosing its Quote Line Items and payment due date. When the Quote uses a bundle that already carries tranches, they are proposed as editable defaults (v1.6)",
       acceptance: AC-06
     }
   - {
@@ -1194,8 +1203,8 @@ requirements:
       pri: M,
       status: agreed,
       source: AUREL-2026-08-24-TRANCHE,
-      text: "Tranche reference and due date propagate from Quote Line Item to Order Item; the whole order then goes to Mexal with both values at line level",
-      tracked_by: [OI-50, OI-143, OI-144, OI-167]
+      text: "Tranche reference and due date propagate from Quote Line Item to Order Item; for a WooCommerce bundle order they come from the tranches defined on the bundle, and the WooCommerce price is ignored. The whole order then goes to Mexal with both values at line level",
+      tracked_by: [OI-50, OI-143, OI-144, OI-167, OI-181]
     }
   - {
       id: ORD-03,

@@ -5,7 +5,7 @@ status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-17
-updated: 2026-09-23
+updated: 2026-09-25
 depends_on: [OI-49]
 blocks: [OI-141]
 source: notes/meetings/2026-09-17 Follow-up Interno.md
@@ -118,3 +118,18 @@ tomorrow. **This is the fifth consecutive run reporting it.**
 Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
 
 - ✅ All three are deployed and active: `Standart`, `Plus_Attivazione_Rinnovo`, `Recall_Tutor`. Opportunities created in the last seven days: 15 `Standart`, 5 Plus, 3 Recall, 1 with none. 🔴 **`Standart` is still misspelt** in the org, and UAT opens tomorrow. ⚠ The System Administrator profile sees **none** of the three. Only `Full_Permission` grants them. (verified)
+
+## 2026-09-25 — the client saw the types, and one changes
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md), Elena Spini walked the client through the three
+types at creation (Vendita standard / Recall da tutor / Plus attivazione rinnovo). Fabrizio
+Paganelli: _"Per ora sì."_ The types are now client-seen. **`Recall_Tutor` is to become a
+`WooCommerce` type** with a mandatory Recall Tutor / Pack Tutor origin → [OI-182](OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md).
+🔴 `Standart` is unchanged: **seventh run**. Fixing it with OI-182 costs one deploy.
+
+## ✅ 2026-09-25 — decided via drill-me: `Standart` is replaced, not relabelled
+
+Handled in [OI-182](OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md):
+new `Standard` and `WooCommerce` types, the old `Standart` and `Recall_Tutor` deactivated
+once the UAT records are remapped. After seven runs, the misspelling has an owner and a
+plan.
