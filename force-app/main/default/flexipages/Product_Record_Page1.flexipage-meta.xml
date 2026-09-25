@@ -209,20 +209,10 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ProductCode</fieldItem>
                 <identifier>RecordProductCodeField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Parent__c</fieldItem>
-                <identifier>RecordParent_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -257,16 +247,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Bundle_Selling_Price__c</fieldItem>
-                <identifier>RecordBundle_Selling_Price_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.IsActive</fieldItem>
                 <identifier>RecordIsActiveField</identifier>
             </fieldInstance>
@@ -283,16 +263,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Family</fieldItem>
                 <identifier>RecordFamilyField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Price_1__c</fieldItem>
-                <identifier>RecordPrice_1_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -350,34 +320,6 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-cadbfd8a-4d7a-481c-b1c1-cfd7a57b45b5</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Description</fieldItem>
-                <identifier>RecordDescriptionField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-c933ce1b-8647-4d0a-83e3-e2adfb0e1a2f</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-c933ce1b-8647-4d0a-83e3-e2adfb0e1a2f</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column3</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-b175301c-12f2-466a-a714-7ee54b473bc4</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -455,24 +397,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
-                    <value>Facet-b175301c-12f2-466a-a714-7ee54b473bc4</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>@@@SFDCDescription_InformationSFDC@@@</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection2</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
                     <value>Facet-33860490-dbd9-4f5a-8fee-6d545b807b78</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -485,6 +409,12 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection3</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-d4e7b097-b0c2-4109-b52b-bc5e8f2037ee</name>
