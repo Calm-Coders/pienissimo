@@ -12,6 +12,8 @@ public with sharing class QuoteTrancheController {
     @AuraEnabled
     public String productCode;
     @AuraEnabled
+    public String bundleName;
+    @AuraEnabled
     public Decimal quantity;
     @AuraEnabled
     public Decimal unitPrice;
@@ -30,6 +32,7 @@ public with sharing class QuoteTrancheController {
       id = line.Id;
       productName = line.Product2 == null ? null : line.Product2.Name;
       productCode = line.Product2 == null ? null : line.Product2.ProductCode;
+      bundleName = bundleNameFromDescription(line.Description);
       quantity = line.Quantity;
       unitPrice = line.UnitPrice;
       totalPrice = line.TotalPrice;
@@ -119,6 +122,7 @@ public with sharing class QuoteTrancheController {
         Quantity,
         UnitPrice,
         TotalPrice,
+        Description,
         Product2.Name,
         Product2.ProductCode,
         Tranche__c,
@@ -560,6 +564,15 @@ public with sharing class QuoteTrancheController {
 
   private static Boolean isEditableStatus(String status) {
     return EDITABLE_QUOTE_STATUSES.contains(status);
+  }
+
+  private static String bundleNameFromDescription(String description) {
+    String prefix = 'Bundle:';
+    if (String.isBlank(description) || !description.startsWith(prefix)) {
+      return null;
+    }
+
+    return description.substring(prefix.length()).trim();
   }
 
   private static Decimal validateSequence(Decimal sequence) {

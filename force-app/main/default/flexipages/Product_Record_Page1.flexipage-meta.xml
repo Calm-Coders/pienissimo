@@ -182,16 +182,6 @@
                 <identifier>RecordEvento__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Genera_Biglietto__c</fieldItem>
-                <identifier>RecordGenera_Biglietto_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-4062bce0-fd1c-4500-ac7e-ccfc8e7334a3</name>
         <type>Facet</type>
     </flexiPageRegions>

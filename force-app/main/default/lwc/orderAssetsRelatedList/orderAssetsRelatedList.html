@@ -1,0 +1,46 @@
+<template>
+  <lightning-card title={title} icon-name="standard:asset_object">
+    <div slot="actions" class="actions">
+      <lightning-button-icon
+        icon-name="utility:refresh"
+        alternative-text="Aggiorna"
+        title="Aggiorna"
+        disabled={isLoading}
+        onclick={handleRefresh}
+      ></lightning-button-icon>
+    </div>
+
+    <div class="content">
+      <template if:true={showInitialLoader}>
+        <div class="loader">
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="small"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:true={hasLoaded}>
+        <template if:true={isLoading}>
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="small"
+          ></lightning-spinner>
+        </template>
+
+        <template if:true={hasRows}>
+          <lightning-datatable
+            key-field="id"
+            columns={columns}
+            data={displayRows}
+            hide-checkbox-column
+          ></lightning-datatable>
+        </template>
+
+        <template if:false={hasRows}>
+          <div class="message">Nessun Asset generato per questo ordine.</div>
+        </template>
+      </template>
+    </div>
+  </lightning-card>
+</template>

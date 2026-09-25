@@ -447,6 +447,9 @@ export default class QuoteCreateTranche extends LightningElement {
       ...line,
       productCode: line.productCode || "Nessun codice",
       productName: line.productName || "Prodotto senza nome",
+      bundleName: line.bundleName || "",
+      bundleLabel: line.bundleName ? `Bundle: ${line.bundleName}` : "",
+      hasBundle: !!line.bundleName,
       totalLabel: this.formatAmount(line.totalPrice)
     };
   }

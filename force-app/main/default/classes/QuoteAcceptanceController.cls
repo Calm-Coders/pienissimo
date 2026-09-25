@@ -195,7 +195,7 @@ public without sharing class QuoteAcceptanceController {
     String queryText =
       'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, Subtotal, ' +
       'TotalPrice, GrandTotal, DocuSign_Status__c, DocuSign_Envelope_Id__c, ' +
-      'Account.Name, Account.Email_Contatto_Principale__c, Opportunity.Name ' +
+      'Email, Account.Name, Opportunity.Name ' +
       'FROM Quote WHERE Id = :quoteId LIMIT 1';
 
     if (lockRecord) {
@@ -263,12 +263,9 @@ public without sharing class QuoteAcceptanceController {
         'La richiesta di firma DocuSign e gia stata inviata.'
       );
     }
-    if (
-      quoteRecord.Account == null ||
-      String.isBlank(quoteRecord.Account.Email_Contatto_Principale__c)
-    ) {
+    if (quoteRecord.Account == null || String.isBlank(quoteRecord.Email)) {
       throw new RequestException(
-        'Email contatto principale mancante. Contatta il referente Pienissimo.'
+        'Email mancante sul preventivo. Contatta il referente Pienissimo.'
       );
     }
   }

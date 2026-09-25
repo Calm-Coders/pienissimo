@@ -6,5 +6,6 @@
   >Indica se la mappatura deve essere usata per collegare i biglietti alla campagna figlia.</description>
     <label>Attiva</label>
     <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

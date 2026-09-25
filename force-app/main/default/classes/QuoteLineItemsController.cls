@@ -33,6 +33,12 @@ public without sharing class QuoteLineItemsController {
     @AuraEnabled
     public String productCode;
     @AuraEnabled
+    public String bundleName;
+    @AuraEnabled
+    public Id bundleId;
+    @AuraEnabled
+    public String bundleCode;
+    @AuraEnabled
     public String description;
     @AuraEnabled
     public Decimal quantity;
@@ -44,7 +50,7 @@ public without sharing class QuoteLineItemsController {
     public LineRow(
       QuoteLineItem line,
       Boolean canDeleteLines,
-      List<BundleComponent__c> components
+      Map<String, Product2> bundlesByName
     ) {
       key = String.valueOf(line.Id);
       id = line.Id;
@@ -53,11 +59,21 @@ public without sharing class QuoteLineItemsController {
       productName = line.Product2 == null ? null : line.Product2.Name;
       productCode = line.Product2 == null ? null : line.Product2.ProductCode;
       description = line.Description;
+      bundleName = bundleNameFromDescription(line.Description);
+      Product2 bundle = String.isBlank(bundleName)
+        ? null
+        : bundlesByName.get(bundleName);
+      bundleId = bundle == null ? null : bundle.Id;
+      bundleCode = bundle == null ? null : bundle.ProductCode;
       quantity = line.Quantity;
       unitPrice = salesUnitPrice(line, components);
       totalPrice = isBundleLine(line) && unitPrice != null
         ? (quantity == null ? 0 : quantity) * unitPrice
         : line.TotalPrice;
+    }
+
+    public LineRow(QuoteLineItem line, Boolean canDeleteLines) {
+      this(line, canDeleteLines, new Map<String, Product2>());
     }
 
     public LineRow(BundleComponent__c component, QuoteLineItem parentLine) {
@@ -152,6 +168,8 @@ public without sharing class QuoteLineItemsController {
       }
     }
 
+    Map<String, Product2> bundlesByName = loadBundlesByName(quoteLines);
+
     Boolean canDeleteLines =
       DELETABLE_QUOTE_STATUSES.contains(quoteRecord.Status) &&
       Schema.sObjectType.QuoteLineItem.isDeletable();
@@ -165,6 +183,7 @@ public without sharing class QuoteLineItemsController {
     context.rows = new List<LineRow>();
 
     for (QuoteLineItem line : quoteLines) {
+      context.rows.add(new LineRow(line, canDeleteLines, bundlesByName));
       List<BundleComponent__c> components = componentsByBundleId.get(
         line.Product2Id
       );
@@ -178,6 +197,43 @@ public without sharing class QuoteLineItemsController {
     }
 
     return context;
+  }
+
+  private static Map<String, Product2> loadBundlesByName(
+    List<QuoteLineItem> quoteLines
+  ) {
+    Set<String> bundleNames = new Set<String>();
+    for (QuoteLineItem line : quoteLines) {
+      String bundleName = bundleNameFromDescription(line.Description);
+      if (!String.isBlank(bundleName)) {
+        bundleNames.add(bundleName);
+      }
+    }
+
+    Map<String, Product2> bundlesByName = new Map<String, Product2>();
+    if (bundleNames.isEmpty()) {
+      return bundlesByName;
+    }
+
+    for (Product2 bundle : [
+      SELECT Id, Name, ProductCode
+      FROM Product2
+      WHERE RecordType.DeveloperName = 'Bundle' AND Name IN :bundleNames
+      WITH USER_MODE
+    ]) {
+      bundlesByName.put(bundle.Name, bundle);
+    }
+
+    return bundlesByName;
+  }
+
+  private static String bundleNameFromDescription(String description) {
+    String prefix = 'Bundle:';
+    if (String.isBlank(description) || !description.startsWith(prefix)) {
+      return null;
+    }
+
+    return description.substring(prefix.length()).trim();
   }
 
   @AuraEnabled

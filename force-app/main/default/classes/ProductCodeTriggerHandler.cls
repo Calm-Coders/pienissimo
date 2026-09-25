@@ -50,13 +50,10 @@ public without sharing class ProductCodeTriggerHandler {
       return;
     }
 
-    Id standardPricebookId = [
-      SELECT Id
-      FROM Pricebook2
-      WHERE IsStandard = TRUE
-      LIMIT 1
-    ]
-    .Id;
+    Id standardPricebookId = getStandardPricebookId();
+    if (standardPricebookId == null) {
+      return;
+    }
 
     Set<Id> productIds = new Map<Id, Product2>(newProducts).keySet();
     Set<Id> productsWithStandardEntry = new Set<Id>();
@@ -87,5 +84,20 @@ public without sharing class ProductCodeTriggerHandler {
     if (!entriesToInsert.isEmpty()) {
       insert entriesToInsert;
     }
+  }
+
+  private static Id getStandardPricebookId() {
+    if (Test.isRunningTest()) {
+      return Test.getStandardPricebookId();
+    }
+
+    List<Pricebook2> pricebooks = [
+      SELECT Id
+      FROM Pricebook2
+      WHERE IsStandard = TRUE
+      LIMIT 1
+    ];
+
+    return pricebooks.isEmpty() ? null : pricebooks[0].Id;
   }
 }
