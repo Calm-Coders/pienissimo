@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bundle__c</fullName>
+    <description
+  >The bundle product this tranche template belongs to.</description>
+    <label>Bundle</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage
+    >Only products with the Bundle record type can be used as a bundle.</errorMessage>
+        <filterItems>
+            <field>Product2.RecordType.DeveloperName</field>
+            <operation>equals</operation>
+            <value>Bundle</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Product2</referenceTo>
+    <relationshipLabel>Bundle Tranches</relationshipLabel>
+    <relationshipName>Bundle_Tranches</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

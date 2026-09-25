@@ -52,7 +52,10 @@ public with sharing class QuoteManageProductsController {
 
     public ExistingBundleLine(QuoteLineItem line) {
       quoteLineItemId = line.Id;
-      productName = line.Product2 == null ? null : line.Product2.Name;
+      String bundleName = bundleNameFromDescription(line.Description);
+      productName = String.isBlank(bundleName)
+        ? line.Product2 == null ? null : line.Product2.Name
+        : bundleName;
       productCode = line.Product2 == null ? null : line.Product2.ProductCode;
     }
   }
@@ -145,6 +148,22 @@ public with sharing class QuoteManageProductsController {
     public Date dueDate { get; set; }
   }
 
+  private class StandardBundleQuoteLineDraft {
+    QuoteLineItem line;
+    Id bundleTranchId;
+
+    StandardBundleQuoteLineDraft(QuoteLineItem line, Id bundleTranchId) {
+      this.line = line;
+      this.bundleTranchId = bundleTranchId;
+    }
+
+    Decimal amount() {
+      Decimal quantity = line.Quantity == null ? 0 : line.Quantity;
+      Decimal unitPrice = line.UnitPrice == null ? 0 : line.UnitPrice;
+      return (quantity * unitPrice).setScale(2);
+    }
+  }
+
   @AuraEnabled
   public static QuoteProductsContext getContext(Id quoteId) {
     validateQuoteId(quoteId);
@@ -186,7 +205,8 @@ public with sharing class QuoteManageProductsController {
         Tranche__r.Name,
         Tranche__r.Sequenza__c,
         Tranche__r.Importo_Previsto__c,
-        Data_Scadenza__c
+        Data_Scadenza__c,
+        Description
       FROM QuoteLineItem
       WHERE QuoteId = :quoteId
       ORDER BY Tranche__r.Sequenza__c NULLS LAST, CreatedDate, Id
@@ -195,13 +215,13 @@ public with sharing class QuoteManageProductsController {
         context.hasPlusLine = true;
       }
 
-      if (isBundleLine(line) && context.existingBundleLine == null) {
+      Boolean representsBundle =
+        isBundleLine(line) || isBundleComponentLine(line);
+      if (representsBundle && context.existingBundleLine == null) {
         context.existingBundleLine = new ExistingBundleLine(line);
-        context.existingLines.add(new ExistingQuoteLine(line));
-        continue;
       }
 
-      if (!isBundleLine(line)) {
+      if (!representsBundle) {
         context.hasItemLines = true;
       }
 
@@ -419,10 +439,20 @@ public with sharing class QuoteManageProductsController {
         }
       }
 
-      insert buildStandardBundleQuoteLines(
+      List<StandardBundleQuoteLineDraft> bundleLineDrafts = buildStandardBundleQuoteLineDrafts(
         quoteId,
         bundleEntry,
         selectedPricebook2Id
+      );
+      List<QuoteLineItem> bundleLines = new List<QuoteLineItem>();
+      for (StandardBundleQuoteLineDraft draft : bundleLineDrafts) {
+        bundleLines.add(draft.line);
+      }
+      insert bundleLines;
+      createTranchesFromBundleTemplates(
+        quoteRecord,
+        bundleEntry.Product2Id,
+        bundleLineDrafts
       );
       return;
     }
@@ -453,7 +483,7 @@ public with sharing class QuoteManageProductsController {
     insert linesToInsert;
   }
 
-  private static List<QuoteLineItem> buildStandardBundleQuoteLines(
+  private static List<StandardBundleQuoteLineDraft> buildStandardBundleQuoteLineDrafts(
     Id quoteId,
     PricebookEntry bundleEntry,
     Id pricebook2Id
@@ -463,7 +493,13 @@ public with sharing class QuoteManageProductsController {
     }
 
     List<BundleComponent__c> components = [
-      SELECT Id, Product__c, Product__r.Name, Quantity__c, Unit_Spread__c
+      SELECT
+        Id,
+        Product__c,
+        Product__r.Name,
+        Quantity__c,
+        Unit_Spread__c,
+        Bundle_Tranch__c
       FROM BundleComponent__c
       WHERE Bundle__c = :bundleEntry.Product2Id
       ORDER BY Product__r.Name, Id
@@ -494,7 +530,7 @@ public with sharing class QuoteManageProductsController {
       entryByProductId.put(componentEntry.Product2Id, componentEntry);
     }
 
-    List<QuoteLineItem> lines = new List<QuoteLineItem>();
+    List<StandardBundleQuoteLineDraft> lineDrafts = new List<StandardBundleQuoteLineDraft>();
     for (BundleComponent__c component : components) {
       PricebookEntry componentEntry = entryByProductId.get(
         component.Product__c
@@ -517,18 +553,104 @@ public with sharing class QuoteManageProductsController {
         );
       }
 
-      lines.add(
-        new QuoteLineItem(
-          QuoteId = quoteId,
-          PricebookEntryId = componentEntry.Id,
-          Quantity = component.Quantity__c,
-          UnitPrice = component.Unit_Spread__c,
-          Description = 'Bundle: ' + bundleEntry.Product2.Name
+      lineDrafts.add(
+        new StandardBundleQuoteLineDraft(
+          new QuoteLineItem(
+            QuoteId = quoteId,
+            PricebookEntryId = componentEntry.Id,
+            Quantity = component.Quantity__c,
+            UnitPrice = component.Unit_Spread__c,
+            Description = 'Bundle: ' + bundleEntry.Product2.Name
+          ),
+          component.Bundle_Tranch__c
         )
       );
     }
 
-    return lines;
+    return lineDrafts;
+  }
+
+  private static void createTranchesFromBundleTemplates(
+    Quote quoteRecord,
+    Id bundleId,
+    List<StandardBundleQuoteLineDraft> lineDrafts
+  ) {
+    List<Bundle_Tranch__c> templates = [
+      SELECT Id, Name, Sequenza__c, Data_Scadenza__c
+      FROM Bundle_Tranch__c
+      WHERE Bundle__c = :bundleId
+      ORDER BY Sequenza__c, CreatedDate, Id
+    ];
+    if (templates.isEmpty()) {
+      return;
+    }
+
+    requireTrancheCreateAccess();
+    requireBundleTemplateTrancheCreateAccess();
+
+    Map<Id, Bundle_Tranch__c> templateById = new Map<Id, Bundle_Tranch__c>(
+      templates
+    );
+    Map<Id, Decimal> amountByTemplateId = new Map<Id, Decimal>();
+    for (StandardBundleQuoteLineDraft draft : lineDrafts) {
+      if (draft.bundleTranchId == null) {
+        throw new AuraHandledException(
+          'Assegna ogni componente del bundle a una tranch prima di aggiungerlo al preventivo.'
+        );
+      }
+      if (!templateById.containsKey(draft.bundleTranchId)) {
+        throw new AuraHandledException(
+          'Una tranch assegnata a un componente non appartiene a questo bundle.'
+        );
+      }
+
+      Decimal amount = amountByTemplateId.containsKey(draft.bundleTranchId)
+        ? amountByTemplateId.get(draft.bundleTranchId)
+        : 0;
+      amountByTemplateId.put(draft.bundleTranchId, amount + draft.amount());
+    }
+
+    List<Tranche__c> tranches = new List<Tranche__c>();
+    for (Bundle_Tranch__c template : templates) {
+      Decimal expectedAmount = amountByTemplateId.get(template.Id);
+      if (expectedAmount == null) {
+        throw new AuraHandledException(
+          'Ogni tranch del bundle deve avere almeno un componente assegnato.'
+        );
+      }
+
+      tranches.add(
+        new Tranche__c(
+          Quote__c = quoteRecord.Id,
+          Name = template.Name,
+          Data_Scadenza__c = template.Data_Scadenza__c,
+          Sequenza__c = template.Sequenza__c,
+          Importo_Previsto__c = expectedAmount,
+          Stato__c = 'Aperta',
+          Completamente_Pagata__c = false,
+          Bundle_Tranch__c = template.Id
+        )
+      );
+    }
+    insert tranches;
+
+    Map<Id, Tranche__c> trancheByTemplateId = new Map<Id, Tranche__c>();
+    for (Tranche__c tranche : tranches) {
+      trancheByTemplateId.put(tranche.Bundle_Tranch__c, tranche);
+    }
+
+    List<QuoteLineItem> lineUpdates = new List<QuoteLineItem>();
+    for (StandardBundleQuoteLineDraft draft : lineDrafts) {
+      Tranche__c tranche = trancheByTemplateId.get(draft.bundleTranchId);
+      lineUpdates.add(
+        new QuoteLineItem(
+          Id = draft.line.Id,
+          Tranche__c = tranche.Id,
+          Data_Scadenza__c = tranche.Data_Scadenza__c
+        )
+      );
+    }
+    update lineUpdates;
   }
 
   private static List<ProductOption> findProductOptions(
@@ -776,6 +898,19 @@ public with sharing class QuoteManageProductsController {
       BUNDLE_RECORD_TYPE_DEVELOPER_NAME;
   }
 
+  private static Boolean isBundleComponentLine(QuoteLineItem line) {
+    return !String.isBlank(bundleNameFromDescription(line.Description));
+  }
+
+  private static String bundleNameFromDescription(String description) {
+    String prefix = 'Bundle:';
+    if (String.isBlank(description) || !description.startsWith(prefix)) {
+      return null;
+    }
+
+    return description.substring(prefix.length()).trim();
+  }
+
   private static Boolean isBundleEntry(PricebookEntry entry) {
     if (entry.Product2 == null || entry.Product2.RecordType == null) {
       return false;
@@ -976,6 +1111,18 @@ public with sharing class QuoteManageProductsController {
     ) {
       throw new AuraHandledException(
         'Non hai i permessi per creare le tranche del preventivo.'
+      );
+    }
+  }
+
+  private static void requireBundleTemplateTrancheCreateAccess() {
+    if (
+      !Schema.sObjectType.Tranche__c.fields.Bundle_Tranch__c.isCreateable() ||
+      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isUpdateable() ||
+      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isUpdateable()
+    ) {
+      throw new AuraHandledException(
+        'Non hai i permessi per creare le tranche del bundle sul preventivo.'
       );
     }
   }

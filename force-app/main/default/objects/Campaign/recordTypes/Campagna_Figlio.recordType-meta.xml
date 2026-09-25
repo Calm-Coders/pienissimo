@@ -3,4 +3,22 @@
     <fullName>Campagna_Figlio</fullName>
     <active>true</active>
     <label>Campagna Figlio</label>
+    <picklistValues>
+        <picklist>Anno_Accademico__c</picklist>
+        <values>
+            <fullName>2026/2027</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Tipologia_Evento__c</picklist>
+        <values>
+            <fullName>Live</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Online</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
 </RecordType>
