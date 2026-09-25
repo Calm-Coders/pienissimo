@@ -5121,21 +5121,3 @@ listino, `Quote.Is_Primary__c`, `Opportunity.Preventivo_Primario__c`, `ProductCo
 🔴 **`Standart` è invariato**, al quinto passaggio;
 [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) è
 invariata; la copertura è **0 su 7.756**.
-
-## 24 settembre 2026 — aggiornamento dati Account_NEW in UAT
-
-Il foglio Account del cliente riporta tre campi ATECO commerciali. `Codice
-ATECO` e `Descrizione ATECO` erano già presenti sull'Account in UAT, con
-1.141 e 1.134 valori importati. `Ateco Stato Attivita` è stato aggiunto come
-picklist non ristretta secondo il foglio corrente e valorizzato su 377 degli
-8.140 Account con Partita IVA di `Account_NEW`. Il campo e i relativi accessi
-sono stati distribuiti in UAT; la rilettura completa non mostra discrepanze.
-
-`Categoria Provvigioni Cliente` era già presente su Account e User. Il campo
-User era vuoto sulle nove utenze Agente inattive; ora è valorizzato su otto,
-secondo la categoria scelta per ciascun agente dai dati sorgente. Elisa non ha
-una categoria nel file; per Nicol l'utente ha scelto `19` fra i due valori
-sorgente. Le categorie sui singoli Account sono state conservate. Questi
-aggiornamenti non hanno creato job di aggiornamento clienti verso Mexal.
-Si tratta di dati UAT, non della migrazione in produzione; la mappatura
-dell'ordine Mexal resta aperta.

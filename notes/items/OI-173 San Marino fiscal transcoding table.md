@@ -1,12 +1,12 @@
 ---
 id: OI-173
 type: open-item
-status: open
+status: resolved
 owner: Elena Spini
 with: Mirko Merendi
 org: both
 raised: 2026-09-23
-updated: 2026-09-23
+updated: 2026-09-24
 depends_on: [OI-97, OI-159]
 blocks: [go-live]
 source: notes/meetings/2026-09-23 Check Data Import.md
@@ -71,3 +71,50 @@ was postponed in the Check Data Import call.
   branches of the same rule; only the Italian one has a stated value so far.
 - ⚠ No register row covers fiscal treatment. **Allocating a requirement id is a human's
   call.**
+
+## 🟢 2026-09-24 — RESOLVED at the 10:00 call, and the table arrived the same morning
+
+[Temi Mexal Anagrafiche/Indirizzi](../meetings/2026-09-24%20Temi%20Mexal%20Anagrafiche%20Indirizzi.md),
+22m45s, with Mirko Merendi and Fabrizio Paganelli. **Both questions this note left open
+are answered.**
+
+### Agree the table and where it lives — answered
+
+It lives in **Salesforce**, as a table the administration maintains. The user sets one
+value on the customer master and **a trigger populates the rest**; the same values go to
+Mexal on order creation. Aurel Mrruku proposed it, Mirko Merendi and Fabrizio Paganelli
+both accepted it in the call.
+
+🔑 **The key is `residenza fiscale`, derived from the customer's two-letter ISO country
+code on the `ragione sociale` — not the billing address.** Fabrizio Paganelli was explicit:
+_"se il cliente è estero ma c'ha un punto vendita in Italia vale il cliente estero."_
+
+### The Italian and San Marino branches — answered
+
+| `residenza fiscale` | Treatment                                                                                                                                                               |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `I` — Italy         | the three e-invoicing fields are filled                                                                                                                                 |
+| `S` — San Marino    | **the same treatment, in future** — Mirko Merendi: _"fra poco entrerà in vigore anche la fatturazione elettronica sanmarinese interna"_. Few San Marino customers today |
+| foreign / extra-EU  | left blank in the table; Salesforce treats anything absent as foreign, with its own code                                                                                |
+
+The three Mexal customer fields, filled **only for Italian customers** (API names from
+Mirko Merendi's 08:46:51Z mail):
+
+- `gest_fatt_el` — activate electronic invoicing
+- `serie_fatt_el` — VAT sectional, value **3**
+- `cod_modu_allega` — PDF-in-XML attachment module, value **`FT`**
+
+### Delivered
+
+**`Nazioni e Residenza Fiscale.xlsx`**, attached by Fabrizio Paganelli to the
+`Ordine cliente` thread at **24/09 10:08:51Z**: the country list with the four linked
+fields; countries not present carry a row with no code.
+
+## Carried forward, not blocking this row
+
+- ⚠ **Two-character versus three-character ISO.** Mexal uses two-letter ISO; Aurel
+  Mrruku's country data comes from Google Maps as a three-letter code. A conversion is
+  owed, and he named **Kosovo** as a code some lists omit. Both sides agreed the residue
+  is marginal and gets fixed by hand.
+- ⚠ **The `.xlsx` was not opened by this sweep.** Its existence, sender, time and stated
+  contents are recorded; the values are not.

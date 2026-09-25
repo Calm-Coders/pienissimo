@@ -25,6 +25,64 @@ Last updated: 2026-09-24 (Account ATECO state and User commission category backf
   See [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md),
   [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
   and [OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md).
+  Last updated: 2026-09-24 (nightly sweep — first UAT session, and a Business Blueprint) · Source of record: [notes/](notes/)
+
+## Where the project stands
+
+- 🔑 **2026-09-24 — the client accepted the whole commercial chain on the first day of UAT,
+  and a Business Blueprint appeared that the record had never heard of.** External sweep,
+  watermark 2026-09-23T22:00Z.
+  🟢🔑 **[UAT: Lead e Opportunità](notes/meetings/2026-09-24%20UAT%20Lead%20e%20Opportunita.md)**
+  (24/09 15:00 CEST, ~2h08m, Marco Montesi · Fabrizio Paganelli · Sabatino Rinaldi ·
+  Elena Spini · Aurel Mrruku) ran **lead → conversion → opportunity → quote → tranche →
+  PDF → Community acceptance → DocuSign → order, end to end.** **Nothing in it was
+  rejected.** Twelve rulings, including 🔑 **a new quote state `Firmato`** at which the
+  order is generated
+  ([OI-151](notes/items/OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)),
+  the agent **mandatory to reach `Qualificato`**, and Closed Won **only at incasso**.
+  🟢 **Three unknowns closed by demonstration:**
+  [OI-164](notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+  **RESOLVED** (both record types present; Elena Spini's two-state `Diretta` path delivered
+  exactly as asked),
+  [OI-163](notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)
+  **a duplicate rule fired and the client approved it**, and
+  [OI-174](notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md)
+  **answered — a client-domain recipient received and signed**, so the block is ROMI-side
+  only. 🔑 The same passage explains the missing DocuSign credentials: Elisa Migliano
+  _"non sapevo dovessi darvi le credenziali"_.
+  🔴 **Two defects, live in front of the client.** **Every form lead is typed `Diretta`**
+  ([OI-176](notes/items/OI-176%20Web%20to%20Lead%20assigns%20every%20lead%20the%20Diretta%20record%20type.md)),
+  and **the first DocuSign send never left** because the products were not in the edition
+  mapping — the same fault as the 11:13Z sandbox Apex exception. The matching code
+  **throws rather than degrading**, so an unmapped product aborts the whole chain
+  ([OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)); the
+  mapping is at **13 of 51** with ticket UAT on 30/09.
+  🟢🔑 **[OI-173](notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md) RESOLVED
+  in 22 minutes** — the rule keys on `residenza fiscale` from the **two-letter ISO on the
+  ragione sociale, not the billing address**; `Nazioni e Residenza Fiscale.xlsx` and
+  `Codici Pagamento.xlsx` arrived the same morning. 🟢 Mirko Merendi supplied the Mexal
+  API field names, with **`valuta` and `cod_listino` mandatory on create, fixed to 1**
+  ([OI-159](notes/items/OI-159%20Mexal%20order%20fields%20Salesforce%20does%20not%20populate.md)).
+  🟢 The client **confirmed the natura article codes in writing**
+  ([OI-154](notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)),
+  though the legend arrived as a screenshot for the third time.
+  🔴 **NEW — [OI-179](notes/items/OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md):
+  a ten-chapter Business Blueprint with its own signature block** appeared at 18:10Z and
+  goes to the client on 25/09, carrying **seven `● Check con Aurel` markers**, material new
+  to the record (two WooCommerce instances, legacy QR codes dying with Zoho, 20 hours of
+  training), and **`Firmato` missing from its own quote-state table**.
+  🔴 **NEW — [OI-180](notes/items/OI-180%20Client%20UAT%20users%20are%20withheld%20until%20a%20director%20review.md):
+  the client has no UAT logins** until Daniela Morgese reviews the product, indicatively
+  **6 October — the day the UAT window closes**.
+  🔴 **NEW — [OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md):
+  the marketing UAT needs production**, and the Aurel Mrruku ↔ Fabrizio Mastracci hand-off
+  is stalled with each waiting on the other.
+  🔴 **NEW — [OI-178](notes/items/OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md):
+  two agent fields on two branches** — `Codice_Agente_Esterno__c` on `DevMain` with 8,140
+  accounts carrying it, `Agente__c` on `DEV_LeadAgenteBundle`, **and the client was shown
+  the second**. 🟢 That branch **now has a PR (#59)**; PR #60 carries the Mappatura
+  Edizione rewrite. 🔴 `Standart` unchanged, sixth run, with UAT records being created now.
+  — [trace](notes/traces/Source%20trace%202026-09-24%20nightly.md)
 
 - **2026-09-24 — Account_NEW UAT import:** 8,140 VAT-bearing Accounts loaded,
   457 source rows without VAT excluded; nine inactive Agent users linked through

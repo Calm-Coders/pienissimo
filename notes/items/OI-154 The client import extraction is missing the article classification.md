@@ -5,7 +5,7 @@ status: in-progress
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-09-21
-updated: 2026-09-22
+updated: 2026-09-24
 depends_on: [OI-24]
 blocks: [OI-121, go-live]
 severity: downgraded 2026-09-22
@@ -150,3 +150,37 @@ opened; it carries real customer and catalogue data.**
 - ⚠ **`Check Data Import` on 23/09 10:00–12:00** is where the field list gets walked.
 - ⚠ The gating concern about **starting UAT on incomplete article data** stands, but it
   is now about registry clean-up and the unread legend, not a missing classification.
+
+## 🟢 2026-09-24 — the client confirmed the natura codes in writing, and the legend arrived as a screenshot again
+
+**Aurel Mrruku put the four-way classification to Fabrizio Paganelli directly, 24/09
+09:08:17Z** (to `fabrizio.p@`, cc Elena Spini and `amministrazione@`), stating the
+ROMI-side reading back for confirmation:
+
+> _"NO: non è un biglietto né un bundle · BO: è un biglietto, ma non un bundle · BB: è sia
+> un biglietto sia un bundle … Mi sembra quindi che manchi la combinazione OB, per gli
+> articoli che sono bundle ma non biglietti. Mi confermi che l'interpretazione è
+> corretta?"_
+
+**Fabrizio Paganelli replied at 10:16:44Z:**
+
+> _"ti giro la lista che abbiamo codificato su Mexal. Oltre a BB, BO e NO che vedi presenti
+> nella lista, ti confermo che al momento non abbiamo nessun codice con Natura NB, ma
+> questi verranno sicuramente gestiti."_
+
+🟢 **The three codes the 1,010-article import ran on are confirmed by the client.** The
+ROMI-supplied mapping used on 23/09 was right.
+
+🟢 **The fourth combination does not exist yet** and is expected later — so the import is
+not missing rows today.
+
+⚠ **The two of them named the fourth code differently.** Aurel Mrruku asked about **`OB`**;
+Fabrizio Paganelli answered about **`NB`**. Read literally the answer does not address the
+question asked, and nothing establishes which letter order the client's own Mexal
+configuration uses. **Worth one line of confirmation before the fourth case appears.**
+
+🔴 **The legend itself arrived as an inline image again** — `image001.png`, the third
+screenshot-only delivery of this list. **No tool available here can read it.** The
+unreadable-legend trigger is therefore **half-discharged**: the client has now confirmed
+the semantics in plain text in the mail body, so ticket UAT on 30/09 no longer rests on a
+convention ROMI invented — but the authoritative list is still a picture.

@@ -161,3 +161,20 @@ of the 8,140 eligible Accounts; the other source values were blank. Read-back
 of every imported Account showed zero mismatches. The update CSVs contained
 only Account ID and the new ATECO-state field. No Mexal customer-update job
 appeared after the update. This remains UAT data, not production cut-over.
+
+## 2026-09-24 — the Business Blueprint names the perimeter; the plan is still missing
+
+`Business_Blueprint_Pienissimo.docx` §5 states the initial load as **one shot**, covering
+four entities from Zoho: **Lead, Account/Aziende/Locali, Contatti, Ordini/Righe**. It
+confirms [OI-172](OI-172%20Historical%20quotes%20and%20offers%20are%20not%20migrated.md)
+by omission — quotes and offers are not on the list — and adds that product master data
+is born on Mexal and imported by **nightly batch**, with the bundle the sole exception.
+
+🔴 **A list of entities is not a plan.** Still no estimate, no production sequence, no
+cut-over owner, no date for the orders/migration session that was postponed on 23/09.
+**Go-live 21 October, Zoho expires 31 October.**
+
+🔑 The UAT account load gives the first real measure of effort: Aurel Mrruku, session
+`02:04:26`, spent **about six hours** loading the accounts into a Partial Copy sandbox and
+still had fields to correct — and bad input (wrong email addresses, missing P.IVA) breaks
+order generation downstream.
