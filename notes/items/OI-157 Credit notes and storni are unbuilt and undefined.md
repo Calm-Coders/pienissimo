@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-09-21
+updated: 2026-09-24
 source: notes/meetings/2026-09-18 Interna Temi Mexal.md
 ---
 
@@ -51,3 +51,22 @@ the same conversation** (see the session note). Stated frequency for that case:
   [OI-136](OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md)
   keeps pointing at: a real administrative need to reverse a payment state, scoped
   twice and built never.
+
+## 2026-09-24 — the Business Blueprint gives credit notes a shape, still unbuilt
+
+`Business_Blueprint_Pienissimo.docx` (§2 deliverables and §6.5 edge cases) describes what
+this note records as undefined
+([OI-179](OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md)):
+
+- A **"Crea Nota di Credito" button at Order level**, with point selection of the order
+  lines and Assets to reverse.
+- For a multi-event order, a **popup to pick the ticket/order line**, so the credit note
+  and the Asset → `Annullato` transition apply only to that line, not the whole order.
+  The client's administration flagged it as **not urgent but to be kept in the design**.
+- Participant name change is handled separately, by a `caso limite` button on the Account:
+  the existing Asset is cancelled and a **new Asset with a new QR code** is created, never
+  updated in place, to preserve history.
+
+⚠ **Both deliverable bullets carry the author's `● Check con Aurel` marker**, and nothing
+is built. This note stays open; what it gains is a described design and a client-visible
+commitment to it.

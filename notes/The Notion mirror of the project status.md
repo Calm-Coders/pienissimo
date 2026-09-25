@@ -5,8 +5,8 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-24
-updated: 2026-09-14
-source: refreshed 2026-09-14 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status page replaced whole, Flows build-state callouts rewritten, 25 tracker rows added, 3 statuses and 1 owner corrected, all 95 rows verified against their notes
+updated: 2026-09-23
+source: refreshed 2026-09-23 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status page replaced whole, 37 tracker rows added (OI-135 to OI-171), 3 statuses corrected, 132 rows verified against 132 notes; Flows page unchanged
 ---
 
 # The Notion mirror of the project status
@@ -244,3 +244,24 @@ one: 95 notes against roughly 86 numbered tracker rows, because the last three
 weeks produced notes faster than the client-facing tracker gained rows. **The
 two no longer correspond one to one**, and nobody should read a row count as a
 tracker count in either direction any more.
+
+## 2026-09-23 — refresh after nine days stale
+
+**The Status page was replaced whole** from the regenerated `STATUS.md`. It had
+no child page or database, which was checked before the write. It was re-fetched
+and read back, and **no markup was mangled**. The nightly runs of 15–22 September
+published nothing, so the page still showed the Mexal chain as org-only, which
+had been closed since 15 September.
+
+**Tracker:** **37 rows added** (`OI-135` to `OI-171`) and **3 statuses
+corrected**: `OI-49`, `OI-88` and `OI-102` were resolved in their notes and still
+`Open` or `In progress` here. The database now holds **132 rows with 132 distinct
+refs**, matching `notes/items/` exactly, with 16 resolved and 15 gating in both
+places.
+
+⚠ **Two rows have no `Note` URL on purpose.** `OI-170` and `OI-171` were written
+in this session, and `DevMain` has not been pushed, so the link would 404. Fill
+them in after the push.
+
+**Flows page: not touched.** No flow note and no `state_machines` entry changed
+in this run.

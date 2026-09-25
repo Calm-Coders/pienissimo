@@ -2,9 +2,97 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-22 (nightly requirements-check: five sessions in one day settled the tranche design, and last night's headline was wrong) · Source of record: [notes/](notes/)
+Last updated: 2026-09-24 (Account ATECO state and User commission category backfilled in UAT) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- **2026-09-24 — ATECO and Agent commission category in UAT:** the third
+  Account ATECO field (`Ateco Stato Attivita`) was deployed and 377 source
+  values loaded; code and description were already present on 1,141 and 1,134
+  imported Accounts. The existing User commission-category field was filled
+  on eight of nine inactive Agent users; the ninth has no source value. Nicol's
+  conflicting source categories were resolved by the user's explicit choice.
+  Full read-back found zero mismatches and no new Mexal customer-update job.
+  See [OI-112](notes/items/OI-112%20Whether%20Anticipay%20returns%20the%20ATECO%20code.md),
+  [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)
+  and [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md).
+
+- **2026-09-24 — commercial Account fields in UAT:** commission category,
+  zona, activity type and seasonal checkbox deployed on Account. Of the 8,140
+  eligible `Account_NEW` rows, 8,138 categories and 181 activity types were
+  loaded with zero mismatches; zona had no source values and seasonal has no
+  source column. The data jobs created **zero Mexal customer-update queueables**.
+  See [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md),
+  [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+  and [OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md).
+  Last updated: 2026-09-24 (nightly sweep — first UAT session, and a Business Blueprint) · Source of record: [notes/](notes/)
+
+## Where the project stands
+
+- 🔑 **2026-09-24 — the client accepted the whole commercial chain on the first day of UAT,
+  and a Business Blueprint appeared that the record had never heard of.** External sweep,
+  watermark 2026-09-23T22:00Z.
+  🟢🔑 **[UAT: Lead e Opportunità](notes/meetings/2026-09-24%20UAT%20Lead%20e%20Opportunita.md)**
+  (24/09 15:00 CEST, ~2h08m, Marco Montesi · Fabrizio Paganelli · Sabatino Rinaldi ·
+  Elena Spini · Aurel Mrruku) ran **lead → conversion → opportunity → quote → tranche →
+  PDF → Community acceptance → DocuSign → order, end to end.** **Nothing in it was
+  rejected.** Twelve rulings, including 🔑 **a new quote state `Firmato`** at which the
+  order is generated
+  ([OI-151](notes/items/OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)),
+  the agent **mandatory to reach `Qualificato`**, and Closed Won **only at incasso**.
+  🟢 **Three unknowns closed by demonstration:**
+  [OI-164](notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+  **RESOLVED** (both record types present; Elena Spini's two-state `Diretta` path delivered
+  exactly as asked),
+  [OI-163](notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)
+  **a duplicate rule fired and the client approved it**, and
+  [OI-174](notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md)
+  **answered — a client-domain recipient received and signed**, so the block is ROMI-side
+  only. 🔑 The same passage explains the missing DocuSign credentials: Elisa Migliano
+  _"non sapevo dovessi darvi le credenziali"_.
+  🔴 **Two defects, live in front of the client.** **Every form lead is typed `Diretta`**
+  ([OI-176](notes/items/OI-176%20Web%20to%20Lead%20assigns%20every%20lead%20the%20Diretta%20record%20type.md)),
+  and **the first DocuSign send never left** because the products were not in the edition
+  mapping — the same fault as the 11:13Z sandbox Apex exception. The matching code
+  **throws rather than degrading**, so an unmapped product aborts the whole chain
+  ([OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)); the
+  mapping is at **13 of 51** with ticket UAT on 30/09.
+  🟢🔑 **[OI-173](notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md) RESOLVED
+  in 22 minutes** — the rule keys on `residenza fiscale` from the **two-letter ISO on the
+  ragione sociale, not the billing address**; `Nazioni e Residenza Fiscale.xlsx` and
+  `Codici Pagamento.xlsx` arrived the same morning. 🟢 Mirko Merendi supplied the Mexal
+  API field names, with **`valuta` and `cod_listino` mandatory on create, fixed to 1**
+  ([OI-159](notes/items/OI-159%20Mexal%20order%20fields%20Salesforce%20does%20not%20populate.md)).
+  🟢 The client **confirmed the natura article codes in writing**
+  ([OI-154](notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)),
+  though the legend arrived as a screenshot for the third time.
+  🔴 **NEW — [OI-179](notes/items/OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md):
+  a ten-chapter Business Blueprint with its own signature block** appeared at 18:10Z and
+  goes to the client on 25/09, carrying **seven `● Check con Aurel` markers**, material new
+  to the record (two WooCommerce instances, legacy QR codes dying with Zoho, 20 hours of
+  training), and **`Firmato` missing from its own quote-state table**.
+  🔴 **NEW — [OI-180](notes/items/OI-180%20Client%20UAT%20users%20are%20withheld%20until%20a%20director%20review.md):
+  the client has no UAT logins** until Daniela Morgese reviews the product, indicatively
+  **6 October — the day the UAT window closes**.
+  🔴 **NEW — [OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md):
+  the marketing UAT needs production**, and the Aurel Mrruku ↔ Fabrizio Mastracci hand-off
+  is stalled with each waiting on the other.
+  🔴 **NEW — [OI-178](notes/items/OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md):
+  two agent fields on two branches** — `Codice_Agente_Esterno__c` on `DevMain` with 8,140
+  accounts carrying it, `Agente__c` on `DEV_LeadAgenteBundle`, **and the client was shown
+  the second**. 🟢 That branch **now has a PR (#59)**; PR #60 carries the Mappatura
+  Edizione rewrite. 🔴 `Standart` unchanged, sixth run, with UAT records being created now.
+  — [trace](notes/traces/Source%20trace%202026-09-24%20nightly.md)
+
+- **2026-09-24 — Account_NEW UAT import:** 8,140 VAT-bearing Accounts loaded,
+  457 source rows without VAT excluded; nine inactive Agent users linked through
+  `Account.Agente__c`, eight with `User.Agente__c` populated from the source.
+  See [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)
+  and [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md).
+  **The update of existing Accounts triggered a Mexal customer callout (HTTP 204)
+  from UAT to the live endpoint; ERP reconciliation is needed.** See
+  [the risk](notes/risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md).
+  Production migration remains open.
 
 ROMI is migrating Pienissimo from **Zoho CRM to Salesforce**. Zoho expires
 **31 October 2026**. **Go-live Fase 1 is 21 October** — moved by ROMI in writing
@@ -14,6 +102,71 @@ register now says 21 October in both languages
 **UAT 24 September – 6 October**, approval by 13 October. The calendar was re-validated by the client on 22/09. Requirements went to
 sign-off on 2026-08-06.
 
+- 🔑 **2026-09-23 — the night before UAT: the client settled what migration means, and
+  the defect that opens UAT is still open.** External sweep, watermark 2026-09-22T22:00Z.
+  🟢🔑 **[OI-146](notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)
+  is RESOLVED, and the six-day-old trigger is discharged.** Fabrizio Paganelli put his own
+  written request — an ingressi conversion factor on the product — to the group in person at
+  [Check Data Import](notes/meetings/2026-09-23%20Check%20Data%20Import.md); Aurel Mrruku
+  answered _"di anagrafica articolo, no, di anagrafica campagna"_ and Elena Spini ruled the
+  whole mechanism **Fase 2**. **Fase 1 is one ticket, one entry, six-day Mastery included**
+  ([the decision](notes/decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md)).
+  ROMI's suspension and the client's expectation finally agree.
+  🟢🔑 **Migration has a perimeter for the first time
+  ([OI-172](notes/items/OI-172%20Historical%20quotes%20and%20offers%20are%20not%20migrated.md)).**
+  Elena Spini: _"Una cosa super importante… tutto ciò che non è un ordine non verrà portato
+  su Salesforce."_ **Only historic orders migrate**; quotes and offers start ex novo — so
+  🔴 **the tutors must re-key every pending quote by hand, and Marco Montesi was not in the
+  room.** 🟢 1,010 articles loaded by Bulk API the same day, zero failures.
+  🟢 **[OI-159](notes/items/OI-159%20Mexal%20order%20fields%20Salesforce%20does%20not%20populate.md)
+  answered in 20 hours** — Fabrizio Paganelli annotated Mirko Merendi's list field by field:
+  Salesforce owes **tipologia pagamento** and **agente**, Mexal's own procedure fills five,
+  and `ratei di riga` is headroom with no current case. The Italian e-invoicing branch was
+  held over to **24/09 10:00 with Mirko Merendi**
+  ([OI-173](notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md)).
+  🔴 **[OI-164](notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+  is still live.** The cause was published to the dev group at 10:26 CEST; at **18:28 CEST**
+  Elena Spini wrote _"il rt è sempre blank"_. The fix is now scheduled for **the morning of
+  the UAT day**, and she added a second expectation the same evening — the `Diretta` record
+  type should show only `New` and `Qualificato`.
+  🔴 **NEW — [OI-174](notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md):
+  ROMI's mail gateway is blocking DocuSign envelopes** to Aurel Mrruku and Rexhina Hysi,
+  found in the internal dress rehearsal. **DocuSign is the second half of the 24/09 session**
+  and nobody has tested whether a client-domain recipient is affected.
+  🟢 **[OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+  is built after all** — `Agente__c` on Account, Lead, Quote and User plus the
+  conversion-blocking validation rule, `7eab757` at 18:47 CEST. ⚠ **On a branch with no PR**,
+  without `zona` or `categoria provvigioni cliente`, and the rule still blocks conversion
+  while the client considers it.
+  — [trace](notes/traces/Source%20trace%202026-09-23.md)
+
+- 🔑 **2026-09-23 — org check the day before UAT: the client will test something
+  other than what `DevMain` holds.** Read-only, Pienissimo UAT, 08:01–08:40Z,
+  `DevMain` at `61f2a53`.
+  🔑 **[OI-164](notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+  root cause found.** The Web-to-Lead creator, `Amministratore Pienissimo` on the
+  System Administrator profile, sees **neither Lead record type** and does not hold
+  `Full_Permission`, the only grant. All 4 web leads of 22/09 are untyped. **This is a
+  configuration fix, due before 24/09.**
+  🔴 **[OI-170](notes/items/OI-170%20DevMain%20is%20ahead%20of%20UAT%20on%20the%20Lead%20conversion%20and%20quote-line%20paths.md)
+  — merged but never deployed.** UAT runs the 21/09 `LeadConversionQueueable`, so
+  **every converted Opportunity becomes `Standart`** and OI-150's picklist does nothing.
+  The _"check-only deploy"_ changed nothing. The quote reopen-to-Bozza rule is missing
+  as well.
+  🔴 **[OI-171](notes/items/OI-171%20A%20bundle%20discount%20was%20deployed%20to%20UAT%20from%20no%20commit.md)
+  — deployed but never committed.** A bundle discount in Manage Products went into UAT
+  at 08:00Z through the shared `ROMI COMPANY` login, and it is in no commit. **Commit
+  it before any `DevMain` deploy.**
+  🟢 The Mexal chain and all credential metadata **are in source now**, and the
+  14/09 org-only finding is closed. Edition mapping is at 13 of 51. Quote ageing is
+  scheduled. DocuSign runs.
+  🔴 Still true: the Mexal chain has never run in UAT (0 of 45 orders, the
+  `isSandbox()` guard, **Mexal UAT 6/10**). `Contract` has zero fields (**UAT 5/10**).
+  0 of 31 Assets have a QR (**ticket UAT 30/09**). Coverage is **0 of 7,756**.
+  ⚠ **Correction:** [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)'s
+  conversion-blocking validation was announced, not built. No agent field exists
+  anywhere.
+
 - 🔑 **2026-09-22 — five sessions in one day, and the correction matters more than
   any of them.**
   🟢🔑 **Last night's headline was wrong, and the record is now right.**
@@ -21,7 +174,7 @@ sign-off on 2026-08-06.
   said an administration user must re-key tranche dates by hand into Mexal. **No
   re-keying is required.** Fabrizio Paganelli demonstrated on Mexal that a Plus sale
   is **already n order lines of the same article code, each with its own `data
-  scadenza`**, and the order _"passa paro paro su Mexal"_. Invoice date and due date
+scadenza`**, and the order _"passa paro paro su Mexal"_. Invoice date and due date
   **are not meant to coincide** — the line date is commercial, administration invoices
   on the 1st for a line due at month end. **The join key is structural, not the date**:
   Mirko Merendi named the fields (invoice ← sigla + numero ordine; scadenziario ←
@@ -36,7 +189,7 @@ sign-off on 2026-08-06.
   agreed Plus mechanism is a tranche count on the product**
   ([OI-167](notes/items/OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md)),
   **demonstrated working the same evening.** 🔴 What survives is one hop:
-  **which order *line* a payment settles**
+  **which order _line_ a payment settles**
   ([OI-166](notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)).
   🟢 **[OI-154](notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
   corrected too — `natura articolo` IS the classification**, a four-way code
@@ -160,7 +313,7 @@ sign-off on 2026-08-06.
   **PR #48 merged 14:29Z** — `4132dab` is on `DevMain`, so the
   **guest-reachable `Incassato` write is gone from source**
   ([OI-136](notes/items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md));
-  the *question* nobody answered is not. **PR #47 merged 15:01Z** — the
+  the _question_ nobody answered is not. **PR #47 merged 15:01Z** — the
   **WooCommerce link generator** and the **three record types**
   ([OI-140](notes/items/OI-140%20Three%20Opportunity%20record%20types.md)) landed.
   🔴 **But the link generator emits the anatomy the 27/08 session replaced** —

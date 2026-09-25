@@ -2,7 +2,7 @@
 
 > Consolidated from the 8 tracked meetings (2026-05-27 → 2026-07-23), **latest decision wins**. Each item cites its source meeting date. Status legend: ✅ DECIDED · 🟡 CONDITIONAL (decided, pending a verification) · 🔴 OPEN (blocks build — see §9).
 > Companion files: per-meeting recaps in `results/`, rolling tracker in `open-items.md`.
-> ⚠ **Precedence, newest first: §36 → §35 → §34 → §33 → §32 → §31 → §30 → §29 → §28 → §27 → §26 → §25 → §24 → §23 → §22 → §21 → §20 → §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.** §36 is the newest BUILD-STATE section (14/09, Pienissimo UAT); §17, §19, §22, §25, §31 and §36 are all build-state checks and the most recent wins on what **exists**, never on what was **agreed**.
+> ⚠ **Precedence, newest first: §45 → §44 → §43 → §42 → §41 → §40 → §39 → §38 → §37 → §36 → §35 → §34 → §33 → §32 → §31 → §30 → §29 → §28 → §27 → §26 → §25 → §24 → §23 → §22 → §21 → §20 → §19 → §18 → §17 → §16 → §15 → §14 → §13 → §12 → [§11](#11-update-2026-08-06--closing-session-on-open-points) → [§10](#10-update-2026-08-03--multi-source-sweep) → §1–§9.** §45 is the newest BUILD-STATE section (23/09, Pienissimo UAT); §17, §19, §22, §25, §31, §36 and §45 are all build-state checks and the most recent wins on what **exists**, never on what was **agreed**.
 >
 > §17, §19, §22 and §25 are **build-state checks** against the Pienissimo UAT
 > org, on 25/08, 26/08, 31/08 and 02/09. Where one contradicts an earlier
@@ -4304,10 +4304,10 @@ Six rulings, from the notes' own `Concordato` block:
 
 Five commits reached `DevMain` between 14:29Z and 15:01Z.
 
-| PR  | Merged     | What it carries                                                        |
-| --- | ---------- | ---------------------------------------------------------------------- |
-| #48 | 14:29:39Z  | `4132dab` — **the `Incassato` removal**, with five unrelated commits    |
-| #47 | 15:01:32Z  | `af8a42b` — **the WooCommerce link generator and three record types**   |
+| PR  | Merged    | What it carries                                                       |
+| --- | --------- | --------------------------------------------------------------------- |
+| #48 | 14:29:39Z | `4132dab` — **the `Incassato` removal**, with five unrelated commits  |
+| #47 | 15:01:32Z | `af8a42b` — **the WooCommerce link generator and three record types** |
 
 🟢 **OI-136 is closed on the build side.** `4132dab` is an ancestor of
 `DevMain`; `markOrderIncassato`, `canMarkOrderIncassato` and the "Segna ordine
@@ -4316,12 +4316,12 @@ not closed** — nobody ruled, and Elisa Migliano still has not been asked.
 🔴 `QuoteAcceptanceController` remains `public without sharing` on a bare
 `quoteId`.
 
-🟢 **The three record types exist**: `Recall_Tutor`, `Standart` (*Vendita
-Standart*) and `Plus_Attivazione_Rinnovo`, on a new `Sales_Process` business
+🟢 **The three record types exist**: `Recall_Tutor`, `Standart` (_Vendita
+Standart_) and `Plus_Attivazione_Rinnovo`, on a new `Sales_Process` business
 process. 🔴 **`Standart` is misspelt in both the API name and the label**, and
 the API name is effectively permanent once records carry it. The same commit
 adds `QuoteLineItemTriggerHandler`, enforcing one Bundle **or** Item products on
-a quote — ⚠ the meeting decided that for the *order*.
+a quote — ⚠ the meeting decided that for the _order_.
 
 ### 42.2 🔴 The link generator contradicts the recorded design
 
@@ -4537,8 +4537,8 @@ register text is still not rewritten here, because one mechanical hop is open:
 🔴 **What survives is the identifier.** Salesforce's 18-character id cannot travel;
 Fabrizio Paganelli asked for a **`numero riga ordine`** field on the order, and the
 afternoon session settled on **Mexal's own order number** instead. Mexal's invoice
-references the *order*, the scadenziario references the *invoice* — so **which
-Salesforce order *line* a payment settles is still not established from either end**,
+references the _order_, the scadenziario references the _invoice_ — so **which
+Salesforce order _line_ a payment settles is still not established from either end**,
 and that is exactly the case that matters for n lines of one article code. →
 [OI-166](../notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)
 
@@ -4550,7 +4550,7 @@ are **5, 10 and 12**, and the mechanism is dynamic. Agreed at 11:22, confirmed w
 vendor at 15:00, **demonstrated working at 17:00**. →
 [OI-167](../notes/items/OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md)
 
-⚠ It supersedes the *shape* of
+⚠ It supersedes the _shape_ of
 [OI-142](../notes/items/OI-142%20Fractional%20product%20records%20for%20tranche%20payment.md):
 the fractional records exist, but as one code repeated n times. **Elisa Migliano's 18/09
 objection is moot and she has not been told.**
@@ -4582,8 +4582,8 @@ all**: one high-value ticket, no split into lines, no per-line condition. →
 
 ### 🔑 A whole integration surfaced: the event check-in app
 
-Everything held about QR codes concerns *generating* them. Nothing established what
-*reads* them. Andrea Parmeggiani runs a **custom Android application** over REST to
+Everything held about QR codes concerns _generating_ them. Nothing established what
+_reads_ them. Andrea Parmeggiani runs a **custom Android application** over REST to
 Zoho, distributed via TestFlight and APK packages, refreshed about every ninety days.
 
 🟢 Agreed for Fase 1: the app calls Salesforce, the asset moves to **`utilizzato`**,
@@ -4694,3 +4694,327 @@ updated at 16:34–16:35Z, and Elena Spini posted the **client-validated calenda
 October still has no written answer. →
 [OI-158](../notes/items/OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md)
 (resolved)
+
+## 45. Update 2026-09-23 — org check the day before UAT: what the client will test is not what `DevMain` holds
+
+> ⚠ **This section records BUILD STATE only.** It supersedes earlier sections'
+> claims about what **exists** in the org. It does **not** supersede any earlier
+> section's record of what was **agreed** — a decision stays decided even where
+> the implementation contradicts it.
+
+Read-only check of **Pienissimo UAT** (`00DMA000004nMMr2AM`, partial sandbox,
+API 68.0) on **2026-09-23, 08:01–08:40Z**, against `force-app/` on `DevMain` at
+`61f2a53`, clean worktree. **442** repository component keys compared with
+**1,382** org components, with no unavailable types. Every unmanaged Apex class,
+trigger and LWC body was compared token by token, and each mismatching body was
+matched against every commit on every remote branch. No test was run, nothing
+was deployed and no org data was modified.
+
+### 45.1 🔑 Why Web-to-Lead leads have no record type (OI-164)
+
+All **four** leads that arrived through the web form on 22/09 have no record type.
+They are created by the default lead creator, **`Amministratore Pienissimo`**, on
+the **System Administrator** profile. A reference retrieve shows that profile with
+**`Lead.Diretta` and `Lead.Standard` both `visible=false` and no default**. The only
+grant of either record type is the `Full_Permission` permission set, and **that
+user is not assigned it**. The form sends a record type the creating user cannot
+use, and the lead lands on Master.
+
+**The fix is configuration, not code**, and it has to be made before the 24/09
+session. It was not applied: the check is read-only.
+
+### 45.2 🔴 Merged work that never reached UAT (OI-170)
+
+| Component                                              | UAT runs                    | `DevMain` has      | Effect in UAT                                                                  |
+| ------------------------------------------------------ | --------------------------- | ------------------ | ------------------------------------------------------------------------------ |
+| `LeadConversionQueueable`                              | `08b97cc` (21/09)           | `54e0be1` (PR #55) | **Every converted Opportunity becomes `Standart`**; the Lead's type is ignored |
+| `QuoteLineItemTrigger` + `QuoteLineItemTriggerHandler` | `2d31ebe` (18/09)           | `ab47b42`          | No reopen to `Bozza` when a line is added                                      |
+| `QuoteLineItemsController`                             | `e992e6a` (17/09)           | `ab47b42`          | Still `with sharing`                                                           |
+| `QuoteNegotiationAgingBatch`                           | a 21/09 version, same logic | `ab47b42`          | Still `with sharing`; the daily schedule is live                               |
+
+[OI-150](../notes/items/OI-150%20Opportunity%20type%20comes%20from%20a%20Lead%20picklist.md)
+records a _"check-only deploy"_ of the mapping on 22/09. **A check-only deploy
+changes nothing in the org.** The field and both record types are deployed, so the
+picklist appears to work in UAT and does nothing at conversion.
+
+### 45.3 🔴 Work deployed that no commit holds (OI-171)
+
+At **07:59–08:00 UTC today**, the shared `ROMI COMPANY` admin user changed
+`QuoteManageProductsController` and the `quoteManageProducts` LWC in UAT. The change
+adds a **bundle-only percentage discount or manual price** to Manage Products. **The
+content matches no commit on any branch.** This is the fifth time work has been
+found in the org and not in source control.
+
+**Order matters:** a `DevMain` deploy to fix §45.2 would overwrite this, so it must
+be committed first. That deploy would also bring the four `without sharing`
+changes of
+[OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)
+into UAT: 19 such classes on `DevMain`, 15 in the org.
+
+### 45.4 What has changed since §36
+
+| Since 14/09                                    | 23/09                                                                                         |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Mexal chain org-only (9 classes)               | 🟢 **In source control and deployed**; org equals `DevMain` except for formatting             |
+| Credentials org-only, clean deploy fails twice | 🟢 3 named + 3 external credentials in `force-app/`                                           |
+| Edition mapping 3 of 43                        | 🟢 **13 of 51**, with 38 still unmapped                                                       |
+| `Happy Team` missing from `Evento__c`          | 🟢 Present                                                                                    |
+| Quote ageing unbuilt                           | 🟢 Scheduled daily at 01:00 UTC, three completed runs                                         |
+| DocuSign                                       | 🟢 15 envelope jobs in seven days; log shows 11 ok and 4 errors                               |
+| Tranche on order lines 3 of 36                 | 🟢 **15 of 60**; 58 of 76 quote lines                                                         |
+| Nightly Mexal sync unscheduled                 | 🔴 Still unscheduled                                                                          |
+| Mexal chain never ran                          | 🔴 **0 of 45** orders with a Mexal status; the `isSandbox()` guard is still in place (OI-137) |
+| Coverage 0 of 4,737                            | 🔴 **0 of 7,756**, 79 entries; last test run 04/08                                            |
+
+### 45.5 Not built, with a UAT date
+
+- **Contract** — `Contract` has zero custom fields and nothing writes it. **UAT 5/10.**
+  [OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)
+- **Check-in** — 0 of 31 Assets carry a QR id and there is no check-in endpoint.
+  **Ticket UAT 30/09.**
+  [OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)
+- **Agent from the customer record** — no field on any of the four objects.
+  **Correction:** the conversion-blocking validation recorded on 22/09 as built was
+  announced, not built.
+  [OI-169](../notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+- **Lead duplicate rule** — only the five stock rules.
+  [OI-163](../notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)
+- **Declarative automation** — zero project Flows, unchanged.
+
+⚠ The org has **three active human users, all System Administrators**, one of them
+the shared `ROMI COMPANY` login. No client tester account exists yet (promised for
+6–13 October).
+
+## 46. Update 2026-09-23 — migration gets a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank
+
+External sweep, watermark **2026-09-22T22:00Z**. Two meetings drilled:
+[Check Data Import](../notes/meetings/2026-09-23%20Check%20Data%20Import.md) (client,
+2h29m — the longest session of the project) and
+[Test Pre Demo](../notes/meetings/2026-09-23%20Test%20Pre%20Demo.md) (internal, 1h33m,
+⚠ transcript machine-garbled and not usable as evidence).
+
+### 🟢 The ingressi suspension is discharged — by the client being told
+
+[OI-146](../notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md) is
+**resolved**. Fabrizio Paganelli put his own 22/09 written request — a conversion factor
+on the product registry — to the group in person. Aurel Mrruku answered _"di anagrafica
+articolo, no. Di anagrafica campagna"_: entry records live on the **campaign edition**,
+as blocks of dates copied onto the ticket at generation. Elena Spini ruled the whole
+mechanism **Fase 2**. Fabrizio Paganelli restated it back twice and accepted.
+
+🟢 **Fase 1 behaviour, stated by the client himself:** _"Oggi facciamo che un biglietto è
+un ingresso, anche se viene 6 giorni diversi."_ **One ticket, one entry — six-day Mastery
+included.** See
+[the decision](../notes/decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md).
+
+🔑 **And the check-in integration gets its purpose.** The scan is an **inbound API call to
+Salesforce** that must return a _speaking error_ when the previous block's entries are
+incomplete — not the one-way asset update this record has carried since 22/09. That is
+Fase 2 as well, **although the session's own auto-summary lists it as an action item**;
+the transcript does not support that reading
+([OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)).
+
+### 🟢 Migration has a perimeter for the first time
+
+> **Elena Spini** (`02:04:53`): _"Una cosa super importante. Tutto ciò che è preventivi
+> non verrà \[portato\] su Salesforce […] Verrà portato su Salesforce tutto ciò che deve
+> finire su Mexal, che è già su Mexal per storico."_
+
+**Only historic orders migrate.** Quotes, offers and opportunities start **ex novo** →
+[OI-172](../notes/items/OI-172%20Historical%20quotes%20and%20offers%20are%20not%20migrated.md).
+🔴 **The tutors therefore re-key every pending quote by hand, and Marco Montesi was not in
+the room.**
+
+Also settled at the same session and folded into
+[OI-165](../notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md):
+the account join key is `codice cliente esterno`; only contacts with a company name
+import, the rest awaiting the direzione **from 1 October**; test data is hand-filtered to
+records with P.IVA. 🟢 **1,010 articles were loaded by Bulk API the same day with zero
+failures**, with Standard Price Book entries for all of them — recorded by the developers
+themselves on `DEV_LeadAgenteBundle`. 🔴 **No estimate, no production sequence and no
+cut-over owner still.**
+
+### Data model changes agreed with the client
+
+`IBAN` is **removed** from the locali model and replaced by a free-text
+**`Categoria statistica Mexal`**; `tipologia attività` becomes a **multi-select** and
+lives on the locale, not the account; the complex customer-state fields are **deleted**
+rather than hidden for a future phase; ATECO activity state becomes a **restricted
+picklist**; `codice fiscale`, `codice SDI` and ATECO all come from the **Anticipay call**,
+with codice fiscale set equal to the P.IVA **only** when Anticipay returns nothing.
+`classificatore rete` is renamed **`categoria provvigioni cliente`** and **`zona` moves
+off the tutor user onto the account**.
+
+### 🟢 OI-159 answered in twenty hours
+
+Fabrizio Paganelli annotated Mirko Merendi's field list line by line on **23/09
+12:16:50Z**. **Salesforce owes `Tipologia pagamento` and `Agente`**; five fields belong to
+the Mexal procedure; **`Gestione ratei di riga`** — the one item this record could not
+account for — is **design headroom with no current case**. One line was held back on
+purpose, the Italian e-invoicing branch, and became
+[OI-173](../notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md), due at the
+**24/09 10:00 call with Mirko Merendi** — the slot vacated when the orders/migration
+session was postponed.
+
+### 🔴 The Lead path, the night before it is tested
+
+- **[OI-164](../notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+  is still live.** The cause was published to the dev group at 10:26 CEST; Elena Spini
+  chased at 12:51; at **18:28:13** she wrote **_"il rt è sempre blank"_**. The fix is now
+  scheduled for **the morning of the UAT day**. She added a second expectation in the same
+  message: the `Diretta` record type should show **only `New` and `Qualificato`**.
+- 🔴 **NEW —
+  [OI-174](../notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md):
+  ROMI's mail gateway blocks DocuSign envelopes** to Aurel Mrruku and Rexhina Hysi. DocuSign
+  is the **second half of the 24/09 session**, and **nobody has tested whether a
+  client-domain recipient is affected.**
+- 🟢 **[OI-169](../notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+  is built after all**, superseding that morning's correction: `7eab757` at 18:47 CEST
+  creates `Agente__c` on Account, Lead, Quote and User plus the conversion-blocking
+  validation rule. ⚠ **On a branch with no pull request**, without `zona` or `categoria
+provvigioni cliente`, **and the rule still blocks conversion while the client considers
+  it.**
+
+### The build
+
+Two merges to `DevMain` at 09:41 CEST (PR #55 `DEV_leadDiagnose`, PR #56
+`DevAnitaDocuSign`), then two evening pushes that are **not** on `DevMain`: Anita Aga's
+`7d0f990` (**PR #57, open** — Pienissimo branding set and theme, pricebook-entry
+automation, `Quote.Is_Primary__c`, `Opportunity.Preventivo_Primario__c`,
+`ProductCodeTrigger`, +212 lines on `QuoteTriggerHandler`) and Rexhina Hysi's `7eab757`
+(**no PR**). 🔴 **`Standart` is unchanged**, five runs on;
+[OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) is
+unchanged; coverage is **0 of 7,756**.
+
+## 24 September 2026 — Account_NEW UAT data update
+
+The client Account workbook now lists three commercial ATECO fields. `Codice
+ATECO` and `Descrizione ATECO` were already present on UAT Account and carried
+1,141 and 1,134 imported values. `Ateco Stato Attivita` was added as an
+unrestricted picklist following the current workbook and filled on 377 of the
+8,140 VAT-bearing Accounts from `Account_NEW`. The field and its access were
+deployed to UAT; full read-back found no mismatches.
+
+`Categoria Provvigioni Cliente` was already present on Account and User.
+The User field was blank on all nine inactive Agent users. It is now filled
+on eight, using the category selected for each agent from the source. Elisa
+has no source category; for Nicol the user selected `19` from the two source
+values. The original per-Account categories were preserved. These data jobs
+created no Mexal customer-update queueable. This is UAT data, not the
+production migration; the Mexal order mapping remains open.
+
+## 47. Update 2026-09-24 — the client accepted the whole commercial chain on the first day of UAT, and a Business Blueprint appeared out of nowhere
+
+External sweep, watermark **2026-09-23T22:00Z**. Two meetings drilled:
+[UAT: Lead e Opportunità](../notes/meetings/2026-09-24%20UAT%20Lead%20e%20Opportunita.md)
+(client, ~2h08m — **the first acceptance session of the project**) and
+[Temi Mexal Anagrafiche/Indirizzi](../notes/meetings/2026-09-24%20Temi%20Mexal%20Anagrafiche%20Indirizzi.md)
+(Kreosoft, 22m45s — the shortest and one of the most productive).
+
+### 🟢 The first acceptance session, and nothing in it was rejected
+
+Lead in by form, conversion, opportunity, quote, tranche, PDF, acceptance on the
+Community, DocuSign signature, order — the chain ran end to end in front of Marco
+Montesi, Fabrizio Paganelli and Sabatino Rinaldi. **Twelve rulings were agreed**, among
+them: the agent is **mandatory to reach `Qualificato`** (and Fabrizio Paganelli settled
+that _"agente"_ and _"tutor"_ are the same thing); leads are assigned to **one named
+person**, not a queue; a **primary quote** carries its value onto the opportunity; the
+opportunity closes won **only at incasso**; and 🔑 **a new quote state `Firmato`**,
+distinct from `Accettato`, at which **the order is generated**
+([OI-151](../notes/items/OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)).
+
+🟢 Three long-standing unknowns were closed by the session rather than by a decision:
+**a duplicate rule exists and the client approved it** — name and email across Leads,
+Contacts and Accounts, merge-or-create
+([OI-163](../notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md));
+**the leads now carry a record type**
+([OI-164](../notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)
+**resolved**, and Elena Spini's two-state `Diretta` path delivered exactly as asked); and
+**a DocuSign envelope reached a client-domain recipient**, so
+[OI-174](../notes/items/OI-174%20ROMI%20mail%20blocks%20DocuSign%20envelopes%20to%20the%20dev%20team.md)
+is a developer nuisance, not a demo blocker.
+
+⚠ One thing was reopened: **the word `rifiutato`**. The mechanism — accepting one quote
+rejects the others — is agreed; both Fabrizio Paganelli and Marco Montesi objected to the
+label, because those quotes are work done, not a customer's refusal. No alternative was
+chosen.
+
+### 🔴 Two defects, live in front of the client
+
+**Every lead the form creates is typed `Diretta`**, including those that should be
+`Standard` — Elena Spini, mid-session: _"nulla mette solo rt diretta"_. The blank-record-type
+defect is closed and a wrong-record-type defect replaces it
+([OI-176](../notes/items/OI-176%20Web%20to%20Lead%20assigns%20every%20lead%20the%20Diretta%20record%20type.md)).
+
+**The first DocuSign send never left**, because the products on it were not in the
+edition mapping — the same fault that raised a sandbox Apex exception at 11:13Z
+(`Nessuna mappatura edizione trovata per il prodotto ACADEMY`). 🔑 The matching code
+**throws rather than degrading**, so an unmapped product aborts the order-item insert and
+the whole chain with it. Anita Aga began rewriting the handler the same afternoon
+(`bfd0fd3`, **PR #60, open**) — but the mapping stood at **13 of 51** and a rewritten
+handler does not add rows, with ticket UAT on **30 September**
+([OI-96](../notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)).
+
+### 🟢 The Mexal call settled the fiscal table, and the attachments arrived the same morning
+
+[OI-173](../notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md) is
+**resolved** in 22 minutes. The rule keys on **`residenza fiscale` derived from the
+two-letter ISO code on the `ragione sociale`, not the billing address**; three Mexal
+fields (`gest_fatt_el`, `serie_fatt_el` = 3, `cod_modu_allega` = `FT`) are filled for
+Italian customers and, in future, San Marino; extra-EU rows stay blank. It lives as a
+Salesforce table the administration maintains, with a trigger populating the rest.
+**`Nazioni e Residenza Fiscale.xlsx` and `Codici Pagamento.xlsx` arrived by 10:08:51Z.**
+
+🟢 Mirko Merendi supplied the **Mexal API field names** the integration needs, including
+🔑 **two mandatory-on-create constraints new to the record — `valuta` and `cod_listino`,
+both fixed to `1`**
+([OI-159](../notes/items/OI-159%20Mexal%20order%20fields%20Salesforce%20does%20not%20populate.md)).
+🟢 And the client confirmed the **natura article codes in writing**, so the 1,010-article
+import rests on an endorsed mapping — though the legend itself arrived as a screenshot
+for the third time
+([OI-154](../notes/items/OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)).
+
+### 🔑 A Business Blueprint appeared, and goes to the client tomorrow
+
+`Business_Blueprint_Pienissimo.docx`, created 24/09 18:10:03Z, ten chapters, **with a
+signature block for ROMI Srl and Pienissimo Srl**. Elena Spini: _"Habemus BPP signori"_,
+and she wants it with the client on 25/09
+([OI-179](../notes/items/OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md)).
+
+🔴 **It carries seven `● Check con Aurel` markers and three `[Open Points]`.** It brings
+material new to the record — **two WooCommerce instances**, **legacy QR codes dying with
+Zoho** at the client's cost, **signed PDFs on external storage**, **20 hours of training**,
+**one month of post-go-live support**. It **omits `Firmato`** from its own quote-state
+table, the state agreed hours earlier. And it states as settled two things the record
+holds open: the **tranche-to-Mexal join on the order line number**
+([OI-166](../notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md))
+and the whole **Contratto** specification
+([OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)),
+which remains unbuilt eleven days before its UAT.
+
+### 🔴 Three new structural findings
+
+**The client has no UAT logins**, and will not until Daniela Morgese reviews the product —
+indicatively **6 October**, the day the UAT window closes
+([OI-180](../notes/items/OI-180%20Client%20UAT%20users%20are%20withheld%20until%20a%20director%20review.md)).
+
+**The marketing UAT needs production.** Elena Spini, 20:18 CEST: _"per fare gli UAT a
+Fabrizio servono le cose in PROD"_ — and a hand-off between Aurel Mrruku and Fabrizio
+Mastracci is stalled with each waiting on the other, eight days before the session
+([OI-177](../notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+
+**Two agent fields now exist on two branches** — `Codice_Agente_Esterno__c` on `DevMain`
+with 8,140 accounts already carrying it, and `Agente__c` on `DEV_LeadAgenteBundle`, which
+is what the client was shown and accepted
+([OI-178](../notes/items/OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md)).
+
+### The build
+
+PRs **#57 and #58 merged** at 07:12 and 07:15Z; `64b2843` (**"Inserted accounts"**, Aurel
+Mrruku 13:03 CEST) is `DevMain`'s head and carries the Account import metadata and script.
+🟢 **`DEV_LeadAgenteBundle` now has a pull request — #59, open** — discharging the 23/09
+flag; **PR #60** (`DevAnita`) opened at 13:49Z with the Mappatura Edizione rewrite and the
+bundle logic. 🔴 **`Standart` is unchanged**, sixth run, in seven places across six files —
+and UAT records are being created now.
+[OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) is
+unchanged at 19 classes; coverage is **0 of 7,756**.

@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-21
+updated: 2026-09-24
 depends_on: [OI-59]
 requirement: [INT-19]
 source: notes/meetings/2026-09-21 Test Interni Pre-UAT.md
@@ -37,11 +37,11 @@ contenuto"_ — by DM on **21/09 19:34–19:47 CEST**, from the
 `CONTRATTI PIENISSIMO PER TIPOLOGIE DI ORDINI` material she forwarded on 18/09
 08:14Z:
 
-| Order type                      | Documents                                                    |
-| ------------------------------- | ------------------------------------------------------------ |
-| **Performance Plus**            | Contratto + Preventivo **+ scheda Performance Plus**         |
-| **All other orders**            | Contratto + Preventivo                                       |
-| **Preventivi per Pienissimo Pro** | **Fase 2** — informational mail only, **no DocuSign**      |
+| Order type                        | Documents                                             |
+| --------------------------------- | ----------------------------------------------------- |
+| **Performance Plus**              | Contratto + Preventivo **+ scheda Performance Plus**  |
+| **All other orders**              | Contratto + Preventivo                                |
+| **Preventivi per Pienissimo Pro** | **Fase 2** — informational mail only, **no DocuSign** |
 
 - ⚠ The **scheda Performance Plus** is the one piece Elena Spini believes is
   missing: _"hanno detto che vanno assieme — questa forse è l'unica cosa che manca
@@ -72,3 +72,55 @@ wrote directly into `notes/` on 21/09.
   suggested simply asking.
 - ⚠ **Quote UAT is 25 September**, titled `Preventivi`, and the original proposal
   named _"Preventivi e Firme Digitali (DocuSign)"_.
+
+## 🟢 2026-09-24 — the client agreed a `Firmato` state, and the order hangs off it
+
+**Settled at [UAT: Lead e Opportunità](../meetings/2026-09-24%20UAT%20Lead%20e%20Opportunita.md)
+`01:36:37`–`01:37:45`.** Elena Spini put the discrepancy: the flow the room had designed
+sends the quote to `Accettato` _after_ signature, but the running build sets `Accettato`
+on the Community confirmation, before DocuSign has returned anything.
+
+Aurel Mrruku's resolution, accepted by Elena Spini, Marco Montesi and Fabrizio Paganelli:
+
+> _"secondo me la cosa migliore da fare è avere lo stato accettato, ma avere anche lo
+> stato firmato alla fine."_
+
+The agreed chain:
+
+| Step                                            | State                                                  |
+| ----------------------------------------------- | ------------------------------------------------------ |
+| Client clicks **Accetta** on the Community page | Quote → **`Accettato`**; the DocuSign envelope is sent |
+| Signed document returns from DocuSign           | Quote → 🔑 **`Firmato`** (new)                         |
+| Quote reaches `Firmato`                         | **the Order is generated automatically**               |
+| Order reaches `Incassato`                       | Opportunity → Chiusa Vinta                             |
+
+🟢 **Proved end to end in the session.** Aurel Mrruku sent a quote for the configured
+product `Lead Funnel Advanced Academy`; Fabrizio Paganelli signed on DocuSign at
+`01:41:45` and received the completed PDF; the order was generated with the same
+structure (`01:46:57`).
+
+### What this means for the register
+
+🔴 **`Firmato` is a sixth quote state agreed with the client, and the register does not
+have it.** `state_machines.quote.states` in
+[requirements/pienissimo-requirements.yaml](../../requirements/pienissimo-requirements.yaml)
+carries the older DGM-derived labels and **already bears a flag saying it disagrees with
+the org's five values, "flagged for a human"**. This sweep did **not** amend it: adding a
+sixth value to a list known to be wrong in five places makes the register less accurate,
+not more, and the block is contract-bound. **A human owes that reconciliation, and it is
+now six values behind, not five.**
+
+### Related decisions from the same session
+
+- A **synchronisation flag on the order** to surface Mexal communication errors, and
+  record locking after the order is generated (`01:46:57`). Unbuilt.
+- **A CC field on the quote send**, so a collaborator or director receives the proposal.
+  Aurel Mrruku distinguished the Salesforce side (any number of addresses, concatenated)
+  from DocuSign's own format, which he must check in the documentation. Unbuilt.
+- **The sender name becomes the agent's**, replacing _"team Pienissimo"_; Fabrizio
+  Paganelli asked that the Pienissimo Srl reference and phone details stay in the body.
+- 🔴 **DocuSign signature boxes are misaligned** — the session's action items carry
+  _"Rivedere il punto di firma e allineare correttamente le caselle di firma"_. The PDF
+  template's signature tags need the client's own markup: Aurel Mrruku asked them to
+  download the generated PDF and mark where signatures go and how much space to leave.
+- ⚠ **Quote UAT is tomorrow, 25/09**, and `Firmato` does not exist yet.

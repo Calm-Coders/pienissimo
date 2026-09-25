@@ -61,6 +61,10 @@
                 <field>Amount</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Preventivo_Primario__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Tipo_Opportunita__c</field>
             </layoutItems>

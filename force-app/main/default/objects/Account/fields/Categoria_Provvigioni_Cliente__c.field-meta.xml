@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Categoria_Provvigioni_Cliente__c</fullName>
+    <description
+  >Categoria provvigionale del cliente dal foglio Account_NEW; dato commerciale della scheda Account.</description>
+    <label>Categoria Provvigioni Cliente</label>
+    <length>40</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+</CustomField>

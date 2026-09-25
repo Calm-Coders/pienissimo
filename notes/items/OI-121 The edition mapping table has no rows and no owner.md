@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-04
-updated: 2026-09-21
+updated: 2026-09-23
 depends_on: [OI-96, OI-98]
 blocks: [OI-53, OI-84]
 source: notes/objects/The Mappatura Edizione object.md
@@ -155,7 +155,6 @@ What changed is the population of orders that will eventually meet it:
 the rows, and there is still no date for entering them beyond "the days
 immediately before go-live".**
 
-
 ## ⚠ 2026-09-16 - the ticket-generating flag gets a mechanism, and the table still has no rows
 
 [Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md)
@@ -170,8 +169,8 @@ descriptions so the mapping logic is traceable.
 has a stated derivation from the system that is master of the article.
 
 🔴 **It does not touch what this row is about.** `Mappatura_Edizione__c` maps a
-ticket-generating product to an **edition and a date window**. Knowing *which*
-products generate tickets does not say *which edition* a given one belongs to,
+ticket-generating product to an **edition and a date window**. Knowing _which_
+products generate tickets does not say _which edition_ a given one belongs to,
 and that is still hand-entered, still **40 of 43 unmapped**, still **without a
 named owner**, and still the direct cause of the four `OrderTriggerHandlerTest`
 failures recorded on 15/09.
@@ -187,7 +186,7 @@ what happens to them.**
 `categoria statistica` instead. That is a ticket attribute, not an edition, and
 it does not feed this table.
 
-**The 07/09 answer to *when* still stands — by hand, in the days immediately
+**The 07/09 answer to _when_ still stands — by hand, in the days immediately
 before go-live — and still nobody has been named to do it.** Those days are now
 the week of 21 October.
 
@@ -196,8 +195,8 @@ the week of 21 October.
 The client's `ARTICOLI` extraction landed on 21/09 and **the ticket flag this row
 needs is not in it.** Aurel Mrruku reviewed it live at
 [the 21/09 Mexal internal](../meetings/2026-09-21%20Interna%20Temi%20Mexal.md):
-**_"Non ha fatto niente, praticamente."_** Neither *generates a ticket* nor
-*included in bundles* is populated, and the bundle classification is absent
+**_"Non ha fatto niente, praticamente."_** Neither _generates a ticket_ nor
+_included in bundles_ is populated, and the bundle classification is absent
 altogether.
 
 The 16/09 ruling was that **`natura` maps to `genera biglietto` + `is bundle`**
@@ -207,3 +206,9 @@ four `OrderTriggerHandlerTest` failures of 15/09 keep their cause.
 
 **Ticket and campaign UAT is 30 September.**
 → [OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🟢 **Movement:** `Mappatura_Edizione__c` holds **13** rows. **13 of 51** ticket-generating products (`Genera_Biglietto__c`) now have an active mapping, up from 3 of 43 on 14/09. 🔴 **38 are still unmapped**, and an order for one of them still rolls back its ticket step. **Ticket UAT is 30/09.** (verified)

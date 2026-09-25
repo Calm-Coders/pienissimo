@@ -1,4 +1,6 @@
 public with sharing class OpportunityQuoteDefaultsController {
+  private static final String DRAFT_STATUS = 'Bozza';
+
   @AuraEnabled(cacheable=true)
   public static QuoteDefaults getDefaults(Id opportunityId) {
     if (opportunityId == null) {
@@ -16,13 +18,13 @@ public with sharing class OpportunityQuoteDefaultsController {
         Account.BillingState,
         Account.BillingPostalCode,
         Account.BillingCountry,
-        Account.ShippingStreet,
-        Account.ShippingCity,
-        Account.ShippingState,
-        Account.ShippingPostalCode,
-        Account.ShippingCountry,
         ContactId,
-        Locale__c
+        Locale__c,
+        (
+          SELECT Id
+          FROM Quotes
+          LIMIT 1
+        )
       FROM Opportunity
       WHERE Id = :opportunityId
       LIMIT 1
@@ -38,6 +40,20 @@ public with sharing class OpportunityQuoteDefaultsController {
       ];
       if (!primaryRoles.isEmpty()) {
         contactId = primaryRoles[0].ContactId;
+      }
+    }
+
+    if (contactId == null && opportunityRecord.AccountId != null) {
+      List<Contact> principalContacts = [
+        SELECT Id
+        FROM Contact
+        WHERE
+          AccountId = :opportunityRecord.AccountId
+          AND Contatto_Principale__c = TRUE
+        LIMIT 1
+      ];
+      if (!principalContacts.isEmpty()) {
+        contactId = principalContacts[0].Id;
       }
     }
 
@@ -60,7 +76,8 @@ public with sharing class OpportunityQuoteDefaultsController {
       : opportunityRecord.Account.Name;
     defaults.localeId = opportunityRecord.Locale__c;
     defaults.quoteName = 'Preventivo - ' + opportunityRecord.Name;
-    defaults.status = defaultQuoteStatus();
+    defaults.status = DRAFT_STATUS;
+    defaults.isPrimary = opportunityRecord.Quotes.isEmpty();
 
     Account accountRecord = opportunityRecord.Account;
     if (accountRecord != null) {
@@ -69,11 +86,11 @@ public with sharing class OpportunityQuoteDefaultsController {
       defaults.billingState = accountRecord.BillingState;
       defaults.billingPostalCode = accountRecord.BillingPostalCode;
       defaults.billingCountry = accountRecord.BillingCountry;
-      defaults.shippingStreet = accountRecord.ShippingStreet;
-      defaults.shippingCity = accountRecord.ShippingCity;
-      defaults.shippingState = accountRecord.ShippingState;
-      defaults.shippingPostalCode = accountRecord.ShippingPostalCode;
-      defaults.shippingCountry = accountRecord.ShippingCountry;
+      defaults.shippingStreet = accountRecord.BillingStreet;
+      defaults.shippingCity = accountRecord.BillingCity;
+      defaults.shippingState = accountRecord.BillingState;
+      defaults.shippingPostalCode = accountRecord.BillingPostalCode;
+      defaults.shippingCountry = accountRecord.BillingCountry;
     }
 
     if (contactRecord != null) {
@@ -107,7 +124,7 @@ public with sharing class OpportunityQuoteDefaultsController {
       Name = input.quoteName,
       OpportunityId = opportunityId,
       ExpirationDate = input.expirationDate,
-      Status = input.status,
+      Status = DRAFT_STATUS,
       ContactId = input.contactId,
       Email = input.email,
       Phone = input.phone,
@@ -129,42 +146,12 @@ public with sharing class OpportunityQuoteDefaultsController {
       QuoteToCity = input.billingCity,
       QuoteToState = input.billingState,
       QuoteToPostalCode = input.billingPostalCode,
-      QuoteToCountry = input.billingCountry
+      QuoteToCountry = input.billingCountry,
+      Is_Primary__c = input.isPrimary == true
     );
 
     insert quoteRecord;
     return quoteRecord.Id;
-  }
-
-  @AuraEnabled(cacheable=true)
-  public static List<PicklistOption> getQuoteStatuses() {
-    List<PicklistOption> options = new List<PicklistOption>();
-    Schema.DescribeFieldResult statusField = Quote.Status.getDescribe();
-    for (Schema.PicklistEntry entry : statusField.getPicklistValues()) {
-      if (!entry.isActive()) {
-        continue;
-      }
-      PicklistOption option = new PicklistOption();
-      option.label = entry.getLabel();
-      option.value = entry.getValue();
-      options.add(option);
-    }
-    return options;
-  }
-
-  private static String defaultQuoteStatus() {
-    Schema.DescribeFieldResult statusField = Quote.Status.getDescribe();
-    for (Schema.PicklistEntry entry : statusField.getPicklistValues()) {
-      if (entry.isDefaultValue()) {
-        return entry.getValue();
-      }
-    }
-    for (Schema.PicklistEntry entry : statusField.getPicklistValues()) {
-      if (entry.isActive()) {
-        return entry.getValue();
-      }
-    }
-    return null;
   }
 
   public class QuoteDefaults {
@@ -180,6 +167,8 @@ public with sharing class OpportunityQuoteDefaultsController {
     public String quoteName;
     @AuraEnabled
     public String status;
+    @AuraEnabled
+    public Boolean isPrimary;
     @AuraEnabled
     public Id contactId;
     @AuraEnabled
@@ -216,7 +205,7 @@ public with sharing class OpportunityQuoteDefaultsController {
     @AuraEnabled
     public String quoteName { get; set; }
     @AuraEnabled
-    public String status { get; set; }
+    public Boolean isPrimary { get; set; }
     @AuraEnabled
     public Date expirationDate { get; set; }
     @AuraEnabled
@@ -249,12 +238,5 @@ public with sharing class OpportunityQuoteDefaultsController {
     public String shippingPostalCode { get; set; }
     @AuraEnabled
     public String shippingCountry { get; set; }
-  }
-
-  public class PicklistOption {
-    @AuraEnabled
-    public String label;
-    @AuraEnabled
-    public String value;
   }
 }

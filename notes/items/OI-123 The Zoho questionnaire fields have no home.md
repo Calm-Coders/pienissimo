@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Marco Montesi
 org: Pienissimo
 raised: 2026-09-07
-updated: 2026-09-08
+updated: 2026-09-24
 depends_on: [OI-24]
 source: notes/meetings/2026-09-08 Data Model Parte 4.md
 ---
@@ -99,7 +99,7 @@ answer costs almost none of that — the hierarchy is the standard `ParentId`.
 
 ## What is still open, as a separate row
 
-Answering *where* the fields go did not answer *which* fields, or how the data
+Answering _where_ the fields go did not answer _which_ fields, or how the data
 gets there. Both are
 [OI-129](OI-129%20The%20locale%20questionnaire%20field%20list%20and%20the%20locale%20API.md):
 
@@ -113,3 +113,12 @@ Elisa Migliano to Marco Montesi with two questions — are the tutors using thes
 fields, and how should they be managed. Parte 4 answered the second. **Whether
 the tutors actually use them is still not on the record**, and it is the question
 that decides whether any of this migrates.
+
+## 2026-09-24 — seasonal field added, source still absent
+
+The user's newer Account model workbook specifies `Stagionale` as a Checkbox.
+`Account.Stagionale__c` is now deployed to UAT and visible on both Azienda and
+Locale pages. The `Account_NEW` data extract contains no Stagionale column;
+the checkbox's initial `false` is a technical default and does not establish
+that any company or locale operates year-round. No seasonal classification
+was inferred or loaded.

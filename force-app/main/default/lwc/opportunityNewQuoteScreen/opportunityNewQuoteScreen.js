@@ -4,7 +4,6 @@ import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import createQuote from "@salesforce/apex/OpportunityQuoteDefaultsController.createQuote";
 import getDefaults from "@salesforce/apex/OpportunityQuoteDefaultsController.getDefaults";
-import getQuoteStatuses from "@salesforce/apex/OpportunityQuoteDefaultsController.getQuoteStatuses";
 
 export default class OpportunityNewQuoteScreen extends NavigationMixin(
   LightningElement
@@ -12,7 +11,6 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
   _recordId;
   hasLoaded = false;
   form = {};
-  statusOptions = [];
   errorMessage = "";
   isLoading = true;
   isSaving = false;
@@ -35,20 +33,14 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
     this.hasLoaded = true;
     this.isLoading = true;
     try {
-      const [defaults, statuses] = await Promise.all([
-        getDefaults({ opportunityId: this._recordId }),
-        getQuoteStatuses()
-      ]);
-      this.statusOptions = statuses || [];
+      const defaults = await getDefaults({ opportunityId: this._recordId });
       this.form = {
         quoteName: defaults?.quoteName || "",
         opportunityName: defaults?.opportunityName || "",
         accountName: defaults?.accountName || "",
         status: defaults?.status || "",
+        isPrimary: defaults?.isPrimary === true,
         expirationDate: "",
-        contactId: defaults?.contactId || null,
-        email: defaults?.email || "",
-        phone: defaults?.phone || "",
         localeId: defaults?.localeId || null,
         billingStreet: defaults?.billingStreet || "",
         billingCity: defaults?.billingCity || "",
@@ -82,23 +74,17 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
     const fieldName = event.target.dataset.field;
     this.form = {
       ...this.form,
-      [fieldName]: event.detail?.value ?? event.target.value ?? ""
-    };
-  }
-
-  handleContactChange(event) {
-    this.form = {
-      ...this.form,
-      contactId: event.detail?.recordId ?? event.detail?.value ?? null
+      [fieldName]:
+        event.target.type === "checkbox"
+          ? event.target.checked
+          : (event.detail?.value ?? event.target.value ?? "")
     };
   }
 
   async handleSave() {
     this.syncFormFromInputs();
     const inputs = [
-      ...this.template.querySelectorAll(
-        "lightning-input, lightning-textarea, lightning-combobox, lightning-record-picker"
-      )
+      ...this.template.querySelectorAll("lightning-input, lightning-textarea")
     ];
     const isValid = inputs
       .map((input) => input.reportValidity())
@@ -145,13 +131,12 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
 
   syncFormFromInputs() {
     const values = { ...this.form };
-    const fields = [
-      ...this.template.querySelectorAll("[data-field], lightning-record-picker")
-    ];
+    const fields = [...this.template.querySelectorAll("[data-field]")];
     fields.forEach((field) => {
       const fieldName = field.dataset?.field;
       if (fieldName) {
-        values[fieldName] = field.value ?? "";
+        values[fieldName] =
+          field.type === "checkbox" ? field.checked : (field.value ?? "");
       }
     });
     this.form = values;
@@ -160,12 +145,9 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
   buildQuoteInput() {
     return {
       quoteName: this.form.quoteName,
-      status: this.form.status,
+      isPrimary: this.form.isPrimary === true,
       expirationDate: this.form.expirationDate || null,
       accountName: this.form.accountName,
-      contactId: this.form.contactId,
-      email: this.form.email,
-      phone: this.form.phone,
       localeId: this.form.localeId,
       billingStreet: this.form.billingStreet,
       billingCity: this.form.billingCity,

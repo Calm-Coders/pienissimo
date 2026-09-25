@@ -10,6 +10,270 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-24 — codex — Account ATECO state and User commission category in UAT
+
+- **Did:** Checked the latest client Account model workbook. Account ATECO
+  code/description and Account commission category already existed in UAT.
+  Deployed `Account.Ateco_Stato_Attivita__c` as an unrestricted picklist with
+  current source values, added it to the Azienda layout/page and Agent FLS,
+  and loaded 377 eligible Account values. Captured the pre-existing User agent
+  and commission-category fields and User layout in DX source. Filled the
+  commission category on eight of nine inactive Agent users; Elisa had no
+  source category. The user selected `19` for Nicol from the two source
+  categories. Full read-back of 8,140 Accounts and nine Users had zero
+  mismatches; Account code/description counts were 1,141/1,134.
+- **Mexal constraint:** The live Account trigger gates Mexal queueing on Name,
+  email, phone and VAT changes. The update CSV held only Id and ATECO state.
+  No new `MexalCustomerUpdateQueueable` job appeared after the sample and bulk
+  updates. Production migration remains separate. No commit or push.
+
+---
+
+## 2026-09-24 — codex — four commercial Account fields and UAT backfill
+
+- **Did:** Read the client Account model workbook supplied in this session.
+  Created Account commission category (Text), zona (Text), activity type
+  (multi-select picklist with 18 source values) and seasonal (Checkbox);
+  deployed fields, FLS and current-state Azienda/Locale layouts and pages to
+  Pienissimo UAT after a successful check-only deploy. The source workbook
+  snapshot was matched exactly by 8,140 CRM IDs to UAT Account records.
+  Updated only the new fields: 8,138 commission categories and 181 activity
+  types. Full read-back had zero mismatches. Zona was blank in all source
+  rows; Stagionale had no source column, so its `false` is a technical default.
+- **Mexal constraint:** Read the live Account trigger, active Account Flow list
+  and workflow rules. The bulk CSVs contained none of the four fields that
+  enqueue a Mexal customer update. After the sample and bulk jobs, zero new
+  `MexalCustomerUpdateQueueable` jobs were present. No Mexal update was sent
+  by this work.
+- **Next:** The Quote activity field/defaulting and actual seasonal source
+  data remain open; production cut-over remains separate. No commit or push.
+
+---
+
+## 2026-09-24 — codex — fill agent codes on UAT users
+
+- **Did:** Re-read the `Account_NEW` agent-code distribution and set
+  `User.Agente__c` on eight of nine inactive Agent users in Pienissimo UAT.
+  Seven had an unambiguous prevailing source code. For the one agent with two
+  different codes on two Accounts, the user chose which code to put on User.
+  The agent whose only source code is blank remains blank at the user's
+  direction. Read-back confirmed all nine inactive users and their values.
+- **State:** The 8,140 Account agent lookups and original per-Account codes
+  were not changed. Five Account rows differ from the linked User's selected
+  code, as expected from the source; production migration remains open.
+
+## 2026-09-24 — claude — nightly requirements-check: the first UAT session, and a Business Blueprint nobody had mentioned
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-23T22:00Z**. Drilled two meetings: `UAT: Lead e Opportunità` (client, ~2h08m,
+  **the first acceptance session of the project**, notes+transcript 155,961 chars) and
+  `Temi Mexal Anagrafiche/Indirizzi` (Kreosoft, 22m45s). Read
+  `Business_Blueprint_Pienissimo.docx` in full (49,165 chars). Wrote 2 meeting notes, 5
+  new items (`OI-176`–`OI-180`), updated 14 items, both trackers, both recaps (§47), MAP,
+  INDEX, and the trace.
+- **State:**
+  - 🟢 **The commercial chain ran end to end in front of the client and nothing was
+    rejected.** Twelve rulings, including 🔑 **a new quote state `Firmato`** at which the
+    order is generated. ⚠ One reopened: the word `rifiutato`, which both Fabrizio
+    Paganelli and Marco Montesi object to.
+  - 🟢 **All three triggers that came due today are discharged.** `OI-164` **RESOLVED**
+    (record types present; Elena Spini's two-state `Diretta` path delivered exactly);
+    `OI-163`'s duplicate rule **fired in front of the client and they approved it**;
+    `OI-174` answered — **a client-domain recipient received and signed**, so the mail
+    block is ROMI-side only. 🔑 And the same passage explains the missing DocuSign
+    credentials: Elisa Migliano _"non sapevo dovessi darvi le credenziali"_.
+  - 🟢 **`OI-173` RESOLVED in 22 minutes** — the fiscal rule keys on `residenza fiscale`
+    from the two-letter ISO on the **ragione sociale, not the billing address**; both
+    `.xlsx` transcoding tables arrived by 10:08:51Z. 🟢 Mexal API field names supplied,
+    with **`valuta` and `cod_listino` mandatory on create**, fixed to `1`.
+  - 🔴 **Two defects live in front of the client**: **every form lead is typed `Diretta`**
+    (`OI-176`), and the first DocuSign send died on the edition mapping — the same fault
+    as the 11:13Z sandbox Apex exception. The matching code **throws rather than
+    degrading**, so an unmapped product aborts the whole chain (`OI-96`).
+  - 🔑 **NEW `OI-179`: a ten-chapter Business Blueprint with its own signature block**,
+    created 18:10Z, due to the client 25/09, carrying **seven `● Check con Aurel`
+    markers** and **omitting `Firmato` from its own quote-state table**.
+  - 🔴 **NEW `OI-180`: the client has no UAT logins** until Daniela Morgese reviews the
+    product — indicatively 6 October, the day the UAT window closes.
+  - 🔴 **NEW `OI-177`: the marketing UAT needs production**, and the Aurel Mrruku ↔
+    Fabrizio Mastracci hand-off is stalled with each waiting on the other.
+  - 🔴 **NEW `OI-178`: two agent fields on two branches** — `Codice_Agente_Esterno__c` on
+    `DevMain` with 8,140 accounts carrying it, `Agente__c` on `DEV_LeadAgenteBundle`, and
+    **the client was shown the second**. 🟢 That branch now has PR #59.
+- **Next:** **Quote UAT is 25/09 at 10:30 (WooCommerce) and after (Preventivi), and
+  `Firmato` does not exist yet.** The BBP goes to the client the same day. Check both
+  before anything else.
+- **Watch:**
+  - **The register was deliberately not amended, and a human owes the reconciliation.**
+    `Firmato` is a sixth quote state the client agreed; `state_machines.quote` already
+    carries a flag saying it disagrees with the org's five values. Adding a sixth to a
+    list wrong in five places makes it worse. **It is now six values behind, not five.**
+  - ⚠ **`notes/items/OI-154` was edited here, reversing the 23/09 call.** `7eab757` is
+    still unmerged (PR #59) and carries a developer-authored addition to the same file, so
+    **this will conflict when #59 merges — keep both, developers' block first.**
+  - ⚠ **`64b2843` contradicts its own JOURNAL entry**, which says _"No commit or push was
+    made"_. The commit exists on `DevMain` and contains that sentence. Not corrected.
+  - **`STATUS.md` was not regenerated** — this run has no org evidence; every build claim
+    is repository arithmetic against `64b2843` plus one sandbox exception mail.
+  - 🟢 **`Flows & Objects.drawio` moved at 17:43:57Z — the first movement in nine runs.**
+    Still unreadable here. **Ask for an export.**
+  - **No human has answered a nightly report in eight nights**, and the dev-group channel
+    had no human post at all in this window.
+
+---
+
+## 2026-09-24 — codex — Account_NEW import into Pienissimo UAT
+
+- **Did:** Inspected the supplied Excel snapshot; deployed Account external CRM ID
+  and per-row agent code fields, the Agente profile and permission set, and a
+  narrow UAT import permission set. Created nine inactive Agent users with
+  reserved invalid-domain email addresses. Imported 8,140 VAT-bearing Accounts
+  from `Account_NEW` (8,138 new, 2 existing); excluded 457 without VAT. Linked
+  each Account to its agent; new Accounts owned by the active client admin and
+  existing owners preserved. Recovered 59 duplicate-rule alerts with the rule's
+  Allow action and one invalid PEC by leaving it blank. Final aggregate UAT
+  query confirmed all 8,140 imported, VAT-bearing, with external IDs and Agent
+  lookups; source customer values were kept out of git.
+- **Incident:** The two existing Account updates invoked
+  `MexalCustomerUpdateQueueable`; a customer update returned HTTP 204 from the
+  UAT named credential, which points to `services.passepartout.cloud` with mocks
+  disabled. A following shipping-address callout failed before send because
+  of pending DML. The ERP-side result needs reconciliation. See the Mexal
+  production ERP risk note.
+- **Next:** Production migration and cut-over are still unplanned. Reconcile
+  the Mexal customer update before more UAT Account updates. No commit or push
+  was made.
+
+---
+
+## 2026-09-23 — claude — nightly requirements-check: migration gets a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-22T22:00Z**. Drilled two meetings: `Check Data Import` (client, 2h29m — the
+  longest session of the project, notes+transcript 165,114 chars) and `Test Pre Demo`
+  (internal, 1h33m, ⚠ transcript machine-garbled, **not used as evidence**). Wrote 2
+  meeting notes, 1 decision note, 4 new items (`OI-172`–`OI-175`), updated 7 items, both
+  trackers, both recaps (§46), MAP, INDEX, and the trace.
+- **State:**
+  - 🟢 **`OI-146` RESOLVED.** Fabrizio Paganelli put his own 22/09 written request — an
+    ingressi conversion factor on the product — to the group in person; Aurel Mrruku put
+    the structure on the **campaign edition** and Elena Spini ruled it **Fase 2**. **Fase 1
+    is one ticket, one entry**, six-day Mastery included. The four-run-old suspension
+    trigger is discharged because the client was told, not because anything was built.
+  - 🟢 **`OI-159` answered** in twenty hours: Salesforce owes `Tipologia pagamento` and
+    `Agente`; five fields are Mexal's own procedure; `Gestione ratei di riga` is headroom
+    with no current case. The Italian e-invoicing branch was held back → **`OI-173`**, due
+    at the 24/09 10:00 Mirko Merendi call.
+  - 🟢 **Migration has a perimeter** (`OI-172`): only historic orders migrate, quotes and
+    offers start ex novo. 🔴 **The tutors re-key every pending quote by hand and Marco
+    Montesi was not in the room.** 1,010 articles loaded by Bulk API the same day, zero
+    failures (recorded by the developers on `DEV_LeadAgenteBundle`).
+  - 🔴 **`OI-164` still open at 18:28 CEST** — Elena Spini: _"il rt è sempre blank"_ — with
+    the fix scheduled for the **morning of the UAT day**, and a second expectation added
+    the same evening (only `New`/`Qualificato` on the `Diretta` record type).
+  - 🔴 **NEW `OI-174`: ROMI's mail gateway blocks DocuSign envelopes** to Aurel Mrruku and
+    Rexhina Hysi, and DocuSign is the second half of the 24/09 session.
+  - 🟢 **`OI-169` is built after all** — `7eab757`, 18:47 CEST: `Agente__c` on Account,
+    Lead, Quote, User plus the conversion-blocking validation rule. ⚠ **This supersedes the
+    correction the morning's org check wrote**, which was accurate at 08:40Z.
+- **Next:** the 24/09 UAT day is the due date of three armed triggers at once — the Lead
+  path (`OI-163`/`OI-164`/`OI-169`), DocuSign delivery (`OI-174`), and `Standart` becoming
+  permanent as UAT records are created. **Report those before anything else.**
+- **Watch:**
+  - **`OI-154` was deliberately not edited on `DevMain`.** `7eab757` carries a clean
+    developer-authored 33-line addition to exactly that file on `DEV_LeadAgenteBundle`;
+    editing it here would hand Rexhina Hysi a merge conflict. The facts are in the tracker
+    row and the trace. **Do not treat it as missed.**
+  - **`DEV_LeadAgenteBundle` has no pull request**, so the agent metadata is on neither
+    `DevMain` nor UAT, and the conversion block it contains is unresolved with the client.
+  - **`STATUS.md` was not regenerated** — the 23/09 org check did it ten hours earlier from
+    live org evidence, and this run has none. Do not overwrite live evidence with inference.
+  - **The `Check Data Import` Gemini summary lists `Implementare errori QR` as an action
+    item; the transcript puts it in Fase 2.** The 22/09 lesson caught it. Do not reinstate
+    it from the summary.
+  - `matteo.d@pienissimo.com` is a **new, unattributed** client address — the second after
+    `direzione@pienissimo.pro`. Not guessed.
+
+## 2026-09-23 — claude — org-status-check: full scope, reconciled and published, the day before UAT
+
+**Org:** Pienissimo UAT, `a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`, partial
+sandbox, API 68.0, connected. **Repository:** `DevMain` at `61f2a53`, clean, in sync
+with `origin/DevMain`. **Evidence collected 2026-09-23 08:01–08:40Z.** Read-only:
+nothing deployed, no org data modified, no anonymous Apex, no tests run, no
+source-format retrieve into `force-app/`.
+
+**Method.** `repo-snapshot.mjs` (442 keys) and `org-snapshot.mjs` (1,382 components,
+no unavailable types; run with `node` directly, the npm wrapper still loses the flag
+on Windows) then `compare.mjs` (9 assertions: 7 matches, 2 partial). On top of that,
+**every unmanaged `ApexClass.Body`, `ApexTrigger.Body` and `LightningComponentResource.Source`
+was compared token by token, and each mismatching org body was matched against every
+commit on every remote branch**. That is what separated _merged but never deployed_
+from _deployed but never committed_. Also run: `CronTrigger`, `AsyncApexJob`,
+`PicklistValueInfo`, `DuplicateRule`, `PermissionSetAssignment`, `User`, `ValidationRule`,
+`FieldDefinition` and aggregates. There was **one reference retrieve** (Profile `Admin`,
+Profile `Landing Page Profile`, five record types) into
+`.org-status-cache/run-2026-09-23/mdapi` only. Graphify (867 nodes) and Open Codebase
+Index (3,415 chunks) were both ready. ⚠ `sf` from Git Bash failed on the long retrieve
+command (`'C:\Program' is not recognized`), so it was run from PowerShell.
+
+**Findings, most severe first.**
+
+1. 🔑 **OI-164 root cause.** The Web-to-Lead creator `Amministratore Pienissimo`
+   (System Administrator) has `Lead.Diretta` and `Lead.Standard` **`visible=false`, no
+   default**. The only grant is `Full_Permission`, and that user does not hold it. All 4
+   web leads of 22/09 are untyped. **This is a configuration fix.**
+2. 🔴 **OI-170 (new): `DevMain` is ahead of UAT.** The org runs `LeadConversionQueueable`
+   of `08b97cc`, so every converted Opportunity becomes `Standart`. The
+   `QuoteLineItemTrigger`/`Handler` reopen-to-Bozza rule of `ab47b42` is not deployed,
+   and three quote classes are still `with sharing`. OI-150's _"check-only deploy"_
+   changed nothing.
+3. 🔴 **OI-171 (new): an uncommitted deploy.** `QuoteManageProductsController` and the
+   `quoteManageProducts` LWC (bundle discount / manual price) were changed at
+   07:59–08:00Z by the shared `ROMI COMPANY` user. The content is **in no commit on any
+   branch**. A `DevMain` deploy would overwrite it.
+4. 🟢 **Closed since 14/09:** the Mexal chain and the two Order fields are in source
+   (DIV-13/15), the credential metadata is in source (DIV-08/16), and `Happy Team` is
+   present (DIV-02). Edition mapping is 13 of 51. Quote ageing is scheduled. DocuSign
+   ran 15 jobs in 7 days.
+5. 🔴 **Unchanged or worse:** 0 of 45 orders have a Mexal status (`isSandbox()` guard,
+   OI-137). The nightly sync is unscheduled. `Contract` has zero fields (OI-168). 0 of 31
+   Assets have a QR (OI-161). No agent field exists anywhere (OI-169). **Correction:**
+   the 22/09 record that a conversion-blocking validation "was built" is wrong; it was
+   announced. Coverage is 0 of 7,756 across 79 entries.
+
+**Written.** New notes `OI-170` and `OI-171`. Dated org sections were added to OI-164,
+OI-150, OI-169, OI-137, OI-116, OI-168, OI-161, OI-156, OI-153, OI-121, OI-140 and OI-64,
+to the coverage risk and the credentials risk (whose metadata part is now closed), and
+to the Notion-mirror note. The `build_state` in the register was rewritten to
+`checked: 2026-09-23` with DIV-19…21, REG-06, LIM-07, LIM-08 and new built / not-built
+entries. One unrelated Prettier reflow of a requirement row was reverted so the
+requirement text stays byte-identical. Also updated: `MAP.md` (new top entry, last-updated
+line), `INDEX.md` (OI-170/171 added; OI-164, OI-169, the Mexal chain and the scaffolding
+rows corrected), both `open-items` trackers (rows 170–171 new, ten rows updated), and
+**`DEVELOPMENT-RECAP` §45 EN + IT**. Both precedence lines now name every section from
+§45 down. The IT line had been stuck at §19. `STATUS.md` was regenerated and
+`site/index.html` re-derived. The leak check returns nothing.
+
+**Published.** Notion Status page **replaced whole** (no child pages, checked first),
+then re-fetched and verified with no mangling. Tracker: **37 rows added (OI-135–OI-171),
+3 statuses corrected (OI-49, OI-88, OI-102 → Resolved)**. It now has **132 rows and 132
+distinct refs**, matching `notes/items/`. OI-170/171 have no `Note` URL until `DevMain`
+is pushed. The Flows page was not touched: no flow note or state machine changed.
+`site/` changed on disk and **was not deployed**. The public URL did not move.
+
+**Deliberate non-actions.** No Apex tests were written or offered. Nothing was deployed
+or fixed. OI-164's configuration change was **not** applied. The uncommitted OI-171 code
+was **not** retrieved into the repository. No requirement text was changed. No commit,
+no push. `MAP.md` is ~145 KB against its 5 KB budget; it was not restructured, and that
+needs its own task.
+
+**Next step.** **Before the 24/09 session:** (1) fix Lead record-type visibility for the
+Web-to-Lead creator and re-run the form test. (2) The OI-171 author commits the bundle
+discount. (3) **Then** deploy `LeadConversionQueueable`. A targeted deploy avoids making
+the OI-156 sharing decision by accident. (4) Name who deploys merged PRs to UAT. After
+that: check-in and mappings for 30/09, Contract for 5/10, and the Mexal sandbox guard for
+6/10. After the push, fill in the Notion `Note` URLs for OI-170 and OI-171.
+
 ## 2026-09-22 — claude — nightly requirements-check: five sessions in a day, and last night's headline was wrong
 
 - **Did:** swept the one-day window from watermark **2026-09-21T22:00Z** and **drilled
@@ -169,7 +433,7 @@ Keep the twenty most recent entries here; archive older ones to
   Slack (20 results, newest 12:26Z), Gmail, Fathom (1 meeting, and it is 247) and
   the build (**1 commit, the interactive run's own**). #47 open and untouched;
   🔴 **`4132dab` still has no PR**, second day. ⚠ **`[PIENISSIMO] - Follow-up
-  Interno` began twelve minutes before this sweep** and has produced no artifact
+Interno` began twelve minutes before this sweep** and has produced no artifact
   yet — **the expected state for a session in progress, not proof it produced
   nothing.** The next run is the first that can drill it.
 - **Written.** **No note created, one updated.** `OI-49` carries the finding;

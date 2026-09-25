@@ -164,6 +164,12 @@
                 <identifier>RecordRecordTypeIdField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Agente__c</fieldItem>
+                <identifier>RecordAgente__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-locale-main-left</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -206,6 +212,18 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Type</fieldItem>
                 <identifier>RecordTypeField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Tipologia_Attivita__c</fieldItem>
+                <identifier>RecordTipologiaAttivitaField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Stagionale__c</fieldItem>
+                <identifier>RecordStagionaleField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-locale-main-right</name>

@@ -107,6 +107,14 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>Tipologia_Attivita__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Stagionale__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>NumberOfEmployees</field>
             </layoutItems>
             <layoutItems>
@@ -124,6 +132,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Descrizione_ATECO__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Ateco_Stato_Attivita__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>

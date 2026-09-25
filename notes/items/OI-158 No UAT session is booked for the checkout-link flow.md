@@ -5,7 +5,7 @@ status: resolved
 owner: Elena Spini
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-22
+updated: 2026-09-24
 depends_on: [OI-49]
 source: Gmail thread 1a0b563a6c15098c and the six UAT invitations of 2026-09-21
 resolution_source: notes/meetings/2026-09-22 Update Interno Aurel Elena.md
@@ -16,15 +16,15 @@ resolution_source: notes/meetings/2026-09-22 Update Interno Aurel Elena.md
 Elena Spini's UAT proposal of **18/09 18:39 CEST** listed **seven** topics. The
 invitations she sent on **21/09 between 16:43 and 16:53Z** cover **six**.
 
-| Proposed topic                                        | Invitation sent                       |
-| ----------------------------------------------------- | ------------------------------------- |
-| Lead e Opportunità                                    | ✅ Thu 24/09 15:00–17:00               |
-| Preventivi e Firme Digitali (DocuSign)                | ✅ Fri 25/09 10:30–12:30 (`Preventivi`)|
-| Gestione Biglietti (Asset), Campagne ed Eventi        | ✅ Wed 30/09 14:00–16:00               |
-| Flussi Marketing Cloud                                | ✅ Fri 02/10 10:00–12:00 (`Flussi MKT Biglietti`) |
-| **WooCommerce e Link di Checkout (da Opty SFDC a ordine WooCommerce)** | 🔴 **none** |
-| Performance Plus + Gestione date pagamento            | ✅ Mon 05/10 15:00–17:00               |
-| Integrazione Mexal ↔ Salesforce                       | ✅ Tue 06/10 10:00–12:00               |
+| Proposed topic                                                         | Invitation sent                                   |
+| ---------------------------------------------------------------------- | ------------------------------------------------- |
+| Lead e Opportunità                                                     | ✅ Thu 24/09 15:00–17:00                          |
+| Preventivi e Firme Digitali (DocuSign)                                 | ✅ Fri 25/09 10:30–12:30 (`Preventivi`)           |
+| Gestione Biglietti (Asset), Campagne ed Eventi                         | ✅ Wed 30/09 14:00–16:00                          |
+| Flussi Marketing Cloud                                                 | ✅ Fri 02/10 10:00–12:00 (`Flussi MKT Biglietti`) |
+| **WooCommerce e Link di Checkout (da Opty SFDC a ordine WooCommerce)** | 🔴 **none**                                       |
+| Performance Plus + Gestione date pagamento                             | ✅ Mon 05/10 15:00–17:00                          |
+| Integrazione Mexal ↔ Salesforce                                        | ✅ Tue 06/10 10:00–12:00                          |
 
 The missing one was proposed for **2 October 15:00–18:00**. The 2 October morning
 slot went to Marketing Cloud instead, and the afternoon was not booked.
@@ -76,9 +76,9 @@ from the 21/09 test.
 🟢 **Done at 16:34–16:35Z.** Two updated invitations went out, and the 25/09 session was
 renamed:
 
-| Session | Now covers |
-| ------- | ---------- |
-| **Thu 24/09 15:00–17:00** `UAT: Lead e Opportunità` | Lead diretta/standard · Opportunità vendita standard + preventivo with DocuSign |
+| Session                                                | Now covers                                                                                                                                                                                |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Thu 24/09 15:00–17:00** `UAT: Lead e Opportunità`    | Lead diretta/standard · Opportunità vendita standard + preventivo with DocuSign                                                                                                           |
 | **Fri 25/09 10:30–12:30** `UAT: Recall Tutor + Bundle` | 🟢 **Opportunità recall tutor >> WooCommerce e Link di Checkout (da Opty SFDC a ordine WooCommerce) + Ordine su SFDC** · vendita standard with Bundle products + preventivo with DocuSign |
 
 Elena Spini posted the **client-validated calendar** to `#tproj-pienissimo` at
@@ -98,3 +98,16 @@ Salesforce still unresolved
 ([OI-49](OI-49%20WooCommerce%20checkout-link%20flow.md)). And **Contratto is on 5 October
 with nothing built** —
 [OI-168](OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md).
+
+## 🟢 2026-09-24 — the WooCommerce test has a time, and the client asked for it
+
+Booked in the session itself (`01:03:46`, `02:07:22`): **Friday 25/09 at 10:30 CEST**,
+with Sabatino Rinaldi and Elisa Migliano, to verify orders descending from WooCommerce
+into Salesforce — **ahead of** the `Preventivi` UAT the same day. **Marco Montesi is to be
+shown how the checkout link is generated**, which was the gap this note recorded.
+
+Elena Spini owes Sabatino Rinaldi the calendar invitation; the session's action items
+carry it. ⚠ **No invitation for it appeared in the mailbox in this window.**
+
+🟢 Sabatino Rinaldi, `02:06:19`, on the integration as it stands: the best one delivered so
+far, proved in twenty minutes of testing after a week of checks.
