@@ -2,6 +2,7 @@ import { api, LightningElement } from "lwc";
 import LightningConfirm from "lightning/confirm";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
+import deleteBundle from "@salesforce/apex/QuoteLineItemsController.deleteBundle";
 import deleteLine from "@salesforce/apex/QuoteLineItemsController.deleteLine";
 import getContext from "@salesforce/apex/QuoteLineItemsController.getContext";
 
@@ -167,17 +168,24 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
   }
 
   async deleteLine(selectedRow) {
+    const isBundle = selectedRow.isVisualBundleTotal === true;
     const lineId = selectedRow.id;
-    if (!lineId || selectedRow.isComponent) {
+    if (
+      !this.canDeleteLines ||
+      selectedRow.isComponent ||
+      (isBundle ? !selectedRow.bundleName : !lineId)
+    ) {
       return;
     }
 
-    const sourceRow = this.rows.find((entry) => entry.id === lineId);
+    const sourceRow = isBundle
+      ? selectedRow
+      : this.rows.find((entry) => entry.id === lineId);
     const confirmed = await LightningConfirm.open({
-      label: "Elimina riga preventivo",
-      message: `Eliminare ${
-        sourceRow?.productName || "questa riga"
-      } dal preventivo?`,
+      label: isBundle ? "Elimina bundle" : "Elimina riga preventivo",
+      message: isBundle
+        ? `Eliminare il bundle ${selectedRow.bundleName} e tutti i suoi componenti dal preventivo?`
+        : `Eliminare ${sourceRow?.productName || "questa riga"} dal preventivo?`,
       variant: "headerless"
     });
 
@@ -186,12 +194,23 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
     }
 
     this.isLoading = true;
-    this.deletingLineId = lineId;
+    this.deletingLineId = isBundle ? selectedRow.key : lineId;
     try {
       this.applyContext(
-        await deleteLine({ quoteId: this.recordId, lineId: lineId })
+        await (isBundle
+          ? deleteBundle({
+              quoteId: this.recordId,
+              bundleName: selectedRow.bundleName
+            })
+          : deleteLine({ quoteId: this.recordId, lineId }))
       );
-      this.showToast("Successo", "Riga preventivo eliminata.", "success");
+      this.showToast(
+        "Successo",
+        isBundle
+          ? "Bundle eliminato dal preventivo."
+          : "Riga preventivo eliminata.",
+        "success"
+      );
       this.dispatchEvent(new RefreshEvent());
     } catch (error) {
       this.showToast("Errore", this.reduceError(error), "error");
@@ -215,19 +234,20 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       unitPriceLabel: this.formatAmount(row.unitPrice),
       totalPriceLabel: this.formatAmount(row.totalPrice),
       quoteLineUrl: lineUrl,
-      rowActions: row.isComponent
-        ? []
-        : [
-            {
-              label: "Elimina riga",
-              name: "delete",
-              iconName: "utility:delete",
-              disabled:
-                row.deleteDisabled ||
-                this.isLoading ||
-                this.deletingLineId === row.id
-            }
-          ]
+      rowActions:
+        !this.canDeleteLines || row.isComponent || row.bundleName
+          ? []
+          : [
+              {
+                label: "Elimina riga",
+                name: "delete",
+                iconName: "utility:delete",
+                disabled:
+                  row.deleteDisabled ||
+                  this.isLoading ||
+                  this.deletingLineId === row.id
+              }
+            ]
     };
   }
 
@@ -238,6 +258,7 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       parentLineId: null,
       isComponent: false,
       isVisualBundleTotal: true,
+      bundleName,
       productName: bundleName,
       productCode: bundleCode || "Bundle",
       description: "Totale bundle",
@@ -248,7 +269,18 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       unitPriceLabel: this.formatAmount(0),
       totalPriceLabel: this.formatAmount(0),
       quoteLineUrl: bundleId ? `/lightning/r/Product2/${bundleId}/view` : "#",
-      rowActions: [],
+      rowActions: this.canDeleteLines
+        ? [
+            {
+              label: "Elimina bundle",
+              name: "delete",
+              iconName: "utility:delete",
+              disabled:
+                this.isLoading ||
+                this.deletingLineId === `visual-bundle-${bundleName}`
+            }
+          ]
+        : [],
       _children: []
     };
   }

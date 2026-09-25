@@ -50,7 +50,8 @@ public without sharing class QuoteLineItemsController {
     public LineRow(
       QuoteLineItem line,
       Boolean canDeleteLines,
-      Map<String, Product2> bundlesByName
+      Map<String, Product2> bundlesByName,
+      List<BundleComponent__c> components
     ) {
       key = String.valueOf(line.Id);
       id = line.Id;
@@ -73,7 +74,7 @@ public without sharing class QuoteLineItemsController {
     }
 
     public LineRow(QuoteLineItem line, Boolean canDeleteLines) {
-      this(line, canDeleteLines, new Map<String, Product2>());
+      this(line, canDeleteLines, new Map<String, Product2>(), null);
     }
 
     public LineRow(BundleComponent__c component, QuoteLineItem parentLine) {
@@ -183,11 +184,12 @@ public without sharing class QuoteLineItemsController {
     context.rows = new List<LineRow>();
 
     for (QuoteLineItem line : quoteLines) {
-      context.rows.add(new LineRow(line, canDeleteLines, bundlesByName));
       List<BundleComponent__c> components = componentsByBundleId.get(
         line.Product2Id
       );
-      context.rows.add(new LineRow(line, canDeleteLines, components));
+      context.rows.add(
+        new LineRow(line, canDeleteLines, bundlesByName, components)
+      );
       if (components == null) {
         continue;
       }
@@ -241,7 +243,57 @@ public without sharing class QuoteLineItemsController {
     validateQuoteId(quoteId);
     validateLineId(lineId);
     requireDeleteAccess();
+    requireDeletableQuote(quoteId);
 
+    List<QuoteLineItem> lines = [
+      SELECT Id, QuoteId, Description
+      FROM QuoteLineItem
+      WHERE Id = :lineId
+      LIMIT 1
+      FOR UPDATE
+    ];
+    if (lines.isEmpty() || lines[0].QuoteId != quoteId) {
+      throw new AuraHandledException(
+        'La riga selezionata non appartiene a questo preventivo. Ricarica e riprova.'
+      );
+    }
+    if (!String.isBlank(bundleNameFromDescription(lines[0].Description))) {
+      throw new AuraHandledException(
+        'Elimina il bundle completo, non una singola riga del bundle.'
+      );
+    }
+
+    delete lines[0];
+    return getContext(quoteId);
+  }
+
+  @AuraEnabled
+  public static QuoteLinesContext deleteBundle(Id quoteId, String bundleName) {
+    validateQuoteId(quoteId);
+    requireDeleteAccess();
+    if (String.isBlank(bundleName)) {
+      throw new AuraHandledException('Seleziona un bundle valido.');
+    }
+    requireDeletableQuote(quoteId);
+
+    String bundleDescription = 'Bundle: ' + bundleName.trim();
+    List<QuoteLineItem> bundleLines = [
+      SELECT Id
+      FROM QuoteLineItem
+      WHERE QuoteId = :quoteId AND Description = :bundleDescription
+      FOR UPDATE
+    ];
+    if (bundleLines.isEmpty()) {
+      throw new AuraHandledException(
+        'Il bundle non e piu presente nel preventivo. Ricarica e riprova.'
+      );
+    }
+
+    delete bundleLines;
+    return getContext(quoteId);
+  }
+
+  private static void requireDeletableQuote(Id quoteId) {
     Quote quoteRecord = [
       SELECT Id, Status
       FROM Quote
@@ -254,22 +306,6 @@ public without sharing class QuoteLineItemsController {
         'Le righe possono essere eliminate solo quando il preventivo e in Bozza o In Trattativa.'
       );
     }
-
-    List<QuoteLineItem> lines = [
-      SELECT Id, QuoteId
-      FROM QuoteLineItem
-      WHERE Id = :lineId
-      LIMIT 1
-      FOR UPDATE
-    ];
-    if (lines.isEmpty() || lines[0].QuoteId != quoteId) {
-      throw new AuraHandledException(
-        'La riga selezionata non appartiene a questo preventivo. Ricarica e riprova.'
-      );
-    }
-
-    delete lines[0];
-    return getContext(quoteId);
   }
 
   private static void validateQuoteId(Id quoteId) {
