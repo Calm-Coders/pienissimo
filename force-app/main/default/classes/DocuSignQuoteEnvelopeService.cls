@@ -124,7 +124,7 @@ public without sharing class DocuSignQuoteEnvelopeService {
 
     String queryText =
       'SELECT Id, Name, QuoteNumber, AccountId, DocuSign_Envelope_Id__c, ' +
-      'DocuSign_Status__c, Account.Name, Account.Email_Contatto_Principale__c, ' +
+      'DocuSign_Status__c, Email, Account.Name, ' +
       'Account.Nome_Legale_Rappresentante__c ' +
       'FROM Quote WHERE Id = :quoteId LIMIT 1';
     if (lockRecord) {
@@ -144,13 +144,8 @@ public without sharing class DocuSignQuoteEnvelopeService {
         'Collega il preventivo a un account prima di inviare DocuSign.'
       );
     }
-    if (
-      quoteRecord.Account == null ||
-      String.isBlank(quoteRecord.Account.Email_Contatto_Principale__c)
-    ) {
-      throw new DocuSignEnvelopeException(
-        'Email contatto principale mancante sull account del preventivo.'
-      );
+    if (quoteRecord.Account == null || String.isBlank(quoteRecord.Email)) {
+      throw new DocuSignEnvelopeException('Email mancante sul preventivo.');
     }
     if (quoteRecord.DocuSign_Status__c == STATUS_COMPLETED) {
       throw new DocuSignEnvelopeException(
@@ -210,7 +205,7 @@ public without sharing class DocuSignQuoteEnvelopeService {
     Quote quoteRecord,
     SigningDocument document
   ) {
-    String recipientEmail = quoteRecord.Account.Email_Contatto_Principale__c;
+    String recipientEmail = quoteRecord.Email;
     String recipientName = resolveRecipientName(quoteRecord);
     String fileExtension = String.isBlank(document.fileExtension)
       ? 'pdf'

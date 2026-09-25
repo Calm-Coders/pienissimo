@@ -120,9 +120,19 @@ public with sharing class OpportunityQuoteDefaultsController {
       throw new AuraHandledException('Expiration Date obbligatoria.');
     }
 
+    Opportunity opportunityRecord = [
+      SELECT Id, Account.Agente__c
+      FROM Opportunity
+      WHERE Id = :opportunityId
+      LIMIT 1
+    ];
+
     Quote quoteRecord = new Quote(
       Name = input.quoteName,
       OpportunityId = opportunityId,
+      Agente__c = opportunityRecord.Account == null
+        ? null
+        : opportunityRecord.Account.Agente__c,
       ExpirationDate = input.expirationDate,
       Status = DRAFT_STATUS,
       ContactId = input.contactId,

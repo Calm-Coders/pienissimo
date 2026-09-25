@@ -245,6 +245,14 @@
   font-size: 0.75rem;
 }
 
+.line-bundle {
+  margin-top: 0.35rem;
+  color: #1b4d89;
+  font-size: 0.75rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 40rem) {
   .tranche-row {
     grid-template-columns: 2rem minmax(0, 1fr);

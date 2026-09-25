@@ -75,6 +75,7 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
   }
 
   get treeRows() {
+    const visualBundleRowsByName = new Map();
     const linesById = new Map();
     const parentRows = [];
 
@@ -84,6 +85,32 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       }
 
       const treeRow = this.decorateTreeRow(row);
+      const bundleName =
+        row.bundleName || this.bundleNameFromDescription(row.description);
+      if (bundleName) {
+        let visualBundleRow = visualBundleRowsByName.get(bundleName);
+        if (!visualBundleRow) {
+          visualBundleRow = this.decorateVisualBundleRow(
+            bundleName,
+            row.bundleId,
+            row.bundleCode
+          );
+          visualBundleRowsByName.set(bundleName, visualBundleRow);
+          parentRows.push(visualBundleRow);
+        }
+        visualBundleRow.totalPrice += Number(row.totalPrice) || 0;
+        visualBundleRow.unitPrice = visualBundleRow.totalPrice;
+        visualBundleRow.unitPriceLabel = this.formatAmount(
+          visualBundleRow.unitPrice
+        );
+        visualBundleRow.totalPriceLabel = this.formatAmount(
+          visualBundleRow.totalPrice
+        );
+        visualBundleRow._children.push(treeRow);
+        linesById.set(row.id, treeRow);
+        continue;
+      }
+
       treeRow._children = [];
       linesById.set(row.id, treeRow);
       parentRows.push(treeRow);
@@ -202,6 +229,36 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
             }
           ]
     };
+  }
+
+  decorateVisualBundleRow(bundleName, bundleId, bundleCode) {
+    return {
+      key: `visual-bundle-${bundleName}`,
+      id: null,
+      parentLineId: null,
+      isComponent: false,
+      isVisualBundleTotal: true,
+      productName: bundleName,
+      productCode: bundleCode || "Bundle",
+      description: "Totale bundle",
+      quantity: 1,
+      unitPrice: 0,
+      totalPrice: 0,
+      quantityLabel: this.formatNumber(1),
+      unitPriceLabel: this.formatAmount(0),
+      totalPriceLabel: this.formatAmount(0),
+      quoteLineUrl: bundleId ? `/lightning/r/Product2/${bundleId}/view` : "#",
+      rowActions: [],
+      _children: []
+    };
+  }
+
+  bundleNameFromDescription(description) {
+    const prefix = "Bundle:";
+    if (!description || !description.startsWith(prefix)) {
+      return "";
+    }
+    return description.slice(prefix.length).trim();
   }
 
   formatAmount(value) {
