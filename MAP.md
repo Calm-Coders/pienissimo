@@ -2,13 +2,34 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-24 (Account_NEW UAT import and Mexal callout finding) · Source of record: [notes/](notes/)
+Last updated: 2026-09-24 (Account ATECO state and User commission category backfilled in UAT) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
+- **2026-09-24 — ATECO and Agent commission category in UAT:** the third
+  Account ATECO field (`Ateco Stato Attivita`) was deployed and 377 source
+  values loaded; code and description were already present on 1,141 and 1,134
+  imported Accounts. The existing User commission-category field was filled
+  on eight of nine inactive Agent users; the ninth has no source value. Nicol's
+  conflicting source categories were resolved by the user's explicit choice.
+  Full read-back found zero mismatches and no new Mexal customer-update job.
+  See [OI-112](notes/items/OI-112%20Whether%20Anticipay%20returns%20the%20ATECO%20code.md),
+  [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)
+  and [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md).
+
+- **2026-09-24 — commercial Account fields in UAT:** commission category,
+  zona, activity type and seasonal checkbox deployed on Account. Of the 8,140
+  eligible `Account_NEW` rows, 8,138 categories and 181 activity types were
+  loaded with zero mismatches; zona had no source values and seasonal has no
+  source column. The data jobs created **zero Mexal customer-update queueables**.
+  See [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md),
+  [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)
+  and [OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md).
+
 - **2026-09-24 — Account_NEW UAT import:** 8,140 VAT-bearing Accounts loaded,
   457 source rows without VAT excluded; nine inactive Agent users linked through
-  `Account.Agente__c`. See [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)
+  `Account.Agente__c`, eight with `User.Agente__c` populated from the source.
+  See [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)
   and [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md).
   **The update of existing Accounts triggered a Mexal customer callout (HTTP 204)
   from UAT to the live endpoint; ERP reconciliation is needed.** See

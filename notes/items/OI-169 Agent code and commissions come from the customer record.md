@@ -119,3 +119,39 @@ agent name had two distinct codes, the user directed us to preserve each row's
 This supplies the customer-to-agent lookup for UAT Account data. It does not
 resolve the outstanding Lead conversion rule, zona, commission category, or
 Mexal order payload described above.
+
+## 2026-09-24 — Agent codes filled on UAT users
+
+After the Account import, the user pointed out that `User.Agente__c` was blank.
+The `Account_NEW` source gives a clear prevailing code for seven Agent users;
+those seven fields were populated in Pienissimo UAT. One agent has two
+different codes across two Accounts, so the user selected the code of one
+of those rows for that User. Another agent's only source row has a blank
+code, and the user directed us to leave that User field blank. The final
+UAT query confirms eight of nine inactive Agent users have `Agente__c` set.
+All 8,140 Account lookups and per-Account original codes remain unchanged;
+five Account rows have a code different from their linked User's chosen code.
+
+## 2026-09-24 — commission category and zona fields deployed
+
+The user directed the team to add both fields to Account, using the latest
+Account model workbook. `Categoria_Provvigioni_Cliente__c` and `Zona__c` are
+now in UAT and visible on the Azienda page. Of 8,140 eligible `Account_NEW`
+rows, 8,138 commission categories were loaded; all source zona values were
+blank, so no zona data was set. This closes the **Account field/data portion**
+of the gap recorded above. The live Mexal customer payload still assigns
+`cod_agente` to `null`, and the order integration mapping remains separate.
+No Mexal update job was enqueued by this data update.
+
+## 2026-09-24 — commission category on the Agent user
+
+The user asked for `Categoria Provvigioni Cliente` on User, alongside the agent
+code. `User.Categoria_Provvigioni_Cliente__c` already existed in Pienissimo
+UAT as a TextArea and was shown on the User layout, but all nine inactive
+Agent users had it blank. Its metadata and the User layout are now in the DX
+source. Eight users were filled from the prevailing category for their name
+in `Account_NEW`; Elisa Migliano's only eligible Account had no category, so
+her User field remains blank. Nicol Pironi had two eligible Accounts with
+different categories; the user explicitly chose `19` for that User, matching
+the Account with agent code `610.00019`. The original per-Account category
+values were not changed. Read-back of all nine users found zero mismatches.

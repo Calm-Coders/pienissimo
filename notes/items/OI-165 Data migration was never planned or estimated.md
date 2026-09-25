@@ -130,3 +130,34 @@ to the repository. The local preparation script is
 historical orders, and the migration estimate remain open. The two existing
 Account updates also triggered a Mexal customer update; see
 [the ERP risk](../risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md).
+
+## 2026-09-24 — commercial fields added to the UAT Account load
+
+At the user's direction, the later `Account Salesforce_V2.xlsx` snapshot
+(SHA-256 `edf51cbb214ee7633ac7a852b7539b0e1523ab1f5bae0a308f8586d5721bb2f3`)
+was matched by its 8,140 CRM IDs to the same 8,140 UAT Accounts. Four Account
+fields were deployed: commission category (Text), zona (Text), activity type
+(multi-select picklist) and seasonal (Checkbox). The Account and Locale layouts
+and record pages now expose the applicable fields. The data update filled
+8,138 commission categories and 181 activity types. Zona had no source values;
+the snapshot had no seasonal column, so the checkbox has only its technical
+default `false`, not a verified business classification. Two source category
+values were blank. A full source-to-UAT read-back found zero mismatches in the
+two imported fields.
+
+The update CSVs held only Salesforce Account IDs and the new commercial fields.
+The live Account trigger enqueues Mexal customer updates only when Name,
+`Email__c`, Phone or Partita IVA changes; none of those was in the update.
+No `MexalCustomerUpdateQueueable` job appeared after the deploy or data jobs.
+This was still a **UAT** load, not production cut-over.
+
+## 2026-09-24 — ATECO activity state backfilled in UAT
+
+The current Account model workbook identifies three ATECO fields. Code and
+description already existed in UAT and the imported `Account_NEW` data held
+1,141 codes and 1,134 descriptions. `Ateco_Stato_Attivita__c` was added as an
+unrestricted picklist with the three source values. It was populated on 377
+of the 8,140 eligible Accounts; the other source values were blank. Read-back
+of every imported Account showed zero mismatches. The update CSVs contained
+only Account ID and the new ATECO-state field. No Mexal customer-update job
+appeared after the update. This remains UAT data, not production cut-over.

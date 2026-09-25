@@ -10,6 +10,60 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-24 — codex — Account ATECO state and User commission category in UAT
+
+- **Did:** Checked the latest client Account model workbook. Account ATECO
+  code/description and Account commission category already existed in UAT.
+  Deployed `Account.Ateco_Stato_Attivita__c` as an unrestricted picklist with
+  current source values, added it to the Azienda layout/page and Agent FLS,
+  and loaded 377 eligible Account values. Captured the pre-existing User agent
+  and commission-category fields and User layout in DX source. Filled the
+  commission category on eight of nine inactive Agent users; Elisa had no
+  source category. The user selected `19` for Nicol from the two source
+  categories. Full read-back of 8,140 Accounts and nine Users had zero
+  mismatches; Account code/description counts were 1,141/1,134.
+- **Mexal constraint:** The live Account trigger gates Mexal queueing on Name,
+  email, phone and VAT changes. The update CSV held only Id and ATECO state.
+  No new `MexalCustomerUpdateQueueable` job appeared after the sample and bulk
+  updates. Production migration remains separate. No commit or push.
+
+---
+
+## 2026-09-24 — codex — four commercial Account fields and UAT backfill
+
+- **Did:** Read the client Account model workbook supplied in this session.
+  Created Account commission category (Text), zona (Text), activity type
+  (multi-select picklist with 18 source values) and seasonal (Checkbox);
+  deployed fields, FLS and current-state Azienda/Locale layouts and pages to
+  Pienissimo UAT after a successful check-only deploy. The source workbook
+  snapshot was matched exactly by 8,140 CRM IDs to UAT Account records.
+  Updated only the new fields: 8,138 commission categories and 181 activity
+  types. Full read-back had zero mismatches. Zona was blank in all source
+  rows; Stagionale had no source column, so its `false` is a technical default.
+- **Mexal constraint:** Read the live Account trigger, active Account Flow list
+  and workflow rules. The bulk CSVs contained none of the four fields that
+  enqueue a Mexal customer update. After the sample and bulk jobs, zero new
+  `MexalCustomerUpdateQueueable` jobs were present. No Mexal update was sent
+  by this work.
+- **Next:** The Quote activity field/defaulting and actual seasonal source
+  data remain open; production cut-over remains separate. No commit or push.
+
+---
+
+## 2026-09-24 — codex — fill agent codes on UAT users
+
+- **Did:** Re-read the `Account_NEW` agent-code distribution and set
+  `User.Agente__c` on eight of nine inactive Agent users in Pienissimo UAT.
+  Seven had an unambiguous prevailing source code. For the one agent with two
+  different codes on two Accounts, the user chose which code to put on User.
+  The agent whose only source code is blank remains blank at the user's
+  direction. Read-back confirmed all nine inactive users and their values.
+- **State:** The 8,140 Account agent lookups and original per-Account codes
+  were not changed. Five Account rows differ from the linked User's selected
+  code, as expected from the source; production migration remains open.
+
+---
+
 ## 2026-09-24 — codex — Account_NEW import into Pienissimo UAT
 
 - **Did:** Inspected the supplied Excel snapshot; deployed Account external CRM ID

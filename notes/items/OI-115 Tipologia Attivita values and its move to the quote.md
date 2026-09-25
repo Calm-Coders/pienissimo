@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Elena Spini
 org: both
 raised: 2026-09-03
-updated: 2026-09-21
+updated: 2026-09-24
 depends_on: [OI-59]
 relates_to: [OI-123]
 requirement: SAL-16
@@ -126,3 +126,14 @@ with only an "initial" value set agreed verbally —
 [OI-148](OI-148%20Tipologia%20evento%20is%20mandatory%20at%20event%20creation.md).
 A mandatory picklist with no values blocks record creation, which is precisely what
 this row records happening once already.
+
+## 2026-09-24 — Account field and UAT source values
+
+The user-provided Account model workbook places `Tipologia Attività` on Account
+as a multi-select picklist. At the user's direction, `Account.Tipologia_Attivita__c`
+was deployed to UAT with the 18 distinct values found in `Account_NEW`. It is
+visible on both Azienda and Locale pages. The import populated 181 Azienda
+Accounts; no Locale rows were part of this source load. This new Account data
+does not by itself build the Quote field or its Locale-to-Quote defaulting,
+which remain open in this item. The source values are observed in the client
+extract, not a separately confirmed complete value set for future use.

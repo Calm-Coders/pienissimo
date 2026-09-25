@@ -5042,7 +5042,7 @@ Mastery di sei giorni compresa.** Vedi
 [la decisione](../notes/decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md).
 
 🔑 **E l'integrazione del check-in trova il suo scopo.** La scansione è una **chiamata API
-in ingresso verso Salesforce**, che deve restituire un *errore parlante* quando gli
+in ingresso verso Salesforce**, che deve restituire un _errore parlante_ quando gli
 ingressi del blocco precedente non sono completi — non l'aggiornamento unidirezionale
 dell'asset che questo record porta dal 22/09. Anche questo è Fase 2, **benché il riepilogo
 automatico della sessione lo elenchi tra i passaggi successivi**; la trascrizione non
@@ -5109,7 +5109,7 @@ sessione ordini/migrazione.
   è costruita dopotutto**, superando la correzione della mattina: `7eab757` alle 18:47 CEST
   crea `Agente__c` su Account, Lead, Quote e User più la validation rule che blocca la
   conversione. ⚠ **Su un branch senza pull request**, senza `zona` né `categoria provvigioni
-  cliente`, **e la regola blocca ancora la conversione mentre il cliente sta valutando.**
+cliente`, **e la regola blocca ancora la conversione mentre il cliente sta valutando.**
 
 ### La build
 
@@ -5121,3 +5121,21 @@ listino, `Quote.Is_Primary__c`, `Opportunity.Preventivo_Primario__c`, `ProductCo
 🔴 **`Standart` è invariato**, al quinto passaggio;
 [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) è
 invariata; la copertura è **0 su 7.756**.
+
+## 24 settembre 2026 — aggiornamento dati Account_NEW in UAT
+
+Il foglio Account del cliente riporta tre campi ATECO commerciali. `Codice
+ATECO` e `Descrizione ATECO` erano già presenti sull'Account in UAT, con
+1.141 e 1.134 valori importati. `Ateco Stato Attivita` è stato aggiunto come
+picklist non ristretta secondo il foglio corrente e valorizzato su 377 degli
+8.140 Account con Partita IVA di `Account_NEW`. Il campo e i relativi accessi
+sono stati distribuiti in UAT; la rilettura completa non mostra discrepanze.
+
+`Categoria Provvigioni Cliente` era già presente su Account e User. Il campo
+User era vuoto sulle nove utenze Agente inattive; ora è valorizzato su otto,
+secondo la categoria scelta per ciascun agente dai dati sorgente. Elisa non ha
+una categoria nel file; per Nicol l'utente ha scelto `19` fra i due valori
+sorgente. Le categorie sui singoli Account sono state conservate. Questi
+aggiornamenti non hanno creato job di aggiornamento clienti verso Mexal.
+Si tratta di dati UAT, non della migrazione in produzione; la mappatura
+dell'ordine Mexal resta aperta.

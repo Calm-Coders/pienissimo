@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-03
-updated: 2026-09-04
+updated: 2026-09-24
 depends_on: [OI-94]
 requirement: INT-18
 source: notes/meetings/2026-09-03 Data Model Parte 1.md
@@ -106,3 +106,20 @@ So this item is resolved **on the meeting record, not on the document**. The
 field list, types and exact names are in a mail nobody has retrieved, and
 whoever maps the response will need it. **Ask Aurel Mrruku where it landed**
 before assuming a fourth revision of the API documentation exists.
+
+## 2026-09-24 — ATECO Account fields in UAT
+
+The Account model workbook supplied by the user lists `Codice Ateco`, `Ateco
+Desc` and `Ateco Stato Attivita` as commercial data. The first two already
+existed on Account in Pienissimo UAT and carried 1,141 and 1,134 values from
+the `Account_NEW` import, respectively. The third was absent. It was deployed
+as `Account.Ateco_Stato_Attivita__c`, an unrestricted picklist as specified by
+the current workbook, and 377 values were loaded from VAT-bearing source
+rows. A read-back of all 8,140 imported Accounts found zero mismatches in the
+new field. This documents the UAT migration state; it does not establish that
+Anticipay populates the field for newly created Accounts.
+The 23 September meeting recap calls the activity-state picklist restricted,
+whereas the current Account workbook calls it unrestricted. The user asked for
+the fields as shown in that workbook, so the UAT field follows the workbook;
+the discrepancy remains to be resolved before treating this as the final
+production data model.

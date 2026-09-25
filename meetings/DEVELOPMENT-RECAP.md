@@ -4808,7 +4808,7 @@ included.** See
 [the decision](../notes/decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md).
 
 🔑 **And the check-in integration gets its purpose.** The scan is an **inbound API call to
-Salesforce** that must return a *speaking error* when the previous block's entries are
+Salesforce** that must return a _speaking error_ when the previous block's entries are
 incomplete — not the one-way asset update this record has carried since 22/09. That is
 Fase 2 as well, **although the session's own auto-summary lists it as an action item**;
 the transcript does not support that reading
@@ -4872,7 +4872,7 @@ session was postponed.
   is built after all**, superseding that morning's correction: `7eab757` at 18:47 CEST
   creates `Agente__c` on Account, Lead, Quote and User plus the conversion-blocking
   validation rule. ⚠ **On a branch with no pull request**, without `zona` or `categoria
-  provvigioni cliente`, **and the rule still blocks conversion while the client considers
+provvigioni cliente`, **and the rule still blocks conversion while the client considers
   it.**
 
 ### The build
@@ -4885,3 +4885,20 @@ automation, `Quote.Is_Primary__c`, `Opportunity.Preventivo_Primario__c`,
 (**no PR**). 🔴 **`Standart` is unchanged**, five runs on;
 [OI-156](../notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md) is
 unchanged; coverage is **0 of 7,756**.
+
+## 24 September 2026 — Account_NEW UAT data update
+
+The client Account workbook now lists three commercial ATECO fields. `Codice
+ATECO` and `Descrizione ATECO` were already present on UAT Account and carried
+1,141 and 1,134 imported values. `Ateco Stato Attivita` was added as an
+unrestricted picklist following the current workbook and filled on 377 of the
+8,140 VAT-bearing Accounts from `Account_NEW`. The field and its access were
+deployed to UAT; full read-back found no mismatches.
+
+`Categoria Provvigioni Cliente` was already present on Account and User.
+The User field was blank on all nine inactive Agent users. It is now filled
+on eight, using the category selected for each agent from the source. Elisa
+has no source category; for Nicol the user selected `19` from the two source
+values. The original per-Account categories were preserved. These data jobs
+created no Mexal customer-update queueable. This is UAT data, not the
+production migration; the Mexal order mapping remains open.

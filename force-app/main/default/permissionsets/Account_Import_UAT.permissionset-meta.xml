@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <description
-  >Accesso in scrittura ai soli identificativi esterni creati per l'import Account UAT.</description>
+  >Accesso in scrittura ai campi della migrazione Account UAT.</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Ateco_Stato_Attivita__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Categoria_Provvigioni_Cliente__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.Codice_Agente_Esterno__c</field>
@@ -10,6 +20,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.External_CRM_ID__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Stagionale__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Tipologia_Attivita__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Zona__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>

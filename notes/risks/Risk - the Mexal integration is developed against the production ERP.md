@@ -136,3 +136,15 @@ from the UAT org on 24 September confirms its endpoint is
 `https://services.passepartout.cloud`. The order-specific sandbox guard did
 not prevent the Account-triggered customer update. The affected customer
 record should be reconciled in Mexal before further Account updates in UAT.
+
+## 2026-09-24 — commercial-field backfill avoided the trigger path
+
+Before the later UAT Account backfill, the live `AccountTriggerHandler` was
+read through Tooling API. It enqueues `MexalCustomerUpdateQueueable` only when
+Name, `Email__c`, Phone or Partita IVA changes on an Account with a Mexal code.
+No active Account Flow or workflow rule was found. The backfill changed only
+new commission-category and activity-type fields, which are outside that
+trigger condition. A sample and the complete bulk jobs succeeded; the count
+of Mexal customer-update queueable jobs since the metadata deploy stayed zero.
+This observation does not resolve the earlier HTTP 204 callout or remove the
+risk from future edits to the four watched Account fields.
