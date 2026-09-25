@@ -19,7 +19,7 @@ public with sharing class BundleProductAssignmentController {
       id = product.Id;
       name = product.Name;
       productCode = product.ProductCode;
-      productPrice = product.Product_Price__c;
+      productPrice = null;
     }
   }
 
@@ -50,7 +50,7 @@ public with sharing class BundleProductAssignmentController {
       (String.isBlank(searchTerm) ? '' : searchTerm.trim()) +
       '%';
     String queryText =
-      'SELECT Id, Name, ProductCode, Product_Price__c, ' +
+      'SELECT Id, Name, ProductCode, ' +
       'Solo_Bundle__c, Genera_Biglietto__c FROM Product2 ' +
       'WHERE RecordType.DeveloperName = \'Item\' AND IsActive = TRUE ' +
       'AND Id NOT IN :excludedIds ' +
@@ -68,9 +68,15 @@ public with sharing class BundleProductAssignmentController {
     List<Product2> products = Database.query(queryText);
     ProductSearchPage result = new ProductSearchPage();
     result.hasMore = products.size() > 50;
+    Set<Id> productIds = new Set<Id>();
+    for (Product2 product : products) {
+      productIds.add(product.Id);
+    }
+    Map<Id, Decimal> standardPrices = standardPricesByProduct(productIds);
     for (Integer index = 0; index < Math.min(products.size(), 50); index++) {
       Product2 product = products[index];
       ItemOption option = new ItemOption(product);
+      option.productPrice = standardPrices.get(product.Id);
       option.bundleOnly = product.Solo_Bundle__c;
       option.generatesTicket = product.Genera_Biglietto__c;
       result.items.add(option);
@@ -101,7 +107,7 @@ public with sharing class BundleProductAssignmentController {
       name = component.Product__r.Name;
       productCode = component.Product__r.ProductCode;
       quantity = component.Quantity__c;
-      listPrice = component.List_Price__c;
+      listPrice = null;
       spreadPrice = component.Spread_Price__c;
     }
   }
@@ -159,20 +165,29 @@ public with sharing class BundleProductAssignmentController {
     context.variance = bundle.Spread_Variance__c;
     context.components = new List<ComponentRow>();
 
-    for (BundleComponent__c component : [
+    List<BundleComponent__c> components = [
       SELECT
         Id,
         Product__c,
         Product__r.Name,
         Product__r.ProductCode,
         Quantity__c,
-        List_Price__c,
         Spread_Price__c
       FROM BundleComponent__c
       WHERE Bundle__c = :bundleId
       ORDER BY Product__r.Name
-    ]) {
-      context.components.add(new ComponentRow(component));
+    ];
+    Set<Id> componentProductIds = new Set<Id>();
+    for (BundleComponent__c component : components) {
+      componentProductIds.add(component.Product__c);
+    }
+    Map<Id, Decimal> standardPrices = standardPricesByProduct(
+      componentProductIds
+    );
+    for (BundleComponent__c component : components) {
+      ComponentRow row = new ComponentRow(component);
+      row.listPrice = standardPrices.get(component.Product__c);
+      context.components.add(row);
     }
 
     return context;
@@ -206,7 +221,7 @@ public with sharing class BundleProductAssignmentController {
 
     List<Product2> products = normalizedSearchTerm == null
       ? [
-          SELECT Id, Name, ProductCode, Product_Price__c
+          SELECT Id, Name, ProductCode
           FROM Product2
           WHERE
             RecordTypeId = :itemRecordTypeId
@@ -216,7 +231,7 @@ public with sharing class BundleProductAssignmentController {
           LIMIT :MAX_RESULTS
         ]
       : [
-          SELECT Id, Name, ProductCode, Product_Price__c
+          SELECT Id, Name, ProductCode
           FROM Product2
           WHERE
             RecordTypeId = :itemRecordTypeId
@@ -229,8 +244,15 @@ public with sharing class BundleProductAssignmentController {
         ];
 
     List<ItemOption> results = new List<ItemOption>();
+    Set<Id> productIds = new Set<Id>();
     for (Product2 product : products) {
-      results.add(new ItemOption(product));
+      productIds.add(product.Id);
+    }
+    Map<Id, Decimal> standardPrices = standardPricesByProduct(productIds);
+    for (Product2 product : products) {
+      ItemOption option = new ItemOption(product);
+      option.productPrice = standardPrices.get(product.Id);
+      results.add(option);
     }
     return results;
   }
@@ -280,7 +302,12 @@ public with sharing class BundleProductAssignmentController {
           'The component list contains an empty row. Reload and try again.'
         );
       }
-      Decimal spread = input.spreadPrice == null ? 0 : input.spreadPrice;
+      if (input.spreadPrice == null) {
+        throw new AuraHandledException(
+          'Inserisci lo sconto o il prezzo totale della riga per ogni prodotto.'
+        );
+      }
+      Decimal spread = input.spreadPrice;
       Decimal quantity = (input.quantity == null ||
         input.quantity < 1)
         ? 1
@@ -360,15 +387,6 @@ public with sharing class BundleProductAssignmentController {
     if (!toUpsert.isEmpty()) {
       upsert toUpsert;
     }
-    if (fixedPrice != null) {
-      if (fixedPrice < 0 || fixedPrice != fixedPrice.setScale(2)) {
-        throw new AuraHandledException(
-          'Inserisci un prezzo bundle non negativo con massimo due decimali.'
-        );
-      }
-    }
-    update new Product2(Id = bundleId, Bundle_Selling_Price__c = fixedPrice);
-
     return getBundleContext(bundleId);
   }
 
@@ -381,5 +399,23 @@ public with sharing class BundleProductAssignmentController {
     ];
 
     return recordTypes.isEmpty() ? null : recordTypes[0].Id;
+  }
+
+  private static Map<Id, Decimal> standardPricesByProduct(Set<Id> productIds) {
+    Map<Id, Decimal> prices = new Map<Id, Decimal>();
+    if (productIds.isEmpty()) {
+      return prices;
+    }
+    for (PricebookEntry entry : [
+      SELECT Product2Id, UnitPrice
+      FROM PricebookEntry
+      WHERE
+        Product2Id IN :productIds
+        AND Pricebook2.IsStandard = TRUE
+        AND IsActive = TRUE
+    ]) {
+      prices.put(entry.Product2Id, entry.UnitPrice);
+    }
+    return prices;
   }
 }

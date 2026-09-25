@@ -1,4 +1,5 @@
 public without sharing class QuoteLineItemsController {
+  private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
   private static final Set<String> DELETABLE_QUOTE_STATUSES = new Set<String>{
     'Bozza',
     'Draft',
@@ -65,8 +66,10 @@ public without sharing class QuoteLineItemsController {
       bundleId = bundle == null ? null : bundle.Id;
       bundleCode = bundle == null ? null : bundle.ProductCode;
       quantity = line.Quantity;
-      unitPrice = line.UnitPrice;
-      totalPrice = line.TotalPrice;
+      unitPrice = salesUnitPrice(line, components);
+      totalPrice = isBundleLine(line) && unitPrice != null
+        ? (quantity == null ? 0 : quantity) * unitPrice
+        : line.TotalPrice;
     }
 
     public LineRow(QuoteLineItem line, Boolean canDeleteLines) {
@@ -121,7 +124,11 @@ public without sharing class QuoteLineItemsController {
         TotalPrice,
         Description,
         Product2.Name,
-        Product2.ProductCode
+        Product2.ProductCode,
+        Product2.Bundle_Selling_Price__c,
+        Product2.Calculated_Bundle_Price__c,
+        Product2.Spread_Total__c,
+        Product2.RecordType.DeveloperName
       FROM QuoteLineItem
       WHERE QuoteId = :quoteId
       WITH USER_MODE
@@ -180,6 +187,7 @@ public without sharing class QuoteLineItemsController {
       List<BundleComponent__c> components = componentsByBundleId.get(
         line.Product2Id
       );
+      context.rows.add(new LineRow(line, canDeleteLines, components));
       if (components == null) {
         continue;
       }
@@ -301,5 +309,57 @@ public without sharing class QuoteLineItemsController {
         'Non hai i permessi necessari per eliminare le righe preventivo.'
       );
     }
+  }
+
+  private static Boolean isBundleLine(QuoteLineItem line) {
+    return line.Product2 != null &&
+      line.Product2.RecordType != null &&
+      line.Product2.RecordType.DeveloperName ==
+      BUNDLE_RECORD_TYPE_DEVELOPER_NAME;
+  }
+
+  private static Decimal salesUnitPrice(
+    QuoteLineItem line,
+    List<BundleComponent__c> components
+  ) {
+    if (!isBundleLine(line)) {
+      return line.UnitPrice;
+    }
+
+    Decimal componentTotal = componentSpreadTotal(components);
+    if (componentTotal != null) {
+      return componentTotal;
+    }
+    if (line.Product2.Bundle_Selling_Price__c != null) {
+      return line.Product2.Bundle_Selling_Price__c;
+    }
+    if (line.Product2.Calculated_Bundle_Price__c != null) {
+      return line.Product2.Calculated_Bundle_Price__c;
+    }
+    if (line.Product2.Spread_Total__c != null) {
+      return line.Product2.Spread_Total__c;
+    }
+
+    return line.UnitPrice;
+  }
+
+  private static Decimal componentSpreadTotal(
+    List<BundleComponent__c> components
+  ) {
+    if (components == null || components.isEmpty()) {
+      return null;
+    }
+
+    Decimal total = 0;
+    Boolean hasSpread = false;
+    for (BundleComponent__c component : components) {
+      if (component.Spread_Price__c == null) {
+        continue;
+      }
+      total += component.Spread_Price__c;
+      hasSpread = true;
+    }
+
+    return hasSpread ? total : null;
   }
 }

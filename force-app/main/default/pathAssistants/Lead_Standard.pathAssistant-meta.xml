@@ -3,7 +3,7 @@
     <active>true</active>
     <entityName>Lead</entityName>
     <fieldName>Status</fieldName>
-    <masterLabel>Default</masterLabel>
+    <masterLabel>Lead Standard</masterLabel>
     <pathAssistantSteps>
         <fieldNames>Company</fieldNames>
         <picklistValueName>New</picklistValueName>
@@ -17,5 +17,5 @@
         <fieldNames>Agente__c</fieldNames>
         <picklistValueName>Qualificato</picklistValueName>
     </pathAssistantSteps>
-    <recordTypeName>__MASTER__</recordTypeName>
+    <recordTypeName>Standard</recordTypeName>
 </PathAssistant>

@@ -90,6 +90,10 @@
                 <behavior>Edit</behavior>
                 <field>Servizio_Interesse__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Agente__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
         </layoutColumns>

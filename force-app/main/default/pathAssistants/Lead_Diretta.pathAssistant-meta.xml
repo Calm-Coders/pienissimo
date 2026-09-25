@@ -3,19 +3,14 @@
     <active>true</active>
     <entityName>Lead</entityName>
     <fieldName>Status</fieldName>
-    <masterLabel>Default</masterLabel>
+    <masterLabel>Lead Diretta</masterLabel>
     <pathAssistantSteps>
         <fieldNames>Company</fieldNames>
         <picklistValueName>New</picklistValueName>
     </pathAssistantSteps>
     <pathAssistantSteps>
-        <fieldNames>Motivazione_Uscita__c</fieldNames>
-        <fieldNames>Dettaglio_Motivazione_Uscita__c</fieldNames>
-        <picklistValueName>Non qualificato</picklistValueName>
-    </pathAssistantSteps>
-    <pathAssistantSteps>
         <fieldNames>Agente__c</fieldNames>
         <picklistValueName>Qualificato</picklistValueName>
     </pathAssistantSteps>
-    <recordTypeName>__MASTER__</recordTypeName>
+    <recordTypeName>Diretta</recordTypeName>
 </PathAssistant>
