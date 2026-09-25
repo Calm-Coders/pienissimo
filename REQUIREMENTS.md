@@ -530,6 +530,16 @@ Read plainly these are two different events. But the 6 August record treats _rin
 The 6 August session replaced the order states with **`Ordinato → Fatturato → Incassato`** and struck _Chiuso acquisito_ outright. The design file has now caught up and draws those three — **but it did not remove the old values**: `CHIUSO/ACQUISITO` and `CREATO` are still on the orders page, and the tranche rule still sends the first tranche to `CHIUSO/ACQUISITO`.
 
 So the source now carries both vocabularies at once. **Nobody has said whether `Incassato` is `CHIUSO/ACQUISITO` renamed, or a different milestone.** Aurel's 24 August decision settles tranche creation and payment aggregation, so those mechanics can proceed; only the final tranche-state label still depends on this answer.
+
+**⚠ Evidence of 25 September 2026, not yet an amendment.** Aurel Mrruku read the
+`Tranche__c` status picklist out of the org during an internal session and reported
+**`aperto` · `parzialmente pagato` · `pagato`** — so the final tranche label appears to be
+**`pagato`**, neither `CHIUSO/ACQUISITO` nor `Incassata`, and **`parzialmente pagato` is a
+value this register does not carry at all**. He also stated the order reaches `Incassato`
+only when **every** tranche is `pagato`, not on the first. This was a person reading a
+screen share, not an org query, so **nothing above is amended**: a human should confirm by
+org query and then close RC-07 and OI-69 together.
+
 **Proposal:** confirm they are the same milestone under a new name, or name the second one. **If nobody decides:** the creation and roll-up can be built, but the final Order and Tranche state values cannot be configured safely.
 
 ### RC-08 · Our flag — a ticket tier changed name in a drawing

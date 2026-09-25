@@ -5189,3 +5189,138 @@ ora sulla linea principale ([OI-178](../notes/items/OI-178%20Two%20agent%20field
   vengono ritirati dopo la rimappatura dei record UAT (drill-me 25/09/2026).
 
 ⚠ Il §47 (24/09) non è mai stato scritto in italiano; va recuperato.
+
+## 49. Aggiornamento 25/09/2026 (sera) — la lacuna bloccante è stata costruita lo stesso giorno, e il Contratto si è ristretto a una sola famiglia di prodotti
+
+Sweep notturno, watermark **25/09/2026 13:00Z**. Due sessioni interne e una PR unita.
+
+### 🟢🔑 La build: `Bundle_Tranch__c` esiste, otto ore dopo la scoperta della lacuna
+
+**La PR [#62](https://github.com/Calm-Coders/pienissimo/pull/62) è stata unita su
+`DevMain` alle 18:07 CEST** (`a5f9370`), dal branch `DevAnita25/09` di Anita Aga. Commit
+`04696bd` alle 17:03 CEST: _"Created an object for Bundle Tranch, created a new component
+for tranch creation, edited the existing logic for quotes that contain an bundle."_
+
+Il nuovo oggetto è un **template di tranche sul prodotto bundle**, cioè la forma che il
+cliente ha chiesto quella mattina:
+
+| Campo              | Tipo   | Descrizione nei metadati                                                        |
+| ------------------ | ------ | ------------------------------------------------------------------------------- |
+| `Bundle__c`        | Lookup | A `Product2`, **filtrato sul record type `Bundle`**                             |
+| `Data_Scadenza__c` | Data   | _"Due date copied to the quote tranche created from this bundle template."_      |
+| `Sequenza__c`      | Numero | _"Order of this tranche in the bundle payment plan."_                            |
+
+Con **`Tranche__c.Bundle_Tranch__c`** — _"The bundle tranche template that generated this
+quote tranche"_ — così una tranche ereditata è distinguibile da una creata a mano, e
+**`BundleComponent__c.Bundle_Tranch__c`** per la riga. Inoltre
+`BundleTranchController.cls`, l'LWC `bundleCreateTranch` (532 righe di JS), un layout, una
+record page, un permission set `Full_Permission` e un ampio rifacimento di
+`bundleProductAssignment` — il componente che il cliente ha visto fallire in mattinata.
+
+🔴 **Resta bloccante.** Il **lato ordine WooCommerce non è nel diff**: un ordine che prende
+le tranche dal bundle ignorando il prezzo WooCommerce non ha alcun file a supporto, e il
+02/10 è il ri-test WooCommerce. `Data_Scadenza__c`, `Sequenza__c` e `Bundle__c` sono tutti
+opzionali, quindi nulla impone un piano coerente. Una sera ha prodotto l'oggetto e il lato
+preventivo — **la stima di "almeno una settimana" non va letta come battuta**
+([OI-181](../notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)).
+
+🟢 La stessa PR ha portato su `DevMain` i **campi Campaign** — `Anno_Accademico__c`,
+`Data_Inizio_Evento__c`, `Data_Fine_Evento__c`, `Data_Avvio_Bruciatura__c`,
+`Tipologia_Evento__c`, `Luogo__c`, `Indirizzo__c`, `Parcheggio__c`, `Orario_Inizio__c`,
+`Zoom_Meeting_Id__c`, `Link_Iscrizione_Infopoint__c`, `Prodotto__c` — e il record type
+**`Campagna_Figlio`**, per la sessione del 30/09.
+
+### 🔑 Contratto: solo `Performance Plus`, creato a `Firmato`, e il suo sviluppatore obietta
+
+[Interna post UAT Contratto e Fase Due](../notes/meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)
+(17:00 CEST, 1h05m05s, Aurel Mrruku ed Elena Spini) ha ripercorso il Business Blueprint
+sezione per sezione.
+
+- 🔑 **L'oggetto `Contract` di Salesforce è per `Performance Plus` e nient'altro.** Elena
+  Spini, due volte: _"Oggetto contratto su salesforce è solo performance plus."_
+  L'ampiezza `attivazione/rinnovo` si restringe alla famiglia Plus.
+- 🔑 **Viene creato al passaggio a `Firmato`**, superando la collocazione del 17/09 alla
+  trasmissione a Mexal — il trigger è quindi
+  [OI-151](../notes/items/OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md),
+  **che è ancora assente da `force-app`.**
+- 🟢 `stato` è **`nuovo` / `rinnovo`**; il terzo valore `in corso` è stato eliminato perché
+  non rintracciabile, e il valore si legge dal **record type dell'opportunità**, dato che
+  esistono sia `Plus` sia `Rinnovo Plus`. `valore totale` è il valore dell'ordine.
+- 🔴 **Il suo sviluppatore sostiene che non debba esistere.** I ritorni notturni di Mexal
+  aggiornano le tranche, che già contengono lo stato finanziario: _"contratto non vedo
+  nessun legame… che senso ha."_ Azione concordata: **portarlo a Fabrizio Paganelli lunedì
+  28/09 alle 10:00 e chiedere la struttura Zoho da replicare**
+  ([OI-141](../notes/items/OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md),
+  [OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)).
+
+### 🔑 Gli stati della tranche, letti dall'org in diretta
+
+Il Blueprint diceva `creato` / `chiuso` / `acquisito`. Aurel Mrruku ha aperto l'org durante
+la call e ha letto **`aperto` · `parzialmente pagato` · `pagato`** — errati tutti e tre.
+`parzialmente pagato` significa che solo alcuni item di quella tranche sono pagati. E
+l'ordine arriva a **`Incassato` solo quando ogni tranche è `pagato`**, non all'ultima:
+_"perché l'ultima trance non è corretta."_ Una tranche **può** coincidere con una singola
+riga d'ordine ([OI-50](../notes/items/OI-50%20Tranche%20object.md)).
+
+### 🟢 Il Business Blueprint non è stato consegnato al cliente
+
+Elena Spini: _"non glielo darò mai oggi perché non se lo merita"_; Aurel Mrruku concorda nel
+merito — la mattinata aveva cambiato la macchina a stati del preventivo e la logica dei
+bundle. Un documento che ometteva `Firmato` sarebbe uscito sbagliato; **non è uscito**
+([OI-179](../notes/items/OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md)).
+Al cliente è andato invece il **testbook UAT**
+([OI-187](../notes/items/OI-187%20The%20UAT%20testbook%20is%20with%20the%20client%20for%20comment.md)).
+
+### 🔴 Calendario: il marketing scavalca la data di approvazione
+
+`UAT: Flussi MKT Biglietti` è stata riprogrammata **due volte in diciannove minuti** — alle
+16:34Z a giovedì 15 ottobre, alle 16:52Z a **venerdì 16 ottobre**. La nota al cliente ne dà
+la ragione e risolve la questione: _"la nostra priorità attuale è stabilizzare e validare la
+piattaforma in ambiente di test, così da arrivare nelle migliori condizioni al passaggio in
+produzione, dove verranno poi condotti i test per i flussi Marketing."_ 🔴 **Il 16 ottobre è
+oltre la data di approvazione del 13 ottobre**: il marketing diventa l'unico modulo il cui
+test di accettazione cade fuori dal periodo di accettazione, dopo essere passato da 02/10 a
+07/10 a 16/10 in due giorni
+([OI-177](../notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+In calendario anche: **Test WooCommerce** venerdì 02/10 12:00–13:00, e il follow-up interno
+settimanale spostato dal lunedì al **martedì alle 17:00**.
+
+### Punti nuovi
+
+- 🔴 **[OI-185](../notes/items/OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md)**
+  (bloccante) — il cambio nominativo **rigenera il biglietto come nuovo Asset con un nuovo
+  QR code**, deliberatamente, perché sopravviva il dato storico. Un bottone sull'Account
+  elenca tutti i biglietti di quell'account. 🔴 Aurel Mrruku: _"Io non ce l'ho pronta questa
+  roba"_ — e l'UAT biglietti è il **30/09**. Il rinvio deve coprire **tutti i biglietti
+  dell'account**, perché il marketing non può sapere quale sia il nuovo.
+- 🔴 **[OI-186](../notes/items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)**
+  — ruoli, profili e permessi **non sono mai stati discussi con il cliente**. Quattro profili
+  sono dedotti dall'organigramma, e **non esiste un elenco utenti** — solo ~18 codici agente.
+  Il go-live è il 21 ottobre.
+- **[OI-187](../notes/items/OI-187%20The%20UAT%20testbook%20is%20with%20the%20client%20for%20comment.md)**
+  — `Testbook_UAT_Lead_Opportunita` è andato al cliente alle 17:27Z con una richiesta di
+  commenti e **senza data**, mentre il cliente ancora non può accedere.
+
+### Altre decisioni
+
+- **Fase 2, per decisione ROMI e non ancora confermata dal cliente:** note di credito,
+  storni e correzione dei pagamenti
+  ([OI-157](../notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)).
+  🔑 È ora a verbale il motivo per cui il bottone sull'asset è stato abbandonato: **le
+  tranche stanno a livello di prodotto e possono non contenere alcun biglietto.** Anche
+  l'app di check-in è Fase 2.
+- **La generazione del QR code alla creazione del biglietto ha per la prima volta un
+  responsabile** — Rexhina Hysi, assegnataria
+  [nella call di allineamento delle 15:31](../notes/meetings/2026-09-25%20Alignment%20Interno%20Prodotti%20e%20Bundle.md),
+  con il QR collegato al documento standard.
+- **Pulizia dei campi prodotto e bundle:** da rimuovere `product family`, `bundle selling
+  price` e `product price`, da mantenere `is active`. 🔴 Il prezzo impostato su un bundle non
+  coincide con quello calcolato dalle sue righe, e gli sconti vanno impostati riga per riga.
+
+### Non fatto
+
+- L'org **non** è stata aperta, quindi `STATUS.md` non è stato rigenerato; la picklist delle
+  tranche qui sopra è una persona che legge in condivisione schermo, non una query.
+- Nessuna trascrizione è stata copiata in `meetings/` e nessun recap per riunione è stato
+  scritto in `meetings/results/`, come in ogni run dal 27/08.
+- ⚠ **Il §47 (24/09) manca ancora nel recap italiano.** Terzo run che lo segnala.

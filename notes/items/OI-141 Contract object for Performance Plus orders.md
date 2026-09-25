@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-17
-updated: 2026-09-17
+updated: 2026-09-25
 depends_on: [OI-140]
 blocks: [go-live]
 source: notes/meetings/2026-09-17 Follow-up Interno.md
@@ -79,3 +79,62 @@ owed since the 14/08 sweep**.
 - ⚠ The financial figures come back **per customer code, not per contract**
   (`00:58:46`), so how one customer's several contracts are told apart is
   unanswered.
+
+## 🔑 2026-09-25 - narrowed, re-placed, and challenged by its own builder
+
+At [the 17:00 internal session](../meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)
+(`00:10:00`-`00:25:00`) Elena Spini read her Business Blueprint section aloud and
+Aurel Mrruku worked through it field by field. Four changes to what this note says:
+
+1. 🔑 **`Performance Plus` only.** Elena Spini, twice and unprompted: _"Oggetto
+   contratto su salesforce è solo performance plus."_ The **`attivazione/rinnovo`**
+   breadth recorded above narrows to the Plus family, and she named the confusion
+   that caused it — the client calls an ordinary quote-plus-contract sale a
+   "contract" too.
+2. 🔑 **Created at `Firmato`, not at Mexal transmission.** This **supersedes** the
+   17/09 placement recorded above. Aurel Mrruku: _"quando il preventivo è stato
+   firmato, perché abbiamo aggiunto anche il nuovo stato firmato, si crea questo
+   oggetto che si chiama contratto"_ — Elena Spini: _"corretto"_. The trigger is
+   therefore [OI-151](OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md),
+   which is itself **still not in `force-app`** (verified at `a5f9370`).
+3. 🟢 **`stato` is `nuovo` / `rinnovo`.** The BBP's third value **`in corso` was
+   deleted in the call** — Elena Spini could not source it: _"Non so dove è uscito
+   sto in corso, sinceramente"_. 🟢 **And the population question above is answered:**
+   Aurel Mrruku takes it from the **opportunity record type**, since `Plus` and
+   `Rinnovo Plus` now both exist. The order carries the opportunity, so the Contract
+   reads it through the order.
+4. 🟢 **`valore totale` is the order value**, agreed in one line. The financial
+   fields keep their Mexal origin — `importo fatturato`, `importo incassato` and
+   `importo insoluto` from the two nightly calls, one for invoicing and one for
+   **`scoperto clienti`**.
+
+### 🔴 The builder's objection is on the record
+
+Aurel Mrruku does not think the object earns its place (`00:20:00`): the Mexal
+returns **update the tranches**, and the tranches already hold the information, so
+_"contratto non vedo nessun legame… che senso ha."_ Elena Spini conceded the
+consequence — _"dovremmo riportare anche le righe dell'ordine su sto cavolo di
+contratto"_ — and defended it only as a client wish: _"Lui ci teneva così tanto."_
+Aurel Mrruku's counter-proposal: the one field that genuinely needs a home is the
+**service start/end date, and it can sit on the order**.
+
+🔑 **Agreed action, and it is the right one:** put it to **Fabrizio Paganelli and ask
+for the Zoho structure** — _"qual è la struttura attuale di questo oggetto che avete
+voi su Zo[ho]? e cerchiamo di replicare quella struttura"_ — rather than invent a
+data model. **Booked for Monday 28/09 10:00**: the invitations
+`[PIENISSIMO] - Aurel / Elena Aggiungere Fabrizio` (15:23Z) and
+`[ROMI-PIENISSIMO] - Tema Contratti + Open Point` (16:50Z) both cover that slot.
+
+### Still open after this session
+
+- 🔴 **`data di servizio` stays manual.** Aurel Mrruku: _"Fa cagare."_ Elena Spini:
+  _"Lo so, però vogliono."_ The role remains unnamed — she called it _"un tizio che
+  si chiama Strategy"_, the BBP's **Strategist**. ⚠ Still no person, still no team.
+- 🔴 **No field spec exists in writing.** The list lives in the BBP and in this
+  transcript; nothing in `requirements/` covers it, and **it is not for a sweep to
+  allocate a requirement id.**
+- ⚠ Elena Spini's alternative — a button on the Contract that calls the API on
+  demand — was **raised and rejected** by both in favour of a live-populated record.
+- ⚠ The **weekly scheduled report** the client asked for was left unassigned to any
+  object: _"chi se ne fotte se è oggetto o se è contratto o tranche"_.
+- ⚠ The per-customer-code aggregation problem recorded above **was not revisited.**

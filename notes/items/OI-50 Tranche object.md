@@ -528,3 +528,52 @@ creation point decided on 24/08 cannot give a WooCommerce order its tranches. Ag
 tranches can also be **defined at bundle creation** and are inherited, editable, by any
 quote that uses the bundle. About one week of work. Tracked as [OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md). The
 quote-side mechanism shown on 24/09 is unchanged and was accepted.
+
+## 🔑 2026-09-25 evening - the status picklist read live out of the org, and a second origin exists
+
+Aurel Mrruku opened the org during
+[the 17:00 internal session](../meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)
+(`00:35:00`) and read the `Tranche__c` status picklist aloud, because Elena Spini's
+Business Blueprint gave different values:
+
+| Business Blueprint             | 🔑 The org                                   |
+| ------------------------------ | -------------------------------------------- |
+| `creato` / `chiuso` / `acquisito` | **`aperto` · `parzialmente pagato` · `pagato`** |
+
+**Three values, and the document was wrong in all three.** He undertook to send her
+the list rather than let her re-type it. `parzialmente pagato` means **only some of
+that tranche's items are paid** — Aurel Mrruku: _"vuol dire che solo alcuni item di
+quella tranche sono state pagate."_
+
+⚠ **Read from the org by a person in a screen share, not by an org query in this
+sweep.** He himself hedged the provenance of the names — _"sto parlando di un mese e
+mezzo fa, forse l'hanno cambiato"_ — then read them live. **Treat as org-confirmed
+for 25/09, and re-verify at the next `org-status-check`.**
+
+### 🔑 The order transition is "all tranches", not "the last tranche"
+
+Aurel Mrruku corrected himself mid-sentence and was explicit: the order reaches
+**`Incassato` when every tranche is `pagato`** — _"quando tutte le trance… perché
+l'ultima trance non è corretta."_ Elena Spini wrote it down that way. The full chain
+as restated: **`Ordinato` → `Fatturato`** (first invoice issued in Mexal) **→
+`Incassato`** (all invoices paid), with the **opportunity going Closed Won at
+`Incassato`** — _"la chiude il pagamento, non la firma"_.
+
+### A second origin, and it is now built
+
+Aurel Mrruku corrected Elena Spini's quote-only wording — _"non è vero, che vi
+generati anche il livello di prodotto bundle"_ — and confirmed the org carries two
+objects: _"abbiamo il tranch e abbiamo anche i bundle tranch"_. 🟢 `Bundle_Tranch__c`
+merged to `DevMain` the same evening, with `Tranche__c.Bundle_Tranch__c` joining a
+quote tranche back to the template that generated it
+([OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)).
+
+Two further confirmations of the existing record, both from Elena Spini's text as
+corrected in the call:
+
+- Per tranche the user selects **which quote lines belong to it** and gives it a
+  **due date**; each line stores the tranche reference and that date. Lines sharing
+  a due date group into the same tranche.
+- 🟢 **A tranche may be a single order line.** Elena Spini had written that it never
+  coincides with one; Aurel Mrruku: _"Può coincidere… se tu hai tre prodotti li puoi
+  dividere in tre trance."_ She deleted the sentence.

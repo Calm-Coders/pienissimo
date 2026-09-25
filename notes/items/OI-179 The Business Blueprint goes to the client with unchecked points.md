@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-09-24
-updated: 2026-09-24
+updated: 2026-09-25
 blocks: [go-live]
 severity: gating
 source: Drive Business_Blueprint_Pienissimo.docx, created 2026-09-24 18:10:03Z
@@ -132,3 +132,42 @@ and roles reconciled with Aurel Mrruku **before or after the UAT session on 25/0
 - 🔴 **Decide the BBP's standing against the signed requirements register.** Two documents
   with signature blocks and no stated precedence is a contract problem, not a docs problem.
 - ⚠ No register row covers the BBP. **Allocating a requirement id is a human's call.**
+
+## 🟢 2026-09-25 - it was not delivered, and the reason is sound
+
+**The BBP did not go to the client on 25/09.** Elena Spini, at
+[the 17:00 internal session](../meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)
+(`00:10:00`): _"adesso abbiamo pure il documento di business che non glielo darò mai
+oggi perché non se lo merita."_ Aurel Mrruku agreed on the substantive ground:
+_"ma è cambiato il flusso col cavolo che le dai oggi… Hanno cambiato sia uno status
+preventivo che una logica su sui bundle."_
+
+🟢 **This closes the risk this row was opened for.** A document that omitted
+`Firmato` and pre-dated the bundle-tranche ruling would have gone out wrong; it did
+not go out. `Business_Blueprint_Pienissimo.docx` was **modified at 15:59:39Z** and
+Elena Spini was editing it live during the call.
+
+### Corrections made to it in the session
+
+- **§6.2 Contratto** narrowed to `Performance Plus` only, the state `in corso`
+  deleted, creation re-placed at `Firmato`
+  ([OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md)).
+- **Tranche states corrected against the org** — the document said `creato` /
+  `chiuso` / `acquisito`; the org has **`aperto` / `parzialmente pagato` /
+  `pagato`** ([OI-50](OI-50%20Tranche%20object.md)).
+- A sentence claiming a tranche never coincides with a single order line
+  **deleted**.
+- **Note di credito, storni and payment correction marked Fase 2**
+  ([OI-157](OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)).
+- The **day-of-event** branch of the name change cut
+  ([OI-185](OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md)).
+- **Roles/profiles** left standing on four inferred profiles
+  ([OI-186](OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)).
+
+⚠ **The `● Check con Aurel` markers were the agenda of this call**, which is what
+they were for. Whether all seven are now discharged **is not established** — the
+transcript covers Contratto, tranche, cambio nominativo, profiles, credit notes,
+document archiving and deliverables, but nothing states the list was closed.
+
+🔴 **No new delivery date is recorded.** The client got the testbook instead
+([OI-187](OI-187%20The%20UAT%20testbook%20is%20with%20the%20client%20for%20comment.md)).

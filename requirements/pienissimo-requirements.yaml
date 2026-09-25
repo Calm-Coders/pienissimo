@@ -318,6 +318,16 @@ state_machines:
       The final paid-state API value remains open: DGM-2 says
       CHIUSO/ACQUISITO, while the newer order vocabulary uses Incassato. Do not
       configure that label until OI-69 is resolved.
+      EVIDENCE 2026-09-25: Aurel Mrruku read the Tranche__c status picklist out
+      of the org during an internal session and reported three values - aperto,
+      parzialmente pagato, pagato - which match neither the states list above nor
+      either candidate in OI-69, and parzialmente pagato is a value the register
+      does not carry at all. He also stated the order reaches Incassato only when
+      every tranche is pagato, not on the first. This is a person reading a
+      screen share, not an org query, so the states list and the conflict status
+      above are deliberately left unchanged and the register is NOT amended here.
+      A human should confirm by org query and then close OI-69 and RC-07
+      together. See notes/items/OI-50 Tranche object.md.
 
   asset:
     source: [DGM-2, DIRECT-2026-08-24-ASSET]

@@ -528,6 +528,17 @@ Letti alla lettera sono due eventi diversi. Ma il verbale del 6 agosto tratta _r
 La sessione del 6 agosto ha sostituito gli stati dell'ordine con **`Ordinato → Fatturato → Incassato`**, eliminando _Chiuso acquisito_. Il file di design si è ora allineato e disegna questi tre — **ma non ha rimosso i valori precedenti**: `CHIUSO/ACQUISITO` e `CREATO` sono ancora nella pagina degli ordini, e la regola delle tranche manda tuttora la prima tranche in `CHIUSO/ACQUISITO`.
 
 La fonte porta quindi entrambi i vocabolari insieme. **Nessuno ha detto se `Incassato` sia `CHIUSO/ACQUISITO` rinominato oppure una milestone diversa.** La decisione di Aurel del 24 agosto definisce la creazione della tranche e l'aggregazione dei pagamenti, quindi questi meccanismi possono procedere; soltanto il nome dello stato finale della tranche dipende ancora dalla risposta.
+
+**⚠ Evidenza del 25 settembre 2026, non ancora una modifica.** Aurel Mrruku ha letto la
+picklist di stato di `Tranche__c` direttamente dall'org durante una sessione interna e ha
+riportato **`aperto` · `parzialmente pagato` · `pagato`** — quindi il nome finale della
+tranche risulterebbe **`pagato`**, né `CHIUSO/ACQUISITO` né `Incassata`, e **`parzialmente
+pagato` è un valore che questo registro non contiene affatto**. Ha inoltre precisato che
+l'ordine arriva a `Incassato` solo quando **tutte** le tranche sono `pagato`, non alla
+prima. Si trattava di una persona che leggeva in condivisione schermo, non di una query
+sull'org, quindi **nulla di quanto sopra è modificato**: una persona deve confermare con una
+query e poi chiudere insieme RC-07 e OI-69.
+
 **Proposta:** confermare che sono la stessa milestone con un nuovo nome, oppure indicare quale sia la seconda. **Se non si decide:** si possono costruire creazione e roll-up, ma non configurare in sicurezza i valori finali di stato di Ordine e Tranche.
 
 ### RC-08 · Segnalazione nostra — una tipologia di biglietto ha cambiato nome in un disegno

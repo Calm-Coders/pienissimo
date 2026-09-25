@@ -2,9 +2,52 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-25 (on-demand sweep + drill-me — second UAT session, tranches on the bundle) · Source of record: [notes/](notes/)
+Last updated: 2026-09-25 (nightly sweep — bundle tranches built, Contratto narrowed, marketing UAT to 16/10) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟢🔑 **2026-09-25 evening — the gating bundle-tranche gap was built the same day it was
+  found, and the Contratto was narrowed to Performance Plus only.** Nightly sweep,
+  watermark 2026-09-25T13:00Z.
+  🟢 **PR [#62](https://github.com/Calm-Coders/pienissimo/pull/62) merged to `DevMain` at
+  18:07 CEST** (`a5f9370`): new object **`Bundle_Tranch__c`** — a tranche template on the
+  bundle product, with `Data_Scadenza__c` _"copied to the quote tranche created from this
+  bundle template"_ — plus `BundleTranchController`, the `bundleCreateTranch` LWC, and
+  `Tranche__c.Bundle_Tranch__c` joining an inherited quote tranche back to its template
+  ([OI-181](notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md),
+  still gating: **the WooCommerce order side is not in the diff**). The same PR brought the
+  **Campaign fields and the `Campagna_Figlio` record type** onto `DevMain`, for the 30/09
+  session.
+  🔑 **[Interna post UAT](notes/meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)**
+  (17:00 CEST, 1h05m, Aurel Mrruku · Elena Spini) walked the Business Blueprint:
+  the Salesforce **`Contract` object is `Performance Plus` only**, created at **`Firmato`**
+  (not at Mexal transmission), `stato` reduced to `nuovo`/`rinnovo` read off the opportunity
+  record type — and **its builder argued it should not exist**, since the Mexal returns
+  update the tranches, which already hold the financial state. Put to Fabrizio Paganelli
+  **Mon 28/09 10:00**, asking for the Zoho structure to replicate
+  ([OI-141](notes/items/OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md),
+  [OI-168](notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)).
+  🔑 **Tranche states read live out of the org: `aperto` · `parzialmente pagato` · `pagato`**
+  — the blueprint had all three wrong — and the order reaches `Incassato` only when **every**
+  tranche is `pagato` ([OI-50](notes/items/OI-50%20Tranche%20object.md)).
+  🟢 **The Business Blueprint was not sent to the client**, because the morning session had
+  changed the quote state machine and the bundle logic
+  ([OI-179](notes/items/OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md)).
+  🔴 **Marketing UAT moved twice more, to Fri 16 October** — past the 13/10 approval deadline
+  — with the client told in writing that the marketing flows will be tested **in production
+  after the switch**
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+  🔴 **New: [OI-185](notes/items/OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md)**
+  (gating) the cambio nominativo regenerates the ticket as a **new asset with a new QR
+  code**, and Aurel Mrruku says it is not ready for the **30/09** ticket UAT ·
+  **[OI-186](notes/items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)**
+  roles, profiles and the **user list were never agreed with the client** ·
+  **[OI-187](notes/items/OI-187%20The%20UAT%20testbook%20is%20with%20the%20client%20for%20comment.md)**
+  the UAT testbook is with the client for comment, with no date on it.
+  🟢 **Fase 2, by ROMI decision and unconfirmed by the client:** note di credito, storni and
+  payment correction ([OI-157](notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)).
+  ⚠ **`Firmato` is still not in `force-app`**, and the Contract creation now depends on it.
+  — [trace](notes/traces/Source%20trace%202026-09-25%20nightly.md)
 
 - 🔴🔑 **2026-09-25 — second UAT session: the recall flow works, but stage-sale bundles
   need tranches on the bundle, and nobody built that.**

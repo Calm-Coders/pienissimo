@@ -10,6 +10,61 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-25 — claude — nightly requirements-check: the bundle-tranche gap was built the same day, and the Contratto narrowed to Performance Plus
+
+- **Did:** The scheduled nightly run, watermark **2026-09-25T13:00Z → 22:00Z**. Swept
+  Fathom (0), Drive (2 pages, 25 files), Gmail (15 threads, 4 opened in full), Slack
+  (workspace-wide + the dev group), git `--all` and the repository diff. Drilled **two
+  internal sessions**: `Alignment Interno Prodotti e Bundle` (10m57s) and
+  `Interna post UAT Contratto e Fase Due` (1h05m05s, transcript read in full, 53,502
+  chars). Wrote 2 meeting notes and 3 new items (`OI-185`–`OI-187`); updated
+  `OI-50/74/141/157/168/177/179/181` and `The newest design diagram`. Then both trackers,
+  recap **§49 in EN and IT**, MAP, INDEX, the trace, and the register evidence below.
+- **State:**
+  - 🟢🔑 **`OI-181` is built.** PR **#62** merged to `DevMain` at 18:07 CEST (`a5f9370`):
+    **`Bundle_Tranch__c`** (a tranche template on the bundle product), `BundleTranchController`,
+    the `bundleCreateTranch` LWC, and `Tranche__c.Bundle_Tranch__c` joining an inherited
+    quote tranche to its template. **Still gating: the WooCommerce order side is not in the
+    diff**, and 02/10 is the WooCommerce re-test.
+  - 🔑 **`Contract` is Performance Plus only, created at `Firmato`**, `stato` = `nuovo`/`rinnovo`
+    read off the opportunity record type. **Aurel Mrruku argues the object should not exist**
+    — the Mexal returns update the tranches, which already hold the state. Goes to Fabrizio
+    Paganelli **Mon 28/09 10:00** with a request for the Zoho structure (`OI-141`, `OI-168`).
+  - 🔑 **Tranche states, read live out of the org: `aperto` / `parzialmente pagato` / `pagato`.**
+    The order reaches `Incassato` only when **every** tranche is `pagato`.
+  - 🔴 **Marketing UAT moved twice more, to Fri 16 October** — past the 13/10 approval
+    deadline — with the client told in writing the flows will be tested **in production
+    after the switch** (`OI-177`).
+  - 🟢 **The Business Blueprint was not sent to the client** (`OI-179`); the **UAT testbook**
+    went instead, with no deadline on it (`OI-187`).
+- **Register: NOT amended, version stays 1.6.** The tranche picklist finding speaks directly
+  to `state_machines.tranche` (`status: conflict`) and to **RC-07** in both prose documents,
+  but it is **a person reading a screen share, not an org query**, and the register's own
+  reconciliation says not to configure the label until `OI-69` resolves. So it was recorded
+  as **evidence in all three surfaces** — YAML `reconciliation`, `REQUIREMENTS.md` §RC-07,
+  `REQUISITI.it.md` §RC-07 — with the normative `states:` list and `conflict` status left
+  untouched. **A human owes the org query, then RC-07 and OI-69 close together.**
+- **Next:**
+  1. **Build `OI-185` (cambio nominativo) before Wednesday 30/09.** Aurel Mrruku:
+     _"Io non ce l'ho pronta questa roba"_; he plans Sunday 27/09 and expects a partial demo.
+  2. **Finish the WooCommerce order side of `OI-181`** — 28/09–01/10, for the 02/10 re-test.
+  3. **28/09 10:00: get the Zoho Contract structure and the user list from Fabrizio
+     Paganelli** (`OI-141`, `OI-186`). The user list is on neither invitation's agenda.
+  4. **`Firmato` still does not exist in `force-app`**, and the Contract creation now
+     depends on it.
+- **Watch:**
+  - ⚠ **The clone opened on `main` only** — a bare 17-file SFDX scaffold with no `notes/`.
+    `DevMain` was simply unfetched. **Fetch before concluding the repository is empty.**
+  - ⚠ `#tproj-pienissimo` **is not findable in the Slack workspace**, third run running,
+    while the skill still names it as required scope.
+  - ⚠ `Flows & Objects.drawio` **changed again (15:19:59Z)** and is still unreadable here.
+    Two days of design-diagram edits are invisible to the record.
+  - ⚠ **`DEVELOPMENT-RECAP.it.md` §47 (24/09) is still missing** — third flag.
+  - ⚠ **No human has answered a nightly report in nine nights.**
+  - **No Apex test was written, proposed or scaffolded.**
+
+---
+
 ## 2026-09-25 — claude — on-demand requirements-check + drill-me: tranches belong on the bundle too, and the register moves to v1.6
 
 - **Did:** Aurel Mrruku asked for the nightly job on demand. Swept Fathom, Drive, Gmail,

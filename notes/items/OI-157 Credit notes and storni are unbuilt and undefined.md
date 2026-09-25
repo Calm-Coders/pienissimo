@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-09-24
+updated: 2026-09-25
 source: notes/meetings/2026-09-18 Interna Temi Mexal.md
 ---
 
@@ -70,3 +70,36 @@ this note records as undefined
 ⚠ **Both deliverable bullets carry the author's `● Check con Aurel` marker**, and nothing
 is built. This note stays open; what it gains is a described design and a client-visible
 commitment to it.
+
+## 🟢 2026-09-25 - explicitly moved to Fase 2, and the abandoned design is explained
+
+This row recorded that the topic _"left the plan without a decision"_. 🟢 **It now
+has one.** At
+[the 17:00 internal session](../meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)
+Aurel Mrruku ruled on both halves as Elena Spini read them out of the Business
+Blueprint:
+
+- **Note di credito and storni** — _"Fase due. Mettila su fase due."_
+- **Correzione di un pagamento** (an incasso booked against the wrong tranche, the
+  case the BBP marks _"esplicitamente non risolto dalle fonti analizzate"_) — the
+  same, Fase 2.
+
+🔑 **And the reason Elena Spini's asset-level button was abandoned is now on the
+record.** Aurel Mrruku: _"non è giusto perché non è a livello di asset, deve essere
+le trance a livello di prodotto"_ and _"non è detto che le trance hanno solo i
+biglietti, Elena."_ **Tranches sit at product level and may contain no tickets at
+all**, so an Asset-rooted correction cannot reach them. Elena Spini explained she
+had rooted it there because the client wanted the **asset status rolled back** as
+part of the correction.
+
+⚠ **The client has not been told.** Aurel Mrruku's stated ground for the move is
+that they will accept it — _"fidati che sarà molto anche loro saranno felici"_ — and
+he tied it to the credit-note button being _"semplicemente un button che qualcuno lo
+preme là e doveva annullare asset"_. **Nothing records the client agreeing**, and
+the Fase 2 perimeter is
+[its own unresolved risk](../risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md) —
+Elena Spini reports Fabrizio Paganelli _"non vuole spendere"_.
+
+🔴 **So the topic has moved from "out of plan by accident" to "in Fase 2 by ROMI
+decision, unconfirmed by the client."** That is an improvement in the record and not
+yet an agreement.
