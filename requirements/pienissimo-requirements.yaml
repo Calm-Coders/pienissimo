@@ -13,6 +13,8 @@ meta:
   # v1.6 (2026-09-25, drill-me decision by Aurel Mrruku): folds in changes the client agreed
   # during UAT - quote state Firmato (UAT 2026-09-24); tranches also defined at bundle
   # creation, bundle year = anno accademico, WooCommerce opportunity type (UAT 2026-09-25).
+  # Also v1.6 (2026-09-25, direct decision by Aurel Mrruku, not yet seen by the client): the
+  # Order goes to Incassato automatically when every tranche on it is Pagata (ORD-14, OI-69).
   # To be sent to the client for signature as one change set at UAT close (~2026-10-13).
   signoff_session: 2026-08-06T15:00:00+02:00
   # Go-live renegotiated 6 -> 21 October by ROMI in writing on 2026-09-08
@@ -40,6 +42,10 @@ sources:
       date: 2026-08-24
       owner: Aurel Mrruku
       topic: Quote-side tranche creation, propagation and payment aggregation
+    - id: AUREL-2026-09-25-INCASSATO
+      date: 2026-09-25
+      owner: Aurel Mrruku
+      topic: The Order goes to Incassato automatically when every tranche on it is Pagata
     - id: DIRECT-2026-08-24-ASSET
       date: 2026-08-24
       topic: Standard Salesforce Asset selected as the target ticket object
@@ -292,13 +298,18 @@ state_machines:
       source now carries both vocabularies and the question is still unanswered.
       Only three states are drawn; no "Perso". states/ states_agreed_06_08 above
       are deliberately left as they are — the edit is unminuted.
+      2026-09-25: Aurel Mrruku decided that the Order goes to Incassato automatically
+      when every tranche on it is Pagata (AUREL-2026-09-25-INCASSATO, ORD-14). The org
+      already runs Ordinato/Fatturato/Incassato. The labels above are still left as
+      they are until the v1.6 change set is signed; Perso (OI-85) is still undecided.
     creation_systems: [WooCommerce, SFDC, Mexal]
     rules:
       # superseded 2026-08-27 by live verification against the delivered plugin - see ORD-12
       - "A WooCommerce order reaches SFDC when its WooCommerce status becomes IN LAVORAZIONE or COMPLETATO, for any payment method (2026-08-27; supersedes 'not visible until COMPLETATO', DGM-2)"
       - "Bank transfer: administration waits for the transfer, then sets the WooCommerce order to COMPLETATO"
       - "Card payment: completes automatically"
-      - "CHIUSO/ACQUISITO is set manually by administration within max 5 days of confirmed payment"
+      - "The Order goes to Incassato automatically when every tranche on its lines is Pagata; the Opportunity then goes Closed Won (AUREL-2026-09-25-INCASSATO, v1.6; supersedes the manual CHIUSO/ACQUISITO step for orders with tranches)"
+      - "WooCommerce orders are created already Incassato (paid online)"
     opportunity_types:
       - "Standard" # was "Vendita da tutor"; tailored quote-based sales, never via WooCommerce
       - "WooCommerce" # replaces "Recall tutor" (UAT 2026-09-25, v1.6); mandatory origin Recall Tutor / Pack Tutor
@@ -1314,9 +1325,9 @@ requirements:
       id: ORD-14,
       area: orders,
       pri: M,
-      status: to_confirm,
-      source: DGM-1,
-      text: "CHIUSO/ACQUISITO set manually by administration within max 5 days of confirmed payment"
+      status: agreed,
+      source: [DGM-1, AUREL-2026-09-25-INCASSATO],
+      text: "The Order goes to Incassato automatically when every tranche on its lines is Pagata (v1.6, decided by Aurel Mrruku 2026-09-25; replaces the manual CHIUSO/ACQUISITO step by administration within max 5 days of confirmed payment)"
     }
   - {
       id: ORD-15,

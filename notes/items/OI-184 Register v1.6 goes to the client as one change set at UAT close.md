@@ -22,12 +22,13 @@ closes** (approval due ~13/10), not one at a time during UAT.
 Applied the same session to `requirements/pienissimo-requirements.yaml`,
 `REQUIREMENTS.md` and `REQUISITI.it.md`:
 
-| Change                                                                                              | Where                                              | Agreed at |
-| --------------------------------------------------------------------------------------------------- | -------------------------------------------------- | --------- |
-| Quote state **`Firmato`**; the order is generated at it                                             | `state_machines.quote`; prose §state machines      | UAT 24/09 |
-| Tranches also defined **at bundle creation**, inherited by quotes, used as-is by WooCommerce orders | `ORD-01`, `ORD-02`, `DM-17`, glossary `TRANCHE`    | UAT 25/09 |
-| Bundle year = **anno accademico**; **evento di origine**; **Presenza piattaforma**                  | `BUN-08`, glossary                                 | UAT 25/09 |
-| Opportunity type **WooCommerce** (Recall Tutor / Pack Tutor) replaces Recall tutor                  | `SAL-21`, `state_machines.order.opportunity_types` | UAT 25/09 |
+| Change                                                                                              | Where                                                         | Agreed at                                                                          |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Quote state **`Firmato`**; the order is generated at it                                             | `state_machines.quote`; prose §state machines                 | UAT 24/09                                                                          |
+| Tranches also defined **at bundle creation**, inherited by quotes, used as-is by WooCommerce orders | `ORD-01`, `ORD-02`, `DM-17`, glossary `TRANCHE`               | UAT 25/09                                                                          |
+| Bundle year = **anno accademico**; **evento di origine**; **Presenza piattaforma**                  | `BUN-08`, glossary                                            | UAT 25/09                                                                          |
+| Opportunity type **WooCommerce** (Recall Tutor / Pack Tutor) replaces Recall tutor                  | `SAL-21`, `state_machines.order.opportunity_types`            | UAT 25/09                                                                          |
+| Order goes **`Incassato` automatically when every tranche is paid**; replaces the manual 5-day step | `ORD-14`, `state_machines.order.rules`; prose §state machines | ROMI 25/09 ([OI-69](OI-69%20Order%20state%20model.md)), not yet seen by the client |
 
 ## Open
 

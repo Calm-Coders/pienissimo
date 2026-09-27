@@ -48,6 +48,10 @@ Last updated: 2026-09-25 (nightly sweep — bundle tranches built, Contratto nar
   payment correction ([OI-157](notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)).
   ⚠ **`Firmato` is still not in `force-app`**, and the Contract creation now depends on it.
   — [trace](notes/traces/Source%20trace%202026-09-25%20nightly.md)
+- 🟢 **2026-09-25 — the order goes `Incassato` when every tranche is `Pagata`** (Aurel
+  Mrruku), and the Opportunity then closes won. Written into `OrderItemTriggerHandler` on
+  `DevMain`, not deployed; register v1.6 `ORD-14` replaces the manual administration step
+  ([OI-69](notes/items/OI-69%20Order%20state%20model.md)).
 
 - 🔴🔑 **2026-09-25 — second UAT session: the recall flow works, but stage-sale bundles
   need tranches on the bundle, and nobody built that.**

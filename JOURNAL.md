@@ -63,6 +63,25 @@ Keep the twenty most recent entries here; archive older ones to
   - ⚠ **No human has answered a nightly report in nine nights.**
   - **No Apex test was written, proposed or scaffolded.**
 
+## 2026-09-25 — claude — the order is Incassato when every tranche is paid
+
+- **Did:** Aurel Mrruku asked what was decided about contracts, then when an order reaches
+  `Incassato`, then decided it. Found that only WooCommerce orders were ever set
+  `Incassato` by code; tranche payment set `Pagata` and freed tickets but never touched
+  the order.
+- **Decided (Aurel Mrruku):** the order goes `Incassato` **automatically when every
+  tranche on its lines is `Pagata`**; `OrderTriggerHandler` then closes the Opportunity.
+- **Built:** `OrderItemTriggerHandler.markOrdersCollectedForFullyPaidTranches` on
+  `DevMain`, **uncommitted, not deployed, no test class** (standing instruction).
+- **Written:** register v1.6 (`AUREL-2026-09-25-INCASSATO`, `ORD-14` rewritten,
+  `order.rules`, reconciliation note), `REQUIREMENTS.md` + `REQUISITI.it.md` (1.6
+  changelog, Order state row, `ORD-14`, manual-steps paragraph), OI-69 (now
+  `in-progress`), OI-184 change set, tracker row 69 EN + IT, MAP.
+- **Open:** the client has not seen it; lines with no tranche are ignored; nothing sets
+  `Fatturato`; a reversed payment does not un-collect the order (OI-92, OI-157).
+- **Next:** commit and deploy with the next UAT push; include it in the v1.6 change set.
+  Contract logic (OI-168) is still not started, UAT 5/10.
+
 ---
 
 ## 2026-09-25 — claude — on-demand requirements-check + drill-me: tranches belong on the bundle too, and the register moves to v1.6
