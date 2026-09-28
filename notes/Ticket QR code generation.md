@@ -290,8 +290,66 @@ The Asset therefore has:
 - `QR_Id__c`: the Campaign Member Id as text
 - a Salesforce File: the QR image containing the same Campaign Member Id
 
+## Lookup endpoint
+
+The repository now includes `TicketQrLookupService`, an Apex REST endpoint for
+scanner/check-in clients that need to resolve the QR payload before taking any
+event action.
+
+Preferred endpoint:
+
+```text
+POST /services/apexrest/ticket-qr
+Content-Type: application/json
+
+{
+  "qrId": "{CampaignMemberId}"
+}
+```
+
+GET path fallback:
+
+```text
+GET /services/apexrest/ticket-qr/{CampaignMemberId}
+```
+
+Query-parameter fallback:
+
+```text
+GET /services/apexrest/ticket-qr?qrId={CampaignMemberId}
+```
+
+The service validates that the supplied value is a real `CampaignMember` Id,
+then returns a stable JSON response containing:
+
+- the Contact name, email, phone and account name
+- the Campaign/event name, event date, start time and place
+- the matching Asset name, status and product name
+
+The response intentionally does not echo Salesforce record ids, including the
+QR payload id.
+
+The Asset lookup first uses `Asset.QR_Id__c = CampaignMember.Id`. If that value
+has not been written yet, it falls back to the same matching rule used by QR
+creation: `Asset.ContactId = CampaignMember.ContactId` and
+`Asset.Campaign__c = CampaignMember.CampaignId`.
+
+Every lookup writes an `Integration_Log__c` row with:
+
+- `Flow_Name__c = TicketQrLookupService.lookup`
+- `Inbound_Outbound__c = Inbound`
+- the REST resource path in `Request_Endpoint__c`
+- request headers in `Request_Headers__c`, with `Authorization` redacted
+- the serialized response in `Response_Body__c`
+- the HTTP status in `Response_State__c`
+- `Is_Error__c = true` for invalid ids, missing Campaign Members, missing
+  Assets, or unexpected exceptions
+
+Unexpected exceptions are converted to `UNEXPECTED_ERROR` responses and log the
+exception message and stack trace.
+
 ## Current boundaries
 
-This implementation generates and stores ticket QR codes. It does not implement
-an inbound scan endpoint, and no current Apex path writes `Asset.Data_CheckIn__c`
-from a QR scan.
+This implementation generates, stores and resolves ticket QR codes. The lookup
+endpoint is read-only: it does not perform check-in, does not change
+`Asset.Status`, and does not write `Asset.Data_CheckIn__c`.
