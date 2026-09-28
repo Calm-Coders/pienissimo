@@ -71,7 +71,8 @@ private class BundleProductAssignmentControllerTest {
     return BundleProductAssignmentController.saveComponents(
       bundleId,
       fixedPrice,
-      components == null ? null : JSON.serialize(components)
+      components == null ? null : JSON.serialize(components),
+      false
     );
   }
 
@@ -289,7 +290,9 @@ private class BundleProductAssignmentControllerTest {
   }
 
   @isTest
-  static void saveComponentsCanUpdateBundleSellingPrice() {
+  // Since 7eab757 the configurator no longer sends a selling price, and
+  // saveComponents ignores the fixedPrice argument it still accepts.
+  static void saveComponentsLeavesBundleSellingPriceAlone() {
     Product2 bundle = makeBundle('Stage bundle', 1000);
     insert bundle;
     Product2 item = makeItem('Item A', 'TEST-A', 600);
@@ -305,9 +308,9 @@ private class BundleProductAssignmentControllerTest {
     );
     Test.stopTest();
 
-    System.assertEquals(1200, context.fixedPrice);
+    System.assertEquals(1000, context.fixedPrice);
     System.assertEquals(
-      1200,
+      1000,
       [
         SELECT Bundle_Selling_Price__c
         FROM Product2
@@ -316,9 +319,9 @@ private class BundleProductAssignmentControllerTest {
       .Bundle_Selling_Price__c
     );
     System.assertEquals(
-      600,
+      400,
       context.variance,
-      'Variance should use the edited bundle selling price'
+      'Variance should use the stored bundle selling price'
     );
   }
 
@@ -328,6 +331,18 @@ private class BundleProductAssignmentControllerTest {
     insert bundle;
     Product2 item = makeItem('Item A', 'TEST-A', 600);
     insert item;
+    // The list price is read from the standard pricebook entry, which is only
+    // queryable through Pricebook2.IsStandard once the pricebook is touched.
+    update new Pricebook2(Id = Test.getStandardPricebookId(), IsActive = true);
+    PricebookEntry standardEntry = [
+      SELECT Id
+      FROM PricebookEntry
+      WHERE
+        Product2Id = :item.Id
+        AND Pricebook2Id = :Test.getStandardPricebookId()
+    ];
+    standardEntry.UnitPrice = 600;
+    update standardEntry;
     insert new BundleComponent__c(
       Bundle__c = bundle.Id,
       Product__c = item.Id,
