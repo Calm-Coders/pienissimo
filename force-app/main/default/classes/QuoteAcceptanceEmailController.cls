@@ -4,7 +4,8 @@ public without sharing class QuoteAcceptanceEmailController {
     'In Attesa Accettazione'
   };
   private static final String TEMPLATE_DEVELOPER_NAME = 'Quote_Acceptance_Request';
-  private static final String ACCEPTANCE_URL = 'https://ability-customization-52152--partial.sandbox.my.site.com/gestione-preventivo?quoteId=';
+  // Resolved per org, so a sandbox and production each link to their own site.
+  private static final String ACCEPTANCE_PATH = '/gestione-preventivo?quoteId=';
 
   public class EmailDraft {
     @AuraEnabled
@@ -23,7 +24,7 @@ public without sharing class QuoteAcceptanceEmailController {
     EmailDraft draft = new EmailDraft();
     EmailTemplate template = getTemplate();
     draft.recipient = quoteRecord.Account.Email_Contatto_Principale__c;
-    draft.acceptanceUrl = ACCEPTANCE_URL + quoteRecord.Id;
+    draft.acceptanceUrl = acceptanceUrl(quoteRecord.Id);
     draft.subject = applyQuoteTokens(getSubject(template), quoteRecord);
     draft.body = buildPlainTextBody(quoteRecord, draft.acceptanceUrl);
     return draft;
@@ -55,7 +56,7 @@ public without sharing class QuoteAcceptanceEmailController {
         'Inserisci un oggetto valido, massimo 255 caratteri e su una sola riga.'
       );
     }
-    String link = ACCEPTANCE_URL + quoteRecord.Id;
+    String link = acceptanceUrl(quoteRecord.Id);
     EmailTemplate template = getTemplate();
     Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
     email.setTargetObjectId(UserInfo.getUserId());
@@ -75,6 +76,13 @@ public without sharing class QuoteAcceptanceEmailController {
     if (quoteRecord.Email != normalizedRecipient) {
       update new Quote(Id = quoteRecord.Id, Email = normalizedRecipient);
     }
+  }
+
+  private static String acceptanceUrl(Id quoteId) {
+    return 'https://' +
+      DomainCreator.getExperienceCloudSitesHostname() +
+      ACCEPTANCE_PATH +
+      quoteId;
   }
 
   private static Quote loadSendableQuote(Id quoteId) {
