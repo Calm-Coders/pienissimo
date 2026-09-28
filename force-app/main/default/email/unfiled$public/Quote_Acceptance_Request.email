@@ -1,0 +1,30 @@
+<div style="font-family: Arial, sans-serif; color: #1f2933; line-height: 1.5">
+  <p>Buongiorno,</p>
+
+  <p>ti inviamo il preventivo {{quoteNumber}} ({{quoteName}}).</p>
+
+  <p>Puoi consultare, accettare o rifiutare il preventivo:</p>
+
+  <p style="margin: 20px 0">
+    <a
+      href="{{acceptanceUrl}}"
+      style="
+        background-color: #0176d3;
+        border-radius: 4px;
+        color: #ffffff;
+        display: inline-block;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 40px;
+        min-width: 120px;
+        padding: 0 18px;
+        text-align: center;
+        text-decoration: none;
+      "
+      >Apri il preventivo</a
+    >
+  </p>
+
+  <p>Grazie,<br />Il team Pienissimo</p>
+</div>

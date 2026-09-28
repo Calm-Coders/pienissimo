@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>New</fullName>
+        <default>true</default>
+        <label>New</label>
+    </standardValue>
+    <standardValue>
+        <fullName>In Lavorazione</fullName>
+        <default>false</default>
+        <label>In Lavorazione</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Non Risponde</fullName>
+        <default>false</default>
+        <label>Non Risponde</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Primo contatto</fullName>
+        <default>false</default>
+        <label>Primo contatto</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Qualificato</fullName>
+        <default>false</default>
+        <label>Qualificato</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Convertito</fullName>
+        <converted>true</converted>
+        <default>false</default>
+        <label>Convertito</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Non qualificato</fullName>
+        <default>false</default>
+        <label>Non qualificato</label>
+    </standardValue>
+</StandardValueSet>

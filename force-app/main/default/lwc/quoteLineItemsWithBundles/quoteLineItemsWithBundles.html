@@ -1,0 +1,56 @@
+<template>
+  <lightning-card title="Righe preventivo" icon-name="standard:quotes">
+    <div slot="actions" class="actions">
+      <lightning-button-icon
+        icon-name="utility:refresh"
+        alternative-text="Aggiorna"
+        title="Aggiorna"
+        disabled={isLoading}
+        onclick={handleRefresh}
+      ></lightning-button-icon>
+    </div>
+
+    <div class="content">
+      <template if:true={showInitialLoader}>
+        <div class="loader">
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="small"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:true={hasLoaded}>
+        <template if:true={isLoading}>
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="small"
+          ></lightning-spinner>
+        </template>
+
+        <template if:false={canDeleteLines}>
+          <div class="message warning">
+            Le righe possono essere eliminate solo quando il preventivo e in
+            Bozza o In Trattativa.
+          </div>
+        </template>
+
+        <template if:true={hasRows}>
+          <lightning-tree-grid
+            key-field="key"
+            columns={columns}
+            data={treeRows}
+            hide-checkbox-column
+            onrowaction={handleRowAction}
+          ></lightning-tree-grid>
+        </template>
+
+        <template if:false={hasRows}>
+          <div class="message">
+            Questo preventivo non contiene righe prodotto.
+          </div>
+        </template>
+      </template>
+    </div>
+  </lightning-card>
+</template>

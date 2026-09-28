@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prodotto_Obbligatorio</fullName>
+    <active>true</active>
+    <description
+  >Il prodotto e obbligatorio per usare una mappatura edizione.</description>
+    <errorConditionFormula>ISBLANK(Prodotto__c)</errorConditionFormula>
+    <errorMessage>Indica il Prodotto della mappatura edizione.</errorMessage>
+</ValidationRule>

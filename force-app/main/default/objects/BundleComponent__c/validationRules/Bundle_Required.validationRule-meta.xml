@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bundle_Required</fullName>
+    <active>true</active>
+    <description
+  >Product2 forbids cascade/restrict lookups, so Bundle__c cannot be flagged required on the field itself.</description>
+    <errorConditionFormula>ISBLANK(Bundle__c)</errorConditionFormula>
+    <errorDisplayField>Bundle__c</errorDisplayField>
+    <errorMessage>A bundle component must belong to a bundle.</errorMessage>
+</ValidationRule>

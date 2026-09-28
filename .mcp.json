@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "open-codebase-index": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "--no-install",
+        "open-codebase-index-mcp",
+        "--host",
+        "codex",
+        "--project",
+        "${CLAUDE_PROJECT_DIR:-.}"
+      ]
+    },
+    "graphify-sfdx": {
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "-X",
+        "utf8",
+        "${CLAUDE_PROJECT_DIR:-.}/scripts/graphify_serve_fresh.py",
+        "${CLAUDE_PROJECT_DIR:-.}/graphify-out/graph.json"
+      ]
+    }
+  }
+}

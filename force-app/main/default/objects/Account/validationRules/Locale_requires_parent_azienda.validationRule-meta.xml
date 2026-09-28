@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Locale_requires_parent_azienda</fullName>
+    <active>true</active>
+    <description
+  >Requires Locale accounts to be linked to a parent Azienda account.</description>
+    <errorConditionFormula>AND(
+  $RecordType.DeveloperName = "Locale",
+  ISBLANK(ParentId)
+)</errorConditionFormula>
+    <errorDisplayField>ParentId</errorDisplayField>
+    <errorMessage>Un Locale deve essere collegato a una Azienda.</errorMessage>
+</ValidationRule>

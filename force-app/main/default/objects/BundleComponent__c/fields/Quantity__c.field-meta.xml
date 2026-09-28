@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Quantity__c</fullName>
+    <defaultValue>1</defaultValue>
+    <description
+  >How many units of this product the bundle contains. Real bundles carry quantities above one (the ACADEMY 2026 order sells Camerieri Venditori, Happy Team, Mastery, FMF Gold and Pienissimo Live in pairs), so the spread must be read against the line, not the unit.</description>
+    <label>Quantity</label>
+    <precision>18</precision>
+    <required>true</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

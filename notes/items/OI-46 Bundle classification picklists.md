@@ -1,0 +1,351 @@
+---
+id: OI-46
+type: open-item
+status: open
+owner: Fabrizio Paganelli
+with: ROMI
+org: both
+raised: 2026-07-23
+updated: 2026-09-25
+requirement: BUN-08
+source: meetings/open-items.md row 46
+---
+
+# OI-46 - Bundle classification picklists
+
+**anno solare** (master) → **evento** (dependent picklist, showing only that
+year's events) + **tipologia di bundle** (independent of both — "Anno con
+Pienissimo", "…Ripetente", other).
+
+The event seed is **7 canonical events**: Tour, Food Marketing Festival,
+Pienissimo Live, Academy, Sold Out, O.D.B. Live, Camerieri Venditori, Mastery —
+Happy Team sells nothing.
+
+⚠ **Use "anno solare", never "anno accademico".** The academic year (May →
+September) is a distinct Pienissimo concept used for ticket generation. Keeping
+them separate is deliberate.
+
+Values are re-created clean from Fabrizio Paganelli's lists, **not** migrated
+from `LIVELLO_3`/`LIVELLO_4`.
+
+**Fields built, data absent.** `Anno_Solare__c`, `Evento__c` and
+`Bundle_Type__c` all exist on `Product2` and are **populated on zero bundles**.
+
+## ✅ 2026-08-24 - the event list arrived, and it is not the list we built
+
+[`Prodotti e Bundle.xlsx`](../The%20Prodotti%20e%20Bundle%20workbook.md) was
+read on 2026-08-24, seventeen days after Fabrizio Paganelli sent it. Its
+`Lista Eventi` sheet is the definitive list, and it **contradicts the seed above
+in three ways**.
+
+### It is eleven events, in four types
+
+The sheet carries a second column, `tipologia evento`, that nobody requested and
+that the register has no field for:
+
+| Type                              | Events                                                                  |
+| --------------------------------- | ----------------------------------------------------------------------- |
+| `Evento a pagamento`              | Academy, Camerieri Venditori, Happy Team, Mastery, Odb, Pienissimo Live |
+| `Evento a pagamento/gratuito`     | Food Marketing Festival — attendable **both** ways                      |
+| `Evento gratuito`                 | Sold Out, Tour                                                          |
+| `Evento annullato`                | Golden Numbers                                                          |
+| `Evento in fase di ridefinizione` | Pienissimo Intensive                                                    |
+
+**Golden Numbers and Pienissimo Intensive appear nowhere else in this project's
+record.** Neither has any article in `Lista Prodotti`, consistent with being
+cancelled and under redefinition. Whether either belongs in the picklist is a
+decision nobody has taken.
+
+### 🔴 "Happy Team sells nothing" is wrong, and the built picklist is wrong because of it
+
+The seed above excludes Happy Team on the strength of the 2026-07-23 transcript,
+where the line is _"c'è Happy Team, ma durante l'Happy Team non vendiamo
+niente"_ — **"we don't sell anything _during_ Happy Team"**, a statement about
+selling _at_ the event. It was read as "Happy Team has nothing to sell".
+
+The registry says otherwise: **`CS-00154 HAPPY TEAM` is a priced article**, with
+a complimentary twin, and it is a **component of the Academy bundle at quantity
+2**. Happy Team tickets are sold, bundled, and must generate assets.
+
+`Product2.Evento__c` in `force-app` is a restricted picklist and **has no
+`Happy Team` value**. A Happy Team article therefore cannot be classified at
+all, and the asset it generates has no event. **This is a build defect, not a
+paperwork gap.**
+
+### Two more built values do not match the client's names
+
+| Client's name                       | Built value |                                               |
+| ----------------------------------- | ----------- | --------------------------------------------- |
+| `Camerieri Venditori`               | `Camerieri` | truncated                                     |
+| `Odb` (articles read `O.D.B. LIVE`) | `Odb Live`  | inconsistent with both                        |
+| —                                   | `ND`        | invented; no counterpart in the client's list |
+
+Since values are _"re-created clean from Fabrizio Paganelli's lists"_, the
+client's spelling governs. Align the picklist to `Lista Eventi`.
+
+### ⚠ The anno solare dependency has no source
+
+`Evento__c` is already built as a dependent picklist controlled by
+`Anno_Solare__c`, with a specific matrix — Food Marketing Festival on 2026 and
+2028, Mastery on 2026 and 2027, Pienissimo Live on 2026 only, and so on.
+
+**The workbook contains no year column of any kind.** The only year anywhere in
+it is the literal `2026` inside the six Tour article names. So that matrix has
+**no client source — it is ROMI guesswork**, and it is the controlling half of
+the mechanism this item specifies. Ask Fabrizio which events run in which
+calendar years, and do not treat the current mapping as agreed.
+
+### Where this leaves the item
+
+**Still open**, but for the opposite reason to before: the input is no longer
+missing, the configuration is now known to be wrong. Fix the picklist, get the
+year matrix, and decide on the two unknown events. `Anno_Solare__c`, `Evento__c`
+and `Bundle_Type__c` all exist on `Product2` and are still **populated on zero
+bundles**.
+
+## How it arrived
+
+✅ **Something was delivered on 2026-08-07 — and on 2026-08-18 we learned what.**
+Fabrizio Paganelli wrote to a thread titled **"Lista Eventi, Codici prodotto,
+esempio Bundle"** at 12:17 CEST that day; Elena Spini thanked him 21 minutes
+later and added Aurel to the thread. His message could not be retrieved for
+eleven days — it survived only as an empty quoted stub — so the record could not
+say whether the event list had arrived.
+
+Aurel Mrruku asked Elena to forward it on 2026-08-14. **She forwarded it on
+2026-08-18 at 09:41 CEST.** Fabrizio's message carries **no body text and one
+attachment, `Prodotti e Bundle.xlsx`** — see
+[the workbook](../The%20Prodotti%20e%20Bundle%20workbook.md). The empty stub is
+explained: the content was always the attachment.
+
+⚠ **Do not close this item yet. Nobody has opened the file.** Whether it
+contains the definitive 7-event list is **unverified** — the mail subject says
+"Lista Eventi", the filename says "Prodotti e Bundle". No connected tool can
+read a Gmail attachment, and the file is in neither Drive nor Slack. **It needs
+a human to download it.** Until then this stays `in-progress`: the delivery is
+confirmed, its sufficiency is not. Do not re-request the list from the client.
+
+Re-requested at the 2026-08-06 session alongside
+[prices](OI-87%20Real%20catalogue%20prices%20still%20outstanding.md) and
+[bundle-only codes](OI-48%20Bundle-only%20article%20codes.md) — one day before
+that thread.
+
+## 🔴 2026-08-24 - the client says the edition is not on the product at all
+
+The [20 August asset session](../meetings/2026-08-20%20Flusso%20Asset%20Biglietti.md) supplied the client source this item has never
+had — and it **contradicts the built design** rather than filling it in.
+
+Fabrizio Paganelli, minuted to the client:
+
+- **Mexal article codes are transversal across years.** There is no code per
+  edition.
+- Classification is three levels — **Evento** (macro name) → **Tipo Biglietto**
+  (from the article code) → **Edizione**, and the edition is **determined by the
+  order date, not by the product**.
+
+The built `Product2.Anno_Solare__c` picklist, and the `Anno_Solare__c` →
+`Evento__c` dependency matrix, both assume the year is an attribute _of the
+product_. On the client's account it is an attribute _of the order_. That is not
+a missing-values problem; it is the wrong mechanism.
+
+**What the design uses instead** is the active child campaign, resolved at order
+time — see
+[the campaign parent and child model](../objects/The%20campaign%20parent%20and%20child%20model.md).
+That is what makes the year unnecessary on the product.
+
+Two further complications from the same week:
+
+- The period is an **event edition, not necessarily a calendar year**. Elisa
+  Migliano's [19 August](../meetings/2026-08-19%20Flussi%20MKT%20Biglietti.md) example was the academic year **2026-2027**, which
+  a calendar-year picklist cannot express.
+- Rebecca Marmo described the current Zoho hierarchy as **Evento → Edizione
+  Evento (anno) → Evento Biglietto (tipologia) → Evento Biglietto Prodotto** —
+  four levels, against the two the Salesforce build has.
+
+**Do not add values to `Anno_Solare__c`.** The question is now whether the field
+should exist. This needs Aurel Mrruku's ruling before any further work on the
+picklists, and it is the single most consequential thing this sweep found.
+
+## 2026-08-25 - org check: the fields exist and are populated on one product
+
+Verified read-only against **Pienissimo UAT**. Both disputed fields are
+configured, and both are effectively empty.
+
+| Field                     | Configured values                                                                                             | Populated on |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------ |
+| `Product2.Anno_Solare__c` | `Anno Solare 2026 · 2027 · 2028`                                                                              | **1 of 280** |
+| `Product2.Evento__c`      | `Tour · Food Marketing Festival · Pienissimo Live · Academy · Sold Out · Odb Live · Camerieri · Mastery · ND` | **1 of 280** |
+
+🔴 **`Happy Team` is confirmed absent from `Evento__c`** — the client's own
+workbook prices it and places it in the Academy bundle at quantity 2. The gap
+this item records against the client's list is real and measured, not inferred.
+
+**The population figures change what the fix costs.** One product out of 280
+carries either value, so correcting or removing the fields breaks essentially no
+data. The decision that
+[OI-46](OI-46%20Bundle%20classification%20picklists.md) actually turns on —
+whether `Anno_Solare__c` should exist at all, given that the client states
+article codes are transversal across years and the edition comes from the order
+date — can be taken **without a migration**. If the edition moves to
+[the campaign parent and child model](../objects/The%20campaign%20parent%20and%20child%20model.md),
+dropping the field costs one record.
+
+The register's `build_state` describes these as "populated on zero bundles". One
+product now carries them; the substance of that line is unchanged.
+
+## 🔴 2026-08-26 - the replacement mechanism is now specified, and it is a table
+
+The [26 August Mexal review](../meetings/2026-08-26%20Review%20Temi%20Integrazione%20Mexal.md)
+supplies what the 20 August ruling left as a gap: **how** the edition is derived
+from the order date.
+
+Fabrizio Paganelli restated the ruling unprompted in the first two minutes —
+_"l'anno accademico avevamo detto di no perché deve essere derivato in base alla
+data dell'ordine"_ — and then specified the mechanism:
+[a manually maintained Salesforce table](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)
+keyed on `article code × order-date window → edizione`, matched **per order
+line**.
+
+**This settles the question this item has been parked on.** `Anno_Solare__c` does
+not merely lack a client source for its dependency matrix — its job now belongs
+to [OI-96](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md). The field
+should go, and it costs one record to remove.
+
+The **event** half also gets its carrier: Mexal's `categoria statistica`, which
+the session tested on the wire and assigned to the event (Campagna Padre). So the
+event is not a hand-maintained Salesforce picklist either — it descends from
+Mexal.
+
+⚠ **Do not correct `Evento__c`'s values yet.**
+[OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md):
+Fabrizio Paganelli intends to close all ~1000 existing article codes and re-create
+them, taking it to direction on 31 August. The event list this item measures the
+picklist against is derived from the workbook extract of the registry he is about
+to replace. `Happy Team` being absent is still a real defect; the rest of the
+value list is provisional until the new registry arrives.
+
+## 2026-09-02 - the Evento picklist is wrong in five places, not one
+
+[The Anagrafica Articoli workbook](../The%20Anagrafica%20Articoli%20workbook.md),
+read 2026-09-02, names its events in **eleven spellings for nine events**.
+Checked against **Pienissimo UAT** (`00DMA000004nMMr2AM`) the same day and
+against `force-app/` at `326d362` - **org and repository agree exactly**, so this
+is a specification gap, not drift.
+
+The deployed values are `Tour`, `Food Marketing Festival`, `Pienissimo Live`,
+`Academy`, `Sold Out`, `Odb Live`, `Camerieri`, `Mastery`, `ND`.
+
+**17 of the workbook's 43 rows name an event the picklist cannot accept:**
+
+| Workbook               | Rows | Against the picklist                       |
+| ---------------------- | ---- | ------------------------------------------ |
+| `Pienissimo Intensive` | 8    | absent entirely                            |
+| `Camerieri Venditori`  | 3    | the picklist says `Camerieri`              |
+| `Happy Team`           | 3    | absent entirely                            |
+| `Odb`                  | 2    | the picklist says `Odb Live`               |
+| `Camerieri venditori`  | 1    | absent, and inconsistent with its own twin |
+| `ODB Live`             | 1    | case-only mismatch                         |
+
+So the **Happy Team defect recorded on 24 August is one of five**, and the
+largest is new: `Pienissimo Intensive` was an event "in fase di ridefinizione"
+with no articles on 7 August and now has eight.
+
+**Correcting it costs nothing.** `Evento__c` is populated on **3 of 281
+products** in UAT - one each on `Pienissimo Live`, `Academy` and `Tour`, blank on 278. There is no migration cost and no reason to keep a spelling the client does
+not use.
+
+`Tour` is in the picklist and has no articles in the workbook, though it was a
+live free event on 7 August. **Do not delete the value on that evidence** - the
+sheet is course articles only.
+
+**The decision this needs is whose spelling wins**, and it is client-facing: the
+built picklist or Fabrizio Paganelli's registry. The registry is the system of
+record for article data, which argues for the registry.
+
+## 2026-09-02 - corrected in the org, on the client's spellings
+
+Aurel Mrruku chose the registry over the built picklist. `Product2.Evento__c` now
+carries **11 values**: `Happy Team` and `Pienissimo Intensive` added,
+`Camerieri` renamed to `Camerieri Venditori`, `Odb Live` renamed to `Odb`. The
+dependency mappings on `Anno_Solare__c` were extended to match, and the values
+were assigned to **both** record types - which is the step that actually makes
+them usable, see
+[the method note](../How%20to%20add%20a%20picklist%20value%20that%20records%20can%20actually%20use.md).
+
+Deployed and in `force-app/`, so no new org-only drift. The rename cost nothing:
+`Evento__c` was populated on 3 of 281 products and none used a renamed value.
+
+🔴 **This does not settle `Anno_Solare__c`, and it deepens the problem.** Loading
+the ten bundle codes required inventing a year - the workbook has no year column,
+and a dependent picklist will not take a value without its controlling field, so
+all ten carry `Anno Solare 2026` **on ROMI's assumption alone**. The open
+question this item records - whether `Anno_Solare__c` should exist at all, given
+the client says the edition comes from the order date - is now **load-bearing for
+data that exists**, not just for a design.
+
+⚠ **`Tour` was kept.** It has no articles in the workbook, but the workbook is
+course articles only and Tour was a live free event on 7 August.
+
+## 2026-09-02 — the division of labour between Mexal and Salesforce is fixed
+
+The [2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+settled which system owns which classification, in Elisa Migliano's own summary:
+
+> _"gestirei su Mexal il campo genera biglietto oppure il discorso solo bundle.
+> Poi gestiamo su Mexal il campo evento. A quel punto abbiamo finito. E poi il
+> tipo biglietto lo andiamo a completare solo su Sales Force."_
+
+| Field                              | Owner                                    |
+| ---------------------------------- | ---------------------------------------- |
+| `genera biglietto` / `solo bundle` | **Mexal** (`natura`)                     |
+| `evento`                           | **Mexal** (`categoria statistica`)       |
+| `tipo biglietto`                   | **Salesforce only**, administrators only |
+
+🔴 **`Anno Solare` was never mentioned in the session.** This item questions
+whether the field should exist at all, and the ten bundle-only records loaded on
+2 September all carry `Anno Solare 2026` **on ROMI's assumption alone** — because
+`Evento__c` is a dependent picklist and will not take a value without its
+controlling field. An hour and a half of the client's product people, with the
+registry on screen, and the one open question about the registry's own structure
+went unasked. **Put it on Data Model Parte 1.**
+
+⚠ The workbook's `Articoli (anagrafica)` sheet carries a `Nuovi Campi` column
+listing `Categoria statistica → evento (da mexal)`, `Gruppo Merceologico`,
+`Natura → genera biglietto SI/NO (mexal)`, `Tipo Biglietto` — and then
+**`LIVELLO_0` through `LIVELLO_6`**, a seven-level product hierarchy that appears
+in no meeting, no requirement and no other note. **Nobody has asked what it is.**
+
+## 🔑 2026-09-25 — reversed: the bundle's year is the academic year
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md) (`01:06:33`), while Aurel Mrruku filled in a
+bundle live, Fabrizio Paganelli corrected the label: _"Qui non sarebbe proprio l'anno
+solare, sarebbe l'anno accademico."_ Aurel Mrruku agreed to rename it **`Anno
+accademico`**, with the client adding a value each year.
+
+🔴 **This reverses the 23/07 rule above** (_"Use 'anno solare', never 'anno
+accademico'"_) and register glossary `ANNO_SOLARE` and `BUN-08`. The 26/08 ruling (the
+**ticket edition** is derived from the order date via [OI-96](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md))
+still holds. **Both are compatible:** the bundle is labelled with the academic year it
+sells, and the edition of each ticket is still derived per line.
+
+Same session, two more bundle fields:
+
+- `Evento` is relabelled **`Evento di origine`**: the event at which the bundle was
+  **proposed**, not the event of its contents. A bundle sold at one Food Marketing
+  Festival holds articles for the **next** year's Academy, Camerieri Venditori and so on,
+  so it cannot be tied to one campaign (`01:07:51`–`01:09:19`). Aurel Mrruku to Anita
+  Aga, Slack DM 11:41 CEST: _"Evento = evento di origine sul order"_.
+- New checkbox **`Presenza piattaforma`**: whether the bundle gives the software platform
+  free (`01:10:50`). Slack 11:42 CEST, to Anita Aga: _"nei boundle flag presenza piataforma
+  checkbox"_.
+- `Tipologia bundle` values confirmed: _Anno con Pienissimo_ / _Anno con Pienissimo
+  ripetente_.
+
+⚠ **The register was not amended** (`BUN-08` still says anno solare). Human call.
+
+## ✅ 2026-09-25 — register amended (v1.6)
+
+`BUN-08` now reads anno accademico + evento di origine + tipologia + `Presenza
+piattaforma`, and the glossary `ANNO_SOLARE` is replaced by `ANNO_ACCADEMICO_BUNDLE`.
+Drill-me decision by Aurel Mrruku; it goes to the client with the rest of v1.6
+([OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)).

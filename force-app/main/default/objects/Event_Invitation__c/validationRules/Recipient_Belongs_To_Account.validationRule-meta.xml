@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Recipient_Belongs_To_Account</fullName>
+    <active>true</active>
+    <errorConditionFormula
+  >AND(NOT(ISBLANK(Recipient_Contact__c)), Recipient_Contact__r.AccountId &lt;&gt; Account__c)</errorConditionFormula>
+    <errorDisplayField>Recipient_Contact__c</errorDisplayField>
+    <errorMessage
+  >Il referente deve appartenere alla azienda indicata nell invito.</errorMessage>
+</ValidationRule>

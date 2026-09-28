@@ -1,0 +1,223 @@
+<template>
+  <div class="content">
+    <template if:true={showInitialLoader}>
+      <div class="initial-loader">
+        <lightning-spinner
+          alternative-text="Caricamento"
+          size="medium"
+        ></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:true={hasLoaded}>
+      <template if:true={isLoading}>
+        <lightning-spinner
+          alternative-text="Caricamento"
+          size="small"
+        ></lightning-spinner>
+      </template>
+
+      <div class="summary">
+        <div>
+          <div class="summary-label">Bundle</div>
+          <div class="summary-value">{bundleName}</div>
+        </div>
+        <div>
+          <div class="summary-label">Componenti</div>
+          <div class="summary-value">{componentCount}</div>
+        </div>
+      </div>
+
+      <template if:true={isEditMode}>
+        <div class="section-header edit-selector-header">
+          <h3 class="section-heading">Tranch esistenti</h3>
+          <span>Seleziona una tranch da modificare</span>
+        </div>
+        <div class="edit-tranche-list">
+          <template for:each={editTranchCards} for:item="tranch">
+            <button
+              key={tranch.key}
+              type="button"
+              class={tranch.cardClass}
+              data-index={tranch.index}
+              onclick={handleSelectEditTranch}
+            >
+              <span class="edit-tranche-main">
+                <span class="edit-tranche-title">{tranch.name}</span>
+                <span class="edit-tranche-meta">
+                  <span>Sequenza {tranch.sequence}</span>
+                  <span>{tranch.dueDateLabel}</span>
+                  <span>{tranch.componentCountLabel}</span>
+                </span>
+              </span>
+            </button>
+          </template>
+        </div>
+      </template>
+
+      <template if:false={isEditMode}>
+        <div class="count-row">
+          <lightning-input
+            type="number"
+            label="Numero di tranch"
+            value={tranchCount}
+            min="1"
+            max="20"
+            step="1"
+            required
+            onchange={handleTranchCountChange}
+          ></lightning-input>
+        </div>
+      </template>
+
+      <template if:true={hasPlannedTranches}>
+        <template if:false={isEditMode}>
+          <div class="pager">
+            <lightning-button-icon
+              icon-name="utility:chevronleft"
+              alternative-text="Tranch precedente"
+              title="Tranch precedente"
+              disabled={isPreviousDisabled}
+              onclick={handlePreviousTranch}
+            ></lightning-button-icon>
+            <div class="pager-label">{currentTranchLabel}</div>
+            <lightning-button-icon
+              icon-name="utility:chevronright"
+              alternative-text="Tranch successiva"
+              title="Tranch successiva"
+              disabled={isNextDisabled}
+              onclick={handleNextTranch}
+            ></lightning-button-icon>
+          </div>
+        </template>
+
+        <template if:true={pageValidationMessage}>
+          <div class="message error">{pageValidationMessage}</div>
+        </template>
+
+        <div class="tranche-card">
+          <template if:true={showDeleteCurrentPage}>
+            <div class="delete-page-actions">
+              <lightning-button
+                label="Elimina questa tranch"
+                variant="destructive"
+                disabled={isDeleteCurrentPageDisabled}
+                onclick={handleDeleteCurrentPage}
+              ></lightning-button>
+            </div>
+          </template>
+
+          <div class="tranche-row">
+            <div class="sequence-badge">{currentTranch.sequence}</div>
+            <lightning-input
+              type="text"
+              label="Nome tranch"
+              value={currentTranch.name}
+              data-index={currentTranch.index}
+              required
+              onchange={handlePlannedNameChange}
+            ></lightning-input>
+            <lightning-input
+              type="date"
+              label="Data scadenza"
+              value={currentTranch.dueDate}
+              data-index={currentTranch.index}
+              data-current-tranch-due-date
+              required
+              onchange={handlePlannedDueDateChange}
+            ></lightning-input>
+          </div>
+
+          <div class="section-header">
+            <h3 class="section-heading">Componenti bundle</h3>
+            <span>{currentSelectionLabel}</span>
+          </div>
+
+          <template if:true={hasComponents}>
+            <template if:true={hasCurrentSelectedComponents}>
+              <div class="line-group">
+                <div class="line-group-title">Assegnati a questa tranch</div>
+                <div class="component-list">
+                  <template
+                    for:each={currentSelectedComponents}
+                    for:item="component"
+                  >
+                    <div class="component-card selected" key={component.id}>
+                      <div class="line-main">
+                        <div class="line-title">{component.productName}</div>
+                        <div class="line-meta">
+                          <span>{component.productCode}</span>
+                          <span>Qta {component.quantity}</span>
+                          <span>Importo {component.spreadLabel}</span>
+                        </div>
+                      </div>
+                      <lightning-button-icon
+                        icon-name="utility:delete"
+                        alternative-text="Rimuovi componente"
+                        title="Rimuovi componente"
+                        variant="bare"
+                        data-id={component.id}
+                        onclick={handleRemoveComponent}
+                      ></lightning-button-icon>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+            <template if:true={hasAvailableComponents}>
+              <div class="line-group">
+                <div class="line-group-title">Componenti disponibili</div>
+                <div class="component-list">
+                  <template for:each={availableComponents} for:item="component">
+                    <div class="component-card" key={component.id}>
+                      <div class="line-main">
+                        <div class="line-title">{component.productName}</div>
+                        <div class="line-meta">
+                          <span>{component.productCode}</span>
+                          <span>Qta {component.quantity}</span>
+                          <span>Importo {component.spreadLabel}</span>
+                        </div>
+                      </div>
+                      <lightning-button
+                        label="Assegna a questa tranch"
+                        data-id={component.id}
+                        onclick={handleAssignComponent}
+                      ></lightning-button>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+            <template if:false={hasAvailableComponents}>
+              <template if:false={hasCurrentSelectedComponents}>
+                <div class="message">
+                  Nessun componente disponibile per questa tranch.
+                </div>
+              </template>
+            </template>
+          </template>
+
+          <template if:false={hasComponents}>
+            <div class="message">Questo bundle non contiene componenti.</div>
+          </template>
+        </div>
+      </template>
+    </template>
+
+    <div class="footer-actions">
+      <lightning-button
+        label="Indietro"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label={saveButtonLabel}
+        disabled={isSaveDisabled}
+        onclick={handleSave}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </div>
+</template>

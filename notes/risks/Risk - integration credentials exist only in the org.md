@@ -1,0 +1,301 @@
+---
+id: risk-named-credentials-org-only
+type: risk
+status: in-progress
+severity: high
+owner: Aurel Mrruku
+org: ROMI
+raised: 2026-09-02
+updated: 2026-09-23
+depends_on: [OI-94, OI-102]
+blocks: [go-live]
+requirement: [INT-18, INT-19]
+source: org-status-check against Pienissimo UAT, 2026-09-02 08:05-08:14Z
+evidence: Metadata API NamedCredential and PermissionSet listing vs force-app on all branches
+---
+
+# Risk - integration credentials exist only in the org
+
+**Two named credentials, `Anticipay` and `DocuSign`, are configured in the
+Pienissimo UAT org and exist in no branch of this repository.** So are three
+permission sets: `DocuSign`, `Full_Permission` and `Sales_User`.
+
+This is the **third** instance of the same pattern in six days, and the first
+two both cost something:
+
+| Component                                  | Discovered | Outcome                                                            |
+| ------------------------------------------ | ---------- | ------------------------------------------------------------------ |
+| The Biglietto Apex stack, 7 components     | 2026-08-31 | Deleted from the org 28 Aug. **Gone** — never in git on any branch |
+| `WoocommerceOrderService`                  | 2026-08-31 | Caught in time; committed by 2026-09-02                            |
+| `Anticipay` / `DocuSign` named credentials | 2026-09-02 | Still org-only                                                     |
+
+## Why a named credential is the worst kind to lose
+
+A named credential is not just configuration — it is **where the endpoint and
+the authentication live**. Losing one does not produce a compile error or a
+missing-component message. The callout simply fails at runtime, in an
+integration, against a third party, with nothing in `force-app/` to say what the
+value used to be.
+
+The `Anticipay` credential is the sharper of the two. The
+[middleware contract](../The%20Anticipay%20middleware%20API%20contract.md) was
+only agreed on 1 September, the bearer token is
+[a single static string shared across both environments](../items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md),
+and nobody has written down where the org's copy of it came from. A sandbox
+refresh takes both the credential and the only record of its configuration.
+
+## What this does NOT mean
+
+**It does not mean the Anticipay integration works.** It does not.
+[The integration scaffolding](../objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)
+still holds **zero** `Integration_Configuration__c` rows and **zero** object
+permissions on that object, so the house callout engine has no endpoint and no
+principal regardless of what named credentials exist. A credential with nothing
+wired to it is scaffolding too.
+
+Nor does it mean somebody did something wrong. A named credential is created in
+Setup by hand; nothing in the normal workflow prompts you to retrieve it into
+source. That is precisely why it keeps happening.
+
+## 🔴 2026-09-02 - the Anticipay credential is probably pointing at a dead host
+
+**Timing puts this beyond doubt as a question, even though the value has not been
+read.**
+
+| Time (2026-09-02) | Event                                                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 08:05–08:14Z      | the org check finds a named credential `Anticipay` already configured                                              |
+| 08:21:59Z         | Aurel Mrruku reports `integration.pienissimo.com` **does not resolve** — `HTTP/1.1 404`, `Content-Type: text/html` |
+| 10:18:26Z         | Andrea Parmeggiani moves the API to **`romi.pienissimo.com`** and sends v3                                         |
+| 10:40:45Z         | Aurel Mrruku confirms _"adesso funziona"_                                                                          |
+
+So the credential was created **before the host existed**, against the only
+hostname anyone had — the one that never worked. **It almost certainly carries
+`integration.pienissimo.com`.**
+
+This sharpens the risk in a way nobody planned: the argument above was that a
+named credential is dangerous because it holds the endpoint and nothing in
+`force-app/` records it. Here the endpoint it holds is **known to be wrong**, and
+because it is org-only there is no diff, no review and no deploy that would
+surface it. It fails at runtime, as an HTML `404`, which
+[OI-107](../items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)
+shows the house engine would log as an **Apex parse error with no status code**.
+
+**Check it in Setup before anything is wired to it**, and fix the host as part of
+the same retrieve. ⚠ Read the endpoint only — do not copy the token anywhere.
+
+## The ask
+
+**Retrieve both named credentials and the three permission sets into
+`force-app/` and commit them**, before anything else touches the sandbox. It is
+a targeted retrieve, not a rebuild, and it closes the pattern rather than the
+instance.
+
+⚠ **Do not commit credential secrets.** A `NamedCredential` retrieve carries the
+endpoint and the principal configuration; the password or token field comes back
+masked, and it must stay that way. If a retrieve ever produces a live secret in
+plain text, stop and treat it as
+[the publishing rules](../../docs/publishing.md) require — the repository is
+private, but git history is forever.
+
+## 🔴 2026-09-10 - the pattern's fourth instance, and this one breaks a deploy
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, open) adds to `Full_Permission`:
+
+```xml
+<externalCredentialPrincipalAccesses>
+    <enabled>true</enabled>
+    <externalCredentialPrincipal
+  >Mexal_External_Credential-Mexal_Principal</externalCredentialPrincipal>
+</externalCredentialPrincipalAccesses>
+```
+
+and `MexalSearchCalloutService` calls `callout:Mexal<path>`, defaulting to a
+named credential literally called **`Mexal`**.
+
+🔴 **The repository has no `namedCredentials/` directory at all**, and no
+`externalCredentials/`. So a **third** named credential now exists only in the
+org, after `Anticipay` and `DocuSign`.
+
+🔴 **This instance is worse than the pattern, because it ships in a file.** The
+previous three were absences — components in the org with no source counterpart,
+which a deploy simply fails to update. This one is a **reference**: a permission
+set in `force-app/` names a principal, and deploying `Full_Permission` into any
+org that does not already hold `Mexal_External_Credential` **fails**. Production
+does not hold it. Neither does a scratch org, nor a fresh sandbox.
+
+**So the org-only pattern has stopped being invisible and started blocking
+deploys** — which is exactly the mechanism this risk predicted, arriving on the
+day Fase 1 development was due to end.
+
+**The ask is unchanged and now urgent:** retrieve `Anticipay`, `DocuSign` and
+`Mexal` — the named credentials, the external credential and its principal — into
+`force-app/` and commit them, **before PR #39 merges**. Endpoint and principal
+configuration only; the secret comes back masked and must stay that way.
+
+## 2026-09-11 — the undeployable reference is now on `DevMain`
+
+Yesterday this risk had just changed character: `Full_Permission` began granting
+`Mexal_External_Credential-Mexal_Principal` while the repository holds **no
+`namedCredentials/` or `externalCredentials/` directory at all**, so the pattern
+stopped being an absence and started breaking deploys. It was then on an
+unmerged pull request.
+
+🔴 **PR #39 merged at 10:27 CEST and PR #41 at 18:05 CEST. It is now in the
+working branch.** `Full_Permission` on `DevMain` names a principal the metadata
+does not contain, and **a clean deploy of `DevMain` to a fresh org fails on that
+permission set** — not on a branch somebody might reject, but on the line
+everything else is built from.
+
+The whole fix is to retrieve the `Mexal`, `Anticipay` and `DocuSign` named
+credentials and their external credentials into `force-app/`. **It is the
+cheapest item on the current risk list and it now blocks the production path
+outright**, with UAT twelve days away and the production org
+(`pienissimo.my.salesforce.com`) provisioned since 3 September and never
+deployed to.
+
+## 2026-09-14 — a third credential, and a second undeployable permission set
+
+The org-status-check against Pienissimo UAT found the pattern widened on both
+sides.
+
+🔴 **Three named credentials are now org-only**, not two: `Anticipay`,
+`DocuSign` and **`Mexal`** (created 2026-09-10). `force-app/` still has **no
+`namedCredentials/` and no `externalCredentials/` directory at all**.
+
+🔴 **Two permission sets now reference an external credential principal that has
+no metadata in this repository**, not one:
+
+| Permission set           | References                                          |
+| ------------------------ | --------------------------------------------------- |
+| `Full_Permission`        | `Mexal_External_Credential-Mexal_Principal`         |
+| `Integration_Management` | `Anticipay_External_Credential-Anticipay Principal` |
+
+Both are on `DevMain`. **A clean deploy of this repository into an empty org
+fails twice**, not once — each permission set names a principal that the deploy
+never creates.
+
+**The fix is unchanged and still nobody's**: retrieve the three external
+credentials and named credentials into source, with their secrets left in the
+org. Until then the repository cannot rebuild the org it describes.
+
+## 2026-09-14 evening — two of the three land in source, with the secrets left behind
+
+`e06a1b4` (PR #43, open and unmerged) creates the two directories this risk has
+asked for since 2 September:
+
+| New file                                                        | Kind                |
+| --------------------------------------------------------------- | ------------------- |
+| `namedCredentials/Mexal.namedCredential-meta.xml`               | Named Credential    |
+| `namedCredentials/Anticipay.namedCredential-meta.xml`           | Named Credential    |
+| `externalCredentials/Mexal_External_Credential...-meta.xml`     | External Credential |
+| `externalCredentials/Anticipay_External_Credential...-meta.xml` | External Credential |
+
+🟢 **It is done correctly.** Both external credentials declare their auth header
+as a **merge-field reference** — `$Credential.<credential>.<parameter>` — so the
+header is assembled at call time from a value held in the org. **No token, no
+password and no bearer value entered the repository**, which is exactly the shape
+this risk asked for: the metadata in source, the secret in the org.
+
+🟢 **`Full_Permission` is no longer undeployable.** The same commit extends the
+permission set alongside the credential metadata it references, so the principal
+the deploy needs is now created by the deploy.
+
+### What is still open
+
+- 🔴 **`DocuSign` is still org-only.** Two of the three named credentials are now
+  in source; the third is not, and it is the one the signature-to-QR chain
+  depends on.
+- 🔴 **`Integration_Management` was not touched.** It still grants
+  `Anticipay_External_Credential-Anticipay Principal`; the external credential
+  that defines that principal now exists in source, so the second deploy failure
+  should resolve with it — ⚠ **unverified, no deploy was attempted.**
+- 🔴 **None of it is on `DevMain`.** PR #43 is open. A clean deploy of `DevMain`
+  today still fails.
+- ⚠ The Mexal auth header carries a literal `Dominio=PIENISSIMO` and the endpoints
+  `https://services.passepartout.cloud` and `https://romi.pienissimo.com` are now
+  in source. Those are endpoint and tenant identifiers, not secrets, and are
+  already in the record; **the Passepartout token itself is not in the
+  repository and must never be**
+  ([the plaintext-circulation risk](Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+
+**Severity drops from high to medium** once PR #43 merges. Until then, unchanged.
+
+## 2026-09-15 — two of three reached `DevMain`; DocuSign did not
+
+PR #43 merged at 08:07:04Z, so `force-app/main/default/namedCredentials/` and
+`externalCredentials/` are on `DevMain` at last, carrying `Mexal` and
+`Anticipay` with their auth headers as merge-field references — **no secret value
+entered the repository**, which is the shape this note asked for.
+
+🟢 **The undeployable-permission-set failure ends.** `Full_Permission` and
+`Integration_Management` reference
+`Mexal_External_Credential-Mexal_Principal`, and the credential now exists in
+source, so a clean deploy no longer fails on it.
+
+🔴 **`DocuSign` is still org-only.** The 2026-09-15 `org-status-check` lists it
+under INT-19 as named and external credential present in UAT and absent from
+source, with the provider requirement itself still open. A rebuild from source
+into a fresh org still loses it.
+
+⚠ **The secrets themselves remain in the org only**, by design. That is correct
+and it is also a single point of failure nobody has written down as a recovery
+procedure. Who can re-enter the Mexal and Anticipay principals if the org is
+rebuilt is not recorded anywhere in this repository.
+
+**Status: in-progress.** It closes when DocuSign is in source too.
+
+## 🟢 2026-09-21 - DocuSign metadata reached source control
+
+**The last org-only credential set is now in the repository**, closing the gap this
+risk has carried since 2 September.
+
+`08b97cc` (Anita Aga, 21/09 18:24:26 CEST, `DevAnitaRecheckAutomations`, **PR #54
+open against `DevMain`**) adds four DocuSign files:
+
+| File                                                                           | What it is                           |
+| ------------------------------------------------------------------------------ | ------------------------------------ |
+| `authproviders/DocuSign.authprovider-meta.xml`                                 | OpenIdConnect auth provider, PKCE on |
+| `externalCredentials/DocuSign_External_Credential.externalCredential-meta.xml` | OAuth, named principal               |
+| `namedCredentials/DocuSign.namedCredential-meta.xml`                           | secured endpoint                     |
+| `permissionsets/DocuSign.permissionset-meta.xml`                               | plus a `Full_Permission` addition    |
+
+✅ **No secret entered the repository.** The `consumerSecret` is the literal
+`Placeholder_Value`, following the merge-field-reference pattern established for
+Mexal and Anticipay on 14/09. Checked by reading the diff.
+
+⚠ **One judgement call for a human.** The auth provider carries a **real DocuSign
+`consumerKey` in cleartext**. A consumer key is an identifier rather than a secret,
+and PKCE is enabled, so it is not a credential leak — but the repository rule is
+categorical about credentials, so **whether it should be a placeholder too is a
+decision, not a defect.** The value is deliberately not reproduced in this note.
+
+⚠ **The endpoints are the DocuSign demo environment** — `account-d.docusign.com`
+and `demo.docusign.net`. So this is pre-provisioning, and **a production endpoint
+and credential swap is owed before 21 October**, with no owner and no date. That is
+the second such rotation in this window: the WooCommerce token is in the same state
+([OI-102](../items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+
+🔴 **The client's own DocuSign credentials are still owed.** Procurement moved on
+21/09 — Elisa Migliano wrote that **the DocuSign contract had arrived** and asked
+for the Salesforce account id to put in it, and Elena Spini supplied the production
+technical user's id and username by mail. Aurel Mrruku is to chase the credentials
+on 22/09
+([the pre-UAT session](../meetings/2026-09-21%20Test%20Interni%20Pre-UAT.md)).
+
+⚠ **A production Salesforce technical user's id and username were circulated by
+mail** on 21/09 11:16Z, to the client and cc the client's own staff. No password was
+sent. **The values are not recorded here.** Noting it because it is the second time
+this project has moved production access details over mail — compare
+[the plaintext-credential risk](Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md).
+
+⚠ This risk stays open, not resolved: PR #54 is **unmerged**, so `DevMain` does not
+carry the DocuSign metadata yet, and the deployed org still holds whatever it holds.
+**The org was not opened in this run.**
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- 🟢 **The metadata part of this risk is closed.** `force-app/` now holds all **three** named credentials and all **three** external credentials (Anticipay, DocuSign, Mexal), and the org has exactly those three named credentials. The `DocuSign` and `Full_Permission` permission sets are on `DevMain` (PR #54 merged). The principals referenced by `Full_Permission` and `Integration_Management` now have metadata in the repository, so the reason a clean deploy failed twice is gone. (inferred: no deploy was run) `Sales_User` is the only project-looking permission set still found only in the org. It was created on 2026-05-13, the day the org was created, so it is probably a platform-provisioned set rather than project work. (inferred)
+- 🔴 **Still open: the production swap.** DocuSign points at the demo environment and WooCommerce at the test token. The client's DocuSign credentials are still owed.

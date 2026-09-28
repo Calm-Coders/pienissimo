@@ -1,0 +1,1128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>Org Status Check — Skill Architecture Review</title>
+    <style>
+      :root {
+        --bg: #fbfbfa;
+        --fg: #1c1c1a;
+        --muted: #6b6b66;
+        --line: #e3e3df;
+        --card: #ffffff;
+        --ok: #2f6f4f;
+        --warn: #8a6413;
+        --risk: #9b3226;
+        --info: #315f8c;
+        --soft: #f3f3ef;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #16161a;
+          --fg: #ececea;
+          --muted: #9a9a95;
+          --line: #2c2c31;
+          --card: #1e1e23;
+          --ok: #7fc0a0;
+          --warn: #d9b168;
+          --risk: #e08b7f;
+          --info: #8cbce6;
+          --soft: #232329;
+        }
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 2.5rem 1.25rem 5rem;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          16px/1.6 ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      main {
+        width: min(76rem, 100%);
+        margin: 0 auto;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        overflow-wrap: anywhere;
+      }
+      h1 {
+        max-width: 18ch;
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.2rem);
+        line-height: 1.02;
+        letter-spacing: -0.045em;
+      }
+      h2 {
+        margin: 0 0 1rem;
+        font-size: clamp(1.35rem, 2.5vw, 2rem);
+        letter-spacing: -0.025em;
+      }
+      h3 {
+        margin: 0 0 0.45rem;
+        font-size: 1rem;
+      }
+      .eyebrow {
+        margin: 0 0 0.75rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .lede {
+        max-width: 61ch;
+        margin: 1.25rem 0 0;
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.75fr);
+        gap: 2rem;
+        align-items: end;
+        padding: 2rem 0 2.5rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .verdict {
+        padding: 1.25rem;
+        border: 1px solid var(--line);
+        border-left: 0.35rem solid var(--ok);
+        border-radius: 0.7rem;
+        background: var(--card);
+      }
+      .verdict strong {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-size: 1.15rem;
+      }
+      section {
+        padding: 2.6rem 0 0;
+      }
+      .stats,
+      .cards,
+      .split {
+        display: grid;
+        gap: 0.8rem;
+      }
+      .stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .split {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .stat,
+      .card {
+        min-width: 0;
+        padding: 1rem 1.1rem;
+        border: 1px solid var(--line);
+        border-radius: 0.65rem;
+        background: var(--card);
+      }
+      .stat .num {
+        display: block;
+        font-size: 1.9rem;
+        font-weight: 680;
+        letter-spacing: -0.035em;
+      }
+      .stat .label,
+      .small,
+      .caption {
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+      .tag {
+        display: inline-block;
+        margin: 0 0.3rem 0.3rem 0;
+        padding: 0.08rem 0.42rem;
+        border: 1px solid currentColor;
+        border-radius: 0.3rem;
+        font-size: 0.72rem;
+        line-height: 1.5;
+        white-space: nowrap;
+      }
+      .ok {
+        color: var(--ok);
+      }
+      .warn {
+        color: var(--warn);
+      }
+      .risk {
+        color: var(--risk);
+      }
+      .info {
+        color: var(--info);
+      }
+      ul,
+      ol {
+        padding-left: 1.2rem;
+      }
+      li + li {
+        margin-top: 0.4rem;
+      }
+      code {
+        padding: 0.08rem 0.28rem;
+        border-radius: 0.25rem;
+        background: var(--soft);
+        font-size: 0.87em;
+        overflow-wrap: anywhere;
+      }
+      .figure {
+        overflow: hidden;
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 0.75rem;
+        background: var(--card);
+      }
+      svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 0.7rem;
+        background: var(--card);
+      }
+      table {
+        width: 100%;
+        min-width: 52rem;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      th,
+      td {
+        padding: 0.7rem 0.75rem;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+        overflow-wrap: anywhere;
+      }
+      th {
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      .recommended {
+        background: color-mix(in srgb, var(--ok) 8%, transparent);
+      }
+      .tree {
+        margin: 0;
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 0.65rem;
+        background: var(--soft);
+        font:
+          0.87rem/1.65 ui-monospace,
+          SFMono-Regular,
+          Consolas,
+          monospace;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      .callout {
+        margin-top: 1rem;
+        padding: 0.9rem 1rem;
+        border-left: 0.25rem solid var(--warn);
+        background: color-mix(in srgb, var(--warn) 9%, transparent);
+      }
+      .step {
+        display: grid;
+        grid-template-columns: 2.2rem minmax(0, 1fr);
+        gap: 0.8rem;
+        align-items: start;
+      }
+      .step + .step {
+        margin-top: 1rem;
+      }
+      .step-num {
+        display: grid;
+        width: 2rem;
+        height: 2rem;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--fg);
+        color: var(--bg);
+        font-weight: 700;
+      }
+      footer {
+        margin-top: 3.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      @media (max-width: 850px) {
+        .hero,
+        .split {
+          grid-template-columns: 1fr;
+        }
+        .stats,
+        .cards {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 520px) {
+        body {
+          padding: 1.3rem 0.85rem 3rem;
+        }
+        .stats,
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Technical design review · 26 August 2026</p>
+          <h1>A smaller skill with stronger evidence</h1>
+          <p class="lede">
+            Redesign <code>org-status-check</code> as an orchestrator over
+            deterministic collectors. Use Graphify and the code index to narrow
+            investigation—not to prove deployed state.
+          </p>
+        </div>
+        <aside class="verdict" id="recommendation">
+          <strong>Recommended: hybrid pipeline</strong>
+          One structured three-way comparison, two optional intelligence aids,
+          and publication separated from the audit itself.
+        </aside>
+      </header>
+
+      <section aria-labelledby="evidence-title">
+        <p class="eyebrow">What the repository proves</p>
+        <h2 id="evidence-title">
+          The current design is expensive because it re-reasons from prose
+        </h2>
+        <div class="stats">
+          <div class="stat" id="stat-lines">
+            <span class="num">278</span>
+            <span class="label">lines in the current monolithic skill</span>
+          </div>
+          <div class="stat" id="stat-first-run">
+            <span class="num">1,246</span>
+            <span class="label">insertions in the 25 Aug org-check commit</span>
+          </div>
+          <div class="stat" id="stat-correction">
+            <span class="num">1,695</span>
+            <span class="label">insertions in the 26 Aug correction run</span>
+          </div>
+          <div class="stat" id="stat-index">
+            <span class="num">1 / 2</span>
+            <span class="label"
+              >intelligence backends healthy in this review</span
+            >
+          </div>
+        </div>
+        <div class="cards" style="margin-top: 0.8rem">
+          <article class="card" id="failure-fls">
+            <span class="tag risk">Observed failure</span>
+            <h3>Field existence was misread</h3>
+            <p>
+              User-level describe hid <code>OrderItem.Tranche__c</code>. The
+              field was deployed but granted to nobody.
+              <code>FieldDefinition</code> is the existence authority;
+              <code>FieldPermissions</code> answers usability.
+            </p>
+          </article>
+          <article class="card" id="failure-graph">
+            <span class="tag warn">Index boundary</span>
+            <h3>Graphify is not an exact inventory</h3>
+            <p>
+              Two source fields share the API name <code>Tranche__c</code>,
+              while the current graph exposes one field node. That is fine for
+              navigation, unsafe as the canonical diff key.
+            </p>
+          </article>
+          <article class="card" id="failure-validation">
+            <span class="tag warn">Validation gap</span>
+            <h3>Build-state references can drift</h3>
+            <p>
+              The register contains build-state refs such as
+              <code>QUO-01</code> and <code>QUO-06</code> without matching
+              requirement IDs. The current vault check validates
+              <code>tracked_by</code>, not build-state refs.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="options-title">
+        <p class="eyebrow">Decision</p>
+        <h2 id="options-title">Three ways to improve it</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Approach</th>
+                <th>Precision</th>
+                <th>Run effort</th>
+                <th>Maintenance</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Instructions-only patch</strong><br /><span
+                    class="small"
+                    >Add Graphify and corrected SOQL guidance to the existing
+                    file.</span
+                  >
+                </td>
+                <td>
+                  Better, but still depends on manual extraction and
+                  interpretation.
+                </td>
+                <td>Still high on every run.</td>
+                <td>Low initial cost; prose keeps accumulating.</td>
+                <td><span class="tag warn">Temporary</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>One large automation script</strong><br /><span
+                    class="small"
+                    >Attempt to classify every requirement automatically.</span
+                  >
+                </td>
+                <td>
+                  Strong for metadata presence; weak for business behavior and
+                  ambiguous requirements.
+                </td>
+                <td>Low once built.</td>
+                <td>High brittleness; false confidence risk.</td>
+                <td><span class="tag risk">Avoid</span></td>
+              </tr>
+              <tr class="recommended">
+                <td>
+                  <strong>Hybrid orchestrator</strong><br /><span class="small"
+                    >Deterministic snapshots and diff; model investigates
+                    exceptions.</span
+                  >
+                </td>
+                <td>
+                  Strong, because structural facts and judgments remain
+                  separate.
+                </td>
+                <td>Low for repeat runs; focused investigation only.</td>
+                <td>Moderate and testable.</td>
+                <td><span class="tag ok">Recommended</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="architecture-title">
+        <p class="eyebrow">Target architecture</p>
+        <h2 id="architecture-title">
+          Three authorities in, one evidence matrix out
+        </h2>
+        <figure class="figure" id="architecture-figure">
+          <svg
+            viewBox="0 0 1120 510"
+            role="img"
+            aria-labelledby="arch-title arch-desc"
+          >
+            <title id="arch-title">
+              Recommended org-status-check architecture
+            </title>
+            <desc id="arch-desc">
+              Requirements, repository, and live org feed deterministic
+              collectors. Graphify and Open Codebase Index assist exception
+              investigation. A comparison engine produces an evidence matrix
+              that can optionally update project records and publication
+              surfaces.
+            </desc>
+            <defs>
+              <marker
+                id="arrow"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="7"
+                markerHeight="7"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+              </marker>
+            </defs>
+            <g
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              opacity="0.58"
+              marker-end="url(#arrow)"
+            >
+              <path d="M230 100 C320 100 330 190 410 190" />
+              <path d="M230 245 C320 245 330 230 410 230" />
+              <path d="M230 390 C320 390 330 270 410 270" />
+              <path d="M625 230 L720 230" />
+              <path d="M870 230 C940 230 950 120 1010 120" />
+              <path d="M870 230 L1010 230" />
+              <path d="M870 230 C940 230 950 340 1010 340" />
+            </g>
+            <g font-family="ui-sans-serif,system-ui" fill="currentColor">
+              <g id="node-requirements">
+                <title>Requirements authority</title>
+                <rect
+                  x="25"
+                  y="45"
+                  width="205"
+                  height="110"
+                  rx="14"
+                  fill="var(--card)"
+                  stroke="var(--line)"
+                />
+                <text x="48" y="82" font-size="17" font-weight="700">
+                  Requirements
+                </text>
+                <text x="48" y="110" font-size="13" fill="var(--muted)">
+                  Register + atomic notes
+                </text>
+                <text x="48" y="133" font-size="12" fill="var(--muted)">
+                  Expected reality
+                </text>
+              </g>
+              <g id="node-repository">
+                <title>Repository authority</title>
+                <rect
+                  x="25"
+                  y="190"
+                  width="205"
+                  height="110"
+                  rx="14"
+                  fill="var(--card)"
+                  stroke="var(--line)"
+                />
+                <text x="48" y="227" font-size="17" font-weight="700">
+                  Repository
+                </text>
+                <text x="48" y="255" font-size="13" fill="var(--muted)">
+                  Exact XML + source hashes
+                </text>
+                <text x="48" y="278" font-size="12" fill="var(--muted)">
+                  Repository claim
+                </text>
+              </g>
+              <g id="node-org">
+                <title>Live org authority</title>
+                <rect
+                  x="25"
+                  y="335"
+                  width="205"
+                  height="110"
+                  rx="14"
+                  fill="var(--card)"
+                  stroke="var(--line)"
+                />
+                <text x="48" y="372" font-size="17" font-weight="700">
+                  Live UAT org
+                </text>
+                <text x="48" y="400" font-size="13" fill="var(--muted)">
+                  Metadata + Tooling + aggregates
+                </text>
+                <text x="48" y="423" font-size="12" fill="var(--muted)">
+                  Deployed reality
+                </text>
+              </g>
+              <g id="node-collectors">
+                <title>Deterministic collectors</title>
+                <rect
+                  x="410"
+                  y="145"
+                  width="215"
+                  height="170"
+                  rx="18"
+                  fill="var(--soft)"
+                  stroke="var(--info)"
+                  stroke-width="2"
+                />
+                <text x="437" y="183" font-size="18" font-weight="700">
+                  Deterministic collectors
+                </text>
+                <text x="437" y="214" font-size="13">
+                  Canonical component keys
+                </text>
+                <text x="437" y="239" font-size="13">
+                  JSON-only CLI parsing
+                </text>
+                <text x="437" y="264" font-size="13">
+                  Source + timestamp provenance
+                </text>
+                <text x="437" y="289" font-size="13">
+                  No behavioral guessing
+                </text>
+              </g>
+              <g id="node-matrix">
+                <title>Evidence matrix</title>
+                <rect
+                  x="720"
+                  y="155"
+                  width="150"
+                  height="150"
+                  rx="75"
+                  fill="var(--card)"
+                  stroke="var(--ok)"
+                  stroke-width="3"
+                />
+                <text
+                  x="795"
+                  y="214"
+                  font-size="17"
+                  font-weight="700"
+                  text-anchor="middle"
+                >
+                  Evidence
+                </text>
+                <text
+                  x="795"
+                  y="238"
+                  font-size="17"
+                  font-weight="700"
+                  text-anchor="middle"
+                >
+                  matrix
+                </text>
+                <text
+                  x="795"
+                  y="267"
+                  font-size="12"
+                  fill="var(--muted)"
+                  text-anchor="middle"
+                >
+                  3 independent axes
+                </text>
+              </g>
+              <g id="node-report">
+                <title>Read-only report output</title>
+                <rect
+                  x="960"
+                  y="70"
+                  width="145"
+                  height="100"
+                  rx="14"
+                  fill="var(--card)"
+                  stroke="var(--line)"
+                />
+                <text
+                  x="1032"
+                  y="108"
+                  font-size="16"
+                  font-weight="700"
+                  text-anchor="middle"
+                >
+                  Report
+                </text>
+                <text
+                  x="1032"
+                  y="135"
+                  font-size="12"
+                  fill="var(--muted)"
+                  text-anchor="middle"
+                >
+                  Default output
+                </text>
+              </g>
+              <g id="node-record">
+                <title>Repository reconciliation output</title>
+                <rect
+                  x="960"
+                  y="180"
+                  width="145"
+                  height="100"
+                  rx="14"
+                  fill="var(--card)"
+                  stroke="var(--line)"
+                />
+                <text
+                  x="1032"
+                  y="218"
+                  font-size="16"
+                  font-weight="700"
+                  text-anchor="middle"
+                >
+                  Reconcile
+                </text>
+                <text
+                  x="1032"
+                  y="245"
+                  font-size="12"
+                  fill="var(--muted)"
+                  text-anchor="middle"
+                >
+                  On request
+                </text>
+              </g>
+              <g id="node-publish">
+                <title>Publication output</title>
+                <rect
+                  x="960"
+                  y="290"
+                  width="145"
+                  height="100"
+                  rx="14"
+                  fill="var(--card)"
+                  stroke="var(--line)"
+                />
+                <text
+                  x="1032"
+                  y="328"
+                  font-size="16"
+                  font-weight="700"
+                  text-anchor="middle"
+                >
+                  Publish
+                </text>
+                <text
+                  x="1032"
+                  y="355"
+                  font-size="12"
+                  fill="var(--muted)"
+                  text-anchor="middle"
+                >
+                  Explicit stage
+                </text>
+              </g>
+              <g id="assist-label">
+                <title>Optional intelligence assistance</title>
+                <text
+                  x="517"
+                  y="348"
+                  font-size="12"
+                  fill="var(--muted)"
+                  text-anchor="middle"
+                >
+                  Exception investigation only
+                </text>
+                <rect
+                  x="410"
+                  y="366"
+                  width="100"
+                  height="48"
+                  rx="10"
+                  fill="var(--card)"
+                  stroke="var(--warn)"
+                />
+                <text x="460" y="396" font-size="13" text-anchor="middle">
+                  Graphify
+                </text>
+                <rect
+                  x="525"
+                  y="366"
+                  width="100"
+                  height="48"
+                  rx="10"
+                  fill="var(--card)"
+                  stroke="var(--warn)"
+                />
+                <text x="575" y="387" font-size="12" text-anchor="middle">
+                  Code index
+                </text>
+                <text
+                  x="575"
+                  y="403"
+                  font-size="10"
+                  fill="var(--muted)"
+                  text-anchor="middle"
+                >
+                  or rg fallback
+                </text>
+              </g>
+            </g>
+          </svg>
+          <figcaption class="caption">
+            The indexes accelerate discovery. Only exact metadata, Tooling API
+            results, targeted aggregates, and cited source files become
+            evidence.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section aria-labelledby="model-title">
+        <p class="eyebrow">Precision model</p>
+        <h2 id="model-title">
+          Replace one overloaded verdict with three independent axes
+        </h2>
+        <div class="cards">
+          <article class="card" id="axis-compliance">
+            <span class="tag info">Axis 1</span>
+            <h3>Requirement compliance</h3>
+            <p>Matches · partial · divergent · missing · unverifiable</p>
+          </article>
+          <article class="card" id="axis-drift">
+            <span class="tag info">Axis 2</span>
+            <h3>Deployment drift</h3>
+            <p>Aligned · repository-only · org-only · content mismatch</p>
+          </article>
+          <article class="card" id="axis-operability">
+            <span class="tag info">Axis 3</span>
+            <h3>Operability</h3>
+            <p>
+              Usable · permission-blocked · unconfigured · uncovered · unproven
+            </p>
+          </article>
+        </div>
+        <div class="callout" id="tranche-example">
+          <strong>Why this matters:</strong>
+          <code>OrderItem.Tranche__c</code> is not “missing.” It is
+          <em>present and aligned</em>, while its operability is
+          <em>permission-blocked</em> and its behavior is
+          <em>unimplemented</em>.
+        </div>
+      </section>
+
+      <section aria-labelledby="structure-title">
+        <p class="eyebrow">Proposed files</p>
+        <h2 id="structure-title">
+          Keep the entrypoint short; put mechanics in shared resources
+        </h2>
+        <div class="split">
+          <pre class="tree" id="file-tree">
+.agents/skills/org-status-check/
+└── SKILL.md                 # 90–120 line router
+
+docs/org-status-check/
+├── evidence-model.md       # authority + verdict rules
+├── live-org-queries.md     # exact read-only query catalogue
+├── reconciliation.md       # notes/register/rendered views
+└── publishing.md           # STATUS, Notion, public site
+
+scripts/org-status/
+├── snapshot-org.mjs        # live org → normalized JSON
+├── snapshot-repo.mjs       # exact XML/source → normalized JSON
+├── build-checklist.mjs     # requirement assertions
+├── compare.mjs             # three-way evidence matrix
+└── validate.mjs            # refs, evidence, output invariants
+
+requirements/
+└── org-verification.yaml   # executable mappings, not requirement text
+
+.org-status-cache/          # gitignored run snapshots</pre>
+          <div>
+            <article class="card" id="why-shared">
+              <h3>Why shared project resources?</h3>
+              <p>
+                This repository mirrors skills under <code>.agents</code> and
+                <code>.claude</code>. Keeping scripts and detailed references at
+                project level avoids duplicating implementation while both
+                clients retain a discoverable <code>SKILL.md</code>.
+              </p>
+            </article>
+            <article
+              class="card"
+              id="verification-sidecar"
+              style="margin-top: 0.8rem"
+            >
+              <h3>Why a verification sidecar?</h3>
+              <p>
+                It maps requirement IDs to component assertions without
+                rewriting the contract-bound requirement text. Expected values
+                should reference structured paths in the register where
+                possible, not duplicate them.
+              </p>
+            </article>
+            <article
+              class="card"
+              id="generated-cache"
+              style="margin-top: 0.8rem"
+            >
+              <h3>Why a generated cache?</h3>
+              <p>
+                A timestamped snapshot supports delta runs and reproducible
+                evidence. Store schemas, names, hashes, counts, and status
+                distributions—never credentials, catalogue values, or personal
+                records.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="workflow-title">
+        <p class="eyebrow">Recommended SKILL.md workflow</p>
+        <h2 id="workflow-title">
+          Eight decisions, not hundreds of ad hoc searches
+        </h2>
+        <div class="split">
+          <div>
+            <div class="step" id="step-mode">
+              <span class="step-num">1</span>
+              <div>
+                <h3>Select scope and side effects</h3>
+                <p>
+                  Targeted or full; report, reconcile, or publish.
+                  Natural-language status questions default to targeted/report.
+                </p>
+              </div>
+            </div>
+            <div class="step" id="step-preflight">
+              <span class="step-num">2</span>
+              <div>
+                <h3>Preflight</h3>
+                <p>
+                  Confirm UAT alias and org ID, branch, working tree, previous
+                  watermark, Graphify health, and optional code-index health.
+                </p>
+              </div>
+            </div>
+            <div class="step" id="step-checklist">
+              <span class="step-num">3</span>
+              <div>
+                <h3>Build the checklist</h3>
+                <p>
+                  Resolve machine-checkable assertions; mark unmapped or
+                  behavioral requirements unverifiable rather than guessing.
+                </p>
+              </div>
+            </div>
+            <div class="step" id="step-snapshot">
+              <span class="step-num">4</span>
+              <div>
+                <h3>Collect two exact snapshots</h3>
+                <p>
+                  Parse repository XML directly. Query the live org with JSON
+                  output, FieldDefinition, FieldPermissions, coverage, and
+                  scoped aggregate checks.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="step" id="step-diff">
+              <span class="step-num">5</span>
+              <div>
+                <h3>Compare deterministically</h3>
+                <p>
+                  Generate compliance, drift, and operability axes using
+                  canonical keys such as
+                  <code>field:OrderItem.Tranche__c</code>.
+                </p>
+              </div>
+            </div>
+            <div class="step" id="step-investigate">
+              <span class="step-num">6</span>
+              <div>
+                <h3>Investigate exceptions</h3>
+                <p>
+                  Use Graphify for Salesforce dependency context and the code
+                  index for code paths. Verify every lead against metadata or
+                  source.
+                </p>
+              </div>
+            </div>
+            <div class="step" id="step-output">
+              <span class="step-num">7</span>
+              <div>
+                <h3>Produce only the requested output</h3>
+                <p>
+                  Report by default. Reconcile repository records or publish
+                  external mirrors only in the matching mode.
+                </p>
+              </div>
+            </div>
+            <div class="step" id="step-validate">
+              <span class="step-num">8</span>
+              <div>
+                <h3>Validate invariants</h3>
+                <p>
+                  No org writes, no <code>force-app</code> changes, valid refs,
+                  permitted file diff, vault check, formatting, and public leak
+                  check when publishing.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="tools-title">
+        <p class="eyebrow">Tool routing</p>
+        <h2 id="tools-title">Use each tool where it is strongest</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Primary evidence</th>
+                <th>Assistance</th>
+                <th>Never infer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Does a field exist?</td>
+                <td>Tooling <code>FieldDefinition</code></td>
+                <td>Exact repository XML</td>
+                <td>Existence from user-level describe</td>
+              </tr>
+              <tr>
+                <td>Can users access it?</td>
+                <td><code>FieldPermissions</code> + object permissions</td>
+                <td>Graphify permission edges, then verify</td>
+                <td>Usability from existence</td>
+              </tr>
+              <tr>
+                <td>What is deployed?</td>
+                <td>Live Metadata/Tooling API snapshot</td>
+                <td>Scoped isolated metadata retrieve if adopted</td>
+                <td>Deployment from <code>force-app</code></td>
+              </tr>
+              <tr>
+                <td>What does repository code do?</td>
+                <td>Cited Apex/LWC/XML source</td>
+                <td>Code index + Graphify call/impact paths</td>
+                <td>Behavior from semantic similarity</td>
+              </tr>
+              <tr>
+                <td>Is behavior working?</td>
+                <td>
+                  Configured automation plus targeted aggregate/runtime evidence
+                </td>
+                <td>Order-of-execution and impact analysis</td>
+                <td>Working behavior from component presence</td>
+              </tr>
+              <tr>
+                <td>Is something absent?</td>
+                <td>Authoritative type-specific inventory</td>
+                <td><code>rg</code> for exact exhaustive repository search</td>
+                <td>A negative from an incomplete index</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="implementation-title">
+        <p class="eyebrow">Implementation sequence</p>
+        <h2 id="implementation-title">
+          Build the safety rails before the automation
+        </h2>
+        <div class="cards">
+          <article class="card" id="phase-one">
+            <span class="tag info">Phase 1</span>
+            <h3>Refactor instructions</h3>
+            <p>
+              Introduce scope/output modes, evidence authority, FLS-safe field
+              checks, index degradation, and remove the stale hardcoded date.
+            </p>
+          </article>
+          <article class="card" id="phase-two">
+            <span class="tag info">Phase 2</span>
+            <h3>Add snapshot + validator</h3>
+            <p>
+              Normalize JSON, canonical keys, provenance, requirement-ref
+              validation, and fixtures for known failures.
+            </p>
+          </article>
+          <article class="card" id="phase-three">
+            <span class="tag info">Phase 3</span>
+            <h3>Add deterministic diff</h3>
+            <p>
+              Automate structural verdicts and produce the evidence matrix.
+              Leave behavior and ambiguity to targeted review.
+            </p>
+          </article>
+          <article class="card" id="phase-four">
+            <span class="tag info">Phase 4</span>
+            <h3>Reduce rendering churn</h3>
+            <p>
+              Generate affected sections from structured results and enforce a
+              changed-file allowlist and diff-size warning.
+            </p>
+          </article>
+          <article class="card" id="phase-five">
+            <span class="tag info">Phase 5</span>
+            <h3>Forward-test</h3>
+            <p>
+              Run read-only fixtures and a live UAT audit; verify no source or
+              org mutation and no repeated false negatives.
+            </p>
+          </article>
+          <article class="card" id="phase-six">
+            <span class="tag info">Phase 6</span>
+            <h3>Propagate</h3>
+            <p>
+              Synchronize the <code>.agents</code>/<code>.claude</code> copies
+              and update the <code>start-sf-projects</code> templates only after
+              the Pienissimo version proves stable.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="tests-title">
+        <p class="eyebrow">Acceptance tests</p>
+        <h2 id="tests-title">Failures the redesigned skill must survive</h2>
+        <div class="split">
+          <ul class="card" id="test-list-a">
+            <li>
+              Field exists but has zero human FLS grants → present +
+              permission-blocked.
+            </li>
+            <li>
+              Same field API name on two objects → two independent canonical
+              keys.
+            </li>
+            <li>
+              Repository-only and org-only components → drift classified
+              separately.
+            </li>
+            <li>
+              Picklist changed while records retain inactive values → configured
+              + data-divergent.
+            </li>
+          </ul>
+          <ul class="card" id="test-list-b">
+            <li>
+              Code index unavailable → <code>rg</code> fallback, no blocked
+              audit.
+            </li>
+            <li>
+              Live org unavailable → repository-only report, no status mutation.
+            </li>
+            <li>Unknown requirement/build-state ref → validation failure.</li>
+            <li>
+              Publish mode → public leak check passes and Notion is re-fetched
+              after write.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <footer>
+        Design source: the project’s existing
+        <code>site/index.html</code> palette and typography, reused because this
+        artifact documents the same project. Evidence reviewed from the current
+        skill, the 25/26 August org-check commits, the schema-reading note,
+        Graphify output, code-index health, the requirements register, and the
+        vault validator. No project records were changed.
+      </footer>
+    </main>
+  </body>
+</html>

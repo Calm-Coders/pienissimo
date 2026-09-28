@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dettaglio_Motivazione_Uscita__c</fullName>
+    <description>Motivo specifico di uscita del Lead, dipendente dalla Motivazione Uscita selezionata.</description>
+    <label>Dettaglio Motivazione Uscita</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Motivazione_Uscita__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Non interessato</fullName>
+                <default>false</default>
+                <label>Non interessato</label>
+            </value>
+            <value>
+                <fullName>Prezzo alto</fullName>
+                <default>false</default>
+                <label>Prezzo alto</label>
+            </value>
+            <value>
+                <fullName>Sceglie concorrenza</fullName>
+                <default>false</default>
+                <label>Sceglie concorrenza</label>
+            </value>
+            <value>
+                <fullName>Servizio non adatto</fullName>
+                <default>false</default>
+                <label>Servizio non adatto</label>
+            </value>
+            <value>
+                <fullName>Ha già P.Pro</fullName>
+                <default>false</default>
+                <label>Ha già P.Pro</label>
+            </value>
+            <value>
+                <fullName>Già in contatto</fullName>
+                <default>false</default>
+                <label>Già in contatto</label>
+            </value>
+            <value>
+                <fullName>Dati per il contatto inesatti</fullName>
+                <default>false</default>
+                <label>Dati per il contatto inesatti</label>
+            </value>
+            <value>
+                <fullName>Duplicato da CRM</fullName>
+                <default>false</default>
+                <label>Duplicato da CRM</label>
+            </value>
+            <value>
+                <fullName>Non in target</fullName>
+                <default>false</default>
+                <label>Non in target</label>
+            </value>
+            <value>
+                <fullName>Richiesta inviata per errore</fullName>
+                <default>false</default>
+                <label>Richiesta inviata per errore</label>
+            </value>
+            <value>
+                <fullName>SW House, Ag. Marketing, Web Agency</fullName>
+                <default>false</default>
+                <label>SW House, Ag. Marketing, Web Agency</label>
+            </value>
+            <value>
+                <fullName>Test</fullName>
+                <default>false</default>
+                <label>Test</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Perso</controllingFieldValue>
+            <valueName>Non interessato</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Perso</controllingFieldValue>
+            <valueName>Prezzo alto</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Perso</controllingFieldValue>
+            <valueName>Sceglie concorrenza</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Perso</controllingFieldValue>
+            <valueName>Servizio non adatto</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Errato</controllingFieldValue>
+            <valueName>Ha già P.Pro</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Errato</controllingFieldValue>
+            <valueName>Già in contatto</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Errato</controllingFieldValue>
+            <valueName>Dati per il contatto inesatti</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Errato</controllingFieldValue>
+            <valueName>Duplicato da CRM</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Errato</controllingFieldValue>
+            <valueName>Non in target</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Errato</controllingFieldValue>
+            <valueName>Richiesta inviata per errore</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Errato</controllingFieldValue>
+            <valueName>SW House, Ag. Marketing, Web Agency</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Errato</controllingFieldValue>
+            <valueName>Test</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

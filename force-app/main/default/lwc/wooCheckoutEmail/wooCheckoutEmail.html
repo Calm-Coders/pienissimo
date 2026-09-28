@@ -1,0 +1,73 @@
+<template>
+  <lightning-quick-action-panel header="Invia email checkout">
+    <div class="content">
+      <template if:true={isOpportunityLoading}>
+        <div class="initial-loader">
+          <lightning-spinner
+            alternative-text="Caricamento"
+            size="medium"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:false={isOpportunityLoading}>
+        <template if:true={opportunityErrorMessage}>
+          <div class="message error">{opportunityErrorMessage}</div>
+        </template>
+
+        <template if:false={opportunityErrorMessage}>
+          <div class="summary">
+            <div>
+              <div class="summary-label">Opportunita</div>
+              <div class="summary-value">{opportunityName}</div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <lightning-input
+              type="email"
+              label="Email destinatario"
+              message-when-value-missing="Inserisci l'email del destinatario."
+              message-when-type-mismatch="Inserisci un indirizzo email valido."
+              value={recipientEmail}
+              onchange={handleRecipientEmailChange}
+              required
+            ></lightning-input>
+          </div>
+
+          <div class="email-summary">
+            <div>
+              <div class="summary-label">Link checkout</div>
+              <template if:true={hasCheckoutLink}>
+                <div class="summary-value">{checkoutLink}</div>
+              </template>
+              <template if:false={hasCheckoutLink}>
+                <div class="message error">
+                  Genera e salva il link checkout prima di inviare questa email.
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <template if:true={validationMessage}>
+            <div class="message error">{validationMessage}</div>
+          </template>
+        </template>
+      </template>
+    </div>
+
+    <div slot="footer">
+      <lightning-button
+        label="Annulla"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        variant="brand"
+        label={sendButtonLabel}
+        disabled={isOpenEmailDisabled}
+        onclick={handleSendEmail}
+        class="slds-m-left_small"
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>

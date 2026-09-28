@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tranche__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Tranche di pagamento a cui appartiene la riga di preventivo.</description>
+    <label>Tranche</label>
+    <referenceTo>Tranche__c</referenceTo>
+    <relationshipLabel>Righe Preventivo</relationshipLabel>
+    <relationshipName>Righe_Preventivo</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

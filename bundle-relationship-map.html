@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pienissimo Bundle Relationships</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --background: light-dark(#f4f6f4, #101512);
+        --foreground: light-dark(#17211c, #e8f0eb);
+        --muted: light-dark(#e7ebe8, #202a24);
+        --muted-foreground: light-dark(#637069, #a7b4ac);
+        --border: light-dark(#cbd3ce, #3d4942);
+        --start: light-dark(#986b10, #d9ad50);
+        --growth: light-dark(#056866, #58b9b6);
+        --shared: light-dark(#6650a4, #b8a4ee);
+        --surface: light-dark(#ffffff, #171e1a);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        margin: 0;
+        padding: 32px 20px;
+      }
+
+      main {
+        margin: 0 auto;
+        max-width: 1120px;
+      }
+
+      h1 {
+        font-size: clamp(24px, 4vw, 38px);
+        font-weight: 500;
+        margin: 0;
+      }
+
+      .subtitle {
+        color: var(--muted-foreground);
+        margin: 8px 0 20px;
+      }
+
+      .controls {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .controls span {
+        color: var(--muted-foreground);
+        margin-right: 4px;
+      }
+
+      button {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--foreground);
+        cursor: pointer;
+        font: inherit;
+        padding: 7px 14px;
+      }
+
+      button[aria-pressed="true"] {
+        background: var(--foreground);
+        border-color: var(--foreground);
+        color: var(--background);
+      }
+
+      button:focus-visible {
+        outline: 3px solid var(--shared);
+        outline-offset: 2px;
+      }
+
+      .diagram {
+        display: block;
+        height: auto;
+        width: 100%;
+      }
+
+      .diagram text {
+        fill: var(--foreground);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 11px;
+        font-weight: 400;
+      }
+
+      .diagram .column-label {
+        fill: var(--muted-foreground);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+      }
+
+      .diagram .title,
+      .diagram .value {
+        font-weight: 500;
+      }
+
+      .diagram .title {
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+
+      .diagram .meta {
+        fill: var(--muted-foreground);
+      }
+
+      .diagram .relation {
+        fill: none;
+        stroke-width: 1.5;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .diagram .relation.start {
+        stroke: var(--start);
+      }
+
+      .diagram .relation.growth {
+        stroke: var(--growth);
+      }
+
+      .diagram .bundle rect,
+      .diagram .component rect,
+      .diagram .item rect {
+        fill: var(--surface);
+        stroke-width: 1.4;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .diagram .start rect {
+        stroke: var(--start);
+      }
+
+      .diagram .growth rect {
+        stroke: var(--growth);
+      }
+
+      .diagram .shared rect {
+        fill: color-mix(in srgb, var(--shared) 9%, var(--surface));
+        stroke: var(--shared);
+      }
+
+      .diagram .exclusive rect {
+        stroke: var(--border);
+      }
+
+      [data-owner],
+      [data-owners] {
+        transition: opacity 180ms ease;
+      }
+
+      .dimmed {
+        opacity: 0.1;
+      }
+
+      .summary {
+        color: var(--muted-foreground);
+        font-size: 13px;
+        margin-top: 8px;
+        text-align: center;
+      }
+
+      .mobile-list {
+        display: none;
+      }
+
+      @media (max-width: 560px) {
+        body {
+          padding: 24px 16px;
+        }
+
+        .diagram {
+          display: none;
+        }
+
+        .mobile-list {
+          display: block;
+        }
+
+        .mobile-list section + section {
+          margin-top: 24px;
+        }
+
+        .mobile-list h2 {
+          font-size: 17px;
+          font-weight: 500;
+          margin: 0 0 8px;
+        }
+
+        .mobile-list ul {
+          margin: 0;
+          padding-left: 20px;
+        }
+
+        .mobile-list li + li {
+          margin-top: 7px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        [data-owner],
+        [data-owners] {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Shared bundle relationships</h1>
+      <p class="subtitle">
+        Pienissimo UAT · Product2 → BundleComponent__c → Product2
+      </p>
+
+      <div class="controls" aria-label="Bundle filters">
+        <span>Highlight</span>
+        <button type="button" data-view="all" aria-pressed="true">All</button>
+        <button type="button" data-view="start" aria-pressed="false">
+          Start
+        </button>
+        <button type="button" data-view="growth" aria-pressed="false">
+          Growth
+        </button>
+      </div>
+
+      <svg
+        id="relationship-map"
+        class="diagram"
+        viewBox="0 0 736 640"
+        role="img"
+        aria-labelledby="map-title map-description"
+      >
+        <title id="map-title">Pienissimo shared bundle relationship map</title>
+        <desc id="map-description">
+          Two bundles connect through eight BundleComponent records to five
+          items. Three items are shared by both bundles. Each bundle has zero
+          spread variance.
+        </desc>
+      </svg>
+
+      <div
+        id="mobile-list"
+        class="mobile-list"
+        aria-label="Bundle relationships"
+      ></div>
+      <div id="summary" class="summary" aria-live="polite">
+        8 relationships · 3 shared items · both bundles reconcile
+      </div>
+    </main>
+
+    <script>
+      const svg = document.getElementById("relationship-map");
+      const mobileList = document.getElementById("mobile-list");
+      const summary = document.getElementById("summary");
+      const namespace = "http://www.w3.org/2000/svg";
+
+      const bundles = [
+        { key: "start", name: "START PIENISSIMO", y: 95, price: 3000 },
+        { key: "growth", name: "GROWTH PIENISSIMO", y: 418, price: 4200 }
+      ];
+
+      const items = [
+        {
+          key: "year",
+          name: ["UN ANNO CON PIENISSIMO"],
+          y: 50,
+          height: 72,
+          list: 6900,
+          spread: 3800,
+          owners: ["start", "growth"]
+        },
+        {
+          key: "platform",
+          name: ["PIATTAFORMA PIENISSIMO", "1 ANNO"],
+          y: 160,
+          height: 82,
+          list: 2400,
+          spread: 1800,
+          owners: ["start", "growth"]
+        },
+        {
+          key: "book",
+          name: ["LIBRO · METODO PIENISSIMO"],
+          y: 280,
+          height: 72,
+          list: 25,
+          spread: 50,
+          owners: ["start", "growth"]
+        },
+        {
+          key: "live",
+          name: ["PIENISSIMO LIVE"],
+          y: 465,
+          height: 72,
+          list: 900,
+          spread: 675,
+          owners: ["start"]
+        },
+        {
+          key: "festival",
+          name: ["FOOD MARKETING FESTIVAL"],
+          y: 560,
+          height: 72,
+          list: 1000,
+          spread: 875,
+          owners: ["growth"]
+        }
+      ];
+
+      const components = [
+        { id: "BC-0049", owner: "start", y: 52, spread: 1500, item: "year" },
+        {
+          id: "BC-0051",
+          owner: "start",
+          y: 122,
+          spread: 800,
+          item: "platform"
+        },
+        { id: "BC-0053", owner: "start", y: 192, spread: 25, item: "book" },
+        { id: "BC-0055", owner: "start", y: 262, spread: 675, item: "live" },
+        { id: "BC-0050", owner: "growth", y: 352, spread: 2300, item: "year" },
+        {
+          id: "BC-0052",
+          owner: "growth",
+          y: 422,
+          spread: 1000,
+          item: "platform"
+        },
+        { id: "BC-0054", owner: "growth", y: 492, spread: 25, item: "book" },
+        {
+          id: "BC-0056",
+          owner: "growth",
+          y: 562,
+          spread: 875,
+          item: "festival"
+        }
+      ];
+
+      const formatMoney = (value) =>
+        new Intl.NumberFormat("en-IE", {
+          style: "currency",
+          currency: "EUR",
+          maximumFractionDigits: 0
+        }).format(value);
+
+      const add = (tag, attributes, parent = svg, text = "") => {
+        const element = document.createElementNS(namespace, tag);
+        Object.entries(attributes).forEach(([name, value]) =>
+          element.setAttribute(name, value)
+        );
+        if (text) element.textContent = text;
+        parent.appendChild(element);
+        return element;
+      };
+
+      const addText = (parent, className, x, y, text, anchor = "start") =>
+        add(
+          "text",
+          { class: className, x, y, "text-anchor": anchor },
+          parent,
+          text
+        );
+
+      addText(svg, "column-label", 10, 24, "PRODUCT2 · BUNDLE");
+      addText(svg, "column-label", 280, 24, "BUNDLECOMPONENT__C");
+      addText(svg, "column-label", 530, 24, "PRODUCT2 · ITEM");
+
+      const bundlesByKey = Object.fromEntries(
+        bundles.map((bundle) => [bundle.key, bundle])
+      );
+      const itemsByKey = Object.fromEntries(
+        items.map((item) => [item.key, item])
+      );
+
+      components.forEach((component) => {
+        const bundle = bundlesByKey[component.owner];
+        const item = itemsByKey[component.item];
+        const componentCenter = component.y + 26;
+        const bundleCenter = bundle.y + 56;
+        const itemCenter = item.y + item.height / 2;
+
+        add("path", {
+          class: `relation ${component.owner}`,
+          "data-owner": component.owner,
+          d: `M195 ${bundleCenter} C235 ${bundleCenter} 240 ${componentCenter} 280 ${componentCenter}`
+        });
+        add("path", {
+          class: `relation ${component.owner}`,
+          "data-owner": component.owner,
+          d: `M460 ${componentCenter} C500 ${componentCenter} 490 ${itemCenter} 530 ${itemCenter}`
+        });
+      });
+
+      bundles.forEach((bundle) => {
+        const group = add("g", {
+          class: `bundle ${bundle.key}`,
+          "data-owner": bundle.key
+        });
+        add(
+          "rect",
+          { x: 10, y: bundle.y, width: 185, height: 112, rx: 5 },
+          group
+        );
+        addText(group, "title", 25, bundle.y + 26, bundle.name);
+        addText(group, "meta", 25, bundle.y + 53, "fixed price");
+        addText(
+          group,
+          "value",
+          179,
+          bundle.y + 53,
+          formatMoney(bundle.price),
+          "end"
+        );
+        addText(group, "meta", 25, bundle.y + 76, "spread total");
+        addText(
+          group,
+          "value",
+          179,
+          bundle.y + 76,
+          formatMoney(bundle.price),
+          "end"
+        );
+        addText(group, "meta", 25, bundle.y + 99, "variance");
+        addText(group, "value", 179, bundle.y + 99, formatMoney(0), "end");
+      });
+
+      components.forEach((component) => {
+        const group = add("g", {
+          class: `component ${component.owner}`,
+          "data-owner": component.owner
+        });
+        add(
+          "rect",
+          { x: 280, y: component.y, width: 180, height: 52, rx: 4 },
+          group
+        );
+        addText(
+          group,
+          "meta",
+          294,
+          component.y + 18,
+          `${component.id} · qty 1`
+        );
+        addText(group, "meta", 294, component.y + 39, "spread");
+        addText(
+          group,
+          "value",
+          446,
+          component.y + 39,
+          formatMoney(component.spread),
+          "end"
+        );
+      });
+
+      items.forEach((item) => {
+        const shared = item.owners.length > 1;
+        const group = add("g", {
+          class: `item ${shared ? "shared" : "exclusive"}`,
+          "data-owners": item.owners.join(" ")
+        });
+        add(
+          "rect",
+          { x: 530, y: item.y, width: 196, height: item.height, rx: 4 },
+          group
+        );
+        item.name.forEach((line, index) =>
+          addText(group, "title", 544, item.y + 22 + index * 17, line)
+        );
+        const labelY = item.y + (item.name.length === 1 ? 43 : 60);
+        addText(
+          group,
+          shared ? "value" : "meta",
+          544,
+          labelY,
+          shared ? "SHARED · 2 BUNDLES" : `${item.owners[0].toUpperCase()} ONLY`
+        );
+        addText(
+          group,
+          "meta",
+          544,
+          labelY + 18,
+          `list ${formatMoney(item.list)} · spread ${formatMoney(item.spread)}`
+        );
+      });
+
+      bundles.forEach((bundle) => {
+        const section = document.createElement("section");
+        section.dataset.owner = bundle.key;
+        const heading = document.createElement("h2");
+        heading.textContent = `${bundle.name} · ${formatMoney(bundle.price)} · variance ${formatMoney(0)}`;
+        const list = document.createElement("ul");
+        components
+          .filter((component) => component.owner === bundle.key)
+          .forEach((component) => {
+            const item = itemsByKey[component.item];
+            const row = document.createElement("li");
+            row.dataset.owners = item.owners.join(" ");
+            row.textContent = `${formatMoney(component.spread)} → ${item.name.join(" ")} · ${
+              item.owners.length > 1
+                ? "shared"
+                : `${bundle.name.split(" ")[0]} only`
+            }`;
+            list.appendChild(row);
+          });
+        section.append(heading, list);
+        mobileList.appendChild(section);
+      });
+
+      const summaries = {
+        all: "8 relationships · 3 shared items · both bundles reconcile",
+        start: "Start · 4 relationships · €3,000 spread · variance €0",
+        growth: "Growth · 4 relationships · €4,200 spread · variance €0"
+      };
+
+      const buttons = Array.from(document.querySelectorAll("[data-view]"));
+      const related = Array.from(
+        document.querySelectorAll("[data-owner], [data-owners]")
+      );
+
+      const setView = (view) => {
+        buttons.forEach((button) =>
+          button.setAttribute(
+            "aria-pressed",
+            String(button.dataset.view === view)
+          )
+        );
+        related.forEach((element) => {
+          const owners = (
+            element.dataset.owners ||
+            element.dataset.owner ||
+            ""
+          ).split(" ");
+          element.classList.toggle(
+            "dimmed",
+            view !== "all" && !owners.includes(view)
+          );
+        });
+        summary.textContent = summaries[view];
+      };
+
+      buttons.forEach((button) =>
+        button.addEventListener("click", () => setView(button.dataset.view))
+      );
+    </script>
+  </body>
+</html>

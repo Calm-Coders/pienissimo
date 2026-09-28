@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ateco_Stato_Attivita__c</fullName>
+    <description
+  >Stato attivita ATECO dell'azienda dal foglio Account_NEW.</description>
+    <label>Ateco Stato Attivita</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value><fullName>ATTIVA</fullName><default>false</default><label
+        >ATTIVA</label></value>
+            <value><fullName>CESSATA</fullName><default>false</default><label
+        >CESSATA</label></value>
+            <value><fullName>INATTIVA</fullName><default>false</default><label
+        >INATTIVA</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

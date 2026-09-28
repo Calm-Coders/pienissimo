@@ -1,0 +1,572 @@
+---
+id: OI-24
+type: open-item
+status: open
+owner: Sabatino Rinaldi
+with: Elisa Migliano
+org: both
+raised: 2026-07-02
+updated: 2026-09-22
+blocks: [go-live]
+severity: gating
+source: meetings/open-items.md row 24
+---
+
+# OI-24 - Data model workbook
+
+An Excel sheet per Salesforce object: ROMI supplies the structure, Pienissimo
+extracts the field lists from Zoho and prunes what is unused — including the
+nome-locale versus ragione-sociale distinction that produced
+`Account.Nome_Locale__c`.
+
+The file is `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx` in
+the `[Pienissimo] Fase Progettuale` Drive folder. Pienissimo owes the Zoho
+field lists for **Account, Referente, Opportunity, Offerta, Ordine, Articoli**.
+
+Committed by Sabatino Rinaldi on 22 July "within next week". Still open.
+Mapping method and volumes settled on 2026-08-06 —
+[OI-79](OI-79%20Migration%20volumes%20and%20mapping%20method.md).
+
+Two build decisions must fold into it:
+[the product flags](OI-47%20Product%20flags%20at%20import.md) `genera biglietto`
+and `solo bundle`, and
+[the bundle classification fields](OI-46%20Bundle%20classification%20picklists.md)
+anno solare, evento and tipologia.
+
+This gates the **~1 September import**, which gates every realistic test of the
+[ticket lifecycle](../flows/The%20ticket%20lifecycle.md) before the September
+events.
+
+⚠ It also gates a ROMI-side deliverable that had no tracker row until the
+2026-08-14 sweep: **the import template Pienissimo loads the Zoho export into**
+— [OI-88](OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md).
+
+## 2026-09-02 — the workbook was filled in, and read
+
+🟢 **The deliverable open since 2 July has substantially arrived.** Elisa Migliano
+committed to it at the end of the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md) —
+_"faccio quel copia incolla su quel file che avevate dato voi e vi do la conferma
+che abbiamo fatto il lavoro"_ — the Drive file was modified at **14:05:38Z**, and
+Fabrizio Paganelli mailed _"Abbiamo aggiornata la tabella condivisa. A domani"_
+at **14:06:38Z** to Elena Spini, Aurel Mrruku and Andrea Di Cicco, cc
+`amministrazione@pienissimo.com`. Read the same evening.
+
+⚠ **The mail carries no link and names no file.** It was matched to
+`Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx` by the one-minute
+gap between the modification and the mail, and by Elisa Migliano's own commitment
+on the recording. That is strong, but it is inference, not a statement.
+
+### What it now carries
+
+Zoho field lists, by sheet:
+
+| Sheet                                                          | Zoho list                                                               |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Lead                                                           | ✅ present                                                              |
+| **Account**                                                    | ✅ present, and **grouped into sections** — see below                   |
+| Referente                                                      | ✅ present                                                              |
+| Opportunità                                                    | ✅ present                                                              |
+| Offerta (Quote)                                                | ✅ present                                                              |
+| Articoli (anagrafica)                                          | ✅ present, plus a **`Nuovi Campi`** column                             |
+| **Ordine**                                                     | 🔴 **absent** — standard Salesforce fields only, plus a three-line note |
+| Asset                                                          | 🔴 four fields and an `F-14` marker                                     |
+| Articoli opportunità, Voci offerta, Pricebook, Pricebook entry | standard Salesforce only                                                |
+| **Utenti**, **Profili**                                        | 🔴 **headers only, empty**                                              |
+| Flussi                                                         | 🟡 **F-1 and F-2 filled, F-3 to F-7 empty**                             |
+| Caricamenti iniziali                                           | 🔴 **C-1 to C-6 all empty**                                             |
+
+So the six field lists this item asked for — Account, Referente, Opportunity,
+Offerta, Ordine, Articoli — are **five delivered and one missing**, with Lead
+supplied as a bonus.
+
+### 🟢 The Account sheet does more than list fields
+
+It **classifies** them into sections, which is the pruning half of this item's
+brief rather than the extraction half:
+
+`Dati Anagrafici` · `Dati Tecnici` · `LEGALE RAPPRESENTANTE` · `MEXAL` ·
+`MEXAL - DATI PER PROVVIGIONI` · **`NON UTILIZZATO O OBSOLETO`** ·
+`UTILIZZATO PER PERFORMANCE`
+
+**`NON UTILIZZATO O OBSOLETO` is the single most useful thing in the file** — it
+is the client saying, field by field, what not to migrate, and it is the largest
+section on the sheet. It is also exactly what Elisa Migliano described on the
+call: many Zoho fields _"erano già presenti e semplicemente non sono state
+eliminate."_
+
+### 🔴 Two findings that collide with decisions already taken
+
+1. **The legal representative's address is already split in Zoho.** The
+   `LEGALE RAPPRESENTANTE` section carries separate residence fields for street,
+   town, province, postcode and country, plus surname, first name, codice
+   fiscale, place and date of birth, and a phone. **On 1 September the room
+   agreed to model the representative's address on Account as ONE free-text
+   field** ([OI-95](OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)).
+   Migrating a structured source into one text field is lossy and irreversible.
+   **Raise it at Data Model Parte 1 before the build starts.**
+2. **`SDI` is a field in the client's own Mexal section**, which is worth knowing
+   next to [OI-109](OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md),
+   withdrawn the same day on the ground that it is not needed.
+
+### The `Flussi` sheet: two integration flows, numbered
+
+| #       | Flow               | Source → target  | Object  | Frequency         | Operation       | Returns | Note                                                  |
+| ------- | ------------------ | ---------------- | ------- | ----------------- | --------------- | ------- | ----------------------------------------------------- |
+| **F-1** | upsert anagrafiche | Salesforce → ERP | account | realtime          | update + insert | ERP id  | _"scatta alla prima opty won"_                        |
+| **F-2** | update             | ERP → Salesforce | account | **nightly batch** | update          | —       | overnight realignment of accounts from ERP-side edits |
+
+Both restate what [the Mexal integration](../flows/The%20Mexal%20integration.md)
+already holds; the value is that **the client has numbered them**, and the Account
+sheet cross-references `F-1` per field. **F-3 to F-7 are empty**, so every other
+integration — WooCommerce included — has a slot and no content.
+
+### 🔴 Personal and commercial data: recorded, never copied
+
+**The workbook is populated with live examples, not blanks.** Each object sheet
+carries one real record beside the field list — a real company with its VAT, PEC
+and IBAN, a named legal representative with codice fiscale, date and place of
+birth and home address, a named lead and a named contact with personal email and
+mobile, and a real quote with its line values.
+
+**None of it is reproduced in this repository, and none of it may be.** Treat the
+file as a source to read in Drive, never to extract from. Same rule as
+[the publishing policy](../../docs/publishing.md): describe a field, never a
+value.
+
+### What is still owed
+
+- **The Ordine field list** — the one sheet with no Zoho content. In its place is
+  a note that the order must carry `Codice Agente`, `Classificatore Rete` and
+  `Codice Zona`, which is [OI-110](OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md).
+- **Utenti and Profili** — untouched, and they are half this file's title.
+- **Caricamenti iniziali** — the initial-load plan, empty, with import due around
+  1 September and [ROMI's import template](OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
+  still owed.
+
+⚠ **Nothing here says which parts arrived on 2 September.** The file was last
+opened by ROMI on 3 August and no earlier extract exists in the repository, so
+this is the state of the workbook, not a diff. Do not attribute any single sheet
+to yesterday's edit.
+
+## 2026-09-03 - the Account sheet was rebuilt to match Data Model Parte 1
+
+Modified **11:11:04Z**, minutes after
+[the session](../meetings/2026-09-03%20Data%20Model%20Parte%201.md) ended at
+roughly 11:07Z. Elena Spini's action from that call was _"Pulire il file dei
+campi, rimuovendo le voci superflue"_, and she did it immediately. Read in full.
+
+**The `NON UTILIZZATO O OBSOLETO` block is gone.** Yesterday's reading recorded a
+large section of fields the client was flagging as not to migrate; the sheet no
+longer carries it. The pruning agreed in the session has been applied to the
+file, not merely minuted.
+
+**The Account sheet is now sectioned**, with columns `SEZIONE · NOME CAMPO · API
+Name SFDC · Modifica da SFDC · Mandatory · Tipo Campo · Esempio`, and four
+sections that match the meeting exactly:
+
+| Section                        | Holds                                                                                                                                           |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Dati Commerciali`             | the three ATECO fields, `Azienda obsoleta`, owner/tutor, `E-mail Commerciale`, `Stato Azienda`                                                  |
+| `Dati Tecnici`                 | `Azienda Test`, `Id Zoho`, `Ultima Verifica Anticipay`                                                                                          |
+| `MEXAL`                        | addresses, ragione sociale, the admin phone and mail, `Azienda Precedente`, `Codice Cliente Mexal`, codice fiscale, IBAN, partita IVA, PEC, SDI |
+| `MEXAL - DATI PER PROVVIGIONI` | `Classificatore_rete`, `Codice_agente`, `Zona`                                                                                                  |
+
+The sections are not cosmetic — they are the boundary of the field lock in
+[OI-117](OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md).
+
+**Also new in this version**
+
+- The **Preventivo** sheet carries `Tipologia Attività — Picklist non restrittiva
+  > > PIENISSIMO TO DO: Inserire i valori esistenti`
+  > > ([OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)).
+- **`Azienda Precedente`** appears, typed `Lookup (con se stessa)`
+  ([OI-118](OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md)).
+- **`Codice Cliente Mexal`** — the rename agreed in the session, already applied.
+- An **Asset** sheet tagged `F-14`, with Cliente / Nome articolo / Quantità /
+  Prezzo.
+- The **Articoli** sheet's `Nuovi Campi` column carries `LIVELLO_0` through
+  `LIVELLO_6` alongside the Mexal classification fields. ⚠ **Seven level fields
+  are in no note and were not discussed in any minuted session.** Ask before
+  building anything from them.
+
+### 🔴 What is still empty, unchanged from 2 September
+
+- **The Ordine field list** — still only the standard Salesforce fields, with the
+  same free-text note that the order must carry `Codice Agente`,
+  `Classificatore Rete` and `Codice Zona`
+  ([OI-110](OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)).
+- **Utenti and Profili** — header rows only. Half the file's title, untouched
+  through two client sessions.
+- **CARICAMENTI INIZIALI, `C-1` to `C-6`** — the initial-load plan, empty, with
+  the data import nominally due around 1 September.
+- **`Flussi` still holds only F-1 and F-2.** Every other integration —
+  WooCommerce, Anticipay, the article registry — has no row.
+
+**A two-hour session moved the Account sheet and none of these.** They should be
+named explicitly as the agenda for Parte 2 or Parte 3, or they will arrive at
+go-live unwritten.
+
+⚠ The file still carries **live customer records** — a real company with its VAT,
+PEC and IBAN, a named legal representative, a named lead and contact, a real
+quote with values. **Recorded, never copied.** Unchanged rule.
+
+⚠ **F-1's trigger contradicts the room.** The sheet says the Salesforce → ERP
+upsert _"scatta alla prima opty won"_; the session said the account is pushed to
+Mexal **immediately before the order is created**. Those are different moments.
+Confirm at Parte 2.
+
+## 2026-09-04 — rebuilt again, during Parte 2
+
+`Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`, modified
+**15:03:03Z** — during the session, as on 3 September when it was rebuilt four
+minutes after the call ended. Read in full.
+
+**What moved:**
+
+- 🟢 **The `Referente` sheet is now the detailed one**, carrying the Contact work
+  from [Parte 2](../meetings/2026-09-04%20Data%20Model%20Parte%202.md): a
+  `Contatto principale — isPrimary` flag, `Ruolo — Vedi nota`, `Keap Id Esterno`,
+  `E-mail secondaria — otherEmail`, `Nome Locale`, and
+  `Modalita iscrizione annullata` sourced from `Zoho campaigns`.
+- 🟢 **The `Ordine` sheet gained a requirement**, though not a field list:
+  _"Nell'ordine e importante che ci siano le seguenti informazioni: Codice
+  Agente, Classificatore Rete, Codice Zona"_
+  ([OI-110](OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)).
+- 🟢 **The Account sheet carries `Azienda Precedente — Lookup (con se stessa)`**,
+  the self-lookup agreed for
+  [OI-118](OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md),
+  and the empty shipping-address fields the mirroring decision needs.
+
+**What did not move — the same four gaps, third session running:**
+
+| Gap                               | State                                 |
+| --------------------------------- | ------------------------------------- |
+| **Utenti**                        | header row only, still empty          |
+| **Profili**                       | header row only, still empty          |
+| **Initial-load plan** `C-1`–`C-6` | six empty rows                        |
+| **Ordine** field mapping          | standard Salesforce fields + one note |
+| `Flussi`                          | still only **F-1** and **F-2**        |
+
+🔴 **`Ruolo` carries `Amministrativo/Commerciale/Piattaforma`**, which is not the
+value set agreed in the session hours earlier —
+[OI-120](OI-120%20The%20contact%20role%20picklist%20values%20disagree%20between%20the%20workbook%20and%20the%20session.md).
+
+⚠ **`LIVELLO_0` through `LIVELLO_6` are still in the Articoli sheet's `Nuovi
+Campi` column**, unexplained and in no minuted session for a second day.
+
+⚠ **The file still holds live customer records** — real companies with VAT, PEC
+and IBAN, and named individuals with contact details, on the Account, Referente
+and Preventivo sheets. **Recorded; nothing copied.**
+
+## 2026-09-07 - a fourth session, and the same four gaps
+
+The workbook was **rebuilt again at 10:08:27Z**, two minutes after
+[Data Model Parte 3](../meetings/2026-09-07%20Data%20Model%20Parte%203.md) ended —
+the same pattern as Parte 1 and Parte 2, Elena Spini saving straight out of the
+session.
+
+🔴 **Utenti, Profili, the Ordine field list and the initial-load plan are
+unchanged after four client sessions.** Parte 3 spent its hour and twelve minutes
+entirely on the Referente object and did not open any of them. Neither did it open
+the **Lead** table, deferred from Parte 1 so Sabatino Rinaldi could attend, and he
+is unavailable from 8 September.
+
+Four sessions, **two objects**: Account and Referente.
+
+⚠ **The content of this run\'s save was not read.** The file was identified by its
+modification time; the sheets were not opened, because the session transcript
+covers the same ground at higher fidelity. If the Ordine or Utenti sheets gained
+rows outside the session, this run would not have seen it.
+
+⚠ **The file still carries live customer records** — a real company with VAT, PEC
+and IBAN, a named legal representative with codice fiscale and date of birth.
+Recorded, never copied.
+
+**Parte 4 is Tuesday 8 September 12:00–13:00** and is the last booked session. On
+the current rate it holds one object, and four gaps plus the Lead table need it.
+
+## 2026-09-08 - Parte 4 ran, and two more sessions were booked
+
+[Parte 4](../meetings/2026-09-08%20Data%20Model%20Parte%204.md) ran 12:01 CEST for
+**1h25m58s** — Elena Spini, Elisa Migliano, Aurel Mrruku. **Andrea Di Cicco did
+not attend**, for the second session running. It **cleared the Opportunity field
+list** and settled duplicate control, category/subcategory picklists and the lead
+origin field.
+
+The workbook itself was **saved at 11:18:29Z**, during the session's closing
+minutes. ⚠ **Its content was not read this run** — the transcript covers the same
+ground at higher fidelity — so a change made outside the session would not have
+been seen.
+
+🟢 **The sessions are no longer the last one booked**, and they got longer:
+
+| Session     | When                                  | Focus                                   |
+| ----------- | ------------------------------------- | --------------------------------------- |
+| **Parte 5** | Wed **16 September** 11:00-13:00 CEST | Prodotti, Preventivi, Ordini            |
+| **Parte 6** | Fri **18 September** 11:00-13:00 CEST | Campagne, Lead — **with Rebecca Marmo** |
+
+Elena Spini proposed two-hour slots to stop losing time; Aurel Mrruku asked for
+**products first** as propedeutico to quotes and orders.
+
+🔴 **The four gaps are now three, and the Lead table has been deferred a fifth
+time.** After five sessions:
+
+| Gap                   | Status                                                        |
+| --------------------- | ------------------------------------------------------------- |
+| **Ordine field list** | booked at last — Parte 5, 16 September                        |
+| **Lead table**        | deferred from Parte 1, 2, 3 and 4 → **Parte 6, 18 September** |
+| **Utenti**            | **in no booked session**                                      |
+| **Profili**           | **in no booked session**                                      |
+| **Initial-load plan** | **in no booked session**, and now formally in stand-by        |
+
+🔴 **Data migration is now explicitly held.** The client status mail of the same
+afternoon says _"L'attività resta temporaneamente in stand-by in attesa della
+chiusura definitiva del Data Model"_ — so this row is the thing gating migration,
+in writing, to the client
+([OI-128](OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
+
+⚠ **Utenti and Profili being unbooked stopped being an abstraction on 8
+September**: a person with no user of their own signed into UAT under someone
+else's login
+([the risk](../risks/Risk%20-%20a%20sandbox%20password%20was%20spoken%20aloud%20and%20preserved%20in%20a%20meeting%20transcript.md)).
+
+Five sessions, **three objects**: Account, Referente, Opportunità.
+
+## 🔴 2026-09-16 - a sixth session, and the same four gaps
+
+[Data Model Parte 5](../meetings/2026-09-16%20Data%20Model%20Parte%205.md)
+(2h21m30s against a two-hour booking) covered the **product registry**, the
+**quote** and the **order header**, field by field, and pruned both layouts
+hard.
+
+🟢 **Three more sheets are now specified**, which is the most any single session
+has delivered.
+
+🔴 **Utenti, Profili, the initial-load plan and the Lead table were not opened.**
+Six sessions, and the four gaps this row has carried since Parte 2 are
+untouched. Order **lines** were deferred as well, so the Ordine sheet is half
+done.
+
+⚠ The workbook itself was **saved at 2026-09-16T11:20:06Z**, during the session,
+as it was during Parte 2. **This sweep did not open it** — the file is 68 KB of
+`.xlsx` and the session's own notes are the cheaper source for what was decided.
+What actually changed inside it is therefore **unread, not unchanged**.
+
+🔴 **A calendar conflict needs resolving before Friday.**
+[Parte 4](../meetings/2026-09-08%20Data%20Model%20Parte%204.md) recorded **Parte 6
+booked 18/09 for Campagne/Lead with Rebecca Marmo**. Parte 5 booked **Friday
+18/09 for order lines**. No source says whether Friday holds one session or two.
+**If order lines take the slot, the Lead table is deferred a sixth time** — ask
+Elena Spini.
+
+## 🟢 2026-09-17 - the workbook was opened at its Parte 5 version
+
+Read at the **`2026-09-16T11:20:06Z`** version — the save made _during_ Parte 5
+that the 16 September run recorded as "unread, not unchanged". It is now read.
+
+### 🟢 The Articoli sheet carries the Parte 5 product rulings
+
+The product registry agreed on 16 September is **in the file**, field for field:
+`Unità di misura` = `NR`, `Prodotto attivo` mapped to `isActive`,
+`Categoria statistica` and `Gruppo Merceologico` as picklists annotated
+_"da mexal"_, `Natura` annotated _"genera biglietto SI/NO (mexal)"_, and
+`Tipo Biglietto` as a picklist. This is the first time the client's own workbook
+and a session minute agree on the product registry in the same week.
+
+🔑 **`LIVELLO_0` now has values** — `Eventi`, `Consulenze`, `Prodotti`,
+`Software`, `Addebiti`. `LIVELLO_1` through `LIVELLO_6` are present and still
+`null`. On 3 September this note recorded the seven level fields as being _"in no
+note and not discussed in any minuted session"_; Parte 5 ruled them picklists
+0–6, and the top level now carries a real list. **One of the six lists owed by
+Elisa Migliano has partially arrived** — in the workbook, not by mail.
+
+⚠ `Tipo Biglietto` reads `null, Executive, Gold, Diamond` — which matches Parte 5
+and **contradicts the design diagram**, still carrying the misspelt `Dinamond`
+and no `Executive`
+([the diagram](../The%20newest%20design%20diagram.md)).
+
+### 🟢 The Preventivo sheet carries the historicised commission fields
+
+`Codice_agente`, `Classificatore_rete` and `Zona` are now **on the quote sheet**,
+which is the workbook catching up with the rule Parte 5 stated for the third
+time. The sheet also gained `Condizioni` and `Condizione di Pagamento` as
+picklists, `Data attivazione Piattaforma`, `Causa Opportunità Persa`,
+`Causa Opportunità Errata` and `Motivazione Chiuso Perso`.
+
+🔴 **`Tipologia Attività` changed in a way that loses a tracker.** It is now
+marked `TRUE` mandatory and typed `Global picklist`. On 3 September it read
+_"Picklist non restrittiva >> PIENISSIMO TO DO: Inserire i valori esistenti"_.
+**The TO-DO text is gone and no values have replaced it** — the field is now
+mandatory, global, and empty. The marker that tracked the debt was deleted
+without the debt being paid
+([OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)).
+
+### 🔴 The four gaps are untouched, sixth session running
+
+| Sheet                    | State at 2026-09-16                                                                                                                                                                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Ordine**               | 🔴 standard Salesforce fields only, plus the same three-line note that the order must carry `Codice Agente`, `Classificatore Rete`, `Codice Zona` ([OI-110](OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)) |
+| **Utenti**               | 🔴 header row only — `Nome · Cognome · Email · Ruolo · Visibilità`                                                                                                                                                                                           |
+| **Profili**              | 🔴 header row only — `Profilo · Visibilità`                                                                                                                                                                                                                  |
+| **Flussi**               | 🟡 `F-1` and `F-2` filled; **`F-3` to `F-7` still empty**                                                                                                                                                                                                    |
+| **Caricamenti iniziali** | 🔴 `C-1` to `C-6` **all still empty**                                                                                                                                                                                                                        |
+
+Unchanged since 2 September, through four further client sessions. **Utenti and
+Profili are half this file's title** and have never held a row.
+
+### 🟢 The Friday conflict is resolved — and not the way the trigger expected
+
+The 16 September run armed a trigger on Friday 18/09 being double-booked between
+Parte 6 (Campagne/Lead) and order lines, and asked Elena Spini to rule.
+**The calendar answers it without anyone being asked.**
+
+Friday 18/09 holds **one** Pienissimo event:
+` [ROMI-PIENISSIMO] - Data Model: Parte 6`, **11:00–13:00 CEST**, organiser Elena
+Spini, focus **`Campagne` / `Lead`**, with `rebecca.m@pienissimo.com` invited and
+Sabatino Rinaldi optional. **No order-lines session exists on any calendar.**
+
+So the trigger's stated risk was backwards: the Lead table is **not** deferred a
+sixth time — it finally gets its session. **Order lines, deferred out of Parte 5,
+have no booking at all**, and the Ordine sheet stays half done with nothing
+scheduled to finish it.
+
+⚠ **Whoever runs Parte 6 should read the LEAD-OPTY page of
+[the design diagram](../The%20newest%20design%20diagram.md) first.** It already
+carries a complete Lead state machine, the qualification criteria, the 48-hour
+task automation, the `CODE` assignment queue and three reason lists — none of
+which is in this workbook's Lead sheet, which holds only the Zoho field mapping.
+
+### 🔴 Personal and commercial data: unchanged rule
+
+The workbook is still populated with **live examples** — a real company with VAT,
+PEC and IBAN, a named contact with personal email and mobile, a real quote with
+its line values and a real customer code. **None of it is reproduced here and
+none of it may be.** Describe a field, never a value —
+[the publishing policy](../../docs/publishing.md).
+
+## 2026-09-17 (evening) - Friday gained a second event, and Monday gained a pre-UAT test session
+
+Three calendar actions from Elena Spini on the afternoon of 17/09, all after
+[the internal follow-up](../meetings/2026-09-17%20Follow-up%20Interno.md):
+
+| Event                                      | When                            | Invited                               | Sent      |
+| ------------------------------------------ | ------------------------------- | ------------------------------------- | --------- |
+| `[ROMI-PIENISSIMO] - Test Interni Pre-UAT` | **Mon 21/09 16:00–18:00 CEST**  | Aurel Mrruku, Rexhina Hysi, Anita Aga | 12:44:35Z |
+| `[PIENISSIMO] - Follow-up Interno`         | Mon 21/09 17:00–18:00 — **cancelled**, note _"Annullo per altro meeting"_ | — | 12:44:56Z |
+| `[PIENISSIMO] - Temi Mexal`                | **Fri 18/09 10:00–11:00 CEST**  | Aurel Mrruku, Andrea Di Cicco         | 13:17:39Z |
+
+🟢 **Monday is the first internal pre-UAT test session on the record**, and it
+lands **two days before UAT opens on 23/09**. It is the minuted _"riunione
+operativa … per lunedì dalle 16 alle 18"_ with Anita Aga and Rexhina Hysi, and
+it displaced the recurring internal follow-up rather than sitting beside it.
+
+### Friday 18/09 now holds two Pienissimo events
+
+| Slot          | Event                          | Focus                          |
+| ------------- | ------------------------------ | ------------------------------ |
+| 10:00–11:00   | `[PIENISSIMO] - Temi Mexal`    | Mexal APIs, with Andrea Di Cicco |
+| 11:00–13:00   | Data Model **Parte 6**         | `Campagne` / `Lead`, with Rebecca Marmo |
+
+🟢 **They do not clash** — back to back, not overlapping, and the 16/09
+double-booking question is answered by the schedule rather than by anyone
+ruling: Parte 6 keeps the 11:00 slot and the Lead table finally gets its
+session.
+
+🔴 **Order lines still have no booking** — seventh session's worth of deferral,
+and now with `Temi Mexal` occupying the only other Friday slot. The 17/09
+internal added **tranche order-line shape** to what needs that session
+([OI-50](OI-50%20Tranche%20object.md)).
+
+⚠ **The client-facing "call di venerdì"** the internal session repeatedly refers
+to — where the order-type constraints and the record types get client validation
+(`00:31:21`) — is **not identified**. Parte 6 is the only client-facing Friday
+event on the record, and its subject is Campagne/Lead. **No source says the two
+are the same meeting**, and it is not inferred here.
+
+## 🟢 2026-09-18 / 2026-09-21 - the data model is declared complete, and the client data arrived
+
+**Parte 6 was the last Data Model session.** Elena Spini's 21/09 status post:
+_"Definizione del Data Model completata con successo a valle delle sessioni di
+analisi."_ [Data Model Parte 6](../meetings/2026-09-18%20Data%20Model%20Parte%206.md)
+covered campaigns, events and discounts — the Campagne/Lead material this row had
+been waiting six sessions for.
+
+🟢 **The four standing gaps are answered, and not by the workbook.**
+[OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+records what Fabrizio Paganelli delivered on 21/09: a Drive folder with one
+subfolder per table — `ACCOUNT` · `ARTICOLI` · `CAMPAGNE` · **`LEAD`** · **`LOCALI`**
+· `OPPORTUNITA` · `PREVENTIVI` · `REFERENTI`. The **Lead** table and the **Locale**
+children are both in it. 🔴 **The `ARTICOLI` classification is empty**, so the
+delivery is partial.
+
+🟢 The ordering question this row carried is also answered: at Parte 6 the group
+confirmed **orders are not managed in Zoho at all**, so there is nothing to map —
+_"noi oggi sul Zoho gli ordini non li gestiamo"_ (Fabrizio Paganelli, `00:03:03`).
+Standard order fields plus what carries over from the quote is the whole of it.
+
+## The calendar, as of 2026-09-21T22:00Z
+
+| When              | What                                                    | Who beyond ROMI                        |
+| ----------------- | ------------------------------------------------------- | -------------------------------------- |
+| Tue 22/09 10:30   | `Temi QR Code Biglietti`                                | **Andrea Parmeggiani**, Elisa, Fabrizio |
+| Tue 22/09 11:00   | `Logiche Spacchettamento Righe`                          | Elisa, Fabrizio                        |
+| Tue 22/09 15:00   | `Test Mexal`                                             | **Mirko Merendi**, Elisa, Fabrizio     |
+| Tue 22/09 17:00   | `Test Interni Pre-UAT - Parte 2`                         | ROMI only                              |
+| Thu 24/09 15:00   | **UAT: Lead e Opportunità**                              | Marco Montesi, Elisa, Fabrizio         |
+| Fri 25/09 10:30   | **UAT: Preventivi**                                      | Marco Montesi, Elisa, Fabrizio         |
+| Mon 28–Tue 29/09  | 🔴 **Food event at Riccione** — client unavailable        | —                                      |
+| Wed 30/09 14:00   | **UAT: Biglietti (Asset), Campagne ed Eventi**            | Rebecca Marmo, Elisa, Fabrizio         |
+| Fri 02/10 10:00   | **UAT: Flussi MKT Biglietti**                             | Rebecca, Fabrizio Mastracci, Elisa, Fabrizio |
+| Mon 05/10 15:00   | **UAT: Performance Plus + Gestione date pagamento**       | Elisa, Fabrizio                        |
+| Tue 06/10 10:00   | **UAT: Integrazione Mexal ↔ Salesforce**                  | Elisa, Fabrizio                        |
+| 06–13/10          | Client credentials, autonomous testing, **approval by 13/10** | —                                  |
+| Wed 21/10         | **Go-live Fase 1**                                       | —                                      |
+
+🔴 **Order lines finally have a booking** — `Logiche Spacchettamento Righe`, 22/09
+11:00, the dedicated session Parte 6 deferred the tranche agreement to. The trigger
+armed on 17/09 is discharged.
+
+🔴 **No UAT session covers WooCommerce and the checkout link**, which was the
+seventh topic of the proposal →
+[OI-158](OI-158%20No%20UAT%20session%20is%20booked%20for%20the%20checkout-link%20flow.md).
+
+⚠ **28 and 29 September are both the Riccione event**, per Elisa Migliano at Parte
+6. The UAT proposal accounted only for the 29th; no session falls on the 28th
+either way.
+
+⚠ **UAT opens 24 September, not 23.** The client chose the later of the two slots
+offered for Lead e Opportunità.
+
+## 2026-09-22 — the import review finally has a slot
+
+🟢 **`Check Data Import` is booked for 23/09 10:00–12:00** — Aurel Mrruku, Elena Spini,
+Fabrizio Paganelli, Elisa Migliano — agreed inside
+[the 11:22 client session](../meetings/2026-09-22%20Logiche%20Spacchettamento%20Righe.md)
+and invited at 22/09 10:12Z. Its purpose is to walk the field list object by object and
+decide what travels.
+
+Elena Spini's objection is what produced it: she cannot verify the extraction field by
+field — _"io non la posso controllare una per uno"_ — and asked Fabrizio Paganelli to
+pre-clean what ROMI does not need. He declined on a concrete ground: the **full product
+and customer registries must travel**, because a historical order portfolio cannot be
+imported if its article codes were filtered out — _"se non ci metto il codice articolo,
+come faccio a portarmi dentro i dati?"_ He kept the Zoho field names deliberately, so a
+re-extraction stays cheap, and offered as many sessions as needed:
+_"possiamo fare anche 10 call su questo argomento, perché se scaziamo qui scaziamo
+tutto."_
+
+⚠ **Two fields the extraction cannot contain were agreed the same day**: the product
+**tranche count**
+([OI-167](OI-167%20Plus%20orders%20explode%20from%20a%20tranche%20count%20on%20the%20product.md))
+and the client's requested **ingressi conversion factor**
+([OI-146](OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)). Both are
+Salesforce-only derived fields, so the mapping is still moving.
+
+🟢 `natura articolo` **does** carry the ticket and bundle classification, encoded —
+[OI-154](OI-154%20The%20client%20import%20extraction%20is%20missing%20the%20article%20classification.md)
+— which closes the gap this note has carried for six sessions. ⚠ `tipo articolo` (`ACZZ`)
+is Mexal-only and need not travel.
+
+🔴 **And the migration itself was never estimated** —
+[OI-165](OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md).

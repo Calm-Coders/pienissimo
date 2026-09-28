@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product__c</fullName>
+    <description
+  >The component product. A lookup, not a master-detail: the same product may be referenced by many bundles at the same time. Product2 forbids cascade/restrict lookups, so this cannot be a required lookup; the Product_Required validation rule enforces it instead.</description>
+    <label>Product</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage
+    >Only products with the Item record type can be bundle components.</errorMessage>
+        <filterItems>
+            <field>Product2.RecordType.DeveloperName</field>
+            <operation>equals</operation>
+            <value>Item</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Product2</referenceTo>
+    <relationshipLabel>Bundle Memberships</relationshipLabel>
+    <relationshipName>Bundle_Memberships</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

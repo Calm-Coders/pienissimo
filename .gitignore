@@ -42,6 +42,24 @@ $RECYCLE.BIN/
 # Local environment variables
 .env
 
+# Generated local code-intelligence indexes
+.codebase-index/*
+!.codebase-index/config.json
+graphify-out/
+
+# Generated org-status evidence
+.org-status-cache/
+
+# Obsidian: the vault config is committed so every machine reads the graph the
+# same way; only per-machine UI state is ignored.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.trash/
+
+# Cloudflare Pages / wrangler local cache (contains the account identifier)
+.wrangler/
+
 # Python Salesforce Functions
 **/__pycache__/
 **/.venv/

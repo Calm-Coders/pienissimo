@@ -1,0 +1,19 @@
+{
+  "useMarkdownLinks": true,
+  "newLinkFormat": "relative",
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": false,
+  "attachmentFolderPath": "notes/attachments",
+  "userIgnoreFilters": [
+    "force-app/",
+    "node_modules/",
+    ".sf/",
+    ".sfdx/",
+    ".husky/",
+    "site/",
+    "config/",
+    "manifest/",
+    "scripts/",
+    "requirements/"
+  ]
+}

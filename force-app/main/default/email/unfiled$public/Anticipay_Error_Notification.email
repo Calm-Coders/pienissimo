@@ -1,0 +1,50 @@
+<div style="font-family: Arial, sans-serif; color: #1f2933; line-height: 1.5">
+  <h2 style="margin: 0 0 12px; color: #b42318; font-size: 20px">
+    Errore controllo Anticipay
+  </h2>
+
+  <p style="margin: 0 0 16px">
+    Il controllo Anticipay ha restituito un errore e richiede una verifica
+    amministrativa.
+  </p>
+
+  <p style="margin: 0 0 20px">
+    Link Account Salesforce:
+    <a href="{{accountLink}}" style="color: #1b5f8c">{{accountLink}}</a>
+  </p>
+
+  <table
+    cellpadding="0"
+    cellspacing="0"
+    style="border-collapse: collapse; width: 100%; max-width: 680px"
+  >
+    <tr>
+      <td style="padding: 8px; border: 1px solid #d9e2ec; font-weight: bold">
+        Account
+      </td>
+      <td style="padding: 8px; border: 1px solid #d9e2ec">{{accountId}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #d9e2ec; font-weight: bold">
+        Stato HTTP
+      </td>
+      <td style="padding: 8px; border: 1px solid #d9e2ec">{{httpStatus}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #d9e2ec; font-weight: bold">
+        Messaggio
+      </td>
+      <td style="padding: 8px; border: 1px solid #d9e2ec">{{message}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #d9e2ec; font-weight: bold">
+        Log integrazione
+      </td>
+      <td style="padding: 8px; border: 1px solid #d9e2ec">{{logId}}</td>
+    </tr>
+  </table>
+
+  <p style="margin: 18px 0 0; color: #52606d; font-size: 13px">
+    Email generata automaticamente da Salesforce.
+  </p>
+</div>

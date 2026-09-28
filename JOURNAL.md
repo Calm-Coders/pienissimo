@@ -1,0 +1,3930 @@
+# Journal - Pienissimo
+
+Append-only session handoffs. Newest first. Any agent, any model, writes here
+at the end of a session that changed project state, so the next one can resume
+cold. Format and intent:
+[notes/Retrieval and write protocol.md](notes/Retrieval%20and%20write%20protocol.md).
+
+Keep the twenty most recent entries here; archive older ones to
+`notes/sessions/YYYY-QN.md`.
+
+---
+
+## 2026-09-28 — claude — Apex suite written and DevMain deployed to Pienissimo Prod
+
+- **Did:** Aurel Mrruku asked to deploy to Prod everything in UAT, chose "everything,
+  tests first" with `DevMain` as the source, and then "commit, push, deploy". Eight check-only
+  validations against Prod. Wrote 8 test classes; the existing bundle test was brought up to date.
+  **Prod deploy `0AfSW000001H1aD0AS`, 2026-09-28 11:28Z, 461/461 components, 142/142 tests,
+  88.8% coverage.** Code commit `23443cd` (pushed).
+- **Changed besides tests:** `QuoteAcceptanceEmailController` hard-coded the **UAT** site URL;
+  it now uses `DomainCreator.getExperienceCloudSitesHostname()`. Six layouts lost the
+  `GenerateKnowledge` excluded button, since Knowledge is off in Prod. The Quote layout lost a
+  duplicate `Is_Primary__c`. The `Landing_Page1` `DigitalExperienceConfig` and its SNA static
+  resource were retrieved from UAT into `force-app` so the deploy could create the site;
+  "Landing Page" is Live in Prod.
+- **Not deployed:** `Campaign_Record_Page`. Prod is on API 67, and Dynamic Forms on Campaign
+  needs 68. Deploy it after the October upgrade.
+- **Open before Prod is used:** `Full_Permission` has 0 assignments. Integration config rows: 0. DocuSign Named Credential still `demo.docusign.net`. Anticipay error mail goes to a
+  hard-coded `a.aga@` address. The order → Mexal chain is live in Prod (the `isSandbox` guard),
+  so it fires on the first order once the config exists, including migrated historic orders.
+- **New risk:** [Mexal writes fail after their own log insert](notes/risks/Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md),
+  confirmed by the UAT log of 24/09.
+- **Not done:** Elena Spini was not told. The deploy had been planned for the week of 5/10.
+  STATUS.md and the trackers were not regenerated. No UAT deploy was made, and UAT still holds
+  the uncommitted OI-171 code.
+
+---
+
+## 2026-09-25 — claude — nightly requirements-check: the bundle-tranche gap was built the same day, and the Contratto narrowed to Performance Plus
+
+- **Did:** The scheduled nightly run, watermark **2026-09-25T13:00Z → 22:00Z**. Swept
+  Fathom (0), Drive (2 pages, 25 files), Gmail (15 threads, 4 opened in full), Slack
+  (workspace-wide + the dev group), git `--all` and the repository diff. Drilled **two
+  internal sessions**: `Alignment Interno Prodotti e Bundle` (10m57s) and
+  `Interna post UAT Contratto e Fase Due` (1h05m05s, transcript read in full, 53,502
+  chars). Wrote 2 meeting notes and 3 new items (`OI-185`–`OI-187`); updated
+  `OI-50/74/141/157/168/177/179/181` and `The newest design diagram`. Then both trackers,
+  recap **§49 in EN and IT**, MAP, INDEX, the trace, and the register evidence below.
+- **State:**
+  - 🟢🔑 **`OI-181` is built.** PR **#62** merged to `DevMain` at 18:07 CEST (`a5f9370`):
+    **`Bundle_Tranch__c`** (a tranche template on the bundle product), `BundleTranchController`,
+    the `bundleCreateTranch` LWC, and `Tranche__c.Bundle_Tranch__c` joining an inherited
+    quote tranche to its template. **Still gating: the WooCommerce order side is not in the
+    diff**, and 02/10 is the WooCommerce re-test.
+  - 🔑 **`Contract` is Performance Plus only, created at `Firmato`**, `stato` = `nuovo`/`rinnovo`
+    read off the opportunity record type. **Aurel Mrruku argues the object should not exist**
+    — the Mexal returns update the tranches, which already hold the state. Goes to Fabrizio
+    Paganelli **Mon 28/09 10:00** with a request for the Zoho structure (`OI-141`, `OI-168`).
+  - 🔑 **Tranche states, read live out of the org: `aperto` / `parzialmente pagato` / `pagato`.**
+    The order reaches `Incassato` only when **every** tranche is `pagato`.
+  - 🔴 **Marketing UAT moved twice more, to Fri 16 October** — past the 13/10 approval
+    deadline — with the client told in writing the flows will be tested **in production
+    after the switch** (`OI-177`).
+  - 🟢 **The Business Blueprint was not sent to the client** (`OI-179`); the **UAT testbook**
+    went instead, with no deadline on it (`OI-187`).
+- **Register: NOT amended, version stays 1.6.** The tranche picklist finding speaks directly
+  to `state_machines.tranche` (`status: conflict`) and to **RC-07** in both prose documents,
+  but it is **a person reading a screen share, not an org query**, and the register's own
+  reconciliation says not to configure the label until `OI-69` resolves. So it was recorded
+  as **evidence in all three surfaces** — YAML `reconciliation`, `REQUIREMENTS.md` §RC-07,
+  `REQUISITI.it.md` §RC-07 — with the normative `states:` list and `conflict` status left
+  untouched. **A human owes the org query, then RC-07 and OI-69 close together.**
+- **Next:**
+  1. **Build `OI-185` (cambio nominativo) before Wednesday 30/09.** Aurel Mrruku:
+     _"Io non ce l'ho pronta questa roba"_; he plans Sunday 27/09 and expects a partial demo.
+  2. **Finish the WooCommerce order side of `OI-181`** — 28/09–01/10, for the 02/10 re-test.
+  3. **28/09 10:00: get the Zoho Contract structure and the user list from Fabrizio
+     Paganelli** (`OI-141`, `OI-186`). The user list is on neither invitation's agenda.
+  4. **`Firmato` still does not exist in `force-app`**, and the Contract creation now
+     depends on it.
+- **Watch:**
+  - ⚠ **The clone opened on `main` only** — a bare 17-file SFDX scaffold with no `notes/`.
+    `DevMain` was simply unfetched. **Fetch before concluding the repository is empty.**
+  - ⚠ `#tproj-pienissimo` **is not findable in the Slack workspace**, third run running,
+    while the skill still names it as required scope.
+  - ⚠ `Flows & Objects.drawio` **changed again (15:19:59Z)** and is still unreadable here.
+    Two days of design-diagram edits are invisible to the record.
+  - ⚠ **`DEVELOPMENT-RECAP.it.md` §47 (24/09) is still missing** — third flag.
+  - ⚠ **No human has answered a nightly report in nine nights.**
+  - **No Apex test was written, proposed or scaffolded.**
+
+## 2026-09-25 — claude — the order is Incassato when every tranche is paid
+
+- **Did:** Aurel Mrruku asked what was decided about contracts, then when an order reaches
+  `Incassato`, then decided it. Found that only WooCommerce orders were ever set
+  `Incassato` by code; tranche payment set `Pagata` and freed tickets but never touched
+  the order.
+- **Decided (Aurel Mrruku):** the order goes `Incassato` **automatically when every
+  tranche on its lines is `Pagata`**; `OrderTriggerHandler` then closes the Opportunity.
+- **Built:** `OrderItemTriggerHandler.markOrdersCollectedForFullyPaidTranches` on
+  `DevMain`, **uncommitted, not deployed, no test class** (standing instruction).
+- **Written:** register v1.6 (`AUREL-2026-09-25-INCASSATO`, `ORD-14` rewritten,
+  `order.rules`, reconciliation note), `REQUIREMENTS.md` + `REQUISITI.it.md` (1.6
+  changelog, Order state row, `ORD-14`, manual-steps paragraph), OI-69 (now
+  `in-progress`), OI-184 change set, tracker row 69 EN + IT, MAP.
+- **Open:** the client has not seen it; lines with no tranche are ignored; nothing sets
+  `Fatturato`; a reversed payment does not un-collect the order (OI-92, OI-157).
+- **Next:** commit and deploy with the next UAT push; include it in the v1.6 change set.
+  Contract logic (OI-168) is still not started, UAT 5/10.
+
+---
+
+## 2026-09-25 — claude — on-demand requirements-check + drill-me: tranches belong on the bundle too, and the register moves to v1.6
+
+- **Did:** Aurel Mrruku asked for the nightly job on demand. Swept Fathom, Drive, Gmail,
+  Slack, git and GitHub from watermark **2026-09-24T22:00Z** to **13:00Z**. Drilled
+  `UAT: Recall Tutor + Bundle` (client, 2h13m50s, notes + transcript, 154,062 chars, read
+  once). Wrote the meeting note, a decision (single products from Mexal only, confirming
+  `BUN-06`), four new items (`OI-181`–`OI-184`), and updated `OI-46/49/50/96/101/140/151/177/178`.
+  Also both trackers, recap §48 in EN and IT, MAP, INDEX and the trace. Then ran a
+  drill-me round of four questions.
+- **Decided (drill-me):**
+  1. The week of 28/09 goes to **bundle-level tranches**, and the partial PROD deploy
+     moves to the week of 5/10. **Elena Spini has not been told yet.**
+  2. **The register was amended to v1.6** in the YAML and both prose documents: `Firmato`,
+     `ORD-01/02`, `DM-17`, `BUN-08`, `SAL-21`, glossary, and order opportunity types. It
+     goes to the client as **one change set at UAT close** (`OI-184`).
+  3. **Both agent fields stay, with a sync** (`OI-178`): lookup for people, code for Mexal.
+  4. **New clean `Standard` / `WooCommerce` record types**; `Standart` and `Recall_Tutor`
+     are retired (`OI-182`).
+- **State:** 🔴 **`OI-181` (gating):** stage sales have no quote, so tranches must also
+  live on the bundle (~1 week, re-test 02/10). 🔑 Anno solare → **anno accademico**
+  reverses the 23/07 rule. Marketing UAT moved to **07/10**, after the window closes.
+  **PR #59 merged**, so both agent fields are on `DevMain`. `Firmato` is still not in
+  `force-app`.
+- **Next:** tell Elena Spini about the deploy move; design the agent-field sync (direction
+  and conflict rule); build `OI-181` before 02/10. Ticket UAT is 30/09 and the edition
+  mapping is still thin.
+- **Watch:**
+  - **Tonight's nightly run should use watermark 2026-09-25T13:00Z** (the new trace), or
+    it will re-drill this meeting.
+  - Not posted to Slack. Only the scheduled run may post there.
+  - **The Italian §47 of `DEVELOPMENT-RECAP.it.md` is missing** (24/09 run). Flagged, not
+    backfilled.
+  - The prose register documents said 1.4 while the YAML said 1.5; all three now say 1.6.
+  - No transcript copy in `meetings/` and no `meetings/results/` recap, as on every run
+    since 27/08. `STATUS.md` was not regenerated, because no org evidence was taken.
+  - No commit or push was made.
+
+---
+
+## 2026-09-24 — codex — Account ATECO state and User commission category in UAT
+
+- **Did:** Checked the latest client Account model workbook. Account ATECO
+  code/description and Account commission category already existed in UAT.
+  Deployed `Account.Ateco_Stato_Attivita__c` as an unrestricted picklist with
+  current source values, added it to the Azienda layout/page and Agent FLS,
+  and loaded 377 eligible Account values. Captured the pre-existing User agent
+  and commission-category fields and User layout in DX source. Filled the
+  commission category on eight of nine inactive Agent users; Elisa had no
+  source category. The user selected `19` for Nicol from the two source
+  categories. Full read-back of 8,140 Accounts and nine Users had zero
+  mismatches; Account code/description counts were 1,141/1,134.
+- **Mexal constraint:** The live Account trigger gates Mexal queueing on Name,
+  email, phone and VAT changes. The update CSV held only Id and ATECO state.
+  No new `MexalCustomerUpdateQueueable` job appeared after the sample and bulk
+  updates. Production migration remains separate. No commit or push.
+
+---
+
+## 2026-09-24 — codex — four commercial Account fields and UAT backfill
+
+- **Did:** Read the client Account model workbook supplied in this session.
+  Created Account commission category (Text), zona (Text), activity type
+  (multi-select picklist with 18 source values) and seasonal (Checkbox);
+  deployed fields, FLS and current-state Azienda/Locale layouts and pages to
+  Pienissimo UAT after a successful check-only deploy. The source workbook
+  snapshot was matched exactly by 8,140 CRM IDs to UAT Account records.
+  Updated only the new fields: 8,138 commission categories and 181 activity
+  types. Full read-back had zero mismatches. Zona was blank in all source
+  rows; Stagionale had no source column, so its `false` is a technical default.
+- **Mexal constraint:** Read the live Account trigger, active Account Flow list
+  and workflow rules. The bulk CSVs contained none of the four fields that
+  enqueue a Mexal customer update. After the sample and bulk jobs, zero new
+  `MexalCustomerUpdateQueueable` jobs were present. No Mexal update was sent
+  by this work.
+- **Next:** The Quote activity field/defaulting and actual seasonal source
+  data remain open; production cut-over remains separate. No commit or push.
+
+---
+
+## 2026-09-24 — codex — fill agent codes on UAT users
+
+- **Did:** Re-read the `Account_NEW` agent-code distribution and set
+  `User.Agente__c` on eight of nine inactive Agent users in Pienissimo UAT.
+  Seven had an unambiguous prevailing source code. For the one agent with two
+  different codes on two Accounts, the user chose which code to put on User.
+  The agent whose only source code is blank remains blank at the user's
+  direction. Read-back confirmed all nine inactive users and their values.
+- **State:** The 8,140 Account agent lookups and original per-Account codes
+  were not changed. Five Account rows differ from the linked User's selected
+  code, as expected from the source; production migration remains open.
+
+## 2026-09-24 — claude — nightly requirements-check: the first UAT session, and a Business Blueprint nobody had mentioned
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-23T22:00Z**. Drilled two meetings: `UAT: Lead e Opportunità` (client, ~2h08m,
+  **the first acceptance session of the project**, notes+transcript 155,961 chars) and
+  `Temi Mexal Anagrafiche/Indirizzi` (Kreosoft, 22m45s). Read
+  `Business_Blueprint_Pienissimo.docx` in full (49,165 chars). Wrote 2 meeting notes, 5
+  new items (`OI-176`–`OI-180`), updated 14 items, both trackers, both recaps (§47), MAP,
+  INDEX, and the trace.
+- **State:**
+  - 🟢 **The commercial chain ran end to end in front of the client and nothing was
+    rejected.** Twelve rulings, including 🔑 **a new quote state `Firmato`** at which the
+    order is generated. ⚠ One reopened: the word `rifiutato`, which both Fabrizio
+    Paganelli and Marco Montesi object to.
+  - 🟢 **All three triggers that came due today are discharged.** `OI-164` **RESOLVED**
+    (record types present; Elena Spini's two-state `Diretta` path delivered exactly);
+    `OI-163`'s duplicate rule **fired in front of the client and they approved it**;
+    `OI-174` answered — **a client-domain recipient received and signed**, so the mail
+    block is ROMI-side only. 🔑 And the same passage explains the missing DocuSign
+    credentials: Elisa Migliano _"non sapevo dovessi darvi le credenziali"_.
+  - 🟢 **`OI-173` RESOLVED in 22 minutes** — the fiscal rule keys on `residenza fiscale`
+    from the two-letter ISO on the **ragione sociale, not the billing address**; both
+    `.xlsx` transcoding tables arrived by 10:08:51Z. 🟢 Mexal API field names supplied,
+    with **`valuta` and `cod_listino` mandatory on create**, fixed to `1`.
+  - 🔴 **Two defects live in front of the client**: **every form lead is typed `Diretta`**
+    (`OI-176`), and the first DocuSign send died on the edition mapping — the same fault
+    as the 11:13Z sandbox Apex exception. The matching code **throws rather than
+    degrading**, so an unmapped product aborts the whole chain (`OI-96`).
+  - 🔑 **NEW `OI-179`: a ten-chapter Business Blueprint with its own signature block**,
+    created 18:10Z, due to the client 25/09, carrying **seven `● Check con Aurel`
+    markers** and **omitting `Firmato` from its own quote-state table**.
+  - 🔴 **NEW `OI-180`: the client has no UAT logins** until Daniela Morgese reviews the
+    product — indicatively 6 October, the day the UAT window closes.
+  - 🔴 **NEW `OI-177`: the marketing UAT needs production**, and the Aurel Mrruku ↔
+    Fabrizio Mastracci hand-off is stalled with each waiting on the other.
+  - 🔴 **NEW `OI-178`: two agent fields on two branches** — `Codice_Agente_Esterno__c` on
+    `DevMain` with 8,140 accounts carrying it, `Agente__c` on `DEV_LeadAgenteBundle`, and
+    **the client was shown the second**. 🟢 That branch now has PR #59.
+- **Next:** **Quote UAT is 25/09 at 10:30 (WooCommerce) and after (Preventivi), and
+  `Firmato` does not exist yet.** The BBP goes to the client the same day. Check both
+  before anything else.
+- **Watch:**
+  - **The register was deliberately not amended, and a human owes the reconciliation.**
+    `Firmato` is a sixth quote state the client agreed; `state_machines.quote` already
+    carries a flag saying it disagrees with the org's five values. Adding a sixth to a
+    list wrong in five places makes it worse. **It is now six values behind, not five.**
+  - ⚠ **`notes/items/OI-154` was edited here, reversing the 23/09 call.** `7eab757` is
+    still unmerged (PR #59) and carries a developer-authored addition to the same file, so
+    **this will conflict when #59 merges — keep both, developers' block first.**
+  - ⚠ **`64b2843` contradicts its own JOURNAL entry**, which says _"No commit or push was
+    made"_. The commit exists on `DevMain` and contains that sentence. Not corrected.
+  - **`STATUS.md` was not regenerated** — this run has no org evidence; every build claim
+    is repository arithmetic against `64b2843` plus one sandbox exception mail.
+  - 🟢 **`Flows & Objects.drawio` moved at 17:43:57Z — the first movement in nine runs.**
+    Still unreadable here. **Ask for an export.**
+  - **No human has answered a nightly report in eight nights**, and the dev-group channel
+    had no human post at all in this window.
+
+---
+
+## 2026-09-24 — codex — Account_NEW import into Pienissimo UAT
+
+- **Did:** Inspected the supplied Excel snapshot; deployed Account external CRM ID
+  and per-row agent code fields, the Agente profile and permission set, and a
+  narrow UAT import permission set. Created nine inactive Agent users with
+  reserved invalid-domain email addresses. Imported 8,140 VAT-bearing Accounts
+  from `Account_NEW` (8,138 new, 2 existing); excluded 457 without VAT. Linked
+  each Account to its agent; new Accounts owned by the active client admin and
+  existing owners preserved. Recovered 59 duplicate-rule alerts with the rule's
+  Allow action and one invalid PEC by leaving it blank. Final aggregate UAT
+  query confirmed all 8,140 imported, VAT-bearing, with external IDs and Agent
+  lookups; source customer values were kept out of git.
+- **Incident:** The two existing Account updates invoked
+  `MexalCustomerUpdateQueueable`; a customer update returned HTTP 204 from the
+  UAT named credential, which points to `services.passepartout.cloud` with mocks
+  disabled. A following shipping-address callout failed before send because
+  of pending DML. The ERP-side result needs reconciliation. See the Mexal
+  production ERP risk note.
+- **Next:** Production migration and cut-over are still unplanned. Reconcile
+  the Mexal customer update before more UAT Account updates. No commit or push
+  was made.
+
+---
+
+## 2026-09-23 — claude — nightly requirements-check: migration gets a perimeter, the ingressi suspension is discharged, and the Lead record type is still blank
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-22T22:00Z**. Drilled two meetings: `Check Data Import` (client, 2h29m — the
+  longest session of the project, notes+transcript 165,114 chars) and `Test Pre Demo`
+  (internal, 1h33m, ⚠ transcript machine-garbled, **not used as evidence**). Wrote 2
+  meeting notes, 1 decision note, 4 new items (`OI-172`–`OI-175`), updated 7 items, both
+  trackers, both recaps (§46), MAP, INDEX, and the trace.
+- **State:**
+  - 🟢 **`OI-146` RESOLVED.** Fabrizio Paganelli put his own 22/09 written request — an
+    ingressi conversion factor on the product — to the group in person; Aurel Mrruku put
+    the structure on the **campaign edition** and Elena Spini ruled it **Fase 2**. **Fase 1
+    is one ticket, one entry**, six-day Mastery included. The four-run-old suspension
+    trigger is discharged because the client was told, not because anything was built.
+  - 🟢 **`OI-159` answered** in twenty hours: Salesforce owes `Tipologia pagamento` and
+    `Agente`; five fields are Mexal's own procedure; `Gestione ratei di riga` is headroom
+    with no current case. The Italian e-invoicing branch was held back → **`OI-173`**, due
+    at the 24/09 10:00 Mirko Merendi call.
+  - 🟢 **Migration has a perimeter** (`OI-172`): only historic orders migrate, quotes and
+    offers start ex novo. 🔴 **The tutors re-key every pending quote by hand and Marco
+    Montesi was not in the room.** 1,010 articles loaded by Bulk API the same day, zero
+    failures (recorded by the developers on `DEV_LeadAgenteBundle`).
+  - 🔴 **`OI-164` still open at 18:28 CEST** — Elena Spini: _"il rt è sempre blank"_ — with
+    the fix scheduled for the **morning of the UAT day**, and a second expectation added
+    the same evening (only `New`/`Qualificato` on the `Diretta` record type).
+  - 🔴 **NEW `OI-174`: ROMI's mail gateway blocks DocuSign envelopes** to Aurel Mrruku and
+    Rexhina Hysi, and DocuSign is the second half of the 24/09 session.
+  - 🟢 **`OI-169` is built after all** — `7eab757`, 18:47 CEST: `Agente__c` on Account,
+    Lead, Quote, User plus the conversion-blocking validation rule. ⚠ **This supersedes the
+    correction the morning's org check wrote**, which was accurate at 08:40Z.
+- **Next:** the 24/09 UAT day is the due date of three armed triggers at once — the Lead
+  path (`OI-163`/`OI-164`/`OI-169`), DocuSign delivery (`OI-174`), and `Standart` becoming
+  permanent as UAT records are created. **Report those before anything else.**
+- **Watch:**
+  - **`OI-154` was deliberately not edited on `DevMain`.** `7eab757` carries a clean
+    developer-authored 33-line addition to exactly that file on `DEV_LeadAgenteBundle`;
+    editing it here would hand Rexhina Hysi a merge conflict. The facts are in the tracker
+    row and the trace. **Do not treat it as missed.**
+  - **`DEV_LeadAgenteBundle` has no pull request**, so the agent metadata is on neither
+    `DevMain` nor UAT, and the conversion block it contains is unresolved with the client.
+  - **`STATUS.md` was not regenerated** — the 23/09 org check did it ten hours earlier from
+    live org evidence, and this run has none. Do not overwrite live evidence with inference.
+  - **The `Check Data Import` Gemini summary lists `Implementare errori QR` as an action
+    item; the transcript puts it in Fase 2.** The 22/09 lesson caught it. Do not reinstate
+    it from the summary.
+  - `matteo.d@pienissimo.com` is a **new, unattributed** client address — the second after
+    `direzione@pienissimo.pro`. Not guessed.
+
+## 2026-09-23 — claude — org-status-check: full scope, reconciled and published, the day before UAT
+
+**Org:** Pienissimo UAT, `a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`, partial
+sandbox, API 68.0, connected. **Repository:** `DevMain` at `61f2a53`, clean, in sync
+with `origin/DevMain`. **Evidence collected 2026-09-23 08:01–08:40Z.** Read-only:
+nothing deployed, no org data modified, no anonymous Apex, no tests run, no
+source-format retrieve into `force-app/`.
+
+**Method.** `repo-snapshot.mjs` (442 keys) and `org-snapshot.mjs` (1,382 components,
+no unavailable types; run with `node` directly, the npm wrapper still loses the flag
+on Windows) then `compare.mjs` (9 assertions: 7 matches, 2 partial). On top of that,
+**every unmanaged `ApexClass.Body`, `ApexTrigger.Body` and `LightningComponentResource.Source`
+was compared token by token, and each mismatching org body was matched against every
+commit on every remote branch**. That is what separated _merged but never deployed_
+from _deployed but never committed_. Also run: `CronTrigger`, `AsyncApexJob`,
+`PicklistValueInfo`, `DuplicateRule`, `PermissionSetAssignment`, `User`, `ValidationRule`,
+`FieldDefinition` and aggregates. There was **one reference retrieve** (Profile `Admin`,
+Profile `Landing Page Profile`, five record types) into
+`.org-status-cache/run-2026-09-23/mdapi` only. Graphify (867 nodes) and Open Codebase
+Index (3,415 chunks) were both ready. ⚠ `sf` from Git Bash failed on the long retrieve
+command (`'C:\Program' is not recognized`), so it was run from PowerShell.
+
+**Findings, most severe first.**
+
+1. 🔑 **OI-164 root cause.** The Web-to-Lead creator `Amministratore Pienissimo`
+   (System Administrator) has `Lead.Diretta` and `Lead.Standard` **`visible=false`, no
+   default**. The only grant is `Full_Permission`, and that user does not hold it. All 4
+   web leads of 22/09 are untyped. **This is a configuration fix.**
+2. 🔴 **OI-170 (new): `DevMain` is ahead of UAT.** The org runs `LeadConversionQueueable`
+   of `08b97cc`, so every converted Opportunity becomes `Standart`. The
+   `QuoteLineItemTrigger`/`Handler` reopen-to-Bozza rule of `ab47b42` is not deployed,
+   and three quote classes are still `with sharing`. OI-150's _"check-only deploy"_
+   changed nothing.
+3. 🔴 **OI-171 (new): an uncommitted deploy.** `QuoteManageProductsController` and the
+   `quoteManageProducts` LWC (bundle discount / manual price) were changed at
+   07:59–08:00Z by the shared `ROMI COMPANY` user. The content is **in no commit on any
+   branch**. A `DevMain` deploy would overwrite it.
+4. 🟢 **Closed since 14/09:** the Mexal chain and the two Order fields are in source
+   (DIV-13/15), the credential metadata is in source (DIV-08/16), and `Happy Team` is
+   present (DIV-02). Edition mapping is 13 of 51. Quote ageing is scheduled. DocuSign
+   ran 15 jobs in 7 days.
+5. 🔴 **Unchanged or worse:** 0 of 45 orders have a Mexal status (`isSandbox()` guard,
+   OI-137). The nightly sync is unscheduled. `Contract` has zero fields (OI-168). 0 of 31
+   Assets have a QR (OI-161). No agent field exists anywhere (OI-169). **Correction:**
+   the 22/09 record that a conversion-blocking validation "was built" is wrong; it was
+   announced. Coverage is 0 of 7,756 across 79 entries.
+
+**Written.** New notes `OI-170` and `OI-171`. Dated org sections were added to OI-164,
+OI-150, OI-169, OI-137, OI-116, OI-168, OI-161, OI-156, OI-153, OI-121, OI-140 and OI-64,
+to the coverage risk and the credentials risk (whose metadata part is now closed), and
+to the Notion-mirror note. The `build_state` in the register was rewritten to
+`checked: 2026-09-23` with DIV-19…21, REG-06, LIM-07, LIM-08 and new built / not-built
+entries. One unrelated Prettier reflow of a requirement row was reverted so the
+requirement text stays byte-identical. Also updated: `MAP.md` (new top entry, last-updated
+line), `INDEX.md` (OI-170/171 added; OI-164, OI-169, the Mexal chain and the scaffolding
+rows corrected), both `open-items` trackers (rows 170–171 new, ten rows updated), and
+**`DEVELOPMENT-RECAP` §45 EN + IT**. Both precedence lines now name every section from
+§45 down. The IT line had been stuck at §19. `STATUS.md` was regenerated and
+`site/index.html` re-derived. The leak check returns nothing.
+
+**Published.** Notion Status page **replaced whole** (no child pages, checked first),
+then re-fetched and verified with no mangling. Tracker: **37 rows added (OI-135–OI-171),
+3 statuses corrected (OI-49, OI-88, OI-102 → Resolved)**. It now has **132 rows and 132
+distinct refs**, matching `notes/items/`. OI-170/171 have no `Note` URL until `DevMain`
+is pushed. The Flows page was not touched: no flow note or state machine changed.
+`site/` changed on disk and **was not deployed**. The public URL did not move.
+
+**Deliberate non-actions.** No Apex tests were written or offered. Nothing was deployed
+or fixed. OI-164's configuration change was **not** applied. The uncommitted OI-171 code
+was **not** retrieved into the repository. No requirement text was changed. No commit,
+no push. `MAP.md` is ~145 KB against its 5 KB budget; it was not restructured, and that
+needs its own task.
+
+**Next step.** **Before the 24/09 session:** (1) fix Lead record-type visibility for the
+Web-to-Lead creator and re-run the form test. (2) The OI-171 author commits the bundle
+discount. (3) **Then** deploy `LeadConversionQueueable`. A targeted deploy avoids making
+the OI-156 sharing decision by accident. (4) Name who deploys merged PRs to UAT. After
+that: check-in and mappings for 30/09, Contract for 5/10, and the Mexal sandbox guard for
+6/10. After the push, fill in the Notion `Note` URLs for OI-170 and OI-171.
+
+## 2026-09-22 — claude — nightly requirements-check: five sessions in a day, and last night's headline was wrong
+
+- **Did:** swept the one-day window from watermark **2026-09-21T22:00Z** and **drilled
+  five meetings** — `Temi QR Code Biglietti` (client, with Andrea Parmeggiani),
+  `Logiche Spacchettamento Righe` (client), `Update Interno Aurel/Elena` (ROMI),
+  `Test Mexal` (client + **Mirko Merendi of Kreosoft**) and `Test Interni Pre-UAT Parte 2`
+  (ROMI). Read 11 Gmail threads (four in full), Elena Spini's DM in full, the
+  `#tproj-pienissimo` calendar post, the dev group, two paged Drive sweeps, five Drive
+  documents, eleven branch heads and PRs #54–#56. Fathom: zero meetings.
+- **State:** committed on `DevMain`, `vault:check` green (290 notes, 290 unique ids, all links resolve).
+- **🔑 The headline is a correction to my own previous run.** `OI-143` said an
+  administration user must re-key tranche dates by hand into Mexal, and that the date is
+  the only join key. **Both are false.** A Plus order is already **n lines of one article
+  code, each with its own `data scadenza`**, the order passes to Mexal unchanged, invoice
+  date and due date are **not meant to coincide**, and the join is **structural** (invoice
+  ← sigla + numero ordine; scadenziario ← codice cliente, serie, numero, data documento).
+  Matching on the date would have been **actively wrong** — a Ri.Ba. insoluto regenerates
+  it. `OI-143` is **superseded with its 21/09 body kept verbatim**; the real residue is
+  `OI-166`, the order-**line** identifier, which neither 22/09 session closed.
+- **Next:** (1) **the Lead path, before UAT on 24/09** — `OI-164` leads land with no record
+  type, `OI-163` no duplicate rule, `OI-169` a conversion-blocking `agente` rule built
+  while the client is still deciding. (2) `OI-168` contract logic not started, on the 5/10
+  agenda. (3) `OI-165` migration unestimated. (4) `OI-161` the check-in app, nothing built,
+  ticket UAT 30/09. (5) `OI-159` nobody has answered Mirko Merendi's field-split mail.
+- **Watch:**
+  - **`notes/items/OI-149` and `OI-150` were deliberately left alone.** PR #55 (`54e0be1`)
+    carries clean, developer-authored edits to exactly those two files. Editing them on
+    `DevMain` would have landed a merge conflict on Rexhina Hysi. Their 22/09 facts are in
+    the new items and the trace instead — **this was a choice, not an omission.**
+  - `ORD-02` is **no longer contradicted** by the date argument; the 21/09 judgement is
+    withdrawn. The register's prose is still unedited because `OI-166` is open and the
+    Italian is the signed text. Only `ORD-02.tracked_by` changed (gained `OI-167`).
+  - 🔴 `ab47b42` flips three classes to `without sharing` and creates a fourth that way —
+    **five in the quote stack, eleven already on `DevMain`.** Treat it as a house style on
+    guest-reachable paths, not an isolated line.
+  - 🟢 The same commit **automates the 5-day quote ageing**, implementing the register's
+    agreed rule; the code's labels confirm the register's are the stale ones.
+  - 🔴 `Standart` is now **inconsistent with itself** — `Lead.Standard` beside
+    `Opportunity.Standart`. Two days to UAT.
+  - The two `natura articolo` / `categoria statistica` legends arrived as
+    **screenshot-only mails no tool here can read**. Not a skipped source — a tool limit.
+  - **STATUS.md not regenerated**, no org evidence; the org record is ~8 days old.
+
+## 2026-09-21 — claude — nightly requirements-check: the client returned, UAT is booked, and Mexal cannot receive a tranche date
+
+- **Did:** swept the four-day window 18–21/09 from watermark **2026-09-17T21:40Z** and
+  **drilled six meetings** — Data Model Parte 6, Flusso Recall Tutor, two Mexal
+  internals, the client WooCommerce/Mexal test and the internal pre-UAT session. Read
+  ~25 Gmail threads (four in full), the `#tproj-pienissimo` status post, three Slack
+  DMs, two paged Drive sweeps, all nine branch heads and PRs #47–#54.
+- **State:** committed on `DevMain`, `vault:check` green.
+  **Six meeting notes new. `OI-143`–`OI-158` new (sixteen).** Updated OI-14, OI-24,
+  OI-49, OI-50, OI-59, OI-83, OI-88, OI-102, OI-115, OI-121, OI-124, OI-136, OI-139,
+  OI-140, OI-142, two risks, the design-diagram note and three people notes.
+  MAP/INDEX, **tracker rows 143–158 new plus fifteen updated, and RECAP §43 — both
+  languages.** The register was **not** touched: nothing in it became false.
+- **The headline:** 🔑🔴 **`OI-143` — Mexal exposes no field through which Salesforce
+  can set an invoice due date.** `data scadenza riga` and `Data scadenza PG` are not
+  related one-to-one; `Scad PG` derives from the payment method. Because Fabrizio
+  Paganelli ruled invoices are created **by hand**, the invoice date does not exist
+  until a person types it — so administration must **read tranche dates in Salesforce
+  and re-key them into every Mexal invoice**, and that date is the only key joining
+  invoice to tranche. **It was put to him at 16:00 on 21/09 and cut off after two
+  minutes** when Daniela Morgese pulled him out. **The client has agreed manual
+  invoicing and has not been told what it costs.** And a bundle cannot carry n tranche
+  dates as one line → `OI-144`, bundles must be split, changing the bundle total.
+- **Correction to my own 17/09 report:** it called the merged checkout link a case of
+  "closing a client's question by implementation". **Superseded within 24 hours.** On
+  18/09 Sabatino Rinaldi rejected the `add-to-cart` link (the shop uses **Funnel Kit**),
+  gave the real anatomy — **the funnel name, not a product id** — and **answered both
+  questions he had been owing since 16/09 by removing their premise**. Rebuilt two hours
+  later, merged in PR #50, and **proved end to end with the client on 21/09**. `OI-49`
+  is resolved on its mechanism.
+- **Also new:** UAT booked and confirmed (six invitations, 24/09→06/10, approval 13/10,
+  go-live 21/10) 🔴 **but the seventh topic, WooCommerce/checkout, was never booked**
+  (`OI-158`) · 🔴 **there is no full UAT sandbox** — everything called UAT is a Partial
+  Copy (`OI-153`) · 🟢🔴 the client delivered eight migration tables including **Lead**
+  and **Locali** and **`ARTICOLI` is unclassified** (`OI-154`) · 🔴
+  **`QuoteTriggerHandler` is now `public without sharing` on `DevMain`** (`OI-156`) ·
+  🟢 **DocuSign metadata reached source with no secret** (PR #54, open) · 🔑 **the
+  referent moved from Sabatino Rinaldi to Fabrizio Paganelli** · 🟢 the client confirmed
+  interest in a **Fase 2 quotation** · 🔴 a **RID mandate form is promised to customers
+  and does not exist** (`OI-152`).
+- **Next:** the 22/09 sessions decide the two biggest open questions —
+  `Logiche Spacchettamento Righe` at 11:00 (tranches) and `Test Mexal` with Mirko
+  Merendi at 15:00 (the Mexal side, the bundle split, the causali, the discount
+  fields). Drill both. Then `Temi QR Code Biglietti` at 10:30 with Andrea Parmeggiani,
+  and `Test Interni Pre-UAT - Parte 2` at 17:00.
+- **Watch:** 🔴 **`Standart` is still misspelt in six places on `DevMain` and UAT opens
+  24/09** — three days. 🔴 The `ingressi` structure is **agreed with the client and
+  suspended by Elena Spini internally**; Monday passed without the promised review.
+  🔴 **Elisa Migliano still has not been asked** about OI-136, and the 18/09 internal
+  now shows the administrative need being dropped without her. ⚠ Two PRs (#49, #53)
+  were opened against `main` and closed — the repo's default target is `main`, so
+  expect a third. ⚠ `0099aea` **is** on `origin/DevMain`, so the 17/09 push blocker is
+  discharged. ⚠ `Stima Task` is a **Vision** file, not Pienissimo — that twelve-run
+  unknown is closed. ⚠ The org record is ~7 days old and `STATUS.md` was not
+  regenerated: no org evidence in this run.
+
+## 2026-09-17 (evening) — claude — requirements-check: the internal follow-up drilled, and five merges in one afternoon
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, git and GitHub from watermark
+  **2026-09-17T12:30Z** to **21:40Z** — a nine-hour window and the busiest this
+  job has had. Drilled `[PIENISSIMO] - Follow-up Interno` (17/09 14:15 CEST,
+  **ROMI-internal, no client**, ~1h22m) from its Gemini notes read in full
+  (~23k tokens). Read the five commits that reached `DevMain` and the metadata
+  they carry.
+- **State:** **4 notes new** — the meeting minute, `OI-140` (three Opportunity
+  record types), `OI-141` (auto-created Contract for Performance Plus orders),
+  `OI-142` (fractional product records for tranches). **7 updated** — `OI-49`,
+  `OI-136`, `OI-50`, `OI-138`, `OI-139`, `OI-24`, the design-diagram note. MAP,
+  INDEX, tracker rows 24/49/50/136/138/139 + **new rows 140–142**, and
+  **RECAP §42 in both languages**. `vault:check` green. **The register was not
+  touched** — the three new rulings are ROMI-internal scope with no client
+  agreement, and allocating a requirement id is a human's call.
+- **Next:** decode `Flows & Objects.drawio` — it moved a **tenth** time at
+  17:20:06Z and this run did not open it. Then check whether Friday's client
+  call validated the record types and the bundle-lock constraint.
+- **Watch:** 🔴 **the merged WooCommerce link generator emits the URL anatomy the
+  27/08 session replaced** (`?add-to-cart=…&sf_opportunity_id=…`, Woo product id
+  **typed by hand**), and in doing so closes both of Sabatino Rinaldi's open
+  questions by implementation. Do **not** record that as "the button was finally
+  built" — the finding is the collision with OI-49's 27/08 section.
+  🔴 `Standart` is misspelt in an Opportunity record-type **API name and label**;
+  fix before records exist. 🔴 **PR #49 targets `main`** with the same head as
+  #50 — do not merge it. 🟢 `4132dab` is on `DevMain`: the guest-reachable
+  `Incassato` write is gone from source, **but nobody ruled**, and Elisa
+  Migliano still has not been asked.
+
+## 2026-09-17 (nightly) — claude — nightly requirements-check: a second cited source documents a retired design
+
+- **Did:** scheduled nightly `requirements-check` from watermark
+  **2026-09-17T11:00Z**, the single value left by the interactive run earlier the
+  same day. **A ninety-minute window** — that run closed at 11:00Z and committed
+  `a1a4584` at 12:17Z; this one fired at 12:27Z. Gmail, Slack, Drive, Fathom, git
+  and GitHub all swept; **the split watermark stayed closed.**
+- **Found:** 🔑 **`Integrazione_Salesforce_WooCommerce.docx` was edited at
+  2026-09-17T07:40:42Z and no trace note recorded it**, although that timestamp
+  fell inside the window the 11:00Z run swept — its Drive query started at
+  2026-09-16T21:00:00Z and reported five items "all modified before the
+  watermark". Missed or mis-triaged there; recorded as a defect in that run.
+  **Read in full: nothing in the document was answered.** The same **five points
+  to agree** are still open, it still specifies the **mu-plugin v1.0.0** and the
+  **long comma-concatenated URL** that 27/08 superseded, and **neither of the two
+  answers owed by Sabatino Rinaldi since 16/09 is in it**. ⚠ It is not an answer
+  to them — its _Esempio 2_ is a multi-product offer built the old way, so the
+  file records the design the build left behind. ⚠ A stray `ciao` now sits inside
+  the `line_items` JSON of its sample response; **not datable from this
+  repository**, and Drive gives the owner but **no last-modifying user**, so
+  **who edited it is unknown and was not inferred.**
+- **Why it matters:** 🔴 **this is the `DGM-2` defect a second time.** Two
+  documents cited as `source:` — this one in `REQUIREMENTS.md`, `REQUISITI.it.md`
+  and tracker row 49, the diagram on several register rows — now describe
+  mechanisms the build has abandoned. The difference is that **this one is still
+  being touched**, so it is live rather than abandoned.
+- **Found, everything else:** nothing. **Zero Pienissimo** across workspace-wide
+  Slack (20 results, newest 12:26Z), Gmail, Fathom (1 meeting, and it is 247) and
+  the build (**1 commit, the interactive run's own**). #47 open and untouched;
+  🔴 **`4132dab` still has no PR**, second day. ⚠ **`[PIENISSIMO] - Follow-up
+Interno` began twelve minutes before this sweep** and has produced no artifact
+  yet — **the expected state for a session in progress, not proof it produced
+  nothing.** The next run is the first that can drill it.
+- **Written.** **No note created, one updated.** `OI-49` carries the finding;
+  `MAP.md` and `INDEX.md` take the live position and the trace row; **tracker row
+  49 and `DEVELOPMENT-RECAP` §41 regenerated in both languages**; trace note at
+  [Source trace 2026-09-17 nightly](notes/traces/Source%20trace%202026-09-17%20nightly.md).
+  **The register was not touched** — nothing in it became false; `INT-12`–`INT-14`
+  and `ORD-12` already record the 27/08 supersession.
+- **Deliberate non-actions.** No Apex test written, proposed or scaffolded.
+  `STATUS.md` not regenerated — its basis is a live org check and this run has no
+  org evidence. The org was not opened. PR #47 not reviewed or merged. **No
+  price, article code, credential, token or personal datum entered the
+  repository** — the spec read tonight carries a product/price table and a
+  billing block with a name, email and phone number in its sample JSON, and none
+  of it was copied.
+- **Next step.** **Drill `[PIENISSIMO] - Follow-up Interno` as soon as it
+  produces notes or a recording** — it is the first movement on OI-49's two open
+  points. Then: the client's mail silence reaches **nine days** tomorrow, which
+  the armed trigger says to raise as a delivery risk rather than a gap; and
+  **order lines still have no booking** with Parte 6 tomorrow.
+
+## 2026-09-17 — claude — requirements-check: Gmail reconnected, and two long-unread sources decoded
+
+- **Did:** interactive (not nightly) `requirements-check` from watermark
+  **2026-09-16T22:00Z**, mail from the frozen **2026-09-11T22:00Z**. 🟢 **Gmail
+  was reconnected by the user mid-session and answered normally**, so the
+  five-day mail gap carried by the runs of 14, 15 and 16 September has been
+  swept. **The split watermark is closed — the next run uses a single value,
+  2026-09-17T11:00Z.**
+- **Found, mail:** 🟢 **the five unswept days contain zero client mail.** An
+  explicit domain search returns nothing; the last message from `@pienissimo.com`
+  is Fabrizio Paganelli, 09/09 07:08Z. The feared unread answer to the 08/09
+  blocking decisions does not exist — **the client has simply been silent for
+  eight days**, with the Mexal credentials, event list, article codes and prices
+  all still owed. **No Kreosoft mail exists in the mailbox at all.**
+  🔴 **The skill names the wrong client domain** — `@pienissimo.pro` belongs to
+  Andrea Parmeggiani alone; the client is on `@pienissimo.com`.
+- **Found, workbook:** 🟢 read at its Parte 5 version (`2026-09-16T11:20:06Z`),
+  two runs after it moved. The product rulings are in it and **`LIVELLO_0` now
+  carries five values**. 🔴 **`Tipologia Attività` is now mandatory and global
+  with no values, and the `PIENISSIMO TO DO` marker that tracked the debt was
+  deleted.** 🔴 The four gaps — Ordine, `Utenti`, `Profili`, the initial-load
+  plan — survive a sixth session.
+- **Found, diagram:** 🟢 **`Flows & Objects.drawio` decoded after five skipped
+  runs.** The blocker had been that the Drive reader returns ~178 KB of base64
+  into context; **oversized results now spill to disk**, so it decoded in three
+  commands. 🔴 **Not one ruling from Parte 1–Parte 5 is in the file** (searched
+  over the raw XML, zero occurrences for every term), the participant link still
+  carries the **Account ID** that `BIG-18` was superseded for, both cells stale
+  since 26/08 are still stale, and the file **contradicts itself on the order
+  status** (`Incasato` ×2 as the box, `Incassato` ×1 in the rules; the Apex uses
+  `Incassato`).
+- **Found, calendar:** 🟢 **Friday 18/09 is not double-booked** — Parte 6
+  (Campagne/Lead, Rebecca Marmo) holds the slot alone, so the Lead table gets its
+  session and **order lines have no booking at all**. ⚠ An **internal dev sync on
+  16/09 15:00** (Aurel, Rexhina Hysi, Anita Aga) surfaced only from calendar
+  mail, so §39's _"that is the entire evidence"_ on the `Incassato` removal was
+  wrong — a venue existed, though no artifact from it does. 🔴 Andrea Di Cicco
+  **declined today's Follow-up Interno** and was active on Slack for another
+  client: not unavailable, unassigned — and there is a **fifth** question behind
+  him, drawn on the design file since 20/08 (OI-92).
+- **Found, chat:** ⚠ **Aurel Mrruku disputed the WooCommerce mechanism at
+  16/09 15:55–15:56**, ~3 hours _before_ Elena Spini's NotebookLM paste. The AI
+  summary was produced to settle a disagreement and **the participant who
+  disputed it never agreed with it**.
+- **Build:** quiet. One commit (the nightly's own), no new PR, #47 still open and
+  undescribed, 🔴 **`4132dab` still has no PR** so the guest-reachable write stays
+  on `DevMain`.
+- **Written:** no note created; **six updated** — the diagram note, OI-24, OI-49,
+  OI-59, OI-115, OI-139 — plus `MAP.md`, `INDEX.md`, both `open-items` trackers
+  (rows 24, 49, 59, 115, 139) and `DEVELOPMENT-RECAP` **§40 EN + IT**. Trace:
+  [Source trace 2026-09-17](notes/traces/Source%20trace%202026-09-17.md).
+  **The register was not touched** — nothing in it became false.
+- **Deliberate non-actions.** **No Slack message was sent**: the carve-out is the
+  nightly job's, and this was interactive. Nothing was replied to, shared,
+  modified or marked read. No Apex test written or offered. The org was not
+  opened. PR #47 not reviewed; `4132dab` not merged. No credential, token, price,
+  article code, VAT number, IBAN or personal datum entered the repository,
+  although both sources read today are full of them.
+- **Next step.** 🔴 **Open a PR for `4132dab`** — the fix is complete and sitting
+  where it protects nobody. Then **reconcile `DGM-2` or stop citing it**: it is a
+  register `source:` that documents a superseded mechanism and has absorbed
+  nothing in three weeks. Before Friday, **book an order-lines session** and read
+  the diagram's LEAD-OPTY page ahead of Parte 6.
+
+---
+
+## 2026-09-16 — claude — nightly requirements-check: Data Model Parte 5, and the Incassato button removed without a decision
+
+- **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark
+  **2026-09-15T22:00Z**. 🔴 **Gmail unreachable for the third consecutive run** —
+  sign-in required, connector disconnected, **zero mail queries ran**; the mail
+  watermark stays at **2026-09-11T22:00Z**, a five-day split. Drilled
+  **[Data Model Parte 5](notes/meetings/2026-09-16%20Data%20Model%20Parte%205.md)**
+  (16/09, client-facing, 2h21m30s) from the Gemini notes in full.
+- **State:** three notes created — the Parte 5 minute, **OI-138** (a won quote and
+  its accepted order freeze; agreed, unbuilt, no register row) and **OI-139**
+  (Andrea Di Cicco released from the project owing OI-110, OI-102, OI-125,
+  OI-135). Ten notes updated. Trackers rows 24/49/50/59/102/110/115/117/121/136
+  touched plus new rows 138/139, `DEVELOPMENT-RECAP` §39, **all in both
+  languages**. `MAP.md` and `INDEX.md` carry the new position. **The register was
+  not touched** — nothing in it became false. `vault:check` green; committed to
+  `DevMain`.
+- **Next:** the **17/09 internal meeting** is where Elena Spini said the
+  WooCommerce product-id question would be picked up — drill anything it
+  produces. **Friday 18/09 is double-booked** (Parte 6 Campagne/Lead with Rebecca
+  Marmo vs order lines); whichever runs, drill it and correct OI-24.
+- **Watch:**
+  - 🔴 **`4132dab` removes the `Incassato` button completely but sits on
+    `DEV_ComponentBundle` with no pull request.** `DevMain` and UAT are still
+    exposed. **Record the merge when it happens** — and note that the _decision_
+    OI-136 asked for was never made; a person acted, no person ruled, and Elisa
+    Migliano still has not been asked.
+  - ✅ **A correction: the 15/09 claim that nothing granted
+    `Edit_Mexal_Synced_Admin_Fields` was wrong.** `400c195` granted it in the same
+    commit, in `Full_Permission` lines 43–46, outside the diff hunks that were
+    read. The real defect is that **`Full_Permission` is the only set granting
+    it** — do not restate the old version.
+  - 🔴 **Both integration counterparts are unavailable at once** — Andrea Di Cicco
+    winding down, Sabatino Rinaldi on tour and not answering WhatsApp — with UAT
+    opening 23/09. **Mirko Merendi at Kreosoft is the untried route** for OI-110
+    and OI-135.
+  - ⚠ **The workbook moved at 11:20:06Z during Parte 5 and was not opened**;
+    `Flows & Objects.drawio` moved a **ninth** time and was **not decoded**, fifth
+    run. Both are absences, not nothings.
+  - ⚠ **A live invitation token and a raw Quote id were pasted into Slack** on
+    16/09 at 14:21 CEST. **Neither value is in this repository and neither must
+    be.**
+
+---
+
+## 2026-09-15 — claude — nightly requirements-check: three PRs in one day, and the chain is switched off in UAT
+
+- **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark
+  **2026-09-14T22:00Z**, the `external_watermark` of
+  [the 14/09 trace](notes/traces/Source%20trace%202026-09-14.md), the newest note
+  in `notes/traces/` by `updated:`. 🔴 **Gmail was unreachable for the second
+  consecutive run** (sign-in required, connector then disconnected, **zero mail
+  queries ran**), so the **mail watermark stays at 2026-09-11T22:00Z** and four
+  days of the project's primary client channel are unread. Trace:
+  [Source trace 2026-09-15](notes/traces/Source%20trace%202026-09-15.md).
+- **State:** the busiest delivery day on the project. **PR #43 merged 08:07:04Z** —
+  the whole order-to-Mexal chain, the OI-117 lock, the article sync and both named
+  credentials are on `DevMain`;
+  [the org-only chain risk is resolved](notes/risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)
+  and `MexalHttpClient` turns out to be absent from both sides, so no orphan.
+  **PR #44 merged 13:43:52Z** (Rexhina Hysi, +2,487) brought the invitation and
+  participant stack into source and moved the public link to a 64-hex
+  per-invitation token, **superseding `BIG-18` in practice** — register and both
+  prose documents updated. **PR #45 opened 16:07:59Z** (Anita Aga, +2,290, still
+  open) is the **tranche roll-up** `ORD-03`/`AC-06` asked for, and it fixes
+  OI-117's principal to a custom permission.
+- **Two findings a cold agent must not lose:**
+  1. **`1830fce` disables the order-to-Mexal chain in every sandbox** — an
+     unconditional `if (isSandbox()) return;`, merged inside PR #43. **UAT is a
+     sandbox, UAT opens 23 September, acceptance is due 13 October**, so the first
+     end-to-end order run would be in production. It is a real answer to the
+     production-ERP risk and its reason is stated nowhere.
+     [OI-137](notes/items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md).
+  2. **The public participant page can set `Order.Status = 'Incassato'`** —
+     `ParticipantRegistrationController` is `public without sharing` and the guest
+     page renders a "Segna ordine incassato" button. Strong token, unbounded
+     authority, no requirement authorises it, **no human has discussed it**.
+     [OI-136](notes/items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md).
+- **Next:** (a) get Gmail reconnected — it is the highest-value human action
+  available; (b) put OI-136 to a person, Elisa Migliano being the operational
+  authority on invoicing; (c) decide how `INT-01`/`INT-05` are accepted if not in
+  UAT; (d) check whether any permission set grants
+  `Edit_Mexal_Synced_Admin_Fields` — if PR #45 merges without one, amministrazione
+  is locked out of the thirteen fields the 03/09 session promised them; (e) a run
+  with context to spare should **decode `Flows & Objects.drawio`**, which moved an
+  eighth time at 15/09 08:29:51Z and is the `source:` of the `BIG-18` the build
+  just superseded — undecoded for four runs now.
+- **Watch:** two corrections this run made. The production-ERP risk's claim that
+  no sandbox/production switch existed was **wrong when written** — it has existed
+  since `bc2ed5d` on 10 September; what is unknown is what
+  `Named_Credential_Sandbox__c` points at. And "all 31 Orders have a blank Mexal
+  integration status" is **no longer evidence of an unexercised chain** — in a
+  sandbox it is the designed behaviour. Do not reinstate either reading.
+- **Did not:** write, propose or scaffold any Apex test (37 pass / 4 fail and
+  5,095 uncovered lines are recorded as brief only); open the org; touch PR #45;
+  rewrite the developer-authored note that arrived inside PR #44.
+
+---
+
+## 2026-09-14 — claude — nightly requirements-check: the org-only chain reached source control, with OI-117's lock
+
+- **Did:** swept Slack, Drive, Fathom, `git` and GitHub from watermark
+  **2026-09-11T22:00Z**, the `external_watermark` of
+  [the 11/09 trace](notes/traces/Source%20trace%202026-09-11.md), which is the
+  newest note in `notes/traces/` by `updated:`. **The window is three days** —
+  12 and 13 September have no trace note and no JOURNAL entry, so whether a run
+  fired on those days cannot be established from the repository; nothing inside
+  the window was assumed held. New trace:
+  [Source trace 2026-09-14](notes/traces/Source%20trace%202026-09-14.md).
+
+- **🔴 Read this before trusting the next watermark — it is split.** **Gmail was
+  unreachable this run**: the MCP server returned _"requires re-authorization
+  (token expired)"_ on both queries and **zero mail queries ran**. The trace
+  therefore carries `external_watermark: 2026-09-14T22:00Z` **and**
+  `mail_watermark: 2026-09-11T22:00Z`. **Do not collapse them** — mail is where
+  the go-live change, the Fase 2 perimeter and the plan deck all arrived, and
+  three days of it are unread. **A human must reconnect the connector** (claude.ai
+  → Settings → Connectors); a session cannot.
+
+- **State — the headline.** **`e06a1b4`** (Anita Aga, 18:05 CEST, `DevAnita`) —
+  **PR #43, opened 16:06Z, OPEN and unmerged**: 40 files, **+2,057 / −143**.
+  Seven hours after the morning org-status-check reported the whole order-to-Mexal
+  integration as org-only, **the retrieve happened**.
+  - 🟢 **Eight of the nine org-only classes, both `Order` fields, and a rewritten
+    `OrderTriggerHandler`** calling the Mexal chain; `AnticipayOrderAutomation`
+    deleted. The "a `DevMain` deploy silently reverts the chain" failure ends when
+    PR #43 merges — **not before**.
+  - 🟢 **[OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)'s
+    lock exists** — active `Lock_Mexal_Synced_Admin_Fields` on thirteen fields —
+    **and** a re-entrancy guard (`setBypassMexalCustomerUpdate`) closing the echo
+    loop with the inbound sync.
+  - 🟢 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+    has watermark storage** (four `Integration_Configuration2__c` fields) and a
+    twin, an [article sync onto `Product2`](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+  - 🟢 **`namedCredentials/` exists at last**, `Mexal` + `Anticipay`, **with the
+    secrets left in the org as merge-field references**. `DocuSign` still org-only.
+  - 🔴 **Still nothing scheduled**; **`MexalHttpClient` is in neither the commit
+    nor any reference in it** while the org has it; **no description, no review**
+    on PR #43; **+2,057 uncovered lines** (brief only).
+
+- **⚠ The morning org check was superseded by the evening, and the record now says
+  so — do not reinstate the first reading.** It concluded OI-117 had been
+  "answered by building the opposite", a push instead of a lock. **Both were
+  built.** That was true of the org at 10:51Z and false of the project by 18:05.
+
+- **State — the second finding.** Slack DM Aurel Mrruku ↔ Andrea Di Cicco, 14/09:
+  the Mexal customer **PUT was executed from Salesforce and worked** (12:07:44),
+  returns **204 with no body** (data in the headers), and **there is no PATCH**
+  (_"Non c'è la patch"_, 15:18:38) — so every update is a full-body replace and
+  Aurel's own objection about Mexal's auto-populated fields is unanswered
+  ([OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)).
+  🔑 **It ran against Mexal production** — _"ricordati che è sempre produzione"_,
+  after a customer record had been created there from Salesforce
+  ([new risk](notes/risks/Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md)).
+  And _"per la creazione di un ordine chi devo avvisare?"_ went unanswered — new
+  [OI-135](notes/items/OI-135%20Who%20must%20be%20told%20when%20Salesforce%20starts%20creating%20Mexal%20orders.md).
+
+- **Next:** the **schedule hour** is now the whole of OI-116 and it covers two
+  batches — but **do not switch it on against production** until the Mexal
+  test-environment question is answered. Then: OI-117's principal is a literal
+  profile name, and the lock covers thirteen fields while the push covers four —
+  nine can still diverge silently. **Ask Kreosoft OI-110 and OI-135 together**;
+  same counterpart, five days unasked.
+
+- **Watch:** the register was **not** touched and no requirement changed; the
+  11/09 pre-committed trigger **fired but its premise failed** — the lock now
+  exists — and is **re-armed in sharper form** in the trace. **The decision note
+  edited by `e06a1b4` was deliberately not touched on `DevMain`** to avoid a merge
+  conflict with PR #43. `MAP.md` is still far over its 5 KB budget and this run
+  added to it, fifth consecutive flag.
+
+## 2026-09-09 — claude — nightly requirements-check: PR #37 built the commercial process automation
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository across **the whole
+  of 9 September**, deduplicating against
+  [the 09/09 interactive trace](notes/traces/Source%20trace%202026-09-09.md).
+  New trace: [Source trace 2026-09-09 nightly](notes/traces/Source%20trace%202026-09-09%20nightly.md).
+  **Two findings, one large.**
+
+- **⚠ Watermark caveat, read this before trusting the last trace.** The 09/09
+  interactive trace declares `external_watermark: 2026-09-09T22:00Z` but was
+  committed at **10:28Z** (`2dbcdca`). It never swept the eleven hours it claimed,
+  and **two commits landed inside them**. I swept from 10:28Z. **Prefer a trace's
+  actual run time to its declared end-of-day value when the two differ.** That run
+  also left **no JOURNAL entry** — this is the first handoff since 08/09.
+
+- **State — the headline.** **PR #37 / `a53345a`** (Anita Aga, merged by Aurel
+  Mrruku 18:41 CEST as `0fe07f6`): 30 files, +1,499/−74, **+729 net Apex**.
+  [The build note](notes/objects/The%20commercial%20process%20automation.md).
+  - 🟢 **An accepted quote now generates its Order and lines, carrying `Tranche__c`
+    and `Data_Scadenza__c`.** That closes
+    [OI-50](notes/items/OI-50%20Tranche%20object.md)'s standing gap since 25 August
+    — `OrderItem.Tranche__c` has a writer at last. **Aggregation is now the only
+    genuinely unbuilt gap of the three.** Only quote-born orders get a tranche.
+  - 🟢 **The Opportunity lifecycle exists and matches the register exactly**;
+    Azienda/Locale is now built end to end (`Locale__c` on Opportunity/Quote/Order,
+    parent normalisation, validation rule, WooCommerce record-type stamp).
+  - 🔴 **DocuSign is absent from the whole diff.** The design signs then orders;
+    this orders with no envelope, seven days after
+    [OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md).
+  - 🔴 **The unauthenticated community page now creates commercial records** — the
+    controller is unchanged, what it _causes_ is not
+    ([the risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)).
+  - 🔴 **+729 uncovered lines**, estimate past 3,686, zero covered, last test run
+    still 4 August. Brief only, per the standing instruction.
+
+- **State — the smaller one.** Aurel Mrruku chased Andrea Di Cicco for the filtered
+  WooCommerce Postman collection at **12:26 CEST** and **had no reply eleven hours
+  later**. Sabatino Rinaldi still holds the pre-filter version; the sixty-year JWT
+  is still unrotated ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)).
+  9–11/09 is the ROMI offsite, corroborated a third time by a Drive folder.
+
+- **⚠ Correction made mid-run — do not reinstate the first reading.** I initially
+  recorded the new `OpportunityStage` values as disagreeing with the design
+  diagram. **They match `state_machines.opportunity.states` character for
+  character.** It is [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)'s
+  own table, transcribed from the 6 August diagram, that is stale. **The real
+  disagreement is the _Quote_ states**, where the register has never matched the
+  built code and **disagrees with itself** — `build_state` carries the code
+  spelling. `a53345a` hard-codes that spelling in a third class.
+
+- **Next:** the Quote-state reconciliation needs **a human to name the canonical
+  spelling** before anything moves; the trigger and the exact edit list are written
+  into the trace note's _"The register was deliberately not changed"_ section.
+  Then: ask about DocuSign vs the new order path — **ask, do not infer**;
+  `org-status-check` is owed for an **eleventh** run and is now behind **two**
+  merges.
+
+- **Watch:** the register was **not** touched this run and no requirement changed.
+  `MAP.md` is still far over its 5 KB budget and this run added to it.
+
+## 2026-09-08 — claude — nightly requirements-check: go-live 21 October, the locale gets a home, and a password in a transcript
+
+- **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
+  **2026-09-07T22:00Z**, taken from the `external_watermark` of
+  [the 07/09 trace](notes/traces/Source%20trace%202026-09-07.md), which is also the
+  newest note in `notes/traces/` by `updated:`. The window is 8 September. Drilled
+  **two** sessions from full transcripts: `Data Model: Parte 4` (client-facing,
+  12:01 CEST, **1h25m58s**) and `Flussi MKT Parte 2` (ROMI-internal, 14:32 CEST,
+  **42m21s**). Read the client status mail and the new plan deck in full.
+- **State:** five things.
+  **(1) ✅🔴 The go-live is 21 October, and it corrects yesterday's record.** Elena
+  Spini told the client in writing at 14:15Z: go-live **21 October**, UAT ready
+  **23/09**, UAT **23/09–13/10**, approval **13/10**, and **Fase 2 out of
+  perimeter** with a request for written acknowledgement
+  ([the decision](notes/decisions/Decision%20-%20go-live%20moves%20to%2021%20October%20and%20Fase%202%20is%20declared%20out%20of%20perimeter.md)).
+  The 07/09 session's "21 September / 13 September" were **21 and 13 October** —
+  Gemini's paraphrase dropped the month.
+  [OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)
+  is **renamed and rewritten**; inbound links fixed in eight files. **The register
+  was left at 6 October deliberately** — the date is proposed, not accepted
+  ([OI-128](notes/items/OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
+  **(2) 🟢 Parte 4 gave the locale a home and it was built the same evening.**
+  Locali are **Account children of the billing company; only parents go to
+  Mexal** — which **resolves
+  [OI-123](notes/items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md)**
+  with a record type, not the new object it feared. PR **#35** / `c877631` shipped
+  it at 18:21 CEST. Also: duplicate control moves to the Lead on **email AND phone
+  in combo**; contracts and tickets go to the billing company's principal only;
+  the Opportunity field list is cleaned; **Parte 5 (16/09) and Parte 6 (18/09)**
+  booked at two hours.
+  **(3) 🔴 A UAT sandbox password was read aloud and Gemini transcribed it**, and
+  Fabrizio Mastracci signed in **as Aurel Mrruku**
+  ([the risk](notes/risks/Risk%20-%20a%20sandbox%20password%20was%20spoken%20aloud%20and%20preserved%20in%20a%20meeting%20transcript.md)).
+  **The value is not in this repository.** The durable half is the shared login —
+  and Utenti/Profili is the workbook section nobody has opened in five sessions.
+  **(4) ✅ The WooCommerce collection reached Sabatino Rinaldi** at 14:17Z
+  ([OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)) —
+  🔴 **without the rotation this record twice asked for**.
+  **(5) ⚠ An org check ran at 16:31 CEST and its org-only drift findings were
+  merged ninety minutes later.**
+- **Next:** the register decision is the one that matters —
+  **OI-128 gates OI-124**. If the client acknowledges, `CTX-02`, the `M`
+  definition, both milestone tables, the Fase 2 escalation rule and `go_live:`
+  change in **both languages in the same session**, and the escalation rule's
+  _"unless explicitly renegotiated"_ premise needs re-examining. `STATUS.md`, the
+  Notion mirror and the Flows page are owed for a **ninth** run and remain
+  `org-status-check`'s.
+- **Watch:** ⚠ **`MAP.md` is 93 KB against its own stated 5 KB budget** and
+  `INDEX.md` still prices it at ~1.1k. It has been over budget for weeks; a run
+  should split it. ⚠ **Diff `DevMain` before believing any org-check drift claim** —
+  second instance in five days. ⚠ **A machine paraphrase can drop a unit and stay
+  plausible**: the 07/09 run was right to flag an unreconcilable date rather than
+  act on it. ⚠ The funnel specification lives in **screenshots nobody has read**,
+  this run included.
+
+## 2026-09-07 — claude — nightly requirements-check: three sessions, and a go-live date that moved without the client
+
+- **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
+  **2026-09-04T22:00Z**, taken from the `external_watermark` of
+  [the 04/09 trace](notes/traces/Source%20trace%202026-09-04.md), which is also the
+  newest note in `notes/traces/` by `updated:` — frontmatter and text agreed. The
+  weekend is empty on every source; everything below is 7 September. Drilled
+  **three** sessions: `Data Model: Parte 3` (client-facing, 11:06 CEST) from its
+  **full 1h12m02s transcript**, `Interna Flussi MKT` (ROMI-internal, 10:00 CEST)
+  from notes and decisions, and `Follow-up Interno` (ROMI-internal, 17:01 CEST)
+  from Gemini notes — **that one has no transcript section**.
+- **State:** four things.
+  **(1) 🔴 The go-live date moved and the register does not know.** The internal
+  follow-up agreed **21 September 2026 with approval by 13 September**, where
+  `CTX-02`, both milestone tables, the `M` priority definition and the Fase 2
+  escalation rule all say **6 October**. Fifteen days **earlier**, yet described as
+  a _slittamento_ adding development weeks — which only fits a plan this repository
+  does not hold. **Nothing was changed in the register**
+  ([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
+  The same session **parked Fase 2 pending client payment** — first movement on
+  that dispute since 24/07 — while **deferring the Mexal scadenzario path into that
+  parked phase**, and settled **six Mexal decisions**
+  ([the flow](notes/flows/The%20Mexal%20integration.md)), including 🔴 **PUT/PATCH
+  required because POST on an existing account fails on a duplicate partita IVA**
+  ([OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md))
+  and 🔴 a **hardcoded `anno = 2025`** against a 2026 go-live that nobody raised.
+  **(2) 🟢 Parte 3 ran on Monday and finished the contact registry** — which
+  resolves the 04/09 calendar ambiguity the first way: not cancelled, held without
+  Andrea Di Cicco. **Consents stay on the Contact, editions move to CampaignMember**
+  ([the decision](notes/decisions/Decision%20-%20consents%20live%20on%20the%20contact%20and%20editions%20on%20the%20campaign.md)),
+  the **Zoho tag scheme is decoded and retired**, and the **primary-contact rule is
+  sharpened**. New
+  [OI-123](notes/items/OI-123%20The%20Zoho%20questionnaire%20fields%20have%20no%20home.md):
+  a dozen fields whose natural owner is a _locale_ object that does not exist.
+  **(3) 🟢🔴 The marketing session closed `30 vs 60` as a 30–60 day window** —
+  ⚠ still ROMI choosing for the client — and **moved rinuncia off the email onto
+  the community page**
+  ([the decision](notes/decisions/Decision%20-%20rinuncia%20moves%20from%20the%20marketing%20email%20to%20the%20community.md)),
+  which is unbuilt work on a page merged 03/09. New
+  [OI-126](notes/items/OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md)
+  and [OI-127](notes/items/OI-127%20What%20a%20total%20rinuncia%20does%20to%20orders%20and%20assets.md).
+  **(4) ⚠ An org check ran at 10:04 CEST, published nothing, and corrects two
+  records** — `Mappatura_Edizione__c` holds **4 rows, 3 active, against 226 of 229
+  products unmapped and 17 of 22 orders on `Incassato`**, and Apex coverage measures
+  **0 of 2,741 lines** with the last run still 4 August.
+- **Next:** (a) **get a human to say which go-live date governs** — if 21 September
+  is real, `CTX-02` and both milestone tables change in **both languages in one
+  session** and the client has to be told; (b) **check the `Follow-up Interno`
+  recording** (553 MB, exists) before anyone acts on the 21 September figure, since
+  that session has **no transcript** and every quotation of it is Gemini's
+  paraphrase; (c) **send the WooCommerce endpoint and token to Sabatino Rinaldi** —
+  now an assigned action on Aurel Mrruku and still unsent, and **rotate first**;
+  (d) open the landing-page/hidden-field spreadsheet `1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`,
+  which specifies a page already built.
+- **Watch:** ⚠ **Fase 1 development ends 10 September, inside a 9–12 September
+  offsite** — described this run as four days, Wednesday to Saturday morning, where
+  the record had 9–11 — and the proposed **approval date of 13 September is the
+  first day after it**, with Elena Spini off 14–15. ⚠ **The 20 August marketing
+  recap answers half of OI-127 in a parenthesis** and was treated as an open
+  question the same morning in a room containing its author. ⚠ **`d562af0` is
+  authored `Aurel Mrruku <slazzaretti@deloitte.it>`** — right name, an address from
+  another organisation; reads like a misconfigured git identity and is **not
+  interpreted here**, but it is permanent on that commit. ⚠ **The `.drawio` moved a
+  sixth time** (10:34:37Z) and still cannot be rendered. ⏸ **~290 further uncovered
+  Apex lines** from `d562af0`, recorded against the coverage records as the brief,
+  **not acted on**.
+- **Method:** **read the window\'s mail before its minutes.** The 20/08 recap landed
+  at 08:48Z and answers a question a 10:00 session raised as open, with the author
+  of the answer in the room. And **read the `Decisioni` block of every internal
+  session in full** — the go-live change is one line in a seven-line list, under a
+  summary that reads _"Riunione tecnica con pianificazione e organizzazione
+  eventi"_. ⚠ **`JOURNAL.md` entries are prepended, not appended**; a `tail` looks
+  like a missing handoff.
+
+---
+
+## 2026-09-07 - claude - invitation access folded into Full Permission
+
+- **Did:** on the user's instruction, deleted the `Event_Invitation_Management` permission set Codex had drafted and merged its entitlements into the existing `Full_Permission` set - object permissions, 8 field permissions, the two Apex class grants and the tab setting, relocated unchanged. Recorded [the decision](notes/decisions/Decision%20-%20invitation%20access%20uses%20Full%20Permission.md).
+- **Nothing was lost in the move:** `Account__c` and `Campaign__c` carry no field entry because both are `required: true` and Salesforce rejects field permissions on required fields - Codex had already omitted them for that reason. `EventInvitationService` needs no class grant; it runs only from triggers, while `EventInvitationUrlJob` exposes the `@InvocableMethod` a Flow calls.
+- **Org state:** neither the drafted permission set nor `Event_Invitation__c` had ever been deployed - both confirmed absent from UAT by query. No assignment to revoke, no user affected. Source-only.
+- **Verified:** check-only dry-run against Pienissimo UAT with NoTestRun, job `0AfMA00000Ce9Qh0AJ`, 22 of 22 components, zero errors, nothing persisted. A first attempt failed on one thing only - the merged `Full_Permission` description exceeded the Salesforce 255 character limit at 425 characters; shortened to 242 and it passed.
+- **Checks:** vault:check OK for 192 notes with the 4 pre-existing trace warnings; Prettier clean on the permission set and the new note; INDEX.md note count 191 to 192.
+- **Next:** the set still has to be assigned to whoever operates invitations - unassigned by design, and never to a guest user.
+- **Watch:** the merged posture allows create, read, edit and view-all-records on `Event_Invitation__c`, which is more permissive than the `BundleComponent__c` entry in the same set. That is the posture drafted with the object, kept deliberately rather than redesigned.
+
+---
+
+## 2026-09-07 - claude - the Order trigger is renamed off Biglietto
+
+- **Did:** at the user's request, renamed `OrderBigliettoTrigger` to `OrderTrigger`, `OrderBigliettoTriggerHandler` to `OrderTriggerHandler` and `OrderBigliettoTriggerHandlerTest` to `OrderTriggerHandlerTest`. Six files moved with `git mv` so history follows; identifiers rewritten. Recorded [the decision](notes/decisions/Decision%20-%20the%20Order%20trigger%20is%20renamed%20off%20Biglietto.md).
+- **Why:** `Biglietto__c` was superseded by standard Asset on 2026-08-24 and the handler builds `List<Asset>`, so the old name named a retired object. It was also narrower than the behaviour - the single Order trigger already dispatches Anticipay automation and now invitation creation. Only `Product2.Genera_Biglietto__c` keeps the Italian term, correctly.
+- **Deploy is destructive, not additive:** UAT still carries `OrderBigliettoTrigger` Active - confirmed by Tooling query, exactly one Order trigger. Deploying the renamed components alone would leave two triggers on Order both creating tickets from the same confirmed order. Added `manifest/order-trigger-rename-destructiveChanges.xml` and its empty package to delete the three old components in the same deployment.
+- **Verified:** check-only dry-run against Pienissimo UAT with NoTestRun passed for the renamed trio plus the invitation dependencies - 26 components, zero errors. Nothing was persisted; the post-run Tooling query still shows only the old trigger. A first dry-run of the trio alone failed only on `EventInvitationService` not existing in the org yet, which is Codex's uncommitted class, not a rename defect.
+- **Checks:** vault:check OK for 191 notes with the 4 pre-existing trace warnings; Prettier clean on the renamed Apex, the new manifests and the new note; INDEX.md note count 190 to 191.
+- **Not changed:** historical records keep the old name because it was true on their date - past journal entries, org coverage tables in OI-64/OI-66 and the deploy risk, the commit citation in OI-53, `STATUS.md`, and the preserved `.org-status-cache/` snapshots. The broken source link in the invitation proposal note was repointed.
+- **Next:** deploy the rename and the destructive manifest together when requested. Nothing is committed yet - Codex's invitation work and this rename both sit in the working tree.
+- **Watch:** no Apex tests were written or run and no coverage was measured; production coverage stays gating. `OrderTriggerHandlerTest` was renamed, not repaired - it is still subject to the OI-64 breakage.
+
+---
+
+## 2026-09-07 - codex - invitation source and Marketing Cloud Growth design
+
+- **Did:** the user confirmed Sales Cloud, Digital Engagement for Facebook/WhatsApp and Marketing Cloud Growth, then explicitly requested Salesforce source. Recorded [the product context](notes/The%20confirmed%20Salesforce%20and%20marketing%20products.md) and rewrote [the invitation design](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md) for Growth related-record marketing flows and content variables.
+- **Built locally:** Event_Invitation__c, internal permission set/layout/tab, three Apex classes and a trigger. The paid-order ticket insertion path ensures one invitation per Account-Campaign, then prepares plain links asynchronously using ConnectApi.Communities.getCommunity(networkId).siteUrl. Flow can explicitly refresh URLs before sending.
+- **Verified:** the read-only Connect-in-Apex probe returned the correct published UAT URL. Check-only deployment 0AfMA00000CeBPF0A3 succeeded with NoTestRun; no org metadata was persisted and no messages were sent. Coverage briefs updated without writing tests.
+- **Checks:** 21 components validated with zero component errors and zero tests run; targeted source/new-note Prettier checks passed, vault:check passed for 190 notes with existing trace warnings, intelligence:verify passed 8 checks, and git diff --check passed.
+- **Next:** deploy when requested, assign the internal permission set, configure recipient/send timing and the Growth marketing flow, then verify the complete journey. Current source does not backfill existing Assets, schedule sends, track delivery or auto-complete/reopen invitations.
+- **Watch:** URL_Status__c Ready means the URL was prepared, not that a marketing send is due. If a transaction has exhausted its queueable allowance, URL preparation stays Pending until the Flow refresh action runs. The Growth product is confirmed; its provisioning/trigger availability has not been inspected.
+
+---
+
+## 2026-09-07 - codex - participant link matched to the live community
+
+- **Did:** updated [the invitation proposal](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md) with the exact UAT domain-root participant route, existing `c__accountId` / `c__campaignId` parameters and a proposed Salesforce Text formula for the invitation URL.
+- **Evidence:** read-only Connect communities API returns the Landing Page community as Live at the domain root; unauthenticated GET of `/participant-registration` returns HTTP 200. SiteDetail's `/vforcesite` prefix is not the published community entry address. The separate marketing community is `/lp`.
+- **State:** documentation only, no metadata deployed. Browser automation was unavailable; HTTP page-shell availability and source parameter handling were verified, not a rendered registration or submission.
+- **Next:** use actual invitation Account/Campaign IDs in the documented formula when implementing the object and dispatcher.
+
+---
+
+## 2026-09-07 - codex - invitation proposal uses plain links for now
+
+- **Did:** revised [the invitation proposal](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md) and its index entry following the user's explicit request to omit tokens for now.
+- **State:** use `c__accountId` and `c__campaignId` in a calculated invitation URL, available from creation and passed to Marketing Cloud when due. Removed token fields, expiry, rotation and token-access implementation work. Existing controller filters remain the proposed page behaviour; no application code changed.
+- **Next:** confirm Marketing Cloud setup, recipient selection, email timing and dispatch/reminder rules. The previous journal entry's token-lifecycle next step is superseded by this direction.
+- **Watch:** this temporary choice does not resolve the existing community access finding or approve the rest of the proposal.
+
+---
+
+## 2026-09-07 - codex - participant invitation proposal documented
+
+- **Did:** created [the event invitation proposal](notes/flows/Proposed%20event%20invitations%20for%20participant%20registration.md) at the user's request and linked it from INDEX.md. Covers one Account-Campaign invitation, creation with campaign-assigned Assets, sending when due, token access, Marketing Cloud API entry data, synchronization and reminder handling.
+- **State:** proposal only; no metadata or requirement changed. Marketing Cloud Engagement is an explicit unconfirmed assumption. No live-org or Marketing Cloud configuration check was performed. The proposal records that current participant-controller code already creates Campaign Members, contrary to older OI-78 prose.
+- **Next:** confirm the Marketing Cloud product/connection, recipient selection, timing, token lifecycle and dispatch retry rules before implementation.
+- **Watch:** documentation is not client approval; 30 versus 60 days and the meaning of rinuncia remain open. No client-facing rendered section is changed by this standalone technical proposal.
+- **Validation:** vault:check passed for 189 notes with existing non-blocking requirement-trace warnings; the new note passes Prettier and the diff passes whitespace checks.
+
+---
+
+## 2026-09-04 — claude — nightly requirements-check: Data Model Parte 2, an edition table that ships empty, and two records that were wrong
+
+- **Did:** swept Gmail, Slack, Drive, Fathom **and `git diff`** from watermark
+  **2026-09-03T22:00Z** (from
+  [the 03/09 trace](notes/traces/Source%20trace%202026-09-03%20nightly.md), by
+  `updated:`; frontmatter and text agreed). Drilled the **04/09 `Data Model:
+Parte 2`** client session from its **full 1h01m33s transcript**, read the
+  rebuilt workbook in full, and read the 40-file diff of PRs #32/#33/#34.
+  ⚠ **The clone arrived single-branch on `main` with no vault** — `git fetch
+origin && git checkout -B DevMain origin/DevMain` recovers it. A future run
+  that finds `AGENTS.md` missing is on the wrong branch.
+- **State:** four things, only one of which arrived through a message.
+  **(1) Parte 2 finished the contact registry inside its hour** — the shipping
+  address becomes a **hidden mirror of billing** (a workaround adopted before
+  `#113` was answered), contacts get a **role picklist** instead of duplicate
+  records, the reference contact becomes **editable on the quote**, and five
+  Contact fields are deleted. **`#112` is resolved and the answer is yes**:
+  Anticipay returns the ATECO code, its description and the codice fiscale in the
+  same call. **DocuSign moved verbally** — _"tutto confermato"_, a named contact
+  (**Massimo**), an update promised next week, nothing written.
+  **(2) PR #34 shipped `Mappatura_Edizione__c`** — `#96` built faithfully, and
+  improved on twice unasked (a `Product2` lookup instead of a text code, and a
+  guard refusing overlapping windows). 🔴 **But the table is empty, hand-
+  maintained and has no owner, and the matching code throws** — so an unmapped
+  product now blocks an order reaching `Incassato` (`#121`).
+  **(3) A `git diff` corrected two records that had been wrong for two sweeps** —
+  `#107`'s three code defects are all fixed, and the Anticipay field-build risk
+  is resolved. Both landed **02/09** in `9b38d1a`, before the last watermark.
+  **(4) The WooCommerce endpoint and its authentication exist** (OAuth JWT
+  bearer, stronger than feared) — but the client has neither, and **both
+  credentials were circulated in plaintext**, the assertion expiring ~60 years
+  out. New rows `#119`–`#122`; new gating risk.
+- **Next:** (a) **ask Aurel Mrruku which mailbox holds Andrea Parmeggiani's two
+  04/09 mails** — they carry the authoritative ATECO field list and are in
+  neither this account nor any search; (b) **settle Parte 3 vs Parte 4** — one
+  message, and against the 10/09 deadline it is worth one of four remaining
+  working days; (c) **name an owner for the edition mapping rows**, sequenced
+  against `#98`; (d) **rotate the two credentials** before the pattern reaches
+  production.
+- **Watch:** 🔴 **Do not report `#107` or the Anticipay field risk as movement in
+  this window.** They are **stale-record corrections** — the code was already
+  fixed at the last trace's own commit. ⚠ **The `#tproj-pienissimo` status post
+  is a recycled template**: its red-flag block is byte-identical to 28/08 and five
+  earlier posts, so the phase-2 scope dispute it describes is **not** new. The
+  only new content is that **Sabatino Rinaldi has stopped answering his phone**
+  because of the client's event — which matters, because he owes the WooCommerce
+  answers and the marketing form review, and the client's tour starts Tue 08/09.
+  ⚠ **`INT-16` was deliberately left open**: platform OAuth is not the class
+  checking its caller, and the org was not opened. ⚠ **~600 more uncovered Apex
+  lines** — recorded against the coverage records, **not acted on**.
+- **Method:** **an org check is a photograph of a moving branch.** The 03/09 run
+  concluded that a pull request is a source; the other half is that **`git diff`
+  against the previous trace's commit must run before any build claim is
+  reported**, not only to find new work. It cost one command and corrected two
+  gating records. And **a recurring status post is not news until it is diffed.**
+
+---
+
+## 2026-09-01 — claude — nightly requirements-check: the Anticipay follow-up drilled, and OI-95 is resolved
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark
+  **2026-08-31T22:00Z**. ⚠ **Not** from the newer
+  [01/09 Anticipay drill trace](notes/traces/Source%20trace%202026-09-01%20Anticipay%20API%20drill.md),
+  which is newest by `updated:` but **disclaims itself as a watermark in its own
+  first line**. Selecting mechanically by frontmatter would have skipped the
+  31/08 → 01/09 window entirely. Then drilled the **01/09 Anticipay follow-up** —
+  Gemini notes, notes document and **the full 19m49s transcript**.
+- **State:** the meeting the last trace called _"the single most valuable thing
+  outstanding"_ is in the record
+  ([the minute](notes/meetings/2026-09-01%20Follow-up%20Integrazione%20Anticipay.md)),
+  and it **resolved [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)**:
+  all eleven middleware fields land on `Account`, the legal representative on the
+  Account rather than a Contact, his address as one free-text field. The `:env`
+  split was **invented in that call** (v2-as-outcome now confirmed, not
+  inferred); the **shared token is deliberate** (OI-106, asked outright);
+  **Anticipay serves Italian companies only**, which answers the foreign-VAT half
+  of `INT-18` in the negative and which nobody in the room noticed (OI-73). Four
+  of six open questions were **never raised**. New: **OI-109** (codice
+  destinatario SDI) and a
+  [risk note on org access](notes/risks/Risk%20-%20the%20team%20lost%20access%20to%20the%20Pienissimo%20orgs%20on%201%20September.md).
+  Eight notes updated, three created; rows 48/94/95/98/105/106/108 + new 109 in
+  both trackers; §24 in both recaps. **No requirement changed.**
+- **Next:** ⚠ **`Anagrafica Articoli.xlsx`** — Fabrizio Paganelli's 01/09 14:04Z
+  attachment carrying the bundle-only code proposal and questions addressed to
+  ROMI — **is unread and the meeting it was prepared for is 2 September.**
+  Somebody has to download it by hand, as with the WooCommerce payload and the
+  API PDF. Then chase **three** Anticipay questions, not six: the error response
+  bodies, the pass-through date, the `dascita` typo.
+- **Watch:** 🔴 **Do not record OI-108 as "the client considered and declined".**
+  The personal-data question was **never raised** in the call; the room took all
+  five person fields without it being asked. One field now has a stated purpose
+  (contract signature), four do not. ⚠ Also: **org access failed for both Aurel
+  Mrruku and Elena Spini on the morning of 01/09 and nothing written says it was
+  restored** — the two decaying findings (Biglietto recycle bin ~12 Sept, the
+  unversioned `WoocommerceOrderService`) can only be worked from inside that org.
+  ⚠ Housekeeping: the 01/09 drill's own entry sits at the **bottom** of this file
+  rather than the top, against the newest-first rule. Left in place, not moved.
+
+## 2026-08-31 — claude — nightly requirements-check: a destructive deploy took 37 records and 270 lines of unversioned code
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-08-28T22:00Z**
+  (from [the 28 Aug trace](notes/traces/Source%20trace%202026-08-28.md), by
+  `updated:`). Window 29–31 Aug; the 29th and 30th were a weekend and are empty
+  everywhere.
+- **State:** **one client mail, no meeting, and a second consecutive stranded org
+  check.** Drive zero, Fathom zero, `#tproj-pienissimo` silent since 28/08, canvas
+  unchanged and now five sessions behind.
+- **Finding 1 — 🔴🔴 `Biglietto__c` was deleted from the org with all 37 records,
+  and seven Apex components went with it that were never in source control.** An
+  `org-status-check` at 31/08 09:36–09:52Z found it and, for the second run
+  running, **published nothing**. The mechanism it said it could not establish was
+  one `git show` away: commit **`5d8cdb3`** (Anita Aga, 28/08 18:10 CEST) carries a
+  destructive-changes manifest. `git log --all` proves **none of the eight deleted
+  components ever existed in this repository on any branch** — so ~270 lines of the
+  DocuSign and PDF stack are gone from their only copy, code that had run (19 of
+  37 records carried an envelope id). The org check called this "drift resolved by
+  deletion from both sides"; **there were never two sides**, and I corrected that
+  reading in the record. Records were **not** migrated: Asset went 4 → 5. Recycle-bin
+  recovery closes about **12 September**.
+- **Finding 2 — 🟢 the Anticipay API documentation arrived four days early.** Andrea
+  Parmeggiani, 31/08 16:15Z, `Documentazione API – Salesforce.pdf`. Owed by 04/09.
+  First client commitment on this project met ahead of its date. **The PDF is
+  unread** — a sweep cannot open a Gmail attachment. Its mail body alone adds a new
+  contract fact: during the test period the middleware **serves only from the
+  Pienissimo cache and does not call Anticipay**, so a test-period `404` cannot be
+  told from a genuine not-found.
+- **Finding 3 — the same unversioned-code pattern is live on WooCommerce.** The
+  deployed `WoocommerceOrderService` is not in source control and the repo's
+  unshipped `WooCommerceOrderEndpoint` claims the same `urlMapping`; the duplicate
+  contract silently changed 409 → 200 + `duplicate: true` without telling Sabatino
+  Rinaldi; `INT-16` survived a full rewrite still unauthenticated.
+- **Next:** three things have dates. **Open the Anticipay PDF before the 01/09
+  10:00 call.** **Ask Anita Aga whether an export was taken** before ~12 Sept.
+  **Retrieve `WoocommerceOrderService` into `force-app/`** — one command, and it is
+  the largest uncovered class as well as the live endpoint.
+- **Watch:** ⚠ this sweep **did not open the org**; every build-state assertion is
+  attributed to the 31/08 run and dated. ⚠ **Coverage fell 1,769 → 1,571 and that
+  is not progress** — the whole difference is deleted code, no test was written;
+  never quote the improvement without that clause. ⚠ OI-66 is **superseded, not
+  done**. ⚠ The Biglietto deletion is a **ROMI-side incident** and was deliberately
+  **not** given a client-facing tracker row — whether it is disclosed is a human's
+  call, not a sweep's.
+- **Cost:** 9 notes updated, 3 created; both trackers (rows 66, 81, 94, 95, 102,
+  104), a new §22 in both recaps plus the §21.10 table corrected, MAP, INDEX,
+  trace. **No requirement changed**, so the register and both prose documents are
+  untouched.
+
+## 2026-08-28 — claude — nightly requirements-check: a quiet night externally, five false claims corrected internally
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-08-27T22:00Z**
+  (from [the 27 Aug trace](notes/traces/Source%20trace%202026-08-27.md), by
+  `updated:`). The earlier 28 Aug entry below was the payload ingest — a single
+  artifact, not a sweep — so it moved no watermark.
+- **State:** **no client sent anything and no meeting ran.** Gmail returned zero
+  Pienissimo items after the watermark across three query shapes; Drive zero,
+  fully paged; Fathom zero; the canvas unchanged and still four sessions behind.
+  Both findings were ROMI-side, both on Slack.
+- **Finding 1 — the record was materially out of date.** An `org-status-check`
+  ran on 28/08 14:45–14:56Z, verified five `MAP.md` claims **false**, and
+  **published nothing** ("no note or requirement mutated"). Its results were
+  sitting in a group DM. Folded in: 2 Flows exist, Asset has 8 custom fields, the
+  WooCommerce endpoint is deployed and taking live traffic, `OrderItem.Tranche__c`
+  is granted to `Tranche_Management`, and the Lead-conversion break is
+  **resolved** — the 27/08 note that inferred it was written without org access
+  and was wrong. OI-104's dedupe turns out to be **already built**
+  (`WooCommerce_Order_Key__c`, unique + external id, 409, exercised); what remains
+  is a SOQL-then-insert race and `INT-16`, now verified from the code as having
+  **no auth at all**.
+- **Finding 2 — the phase 2 red flag is five weeks old and unchanged.** Elena
+  Spini's status post broke a seven-week silence in `#tproj-pienissimo`, but its
+  red-flag paragraph is **verbatim** from 24/07, 31/07 and 07/08. The one new
+  sentence says she still has no update. Also new and genuinely positive: the
+  **2 MKT flows are confirmed and Fabrizio Mastracci is building them** — while
+  the 100+ form review is confirmed **still owed after nine weeks** and the funnel
+  screenshots he needs have never been confirmed delivered.
+- **Next:** OI-102's token is the whole of the WooCommerce authentication and the
+  tests are the week of 31 Aug — that is the one thing with a deadline. Settle
+  OI-81's `30 vs 60` before the flow is finished. `STATUS.md`, the Notion mirror
+  and the Flows page are still owed by `org-status-check` — **second trace
+  running**.
+- **Watch:** ⚠ this sweep **did not open the org**; every build-state assertion
+  written tonight is attributed to the 28/08 run and dated. ⚠ Do not cite Elena
+  Spini's 28/08 post for the _merits_ of the phase 2 dispute — it adds no
+  argument, only a date for the silence. ⚠ "Fabrizio" in that post is **Mastracci
+  (ROMI)**, not Paganelli (Pienissimo).
+- **Cost:** 5 notes updated, 0 created; both trackers (rows 14, 81, 104), both
+  recaps, MAP, INDEX, trace. **No requirement changed**, so the register and both
+  prose documents are untouched.
+
+## 2026-08-28 — claude — the WooCommerce payload attachment was opened
+
+- **Did:** Aurel Mrruku supplied the file Sabatino Rinaldi mailed on **27/08 at
+  14:20:18Z** (subject _"Integrazione woo commerce - salesforce"_, cc Andrea Di
+  Cicco and Elena Spini, body _"Ecco il payload:"_). Provenance confirmed against
+  Gmail. Not a meeting and not a sweep — a single artifact, decoded and folded in.
+- **State:** preserved at `Payload woo-salesforce.json` in the repository root,
+  verified identical to the mailed original. Decoded in
+  [the WooCommerce payload contract](notes/The%20WooCommerce%20payload%20contract.md).
+  **Two notes created** (the contract, OI-104), **three updated** (the flow,
+  OI-49, OI-102), both trackers (rows 49 and 102 touched, **104** added), the
+  register (`INT-11`, `INT-16`) and both prose mirrors, `MAP.md`, `INDEX.md`.
+- ⚠ **Read the contract note's "How to read it" section before using any of
+  this.** Aurel Mrruku's own instruction, given during the session: the file is
+  **one example order** and is authoritative on the payload's **structure only**.
+  Do not raise findings about which of its fields were empty or duplicated — the
+  sample is a €50 test product through a test funnel. An earlier pass of this
+  session did exactly that and produced three items off the sample values; they
+  were withdrawn before anything left the repository. **Ask Sabatino Rinaldi
+  instead** — the open questions are listed at the foot of the contract note.
+- **What it closed:** 🟢 two of the five points OI-49 has carried since 31 July —
+  the parameter is **`sf_opportunity_id`** (top level, and again in `meta_data`;
+  the recorded `sf_opp_id` was only the snippet default), and the id is the
+  **15-character** Salesforce form, case-sensitive. Both are structural, so the
+  example does settle them.
+- **What it cost:** 🔴 **the id travels in clear** — the envelope has no
+  signature, nonce or send-timestamp field — so the header token ROMI owes is the
+  _entire_ authentication of this integration, while `INT-16` still recommends a
+  signed token. 🔴 **No idempotency key either**, beside a plugin that has a
+  manual re-send button and a trigger that fires on two states. Both are one item,
+  [OI-104](notes/items/OI-104%20The%20WooCommerce%20payload%20has%20no%20idempotency%20key.md).
+- **Worth reading before anyone writes the endpoint:** `meta_data[].value` is
+  string, object _and_ array across rows, so a typed Apex wrapper throws;
+  `tracking.first_click` is not ISO 8601 and `Datetime.valueOf` fails on it; every
+  money value is a string with inconsistent decimals; `order.id` is a number while
+  `order.number` is a string. Full list in the contract note.
+- **Next:** the endpoint under
+  [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+  now has a contract to build against and the client half is delivered. Before the
+  **week of 31 August** tests it needs a dedupe rule (OI-104), a decision on the
+  clear-text id (`INT-16`), and Sabatino Rinaldi's answers on `event` values and
+  `sku`. Fase 1 development ends **10 September**.
+- **Not touched:** Apex tests — still Aurel's separate task, unprompted work
+  forbidden.
+
+---
+
+## 2026-08-27 — claude — nightly requirements-check: the WooCommerce integration is settled, and half of it is already built
+
+- **Did:** swept Gmail, Slack, Drive and Fathom against the **2026-08-26T21:40Z**
+  watermark (the 26 Aug nightly trace, selected by `updated:`). Found **both
+  27 August WooCommerce sessions** — Gemini notes, **full transcripts** and
+  recordings for each — and drilled them per `drill-meeting`. Also found a live
+  Apex failure in the Pienissimo partial sandbox that came from no meeting at all.
+- **State:** transcripts preserved verbatim at
+  `meetings/2026-08-27-integrazione-woocommerce-transcript.it.md` (48m20s) and
+  `meetings/2026-08-27-test-integrazione-woocommerce-transcript.it.md` (17m13s),
+  each read once in full. Bilingual recaps for both in `meetings/results/`.
+  **Eight notes created, six updated**, both trackers (rows 49 and 73 touched,
+  100–103 added), both recaps (§21), `MAP.md`, `INDEX.md`. Full audit:
+  [the trace](notes/traces/Source%20trace%202026-08-27.md).
+- **The headline:** 🟢 **the integration direction is settled — WooCommerce writes
+  into Salesforce**, and not via a stock webhook: those were evaluated on screen
+  and **rejected** (one topic per webhook, no multi-select, no control of the
+  body). The mechanism is a **custom WooCommerce plugin on a PHP order-status
+  action hook** sending one JSON body with order, customer and lines —
+  [the flow](notes/flows/The%20WooCommerce%20order%20integration.md). 🟢 **And
+  Sabatino Rinaldi had already built it** by the afternoon session: v1.3, always
+  active, HTTP 200 on the wire against the production shop, with a manual re-send
+  button.
+- **Requirements moved, for the first time in three sweeps.** `INT-14` open →
+  agreed · `INT-13` mu-plugin superseded and the link generator's product/quantity
+  pickers dropped, because carts are **Funnel Kit** funnels that already carry the
+  product · `INT-11` credential direction **reversed** · 🔴 **`ORD-12` corrected**
+  — an order reaches Salesforce at **`in lavorazione` OR `completato`**, any
+  payment method, not only COMPLETATO, so every line arrives paid. All landed in
+  the YAML register, `REQUIREMENTS.md` and `REQUISITI.it.md` in the same session,
+  with `tracked_by` wired back.
+- **Next:** 🔴
+  [OI-102](notes/items/OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+  — **ROMI owes Pienissimo the Salesforce endpoint and header token.** It is the
+  only thing between a working client-side plugin and a real test, and it blocks
+  the integration tests set for the **week of 31 August**. Nothing of the
+  Salesforce side exists. Also: **download the `Payload woo-salesforce`
+  attachment** from Sabatino Rinaldi's 14:20Z mail — it is the authoritative
+  field list and no connected tool can open a Gmail attachment.
+- **Watch:** 🔴
+  [the sandbox failure](notes/risks/Risk%20-%20LeadConversionQueueable%20is%20broken%20in%20the%20Pienissimo%20sandbox.md)
+  — `LeadConversionQueueable` threw _"No such column 'Servizio_Interesse__c' on
+  entity 'Lead'"_ at 15:08Z. **The repo's copy of that class does not select that
+  field** and the field's metadata **is** in `force-app/`, so the org runs a
+  different version and the sandbox lacks a field the repository has. Lead
+  conversion does not complete there, which also blocks testing
+  [OI-100](notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md).
+  Written **without org access** — confirm before acting. ⚠ Also: the afternoon
+  session had **two participants and no minute but Gemini's**, and it relocated
+  the **client-agreed P.IVA check** ([OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md))
+  with neither Elisa Migliano, who proposed it, nor Elena Spini, who approved it,
+  in the room. Prefer the 6 August client rule until someone restates it.
+- **Not done, deliberately:** no Apex test class written or proposed — coverage is
+  Aurel Mrruku's separate task before the production deploy. `STATUS.md`, the
+  Notion mirror and `site/` were not regenerated: they carry **build state**,
+  refreshed by the 26 Aug org check, and this sweep moved decisions. A note landed
+  in `notes/flows/`, so **step 6a-bis applies on the next org-status run** —
+  flagged, not done.
+
+---
+
+## 2026-08-26 — claude — nightly requirements-check: the Mexal review, and the edition mechanism changes again
+
+- **Did:** swept Gmail, Slack, Drive and Fathom against the **2026-08-26**
+  watermark (the trace taken at ~13:15 CEST the same day, selected by
+  `updated:`). Found the **26 August `Review Temi Integrazione Mexal`** client
+  session — Gemini notes, **full 1h25m45s transcript** and recording — and
+  drilled it per `drill-meeting`. Also found a new **2 September** client meeting
+  and a substantive ROMI group DM thread.
+- **State:** transcript preserved verbatim at
+  `meetings/2026-08-26-review-temi-integrazione-mexal-transcript.it.md` and read
+  once in full. Bilingual recap in `meetings/results/`. **Five notes created**
+  (the meeting, OI-96/97/98/99), **eleven updated**, both trackers, both recaps
+  (§20), `MAP.md`, `INDEX.md`. `vault:check` green — 126 notes, 126 unique ids,
+  all links resolve. Full audit:
+  [the trace](notes/traces/Source%20trace%202026-08-26%20nightly.md).
+- **The headline:** 🔴 **the event edition now comes from a hand-maintained
+  Salesforce table** keyed on `article code × order-date window`, matched **per
+  order line**, with a separate hand-entered event date driving the no-show
+  logic — [OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md).
+  It **replaces the one-active-child-campaign rule** agreed 24 August, which
+  Elena Spini killed in session because a bundle spanning two events cannot
+  resolve to one active edition. This also settles what
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) turns on:
+  `Anno_Solare__c`'s job now belongs to OI-96, and it is populated on 1 of 280
+  products, so dropping it costs one record.
+- **Also landed:** Mexal's three classification fields are assigned and each was
+  **tested on the wire** — `natura` → genera biglietto, `categoria statistica` →
+  the event, `gruppo merceologico` → candidate for ticket type, `Gest. annullato`
+  → product disabled. Only **listino 1** is used. **Invoicing stays Mexal-driven
+  for ~6 months.** A ticket-generating article and its bundle twin need **two
+  distinct codes**, which reverses the 24 August reading in
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md).
+- **Next:** 🔴 **[OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)
+  was the question this meeting existed to answer and was never asked** — the
+  word _scadenziario_ is not in the transcript, and it now has no forum. Put it
+  on the **2 September** agenda explicitly, together with the customer-registry
+  items, because that invitation is titled for the **article** registry only.
+- **Watch:** 🔴
+  [OI-98](notes/items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
+  — Fabrizio Paganelli intends to **close all ~1000 article codes and re-create
+  them**, listini included, going to direction on **31 August**. It makes
+  `Prodotti e Bundle.xlsx`, the event list, the tier evidence and the 280 UAT
+  products provisional, **eleven days before Fase 1 development ends**. Nobody in
+  the session connected the two. ⚠ Also: `Flows & Objects.drawio` moved a
+  **sixth** time, six minutes into the meeting, and **no tracked text cell
+  changed** — but it now contradicts the minutes on campaigns as well as on
+  Anticipay. Prefer the meeting note over the diagram on campaigns.
+- **Not done, deliberately:** no requirement document was opened or changed —
+  the session settled a mechanism, not a clause, and OI-96 is explicitly
+  unfinished. `STATUS.md`, the Notion mirror and `site/` were not regenerated:
+  they carry build state, refreshed by the same day's org check, and this sweep
+  moved decisions. **The Flows page is flagged** — `notes/flows/The Mexal
+integration.md` changed, so step 6a-bis applies on the next org-status run.
+
+---
+
+## 2026-08-26 — codex — org-status results now deliver to Aurel by Slack DM
+
+- **Standing instruction implemented:** every completed `org-status-check` run
+  now sends its final result to Aurel Mrruku by direct message, independently of
+  `report`, `reconcile` or `publish` mode. Aurel can opt out for an individual
+  run without disabling the standing preference.
+- **Destination verified, not inferred:** the Slack connector returned one exact
+  Aurel match in the `Romi` workspace. The stable workspace and user ids are
+  recorded in the skill's Slack-delivery reference; ordinary runs do not search
+  again or substitute a channel or similarly named account.
+- **Delivery contract:** send only after validation and selected write/publish
+  work finishes; include the full substantive result, thread numbered
+  continuations above 4,500 characters, omit secrets and local paths, and return
+  the message link in chat. An unavailable or ambiguous Slack send is reported
+  without retrying or invalidating the org check.
+- **Generator:** future Salesforce projects receive the same delivery mechanism
+  disabled by default; it becomes active only after explicit authorization and
+  exact recipient verification. Agent and Claude mirrors remain synchronized.
+- **End-to-end proof:** a one-time configuration confirmation was delivered to
+  Aurel's DM successfully and Slack returned its message permalink. No org-status
+  report was generated merely to test delivery.
+
+## 2026-08-26 — codex — org-status-check rebuilt as a hybrid evidence pipeline
+
+- **Structure:** replaced the 278-line monolith with a compact router and four
+  progressive references: evidence model, live-org inventory, reconciliation
+  and publishing. Scope (`targeted`/`full`) is now independent from output
+  (`report`/`reconcile`/`publish`), so a status question no longer implies a
+  large repository or Notion rewrite.
+- **Precision:** the report keeps requirement compliance, repository/org drift
+  and operability as separate axes. Field existence uses Tooling
+  `FieldDefinition`; access requires matching `FieldPermissions` and
+  `ObjectPermissions`. Failed inventory calls become `unverifiable`, never an
+  empty result. Graphify and Open Codebase Index are exception-navigation aids,
+  not deployment evidence; exact search remains the exhaustive fallback.
+- **Deterministic layer:** added a nine-assertion starter plan at
+  `requirements/org-verification.json` and local commands for repository and
+  live-org snapshots, structural comparison, validation and tests. Generated
+  evidence stays under gitignored `.org-status-cache/`; output paths are
+  constrained there and Salesforce credentials or record data are not stored.
+- **Regression protection:** five Node tests cover object-qualified duplicate
+  field names, the deployed-but-no-FLS failure mode, matching field/object
+  access, failed-inventory uncertainty and invalid requirement references.
+  Windows Salesforce CLI invocation was smoke-tested after handling `.cmd`
+  execution explicitly.
+- **Mirrors and generator:** `.agents` and `.claude` copies are byte-identical.
+  The reusable `start-sf-projects` template now generates the same modular,
+  report-first architecture and its related workflows no longer cite the old
+  hardcoded step 6.
+- **Validation:** skill-creator validation, `org-status:test`, repository
+  snapshot, mirror validation and Python compilation pass. The stricter
+  build-state validator correctly exposes two pre-existing undefined refs,
+  `QUO-01` and `QUO-06`; this skill-only update did not rewrite the requirements
+  register. No live org snapshot, deployment, retrieve, data write, test run,
+  Notion write, commit or push was performed.
+
+## 2026-08-26 — claude — requirement-trace: the `sales` batch, 9 → 19 of 167
+
+- **Batch:** `sales` (`SAL`), 23 requirements. **Five notes mapped, ten
+  requirements traced.** Progress table and full evidence:
+  [the fabricated-mappings note](notes/The%20requirement%20mappings%20were%20fabricated.md).
+  Tickets and sales are now done; **36 requirements remain** across `INT`,
+  `BUN`, `ORD`, `DAT`, `MKT`, `NFR`, `CTX`.
+- **Every pair was decided by quotation**, requirement text beside a line from
+  the note. Nothing scored, nothing carried over from the discarded 2026-08-15
+  table — two of which (`OI-68 → SAL-17`, `OI-59 → SAL-10`) this batch
+  **rejected** in favour of better-evidenced targets.
+- **Wired:** `SAL-07/06/08/09/10` ← [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md) ·
+  `SAL-18/04` ← [OI-80](notes/items/OI-80%20Lead%20routing%20queues.md) ·
+  `SAL-16` ← [OI-68](notes/items/OI-68%20Quote%20acceptance%20landing%20page.md) ·
+  `SAL-17` ← [the quote to order flow](notes/flows/The%20quote%20to%20order%20flow.md) ·
+  `SAL-21` ← [OI-70](notes/items/OI-70%20Performance%20Plus%20opportunity%20typing.md).
+  Both directions written; `vault:check` reciprocates all ten with no warnings.
+- **⚠ The thing to carry forward: `requirement:` accepts a LIST.**
+  `vault:check` strips brackets and comma-splits, so
+  `requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]` validates in both
+  directions. Without it, one note evidencing five requirements emits four
+  permanent "does not cite back" warnings — which is how a real disagreement
+  would end up ignored. **The schema block in `AGENTS.md` still documents only
+  the singular form and should be corrected** — I did not edit the canonical
+  instructions unasked. Convention adopted: **primary id first**.
+- **Two contradictions raised, no requirement text touched.** `RC-07` —
+  `SAL-16` is still `to_confirm` but was **rejected outright** on 2026-08-06 and
+  replaced by the landing page, so it reads to a builder as still open. `RC-08` —
+  `SAL-21` documents only one of the two jobs `Opportunity.Tipo_Opportunita__c`
+  is asked to do; the attivazione/rinnovo typing that drives contract generation
+  ([OI-51](notes/items/OI-51%20Contract%20auto-generation%20keyed%20to%20product%20code.md))
+  is in no requirement.
+- **Two register gaps found** — [OI-90](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md)
+  (a **Prospect** state alongside Lead and Cliente is covered by nothing, in any
+  area) and [OI-71](notes/items/OI-71%20Service%20start%20date%20owned%20by%20the%20Strategist.md)
+  (the Strategist-owned service start date, its banner and its email alert are
+  covered by nothing; `DM-19` is adjacent and does not cover it).
+- **Two deferrals, now with ids to test against:**
+  [OI-72](notes/items/OI-72%20Partita%20IVA%20mandatory%20on%20lead%20forms.md) →
+  marketing/data-model batch, and ⚠ it **contradicts `MKT-02`** (double opt-in);
+  [OI-29](notes/items/OI-29%20Account%20creation%20policy%20for%20free%20tour%20tickets.md) →
+  data-model batch, check `DM-01` and `DM-03`. OI-29 is needed before the
+  7–19 September tour.
+- **13 of the 23 `SAL` requirements still have no note.** Two are worth a human
+  rather than another pass: `SAL-13` (cross-check in the orders batch — it is
+  the sales-side statement of the tranche mechanism) and `SAL-20`, the batch's
+  closest near-miss, **left untraced on purpose** because OI-59's "generic and
+  preventivo-inviato" pair does not clearly correspond to the requirement's
+  "after first contact / after the appointment" pair.
+- **Published:** `STATUS.md` and the Notion status page refreshed (**19 of 167**,
+  120 notes, 56 item notes) and the `Requirement` column set on the four Notion
+  tracker rows, verified by re-query. `site/` was **not** touched — it publishes
+  no trace count and no item status changed. The Flows page was **not**
+  regenerated: the flow note changed only in frontmatter provenance and the
+  register's `state_machines` block did not move, so it would have been a no-op
+  push.
+- ⚠ Also corrected on `STATUS.md`: the prose still read "9 of **163**" against a
+  table saying 167, and the item-note counts were a batch stale (54/42/8).
+
+## 2026-08-26 — claude — requirements-check: a dry sweep, and four marketing commitments went overdue
+
+- **Watermark used:** 2026-08-25, from
+  [that day's trace](notes/traces/Source%20trace%202026-08-25.md), selected by
+  `updated:`. **New watermark: 2026-08-26**,
+  [Source trace 2026-08-26](notes/traces/Source%20trace%202026-08-26.md).
+- **Did:** swept Gmail (two query shapes), Slack (`#tproj-pienissimo`, the
+  canvas re-read in full, workspace-wide DMs, and `from:` filters on Elena Spini
+  and Andrea Di Cicco), Drive (two query shapes), Fathom and Calendar.
+  **Nothing new arrived.** First fully dry sweep in this record — and it is a
+  one-day window, so it is a sample of one, not a trend.
+- **The one record change came from the calendar, not from an inbox.** Every
+  marketing commitment made on 19 August is now overdue with no evidence on any
+  channel: DNS records **five days** late, funnel screenshots and graphics
+  **six days** late, and the forms were **due today**.
+  [OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md) is the only
+  note this sweep changed. It has been open since 23 June — **nine weeks**, the
+  oldest live blocker — and the first ticketed event is **7 September**.
+  ⚠ Matteo Distaso and Rebecca Marmo correspond with Fabrizio Mastracci on
+  channels this sweep does not reach: **ask him before escalating.**
+- **Four confirmations of absence worth keeping.** `Flows & Objects.drawio` has
+  **not** moved since 25 Aug 08:23Z, so its self-contradiction stands — LEAD-OPTY
+  says the middleware, Ordini still says `Anticipay`. The Slack canvas is
+  unchanged with newest entry **20.08**, so the client-facing 25 Aug session is
+  still not indexed on it. `#tproj-pienissimo` is silent for a **sixth** week.
+  Fathom still holds **0** recordings since 6 Aug.
+- **Today's Mexal review had not run yet** when the sweep was taken (~13:15 CEST
+  against a 16:00–17:00 slot). Confirmed, client-facing, six attendees, first
+  Mexal session since 14 July, and **the Mexal WEBAPI credentials are due at
+  it**. The next run should expect a recording and drill it. Tomorrow 10:00 is
+  the WooCommerce session, where its credentials are due.
+- **Did not do:** no requirement document opened; `MAP.md`, both trackers and
+  both recaps untouched, because the live position did not move.
+  **`STATUS.md`, the Notion mirror and `site/` were regenerated earlier the same
+  day by `org-status-check` and are current** — step 7's refresh was deliberately
+  not repeated, since it would have rewritten identical figures.
+- **Read-only throughout.** Nothing sent, replied to, shared or marked read; no
+  Slack message posted on this run.
+
+## 2026-08-26 — claude — org-status-check: one finding of the 25 Aug check was a false negative
+
+- **Org:** Pienissimo UAT (`a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`),
+  read-only, against `DevMain` at `dc513c6`. Second check in two days.
+- **The thing to carry forward:** ❌ **the 2026-08-25 finding that
+  `OrderItem.Tranche__c` was "committed but never deployed" is wrong.** The
+  field is in the org, created 24/08 15:18Z. `sf sobject describe` **filters by
+  the running user's field-level security**, and that field is granted to no
+  profile and no project permission set — invisible even to System
+  Administrator. Every field comparison was re-run against Tooling
+  `FieldDefinition`; only this one finding changed. Method note written so this
+  does not recur:
+  [How to read the org schema without a false negative](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
+  The old risk note was renamed to
+  [OrderItem Tranche is invisible to every user](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md);
+  its conclusion survives, its diagnosis did not.
+- **Two green findings.** 🟢 PR #12 (`dc513c6`) **retrieved the tranche creation
+  stack into source control** one day after it was deployed — controller (byte
+  identical to the org copy), LWC, quick action, two fields, permission set.
+  Only the Tranche layout is still org-only. 🟢 **`Quote.Status` now carries the
+  agreed lifecycle** `Bozza → Nuovo Preventivo → In Trattativa → In Attesa
+Accettazione → Accettato / Rifiutato` — the first agreed state machine on this
+  project to reach the org. [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)
+  reversed on that point one day after it was written.
+- **New findings.** 🔴 The **integration scaffolding has never been configured**
+  — `Integration_Configuration__c` and `Integration_Log__c` hold zero rows, one
+  named credential (`DocuSign`), so Mexal / WooCommerce / the VAT middleware
+  have no endpoint
+  ([note](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)).
+  🔴 **`Tranche__c.Sequenza__c` has no integrity control** — 1, 4, 3 on one
+  quote, null on three records, and ticket release reads it as a total order
+  ([risk](notes/risks/Risk%20-%20the%20tranche%20sequence%20has%20no%20integrity%20control.md)).
+  🔴 The **Quote value set was swapped without migrating the records** — 3 of 4
+  quotes sit on deactivated values; a rehearsal for the same operation on 37
+  tickets. 🔴 §17.2's "no Flow" is wider than recorded: also zero
+  `WorkflowRule`, `ApprovalProcess`, `EmailTemplate`, `CustomNotificationType`
+  and no scheduled Apex — so Marco Montesi's reminder copy and the 24/08
+  notifications have nothing to sit on. The Biglietto stack is **three
+  components larger** than recorded (`BigliettoPdf` page, `DocuSign` named
+  credential, `BundleComponent__c` tab).
+- **Unchanged:** 37 tickets, 30 in `In attesa firma`, 0 ever `Disponibile`, 0 QR
+  codes; Asset still zero custom fields; Campaign and CampaignMember still zero;
+  Order/Lead/Opportunity still stock. Coverage **0%**, **1069** uncovered lines
+  (1028 on 25/08 — the whole rise is `QuoteTrancheController`'s snapshot
+  catching up, not new code).
+- **Wrote:** 3 new notes, 11 updated, the renamed risk; `MAP.md`, `INDEX.md`
+  (119 notes), the 26/08 org-verification block in `open-items.md` **and**
+  `.it.md`, `§19` in `DEVELOPMENT-RECAP.md` **and** `.it.md` with the precedence
+  line extended to name §18 and §19 (it was stale at §17), the register's
+  `build_state` block (DIV-04 … DIV-07 added; nothing else in the register
+  touched), `STATUS.md` and `site/`.
+- **Did not do, deliberately:** no deploy, no retrieve, no data write, no test
+  run. **No Apex test class written or offered** — that is a separate task on
+  request. No requirement amended: the register's
+  `state_machines.quote.states` now disagrees with the org and with OI-59 and is
+  **flagged for a human** as DIV-07, not corrected.
+- **Still owed by a human, untouched by an org check:** #46
+  (`Anno_Solare__c`), #53 (asset generation stated two ways), #59 ("Da
+  ricontattare" task vs banner), #69 (is `Incassato` `CHIUSO/ACQUISITO`
+  renamed?), #74 (`Rinuncia`).
+
+## 2026-08-25 — claude — Nightly requirements-check: the Anticipay call reversed the integration design
+
+- **Watermark used:** 2026-08-24, from
+  [that day's trace](notes/traces/Source%20trace%202026-08-24.md), selected by
+  `updated:`. **New watermark: 2026-08-25**,
+  [Source trace 2026-08-25](notes/traces/Source%20trace%202026-08-25.md).
+- **Did:** swept Gmail, Slack (channel, canvas, workspace, DMs), Drive and
+  Fathom. Six findings; the sweep was not dry.
+- **The headline:** the **25 August client Anticipay call ran and changed the
+  counterparty**. Salesforce will **not** call Anticipay — it calls a middleware
+  **built and hosted by Pienissimo Software Srl**. Token in the HTTP header,
+  `404`/`500` error codes returned with their messages and stored in Salesforce
+  for three months, returned values overwrite Salesforce, payload trimmed to
+  fields nobody has chosen yet. New
+  [OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)
+  and [OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md),
+  session at
+  [2026-08-25 Integrazione Anticipay](notes/meetings/2026-08-25%20Integrazione%20Anticipay.md).
+- **The thing that actually needs a human:** a **Fase 1** integration now has a
+  hard build dependency on **the entity at the centre of the phase 2 scope
+  dispute**. Fase 1 cannot go live unless Pienissimo Software writes the service,
+  hosts it and keeps it running. Who pays and who owns uptime was never raised.
+  Recorded in
+  [the risk note](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
+- **Two accuracy problems to know about.** The Gemini minute assigns "create the
+  test environment" to Aurel Mrruku — wrong; he corrected it on Slack (_"serve un
+  loro ambiente di test dove noi dobbiamo puntare"_) and Elena Spini accepted,
+  but **the client-facing calendar invitation still carries the error**. And
+  `Flows & Objects.drawio` moved a **fifth** time, during the call, updating only
+  the LEAD-OPTY page — so **the master now contradicts itself**, Ordini still
+  naming Anticipay.
+- **Also closed, all from Slack DMs:** the Postman collection (partial), the
+  invoice-to-order-line link (a Mexal invoice carries its item list — the input
+  the tranche aggregation needs), and Marco Montesi's reminder-email copy.
+- **State:** three notes created, seven updated, `MAP.md`, `INDEX.md`, both
+  trackers (rows 50, 58, 59, 73 + new 94, 95) and both recaps (§18) regenerated.
+  `npm run vault:check` green.
+- **Next:** the **26 August** client Mexal review is the venue for the WEBAPI
+  credentials, `Get Fatture`'s missing order-line number, listino 1 vs 2, the
+  Mexal test company and #93. Chase Andrea Parmeggiani's API example ahead of
+  **1 September**.
+- **Watch:** **no requirement document was touched.** OI-94 bears directly on
+  signed integration text and a human has to decide whether `REQUISITI.it.md`
+  moves. Do not read the **Ordini** page of the design file for the VAT rule —
+  it is stale.
+
+---
+
+## 2026-08-25 — codex — Teammate code-intelligence bootstrap added
+
+- **Did:** added the repository-local `setup-code-intelligence` skill under
+  `.agents/skills/`, mirrored it to `.claude/skills/`, and added
+  `npm run intelligence:setup` plus a read-only
+  `npm run intelligence:setup:check`. The installer checks the system
+  prerequisites, installs or reuses the exact lockfile-matched Node tree,
+  installs the pinned Graphify/MCP Python requirements, pulls the Ollama
+  embedding model, builds both indexes, and verifies the Git hooks and live
+  Graphify watcher.
+- **Windows fix found while testing:** Git Bash can be installed without `sh`
+  being on PowerShell's PATH. Added `scripts/run-with-git-sh.mjs`, which finds
+  Git's bundled shell, and routed `npm run intelligence:verify` through it.
+  Also handled the native Open Codebase Index module being locked by an active
+  agent: an already lockfile-matched dependency tree is reused; if dependencies
+  really changed, the installer tells the developer to restart and run once
+  from a terminal.
+- **Why setup is explicit:** a pull delivers the skill, installer, configs and
+  hooks, but pulls and branch switches never download packages or models. Once
+  the one-time setup succeeds, the existing hooks and MCP wrapper own graph
+  freshness.
+- **Verified:** the complete `npm run intelligence:setup` succeeds on Windows,
+  including both index builds, its final health check, and the refresh verifier
+  at 8/8.
+
+---
+
+## 2026-08-25 — claude — Architecture documented
+
+- **Did:** wrote [docs/architecture.md](docs/architecture.md) - the four-kinds
+  model (authority / preserved / derived-for-humans / derived-for-machines), the
+  Obsidian vault rules and its committed `.obsidian/` config, the two MCP indexes
+  and their two different freshness models, the DX build, the publication chain
+  and the agent layer, plus ten invariants and three Mermaid diagrams. Added a
+  condensed **Architecture** section carrying the top-level schema to
+  [README.md](README.md), and routed both from [INDEX.md](INDEX.md). Then closed
+  a second gap: the README named no technologies and carried no install steps at
+  all - the only ones in the repository were the optional code-intelligence block
+  in [docs/code-intelligence.md](docs/code-intelligence.md). Added a **Stack and
+  setup** section - the eleven-row stack table, first-run commands, the optional
+  code-intelligence and Obsidian steps, and the five check commands.
+- **Then closed the two regeneration gaps that audit exposed.** The 25/08 org
+  check had updated the notes, both trackers, `STATUS.md` and Notion, but **two
+  rendered surfaces were left behind**: `DEVELOPMENT-RECAP` (last touched 24/08 -
+  step 5 named only `open-items`) and `site/` (last touched 14/08 - old step 6f
+  excluded it, and no other procedure claimed it, so nothing owned it at all).
+  - **The recap:** appended **§17 - build-state check against the UAT org**, EN
+    and IT, covering the tranche being built, zero Flows in the org, stock state
+    machines, the repository being ahead of and behind the org at once, the 37
+    parked tickets, 0% coverage and the empty classification fields. The
+    precedence line in both headers was itself stale - it stopped at §14 while
+    §15 and §16 existed - and now runs to §17 with the rule that §17 wins on what
+    _exists_ and earlier sections still govern what was _agreed_.
+  - **The procedure:** `org-status-check` step 5 now requires the recap in both
+    languages (append the next section, extend the precedence line, build state
+    only); step 6f no longer says `site/` is out of scope but **owns** it -
+    re-derive from `notes/`, never move a sentence from `STATUS.md` or Notion,
+    keep the anonymised vocabulary, run the leak check, and say in the report
+    that the page is refreshed but not deployed. Mirrored to `.claude/skills/`.
+  - **The page:** `site/` refreshed to 25/08 - 6 wk remaining, tranche
+    `not started` -> `partly built`, marketing funnels `blocked on client review`
+    -> `model agreed, build not started`, a new `Record status models` row, the
+    milestone table put in date order, and the four owner counts replaced with
+    counts derived from the item notes (50 open, 7 gating, 11 awaiting client,
+    1 commercial). Leak check clean. [docs/publishing.md](docs/publishing.md)
+    now records who refreshes it.
+- **Also added a viewer for the Salesforce graph.** `graphify-out/graph.json`
+  (179 nodes, 184 edges) had no graphic representation at all - it was reachable
+  only as text through the MCP tools. `scripts/graph-view.mjs` renders it to
+  `graphify-out/graph.html`: dependency-free, offline, force-directed, filterable
+  by node kind and relation, searchable, with a per-node panel listing every
+  connection and the `file:line` it came from. Inferred edges dashed, governor
+  violations red - deliberately, so it reads as leads to check rather than
+  findings. Wired as `npm run intelligence:view`.
+  - **It strips the Apex `source` text** the graph carries on every node - the
+    page keeps the file path instead, so it stays 86 KB and is not a way to
+    forward source code.
+  - **Output lands in `graphify-out/`, which is gitignored.** The page is
+    generated data like the graph itself; nothing regenerates it automatically,
+    so re-run the command after a graph rebuild.
+- **State:** documentation, rendered views and one new script. **No note,
+  requirement, tracker or metadata was touched** - §17 records build state
+  already established by the 25/08 org check, it does not re-run it.
+  `npm run vault:check` passes.
+- **Next:** nothing pending. The recap and `site/` are now regenerated by step 5
+  and step 6f of `org-status-check`; revisit only when the routing rules in `AGENTS.md`,
+  the MCP wiring or the publication chain actually change.
+- **Watch:** the per-folder note counts in that file are stamped 2026-08-25 and
+  will drift - `vault:check` prints the live total. The INDEX row for
+  [README.md](README.md) had been stale at ~2k and is now ~6k.
+
+---
+
+## 2026-08-25 — claude — Graphify snapshot staleness closed
+
+- **Did:** the Graphify-SFDX graph was a manual snapshot that went silently
+  stale after any branch switch, merge or metadata retrieve. Added
+  `scripts/refresh-sf-graph.sh` and wired it to `.husky/post-checkout`,
+  `post-merge` and `post-rewrite`, plus a `retrieve` / `postretrieve` npm script
+  pair for `sf project retrieve start`. Updated
+  [docs/code-intelligence.md](docs/code-intelligence.md) and the routing bullet
+  in [AGENTS.md](AGENTS.md).
+- **Why rebuild rather than detect:** the extract is **deterministic** —
+  byte-identical across runs on unchanged input — and takes **0.67 s**. Cheaper
+  to rebuild unconditionally than to maintain a staleness check.
+- **Verified live:** `graphify.serve` calls `_maybe_reload()` in both
+  `call_tool` and `read_resource`, keyed on graph.json's `(mtime_ns, size)`.
+  Proved it end-to-end by injecting a probe node — the running MCP server
+  reported 180 nodes with **no session restart**, then 179 again after a
+  rebuild. **Refreshing the file is enough; no client restart is needed.**
+- **The hook degrades silently.** The Python toolchain is a per-machine opt-in,
+  so the script no-ops when `graphify` is unimportable and never fails the git
+  operation. DevAnita / DevSara / DevRexhina_* branches are unaffected if they
+  never install it — but they also get no graph.
+- **Both remaining gaps are now closed as well.** Both clients launch Graphify
+  through `scripts/graphify_serve_fresh.py` (wired in `.mcp.json` and
+  `.codex/config.toml`). It rebuilds at session start and watches `force-app/`
+  on a 2 s poll for the life of the session, which covers the two cases no git
+  hook can see: metadata edited in place, and `sf project retrieve start` run
+  directly. Verified end to end — touched a class, graph rebuilt ~2 s later,
+  stdout still 0 bytes.
+- **How to check it still works:** `npm run intelligence:verify`
+  (`scripts/verify-graph-refresh.sh`, ~20 s). Eight assertions covering the
+  hook, its silent degradation without the Python toolchain, the wrapper's
+  startup rebuild and MCP handshake, the live watcher, and that stdout stays
+  empty. Currently 8/8. Run it after touching anything in the refresh path.
+- **The one real trap, worth not re-learning.** A child process of an MCP stdio
+  server must not inherit fd 0. `graphify.serve` swaps stdin for an OS pipe
+  (`_filter_blank_stdin`), and the rebuild subprocess inherited it and **hung**
+  — measured 20 s timeout inherited against 0.25 s with `stdin=DEVNULL`. The
+  same class of bug applies to git hooks, which receive rewritten-commit data
+  on stdin for `post-rewrite`, so `scripts/refresh-sf-graph.sh` detaches stdin
+  too. **Do not remove either redirect.** Both are commented in place.
+- **Note, unrelated to the fix:** `sf_violations` reports two HIGH SOQL-in-loop
+  findings on `BundleComponentTriggerHandler` and
+  `BundleProductAssignmentController`. Both are **false positives** — they are
+  SOQL-_for_ loops, the bulkified idiom. This is exactly the heuristic caveat
+  AGENTS.md already warns about; the caveat is correctly worded and needs no
+  change.
+
+## 2026-08-25 — codex — shared code and Salesforce intelligence layer
+
+- **Did:** added project-scoped MCP configuration for both Codex
+  (`.codex/config.toml`) and Claude Code (`.mcp.json`). Both clients launch Open
+  Codebase Index for semantic/code navigation and Graphify-SFDX for
+  Salesforce-specific graph queries.
+- **Pinned tooling:** `open-codebase-index@0.25.1` is a development dependency;
+  `requirements-code-intelligence.txt` pins `graphify-sfdx==0.1.1` and the
+  compatible `mcp==1.29.1`. MCP 2.x is currently incompatible with Graphify's
+  `AnyUrl` import. The local Codex CLI was upgraded from 0.116.0 to 0.149.1 so
+  it can read the current project MCP configuration.
+- **Indexes:** local Ollama `nomic-embed-text` embeddings produced 686 chunks
+  across 156 code/metadata files in `.codebase-index/index/`. Graphify produced
+  179 nodes and 184 edges from `force-app/` in `graphify-out/graph.json`.
+  Generated outputs are ignored; configuration and refresh commands are
+  committed.
+- **Important correction:** Graphify was first pointed at the repository root
+  and crawled `.sfdx` standard Apex libraries, creating a polluted 8,884-node
+  graph. Extraction is now deliberately rooted at `force-app/`.
+- **Verified:** both servers completed a real MCP initialize/list-tools/tool-call
+  handshake. Open Codebase Index returned index status and a representative
+  bundle search; Graphify returned graph statistics, Salesforce impact, and an
+  18-step order-of-execution chain. Claude Code sees both project servers and
+  will require its normal one-time project approval.
+- **Watch:** Graphify's two HIGH `SOQL-in-loop` results appear to be its static
+  heuristic interpreting Apex SOQL-for loops. Treat graph confidence and
+  violation output as leads and inspect the cited source before making a claim.
+
+---
+
+## 2026-08-25 — claude — org-status-check against Pienissimo UAT
+
+- **Did:** ran the three-way comparison — requirements register vs `force-app/`
+  vs the live **Pienissimo UAT** org (`a.mrruku@pienissimo.uat`,
+  `00DMA000004nMMr2AM`), read-only. Metadata inventories, sObject describes,
+  picklist extraction, record counts and `ApexCodeCoverageAggregate`.
+- **Biggest correction:** the record said **`Tranche__c` exists in neither the
+  org nor the repository**. It exists in **both**, and the Quote-side creation
+  UI (`Quote.Crea_Tranche` + `quoteCreateTranche` LWC + `QuoteTrancheController`)
+  went into the org on **2026-08-25**, hours before the check. OI-50 rewritten.
+- **Four findings that change the plan:**
+  1. 🔴 **Zero Flows in the org** — confirmed three ways (`Flow` and
+     `FlowDefinition` metadata lists, Tooling query). Every declarative
+     automation designed since June is absent; all automation is three Apex
+     triggers.
+  2. 🔴 **`OrderItem.Tranche__c` is committed and never deployed** — a new
+     divergence direction, repository ahead of org. New risk note.
+  3. 🔴 **Coverage is 0%, not 1%** — 24 classes/triggers, 1028 uncovered lines,
+     zero covered. `QuoteTrancheController` (144 lines) shipped the same day
+     with no test.
+  4. 🔴 **30 of 37 tickets sit in `In attesa firma`**, a state struck on
+     2026-08-06. None has ever reached `Disponibile`. Standard `Asset` carries
+     zero custom fields.
+- **State:** updated OI-41, OI-44, OI-46, OI-47, OI-49, OI-50, OI-59, OI-64,
+  OI-66, OI-69, OI-74; the Biglietto build, build-ahead-of-record, campaign
+  parent/child and quote-to-order notes; the coverage, source-control and
+  ticket-lifecycle risks. Added two notes — the `OrderItem.Tranche__c` risk and
+  `Unrequested implementation in the org`. Rewrote the register's `build_state`
+  block (`checked: 2026-08-25`, with new `divergent:` entries); no requirement
+  text touched. Inserted a 2026-08-25 org-verification block into
+  `meetings/open-items.md` **and** `.it.md`. Refreshed MAP.md, INDEX.md,
+  STATUS.md. Pushed the Notion mirror: Status page, Flows page (diagrams
+  unchanged, build-state text rewritten) and **13 tracker rows reconciled on
+  `Ref`** — all 13 were stale from earlier sessions, not from this check.
+- **Watch out:** `sf project retrieve preview` **cannot be used on this org** —
+  partial sandbox, no source tracking, `NonSourceTrackedOrgError`. Divergence
+  has to be found component by component. Also: `sf` subcommands other than
+  `org list` fail under the Bash tool on this machine (`'C:\Program' is not
+recognized`); use the PowerShell tool for them.
+- **Next:** the org-only tranche components need retrieving into source control,
+  and `OrderItem.Tranche__c` needs deploying or an explicit deferral. Both are
+  write actions this check deliberately did not take.
+
+---
+
+## 2026-08-24 — codex — tranche and standard Asset decisions recorded
+
+- **Did:** recorded Aurel Mrruku's direct decision that payment tranches are
+  created on the Quote after product selection through a guided choice of Quote
+  Line Items and a planned payment due date. The tranche reference/date
+  propagate to Order Items; Mexal returns payment per line; Salesforce marks
+  the tranche fully paid only when every included line is fully paid.
+- **State:** updated OI-50, OI-75, the quote-to-order and Mexal flows, the
+  catalogue-block note, the YAML register and both contractual prose mirrors.
+  The `BLO-` catalogue block is now explicitly separate and does not create
+  `Tranche__c`.
+- **Also decided:** the target ticket object is the standard Salesforce Asset.
+  The direct instruction did not identify the decision-maker, so it is not
+  personally attributed. OI-41 is resolved; `Biglietto__c` remains the current
+  UAT implementation and its migration/rebuild is an open, unestimated gap.
+  Updated the atomic item, object/flow/risk notes, both trackers and recaps,
+  `STATUS.md`, `MAP.md`, the register and both contractual prose mirrors. The
+  register/prose version is now 1.4 dated 2026-08-24.
+- **Check correction:** mapping OI-41 to `DM-22` exposed that `vault:check`
+  accepted only three-letter requirement prefixes and silently omitted all
+  `DM-*` ids. The parser now accepts the `DM` prefix without counting
+  two-letter reconciliation ids; OI-41 and DM-22 carry the reciprocal trace,
+  bringing the measured coverage to 9/159 (the 154 main entries plus five
+  requirement ids under `scope:` and `build_state:`).
+- **Next:** build remains entirely outstanding: `Tranche__c`, Quote-side action
+  and fields, propagation to Order Items, and payment roll-up. The Notion
+  **Flows** page was refreshed for the tranche decision at 13:47 CEST. At 16:07
+  CEST the Notion Status and Flows pages were refreshed for the Asset decision,
+  OI-41 was moved to `Resolved` and mapped to `DM-22`, and all three were fetched
+  again to verify them. Asset field/automation mapping and migration are still
+  to plan and build.
+- **Watch:** the final paid-state API value is deliberately still open under
+  OI-69. Do not infer `CHIUSO/ACQUISITO`; creation and roll-up can proceed while
+  the final label waits for Elena's answer.
+
+## 2026-08-24 — claude — generator reconciled with what the live projects actually do
+
+Two divergences between `start-sf-projects` and both live projects, closed in
+the generator so future projects inherit the corrected shape.
+
+- **The scaffolded mirror note is renamed.** It shipped as
+  `notes/notion-mirror.md`, which **breaks this project family's own rule** that
+  the filename is the note's H1 title — both Pienissimo and Life365 had renamed
+  it by hand. The generator now writes
+  `notes/The Notion mirror of the project status.md`, and every scaffolded link
+  to it is **percent-encoded**, as the portability rules require.
+  ⚠ **The `id:` stays `ref-notion-mirror`** — ids are stable forever and both
+  live projects already use it. Renaming the file is not renaming the note.
+- **Checked the overwrite guard rather than assuming it.** The installer's
+  `seeded` set — files written once and never rewritten — is built from the keys
+  of `vault_seed_templates()`, so it follows the rename automatically. Confirmed
+  the renamed key sits inside that function. Had the path been hardcoded
+  anywhere else, a re-run would have **overwritten a mirror note holding real
+  Notion ids**; it is not.
+- **The tracker's Status picklist goes from three values to five.** The stub
+  offered `Open / In progress / Resolved`; the vault's frontmatter schema allows
+  `open | in-progress | resolved | stale | superseded`, so a scaffolded tracker
+  could not represent a stale or superseded item at all. Now aligned.
+- Both scripts still compile (`py_compile`), and `.agents/` and `.claude/`
+  copies verified byte-identical.
+- ⚠ **Life365 still holds an unreconciled copy of the generator** — it now
+  differs in four files (the two drill templates, the script, the
+  org-status-check template). If the generator is meant to live in one place,
+  that decision is still nobody's.
+- **Not done:** the Flows page is not part of the scaffold. It is a Pienissimo
+  invention, and adding it to the generator would push an unproven idea onto
+  every future project.
+
+## 2026-08-24 — claude — Flows refresh wired into all five skills
+
+- 🔴 **Third instance of the same defect, caught by Aurel asking when the flows
+  update.** Only `org-status-check` step 6a-bis regenerated the Flows page. The
+  four skills that actually **edit** `notes/flows/` — `drill-meeting`,
+  `drill-me`, `requirements-check`, `requirement-trace` — refreshed `STATUS.md`
+  and the status mirror but **never the diagrams**. `drill-meeting` is exactly
+  what moved `The ticket lifecycle` on 19 August, so the next such drill would
+  have left the diagrams silently stale. All four now carry the pointer; all
+  five skill pairs verified byte-identical.
+- **The pattern to watch:** every time a new rendered surface is added, the
+  skills that write its _source_ have to be told. It has now been missed three
+  times in one day — the STATUS.md close-out, the README links, and this.
+- ⚠ **The register's own date stamp is stale.**
+  `requirements/pienissimo-requirements.yaml` declares `version: 1.1,
+date: 2026-08-03`, but the file was last written **2026-08-20** by the nightly
+  routine. Do not use that stamp as a freshness signal; use `git log`.
+  Not corrected here — bumping a contract-bound register's version is a
+  deliberate act, not a side effect of a journal entry.
+- **Freshness at this moment:** flow notes 2026-08-19 (ticket lifecycle) and
+  2026-08-15 (quote-to-order, Mexal); register content 2026-08-20; Notion Flows
+  page regenerated 2026-08-24, so the page is current with every source.
+- ⚠ **The nightly cannot push any of this.** The routine runs
+  `requirements-check` Mon–Fri 23:30, but a headless cloud run has no
+  interactively-authenticated Notion connector, so it will report the mirror
+  stale rather than refresh it. **In practice every Notion surface updates only
+  when a human-driven session with the connector runs one of the five skills.**
+
+## 2026-08-24 — claude — a Flows page, one schema per flow
+
+- **New Notion page `PIENISSIMO - Flows`**, `3c6a6b77-a25c-81f8-91e7-ffba884cd150`,
+  under the PIENISSIMO parent. **Eight Mermaid diagrams**: lead, opportunity,
+  quote, quote-to-order, order, tranche, the ticket/asset lifecycle, and the
+  Mexal call sequence.
+- **Every diagram is sourced, none invented.** They come from the three notes in
+  [notes/flows/](notes/flows/) and the `state_machines` block of
+  [the register](requirements/pienissimo-requirements.yaml) — which is why the
+  page is a mirror like the rest of the space, not a new source.
+- **Dotted edges are the convention that matters.** An edge drawn in a source
+  diagram but agreed in no minute renders **dotted**, labelled with its item:
+  the `Aggiornamento Incasso` reversal
+  ([OI-91](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md)) and
+  `Rinuncia` ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)). Rendering
+  either solid would quietly promote a drawing into a decision. Step 6a-bis now
+  says so.
+- **The order diagram draws the conflict rather than resolving it** — two
+  vocabularies side by side with an unanswered dotted link between
+  `CHIUSO/ACQUISITO` and `Incassato`
+  ([OI-69](notes/items/OI-69%20Order%20state%20model.md)). The tranche diagram
+  carries the callout about the client's **second, product-side** tranche.
+- ⚠ **Three flows are deliberately undrawn** — e-commerce parallel, documents &
+  signatures, Performance Plus contracts. `DEVELOPMENT-RECAP` §3 names them as
+  core flows but **none has an atomic note**, so drawing them would mean
+  inventing detail. The page states this instead of leaving a silent gap. **If
+  those flows matter, the fix is to write the notes**, not to draw from the
+  recap.
+- **Re-fetched after publishing** and confirmed all eight Mermaid blocks
+  survived intact with no markup mangling — avoided wrapping inline code in
+  bold this time, which is what broke the parent page earlier.
+- **Made the entry points explicit, on Aurel's note that they were not.** Every
+  diagram now opens with a dark green `START` stadium naming the **trigger**,
+  and the **first status the record actually holds** is a thick-bordered green
+  box beside it — the two were previously indistinguishable from ordinary
+  states. Terminal states are grey, disputed ones red dashed, and statuses are
+  numbered where the order is fixed (`1. Ordinato`, `2. Disponibile`). A
+  **Legend diagram** at the top defines the vocabulary.
+- Two entry points that are easy to get wrong are now stated on the face of
+  the diagram: **tranche 1 starts at `CHIUSO/ACQUISITO` and skips `CREATO`
+  entirely** while tranches 2..n start at `CREATO`; and the order flow has
+  **two competing first states** drawn side by side, because the record has
+  not chosen.
+- Wired in: the mirror note's id table and a new section, README and `STATUS.md`
+  link lines, and **step 6a-bis** of `org-status-check` in both skill mirrors —
+  which now carries the four conventions as a table, so a regeneration cannot
+  quietly drop them.
+
+## 2026-08-24 — claude — start-sf-projects brought in, and its templates fixed
+
+- **Compared the two projects' skill sets properly.** Neither has strictly more:
+  **Life365** had `start-sf-projects` (the generator that scaffolded both),
+  **Pienissimo** has `requirement-trace` — correctly, since Life365 has no
+  `requirements/` register at all to trace against.
+- **Copied `start-sf-projects` into this repo**, `.agents/` and `.claude/`,
+  verified identical: `SKILL.md`, `agents/openai.yaml`,
+  `scripts/create_sf_project.py`, `scripts/install_project_workflows.py`, and
+  four `assets/project-skills/*/SKILL.md.tpl` templates.
+- 🔴 **Fixed the defect that prompted this.** The generator's `drill-me` and
+  `drill-meeting` templates carried **zero** mention of `STATUS.md` or Notion,
+  so every project scaffolded from it got drill skills that move note statuses
+  and leave the mirror silently stale. Life365's live copies had been
+  hand-patched after generation; the generator never was. Both templates now
+  carry the refresh step, matching the wording already in
+  `requirements-check.tpl`. All four templates now reference `STATUS.md`.
+- **The generator's design was never the problem.** It already scaffolds
+  `STATUS.md` as a stub for `org-status-check` to fill, and ships a
+  `notes/notion-mirror.md` with an empty id table and a first-run procedure.
+  Only the two close-out pointers were missing.
+- ⚠ **Naming divergence, left alone:** the generator scaffolds the mirror note
+  as `notes/notion-mirror.md`, while **both** live projects renamed it to
+  `notes/The Notion mirror of the project status.md` to satisfy the
+  filename-is-the-H1-title rule. The generator's stub name breaks that
+  convention. Not changed — it would alter what every future project gets, and
+  is a naming call, not a bug fix.
+- ⚠ **Two copies of the generator now exist**, here and in `life365`, and
+  **only this one carries the template fix.** They can drift. If the generator
+  should live in one place, that is a decision nobody has taken.
+- **Traced the Notion URL through every file that should carry it.** It was
+  quoted **nowhere** — `README.md` had no mention of `STATUS.md` or Notion at
+  all, and `STATUS.md` named Notion only in passing, without the links. Step 6c
+  meanwhile _asserted_ the URL was "quoted in `STATUS.md` and the mirror note",
+  which was false when written. Now true: **README.md, STATUS.md and the mirror
+  note** all carry both URLs, verified byte-identical against the live page ids.
+- **The nightly routine was undocumented in the README too.** Pienissimo has run
+  cloud routine `trig_01VCdUXmqy8PngWPJHA2dSYC` since 2026-08-14, and only
+  `docs/task-status.md` described it — the README had no `Scheduled checks`
+  section at all, where the sister project devotes one to it. Added, matching
+  Life365's shape with this project's own facts: Mon–Fri 23:30 Europe/Budapest,
+  Opus 5, commits **directly to DevMain** and only when `vault:check` passes,
+  reporting to the "pienissimo devs" group DM. It also now carries the
+  🔴 **DST fix due 25 October** (`30 21` → `30 22`), which otherwise fires
+  22:30 local inside the go-live window.
+- ⚠ **Not independently verified.** The routine's configuration above is
+  transcribed from `docs/task-status.md`, not read back from the cloud — no
+  connected tool here lists cloud routines. The evidence it still runs is the
+  commit trail: `nightly requirements-check` on 18, 19 and 20 August. Friday
+  21 August produced no commit, which is the documented behaviour for a
+  no-change run, not proof of a failure.
+- ⚠ **Three files quote those URLs**, so a page replaced rather than updated in
+  place breaks all three at once. That is exactly why step 6c forbids creating a
+  replacement page, and the mirror note now says so beside the id table.
+- `AGENTS.md` now says six procedures, with a warning that `start-sf-projects`
+  is a generator: **editing a skill here does not change what the next project
+  gets** — that has to be done in the template. `CLAUDE.md` skill list updated.
+
+## 2026-08-24 — claude — nightly requirements-check, four meetings out of the dark at once
+
+- **Did:** ran `requirements-check` against watermark **2026-08-20**. Gmail,
+  Slack, Drive and Fathom all swept. **Six findings — the largest single sweep in
+  the project's records.**
+- **The headline: the 19 and 20 August sessions were minuted all along.** Three
+  consecutive sweeps reported them as leaving no minute of any kind. Both now
+  have a canvas entry, a recording and a Gemini notes-plus-transcript doc, added
+  to the canvas between the 21 Aug re-read and 24 Aug. And Elena Spini had
+  **minuted the 20 Aug session to the client the same evening** (20/08 18:08
+  CEST) — she forwarded it to Aurel on 24/08 16:38. **The gap was distribution,
+  not existence.** That minute is now the strongest evidence in the record:
+  human-written, sent to the client, uncontradicted for four days.
+- **Two further ROMI-internal sessions ran on 24 Aug** — Interna per update
+  flusso Lead/Opty (Elena + Aurel, 15 decisions) and Follow-up Interno (Elena,
+  Aurel, Andrea Di Cicco, Fabrizio Mastracci, 5 decisions). Both fully minuted.
+- 🔴 **The most consequential finding is a design conflict, not a decision.**
+  Fabrizio Paganelli, minuted to the client 20/08: **Mexal article codes are
+  transversal across years and the edition is determined by the ORDER DATE, not
+  the product.** `Product2.Anno_Solare__c` and its dependency matrix assume the
+  opposite. §13's finding that the matrix was ROMI guesswork now has its answer —
+  there is no client source because there is no client concept.
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) is now
+  "should this field exist", and it needs **Aurel's ruling**.
+- 🆕 **What carries the edition instead is a three-level campaign model** —
+  Campagna Padre → Campagna Figlio → Campaign Member, agreed with the client
+  20/08 and configured internally 24/08: two Record Types, a **hand-populated
+  lookup on Product** for the parent campaign code, one active child per parent,
+  membership at enrolment only. ~10 campaigns a year, created manually.
+  **Entirely unbuilt.** New note:
+  [the campaign parent and child model](notes/objects/The%20campaign%20parent%20and%20child%20model.md).
+  It rewrites the scope of OI-77 and OI-84.
+- 🔴 **Two contradictions block building.** (1)
+  [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md): the 20/08
+  minute told the **client** that "Da ricontattare" generates **no automatic
+  task** (banner instead); the 24/08 internal session specifies a validation
+  rule, a trigger and reminder notifications on that same state. (2)
+  [OI-53](notes/items/OI-53%20Asset%20generation%20rule.md): the 19/08 minute
+  states the asset-creation rule **two incompatible ways in one document** — the
+  Dettagli say "at order", the auto-generated Decisioni line says "order **or**
+  quote". Prefer the Dettagli; get both ruled on.
+- ✅ **Settled:** [OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)
+  — ticket type is a **manually maintained Salesforce field owned by
+  amministrazione**, because Mexal carries at most three classifications; this
+  **reverses** the standing instruction to ask for a tier _column_ on 26/08.
+  [OI-50](notes/items/OI-50%20Tranche%20object.md) — tranche created by hand on
+  the Quote, before the order, editable only in `Bozza`.
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) — availability
+  follows the tranche **and every tranche before it**.
+  [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md) —
+  the provider is **Anticipay**, called on the first order for an Account.
+  [OI-82](notes/items/OI-82%20Asset%20flow%20needs%20a%20dedicated%20review.md)
+  **resolved** — the review it asked for is the 20/08 session.
+- **New artifact:** `Integrazioni pienissimo.xlsx` (Andrea Di Cicco, 24/08) — the
+  first field-level Mexal↔Salesforce mapping;
+  [note](notes/The%20Mexal%20integration%20mapping%20workbook.md). Sandbox pattern
+  fixed: **code 501 for new customers, series 10 for new orders**. ⚠ **It holds
+  real customer records** — existence recorded, **no values copied**. Third
+  artifact with this problem.
+- **The design file moved a fourth time** (24/08 16:34:34Z), re-decoded in full.
+  **For the first time the edit is minuted**: it carries the campaign lookup
+  rule, two `RULES + FLOW` blocks with the **actual picklist values** for both
+  "Motivazione da Ricontattare" fields, a third loss-reason list, and
+  `Anticipay`. The last two **cannot be dated** — present now, absent from the
+  20/08 prose write-up, and prose is not a byte-level record.
+- **Written:** 4 meeting notes, 3 new supporting notes (campaign model,
+  integration workbook, Fabrizio Mastracci person note — ROMI marketing, **not**
+  Fabrizio Paganelli), 19 item notes rewritten + OI-82 resolved, the design
+  diagram note, `MAP.md`, `INDEX.md`, `meetings/open-items.md` + `.it.md` (19
+  rows, #82 moved to Resolved, new header note and status block),
+  `meetings/DEVELOPMENT-RECAP.md` + `.it.md` (new §16), and
+  [the trace](notes/traces/Source%20trace%202026-08-24.md).
+- **Not done, deliberately:** **no requirement was changed.** The YAML register,
+  `REQUIREMENTS.md` and `REQUISITI.it.md` are untouched. OI-46 and OI-76 bear
+  directly on signed text, but rewriting a contractual document off a nightly
+  sweep is a human's call. Nothing in `force-app/` was touched. `STATUS.md` and
+  the Notion mirror were **not** regenerated — see Watch.
+- **Watch:** ⚠ `STATUS.md` and its Notion mirror are now **stale** — this sweep
+  moved the live position substantially and step 6 of `org-status-check` was not
+  run. That is the first thing the next session should do. ⚠ Matteo Distaso's
+  DNS deadline (21/08) passed unconfirmed and the forms deadline is 26/08;
+  Rebecca Marmo's funnel screenshots never arrived. ⚠ Fathom has held **0
+  recordings since 06 August** while five sessions were recorded — **a Fathom
+  miss no longer proves a meeting did not happen**; check Drive and the canvas.
+- **Next:** take OI-46, OI-53 and OI-59 to a human — they are three
+  one-sentence rulings and they block Order, Tranche, Asset and the picklists.
+  The 26/08 client Mexal review is the forum for OI-46 and OI-92; ask OI-76 for
+  the **value list**, not a column.
+
+## 2026-08-24 — claude — STATUS.md created and mirrored to Notion
+
+Replicated the Life365 status apparatus for this project, at Aurel's request.
+Pienissimo had **none** of it: no `STATUS.md`, and `org-status-check` stopped at
+step 5 with no publish step.
+
+- **New [STATUS.md](STATUS.md)** — the ROMI-internal, human-facing status page,
+  generated from `notes/`. ⚠ **Its basis line says plainly that this was not a
+  live org check.** The newest org verification is still **2026-08-03** and is
+  stale in both directions; the "what is built" table is read from `force-app/`
+  on `DevMain` and labelled as such. Do not let a later regeneration quietly
+  upgrade that claim.
+- **New [the mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md)**
+  — the four Notion ids, the workspace, and the sharing rules.
+- **Notion, in `Aurel mrruku's Space`**: parent page **PIENISSIMO**, page
+  **ROMI - PIENISSIMO Project Status**, and database **PIENISSIMO - Open Items**
+  with **54 rows**, one per note in `notes/items/`, keyed on `Ref`.
+- **`org-status-check` gained step 6** (6a–6f), in both `.agents/` and
+  `.claude/` mirrors, which are byte-identical. It updates the page **in place**
+  — creating a replacement would strand everyone invited to the old one.
+- **Precedence is now written down** in `AGENTS.md`: `notes/` → `meetings/`
+  views → `STATUS.md` + mirror → `site/`. Notion is a **publish target, never a
+  source**. `docs/publishing.md` now governs the internal surface too.
+- ⚠ **The mirror shows 54 of roughly 86 tracker rows**, because only 54 have
+  atomic notes. That is stated on the status page, the parent page and in the
+  note, so it cannot be mistaken for a complete tracker. **Closing the gap means
+  writing the missing notes, not adding Notion rows** — a row with no note
+  breaks the `Ref` join step 6d depends on.
+- **Price rule extended to the new surface.** `Prodotti e Bundle.xlsx` put real
+  catalogue prices in the repository for the first time this morning; neither
+  `STATUS.md` nor the mirror carries a single value, and both say so.
+- **Second pass, same day — two parity gaps closed.** The first build had the
+  database but not everything Life365's has: **the `Note` URL column** and **the
+  three views**. Both now exist. `Note` links each row to its atomic note on
+  GitHub (`DevMain`, percent-encoded); views are **Board** by status,
+  **Critical path** filtered to the checkbox, and **By owner** — all sorted by
+  `Ref`, matching Life365's config. ⚠ The `Note` links **404 until the branch is
+  pushed**, which reads as a missing note rather than an unpushed commit; step
+  6d now says so.
+- **Also closed: only `org-status-check` knew the page existed.** In Life365
+  four skills carry a close-out pointer to step 6; Pienissimo's had none, so a
+  `drill-meeting` or `drill-me` run would have moved a dozen note statuses and
+  left Notion silently stale. `drill-meeting`, `drill-me`,
+  `requirements-check` and `requirement-trace` now all end by refreshing
+  `STATUS.md` and the mirror.
+- **Watch:** the workspace is **personal** (`a.mrruku@romicompany.com`), not a
+  ROMI company workspace, and it also holds the **LIFE365** mirror whose pages
+  are named alike. Step 6 forbids locating anything by title for exactly that
+  reason. If ROMI ever adopts a company workspace, the pages move by hand.
+
+## 2026-08-24 — claude — the Prodotti e Bundle workbook drilled, 17 days late
+
+- **Aurel downloaded `Prodotti e Bundle.xlsx` and it was read.** This is the
+  file [MAP.md](MAP.md) had been flagging as delivered-but-unopened since
+  18 August. Fabrizio Paganelli sent it **2026-08-07 at 12:17 CEST**; the file's
+  own metadata shows it was saved **10:16 UTC — one minute before he sent it**,
+  so it was built for that request and is the `anagrafica prodotti` the 22/07
+  session asked him for. **A copy now sits in the repository root** beside
+  `anar_PIE_ricla.xlsx`, so no future agent has to ask a human to fetch it.
+  ⚠ It carries **real list prices** — private repo only.
+- **Three sheets, four answers.** `Lista Eventi` (11 events, 4 types),
+  `Lista Prodotti` (29 articles, 9 events, prices on every row),
+  `Esempio di Bundle` (one worked bundle, drawn twice). Decode:
+  [the workbook note](notes/The%20Prodotti%20e%20Bundle%20workbook.md).
+- ✅ **[OI-87](notes/items/OI-87%20Real%20catalogue%20prices%20still%20outstanding.md)
+  resolved** — the real prices are here. It does **not** clear
+  [OI-42](notes/items/OI-42%20List%20prices%20in%20UAT%20are%20placeholders.md):
+  UAT still holds the placeholders, the input arrived and the load did not. And
+  **no bundle price exists anywhere**, so
+  [the bundle demo](notes/items/OI-13%20Bundle%20effort%20estimate%20and%20client%20demo.md)
+  is still short.
+- 🔴 **The headline is a build defect, not a paperwork gap.** The record has
+  said since 23/07 that "Happy Team sells nothing". The transcript actually says
+  _"durante l'Happy Team non vendiamo niente"_ — **we don't sell _during_ Happy
+  Team**. `CS-00154 HAPPY TEAM` is priced, has a complimentary twin, and is in
+  the Academy bundle **at quantity 2**. `Product2.Evento__c` is a **restricted**
+  picklist with **no `Happy Team` value**, so such an article cannot be
+  classified and its asset has no event. Also wrong: `Camerieri` (truncated),
+  `Odb Live`, an invented `ND`. See
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md).
+- ⚠ **The `Anno_Solare__c` → `Evento__c` dependency matrix is ROMI guesswork.**
+  It is built with a specific mapping and **the workbook has no year column at
+  all**. That is the controlling half of the mechanism OI-46 specifies.
+- **[OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md)
+  — `Silver` and `Dinamond` both die.** The registry's tiers are `EXECUTIVE`,
+  `GOLD`, `DIAMOND`. `Dinamond` was a typo for `Diamond`; `Silver` exists
+  nowhere, and the minuted 06/08 example named two tiers for an event that has
+  neither. **Still open** — `Lista Prodotti` has four columns and neither a
+  ticket-type nor an event-flag column, so tier is still parsed out of a name.
+- 🆕 **[OI-93](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md)
+  — a client change request nobody knew existed.** The bundle is drawn as
+  `COME SONO ADESSO` (components are `OMAGGIO`) and `COME LO VORREMMO`
+  (components are priced). ⚠ **It may already be built and I did not verify
+  that** — `BundleComponent__c.Spread_Price__c` and the `Spread_*` fields exist
+  for this purpose, but they change the _price on the junction_, not _which code
+  is in the bundle_. Different data, same revenue answer.
+- **New structural notes:**
+  [the article code namespace](notes/objects/The%20article%20code%20namespace.md),
+  [a bundle is two levels deep](notes/objects/A%20bundle%20is%20two%20levels%20deep.md),
+  and [the normalisation risk](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
+  The last is the one to carry forward: **`_ARCOD` is an opaque string.**
+  `CS-00061` and `CS-0061` are different events at different prices, one leading
+  zero apart, and `Product2.Code__c` is a unique case-insensitive external id —
+  a normalising import overwrites a product or throws an opaque duplicate error
+  during the ~1 September load.
+- **[OI-50](notes/items/OI-50%20Tranche%20object.md) gained a problem.** The
+  client has a **product-side** tranche — the `BLO-` blocco, in the catalogue,
+  before any order — while OI-50 derives one from order-line due dates after the
+  sale. Two things, one name. It decides whether `Tranche__c` is created at
+  import or at order time. `BundleComponent__c` is also flat and cannot express
+  the middle level at all.
+- **Views regenerated:** `meetings/open-items.md` + `.it.md` (rows 46/48/50/76
+  rewritten, #87 moved to Resolved, #93 added, fourth-pass block appended),
+  `meetings/DEVELOPMENT-RECAP.md` + `.it.md` (new §13, §9 blockers updated),
+  `MAP.md`, `INDEX.md`.
+- **Next / owed:** the 22/07 action paired this file with a **review meeting on
+  the anagrafica prodotti** that never happened. OI-46, OI-48, OI-76 and OI-93
+  all want the **26/08 client Mexal review**, where Fabrizio is an invitee.
+- **Not done, deliberately:** nothing in `force-app/` was changed and
+  `requirements/pienissimo-requirements.yaml` was not touched — the event
+  picklist fix and OI-93 both need a decision, and a client workbook is evidence,
+  not a signed requirement.
+
+## 2026-08-24 — codex — restored the full colored Obsidian graph
+
+- **Did:** verified that Prettier and the vault's 15 native Obsidian graph color
+  groups were already installed/configured. Registered Pienissimo as an
+  Obsidian vault, cleared the stale `aurel` global graph search from
+  `.obsidian/graph.json`, and expanded the color-group panel.
+- **Why:** Obsidian was opening the separate Life365 vault, while Pienissimo was
+  not registered; its saved graph also carried an old filter. Graph coloring is
+  native Obsidian configuration and does not depend on Prettier or a community
+  plugin.
+- **State:** Pienissimo now opens directly into Graph view with the full color
+  configuration; `vault:check` passes.
+- **Follow-up:** increased this journal's retention from 10 to 20 entries and
+  restored all four archived entries; there are currently 14 in total.
+
+---
+
+## 2026-08-20 — claude — nightly requirements-check, both design diagrams moved on the same afternoon
+
+- **Did:** ran `requirements-check` against watermark **2026-08-19**. Gmail,
+  Slack, Drive and Fathom all swept; **three findings**. Cleared the 🔴 action
+  carried from 19 August by **re-decoding the master `Flows & Objects.drawio`**
+  at its 2026-08-20T15:36:24Z version — and found that the **client's own
+  `Workflow Pienissimo 23-7-26.drawio` had moved 68 minutes earlier**, at 14:28
+  UTC. Both are register source diagrams (`DGM-2`, `DGM-1`). **Neither edit is
+  minuted.** Both decoded in full from base64.
+- **State:** new notes
+  [the client Lead-Opty diagram](notes/The%20client%20Lead-Opty%20diagram%20moved%20on%2020%20August.md)
+  and [OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md);
+  [the newest design diagram](notes/The%20newest%20design%20diagram.md) rewritten
+  for the new version; OI-69, OI-74, OI-76, OI-85, OI-91 updated. Register:
+  **provenance dates for both diagrams corrected**, plus non-normative notes on
+  `order.reconciliation` and `asset_status`. MAP, INDEX, both trackers (row 92
+  added, rows 69/74/76/85/91 flagged), both recaps (§11.3 and the order-state
+  gap), README, and **RC-06/07/08 added to §17 of `REQUIREMENTS.md` and
+  `REQUISITI.it.md`**. Trace at
+  [Source trace 2026-08-20](notes/traces/Source%20trace%202026-08-20.md). The
+  oldest journal entry moved to `notes/sessions/2026-Q3.md`.
+- **🔴 Next — nothing in the register was re-extracted, and that was deliberate.**
+  Three divergences between the register and its own source files are now open
+  and need a human, not another sweep: is `Rinuncia` a seventh asset state
+  (OI-74); is `Incassato` `CHIUSO/ACQUISITO` renamed (OI-69); and is the ticket
+  tier `Silver` or `Dinamond` (OI-76). Each is one sentence from Elena Spini or
+  Sabatino Rinaldi.
+- **Watch:** ⚠ **The master now draws the 06 Aug order states _alongside_ the old
+  ones without striking them** — `CHIUSO/ACQUISITO` and `CREATO` are still on the
+  Ordini page. OI-69 can no longer be waved off as "the drawing predates the
+  decision"; the source itself is now ambiguous. Only three states, **no
+  `Perso`** (OI-85). ⚠ **`DGM-1` is reached through a Drive shortcut**, so a
+  `parentId` listing of the project folder returns the shortcut, not the file's
+  real `modifiedTime` — this run only caught the client-side edit because the
+  sweep was by `modifiedTime` across all files. **Resolve shortcuts.** ⚠ There is
+  **no decode of `DGM-1` between 4 and 20 August**, so its divergences from the
+  register cannot be dated and are recorded as "present, not registered" — do not
+  let a later run report them as "changed today". ⚠ Both the **19 Aug marketing**
+  and **20 Aug asset** sessions left **no recording, no canvas entry, no
+  message**; Fathom holds nothing after 06 Aug. Whether they ran is unrecorded.
+  ⚠ `Prodotti e Bundle.xlsx` is **still unread** — and may also hold the ticket
+  tier list OI-76 now needs.
+- **Note:** a client-facing meeting is on the calendar — _[ROMI-PIENISSIMO] -
+  Review Temi Integrazione Mexal_, **Wed 26 Aug 16:00–17:00 CEST**, Elena Spini
+  with Aurel, Andrea Di Cicco, amministrazione@pienissimo.com and Fabrizio
+  Paganelli. First Mexal session since 14 July, and the forum for OI-92.
+
+---
+
+## 2026-08-19 — claude — nightly requirements-check, the ticket design moved and nobody said so
+
+- **Did:** ran `requirements-check` against watermark **2026-08-18**. Gmail,
+  Slack, Drive and Fathom all swept; **two findings**, one substantial. Elena
+  Spini created a **new standalone `Flusso Biglietti.drawio`** in
+  `[Pienissimo] Fase Progettuale` on **19 Aug 15:00 UTC**, and modified the
+  master `Flows & Objects.drawio` **92 minutes later**. The new file was
+  downloaded and base64-decoded in full.
+- **State:** new notes
+  [the 19 August ticket flow diagram](notes/The%20ticket%20flow%20diagram%20of%2019%20August.md)
+  and [OI-91](notes/items/OI-91%20Aggiornamento%20Incasso%20button.md); OI-74,
+  OI-78, OI-81, the ticket lifecycle and the master-diagram note updated; MAP,
+  INDEX, both trackers (row 91 added, rows 74/78/81 flagged) and both recaps
+  §11.3 carry the change; trace at
+  [Source trace 2026-08-19](notes/traces/Source%20trace%202026-08-19.md). The
+  oldest journal entry moved to `notes/sessions/2026-Q3.md`.
+- **🔴 Next — re-decode `Flows & Objects.drawio` at its 19 Aug 16:33 UTC
+  version.** It is the master the requirement register is checked against and it
+  was **not** re-decoded this run. It is reachable — Drive simply does not
+  full-text index mxfiles; download it and base64-decode. Until then it is
+  unknown whether the master also shows `Rinuncia`.
+- **Watch:** ⚠ **The 14/08 instinct was probably right and 15/08 overruled it.**
+  That entry flagged `rinuncia al servizio` as a possible sixth state; OI-74 then
+  settled it as loose prose for `Annullato`. The 19/08 drawing puts
+  **`Rinuncia` and `Annullato` in the same row as separate boxes**, at different
+  moments — decline at the participant-list request vs. name change or credit
+  note. **Do not reconfigure the picklist either way**; Elena or Sabatino rules.
+  ⚠ **The requirement register was deliberately left alone** — nothing in the
+  drawing is minuted, so no agreed requirement has moved. ⚠ OI-91's
+  `Aggiornamento Incasso` button is the **first backward transition** in the
+  asset state machine and qualifies OI-75's release rule; it also needs the
+  tranche object, which does not exist. ⚠ If the 19/08 marketing session ran, it
+  is **unminuted** — no recording, no canvas entry, no message.
+- **Note:** a new internal meeting is on the calendar — _[PIENISSIMO] - Interna
+  per update flusso Lead/Opty_, **Mon 24 Aug 16:00–17:00 CEST**, Elena + Aurel.
+
+---
+
+## 2026-08-18 — claude — nightly requirements-check, the 07/08 attachment surfaced
+
+- **Did:** ran `requirements-check` against watermark **2026-08-14**. Gmail,
+  Slack, Drive and Fathom all swept; **one finding**. Elena Spini forwarded the
+  thread _"Lista Eventi, Codici prodotto, esempio Bundle"_ on **18 Aug 09:41
+  CEST**, answering Aurel's 14 Aug request. Fabrizio Paganelli's 07 Aug 12:17
+  message carries **no body text and exactly one attachment,
+  `Prodotti e Bundle.xlsx`** — which is why no `from:` search ever found it and
+  why only an empty quoted stub survived.
+- **State:** new note
+  [the workbook](notes/The%20Prodotti%20e%20Bundle%20workbook.md); OI-46, OI-48
+  and OI-87 updated; MAP, INDEX, both trackers and both recaps carry the change;
+  trace at [Source trace 2026-08-18](notes/traces/Source%20trace%202026-08-18.md).
+  The oldest journal entry moved to `notes/sessions/2026-Q3.md`.
+- **🔴 Next — this is the whole point of the finding: the file is still
+  unread.** No connected tool can read a Gmail attachment; the integration
+  exposes metadata only and has no download call, and the file is in neither
+  Drive nor Slack. **Aurel must download it**, exactly as
+  `Integrazioni pienissimo.xlsx` was handled on 14 Aug. Until then **nothing
+  closes**: whether it holds the 7-event list (OI-46), the "(B)" bundle-only
+  codes (OI-48) or any price (OI-87) is unverified.
+- **Watch:** ⚠ it may well be the _anagrafica prodotti_ promised at the 22/07
+  session, which also carried an action on Aurel to attend a review meeting
+  _after receiving the Excel_ — if so, that meeting is owed. ⚠ Treat the file as
+  **price-bearing** until proven otherwise; record what it answers, never the
+  values. ⚠ Two `[ROMI-LIFE365]` marketing docs were shared on 18 Aug dated
+  23/07 and **30/07** — a different client, _not_ the Pienissimo 30/07 marketing
+  follow-up, which is still unminuted. Do not conflate them.
+
+---
+
+## 2026-08-15 — claude — transcripts linked to their recaps
+
+- **Did:** turned the transcript path in the `Sources:` / `Fonti:` line of all
+  **18** files in `meetings/results/` into a relative Markdown link
+  (`[meetings/<name>-transcript.it.md](../<name>-transcript.it.md)`). The
+  rendered text is unchanged — the path was already written there as plain text
+  in 16 files and inside backticks in the 2026-08-06 pair; only the link markup
+  is new, so the preserved record still reads exactly as before. The transcripts
+  themselves were **not** touched. Added the rule to step 4 of
+  `drill-meeting/SKILL.md` in both `.agents/` and `.claude/` so new meetings get
+  the link by default.
+- **Why:** Aurel noticed the Obsidian graph was full of floating nodes. The
+  cause: the vault root is the repo root, and the transcript↔recap relationship
+  was recorded as text, not as a link. Isolated files went **23 → 2**; the two
+  left are the `meetings/proposals/`. `vault:check` passes (87 notes).
+- **State — the graph is still 10 components, not 1.** The nine meeting
+  clusters (transcript + EN recap + IT recap) are now internally connected but
+  **eight of them still hang off the main graph**, because nothing links their
+  recap. Only 2026-08-06 is attached, via a single link in
+  [INDEX.md](INDEX.md). The reason is systemic: **70 notes cite their meeting
+  through the frontmatter field `source: meetings/results/…`, which is a bare
+  YAML string and produces no graph edge.** The same applies to `depends_on:`
+  and `blocks:` — the dependency structure is invisible in the graph. Wikilinks
+  would fix it but are banned for portability, so the fix has to be body-level
+  Markdown links.
+- **Next:** either list all nine recaps in `INDEX.md` (one edit, attaches every
+  cluster) or add a body-level `**Source:**` link to the ~70 notes that carry
+  the frontmatter field (heavier, but makes the citation trail real). Neither
+  is done. `meetings/proposals/` (2 files) is linked from nowhere at all.
+
+---
+
+## 2026-08-15 — claude — requirement trace, tickets batch
+
+- **Did:** re-derived the `tickets` area. **10 notes mapped to 8 `BIG`
+  requirements**, written in both directions (`requirement:` on the note,
+  `tracked_by:` on the requirement) and verified by `vault:check`, which now
+  reports `8/137 reachable` with **zero** disagreements. Mappings:
+  `BIG-01←flow-ticket-lifecycle` · `BIG-02←OI-53,OI-77` · `BIG-03←obj-biglietto`
+  · `BIG-04←OI-76` · `BIG-06←OI-81` · `BIG-09←OI-57` · `BIG-17←OI-74` ·
+  `BIG-18←OI-78,OI-86`.
+- **🔴 Found `RC-06`: four requirements still encode signature in the ticket
+  flow** — `BIG-01`, `BIG-12`, `BIG-19`, `BIG-21` — after 2026-08-06 struck it
+  outright ("Participants sign on paper at check-in; DocuSign applies only to
+  quotes and contracts"). `BIG-01` is the four-stage lifecycle naming the phases
+  of the whole flow, so the stale wording is load-bearing: anyone building from
+  the signed document builds a cancelled signature step. Recorded as a
+  reconciliation entry on Aurel's instruction; **no requirement text changed**,
+  because that edits `REQUISITI.it.md`. **The correction is still owed.**
+- **Two register gaps, both deliberate non-mappings.**
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) — the rule
+  releasing a ticket when the tranche invoice is paid in full, which the entire
+  flow keys on — **has no requirement id at all**. And
+  [OI-84](notes/items/OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md),
+  manual check-in issuing no QR, is covered by nothing; what breaks is `DAT-03`.
+  Full Tier C list in
+  [the fabricated-mappings note](notes/The%20requirement%20mappings%20were%20fabricated.md).
+- **Method, and why:** batch by the register's own `area:` field — ~20
+  requirements per batch instead of 132. Text-similarity scoring was built and
+  **rejected**: it produced 28 confident matches, most wrong, because a
+  four-word requirement whose words all appear in a long note scores 1.00. That
+  is almost certainly how the original 23 were fabricated. The rule is now **a
+  mapping needs a quotable sentence**. Written up as a fifth skill,
+  `requirement-trace`, in `.agents/` and `.claude/`, registered in `AGENTS.md`
+  and `CLAUDE.md`.
+- **Next:** five batches left — `SAL` 23, `INT` 22, `BUN` 20, `ORD` 15, and
+  data/marketing/nfr/context 28. Run `/requirement-trace` per area. Also note
+  **16 of 24 `BIG` requirements have no note**; worth a pre-sign-off pass to
+  check none is unbuilt and untracked.
+
+---
+
+## 2026-08-15 — claude — 🔴 the note-to-requirement mappings are fabricated
+
+- **Finding, and it is serious.** Trying to make requirements traceable back to
+  the meetings that produced them, the existing `requirement:` frontmatter
+  fields turned out to be **generated by arithmetic, not by matching content**.
+  In the 2026-08-06 cluster the id is literally `BIG-(OI number minus 69)`:
+  - `OI-74` _Asset state machine_ → cites **BIG-05** _"Participants are not
+    account contacts"_. The note is entirely the six-value Asset status
+    picklist, i.e. **BIG-17**.
+  - `OI-75` _Ticket availability rule_ → cites **BIG-06** _"Reminder funnel
+    cadence"_. Unrelated; the note is tranche-paid-in-full release.
+  - `OI-78` _Participant data collection_ → cites **BIG-09** _"Zero-euro orders
+    stay in the CRM"_. Unrelated; the note is the participant landing page,
+    i.e. **BIG-18/BIG-19**.
+  - `OI-50` _Tranche object_ → cites **ORD-06** _"Order types"_. Its body is
+    verbatim **ORD-01** _"Tranches auto-created from order-line due dates"_.
+  - `OI-43` _Spread variance does not block saving_ → cites **BUN-04**. Its
+    body is verbatim **BUN-17** _"A non-zero spread variance must block
+    saving"_.
+  - `OI-47` cites **PRD-04**, and there is no PRD prefix in the register at
+    all. Probably **BUN-12/BUN-13**, the two product flags.
+    **Five of five spot-checks were wrong.** Treat all 23 `requirement:` fields as
+    unverified until re-derived from the note bodies.
+- **Did NOT write them into the register.** A `tracked_by:` reverse index was
+  built and then **reverted** — mirroring fabricated mappings into the
+  contract-bound YAML would have laundered them into the document Pienissimo
+  signs. `requirements/pienissimo-requirements.yaml` is untouched at HEAD.
+- **Did:** taught `scripts/vault-check.mjs` to trace notes against the register
+  in both directions — unknown requirement ids are reported per-note, and
+  un-backfilled ones as a single count. **Warnings, never errors**, so the
+  nightly routine (which commits only on exit 0) stays green. It currently
+  reports `0/137 reachable`, the PRD-04 break, and 22 one-way citations. Added
+  the both-directions rule to step 4 of `drill-meeting` and step 4.3 of
+  `drill-me`, in both `.agents/` and `.claude/`.
+- **Aurel chose the safe path, and it is done:** all **23** `requirement:`
+  fields were **stripped** from the notes rather than left wrong, and every
+  discarded claim is preserved in
+  [the fabricated-mappings note](notes/The%20requirement%20mappings%20were%20fabricated.md)
+  with a first-impression assessment per row, so re-derivation starts warm
+  instead of from nothing. `updated:` bumped on all 23. Nothing else in those
+  files changed — the diffs are two lines each.
+- **The register was never written to.** It is untouched at HEAD. `tracked_by:`
+  belongs there only after the 56 mappings are re-derived and checked.
+- **Also unverified:** `AGENTS.md` states the item numbers are cited in
+  `REQUIREMENTS.md`. Measured: **zero** `OI-nn` or `#nn` references in either
+  `REQUIREMENTS.md` or `REQUISITI.it.md`, and zero links into `notes/` or
+  `meetings/` from either. The claim may hold for the published artifacts and
+  the client's correspondence, which were not checked.
+
+---
+
+## 2026-08-14 — claude — nightly requirements-check scheduled
+
+- **Did:** created cloud routine `trig_01VCdUXmqy8PngWPJHA2dSYC` —
+  **Mon–Fri 23:30 Europe/Budapest** (`30 21 * * 1-5` UTC), reporting to Slack
+  group DM `C0BQD34LLF4` (Aurel, Anita Aga, Sara Aga). Full configuration in
+  [docs/task-status.md](docs/task-status.md). First run **Mon 17 August**.
+- **State:** it **commits directly to DevMain**, Aurel's explicit choice over a
+  PR-based flow. Guarded: it commits only if `npm run vault:check` passes, and
+  on failure commits nothing and leads its report with the failure. No-change
+  runs write nothing and keep the existing watermark.
+- **The skill had to change.** `requirements-check` guardrails said "never send a
+  chat message", which would have made the routine refuse to post. Added **one
+  explicit carve-out** naming that single group DM, mirrored to `.agents/`.
+  **Do not widen it** — everything else stays read-only.
+- **Watch:** ⚠ **the cron is fixed UTC and DST will break it.** Budapest leaves
+  CEST on **25 October 2026**; after that it fires at 22:30 local. Change the
+  cron to `30 22 * * 1-5` then.
+- **Corrections, same day.** I reported that **Rexhina was unreachable on
+  Slack** — wrong. I had searched four names in one query and got nothing;
+  searching her name alone returns her immediately
+  (`U0B36MRLJUV`, `r.hysi@romicompany.com`). Aurel then added her to the
+  conversation by hand; **the channel id did not change**, so the routine still
+  points at `C0BQD34LLF4` and now reaches all four developers.
+- **Her surname is now known: Hysi**, supplied by Aurel on 2026-08-14 and
+  matching the sister project's records. The person note was **renamed**
+  accordingly — filename, H1 and all four inbound links — since the filename is
+  the note's title.
+- **Model set to `claude-opus-5`**, on Aurel's instruction, matching the sister
+  project. The `schedule` skill defaults to Sonnet, so a future edit that resends
+  `job_config` without the model will silently downgrade it — the model lives
+  inside `session_context` and a partial update replaces the whole block.
+
+- **Did:** R1 and R2. Added **§12 to `DEVELOPMENT-RECAP.md` and `.it.md`** — nine
+  subsections, both twins in the same session, precedence headers updated so §12
+  wins. Corrected the diagram provenance dates in the register, `README.md`,
+  `REQUIREMENTS.md` and `REQUISITI.it.md`.
+- **Correction, and it matters.** I had claimed the register and the prose
+  carried stale state names, and recommended R2 on that basis. **They did not.**
+  The register already held `In attesa di accettazione`, `Annullato`, six asset
+  states, the tranche states, and `preventivo scaduto` documented as a retired
+  label. Notes that over-claimed — OI-50, OI-59, OI-74, OI-69 and
+  [the diagram note](notes/The%20newest%20design%20diagram.md) — have been
+  corrected. **Verify before asserting a document is stale.**
+- **State:** two genuine gaps were found. `order.states` still reads
+  `[CREATO, CHIUSO/ACQUISITO]` against the 06/08 decision of
+  `Ordinato → Fatturato → Incassato` — now marked `status: conflict` in the
+  register with Elena Spini as owner. And `opportunity_types` was missing
+  `Plus + Attivazione o Rinnovo`, now added.
+- **Next:** **R2b** — get Elena to say whether `Incassato` is `CHIUSO/ACQUISITO`
+  renamed. It is the same question as A2 on the board and it blocks configuring
+  both `Order` and `Tranche__c`.
+- **Watch:** §12 is now the top of the precedence chain in both recaps. Anything
+  written after this must either fold into §12 or open §13.
+
+---
+
+## 2026-08-14 — claude — action board opened
+
+- **Did:** created [docs/task-status.md](docs/task-status.md), a **ROMI-internal
+  action board** modelled on the sister project's. It holds chores,
+  confirmations and repo work that must **not** consume an `OI-NN`, because that
+  numbering is client-facing and cited in `REQUIREMENTS.md`. Linked from
+  [MAP.md](MAP.md) and [INDEX.md](INDEX.md).
+- **State:** six actions for Aurel (A1–A6), four repo tasks (R1–R4). **A6 is
+  already sent** — he replied on the _"Lista Eventi, Codici prodotto, esempio
+  Bundle"_ thread on 14/08 to establish what Fabrizio delivered on 07/08;
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) and
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) now record that
+  and are **waiting on Elena**, who returns 17 August.
+- **Next:** **R2 first** when work resumes — re-merging the diagrams into the
+  register and correcting the "31 July" claim. It is the only queued task with
+  contractual consequence: `REQUISITI.it.md` goes to Pienissimo for signature
+  and currently carries state names the design has moved past. Then R1.
+- **Watch:** A4 (retrieving the six Biglietto classes into `force-app/`) is
+  **source control, not test work** — it is deliberately outside the test-suite
+  deferral and should not be swept up in it.
+
+---
+
+## 2026-08-14 — claude — newest diagram and the Mexal workbook drilled
+
+- **Did:** decoded `Flows & Objects.drawio` (all three pages) and parsed
+  `Integrazioni pienissimo.xlsx`, which Aurel downloaded manually after no
+  connected tool could reach it.
+- **State:** 🔴 **`Get Fatture` maps `numero_ordine` but no order-_line_
+  number** — the key
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) was agreed to match
+  on. Mapping gap, not a Mexal limit; the line data is in the per-document call.
+  **Raise at the 27 August call.** The diagram also settles three disputes with
+  the prose: asset states are six with the sixth named **`Annullato`** (not
+  "rinuncia al servizio"), `CHIUSO/ACQUISITO` **still appears** on the Ordini
+  page after the session deleted it, and the quote state _Scaduto_ was renamed
+  **`In Attesa Accettazione`**. Tranche states appear for the first time.
+- **Next:** confirm `CHIUSO/ACQUISITO` with Elena — the tranche rule depends on
+  it. Re-merge the diagrams into the register.
+- **Watch:** ⚠ **the register is reading stale copies.** It records both diagrams
+  as modified 31 July; Drive says **6 August** and **4 August**. `README.md` and
+  `REQUIREMENTS.md` repeat the 31 July date. Anything "extracted verbatim from
+  the diagrams" needs re-checking — see
+  [the newest design diagram](notes/The%20newest%20design%20diagram.md).
+- **Note:** both the diagram and the Mexal workbook use **real customer data** as
+  worked examples — a named company with VAT, address, phone, email and PEC.
+  Recorded as a hazard; the values are not reproduced in `notes/`.
+
+---
+
+## 2026-08-14 — claude — client documents drilled
+
+- **Did:** drilled `01 Documenti forniti dal cliente/`, located the untracked
+  16/07 internal meeting, and chased the two artifacts that could not be read.
+- **State:** the find is
+  [the client's own 11 June requirements document](notes/The%20client%20June%20requirements%20document.md) —
+  seven pages, 13 numbered questions to ROMI, an internal owners table, and in
+  no tracker. It is the **origin of `rinuncia al servizio`** (a Fabrizio-owned
+  requirement, not an August addition), it yielded
+  [OI-90](notes/items/OI-90%20Whether%20to%20introduce%20a%20Prospect%20state.md),
+  and it puts **GLS, Teachable and Pienissimo Pro in writing on 11 June**.
+- **Next:** open `Integrazioni pienissimo.xlsx` manually before 27 August — the
+  per-field mapping is in the workbook, not in Mirko's mail body.
+- **Watch:** the June document is **not** pre-sale evidence — 11 June is after
+  the 27 May kickoff. It shows the topics were raised early and formally, which
+  is why the client is confident, but the question that decides
+  [the dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)
+  is whether they were **in the contract**. Do not present it as settling
+  anything.
+- **Tool limits, recorded so nobody repeats the attempt:** Gmail exposes
+  attachment metadata but has **no download tool**; Drive cannot render
+  `.drawio` as text. Both are noted in the trace with the fallback.
+
+---
+
+## 2026-08-14 — claude — knowledge structure installed
+
+- **Did:** replicated the Life365 knowledge architecture onto this repository.
+  Added the routing layer ([MAP.md](MAP.md), [INDEX.md](INDEX.md),
+  [AGENTS.md](AGENTS.md) with `CLAUDE.md` / `GEMINI.md` /
+  `.github/copilot-instructions.md` as pointers, this journal), the
+  [notes/](notes/) vault with its
+  [protocol](notes/Retrieval%20and%20write%20protocol.md),
+  `npm run vault:check`, committed Obsidian config, the four project skills in
+  both `.agents/skills/` and `.claude/skills/`, and
+  [docs/publishing.md](docs/publishing.md) + [site/](site/).
+- **State:** the first wave of notes is written — every live open item, the
+  people, the risks, what is actually built, and the three core flows.
+  **Resolved tracker rows were deliberately not split**; they stay in
+  `meetings/open-items.md` under `## Resolved`, which remains the archive.
+- **Two findings came out of the migration, neither of them in any tracker.**
+  **(1)** The repository is roughly a week ahead of the 2026-08-03 org check:
+  `OrderBigliettoTrigger`, `Solo_Bundle__c`, both WooCommerce fields,
+  `OrderItem.Data_Scadenza__c`, `Opportunity.Tipo_Opportunita__c` and an
+  standard integration scaffolding were all committed 04–07 August by the
+  Calm-Coders developers working for ROMI — Anita Aga, Sara Aga and Rexhina —
+  and the trackers were never updated to match. (The scaffolding itself is
+  house pattern and correctly has no requirement; everything else on that list
+  does.) **(2)** The Biglietto DocuSign/PDF
+  Apex stack that the org check found Active in UAT is **not in `force-app/`
+  at all** — six classes live only in the org.
+- **Next:** re-run the org check against UAT to date the divergence properly
+  (the 2026-08-03 snapshot is now stale in both directions), and decide whether
+  `Tranche__c` or the participant flow goes first when the team returns ~24–26
+  August.
+- **Watch:** item ids in `notes/items/` are the tracker's own numbers
+  (`#64` → `OI-64`) because those numbers are cited in `REQUIREMENTS.md` and in
+  the published artifacts. Never renumber them. Note filenames are ASCII with
+  spaces — Italian domain words are fine, accents are transliterated.
+
+---
+
+## 2026-08-14 — claude — requirements check, watermark 2026-08-07
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from the 2026-08-07 watermark.
+  Six material findings, all folded into notes and both tracker languages.
+- **State:** **Mexal field mapping answered** by Mirko Merendi on 11/08 —
+  agent filter `610`, computed availability, causale FE, a **two-step N+1
+  invoice retrieval** that is also the only source of the `numero riga d'ordine`
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md) needs, `501.AUTO`
+  client creation, order serie 1 prod / 10 test. **Anticipay = ex CreditSafe**,
+  one company — [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)
+  is no longer uncertain. **Coupons excluded from phase 1**, closing one of
+  [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)'s two open
+  decisions. Four meetings dated: **19, 20, 25, 27 August**.
+- **Next:** the 20/08 asset meeting is scope discovery, not review — Elisa says
+  there are things never discussed. Read the two attachments before the 27/08
+  build call: `Integrazioni pienissimo.xlsx` and the Mexal mapping workbook.
+  Chase Fabrizio on **listino 1 vs listino 2**.
+- **Watch:** three things. **(1)** A **sixth asset state, `rinuncia al
+servizio`**, exists in Elena's client-facing doc and in no version of
+  [OI-74](notes/items/OI-74%20Asset%20state%20machine.md) — do not configure the
+  picklist without it. **(2)** `PIENISSIMO - Project Status.docx` numbers its
+  open points **1–15 under its own scheme**; never conflate with the tracker's
+  `#NN`. **(3)** [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)
+  is new and is the **only migration item ROMI owns** — it had no row anywhere.
+- **Note:** the trace note now carries `external_watermark:`, and the earlier
+  same-day repository trace is marked `superseded` and links forward, so the
+  next run cannot mistake a repo read for a sweep.
+- **Correction, same session.** The first pass ran only **one** Gmail query and
+  read eight of nine threads from snippets, then reported the client inputs as
+  outstanding. Re-running the prescribed search angles showed no new threads —
+  but a subject search surfaced that **Fabrizio Paganelli wrote to a thread
+  titled "Lista Eventi, Codici prodotto, esempio Bundle" on 07/08 12:17** and
+  Elena thanked him 21 minutes later. His message is **not retrievable from the
+  mailbox** — an empty quoted stub only, consistent with an attachment. So
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md) and
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) are now marked
+  **unverified in both directions**; open that thread in a mail client before
+  chasing the client again. Read full bodies next run, not snippets.
+
+---
+
+## 2026-08-26 — codex — org-status Slack delivery expanded
+
+- **Did:** verified the existing `Pienissimo devs` Slack group DM by exact
+  conversation id and membership, then updated both the canonical and Claude
+  `org-status-check` skills so every completed result is sent independently to
+  Aurel's personal DM and the project group DM.
+- **Destination:** `Pienissimo devs` contains Aurel Mrruku, Rexhina Hysi, Sara
+  Aga and Anita Aga. The completed 26 August org-status report was forwarded to
+  the group immediately.
+- **Validation:** both skill trees remain byte-for-byte identical; both pass
+  the skill validator in UTF-8; all five org-status behavioral tests pass; the
+  changed Markdown files pass Prettier verification.
+- **Watch:** Slack delivery is independent per destination. If one send fails,
+  deliver to the other, report the partial failure in chat and never guess a
+  replacement conversation.
+
+---
+
+## 2026-08-27 — codex — traced Lead duplicate VAT question
+
+- **Did:** created
+  [OI-100](notes/items/OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md)
+  for the unresolved Lead conversion scenario where two Leads share the same
+  email but have different VAT / Partita IVA values.
+- **Decision needed:** Aurel must choose whether email identity wins, VAT/company
+  identity wins, or the conflict should block conversion and ask the user to
+  choose the correct Account/Contact.
+- **Current build note:** the manual Lead conversion Apex matches by Contact
+  email and does not evaluate VAT, so no further change should be made there
+  until this question is answered.
+
+---
+
+## 2026-09-02 - codex - checkout email action uses shared template
+
+- **Did:** changed the Opportunity `Send Checkout Email` quick action from a
+  hardcoded email composer draft to a direct Apex send using the shared
+  `WooCommerce_Checkout_Link` Salesforce email template.
+- **UI:** `wooCheckoutEmail` now asks for a recipient email address and sends the
+  template to that address; the checkout link is supplied by the template from
+  the current Opportunity id.
+- **Validation:** the focused LWC behavior is covered by the updated Jest test.
+  No Apex test class was added, per the standing instruction to leave Apex test
+  work for its separate pass.
+- **Follow-up:** after deployment, the quick-action UI was adjusted to hide the
+  internal template name and show an example checkout link containing the current
+  Opportunity id.
+
+## 2026-09-01 — claude — drilled the Anticipay middleware API documentation
+
+- **Did:** Aurel Mrruku downloaded `Documentazione API - Salesforce.pdf` by hand
+  and asked for it to be drilled — the outstanding ask the 31 August trace listed
+  first. Extracted with `pdftotext -layout` (the `Read` tool needs poppler's
+  `pdftoppm`, which is not installed; `/mingw64/bin/pdftotext` is). Decoded in
+  full into
+  [the Anticipay middleware API contract](notes/The%20Anticipay%20middleware%20API%20contract.md).
+- **Provenance:** Gmail thread `1a0589a4a85b5bdf`, **two** messages from Andrea
+  Parmeggiani — v1 **31 Aug 16:15:00Z**, v2 **1 Sep 10:46:38Z** adding the `:env`
+  path parameter. The downloaded file is **v2**. Only one Gmail query was run,
+  for provenance; **this was not a sweep**.
+- **Created:** the contract note, `OI-105`–`OI-108`, and
+  [a trace](notes/traces/Source%20trace%202026-09-01%20Anticipay%20API%20drill.md).
+  **Updated:** `OI-73`, `OI-94`, `OI-95`, `MAP.md`, `INDEX.md`, both trackers
+  (rows 105–108 new; 73, 94, 95 extended) and a new §23 in both recaps.
+- **Corrected same session, on Aurel's steer.** `OI-107` was first written as
+  _"the error response body is undocumented, so the three-month error store cannot
+  be built"_. **Wrong** — the store is `Integration_Log__c`, ROMI's standard
+  callout audit trail, already committed and already logging `Response_State__c`
+  plus the raw body. Renamed to
+  [OI-107 The Anticipay error path does not reach the integration log intact](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)
+  and rewritten around what reading `API_Callout_Engine` actually shows:
+  🔴 **`Is_Error__c` is never set for an HTTP error** (so the agreed notification
+  is silent for every `404`), and 🔴 **the `catch` rebuilds the log row without
+  `Response_State__c`** (so a non-matching error body loses the HTTP code). Both
+  generic — they affect Mexal too. Corrected across MAP, INDEX, both recaps, both
+  trackers, OI-73, the contract note and the trace.
+- 🔴 **The harder blocker, found in the same pass:** `API_Callout_Engine` **cannot
+  pass a path parameter**. For a `GET` it discards the caller's argument
+  (`buildRequest` sets a body only when the method is not `GET`) and
+  `Endpoint_Path__c` is a static custom-setting field — so `:piva`, which differs
+  on every call, has nowhere to go. Extend the shared engine, or give Anticipay
+  its own client. Recorded in the contract note; **not yet an item, because the
+  choice is Aurel's.**
+- **Also corrected:** the token does **not** belong in
+  `Integration_Configuration__c.Token__c` — `buildEndpoint` uses
+  `callout:<NamedCredential>`, so it goes in a Named Credential. 🟢 And the engine
+  never populates `Request_Headers__c`, so the bearer token is not written to the
+  log.
+- **Also new:** six of eleven response fields identify a private individual
+  ([OI-108](notes/items/OI-108%20The%20Anticipay%20payload%20carries%20personal%20data%20of%20the%20legale%20rappresentante.md));
+  one static bearer token for both `test` and `prod`, mailed twice to six
+  addresses
+  ([OI-106](notes/items/OI-106%20One%20static%20bearer%20token%20serves%20both%20Anticipay%20environments.md));
+  and `data_di_dascita_legale_rappresentante` is misspelled **in the wire format**
+  ([OI-105](notes/items/OI-105%20The%20Anticipay%20date%20of%20birth%20field%20name%20is%20misspelled.md)).
+- 🔴 **The PDF was deliberately NOT committed**, breaking the precedent set by
+  `Payload woo-salesforce.json`. It carries a **live bearer token** and a real
+  individual's full personal data; committing it would put a working credential
+  into git history where deleting the file does not remove it. The contract note
+  is the record — structure only, no values. **Do not add the PDF later.**
+- **Watermark untouched.** The next `requirements-check` still uses
+  **2026-08-31T22:00Z** from
+  [the 31 August trace](notes/traces/Source%20trace%202026-08-31.md). Slack, Drive
+  and Fathom were not searched today.
+- **Fixed in passing:** `INDEX.md` had never listed the 31 August trace and still
+  named the **28 August** one as the current watermark. Both corrected.
+- **Left alone, deliberately:** `INT-18` still reads
+  `status: open, recommendation: phase_2` while the whole record treats Anticipay
+  as **Fase 1**. Real contradiction, predates today, and fixing it means moving a
+  signed document in both languages — raise with Elena Spini rather than change
+  it from a note.
+- 🔴 **Caught late, and it matters: the 1 September follow-up call ALREADY RAN.**
+  The calendar event `2j4tg4tglt9iei6285jfn8i62s` carries a **recording timed
+  10:02 CEST** and Gemini notes `1CiCRPuxOoZvqmlUTRahWyewjAuDw4n0wgOMzs4vK0dU`.
+  ⚠ **v2 of the documentation arrived 12:46 CEST, after the call ended**, so
+  `:env` is plausibly an **outcome** of that session. The first pass of today's
+  notes framed the six questions as an agenda for an upcoming call; **corrected
+  across `MAP.md`, `OI-94`, both recaps, both trackers and the trace** to read as
+  questions raised by the document, to be checked against the minute first.
+- **Next action on this whole area: drill the 1 September meeting.** It was not
+  done today — it is `drill-meeting`'s job and much larger than what was asked —
+  and it may already answer several of `OI-105`–`OI-108`. **Do not chase Andrea
+  Parmeggiani for anything before reading it.**
+- **Watch:** `MAP.md` is now **~34 KB** against its own "keep under 5 KB"
+  instruction. Not restructured today; it needs a deliberate pass that moves the
+  dated incident blocks into notes.
+
+## 2026-09-02 — claude — org-status check, and org access confirmed fixed
+
+- **Ran `org-status-check`, full scope, report mode**, against `Pienissimo UAT`
+  (`00DMA000004nMMr2AM`, partial sandbox, API 68.0) at repo `4a49376`.
+  165 repository components vs 1,072 org components; 9 deterministic assertions;
+  `org-status:validate` passes with one warning. Result delivered to the
+  `Pienissimo devs` group DM, summary plus one threaded continuation.
+- 🟢 **Org access is fixed, and this session is what wrote it down.** Aurel
+  Mrruku, asked directly: _"yes its working, we have fixed it"_. The org check
+  the same morning corroborates it independently — full inventory, no auth
+  failure. [The access risk](notes/risks/Risk%20-%20the%20team%20lost%20access%20to%20the%20Pienissimo%20orgs%20on%201%20September.md)
+  is **resolved**; `MAP.md` and `INDEX.md` updated. **Two things it does not
+  settle** and the note says so: which PROD Elena Spini meant, and why it broke.
+- **Findings the run produced** — the run itself was report mode, so nothing was
+  mutated by it. ✅ **All of the following were reconciled and published later the
+  same day** — see the next entry:
+  - 🔴 **The eleven Anticipay fields agreed 1 September are unbuilt.** Account
+    carries three custom fields, none of them PEC, the legal-representative
+    fields or the rep address. Eight days before Fase 1 development ends.
+  - 🔴 **Zero project Flows in the org**, verified twice (Metadata API list, and
+    `FlowDefinitionView` — 79 flows, none non-namespaced).
+    `Lead_Non_Risponde_Follow_Up` was deleted in `158c2d0` and is recoverable
+    from git, but the 28 August run recorded **two** flows and git history holds
+    only ever one flow file. The second is unidentifiable.
+  - 🔴 **Named credentials `Anticipay` and `DocuSign` exist only in the org**, as
+    do permission sets `DocuSign`, `Full_Permission`, `Sales_User`. Third
+    instance of the org-only pattern.
+  - 🔴 **The register misstates build state in three places**: `build_state` cites
+    `QUO-01`/`QUO-06` which are not among the 154 ids; `NFR-06` carries
+    `current: "1%"`; the `ORD-01` `not_built` entry says Order has stock status
+    and zero custom fields, against `Incassato` on 12 of 15 orders and 3 custom
+    fields.
+  - 🟢 **The WooCommerce orphan-route risk is closable.**
+    `WoocommerceOrderService` is now committed and **byte-identical** to the
+    deployed class (the size gap is line endings alone), the duplicate endpoint
+    class is gone from both sides, one REST route remains.
+    [The deploy risk](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)
+    was **left open** — it needs its own pass, not a side effect of this one.
+- ⚠ **The coverage number is being read wrongly across the record.** The org
+  reports 0% of 1,646 lines, but the last Apex test run is **2026-08-04**, while
+  classes changed through 31 August. The aggregate is not measuring current code;
+  0% means _unmeasured_, not _measured at zero_. Still a deploy blocker either
+  way. No test was run, written or offered.
+- ⚠ **`org-status-check` has a silent false negative.** Its Metadata API listing
+  returns **0 EmailTemplates** with nothing recorded in
+  `unavailable_metadata_types`, because folder-scoped types cannot be enumerated
+  without a folder. SOQL proves 88 templates, including the project's active
+  `WooCommerce_Checkout_Link`. The negative-evidence rule was violated silently.
+  The skill's inventory reference needs this caveat; **not fixed today**.
+- **Unrelated, same session:** `.codebase-index/config.json` had `autoIndex:
+false` since it was first committed in `3618d96` (25 August) — the package's
+  own default, never a decision. Set to `true` at Aurel's request; **uncommitted**
+  and needs a session restart to take effect. Reading the shipped MCP server
+  showed the watcher reindexes regardless of that flag, so the practical effect
+  is the startup pass, not mid-session edits.
+- **Watermark untouched.** The next `requirements-check` still uses
+  **2026-09-01T22:00Z**. No mail, Slack, Drive or Fathom sweep was run today.
+
+## 2026-09-02 — claude — org-status reconcile + publish
+
+Second half of the same session. Aurel Mrruku authorised `reconcile + publish`
+after the report-mode run above; this entry records what was written.
+
+**Register.** The whole `build_state` block was rewritten from the 2026-09-02
+evidence, `supersedes: 2026-08-26`. 16 built, 8 not-built, 9 divergent, 2
+regression entries, plus three new keys: `instrument_limitations` (LIM-01..04),
+`unmapped_observations`, and a corrected `out_of_source_control` list.
+✅ **The `QUO-01`/`QUO-06` defect is fixed.** Those ids have never existed among
+the 154 requirements — the sales area uses `SAL-`. Entries whose text names a
+requirement now cite `SAL-08` and `SAL-09`; entries observing the quote **state
+machine** carry a new `state_machine: quote` key and no ref, because the register
+has no id for it. `org-status:validate:strict` passes with
+`unknown_build_state_refs: []`. ⚠ **That mapping is the one judgment call in this
+pass and is reversible** — nothing else in the register was touched, and no
+requirement text moved.
+
+**Three new notes**, one per new divergent finding:
+
+- [integration credentials exist only in the org](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)
+  — `Anticipay` and `DocuSign` named credentials plus three permission sets,
+  org-only. Asks for a targeted retrieve; warns explicitly not to commit secrets.
+- [a second Flow was deleted with no source copy](notes/risks/Risk%20-%20a%20second%20Flow%20was%20deleted%20with%20no%20source%20copy.md)
+  — severity medium, deliberately: nothing is known to have been lost, and the
+  finding is that the project cannot tell. **Asks Anita Aga, and says explicitly
+  not to reconstruct a flow from inference.**
+- [the Anticipay field build has not started](notes/risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)
+  — the sharpest date on the project. Records that the fields are buildable
+  _today_, unblocked by the outstanding client answer.
+
+**Two risks resolved**, both with the evidence kept intact rather than rewritten:
+[the WooCommerce orphan route](notes/risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)
+(byte-identical after normalising line endings; the 848-char gap is CRLF) and
+[OrderItem Tranche invisibility](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md)
+(granted to `Tranche_Management`; **propagation still unbuilt**, 0 of 18).
+
+**Three notes corrected**: the coverage risk and `OI-64` both now carry the
+LIM-04 reading — 0% is **unmeasured**, not measured at zero, because no test has
+run since 4 August;
+[the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md)
+gained the EmailTemplate case and a generalised rule with an instrument table.
+
+**Rendered views**: `§25` appended to `DEVELOPMENT-RECAP.md` **and** `.it.md` in
+the same session, both precedence lines extended (they had been stale since
+`§19` and now name every section through `§25`); a `2026-09-02` org-verification
+block added to `open-items.md` **and** `.it.md`; `MAP.md`, `INDEX.md` and
+`STATUS.md` regenerated.
+
+**Checks**: `vault:check` OK — 156 notes, 156 unique ids, all links resolve.
+`validate:strict` passes.
+
+⚠ **Prettier was NOT run repo-wide, deliberately.** `npm run prettier:verify`
+fails on **324 files** and has clearly been failing for a long time; reformatting
+would have produced a diff that buried this reconcile. Only the three new notes
+were formatted. **The repo-wide prettier drift is pre-existing and still owed.**
+
+⚠ **The trace backfill is owed.** `vault:check` now warns that **10** notes cite
+a requirement that does not name them back, up from 6 — the three new notes carry
+`requirement:` and the register has no matching `tracked_by:`. That is
+`requirement-trace`'s job, not this skill's, and was not attempted here.
+
+**Published.** Notion identity verified by **workspace id**, which matched — the
+**name** had changed (`Aurel mrruku's Space` → `Romi Projects's Space`); a rename,
+not a different workspace, and now recorded in
+[the mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
+Status page updated in place by id; Flows page build-state callouts rewritten with
+**every diagram untouched**; tracker reconciled on `Ref` — **14 rows added**
+(`OI-96`–`OI-109`), **2 statuses corrected** (`OI-66` Superseded, `OI-95`
+Resolved), all **70** rows re-queried and matched. `site/index.html` re-derived;
+**the leak check returns nothing**.
+
+⚠ **A trap worth recording.** Small targeted replacements leave untouched every
+sentence they contradict. The first Status-page pass left the page asserting both
+that the Order Item grant was resolved and, four sections later, that it was
+granted to nobody — caught only by re-fetching and reading the whole page.
+`STATUS.md` had the same defect and was fixed alongside. **Re-read the whole
+surface after writing, not just the parts you changed.**
+
+⚠ **`site/` is refreshed, not deployed.** It has never been deployed; there is no
+public URL. Deployment is a manual upload with credentials this session does not
+hold.
+
+**Watermark untouched** — still **2026-09-01T22:00Z**. No mail, Slack, Drive or
+Fathom sweep ran today.
+
+---
+
+## 2026-09-02 — claude — Anticipay v3: the endpoint moved and now works
+
+- **Did:** drilled a **third** revision of `Documentazione API - Salesforce.pdf`
+  (`(1).pdf` in Downloads, 12:47 CEST). Extracted with `pdftotext -layout` and
+  **diffed against the v2 extraction** rather than trusting the mail body.
+- **The change is two lines.** Host `integration.pienissimo.com` →
+  **`romi.pienissimo.com`**. Nothing else differs.
+- 🟢 **The endpoint works for the first time.** Thread `1a0589a4a85b5bdf` now has
+  5 messages: Aurel Mrruku reported the old host dead at **08:21:59Z**
+  (`HTTP/1.1 404`, `Content-Type: text/html`), Andrea Parmeggiani stood up the new
+  third-level domain and sent v3 at **10:18:26Z**, Aurel Mrruku confirmed at
+  **10:40:45Z**. **So v1 and v2 documented a host that never resolved.**
+- 🔴 **Best finding of the session, and it came from the outage, not the fix.** An
+  HTML `404` from a wrong hostname is a **third meaning** for `404` (alongside
+  _VAT unknown_ and _not cached under `env=test`_), separable only by
+  `Content-Type`. It is the concrete case that breaks
+  [OI-107](notes/items/OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)
+  defect 2: `API_Callout_Engine` parses HTML into the `200` wrapper, throws, and
+  the `catch` drops `Response_State__c` — **a dead endpoint logged as an Apex
+  parse error with no status and no error flag.** Written up as §2b.
+- ⚠ **The org's `Anticipay` named credential predates the move** — today's org
+  check found it 08:05–08:14Z, before the new host existed. Very probably carries
+  the dead host. Folded into
+  [the credential risk](notes/risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md).
+  **Not verified** — nobody opened Setup; it is stated as a timing inference.
+- ⚠ **Three revisions, and the `data_di_dascita` typo and the missing error body
+  survive all three** — because neither ask has ever been made. Both belong in one
+  mail to Andrea Parmeggiani, who has now revised the doc three times in three
+  days.
+- 🔴 **Reachability is not the contract.** No lookup has run — no `200`, no `404`,
+  no error body observed. **The eleven fields agreed 1 September are still not
+  built**, eight days from the 10 September deadline, and that work never needed
+  an endpoint or a token.
+- **Written:** the trace, plus the contract note, `OI-94`, `OI-105`, `OI-107`, the
+  credential risk, `MAP.md`, row 94 in both trackers and a new **§26** in both
+  recaps. The v3 PDF was **not** committed — live token and real personal data,
+  same as v1–v2.
+- **Method note worth keeping:** a document can be perfectly specified and still
+  describe nothing. Three sessions of analysis went into a contract whose host had
+  never resolved. **Curl an endpoint before drilling its documentation** — it is
+  seconds and it bounds everything else.
+- **Still not done:** Notion is unpushed and now further behind; today's work and
+  the org check's output are both uncommitted.
+
+---
+
+## 2026-09-02 — claude — two owner decisions retired the project's only decaying deadline
+
+- **Asked** what most needed doing ASAP. Answered from `MAP.md`, the risk
+  frontmatter, the item frontmatter and `docs/task-status.md` — no big document
+  opened. Working tree was clean at `326d362`, so the previous entry's "today's
+  work is uncommitted" no longer holds.
+- 🟢 **Aurel Mrruku killed the recycle-bin deadline.** The deleted 37
+  `Biglietto__c` records — carried as the single finding that decayed if nobody
+  acted, window closing ~12 September — **do not need recovering**: _"here we are
+  in test environment and we dont care about the data if we delete them, same on
+  the tranche"_. So the question this record has been holding for Anita Aga —
+  was an export taken before `5d8cdb3`? — **need never be asked**.
+  [The decision](notes/decisions/Decision%20-%20UAT%20data%20is%20disposable%20in%20Fase%201.md),
+  [the risk, now resolved](notes/risks/Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md).
+  **Nothing in the current record now decays on a date.**
+- 🟢 **And deferred coverage explicitly**: _"in this faase we dont care about the
+  coverage too"_. Recorded as
+  [a decision](notes/decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+  ⚠ **The deploy risk stays open and stays gating** — the standing instruction in
+  `AGENTS.md` requires it, and the 75% floor is computed at the production
+  deploy regardless of what the phase is called. What changed is the _reporting_:
+  0% is no longer a live blocker on Fase 1 work. **No test was written, proposed
+  or offered.**
+- 🔴 **The two decisions do not travel as far as they look.** Kept separate and
+  written down as such:
+  - **Code is not data.** The seven Biglietto Apex components deleted in the same
+    28 August deploy were never in this repository on any branch, and deleted
+    Apex is not in a recycle bin.
+    [That risk stays open.](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)
+  - **Empty data is not evidence of missing code.** `MAP.md` had been citing
+    "0 of 18 order items carry a tranche" as proof that propagation is unbuilt.
+    Once the data is disposable that inference dies, so the claim was **re-based
+    on source**: no Apex in `force-app/` writes `OrderItem.Tranche__c` —
+    `QuoteTrancheController` touches only `QuoteLineItem` and `Tranche__c`, and
+    the two classes that do touch `OrderItem` never mention tranche. Verified at
+    `326d362`. The conclusion survived; its evidence did not.
+- **Wrote:** two notes in `notes/decisions/` — previously an empty folder, so
+  these are the first of their type — plus dated sections on both risks, **seven
+  blocks in `MAP.md`**, and `D1` on the action board for the data purge Aurel
+  will request later.
+- ⚠ **Followed the trap recorded on 2026-09-01**: after editing, re-grepped
+  `MAP.md` for every remaining mention of coverage, "decays", "12 September" and
+  "Nothing can deploy" rather than trusting the targeted replacements. That
+  caught three further contradicting sentences — the live-chain "Deployability"
+  entry, "Nothing can deploy today", and the Asset-migration framing — which the
+  first pass had left standing.
+- **Method note.** A finding can be perfectly evidenced and still not be a
+  problem, because urgency is a property of what the owner values, not of the
+  data. Three sessions carried the recycle-bin window as the sharpest date on the
+  project; one sentence from Aurel Mrruku retired it. **Ask the owner what the
+  data is worth before costing its recovery.**
+- **Still not done:** the trackers and recaps in `meetings/` are rendered views
+  and still carry the old framing — neither was regenerated. Notion is unpushed
+  and now further behind. This session's changes are uncommitted.
+
+---
+
+## 2026-09-02 - claude - the Anagrafica Articoli workbook, drilled
+
+- **Given** `Anagrafica Articoli.xlsx` by hand (Downloads), with "drill it and if
+  its needed store them in the org". The record had been carrying it as unread
+  since 1 September, flagged as needed **before** the 2 September meeting.
+- **The file is small and dense.** One sheet, 43 course articles, 7 columns,
+  built **five minutes before it was sent**. Full decode:
+  [the note](notes/The%20Anagrafica%20Articoli%20workbook.md).
+- **OI-48's deliverable is in it** - ten bundle-only codes, `SFAC0001` through
+  `SFSO0001`. The **mechanism** is what was agreed on 26 August; the **naming is
+  a third convention**, neither the `(B)` suffix nor the `codice A`/`codice B`
+  Fabrizio Paganelli named himself. Anyone grepping for a `B` code will find
+  nothing.
+- **The best finding came from checking the file against the org rather than
+  reading it.** 17 of the 43 rows name an event `Product2.Evento__c` cannot
+  accept, and **org and repository agree exactly**, so it is a specification gap
+  and not drift. The known Happy Team defect turns out to be **one of five**, and
+  the largest is new: `Pienissimo Intensive` had no articles on 7 August and now
+  has eight. **Fixing it is free** - `Evento__c` is populated on **3 of 281
+  products**, so a picklist argued over for weeks is essentially unused.
+- **The article-code risk stopped being theoretical.** The sheet holds **three**
+  code pairs that collapse under the obvious normalisation - `CS-00003`/`CS000003`
+  and `CS-00061`/`CS-0061` **across different events**, and `CS000058`/`CS-00058`
+  **merging a paid ticket with its free twin**. Salesforce will not do this by
+  itself, but `Code__c` is an **external id**, so a normalising upsert
+  **overwrites silently**. From a 43-row extract; the full registry is ~1000
+  codes.
+- **The meeting had already run.** A Gemini-notes mail arrived at 09:21Z that
+  nothing in the record knew about. Two build actions landed on Aurel Mrruku -
+  **`Tipo Biglietto`** (admin-editable only, which is exactly the field the
+  workbook needs and which does not exist) and **`Stato Bundle`**, a state
+  machine that is **in no tracker at all**.
+  [The meeting note](notes/meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+  is written from those notes **alone** and says so - no transcript, no
+  recording, so it is an action list and not a minute. **The full drill is still
+  owed**, and no OI ids were minted outside it.
+- **Did not write to the org, and said why.** The ask was conditional on need.
+  The ten `SF` codes are the genuinely Salesforce-native ones - Mexal will never
+  send them - but **3 of the 10 fail on the event picklist**, 4 carry a
+  `Tipo Biglietto` with no field to receive it, all 10 are **unpriced** with no
+  stated rule, and one is named `PIENISSIMO LIVE LIVE`. Loading now would bake
+  four defects into a unique external id. The blocking decisions are
+  **client-facing** (whose event spelling wins) and **assigned to Aurel by today's
+  meeting** (the two fields), so they are not an agent's to make.
+- **Wrote:** the workbook decode, the meeting note, dated sections on OI-48,
+  OI-46, OI-76 and the normalisation risk, and two rewritten blocks plus the
+  calendar line in `MAP.md`.
+- **Method note.** The mail promised _"un paio di domande"_ and the record had
+  been carrying them as pending client input. **They are not in the file** - no
+  comment, note or question anywhere in it. They were asked out loud in a meeting
+  nobody had noticed had happened. **A promised artifact and the thing it
+  promises are separate facts; verify the second, not the first.**
+- **Still not done:** the trackers and recaps still carry the pre-drill framing;
+  `Stato Bundle` and the 3/4 September sessions need tracker rows; the mapping
+  file, data model file and JSON promised in the meeting have **not been looked
+  for**; Notion is unpushed; nothing is committed.
+
+## 2026-09-02 - claude - and then the build shipped
+
+Continues the entry above. Aurel Mrruku chose **the client's event spellings**
+and **fields plus the ten bundle codes**, so the drill turned into a build.
+
+- **Shipped, deployed and committed** (no new org-only drift): `Evento__c`
+  corrected to 11 values on the client's own names; **`Tipo_Biglietto__c`**
+  (`Executive`/`Diamond`/`Gold`); **`Stato_Bundle__c`**; a
+  **`Product_Registry_Admin`** permission set; **the ten bundle-only articles**,
+  verified by query after insert.
+- **"Administrators only" was built as a permission set, not a profile edit.**
+  It grants edit on the two new fields and nothing else. The rule is then
+  enforced by who it is assigned to, and it lives in `force-app/` instead of
+  being a fourth instance of the org-only pattern.
+- 🔴 **The one thing I invented, and flagged everywhere:**
+  `Anno_Solare__c = 'Anno Solare 2026'` on all ten. The workbook has **no year
+  column**, but `Evento__c` is a dependent picklist and will not accept a value
+  without its controlling field. So the field OI-46 asks whether to keep is now
+  **load-bearing for records that exist**. That is worse than it was this
+  morning, and it is written into OI-46 rather than left in a commit.
+- **Loaded `PIENISSIMO LIVE LIVE` as written.** Silently correcting a client's
+  data is worse than carrying a visible typo. Flagged for Fabrizio Paganelli.
+- 🔴 **The load found three things nobody was looking for.** `Code__c` - the
+  declared `required`/`unique`/`externalId` article key - is **empty on all 281
+  pre-existing products**, which use `ProductCode`; so an upsert on `Code__c`
+  matches nothing today, and it decides which field the collision risk actually
+  bites. **Only 9 of the workbook's 33 Mexal articles are in the org.** And
+  **`Genera_Biglietto__c` is false on all 9** despite the workbook saying `SI`
+  for all 43. **None of the three was corrected** - they touch records this
+  session did not create, against a registry that is being re-created anyway.
+- ⚠ **`Stato_Bundle__c` is provisional and says so in its own `description`.**
+  Its value set and its host object are inferred from a Gemini summary. The
+  transition logic the meeting also asked for was **not** built, because
+  inventing a state machine from a summary is exactly what the write protocol
+  forbids.
+- **An hour went into one error, and the write-up is the deliverable:**
+  [adding a picklist value is not the same as making it usable](notes/How%20to%20add%20a%20picklist%20value%20that%20records%20can%20actually%20use.md).
+  Three inserts failed on values that the deploy, `sobject describe`, the
+  `CustomField` retrieve and the dependency bitmap **all four** said were valid.
+  The cause was record-type value assignment - and a `RecordType` retrieve
+  **omits the picklist block entirely** when it thinks the assignment is
+  implicit, so the retrieved file looks identical whether all values are assigned
+  or none are. **Four checks agreed with each other and were wrong; one
+  throwaway insert settled it.** Both record types were fixed, not just the one
+  being loaded into.
+- **Method note.** When every diagnostic agrees the value is fine and the API
+  says it is not, stop reading metadata and **write one record**. The cheapest
+  test exercises the only path that matters.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions still need tracker rows; the mapping file, data model
+  file and JSON from the meeting have not been looked for; the workbook itself is
+  **not** in the repository (the copy was blocked); Notion unpushed; nothing
+  committed.
+
+### Correction, same day - the `Code__c` finding above was wrong
+
+The entry above reports that `Code__c` is empty on all 281 pre-existing
+products, that only 9 of the workbook's 33 Mexal articles are in the org, and
+that `Genera_Biglietto__c` is false on all 9. **All three are wrong**, and they
+share one cause: I sampled **four** records, saw `Code__c` blank on all four, and
+generalised to 281 without counting.
+
+Counted properly:
+
+- **`Code__c` is populated on 259 of 291 products**, null on 32. It is the
+  article key in use. `ProductCode` and `Code__c` hold **disjoint** populations,
+  and my four samples all landed in the smaller one.
+- **29 of the 33 workbook articles are in the org**, matched on `Code__c`. My
+  original query matched on `ProductCode` - the wrong field - which is why it
+  found 9.
+- **`Genera_Biglietto__c` is true on 3 of those 29**, not 0 of 9. The underlying
+  point survives: the flag is unset on most of them.
+
+One real finding came out of the correction that the wrong version had buried:
+**`CS-00115` in the client's workbook is `CS000115` in the org** - the same
+article, spelled differently. That is the normalisation risk as a **live**
+mismatch between the client's file and the org.
+
+🔴 **It also reverses the conclusion.** The wrong version made `Code__c` look
+redundant. It is the opposite: it holds the article code for 259 products and is
+the match key in `WoocommerceOrderService`, the class taking live WooCommerce
+traffic. `MAP.md` and the workbook note are corrected.
+
+**Method note.** Four samples are not a population. `COUNT()` costs one query and
+would have cost nothing to run first - and the wrong version of this finding was
+already shaping a decision about deleting the field by the time it was caught.
+
+## 2026-09-02 - claude - the registry cleanout ran
+
+Continues the two entries above. Aurel Mrruku left auto mode so the deletes could
+be approved, and the whole sequence ran.
+
+- **Result:** `Product2` **291 -> 236**. **95 deleted**, **40 loaded**, **3 kept
+  and updated in place**. End state is exactly the workbook: **43** products with
+  `Genera_Biglietto__c`, **10** `Solo_Bundle__c`, **13** with a
+  `Tipo_Biglietto__c`, **0** `-B` records.
+- 🟢 **Widened the sweep on purpose.** The computed set had 30 `-B` twins
+  of workbook articles; **19 more** existed for Tour, Golden Numbers and
+  Intensive - same convention, same inactive/flag-unset shape. Deleting half a
+  generation leaves the next person the same confusion, so all **49** went.
+- 🔴 **Narrowed it on purpose too, and this is the one worth reading.**
+  Six of seven OrderItems refused to delete - _"unable to modify activated
+  order"_. Forcing it meant deactivating live orders and rewriting the
+  order-lifecycle evidence. So I checked the three Academy products the deletion
+  was for, and **they already had `Genera_Biglietto__c` true and were active** -
+  identical to what the reload would produce, minus `Evento__c`. **Updated in
+  place instead**, and excluded `CS-00115` from the load so the org keeps one
+  Academy Omaggio rather than two.
+- ⚠ **I deleted 4 Assets and 1 OrderItem before working that out**, clearing
+  a path to a deletion that then did not happen. Recoverable from the Recycle Bin
+  for ~15 days. Disposable UAT data by decision, but avoidable: **the check that
+  made the deletion unnecessary cost one query and came second.**
+- 🟢 **Fixed my own inconsistency from the morning.** The first pass set both
+  `Code__c` and `ProductCode` on the 10 SF records, matching neither population.
+  The reload sets **`Code__c` only**, matching the 249-record majority. Prices
+  loaded from the workbook for the 30 priced articles; the 10 bundle-only codes
+  stay unpriced as the client sent them.
+- **Two Bulk API traps, both silent.** `sf data delete bulk` created a job,
+  reported `UploadComplete`, exited non-zero and **deleted nothing** - the CSV
+  had a **UTF-8 BOM** from PowerShell's `-Encoding utf8`, so the header parsed as
+  `\ufeffId` and the job failed with _"the 'delete' batch must contain only
+  ids"_. Bulk also requires **CRLF**. Write these files with
+  `UTF8Encoding($false)` and explicit `\r\n`, and **verify by counting rows
+  afterwards** - the command's own exit status is not sufficient evidence.
+- **Method note.** Two of today's three biggest findings came from inventorying
+  the object rather than reading the request: the `-B` generation nobody had
+  recorded, and the fact that the records I was told to delete did not need
+  deleting. **When the instruction is "delete X", the first query should be
+  "what is X, actually?"** - and it should come before the first delete, not
+  after the fifth.
+- **Written:** the three-generations note (now `resolved`) with the departures
+  and their reasons, the `Full_Permission` note, and two new blocks in `MAP.md`.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions still need tracker rows; the meeting's mapping file,
+  data model file and JSON have not been looked for; the workbook is still not in
+  the repository; Notion unpushed; **nothing committed**.
+
+## 2026-09-02 - claude - Code__c is deleted
+
+Aurel Mrruku asked for `Product2.Code__c` to be deleted earlier in the session. I
+pushed back with evidence, he reaffirmed, so it is his call and it is done.
+[The note](notes/objects/The%20article%20code%20moved%20from%20Code__c%20to%20ProductCode.md).
+
+- **It could not be a straight delete.** The field held the article code for
+  **207 of 230** products and was the key `WoocommerceOrderService` - the class
+  taking live traffic - matched incoming orders against. Salesforce also refuses
+  to drop a field referenced in Apex.
+- **Sequence:** delete 6 stale duplicates -> copy 207 codes to `ProductCode` ->
+  repoint the WooCommerce class and 3 test classes -> strip it from 2 layouts,
+  2 flexipages and `Bundle_Demo` -> destructive deploy. Verified: field absent by
+  Tooling `FieldDefinition`, **228 of 230 products still carry a code, none
+  lost**, and lookups resolve.
+- 🟢 **Merging the namespaces surfaced a hidden conflict.** `Code__c` and
+  `ProductCode` were **disjoint** populations, which concealed six codes naming
+  **two different articles each** (`CS-00007`, `CS-00129`, `CS-00132`,
+  `CS-00133`, `CS-00156`, `CS-00157`). In every pair the `Code__c` side was
+  inactive and the `ProductCode` side active, so the six inactive ones went. That
+  conflict existed all along and only became visible because the two fields were
+  being merged.
+- **The test classes already set `ProductCode`.** All three assigned both fields,
+  so repointing produced `Duplicate field initialization` and the real change was
+  a **de-duplication**. Worth noting because it means the tests were already
+  half-migrated and nobody had said so.
+- 🔴 **The cost, stated once and then left alone.** `Code__c` was `unique`
+  - `externalId` + case-insensitive; `ProductCode` is a plain standard field.
+    **The org has lost its only structural guard against duplicate article codes.**
+    There are zero duplicates today - checked - but nothing prevents the next
+    import from creating one, against a risk with three proven instances and ~1000
+    codes about to be re-created. Recorded in the note as the thing to revisit
+    before the registry reload; not acted on, because it was not asked for.
+- **Method note.** I was right that the field was load-bearing and wrong to treat
+  that as a reason not to proceed. The useful output of pushing back was not the
+  delay - it was the **migration plan**, which is what stopped the deletion from
+  breaking the WooCommerce endpoint. State the cost, then do the work.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions need tracker rows; the meeting's mapping file, data
+  model file and JSON not looked for; the workbook still not in the repository;
+  Notion unpushed; **nothing committed**.
+
+## 2026-09-02 - claude - ProductCode uniqueness, by trigger
+
+Follows the `Code__c` deletion. Aurel Mrruku asked what protection `ProductCode`
+had, then asked for a duplicate rule, then for a trigger when the rule proved
+impossible.
+[The note](notes/objects/ProductCode%20is%20kept%20in%20step%20with%20the%20external%20product%20code.md).
+
+- **The answer to the question was: none.** `ProductCode` describes as
+  `unique: False`, `externalId: False`, **`idLookup: False`**, `nillable: True`,
+  and Product2 had **0 validation rules, 0 duplicate rules, 0 triggers**. The
+  `idLookup: False` is the part I had got wrong earlier - I said a normalising
+  upsert "would silently overwrite one product with another", but you **cannot
+  upsert on `ProductCode` at all**. That is a capability `Code__c` had and its
+  replacement does not, and it matters for the ~1000-article Mexal reload.
+- **The declarative route is not available.** A matching-rule deploy is refused:
+  _"The Product2 object is invalid"_. Salesforce Duplicate Management supports
+  Account, Contact, Lead, Person Account and custom objects only. Files removed
+  rather than left as dead metadata; written up so nobody retries.
+- **Built `ProductCodeTrigger` + `ProductCodeTriggerHandler`**, matching the
+  project's thin-trigger / static-handler idiom. Case-insensitive, skips blanks,
+  re-checks only a changed code on update.
+- **Proven in the org rather than asserted** - exact duplicate blocked,
+  case-variant blocked, **in-batch duplicate blocked**, clean and blank codes
+  allowed, and 3 of 5 rows still loading on a partial-failure bulk import. All
+  throwaway records deleted afterwards.
+- \u26a0 **Caught my own bug before deploying it for real.** The first version had
+  `WITH SECURITY_ENFORCED` on the uniqueness query. That throws for any user who
+  cannot read `ProductCode` - and this org's FLS is demonstrably patchy, since
+  `Full_Permission` was granting 6 of 26 Product2 fields the same afternoon.
+  Worse, enforcing sharing would let a duplicate the user cannot see slip
+  through. Changed to `without sharing` with no FLS enforcement, and the
+  reasoning is in the code as a comment rather than only in a note.
+- \U0001f534 **The honest limit, recorded rather than glossed:** Bulk API batches run
+  in **parallel** can each query before the other commits, so a duplicate split
+  across them lands twice. **No trigger can close that** - it is a read-then-write
+  race. A unique custom field is strictly stronger, and choosing the trigger is
+  what gives that up.
+- \u26a0 **One product is unaccounted for.** `Atest` / "Test boundle with same
+  products" (inactive) is gone and was in none of the delete sets. `Parent__c`
+  is `deleteConstraint: SetNull`, so it was not a cascade. Total is 229, not the
+  230 predicted; the 43 workbook articles are intact. **Cause unknown and stated
+  as unknown** - it is disposable test data, but the discrepancy is real and
+  inventing an explanation would be worse than carrying it.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions need tracker rows; the meeting's mapping file, data
+  model file and JSON not looked for; the workbook still not in the repository;
+  Notion unpushed; **nothing committed** - and this is now a large body of
+  uncommitted work across `force-app/` and the vault.
+
+### Same day - the guarantee went back to being a field
+
+Aurel Mrruku asked the right question: **would a unique field have had the
+parallel-batch problem?** No - a unique field is a database index enforced at
+commit, with no read-then-write window. That answer reversed the design.
+
+- **Built `Product2.External_Product_Code__c`** - Text(255), unique,
+  case-insensitive, `externalId`, **not required**. Migrated all **227** coded
+  products from `ProductCode`, **zero mismatches**, verified.
+- \U0001f7e2 **Three things came back at once:** atomic uniqueness across parallel
+  batches, **upsert by article code** (`idLookup: True`, which `ProductCode`
+  cannot do and the ~1000-article Mexal reload needs), and a field that can
+  carry FLS - `Code__c` was universally required, which is exactly why it could
+  not.
+- **Repointed the trigger** to the new field and rewrote its header to say what
+  it now is: **a usability layer, not the guarantee**. The index enforces
+  uniqueness; the trigger turns `DUPLICATE_VALUE` into a message naming the
+  offending row in a bulk load. Recorded that removing it would cost only error
+  quality and return ~45 lines to the coverage deficit.
+- \u26a0 **Hit the FLS trap a second time in one session** - the new field deployed
+  fine and then described as absent, because a newly created field is granted to
+  nobody. Same shape as `Tipo_Biglietto__c` this morning. It is now in
+  `Full_Permission`.
+- **Method note.** I had written "no trigger can close this - it is a
+  read-then-write race" and left it there as a limitation. That was true and
+  incomplete: the race only existed _because_ the constraint had been moved out
+  of the database. **When a limitation looks fundamental, check whether it is a
+  property of the problem or of the design you just chose.** The user caught it;
+  I had accepted it.
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions need tracker rows; the meeting's mapping file, data
+  model file and JSON not looked for; the workbook still not in the repository;
+  Notion unpushed; **nothing committed**.
+
+### Same day - the trigger stopped checking and started copying
+
+Aurel Mrruku: no duplicate check in the trigger; just populate `ProductCode`
+from `External_Product_Code__c`. Correct call - the check was redundant the
+moment the unique field existed.
+
+- **Rewrote `ProductCodeTriggerHandler` as a one-way copy.** Before-insert and
+  before-update, `ProductCode = External_Product_Code__c` when the external code
+  is set. **No SOQL, no DML, no duplicate logic** - trivially bulk-safe, and it
+  removes the last reason the class needed a governor-limit argument.
+- **A blank external code leaves `ProductCode` untouched** rather than clearing
+  it - a copy, not a mirror, so it cannot destroy a hand-entered value. Two
+  products carry neither field and are unaffected.
+- **Verified in the org**: insert with `ProductCode` omitted populated it;
+  changing the external code moved it; a duplicate was rejected **by the index**
+  with the platform's own `duplicate value found:
+External_Product_Code__c duplicates value on record with id: ...` - which is
+  the proof that uniqueness no longer depends on Apex at all.
+- **Renamed the note** to match what the thing now does, and repointed the two
+  links that pointed at the old filename. `vault:check` passes at 166 notes.
+- **Data unchanged:** 229 products, 227 carrying both fields, **0** with an
+  external code and no `ProductCode`.
+- **Method note.** Three designs in one afternoon - declarative rule, checking
+  trigger, unique field plus copy trigger - and only the last is simple. The
+  simplification came from removing work, not adding it: once the constraint was
+  back in the database, roughly 45 lines of careful bulk-safe Apex became dead
+  weight. **Worth asking what a piece of code is still for after the thing
+  around it changes.**
+- **Still not done:** trackers and recaps not regenerated; `Stato Bundle` and the
+  3/4 September sessions need tracker rows; the meeting's mapping file, data
+  model file and JSON not looked for; the workbook still not in the repository;
+  Notion unpushed; **nothing committed**.
+
+## 2026-09-02 — claude — nightly requirements-check: the 02/09 transcript, and the shared workbook
+
+**Watermark used: 2026-09-01T22:00Z. Next watermark: 2026-09-02T22:00Z.**
+Full trace: [notes/traces/Source trace 2026-09-02 nightly.md](notes/traces/Source%20trace%202026-09-02%20nightly.md).
+
+Read-only on every external source; the only thing sent anywhere was the nightly
+report to the `C0BQD34LLF4` group DM.
+
+### What made this run worth it
+
+**The Gemini document for the 2 September client session picked up its full
+transcript at 10:36Z** — after the morning session had written the meeting note
+from the summary mail and flagged that the drill was still owed. Read in full
+(1h16m37s). The meeting is much larger than its summary, and it moved five open
+items.
+
+- 🟢 **The client's two unwritten questions were asked verbally and both
+  answered.** `tipo biglietto` does not get a Mexal field (OI-76); the ten
+  bundle-only codes keep their real list price with the bundle price set on the
+  association (OI-48, OI-93).
+- 🟢 **OI-97 resolved** — fiscal residence derived automatically from the country
+  code, five values. **OI-109 resolved by withdrawal** — Elisa Migliano dropped
+  the SDI field herself the day after asking for it.
+- 🔴 **OI-73 reversed**: Anticipay is called for **every** account, foreign ones
+  included, because a bad VAT returning an error **is** the validation. On
+  failure a mail goes to `amministrazione@pienissimo.com` with a direct link to
+  the Salesforce record — which closes the administration-address gap open since
+  6 August, and lands on **OI-107**, because `Is_Error__c` is never set on an
+  HTTP error so that mail would be silent.
+- 🟢 **The Mexal order tracciato is written down for the first time** — `OC`/`BC`,
+  causali 1-3 / 4-6, warehouse, cost centre, exemption codes, and a **`data di
+scadenza` per line that is the tranche due date** (OI-50). New **OI-110**:
+  `codice agente`, `zona`, `classificatore rete` are needed on the header and
+  Andrea Di Cicco cannot find them in the call's field set.
+- 🟢 **OI-24, gating since 2 July, substantially arrived** — Elisa Migliano filled
+  the shared workbook straight after the call (14:05:38Z, mail 14:06:38Z). Zoho
+  field lists for six objects, the Account sheet sectioned including a large
+  `NON UTILIZZATO O OBSOLETO` block. Ordine, Utenti, Profili and the load plan
+  are still empty, and 🔴 the legal representative's residence is already split
+  into five Zoho fields while OI-95 agreed to store it as one free-text field.
+- 🔴 New **OI-111**: nobody has confirmed Pienissimo owns DocuSign. Elena Spini —
+  _"richiedo conferma, ma mi aspetto di sì"_.
+- 🔴 **ROMI is at a company event 9-11 September and Fase 1 development ends on
+  the 10th.** Said in passing while booking meetings; nobody connected the two.
+
+### Housekeeping worth knowing next session
+
+- **Attendance and authorship corrections**: Fabrizio Paganelli was in the room
+  with Elisa Migliano on 2 September and does not speak; the `Anagrafica
+Articoli` workbook is **hers**, sent from his mailbox.
+- **`Product2.Stato_Bundle__c`'s PROVISIONAL description is retired** — the
+  transcript confirms the values and the host object. The transition logic is
+  still unbuilt and the session never chose between a button and a manual change.
+- **Rexhina Hysi's Notion access is not an oversight** — she was removed on cost
+  while Aurel Mrruku reorganised the workspace. Stop chasing it.
+- ⚠ **The 02/09 Anticipay endpoint trace says the last real sweep was 31 August.
+  It is wrong** — the 01/09 nightly ran and set the 01/09T22:00Z watermark.
+  Harmless here, but it would cost a 24-hour double-sweep.
+- 🔴 **Fathom was not searched this run.** Cover it next time.
+- **`STATUS.md`, its Notion mirror and the Flows page are owed by
+  `org-status-check` for a fifth run.** This sweep did not open the org.
+
+### Do next
+
+1. **Data Model Parte 1 is at 11:00 CEST tomorrow.** Two things belong on it and
+   neither is on anyone's list: the **split-versus-free-text legal-rep address**,
+   and **whether `Anno Solare` should exist at all** (OI-46) — ten loaded records
+   carry `Anno Solare 2026` on ROMI's assumption alone.
+2. **Ask Andrea Parmeggiani what the middleware returns for a non-Italian VAT**,
+   and how it differs from an unknown one. It is now the last technical blocker
+   on an agreed feature, not a documentation nicety. Same mail as the `dascita`
+   typo.
+3. **Ask Aurel Mrruku which community Rexhina Hysi is building.** OI-86 is open,
+   and there are three candidates.
+4. **Build the eleven Anticipay fields.** Still unstarted, still needs no
+   endpoint and no token, and there are four working days left.
+
+---
+
+## 2026-09-03 — claude — nightly requirements-check: Data Model Parte 1, and a community merged in silence
+
+- **Did:** swept Gmail, Slack, Drive, Fathom **and the repository** from watermark
+  **2026-09-02T22:00Z**, taken from the first line of
+  [the 02/09 nightly trace](notes/traces/Source%20trace%202026-09-02%20nightly.md)
+  — the first run in three where frontmatter and text agreed and no
+  disambiguation was needed. Drilled the **03/09 `Data Model: Parte 1`** client
+  session from its **full 2h08m transcript**, read the rebuilt shared workbook,
+  and read the two Apex controllers merged in **PR #31**.
+- **State:** two large things, unconnected.
+  **(1) The session settled who owns the customer registry**, which was nowhere
+  in the record: Salesforce creates the account and pushes it to Mexal before the
+  order, **Mexal then owns the anagrafica**, a **nightly batch** returns its
+  changes (`OI-116`), and Salesforce **locks its administrative fields** on
+  `Codice Cliente Mexal` (`OI-117`). Both unbuilt. `OI-110` is **half answered
+  from the opposite direction** — the commission fields come from the tutor, not
+  from Mexal — and `OI-95` improved sharply: the client struck the whole
+  legal-representative block and Aurel Mrruku will map the live response. Seven
+  new rows, `OI-112`–`OI-118`.
+  **(2) PR #31 merged an entire Experience Cloud community to `DevMain`** — 82
+  files, +4,402 lines, written by Rexhina Hysi one day after a one-line Slack
+  assignment, merged 41 minutes after opening, **published to the UAT sandbox
+  before it was merged**, and **announced nowhere but a bare link in a DM**. It
+  builds `OI-68` and `OI-78` on one site, **answers `OI-86` by build while
+  `OI-86` is still open**, **skips DocuSign** on the quote page, and **neither
+  page has application-level authentication**
+  ([the risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md),
+  gating).
+- **Next:** (a) **ask Aurel Mrruku whether the missing DocuSign step is a first
+  pass or a design change** — it decides whether `OI-111` is urgent or moot;
+  (b) **decode `Flows & Objects.drawio`**, which moved a fifth time on 03/09 and
+  which this session could not render, **before Parte 2 on 4 September**;
+  (c) **name Utenti, Profili, the Ordine field list and the initial-load plan as
+  the agenda for Parte 2 or Parte 3** — Parte 1 spent two hours and did not reach
+  them; (d) send Andrea Parmeggiani **one** mail with the four queued questions.
+- **Watch:** **`OI-86` stays open even though the page exists.** A build is
+  evidence of what happened, not a record of a decision, and Rebecca Marmo has
+  not been told. ⚠ **The SDI is back** (`OI-109` stays resolved — it was withdrawn
+  as an _Anticipay_ field, and Fabrizio Paganelli kept it as a _Mexal_-fed one;
+  keep both facts). ⚠ **Every Salesforce label and state is to be translated into
+  Italian**, agreed and unpriced, touching every layout and state machine already
+  built. ⚠ **+844 uncovered Apex lines** — recorded against the coverage records
+  as the brief, **not acted on**. ⚠ **Between 9 and 17 September there is one
+  working day with the full team available**: the offsite is 9–11 (now
+  corroborated in writing by Gianpaolo Motta), Fase 1 development ends on the
+  10th, and Elena Spini is off the 14th and 15th.
+- **Method:** **a pull request is a source.** This sweep found more in one PR than
+  in the mailbox, and the PR announced itself nowhere. From here, **diff `DevMain`
+  against the previous trace's commit before writing the report** — it costs one
+  command.
+
+---
+
+## 2026-09-09 — claude — requirements-check: the client acknowledged, and the register finally moved
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  **2026-09-08T22:00Z**, taken from the `external_watermark` of
+  [the 08/09 trace](notes/traces/Source%20trace%202026-09-08.md), which is also the
+  newest note in that folder by `updated:` — frontmatter and text agreed, no
+  disambiguation needed. **A thin window with one consequential message.** Slack
+  returned zero Pienissimo hits, Drive zero Pienissimo files, Fathom zero
+  meetings, `git log` zero new commits. `#tproj-pienissimo` is silent for a third
+  week.
+- **State:** **Fabrizio Paganelli replied to the perimeter mail at 07:08:22Z** —
+  _"presa visione e aggiungo Daniela in cc, per sua conoscenza"_ — and four words
+  did three things.
+  **(1) The date is acknowledged**, in verbatim the phrase Elena Spini asked for,
+  so **the register moved to 21 October**: `go_live: 2026-10-21`, `CTX-02`, the
+  `M` priority definition, both milestone tables and the §14 Fase 2 rule, across
+  the YAML, `REQUIREMENTS.md` and `REQUISITI.it.md`, in both languages in one
+  session, register **`v1.5`**. First requirement change since 2026-08-24.
+  `OI-124` is **resolved** and renamed to
+  [OI-124 Go-live moved from 6 to 21 October](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md).
+  **This was put to Aurel Mrruku as a decision and he authorised it** — it changes
+  the document presented for signature, so it was not taken unilaterally.
+  **(2) 🟢 Daniela Morgese is on the thread, and the client put her there**,
+  unprompted. **First movement on
+  [the Fase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)
+  in sixty-one days** — the standing diagnosis since 10 July has been that it
+  cannot close because it never reached her. ⚠ But she is **cc, not addressee**,
+  _"per sua conoscenza"_, no reply, and **still no quotation**, so
+  [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md) does not move.
+  **(3) 🔴 The perimeter was not accepted**, exactly as the 08/09 record predicted
+  in writing. Three of four addressees never replied, and **the four blocking
+  decisions got no answer at all**.
+- **Next:** (a) **chase Sabatino Rinaldi specifically** — he is the client's
+  project lead, he carried the dispute to Daniela Morgese, and a perimeter he has
+  not acknowledged is one he can say he did not see; (b) **get the Fase 2
+  quotation written**, now that the decision-maker can finally read it — reach
+  without a number is the same standstill with a wider audience; (c) **answer the
+  DocuSign licence question**, which blocks the quote flow and is on the UAT list
+  for **23 September**; (d) **reconcile the 23 September UAT start** with _"non
+  abbiamo ancora fatto dei UAT noi"_ — fourteen days out and nobody has addressed
+  it in two runs.
+- **Watch:** ⚠ **A "presa visione" is not agreement to a perimeter**, and the
+  record should keep saying so — the mail bundled a date, a scope boundary and
+  four decisions into one request for acknowledgement, and got the cheapest of the
+  three back. ⚠ **Fabrizio Paganelli's own Mexal scadenzario request now sits
+  inside the perimeter he acknowledged**, unnamed by the mail and unnamed by Slide
+  4; he cannot tell from what he signed off that it moved out of scope. ⚠ **The
+  §14 escalation rule was re-dated, not re-examined** — it still permits exactly
+  the renegotiation that just happened. ⚠ **One "6 October" was deliberately left
+  in §2.2 of both prose texts**: it quotes the 06/08 sign-off session, and editing
+  it would misquote the session. ⚠ **`MAP.md` is ~98 KB against its own stated
+  5 KB budget**, flagged on 08/09 and again here, still priced at ~1.1k in
+  `INDEX.md`. ⚠ **`STATUS.md`, the Notion mirror and the Flows page are owed by
+  `org-status-check` for a tenth run.** This sweep did not open the org.
+- **Method:** **write the trigger, not just the reason, when you decline to act.**
+  The 08/09 run could not decide whether the register should move, so it recorded
+  the exact condition and enumerated the ten places. When the condition fired the
+  next morning the change took one pass and needed no re-derivation. The converse
+  lesson is in the same message: **read a short reply for what it does, not for
+  how much it says** — the sixty-one-day blocker moved in a subordinate clause.
+
+## 2026-09-10 — claude — requirements-check: the first Mexal Apex, and a credential in a DM
+
+- **Did:** swept Gmail, Slack, Drive, Fathom, GitHub and the repository from
+  watermark **2026-09-09T22:00Z**, taken from the `external_watermark` of
+  [the 09/09 nightly trace](notes/traces/Source%20trace%202026-09-09%20nightly.md).
+  🟢 **The 09/09 method note was acted on, not just noted**: that trace warned a
+  declared watermark is only as good as the moment the sweep ran, so this run
+  checked — `9113453` is timestamped **21:50:20Z** against a declared `22:00Z`,
+  and `git log --all` confirms nothing landed in the ten-minute gap. **No blind
+  spot.** Gmail returned zero Pienissimo messages, Drive zero Pienissimo files,
+  Fathom zero meetings, `#tproj-pienissimo` silent since 04/09. **Everything this
+  run found came from Slack DMs and from `git`.**
+- **State:** **Two findings, and they are one story three hours apart.**
+  **(1) 🔑 At 14:45:51 CEST Aurel Mrruku sent Anita Aga
+  `Mexal Dev v.2.postman_collection` in a DM, and all fourteen requests carry the
+  live Passepartout `Authorization` header** — **third credential circulated in
+  plaintext in seven days**, after the WooCommerce JWT (04/09) and the sandbox
+  password spoken into a transcript (08/09). Three secrets, three channels, three
+  people; the common factor is that the project has no agreed place to put one.
+  **No value copied.** The collection is also the first readable statement of the
+  Mexal contract and it moved five records — see the trace.
+  **(2) 🟢🔴 At 17:58 CEST Anita Aga pushed `bc2ed5d`, the first Mexal Apex this
+  repository has ever held**, opened as **PR #39 — which is OPEN and unmerged**;
+  `DevMain` still ends at last night's commit
+  ([the build](notes/objects/The%20first%20Mexal%20integration%20Apex.md)).
+  🟢 It is genuinely well built: **Named Credential auth** with the secret kept
+  out of `Integration_Log__c` on purpose, and **hard-guarded read-only** by three
+  independent checks. After the sixty-year JWT that is the first integration built
+  the right way round. 🔴 But
+  [OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+  gets **a read, not a sync**: fourteen fields map onto `Account` and **there is no
+  DML anywhere**, while the nightly job is **commented out by design** with the
+  code naming its own blocker — the sync window unspecified since 03/09.
+  🔴 **`Full_Permission` now ships a reference to `Mexal_External_Credential`,
+  which exists in no repository file**, so the org-only credential pattern has
+  stopped being an absence and started **breaking deploys**.
+  🟢 The unpriced Italianisation decision of 03/09 is finally being built.
+  **Fase 1 development was due to end today.**
+- **Next:** (a) **decide the Mexal sync window and watermark** — the code is
+  blocked on it and says so in a comment; (b) **retrieve the `Mexal`, `Anticipay`
+  and `DocuSign` named credentials into `force-app/` before PR #39 merges**, or
+  the permission set will not deploy; (c) **create the two
+  `Integration_Configuration__c` rows** — `Mexal_Clienti_Ricerca` and
+  `Mexal_Articoli_Ricerca` — and name an owner; (d) **ask Mirko Merendi at
+  Kreosoft** whether the `ordini-clienti` create call can carry `cod_agente`,
+  `zona` and `classificatore rete`, because the collection says it cannot and that
+  contradicts the 03/09 commission freeze; (e) **chase Andrea Di Cicco for the
+  filtered WooCommerce collection** and rotate the JWT — two days now, and he was
+  active in the same DM on 10/09 without answering.
+- **Watch:** ⚠ **`anno` is now wrong in two directions** — the collection hardcodes
+  `2025`, the code sends the current year, they shipped three hours apart and
+  **nobody chose**. The 07/09 flag was answered by accident, in one artefact only.
+  ⚠ **The order body has no per-line `data di scadenza`**, which is exactly the
+  field PR #37 propagated to `OrderItem` the day before — either the collection is
+  incomplete or the 02/09 tracciato described the fulfilment date. Ask before
+  building the outbound leg. ⚠ **`IBAN__c` prefers `banca_appoggio` over the
+  assembled IBAN** — flagged from the code, not confirmed against a live response;
+  worth one look before merge. ⚠ **Everything above is repository arithmetic on an
+  unmerged branch**; the org was not opened and `STATUS.md`, the Notion mirror and
+  the Flows page are owed for a twelfth run. ⚠ `#tproj-pienissimo` still says
+  **go-live 6 October** three days after the register moved to 21 October.
+  ⚠ **`MAP.md` is still far over its 5 KB budget** and this run added to it again.
+- **Method:** **check the watermark, do not inherit it.** The 09/09 note said a
+  declared watermark is only as good as the moment the sweep ran; this run spent
+  one `git log` proving the claim rather than repeating it, and could then say "no
+  blind spot" as a fact instead of an assumption. The second lesson is the
+  opposite of last night's: **when nothing is in the mail, read the DMs and the
+  branch heads.** Every source that usually carries this project returned zero
+  today, and the whole run came from two Slack direct messages and
+  `git log --all` — a sweep that stopped at the inbox would have reported a quiet
+  night on the day the Mexal integration started.
+
+## 2026-09-11 — claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive and Fathom against watermark
+  **2026-09-10T22:00Z**. **Every external source returned nothing.** The entire
+  run came from `git` and GitHub — see
+  [the trace](notes/traces/Source%20trace%202026-09-11.md).
+- **State:** **The Mexal integration started writing, and both pull requests were
+  merged the same day.** **PR #39** merged 10:27 CEST; **PR #41** / **`80420cf`**
+  (Anita Aga) was pushed 17:57, opened 17:58 and **merged 18:05 — seven minutes,
+  no description, no review**: 32 files, +1,326 / −193
+  ([the build](notes/objects/The%20Mexal%20customer%20create%20and%20update%20path.md)).
+  🟢 **The read-only guard was extended, not removed** — a second allow-list of
+  exactly two write actions, separately validated, beside the untouched read one.
+  Named Credential auth unchanged, the secret still out of the log. 🟢 `POST
+/clienti` with `codice = '501.AUTO'` so **Mexal assigns the number**, read back
+  from the response headers and written onto `Account.Codice_Cliente_Mexal__c`;
+  🟢 the **duplicate `partita IVA` error is parsed at last**, returning the
+  colliding customer's code.
+  🟢🔴 **[OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+  gains its DML** — partial-success `insert`/`update`, `Azienda` record type,
+  ambiguous matches skipped — **but the nightly job is still commented out with
+  the identical blocker**. It moves from _a read, not a sync_ to **a sync with no
+  schedule**.
+  🔴 **[OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)
+  is built and uncalled**; 🔴
+  **[OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md)
+  is the day's real exposure** — two writers now set the Mexal code and the lock
+  is still unbuilt.
+  🔴 **`Integration_Configuration__c` → `Integration_Configuration2__c`**, Hierarchy
+  → List, `SetupOwnerId` resolution deleted; the **`2` suffix is permanent**, the
+  table still holds **zero rows** and **four are now needed by exact name**.
+  🔴 **The undeployable `Mexal_External_Credential` reference reached `DevMain`** —
+  yesterday on a branch, today on the mainline, with still **no
+  `namedCredentials/` directory in the repository**.
+  ⚠ **A decision arrived outside the sweep**, committed straight into the repo:
+  [Anticipay before Mexal customer creation](notes/decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md).
+  **The shipped code does not follow it** — a synchronous Account button, no
+  Anticipay step, no queueing.
+- **Next:** (a) **retrieve the `Mexal`, `Anticipay` and `DocuSign` named
+  credentials into `force-app/`** — this now breaks a clean deploy of `DevMain`
+  and is the cheapest open defect; (b) **build OI-117's lock before the `Modifica`
+  caller is uncommented or the nightly scheduler switched on**, because at that
+  point the registry can silently lose a user edit; (c) **create the four
+  `Integration_Configuration2__c` rows** and name an owner; (d) **decide the Mexal
+  sync window and watermark** — nine days open and now the only thing between
+  OI-116 and a running job; (e) **ask Mirko Merendi at Kreosoft** the
+  `cod_agente` / `zona` / `classificatore rete` question, unasked for a second
+  day; (f) **chase Andrea Di Cicco for the filtered WooCommerce collection**,
+  third day, and rotate the JWT.
+- **Watch:** ⚠ **Two findings written twenty-four hours ago were false by the time
+  this run started** — _"cannot write by construction"_ and _"no DML anywhere"_.
+  Both are marked superseded in place. **Re-read the most recent build note
+  against the code, not only the sources.** ⚠ **The `2` in
+  `Integration_Configuration2__c` is permanent unless someone decides otherwise
+  now** — renaming later is a second migration. ⚠ **`anno` is still wrong in two
+  directions**, second day, nobody has chosen. ⚠ **The org was not opened**;
+  `STATUS.md`, the Notion mirror and the Flows page are owed for a **thirteenth**
+  run and now sit behind four merges. ⚠ **`MAP.md` is ~44k tokens against a stated
+  5 KB budget** — raised on 08/09, 09/09, 10/09 and here, **four consecutive runs
+  with no authorisation to act on it.**
+- **Method:** **when every external source is empty, the record itself is the
+  source.** Two consecutive days now where nothing arrived by mail, chat, Drive or
+  Fathom and the entire finding came from `git log --all` and two diffs. A sweep
+  that treats yesterday's note as current state, on a project where merges land at
+  18:05, reports the opposite of the truth.
+
+## 2026-09-14 — claude — org-status-check: full scope, reconciled and published
+
+**Org:** Pienissimo UAT, `a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`,
+partial sandbox, API 68.0, connected. **Repository:** `DevMain` at `cc3c571`,
+worktree clean at start, in sync with `origin/DevMain`. **Evidence collected
+2026-09-14 10:51Z.** Read-only: nothing deployed, no org data modified, no
+anonymous Apex, no tests run, no source-format retrieve into `force-app/`.
+
+**Method.** `org-status:snapshot:repo` (335 keys) and `:snapshot:org`
+(1,218 components, no unavailable types) then `:compare`; Tooling
+`FieldDefinition`, `FieldPermissions`, `ApexCodeCoverageAggregate`,
+`ApexClass.Body` and `ApexTrigger.Body` for all 76 unmanaged classes and
+triggers; `CronTrigger`, `AsyncApexJob`, `FlowDefinitionView`; targeted SOQL
+aggregates. Graphify (599 nodes) and Open Codebase Index (2,122 chunks) both
+ready and used only as leads. ⚠ **`npm run org-status:snapshot:org -- --target-org`
+loses the flag under PowerShell**; the script was run directly with `node`. Same
+Windows argument-forwarding issue recorded on 8 September.
+
+**The finding.** **Nine Apex classes implementing the entire order-to-Mexal
+integration exist in the org and in no branch** — created 09:12–10:33Z that
+morning by Aurel Mrruku, ~28,000 characters, plus `Order.Mexal_Integration_Status__c`
+and `Order.Mexal_Order_Number__c`. The chain is **correct**: Mark Running →
+Anticipay (first order only, resolved by query, non-blocking on failure) → Mexal
+Customer → Mexal Order. It builds
+[the 11 September sequencing decision](notes/decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+and supplies [OI-125](notes/items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)'s
+missing caller. **A deploy from `DevMain` reverts it** — the repository's
+`OrderTriggerHandler` still calls `AnticipayOrderAutomation` — and would orphan
+all nine.
+
+**Other findings.** `Integration_Configuration2__c` holds **6 rows**, so every
+"zero rows" claim since 26 August is withdrawn and
+[the scaffolding note](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)
+is `superseded`. **Nothing is scheduled** — all 7 `CronTrigger` rows are platform
+jobs — so OI-116 keeps its diagnosis but is now one `System.schedule` call.
+**OI-117 was answered by building the opposite**: the org pushes admin edits to
+Mexal instead of locking them, unminuted, leaving two writers on the same fields
+with no conflict rule. Coverage **0/4,737, 0%, 60 entries**, up from 2,957/42.
+Source drift **12 of 76 mismatched, 8 at token level**, up from 4. **Two**
+permission sets now reference credential principals absent from the repository.
+Repository-only is **zero** in the twelve kinds compared both ways. Unchanged:
+40 of 43 ticket products unmapped, 3 invitations without recipients, 0 of 15
+Assets with a QR, OI-119's hardcoded mailbox, zero project-authored Flows.
+
+**Written.** Two new notes —
+[the build](notes/objects/The%20order%20to%20Mexal%20integration%20chain.md) and
+[the risk](notes/risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md).
+Updated OI-116, OI-117, OI-125, the scaffolding note (superseded), the
+credentials risk, the coverage risk and the Notion mirror note. `build_state` in
+the register rewritten to `checked: 2026-09-14` with DIV-13…DIV-18, LIM-05,
+LIM-06 and the new built / not-built / out-of-source-control entries. `MAP.md`,
+`INDEX.md`, both `open-items` trackers (rows 116, 117, 125), `DEVELOPMENT-RECAP`
+**§36 EN + IT** with precedence lines extended, `STATUS.md` regenerated, and
+`site/index.html` re-derived.
+
+**Published.** Notion Status page **replaced whole** (it was twelve days stale
+and the 8 September run published nothing); re-fetched and verified — no
+mangling. Flows page: **every diagram unchanged, no state machine moved**;
+build-state callouts rewritten, new red callout on flow 8. Tracker: **25 rows
+added (`OI-110`–`OI-134`)**, 3 statuses and 1 owner corrected; now **95 rows,
+95 distinct refs, no missing `Note` URL**, matching `notes/items/` exactly.
+
+**Deliberate non-actions.** No Apex tests written or offered — coverage is
+measured only, per the standing instruction. Nothing retrieved into `force-app/`.
+No requirement text changed; the OI-117 divergence is **recorded, not resolved**.
+No commit, no push. The nine org-only classes were **not** retrieved — that is a
+write to the repository and belongs to a deliberate task.
+
+**Next step.** **Retrieve the nine Mexal classes, the two `Order` fields and the
+three org-edited classes onto a branch, before anything is deployed to this
+org.** Then schedule the nightly sync, and settle whether OI-117 is a lock or a
+two-way sync with Elisa Migliano.

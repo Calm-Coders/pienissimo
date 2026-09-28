@@ -1,0 +1,12 @@
+{
+  "type": "sfdc_cms__route",
+  "title": "Gestione Preventivo",
+  "contentBody": {
+    "activeViewId": "Gestione_Preventivo",
+    "configurationTags": [],
+    "pageAccess": "Public",
+    "routeType": "custom-gestione-preventivo",
+    "urlPrefix": "gestione-preventivo"
+  },
+  "urlName": "gestione-preventivo"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Start SF Projects"
+  short_description: "Start Salesforce projects with meeting intelligence"
+  default_prompt: "Use $start-sf-projects to create or upgrade a researched Salesforce project with meeting workflows."

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Bozza</fullName>
+        <default>true</default>
+        <label>Bozza</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Nuovo Preventivo</fullName>
+        <default>false</default>
+        <label>Nuovo Preventivo</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>In Trattativa</fullName>
+        <default>false</default>
+        <label>In Trattativa</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>In Attesa Accettazione</fullName>
+        <default>false</default>
+        <label>In Attesa Accettazione</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Accettato</fullName>
+        <default>false</default>
+        <label>Accettato</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Rifiutato</fullName>
+        <default>false</default>
+        <label>Rifiutato</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Draft</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Draft</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Needs Review</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Needs Review</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>In Review</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>In Review</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Approved</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Approved</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Rejected</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Rejected</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Presented</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Presented</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Accepted</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Accepted</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
+        <fullName>Denied</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Denied</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+</StandardValueSet>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Tipo_Opp_When_Qualificato</fullName>
+    <active>true</active>
+    <description
+  >Richiede il tipo opportunita quando il Lead passa allo stato Qualificato.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Qualificato&quot;),
+    ISPICKVAL(Tipo_Opportunita__c, &quot;&quot;)
+)</errorConditionFormula>
+    <errorDisplayField>Tipo_Opportunita__c</errorDisplayField>
+    <errorMessage
+  >Seleziona il tipo opportunita prima di qualificare il Lead.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Non_Qualificato_Exit_Reason</fullName>
+    <active>true</active>
+    <description
+  >Requires exit reason fields when a Lead is marked as Non qualificato.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Non qualificato&quot;),
+    OR(
+        ISPICKVAL(Motivazione_Uscita__c, &quot;&quot;),
+        ISPICKVAL(Dettaglio_Motivazione_Uscita__c, &quot;&quot;)
+    )
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage
+  >Select Exit Reason and Exit Reason Detail before setting the Lead to Non qualificato.</errorMessage>
+</ValidationRule>

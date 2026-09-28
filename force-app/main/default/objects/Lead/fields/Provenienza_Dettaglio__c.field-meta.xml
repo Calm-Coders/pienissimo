@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Provenienza_Dettaglio__c</fullName>
+    <description
+  >Dettaglio tecnico o nascosto della provenienza del Lead, ad esempio form, campagna o canale specifico.</description>
+    <externalId>false</externalId>
+    <label>Provenienza Dettaglio</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

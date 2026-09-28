@@ -1,0 +1,38 @@
+<messaging:emailTemplate
+  subject="Completa il tuo ordine Pienissimo"
+  recipientType="User"
+  relatedToType="Opportunity"
+>
+  <messaging:htmlEmailBody>
+    <p>Gentile cliente,</p>
+
+    <p>
+      La invitiamo a utilizzare il link qui sotto per completare il checkout del
+      suo ordine Pienissimo.
+    </p>
+
+    <p><strong>Completa il checkout:</strong></p>
+
+    <p>
+      <a href="{!relatedTo.Checkout_Link__c}">{!relatedTo.Checkout_Link__c}</a>
+    </p>
+
+    <p>Per qualsiasi necessita' di assistenza, non esiti a contattarci.</p>
+
+    <p>Cordiali saluti,<br /><strong>Il team Pienissimo</strong></p>
+  </messaging:htmlEmailBody>
+  <messaging:plainTextEmailBody>
+Gentile cliente,
+
+La invitiamo a utilizzare il link qui sotto per completare il checkout del suo ordine Pienissimo.
+
+Completa il checkout:
+
+{!relatedTo.Checkout_Link__c}
+
+Per qualsiasi necessita' di assistenza, non esiti a contattarci.
+
+Cordiali saluti,
+Il team Pienissimo
+  </messaging:plainTextEmailBody>
+</messaging:emailTemplate>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campagna_Figlio_Richiede_Date</fullName>
+    <active>true</active>
+    <description
+  >Una Campagna Figlio deve avere date di calendario, data evento e data invio biglietto coerenti.</description>
+    <errorConditionFormula>AND(
+  RecordType.DeveloperName = &quot;Campagna_Figlio&quot;,
+  OR(
+    ISBLANK(StartDate),
+    ISBLANK(EndDate),
+    ISBLANK(Data_Evento__c),
+    ISBLANK(Data_Invio_Biglietto__c),
+    EndDate &lt; StartDate
+  )
+)</errorConditionFormula>
+    <errorMessage
+  >Una Campagna Figlio deve avere Data Inizio, Data Fine, Data Evento, Data Invio Biglietto e Data Fine non precedente a Data Inizio.</errorMessage>
+</ValidationRule>
