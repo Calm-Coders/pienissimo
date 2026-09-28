@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-07-22
-updated: 2026-09-22
+updated: 2026-09-25
 blocks: [OI-75, go-live]
 severity: gating
 requirement: [ORD-02, ORD-03]
@@ -331,7 +331,7 @@ collection the due date is not a field on the order at all — it is the
 `data_documento` of the fulfilment call, sent later.
 
 **Unreconciled, and it matters to what was just built.** Either the collection is
-an incomplete export, or the tracciato described the *fulfilment* date rather than
+an incomplete export, or the tracciato described the _fulfilment_ date rather than
 an order-line field, in which case `Data_Scadenza__c` is populated for a wire
 field that does not exist. **Ask before building the outbound leg.**
 
@@ -340,7 +340,7 @@ field that does not exist. **Ask before building the outbound leg.**
 
 **Gap 2, the aggregation, is still the one genuinely unbuilt gap.**
 `Completamente_Pagata__c` remains a checkbox nothing computes, and nothing in
-`bc2ed5d` touches it — that commit is inbound-read only. What it *does* add is
+`bc2ed5d` touches it — that commit is inbound-read only. What it _does_ add is
 the first evidence of how the per-line payment status will arrive:
 `POST /risorse/scadenzario/ricerca`, filterable **by customer code**, exists and
 is reachable.
@@ -366,7 +366,6 @@ customer, article and warehouse batches; how the scadenzario read is triggered i
 not visible in the commit.
 ⚠ The 2026-09-15 `org-status-check` still reads the org as it was this morning:
 **29 tranches, 5 of 38 Order Items carrying tranche and due date, 0 fully paid.**
-
 
 ## 🔴 2026-09-16 - the roll-up merged, and the client named a gap it does not cover
 
@@ -513,7 +512,7 @@ scadenziario dates move when a Ri.Ba. comes back unpaid or a recovery plan is ag
 Fabrizio Paganelli: _"sulle date di scadenza è bene non fare nessun tipo di automatismo
 di programma perché è un casino."_
 
-🔴 **The one hop still open is the last one** — which Salesforce order *line* a payment
+🔴 **The one hop still open is the last one** — which Salesforce order _line_ a payment
 settles, given a Plus order is n lines of the same article code distinguished only by due
 date. See
 [OI-166](OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md).
@@ -521,3 +520,60 @@ date. See
 ⚠ This supersedes the premise of
 [OI-143](OI-143%20The%20tranche%20invoice%20date%20must%20be%20re-keyed%20by%20hand%20into%20Mexal.md);
 cite 21/09 and 22/09 together.
+
+## 🔴 2026-09-25 — tranches also need to exist on the bundle
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md): a **stage sale has no quote**, so the quote-only
+creation point decided on 24/08 cannot give a WooCommerce order its tranches. Agreed:
+tranches can also be **defined at bundle creation** and are inherited, editable, by any
+quote that uses the bundle. About one week of work. Tracked as [OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md). The
+quote-side mechanism shown on 24/09 is unchanged and was accepted.
+
+## 🔑 2026-09-25 evening - the status picklist read live out of the org, and a second origin exists
+
+Aurel Mrruku opened the org during
+[the 17:00 internal session](../meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)
+(`00:35:00`) and read the `Tranche__c` status picklist aloud, because Elena Spini's
+Business Blueprint gave different values:
+
+| Business Blueprint             | 🔑 The org                                   |
+| ------------------------------ | -------------------------------------------- |
+| `creato` / `chiuso` / `acquisito` | **`aperto` · `parzialmente pagato` · `pagato`** |
+
+**Three values, and the document was wrong in all three.** He undertook to send her
+the list rather than let her re-type it. `parzialmente pagato` means **only some of
+that tranche's items are paid** — Aurel Mrruku: _"vuol dire che solo alcuni item di
+quella tranche sono state pagate."_
+
+⚠ **Read from the org by a person in a screen share, not by an org query in this
+sweep.** He himself hedged the provenance of the names — _"sto parlando di un mese e
+mezzo fa, forse l'hanno cambiato"_ — then read them live. **Treat as org-confirmed
+for 25/09, and re-verify at the next `org-status-check`.**
+
+### 🔑 The order transition is "all tranches", not "the last tranche"
+
+Aurel Mrruku corrected himself mid-sentence and was explicit: the order reaches
+**`Incassato` when every tranche is `pagato`** — _"quando tutte le trance… perché
+l'ultima trance non è corretta."_ Elena Spini wrote it down that way. The full chain
+as restated: **`Ordinato` → `Fatturato`** (first invoice issued in Mexal) **→
+`Incassato`** (all invoices paid), with the **opportunity going Closed Won at
+`Incassato`** — _"la chiude il pagamento, non la firma"_.
+
+### A second origin, and it is now built
+
+Aurel Mrruku corrected Elena Spini's quote-only wording — _"non è vero, che vi
+generati anche il livello di prodotto bundle"_ — and confirmed the org carries two
+objects: _"abbiamo il tranch e abbiamo anche i bundle tranch"_. 🟢 `Bundle_Tranch__c`
+merged to `DevMain` the same evening, with `Tranche__c.Bundle_Tranch__c` joining a
+quote tranche back to the template that generated it
+([OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)).
+
+Two further confirmations of the existing record, both from Elena Spini's text as
+corrected in the call:
+
+- Per tranche the user selects **which quote lines belong to it** and gives it a
+  **due date**; each line stores the tranche reference and that date. Lines sharing
+  a due date group into the same tranche.
+- 🟢 **A tranche may be a single order line.** Elena Spini had written that it never
+  coincides with one; Aurel Mrruku: _"Può coincidere… se tu hai tre prodotti li puoi
+  dividere in tre trance."_ She deleted the sentence.

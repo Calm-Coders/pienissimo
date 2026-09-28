@@ -1,12 +1,12 @@
 ---
 id: risk-coverage-blocks-deploy
 type: risk
-status: open
+status: resolved
 severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-23
+updated: 2026-09-28
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -477,3 +477,34 @@ Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothi
 
 - **0 of 7,756 lines, 0%, 79 entries**, against 4,737 across 60 on 14/09: **+3,019 uncovered lines in nine days.** Three test classes against 57 Apex classes in `force-app/`. The last `ApexTestRunResult` row is still **2026-08-04**. Read the percentage as unmeasured and the uncovered count as real.
 - ⚠ **Go-live is 21 October.** The production deploy needs this task done first, and it has **no slot on the calendar**. UAT runs until 13 October. Recorded as the brief only. **No test was written, proposed or run.**
+
+## 2026-09-28 — resolved: the suite was written and Prod was deployed
+
+Aurel Mrruku asked for the test suite and the production deploy in one task.
+
+- **Eight test classes, 142 tests, 88.8% org-wide coverage** (7,601 of 8,563
+  lines), validated check-only against **Pienissimo Prod** with `RunLocalTests`:
+  `TestDataFactory`, `TestHttpMock`, `MexalIntegrationTest`,
+  `QuoteCommercialTest`, `QuoteLinesAndTranchesTest`, `QuoteDocumentsTest`,
+  `CrmAutomationTest`, `TicketingTest`. `BundleProductAssignmentControllerTest`
+  was brought up to date. Commit `23443cd` on `DevMain`.
+- **Quick-deployed to Prod at 2026-09-28 11:28Z** (deploy `0AfSW000001H1aD0AS`,
+  461/461 components). The source is `DevMain` less `Campaign_Record_Page`: Prod
+  runs API 67, and Dynamic Forms on Campaign needs 68, which reaches Prod with the
+  October release. It is re-deployed after the upgrade.
+- Lowest remaining coverage: `QuotePdfService` 21% (PDF rendering and file
+  sharing behave differently inside tests), `MexalMaggazinoSyncBatch` 36%
+  (blocked by a real defect, see [the Mexal callout risk](Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md)), `ParticipantCommunityUrl` 37%
+  (`ConnectApi` needs `SeeAllData`).
+
+Facts the suite surfaced in Prod, recorded so nobody re-derives them:
+
+- Prod runs **Account, Contact and Lead duplicate rules**. Test data saves with
+  `DuplicateRuleHeader.AllowSave`.
+- **New fields carry no FLS for the System Administrator profile.** The
+  controllers that query `WITH USER_MODE` fail for a user without
+  **`Full_Permission`**. After the deploy it had **0 assignments in Prod**.
+- `Lead.Agente__c` has a lookup filter that requires `User.Agente__c`, the agent
+  code, to be filled.
+- `AuraHandledException.getMessage()` returns `Script-thrown exception` inside a
+  test, so only the throw can be asserted.

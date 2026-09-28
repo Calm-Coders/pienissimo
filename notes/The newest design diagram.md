@@ -4,7 +4,7 @@ type: reference
 status: active
 owner: Elena Spini
 org: ROMI
-updated: 2026-09-21
+updated: 2026-09-25
 source: Drive - Flows & Objects.drawio, modified 2026-09-16T08:42:38Z
 decoded_at_version: 2026-09-16T08:42:38Z
 supersedes_in_register: DGM-2
@@ -450,3 +450,21 @@ types and a quote signature state. **None of it can be in a file last touched on
 the 11:08 Parte 6 — which is consistent with Elena Spini editing it herself for the
 blueprint. Drive still returns no last-modifying user, so **the author is not
 inferred.**
+
+## 2026-09-25 - modified again, 15:19Z, still unreadable here
+
+`Flows & Objects.drawio` (Drive `11ly3iGQc1smlY8IybSnUMQBGXbZ-ddbx`, owner Elena
+Spini) was **modified at 2026-09-25T15:19:59Z** — the second movement in two days,
+after 24/09 17:43 ended nine sweeps of stillness. It is **four hours after the UAT
+session** and **twelve minutes before** the product-and-bundle alignment call
+([2026-09-25 Alignment Interno Prodotti e Bundle](meetings/2026-09-25%20Alignment%20Interno%20Prodotti%20e%20Bundle.md)),
+which is consistent with the field cleanup being drawn before it was discussed —
+**but that is an inference from timestamps and nothing states it.**
+
+🔴 **Still not readable from here.** The file is an `mxfile`; the Drive reader does
+not parse it and no export exists. Two days of edits to the project's own design
+diagram are therefore **invisible to the record**, and whatever they changed about
+the bundle, the tranche origin or the asset flow cannot be checked against the notes.
+
+**Ask for a PNG or PDF export.** This is the third sweep to say so and the first
+where the file is actively changing.

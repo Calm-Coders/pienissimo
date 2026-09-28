@@ -43,7 +43,7 @@
                                     <leftValue
                   >{!Record.Opportunity.RecordType.DeveloperName}</leftValue>
                                     <operator>CONTAINS</operator>
-                                    <rightValue>Standart</rightValue>
+                                    <rightValue>Vendita_Standard</rightValue>
                                 </criteria>
                                 <criteria>
                                     <leftValue
@@ -67,7 +67,7 @@
                                     <leftValue
                   >{!Record.Opportunity.RecordType.DeveloperName}</leftValue>
                                     <operator>CONTAINS</operator>
-                                    <rightValue>Standart</rightValue>
+                                    <rightValue>Vendita_Standard</rightValue>
                                 </criteria>
                                 <criteria>
                                     <leftValue

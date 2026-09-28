@@ -5,7 +5,7 @@ status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-15
-updated: 2026-09-15
+updated: 2026-09-25
 depends_on: [OI-50, OI-116, OI-137]
 requirement: [ORD-03, ORD-04, INT-01]
 source: commit 400c195, Anita Aga, 2026-09-15 18:00:39 CEST, PR #45 open against DevMain
@@ -27,15 +27,15 @@ fourth consecutive Mexal PR with a truncated title and no description.
 
 ## What it builds
 
-| Component                             | Lines | What it does                                                                                          |
-| ------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------- |
-| `MexalInvoiceOrderLineMappingService` | 606   | Matches Mexal invoice lines to Order Items and derives `Paid` / `Unpaid` / `No Payment Match`          |
-| `MexalScadenzarioSearchService`       | 332   | Calls the `Mexal_Scadenzario_Ricerca` action — the payment-schedule read                              |
-| `MexalMaggazinoSyncBatch`             | 286   | A **third** nightly batch, over warehouse movements, on the same cursor service                        |
-| `MexalMaggazinoSearchService`         | 249   | The `ricerca` half of the warehouse read                                                              |
-| `MexalMaggazinoDetailService`         | 225   | The per-document detail read, capped at 90 detail callouts per `execute`                              |
-| `OrderItemTriggerHandler`             | 148   | The tranche roll-up                                                                                   |
-| `MexalOrderMappingService`            | 59    | Writes the Mexal document coordinates back onto the Order and its lines after a send                  |
+| Component                             | Lines | What it does                                                                                  |
+| ------------------------------------- | ----- | --------------------------------------------------------------------------------------------- |
+| `MexalInvoiceOrderLineMappingService` | 606   | Matches Mexal invoice lines to Order Items and derives `Paid` / `Unpaid` / `No Payment Match` |
+| `MexalScadenzarioSearchService`       | 332   | Calls the `Mexal_Scadenzario_Ricerca` action — the payment-schedule read                      |
+| `MexalMaggazinoSyncBatch`             | 286   | A **third** nightly batch, over warehouse movements, on the same cursor service               |
+| `MexalMaggazinoSearchService`         | 249   | The `ricerca` half of the warehouse read                                                      |
+| `MexalMaggazinoDetailService`         | 225   | The per-document detail read, capped at 90 detail callouts per `execute`                      |
+| `OrderItemTriggerHandler`             | 148   | The tranche roll-up                                                                           |
+| `MexalOrderMappingService`            | 59    | Writes the Mexal document coordinates back onto the Order and its lines after a send          |
 
 Six new fields: `Order.Mexal_Customer_Code__c`, `Mexal_Document_Sigla__c`,
 `Mexal_Document_Serie__c`, `Mexal_Document_Number__c`;
@@ -90,3 +90,12 @@ and the hour it runs is still unspecified — open since 3 September.
   this record. What it is for, and who asked for it, is not established.
 - ⚠ **The spelling `Maggazino` is a typo** for _magazzino_, and it is baked into
   three class names. Cheap to fix now, permanent once deployed.
+
+## 2026-09-25 - the roll-up now reaches the order
+
+Aurel Mrruku decided that the order goes `Incassato` when **every tranche on it** is
+`Pagata`. The roll-up gained a third step,
+`markOrdersCollectedForFullyPaidTranches`, after the tranche update and the ticket
+release. The existing `OrderTriggerHandler` then closes the Opportunity. Written on
+`DevMain`, uncommitted, not deployed. Detail and open edges:
+[OI-69](../items/OI-69%20Order%20state%20model.md).

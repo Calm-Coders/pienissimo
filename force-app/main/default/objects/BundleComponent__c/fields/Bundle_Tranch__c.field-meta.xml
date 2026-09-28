@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bundle_Tranch__c</fullName>
+    <description
+  >The bundle tranche template this component belongs to when the bundle is copied to a quote.</description>
+    <label>Bundle Tranch</label>
+    <referenceTo>Bundle_Tranch__c</referenceTo>
+    <relationshipLabel>Bundle Components</relationshipLabel>
+    <relationshipName>Bundle_Components</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -10,6 +10,145 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-28 — claude — Apex suite written and DevMain deployed to Pienissimo Prod
+
+- **Did:** Aurel Mrruku asked to deploy to Prod everything in UAT, chose "everything,
+  tests first" with `DevMain` as the source, and then "commit, push, deploy". Eight check-only
+  validations against Prod. Wrote 8 test classes; the existing bundle test was brought up to date.
+  **Prod deploy `0AfSW000001H1aD0AS`, 2026-09-28 11:28Z, 461/461 components, 142/142 tests,
+  88.8% coverage.** Code commit `23443cd` (pushed).
+- **Changed besides tests:** `QuoteAcceptanceEmailController` hard-coded the **UAT** site URL;
+  it now uses `DomainCreator.getExperienceCloudSitesHostname()`. Six layouts lost the
+  `GenerateKnowledge` excluded button, since Knowledge is off in Prod. The Quote layout lost a
+  duplicate `Is_Primary__c`. The `Landing_Page1` `DigitalExperienceConfig` and its SNA static
+  resource were retrieved from UAT into `force-app` so the deploy could create the site;
+  "Landing Page" is Live in Prod.
+- **Not deployed:** `Campaign_Record_Page`. Prod is on API 67, and Dynamic Forms on Campaign
+  needs 68. Deploy it after the October upgrade.
+- **Open before Prod is used:** `Full_Permission` has 0 assignments. Integration config rows: 0. DocuSign Named Credential still `demo.docusign.net`. Anticipay error mail goes to a
+  hard-coded `a.aga@` address. The order → Mexal chain is live in Prod (the `isSandbox` guard),
+  so it fires on the first order once the config exists, including migrated historic orders.
+- **New risk:** [Mexal writes fail after their own log insert](notes/risks/Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md),
+  confirmed by the UAT log of 24/09.
+- **Not done:** Elena Spini was not told. The deploy had been planned for the week of 5/10.
+  STATUS.md and the trackers were not regenerated. No UAT deploy was made, and UAT still holds
+  the uncommitted OI-171 code.
+
+---
+
+## 2026-09-25 — claude — nightly requirements-check: the bundle-tranche gap was built the same day, and the Contratto narrowed to Performance Plus
+
+- **Did:** The scheduled nightly run, watermark **2026-09-25T13:00Z → 22:00Z**. Swept
+  Fathom (0), Drive (2 pages, 25 files), Gmail (15 threads, 4 opened in full), Slack
+  (workspace-wide + the dev group), git `--all` and the repository diff. Drilled **two
+  internal sessions**: `Alignment Interno Prodotti e Bundle` (10m57s) and
+  `Interna post UAT Contratto e Fase Due` (1h05m05s, transcript read in full, 53,502
+  chars). Wrote 2 meeting notes and 3 new items (`OI-185`–`OI-187`); updated
+  `OI-50/74/141/157/168/177/179/181` and `The newest design diagram`. Then both trackers,
+  recap **§49 in EN and IT**, MAP, INDEX, the trace, and the register evidence below.
+- **State:**
+  - 🟢🔑 **`OI-181` is built.** PR **#62** merged to `DevMain` at 18:07 CEST (`a5f9370`):
+    **`Bundle_Tranch__c`** (a tranche template on the bundle product), `BundleTranchController`,
+    the `bundleCreateTranch` LWC, and `Tranche__c.Bundle_Tranch__c` joining an inherited
+    quote tranche to its template. **Still gating: the WooCommerce order side is not in the
+    diff**, and 02/10 is the WooCommerce re-test.
+  - 🔑 **`Contract` is Performance Plus only, created at `Firmato`**, `stato` = `nuovo`/`rinnovo`
+    read off the opportunity record type. **Aurel Mrruku argues the object should not exist**
+    — the Mexal returns update the tranches, which already hold the state. Goes to Fabrizio
+    Paganelli **Mon 28/09 10:00** with a request for the Zoho structure (`OI-141`, `OI-168`).
+  - 🔑 **Tranche states, read live out of the org: `aperto` / `parzialmente pagato` / `pagato`.**
+    The order reaches `Incassato` only when **every** tranche is `pagato`.
+  - 🔴 **Marketing UAT moved twice more, to Fri 16 October** — past the 13/10 approval
+    deadline — with the client told in writing the flows will be tested **in production
+    after the switch** (`OI-177`).
+  - 🟢 **The Business Blueprint was not sent to the client** (`OI-179`); the **UAT testbook**
+    went instead, with no deadline on it (`OI-187`).
+- **Register: NOT amended, version stays 1.6.** The tranche picklist finding speaks directly
+  to `state_machines.tranche` (`status: conflict`) and to **RC-07** in both prose documents,
+  but it is **a person reading a screen share, not an org query**, and the register's own
+  reconciliation says not to configure the label until `OI-69` resolves. So it was recorded
+  as **evidence in all three surfaces** — YAML `reconciliation`, `REQUIREMENTS.md` §RC-07,
+  `REQUISITI.it.md` §RC-07 — with the normative `states:` list and `conflict` status left
+  untouched. **A human owes the org query, then RC-07 and OI-69 close together.**
+- **Next:**
+  1. **Build `OI-185` (cambio nominativo) before Wednesday 30/09.** Aurel Mrruku:
+     _"Io non ce l'ho pronta questa roba"_; he plans Sunday 27/09 and expects a partial demo.
+  2. **Finish the WooCommerce order side of `OI-181`** — 28/09–01/10, for the 02/10 re-test.
+  3. **28/09 10:00: get the Zoho Contract structure and the user list from Fabrizio
+     Paganelli** (`OI-141`, `OI-186`). The user list is on neither invitation's agenda.
+  4. **`Firmato` still does not exist in `force-app`**, and the Contract creation now
+     depends on it.
+- **Watch:**
+  - ⚠ **The clone opened on `main` only** — a bare 17-file SFDX scaffold with no `notes/`.
+    `DevMain` was simply unfetched. **Fetch before concluding the repository is empty.**
+  - ⚠ `#tproj-pienissimo` **is not findable in the Slack workspace**, third run running,
+    while the skill still names it as required scope.
+  - ⚠ `Flows & Objects.drawio` **changed again (15:19:59Z)** and is still unreadable here.
+    Two days of design-diagram edits are invisible to the record.
+  - ⚠ **`DEVELOPMENT-RECAP.it.md` §47 (24/09) is still missing** — third flag.
+  - ⚠ **No human has answered a nightly report in nine nights.**
+  - **No Apex test was written, proposed or scaffolded.**
+
+## 2026-09-25 — claude — the order is Incassato when every tranche is paid
+
+- **Did:** Aurel Mrruku asked what was decided about contracts, then when an order reaches
+  `Incassato`, then decided it. Found that only WooCommerce orders were ever set
+  `Incassato` by code; tranche payment set `Pagata` and freed tickets but never touched
+  the order.
+- **Decided (Aurel Mrruku):** the order goes `Incassato` **automatically when every
+  tranche on its lines is `Pagata`**; `OrderTriggerHandler` then closes the Opportunity.
+- **Built:** `OrderItemTriggerHandler.markOrdersCollectedForFullyPaidTranches` on
+  `DevMain`, **uncommitted, not deployed, no test class** (standing instruction).
+- **Written:** register v1.6 (`AUREL-2026-09-25-INCASSATO`, `ORD-14` rewritten,
+  `order.rules`, reconciliation note), `REQUIREMENTS.md` + `REQUISITI.it.md` (1.6
+  changelog, Order state row, `ORD-14`, manual-steps paragraph), OI-69 (now
+  `in-progress`), OI-184 change set, tracker row 69 EN + IT, MAP.
+- **Open:** the client has not seen it; lines with no tranche are ignored; nothing sets
+  `Fatturato`; a reversed payment does not un-collect the order (OI-92, OI-157).
+- **Next:** commit and deploy with the next UAT push; include it in the v1.6 change set.
+  Contract logic (OI-168) is still not started, UAT 5/10.
+
+---
+
+## 2026-09-25 — claude — on-demand requirements-check + drill-me: tranches belong on the bundle too, and the register moves to v1.6
+
+- **Did:** Aurel Mrruku asked for the nightly job on demand. Swept Fathom, Drive, Gmail,
+  Slack, git and GitHub from watermark **2026-09-24T22:00Z** to **13:00Z**. Drilled
+  `UAT: Recall Tutor + Bundle` (client, 2h13m50s, notes + transcript, 154,062 chars, read
+  once). Wrote the meeting note, a decision (single products from Mexal only, confirming
+  `BUN-06`), four new items (`OI-181`–`OI-184`), and updated `OI-46/49/50/96/101/140/151/177/178`.
+  Also both trackers, recap §48 in EN and IT, MAP, INDEX and the trace. Then ran a
+  drill-me round of four questions.
+- **Decided (drill-me):**
+  1. The week of 28/09 goes to **bundle-level tranches**, and the partial PROD deploy
+     moves to the week of 5/10. **Elena Spini has not been told yet.**
+  2. **The register was amended to v1.6** in the YAML and both prose documents: `Firmato`,
+     `ORD-01/02`, `DM-17`, `BUN-08`, `SAL-21`, glossary, and order opportunity types. It
+     goes to the client as **one change set at UAT close** (`OI-184`).
+  3. **Both agent fields stay, with a sync** (`OI-178`): lookup for people, code for Mexal.
+  4. **New clean `Standard` / `WooCommerce` record types**; `Standart` and `Recall_Tutor`
+     are retired (`OI-182`).
+- **State:** 🔴 **`OI-181` (gating):** stage sales have no quote, so tranches must also
+  live on the bundle (~1 week, re-test 02/10). 🔑 Anno solare → **anno accademico**
+  reverses the 23/07 rule. Marketing UAT moved to **07/10**, after the window closes.
+  **PR #59 merged**, so both agent fields are on `DevMain`. `Firmato` is still not in
+  `force-app`.
+- **Next:** tell Elena Spini about the deploy move; design the agent-field sync (direction
+  and conflict rule); build `OI-181` before 02/10. Ticket UAT is 30/09 and the edition
+  mapping is still thin.
+- **Watch:**
+  - **Tonight's nightly run should use watermark 2026-09-25T13:00Z** (the new trace), or
+    it will re-drill this meeting.
+  - Not posted to Slack. Only the scheduled run may post there.
+  - **The Italian §47 of `DEVELOPMENT-RECAP.it.md` is missing** (24/09 run). Flagged, not
+    backfilled.
+  - The prose register documents said 1.4 while the YAML said 1.5; all three now say 1.6.
+  - No transcript copy in `meetings/` and no `meetings/results/` recap, as on every run
+    since 27/08. `STATUS.md` was not regenerated, because no org evidence was taken.
+  - No commit or push was made.
+
+---
+
 ## 2026-09-24 — codex — Account ATECO state and User commission category in UAT
 
 - **Did:** Checked the latest client Account model workbook. Account ATECO

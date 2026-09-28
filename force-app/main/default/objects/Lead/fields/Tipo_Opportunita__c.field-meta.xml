@@ -17,9 +17,9 @@
                 <label>Vendita da tutor</label>
             </value>
             <value>
-                <fullName>Recall tutor</fullName>
+                <fullName>WooCommerce</fullName>
                 <default>false</default>
-                <label>Recall tutor</label>
+                <label>WooCommerce</label>
             </value>
             <value>
                 <fullName>Performance Plus - Attivazione</fullName>

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-09-24
+updated: 2026-09-25
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -147,3 +147,14 @@ and `Data_Inizio__c`. ⚠ **Not read line by line here**, and not on `DevMain`.
 
 🔴 **Ticket UAT is 30 September** and the mapping stood at **13 of 51** at the 23/09 org
 check. A rewritten handler does not add rows.
+
+## 2026-09-25 — the same fault, live, for the second day running
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md) (`00:30:40`), the first WooCommerce test order
+failed with `TicketGenerationException: Nessuna mappatura`. Aurel Mrruku created a
+mapping row live, pointing the product at a test edition, and the order then landed.
+He told the client: _"dobbiamo per forza poi mappare i prodotti… alle edizioni per fare i
+test."_ PR #60 (the handler rewrite) **merged at 08:17Z**. Anita Aga (Slack, 10:47 CEST):
+only one test bundle has a mapping. Gemini action for Aurel Mrruku: _"Completare la
+mappatura dei prodotti alle campagne e alle edizioni necessarie per i test"_.
+**Ticket UAT is 30/09.**

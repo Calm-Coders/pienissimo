@@ -1,11 +1,11 @@
 ---
 id: OI-69
 type: open-item
-status: open
+status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-25
+updated: 2026-09-25
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -97,3 +97,39 @@ Opportunity going Closed Won **when the order reaches `Incassato`** — has
 neither a source state nor a target state configured, and **no automation of any
 kind** to carry it. See the flow finding at
 [the quote to order flow](../flows/The%20quote%20to%20order%20flow.md).
+
+## 2026-09-25 - decided: the order is Incassato when every tranche is paid
+
+**Aurel Mrruku, direct decision:** _"quando tutte tranche vanno in pagato l'ordine va
+in incassato."_ This answers the question left open by the 24/09 UAT ruling ("Closed Won
+only at incasso"): with several tranches, the order is collected at the **last** paid
+tranche, not the first.
+
+- **The mechanism is automatic.** Mexal marks each order line paid; the line roll-up sets
+  the tranche to `Pagata`
+  ([OI-50](OI-50%20Tranche%20object.md)); once **every tranche on the order's lines** is
+  `Pagata`, the order goes to `Incassato`, and the existing `OrderTriggerHandler` then
+  closes the Opportunity `Chiusa/Vinta`.
+- **Built in source, not deployed.** `OrderItemTriggerHandler.markOrdersCollectedForFullyPaidTranches`,
+  written the same session on `DevMain`, uncommitted. No test class was written, per the
+  standing instruction.
+- **The register moved with it.** v1.6 rewrites `ORD-14`: the manual step in which
+  administration set `CHIUSO/ACQUISITO` within five days is replaced by the automatic
+  rule, in the YAML and in both prose documents. It joins the
+  [v1.6 change set](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md).
+- WooCommerce orders are unaffected: they are created already `Incassato`.
+
+## Still open
+
+- ⚠ **The client has not seen this.** It is a ROMI decision; it reaches Pienissimo with
+  the v1.6 change set.
+- ⚠ **Lines with no tranche are ignored.** An order whose lines are only partly assigned
+  to tranches goes `Incassato` when the assigned ones are paid. Not decided whether that
+  is right.
+- ⚠ **Nothing sets `Fatturato`.** The order jumps from `Ordinato` to `Incassato`.
+- ⚠ **No way back.** A payment later reversed in Mexal moves the tranche back but leaves
+  the order `Incassato` and the Opportunity won
+  ([OI-92](OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md),
+  [OI-157](OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)).
+- `Perso` ([OI-85](OI-85%20Order%20state%20set%20may%20be%20incomplete.md)) is still
+  undecided.

@@ -5,6 +5,7 @@ public with sharing class OrderItemTriggerHandler {
   private static final String TRANCHE_STATUS_PAID = 'Pagata';
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
   private static final String TICKET_STATUS_AVAILABLE = 'Disponibile';
+  private static final String ORDER_STATUS_COLLECTED = 'Incassato';
 
   public static void afterInsert(List<OrderItem> newLines) {
     OrderTriggerHandler.createTicketsForOrderLines(newLines);
@@ -85,6 +86,57 @@ public with sharing class OrderItemTriggerHandler {
     }
 
     markTicketsAvailableForFullyPaidTranches(fullyPaidTrancheIds);
+    markOrdersCollectedForFullyPaidTranches(fullyPaidTrancheIds);
+  }
+
+  // An Order is Incassato once every tranche on its lines is Pagata (OI-69).
+  private static void markOrdersCollectedForFullyPaidTranches(
+    Set<Id> trancheIds
+  ) {
+    if (trancheIds == null || trancheIds.isEmpty()) {
+      return;
+    }
+
+    Set<Id> orderIds = new Set<Id>();
+    for (OrderItem line : [
+      SELECT OrderId
+      FROM OrderItem
+      WHERE Tranche__c IN :trancheIds
+    ]) {
+      orderIds.add(line.OrderId);
+    }
+
+    if (orderIds.isEmpty()) {
+      return;
+    }
+
+    Set<Id> ordersWithUnpaidTranches = new Set<Id>();
+    for (OrderItem line : [
+      SELECT OrderId, Tranche__r.Stato__c
+      FROM OrderItem
+      WHERE OrderId IN :orderIds AND Tranche__c != NULL
+    ]) {
+      if (line.Tranche__r.Stato__c != TRANCHE_STATUS_PAID) {
+        ordersWithUnpaidTranches.add(line.OrderId);
+      }
+    }
+
+    List<Order> orderUpdates = new List<Order>();
+    for (Order orderRecord : [
+      SELECT Id
+      FROM Order
+      WHERE Id IN :orderIds AND Status != :ORDER_STATUS_COLLECTED
+    ]) {
+      if (!ordersWithUnpaidTranches.contains(orderRecord.Id)) {
+        orderUpdates.add(
+          new Order(Id = orderRecord.Id, Status = ORDER_STATUS_COLLECTED)
+        );
+      }
+    }
+
+    if (!orderUpdates.isEmpty()) {
+      update orderUpdates;
+    }
   }
 
   private static void markTicketsAvailableForFullyPaidTranches(

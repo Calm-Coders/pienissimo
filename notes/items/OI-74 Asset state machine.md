@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-26
+updated: 2026-09-25
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-17
@@ -197,3 +197,20 @@ and there is a worked example one object away:
 being replaced on 26 August with the agreed Italian values while three of its
 four records were left sitting on deactivated ones. Same operation, four records
 instead of thirty-seven.
+
+## 2026-09-25 - the `Annullato` name-change transition now has a mechanism
+
+The register's `Assegnato → Annullato` on _"name change (option 1)"_ was specified in
+full at
+[the 25/09 internal session](../meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)
+and is recorded as
+[OI-185](OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md).
+
+🔑 **It is more than a status change.** The original Asset is set to `Annullato` and
+a **new Asset with a new QR code** is generated, deliberately, so the historic record
+survives — Elena Spini: _"Per preservare la tracciabilità storica non viene
+aggiornato l'asset esistente."_ **Nothing here changes the state list**; it fixes
+what the transition does on the way through.
+
+🔴 **Not built, and the ticket UAT is 30/09.** See OI-185 for the open questions,
+including the marketing re-send that cannot distinguish the new ticket from the old.

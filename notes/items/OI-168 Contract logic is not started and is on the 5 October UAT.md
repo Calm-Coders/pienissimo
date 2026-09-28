@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-24
+updated: 2026-09-25
 depends_on: [OI-141, OI-151]
 blocks: [go-live]
 severity: gating
@@ -88,3 +88,29 @@ Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothi
 check found zero custom fields on the object. **UAT is 5 October — eleven days**, and the
 specification now includes a trigger-based freeze, a scheduled insoluto report set and a
 page banner that did not exist in the record before today.
+
+## 2026-09-25 - still not started, but the questions finally exist and a client session is booked
+
+This row was opened because _"the questions Aurel Mrruku needs answered are not
+written down anywhere."_ 🟢 **They now are**, as the working-through at
+[the 17:00 internal session](../meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md) —
+recorded field by field in
+[OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md). The
+substantive ones that remain for the client: **the Zoho structure to replicate**,
+and whether the object is needed at all given the tranches already carry the
+financial state.
+
+🟢 **And the session to ask them is booked** — **Monday 28 September 10:00**, with
+**Fabrizio Paganelli** added: `[ROMI-PIENISSIMO] - Tema Contratti + Open Point`
+(invitation 16:50Z, to Aurel Mrruku, `amministrazione@` and Fabrizio Paganelli).
+That is **eight days before the 5 October UAT**, not after it.
+
+🔴 **Nothing was built.** `Firmato` — on which the Contract creation now depends —
+**is still absent from `force-app`** at `DevMain` `a5f9370`, checked this evening.
+No commit in this window touches Contract. The 5 October session is ten days out and
+the fallback recorded above (show the opportunity logic, promise the contract) is
+still the only plan that exists.
+
+⚠ **One specification item dropped since 24/09:** the BBP's third contract state
+`in corso` was deleted in this call. The trigger-based freeze, the insoluto reports
+and the page banner recorded above were **not** revisited and stand.

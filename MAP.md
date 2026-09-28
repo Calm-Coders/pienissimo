@@ -2,9 +2,86 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-24 (Account ATECO state and User commission category backfilled in UAT) · Source of record: [notes/](notes/)
+Last updated: 2026-09-28 (Apex suite written, DevMain deployed to Pienissimo Prod) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟢🔑 **2026-09-28 — `DevMain` is deployed to Pienissimo Prod.** 142 tests, 88.8% coverage,
+  deploy `0AfSW000001H1aD0AS` (461 components), commit `23443cd`
+  ([the resolved coverage risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)).
+  **Before anyone uses Prod:** assign `Full_Permission` (0 assignments, without it the new
+  fields are invisible); load the `Integration_Configuration2__c` rows (none, so Mexal,
+  Anticipay and DocuSign are inert); point the DocuSign Named Credential away from
+  `demo.docusign.net` and enter the credentials; re-deploy `Campaign_Record_Page` after the
+  October release. 🔴 Once the config rows exist, **every new Order starts the live Mexal chain**,
+  and the historic-order migration will too.
+  🔴 [Mexal writes fail after their own log insert](notes/risks/Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md):
+  the shipping address and the nightly payment sync cannot complete.
+  🟢 The quote-acceptance email no longer links to the UAT site.
+- 🟢🔑 **2026-09-25 evening — the gating bundle-tranche gap was built the same day it was
+  found, and the Contratto was narrowed to Performance Plus only.** Nightly sweep,
+  watermark 2026-09-25T13:00Z.
+  🟢 **PR [#62](https://github.com/Calm-Coders/pienissimo/pull/62) merged to `DevMain` at
+  18:07 CEST** (`a5f9370`): new object **`Bundle_Tranch__c`** — a tranche template on the
+  bundle product, with `Data_Scadenza__c` _"copied to the quote tranche created from this
+  bundle template"_ — plus `BundleTranchController`, the `bundleCreateTranch` LWC, and
+  `Tranche__c.Bundle_Tranch__c` joining an inherited quote tranche back to its template
+  ([OI-181](notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md),
+  still gating: **the WooCommerce order side is not in the diff**). The same PR brought the
+  **Campaign fields and the `Campagna_Figlio` record type** onto `DevMain`, for the 30/09
+  session.
+  🔑 **[Interna post UAT](notes/meetings/2026-09-25%20Interna%20post%20UAT%20Contratto%20e%20Fase%20Due.md)**
+  (17:00 CEST, 1h05m, Aurel Mrruku · Elena Spini) walked the Business Blueprint:
+  the Salesforce **`Contract` object is `Performance Plus` only**, created at **`Firmato`**
+  (not at Mexal transmission), `stato` reduced to `nuovo`/`rinnovo` read off the opportunity
+  record type — and **its builder argued it should not exist**, since the Mexal returns
+  update the tranches, which already hold the financial state. Put to Fabrizio Paganelli
+  **Mon 28/09 10:00**, asking for the Zoho structure to replicate
+  ([OI-141](notes/items/OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md),
+  [OI-168](notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)).
+  🔑 **Tranche states read live out of the org: `aperto` · `parzialmente pagato` · `pagato`**
+  — the blueprint had all three wrong — and the order reaches `Incassato` only when **every**
+  tranche is `pagato` ([OI-50](notes/items/OI-50%20Tranche%20object.md)).
+  🟢 **The Business Blueprint was not sent to the client**, because the morning session had
+  changed the quote state machine and the bundle logic
+  ([OI-179](notes/items/OI-179%20The%20Business%20Blueprint%20goes%20to%20the%20client%20with%20unchecked%20points.md)).
+  🔴 **Marketing UAT moved twice more, to Fri 16 October** — past the 13/10 approval deadline
+  — with the client told in writing that the marketing flows will be tested **in production
+  after the switch**
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+  🔴 **New: [OI-185](notes/items/OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md)**
+  (gating) the cambio nominativo regenerates the ticket as a **new asset with a new QR
+  code**, and Aurel Mrruku says it is not ready for the **30/09** ticket UAT ·
+  **[OI-186](notes/items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)**
+  roles, profiles and the **user list were never agreed with the client** ·
+  **[OI-187](notes/items/OI-187%20The%20UAT%20testbook%20is%20with%20the%20client%20for%20comment.md)**
+  the UAT testbook is with the client for comment, with no date on it.
+  🟢 **Fase 2, by ROMI decision and unconfirmed by the client:** note di credito, storni and
+  payment correction ([OI-157](notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)).
+  ⚠ **`Firmato` is still not in `force-app`**, and the Contract creation now depends on it.
+  — [trace](notes/traces/Source%20trace%202026-09-25%20nightly.md)
+- 🟢 **2026-09-25 — the order goes `Incassato` when every tranche is `Pagata`** (Aurel
+  Mrruku), and the Opportunity then closes won. Written into `OrderItemTriggerHandler` on
+  `DevMain`, not deployed; register v1.6 `ORD-14` replaces the manual administration step
+  ([OI-69](notes/items/OI-69%20Order%20state%20model.md)).
+
+- 🔴🔑 **2026-09-25 — second UAT session: the recall flow works, but stage-sale bundles
+  need tranches on the bundle, and nobody built that.**
+  [UAT Recall Tutor e Bundle](notes/meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md)
+  (2h13m50s). A stage sale has no quote, so ROMI's quote-only tranches cannot give a
+  WooCommerce order its tranches. The agreed fix is to define tranches at bundle creation,
+  estimated at **about a week**
+  ([OI-181](notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md), gating).
+  `Recall Tutor` becomes a `WooCommerce` type with a Recall/Pack Tutor origin
+  ([OI-182](notes/items/OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md)).
+  The bundle's year is now the **anno accademico** (a reversal,
+  [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)). **02/10 becomes
+  the WooCommerce re-test and marketing moves to 07/10**
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+  Marco Montesi asked for part of the session to be redone. PR #59 put **both agent
+  fields on `DevMain`**
+  ([OI-178](notes/items/OI-178%20Two%20agent%20field%20implementations%20exist%20on%20two%20branches.md)).
+  — [trace](notes/traces/Source%20trace%202026-09-25.md)
 
 - **2026-09-24 — ATECO and Agent commission category in UAT:** the third
   Account ATECO field (`Ateco Stato Attivita`) was deployed and 377 source

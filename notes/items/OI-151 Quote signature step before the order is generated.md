@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-24
+updated: 2026-09-25
 depends_on: [OI-59]
 requirement: [INT-19]
 source: notes/meetings/2026-09-21 Test Interni Pre-UAT.md
@@ -124,3 +124,11 @@ now six values behind, not five.**
   template's signature tags need the client's own markup: Aurel Mrruku asked them to
   download the generated PDF and mark where signatures go and how much space to leave.
 - ⚠ **Quote UAT is tomorrow, 25/09**, and `Firmato` does not exist yet.
+
+## ✅ 2026-09-25 — `Firmato` is in the register (v1.6)
+
+Drill-me decision by Aurel Mrruku: `state_machines.quote` gains `Firmato`, with two rules
+(`Accettato` = confirmed on the Community; `Firmato` = signed document back from DocuSign;
+the order is generated at `Firmato`). The **other** labels still disagree with the org
+(`DIV-07`); that is unchanged. 🔴 `Firmato` is **still not in `force-app`** at `ab318f3`.
+See [OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md).

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-08-27
-updated: 2026-08-27
+updated: 2026-09-25
 depends_on: [OI-102]
 blocks: [OI-49]
 source: meetings/2026-08-27-integrazione-woocommerce-transcript.it.md
@@ -72,3 +72,18 @@ money. Neither path has been exercised end to end.
 Related: `ORD-11` in the register — _"Performance Plus from stage bundle or
 direct tutor entry"_ — and
 [OI-70](OI-70%20Performance%20Plus%20opportunity%20typing.md).
+
+## 2026-09-25 — the stage-sale mechanics are known, and the test is booked
+
+At [UAT Recall Tutor e Bundle](../meetings/2026-09-25%20UAT%20Recall%20Tutor%20e%20Bundle.md) the client described the stage sale in full, and
+it exposed [OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md). The customer scans a QR code in the room and fills the cart
+**including the VAT number**. Bank transfer leaves the order to the administration; card or
+PayPal moves it straight to `in lavorazione`. **No opportunity is created.** Salesforce must
+match or create the Account and Contact from the payload, then call Mexal and Anticipay.
+Stage-sale orders go to Mexal with **no human check**.
+
+🟢 **A live test is booked: Fri 2 October.** A bundle will be built in the session from
+Fabrizio Paganelli's codes, Sabatino Rinaldi will create the linked WooCommerce product,
+**and a non-bundle self-service ticket purchase** will be tested too. Sabatino Rinaldi's
+plugin already has a (disabled) section to forward any self-service order.
+🔴 It depends on OI-181, estimated at one week.

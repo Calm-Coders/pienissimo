@@ -100,6 +100,10 @@ public with sharing class BundleProductAssignmentController {
     public Decimal listPrice;
     @AuraEnabled
     public Decimal spreadPrice;
+    @AuraEnabled
+    public Id bundleTranchId;
+    @AuraEnabled
+    public String bundleTranchName;
 
     public ComponentRow(BundleComponent__c component) {
       id = component.Id;
@@ -109,6 +113,28 @@ public with sharing class BundleProductAssignmentController {
       quantity = component.Quantity__c;
       listPrice = null;
       spreadPrice = component.Spread_Price__c;
+      bundleTranchId = component.Bundle_Tranch__c;
+      bundleTranchName = component.Bundle_Tranch__r == null
+        ? null
+        : component.Bundle_Tranch__r.Name;
+    }
+  }
+
+  public class BundleTranchOption {
+    @AuraEnabled
+    public Id id;
+    @AuraEnabled
+    public String name;
+    @AuraEnabled
+    public Decimal sequence;
+    @AuraEnabled
+    public Date dueDate;
+
+    public BundleTranchOption(Bundle_Tranch__c tranch) {
+      id = tranch.Id;
+      name = tranch.Name;
+      sequence = tranch.Sequenza__c;
+      dueDate = tranch.Data_Scadenza__c;
     }
   }
 
@@ -125,6 +151,8 @@ public with sharing class BundleProductAssignmentController {
     public Decimal variance;
     @AuraEnabled
     public List<ComponentRow> components;
+    @AuraEnabled
+    public List<BundleTranchOption> bundleTranches;
   }
 
   // This type is deserialized explicitly from JSON. Letting the LWC/Apex bridge coerce a
@@ -134,6 +162,7 @@ public with sharing class BundleProductAssignmentController {
     public String productId;
     public Decimal quantity;
     public Decimal spreadPrice;
+    public String bundleTranchId;
   }
 
   @AuraEnabled
@@ -164,6 +193,16 @@ public with sharing class BundleProductAssignmentController {
     context.spreadTotal = bundle.Spread_Total__c;
     context.variance = bundle.Spread_Variance__c;
     context.components = new List<ComponentRow>();
+    context.bundleTranches = new List<BundleTranchOption>();
+
+    for (Bundle_Tranch__c tranch : [
+      SELECT Id, Name, Sequenza__c, Data_Scadenza__c
+      FROM Bundle_Tranch__c
+      WHERE Bundle__c = :bundleId
+      ORDER BY Sequenza__c, CreatedDate, Id
+    ]) {
+      context.bundleTranches.add(new BundleTranchOption(tranch));
+    }
 
     List<BundleComponent__c> components = [
       SELECT
@@ -172,7 +211,9 @@ public with sharing class BundleProductAssignmentController {
         Product__r.Name,
         Product__r.ProductCode,
         Quantity__c,
-        Spread_Price__c
+        Spread_Price__c,
+        Bundle_Tranch__c,
+        Bundle_Tranch__r.Name
       FROM BundleComponent__c
       WHERE Bundle__c = :bundleId
       ORDER BY Product__r.Name
@@ -263,7 +304,8 @@ public with sharing class BundleProductAssignmentController {
   public static BundleContext saveComponents(
     Id bundleId,
     Decimal fixedPrice,
-    String componentsJson
+    String componentsJson,
+    Boolean allowMissingTranch
   ) {
     if (bundleId == null) {
       throw new AuraHandledException('Missing bundle record id.');
@@ -287,11 +329,21 @@ public with sharing class BundleProductAssignmentController {
 
     Map<Id, BundleComponent__c> existingById = new Map<Id, BundleComponent__c>(
       [
-        SELECT Id, Product__c, Quantity__c, Spread_Price__c
+        SELECT Id, Product__c, Quantity__c, Spread_Price__c, Bundle_Tranch__c
         FROM BundleComponent__c
         WHERE Bundle__c = :bundleId
       ]
     );
+
+    Set<Id> validBundleTranchIds = new Set<Id>();
+    for (Bundle_Tranch__c tranch : [
+      SELECT Id
+      FROM Bundle_Tranch__c
+      WHERE Bundle__c = :bundleId
+    ]) {
+      validBundleTranchIds.add(tranch.Id);
+    }
+    Boolean requiresTranchAssignment = !validBundleTranchIds.isEmpty();
 
     List<BundleComponent__c> toUpsert = new List<BundleComponent__c>();
     Set<Id> keptIds = new Set<Id>();
@@ -325,6 +377,25 @@ public with sharing class BundleProductAssignmentController {
       Id productId = String.isBlank(input.productId)
         ? null
         : (Id) input.productId;
+      Id bundleTranchId = String.isBlank(input.bundleTranchId)
+        ? null
+        : (Id) input.bundleTranchId;
+      if (
+        requiresTranchAssignment &&
+        allowMissingTranch != true &&
+        bundleTranchId == null
+      ) {
+        throw new AuraHandledException(
+          'Assegna ogni prodotto del bundle a una tranch prima di salvare.'
+        );
+      }
+      if (
+        bundleTranchId != null && !validBundleTranchIds.contains(bundleTranchId)
+      ) {
+        throw new AuraHandledException(
+          'Una tranch selezionata non appartiene a questo bundle. Ricarica la pagina.'
+        );
+      }
 
       // A row that would be inserted without a product trips the Product_Required rule,
       // whose message gives no clue which row is at fault. Say so precisely instead.
@@ -352,13 +423,15 @@ public with sharing class BundleProductAssignmentController {
         BundleComponent__c existing = existingById.get(componentId);
         if (
           existing.Spread_Price__c != spread ||
-          existing.Quantity__c != quantity
+          existing.Quantity__c != quantity ||
+          existing.Bundle_Tranch__c != bundleTranchId
         ) {
           toUpsert.add(
             new BundleComponent__c(
               Id = componentId,
               Quantity__c = quantity,
-              Spread_Price__c = spread
+              Spread_Price__c = spread,
+              Bundle_Tranch__c = bundleTranchId
             )
           );
         }
@@ -368,7 +441,8 @@ public with sharing class BundleProductAssignmentController {
             Bundle__c = bundleId,
             Product__c = productId,
             Quantity__c = quantity,
-            Spread_Price__c = spread
+            Spread_Price__c = spread,
+            Bundle_Tranch__c = bundleTranchId
           )
         );
       }
