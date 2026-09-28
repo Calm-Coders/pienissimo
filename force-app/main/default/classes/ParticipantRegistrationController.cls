@@ -458,11 +458,11 @@ public without sharing class ParticipantRegistrationController {
       );
     }
 
-    insertMissingCampaignMembers(access.campaign.Id, participantContactIds);
-
     if (!assetsToUpdate.isEmpty()) {
       update assetsToUpdate;
     }
+
+    insertMissingCampaignMembers(access.campaign.Id, participantContactIds);
 
     return buildPage(access);
   }
