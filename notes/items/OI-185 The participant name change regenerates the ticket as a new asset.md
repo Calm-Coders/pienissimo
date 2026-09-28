@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: both
 raised: 2026-09-25
-updated: 2026-09-25
+updated: 2026-09-28
 depends_on: [OI-74, OI-53]
 blocks: [go-live]
 severity: gating
@@ -77,3 +77,35 @@ check-in app that would have covered it is **Fase 2**.
   nothing records a date or status filter being agreed.
 - ⚠ No register row covers the regeneration. `BIG-17` carries the Asset state
   machine, not this procedure — **not for a sweep to allocate.**
+
+## 2026-09-28 - QR generation was built; the name-change regeneration was not
+
+Aurel Mrruku's _"Io non ce l'ho pronta questa roba"_ of 25/09 stands, with one part
+of the stack now in place. Ticket UAT is **Wednesday 30/09**, two days out.
+
+🟢 **QR generation exists on `DevMain`.** Rexhina Hysi — the owner this gained on
+25/09 — committed it on 28/09 morning:
+
+- **`e887b15`** (09:41 CEST) and **`b40db42`** (10:12 CEST): **`AssetQrService.cls`**,
+  **`BarcodeGenerator.cls`** (796 lines, with a vendored `Portwood-DocGen` licence
+  added under `docs/third-party/`), **`TicketQrImage.cls`**, a QR section on the
+  Asset layout, and edits to `ParticipantRegistrationController.cls` and
+  `QuoteAcceptanceEmailController.cls`.
+- Reached `DevMain` at `55101d2` through PR
+  [#63](https://github.com/Calm-Coders/pienissimo/pull/63) (`DEV_fixController`,
+  merged 16:30 CEST, one conflict resolved in `fb3ae13`).
+
+🔴 **None of that is this item.** What this note records is the **cambio nominativo
+flow**: an Account-level button that cancels the existing ticket, creates a **new
+Asset with a new QR code**, and re-sends **every ticket on the account** because
+marketing cannot tell which one is new. **Nothing in this window implements a name
+change, a cancellation, or a re-send.** Verified against the 28/09 commits.
+
+🟢 **What the QR work does change:** the regeneration now has something to
+regenerate. `AssetQrService` and `TicketQrImage` are the pieces a new-asset flow
+would call, so the remaining work is the trigger, the cancellation of the
+predecessor, and the bulk re-send — not the barcode.
+
+⚠ **Nothing was run.** This is a reading of the source at `DevMain` `55101d2`; no
+QR was generated in an org during this sweep, and no test was written, proposed or
+scaffolded.

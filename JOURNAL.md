@@ -10,6 +10,54 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-28 — claude — nightly requirements-check: the client gave the Contratto a purpose, and the bundle order side was built
+
+- **Did:** scheduled nightly sweep, watermark **2026-09-25T22:00Z → 2026-09-28T22:00Z**
+  (three days; 26/09 and 27/09 had no sweep, and the 28/09 Prod-deploy session was not a
+  requirements-check). Drilled one client meeting from its full transcript; read 16 commits
+  and verified the key class line by line.
+- **Headline:** ROMI asked the client whether the Contract object should exist.
+  **Fabrizio Paganelli kept it and changed what it is for** — the customer's contractual
+  history, one Contract per order, multi-year view read off the Account. Aurel Mrruku's
+  25/09 objection was **discharged, not overruled**. And the gating WooCommerce gap was
+  built: bundle orders now take tranches from `Bundle_Tranch__c`, price lines from
+  `BundleComponent__c.Unit_Spread__c` (payload price ignored), and no longer jump to
+  `Incassato`.
+- **State:** new notes — the 28/09 meeting, **OI-188** (Performance Plus = Mexal
+  `categoria articolo` `C10`/`C11`), and a reference note on the Slack channel. Updated
+  OI-59, OI-111, OI-141, OI-157, OI-161, OI-168, OI-177, OI-181, OI-182, OI-184, OI-185,
+  OI-186, OI-187. Both trackers, both recaps (§50 EN + IT), MAP, INDEX, trace.
+- **🟢 Discharged this run:** `Standart` → `Standard` (7th flag, `3bd0801`) · the
+  WooCommerce order side (OI-181) · `rifiutato` wording → reason `sostituito da altro
+  preventivo` · DocuSign credentials received · credit notes + payment correction now
+  **client-confirmed** Fase 2 · QR generation built.
+- **🔑 Retrieval correction, important:** **`#tproj-pienissimo` exists — `C0B5T3RB4FM`.**
+  Three previous traces called it missing; `slack_search_channels` cannot find it, message
+  search and a direct read can. **Three runs of client-facing project status were missed.**
+  Recorded as `notes/The Pienissimo Slack channel and its id.md` — read it before any sweep.
+- **Next:** 🔴 OI-185 (cambio nominativo) is **not** built and ticket UAT is **30/09** —
+  QR generation landed, the regeneration did not. 🔴 Ask Fabrizio Paganelli to map bundle
+  components to tranches, or the 02/10 order test fails **by design**. 🔴 `Firmato` still
+  absent from `force-app` (4th flag) and the Contract depends on it. 🔴 Get the **user
+  list** — it was the 28/09 session's other purpose and never came up.
+- **Watch:** ⚠ the service writes `Tranche__c.Stato__c = 'Aperta'` (matching `force-app`)
+  while the 25/09 screen-share read the **org** as `aperto`/`parzialmente pagato`/`pagato`
+  — **if the org differs, every bundle order insert fails.** The org query owed for
+  OI-50/OI-69 now has a second, more expensive reason. ⚠ Elena Spini **still does not know
+  DevMain went to Prod on 28/09** and is planning against a 12/10 PROD objective.
+  ⚠ `TestDataFactory.cls:257` still references `'Standart'` — recorded only, no test was
+  written or proposed. ⚠ A DM says Fabrizio confirmed a 29/09 morning call; **he said in
+  the recorded session that Pienissimo is unreachable that day.** Unresolved.
+- **Caveats:** the org was not opened, so `STATUS.md` was not regenerated and the Notion
+  mirror stays stale; all build claims are repository arithmetic against `DevMain`
+  `55101d2`. `prettier:verify` could not run (no `node_modules`).
+  `DEVELOPMENT-RECAP.it.md` §47 (24/09) still missing, 4th flag. The clone again opened on
+  `main` only — the 25/09 trace predicted it and the fetch cost under a minute.
+  **No Apex test was written, proposed or scaffolded.** No human has answered a nightly
+  report in twelve nights.
+
+---
+
 ## 2026-09-28 — claude — Apex suite written and DevMain deployed to Pienissimo Prod
 
 - **Did:** Aurel Mrruku asked to deploy to Prod everything in UAT, chose "everything,

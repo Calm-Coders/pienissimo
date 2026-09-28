@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-17
-updated: 2026-09-25
+updated: 2026-09-28
 depends_on: [OI-140]
 blocks: [go-live]
 source: notes/meetings/2026-09-17 Follow-up Interno.md
@@ -138,3 +138,91 @@ data model. **Booked for Monday 28/09 10:00**: the invitations
 - ⚠ The **weekly scheduled report** the client asked for was left unassigned to any
   object: _"chi se ne fotte se è oggetto o se è contratto o tranche"_.
 - ⚠ The per-customer-code aggregation problem recorded above **was not revisited.**
+
+## 🔑 2026-09-28 - the client was asked whether it should exist, and gave it a different purpose
+
+[The 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(10:02 CEST, 1h03m, Aurel Mrruku · Elena Spini · **Fabrizio Paganelli**) is the
+session this note booked. **The builder's objection recorded above was put to the
+client directly, and the client answered it.**
+
+🔑 **The object survives, and its justification is the one nobody had stated.** It
+is not a per-order appendix — it is the **customer's contractual history across
+years and renewals**. Fabrizio Paganelli:
+
+> _"l'importante è che noi da qualche parte abbiamo un contenitore dove per ogni
+> cliente io posso vedere quando è stato attivato da data a data, qual era
+> l'importo complessivo, si è pagato tutto."_
+
+and _"se magari è un cliente storico, io potrei avere anche 5 6 rinnovi, almeno in
+un unico quadro, ho tutte le informazioni della storia contrattuale del cliente,
+non solo del contratto collegato a quell'ordine."_
+
+🟢 **Aurel Mrruku accepted it on that reasoning** and restated it himself: _"il
+contratto praticamente non è che è collegato all'ordine, è collegato al cliente,
+quindi serve un'entità."_ **The objection above is discharged — not overruled.**
+His alternative (put the five fields on the order) was offered to the client and
+declined for a stated reason.
+
+### What this changes in the record
+
+1. 🔑 **One Contract per order**, with the multi-year view read off the Account's
+   several Contracts. Fabrizio Paganelli: _"Ogni ordine avrà il suo contratto e
+   ogni ordine avrà i suoi tre quattro valori."_ He had floated 1:N as well
+   (_"1 a 1 ordine con contratto oppure … 1 a n"_) and left the shape to ROMI;
+   both then worked from 1:1.
+2. 🔑 **`data di attivazione` is a separate, manual field and the term runs from
+   it** — not from signature and not from the order. Customers defer activation:
+   _"attivatemi a marzo quando riaprirò il locale"_, and _"da lì decorreranno i 12
+   mesi."_ This sharpens the *dates are manual* section above: `data inizio` /
+   `data fine` are the order's, `data di attivazione` is the one a human fills.
+3. 🟢 **The financial fields are confirmed as three, with a stated purpose each:**
+   `ordinato` (the order value), `fatturato` and `incassato` (both from the
+   nightly Mexal reads). `ordinato − fatturato` is what remains to invoice;
+   **`fatturato − incassato` is how punctual the customer is.** Aurel Mrruku
+   checked that no cleverer logic was expected and was told no. **Amounts used as
+   illustrations in the call are not recorded** — see
+   [docs/publishing.md](../../docs/publishing.md).
+4. 🔑 **New fields: `strategist` and `digital`, as plain text.** Fabrizio
+   Paganelli asked for the two roles that follow a contract — a supervisor
+   (`strategist`) and the operator they oversee (`digital`), **about fifteen
+   people**. **Deliberately not lookups:** they have no Salesforce licence and
+   will not get one — _"Questi non avranno un'utenza sales force perché la
+   userebbero solo per andare a metterci quel nome lì dentro … Non ha senso."_
+   Aurel Mrruku twice offered a `Strategist` object; Fabrizio Paganelli chose text
+   _"poi magari … nella fase tre o quattro o sette."_ Pienissimo's own internal
+   platform already holds the assignment and could later feed Salesforce via
+   Sabatino Rinaldi — **not committed, no date.**
+5. 🟢 **The product-code gap recorded above is closed**, and it is not a new code:
+   Performance Plus is identified by the Mexal **`categoria articolo`** — `C10`
+   attivazione, `C11` rinnovo. See
+   [OI-188](OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md).
+
+### What the client will do with it
+
+Three reporting uses, at three levels: **direction** — how many customers are
+active today; **commercial** — whose contract expires at the end of a given month
+(_"a fine di ottobre avete 10 clienti che scadono, quindi contattateli"_);
+**administration** — who to invoice this month. ⚠ These are the scheduled reports
+the Business Blueprint specified, recorded in
+[OI-168](OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md).
+**Nothing said who builds them or when.**
+
+### Still open after this session
+
+- 🔴 **The Zoho structure was never produced.** The agreed action above was to ask
+  for it and replicate it. Fabrizio Paganelli answered from first principles
+  instead and the question was not pressed. **There is still no reference
+  implementation** — but the requirement is now stated well enough not to need
+  one.
+- 🔴 **`Firmato` is still absent from `force-app`** at `DevMain` `55101d2`, and
+  the Contract creation depends on it. Fourth run flagging this.
+- 🔴 **Nothing is built.** No commit in this window touches Contract.
+- ⚠ **The field list is explicitly not frozen.** Aurel Mrruku: _"quando faremo i
+  test possiamo anche indicare … più campi o meno campi. A me interessava proprio
+  il concetto, il legame tra le entità account, ordine, contratto."_ The
+  **entity relationship** is what was agreed.
+- ⚠ **`strategist` still has no named person**, and the earlier open question —
+  who fills the service dates by hand — was not asked. The role now has a
+  definition and a headcount, which is more than it had.
+- ⚠ **The per-customer-code aggregation problem was not revisited**, third run.
