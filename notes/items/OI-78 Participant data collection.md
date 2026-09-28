@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-07
+updated: 2026-09-25
 depends_on: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-18
@@ -138,7 +138,7 @@ overtaken.
 🔴 **The community page has to grow a rinuncia path.** Agreed ROMI-internally at
 [the marketing session](../meetings/2026-09-07%20Interna%20Flussi%20MKT.md): the
 option is removed from the marketing email and handled on the community instead,
-because Marketing Cloud cannot resolve *which assets* an email button refers to,
+because Marketing Cloud cannot resolve _which assets_ an email button refers to,
 and a guided path can
 ([the decision](../decisions/Decision%20-%20rinuncia%20moves%20from%20the%20marketing%20email%20to%20the%20community.md)).
 This is unbuilt work on a page that merged on 3 September, arriving after the
@@ -173,3 +173,34 @@ chosen by the customer at ticket compilation and **not editable by Pienissimo**.
 **New**: [OI-126](OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md)
 — a Salesforce flag marking tickets whose participant data is not yet filled in,
 so the nurturing flow can key off it.
+
+## 2026-09-25 - QR generation and saved image in UAT
+
+`CampaignMemberQrTrigger` and `AssetQrService` match a newly created Campaign
+Member to an Asset
+by both Contact and Campaign and writes the member ID to `Asset.QR_Id__c`.
+The registration controller assigns the Contact to the Asset before creating
+the Campaign Member, so that trigger can find the ticket. There is no Asset QR
+trigger. The `Visualizza QR biglietto` action on the Asset layout renders
+that ID as a QR image using a local static resource. The user explicitly
+confirmed the Campaign Member ID as payload and the Asset record as display
+surface, correcting an initial request that said Asset ID.
+
+The revised service and registration controller passed a check-only deployment
+and were deployed to Pienissimo UAT on 25 September (deployment
+`0AfMA00000CnIpi0AF`, no tests run). Asset `02iMA000009u3qrYAA` already had
+a matching Campaign Member but a blank QR field; its `QR_Id__c` was filled with
+that existing member ID and verified by read-back. Members that already exist
+when an Asset is later assigned do not fire the creation trigger; other older
+tickets still need a separate backfill.
+
+At the user's request, a second UAT deploy (`0AfMA00000CnGnv0AF`) added a
+native Apex QR encoder and BMP writer. The Campaign Member insert path now
+creates a **264 by 264 BMP image** with the member ID and saves it as a
+Salesforce File on every matching Asset, in the same transaction. This does not
+need the LWC or an external QR service. The linked sample Asset now has a
+`Ticket QR` BMP File; a local decoder read that File back from UAT and decoded
+the expected Campaign Member ID. The Asset layout already has the Files related
+list. The image has been verified through an admin execution of the service;
+the guest registration path has not been exercised with this new File write.
+The QR mail, name-change handling and check-in path remain open.
