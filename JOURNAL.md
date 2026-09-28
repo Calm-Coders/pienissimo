@@ -10,6 +10,32 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-28 — claude — Apex suite written and DevMain deployed to Pienissimo Prod
+
+- **Did:** Aurel Mrruku asked to deploy to Prod everything in UAT, chose "everything,
+  tests first" with `DevMain` as the source, and then "commit, push, deploy". Eight check-only
+  validations against Prod. Wrote 8 test classes; the existing bundle test was brought up to date.
+  **Prod deploy `0AfSW000001H1aD0AS`, 2026-09-28 11:28Z, 461/461 components, 142/142 tests,
+  88.8% coverage.** Code commit `23443cd` (pushed).
+- **Changed besides tests:** `QuoteAcceptanceEmailController` hard-coded the **UAT** site URL;
+  it now uses `DomainCreator.getExperienceCloudSitesHostname()`. Six layouts lost the
+  `GenerateKnowledge` excluded button, since Knowledge is off in Prod. The Quote layout lost a
+  duplicate `Is_Primary__c`. The `Landing_Page1` `DigitalExperienceConfig` and its SNA static
+  resource were retrieved from UAT into `force-app` so the deploy could create the site;
+  "Landing Page" is Live in Prod.
+- **Not deployed:** `Campaign_Record_Page`. Prod is on API 67, and Dynamic Forms on Campaign
+  needs 68. Deploy it after the October upgrade.
+- **Open before Prod is used:** `Full_Permission` has 0 assignments. Integration config rows: 0. DocuSign Named Credential still `demo.docusign.net`. Anticipay error mail goes to a
+  hard-coded `a.aga@` address. The order → Mexal chain is live in Prod (the `isSandbox` guard),
+  so it fires on the first order once the config exists, including migrated historic orders.
+- **New risk:** [Mexal writes fail after their own log insert](notes/risks/Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md),
+  confirmed by the UAT log of 24/09.
+- **Not done:** Elena Spini was not told. The deploy had been planned for the week of 5/10.
+  STATUS.md and the trackers were not regenerated. No UAT deploy was made, and UAT still holds
+  the uncommitted OI-171 code.
+
+---
+
 ## 2026-09-25 — claude — nightly requirements-check: the bundle-tranche gap was built the same day, and the Contratto narrowed to Performance Plus
 
 - **Did:** The scheduled nightly run, watermark **2026-09-25T13:00Z → 22:00Z**. Swept

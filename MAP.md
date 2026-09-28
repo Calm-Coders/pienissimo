@@ -2,10 +2,22 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-25 (nightly sweep — bundle tranches built, Contratto narrowed, marketing UAT to 16/10) · Source of record: [notes/](notes/)
+Last updated: 2026-09-28 (Apex suite written, DevMain deployed to Pienissimo Prod) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
+- 🟢🔑 **2026-09-28 — `DevMain` is deployed to Pienissimo Prod.** 142 tests, 88.8% coverage,
+  deploy `0AfSW000001H1aD0AS` (461 components), commit `23443cd`
+  ([the resolved coverage risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)).
+  **Before anyone uses Prod:** assign `Full_Permission` (0 assignments, without it the new
+  fields are invisible); load the `Integration_Configuration2__c` rows (none, so Mexal,
+  Anticipay and DocuSign are inert); point the DocuSign Named Credential away from
+  `demo.docusign.net` and enter the credentials; re-deploy `Campaign_Record_Page` after the
+  October release. 🔴 Once the config rows exist, **every new Order starts the live Mexal chain**,
+  and the historic-order migration will too.
+  🔴 [Mexal writes fail after their own log insert](notes/risks/Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md):
+  the shipping address and the nightly payment sync cannot complete.
+  🟢 The quote-acceptance email no longer links to the UAT site.
 - 🟢🔑 **2026-09-25 evening — the gating bundle-tranche gap was built the same day it was
   found, and the Contratto was narrowed to Performance Plus only.** Nightly sweep,
   watermark 2026-09-25T13:00Z.
