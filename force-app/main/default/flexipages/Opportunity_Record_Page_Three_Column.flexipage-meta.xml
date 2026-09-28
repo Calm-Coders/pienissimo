@@ -335,13 +335,12 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Origine_WooCommerce__c</fieldItem>
-                <identifier>RecordOrigine_WooCommerce_cField</identifier>
+                <fieldItem>Record.Checkout_Link__c</fieldItem>
+                <identifier>RecordCheckout_Link_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.RecordType.Name}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>WooCommerce</rightValue>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -352,12 +351,13 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Checkout_Link__c</fieldItem>
-                <identifier>RecordCheckout_Link_cField</identifier>
+                <fieldItem>Record.Origine_WooCommerce__c</fieldItem>
+                <identifier>RecordOrigine_WooCommerce_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
-                        <operator>NE</operator>
+                        <leftValue>{!Record.RecordType.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>WooCommerce</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
