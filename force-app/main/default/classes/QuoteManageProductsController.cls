@@ -2,7 +2,7 @@ public with sharing class QuoteManageProductsController {
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
   private static final String ITEM_RECORD_TYPE_DEVELOPER_NAME = 'Item';
   private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
-  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Standart';
+  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Vendita_Standard';
 
   public class ProductOption {
     @AuraEnabled

@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Tipo_Opportunita__c</fullName>
     <description
-  >Classifica l’Opportunità come vendita da tutor o recall tutor.</description>
+  >Classifica l'Opportunita come vendita da tutor, WooCommerce o Performance Plus.</description>
     <label>Tipo Opportunita</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
@@ -17,11 +17,6 @@
                 <label>Vendita da tutor</label>
             </value>
             <value>
-                <fullName>Recall tutor</fullName>
-                <default>false</default>
-                <label>Recall tutor</label>
-            </value>
-            <value>
                 <fullName>Performance Plus - Attivazione</fullName>
                 <default>false</default>
                 <label>Performance Plus - Attivazione</label>
@@ -30,6 +25,11 @@
                 <fullName>Performance Plus - Rinnovo</fullName>
                 <default>false</default>
                 <label>Performance Plus - Rinnovo</label>
+            </value>
+            <value>
+                <fullName>WooCommerce</fullName>
+                <default>false</default>
+                <label>WooCommerce</label>
             </value>
         </valueSetDefinition>
     </valueSet>

@@ -11,7 +11,7 @@ import searchProducts from "@salesforce/apex/QuoteManageProductsController.searc
 const BUNDLE_TYPE = "Bundle";
 const ITEM_TYPE = "Item";
 const PLUS_OPPORTUNITY_RECORD_TYPE = "Plus_Attivazione_Rinnovo";
-const STANDARD_OPPORTUNITY_RECORD_TYPE = "Standart";
+const STANDARD_OPPORTUNITY_RECORD_TYPE = "Vendita_Standard";
 
 export default class QuoteManageProducts extends NavigationMixin(
   LightningElement
