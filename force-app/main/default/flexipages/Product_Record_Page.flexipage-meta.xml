@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -7,23 +7,15 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
-                            <value>Edit</value>
-                        </valueListItems>
-                        <valueListItems>
                             <value>Product2.Add_Products</value>
                             <visibilityRule>
                                 <criteria>
-                                    <leftValue>{!Record.RecordType.Name}</leftValue>
+                                    <leftValue
+                  >{!Record.RecordType.Name}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>Bundle</rightValue>
                                 </criteria>
                             </visibilityRule>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Delete</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Clone</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -132,24 +124,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Code__c</fieldItem>
-                <identifier>RecordARCOD_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Genera_Biglietto__c</fieldItem>
                 <identifier>RecordGenera_Biglietto__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.Solo_Bundle__c</fieldItem>
-                <identifier>RecordSolo_Bundle__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-218fea7c-3e45-425f-ab12-664779e19118</name>
@@ -184,6 +160,36 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Price_1__c</fieldItem>
                 <identifier>RecordARPRZ_1_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Solo_Bundle__c</fieldItem>
+                <identifier>RecordSolo_Bundle__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Is_Plus__c</fieldItem>
+                <identifier>RecordIs_Plus__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Numero_Tranche__c</fieldItem>
+                <identifier>RecordNumero_Tranche_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-4062bce0-fd1c-4500-ac7e-ccfc8e7334a3</name>

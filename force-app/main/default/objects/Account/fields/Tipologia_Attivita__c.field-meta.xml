@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tipologia_Attivita__c</fullName>
+    <description
+  >Tipologia dell'attivita dal foglio Account_NEW; elenco a selezione multipla nel modello Account Pienissimo.</description>
+    <label>Tipologia Attività</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value><fullName>Agriturismo</fullName><default
+        >false</default><label>Agriturismo</label></value>
+            <value><fullName>Bar</fullName><default>false</default><label
+        >Bar</label></value>
+            <value><fullName>Catena di Proprietà</fullName><default
+        >false</default><label>Catena di Proprietà</label></value>
+            <value><fullName>Cocktail Bar</fullName><default
+        >false</default><label>Cocktail Bar</label></value>
+            <value><fullName>Fast food</fullName><default>false</default><label
+        >Fast food</label></value>
+            <value><fullName>Franchising</fullName><default
+        >false</default><label>Franchising</label></value>
+            <value><fullName>Hotel</fullName><default>false</default><label
+        >Hotel</label></value>
+            <value><fullName>Locale notturno</fullName><default
+        >false</default><label>Locale notturno</label></value>
+            <value><fullName>Negozio</fullName><default>false</default><label
+        >Negozio</label></value>
+            <value><fullName>Pasticceria</fullName><default
+        >false</default><label>Pasticceria</label></value>
+            <value><fullName>Pizzeria</fullName><default>false</default><label
+        >Pizzeria</label></value>
+            <value><fullName>Pub</fullName><default>false</default><label
+        >Pub</label></value>
+            <value><fullName>Ristorante</fullName><default>false</default><label
+        >Ristorante</label></value>
+            <value><fullName>Ristorante Gourmet</fullName><default
+        >false</default><label>Ristorante Gourmet</label></value>
+            <value><fullName>Ristorante specialità Carne</fullName><default
+        >false</default><label>Ristorante specialità Carne</label></value>
+            <value><fullName>Ristorante specialità Pesce</fullName><default
+        >false</default><label>Ristorante specialità Pesce</label></value>
+            <value><fullName
+        >Spiaggia con servizio Ristorazione</fullName><default
+        >false</default><label
+        >Spiaggia con servizio Ristorazione</label></value>
+            <value><fullName>Sushi</fullName><default>false</default><label
+        >Sushi</label></value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

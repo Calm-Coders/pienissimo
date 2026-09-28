@@ -81,8 +81,19 @@ What was actually stale: the **provenance dates** on both diagrams, and
 second is real and is now **R2b**. If you deprioritised something else on the
 strength of my original framing, that was my error.
 
+## Requested, not yet scheduled
+
+| #   | Action                                                                                                                                            | Why it matters                                                                                                                                                                                                                                                                       | Status                     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| D1  | **Purge old and mismatching data from Pienissimo UAT.** Aurel Mrruku, 2026-09-02: he will ask for this _"in a second moment"_. Scope not yet set. | Follows from [UAT data is disposable in Fase 1](../notes/decisions/Decision%20-%20UAT%20data%20is%20disposable%20in%20Fase%201.md). Recorded so the request is not lost. ⚠ **Do not act on this before it is asked**, and establish the scope then — no object list has been agreed. | ⏸ awaiting Aurel's request |
+
 ## Deferred by standing instruction
 
+- **Apex coverage generally, for this phase.** Aurel Mrruku, 2026-09-02: _"in
+  this faase we dont care about the coverage too"_ —
+  [the decision](../notes/decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+  Stop reporting 0% as a live blocker on Fase 1 build work. It still gates the
+  **production** deploy, and the suite is still unscheduled.
 - **The Apex test suite.** Requested separately before the production deploy —
   see the standing instruction in [AGENTS.md](../AGENTS.md). The coverage records
   ([OI-64](../notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md),

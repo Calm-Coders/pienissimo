@@ -1,6 +1,6 @@
 ---
 name: org-status-check
-description: Compare Pienissimo requirements, Salesforce DX source, and a live Salesforce org; classify compliance, deployment drift, and operability with cited evidence, then send the completed result to Aurel and the Pienissimo devs group on Slack. Use for implementation-status questions, org/spec gap checks, UAT or sign-off readiness, and explicit org-status runs. Do not use to deploy, fix findings, write Apex tests, or retrieve metadata into force-app.
+description: Compare Pienissimo requirements, Salesforce DX source, and a live Salesforce org; classify compliance, deployment drift, and operability with cited evidence, then send the completed result to the Pienissimo devs group DM on Slack. Use for implementation-status questions, org/spec gap checks, UAT or sign-off readiness, and explicit org-status runs. Do not use to deploy, fix findings, write Apex tests, or retrieve metadata into force-app.
 ---
 
 # Org Status Check — Pienissimo
@@ -138,8 +138,9 @@ complete reconciliation first and then follow
 After the selected mode and its validations finish, read and follow
 [references/slack-delivery.md](references/slack-delivery.md). This is a standing
 instruction explicitly authorized by Aurel: send every completed org-status
-result separately to his configured personal DM and the Pienissimo devs group
-DM unless he opts out for that particular run.
+result to the `Pienissimo devs` group DM unless he opts out for that particular
+run. **Do not send a personal DM** — he is in that group and asked on
+2026-08-31 for the personal copy to stop.
 
 Slack delivery is separate from `publish` mode. Send the final result, never an
 interim finding. If delivery is unavailable or fails, keep the org-status run
@@ -157,7 +158,7 @@ successful but tell the user plainly that the DM was not delivered.
   attribution.
 - Requirements do not move because implementation differs. Record the
   divergence instead.
-- Send only to the verified Slack destinations in the delivery reference; never
+- Send only to the verified Slack destination in the delivery reference; never
   substitute a channel, similarly named user or newly discovered workspace.
 - Run `npm run org-status:validate` before reporting and
   `npm run org-status:validate:strict` after reconciliation. Run

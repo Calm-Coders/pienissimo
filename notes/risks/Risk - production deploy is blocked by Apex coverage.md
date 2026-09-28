@@ -1,18 +1,28 @@
 ---
 id: risk-coverage-blocks-deploy
 type: risk
-status: open
+status: resolved
 severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-08-26
+updated: 2026-09-28
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
 ---
 
 # Risk - production deploy is blocked by Apex coverage
+
+## 2026-09-07 - invitation source extends the production coverage brief
+
+Three new Apex classes and EventInvitationTrigger, plus an order-handler call,
+implement [the invitation foundation](../flows/Proposed%20event%20invitations%20for%20participant%20registration.md)
+in local source only. Salesforce check-only validation with NoTestRun passed;
+no tests were added, no live coverage changed or was measured, and this is not
+production readiness. OI-64 and OI-66 carry the added scenarios for the separate
+suite task. Production coverage remains gating; it is not a Phase 1 feature-work
+blocker under the existing user decision.
 
 Org-wide Apex coverage in UAT was **1%** on 2026-08-03. Salesforce requires
 **75%** to deploy to production. Until that gap closes, nothing in this project
@@ -70,3 +80,431 @@ first complete measurement of the tranche stack rather than as a regression.
 
 Nothing else moved. The floor is 75%; the org is at 0%. This stays **high**,
 stays **gating**, and stays one late task at Aurel Mrruku's request.
+
+## 2026-08-31 - org check: 1571 uncovered lines, still zero covered, and the drop is not progress
+
+Re-measured read-only against **Pienissimo UAT** by the `org-status-check` of
+09:36–09:52Z. **0 lines covered of 1,571, across 21 classes** — down from 1,769
+across 28.
+
+⚠ **Read the decrease correctly.** The whole of it is the seven Biglietto classes
+[deleted from the org on 28 August](Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
+**No test was written.** Coverage did not improve; the denominator shrank because
+code was destroyed. A summary that reports "1,769 → 1,571" as movement toward the
+floor would be wrong in the most misleading possible direction.
+
+Largest uncovered, first: `WoocommerceOrderService` **396**,
+`QuoteTrancheController` **386**, `LeadConversionQueueable` **148**.
+
+🔴 **The largest target is unversioned.** `WoocommerceOrderService` is the live
+WooCommerce endpoint and exists only in the org —
+[the deploy risk](Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md).
+It cannot be read from `force-app/`, so it cannot be tested from `force-app/`
+either. Retrieving it is a prerequisite of the test task, and it is a one-command
+prerequisite that nobody has run.
+
+⚠ The register still records `current: "1%"`. It has been 0% on every measurement
+since 25 August.
+
+The floor is 75%; the org is at 0%. This stays **high**, stays **gating**, and
+stays one late task at Aurel Mrruku's request. Nothing here proposes writing it.
+
+## 2026-09-02 - the number is real, but it is not a measurement
+
+Verified against Pienissimo UAT, 08:05-08:14Z. `ApexCodeCoverageAggregate`
+reports **0 covered, 1,646 uncovered, 0%** — up from 1,571 lines on 31 August as
+code lands. Against a 75% floor, nothing can ship. **That part is unchanged and
+still gating.**
+
+But the figure has been read too literally across the record, and the correction
+matters when the suite is finally written:
+
+**The last Apex test run in this org is `2026-08-04T08:53Z`** — 10 methods
+enqueued, 10 completed, **0 failed**. Project classes have changed continuously
+since, through 31 August. `ApexCodeCoverageAggregate` is populated only _by a
+test run_ and is invalidated when classes recompile, so the stored 0% is
+measuring **nothing about the current code**.
+
+> Read it as **unmeasured**, not as **measured at zero**.
+
+The practical difference: "0% coverage" has been cited as evidence that the
+tests are broken or absent. Neither is established. **Three project test classes
+are deployed** — `BundleComponentTriggerHandlerTest` (6,235 chars),
+`BundleProductAssignmentControllerTest` (10,320) and
+`OrderBigliettoTriggerHandlerTest` (7,151) — and on their last recorded run they
+passed.
+
+⚠ **This does not mean coverage is secretly fine.** Three test classes against
+twelve project classes and 1,646 lines will not reach 75%, and the deploy gate
+computes coverage at deploy time regardless of what is stored. The honest
+position is that **nobody currently knows the real figure**, and the only way to
+learn it is to run the suite.
+
+**No test was run by this check, and none was written or offered.** The suite
+remains one task, requested separately before the production deploy.
+
+⚠ [OI-66](../items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md) is
+**superseded, not fixed** — its ~270 lines were deleted with the Biglietto stack
+on 28 August rather than covered. The fall from 1,769 lines is that deletion, not
+progress.
+
+## 2026-09-02 - deferred by explicit decision, and still gating
+
+Aurel Mrruku, the same day: _"in this faase we dont care about the coverage
+too"_. Recorded as
+[a decision](../decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+
+**What changes:** coverage stops being reported as a live blocker on Fase 1
+build work. It is a known, accepted, dated deferral, not a finding.
+
+**What does not change:** this risk **stays open, stays high and stays gating**,
+per the standing instruction in [AGENTS.md](../../AGENTS.md) that the coverage
+records remain current as the brief for the test task. The 75% floor is computed
+by Salesforce **at the production deploy** and is indifferent to what phase the
+project calls itself. Deferring costs nothing in a sandbox and everything on the
+day of the deploy, and the window in which the suite must be written and pass —
+between the **10 September** end of Fase 1 development and the **6 October**
+go-live — is still not scheduled and still not estimated.
+
+🟢 One thing genuinely improved: **`WoocommerceOrderService` is now committed**
+and byte-identical to the deployed class
+([the orphan-route risk, resolved](Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md)).
+The largest single uncovered target — 396 lines — could not be tested from
+`force-app/` before, and now can. The one-command prerequisite this note flagged
+on 31 August is met.
+
+Nothing here writes, proposes or offers a test.
+
+## 2026-09-03 - the deficit grew by 844 lines in one day
+
+PR **#31** added two Apex controllers to `DevMain` with no tests:
+`ParticipantRegistrationController` (**576 lines**) and
+`QuoteAcceptanceController` (**268 lines**) —
+[the Landing Page community](../objects/The%20Landing%20Page%20community.md).
+
+Against the last measurement of **1,571 uncovered lines across 21 classes, zero
+covered** (31 August, from the org), the repository now carries roughly **844 more
+uncovered lines**. ⚠ That figure is arithmetic on the repository, **not a
+measurement** — the org has not been opened since 2 September and the last actual
+Apex test run remains **4 August**.
+
+The deficit continues to grow as code lands, which is the pattern this risk has
+recorded since 25 August (1,028 → 1,769 → 1,571 → ~2,415).
+
+**Unchanged in substance:** coverage is
+[deliberately deferred out of Fase 1](../decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md)
+and is **not** a blocker on current build work. It still gates the production
+deploy, and the suite is still unscheduled between the 10 September end of build
+and the 6 October go-live. **Recorded, not acted on** — the suite is written once,
+as its own task, when Aurel Mrruku asks for it.
+
+⚠ The two new classes are the first uncovered code that sits on an
+**internet-facing write path**
+([the authentication risk](Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md)),
+which changes what the eventual test suite has to cover, not when it is written.
+
+## 2026-09-04 — a second large uncovered increment, four days after the first
+
+Two merges on 4 September add roughly **another 600 uncovered lines** to
+`DevMain`, on top of the +844 recorded on 3 September:
+
+| Class                                      | Lines added | From                                   |
+| ------------------------------------------ | ----------- | -------------------------------------- |
+| `AnticipayErrorNotificationService`        | 188         | PR #32 — the Anticipay failure mail    |
+| `MappaturaEdizioneTriggerHandler`          | 132         | PR #34 — edition mapping overlap guard |
+| `OrderBigliettoTriggerHandler` (additions) | ~93         | PR #34 — campaign assignment           |
+| `AnticipayAccountService` (additions)      | ~80         | PR #32                                 |
+| `AnticipayOrderAutomation`                 | 63          | PR #32                                 |
+| `AnticipayAccountRefreshQueueable`         | 38          | PR #32                                 |
+| `anticipayAccountRefreshAction` (LWC JS)   | 112         | PR #32                                 |
+
+**Recorded, not acted on**, per the standing instruction: the test suite is
+Aurel Mrruku's to request as its own task before the production deploy, and
+[Apex coverage is not a Fase 1 concern](../decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md).
+
+⚠ **Two of the new classes are branch-heavy in ways that will make the eventual
+suite larger than the line count suggests** — worth knowing when the task is
+scoped, not now. `MappaturaEdizioneTriggerHandler` has an in-transaction path and
+an against-existing path with an insert/update distinction; `assignCampaigns` has
+three distinct throw conditions on a trigger path that rolls back a business
+state transition. **Both are exactly the kind of code where an untested edge
+becomes a production incident**, and `assignCampaigns` in particular now sits
+between a live order lifecycle and a table with no rows
+([OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)).
+
+⚠ **The last measured figure is still 4 August.** Everything since is a line
+count from `git diff`, not a coverage run — the number remains **unmeasured, not
+measured at zero**.
+
+## 2026-09-07 - the org puts a number on it: 0 of 2,741 lines
+
+An `org-status-check` run against Pienissimo UAT, reported by **Aurel Mrruku in
+the ROMI Salesforce group DM at 10:04 CEST**, measured the org rather than the
+diff:
+
+- **0 of 2,741 covered lines.**
+- **Lines grew 1,646 → 2,741 (+1,095) since 2 September.**
+- **The last Apex test run is still 2026-08-04**, while code landed through
+  4 September.
+- Its own verdict: _"The 75% production floor cannot be evidenced today."_
+  Classified `partial / aligned / uncovered`.
+
+🟢 **This confirms the standing caveat rather than overturning it**: the figure is
+**unmeasured, not measured at zero**. Nothing has run since 4 August.
+
+⚠ **And it predates the largest single addition.** The check ran at repo commit
+`012d49d`; commit **`d562af0`** landed later the same day carrying
+`EventInvitationService` (107 lines), `EventInvitationUrlJob` (110),
+`ParticipantCommunityUrl` (60) and `EventInvitationTrigger` (12) — roughly **290
+further uncovered lines** on top of the 2,741.
+
+**Recorded, not acted on.** The suite remains Aurel Mrruku\'s to request as its own
+task before the production deploy.
+
+🔴 **The window for it just narrowed.** This risk has been scheduled against
+"between the 10 September end of build and the 6 October go-live". The
+7 September internal follow-up agreed **go-live 21 September with approval by
+13 September**
+([OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
+If that date holds, the unscheduled test task has to fit **between 10 and 13
+September**, three of which are the company offsite. **Nobody has connected the
+two.**
+
+## 2026-09-08 - 0 of 2,957 lines, and the deploy window is now dated
+
+The org check of 8 September, 16:31-16:39 CEST, reports the stored aggregate as
+**0 covered / 2,957 uncovered lines (0%, 42 entries)** against live UAT — up from
+**2,741** the day before, which is the invitation stack and now `c877631`'s
+`AccountTriggerHandler`, `CommercialAccountResolver` and the `AnticipayAccountService`
+additions.
+
+| Date      | Uncovered lines | Source                                      |
+| --------- | --------------- | ------------------------------------------- |
+| 31/08     | 1,571           | org check                                   |
+| 02/09     | 1,646           | org check                                   |
+| 07/09     | 2,741           | ROMI org check, posted to the dev group     |
+| **08/09** | **2,957**       | **ROMI org check, posted to the dev group** |
+
+🔴 **The window is no longer open-ended.** The client has been told go-live is
+**21 October** with production release preceding it, and a first production deploy
+was estimated the same day at **"almeno un paio di settimane"**
+([OI-124](../items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
+Salesforce requires 75% org-wide coverage to deploy to production. **At 0% the
+deploy fails, whatever else is ready.**
+
+⚠ **The last actual Apex test run is still 4 August.** The figure remains
+**UNMEASURED, not measured at zero**, and it predates almost all current code.
+
+⏸ **Nothing was done about it and nothing should be.** Coverage remains
+[deliberately deferred in Fase 1](../decisions/Decision%20-%20Apex%20coverage%20is%20not%20a%20Fase%201%20concern.md),
+and the test suite is a separate task Aurel Mrruku requests in one pass before the
+production deploy. **This record stays current as the brief for that task and is
+not acted on.** The brief now additionally covers `AccountTriggerHandler`,
+`CommercialAccountResolver` and the Account record-type validation rules.
+
+## 2026-09-09 - the brief grows by 729 Apex lines in one merge
+
+Commit **`a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) adds **+729 net
+Apex lines** across six classes
+([the build](../objects/The%20commercial%20process%20automation.md)):
+
+| Class                          | Net lines | New?          |
+| ------------------------------ | --------- | ------------- |
+| `LeadConversionTriggerHandler` | +248      | new (extract) |
+| `QuoteTriggerHandler`          | +219      | **new**       |
+| `LeadConversionQueueable`      | +134      | refactored    |
+| `OpportunityTriggerHandler`    | +62       | **new**       |
+| `OrderTriggerHandler`          | +47       | existing      |
+| `WoocommerceOrderService`      | +19       | existing      |
+
+⚠ **This is arithmetic on the repository, not an org measurement.** The last
+measured figure is **0 of 2,957** from the 08/09 ROMI org check, which ran
+16:31–16:39 CEST on **8** September and therefore predates both `c877631`'s merge
+and this one. Read the two together as _"at least 2,957 + 729, still zero
+covered"_ — and the last actual Apex test run is **still 4 August**.
+
+| Date      | Uncovered lines           | Source                                              |
+| --------- | ------------------------- | --------------------------------------------------- |
+| 31/08     | 1,571                     | org check                                           |
+| 02/09     | 1,646                     | org check                                           |
+| 07/09     | 2,741                     | ROMI org check, posted to the dev group             |
+| 08/09     | 2,957                     | ROMI org check, posted to the dev group             |
+| **09/09** | **≥ 3,686** _(estimated)_ | **repository arithmetic on `a53345a`**              |
+| **10/09** | **≥ 4,182** _(estimated)_ | **repository arithmetic on `bc2ed5d`, PR #39 open** |
+
+🔴 **Two new classes carry commercial write paths and have no tests at all** —
+`QuoteTriggerHandler` inserts Orders and OrderItems, `OpportunityTriggerHandler`
+rewrites `AccountId` before save. Both are the kind of code where an untested
+edge case corrupts data rather than throwing.
+
+⚠ Note the repository does contain three test classes —
+`OrderTriggerHandlerTest`, `BundleComponentTriggerHandlerTest`,
+`BundleProductAssignmentControllerTest`. `OrderTriggerHandlerTest` **was not
+updated** for the opportunity-closing behaviour added to the class it covers, so
+whatever it asserted about `OrderTriggerHandler` is now incomplete. **Whether it
+still compiles was not checked, and checking it is part of the suite task, not
+this run.**
+
+⏸ **Recorded, not acted on. No test class was written or proposed.**
+
+## 2026-09-10 - +496 more, and the first of them is a callout class
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, **open, not merged**) adds two new Apex
+classes and **496 new lines** with no test of any kind:
+
+- **`MexalSearchCalloutService`** — 260 lines. An **HTTP callout** class, which is
+  the category that cannot be covered at all without `HttpCalloutMock`. The suite
+  task now needs mock classes, not only assertions.
+- **`MexalCustomerSearchService`** — 236 lines, of which the response mapper is
+  the part worth testing: fourteen field assignments, a three-way
+  `chooseFirstPopulated`, an IBAN reconstruction with a `leftPad`, and untyped
+  JSON deserialisation that silently returns on any shape it does not expect.
+
+That takes the estimate past **4,182 lines**, with the **last Apex test run still
+4 August** — five weeks and roughly 2,500 lines ago.
+
+⚠ **The estimate is repository arithmetic, not a measurement**, and it now counts
+lines on a branch that has not merged. If PR #39 is rejected the figure falls
+back to ~3,686.
+
+🟢 One thing in this commit helps the eventual suite: the callout service is
+**configuration-driven**, reading endpoint and method from
+`Integration_Configuration__c`, and the scaffolding it uses already carries
+`Use_Mock__c`, `Mock_API_Scenario__c` and `Mock_Apex_Class__c` fields. Whoever
+writes the suite should look at whether the house mock path can be used rather
+than hand-rolling `HttpCalloutMock`.
+
+⏸ **Recorded, not acted on. No test class was written or proposed.**
+
+## 2026-09-11 — two merges in one day, and the brief now includes an ERP writer
+
+`b9cfc1b` (PR #39, 10:27 CEST) and `80420cf` (PR #41, 18:05 CEST) both landed on
+`DevMain` today. Counted from the repository, `force-app/` now holds **30 Apex
+classes and 8,193 lines**. `MexalCustomerCreateService` is 363 new lines;
+`MexalCustomerSearchService` gained 277.
+
+⚠ **That total is a fresh whole-repository count and is not the same basis as the
+running "+N uncovered lines" estimate carried in earlier entries** — it includes
+comments and blanks across every class. It is recorded as a measured figure, not
+as a reconciliation of the estimate.
+
+🔴 **Last Apex test run is still 4 August**, now thirty-eight days ago and four
+merges behind.
+
+🔴 **The brief crosses a line today.** Until now the untested classes read, mapped
+and wrote to Salesforce. `MexalCustomerCreateService` **creates records in an
+external ERP** and writes the returned key back onto `Account`, and
+`MexalCustomerSearchService` now **inserts and updates Accounts**. Untested code
+whose failure mode is a wrong or duplicated customer in the billing system is a
+different class of exposure from untested code that renders a page.
+
+**Brief only. Nothing acted on; no test class written, proposed or scheduled** —
+the suite is requested separately before the production deploy, and this record
+exists to be complete when it is.
+
+## 2026-09-14 — the uncovered estimate is now measured at 4,737 lines
+
+The org-status-check against Pienissimo UAT read
+`ApexCodeCoverageAggregate` directly: **0 lines covered, 4,737 uncovered, 0%,
+across 60 entries.**
+
+That is up from **2,957 uncovered across 42 entries** on 8 September — **+1,780
+uncovered lines and 18 new entries in six days**, the steepest rise the project
+has recorded. Most of it is
+[the order-to-Mexal chain](../objects/The%20order%20to%20Mexal%20integration%20chain.md),
+nine classes written on 14 September.
+
+Salesforce requires **75%** to deploy to production. At 0% the gap is now
+**~3,553 covered lines** that do not exist.
+
+⚠ **The brief for the separate test task keeps growing, and its newest members
+are the riskiest.** The suite must now cover a queueable chain that **creates
+and updates customers in an external ERP** and a batch that **writes to the
+customer registry**. Both are callout classes, so they need mocks, and both are
+org-only today — they cannot be tested from a checkout until they are retrieved
+([the risk](Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)).
+
+Coverage remains **gating for production** and, per the standing user decision,
+**not a blocker on Fase 1 feature work**. No tests were written, offered or run
+by this check; the figure above is the stored measurement.
+
+## 2026-09-14 evening — +2,057 lines on an open PR, none of it covered
+
+`e06a1b4` (PR #43, open and unmerged) adds **eight Apex classes and modifies six
+more**, +2,057 / −143 across 40 files. The morning org check measured **0 covered
+/ 4,737 uncovered / 0%** — the steepest rise recorded — and **this commit is on
+top of that figure**, not inside it.
+
+Two things make the gap qualitatively worse rather than only larger:
+
+- 🔴 **The uncovered surface now includes two `Database.Batchable` classes with
+  `AllowsCallouts`, two `Queueable` chains and a trigger-driven async path.**
+  These are the hardest things in Apex to cover, and they are the last to be
+  written.
+- 🔴 **`MexalOrderSendService` creates orders in Pienissimo's live ERP**
+  ([the risk](Risk%20-%20the%20Mexal%20integration%20is%20developed%20against%20the%20production%20ERP.md)).
+  Running an uncovered write path against production is a different class of
+  exposure from running one against sandbox data.
+
+**Unchanged:** the 75% production floor cannot be evidenced, the last test run is
+**2026-08-04**, and **UAT opens on 23 September — nine days away.** Recorded as
+brief only; no test was written or offered.
+
+## 2026-09-15 — 5,095 uncovered before today's 4,777 new lines
+
+The 2026-09-15 `org-status-check` reads UAT at **0 covered / 5,095 uncovered /
+0% org-wide**, and records the **first test run since 4 August**: 37 pass,
+**4 fail**, all four `OrderTriggerHandlerTest` methods blocked by the missing
+edition mappings of
+[OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md).
+
+That snapshot was taken at 08:47Z. Since then **PR #44 merged (+2,487)** and
+**PR #45 opened (+2,290)**. The repository holds **40 Apex classes, three of
+which are tests**.
+
+🔴 **The newly uncovered surface now includes a guest-reachable write to Order
+status** — `ParticipantRegistrationController.markOrderIncassato`
+([OI-136](../items/OI-136%20Public%20participant%20link%20can%20mark%20an%20order%20Incassato.md)) —
+and a payment-state machine over tranches. The 75% production floor is further
+away than on any previous reading.
+
+⚠ **UAT opens 23 September — eight days.** Recorded as brief only; **no test was
+written, proposed or scaffolded.**
+
+## 2026-09-23 — org-status check
+
+Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
+
+- **0 of 7,756 lines, 0%, 79 entries**, against 4,737 across 60 on 14/09: **+3,019 uncovered lines in nine days.** Three test classes against 57 Apex classes in `force-app/`. The last `ApexTestRunResult` row is still **2026-08-04**. Read the percentage as unmeasured and the uncovered count as real.
+- ⚠ **Go-live is 21 October.** The production deploy needs this task done first, and it has **no slot on the calendar**. UAT runs until 13 October. Recorded as the brief only. **No test was written, proposed or run.**
+
+## 2026-09-28 — resolved: the suite was written and Prod was deployed
+
+Aurel Mrruku asked for the test suite and the production deploy in one task.
+
+- **Eight test classes, 142 tests, 88.8% org-wide coverage** (7,601 of 8,563
+  lines), validated check-only against **Pienissimo Prod** with `RunLocalTests`:
+  `TestDataFactory`, `TestHttpMock`, `MexalIntegrationTest`,
+  `QuoteCommercialTest`, `QuoteLinesAndTranchesTest`, `QuoteDocumentsTest`,
+  `CrmAutomationTest`, `TicketingTest`. `BundleProductAssignmentControllerTest`
+  was brought up to date. Commit `23443cd` on `DevMain`.
+- **Quick-deployed to Prod at 2026-09-28 11:28Z** (deploy `0AfSW000001H1aD0AS`,
+  461/461 components). The source is `DevMain` less `Campaign_Record_Page`: Prod
+  runs API 67, and Dynamic Forms on Campaign needs 68, which reaches Prod with the
+  October release. It is re-deployed after the upgrade.
+- Lowest remaining coverage: `QuotePdfService` 21% (PDF rendering and file
+  sharing behave differently inside tests), `MexalMaggazinoSyncBatch` 36%
+  (blocked by a real defect, see [the Mexal callout risk](Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md)), `ParticipantCommunityUrl` 37%
+  (`ConnectApi` needs `SeeAllData`).
+
+Facts the suite surfaced in Prod, recorded so nobody re-derives them:
+
+- Prod runs **Account, Contact and Lead duplicate rules**. Test data saves with
+  `DuplicateRuleHeader.AllowSave`.
+- **New fields carry no FLS for the System Administrator profile.** The
+  controllers that query `WITH USER_MODE` fail for a user without
+  **`Full_Permission`**. After the deploy it had **0 assignments in Prod**.
+- `Lead.Agente__c` has a lookup filter that requires `User.Agente__c`, the agent
+  code, to be filled.
+- `AuraHandledException.getMessage()` returns `Script-thrown exception` inside a
+  test, so only the throw can be asserted.

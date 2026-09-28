@@ -1,0 +1,38 @@
+.content {
+  position: relative;
+  min-height: 7rem;
+  padding: 0 1rem 1rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.loader {
+  min-height: 7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  padding: 0.75rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  background: #fff;
+  color: #5c6973;
+}
+
+.message.warning {
+  border-color: #f3c65b;
+  background: #fff8e5;
+  color: #8c4b02;
+  margin-bottom: 1rem;
+}
+
+lightning-tree-grid {
+  display: block;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+}

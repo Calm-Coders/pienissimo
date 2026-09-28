@@ -5,7 +5,7 @@ status: in-progress
 owner: Elena Spini
 org: both
 raised: 2026-08-20
-updated: 2026-08-26
+updated: 2026-09-04
 source: notes/meetings/2026-08-20 Flusso Asset Biglietti.md
 depends_on: [OI-77, OI-84, OI-46]
 ---
@@ -153,3 +153,28 @@ resolves**, and grows a second instance:
 
 Everything in this note remains **unbuilt** — the 25 August org check measured it,
 and nothing has been deployed since.
+
+## ✅ 2026-09-04 — the record types exist
+
+**`Campagna_Padre` and `Campagna_Figlio` are in `force-app/`**, merged in PR #34
+(commit `68c4342`, Anita Aga). This is the first time this model exists as
+metadata rather than as a design agreed in a room.
+
+Shipped with them: a `Campaign` layout, a `Campaign_Management` permission set,
+and two validation rules — **`Campagna_Figlio_Richiede_Padre`** and
+**`Campagna_Figlio_Richiede_Date`** — which enforce in the org what this note
+describes in prose: a child campaign must have a parent, and must carry dates.
+
+🟢 **The `Campagna_Figlio` type is what
+[`Mappatura_Edizione__c`](The%20Mappatura%20Edizione%20object.md) points at**, and
+the lookup is filtered to it — `Campaign.RecordType.DeveloperName = Campagna_Figlio`
+**and** `Campaign.IsActive = true`. So the edition mapping cannot accidentally
+target a parent campaign or a closed edition.
+
+⚠ **The dead rule is dead in code too, and correctly.** The
+one-active-child-campaign rule Elena Spini killed on 26 August is **not**
+reimplemented: the lookup filter requires the child to be active but does not
+require it to be the *only* active child. The edition is chosen by the mapping
+window, exactly as agreed.
+
+⚠ **Not verified against the org.** This is the repository.

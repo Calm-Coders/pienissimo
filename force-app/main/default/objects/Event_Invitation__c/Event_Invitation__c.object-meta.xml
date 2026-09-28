@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description
+  >Invito alla registrazione partecipanti per una azienda e una edizione evento.</description>
+    <enableActivities>false</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Invito Evento</label>
+    <nameField>
+        <displayFormat>INV-{000000}</displayFormat>
+        <label>Numero Invito</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Inviti Evento</pluralLabel>
+    <sharingModel>Private</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

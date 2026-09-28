@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Codice_Agente_Esterno__c</fullName>
+    <description
+  >Valore originale di Codice_agente per singolo Account nel foglio Account_NEW; puo differire dal codice sull'utente agente.</description>
+    <label>Codice Agente Esterno</label>
+    <length>40</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+</CustomField>

@@ -2,395 +2,636 @@ import { api, LightningElement } from "lwc";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
+import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
+import LightningConfirm from "lightning/confirm";
 import getBundleContext from "@salesforce/apex/BundleProductAssignmentController.getBundleContext";
+import searchProducts from "@salesforce/apex/BundleProductAssignmentController.searchProducts";
 import saveComponents from "@salesforce/apex/BundleProductAssignmentController.saveComponents";
+import { validRows } from "./pricing";
 
+const currency = { currencyCode: "EUR", minimumFractionDigits: 2 };
 export default class BundleProductAssignment extends LightningElement {
-  duplicateProductMessage =
-    "This product is already a component of this bundle. A product can belong to several bundles, but only once per bundle.";
-
-  componentColumns = [
-    { label: "Name", fieldName: "name" },
-    { label: "Code", fieldName: "productCode" },
+  productColumns = [
+    { label: "Prodotto", fieldName: "name", wrapText: true },
+    { label: "Codice", fieldName: "productCode" },
     {
-      label: "Qty",
-      fieldName: "quantity",
-      type: "number",
-      initialWidth: 70,
-      editable: true
+      label: "Listino unitario",
+      fieldName: "productPriceDisplay"
     },
-    { label: "Row Price", fieldName: "lineListPrice", type: "currency" },
     {
-      label: "Row Selling Price",
-      fieldName: "spreadPrice",
-      type: "currency",
-      editable: true
-    },
-    { label: "Discount", fieldName: "discountLabel" },
-    {
-      type: "button-icon",
-      fixedWidth: 44,
+      type: "button",
       typeAttributes: {
-        iconName: "utility:delete",
-        name: "remove",
-        alternativeText: "Remove",
-        variant: "bare"
+        label: "Scegli",
+        name: "choose",
+        variant: "brand-outline"
       }
     }
   ];
-
   _recordId;
-
   isLoading = false;
   hasLoaded = false;
-  isCreateModalOpen = false;
-  keepCreateModalOpen = false;
-  createProductError = "";
-  createFormError = "";
+  isPickerOpen = false;
+  isTranchView = false;
+  isSearching = false;
+  errorMessage = "";
+  searchError = "";
   bundleName = "";
-  fixedPrice = 0;
-  calculatedBundlePrice = 0;
+  bundleTranches = [];
   rows = [];
+  savedRows = [];
+  products = [];
+  selectedProducts = [];
+  searchTerm = "";
+  isChoosingProduct = true;
+  hasMore = false;
+  nextCursor;
+  searchVersion = 0;
+  contextVersion = 0;
+  isDirty = false;
 
   @api
   get recordId() {
     return this._recordId;
   }
-
   set recordId(value) {
-    this._recordId = value;
-    if (value) {
+    if (value && value !== this._recordId) {
+      this._recordId = value;
       this.loadContext();
     }
   }
 
-  // Totals are recomputed in the browser so the configurator sees the variance
-  // move as they type, rather than only after a save.
   get spreadTotal() {
-    return this.rows.reduce(
-      (sum, row) => sum + (Number(row.spreadPrice) || 0),
+    return [
+      ...this.rows,
+      ...this.selectedProducts.map((row) => this.resolvePendingRow(row))
+    ].reduce((sum, row) => sum + (Number(row.spreadPrice) || 0), 0);
+  }
+  get listTotal() {
+    return [...this.rows, ...this.selectedProducts].reduce(
+      (sum, row) =>
+        sum + (Number(row.listPrice) || 0) * Number(row.quantity || 0),
       0
     );
   }
-
-  get variance() {
-    return (Number(this.fixedPrice) || 0) - this.spreadTotal;
+  get hasMissingListPrices() {
+    return [...this.rows, ...this.selectedProducts].some(
+      (row) => row.listPrice == null
+    );
   }
-
-  get isReconciled() {
-    return Math.abs(this.variance) < 0.005;
-  }
-
-  get varianceClass() {
-    return this.isReconciled ? "variance reconciled" : "variance drifted";
-  }
-
-  get varianceMessage() {
-    if (this.isReconciled) {
-      return "Spreads reconcile to the bundle price.";
-    }
-    return this.variance > 0
-      ? `${this.formatCurrency(this.variance)} of the bundle price is not attributed to any product.`
-      : `Spreads exceed the bundle price by ${this.formatCurrency(Math.abs(this.variance))}.`;
-  }
-
   get hasRows() {
     return this.rows.length > 0;
   }
-
+  get hasBundleTranches() {
+    return this.bundleTranches.length > 0;
+  }
+  get bundleTranchOptions() {
+    return this.bundleTranches.map((tranch) => ({
+      label: this.formatTranchOption(tranch),
+      value: tranch.id
+    }));
+  }
+  get componentColumns() {
+    const columns = [
+      { label: "Prodotto", fieldName: "name", wrapText: true },
+      { label: "Codice", fieldName: "productCode" }
+    ];
+    if (this.hasBundleTranches) {
+      columns.push({
+        label: "Tranch",
+        fieldName: "bundleTranchName",
+        wrapText: true
+      });
+    }
+    columns.push(
+      {
+        label: "Quantita",
+        fieldName: "quantity",
+        type: "number",
+        editable: true,
+        initialWidth: 95
+      },
+      {
+        label: "Listino riga",
+        fieldName: "lineListPrice",
+        type: "currency",
+        typeAttributes: currency
+      },
+      {
+        label: "Importo assegnato alla riga",
+        fieldName: "spreadPrice",
+        type: "currency",
+        typeAttributes: currency,
+        editable: true
+      },
+      {
+        label: "Importo per unita",
+        fieldName: "unitSpread",
+        type: "currency",
+        typeAttributes: currency
+      },
+      { label: "Sconto", fieldName: "discountLabel" },
+      {
+        type: "button-icon",
+        fixedWidth: 44,
+        typeAttributes: {
+          iconName: "utility:delete",
+          name: "remove",
+          alternativeText: "Rimuovi",
+          variant: "bare"
+        }
+      }
+    );
+    return columns;
+  }
   get showMainView() {
-    return !this.isCreateModalOpen;
+    return !this.isPickerOpen;
   }
-
-  get showCreateView() {
-    return this.isCreateModalOpen;
-  }
-
-  get showFooter() {
-    return this.hasLoaded && this.showMainView;
-  }
-
   get panelHeader() {
-    return this.isCreateModalOpen
-      ? "New Bundle Component"
-      : "Configure bundle components";
+    if (this.isTranchView) {
+      return "Crea Tranch";
+    }
+    return this.isPickerOpen ? "Aggiungi prodotti" : "Configura bundle";
   }
-
-  get showInitialLoader() {
-    return !this.hasLoaded && this.isLoading;
+  get showBundleFooter() {
+    return !this.isTranchView;
+  }
+  get saveDisabled() {
+    return this.isLoading || !this.hasLoaded;
+  }
+  get createTranchDisabled() {
+    return this.saveDisabled || !this.hasRows;
+  }
+  get addSelectionDisabled() {
+    return this.selectedProducts.length === 0 || this.isLoading;
+  }
+  get hasSelection() {
+    return this.selectedProducts.length > 0;
+  }
+  get selectionLabel() {
+    return "Aggiungi tutti (" + this.selectedProducts.length + ")";
+  }
+  get selectedLabel() {
+    return "Prodotti da aggiungere (" + this.selectedProducts.length + ")";
+  }
+  get resultLabel() {
+    return this.products.length + " prodotti visualizzati";
+  }
+  get componentLabel() {
+    return "Componenti (" + this.rows.length + ")";
+  }
+  get hasProducts() {
+    return this.products.length > 0;
+  }
+  get showNoProducts() {
+    return !this.isSearching && !this.searchError && !this.hasProducts;
+  }
+  get pendingLabel() {
+    return this.isDirty
+      ? "Modifiche da salvare"
+      : "Nessuna modifica in sospeso";
   }
 
   async loadContext() {
+    const version = ++this.contextVersion;
     this.isLoading = true;
+    this.hasLoaded = false;
+    this.errorMessage = "";
     try {
-      this.applyContext(
-        await getBundleContext({ bundleId: this.recordId })
-      );
-    } catch (error) {
-      this.showToast("Error", this.reduceError(error), "error");
-    } finally {
+      const context = await getBundleContext({ bundleId: this.recordId });
+      if (version !== this.contextVersion) return;
+      this.applyContext(context);
       this.hasLoaded = true;
-      this.isLoading = false;
+    } catch (error) {
+      if (version === this.contextVersion)
+        this.errorMessage = this.reduceError(error);
+    } finally {
+      if (version === this.contextVersion) this.isLoading = false;
     }
   }
-
   applyContext(context) {
     this.bundleName = context.bundleName;
-    this.fixedPrice = context.fixedPrice || 0;
-    this.calculatedBundlePrice =
-      context.calculatedBundlePrice ?? context.spreadTotal ?? 0;
+    this.bundleTranches = context.bundleTranches || [];
     this.rows = (context.components || []).map((row) => this.decorate(row));
+    this.savedRows = this.rows.map((row) => ({ ...row }));
+    this.isDirty = false;
   }
-
   decorate(row) {
-    const quantity = Number(row.quantity) || 1;
-    const listPrice = Number(row.listPrice) || 0;
-    const spreadPrice = Number(row.spreadPrice) || 0;
-    const lineListPrice = listPrice * quantity;
-    const discount =
-      lineListPrice === 0 ? 0 : (1 - spreadPrice / lineListPrice) * 100;
+    const quantity = Number(row.quantity);
+    const spreadPrice = Number(row.spreadPrice);
+    const lineListPrice = (Number(row.listPrice) || 0) * quantity;
     return {
       ...row,
       quantity,
+      spreadPrice,
       lineListPrice,
-      unitSpread: spreadPrice / quantity,
-      key: row.id || `new-${row.productId}`,
-      discountLabel: lineListPrice === 0 ? "-" : `${discount.toFixed(2)}%`
+      unitSpread: quantity > 0 ? spreadPrice / quantity : 0,
+      key: row.id || "new-" + row.productId,
+      bundleTranchName: this.resolveBundleTranchName(row.bundleTranchId),
+      discountLabel:
+        lineListPrice === 0
+          ? "-"
+          : ((1 - spreadPrice / lineListPrice) * 100).toFixed(2) + "%"
     };
   }
-
   handleCellChange(event) {
     const drafts = new Map(
       event.detail.draftValues.map((draft) => [draft.key, draft])
     );
-    this.rows = this.rows.map((row) => {
-      const draft = drafts.get(row.key);
-      if (!draft) {
-        return row;
-      }
-      return this.decorate({
-        ...row,
-        quantity:
-          draft.quantity === undefined
-            ? row.quantity
-            : Math.max(1, Number(draft.quantity) || 1),
-        spreadPrice:
-          draft.spreadPrice === undefined
-            ? row.spreadPrice
-            : Number(draft.spreadPrice) || 0
-      });
-    });
+    this.rows = this.rows.map((row) =>
+      this.decorate({ ...row, ...(drafts.get(row.key) || {}) })
+    );
+    this.isDirty = true;
     const table = this.template.querySelector('[data-id="components"]');
-    if (table) {
-      table.draftValues = [];
-    }
+    if (table) table.draftValues = [];
   }
-
   handleRowAction(event) {
-    if (event.detail.action.name !== "remove") {
-      return;
+    if (event.detail.action.name === "remove") {
+      this.rows = this.rows.filter((row) => row.key !== event.detail.row.key);
+      this.isDirty = true;
     }
-    const removed = event.detail.row;
-    this.rows = this.rows.filter((row) => row.key !== removed.key);
   }
-
   handleAddComponent() {
-    this.keepCreateModalOpen = false;
-    this.createProductError = "";
-    this.createFormError = "";
-    this.isCreateModalOpen = true;
+    this.isPickerOpen = true;
+    this.selectedProducts = [];
+    this.searchTerm = "";
+    this.isChoosingProduct = true;
+    this.fetchProducts();
   }
-
-  handleCloseCreateModal() {
-    this.closeCreateModal();
-  }
-
-  handleSaveAndNew() {
-    this.keepCreateModalOpen = true;
-    const form = this.template.querySelector("lightning-record-edit-form");
-    if (form) {
-      form.submit();
+  async handleBack() {
+    if (this.isLoading) return;
+    if (this.hasSelection) {
+      this.isLoading = true;
+      try {
+        const confirmed = await LightningConfirm.open({
+          label: "Scartare i prodotti da aggiungere?",
+          message:
+            "Le quantita e i prezzi inseriti in questa pagina saranno persi.",
+          theme: "warning"
+        });
+        if (!confirmed) return;
+      } finally {
+        this.isLoading = false;
+      }
     }
+    this.closePicker();
   }
-
-  async handleCreateSuccess() {
-    await this.loadContext();
-    this.createProductError = "";
-    this.createFormError = "";
-    this.showToast("Success", "Bundle component created.", "success");
-
-    if (this.keepCreateModalOpen) {
-      this.closeCreateModal();
-      requestAnimationFrame(() => {
-        this.isCreateModalOpen = true;
+  closePicker() {
+    ++this.searchVersion;
+    this.isSearching = false;
+    this.isPickerOpen = false;
+    this.selectedProducts = [];
+  }
+  handleSearchInput(event) {
+    this.searchTerm = event.target.value;
+    this.fetchProducts();
+  }
+  handleRetrySearch() {
+    this.fetchProducts();
+  }
+  handleLoadMore() {
+    this.fetchProducts(true);
+  }
+  async fetchProducts(append = false) {
+    const version = ++this.searchVersion;
+    this.isSearching = true;
+    this.searchError = "";
+    if (!append) {
+      this.products = [];
+      this.hasMore = false;
+      this.nextCursor = null;
+    }
+    try {
+      const result = await searchProducts({
+        searchTerm: this.searchTerm,
+        bundleOnly: true,
+        generatesTicket: null,
+        excludedProductIds: [...this.rows, ...this.selectedProducts].map(
+          (row) => row.productId
+        ),
+        afterId: append ? this.nextCursor : null
       });
-      return;
+      if (version !== this.searchVersion || !this.isPickerOpen) return;
+      const items = result.items.map((item) => ({
+        ...item,
+        productPriceDisplay:
+          item.productPrice == null
+            ? "Non disponibile"
+            : this.formatCurrency(item.productPrice)
+      }));
+      this.products = append ? [...this.products, ...items] : items;
+      this.hasMore = result.hasMore;
+      this.nextCursor = result.nextCursor;
+    } catch (error) {
+      if (version === this.searchVersion)
+        this.searchError = this.reduceError(error);
+    } finally {
+      if (version === this.searchVersion) this.isSearching = false;
     }
-
-    this.closeCreateModal();
   }
-
-  handleCreateError(event) {
-    this.keepCreateModalOpen = false;
-    const message = this.reduceError(event.detail);
-    if (message.includes(this.duplicateProductMessage)) {
-      this.createProductError = this.duplicateProductMessage;
-      this.createFormError = "";
+  handleChooseProduct(event) {
+    if (this.isLoading || event.detail.action.name !== "choose") return;
+    const product = event.detail.row;
+    if (
+      [...this.rows, ...this.selectedProducts].some(
+        (row) => row.productId === product.id
+      )
+    )
       return;
-    }
-    this.createProductError = "";
-    this.createFormError = message;
-    console.error(
-      "bundleProductAssignment create error",
-      event.detail
+    const saved = this.savedRows.find((row) => row.productId === product.id);
+    const row = saved
+      ? { ...saved }
+      : {
+          productId: product.id,
+          name: product.name,
+          productCode: product.productCode,
+          listPrice: product.productPrice,
+          quantity: 1,
+          spreadPrice: null,
+          bundleTranchId: null,
+          key: "new-" + product.id
+        };
+    this.selectedProducts = [
+      ...this.selectedProducts,
+      this.decoratePending(row)
+    ];
+    this.isChoosingProduct = false;
+    ++this.searchVersion;
+    this.isSearching = false;
+  }
+  handlePendingChange(event) {
+    const { key, field } = event.target.dataset;
+    const value = event.target.value;
+    this.selectedProducts = this.selectedProducts.map((row) => {
+      if (row.key !== key) return row;
+      const updated = {
+        ...row,
+        [field]:
+          field === "bundleTranchId"
+            ? value || null
+            : value === "" || value == null
+              ? null
+              : Number(value)
+      };
+      if (field === "discountPercent" && updated.discountPercent != null) {
+        updated.spreadPrice = null;
+      }
+      if (field === "spreadPrice" && updated.spreadPrice != null) {
+        updated.discountPercent = null;
+      }
+      return this.decoratePending(updated);
+    });
+  }
+  decoratePending(row) {
+    const hasListPrice = row.listPrice != null;
+    const needsChoice =
+      Number(row.listPrice) > 0 &&
+      row.discountPercent == null &&
+      row.spreadPrice == null;
+    return {
+      ...row,
+      bundleTranchName: this.resolveBundleTranchName(row.bundleTranchId),
+      hasListPrice,
+      discountDisabled: !hasListPrice || Number(row.listPrice) <= 0,
+      discountRequired: needsChoice,
+      rowPriceRequired:
+        !hasListPrice || Number(row.listPrice) <= 0 || needsChoice
+    };
+  }
+  resolvePendingRow(row) {
+    if (row.discountPercent == null) return row;
+    const total =
+      Number(row.listPrice) *
+      Number(row.quantity) *
+      (1 - Number(row.discountPercent) / 100);
+    return { ...row, spreadPrice: Math.round(total * 100) / 100 };
+  }
+  handleRemovePending(event) {
+    this.selectedProducts = this.selectedProducts.filter(
+      (row) => row.key !== event.currentTarget.dataset.key
+    );
+    if (!this.hasSelection) this.isChoosingProduct = true;
+    if (this.isChoosingProduct) this.fetchProducts();
+  }
+  validateSelection({ requireTranch } = { requireTranch: false }) {
+    const inputs = [...this.template.querySelectorAll("[data-pending]")];
+    const validInputs = inputs.reduce(
+      (valid, input) => input.reportValidity() && valid,
+      true
+    );
+    return (
+      validInputs &&
+      (!requireTranch ||
+        !this.hasBundleTranches ||
+        this.selectedProducts.every((row) => row.bundleTranchId)) &&
+      validRows(this.selectedProducts.map((row) => this.resolvePendingRow(row)))
     );
   }
-
-  closeCreateModal() {
-    this.keepCreateModalOpen = false;
-    this.isCreateModalOpen = false;
-    this.createProductError = "";
-    this.createFormError = "";
+  handleAddAnother() {
+    if (this.isLoading || !this.validateSelection()) return;
+    this.isChoosingProduct = true;
+    this.searchTerm = "";
+    this.fetchProducts();
   }
-
-  handleProductFieldChange() {
-    this.createProductError = "";
-    this.createFormError = "";
+  stageSelection() {
+    if (this.addSelectionDisabled || !this.validateSelection()) return false;
+    this.rows = [
+      ...this.rows,
+      ...this.selectedProducts.map((row) =>
+        this.decorate(this.resolvePendingRow(row))
+      )
+    ];
+    this.isDirty = true;
+    this.closePicker();
+    return true;
   }
-
-  handleCreateSubmit(event) {
-    event.preventDefault();
-    this.createProductError = "";
-    this.createFormError = "";
-    event.target.submit({
-      ...event.detail.fields,
-      Bundle__c: this.recordId
-    });
+  handleAddSelected() {
+    this.stageSelection();
   }
-
-  serializeRows() {
-    return this.rows.map((row) => ({
-      id: row.id,
-      productId: row.productId,
-      quantity: Number(row.quantity) || 1,
-      spreadPrice: Number(row.spreadPrice) || 0
-    }));
+  async handleSaveSelected() {
+    if (this.stageSelection()) await this.handleSave();
   }
-
   async handleSave() {
-    const orphans = this.rows.filter((row) => !row.productId);
-    if (orphans.length) {
-      console.error(
-        "bundleProductAssignment: rows with no productId",
-        orphans,
-        this.rows
-      );
-      const described = orphans
-        .map((row) => row.name || row.productCode || "(unnamed row)")
-        .join(", ");
+    await this.saveBundle({ closeAfterSave: true });
+  }
+  async handleCreateTranch() {
+    if (this.createTranchDisabled) return;
+    if (!validRows(this.rows) || this.rows.some((row) => !row.productId)) {
       this.showToast(
-        "Error",
-        `${orphans.length} row(s) have no product and cannot be saved: ${described}. ` +
-          "Remove them, or reload the page to start from the saved state.",
+        "Controlla le righe",
+        "Salva righe valide prima di creare una tranch.",
         "error"
       );
       return;
     }
 
+    if (this.isDirty) {
+      this.isLoading = true;
+      try {
+        const confirmed = await LightningConfirm.open({
+          label: "Salvare il bundle?",
+          message:
+            "Le modifiche ai prodotti devono essere salvate prima di creare una tranch.",
+          theme: "warning"
+        });
+        if (!confirmed) return;
+      } finally {
+        this.isLoading = false;
+      }
+
+      const saved = await this.saveBundle({
+        closeAfterSave: false,
+        allowMissingTranch: true
+      });
+      if (!saved) return;
+    }
+
+    this.isTranchView = true;
+  }
+  async saveBundle({ closeAfterSave, allowMissingTranch = false }) {
+    if (this.saveDisabled) return false;
+    if (
+      !allowMissingTranch &&
+      this.hasBundleTranches &&
+      this.rows.some((row) => !row.bundleTranchId)
+    ) {
+      this.showToast(
+        "Tranch mancante",
+        "Assegna ogni prodotto del bundle a una tranch prima di salvare.",
+        "error"
+      );
+      return false;
+    }
+    if (!validRows(this.rows) || this.rows.some((row) => !row.productId)) {
+      this.showToast(
+        "Controlla le righe",
+        "Ogni riga deve avere un prodotto, una quantita intera positiva e un importo non negativo con massimo due decimali.",
+        "error"
+      );
+      return false;
+    }
     this.isLoading = true;
     try {
       this.applyContext(
         await saveComponents({
           bundleId: this.recordId,
-          componentsJson: JSON.stringify(this.serializeRows())
+          componentsJson: JSON.stringify(
+            this.rows.map((row) => ({
+              id: row.id,
+              productId: row.productId,
+              quantity: row.quantity,
+              spreadPrice: row.spreadPrice,
+              bundleTranchId: row.bundleTranchId
+            }))
+          ),
+          allowMissingTranch
         })
       );
-
-      const message = this.isReconciled
-        ? "Components saved."
-        : `Components saved, but the spread does not reconcile (${this.formatCurrency(
-            this.variance
-          )}).`;
       this.showToast(
-        "Success",
-        message,
-        this.isReconciled ? "success" : "warning"
+        "Salvataggio completato",
+        "Componenti salvati.",
+        "success"
       );
-      this.closeAndRefresh();
+      if (closeAfterSave) {
+        await this.refreshAndClose();
+      } else {
+        await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
+        this.dispatchEvent(new RefreshEvent());
+      }
+      return true;
     } catch (error) {
-      this.showToast("Error", this.reduceError(error), "error");
+      this.showToast(
+        "Salvataggio non riuscito",
+        this.reduceError(error),
+        "error"
+      );
+      return false;
     } finally {
       this.isLoading = false;
     }
   }
-
-  handleCancel() {
-    this.closeAndRefresh();
-  }
-
-  closeAndRefresh() {
-    this.dispatchEvent(new CloseActionScreenEvent());
+  async handleTranchSaved() {
+    this.isTranchView = false;
+    await this.loadContext();
+    await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
     this.dispatchEvent(new RefreshEvent());
   }
-
+  handleTranchCancel() {
+    this.isTranchView = false;
+  }
+  async handleCancel() {
+    if (this.isLoading) return;
+    if (this.isDirty) {
+      this.isLoading = true;
+      try {
+        const confirmed = await LightningConfirm.open({
+          label: "Annullare le modifiche?",
+          theme: "warning",
+          message:
+            "Le aggiunte, le modifiche e le rimozioni non salvate saranno perse."
+        });
+        if (!confirmed) return;
+      } finally {
+        this.isLoading = false;
+      }
+    }
+    this.closeWithoutRefresh();
+  }
+  async refreshAndClose() {
+    await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
+    this.dispatchEvent(new RefreshEvent());
+    this.closeWithoutRefresh();
+  }
+  closeWithoutRefresh() {
+    this.dispatchEvent(new CloseActionScreenEvent());
+  }
   formatCurrency(value) {
     return new Intl.NumberFormat("it-IT", {
       style: "currency",
       currency: "EUR"
-    }).format(value || 0);
+    }).format(value);
   }
-
+  formatTranchOption(tranch) {
+    const dueDate = tranch.dueDate
+      ? " - " + this.formatDate(tranch.dueDate)
+      : "";
+    const sequence =
+      tranch.sequence === null || tranch.sequence === undefined
+        ? ""
+        : tranch.sequence + " - ";
+    return sequence + tranch.name + dueDate;
+  }
+  resolveBundleTranchName(bundleTranchId) {
+    if (!bundleTranchId) {
+      return "";
+    }
+    const tranch = this.bundleTranches.find(
+      (candidate) => candidate.id === bundleTranchId
+    );
+    return tranch ? this.formatTranchOption(tranch) : "";
+  }
+  formatDate(value) {
+    if (!value) {
+      return "";
+    }
+    const [year, month, day] = value.split("-");
+    return `${day}/${month}/${year}`;
+  }
   showToast(title, message, variant) {
     this.dispatchEvent(new ShowToastEvent({ title, message, variant }));
   }
-
   reduceError(error) {
-    console.error("bundleProductAssignment error", error);
-
-    if (!error) {
-      return "Unknown error";
-    }
-    if (typeof error === "string") {
-      return error;
-    }
-
-    const messages = [];
-    const body = error.body ?? error;
-
-    if (Array.isArray(body)) {
-      messages.push(...body.map((entry) => entry?.message).filter(Boolean));
-    }
-    if (body?.message) {
-      messages.push(body.message);
-    }
-    if (Array.isArray(body?.pageErrors)) {
-      messages.push(
-        ...body.pageErrors.map((entry) => entry?.message).filter(Boolean)
-      );
-    }
-    if (body?.fieldErrors) {
-      for (const field of Object.keys(body.fieldErrors)) {
-        messages.push(
-          ...body.fieldErrors[field]
-            .map((entry) => entry?.message)
-            .filter(Boolean)
-        );
-      }
-    }
-    if (body?.output?.errors?.length) {
-      messages.push(
-        ...body.output.errors.map((entry) => entry?.message).filter(Boolean)
-      );
-    }
-    if (!messages.length && error.message) {
-      messages.push(error.message);
-    }
-    if (!messages.length && body?.enhancedErrorType) {
-      messages.push(body.enhancedErrorType);
-    }
-
-    return messages.length
-      ? messages.join(" | ")
-      : JSON.stringify(error).slice(0, 255);
+    const body = error?.body || error;
+    const messages = [
+      ...(Array.isArray(body) ? body.map((entry) => entry.message) : []),
+      body?.message,
+      ...(body?.pageErrors || []).map((entry) => entry.message),
+      ...Object.values(body?.fieldErrors || {})
+        .flat()
+        .map((entry) => entry.message)
+    ].filter(Boolean);
+    const message = messages.join(" ? ") || "Operazione non riuscita. Riprova.";
+    return message.includes("already a component")
+      ? "Questo prodotto e gia presente nel bundle. Modifica la quantita della riga esistente."
+      : message;
   }
 }

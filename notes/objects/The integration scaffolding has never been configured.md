@@ -1,11 +1,11 @@
 ---
 id: obj-integration-scaffolding-empty
 type: object
-status: active
+status: superseded
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-26
-updated: 2026-08-26
+updated: 2026-09-14
 depends_on: [OI-58, OI-49, OI-73, OI-94]
 source: org-status-check against Pienissimo UAT, 2026-08-26
 evidence: SOQL counts on Integration_Configuration__c and Integration_Log__c, NamedCredential listing
@@ -67,3 +67,137 @@ describes, one level down.
 
 Do **not** re-flag the scaffolding itself as unrequested implementation — that
 is already recorded and settled.
+
+## 2026-09-02 - unchanged, and now it blocks a dated build
+
+Re-verified against Pienissimo UAT, 08:05-08:14Z. Seven days on, nothing has
+moved:
+
+|                                                   | 2026-08-26   | 2026-09-02                  |
+| ------------------------------------------------- | ------------ | --------------------------- |
+| `Integration_Configuration__c` rows               | 0            | **0**                       |
+| `Integration_Configuration__c` object permissions | 0            | **0**                       |
+| `Integration_Log__c` rows                         | 0            | **21**                      |
+| Named credentials                                 | 1 (DocuSign) | **2 (DocuSign, Anticipay)** |
+| Remote site settings                              | 0            | **0**                       |
+
+Two of those numbers moved and both are worth reading carefully.
+
+**The log is being written.** 21 `Integration_Log__c` rows, up from 0 — but they
+come from the **inbound** WooCommerce endpoint, which does not use this
+scaffolding at all. `WoocommerceOrderService` is a `@RestResource` that
+WooCommerce calls; it needs no configuration row and no named credential.
+**Nothing outbound has run.**
+
+**A second named credential appeared, and it is org-only.** `Anticipay` now
+exists in the org and in no branch of this repository — see
+[the credentials risk](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md).
+Its existence does **not** configure anything here: the house
+`API_Callout_Engine` reads its endpoint from `Integration_Configuration__c`,
+which still has no rows.
+
+### The object nobody can read
+
+`Integration_Configuration__c` still returns **zero `ObjectPermissions` rows** —
+against 6 to 102 for every other project object. No profile and no permission
+set grants read on it. So even once a configuration row exists, no running user
+can see it.
+
+That is now blocking a dated deliverable rather than a hypothetical one: the
+[Anticipay field build](../risks/Risk%20-%20the%20Anticipay%20field%20build%20has%20not%20started.md)
+is due inside Fase 1, which ends **10 September**.
+
+## 2026-09-10 - the empty table now has two rows waiting by name
+
+**`bc2ed5d`** (Anita Aga, PR **#39**, open) is the first code in this project to
+call Mexal, and it reads its endpoint from this custom setting
+([the build](The%20first%20Mexal%20integration%20Apex.md)).
+
+Two `Integration_Configuration__c` rows are now required **by exact
+`Azione__c` value**, or every call throws _"Configurazione Mexal non trovata per
+azione"_ before it leaves the org:
+
+| `Azione__c`              | Needs                                                                                                       |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `Mexal_Clienti_Ricerca`  | `Endpoint_Path__c` ending `/ricerca`, `HTTP_Method__c` = `POST`, `Named_Credential_Sandbox__c` / `_Prod__c` |
+| `Mexal_Articoli_Ricerca` | same shape; declared in the allow-list, not yet called by any service class                                 |
+
+🔴 **The table still holds zero rows and still has no named owner.** This is the
+same shape as
+[OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)
+— a hand-maintained table that code now depends on, with nobody assigned to fill
+it — and it is the second instance in a week.
+
+🔴 **The `Mexal` named credential and `Mexal_External_Credential` do not exist in
+`force-app/` either**
+([the org-only risk](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)),
+so the row would point at a principal the repository cannot deploy.
+
+⚠ **This is a repository reading.** Whether anyone created the rows or the
+credential in UAT during the day was **not checked** — the org was not opened this
+run, and the last org check (08/09 16:31Z) predates three commits.
+
+## 2026-09-11 — the object was renamed and retyped, and now four rows are needed
+
+`80420cf` (PR #41, merged 18:05 CEST) **renamed
+`Integration_Configuration__c` to `Integration_Configuration2__c`** and changed
+its type from a **Hierarchy** custom setting to a **List** custom setting. The
+per-user → per-profile → per-org `SetupOwnerId` resolution was deleted outright
+and replaced with `ORDER BY Name LIMIT 1`. All seventeen fields moved; the old
+directory is gone and no reference to the old API name survives in `force-app/`.
+
+⚠ **The rename is almost certainly forced, not careless** — Salesforce cannot
+convert a custom setting between Hierarchy and List in place. 🔴 **But the `2`
+suffix is now permanent**, baked into every class, the permission set and the
+layouts. Renaming it later is a second migration. **Decide deliberately now or
+accept it on the record.**
+
+⚠ **What happened to the original object in the org is unknown.** No destructive
+change and no data move is recorded anywhere, and a repository reading cannot
+see whether the old object still exists or still holds rows.
+
+🔴 **Four rows are now required by exact name**, up from two yesterday:
+
+| `Azione__c`               | Used by                                |
+| ------------------------- | -------------------------------------- |
+| `Mexal_Clienti_Ricerca`   | customer search, and the nightly sync  |
+| `Mexal_Articoli_Ricerca`  | article search                         |
+| `Mexal_Clienti_Creazione` | **customer create — writes to Mexal**  |
+| `Mexal_Clienti_Modifica`  | customer update (built, no caller yet) |
+
+**Zero rows, no named owner, and now on the critical path of a write
+integration.** Every call throws _"Configurazione Mexal non trovata per azione"_
+until somebody creates them. Third table in eight days with this exact shape,
+after [OI-121](../items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md).
+
+## 2026-09-14 — superseded: the scaffolding is configured
+
+**This note's central claim is no longer true.** The org-status-check against
+Pienissimo UAT found `Integration_Configuration2__c` holding **six rows**:
+
+| Row name                  | Serves                   |
+| ------------------------- | ------------------------ |
+| `Anticipay_Account_Check` | The Anticipay VAT lookup |
+| `Mexal_Clienti_Ricerca`   | Customer search          |
+| `Mexal_Clienti_Creazione` | Customer create (POST)   |
+| `Mexal_Clienti_Modifica`  | Customer update (PUT)    |
+| `Mexal_Articoli_Ricerca`  | Article registry search  |
+| `Mexal_Ordini_Creazione`  | Order create             |
+
+`Integration_Log__c` holds **85 rows** — 45 flagged as errors, 40 not. The org
+has **three** named credentials (`Anticipay`, `DocuSign`, `Mexal`), not one.
+
+**So every "zero rows" statement above is stale**, including the ones quoted
+into [OI-116](../items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)
+and MAP.md through 11 September. The engine has an endpoint for every action the
+built code names, and the logs prove it has been called.
+
+⚠ **What the correction does not say.** Rows existing is not the same as the
+integrations working: the log's error rows outnumber its successes, and the
+order-to-Mexal chain
+([the build](The%20order%20to%20Mexal%20integration%20chain.md)) has never run at
+all. This note is superseded on **configuration**, not on **operability**.
+
+⚠ **The row values were deliberately not read.** They carry endpoints and
+principals, which do not belong in this repository. Only the row names and the
+count were taken.

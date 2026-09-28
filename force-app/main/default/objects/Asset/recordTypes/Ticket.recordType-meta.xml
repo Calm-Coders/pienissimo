@@ -14,6 +14,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Rinuncia</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Assegnato</fullName>
             <default>false</default>
         </values>

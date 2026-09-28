@@ -17,4 +17,51 @@
             <default>false</default>
         </values>
     </picklistValues>
+    <picklistValues>
+        <picklist>Evento__c</picklist>
+        <values>
+            <fullName>Tour</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Food Marketing Festival</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pienissimo Live</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Academy</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sold Out</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Odb</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Camerieri Venditori</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mastery</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Happy Team</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pienissimo Intensive</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>ND</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
 </RecordType>

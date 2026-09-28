@@ -78,6 +78,14 @@ Example: `OrderItem.Tranche__c` may be `partial` compliance, `aligned` drift,
 and `permission-blocked` operability. Calling it simply “missing” or
 “implemented” loses the important fact.
 
+Field access and object access are judged together. `permission-blocked` is
+reserved for a real denial: nothing outside the platform internals grants the
+field. When a permission set grants the field but only a profile grants the
+object, the verdict is `unproven`, not `permission-blocked` — a user carries one
+profile plus their permission sets, so the combination is usually usable, and
+proving it needs `PermissionSetAssignment`. Failing to prove usability is not
+proving a blockage.
+
 ## Negative-evidence rule
 
 An absence finding must name the exhaustive authority that was searched.

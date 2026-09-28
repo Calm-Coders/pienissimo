@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-08-28
-updated: 2026-08-28
+updated: 2026-08-31
 depends_on: [OI-102]
 blocks: [OI-49]
 requirement: [INT-11, INT-14, INT-16]
@@ -125,3 +125,52 @@ and is all ROMI-side:
 **Basis: the org, inspected 2026-08-28.** This sweep did not open the org
 itself; it is recording a run that did. The tracker row and the register entry
 both still describe the pre-28-August reading.
+
+## 2026-08-31 - the class was rewritten and the duplicate contract changed silently
+
+The `org-status-check` of **2026-08-31, 09:36–09:52Z** found the endpoint
+**rewritten and renamed** since 28 August — the deployed class is now
+`WoocommerceOrderService` (23,087 chars), it was modified that same day, and it
+is [not in source control at all](../risks/Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md).
+Everything below is about a class nobody can review in a diff.
+
+🔴 **The duplicate response changed, and no one recorded it.** A repeat delivery
+now returns **HTTP 200 with `duplicate: true`** in the body, and updates the
+Opportunity, where on 28 August it returned **409**.
+
+That is defensible on its own terms — idempotent-success is a normal choice, and
+arguably a friendlier one for a plugin that retries. **The problem is that it is
+a contract change on a live integration that the counterparty was never told
+about.** Sabatino Rinaldi's plugin has a manual re-send button; whatever it does
+today with a 409 it will now do with a 200, and it can only tell "created" from
+"already existed" by parsing the body flag. If it branches on status code, it now
+reports every duplicate as a fresh success.
+
+**Somebody has to tell Sabatino Rinaldi before the integration tests this week.**
+This is a one-line message, and it is the cheapest thing on this note.
+
+⚠ It also means the record now describes the endpoint three different ways —
+`409` in the 28 August section above, `409` in the tracker row and the register,
+and `200 + duplicate: true` in the org. The org is right; the rest is stale.
+
+🟢 **Still being exercised, harder than before.** 16 inbound log rows (13×200,
+1×409 historical, 2×500) and **7** Orders carrying a WooCommerce key, up from 5
+logs and 2 orders. The single historical 409 is the last artifact of the old
+contract.
+
+🔴 **Both residuals survived the rewrite intact.**
+
+- The **SOQL-then-insert race** is unchanged, and the 500 count has gone from 1
+  to 2. Causation is still not established, and two 500s is still not evidence —
+  but it is the direction the race would push it, and the traffic has roughly
+  tripled.
+- **`INT-16` is unchanged and re-verified.** The rewritten service is still
+  `global without sharing` with no token or signature check anywhere. Its only
+  handling of `Authorization` **redacts the header for logging** (lines 418–427)
+  — which proves the header is received and stored safely, and proves nothing
+  about it being checked. The token owed under
+  [OI-102](OI-102%20Salesforce%20endpoint%20and%20token%20for%20the%20WooCommerce%20plugin.md)
+  is still the entire authentication of this integration.
+
+**Basis: the org, inspected 2026-08-31.** This sweep did not open the org; it is
+recording a run that did, whose findings were otherwise never published.

@@ -5,7 +5,7 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-26
-updated: 2026-08-26
+updated: 2026-09-02
 source: org-status-check against Pienissimo UAT, 2026-08-26
 ---
 
@@ -70,3 +70,44 @@ component by component, which is why the instrument used to do it matters.
 
 Related: [the build ahead of the record](objects/The%20build%20ahead%20of%20the%20record.md),
 [the Biglietto stack is not in source control](risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md).
+
+## 2026-09-02 - the same failure, a different instrument
+
+The rule below was written about **fields** and `sf sobject describe`. A second
+instance turned up on 2 September, in a different tool, with the same shape: an
+instrument that cannot see something reports **nothing** rather than **cannot
+tell**.
+
+**`org-status-check`'s own inventory reported ZERO EmailTemplates in Pienissimo
+UAT**, and recorded no unavailability for the type — so the run treated the
+absence as fact. SOQL against `EmailTemplate` returns **88**, including the
+project's own `WooCommerce_Checkout_Link`, active, in
+`Unfiled Public Classic Email Templates`.
+
+The cause: **Metadata API `listMetadata` cannot enumerate folder-scoped types
+without being given a folder.** `EmailTemplate` is folder-scoped. Asked without
+one, it returns an empty list and no error.
+
+The 2026-08-26 build state carried a `not_built` entry asserting the org had
+"zero ... EmailTemplate". That claim rested entirely on this artefact and has
+been **withdrawn** in the 2026-09-02 block, recorded as `LIM-01`.
+
+### The generalised rule
+
+> **An empty result from an instrument that cannot enumerate the thing is not
+> absence. It is silence.**
+
+Before recording any absence, name the authority that was searched and check it
+was capable of answering:
+
+| Question                          | Instrument that can answer                          | Instrument that will lie by omission         |
+| --------------------------------- | --------------------------------------------------- | -------------------------------------------- |
+| Does a field exist?               | Tooling `FieldDefinition`                           | `sf sobject describe`, ordinary SOQL         |
+| Does an email template exist?     | SOQL on `EmailTemplate`                             | Metadata API `listMetadata` without a folder |
+| Does a Flow exist?                | `FlowDefinitionView` **and** Metadata API, agreeing | either one alone                             |
+| Is a component in the repository? | exact `rg` or file enumeration                      | semantic code search                         |
+
+The Flow row is there because the same run **did** get it right: zero Flows was
+confirmed twice, by an empty Metadata API list _and_ by `FlowDefinitionView`
+returning 79 namespaced flows and no project one. Two instruments agreeing is
+what let that finding stand while the EmailTemplate one fell.

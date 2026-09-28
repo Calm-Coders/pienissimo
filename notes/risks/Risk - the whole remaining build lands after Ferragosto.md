@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-08-06
-updated: 2026-08-14
+updated: 2026-09-08
 blocks: [go-live]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -74,3 +74,105 @@ dati tempi ahaha."_
 
 Both **internal follow-ups on 10 and 17 August were cancelled** on 7 August, so
 there is no ROMI-side checkpoint between the break and the 19 August restart.
+
+## 2026-09-02 — ROMI is away 9-11 September, and Fase 1 development ends on the 10th
+
+Stated by Elena Spini in the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md),
+while the group was picking dates:
+
+> _"noi dal 9 all'11 siamo a un evento aziendale, quindi 9 10 11 anche noi non ci
+> saremo."_
+
+🔴 **The end of Fase 1 development, 10 September, falls in the middle of it** —
+and nobody in the room connected the two. The date was not renegotiated, and the
+project plan was not mentioned.
+
+Read against the calendar this leaves, from tonight:
+
+| Day                    | What is on it                                              |
+| ---------------------- | ---------------------------------------------------------- |
+| **3 Sept**             | Data Model Parte 1, client-facing                          |
+| **4 Sept**             | Data Model Parte 2, client-facing                          |
+| **5 Sept**             | free                                                       |
+| **7 Sept**             | Data Model Parte 3, plus the internal MKT flows session     |
+| **8 Sept**             | free                                                       |
+| **9-11 Sept**          | 🔴 **ROMI company event** — and Pienissimo is on tour 9-10 |
+
+So **four working days remain before the deadline**, three of which carry a
+client session, and the deadline itself is inside a company offsite. Against that
+sit the eleven Anticipay fields (unbuilt), the Asset build from scratch
+(unstarted), the whole Salesforce side of WooCommerce (unstarted), the campaign
+parent/child model (unbuilt), the tranche remainder, and now the Mexal order
+tracciato agreed on 2 September.
+
+⚠ **This is not a claim that the date will move or that it will be missed.** It
+is that the plan and the calendar have never been laid over each other in
+writing, and the person who owns the plan said the words in passing while
+scheduling something else.
+
+## 2026-09-03 - the offsite is confirmed in writing, and a second absence appears
+
+🔴 **The 9-11 September ROMI company event is now corroborated in writing.**
+The record carried it only from Elena Spini's passing remark on 2 September.
+Gianpaolo Motta, mailing an external contact at 14:00Z on an unrelated subject:
+
+> _"hai spazio lunedì o martedì per una call per le attività Salesforce? (da
+> mercoledì a venerdì saremo out)"_
+
+Wednesday to Friday of next week is **9-11 September**. **The Fase 1 development
+deadline of 10 September falls inside it**, and the fact that ROMI's COO is
+routing external calls around it while nobody has moved the deadline is the whole
+problem in one sentence.
+
+⚠ **Elena Spini is also off 14 and 15 September.** She moved the internal
+follow-up on 3 September at 15:30Z with the note _"Aggiorno il ns follow-up per il
+progetto perché il 14 e 15 sarò off"_ — the 14 September occurrence goes to
+**Thursday 17 September, 14:15-15:15 CEST**, and the slot is now an hour rather
+than 45 minutes because _"andiamo sempre lunghi"_.
+
+So the week after the deadline opens with the project manager away for two days
+and the first internal checkpoint on the 17th. **Between 9 and 17 September there
+is one working day with the full team available.**
+
+⚠ Meanwhile the 3 September session put **sixteen more actions** into the pipe,
+nine of them build or integration work on Aurel Mrruku and Andrea Di Cicco
+([the minute](../meetings/2026-09-03%20Data%20Model%20Parte%201.md)), and two
+further client sessions are booked for 4 and 7 September.
+
+## 2026-09-08 - the calendar was re-cut, and the pressure moved rather than eased
+
+The client was given a new plan
+([the decision](../decisions/Decision%20-%20go-live%20moves%20to%2021%20October%20and%20Fase%202%20is%20declared%20out%20of%20perimeter.md)):
+
+| Milestone | New date |
+| --------- | -------- |
+| **UAT ready, Fase 1** | **23 September** |
+| **UAT and test window** | 23 September – 13 October |
+| **Solution approval** | 13 October |
+| **Go-live Fase 1** | **21 October** |
+
+🟢 **Fifteen more days of build than the 6 October plan allowed**, and the
+internal "Fase 1 development ends 10 September" deadline is superseded by a
+client-facing schedule that no longer depends on it.
+
+🔴 **What replaces it is tighter where it counts.** The build must be **UAT-ready
+in fifteen days**, and on the same afternoon Aurel Mrruku said _"non abbiamo
+ancora fatto dei UAT noi"_ and that a first production release needs _"almeno un
+paio di settimane"_
+([OI-134](../items/OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md)).
+Those two estimates consume the whole window.
+
+🔴 **The absences fall inside it, unchanged.** The **9–11 September offsite** and
+**Elena Spini off 14 and 15 September** both sit between now and UAT-ready. The
+data-model sessions that gate migration are **16 and 18 September** — *after* the
+UAT-ready date, and the workstream they gate is in stand-by until they close.
+
+🔴 **The Zoho margin halves.** Zoho CRM expires **31 October 2026**. 6 October left
+twenty-five days of dual-run; **21 October leaves ten**, with only
+_"supporto post go-live"_ after it.
+
+⚠ **The nine flows named for UAT include several the record shows as unbuilt or
+unproven** — Mexal, tranche propagation on orders (0 of 32 order lines), the
+DocuSign signature-to-QR chain (0 Assets with QR values), and the Marketing Cloud
+flows. **A UAT window is not the same as a testable build.**

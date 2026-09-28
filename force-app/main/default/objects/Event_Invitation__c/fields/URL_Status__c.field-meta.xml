@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>URL_Status__c</fullName>
+    <label>Stato Link</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Pending</fullName><default>true</default><label
+        >In attesa</label></value>
+            <value><fullName>Ready</fullName><default>false</default><label
+        >Pronto</label></value>
+            <value><fullName>Error</fullName><default>false</default><label
+        >Errore</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

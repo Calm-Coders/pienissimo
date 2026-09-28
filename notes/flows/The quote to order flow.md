@@ -4,7 +4,7 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-08-26
+updated: 2026-09-03
 requirement: SAL-17
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -105,3 +105,21 @@ at last — see [OI-59](../items/OI-59%20Quote%20workflow%20configuration.md).
 The transitions themselves remain unbuilt.
 
 Still against a **10 September** development end date.
+
+## 2026-09-03 - the entry point exists, and it is shorter than the flow
+
+The quote acceptance landing page was built and merged —
+[the Landing Page community](../objects/The%20Landing%20Page%20community.md),
+[OI-68](../items/OI-68%20Quote%20acceptance%20landing%20page.md).
+
+🟢 It reads the quote, its lines, account and opportunity, and offers accept and
+reject on the agreed statuses (`In Trattativa`, `In Attesa Accettazione`).
+
+🔴 **Acceptance sets `Quote.Status = Accettato` and stops.** The flow above
+continues — DocuSign signature, then automatic order creation in `Ordinato`.
+**Neither is in the code.** So the chain now has a front door that opens onto
+nothing: a quote can be accepted through the page and no order will follow.
+
+Whether that is a first pass or a change of design is unresolved —
+[OI-111](../items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md).
+Until someone says, **do not treat the quote-to-order chain as started.**

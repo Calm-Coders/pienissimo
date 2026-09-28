@@ -1,12 +1,12 @@
 ---
 id: OI-76
 type: open-item
-status: open
+status: resolved
 owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-08-06
-updated: 2026-08-26
+updated: 2026-09-02
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-04
 ---
@@ -113,7 +113,7 @@ field cannot come down from the registry the way
 - **The one-off mass update of existing products at go-live is ROMI's**, so it
   does not land on Rebecca Marmo.
 
-This resolves the *ownership* question and reverses the assumption above that the
+This resolves the _ownership_ question and reverses the assumption above that the
 values would arrive as a registry column. **Do not ask for a tier column at the
 26 August review** — ask instead for the agreed value list, because the client
 has now accepted that the list lives in Salesforce.
@@ -157,3 +157,86 @@ the 20 August ruling as standing and the Mexal option as an open alternative.
 ⚠ Whichever way it lands, [OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
 governs the timing: the article registry is being re-created, and the tier values
 this note cites were parsed from an extract of the registry being replaced.
+
+## 2026-09-02 - assigned as a build action, and the first values arrived
+
+Two things landed on the same day.
+
+**The 2 September meeting turned this into an assigned action on Aurel Mrruku** -
+"Aggiungere su Salesforce il campo Tipo Biglietto modificabile esclusivamente
+dagli amministratori di sistema"
+([the meeting](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)).
+That confirms the 24 August design - a manually maintained Salesforce field owned
+by amministrazione - and adds the access rule: **system administrators only**.
+⚠ Recorded from Gemini notes; whether it is a picklist or free text was not
+minuted.
+
+**The first values are known.** `Anagrafica Articoli.xlsx` carries a
+`Tipo Biglietto` column with three values - **`Executive`, `Diamond`, `Gold`** -
+populated on **13 of 43 rows** and empty on the other 30. It applies to exactly
+two events: Camerieri Venditori (Executive only) and Food Marketing Festival (all
+three). So the field is **sparse by design**, not incompletely filled: most
+events have no tiers.
+
+**The field does not exist.** Verified 2026-09-02 by Tooling `FieldDefinition`
+against Pienissimo UAT and by inspection of `force-app/`: `Product2` has no
+`Tipo_Biglietto__c` in either. `Tipologia__c` (Text 255) exists, but nothing in
+the record establishes it as the ticket type and it should not be assumed to be.
+
+Until the field exists, the 13 rows that carry a tier **cannot be loaded with
+their tier**, and that is one of the two things blocking
+[the workbook](../The%20Anagrafica%20Articoli%20workbook.md) from going into the
+org.
+
+## 2026-09-02 - built
+
+`Product2.Tipo_Biglietto__c` exists: **restricted picklist**, values
+`Executive` / `Diamond` / `Gold`, deployed to Pienissimo UAT and committed to
+`force-app/`. Populated on the four bundle-only articles that carry a tier.
+
+**"Editable by system administrators only" is expressed as a permission set**,
+`Product_Registry_Admin`, which grants edit on this field and
+`Stato_Bundle__c` and nothing else. Assigning it to nobody but administrators is
+what enforces the rule - the field itself has no other grant. Doing it this way
+rather than by editing a profile in the org keeps it in source control, against
+[the org-only pattern](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md).
+
+⚠ The field is a **picklist**; the meeting did not say whether it should be one.
+Three values are what the registry currently uses, and the picklist is restricted,
+so a fourth tier will need a deploy rather than a typed value. Confirm when the
+transcript is drilled.
+
+⚠ The 13 workbook rows that carry a tier are **not** all loaded - only the four
+bundle-only ones are. The other nine are Mexal articles, most of which are not in
+the org at all.
+
+## 2026-09-02 — confirmed from the transcript, with the access rule attached
+
+This item was resolved from the Gemini summary of the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md).
+The transcript adds three things the summary did not carry:
+
+- **Why it left Mexal.** Elisa Migliano's own question opened the call — _"vale
+  la pena di impegnare un campo di mexal per solo 15 codici articolo?"_ — and the
+  answer is no. That also **retires the double-coding trick** agreed on
+  26 August, where one scarce Mexal field was to carry _genera biglietto_ and
+  _bundle_ packed together: freeing `tipo biglietto` frees the field.
+- **The access rule is stricter than "administrators".** Elisa Migliano:
+  _"questo menù dell'anagrafica prodotti deve essere visibile esclusivamente
+  all'account amministrazione@pienissimo.com."_ The built
+  `Product_Registry_Admin` permission set carries the rule; **whether it is
+  granted to that account alone has not been checked.**
+- 🔴 **There is no validation and both sides know it.** Aurel Mrruku said so
+  plainly: _"non c'è automatismo per beccare quella problematica… se metti su un
+  prodotto una tipologia di biglietto che non c'entra niente con quel prodotto,
+  lì non ti posso aiutare."_ The mitigation is access control, and the exposure
+  is a wrong ticket type on a live product with nothing to catch it.
+
+**Volume**: about 15 codes carry a value, out of a course registry of 40-50 rows,
+so roughly twenty manual updates a year. Aurel Mrruku drew the line at scale —
+fine at 13, not at 100-200 — and if the format ever changes (_"la mastery
+facciamo Gold e Diamond"_) the field can be moved back to Mexal and mapped.
+
+⚠ **Elisa Migliano also asked for _"ulteriori cinque sei campi"_ on Salesforce
+only**, decoupled from Mexal, for free mapping. They were not named and they are
+not in any tracker row.

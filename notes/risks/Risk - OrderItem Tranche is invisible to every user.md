@@ -1,19 +1,25 @@
 ---
 id: risk-orderitem-tranche-undeployed
 type: risk
-status: open
+status: resolved
 severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-25
-updated: 2026-08-26
+updated: 2026-09-02
 depends_on: [OI-50]
 blocks: [OI-75, go-live]
 source: org-status-check against Pienissimo UAT, 2026-08-26
+resolved_by: org-status-check 2026-09-02 08:05-08:14Z
 evidence: Tooling FieldDefinition + FieldPermissions on OrderItem.Tranche__c, Pienissimo UAT
 ---
 
 # Risk - OrderItem Tranche is invisible to every user
+
+> ✅ **Resolved 2026-09-02.** `Tranche_Management` now grants read and edit
+> on `OrderItem.Tranche__c`. The field is no longer invisible. Read
+> [the resolution](#2026-09-02---resolved) — the _propagation_ half of this
+> note is still unbuilt and did not move.
 
 **`OrderItem.Tranche__c` exists in Pienissimo UAT and no profile or project
 permission set grants read or edit on it.** It is therefore invisible to every
@@ -87,3 +93,30 @@ done, is the one option that is not fine.
 
 Both are write actions and belong to Aurel Mrruku; **this check is read-only and
 performed neither.**
+
+## 2026-09-02 - Resolved
+
+**The permission gap is closed.** `FieldPermissions` for
+`OrderItem.Tranche__c` on 2026-09-02 returns two rows, not one:
+
+| Permission set                                       | Read | Edit |
+| ---------------------------------------------------- | ---- | ---- |
+| `Tranche_Management`                                 | yes  | yes  |
+| `sfdc_a360_sfcrm_data_extract` (Salesforce internal) | yes  | no   |
+
+The `QuoteLineItem` twin carries the identical pair, so the asymmetry this note
+was written about is gone. `OrderItem` inherits object access from `Order`,
+which carries 72 grant rows, so field and object access line up.
+
+### Two caveats that keep this from being "done"
+
+**Reach is one user.** `Tranche_Management` is assigned to exactly **one** active
+user against 8 active users in the org — the same as every other project
+permission set. The field is visible in principle and to almost nobody in
+practice; that is tracked separately as `DIV-09` in the register's build state.
+
+**Propagation is still unbuilt, and this note always said so.** On 2026-09-02,
+**0 of 18** `OrderItem` records carry a tranche, `Completamente_Pagata__c` is
+true on none of the 19 tranches, and nothing in `force-app/` writes either side.
+Making the field visible did not make anything fill it. That half belongs to
+[OI-50](../items/OI-50%20Tranche%20object.md) and is unchanged.

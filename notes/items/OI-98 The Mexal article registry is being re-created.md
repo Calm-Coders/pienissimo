@@ -65,3 +65,29 @@ is the standing warning about touching them at all.
 **Nobody in the session connected this to the go-live date.** Fase 1 development
 ends 10 September; a registry re-created "next week" arrives with days to spare
 and no stated migration plan for the old codes already in UAT.
+
+## 2026-09-01 - the first extract arrived, scoped to the courses
+
+**Fabrizio Paganelli mailed `Anagrafica Articoli.xlsx` on 1 September 14:04Z** to
+Elena Spini, Aurel Mrruku and Andrea Di Cicco, for the 2 September _Follow-up
+Anagrafica Articoli_ session: _"un estratto di anagrafica articoli **con solo i
+corsi**"_, plus a proposal for bundle-only codes
+([OI-48](OI-48%20Bundle-only%20article%20codes.md)) and _"un paio di domande"_ for
+ROMI.
+
+Two things this tells the record, and one it does not:
+
+- 🟢 **The re-creation is under way and producing artifacts**, eleven days after
+  it was announced. This is the first tangible output of it.
+- ⚠ **It is an extract, not the registry.** Scoped to the courses only, out of
+  roughly 1000 codes. It does not tell anyone whether the other ~900 have been
+  touched, nor whether these are the **new** codes or the **current** ones being
+  reviewed. Fabrizio Paganelli's wording — _"estratto di anagrafica articoli"_ —
+  is ambiguous and should not be resolved by guessing.
+- 🔴 **The workbook has not been read** — this sweep cannot open a Gmail
+  attachment. Everything above comes from the mail body.
+
+**The 2 September session is the place to establish which it is**, and to ask the
+question this item has carried since 26 August: what happens to the 280
+`Product2` rows already in UAT, and to the codes the migration must carry across.
+Nothing in the mail addresses it.

@@ -5,9 +5,9 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-08-26
+updated: 2026-09-11
 depends_on: [OI-58]
-source: meetings/open-items.md row 58
+source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
 
 # The Mexal integration
@@ -226,3 +226,389 @@ order rows** implied by Mexal's row identifiers. Andrea Di Cicco described the
 row-id structure as what makes per-tranche invoicing of a bundle possible; Aurel
 Mrruku asked him to explain it — _"mi devi spiegare sta roba"_ — and the call
 ended first. It bears on [OI-50](../items/OI-50%20Tranche%20object.md).
+
+## The document rules, dictated 2026-09-02
+
+**The second half of the
+[2 September session](../meetings/2026-09-02%20Follow-up%20Anagrafica%20Articoli.md)
+is Elisa Migliano reading her own Mexal screens aloud while Andrea Di Cicco maps
+them.** This is the first time the order tracciato has been written down. Treat
+it as the client's own statement of the contract — and note that several values
+were recalled rather than read, which is flagged where it happened.
+
+### Order header
+
+| Field                     | Rule                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------- |
+| `codice conto`            | the customer code                                                                     |
+| `data documento`          | the date the order is created                                                          |
+| `sigla` / `serie` / `numero` | fixed except `numero`; send **0** and Mexal assigns the next value                 |
+| **`sigla`**               | **`OC` for services, `BC` for books** — never mixed in one order                      |
+| **`causale`**             | derived from sigla × fiscal residence — see the table below                            |
+| **magazzino di uscita**   | **1** for `OC`, **2** for `BC`                                                        |
+| **`costi ricavi`**        | **3** (servizi) for `OC`, **1** (materie prime) for `BC`                              |
+| `agente`                  | on the order header                                                                   |
+| `origine`                 | today the Zoho order number; after go-live the Salesforce one                          |
+
+**Causale by document type and fiscal residence:**
+
+| Causale | Sigla | Applies to                    |
+| ------- | ----- | ----------------------------- |
+| 1       | `OC`  | services, Italy               |
+| 2       | `OC`  | services, San Marino          |
+| 3       | `OC`  | services, everywhere else     |
+| 4       | `BC`  | books, Italy                  |
+| 5       | `BC`  | books, San Marino             |
+| 6       | `BC`  | books, abroad                 |
+
+Elisa Migliano restated it herself to be sure: _"nel caso che l'ordine sia di
+tipo OC, la causale può essere 1 2 o 3… nel caso in cui l'ordine è di tipo BC, la
+causale può essere 4 5 o 6, sempre in base alla nazionalità del cliente."_
+
+⚠ **`BC` was a late catch** — _"quando facciamo la vendita del libro, la sigla
+dell'ordine non è OC, è BC. Questa c'era sfuggita effettivamente."_ Everything
+written before 2 September assumed one order type.
+
+⚠ **The cost-centre values were recalled, not read**: _"l'uno, se non ricordo
+male, vero?"_ Confirm both against a real document before coding.
+
+### Order lines
+
+`codice articolo`, `descrizione`, `unità di misura`, `quantità`, `prezzo`,
+`sconti`, `importo`, `IVA` — and:
+
+🔴 **`data di scadenza` on every line, and it is the tranche due date.** Andrea Di
+Cicco: _"è per le tranche."_ Elisa Migliano: _"su Mexal sarebbe la data di
+scadenza della tranche… oggi noi non la gestiamo, però un domani andrà messa."_
+So the tranche stops being a Salesforce-only concept and becomes part of the
+order tracciato — see [OI-50](../items/OI-50%20Tranche%20object.md).
+
+**VAT is exempt on both types**, with different exemption codes. Elisa Migliano
+gave them, corrected herself once, and the correction is what stands: **`E01` for
+`OC`, `E10` for `BC`** — _"per gli ordini BC non è E01, è E10. Ho invertito i
+due."_ ⚠ Read off memory mid-sentence; verify before use.
+
+🔴 **`codice agente`, `zona` and `classificatore rete` are wanted on the header
+and Andrea Di Cicco could not find them** in the field set the read call returns
+— [OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md).
+
+### Customer registry
+
+| Field                      | Rule                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------- |
+| `codice paese`             | full country list; a `paese` table in the API holds the codes — **identified, unread**   |
+| `residenza fiscale` / `tipo nazionalità` | **derived from the country code**, five values — [OI-97](../items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md) |
+| `tipo fattura elettronica` | B2B for Italian companies, **blank** (_"non gestita"_) for all others                     |
+| `PEC`                      | _"fondamentale… è quello che guida la fatturazione elettronica"_                          |
+| `codice agente`            | on **every** customer, for the commission run                                             |
+| `valuta`                   | **Euro only**, fixed — this retires the 26 August _"non so se 1 è euro"_ unknown          |
+| listino                    | **listino 1 only**, confirming 26 August                                                  |
+| `tipo società`, `pubblico` | not used — _"non ci interessa, non la gestiamo"_                                          |
+
+⚠ **The B2B code was guessed on the call, not read**: _"Potrebbe essere S." —
+"Potrebbe essere S. Sì, esatto."_ They then verified the **other** half properly,
+looking up a real non-managed customer and confirming the field is blank. So the
+blank is evidence and **`S` is a guess** — confirm it.
+
+### The sales network, and why the agent code matters
+
+Pienissimo's sellers are the **tutors**. All of them have CRM access; some are
+employees paid through payroll, and **two work under an agency contract and are
+paid commission**. Every customer therefore carries an agent code, _"anche se non
+è codice agente, per avere una pulizia generale"_ — that is, the code is assigned
+to every tutor whether or not commission is actually calculated for them.
+
+This is the same population as the agents already known to live in Mexal as
+**suppliers under mastro 610**.
+
+## 2026-09-03 - the customer registry leg, from Data Model Parte 1
+
+[The session](../meetings/2026-09-03%20Data%20Model%20Parte%201.md) specified the
+anagrafica side of this integration for the first time. Four rules:
+
+1. **Salesforce creates the account**, and pushes it to Mexal **immediately before
+   the order is created**. The client's own `Flussi` sheet calls this `F-1` and
+   dates it differently — _"scatta alla prima opty won"_ — which is
+   [an unreconciled discrepancy](../items/OI-24%20Data%20model%20workbook.md).
+2. **Mexal owns the registry thereafter.** Post-creation changes are made on
+   Mexal only.
+3. **A nightly batch returns them** — `F-2`, Aurel Mrruku's _"get notturno"_. It
+   is unbuilt:
+   [OI-116](../items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md).
+4. **Salesforce locks its administrative fields** once `Codice Cliente Mexal` is
+   populated:
+   [OI-117](../items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md).
+
+### Agent reconciliation on the order
+
+Mexal, on receiving an order, compares the order's `codice agente` against its own
+customer registry. If they differ it **rewrites its registry** and returns the new
+customer-agent pairing on the nightly flow. Nothing has to be pushed or notified
+from Salesforce. The three commission fields themselves originate from the
+Salesforce user assigned as tutor —
+[OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md).
+
+### Two new Mexal-side fields named for the first time
+
+- **`codice alternativo`** — where Mexal stores the code of a customer's previous
+  ragione sociale, fed from Salesforce's `Azienda Precedente` lookup
+  ([OI-118](../items/OI-118%20Ragione%20sociale%20continuity%20on%20the%20customer%20registry.md)).
+- **The SDI / codice destinatario**, which Fabrizio Paganelli asked the
+  integration to populate even though San Marino ↔ Italy traffic uses the PEC
+  ([OI-109](../items/OI-109%20Codice%20destinatario%20SDI%20as%20a%20twelfth%20Anticipay%20field.md)).
+
+### One behaviour replicated deliberately
+
+**Codice fiscale is pre-populated from the partita IVA** on creation in
+Salesforce, because that is what Mexal does. Fabrizio Paganelli noted the two
+**can diverge after a change of ragione sociale**, so it is a default and not a
+mirror — which matters to any matching rule keyed on either field.
+
+⚠ **Whether Mexal requires both the billing and the shipping address to create a
+customer is untested** and is the session's only formally deferred question:
+[OI-113](../items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md).
+
+## 2026-09-07 - six decisions that make this buildable
+
+From [the internal follow-up](../meetings/2026-09-07%20Follow-up%20Interno.md),
+7 September, all recorded by Gemini under `Concordato`. Present: Elena Spini,
+Aurel Mrruku, Andrea Di Cicco, Fabrizio Mastracci.
+
+### Authentication and management coordinates
+
+The *coordinate gestionali* go in the request header as **`azienda = PE`** and
+**`anno = 2025`**, set **statically in code**. Authorization is **basic**: a
+base64 encoding of user then password. Andrea Di Cicco owes Aurel Mrruku the
+documentation fragment.
+
+⚠ **`azienda = PE` is wrong and was corrected on 2026-09-10** — the value is
+**`PIE`**. See [the wire facts](#2026-09-10---the-wire-facts-arrive-and-the-first-apex-is-written)
+below. This paragraph is left as the session recorded it.
+
+🔴 **`anno = 2025` is hardcoded and this project goes live in 2026.** Whether that
+is a Mexal fiscal-year selector that must roll over, and what happens at the
+boundary, was **not raised by anyone**. ⚠ **Still unresolved on 2026-09-10, and
+now resolved two ways at once** — see below.
+
+⚠ **No credential value is recorded in this repository**, and none may be.
+
+### Customer search is filtered
+
+The lookup is a **POST returning customers modified in the last 24 hours**. Aurel
+Mrruku raised that the volume of unneeded fields in the response risks **breaching
+JSON size limits**. Agreed: **apply a field filter on retrieval**, and evaluate
+**pagination** for large volumes.
+
+### Customer update requires PUT
+
+🔴 **POST on an existing account fails** with a *partita IVA already exists* error.
+**PUT or PATCH is required**, and Andrea Di Cicco is to implement it —
+[OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md).
+
+Agreed with it: **the customer is sent to Mexal on every order creation**, as an
+**empty update** when nothing changed commercially. So the push is unconditional,
+and every order after a customer\'s first hits the path that does not work.
+
+### Orders, invoices and agents
+
+- Customer orders are created through a **key-value mapping**, so the number of
+  products and lines can vary.
+- 🔴 **Invoice generation and line fulfilment are manual**, done by Fabrizio
+  Paganelli on Mexal. Salesforce retrieves the progress of non-final invoices with
+  a **GET over documents modified in the last 24 hours**.
+- 🔴 **Agent lookup is manual**, chosen to avoid Salesforce user licence and
+  permission problems ([OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)).
+
+### Shipping address is write-only
+
+**Salesforce sends the shipping address to Mexal** at account or order creation and
+owns changes; it is **never retrieved from Mexal**
+([OI-113](../items/OI-113%20Whether%20Mexal%20requires%20both%20addresses%20to%20create%20an%20account.md)).
+
+### Deferred to Fase 2 — the scadenzario correction path
+
+Asset status following unpaid invoices, and correcting incassi and tranche errors
+through the scadenzario API, needs a **sequence of calls deleting and recreating
+orders and invoices**. **Deferred**, into a phase that is itself parked pending
+payment ([the dispute](../risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)).
+It touches [OI-50](../items/OI-50%20Tranche%20object.md).
+
+### Migration, unsettled
+
+**In-flight orders must be closed directly from Salesforce.** Migration of
+historical customers, accounts and orders raised concerns and produced no plan;
+whether migration precedes user acceptance testing was asked by Andrea Di Cicco
+and not answered.
+
+## 2026-09-10 - the wire facts arrive, and the first Apex is written
+
+Two things landed on the same afternoon and they are one story. Aurel Mrruku sent
+Anita Aga **`Mexal Dev v.2.postman_collection`** in their Slack DM at **14:45:51
+CEST**; Anita Aga pushed the project's **first Mexal Apex** at **17:58 CEST**
+([the build](../objects/The%20first%20Mexal%20integration%20Apex.md), PR #39,
+**open, not merged**).
+
+The collection is a working export against `services.passepartout.cloud/webapi`
+with fourteen requests. It is the first time the Mexal contract has been readable
+as calls rather than as minutes. 🔴 **It carries the WEBAPI credential in
+plaintext in every request's `Authorization` header**
+([the risk](../risks/Risk%20-%20Salesforce%20integration%20credentials%20were%20circulated%20in%20plaintext.md)).
+**No credential value is recorded in this repository, and none may be.**
+
+### ✅ The management coordinates are `PIE`, not `PE`
+
+The header is `Coordinate-Gestionale: Azienda=PIE Anno=2025` in all fourteen
+requests, and the built code sets `MEXAL_COMPANY = 'PIE'`. **The 7 September
+record's `azienda = PE` was a transcription slip**, and this note's own
+2026-07-15 line already said _"azienda PIE"_ — the two halves of this file
+disagreed for three days. **`PIE` is correct.** Later evidence wins and both
+sources now agree.
+
+### 🔴 `anno` is answered in one direction and reopened in the other
+
+The 7 September flag — _"`anno = 2025` is hardcoded against a 2026 go-live"_ —
+has been acted on **without anyone raising it**, and in the opposite direction
+from the collection:
+
+- **The collection** sends `Anno=2025`, statically, in all fourteen requests.
+- **The code** sends `Anno=` + `Date.today().year()`, so from this build it sends
+  **`2026`**.
+
+🔴 **Nobody has decided which is right, and the two shipped three hours apart.**
+If `Anno` selects a Mexal fiscal-year archive, a dynamic value points the
+integration at an archive that may hold nothing on 1 January; if it is
+informational, the hardcode was harmless. **The original question — is this a
+fiscal-year selector, and what happens at the boundary — is still unasked**, and
+it now has a wrong answer available in each of two artefacts.
+
+### 🟢 The customer update is `PUT`, and it is keyed on the Mexal code
+
+`Modifica Cliente` is **`PUT /webapi/risorse/clienti/{codice}`** carrying the
+**full body** — the same field set as creation, minus `codice`. That settles both
+questions [OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)
+left open: **PUT, not PATCH**, and the customer is identified by its **Mexal
+customer code** in the path, which is `Codice_Cliente_Mexal__c` on the Salesforce
+side. The "empty update on every order" pattern fits PUT exactly.
+
+🔴 **The item does not close.** Knowing the call is not making it: the built code
+is hard-guarded to `POST /ricerca` only and **cannot issue a PUT**. Nothing in
+`force-app/` sends a customer to Mexal at all.
+
+### 🟢 The customer search field filter is now a concrete list
+
+The agreed retrieval filter exists as a query parameter, and this is its content:
+
+`codice, cod_alternativo, cod_paese, codice_fiscale, partita_iva,
+ragione_sociale, indirizzo, cap, localita, provincia, telefono, fax, email, pec,
+codice_sdi, cod_agente, tp_nazionalita, cod_listino, valuta, gest_fatt_el`
+
+Twenty fields. The built mapping consumes fourteen of them and adds `url`,
+`denominazione`, `cognome`, `banca_appoggio` and the three IBAN parts, which are
+**not in the filter** — so those five would come back empty against this exact
+query. Worth reconciling before the sync is switched on.
+
+### 🔴 The order call does not carry the agent fields
+
+The `Creazione Ordine cliente` body is `sigla`, `serie`, `numero`, `cod_conto`,
+`data_documento` and five parallel line arrays (`id_riga`, `tp_riga`,
+`codice_articolo`, `quantita`, `cod_iva`). **There is no `cod_agente`, no `zona`
+and no `classificatore rete` on the header.**
+
+That answers [OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)'s
+one remaining question — the wire question — **negatively**, from the artefact
+rather than from Kreosoft. `cod_agente` is on the **customer**, in both the create
+and the update bodies and in the search filter. So the commission attribution
+travels with the anagrafica, not with the order, and the freeze-on-order
+behaviour agreed on 3 September has no field to freeze into.
+
+⚠ **This is a reading of one Postman collection, not a statement from Mexal.**
+The header may accept fields the collection does not exercise. **Mirko Merendi at
+Kreosoft is still the person to ask**, and the question is now sharper: _can the
+order header carry `cod_agente`, `zona` and `classificatore rete`, and under what
+names?_
+
+### 🟢 Tranche fulfilment has a wire shape for the first time
+
+Three requests together demonstrate the instalment mechanism, and the names are
+the author's own: **`Creazione Ordine cliente`** creates an `OC` with four lines,
+then **`Evasione Riga 1 e 2 il 30 Settembre`** and **`Evasione Riga 3 e 4 il 31
+Ottobre`** each post an **`FT`** carrying `tipo_stato_riga: "E"` and back-references
+to the originating order (`sigla_doc_orig`, `serie_doc_orig`, `numero_doc_orig`,
+`data_doc_orig`, `sigla_ordine`, `serie_ordine`, `numero_ordine`, `data_ordine`,
+`id_rif_testata`, `dt_ult_mod_orig`).
+
+**So a tranche is invoiced as a partial fulfilment of specific order rows on a
+date**, not as a due-date field. 🔴 **And the order-creation body has no
+per-line `data di scadenza`** — which is what
+[the 2 September tracciato](../items/OI-50%20Tranche%20object.md) said every order
+line must carry. Either the collection is incomplete or the tracciato described
+the fulfilment date rather than a field. **Unreconciled; ask before building.**
+
+⚠ Note `serie: 10` throughout — the **test** series. Production is `serie 1`,
+settled by Mirko Merendi on 11 August.
+
+### 🟢 Scadenzario and pagamenti endpoints exist
+
+`POST /risorse/scadenzario/ricerca`, filterable by `data_ult_mod` **or by
+customer `codice`**, and `POST /risorse/dati-generali/pagamenti/ricerca`. These
+are the calls Fabrizio Paganelli's scadenzario correction path would need — the
+path **deferred into the parked Fase 2** on 7 September
+([the dispute](../risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md)).
+They exist and are reachable; nobody has asked to un-park the work.
+
+### Also in the collection
+
+- **Agents are `POST /risorse/fornitori/ricerca`** — corroborating Mirko
+  Merendi's 11 August answer that Get Agenti is Get Fornitori.
+- `Ricerca Indirizzo di spedizione` and `Creazione Indirizzo di Spedizione` on
+  `/risorse/indirizzi-spedizione`, consistent with the write-only shipping
+  address.
+- The invoice two-step is present as `movimenti-magazzino/ricerca` then
+  `movimenti-magazzino/{sigla+serie+numero}`, exactly the N+1 recorded on
+  11 August.
+- ⚠ The customer create/update bodies use an obviously **synthetic test record**
+  (`test romi Elena`, a ROMI address). **Not a real customer; nothing copied.**
+
+## 2026-09-11 — the integration becomes bidirectional
+
+Two merges landed on `DevMain` today — `b9cfc1b` (PR #39, 10:27 CEST), which
+merged yesterday's read-only Apex, and `80420cf` (PR #41, 18:05 CEST), which
+**made the integration write**. Full detail in
+[the create and update path](../objects/The%20Mexal%20customer%20create%20and%20update%20path.md).
+
+Three things change in this flow's picture:
+
+🟢 **Salesforce → Mexal customer creation exists.** `POST /clienti` with
+`codice = '501.AUTO'`, the generated code read back from the response headers
+(falling back to the body) and written onto `Account.Codice_Cliente_Mexal__c`.
+The 3 September ownership model — Salesforce creates, Mexal then owns the
+anagrafica — has its first working half.
+
+🟢 **Mexal → Salesforce now persists.** The anagrafica read inserts and updates
+`Account` with partial-success DML, stamping the `Azienda` record type and
+skipping ambiguous matches. 🔴 The **nightly schedule is still commented out**,
+still blocked on the sync window unspecified since 3 September
+([OI-116](../items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)).
+
+🟢 **`PUT /clienti/{codice}` is implemented** and **has no caller**
+([OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md)).
+
+🟢 **The duplicate `partita IVA` failure recorded here on 7 September is now
+parsed**, returning the colliding customer's existing Mexal code rather than an
+opaque error.
+
+🔴 **The `anno` contradiction is untouched.** The collection sends `Anno=2025`
+statically, the code sends `Date.today().year()` — so `2026` — and **nobody has
+chosen**, a second day on. The original question, whether it is a fiscal-year
+selector, is still unasked. Go-live is 21 October 2026.
+
+🔴 **The order leg is still unbuilt.** Everything above is the customer registry.
+`ordini-clienti`, the `data di scadenza` per line, and
+[OI-110](../items/OI-110%20Agent%20and%20network%20fields%20are%20missing%20from%20the%20Mexal%20order%20call.md)'s
+agent/zone/network question remain exactly where the collection left them on
+10 September. **Mirko Merendi at Kreosoft has still not been asked.**
+
+⚠ **The sequencing is now written down and not yet built.**
+[The decision of the same day](../decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
+requires Anticipay → Account update → Mexal create → Order, all queued off the
+first Order of an Account. What shipped is a manual button on the Account.

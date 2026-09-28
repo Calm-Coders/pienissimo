@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-08-26
+updated: 2026-09-21
 requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
 source: meetings/open-items.md row 59
 ---
@@ -240,3 +240,172 @@ DGM-derived labels (`In trattativa (Prev inviato)`, `In attesa di accettazione`,
 `Accettato - Copia Contabile Ricevuta`, `Rifiutata`) and now disagrees with both
 this note and the org. **The register is not amended from an org check** — this
 is flagged for a human to reconcile, not corrected here.
+
+## 🟢 2026-09-03 - the agreed values reached built code for the first time
+
+`QuoteAcceptanceController`, merged to `DevMain` in PR #31, hard-codes exactly the
+lifecycle this item has been fighting for:
+
+```apex
+ACTIONABLE_STATUSES = { 'In Trattativa', 'In Attesa Accettazione' }
+ACCEPTED_STATUS = 'Accettato';  REJECTED_STATUS = 'Rifiutato';
+```
+
+**`In Attesa Accettazione` — the rename this item singles out as mattering — is
+in it.** That is the first time the agreed vocabulary appears in code rather than
+in a minute.
+
+⚠ **It is code, not configuration.** The org's `Quote.Status` picklist was last
+checked on 2 September and the disagreement recorded above still stands until an
+`org-status-check` says otherwise. **A controller that writes a picklist value the
+picklist does not carry fails at run time**, so this raises the cost of the
+outstanding picklist work rather than closing it.
+
+⚠ Separately,
+[OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)
+adds a `Tipologia Attività` field to this same object on 3 September.
+
+## 🟢🔴 2026-09-09 - the Opportunity half is built, and its labels do not match the diagram
+
+Commit **`a53345a`** (Anita Aga, PR **#37**, merged 18:41 CEST) checks an
+`OpportunityStage` standard value set into source control and drives it from Apex
+([the build](../objects/The%20commercial%20process%20automation.md)).
+
+🟢 **Two transitions are automated**, and both are ones this item asked for:
+creating a Quote moves a `Qualificato` Opportunity into negotiation, and an Order
+reaching `Incassato` closes it won.
+
+🟢 **The five values match the register exactly**, character for character, at
+`state_machines.opportunity.states` in
+[the register](../../requirements/pienissimo-requirements.yaml) — including the
+parenthetical in `In trattativa (Prev inviato)` and the lower-case `ricontattare`.
+**The build is right and the table at the head of this note is the stale copy**:
+it was transcribed from the 6 August diagram's bracketed renames, which use the
+looser spelling. The register governs. _Corrected here rather than in the table
+above, which is left as the record of what the diagram says._
+
+🟢 **The close-won rule is implemented as written**, too. The register's
+_"Chiusa/Vinta requires at least one quote sent; payment confirms the win"_ is
+exactly `OrderTriggerHandler.closeWonOpportunitiesForConfirmedOrders` — the
+opportunity closes when its Order reaches `Incassato`.
+
+🔴 **The Quote side is the one that disagrees, and this commit deepens it.** The
+register's `state_machines.quote.states` and the built code have never matched:
+
+| Register (`state_machines.quote`)      | Built code               |
+| -------------------------------------- | ------------------------ |
+| `Bozza`                                | `Bozza`                  |
+| — _(absent)_                           | `Nuovo Preventivo`       |
+| `In trattativa (Prev inviato)`         | `In Trattativa`          |
+| `In attesa di accettazione`            | `In Attesa Accettazione` |
+| `Accettato - Copia Contabile Ricevuta` | `Accettato`              |
+| `Rifiutata`                            | `Rifiutato`              |
+
+⚠ **The register disagrees with itself here**: its `build_state` block records the
+org picklist as _"Bozza, Nuovo Preventivo, In Trattativa, In Attesa Accettazione,
+Accettato, Rifiutato"_ — the code spelling — while its contract-bound
+`state_machines` block carries the other. `a53345a` adds a **third** class
+(`QuoteTriggerHandler`) hard-coding the code spelling, after
+`QuoteAcceptanceController` and `QuoteTrancheController`.
+
+**Not corrected here.** `REQUISITI.it.md` is the text the client signs, so
+reconciling the quote states is a requirement change needing the YAML and both
+prose documents in one session — and somebody has to decide **which spelling is
+canonical** first. Salesforce picklist API names are case-sensitive, so this is a
+run-time failure waiting on whichever side is wrong.
+
+🔴 **Still unbuilt after this commit:** the **5-day validity**, the mandatory
+expiry date at send, the **day-2 and expiry alerts**, the 3-day owner email, the
+manual quote-creation button, and the ability to revive an expired quote. Nothing
+moves an Opportunity to `Chiusa/Persa` or into `Da ricontattare - Prev. inviato`
+automatically; both are hand-set.
+
+🔴 **Marco Montesi still owes the preset expiry timings.** Unchanged since
+31 July, and he did not reply to the 8 September status mail either.
+
+## 🔴 2026-09-16 - the code spelling reaches two more classes, on a branch
+
+`DEV_ComponentBundle` adds two quote features that each key on a **literal quote
+status string**:
+
+- `QuoteAcceptanceEmailController` — the **Invia per accettazione** quick action
+  loads and sends only when `Quote.Status` is exactly **`In Attesa
+Accettazione`**, checked twice, once on load and once on send.
+- The **Genera PDF** action and its Visualforce controller — available only when
+  `Quote.Status = `**`Bozza`**, enforced independently in both.
+
+Both are documented in developer-authored notes committed alongside the code
+(`notes/How the Quote acceptance email action works.md`,
+`notes/Quote PDF generation for Bozza quotes.md`), neither is deployed, and
+**neither is on `DevMain`**.
+
+🔴 **That is four independent hard-codings of the code spelling**, after the
+three `a53345a` introduced on 09/09 — and the register still disagrees with
+itself, its `build_state` carrying the code spelling while its requirement text
+carries another.
+
+⚠ **The cost is now concrete rather than theoretical.** Reconciling the register
+to the code means one edit; reconciling the code to the register means finding
+every literal in Apex, in two Visualforce controllers and in two quick actions,
+and any one missed leaves an action that silently never appears.
+
+**The 09/09 trigger has not fired for a seventh day: nobody has ruled on the
+canonical spelling.** Each day it stays open, it gets more expensive in exactly
+this way.
+
+## ⚠ 2026-09-17 - the diagram holds the canonical spellings, and disagrees with itself
+
+[The design diagram](../The%20newest%20design%20diagram.md) was decoded at its
+16/09 version. Its quote state machine reads
+`Bozza → Nuovo Preventivo → In Trattativa → In Attesa Accettazione →
+Accettato / Rifiutato`, with `In Attesa Accettazione` explicitly annotated as the
+rename of `Scaduto` and the five-day validity written into the `In Trattativa`
+box — matching Parte 5's five-day expiry.
+
+🟢 **The four spellings hard-coded in Apex since 09/09 — `Bozza` and
+`In Attesa Accettazione`, each enforced twice — match the diagram exactly.** That
+is worth knowing: the literals in the code are not invented, they track the
+design file. **It is still not a ruling.** `DGM-2` is a drawing, not the
+register, and this row closes when someone states the canonical set in a place
+the build can cite.
+
+🔴 **On Order, the same file spells the status two ways.** `Incasato` (one `s`)
+is the status box on **both** the LEAD-OPTY and Ordini pages; `Incassato` (two)
+appears once, inside the `RULES + FLOW TASK OPTY` block — _"Status Order ==
+Incassato >> Aggiornamento dell' Opty in Chiusa Vinta"_. The deployed Apex uses
+`Incassato`.
+
+**Eighth day with no ruling**, and the surface has grown: it is no longer only
+the Quote picklist, it is Order too, and the design source is now a witness
+against itself on both.
+
+## 🔑 2026-09-21 - a state was added, and the handler's sharing model was widened
+
+Two changes reached this row in this window, neither of them minuted as a workflow
+decision.
+
+**A signature state was added.** At
+[the 21/09 pre-UAT session](../meetings/2026-09-21%20Test%20Interni%20Pre-UAT.md)
+(`00:45:34`) Aurel Mrruku established that acceptance in the community is **not
+enough** to conclude the contract: a **`firmato` flag and a `signed by` field** come
+between acceptance and order generation. The effective flow becomes
+
+`Bozza → In Attesa Accettazione → Accettato → firmato → order`
+
+where `QuoteTriggerHandler`'s own constants stop at `Accettato`.
+→ [OI-151](OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)
+
+**And a quote expiry pair is on record**: expiry at **5 days**, with an **automatic
+task after two days** if the quote has not been accepted (`00:50:28`). Anita Aga and
+Rexhina Hysi own the task logic. Not contradictory — a nudge at two, expiry at five
+— but neither number has a requirement behind it.
+
+🔴 **`QuoteTriggerHandler` is now `without sharing`**, merged to `DevMain` in PR
+#50 →
+[OI-156](OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md). That is a
+change to who can drive this workflow, made in a one-line diff inside a commit about
+something else.
+
+⚠ **This row has been unruled for eleven days** while four classes hard-code the
+status spellings and a fifth state is now added on top. **Quote UAT is 25
+September.**

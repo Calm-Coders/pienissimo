@@ -5,323 +5,299 @@
 > page in [site/](site/), which is sanitized to different rules
 > ([docs/publishing.md](docs/publishing.md)).
 
-**Last regenerated: 2026-08-26 (org-status-check, then the `SAL` requirement-trace batch)** ·
+**Last regenerated: 2026-09-23 (org-status-check, full scope, reconciled and published)** ·
 **Basis: a live, read-only check of the Pienissimo UAT org**
-(`a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`) run on **2026-08-26**,
-compared against `force-app/` on `DevMain` at `dc513c6`, the notes and the
-requirements register. This supersedes the 2026-08-25 check. Everything below
-marked as built or not built was **observed in the org on 26 August**, unless
-the row says otherwise.
+(`a.mrruku@pienissimo.uat`, `00DMA000004nMMr2AM`, API 68.0) run on
+**2026-09-23, 08:01–08:40Z**, comparing **442** repository component keys on
+`DevMain` at `61f2a53` against **1,382** org components, plus a token-by-token
+comparison of every unmanaged Apex class, trigger and LWC body, each mismatch
+matched against the git history of every branch. This supersedes the 2026-09-14
+published check. Everything below marked as built or not built was **observed in
+the org on 23 September**, unless the row says otherwise.
 
-⚠ **One finding of the 25 August check did not survive re-checking.**
-`sf sobject describe` filters its field list by the running user's field-level
-security, so a deployed field granted to nobody reads as missing. Every field
-comparison was re-run against Tooling `FieldDefinition`, which is not filtered —
-see [the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
+🔴 **The finding that matters most, the day before UAT opens: what the client
+will test is not what `DevMain` holds — in both directions.** UAT runs the
+**21/09 Lead conversion**, so every converted Opportunity becomes `Standart` and
+the Lead-type picklist does nothing
+([OI-170](notes/items/OI-170%20DevMain%20is%20ahead%20of%20UAT%20on%20the%20Lead%20conversion%20and%20quote-line%20paths.md)).
+And UAT carries a **bundle discount deployed at 08:00Z today that is in no commit**
+([OI-171](notes/items/OI-171%20A%20bundle%20discount%20was%20deployed%20to%20UAT%20from%20no%20commit.md)),
+which the deploy needed to fix the first problem would overwrite. **Commit, then
+deploy — in that order, today.**
+
+🔑 **And the Web-to-Lead defect has a cause.** The user that creates form leads
+cannot see either Lead record type
+([OI-164](notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)).
+It is a configuration fix measured in minutes.
+
+⚠ **Instruments that report silence as absence — and presence that proves
+nothing.** `sf sobject describe` filters by field-level security, and
+`listMetadata` cannot enumerate folder-scoped types; both have produced false
+absences here
+([the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md)).
+This run adds the opposite trap: **every repository component is present in the
+org, and eight files still differ.** A structural comparison alone would have
+called this org aligned.
 
 Generated from [notes/](notes/), which is the source of record. If this page and
 a note disagree, the note wins — regenerate this page rather than editing facts
-into it. Agent-facing equivalent: [MAP.md](MAP.md). ROMI action board:
-[docs/task-status.md](docs/task-status.md).
-
-Shared with colleagues as a Notion mirror, invite-only and refreshed by step 6
-of `org-status-check`:
-[status page](https://app.notion.com/p/3c6a6b77a25c818e9b51dc873a2f489c) ·
-[open-items tracker](https://app.notion.com/p/04cc8a62d28a40419d7916271f6cae11) ·
-[flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150).
-See [the mirror note](notes/The%20Notion%20mirror%20of%20the%20project%20status.md).
-
-⚠ **No catalogue prices, no article-code values, no credentials on this page or
-its mirror.** Every price in UAT is a ROMI placeholder, and the real ones now
-live in a private workbook — describe a field, never a value. See
-[docs/publishing.md](docs/publishing.md).
+into it. Agent-facing equivalent: [MAP.md](MAP.md).
 
 ---
 
 ## At a glance
 
-|                                                                               |                                                                                                           |
-| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| 🔴 **Nothing can deploy today**                                               | Apex coverage is **0%** against a 75% floor — 24 classes and triggers, 1069 uncovered lines, zero covered |
-| 🔴 **Fase 1 development ends 10 September, not 6 October**                    | ROMI's own project plan. With the team back ~24–26 August that is **two weeks of build**                  |
-| 🔴 **There is not one Flow in the org**                                       | Every declarative automation designed since June is absent. All automation is three Apex triggers         |
-| 🔴 **37 tickets are parked in a state deleted on 6 August**                   | 30 await a signature step the design removed. **None has ever reached `Disponibile`**                     |
-| ✅ **The tranche is built, and now in source control** — retrieved in PR #12  | Object, Quote-side creation UI and controller are live and tracked. Propagation and tests are not         |
-| ✅ **The first agreed state machine reached the org**                         | `Quote.Status` now carries `Bozza → Nuovo Preventivo → In Trattativa → In Attesa Accettazione → …`        |
-| 🔴 **`OrderItem.Tranche__c` is deployed and invisible to everyone**           | Granted to no profile and no permission set — admin included. Propagation still cannot run                |
-| 🔴 **No outbound integration has an endpoint**                                | `Integration_Configuration__c` holds **zero rows**. Mexal, WooCommerce and the VAT middleware are unwired |
-| ✅ **The client's product registry finally arrived — and was read 24 August** | Sent 7 August, unopened for seventeen days. It broke more of the record than it closed                    |
-| 🔴 **A Fase 1 integration now depends on the disputed entity**                | Anticipay is called through a **Pienissimo Software** middleware, agreed 25 August. Nobody said so        |
-| **Zoho expires 31 October 2026**                                              | Go-live Fase 1 **6 October**, Fase 2 **9 November**, data import ~1 September                             |
+|                                                   |                                                                                                                                                                                                 |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🔴 **UAT runs older Lead code than `DevMain`**    | `LeadConversionQueueable` is the 21/09 version: **every converted Opportunity becomes `Standart`**. OI-150's _"check-only deploy"_ changed nothing. Quote reopen-to-Bozza also missing (OI-170) |
+| 🔴 **Uncommitted code in UAT since 08:00Z today** | Bundle discount / manual price in Manage Products, via the shared `ROMI COMPANY` login; in no commit on any branch. **A `DevMain` deploy overwrites it** (OI-171)                               |
+| 🔑 **Web-to-Lead cause found**                    | Creator `Amministratore Pienissimo` (System Administrator) sees **neither Lead record type** and lacks `Full_Permission`. All 4 web leads of 22/09 untyped. Configuration fix (OI-164)          |
+| 🟢 **The Mexal chain is in source control**       | The 14/09 org-only finding is **closed** — the nine classes and two `Order` fields are on `DevMain`, and the org equals source except for formatting                                            |
+| 🔴 **…and has never run in UAT**                  | **0 of 45** orders carry a Mexal status; the `isSandbox()` guard is still in place. **Mexal UAT is 6/10** (OI-137)                                                                              |
+| 🟢 **Credential metadata is in source control**   | 3 named + 3 external credentials in `force-app/`; the "clean deploy fails twice" finding is gone. Production swap still owed                                                                    |
+| 🔴 **Contract: zero fields**                      | Standard `Contract`, no custom field, nothing writes it. **UAT 5/10** (OI-168)                                                                                                                  |
+| 🔴 **Check-in: 0 of 31 tickets have a QR**        | No check-in endpoint. **Ticket UAT 30/09** (OI-161); 38 of 51 ticket products still unmapped (OI-121)                                                                                           |
+| 🔴 **Coverage 0 of 7,756 lines**                  | Up from 4,737 nine days ago; 3 test classes of 57. Unmeasured since 4 August. **Production deploy has no calendar slot for it**                                                                 |
+| 🟢 **Movement that is real**                      | Quote ageing scheduled daily · DocuSign 15 envelope jobs in 7 days · tranche on 15 of 60 order lines · edition mapping 13 of 51 · `Happy Team` present                                          |
+| **Zoho expires 31 October 2026**                  | **Go-live Fase 1 is 21 October.** UAT sessions 24/09 → 06/10, approval by 13/10                                                                                                                 |
 
 ---
 
 ## Where the project stands
 
 ROMI is migrating Pienissimo from **Zoho CRM to Salesforce**. The contract-bound
-constraint is the Zoho expiry on **31 October 2026**; requirements went to
-sign-off on 2026-08-06.
+constraint is the Zoho expiry on **31 October 2026**. **Go-live Fase 1 is
+21 October**, moved by ROMI in writing on 8 September and acknowledged by
+Fabrizio Paganelli on 9 September
+([OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)).
+**UAT is booked and client-confirmed:** 24/09 Lead e Opportunità · 25/09
+Preventivi and WooCommerce · 30/09 Biglietti, Campagne ed Eventi · 02/10 Flussi
+MKT · 05/10 Performance Plus, date pagamento and `Contratto` · 06/10 Integrazione
+Mexal and Anticipay. Approval by 13 October.
 
-The delivery is not short of design — it is short of **build time and
-deployability**. Every open design question below has a forum and an owner. The
-two that have neither are the Apex coverage floor, which is handled as one
-deliberately deferred task, and the phase 2 commercial dispute, which has run
-four meetings without reaching the person who decides.
+**The build is moving fast and deploying informally.** Fourteen merges since
+14 September. None of them has a named step that deploys to UAT, and the shared
+admin login deploys work that has no commit. **UAT is a Partial Copy sandbox**
+([OI-153](notes/items/OI-153%20There%20is%20no%20full%20UAT%20sandbox.md)) with
+**three active human users, all System Administrators**. The client tester
+accounts are promised for 6–13 October.
+
+**Data migration was never planned or estimated**
+([OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)),
+with go-live 21/10 and Zoho expiring 31/10.
 
 ---
 
 ## What is built
 
-**Verified against the Pienissimo UAT org on 2026-08-26**, read-only, and
-cross-checked against `force-app/` on `DevMain` at `dc513c6`. Where the two differ the row
-says so. Detail:
-[the build ahead of the record](notes/objects/The%20build%20ahead%20of%20the%20record.md).
+**Verified against the Pienissimo UAT org on 2026-09-23**, read-only, and
+cross-checked against `force-app/` on `DevMain` at `61f2a53`. 🟢
+**Repository-only drift is zero** in the twelve kinds compared both ways. 🔴
+**Version drift is the problem**: 7 Apex files and 1 LWC bundle differ at token
+level, in both directions.
 
-| Area                      | State                                                                                                                                                                                                                                                                  |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Custom objects**        | `Biglietto__c` (legacy UAT ticket implementation; standard Asset is the decided target), `BundleComponent__c`, plus extensions to Account, Lead, Opportunity, OrderItem, Product2, Quote                                                                               |
-| **Bundle composition**    | `BundleComponent__c` — a Product2↔Product2 junction carrying a per-bundle `Spread_Price__c`. Replaced `Product2.Parent__c` on 2026-07-16                                                                                                                               |
-| **Bundle reconciliation** | `Bundle_Selling_Price__c`, `Spread_Total__c`, `Spread_Variance__c` — maintained by `BundleComponentTriggerHandler`, since Product2 takes no roll-ups                                                                                                                   |
-| **Ticket generation**     | `OrderBigliettoTriggerHandler` creates a `Biglietto__c` from an Order. No equivalent standard Asset generation or migration is built                                                                                                                                   |
-| **Product flags**         | `Genera_Biglietto__c` — true on **4 of 280** products. `Solo_Bundle__c` — true on **0 of 280**, and no automation reads it                                                                                                                                             |
-| **Classification fields** | `Anno_Solare__c`, `Evento__c`, `Bundle_Type__c` on Product2 — all three **populated on 1 of 280 products**                                                                                                                                                             |
-| **Tranche**               | ✅ `Tranche__c` with state, due date, planned amount, sequence and Quote lookup; `QuoteLineItem.Tranche__c`. Six records. ✅ The creation UI — quick action, LWC and controller — is now **in source control** (PR #12)                                                |
-| **WooCommerce keys**      | `Product2.WooCommerce_Product_Id__c` (**populated on 0 records**), `Opportunity.WooCommerce_Order_Id__c`. Nothing else on the build list exists                                                                                                                        |
-| **Integration framework** | `Integration_Configuration__c`, `Integration_Log__c`, `API_Callout_Engine` — [standard ROMI scaffolding](notes/Integration%20Configuration%20is%20standard%20ROMI%20scaffolding.md). 🔴 **Zero configuration rows and zero log rows — the engine has never run**       |
-| **Quote lifecycle**       | ✅ `Quote.Status` = `Bozza · Nuovo Preventivo · In Trattativa · In Attesa Accettazione · Accettato · Rifiutato`, stock English values deactivated. ⚠ The picklist only — **no rule, alert or template enforces it**, and 3 of 4 quotes were left on deactivated values |
-| **UI**                    | `bundleProductAssignment` LWC + controller; `quoteCreateTranche` LWC — both now in source control                                                                                                                                                                      |
-| **Automation**            | Three Apex triggers: `BigliettoTrigger`, `BundleComponentTrigger`, `OrderBigliettoTrigger`. 🔴 **No Flow, workflow rule, approval process, email template, notification type or scheduled job exists in the org**                                                      |
+| Area                        | State                                                                                                                                                                                                                                                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Order → Mexal chain**     | ✅ **In source control and deployed** — Mark Running → Anticipay (first order only) → Mexal Customer → Mexal Order. 🔴 **Never executed in UAT**: `isSandbox()` guard, 0 of 45 orders with a status ([OI-137](notes/items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md)) |
+| **Nightly anagrafica sync** | Batch, scheduler and watermark deployed and in source. 🔴 **Not scheduled** ([OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md))                                                                                                                                           |
+| **Admin-field lock (#117)** | ✅ `Lock_Mexal_Synced_Admin_Fields` active since 15/09 (13 fields). ⚠ The outbound push of four fields also still exists; the client has not been told ([OI-117](notes/items/OI-117%20Administrative%20fields%20lock%20once%20the%20Mexal%20customer%20code%20is%20set.md))                                     |
+| **Integration framework**   | ✅ `Integration_Configuration2__c` **11 rows** (up from 6). `Integration_Log__c` 113 rows; last 7 days: DocuSign 11 ok / 4 error, WooCommerce 4 ok / 5 error, Anticipay 1 / 1                                                                                                                                   |
+| **Credentials**             | ✅ Anticipay, DocuSign, Mexal — named and external credential metadata **in source**. 🔴 DocuSign is on the demo environment; the production swap has no owner or date                                                                                                                                          |
+| **DocuSign**                | ✅ Quote → envelope → signed → order ran end to end on 22/09; `DocuSignQuoteEnvelopeQueueable` completed 15 times in 7 days                                                                                                                                                                                     |
+| **Lead**                    | ✅ Record types `Standard` / `Diretta`, `Tipo_Opportunita__c`, conversion trigger. 🔴 **Conversion code is the 21/09 version** (OI-170). 🔴 Web-to-Lead leads untyped (OI-164). Stock duplicate rules only (OI-163)                                                                                             |
+| **Opportunity**             | ✅ Record types `Standart` (🔴 still misspelt), `Plus_Attivazione_Rinnovo`, `Recall_Tutor`; 15 / 5 / 3 created in the last 7 days. Only `Full_Permission` grants them                                                                                                                                           |
+| **Quote**                   | ✅ Five Italian statuses. ✅ **5-day ageing scheduled** (daily 01:00 UTC, 3 runs). 🔴 Reopen-to-Bozza on a new line **not deployed** (OI-170). 🔴 Manage Products bundle discount **uncommitted** (OI-171)                                                                                                      |
+| **Tranche**                 | ✅ 50 tranches; **58 of 76** quote lines and **15 of 60** order lines carry one (3 of 36 on 14/09). ✅ `Product2.Numero_Tranche__c` deployed 22/09 for the Plus explosion. 🔴 Payment roll-up waits on the order-line identifier (OI-166)                                                                       |
+| **Edition mapping**         | 🟢 **13 of 51** ticket-generating products mapped (3 of 43 on 14/09). 🔴 38 unmapped — an order for one rolls back its ticket step                                                                                                                                                                              |
+| **Ticket / Asset**          | Asset with Ticket record type, `QR_Id__c`, `Data_CheckIn__c`; 31 records. 🔴 **0 carry a QR**; nothing writes check-in                                                                                                                                                                                          |
+| **Order lifecycle**         | ✅ In use — 32 `Incassato`, 9 `Ordinato`, 1 `Fatturato` of 45. 3 legacy records on stock English values                                                                                                                                                                                                         |
+| **WooCommerce**             | ✅ Inbound endpoint, Funnel Kit checkout link, email template — proved end to end with the client on 21/09. ⚠ 5 errors in 7 days in the log                                                                                                                                                                     |
+| **Community**               | Quote-acceptance and participant pages. 🔴 No application-level authentication ([the risk](notes/risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md))                                                                                                                 |
+| **Sharing**                 | 🔴 **19** classes `without sharing` on `DevMain`, **15** in UAT — four of 22/09 undeployed and undecided ([OI-156](notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md))                                                                                                                     |
+| **Automation**              | 12 triggers, 57 project classes. 🔴 **Zero project-authored Flows**                                                                                                                                                                                                                                             |
 
-154 files under `force-app/`. Written by the
+Written by the
 [Calm-Coders developers working for ROMI](notes/Calm-Coders%20on%20GitHub%20means%20ROMI.md)
-— Anita Aga, Sara Aga and Rexhina Hysi — whose commits land **ahead of every
-tracker**, which is why the written record repeatedly understates what exists.
+— Anita Aga, Sara Aga and Rexhina Hysi — plus Aurel Mrruku.
 
 ---
 
 ## What is not built
 
-| Gap                                                                                                                                                                                                                                             | Item                                                                                                                                                                          |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Standard Asset migration** — target decided 24 Aug, but fields, relationships and six Apex classes still sit on custom `Biglietto__c`; effort unestimated                                                                                     | [OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md), [risk](notes/risks/Risk%20-%20the%20Biglietto%20object%20diverged%20from%20the%20approved%20proposal.md) |
-| 🔴 **No declarative automation at all** — zero Flows, and also zero workflow rules, approval processes, email templates, notification types and scheduled jobs. So the reminder copy delivered 25 Aug has nothing to sit on                     | [the flow](notes/flows/The%20quote%20to%20order%20flow.md)                                                                                                                    |
-| 🔴 **No outbound integration is configured** — `Integration_Configuration__c` and `Integration_Log__c` hold zero rows and the org has one named credential. Mexal, WooCommerce and the VAT middleware have no endpoint                          | [the scaffolding](notes/objects/The%20integration%20scaffolding%20has%20never%20been%20configured.md)                                                                         |
-| 🔴 **Order, Lead and Opportunity state machines are still stock Salesforce** — not one agreed value configured. **Quote is now the exception**: its picklist landed 26 Aug                                                                      | [OI-69](notes/items/OI-69%20Order%20state%20model.md), [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)                                                       |
-| 🔴 **`OrderItem.Tranche__c` is deployed and granted to nobody** — no profile, no permission set, admin included. Nothing in `force-app/` writes it either, so propagation cannot run                                                            | [risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md)                                                                                    |
-| **The tranche remainder** — payment aggregation is unverified and untested, and `Sequenza__c` has no uniqueness or contiguity control though ticket release reads it as an order                                                                | [OI-50](notes/items/OI-50%20Tranche%20object.md), [risk](notes/risks/Risk%20-%20the%20tranche%20sequence%20has%20no%20integrity%20control.md)                                 |
-| **The campaign parent/child model** — `Campaign` **and `CampaignMember`** both have zero custom fields, no record types and no validation rules. It is what carries the event edition                                                           | [the model](notes/objects/The%20campaign%20parent%20and%20child%20model.md)                                                                                                   |
-| **Any Apex coverage at all** — **0%** org-wide against a 75% deploy floor                                                                                                                                                                       | [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md), [OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)         |
-| **The Biglietto stack is still not in source control** — unmoved since 22 July, and three components larger than recorded: the `BigliettoPdf` page, the `DocuSign` named credential and a custom tab. ✅ The tranche stack was retrieved 26 Aug | [risk](notes/risks/Risk%20-%20the%20Biglietto%20Apex%20stack%20is%20not%20in%20source%20control.md)                                                                           |
-| Participant data collection, and who hosts the landing page                                                                                                                                                                                     | [OI-78](notes/items/OI-78%20Participant%20data%20collection.md), [OI-86](notes/items/OI-86%20Who%20hosts%20the%20participant%20landing%20page.md)                             |
-| The WooCommerce checkout-link flow — credentials expected 26 August                                                                                                                                                                             | [OI-49](notes/items/OI-49%20WooCommerce%20checkout-link%20flow.md)                                                                                                            |
-| VAT validation moving into Salesforce — provider unconfirmed                                                                                                                                                                                    | [OI-73](notes/items/OI-73%20VAT%20validation%20moves%20into%20Salesforce.md)                                                                                                  |
-| The Zoho import template ROMI owes the client, ahead of the ~1 September import                                                                                                                                                                 | [OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)                                                                                             |
-| The whole phase 2 scope — no estimate exists and the decision-maker was never told                                                                                                                                                              | [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                                                                                     |
+| Gap                                                                                                                           | Item                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 🔴 **Contract logic** — zero fields on `Contract`, nothing writes it. **UAT 5/10**                                            | [OI-168](notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md) |
+| 🔴 **Event check-in** — no QR on any ticket, no inbound endpoint; a custom Android scanner talks to Zoho today. **UAT 30/09** | [OI-161](notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)             |
+| 🔴 **Data migration** — never planned or estimated                                                                            | [OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)                       |
+| 🔴 **Mexal chain runnable in a sandbox** — code guard, not configuration. **UAT 6/10**                                        | [OI-137](notes/items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md)         |
+| 🔴 **The order-line identifier for Mexal** — the last hop of payment → tranche                                                | [OI-166](notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)              |
+| 🔴 **Agent from the customer record** — no field anywhere. The conversion block recorded as built on 22/09 was announced only | [OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)        |
+| 🔴 **Lead duplicate rule** — five undecided cases, stock rules only                                                           | [OI-163](notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)                        |
+| 🔴 **Nightly sync schedule**                                                                                                  | [OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md)                           |
+| 🔴 **Apex coverage** — **0 of 7,756, 0%**, 79 entries                                                                         | [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md)                                  |
+| 🔴 **Credit notes and storni** — unbuilt and undefined                                                                        | [OI-157](notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)                 |
+| 🔴 **The RID mandate form** promised to customers                                                                             | [OI-152](notes/items/OI-152%20The%20RID%20mandate%20form%20promised%20to%20customers%20does%20not%20exist.md)     |
+| Declarative automation — zero project Flows, no approval process, no scheduled report                                         | [the flow](notes/flows/The%20quote%20to%20order%20flow.md)                                                        |
+| The whole phase 2 scope — no estimate                                                                                         | [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)                                                         |
 
 ---
 
 ## Blocking now, in order
 
-1. **Apex coverage — nothing ships until it clears 75%, and it now reads 0%.**
-   _Aurel Mrruku._ Measured 2026-08-26: 24 classes and triggers, **1069**
-   uncovered lines, **zero covered**. Three causes: making `Product2.Code__c` required
-   broke nine of ten bundle tests
-   ([OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md)),
-   the Biglietto stack has no tests
-   ([OI-66](notes/items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)),
-   and `QuoteTrancheController` shipped on 25 Aug with none — **185 lines**, the
-   largest uncovered class in the org. (It read 144 on 25 Aug; the class has not
-   changed, the coverage snapshot caught up with the deploy.)
-   ⚠ **This is handled as one deliberate task, requested separately before the
-   production deploy — it is not to be picked up mid-flight.** The records stay
-   current so that task has a brief when it comes.
-2. **Build the automation layer — there is none.** _ROMI._ The org contains
-   **zero Flows**. Asset generation, the quote validity and alert rules, the
-   participant funnel, campaign member handling and the Lead/Opty validation
-   specified on 24 August are all designed and none is implemented. There is also
-   **no email template, no notification type and no scheduled job**, so the
-   reminder copy delivered on 25 August has nothing to sit on. Order, Lead and
-   Opportunity are still stock Salesforce; **Quote is the one exception** and its
-   picklist landed without any rule to enforce it. This is the single largest gap
-   against the **10 September** development end date
-   ([the flow](notes/flows/The%20quote%20to%20order%20flow.md)).
-3. **Finish the tranche.** _ROMI._ The object and the Quote-side creation UI
-   exist and, since 26 August, are **in source control** — that gap is closed.
-   Three remain: **`OrderItem.Tranche__c` is deployed but granted to no profile
-   and no permission set**, so no user or FLS-respecting code can touch it, and
-   nothing in `force-app/` writes it either — propagation cannot run
-   ([risk](notes/risks/Risk%20-%20OrderItem%20Tranche%20is%20invisible%20to%20every%20user.md));
-   the payment aggregation from Mexal lines is still unverified; and
-   **`Sequenza__c` has no integrity control** — 1, 4, 3 on one quote and null on
-   three records, while ticket release reads it as a total order
-   ([OI-50](notes/items/OI-50%20Tranche%20object.md),
-   [risk](notes/risks/Risk%20-%20the%20tranche%20sequence%20has%20no%20integrity%20control.md)).
-4. **Plan and build the move from `Biglietto__c` to standard Asset.** _ROMI._
-   The object decision is closed; implementation has not started — **`Asset`
-   carries zero custom fields** and holds one record, against 37 on
-   `Biglietto__c`. Worse, those 37 are unusable as they stand: **30 sit in
-   `In attesa firma` and 7 in `Caricato`**, and `Biglietto__c.Status__c` still
-   carries the pre-06-August signature vocabulary that the closing session
-   struck. **No ticket has ever reached `Disponibile`.** Map every field,
-   relationship and automation, including the seven UAT-only Apex classes, then
-   decide what is migrated, rewritten or retired. Effort is not estimated
-   ([OI-41](notes/items/OI-41%20Asset%20and%20ticket%20data%20model.md),
-   [OI-74](notes/items/OI-74%20Asset%20state%20machine.md)).
-5. **Fix `Product2.Evento__c` before any product import.** _ROMI._ The built
-   restricted picklist is wrong against the client's own event list: **no
-   `Happy Team` value**, although Happy Team is priced and sits in the Academy
-   bundle at quantity 2. Also `Camerieri` truncated, `Odb Live`, and an invented
-   `ND`. And the `Anno_Solare__c` dependency matrix has **no client source at
-   at all**. ✅ The org check makes this cheap: both fields are populated on
-   **1 of 280 products**, so correcting or dropping them breaks essentially no
-   data ([OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)).
-6. **Get the 19 and 20 August sessions minuted, or re-run them.** _Elena Spini._
-   Three design moves in two days, none recorded — `Rinuncia` entering the
-   master diagram ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)), the
-   06-08 order states drawn _alongside_ the old ones rather than replacing them
-   ([OI-69](notes/items/OI-69%20Order%20state%20model.md)), and a new question
-   about Mexal reversing an asset
-   ([OI-92](notes/items/OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md)).
-   **Nothing was reconfigured against any of it.**
-7. **Close the `CHIUSO/ACQUISITO` question.** _Elena Spini._ The 06-08 session
-   struck it from the Order; the legacy tranche design still uses the name.
-   ✅ The tranche half is settled in the build: `Tranche__c.Stato__c` uses
-   `Aperta / Parzialmente Pagata / Pagata`, not `CHIUSO/ACQUISITO`. What remains
-   blocked is the **Order** state machine, still stock `Draft` / `Activated`
-   with zero custom fields — so nothing has been configured twice
-   ([OI-69](notes/items/OI-69%20Order%20state%20model.md)).
-8. **Send Pienissimo the Zoho import template.** _ROMI._ Owed before the
-   ~1 September import
-   ([OI-88](notes/items/OI-88%20Zoho%20import%20template%20owed%20to%20Pienissimo.md)),
-   and it must carry the opaque-code rule below.
-9. **Take the phase 2 dispute to Daniela Morgese.** Four meetings, and
-   [OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md) records that the only
-   person who can decide it was never told.
-10. **Confirm the 10 September development deadline still stands.** _Elena
-    Spini._ Every conversation anchors on 6 October, which is go-live, not
-    code-complete ([OI-04](notes/items/OI-04%20Scope%20against%20the%20go-live%20date.md)).
-11. **Decide who owns the Anticipay middleware before anyone builds against it.**
-    _Elena Spini._ The 25 August client call moved the VAT check off a direct
-    Anticipay call and onto **an API that Pienissimo Software Srl must build,
-    host and keep running**
-    ([OI-94](notes/items/OI-94%20Anticipay%20is%20called%20through%20the%20Pienissimo%20middleware.md)).
-    Anticipay → SFDC is **Fase 1**. So Fase 1 now cannot go live without work
-    from the separate legal entity ROMI argues is not this project's client, and
-    the entity at the centre of
-    [the phase 2 dispute](notes/risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
-    Who pays, and who owns uptime after go-live, was not raised in the session.
-    The technical decision is sound on its own terms — this is a commercial line,
-    and it moved inside an architecture diagram.
-12. **Chase Andrea Parmeggiani's API payload example.** _Aurel Mrruku._ Due
-    **Friday 4 September**; nothing about the VAT integration is buildable until
-    it arrives — no endpoint, no schema, no token, no test environment. Follow-up
-    call **Tuesday 1 September 10:00**. Set against the **10 September**
-    development end, that is roughly four working days. The trimmed field list is
-    a second, client-owned dependency
-    ([OI-95](notes/items/OI-95%20Which%20Anticipay%20fields%20land%20in%20Salesforce.md)).
-13. **Re-send the 1 September invitation, or correct it in the call.** _Elena
-    Spini._ The client-facing invitation of 25 August states that ROMI will
-    create the integration test environment. That is wrong — ROMI's exists, and
-    what is needed is **Pienissimo's, for ROMI to point at**. Aurel Mrruku
-    corrected it internally the same afternoon; the client has not been told.
-14. **Fix the master design file — it contradicts itself.** _Elena Spini._
-    `Flows & Objects.drawio` was edited during the 25 August call and only the
-    **LEAD-OPTY** page was updated. The **Ordini** page still instructs a direct
-    Anticipay call. A developer reading that page will build the superseded
-    architecture
-    ([the diagram](notes/The%20newest%20design%20diagram.md)).
+The order is by the UAT calendar: the item that can still spoil the nearest
+session comes first.
+
+1. **Fix the Web-to-Lead record type — today, before the 24/09 session.**
+   _Rexhina Hysi, with Aurel Mrruku._ Either make `Standard` / `Diretta` visible with a
+   default on the System Administrator profile, or assign `Full_Permission` (or a
+   narrower set) to `Amministratore Pienissimo`. Configuration, not code. Then re-run
+   Elena Spini's form test
+   ([OI-164](notes/items/OI-164%20Web%20to%20Lead%20leads%20arrive%20without%20a%20record%20type.md)).
+2. **Commit the bundle discount, then deploy the Lead conversion — today, in that
+   order.** _The author of the 08:00Z change, then whoever deploys._ The uncommitted
+   Manage Products change
+   ([OI-171](notes/items/OI-171%20A%20bundle%20discount%20was%20deployed%20to%20UAT%20from%20no%20commit.md))
+   must reach a branch before any `DevMain` deploy. Then `LeadConversionQueueable` must
+   reach UAT, or the 24/09 session must be told that conversion always yields
+   `Standart`
+   ([OI-170](notes/items/OI-170%20DevMain%20is%20ahead%20of%20UAT%20on%20the%20Lead%20conversion%20and%20quote-line%20paths.md)).
+   ⚠ A full `DevMain` deploy also brings the four undecided `without sharing` changes
+   into UAT ([OI-156](notes/items/OI-156%20QuoteTriggerHandler%20runs%20without%20sharing.md)).
+   A targeted deploy of the Lead class avoids making that decision by accident.
+3. **Settle the Lead conversion rules, or name them as UAT questions.** _Aurel
+   Mrruku with Elena Spini._ Five duplicate cases are undecided
+   ([OI-163](notes/items/OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)).
+   The agent-required block is not built
+   ([OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md))
+   — keep it that way until the client answers.
+4. **Name who deploys a merged PR to UAT.** _Aurel Mrruku._ Both of today's
+   findings come from the same gap. It will recur before every remaining UAT session.
+5. **Ticket UAT 30/09: check-in and mappings.** _Aurel Mrruku; Fabrizio Paganelli for
+   the mappings._ No ticket has a QR, nothing reads one, and 38 of 51 ticket products are
+   unmapped
+   ([OI-161](notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md),
+   [OI-121](notes/items/OI-121%20The%20edition%20mapping%20table%20has%20no%20rows%20and%20no%20owner.md)).
+6. **Contract UAT 5/10: start it.** _Aurel Mrruku._ Zero fields, zero code, twelve
+   days
+   ([OI-168](notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)).
+7. **Mexal UAT 6/10: make the chain runnable in a sandbox.** _Aurel Mrruku._ Replace
+   the `isSandbox()` guard with configuration (`Use_Mock__c`, the sandbox named
+   credential), or agree with the client how Mexal is accepted. Schedule the nightly
+   sync. Get the order-line identifier agreed
+   ([OI-137](notes/items/OI-137%20The%20order%20to%20Mexal%20chain%20is%20disabled%20in%20every%20sandbox.md),
+   [OI-116](notes/items/OI-116%20Nightly%20Mexal%20to%20Salesforce%20anagrafica%20sync.md),
+   [OI-166](notes/items/OI-166%20The%20order%20line%20needs%20a%20shared%20identifier%20for%20Mexal.md)).
+8. **Plan and estimate the data migration.** _Aurel Mrruku._ Go-live is 21/10 and
+   Zoho expires 31/10; there is no slot on the calendar
+   ([OI-165](notes/items/OI-165%20Data%20migration%20was%20never%20planned%20or%20estimated.md)).
+9. **Apex coverage before the production deploy.** _Aurel Mrruku._ **0 of 7,756**
+   lines. ⚠ **This is one deliberate task, requested separately before the production
+   deploy — it is not to be picked up mid-flight.** It also has no calendar slot
+   between approval on 13/10 and go-live on 21/10. The records stay current so the
+   task has a brief when it comes.
 
 ---
 
 ## The client's product registry, read 2026-08-24
 
 `Prodotti e Bundle.xlsx` — Fabrizio Paganelli's attachment of **7 August**,
-forwarded 18 August, **opened 24 August**. Seventeen days unread. It answered
-four questions and **broke more of the record than it closed**. Decode:
+forwarded 18 August, **opened 24 August**. Decode:
 [the workbook](notes/The%20Prodotti%20e%20Bundle%20workbook.md).
 
 | It settled                                                                                                                     | It broke                                                                                                                             |
 | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Real catalogue prices delivered** — [OI-87](notes/items/OI-87%20Real%20catalogue%20prices%20still%20outstanding.md) resolved | The built event picklist is wrong, and **`Happy Team` is missing outright**                                                          |
+| **Real catalogue prices delivered** — [OI-87](notes/items/OI-87%20Real%20catalogue%20prices%20still%20outstanding.md) resolved | The built event picklist was wrong — ✅ **`Happy Team` is now present** (verified 23/09)                                             |
 | The event list: **11 events in 4 types**, not the 7 on record                                                                  | The `Anno_Solare__c` → `Evento__c` matrix has **no client source**                                                                   |
 | Tier vocabulary: `EXECUTIVE` / `GOLD` / `DIAMOND` — **`Silver` and `Dinamond` both die**                                       | The tier **field still does not exist**, so [OI-76](notes/items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md) stays open |
 | A bundle is **two levels deep**: `PACK` → `BLO` (blocco) → article                                                             | `BundleComponent__c` is **flat** and cannot express the middle level                                                                 |
 | The `(B)` bundle-code convention looks **obsolete, not forgotten**                                                             | [OI-93](notes/items/OI-93%20Bundle%20components%20should%20be%20priced%20articles.md) — a client change request nobody knew existed  |
 
-⚠ **One rule from it binds the September import.** `_ARCOD` is an **opaque
-string**: two pairs of codes differ only by a separator or a leading zero and
-name **different events at different prices**. `Product2.Code__c` is a unique,
-case-insensitive external id, so a normalising import does not fail cleanly — it
-overwrites a product or throws an opaque duplicate error at load time. **No
-trim, pad, separator-strip or case-fold, anywhere.**
+⚠ **One rule from it binds the import.** `_ARCOD` is an **opaque string**: two
+pairs of codes differ only by a separator or a leading zero and name **different
+events**. **No trim, pad, separator-strip or case-fold, anywhere.**
 [The risk](notes/risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md).
-
-**Still owed:** the 22 July session paired this file with a **review meeting on
-the anagrafica prodotti**. The file arrived; the meeting has not happened.
 
 ---
 
 ## Open risks
 
-Eleven recorded. Severity is the note's own.
+Sixteen open. Severity is the note's own.
 
-| Risk                                                                                       | Severity |
-| ------------------------------------------------------------------------------------------ | -------- |
-| Production deploy is blocked by Apex coverage — **0%** against a 75% floor                 | high     |
-| The Biglietto Apex stack is not in source control — and the tranche stack repeated it      | high     |
-| `OrderItem.Tranche__c` is deployed and granted to no user — propagation cannot run in UAT  | high     |
-| The whole remaining build lands after Ferragosto — two weeks for everything                | high     |
-| The phase 2 scope dispute is unresolved, and the decision-maker was never told             | high     |
-| Placeholder prices could reach the client — every UAT price is a ROMI invention            | high     |
-| Normalising an article code merges two products — bites at the ~1 September import         | high     |
-| Standard Asset is decided, but UAT still runs on custom Biglietto — migration unestimated  | medium   |
-| The ticket lifecycle has never run end to end — 0 of 37 tickets have reached `Disponibile` | high     |
-| The tranche sequence has no integrity control — release reads it as a total order          | medium   |
-| No coherence control on bundle composition                                                 | medium   |
+| Risk                                                                                                          | Severity     |
+| ------------------------------------------------------------------------------------------------------------- | ------------ |
+| Salesforce integration credentials were circulated in plaintext                                               | **gating**   |
+| The community pages have no application-level authentication — a bare record id accepts or rejects a quote    | **gating**   |
+| The Biglietto Apex stack is not in source control                                                             | **critical** |
+| Integration credentials exist only in the org — 🟢 **metadata part closed 23/09**; production swap still owed | high         |
+| Production deploy is blocked by Apex coverage — **0 of 7,756**, unmeasured since 4 August, no calendar slot   | high         |
+| The Mexal integration is developed against the production ERP                                                 | high         |
+| The ticket lifecycle has never run end to end — 0 of 31 Assets carry a QR                                     | high         |
+| The phase 2 scope dispute is unresolved                                                                       | high         |
+| Placeholder prices could reach the client                                                                     | high         |
+| A sandbox password was spoken aloud and preserved in a meeting transcript                                     | high         |
+| The whole remaining build lands after Ferragosto                                                              | high         |
+| Normalising an article code merges two products                                                               | high         |
+| The Biglietto object diverged from the approved proposal                                                      | medium       |
+| A second Flow was deleted with no source copy                                                                 | medium       |
+| The tranche sequence has no integrity control                                                                 | medium       |
+| No coherence control on bundle composition                                                                    | medium       |
+| ~~The Mexal order integration exists only in the org~~ — **resolved 15/09**, verified in source 23/09         | resolved     |
+
+⚠ Today's two version-drift findings are recorded as **items**, not risks,
+because each has a concrete action:
+[OI-170](notes/items/OI-170%20DevMain%20is%20ahead%20of%20UAT%20on%20the%20Lead%20conversion%20and%20quote-line%20paths.md)
+and
+[OI-171](notes/items/OI-171%20A%20bundle%20discount%20was%20deployed%20to%20UAT%20from%20no%20commit.md).
 
 ---
 
 ## Register coverage
 
-|                                     |                                                                          |
-| ----------------------------------- | ------------------------------------------------------------------------ |
-| Atomic notes                        | 120                                                                      |
-| Item notes in `notes/items/`        | 56 — of which **7 gating**, 37 open, 14 in progress, 4 resolved, 1 stale |
-| Numbered rows in the client tracker | ~86                                                                      |
-| Requirements reachable from a note  | **19 of 167**                                                            |
-| Org components verified 2026-08-26  | 6 custom objects, 34 Apex classes, 3 triggers, 2 LWC, **0 Flows**        |
+|                                     |                                                                                                                                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Atomic notes                        | **292**                                                                                                                                                                  |
+| Item notes in `notes/items/`        | **132** — highest id `OI-171`; **112 active** (87 open, 25 in progress), **13 gating**                                                                                   |
+| Numbered rows in the client tracker | **160**                                                                                                                                                                  |
+| Requirements traced to a note       | **27 of 154** carry `tracked_by`                                                                                                                                         |
+| Org components verified 2026-09-23  | **1,382** org vs **442** repository keys; **0** repository-only in the twelve kinds compared both ways; **0** project-authored Flows                                     |
+| Apex and LWC bodies compared        | **69** project classes and triggers — 50 identical, 12 formatting-only, **7 at token level** (6 repository-ahead, 1 org-ahead); **1** LWC bundle differs, **1** org-only |
+| Stored Apex coverage                | **0 covered / 7,756 uncovered / 0%**, 79 entries — unmeasured since 4 August                                                                                             |
 
-⚠ **Two honest gaps in the record itself.** The tracker carries roughly 86
-numbered rows and only 56 have atomic notes behind them, so this page's item
-view is the _notes_ view, not the whole tracker. And the requirement trace is
-**19 of 167** — the `tickets` and `sales` areas are traced; most signed
-requirements still cannot be walked back to the meeting that produced them
-([the trace](notes/The%20requirement%20mappings%20were%20fabricated.md)).
+⚠ **Honest gaps in the record itself.** The requirement trace is **27 of 154**:
+most signed requirements still cannot be walked back to the meeting that produced
+them ([the trace](notes/The%20requirement%20mappings%20were%20fabricated.md)). And
+**`MAP.md` is now about 145 KB against a 5 KB budget** — it is a running log and
+needs its history moved into notes.
 
-⚠ **`sf project retrieve preview` cannot be used on this org.** Pienissimo UAT is
-a partial sandbox with no source tracking, so repository-vs-org divergence has to
-be established component by component. Any future check that skips that step will
-silently miss org-only work — which is how the tranche controller went unrecorded.
+⚠ **Presence is not version.** On 23/09 every repository key existed in the org
+and eight files still differed. Only a body comparison matched to git history
+tells _merged but never deployed_ from _deployed but never committed_ — and today
+both happened.
 
-⚠ **And do not use `sf sobject describe` for that comparison.** It is filtered by
-the running user's field-level security, so a deployed field granted to nobody
-reads as never deployed. That produced a false finding on 25 August. Use Tooling
-`FieldDefinition` for existence and `FieldPermissions` for visibility —
-[the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
+⚠ **`sf project retrieve preview` cannot be used on this org** (partial sandbox,
+no source tracking), and **`sf sobject describe` must not be used for field
+existence** — [the method note](notes/How%20to%20read%20the%20org%20schema%20without%20a%20false%20negative.md).
+
+✅ `npm run org-status:validate:strict` passes: 154 requirement ids, 200 registry
+ids, 9 structural assertions, no unknown `build_state` references.
 
 ---
 
 ## Who is who
 
 **ROMI** — **Elena Spini** chairs and owns the client relationship. **Aurel
-Mrruku** is technical lead. **Andrea Di Cicco** owns the Mexal integration.
-**Anita Aga**, **Sara Aga** and **Rexhina Hysi** write the build and appear in
-almost no meeting record.
+Mrruku** is technical lead. **Anita Aga**, **Sara Aga** and **Rexhina Hysi** write
+the build. **Andrea Di Cicco** owned the Mexal integration and is winding down
+([OI-139](notes/items/OI-139%20Andrea%20Di%20Cicco%20is%20winding%20down%20with%20four%20integration%20questions%20unanswered.md)).
 
-**Pienissimo** — **Daniela Morgese** decides and signs commercially. **Sabatino
-Rinaldi** leads day to day. **Elisa Migliano** is the operational authority on
-administration, invoicing and the infopoint. **Fabrizio Paganelli** owns the
-product registry. **Marco Montesi** sales.
+**Pienissimo** — **Daniela Morgese** decides and signs commercially. **Fabrizio
+Paganelli** is the day-to-day referent **since 21 September** and owns the product
+registry. **Sabatino Rinaldi** keeps WooCommerce and the marketing forms. **Elisa
+Migliano** is the operational authority on administration, invoicing and the
+infopoint. **Marco Montesi** sales. **Andrea Parmeggiani** runs the event check-in
+app.
+
+**Vendors** — **Mirko Merendi** (Kreosoft) for Mexal.
 
 ---
 

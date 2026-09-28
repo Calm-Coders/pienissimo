@@ -2,11 +2,11 @@
 id: risk-biglietto-not-in-scm
 type: risk
 status: open
-severity: high
+severity: critical
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-14
-updated: 2026-08-26
+updated: 2026-08-31
 source: force-app/main/default/classes vs org verification 2026-08-03
 ---
 
@@ -109,3 +109,51 @@ The `DocuSign`, `Full_Permission` and `Sales_User` permission sets remain
 org-only, unchanged.
 
 **The fix is unchanged and is still a retrieve, not a decision.**
+
+## 2026-08-31 - the risk materialised: the code was deleted, and there was never a copy
+
+**This note warned for seventeen days that these components existed in exactly
+one place. On 28 August that place was wiped.**
+
+The `org-status-check` of **2026-08-31, 09:36–09:52Z** found all seven Biglietto
+Apex components gone from the org — 31 classes now against 37 on 28 August. The
+destructive-changes manifest added by commit **`5d8cdb3`** (Anita Aga, 28 August
+18:10 CEST) names them explicitly: `BigliettoTriggerHandler`,
+`BigliettoDocuSignService`, `BigliettoDocuSignQueueable`, `BigliettoPdfService`,
+`BigliettoPdfQueueable`, `BigliettoPdfBatch`, the `BigliettoTrigger` and the
+`BigliettoPdf` Visualforce page.
+
+🔴 **Verified against the whole of git history: not one of those eight components
+has ever existed in this repository, on any branch.** `git log --all` returns
+zero commits touching any of their files. The only committed Biglietto Apex was
+`OrderBigliettoTrigger`, which is a different component.
+
+So the loss is total. Roughly **270 lines of the most integration-sensitive code
+on the project** — the DocuSign send path and the PDF generation stack — are
+gone from the only copy that existed. This code had **demonstrably run**: 19 of
+the 37 deleted records carried a populated `DocuSign_Envelope_Id__c`.
+
+⚠ **The 31 August org check reported this as _"the Biglietto Apex source-control
+drift is resolved, albeit by deletion from both sides."_ That reading is wrong
+and should not be carried forward.** There were never two sides. The drift is not
+resolved; the unversioned half was destroyed, which is the outcome this note
+existed to prevent. A deleted custom object can be undeleted from the recycle bin
+for ~15 days; **deleted Apex classes have no equivalent user-facing restore**, so
+the code and the records are not one recovery problem, and the code is the harder
+half.
+
+**What a human must establish**, and only Anita Aga and Aurel Mrruku can:
+whether any retrieve, export or sandbox copy of those eight components exists
+anywhere outside the org — a local `force-app/` working copy that was never
+committed, an IDE workspace, a prior sandbox refresh. If one does, commit it
+today. If none does, the DocuSign and PDF implementation has to be written again
+from scratch, and the record should say so plainly rather than carry it as
+"built".
+
+🔴 **The pattern has a third instance, live right now.** The same 31 August check
+found the deployed WooCommerce class is not in source control either — see
+[the deploy risk it creates](Risk%20-%20a%20clean%20deploy%20would%20orphan%20the%20live%20WooCommerce%20endpoint.md).
+That one is the current integration on the critical path to go-live, and it is in
+exactly the position the Biglietto stack was in on 26 August.
+
+Related: [the records half of the same deploy](Risk%20-%20the%20Biglietto%20UAT%20ticket%20dataset%20was%20deleted.md).

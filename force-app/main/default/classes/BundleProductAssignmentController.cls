@@ -10,13 +10,79 @@ public with sharing class BundleProductAssignmentController {
     public String productCode;
     @AuraEnabled
     public Decimal productPrice;
+    @AuraEnabled
+    public Boolean bundleOnly;
+    @AuraEnabled
+    public Boolean generatesTicket;
 
     public ItemOption(Product2 product) {
       id = product.Id;
       name = product.Name;
       productCode = product.ProductCode;
-      productPrice = product.Product_Price__c;
+      productPrice = null;
     }
+  }
+
+  public class ProductSearchPage {
+    @AuraEnabled
+    public List<ItemOption> items = new List<ItemOption>();
+    @AuraEnabled
+    public Boolean hasMore;
+    @AuraEnabled
+    public Id nextCursor;
+  }
+
+  // Keyset pagination keeps every matching item reachable without an OFFSET cap.
+  // Exclusions come from the draft, so removed memberships can be selected again.
+  @AuraEnabled
+  public static ProductSearchPage searchProducts(
+    String searchTerm,
+    Boolean bundleOnly,
+    Boolean generatesTicket,
+    List<Id> excludedProductIds,
+    Id afterId
+  ) {
+    Set<Id> excludedIds = excludedProductIds == null
+      ? new Set<Id>()
+      : new Set<Id>(excludedProductIds);
+    String term =
+      '%' +
+      (String.isBlank(searchTerm) ? '' : searchTerm.trim()) +
+      '%';
+    String queryText =
+      'SELECT Id, Name, ProductCode, ' +
+      'Solo_Bundle__c, Genera_Biglietto__c FROM Product2 ' +
+      'WHERE RecordType.DeveloperName = \'Item\' AND IsActive = TRUE ' +
+      'AND Id NOT IN :excludedIds ' +
+      'AND (ProductCode LIKE :term OR Name LIKE :term)';
+    if (bundleOnly != null) {
+      queryText += ' AND Solo_Bundle__c = :bundleOnly';
+    }
+    if (generatesTicket != null) {
+      queryText += ' AND Genera_Biglietto__c = :generatesTicket';
+    }
+    if (afterId != null) {
+      queryText += ' AND Id > :afterId';
+    }
+    queryText += ' ORDER BY Id LIMIT 51';
+    List<Product2> products = Database.query(queryText);
+    ProductSearchPage result = new ProductSearchPage();
+    result.hasMore = products.size() > 50;
+    Set<Id> productIds = new Set<Id>();
+    for (Product2 product : products) {
+      productIds.add(product.Id);
+    }
+    Map<Id, Decimal> standardPrices = standardPricesByProduct(productIds);
+    for (Integer index = 0; index < Math.min(products.size(), 50); index++) {
+      Product2 product = products[index];
+      ItemOption option = new ItemOption(product);
+      option.productPrice = standardPrices.get(product.Id);
+      option.bundleOnly = product.Solo_Bundle__c;
+      option.generatesTicket = product.Genera_Biglietto__c;
+      result.items.add(option);
+      result.nextCursor = product.Id;
+    }
+    return result;
   }
 
   public class ComponentRow {
@@ -34,6 +100,10 @@ public with sharing class BundleProductAssignmentController {
     public Decimal listPrice;
     @AuraEnabled
     public Decimal spreadPrice;
+    @AuraEnabled
+    public Id bundleTranchId;
+    @AuraEnabled
+    public String bundleTranchName;
 
     public ComponentRow(BundleComponent__c component) {
       id = component.Id;
@@ -41,8 +111,30 @@ public with sharing class BundleProductAssignmentController {
       name = component.Product__r.Name;
       productCode = component.Product__r.ProductCode;
       quantity = component.Quantity__c;
-      listPrice = component.List_Price__c;
+      listPrice = null;
       spreadPrice = component.Spread_Price__c;
+      bundleTranchId = component.Bundle_Tranch__c;
+      bundleTranchName = component.Bundle_Tranch__r == null
+        ? null
+        : component.Bundle_Tranch__r.Name;
+    }
+  }
+
+  public class BundleTranchOption {
+    @AuraEnabled
+    public Id id;
+    @AuraEnabled
+    public String name;
+    @AuraEnabled
+    public Decimal sequence;
+    @AuraEnabled
+    public Date dueDate;
+
+    public BundleTranchOption(Bundle_Tranch__c tranch) {
+      id = tranch.Id;
+      name = tranch.Name;
+      sequence = tranch.Sequenza__c;
+      dueDate = tranch.Data_Scadenza__c;
     }
   }
 
@@ -59,6 +151,8 @@ public with sharing class BundleProductAssignmentController {
     public Decimal variance;
     @AuraEnabled
     public List<ComponentRow> components;
+    @AuraEnabled
+    public List<BundleTranchOption> bundleTranches;
   }
 
   // This type is deserialized explicitly from JSON. Letting the LWC/Apex bridge coerce a
@@ -68,6 +162,7 @@ public with sharing class BundleProductAssignmentController {
     public String productId;
     public Decimal quantity;
     public Decimal spreadPrice;
+    public String bundleTranchId;
   }
 
   @AuraEnabled
@@ -98,21 +193,42 @@ public with sharing class BundleProductAssignmentController {
     context.spreadTotal = bundle.Spread_Total__c;
     context.variance = bundle.Spread_Variance__c;
     context.components = new List<ComponentRow>();
+    context.bundleTranches = new List<BundleTranchOption>();
 
-    for (BundleComponent__c component : [
+    for (Bundle_Tranch__c tranch : [
+      SELECT Id, Name, Sequenza__c, Data_Scadenza__c
+      FROM Bundle_Tranch__c
+      WHERE Bundle__c = :bundleId
+      ORDER BY Sequenza__c, CreatedDate, Id
+    ]) {
+      context.bundleTranches.add(new BundleTranchOption(tranch));
+    }
+
+    List<BundleComponent__c> components = [
       SELECT
         Id,
         Product__c,
         Product__r.Name,
         Product__r.ProductCode,
         Quantity__c,
-        List_Price__c,
-        Spread_Price__c
+        Spread_Price__c,
+        Bundle_Tranch__c,
+        Bundle_Tranch__r.Name
       FROM BundleComponent__c
       WHERE Bundle__c = :bundleId
       ORDER BY Product__r.Name
-    ]) {
-      context.components.add(new ComponentRow(component));
+    ];
+    Set<Id> componentProductIds = new Set<Id>();
+    for (BundleComponent__c component : components) {
+      componentProductIds.add(component.Product__c);
+    }
+    Map<Id, Decimal> standardPrices = standardPricesByProduct(
+      componentProductIds
+    );
+    for (BundleComponent__c component : components) {
+      ComponentRow row = new ComponentRow(component);
+      row.listPrice = standardPrices.get(component.Product__c);
+      context.components.add(row);
     }
 
     return context;
@@ -146,7 +262,7 @@ public with sharing class BundleProductAssignmentController {
 
     List<Product2> products = normalizedSearchTerm == null
       ? [
-          SELECT Id, Name, ProductCode, Product_Price__c
+          SELECT Id, Name, ProductCode
           FROM Product2
           WHERE
             RecordTypeId = :itemRecordTypeId
@@ -156,7 +272,7 @@ public with sharing class BundleProductAssignmentController {
           LIMIT :MAX_RESULTS
         ]
       : [
-          SELECT Id, Name, ProductCode, Product_Price__c
+          SELECT Id, Name, ProductCode
           FROM Product2
           WHERE
             RecordTypeId = :itemRecordTypeId
@@ -169,8 +285,15 @@ public with sharing class BundleProductAssignmentController {
         ];
 
     List<ItemOption> results = new List<ItemOption>();
+    Set<Id> productIds = new Set<Id>();
     for (Product2 product : products) {
-      results.add(new ItemOption(product));
+      productIds.add(product.Id);
+    }
+    Map<Id, Decimal> standardPrices = standardPricesByProduct(productIds);
+    for (Product2 product : products) {
+      ItemOption option = new ItemOption(product);
+      option.productPrice = standardPrices.get(product.Id);
+      results.add(option);
     }
     return results;
   }
@@ -180,7 +303,9 @@ public with sharing class BundleProductAssignmentController {
   @AuraEnabled
   public static BundleContext saveComponents(
     Id bundleId,
-    String componentsJson
+    Decimal fixedPrice,
+    String componentsJson,
+    Boolean allowMissingTranch
   ) {
     if (bundleId == null) {
       throw new AuraHandledException('Missing bundle record id.');
@@ -204,11 +329,21 @@ public with sharing class BundleProductAssignmentController {
 
     Map<Id, BundleComponent__c> existingById = new Map<Id, BundleComponent__c>(
       [
-        SELECT Id, Product__c, Quantity__c, Spread_Price__c
+        SELECT Id, Product__c, Quantity__c, Spread_Price__c, Bundle_Tranch__c
         FROM BundleComponent__c
         WHERE Bundle__c = :bundleId
       ]
     );
+
+    Set<Id> validBundleTranchIds = new Set<Id>();
+    for (Bundle_Tranch__c tranch : [
+      SELECT Id
+      FROM Bundle_Tranch__c
+      WHERE Bundle__c = :bundleId
+    ]) {
+      validBundleTranchIds.add(tranch.Id);
+    }
+    Boolean requiresTranchAssignment = !validBundleTranchIds.isEmpty();
 
     List<BundleComponent__c> toUpsert = new List<BundleComponent__c>();
     Set<Id> keptIds = new Set<Id>();
@@ -219,20 +354,58 @@ public with sharing class BundleProductAssignmentController {
           'The component list contains an empty row. Reload and try again.'
         );
       }
-      Decimal spread = input.spreadPrice == null ? 0 : input.spreadPrice;
+      if (input.spreadPrice == null) {
+        throw new AuraHandledException(
+          'Inserisci lo sconto o il prezzo totale della riga per ogni prodotto.'
+        );
+      }
+      Decimal spread = input.spreadPrice;
       Decimal quantity = (input.quantity == null ||
         input.quantity < 1)
         ? 1
         : input.quantity;
+      if (
+        quantity != quantity.setScale(0) ||
+        spread < 0 ||
+        spread != spread.setScale(2)
+      ) {
+        throw new AuraHandledException(
+          'Inserisci una quantita intera positiva e un importo non negativo con massimo due decimali.'
+        );
+      }
       Id componentId = String.isBlank(input.id) ? null : (Id) input.id;
       Id productId = String.isBlank(input.productId)
         ? null
         : (Id) input.productId;
+      Id bundleTranchId = String.isBlank(input.bundleTranchId)
+        ? null
+        : (Id) input.bundleTranchId;
+      if (
+        requiresTranchAssignment &&
+        allowMissingTranch != true &&
+        bundleTranchId == null
+      ) {
+        throw new AuraHandledException(
+          'Assegna ogni prodotto del bundle a una tranch prima di salvare.'
+        );
+      }
+      if (
+        bundleTranchId != null && !validBundleTranchIds.contains(bundleTranchId)
+      ) {
+        throw new AuraHandledException(
+          'Una tranch selezionata non appartiene a questo bundle. Ricarica la pagina.'
+        );
+      }
 
       // A row that would be inserted without a product trips the Product_Required rule,
       // whose message gives no clue which row is at fault. Say so precisely instead.
       Boolean isExisting =
         componentId != null && existingById.containsKey(componentId);
+      if (componentId != null && !isExisting) {
+        throw new AuraHandledException(
+          'Una riga non appartiene a questo bundle. Ricarica la pagina.'
+        );
+      }
       if (!isExisting && productId == null) {
         throw new AuraHandledException(
           'A component row arrived without a product (id=' +
@@ -250,13 +423,15 @@ public with sharing class BundleProductAssignmentController {
         BundleComponent__c existing = existingById.get(componentId);
         if (
           existing.Spread_Price__c != spread ||
-          existing.Quantity__c != quantity
+          existing.Quantity__c != quantity ||
+          existing.Bundle_Tranch__c != bundleTranchId
         ) {
           toUpsert.add(
             new BundleComponent__c(
               Id = componentId,
               Quantity__c = quantity,
-              Spread_Price__c = spread
+              Spread_Price__c = spread,
+              Bundle_Tranch__c = bundleTranchId
             )
           );
         }
@@ -266,7 +441,8 @@ public with sharing class BundleProductAssignmentController {
             Bundle__c = bundleId,
             Product__c = productId,
             Quantity__c = quantity,
-            Spread_Price__c = spread
+            Spread_Price__c = spread,
+            Bundle_Tranch__c = bundleTranchId
           )
         );
       }
@@ -285,7 +461,6 @@ public with sharing class BundleProductAssignmentController {
     if (!toUpsert.isEmpty()) {
       upsert toUpsert;
     }
-
     return getBundleContext(bundleId);
   }
 
@@ -298,5 +473,23 @@ public with sharing class BundleProductAssignmentController {
     ];
 
     return recordTypes.isEmpty() ? null : recordTypes[0].Id;
+  }
+
+  private static Map<Id, Decimal> standardPricesByProduct(Set<Id> productIds) {
+    Map<Id, Decimal> prices = new Map<Id, Decimal>();
+    if (productIds.isEmpty()) {
+      return prices;
+    }
+    for (PricebookEntry entry : [
+      SELECT Product2Id, UnitPrice
+      FROM PricebookEntry
+      WHERE
+        Product2Id IN :productIds
+        AND Pricebook2.IsStandard = TRUE
+        AND IsActive = TRUE
+    ]) {
+      prices.put(entry.Product2Id, entry.UnitPrice);
+    }
+    return prices;
   }
 }

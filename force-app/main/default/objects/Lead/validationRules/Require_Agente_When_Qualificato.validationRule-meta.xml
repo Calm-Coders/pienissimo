@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Agente_When_Qualificato</fullName>
+    <active>true</active>
+    <description
+  >Richiede un agente quando il Lead passa allo stato Qualificato.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Qualificato&quot;),
+    ISBLANK(Agente__c)
+)</errorConditionFormula>
+    <errorDisplayField>Agente__c</errorDisplayField>
+    <errorMessage
+  >Seleziona un agente prima di qualificare il Lead.</errorMessage>
+</ValidationRule>

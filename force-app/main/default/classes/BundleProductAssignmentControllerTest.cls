@@ -13,7 +13,7 @@ private class BundleProductAssignmentControllerTest {
   private static Product2 makeBundle(String name, Decimal sellingPrice) {
     return new Product2(
       Name = name,
-      Code__c = 'TEST-BUNDLE-' + name.replace(' ', '-'),
+      ProductCode = 'TEST-BUNDLE-' + name.replace(' ', '-'),
       IsActive = true,
       RecordTypeId = recordTypeId('Bundle'),
       Bundle_Selling_Price__c = sellingPrice
@@ -27,7 +27,6 @@ private class BundleProductAssignmentControllerTest {
   ) {
     return new Product2(
       Name = name,
-      Code__c = code,
       ProductCode = code,
       IsActive = true,
       RecordTypeId = recordTypeId('Item'),
@@ -61,9 +60,19 @@ private class BundleProductAssignmentControllerTest {
     Id bundleId,
     List<BundleProductAssignmentController.ComponentInput> components
   ) {
+    return save(bundleId, null, components);
+  }
+
+  private static BundleProductAssignmentController.BundleContext save(
+    Id bundleId,
+    Decimal fixedPrice,
+    List<BundleProductAssignmentController.ComponentInput> components
+  ) {
     return BundleProductAssignmentController.saveComponents(
       bundleId,
-      components == null ? null : JSON.serialize(components)
+      fixedPrice,
+      components == null ? null : JSON.serialize(components),
+      false
     );
   }
 
@@ -241,11 +250,99 @@ private class BundleProductAssignmentControllerTest {
   }
 
   @isTest
+  static void pagedSearchProductsFiltersByNameOrCode() {
+    Product2 bundle = makeBundle('Stage bundle', 1000);
+    insert bundle;
+    insert new List<Product2>{
+      makeItem('Pienissimo Live', 'TEST-LIVE', 600),
+      makeItem('Food Marketing Festival', 'TEST-FMF', 300)
+    };
+
+    Test.startTest();
+    BundleProductAssignmentController.ProductSearchPage byName = BundleProductAssignmentController.searchProducts(
+      'Pienissimo',
+      null,
+      null,
+      null,
+      null
+    );
+    BundleProductAssignmentController.ProductSearchPage byCode = BundleProductAssignmentController.searchProducts(
+      'TEST-FMF',
+      null,
+      null,
+      null,
+      null
+    );
+    Test.stopTest();
+
+    System.assertEquals(
+      1,
+      byName.items.size(),
+      'Name search should match one product'
+    );
+    System.assertEquals('Pienissimo Live', byName.items[0].name);
+    System.assertEquals(
+      1,
+      byCode.items.size(),
+      'Code search should match one product'
+    );
+    System.assertEquals('TEST-FMF', byCode.items[0].productCode);
+  }
+
+  @isTest
+  // Since 7eab757 the configurator no longer sends a selling price, and
+  // saveComponents ignores the fixedPrice argument it still accepts.
+  static void saveComponentsLeavesBundleSellingPriceAlone() {
+    Product2 bundle = makeBundle('Stage bundle', 1000);
+    insert bundle;
+    Product2 item = makeItem('Item A', 'TEST-A', 600);
+    insert item;
+
+    Test.startTest();
+    BundleProductAssignmentController.BundleContext context = save(
+      bundle.Id,
+      1200,
+      new List<BundleProductAssignmentController.ComponentInput>{
+        input(null, item.Id, 600)
+      }
+    );
+    Test.stopTest();
+
+    System.assertEquals(1000, context.fixedPrice);
+    System.assertEquals(
+      1000,
+      [
+        SELECT Bundle_Selling_Price__c
+        FROM Product2
+        WHERE Id = :bundle.Id
+      ]
+      .Bundle_Selling_Price__c
+    );
+    System.assertEquals(
+      400,
+      context.variance,
+      'Variance should use the stored bundle selling price'
+    );
+  }
+
+  @isTest
   static void contextReportsDriftWhenSpreadsDoNotReconcile() {
     Product2 bundle = makeBundle('Stage bundle', 1000);
     insert bundle;
     Product2 item = makeItem('Item A', 'TEST-A', 600);
     insert item;
+    // The list price is read from the standard pricebook entry, which is only
+    // queryable through Pricebook2.IsStandard once the pricebook is touched.
+    update new Pricebook2(Id = Test.getStandardPricebookId(), IsActive = true);
+    PricebookEntry standardEntry = [
+      SELECT Id
+      FROM PricebookEntry
+      WHERE
+        Product2Id = :item.Id
+        AND Pricebook2Id = :Test.getStandardPricebookId()
+    ];
+    standardEntry.UnitPrice = 600;
+    update standardEntry;
     insert new BundleComponent__c(
       Bundle__c = bundle.Id,
       Product__c = item.Id,

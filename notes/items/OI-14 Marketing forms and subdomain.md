@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-08-28
+updated: 2026-09-21
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -135,3 +135,87 @@ Elena Spini's own 24 July status records the marketing handover to Mastracci —
 _"ho fatto passaggio di consegna con Fabrizio che ora seguirà questa parte"_ —
 and the surrounding clause here is about the ROMI-side build. Paganelli owns the
 **product registry**, not marketing.
+
+## 2026-09-07 - the owed list is now itemised, in ROMI\'s own words, and it is overdue
+
+Elena Spini forwarded **Fabrizio Mastracci\'s 20 August recap** to Aurel Mrruku at
+08:48:04Z with the body _"FYI"_. It was originally sent to **Marco Montesi**,
+**Matteo Distaso** and **Rebecca Marmo**, cc Elena Spini. **Its text has not been
+in this record before**, and it itemises what the client owes with dates attached:
+
+| Owed | By | Due in the mail | Status |
+| ---- | -- | --------------- | ------ |
+| **DNS records** | Matteo Distaso | _"entro venerdì"_ — 21 August | unconfirmed |
+| **Segment logic, criteria and mail detail** | Rebecca Marmo | _"entro venerdì"_ — 21 August | unconfirmed |
+| **Landing-page document and hidden-field list** | Pienissimo | _"mercoledì prossimo"_ — 26 August | unconfirmed |
+| Segment/criteria screenshots, flow screenshots, other email and WhatsApp texts, logos and images | Rebecca Marmo / Matteo Distaso | open-ended | unconfirmed |
+
+🔴 **All of it is between two and three weeks overdue**, and none of it appears on
+any source this sweep reached. The DNS records are the item that has been open
+longest under this row.
+
+🟢 **The landing-page document has a location for the first time**: a Google Sheet
+at file id `1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`, named in the mail as the place for
+_"documento per la landing page e campi nascosti da compilare"_. ⚠ **The link in
+the mail body is corrupted in transit** — the `gid` fragment carries a control
+character where a digit belongs — and **the file was not opened this run**. It is
+not otherwise in the record, and it is the specification for the hidden fields on
+a page that is already built.
+
+⚠ **The 100+ form review** remains unmentioned by any source since 28 August.
+
+## 2026-09-08 - the form review is now a named client blocker
+
+The status mail to Pienissimo lists it among the four urgent items:
+
+> _"**Form Marketing:** Siamo in attesa della vostra review finale per poter
+> procedere, sul tema form (quali ha senso tenere o meno)."_
+
+🟢 **The 100+ form review has an owner and a channel again** after being
+unmentioned since 28 August. It is asked of the client as a whole rather than of
+Matteo Distaso or Rebecca Marmo by name.
+
+🔴 **The DNS records are not in the mail.** They have been owed by **Matteo
+Distaso since 21 August** and are the longest-open thing under this row — and
+they became sharper the same day: Marketing Cloud **cannot send from the sandbox
+because no authenticated domain exists**
+([OI-134](OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md)).
+The DNS work is a prerequisite for the UAT window that starts **23 September**,
+and the escalation mail does not mention it.
+
+⚠ **The landing-page and hidden-field sheet was not opened again this run**
+(`1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`). Its link is still corrupted in the mail
+body. It is now **eighteen days** past its 26 August due date.
+
+🟢 **Three funnel documents and two email previews did arrive**, collected by
+Elena Spini into a new Drive folder `02 Marketing` during
+[Flussi MKT Parte 2](../meetings/2026-09-08%20Flussi%20MKT%20Parte%202.md). ⚠ Two
+of the three are effectively empty as text — the logic sits in screenshots — and
+the WhatsApp templates are absent altogether
+([OI-133](OI-133%20The%20WhatsApp%20templates%20are%20missing%20from%20the%20marketing%20material.md)).
+
+## 🟡 2026-09-18 - the first movement in nine weeks, and it has not landed
+
+At [Flusso Recall Tutor SFDC-WooCommerce](../meetings/2026-09-18%20Flusso%20Recall%20Tutor%20SFDC-WooCommerce.md)
+(`00:13:07`, `00:14:38`) Elena Spini asked Sabatino Rinaldi to **send by email the
+Zoho form links that are absolutely indispensable**, out of the ~100, so the flows
+can be configured with Fabrizio Mastracci. He agreed, unprompted and specifically:
+
+> _"ti mando i link di Zoho, dei form che in assoluto dobbiamo avere subito"_
+
+🔴 **No such mail has arrived as of 2026-09-21T22:00Z** — three days, and Gmail was
+swept for his address across both client domains.
+
+🔑 **He named Matteo again, and offered to route around him.** _"se non riusciamo
+subito a darvi quella roba lì da parte di Matteo"_ — that is
+[Matteo Distaso](../people/Matteo%20Distaso%20-%20Pienissimo%20marketing%20lead.md),
+Responsabile Marketing, the same person this row has named since **23 June**.
+Thirteen weeks. Sabatino Rinaldi's offer to send the indispensable links himself is
+an explicit workaround for Matteo Distaso not delivering, which is the first time
+anyone has proposed one.
+
+🟢 Elena Spini's 21/09 status post confirms the split of work: still waiting on
+Sabatino Rinaldi's web-form validation **with priority agreed on the core forms**,
+while the ticket flows are being configured by Fabrizio Mastracci and Aurel Mrruku.
+
+⚠ **Marketing Cloud UAT is 2 October**, and the forms are its input.

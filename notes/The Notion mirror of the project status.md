@@ -5,8 +5,8 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-24
-updated: 2026-08-26
-source: refreshed 2026-08-26 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status and Flows pages updated in place, 2 tracker rows added, all 54 existing rows verified against their notes
+updated: 2026-09-23
+source: refreshed 2026-09-23 from STATUS.md and notes/items/ after the org-status-check against Pienissimo UAT; Status page replaced whole, 37 tracker rows added (OI-135 to OI-171), 3 statuses corrected, 132 rows verified against 132 notes; Flows page unchanged
 ---
 
 # The Notion mirror of the project status
@@ -54,8 +54,30 @@ Openable links, the same ones quoted in [STATUS.md](../STATUS.md) and
 [flows](https://app.notion.com/p/3c6a6b77a25c81f891e7ffba884cd150).
 
 **The Notion Status page, Flows page and the tracker are current as of
-2026-08-26**, refreshed by the `org-status-check` run against the live
-Pienissimo UAT org. The Status page carries the new basis line, the 1069-line
+2026-09-02**, refreshed by the `org-status-check` run against the live
+Pienissimo UAT org. The three intervening runs — 28 August, 31 August and the
+report-mode pass on the morning of 2 September — **published nothing**, so the
+mirror had been seven days stale and wrong in ways that mattered: it still
+showed the deleted ticket object as live, carried a coverage figure of 1,069
+lines, and held 56 rows against 70 notes.
+
+**What the 2026-09-02 refresh changed.** The Status page carries the new basis
+line, the corrected coverage reading, the resolved Order Item grant, the live
+order lifecycle and the unbuilt Anticipay fields. The Flows page again keeps
+**every diagram unchanged** — no state machine moved — but its build-state
+callouts were rewritten: the ticket lifecycle callout now records that the 37
+records were deleted, the tranche callout that the Order Item grant cleared, and
+the automation callout that the "zero email templates" claim was an instrument
+error. **14 rows were added** (`OI-96` to `OI-109`) and **two statuses corrected**
+(`OI-66` to Superseded, `OI-95` to Resolved). All 70 rows were then re-queried
+and matched against their notes.
+
+⚠ **A stale-content trap worth knowing.** Updating a page with small targeted
+replacements leaves everything you did not name untouched — including sentences
+that the update contradicts. The first pass on 2026-09-02 left the Status page
+asserting both that the Order Item grant was resolved _and_, four sections
+later, that it was granted to nobody. **Re-fetch and read the whole page after
+writing**, not just the parts you changed. The Status page carries the new basis line, the 1069-line
 coverage figure, the corrected Order Item finding, the configured quote
 lifecycle and the empty integration scaffolding; the Flows page again keeps
 every diagram unchanged — no state machine moved — but its build-state text, the
@@ -79,22 +101,31 @@ The thirteen fixed on 2026-08-25 were OI-46, OI-47 and OI-53 (showing
 OI-77, OI-80, OI-84, OI-91 and OI-92 (showing `Open` against notes that read
 `in-progress`); and OI-82, still `Open` after being resolved on 24 August.
 
-**Two rows were added on 2026-08-26** — `OI-94` and `OI-95`, whose notes were
-written by the 25 August requirements-check and never mirrored. The database now
-holds **56** rows.
+**Fourteen rows were added on 2026-09-02** — `OI-96` through `OI-109`, the whole
+Mexal article-registry, WooCommerce and Anticipay body of work written between
+26 August and 1 September and never mirrored. The database now holds **70**
+rows, one per note in `notes/items/`.
 
-⚠ **Their `Note` URLs 404 until `DevMain` is pushed.** The 26 August session was
-read-only against the org and neither committed nor pushed, so both links point
-at a branch state GitHub does not have yet. This is exactly the failure mode the
-`Note` column warns about: a 404 there looks like a missing note and is actually
-an unpushed commit.
+✅ **Their `Note` URLs resolve.** All fourteen notes were committed and pushed
+before 2026-09-02, and `DevMain` was in sync with `origin/DevMain` at the time
+of the refresh — checked deliberately, because the 26 August session added two
+rows whose links 404'd for exactly this reason. **The three risk notes written on
+2026-09-02 are NOT mirrored**: they are risks, not items, and the tracker mirrors
+`notes/items/` only.
 
 ⚠ **Three files quote these URLs.** If a page is ever replaced rather than
 updated in place, all three go stale at once — which is the reason step 6c
 forbids creating a replacement page.
 
-Workspace: **Aurel mrruku's Space**, `132a6b77-a25c-8158-a1e2-000390dba9f5`,
+Workspace: **Romi Projects's Space**, `132a6b77-a25c-8158-a1e2-000390dba9f5`,
 authenticated as `a.mrruku@romicompany.com`.
+
+⚠ **It was renamed.** Through 2026-08-26 this note recorded it as _Aurel
+mrruku's Space_; on 2026-09-02 the identity call returned **Romi Projects's
+Space** for the **same workspace id**. A workspace id is immutable and a name is
+not, so this is a rename, not a different workspace — which is exactly why the
+publishing procedure checks the **id**. If a future run finds the id changed,
+that is a different workspace: stop and do not write.
 
 ⚠ Not a ROMI company workspace — if one is ever adopted, the pages move by hand;
 the API cannot switch or rename workspaces. **The same workspace holds the
@@ -167,3 +198,70 @@ a decision.
 documents and signatures, and Performance Plus contracts. The development recap
 names them as core flows, but none has an atomic note, so drawing them would
 mean inventing the detail. The page says so rather than leaving a silent gap.
+
+## 2026-09-14 — refreshed after the org-status-check, and the tracker is whole again
+
+**All three artifacts were refreshed** by the `org-status-check` run against the
+live Pienissimo UAT org. Identity was confirmed as `a.mrruku@romicompany.com`
+and every page was reached **by id**, never by title.
+
+**The Status page was replaced whole rather than patched.** It had gone twelve
+days stale — still dated 2 September, still saying go-live 6 October, still
+claiming zero configuration rows — and the 8 September run was report-only, so
+it published nothing. A whole-page replacement was used deliberately **because
+the stale-content trap above is exactly what small targeted edits cause**; the
+call was made without `allow_deleting_content`, so it would have failed rather
+than remove a child page, and it did not. Re-fetched afterwards: **no `****`
+mangling, no surviving contradictions.**
+
+**The tracker is now complete for the first time.** It held **70** rows against
+**95** item notes — everything from `OI-110` to `OI-134` had never been mirrored,
+twenty-five rows covering the whole Mexal, locale, marketing and go-live body of
+work written between 2 and 8 September. All twenty-five were added; the
+database now holds **95 rows, 95 distinct `Ref` values, and no row without a
+`Note` URL**. `DevMain` was verified in sync with `origin/DevMain` first, so
+every link resolves.
+
+**Three rows had drifted and were corrected** — `OI-76`, `OI-97` and `OI-109`
+all read `Open` against notes that read `resolved`; `OI-109` also carried the
+wrong owner (Andrea Parmeggiani, where the note says Elisa Migliano). That is
+the drift this note predicts: **it happens whenever a session updates a note
+without running the publish step**, and three of the twelve days since the last
+refresh produced it.
+
+**The Flows page keeps every diagram unchanged — no state machine moved.** Its
+build-state text did move, and substantially: flow 8's call sequence is now
+**built and org-only**, so a new red callout records the nine classes, the
+queued Anticipay → Mexal chain, and the fact that nothing has run and nothing is
+scheduled. The tranche callout records the first propagation the project has
+ever measured, 3 of 36 order lines. The zero-project-Flows callout was re-verified
+and restated: **66 active flows, every one Salesforce stock or a managed
+template**.
+
+⚠ **A counting convention changed and the page says so.** The tracker used to
+be the smaller view — 56 rows against ~86 tracker rows. It is now the **larger**
+one: 95 notes against roughly 86 numbered tracker rows, because the last three
+weeks produced notes faster than the client-facing tracker gained rows. **The
+two no longer correspond one to one**, and nobody should read a row count as a
+tracker count in either direction any more.
+
+## 2026-09-23 — refresh after nine days stale
+
+**The Status page was replaced whole** from the regenerated `STATUS.md`. It had
+no child page or database, which was checked before the write. It was re-fetched
+and read back, and **no markup was mangled**. The nightly runs of 15–22 September
+published nothing, so the page still showed the Mexal chain as org-only, which
+had been closed since 15 September.
+
+**Tracker:** **37 rows added** (`OI-135` to `OI-171`) and **3 statuses
+corrected**: `OI-49`, `OI-88` and `OI-102` were resolved in their notes and still
+`Open` or `In progress` here. The database now holds **132 rows with 132 distinct
+refs**, matching `notes/items/` exactly, with 16 resolved and 15 gating in both
+places.
+
+⚠ **Two rows have no `Note` URL on purpose.** `OI-170` and `OI-171` were written
+in this session, and `DevMain` has not been pushed, so the link would 404. Fill
+them in after the push.
+
+**Flows page: not touched.** No flow note and no `state_machines` entry changed
+in this run.

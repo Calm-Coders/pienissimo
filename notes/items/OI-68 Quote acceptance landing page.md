@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-08-26
+updated: 2026-09-03
 requirement: SAL-16
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -53,3 +53,45 @@ and `site/`.
 
 Not settled: who hosts it, and whether it is the same surface as the participant
 landing page in [OI-86](OI-86%20Who%20hosts%20the%20participant%20landing%20page.md).
+
+## 2026-09-03 - it is built, and it does not use DocuSign
+
+🟢 **The PoC Aurel Mrruku owned since 24 August has landed as production code.**
+`lwc/quoteAcceptancePage` and `QuoteAcceptanceController` (268 lines) merged to
+`DevMain` in PR **#31** at 15:02:59Z, written by Rexhina Hysi, on the shared
+Experience site in
+[the Landing Page community](../objects/The%20Landing%20Page%20community.md).
+
+🟢 **It answers this note's last open question.** _"Whether it is the same
+surface as the participant landing page in OI-86"_ — yes. One site, two LWCs.
+
+🟢 **The status values are the agreed ones.** `In Trattativa` and `In Attesa
+Accettazione` are actionable; the outcomes are `Accettato` and `Rifiutato`,
+matching the lifecycle in
+[OI-59](OI-59%20Quote%20workflow%20configuration.md).
+
+🔴 **But the design above is not what was built.** This note records: link →
+page → **Accetto sends the documents via DocuSign** → **on signature** the quote
+flips to `Accettato` and **the order is generated automatically**. The built
+`submitAction` sets the status on the click:
+
+```apex
+update new Quote(Id = quoteRecord.Id, Status = nextStatus);
+```
+
+There is **no DocuSign envelope and no order generation** in the class. So of the
+three things acceptance was supposed to do, the page does one.
+
+⚠ **Do not read this as a decision to drop DocuSign.** It arrived the day after
+[OI-111](OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)
+recorded that nobody has confirmed the client owns a DocuSign contract, and the
+sequence is suggestive — but **no commit message, PR description or message
+anywhere connects them**. It is equally consistent with a first pass that has not
+reached the signature step. **Ask Aurel Mrruku and Rexhina Hysi which it is**;
+the answer changes whether OI-111 is urgent or moot.
+
+🔴 **The page has no application-level authentication** — `submitAction` accepts
+a bare quote id and writes. See
+[the authentication risk](../risks/Risk%20-%20the%20community%20pages%20have%20no%20application-level%20authentication.md).
+On the agreed design this call is what generates the order, which makes it a
+commercial commitment on an unauthenticated request.

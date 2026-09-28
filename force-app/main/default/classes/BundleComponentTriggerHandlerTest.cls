@@ -13,7 +13,7 @@ private class BundleComponentTriggerHandlerTest {
   private static Product2 makeBundle(String name, Decimal sellingPrice) {
     return new Product2(
       Name = name,
-      Code__c = 'TEST-BUNDLE-' + name.replace(' ', '-'),
+      ProductCode = 'TEST-BUNDLE-' + name.replace(' ', '-'),
       IsActive = true,
       RecordTypeId = recordTypeId('Bundle'),
       Bundle_Selling_Price__c = sellingPrice
@@ -27,7 +27,6 @@ private class BundleComponentTriggerHandlerTest {
   ) {
     return new Product2(
       Name = name,
-      Code__c = code,
       ProductCode = code,
       IsActive = true,
       RecordTypeId = recordTypeId('Item'),
