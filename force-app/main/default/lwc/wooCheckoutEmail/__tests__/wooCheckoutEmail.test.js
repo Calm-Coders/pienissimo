@@ -66,7 +66,8 @@ describe("c-woo-checkout-email", () => {
     const element = buildComponent();
     getContext.emit({
       opportunityName: "Academy 2026",
-      checkoutLink: CHECKOUT_LINK
+      checkoutLink: CHECKOUT_LINK,
+      recipientEmail: RECIPIENT_EMAIL
     });
     await flush();
     await flush();
@@ -75,11 +76,14 @@ describe("c-woo-checkout-email", () => {
     expect(element.shadowRoot.textContent).toContain(CHECKOUT_LINK);
 
     const emailInput = element.shadowRoot.querySelector("lightning-input");
-    emailInput.value = RECIPIENT_EMAIL;
+    expect(emailInput.value).toBe(RECIPIENT_EMAIL);
     emailInput.reportValidity = jest.fn().mockReturnValue(true);
+
+    const changedRecipient = "override@example.com";
+    emailInput.value = changedRecipient;
     emailInput.dispatchEvent(
       new CustomEvent("change", {
-        detail: { value: RECIPIENT_EMAIL }
+        detail: { value: changedRecipient }
       })
     );
     await flush();
@@ -96,7 +100,7 @@ describe("c-woo-checkout-email", () => {
 
     expect(sendCheckoutEmail).toHaveBeenCalledWith({
       opportunityId: OPPORTUNITY_ID,
-      recipientEmail: RECIPIENT_EMAIL
+      recipientEmail: changedRecipient
     });
   });
 });

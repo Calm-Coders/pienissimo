@@ -8,7 +8,7 @@ public with sharing class WooCheckoutEmailController {
     }
 
     Opportunity opportunityRecord = [
-      SELECT Name, Checkout_Link__c
+      SELECT Name, Checkout_Link__c, Account.Email_Contatto_Principale__c
       FROM Opportunity
       WHERE Id = :opportunityId
       WITH USER_MODE
@@ -18,6 +18,9 @@ public with sharing class WooCheckoutEmailController {
     CheckoutEmailContext context = new CheckoutEmailContext();
     context.opportunityName = opportunityRecord.Name;
     context.checkoutLink = opportunityRecord.Checkout_Link__c;
+    context.recipientEmail = opportunityRecord.Account == null
+      ? null
+      : opportunityRecord.Account.Email_Contatto_Principale__c;
     return context;
   }
 
@@ -87,5 +90,7 @@ public with sharing class WooCheckoutEmailController {
     public String opportunityName;
     @AuraEnabled
     public String checkoutLink;
+    @AuraEnabled
+    public String recipientEmail;
   }
 }
