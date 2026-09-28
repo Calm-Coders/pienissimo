@@ -1,0 +1,83 @@
+<template>
+  <lightning-quick-action-panel header="Nuova Opportunità">
+    <template if:true={isLoading}>
+      <div class="loader">
+        <lightning-spinner
+          alternative-text="Caricamento"
+          size="medium"
+        ></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:false={isLoading}>
+      <section class="summary">
+        <div class="summary-item">
+          <span class="label">Account</span>
+          <span class="value">{accountName}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Fase iniziale</span>
+          <span class="stage-pill">Qualificato</span>
+        </div>
+      </section>
+
+      <section class="record-type-section">
+        <template if:true={showRecordTypeSelector}>
+          <lightning-combobox
+            label="Tipo record"
+            value={selectedRecordTypeId}
+            options={recordTypeOptions}
+            onchange={handleRecordTypeChange}
+            required
+          ></lightning-combobox>
+        </template>
+        <template if:false={showRecordTypeSelector}>
+          <div class="readonly-record-type">
+            <span class="label">Tipo record</span>
+            <span class="value">{selectedRecordTypeName}</span>
+          </div>
+        </template>
+      </section>
+
+      <lightning-record-edit-form
+        object-api-name="Opportunity"
+        record-type-id={selectedRecordTypeId}
+        onsubmit={handleSubmit}
+        onsuccess={handleSuccess}
+        onerror={handleError}
+      >
+        <lightning-messages></lightning-messages>
+
+        <section class="section">
+          <div class="section-title">Informazioni Opportunità</div>
+          <div class="grid">
+            <lightning-input-field field-name="Name"></lightning-input-field>
+            <lightning-input-field field-name="OwnerId"></lightning-input-field>
+            <lightning-input-field
+              field-name="Tipo_Opportunita__c"
+            ></lightning-input-field>
+            <template if:true={isWooCommerceRecordType}>
+              <lightning-input-field
+                field-name="Origine_WooCommerce__c"
+              ></lightning-input-field>
+            </template>
+          </div>
+        </section>
+
+        <div class="footer">
+          <lightning-button
+            label="Annulla"
+            onclick={handleCancel}
+          ></lightning-button>
+          <lightning-button
+            class="save-button"
+            type="submit"
+            variant="brand"
+            label="Salva"
+            disabled={isSaveDisabled}
+          ></lightning-button>
+        </div>
+      </lightning-record-edit-form>
+    </template>
+  </lightning-quick-action-panel>
+</template>

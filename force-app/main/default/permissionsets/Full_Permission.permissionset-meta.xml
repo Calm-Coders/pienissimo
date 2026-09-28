@@ -894,6 +894,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.Origine_WooCommerce__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Opportunity.TotalOpportunityQuantity</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1060,6 +1065,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Price_2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.Presenza_Piattaforma__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1474,11 +1484,11 @@
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
-        <recordType>Opportunity.Recall_Tutor</recordType>
+        <recordType>Opportunity.WooCommerce</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
-        <recordType>Opportunity.Standart</recordType>
+        <recordType>Opportunity.Vendita_Standard</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <tabSettings>

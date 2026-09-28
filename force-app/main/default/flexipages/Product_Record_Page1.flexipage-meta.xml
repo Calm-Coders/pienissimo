@@ -80,13 +80,13 @@
                             <value>NAME</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>Product__c</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Quantity__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Spread_Price__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Unit_Spread__c</value>
+                            <value>List_Price__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -259,16 +259,6 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Family</fieldItem>
-                <identifier>RecordFamilyField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Bundle_Type__c</fieldItem>
@@ -293,6 +283,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Evento__c</fieldItem>
                 <identifier>RecordEvento__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Presenza_Piattaforma__c</fieldItem>
+                <identifier>RecordPresenza_Piattaforma_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-4062bce0-fd1c-4500-ac7e-ccfc8e7334a3</name>

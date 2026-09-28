@@ -159,7 +159,11 @@ export default class QuoteCreateTranche extends LightningElement {
   }
 
   get isDeleteCurrentPageDisabled() {
-    return this.isSaveDisabledByStatus || this.plannedTranches.length <= 1;
+    return (
+      this.isSaveDisabledByStatus ||
+      this.plannedTranches.length <= 1 ||
+      this.currentTranche.canDelete === false
+    );
   }
 
   get showDeleteCurrentPage() {
@@ -167,6 +171,7 @@ export default class QuoteCreateTranche extends LightningElement {
       this.isEditMode &&
       this.hasPlannedTranches &&
       this.currentTranche.id &&
+      this.currentTranche.canDelete !== false &&
       !this.hasCurrentSelectedLines
     ) {
       return true;
@@ -250,6 +255,17 @@ export default class QuoteCreateTranche extends LightningElement {
       return;
     }
     const normalizedCount = Math.min(count, 20);
+    const removedExistingTranches = this.plannedTranches
+      .slice(normalizedCount)
+      .filter((tranche) => tranche.id);
+    if (
+      removedExistingTranches.some((tranche) => tranche.canDelete === false)
+    ) {
+      this.pageValidationMessage =
+        "Le tranche ereditate dal bundle non possono essere eliminate.";
+      this.trancheCount = String(this.plannedTranches.length);
+      return;
+    }
     const removedExistingIds = this.plannedTranches
       .slice(normalizedCount)
       .map((tranche) => tranche.id)
@@ -393,6 +409,7 @@ export default class QuoteCreateTranche extends LightningElement {
       sequence: index + 1,
       name: tranche.trancheName,
       dueDate: tranche.dueDate || "",
+      canDelete: tranche.canDelete !== false,
       quoteLineItemIds: this.quoteLines
         .filter((line) => line.trancheId === tranche.trancheId)
         .map((line) => line.id)

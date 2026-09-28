@@ -1,4 +1,6 @@
 public with sharing class QuoteTrancheController {
+  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Vendita_Standard';
+
   private static final Set<String> EDITABLE_QUOTE_STATUSES = new Set<String>{
     'Bozza',
     'Draft'
@@ -64,12 +66,19 @@ public with sharing class QuoteTrancheController {
     public Decimal trancheSequence;
     @AuraEnabled
     public Date dueDate;
+    @AuraEnabled
+    public Boolean canDelete;
 
-    public TrancheRow(Tranche__c tranche) {
+    public TrancheRow(
+      Tranche__c tranche,
+      Boolean protectBundleTemplateTranches
+    ) {
       trancheId = tranche.Id;
       trancheName = displayName(tranche);
       trancheSequence = tranche.Sequenza__c;
       dueDate = tranche.Data_Scadenza__c;
+      canDelete =
+        !protectBundleTemplateTranches || tranche.Bundle_Tranch__c == null;
     }
   }
 
@@ -92,11 +101,12 @@ public with sharing class QuoteTrancheController {
     requireReadAccess();
 
     Quote quoteRecord = [
-      SELECT Id, Name, QuoteNumber, Status
+      SELECT Id, Name, QuoteNumber, Status, Opportunity.RecordType.DeveloperName
       FROM Quote
       WHERE Id = :quoteId
       LIMIT 1
     ];
+    Boolean protectBundleTemplateTranches = isStandardOpportunity(quoteRecord);
 
     QuoteTrancheContext context = new QuoteTrancheContext();
     context.quoteName = String.isBlank(quoteRecord.Name)
@@ -108,12 +118,14 @@ public with sharing class QuoteTrancheController {
     context.tranches = new List<TrancheRow>();
 
     for (Tranche__c tranche : [
-      SELECT Id, Name, Sequenza__c, Data_Scadenza__c
+      SELECT Id, Name, Sequenza__c, Data_Scadenza__c, Bundle_Tranch__c
       FROM Tranche__c
       WHERE Quote__c = :quoteId
       ORDER BY Sequenza__c, CreatedDate, Id
     ]) {
-      context.tranches.add(new TrancheRow(tranche));
+      context.tranches.add(
+        new TrancheRow(tranche, protectBundleTemplateTranches)
+      );
     }
 
     for (QuoteLineItem line : [
@@ -155,7 +167,7 @@ public with sharing class QuoteTrancheController {
     List<TrancheInput> trancheInputs = parseTrancheInputs(trancheInputsJson);
 
     Quote quoteRecord = [
-      SELECT Id, Status
+      SELECT Id, Status, Opportunity.RecordType.DeveloperName
       FROM Quote
       WHERE Id = :quoteId
       LIMIT 1
@@ -166,6 +178,11 @@ public with sharing class QuoteTrancheController {
         'The tranche can be created or changed only when the quote is in Draft.'
       );
     }
+    validateBundleTemplateTrancheDeletion(
+      quoteId,
+      deletedTrancheIds,
+      isStandardOpportunity(quoteRecord)
+    );
 
     Set<Decimal> sequences = new Set<Decimal>();
     Set<Id> selectedLineIds = new Set<Id>();
@@ -391,7 +408,7 @@ public with sharing class QuoteTrancheController {
     requireDeleteAccess();
 
     Quote quoteRecord = [
-      SELECT Id, Status
+      SELECT Id, Status, Opportunity.RecordType.DeveloperName
       FROM Quote
       WHERE Id = :quoteId
       LIMIT 1
@@ -404,7 +421,7 @@ public with sharing class QuoteTrancheController {
     }
 
     Tranche__c tranche = [
-      SELECT Id, Quote__c
+      SELECT Id, Quote__c, Bundle_Tranch__c
       FROM Tranche__c
       WHERE Id = :trancheId
       LIMIT 1
@@ -415,6 +432,12 @@ public with sharing class QuoteTrancheController {
         'The selected tranche does not belong to this quote. Reload and try again.'
       );
     }
+    validateBundleTemplateTrancheDeletion(
+      quoteId,
+      new Set<Id>{ trancheId },
+      isStandardOpportunity(quoteRecord),
+      new Map<Id, Tranche__c>{ tranche.Id => tranche }
+    );
 
     List<QuoteLineItem> linkedLines = [
       SELECT Id
@@ -521,7 +544,7 @@ public with sharing class QuoteTrancheController {
   private static void deleteTrancheRecords(Id quoteId, Set<Id> trancheIds) {
     Map<Id, Tranche__c> tranchesById = new Map<Id, Tranche__c>(
       [
-        SELECT Id, Quote__c
+        SELECT Id, Quote__c, Bundle_Tranch__c
         FROM Tranche__c
         WHERE Id IN :trancheIds
         FOR UPDATE
@@ -562,8 +585,63 @@ public with sharing class QuoteTrancheController {
     delete tranchesById.values();
   }
 
+  private static void validateBundleTemplateTrancheDeletion(
+    Id quoteId,
+    Set<Id> trancheIds,
+    Boolean protectBundleTemplateTranches
+  ) {
+    validateBundleTemplateTrancheDeletion(
+      quoteId,
+      trancheIds,
+      protectBundleTemplateTranches,
+      null
+    );
+  }
+
+  private static void validateBundleTemplateTrancheDeletion(
+    Id quoteId,
+    Set<Id> trancheIds,
+    Boolean protectBundleTemplateTranches,
+    Map<Id, Tranche__c> preloadedTranchesById
+  ) {
+    if (!protectBundleTemplateTranches || trancheIds.isEmpty()) {
+      return;
+    }
+
+    Map<Id, Tranche__c> tranchesById = preloadedTranchesById;
+    if (tranchesById == null) {
+      tranchesById = new Map<Id, Tranche__c>(
+        [
+          SELECT Id, Quote__c, Bundle_Tranch__c
+          FROM Tranche__c
+          WHERE Id IN :trancheIds
+        ]
+      );
+    }
+
+    for (Id trancheId : trancheIds) {
+      Tranche__c tranche = tranchesById.get(trancheId);
+      if (
+        tranche != null &&
+        tranche.Quote__c == quoteId &&
+        tranche.Bundle_Tranch__c != null
+      ) {
+        throw new AuraHandledException(
+          'Le tranche ereditate dal bundle non possono essere eliminate. Puoi modificare la data di scadenza e spostare le righe tra tranche.'
+        );
+      }
+    }
+  }
+
   private static Boolean isEditableStatus(String status) {
     return EDITABLE_QUOTE_STATUSES.contains(status);
+  }
+
+  private static Boolean isStandardOpportunity(Quote quoteRecord) {
+    return quoteRecord.Opportunity != null &&
+      quoteRecord.Opportunity.RecordType != null &&
+      quoteRecord.Opportunity.RecordType.DeveloperName ==
+      STANDARD_OPPORTUNITY_RECORD_TYPE;
   }
 
   private static String bundleNameFromDescription(String description) {

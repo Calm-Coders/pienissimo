@@ -1,9 +1,10 @@
 @RestResource(urlMapping='/woocommerce/orders/*')
 global without sharing class WoocommerceOrderService {
   private static final String FLOW_NAME = 'WoocommerceOrderService.createOrder';
-  private static final String AZIENDA_RECORD_TYPE = 'Azienda';
+  private static final String BUNDLE_RECORD_TYPE = 'Bundle';
   private static final String CREATED_STATUS = 'Incassato';
   private static final String INITIAL_STATUS = 'Ordinato';
+  private static final String TRANCHE_STATUS_OPEN = 'Aperta';
 
   @HttpPost
   global static void createOrder() {
@@ -29,15 +30,17 @@ global without sharing class WoocommerceOrderService {
       }
 
       Id payloadOpportunityId = opportunityId(payload);
-      Id accountId = CommercialAccountResolver.resolve(
-        getOrCreateAccount(payload)
-      );
+      Id accountId = getOpportunityAccountId(payloadOpportunityId);
       Id pricebookId = getStandardPricebookId();
       Map<String, Product2> productsByScCode = getProductsByScCode(
         payload.orderLines()
       );
+      OrderBuildPlan orderBuildPlan = buildOrderBuildPlan(
+        payload.orderLines(),
+        productsByScCode
+      );
       Map<Id, PricebookEntry> entriesByProductId = getPricebookEntries(
-        productsByScCode.values(),
+        orderBuildPlan.productIds(),
         pricebookId
       );
 
@@ -52,15 +55,12 @@ global without sharing class WoocommerceOrderService {
       );
       insert orderRec;
 
-      insertOrderLines(
-        orderRec.Id,
-        payload.orderLines(),
-        productsByScCode,
-        entriesByProductId
-      );
+      insertOrderLines(orderRec.Id, orderBuildPlan, entriesByProductId);
 
-      orderRec.Status = CREATED_STATUS;
-      update orderRec;
+      if (!orderBuildPlan.hasBundleTranches()) {
+        orderRec.Status = CREATED_STATUS;
+        update orderRec;
+      }
 
       updateOpportunity(payload, orderRec.Id);
       writeSuccess(logRec, orderRec.Id, accountId, false);
@@ -94,6 +94,10 @@ global without sharing class WoocommerceOrderService {
         'WooCommerce order key is too long for Order.WooCommerce_Order_Key__c'
       );
     }
+    if (String.isBlank(payload.sf_opportunity_id)) {
+      throw new WooCommerceOrderException('sf_opportunity_id is required');
+    }
+    opportunityId(payload);
     if (payload.orderLines().isEmpty()) {
       throw new WooCommerceOrderException(
         'At least one WooCommerce order line is required'
@@ -130,47 +134,7 @@ global without sharing class WoocommerceOrderService {
     return orders.isEmpty() ? null : orders[0];
   }
 
-  private static Id getOrCreateAccount(WooCommerceOrderPayload payload) {
-    Id opportunityAccountId = getOpportunityAccountId(payload);
-    if (opportunityAccountId != null) {
-      return opportunityAccountId;
-    }
-
-    Id accountId = findAccount(payload);
-    if (accountId != null) {
-      return accountId;
-    }
-
-    Account accountRec = new Account(
-      Name = limitLength(accountName(payload), 255),
-      RecordTypeId = getAziendaAccountRecordTypeId(),
-      BillingStreet = payload.billingStreet(),
-      BillingCity = payload.billingCity(),
-      BillingState = payload.billingState(),
-      BillingPostalCode = payload.billingPostalCode(),
-      BillingCountry = payload.billingCountry(),
-      ShippingStreet = payload.shippingStreet(),
-      ShippingCity = payload.shippingCity(),
-      ShippingState = payload.shippingState(),
-      ShippingPostalCode = payload.shippingPostalCode(),
-      ShippingCountry = payload.shippingCountry()
-    );
-    putAccountValue(accountRec, 'Lead_Email__c', payload.email());
-    putAccountValue(accountRec, 'Partita_IVA__c', payload.partitaIva());
-    putAccountValue(accountRec, 'Nome_Locale__c', payload.venueName());
-    putAccountValue(accountRec, 'Phone', payload.phone());
-    insert accountRec;
-
-    createContact(accountRec.Id, payload);
-    return accountRec.Id;
-  }
-
-  private static Id getOpportunityAccountId(WooCommerceOrderPayload payload) {
-    Id opportunityId = opportunityId(payload);
-    if (opportunityId == null) {
-      return null;
-    }
-
+  private static Id getOpportunityAccountId(Id opportunityId) {
     List<Opportunity> opportunities = [
       SELECT AccountId
       FROM Opportunity
@@ -179,60 +143,16 @@ global without sharing class WoocommerceOrderService {
     ];
     if (opportunities.isEmpty()) {
       throw new WooCommerceOrderException(
-        'No Opportunity found for sf_opportunity_id: ' +
-        payload.sf_opportunity_id
+        'No Opportunity found for sf_opportunity_id: ' + opportunityId
+      );
+    }
+    if (opportunities[0].AccountId == null) {
+      throw new WooCommerceOrderException(
+        'Opportunity ' + opportunityId + ' does not have an Account'
       );
     }
 
     return opportunities[0].AccountId;
-  }
-
-  private static Id findAccount(WooCommerceOrderPayload payload) {
-    String email = payload.email();
-    String partitaIva = payload.partitaIva();
-
-    if (
-      !String.isBlank(email) &&
-      !String.isBlank(partitaIva) &&
-      hasAccountField('Lead_Email__c') &&
-      hasAccountField('Partita_IVA__c')
-    ) {
-      List<Account> accounts = Database.query(
-        'SELECT Id FROM Account WHERE Lead_Email__c = :email ' +
-        'AND Partita_IVA__c = :partitaIva LIMIT 1'
-      );
-      if (!accounts.isEmpty()) {
-        return accounts[0].Id;
-      }
-    }
-
-    return null;
-  }
-
-  private static void createContact(
-    Id accountId,
-    WooCommerceOrderPayload payload
-  ) {
-    if (
-      String.isBlank(payload.email()) &&
-      String.isBlank(payload.firstName()) &&
-      String.isBlank(payload.lastName())
-    ) {
-      return;
-    }
-
-    insert new Contact(
-      AccountId = accountId,
-      FirstName = limitLength(payload.firstName(), 40),
-      LastName = limitLength(contactLastName(payload), 80),
-      Email = payload.email(),
-      Phone = payload.phone(),
-      MailingStreet = payload.billingStreet(),
-      MailingCity = payload.billingCity(),
-      MailingState = payload.billingState(),
-      MailingPostalCode = payload.billingPostalCode(),
-      MailingCountry = payload.billingCountry()
-    );
   }
 
   private static Map<String, Product2> getProductsByScCode(
@@ -245,7 +165,7 @@ global without sharing class WoocommerceOrderService {
 
     Map<String, Product2> productsByScCode = new Map<String, Product2>();
     for (Product2 productRec : [
-      SELECT Id, ProductCode
+      SELECT Id, Name, ProductCode, RecordType.DeveloperName
       FROM Product2
       WHERE ProductCode IN :scCodes
     ]) {
@@ -268,6 +188,192 @@ global without sharing class WoocommerceOrderService {
     return productsByScCode;
   }
 
+  private static OrderBuildPlan buildOrderBuildPlan(
+    List<WooCommerceOrderLinePayload> lines,
+    Map<String, Product2> productsByScCode
+  ) {
+    OrderBuildPlan plan = new OrderBuildPlan();
+    Set<Id> bundleIds = new Set<Id>();
+
+    for (WooCommerceOrderLinePayload line : lines) {
+      Product2 productRec = productsByScCode.get(line.scCode());
+      if (isBundleProduct(productRec)) {
+        bundleIds.add(productRec.Id);
+      }
+    }
+
+    Map<Id, List<BundleComponent__c>> componentsByBundleId = getBundleComponentsByBundleId(
+      bundleIds
+    );
+    Map<Id, List<Bundle_Tranch__c>> templatesByBundleId = getBundleTranchesByBundleId(
+      bundleIds
+    );
+
+    for (WooCommerceOrderLinePayload line : lines) {
+      Product2 productRec = productsByScCode.get(line.scCode());
+      if (!isBundleProduct(productRec)) {
+        plan.lines.add(
+          new OrderLineDraft(
+            productRec.Id,
+            line.quantity,
+            line.unitPrice(),
+            null,
+            null
+          )
+        );
+        continue;
+      }
+
+      List<BundleComponent__c> components = componentsByBundleId.get(
+        productRec.Id
+      );
+      if (components == null || components.isEmpty()) {
+        throw new WooCommerceOrderException(
+          'Il bundle ' +
+            productRec.ProductCode +
+            ' non ha componenti configurati.'
+        );
+      }
+
+      List<Bundle_Tranch__c> templates = templatesByBundleId.get(productRec.Id);
+      if (templates == null || templates.isEmpty()) {
+        throw new WooCommerceOrderException(
+          'Il bundle ' +
+            productRec.ProductCode +
+            ' non ha tranche configurate. Configura le tranche sul bundle prima di acquisire ordini WooCommerce.'
+        );
+      }
+
+      Map<Id, Bundle_Tranch__c> templatesById = new Map<Id, Bundle_Tranch__c>(
+        templates
+      );
+      Map<Id, Boolean> templateHasComponent = new Map<Id, Boolean>();
+      for (Bundle_Tranch__c template : templates) {
+        plan.bundleTranchesById.put(template.Id, template);
+        templateHasComponent.put(template.Id, false);
+      }
+
+      for (BundleComponent__c component : components) {
+        if (component.Bundle_Tranch__c == null) {
+          throw new WooCommerceOrderException(
+            'Assegna ogni componente del bundle ' +
+              productRec.ProductCode +
+              ' a una tranche prima di acquisire ordini WooCommerce.'
+          );
+        }
+        if (!templatesById.containsKey(component.Bundle_Tranch__c)) {
+          throw new WooCommerceOrderException(
+            'Una tranche assegnata a un componente del bundle ' +
+              productRec.ProductCode +
+              ' non appartiene a questo bundle.'
+          );
+        }
+        if (component.Product__c == null) {
+          throw new WooCommerceOrderException(
+            'Configura il prodotto su ogni componente del bundle ' +
+              productRec.ProductCode +
+              '.'
+          );
+        }
+        if (component.Quantity__c == null || component.Quantity__c <= 0) {
+          throw new WooCommerceOrderException(
+            'Configura una quantita maggiore di zero per ogni componente del bundle ' +
+              productRec.ProductCode +
+              '.'
+          );
+        }
+        if (component.Unit_Spread__c == null || component.Unit_Spread__c < 0) {
+          throw new WooCommerceOrderException(
+            'Configura gli importi dei componenti del bundle ' +
+              productRec.ProductCode +
+              ' prima di acquisire ordini WooCommerce.'
+          );
+        }
+
+        Decimal bundleQuantity = line.quantity == null ? 1 : line.quantity;
+        plan.lines.add(
+          new OrderLineDraft(
+            component.Product__c,
+            component.Quantity__c * bundleQuantity,
+            component.Unit_Spread__c,
+            component.Bundle_Tranch__c,
+            'Bundle: ' + productRec.Name
+          )
+        );
+        templateHasComponent.put(component.Bundle_Tranch__c, true);
+      }
+
+      for (Id templateId : templateHasComponent.keySet()) {
+        if (templateHasComponent.get(templateId) != true) {
+          throw new WooCommerceOrderException(
+            'Ogni tranche del bundle ' +
+              productRec.ProductCode +
+              ' deve avere almeno un componente assegnato.'
+          );
+        }
+      }
+    }
+
+    return plan;
+  }
+
+  private static Map<Id, List<BundleComponent__c>> getBundleComponentsByBundleId(
+    Set<Id> bundleIds
+  ) {
+    Map<Id, List<BundleComponent__c>> componentsByBundleId = new Map<Id, List<BundleComponent__c>>();
+    if (bundleIds.isEmpty()) {
+      return componentsByBundleId;
+    }
+
+    for (BundleComponent__c component : [
+      SELECT
+        Bundle__c,
+        Product__c,
+        Quantity__c,
+        Unit_Spread__c,
+        Bundle_Tranch__c
+      FROM BundleComponent__c
+      WHERE Bundle__c IN :bundleIds
+      ORDER BY Bundle__c, Product__r.Name, Id
+    ]) {
+      if (!componentsByBundleId.containsKey(component.Bundle__c)) {
+        componentsByBundleId.put(
+          component.Bundle__c,
+          new List<BundleComponent__c>()
+        );
+      }
+      componentsByBundleId.get(component.Bundle__c).add(component);
+    }
+
+    return componentsByBundleId;
+  }
+
+  private static Map<Id, List<Bundle_Tranch__c>> getBundleTranchesByBundleId(
+    Set<Id> bundleIds
+  ) {
+    Map<Id, List<Bundle_Tranch__c>> templatesByBundleId = new Map<Id, List<Bundle_Tranch__c>>();
+    if (bundleIds.isEmpty()) {
+      return templatesByBundleId;
+    }
+
+    for (Bundle_Tranch__c template : [
+      SELECT Id, Bundle__c, Name, Sequenza__c, Data_Scadenza__c
+      FROM Bundle_Tranch__c
+      WHERE Bundle__c IN :bundleIds
+      ORDER BY Bundle__c, Sequenza__c, CreatedDate, Id
+    ]) {
+      if (!templatesByBundleId.containsKey(template.Bundle__c)) {
+        templatesByBundleId.put(
+          template.Bundle__c,
+          new List<Bundle_Tranch__c>()
+        );
+      }
+      templatesByBundleId.get(template.Bundle__c).add(template);
+    }
+
+    return templatesByBundleId;
+  }
+
   private static Id getStandardPricebookId() {
     List<Pricebook2> pricebooks = [
       SELECT Id
@@ -283,16 +389,9 @@ global without sharing class WoocommerceOrderService {
   }
 
   private static Map<Id, PricebookEntry> getPricebookEntries(
-    List<Product2> products,
+    Set<Id> productIds,
     Id pricebookId
   ) {
-    Set<Id> productIds = new Set<Id>();
-    Map<Id, String> productIdToScCode = new Map<Id, String>();
-    for (Product2 productRec : products) {
-      productIds.add(productRec.Id);
-      productIdToScCode.put(productRec.Id, productRec.ProductCode);
-    }
-
     Map<Id, PricebookEntry> entriesByProductId = new Map<Id, PricebookEntry>();
     for (PricebookEntry entry : [
       SELECT Id, Product2Id
@@ -308,7 +407,7 @@ global without sharing class WoocommerceOrderService {
     List<String> missingScCodes = new List<String>();
     for (Id productId : productIds) {
       if (!entriesByProductId.containsKey(productId)) {
-        missingScCodes.add(productIdToScCode.get(productId));
+        missingScCodes.add(String.valueOf(productId));
       }
     }
     if (!missingScCodes.isEmpty()) {
@@ -323,25 +422,111 @@ global without sharing class WoocommerceOrderService {
 
   private static void insertOrderLines(
     Id orderId,
-    List<WooCommerceOrderLinePayload> lines,
-    Map<String, Product2> productsByScCode,
+    OrderBuildPlan orderBuildPlan,
     Map<Id, PricebookEntry> entriesByProductId
   ) {
+    Map<Id, Tranche__c> tranchesByBundleTemplateId = createOrderTranches(
+      orderBuildPlan
+    );
+
     List<OrderItem> orderItems = new List<OrderItem>();
-    for (WooCommerceOrderLinePayload line : lines) {
-      Product2 productRec = productsByScCode.get(line.scCode());
-      PricebookEntry entry = entriesByProductId.get(productRec.Id);
+    for (OrderLineDraft line : orderBuildPlan.lines) {
+      PricebookEntry entry = entriesByProductId.get(line.productId);
+      Tranche__c tranche = line.bundleTranchId == null
+        ? null
+        : tranchesByBundleTemplateId.get(line.bundleTranchId);
       orderItems.add(
         new OrderItem(
           OrderId = orderId,
           PricebookEntryId = entry.Id,
           Quantity = line.quantity,
-          UnitPrice = line.unitPrice()
+          UnitPrice = line.unitPrice,
+          Description = line.description,
+          Tranche__c = tranche == null ? null : tranche.Id,
+          Data_Scadenza__c = tranche == null ? null : tranche.Data_Scadenza__c
         )
       );
     }
 
     insert orderItems;
+  }
+
+  private static Map<Id, Tranche__c> createOrderTranches(
+    OrderBuildPlan orderBuildPlan
+  ) {
+    Map<Id, Tranche__c> tranchesByBundleTemplateId = new Map<Id, Tranche__c>();
+    if (orderBuildPlan.bundleTranchesById.isEmpty()) {
+      return tranchesByBundleTemplateId;
+    }
+
+    Map<Id, Decimal> amountByTemplateId = new Map<Id, Decimal>();
+    for (OrderLineDraft line : orderBuildPlan.lines) {
+      if (line.bundleTranchId == null) {
+        continue;
+      }
+      Decimal amount = amountByTemplateId.containsKey(line.bundleTranchId)
+        ? amountByTemplateId.get(line.bundleTranchId)
+        : 0;
+      amountByTemplateId.put(line.bundleTranchId, amount + line.amount());
+    }
+
+    List<Tranche__c> tranches = new List<Tranche__c>();
+    for (
+      Bundle_Tranch__c template : orderBuildPlan.bundleTranchesById.values()
+    ) {
+      tranches.add(
+        new Tranche__c(
+          Name = trancheNameFromBundleTemplate(template),
+          Data_Scadenza__c = template.Data_Scadenza__c,
+          Sequenza__c = template.Sequenza__c,
+          Importo_Previsto__c = amountByTemplateId.get(template.Id),
+          Stato__c = TRANCHE_STATUS_OPEN,
+          Completamente_Pagata__c = false,
+          Bundle_Tranch__c = template.Id
+        )
+      );
+    }
+    insert tranches;
+
+    for (Tranche__c tranche : tranches) {
+      tranchesByBundleTemplateId.put(tranche.Bundle_Tranch__c, tranche);
+    }
+
+    return tranchesByBundleTemplateId;
+  }
+
+  private static String trancheNameFromBundleTemplate(
+    Bundle_Tranch__c template
+  ) {
+    String sourceName = String.isBlank(template.Name)
+      ? null
+      : template.Name.trim();
+    String sequenceLabel = sequenceLabel(template.Sequenza__c);
+
+    if (String.isBlank(sourceName)) {
+      return String.isBlank(sequenceLabel) ? 'Tranche' : 'T' + sequenceLabel;
+    }
+
+    String upperName = sourceName.toUpperCase();
+    if (upperName.startsWith('BT')) {
+      return 'T' + sourceName.substring(2);
+    }
+    if (upperName.startsWith('T')) {
+      return sourceName;
+    }
+
+    return String.isBlank(sequenceLabel)
+      ? 'T - ' + sourceName
+      : 'T' + sequenceLabel + ' - ' + sourceName;
+  }
+
+  private static String sequenceLabel(Decimal sequence) {
+    if (sequence == null) {
+      return null;
+    }
+    return sequence == sequence.setScale(0)
+      ? String.valueOf(sequence.intValue())
+      : String.valueOf(sequence);
   }
 
   private static void updateOpportunity(
@@ -446,43 +631,10 @@ global without sharing class WoocommerceOrderService {
     return JSON.serialize(safeHeaders).abbreviate(131072);
   }
 
-  private static Boolean hasAccountField(String fieldName) {
-    return Account.SObjectType.getDescribe()
-      .fields.getMap()
-      .containsKey(fieldName);
-  }
-
-  private static Id getAziendaAccountRecordTypeId() {
-    List<RecordType> recordTypes = [
-      SELECT Id
-      FROM RecordType
-      WHERE SObjectType = 'Account' AND DeveloperName = :AZIENDA_RECORD_TYPE
-      LIMIT 1
-    ];
-
-    if (recordTypes.isEmpty()) {
-      throw new WooCommerceOrderException(
-        'Account record type Azienda was not found'
-      );
-    }
-
-    return recordTypes[0].Id;
-  }
-
   private static Boolean hasOpportunityField(String fieldName) {
     return Opportunity.SObjectType.getDescribe()
       .fields.getMap()
       .containsKey(fieldName);
-  }
-
-  private static void putAccountValue(
-    Account accountRec,
-    String fieldName,
-    String value
-  ) {
-    if (!String.isBlank(value) && hasAccountField(fieldName)) {
-      accountRec.put(fieldName, value);
-    }
   }
 
   private static void putOpportunityValue(
@@ -495,31 +647,55 @@ global without sharing class WoocommerceOrderService {
     }
   }
 
-  private static String accountName(WooCommerceOrderPayload payload) {
-    String name = firstNotBlank(
-      new List<String>{
-        payload.companyName(),
-        payload.billingCompany(),
-        payload.fullName(),
-        payload.venueName()
-      }
-    );
-    return String.isBlank(name) ? 'WooCommerce customer' : name;
+  private static Boolean isBundleProduct(Product2 productRec) {
+    return productRec != null &&
+      productRec.RecordType != null &&
+      productRec.RecordType.DeveloperName == BUNDLE_RECORD_TYPE;
   }
 
-  private static String contactLastName(WooCommerceOrderPayload payload) {
-    String lastName = payload.lastName();
-    if (!String.isBlank(lastName)) {
-      return lastName;
+  private class OrderBuildPlan {
+    public List<OrderLineDraft> lines = new List<OrderLineDraft>();
+    public Map<Id, Bundle_Tranch__c> bundleTranchesById = new Map<Id, Bundle_Tranch__c>();
+
+    public Set<Id> productIds() {
+      Set<Id> productIds = new Set<Id>();
+      for (OrderLineDraft line : lines) {
+        productIds.add(line.productId);
+      }
+      return productIds;
     }
 
-    String firstName = payload.firstName();
-    if (!String.isBlank(firstName)) {
-      return firstName;
+    public Boolean hasBundleTranches() {
+      return !bundleTranchesById.isEmpty();
+    }
+  }
+
+  private class OrderLineDraft {
+    public Id productId;
+    public Decimal quantity;
+    public Decimal unitPrice;
+    public Id bundleTranchId;
+    public String description;
+
+    public OrderLineDraft(
+      Id productId,
+      Decimal quantity,
+      Decimal unitPrice,
+      Id bundleTranchId,
+      String description
+    ) {
+      this.productId = productId;
+      this.quantity = quantity;
+      this.unitPrice = unitPrice;
+      this.bundleTranchId = bundleTranchId;
+      this.description = description;
     }
 
-    String company = payload.billingCompany();
-    return String.isBlank(company) ? 'WooCommerce customer' : company;
+    public Decimal amount() {
+      Decimal normalizedQuantity = quantity == null ? 0 : quantity;
+      Decimal normalizedUnitPrice = unitPrice == null ? 0 : unitPrice;
+      return normalizedQuantity * normalizedUnitPrice;
+    }
   }
 
   private static String normalizeEmail(String email) {
@@ -528,13 +704,6 @@ global without sharing class WoocommerceOrderService {
 
   private static String clean(String value) {
     return String.isBlank(value) ? null : value.trim();
-  }
-
-  private static String limitLength(String value, Integer maxLength) {
-    if (value == null || value.length() <= maxLength) {
-      return value;
-    }
-    return value.substring(0, maxLength);
   }
 
   private static String firstNotBlank(List<String> values) {

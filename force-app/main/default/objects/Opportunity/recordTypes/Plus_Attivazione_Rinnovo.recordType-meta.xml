@@ -4,4 +4,23 @@
     <active>true</active>
     <businessProcess>Sales_Process</businessProcess>
     <label>Plus Attivazione/Rinnovo</label>
+    <picklistValues>
+        <picklist>Tipo_Opportunita__c</picklist>
+        <values>
+            <fullName>Performance Plus - Attivazione</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Performance Plus - Rinnovo</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Vendita da tutor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>WooCommerce</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
 </RecordType>

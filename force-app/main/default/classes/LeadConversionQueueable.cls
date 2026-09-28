@@ -3,14 +3,14 @@ public without sharing class LeadConversionQueueable implements Queueable {
   private static final String CONVERTED_STATUS = 'Convertito';
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
 
-  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Standart';
+  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Vendita_Standard';
   private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
-  private static final String RECALL_OPPORTUNITY_RECORD_TYPE = 'Recall_Tutor';
+  private static final String RECALL_OPPORTUNITY_RECORD_TYPE = 'WooCommerce';
 
   private static final String STANDARD_OPPORTUNITY_TYPE = 'Vendita da tutor';
   private static final String PLUS_ACTIVATION_OPPORTUNITY_TYPE = 'Performance Plus - Attivazione';
   private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
-  private static final String RECALL_OPPORTUNITY_TYPE = 'Recall tutor';
+  private static final String RECALL_OPPORTUNITY_TYPE = 'WooCommerce';
 
   private static final Integer OPPORTUNITY_NAME_LIMIT = 120;
   private static final Integer LEAD_CONVERT_BATCH_SIZE = 100;

@@ -13,7 +13,7 @@
                             <value>Account.Aggiorna_Anticipay</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Global.NewOpportunity</value>
+                            <value>Account.Nuova_Opportunita</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
