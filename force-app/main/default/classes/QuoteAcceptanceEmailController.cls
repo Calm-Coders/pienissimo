@@ -23,9 +23,7 @@ public without sharing class QuoteAcceptanceEmailController {
     Quote quoteRecord = loadSendableQuote(quoteId);
     EmailDraft draft = new EmailDraft();
     EmailTemplate template = getTemplate();
-    draft.recipient = String.isBlank(quoteRecord.Email)
-      ? quoteRecord.Account.Email_Contatto_Principale__c
-      : quoteRecord.Email;
+    draft.recipient = quoteRecord.Account.Email_Contatto_Principale__c;
     draft.acceptanceUrl = acceptanceUrl(quoteRecord.Id);
     draft.subject = applyQuoteTokens(getSubject(template), quoteRecord);
     draft.body = buildPlainTextBody(quoteRecord, draft.acceptanceUrl);
