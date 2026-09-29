@@ -2,7 +2,7 @@
 id: ticket-qr-code-generation
 type: reference
 status: active
-updated: 2026-09-28
+updated: 2026-09-29
 source: requirements/pienissimo-requirements.yaml
 ---
 
@@ -47,7 +47,12 @@ AssetQrService.syncCampaignMembers(...)
         +-- finds matching Asset by ContactId + Campaign__c
         +-- writes Asset.QR_Id__c = CampaignMember.Id
         +-- creates ContentVersion with TicketQrImage.generate(...)
+        +-- publishes Participant_Document_Request__e per Asset
 ```
+
+The document PDF that follows is rendered by an internal user, not the site
+guest user: see
+[Participant document PDFs are rendered by an internal user](flows/Participant%20document%20PDFs%20are%20rendered%20by%20an%20internal%20user.md).
 
 The files involved are:
 

@@ -364,6 +364,8 @@ private class TicketingTest {
           participant(inv.tickets[1].Id, 'nuovo.partecipante@example.com')
         }
       );
+      // Delivers the document requests; their trigger queues the first job.
+      Test.getEventBus().deliver();
       Test.stopTest();
       Set<Id> ticketIds = new Set<Id>();
       for (Asset ticket : inv.tickets) {
@@ -399,14 +401,15 @@ private class TicketingTest {
           WHERE FirstPublishLocationId IN :ticketIds AND Title LIKE 'Ticket QR%'
         ]
       );
+      // One document per job: the first job files one, the next is chained.
       System.assertEquals(
-        2,
+        1,
         [
           SELECT COUNT()
-          FROM ContentVersion
+          FROM ContentDocumentLink
           WHERE
-            FirstPublishLocationId IN :ticketIds
-            AND Title LIKE 'Documenti partecipazione%'
+            LinkedEntityId IN :ticketIds
+            AND ContentDocument.Title LIKE 'Documenti partecipazione%'
         ]
       );
 
@@ -430,10 +433,10 @@ private class TicketingTest {
         2,
         [
           SELECT COUNT()
-          FROM ContentVersion
+          FROM ContentDocumentLink
           WHERE
-            FirstPublishLocationId IN :ticketIds
-            AND Title LIKE 'Documenti partecipazione%'
+            LinkedEntityId IN :ticketIds
+            AND ContentDocument.Title LIKE 'Documenti partecipazione%'
         ]
       );
     }

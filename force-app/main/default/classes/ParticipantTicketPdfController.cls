@@ -3,6 +3,11 @@ public without sharing class ParticipantTicketPdfController {
   private List<QrRow> qrRows;
 
   public ParticipantTicketPdfController() {
+    // The page shows the participant's contact details by Asset id alone, so
+    // it must never be reachable from the public site.
+    if (UserInfo.getUserType() == 'Guest') {
+      throw new ParticipantTicketPdfException('Biglietto non valido.');
+    }
     Id assetId = parseAssetId(
       ApexPages.currentPage().getParameters().get('id')
     );

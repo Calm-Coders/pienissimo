@@ -10,6 +10,27 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-29 — claude — Participant document PDFs moved off the guest user; deployed to UAT
+
+- **Did:** diagnosed `ParticipantTicketDocumentJob` failing in UAT ("rendered 789 bytes"): the job ran
+  as the site guest user, which cannot render `ParticipantTicketPdf`. On branch
+  `DevMain_exposeEndpoint`, rebuilt it as a platform event (`Participant_Document_Request__e`)
+  handled by an internal user, one document per job chained by a finalizer. Closed public guest
+  access to the page. Design and evidence:
+  [the note](notes/flows/Participant%20document%20PDFs%20are%20rendered%20by%20an%20internal%20user.md).
+- **Deployed to UAT:** `0AfMA00000CoORd0AN` (12/12 components, `ParticipantTicketDocumentTest`
+  12/12), then the subscriber config with Aurel as run-as user, and the trigger redeployed
+  Inactive → Active to restart the subscription. `TestDataFactory` is now in UAT too.
+  Permission set `Participant_Document_Generation` assigned to Aurel.
+- **Live test:** 10 test Assets → 10 Completed jobs → 10 PDFs of 1.31 MB each in ~13 s.
+- **Rejected:** Integration User as run-as user. Its license cannot have Visualforce page access.
+  6 failed jobs from that attempt remain in Apex Jobs, 14:02Z.
+- **Open:** Prod run-as user not chosen; the config file must carry a Prod username. Not
+  committed (user did not ask). `TicketingTest`'s 4 WooCommerce tests fail in UAT on an
+  Opportunity record type in `TestDataFactory.opportunity`; untouched by this work.
+
+---
+
 ## 2026-09-28 — claude — Apex suite written and DevMain deployed to Pienissimo Prod
 
 - **Did:** Aurel Mrruku asked to deploy to Prod everything in UAT, chose "everything,

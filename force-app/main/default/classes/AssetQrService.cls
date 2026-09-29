@@ -67,8 +67,8 @@ public without sharing class AssetQrService {
     if (!qrFiles.isEmpty()) {
       insert qrFiles;
     }
-    if (!documentAssetIds.isEmpty()) {
-      System.enqueueJob(new ParticipantTicketDocumentJob(documentAssetIds));
-    }
+    // Runs as the site guest user during registration, which cannot render
+    // the PDF: hand the work to the event subscriber's internal user.
+    ParticipantTicketDocumentRequests.publish(documentAssetIds);
   }
 }
