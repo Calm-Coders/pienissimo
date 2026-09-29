@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-28
+updated: 2026-09-29
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -282,3 +282,21 @@ reads the standard pricebook entry, and since `7eab757` the selling price is no
 longer saved from the configurator. The whole suite was written in one pass:
 **142 tests pass in Prod, 88.8% coverage**. Details are in
 [the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+## ⚠ 2026-09-29 — a regression in the suite, recorded only
+
+The `Standart` → `Standard` record-type rename of 28/09 left
+**`TestDataFactory.cls:257`** calling `opportunity(accountId, 'Standart')`, against
+record types that no longer exist. Flagged as a risk in the 28/09 sweep; **now
+confirmed as an actual failure.** From the `JOURNAL.md` entry in `1e1ab6d` (Aurel
+Mrruku, 29/09): _"`TicketingTest`'s 4 WooCommerce tests fail in UAT on an
+Opportunity record type in `TestDataFactory.opportunity`."_
+
+So the 88.8% Prod figure below was measured **before** that rename reached the
+factory, and four tests are red in UAT today. The comment two lines down
+(`// Record types: Standart, Plus_Attivazione_Rinnovo, Recall_Tutor.`) is stale for
+the same reason.
+
+**Recorded for the test-suite task, per the standing instruction. Nothing was
+written, proposed or scaffolded here.** The fix is a one-token change in the
+factory, and it belongs to whoever is asked for the suite.

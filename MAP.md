@@ -2,9 +2,63 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-28 (nightly sweep - the client gave the Contratto a purpose, and the bundle order side was built) · Source of record: [notes/](notes/)
+Last updated: 2026-09-29 (nightly sweep - a forgotten requirement surfaced the day before its UAT, and `Firmato` shipped) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🔑 **2026-09-29 — the ticket turns out to be a document the record had forgotten, and `Firmato`
+  finally reached `force-app`.** Nightly sweep, watermark 2026-09-28T22:00Z. **Pienissimo was
+  unreachable all day** (their biggest company event), so every source below is ROMI-internal.
+  🔴🔑 **[Pre UAT: Check giro MKT](notes/meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)**
+  (09:31 CEST, 56m06s, Aurel Mrruku · Elena Spini · **Fabrizio Mastracci**) opened the artifact the
+  participant actually receives: **`Pienissimo_Scheda di Partecipazione ai corsi_da firmare.pdf`,
+  handed over by the client on 26 June 2026** — a multi-page document with the QR code, dynamic
+  event and participant fields, and _"i Documenti di Iscrizione al corso che sono 7 pagine da
+  consegnare al personale al check-in"_. The record, and its technical lead, had carried it as a QR
+  code. Elena Spini: _"è la base di tutto questo progetto… noi l'abbiamo dimenticato."_ Seen once in
+  the 14/08 sweep, never written into a note
+  ([OI-194](notes/items/OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md),
+  gating). 🔴 **Ticket UAT is 30/09 14:00** and Aurel Mrruku forecast it in the session:
+  _"col cavolo che riusciamo domani. Andrà male anche domani."_
+  🔴🔑 **New: [OI-195](notes/items/OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)**
+  (gating) — flow 1 goes out by **WhatsApp**, which means the community opens **on a phone**, and
+  its custom components have **no mobile mockup and no responsive spec**. Aurel Mrruku drew the
+  consequence himself and said the channel was new to him; Elena Spini disputed that. The channel
+  was in the 20/08 recap — **the mobile consequence never was.**
+  🔴 **New: [OI-196](notes/items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)**
+  — tickets were designed to send **only on full completion**, while the client's own
+  `SEGMENTI FUNNEL BIGLIETTI.docx` says a buyer who names one of three **leaves the funnel**. That
+  buyer is never chased and never sent anything. On the **30/09** client agenda.
+  🟢🔑 **`Firmato` is in `force-app`**, five flags after it was agreed: `f53016d` (Anita Aga) adds it
+  to `QuoteStatus` and rewires `QuoteTriggerHandler`, `DocuSignQuoteEnvelopeService` and
+  `QuoteAcceptanceController`; on `DevMain` 17:49 CEST via PR #68
+  ([OI-151](notes/items/OI-151%20Quote%20signature%20step%20before%20the%20order%20is%20generated.md)).
+  🟢🔑 **The participant-document stack was built and a live bug fixed.** A sandbox job rendered
+  **789-byte PDFs** at 11:20Z because it ran as the **site guest user**, which cannot render a
+  Visualforce page; rebuilt as a platform event handled by an internal run-as user, reported as
+  10 Assets → 10 PDFs in ~13 s. 🔴 **`e2bdb1f`, `1e1ab6d` and `963e582` are all on
+  `DevMain_exposeEndpoint` with no PR** — `DevMain` carries none of it
+  ([OI-185](notes/items/OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md)).
+  🔴 **The cambio nominativo is still unbuilt**, and no Prod run-as user has been chosen.
+  🟢 **A dated way out of the marketing test block:** Marketing Cloud **cannot be installed in the
+  UAT sandbox** at all — the mechanism behind
+  [OI-134](notes/items/OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md).
+  Aurel Mrruku will load objects and clean test records into **production by Mon 05/10**, with
+  `PIENISSIMO - Interna Check PROD per MKT` booked 05/10 09:30
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+  🔴 **The edition mapping still throws**, third occurrence: a sandbox exception at 08:59Z,
+  `Nessuna mappatura edizione trovata per il prodotto PIENISSIMO LIVE LIVE`, mapping at **13 of 51**
+  ([OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)).
+  🟢🔑 **Retrieval correction, second night running: the marketing group DM `C0C38JJ9D1T` is a
+  project source** and no prior sweep listed it
+  ([the note](notes/The%20marketing%20group%20DM%20is%20a%20project%20source.md)).
+  ⚠ **Item ids OI-189–OI-193 are reserved** by an org-status-check that reported them to the dev
+  group and committed nothing
+  ([the note](notes/Item%20ids%20189%20to%20193%20are%20reserved%20by%20an%20uncommitted%20org%20status%20check.md)).
+  ⚠ `TestDataFactory.cls:257` is now a **confirmed** failure, not a risk — four `TicketingTest`
+  WooCommerce tests are red in UAT. Recorded only
+  ([OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md)).
+  — [trace](notes/traces/Source%20trace%202026-09-29%20nightly.md)
 
 - 🔑 **2026-09-28 — the client was asked whether the Contratto should exist, and answered by
   changing what it is for; the gating WooCommerce order gap was built the same day.** Nightly

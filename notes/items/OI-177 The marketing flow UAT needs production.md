@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-09-28
+updated: 2026-09-29
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -164,3 +164,31 @@ objective. **She is planning against a state the org has already left.**
 🔴 **The acceptance-window problem recorded above is unchanged.** 16/10 is still
 past the **13/10** approval deadline, and the client has still not been told its
 marketing approval is conditional.
+
+## 2026-09-29 — a production date for marketing, and the reason it was always needed
+
+🟢 **Aurel Mrruku committed to a date.** At
+[the 29/09 pre-UAT marketing session](../meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+he undertook to put the ticket and campaign objects plus a clean test record set
+into **production by Monday 5 October** — _"quando dico lunedì io lo faccio venerdì
+e ci lavoro nel weekend"_ — and a session is booked to verify it there:
+**`PIENISSIMO - Interna Check PROD per MKT`, Mon 05/10 09:30–10:30 CEST** (invited
+29/09 07:51Z, Aurel Mrruku and Fabrizio Mastracci).
+
+🔑 **The reason production is unavoidable is now on the record explicitly:**
+Marketing Cloud **cannot be installed in the UAT sandbox** — Fabrizio Mastracci,
+24/09 in the MKT group DM, _"in uat non posso installare mc e per questo non riesco
+a creare il flusso secondo le logiche che prendo dall'oggetto che ha creato Aurel"_,
+discovered with Carol on 23/09. That is the mechanism behind
+[OI-134](OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md).
+
+⚠ **He refused the same request on 25/09** — _"portare i sviluppi come sono in prod
+chiede tanto effort aggiuntivo, e poi sarebbe un doppio lavoro di pulizia"_ — and
+reversed after the 28/09 Prod deploy made the structures available. Four days.
+
+🔴 **Two new risks land inside the 16/10 window**, neither costed:
+[OI-194](OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)
+(the ticket is a multi-page document, not a QR code) and
+[OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+(WhatsApp implies a mobile community nobody designed). ⚠ The **WhatsApp templates
+are still not built** — Fabrizio Mastracci, asked directly: _"non ho ancora fatto."_

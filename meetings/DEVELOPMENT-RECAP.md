@@ -5388,3 +5388,81 @@ The org was **not opened**: every build claim here is repository arithmetic agai
 `DevMain` at `55101d2`, and `STATUS.md` was not regenerated, so the Notion mirror
 stays stale. **No Apex test was written, proposed or scaffolded.**
 ⚠ **`DEVELOPMENT-RECAP.it.md` §47 (24/09) is still missing — fourth flag.**
+
+---
+
+## 51. Update 2026-09-29 — a forgotten requirement surfaced the day before its UAT, and `Firmato` finally shipped
+
+Nightly sweep, watermark **2026-09-28T22:00Z**. The client was unreachable all day
+— their biggest company event of the year — so everything below is ROMI-internal.
+One internal session drilled, 56m06s.
+
+### 🔴 The ticket is a document, and the record had forgotten it
+
+At **[the 29/09 pre-UAT marketing session](../notes/meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)**
+(09:31 CEST, Aurel Mrruku · Elena Spini · Fabrizio Mastracci) the artifact the
+participant actually receives was opened on screen:
+`Pienissimo_Scheda di Partecipazione ai corsi_da firmare.pdf`, **handed over by the
+client on 26 June 2026** — a multi-page document carrying the QR code, dynamic
+event and participant fields, and _"i Documenti di Iscrizione al corso che sono 7
+pagine da consegnare al personale al check-in"_.
+
+The record had carried the artifact as a QR code throughout, and so had its
+technical lead: _"Serviva solo il QR Code per scaneggiare col palmare."_ Elena Spini
+corrected him and took the omission herself — _"Questa è la base di tutto questo
+progetto, va fatto, non è una scelta, purtroppo, perché noi l'abbiamo dimenticato."_
+The file had been seen once, in the 14 August sweep, and never written into a note.
+🟢 The DocuSign signature on it is dropped; the document is not.
+🔴 **Ticket UAT is 30/09.** Aurel Mrruku's own forecast: _"col cavolo che riusciamo
+domani. Andrà male anche domani."_
+([#194](open-items.md))
+
+### 🔴 WhatsApp implies a mobile community that was never designed
+
+Reading the client's WhatsApp template, Aurel Mrruku drew the consequence: _"Di
+WhatsApp vuol dire che devono aprire la community da mobile. Noi non abbiamo mai
+parlato di mobile fino adesso."_ The community's custom components have **no mobile
+mockup and no responsive specification**, and the rinuncia button, the confirm
+button and the participant form have never been opened on a phone. The channel was
+documented in the client's own 20 August recap; **the mobile consequence was never
+drawn.** ⚠ The WhatsApp templates are also still unbuilt.
+([#195](open-items.md))
+
+### 🔴 The send rule now contradicts the client's own funnel document
+
+Internally agreed: tickets go **only** when every participant is named. The client's
+`SEGMENTI FUNNEL BIGLIETTI.docx` says a buyer who names one of three **leaves the
+funnel** and stops being chased. So that buyer is never chased and never sent
+anything. Neither builder raised the document. Elena Spini logged it for the **30/09**
+client session. ([#196](open-items.md))
+
+### 🟢 What shipped
+
+- 🔑 **`Firmato` is in `force-app`**, five flags after it was agreed. `f53016d`
+  (Anita Aga) adds it to `QuoteStatus` and rewires `QuoteTriggerHandler`,
+  `DocuSignQuoteEnvelopeService` and `QuoteAcceptanceController`; on `DevMain` at
+  17:49 CEST via PR #68. Verified as source, not as behaviour.
+- 🔑 **The participant-document stack was built and a live bug diagnosed.** A
+  sandbox job failed at 11:20Z rendering 789-byte PDFs; the cause was the **site
+  guest user**, which cannot render a Visualforce page. Rebuilt as a platform event
+  handled by an internal run-as user, reported as 10 Assets → 10 PDFs in ~13 s.
+  🔴 **Three of the four commits are on `DevMain_exposeEndpoint` with no PR**, the
+  night before the UAT that needs them.
+- 🟢 **A dated way out of the marketing test blocker.** Marketing Cloud cannot be
+  installed in the UAT sandbox at all — the mechanism behind a five-week-old row.
+  Aurel Mrruku will load objects and clean test records into **production by
+  Monday 5 October**, with a session booked to verify it there.
+
+### 🔴 Unchanged and live
+
+The **edition mapping still throws**: a sandbox exception at 08:59Z,
+`Nessuna mappatura edizione trovata per il prodotto PIENISSIMO LIVE LIVE`. Third
+occurrence, mapping last read at **13 of 51**, ticket UAT tomorrow.
+
+### Caveats
+
+The org was **not opened**; every build claim is repository arithmetic against
+`DevMain` at `4c9b121`. `STATUS.md` was not regenerated, so the Notion mirror stays
+stale. **No Apex test was written, proposed or scaffolded** — a confirmed failure in
+`TestDataFactory.cls:257` is recorded only.
+⚠ **`DEVELOPMENT-RECAP.it.md` §47 (24/09) is still missing — fifth flag.**

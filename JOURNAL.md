@@ -10,6 +10,41 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-29 — claude — nightly requirements-check: a forgotten requirement, and `Firmato` shipped
+
+- **Watermark:** 2026-09-28T22:00Z → **2026-09-29T22:00Z**. One day, no gap.
+  🔴 **Pienissimo was unreachable all day** as Fabrizio Paganelli had said they would
+  be, so every finding is ROMI-internal — and that settles the 28/09 conflict over
+  whether he had confirmed a morning call. He had not.
+- **Drilled:** [Pre UAT: Check giro MKT](notes/meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+  (09:31 CEST, 56m06s, Aurel Mrruku · Elena Spini · Fabrizio Mastracci), transcript
+  read in full at 56,157 characters. The 10:30 Aurel/Elena call has a **ten-second**
+  transcript and was not drilled.
+- **Headline:** the artifact the participant receives is
+  `Pienissimo_Scheda di Partecipazione ai corsi_da firmare.pdf`, **handed over by the
+  client on 26 June 2026** — a multi-page document with the QR, dynamic campaign
+  fields and seven pages of enrolment documents. The record, and the technical lead,
+  had carried it as a QR code. It had been seen once, in the 14/08 sweep, and never
+  written into a note.
+- **New:** [OI-194](notes/items/OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)
+  (gating) · [OI-195](notes/items/OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+  (gating) · [OI-196](notes/items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md).
+  **Updated:** OI-64, OI-81, OI-96, OI-126, OI-127, OI-134, OI-151, OI-177, OI-185.
+  **Two reference notes:** the marketing group DM as a source, and the reserved ids.
+- **Build:** 🟢 `Firmato` is in `force-app` (`f53016d`, on `DevMain` via PR #68) after
+  five flags. 🟢 The participant-document stack was built and the 789-byte render bug
+  traced to the site guest user. 🔴 **Five of the day's eight commits are unmerged**,
+  including the entire document stack, the night before the ticket UAT.
+- ⚠ **Item ids OI-189–OI-193 are reserved**, not free: an org-status-check reported
+  them to the dev group and committed nothing. **Next free id is 197.**
+- ⚠ **Retrieval correction, second night running:** the marketing group DM
+  `C0C38JJ9D1T` is a project source no prior sweep listed. A `from:` filter finds a
+  person's messages; it does not find a conversation.
+- **Not done:** org not opened, `STATUS.md` and the Notion mirror stale, register
+  unamended at v1.6, prettier unrun, **no Apex test written or proposed**.
+
+---
+
 ## 2026-09-28 — claude — nightly requirements-check: the client gave the Contratto a purpose, and the bundle order side was built
 
 - **Did:** scheduled nightly sweep, watermark **2026-09-25T22:00Z → 2026-09-28T22:00Z**

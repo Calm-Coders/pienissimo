@@ -5506,3 +5506,84 @@ repository contro `DevMain` a `55101d2`, e `STATUS.md` non è stato rigenerato, 
 il mirror Notion resta obsoleto. **Nessun test Apex è stato scritto, proposto o
 abbozzato.** ⚠ **Il §47 (24/09) di questo documento è ancora mancante — quarta
 segnalazione.**
+
+---
+
+## 51. Aggiornamento 29/09/2026 — un requisito dimenticato riemerge alla vigilia del suo UAT, e `Firmato` finalmente arriva
+
+Sweep notturno, watermark **28/09/2026 22:00Z**. Il cliente è stato irraggiungibile
+tutto il giorno — il loro evento aziendale più importante dell'anno — quindi quanto
+segue è interamente interno a ROMI. Una sessione interna analizzata, 56m06s.
+
+### 🔴 Il biglietto è un documento, e il record se n'era dimenticato
+
+Alla **[sessione MKT pre-UAT del 29/09](../notes/meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)**
+(09:31 CEST, Aurel Mrruku · Elena Spini · Fabrizio Mastracci) è stato aperto a
+schermo l'artefatto che il partecipante riceve davvero:
+`Pienissimo_Scheda di Partecipazione ai corsi_da firmare.pdf`, **consegnato dal
+cliente il 26 giugno 2026** — un documento multipagina con il QR code, i campi
+dinamici di evento e partecipante e _"i Documenti di Iscrizione al corso che sono 7
+pagine da consegnare al personale al check-in"_.
+
+Il record ha sempre trattato l'artefatto come un QR code, e così anche il
+responsabile tecnico: _"Serviva solo il QR Code per scaneggiare col palmare."_ Elena
+Spini l'ha corretto assumendosi l'omissione — _"Questa è la base di tutto questo
+progetto, va fatto, non è una scelta, purtroppo, perché noi l'abbiamo dimenticato."_
+Il file era stato visto una volta, nello sweep del 14 agosto, e mai trasformato in
+una nota. 🟢 La firma DocuSign è stata abbandonata; il documento no.
+🔴 **L'UAT biglietti è il 30/09.** Previsione dello stesso Aurel Mrruku: _"col
+cavolo che riusciamo domani. Andrà male anche domani."_
+([#194](open-items.it.md))
+
+### 🔴 WhatsApp implica una community mobile mai progettata
+
+Leggendo il template WhatsApp del cliente, Aurel Mrruku ne ha tratto la conseguenza:
+_"Di WhatsApp vuol dire che devono aprire la community da mobile. Noi non abbiamo
+mai parlato di mobile fino adesso."_ I componenti custom della community **non hanno
+mockup mobile né specifica responsive**, e il pulsante di rinuncia, quello di
+conferma e il form partecipanti non sono mai stati aperti da telefono. Il canale era
+documentato nel recap del cliente del 20 agosto; **la conseguenza mobile non era mai
+stata tratta.** ⚠ Anche i template WhatsApp restano da realizzare.
+([#195](open-items.it.md))
+
+### 🔴 La regola di invio contraddice il documento di funnel del cliente
+
+Concordato internamente: i biglietti partono **solo** a nominativi completi. Il
+`SEGMENTI FUNNEL BIGLIETTI.docx` del cliente dice che chi ne compila uno su tre
+**esce dal funnel** e non viene più sollecitato. Quindi quell'acquirente non viene
+sollecitato e non riceve mai nulla. Nessuno dei due ha richiamato il documento.
+Elena Spini l'ha messo all'ordine del giorno del **30/09** con il cliente.
+([#196](open-items.it.md))
+
+### 🟢 Cosa è stato rilasciato
+
+- 🔑 **`Firmato` è in `force-app`**, cinque segnalazioni dopo l'accordo. `f53016d`
+  (Anita Aga) lo aggiunge a `QuoteStatus` e riscrive la logica in
+  `QuoteTriggerHandler`, `DocuSignQuoteEnvelopeService` e
+  `QuoteAcceptanceController`; su `DevMain` alle 17:49 CEST con la PR #68.
+  Verificato come sorgente, non come comportamento.
+- 🔑 **Costruito lo stack del documento partecipante e diagnosticato un bug reale.**
+  Un job in sandbox è fallito alle 11:20Z generando PDF da 789 byte; la causa è
+  l'**utente guest del sito**, che non può renderizzare una pagina Visualforce.
+  Ricostruito come platform event gestito da un utente interno, con 10 Asset → 10
+  PDF in ~13 s. 🔴 **Tre dei quattro commit sono su `DevMain_exposeEndpoint` senza
+  PR**, la sera prima dell'UAT che ne ha bisogno.
+- 🟢 **Una via d'uscita datata dal blocco dei test marketing.** Marketing Cloud non
+  è installabile in sandbox UAT: è il meccanismo dietro una riga aperta da cinque
+  settimane. Aurel Mrruku porterà oggetti e record di test puliti **in produzione
+  entro lunedì 5 ottobre**, con una sessione già fissata per verificarlo lì.
+
+### 🔴 Invariato e attivo
+
+La **mappatura edizione continua a lanciare eccezione**: errore in sandbox alle
+08:59Z, `Nessuna mappatura edizione trovata per il prodotto PIENISSIMO LIVE LIVE`.
+Terza occorrenza, mappatura ferma a **13 su 51**, UAT biglietti domani.
+
+### Avvertenze
+
+L'org **non è stata aperta**; ogni affermazione sulla build è aritmetica di
+repository su `DevMain` a `4c9b121`. `STATUS.md` non è stato rigenerato, quindi il
+mirror Notion resta obsoleto. **Nessuna classe di test Apex è stata scritta,
+proposta o predisposta** — un fallimento confermato in `TestDataFactory.cls:257` è
+solo registrato.
+⚠ **Il §47 (24/09) di questo documento è ancora mancante — quinta segnalazione.**
