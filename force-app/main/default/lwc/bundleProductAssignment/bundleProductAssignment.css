@@ -1,9 +1,70 @@
+:host {
+  display: block;
+  height: calc(100vh - 8rem);
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.action-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.action-header {
+  flex: 0 0 auto;
+  border-bottom: 1px solid #d8dde6;
+  padding: 1rem 1rem 0.9rem;
+}
+.action-header h1 {
+  color: #16325c;
+  font-size: 1.15rem;
+  font-weight: 400;
+  margin: 0;
+}
+.action-footer {
+  flex: 0 0 auto;
+  z-index: 2;
+  background: #fff;
+  border-top: 1px solid #d8dde6;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  padding: 0.75rem 1rem;
+  text-align: right;
+}
+
+.content,
+.product-search,
+.search-results,
+.pending-products,
+.actions,
+.result-footer,
+.selection-summary,
+lightning-datatable {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .content {
+  flex: 1 1 auto;
   position: relative;
-  min-height: 20rem;
+  min-height: 0;
+  padding: 1rem 1rem 1.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.content * {
+  box-sizing: border-box;
+}
+lightning-datatable {
+  display: block;
 }
 .bundle-heading {
   margin-bottom: 1.25rem;
+}
+.bundle-heading-text {
+  min-width: 0;
 }
 .eyebrow {
   color: #52677a;
@@ -36,7 +97,7 @@ p,
 }
 .figures {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 .figure {
@@ -69,9 +130,10 @@ p,
   margin: 0.5rem 0 0.85rem;
 }
 .table-container {
+  max-width: 100%;
   border: 1px solid #e0e5eb;
   border-radius: 0.5rem;
-  overflow: auto;
+  overflow: hidden;
 }
 .empty-state {
   text-align: center;
@@ -104,6 +166,7 @@ p,
   justify-content: space-between;
   gap: 0.5rem;
   padding: 0.75rem 0;
+  flex-wrap: wrap;
 }
 .selection-summary {
   color: #16325c;
@@ -120,6 +183,7 @@ p,
   margin-bottom: 0.75rem;
 }
 .product-card {
+  max-width: 100%;
   background: #fff;
   border: 1px solid #d8e5f0;
   border-left: 4px solid #0176d3;
@@ -136,13 +200,71 @@ p,
 .product-card-heading h3 {
   overflow-wrap: anywhere;
 }
+.product-card-heading > div {
+  min-width: 0;
+}
+.card-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.25rem;
+}
+.line-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  color: #52677a;
+  font-size: 0.8rem;
+}
+.editor-preview {
+  gap: 0.75rem;
+}
+.preview-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-right: 0.75rem;
+}
+.preview-label {
+  font-weight: 700;
+}
+.row-error {
+  color: #ba0517;
+  font-size: 0.8rem;
+  margin: 0.75rem 0 0;
+}
 .reference-price {
   margin: 0.5rem 0;
+}
+.unit-price-box {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  border: 1px solid #d8e5f0;
+  border-radius: 0.5rem;
+  background: #f5f9fd;
+  padding: 0.65rem 0.85rem;
+}
+.unit-price-label {
+  color: #52677a;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.unit-price-value {
+  color: #16325c;
+  font-size: 1rem;
+  font-weight: 700;
 }
 .row-inputs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   gap: 1rem;
+}
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 .add-another {
   display: block;
@@ -159,6 +281,7 @@ p,
     grid-template-columns: 1fr;
   }
   .figures {
+    grid-template-columns: 1fr;
     gap: 0.5rem;
   }
   .figure-value {
