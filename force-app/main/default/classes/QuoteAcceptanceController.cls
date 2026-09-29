@@ -7,6 +7,7 @@ public without sharing class QuoteAcceptanceController {
   private static final String ACCEPT_ACTION = 'accept';
   private static final String REJECT_ACTION = 'reject';
   private static final String ACCEPTED_STATUS = 'Accettato';
+  private static final String SIGNED_STATUS = 'Firmato';
   private static final String REJECTED_STATUS = 'Rifiutato';
   private static final String DOCUSIGN_STATUS_SENT = 'Sent';
   private static final String DOCUSIGN_STATUS_COMPLETED = 'Completed';
@@ -210,7 +211,7 @@ public without sharing class QuoteAcceptanceController {
   }
 
   private static String stateForStatus(String status) {
-    if (status == ACCEPTED_STATUS) {
+    if (status == ACCEPTED_STATUS || status == SIGNED_STATUS) {
       return ACCEPTED_STATE;
     }
     if (status == REJECTED_STATUS) {
