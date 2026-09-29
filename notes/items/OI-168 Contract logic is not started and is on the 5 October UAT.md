@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-25
+updated: 2026-09-28
 depends_on: [OI-141, OI-151]
 blocks: [go-live]
 severity: gating
@@ -114,3 +114,41 @@ still the only plan that exists.
 ⚠ **One specification item dropped since 24/09:** the BBP's third contract state
 `in corso` was deleted in this call. The trigger-based freeze, the insoluto reports
 and the page banner recorded above were **not** revisited and stand.
+
+## 2026-09-28 - the client session happened, the requirement is now clear, and it is still not built
+
+[The 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+ran as booked (10:02 CEST, 1h03m, with **Fabrizio Paganelli**). Both substantive
+questions this note said remained for the client were answered:
+
+- 🟢 **Whether the object is needed at all, given the tranches carry the financial
+  state** — answered yes, for a reason not previously in the record: it is the
+  **customer's contractual history**, not a per-order appendix. Aurel Mrruku
+  accepted it. Recorded in
+  [OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md).
+- 🔴 **The Zoho structure to replicate was never produced.** Fabrizio Paganelli
+  answered from first principles and nobody pressed for the Zoho model. The
+  requirement is clear enough without it, so this stops being a blocker — but the
+  action recorded on 25/09 was **not** completed.
+
+🟢 **The fallback recorded above is no longer the only plan that exists.** The
+entity relationship (Account ← Contract ← Order), the cardinality (one per order),
+the three financial fields and their Mexal origin, the manual `data di
+attivazione`, and the two new text fields `strategist` / `digital` are all agreed.
+A build now has a specification.
+
+🔴 **Nothing was built.** No commit in the 25/09→28/09 window touches Contract, and
+`Firmato` — on which creation depends — **is still absent from `force-app`** at
+`DevMain` `55101d2`. **The 5 October UAT is seven days away**, and the 23/09 org
+finding (zero custom fields on `Contract`) was re-confirmed against UAT by the
+27/09 org-status comparison: _"UAT `Contract` has 0 custom fields today, and no
+Contract build appears in source."_
+
+⚠ **Two specification items from the BBP were confirmed as live client needs, not
+dropped:** the monthly expiring-contract list (commercial) and the monthly
+invoicing list (administration), plus a direction-level active-customer count.
+**Nobody was assigned to build them and no date was set.** The trigger-based
+freeze and the page banner recorded above were not revisited and stand.
+
+⚠ **The `insoluto` field was not mentioned in this session.** It stands as
+specified on 24/09; absence of discussion is not a removal.

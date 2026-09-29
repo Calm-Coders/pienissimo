@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-09-25
+updated: 2026-09-28
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -134,3 +134,33 @@ is no longer a problem to solve — it is the plan.
   and the `Campagna_Figlio` record type reached `DevMain` this evening
   ([OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)),
   so that half is not affected by this move.
+
+## 🔑 2026-09-28 - a PROD date now exists for it, and PROD already happened
+
+Elena Spini's project status in **`#tproj-pienissimo`** (28/09 09:07 CEST) puts a
+date on the production dependency this note is about, for the first time:
+
+> _"16/10 – UAT: flussi Marketing Biglietti >> obiettivo arrivare in PROD il 12/10
+> per permettere a Fabrizio di lavorare sui flussi Marketing"_
+
+🟢 **So the 16/10 marketing UAT has a stated precondition: production by 12/10.**
+That is the first time the sequencing recorded here — marketing cannot be tested
+without PROD — has been given a deliverable date rather than an argument.
+
+🔑 **And PROD arrived two weeks early.** `DevMain` was deployed to Pienissimo
+Production on **28/09 at 11:28Z** (deploy `0AfSW000001H1aD0AS`, 461 components, 142
+tests, 88.8% coverage) — see [MAP.md](../../MAP.md) and the
+[coverage risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+⚠ **That is not the same thing as Fabrizio Mastracci being able to work in it.**
+The org is deployed and **unusable as delivered**: `Full_Permission` has zero
+assignments, the `Integration_Configuration2__c` rows are absent, and the DocuSign
+Named Credential still points at `demo.docusign.net`. **Until those are done, 12/10
+is a deploy date that has been met and an access date that has not.**
+
+⚠ **Elena Spini was not told about the deploy** — recorded in the 28/09 JOURNAL
+entry — and her status post, written that morning, still frames PROD as a 12/10
+objective. **She is planning against a state the org has already left.**
+
+🔴 **The acceptance-window problem recorded above is unchanged.** 16/10 is still
+past the **13/10** approval deadline, and the client has still not been told its
+marketing approval is conditional.

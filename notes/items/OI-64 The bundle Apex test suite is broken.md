@@ -1,11 +1,11 @@
 ---
 id: OI-64
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-23
+updated: 2026-09-28
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -273,3 +273,12 @@ properly in one pass when Aurel Mrruku asks for it.
 Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothing was deployed or changed.
 
 - **Coverage in UAT: 0 covered, 7,756 uncovered, 0% across 79 entries**, up from 4,737 across 60 on 14/09. `force-app/` holds **57** Apex classes, **3** of them tests. The last `ApexTestRunResult` row in the org is **2026-08-04**. Recorded as the brief only. **No test was written, proposed or run.** (verified)
+
+## 2026-09-28 — resolved
+
+Requested by Aurel Mrruku together with the production deploy. The bundle tests
+were repaired: `saveComponents` gained `allowMissingTranch`, the list price now
+reads the standard pricebook entry, and since `7eab757` the selling price is no
+longer saved from the configurator. The whole suite was written in one pass:
+**142 tests pass in Prod, 88.8% coverage**. Details are in
+[the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).

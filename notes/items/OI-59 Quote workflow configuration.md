@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-09-21
+updated: 2026-09-28
 requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
 source: meetings/open-items.md row 59
 ---
@@ -409,3 +409,44 @@ something else.
 ⚠ **This row has been unruled for eleven days** while four classes hard-code the
 status spellings and a fifth state is now added on top. **Quote UAT is 25
 September.**
+
+## 🟢 2026-09-28 - `rifiutato` is settled: the state stays, the reason carries the meaning
+
+The wording reopened on 24/09 — Fabrizio Paganelli and Marco Montesi both objected
+that a superseded quote marked `rifiutato` reads as the tutor's failure — was
+resolved with the client at
+[the 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(`01:00:00`).
+
+Fabrizio Paganelli restated the objection and his preferred word: _"a me mi piace il
+termine sostituito … perché rifiutato, sembra qualche cosa che è incapace il tutor
+da vendere."_
+
+Aurel Mrruku held the state on a case Fabrizio Paganelli accepted — a **single**
+quote on a lost opportunity genuinely *is* refused — and moved the distinction into
+the reason instead:
+
+> _"Invece di scrivere per scelta [tra] l'altro preventivo, facciamo sostituito."_
+
+🔑 **The agreed shape:**
+
+- The quote state stays **`Rifiutato`**. No sixth value, no rename.
+- The accompanying flag/reason changes from **`per scelta altro preventivo`** to
+  **`sostituito da altro preventivo`**. Elena Spini took it down in those words.
+- When one quote is signed, **the others move to `Rifiutato` carrying that reason
+  automatically**. Aurel Mrruku noted the statistic then falls out of the flag
+  rather than needing a separate state.
+
+🟢 **Two related confirmations in the same passage**, correcting an assumption
+Fabrizio Paganelli had stated:
+
+- Several quotes can be worked **in parallel** on one opportunity — it is not a
+  strict version chain. Aurel Mrruku: _"tu puoi contemporaneamente lavorare anche
+  su n preventivi."_
+- A quote can be **edited and made primary** rather than superseded by a new one,
+  _"per non perdere tempo a rifare tutto il giro."_
+
+🔴 **Nothing is built and nothing is labelled.** The `rifiutato` label question this
+row carries against the org is unchanged; what exists now is an agreed wording for
+the reason field. See
+[OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md).

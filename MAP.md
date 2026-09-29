@@ -2,10 +2,83 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-25 (nightly sweep — bundle tranches built, Contratto narrowed, marketing UAT to 16/10) · Source of record: [notes/](notes/)
+Last updated: 2026-09-28 (nightly sweep - the client gave the Contratto a purpose, and the bundle order side was built) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
+- 🔑 **2026-09-28 — the client was asked whether the Contratto should exist, and answered by
+  changing what it is for; the gating WooCommerce order gap was built the same day.** Nightly
+  sweep, watermark 2026-09-25T22:00Z.
+  🔑 **[Tema Contratti e Open Point](notes/meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)**
+  (10:02 CEST, 1h03m, Aurel Mrruku · Elena Spini · **Fabrizio Paganelli**) — the session booked
+  to put the builder's objection to the client. **The object survives**, because it is the
+  **customer's contractual history**, not a per-order appendix: _"un contenitore dove per ogni
+  cliente io posso vedere quando è stato attivato da data a data, qual era l'importo complessivo,
+  si è pagato tutto."_ Aurel Mrruku accepted it and restated it — _"è collegato al cliente"_.
+  **One Contract per order**, the multi-year view read off the Account. `ordinato` / `fatturato` /
+  `incassato` from the nightly Mexal reads; **`data di attivazione` manual, and the 12 months run
+  from it**; new text fields **`strategist`** and **`digital`** (~15 people, no licences)
+  ([OI-141](notes/items/OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md),
+  [OI-168](notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)).
+  🔴 **Still nothing built, and `Firmato` is still absent from `force-app`** — UAT 05/10.
+  🟢🔑 **The 25/09 gating gap is closed in the repository.** `0086681` / PR
+  [#64](https://github.com/Calm-Coders/pienissimo/pull/64) rewrites `WoocommerceOrderService`
+  (+525/−187): bundle orders take their tranches from `Bundle_Tranch__c`, price each line from
+  **`BundleComponent__c.Unit_Spread__c`** rather than the WooCommerce payload, and **no longer go
+  straight to `Incassato`** — only a tranche-less order does
+  ([OI-181](notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)).
+  🔴 **Nothing was run, and no UAT bundle has its components mapped to a tranche — the code now
+  refuses such an order by design.** 02/10 is the re-test.
+  🟢🔑 **`Standart` → `Standard` is done**, seven runs after it was first flagged: `3bd0801`
+  replaces the `Standart` and `Recall_Tutor` opportunity record types with **`Vendita_Standard`**
+  and **`WooCommerce`**, adds **`Plus_Attivazione_Rinnovo`** and `Origine_WooCommerce__c`
+  ([OI-182](notes/items/OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md)).
+  🔴 **UAT records still point at the deleted types; nothing remapped them.**
+  🟢 **QR generation built** (`AssetQrService`, `BarcodeGenerator`, `TicketQrImage`) by Rexhina
+  Hysi — but **not** the cambio-nominativo regeneration, and ticket UAT is **30/09**
+  ([OI-185](notes/items/OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md)).
+  🔑 **New: [OI-188](notes/items/OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md)**
+  (gating) Performance Plus is identified by the Mexal **`categoria articolo`**: **`C10`
+  attivazione, `C11` rinnovo**, `C20` an ordinary sale. No new field needed — Aurel Mrruku
+  withdrew his own mapping-table proposal. 🔴 **Fabrizio Paganelli owes new article codes carrying
+  a tranche count and could not do it on 28/09; no date, UAT 05/10.**
+  🟢 **Credit notes and the payment correction are Fase 2 with the client's own agreement**, and
+  his reason is new: **Mexal has no order behind a credit note** — dual manual entry — which he
+  asked ROMI to verify and **nobody was assigned**
+  ([OI-157](notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)).
+  🔑 **Permissions ruled by the client: `tutti vedono tutto` at record level, edit access is what
+  gets restricted — one profile plus permission sets, no role hierarchy.** His reason is a Zoho
+  incident that **stopped his invoicing for days**. 🔴 **The user list was the session's other
+  purpose and was never asked for**
+  ([OI-186](notes/items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)).
+  🟢 **`rifiutato` settled:** the state stays, the reason becomes **`sostituito da altro
+  preventivo`** ([OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)).
+  🟢 **DocuSign credentials arrived** 10:27Z, chased by Fabrizio Paganelli himself — **values not
+  recorded anywhere** ([OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)).
+  🟢🔑 **`#tproj-pienissimo` exists after all — `C0B5T3RB4FM`.** Three runs called it missing;
+  `slack_search_channels` cannot find it, message search and a direct read can
+  ([the channel note](notes/The%20Pienissimo%20Slack%20channel%20and%20its%20id.md)). Its 28/09
+  status carries **PROD by 12/10** for the 16/10 marketing UAT and **Infopoint deferred to Fase 2**
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md),
+  [OI-161](notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)).
+  ⚠ **Elena Spini still does not know DevMain went to Prod on 28/09** and is planning against 12/10.
+  🔴 **Pienissimo is unreachable 29/09** (their biggest company event); next contact 30/09.
+  ⚠ A Slack DM at 13:01 says _"Fabrizio ha confermato per domani mattina"_ — **contradicting what
+  he said in the recorded call.** Unresolved.
+  — [trace](notes/traces/Source%20trace%202026-09-28%20nightly.md)
+
+- 🟢🔑 **2026-09-28 — `DevMain` is deployed to Pienissimo Prod.** 142 tests, 88.8% coverage,
+  deploy `0AfSW000001H1aD0AS` (461 components), commit `23443cd`
+  ([the resolved coverage risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)).
+  **Before anyone uses Prod:** assign `Full_Permission` (0 assignments, without it the new
+  fields are invisible); load the `Integration_Configuration2__c` rows (none, so Mexal,
+  Anticipay and DocuSign are inert); point the DocuSign Named Credential away from
+  `demo.docusign.net` and enter the credentials; re-deploy `Campaign_Record_Page` after the
+  October release. 🔴 Once the config rows exist, **every new Order starts the live Mexal chain**,
+  and the historic-order migration will too.
+  🔴 [Mexal writes fail after their own log insert](notes/risks/Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md):
+  the shipping address and the nightly payment sync cannot complete.
+  🟢 The quote-acceptance email no longer links to the UAT site.
 - 🟢🔑 **2026-09-25 evening — the gating bundle-tranche gap was built the same day it was
   found, and the Contratto was narrowed to Performance Plus only.** Nightly sweep,
   watermark 2026-09-25T13:00Z.

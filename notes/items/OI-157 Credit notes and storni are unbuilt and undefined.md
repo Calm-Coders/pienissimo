@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-09-25
+updated: 2026-09-28
 source: notes/meetings/2026-09-18 Interna Temi Mexal.md
 ---
 
@@ -103,3 +103,46 @@ Elena Spini reports Fabrizio Paganelli _"non vuole spendere"_.
 🔴 **So the topic has moved from "out of plan by accident" to "in Fase 2 by ROMI
 decision, unconfirmed by the client."** That is an improvement in the record and not
 yet an agreement.
+
+## 🟢 2026-09-28 - the client confirmed Fase 2, and gave a reason nobody had
+
+The sentence immediately above is now out of date. At
+[the 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(`00:27:00`) Elena Spini put the deferral to Fabrizio Paganelli and he agreed in
+his own words:
+
+> _"rimandiamo sia al tema della nota di credito che questo qui alla fase due."_
+
+🟢 **So it is now in Fase 2 by client agreement, not by ROMI decision alone.** Both
+items were named: the **credit note** and the **wrong-payment correction** (an
+administration mis-registration that has already flowed through to the ticket,
+needing the asset state walked back and the invoice re-applied).
+
+**His two reasons, both new to the record:**
+
+1. **Volume.** _"la nota di credito ne facciamo poche, quindi fortunatamente …
+   possiamo anche posticiparla e dare priorità ad altre cose."_
+2. 🔑 **Mexal has no order behind a credit note**, which makes the whole flow
+   different in kind from invoicing: _"mentre per le fatture abbiamo un ordine
+   sottostante … per le note di credito su Mexal non passano gli ordini, quindi noi
+   dovremmo fare la nota di credito a mano su Salesforce e la nota di credito a
+   mano su Mexal."_ He contrasted it with a previous employer's returns-order type
+   and called the gestionale _"un po' particolare"_ here.
+
+⚠ **Point 2 is his recollection and he asked for it to be verified** —
+_"questa cosa qui verifichiamola bene"_. 🔴 **Nobody was assigned the
+verification.** It matters beyond Fase 2 scoping: if Mexal genuinely has no credit
+note order type, then a credit note is dual manual entry forever, and that is a
+design constraint rather than a build task.
+
+🟢 **Fase 2 will be released incrementally.** Elena Spini proposed prioritising
+within it — _"possiamo fare rilasci dedicati pezzettino per pezzettino"_ — and
+Aurel Mrruku backed it: _"il problema è strutturare bene il data model e non
+mettere cose a metà"_, because production bonifiche cost more than staged
+delivery. He drew the contrast explicitly: **Fase 1 cannot be staged**, because all
+the structures must exist for the Excel migration to map onto.
+
+🔴 **Fabrizio Paganelli asked which months Fase 2 covers and did not get an
+answer.** Elena Spini said the quotation is still to be done and undertook to send
+the updated plan and a proposal **this week**. Still no dates, and the client is
+now asking for them.

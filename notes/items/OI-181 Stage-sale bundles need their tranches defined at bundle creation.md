@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-25
-updated: 2026-09-25
+updated: 2026-09-28
 depends_on: [OI-50]
 blocks: [OI-101, go-live]
 severity: gating
@@ -144,3 +144,58 @@ bundle tranch"_.
 `Prodotto__c` and the **`Campagna_Figlio` record type** — authored in `c3aa064`
 before this sweep's watermark but only reaching the working branch now. They bear on
 the **30/09 campaigns-and-tickets session**.
+
+## 🟢🔑 2026-09-28 - the WooCommerce order side was built, and the gating gap is closed in the repository
+
+The gap this note has carried since 25/09 — _"the WooCommerce order side is not in
+the diff"_ — is closed. **`0086681`** (Anita Aga, 28/09 15:25 CEST, merged to
+`DevMain` in **PR [#64](https://github.com/Calm-Coders/pienissimo/pull/64)** at
+16:09 CEST) rewrites `WoocommerceOrderService.cls` (**+525/−187 lines**), with
+`QuoteTrancheController.cls` (+94) and the `quoteCreateTranche` LWC.
+
+**Verified by reading the class at `DevMain` `55101d2`**, not inferred from the
+commit message:
+
+1. 🟢 **The bundle's own tranche templates drive the order.** The service loads
+   `Bundle_Tranch__c` by bundle and `BundleComponent__c` by bundle, and creates one
+   `Tranche__c` per template, copying `Data_Scadenza__c` and `Sequenza__c` from the
+   template and joining back through `Tranche__c.Bundle_Tranch__c`.
+2. 🟢🔑 **The WooCommerce price is ignored for bundle lines.** A bundle line is
+   expanded into its components, and each component line takes its unit amount from
+   **`BundleComponent__c.Unit_Spread__c`** — the bundle's own configured amount —
+   with quantity `component.Quantity__c × bundleQuantity`. The payload's
+   `unitPrice()` is used only for **non-bundle** lines. That is exactly the 25/09
+   agreement.
+3. 🟢🔑 **The order no longer goes straight to `Incassato`.** The status jumps to
+   `Incassato` **only when the plan has no bundle tranches**
+   (`if (!orderBuildPlan.hasBundleTranches())`). A bundle order with tranches stays
+   at the initial status and its tranches are created `Aperta`. This answers the
+   27/09 org-status finding directly.
+4. 🟢 **Misconfiguration fails loudly, in Italian, before an order is taken.** The
+   service throws named errors when a bundle has no tranches configured, when a
+   component is not assigned to a tranche, when a component's tranche belongs to a
+   different bundle, when a component has no product, quantity or amount, and when a
+   tranche has no component assigned — e.g. _"Configura le tranche sul bundle prima
+   di acquisire ordini WooCommerce."_
+
+## 🔴 What is not yet established
+
+- 🔴 **Nothing has been run.** This is a reading of the source on `DevMain`. **No
+  end-to-end WooCommerce order was exercised**, and the **02/10 re-test** is the
+  first time it will be.
+- 🔴 **The client's bundles are not configured.** The code now *requires* every
+  bundle component to be assigned to a `Bundle_Tranch__c`, and refuses the order
+  otherwise. **No existing bundle in UAT has that mapping**, so an order against a
+  today's bundle fails by design until Fabrizio Paganelli — the only person who
+  creates bundles — assigns them. **Nobody has been asked to.**
+- ⚠🔑 **A picklist mismatch may bite here.** The service writes
+  `Tranche__c.Stato__c = 'Aperta'`, which matches the `force-app` picklist
+  (`Aperta` / `Parzialmente Pagata` / `Pagata`). But the 25/09 session recorded the
+  **live org** values as `aperto` / `parzialmente pagato` / `pagato`, read off a
+  screen share. **If the org really differs, every bundle order insert fails on a
+  restricted picklist.** The org query already owed for
+  [OI-50](OI-50%20Tranche%20object.md) and
+  [OI-69](OI-69%20Order%20state%20model.md) now has a second reason to happen, and
+  it is the WooCommerce re-test that pays for getting it wrong.
+- ⚠ The one-week estimate of 25/09 was met for the code: object and quote side on
+  25/09, order side on 28/09.

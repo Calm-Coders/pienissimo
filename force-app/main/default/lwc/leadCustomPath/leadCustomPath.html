@@ -1,0 +1,106 @@
+<template>
+  <section class="path-shell" aria-label="Percorso lead">
+    <div class="stage-list" role="listbox" aria-label="Fasi lead">
+      <template for:each={stageItems} for:item="stage">
+        <button
+          key={stage.value}
+          class={stage.className}
+          data-stage={stage.value}
+          disabled={isSaving}
+          onclick={handleStageSelect}
+          type="button"
+        >
+          <span class="stage-label">{stage.label}</span>
+        </button>
+      </template>
+    </div>
+
+    <div class="action-row">
+      <p class={statusClass}>{statusText}</p>
+      <lightning-button
+        disabled={markDisabled}
+        label="Mark as Current Stage"
+        onclick={handleMarkCurrent}
+        variant="brand"
+      ></lightning-button>
+    </div>
+  </section>
+
+  <template if:true={showExitReasonModal}>
+    <section
+      aria-labelledby="exit-reason-heading"
+      aria-modal="true"
+      class="slds-modal slds-fade-in-open"
+      role="dialog"
+    >
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close"
+            onclick={closeModal}
+            title="Chiudi"
+            type="button"
+          >
+            <lightning-icon
+              alternative-text="Chiudi"
+              icon-name="utility:close"
+              size="small"
+              variant="inverse"
+            ></lightning-icon>
+          </button>
+          <h2 class="slds-modal__title slds-hyphenate" id="exit-reason-heading">
+            Sposta a Non qualificato
+          </h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+          <div class="warning-line">
+            <lightning-icon
+              alternative-text="Obbligatorio"
+              icon-name="utility:warning"
+              size="small"
+              variant="warning"
+            ></lightning-icon>
+            <span
+              >Compila la motivazione prima di spostare il Lead a Non
+              qualificato.</span
+            >
+          </div>
+          <lightning-combobox
+            class="exit-reason-field"
+            label="Motivazione uscita"
+            message-when-value-missing="Seleziona la motivazione uscita."
+            options={exitReasonOptions}
+            required
+            value={exitReason}
+            onchange={handleExitReasonChange}
+          ></lightning-combobox>
+          <lightning-combobox
+            class="exit-reason-field slds-m-top_medium"
+            disabled={exitReasonDetailDisabled}
+            label="Dettaglio motivazione uscita"
+            message-when-value-missing="Seleziona il dettaglio motivazione uscita."
+            options={filteredExitReasonDetailOptions}
+            required
+            value={exitReasonDetail}
+            onchange={handleExitReasonDetailChange}
+          ></lightning-combobox>
+        </div>
+        <footer class="slds-modal__footer">
+          <lightning-button
+            disabled={isSaving}
+            label="Annulla"
+            onclick={closeModal}
+          ></lightning-button>
+          <lightning-button
+            class="slds-m-left_small"
+            disabled={isSaving}
+            label="Salva"
+            onclick={handleExitReasonSave}
+            variant="brand"
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>
