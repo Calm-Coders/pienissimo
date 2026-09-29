@@ -1,5 +1,8 @@
 <template>
-  <lightning-quick-action-panel header={panelHeader}>
+  <div class="action-shell">
+    <header class="action-header">
+      <h1>{panelHeader}</h1>
+    </header>
     <div class="content">
       <template lwc:if={isLoading}>
         <lightning-spinner
@@ -25,12 +28,29 @@
         </template>
         <template lwc:else>
           <div class="bundle-heading">
-            <span class="eyebrow">CONFIGURAZIONE BUNDLE</span>
-            <h2>{bundleName}</h2>
-            <p>Le modifiche saranno applicate solo con Salva bundle.</p>
+            <div class="bundle-heading-text">
+              <span class="eyebrow">CONFIGURAZIONE BUNDLE</span>
+              <h2>{bundleName}</h2>
+              <p>Le modifiche saranno applicate solo con Salva bundle.</p>
+            </div>
           </div>
           <div class="totals">
             <div class="figures">
+              <div class="figure">
+                <lightning-input
+                  data-id="bundle-price"
+                  type="number"
+                  label="Prezzo prodotto bundle"
+                  value={fixedPrice}
+                  min="0"
+                  step="0.01"
+                  formatter="currency"
+                  required
+                  onchange={handleFixedPriceChange}
+                  oninput={handleFixedPriceChange}
+                  disabled={isLoading}
+                ></lightning-input>
+              </div>
               <div class="figure">
                 <span class="figure-label">Prezzo listino</span>
                 <lightning-formatted-number
@@ -85,18 +105,137 @@
               mantiene lo stesso importo e modifica il valore per unita.
             </p>
             <template lwc:if={hasRows}>
-              <div class="table-container">
-                <lightning-datatable
-                  data-id="components"
-                  key-field="key"
-                  data={rows}
-                  columns={componentColumns}
-                  hide-checkbox-column
-                  suppress-bottom-bar
-                  oncellchange={handleCellChange}
-                  onrowaction={handleRowAction}
-                ></lightning-datatable>
-              </div>
+              <template lwc:if={hasEditingComponent}>
+                <article class="product-card row-editor">
+                  <div class="product-card-heading">
+                    <div>
+                      <span class="eyebrow">MODIFICA COMPONENTE</span>
+                      <h3>{editingComponent.name}</h3>
+                      <p>Codice: {editingComponent.productCode}</p>
+                    </div>
+                    <lightning-button-icon
+                      icon-name="utility:close"
+                      alternative-text="Chiudi modifica"
+                      title="Chiudi modifica"
+                      variant="border"
+                      onclick={handleCloseComponentEditor}
+                      disabled={isLoading}
+                    ></lightning-button-icon>
+                  </div>
+                  <div class="reference-price">
+                    <div class="unit-price-box">
+                      <span class="unit-price-label">Listino unitario</span>
+                      <span class="unit-price-value">
+                        <lightning-formatted-number
+                          value={editingComponent.listPrice}
+                          format-style="currency"
+                          currency-code="EUR"
+                        ></lightning-formatted-number>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="row-inputs">
+                    <template lwc:if={hasBundleTranches}>
+                      <lightning-combobox
+                        data-component-editor="true"
+                        data-field="bundleTranchId"
+                        label="Tranch"
+                        value={editingComponent.bundleTranchId}
+                        options={bundleTranchOptions}
+                        onchange={handleComponentEditChange}
+                        disabled={isLoading}
+                      ></lightning-combobox>
+                    </template>
+                    <lightning-input
+                      data-component-editor="true"
+                      data-field="quantity"
+                      type="number"
+                      label="Quantita"
+                      value={editingComponent.quantity}
+                      min="1"
+                      step="1"
+                      required
+                      onchange={handleComponentEditChange}
+                      oninput={handleComponentEditChange}
+                      disabled={isLoading}
+                    ></lightning-input>
+                    <lightning-input
+                      data-component-editor="true"
+                      data-field="discountPercent"
+                      type="number"
+                      label="Sconto %"
+                      value={editingComponent.discountPercent}
+                      min="0"
+                      max="100"
+                      step="0.01"
+                      onchange={handleComponentEditChange}
+                      oninput={handleComponentEditChange}
+                      disabled={editingComponent.discountDisabled}
+                    ></lightning-input>
+                    <lightning-input
+                      data-component-editor="true"
+                      data-field="spreadPrice"
+                      type="number"
+                      label="Prezzo totale della riga"
+                      value={editingComponent.spreadPrice}
+                      min="0"
+                      step="0.01"
+                      formatter="currency"
+                      onchange={handleComponentEditChange}
+                      oninput={handleComponentEditChange}
+                      disabled={isLoading}
+                    ></lightning-input>
+                  </div>
+                  <div class="line-summary editor-preview">
+                    <span class="preview-item">
+                      <span class="preview-label">Sconto:</span>
+                      <span>{editingComponent.discountLabel}</span>
+                    </span>
+                    <span class="preview-item">
+                      <span class="preview-label">Prezzo riga:</span>
+                      <lightning-formatted-number
+                        value={editingComponent.spreadPrice}
+                        format-style="currency"
+                        currency-code="EUR"
+                      ></lightning-formatted-number>
+                    </span>
+                    <span class="preview-item">
+                      <span class="preview-label">Totale assegnato:</span>
+                      <lightning-formatted-number
+                        value={spreadTotal}
+                        format-style="currency"
+                        currency-code="EUR"
+                      ></lightning-formatted-number>
+                    </span>
+                  </div>
+                  <div class="editor-actions">
+                    <lightning-button
+                      label="Chiudi"
+                      onclick={handleCloseComponentEditor}
+                      disabled={isLoading}
+                    ></lightning-button>
+                    <lightning-button
+                      label="Salva modifica"
+                      variant="brand"
+                      onclick={handleSaveComponentEdit}
+                      disabled={isLoading}
+                    ></lightning-button>
+                  </div>
+                </article>
+              </template>
+              <template lwc:else>
+                <div class="table-container">
+                  <lightning-datatable
+                    data-id="components"
+                    key-field="key"
+                    data={rows}
+                    columns={componentColumns}
+                    hide-checkbox-column
+                    suppress-bottom-bar
+                    onrowaction={handleRowAction}
+                  ></lightning-datatable>
+                </div>
+              </template>
             </template>
             <template lwc:else>
               <div class="empty-state">
@@ -131,24 +270,36 @@
                         <h3>{row.name}</h3>
                         <p>Codice: {row.productCode}</p>
                       </div>
-                      <lightning-button-icon
-                        icon-name="utility:delete"
-                        alternative-text="Rimuovi prodotto"
-                        title="Rimuovi prodotto"
-                        data-key={row.key}
-                        onclick={handleRemovePending}
-                        disabled={isLoading}
-                      ></lightning-button-icon>
+                      <div class="card-actions">
+                        <lightning-button-icon
+                          icon-name="utility:delete"
+                          alternative-text="Rimuovi prodotto"
+                          title="Rimuovi prodotto"
+                          variant="border"
+                          data-key={row.key}
+                          onclick={handleRemovePending}
+                          disabled={isLoading}
+                        ></lightning-button-icon>
+                      </div>
                     </div>
+                    <div class="line-summary">
+                      <span>Quantita: {row.quantityDisplay}</span>
+                      <span>Sconto: {row.selectedDiscountDisplay}</span>
+                      <span>Prezzo riga: {row.selectedPriceDisplay}</span>
+                    </div>
+                    <template lwc:if={row.pendingPriceError}>
+                      <p class="row-error" role="alert">
+                        {row.pendingPriceError}
+                      </p>
+                    </template>
                     <div class="reference-price">
                       <template lwc:if={row.hasListPrice}>
-                        <lightning-input
-                          type="number"
-                          label="Listino unitario"
-                          value={row.listPrice}
-                          formatter="currency"
-                          read-only
-                        ></lightning-input>
+                        <div class="unit-price-box">
+                          <span class="unit-price-label">Listino unitario</span>
+                          <span class="unit-price-value"
+                            >{row.listPriceDisplay}</span
+                          >
+                        </div>
                       </template>
                       <template lwc:else>
                         <span
@@ -190,11 +341,11 @@
                         type="number"
                         label="Sconto %"
                         value={row.discountPercent}
-                        min="0.01"
+                        min="0"
                         max="100"
                         step="0.01"
-                        required={row.discountRequired}
                         onchange={handlePendingChange}
+                        oninput={handlePendingChange}
                         disabled={row.discountDisabled}
                       ></lightning-input>
                       <lightning-input
@@ -207,8 +358,8 @@
                         min="0"
                         step="0.01"
                         formatter="currency"
-                        required={row.rowPriceRequired}
                         onchange={handlePendingChange}
+                        oninput={handlePendingChange}
                         disabled={isLoading}
                         field-level-help="Importo assegnato a tutte le unita di questa riga, non alla singola unita."
                       ></lightning-input>
@@ -269,7 +420,8 @@
                       key-field="id"
                       data={products}
                       columns={productColumns}
-                      hide-checkbox-column
+                      selected-rows={selectedSearchProductIds}
+                      onrowselection={handleProductSelection}
                       onrowaction={handleChooseProduct}
                     ></lightning-datatable>
                   </template>
@@ -285,6 +437,13 @@
                 </div>
                 <div class="result-footer">
                   <span>{resultLabel}</span>
+                  <lightning-button
+                    data-id="add-search-selection"
+                    label={searchSelectionLabel}
+                    variant="brand-outline"
+                    onclick={handleAddSearchSelection}
+                    disabled={addSearchSelectionDisabled}
+                  ></lightning-button>
                   <template lwc:if={hasMore}
                     ><lightning-button
                       data-id="more"
@@ -297,14 +456,13 @@
               </section>
             </template>
             <p class="help">
-              Aggiungi tutti riporta le righe nel riepilogo. Salva bundle salva
-              tutte le modifiche e chiude la finestra.
+              Aggiungi tutti riporta le righe nel riepilogo per il salvataggio.
             </p>
           </template>
         </template>
       </template>
     </div>
-    <div slot="footer">
+    <footer class="action-footer">
       <template lwc:if={showBundleFooter}>
         <template lwc:if={showMainView}>
           <lightning-button
@@ -331,20 +489,12 @@
             data-id="add-selected"
             class="slds-m-left_small"
             label={selectionLabel}
-            variant="neutral"
-            onclick={handleAddSelected}
-            disabled={addSelectionDisabled}
-          ></lightning-button>
-          <lightning-button
-            data-id="save-selected"
-            class="slds-m-left_small"
-            label="Salva bundle"
             variant="brand"
-            onclick={handleSaveSelected}
+            onclick={handleAddSelected}
             disabled={addSelectionDisabled}
           ></lightning-button>
         </template>
       </template>
-    </div>
-  </lightning-quick-action-panel>
+    </footer>
+  </div>
 </template>
