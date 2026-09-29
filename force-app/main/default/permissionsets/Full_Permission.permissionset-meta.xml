@@ -519,6 +519,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Campaign.A_Data_Competenza__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Campaign.Anno_Accademico__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -535,6 +540,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Campaign.Data_Inizio_Evento__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Campaign.Da_Data_Competenza__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -919,6 +929,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Order.Codice_Pagamento_Mexal__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Order.Mexal_Customer_Code__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1155,6 +1170,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Description</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Quote.Codice_Pagamento_Mexal__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

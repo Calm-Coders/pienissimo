@@ -3,17 +3,17 @@
     <fullName>Campagna_Figlio_Richiede_Date</fullName>
     <active>true</active>
     <description
-  >Una Campagna Figlio deve avere date di calendario, data evento e data invio biglietto coerenti.</description>
+  >Una Campagna Figlio deve avere date di competenza, data evento e data invio biglietto coerenti.</description>
     <errorConditionFormula>AND(
   RecordType.DeveloperName = &quot;Campagna_Figlio&quot;,
   OR(
-    ISBLANK(StartDate),
-    ISBLANK(EndDate),
+    ISBLANK(Da_Data_Competenza__c),
+    ISBLANK(A_Data_Competenza__c),
     ISBLANK(Data_Evento__c),
     ISBLANK(Data_Invio_Biglietto__c),
-    EndDate &lt; StartDate
+    A_Data_Competenza__c &lt; Da_Data_Competenza__c
   )
 )</errorConditionFormula>
     <errorMessage
-  >Una Campagna Figlio deve avere Data Inizio, Data Fine, Data Evento, Data Invio Biglietto e Data Fine non precedente a Data Inizio.</errorMessage>
+  >Una Campagna Figlio deve avere Da Data Competenza, A Data Competenza, Data Evento, Data Invio Biglietto e A Data Competenza non precedente a Da Data Competenza.</errorMessage>
 </ValidationRule>
