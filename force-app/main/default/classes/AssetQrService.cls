@@ -30,6 +30,7 @@ public without sharing class AssetQrService {
 
     List<Asset> assetsToUpdate = new List<Asset>();
     List<ContentVersion> qrFiles = new List<ContentVersion>();
+    Set<Id> documentAssetIds = new Set<Id>();
 
     for (Asset assetRecord : [
       SELECT Id, ContactId, Campaign__c, QR_Id__c
@@ -56,6 +57,7 @@ public without sharing class AssetQrService {
             FirstPublishLocationId = assetRecord.Id
           )
         );
+        documentAssetIds.add(assetRecord.Id);
       }
     }
 
@@ -64,6 +66,9 @@ public without sharing class AssetQrService {
     }
     if (!qrFiles.isEmpty()) {
       insert qrFiles;
+    }
+    if (!documentAssetIds.isEmpty()) {
+      System.enqueueJob(new ParticipantTicketDocumentJob(documentAssetIds));
     }
   }
 }

@@ -356,6 +356,7 @@ private class TicketingTest {
         ParticipantRegistrationController.findContact(inv.token, 'x@y.it').found
       );
 
+      Test.startTest();
       ParticipantRegistrationController.PageResponse saved = ParticipantRegistrationController.savePage(
         inv.token,
         new List<ParticipantRegistrationController.ParticipantInput>{
@@ -363,6 +364,11 @@ private class TicketingTest {
           participant(inv.tickets[1].Id, 'nuovo.partecipante@example.com')
         }
       );
+      Test.stopTest();
+      Set<Id> ticketIds = new Set<Id>();
+      for (Asset ticket : inv.tickets) {
+        ticketIds.add(ticket.Id);
+      }
 
       System.assertEquals('COMPLETED', saved.state);
       System.assertEquals(
@@ -376,6 +382,59 @@ private class TicketingTest {
       System.assertEquals(
         2,
         [SELECT COUNT() FROM CampaignMember WHERE CampaignId = :inv.campaign.Id]
+      );
+      System.assertEquals(
+        2,
+        [
+          SELECT COUNT()
+          FROM Asset
+          WHERE Id IN :ticketIds AND QR_Id__c != NULL
+        ]
+      );
+      System.assertEquals(
+        2,
+        [
+          SELECT COUNT()
+          FROM ContentVersion
+          WHERE FirstPublishLocationId IN :ticketIds AND Title LIKE 'Ticket QR%'
+        ]
+      );
+      System.assertEquals(
+        2,
+        [
+          SELECT COUNT()
+          FROM ContentVersion
+          WHERE
+            FirstPublishLocationId IN :ticketIds
+            AND Title LIKE 'Documenti partecipazione%'
+        ]
+      );
+
+      PageReference participantDocumentPage = new PageReference(
+        '/apex/ParticipantTicketPdf'
+      );
+      participantDocumentPage.getParameters()
+        .put('id', String.valueOf(inv.tickets[1].Id));
+      Test.setCurrentPage(participantDocumentPage);
+      ParticipantTicketPdfController pdfController = new ParticipantTicketPdfController();
+      System.assertEquals('Tappa Milano', pdfController.getEventName());
+      System.assertEquals('Paolo Gialli', pdfController.getParticipantName());
+      System.assertEquals(
+        inv.accountRecord.Name,
+        pdfController.getAccountName()
+      );
+      System.assertEquals('Biglietto 2', pdfController.getTicketName());
+
+      ParticipantTicketDocumentJob.generate(ticketIds);
+      System.assertEquals(
+        2,
+        [
+          SELECT COUNT()
+          FROM ContentVersion
+          WHERE
+            FirstPublishLocationId IN :ticketIds
+            AND Title LIKE 'Documenti partecipazione%'
+        ]
       );
     }
   }

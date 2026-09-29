@@ -1,0 +1,251 @@
+<apex:page
+  controller="ParticipantTicketPdfController"
+  renderAs="pdf"
+  showHeader="false"
+  sidebar="false"
+  standardStylesheets="false"
+  readOnly="true"
+  cache="false"
+  language="it"
+  applyHtmlTag="false"
+  applyBodyTag="false"
+>
+  <html>
+    <head>
+      <style type="text/css">
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          color: #111;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 8pt;
+        }
+        .sheet {
+          height: 297mm;
+          page-break-before: always;
+          position: relative;
+          width: 210mm;
+        }
+        .first {
+          page-break-before: auto;
+        }
+        .bg {
+          height: 297mm;
+          left: 0;
+          position: absolute;
+          top: 0;
+          width: 210mm;
+          z-index: 0;
+        }
+        .field {
+          background: #fff;
+          line-height: 1.1;
+          overflow: hidden;
+          padding: 0.5mm 0.8mm;
+          position: absolute;
+          z-index: 2;
+        }
+        .small {
+          font-size: 6.5pt;
+        }
+        .center {
+          text-align: center;
+        }
+        .qr {
+          background: #fff;
+          border-collapse: collapse;
+          left: 39mm;
+          position: absolute;
+          top: 84.5mm;
+          z-index: 3;
+        }
+        .qr td {
+          height: 1.36mm;
+          line-height: 1.36mm;
+          margin: 0;
+          padding: 0;
+          width: 1.36mm;
+        }
+        .qr-dark {
+          background: #000;
+        }
+        .qr-light {
+          background: #fff;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="sheet first">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-1.png')}"
+        />
+        <div
+          class="field"
+          style="left: 18mm; top: 21mm; width: 72mm; height: 4mm"
+        >
+          <apex:outputText value="{!eventName}" />
+        </div>
+        <div
+          class="field small"
+          style="left: 18mm; top: 27mm; width: 54mm; height: 3.5mm"
+        >
+          <apex:outputText value="{!eventDate}" />
+        </div>
+        <div
+          class="field"
+          style="left: 18mm; top: 48mm; width: 72mm; height: 4mm"
+        >
+          <apex:outputText value="{!participantName}" />
+        </div>
+        <div
+          class="field small"
+          style="left: 18mm; top: 57mm; width: 70mm; height: 3.5mm"
+        >
+          <apex:outputText value="{!participantEmail}" />
+        </div>
+        <div
+          class="field small"
+          style="left: 18mm; top: 63mm; width: 70mm; height: 3.5mm"
+        >
+          <apex:outputText value="{!accountName}" />
+        </div>
+        <div
+          class="field"
+          style="left: 18mm; top: 81mm; width: 70mm; height: 4mm"
+        >
+          <apex:outputText value="{!ticketName}" />
+        </div>
+        <apex:outputPanel rendered="{!hasQrCode}" layout="none">
+          <table class="qr">
+            <apex:repeat value="{!qrRows}" var="qrRow">
+              <tr>
+                <apex:repeat value="{!qrRow.modules}" var="module">
+                  <td class="{!IF(module, 'qr-dark', 'qr-light')}"></td>
+                </apex:repeat>
+              </tr>
+            </apex:repeat>
+          </table>
+        </apex:outputPanel>
+        <div
+          class="field center"
+          style="left: 116mm; top: 78mm; width: 64mm; height: 5mm"
+        >
+          <apex:outputText value="{!eventName}" />
+        </div>
+        <div
+          class="field center small"
+          style="left: 123mm; top: 99mm; width: 48mm; height: 4mm"
+        >
+          <apex:outputText value="{!eventDate}" />
+        </div>
+        <div
+          class="field center small"
+          style="left: 116mm; top: 111mm; width: 64mm; height: 10mm"
+        >
+          <apex:outputText value="{!eventLocationLine}" />
+        </div>
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-2.png')}"
+        />
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-3.png')}"
+        />
+        <div class="field" style="left: 42mm; top: 60mm; width: 122mm">
+          <apex:outputText value="{!participantName}" />
+        </div>
+        <div class="field" style="left: 34mm; top: 105mm; width: 36mm">
+          <apex:outputText value="{!participantPhone}" />
+        </div>
+        <div class="field" style="left: 90mm; top: 105mm; width: 72mm">
+          <apex:outputText value="{!participantEmail}" />
+        </div>
+        <div class="field" style="left: 43mm; top: 119mm; width: 118mm">
+          <apex:outputText value="{!accountName}" />
+        </div>
+        <div class="field" style="left: 45mm; top: 133mm; width: 116mm">
+          <apex:outputText value="{!accountName}" />
+        </div>
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-4.png')}"
+        />
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-5.png')}"
+        />
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-6.png')}"
+        />
+        <div class="field" style="left: 42mm; top: 45mm; width: 122mm">
+          <apex:outputText value="{!participantName}" />
+        </div>
+        <div class="field" style="left: 34mm; top: 74mm; width: 36mm">
+          <apex:outputText value="{!participantPhone}" />
+        </div>
+        <div class="field" style="left: 90mm; top: 74mm; width: 72mm">
+          <apex:outputText value="{!participantEmail}" />
+        </div>
+        <div class="field" style="left: 43mm; top: 84mm; width: 118mm">
+          <apex:outputText value="{!accountName}" />
+        </div>
+        <div class="field" style="left: 45mm; top: 94mm; width: 116mm">
+          <apex:outputText value="{!accountName}" />
+        </div>
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-7.png')}"
+        />
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-8.png')}"
+        />
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-9.png')}"
+        />
+      </div>
+
+      <div class="sheet">
+        <img
+          class="bg"
+          src="{!URLFOR($Resource.ParticipantDocumentTemplate, 'page-10.png')}"
+        />
+      </div>
+    </body>
+  </html>
+</apex:page>
