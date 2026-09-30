@@ -40,7 +40,7 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
         accountName: defaults?.accountName || "",
         status: defaults?.status || "",
         isPrimary: defaults?.isPrimary === true,
-        expirationDate: "",
+        expirationDate: this.getDefaultExpirationDate(),
         localeId: defaults?.localeId || null,
         billingStreet: defaults?.billingStreet || "",
         billingCity: defaults?.billingCity || "",
@@ -68,6 +68,12 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
     return (
       this.isLoading || this.isSaving || !this._recordId || !this.form.quoteName
     );
+  }
+
+  getDefaultExpirationDate() {
+    const date = new Date();
+    date.setDate(date.getDate() + 5);
+    return date.toISOString().slice(0, 10);
   }
 
   handleInputChange(event) {
