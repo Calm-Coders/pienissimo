@@ -5,7 +5,7 @@ status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-29
-updated: 2026-09-29
+updated: 2026-09-30
 depends_on: [ticket-qr-code-generation]
 source: Claude session 2026-09-29, UAT inspection, deploy 0AfMA00000CoORd0AN and live test
 uncertain: Not yet deployed to Prod; the Prod run-as user is not chosen.
@@ -90,3 +90,33 @@ running user owns.
   1.31 MB each in about 13 seconds; one opened as 10 A4 pages.
 
 Related: [Ticket QR code generation](../Ticket%20QR%20code%20generation.md).
+
+## Local PDF layout revision - 30 September 2026
+
+The local `ParticipantTicketPdf.page` now uses shared document content areas,
+flowing paragraphs and numbered lists, table-based headers, footers, forms and
+signatures. The 30 September revision completes the existing local rewrite with
+standard page margins, legal-text typography and consolidated instruction labels.
+The ticket keeps its four-region layout and explicit spacing before the event
+name; its box dimensions now account for padding without `box-sizing`.
+This revision is local only: formatting checked, Salesforce rendering and page
+fit not yet verified. The local template has one ticket and seven document sheets;
+that does not establish the page count currently deployed in UAT.
+
+### Follow-up layout correction - 30 September 2026
+
+Applied the user-supplied second revision locally: document bodies now use normal
+flow with margins and padding; only headers and footers remain positioned.
+Instruction numbering uses three tables, legal text uses 7.3pt compact spacing,
+and declaration bullets have separate styling. Removed decorative checkbox
+squares and keep-together rules on large groups; choice and signature tables
+remain indivisible. Fixed-height document sheets now clip overflow as requested.
+The next Salesforce PDF test must check for clipped text and footer overlap;
+no rendered result or deployment is established by this local change.
+
+### Readability and choice boxes - 30 September 2026
+
+At the user's request, increased local legal body text from 7.3pt to 7.8pt
+and legal section headings from 7.5pt to 8pt. Restored bordered square boxes
+beside all eight role and consent choices. This supersedes the earlier request
+to remove checkbox squares. PDF page fit remains unverified; not deployed.
