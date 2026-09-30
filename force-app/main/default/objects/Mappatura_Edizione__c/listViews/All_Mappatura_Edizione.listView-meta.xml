@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Mappatura_Edizione</fullName>
+    <columns>NAME</columns>
+    <columns>Campagna__c</columns>
+    <columns>Data_Evento__c</columns>
+    <columns>Prodotto__c</columns>
+    <columns>Data_Inizio__c</columns>
+    <columns>Data_Fine__c</columns>
+    <filterScope>Mine</filterScope>
+    <label>All Mappatura Edizione</label>
+</ListView>
