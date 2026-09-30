@@ -7,7 +7,7 @@ public without sharing class DocuSignQuoteEnvelopeService {
   private static final String STATUS_COMPLETED = 'Completed';
   private static final String STATUS_DECLINED = 'Declined';
   private static final String STATUS_ERROR = 'Error';
-  private static final String QUOTE_ACCEPTED_STATUS = 'Accettato';
+  private static final String QUOTE_SIGNED_STATUS = 'Firmato';
 
   private static final Boolean IS_SANDBOX = [
     SELECT IsSandbox
@@ -91,7 +91,7 @@ public without sharing class DocuSignQuoteEnvelopeService {
     update new Quote(
       Id = quotes[0].Id,
       DocuSign_Status__c = STATUS_COMPLETED,
-      Status = QUOTE_ACCEPTED_STATUS,
+      Status = QUOTE_SIGNED_STATUS,
       Is_Signed__c = true
     );
   }

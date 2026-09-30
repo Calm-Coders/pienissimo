@@ -1,5 +1,6 @@
 public without sharing class QuoteTriggerHandler {
   private static final String ACCEPTED_STATUS = 'Accettato';
+  private static final String SIGNED_STATUS = 'Firmato';
   private static final String AWAITING_ACCEPTANCE_STATUS = 'In Attesa Accettazione';
   private static final String DRAFT_STATUS = 'Bozza';
   private static final String DOCUSIGN_COMPLETED_STATUS = 'Completed';
@@ -16,7 +17,12 @@ public without sharing class QuoteTriggerHandler {
     NEW_QUOTE_STATUS,
     NEGOTIATION_QUOTE_STATUS,
     AWAITING_ACCEPTANCE_STATUS,
-    ACCEPTED_STATUS
+    ACCEPTED_STATUS,
+    SIGNED_STATUS
+  };
+  private static final Set<String> ACCEPTED_REVENUE_QUOTE_STATUSES = new Set<String>{
+    ACCEPTED_STATUS,
+    SIGNED_STATUS
   };
 
   public static void beforeSave(List<Quote> quotes) {
@@ -39,7 +45,7 @@ public without sharing class QuoteTriggerHandler {
     keepOnePrimaryQuotePerOpportunity(quotes, oldQuoteMap);
     updatePrimaryQuoteLookups(quotes, oldQuoteMap);
     updateOpportunityAmountsFromAcceptedPrimaryQuotes(quotes, oldQuoteMap);
-    createOrdersForAcceptedQuotes(quotes, oldQuoteMap);
+    createOrdersForSignedQuotes(quotes, oldQuoteMap);
   }
 
   private static void copyLocaleFromOpportunity(List<Quote> quotes) {
@@ -83,11 +89,13 @@ public without sharing class QuoteTriggerHandler {
 
   private static void markCompletedDocuSignQuotesAsSigned(List<Quote> quotes) {
     for (Quote quoteRecord : quotes) {
-      if (
-        quoteRecord.DocuSign_Status__c == DOCUSIGN_COMPLETED_STATUS &&
-        quoteRecord.Is_Signed__c != true
-      ) {
-        quoteRecord.Is_Signed__c = true;
+      if (quoteRecord.DocuSign_Status__c == DOCUSIGN_COMPLETED_STATUS) {
+        if (quoteRecord.Is_Signed__c != true) {
+          quoteRecord.Is_Signed__c = true;
+        }
+        if (quoteRecord.Status != SIGNED_STATUS) {
+          quoteRecord.Status = SIGNED_STATUS;
+        }
       }
     }
   }
@@ -132,24 +140,25 @@ public without sharing class QuoteTriggerHandler {
     }
   }
 
-  private static void createOrdersForAcceptedQuotes(
+  private static void createOrdersForSignedQuotes(
     List<Quote> quotes,
     Map<Id, Quote> oldQuoteMap
   ) {
-    Set<Id> acceptedQuoteIds = new Set<Id>();
+    Set<Id> signedQuoteIds = new Set<Id>();
     for (Quote quoteRecord : quotes) {
       Quote oldQuote = oldQuoteMap.get(quoteRecord.Id);
       if (
-        quoteRecord.Status == ACCEPTED_STATUS &&
+        quoteRecord.Status == SIGNED_STATUS &&
         quoteRecord.Is_Signed__c == true &&
         oldQuote != null &&
-        oldQuote.Is_Signed__c != true
+        (oldQuote.Status != SIGNED_STATUS ||
+        oldQuote.Is_Signed__c != true)
       ) {
-        acceptedQuoteIds.add(quoteRecord.Id);
+        signedQuoteIds.add(quoteRecord.Id);
       }
     }
 
-    if (acceptedQuoteIds.isEmpty()) {
+    if (signedQuoteIds.isEmpty()) {
       return;
     }
 
@@ -157,7 +166,7 @@ public without sharing class QuoteTriggerHandler {
     for (Order existingOrder : [
       SELECT Id, Quote__c
       FROM Order
-      WHERE Quote__c IN :acceptedQuoteIds
+      WHERE Quote__c IN :signedQuoteIds
     ]) {
       quotedOrderIds.add(existingOrder.Quote__c);
     }
@@ -166,7 +175,7 @@ public without sharing class QuoteTriggerHandler {
     for (Quote quoteRecord : [
       SELECT Id, AccountId, OpportunityId, Pricebook2Id, Locale__c
       FROM Quote
-      WHERE Id IN :acceptedQuoteIds
+      WHERE Id IN :signedQuoteIds
     ]) {
       if (!quotedOrderIds.contains(quoteRecord.Id)) {
         quotesToConvert.put(quoteRecord.Id, quoteRecord);
@@ -290,8 +299,8 @@ public without sharing class QuoteTriggerHandler {
       if (
         oldQuote == null ||
         quoteRecord.OpportunityId == null ||
-        quoteRecord.Status != ACCEPTED_STATUS ||
-        oldQuote.Status == ACCEPTED_STATUS ||
+        !ACCEPTED_REVENUE_QUOTE_STATUSES.contains(quoteRecord.Status) ||
+        ACCEPTED_REVENUE_QUOTE_STATUSES.contains(oldQuote.Status) ||
         quoteRecord.Is_Primary__c != true
       ) {
         continue;

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: both
 raised: 2026-09-25
-updated: 2026-09-25
+updated: 2026-09-28
 depends_on: [OI-140]
 source: notes/meetings/2026-09-25 UAT Recall Tutor e Bundle.md
 ---
@@ -65,3 +65,46 @@ names. This also closes the `Standart` misspelling
   retired name.
 - ⚠ The Lead → Opportunity type mapping ([OI-150](OI-150%20Opportunity%20type%20comes%20from%20a%20Lead%20picklist.md))
   must point at the new API names.
+
+## 🟢🔑 2026-09-28 - built, and the `Standart` misspelling is finally gone
+
+**`3bd0801`** (Anita Aga, 28/09 12:14 CEST, on `DevMain` at `55101d2`) —
+_"Change of API Name of Vendita Standard and Recall Tutor to the correct names and
+added origin field for WooCommerce record type"_. Verified against the metadata,
+not the commit message:
+
+**Opportunity record types:**
+
+| Before                    | After                                 |
+| ------------------------- | ------------------------------------- |
+| `Standart` **(deleted)**  | `Vendita_Standard` **(new, 107 lines)** |
+| `Recall_Tutor` **(deleted)** | `WooCommerce` **(new, 106 lines)**   |
+| —                         | `Plus_Attivazione_Rinnovo` **(new)**  |
+
+🟢 **New field `Opportunity.Origine_WooCommerce__c`** — the mandatory
+Recall Tutor / Pack Tutor origin this note called for.
+
+🟢🔑 **`Standart` → `Standard` is done.** It had been flagged on **seven
+consecutive runs** as data permanence, not cosmetics. The rename reached the code
+paths with it: `LeadConversionQueueable.cls`, `QuoteManageProductsController.cls`,
+the `quoteManageProducts` LWC, `Lead.Tipo_Opportunita__c`,
+`Opportunity.Tipo_Opportunita__c`, the Opportunity layout, the Quote and
+Opportunity record pages, and the `Diretta` / `Standard` Lead record types.
+
+⚠ **Two references survive, both in test code:** `TestDataFactory.cls:257` still
+calls `opportunity(accountId, 'Standart')` and line 260 lists the old names in a
+comment. **That will fail at runtime against the new record types.** Recorded as an
+observation against the standing instruction — **no test class was written,
+proposed or scaffolded here**, and this is for whoever takes the test-suite task.
+
+## 🔴 Still open
+
+- 🔴 **The UAT record remapping recorded above has not been shown to happen.** The
+  old record types are deleted from `force-app`; **UAT opportunities created under
+  `Standart` and `Recall_Tutor` still point at them**, and nothing in this window
+  remaps them. Deleting a record type in source does not migrate records.
+- 🔴 **Not verified in any org.** This is repository arithmetic against `DevMain`
+  `55101d2`. The 02/10 WooCommerce session is the first exercise.
+- ⚠ `Plus_Attivazione_Rinnovo` arriving here matters to
+  [OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md),
+  which reads the Contract `stato` off the opportunity record type.

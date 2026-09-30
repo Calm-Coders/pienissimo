@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-22
-updated: 2026-09-23
+updated: 2026-09-28
 depends_on: [OI-74]
 blocks: [go-live]
 severity: gating
@@ -93,3 +93,53 @@ name and Elena Spini supplied it. The 23/09 Pienissimo org chart places him as
 **Maintenance Manager at Pienissimo Software Srl**.
 
 🔴 **Unchanged and still gating: nothing is built, and ticket UAT is 30/09.**
+
+## 🔑 2026-09-28 - Infopoint is confirmed Fase 2, and the Salesforce side of the endpoint exists
+
+Two movements, from two different sources.
+
+### 🟢 The client-facing split is now stated in writing
+
+Elena Spini's project status in **`#tproj-pienissimo`** (28/09 09:07 CEST — the
+channel is findable again, see the trace) separates the two halves of this note:
+
+> _"QR Code: l'app aggiornerà Salesforce tramite API, mentre è stato confermato che
+> la parte Infopoint (app custom di Pienissimo che ci è stata presentata in
+> settimana -.-), anche se fondamentale per la gestione dei check-in degli eventi,
+> passerà alla Fase 2."_
+
+- 🟢 **The scan-updates-Salesforce-by-API design is confirmed** — the direction this
+  note established on 22/09.
+- 🔑 **Infopoint moves to Fase 2, and is named for the first time.** Her own
+  annotation — _"app custom di Pienissimo che ci è stata presentata in settimana"_,
+  with a visible `-.-` — matches the 22/09 finding that the app had never been
+  mentioned. ⚠ **She calls it fundamental to event check-in and defers it anyway.**
+  That is a scope decision with a consequence: **at go-live there is no check-in
+  path**, and the tickets it would scan are Fase 1.
+- ⚠ **The `Link_Iscrizione_Infopoint__c` Campaign field reached `DevMain` on
+  25/09** in PR #62, so a field naming Infopoint ships in Fase 1 while the
+  integration behind it does not.
+
+### 🟢🔑 The Salesforce-side lookup endpoint has been written
+
+**`807ed4e`** (Rexhina Hysi, 28/09 17:49 CEST) — _"expose endpoint to get info
+based on campaign member id"_ — adds **`TicketQrLookupService.cls` (317 lines)**,
+together with two notes the author wrote herself:
+`notes/Ticket QR lookup endpoint usage.md` (new, 109 lines) and an update to
+`notes/Ticket QR code generation.md`.
+
+🔴 **It is on the branch `DevMain_exposeEndpoint` and is NOT on `DevMain`.** No PR
+was open for it at the time of this sweep. **Its two notes are therefore not in the
+vault either**, which is why this section describes the commit rather than linking
+them.
+
+⚠ **This was not drilled.** The class and its notes were identified by commit, and
+whether the endpoint matches the contract Andrea Parmeggiani needs — the *speaking
+error when a previous block's entries are incomplete*, recorded above from 23/09 —
+**was not verified.** That is a read for whoever merges it.
+
+🟢 **QR generation itself landed the same morning**: `e887b15` and `b40db42`
+(Rexhina Hysi, 09:41 and 10:12 CEST) add `AssetQrService.cls`,
+`BarcodeGenerator.cls` (796 lines, with a vendored `Portwood-DocGen` licence under
+`docs/third-party/`) and `TicketQrImage.cls`. See
+[OI-185](OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md).

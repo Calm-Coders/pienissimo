@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-09-25
+updated: 2026-09-29
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -134,3 +134,61 @@ is no longer a problem to solve — it is the plan.
   and the `Campagna_Figlio` record type reached `DevMain` this evening
   ([OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)),
   so that half is not affected by this move.
+
+## 🔑 2026-09-28 - a PROD date now exists for it, and PROD already happened
+
+Elena Spini's project status in **`#tproj-pienissimo`** (28/09 09:07 CEST) puts a
+date on the production dependency this note is about, for the first time:
+
+> _"16/10 – UAT: flussi Marketing Biglietti >> obiettivo arrivare in PROD il 12/10
+> per permettere a Fabrizio di lavorare sui flussi Marketing"_
+
+🟢 **So the 16/10 marketing UAT has a stated precondition: production by 12/10.**
+That is the first time the sequencing recorded here — marketing cannot be tested
+without PROD — has been given a deliverable date rather than an argument.
+
+🔑 **And PROD arrived two weeks early.** `DevMain` was deployed to Pienissimo
+Production on **28/09 at 11:28Z** (deploy `0AfSW000001H1aD0AS`, 461 components, 142
+tests, 88.8% coverage) — see [MAP.md](../../MAP.md) and the
+[coverage risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+⚠ **That is not the same thing as Fabrizio Mastracci being able to work in it.**
+The org is deployed and **unusable as delivered**: `Full_Permission` has zero
+assignments, the `Integration_Configuration2__c` rows are absent, and the DocuSign
+Named Credential still points at `demo.docusign.net`. **Until those are done, 12/10
+is a deploy date that has been met and an access date that has not.**
+
+⚠ **Elena Spini was not told about the deploy** — recorded in the 28/09 JOURNAL
+entry — and her status post, written that morning, still frames PROD as a 12/10
+objective. **She is planning against a state the org has already left.**
+
+🔴 **The acceptance-window problem recorded above is unchanged.** 16/10 is still
+past the **13/10** approval deadline, and the client has still not been told its
+marketing approval is conditional.
+
+## 2026-09-29 — a production date for marketing, and the reason it was always needed
+
+🟢 **Aurel Mrruku committed to a date.** At
+[the 29/09 pre-UAT marketing session](../meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+he undertook to put the ticket and campaign objects plus a clean test record set
+into **production by Monday 5 October** — _"quando dico lunedì io lo faccio venerdì
+e ci lavoro nel weekend"_ — and a session is booked to verify it there:
+**`PIENISSIMO - Interna Check PROD per MKT`, Mon 05/10 09:30–10:30 CEST** (invited
+29/09 07:51Z, Aurel Mrruku and Fabrizio Mastracci).
+
+🔑 **The reason production is unavoidable is now on the record explicitly:**
+Marketing Cloud **cannot be installed in the UAT sandbox** — Fabrizio Mastracci,
+24/09 in the MKT group DM, _"in uat non posso installare mc e per questo non riesco
+a creare il flusso secondo le logiche che prendo dall'oggetto che ha creato Aurel"_,
+discovered with Carol on 23/09. That is the mechanism behind
+[OI-134](OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md).
+
+⚠ **He refused the same request on 25/09** — _"portare i sviluppi come sono in prod
+chiede tanto effort aggiuntivo, e poi sarebbe un doppio lavoro di pulizia"_ — and
+reversed after the 28/09 Prod deploy made the structures available. Four days.
+
+🔴 **Two new risks land inside the 16/10 window**, neither costed:
+[OI-194](OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)
+(the ticket is a multi-page document, not a QR code) and
+[OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+(WhatsApp implies a mobile community nobody designed). ⚠ The **WhatsApp templates
+are still not built** — Fabrizio Mastracci, asked directly: _"non ho ancora fatto."_

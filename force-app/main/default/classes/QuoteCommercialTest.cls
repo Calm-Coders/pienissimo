@@ -195,7 +195,7 @@ private class QuoteCommercialTest {
       Test.startTest();
       update new Quote(
         Id = quoteRecord.Id,
-        Status = 'Accettato',
+        Status = 'Firmato',
         DocuSign_Status__c = 'Completed'
       );
       Test.stopTest();

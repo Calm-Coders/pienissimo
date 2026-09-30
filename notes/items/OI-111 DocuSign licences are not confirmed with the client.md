@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-09-02
-updated: 2026-09-08
+updated: 2026-09-28
 blocks: [OI-68]
 requirement: INT-19
 source: Slack DM Aurel Mrruku / Elena Spini, 2026-09-02 15:47-15:49 CEST
@@ -170,3 +170,42 @@ settle whether production can send an envelope on 21 October.
 quote acceptance page sets `Quote.Status` on the click with no envelope. The
 8 September org check confirms it again — the quote controller "does not invoke
 signature processing" and **0 Assets carry QR values**.
+
+## 🟢 2026-09-28 - the credentials arrived
+
+The client's DocuSign account credentials were sent by **Elisa Migliano
+(`amministrazione@pienissimo.com`)** to Elena Spini and Aurel Mrruku, cc Fabrizio
+Paganelli and Sabatino Rinaldi, on **2026-09-28 at 10:27Z**, on the
+`ID ACCOUNT SALESFORCE` thread (Gmail `1a0c3aed1b1964cb`).
+
+🔴 **They were sent in the clear in a mail body — an account address and a
+password, alongside a DocuSign document link.** **The values are deliberately not
+recorded in this repository**, here or anywhere: see
+[docs/publishing.md](../../docs/publishing.md). What is recorded is that they exist
+and where. Anyone who needs them reads the mail.
+
+⚠ **This is the second credential-shaped item to travel in plain text** — a
+password-shaped string was posted in a Slack DM on 23/09. **Worth a standing note
+on where credentials are meant to go**, which still does not exist.
+
+🟢 **How it was unblocked:** Elena Spini raised the missing access with Fabrizio
+Paganelli at [the 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(`00:31:00`). He had not known it was outstanding — _"Ah, vi servivano gli
+accessi"_ — Elisa Migliano was out of the office, and he undertook to chase her
+himself: _"Vedo di fare in modo che ve lo giro io."_ **The mail landed roughly
+twenty-five minutes later.** Elena Spini confirmed receipt to Aurel Mrruku on
+Slack at 12:44 CEST (_"credenziali DocuSign inviate da Elisa"_); he replied
+_"viste, grz"_ at 13:01.
+
+### What this unblocks, and what it does not
+
+- 🟢 Everything demonstrated to the client so far ran on a **ROMI-made test account
+  in the DocuSign demo environment**. There is now a client account to move to.
+- 🔴 **The Named Credential still points at `demo.docusign.net`** in the Prod org,
+  recorded in [MAP.md](../../MAP.md) as an open item before Prod is used. Having
+  the credentials does not change the configuration; **somebody has to enter
+  them.** No owner, no date.
+- ⚠ **The original question in this note is still not answered on paper.** Whether
+  Pienissimo holds a *licence* — as opposed to an account someone can log into —
+  was never confirmed in writing. An account arriving is strong evidence and not
+  the same thing.

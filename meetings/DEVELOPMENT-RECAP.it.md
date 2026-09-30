@@ -5324,3 +5324,266 @@ settimanale spostato dal lunedì al **martedì alle 17:00**.
 - Nessuna trascrizione è stata copiata in `meetings/` e nessun recap per riunione è stato
   scritto in `meetings/results/`, come in ogni run dal 27/08.
 - ⚠ **Il §47 (24/09) manca ancora nel recap italiano.** Terzo run che lo segnala.
+
+## 50. Aggiornamento 28/09/2026 — il cliente ha dato uno scopo al Contratto, e la lacuna bloccante sull'ordine bundle è stata costruita
+
+Sweep notturno, watermark **2026-09-25T22:00Z → 2026-09-28T22:00Z**. Tre giorni, una
+sessione con il cliente, sedici commit.
+
+### La domanda sul Contratto ha avuto risposta ribaltandola
+
+ROMI è entrata in
+[Tema Contratti e Open Point](../notes/meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(28/09 10:02 CEST, 1h03m02s, Aurel Mrruku · Elena Spini · **Fabrizio Paganelli**) con
+l'intenzione di chiedere se l'oggetto Contratto potesse essere eliminato. L'obiezione
+di Aurel Mrruku del 25/09 era che i ritorni Mexal aggiornano le tranche, che già
+contengono lo stato finanziario, e ha posto l'alternativa direttamente al cliente: i
+cinque campi possono stare sull'ordine.
+
+🔑 **L'oggetto sopravvive, e per una ragione che il record non conteneva.** Fabrizio
+Paganelli non lo ha difeso in ottica per-ordine, lo ha riformulato come **storia
+contrattuale del cliente**:
+
+> _"l'importante è che noi da qualche parte abbiamo un contenitore dove per ogni
+> cliente io posso vedere quando è stato attivato da data a data, qual era l'importo
+> complessivo, si è pagato tutto."_
+
+🟢 Aurel Mrruku lo ha accettato su questa base e lo ha ribadito lui stesso — _"è
+collegato al cliente, quindi serve un'entità"_. **L'obiezione è superata, non
+respinta.**
+
+Cosa ha deciso la sessione:
+
+- 🔑 **Un Contratto per ordine.** La vista pluriennale si legge dai diversi Contratti
+  dell'Account, non collegando più ordini a un unico Contratto.
+- 🟢 **Tre campi finanziari, ognuno con un uso dichiarato:** `ordinato` dall'ordine,
+  `fatturato` e `incassato` dalle letture notturne Mexal. `ordinato − fatturato` è
+  quanto resta da fatturare; **`fatturato − incassato` misura la puntualità del
+  cliente.**
+- 🔑 **`data di attivazione` è un campo distinto e manuale, e i dodici mesi decorrono
+  da quella** — non dalla firma né dall'ordine — perché i clienti acquistano e
+  rinviano l'attivazione.
+- 🔑 **Due nuovi campi testo, `strategist` e `digital`**, per la quindicina di persone
+  che seguono un contratto. Deliberatamente non lookup: **non hanno licenza Salesforce
+  e non l'avranno.**
+- **Tre usi di reporting**, su tre livelli: clienti attivi (direzione), contratti in
+  scadenza il mese prossimo (commerciale), chi fatturare questo mese (amministrazione).
+
+🔴 **La struttura Zoho richiesta il 25/09 non è mai stata fornita** — ha risposto da
+principi primi e nessuno ha insistito. 🔴 **Nulla è costruito, e `Firmato` è ancora
+assente da `force-app`.** L'UAT del Contratto è il **5 ottobre**.
+([OI-141](../notes/items/OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md),
+[OI-168](../notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md))
+
+### 🟢 La lacuna bloccante su WooCommerce è chiusa nel repository
+
+`0086681` (Anita Aga, 15:25 CEST, portato su `DevMain` con la PR
+[#64](https://github.com/Calm-Coders/pienissimo/pull/64) alle 16:09) riscrive
+**`WoocommerceOrderService.cls` (+525/−187 righe)**. Letto a `DevMain` `55101d2`, non
+desunto dal messaggio di commit:
+
+- 🟢 Gli ordini con bundle creano una `Tranche__c` per ogni template
+  `Bundle_Tranch__c`, copiandone scadenza e sequenza e collegandosi a ritroso tramite
+  `Tranche__c.Bundle_Tranch__c`.
+- 🟢🔑 **Il prezzo WooCommerce è ignorato per le righe di bundle** — ogni riga
+  componente prende l'importo da `BundleComponent__c.Unit_Spread__c`. Il prezzo del
+  payload è usato solo per le righe non-bundle. È esattamente l'accordo del 25/09.
+- 🟢🔑 **L'ordine non va più direttamente a `Incassato`** — succede solo per un ordine
+  privo di tranche. Un ordine con bundle resta allo stato iniziale con tranche
+  `Aperta`.
+- 🟢 Una configurazione errata solleva errori parlanti in italiano prima
+  dell'acquisizione dell'ordine.
+
+🔴 **Nulla è stato eseguito, e nessun bundle in UAT ha i componenti mappati su una
+tranche — il codice ora rifiuta per progetto un ordine così.** I bundle li crea solo
+Fabrizio Paganelli e nessuno gli ha chiesto di mapparli. **Il 02/10 è la riprova.**
+([OI-181](../notes/items/OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md))
+
+### 🟢 `Standart` → `Standard`, sette run dopo
+
+`3bd0801` elimina i record type Opportunity `Standart` e `Recall_Tutor` e aggiunge
+**`Vendita_Standard`**, **`WooCommerce`** e **`Plus_Attivazione_Rinnovo`**, oltre a
+`Opportunity.Origine_WooCommerce__c`. La rinomina ha raggiunto l'Apex, i LWC, entrambi
+i campi `Tipo_Opportunita__c`, i layout e le record page. ⚠ Sopravvivono due
+riferimenti **nel codice di test** (`TestDataFactory.cls:257` e un commento alla 260),
+che falliranno contro i nuovi record type. 🔴 **Le opportunità in UAT puntano ancora ai
+record type eliminati; nessuno le ha rimappate.**
+([OI-182](../notes/items/OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md))
+
+### 🔑 Performance Plus si riconosce dalla categoria articolo Mexal
+
+Nuova riga
+[OI-188](../notes/items/OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md),
+bloccante. Il codice prodotto che la
+[OI-141](../notes/items/OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md)
+dava per inesistente esisteva: è la **`categoria articolo`** Mexal — **`C10`
+attivazione, `C11` rinnovo**, con **`C20` (servizi spot, inclusi i servizi Google) che
+è una vendita normale** e non genera né ordine né contratto. 🟢 Aurel Mrruku ha
+ritirato la propria proposta di tabella di mappatura una volta appurato che la
+categoria basta.
+
+🔴 **Fabrizio Paganelli deve i nuovi codici articolo Plus, ciascuno con un numero di
+tranche**, e intende portare a `annullato` i ~20 codici `C10` attuali. **Il 28/09 non
+è riuscito a produrli e non ha dato una data**; l'UAT Performance Plus è il
+**5 ottobre**. ⚠ **I servizi Google sono stati classificati in due modi nella stessa
+sessione**, e la riconciliazione che ha proposto — ricodificarli come `C10`/`C11` —
+**non l'ha decisa.**
+
+### 🟢 Note di credito e correzione incassi: ora Fase 2 confermata dal cliente
+
+Il record del 25/09 le dava come **decisione ROMI, non confermata**. Fabrizio
+Paganelli ha confermato entrambe di persona: _"rimandiamo sia al tema della nota di
+credito che questo qui alla fase due."_ Le sue motivazioni sono nuove — volumi bassi e
+🔑 **su Mexal la nota di credito non ha un ordine sottostante**, quindi è doppio
+inserimento manuale su entrambi i sistemi. ⚠ **Ha chiesto che sia verificato e nessuno
+è stato incaricato.** 🟢 La Fase 2 sarà rilasciata in modo incrementale, con priorità
+interne; la Fase 1 no, perché tutte le strutture devono esistere per accogliere la
+migrazione. 🔴 **Ha chiesto in quali mesi cada la Fase 2 e non ha avuto risposta.**
+([OI-157](../notes/items/OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md))
+
+### 🔑 Permessi: la prima dichiarazione del cliente
+
+**`tutti vedono tutto` a livello di record**, confermato come modello operativo del
+cliente stesso — _"facciamo che al momento tutti vedono tutto e poi l'importante è che
+non tutti possano modificare tutto."_ **Lettura aperta, modifica ristretta.** 🔑 La sua
+motivazione è un episodio Zoho in cui una modifica di configurazione non annunciata
+**ha bloccato la sua fatturazione per giorni**, e vuole la configurazione riservata a
+persone nominate. 🟢 Forma concordata: **un profilo più permission set, senza gerarchia
+di ruoli** — che supera i quattro profili dedotti da ROMI dall'organigramma. 🔴 **Quali
+funzioni riceveranno un permesso ad hoc è rinviato a dopo l'UAT**, cioè dopo
+l'approvazione del 13/10. 🔴 **La lista utenti era l'altro scopo della sessione e non è
+mai emersa.**
+([OI-186](../notes/items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md))
+
+### Altri movimenti
+
+- 🟢 **`rifiutato` è risolto:** lo stato resta `Rifiutato`, la motivazione diventa
+  **`sostituito da altro preventivo`**. Confermato anche: si può lavorare su più
+  preventivi in parallelo, e uno può essere modificato e reso principale invece di
+  essere sostituito.
+  ([OI-59](../notes/items/OI-59%20Quote%20workflow%20configuration.md))
+- 🟢 **Le credenziali DocuSign sono arrivate alle 10:27Z**, sollecitate da Fabrizio
+  Paganelli stesso entro l'ora. 🔴 Inviate in chiaro nel corpo della mail — **i valori
+  non sono riportati in nessun punto di questo repository**. 🔴 La Named Credential in
+  Prod punta ancora a `demo.docusign.net`.
+  ([OI-111](../notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md))
+- 🟢 **La generazione del QR è stata costruita** (`AssetQrService`,
+  `BarcodeGenerator`, `TicketQrImage`, Rexhina Hysi) ed è arrivata su `DevMain` con la
+  PR #63. 🔴 **La rigenerazione da cambio nominativo no**, e l'UAT biglietti è il
+  **30/09**.
+  ([OI-185](../notes/items/OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md))
+- 🔑 **Infopoint è confermata in Fase 2** e nominata per la prima volta; resta valido
+  il disegno *la scansione aggiorna Salesforce via API*. `TicketQrLookupService.cls`
+  (317 righe) esiste su `DevMain_exposeEndpoint`, **non su `DevMain` e senza PR**.
+  ([OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md))
+- 🔑 **Ora una data di PROD sostiene l'UAT marketing: 12/10.** ⚠ E PROD è già avvenuto
+  — `DevMain` è stato deployato in Produzione il **28/09 alle 11:28Z** — ma l'org non
+  è utilizzabile così com'è (nessuna assegnazione di permission set, nessuna riga di
+  configurazione integrazioni, DocuSign ancora sull'host demo). ⚠ **Elena Spini non è
+  stata informata**, e pianifica sul 12/10.
+  ([OI-177](../notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md))
+- 🟢🔑 **`#tproj-pienissimo` esiste** — `C0B5T3RB4FM`. Tre run precedenti lo davano per
+  inesistente perché `slack_search_channels` non lo trova; la ricerca sui messaggi e
+  una lettura diretta sì. Vedi
+  [la nota sul canale](../notes/The%20Pienissimo%20Slack%20channel%20and%20its%20id.md).
+
+### Date
+
+**30/09** UAT biglietti, campagne ed eventi · **02/10** WooCommerce e Bundle, poi test
+tecnico WooCommerce · **05/10** Performance Plus e date di pagamento · **06/10**
+integrazione Mexal ↔ Salesforce · **16/10** flussi marketing, con obiettivo PROD entro
+il 12/10 · approvazione attesa entro il **13/10** · go-live **21/10** · Zoho dismesso
+il **31/10**. Stima di Elena Spini: **circa 27 giornate a finire**.
+
+🔴 **Pienissimo è irraggiungibile il 29/09** — il loro evento aziendale più importante
+dell'anno. ⚠ Un DM Slack alle 13:01 dice _"Fabrizio ha confermato per domani
+mattina"_, **in contraddizione con quanto ha detto nella call registrata**. Irrisolto.
+
+### Avvertenze
+
+L'org **non è stata aperta**: ogni affermazione su cosa è costruito è aritmetica di
+repository contro `DevMain` a `55101d2`, e `STATUS.md` non è stato rigenerato, quindi
+il mirror Notion resta obsoleto. **Nessun test Apex è stato scritto, proposto o
+abbozzato.** ⚠ **Il §47 (24/09) di questo documento è ancora mancante — quarta
+segnalazione.**
+
+---
+
+## 51. Aggiornamento 29/09/2026 — un requisito dimenticato riemerge alla vigilia del suo UAT, e `Firmato` finalmente arriva
+
+Sweep notturno, watermark **28/09/2026 22:00Z**. Il cliente è stato irraggiungibile
+tutto il giorno — il loro evento aziendale più importante dell'anno — quindi quanto
+segue è interamente interno a ROMI. Una sessione interna analizzata, 56m06s.
+
+### 🔴 Il biglietto è un documento, e il record se n'era dimenticato
+
+Alla **[sessione MKT pre-UAT del 29/09](../notes/meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)**
+(09:31 CEST, Aurel Mrruku · Elena Spini · Fabrizio Mastracci) è stato aperto a
+schermo l'artefatto che il partecipante riceve davvero:
+`Pienissimo_Scheda di Partecipazione ai corsi_da firmare.pdf`, **consegnato dal
+cliente il 26 giugno 2026** — un documento multipagina con il QR code, i campi
+dinamici di evento e partecipante e _"i Documenti di Iscrizione al corso che sono 7
+pagine da consegnare al personale al check-in"_.
+
+Il record ha sempre trattato l'artefatto come un QR code, e così anche il
+responsabile tecnico: _"Serviva solo il QR Code per scaneggiare col palmare."_ Elena
+Spini l'ha corretto assumendosi l'omissione — _"Questa è la base di tutto questo
+progetto, va fatto, non è una scelta, purtroppo, perché noi l'abbiamo dimenticato."_
+Il file era stato visto una volta, nello sweep del 14 agosto, e mai trasformato in
+una nota. 🟢 La firma DocuSign è stata abbandonata; il documento no.
+🔴 **L'UAT biglietti è il 30/09.** Previsione dello stesso Aurel Mrruku: _"col
+cavolo che riusciamo domani. Andrà male anche domani."_
+([#194](open-items.it.md))
+
+### 🔴 WhatsApp implica una community mobile mai progettata
+
+Leggendo il template WhatsApp del cliente, Aurel Mrruku ne ha tratto la conseguenza:
+_"Di WhatsApp vuol dire che devono aprire la community da mobile. Noi non abbiamo
+mai parlato di mobile fino adesso."_ I componenti custom della community **non hanno
+mockup mobile né specifica responsive**, e il pulsante di rinuncia, quello di
+conferma e il form partecipanti non sono mai stati aperti da telefono. Il canale era
+documentato nel recap del cliente del 20 agosto; **la conseguenza mobile non era mai
+stata tratta.** ⚠ Anche i template WhatsApp restano da realizzare.
+([#195](open-items.it.md))
+
+### 🔴 La regola di invio contraddice il documento di funnel del cliente
+
+Concordato internamente: i biglietti partono **solo** a nominativi completi. Il
+`SEGMENTI FUNNEL BIGLIETTI.docx` del cliente dice che chi ne compila uno su tre
+**esce dal funnel** e non viene più sollecitato. Quindi quell'acquirente non viene
+sollecitato e non riceve mai nulla. Nessuno dei due ha richiamato il documento.
+Elena Spini l'ha messo all'ordine del giorno del **30/09** con il cliente.
+([#196](open-items.it.md))
+
+### 🟢 Cosa è stato rilasciato
+
+- 🔑 **`Firmato` è in `force-app`**, cinque segnalazioni dopo l'accordo. `f53016d`
+  (Anita Aga) lo aggiunge a `QuoteStatus` e riscrive la logica in
+  `QuoteTriggerHandler`, `DocuSignQuoteEnvelopeService` e
+  `QuoteAcceptanceController`; su `DevMain` alle 17:49 CEST con la PR #68.
+  Verificato come sorgente, non come comportamento.
+- 🔑 **Costruito lo stack del documento partecipante e diagnosticato un bug reale.**
+  Un job in sandbox è fallito alle 11:20Z generando PDF da 789 byte; la causa è
+  l'**utente guest del sito**, che non può renderizzare una pagina Visualforce.
+  Ricostruito come platform event gestito da un utente interno, con 10 Asset → 10
+  PDF in ~13 s. 🔴 **Tre dei quattro commit sono su `DevMain_exposeEndpoint` senza
+  PR**, la sera prima dell'UAT che ne ha bisogno.
+- 🟢 **Una via d'uscita datata dal blocco dei test marketing.** Marketing Cloud non
+  è installabile in sandbox UAT: è il meccanismo dietro una riga aperta da cinque
+  settimane. Aurel Mrruku porterà oggetti e record di test puliti **in produzione
+  entro lunedì 5 ottobre**, con una sessione già fissata per verificarlo lì.
+
+### 🔴 Invariato e attivo
+
+La **mappatura edizione continua a lanciare eccezione**: errore in sandbox alle
+08:59Z, `Nessuna mappatura edizione trovata per il prodotto PIENISSIMO LIVE LIVE`.
+Terza occorrenza, mappatura ferma a **13 su 51**, UAT biglietti domani.
+
+### Avvertenze
+
+L'org **non è stata aperta**; ogni affermazione sulla build è aritmetica di
+repository su `DevMain` a `4c9b121`. `STATUS.md` non è stato rigenerato, quindi il
+mirror Notion resta obsoleto. **Nessuna classe di test Apex è stata scritta,
+proposta o predisposta** — un fallimento confermato in `TestDataFactory.cls:257` è
+solo registrato.
+⚠ **Il §47 (24/09) di questo documento è ancora mancante — quinta segnalazione.**

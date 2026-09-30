@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-07
-updated: 2026-09-08
+updated: 2026-09-29
 depends_on: [OI-78]
 requirement: BIG-06
 source: notes/meetings/2026-09-07 Interna Flussi MKT.md
@@ -99,3 +99,20 @@ declined to invent a field name, and so does this row.
 
 ⚠ It interacts with the tag scheme: `<EVENT>_I` is set **per contact on first
 completion**, which is the same aggregate seen from the marketing side.
+
+## 2026-09-29 — the send rule was designed without this row in the room
+
+At [the pre-UAT marketing session](../meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+Aurel Mrruku and Fabrizio Mastracci agreed tickets are sent **only when every
+participant is named** — and neither raised the client's own exit rule quoted above,
+which says a buyer who completes one of three leaves the funnel.
+
+🔴 So the two documents now disagree about the same buyer: the client's says stop
+chasing them, the 29/09 design says send them nothing. Split out as
+[OI-196](OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)
+and put on the **30/09** client agenda.
+
+⚠ **This row is still unowned and unbuilt.** No completeness flag exists on `Asset`
+or on `Event_Invitation__c` in `force-app` at `4c9b121`, and the aggregate the
+segment actually needs — tickets held versus tickets completed, per contact per
+campaign — has still not been chosen or placed.
