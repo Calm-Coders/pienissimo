@@ -1,12 +1,12 @@
 ---
 id: OI-196
 type: open-item
-status: open
+status: resolved
 owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-29
-updated: 2026-09-29
+updated: 2026-09-30
 depends_on: [OI-126, OI-127, OI-78]
 blocks: [OI-194]
 requirement: BIG-06
@@ -99,3 +99,54 @@ tutte le cose più complicate."_
 
 ⚠ Elena Spini also proposed sending the client the full question list by mail
 afterwards. Not confirmed sent.
+
+## 🟢 2026-09-30 — resolved by the client, against the 29/09 design
+
+**The client ruled the opposite of what ROMI agreed internally the day before:
+the named tickets are sent, and the unnamed ones are burned.** At
+[the 30/09 ticket UAT](../meetings/2026-09-30%20UAT%20Biglietti%20Asset%20Campagne%20ed%20Eventi.md)
+(`01:02:22`–`01:03:48`), with Fabrizio Paganelli, Rebecca Marmo, Sabatino Rinaldi
+and Elisa Migliano present.
+
+Fabrizio Paganelli, on the exact five-tickets-three-named case this note was
+opened for:
+
+> _"il cliente ha comprato cinque biglietti, li ha già pagati tutti, però non ha
+> le persone per venire. È chiaro che lo nomina, i biglietti vengono nominati solo
+> per i tre che parteciperanno, gli altri due glieli bruceremo."_
+
+Rebecca Marmo added that the unnamed two **stay `Disponibile`** so a buyer who
+changes their mind can still use them. The consensus recorded in the session
+notes: compiled tickets are sent **within a few hours**, unnamed ones remain
+available and are burned close to the event if unused.
+
+🔑 **The premise of the 29/09 design was also wrong.** The all-or-nothing rule was
+justified by an indiscriminate daily reminder that does not exist. Rebecca Marmo,
+who runs the sends:
+
+> _"in realtà non continuo a ricevere comunicazioni di nominare anche gli altri
+> due, perché io controllo anche se ha già effettuato delle iscrizioni"_ ·
+> _"metto un ritardo orario che decido io di 2 5 7 8 10 giorni"_
+
+Fabrizio Paganelli translated it for the room: the send is _"tra virgolette
+manuale"_ — automated, but launched on a chosen day and stepped up near the event,
+**not fired daily by date**.
+
+**So the client's own written exit rule wins**, exactly as this note argued:
+`SEGMENTI FUNNEL BIGLIETTI.docx` and Fabrizio Mastracci's 20/08 recap were right
+and the 29/09 room was wrong. Neither of the two proposals recorded above was
+needed — no deadline rule, no final-warning mail, no re-entry guard.
+
+🟢 **The linked rinuncia question is settled too.** Sabatino Rinaldi, `01:44:11`:
+_"lasciamolo lì e nel momento in cui lui nomina almeno un biglietto, quel tasto
+sparisce e abbiam finito."_ The button stays visible until the first nomination,
+then disappears — which is Elena Spini's _"always available"_ position **only up
+to the first name**, and removes Aurel Mrruku's asset-status-history objection,
+because a partially-named order can no longer be renounced at all.
+
+⚠ **This ruling is what the build now has to follow, and the build does not.** The
+trigger becomes **at least one** confirmed participant, not all — carried into
+[OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md).
+Elena Spini owns configuring the button visibility; her action item has no date.
+
+**Resolved on the rule. The build is [OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md).**

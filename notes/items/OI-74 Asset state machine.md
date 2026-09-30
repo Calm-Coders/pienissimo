@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-25
+updated: 2026-09-30
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-17
@@ -214,3 +214,49 @@ what the transition does on the way through.
 
 🔴 **Not built, and the ticket UAT is 30/09.** See OI-185 for the open questions,
 including the marketing re-send that cannot distinguish the new ticket from the old.
+
+## 🔑 2026-09-30 — an eighth state, `Inviato`, and the tranche-level rule confirmed by the client
+
+Two additions from the 30/09 pair of sessions.
+
+**1. `Inviato` is agreed.** At [the Post UAT](../meetings/2026-09-30%20Post%20UAT.md)
+(`01:10:37`) Elena Spini and Aurel Mrruku settled the state list for the send
+path: **`Assegnato` when the names are entered, `Inviato` after the communication
+has actually gone out**, written by the marketing flow. Aurel Mrruku required that
+`Inviato` be set **as soon as the record is modified**, not on a later pass;
+Fabrizio Mastracci confirmed the technical link to the Contact object
+(`01:11:58`).
+
+🔴 **It does not exist.** `AssetStatus.standardValueSet` at `DevMain` `0b6b828`
+carries seven values — `Ordinato · Disponibile · Rinuncia · Assegnato ·
+Utilizzato · Non utilizzato · Annullato`. This would be the eighth, and the
+migration this note has deferred since August is now one value larger.
+→ [OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md)
+
+**2. `Disponibile` is confirmed as tranche-level, by the client, as a directive.**
+Fabrizio Paganelli at [the UAT](../meetings/2026-09-30%20UAT%20Biglietti%20Asset%20Campagne%20ed%20Eventi.md)
+(`01:29:09`, `01:30:33`): the state is set _"solo ed esclusivamente quando la
+fattura collegata quella tranche è stata integralmente pagata"_, and within a
+bundle order the tickets of one tranche become available independently of the
+rest. Aurel Mrruku and Elena Spini confirmed marketing processes **only**
+`Disponibile` assets (`00:59:52`).
+
+🟢 That matches the diagram's annotation _"Fattura pagata - a livello di
+tranche/rate"_ and [OI-75](OI-75%20Ticket%20availability%20rule.md) exactly — the
+August reading is vindicated by the client in his own words. 🔴 **But there is no
+field on `Asset` naming the tranche**, so the state cannot be computed as
+specified — [OI-198](OI-198%20The%20asset%20does%20not%20say%20which%20tranche%20paid%20for%20it.md).
+
+**3. ⚠ The `Rinuncia` question is still open.** The 30/09 UAT settled the
+**rinuncia button's visibility** — Sabatino Rinaldi, `01:44:11`: _"nel momento in
+cui lui nomina almeno un biglietto, quel tasto sparisce"_ — and that is a UI rule,
+not a picklist ruling. Nobody asked whether `Rinuncia` is an Asset state, a
+synonym for `Annullato`, or a marketing tag. **The one-sentence ask this note has
+carried since 19 August went unasked in a room containing both Elena Spini and
+Sabatino Rinaldi.**
+
+🟢 **A related procedure did arrive:** on a signed-but-unpaid quote later
+withdrawn, Fabrizio Paganelli's route is a **credit note plus a dedicated
+cancelled state on the asset** for traceability (`01:52:25`) — consistent with
+`Annullato`'s recorded credit-note trigger. See
+[OI-157](OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md).

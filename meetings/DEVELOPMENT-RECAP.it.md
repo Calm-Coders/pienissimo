@@ -5587,3 +5587,119 @@ mirror Notion resta obsoleto. **Nessuna classe di test Apex è stata scritta,
 proposta o predisposta** — un fallimento confermato in `TestDataFactory.cls:257` è
 solo registrato.
 ⚠ **Il §47 (24/09) di questo documento è ancora mancante — quinta segnalazione.**
+
+## 52. Aggiornamento 30/09/2026 — l'UAT biglietti si è svolto, e il cliente ha ribaltato due decisioni che ROMI aveva già preso
+
+Requirements-check notturno, watermark 30/09/2026 (2026-09-29T22:00Z). **Il contatto
+con il cliente è ripreso** dopo il blackout del 29/09. Due sessioni, entrambe
+analizzate integralmente dalle trascrizioni su Drive.
+
+### 🔑 L'UAT biglietti, ore 14:00 CEST, ~1h55m
+
+Aurel Mrruku, Elena Spini e Fabrizio Mastracci per ROMI; **Fabrizio Paganelli,
+Rebecca Marmo, Sabatino Rinaldi ed Elisa Migliano** per Pienissimo. Perimetro: il
+backend a monte del flusso di marketing — il flusso di marketing vero e proprio è
+stato ancora rinviato.
+
+**Ne sono uscite cinque decisioni.**
+
+1. 🔑 **Il vincolo di pagamento è diventato una direttiva del cliente, a livello di
+   tranche.** Nessun biglietto, codice QR o richiesta di nomina può partire se la
+   fattura di **quella tranche** non è stata integralmente pagata e incassata.
+   Fabrizio Paganelli ne ha tratto lui stesso la conseguenza sui bundle: i biglietti
+   dentro un ordine bundle si rendono disponibili per tranche, non a saldo
+   dell'intero ordine, _"sennò agli eventi non viene nessuno."_ Il marketing elabora
+   solo gli asset in `Disponibile`, cioè la fattura saldata a livello di tranche.
+2. 🟢 **La regola del tutto-o-niente è superata.** Il 29/09 ROMI aveva concordato
+   internamente che i biglietti partono solo a conferma di tutti i partecipanti. Il
+   cliente ha deciso il contrario: chi ne nomina tre su cinque **riceve i tre**, e i
+   due non nominati restano `Disponibile` fino a essere bruciati a ridosso
+   dell'evento. **Anche la premessa del progetto ROMI era falsa** — il sollecito
+   quotidiano indiscriminato contro cui era stato costruito non esiste; Rebecca
+   Marmo gestisce la scaletta con ritardi configurati e verifica già le iscrizioni
+   parziali. La regola di uscita dal funnel scritta dal cliente, che la riunione del
+   29/09 non ha mai richiamato, risulta corretta.
+3. 🔴 **La finestra della tabella di mappatura passa alle date di competenza** — e
+   con essa, un ordine non può più ricadere su due edizioni. Aurel Mrruku ne ha
+   dichiarato il costo in riunione e Fabrizio Paganelli lo ha accettato: _"Ma infatti
+   deve essere così."_ **Questo ribalta la risoluzione per riga d'ordine che lui
+   stesso aveva confermato il 26 agosto**, e nessuno dei due ha rilevato il
+   ribaltamento. Stimato in mezza giornata; non sviluppato; la mappatura è ancora a
+   **13 su 51**.
+4. 🟢 **Gerarchia delle campagne confermata come costruita** — campagna di tipo
+   evento padre, tipo edizione figlia, esercitata dal vivo con date di competenza,
+   date evento, anno accademico, luogo e data di avvio della comunicazione
+   marketing.
+5. 🟢 **Il pulsante di rinuncia scompare dopo la prima nomina.** È una regola di
+   interfaccia, non una decisione sul picklist — se `Rinuncia` sia uno stato
+   dell'Asset resta la domanda aperta dal 19 agosto, e non è stata posta in una
+   stanza che conteneva entrambe le persone in grado di rispondere.
+
+Inoltre: i **preventivi firmati e non pagati** ottengono una procedura (fattura
+emessa alla firma indipendentemente dall'incasso; in caso di rinuncia concordata,
+nota di credito e stato asset dedicato di annullamento), e i **pagamenti
+dell'ultimo minuto** una proposta di meccanismo (tag su Salesforce gestiti da job
+notturni, con forzatura manuale) che **nessuno è stato incaricato di realizzare**.
+
+### 🔑 Il Post UAT, ore 16:09 CEST, ~1h23m, interno ROMI
+
+Convocato dieci minuti dopo l'uscita del cliente, nelle parole di Elena Spini perché
+_"è esploso il mondo su sto flusso che coinvolge anche MKT."_ Ha definito l'intero
+contratto di invio Salesforce→Marketing Cloud:
+
+- un **flag booleano** portato a `true` alla conferma di **almeno un** partecipante;
+- una **query di Marketing Cloud** su quel flag;
+- un **invio transazionale per singolo partecipante**, ciascuno al proprio
+  indirizzo, immediato e non notturno — l'elaborazione batch è stata esplicitamente
+  eliminata;
+- una **riscrittura post-invio** sull'asset per impedire i reinvii;
+- un ottavo stato asset, **`Inviato`**, scritto appena il record cambia;
+- e una pagina partecipanti che mostra **tutte le tranche pagate insieme**, non una.
+
+🔴 **Nulla di tutto questo esiste.** Su `DevMain` `0b6b828` `AssetStatus` porta sette
+valori e `Inviato` non è tra questi; `Asset` non ha flag di invio, né data di invio,
+né **alcun campo che nomini la propria tranche** — `Fattura_Pagata__c` è una semplice
+casella di controllo, quindi un asset di bundle non può distinguere la propria rata
+da un'altra. Aurel Mrruku deve a Fabrizio Mastracci la specifica del campo e
+**nessuna delle due azioni ha una data**, contro un **rilascio in produzione
+impegnato per lunedì 5 ottobre** e l'UAT marketing del **16 ottobre**. Il lato in
+lettura è rinviato esplicitamente: i criteri di filtraggio dei biglietti pagati sono
+l'unico punto classificato come _Da approfondire_, in attesa di un documento di
+flusso che deve Elena Spini.
+
+### 🟢 Cosa si è mosso nel repository
+
+`DevMain` è passato da `4c9b121` a **`0b6b828`** con le PR #69, #70 e #71. **Lo stack
+del documento partecipante è arrivato su `DevMain`** — `e2bdb1f`, `1e1ab6d` e
+`963e582` sono ora antenati della head, verificato per ascendenza e non dal messaggio
+di commit, chiudendo il 🔴 sollevato dal recap del 29/09. 🔴 **Il cambio nominativo
+resta non sviluppato, e non è stato discusso in nessuna delle due sessioni.**
+
+### 🟢 Una lacuna di provenienza chiusa dopo settimane
+
+**L'indicazione dei ~60 giorni prima è di Sabatino Rinaldi, dal kickoff del 27
+maggio** — riletta dagli appunti dello stesso Aurel Mrruku. Cade l'avvertenza che
+quella cifra fosse stata scelta da ROMI per il cliente.
+
+### 🔴 Invariato e attivo
+
+- **Gli eventi su più giorni restano indecisi, e il primo ha ora una data.**
+  Pienissimo Live si tiene **dal 24 al 26 novembre** con un unico check-in; la
+  Mastery si divide tra aprile e maggio e il suo biglietto richiede più ingressi.
+  Rinviato senza data.
+- ⚠ **I due punti bloccanti sollevati la notte precedente — il documento di
+  partecipazione di sette pagine e la community mobile — non sono stati discussi in
+  nessuna delle due sessioni.** Il documento di partecipazione era la ragione per cui
+  il sweep del 29/09 aveva dato questo UAT a rischio, e l'UAT si è svolto senza.
+- L'**eccezione sulla mappatura edizione** del 29/09 non è mai stata menzionata in
+  riunione.
+
+### Avvertenze
+
+L'org **non è stata aperta**; ogni affermazione sullo sviluppo è aritmetica sul
+repository contro `DevMain` `0b6b828`. `STATUS.md` non è stato rigenerato, quindi il
+mirror Notion resta obsoleto. **Nessuna classe di test Apex è stata scritta, proposta
+o predisposta.** Vale la pena conservare anche l'ammissione di Aurel Mrruku: i test
+UAT sono stati fatti _"troppo tardi rispetto ai test con i clienti"_, e ha terminato
+la generazione dei biglietti alle **4:00** del mattino precedente. ⚠ **Il §47
+(24/09) di questo documento è ancora mancante — sesta segnalazione.**

@@ -10,6 +10,50 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-09-30 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark **2026-09-29T22:00Z**.
+  Drilled **two sessions in full** — the client ticket UAT (127,631 chars) and the
+  ROMI-internal Post UAT (89,015 chars). Wrote both meeting notes, created **OI-197**
+  and **OI-198**, resolved **OI-196**, and updated OI-74, OI-81, OI-96, OI-126, OI-146,
+  OI-157, OI-177, OI-184, OI-185, OI-188. MAP, INDEX, both trackers and both recaps
+  (§52) regenerated. Trace note written.
+- **State:** `DevMain` at **`0b6b828`**. **Client contact resumed** and the ticket UAT
+  ran with five Pienissimo people. **Two ROMI decisions were reversed by the client:**
+  the 29/09 all-or-nothing ticket send (partial naming now sends the named tickets), and
+  the per-order-line edition resolution (the mapping window becomes the competenza
+  dates, so one order can no longer span editions — reversing Fabrizio Paganelli's own
+  26/08 ruling). The Post UAT specified the entire Salesforce→Marketing Cloud send
+  contract and **none of it is built**. The participant-document stack **did** reach
+  `DevMain` via PRs #69/#71.
+- **Next:** (1) **diff `4f672a2`** on `DevAnita30` — it adds a *custom metadata type*,
+  which is the open shape question on OI-96, and it is unmerged. (2) Watch for **Elena
+  Spini's written flow document**; OI-197's read side is blocked on it. (3) Ask whether
+  **`Articoli Salesforce.xlsx`** (moved 12:45Z 30/09, not opened) now carries the Plus
+  codes with a tranche count — OI-188, UAT 05/10. (4) **Monday 05/10** is the committed
+  production release and the date to verify.
+- **Watch:**
+  - 🔴 **OI-194 and OI-195 — both gating, both raised on 29/09 — were not discussed at
+    either 30/09 session.** Verified by reading both transcripts in full. The
+    participation document was the stated reason the UAT was at risk, and it never came
+    up. Do not let a third day pass silently.
+  - 🔴 **The register was NOT amended** and stays at v1.6. Four client-agreed changes are
+    flagged into **OI-184** for the UAT-close review, per its own mechanism. `Inviato`
+    is deliberately **excluded** — it is ROMI-internal, and `BIG-17` already carries the
+    precedent refusing the unminuted seventh `Rinuncia` box. Do not add it from a sweep.
+  - ⚠ **`Rinuncia`-as-an-Asset-state is still unruled** after 6 weeks. The 30/09 UAT
+    settled the *button*, not the picklist, in a room containing both Elena Spini and
+    Sabatino Rinaldi. The one-sentence ask went unasked again.
+  - ⚠ **The tranche payment gate will first be tested against invoices Aurel Mrruku
+    forces by hand**, not against Mexal. Do not read a passing test as an integrated one.
+  - ⚠ **Fathom has returned nothing for seven consecutive runs.** Both real sessions of
+    today exist only as Google Meet artifacts. Treat Fathom silence as a tooling fact,
+    not as a quiet project.
+  - ⚠ The clone opened on **`main` only** for the fourth run running. `git fetch origin`
+    and `git checkout -b DevMain origin/DevMain` recovers it.
+
+---
+
 ## 2026-09-29 — claude — nightly requirements-check: a forgotten requirement, and `Firmato` shipped
 
 - **Watermark:** 2026-09-28T22:00Z → **2026-09-29T22:00Z**. One day, no gap.

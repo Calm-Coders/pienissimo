@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-09-29
+updated: 2026-09-30
 blocks: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-06
@@ -278,3 +278,41 @@ the build.
 🔴 **Flow 1's reminder ladder is where WhatsApp bites.** Up to 10–11 communications
 at WhatsApp rates is the reason Fabrizio Mastracci wants the channel delivered dark
 — see [OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md).
+
+## 🟢 2026-09-30 — the 60-day figure finally has an author, and the send becomes transactional
+
+**Two things this row has carried without provenance are now sourced.**
+
+🔑 **The ~60-days-before instruction is Sabatino Rinaldi's, from the 27 May
+kickoff.** At [the Post UAT](../meetings/2026-09-30%20Post%20UAT.md) (`00:37:26`,
+`00:49:36`) Aurel Mrruku read his own kickoff notes back to settle a discrepancy
+about when the nomination link goes out. This answers the warning this row has
+carried since 07/09 — that the single figure was **ROMI choosing for the client**.
+It was not: it was the client's project lead, at the first meeting, and the date
+_"può variare in base all'evento e al calendario festivo"_.
+
+🟢 **Elena Spini added the operational half:** **Rebecca Marmo runs the
+campaigns**, and repeated sends close to the event are needed to catch late
+purchases (`00:38:45`) — which the client corroborated independently at the UAT,
+where Fabrizio Paganelli described the send as _"tra virgolette manuale"_,
+launched on a chosen day and stepped up near the event.
+
+🔑 **The ticket send itself is now transactional, not scheduled.** Elena Spini
+raised Marketing Cloud credit cost; Fabrizio Mastracci answered that a QR ticket
+needs no branching logic and is sent as soon as a record is updated with the send
+flag; the room agreed and **dropped the nightly batch**
+(`01:14:05`–`01:16:02`). So the funnel now has two different timing regimes: the
+**nomination request** on the 60/30-day calendar, and the **ticket delivery**
+immediately on confirmation.
+→ [OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md)
+
+🔑 **Each participant gets their own ticket at their own address** — Fabrizio
+Mastracci, `00:24:47` — consistent with the 29/09 ruling that the referente is not
+copied.
+
+🔴 **Late purchases get a mechanism, not a build.** Elisa Migliano reported clients
+paying the day before an event; Sabatino Rinaldi proposed **Salesforce tags
+maintained by nightly asynchronous jobs**, with a **manual override** of the tag
+for purchases right against the event (UAT `01:23:50`, `01:27:02`). Aurel Mrruku
+confirmed feasibility and flagged the complexity of tranches, invoices and
+Marketing Cloud tracking. **Nobody was assigned and no date was set.**

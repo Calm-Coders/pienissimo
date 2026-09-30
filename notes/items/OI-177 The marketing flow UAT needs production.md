@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-09-29
+updated: 2026-09-30
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -192,3 +192,26 @@ reversed after the 28/09 Prod deploy made the structures available. Four days.
 [OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
 (WhatsApp implies a mobile community nobody designed). ⚠ The **WhatsApp templates
 are still not built** — Fabrizio Mastracci, asked directly: _"non ho ancora fatto."_
+
+## 🟢 2026-09-30 — the Monday production release was committed a second time, in a second session
+
+Fabrizio Mastracci asked for timing at [the Post UAT](../meetings/2026-09-30%20Post%20UAT.md)
+(`01:03:47`) and Aurel Mrruku confirmed **the structures and the data will be in
+production for Monday** — 05/10, the date this row already carried from the 29/09
+MKT DM, now committed in a recorded session with the marketing owner present.
+
+`PIENISSIMO - Interna Check PROD per MKT` stays booked **Mon 05/10 09:30–10:30
+CEST** (Aurel Mrruku + Fabrizio Mastracci).
+
+🔴 **What has to be in that release grew on 30/09.** The Post UAT specified a send
+contract whose Salesforce half does not exist — a boolean send flag, a paid-tranche
+field on the asset, and an eighth asset state `Inviato`
+([OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md),
+[OI-198](OI-198%20The%20asset%20does%20not%20say%20which%20tranche%20paid%20for%20it.md)).
+Marketing cannot be configured against structures that are not there, and
+**marketing UAT is 16/10**.
+
+⚠ **The invoicing half will be simulated.** Aurel Mrruku will **force invoices
+manually and simulate their payment** to test the billing path (`01:22:43`), so the
+tranche payment gate that the whole send now depends on will first be exercised
+against forced data rather than against Mexal.

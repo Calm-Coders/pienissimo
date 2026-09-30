@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: Pienissimo
 raised: 2026-09-28
-updated: 2026-09-28
+updated: 2026-09-30
 depends_on: [OI-98]
 blocks: [OI-141, OI-168]
 severity: gating
@@ -108,3 +108,24 @@ answer.
 - ⚠ **No register row covers the categorisation.** It is a mechanism the client
   confirmed, not a requirement anyone has written; allocating a requirement id is
   not a sweep's call.
+
+## ⚠ 2026-09-30 - `Articoli Salesforce.xlsx` moved 75 minutes before the ticket UAT
+
+Fabrizio Paganelli's article workbook (Drive `17pyx0xRtRY7vWXjN5oddAs52XWvkbM7p`,
+owner `fabrizio.pienissimo@gmail.com`) was **modified at 12:45:55Z on 30/09**, having
+been unchanged since 28/09 08:51Z. **Not opened** — it carries article-code values and
+probably catalogue prices, so per `docs/publishing.md` its movement is recorded and
+nothing from it is copied.
+
+⚠ **Whether this is the new Plus codes carrying a tranche count is unknown.** That is
+what this row is waiting for, it is what Fabrizio Paganelli could not produce on 28/09
+_"non penso di farcela oggi"_, and **he gave no date**. The workbook moved on the day
+of the ticket UAT, not the Performance Plus UAT, and **the article codes were not
+discussed at either 30/09 session** — the UAT read this same workbook live on 28/09,
+but on 30/09 the product conversation was about mapping products to editions, not
+about creating codes.
+
+🔴 **Performance Plus UAT is 05/10.** A human opening this file would settle in one
+minute whether the codes now exist. ⚠ Separately, **Elena Spini owes Aurel Mrruku
+the updated product list** for database cleanup, taken as an action item at the 30/09
+UAT with no date — a second, overlapping route to the same information.

@@ -2,9 +2,66 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-29 (nightly sweep - a forgotten requirement surfaced the day before its UAT, and `Firmato` shipped) · Source of record: [notes/](notes/)
+Last updated: 2026-09-30 (nightly sweep - the ticket UAT ran, the client reversed two ROMI rulings, and the send contract was specified but not built) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🔑 **2026-09-30 — the ticket UAT ran with the client in the room, and it reversed two things ROMI
+  had already decided.** Nightly sweep, watermark 2026-09-29T22:00Z. **Client contact resumed** after
+  the 29/09 blackout: eight speakers, five Pienissimo-side.
+  🔴🔑 **[UAT Biglietti Asset Campagne ed Eventi](notes/meetings/2026-09-30%20UAT%20Biglietti%20Asset%20Campagne%20ed%20Eventi.md)**
+  (14:00 CEST, ~1h55m, Aurel Mrruku · Elena Spini · Fabrizio Mastracci · **Fabrizio Paganelli ·
+  Rebecca Marmo · Sabatino Rinaldi · Elisa Migliano**). 🔑 **The payment gate is now a client
+  directive at tranche granularity**: no ticket, QR or nomination request may leave unless that
+  tranche's invoice is paid and collected — _"solo ed esclusivamente quando la fattura collegata
+  quella tranche è stata integralmente pagata"_ — and inside a bundle each event's tickets release
+  on their own tranche, _"sennò agli eventi non viene nessuno"_
+  ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md),
+  [OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md)).
+  🟢🔑 **[OI-196](notes/items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)
+  is resolved, against ROMI's own 29/09 design**: a buyer who names three of five **gets the three**,
+  the other two stay `Disponibile` and are burned near the event. The client's written funnel exit
+  rule wins, and the reminder ladder Rebecca Marmo actually runs **already checks partial
+  registrations** — the all-or-nothing rule was built on a premise that was false.
+  🔴🔑 **The mapping window becomes the competenza dates** and, as Aurel Mrruku said out loud,
+  _"non possiamo avere diversi biglietti su diverse edizioni sullo stesso ordine"_ — Fabrizio
+  Paganelli: _"Ma infatti deve essere così."_ **That reverses the per-order-line property he himself
+  confirmed on 26 August**, and neither man acknowledged it; costed at half a day, unbuilt, and the
+  mapping is still at **13 of 51**
+  ([OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)).
+  🔑 **[Post UAT](notes/meetings/2026-09-30%20Post%20UAT.md)** (16:09 CEST, ~1h23m, ROMI-internal,
+  called ten minutes after the client left because _"è esploso il mondo su sto flusso"_) specified the
+  whole Salesforce→Marketing Cloud send contract — a boolean flag on **at least one** confirmed
+  participant, a Marketing Cloud query on it, a **per-participant transactional** send, a post-send
+  write-back, and an eighth asset state **`Inviato`**. 🔴 **New:
+  [OI-197](notes/items/OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md)**
+  (gating) — **none of it exists** at `DevMain` `0b6b828`, Aurel Mrruku owes Fabrizio Mastracci the
+  spec with no date, and the paid-ticket filter is deferred pending a document Elena Spini owes.
+  🔴 **New: [OI-198](notes/items/OI-198%20The%20asset%20does%20not%20say%20which%20tranche%20paid%20for%20it.md)**
+  (gating) — the Asset has **no field naming its tranche**, so the client's own gate cannot be
+  computed; `Fattura_Pagata__c` is a bare checkbox. ⚠ And the gate will first be tested against
+  **invoices forced by hand**, not against Mexal.
+  🟢 **The document stack reached `DevMain`** — `e2bdb1f`, `1e1ab6d`, `963e582` merged via PRs #69
+  and #71, verified by ancestry, closing yesterday's 🔴
+  ([OI-185](notes/items/OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md)).
+  🔴 **The cambio nominativo is still unbuilt and was not discussed.**
+  🟢 **The 60-day send figure finally has an author** — Sabatino Rinaldi, at the **27 May kickoff**,
+  read back from Aurel Mrruku's own notes; the standing warning that ROMI chose it for the client is
+  withdrawn ([OI-81](notes/items/OI-81%20Event%20communication%20funnel.md)).
+  🔴 **Multi-day events are still undecided, and the first one is dated**: Pienissimo Live runs
+  **24–26 November** on a single check-in, Mastery splits across April and May and needs multiple
+  entries ([OI-146](notes/items/OI-146%20Ingressi%20structure%20for%20multi-day%20events.md)).
+  🟢 **Production by Mon 05/10 re-committed** with the marketing owner present
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+  ⚠🔑 **[OI-194](notes/items/OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)
+  and [OI-195](notes/items/OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+  — both gating, both raised last night — were not discussed at either session.** The participation
+  document was the reason yesterday's sweep called the UAT at risk, and the UAT came and went
+  without it.
+  ⚠ Aurel Mrruku, on his own process: the UAT tests ran _"troppo tardi rispetto ai test con i
+  clienti"_, and he finished ticket generation at **04:00** the previous morning.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **199**.
+  — [trace](notes/traces/Source%20trace%202026-09-30%20nightly.md)
 
 - 🔑 **2026-09-29 — the ticket turns out to be a document the record had forgotten, and `Firmato`
   finally reached `force-app`.** Nightly sweep, watermark 2026-09-28T22:00Z. **Pienissimo was
