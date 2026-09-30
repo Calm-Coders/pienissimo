@@ -30,6 +30,7 @@ public without sharing class AssetQrService {
 
     List<Asset> assetsToUpdate = new List<Asset>();
     List<ContentVersion> qrFiles = new List<ContentVersion>();
+    Set<Id> documentAssetIds = new Set<Id>();
 
     for (Asset assetRecord : [
       SELECT Id, ContactId, Campaign__c, QR_Id__c
@@ -56,6 +57,7 @@ public without sharing class AssetQrService {
             FirstPublishLocationId = assetRecord.Id
           )
         );
+        documentAssetIds.add(assetRecord.Id);
       }
     }
 
@@ -65,5 +67,8 @@ public without sharing class AssetQrService {
     if (!qrFiles.isEmpty()) {
       insert qrFiles;
     }
+    // Runs as the site guest user during registration, which cannot render
+    // the PDF: hand the work to the event subscriber's internal user.
+    ParticipantTicketDocumentRequests.publish(documentAssetIds);
   }
 }

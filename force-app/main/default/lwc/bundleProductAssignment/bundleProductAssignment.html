@@ -37,13 +37,19 @@
           <div class="totals">
             <div class="figures">
               <div class="figure">
-                <span class="figure-label">Prezzo prodotto bundle</span>
-                <lightning-formatted-number
+                <lightning-input
+                  data-id="bundle-price"
+                  type="number"
+                  label="Prezzo prodotto bundle"
                   value={fixedPrice}
-                  format-style="currency"
-                  currency-code="EUR"
-                  class="figure-value"
-                ></lightning-formatted-number>
+                  min="0"
+                  step="0.01"
+                  formatter="currency"
+                  required
+                  onchange={handleFixedPriceChange}
+                  oninput={handleFixedPriceChange}
+                  disabled={isLoading}
+                ></lightning-input>
               </div>
               <div class="figure">
                 <span class="figure-label">Prezzo listino</span>
@@ -335,10 +341,11 @@
                         type="number"
                         label="Sconto %"
                         value={row.discountPercent}
-                        min="0.01"
+                        min="0"
                         max="100"
                         step="0.01"
                         onchange={handlePendingChange}
+                        oninput={handlePendingChange}
                         disabled={row.discountDisabled}
                       ></lightning-input>
                       <lightning-input
@@ -352,6 +359,7 @@
                         step="0.01"
                         formatter="currency"
                         onchange={handlePendingChange}
+                        oninput={handlePendingChange}
                         disabled={isLoading}
                         field-level-help="Importo assegnato a tutte le unita di questa riga, non alla singola unita."
                       ></lightning-input>

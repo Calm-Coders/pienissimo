@@ -15,6 +15,26 @@
       </template>
     </div>
 
+    <template if:true={showKeyFields}>
+      <lightning-record-edit-form
+        object-api-name={leadObjectApiName}
+        record-id={recordId}
+      >
+        <div class="key-fields" aria-label="Campi principali della fase">
+          <template for:each={keyFields} for:item="field">
+            <lightning-input-field
+              key={field.fieldName}
+              class="key-field"
+              data-field-name={field.fieldName}
+              field-name={field.fieldName}
+              required={field.required}
+              onchange={handleKeyFieldChange}
+            ></lightning-input-field>
+          </template>
+        </div>
+      </lightning-record-edit-form>
+    </template>
+
     <div class="action-row">
       <p class={statusClass}>{statusText}</p>
       <lightning-button

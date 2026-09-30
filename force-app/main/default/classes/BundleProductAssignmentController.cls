@@ -310,6 +310,15 @@ public with sharing class BundleProductAssignmentController {
     if (bundleId == null) {
       throw new AuraHandledException('Missing bundle record id.');
     }
+    if (
+      fixedPrice == null ||
+      fixedPrice < 0 ||
+      fixedPrice != fixedPrice.setScale(2)
+    ) {
+      throw new AuraHandledException(
+        'Inserisci un prezzo bundle non negativo con massimo due decimali.'
+      );
+    }
     List<ComponentInput> components = new List<ComponentInput>();
     if (!String.isBlank(componentsJson)) {
       try {
@@ -347,6 +356,7 @@ public with sharing class BundleProductAssignmentController {
 
     List<BundleComponent__c> toUpsert = new List<BundleComponent__c>();
     Set<Id> keptIds = new Set<Id>();
+    Decimal submittedSpreadTotal = 0;
 
     for (ComponentInput input : components) {
       if (input == null) {
@@ -373,6 +383,7 @@ public with sharing class BundleProductAssignmentController {
           'Inserisci una quantita intera positiva e un importo non negativo con massimo due decimali.'
         );
       }
+      submittedSpreadTotal += spread;
       Id componentId = String.isBlank(input.id) ? null : (Id) input.id;
       Id productId = String.isBlank(input.productId)
         ? null
@@ -448,6 +459,12 @@ public with sharing class BundleProductAssignmentController {
       }
     }
 
+    if (submittedSpreadTotal != fixedPrice) {
+      throw new AuraHandledException(
+        'Il Totale assegnato deve essere uguale al Prezzo prodotto bundle prima di salvare.'
+      );
+    }
+
     List<BundleComponent__c> toDelete = new List<BundleComponent__c>();
     for (Id existingId : existingById.keySet()) {
       if (!keptIds.contains(existingId)) {
@@ -468,6 +485,7 @@ public with sharing class BundleProductAssignmentController {
     if (!toUpsert.isEmpty()) {
       upsert toUpsert;
     }
+    update new Product2(Id = bundleId, Bundle_Selling_Price__c = fixedPrice);
     return getBundleContext(bundleId);
   }
 

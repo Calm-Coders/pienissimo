@@ -254,12 +254,18 @@ export default class BundleProductAssignment extends LightningElement {
     this.savedRows = this.rows.map((row) => ({ ...row }));
     this.isDirty = false;
   }
+  handleFixedPriceChange(event) {
+    const value = event.target.value;
+    this.fixedPrice = value === "" || value == null ? null : Number(value);
+    this.isDirty = true;
+  }
   decorate(row) {
     const quantity = Number(row.quantity);
-    const spreadPrice = Number(row.spreadPrice);
+    const spreadPrice =
+      row.spreadPrice == null ? null : Number(row.spreadPrice);
     const lineListPrice = (Number(row.listPrice) || 0) * quantity;
     const discountPercent =
-      row.discountPercent == null && lineListPrice > 0
+      row.discountPercent == null && spreadPrice != null && lineListPrice > 0
         ? Math.round((1 - spreadPrice / lineListPrice) * 10000) / 100
         : row.discountPercent;
     return {
@@ -268,12 +274,15 @@ export default class BundleProductAssignment extends LightningElement {
       spreadPrice,
       discountPercent,
       lineListPrice,
-      unitSpread: quantity > 0 ? spreadPrice / quantity : 0,
+      unitSpread:
+        quantity > 0 && spreadPrice != null ? spreadPrice / quantity : null,
       key: row.id || "new-" + row.productId,
       bundleTranchName: this.resolveBundleTranchName(row.bundleTranchId),
       discountDisabled: row.listPrice == null || Number(row.listPrice) <= 0,
       discountLabel:
-        lineListPrice === 0 ? "-" : discountPercent.toFixed(2) + "%"
+        lineListPrice === 0 || discountPercent == null
+          ? "-"
+          : discountPercent.toFixed(2) + "%"
     };
   }
   handleCellChange(event) {
@@ -314,11 +323,17 @@ export default class BundleProductAssignment extends LightningElement {
             ? null
             : Number(value)
     };
-    if (field === "discountPercent" && updated.discountPercent != null) {
-      updated.spreadPrice = this.calculateDiscountedTotal(updated);
+    if (field === "discountPercent") {
+      updated.spreadPrice =
+        updated.discountPercent == null
+          ? null
+          : this.calculateDiscountedTotal(updated);
     }
     if (field === "spreadPrice") {
-      updated.discountPercent = null;
+      updated.discountPercent =
+        updated.spreadPrice == null
+          ? null
+          : this.calculateDiscountPercent(updated);
     }
     this.editingComponentDraft = this.decorate(updated);
   }
@@ -497,11 +512,17 @@ export default class BundleProductAssignment extends LightningElement {
               ? null
               : Number(value)
       };
-      if (field === "discountPercent" && updated.discountPercent != null) {
-        updated.spreadPrice = null;
+      if (field === "discountPercent") {
+        updated.spreadPrice =
+          updated.discountPercent == null
+            ? null
+            : this.calculateDiscountedTotal(updated);
       }
-      if (field === "spreadPrice" && updated.spreadPrice != null) {
-        updated.discountPercent = null;
+      if (field === "spreadPrice") {
+        updated.discountPercent =
+          updated.spreadPrice == null
+            ? null
+            : this.calculateDiscountPercent(updated);
       }
       return this.decoratePending(updated);
     });
@@ -544,6 +565,11 @@ export default class BundleProductAssignment extends LightningElement {
       Number(row.quantity) *
       (1 - Number(row.discountPercent) / 100);
     return Math.round(total * 100) / 100;
+  }
+  calculateDiscountPercent(row) {
+    const listTotal = Number(row.listPrice) * Number(row.quantity);
+    if (listTotal <= 0 || row.spreadPrice == null) return null;
+    return Math.round((1 - Number(row.spreadPrice) / listTotal) * 10000) / 100;
   }
   handleRemovePending(event) {
     const key = event.currentTarget.dataset.key;
@@ -724,6 +750,23 @@ export default class BundleProductAssignment extends LightningElement {
       );
       return false;
     }
+    const bundlePriceInput = this.template.querySelector(
+      '[data-id="bundle-price"]'
+    );
+    if (
+      !bundlePriceInput?.reportValidity() ||
+      !Number.isFinite(this.fixedPrice) ||
+      this.fixedPrice < 0 ||
+      Math.abs(this.fixedPrice * 100 - Math.round(this.fixedPrice * 100)) >=
+        0.00001
+    ) {
+      this.showToast(
+        "Prezzo bundle non valido",
+        "Inserisci un prezzo bundle non negativo con massimo due decimali.",
+        "error"
+      );
+      return false;
+    }
     if (
       !allowMissingTranch &&
       this.hasBundleTranches &&
@@ -757,6 +800,7 @@ export default class BundleProductAssignment extends LightningElement {
       this.applyContext(
         await saveComponents({
           bundleId: this.recordId,
+          fixedPrice: this.fixedPrice,
           componentsJson: JSON.stringify(
             this.rows.map((row) => ({
               id: row.id,
