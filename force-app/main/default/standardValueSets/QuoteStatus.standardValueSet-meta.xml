@@ -32,6 +32,12 @@
         <allowEmail>true</allowEmail>
     </standardValue>
     <standardValue>
+        <fullName>Firmato</fullName>
+        <default>false</default>
+        <label>Firmato</label>
+        <allowEmail>true</allowEmail>
+    </standardValue>
+    <standardValue>
         <fullName>Rifiutato</fullName>
         <default>false</default>
         <label>Rifiutato</label>

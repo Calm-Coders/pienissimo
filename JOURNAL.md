@@ -10,24 +10,86 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
-## 2026-09-29 — claude — Participant document PDFs moved off the guest user; deployed to UAT
+## 2026-09-29 — claude — nightly requirements-check: a forgotten requirement, and `Firmato` shipped
 
-- **Did:** diagnosed `ParticipantTicketDocumentJob` failing in UAT ("rendered 789 bytes"): the job ran
-  as the site guest user, which cannot render `ParticipantTicketPdf`. On branch
-  `DevMain_exposeEndpoint`, rebuilt it as a platform event (`Participant_Document_Request__e`)
-  handled by an internal user, one document per job chained by a finalizer. Closed public guest
-  access to the page. Design and evidence:
-  [the note](notes/flows/Participant%20document%20PDFs%20are%20rendered%20by%20an%20internal%20user.md).
-- **Deployed to UAT:** `0AfMA00000CoORd0AN` (12/12 components, `ParticipantTicketDocumentTest`
-  12/12), then the subscriber config with Aurel as run-as user, and the trigger redeployed
-  Inactive → Active to restart the subscription. `TestDataFactory` is now in UAT too.
-  Permission set `Participant_Document_Generation` assigned to Aurel.
-- **Live test:** 10 test Assets → 10 Completed jobs → 10 PDFs of 1.31 MB each in ~13 s.
-- **Rejected:** Integration User as run-as user. Its license cannot have Visualforce page access.
-  6 failed jobs from that attempt remain in Apex Jobs, 14:02Z.
-- **Open:** Prod run-as user not chosen; the config file must carry a Prod username. Not
-  committed (user did not ask). `TicketingTest`'s 4 WooCommerce tests fail in UAT on an
-  Opportunity record type in `TestDataFactory.opportunity`; untouched by this work.
+- **Watermark:** 2026-09-28T22:00Z → **2026-09-29T22:00Z**. One day, no gap.
+  🔴 **Pienissimo was unreachable all day** as Fabrizio Paganelli had said they would
+  be, so every finding is ROMI-internal — and that settles the 28/09 conflict over
+  whether he had confirmed a morning call. He had not.
+- **Drilled:** [Pre UAT: Check giro MKT](notes/meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+  (09:31 CEST, 56m06s, Aurel Mrruku · Elena Spini · Fabrizio Mastracci), transcript
+  read in full at 56,157 characters. The 10:30 Aurel/Elena call has a **ten-second**
+  transcript and was not drilled.
+- **Headline:** the artifact the participant receives is
+  `Pienissimo_Scheda di Partecipazione ai corsi_da firmare.pdf`, **handed over by the
+  client on 26 June 2026** — a multi-page document with the QR, dynamic campaign
+  fields and seven pages of enrolment documents. The record, and the technical lead,
+  had carried it as a QR code. It had been seen once, in the 14/08 sweep, and never
+  written into a note.
+- **New:** [OI-194](notes/items/OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)
+  (gating) · [OI-195](notes/items/OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+  (gating) · [OI-196](notes/items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md).
+  **Updated:** OI-64, OI-81, OI-96, OI-126, OI-127, OI-134, OI-151, OI-177, OI-185.
+  **Two reference notes:** the marketing group DM as a source, and the reserved ids.
+- **Build:** 🟢 `Firmato` is in `force-app` (`f53016d`, on `DevMain` via PR #68) after
+  five flags. 🟢 The participant-document stack was built and the 789-byte render bug
+  traced to the site guest user. 🔴 **Five of the day's eight commits are unmerged**,
+  including the entire document stack, the night before the ticket UAT.
+- ⚠ **Item ids OI-189–OI-193 are reserved**, not free: an org-status-check reported
+  them to the dev group and committed nothing. **Next free id is 197.**
+- ⚠ **Retrieval correction, second night running:** the marketing group DM
+  `C0C38JJ9D1T` is a project source no prior sweep listed. A `from:` filter finds a
+  person's messages; it does not find a conversation.
+- **Not done:** org not opened, `STATUS.md` and the Notion mirror stale, register
+  unamended at v1.6, prettier unrun, **no Apex test written or proposed**.
+
+---
+
+## 2026-09-28 — claude — nightly requirements-check: the client gave the Contratto a purpose, and the bundle order side was built
+
+- **Did:** scheduled nightly sweep, watermark **2026-09-25T22:00Z → 2026-09-28T22:00Z**
+  (three days; 26/09 and 27/09 had no sweep, and the 28/09 Prod-deploy session was not a
+  requirements-check). Drilled one client meeting from its full transcript; read 16 commits
+  and verified the key class line by line.
+- **Headline:** ROMI asked the client whether the Contract object should exist.
+  **Fabrizio Paganelli kept it and changed what it is for** — the customer's contractual
+  history, one Contract per order, multi-year view read off the Account. Aurel Mrruku's
+  25/09 objection was **discharged, not overruled**. And the gating WooCommerce gap was
+  built: bundle orders now take tranches from `Bundle_Tranch__c`, price lines from
+  `BundleComponent__c.Unit_Spread__c` (payload price ignored), and no longer jump to
+  `Incassato`.
+- **State:** new notes — the 28/09 meeting, **OI-188** (Performance Plus = Mexal
+  `categoria articolo` `C10`/`C11`), and a reference note on the Slack channel. Updated
+  OI-59, OI-111, OI-141, OI-157, OI-161, OI-168, OI-177, OI-181, OI-182, OI-184, OI-185,
+  OI-186, OI-187. Both trackers, both recaps (§50 EN + IT), MAP, INDEX, trace.
+- **🟢 Discharged this run:** `Standart` → `Standard` (7th flag, `3bd0801`) · the
+  WooCommerce order side (OI-181) · `rifiutato` wording → reason `sostituito da altro
+  preventivo` · DocuSign credentials received · credit notes + payment correction now
+  **client-confirmed** Fase 2 · QR generation built.
+- **🔑 Retrieval correction, important:** **`#tproj-pienissimo` exists — `C0B5T3RB4FM`.**
+  Three previous traces called it missing; `slack_search_channels` cannot find it, message
+  search and a direct read can. **Three runs of client-facing project status were missed.**
+  Recorded as `notes/The Pienissimo Slack channel and its id.md` — read it before any sweep.
+- **Next:** 🔴 OI-185 (cambio nominativo) is **not** built and ticket UAT is **30/09** —
+  QR generation landed, the regeneration did not. 🔴 Ask Fabrizio Paganelli to map bundle
+  components to tranches, or the 02/10 order test fails **by design**. 🔴 `Firmato` still
+  absent from `force-app` (4th flag) and the Contract depends on it. 🔴 Get the **user
+  list** — it was the 28/09 session's other purpose and never came up.
+- **Watch:** ⚠ the service writes `Tranche__c.Stato__c = 'Aperta'` (matching `force-app`)
+  while the 25/09 screen-share read the **org** as `aperto`/`parzialmente pagato`/`pagato`
+  — **if the org differs, every bundle order insert fails.** The org query owed for
+  OI-50/OI-69 now has a second, more expensive reason. ⚠ Elena Spini **still does not know
+  DevMain went to Prod on 28/09** and is planning against a 12/10 PROD objective.
+  ⚠ `TestDataFactory.cls:257` still references `'Standart'` — recorded only, no test was
+  written or proposed. ⚠ A DM says Fabrizio confirmed a 29/09 morning call; **he said in
+  the recorded session that Pienissimo is unreachable that day.** Unresolved.
+- **Caveats:** the org was not opened, so `STATUS.md` was not regenerated and the Notion
+  mirror stays stale; all build claims are repository arithmetic against `DevMain`
+  `55101d2`. `prettier:verify` could not run (no `node_modules`).
+  `DEVELOPMENT-RECAP.it.md` §47 (24/09) still missing, 4th flag. The clone again opened on
+  `main` only — the 25/09 trace predicted it and the fetch cost under a minute.
+  **No Apex test was written, proposed or scaffolded.** No human has answered a nightly
+  report in twelve nights.
 
 ---
 

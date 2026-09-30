@@ -475,6 +475,13 @@ public with sharing class BundleProductAssignmentController {
     if (!toDelete.isEmpty()) {
       delete toDelete;
     }
+    if (components.isEmpty() && !validBundleTranchIds.isEmpty()) {
+      delete [
+        SELECT Id
+        FROM Bundle_Tranch__c
+        WHERE Bundle__c = :bundleId
+      ];
+    }
     if (!toUpsert.isEmpty()) {
       upsert toUpsert;
     }

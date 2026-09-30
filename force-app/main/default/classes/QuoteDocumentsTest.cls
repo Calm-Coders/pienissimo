@@ -275,7 +275,7 @@ private class QuoteDocumentsTest {
         FROM Quote
         WHERE Id = :completed.Id
       ];
-      System.assertEquals('Accettato', signed.Status);
+      System.assertEquals('Firmato', signed.Status);
       System.assertEquals(true, signed.Is_Signed__c);
       System.assertEquals(
         1,

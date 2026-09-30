@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-09-08
+updated: 2026-09-29
 blocks: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-06
@@ -243,3 +243,38 @@ pattern this row has carried since August.
 
 ⚠ **The plain-text style constraint was still not restated** to Fabrizio
 Mastracci, for the second session running.
+
+## 2026-09-29 - the two-campaign shape is confirmed, and one ticket goes to one participant
+
+[The pre-UAT marketing session](../meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+settled two things this note had left implicit.
+
+🟢 **Two campaigns, technically, not two marketing flows on one.** Fabrizio
+Mastracci put the model and Aurel Mrruku confirmed it word for word: flow 1 runs on
+**the Account's principal contact — not on campaign members** — and each ticket line
+subsequently created becomes a campaign member of a **second** campaign, which is
+where the tickets go. _"dobbiamo a livello tecnico creare una seconda campagna dove
+entrano compilati e mando i biglietti di conferma."_ This matches
+[the campaign parent and child model](../objects/The%20campaign%20parent%20and%20child%20model.md)
+and is the first time the marketing builder and the Salesforce builder have stated
+it together.
+
+🟢 **Delivery is per participant, and the referente is not copied.** Elena Spini:
+_"Ogni partecipante riceve il suo biglietto personale."_ Aurel Mrruku proposed
+copying the principal contact and withdrew it; **no flow notifies the buyer that the
+tickets went out**, and Elena Spini judged that acceptable — _"glielo chiederà a
+voce ai suoi collaboratori."_
+
+🟢 **The send can be transactional.** Aurel Mrruku had assumed a nightly job sweeping
+for fully-confirmed orders; Fabrizio Mastracci can instead listen to record creation
+— _"posso leggere quando si crea quell'informazione, una sorta di transazionale"_ —
+which Aurel Mrruku preferred: _"sarebbe ottimo."_ Not yet built either way.
+
+⚠ **The plain-text style constraint was still not restated**, for the **third**
+session running. Fabrizio Mastracci wrote it himself in the 20 August recap and was
+in the room; nobody said it aloud, and nobody has confirmed it as an instruction to
+the build.
+
+🔴 **Flow 1's reminder ladder is where WhatsApp bites.** Up to 10–11 communications
+at WhatsApp rates is the reason Fabrizio Mastracci wants the channel delivered dark
+— see [OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md).

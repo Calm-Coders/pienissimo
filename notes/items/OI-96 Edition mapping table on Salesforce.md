@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-09-25
+updated: 2026-09-29
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -158,3 +158,28 @@ test."_ PR #60 (the handler rewrite) **merged at 08:17Z**. Anita Aga (Slack, 10:
 only one test bundle has a mapping. Gemini action for Aurel Mrruku: _"Completare la
 mappatura dei prodotti alle campagne e alle edizioni necessarie per i test"_.
 **Ticket UAT is 30/09.**
+
+## 🔴 2026-09-29 — the same exception, in the sandbox, the day before ticket UAT
+
+A Salesforce sandbox error mail at **08:59:16Z** (partial sandbox
+`ability-customization-52152`, org `00DMA000004nMMr`):
+
+> `OrderItemTrigger: execution of AfterInsert caused by:
+> OrderTriggerHandler.TicketGenerationException: Nessuna mappatura edizione trovata
+> per il prodotto PIENISSIMO LIVE LIVE alla data ordine 2026-09-29.`
+> `Class.OrderTriggerHandler.assignCampaigns: line 332`
+
+**Third occurrence on the record** — 24/09 in front of the client, 25/09 at the
+Recall Tutor UAT, now 29/09. The rewritten `MappaturaEdizioneTriggerHandler` from
+PR #60 did not change the failure mode, because the fault is **missing rows, not
+broken code**: the handler still throws rather than degrading, so an unmapped
+product aborts the whole order-item insert.
+
+🔴 **Ticket UAT is 30/09, 14:00–16:00 CEST**, with Fabrizio Paganelli, Elisa
+Migliano and Rebecca Marmo invited, and the mapping last read at **13 of 51**. The
+failing product is named — `PIENISSIMO LIVE LIVE` — so this one is a row somebody
+can add before the session.
+
+⚠ `2ed8a56` (Anita Aga, 29/09 18:19 CEST, `DevAnita28/09`, **unmerged**) touches
+`MappaturaEdizioneTriggerHandler.cls` (+17/−…). Not read line by line here, and not
+on `DevMain`.

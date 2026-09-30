@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-25
-updated: 2026-09-25
+updated: 2026-09-28
 blocks: [go-live]
 source: notes/meetings/2026-09-25 Interna post UAT Contratto e Fase Due.md
 ---
@@ -57,3 +57,64 @@ caveat: everyone seeing everything is not the same as everyone being able to
   That row waits on Daniela Morgese's review; **this one waits on a list that does
   not exist**, which is the harder of the two.
 - ⚠ No register row covers profiles, roles or permission sets.
+
+## 🔑 2026-09-28 - the client ruled on visibility, and the user list is still missing
+
+Half of this note is answered. At
+[the 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(`00:33:00`-`00:38:00`) Fabrizio Paganelli gave **the first client statement on
+permissions**.
+
+He reached for segregation first — _"i commerciali dovranno vedere delle cose che …
+noi in amministrazione vediamo cose che i commerciali non possono vedere"_ — and
+reversed once Aurel Mrruku spelled out what *everyone sees everything* meant at
+record level (a commerciale seeing another commerciale's orders and accounts):
+
+> _"adesso è così, eh, e tutti i commerciali vedono tutto … è una modalità che non
+> mi sento di disapplicare, nel senso che poi dopo corriamo il rischio che
+> stravolgiamo troppo il modo di lavorare."_
+
+🔑 **The rule, in his words:** _"facciamo che al momento tutti vedono tutto e poi
+l'importante è che non tutti possano modificare tutto."_ **Read access is open
+across records; edit access is what gets restricted**, with field-level exceptions.
+
+### 🔑 His reason is itself a requirement
+
+He wants configuration structures locked to named people, because at Zoho someone
+changed configuration without telling anyone and **his invoicing stopped for days**:
+
+> _"uno per risolvere una cosa del suo reparto faceva i danni agli altri … mi si è
+> bloccata la fatturazione perché Tizio era andato dentro, aveva toccato
+> determinate cose."_
+
+His ask: _"sarei più favorevole a blindare determinati profili, a fare determinate
+cose, solo le cose del loro reparto"_, with a request route for exceptions. **This
+is a stated client requirement about configuration change control, not a
+preference.** Nothing in `requirements/` covers it.
+
+### 🟢 The shape, agreed
+
+Elena Spini proposed _"forse uno o due profili, ma … forse già solo uno e poi
+andiamo di permessi"_. Aurel Mrruku ruled **role hierarchy out entirely** —
+_"ruoli poco, siccome tutti vedono tutto, non vedo utilità."_
+
+**So: one profile plus permission sets, and no role hierarchy.** 🟢 This
+**supersedes the four profiles inferred from the org chart** recorded above — the
+inference is no longer load-bearing.
+
+🔴 **Which functions get an ad-hoc permission is deliberately deferred to after
+UAT**, once the record life cycles are visible. Aurel Mrruku: _"alla fine dei test
+dobbiamo definire … ci dovete dire questa roba si deve fare solo da questa
+persona."_ Fabrizio Paganelli agreed. **That is a decision dated after 13 October
+approval**, on a go-live of 21 October.
+
+### 🔴 The user list was not asked for
+
+Getting it was the **second purpose of this session**. Elena Spini had named it a
+red flag in `#tproj-pienissimo` ninety minutes earlier — _"Il cliente deve ancora
+fornire i template dei Web Form (Sabatino) e la lista degli utenti"_ — and **it did
+not come up in the call at all.** Fabrizio Paganelli was the right person and was
+on the line for an hour.
+
+🔴 **Still: no user list, no named people, ~18 agent codes.** Go-live 21/10.
+Pienissimo is unreachable 29/09; the next contact is 30/09, a UAT session.
