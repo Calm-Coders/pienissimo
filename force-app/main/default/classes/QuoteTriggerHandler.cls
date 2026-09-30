@@ -5,7 +5,6 @@ public without sharing class QuoteTriggerHandler {
   private static final String DRAFT_STATUS = 'Bozza';
   private static final String DOCUSIGN_COMPLETED_STATUS = 'Completed';
   private static final String NEGOTIATION_QUOTE_STATUS = 'In Trattativa';
-  private static final String NEW_QUOTE_STATUS = 'Nuovo Preventivo';
   private static final String OPPORTUNITY_QUALIFIED_STAGE = 'Qualificato';
   private static final String OPPORTUNITY_NEGOTIATION_STAGE = 'In trattativa (Prev inviato)';
   private static final String INITIAL_ORDER_STATUS = 'Ordinato';
@@ -14,7 +13,6 @@ public without sharing class QuoteTriggerHandler {
 
   private static final Set<String> OPPORTUNITY_NEGOTIATION_QUOTE_STATUSES = new Set<String>{
     DRAFT_STATUS,
-    NEW_QUOTE_STATUS,
     NEGOTIATION_QUOTE_STATUS,
     AWAITING_ACCEPTANCE_STATUS,
     ACCEPTED_STATUS,
@@ -173,7 +171,13 @@ public without sharing class QuoteTriggerHandler {
 
     Map<Id, Quote> quotesToConvert = new Map<Id, Quote>();
     for (Quote quoteRecord : [
-      SELECT Id, AccountId, OpportunityId, Pricebook2Id, Locale__c
+      SELECT
+        Id,
+        AccountId,
+        OpportunityId,
+        Pricebook2Id,
+        Locale__c,
+        Codice_Pagamento_Mexal__c
       FROM Quote
       WHERE Id IN :signedQuoteIds
     ]) {
@@ -197,6 +201,7 @@ public without sharing class QuoteTriggerHandler {
           Status = INITIAL_ORDER_STATUS,
           Quote__c = quoteRecord.Id,
           Locale__c = quoteRecord.Locale__c,
+          Codice_Pagamento_Mexal__c = quoteRecord.Codice_Pagamento_Mexal__c,
           Origine__c = SALESFORCE_ORIGIN
         )
       );

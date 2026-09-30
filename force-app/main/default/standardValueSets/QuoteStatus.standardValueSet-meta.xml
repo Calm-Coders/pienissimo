@@ -10,6 +10,7 @@
     <standardValue>
         <fullName>Nuovo Preventivo</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Nuovo Preventivo</label>
         <allowEmail>true</allowEmail>
     </standardValue>

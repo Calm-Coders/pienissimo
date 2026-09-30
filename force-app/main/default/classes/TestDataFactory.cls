@@ -359,6 +359,8 @@ public class TestDataFactory {
       ParentId = parentId,
       StartDate = Date.today().addDays(-1),
       EndDate = Date.today().addDays(10),
+      Da_Data_Competenza__c = Date.today().addDays(-1),
+      A_Data_Competenza__c = Date.today().addDays(10),
       Data_Evento__c = Date.today().addDays(10),
       Data_Invio_Biglietto__c = Date.today()
     );

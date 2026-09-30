@@ -61,6 +61,7 @@ public with sharing class MexalOrderSendService {
         EffectiveDate,
         OrderNumber,
         Quote__c,
+        Codice_Pagamento_Mexal__c,
         WooCommerce_Order_Key__c,
         (
           SELECT
@@ -119,6 +120,7 @@ public with sharing class MexalOrderSendService {
     payload.put('numero', AUTO_NUMBER);
     payload.put('cod_conto', orderRecord.Account.Codice_Cliente_Mexal__c);
     payload.put('data_documento', formatDate(orderRecord.EffectiveDate));
+    putValue(payload, 'id_pagamento', orderRecord.Codice_Pagamento_Mexal__c);
     putLineArrays(payload, orderRecord.OrderItems);
     return payload;
   }
@@ -306,6 +308,14 @@ public with sharing class MexalOrderSendService {
     }
 
     return String.isBlank(secondValue) ? null : secondValue.trim();
+  }
+
+  private static void putValue(
+    Map<String, Object> payload,
+    String fieldName,
+    String value
+  ) {
+    payload.put(fieldName, String.isBlank(value) ? '' : value.trim());
   }
 
   private static Integer parseInteger(String value) {

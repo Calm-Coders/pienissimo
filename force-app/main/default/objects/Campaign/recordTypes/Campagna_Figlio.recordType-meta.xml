@@ -2,7 +2,7 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Campagna_Figlio</fullName>
     <active>true</active>
-    <label>Campagna Figlio</label>
+    <label>Edizione</label>
     <picklistValues>
         <picklist>Anno_Accademico__c</picklist>
         <values>

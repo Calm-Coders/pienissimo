@@ -17,7 +17,7 @@ public with sharing class MappaturaEdizioneTriggerHandler {
 
     Map<Id, Campaign> campaignById = new Map<Id, Campaign>(
       [
-        SELECT Id, StartDate, EndDate, Data_Evento__c
+        SELECT Id, Da_Data_Competenza__c, A_Data_Competenza__c, Data_Evento__c
         FROM Campaign
         WHERE Id IN :campaignIds
       ]
@@ -34,25 +34,28 @@ public with sharing class MappaturaEdizioneTriggerHandler {
         continue;
       }
 
-      mapping.Data_Inizio__c = campaign.StartDate;
-      mapping.Data_Fine__c = campaign.EndDate;
+      mapping.Data_Inizio__c = campaign.Da_Data_Competenza__c;
+      mapping.Data_Fine__c = campaign.A_Data_Competenza__c;
       mapping.Data_Evento__c = campaign.Data_Evento__c;
 
       if (!shouldValidate(mapping, oldMappingMap)) {
         continue;
       }
 
-      if (campaign.StartDate == null || campaign.EndDate == null) {
+      if (
+        campaign.Da_Data_Competenza__c == null ||
+        campaign.A_Data_Competenza__c == null
+      ) {
         mapping.addError(
-          'La campagna figlia collegata deve avere Data Inizio e Data Fine valorizzate.'
+          'La campagna figlia collegata deve avere Da Data Competenza e A Data Competenza valorizzate.'
         );
         continue;
       }
 
       MappingWindow window = new MappingWindow(
         mapping,
-        campaign.StartDate,
-        campaign.EndDate
+        campaign.Da_Data_Competenza__c,
+        campaign.A_Data_Competenza__c
       );
 
       activeMappings.add(window);
