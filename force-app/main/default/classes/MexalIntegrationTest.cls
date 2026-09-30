@@ -1142,12 +1142,7 @@ private class MexalIntegrationTest {
       );
 
     Test.startTest();
-    Exception shippingFailure;
-    try {
-      MexalCustomerCreateService.createForAccount(accountRecord.Id);
-    } catch (MexalCustomerCreateService.MexalCustomerCreateException e) {
-      shippingFailure = e;
-    }
+    MexalCustomerCreateService.createForAccount(accountRecord.Id);
     Test.stopTest();
 
     System.assertEquals(
@@ -1155,9 +1150,6 @@ private class MexalIntegrationTest {
       [SELECT Codice_Cliente_Mexal__c FROM Account WHERE Id = :accountRecord.Id]
       .Codice_Cliente_Mexal__c
     );
-    // The shipping-address callout follows the Account update in the same
-    // transaction and cannot be sent; the service reports it as a failure.
-    System.assertNotEquals(null, shippingFailure);
   }
 
   @isTest
@@ -1167,11 +1159,7 @@ private class MexalIntegrationTest {
       .when('/webapi/risorse/clienti', 201, '{"codice_cliente":"501.00078"}');
 
     Test.startTest();
-    try {
-      MexalCustomerCreateService.createForAccount(accountRecord.Id);
-    } catch (MexalCustomerCreateService.MexalCustomerCreateException e) {
-      System.assert(e.getMessage().contains('spedizione'));
-    }
+    MexalCustomerCreateService.createForAccount(accountRecord.Id);
     Test.stopTest();
 
     System.assertEquals(
@@ -1192,11 +1180,7 @@ private class MexalIntegrationTest {
       );
 
     Test.startTest();
-    try {
-      MexalCustomerCreateService.createForAccount(accountRecord.Id);
-    } catch (MexalCustomerCreateService.MexalCustomerCreateException e) {
-      System.assert(e.getMessage().contains('spedizione'));
-    }
+    MexalCustomerCreateService.createForAccount(accountRecord.Id);
     Test.stopTest();
 
     System.assertEquals(
@@ -1264,18 +1248,16 @@ private class MexalIntegrationTest {
   static void customerUpdatePutsToTheCustomerResource() {
     Account accountRecord = TestDataFactory.buildAzienda('Da aggiornare');
     accountRecord.Codice_Cliente_Mexal__c = CUSTOMER_CODE;
-    accountRecord.BillingCountry = 'Francia';
+    accountRecord.BillingCountry = 'IT';
+    accountRecord.Codice_Agente_Esterno__c = 'AG001';
+    accountRecord.Zona__c = 'ZONA01';
+    accountRecord.Categoria_Provvigioni_Cliente__c = 'CAT01';
     TestDataFactory.insertAllowingDuplicates(accountRecord);
     TestHttpMock mock = TestHttpMock.install()
       .when('/clienti/501.00001', 204, '');
 
     Test.startTest();
-    Exception shippingFailure;
-    try {
-      MexalCustomerCreateService.updateForAccount(accountRecord.Id);
-    } catch (MexalCustomerCreateService.MexalCustomerCreateException e) {
-      shippingFailure = e;
-    }
+    MexalCustomerCreateService.updateForAccount(accountRecord.Id);
     Test.stopTest();
 
     System.assertEquals('PUT', mock.requests[0].getMethod());
@@ -1283,7 +1265,30 @@ private class MexalIntegrationTest {
       !mock.requests[0].getBody().contains('"codice":'),
       'An update never sends the generated-code placeholder'
     );
-    System.assertNotEquals(null, shippingFailure);
+    System.assert(
+      mock.requests[0].getBody().contains('"cod_agente":"AG001"'),
+      'The customer update should send the Account agent code'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"cod_zona":"ZONA01"'),
+      'The customer update should send the Account zone'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"cod_cat_pr":"CAT01"'),
+      'The customer update should send the Account commission category'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"gest_fatt_el":"S"'),
+      'Italian customers should enable electronic invoicing'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"serie_fatt_el":"3"'),
+      'Italian customers should send the agreed electronic invoice series'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"cod_modu_allega":"FT"'),
+      'Italian customers should send the agreed PDF attachment module'
+    );
   }
 
   @isTest
@@ -1387,6 +1392,8 @@ private class MexalIntegrationTest {
   @isTest
   static void orderSendMapsTheMexalDocumentBack() {
     Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    orderRecord.Codice_Pagamento_Mexal__c = 'PAG01';
+    update orderRecord;
     TestHttpMock mock = TestHttpMock.install()
       .when(
         '/ordini-clienti',
@@ -1423,6 +1430,7 @@ private class MexalIntegrationTest {
       mock.requests[0].getBody()
     );
     System.assertEquals(CUSTOMER_CODE, payload.get('cod_conto'));
+    System.assertEquals('PAG01', payload.get('id_pagamento'));
   }
 
   @isTest

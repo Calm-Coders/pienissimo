@@ -173,7 +173,13 @@ public without sharing class QuoteTriggerHandler {
 
     Map<Id, Quote> quotesToConvert = new Map<Id, Quote>();
     for (Quote quoteRecord : [
-      SELECT Id, AccountId, OpportunityId, Pricebook2Id, Locale__c
+      SELECT
+        Id,
+        AccountId,
+        OpportunityId,
+        Pricebook2Id,
+        Locale__c,
+        Codice_Pagamento_Mexal__c
       FROM Quote
       WHERE Id IN :signedQuoteIds
     ]) {
@@ -197,6 +203,7 @@ public without sharing class QuoteTriggerHandler {
           Status = INITIAL_ORDER_STATUS,
           Quote__c = quoteRecord.Id,
           Locale__c = quoteRecord.Locale__c,
+          Codice_Pagamento_Mexal__c = quoteRecord.Codice_Pagamento_Mexal__c,
           Origine__c = SALESFORCE_ORIGIN
         )
       );

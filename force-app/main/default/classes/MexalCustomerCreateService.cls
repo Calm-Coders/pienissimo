@@ -69,7 +69,8 @@ public with sharing class MexalCustomerCreateService {
 
     Result result = buildResult(account.Id, payload, calloutResult);
     updateAccountWithGeneratedCode(account, result);
-    syncShippingAddress(account, result);
+    // Temporarily disabled: the shipping-address call must run in a separate transaction.
+    // syncShippingAddress(account, result);
     return result;
   }
 
@@ -96,7 +97,8 @@ public with sharing class MexalCustomerCreateService {
     result.message = result.success
       ? 'Modifica cliente Mexal completata.'
       : 'Modifica cliente Mexal fallita.';
-    syncShippingAddress(account, result);
+    // Temporarily disabled: Account registry updates must not recreate shipping addresses.
+    // syncShippingAddress(account, result);
     return result;
   }
 
@@ -123,6 +125,9 @@ public with sharing class MexalCustomerCreateService {
         Email__c,
         PEC__c,
         Codice_Destinatario_SDI__c,
+        Codice_Agente_Esterno__c,
+        Zona__c,
+        Categoria_Provvigioni_Cliente__c,
         Azienda_Precedente__r.Codice_Cliente_Mexal__c
       FROM Account
       WHERE Id = :accountId
@@ -153,13 +158,21 @@ public with sharing class MexalCustomerCreateService {
     putValue(payload, 'email', account.Email__c);
     putValue(payload, 'pec', account.PEC__c);
     putValue(payload, 'codice_sdi', account.Codice_Destinatario_SDI__c);
-    putValue(payload, 'cod_agente', null);
+    putValue(payload, 'cod_agente', account.Codice_Agente_Esterno__c);
+    putValue(payload, 'cod_zona', account.Zona__c);
+    putValue(payload, 'cod_cat_pr', account.Categoria_Provvigioni_Cliente__c);
     putValue(payload, 'tp_nazionalita', deriveFiscalResidenceCode(account));
 
     // Settled by the customer-registry review: Pienissimo uses listino 1 and Euro only.
     payload.put('cod_listino', 1);
     payload.put('valuta', 1);
     putValue(payload, 'gest_fatt_el', deriveElectronicInvoiceType(account));
+    putValue(payload, 'serie_fatt_el', deriveElectronicInvoiceSeries(account));
+    putValue(
+      payload,
+      'cod_modu_allega',
+      deriveElectronicInvoiceAttachment(account)
+    );
     return payload;
   }
 
@@ -219,6 +232,14 @@ public with sharing class MexalCustomerCreateService {
 
   private static String deriveElectronicInvoiceType(Account account) {
     return deriveFiscalResidenceCode(account) == 'I' ? 'S' : null;
+  }
+
+  private static String deriveElectronicInvoiceSeries(Account account) {
+    return deriveElectronicInvoiceType(account) == 'S' ? '3' : null;
+  }
+
+  private static String deriveElectronicInvoiceAttachment(Account account) {
+    return deriveElectronicInvoiceType(account) == 'S' ? 'FT' : null;
   }
 
   private static String normalizeCountry(String value) {
