@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ticket_Sent__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >Indicates that Marketing Cloud has sent the tickets for this Order.</description>
+    <label>Ticket Sent</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

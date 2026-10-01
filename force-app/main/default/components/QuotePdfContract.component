@@ -640,10 +640,14 @@
         <td style="width: 50%; border: none; font-weight: bold">Pienissimo</td>
 
         <td
+          class="client-signature-cell"
           style="width: 50%; border: none; text-align: right; font-weight: bold"
         >
           Il Cliente
-          <span style="color: #ffffff; font-size: 1px">/sig1/</span>
+          <div class="signing-line">
+            <span style="color: #000000; font-size: 1px">/sig1/</span>
+          </div>
+          <div class="signing-label">Firma del Cliente</div>
         </td>
       </tr>
     </table>
@@ -679,9 +683,14 @@
         <td style="width: 50%; border: none; font-weight: bold">Pienissimo</td>
 
         <td
+          class="client-signature-cell"
           style="width: 50%; border: none; text-align: right; font-weight: bold"
         >
           Il Cliente
+          <div class="signing-line">
+            <span style="color: #000000; font-size: 1px">/sig1/</span>
+          </div>
+          <div class="signing-label">Firma per approvazione specifica</div>
         </td>
       </tr>
     </table>

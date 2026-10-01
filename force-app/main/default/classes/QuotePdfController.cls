@@ -1,5 +1,6 @@
 public without sharing class QuotePdfController {
   private static final Integer MAX_LINES = 500;
+  private static final String EMPTY_QUOTE_ERROR = 'Questo preventivo non contiene righe prodotto. Aggiungi almeno un prodotto prima di generare il PDF.';
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
   private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
   public Quote quoteRecord { get; private set; }
@@ -19,9 +20,10 @@ public without sharing class QuotePdfController {
     Boolean multiCurrency = Schema.SObjectType.Quote.fields.getMap()
       .containsKey('CurrencyIsoCode');
     String queryText =
-      'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, Description, ' +
+      'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, ' +
       'BillingName, BillingStreet, BillingPostalCode, BillingCity, BillingState, BillingCountry, ' +
-      'Subtotal, TotalPrice, Tax, ShippingHandling, GrandTotal, Modalita_Pagamento_PDF__c, ' +
+      'Subtotal, TotalPrice, Tax, ShippingHandling, GrandTotal, ' +
+      'Condizione_di_Pagamento__c, Descrizione_Condizione_di_Pagamento__c, ' +
       'Account.Name, Account.BillingStreet, Account.BillingPostalCode, Account.BillingCity, ' +
       'Account.BillingState, Account.BillingCountry, Account.Partita_IVA__c, ' +
       'Account.Nome_Legale_Rappresentante__c, Account.PEC__c, Opportunity.Owner.Name, ' +
@@ -58,9 +60,7 @@ public without sharing class QuotePdfController {
       LIMIT 501
     ];
     if (items.isEmpty()) {
-      throw new QuotePdfException(
-        'Aggiungi almeno una riga al preventivo prima di generare il PDF.'
-      );
+      throw new QuotePdfException(EMPTY_QUOTE_ERROR);
     }
     if (items.size() > MAX_LINES) {
       throw new QuotePdfException(
@@ -120,7 +120,7 @@ public without sharing class QuotePdfController {
       throw new QuotePdfException('Preventivo non valido.');
     }
     List<Quote> records = [
-      SELECT Id, QuoteNumber, Status
+      SELECT Id, QuoteNumber, Status, (SELECT Id FROM QuoteLineItems LIMIT 1)
       FROM Quote
       WHERE Id = :quoteId
       WITH USER_MODE
@@ -134,6 +134,9 @@ public without sharing class QuotePdfController {
       throw new QuotePdfException(
         'Il PDF puo essere generato solo quando il preventivo e in Bozza.'
       );
+    }
+    if (records[0].QuoteLineItems.isEmpty()) {
+      throw new QuotePdfException(EMPTY_QUOTE_ERROR);
     }
     return records[0];
   }

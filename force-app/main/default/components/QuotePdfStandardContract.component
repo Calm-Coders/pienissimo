@@ -536,9 +536,8 @@
             <br /> Sig. Giuliano Lanzetti
           </td>
 
-          <td valign="top">
+          <td valign="top" class="client-signature-cell">
             <strong>Il Cliente</strong>
-            <span style="color: #ffffff; font-size: 1px">/sig1/</span>
             <br />
 
             <apex:outputText value="{!customerName}" />
@@ -548,6 +547,10 @@
             <apex:outputText
               value="{!customer.Nome_Legale_Rappresentante__c}"
             />
+            <div class="signing-line">
+              <span style="color: #000000; font-size: 1px">/sig1/</span>
+            </div>
+            <div class="signing-label">Firma del Cliente</div>
           </td>
         </tr>
       </table>
@@ -583,7 +586,7 @@
             <br /> Sig. Giuliano Lanzetti
           </td>
 
-          <td valign="top">
+          <td valign="top" class="client-signature-cell">
             <strong>Il Cliente</strong>
             <br />
 
@@ -594,6 +597,10 @@
             <apex:outputText
               value="{!customer.Nome_Legale_Rappresentante__c}"
             />
+            <div class="signing-line">
+              <span style="color: #000000; font-size: 1px">/sig1/</span>
+            </div>
+            <div class="signing-label">Firma per approvazione specifica</div>
           </td>
         </tr>
       </table>

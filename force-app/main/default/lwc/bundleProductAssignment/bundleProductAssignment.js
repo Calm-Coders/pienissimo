@@ -7,7 +7,14 @@ import LightningConfirm from "lightning/confirm";
 import getBundleContext from "@salesforce/apex/BundleProductAssignmentController.getBundleContext";
 import searchProducts from "@salesforce/apex/BundleProductAssignmentController.searchProducts";
 import saveComponents from "@salesforce/apex/BundleProductAssignmentController.saveComponents";
-import { validRows } from "./pricing";
+import {
+  calculateDiscountedTotal,
+  calculateDiscountPercent,
+  PRICING_SOURCE_DISCOUNT,
+  PRICING_SOURCE_MANUAL,
+  resolveRowPrice,
+  validRows
+} from "./pricing";
 
 const currency = { currencyCode: "EUR", minimumFractionDigits: 2 };
 export default class BundleProductAssignment extends LightningElement {
@@ -273,6 +280,9 @@ export default class BundleProductAssignment extends LightningElement {
       quantity,
       spreadPrice,
       discountPercent,
+      pricingSource:
+        row.pricingSource ||
+        (spreadPrice == null ? null : PRICING_SOURCE_MANUAL),
       lineListPrice,
       unitSpread:
         quantity > 0 && spreadPrice != null ? spreadPrice / quantity : null,
@@ -324,16 +334,30 @@ export default class BundleProductAssignment extends LightningElement {
             : Number(value)
     };
     if (field === "discountPercent") {
+      updated.pricingSource =
+        updated.discountPercent == null ? null : PRICING_SOURCE_DISCOUNT;
       updated.spreadPrice =
         updated.discountPercent == null
           ? null
           : this.calculateDiscountedTotal(updated);
     }
     if (field === "spreadPrice") {
+      updated.pricingSource =
+        updated.spreadPrice == null ? null : PRICING_SOURCE_MANUAL;
       updated.discountPercent =
         updated.spreadPrice == null
           ? null
           : this.calculateDiscountPercent(updated);
+    }
+    if (field === "quantity" && updated.spreadPrice != null) {
+      if (
+        updated.pricingSource === PRICING_SOURCE_DISCOUNT &&
+        updated.discountPercent != null
+      ) {
+        updated.spreadPrice = this.calculateDiscountedTotal(updated);
+      } else {
+        updated.discountPercent = this.calculateDiscountPercent(updated);
+      }
     }
     this.editingComponentDraft = this.decorate(updated);
   }
@@ -487,6 +511,7 @@ export default class BundleProductAssignment extends LightningElement {
           listPrice: product.productPrice,
           quantity: 1,
           spreadPrice: null,
+          pricingSource: null,
           bundleTranchId: null,
           key: "new-" + product.id
         };
@@ -513,16 +538,30 @@ export default class BundleProductAssignment extends LightningElement {
               : Number(value)
       };
       if (field === "discountPercent") {
+        updated.pricingSource =
+          updated.discountPercent == null ? null : PRICING_SOURCE_DISCOUNT;
         updated.spreadPrice =
           updated.discountPercent == null
             ? null
             : this.calculateDiscountedTotal(updated);
       }
       if (field === "spreadPrice") {
+        updated.pricingSource =
+          updated.spreadPrice == null ? null : PRICING_SOURCE_MANUAL;
         updated.discountPercent =
           updated.spreadPrice == null
             ? null
             : this.calculateDiscountPercent(updated);
+      }
+      if (field === "quantity" && updated.spreadPrice != null) {
+        if (
+          updated.pricingSource === PRICING_SOURCE_DISCOUNT &&
+          updated.discountPercent != null
+        ) {
+          updated.spreadPrice = this.calculateDiscountedTotal(updated);
+        } else {
+          updated.discountPercent = this.calculateDiscountPercent(updated);
+        }
       }
       return this.decoratePending(updated);
     });
@@ -556,20 +595,13 @@ export default class BundleProductAssignment extends LightningElement {
     };
   }
   resolvePendingRow(row) {
-    if (row.discountPercent == null) return row;
-    return { ...row, spreadPrice: this.calculateDiscountedTotal(row) };
+    return resolveRowPrice(row);
   }
   calculateDiscountedTotal(row) {
-    const total =
-      Number(row.listPrice) *
-      Number(row.quantity) *
-      (1 - Number(row.discountPercent) / 100);
-    return Math.round(total * 100) / 100;
+    return calculateDiscountedTotal(row);
   }
   calculateDiscountPercent(row) {
-    const listTotal = Number(row.listPrice) * Number(row.quantity);
-    if (listTotal <= 0 || row.spreadPrice == null) return null;
-    return Math.round((1 - Number(row.spreadPrice) / listTotal) * 10000) / 100;
+    return calculateDiscountPercent(row);
   }
   handleRemovePending(event) {
     const key = event.currentTarget.dataset.key;

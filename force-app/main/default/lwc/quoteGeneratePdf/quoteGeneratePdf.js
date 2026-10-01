@@ -24,9 +24,15 @@ export default class QuoteGeneratePdf extends LightningElement {
   loadQuote({ data, error }) {
     if (data) {
       this.quote = data;
-      if (getFieldValue(data, STATUS) !== "Bozza") {
+      if (
+        getFieldValue(data, STATUS) !== "Bozza" &&
+        !this.busy &&
+        !this.documentId
+      ) {
         this.error =
           "Il PDF puo essere generato solo quando il preventivo e in Bozza.";
+      } else {
+        this.error = undefined;
       }
     } else if (error) {
       this.quote = undefined;

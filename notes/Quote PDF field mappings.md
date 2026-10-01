@@ -2,7 +2,7 @@
 id: quote-pdf-field-mappings
 type: reference
 status: active
-updated: 2026-09-21
+updated: 2026-10-01
 source:
   - force-app/main/default/pages/QuotePdf.page
   - force-app/main/default/classes/QuotePdfController.cls
@@ -57,8 +57,8 @@ by
 | Tax                      | `Quote.Tax`; shown only when non-zero                                                                                                                       |
 | Shipping                 | `Quote.ShippingHandling`; shown only when non-zero                                                                                                          |
 | Grand total              | `Quote.GrandTotal`                                                                                                                                          |
-| Payment method text      | `Quote.Modalita_Pagamento_PDF__c`; section shown only when populated                                                                                        |
-| Notes                    | `Quote.Description`; section shown only when populated                                                                                                      |
+| Payment method section   | `Quote.Condizione_di_Pagamento__c`; restricted picklist, currently `RID FINE MESE DF`; rendered under `MODALITÀ PAGAMENTO`                                  |
+| Notes section            | `Quote.Descrizione_Condizione_di_Pagamento__c`; rendered separately under `NOTE`                                                                            |
 
 ## Performance Plus quote PDF
 
@@ -87,8 +87,8 @@ by
 | Discount shown            | Derived as `(QuoteLineItem.Quantity * QuoteLineItem.UnitPrice) - QuoteLineItem.TotalPrice`                                                                  |
 | Net total                 | `QuoteLineItem.TotalPrice`                                                                                                                                  |
 | Payment due date          | `QuoteLineItem.Data_Scadenza__c`; fallback `QuoteLineItem.Tranche__r.Data_Scadenza__c`                                                                      |
-| Payment method text       | `Quote.Modalita_Pagamento_PDF__c`; section shown only when populated                                                                                        |
-| Notes                     | `Quote.Description`; section shown only when populated                                                                                                      |
+| Payment method section    | `Quote.Condizione_di_Pagamento__c`; restricted picklist, currently `RID FINE MESE DF`; rendered under `MODALITÀ PAGAMENTO`                                  |
+| Notes section             | `Quote.Descrizione_Condizione_di_Pagamento__c`; rendered separately under `NOTE`                                                                            |
 
 ## Generation-only fields
 

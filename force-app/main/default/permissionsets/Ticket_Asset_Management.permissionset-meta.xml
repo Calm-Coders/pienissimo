@@ -42,6 +42,11 @@
         <field>Asset.QR_Id__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Asset.Ready_for_Ticket_Dispatch__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Ticket Asset Management</label>
     <objectPermissions>

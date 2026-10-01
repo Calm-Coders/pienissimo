@@ -25,11 +25,13 @@
         }
         body {
           font-family: Arial, sans-serif;
-          color: #161616;
-          font-size: 10pt;
+          color: #242424;
+          font-size: 10.5pt;
         }
         .contract-page {
           page-break-after: always;
+          border-top: 1pt solid #d9d4c2;
+          padding-top: 10pt;
         }
         .contract-text {
           white-space: pre-line;
@@ -38,35 +40,67 @@
         }
         .header {
           width: 100%;
-          margin-bottom: 24px;
+          border-collapse: collapse;
+          margin-bottom: 14pt;
         }
         .header td {
           width: 50%;
           vertical-align: top;
         }
+        .brand-header {
+          border-bottom: 1pt solid #dedede;
+          padding-bottom: 10pt;
+        }
+        .brand-header .company-details {
+          color: #5d5d5d;
+          font-size: 9pt;
+          line-height: 1.35;
+          text-align: right;
+        }
+        .quote-heading td {
+          padding: 11pt 12pt;
+          background: #f7f4f1;
+          border-top: 1pt solid #e3ded9;
+          border-bottom: 1pt solid #e3ded9;
+        }
+        .quote-heading .customer-card {
+          border-left: 1pt solid #d9d4c2;
+          padding-left: 16pt;
+          line-height: 1.35;
+        }
         h1 {
-          font-size: 15pt;
-          margin: 0 0 6px;
+          color: #161616;
+          font-size: 18pt;
+          letter-spacing: 0.4pt;
+          margin: 0 0 5pt;
         }
         .summary {
-          margin: 18px 0 12px;
+          background: #fff;
+          border: 1pt solid #e2ddd8;
+          border-left: 1pt solid #e2ddd8;
+          margin: 0 0 15pt;
+          padding: 9pt 11pt;
+          line-height: 1.5;
         }
         .lines {
           width: 100%;
           border-collapse: collapse;
           table-layout: fixed;
           -fs-table-paginate: paginate;
-          font-size: 8pt;
+          font-size: 8.5pt;
         }
         .lines th,
         .lines td {
-          border: 1px solid #d9d4c2;
-          padding: 6px 4px;
+          border: 0.6pt solid #d8d3cf;
+          padding: 6pt 4pt;
           vertical-align: top;
           word-wrap: break-word;
         }
         .lines th {
           background: #efefef;
+          color: #161616;
+          font-size: 8pt;
+          font-weight: bold;
           text-align: center;
         }
         .lines thead {
@@ -83,26 +117,40 @@
         }
         .description {
           white-space: pre-line;
-          margin-top: 4px;
+          color: #5d5d5d;
+          font-size: 8pt;
+          margin-top: 3pt;
         }
         .totals {
           width: 48%;
-          margin-top: 14px;
+          border-collapse: collapse;
+          margin-top: 14pt;
           margin-left: auto;
           page-break-inside: avoid;
         }
         .totals td {
-          padding: 3px;
+          border-bottom: 0.6pt solid #e2ddd8;
+          padding: 4pt 5pt;
         }
         .grand-total {
+          background: #f7f4f1;
+          color: #161616;
           font-weight: bold;
+          font-size: 10.5pt;
         }
         .notes {
+          background: #f8f8f8;
+          border-left: 1pt solid #d9d4c2;
+          margin-top: 4pt;
+          padding: 7pt 9pt;
           white-space: pre-line;
         }
         .section-title {
+          color: #161616;
+          font-size: 9pt;
           font-weight: bold;
-          margin-top: 18px;
+          letter-spacing: 0.5pt;
+          margin-top: 15pt;
           page-break-after: avoid;
         }
         .plus-terms {
@@ -145,8 +193,8 @@
         .plus-signature-block td,
         .plus-annex td {
           width: 50%;
-          border: 1px solid #d9d4c2;
-          padding: 6px;
+          border: 0.6pt solid #d9d4c2;
+          padding: 8pt;
           vertical-align: top;
           font-size: 8pt;
         }
@@ -156,8 +204,9 @@
         }
         .plus-order-header {
           width: 100%;
-          margin-bottom: 18px;
-          font-size: 8pt;
+          border-collapse: collapse;
+          margin-bottom: 14pt;
+          font-size: 8.5pt;
         }
         .plus-order-header td {
           width: 50%;
@@ -165,14 +214,46 @@
         }
         .plus-order-title {
           font-size: 11pt;
-          margin: 18px 0 0;
+          margin: 0 0 5pt;
         }
         .plus-order-meta {
-          margin: 18px 0 12px;
-          font-size: 8pt;
+          background: #fff;
+          border: 1pt solid #e2ddd8;
+          border-left: 1pt solid #e2ddd8;
+          line-height: 1.5;
+          margin: 0 0 15pt;
+          padding: 9pt 11pt;
+          font-size: 8.5pt;
         }
         .plus-lines {
-          font-size: 7.5pt;
+          font-size: 8.5pt;
+        }
+        .plus-signature-table {
+          width: 100%;
+          border-collapse: collapse;
+          page-break-inside: avoid;
+        }
+        .plus-specific-approval {
+          background: #f8f8f8;
+          border-left: 1pt solid #d9d4c2;
+          margin-top: 14pt;
+          padding: 9pt 11pt;
+          page-break-inside: avoid;
+        }
+        .client-signature-cell {
+          background: #fff;
+        }
+        .signing-line {
+          border-bottom: 0.8pt solid #444;
+          height: 24pt;
+          margin-top: 10pt;
+        }
+        .signing-label {
+          color: #666;
+          font-size: 6.5pt;
+          font-style: italic;
+          margin-top: 3pt;
+          text-align: center;
         }
       </style>
     </head>
@@ -186,7 +267,7 @@
           />
         </div>
 
-        <table class="header">
+        <table class="header brand-header">
           <tr>
             <td>
               <apex:image
@@ -196,13 +277,13 @@
                 alt="Pienissimo - Strategie per locali di successo"
               />
             </td>
-            <td>
+            <td class="company-details">
               Pienissimo s.r.l.<br />Strada Rovereta, 6<br />47891 Falciano,<br />San
               Marino
             </td>
           </tr>
         </table>
-        <table class="header">
+        <table class="header quote-heading">
           <tr>
             <td>
               <h1>
@@ -211,7 +292,7 @@
               </h1>
               <apex:outputText value="{!generatedDate}" />
             </td>
-            <td>
+            <td class="customer-card">
               <strong>Fattura a:</strong><br /><apex:outputText
                 value="{!customerName}"
               /><br /><apex:outputText
@@ -312,19 +393,21 @@
         </table>
         <apex:outputPanel
           layout="block"
-          rendered="{!NOT(ISBLANK(quoteRecord.Modalita_Pagamento_PDF__c))}"
+          rendered="{!NOT(ISBLANK(quoteRecord.Condizione_di_Pagamento__c))}"
           ><div class="section-title">MODALITÀ PAGAMENTO</div>
           <div class="notes">
             <apex:outputText
-              value="{!quoteRecord.Modalita_Pagamento_PDF__c}"
+              value="{!quoteRecord.Condizione_di_Pagamento__c}"
             /></div
         ></apex:outputPanel>
         <apex:outputPanel
           layout="block"
-          rendered="{!NOT(ISBLANK(quoteRecord.Description))}"
+          rendered="{!NOT(ISBLANK(quoteRecord.Descrizione_Condizione_di_Pagamento__c))}"
           ><div class="section-title">NOTE</div>
           <div class="notes">
-            <apex:outputText value="{!quoteRecord.Description}" /></div
+            <apex:outputText
+              value="{!quoteRecord.Descrizione_Condizione_di_Pagamento__c}"
+            /></div
         ></apex:outputPanel>
       </apex:outputPanel>
 
@@ -337,7 +420,7 @@
           />
         </div>
 
-        <table class="plus-order-header">
+        <table class="plus-order-header brand-header">
           <tr>
             <td>
               <apex:image
@@ -347,14 +430,14 @@
                 alt="Pienissimo - Strategie per locali di successo"
               />
             </td>
-            <td>
+            <td class="company-details">
               Pienissimo s.r.l.<br />Strada Rovereta, 6<br />47891 Falciano,<br />San
               Marino
             </td>
           </tr>
         </table>
 
-        <table class="plus-order-header">
+        <table class="plus-order-header quote-heading">
           <tr>
             <td>
               <h1 class="plus-order-title">
@@ -363,7 +446,7 @@
               </h1>
               <apex:outputText value="{!generatedDate}" />
             </td>
-            <td>
+            <td class="customer-card">
               <strong>Fattura a:</strong><br />
               <apex:outputText value="{!customerName}" /><br />
               <apex:outputText
@@ -438,19 +521,21 @@
 
         <apex:outputPanel
           layout="block"
-          rendered="{!NOT(ISBLANK(quoteRecord.Modalita_Pagamento_PDF__c))}"
+          rendered="{!NOT(ISBLANK(quoteRecord.Condizione_di_Pagamento__c))}"
           ><div class="section-title">MODALITA' PAGAMENTO</div>
           <div class="notes">
             <apex:outputText
-              value="{!quoteRecord.Modalita_Pagamento_PDF__c}"
+              value="{!quoteRecord.Condizione_di_Pagamento__c}"
             /></div
         ></apex:outputPanel>
         <apex:outputPanel
           layout="block"
-          rendered="{!NOT(ISBLANK(quoteRecord.Description))}"
+          rendered="{!NOT(ISBLANK(quoteRecord.Descrizione_Condizione_di_Pagamento__c))}"
           ><div class="section-title">NOTE</div>
           <div class="notes">
-            <apex:outputText value="{!quoteRecord.Description}" /></div
+            <apex:outputText
+              value="{!quoteRecord.Descrizione_Condizione_di_Pagamento__c}"
+            /></div
         ></apex:outputPanel>
       </apex:outputPanel>
     </body>
