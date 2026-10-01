@@ -136,7 +136,16 @@
 
             <template if:true={showNewSelection}>
               <div class="selected-panel new-selection-panel">
-                <div class="section-label">Prodotti scelti da aggiungere</div>
+                <div class="selected-panel-heading">
+                  <div>
+                    <div class="section-label">
+                      Prodotti scelti da aggiungere
+                    </div>
+                    <div class="selected-subtitle">
+                      {selectedProductCountLabel}
+                    </div>
+                  </div>
+                </div>
                 <div class="selected-table">
                   <div class="selected-header">
                     <span>Prodotto</span>
@@ -255,6 +264,69 @@
                 disabled={isSearchDisabled}
                 onchange={handleSearchChange}
               ></lightning-input>
+
+              <template if:true={showPickerSelection}>
+                <div
+                  class="selected-panel new-selection-panel picker-selection-panel"
+                >
+                  <div class="selected-panel-heading">
+                    <div>
+                      <div class="section-label">
+                        Prodotti scelti da aggiungere
+                      </div>
+                      <div class="selected-subtitle">
+                        {selectedProductCountLabel}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="selected-table">
+                    <div class="selected-header">
+                      <span>Prodotto</span>
+                      <span>Qta</span>
+                      <span>Stato</span>
+                      <span></span>
+                    </div>
+                    <div class="selected-body">
+                      <template for:each={selectedProducts} for:item="product">
+                        <div class="selected-row" key={product.rowKey}>
+                          <div class="selected-main">
+                            <div class="product-title">
+                              {product.productName}
+                            </div>
+                            <div class="product-meta">
+                              <span>{product.productCode}</span>
+                              <span>{product.typeLabel}</span>
+                              <span>Prezzo {product.unitPrice}</span>
+                            </div>
+                          </div>
+                          <lightning-input
+                            class="quantity-input"
+                            type="number"
+                            label="Quantita"
+                            value={product.quantity}
+                            min="0.01"
+                            step="0.01"
+                            data-id={product.pricebookEntryId}
+                            variant="label-hidden"
+                            disabled={product.quantityDisabled}
+                            required
+                            onchange={handleQuantityChange}
+                          ></lightning-input>
+                          <span class="row-status">{product.rowStatus}</span>
+                          <lightning-button-icon
+                            icon-name="utility:delete"
+                            alternative-text="Rimuovi"
+                            title="Rimuovi"
+                            variant="bare"
+                            data-id={product.pricebookEntryId}
+                            onclick={handleRemoveProduct}
+                          ></lightning-button-icon>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </template>
 
               <template if:true={hasProductOptions}>
                 <div class="available-table">
