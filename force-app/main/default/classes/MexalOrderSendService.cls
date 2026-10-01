@@ -120,7 +120,11 @@ public with sharing class MexalOrderSendService {
     payload.put('numero', AUTO_NUMBER);
     payload.put('cod_conto', orderRecord.Account.Codice_Cliente_Mexal__c);
     payload.put('data_documento', formatDate(orderRecord.EffectiveDate));
-    putValue(payload, 'id_pagamento', orderRecord.Codice_Pagamento_Mexal__c);
+    putIntegerValue(
+      payload,
+      'id_pagamento',
+      orderRecord.Codice_Pagamento_Mexal__c
+    );
     putLineArrays(payload, orderRecord.OrderItems);
     return payload;
   }
@@ -134,6 +138,7 @@ public with sharing class MexalOrderSendService {
     List<Object> articleCodes = new List<Object>();
     List<Object> quantities = new List<Object>();
     List<Object> vatCodes = new List<Object>();
+    List<Object> dueDates = new List<Object>();
     Integer lineNumber = 1;
 
     for (OrderItem line : orderLines) {
@@ -144,6 +149,10 @@ public with sharing class MexalOrderSendService {
       );
       quantities.add(new List<Object>{ lineNumber, line.Quantity });
       vatCodes.add(new List<Object>{ lineNumber, DEFAULT_VAT_CODE });
+      String dueDate = formatDate(line.Data_Scadenza__c);
+      if (!String.isBlank(dueDate)) {
+        dueDates.add(new List<Object>{ lineNumber, dueDate });
+      }
       lineNumber++;
     }
 
@@ -152,6 +161,9 @@ public with sharing class MexalOrderSendService {
     payload.put('codice_articolo', articleCodes);
     payload.put('quantita', quantities);
     payload.put('cod_iva', vatCodes);
+    if (!dueDates.isEmpty()) {
+      payload.put('dt_sca_riga', dueDates);
+    }
   }
 
   private static Map<Id, Integer> buildLineNumberMap(
@@ -253,6 +265,12 @@ public with sharing class MexalOrderSendService {
 
       String headerName = parts[0].toLowerCase();
       String headerValue = parts[1].trim();
+      if (headerName == 'location') {
+        String numberFromLocation = findMexalOrderNumberInLocation(headerValue);
+        if (!String.isBlank(numberFromLocation)) {
+          return numberFromLocation;
+        }
+      }
       if (
         headerName.contains('numero') ||
         headerName.contains('ordine') ||
@@ -263,6 +281,26 @@ public with sharing class MexalOrderSendService {
     }
 
     return null;
+  }
+
+  private static String findMexalOrderNumberInLocation(String location) {
+    if (String.isBlank(location)) {
+      return null;
+    }
+
+    String documentKey = location.trim();
+    Integer queryIndex = documentKey.indexOf('?');
+    if (queryIndex >= 0) {
+      documentKey = documentKey.substring(0, queryIndex);
+    }
+
+    Integer slashIndex = documentKey.lastIndexOf('/');
+    if (slashIndex >= 0) {
+      documentKey = documentKey.substring(slashIndex + 1);
+    }
+
+    List<String> parts = documentKey.split('\\+');
+    return parts.size() >= 3 ? parts[2].trim() : null;
   }
 
   private static String findMexalOrderNumberInBody(String body) {
@@ -316,6 +354,24 @@ public with sharing class MexalOrderSendService {
     String value
   ) {
     payload.put(fieldName, String.isBlank(value) ? '' : value.trim());
+  }
+
+  private static void putIntegerValue(
+    Map<String, Object> payload,
+    String fieldName,
+    String value
+  ) {
+    if (String.isBlank(value)) {
+      return;
+    }
+
+    try {
+      payload.put(fieldName, Integer.valueOf(value.trim()));
+    } catch (Exception error) {
+      throw new MexalOrderSendException(
+        'Valore numerico non valido per ' + fieldName + ': ' + value
+      );
+    }
   }
 
   private static Integer parseInteger(String value) {

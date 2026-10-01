@@ -159,16 +159,28 @@ public with sharing class MexalCustomerCreateService {
     putValue(payload, 'pec', account.PEC__c);
     putValue(payload, 'codice_sdi', account.Codice_Destinatario_SDI__c);
     putValue(payload, 'cod_agente', account.Codice_Agente_Esterno__c);
-    putValue(payload, 'cod_zona', account.Zona__c);
-    putValue(payload, 'cod_cat_pr', account.Categoria_Provvigioni_Cliente__c);
+    putIntegerValue(payload, 'cod_zona', account.Zona__c);
+    putIntegerValue(
+      payload,
+      'cod_cat_pr',
+      account.Categoria_Provvigioni_Cliente__c
+    );
     putValue(payload, 'tp_nazionalita', deriveFiscalResidenceCode(account));
 
     // Settled by the customer-registry review: Pienissimo uses listino 1 and Euro only.
     payload.put('cod_listino', 1);
     payload.put('valuta', 1);
-    putValue(payload, 'gest_fatt_el', deriveElectronicInvoiceType(account));
-    putValue(payload, 'serie_fatt_el', deriveElectronicInvoiceSeries(account));
-    putValue(
+    putOptionalTextValue(
+      payload,
+      'gest_fatt_el',
+      deriveElectronicInvoiceType(account)
+    );
+    putIntegerValue(
+      payload,
+      'serie_fatt_el',
+      deriveElectronicInvoiceSeries(account)
+    );
+    putOptionalTextValue(
       payload,
       'cod_modu_allega',
       deriveElectronicInvoiceAttachment(account)
@@ -227,7 +239,109 @@ public with sharing class MexalCustomerCreateService {
     if (country == 'IT' || country == 'ITALIA' || country == 'ITALY') {
       return 'I';
     }
-    return null;
+    if (
+      country == 'SM' ||
+      country == 'SAN MARINO' ||
+      country == 'RSM' ||
+      country == 'REPUBLIC OF SAN MARINO' ||
+      country == 'REPUBBLICA DI SAN MARINO'
+    ) {
+      return 'R';
+    }
+    if (
+      country == 'VA' ||
+      country == 'VAT' ||
+      country == 'VATICAN' ||
+      country == 'VATICANO' ||
+      country == 'CITTA DEL VATICANO' ||
+      country == 'CITTA\' DEL VATICANO' ||
+      country == 'HOLY SEE'
+    ) {
+      return 'V';
+    }
+    if (isEuropeanUnionCountry(country)) {
+      return 'C';
+    }
+    return String.isBlank(country) ? null : 'E';
+  }
+
+  private static Boolean isEuropeanUnionCountry(String country) {
+    return new Set<String>{
+        'AT',
+        'AUSTRIA',
+        'BE',
+        'BELGIUM',
+        'BELGIO',
+        'BG',
+        'BULGARIA',
+        'HR',
+        'CROATIA',
+        'CROAZIA',
+        'CY',
+        'CYPRUS',
+        'CIPRO',
+        'CZ',
+        'CZECHIA',
+        'CZECH REPUBLIC',
+        'REPUBBLICA CECA',
+        'DK',
+        'DENMARK',
+        'DANIMARCA',
+        'EE',
+        'ESTONIA',
+        'FI',
+        'FINLAND',
+        'FINLANDIA',
+        'FR',
+        'FRANCE',
+        'FRANCIA',
+        'DE',
+        'GERMANY',
+        'GERMANIA',
+        'GR',
+        'GREECE',
+        'GRECIA',
+        'HU',
+        'HUNGARY',
+        'UNGHERIA',
+        'IE',
+        'IRELAND',
+        'IRLANDA',
+        'LV',
+        'LATVIA',
+        'LETTONIA',
+        'LT',
+        'LITHUANIA',
+        'LITUANIA',
+        'LU',
+        'LUXEMBOURG',
+        'LUSSEMBURGO',
+        'MT',
+        'MALTA',
+        'NL',
+        'NETHERLANDS',
+        'PAESI BASSI',
+        'PL',
+        'POLAND',
+        'POLONIA',
+        'PT',
+        'PORTUGAL',
+        'PORTOGALLO',
+        'RO',
+        'ROMANIA',
+        'SK',
+        'SLOVAKIA',
+        'SLOVACCHIA',
+        'SI',
+        'SLOVENIA',
+        'ES',
+        'SPAIN',
+        'SPAGNA',
+        'SE',
+        'SWEDEN',
+        'SVEZIA'
+      }
+      .contains(country);
   }
 
   private static String deriveElectronicInvoiceType(Account account) {
@@ -260,6 +374,34 @@ public with sharing class MexalCustomerCreateService {
     String value
   ) {
     payload.put(fieldName, String.isBlank(value) ? '' : value.trim());
+  }
+
+  private static void putOptionalTextValue(
+    Map<String, Object> payload,
+    String fieldName,
+    String value
+  ) {
+    if (!String.isBlank(value)) {
+      payload.put(fieldName, value.trim());
+    }
+  }
+
+  private static void putIntegerValue(
+    Map<String, Object> payload,
+    String fieldName,
+    String value
+  ) {
+    if (String.isBlank(value)) {
+      return;
+    }
+
+    try {
+      payload.put(fieldName, Integer.valueOf(value.trim()));
+    } catch (Exception error) {
+      throw new MexalCustomerCreateException(
+        'Valore numerico non valido per ' + fieldName + ': ' + value
+      );
+    }
   }
 
   private static Result buildResult(

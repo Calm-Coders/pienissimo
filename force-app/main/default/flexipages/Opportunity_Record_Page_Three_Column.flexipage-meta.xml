@@ -225,12 +225,30 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Amount</fieldItem>
-                <identifier>RecordAmountField</identifier>
+                <fieldItem>Record.Origine_WooCommerce__c</fieldItem>
+                <identifier>RecordOrigine_WooCommerce_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
-                        <operator>NE</operator>
+                        <leftValue>{!Record.RecordType.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>WooCommerce</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Tipo_Opportunita__c</fieldItem>
+                <identifier>RecordTipo_Opportunita_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.RecordType.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Plus Attivazione/Rinnovo</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -291,6 +309,22 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Amount</fieldItem>
+                <identifier>RecordAmountField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-f31cfb4a-cff9-4183-ab78-8e77ec6894f0</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -325,18 +359,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Tipo_Opportunita__c</fieldItem>
-                <identifier>RecordTipo_Opportunita_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Checkout_Link__c</fieldItem>
-                <identifier>RecordCheckout_Link_cField</identifier>
+                <fieldItem>Record.Motivazione_Chiusa_Persa__c</fieldItem>
+                <identifier>RecordMotivazione_Chiusa_Persa_cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.CreatedBy.Username}</leftValue>
@@ -345,27 +369,6 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Origine_WooCommerce__c</fieldItem>
-                <identifier>RecordOrigine_WooCommerce_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.RecordType.Name}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>WooCommerce</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-dac64c49-7ca4-4dd8-9dde-aca45489bcc5</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -383,14 +386,18 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
+        <name>Facet-dac64c49-7ca4-4dd8-9dde-aca45489bcc5</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Motivazione_Chiusa_Persa__c</fieldItem>
-                <identifier>RecordMotivazione_Chiusa_Persa_cField</identifier>
+                <fieldItem>Record.Checkout_Link__c</fieldItem>
+                <identifier>RecordCheckout_Link_cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.CreatedBy.Username}</leftValue>
@@ -424,58 +431,6 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-f2231ac9-7107-4220-8387-0360403bcb07</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ContractId</fieldItem>
-                <identifier>RecordContractIdField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-23e443a5-82a0-4dcb-b487-eb03307da148</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.SyncedQuoteId</fieldItem>
-                <identifier>RecordSyncedQuoteIdField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-b92bbf12-b4b7-4399-96b6-1fc48619422d</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-23e443a5-82a0-4dcb-b487-eb03307da148</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column6</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-b92bbf12-b4b7-4399-96b6-1fc48619422d</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column7</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-a1e0eeff-4d6c-4d86-99cd-83695670817d</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -565,24 +520,12 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection2</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-a1e0eeff-4d6c-4d86-99cd-83695670817d</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Other Information</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection4</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>

@@ -6,7 +6,15 @@
     <picklistValues>
         <picklist>Anno_Accademico__c</picklist>
         <values>
-            <fullName>2026/2027</fullName>
+            <fullName>2026%2F2027</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2027%2F2028</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2028%2F2029</fullName>
             <default>false</default>
         </values>
     </picklistValues>

@@ -1250,8 +1250,8 @@ private class MexalIntegrationTest {
     accountRecord.Codice_Cliente_Mexal__c = CUSTOMER_CODE;
     accountRecord.BillingCountry = 'IT';
     accountRecord.Codice_Agente_Esterno__c = 'AG001';
-    accountRecord.Zona__c = 'ZONA01';
-    accountRecord.Categoria_Provvigioni_Cliente__c = 'CAT01';
+    accountRecord.Zona__c = '7';
+    accountRecord.Categoria_Provvigioni_Cliente__c = '19';
     TestDataFactory.insertAllowingDuplicates(accountRecord);
     TestHttpMock mock = TestHttpMock.install()
       .when('/clienti/501.00001', 204, '');
@@ -1270,11 +1270,11 @@ private class MexalIntegrationTest {
       'The customer update should send the Account agent code'
     );
     System.assert(
-      mock.requests[0].getBody().contains('"cod_zona":"ZONA01"'),
+      mock.requests[0].getBody().contains('"cod_zona":7'),
       'The customer update should send the Account zone'
     );
     System.assert(
-      mock.requests[0].getBody().contains('"cod_cat_pr":"CAT01"'),
+      mock.requests[0].getBody().contains('"cod_cat_pr":19'),
       'The customer update should send the Account commission category'
     );
     System.assert(
@@ -1282,12 +1282,63 @@ private class MexalIntegrationTest {
       'Italian customers should enable electronic invoicing'
     );
     System.assert(
-      mock.requests[0].getBody().contains('"serie_fatt_el":"3"'),
+      mock.requests[0].getBody().contains('"serie_fatt_el":3'),
       'Italian customers should send the agreed electronic invoice series'
     );
     System.assert(
       mock.requests[0].getBody().contains('"cod_modu_allega":"FT"'),
       'Italian customers should send the agreed PDF attachment module'
+    );
+  }
+
+  @isTest
+  static void customerUpdateOmitsBlankOptionalMexalFields() {
+    Account accountRecord = TestDataFactory.buildAzienda('San Marino');
+    accountRecord.Codice_Cliente_Mexal__c = CUSTOMER_CODE;
+    accountRecord.BillingCountry = 'SM';
+    accountRecord.Codice_Agente_Esterno__c = '610.00019';
+    accountRecord.Zona__c = null;
+    accountRecord.Categoria_Provvigioni_Cliente__c = null;
+    TestDataFactory.insertAllowingDuplicates(accountRecord);
+    TestHttpMock mock = TestHttpMock.install()
+      .when('/clienti/501.00001', 204, '');
+
+    Test.startTest();
+    MexalCustomerCreateService.updateForAccount(accountRecord.Id);
+    Test.stopTest();
+
+    String requestBody = mock.requests[0].getBody();
+    System.assert(
+      requestBody.contains('"cod_listino":1'),
+      'Customer updates should still send the fixed price-list code'
+    );
+    System.assert(
+      requestBody.contains('"valuta":1'),
+      'Customer updates should still send the fixed currency code'
+    );
+    System.assert(
+      requestBody.contains('"tp_nazionalita":"R"'),
+      'San Marino customers should send the Mexal fiscal-residence code'
+    );
+    System.assert(
+      !requestBody.contains('"cod_zona":'),
+      'Blank numeric optional fields should be omitted'
+    );
+    System.assert(
+      !requestBody.contains('"cod_cat_pr":'),
+      'Blank numeric optional fields should be omitted'
+    );
+    System.assert(
+      !requestBody.contains('"gest_fatt_el":'),
+      'Blank e-invoicing fields should be omitted'
+    );
+    System.assert(
+      !requestBody.contains('"serie_fatt_el":'),
+      'Blank numeric e-invoicing fields should be omitted'
+    );
+    System.assert(
+      !requestBody.contains('"cod_modu_allega":'),
+      'Blank e-invoicing fields should be omitted'
     );
   }
 
@@ -1380,11 +1431,13 @@ private class MexalIntegrationTest {
         'Corso Ordine',
         TestDataFactory.unique('ART-ORD')
       );
-      TestDataFactory.orderItem(
+      OrderItem line = TestDataFactory.orderItem(
         orderRecord.Id,
         TestDataFactory.standardEntry(product.Id, 250),
         2
       );
+      line.Data_Scadenza__c = Date.today().addDays(30);
+      update line;
     }
     return orderRecord;
   }
@@ -1392,14 +1445,16 @@ private class MexalIntegrationTest {
   @isTest
   static void orderSendMapsTheMexalDocumentBack() {
     Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
-    orderRecord.Codice_Pagamento_Mexal__c = 'PAG01';
+    orderRecord.Codice_Pagamento_Mexal__c = '1';
     update orderRecord;
     TestHttpMock mock = TestHttpMock.install()
       .when(
         '/ordini-clienti',
         201,
         '',
-        new Map<String, String>{ 'X-Numero-Documento' => '77' }
+        new Map<String, String>{
+          'location' => '/webapi/risorse/documenti/ordini-clienti/OC+10+77'
+        }
       );
 
     Test.startTest();
@@ -1430,7 +1485,47 @@ private class MexalIntegrationTest {
       mock.requests[0].getBody()
     );
     System.assertEquals(CUSTOMER_CODE, payload.get('cod_conto'));
-    System.assertEquals('PAG01', payload.get('id_pagamento'));
+    System.assertEquals(1, payload.get('id_pagamento'));
+    List<Object> lineDueDates = (List<Object>) payload.get('dt_sca_riga');
+    List<Object> firstLineDueDate = (List<Object>) lineDueDates[0];
+    System.assertEquals(1, firstLineDueDate[0]);
+    System.assertEquals(
+      formatDate(Date.today().addDays(30)),
+      firstLineDueDate[1]
+    );
+  }
+
+  @isTest
+  static void orderSendOmitsBlankPaymentCode() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    orderRecord.Codice_Pagamento_Mexal__c = null;
+    update orderRecord;
+    List<OrderItem> lines = [
+      SELECT Id, Data_Scadenza__c
+      FROM OrderItem
+      WHERE OrderId = :orderRecord.Id
+    ];
+    for (OrderItem line : lines) {
+      line.Data_Scadenza__c = null;
+    }
+    update lines;
+    TestHttpMock mock = TestHttpMock.install().when('/ordini-clienti', 201, '');
+
+    Test.startTest();
+    MexalOrderSendService.Result result = MexalOrderSendService.sendOrder(
+      orderRecord.Id
+    );
+    Test.stopTest();
+
+    System.assertEquals(true, result.success);
+    System.assert(
+      !mock.requests[0].getBody().contains('"id_pagamento":'),
+      'Blank payment codes should not be sent to Mexal'
+    );
+    System.assert(
+      !mock.requests[0].getBody().contains('"dt_sca_riga":'),
+      'Blank line due dates should not be sent to Mexal'
+    );
   }
 
   @isTest
@@ -1569,5 +1664,13 @@ private class MexalIntegrationTest {
       .Mexal_Integration_Status__c
     );
     new OrderMexalIntegrationQueueable(null, null).execute(null);
+  }
+
+  private static String formatDate(Date value) {
+    return value == null
+      ? null
+      : String.valueOf(value.year()).leftPad(4, '0') +
+        String.valueOf(value.month()).leftPad(2, '0') +
+        String.valueOf(value.day()).leftPad(2, '0');
   }
 }

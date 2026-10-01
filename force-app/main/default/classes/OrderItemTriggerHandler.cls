@@ -4,6 +4,7 @@ public with sharing class OrderItemTriggerHandler {
   private static final String TRANCHE_STATUS_PARTIAL = 'Parzialmente Pagata';
   private static final String TRANCHE_STATUS_PAID = 'Pagata';
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
+  private static final String TICKET_STATUS_ORDERED = 'Ordinato';
   private static final String TICKET_STATUS_AVAILABLE = 'Disponibile';
   private static final String ORDER_STATUS_COLLECTED = 'Incassato';
 
@@ -166,7 +167,7 @@ public with sharing class OrderItemTriggerHandler {
       WHERE
         Order_Product__c IN :paidOrderItemIds
         AND RecordType.DeveloperName = :TICKET_RECORD_TYPE_DEVELOPER_NAME
-        AND (Status != :TICKET_STATUS_AVAILABLE
+        AND (Status = :TICKET_STATUS_ORDERED
         OR Fattura_Pagata__c = FALSE)
     ]) {
       ticketUpdates.add(

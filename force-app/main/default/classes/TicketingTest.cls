@@ -188,6 +188,71 @@ private class TicketingTest {
   }
 
   @isTest
+  static void wooOrderRollsBackWhenTicketMappingIsMissing() {
+    System.runAs(TestDataFactory.runner()) {
+      TestDataFactory.activateStandardPricebook();
+      Product2 product = TestDataFactory.item(
+        'Ticket senza mappatura',
+        'SC-NOMAP'
+      );
+      product.Genera_Biglietto__c = true;
+      update product;
+      TestDataFactory.standardEntry(product.Id, 75);
+      Account accountRecord = TestDataFactory.azienda('Cliente No Map');
+      Opportunity opportunityRecord = TestDataFactory.opportunity(
+        accountRecord.Id
+      );
+
+      Test.startTest();
+      callWoo(wooPayload('wc_order_nomap', 'SC-NOMAP', opportunityRecord.Id));
+      Test.stopTest();
+
+      System.assertEquals(
+        500,
+        RestContext.response.statusCode,
+        'Missing ticket mapping should return an integration error.'
+      );
+      System.assertEquals(
+        0,
+        [
+          SELECT COUNT()
+          FROM Order
+          WHERE WooCommerce_Order_Key__c = 'wc_order_nomap'
+        ],
+        'Failed WooCommerce order creation must roll back the parent Order.'
+      );
+      System.assertEquals(
+        1,
+        [
+          SELECT COUNT()
+          FROM Integration_Log__c
+          WHERE
+            Flow_Name__c = 'WoocommerceOrderService.createOrder'
+            AND Is_Error__c = TRUE
+        ],
+        'The rollback must not remove the error integration log.'
+      );
+      Integration_Log__c logRow = [
+        SELECT Is_Error__c, Exception_Message__c
+        FROM Integration_Log__c
+        WHERE Flow_Name__c = 'WoocommerceOrderService.createOrder'
+        LIMIT 1
+      ];
+      System.assertEquals(
+        true,
+        logRow.Is_Error__c,
+        'The saved integration log should be marked as an error.'
+      );
+      System.assert(
+        logRow.Exception_Message__c.contains(
+          'Nessuna mappatura edizione trovata'
+        ),
+        'The integration log should keep the ticket-mapping failure reason.'
+      );
+    }
+  }
+
+  @isTest
   static void wooOrderRejectsInvalidPayloads() {
     System.runAs(TestDataFactory.runner()) {
       TestDataFactory.activateStandardPricebook();

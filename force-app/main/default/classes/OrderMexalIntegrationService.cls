@@ -4,13 +4,18 @@ public with sharing class OrderMexalIntegrationService {
   private static final String STATUS_RUNNING = 'Running';
   private static final String STATUS_SENT = 'Sent';
   private static final String STATUS_FAILED = 'Failed';
+  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = false;
   private static final Set<Id> ORDER_IDS_QUEUED_IN_TRANSACTION = new Set<Id>();
 
   public class OrderMexalIntegrationException extends Exception {
   }
 
   public static void enqueueForCreatedOrders(List<Order> newOrders) {
-    if (isSandbox()) {
+    if (Test.isRunningTest()) {
+      return;
+    }
+
+    if (!shouldRunMexalQueue()) {
       return;
     }
 
@@ -165,6 +170,14 @@ public with sharing class OrderMexalIntegrationService {
     }
   }
 
+  private static Boolean shouldRunMexalQueue() {
+    if (ALLOW_MEXAL_QUEUE_IN_SANDBOX == true) {
+      return true;
+    }
+
+    return [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox != true;
+  }
+
   private static void logNonBlockingAnticipayFailure(
     Id orderId,
     AnticipayAccountService.Result result
@@ -253,10 +266,6 @@ public with sharing class OrderMexalIntegrationService {
     }
 
     return accountsWithEarlierOrders;
-  }
-
-  private static Boolean isSandbox() {
-    return [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox;
   }
 
   private static Order loadOrderWithAccount(Id orderId) {
