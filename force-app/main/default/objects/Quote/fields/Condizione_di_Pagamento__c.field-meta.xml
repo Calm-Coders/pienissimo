@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Condizione_di_Pagamento__c</fullName>
+    <description>Condizione di pagamento applicata al preventivo.</description>
+    <label>Condizione di Pagamento</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>RID FINE MESE DF</fullName>
+                <default>false</default>
+                <label>RID FINE MESE DF</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

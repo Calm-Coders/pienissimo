@@ -32,128 +32,137 @@
             <strong>{accountLabel}</strong>
           </div>
           <div>
-            <span class="context-label">Evento</span>
-            <strong>{campaignLabel}</strong>
+            <span class="context-label">Ordine</span>
+            <strong>{orderLabel}</strong>
           </div>
-          <template if:true={page.eventStartDate}>
-            <div>
-              <span class="context-label">Data evento</span>
-              <strong>
-                <lightning-formatted-date-time
-                  value={page.eventStartDate}
-                  day="2-digit"
-                  month="long"
-                  year="numeric"
-                ></lightning-formatted-date-time>
-              </strong>
-            </div>
-          </template>
         </div>
 
-        <template if:true={showRinunciaAction}>
-          <div class="top-actions">
-            <lightning-button
-              label="Rinuncia"
-              variant="destructive"
-              disabled={rinunciaActionDisabled}
-              onclick={handleMarkTicketRinuncia}
-            ></lightning-button>
-          </div>
-        </template>
-
         <template if:true={showTickets}>
-          <div class="ticket-list">
-            <template for:each={tickets} for:item="ticket">
-              <article class={ticket.cardClass} key={ticket.assetId}>
-                <header class="ticket-header">
+          <div class="participation-list">
+            <template for:each={groups} for:item="group">
+              <section class="participation-group" key={group.groupId}>
+                <header class="participation-header">
                   <div>
-                    <p class="ticket-number">
-                      Biglietto {ticket.displayNumber}
-                    </p>
-                    <h2>{ticket.productName}</h2>
+                    <p class="context-label">Edizione</p>
+                    <h2>{group.campaignName}</h2>
+                    <template if:true={group.eventStartDate}>
+                      <lightning-formatted-date-time
+                        value={group.eventStartDate}
+                        day="2-digit"
+                        month="long"
+                        year="numeric"
+                      ></lightning-formatted-date-time>
+                    </template>
                   </div>
-                  <span class={ticket.badgeClass}>{ticket.badgeLabel}</span>
+                  <template if:true={group.showRinunciaAction}>
+                    <lightning-button
+                      label="Rinuncia"
+                      variant="destructive"
+                      data-group-id={group.groupId}
+                      disabled={group.rinunciaDisabled}
+                      onclick={handleMarkParticipationGroupRinuncia}
+                    ></lightning-button>
+                  </template>
                 </header>
 
-                <template if:true={ticket.editable}>
-                  <div class="field-grid">
-                    <lightning-input
-                      data-asset-id={ticket.assetId}
-                      data-field="firstName"
-                      label="Nome"
-                      value={ticket.firstName}
-                      required={ticket.rowRequiresFields}
-                      autocomplete="given-name"
-                      onchange={handleInput}
-                    ></lightning-input>
-                    <lightning-input
-                      data-asset-id={ticket.assetId}
-                      data-field="lastName"
-                      label="Cognome"
-                      value={ticket.lastName}
-                      required={ticket.rowRequiresFields}
-                      autocomplete="family-name"
-                      onchange={handleInput}
-                    ></lightning-input>
-                    <div class="field-with-status">
-                      <lightning-input
-                        data-asset-id={ticket.assetId}
-                        data-field="email"
-                        type="email"
-                        label="Email"
-                        value={ticket.email}
-                        required={ticket.rowRequiresFields}
-                        autocomplete="email"
-                        onchange={handleInput}
-                        onblur={handleEmailBlur}
-                      ></lightning-input>
-                      <template if:true={ticket.isLookingUp}>
-                        <lightning-spinner
-                          alternative-text="Ricerca del contatto"
-                          size="small"
-                        ></lightning-spinner>
-                      </template>
-                    </div>
-                    <lightning-input
-                      data-asset-id={ticket.assetId}
-                      data-field="phone"
-                      type="tel"
-                      label="Telefono"
-                      value={ticket.phone}
-                      required={ticket.rowRequiresFields}
-                      autocomplete="tel"
-                      onchange={handleInput}
-                    ></lightning-input>
-                  </div>
-                  <template if:true={ticket.contactRecognized}>
-                    <p class="contact-match" role="status">
-                      Contatto esistente riconosciuto tramite email.
-                    </p>
-                  </template>
-                  <template if:true={ticket.hasPartialInput}>
-                    <p class="row-warning" role="alert">
-                      Completa questa riga oppure svuotala prima di salvare.
-                    </p>
-                  </template>
-                </template>
+                <div class="ticket-list">
+                  <template for:each={group.tickets} for:item="ticket">
+                    <article class={ticket.cardClass} key={ticket.assetId}>
+                      <header class="ticket-header">
+                        <div>
+                          <p class="ticket-number">
+                            Biglietto {ticket.displayNumber}
+                          </p>
+                          <h2>{ticket.productName}</h2>
+                        </div>
+                        <span class={ticket.badgeClass}
+                          >{ticket.badgeLabel}</span
+                        >
+                      </header>
 
-                <template if:false={ticket.editable}>
-                  <dl class="assigned-details">
-                    <div>
-                      <dt>Partecipante</dt>
-                      <dd>{ticket.firstName} {ticket.lastName}</dd>
-                    </div>
-                    <div>
-                      <dt>Email</dt>
-                      <dd>{ticket.email}</dd>
-                    </div>
-                    <div>
-                      <dt>Telefono</dt>
-                      <dd>{ticket.phone}</dd>
-                    </div>
-                  </dl>
-                </template>
-              </article>
+                      <template if:true={ticket.editable}>
+                        <div class="field-grid">
+                          <lightning-input
+                            data-asset-id={ticket.assetId}
+                            data-field="firstName"
+                            label="Nome"
+                            value={ticket.firstName}
+                            required={ticket.rowRequiresFields}
+                            autocomplete="given-name"
+                            onchange={handleInput}
+                          ></lightning-input>
+                          <lightning-input
+                            data-asset-id={ticket.assetId}
+                            data-field="lastName"
+                            label="Cognome"
+                            value={ticket.lastName}
+                            required={ticket.rowRequiresFields}
+                            autocomplete="family-name"
+                            onchange={handleInput}
+                          ></lightning-input>
+                          <div class="field-with-status">
+                            <lightning-input
+                              data-asset-id={ticket.assetId}
+                              data-field="email"
+                              type="email"
+                              label="Email"
+                              value={ticket.email}
+                              required={ticket.rowRequiresFields}
+                              autocomplete="email"
+                              onchange={handleInput}
+                              onblur={handleEmailBlur}
+                            ></lightning-input>
+                            <template if:true={ticket.isLookingUp}>
+                              <lightning-spinner
+                                alternative-text="Ricerca del contatto"
+                                size="small"
+                              ></lightning-spinner>
+                            </template>
+                          </div>
+                          <lightning-input
+                            data-asset-id={ticket.assetId}
+                            data-field="phone"
+                            type="tel"
+                            label="Telefono"
+                            value={ticket.phone}
+                            required={ticket.rowRequiresFields}
+                            autocomplete="tel"
+                            onchange={handleInput}
+                          ></lightning-input>
+                        </div>
+                        <template if:true={ticket.contactRecognized}>
+                          <p class="contact-match" role="status">
+                            Contatto esistente riconosciuto tramite email.
+                          </p>
+                        </template>
+                        <template if:true={ticket.hasPartialInput}>
+                          <p class="row-warning" role="alert">
+                            Completa questa riga oppure svuotala prima di
+                            salvare.
+                          </p>
+                        </template>
+                      </template>
+
+                      <template if:false={ticket.editable}>
+                        <dl class="assigned-details">
+                          <div>
+                            <dt>Partecipante</dt>
+                            <dd>{ticket.firstName} {ticket.lastName}</dd>
+                          </div>
+                          <div>
+                            <dt>Email</dt>
+                            <dd>{ticket.email}</dd>
+                          </div>
+                          <div>
+                            <dt>Telefono</dt>
+                            <dd>{ticket.phone}</dd>
+                          </div>
+                        </dl>
+                      </template>
+                    </article>
+                  </template>
+                </div>
+              </section>
             </template>
           </div>
         </template>
@@ -180,6 +189,42 @@
               ></lightning-button>
             </template>
           </footer>
+        </template>
+
+        <template if:true={showAssignedTickets}>
+          <section class="assigned-ticket-section">
+            <header class="assigned-ticket-heading">
+              <p class="context-label">Riepilogo</p>
+              <h2>Biglietti gia assegnati</h2>
+            </header>
+            <div class="ticket-list">
+              <template for:each={assignedTickets} for:item="ticket">
+                <article class={ticket.cardClass} key={ticket.assetId}>
+                  <header class="ticket-header">
+                    <div>
+                      <p class="ticket-number">{ticket.campaignName}</p>
+                      <h2>{ticket.productName}</h2>
+                    </div>
+                    <span class={ticket.badgeClass}>{ticket.badgeLabel}</span>
+                  </header>
+                  <dl class="assigned-details">
+                    <div>
+                      <dt>Partecipante</dt>
+                      <dd>{ticket.firstName} {ticket.lastName}</dd>
+                    </div>
+                    <div>
+                      <dt>Email</dt>
+                      <dd>{ticket.email}</dd>
+                    </div>
+                    <div>
+                      <dt>Telefono</dt>
+                      <dd>{ticket.phone}</dd>
+                    </div>
+                  </dl>
+                </article>
+              </template>
+            </div>
+          </section>
         </template>
       </template>
     </section>

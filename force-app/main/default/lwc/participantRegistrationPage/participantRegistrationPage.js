@@ -2,7 +2,7 @@ import { api, LightningElement, wire } from "lwc";
 import { CurrentPageReference } from "lightning/navigation";
 import findContact from "@salesforce/apex/ParticipantRegistrationController.findContact";
 import loadPage from "@salesforce/apex/ParticipantRegistrationController.loadPage";
-import markTicketRinuncia from "@salesforce/apex/ParticipantRegistrationController.markTicketRinuncia";
+import markParticipationGroupRinuncia from "@salesforce/apex/ParticipantRegistrationController.markParticipationGroupRinuncia";
 import savePage from "@salesforce/apex/ParticipantRegistrationController.savePage";
 
 const READY = "READY";
@@ -15,6 +15,8 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
   token;
   page;
+  groups = [];
+  assignedTickets = [];
   tickets = [];
   isLoading = true;
   rinunciaAssetId;
@@ -47,18 +49,14 @@ export default class ParticipantRegistrationPage extends LightningElement {
     return this.tickets.length > 0;
   }
 
+  get showAssignedTickets() {
+    return this.assignedTickets.length > 0;
+  }
+
   get showFormActions() {
     return (
       this.page?.state === READY && this.tickets.some((row) => row.editable)
     );
-  }
-
-  get showRinunciaAction() {
-    return this.rinunciaTicket !== null;
-  }
-
-  get rinunciaTicket() {
-    return this.tickets.find((ticket) => ticket.canRinuncia) || null;
   }
 
   get showFinalMessage() {
@@ -97,13 +95,15 @@ export default class ParticipantRegistrationPage extends LightningElement {
     return this.page?.accountName || "-";
   }
 
-  get campaignLabel() {
-    return this.page?.campaignName || "-";
+  get orderLabel() {
+    return this.page?.orderNumber || "-";
   }
 
   async loadParticipants() {
     this.errorMessage = null;
     this.page = null;
+    this.groups = [];
+    this.assignedTickets = [];
     this.tickets = [];
 
     if (!this.token) {
@@ -129,12 +129,24 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
   applyPage(payload) {
     this.page = payload || {};
-    this.tickets = (payload?.tickets || []).map((ticket, index) =>
-      this.decorateTicket({
-        ...ticket,
-        displayNumber: index + 1
+    const decoratedTickets = (payload?.tickets || []).map((ticket, index) =>
+      this.decorateTicket({ ...ticket, displayNumber: index + 1 })
+    );
+    const ticketsById = new Map(
+      decoratedTickets.map((ticket) => [ticket.assetId, ticket])
+    );
+    const sourceGroups = payload?.groups || [];
+    this.groups = sourceGroups.map((group) =>
+      this.decorateGroup({
+        ...group,
+        tickets: (group.tickets || []).map(
+          (ticket) =>
+            ticketsById.get(ticket.assetId) || this.decorateTicket(ticket)
+        )
       })
     );
+    this.tickets = decoratedTickets;
+    this.assignedTickets = decoratedTickets.filter((ticket) => ticket.assigned);
 
     if (
       payload?.state !== READY &&
@@ -167,12 +179,14 @@ export default class ParticipantRegistrationPage extends LightningElement {
       editable && hasAnyParticipantValue && !hasCompleteParticipant;
     const pendingSave = editable && hasCompleteParticipant;
 
-    let badgeLabel = "Da compilare";
+    let badgeLabel = ticket.status || "Non disponibile";
     let badgeClass = "status-badge open-badge";
 
     if (pendingSave) {
       badgeLabel = "Pronto";
       badgeClass = "status-badge save-badge";
+    } else if (editable) {
+      badgeLabel = "Da compilare";
     } else if (assigned) {
       badgeLabel = "Assegnato";
       badgeClass = "status-badge assigned-badge";
@@ -267,6 +281,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
       return ticket;
     });
+    this.syncGroupTickets();
   }
 
   compactChanges(changes) {
@@ -333,20 +348,20 @@ export default class ParticipantRegistrationPage extends LightningElement {
     }
   }
 
-  async handleMarkTicketRinuncia() {
-    const assetId = this.rinunciaTicket?.assetId;
-    if (!assetId) {
+  async handleMarkParticipationGroupRinuncia(event) {
+    const groupAssetId = event.currentTarget.dataset.groupId;
+    if (!groupAssetId) {
       return;
     }
 
-    this.rinunciaAssetId = assetId;
+    this.rinunciaAssetId = groupAssetId;
     this.errorMessage = null;
     this.refreshTicketDecorations();
 
     try {
-      const payload = await markTicketRinuncia({
+      const payload = await markParticipationGroupRinuncia({
         token: this.token,
-        assetId
+        groupAssetId
       });
       this.applyPage(payload);
     } catch (error) {
@@ -359,6 +374,30 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
   refreshTicketDecorations() {
     this.tickets = this.tickets.map((ticket) => this.decorateTicket(ticket));
+    this.syncGroupTickets();
+  }
+
+  decorateGroup(group) {
+    return {
+      ...group,
+      showRinunciaAction: Boolean(group.canRinuncia),
+      rinunciaDisabled: this.rinunciaActionDisabled
+    };
+  }
+
+  syncGroupTickets() {
+    const ticketsById = new Map(
+      this.tickets.map((ticket) => [ticket.assetId, ticket])
+    );
+    this.groups = this.groups.map((group) =>
+      this.decorateGroup({
+        ...group,
+        tickets: group.tickets.map(
+          (ticket) => ticketsById.get(ticket.assetId) || ticket
+        )
+      })
+    );
+    this.assignedTickets = this.tickets.filter((ticket) => ticket.assigned);
   }
 
   handleModalKeydown(event) {

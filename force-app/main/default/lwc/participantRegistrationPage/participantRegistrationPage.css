@@ -97,6 +97,33 @@ h2 {
   padding-bottom: 1.5rem;
 }
 
+.participation-list {
+  display: grid;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.participation-group {
+  border-top: 1px solid var(--page-border);
+}
+
+.assigned-ticket-section {
+  border-top: 1px solid var(--page-border);
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 0;
+}
+
+.assigned-ticket-heading {
+  margin-bottom: 1rem;
+}
+
+.participation-header {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 1rem;
+}
+
 .ticket-list {
   display: grid;
   gap: 1rem;

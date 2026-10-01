@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Aziende_Operative</fullName>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Partita_IVA__c</columns>
+    <columns>Codice_Cliente_Mexal__c</columns>
+    <columns>ACCOUNT.PHONE1</columns>
+    <columns>Email_Contatto_Principale__c</columns>
+    <columns>Agente__c</columns>
+    <columns>Zona__c</columns>
+    <columns>Tipologia_Attivita__c</columns>
+    <columns>CORE.USERS.FIRST_NAME</columns>
+    <columns>CORE.USERS.LAST_NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Tipo_Record_Lista__c</field>
+        <operation>equals</operation>
+        <value>Azienda</value>
+    </filters>
+    <label>Aziende - Operativo</label>
+</ListView>

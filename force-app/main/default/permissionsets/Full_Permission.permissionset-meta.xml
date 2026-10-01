@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
+        <apexClass>BundleTranchController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CommercialAccountResolver</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -46,10 +50,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>QuoteManageProductsController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>BundleTranchController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <customPermissions>
@@ -288,6 +288,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Tipo_Record_Lista__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Account.Website</field>
         <readable>true</readable>
@@ -303,7 +308,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Asset.AssetLevel</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -439,6 +444,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Asset.Ready_for_Ticket_Dispatch__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Asset.SerialNumber</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -469,12 +479,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>BundleComponent__c.Bundle__c</field>
+        <field>BundleComponent__c.Bundle_Tranch__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>BundleComponent__c.Bundle_Tranch__c</field>
+        <field>BundleComponent__c.Bundle__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -529,6 +539,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Campaign.Da_Data_Competenza__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Campaign.Data_Avvio_Bruciatura__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Campaign.Data_Evento__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -540,16 +560,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Campaign.Data_Inizio_Evento__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Campaign.Da_Data_Competenza__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Campaign.Data_Avvio_Bruciatura__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -625,6 +635,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Event_Invitation__c.Last_URL_Error__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Event_Invitation__c.Order_Key__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Event_Invitation__c.Order__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -843,7 +863,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Opportunity.ExpectedRevenue</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -884,6 +904,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.Origine_WooCommerce__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Opportunity.Preventivo_Primario__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -903,8 +928,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Opportunity.Origine_WooCommerce__c</field>
+        <editable>false</editable>
+        <field>Opportunity.Tipo_Record_Lista__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -924,12 +949,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Order.Locale__c</field>
+        <field>Order.Codice_Pagamento_Mexal__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Order.Codice_Pagamento_Mexal__c</field>
+        <field>Order.Locale__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -965,6 +990,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Order.OpportunityId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Order.Ticket_Sent_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Order.Ticket_Sent__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1074,17 +1109,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Product2.Presenza_Piattaforma__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Product2.Price_1__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Price_2__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Product2.Presenza_Piattaforma__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1159,6 +1194,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Quote.Codice_Pagamento_Mexal__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Quote.ContactId</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1174,12 +1214,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Quote.Codice_Pagamento_Mexal__c</field>
+        <field>Quote.Discount</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Quote.Discount</field>
+        <field>Quote.Condizione_di_Pagamento__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Quote.Descrizione_Condizione_di_Pagamento__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1294,6 +1339,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Quote.Tipo_Opportunita_Lista__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Quote.TotalPrice</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1343,13 +1393,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Tranche__c.Completamente_Pagata__c</field>
+        <editable>true</editable>
+        <field>Tranche__c.Bundle_Tranch__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Tranche__c.Bundle_Tranch__c</field>
+        <editable>false</editable>
+        <field>Tranche__c.Completamente_Pagata__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1504,11 +1554,11 @@
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
-        <recordType>Opportunity.WooCommerce</recordType>
+        <recordType>Opportunity.Vendita_Standard</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
-        <recordType>Opportunity.Vendita_Standard</recordType>
+        <recordType>Opportunity.WooCommerce</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <tabSettings>

@@ -16,6 +16,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
+                <field>Order__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>Campaign__c</field>
             </layoutItems>
             <layoutItems>
@@ -49,6 +53,10 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>Account_Campaign_Key__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Order_Key__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

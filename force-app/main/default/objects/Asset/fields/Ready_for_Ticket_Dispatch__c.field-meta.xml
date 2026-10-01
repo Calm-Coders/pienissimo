@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ready_for_Ticket_Dispatch__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >Set when participant contact data is saved and the ticket Asset moves to Assegnato.</description>
+    <label>Ready for Ticket Dispatch</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
