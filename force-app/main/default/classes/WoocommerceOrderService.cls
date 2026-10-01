@@ -10,6 +10,7 @@ global without sharing class WoocommerceOrderService {
   global static void createOrder() {
     Integration_Log__c logRec = new Integration_Log__c();
     initializeLog(logRec);
+    Savepoint orderCreationSavepoint;
 
     try {
       RestRequest req = RestContext.request;
@@ -53,6 +54,8 @@ global without sharing class WoocommerceOrderService {
         OpportunityId = payloadOpportunityId,
         WooCommerce_Order_Key__c = payload.orderKey()
       );
+
+      orderCreationSavepoint = Database.setSavepoint();
       insert orderRec;
 
       insertOrderLines(orderRec.Id, orderBuildPlan, entriesByProductId);
@@ -65,6 +68,9 @@ global without sharing class WoocommerceOrderService {
       updateOpportunity(payload, orderRec.Id);
       writeSuccess(logRec, orderRec.Id, accountId, false);
     } catch (Exception e) {
+      if (orderCreationSavepoint != null) {
+        Database.rollback(orderCreationSavepoint);
+      }
       writeError(logRec, e);
     } finally {
       insert logRec;

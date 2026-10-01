@@ -14,6 +14,16 @@
                 <default>false</default>
                 <label>2026/2027</label>
             </value>
+            <value>
+                <fullName>2027/2028</fullName>
+                <default>false</default>
+                <label>2027/2028</label>
+            </value>
+            <value>
+                <fullName>2028/2029</fullName>
+                <default>false</default>
+                <label>2028/2029</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

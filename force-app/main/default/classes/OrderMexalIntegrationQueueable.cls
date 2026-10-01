@@ -3,6 +3,7 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
   private static final String STEP_ANTICIPAY = 'Anticipay';
   private static final String STEP_MEXAL_CUSTOMER = 'Mexal Customer';
   private static final String STEP_MEXAL_ORDER = 'Mexal Order';
+  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = false;
 
   private final Id orderId;
   private final String stepName;
@@ -47,6 +48,10 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
   }
 
   public void execute(QueueableContext context) {
+    if (!shouldRunInThisOrg()) {
+      return;
+    }
+
     if (orderId == null) {
       enqueueNextOrder();
       return;
@@ -126,5 +131,13 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
 
   private static String initialStep(Id orderId, Set<Id> firstOrderIds) {
     return STEP_MARK_RUNNING;
+  }
+
+  private static Boolean shouldRunInThisOrg() {
+    if (Test.isRunningTest() || ALLOW_MEXAL_QUEUE_IN_SANDBOX == true) {
+      return true;
+    }
+
+    return [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox != true;
   }
 }
