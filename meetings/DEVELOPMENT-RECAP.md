@@ -5466,3 +5466,110 @@ The org was **not opened**; every build claim is repository arithmetic against
 stale. **No Apex test was written, proposed or scaffolded** — a confirmed failure in
 `TestDataFactory.cls:257` is recorded only.
 ⚠ **`DEVELOPMENT-RECAP.it.md` §47 (24/09) is still missing — fifth flag.**
+
+## 52. Update 2026-09-30 — the ticket UAT ran, and the client reversed two decisions ROMI had already taken
+
+Nightly requirements-check, watermark 2026-09-29T22:00Z. **Client contact resumed**
+after the 29/09 blackout. Two sessions, both drilled in full from their Drive
+transcripts.
+
+### 🔑 The ticket UAT, 14:00 CEST, ~1h55m
+
+Aurel Mrruku, Elena Spini and Fabrizio Mastracci for ROMI; **Fabrizio Paganelli,
+Rebecca Marmo, Sabatino Rinaldi and Elisa Migliano** for Pienissimo. Scoped to the
+backend upstream of the marketing flow — the marketing flow proper was postponed
+again.
+
+**Five rulings came out of it.**
+
+1. 🔑 **The payment gate became a client directive, at tranche granularity.** No
+   ticket, QR code or nomination request may leave unless the invoice for **that
+   tranche** is paid and collected in full. Fabrizio Paganelli drew the bundle
+   consequence himself: the tickets inside a bundle order release per tranche, not
+   on the whole order, _"sennò agli eventi non viene nessuno."_ Marketing processes
+   only assets in `Disponibile`, which is the tranche-level paid invoice.
+2. 🟢 **The all-or-nothing send rule is dead.** ROMI agreed internally on 29/09
+   that tickets go only when every participant is named. The client ruled the
+   opposite: a buyer who names three of five **gets the three**, and the unnamed
+   two stay `Disponibile` until burned near the event. **The premise of the ROMI
+   design was also false** — the indiscriminate daily reminder it was built against
+   does not exist; Rebecca Marmo runs the ladder with configured delays and already
+   checks partial registrations. The client's own written funnel exit rule, which
+   the 29/09 room never raised, is vindicated.
+3. 🔴 **The mapping window becomes the competenza dates** — and with it, one order
+   can no longer span two editions. Aurel Mrruku named that cost out loud and
+   Fabrizio Paganelli accepted it: _"Ma infatti deve essere così."_ **That reverses
+   the per-order-line property he himself confirmed on 26 August**, and neither man
+   acknowledged the reversal. Costed at half a day; unbuilt; the mapping is still
+   at **13 of 51**.
+4. 🟢 **Campaign hierarchy confirmed as built** — event-type campaign parent,
+   edition-type child, exercised live with competenza dates, event dates, anno
+   accademico, venue and the marketing communication start date.
+5. 🟢 **The rinuncia button disappears after the first nomination.** A UI rule, not
+   a picklist ruling — whether `Rinuncia` is an Asset state is still the question
+   it has been since 19 August, and it went unasked in a room containing both the
+   people who can answer it.
+
+Also: **signed-but-unpaid quotes** get a procedure (invoice issued on signature
+regardless of collection; on agreed withdrawal a credit note plus a dedicated
+cancelled asset state), and **last-minute payments** get a proposed mechanism
+(Salesforce tags maintained by nightly jobs, with a manual override) that nobody
+was assigned to build.
+
+### 🔑 The Post UAT, 16:09 CEST, ~1h23m, ROMI-internal
+
+Called ten minutes after the client left, in Elena Spini's words because _"è
+esploso il mondo su sto flusso che coinvolge anche MKT."_ It specified the whole
+Salesforce-to-Marketing-Cloud send contract:
+
+- a **boolean flag** set to `true` on confirmation of **at least one** participant;
+- a **Marketing Cloud query** on that flag;
+- a **per-participant transactional send**, each to their own address, immediate
+  rather than nightly — the batch was explicitly dropped;
+- a **post-send write-back** on the asset to stop re-sends;
+- an eighth asset state, **`Inviato`**, written as soon as the record changes;
+- and a participant page showing **all paid tranches at once**, not one.
+
+🔴 **None of it exists.** At `DevMain` `0b6b828`, `AssetStatus` carries seven
+values and `Inviato` is not among them; `Asset` has no send flag, no sent
+timestamp, and **no field naming its tranche** — `Fattura_Pagata__c` is a bare
+checkbox, so a bundle asset cannot tell its own instalment from another's. Aurel
+Mrruku owes Fabrizio Mastracci the field specification and **neither action item
+carries a date**, against a **production release committed for Monday 5 October**
+and marketing UAT on **16 October**. The read side is deferred by name: the
+filtering criteria for paid tickets is the one item the session files under _Da
+approfondire_, pending a written flow document Elena Spini owes.
+
+### 🟢 What moved in the repository
+
+`DevMain` advanced `4c9b121` → **`0b6b828`** on PRs #69, #70 and #71. **The
+participant-document stack reached `DevMain`** — `e2bdb1f`, `1e1ab6d` and `963e582`
+are now ancestors of the head, verified by ancestry rather than commit message,
+closing the 🔴 the 29/09 recap raised. 🔴 **The cambio nominativo is still
+unbuilt, and was not discussed at either session.**
+
+### 🟢 One long-standing provenance gap closed
+
+**The ~60-days-before send figure is Sabatino Rinaldi's, from the 27 May kickoff** —
+read back from Aurel Mrruku's own notes. The standing warning that ROMI had chosen
+that figure for the client is withdrawn.
+
+### 🔴 Unchanged and live
+
+- **Multi-day events are still undecided, and the first is now dated.** Pienissimo
+  Live runs **24–26 November** on a single check-in; Mastery splits across April
+  and May and its ticket needs multiple entries. Deferred with no date.
+- ⚠ **The two gating items raised the night before — the seven-page participation
+  document and the mobile community — were not discussed at either session.** The
+  participation document was the reason the 29/09 sweep called this UAT at risk,
+  and the UAT came and went without it.
+- The **edition mapping exception** of 29/09 was never mentioned in the room.
+
+### Caveats
+
+The org was **not opened**; every build claim is repository arithmetic against
+`DevMain` at `0b6b828`. `STATUS.md` was not regenerated, so the Notion mirror stays
+stale. **No Apex test was written, proposed or scaffolded.** Aurel Mrruku's own
+admission is worth keeping with the rest: the UAT tests ran _"troppo tardi rispetto
+ai test con i clienti"_, and he finished ticket generation at **04:00** the previous
+morning. ⚠ **`DEVELOPMENT-RECAP.it.md` §47 (24/09) is still missing — sixth flag.**

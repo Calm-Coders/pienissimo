@@ -1044,6 +1044,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Product2.Categoria_Articolo__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Product2.Evento__c</field>
         <readable>true</readable>
     </fieldPermissions>

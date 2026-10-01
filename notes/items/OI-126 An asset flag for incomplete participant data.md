@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-07
-updated: 2026-09-29
+updated: 2026-09-30
 depends_on: [OI-78]
 requirement: BIG-06
 source: notes/meetings/2026-09-07 Interna Flussi MKT.md
@@ -116,3 +116,38 @@ and put on the **30/09** client agenda.
 or on `Event_Invitation__c` in `force-app` at `4c9b121`, and the aggregate the
 segment actually needs — tickets held versus tickets completed, per contact per
 campaign — has still not been chosen or placed.
+
+## 🔑 2026-09-30 — the send flag was specified; this row's aggregate still was not
+
+Two sessions on 30/09 settled the **send** side and left this row's question where
+it was.
+
+🟢 **The flag exists as a specification now.** At
+[the Post UAT](../meetings/2026-09-30%20Post%20UAT.md) (`01:06:17`) Elena Spini
+recapped: on confirmation of **at least one** participant's data, Aurel Mrruku
+sets a **boolean flag to `true`**, and Marketing Cloud queries for records
+carrying it (`01:07:56`). After the send, Fabrizio Mastracci writes a field back on
+the asset so the ticket is not re-sent. Carried as
+[OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md).
+
+🟢 **The 29/09 contradiction this row raised is resolved in the client's favour.**
+Fabrizio Paganelli and Rebecca Marmo ruled that a buyer who names three of five
+**gets the three**, the other two staying `Disponibile` until burned near the
+event — so the client's own exit rule, quoted above from
+`SEGMENTI FUNNEL BIGLIETTI.docx`, stands and the all-or-nothing design is dead.
+See [OI-196](OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md).
+
+🔑 **And the reminder ladder turns out not to work the way this row assumed.**
+Rebecca Marmo runs it with configured delays — _"metto un ritardo orario che
+decido io di 2 5 7 8 10 giorni"_ — and **already checks whether the contact has
+made partial registrations**: _"io controllo anche se ha già effettuato delle
+iscrizioni, cioè se ha già nominato altri biglietti."_ She was describing existing
+Marketing Cloud practice, not a requirement on Salesforce.
+
+⚠ **So the question narrows rather than closes.** What she checks today is
+completeness as Marketing Cloud can see it; what this row asks for is the
+Salesforce-side aggregate — **tickets held versus tickets completed, per contact
+per campaign** — and that was still not chosen, named or placed in either session.
+
+🔴 **Nothing was built.** At `DevMain` `0b6b828` there is still no completeness
+flag on `Asset` or on `Event_Invitation__c`, and no send flag either.

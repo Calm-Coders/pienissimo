@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: both
 raised: 2026-09-25
-updated: 2026-09-28
+updated: 2026-09-30
 depends_on: [OI-151, OI-181, OI-182, OI-46]
 source: drill-me session 2026-09-25
 ---
@@ -70,3 +70,44 @@ requirement id for the article-category mechanism, and restructuring `ORD-05` fo
 the reversed Contract purpose, are **not a sweep's call** — and the note above
 already says v1.6 goes out as one change set at UAT close. The UAT sessions
 remaining before that close are now **30/09, 02/10, 05/10, 06/10 and 16/10**.
+
+## 2026-09-30 - the Biglietti UAT this note was waiting for happened, and it reversed two register-adjacent rulings
+
+The open flag above names **"Biglietti 30/09"** as one of the sessions whose changes
+must join this set before it is sent. It ran. **Four client-agreed changes come out
+of it, and two of them are reversals rather than additions** — which makes them more
+important to the change set than ordinary increments, because the current text says
+the opposite.
+
+| Change | Register target | Agreed at |
+| --- | --- | --- |
+| **Ticket send on partial naming**: the named tickets are sent, the unnamed stay `Disponibile` and are burned near the event. **Reverses** the all-or-nothing rule ROMI agreed internally on 29/09 | `BIG-06`, and the funnel prose ([OI-196](OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)) | UAT 30/09 |
+| **Nothing is sent — ticket, QR or nomination request — until that tranche's invoice is paid and collected**, per tranche inside a bundle order, stated as an inderogable administrative directive | `BIG-17` / `BIG-06`, `Disponibile`'s definition ([OI-74](OI-74%20Asset%20state%20machine.md), [OI-75](OI-75%20Ticket%20availability%20rule.md)) | UAT 30/09 |
+| **The mapping window is the campaign's `data inizio` / `fine competenza`**, not the event dates — and consequently **one order can no longer span two editions**. **Reverses** the per-order-line resolution confirmed by the same person on 26/08 | `BIG-13`-adjacent / the mapping-table prose ([OI-96](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)) | UAT 30/09 |
+| **The rinuncia button is hidden once the first ticket is named** | the funnel prose ([OI-196](OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)) | UAT 30/09 |
+
+🔴 **The register was not amended tonight, and the version stays 1.6.** Two reasons,
+both of them this note's own rules:
+
+1. **This note is the mechanism** — v1.6 goes to the client as one reviewed change
+   set at UAT close, not one row at a time during UAT. A nightly sweep adding
+   contract-bound text to `REQUISITI.it.md`, which is the document the client signs,
+   is not that review.
+2. **A reversal needs a human to confirm it is a reversal.** Neither the mapping
+   change nor the send-rule change was acknowledged in the room as overturning an
+   earlier agreement, and the 26/08 per-order-line ruling was confirmed by the same
+   client representative who overturned it. That reconciliation belongs to the
+   review, not to a sweep.
+
+⚠ **`Inviato` is deliberately excluded from the table above.** It was agreed at the
+ROMI-internal Post UAT, not with the client, and the register already carries a
+worked precedent for exactly this: `BIG-17`'s inline comment refuses the seventh
+`Rinuncia` box because the edit was unminuted. An eighth state from an internal
+session is weaker evidence than that, not stronger. It is tracked as a build item in
+[OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md).
+
+⚠ **The set is now large enough to be a risk in itself.** v1.6 was drawn on 25/09
+with five changes; it has since taken four from 28/09 and four more from 30/09, with
+**WooCommerce 02/10, Performance Plus / Contratto 05/10, Mexal 06/10 and marketing
+16/10 still to come**, against an approval due ~13/10. 🔴 **`DIV-07` is still open**,
+and **who sends it and in what form is still undecided** — with under two weeks left.

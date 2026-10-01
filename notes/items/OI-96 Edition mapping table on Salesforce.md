@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-09-29
+updated: 2026-09-30
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -183,3 +183,59 @@ can add before the session.
 ⚠ `2ed8a56` (Anita Aga, 29/09 18:19 CEST, `DevAnita28/09`, **unmerged**) touches
 `MappaturaEdizioneTriggerHandler.cls` (+17/−…). Not read line by line here, and not
 on `DevMain`.
+
+## 🔑 2026-09-30 — the client changed the window's source, and reversed a property he set on 26 August
+
+At [the ticket UAT](../meetings/2026-09-30%20UAT%20Biglietti%20Asset%20Campagne%20ed%20Eventi.md)
+(`00:29:10`, restated at `00:34:10`) Fabrizio Paganelli objected to associating
+article codes that run across years to single editions, and asked for the window
+fields to be **the campaign's `data inizio` / `data fine competenza`** instead of
+the event's start and end dates:
+
+> _"potresti riprenderle anziché da data inizio evento a data fine evento, da data
+> inizio competenza a data fine competenza… sarebbero l'intervallo iniziale finale
+> che se un ordine è compreso in quell'intervallo di date, l'ordine con quel
+> codice prodotto deve confluire nella campagna"_
+
+His worked example: an order generated 1 December 2025 lands in Pienissimo Live
+26; one generated in the following September lands in the next edition.
+
+🟢 **Aurel Mrruku accepted it and costed it at half a day** — _"per me è in metà
+giornata ti cambia la logica perché c'ho già tutti gli elementi"_ — and said he
+would search on the **parent** campaign rather than the child (`00:30:31`).
+
+🔴 **It reverses property 1 of this note.** Aurel Mrruku named the cost in the
+room: under this model _"non possiamo avere diversi biglietti su diverse edizioni
+sullo stesso ordine"_. Fabrizio Paganelli answered _"Ma infatti deve essere
+così."_
+
+**That is the opposite of what he confirmed on 26 August**, when Elena Spini asked
+and he said the table resolves _"a livello di riga ordine"_ precisely so one order
+could split across editions — the reason the _"one active child campaign per
+parent"_ rule was killed. Later evidence wins, so the 30/09 ruling stands, but
+**both dates are on the record and the reversal was not acknowledged by either man.**
+
+⚠ **Consequences nobody worked through:**
+
+- **A bundle spanning two events was the original reason for per-line
+  resolution.** [OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)
+  prices bundle components against tranches that deliberately fall in different
+  months, and the payment gate agreed the same afternoon assumes exactly that. How
+  a one-edition-per-order rule and a multi-event bundle coexist was **not asked**.
+- The built object resolves **per order line and per bundle component**
+  ([the build note](../objects/The%20Mappatura%20Edizione%20object.md)). Whether
+  the new rule removes that or merely constrains the data is unstated.
+- The before-save guard **refusing overlapping active windows** becomes far more
+  load-bearing: with competenza dates as the window, two editions may not share a
+  date range at all.
+
+🔴 **Unbuilt, and the rows are still missing.** Nothing in the session added
+mapping rows; the mapping stood at **13 of 51** at the 23/09 org check and the
+29/09 `PIENISSIMO LIVE LIVE` exception was **not mentioned in the UAT at all**.
+Fabrizio Paganelli and Elena Spini took the action item to map products to
+campaigns by hand, and Elena Spini owes Aurel Mrruku the updated product list for
+database cleanup. 🔴 **Neither carries a date.**
+
+⚠ `897b38e` (Anita Aga, 30/09 10:13 CEST) adds _"a new custom listview for
+Mappatura Edizione"_ and reached `DevMain` via PR #70 — a navigation aid, **not the
+logic change agreed six hours later**, and not rows.

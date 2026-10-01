@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: both
 raised: 2026-09-25
-updated: 2026-09-29
+updated: 2026-09-30
 depends_on: [OI-74, OI-53]
 blocks: [go-live]
 severity: gating
@@ -158,3 +158,33 @@ licence cannot have Visualforce page access) remain in Apex Jobs at 14:02Z.
 
 🔑 The document these PDFs render is larger than this row assumed — see
 [OI-194](OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md).
+
+## 🟢 2026-09-30 — the document stack reached `DevMain`; the name change still did not
+
+**The 🔴 this row carried yesterday is closed.** `e2bdb1f`, `1e1ab6d` and `963e582`
+— the participant-document stack that was stranded on `DevMain_exposeEndpoint` with
+no PR — are all **ancestors of `DevMain` `0b6b828`** (30/09 12:32 CEST), merged via
+**PR #69** and **PR #71**, with `c397bee` (Rexhina Hysi, _"fix template"_) on top.
+Verified with `git merge-base --is-ancestor`, not from the commit messages.
+
+`force-app` on `DevMain` now carries `ParticipantTicketDocumentJob`,
+`ParticipantTicketDocumentRequests`, `ParticipantTicketPdfController`,
+`ParticipantCommunityUrl`, `AssetQrService`, `BarcodeGenerator`, `TicketQrImage`,
+`TicketQrLookupService` and the `Participant_Document_Request__e` platform event.
+
+⚠ Rexhina Hysi asked Aurel Mrruku in DM at 11:23 CEST when the Pienissimo meeting
+was, because she wanted to deploy the PDF template changes; he cleared it and
+merged PR #71 at 12:32, ninety minutes before the client UAT.
+
+🔴 **The cambio nominativo itself is still unbuilt.** Nothing in the 30/09 commits
+implements a name change, the cancellation of the predecessor asset, or the bulk
+re-send — and **the name change was not discussed at either 30/09 session**, so the
+open question this row carries (marketing cannot tell which ticket is the new one)
+is unmoved.
+
+🟢 **One thing the 30/09 Post UAT supplies indirectly:** the agreed `Inviato` state
+and the post-send write-back field
+([OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md))
+are exactly the flag this row said _"must be reset to `false`"_ for a regenerated
+ticket to re-enter the campaign filter. **Nobody connected the two**, and the reset
+is still unowned.

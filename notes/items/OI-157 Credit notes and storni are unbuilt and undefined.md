@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-09-28
+updated: 2026-09-30
 source: notes/meetings/2026-09-18 Interna Temi Mexal.md
 ---
 
@@ -146,3 +146,31 @@ the structures must exist for the Excel migration to map onto.
 answer.** Elena Spini said the quotation is still to be done and undertook to send
 the updated plan and a proposal **this week**. Still no dates, and the client is
 now asking for them.
+
+## 🔑 2026-09-30 — the client gave the credit-note path a trigger and an asset outcome
+
+At [the ticket UAT](../meetings/2026-09-30%20UAT%20Biglietti%20Asset%20Campagne%20ed%20Eventi.md)
+(`01:48:32`–`01:52:25`) Rebecca Marmo raised the case this row needed: quotes that
+tutors **sign and never pay**, leaving assets in `Ordinato` from October to May
+without ever becoming available.
+
+Fabrizio Paganelli stated the administrative procedure:
+
+- **The order is generated on acceptance and signature, and the invoice is issued
+  immediately — regardless of collection** (`01:51:15`).
+- On non-payment followed by a withdrawal agreed with the customer, a **credit
+  note** is issued and **the asset is moved to a dedicated cancelled state on
+  Salesforce to keep traceability** (`01:52:25`).
+
+🟢 **That is the first client-stated trigger for a credit note on this record**, and
+it is consistent with `Annullato`'s recorded credit-note transition in
+[OI-74](OI-74%20Asset%20state%20machine.md).
+
+⚠ **It does not lift this row out of Fase 2**, and nothing on 30/09 said it did.
+What it changes is that the Fase 1 build now has an **asset consequence** to
+honour even while the credit-note mechanics stay deferred: an asset stranded in
+`Ordinato` must be cancellable.
+
+🔴 **The Mexal question this row carries is untouched.** Fabrizio Paganelli's own
+28/09 point — that Mexal has no order behind a credit note, so entry is dual and
+manual — was **not raised**, and **nobody is still assigned** to verify it.

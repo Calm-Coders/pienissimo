@@ -66,6 +66,12 @@ export default class QuoteManageProducts extends NavigationMixin(
     return this.selectedProducts.length > 0;
   }
 
+  get selectedProductCountLabel() {
+    return this.selectedProducts.length === 1
+      ? "1 prodotto selezionato"
+      : `${this.selectedProducts.length} prodotti selezionati`;
+  }
+
   get hasExistingProducts() {
     return this.existingProducts.length > 0;
   }
@@ -130,6 +136,10 @@ export default class QuoteManageProducts extends NavigationMixin(
 
   get showNewSelection() {
     return !this.isPickerOpen && this.hasSelectedProducts;
+  }
+
+  get showPickerSelection() {
+    return this.isPickerOpen && this.hasSelectedProducts;
   }
 
   get isFormDisabled() {
@@ -460,13 +470,8 @@ export default class QuoteManageProducts extends NavigationMixin(
       productName: line.productName || "Prodotto senza nome",
       productCode: line.productCode || "Nessun codice",
       productType: line.productType,
-      typeLabel:
-        line.isPlus === true
-          ? "Plus"
-          : line.productType === BUNDLE_TYPE
-            ? "Bundle"
-            : "Item",
-      isPlus: line.isPlus === true,
+      typeLabel: line.productType === BUNDLE_TYPE ? "Bundle" : "Item",
+      isPlus: false,
       unitPrice: line.unitPrice,
       unitPriceLabel: this.formatAmount(line.unitPrice),
       quantity: line.quantity,
@@ -526,9 +531,6 @@ export default class QuoteManageProducts extends NavigationMixin(
     const hasSelectedItems = this.selectedProducts.some(
       (product) => product.productType === ITEM_TYPE
     );
-    const hasSelectedPlus = this.selectedProducts.some(
-      (product) => product.isPlus === true
-    );
     const selectedPricebook2Id = this.selectedProducts[0]?.pricebook2Id;
 
     return options.map((option) => {
@@ -536,21 +538,14 @@ export default class QuoteManageProducts extends NavigationMixin(
       const typeConflict =
         (hasSelectedBundle && option.productType === ITEM_TYPE) ||
         (hasSelectedItems && option.productType === BUNDLE_TYPE);
-      const plusConflict = this.isPlusOpportunity && hasSelectedPlus;
       const pricebookConflict =
         selectedPricebook2Id && option.pricebook2Id !== selectedPricebook2Id;
-      const isDisabled =
-        !isSelected && (typeConflict || plusConflict || pricebookConflict);
+      const isDisabled = !isSelected && (typeConflict || pricebookConflict);
       return {
         ...option,
         isSelected,
         isDisabled,
-        typeLabel:
-          option.isPlus === true
-            ? "Plus"
-            : option.productType === BUNDLE_TYPE
-              ? "Bundle"
-              : "Item",
+        typeLabel: option.productType === BUNDLE_TYPE ? "Bundle" : "Item",
         buttonClass: isSelected ? "option selected removable" : "option"
       };
     });
