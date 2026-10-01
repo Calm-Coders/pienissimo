@@ -5573,3 +5573,76 @@ stale. **No Apex test was written, proposed or scaffolded.** Aurel Mrruku's own
 admission is worth keeping with the rest: the UAT tests ran _"troppo tardi rispetto
 ai test con i clienti"_, and he finished ticket generation at **04:00** the previous
 morning. ⚠ **`DEVELOPMENT-RECAP.it.md` §47 (24/09) is still missing — sixth flag.**
+
+---
+
+## 53. Update 2026-10-01 — the agreed logic went to the client in writing, and the send flag was built on the wrong object
+
+Nightly sweep, watermark **2026-09-30T22:00Z**. **Three ROMI-internal sessions and no client meeting**; the client's only involvement was receiving a mail at 18:25Z. Sources: Gmail, Drive, Slack (three conversations), Fathom, git. Build claims are repository arithmetic against `DevMain` **`618e646`**.
+
+### 53.1 ✅ The written specification exists, and it is the one §52 was waiting for
+
+Elena Spini wrote the ticket logic up overnight, reviewed it line by line with Aurel Mrruku at the [01/10 Interna](../notes/meetings/2026-10-01%20Interna.md) (10:01 CEST, 40m29s) and mailed it to Fabrizio Paganelli, Rebecca Marmo, Sabatino Rinaldi, Marco Montesi and `amministrazione@` at **18:25Z**, copying Aurel Mrruku. §52 recorded the paid-ticket filter as _deferred pending Elena Spini's written flow document_; **that deferral is discharged**. See [the document note](../notes/The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md).
+
+The flow as written: asset generated in `Ordinato` on quote signature → `Disponibile` only when **that tranche's** invoice is paid (or, with no tranches, when the order reaches **`Incassato`**) → the `Event_Invitation__c` link goes out **once at least one asset is `Disponibile`** → confirmation of **one or some** participants sets `Ready_for_Ticket_Dispatch__c` → Marketing Cloud selects on `Ready_for_Ticket_Dispatch__c = TRUE AND Ticket_Sent__c = FALSE` and mails each participant → write-back sets `Ticket_Sent__c` and `Ticket_Sent_Date__c`.
+
+🔴 **The mail asks for written confirmation of the logics and there is no next client meeting booked** — the mail says so itself: _"nel prossimo incontro utile (ancora da concordare, non in programma)."_
+
+### 53.2 🔴 The eighth asset state agreed in §52 was withdrawn the next day
+
+§52 recorded `Inviato` as a new asset state. At the 01/10 Interna Aurel Mrruku re-offered it and Elena Spini declined — _"più che assegnato. Va bene, chi se ne frega. Assegnati."_ It appears in neither version of the document. `AssetStatus` therefore stays at **seven** values and no picklist change is pending; send tracking lives on the two fields instead.
+
+⚠ **Neither person named this as a reversal**, one day later, in the same pair who agreed it. Recorded as one — §52's `Inviato` row is superseded, not outstanding. ([#74](open-items.md), [#197](open-items.md))
+
+### 53.3 🔴 The three send fields were built across two objects
+
+`5b19caa` (Rexhina Hysi, 01/10 18:43 CEST), merged via PR **#73**. At `DevMain` `618e646`:
+
+| Field | Object |
+| --- | --- |
+| `Ready_for_Ticket_Dispatch__c` | ✅ `Asset` — and `ParticipantRegistrationController.cls:524` already sets it |
+| `Ticket_Sent__c` | 🔴 **`Order`** |
+| `Ticket_Sent_Date__c` | 🔴 **`Order`** |
+
+**The agreed query cannot be written**, because its two predicates sit on different objects. Worse, **an order-level boolean cannot record that three of five tickets were sent** — and after §52's ruling that naming three of five sends three, partial sending is the normal case, not the exception. The de-duplication guarantee the write-back exists for is lost for exactly those orders.
+
+⚠ **The document left the object open** — _"Oggetto per il Flag: Asset ? da confermare con Aurel"_ — and the internal review warned against the split **in writing at 12:17 CEST, six hours before the commit**. 🟢 Nothing reads the fields yet, so the correction is cheap **before** the weekend production deploy. New item [#199](open-items.md), gating.
+
+### 53.4 🔴 The client was asked to confirm logics whose open points had been removed
+
+The document exists in two versions with identical operative text. The client's copy drops two sections: `POSSIBILI PROBLEMI` (✅ correct — it is ROMI's internal risk review and says so) and **`Open point da confermare con il cliente`** (🔴 not — by its own heading it is what the client is supposed to decide). Three of the seven are live blockers: **when the link goes out**, whose current wording would open nomination up to eleven months early — a case Fabrizio Paganelli explicitly excluded at the 30/09 UAT; **who manually unlocks a late-arriving payment**, an unassigned operational duty; and **which asset state a credit note produces** ([#157](open-items.md)).
+
+⚠ Nothing suggests concealment; Elena Spini's own Slack line collapses both sections into _"op e possibili problemi"_. The effect is the problem. New item [#200](open-items.md).
+
+### 53.5 ✅ The Performance Plus categorisation is built
+
+`4f672a2` merged via PR **#72** at 10:03 CEST — the diff §52 flagged as worth reading. It is `Product_Category_Rule__mdt`, a public custom metadata type with two text fields and two records mapping the Plus activation and renewal categories to their opportunity types, plus `Product2.Categoria_Articolo__c`. `QuoteManageProductsController` queries the metadata and filters the product picker from it, so **categories are configuration, not code** — which is the shape Aurel Mrruku wanted when he withdrew the hand-maintained table on 28/09. `Product2.Numero_Tranche__c` has existed since 22/09.
+
+🔴 **Fabrizio Paganelli's new Plus article codes carrying tranche counts are still owed and still have no date.** Performance Plus UAT is **05/10**. ⚠ This serves [#188](open-items.md), **not** the edition mapping of [#96](open-items.md).
+
+### 53.6 ✅ Two dated commitments, and one of them lands after go-live
+
+The [01/10 Pre UAT](../notes/meetings/2026-10-01%20Pre%20UAT.md) (17:10 CEST, ~1h33m, Aurel Mrruku · Elena Spini · Anita Aga · Rexhina Hysi) drove a bundle end to end in the sandbox and produced:
+
+- **Production over the weekend 03–04/10**, with records created in production from Monday 05/10. The PROD check was re-invited and moved to **05/10 10:00–11:00**.
+- **A four-hour end-to-end check, whole team, Thursday 08/10 10:00–13:00.** ⚠ **Two days after go-live on 06/10.**
+- Aurel Mrruku's field specification for Fabrizio Mastracci is now **due 02/10** — §52 recorded it as undated.
+
+### 53.7 🔴 What the sandbox run exposed
+
+- **Competenza ranges may not overlap between sibling editions.** A bundle product mapped to a 2027 campaign threw a live error; Aurel Mrruku ruled the overlap out and Rexhina Hysi remapped. Association is by the order date falling inside the edition's competenza range. ⚠ Aurel Mrruku's year-boundary objection was answered with _widening_ the ranges — which collides with the no-overlap rule and is enforced by nothing. ([#96](open-items.md))
+- **A third asset silently failed to generate** on a clean test bundle. No cause established, no item raised in the room.
+- **The negative-discount restriction was removed**, so any price can be entered. No compensating check was discussed.
+- ⚠ **The asset transition to `Disponibile` was forced by hand** so the demonstration could continue. The tranche's own partially→fully paid move did work when its order lines were marked paid. ([#198](open-items.md))
+
+### 53.8 🔴 Still unaddressed, and newly complicated
+
+[#194](open-items.md) (the seven-page signed participation document) and [#195](open-items.md) (the mobile community implied by WhatsApp) went undiscussed for a **third consecutive day**, both gating. ⚠ And the Interna added a **filename-prefix contract**: the send picks the ticket off the asset by a filename beginning `biglietto`, on an asset that will also carry #194's document.
+
+**Chronological tranche sequencing** is new in writing — an unpaid September tranche blocks November's tickets even if November is paid. ⚠ Attributed to Pienissimo with **no meeting or date cited**, and [#198](open-items.md) still has no tranche field with which to evaluate it.
+
+### 53.9 ⚠ Delivery health, stated by both leads
+
+Aurel Mrruku worked to 00:24, has _"quattro progetti in rilascio … e nessuno sta andando bene"_, says he must rebuild the participant component outright and answered _"Mai."_ when asked when it would be ready. Elena Spini intends to escalate that the project is _"fuori controllo"_. **Go-live is 06/10.** Recorded because it is the second consecutive night the record carries it from the technical lead directly.
+
+**Register not amended. Version stays 1.6** — the 01/10 changes are ROMI-internal or awaiting the client's written confirmation, and [#184](open-items.md) is the mechanism that carries the change set at UAT close.

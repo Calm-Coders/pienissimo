@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-09-30
+updated: 2026-10-01
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -239,3 +239,51 @@ database cleanup. 🔴 **Neither carries a date.**
 ⚠ `897b38e` (Anita Aga, 30/09 10:13 CEST) adds _"a new custom listview for
 Mappatura Edizione"_ and reached `DevMain` via PR #70 — a navigation aid, **not the
 logic change agreed six hours later**, and not rows.
+
+
+## 🔑 2026-10-01 - a hard constraint on the mapping, and a live failure
+
+[The Pre UAT build session](../meetings/2026-10-01%20Pre%20UAT.md) exercised the
+mapping end to end and produced two things this row did not have.
+
+🔴 **Competenza ranges may not overlap between sibling editions.** A bundle
+product mapped to a 2027 campaign threw an error in the test. Elena Spini asked
+whether an earlier competenza date could simply be set; Aurel Mrruku ruled it out
+— **overlapping competenza dates are not permitted on child entities sharing the
+same parent** (`01:08:59`). Rexhina Hysi remapped the product to resolve it.
+
+This is the operative constraint behind the 30/09 UAT ruling that made the
+mapping window the competenza dates. It means the mapping is not free-form: the
+editions of one event must partition the timeline.
+
+**The association rule, read back from the blueprint by Elena Spini:** an order is
+attached to an edition when **the order date falls inside that edition's
+competenza range**.
+
+⚠ **The year-boundary case is mitigated by convention only.** Aurel Mrruku raised
+an offer issued in one year and paid or registered in the next; Elena Spini's
+answer is that competenza ranges are widened preventively. Nothing in the system
+enforces or checks that widening, and widening ranges collides directly with the
+no-overlap constraint above.
+
+🟢 **Rexhina Hysi configured child campaigns for 2026 and 2027** for Academy and
+Camerieri Venditori during the session, with competenza dates, and associated the
+products. The mapping count was not restated; the 13-of-51 figure from 29/09 has
+not been superseded by anything this sweep saw.
+
+⚠ Elena Spini recalled a conversation with Fabrizio Paganelli about mapping
+through _"il codice denominato natura"_ (`00:58:04`). **Not pursued in the
+session and not resolvable from the record** — flagged, not interpreted.
+
+🔴 **Aurel Mrruku owns the edition-mapping section of the blueprint** as a Pre UAT
+action item, **with no date**.
+
+### ⬛ The custom metadata type was not for this
+
+`4f672a2` on `DevAnita30` — flagged on 30/09 as _"worth a diff next run"_ because
+a custom metadata type is the shape question here — **merged to `DevMain` via PR
+#72** at 01/10 10:03 CEST. Diffed: it is
+`Product_Category_Rule__mdt`, and it serves
+[OI-188](OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md),
+**not this row**. The edition mapping remains org-side configuration of child
+campaigns, with no metadata-driven table.

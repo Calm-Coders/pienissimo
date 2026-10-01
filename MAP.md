@@ -2,9 +2,72 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-09-30 (nightly sweep - the ticket UAT ran, the client reversed two ROMI rulings, and the send contract was specified but not built) · Source of record: [notes/](notes/)
+Last updated: 2026-10-01 (nightly sweep - the agreed logic went to the client in writing, the send flag was built on the wrong object, and the eighth asset state was dropped) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🔑 **2026-10-01 — the agreed logic is in writing and with the client, the send flag was built on the
+  wrong object, and `Inviato` was dropped a day after it was agreed.** Nightly sweep, watermark
+  2026-09-30T22:00Z. **Three ROMI-internal sessions, no client meeting** — the client's only
+  involvement was receiving a mail.
+  🔑 **[The agreed Asset and ticket send logic document](notes/The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md)
+  exists** — the specification [OI-197](notes/items/OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md)
+  was deferred on. Elena Spini wrote it overnight, reviewed it with Aurel Mrruku at
+  **[Interna](notes/meetings/2026-10-01%20Interna.md)** (10:01 CEST, 40m29s) and **mailed it to
+  Fabrizio Paganelli, Rebecca Marmo, Sabatino Rinaldi and Marco Montesi at 18:25Z asking for written
+  confirmation of the logics.** 🔴 **No next client meeting is booked** — the mail says so itself.
+  🔴🔑 **New: [OI-199](notes/items/OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)**
+  (gating) — the three send fields were built six hours after the document named them, **split across
+  two objects**: `Ready_for_Ticket_Dispatch__c` on `Asset`, `Ticket_Sent__c` and
+  `Ticket_Sent_Date__c` on **`Order`** (`5b19caa`, PR #73). The agreed Marketing Cloud query
+  `Ready = TRUE AND Sent = FALSE` **cannot be run**, and **one boolean on the Order cannot say that
+  three of five tickets were sent** — which after OI-196 is the normal case. ⚠ **The internal review
+  predicted exactly this, in writing, six hours before the commit.**
+  🔴 **New: [OI-200](notes/items/OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md)**
+  — the document exists in two versions and the client's copy drops both the internal
+  `POSSIBILI PROBLEMI` table (🟢 correct) **and the seven points headed `Open point da confermare con
+  il cliente` (🔴 not)**. The people meant to answer them were not shown them; among them **when the
+  link goes out**, whose current wording would open nomination up to eleven months early — a case
+  Fabrizio Paganelli excluded at the UAT.
+  🔴 **`Inviato` is withdrawn.** Aurel Mrruku re-offered the eighth state; Elena Spini declined —
+  _"più che assegnato. Va bene, chi se ne frega."_ **One day after the Post UAT agreed it, between the
+  same two people, and neither named it a reversal**
+  ([OI-74](notes/items/OI-74%20Asset%20state%20machine.md)). `AssetStatus` stays at seven values.
+  🔑 **`Rinuncia` is per edition** — third granularity in three days; renouncing an edition renounces
+  tickets a later tranche has not yet revealed ([OI-75](notes/items/OI-75%20Ticket%20availability%20rule.md)).
+  🔑 **Chronological tranche sequencing is new in writing**: an unpaid September tranche blocks
+  November's tickets even if November is paid. ⚠ Attributed to Pienissimo with **no date or meeting
+  cited**, and [OI-198](notes/items/OI-198%20The%20asset%20does%20not%20say%20which%20tranche%20paid%20for%20it.md)
+  still has no tranche field to evaluate it with.
+  🟢🔑 **[OI-188](notes/items/OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md)
+  is built** — `Product_Category_Rule__mdt` plus `Product2.Categoria_Articolo__c`, merged via PR #72;
+  `QuoteManageProductsController` filters the picker from the metadata, so categories are
+  configuration, not code. **This is the `4f672a2` diff flagged last night** — and it serves OI-188,
+  **not** [OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md).
+  🟢 **[Pre UAT](notes/meetings/2026-10-01%20Pre%20UAT.md)** (17:10 CEST, ~1h33m, Aurel Mrruku · Elena
+  Spini · Anita Aga · Rexhina Hysi) drove a bundle end to end in the sandbox and produced **two dated
+  commitments**: **production over the weekend 03–04/10** with records created from Monday, and a
+  **four-hour end-to-end check Thu 08/10 10:00–13:00** — ⚠ **two days after go-live**
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)). Aurel
+  Mrruku's field spec for Fabrizio Mastracci is now **due 02/10**.
+  🔴 **Competenza ranges may not overlap between sibling editions** — a 2027-mapped product threw a
+  live error; and ⚠ the year-boundary risk is mitigated by *widening* ranges, which collides with that
+  very constraint ([OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)).
+  🔴 **A third asset silently failed to generate** on a clean test bundle; no cause established, no
+  item raised in the room.
+  ⚠ **The negative-discount restriction was removed**, so any price can be entered; no compensating
+  check was discussed.
+  ⚠ **[OI-194](notes/items/OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)
+  and [OI-195](notes/items/OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+  went undiscussed for a third consecutive day** — both gating. ⚠ And the new filename-prefix contract
+  for the ticket PDF means the send picks a document **by name** off an asset that will also carry
+  OI-194's seven-page document.
+  ⚠ **Delivery health, stated by both leads**: Aurel Mrruku worked to 00:24, has _"quattro progetti in
+  rilascio … e nessuno sta andando bene"_, and answered _"Mai."_ when asked when the rebuilt component
+  would be ready; Elena Spini intends to escalate that the project is _"fuori controllo"_.
+  **Go-live is 06/10.**
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **201**.
+  — [trace](notes/traces/Source%20trace%202026-10-01%20nightly.md)
 
 - 🔑 **2026-09-30 — the ticket UAT ran with the client in the room, and it reversed two things ROMI
   had already decided.** Nightly sweep, watermark 2026-09-29T22:00Z. **Client contact resumed** after

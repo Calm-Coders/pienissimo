@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: Pienissimo
 raised: 2026-09-28
-updated: 2026-09-30
+updated: 2026-10-01
 depends_on: [OI-98]
 blocks: [OI-141, OI-168]
 severity: gating
@@ -129,3 +129,48 @@ about creating codes.
 minute whether the codes now exist. ⚠ Separately, **Elena Spini owes Aurel Mrruku
 the updated product list** for database cleanup, taken as an action item at the 30/09
 UAT with no date — a second, overlapping route to the same information.
+
+
+## 🟢 2026-10-01 - the categorisation is built and merged
+
+**The row's own finding that _"nothing in `force-app` reads `categoria articolo`
+to set a Plus flag yet"_ no longer holds.** `4f672a2` (Anita Aga, `DevAnita30`,
+30/09 17:56 CEST) merged to `DevMain` in `8661564` via PR **#72** at 01/10 10:03
+CEST. Verified at `DevMain` `618e646`:
+
+| Metadata | What it is |
+| --- | --- |
+| `Product_Category_Rule__mdt` | New public custom metadata type, two text fields: `Categoria_Articolo__c` and `Tipo_Opportunita__c` |
+| two `customMetadata` records | map the Plus **attivazione** and **rinnovo** categories to their opportunity types |
+| `Product2.Categoria_Articolo__c` | Text, the Mexal category on the article |
+| `Opportunity.Tipo_Opportunita__c`, `Lead.Tipo_Opportunita__c` | Text |
+
+`QuoteManageProductsController.cls` queries the metadata type by
+`Tipo_Opportunita__c` (`plusCategoriesForOpportunity`, line 778) and filters the
+product picker with `Product2.Categoria_Articolo__c IN :allowedCategories`
+(line 693), with an exclusion branch for the non-Plus case (line 697). The class
+was substantially rewritten — 341 lines changed — along with the
+`quoteManageProducts` LWC.
+
+🟢 **This is exactly the purpose the client confirmed on 28/09**: filtering the
+picker so a non-Plus product cannot be selected when a tutor builds a Plus offer.
+🟢 **And it is configurable metadata, not hardcoded**, so adding a category is a
+record rather than a deploy — which answers the shape question Aurel Mrruku had
+withdrawn a hand-maintained Salesforce table in favour of.
+
+⚠ **Category values are held in the repository as metadata records.** Per
+`docs/publishing.md` they are described here, not enumerated beyond the mapping
+already recorded above.
+
+### 🟢 The tranche-count field exists; the client's data does not
+
+`Product2.Numero_Tranche__c` (Number) has been in `force-app` since `7b7d8a5`
+(Anita Aga, 22/09) and is selected by the controller at line 704. **So the
+Salesforce side of the tranche-count article is ready and waiting.**
+
+🔴 **What is still owed is unchanged and still has no date:** Fabrizio Paganelli's
+new Plus article codes carrying tranche counts, created in Mexal first.
+`Articoli Salesforce.xlsx` has **not moved since 30/09 12:45:55Z** — this sweep
+re-checked, and it was not opened. **Performance Plus UAT is 05/10.**
+
+🔴 **Whether Google services join the Plus flow is still unanswered.**

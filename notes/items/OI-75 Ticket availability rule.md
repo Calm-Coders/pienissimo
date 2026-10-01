@@ -6,7 +6,7 @@ owner: ROMI
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-26
+updated: 2026-10-01
 depends_on: [OI-50]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -133,3 +133,38 @@ needs — though its semantics are still unasked.
 
 **This is the first question for the 26 August 16:00 Mexal review**, and it can
 now be asked with a URL beside it rather than as a mapping abstraction.
+
+
+## 🔑 2026-10-01 - the rule is in writing, with the client, and `Rinuncia` is per edition
+
+[The written logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md)
+is now the authoritative statement of this rule and has gone to the client for
+confirmation. Three changes against this row as it stood:
+
+- 🔑 **Chronological sequencing.** Tranches must be settled in date order; an
+  unpaid earlier tranche blocks a later tranche's tickets even if that later
+  invoice is paid. ⚠ Attributed to Pienissimo in the document, with **no meeting
+  or date cited**, and this sweep found no source for the confirmation.
+- 🟢 **Orders without tranches** release on the order reaching **`Incassato`**.
+  Worked out live at [the 01/10 Interna](../meetings/2026-10-01%20Interna.md),
+  where both Aurel Mrruku and Elena Spini were initially unsure between
+  `Fatturato` and `Incassato`; `Fatturato` is the multi-tranche state.
+- 🔑 **`Rinuncia` is per edition.** Settled at the 01/10 Interna after moving
+  through header and asset granularity in the same call. The button is visible per
+  edition until the first participant of that edition is confirmed, then hidden
+  and disabled permanently; renouncing an edition renounces **every ticket of that
+  edition, including ones a later tranche has not yet revealed**. Later
+  withdrawals go through an offline procedure.
+
+🔴 **A per-edition `Rinuncia` still has nowhere to live.** The internal review's
+problem #8 puts it precisely: the link is per order, so the renunciation must be
+tracked **on the assets of the edition, not on `Event_Invitation__c`**, or the
+reminder ladder cannot be stopped for just that edition. The
+`Rinuncia`-as-an-asset-state question remains unruled.
+
+⚠ **The trigger date for the link is an open point the client was not shown.**
+The document ties the link only to the first `Disponibile` asset; the internal
+review's first problem is that this ignores the edition's
+`Data_Invio_Biglietto__c` and would open nomination up to eleven months early,
+a case Fabrizio Paganelli excluded at the 30/09 UAT. See
+[OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md).

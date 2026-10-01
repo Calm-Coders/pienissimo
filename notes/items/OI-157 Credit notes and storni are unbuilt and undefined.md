@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-09-30
+updated: 2026-10-01
 source: notes/meetings/2026-09-18 Interna Temi Mexal.md
 ---
 
@@ -174,3 +174,23 @@ honour even while the credit-note mechanics stay deferred: an asset stranded in
 🔴 **The Mexal question this row carries is untouched.** Fabrizio Paganelli's own
 28/09 point — that Mexal has no order behind a credit note, so entry is dual and
 manual — was **not raised**, and **nobody is still assigned** to verify it.
+
+
+## 🔴 2026-10-01 - now an open point on a document the client is confirming
+
+Open point 7 of
+[the written logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md),
+verbatim:
+
+> _"Nota di credito / annullamento: quale stato assume l'asset, distinto da
+> Rinuncia e Annullato?"_
+
+🔴 **The client was not shown it.** The `Open point` section was removed from the
+copy mailed on 01/10, which asked for confirmation of the logics —
+[OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md).
+
+This row remains Fase 2 and this sweep does not change that. What changed is that
+it is now a **named gap in the document that will become the agreed baseline**,
+rather than a deferred topic — and the 30/09 UAT already established that the
+invoice is issued on signature regardless of collection, so a withdrawal always
+produces a credit note and therefore always needs this state.

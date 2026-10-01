@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-30
-updated: 2026-09-30
+updated: 2026-10-01
 depends_on: [OI-50, OI-75]
 blocks: [OI-197]
 requirement: BIG-17
@@ -74,3 +74,36 @@ At `DevMain` `0b6b828`, `Asset` custom fields are `Anno_Competenza__c`,
 ⚠ **The gate will first be tested against forced data.** Aurel Mrruku said he will
 **force invoices manually and simulate payment** to test billing (`01:22:43`), so
 the first exercise of this rule will not involve Mexal.
+
+
+## 🔴 2026-10-01 - the rule hardened, the field still does not exist
+
+Re-verified at `DevMain` `618e646`: `Asset` gained
+`Ready_for_Ticket_Dispatch__c` and nothing else. **There is still no tranche
+field**, and `Fattura_Pagata__c` is still a bare checkbox.
+
+Meanwhile [the written logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md),
+now in the client's hands, makes the rule harder in two ways:
+
+- **The unlock is explicitly per tranche invoice, not per order** —
+  _"Solo a saldo completo della fattura di tranche (non dell'ordine totale
+  contenente + tranche), il sistema aggiorna lo stato degli Asset associati a
+  tutte le righe d'ordine di quella specifica tranche."_
+- 🔑 **Chronological sequencing is new.** _"Pienissimo ha confermato che le
+  tranche vanno saldate in ordine cronologico."_ An unpaid September tranche
+  blocks November's tickets **even when the November invoice is registered and
+  paid**. ⚠ The document attributes this to Pienissimo but cites no meeting or
+  date, and this sweep found no source for the confirmation.
+
+🔴 **Sequencing cannot be evaluated without this field either** — it requires
+knowing, per asset, which tranche it belongs to **and** the settlement state of
+every earlier tranche of the same order. The internal review raised exactly this
+as its problem #6: _"Disponibile = tranche saldata AND tutte le tranche
+precedenti saldate."_
+
+⚠ **The sandbox run on 01/10 did not test any of it.** At
+[the Pre UAT](../meetings/2026-10-01%20Pre%20UAT.md) Rexhina Hysi set the assets
+to `Disponibile` **by hand** so the demonstration could continue. The tranche
+itself moved from partially to fully paid correctly when its order lines were
+marked paid — that part works — but the asset transition it is supposed to drive
+was forced, not observed.

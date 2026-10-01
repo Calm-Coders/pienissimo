@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-09-30
+updated: 2026-10-01
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -215,3 +215,28 @@ Marketing cannot be configured against structures that are not there, and
 manually and simulate their payment** to test the billing path (`01:22:43`), so the
 tranche payment gate that the whole send now depends on will first be exercised
 against forced data rather than against Mexal.
+
+
+## 🟢 2026-10-01 - the production route is now a weekend deploy
+
+[The Pre UAT](../meetings/2026-10-01%20Pre%20UAT.md) turned the 05/10 commitment
+into a mechanism. Aurel Mrruku committed to completing the outstanding
+integrations and **deploying everything to production across the weekend of
+03–04/10**, so that **records can be created in production from Monday 05/10**
+(`01:24:24`, `01:27:19`). It was minuted as an agreed decision, not a hope.
+
+`PIENISSIMO - Interna Check PROD per MKT` remains booked for **Mon 05/10**; the
+invitation was **re-issued on 01/10 at 17:41Z** as an update, moving it to
+**10:00–11:00 CEST** (from 09:30), to Aurel Mrruku and Fabrizio Mastracci.
+
+🟢 **A second, larger checkpoint now exists:** a **four-hour end-to-end check on
+Thursday 08/10, 10:00–13:00**, whole team, agreed by Aurel Mrruku and Elena
+Spini. His stated reason: recent changes and _"la necessità di colmare i ritardi
+sulle integrazioni"_.
+
+⚠ **It is two days after go-live on 06/10.** The first full end-to-end exercise of
+the flow is scheduled after the date the project is supposed to be live.
+
+🔴 The weekend deploy will carry
+[OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)
+into production unless the object question is settled first.

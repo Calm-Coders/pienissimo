@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-30
-updated: 2026-09-30
+updated: 2026-10-01
 depends_on: [OI-126, OI-74, OI-198]
 blocks: [OI-177]
 requirement: BIG-06
@@ -97,3 +97,47 @@ how Marketing Cloud **queries completeness** for the reminder ladder. This row i
 the **send** trigger and the send's write-back. The 30/09 sessions answered this
 one and left OI-126's aggregate — tickets held versus tickets completed, per
 contact per campaign — still unplaced.
+
+
+## 🔑 2026-10-01 - the written document arrived, and two pieces of this row changed
+
+[The specification this row was deferred on now exists](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md).
+Elena Spini wrote it overnight, reviewed it with Aurel Mrruku at
+[the 01/10 Interna](../meetings/2026-10-01%20Interna.md) and mailed it to the
+client at 18:25Z. **The deferral recorded above is lifted.**
+
+Two substantive changes to the contract as this row recorded it:
+
+- 🔴 **`Inviato` was dropped.** Aurel Mrruku re-offered the eighth state; Elena
+  Spini declined it — _"No, sì, sì, più che assegnato. Va bene, chi se ne frega.
+  Assegnati."_ It is absent from both versions of the document. Tracking moved to
+  `Ticket_Sent__c` plus `Ticket_Sent_Date__c` on top of `Assegnato`.
+  ⚠ **This reverses the 30/09 Post UAT agreement after one day, between the same
+  two people, and neither named it as a reversal.** The `Inviato` row in the
+  table above is therefore superseded, not outstanding.
+- 🟢 **The flag has a name and is built**: `Ready_for_Ticket_Dispatch__c` on
+  `Asset`, written by `ParticipantRegistrationController.cls:524`.
+  🔴 **The two write-back fields were built on `Order`** — a separate defect,
+  [OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md).
+
+### Re-verified against `DevMain` `618e646` (01/10 18:54 CEST)
+
+| Piece | Built? |
+| --- | --- |
+| Flag on confirmation of at least one participant | 🟢 **yes** — `Asset.Ready_for_Ticket_Dispatch__c`, and the controller sets it |
+| Marketing Cloud query on the flag | 🔴 no |
+| Per-participant transactional send | 🔴 no |
+| Write-back after the send | ⚠ fields exist, **on the wrong object** — [OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md) |
+| `Inviato` asset state | ⬛ **withdrawn** — `AssetStatus` still carries seven values, and an eighth is no longer wanted |
+
+### 🟢 The spec now has a date
+
+Aurel Mrruku's action item to give Fabrizio Mastracci the field specification is
+recorded at [the 01/10 Pre UAT](../meetings/2026-10-01%20Pre%20UAT.md) as
+**due 02/10**. This row's _"neither action item carries a date"_ no longer holds
+for his side.
+
+🔴 **Production deploys over the weekend of 03–04/10**, with records created in
+production from Monday 05/10, so the object question in
+[OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)
+has to be settled before that deploy, not after.

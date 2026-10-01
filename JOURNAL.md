@@ -10,6 +10,56 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-01 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack (three conversations), Drive, Fathom and git from
+  watermark **2026-09-30T22:00Z**. Read **both versions of Elena Spini's logic
+  document** in full, drilled the **01/10 Interna** from its full transcript and the
+  **01/10 Pre UAT** from its Gemini notes. Wrote both meeting notes and a reference
+  note for the document; created **OI-199** and **OI-200**; updated OI-74, OI-75,
+  OI-96, OI-126, OI-157, OI-177, OI-188, OI-197, OI-198. MAP, INDEX, both trackers
+  and both recaps (§53) regenerated. Trace note written.
+- **State:** `DevMain` at **`618e646`** (PRs #72, #73, #74). **No client meeting** —
+  three ROMI-internal sessions and one outbound mail. 🔑 **The written specification
+  OI-197 was deferred on now exists and went to the client at 18:25Z** asking for
+  written confirmation of the logics; **no reply had arrived by the sweep, and no next
+  client meeting is booked.** 🔴 **OI-199 is the sharp one:** the three agreed send
+  fields were built six hours later across **two objects** —
+  `Ready_for_Ticket_Dispatch__c` on `Asset`, `Ticket_Sent__c` and `Ticket_Sent_Date__c`
+  on **`Order`** — so the agreed Marketing Cloud query cannot be written and an
+  order-level boolean cannot record a per-participant send, which after OI-196 is the
+  normal case. The internal review predicted exactly this in writing six hours before
+  the commit. 🔴 **OI-200:** the client's copy of the document drops the seven points
+  headed `Open point da confermare con il cliente` as well as the internal problems
+  table. ⬛ **`Inviato` was withdrawn** one day after the Post UAT agreed it, unmarked
+  as a reversal. 🟢 **OI-188 is built** — `Product_Category_Rule__mdt`, which is the
+  `4f672a2` diff flagged last night, and it serves OI-188 **not** OI-96.
+- **Next:** (1) **OI-199 must be settled before the weekend deploy of 03-04/10** —
+  nothing reads the fields yet, so moving them onto `Asset` is cheap today; Fabrizio
+  Mastracci is due the field spec **02/10** and will configure Marketing Cloud against
+  whatever he is told. (2) **Diff `eee1788`** (Anita Aga, PR #74, 18:52 CEST, _"Mexal
+  and Woocommerce automations"_) — merged four minutes before head and not read.
+  (3) **Open `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`** (moved
+  14:31Z) and **`Business_Blueprint_Pienissimo.docx`** (moved 16:05Z, first movement
+  since 24/09) — both unopened, and the first may answer OI-199's object question.
+  (4) **Watch for the client reply** to the 18:25Z thread; OI-200 and the v1.6 change
+  set both wait on it.
+- **Watch:** ⚠ **Chronological tranche sequencing is attributed to Pienissimo with no
+  meeting or date cited, and this sweep found no source for it** — do not treat it as
+  minuted until someone produces the origin. ⚠ **"Claudio"**, credited twice by Elena
+  Spini for the problems table, **is not resolvable** — no person note was created and
+  nothing was attributed; do not invent one. ⚠ **`Rinuncia` has now had three
+  granularities in three days** (header → asset → edition) and a per-edition
+  `Rinuncia` still has nowhere to live. ⚠ **A third asset silently failed to generate**
+  on a clean test bundle and nobody raised it in the room. ⚠ The **negative-discount
+  restriction was removed** with no compensating check. ⚠ **OI-194 and OI-195 went
+  undiscussed for a third day**, both gating. ⚠ Both leads stated on the record that
+  the delivery is in trouble; **go-live is 06/10** and the team's own end-to-end check
+  is **08/10, two days after it**. ⚠ **Item ids OI-189-OI-193 remain reserved; the next
+  free id is 201.**
+
+---
+
 ## 2026-09-30 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark **2026-09-29T22:00Z**.

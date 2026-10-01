@@ -5703,3 +5703,76 @@ o predisposta.** Vale la pena conservare anche l'ammissione di Aurel Mrruku: i t
 UAT sono stati fatti _"troppo tardi rispetto ai test con i clienti"_, e ha terminato
 la generazione dei biglietti alle **4:00** del mattino precedente. ⚠ **Il §47
 (24/09) di questo documento è ancora mancante — sesta segnalazione.**
+
+---
+
+## 53. Aggiornamento 01/10/2026 — le logiche concordate sono andate al cliente per iscritto, e il flag di invio è stato costruito sull'oggetto sbagliato
+
+Giro notturno, watermark **2026-09-30T22:00Z**. **Tre sessioni interne ROMI e nessun incontro con il cliente**; l'unico coinvolgimento del cliente è stata una mail ricevuta alle 18:25Z. Fonti: Gmail, Drive, Slack (tre conversazioni), Fathom, git. Le affermazioni sul costruito sono aritmetica di repository su `DevMain` **`618e646`**.
+
+### 53.1 ✅ La specifica scritta esiste, ed è quella che il §52 attendeva
+
+Elena Spini ha messo per iscritto le logiche del biglietto durante la notte, le ha riviste riga per riga con Aurel Mrruku all'[Interna del 01/10](../notes/meetings/2026-10-01%20Interna.md) (10:01 CEST, 40m29s) e le ha inviate a Fabrizio Paganelli, Rebecca Marmo, Sabatino Rinaldi, Marco Montesi e `amministrazione@` alle **18:25Z**, in copia Aurel Mrruku. Il §52 registrava il filtro dei biglietti pagati come _rinviato in attesa del documento scritto di Elena Spini_; **quel rinvio è superato**. Vedi [la nota sul documento](../notes/The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md).
+
+Il flusso come scritto: asset generato in `Ordinato` alla firma del preventivo → `Disponibile` solo quando la fattura **di quella tranche** è pagata (o, in assenza di tranche, quando l'ordine arriva a **`Incassato`**) → il link `Event_Invitation__c` parte **quando almeno un asset è `Disponibile`** → la conferma di **uno o alcuni** partecipanti valorizza `Ready_for_Ticket_Dispatch__c` → Marketing Cloud seleziona su `Ready_for_Ticket_Dispatch__c = TRUE AND Ticket_Sent__c = FALSE` e invia a ciascun partecipante → la riscrittura valorizza `Ticket_Sent__c` e `Ticket_Sent_Date__c`.
+
+🔴 **La mail chiede conferma scritta delle logiche e non è fissato alcun incontro successivo con il cliente** — lo dice la mail stessa: _"nel prossimo incontro utile (ancora da concordare, non in programma)."_
+
+### 53.2 🔴 L'ottavo stato dell'asset concordato nel §52 è stato ritirato il giorno dopo
+
+Il §52 registrava `Inviato` come nuovo stato dell'asset. All'Interna del 01/10 Aurel Mrruku lo ha riproposto ed Elena Spini ha declinato — _"più che assegnato. Va bene, chi se ne frega. Assegnati."_ Non compare in nessuna delle due versioni del documento. `AssetStatus` resta quindi a **sette** valori e nessuna modifica al picklist è pendente; il tracciamento dell'invio vive sui due campi.
+
+⚠ **Nessuno dei due l'ha definito un ribaltamento**, un giorno dopo, nella stessa coppia che lo aveva concordato. Registrato qui come tale — la riga `Inviato` del §52 è superata, non pendente. ([#74](open-items.it.md), [#197](open-items.it.md))
+
+### 53.3 🔴 I tre campi di invio sono stati costruiti su due oggetti
+
+`5b19caa` (Rexhina Hysi, 01/10 18:43 CEST), integrato con la PR **#73**. Su `DevMain` `618e646`:
+
+| Campo | Oggetto |
+| --- | --- |
+| `Ready_for_Ticket_Dispatch__c` | ✅ `Asset` — e `ParticipantRegistrationController.cls:524` lo valorizza già |
+| `Ticket_Sent__c` | 🔴 **`Order`** |
+| `Ticket_Sent_Date__c` | 🔴 **`Order`** |
+
+**La query concordata non è scrivibile**, perché i due predicati stanno su oggetti diversi. Peggio: **una sola casella sull'ordine non può registrare che tre biglietti su cinque sono partiti** — e dopo la decisione del §52 per cui nominarne tre su cinque ne invia tre, l'invio parziale è il caso normale, non l'eccezione. La garanzia di non duplicazione per cui la riscrittura esiste si perde proprio su quegli ordini.
+
+⚠ **Il documento lasciava aperto l'oggetto** — _"Oggetto per il Flag: Asset ? da confermare con Aurel"_ — e la revisione interna aveva messo in guardia dalla divisione **per iscritto alle 12:17 CEST, sei ore prima del commit**. 🟢 Nessun codice legge ancora i campi, quindi la correzione costa poco **prima** del rilascio in produzione del fine settimana. Nuovo punto [#199](open-items.it.md), bloccante.
+
+### 53.4 🔴 Al cliente è stata chiesta conferma di logiche i cui open point erano stati rimossi
+
+Il documento esiste in due versioni con testo operativo identico. La copia per il cliente perde due sezioni: `POSSIBILI PROBLEMI` (✅ corretto — è la revisione dei rischi interna a ROMI e lo dichiara) e **`Open point da confermare con il cliente`** (🔴 non corretto — per sua stessa intestazione è ciò che il cliente deve decidere). Tre dei sette sono bloccanti: **quando parte il link**, la cui formulazione attuale aprirebbe la nomina fino a undici mesi prima — caso che Fabrizio Paganelli ha escluso esplicitamente all'UAT del 30/09; **chi sblocca manualmente un incasso in ritardo**, onere operativo non assegnato; e **quale stato assume l'asset per una nota di credito** ([#157](open-items.it.md)).
+
+⚠ Nulla indica una volontà di occultamento; il messaggio Slack di Elena Spini accorpa le due sezioni in _"op e possibili problemi"_. Il problema è l'effetto. Nuovo punto [#200](open-items.it.md).
+
+### 53.5 ✅ La categorizzazione Performance Plus è costruita
+
+`4f672a2` integrato con la PR **#72** alle 10:03 CEST — il diff che il §52 aveva segnalato come da leggere. Si tratta di `Product_Category_Rule__mdt`, un custom metadata type pubblico con due campi testo e due record che associano le categorie Plus di attivazione e rinnovo ai rispettivi tipi di opportunità, più `Product2.Categoria_Articolo__c`. `QuoteManageProductsController` interroga il metadato e da lì filtra il selettore prodotti, quindi **le categorie sono configurazione, non codice** — la forma che Aurel Mrruku voleva quando il 28/09 ha ritirato la tabella da mantenere a mano. `Product2.Numero_Tranche__c` esiste dal 22/09.
+
+🔴 **I nuovi codici articolo Plus con il numero di tranche di Fabrizio Paganelli sono ancora attesi e ancora senza data.** L'UAT Performance Plus è il **05/10**. ⚠ Questo serve il [#188](open-items.it.md), **non** la mappatura edizioni del [#96](open-items.it.md).
+
+### 53.6 ✅ Due impegni con data, e uno cade dopo il go-live
+
+Il [Pre UAT del 01/10](../notes/meetings/2026-10-01%20Pre%20UAT.md) (17:10 CEST, ~1h33m, Aurel Mrruku · Elena Spini · Anita Aga · Rexhina Hysi) ha portato un bundle end to end in sandbox e ha prodotto:
+
+- **Produzione nel fine settimana 03–04/10**, con creazione di record in produzione da lunedì 05/10. Il check PROD è stato re-invitato e spostato al **05/10 10:00–11:00**.
+- **Una verifica end-to-end di quattro ore, tutto il team, giovedì 08/10 10:00–13:00.** ⚠ **Due giorni dopo il go-live del 06/10.**
+- Le specifiche dei campi di Aurel Mrruku per Fabrizio Mastracci hanno ora **scadenza 02/10** — il §52 le registrava senza data.
+
+### 53.7 🔴 Che cosa ha fatto emergere la prova in sandbox
+
+- **Gli intervalli di competenza non possono sovrapporsi tra edizioni sorelle.** Un prodotto del bundle mappato su una campagna 2027 ha generato un errore in diretta; Aurel Mrruku ha escluso la sovrapposizione e Rexhina Hysi ha rimappato. L'associazione avviene per data dell'ordine compresa nell'intervallo di competenza dell'edizione. ⚠ All'obiezione di Aurel Mrruku sul passaggio d'anno si è risposto **ampliando** gli intervalli — cosa che collide con la regola di non sovrapposizione e non è imposta da nulla. ([#96](open-items.it.md))
+- **Un terzo asset non è stato generato**, in silenzio, su un bundle di prova pulito. Nessuna causa accertata, nessun punto sollevato in sessione.
+- **È stata rimossa la restrizione sugli sconti negativi**, quindi si può inserire qualsiasi prezzo. Nessun controllo compensativo è stato discusso.
+- ⚠ **Il passaggio dell'asset a `Disponibile` è stato forzato a mano** per far proseguire la dimostrazione. Il passaggio della tranche da parzialmente a completamente pagata ha invece funzionato quando le righe d'ordine sono state marcate pagate. ([#198](open-items.it.md))
+
+### 53.8 🔴 Ancora non affrontato, e ora più complicato
+
+Il [#194](open-items.it.md) (il documento di partecipazione firmato, sette pagine) e il [#195](open-items.it.md) (la community mobile implicata da WhatsApp) non sono stati discussi per il **terzo giorno consecutivo**, entrambi bloccanti. ⚠ E l'Interna ha aggiunto un **vincolo sul nome del file**: l'invio preleva il biglietto dall'asset tramite un nome che inizia con `biglietto`, su un asset che porterà anche il documento del #194.
+
+La **sequenzialità cronologica delle tranche** è nuova per iscritto — una tranche di settembre non saldata blocca i biglietti di novembre anche se novembre è pagata. ⚠ Attribuita a Pienissimo **senza citare incontro né data**, e il [#198](open-items.it.md) non ha ancora il campo tranche con cui valutarla.
+
+### 53.9 ⚠ Stato di salute della consegna, dichiarato da entrambi i responsabili
+
+Aurel Mrruku ha lavorato fino alle 00:24, ha _"quattro progetti in rilascio … e nessuno sta andando bene"_, dice di dover rifare interamente il componente partecipanti e alla domanda su quando sarà pronto ha risposto _"Mai."_ Elena Spini intende segnalare che il progetto è _"fuori controllo"_. **Il go-live è il 06/10.** Registrato perché è la seconda notte consecutiva in cui il record lo riporta direttamente dal responsabile tecnico.
+
+**Registro non modificato. La versione resta 1.6** — le modifiche del 01/10 sono interne a ROMI oppure in attesa della conferma scritta del cliente, e il [#184](open-items.it.md) è il meccanismo che porta il change set alla chiusura UAT.

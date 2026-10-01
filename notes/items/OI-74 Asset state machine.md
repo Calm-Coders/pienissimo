@@ -5,7 +5,7 @@ status: open
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-30
+updated: 2026-10-01
 depends_on: [OI-75]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-17
@@ -260,3 +260,36 @@ withdrawn, Fabrizio Paganelli's route is a **credit note plus a dedicated
 cancelled state on the asset** for traceability (`01:52:25`) — consistent with
 `Annullato`'s recorded credit-note trigger. See
 [OI-157](OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md).
+
+
+## 🔑 2026-10-01 - `Inviato` is withdrawn, and the written lifecycle has four states
+
+[The 01/10 Interna](../meetings/2026-10-01%20Interna.md) reversed the 30/09 Post
+UAT decision to add an eighth state. Aurel Mrruku re-offered it; Elena Spini
+declined — _"più che assegnato. Va bene, chi se ne frega. Assegnati."_
+
+🟢 **`AssetStatus` therefore stays at seven values**, verified at `DevMain`
+`618e646`: `Ordinato · Disponibile · Rinuncia · Assegnato · Utilizzato · Non
+utilizzato · Annullato`. No picklist change is pending for the send.
+
+Send tracking moved onto fields instead — `Ticket_Sent__c` and
+`Ticket_Sent_Date__c` — which is why
+[OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)
+matters: the state machine no longer records that a ticket was sent, so the fields
+are the only record.
+
+⚠ **Neither person named this as a reversal**, one day after agreeing the
+opposite, in the same pair. Recorded here as one.
+
+[The written document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md)
+describes the client-facing lifecycle as **four states** —
+`Ordinato → Disponibile → (Nominato) → Assegnato` — where `Nominato` is drawn as
+a dashed box and is explicitly **not a state**, only the moment the referent
+confirms the data.
+
+🔴 **Two states in the picklist have no written transition:** a credit-note or
+cancellation state distinct from `Rinuncia` and `Annullato` is open point 7 of the
+document ([OI-157](OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)),
+and the internal review's problem #4 notes that a **corrected** collection moves
+an asset `Disponibile → Ordinato` after nomination — a backward transition nothing
+in the record describes.

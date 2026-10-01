@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-07
-updated: 2026-09-30
+updated: 2026-10-01
 depends_on: [OI-78]
 requirement: BIG-06
 source: notes/meetings/2026-09-07 Interna Flussi MKT.md
@@ -151,3 +151,28 @@ per campaign** — and that was still not chosen, named or placed in either sess
 
 🔴 **Nothing was built.** At `DevMain` `0b6b828` there is still no completeness
 flag on `Asset` or on `Event_Invitation__c`, and no send flag either.
+
+
+## 🔴 2026-10-01 - the reminder stop rule is an open point, and it is unanswered
+
+Open point 3 of
+[the written logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md):
+
+> _"Reminder: si interrompono quando il referente ha nominato almeno un biglietto
+> dell'ordine o della singola edizione?"_
+
+That is this row's aggregate question, asked in writing for the first time — and
+**order-versus-edition is exactly the granularity this row says is unplaced**.
+🔴 It was removed from the copy sent to the client
+([OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md)),
+so Rebecca Marmo, who runs the ladder, has not been asked.
+
+⚠ **The internal review makes it worse than a gap.** Its problem #3: when a later
+tranche unlocks new assets, no mail is triggered, **and** Rebecca Marmo's existing
+filter skips anyone who has already named someone. A referent who names one
+ticket in tranche one is therefore never told that tranche two's tickets are
+waiting, and never chased about them.
+
+🟢 The new field `Asset.Ready_for_Ticket_Dispatch__c` is a per-asset
+confirmed-or-not signal and is the natural input to the aggregate this row wants.
+Nothing reads it for that purpose yet.
