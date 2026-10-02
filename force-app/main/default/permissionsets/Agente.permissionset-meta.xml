@@ -39,6 +39,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Account.Creato_su_Mexal__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Account.Codice_Destinatario_SDI__c</field>
         <readable>true</readable>
     </fieldPermissions>

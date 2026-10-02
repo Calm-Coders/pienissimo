@@ -69,6 +69,7 @@ public with sharing class MexalCustomerCreateService {
 
     Result result = buildResult(account.Id, payload, calloutResult);
     updateAccountWithGeneratedCode(account, result);
+    MexalCustomerErrorNotificationService.sendIfNotLinked(result);
     // Temporarily disabled: the shipping-address call must run in a separate transaction.
     // syncShippingAddress(account, result);
     return result;
@@ -447,7 +448,8 @@ public with sharing class MexalCustomerCreateService {
 
     update new Account(
       Id = account.Id,
-      Codice_Cliente_Mexal__c = result.generatedCustomerCode
+      Codice_Cliente_Mexal__c = result.generatedCustomerCode,
+      Creato_su_Mexal__c = true
     );
     result.accountUpdated = true;
   }
