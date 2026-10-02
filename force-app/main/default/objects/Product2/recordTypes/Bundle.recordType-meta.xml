@@ -13,7 +13,7 @@
     <picklistValues>
         <picklist>QuantityUnitOfMeasure</picklist>
         <values>
-            <fullName>Each</fullName>
+            <fullName>Nr</fullName>
             <default>false</default>
         </values>
     </picklistValues>
