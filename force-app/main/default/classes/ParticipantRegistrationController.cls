@@ -352,7 +352,8 @@ public without sharing class ParticipantRegistrationController {
     for (Asset ticket : orderTickets) {
       if (
         ticket.Status != AVAILABLE_STATUS &&
-        ticket.Status != ASSIGNED_STATUS
+        ticket.Status != ASSIGNED_STATUS &&
+        ticket.Status != WAIVED_STATUS
       ) {
         continue;
       }
@@ -388,9 +389,9 @@ public without sharing class ParticipantRegistrationController {
 
       response.tickets.add(row);
 
-      // Assigned tickets remain visible as a read-only summary at the bottom
-      // of the page, but they are not part of the editable campaign groups.
-      if (row.assigned) {
+      // Assigned and waived tickets remain visible in read-only summaries at
+      // the bottom of the page, but are not part of the editable groups.
+      if (row.assigned || ticket.Status == WAIVED_STATUS) {
         continue;
       }
 
@@ -421,9 +422,16 @@ public without sharing class ParticipantRegistrationController {
     response.state = requiredParticipantCount > 0
       ? READY_STATE
       : COMPLETED_STATE;
+    Boolean onlyWaivedTickets =
+      requiredParticipantCount == 0 &&
+      !response.tickets.isEmpty() &&
+      campaignsWithAssignedTickets.isEmpty() &&
+      !ungroupedTicketsIncludeAssigned;
     response.message = requiredParticipantCount > 0
       ? null
-      : 'La lista dei partecipanti e gia stata inviata.';
+      : onlyWaivedTickets
+          ? 'La rinuncia e gia stata registrata.'
+          : 'La lista dei partecipanti e gia stata inviata.';
 
     return response;
   }
@@ -434,7 +442,7 @@ public without sharing class ParticipantRegistrationController {
   ) {
     if (inputs == null || inputs.isEmpty()) {
       throw new RequestException(
-        'Completa tutti i biglietti prima di salvare.'
+        'Inserisci almeno un partecipante prima di salvare.'
       );
     }
 
@@ -449,10 +457,6 @@ public without sharing class ParticipantRegistrationController {
       ) {
         eligibleAssets.put(ticket.Id, ticket);
       }
-    }
-
-    if (inputs.size() != eligibleAssets.size()) {
-      throw staleTickets();
     }
 
     Set<Id> submittedAssetIds = new Set<Id>();
@@ -654,7 +658,7 @@ public without sharing class ParticipantRegistrationController {
       input.lastName.trim().length() > 80 ||
       !isValidEmail(email) ||
       email.length() > 80 ||
-      String.isBlank(input.phone) ||
+      !isValidPhone(input.phone) ||
       input.phone.trim().length() > 40
     ) {
       throw invalidParticipant();
@@ -721,6 +725,11 @@ public without sharing class ParticipantRegistrationController {
     Pattern.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$', email));
   }
 
+  private static Boolean isValidPhone(String phone) {
+    return (!String.isBlank(phone) &&
+    Pattern.matches('^[0-9]{6,15}$', phone.trim()));
+  }
+
   private static Boolean isValidToken(String token) {
     return !String.isBlank(token) && Pattern.matches('^[0-9a-f]{64}$', token);
   }
@@ -731,7 +740,7 @@ public without sharing class ParticipantRegistrationController {
 
   private static RequestException invalidParticipant() {
     return new RequestException(
-      'Completa nome, cognome, email e telefono per ogni partecipante.'
+      'Completa nome, cognome, email e telefono e verifica che i formati siano validi.'
     );
   }
 

@@ -1,6 +1,7 @@
 public with sharing class OrderTriggerHandler {
   private static final String CONFIRMED_STATUS = 'Incassato';
   private static final String INITIAL_TICKET_STATUS = 'Ordinato';
+  private static final String AVAILABLE_TICKET_STATUS = 'Disponibile';
   private static final String OPPORTUNITY_WON_STAGE = 'Chiusa/Vinta';
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
   private static Id ticketRecordTypeId;
@@ -18,6 +19,69 @@ public with sharing class OrderTriggerHandler {
     Map<Id, Order> oldOrderMap
   ) {
     closeWonOpportunitiesForConfirmedOrders(newOrders, oldOrderMap);
+    makeTicketsAvailableForCollectedOrdersWithoutTranches(
+      newOrders,
+      oldOrderMap
+    );
+  }
+
+  private static void makeTicketsAvailableForCollectedOrdersWithoutTranches(
+    List<Order> orders,
+    Map<Id, Order> oldOrderMap
+  ) {
+    Set<Id> collectedOrderIds = new Set<Id>();
+
+    for (Order orderRecord : orders) {
+      Order oldOrder = oldOrderMap == null
+        ? null
+        : oldOrderMap.get(orderRecord.Id);
+
+      if (
+        orderRecord.Status == CONFIRMED_STATUS &&
+        oldOrder != null &&
+        oldOrder.Status != CONFIRMED_STATUS
+      ) {
+        collectedOrderIds.add(orderRecord.Id);
+      }
+    }
+
+    if (collectedOrderIds.isEmpty()) {
+      return;
+    }
+
+    for (OrderItem trancheLine : [
+      SELECT OrderId
+      FROM OrderItem
+      WHERE OrderId IN :collectedOrderIds AND Tranche__c != NULL
+    ]) {
+      collectedOrderIds.remove(trancheLine.OrderId);
+    }
+
+    if (collectedOrderIds.isEmpty()) {
+      return;
+    }
+
+    List<Asset> ticketUpdates = new List<Asset>();
+    for (Asset ticket : [
+      SELECT Id
+      FROM Asset
+      WHERE
+        Order_Product__r.OrderId IN :collectedOrderIds
+        AND RecordType.DeveloperName = :TICKET_RECORD_TYPE_DEVELOPER_NAME
+        AND Status = :INITIAL_TICKET_STATUS
+    ]) {
+      ticketUpdates.add(
+        new Asset(
+          Id = ticket.Id,
+          Status = AVAILABLE_TICKET_STATUS,
+          Fattura_Pagata__c = true
+        )
+      );
+    }
+
+    if (!ticketUpdates.isEmpty()) {
+      update ticketUpdates;
+    }
   }
 
   private static void closeWonOpportunitiesForConfirmedOrders(

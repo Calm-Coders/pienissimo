@@ -422,10 +422,26 @@ private class TicketingTest {
       );
 
       Test.startTest();
+      ParticipantRegistrationController.PageResponse partiallySaved = ParticipantRegistrationController.savePage(
+        inv.token,
+        new List<ParticipantRegistrationController.ParticipantInput>{
+          participant(inv.tickets[0].Id, 'noto@example.com')
+        }
+      );
+      System.assertEquals('READY', partiallySaved.state);
+      System.assertEquals(2, partiallySaved.tickets.size());
+      System.assertEquals(
+        'Assegnato',
+        [SELECT Status FROM Asset WHERE Id = :inv.tickets[0].Id].Status
+      );
+      System.assertEquals(
+        'Disponibile',
+        [SELECT Status FROM Asset WHERE Id = :inv.tickets[1].Id].Status
+      );
+
       ParticipantRegistrationController.PageResponse saved = ParticipantRegistrationController.savePage(
         inv.token,
         new List<ParticipantRegistrationController.ParticipantInput>{
-          participant(inv.tickets[0].Id, 'noto@example.com'),
           participant(inv.tickets[1].Id, 'nuovo.partecipante@example.com')
         }
       );
@@ -517,9 +533,6 @@ private class TicketingTest {
       List<List<ParticipantRegistrationController.ParticipantInput>> invalid = new List<List<ParticipantRegistrationController.ParticipantInput>>{
         null,
         new List<ParticipantRegistrationController.ParticipantInput>{
-          participant(inv.tickets[0].Id, 'a@example.com')
-        },
-        new List<ParticipantRegistrationController.ParticipantInput>{
           participant(inv.tickets[0].Id, 'a@example.com'),
           participant(inv.tickets[0].Id, 'b@example.com')
         },
@@ -545,6 +558,16 @@ private class TicketingTest {
         new List<ParticipantRegistrationController.ParticipantInput>{
           participant(inv.tickets[0].Id, 'stessa@example.com'),
           conflicting
+        }
+      );
+      ParticipantRegistrationController.ParticipantInput invalidPhone = participant(
+        inv.tickets[0].Id,
+        'telefono@example.com'
+      );
+      invalidPhone.phone = 'non-un-numero';
+      invalid.add(
+        new List<ParticipantRegistrationController.ParticipantInput>{
+          invalidPhone
         }
       );
       for (

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-07
+updated: 2026-10-02
 depends_on: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-18
@@ -138,7 +138,7 @@ overtaken.
 🔴 **The community page has to grow a rinuncia path.** Agreed ROMI-internally at
 [the marketing session](../meetings/2026-09-07%20Interna%20Flussi%20MKT.md): the
 option is removed from the marketing email and handled on the community instead,
-because Marketing Cloud cannot resolve *which assets* an email button refers to,
+because Marketing Cloud cannot resolve _which assets_ an email button refers to,
 and a guided path can
 ([the decision](../decisions/Decision%20-%20rinuncia%20moves%20from%20the%20marketing%20email%20to%20the%20community.md)).
 This is unbuilt work on a page that merged on 3 September, arriving after the
@@ -173,3 +173,23 @@ chosen by the customer at ticket compilation and **not editable by Pienissimo**.
 **New**: [OI-126](OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md)
 — a Salesforce flag marking tickets whose participant data is not yet filled in,
 so the nurturing flow can key off it.
+
+## 2026-10-02 — email and telephone validation in source
+
+The current participant page still implements the four-field version, including
+phone. Email is validated as an email address and limited to the Contact field's
+80 characters. Telephone accepts only 6–15 digits, with no letters, spaces or
+symbols and no country-specific prefix restriction. Non-digits are removed as
+the user types; an international country code is entered as digits, for example
+`393331234567`. The same telephone rule now runs in
+`ParticipantRegistrationController`, so an invalid value cannot bypass the
+browser check through a direct Apex request.
+
+Ticket labels are now numbered within their edition rather than across the whole
+page. Each edition starts again at `Biglietto 1` and continues `2`, `3`, and so
+on for that edition's tickets.
+
+This records the source implementation, not a resolution of the older
+three-versus-four-field requirement divergence above. The changed Apex and LWC
+validated successfully against UAT in dry-runs `0AfMA00000Cpy010AB`,
+`0AfMA00000Cpysr0AB` and `0AfMA00000CpzKH0AZ`; nothing was deployed.

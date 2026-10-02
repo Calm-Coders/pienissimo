@@ -44,6 +44,7 @@ public without sharing class QuotePdfController {
         Id,
         Product2Id,
         Product2.Name,
+        Product2.QuantityUnitOfMeasure,
         Product2.RecordType.DeveloperName,
         Description,
         Quantity,
@@ -84,7 +85,8 @@ public without sharing class QuotePdfController {
           Quantity__c,
           Unit_Spread__c,
           Spread_Price__c,
-          Product__r.Name
+          Product__r.Name,
+          Product__r.QuantityUnitOfMeasure
         FROM BundleComponent__c
         WHERE Bundle__c IN :productIds
         WITH USER_MODE
@@ -253,6 +255,7 @@ public without sharing class QuotePdfController {
   public class LineRow {
     public String name { get; private set; }
     public String description { get; private set; }
+    public String unitOfMeasure { get; private set; }
     public Decimal quantity { get; private set; }
     public String listPrice { get; private set; }
     public String amount { get; private set; }
@@ -263,6 +266,7 @@ public without sharing class QuotePdfController {
     public LineRow(QuoteLineItem item) {
       name = item.Product2.Name;
       description = item.Description;
+      unitOfMeasure = item.Product2.QuantityUnitOfMeasure;
       quantity = item.Quantity;
       listPrice = money(item.ListPrice);
       Decimal gross = item.Quantity * item.UnitPrice;
@@ -289,6 +293,9 @@ public without sharing class QuotePdfController {
 
       name = component.Product__r == null ? '' : component.Product__r.Name;
       description = 'Componente bundle: ' + parentLine.Product2.Name;
+      unitOfMeasure = component.Product__r == null
+        ? ''
+        : component.Product__r.QuantityUnitOfMeasure;
       quantity = parentQuantity * componentQuantity;
       listPrice = money(component.Unit_Spread__c);
       amount = money(totalAmount);

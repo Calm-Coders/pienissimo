@@ -321,13 +321,14 @@
         <table class="lines">
           <thead>
             <tr>
-              <th style="width: 28%">Articolo e Descrizione</th>
+              <th style="width: 22%">Articolo e Descrizione</th>
+              <th style="width: 7%">Unità di misura</th>
               <th style="width: 7%">Quantità</th>
-              <th style="width: 13%">Prezzo Listino</th>
-              <th style="width: 13%">Importo</th>
-              <th style="width: 11%">Sconto</th>
+              <th style="width: 12%">Prezzo Listino</th>
+              <th style="width: 12%">Importo</th>
+              <th style="width: 10%">Sconto</th>
               <th style="width: 14%">Totale Netto</th>
-              <th style="width: 14%">Scadenza Pagamento</th>
+              <th style="width: 16%">Scadenza Pagamento</th>
             </tr>
           </thead>
           <tbody>
@@ -338,6 +339,9 @@
                   <div class="description">
                     <apex:outputText value="{!line.description}" />
                   </div>
+                </td>
+                <td>
+                  <apex:outputText value="{!line.unitOfMeasure}" />
                 </td>
                 <td class="number">
                   <apex:outputText value="{!line.quantity}" />
@@ -478,13 +482,14 @@
         <table class="lines plus-lines">
           <thead>
             <tr>
-              <th style="width: 28%">Articolo e Descrizione</th>
+              <th style="width: 22%">Articolo e Descrizione</th>
+              <th style="width: 7%">Unità di misura</th>
               <th style="width: 7%">Quantita</th>
-              <th style="width: 13%">Prezzo Listino</th>
-              <th style="width: 13%">Importo</th>
-              <th style="width: 11%">Sconto</th>
+              <th style="width: 12%">Prezzo Listino</th>
+              <th style="width: 12%">Importo</th>
+              <th style="width: 10%">Sconto</th>
               <th style="width: 14%">Totale Netto</th>
-              <th style="width: 14%">Scadenza Pagamento</th>
+              <th style="width: 16%">Scadenza Pagamento</th>
             </tr>
           </thead>
           <tbody>
@@ -495,6 +500,9 @@
                   <div class="description">
                     <apex:outputText value="{!line.description}" />
                   </div>
+                </td>
+                <td>
+                  <apex:outputText value="{!line.unitOfMeasure}" />
                 </td>
                 <td class="number">
                   <apex:outputText value="{!line.quantity}" />
