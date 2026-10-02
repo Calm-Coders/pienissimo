@@ -53,12 +53,16 @@
           <div class="grid">
             <lightning-input-field field-name="Name"></lightning-input-field>
             <lightning-input-field field-name="OwnerId"></lightning-input-field>
-            <lightning-input-field
-              field-name="Tipo_Opportunita__c"
-            ></lightning-input-field>
+            <template if:true={showOpportunityType}>
+              <lightning-input-field
+                field-name="Tipo_Opportunita__c"
+                required={isPlusRecordType}
+              ></lightning-input-field>
+            </template>
             <template if:true={isWooCommerceRecordType}>
               <lightning-input-field
                 field-name="Origine_WooCommerce__c"
+                required
               ></lightning-input-field>
             </template>
           </div>
