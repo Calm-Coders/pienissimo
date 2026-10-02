@@ -16,15 +16,17 @@ Keep the twenty most recent entries here; archive older ones to
   `Condizione_di_Pagamento` (API name = Mexal code sent as `id_pagamento`, label =
   description), used by `Condizione_di_Pagamento__c` on Quote (existing) and Order
   (new). Repointed the quote → order copy, the Mexal send, the PDF, both layouts and
-  `Full_Permission` to it; `Codice_Pagamento_Mexal__c` is now unused. Fixture values in
+  `Full_Permission` to it. Fixture values in
   `QuoteCommercialTest` / `MexalIntegrationTest` changed to a valid code. Recorded in
   [OI-160](notes/items/OI-160%20Payment%20conditions%20cannot%20vary%20by%20order%20line.md).
 - **State:** 🟢 **deployed to Pienissimo UAT** (`0AfMA00000CpvqB0AR`, `NoTestRun`) after
   Aurel Mrruku promoted the Quote picklist to the GVS in Setup; **not committed, not in
   Prod**. `MexalIntegrationTest` 50/50 on the change; `QuoteCommercialTest` fails 15/19
   in UAT with or without it (RecordTypeId) — pre-existing.
-- **Next:** commit; one UAT test quote still holds `RID FINE MESE DF`; decide whether to
-  delete `Codice_Pagamento_Mexal__c`; Prod deploy creates both fields on the GVS.
+- **Also:** deleted the now-unused `Codice_Pagamento_Mexal__c` (Quote + Order) from source
+  and UAT (`0AfMA00000Cq4Bv0AJ`); re-set the one UAT quote on `RID FINE MESE DF` to `64`.
+- **Next:** commit; Prod deploy creates both `Condizione_di_Pagamento__c` fields on the
+  GVS (no manual step there).
 
 ## 2026-10-01 - claude (nightly requirements-check)
 

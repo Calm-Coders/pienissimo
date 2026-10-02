@@ -78,8 +78,10 @@ Pagamento**, and the values live in a **Global Value Set** so Quote and Order sh
 - The quote → order copy (`QuoteTriggerHandler`) and the Mexal send
   (`MexalOrderSendService`, `id_pagamento`) now read `Condizione_di_Pagamento__c`.
   The PDF prints its label via `toLabel`. Both page layouts show it.
-- `Codice_Pagamento_Mexal__c` (text, Quote + Order) is **no longer read or written by
-  any code** and was empty in UAT; it is left in place, not deleted.
+- `Codice_Pagamento_Mexal__c` (text, Quote + Order), the earlier carrier of the code,
+  was empty and unreferenced, and was **deleted from source and from UAT** the same day
+  (destructive deploy `0AfMA00000Cq4Bv0AJ`; it sits in Deleted Fields for 15 days). It
+  never existed in Prod.
 - 🟢 **Deployed to Pienissimo UAT** (`0AfMA00000CpvqB0AR`, `NoTestRun`) after Aurel
   Mrruku promoted the Quote field's local picklist to the GVS in Setup — the Metadata
   API refuses that conversion (_"Cannot change which global value set this picklist
@@ -90,8 +92,8 @@ Pagamento**, and the values live in a **Global Value Set** so Quote and Order sh
   `QuoteCommercialTest` fails **15 of 19 in UAT before and after this change**
   (`INVALID_CROSS_REFERENCE_KEY` on `RecordTypeId`) — see
   [OI-64](OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md).
-- ⚠ One UAT test quote still holds the retired value `RID FINE MESE DF`; it will fail
-  the restricted picklist on its next save until re-set.
+- The one UAT test quote holding the retired value `RID FINE MESE DF` was re-set to `64`
+  (RID FINE MESE DATA FATTURA), at Aurel Mrruku's request.
 - In Prod neither field exists; a deploy creates both directly on the GVS.
 - ⚠ The five-vs-four discrepancy from the 24/09 call is still unreconciled, and the
   **new structured codes** promised on 22/09 have not arrived — these four are the
