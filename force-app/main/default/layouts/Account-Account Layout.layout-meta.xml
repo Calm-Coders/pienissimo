@@ -64,6 +64,10 @@
                 <field>Codice_Cliente_Mexal__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Creato_su_Mexal__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Id_Zoho__c</field>
             </layoutItems>

@@ -30,13 +30,11 @@
             <value>
                 <fullName>Vendita da tutor</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
                 <label>Vendita da tutor</label>
             </value>
             <value>
                 <fullName>WooCommerce</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
                 <label>WooCommerce</label>
             </value>
         </valueSetDefinition>

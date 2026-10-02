@@ -8,7 +8,11 @@ import OPPORTUNITY_OBJECT from "@salesforce/schema/Opportunity";
 import ACCOUNT_NAME from "@salesforce/schema/Account.Name";
 
 const INITIAL_STAGE = "Qualificato";
+const PLUS_RECORD_TYPE = "Plus_Attivazione_Rinnovo";
+const STANDARD_RECORD_TYPE = "Vendita_Standard";
 const WOOCOMMERCE_RECORD_TYPE = "WooCommerce";
+const STANDARD_OPPORTUNITY_TYPE = "Vendita da tutor";
+const WOOCOMMERCE_OPPORTUNITY_TYPE = "WooCommerce";
 
 export default class AccountNewOpportunity extends NavigationMixin(
   LightningElement
@@ -74,6 +78,24 @@ export default class AccountNewOpportunity extends NavigationMixin(
     );
   }
 
+  get isPlusRecordType() {
+    return (
+      this.selectedRecordTypeDeveloperName === PLUS_RECORD_TYPE ||
+      this.selectedRecordTypeName === "Plus Attivazione/Rinnovo"
+    );
+  }
+
+  get isStandardRecordType() {
+    return (
+      this.selectedRecordTypeDeveloperName === STANDARD_RECORD_TYPE ||
+      this.selectedRecordTypeName === "Vendita Standard"
+    );
+  }
+
+  get showOpportunityType() {
+    return !this.isWooCommerceRecordType && !this.isStandardRecordType;
+  }
+
   get showRecordTypeSelector() {
     return this.recordTypeOptions.length > 1;
   }
@@ -108,8 +130,21 @@ export default class AccountNewOpportunity extends NavigationMixin(
     fields.RecordTypeId = this.selectedRecordTypeId;
     fields.StageName = INITIAL_STAGE;
     fields.CloseDate = this.defaultCloseDate;
+    fields.Tipo_Opportunita__c = this.hiddenOpportunityTypeValue(
+      fields.Tipo_Opportunita__c
+    );
 
     this.template.querySelector("lightning-record-edit-form").submit(fields);
+  }
+
+  hiddenOpportunityTypeValue(currentValue) {
+    if (this.isWooCommerceRecordType) {
+      return WOOCOMMERCE_OPPORTUNITY_TYPE;
+    }
+    if (this.isStandardRecordType) {
+      return STANDARD_OPPORTUNITY_TYPE;
+    }
+    return currentValue;
   }
 
   handleSuccess(event) {

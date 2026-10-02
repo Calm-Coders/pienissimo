@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description
+  >Email interna inviata quando la creazione cliente Mexal non collega un codice cliente al record Account Salesforce.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Mexal Customer Error Notification</name>
+    <style>freeForm</style>
+    <subject>Errore creazione cliente Mexal - {{accountId}}</subject>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -5,6 +5,7 @@ global without sharing class WoocommerceOrderService {
   private static final String CREATED_STATUS = 'Incassato';
   private static final String INITIAL_STATUS = 'Ordinato';
   private static final String TRANCHE_STATUS_OPEN = 'Aperta';
+  private static final String AZIENDA_RECORD_TYPE = 'Azienda';
 
   @HttpPost
   global static void createOrder() {
@@ -31,7 +32,6 @@ global without sharing class WoocommerceOrderService {
       }
 
       Id payloadOpportunityId = opportunityId(payload);
-      Id accountId = getOpportunityAccountId(payloadOpportunityId);
       Id pricebookId = getStandardPricebookId();
       Map<String, Product2> productsByScCode = getProductsByScCode(
         payload.orderLines()
@@ -45,8 +45,14 @@ global without sharing class WoocommerceOrderService {
         pricebookId
       );
 
+      orderCreationSavepoint = Database.setSavepoint();
+      CustomerResolution customer = resolveCustomer(
+        payload,
+        payloadOpportunityId
+      );
+
       Order orderRec = new Order(
-        AccountId = accountId,
+        AccountId = customer.accountId,
         EffectiveDate = payload.orderDate(),
         Status = INITIAL_STATUS,
         Pricebook2Id = pricebookId,
@@ -55,7 +61,6 @@ global without sharing class WoocommerceOrderService {
         WooCommerce_Order_Key__c = payload.orderKey()
       );
 
-      orderCreationSavepoint = Database.setSavepoint();
       insert orderRec;
 
       insertOrderLines(orderRec.Id, orderBuildPlan, entriesByProductId);
@@ -66,7 +71,14 @@ global without sharing class WoocommerceOrderService {
       }
 
       updateOpportunity(payload, orderRec.Id);
-      writeSuccess(logRec, orderRec.Id, accountId, false);
+      writeSuccess(
+        logRec,
+        orderRec.Id,
+        customer.accountId,
+        customer.contactId,
+        customer.contactWarning,
+        false
+      );
     } catch (Exception e) {
       if (orderCreationSavepoint != null) {
         Database.rollback(orderCreationSavepoint);
@@ -101,9 +113,10 @@ global without sharing class WoocommerceOrderService {
       );
     }
     if (String.isBlank(payload.sf_opportunity_id)) {
-      throw new WooCommerceOrderException('sf_opportunity_id is required');
+      validateCustomerPayload(payload);
+    } else {
+      opportunityId(payload);
     }
-    opportunityId(payload);
     if (payload.orderLines().isEmpty()) {
       throw new WooCommerceOrderException(
         'At least one WooCommerce order line is required'
@@ -126,6 +139,24 @@ global without sharing class WoocommerceOrderService {
           'Total or subtotal is required for SC code ' + line.scCode()
         );
       }
+    }
+  }
+
+  private static void validateCustomerPayload(WooCommerceOrderPayload payload) {
+    if (String.isBlank(payload.partitaIva())) {
+      throw new WooCommerceOrderException(
+        'VAT number is required when sf_opportunity_id is missing'
+      );
+    }
+    if (String.isBlank(customerAccountName(payload))) {
+      throw new WooCommerceOrderException(
+        'Customer or company name is required when sf_opportunity_id is missing'
+      );
+    }
+    if (String.isBlank(payload.billingCountry())) {
+      throw new WooCommerceOrderException(
+        'Billing country is required when sf_opportunity_id is missing'
+      );
     }
   }
 
@@ -159,6 +190,190 @@ global without sharing class WoocommerceOrderService {
     }
 
     return opportunities[0].AccountId;
+  }
+
+  private static CustomerResolution resolveCustomer(
+    WooCommerceOrderPayload payload,
+    Id payloadOpportunityId
+  ) {
+    if (payloadOpportunityId != null) {
+      return new CustomerResolution(
+        getOpportunityAccountId(payloadOpportunityId),
+        null,
+        null
+      );
+    }
+
+    Account accountRecord = findAccountByVat(payload.partitaIva());
+    if (accountRecord == null) {
+      accountRecord = createAccount(payload);
+    }
+
+    Id commercialAccountId = CommercialAccountResolver.resolve(
+      accountRecord.Id
+    );
+    Contact contactRecord;
+    String contactWarning;
+    try {
+      contactRecord = findOrCreateContact(commercialAccountId, payload);
+    } catch (Exception error) {
+      contactWarning = 'Order created without Contact: ' + error.getMessage();
+      System.debug(LoggingLevel.WARN, contactWarning);
+    }
+    return new CustomerResolution(
+      commercialAccountId,
+      contactRecord == null ? null : contactRecord.Id,
+      contactWarning
+    );
+  }
+
+  private static Account findAccountByVat(String partitaIva) {
+    String normalizedVat = normalizeVat(partitaIva);
+    List<Account> accounts = [
+      SELECT Id, Partita_IVA__c
+      FROM Account
+      WHERE Partita_IVA__c = :normalizedVat
+      ORDER BY CreatedDate, Id
+      LIMIT 2
+    ];
+
+    if (accounts.size() > 1) {
+      throw new WooCommerceOrderException(
+        'Multiple Accounts found for the WooCommerce VAT number'
+      );
+    }
+    return accounts.isEmpty() ? null : accounts[0];
+  }
+
+  private static Account createAccount(WooCommerceOrderPayload payload) {
+    Account accountRecord = new Account(
+      Name = limitLength(customerAccountName(payload), 255),
+      RecordTypeId = getAziendaAccountRecordTypeId(),
+      Lead_Email__c = payload.email(),
+      Email__c = payload.email(),
+      Partita_IVA__c = normalizeVat(payload.partitaIva()),
+      Codice_Fiscale__c = payload.taxCode(),
+      PEC__c = payload.pecEmail(),
+      Codice_Destinatario_SDI__c = payload.sdiCode(),
+      Phone = payload.phone(),
+      Nome_Locale__c = payload.venueName(),
+      BillingStreet = payload.billingStreet(),
+      BillingCity = payload.billingCity(),
+      BillingState = payload.billingState(),
+      BillingPostalCode = payload.billingPostalCode(),
+      BillingCountry = payload.billingCountry(),
+      ShippingStreet = payload.shippingStreet(),
+      ShippingCity = payload.shippingCity(),
+      ShippingState = payload.shippingState(),
+      ShippingPostalCode = payload.shippingPostalCode(),
+      ShippingCountry = payload.shippingCountry()
+    );
+    insert accountRecord;
+    return accountRecord;
+  }
+
+  private static Contact findOrCreateContact(
+    Id accountId,
+    WooCommerceOrderPayload payload
+  ) {
+    String email = payload.email();
+    if (String.isBlank(email)) {
+      throw new WooCommerceOrderException(
+        'Billing email is missing; Contact matching was skipped'
+      );
+    }
+    List<Contact> contacts = [
+      SELECT Id, AccountId, Email, Contatto_Principale__c
+      FROM Contact
+      WHERE Email = :email
+      ORDER BY Contatto_Principale__c DESC, CreatedDate, Id
+    ];
+
+    Contact matchingContact;
+    List<Contact> orphanContacts = new List<Contact>();
+    for (Contact contactRecord : contacts) {
+      if (contactRecord.AccountId == accountId && matchingContact == null) {
+        matchingContact = contactRecord;
+      } else if (contactRecord.AccountId == null) {
+        orphanContacts.add(contactRecord);
+      }
+    }
+
+    if (matchingContact == null) {
+      if (orphanContacts.size() > 1) {
+        throw new WooCommerceOrderException(
+          'Multiple Contacts without an Account use the WooCommerce billing email'
+        );
+      }
+
+      if (orphanContacts.size() == 1) {
+        matchingContact = orphanContacts[0];
+        matchingContact.AccountId = accountId;
+        update matchingContact;
+      } else {
+        matchingContact = new Contact(
+          AccountId = accountId,
+          FirstName = limitLength(payload.firstName(), 40),
+          LastName = limitLength(customerContactLastName(payload), 80),
+          Email = email,
+          Phone = payload.phone(),
+          MailingStreet = payload.billingStreet(),
+          MailingCity = payload.billingCity(),
+          MailingState = payload.billingState(),
+          MailingPostalCode = payload.billingPostalCode(),
+          MailingCountry = payload.billingCountry()
+        );
+        insertContactAllowingDuplicates(matchingContact);
+      }
+    }
+
+    setAsPrincipalContactWhenMissing(accountId, matchingContact);
+    return matchingContact;
+  }
+
+  private static void insertContactAllowingDuplicates(Contact contactRecord) {
+    Database.DMLOptions options = new Database.DMLOptions();
+    options.DuplicateRuleHeader.AllowSave = true;
+    Database.SaveResult result = Database.insert(contactRecord, options);
+    if (!result.isSuccess()) {
+      throw new WooCommerceOrderException(
+        'Unable to create Contact: ' + result.getErrors()[0].getMessage()
+      );
+    }
+  }
+
+  private static void setAsPrincipalContactWhenMissing(
+    Id accountId,
+    Contact contactRecord
+  ) {
+    if (contactRecord.Contatto_Principale__c == true) {
+      return;
+    }
+
+    Integer principalContacts = [
+      SELECT COUNT()
+      FROM Contact
+      WHERE AccountId = :accountId AND Contatto_Principale__c = TRUE
+    ];
+    if (principalContacts == 0) {
+      update new Contact(Id = contactRecord.Id, Contatto_Principale__c = true);
+      contactRecord.Contatto_Principale__c = true;
+    }
+  }
+
+  private static Id getAziendaAccountRecordTypeId() {
+    List<RecordType> recordTypes = [
+      SELECT Id
+      FROM RecordType
+      WHERE SObjectType = 'Account' AND DeveloperName = :AZIENDA_RECORD_TYPE
+      LIMIT 1
+    ];
+    if (recordTypes.isEmpty()) {
+      throw new WooCommerceOrderException(
+        'Account record type Azienda was not found'
+      );
+    }
+    return recordTypes[0].Id;
   }
 
   private static Map<String, Product2> getProductsByScCode(
@@ -566,14 +781,20 @@ global without sharing class WoocommerceOrderService {
     Integration_Log__c logRec,
     Id orderId,
     Id accountId,
+    Id contactId,
+    String contactWarning,
     Boolean duplicate
   ) {
     Map<String, Object> responseBody = new Map<String, Object>{
       'success' => true,
       'duplicate' => duplicate,
       'orderId' => orderId,
-      'accountId' => accountId
+      'accountId' => accountId,
+      'contactId' => contactId
     };
+    if (!String.isBlank(contactWarning)) {
+      responseBody.put('warning', contactWarning);
+    }
     writeResponse(logRec, 200, responseBody, false);
   }
 
@@ -659,6 +880,22 @@ global without sharing class WoocommerceOrderService {
       productRec.RecordType.DeveloperName == BUNDLE_RECORD_TYPE;
   }
 
+  private class CustomerResolution {
+    public Id accountId;
+    public Id contactId;
+    public String contactWarning;
+
+    public CustomerResolution(
+      Id accountId,
+      Id contactId,
+      String contactWarning
+    ) {
+      this.accountId = accountId;
+      this.contactId = contactId;
+      this.contactWarning = contactWarning;
+    }
+  }
+
   private class OrderBuildPlan {
     public List<OrderLineDraft> lines = new List<OrderLineDraft>();
     public Map<Id, Bundle_Tranch__c> bundleTranchesById = new Map<Id, Bundle_Tranch__c>();
@@ -708,8 +945,43 @@ global without sharing class WoocommerceOrderService {
     return String.isBlank(email) ? null : email.trim().toLowerCase();
   }
 
+  private static String normalizeVat(String vatNumber) {
+    return String.isBlank(vatNumber) ? null : vatNumber.trim().toUpperCase();
+  }
+
+  private static String customerAccountName(WooCommerceOrderPayload payload) {
+    return firstNotBlank(
+      new List<String>{
+        payload.companyName(),
+        payload.billingCompany(),
+        payload.venueName(),
+        payload.fullName()
+      }
+    );
+  }
+
+  private static String customerContactLastName(
+    WooCommerceOrderPayload payload
+  ) {
+    return firstNotBlank(
+      new List<String>{
+        payload.lastName(),
+        payload.fullName(),
+        payload.billingCompany(),
+        payload.email()
+      }
+    );
+  }
+
   private static String clean(String value) {
     return String.isBlank(value) ? null : value.trim();
+  }
+
+  private static String limitLength(String value, Integer maxLength) {
+    if (value == null || value.length() <= maxLength) {
+      return value;
+    }
+    return value.substring(0, maxLength);
   }
 
   private static String firstNotBlank(List<String> values) {
@@ -866,6 +1138,18 @@ global without sharing class WoocommerceOrderService {
 
     public String partitaIva() {
       return fiscal == null ? null : clean(fiscal.vat_number);
+    }
+
+    public String taxCode() {
+      return fiscal == null ? null : clean(fiscal.tax_code);
+    }
+
+    public String sdiCode() {
+      return fiscal == null ? null : clean(fiscal.sdi_code);
+    }
+
+    public String pecEmail() {
+      return fiscal == null ? null : normalizeEmail(fiscal.pec_email);
     }
 
     public String billingStreet() {
