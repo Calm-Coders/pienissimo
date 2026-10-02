@@ -177,7 +177,7 @@ public without sharing class QuoteTriggerHandler {
         OpportunityId,
         Pricebook2Id,
         Locale__c,
-        Codice_Pagamento_Mexal__c
+        Condizione_di_Pagamento__c
       FROM Quote
       WHERE Id IN :signedQuoteIds
     ]) {
@@ -201,7 +201,7 @@ public without sharing class QuoteTriggerHandler {
           Status = INITIAL_ORDER_STATUS,
           Quote__c = quoteRecord.Id,
           Locale__c = quoteRecord.Locale__c,
-          Codice_Pagamento_Mexal__c = quoteRecord.Codice_Pagamento_Mexal__c,
+          Condizione_di_Pagamento__c = quoteRecord.Condizione_di_Pagamento__c,
           Origine__c = SALESFORCE_ORIGIN
         )
       );

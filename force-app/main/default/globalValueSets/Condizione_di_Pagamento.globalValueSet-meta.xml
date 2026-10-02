@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>2</fullName>
+        <default>false</default>
+        <label>RIMESSA DIRETTA</label>
+    </customValue>
+    <customValue>
+        <fullName>12</fullName>
+        <default>false</default>
+        <label>BONIFICO DATA FATTURA</label>
+    </customValue>
+    <customValue>
+        <fullName>20</fullName>
+        <default>false</default>
+        <label>BONIFICO FINE MESE DATA FATTURA</label>
+    </customValue>
+    <customValue>
+        <fullName>64</fullName>
+        <default>false</default>
+        <label>RID FINE MESE DATA FATTURA</label>
+    </customValue>
+    <description
+  >Condizioni di pagamento Mexal (Codici Pagamento.xlsx). API name = codice Mexal inviato come id_pagamento; label = descrizione. Un codice aggiunto in Mexal va aggiunto qui a mano con lo stesso codice.</description>
+    <masterLabel>Condizione di Pagamento</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-29
+updated: 2026-10-02
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -300,3 +300,15 @@ the same reason.
 **Recorded for the test-suite task, per the standing instruction. Nothing was
 written, proposed or scaffolded here.** The fix is a one-token change in the
 factory, and it belongs to whoever is asked for the suite.
+
+## 2026-10-02 - `QuoteCommercialTest` fails in UAT
+
+Observed while deploying the payment-condition change
+([OI-160](OI-160%20Payment%20conditions%20cannot%20vary%20by%20order%20line.md)):
+**`QuoteCommercialTest` fails 15 of 19 methods in Pienissimo UAT with the code already
+in the org**, 14 on `INVALID_CROSS_REFERENCE_KEY ... [RecordTypeId]` at insert and one
+`AuraHandledException` (`plusProductCreatesOneTrancheAndLinePerDueDate`). The record-type
+id the fixtures use is not valid for the running user in UAT. `QuoteDocumentsTest` and
+`QuoteLinesAndTranchesTest` exist in source but **not in UAT**, so `QuoteTriggerHandler`
+and `QuotePdfController` show 0% coverage there under `RunSpecifiedTests`. Recorded, not
+acted on — the suite is a separate task.

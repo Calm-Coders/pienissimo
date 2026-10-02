@@ -181,7 +181,7 @@ private class QuoteCommercialTest {
     System.runAs(TestDataFactory.runner()) {
       Opportunity opportunityRecord = TestDataFactory.opportunity(azienda().Id);
       Quote quoteRecord = TestDataFactory.quote(opportunityRecord.Id);
-      quoteRecord.Codice_Pagamento_Mexal__c = 'PAG01';
+      quoteRecord.Condizione_di_Pagamento__c = '64';
       update quoteRecord;
       Tranche__c trancheRecord = TestDataFactory.tranche(quoteRecord.Id, 1);
       QuoteLineItem line = new QuoteLineItem(
@@ -213,7 +213,7 @@ private class QuoteCommercialTest {
           Status,
           OpportunityId,
           Origine__c,
-          Codice_Pagamento_Mexal__c,
+          Condizione_di_Pagamento__c,
           (SELECT Quantity, UnitPrice, Tranche__c FROM OrderItems)
         FROM Order
         WHERE Quote__c = :quoteRecord.Id
@@ -221,7 +221,7 @@ private class QuoteCommercialTest {
       System.assertEquals('Ordinato', generated.Status);
       System.assertEquals('Salesforce', generated.Origine__c);
       System.assertEquals(opportunityRecord.Id, generated.OpportunityId);
-      System.assertEquals('PAG01', generated.Codice_Pagamento_Mexal__c);
+      System.assertEquals('64', generated.Condizione_di_Pagamento__c);
       System.assertEquals(1, generated.OrderItems.size());
       System.assertEquals(trancheRecord.Id, generated.OrderItems[0].Tranche__c);
       System.assertEquals(

@@ -1445,7 +1445,7 @@ private class MexalIntegrationTest {
   @isTest
   static void orderSendMapsTheMexalDocumentBack() {
     Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
-    orderRecord.Codice_Pagamento_Mexal__c = '1';
+    orderRecord.Condizione_di_Pagamento__c = '64';
     update orderRecord;
     TestHttpMock mock = TestHttpMock.install()
       .when(
@@ -1485,7 +1485,7 @@ private class MexalIntegrationTest {
       mock.requests[0].getBody()
     );
     System.assertEquals(CUSTOMER_CODE, payload.get('cod_conto'));
-    System.assertEquals(1, payload.get('id_pagamento'));
+    System.assertEquals(64, payload.get('id_pagamento'));
     List<Object> lineDueDates = (List<Object>) payload.get('dt_sca_riga');
     List<Object> firstLineDueDate = (List<Object>) lineDueDates[0];
     System.assertEquals(1, firstLineDueDate[0]);
@@ -1498,7 +1498,7 @@ private class MexalIntegrationTest {
   @isTest
   static void orderSendOmitsBlankPaymentCode() {
     Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
-    orderRecord.Codice_Pagamento_Mexal__c = null;
+    orderRecord.Condizione_di_Pagamento__c = null;
     update orderRecord;
     List<OrderItem> lines = [
       SELECT Id, Data_Scadenza__c

@@ -10,6 +10,22 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-02 - claude - Mexal payment codes implemented in source
+
+- **Did:** implemented `Codici Pagamento.xlsx` (four codes) as Global Value Set
+  `Condizione_di_Pagamento` (API name = Mexal code sent as `id_pagamento`, label =
+  description), used by `Condizione_di_Pagamento__c` on Quote (existing) and Order
+  (new). Repointed the quote → order copy, the Mexal send, the PDF, both layouts and
+  `Full_Permission` to it; `Codice_Pagamento_Mexal__c` is now unused. Fixture values in
+  `QuoteCommercialTest` / `MexalIntegrationTest` changed to a valid code. Recorded in
+  [OI-160](notes/items/OI-160%20Payment%20conditions%20cannot%20vary%20by%20order%20line.md).
+- **State:** 🟢 **deployed to Pienissimo UAT** (`0AfMA00000CpvqB0AR`, `NoTestRun`) after
+  Aurel Mrruku promoted the Quote picklist to the GVS in Setup; **not committed, not in
+  Prod**. `MexalIntegrationTest` 50/50 on the change; `QuoteCommercialTest` fails 15/19
+  in UAT with or without it (RecordTypeId) — pre-existing.
+- **Next:** commit; one UAT test quote still holds `RID FINE MESE DF`; decide whether to
+  delete `Codice_Pagamento_Mexal__c`; Prod deploy creates both fields on the GVS.
+
 ## 2026-10-01 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack (three conversations), Drive, Fathom and git from
@@ -76,7 +92,7 @@ Keep the twenty most recent entries here; archive older ones to
   26/08 ruling). The Post UAT specified the entire Salesforce→Marketing Cloud send
   contract and **none of it is built**. The participant-document stack **did** reach
   `DevMain` via PRs #69/#71.
-- **Next:** (1) **diff `4f672a2`** on `DevAnita30` — it adds a *custom metadata type*,
+- **Next:** (1) **diff `4f672a2`** on `DevAnita30` — it adds a _custom metadata type_,
   which is the open shape question on OI-96, and it is unmerged. (2) Watch for **Elena
   Spini's written flow document**; OI-197's read side is blocked on it. (3) Ask whether
   **`Articoli Salesforce.xlsx`** (moved 12:45Z 30/09, not opened) now carries the Plus
@@ -92,7 +108,7 @@ Keep the twenty most recent entries here; archive older ones to
     is deliberately **excluded** — it is ROMI-internal, and `BIG-17` already carries the
     precedent refusing the unminuted seventh `Rinuncia` box. Do not add it from a sweep.
   - ⚠ **`Rinuncia`-as-an-Asset-state is still unruled** after 6 weeks. The 30/09 UAT
-    settled the *button*, not the picklist, in a room containing both Elena Spini and
+    settled the _button_, not the picklist, in a room containing both Elena Spini and
     Sabatino Rinaldi. The one-sentence ask went unasked again.
   - ⚠ **The tranche payment gate will first be tested against invoices Aurel Mrruku
     forces by hand**, not against Mexal. Do not read a passing test as an integrated one.
@@ -158,7 +174,7 @@ Keep the twenty most recent entries here; archive older ones to
   OI-186, OI-187. Both trackers, both recaps (§50 EN + IT), MAP, INDEX, trace.
 - **🟢 Discharged this run:** `Standart` → `Standard` (7th flag, `3bd0801`) · the
   WooCommerce order side (OI-181) · `rifiutato` wording → reason `sostituito da altro
-  preventivo` · DocuSign credentials received · credit notes + payment correction now
+preventivo` · DocuSign credentials received · credit notes + payment correction now
   **client-confirmed** Fase 2 · QR generation built.
 - **🔑 Retrieval correction, important:** **`#tproj-pienissimo` exists — `C0B5T3RB4FM`.**
   Three previous traces called it missing; `slack_search_channels` cannot find it, message

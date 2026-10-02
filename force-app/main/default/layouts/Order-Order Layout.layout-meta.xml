@@ -29,7 +29,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Codice_Pagamento_Mexal__c</field>
+                <field>Condizione_di_Pagamento__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>

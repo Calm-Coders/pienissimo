@@ -23,7 +23,7 @@ public without sharing class QuotePdfController {
       'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, ' +
       'BillingName, BillingStreet, BillingPostalCode, BillingCity, BillingState, BillingCountry, ' +
       'Subtotal, TotalPrice, Tax, ShippingHandling, GrandTotal, ' +
-      'Condizione_di_Pagamento__c, Descrizione_Condizione_di_Pagamento__c, ' +
+      'toLabel(Condizione_di_Pagamento__c), Descrizione_Condizione_di_Pagamento__c, ' +
       'Account.Name, Account.BillingStreet, Account.BillingPostalCode, Account.BillingCity, ' +
       'Account.BillingState, Account.BillingCountry, Account.Partita_IVA__c, ' +
       'Account.Nome_Legale_Rappresentante__c, Account.PEC__c, Opportunity.Owner.Name, ' +

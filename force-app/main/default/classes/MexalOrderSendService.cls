@@ -61,7 +61,7 @@ public with sharing class MexalOrderSendService {
         EffectiveDate,
         OrderNumber,
         Quote__c,
-        Codice_Pagamento_Mexal__c,
+        Condizione_di_Pagamento__c,
         WooCommerce_Order_Key__c,
         (
           SELECT
@@ -123,7 +123,7 @@ public with sharing class MexalOrderSendService {
     putIntegerValue(
       payload,
       'id_pagamento',
-      orderRecord.Codice_Pagamento_Mexal__c
+      orderRecord.Condizione_di_Pagamento__c
     );
     putLineArrays(payload, orderRecord.OrderItems);
     return payload;
