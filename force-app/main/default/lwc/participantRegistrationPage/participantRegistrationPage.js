@@ -17,6 +17,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
   page;
   groups = [];
   assignedTickets = [];
+  waivedTickets = [];
   tickets = [];
   isLoading = true;
   rinunciaAssetId;
@@ -46,11 +47,15 @@ export default class ParticipantRegistrationPage extends LightningElement {
   }
 
   get showTickets() {
-    return this.tickets.length > 0;
+    return this.groups.length > 0;
   }
 
   get showAssignedTickets() {
     return this.assignedTickets.length > 0;
+  }
+
+  get showWaivedTickets() {
+    return this.waivedTickets.length > 0;
   }
 
   get showFormActions() {
@@ -61,6 +66,12 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
   get showFinalMessage() {
     return this.page?.state === COMPLETED && this.page?.message;
+  }
+
+  get finalMessageHeading() {
+    return this.waivedTickets.length > 0 && this.assignedTickets.length === 0
+      ? "Rinuncia registrata"
+      : "Partecipanti confermati";
   }
 
   get requiredSubmissionCount() {
@@ -103,6 +114,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
     this.page = null;
     this.groups = [];
     this.assignedTickets = [];
+    this.waivedTickets = [];
     this.tickets = [];
 
     if (!this.token) {
@@ -160,6 +172,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
     );
     this.tickets = decoratedTickets;
     this.assignedTickets = decoratedTickets.filter((ticket) => ticket.assigned);
+    this.waivedTickets = decoratedTickets.filter((ticket) => ticket.isRinuncia);
 
     if (
       payload?.state !== READY &&
@@ -478,6 +491,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
       })
     );
     this.assignedTickets = this.tickets.filter((ticket) => ticket.assigned);
+    this.waivedTickets = this.tickets.filter((ticket) => ticket.isRinuncia);
   }
 
   handleModalKeydown(event) {

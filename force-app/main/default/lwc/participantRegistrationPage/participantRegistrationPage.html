@@ -175,7 +175,7 @@
 
         <template if:true={showFinalMessage}>
           <div class="message message-success" role="status">
-            <h2>Partecipanti confermati</h2>
+            <h2>{finalMessageHeading}</h2>
             <p>{page.message}</p>
           </div>
         </template>
@@ -227,6 +227,28 @@
                       <dd>{ticket.phone}</dd>
                     </div>
                   </dl>
+                </article>
+              </template>
+            </div>
+          </section>
+        </template>
+
+        <template if:true={showWaivedTickets}>
+          <section class="assigned-ticket-section">
+            <header class="assigned-ticket-heading">
+              <p class="context-label">Riepilogo</p>
+              <h2>Biglietti in rinuncia</h2>
+            </header>
+            <div class="ticket-list">
+              <template for:each={waivedTickets} for:item="ticket">
+                <article class={ticket.cardClass} key={ticket.assetId}>
+                  <header class="ticket-header">
+                    <div>
+                      <p class="ticket-number">{ticket.campaignName}</p>
+                      <h2>{ticket.productName}</h2>
+                    </div>
+                    <span class={ticket.badgeClass}>{ticket.badgeLabel}</span>
+                  </header>
                 </article>
               </template>
             </div>

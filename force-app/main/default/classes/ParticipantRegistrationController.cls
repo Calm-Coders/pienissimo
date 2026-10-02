@@ -352,7 +352,8 @@ public without sharing class ParticipantRegistrationController {
     for (Asset ticket : orderTickets) {
       if (
         ticket.Status != AVAILABLE_STATUS &&
-        ticket.Status != ASSIGNED_STATUS
+        ticket.Status != ASSIGNED_STATUS &&
+        ticket.Status != WAIVED_STATUS
       ) {
         continue;
       }
@@ -388,9 +389,9 @@ public without sharing class ParticipantRegistrationController {
 
       response.tickets.add(row);
 
-      // Assigned tickets remain visible as a read-only summary at the bottom
-      // of the page, but they are not part of the editable campaign groups.
-      if (row.assigned) {
+      // Assigned and waived tickets remain visible in read-only summaries at
+      // the bottom of the page, but are not part of the editable groups.
+      if (row.assigned || ticket.Status == WAIVED_STATUS) {
         continue;
       }
 
@@ -421,9 +422,16 @@ public without sharing class ParticipantRegistrationController {
     response.state = requiredParticipantCount > 0
       ? READY_STATE
       : COMPLETED_STATE;
+    Boolean onlyWaivedTickets =
+      requiredParticipantCount == 0 &&
+      !response.tickets.isEmpty() &&
+      campaignsWithAssignedTickets.isEmpty() &&
+      !ungroupedTicketsIncludeAssigned;
     response.message = requiredParticipantCount > 0
       ? null
-      : 'La lista dei partecipanti e gia stata inviata.';
+      : onlyWaivedTickets
+          ? 'La rinuncia e gia stata registrata.'
+          : 'La lista dei partecipanti e gia stata inviata.';
 
     return response;
   }

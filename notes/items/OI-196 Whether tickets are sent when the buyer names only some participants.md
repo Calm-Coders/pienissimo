@@ -182,6 +182,12 @@ and remains editable. Data entered for another edition is therefore not lost;
 the renounced edition is deliberately not restored. An LWC regression test
 covers this two-edition case.
 
+The page response now also retains Assets already in `Rinuncia`. The LWC keeps
+them out of the editable edition groups and lists them in a read-only **Biglietti
+in rinuncia** summary at the end of the page, after the assigned-ticket summary.
+This also makes the result of a successful rinuncia visible immediately after
+the server refresh.
+
 This is a repository implementation only in this session; it was not deployed.
 It implements the nomination-page half of the 30/09 ruling. The downstream send
 contract and field placement remain tracked separately by OI-197 and OI-199.

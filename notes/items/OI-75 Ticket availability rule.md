@@ -6,7 +6,7 @@ owner: ROMI
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-10-01
+updated: 2026-10-02
 depends_on: [OI-50]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -134,7 +134,6 @@ needs — though its semantics are still unasked.
 **This is the first question for the 26 August 16:00 Mexal review**, and it can
 now be asked with a URL beside it rather than as a mapping abstraction.
 
-
 ## 🔑 2026-10-01 - the rule is in writing, with the client, and `Rinuncia` is per edition
 
 [The written logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md)
@@ -168,3 +167,15 @@ review's first problem is that this ignores the edition's
 `Data_Invio_Biglietto__c` and would open nomination up to eleven months early,
 a case Fabrizio Paganelli excluded at the 30/09 UAT. See
 [OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md).
+
+## 2026-10-02 - tranche-less release built in the repository
+
+`OrderTriggerHandler.afterUpdate` now handles the documented tranche-less case.
+When an Order transitions to `Incassato`, the handler first excludes every Order
+that has any line linked to a `Tranche__c`. For each remaining Order it changes
+ticket Assets still in `Ordinato` to `Disponibile` and sets
+`Fattura_Pagata__c = true`.
+
+This is a repository-only implementation, not an org verification. Mixed Orders
+remain on the tranche path, and the wider chronological-tranche rule above is
+unchanged and still open.
