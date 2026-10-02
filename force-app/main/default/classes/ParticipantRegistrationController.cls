@@ -434,7 +434,7 @@ public without sharing class ParticipantRegistrationController {
   ) {
     if (inputs == null || inputs.isEmpty()) {
       throw new RequestException(
-        'Completa tutti i biglietti prima di salvare.'
+        'Inserisci almeno un partecipante prima di salvare.'
       );
     }
 
@@ -449,10 +449,6 @@ public without sharing class ParticipantRegistrationController {
       ) {
         eligibleAssets.put(ticket.Id, ticket);
       }
-    }
-
-    if (inputs.size() != eligibleAssets.size()) {
-      throw staleTickets();
     }
 
     Set<Id> submittedAssetIds = new Set<Id>();
@@ -654,7 +650,7 @@ public without sharing class ParticipantRegistrationController {
       input.lastName.trim().length() > 80 ||
       !isValidEmail(email) ||
       email.length() > 80 ||
-      String.isBlank(input.phone) ||
+      !isValidPhone(input.phone) ||
       input.phone.trim().length() > 40
     ) {
       throw invalidParticipant();
@@ -721,6 +717,11 @@ public without sharing class ParticipantRegistrationController {
     Pattern.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$', email));
   }
 
+  private static Boolean isValidPhone(String phone) {
+    return (!String.isBlank(phone) &&
+    Pattern.matches('^[0-9]{6,15}$', phone.trim()));
+  }
+
   private static Boolean isValidToken(String token) {
     return !String.isBlank(token) && Pattern.matches('^[0-9a-f]{64}$', token);
   }
@@ -731,7 +732,7 @@ public without sharing class ParticipantRegistrationController {
 
   private static RequestException invalidParticipant() {
     return new RequestException(
-      'Completa nome, cognome, email e telefono per ogni partecipante.'
+      'Completa nome, cognome, email e telefono e verifica che i formati siano validi.'
     );
   }
 

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-02
 depends_on: [OI-126, OI-127, OI-78]
 blocks: [OI-194]
 requirement: BIG-06
@@ -54,7 +54,7 @@ reconciled them in the session — the exit rule was not raised.
 
 ⚠ This is not the same question as
 [OI-126](OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md), which
-asks how Marketing Cloud *queries* completeness. This asks what the **send** does.
+asks how Marketing Cloud _queries_ completeness. This asks what the **send** does.
 
 ## The consequences named in the room
 
@@ -150,3 +150,38 @@ trigger becomes **at least one** confirmed participant, not all — carried into
 Elena Spini owns configuring the button visibility; her action item has no date.
 
 **Resolved on the rule. The build is [OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md).**
+
+## 2026-10-02 — partial participant save implemented in source
+
+`participantRegistrationPage` now enables its save action when at least one row
+is complete, sends only complete rows, and leaves blank ticket rows available for
+later. A partly filled row still blocks the save until it is completed or
+cleared. `ParticipantRegistrationController.savePage` now accepts that submitted
+subset while continuing to reject empty, invalid, duplicate or stale ticket
+inputs. The existing `TicketingTest` registration scenario now saves the two
+participants one at a time and checks that the first save leaves the page
+`READY` and the other Asset `Disponibile`.
+
+All four fields now use `lightning-input`'s supported `change` event, which fires
+as its value changes. Phone sanitization runs inside that same handler. This
+avoids the native `input` event, which did not reliably cross the base component
+boundary and left the row badge at `Da compilare`. The LWC test completes one
+ticket while leaving another blank and asserts that the save button enables.
+
+The save action no longer depends on that live badge state at all. It remains
+enabled whenever editable tickets exist, synchronizes the values currently
+visible in every input when clicked, and then validates the resulting rows.
+Empty and partial submissions are still rejected, while one complete row opens
+confirmation even if another row is blank. The regression test sets visible
+values without dispatching field events and verifies the one-participant
+confirmation.
+
+The page also snapshots started participant rows before a `Rinuncia` action and
+restores those drafts after the server refresh for every ticket that still exists
+and remains editable. Data entered for another edition is therefore not lost;
+the renounced edition is deliberately not restored. An LWC regression test
+covers this two-edition case.
+
+This is a repository implementation only in this session; it was not deployed.
+It implements the nomination-page half of the 30/09 ruling. The downstream send
+contract and field placement remain tracked separately by OI-197 and OI-199.

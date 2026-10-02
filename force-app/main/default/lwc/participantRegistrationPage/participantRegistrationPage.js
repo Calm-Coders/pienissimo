@@ -72,7 +72,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
   }
 
   get confirmationMessage() {
-    const count = this.requiredSubmissionCount;
+    const count = this.completedSubmissionCount;
     return count === 1
       ? "Confermi il salvataggio di questo partecipante?"
       : `Confermi il salvataggio di ${count} partecipanti?`;
@@ -82,8 +82,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
     return (
       this.isSubmitting ||
       Boolean(this.rinunciaAssetId) ||
-      this.requiredSubmissionCount === 0 ||
-      this.completedSubmissionCount !== this.requiredSubmissionCount
+      this.requiredSubmissionCount === 0
     );
   }
 
@@ -127,15 +126,29 @@ export default class ParticipantRegistrationPage extends LightningElement {
     }
   }
 
-  applyPage(payload) {
+  applyPage(payload, participantDrafts = new Map()) {
     this.page = payload || {};
-    const decoratedTickets = (payload?.tickets || []).map((ticket, index) =>
-      this.decorateTicket({ ...ticket, displayNumber: index + 1 })
-    );
+    const sourceGroups = payload?.groups || [];
+    const displayNumberByAssetId = new Map();
+    sourceGroups.forEach((group) => {
+      (group.tickets || []).forEach((ticket, index) => {
+        displayNumberByAssetId.set(ticket.assetId, index + 1);
+      });
+    });
+    const decoratedTickets = (payload?.tickets || []).map((ticket, index) => {
+      const participantDraft = ticket.editable
+        ? participantDrafts.get(ticket.assetId) || {}
+        : {};
+
+      return this.decorateTicket({
+        ...ticket,
+        ...participantDraft,
+        displayNumber: displayNumberByAssetId.get(ticket.assetId) || index + 1
+      });
+    });
     const ticketsById = new Map(
       decoratedTickets.map((ticket) => [ticket.assetId, ticket])
     );
-    const sourceGroups = payload?.groups || [];
     this.groups = sourceGroups.map((group) =>
       this.decorateGroup({
         ...group,
@@ -223,15 +236,22 @@ export default class ParticipantRegistrationPage extends LightningElement {
       isRinuncia: ticket.status === "Rinuncia",
       isSavingRinuncia: this.rinunciaAssetId === ticket.assetId,
       pendingSave,
-      rowRequiresFields: editable
+      rowRequiresFields: hasAnyParticipantValue
     };
   }
 
   handleInput(event) {
     const assetId = event.target.dataset.assetId;
     const fieldName = event.target.dataset.field;
+    let value = event.detail?.value ?? event.target.value ?? "";
+
+    if (fieldName === "phone") {
+      value = value.replace(/\D/g, "").slice(0, 15);
+      event.target.value = value;
+    }
+
     const changes = {
-      [fieldName]: event.detail.value
+      [fieldName]: value
     };
 
     if (fieldName === "email") {
@@ -290,26 +310,85 @@ export default class ParticipantRegistrationPage extends LightningElement {
     );
   }
 
+  syncParticipantInputs(inputs) {
+    const changesByAssetId = new Map();
+
+    inputs.forEach((input) => {
+      const assetId = input.dataset.assetId;
+      const fieldName = input.dataset.field;
+      if (!assetId || !FIELD_NAMES.includes(fieldName)) {
+        return;
+      }
+
+      let value = input.value || "";
+      if (fieldName === "phone") {
+        value = value.replace(/\D/g, "").slice(0, 15);
+        input.value = value;
+      }
+
+      const changes = changesByAssetId.get(assetId) || {};
+      changes[fieldName] = value;
+      changesByAssetId.set(assetId, changes);
+    });
+
+    this.tickets = this.tickets.map((ticket) => {
+      const changes = changesByAssetId.get(ticket.assetId);
+      if (!changes) {
+        return ticket;
+      }
+
+      return this.decorateTicket({
+        ...ticket,
+        ...changes,
+        contactRecognized:
+          changes.email !== undefined && changes.email !== ticket.email
+            ? false
+            : ticket.contactRecognized
+      });
+    });
+    this.syncGroupTickets();
+  }
+
+  captureParticipantDrafts() {
+    return new Map(
+      this.tickets
+        .filter(
+          (ticket) =>
+            ticket.editable &&
+            FIELD_NAMES.some((fieldName) =>
+              Boolean(this.normalizeValue(ticket[fieldName]))
+            )
+        )
+        .map((ticket) => [
+          ticket.assetId,
+          {
+            ...Object.fromEntries(
+              FIELD_NAMES.map((fieldName) => [fieldName, ticket[fieldName]])
+            ),
+            contactRecognized: ticket.contactRecognized
+          }
+        ])
+    );
+  }
+
   openConfirmation() {
     this.errorMessage = null;
 
     const inputs = [...this.template.querySelectorAll("lightning-input")];
+    this.syncParticipantInputs(inputs);
     const isValid = inputs.reduce((valid, input) => {
       input.reportValidity();
       return input.checkValidity() && valid;
     }, true);
 
-    if (this.requiredSubmissionCount === 0) {
+    if (this.completedSubmissionCount === 0) {
       this.errorMessage = "Non ci sono partecipanti da salvare.";
       return;
     }
 
-    if (
-      !isValid ||
-      this.completedSubmissionCount !== this.requiredSubmissionCount
-    ) {
+    if (!isValid || this.tickets.some((ticket) => ticket.hasPartialInput)) {
       this.errorMessage =
-        "Completa nome, cognome, email e telefono per tutti i biglietti non ancora assegnati.";
+        "Completa nome, cognome, email e telefono per ogni partecipante iniziato, oppure svuota la riga.";
       return;
     }
 
@@ -326,7 +405,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
     this.errorMessage = null;
 
     const participants = this.tickets
-      .filter((ticket) => ticket.editable)
+      .filter((ticket) => ticket.pendingSave)
       .map((ticket) => ({
         assetId: ticket.assetId,
         firstName: (ticket.firstName || "").trim(),
@@ -354,6 +433,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
       return;
     }
 
+    const participantDrafts = this.captureParticipantDrafts();
     this.rinunciaAssetId = groupAssetId;
     this.errorMessage = null;
     this.refreshTicketDecorations();
@@ -363,7 +443,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
         token: this.token,
         groupAssetId
       });
-      this.applyPage(payload);
+      this.applyPage(payload, participantDrafts);
     } catch (error) {
       this.errorMessage = this.normalizeError(error);
     } finally {
