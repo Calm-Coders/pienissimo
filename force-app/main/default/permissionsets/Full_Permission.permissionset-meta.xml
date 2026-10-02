@@ -949,11 +949,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Order.Codice_Pagamento_Mexal__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Order.Condizione_di_Pagamento__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1200,11 +1195,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.BillingName</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Quote.Codice_Pagamento_Mexal__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
