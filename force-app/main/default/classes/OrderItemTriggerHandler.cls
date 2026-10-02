@@ -17,11 +17,20 @@ public with sharing class OrderItemTriggerHandler {
     Map<Id, OrderItem> oldLineMap
   ) {
     Set<Id> trancheIds = new Set<Id>();
+    Set<Id> contractOrderIds = new Set<Id>();
 
     for (OrderItem line : newLines) {
       OrderItem oldLine = oldLineMap == null ? null : oldLineMap.get(line.Id);
       if (oldLine == null) {
         continue;
+      }
+
+      if (
+        line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c ||
+        line.TotalPrice != oldLine.TotalPrice ||
+        line.Data_Scadenza__c != oldLine.Data_Scadenza__c
+      ) {
+        contractOrderIds.add(line.OrderId);
       }
 
       if (
@@ -38,6 +47,7 @@ public with sharing class OrderItemTriggerHandler {
     }
 
     recalculateTranches(trancheIds);
+    PerformancePlusContractService.refreshAmounts(contractOrderIds);
   }
 
   private static void recalculateTranches(Set<Id> trancheIds) {

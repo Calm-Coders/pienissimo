@@ -319,3 +319,7 @@ Same day, the fiscal-residence deploy
 **`MexalCustomerCreateService` at 74.6%** in UAT under `RunSpecifiedTests`; it went with
 `NoTestRun`. The new `FiscalResidenceResolver` has no dedicated test class. Recorded for
 the suite task.
+
+The Contract build (same day) adds **`PerformancePlusContractService`** with no test
+class (8.5% coverage from `MexalIntegrationTest`), and changes `QuoteTriggerHandler`
+and `OrderItemTriggerHandler`; deployed to UAT with `NoTestRun`.

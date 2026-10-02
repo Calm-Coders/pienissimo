@@ -169,6 +169,14 @@
         <relatedList>RelatedOrderItemList</relatedList>
     </relatedLists>
     <relatedLists>
+        <fields>CONTRACT.CONTRACT_NUMBER</fields>
+        <fields>Tipo_Contratto__c</fields>
+        <fields>CONTRACT.STATUS</fields>
+        <fields>Data_Attivazione__c</fields>
+        <fields>Data_Fine_Servizio__c</fields>
+        <relatedList>Contract.Ordine__c</relatedList>
+    </relatedLists>
+    <relatedLists>
         <fields>Name</fields>
         <fields>BillingAccount</fields>
         <fields>TotalAmount</fields>

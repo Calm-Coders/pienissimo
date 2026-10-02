@@ -1,12 +1,12 @@
 ---
 id: OI-168
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-28
+updated: 2026-10-02
 depends_on: [OI-141, OI-151]
 blocks: [go-live]
 severity: gating
@@ -152,3 +152,9 @@ freeze and the page banner recorded above were not revisited and stand.
 
 ⚠ **The `insoluto` field was not mentioned in this session.** It stands as
 specified on 24/09; absence of discussion is not a removal.
+
+## 2026-10-02 - built
+
+The Contract is built and in UAT — detail in
+[OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md). The 5 October
+session can show a contract, not a promise. Not committed; not in Prod.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-09-17
-updated: 2026-09-28
+updated: 2026-10-02
 depends_on: [OI-140]
 blocks: [go-live]
 source: notes/meetings/2026-09-17 Follow-up Interno.md
@@ -69,7 +69,7 @@ owed since the 14/08 sweep**.
 ## Open
 
 - 🔴 **The contract data model is undefined** — the notes say so explicitly, and
-  the *activation field* with it (`01:11:11`).
+  the _activation field_ with it (`01:11:11`).
 - 🔴 **No register row covers it.** Nothing in
   `requirements/pienissimo-requirements.yaml` describes a Contract object. This
   is new scope stated internally by ROMI, eight days before UAT opens, and it is
@@ -174,7 +174,7 @@ declined for a stated reason.
 2. 🔑 **`data di attivazione` is a separate, manual field and the term runs from
    it** — not from signature and not from the order. Customers defer activation:
    _"attivatemi a marzo quando riaprirò il locale"_, and _"da lì decorreranno i 12
-   mesi."_ This sharpens the *dates are manual* section above: `data inizio` /
+   mesi."_ This sharpens the _dates are manual_ section above: `data inizio` /
    `data fine` are the order's, `data di attivazione` is the one a human fills.
 3. 🟢 **The financial fields are confirmed as three, with a stated purpose each:**
    `ordinato` (the order value), `fatturato` and `incassato` (both from the
@@ -226,3 +226,57 @@ the Business Blueprint specified, recorded in
   who fills the service dates by hand — was not asked. The role now has a
   definition and a headcount, which is more than it had.
 - ⚠ **The per-customer-code aggregation problem was not revisited**, third run.
+
+## 2026-10-02 - built and deployed to UAT, three days before the 5 October session
+
+Built to the 28/09 agreement and deployed to Pienissimo UAT (`0AfMA00000CqC9R0AV`,
+validation rule re-deployed `0AfMA00000CqCFt0AN`); **not committed, not in Prod**.
+
+- **Creation:** `PerformancePlusContractService`, called from `QuoteTriggerHandler`
+  right after the order and its lines are created at **`Firmato`**. An order is
+  Performance Plus when a line's `Product2.Categoria_Articolo__c` maps to a
+  `Performance Plus - ...` type in `Product_Category_Rule__mdt` (`C10` → **Nuovo**,
+  `C11` → **Rinnovo**; a renewal line wins). One Contract per order, `Status` Draft,
+  `StartDate` = order date. **Account ← Contract ← Order** uses the standard
+  `Order.ContractId`; `Contract.Ordine__c` points back for the amounts. No Mexal sync.
+- **Fields on Contract:** `Tipo_Contratto__c`, `Data_Attivazione__c` (manual),
+  `Data_Fine_Servizio__c` (activation + 12 months − 1 day), `Ordinato__c`
+  (= order total), `Fatturato__c`, `Incassato__c`, `Da_Fatturare__c`,
+  `Da_Incassare__c`, `Prima_Scadenza_Non_Pagata__c`, `Insoluto__c` (an `Unpaid` line
+  past its due date), `Strategist__c` / `Digital__c` (free text),
+  `Avviso_Attivazione__c` (the banner, shown at the top of the layout while the
+  activation date is empty).
+- **Invoiced / collected are maintained by Apex** from the Mexal payment status on the
+  order lines (`OrderItemTriggerHandler.afterUpdate`). 🔑 **Roll-up summaries on
+  `Order` were tried first and rejected:** with any `OrderItem` roll-up present,
+  `MexalIntegrationTest` failed two payment-sync tests with an _Internal Salesforce
+  Error_, because that sync also updates the Order (`Incassato`) in the same
+  transaction.
+- **Freeze:** validation rule `Contratto_bloccato_dopo_fatturazione` — once invoiced,
+  order, customer, type and start date are locked; activation date, strategist and
+  digital stay editable (a deferred activation can follow the first invoice).
+- **Verified in UAT** by a rolled-back anonymous run: contract created and linked,
+  Unpaid line past due → invoiced 1,000 / insoluto true, Paid → collected 1,000 /
+  insoluto false, activation 2027-03-01 → end 2028-02-29 and banner cleared, start-date
+  change after invoice refused. `MexalIntegrationTest` 50/50 in the dry-run.
+- 🟢 **Real `Firmato` path verified in UAT** the same day, at Aurel Mrruku's request:
+  his test quote `Preventivo - 43rreffrefe` (four C10 lines) was set to `Firmato`;
+  order `00000271` was created with its lines and payment condition, and Contract
+  `00000110` (_Nuovo_, Draft) was created and linked both ways, banner showing. The
+  records stay in UAT.
+- The four reports were **removed** at Aurel Mrruku's request (source and UAT), and
+  the standard Contract `Name` was added to the layout with read/edit in
+  `Full_Permission`.
+  ⚠ The running user has no field access to the standard Contract `Name`, which the
+  service fills.
+- **Related lists** (requested the same day): _Contratti_ on the Order layout (via
+  `Contract.Ordine__c`: number, type, status, activation and end date) and a
+  _Contracts_ related-list component on the three Account Lightning pages (Azienda,
+  Locale, Three Column). Deployed to UAT `0AfMA00000CqDdO0AV`.
+- **Path** (requested the same day): `Stato_Contratto__c` — **Creato → Parzialmente
+  Incassato → Incassato** — computed by Apex with the amounts (_Creato_ until something
+  is collected, _Incassato_ once collected ≥ ordered), read-only, shown by Path
+  `Contract_Stato` on a new **`Contract_Record_Page`** made the desktop default via the
+  Contract `View` override (path update button hidden). Deployed `0AfMA00000CqEJK0A3`;
+  transitions verified by a rolled-back run (600 of 1,000 paid → Parzialmente
+  Incassato, all paid → Incassato); Contract `00000110` set to _Creato_.

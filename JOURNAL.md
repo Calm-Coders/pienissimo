@@ -10,6 +10,24 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-02 - claude - Performance Plus Contract built and deployed to UAT
+
+- **Did:** built the Contract agreed on 28/09: creation at `Firmato` for C10/C11 orders
+  (`PerformancePlusContractService`, hooked in `QuoteTriggerHandler`), 14 Contract
+  fields, Apex-maintained invoiced/collected/oldest-unpaid from the Mexal line status
+  (`OrderItemTriggerHandler`), freeze validation rule, banner field, layout, FLS in
+  `Full_Permission` (reports built then removed on request). Order roll-ups were tried and
+  dropped (they break two Mexal payment tests). Also: CMDT layout and list view for
+  `Residenza_Fiscale__mdt`. Recorded in
+  [OI-141](notes/items/OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md),
+  [OI-168](notes/items/OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md).
+- **State:** deployed to UAT (`0AfMA00000CqC9R0AV`, `NoTestRun`), verified by a
+  rolled-back anonymous run; **not committed, not in Prod**. No test class for the new
+  service.
+- **Verified end to end:** test quote `43rreffrefe` signed in UAT → order `00000271` →
+  Contract `00000110` (Nuovo, linked both ways). Records left in UAT.
+- **Next:** commit.
+
 ## 2026-10-02 - claude - Fiscal residence table built and deployed to UAT
 
 - **Did:** implemented `Nazioni e Residenza Fiscale.xlsx` as Custom Metadata

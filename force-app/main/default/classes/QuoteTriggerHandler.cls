@@ -243,6 +243,10 @@ public without sharing class QuoteTriggerHandler {
     if (!orderItemsToInsert.isEmpty()) {
       insert orderItemsToInsert;
     }
+
+    PerformancePlusContractService.createForOrders(
+      new Set<Id>(orderIdByQuoteId.values())
+    );
   }
 
   private static void keepOnePrimaryQuotePerOpportunity(
