@@ -312,3 +312,10 @@ id the fixtures use is not valid for the running user in UAT. `QuoteDocumentsTes
 `QuoteLinesAndTranchesTest` exist in source but **not in UAT**, so `QuoteTriggerHandler`
 and `QuotePdfController` show 0% coverage there under `RunSpecifiedTests`. Recorded, not
 acted on — the suite is a separate task.
+
+Same day, the fiscal-residence deploy
+([OI-173](OI-173%20San%20Marino%20fiscal%20transcoding%20table.md)) passed
+`MexalIntegrationTest` 50/50 but measured **`AccountTriggerHandler` at 49%** and
+**`MexalCustomerCreateService` at 74.6%** in UAT under `RunSpecifiedTests`; it went with
+`NoTestRun`. The new `FiscalResidenceResolver` has no dedicated test class. Recorded for
+the suite task.

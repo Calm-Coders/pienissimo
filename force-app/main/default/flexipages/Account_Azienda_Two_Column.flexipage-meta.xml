@@ -279,6 +279,16 @@
                 <identifier>RecordCodice_Destinatario_SDI_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Residenza_Fiscale__c</fieldItem>
+                <identifier>RecordResidenza_Fiscale_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-d0a3b329-1f23-4c0e-a49e-c95d86f3fb5e</name>
         <type>Facet</type>
     </flexiPageRegions>

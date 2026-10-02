@@ -145,7 +145,18 @@ public with sharing class MexalCustomerCreateService {
         ? null
         : account.Azienda_Precedente__r.Codice_Cliente_Mexal__c
     );
-    putValue(payload, 'cod_paese', account.BillingCountry);
+    // Residence and e-invoicing settings come from the Residenza_Fiscale__mdt table.
+    Residenza_Fiscale__mdt fiscalResidence = FiscalResidenceResolver.forCountry(
+      account.BillingCountry
+    );
+    // Mexal wants the two-letter code, whatever form the address search wrote.
+    putValue(
+      payload,
+      'cod_paese',
+      fiscalResidence == null || fiscalResidence.Predefinito__c
+        ? account.BillingCountry
+        : fiscalResidence.Codice_Paese__c
+    );
     putValue(payload, 'codice_fiscale', account.Codice_Fiscale__c);
     putValue(payload, 'partita_iva', account.Partita_IVA__c);
     putValue(payload, 'ragione_sociale', account.Name);
@@ -165,7 +176,11 @@ public with sharing class MexalCustomerCreateService {
       'cod_cat_pr',
       account.Categoria_Provvigioni_Cliente__c
     );
-    putValue(payload, 'tp_nazionalita', deriveFiscalResidenceCode(account));
+    putValue(
+      payload,
+      'tp_nazionalita',
+      fiscalResidence?.Codice_Residenza_Fiscale__c
+    );
 
     // Settled by the customer-registry review: Pienissimo uses listino 1 and Euro only.
     payload.put('cod_listino', 1);
@@ -173,17 +188,19 @@ public with sharing class MexalCustomerCreateService {
     putOptionalTextValue(
       payload,
       'gest_fatt_el',
-      deriveElectronicInvoiceType(account)
+      fiscalResidence?.Fatturazione_Elettronica__c
     );
     putIntegerValue(
       payload,
       'serie_fatt_el',
-      deriveElectronicInvoiceSeries(account)
+      fiscalResidence?.Sezionale_IVA__c == null
+        ? null
+        : String.valueOf(fiscalResidence.Sezionale_IVA__c.intValue())
     );
     putOptionalTextValue(
       payload,
       'cod_modu_allega',
-      deriveElectronicInvoiceAttachment(account)
+      fiscalResidence?.Allegato_PDF__c
     );
     return payload;
   }
@@ -232,132 +249,6 @@ public with sharing class MexalCustomerCreateService {
   private static String buildShippingAddressDescription(Account account) {
     String city = firstNonBlank(account.ShippingCity, account.BillingCity);
     return String.isBlank(city) ? 'Sede operativa' : 'Sede operativa ' + city;
-  }
-
-  private static String deriveFiscalResidenceCode(Account account) {
-    String country = normalizeCountry(account.BillingCountry);
-    if (country == 'IT' || country == 'ITALIA' || country == 'ITALY') {
-      return 'I';
-    }
-    if (
-      country == 'SM' ||
-      country == 'SAN MARINO' ||
-      country == 'RSM' ||
-      country == 'REPUBLIC OF SAN MARINO' ||
-      country == 'REPUBBLICA DI SAN MARINO'
-    ) {
-      return 'R';
-    }
-    if (
-      country == 'VA' ||
-      country == 'VAT' ||
-      country == 'VATICAN' ||
-      country == 'VATICANO' ||
-      country == 'CITTA DEL VATICANO' ||
-      country == 'CITTA\' DEL VATICANO' ||
-      country == 'HOLY SEE'
-    ) {
-      return 'V';
-    }
-    if (isEuropeanUnionCountry(country)) {
-      return 'C';
-    }
-    return String.isBlank(country) ? null : 'E';
-  }
-
-  private static Boolean isEuropeanUnionCountry(String country) {
-    return new Set<String>{
-        'AT',
-        'AUSTRIA',
-        'BE',
-        'BELGIUM',
-        'BELGIO',
-        'BG',
-        'BULGARIA',
-        'HR',
-        'CROATIA',
-        'CROAZIA',
-        'CY',
-        'CYPRUS',
-        'CIPRO',
-        'CZ',
-        'CZECHIA',
-        'CZECH REPUBLIC',
-        'REPUBBLICA CECA',
-        'DK',
-        'DENMARK',
-        'DANIMARCA',
-        'EE',
-        'ESTONIA',
-        'FI',
-        'FINLAND',
-        'FINLANDIA',
-        'FR',
-        'FRANCE',
-        'FRANCIA',
-        'DE',
-        'GERMANY',
-        'GERMANIA',
-        'GR',
-        'GREECE',
-        'GRECIA',
-        'HU',
-        'HUNGARY',
-        'UNGHERIA',
-        'IE',
-        'IRELAND',
-        'IRLANDA',
-        'LV',
-        'LATVIA',
-        'LETTONIA',
-        'LT',
-        'LITHUANIA',
-        'LITUANIA',
-        'LU',
-        'LUXEMBOURG',
-        'LUSSEMBURGO',
-        'MT',
-        'MALTA',
-        'NL',
-        'NETHERLANDS',
-        'PAESI BASSI',
-        'PL',
-        'POLAND',
-        'POLONIA',
-        'PT',
-        'PORTUGAL',
-        'PORTOGALLO',
-        'RO',
-        'ROMANIA',
-        'SK',
-        'SLOVAKIA',
-        'SLOVACCHIA',
-        'SI',
-        'SLOVENIA',
-        'ES',
-        'SPAIN',
-        'SPAGNA',
-        'SE',
-        'SWEDEN',
-        'SVEZIA'
-      }
-      .contains(country);
-  }
-
-  private static String deriveElectronicInvoiceType(Account account) {
-    return deriveFiscalResidenceCode(account) == 'I' ? 'S' : null;
-  }
-
-  private static String deriveElectronicInvoiceSeries(Account account) {
-    return deriveElectronicInvoiceType(account) == 'S' ? '3' : null;
-  }
-
-  private static String deriveElectronicInvoiceAttachment(Account account) {
-    return deriveElectronicInvoiceType(account) == 'S' ? 'FT' : null;
-  }
-
-  private static String normalizeCountry(String value) {
-    return String.isBlank(value) ? null : value.trim().toUpperCase();
   }
 
   private static String firstNonBlank(String firstValue, String secondValue) {

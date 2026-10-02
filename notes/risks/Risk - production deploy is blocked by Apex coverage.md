@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-28
+updated: 2026-10-02
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -508,3 +508,11 @@ Facts the suite surfaced in Prod, recorded so nobody re-derives them:
   code, to be filled.
 - `AuraHandledException.getMessage()` returns `Script-thrown exception` inside a
   test, so only the throw can be asserted.
+
+## 2026-10-02 - two more UAT deploys went with `NoTestRun`
+
+The payment-condition and fiscal-residence deploys to UAT could not meet per-class
+coverage under `RunSpecifiedTests` (`QuoteTriggerHandler`, `QuotePdfController`,
+`AccountTriggerHandler` 49%, `MexalCustomerCreateService` 74.6%) and went without tests.
+New untested class: `FiscalResidenceResolver`. Detail in
+[OI-64](../items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md).

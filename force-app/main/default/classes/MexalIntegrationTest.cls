@@ -1329,16 +1329,16 @@ private class MexalIntegrationTest {
       'Blank numeric optional fields should be omitted'
     );
     System.assert(
-      !requestBody.contains('"gest_fatt_el":'),
-      'Blank e-invoicing fields should be omitted'
+      requestBody.contains('"gest_fatt_el":"N"'),
+      'San Marino customers should send e-invoicing as not managed'
     );
     System.assert(
-      !requestBody.contains('"serie_fatt_el":'),
-      'Blank numeric e-invoicing fields should be omitted'
+      requestBody.contains('"serie_fatt_el":1'),
+      'San Marino customers should send VAT sectional 1'
     );
     System.assert(
-      !requestBody.contains('"cod_modu_allega":'),
-      'Blank e-invoicing fields should be omitted'
+      requestBody.contains('"cod_modu_allega":"FT"'),
+      'San Marino customers should send the FT attachment module'
     );
   }
 

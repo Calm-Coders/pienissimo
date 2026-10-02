@@ -3,6 +3,10 @@ public with sharing class AccountTriggerHandler {
   private static final String LOCALE_RECORD_TYPE = 'Locale';
   private static Boolean bypassMexalCustomerUpdate = false;
 
+  public static void beforeSave(List<Account> newAccounts) {
+    FiscalResidenceResolver.applyToAccounts(newAccounts);
+  }
+
   public static void afterUpdate(
     List<Account> newAccounts,
     Map<Id, Account> oldAccountMap

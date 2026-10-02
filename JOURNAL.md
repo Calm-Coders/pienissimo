@@ -10,6 +10,26 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-02 - claude - Fiscal residence table built and deployed to UAT
+
+- **Did:** implemented `Nazioni e Residenza Fiscale.xlsx` as Custom Metadata
+  `Residenza_Fiscale__mdt` (29 rows), a `FiscalResidenceResolver`, read-only
+  `Account.Residenza_Fiscale__c` set by `AccountTrigger` (before insert/update), and
+  rewired `MexalCustomerCreateService` to send the four Mexal fields from the table —
+  non-Italian customers now send `N` / `1` / `FT` where the old code omitted them.
+  Updated the San Marino assertions in `MexalIntegrationTest` to the table. Recorded in
+  [OI-173](notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md) and
+  [OI-64](notes/items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md).
+- **State:** deployed to Pienissimo UAT (`0AfMA00000Cq7zN0AR`, `NoTestRun`; 50/50 tests
+  green in the dry-run, coverage short). **Not committed.** Existing UAT accounts
+  back-filled at Aurel Mrruku's request: 8,144 updated, 0 errors; only the 51 accounts
+  with no billing country stay blank.
+- **Fix:** UAT test showed `Italy` (address search writes English names) classified `E`.
+  Added `Nomi_Alternativi__c` aliases to the table and send `cod_paese` as the row's ISO
+  code (`0AfMA00000Cq9pt0AB`); test account now `I`.
+- **Next:** commit; decide whether a `BillingCountry` change should re-send the customer
+  to Mexal; the Prod deploy will need the same back-fill once accounts are migrated.
+
 ## 2026-10-02 - claude - Mexal payment codes implemented in source
 
 - **Did:** implemented `Codici Pagamento.xlsx` (four codes) as Global Value Set

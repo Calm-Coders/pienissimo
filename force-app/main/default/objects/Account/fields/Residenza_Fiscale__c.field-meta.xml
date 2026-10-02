@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Residenza_Fiscale__c</fullName>
+    <description
+  >Residenza fiscale Mexal (tp_nazionalita), calcolata dal paese di fatturazione tramite la tabella Residenza Fiscale (Custom Metadata). Impostata dal trigger: non va modificata a mano.</description>
+    <inlineHelpText
+  >Calcolata automaticamente dal paese di fatturazione.</inlineHelpText>
+    <label>Residenza Fiscale</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>I</fullName>
+                <default>false</default>
+                <label>Italia</label>
+            </value>
+            <value>
+                <fullName>C</fullName>
+                <default>false</default>
+                <label>Estero CEE</label>
+            </value>
+            <value>
+                <fullName>R</fullName>
+                <default>false</default>
+                <label>Repubblica San Marino</label>
+            </value>
+            <value>
+                <fullName>E</fullName>
+                <default>false</default>
+                <label>Estero Extra CEE</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

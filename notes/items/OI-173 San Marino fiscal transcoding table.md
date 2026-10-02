@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Mirko Merendi
 org: both
 raised: 2026-09-23
-updated: 2026-09-24
+updated: 2026-10-02
 depends_on: [OI-97, OI-159]
 blocks: [go-live]
 source: notes/meetings/2026-09-23 Check Data Import.md
@@ -116,5 +116,42 @@ fields; countries not present carry a row with no code.
   Mrruku's country data comes from Google Maps as a three-letter code. A conversion is
   owed, and he named **Kosovo** as a code some lists omit. Both sides agreed the residue
   is marginal and gets fixed by hand.
-- ⚠ **The `.xlsx` was not opened by this sweep.** Its existence, sender, time and stated
-  contents are recorded; the values are not.
+- 🟢 The `.xlsx` was opened on 2026-10-02 and implemented — see below.
+
+## 2026-10-02 - the table is built and live in UAT
+
+The file holds 29 rows: `IT` → residence `I`, e-invoicing `S` (Fattura B2B), sectional 3,
+attachment `FT`; the 26 other EU countries → `C` (Estero CEE); `SM` → `R` (Repubblica San
+Marino); and an **Altri Paesi** row → `E` (Estero Extra CEE). Every non-Italian row is
+e-invoicing `N`, sectional 1, attachment `FT`.
+
+🔴 **The code it replaces disagreed with it.** `MexalCustomerCreateService` derived the
+values from `BillingCountry` in hard-coded Apex and **omitted** `gest_fatt_el`,
+`serie_fatt_el` and `cod_modu_allega` for every non-Italian customer, where the table sends
+`N` / `1` / `FT`. It also returned `V` for the Vatican, which the table does not have
+(the Vatican now falls to `E`).
+
+Built as agreed on 24/09, deployed to Pienissimo UAT (`0AfMA00000Cq7zN0AR`):
+
+- **Custom Metadata `Residenza_Fiscale__mdt`**, 29 records from the file, editable by the
+  administration in Setup. Matched on the two-letter ISO code, the three-letter one (from
+  the file's _Elenco Paesi_ sheet) or the Mexal country name; any other country takes the
+  `Predefinito` row; a blank country gets nothing.
+- `FiscalResidenceResolver` reads it; `MexalCustomerCreateService` now sends
+  `tp_nazionalita`, `gest_fatt_el`, `serie_fatt_el` and `cod_modu_allega` from the row.
+- **`Account.Residenza_Fiscale__c`**, read-only, set by `AccountTrigger` before insert and
+  update from `BillingCountry`; on the Azienda record page and the Account layout.
+- 🟢 **Existing UAT accounts back-filled** the same day by anonymous Apex in five batches
+  (Mexal customer sync bypassed, duplicate rules allowed), **8,144 updated, 0 errors**.
+  Result: `I` 7,956 · `C` 100 · `E` 50 · `R` 38 · blank 51 (no billing country). Every
+  account with a country now carries a value.
+- 🔴→🟢 **English country names broke it, found in UAT the same day.** Aurel Mrruku's
+  test account (Milan) got `E` because Salesforce's standard address search writes the
+  country as **`Italy`**, not `IT` — every hand-entered account would hit it. Fixed
+  (`0AfMA00000Cq9pt0AB`): a **`Nomi_Alternativi__c`** column on the table carries English
+  names and variants (comma-separated, administration-editable), and the Mexal customer
+  payload now sends **`cod_paese` as the row's two-letter code** — before, it sent the
+  raw `BillingCountry`, so `Italy` would have reached Mexal verbatim. Unlisted countries
+  still send the raw value. In UAT only that one account was misclassified.
+- ⚠ A country change alone does **not** re-send an existing customer to Mexal: the
+  update trigger watches only email, phone, P.IVA and name.

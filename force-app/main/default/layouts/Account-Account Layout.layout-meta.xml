@@ -36,6 +36,10 @@
                 <field>Partita_IVA__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Residenza_Fiscale__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Lead_Email__c</field>
             </layoutItems>
