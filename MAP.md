@@ -2,9 +2,68 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-01 (nightly sweep - the agreed logic went to the client in writing, the send flag was built on the wrong object, and the eighth asset state was dropped) · Source of record: [notes/](notes/)
+Last updated: 2026-10-02 (nightly sweep - the ERP vendor defined the payment states and the code counts only one of them, the client rejected the agreed ticket logics, and the Blueprint went out carrying signature lines) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🔴 **2026-10-02 — the ERP vendor defined the payment states and the repository counts only one of
+  them, the client rejected the logics it was asked to confirm, and a second signature document went
+  out.** Nightly sweep, watermark 2026-10-01T22:00Z. **A client UAT, two internal sessions, four
+  client mails.** Build claims are repository arithmetic against `DevMain` **`6778b58`**.
+  🔴🔑 **New: [OI-201](notes/items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)**
+  (gating) — Mirko Merendi confirmed in writing at 15:11Z that Mexal's `stato_pagamento` has exactly
+  three values (empty, `P`, `E`) and that **`E` = Ri.Ba. issued counts as paid, like `P`**.
+  `MexalScadenzarioSearchService.cls:205` matches **only `P`**. So for anyone paying by Ri.Ba. the
+  tranche never goes `Pagata`, the tickets never go `Disponibile`, the order never reaches
+  `Incassato`, the opportunity never closes won and the Performance Plus contract under-reports what
+  was collected — permanently. Aurel Mrruku has already seen `E` in live data, and
+  `Scadenziario (GET)` is on the client UAT agenda for **07/10**.
+  🔴🔑 **New: [OI-203](notes/items/OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)**
+  (gating) — the confirmation [OI-200](notes/items/OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md)
+  waited for **arrived as a rejection**. Fabrizio Paganelli and Sabatino Rinaldi: _"non ci torna il
+  paragrafo Regole di Business Aggiuntive, sia il punto 1 che il punto 2"_, plus the `Rinuncia` part —
+  the **multi-event aggregation per order**, logics the 30/09 UAT confirmed with them in the room.
+  🟢 Which document they meant is settled: the Blueprint has no such paragraph, so it is the 01/10
+  logic document, replied to on the wrong thread. 🔴 **ROMI's answer is to persuade, not to revisit** —
+  a live demonstration at Monday's existing meeting instead of the Wednesday call they asked for, and
+  the client has not yet agreed to that substitution.
+  🔑 **[The Business Blueprint](notes/The%20Business%20Blueprint%20delivered%20to%20the%20client.md)
+  was delivered at 13:55:56Z, dated 02/10 and carrying signature lines for ROMI Srl and Pienissimo
+  Srl** — read in full for the first time after eight days on the unreachable list. It enumerates
+  Fase 2, fixes two profiles, confirms the asset state machine at **seven values** (so `Inviato` is
+  independently gone), and **states no go-live date**. ⚠ It also carries six divergences, among them
+  the WooCommerce sync trigger reverting to COMPLETATO-only (superseded 27/08), two different
+  marketing subdomains, and `Rinuncia` at **header** level one day after the logic document said
+  per edition.
+  🟢 **[The 02/10 client UAT](notes/meetings/2026-10-02%20UAT%20WooCommerce%20e%20Bundle.md) worked** —
+  Sabatino Rinaldi drove checkouts through to Salesforce and four assets generated. **Six agreements**,
+  including Anticipay before Mexal on the inbound path, billing data to Account/Contact, and sync-error
+  mail with flags. New from it: **[OI-204](notes/items/OI-204%20WooCommerce%20payment%20codes%20need%20a%20mapping%20table%20to%20Mexal.md)**
+  (WooCommerce → Mexal payment-code table) and
+  **[OI-202](notes/items/OI-202%20Anticipay%20does%20not%20recognise%20sole%20traders%20absent%20from%20the%20registro%20imprese.md)**
+  — Fabrizio Paganelli flagged that sole traders outside the registro imprese are not recognised by
+  Anticipay, and nobody picked it up.
+  🔴 **[OI-199](notes/items/OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)
+  did not move** — the fields are still split, the spec Fabrizio Mastracci was owed **today** has not
+  appeared, and the deploy weekend starts tomorrow. 🟢 One hypothesis is closed:
+  [the Campi Oggetti workbook](notes/The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md) was
+  read in full and **does not** answer the object question — but it does name
+  `Data invio automatico biglietti` on `Campagna Figlia`, a send date with a documented home since
+  July that the built design ignores.
+  🔴 **New: [OI-205](notes/items/OI-205%20The%20tranche%20carries%20no%20value%20so%20the%20client%20cannot%20see%20what%20each%20one%20is%20worth.md)**
+  (the tranche has no amount, on every tranche) and
+  **[OI-206](notes/items/OI-206%20The%20Insoluto%20concept%20has%20no%20invoice%20due%20date%20and%20no%20invoice%20record.md)**
+  (the Blueprint promises `Insoluto` reporting; there is no invoice record and no persisted due date,
+  and the reports were built then removed).
+  ⚠ **Anita Aga's two commits are not in `DevMain`** — `73fe1bc` carries the sync-error mail and the
+  Mexal-created flag agreed with the client that morning, `49b5401` the vendita-da-palco logic. A
+  weekend deploy from `DevMain` ships neither.
+  ⚠ **Elena Spini's status post revises the estimate to 25 days to finish** and states go-live 21/10,
+  _"i requisiti continuano a cambiare"_ and _"sforiamo con i giorni a disposizione"_. New dates:
+  **12/10 everything in PROD**, **16/10 Marketing ticket UAT**, client autonomous testing from next
+  week, phase-2 quote to follow.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **207**.
+  — [trace](notes/traces/Source%20trace%202026-10-02%20nightly.md)
 
 - 🔑 **2026-10-01 — the agreed logic is in writing and with the client, the send flag was built on the
   wrong object, and `Inviato` was dropped a day after it was agreed.** Nightly sweep, watermark
@@ -65,7 +124,11 @@ Last updated: 2026-10-01 (nightly sweep - the agreed logic went to the client in
   ⚠ **Delivery health, stated by both leads**: Aurel Mrruku worked to 00:24, has _"quattro progetti in
   rilascio … e nessuno sta andando bene"_, and answered _"Mai."_ when asked when the rebuilt component
   would be ready; Elena Spini intends to escalate that the project is _"fuori controllo"_.
-  **Go-live is 06/10.**
+  ⬛ **Correction: go-live is 21/10, not 06/10.** The register has carried
+  `go_live: 2026-10-21` since OI-124 (ROMI moved it in writing on 08/09, Fabrizio
+  Paganelli acknowledged on 09/09). **6 October is the date the UAT window closes.**
+  The 01/10 entry said 06/10 and so did `AGENTS.md`; both are corrected. Elena
+  Spini's 02/10 status post independently states 21/10.
   ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **201**.
   — [trace](notes/traces/Source%20trace%202026-10-01%20nightly.md)
 

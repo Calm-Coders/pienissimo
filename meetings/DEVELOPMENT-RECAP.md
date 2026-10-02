@@ -5646,3 +5646,65 @@ The [01/10 Pre UAT](../notes/meetings/2026-10-01%20Pre%20UAT.md) (17:10 CEST, ~1
 Aurel Mrruku worked to 00:24, has _"quattro progetti in rilascio … e nessuno sta andando bene"_, says he must rebuild the participant component outright and answered _"Mai."_ when asked when it would be ready. Elena Spini intends to escalate that the project is _"fuori controllo"_. **Go-live is 06/10.** Recorded because it is the second consecutive night the record carries it from the technical lead directly.
 
 **Register not amended. Version stays 1.6** — the 01/10 changes are ROMI-internal or awaiting the client's written confirmation, and [#184](open-items.md) is the mechanism that carries the change set at UAT close.
+
+## 54. Update 2026-10-02 — the ERP vendor defined the payment states and the code counts only one of them, and the client rejected the logics it was asked to confirm
+
+Nightly sweep, watermark **2026-10-01T22:00Z**. **One client UAT, two ROMI-internal sessions, four client mails** — the busiest day with the client in a week. Sources: Gmail, Drive, Slack (three conversations), Fathom, git, `force-app`. Build claims are repository arithmetic against `DevMain` **`6778b58`**.
+
+### 54.1 🔴 Ri.Ba. payments are read as unpaid, and the whole availability chain stalls behind it
+
+Mirko Merendi of Kreosoft stated the value domain of the Mexal scadenziario field `stato_pagamento` for the first time, in writing, at 15:11Z: exactly three values — empty, `P` and `E` — and **`E`, the issue of a Ri.Ba., is to be counted as paid, the same as `P`**. Aurel Mrruku had asked at 14:55Z because the live Scadenziario call returned `"E"`.
+
+`MexalScadenzarioSearchService.cls:205` tests only `deadline.paymentStatus == 'P'`. The flag it sets runs the length of the project: `OrderItem.Mexal_Payment_Status__c` → `Tranche__c.Completamente_Pagata__c` → Asset `Disponibile` → Order `Incassato` → Opportunity Closed Won → the Performance Plus contract's `importo incassato`. So for any customer who settles by Ri.Ba. — an ordinary Italian collection method — **the tranche never goes `Pagata`, the tickets never become available, the order never reaches `Incassato`, and the contract under-reports what has been collected**, permanently, because nothing else ever sets the flag.
+
+`Scadenziario / Scoperto Cliente (GET)` is on the agenda of the client integration UAT on **Wednesday 07/10**, and the production deploy is over the weekend **03–04/10**. Aurel Mrruku named the risk himself, hours before the answer arrived: _"if we start testing and the values are not defined, it's going to be a mess."_ 🟢 `Mexal_Payment_Status__c` already carries an `Invoiced` value that is defined and never written, so the fatturata-non-incassata case has somewhere to live and the fix is a value test. See #201.
+
+### 54.2 🔴 The confirmation the project was waiting for arrived as a rejection
+
+Fabrizio Paganelli and Sabatino Rinaldi replied at 14:19:31Z: _"Non ci torna il paragrafo Regole di Business Aggiuntive, sia il punto 1 che il punto 2"_, with a request for a separate call on Wednesday 7 October. Elena Spini identified the contested rules as the **multi-event aggregation per order**, and reported that they objected to the `Rinuncia` part as well.
+
+🟢 Which document they meant is settled rather than guessed: the reply landed on the Business Blueprint thread, and the Blueprint — read in full — has no `Regole di Business Aggiuntive` paragraph. The objection belongs to the 01/10 logic document, answered on the wrong thread.
+
+⚠ **These are the logics the 30/09 UAT confirmed with the same two people in the room.** 🔴 ROMI's answer is not to revisit them but to demonstrate them live at Monday's existing meeting instead of the Wednesday call the client asked for — _"I really want to make them change their mind"_ — and the client has not yet agreed to the substitution. #184 cannot carry a rejected text into the register, and the seven open points #200 records as cut from the client's copy have still never been put to them. See #203.
+
+### 54.3 🔑 The Business Blueprint was delivered, and it carries signature lines
+
+`Business_Blueprint_Pienissimo.docx` went to Pienissimo at 13:55:56Z, dated 02/10, ending with signature lines for **ROMI Srl and Pienissimo Srl**. It had been on the unreachable list since 24/09 and was read in full for the first time. It is a second signature-bearing document beside `REQUISITI.it.md`, and the repository does not hold it.
+
+What it settles: Fase 2 is enumerated (GLS, Teachable, Pienissimo Pro, multi-edition automations, Info Point, credit notes); two profiles only; post-go-live support of one month per released feature and training of up to 20 hours; bundles at most two levels, one per order, and **permitted to contain a single product**, which already covers the request the client made the same day; the asset life cycle at **seven states**, independently confirming that `Inviato` is gone.
+
+🔴 Six divergences travelled with it: the WooCommerce sync trigger reverts to COMPLETATO-only, a rule superseded on 27/08 by live verification against the delivered plugin; §7.1 and the deliverable list name **two different marketing subdomains**; `Rinuncia` is stated at **header** level one day after the logic document said per edition; `Firmato` appears in the acceptance flow but not in the Quote state table; the edition mapping is described as a manual **association**, the wording Aurel Mrruku had corrected 95 minutes earlier; and **Data Cloud** is named as the dedup engine while Fase 1 names only Sales and Marketing Cloud. It also states **no go-live date**.
+
+### 54.4 ✅ The client drove WooCommerce orders through, and six things were agreed
+
+At the 02/10 `UAT: WooCommerce + Bundle` Sabatino Rinaldi completed checkouts through the Salesforce-generated link and **four assets generated**, confirmed from the integration logs. A second, autonomous order failed first because the new `pienissimo lab` code was not in Salesforce; Aurel Mrruku mapped `ST054` live and the retry with `Pack 1009` landed.
+
+Agreed: **every article code and bundle must be mapped in the edition mapping table** against the competenza range; `unità di misura` is added to bundle configuration; **the Anticipay call runs before the account and order go to Mexal** on the inbound path; a **mapping table converts WooCommerce payment codes to Mexal's** (#204); checkout billing data and the paying subject populate the Account, both addresses and the primary Contact; and sync failures **mail Amministrazione and raise dedicated flags**. **Partita IVA is the external key**, confirmed by both client leads.
+
+Formal approval of the integration logics was made conditional on **Daniela's verification on Monday**. ⚠ The sources say only "Daniela"; Daniela Morgese is the only one in the records and the role fits, but no source states the surname.
+
+### 54.5 🔴 Fabrizio Paganelli raised a gap and the room dropped it
+
+A `ditta individuale` can hold a perfectly valid Italian VAT number, be absent from the registro delle imprese, and go unrecognised by Anticipay. No resolution, no owner, no action item. The Blueprint treats a negative outcome as `non applicabile` and does not block the order, so nothing breaks — but a sole trader is neither foreign nor invalid, and restaurant owners are the primary target. ⚠ Nobody has estimated the volume. See #202.
+
+### 54.6 🔴 OI-199 did not move, and the window closed
+
+The three send fields are exactly where they were: `Ready_for_Ticket_Dispatch__c` on `Asset`, `Ticket_Sent__c` and `Ticket_Sent_Date__c` on `Order`. No decision was recorded anywhere. **The field spec Fabrizio Mastracci was owed on 02/10 has not appeared**, the deploy weekend begins tomorrow, and the internal PROD check that exists to let him finish the Marketing flows is Monday 05/10.
+
+🟢 One standing hypothesis is closed: `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`, carried by the last two traces as possibly holding the answer, was read in full and **does not** — its `Asset` block lists four fields and none is a send flag. 🔑 But the same workbook names `Data invio automatico biglietti` on `Campagna Figlia`: a send date has had a documented home on the edition since July, and the design that was built ignores it.
+
+### 54.7 🔴 Three more gaps the Performance Plus rehearsal exposed
+
+A five-tranche Plus quote was driven to signed order and contract at the 02/10 Pre-UAT. 🟢 The Contract matched the Blueprint clause by clause and the fiscal-residence table computed correctly live. What it exposed: **the tranche carries no value**, on every tranche and not only on Plus, and must follow order amendments (#205); **`unità di misura` is missing on every preventivo and at bundle level**, settled as `NR` and shipped the same evening; and **`Insoluto` has nowhere to stand** — no persisted invoice due date, no settled invoice record, and the contract reports built then removed on request (#206).
+
+🔴 **The Plus products still have no real names or codes.** Aurel Mrruku, on asking the client: _"he said I can't give you those products. Put whatever you want."_ The Performance Plus UAT is Monday 05/10 and `Articoli Salesforce.xlsx` has not moved since 30/09.
+
+### 54.8 ⬛ Correction: go-live is 21 October, not 6 October
+
+The register has carried `go_live: 2026-10-21` since #124 — ROMI moved it in writing on 08/09 and Fabrizio Paganelli acknowledged on 09/09. **6 October is the date the UAT window closes.** The 01/10 recap and `AGENTS.md` both stated 6 October as go-live; both are corrected. Elena Spini's 02/10 status post independently states 21/10.
+
+### 54.9 ⚠ Two merged branches short of the deploy, and a revised estimate
+
+Anita Aga's `73fe1bc` (the sync-error mail, the `Mexal_Customer_Error_Notification` template and `Account.Creato_su_Mexal__c` — the flag Elena Spini asked for at the Pre-UAT) and `49b5401` (the vendita-da-palco logic, ~300 lines of `WoocommerceOrderService`) are on `origin/DevAnita02/10` and **not in `DevMain`**. A weekend deploy from `DevMain` ships neither, including the error mail agreed with the client that morning.
+
+Elena Spini's status post revises the estimate to **25 days to finish**, states go-live 21/10 and Zoho decommission 31/10, and lists new dates: **12/10 everything in PROD**, **16/10 Marketing ticket UAT**, client autonomous testing from next week, and a phase-2 estimate to follow. Her own red flags: _"i requisiti continuano a cambiare"_ and _"sforiamo con i giorni a disposizione"_.

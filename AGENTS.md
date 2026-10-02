@@ -6,9 +6,11 @@ Canonical instructions for **any** AI coding agent working in this repository
 to this file. Edit this file, not the pointers.
 
 This is a Salesforce DX project for the ROMI → Pienissimo delivery (Zoho CRM →
-Salesforce, Zoho contract expires **31 October 2026**, go-live **6 October
-2026**). It carries both a real metadata build and a very large body of project
-knowledge in markdown. The markdown is big enough that reading it carelessly
+Salesforce, Zoho contract expires **31 October 2026**, go-live Fase 1 **21
+October 2026** — moved from 6 October by ROMI in writing on 2026-09-08, see
+[OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md);
+the UAT window closes 6 October, which is a different date). It carries both a
+real metadata build and a very large body of project knowledge in markdown. The markdown is big enough that reading it carelessly
 will exhaust your context before you reach the answer.
 
 ## Read protocol

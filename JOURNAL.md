@@ -10,6 +10,71 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-02 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack (three conversations), Drive, Fathom, git and `force-app`
+  from watermark **2026-10-01T22:00Z**. Read **the Business Blueprint** and **the Campi
+  Oggetti workbook** in full — both long-standing unreachables, both off the list now —
+  plus the 02/10 client UAT Gemini notes and both internal transcripts. Six new items
+  **OI-201 to OI-206**, three meeting notes, two reference notes; updated OI-75, OI-96,
+  OI-141, OI-160, OI-199, OI-200 and the Matteo Distaso and Daniela Morgese person
+  notes. MAP, INDEX, both trackers and both recaps (§54) regenerated. Trace note written.
+- **State:** `DevMain` at **`6778b58`** (PR #75). 🔴 **The headline is
+  [OI-201](notes/items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md),
+  gating:** Mirko Merendi confirmed in writing at 15:11Z that Mexal's `stato_pagamento`
+  holds exactly empty / `P` / `E` and that **`E` (Ri.Ba. issued) counts as paid like
+  `P`**. `MexalScadenzarioSearchService.cls:205` matches only `P`, and that single flag
+  runs the whole chain — `OrderItem.Mexal_Payment_Status__c` → `Tranche__c` →
+  Asset `Disponibile` → Order `Incassato` → Opportunity Closed Won → the Plus contract's
+  `incassato`. So **every Ri.Ba. payer stalls permanently**: tickets never become
+  available, the order never closes. Aurel Mrruku has already seen `E` in live data;
+  `Scadenziario (GET)` is on the 07/10 client UAT agenda; the deploy is 03–04/10.
+  🟢 `Mexal_Payment_Status__c` has an unused `Invoiced` value, so the fix is a value
+  test, not a data-model change. 🔴 **Second:
+  [OI-203](notes/items/OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md),
+  gating** — the confirmation OI-200 waited for arrived at 14:19:31Z as a **rejection**.
+  Fabrizio Paganelli and Sabatino Rinaldi reject `Regole di Business Aggiuntive` points 1
+  and 2 (the **multi-event aggregation per order**) and the `Rinuncia` part — logics the
+  30/09 UAT confirmed with them in the room. 🟢 Which document is **proved**: the
+  Blueprint has no such paragraph, so it is the 01/10 logic document answered on the
+  wrong thread. 🔴 ROMI's answer is to persuade at Monday's meeting, not revisit.
+  🔑 **The Business Blueprint went to the client at 13:55:56Z, dated 02/10 and carrying
+  signature lines for ROMI Srl and Pienissimo Srl** — a second signature document the
+  repository does not hold, with six internal divergences and **no go-live date**.
+  🟢 **The client UAT worked** — four assets generated from a real checkout, six
+  agreements, yielding OI-204 (WooCommerce → Mexal payment codes) and OI-202 (Anticipay
+  does not recognise sole traders outside the registro imprese, raised by Fabrizio
+  Paganelli and dropped). 🔴 **OI-199 did not move** and Fabrizio Mastracci's field spec
+  was due today. ⬛ **Correction: go-live is 21/10, not 06/10** — the register has said so
+  since OI-124; `AGENTS.md` and last night's MAP entry were wrong and are fixed. 6 October
+  is the UAT window close.
+- **Next:** (1) **OI-201 before the weekend deploy** — one predicate, `'P' || 'E'`, plus a
+  decision on whether `Invoiced` should carry fatturata-non-incassata. Nothing was changed
+  in `force-app` by this run. (2) **Merge or consciously skip Anita Aga's `73fe1bc` and
+  `49b5401`** — they are on `origin/DevAnita02/10` only, and `73fe1bc` carries the
+  sync-error mail and `Account.Creato_su_Mexal__c` agreed with the client that morning; a
+  `DevMain` deploy ships neither. (3) **OI-199 is now a Monday problem, not a Friday one** —
+  the PROD check that lets Fabrizio Mastracci configure Marketing Cloud is 05/10 10:00.
+  (4) **Open `Articoli Salesforce.xlsx`** — the Plus UAT is Monday and Aurel Mrruku was told
+  to invent the product names. (5) **Watch for whether the client accepts Monday's meeting**
+  in place of the Wednesday call; OI-203, OI-200 and the v1.6 change set all hang on it.
+- **Watch:** ⚠ **Nothing written was found for the `P`/`E` rule** — Aurel Mrruku said
+  _"I'm going to type it today"_ and stated the full rule verbally, including that it still
+  needs the client's confirmation. ⚠ **`b382fe2`'s commit message is wrong, not its code**:
+  it says _"when order fatturata"_ and tests `Incassato`. ⚠ **Aurel Mrruku on the Mexal
+  order**: _"ho semplicemente bypassato dei valori sui campi"_ — placeholder values for
+  unsettled fields. ⚠ **Addresses contradict within one day**: the client session agreed
+  billing and shipping are both carried; three hours later he said the story _"non è manche
+  iniziata"_ and billing would equal shipping. ⚠ **The Campi Oggetti workbook does NOT
+  answer OI-199** — stop carrying that hypothesis — but it names `Data invio automatico
+  biglietti` on `Campagna Figlia`, a send date with a home since July that the built design
+  ignores. ⚠ **The workbook contains live customer records; no value was copied.**
+  ⚠ **`Rinuncia` now has a fourth granularity statement in four days** and the two
+  client-facing documents disagree. ⚠ **Elena Spini revised the estimate to 25 days to
+  finish**; 12/10 for everything in PROD, 16/10 Marketing ticket UAT. ⚠ **"Claudio" is
+  still unresolved**; _"Anna"_ and _"Regina"_ are now confirmed as Anita Aga and Rexhina
+  Hysi. ⚠ **Item ids OI-189–OI-193 remain reserved; the next free id is 207.**
+
 ## 2026-10-02 - claude - Performance Plus Contract built and deployed to UAT
 
 - **Did:** built the Contract agreed on 28/09: creation at `Firmato` for C10/C11 orders

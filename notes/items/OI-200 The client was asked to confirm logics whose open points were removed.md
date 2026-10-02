@@ -5,7 +5,7 @@ status: open
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-01
-updated: 2026-10-01
+updated: 2026-10-02
 depends_on: [OI-197]
 blocks: [OI-184]
 source: notes/The agreed Asset and ticket send logic document.md
@@ -74,7 +74,7 @@ Three of them are live blockers rather than details:
 - **There is no next client meeting booked.** The mail states it:
   _"nel prossimo incontro utile (ancora da concordare, non in programma)."_ Mail
   is currently the only channel to the client.
-- **Go-live is 06/10**, production deploys over the weekend of 03–04/10, and the
+- Production deploys over the weekend of **03–04/10**, and the
   team's own end-to-end check is **08/10** — two days after go-live.
 - A confirmation obtained on this text would become the agreed baseline, and
   [OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)
@@ -86,3 +86,20 @@ A follow-up mail on the same thread putting the seven points to the client as
 questions. ⚠ **This procedure does not send mail** — see the guardrails in
 `.agents/skills/requirements-check/SKILL.md`. It is Elena Spini's to send, and it
 is recorded here because nobody else is tracking it.
+
+## 🔴 2026-10-02 - the confirmation arrived, and it is a rejection
+
+The reply this row was waiting on came at **14:19:31Z on 02/10** — and it came on
+the **Business Blueprint thread**, not this one. Fabrizio Paganelli and Sabatino
+Rinaldi reject two of the document's additional business rules and ask for a
+separate call.
+
+So the mail did not obtain the confirmation it asked for, and **the seven
+`Open point da confermare con il cliente` have still never been put to the
+client**. They are now stranded behind a rejection of the surrounding text.
+
+🔴 **This row no longer closes on its own.** The follow-up mail it asks for would
+now land into an open dispute. Whatever is agreed at the 05/10 meeting has to carry
+the seven points with it, or they stay open into client-autonomous testing. The
+dispute itself is
+[OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md).

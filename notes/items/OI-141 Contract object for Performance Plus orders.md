@@ -280,3 +280,28 @@ validation rule re-deployed `0AfMA00000CqCFt0AN`); **not committed, not in Prod*
   Contract `View` override (path update button hidden). Deployed `0AfMA00000CqEJK0A3`;
   transitions verified by a rolled-back run (600 of 1,000 paid → Parzialmente
   Incassato, all paid → Incassato); Contract `00000110` set to _Creato_.
+
+## 2026-10-02 - demonstrated against the Blueprint, and one dependency named
+
+Walked through clause by clause at
+[the 02/10 Interna Pre-UAT Plus](../meetings/2026-10-02%20Interna%20Pre-UAT%20Plus.md)
+on a five-tranche Performance Plus order, with Elena Spini reading the Blueprint
+text alongside. 🟢 Everything the Blueprint names was present: data inizio/fine
+attivazione, valore totale, importo fatturato, importo incassato, `tipo contratto`
+nuovo/rinnovo, a status of creato / parzialmente incassato / incassato, the
+activation-date alert banner, the post-invoice freeze, and the contract surfaced on
+the Account.
+
+🔴 **Its numbers inherit the payment-state defect.** `fatturato` and `incassato` are
+maintained from `OrderItem.Mexal_Payment_Status__c`, which is `Paid` only when the
+scadenziario returns `P`. Any Ri.Ba.-settled invoice therefore leaves the contract
+under-reporting what has been collected, indefinitely —
+[OI-201](OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md).
+Aurel Mrruku saw this coming in the session: _"if we get fattura emessa but non
+pagata we should have a different fatturato/incassato … but we need confirm by
+them."_
+
+⚠ Two things the Blueprint promises on the Contract that are **not** built: the
+`Insoluto` concept and its scheduled reports
+([OI-206](OI-206%20The%20Insoluto%20concept%20has%20no%20invoice%20due%20date%20and%20no%20invoice%20record.md)) —
+the reports were built during the day and then removed on request.

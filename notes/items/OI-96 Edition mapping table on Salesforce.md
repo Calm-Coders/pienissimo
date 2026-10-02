@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-10-01
+updated: 2026-10-02
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -287,3 +287,34 @@ a custom metadata type is the shape question here — **merged to `DevMain` via 
 [OI-188](OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md),
 **not this row**. The edition mapping remains org-side configuration of child
 campaigns, with no metadata-driven table.
+
+## 🔑 2026-10-02 - the client agreed to map everything, and the mechanism was restated
+
+At [the 02/10 client UAT](../meetings/2026-10-02%20UAT%20WooCommerce%20e%20Bundle.md)
+this moved from a ROMI setup task to a standing client obligation. The agreed
+wording:
+
+> _"Tutti i codici articolo e i bundle devono essere mappati nella tabella di
+> mappatura edizione associandoli all'intervallo temporale delle date di
+> competenza."_
+
+🔴 **The case for it was made by a live failure in the same session.** An order
+placed autonomously on WooCommerce for the new `pienissimo lab` product did not
+land, because its code was not in Salesforce; Aurel Mrruku had to map `ST054` by
+hand mid-call before Sabatino Rinaldi's retry with `Pack 1009` succeeded.
+
+🔑 **The mechanism, stated by Aurel Mrruku** at
+[the 12:22 Interna](../meetings/2026-10-02%20Interna.md), correcting a draft
+Blueprint sentence: _"i dati della mappatura devono essere inseriti manualmente per
+poter fare la mappatura in modo automatico quando si crea l'ordine."_ Manual data
+entry, automatic association at order creation. ⚠ **The Blueprint as delivered 95
+minutes later still says the association itself is manual**, because Elena Spini
+deferred the correction.
+
+His closing priority at the Pre-UAT the same evening was the same thing: _"Make
+sure they know how to configure the edizione, very important … documentation at the
+end, explain to them."_ No such documentation exists yet.
+
+⚠ `Da Data Competenza` and `A Data Competenza` are confirmed in the Blueprint as
+**Administration's responsibility alone**, because the dates drive which edition an
+order lands on.

@@ -179,3 +179,29 @@ ticket Assets still in `Ordinato` to `Disponibile` and sets
 This is a repository-only implementation, not an org verification. Mixed Orders
 remain on the tranche path, and the wider chronological-tranche rule above is
 unchanged and still open.
+
+## 🔴 2026-10-02 - the two client-facing documents disagree on `Rinuncia`
+
+[The Business Blueprint](../The%20Business%20Blueprint%20delivered%20to%20the%20client.md),
+delivered to Pienissimo at 13:55:56Z on 02/10, states `Rinuncia` at **header
+level**, §7.4:
+
+> _"La conferma della rinuncia ha effetto su **tutti i partecipanti associati
+> all'acquisto**: tutti i titoli d'accesso (asset/biglietti) riconducibili al
+> referente principale verranno automaticamente aggiornati allo stato
+> 'Rinuncia'."_
+
+[The logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md),
+mailed to the same five people the previous evening, says **per edition**.
+
+🔴 **So the client holds two documents, one day apart, stating different
+granularities for the same button** — and this is the fourth statement of it in
+four days (header → asset → edition → header). Neither document marks itself as
+superseding the other, and the Blueprint is the one carrying signature lines.
+
+⚠ **The client has objected to the `Rinuncia` part.** Elena Spini, reporting
+Fabrizio Paganelli's reply at [the 02/10 Pre-UAT](../meetings/2026-10-02%20Interna%20Pre-UAT%20Plus.md):
+_"they say that part of rinuncia but who cares I don't mind."_ See
+[OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md).
+A per-edition `Rinuncia` still has nowhere to live, so the Blueprint's header-level
+rule is also the only one of the two that the current data model can express.

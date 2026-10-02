@@ -98,3 +98,20 @@ Pagamento**, and the values live in a **Global Value Set** so Quote and Order sh
 - ⚠ The five-vs-four discrepancy from the 24/09 call is still unreconciled, and the
   **new structured codes** promised on 22/09 have not arrived — these four are the
   24/09 file.
+
+## 2026-10-02 - no API sync, and a second mapping is still needed
+
+Two things this row should carry now that the Global Value Set is built.
+
+🟢 **There is no Mexal sync for these codes, by design.** Elena Spini had drafted a
+daily GET of the payment-conditions table into the integration UAT agenda;
+Aurel Mrruku removed it at [the 12:22 Interna](../meetings/2026-10-02%20Interna.md).
+The four codes arrived **by spreadsheet** from Fabrizio Paganelli on 24/09 and
+`condizione di pagamento` is an order-level picklist, not an entity with its own
+call: _"i dati li ha passati tramite Excel, la tabella l'ha passato tramite Excel."_
+If Mexal's codes change, somebody edits the value set by hand.
+
+🔴 **The inbound leg is not covered.** WooCommerce sends its own payment-method
+codes, which are not Mexal's, so a conversion table in front of this one was agreed
+with the client the same morning —
+[OI-204](OI-204%20WooCommerce%20payment%20codes%20need%20a%20mapping%20table%20to%20Mexal.md).

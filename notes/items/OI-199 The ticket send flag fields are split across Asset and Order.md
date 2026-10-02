@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-01
-updated: 2026-10-01
+updated: 2026-10-02
 depends_on: [OI-197]
 blocks: [OI-177, go-live]
 severity: gating
@@ -108,3 +108,28 @@ against the wrong object.
 is the contract and the pieces that do not exist — the Marketing Cloud query, the
 transactional send, the write-back activity. This row is the one piece that
 **does** exist and is on the wrong object.
+
+## 🔴 2026-10-02 - unchanged, and the window has closed
+
+Checked against `DevMain` at `6778b58`. **The three fields are exactly where they
+were**: `Ready_for_Ticket_Dispatch__c` on `Asset`,
+`Ticket_Sent__c` and `Ticket_Sent_Date__c` on `Order`. Nothing was moved, and no
+decision was recorded anywhere in today's sources.
+
+🔴 **The field spec for Fabrizio Mastracci was due today** and there is no sign of
+it. The production deploy is **over the weekend 03–04/10**, from this branch, and
+the internal PROD check that exists to let him finish the Marketing flows is
+**Monday 05/10 10:00**. The window in which moving two fields was free is the one
+that closes with that deploy.
+
+🟢 **One hypothesis can be closed.** The last two traces carried
+`Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx` as possibly holding
+the answer to which object should carry the flags. It was read in full on 02/10 and
+**it does not** — its `Asset` block lists four fields and none of them is a send
+flag. See [the workbook note](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md).
+
+🔑 **But the same workbook names a field that nobody has considered**:
+`Campagna Figlia` carries **`Data invio automatico biglietti`**. A send date has had
+a documented home on the edition since July, and the design that was built ignores
+it. That is worth putting on the table alongside the Asset-versus-Order question
+rather than settling the object in isolation.

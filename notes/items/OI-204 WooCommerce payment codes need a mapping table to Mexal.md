@@ -1,0 +1,75 @@
+---
+id: OI-204
+type: open-item
+status: open
+owner: Aurel Mrruku
+with: Sabatino Rinaldi
+org: both
+raised: 2026-10-02
+updated: 2026-10-02
+depends_on: [OI-160]
+blocks: [go-live]
+source: notes/meetings/2026-10-02 UAT WooCommerce e Bundle.md
+---
+
+# OI-204 - WooCommerce payment codes need a mapping table to Mexal
+
+**Agreed at the 02/10 client UAT: WooCommerce's payment-method codes are not
+Mexal's, so a conversion table is needed between them. It does not exist, and
+Aurel Mrruku owes the documentation for how it is maintained.**
+
+## What was agreed
+
+From the `Concordato` block of the 02/10 `UAT: WooCommerce + Bundle`:
+
+> **Tabella di mappatura per i metodi di pagamento** — _"Viene stabilito l'uso di
+> una tabella di mappatura per associare i codici dei metodi di pagamento di
+> WooCommerce a quelli di Mexal."_
+
+How it came up
+([01:05:40](https://docs.google.com/document/d/1-t2XHtTO9ePWyO4mdqpDBId1KA89u4enpF8y2EWaM00/edit#heading=h.xjtasi6nq4os)–[01:06:46](https://docs.google.com/document/d/1-t2XHtTO9ePWyO4mdqpDBId1KA89u4enpF8y2EWaM00/edit#heading=h.bv6oklkwdy5p)):
+Fabrizio Paganelli asked Sabatino Rinaldi whether he could use the payment codes
+already in the system or had to use WooCommerce's. Sabatino Rinaldi said
+WooCommerce's. Aurel Mrruku then said a mapping table is needed and **undertook
+to supply documentation on how to do it**.
+
+**WooCommerce currently exposes three methods** — bonifico, carta, PayPal
+(Sabatino Rinaldi, same exchange).
+
+## 🔴 Why this is not already solved by OI-160
+
+[OI-160](OI-160%20Payment%20conditions%20cannot%20vary%20by%20order%20line.md) was
+closed on 02/10 by building the Global Value Set `Condizione_di_Pagamento`, whose
+**API names are the Mexal codes** sent as `id_pagamento` and whose labels are the
+descriptions. That is the Salesforce → Mexal leg, from the four codes Fabrizio
+Paganelli supplied by spreadsheet on 24/09.
+
+This row is the **WooCommerce → Salesforce** leg in front of it. The inbound
+order carries a WooCommerce method name, and nothing in the repository turns that
+into one of the four Mexal codes. Aurel Mrruku restated the gap internally the
+same day at [the 12:22 Interna](../meetings/2026-10-02%20Interna.md):
+
+> _"lo stesso discorso che ho fatto a Sabatino oggi che mi ha detto che no, non
+> sono gli stessi codici, in qualche modo dobbiamo fare una mappatura."_
+
+## 🟢 One thing that was ruled out
+
+Elena Spini had drafted a **daily GET sync of the payment-conditions table from
+Mexal** into the integration agenda. Aurel Mrruku removed it at the 12:22
+Interna: the table arrived **by spreadsheet**, not over the API, and
+`condizione di pagamento` is an order-level four-value picklist, not an entity
+with its own call. ⚠ So there is no automatic refresh of these codes by design —
+if Mexal's codes change, somebody edits the value set by hand.
+
+## What is unresolved
+
+- Which object holds the mapping — custom metadata like
+  `Residenza_Fiscale__mdt` and `Product_Category_Rule__mdt` would match the
+  pattern the project has settled into, but nothing has been decided.
+- Who maintains it. The bundle-code precedent is that Administration does it by
+  hand.
+- What happens to an inbound order whose WooCommerce method has no mapping row.
+- Aurel Mrruku's documentation, which is an open action item from the UAT.
+
+⚠ The WooCommerce and Mexal integration UAT with the client is **Wednesday 07/10,
+10:00–13:00**, and `Creazione Ordini (POST)` towards Mexal is on its agenda.

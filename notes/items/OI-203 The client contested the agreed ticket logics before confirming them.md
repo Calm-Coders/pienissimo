@@ -1,0 +1,96 @@
+---
+id: OI-203
+type: open-item
+status: open
+owner: Elena Spini
+with: Fabrizio Paganelli
+org: both
+raised: 2026-10-02
+updated: 2026-10-02
+depends_on: [OI-197, OI-200]
+blocks: [OI-184, go-live]
+severity: gating
+source: notes/The Business Blueprint delivered to the client.md
+---
+
+# OI-203 - The client contested the agreed ticket logics before confirming them
+
+**The written confirmation [OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md)
+was waiting for arrived on 02/10, and it is a rejection. Fabrizio Paganelli and
+Sabatino Rinaldi say two of the document's additional business rules do not add
+up, and they asked for a separate call. ROMI's answer is not to change the
+logic but to demonstrate it live at Monday's existing meeting.**
+
+## The exchange
+
+| Time (02/10) | Event |
+| --- | --- |
+| 13:55:56Z | Elena Spini mails the **Business Blueprint** to Fabrizio Paganelli, `amministrazione@`, Sabatino Rinaldi, Marco Montesi and Rebecca Marmo, cc Aurel Mrruku and Fabrizio Mastracci, asking them to re-read it ahead of autonomous testing from next week |
+| 14:19:31Z | **Fabrizio Paganelli replies on that thread:** _"io e Sabatino abbiamo letto il documento. Non ci torna il paragrafo Regole di Business Aggiuntive, sia il punto 1 che il punto 2. Vi chiediamo se possiamo fare una call aggiuntiva Mercoledì 7 ottobre"_ |
+| 16:17:18Z | Elena Spini replies that she thinks they mean the **other** document — `PIENISSIMO – INTERNA Asset e invio biglietti`, sent the previous evening — and proposes using the **meeting already booked for Monday** instead of adding a call on the 7th, to show the logic live |
+
+## 🟢 Which document they meant is now settled
+
+**The Business Blueprint has no section called `Regole di Business Aggiuntive`.**
+Its §6 runs 6.1 Lead → Opportunità, 6.2 Preventivi/Contratti/Ordine, 6.3 Bundle,
+Mappatura Edizione e Tranche, 6.4 Flusso Ticket/Asset — read in full on 02/10.
+So Elena Spini's reading is correct: the objection is against
+[the 01/10 logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md),
+replied to on the wrong thread.
+
+She said as much internally the same evening at
+[the Pre-UAT](../meetings/2026-10-02%20Interna%20Pre-UAT%20Plus.md):
+_"Fabrizio reply on the wrong email because he was talking about the document
+that we were saying."_
+
+## 🔴 What they are objecting to
+
+Elena Spini, same session, identifying the two points:
+
+> _"regole di business aggiuntive is the logic of everything. So aggregation
+> multievento per ordine and all the logic that we were saying that is impossible
+> to change."_
+
+So the contested rules are the **multi-event aggregation per order** —
+[OI-196](OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)'s
+territory — and she adds that they also objected to **the `Rinuncia` part**:
+_"they say that part of rinuncia but who cares I don't mind."_
+
+⚠ **These are the logics the 30/09 UAT confirmed with the client in the room.**
+Elena Spini's own status post says so: _"Fabrizio P. e Sabatino hanno contestato
+alcune delle logiche fondamentali del flusso dei biglietti, confermate nel meeting
+di due giorni fa."_
+
+## 🔴 The position ROMI has taken
+
+Not to revisit the rules, but to persuade:
+
+> _"I think that as soon as he will see the link it will change his mind because
+> **he doesn't have any idea of what we are talking about** and I really want to
+> make them change their mind."_ — Elena Spini, 02/10 Pre-UAT
+
+Aurel Mrruku agreed to the plan. The vehicle is the **Monday 05/10 meeting**,
+with a live demonstration instead of the Wednesday 07/10 call Fabrizio Paganelli
+asked for. ⚠ **As of this sweep the client has not agreed to that substitution** —
+Elena Spini's mail ends _"Fatemi sapere se per voi va bene procedere così."_
+
+## 🔴 Why this is gating
+
+- A `Rinuncia` objection is not a misunderstanding that a demo settles. The
+  granularity has been stated four different ways in four days and **the two
+  client-facing documents disagree with each other** — see
+  [OI-75](OI-75%20Ticket%20availability%20rule.md).
+- [OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)
+  was going to carry this document into the register as the v1.6 change set. It
+  cannot carry a rejected text.
+- The seven `Open point da confermare con il cliente` that OI-200 records as cut
+  from the client's copy **still have not been put to them**, and the client has
+  now objected to the document anyway.
+- The client begins **testing in autonomy next week** against logics two of its
+  own leads have said do not add up.
+
+## What closing it looks like
+
+Either the client accepts the rules at the 05/10 meeting **and that acceptance is
+recorded in writing**, or the rules change. ⚠ A demonstration that ends in verbal
+agreement, with no mail behind it, leaves this row exactly where it is.

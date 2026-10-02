@@ -5776,3 +5776,65 @@ La **sequenzialità cronologica delle tranche** è nuova per iscritto — una tr
 Aurel Mrruku ha lavorato fino alle 00:24, ha _"quattro progetti in rilascio … e nessuno sta andando bene"_, dice di dover rifare interamente il componente partecipanti e alla domanda su quando sarà pronto ha risposto _"Mai."_ Elena Spini intende segnalare che il progetto è _"fuori controllo"_. **Il go-live è il 06/10.** Registrato perché è la seconda notte consecutiva in cui il record lo riporta direttamente dal responsabile tecnico.
 
 **Registro non modificato. La versione resta 1.6** — le modifiche del 01/10 sono interne a ROMI oppure in attesa della conferma scritta del cliente, e il [#184](open-items.it.md) è il meccanismo che porta il change set alla chiusura UAT.
+
+## 54. Aggiornamento 02/10/2026 — il fornitore dell'ERP ha definito gli stati di pagamento e il codice ne considera uno solo, e il cliente ha rifiutato le logiche di cui gli era chiesta conferma
+
+Sweep notturna, watermark **2026-10-01T22:00Z**. **Un UAT cliente, due sessioni interne ROMI, quattro mail con il cliente** — la giornata con più contatto cliente dell'ultima settimana. Fonti: Gmail, Drive, Slack (tre conversazioni), Fathom, git, `force-app`. Le affermazioni sul costruito sono aritmetica di repository su `DevMain` **`6778b58`**.
+
+### 54.1 🔴 I pagamenti Ri.Ba. sono letti come non pagati, e tutta la catena di disponibilità si blocca a valle
+
+Mirko Merendi di Kreosoft ha enunciato per la prima volta per iscritto, alle 15:11Z, il dominio di valori del campo `stato_pagamento` dello scadenziario Mexal: esattamente tre valori — vuoto, `P` ed `E` — e **`E`, l'emissione della Ri.Ba., va considerato pagato al pari di `P`**. Aurel Mrruku aveva chiesto alle 14:55Z perché la chiamata reale allo Scadenziario restituiva `"E"`.
+
+`MexalScadenzarioSearchService.cls:205` verifica solo `deadline.paymentStatus == 'P'`. Il flag che imposta attraversa l'intero progetto: `OrderItem.Mexal_Payment_Status__c` → `Tranche__c.Completamente_Pagata__c` → Asset `Disponibile` → Ordine `Incassato` → Opportunità Chiusa/Vinta → `importo incassato` del contratto Performance Plus. Quindi per qualsiasi cliente che incassi con Ri.Ba. — una modalità ordinaria in Italia — **la tranche non passa mai a `Pagata`, i biglietti non diventano mai disponibili, l'ordine non arriva mai a `Incassato` e il contratto sottostima l'incassato**, in modo permanente, perché nulla altro imposta quel flag.
+
+`Scadenziario / Scoperto Cliente (GET)` è in agenda all'UAT di integrazione con il cliente di **mercoledì 07/10**, e il rilascio in produzione è nel weekend **03–04/10**. Aurel Mrruku ha nominato il rischio lui stesso, poche ore prima che arrivasse la risposta: _"if we start testing and the values are not defined, it's going to be a mess."_ 🟢 `Mexal_Payment_Status__c` porta già un valore `Invoiced` definito e mai scritto, quindi il caso fatturata-non-incassata ha dove stare e la correzione è un test di valore. Vedi #201.
+
+### 54.2 🔴 La conferma che il progetto attendeva è arrivata come rifiuto
+
+Fabrizio Paganelli e Sabatino Rinaldi hanno risposto alle 14:19:31Z: _"Non ci torna il paragrafo Regole di Business Aggiuntive, sia il punto 1 che il punto 2"_, con richiesta di una call separata mercoledì 7 ottobre. Elena Spini ha identificato le regole contestate nell'**aggregazione multievento per ordine**, e ha riferito che hanno obiettato anche sulla parte `Rinuncia`.
+
+🟢 Quale documento intendessero è accertato e non supposto: la risposta è arrivata sul thread del Business Blueprint, e il Blueprint — letto integralmente — non ha alcun paragrafo `Regole di Business Aggiuntive`. L'obiezione riguarda il documento di logiche del 01/10, con risposta sul thread sbagliato.
+
+⚠ **Sono le logiche che l'UAT del 30/09 ha confermato con le stesse due persone presenti.** 🔴 La risposta di ROMI non è rivederle ma dimostrarle dal vivo al meeting già fissato per lunedì, invece della call del mercoledì richiesta dal cliente — _"I really want to make them change their mind"_ — e il cliente non ha ancora accettato la sostituzione. Il #184 non può portare nel registro un testo rifiutato, e i sette open point che il #200 registra come tagliati dalla copia del cliente non gli sono ancora stati posti. Vedi #203.
+
+### 54.3 🔑 Il Business Blueprint è stato consegnato, e porta le firme
+
+`Business_Blueprint_Pienissimo.docx` è andato a Pienissimo alle 13:55:56Z, datato 02/10, e si chiude con le righe di firma per **ROMI Srl e Pienissimo Srl**. Era nell'elenco degli irraggiungibili dal 24/09 ed è stato letto integralmente per la prima volta. È un secondo documento che porta firme accanto a `REQUISITI.it.md`, e il repository non lo contiene.
+
+Cosa stabilisce: la Fase 2 è enumerata (GLS, Teachable, Pienissimo Pro, automazioni multi-edizione, Info Point, note di credito); due soli profili; supporto post go-live di un mese per funzionalità rilasciata e formazione fino a 20 ore; bundle a massimo due livelli, uno per ordine, e **ammessi anche con un solo prodotto**, caso che copre già la richiesta fatta dal cliente lo stesso giorno; il ciclo di vita dell'asset a **sette stati**, confermando in modo indipendente che `Inviato` non c'è più.
+
+🔴 Sei divergenze hanno viaggiato con esso: il trigger di sincronizzazione WooCommerce torna al solo COMPLETATO, regola superata il 27/08 da verifica dal vivo sul plugin consegnato; il §7.1 e l'elenco dei deliverable indicano **due sottodomini marketing diversi**; la `Rinuncia` è dichiarata a livello di **testata** un giorno dopo che il documento di logiche la diceva per edizione; `Firmato` compare nel flusso di accettazione ma non nella tabella degli stati del Preventivo; la mappatura edizione è descritta come **associazione** manuale, la dicitura che Aurel Mrruku aveva corretto 95 minuti prima; e **Data Cloud** è nominato come motore di deduplica mentre la Fase 1 nomina solo Sales e Marketing Cloud. Non indica inoltre **alcuna data di go-live**.
+
+### 54.4 ✅ Il cliente ha portato a termine ordini WooCommerce, e sono state concordate sei cose
+
+All'`UAT: WooCommerce + Bundle` del 02/10 Sabatino Rinaldi ha completato checkout tramite il link generato da Salesforce e **si sono generati quattro asset**, verificati dai log di integrazione. Un secondo ordine, effettuato in autonomia, è fallito al primo tentativo perché il codice del nuovo `pienissimo lab` non era su Salesforce; Aurel Mrruku ha mappato `ST054` dal vivo e il nuovo tentativo con `Pack 1009` è arrivato.
+
+Concordato: **tutti i codici articolo e i bundle devono essere mappati nella tabella di mappatura edizione** sull'intervallo delle date di competenza; `unità di misura` viene aggiunta alla configurazione dei bundle; **la chiamata ad Anticipay precede l'invio di anagrafica e ordine a Mexal** sul percorso in ingresso; una **tabella di mappatura converte i codici di pagamento WooCommerce in quelli Mexal** (#204); i dati di fatturazione del checkout e il soggetto pagante popolano l'account, entrambi gli indirizzi e il contatto principale; e in caso di errore di sincronizzazione parte una **mail all'Amministrazione con appositi flag**. **La partita IVA è la chiave esterna**, confermato da entrambi i referenti del cliente.
+
+L'approvazione formale delle logiche di integrazione è stata subordinata alla **verifica di Daniela, lunedì**. ⚠ Le fonti dicono solo "Daniela"; Daniela Morgese è l'unica nei record e il ruolo corrisponde, ma nessuna fonte riporta il cognome.
+
+### 54.5 🔴 Fabrizio Paganelli ha sollevato un buco e la riunione l'ha lasciato cadere
+
+Una ditta individuale può avere una partita IVA italiana perfettamente valida, non essere nel registro delle imprese e non essere riconosciuta da Anticipay. Nessuna soluzione, nessun owner, nessuna azione. Il Blueprint tratta l'esito negativo come `non applicabile` e non blocca l'ordine, quindi nulla si rompe — ma una ditta individuale non è né estera né invalida, e i ristoratori sono il target primario. ⚠ Nessuno ha stimato i volumi. Vedi #202.
+
+### 54.6 🔴 Il #199 non si è mosso, e la finestra si è chiusa
+
+I tre campi di invio sono esattamente dov'erano: `Ready_for_Ticket_Dispatch__c` su `Asset`, `Ticket_Sent__c` e `Ticket_Sent_Date__c` su `Order`. Nessuna decisione è registrata da nessuna parte. **La specifica dei campi dovuta a Fabrizio Mastracci il 02/10 non è comparsa**, il weekend di rilascio inizia domani, e il check interno su PROD che serve a permettergli di completare i flussi Marketing è lunedì 05/10.
+
+🟢 Un'ipotesi che durava da due trace si chiude: `Campi Oggetti, Flussi e Utenti Salesforce - Pienissimo.xlsx`, indicato come possibile risposta alla domanda sull'oggetto, è stato letto integralmente e **non lo è** — il suo blocco `Asset` elenca quattro campi e nessuno è un flag di invio. 🔑 Ma lo stesso file nomina `Data invio automatico biglietti` sulla `Campagna Figlia`: una data di invio ha una collocazione documentata sull'edizione da luglio, e il disegno costruito la ignora.
+
+### 54.7 🔴 Altri tre buchi emersi dalla prova Performance Plus
+
+Al Pre-UAT del 02/10 un preventivo Plus a cinque tranche è stato portato fino all'ordine firmato e al contratto. 🟢 Il Contratto corrispondeva al Blueprint clausola per clausola e la tabella di residenza fiscale ha calcolato correttamente dal vivo. Cosa ha fatto emergere: **la tranche non porta un valore**, su tutte le tranche e non solo sul Plus, e deve seguire le modifiche d'ordine (#205); **`unità di misura` manca su ogni preventivo e a livello di bundle**, risolta come `NR` e rilasciata la sera stessa; e **`Insoluto` non ha dove stare** — nessuna data di scadenza fattura persistita, nessun record fattura deciso, e i report del contratto costruiti e poi rimossi su richiesta (#206).
+
+🔴 **I prodotti Plus non hanno ancora nomi né codici reali.** Aurel Mrruku, su quanto chiesto al cliente: _"he said I can't give you those products. Put whatever you want."_ L'UAT Performance Plus è lunedì 05/10 e `Articoli Salesforce.xlsx` non si muove dal 30/09.
+
+### 54.8 ⬛ Correzione: il go-live è il 21 ottobre, non il 6 ottobre
+
+Il registro porta `go_live: 2026-10-21` dal #124 — ROMI l'ha spostato per iscritto l'08/09 e Fabrizio Paganelli ne ha dato riscontro il 09/09. **Il 6 ottobre è la data di chiusura della finestra UAT.** Il recap del 01/10 e `AGENTS.md` indicavano entrambi il 6 ottobre come go-live; entrambi sono corretti. Lo status di Elena Spini del 02/10 indica indipendentemente il 21/10.
+
+### 54.9 ⚠ Due rami non confluiti alla vigilia del rilascio, e una stima rivista
+
+Il `73fe1bc` di Anita Aga (la mail di errore sincronizzazione, il template `Mexal_Customer_Error_Notification` e `Account.Creato_su_Mexal__c` — il flag chiesto da Elena Spini al Pre-UAT) e il `49b5401` (la logica vendita da palco, ~300 righe di `WoocommerceOrderService`) sono su `origin/DevAnita02/10` e **non in `DevMain`**. Un rilascio nel weekend da `DevMain` non porta nessuno dei due, compresa la mail di errore concordata con il cliente quella mattina.
+
+Lo status di Elena Spini rivede la stima a **25 giornate a finire**, indica go-live 21/10 e dismissione Zoho 31/10, ed elenca nuove date: **12/10 tutto in PROD**, **16/10 UAT flussi Marketing biglietti**, test in autonomia del cliente dalla settimana prossima, e una stima di fase 2 a seguire. I suoi red flag: _"i requisiti continuano a cambiare"_ e _"sforiamo con i giorni a disposizione"_.

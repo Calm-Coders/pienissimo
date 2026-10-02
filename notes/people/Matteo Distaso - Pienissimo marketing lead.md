@@ -3,7 +3,7 @@ id: person-matteo-distaso
 type: person
 status: active
 org: Pienissimo
-updated: 2026-08-14
+updated: 2026-10-02
 source: Drive - Organigrammi Pienissimo (EV - SW) (APRILE 26).pdf
 ---
 
@@ -26,3 +26,18 @@ Montesi — which makes that session the first time in eight weeks that the pers
 holding the marketing blocker is in a room with the people who need it cleared.
 
 Reports into the events company, not Pienissimo Software Srl.
+
+## 2026-10-02 - he set the form migration order, in writing
+
+First direct written contribution from him in the record. At 09:08Z he answered
+Elena Spini on the `Form Pienissimo` thread:
+
+> _"dopo controllo del file posso garantirti che **tutti i form hanno importanza**,
+> ma dobbiamo partire da quello di **pienissimo live** e quello di **camerieri
+> venditori**."_
+
+Elena Spini confirmed at 09:42Z and added the team. The same pair is written into
+[the Business Blueprint](../The%20Business%20Blueprint%20delivered%20to%20the%20client.md)
+§7.2, against the ~100 Zoho forms of which only the main ones are migrating.
+
+Signs himself **Reparto Marketing - Pienissimo s.r.l.**
