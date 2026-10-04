@@ -254,10 +254,10 @@ public class TestDataFactory {
   // ------------------------------------------------------ Commercial chain
 
   public static Opportunity opportunity(Id accountId) {
-    return opportunity(accountId, 'Standart');
+    return opportunity(accountId, 'Vendita_Standard');
   }
 
-  // Record types: Standart, Plus_Attivazione_Rinnovo, Recall_Tutor.
+  // Record types: Vendita_Standard, Plus_Attivazione_Rinnovo, WooCommerce.
   public static Opportunity opportunity(
     Id accountId,
     String recordTypeDeveloperName
@@ -270,6 +270,11 @@ public class TestDataFactory {
       Pricebook2Id = Test.getStandardPricebookId(),
       RecordTypeId = recordTypeId('Opportunity', recordTypeDeveloperName)
     );
+    // Plus products are matched to the opportunity type through
+    // Product_Category_Rule__mdt (C10 = Performance Plus - Attivazione).
+    if (recordTypeDeveloperName == 'Plus_Attivazione_Rinnovo') {
+      opportunityRecord.Tipo_Opportunita__c = 'Performance Plus - Attivazione';
+    }
     insert opportunityRecord;
     return opportunityRecord;
   }

@@ -1195,8 +1195,14 @@
     <tabs>standard-Lead</tabs>
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
+    <tabs>standard-Product2</tabs>
     <tabs>standard-Opportunity</tabs>
     <tabs>standard-Quote</tabs>
+    <tabs>standard-Asset</tabs>
+    <tabs>standard-Campaign</tabs>
+    <tabs>standard-Order</tabs>
+    <tabs>Mappatura_Edizione__c</tabs>
+    <tabs>Integration_Log__c</tabs>
     <tabs>BundleComponent__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningSales_UtilityBar</utilityBar>

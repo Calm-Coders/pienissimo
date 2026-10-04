@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-10-01
+updated: 2026-10-04
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -94,8 +94,8 @@ the 7/10 marketing session. 🔴 Not yet communicated to her; nothing records he
 nineteen minutes**, both by Elena Spini, on the same calendar event (same Meet link,
 same `eid`):
 
-| Sent   | New slot                          |
-| ------ | --------------------------------- |
+| Sent   | New slot                             |
+| ------ | ------------------------------------ |
 | 16:34Z | **Thu 15 October**, 10:00-12:00 CEST |
 | 16:52Z | **Fri 16 October**, 10:00-12:00 CEST |
 
@@ -216,7 +216,6 @@ manually and simulate their payment** to test the billing path (`01:22:43`), so 
 tranche payment gate that the whole send now depends on will first be exercised
 against forced data rather than against Mexal.
 
-
 ## 🟢 2026-10-01 - the production route is now a weekend deploy
 
 [The Pre UAT](../meetings/2026-10-01%20Pre%20UAT.md) turned the 05/10 commitment
@@ -240,3 +239,23 @@ the flow is scheduled after the date the project is supposed to be live.
 🔴 The weekend deploy will carry
 [OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)
 into production unless the object question is settled first.
+
+## 2026-10-04 - Prod is ready for the marketing round trip
+
+Built by Claude Code at Aurel Mrruku's request, recorded in
+[JOURNAL.md](../../JOURNAL.md):
+
+- **The community exists in Prod and is published.** The Landing Page LWR site was
+  published (job `08PSW00000WggaD2AR`); before that a guest was sent to the login page.
+- **The guest profile can run the page.** `ParticipantRegistrationController`,
+  `AssetQrService` and `QuoteAcceptanceController` granted to `Landing Page Profile`
+  in Prod (deploy `0AfSW000001Hfqz0AC`). Class access only — the controllers run in
+  system mode, so no guest field access was added.
+- **Test data**, all prefixed `TEST MKT`: two parent campaigns and two 2026 editions
+  (event 19/11/2026, send date 05/10/2026), two ticket products, six companies with
+  principal contacts on `+mkt1`–`+mkt6` aliases of Aurel Mrruku's mailbox, six
+  `Incassato` orders, 13 `Disponibile` tickets and six Event Links `Pending/Ready`
+  with Prod registration URLs. Nothing reached Mexal (`Integration_Log__c` 0).
+- ⚠ Still open for the round trip: whether Marketing Cloud in production can send
+  (authenticated domain), and `Send_After__c`, which is no longer populated on
+  Event Links since `5b19caa`.

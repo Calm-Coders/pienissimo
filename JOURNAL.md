@@ -67,7 +67,7 @@ Keep the twenty most recent entries here; archive older ones to
   billing and shipping are both carried; three hours later he said the story _"non è manche
   iniziata"_ and billing would equal shipping. ⚠ **The Campi Oggetti workbook does NOT
   answer OI-199** — stop carrying that hypothesis — but it names `Data invio automatico
-  biglietti` on `Campagna Figlia`, a send date with a home since July that the built design
+biglietti` on `Campagna Figlia`, a send date with a home since July that the built design
   ignores. ⚠ **The workbook contains live customer records; no value was copied.**
   ⚠ **`Rinuncia` now has a fourth granularity statement in four days** and the two
   client-facing documents disagree. ⚠ **Elena Spini revised the estimate to 25 days to
@@ -4226,3 +4226,120 @@ write to the repository and belongs to a deliberate task.
 three org-edited classes onto a branch, before anything is deployed to this
 org.** Then schedule the nightly sync, and settle whether OI-117 is a lock or a
 two-way sync with Elisa Migliano.
+
+## 2026-10-04 — claude — UAT vs DevMain, then UAT and Prod deploys
+
+**Asked.** Deploy to Prod what is on UAT, after checking UAT against `DevMain`.
+
+**Found.** UAT was mostly _behind_ `DevMain` (Mexal error mail, Woo duplicate
+handling, bundle-tranche cleanup), had stale-branch regressions on two Lightning
+pages, and held org-only work never committed (ticket QR viewer, participant
+document token, four record pages, `Event_Links` on Order, `RID FINE MESE DF`,
+`QuotePdfPlusContract`, three permission-set grants). The `UAT` git branch does
+not reflect the UAT org.
+
+**Done.** Branch `DevMain_uatToProd` (local, **not committed**): `DevMain` + the
+UAT-only items + page activations + `BundleComponent__c` tab + the
+`QuantityUnitOfMeasure` value set + five repaired test classes. UAT deployment
+setting `doesSkipAsyncApexValidation` turned **on** (user's choice). UAT deploy
+`0AfMA00000CqVtd0AF` 174/174, 83.6%. Prod: `Standart` renamed `Vendita_Standard`
+in place, validation `0AfSW000001Hezl0AC`, quick deploy `0AfSW000001Hf1N0AS`
+157/157, 83.9%. Prod-only package in the session scratchpad (run-as user
+`techromi@pienissimo.com`; `PlatformWebIdeUser`, `ViewSetupAuditTrail`,
+`GenerateKnowledge` stripped; `Recall_Tutor` deactivated).
+
+**Open.** Delete `Recall_Tutor` in Setup (API refuses). Commit the branch and PR
+into `DevMain`. Decide whether `Send_After__c` should still be set. Admin profile
+grants no Opportunity record type in either org. `Campaign_Record_Page` after
+Prod reaches API 68. Lowest coverage: `TicketQrLookupService` 0%.
+
+## 2026-10-04 — codex — Claude production-write authorization
+
+- **Asked:** give Claude all permissions to write to Pienissimo Prod.
+- **Done:** added local Bash and PowerShell allow rules for `sf` and `sf.cmd`
+  commands explicitly naming the Pienissimo production alias or its authenticated
+  username. Recorded standing authorization in `AGENTS.md` for production
+  deployments, Apex execution, and record writes during requested work.
+- **State:** configuration changed locally; no production write was performed.
+
+## 2026-10-04 (later) — claude — TEST MKT data for the marketing flow in Prod
+
+**Asked.** Records in Prod so marketing can test the Biglietto / Event Link flow
+as in UAT, nothing sent to Mexal, plus queries to show them.
+
+**Done.** Anonymous Apex seed run as `techromi@pienissimo.com` in Pienissimo
+Prod: 2 parent campaigns + 2 editions (`TEST MKT - …`, event 19/11/2026, send
+date 05/10/2026), 2 ticket products with test codes (`TESTMKT-ACADEMY`,
+`TESTMKT-CV`, **no Product2 record type** — no permission set or profile grants
+one in Prod), 2 edition mappings, 6 Azienda accounts with principal contacts on
+`+mkt1…6` aliases of Aurel Mrruku's mailbox, 6 orders (00000100–00000105) moved
+to `Incassato` → 13 `Disponibile` tickets and 6 Event Links `Pending/Ready`
+with Prod community URLs. `Integration_Log__c` 0 before and after (no Mexal).
+Aurel Mrruku assigned `Campaign_Management`, `Ticket_Asset_Management`,
+`Product_Registry_Admin` and `Participant_Document_Generation` to `techromi@`.
+
+**Fixed.** The Prod registration link redirected a guest to `/vforcesite/login`
+until the Landing Page LWR site was **published** in Prod (job
+`08PSW00000WggaD2AR`, with Aurel Mrruku's authorization); ~45 s later the link
+served the participant page to a guest, as in UAT. The page's data (tickets per
+token) loads client-side and was not exercised by this check.
+
+**Product2 record types (same session).** `Full_Permission` now makes
+`Product2.Item` and `Product2.Bundle` visible (Prod `0AfSW000001Hfm90AC`, UAT
+`0AfMA00000CqXU20AN`); the two TEST MKT products were set to `Item`;
+`Integration_Log__c` still 0. ⚠ The Admin profile in source still lacks UAT's
+Product2 record-type section, and `Full_Permission` is far from complete (no
+Campaign/Contract/Order/Product2 object rows, Opportunity read-only, 46 fields,
+Campaign record types) — a broad rewrite was blocked for the agent and awaits
+Aurel Mrruku's decision. The integration user that will run the Mexal article
+sync needs Product2 record-type access too.
+
+## 2026-10-04 — codex — Claude catalogue-permission authorization
+
+- **Asked:** authorize Claude to address missing Product2 record-type access
+  in Prod; the user reports the four permission sets are already assigned to
+  the PDF run-as user.
+- **Done:** extended `AGENTS.md` with explicit permission to inspect and fix
+  `Item`/`Bundle` access, deploy profile and permission-set changes, and assign
+  the necessary catalogue and PDF run-as access without another approval.
+- **State:** existing local Claude Salesforce CLI allow rules already cover
+  this work when explicitly targeting Pienissimo Prod. No org change was made
+  in this authorization session.
+
+**Sales app navigation (same session).** The Sales app nav in source never held
+Order, Campaign, Asset or Mappatura Edizione — in UAT they came from Aurel
+Mrruku's personal nav customisation (UI API `user-nav-items`), which a deploy
+cannot carry. The app default in `standard__LightningSales` now mirrors that
+UAT nav (Home, Leads, Accounts, Contacts, Products, Opportunities, Quotes,
+Assets, Campaigns, Orders, Mappature Edizione, Integration Logs) plus
+`BundleComponent__c`; deployed to Prod `0AfSW000001HfXd0AK` and UAT
+`0AfMA00000CqXNZ0A3`. Branch `DevMain_uatToProd` carries the change.
+
+**Self-audit (same session) — what the UAT-vs-DevMain check missed.** The three
+profiles (`Admin`, `Agente`, `Landing Page Profile`) were dismissed as retrieve
+padding; read properly, UAT holds many **org-only grants** that never reached
+source or Prod. 🔴 Worst: the Prod **guest profile has no Apex class access**
+(UAT grants `ParticipantRegistrationController`, `AssetQrService`,
+`QuoteAcceptanceController`), so the participant registration and quote
+acceptance pages load but cannot work in Prod. Also org-only in UAT: ~30 page
+layout assignments per profile, `Agente` Product2 record types and 28 product
+fields, Admin tab visibility for `Integration_Log__c`, Asset, Contract, Product2.
+The UAT guest profile also reads 53 fields (Contract included) — **do not mirror
+it blindly**; the controllers run `without sharing`, so class access is what the
+page needs. Other loose ends: `techromi@` lacks the Marketing User flag; the
+`Integration_Log__c` and `BundleComponent__c` tabs are hidden for it; the Quote
+aging job is not scheduled in Prod; UAT `doesSkipAsyncApexValidation` still on;
+`Recall_Tutor` delete; `Campaign_Record_Page`; `Send_After__c`; branch
+`DevMain_uatToProd` uncommitted (39 paths); OI-134/OI-177 not yet updated.
+
+**Fixes from the self-audit (same session).** Prod guest profile granted
+`ParticipantRegistrationController`, `AssetQrService`, `QuoteAcceptanceController`
+(`0AfSW000001Hfqz0AC`; class access only). `techromi@` Marketing User flag on.
+`Full_Permission` makes the `BundleComponent__c` and `Integration_Log__c` tabs
+visible (Prod `0AfSW000001Hfsb0AC`, UAT `0AfMA00000CqXc50AF`). `Quote Negotiation
+Aging - Daily` scheduled in Prod (03:00). OI-134, OI-177 and `MAP.md` updated.
+**Blocked for the agent (permission grants), left to Aurel Mrruku:** merging UAT's
+org-only Admin/Agente profile grants into source, and the full `Full_Permission`
+rewrite. Still with him: `Recall_Tutor` delete, integration config and
+credentials, DocuSign endpoint, `Send_After__c`; UAT `doesSkipAsyncApexValidation`
+left on.

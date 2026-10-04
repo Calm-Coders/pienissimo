@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-10-02
+updated: 2026-10-04
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -323,3 +323,11 @@ the suite task.
 The Contract build (same day) adds **`PerformancePlusContractService`** with no test
 class (8.5% coverage from `MexalIntegrationTest`), and changes `QuoteTriggerHandler`
 and `OrderItemTriggerHandler`; deployed to UAT with `NoTestRun`.
+
+## 2026-10-04 - repaired and deployed to Prod
+
+51 of 174 tests failed in UAT after the 09-28 to 10-02 changes; fixed in
+`TestDataFactory`, `CrmAutomationTest`, `QuoteCommercialTest`,
+`OrderTriggerHandlerTest` and `TicketingTest` at Aurel Mrruku's request. UAT
+174/174 at 83.6%; Prod 157/157 at 83.9%, deploy `0AfSW000001Hf1N0AS`. Detail in
+[the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).

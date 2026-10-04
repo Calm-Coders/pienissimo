@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-08
-updated: 2026-09-29
+updated: 2026-10-04
 depends_on: [OI-81, OI-124]
 blocks: [go-live]
 source: notes/meetings/2026-09-08 Flussi MKT Parte 2.md
@@ -96,3 +96,23 @@ sporchi."_
 🔴 **Still blind until then.** Nothing has been tested end to end, and
 [OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
 adds a channel — WhatsApp on mobile — that this workaround does not cover at all.
+
+## 2026-10-04 - Prod is ready for the marketing round trip
+
+Built by Claude Code at Aurel Mrruku's request, recorded in
+[JOURNAL.md](../../JOURNAL.md):
+
+- **The community exists in Prod and is published.** The Landing Page LWR site was
+  published (job `08PSW00000WggaD2AR`); before that a guest was sent to the login page.
+- **The guest profile can run the page.** `ParticipantRegistrationController`,
+  `AssetQrService` and `QuoteAcceptanceController` granted to `Landing Page Profile`
+  in Prod (deploy `0AfSW000001Hfqz0AC`). Class access only — the controllers run in
+  system mode, so no guest field access was added.
+- **Test data**, all prefixed `TEST MKT`: two parent campaigns and two 2026 editions
+  (event 19/11/2026, send date 05/10/2026), two ticket products, six companies with
+  principal contacts on `+mkt1`–`+mkt6` aliases of Aurel Mrruku's mailbox, six
+  `Incassato` orders, 13 `Disponibile` tickets and six Event Links `Pending/Ready`
+  with Prod registration URLs. Nothing reached Mexal (`Integration_Log__c` 0).
+- ⚠ Still open for the round trip: whether Marketing Cloud in production can send
+  (authenticated domain), and `Send_After__c`, which is no longer populated on
+  Event Links since `5b19caa`.
