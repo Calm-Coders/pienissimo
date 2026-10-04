@@ -2,9 +2,23 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-02 (nightly sweep - the ERP vendor defined the payment states and the code counts only one of them, the client rejected the agreed ticket logics, and the Blueprint went out carrying signature lines) · Source of record: [notes/](notes/)
+Last updated: 2026-10-04 (second Prod deploy - UAT-only work brought into source, test suite repaired, Prod at 83.9%) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟢 **2026-10-04 (later) — Prod is set up for the marketing round trip.** Landing Page site
+  published, guest granted the three page controllers, `TEST MKT` data (6 orders, 13 tickets,
+  6 Event Links) with nothing sent to Mexal, Sales app nav aligned with UAT, quote aging job
+  scheduled. 🔴 **Found late:** UAT's profiles hold many org-only grants (layout assignments,
+  Product2 record types, Agente product fields) that never reached source or Prod — the merge
+  needs Aurel Mrruku. — [OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)
+- 🟢🔑 **2026-10-04 — UAT-plus-`DevMain` is deployed to Pienissimo Prod.** Deploy
+  `0AfSW000001Hf1N0AS`, 606 components, 157/157 tests, **83.9%** coverage; UAT re-synced
+  (174/174, 83.6%). The UAT-only components were brought into branch `DevMain_uatToProd`;
+  51 stale tests were repaired. In Prod `Standart` was renamed `Vendita_Standard` and
+  `Recall_Tutor` deactivated — ⚠ **deleting it is still a Setup click**. ⚠ `Send_After__c`
+  is no longer set on invitations since `5b19caa`. `Campaign_Record_Page` still waits for
+  API 68. — [the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md)
 
 - 🔴 **2026-10-02 — the ERP vendor defined the payment states and the repository counts only one of
   them, the client rejected the logics it was asked to confirm, and a second signature document went
@@ -85,7 +99,7 @@ Last updated: 2026-10-02 (nightly sweep - the ERP vendor defined the payment sta
   🔴 **New: [OI-200](notes/items/OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md)**
   — the document exists in two versions and the client's copy drops both the internal
   `POSSIBILI PROBLEMI` table (🟢 correct) **and the seven points headed `Open point da confermare con
-  il cliente` (🔴 not)**. The people meant to answer them were not shown them; among them **when the
+il cliente` (🔴 not)**. The people meant to answer them were not shown them; among them **when the
   link goes out**, whose current wording would open nomination up to eleven months early — a case
   Fabrizio Paganelli excluded at the UAT.
   🔴 **`Inviato` is withdrawn.** Aurel Mrruku re-offered the eighth state; Elena Spini declined —
@@ -110,7 +124,7 @@ Last updated: 2026-10-02 (nightly sweep - the ERP vendor defined the payment sta
   ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)). Aurel
   Mrruku's field spec for Fabrizio Mastracci is now **due 02/10**.
   🔴 **Competenza ranges may not overlap between sibling editions** — a 2027-mapped product threw a
-  live error; and ⚠ the year-boundary risk is mitigated by *widening* ranges, which collides with that
+  live error; and ⚠ the year-boundary risk is mitigated by _widening_ ranges, which collides with that
   very constraint ([OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)).
   🔴 **A third asset silently failed to generate** on a clean test bundle; no cause established, no
   item raised in the room.
@@ -289,7 +303,7 @@ Last updated: 2026-10-02 (nightly sweep - the ERP vendor defined the payment sta
   purpose and was never asked for**
   ([OI-186](notes/items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)).
   🟢 **`rifiutato` settled:** the state stays, the reason becomes **`sostituito da altro
-  preventivo`** ([OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)).
+preventivo`** ([OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md)).
   🟢 **DocuSign credentials arrived** 10:27Z, chased by Fabrizio Paganelli himself — **values not
   recorded anywhere** ([OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)).
   🟢🔑 **`#tproj-pienissimo` exists after all — `C0B5T3RB4FM`.** Three runs called it missing;

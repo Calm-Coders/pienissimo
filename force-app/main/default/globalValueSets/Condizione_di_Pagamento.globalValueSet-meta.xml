@@ -20,6 +20,12 @@
         <default>false</default>
         <label>RID FINE MESE DATA FATTURA</label>
     </customValue>
+    <customValue>
+        <fullName>RID FINE MESE DF</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>RID FINE MESE DF</label>
+    </customValue>
     <description
   >Condizioni di pagamento Mexal (Codici Pagamento.xlsx). API name = codice Mexal inviato come id_pagamento; label = descrizione. Un codice aggiunto in Mexal va aggiunto qui a mano con lo stesso codice.</description>
     <masterLabel>Condizione di Pagamento</masterLabel>

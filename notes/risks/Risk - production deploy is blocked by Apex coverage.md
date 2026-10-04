@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-10-02
+updated: 2026-10-04
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -516,3 +516,29 @@ coverage under `RunSpecifiedTests` (`QuoteTriggerHandler`, `QuotePdfController`,
 `AccountTriggerHandler` 49%, `MexalCustomerCreateService` 74.6%) and went without tests.
 New untested class: `FiscalResidenceResolver`. Detail in
 [OI-64](../items/OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md).
+
+## 2026-10-04 - second Prod deploy, suite repaired first
+
+Aurel Mrruku asked for UAT to be deployed to Prod after a UAT-vs-`DevMain` check.
+Branch `DevMain_uatToProd` (local, uncommitted at the time of writing) = `DevMain`
+`c305d9f` plus every component built only in UAT, a new `BundleComponent__c` tab
+and the `QuantityUnitOfMeasure` value set.
+
+- **The suite had decayed: 51 of 174 failing in UAT, 56% coverage.** Causes:
+  the 09-28 record-type rename (`Standart` to `Vendita_Standard`, `Recall_Tutor`
+  to `WooCommerce`), the Campagna Figlio date rule, per-Order Event Links,
+  tickets `Disponibile` on a tranche-less `Incassato` order, Plus products
+  recognised by `Categoria_Articolo__c` instead of `Is_Plus__c`, and the UAT
+  scheduled aging job. Fixed in five test classes at the user's request.
+- **UAT** deploy `0AfMA00000CqVtd0AF`: 606/606, 174/174 tests, 83.6%.
+- **Prod** validation `0AfSW000001Hezl0AC`: 157/157 tests, **83.9%** (8,715 of
+  10,390); quick-deployed as `0AfSW000001Hf1N0AS` at 2026-10-04 14:01Z, 606
+  components. `Campaign_Record_Page` still excluded (Prod on API 67).
+- Prod-only package adjustments: subscriber config runs as
+  `techromi@pienissimo.com`; `PlatformWebIdeUser`, `ViewSetupAuditTrail` and the
+  `GenerateKnowledge` layout exclusion stripped (unknown to Prod).
+- Prod setup changes: `Standart` record type renamed in place to
+  `Vendita_Standard` (same Id); `Recall_Tutor` deactivated. **Deleting it is a
+  Setup click** - the API refuses record-type deletion.
+- Open from the run: `Send_After__c` is no longer populated on invitations since
+  `5b19caa`; the assertion was removed, not the question answered.

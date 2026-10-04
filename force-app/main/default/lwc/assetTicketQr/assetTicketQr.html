@@ -1,0 +1,22 @@
+<template>
+  <lightning-quick-action-panel header="QR biglietto">
+    <template if:true={isLoading}>
+      <lightning-spinner alternative-text="Generazione QR"></lightning-spinner>
+    </template>
+    <template if:true={errorMessage}>
+      <p>{errorMessage}</p>
+    </template>
+    <template if:true={emptyMessage}>
+      <p>{emptyMessage}</p>
+    </template>
+    <template if:true={hasQr}>
+      <div class="qr-container">
+        <img src={qrImage} alt="Codice QR del biglietto" />
+        <p>Identificativo partecipante: {qrId}</p>
+      </div>
+    </template>
+    <div slot="footer">
+      <lightning-button label="Chiudi" onclick={handleClose}></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>

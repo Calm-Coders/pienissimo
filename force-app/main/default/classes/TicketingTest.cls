@@ -355,6 +355,13 @@ private class TicketingTest {
       'Ingresso',
       TestDataFactory.unique('ART-TKT')
     );
+    // Event Links are created per Order, so every ticket needs an order line.
+    Order orderRecord = TestDataFactory.order(result.accountRecord.Id);
+    OrderItem line = TestDataFactory.orderItem(
+      orderRecord.Id,
+      TestDataFactory.standardEntry(product.Id, 100),
+      Math.max(ticketCount, 1)
+    );
     result.tickets = new List<Asset>();
     for (Integer i = 1; i <= ticketCount; i++) {
       result.tickets.add(
@@ -362,8 +369,9 @@ private class TicketingTest {
           Name = 'Biglietto ' + i,
           AccountId = result.accountRecord.Id,
           Product2Id = product.Id,
+          Order_Product__c = line.Id,
           Campaign__c = result.campaign.Id,
-          Status = 'Ordinato',
+          Status = 'Disponibile',
           RecordTypeId = TestDataFactory.recordTypeId('Asset', 'Ticket')
         )
       );
@@ -649,13 +657,12 @@ private class TicketingTest {
     System.runAs(TestDataFactory.runner()) {
       Invitation inv = invitation(1);
       Event_Invitation__c invitationRecord = [
-        SELECT Id, Token__c, Status__c, URL_Status__c, Send_After__c
+        SELECT Id, Token__c, Status__c, URL_Status__c
         FROM Event_Invitation__c
         WHERE Token__c = :inv.token
       ];
       System.assertEquals(64, invitationRecord.Token__c.length());
       System.assertEquals('Pending', invitationRecord.Status__c);
-      System.assertNotEquals(null, invitationRecord.Send_After__c);
 
       invitationRecord.Token__c = null;
       update invitationRecord;

@@ -131,7 +131,7 @@ private class CrmAutomationTest {
       save(leadRecord);
 
       Test.startTest();
-      qualify(leadRecord, 'Recall tutor');
+      qualify(leadRecord, 'WooCommerce');
       System.assert(save(leadRecord).isSuccess());
       Test.stopTest();
 
@@ -173,13 +173,10 @@ private class CrmAutomationTest {
         WHERE Id = :converted.ConvertedOpportunityId
       ];
       System.assertEquals(
-        'Recall_Tutor',
+        'WooCommerce',
         opportunityRecord.RecordType.DeveloperName
       );
-      System.assertEquals(
-        'Recall tutor',
-        opportunityRecord.Tipo_Opportunita__c
-      );
+      System.assertEquals('WooCommerce', opportunityRecord.Tipo_Opportunita__c);
     }
   }
 
