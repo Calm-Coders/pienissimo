@@ -4356,3 +4356,13 @@ left on.
   Git staging/commit/branch push, and PR creation.
 - **State:** permissions and instructions updated; the production changes,
   delivery commit, and PR remain for Claude to execute and verify.
+
+**Record page activations (same session).** Prod showed Salesforce's default
+record page for Quote and Opportunity (hence the extra actions such as New Note
+and New Contact): their org-wide activations of `Quote_Record_Page` and
+`Opportunity_Record_Page_Three_Column` existed only in UAT. The source
+`Quote.object-meta.xml` was an empty element and there was no Opportunity object
+file. Both now carry UAT's object file (the activations are the only object-level
+difference from Prod); deployed to Prod `0AfSW000001HgdN0AS` and UAT
+`0AfMA00000CqYZl0AN`, read back from Prod. Account needed nothing — its pages are
+assigned through the Sales app in both orgs.
