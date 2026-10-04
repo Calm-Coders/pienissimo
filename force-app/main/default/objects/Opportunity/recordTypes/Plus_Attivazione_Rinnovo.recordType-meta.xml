@@ -14,13 +14,5 @@
             <fullName>Performance Plus - Rinnovo</fullName>
             <default>false</default>
         </values>
-        <values>
-            <fullName>Vendita da tutor</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>WooCommerce</fullName>
-            <default>false</default>
-        </values>
     </picklistValues>
 </RecordType>

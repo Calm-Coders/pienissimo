@@ -1,4 +1,7 @@
 public with sharing class OrderMexalIntegrationService {
+  // Temporary release guard: Salesforce Order creation must not create or
+  // update Mexal customers, or create Mexal orders, until explicitly enabled.
+  private static final Boolean AUTOMATIC_MEXAL_CREATION_ENABLED = false;
   private static final String FLOW_NAME = 'OrderMexalIntegration';
   private static final String STATUS_QUEUED = 'Queued';
   private static final String STATUS_RUNNING = 'Running';
@@ -11,7 +14,7 @@ public with sharing class OrderMexalIntegrationService {
   }
 
   public static void enqueueForCreatedOrders(List<Order> newOrders) {
-    if (Test.isRunningTest()) {
+    if (AUTOMATIC_MEXAL_CREATION_ENABLED != true || Test.isRunningTest()) {
       return;
     }
 
@@ -69,6 +72,10 @@ public with sharing class OrderMexalIntegrationService {
     System.enqueueJob(
       new OrderMexalIntegrationQueueable(orderIds, firstOrderIds)
     );
+  }
+
+  public static Boolean isAutomaticMexalCreationEnabled() {
+    return AUTOMATIC_MEXAL_CREATION_ENABLED;
   }
 
   public static void markOrderRunning(Id orderId) {

@@ -134,7 +134,15 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
   }
 
   private static Boolean shouldRunInThisOrg() {
-    if (Test.isRunningTest() || ALLOW_MEXAL_QUEUE_IN_SANDBOX == true) {
+    if (Test.isRunningTest()) {
+      return true;
+    }
+
+    if (!OrderMexalIntegrationService.isAutomaticMexalCreationEnabled()) {
+      return false;
+    }
+
+    if (ALLOW_MEXAL_QUEUE_IN_SANDBOX == true) {
       return true;
     }
 

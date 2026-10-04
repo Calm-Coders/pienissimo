@@ -7,7 +7,7 @@
         <picklist>Anno_Accademico__c</picklist>
         <values>
             <fullName>2026%2F2027</fullName>
-            <default>false</default>
+            <default>true</default>
         </values>
         <values>
             <fullName>2027%2F2028</fullName>
@@ -22,7 +22,7 @@
         <picklist>Tipologia_Evento__c</picklist>
         <values>
             <fullName>Live</fullName>
-            <default>false</default>
+            <default>true</default>
         </values>
         <values>
             <fullName>Online</fullName>
