@@ -4343,3 +4343,16 @@ org-only Admin/Agente profile grants into source, and the full `Full_Permission`
 rewrite. Still with him: `Recall_Tutor` delete, integration config and
 credentials, DocuSign endpoint, `Send_After__c`; UAT `doesSkipAsyncApexValidation`
 left on.
+
+## 2026-10-04 ? codex ? Claude marketing unblock and PR authorization
+
+- **Asked:** give Claude the permissions needed for the five requested marketing
+  unblock and delivery steps.
+- **Done:** recorded explicit authorization in `AGENTS.md` for the three Prod
+  guest Apex grants, Marketing User and tab visibility, deliberate UAT profile
+  reconciliation and Prod deployment, committing/pushing `DevMain_uatToProd` and
+  opening its PR into `DevMain`, and updating OI-134/OI-177 and project views.
+  Added command-specific local allow rules for Salesforce writes, UAT retrieval,
+  Git staging/commit/branch push, and PR creation.
+- **State:** permissions and instructions updated; the production changes,
+  delivery commit, and PR remain for Claude to execute and verify.
