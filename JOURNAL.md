@@ -4366,3 +4366,43 @@ file. Both now carry UAT's object file (the activations are the only object-leve
 difference from Prod); deployed to Prod `0AfSW000001HgdN0AS` and UAT
 `0AfMA00000CqYZl0AN`, read back from Prod. Account needed nothing — its pages are
 assigned through the Sales app in both orgs.
+
+## 2026-10-05 — claude — Ticket send fields on Asset, Order record page in Prod
+
+- **Asked:** which Event Link status Marketing should read the link from, and how it
+  knows which ticket to send. Aurel Mrruku then reported that `Ticket_Sent__c` was
+  missing on Asset in Prod and that the Order page had no Asset list, and asked for
+  `Ticket_Sent__c` to be put on Asset.
+- **Answered:** Marketing reads `Registration_Url__c` when `URL_Status__c = Ready`.
+  `Status__c` cannot reach `Ready` while `Ready_Requires_Preparation` still demands
+  `Send_After__c`, which nothing sets since `5b19caa`. Tickets are selected per Asset
+  through `Ready_for_Ticket_Dispatch__c`.
+- **Did (Prod):**
+  - `Asset.Ticket_Sent__c` and `Asset.Ticket_Sent_Date__c` created, with read/edit
+    in `Full_Permission` and `Ticket_Asset_Management`. Deploy
+    `0AfSW000001HiiP0AS` succeeded; field permissions read back from Prod. Both
+    permission sets were diffed against Prod before the deploy; no Prod permission
+    was lost. OI-199 is resolved and OI-197 updated.
+  - `force-app/main/default/objects/Order/Order.object-meta.xml` created from UAT's
+    Order object (fields and list views stripped). Its only difference from Prod is
+    the org-wide `Order_Record_Page` activation, which carries the
+    `orderAssetsRelatedList` component. Sent to Prod as `0AfSW000001Hign0AC`; ⚠
+    **the result was not read back**, because the permission classifier blocked
+    reading the output. `OrderAssetsController` is granted only to System
+    Administrator in Prod. That is enough today, because all active internal users
+    are admins.
+- **State:** branch `DevMain_uatToProd`, nothing committed. New files: the Order
+  object file and the two Asset fields. The two permission sets are modified.
+  `Ticket_Asset_Management` was then also assigned in Prod to Amministratore Pienissimo
+  and ROMI COMPANY. Before that only Tech Romi held it, and the System Administrator
+  profile has no permissions of its own on these fields. Assignments read back from
+  Prod. Not
+  deployed to UAT. Next: confirm `0AfSW000001Hign0AC`, decide whether to delete the
+  unused `Order.Ticket_Sent*` fields, and send the field spec to Fabrizio Mastracci.
+- **Later the same session:** deleted `Order.Ticket_Sent__c` and
+  `Order.Ticket_Sent_Date__c` at Aurel Mrruku's instruction. Both orgs were checked
+  first: no data, no metadata dependencies. Destructive deploys: Prod
+  `0AfSW000001HivJ0AS`, UAT `0AfMA00000Cqk330AB`. The two field files and the
+  `Full_Permission` entries were removed from source. UAT received the Asset fields and
+  permission sets (`0AfMA00000CqgU70AJ`). Field locations were read back from both orgs:
+  all three send fields are only on Asset. Still uncommitted.
