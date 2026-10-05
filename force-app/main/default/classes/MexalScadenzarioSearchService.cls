@@ -202,7 +202,9 @@ public with sharing class MexalScadenzarioSearchService {
         'stato_pagamento',
         rowIndex
       );
-      deadline.paid = deadline.paymentStatus == 'P';
+      deadline.paid =
+        deadline.paymentStatus == 'P' ||
+        deadline.paymentStatus == 'E';
       deadlines.add(deadline);
     }
     return deadlines;

@@ -1,13 +1,12 @@
 public with sharing class OrderMexalIntegrationService {
-  // Temporary release guard: Salesforce Order creation must not create or
-  // update Mexal customers, or create Mexal orders, until explicitly enabled.
-  private static final Boolean AUTOMATIC_MEXAL_CREATION_ENABLED = false;
+  private static final Boolean AUTOMATIC_MEXAL_CREATION_ENABLED = true;
   private static final String FLOW_NAME = 'OrderMexalIntegration';
   private static final String STATUS_QUEUED = 'Queued';
   private static final String STATUS_RUNNING = 'Running';
   private static final String STATUS_SENT = 'Sent';
   private static final String STATUS_FAILED = 'Failed';
-  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = false;
+  private static final String STATUS_EXCLUDED = 'Excluded';
+  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = true;
   private static final Set<Id> ORDER_IDS_QUEUED_IN_TRANSACTION = new Set<Id>();
 
   public class OrderMexalIntegrationException extends Exception {
@@ -80,6 +79,25 @@ public with sharing class OrderMexalIntegrationService {
 
   public static void markOrderRunning(Id orderId) {
     updateOrderIntegrationFields(orderId, STATUS_RUNNING, null);
+  }
+
+  public static Boolean excludeZeroValueOrder(Id orderId) {
+    if (orderId == null) {
+      return false;
+    }
+
+    Order orderRecord = [
+      SELECT TotalAmount
+      FROM Order
+      WHERE Id = :orderId
+      LIMIT 1
+    ];
+    if (orderRecord.TotalAmount != 0) {
+      return false;
+    }
+
+    updateOrderIntegrationFields(orderId, STATUS_EXCLUDED, null);
+    return true;
   }
 
   public static void runAnticipayStep(Id orderId) {

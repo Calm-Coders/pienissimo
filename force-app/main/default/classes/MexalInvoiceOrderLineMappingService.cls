@@ -41,6 +41,8 @@ public with sharing class MexalInvoiceOrderLineMappingService {
     @AuraEnabled
     public Integer invoiceNumber;
     @AuraEnabled
+    public String invoiceDate;
+    @AuraEnabled
     public Integer invoiceLineIndex;
     @AuraEnabled
     public String customerCode;
@@ -147,6 +149,7 @@ public with sharing class MexalInvoiceOrderLineMappingService {
       mapping.invoiceSigla = getString(detail, 'sigla');
       mapping.invoiceSerie = parseInteger(detail.get('serie'));
       mapping.invoiceNumber = parseInteger(detail.get('numero'));
+      mapping.invoiceDate = getString(detail, 'data_documento');
       mapping.customerCode = getString(detail, 'cod_conto');
       mapping.invoiceLineIndex = lineIndex;
       mapping.orderSigla = firstNonBlank(
@@ -287,7 +290,7 @@ public with sharing class MexalInvoiceOrderLineMappingService {
       return;
     }
 
-    Map<String, MexalScadenzarioSearchService.PaymentDeadline> deadlinesByKey = new Map<String, MexalScadenzarioSearchService.PaymentDeadline>();
+    Map<String, List<MexalScadenzarioSearchService.PaymentDeadline>> deadlinesByKey = new Map<String, List<MexalScadenzarioSearchService.PaymentDeadline>>();
     for (
       MexalScadenzarioSearchService.ScadenzarioDocument document : scadenzarioDocuments
     ) {
@@ -296,27 +299,32 @@ public with sharing class MexalInvoiceOrderLineMappingService {
         document.serie == null ||
         document.numero == null ||
         String.isBlank(document.customerCode) ||
+        String.isBlank(document.documentDate) ||
         document.deadlines == null
       ) {
         continue;
       }
 
+      String documentKey = buildPaymentKey(
+        document.customerCode,
+        document.serie,
+        document.numero,
+        document.documentDate
+      );
+      if (!deadlinesByKey.containsKey(documentKey)) {
+        deadlinesByKey.put(
+          documentKey,
+          new List<MexalScadenzarioSearchService.PaymentDeadline>()
+        );
+      }
       for (
         MexalScadenzarioSearchService.PaymentDeadline deadline : document.deadlines
       ) {
-        if (deadline == null || deadline.dueDate == null) {
+        if (deadline == null) {
           continue;
         }
 
-        deadlinesByKey.put(
-          buildPaymentKey(
-            document.customerCode,
-            document.serie,
-            document.numero,
-            deadline.dueDate
-          ),
-          deadline
-        );
+        deadlinesByKey.get(documentKey).add(deadline);
       }
     }
 
@@ -329,23 +337,25 @@ public with sharing class MexalInvoiceOrderLineMappingService {
         mapping.invoiceSerie == null ||
         mapping.invoiceNumber == null ||
         String.isBlank(mapping.customerCode) ||
-        mapping.orderItemDueDate == null
+        String.isBlank(mapping.invoiceDate)
       ) {
         continue;
       }
 
-      MexalScadenzarioSearchService.PaymentDeadline deadline = deadlinesByKey.get(
+      List<MexalScadenzarioSearchService.PaymentDeadline> deadlines = deadlinesByKey.get(
         buildPaymentKey(
           mapping.customerCode,
           mapping.invoiceSerie,
           mapping.invoiceNumber,
-          mapping.orderItemDueDate
+          mapping.invoiceDate
         )
       );
-      if (deadline == null) {
+      // Multiple installments cannot yet be allocated to individual order lines.
+      if (deadlines == null || deadlines.size() != 1) {
         continue;
       }
 
+      MexalScadenzarioSearchService.PaymentDeadline deadline = deadlines[0];
       mapping.paymentDeadlineIndex = deadline.rowIndex;
       mapping.paymentDeadlineAmount = deadline.amount;
       mapping.paymentStatus = deadline.paymentStatus;
@@ -522,14 +532,14 @@ public with sharing class MexalInvoiceOrderLineMappingService {
     String customerCode,
     Integer serie,
     Integer numero,
-    Date dueDate
+    String documentDate
   ) {
     return String.join(
       new List<String>{
         normalize(customerCode),
         String.valueOf(serie),
         String.valueOf(numero),
-        String.valueOf(dueDate)
+        normalize(documentDate)
       },
       '|'
     );

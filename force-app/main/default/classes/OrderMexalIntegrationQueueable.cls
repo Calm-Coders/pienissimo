@@ -3,7 +3,7 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
   private static final String STEP_ANTICIPAY = 'Anticipay';
   private static final String STEP_MEXAL_CUSTOMER = 'Mexal Customer';
   private static final String STEP_MEXAL_ORDER = 'Mexal Order';
-  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = false;
+  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = true;
 
   private final Id orderId;
   private final String stepName;
@@ -58,6 +58,14 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
     }
 
     try {
+      if (
+        stepName == STEP_MEXAL_ORDER &&
+        OrderMexalIntegrationService.excludeZeroValueOrder(orderId)
+      ) {
+        enqueueNextOrder();
+        return;
+      }
+
       runCurrentStep();
       enqueueNextStepOrOrder();
     } catch (Exception error) {
