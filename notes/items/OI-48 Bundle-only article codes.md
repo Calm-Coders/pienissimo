@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-07-23
-updated: 2026-09-02
+updated: 2026-10-05
 blocks: [OI-13]
 source: meetings/open-items.md row 48
 ---
@@ -234,3 +234,25 @@ qui è un file che ho fatto io a mano, ci ho aggiunto anche i campi che avevamo
 definito insieme l'altro giorno."_ They were sitting in the same room and share
 the mailbox in practice; the correction is about who to ask, not about who owns
 the registry. **Ask Elisa Migliano about the file's contents.**
+
+## 🔴 2026-10-05 - the registry has no active bundle article at all
+
+[`Articoli Salesforce.xlsx`](../The%20Articoli%20Salesforce%20article%20registry.md),
+read in full on 05/10, counts **469 articles in category `E99` `Z2) Blocchi`
+and marks every one of them `Flag_Annullato = S`.**
+
+So the bundle-and-block articles this item is waiting for **do not exist as
+live articles in the client's own registry**. That is consistent with
+[OI-98](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md) —
+the registry is being re-created and the new generation has not been issued —
+but it makes the position concrete: there is nothing to map today, not a
+partial set.
+
+The cancelled 469 cover `BLO-*` blocks and `PACK-*` packs back to 2022, which
+is the historical population
+[the three generations note](../objects/The%20three%20generations%20of%20bundle%20article%20code.md)
+describes. ⚠ Asking for "the bundle-only codes" will keep returning nothing
+until the re-created registry is issued; the question to put instead is **when
+the new `E99` generation will exist and whether bundles will carry article
+codes at all**, since `BundleComponent__c.Unit_Spread__c` now prices a bundle
+line from the component rather than from an article.

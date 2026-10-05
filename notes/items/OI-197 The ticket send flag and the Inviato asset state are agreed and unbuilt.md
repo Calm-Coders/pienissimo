@@ -148,3 +148,35 @@ has to be settled before that deploy, not after.
 [OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md).
 The Marketing Cloud query, the transactional send and the write-back activity itself
 are still unbuilt on the Marketing Cloud side.
+
+## 🟢🔑 2026-10-05 - the owed spec exists, written by the person who was owed it
+
+The field specification Aurel Mrruku has owed Fabrizio Mastracci since 30/09,
+due 02/10 and never produced, **now exists in the opposite direction**:
+Fabrizio Mastracci wrote both send logics into the marketing group DM on 05/10
+at 10:44:57 and 10:56:50 CEST, after
+[the production check session](../meetings/2026-10-05%20Interna%20Check%20PROD%20per%20MKT.md)
+— _"Ho messo le logiche sulla nostra chat."_ Full text in
+[the marketing send contract note](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+
+🟢 **Flow 2 is specified and satisfiable** — all three fields on `Asset`, with
+`Status = 'Assegnato'` added, the PDF from the Asset's attachments, the mail to
+the referenced Contact, then the write-back. See
+[OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md).
+
+🟢🔑 **Flow 1 gained the send date.** `Data_Invio_Biglietto__c` now exists on
+`Event_Invitation__c` and takes the Campaign's value — Aurel Mrruku at the
+10:01 session: _"La data che mettono sulla campagna."_ That closes the open
+point this item recorded as the biggest risk in the whole document, and it
+honours `Data invio automatico biglietti` on `Campagna Figlia`, documented in
+the Campi Oggetti workbook since July. ⚠ Fabrizio Mastracci notes it is
+_"popolato solo su campagne figlie"_.
+
+⏸ **But flow 1 is stopped.** Elena Spini, marketing group DM, 18:28:50 CEST:
+_"non mandare la mail perchè dobbiamo ancora sentirli per il tema link invio
+partecipanti ecc"_ — held until the client call on **06/10 10:00**, because the
+link's granularity is being reopened
+([OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)).
+
+⬛ `Inviato` remains withdrawn; nothing in this sweep revisited it. `AssetStatus`
+stays at seven values.

@@ -10,6 +10,42 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-05 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-10-02T22:00Z** (three days: the Prod deploy weekend plus Monday).
+  Read in full: `Articoli Salesforce.xlsx` (first time ever, off the
+  unreachable list after four runs), the Campi Oggetti workbook (re-read), the
+  internal logic document (re-read), and the Gemini notes of both 05/10 client
+  sessions. Grepped the 10:01 internal transcript.
+- **State:** committed to `DevMain`. **Four new items OI-207–OI-210**; three
+  meeting notes (`2026-10-05 UAT Performance Plus e Gestione date pagamento`,
+  `2026-10-05 Check Data Import Lead e Contact`,
+  `2026-10-05 Interna Check PROD per MKT`); two reference notes
+  (`The Articoli Salesforce article registry`,
+  `The marketing ticket send logics as written by Marketing`). Updated OI-14,
+  46, 48, 96, 111, 115, 177, 182, 186, 188, 197, 199, 201, 203, the Blueprint
+  note, the Campi Oggetti note, the logic-document note and the Plus-renewal
+  decision. MAP, INDEX, both trackers, both recaps §55, trace.
+  **Register not amended, stays v1.6.**
+- **Next:** OI-201 is still a one-predicate fix (`'P' || 'E'`) and is the
+  single highest-value thing anyone can do — it now blocks OI-208 as well.
+  Answer Marco Montesi's three questions; one of them was already answered in
+  another room. Decide OI-210 with the client: one article plus a count, or one
+  article per tranche — the two statements are from the same day.
+- **Watch:** 🔴 the per-edition link rebuild (`4a6fe3f`, 17:39 CEST) **landed
+  before the 06/10 client consultation it was deferred to**; if they ask for
+  something else tomorrow, that work is sunk. ⚠ Three documented client designs
+  in four days have been overlooked by the build (`Data invio automatico
+  biglietti`, the commercial quote fields, the `F-2` nightly anagrafica batch)
+  — **read the Campi Oggetti workbook before designing anything new.** ⚠ The
+  `Articoli Salesforce.xlsx` extract holds **real catalogue prices**; no value
+  was copied and none may be. ⚠ Branch `DevmainRevertParticipationPage` is
+  misnamed and reverts nothing. ⚠ 07/10 double-books the client, 10:00–13:00
+  against 12:15–13:00.
+
+---
+
 ## 2026-10-02 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack (three conversations), Drive, Fathom, git and `force-app`

@@ -5838,3 +5838,153 @@ Il registro porta `go_live: 2026-10-21` dal #124 — ROMI l'ha spostato per iscr
 Il `73fe1bc` di Anita Aga (la mail di errore sincronizzazione, il template `Mexal_Customer_Error_Notification` e `Account.Creato_su_Mexal__c` — il flag chiesto da Elena Spini al Pre-UAT) e il `49b5401` (la logica vendita da palco, ~300 righe di `WoocommerceOrderService`) sono su `origin/DevAnita02/10` e **non in `DevMain`**. Un rilascio nel weekend da `DevMain` non porta nessuno dei due, compresa la mail di errore concordata con il cliente quella mattina.
 
 Lo status di Elena Spini rivede la stima a **25 giornate a finire**, indica go-live 21/10 e dismissione Zoho 31/10, ed elenca nuove date: **12/10 tutto in PROD**, **16/10 UAT flussi Marketing biglietti**, test in autonomia del cliente dalla settimana prossima, e una stima di fase 2 a seguire. I suoi red flag: _"i requisiti continuano a cambiare"_ e _"sforiamo con i giorni a disposizione"_.
+
+## 55. Aggiornamento 05/10/2026 — l'anagrafica articoli è arrivata e contraddice il modello concordato lo stesso giorno, e la regola rifiutata dal cliente è stata ricostruita prima di consultarlo
+
+`requirements-check` notturno, watermark **02/10/2026T22:00Z**, tre giorni —
+il weekend di rilascio in produzione più lunedì. **Tre sessioni il 05/10, due
+con il cliente**, quattro persone lato Pienissimo presenti. Le affermazioni
+sulla realizzazione sono aritmetica di repository su `DevMain` **`d526189`**.
+
+### Il file atteso è arrivato
+
+`Articoli Salesforce.xlsx` è stato modificato il **05/10 alle 09:24:17Z** —
+poche ore prima dell'UAT che ne aveva bisogno — ed è uscito dalla lista dei
+file irraggiungibili dopo quattro run notturni consecutivi. Letto
+integralmente. Contiene prezzi di listino reali; **nessuno è registrato in
+alcun punto di questo repository.**
+
+È la prima affermazione autorevole di cosa siano gli articoli del cliente:
+**1.010 articoli, 197 attivi.** La sua stessa tabella pivot fornisce l'elenco
+delle categorie, e tre voci sono nuove per il record — `C20` è specificamente
+**Servizi Google**, con un gemello di rinnovo **`C21`**, e esistono altre due
+categorie di consulenza, **`C40` Manuale Operativo** e **`C41` Menù
+Engineering**. Il §50 registrava `C20` come "servizi spot, inclusi Google": è
+più stretto di così, e `C21` non era noto affatto.
+
+Tre risultanze modificano punti aperti:
+
+- **`NR_Tranche` è nell'intestazione e vuoto su ogni riga.** Il numero di
+  tranche è l'unica cosa che il #188 registrava come dovuta da Fabrizio
+  Paganelli, e il file che doveva portarlo non lo porta. Peggio, contraddice
+  una decisione presa lo stesso pomeriggio: l'UAT ha concordato che Performance
+  Plus è *un unico articolo con un campo per il numero di tranche*, e
+  l'anagrafica è costruita al contrario — un articolo per tranche, col numero
+  scritto nella descrizione come testo libero. Tre affermazioni incompatibili
+  di un solo modello, e il nuovo punto è il **#210**.
+- **`E10` nomina due eventi diversi** — Golden Numbers e Pienissimo Intensive.
+  Il codice categoria è la chiave naturale per una regola articolo→edizione e
+  non è univoco, quindi la mappatura del #96 non può basarsi sulla sola
+  categoria. Anche il suo perimetro reale è ora misurabile: **42 articoli
+  evento attivi**, su nove categorie, non 51.
+- **Nemmeno un blocco `E99` attivo.** Tutti i 469 sono annullati, quindi il #48
+  non ha nulla da mappare anziché un insieme parziale — coerente col #98 che
+  ricrea l'anagrafica.
+
+E un difetto di lunga data si chiude. **`E08` è Happy Team, con tre articoli
+attivi**, che conferma la correzione fatta dal §40 alla lettura "Happy Team non
+vende niente" — e `Product2.Evento__c` ora contiene `Happy Team`.
+
+### La correzione Ri.Ba. è ancora a un carattere di distanza
+
+`MexalScadenzarioSearchService.cls:205` verifica ancora solo `'P'`. Tre giorni
+dopo la risposta scritta di Mirko Merendi, attraverso un weekend di rilascio in
+produzione, quattordici commit e cinque PR chiuse, **nulla tocca il
+predicato**, e nessuna fonte nella finestra registra una decisione.
+
+Nel frattempo l'UAT del 05/10 ha assegnato a **Fabrizio Paganelli** di produrre
+_"tutti i possibili stati e codici presenti nello scadenziario di Mexal"_ — la
+stessa lista che il fornitore ha già dato, su un thread di cui Fabrizio
+Paganelli stesso fa parte, cosa che nessuno in riunione ha fatto notare. E ha
+acquisito un secondo dipendente: il **#208**, la nuova richiesta del cliente di
+distinguere gli importi non saldati tra `scaduto` e `a scadere`, che finché `E`
+è letto come non pagato segnalerebbe come scaduto ogni pagatore Ri.Ba.
+
+### DocuSign: il piano gratuito era l'account sbagliato
+
+Il journal del 05/10 registrava l'account DocuSign di produzione come piano
+gratuito limitato a tre buste. L'UAT cliente lo ha corretto. Esistono **due**
+account; l'integrazione deve usare l'utenza Pienissimo e non
+`amministrazione`, che è il tenant gratuito; e Sabatino Rinaldi dichiara un
+contratto chiuso per **2.500 buste annuali**. I preventivi 00000002 e 00000003
+sono stati inviati e completati dalla produzione nel pomeriggio stesso, dal
+vivo in sessione. ⚠ Resta solo la sua parola — nessun nome di piano né
+documento è stato visto — e la mattina era iniziata con l'account inaccessibile,
+costando ad Aurel Mrruku un giro end-to-end pulito dopo una notte finita alle
+04:00.
+
+### Il preventivo non è ancora un documento commerciale
+
+Provando un rinnovo, Fabrizio Paganelli ha rilevato che prezzo di listino
+unitario, quantità, unità di misura, sconto di riga e prezzo netto sono **tutti
+assenti** dalla schermata del preventivo e dal preventivo. Il cliente li
+richiede per riga su tutti i layout, pagine community e documenti, più il logo
+— **#207**. Aurel Mrruku ha accettato e ha spiegato lui stesso l'omissione: la
+realizzazione si era concentrata sulla logica di processo anziché
+sull'impaginazione.
+
+Lo schema conta più del punto. Tutti quei campi sono specificati nel file Campi
+Oggetti del cliente, e così è il refresh notturno delle anagrafiche Mexal che
+la stessa sessione ha deciso di andare a chiedere al fornitore — è l'`F-2`,
+scritto da luglio (**#209**). Con `Data invio automatico biglietti` il 02/10,
+fanno **tre disegni documentati dal cliente in quattro giorni che la
+realizzazione ha trascurato**.
+
+### La regola contestata è stata ricostruita prima del confronto
+
+Alla sessione Lead delle 17:15 Elena Spini ha anticipato il passaggio dei link
+partecipanti da per-ordine a per-edizione, come proposta per il cliente il
+06/10. Il commit `4a6fe3f` è arrivato alle **17:39 CEST**: un Event Link per
+coppia Ordine-Campagna, 391 righe di `EventInvitationService`, due nuovi
+trigger.
+
+L'obiezione del cliente (#203) era fondata nel merito. Alle 10:01 Aurel Mrruku
+aveva ammesso che `Event_Invitation__c.Campaign__c` prendeva _"la prima
+campagna che ha trovato"_ — indefinito su un ordine multi-edizione — e che
+serviva un'entità molti-a-molti: _"Posso fare, però non l'abbiamo pensata."_
+Quindi la modifica su cui il cliente va consultato domani era nel repository
+prima del confronto, e il paragrafo che hanno rifiutato non descrive più la
+realizzazione. ⚠ Internamente si continua a ritenere che non l'abbiano capito.
+
+### Due cose sono andate bene senza che fossero chieste
+
+**Marco Montesi ha accettato per iscritto il Business Blueprint** alle
+13:20:02Z — _"direi che torna tutto, giusto tre precisazioni"_ — la prima
+accettazione scritta del cliente che questo progetto abbia avuto. I suoi tre
+punti sono domande, e a una di esse l'UAT Performance Plus ha risposto poche
+ore dopo in un'altra stanza. **Nessuno gli ha risposto.**
+
+E **Fabrizio Mastracci ha scritto lui stesso la specifica di invio**, quella
+che Aurel Mrruku deve dal 30/09 e che era attesa per il 02/10. La sua query
+legge tutti e tre i flag da `Asset` — quindi il #199 è assolto dal lato di chi
+consuma — e ha aggiunto `Status = 'Assegnato'` di sua iniziativa, chiudendo il
+problema #4 della tabella dei rischi del documento di logiche. **Quattro dei
+dieci problemi di quella tabella sono ora chiusi**, tre per realizzazione e non
+per decisione.
+
+⏸ La prima mail marketing è comunque **sospesa**, da Elena Spini alle 18:28:50
+CEST, in attesa della call col cliente del 06/10 sul link.
+
+### Inoltre
+
+- L'oggetto Lead è stato rivisto campo per campo per la prima volta: `Settore`
+  diventa `Tipologia di attività` con la **lista di 21 valori ora consegnata**
+  (#115), la deduplicazione usa email e telefono con **Partita IVA obbligatoria
+  alla conversione**, i consensi si riducono a due flag, i parametri UTM
+  restano nascosti.
+- Matteo Distaso deve la mappatura dei campi nascosti dei due form prioritari
+  **entro domani mattina** — primo passo con una data sul #14 in nove
+  settimane.
+- Gli strategist **condivideranno un unico account utente** per risparmiare
+  licenze e compileranno la data di attivazione del contratto; il campo
+  `digital` è nascosto ma mantenuto. ⚠ I fogli `Utenti` e `Profili` del file
+  sono ancora intestazioni vuote (#186).
+- I commit `73fe1bc`, `49b5401` e `eee1788` di Anita Aga sono ora tutti in
+  `DevMain`.
+- ⚠ **Il 07/10 sovrappone due impegni col cliente**: l'UAT WooCommerce e Mexal
+  dalle 10:00 alle 13:00 e la call Kreosoft dalle 12:15 alle 13:00.
+
+**Registro non modificato; resta alla v1.6.** Gli accordi del giorno sono
+decisioni operative e di layout, e l'unico apporto reale del cliente — l'accettazione
+di Marco Montesi — riguarda il Blueprint, non `REQUISITI.it.md`. Il #184 resta
+il meccanismo.

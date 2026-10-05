@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-05
 depends_on: [OI-69]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -105,3 +105,41 @@ carry the fatturata-non-incassata case that `Unpaid` currently carries. ⚠ **Th
 procedure does not change Apex**; it is recorded here because the vendor's answer
 arrived four hours before the deploy weekend and nothing in the repository has
 moved since.
+
+## 🔴 2026-10-05 - three days on, the line is unchanged and the state list is now owed twice
+
+Checked against `DevMain` `d526189`: `MexalScadenzarioSearchService.cls:205`
+still reads
+
+```apex
+deadline.paid = deadline.paymentStatus == 'P';
+```
+
+Mirko Merendi's written answer landed 02/10 at 15:11Z. Since then the
+production deploy weekend has happened, fourteen commits have landed and five
+PRs have merged — **none of them touches this predicate.** Nothing in Gmail,
+Slack or Drive in the 02/10–05/10 window records a decision on it.
+
+🔑 **The client has now been asked for the same list.** At
+[the 05/10 UAT](../meetings/2026-10-05%20UAT%20Performance%20Plus%20e%20Gestione%20date%20pagamento.md)
+Fabrizio Paganelli was assigned:
+
+> _"Mappare stati scadenziario: Identificare tutti i possibili stati e codici
+> presenti nello scadenziario di Mexal. Fornire una lista completa per
+> configurare correttamente la distinzione tra fatturato e incassato nel
+> database."_
+
+So the vendor has answered and the client has been tasked with answering, while
+the one line that consumes the answer is untouched. ⚠ Nobody in the session
+mentioned that the answer already exists in writing on the `Ordine cliente`
+thread, which Fabrizio Paganelli is himself on.
+
+🔴 **It now blocks a second item.**
+[OI-208](OI-208%20Overdue%20and%20upcoming%20payments%20are%20not%20distinguished%20on%20the%20contract.md)
+asks for unsettled amounts split into `scaduto` and `a scadere`. While `E`
+reads as unpaid, every Ri.Ba.-settled invoice past due appears as overdue — in
+a view built for Fabrizio Paganelli.
+
+**Next:** `Scadenziario (GET)` is on the WooCommerce/Mexal UAT agenda for
+07/10, and `[ROMI-PIENISSIMO] - Temi Integrazione Mexal` is booked **07/10
+12:15–13:00** with Mirko Merendi in the room. ⚠ The two overlap.

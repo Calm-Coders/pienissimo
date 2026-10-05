@@ -2,9 +2,86 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-05 (ticket send write-back fields moved to Asset in Prod; Order record page activation sent to Prod) · Source of record: [notes/](notes/)
+Last updated: 2026-10-05 (nightly sweep — the article registry landed, three client sessions, and the contested link rule was rebuilt) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🔴🔑 **2026-10-05 — the article registry finally arrived and it contradicts the model agreed the same day; the rule the client rejected was rebuilt before they were consulted; and the one-character Ri.Ba. fix is still not in the code.** Nightly sweep,
+  watermark 2026-10-02T22:00Z, **three days** (the Prod deploy weekend plus Monday). **Three
+  sessions on 05/10, two of them with the client**, four client-side people in the room.
+  Build claims are repository arithmetic against `DevMain` **`d526189`**.
+  🟢🔑 **[`Articoli Salesforce.xlsx` is off the unreachable list](notes/The%20Articoli%20Salesforce%20article%20registry.md)**
+  after four runs — modified 05/10 09:24:17Z, hours before the UAT that needed it, read in full.
+  1,010 articles, **197 active**. It gives the first authoritative category table: `C10` Performance
+  Plus (23 active), `C11` Rinnovo (4), 🔑 **`C20` is specifically `Servizi Google`** with a renewal
+  twin **`C21`**, plus **`C40` Manuale Operativo** and **`C41` Menù Engineering** — three categories
+  [OI-188](notes/items/OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md)
+  does not carry. 🔴 **`NR_Tranche` is in the header and empty on every row** —
+  **new [OI-210](notes/items/OI-210%20The%20delivered%20article%20registry%20carries%20no%20tranche%20count.md)**:
+  the UAT agreed Plus is _one article with a tranche-count field_ and the registry delivered that
+  morning is one article **per tranche**, the number in the description as free text. 🔴 **`E10`
+  names two different events** (Golden Numbers and Pienissimo Intensive), so the category code is
+  not a unique key for
+  [OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md) — whose real scope is
+  **42 active event articles**, not 51. 🔴 **Not one active `E99` blocco**: all 469 are cancelled, so
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md) has nothing to map, not a partial set.
+  🟢 **`E08 Happy Team` has three active articles** and `Happy Team` is now in `Product2.Evento__c`
+  (`dd4e95c`) — [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)'s red is
+  discharged; ⚠ but the workbook's new sub-category list names **`Intensive at Home`** and
+  **`Cassa Zucchetti`**, which exist nowhere in this project.
+  🔴🔑 **[OI-201](notes/items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)
+  did not move.** `MexalScadenzarioSearchService.cls:205` still tests only `'P'` at `d526189` —
+  three days after the vendor answered in writing, through a production deploy weekend, fourteen
+  commits and five PRs. ⚠ And the client has now been asked for the **same list Mirko Merendi
+  already gave**: Fabrizio Paganelli owes _"tutti i possibili stati e codici"_ of the scadenziario.
+  🟢🔑 **[The Performance Plus UAT](notes/meetings/2026-10-05%20UAT%20Performance%20Plus%20e%20Gestione%20date%20pagamento.md)**
+  (15:01 CEST, ~2h01m, Aurel Mrruku · Elena Spini · **Fabrizio Paganelli · Elisa Migliano · Sabatino
+  Rinaldi · Marco Montesi**) drove activation end to end and **signed through DocuSign in
+  production, live**. **Nine rulings.** 🟢🔑 **The "free plan, three envelopes" finding was the wrong
+  account**: there are **two** DocuSign accounts, the integration must use the Pienissimo user not
+  `amministrazione`, and Sabatino Rinaldi states a contract for **2,500 envelopes a year**. Quotes
+  00000002 and 00000003 completed from Prod the same afternoon
+  ([OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)).
+  🟢 **Renewals bypass DocuSign** — client-confirmed, and only the summary table is sent.
+  🔴 **New: [OI-207](notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)**
+  — unit list price, quantity, unit of measure, line discount and net price are **absent from the
+  quote screen and the quote**; required on every layout, community page and document, plus the
+  logo. ⚠ The client's own workbook specified all of them. 🔴 **New:
+  [OI-208](notes/items/OI-208%20Overdue%20and%20upcoming%20payments%20are%20not%20distinguished%20on%20the%20contract.md)**
+  (`scaduto` vs `a scadere`, which OI-201 would report backwards) and
+  **[OI-209](notes/items/OI-209%20Mexal%20anagrafica%20updates%20only%20propagate%20when%20an%20order%20is%20sent.md)**
+  — ⚠ whose fix, a **nightly erp→sfdc anagrafica batch, is `F-2` in the client's own workbook since
+  July**, the third documented design in four days that the build overlooked.
+  🔑 **[The Lead session](notes/meetings/2026-10-05%20Check%20Data%20Import%20Lead%20e%20Contact.md)**
+  (17:15 CEST, ~1h10m, with **Matteo Distaso** and four client-side) reviewed the `Lead` object
+  field by field — **six rulings**: `Settore` → `Tipologia di attività` (**21 values, arrived**,
+  [OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)),
+  dedup on email + phone with **P.IVA mandatory at conversion**, consents down to two flags, UTM
+  hidden, and a list of fields deleted. 🟢 Matteo Distaso owes the hidden-field mapping for the two
+  prioritised forms **by tomorrow morning** — the first dated step on
+  [OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md) in nine weeks.
+  🔴🔑 **The contested rule was rebuilt before the client was consulted.** Elena Spini previewed
+  _"passare da un link per ordine a un link per edizione"_ as a proposal for **06/10 10:00** — and
+  commit **`4a6fe3f` landed at 17:39 CEST the same evening**, one Event Link per Order-Campaign
+  pair. Aurel Mrruku had conceded at 10:01 that `Event_Invitation__c.Campaign__c` was taking
+  _"la prima campagna che ha trovato"_, so **the client's objection was correct on the merits**
+  ([OI-203](notes/items/OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)).
+  🟢🔑 **First written client acceptance this project has had**: Marco Montesi on the Blueprint,
+  13:20:02Z — _"direi che torna tutto, giusto tre precisazioni"_. ⚠ **Nobody has answered his three
+  questions**, one of which the Performance Plus UAT answered hours later in another room
+  ([the Blueprint](notes/The%20Business%20Blueprint%20delivered%20to%20the%20client.md)).
+  🟢🔑 **The owed field spec exists, written by the person who was owed it** — Fabrizio Mastracci
+  posted both send logics to the marketing DM, and his query adds `Status = 'Assegnato'`, closing
+  problem #4 of the logic document's own risk table unasked
+  ([the send contract](notes/The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md)).
+  🔑 **Four of that table's ten problems are now closed** — and ⏸ **the first marketing mail is
+  stopped by Elena Spini** at 18:28:50 CEST pending tomorrow's call
+  ([OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+  🟢 **Anita Aga's `73fe1bc`, `49b5401` and `eee1788` are all in `DevMain`** — last night's red is
+  closed. ⚠ **07/10 double-books the client**: the WooCommerce/Mexal UAT runs 10:00–13:00 and the
+  Kreosoft call 12:15–13:00.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **211**.
+  — [trace](notes/traces/Source%20trace%202026-10-05%20nightly.md)
 
 - 🟢 **2026-10-05 — [OI-199](notes/items/OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md) closed in Prod.** `Ticket_Sent__c` and `Ticket_Sent_Date__c` now exist on `Asset`
   (`0AfSW000001HiiP0AS`). The Marketing Cloud selection is `Ready_for_Ticket_Dispatch__c = TRUE AND

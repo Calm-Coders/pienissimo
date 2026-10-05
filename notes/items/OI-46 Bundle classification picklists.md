@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-07-23
-updated: 2026-09-25
+updated: 2026-10-05
 requirement: BUN-08
 source: meetings/open-items.md row 46
 ---
@@ -349,3 +349,42 @@ Same session, two more bundle fields:
 piattaforma`, and the glossary `ANNO_SOLARE` is replaced by `ANNO_ACCADEMICO_BUNDLE`.
 Drill-me decision by Aurel Mrruku; it goes to the client with the rest of v1.6
 ([OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)).
+
+## 🟢🔑 2026-10-05 - the client's own registry settles Happy Team, and names two values nobody has
+
+[`Articoli Salesforce.xlsx`](../The%20Articoli%20Salesforce%20article%20registry.md),
+read in full on 05/10, carries the Mexal event categories with article counts.
+
+🟢 **`E08` is `Happy Team`, with three active articles and none cancelled** —
+`CS-00154 HAPPY TEAM` and `HTES0099 HAPPY TEAM (OMAGGIO)` among them. Happy
+Team is a first-class event in the client's registry, which independently
+confirms the correction this note makes and retires the _"Happy Team sells
+nothing"_ reading for good.
+
+🟢 **And `Product2.Evento__c` now carries `Happy Team`** — added in commit
+`dd4e95c`, _"changes on the products after the examples shared via exel"_. The
+🔴 above is discharged. The picklist's eleven values are now `Tour`, `Food
+Marketing Festival`, `Pienissimo Live`, `Academy`, `Sold Out`, `Odb`,
+`Camerieri Venditori`, `Mastery`, `Happy Team`, `Pienissimo Intensive`, `ND`.
+
+🟢 **`Golden Numbers` has no active article** — all five are `annullato` — so
+its absence from `Evento__c` matches the Prodotti e Bundle workbook's
+`Evento annullato` classification and is not a gap.
+
+🔴 **Two values are missing from somewhere.**
+[The Campi Oggetti workbook](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md),
+modified 05/10 at 16:40Z, now holds a `Categoria`→`Sottocategoria` dependency
+whose `Corso` branch lists eleven sub-categories: Video corso, Pienissimo Live,
+Camerieri Venditori, Mastery, Academy, Sold Out, OdB LIVE, **Happy Team**,
+Intensive, **Intensive at Home**, Food marketing Festival.
+
+- **`Intensive at Home`** appears nowhere else in this project and is not in
+  `Evento__c`, which has only `Pienissimo Intensive`.
+- The sibling `Categoria` branch includes **`Cassa Zucchetti`** and
+  `Altri Servizi`, both new to the record, both mapped as
+  _"(nessuna mappatura - Mostra tutti i valori)"_.
+
+🔴 **`E10` is used twice in the registry** — for `Golden Numbers` and for
+`Pienissimo Intensive`. A category code that names two events cannot classify
+an article on its own; carried in
+[OI-96](OI-96%20Edition%20mapping%20table%20on%20Salesforce.md).

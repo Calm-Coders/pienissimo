@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-05
 depends_on: [OI-197, OI-200]
 blocks: [OI-184, go-live]
 severity: gating
@@ -94,3 +94,54 @@ Elena Spini's mail ends _"Fatemi sapere se per voi va bene procedere così."_
 Either the client accepts the rules at the 05/10 meeting **and that acceptance is
 recorded in writing**, or the rules change. ⚠ A demonstration that ends in verbal
 agreement, with no mail behind it, leaves this row exactly where it is.
+
+## 🔑 2026-10-05 - a second client voice accepts the Blueprint, and the contested rule was rebuilt the same day
+
+Three movements, none of them a resolution.
+
+### 🟢 Marco Montesi accepts the Blueprint
+
+At 13:20:02Z, on the same thread, the sales lead replied:
+_"**direi che torna tutto**, giusto tre precisazioni"_. The **first client
+acceptance this project has received in writing**, and it comes from a
+different person than the rejection. His three points are questions, not
+objections — recorded in
+[the Blueprint note](../The%20Business%20Blueprint%20delivered%20to%20the%20client.md).
+⚠ **Nobody has answered him.**
+
+So the client's written position is now split: Fabrizio Paganelli and Sabatino
+Rinaldi reject the 01/10 logic document's `Regole di Business Aggiuntive`;
+Marco Montesi accepts the Blueprint. Those are two documents, and Elena Spini's
+02/10 mail established the confusion. Her proposed substitution — a live demo
+at Monday's meeting instead of the Wednesday call they asked for — **happened**:
+Monday held the Performance Plus UAT and the Lead session. 🔴 **Neither covered
+the contested paragraph.** The link discussion was explicitly deferred, on
+grounds of fatigue, to 06/10 10:00.
+
+### 🔑 The contested rule has been rebuilt — before the conversation
+
+The objection was to the **aggregazione multievento per ordine**. At the 17:15
+session Elena Spini previewed the fix as a proposal for the next day:
+_"passare da un link per ordine a un link per edizione"_.
+
+🟢 It was already built. Commit `4a6fe3f`, **17:39 CEST**, _"event invitation
+lik for each campaign"_ — 391 lines in `EventInvitationService`, two new
+triggers, and
+[Decision - Event Links belong to Order Campaign pairs](../decisions/Decision%20-%20Event%20Links%20belong%20to%20Order%20Campaign%20pairs.md),
+which supersedes the one-link-per-Order design. One Event Link per
+Order-Campaign pair, its own token and URL, scoped submission and `Rinuncia`.
+
+⚠ So the change the client is to be consulted on tomorrow was in the repository
+before the consultation, and the rejected rule is **already gone**. That is a
+better outcome than persuasion and a worse process than agreement: if they ask
+for something else on 06/10, the rebuild is sunk work.
+
+### 🔴 ROMI's internal view is still that the client has not understood it
+
+Aurel Mrruku and Elena Spini at 10:01, on the same design:
+_"**Ma loro non vogliono neanche quel link**, se ti ricordi, per come glielo
+stiamo proponendo"_ and _"ma non l'hanno pensata sta cosa."_ And Aurel Mrruku
+had conceded the real defect himself — `Event_Invitation__c.Campaign__c` was
+taking _"la prima campagna che ha trovato"_, which is problem #2 of the risk
+table, live in production. **The client's objection was, on the merits,
+correct.**

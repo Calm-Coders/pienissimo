@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Elena Spini
 org: both
 raised: 2026-09-03
-updated: 2026-09-24
+updated: 2026-10-05
 depends_on: [OI-59]
 relates_to: [OI-123]
 requirement: SAL-16
@@ -137,3 +137,33 @@ Accounts; no Locale rows were part of this source load. This new Account data
 does not by itself build the Quote field or its Locale-to-Quote defaulting,
 which remain open in this item. The source values are observed in the client
 extract, not a separately confirmed complete value set for future use.
+
+## 🟢🔑 2026-10-05 - the value list arrived, and it is twenty-one values
+
+Agreed at
+[the 05/10 Lead session](../meetings/2026-10-05%20Check%20Data%20Import%20Lead%20e%20Contact.md):
+the standard `Settore` field is **replaced** by `Tipologia di attività`, a
+**multiselect picklist**, with the generic Salesforce industry values deleted.
+Elisa Migliano and Sabatino Rinaldi drove it; gourmet restaurants were added in
+the closing minutes.
+
+[The Campi Oggetti workbook](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md),
+modified the same day at 16:40Z, now carries the list on **both the `Lead` and
+the `Account` sheets**, identically, 21 values:
+
+Ristorante · Ristorante Gourmet · Ristorante specialità Carne · Ristorante
+specialità Pesce · Pizzeria · Pub · Fast food · Agriturismo · Sushi · Locale
+notturno · Pasticceria · Gelateria · Hotel · Franchising · Catena di Proprietà
+· Spiaggia con servizio Ristorazione · Bar · Cocktail Bar · Negozio · Agenzia
+Comunicazione · Attività diversa da somministrazione
+
+The `Account` sheet types it `Multiselect picklist` and the `Preventivo` sheet
+types it `Global picklist` and marks it **mandatory** — 🔑 so the move to the
+quote that this item is about is specified in the client's own document, as a
+**global** value set shared by Lead, Account and Quote. The Lead sheet records
+it as `Mapping con campo Account`.
+
+⚠ **Global and multiselect are not the same thing.** A global value set can
+back a multiselect picklist, but the workbook states both without saying which
+surface is which, and a mandatory multiselect on the quote is a different
+constraint from a mandatory single-select. Worth settling before building.

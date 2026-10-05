@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-25
-updated: 2026-09-28
+updated: 2026-10-05
 blocks: [go-live]
 source: notes/meetings/2026-09-25 Interna post UAT Contratto e Fase Due.md
 ---
@@ -118,3 +118,29 @@ on the line for an hour.
 
 🔴 **Still: no user list, no named people, ~18 agent codes.** Go-live 21/10.
 Pienissimo is unreachable 29/09; the next contact is 30/09, a UAT session.
+
+## 2026-10-05 - two rulings on users, and the source sheets are still empty
+
+🔑 **From [the Performance Plus UAT](../meetings/2026-10-05%20UAT%20Performance%20Plus%20e%20Gestione%20date%20pagamento.md):**
+
+- **Strategists share one user account.** Agreed as a `Concordato`:
+  _"Gli strategist utilizzeranno un account utente condiviso per
+  l'aggiornamento dei campi contrattuali al fine di ottimizzare i costi delle
+  licenze."_ The strategist is also the role that fills the contract's
+  `data di attivazione`. ⚠ A shared login makes `LastModifiedBy` useless on
+  exactly the field the contract's twelve months run from, and the 28/09 ruling
+  was `tutti vedono tutto` at record level with **edit** access as the thing
+  restricted — a shared account restricts nothing and audits nothing. Nobody
+  raised either point.
+- **The `digital` field is hidden** in the contract interface, kept in the
+  database, because task management belongs to the strategist. `strategist` and
+  `digital` were the two text fields added on 28/09 for ~15 people with no
+  licences; one of them is now invisible.
+
+🔴 **The client's own source for this is still blank.**
+[The Campi Oggetti workbook](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md)
+was modified 05/10 at 16:40Z and its `Utenti` sheet still holds only the header
+`Nome, Cognome, Email, Ruolo, Visibilità`, its `Profili` sheet only
+`Profilo, Visibilità`. **Nothing underneath either.** Three sessions with the
+client on 05/10, two of them about data and fields, and the user list was not
+asked for again — the same omission this item recorded on 28/09.

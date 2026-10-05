@@ -182,3 +182,34 @@ The product-category mapping remains responsible for configuring the Opportunity
 type earlier in the sales flow. See [the decision](../decisions/Decision%20-%20Performance%20Plus%20Rinnovo%20bypasses%20conditions%20and%20signature.md).
 
 🔴 **Whether Google services join the Plus flow is still unanswered.**
+
+## 🔑 2026-10-05 - the registry arrived, and the category table is wider than this note
+
+[`Articoli Salesforce.xlsx`](../The%20Articoli%20Salesforce%20article%20registry.md)
+was modified 2026-10-05 at 09:24:17Z and read in full. Its own pivot gives the
+authoritative category list, and three things in it are new here.
+
+- 🔑 **`C20` is specifically `Servizi Google`** (3 active), not the general
+  "additional / spot services, incl. Google" this note records — and it has a
+  **renewal twin `C21`, `Servizi Google - Rinnovo`** (1 active), which this note
+  does not mention at all. A renewal category outside `C11` matters: the rule
+  built here treats `C10`/`C11` as the Performance set, so a Google renewal is
+  correctly excluded, but nothing documents that `C21` exists or how it should
+  behave.
+- 🔑 **Two further consultancy categories exist**: `C40` `Manuale Operativo`
+  (7 active) and `C41` `Menù Engineering` (2 active).
+- 🟢 `C10` has **23 active** articles and `C11` **4**. The retirement of the
+  twenty existing `C10` codes that this note recorded as owed **has not
+  happened** — they are still `Flag_Annullato = N`.
+
+🔴 **The tranche count did not arrive.** The registry has an `NR_Tranche`
+column and it is empty on every row; the count lives only in article
+descriptions as free text. That is
+[OI-210](OI-210%20The%20delivered%20article%20registry%20carries%20no%20tranche%20count.md),
+and it contradicts the 05/10 UAT's own `Concordato` that Plus is one article
+with a tranche-count field.
+
+⚠ **Retired codes are selectable.** Fabrizio Paganelli flagged live in the UAT
+that some Plus codes are cancelled, and the registry bears it out —
+`PLUS-310 RINNOVO PERFORMANCE (EXT)` sits under `C11`. A picker filtering on
+category alone will offer them; it must also test `Flag_Annullato`.

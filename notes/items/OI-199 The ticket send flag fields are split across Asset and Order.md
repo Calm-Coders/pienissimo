@@ -181,3 +181,31 @@ only references were their own files and two `Full_Permission` entries.
   `Ticket_Sent__c` and `Ticket_Sent_Date__c` now exist **only on Asset**, in Prod and
   in UAT.
 - Deleted fields remain restorable for 15 days under Setup → Deleted Fields.
+
+## 🟢 2026-10-05 (later) - the consumer has written the query, and it runs
+
+[Fabrizio Mastracci's own statement of the send logic](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md),
+posted to the marketing group DM at 10:56:50 CEST, reads the three fields off
+`Asset`:
+
+> _"Prendere dall'oggetto Order, gli Asset che hanno Statuse = 'Assegnato' AND
+> Ready for Ticket Dispatch = true AND ticket_sent__c = 'false' … ci sono due
+> campi sull'asset che sono ticket sent e ticket sent date."_
+
+So the person who has to build the Marketing Cloud selection has written it
+against a single object and it is satisfiable. **This item is discharged from
+the consumer's side**, the day after the fields moved to `Asset` and the Order
+copies were deleted in both orgs.
+
+🟢🔑 **He also closed a hole nobody asked him to.** His query includes
+`Status = 'Assegnato'`, which is exactly problem #4 of the logic document's own
+risk table — the published query `Ready = TRUE AND Sent = FALSE` ignores
+`Status`, so a collection corrected after nomination would still send a ticket.
+The spec as written by Marketing is **stricter and more correct than the spec
+ROMI issued.**
+
+⚠ Two of the ten problems remain live in his text: the ticket is taken from the
+Asset's **attachments** by name, on an Asset that will also carry
+[OI-194](OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)'s
+seven-page document (#5 in spirit), and the write-back is Marketing Cloud
+writing per participant at volume (#10), unaddressed.

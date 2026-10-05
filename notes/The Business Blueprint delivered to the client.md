@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-05
 source: Drive 1oa5iIHxu86wx6v7qZaBjM7g5Sk7bmuK9
 ---
 
@@ -98,3 +98,52 @@ It also does not mention the sole-trader Anticipay gap Fabrizio Paganelli raised
 that morning ([OI-202](items/OI-202%20Anticipay%20does%20not%20recognise%20sole%20traders%20absent%20from%20the%20registro%20imprese.md)),
 and it promises `Insoluto` reporting that nothing supports
 ([OI-206](items/OI-206%20The%20Insoluto%20concept%20has%20no%20invoice%20due%20date%20and%20no%20invoice%20record.md)).
+
+## 🟢🔑 2026-10-05 - the first written client acceptance, with three questions
+
+Marco Montesi, `marco.m@pienissimo.com`, **Responsabile Area Commerciale**,
+replied on the delivery thread at **13:20:02Z**:
+
+> _"Ciao Elena, **direi che torna tutto**, giusto tre precisazioni:"_
+
+**This is the first time a Pienissimo signatory has accepted a ROMI document in
+writing.** It matters because the same thread carries Fabrizio Paganelli and
+Sabatino Rinaldi's rejection of a *different* document three days earlier, and
+Elena Spini's 02/10 mail established that the two had been confused
+([OI-203](items/OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)).
+The Blueprint carries signature lines for ROMI Srl and Pienissimo Srl.
+
+⚠ It is an acceptance by the **sales** lead. Fabrizio Paganelli owns the product
+registry and is the day-to-day referent; Elisa Migliano owns administration.
+Neither has replied to the Blueprint, and Sabatino Rinaldi **had not read it**
+as of 17:15 the same day, when Elena Spini asked everyone to before the 06/10
+meeting.
+
+### His three precisazioni
+
+1. 🔑 **Recall Tutor opportunities are also created in bulk by Pienissimo** —
+   _"potrebbe essere generata dal Tutor ma anche massivamente da noi, come ad
+   esempio a seguito di una lista di contatti che manifestano interesse a
+   seguito di un'azione di survey post evento."_ A second origin for the record
+   type, and a mass insert —
+   [OI-182](items/OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md).
+2. **Can they edit the `Perso`/`Errato` filter values themselves?** —
+   _"Le voci che ci sono nei filtri Perso/Errato possono essere modificati e
+   implementati in autonomia da noi?"_ A self-service picklist-administration
+   question, which is the permission model in
+   [OI-186](items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md).
+   The register's `rifiutato` reason `sostituito da altro preventivo` was
+   settled on 28/09; nothing says who may add a value.
+3. **Are the mail and WhatsApp follow-ups set once and then only changeable
+   through support?** — _"devono essere settati all'inizio e poi per
+   modificarli dobbiamo passare sempre dall'assistenza, corretto?"_
+
+🟢 **Question 3 was answered hours later, in a different room.** The 05/10
+Performance Plus UAT agreed as a `Concordato` that **email templates are
+editable directly in production** by the administrator, who can change the HTML
+for mass updates or personalise a single customer's mail — and Aurel Mrruku
+owes a preview-and-personalise feature. So the answer to Marco Montesi is
+"no, you can edit them yourselves", and **nobody has told him.**
+
+🔴 **No reply has been sent to any of the three.** They are the only
+constructive client feedback on a signature-bearing document this project has.
