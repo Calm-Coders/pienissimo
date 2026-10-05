@@ -355,7 +355,8 @@ private class TicketingTest {
       'Ingresso',
       TestDataFactory.unique('ART-TKT')
     );
-    // Event Links are created per Order, so every ticket needs an order line.
+    // Event Links are created per Order-Campaign pair, so every ticket needs
+    // an order line.
     Order orderRecord = TestDataFactory.order(result.accountRecord.Id);
     OrderItem line = TestDataFactory.orderItem(
       orderRecord.Id,

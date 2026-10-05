@@ -3,7 +3,7 @@
     <fullName>Order__c</fullName>
     <deleteConstraint>Restrict</deleteConstraint>
     <description
-  >Order exclusively represented by this participant Event Link.</description>
+  >Order represented by this participant Event Link together with its event Campaign.</description>
     <label>Order</label>
     <referenceTo>Order</referenceTo>
     <relationshipLabel>Event Links</relationshipLabel>

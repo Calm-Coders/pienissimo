@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: Pienissimo
 raised: 2026-09-28
-updated: 2026-10-01
+updated: 2026-10-05
 depends_on: [OI-98]
 blocks: [OI-141, OI-168]
 severity: gating
@@ -130,7 +130,6 @@ minute whether the codes now exist. ⚠ Separately, **Elena Spini owes Aurel Mrr
 the updated product list** for database cleanup, taken as an action item at the 30/09
 UAT with no date — a second, overlapping route to the same information.
 
-
 ## 🟢 2026-10-01 - the categorisation is built and merged
 
 **The row's own finding that _"nothing in `force-app` reads `categoria articolo`
@@ -138,12 +137,12 @@ to set a Plus flag yet"_ no longer holds.** `4f672a2` (Anita Aga, `DevAnita30`,
 30/09 17:56 CEST) merged to `DevMain` in `8661564` via PR **#72** at 01/10 10:03
 CEST. Verified at `DevMain` `618e646`:
 
-| Metadata | What it is |
-| --- | --- |
-| `Product_Category_Rule__mdt` | New public custom metadata type, two text fields: `Categoria_Articolo__c` and `Tipo_Opportunita__c` |
-| two `customMetadata` records | map the Plus **attivazione** and **rinnovo** categories to their opportunity types |
-| `Product2.Categoria_Articolo__c` | Text, the Mexal category on the article |
-| `Opportunity.Tipo_Opportunita__c`, `Lead.Tipo_Opportunita__c` | Text |
+| Metadata                                                      | What it is                                                                                          |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `Product_Category_Rule__mdt`                                  | New public custom metadata type, two text fields: `Categoria_Articolo__c` and `Tipo_Opportunita__c` |
+| two `customMetadata` records                                  | map the Plus **attivazione** and **rinnovo** categories to their opportunity types                  |
+| `Product2.Categoria_Articolo__c`                              | Text, the Mexal category on the article                                                             |
+| `Opportunity.Tipo_Opportunita__c`, `Lead.Tipo_Opportunita__c` | Text                                                                                                |
 
 `QuoteManageProductsController.cls` queries the metadata type by
 `Tipo_Opportunita__c` (`plusCategoriesForOpportunity`, line 778) and filters the
@@ -172,5 +171,14 @@ Salesforce side of the tranche-count article is ready and waiting.**
 new Plus article codes carrying tranche counts, created in Mexal first.
 `Articoli Salesforce.xlsx` has **not moved since 30/09 12:45:55Z** — this sweep
 re-checked, and it was not opened. **Performance Plus UAT is 05/10.**
+
+## 2026-10-05 - Rinnovo behavior reads only the Opportunity field
+
+For the new no-signature renewal exception, the user explicitly required the
+runtime discriminator to be only
+`Opportunity.Tipo_Opportunita__c = Performance Plus - Rinnovo`. Product category,
+Quote lines and Opportunity record type do not decide that downstream behavior.
+The product-category mapping remains responsible for configuring the Opportunity
+type earlier in the sales flow. See [the decision](../decisions/Decision%20-%20Performance%20Plus%20Rinnovo%20bypasses%20conditions%20and%20signature.md).
 
 🔴 **Whether Google services join the Plus flow is still unanswered.**

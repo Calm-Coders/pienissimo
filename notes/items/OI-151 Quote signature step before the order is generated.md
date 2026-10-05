@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-29
+updated: 2026-10-05
 depends_on: [OI-59]
 requirement: [INT-19]
 source: notes/meetings/2026-09-21 Test Interni Pre-UAT.md
@@ -156,3 +156,11 @@ hangs off this state is still unbuilt, with its UAT on **05/10**.
 exactly this point. **That reading was correct when it was taken** — the commit was
 on `DevAnita28/09` at the time and merged six hours later. See
 [the reserved ids](../Item%20ids%20189%20to%20193%20are%20reserved%20by%20an%20uncommitted%20org%20status%20check.md).
+
+## 2026-10-05 - Performance Plus Rinnovo exception
+
+By direct user instruction, the signature step no longer applies when
+`Opportunity.Tipo_Opportunita__c` is exactly `Performance Plus - Rinnovo`.
+Customer acceptance moves the Quote directly to `Firmato`, without DocuSign, so
+the existing order-generation transition still runs. Attivazione and non-Plus
+Quotes retain the signed flow. See [the decision](../decisions/Decision%20-%20Performance%20Plus%20Rinnovo%20bypasses%20conditions%20and%20signature.md).

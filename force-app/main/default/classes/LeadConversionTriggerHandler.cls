@@ -1,6 +1,6 @@
 public without sharing class LeadConversionTriggerHandler {
   private static final String NON_RISPONDE_STATUS = 'Non Risponde';
-  private static final String DUPLICATE_LEAD_ERROR = 'Esiste gia un Lead aperto con la stessa email, lo stesso telefono e la stessa Partita IVA.';
+  private static final String DUPLICATE_LEAD_ERROR = 'Esiste gia un Lead aperto con la stessa Partita IVA oppure con la stessa email e lo stesso telefono.';
   private static final String CONTACT_ACCOUNT_CONFLICT_ERROR = 'La Partita IVA del Lead appartiene a una Azienda diversa dal Contact trovato con la stessa email e lo stesso telefono.';
   private static final String FOLLOW_UP_TASK_SUBJECT = 'Ricontattare Lead - Non Risponde';
   private static final String FOLLOW_UP_TASK_DESCRIPTION = 'Il Lead e stato spostato in Non Risponde. Ricontattare il prospect.';
@@ -30,8 +30,10 @@ public without sharing class LeadConversionTriggerHandler {
   }
 
   private static void preventDuplicateOpenLeads(List<Lead> newLeads) {
-    Set<String> leadKeys = new Set<String>();
-    Set<String> duplicateKeysInBatch = new Set<String>();
+    Set<String> vatKeys = new Set<String>();
+    Set<String> personKeys = new Set<String>();
+    Set<String> duplicateVatKeys = new Set<String>();
+    Set<String> duplicatePersonKeys = new Set<String>();
     Set<String> emails = new Set<String>();
     Set<Id> currentLeadIds = new Set<Id>();
 
@@ -43,32 +45,45 @@ public without sharing class LeadConversionTriggerHandler {
       String email = normalizeEmail(leadRecord.Email);
       String phone = normalizePhone(leadRecord.Phone);
       String vatNumber = normalizeVat(leadRecord.Partita_IVA__c);
-      if (email == null || phone == null || vatNumber == null) {
-        continue;
+      String personKey = buildPersonKey(email, phone);
+
+      if (vatNumber != null) {
+        if (vatKeys.contains(vatNumber)) {
+          duplicateVatKeys.add(vatNumber);
+        }
+        vatKeys.add(vatNumber);
       }
 
-      String leadKey = buildLeadDuplicateKey(email, phone, vatNumber);
-      if (leadKeys.contains(leadKey)) {
-        duplicateKeysInBatch.add(leadKey);
+      if (personKey != null) {
+        if (personKeys.contains(personKey)) {
+          duplicatePersonKeys.add(personKey);
+        }
+        personKeys.add(personKey);
+        emails.add(email);
       }
-      leadKeys.add(leadKey);
-      emails.add(email);
     }
 
-    if (leadKeys.isEmpty()) {
+    if (vatKeys.isEmpty() && personKeys.isEmpty()) {
       return;
     }
 
-    Set<String> duplicateKeys = new Set<String>();
-    duplicateKeys.addAll(duplicateKeysInBatch);
+    Map<String, Object> queryBinds = new Map<String, Object>();
+    List<String> matchConditions = new List<String>();
+    if (!vatKeys.isEmpty()) {
+      queryBinds.put('vatValues', vatKeys);
+      matchConditions.add('Partita_IVA__c IN :vatValues');
+    }
+    if (!emails.isEmpty()) {
+      queryBinds.put('emailValues', emails);
+      matchConditions.add('Email IN :emailValues');
+    }
 
-    Map<String, Object> queryBinds = new Map<String, Object>{
-      'emailValues' => emails
-    };
     List<Lead> existingOpenLeads = Database.queryWithBinds(
       'SELECT Id, Email, Phone, Partita_IVA__c ' +
         'FROM Lead ' +
-        'WHERE IsConverted = false AND Email IN :emailValues',
+        'WHERE IsConverted = false AND (' +
+        String.join(matchConditions, ' OR ') +
+        ')',
       queryBinds,
       AccessLevel.SYSTEM_MODE
     );
@@ -81,35 +96,30 @@ public without sharing class LeadConversionTriggerHandler {
       String existingEmail = normalizeEmail(existingLead.Email);
       String existingPhone = normalizePhone(existingLead.Phone);
       String existingVatNumber = normalizeVat(existingLead.Partita_IVA__c);
-      if (
-        existingEmail == null ||
-        existingPhone == null ||
-        existingVatNumber == null
-      ) {
-        continue;
-      }
+      String existingPersonKey = buildPersonKey(existingEmail, existingPhone);
 
-      String existingKey = buildLeadDuplicateKey(
-        existingEmail,
-        existingPhone,
-        existingVatNumber
-      );
-      if (leadKeys.contains(existingKey)) {
-        duplicateKeys.add(existingKey);
+      if (existingVatNumber != null && vatKeys.contains(existingVatNumber)) {
+        duplicateVatKeys.add(existingVatNumber);
+      }
+      if (existingPersonKey != null && personKeys.contains(existingPersonKey)) {
+        duplicatePersonKeys.add(existingPersonKey);
       }
     }
 
-    if (duplicateKeys.isEmpty()) {
+    if (duplicateVatKeys.isEmpty() && duplicatePersonKeys.isEmpty()) {
       return;
     }
 
     for (Lead leadRecord : newLeads) {
-      String leadKey = buildLeadDuplicateKey(
+      String vatNumber = normalizeVat(leadRecord.Partita_IVA__c);
+      String personKey = buildPersonKey(
         normalizeEmail(leadRecord.Email),
-        normalizePhone(leadRecord.Phone),
-        normalizeVat(leadRecord.Partita_IVA__c)
+        normalizePhone(leadRecord.Phone)
       );
-      if (duplicateKeys.contains(leadKey)) {
+      if (
+        duplicateVatKeys.contains(vatNumber) ||
+        duplicatePersonKeys.contains(personKey)
+      ) {
         leadRecord.addError(DUPLICATE_LEAD_ERROR);
       }
     }
@@ -326,18 +336,6 @@ public without sharing class LeadConversionTriggerHandler {
 
   private static String buildPersonKey(String email, String phone) {
     return email == null || phone == null ? null : email + '|' + phone;
-  }
-
-  private static String buildLeadDuplicateKey(
-    String email,
-    String phone,
-    String vatNumber
-  ) {
-    return email == null ||
-      phone == null ||
-      vatNumber == null
-      ? null
-      : email + '|' + phone + '|' + vatNumber;
   }
 
   private static String normalizeEmail(String email) {

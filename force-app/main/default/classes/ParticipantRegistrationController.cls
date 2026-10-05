@@ -223,7 +223,11 @@ public without sharing class ParticipantRegistrationController {
         throw staleTickets();
       }
 
-      List<Asset> orderTickets = queryOrderAssets(access.orderRecord.Id, true);
+      List<Asset> orderTickets = queryOrderAssets(
+        access.orderRecord.Id,
+        access.invitation.Campaign__c,
+        true
+      );
       Asset selectedTicket;
       for (Asset ticket : orderTickets) {
         if (ticket.Id == parsedAssetId) {
@@ -289,6 +293,11 @@ public without sharing class ParticipantRegistrationController {
         Status__c,
         Account__c,
         Account__r.Name,
+        Campaign__c,
+        Campaign__r.Name,
+        Campaign__r.Data_Evento__c,
+        Campaign__r.StartDate,
+        Campaign__r.EndDate,
         Order__c,
         Order__r.Id,
         Order__r.OrderNumber,
@@ -330,8 +339,22 @@ public without sharing class ParticipantRegistrationController {
     response.accountName = access.account.Name;
     response.orderId = access.orderRecord.Id;
     response.orderNumber = access.orderRecord.OrderNumber;
+    response.campaignId = access.invitation.Campaign__c;
+    response.campaignName = access.invitation.Campaign__r == null
+      ? null
+      : access.invitation.Campaign__r.Name;
+    response.eventStartDate = access.invitation.Campaign__r == null
+      ? null
+      : displayEventDate(access.invitation.Campaign__r);
+    response.eventEndDate = access.invitation.Campaign__r == null
+      ? null
+      : access.invitation.Campaign__r.EndDate;
 
-    List<Asset> orderTickets = queryOrderAssets(access.orderRecord.Id, false);
+    List<Asset> orderTickets = queryOrderAssets(
+      access.orderRecord.Id,
+      access.invitation.Campaign__c,
+      false
+    );
     Map<Id, ParticipationGroup> groupsByCampaignId = new Map<Id, ParticipationGroup>();
     Set<Id> campaignsWithAssignedTickets = new Set<Id>();
     Boolean ungroupedTicketsIncludeAssigned = false;
@@ -446,7 +469,11 @@ public without sharing class ParticipantRegistrationController {
       );
     }
 
-    List<Asset> visibleAssets = queryOrderAssets(access.orderRecord.Id, true);
+    List<Asset> visibleAssets = queryOrderAssets(
+      access.orderRecord.Id,
+      access.invitation.Campaign__c,
+      true
+    );
 
     Map<Id, Asset> eligibleAssets = new Map<Id, Asset>();
 
@@ -613,12 +640,17 @@ public without sharing class ParticipantRegistrationController {
     return result;
   }
 
-  private static List<Asset> queryOrderAssets(Id orderId, Boolean lockRecords) {
+  private static List<Asset> queryOrderAssets(
+    Id orderId,
+    Id campaignId,
+    Boolean lockRecords
+  ) {
     String queryText =
       'SELECT Id, Name, Status, ContactId, Campaign__c, Campaign__r.Name, ' +
       'Campaign__r.Data_Evento__c, Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
       'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name, Order_Product__c ' +
-      'FROM Asset WHERE Order_Product__r.OrderId = :orderId ';
+      'FROM Asset WHERE Order_Product__r.OrderId = :orderId ' +
+      'AND Campaign__c = :campaignId ';
 
     if (lockRecords) {
       queryText += 'FOR UPDATE';
