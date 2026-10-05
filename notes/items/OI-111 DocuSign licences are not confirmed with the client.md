@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-09-02
-updated: 2026-09-28
+updated: 2026-10-05
 blocks: [OI-68]
 requirement: INT-19
 source: Slack DM Aurel Mrruku / Elena Spini, 2026-09-02 15:47-15:49 CEST
@@ -206,6 +206,26 @@ _"viste, grz"_ at 13:01.
   the credentials does not change the configuration; **somebody has to enter
   them.** No owner, no date.
 - ⚠ **The original question in this note is still not answered on paper.** Whether
-  Pienissimo holds a *licence* — as opposed to an account someone can log into —
+  Pienissimo holds a _licence_ — as opposed to an account someone can log into —
   was never confirmed in writing. An account arriving is strong evidence and not
   the same thing.
+
+## 🔴 2026-10-05 - the production account is a free plan with three envelopes
+
+The client's production account is now wired into Pienissimo Prod (Go-Live of the
+existing integration key, production endpoints, principal authenticated; see
+[JOURNAL.md](../../JOURNAL.md)). A read-only call to the account from Prod returned:
+
+- `planName: DocuSignIt`, **`planClassification: free`**
+- **`billingPeriodEnvelopesAllowed: 3`**, `canUpgrade: false`
+- plan start 21 September 2026
+
+**This answers the question this item has asked since 2 September, and the answer is
+no.** The account the client handed over is not a commercial licence. Three envelopes
+a month cannot carry the quote flow, every test spends one, and DocuSign Connect —
+which writes `Completed` back to the quote and so produces `Firmato` and the order —
+is very likely not on a free plan. Not verified on the account itself.
+
+🔴 **The ask is now concrete:** Pienissimo must buy a paid eSignature plan that
+includes API use and Connect, on this same account, before 21 October. Owner not yet
+assigned.

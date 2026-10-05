@@ -1,12 +1,12 @@
 ---
 id: OI-174
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 with: Angelo Pastorelli
 org: ROMI
 raised: 2026-09-23
-updated: 2026-09-24
+updated: 2026-10-05
 blocks: [go-live]
 severity: gating
 source: Slack #team-romi-tech C0A43NQLZ24, Aurel Mrruku 2026-09-23 18:12:11 CEST
@@ -95,3 +95,12 @@ DocuSign demo environment**, so the production swap is still owed.
 - 🔴 **Ask Elisa Migliano for the DocuSign credentials.** She now knows they are owed;
   nothing records them being sent.
 - 🔴 **The production DocuSign swap is unbuilt and untested.**
+
+## 🟢 2026-10-05 - resolved: ROMI addresses receive and sign envelopes
+
+A read of Pienissimo UAT on 05/10 shows DocuSign envelopes to `@romicompany.com`
+recipients reaching `DocuSign_Status__c = Completed` from **29/09 onwards** — Anita
+Aga's address repeatedly, Rexhina Hysi's twice on 05/10, and Aurel Mrruku's
+(quote `00000121`) on 02/10. The service sends remote-signing envelopes by email,
+so `Completed` means the mail arrived and was signed. **The block is gone.** What
+lifted it is not recorded — nothing names Danilo or a gateway change.

@@ -4406,3 +4406,48 @@ assigned through the Sales app in both orgs.
   `Full_Permission` entries were removed from source. UAT received the Asset fields and
   permission sets (`0AfMA00000CqgU70AJ`). Field locations were read back from both orgs:
   all three send fields are only on Asset. Still uncommitted.
+
+## 2026-10-05 — claude — DocuSign production account wired into Prod
+
+- **Asked:** Aurel Mrruku received the client's production DocuSign account and asked
+  for the steps to configure it in Prod, then to diagnose a test quote
+  (`0Q0SW000006fs7R0AQ`) whose envelope never arrived.
+- **Did (DocuSign):** Aurel Mrruku ran Go-Live on integration key `1f4543dc-…` from his
+  own demo account into the client's production account, created a production secret
+  and authenticated `DocuSign Principal` in Prod (status read back: `Configured`).
+  The key's origin stays in a ROMI developer's personal demo account — a handover
+  point.
+- **Did (Prod):**
+  - Auth Provider `DocuSign`: endpoints moved from `account-d.docusign.com` to
+    `account.docusign.com` (deploy `0AfSW000001HjOL0A0`). The secret cannot be set
+    through the Metadata API ("Consumer Secret update is not allowed"); Aurel Mrruku
+    entered it in Setup. A first attempt put the secret into Consumer Key; corrected,
+    read back as `1f4543dc-…`.
+  - Named Credential `DocuSign`: URL was `https://na4.docusign.ne` (typo, set by hand);
+    corrected to `https://na4.docusign.net`, deploy succeeded.
+  - `Integration_Configuration2__c` `DocuSign_Create_Envelope`: endpoint path moved from
+    the demo account id to the production API account id. Read back.
+  - Read-only `GET` on the production account from Prod returned **HTTP 200**.
+- **Found:** 🔴 the production account is a **free plan** (`DocuSignIt`,
+  `planClassification: free`, **3 envelopes per billing period**, `canUpgrade: false`).
+  Recorded in [OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md).
+  Connect for Salesforce — the only path that writes `Completed` back and so turns a
+  quote `Firmato` — is not configured on the production account and is likely absent
+  on that plan. OI-174 (ROMI mail blocking DocuSign) was checked against UAT and is
+  resolved: `@romicompany.com` recipients have signed envelopes since 29/09.
+- **Test failure diagnosed:** the 05/10 11:00 send failed with `System.CalloutException:
+You don't have read permissions on the User External Credential object` — the job runs
+  as the Landing Page guest, and only UAT's `Landing Page Profile` holds that read (an
+  org-only grant). The 04/10 21:45 error (`Configurazione DocuSign_Create_Envelope
+mancante`) predates the config row (created 04/10 23:32Z).
+- **Permissions (source + Prod):** `Full_Permission` gains full access to
+  `Integration_Log__c` and its ten fields (deploy `0AfSW000001HjbF0AS`; before it, no
+  assigned permission set or profile could read the log fields). `DocuSign` and
+  `Full_Permission` gain read on `UserExternalCredential` (deploy `0AfSW000001Hjg50AC`,
+  read back). Both permission sets were diffed against Prod first; nothing Prod-only.
+- **Not done:** the resend of the test quote — blocked by the session's permission
+  classifier; left to Aurel Mrruku.
+- **State:** nothing committed. ⚠ `force-app` still carries the demo endpoints for the
+  Auth Provider and Named Credential; a Prod deploy of those two files reverts this
+  work. The test quote is `Accettato` / `DocuSign_Status__c = Error`; no envelope has
+  been sent from production yet.
