@@ -1,7 +1,6 @@
 public without sharing class QuotePdfService {
   private static final String DRAFT_STATUS = 'Bozza';
   private static final String NEGOTIATION_STATUS = 'In Trattativa';
-  private static final String SIGNATURE_TITLE_TOKEN = 'da firmare';
   private static final String FILE_SHARE_TYPE_VIEWER = 'V';
   private static final String FILE_VISIBILITY_ALL_USERS = 'AllUsers';
 
@@ -22,7 +21,6 @@ public without sharing class QuotePdfService {
         SELECT Id, Status
         FROM Quote
         WHERE Id = :quoteId
-        WITH USER_MODE
         FOR UPDATE
       ];
       if (currentQuote.Status != DRAFT_STATUS) {
@@ -31,27 +29,22 @@ public without sharing class QuotePdfService {
         );
       }
       deleteExistingSigningFiles(quoteId);
-      String title =
-        'Preventivo-' +
-        quoteRecord.QuoteNumber +
-        '-da firmare-' +
-        Datetime.now().format('yyyyMMdd-HHmmss');
+      String title = 'Preventivo-' + quoteRecord.QuoteNumber;
       ContentVersion file = new ContentVersion(
         Title = title,
         PathOnClient = title + '.pdf',
         VersionData = body,
         FirstPublishLocationId = quoteId
       );
-      insert as user file;
+      insert file;
       Id documentId = [
         SELECT ContentDocumentId
         FROM ContentVersion
         WHERE Id = :file.Id
-        WITH USER_MODE
       ]
       .ContentDocumentId;
       shareWithAllUsers(documentId, quoteId);
-      update as user new Quote(Id = quoteId, Status = NEGOTIATION_STATUS);
+      update new Quote(Id = quoteId, Status = NEGOTIATION_STATUS);
       return documentId;
     } catch (QuotePdfController.QuotePdfException e) {
       throw new AuraHandledException(e.getMessage());
@@ -69,17 +62,14 @@ public without sharing class QuotePdfService {
       SELECT ContentDocumentId, ContentDocument.Title
       FROM ContentDocumentLink
       WHERE LinkedEntityId = :quoteId
-      WITH USER_MODE
     ]) {
       String title = link.ContentDocument.Title;
-      if (
-        title != null && title.toLowerCase().contains(SIGNATURE_TITLE_TOKEN)
-      ) {
+      if (title != null && title.contains('Preventivo-')) {
         documentsToDelete.add(new ContentDocument(Id = link.ContentDocumentId));
       }
     }
     if (!documentsToDelete.isEmpty()) {
-      delete as user documentsToDelete;
+      delete documentsToDelete;
     }
   }
 
@@ -88,7 +78,6 @@ public without sharing class QuotePdfService {
       SELECT Id, ShareType, Visibility
       FROM ContentDocumentLink
       WHERE ContentDocumentId = :documentId AND LinkedEntityId = :quoteId
-      WITH USER_MODE
       LIMIT 1
     ];
 
@@ -96,7 +85,7 @@ public without sharing class QuotePdfService {
       return;
     }
 
-    update as user new ContentDocumentLink(
+    update new ContentDocumentLink(
       Id = links[0].Id,
       ShareType = FILE_SHARE_TYPE_VIEWER,
       Visibility = FILE_VISIBILITY_ALL_USERS

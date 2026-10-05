@@ -644,7 +644,7 @@
           style="width: 50%; border: none; text-align: right; font-weight: bold"
         >
           Il Cliente
-          <div class="signing-line">
+          <div class="signing-line" style="text-align: center">
             <span style="color: #000000; font-size: 1px">/sig1/</span>
           </div>
           <div class="signing-label">Firma del Cliente</div>
@@ -687,10 +687,10 @@
           style="width: 50%; border: none; text-align: right; font-weight: bold"
         >
           Il Cliente
-          <div class="signing-line">
+          <div class="signing-line" style="text-align: center">
             <span style="color: #000000; font-size: 1px">/sig1/</span>
           </div>
-          <div class="signing-label">Firma per approvazione specifica</div>
+          <div class="signing-label">Firma del Cliente</div>
         </td>
       </tr>
     </table>

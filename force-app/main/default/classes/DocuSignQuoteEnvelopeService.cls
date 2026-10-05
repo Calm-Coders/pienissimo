@@ -2,7 +2,7 @@ public without sharing class DocuSignQuoteEnvelopeService {
   private static final String ACTION_CREATE_ENVELOPE = 'DocuSign_Create_Envelope';
   private static final String DEFAULT_NAMED_CREDENTIAL = 'DocuSign';
   private static final String CONTENT_TYPE_JSON = 'application/json';
-  private static final String SIGNATURE_TITLE_TOKEN = 'da firmare';
+  private static final String QUOTE_DOCUMENT_TITLE_PREFIX = 'Preventivo-';
   private static final String STATUS_SENT = 'Sent';
   private static final String STATUS_COMPLETED = 'Completed';
   private static final String STATUS_DECLINED = 'Declined';
@@ -34,7 +34,10 @@ public without sharing class DocuSignQuoteEnvelopeService {
       Quote quoteRecord = loadQuote(quoteId, true);
       validateReadyToSend(quoteRecord);
 
-      SigningDocument document = loadSigningDocument(quoteId);
+      SigningDocument document = loadSigningDocument(
+        quoteId,
+        quoteRecord.QuoteNumber
+      );
       String requestBody = buildEnvelopeRequest(quoteRecord, document);
       HttpRequest request = buildRequest(requestBody);
       Integration_Log__c logRow = buildLog(request);
@@ -162,8 +165,11 @@ public without sharing class DocuSignQuoteEnvelopeService {
     }
   }
 
-  private static SigningDocument loadSigningDocument(Id quoteId) {
-    String titlePattern = '%' + SIGNATURE_TITLE_TOKEN + '%';
+  private static SigningDocument loadSigningDocument(
+    Id quoteId,
+    String quoteNumber
+  ) {
+    String expectedTitle = QUOTE_DOCUMENT_TITLE_PREFIX + quoteNumber;
     List<ContentDocumentLink> links = [
       SELECT
         ContentDocumentId,
@@ -172,7 +178,8 @@ public without sharing class DocuSignQuoteEnvelopeService {
       FROM ContentDocumentLink
       WHERE
         LinkedEntityId = :quoteId
-        AND ContentDocument.Title LIKE :titlePattern
+        AND ContentDocument.Title = :expectedTitle
+        AND ContentDocument.FileExtension = 'pdf'
       ORDER BY ContentDocument.LastModifiedDate DESC
       LIMIT 1
     ];

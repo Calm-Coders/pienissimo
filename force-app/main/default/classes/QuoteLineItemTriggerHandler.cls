@@ -164,7 +164,7 @@ public without sharing class QuoteLineItemTriggerHandler {
     }
 
     for (PricebookEntry entry : [
-      SELECT Id, Product2.Is_Plus__c, Product2.RecordType.DeveloperName
+      SELECT Id, Product2.RecordType.DeveloperName
       FROM PricebookEntry
       WHERE Id IN :pricebookEntryIds
     ]) {
@@ -186,20 +186,12 @@ public without sharing class QuoteLineItemTriggerHandler {
     List<QuoteLineItem> existingLines = replacedLineIds == null ||
       replacedLineIds.isEmpty()
       ? [
-          SELECT
-            Id,
-            QuoteId,
-            PricebookEntry.Product2.RecordType.DeveloperName,
-            PricebookEntry.Product2.Is_Plus__c
+          SELECT Id, QuoteId, PricebookEntry.Product2.RecordType.DeveloperName
           FROM QuoteLineItem
           WHERE QuoteId IN :quoteIds
         ]
       : [
-          SELECT
-            Id,
-            QuoteId,
-            PricebookEntry.Product2.RecordType.DeveloperName,
-            PricebookEntry.Product2.Is_Plus__c
+          SELECT Id, QuoteId, PricebookEntry.Product2.RecordType.DeveloperName
           FROM QuoteLineItem
           WHERE QuoteId IN :quoteIds AND Id NOT IN :replacedLineIds
         ];
@@ -254,16 +246,10 @@ public without sharing class QuoteLineItemTriggerHandler {
   private class QuoteProductMix {
     Integer bundleLineCount = 0;
     Integer itemLineCount = 0;
-    Integer plusBundleLineCount = 0;
 
     void addLine(ProductLineKind kind) {
       if (kind == null) {
         itemLineCount++;
-        return;
-      }
-
-      if (kind.isPlusBundle) {
-        plusBundleLineCount++;
         return;
       }
 
@@ -276,10 +262,6 @@ public without sharing class QuoteLineItemTriggerHandler {
     }
 
     Boolean isValid() {
-      if (plusBundleLineCount > 0) {
-        return bundleLineCount == 0 && itemLineCount == 0;
-      }
-
       return bundleLineCount <= 1 &&
         (bundleLineCount == 0 ||
         itemLineCount == 0);
@@ -288,22 +270,13 @@ public without sharing class QuoteLineItemTriggerHandler {
 
   private class ProductLineKind {
     Boolean isBundle;
-    Boolean isPlusBundle;
 
     ProductLineKind(PricebookEntry entry) {
       isBundle = isBundle(entry);
-      isPlusBundle =
-        isBundle &&
-        entry.Product2 != null &&
-        entry.Product2.Is_Plus__c == true;
     }
 
     ProductLineKind(QuoteLineItem line) {
       isBundle = isBundle(line);
-      isPlusBundle =
-        isBundle &&
-        line.PricebookEntry.Product2 != null &&
-        line.PricebookEntry.Product2.Is_Plus__c == true;
     }
   }
 }
