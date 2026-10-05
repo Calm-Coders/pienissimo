@@ -4,13 +4,23 @@ type: reference
 status: open
 org: ROMI
 raised: 2026-09-07
-updated: 2026-09-08
+updated: 2026-10-05
 depends_on: [OI-78, OI-81, OI-121]
 source: User conversation with Codex on 2026-09-07
 uncertain: Invitation foundation implemented in local source only; Growth provisioning and flow configuration were not inspected; email timing remains open.
 ---
 
 # Proposed event invitations for participant registration
+
+> **Implementation update, 5 October 2026:** invitation identity is now one
+> Order-Campaign pair rather than Account-Campaign, and `Stato Raccolta` is now
+> recalculated only from that pair's Assets. One `Disponibile` Asset makes it
+> `Ready`; recipient, date, token and URL preparation remain separate sending
+> prerequisites. Because `Rinuncia` applies to every ticket in the pair, an
+> all-ticket `Rinuncia` makes the invitation `Cancelled`. See
+> [the identity decision](../decisions/Decision%20-%20Event%20Links%20belong%20to%20Order%20Campaign%20pairs.md)
+> and
+> [the collection-status decision](../decisions/Decision%20-%20Event%20Link%20collection%20status%20follows%20campaign%20tickets.md).
 
 **Create one invitation per Account and event-edition Campaign with the tickets.
 Resolve the published community URL at runtime, store the plain link on the
@@ -122,16 +132,17 @@ No browser-rendered submission was verified.
    order entry point is transition to Incassato. Do not make an external API
    call from that transaction.
 2. **After commit:** resolve the URL and populate the field asynchronously.
-   Keep the invitation Pending until preparation succeeds. Reconcile imports
+   Keep URL preparation state separate from `Stato Raccolta`. Reconcile imports
    and campaign reassignments as well as new orders.
 3. **Calculate the due date:** use the event edition and configurable collection
    offset. [OI-81](../items/OI-81%20Event%20communication%20funnel.md) leaves its
    number open; do not hardcode 30 or 60 days or substitute the separate
    no-show-reduction flow's timing.
-4. **When due:** a scheduled Salesforce process selects invitations with a
-   recipient and eligible tickets missing participant data, refreshes the URL,
-   assigns a communication key and marks Ready. Time passing alone does not
-   fire a record-change event; the scheduler must make the qualifying update.
+4. **When due:** a scheduled Salesforce process selects invitations that are
+   `Ready` from their Assets and also have a recipient and eligible tickets
+   missing participant data, then refreshes the URL and assigns a communication
+   key. Time passing alone does not fire a record-change event; sending
+   eligibility must therefore be evaluated independently from collection state.
 5. **After submission:** recompute completion from eligible Assets. Reopen when
    new eligible tickets are added. Recalculate unsent dates when an event moves.
    Confirm the cutoff and late-purchase/new-request rules.
@@ -143,7 +154,9 @@ Recommended entry: an **automation event-triggered marketing flow**, using
 and its Recipient_Contact__c relationship, and enter when the invitation becomes
 Ready for a communication cycle that has not been dispatched.
 
-Salesforce documents this related-record trigger for Growth. Verify that the
+Salesforce documents this related-record trigger for Growth. The entry criteria
+must require collection `Ready` plus the separate recipient, timing, URL and
+communication-cycle prerequisites. Verify that the
 object and relationship appear in the actual org and grant the required access.
 An ordinary record-triggered Flow is not interchangeable with this marketing
 flow type.
@@ -246,19 +259,22 @@ The user explicitly requested the Salesforce source in addition to this note.
   send anything. It locks records after URL discovery to prevent stale lookup
   values from producing a mismatched link.
 - Added a tab, layout, and validation rules for recipient Account membership and
-  Ready-state prerequisites. Access is granted through the existing
+  the original Ready-state prerequisites. The latter rule was deactivated on 5
+  October because collection state now follows Assets only. Access is granted
+  through the existing
   **Full Permission** set, not a new one - see
   [the decision](../decisions/Decision%20-%20invitation%20access%20uses%20Full%20Permission.md).
   `Account__c` and `Campaign__c` are required lookups and therefore carry no
   field entry. The set is internal; never grant it to guests.
 
-**URL Ready is not collection Ready.** Initial collection status stays Pending;
-recipient and send time are not guessed. No scheduler, Growth marketing flow,
-message content, send tracking, completion/reopen automation or historical Asset
-backfill has been implemented in this source step. Use the exact invitation's
-URL refresh action in the preparation flow before marking it Ready, and refresh
-again before dispatch. Existing Assets are not automatically backfilled; new
-invitations are created on the order path when it inserts new ticket Assets.
+**URL Ready is not collection Ready.** This 7 September implementation initially
+kept collection Pending until link preparation; the 5 October correction
+supersedes that coupling. Collection status now follows Assets, while sending
+still separately requires the recipient, timing and prepared URL. The Growth
+marketing flow, message content, send tracking and historical Asset backfill
+remain outside this source step. Refresh the exact invitation URL before
+dispatch. Existing Assets are not automatically backfilled; new invitations are
+created on the order path when it inserts new ticket Assets.
 
 Verification: Salesforce check-only deployment with NoTestRun succeeded for
 the selected new components and order-handler change (job

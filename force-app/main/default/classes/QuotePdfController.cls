@@ -2,7 +2,8 @@ public without sharing class QuotePdfController {
   private static final Integer MAX_LINES = 500;
   private static final String EMPTY_QUOTE_ERROR = 'Questo preventivo non contiene righe prodotto. Aggiungi almeno un prodotto prima di generare il PDF.';
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
-  private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
+  private static final String PLUS_OPPORTUNITY_TYPE_PREFIX = 'Performance Plus -';
+  private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
   public Quote quoteRecord { get; private set; }
   public List<LineRow> lines { get; private set; }
   public String currencyCode { get; private set; }
@@ -27,7 +28,7 @@ public without sharing class QuotePdfController {
       'Account.Name, Account.BillingStreet, Account.BillingPostalCode, Account.BillingCity, ' +
       'Account.BillingState, Account.BillingCountry, Account.Partita_IVA__c, ' +
       'Account.Nome_Legale_Rappresentante__c, Account.PEC__c, Opportunity.Owner.Name, ' +
-      'Opportunity.RecordType.DeveloperName' +
+      'Opportunity.Tipo_Opportunita__c' +
       (multiCurrency ? ', CurrencyIsoCode' : '') +
       ' FROM Quote WHERE Id = :quoteId';
     quoteRecord = (Quote) Database.queryWithBinds(
@@ -199,9 +200,15 @@ public without sharing class QuotePdfController {
   }
   public Boolean getIsPlusOpportunity() {
     return quoteRecord.Opportunity != null &&
-      quoteRecord.Opportunity.RecordType != null &&
-      quoteRecord.Opportunity.RecordType.DeveloperName ==
-      PLUS_OPPORTUNITY_RECORD_TYPE;
+      String.isNotBlank(quoteRecord.Opportunity.Tipo_Opportunita__c) &&
+      quoteRecord.Opportunity.Tipo_Opportunita__c.startsWith(
+        PLUS_OPPORTUNITY_TYPE_PREFIX
+      );
+  }
+  public Boolean getIsPerformancePlusRenewal() {
+    return quoteRecord.Opportunity != null &&
+      quoteRecord.Opportunity.Tipo_Opportunita__c ==
+      PLUS_RENEWAL_OPPORTUNITY_TYPE;
   }
 
   private static String address(

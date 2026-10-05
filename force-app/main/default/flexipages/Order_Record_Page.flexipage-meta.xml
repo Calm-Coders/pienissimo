@@ -120,7 +120,7 @@
                             <value>Registration_Url__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>URL_Status__c</value>
+                            <value>Status__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>

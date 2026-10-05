@@ -42,8 +42,31 @@
         name="body"
         label="Messaggio"
         value={body}
-        readonly
+        onchange={handleChange}
+        required
+        maxlength="32000"
+        message-when-too-long="Il messaggio non può superare 32000 caratteri."
+        field-level-help="Il pulsante per consultare, accettare o rifiutare il preventivo e la firma vengono aggiunti automaticamente dopo il messaggio."
+        disabled={busy}
       ></lightning-textarea>
+      <div
+        class="system-footer-preview slds-box slds-m-top_medium"
+        aria-label="Contenuto aggiunto automaticamente"
+      >
+        <p class="slds-text-title_bold slds-m-bottom_small">
+          Contenuto aggiunto automaticamente
+        </p>
+        <p>Puoi consultare, accettare o rifiutare il preventivo:</p>
+        <p class="slds-m-vertical_medium">
+          <span
+            class="slds-button slds-button_brand preview-button"
+            aria-disabled="true"
+          >
+            Apri il preventivo
+          </span>
+        </p>
+        <p>Grazie,<br />Il team Pienissimo</p>
+      </div>
     </template>
     <div slot="footer">
       <lightning-button

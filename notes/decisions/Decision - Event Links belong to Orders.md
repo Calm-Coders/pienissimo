@@ -1,16 +1,20 @@
 ---
 id: DEC-2026-10-01-event-link-order
 type: decision
-status: active
+status: superseded
 owner: null
 org: ROMI
 raised: 2026-10-01
-updated: 2026-10-01
+updated: 2026-10-05
 depends_on: [OI-78, OI-127]
 source: User instruction to Codex on 2026-10-01
 ---
 
 # Decision - Event Links belong to Orders
+
+> **Superseded on 5 October 2026:** the user corrected the invitation identity
+> to one Event Link per Order-Campaign pair. See
+> [Decision - Event Links belong to Order Campaign pairs](Decision%20-%20Event%20Links%20belong%20to%20Order%20Campaign%20pairs.md).
 
 An Event Link (`Event_Invitation__c`) belongs to exactly one Order, and an Order
 cannot have more than one Event Link. Campaign is not part of the relationship or

@@ -11,6 +11,7 @@ public without sharing class QuoteAcceptanceController {
   private static final String REJECTED_STATUS = 'Rifiutato';
   private static final String DOCUSIGN_STATUS_SENT = 'Sent';
   private static final String DOCUSIGN_STATUS_COMPLETED = 'Completed';
+  private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
   private static final Set<String> ACTIONABLE_STATUSES = new Set<String>{
     'In Trattativa',
     'In Attesa Accettazione'
@@ -113,20 +114,33 @@ public without sharing class QuoteAcceptanceController {
       }
 
       if (normalizedAction == ACCEPT_ACTION) {
-        ensureCanSendDocuSign(quoteRecord);
-        update new Quote(
-          Id = quoteRecord.Id,
-          Status = ACCEPTED_STATUS,
-          DocuSign_Status__c = DOCUSIGN_STATUS_SENT
-        );
-        DocuSignQuoteEnvelopeService.enqueue(quoteRecord.Id);
+        if (isPerformancePlusRenewal(quoteRecord)) {
+          update new Quote(
+            Id = quoteRecord.Id,
+            Status = SIGNED_STATUS,
+            Is_Signed__c = true
+          );
+        } else {
+          ensureCanSendDocuSign(quoteRecord);
+          update new Quote(
+            Id = quoteRecord.Id,
+            Status = ACCEPTED_STATUS,
+            DocuSign_Status__c = DOCUSIGN_STATUS_SENT
+          );
+          DocuSignQuoteEnvelopeService.enqueue(quoteRecord.Id);
+        }
       } else {
         update new Quote(Id = quoteRecord.Id, Status = REJECTED_STATUS);
       }
 
-      String message = normalizedAction == ACCEPT_ACTION
-        ? 'Il preventivo e stato confermato. La richiesta di firma e stata inviata al contatto principale.'
-        : 'Il preventivo e stato annullato.';
+      String message;
+      if (normalizedAction == REJECT_ACTION) {
+        message = 'Il preventivo e stato annullato.';
+      } else if (isPerformancePlusRenewal(quoteRecord)) {
+        message = 'Il rinnovo Performance Plus e stato confermato. Non e richiesta la firma.';
+      } else {
+        message = 'Il preventivo e stato confermato. La richiesta di firma e stata inviata al contatto principale.';
+      }
       return buildPage(parsedQuoteId, message);
     } catch (RequestException requestError) {
       Database.rollback(savepoint);
@@ -196,7 +210,7 @@ public without sharing class QuoteAcceptanceController {
     String queryText =
       'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, Subtotal, ' +
       'TotalPrice, GrandTotal, DocuSign_Status__c, DocuSign_Envelope_Id__c, ' +
-      'Email, Account.Name, Opportunity.Name ' +
+      'Email, Account.Name, Opportunity.Name, Opportunity.Tipo_Opportunita__c ' +
       'FROM Quote WHERE Id = :quoteId LIMIT 1';
 
     if (lockRecord) {
@@ -269,6 +283,12 @@ public without sharing class QuoteAcceptanceController {
         'Email mancante sul preventivo. Contatta il referente Pienissimo.'
       );
     }
+  }
+
+  private static Boolean isPerformancePlusRenewal(Quote quoteRecord) {
+    return quoteRecord.Opportunity != null &&
+      quoteRecord.Opportunity.Tipo_Opportunita__c ==
+      PLUS_RENEWAL_OPPORTUNITY_TYPE;
   }
 
   private static String normalizeAction(String action) {

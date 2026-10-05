@@ -2,7 +2,7 @@
 id: quote-pdf-field-mappings
 type: reference
 status: active
-updated: 2026-10-01
+updated: 2026-10-05
 source:
   - force-app/main/default/pages/QuotePdf.page
   - force-app/main/default/classes/QuotePdfController.cls
@@ -22,10 +22,10 @@ by
 
 ## Template selection
 
-| PDF template               | Condition                                                                      | Source file                                                                                                   |
-| -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| Standard quote PDF         | `Quote.Opportunity.RecordType.DeveloperName` is not `Plus_Attivazione_Rinnovo` | [QuotePdfStandardContract.component](../force-app/main/default/components/QuotePdfStandardContract.component) |
-| Performance Plus quote PDF | `Quote.Opportunity.RecordType.DeveloperName = Plus_Attivazione_Rinnovo`        | [QuotePdfContract.component](../force-app/main/default/components/QuotePdfContract.component)                 |
+| PDF template               | Condition                                                                        | Source file                                                                                                                                        |
+| -------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Standard quote PDF         | `Quote.Opportunity.Tipo_Opportunita__c` does not start with `Performance Plus -` | [QuotePdfStandardContract.component](../force-app/main/default/components/QuotePdfStandardContract.component)                                      |
+| Performance Plus quote PDF | `Quote.Opportunity.Tipo_Opportunita__c` starts with `Performance Plus -`         | [QuotePdfContract.component](../force-app/main/default/components/QuotePdfContract.component); omitted for exact type `Performance Plus - Rinnovo` |
 
 ## Standard quote PDF
 
@@ -61,6 +61,11 @@ by
 | Notes section            | `Quote.Descrizione_Condizione_di_Pagamento__c`; rendered separately under `NOTE`                                                                            |
 
 ## Performance Plus quote PDF
+
+The contractual conditions component is rendered for Performance Plus
+Attivazione but omitted for exact Opportunity type `Performance Plus - Rinnovo`.
+The payment method and notes fields on the Quote remain part of the commercial
+quote section.
 
 | PDF field or section      | Salesforce source                                                                                                                                           |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
