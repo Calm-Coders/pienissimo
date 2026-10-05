@@ -2,10 +2,14 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-04 (second Prod deploy - UAT-only work brought into source, test suite repaired, Prod at 83.9%) · Source of record: [notes/](notes/)
+Last updated: 2026-10-05 (ticket send write-back fields moved to Asset in Prod; Order record page activation sent to Prod) · Source of record: [notes/](notes/)
 
 ## Where the project stands
 
+- 🟢 **2026-10-05 — [OI-199](notes/items/OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md) closed in Prod.** `Ticket_Sent__c` and `Ticket_Sent_Date__c` now exist on `Asset`
+  (`0AfSW000001HiiP0AS`). The Marketing Cloud selection is `Ready_for_Ticket_Dispatch__c = TRUE AND
+Ticket_Sent__c = FALSE` on Asset. The unused `Order` copies are deleted in Prod and UAT, and UAT is aligned. ⚠ The `Order_Record_Page`
+  activation (Assets list on the Order) was sent as `0AfSW000001Hign0AC`; result unverified.
 - 🟢 **2026-10-04 (later) — Prod is set up for the marketing round trip.** Landing Page site
   published, guest granted the three page controllers, `TEST MKT` data (6 orders, 13 tickets,
   6 Event Links) with nothing sent to Mexal, Sales app nav aligned with UAT, quote aging job

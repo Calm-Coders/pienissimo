@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionOverrides>
+        <actionName>Activate</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Activate</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Activate</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Approve</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Approve</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Approve</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>CancelEdit</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -15,16 +43,30 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>CreatePdf</actionName>
+        <actionName>Clone</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>CreatePdf</actionName>
+        <actionName>Clone</actionName>
         <formFactor>Large</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>CreatePdf</actionName>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Deactivate</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Deactivate</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Deactivate</actionName>
         <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
@@ -57,20 +99,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>EmailQuote</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>EmailQuote</actionName>
-        <formFactor>Large</formFactor>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>EmailQuote</actionName>
-        <formFactor>Small</formFactor>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -85,30 +113,58 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>NewQuote</actionName>
+        <actionName>New</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>NewQuote</actionName>
+        <actionName>New</actionName>
         <formFactor>Large</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>NewQuote</actionName>
+        <actionName>New</actionName>
         <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>QuoteAdjustment</actionName>
+        <actionName>NewReduction</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>QuoteAdjustment</actionName>
+        <actionName>NewReduction</actionName>
         <formFactor>Large</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>QuoteAdjustment</actionName>
+        <actionName>NewReduction</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>OrderAdjustment</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>OrderAdjustment</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>OrderAdjustment</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ReduceOrder</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ReduceOrder</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ReduceOrder</actionName>
         <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
@@ -123,20 +179,6 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>SaveEdit</actionName>
-        <formFactor>Small</formFactor>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>SyncQuote</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>SyncQuote</actionName>
-        <formFactor>Large</formFactor>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>SyncQuote</actionName>
         <formFactor>Small</formFactor>
         <type>Default</type>
     </actionOverrides>
@@ -158,8 +200,8 @@
         <actionName>View</actionName>
         <comment
     >Action override created by Lightning App Builder during activation.</comment>
-        <content>Quote_Record_Page</content>
-        <formFactor>Large</formFactor>
+        <content>Order_Record_Page</content>
+        <formFactor>Small</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
     </actionOverrides>
@@ -167,8 +209,8 @@
         <actionName>View</actionName>
         <comment
     >Action override created by Lightning App Builder during activation.</comment>
-        <content>Quote_Record_Page</content>
-        <formFactor>Small</formFactor>
+        <content>Order_Record_Page</content>
+        <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
     </actionOverrides>
@@ -181,57 +223,33 @@
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <searchLayouts>
         <customTabListAdditionalFields
-    >QUOTE.NAME</customTabListAdditionalFields>
+    >ORDERS.ORDER_NUMBER</customTabListAdditionalFields>
         <customTabListAdditionalFields
-    >OPPORTUNITY.NAME</customTabListAdditionalFields>
+    >SALES.ACCOUNT.NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields
-    >QUOTE.ISSYNCING</customTabListAdditionalFields>
+    >ORDERS.STATUS</customTabListAdditionalFields>
         <customTabListAdditionalFields
-    >QUOTE.EXPIRATIONDATE</customTabListAdditionalFields>
-        <customTabListAdditionalFields
-    >QUOTE.SUBTOTAL</customTabListAdditionalFields>
-        <customTabListAdditionalFields
-    >QUOTE.TOTALPRICE</customTabListAdditionalFields>
+    >ORDERS.TOTAL_AMOUNT</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields
-    >QUOTE.NAME</lookupDialogsAdditionalFields>
+    >ORDERS.ORDER_NUMBER</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields
-    >OPPORTUNITY.NAME</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields
-    >QUOTE.ISSYNCING</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields
-    >QUOTE.EXPIRATIONDATE</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields
-    >QUOTE.SUBTOTAL</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields
-    >QUOTE.TOTALPRICE</lookupDialogsAdditionalFields>
+    >CONTRACT.OWNERALIAS</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields
-    >QUOTE.NAME</lookupPhoneDialogsAdditionalFields>
+    >ORDERS.ORDER_NUMBER</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields
-    >OPPORTUNITY.NAME</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields
-    >QUOTE.ISSYNCING</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields
-    >QUOTE.EXPIRATIONDATE</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields
-    >QUOTE.SUBTOTAL</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields
-    >QUOTE.TOTALPRICE</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields
-    >QUOTE.PHONE</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields
-    >QUOTE.FAX</lookupPhoneDialogsAdditionalFields>
+    >CONTRACT.OWNERALIAS</lookupPhoneDialogsAdditionalFields>
         <searchResultsAdditionalFields
-    >QUOTE.NAME</searchResultsAdditionalFields>
+    >ORDERS.ORDER_NUMBER</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
-    >OPPORTUNITY.NAME</searchResultsAdditionalFields>
+    >SALES.ACCOUNT.NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
-    >QUOTE.ISSYNCING</searchResultsAdditionalFields>
+    >ORDERS.TOTAL_AMOUNT</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
-    >QUOTE.EXPIRATIONDATE</searchResultsAdditionalFields>
+    >ORDERS.EFFECTIVE_DATE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
-    >QUOTE.SUBTOTAL</searchResultsAdditionalFields>
+    >ORDERS.STATUS</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
-    >QUOTE.TOTALPRICE</searchResultsAdditionalFields>
+    >CONTRACT.CONTRACT_NUMBER</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

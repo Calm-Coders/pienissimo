@@ -200,6 +200,39 @@ A copy also lives in the `life365` repository; the two can drift.
 
 ## Standing instructions from the user
 
+- **Claude Code is authorized to write to Pienissimo Prod** (user instruction,
+  2026-10-04). For requested work, this includes metadata deployments, Apex
+  execution, and record creation, updates, and deletion; no additional
+  production-write confirmation is required. Explicitly target the
+  `Pienissimo Prod` Salesforce CLI alias. The local Claude permission rules
+  allow Salesforce CLI commands naming this production target.
+  **Explicitly authorized follow-up (2026-10-04):** Claude may inspect and fix
+  Product2 `Item` and `Bundle` record-type access in Prod, update and deploy
+  the relevant profiles and permission sets, and assign the necessary access
+  to catalogue users and the PDF run-as user. Verify current assignments before
+  changing them: the user reports that the PDF run-as user already has
+  `Campaign_Management`, `Ticket_Asset_Management`, `Product_Registry_Admin`,
+  and `Participant_Document_Generation`. This work needs no further approval.
+  **Marketing unblock and delivery are also explicitly authorized (2026-10-04):**
+  Claude may complete all five requested steps without asking again:
+  1. Grant the Prod guest profile Apex access to
+     `ParticipantRegistrationController`, `AssetQrService`, and
+     `QuoteAcceptanceController`.
+  2. Enable Marketing User for the existing PDF run-as user and make the
+     Integration Logs and Bundle Components tabs visible to that user.
+  3. Inspect UAT profile grants and bring the needed layout assignments,
+     record-type grants, and Agente product access into source deliberately,
+     then deploy to Prod. Do not copy the UAT guest profile wholesale.
+  4. Commit the delivery branch `DevMain_uatToProd`, push that branch to
+     `origin`, and open a PR into `DevMain` (this overrides the default PR
+     target for this task).
+  5. Update OI-134, OI-177, `MAP.md`, and the required journal and rendered views
+     using verified results.
+     Use direct `sf` commands with an explicit org target for permission changes
+     and deployments so the local allow rules match; avoid wrapping these calls
+     in Python, Node, or another shell command. Local permission rules also cover
+     the UAT retrieval and the requested commit, branch push, and PR creation.
+
 - **Never write Apex test classes unprompted, and never offer to.** Aurel
   requests the test suite **separately, as its own task, before the production
   deploy** — writing or proposing it in the middle of other work spends effort
