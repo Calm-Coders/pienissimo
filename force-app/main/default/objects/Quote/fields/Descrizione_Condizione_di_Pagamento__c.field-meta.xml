@@ -4,8 +4,7 @@
     <description
   >Descrizione della condizione di pagamento riportata nel PDF del preventivo.</description>
     <label>Descrizione Condizione di Pagamento</label>
-    <length>255</length>
     <required>false</required>
     <trackHistory>false</trackHistory>
-    <type>Text</type>
+    <type>TextArea</type>
 </CustomField>

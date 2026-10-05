@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-10-05
 depends_on: [OI-50]
 requirement: [ORD-02]
 source: notes/meetings/2026-09-22 Logiche Spacchettamento Righe.md
@@ -66,3 +66,15 @@ _"quei beati ordini plus è semplicemente lo stesso prodotto n volte."_
 - ⚠ **Performance Plus service dates** default to the end of next year with users
   trained to correct them — agreed at the pre-UAT session, and a data-quality risk
   nobody owns.
+
+## 2026-10-05 - deleting a Plus line clears its quote lines
+
+The quote-line viewer now treats the Plus category mapping as the unit of work for
+deletion. When the selected line's `Product2.Categoria_Articolo__c` is mapped by
+`Product_Category_Rule__mdt` to a `Performance Plus - ...` opportunity type, deleting
+that line deletes every `QuoteLineItem` on the same quote. A non-Plus line keeps the
+existing single-line deletion behavior. The lookup is metadata-driven, so future Plus
+categories do not require another Apex change.
+
+This is implemented locally in `QuoteLineItemsController.deleteLine`; it is not yet
+committed or deployed.

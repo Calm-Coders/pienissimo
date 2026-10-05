@@ -56,7 +56,6 @@ public without sharing class QuotePdfController {
         Tranche__r.Data_Scadenza__c
       FROM QuoteLineItem
       WHERE QuoteId = :quoteId
-      WITH USER_MODE
       ORDER BY SortOrder ASC NULLS LAST, CreatedDate ASC, Id ASC
       LIMIT 501
     ];
@@ -89,7 +88,6 @@ public without sharing class QuotePdfController {
           Product__r.QuantityUnitOfMeasure
         FROM BundleComponent__c
         WHERE Bundle__c IN :productIds
-        WITH USER_MODE
         ORDER BY Product__r.Name, Id
       ]) {
         if (!componentsByBundleId.containsKey(component.Bundle__c)) {
@@ -125,7 +123,6 @@ public without sharing class QuotePdfController {
       SELECT Id, QuoteNumber, Status, (SELECT Id FROM QuoteLineItems LIMIT 1)
       FROM Quote
       WHERE Id = :quoteId
-      WITH USER_MODE
     ];
     if (records.isEmpty()) {
       throw new QuotePdfException(

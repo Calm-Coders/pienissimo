@@ -100,7 +100,6 @@ public without sharing class QuoteAcceptanceEmailController {
         Account.Email_Contatto_Principale__c
       FROM Quote
       WHERE Id = :quoteId
-      WITH USER_MODE
       LIMIT 1
     ];
     if (records.isEmpty()) {
