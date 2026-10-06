@@ -2,14 +2,13 @@ import { api, LightningElement } from "lwc";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getDraft from "@salesforce/apex/QuoteAcceptanceEmailController.getDraft";
-import sendEmail from "@salesforce/apex/QuoteAcceptanceEmailController.sendEmail";
+import sendEditedEmail from "@salesforce/apex/QuoteAcceptanceEmailController.sendEditedEmail";
 
 export default class QuoteAcceptanceEmail extends LightningElement {
   _recordId;
   recipient = "";
   subject = "";
   body = "";
-  acceptanceUrl = "";
   isLoading = true;
   isSending = false;
   loaded = false;
@@ -45,7 +44,6 @@ export default class QuoteAcceptanceEmail extends LightningElement {
       this.recipient = draft.recipient || "";
       this.subject = draft.subject;
       this.body = draft.body || "";
-      this.acceptanceUrl = draft.acceptanceUrl;
       this.loaded = true;
     } catch (error) {
       if (quoteId === this.recordId) this.errorMessage = this.message(error);
@@ -58,16 +56,19 @@ export default class QuoteAcceptanceEmail extends LightningElement {
   }
   async handleSend() {
     if (this.sendDisabled) return;
-    const inputs = [...this.template.querySelectorAll("lightning-input")];
+    const inputs = [
+      ...this.template.querySelectorAll("lightning-input, lightning-textarea")
+    ];
     if (!inputs.reduce((valid, input) => input.reportValidity() && valid, true))
       return;
     this.errorMessage = "";
     this.isSending = true;
     try {
-      await sendEmail({
+      await sendEditedEmail({
         quoteId: this.recordId,
         recipient: this.recipient,
-        subject: this.subject
+        subject: this.subject,
+        body: this.body
       });
       this.dispatchEvent(
         new ShowToastEvent({

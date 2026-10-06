@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-09-21
+updated: 2026-10-05
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -219,3 +219,32 @@ Sabatino Rinaldi's web-form validation **with priority agreed on the core forms*
 while the ticket flows are being configured by Fabrizio Mastracci and Aurel Mrruku.
 
 ⚠ **Marketing Cloud UAT is 2 October**, and the forms are its input.
+
+## 2026-10-05 - the form mapping finally has an owner and a date
+
+At [the 05/10 Lead session](../meetings/2026-10-05%20Check%20Data%20Import%20Lead%20e%20Contact.md),
+Sabatino Rinaldi assigned **Matteo Distaso** to flag the hidden and non-hidden
+fields for the two forms he had prioritised in writing on 02/10 —
+`Pienissimo Live` and `Camerieri Venditori` — **by the morning of 06/10**, in
+Elena Spini's shared file, checked against the data model.
+
+🟢 **First dated step on this workstream in nine weeks.** And the field-level
+decisions were taken in the session rather than deferred: UTM parameters
+(`campaign`, `content`, `medium`, `source` — ⚠ the workbook carries a fifth,
+`utm_term`) stay hidden and auto-populate from the URL, never visible to the
+customer; **visitor score, `ID campagna Z` and postcode are removed** from the
+forms; consents reduce to the privacy notice (mandatory) and commercial
+profiling (optional).
+
+Who builds what was also settled: _"i moduli principali saranno configurati
+dalla squadra tecnica mentre gli utenti potranno crearne autonomamente di
+nuovi."_
+
+🔴 **Still outstanding and not raised:** the 100+ form review, the DNS records,
+the funnel screenshots and the graphics. Two forms with a mapping deadline is
+not the form review.
+
+⚠ Elena Spini said plainly she cannot follow the form logic without an overall
+view, and Sabatino Rinaldi answered that **Fabrizio Paganelli already holds
+that information** from an earlier discussion. It has never reached the
+repository.

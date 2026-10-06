@@ -1,5 +1,6 @@
 public without sharing class QuoteLineItemsController {
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
+  private static final String PLUS_OPPORTUNITY_TYPE_PREFIX = 'Performance Plus -';
   private static final Set<String> DELETABLE_QUOTE_STATUSES = new Set<String>{
     'Bozza',
     'Draft',
@@ -112,7 +113,6 @@ public without sharing class QuoteLineItemsController {
       SELECT Id, Name, QuoteNumber, Status
       FROM Quote
       WHERE Id = :quoteId
-      WITH USER_MODE
       LIMIT 1
     ];
 
@@ -132,7 +132,6 @@ public without sharing class QuoteLineItemsController {
         Product2.RecordType.DeveloperName
       FROM QuoteLineItem
       WHERE QuoteId = :quoteId
-      WITH USER_MODE
       ORDER BY SortOrder ASC NULLS LAST, CreatedDate ASC, Id ASC
     ];
 
@@ -156,7 +155,6 @@ public without sharing class QuoteLineItemsController {
           Product__r.ProductCode
         FROM BundleComponent__c
         WHERE Bundle__c IN :productIds
-        WITH USER_MODE
         ORDER BY Product__r.Name, Id
       ]) {
         if (!componentsByBundleId.containsKey(component.Bundle__c)) {
@@ -221,7 +219,6 @@ public without sharing class QuoteLineItemsController {
       SELECT Id, Name, ProductCode
       FROM Product2
       WHERE RecordType.DeveloperName = 'Bundle' AND Name IN :bundleNames
-      WITH USER_MODE
     ]) {
       bundlesByName.put(bundle.Name, bundle);
     }
@@ -246,7 +243,7 @@ public without sharing class QuoteLineItemsController {
     requireDeletableQuote(quoteId);
 
     List<QuoteLineItem> lines = [
-      SELECT Id, QuoteId, Description
+      SELECT Id, QuoteId, Description, Product2.Categoria_Articolo__c
       FROM QuoteLineItem
       WHERE Id = :lineId
       LIMIT 1
@@ -263,7 +260,20 @@ public without sharing class QuoteLineItemsController {
       );
     }
 
-    delete lines[0];
+    List<QuoteLineItem> linesToDelete = new List<QuoteLineItem>{ lines[0] };
+    String productCategory = lines[0].Product2 == null
+      ? null
+      : lines[0].Product2.Categoria_Articolo__c;
+    if (isPlusCategory(productCategory)) {
+      linesToDelete = [
+        SELECT Id
+        FROM QuoteLineItem
+        WHERE QuoteId = :quoteId
+        FOR UPDATE
+      ];
+    }
+
+    delete linesToDelete;
     return getContext(quoteId);
   }
 
@@ -352,6 +362,37 @@ public without sharing class QuoteLineItemsController {
       line.Product2.RecordType != null &&
       line.Product2.RecordType.DeveloperName ==
       BUNDLE_RECORD_TYPE_DEVELOPER_NAME;
+  }
+
+  private static Boolean isPlusCategory(String productCategory) {
+    if (String.isBlank(productCategory)) {
+      return false;
+    }
+
+    String normalizedCategory = productCategory.trim();
+    for (
+      Product_Category_Rule__mdt rule : Product_Category_Rule__mdt.getAll()
+        .values()
+    ) {
+      if (
+        String.isBlank(rule.Tipo_Opportunita__c) ||
+        !rule.Tipo_Opportunita__c.startsWith(PLUS_OPPORTUNITY_TYPE_PREFIX) ||
+        String.isBlank(rule.Categoria_Articolo__c)
+      ) {
+        continue;
+      }
+
+      for (String category : rule.Categoria_Articolo__c.split('[,;\\n]')) {
+        if (
+          !String.isBlank(category) &&
+          category.trim().equalsIgnoreCase(normalizedCategory)
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   private static Decimal salesUnitPrice(

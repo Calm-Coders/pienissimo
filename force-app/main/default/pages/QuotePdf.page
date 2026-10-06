@@ -416,13 +416,18 @@
       </apex:outputPanel>
 
       <apex:outputPanel layout="none" rendered="{!isPlusOpportunity}">
-        <div class="contract-page">
-          <c:QuotePdfContract
-            customer="{!quoteRecord.Account}"
-            customerName="{!customerName}"
-            legalAddress="{!legalAddress}"
-          />
-        </div>
+        <apex:outputPanel
+          layout="none"
+          rendered="{!NOT(isPerformancePlusRenewal)}"
+        >
+          <div class="contract-page">
+            <c:QuotePdfContract
+              customer="{!quoteRecord.Account}"
+              customerName="{!customerName}"
+              legalAddress="{!legalAddress}"
+            />
+          </div>
+        </apex:outputPanel>
 
         <table class="plus-order-header brand-header">
           <tr>

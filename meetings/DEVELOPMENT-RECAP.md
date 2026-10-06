@@ -5708,3 +5708,142 @@ The register has carried `go_live: 2026-10-21` since #124 — ROMI moved it in w
 Anita Aga's `73fe1bc` (the sync-error mail, the `Mexal_Customer_Error_Notification` template and `Account.Creato_su_Mexal__c` — the flag Elena Spini asked for at the Pre-UAT) and `49b5401` (the vendita-da-palco logic, ~300 lines of `WoocommerceOrderService`) are on `origin/DevAnita02/10` and **not in `DevMain`**. A weekend deploy from `DevMain` ships neither, including the error mail agreed with the client that morning.
 
 Elena Spini's status post revises the estimate to **25 days to finish**, states go-live 21/10 and Zoho decommission 31/10, and lists new dates: **12/10 everything in PROD**, **16/10 Marketing ticket UAT**, client autonomous testing from next week, and a phase-2 estimate to follow. Her own red flags: _"i requisiti continuano a cambiare"_ and _"sforiamo con i giorni a disposizione"_.
+
+## 55. Update 2026-10-05 — the article registry arrived and contradicts the model agreed the same day, and the rule the client rejected was rebuilt before they were consulted
+
+Nightly `requirements-check`, watermark **2026-10-02T22:00Z**, three days —
+the production deploy weekend plus Monday. **Three sessions on 05/10, two of
+them with the client**, four Pienissimo-side people in the room. Build claims
+are repository arithmetic against `DevMain` **`d526189`**.
+
+### The long-awaited file landed
+
+`Articoli Salesforce.xlsx` was modified **05/10 at 09:24:17Z** — hours before
+the UAT that needed it — and came off the unreachable list after four
+consecutive nightly runs. Read in full. It holds real catalogue prices; **none
+is recorded anywhere in this repository.**
+
+It is the first authoritative statement of what the client's articles are:
+**1,010 articles, 197 active.** Its own pivot gives the category table, and
+three entries are new to the record — `C20` is specifically **Servizi
+Google**, with a renewal twin **`C21`**, and there are two further consultancy
+categories, **`C40` Manuale Operativo** and **`C41` Menù Engineering**. §50
+recorded `C20` as "additional / spot services, incl. Google"; it is narrower
+than that, and `C21` was not known at all.
+
+Three findings change open items:
+
+- **`NR_Tranche` is in the header and empty on every row.** The tranche count
+  is the one thing #188 recorded Fabrizio Paganelli as owing, and the file that
+  was supposed to carry it does not. Worse, it contradicts a ruling taken the
+  same afternoon: the UAT agreed Performance Plus is *one article with a
+  tranche-count field*, and the registry is built the other way — one article
+  per tranche, the number written into the description as free text. Three
+  incompatible statements of one model, and **#210** is the new item.
+- **`E10` names two different events** — Golden Numbers and Pienissimo
+  Intensive. A category code is the natural key for an article→edition rule and
+  it is not unique, so #96's mapping cannot be built on the category alone.
+  That mapping's real scope is also now measurable: **42 active event
+  articles**, across nine categories, not 51.
+- **Not one active `E99` blocco.** All 469 are cancelled, so #48 has nothing to
+  map rather than a partial set — consistent with #98 re-creating the registry.
+
+And one long-standing defect is closed. **`E08` is Happy Team, with three
+active articles**, which confirms the correction §40 made to the "Happy Team
+sells nothing" reading — and `Product2.Evento__c` now carries `Happy Team`.
+
+### The Ri.Ba. fix is still one character away
+
+`MexalScadenzarioSearchService.cls:205` still tests only `'P'`. Three days
+after Mirko Merendi answered in writing, through a production deploy weekend,
+fourteen commits and five merged PRs, **nothing touches the predicate**, and
+no source in the window records a decision on it.
+
+Meanwhile the 05/10 UAT assigned **Fabrizio Paganelli** to produce
+_"tutti i possibili stati e codici presenti nello scadenziario di Mexal"_ —
+the same list the vendor has already given, on a thread Fabrizio Paganelli is
+himself on, which nobody in the room mentioned. And it has acquired a second
+dependant: **#208**, the client's new request to split unsettled amounts into
+`scaduto` and `a scadere`, which while `E` reads as unpaid would report every
+Ri.Ba. payer as overdue.
+
+### DocuSign: the free plan was the wrong account
+
+The 05/10 journal recorded the production DocuSign account as a free plan
+capped at three envelopes. The client UAT corrected it. There are **two**
+accounts; the integration must use the Pienissimo user rather than
+`amministrazione`, which is the free tenant; and Sabatino Rinaldi states a
+signed contract for **2,500 envelopes a year**. Quotes 00000002 and 00000003
+were sent and completed from production the same afternoon, live in the
+session. ⚠ Still only his spoken word — no plan name or document has been
+seen — and the morning had begun with the account unreachable, costing Aurel
+Mrruku a clean end-to-end run after a night that ended at 04:00.
+
+### The quote is not yet a commercial document
+
+Testing a renewal, Fabrizio Paganelli found the unit list price, quantity,
+unit of measure, line discount and net price **all absent** from the quote
+screen and from the quote. The client requires them per line on every layout,
+community page and document, plus the logo — **#207**. Aurel Mrruku accepted
+it and explained the omission himself: the build had concentrated on process
+logic rather than pagination.
+
+The pattern matters more than the item. All of those fields are specified in
+the client's own Campi Oggetti workbook, and so is the nightly Mexal anagrafica
+refresh the same session decided to go and ask the vendor about — it is `F-2`,
+written down since July (**#209**). With `Data invio automatico biglietti` on
+02/10, that is **three documented client designs in four days that the build
+overlooked**.
+
+### The contested rule was rebuilt before the conversation
+
+At the 17:15 Lead session Elena Spini previewed moving participant links from
+per-order to per-edition, as a proposal for the client on 06/10. Commit
+`4a6fe3f` landed at **17:39 CEST**: one Event Link per Order-Campaign pair,
+391 lines of `EventInvitationService`, two new triggers.
+
+The client's objection (#203) was correct on the merits. At 10:01 Aurel Mrruku
+had conceded that `Event_Invitation__c.Campaign__c` was taking _"la prima
+campagna che ha trovato"_ — undefined on a multi-edition order — and that a
+many-to-many entity was needed: _"Posso fare, però non l'abbiamo pensata."_
+So the change the client is to be consulted on tomorrow was in the repository
+before the consultation, and the paragraph they rejected no longer describes
+the build. ⚠ Internally the view is still that they have not understood it.
+
+### Two things went right without being asked for
+
+**Marco Montesi accepted the Business Blueprint in writing** at 13:20:02Z —
+_"direi che torna tutto, giusto tre precisazioni"_ — the first written client
+acceptance this project has had. His three points are questions, one of which
+the Performance Plus UAT answered hours later in another room. **Nobody has
+replied to him.**
+
+And **Fabrizio Mastracci wrote the send specification himself**, the one Aurel
+Mrruku has owed since 30/09 and which was due on 02/10. His query reads all
+three flags off `Asset` — so #199 is discharged from the consumer's side — and
+he added `Status = 'Assegnato'` of his own accord, closing problem #4 of the
+logic document's own risk table. **Four of that table's ten problems are now
+closed**, three of them by build rather than by decision.
+
+⏸ The first marketing mail is nonetheless **stopped**, by Elena Spini at
+18:28:50 CEST, pending the 06/10 client call on the link.
+
+### Also
+
+- The Lead object was reviewed field by field for the first time: `Settore`
+  becomes `Tipologia di attività` with the **21-value list now delivered**
+  (#115), deduplication runs on email and phone with **Partita IVA mandatory at
+  conversion**, consents reduce to two flags, UTM parameters stay hidden.
+- Matteo Distaso owes the hidden-field mapping for the two prioritised forms
+  **by tomorrow morning** — the first dated step on #14 in nine weeks.
+- Strategists will **share one user account** to save licences, and will fill
+  the contract activation date; the `digital` field is hidden but kept. ⚠ The
+  workbook's `Utenti` and `Profili` sheets are still empty headers (#186).
+- Anita Aga's `73fe1bc`, `49b5401` and `eee1788` are now all in `DevMain`.
+- ⚠ **07/10 double-books the client**: the WooCommerce and Mexal UAT runs
+  10:00–13:00 and the Kreosoft call 12:15–13:00.
+
+**Register not amended; stays v1.6.** The day's client agreements are
+operational and layout rulings, and the one item of real client input — Marco
+Montesi's acceptance — covers the Blueprint, not `REQUISITI.it.md`. #184
+remains the mechanism.

@@ -10,6 +10,42 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-05 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-10-02T22:00Z** (three days: the Prod deploy weekend plus Monday).
+  Read in full: `Articoli Salesforce.xlsx` (first time ever, off the
+  unreachable list after four runs), the Campi Oggetti workbook (re-read), the
+  internal logic document (re-read), and the Gemini notes of both 05/10 client
+  sessions. Grepped the 10:01 internal transcript.
+- **State:** committed to `DevMain`. **Four new items OI-207–OI-210**; three
+  meeting notes (`2026-10-05 UAT Performance Plus e Gestione date pagamento`,
+  `2026-10-05 Check Data Import Lead e Contact`,
+  `2026-10-05 Interna Check PROD per MKT`); two reference notes
+  (`The Articoli Salesforce article registry`,
+  `The marketing ticket send logics as written by Marketing`). Updated OI-14,
+  46, 48, 96, 111, 115, 177, 182, 186, 188, 197, 199, 201, 203, the Blueprint
+  note, the Campi Oggetti note, the logic-document note and the Plus-renewal
+  decision. MAP, INDEX, both trackers, both recaps §55, trace.
+  **Register not amended, stays v1.6.**
+- **Next:** OI-201 is still a one-predicate fix (`'P' || 'E'`) and is the
+  single highest-value thing anyone can do — it now blocks OI-208 as well.
+  Answer Marco Montesi's three questions; one of them was already answered in
+  another room. Decide OI-210 with the client: one article plus a count, or one
+  article per tranche — the two statements are from the same day.
+- **Watch:** 🔴 the per-edition link rebuild (`4a6fe3f`, 17:39 CEST) **landed
+  before the 06/10 client consultation it was deferred to**; if they ask for
+  something else tomorrow, that work is sunk. ⚠ Three documented client designs
+  in four days have been overlooked by the build (`Data invio automatico
+  biglietti`, the commercial quote fields, the `F-2` nightly anagrafica batch)
+  — **read the Campi Oggetti workbook before designing anything new.** ⚠ The
+  `Articoli Salesforce.xlsx` extract holds **real catalogue prices**; no value
+  was copied and none may be. ⚠ Branch `DevmainRevertParticipationPage` is
+  misnamed and reverts nothing. ⚠ 07/10 double-books the client, 10:00–13:00
+  against 12:15–13:00.
+
+---
+
 ## 2026-10-02 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack (three conversations), Drive, Fathom, git and `force-app`
@@ -4343,3 +4379,111 @@ org-only Admin/Agente profile grants into source, and the full `Full_Permission`
 rewrite. Still with him: `Recall_Tutor` delete, integration config and
 credentials, DocuSign endpoint, `Send_After__c`; UAT `doesSkipAsyncApexValidation`
 left on.
+
+## 2026-10-04 ? codex ? Claude marketing unblock and PR authorization
+
+- **Asked:** give Claude the permissions needed for the five requested marketing
+  unblock and delivery steps.
+- **Done:** recorded explicit authorization in `AGENTS.md` for the three Prod
+  guest Apex grants, Marketing User and tab visibility, deliberate UAT profile
+  reconciliation and Prod deployment, committing/pushing `DevMain_uatToProd` and
+  opening its PR into `DevMain`, and updating OI-134/OI-177 and project views.
+  Added command-specific local allow rules for Salesforce writes, UAT retrieval,
+  Git staging/commit/branch push, and PR creation.
+- **State:** permissions and instructions updated; the production changes,
+  delivery commit, and PR remain for Claude to execute and verify.
+
+**Record page activations (same session).** Prod showed Salesforce's default
+record page for Quote and Opportunity (hence the extra actions such as New Note
+and New Contact): their org-wide activations of `Quote_Record_Page` and
+`Opportunity_Record_Page_Three_Column` existed only in UAT. The source
+`Quote.object-meta.xml` was an empty element and there was no Opportunity object
+file. Both now carry UAT's object file (the activations are the only object-level
+difference from Prod); deployed to Prod `0AfSW000001HgdN0AS` and UAT
+`0AfMA00000CqYZl0AN`, read back from Prod. Account needed nothing — its pages are
+assigned through the Sales app in both orgs.
+
+## 2026-10-05 — claude — Ticket send fields on Asset, Order record page in Prod
+
+- **Asked:** which Event Link status Marketing should read the link from, and how it
+  knows which ticket to send. Aurel Mrruku then reported that `Ticket_Sent__c` was
+  missing on Asset in Prod and that the Order page had no Asset list, and asked for
+  `Ticket_Sent__c` to be put on Asset.
+- **Answered:** Marketing reads `Registration_Url__c` when `URL_Status__c = Ready`.
+  `Status__c` cannot reach `Ready` while `Ready_Requires_Preparation` still demands
+  `Send_After__c`, which nothing sets since `5b19caa`. Tickets are selected per Asset
+  through `Ready_for_Ticket_Dispatch__c`.
+- **Did (Prod):**
+  - `Asset.Ticket_Sent__c` and `Asset.Ticket_Sent_Date__c` created, with read/edit
+    in `Full_Permission` and `Ticket_Asset_Management`. Deploy
+    `0AfSW000001HiiP0AS` succeeded; field permissions read back from Prod. Both
+    permission sets were diffed against Prod before the deploy; no Prod permission
+    was lost. OI-199 is resolved and OI-197 updated.
+  - `force-app/main/default/objects/Order/Order.object-meta.xml` created from UAT's
+    Order object (fields and list views stripped). Its only difference from Prod is
+    the org-wide `Order_Record_Page` activation, which carries the
+    `orderAssetsRelatedList` component. Sent to Prod as `0AfSW000001Hign0AC`; ⚠
+    **the result was not read back**, because the permission classifier blocked
+    reading the output. `OrderAssetsController` is granted only to System
+    Administrator in Prod. That is enough today, because all active internal users
+    are admins.
+- **State:** branch `DevMain_uatToProd`, nothing committed. New files: the Order
+  object file and the two Asset fields. The two permission sets are modified.
+  `Ticket_Asset_Management` was then also assigned in Prod to Amministratore Pienissimo
+  and ROMI COMPANY. Before that only Tech Romi held it, and the System Administrator
+  profile has no permissions of its own on these fields. Assignments read back from
+  Prod. Not
+  deployed to UAT. Next: confirm `0AfSW000001Hign0AC`, decide whether to delete the
+  unused `Order.Ticket_Sent*` fields, and send the field spec to Fabrizio Mastracci.
+- **Later the same session:** deleted `Order.Ticket_Sent__c` and
+  `Order.Ticket_Sent_Date__c` at Aurel Mrruku's instruction. Both orgs were checked
+  first: no data, no metadata dependencies. Destructive deploys: Prod
+  `0AfSW000001HivJ0AS`, UAT `0AfMA00000Cqk330AB`. The two field files and the
+  `Full_Permission` entries were removed from source. UAT received the Asset fields and
+  permission sets (`0AfMA00000CqgU70AJ`). Field locations were read back from both orgs:
+  all three send fields are only on Asset. Still uncommitted.
+
+## 2026-10-05 — claude — DocuSign production account wired into Prod
+
+- **Asked:** Aurel Mrruku received the client's production DocuSign account and asked
+  for the steps to configure it in Prod, then to diagnose a test quote
+  (`0Q0SW000006fs7R0AQ`) whose envelope never arrived.
+- **Did (DocuSign):** Aurel Mrruku ran Go-Live on integration key `1f4543dc-…` from his
+  own demo account into the client's production account, created a production secret
+  and authenticated `DocuSign Principal` in Prod (status read back: `Configured`).
+  The key's origin stays in a ROMI developer's personal demo account — a handover
+  point.
+- **Did (Prod):**
+  - Auth Provider `DocuSign`: endpoints moved from `account-d.docusign.com` to
+    `account.docusign.com` (deploy `0AfSW000001HjOL0A0`). The secret cannot be set
+    through the Metadata API ("Consumer Secret update is not allowed"); Aurel Mrruku
+    entered it in Setup. A first attempt put the secret into Consumer Key; corrected,
+    read back as `1f4543dc-…`.
+  - Named Credential `DocuSign`: URL was `https://na4.docusign.ne` (typo, set by hand);
+    corrected to `https://na4.docusign.net`, deploy succeeded.
+  - `Integration_Configuration2__c` `DocuSign_Create_Envelope`: endpoint path moved from
+    the demo account id to the production API account id. Read back.
+  - Read-only `GET` on the production account from Prod returned **HTTP 200**.
+- **Found:** 🔴 the production account is a **free plan** (`DocuSignIt`,
+  `planClassification: free`, **3 envelopes per billing period**, `canUpgrade: false`).
+  Recorded in [OI-111](notes/items/OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md).
+  Connect for Salesforce — the only path that writes `Completed` back and so turns a
+  quote `Firmato` — is not configured on the production account and is likely absent
+  on that plan. OI-174 (ROMI mail blocking DocuSign) was checked against UAT and is
+  resolved: `@romicompany.com` recipients have signed envelopes since 29/09.
+- **Test failure diagnosed:** the 05/10 11:00 send failed with `System.CalloutException:
+You don't have read permissions on the User External Credential object` — the job runs
+  as the Landing Page guest, and only UAT's `Landing Page Profile` holds that read (an
+  org-only grant). The 04/10 21:45 error (`Configurazione DocuSign_Create_Envelope
+mancante`) predates the config row (created 04/10 23:32Z).
+- **Permissions (source + Prod):** `Full_Permission` gains full access to
+  `Integration_Log__c` and its ten fields (deploy `0AfSW000001HjbF0AS`; before it, no
+  assigned permission set or profile could read the log fields). `DocuSign` and
+  `Full_Permission` gain read on `UserExternalCredential` (deploy `0AfSW000001Hjg50AC`,
+  read back). Both permission sets were diffed against Prod first; nothing Prod-only.
+- **Not done:** the resend of the test quote — blocked by the session's permission
+  classifier; left to Aurel Mrruku.
+- **State:** nothing committed. ⚠ `force-app` still carries the demo endpoints for the
+  Auth Provider and Named Credential; a Prod deploy of those two files reverts this
+  work. The test quote is `Accettato` / `DocuSign_Status__c = Error`; no envelope has
+  been sent from production yet.

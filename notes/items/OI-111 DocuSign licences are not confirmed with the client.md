@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-09-02
-updated: 2026-09-28
+updated: 2026-10-05
 blocks: [OI-68]
 requirement: INT-19
 source: Slack DM Aurel Mrruku / Elena Spini, 2026-09-02 15:47-15:49 CEST
@@ -206,6 +206,69 @@ _"viste, grz"_ at 13:01.
   the credentials does not change the configuration; **somebody has to enter
   them.** No owner, no date.
 - ⚠ **The original question in this note is still not answered on paper.** Whether
-  Pienissimo holds a *licence* — as opposed to an account someone can log into —
+  Pienissimo holds a _licence_ — as opposed to an account someone can log into —
   was never confirmed in writing. An account arriving is strong evidence and not
   the same thing.
+
+## 🔴 2026-10-05 - the production account is a free plan with three envelopes
+
+The client's production account is now wired into Pienissimo Prod (Go-Live of the
+existing integration key, production endpoints, principal authenticated; see
+[JOURNAL.md](../../JOURNAL.md)). A read-only call to the account from Prod returned:
+
+- `planName: DocuSignIt`, **`planClassification: free`**
+- **`billingPeriodEnvelopesAllowed: 3`**, `canUpgrade: false`
+- plan start 21 September 2026
+
+**This answers the question this item has asked since 2 September, and the answer is
+no.** The account the client handed over is not a commercial licence. Three envelopes
+a month cannot carry the quote flow, every test spends one, and DocuSign Connect —
+which writes `Completed` back to the quote and so produces `Firmato` and the order —
+is very likely not on a free plan. Not verified on the account itself.
+
+🔴 **The ask is now concrete:** Pienissimo must buy a paid eSignature plan that
+includes API use and Connect, on this same account, before 21 October. Owner not yet
+assigned.
+
+## 🟢🔑 2026-10-05 (later) - the free-plan finding was the wrong account, and the client holds 2,500 envelopes a year
+
+**Corrects the section above.** At
+[the 05/10 client UAT](../meetings/2026-10-05%20UAT%20Performance%20Plus%20e%20Gestione%20date%20pagamento.md)
+two facts came out that the account inspection could not see.
+
+🔑 **There are two DocuSign accounts.** Aurel Mrruku: _"hanno due account
+Elena. Allora, in qualche modo hanno creato un account, poi Docusign ha
+aggiunto il loro account."_ The free `DocuSignIt` plan with three envelopes is
+the `amministrazione` one, and it is **not** the account to use —
+_"Io stavo facendo quella configurazione sugli user di amministrazione, però
+no, dobbiamo usare user di Pienissimo, sappiatelo anche voi. Roba molto
+importante."_
+
+🔑 **A paid contract exists.** Sabatino Rinaldi, asked directly what it costs:
+_"noi abbiamo chiuso un contratto per 2005, cioè abbiamo la disponibilità di
+erogare **2500 buste annuali**. Ovviamente poi Docusign ragiona che ogni busta
+può avere più preventivi."_ The "2005" is a transcription garble; the figure he
+states is 2,500 envelopes a year, one envelope per quote, several documents per
+envelope. ⚠ **No document, order confirmation or plan name has been seen** —
+this is his spoken statement in a recorded call, which is more than the
+project has ever had, and still not the written confirmation this item asks
+for.
+
+🟢 **Envelopes completed from production the same afternoon.** `Preventivo
+00000002` was sent and reached `Completed` during the UAT (`dse_NA4@docusign.net`
+11:31Z, then `dse@eumail.docusign.net` 12:55Z–13:13Z), and `Preventivo
+00000003` completed at 15:14Z, forwarded by Anita Aga. The round trip works
+against the client's production account.
+
+⚠ **Retries.** Six copies of the quote-acceptance mail and four `Completed`
+notices went out for quote 00000002 between 11:30Z and 13:13Z. Whatever caused
+the repeats spends envelopes from a counted allowance, and Aurel Mrruku's own
+intent is _"cercherò di usare il meno possibile Docusign in produzione perché
+costa."_
+
+🔴 **Still open:** the morning of 05/10 began with the production account
+unreachable — _"username password non vanno bene"_ — which cost Aurel Mrruku a
+clean end-to-end run and five hours. And the integration key's origin remains a
+ROMI developer's personal demo account. The ask is no longer "buy a plan"; it
+is **which of the two accounts is contractually the client's, and who
+administers it.**

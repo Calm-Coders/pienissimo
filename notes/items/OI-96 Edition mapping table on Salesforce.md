@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-10-02
+updated: 2026-10-05
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -318,3 +318,41 @@ end, explain to them."_ No such documentation exists yet.
 ⚠ `Da Data Competenza` and `A Data Competenza` are confirmed in the Blueprint as
 **Administration's responsibility alone**, because the dates drive which edition an
 order lands on.
+
+## 🔴🔑 2026-10-05 - the mapping has an authoritative source now, and it contains a collision
+
+[`Articoli Salesforce.xlsx`](../The%20Articoli%20Salesforce%20article%20registry.md)
+arrived 05/10 09:24:17Z and is the first authoritative statement of what the
+articles actually are. It changes the size and the shape of this task.
+
+🔑 **Scope.** 1,010 articles, of which **197 are active**. Of those, **42 are
+event articles** across nine categories: `E02` Food Marketing Festival 9,
+`E03` Pienissimo Live 4, `E04` Academy 4, `E05` Sold Out 3, `E06` ODB Live 3,
+`E07` Camerieri Venditori 4, `E08` Happy Team 3, `E09` Mastery 4, `E10`
+Pienissimo Intensive 8. `E01` Tour has **no** active article. Any "mapped N of
+M" figure should be measured against 42 live event articles, not against the
+whole registry.
+
+🔴 **`E10` names two different events** — `Golden Numbers` (5 articles, all
+cancelled) and `Pienissimo Intensive` (14 cancelled, 8 active). The category
+code is the natural key for an article→edition rule and **it is not unique**.
+Nothing in the registry distinguishes the two beyond the description text, and
+normalising an article's meaning out of its text is what
+[the article-code risk](../risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)
+forbids. A rule keyed on `E10` will map Golden Numbers articles to Pienissimo
+Intensive or refuse both.
+
+🔴 **Not one active `E99` `blocco`.** All 469 are cancelled — see
+[OI-48](OI-48%20Bundle-only%20article%20codes.md).
+
+🔑 **The decode of `Natura Articolo`.** The Campi Oggetti workbook's
+`Articoli (anagrafica)` sheet defines `Natura` as **"genera biglietto SI/NO
+(mexal)"** — the article field that says whether the article produces a ticket.
+The registry's `Natura Articolo` column carries `BO`, `BB`, `MS`, `HR`, `NM`,
+`S`, `NO`, `ND`. ⚠ The mapping from those codes to yes/no is **not documented
+anywhere**, and it governs whether an Asset is generated at all.
+
+⚠ Also new in the same workbook: `Tipo Biglietto` is a three-value picklist —
+`Executive`, `Gold`, `Diamond` — and the registry populates it. The competenza
+range remains the mapping window per the 30/09 UAT; nothing in this sweep
+changed that or the sibling-overlap constraint.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-10-04
+updated: 2026-10-05
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -259,3 +259,35 @@ Built by Claude Code at Aurel Mrruku's request, recorded in
 - ⚠ Still open for the round trip: whether Marketing Cloud in production can send
   (authenticated domain), and `Send_After__c`, which is no longer populated on
   Event Links since `5b19caa`.
+
+## 2026-10-05 - the production handover happened, and the first send is held
+
+`PIENISSIMO - Interna Check PROD per MKT` ran **05/10 10:01 CEST** as booked —
+[the note](../meetings/2026-10-05%20Interna%20Check%20PROD%20per%20MKT.md). Aurel
+Mrruku, Elena Spini, Fabrizio Mastracci.
+
+🟢 **Fabrizio Mastracci got what he needed to write the send logics**, and
+wrote them the same morning —
+[the marketing send contract](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+The `Data invio biglietti` question that blocked flow 1 was answered in the
+session.
+
+🔴 **Production was not clean.** Aurel Mrruku finished at 04:00, could not sign
+in to the production DocuSign account — _"username password non vanno bene"_ —
+and so **created orders directly in Prod with fields bypassed** to give
+Fabrizio Mastracci records to look at: _"volevo proprio fare un giro pulito"_
+and could not reach `Firmato`. The DocuSign block cleared five hours later, live
+in the client UAT ([OI-111](OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)).
+
+⏸ **The first marketing mail is stopped.** Elena Spini, marketing group DM,
+18:28:50 CEST: _"<Fabrizio Mastracci> non mandare la mail perchè dobbiamo
+ancora sentirli per il tema link invio partecipanti ecc"_ — held pending the
+client call `[ROMI-PIENISSIMO] - Form: Link per partecipanti`, **06/10
+10:00–11:00**, because the link's granularity moved from per-order to
+per-edition the same evening
+([OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)).
+
+⚠ So the production round trip this item exists to enable is **built,
+specified, and administratively paused** one day after the org was handed over.
+The 16/10 Marketing ticket UAT and the 08/10 four-hour end-to-end check are
+unchanged by this sweep.

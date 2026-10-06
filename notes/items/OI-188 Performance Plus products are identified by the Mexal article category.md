@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: Pienissimo
 raised: 2026-09-28
-updated: 2026-10-01
+updated: 2026-10-05
 depends_on: [OI-98]
 blocks: [OI-141, OI-168]
 severity: gating
@@ -130,7 +130,6 @@ minute whether the codes now exist. ⚠ Separately, **Elena Spini owes Aurel Mrr
 the updated product list** for database cleanup, taken as an action item at the 30/09
 UAT with no date — a second, overlapping route to the same information.
 
-
 ## 🟢 2026-10-01 - the categorisation is built and merged
 
 **The row's own finding that _"nothing in `force-app` reads `categoria articolo`
@@ -138,12 +137,12 @@ to set a Plus flag yet"_ no longer holds.** `4f672a2` (Anita Aga, `DevAnita30`,
 30/09 17:56 CEST) merged to `DevMain` in `8661564` via PR **#72** at 01/10 10:03
 CEST. Verified at `DevMain` `618e646`:
 
-| Metadata | What it is |
-| --- | --- |
-| `Product_Category_Rule__mdt` | New public custom metadata type, two text fields: `Categoria_Articolo__c` and `Tipo_Opportunita__c` |
-| two `customMetadata` records | map the Plus **attivazione** and **rinnovo** categories to their opportunity types |
-| `Product2.Categoria_Articolo__c` | Text, the Mexal category on the article |
-| `Opportunity.Tipo_Opportunita__c`, `Lead.Tipo_Opportunita__c` | Text |
+| Metadata                                                      | What it is                                                                                          |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `Product_Category_Rule__mdt`                                  | New public custom metadata type, two text fields: `Categoria_Articolo__c` and `Tipo_Opportunita__c` |
+| two `customMetadata` records                                  | map the Plus **attivazione** and **rinnovo** categories to their opportunity types                  |
+| `Product2.Categoria_Articolo__c`                              | Text, the Mexal category on the article                                                             |
+| `Opportunity.Tipo_Opportunita__c`, `Lead.Tipo_Opportunita__c` | Text                                                                                                |
 
 `QuoteManageProductsController.cls` queries the metadata type by
 `Tipo_Opportunita__c` (`plusCategoriesForOpportunity`, line 778) and filters the
@@ -173,4 +172,44 @@ new Plus article codes carrying tranche counts, created in Mexal first.
 `Articoli Salesforce.xlsx` has **not moved since 30/09 12:45:55Z** — this sweep
 re-checked, and it was not opened. **Performance Plus UAT is 05/10.**
 
+## 2026-10-05 - Rinnovo behavior reads only the Opportunity field
+
+For the new no-signature renewal exception, the user explicitly required the
+runtime discriminator to be only
+`Opportunity.Tipo_Opportunita__c = Performance Plus - Rinnovo`. Product category,
+Quote lines and Opportunity record type do not decide that downstream behavior.
+The product-category mapping remains responsible for configuring the Opportunity
+type earlier in the sales flow. See [the decision](../decisions/Decision%20-%20Performance%20Plus%20Rinnovo%20bypasses%20conditions%20and%20signature.md).
+
 🔴 **Whether Google services join the Plus flow is still unanswered.**
+
+## 🔑 2026-10-05 - the registry arrived, and the category table is wider than this note
+
+[`Articoli Salesforce.xlsx`](../The%20Articoli%20Salesforce%20article%20registry.md)
+was modified 2026-10-05 at 09:24:17Z and read in full. Its own pivot gives the
+authoritative category list, and three things in it are new here.
+
+- 🔑 **`C20` is specifically `Servizi Google`** (3 active), not the general
+  "additional / spot services, incl. Google" this note records — and it has a
+  **renewal twin `C21`, `Servizi Google - Rinnovo`** (1 active), which this note
+  does not mention at all. A renewal category outside `C11` matters: the rule
+  built here treats `C10`/`C11` as the Performance set, so a Google renewal is
+  correctly excluded, but nothing documents that `C21` exists or how it should
+  behave.
+- 🔑 **Two further consultancy categories exist**: `C40` `Manuale Operativo`
+  (7 active) and `C41` `Menù Engineering` (2 active).
+- 🟢 `C10` has **23 active** articles and `C11` **4**. The retirement of the
+  twenty existing `C10` codes that this note recorded as owed **has not
+  happened** — they are still `Flag_Annullato = N`.
+
+🔴 **The tranche count did not arrive.** The registry has an `NR_Tranche`
+column and it is empty on every row; the count lives only in article
+descriptions as free text. That is
+[OI-210](OI-210%20The%20delivered%20article%20registry%20carries%20no%20tranche%20count.md),
+and it contradicts the 05/10 UAT's own `Concordato` that Plus is one article
+with a tranche-count field.
+
+⚠ **Retired codes are selectable.** Fabrizio Paganelli flagged live in the UAT
+that some Plus codes are cancelled, and the registry bears it out —
+`PLUS-310 RINNOVO PERFORMANCE (EXT)` sits under `C11`. A picker filtering on
+category alone will offer them; it must also test `Flag_Annullato`.

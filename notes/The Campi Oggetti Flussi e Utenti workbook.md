@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-05
 source: Drive 121CTGF0mCkL_hiQIZWL1aYEirqwdSVZs
 ---
 
@@ -90,3 +90,80 @@ client-facing; this row is stale.
 A **field-naming and Zoho-provenance reference**, useful when deciding what a
 field was called before and what the client expects to see. Not a build state, not
 a flow register, and not an authority on anything the register or `notes/` covers.
+
+## 🔑 2026-10-05 - the Lead and Campagne sheets were filled in, and the flow register was not
+
+Modified **2026-10-05 at 16:40:32Z**, during or just after
+[the Lead session](meetings/2026-10-05%20Check%20Data%20Import%20Lead%20e%20Contact.md)
+— the third consecutive working day this file has changed. Re-read in full.
+**It is no longer a stub on the Lead side.**
+
+### 🟢 New, and authoritative
+
+- **`Origine Lead`**, nine Italian values: `Da Direzione, Da Tutor, Da Cliente,
+  Da libro, Da videocorso, Da Diretta, Da Corso, Da Marketing, Da Referral`.
+  Answers Matteo Distaso's request in the session for Italian labels.
+- **`Tipologia Attività`**, 21 values, on **both** the Lead and Account sheets,
+  typed `Multiselect picklist` on Account and `Global picklist` **mandatory**
+  on `Preventivo` —
+  [OI-115](items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md).
+- **Five UTM fields**: `utm_campaign`, `utm_content`, `utm_medium`,
+  `utm_source`, **`utm_term`** — ⚠ the session named only four.
+- **Two Lead consent flags**, both `Mapping con campo Contact`:
+  `Flag Consenso Profilazione`, `Flag Informativa Privacy`. Matches the
+  session's ruling exactly.
+- **A `Categoria`→`Sottocategoria` dependency.** The `Corso` branch has eleven
+  sub-categories including **`Happy Team`** and **`Intensive at Home`**; the
+  `Categoria` side adds **`Cassa Zucchetti`** and `Altri Servizi`. `Intensive at
+  Home` and `Cassa Zucchetti` appear nowhere else in this project —
+  [OI-46](items/OI-46%20Bundle%20classification%20picklists.md).
+
+### 🔑 `Articoli (anagrafica)` decodes the article registry
+
+The sheet now defines the Salesforce product fields, and two definitions are
+the key to
+[`Articoli Salesforce.xlsx`](The%20Articoli%20Salesforce%20article%20registry.md):
+
+- **`Natura` = _"genera biglietto SI/NO (mexal)"_** — the article field that
+  says whether the article produces a ticket. ⚠ The registry's `Natura
+  Articolo` column holds `BO`, `BB`, `MS`, `HR`, `NM`, `S`, `NO`, `ND`, and
+  **nothing documents which of those mean yes.** It governs whether an Asset is
+  generated at all.
+- **`Tipo Biglietto` = `null, Executive, Gold, Diamond`** — a three-value
+  picklist, populated in the registry.
+- `Categoria statistica` = _"evento (da mexal)"_; `LIVELLO_0` =
+  `Eventi, Consulenze, Prodotti, Software, Addebiti`; `LIVELLO_1`–`_6` null.
+
+### 🔑 `Campagne` is filled, and names two fields the record did not have
+
+`Campagna Figlia`: `Edizione`, `Anno Accademico`, `Data Fine Evento`,
+`Data Inizio Evento`, **`Data invio automatico biglietti`**, `Da Data
+Competenza`, `A Data Competenza`, `Indirizzo`, `Link Iscrizione Infopoint`,
+`Luogo`, `Orario inizio`, `Parcheggio`, `Zoom Meeting id`, **`Tipologia Evento`
+(`Live`/`Online`, mandatory)**, **`Data Avvio Bruciatura`** (Date).
+`Campagna Padre`: `Prodotto` (Lookup Product2), `Periodo`, `Ingressi`.
+
+- 🟢 **`Data invio automatico biglietti` is now honoured by the build** — it is
+  the source of `Event_Invitation__c.Data_Invio_Biglietto__c`, confirmed at the
+  10:01 session. The 02/10 complaint that the design ignored it is withdrawn.
+- 🔑 **`Data Avvio Bruciatura`** is a burn-start date on the edition — the
+  mechanism [OI-196](items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)
+  needs for unnamed tickets being burned near the event, named here for the
+  first time.
+- 🔑 **`Tipologia Evento` `Live`/`Online`, mandatory** — new to the record.
+
+### 🔴 Unchanged where it matters
+
+- **`Flussi - elenco` is still 2 of 7.** `F-1` (upsert anagrafiche sfdc→erp,
+  realtime, _"scatta alla prima opty won"_) and `F-2` (update erp→sfdc,
+  **batch notturno**). `F-3`–`F-7` and `C-1`–`C-6` empty, a fourth consecutive
+  reading. So `Flows & Objects.drawio` remains the only picture of the flows.
+  ⚠ **`F-2` is the nightly alignment the 05/10 UAT decided to go and ask Mirko
+  Merendi about** —
+  [OI-209](items/OI-209%20Mexal%20anagrafica%20updates%20only%20propagate%20when%20an%20order%20is%20sent.md).
+- **`Utenti` and `Profili` hold headers only** —
+  [OI-186](items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md).
+- 🔴 The `Account` and `Referente` sheets still carry **live customer records** —
+  a named company with its VAT number, PEC, administrative email, phone, Mexal
+  customer code and named owner, and a named private individual with email and
+  mobile. **No value is copied into this repository.**

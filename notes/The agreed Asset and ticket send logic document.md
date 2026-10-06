@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-01
-updated: 2026-10-01
+updated: 2026-10-05
 source: Gmail thread 1a0f8b6c0021fe9c, 2026-10-01 18:25Z
 ---
 
@@ -136,3 +136,40 @@ Claudio"_, and "Claudio" is not resolvable — see
 [the 01/10 Interna note](meetings/2026-10-01%20Interna.md). Aurel Mrruku declined
 to review it in the call, so **none of the ten has been through a ROMI technical
 review**, and item 5 has already materialised in the build.
+
+## 2026-10-05 - modified, and four of the ten problems have moved
+
+The internal version `PIENISSIMO – INTERNA Asset e invio biglietti.docx` was
+**modified 2026-10-05 at 08:37:23Z** and re-read in full.
+
+⚠ **No textual change is detectable against the record above.** Both withheld
+sections are still there and still the same size — seven open points, ten
+problems — and the `LOGICHE FLUSSI SALESFORCE` text matches. The modification
+is real; what it changed is not, and the 01/10 version was not retained to diff
+against. The figure caption reads _"ciclo di vita del biglietto · 4 stati"_,
+describing the path `Ordinato → Disponibile → [Nominato] → Assegnato`, not the
+seven-value `AssetStatus` picklist. **Recorded as uncertain, not as unchanged.**
+
+### Four problems closed or answered, by build rather than by decision
+
+| # | Was | Now |
+| --- | --- | --- |
+| 1 | the link ignores the edition's `Data_Invio_Biglietto__c` — the biggest risk in the table | 🟢 **closed.** The field is built on `Event_Invitation__c` and takes the Campaign's value — [the 10:01 session](meetings/2026-10-05%20Interna%20Check%20PROD%20per%20MKT.md) |
+| 2 | one `Campaign__c` per invitation, undefined on a multi-edition order | 🟢 **closed.** Aurel Mrruku confirmed it was taking _"la prima campagna che ha trovato"_, then rebuilt it per Order-Campaign pair in `4a6fe3f` — [the decision](decisions/Decision%20-%20Event%20Links%20belong%20to%20Order%20Campaign%20pairs.md) |
+| 4 | the selection query ignores `Status` | 🟢 **closed by Marketing, unasked.** Fabrizio Mastracci's own query includes `Status = 'Assegnato'` — [the send contract](The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md) |
+| 5 | three flags on two objects | 🟢 **closed 05/10.** All three are on `Asset`; the `Order` copies are deleted in both orgs — [OI-199](items/OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md) |
+| 8 | `Rinuncia` must be per edition, not on the `Event_Invitation` | 🟡 **addressed in part.** `Rinuncia` is now scoped to the link's own Campaign, which is per edition in effect |
+
+🔑 **Four of the ten were right, and all four were fixed within four days of
+being written** — by a table whose authorship this note records as uncertain
+(_"il feedback di Claudio"_, unresolved) and which Aurel Mrruku declined to
+review. ⚠ The remaining six, including #3 (no mail when a later tranche
+unlocks tickets), #6 (chronological sequencing versus per-tranche unlock), #9
+(last-day payments) and #10 (write-back at volume), are untouched.
+
+🔴 **The document is still the text the client rejected.** Fabrizio Paganelli
+and Sabatino Rinaldi objected to its `Regole di Business Aggiuntive` points 1
+and 2, and point 1 — the multi-event aggregation per order — **has now been
+rebuilt per edition**, so the paragraph in this document no longer describes
+the build. It should not be re-sent as it stands
+([OI-203](items/OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)).

@@ -1,12 +1,12 @@
 ---
 id: OI-199
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-01
-updated: 2026-10-02
+updated: 2026-10-05
 depends_on: [OI-197]
 blocks: [OI-177, go-live]
 severity: gating
@@ -42,11 +42,11 @@ question was never answered; the fields were built anyway, hours later.
 `5b19caa` (Rexhina Hysi, _"all the changes dine today"_, 01/10 18:43 CEST),
 merged to `DevMain` in `367799b` via PR **#73**. Verified at `DevMain` `618e646`:
 
-| Field | Object | Type |
-| --- | --- | --- |
-| `Ready_for_Ticket_Dispatch__c` | 🟢 `Asset` | Checkbox |
-| `Ticket_Sent__c` | 🔴 **`Order`** | Checkbox |
-| `Ticket_Sent_Date__c` | 🔴 **`Order`** | DateTime |
+| Field                          | Object         | Type     |
+| ------------------------------ | -------------- | -------- |
+| `Ready_for_Ticket_Dispatch__c` | 🟢 `Asset`     | Checkbox |
+| `Ticket_Sent__c`               | 🔴 **`Order`** | Checkbox |
+| `Ticket_Sent_Date__c`          | 🔴 **`Order`** | DateTime |
 
 `ParticipantRegistrationController.cls:524` already sets
 `Ready_for_Ticket_Dispatch__c = true` on the Asset, so the write side is live.
@@ -133,3 +133,79 @@ flag. See [the workbook note](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20w
 a documented home on the edition since July, and the design that was built ignores
 it. That is worth putting on the table alongside the Asset-versus-Order question
 rather than settling the object in isolation.
+
+## 🟢 2026-10-05 - the write-back fields now exist on Asset, in source and Prod
+
+Built by Claude Code at Aurel Mrruku's request, after he found `Ticket_Sent__c`
+missing on Asset in Prod. Before the change a Prod `FieldDefinition` query confirmed
+the split exactly as recorded above: `Ready_for_Ticket_Dispatch__c` on `Asset`,
+`Ticket_Sent__c` and `Ticket_Sent_Date__c` on `Order`.
+
+- `Asset.Ticket_Sent__c` (checkbox, default false) and `Asset.Ticket_Sent_Date__c`
+  (date/time) added to source, read/edit in `Full_Permission` and
+  `Ticket_Asset_Management`.
+- Deployed to Prod as `0AfSW000001HiiP0AS` (4 components, 0 errors). The Prod
+  `FieldPermissions` read-back shows both permission sets with read and edit, and the
+  Data Cloud CRM extract set `sfdc_a360_sfcrm_data_extract` with read only.
+- Before deploying, both permission sets were retrieved from Prod and compared with
+  source. The only other differences were standard read-only fields that source marks
+  editable, so the deploy removed no Prod permission.
+
+The selection the logic document specifies can now be run on one object:
+`Asset: Ready_for_Ticket_Dispatch__c = TRUE AND Ticket_Sent__c = FALSE`. After the
+send, Marketing Cloud writes `Ticket_Sent__c = TRUE` and `Ticket_Sent_Date__c` on that
+Asset.
+
+⚠ **Still open:**
+
+- Not verified: whether the Data Cloud stream feeding Marketing Cloud picks up the
+  two new Asset fields without a manual stream update.
+- The field spec still has to reach Fabrizio Mastracci.
+- Prod assignment: `Ticket_Asset_Management` is now held by Tech Romi, Amministratore
+  Pienissimo and ROMI COMPANY (05/10). The user the Marketing Cloud flow runs as is
+  not yet identified, so its edit access on Asset is unverified.
+
+### Later on 05/10 - the Order copies are deleted, UAT aligned
+
+At Aurel Mrruku's instruction, `Order.Ticket_Sent__c` and `Order.Ticket_Sent_Date__c`
+were deleted. Checks before deleting, in both orgs: no Order held a value, and
+`MetadataComponentDependency` found nothing referencing either field. In source, their
+only references were their own files and two `Full_Permission` entries.
+
+- Source: both field files and the two `Full_Permission` entries removed.
+- Destructive deploy: Prod `0AfSW000001HivJ0AS`, UAT `0AfMA00000Cqk330AB`.
+- UAT then received the two Asset fields and both permission sets
+  (`0AfMA00000CqgU70AJ`). Its permission sets were diffed against source first;
+  nothing was UAT-only.
+- `FieldDefinition` read back from both orgs: `Ready_for_Ticket_Dispatch__c`,
+  `Ticket_Sent__c` and `Ticket_Sent_Date__c` now exist **only on Asset**, in Prod and
+  in UAT.
+- Deleted fields remain restorable for 15 days under Setup → Deleted Fields.
+
+## 🟢 2026-10-05 (later) - the consumer has written the query, and it runs
+
+[Fabrizio Mastracci's own statement of the send logic](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md),
+posted to the marketing group DM at 10:56:50 CEST, reads the three fields off
+`Asset`:
+
+> _"Prendere dall'oggetto Order, gli Asset che hanno Statuse = 'Assegnato' AND
+> Ready for Ticket Dispatch = true AND ticket_sent__c = 'false' … ci sono due
+> campi sull'asset che sono ticket sent e ticket sent date."_
+
+So the person who has to build the Marketing Cloud selection has written it
+against a single object and it is satisfiable. **This item is discharged from
+the consumer's side**, the day after the fields moved to `Asset` and the Order
+copies were deleted in both orgs.
+
+🟢🔑 **He also closed a hole nobody asked him to.** His query includes
+`Status = 'Assegnato'`, which is exactly problem #4 of the logic document's own
+risk table — the published query `Ready = TRUE AND Sent = FALSE` ignores
+`Status`, so a collection corrected after nomination would still send a ticket.
+The spec as written by Marketing is **stricter and more correct than the spec
+ROMI issued.**
+
+⚠ Two of the ten problems remain live in his text: the ticket is taken from the
+Asset's **attachments** by name, on an Asset that will also carry
+[OI-194](OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)'s
+seven-page document (#5 in spirit), and the write-back is Marketing Cloud
+writing per participant at volume (#10), unaddressed.

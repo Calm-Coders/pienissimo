@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-30
-updated: 2026-10-01
+updated: 2026-10-05
 depends_on: [OI-126, OI-74, OI-198]
 blocks: [OI-177]
 requirement: BIG-06
@@ -23,13 +23,13 @@ marketing flow Fabrizio Mastracci has to build depends on all of them.**
 
 ## The contract
 
-| Piece | Owner | Built? |
-| --- | --- | --- |
-| Boolean flag → `true` on confirmation of **at least one** participant | Aurel Mrruku | 🔴 no |
-| Marketing Cloud query intercepting records with the flag set | Fabrizio Mastracci | 🔴 no |
-| Transactional send, per participant, to the participant's own address | Fabrizio Mastracci | 🔴 no |
-| Write-back field on the asset after the send, to stop re-sends | Fabrizio Mastracci | 🔴 no |
-| `Inviato` asset state, written **as soon as the record is modified** | Aurel Mrruku | 🔴 no |
+| Piece                                                                 | Owner              | Built? |
+| --------------------------------------------------------------------- | ------------------ | ------ |
+| Boolean flag → `true` on confirmation of **at least one** participant | Aurel Mrruku       | 🔴 no  |
+| Marketing Cloud query intercepting records with the flag set          | Fabrizio Mastracci | 🔴 no  |
+| Transactional send, per participant, to the participant's own address | Fabrizio Mastracci | 🔴 no  |
+| Write-back field on the asset after the send, to stop re-sends        | Fabrizio Mastracci | 🔴 no  |
+| `Inviato` asset state, written **as soon as the record is modified**  | Aurel Mrruku       | 🔴 no  |
 
 Elena Spini's recap (`01:06:17`): the link from `Event_Invitation__c` leads to the
 compilation page, and on confirmation of at least one participant's data Aurel
@@ -60,7 +60,7 @@ At `DevMain` `0b6b828` (30/09 12:32 CEST):
 
 - `AssetStatus.standardValueSet` carries **seven** values —
   `Ordinato · Disponibile · Rinuncia · Assegnato · Utilizzato · Non utilizzato ·
-  Annullato`. **`Inviato` is absent.**
+Annullato`. **`Inviato` is absent.**
 - `Asset` carries `Anno_Competenza__c`, `Campaign__c`, `Data_CheckIn__c`,
   `Fattura_Pagata__c`, `Fattura_Rif__c`, `Fonte_Acquisto__c`,
   `Order_Product__c`, `QR_Id__c`. **No send flag and no sent-timestamp field.**
@@ -98,7 +98,6 @@ the **send** trigger and the send's write-back. The 30/09 sessions answered this
 one and left OI-126's aggregate — tickets held versus tickets completed, per
 contact per campaign — still unplaced.
 
-
 ## 🔑 2026-10-01 - the written document arrived, and two pieces of this row changed
 
 [The specification this row was deferred on now exists](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md).
@@ -122,13 +121,13 @@ Two substantive changes to the contract as this row recorded it:
 
 ### Re-verified against `DevMain` `618e646` (01/10 18:54 CEST)
 
-| Piece | Built? |
-| --- | --- |
-| Flag on confirmation of at least one participant | 🟢 **yes** — `Asset.Ready_for_Ticket_Dispatch__c`, and the controller sets it |
-| Marketing Cloud query on the flag | 🔴 no |
-| Per-participant transactional send | 🔴 no |
-| Write-back after the send | ⚠ fields exist, **on the wrong object** — [OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md) |
-| `Inviato` asset state | ⬛ **withdrawn** — `AssetStatus` still carries seven values, and an eighth is no longer wanted |
+| Piece                                            | Built?                                                                                                                                           |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Flag on confirmation of at least one participant | 🟢 **yes** — `Asset.Ready_for_Ticket_Dispatch__c`, and the controller sets it                                                                    |
+| Marketing Cloud query on the flag                | 🔴 no                                                                                                                                            |
+| Per-participant transactional send               | 🔴 no                                                                                                                                            |
+| Write-back after the send                        | ⚠ fields exist, **on the wrong object** — [OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md) |
+| `Inviato` asset state                            | ⬛ **withdrawn** — `AssetStatus` still carries seven values, and an eighth is no longer wanted                                                   |
 
 ### 🟢 The spec now has a date
 
@@ -141,3 +140,43 @@ for his side.
 production from Monday 05/10, so the object question in
 [OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)
 has to be settled before that deploy, not after.
+
+## 2026-10-05 - write-back fields moved to Asset
+
+`Ticket_Sent__c` and `Ticket_Sent_Date__c` now exist on `Asset` in source and in Prod
+(`0AfSW000001HiiP0AS`), next to `Ready_for_Ticket_Dispatch__c`. See
+[OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md).
+The Marketing Cloud query, the transactional send and the write-back activity itself
+are still unbuilt on the Marketing Cloud side.
+
+## 🟢🔑 2026-10-05 - the owed spec exists, written by the person who was owed it
+
+The field specification Aurel Mrruku has owed Fabrizio Mastracci since 30/09,
+due 02/10 and never produced, **now exists in the opposite direction**:
+Fabrizio Mastracci wrote both send logics into the marketing group DM on 05/10
+at 10:44:57 and 10:56:50 CEST, after
+[the production check session](../meetings/2026-10-05%20Interna%20Check%20PROD%20per%20MKT.md)
+— _"Ho messo le logiche sulla nostra chat."_ Full text in
+[the marketing send contract note](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+
+🟢 **Flow 2 is specified and satisfiable** — all three fields on `Asset`, with
+`Status = 'Assegnato'` added, the PDF from the Asset's attachments, the mail to
+the referenced Contact, then the write-back. See
+[OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md).
+
+🟢🔑 **Flow 1 gained the send date.** `Data_Invio_Biglietto__c` now exists on
+`Event_Invitation__c` and takes the Campaign's value — Aurel Mrruku at the
+10:01 session: _"La data che mettono sulla campagna."_ That closes the open
+point this item recorded as the biggest risk in the whole document, and it
+honours `Data invio automatico biglietti` on `Campagna Figlia`, documented in
+the Campi Oggetti workbook since July. ⚠ Fabrizio Mastracci notes it is
+_"popolato solo su campagne figlie"_.
+
+⏸ **But flow 1 is stopped.** Elena Spini, marketing group DM, 18:28:50 CEST:
+_"non mandare la mail perchè dobbiamo ancora sentirli per il tema link invio
+partecipanti ecc"_ — held until the client call on **06/10 10:00**, because the
+link's granularity is being reopened
+([OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)).
+
+⬛ `Inviato` remains withdrawn; nothing in this sweep revisited it. `AssetStatus`
+stays at seven values.

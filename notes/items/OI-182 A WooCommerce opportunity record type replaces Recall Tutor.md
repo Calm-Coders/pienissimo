@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: both
 raised: 2026-09-25
-updated: 2026-09-28
+updated: 2026-10-05
 depends_on: [OI-140]
 source: notes/meetings/2026-09-25 UAT Recall Tutor e Bundle.md
 ---
@@ -108,3 +108,31 @@ proposed or scaffolded here**, and this is for whoever takes the test-suite task
 - ⚠ `Plus_Attivazione_Rinnovo` arriving here matters to
   [OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md),
   which reads the Contract `stato` off the opportunity record type.
+
+## 🔑 2026-10-05 - the client says Recall Tutor opportunities are also created in bulk
+
+Marco Montesi, replying to the Business Blueprint at 13:20:02Z, first of his
+three precisazioni:
+
+> _"in merito alle 3 tipologie di opportunità, quando parliamo di **Recall
+> Tutor**, l'opportunità potrebbe essere generata dal Tutor ma anche
+> **massivamente da noi**, come ad esempio a seguito di una lista di contatti
+> che manifestano interesse a seguito di un'azione di survey post evento."_
+
+🔑 So `Recall Tutor` is **not** only a tutor-initiated opportunity. Pienissimo
+also creates them in bulk from a contact list, for instance after a post-event
+survey. That is a second origin for the same record type, and it is a mass
+insert rather than a single record.
+
+⚠ **It bears directly on the `Origine` field.** This item replaced the
+`Recall_Tutor` record type with `WooCommerce` plus a Recall/Pack Tutor origin.
+A bulk-created recall opportunity has neither a tutor nor a WooCommerce order
+behind it, so neither the record type nor the origin values as built describe
+it. The nine-value `Origine Lead` list the Campi Oggetti workbook now carries —
+Da Direzione, Da Tutor, Da Cliente, Da libro, Da videocorso, Da Diretta, Da
+Corso, Da Marketing, Da Referral — is the Lead's, not the Opportunity's, and
+`Da Direzione` is plausibly the bulk case.
+
+🔴 **Unanswered.** Marco Montesi's mail has had no reply. Nobody has said
+whether bulk creation is in Fase 1, what sets the origin, or how a survey list
+becomes opportunities — there is no import or mass-create path in the record.
