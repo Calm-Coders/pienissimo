@@ -2,9 +2,79 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-05 (nightly sweep — the article registry landed, three client sessions, and the contested link rule was rebuilt) · Source of record: [notes/](notes/)
+Last updated: 2026-10-06 (nightly sweep — the contested rule was adopted as the client wanted it, and three gating items closed in code) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟢🔑 **2026-10-06 — the rule the client rejected was adopted in the direction it had already been rebuilt, and three gating items closed in code on one day.** Nightly sweep,
+  watermark 2026-10-05T22:00Z. **One client session**, six rulings; build claims are repository
+  arithmetic against `DevMain` **`59d4264`**.
+  🟢🔑 **[OI-203](notes/items/OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)
+  is resolved.** At [the 06/10 session](notes/meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)
+  (10:02 CEST, ~1h30m — Fabrizio Paganelli · Sabatino Rinaldi · Elisa Migliano · **Rebecca Marmo**,
+  with Elena Spini and Aurel Mrruku) the room **adopted one nomination link per edizione, not per
+  order**, and settled the `Rinuncia` rule per edition. **Both contested points closed**, and
+  closed the way the client wanted them. ⚠ So `4a6fe3f`'s pre-emptive rebuild is **not sunk** —
+  which vindicates the direction, not the sequence.
+  🟢🔑 **[OI-201](notes/items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)
+  is fixed on both paths.** `MexalScadenzarioSearchService` now tests `'P' || 'E'` —
+  **Anita Aga's `b74c8c4`, committed 05/10 at 18:46 CEST on an unmerged branch**, so four nights of
+  "did not move" were right about `DevMain` and blind to the branch. It merged today via **PR #81**.
+  🟢🔑 **[OI-206](notes/items/OI-206%20The%20Insoluto%20concept%20has%20no%20invoice%20due%20date%20and%20no%20invoice%20record.md)
+  and [OI-208](notes/items/OI-208%20Overdue%20and%20upcoming%20payments%20are%20not%20distinguished%20on%20the%20contract.md)
+  are built** by `731c7ac`: new **`Fattura__c`** (with `Insoluto__c`, citing OI-206) and
+  **`Scadenza_Fattura__c`** (with `Stato_Scadenza__c` = `Pagata`/`Scaduta`/`A scadere`, citing
+  OI-208, plus `Giorni_Ritardo__c` and two list views). ⚠ **Neither is in Prod**, nothing is
+  verified against a real invoice, and 🔴 **OI-206's reports are still absent** — fields are not the
+  Blueprint's reporting promise.
+  🟢🔑 **[OI-209](notes/items/OI-209%20Mexal%20anagrafica%20updates%20only%20propagate%20when%20an%20order%20is%20sent.md)
+  has its design, agreed a day before the vendor call it was deferred to**: Mexal-managed registry
+  fields locked in the Salesforce UI, corrections made in Mexal, **a nightly sync through a
+  dedicated user that bypasses the lock**. That is `F-2` of the client's own workbook, three months
+  on. 🔴 **Nothing is built**, and the exception-queue owner is *still* unassigned.
+  🟢 **[OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md):
+  Elisa Migliano sent all four picklists** at 06:54:07Z — categoria, sottocategoria, origine lead,
+  tipologia attività. 🔴 **As a mail attachment this sweep cannot open**, so the values are unread
+  and the 21-value list is unreconciled. ⚠ She warns the list may already be short.
+  🟢 **[OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md) moved for the first time in
+  nine weeks** — Matteo Distaso delivered the hidden-field mapping on the morning it was due, and
+  documented **two different UTM capture mechanisms** (the two prioritised forms use the cookie +
+  iframe-URL path, not hidden inputs). 🔴 **The `pienissimolive.it` form "non risulta
+  raggiungibile"** — one of the two, unreachable, no owner. 🔑 **Forms must now require Partita
+  IVA**, for the Anticipay check before Mexal.
+  🔑 **[The marketing funnel is written out](notes/The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md)**:
+  **11 email + 11 WhatsApp**, variable waits (2–8 days from the event setting), exit check at every
+  step. 🔴 **Two questions to Rebecca Marmo are unanswered** — WhatsApp parallel or backup, and
+  which event date stops the send. 🔴 **One nomination of five ends the funnel**
+  ([OI-196](notes/items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)):
+  the client agreed to drop follow-ups for partial nominations for go-live, and ⚠ **Elena Spini
+  accepted it, rejected it on the merits 37 seconds later, and accepted it anyway** —
+  _"per me è no sense… ma se va bene a loro"_. The deferral is marked `temporaneamente` with
+  **no Fase 2 row to bring it back**.
+  🔴 **New: [OI-211](notes/items/OI-211%20Mexal%20rejects%20N%20for%20the%20electronic%20invoicing%20code.md)**
+  — Mexal refuses the `N` the client supplied for `Codice Fatturazione Elettronica`; Aurel Mrruku
+  reads the admitted values as `P` or `S`, hedged, and has asked Kreosoft. On the order-send path,
+  due at the **07/10 12:15** Mexal call.
+  🔴 **[OI-200](notes/items/OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md)
+  did not move, on a second version.** The document was amended (12:46:10Z) and re-sent (12:47:00Z)
+  — and the **seven `Open point da confermare con il cliente` are still absent**, the Marketing
+  Cloud **query condition is still blank**, and it still prints _"Oggetto per il Flag: Asset ? da
+  confermare con Aurel"_ — **a question answered and deployed on 05/10**. No reply at this watermark.
+  🟡 **[OI-207](notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)
+  partly landed** via PR #82: `QuoteLineItem.Discount_Pct__c` (`Sconto %`), the quote PDF, the quote
+  screen, the acceptance community page, a new quote-line record page, `Agente__c` on three objects.
+  ⚠ **Unit of measure and the logo are untouched**, and the other three fields were not verified on
+  the seven surfaces.
+  🔑 **Go-live was stated in the room as "2 settimane"**, and used as the reason to refuse every
+  structural change: **cambio nominativo → Fase 2**, dynamic follow-ups → Fase 2, per-ticket
+  rinuncia → Fase 2, no mail on full renunciation → Fase 2.
+  ⚠ New of record: **QR check-in writes `utilizzato` within 5 days of the event date**; the
+  **Rinuncia button leaves the email** and must be **bigger on the community page** (Rebecca Marmo,
+  surface confirmed by Aurel Mrruku); the **edition-move exception** (2026→2027) is handled by
+  changing the academic year or a zero-value offer, with no build and no owner; and **ROMI has no
+  solution-design template** for Fabrizio Mastracci's marketing write-up.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **212**.
+  — [trace](notes/traces/Source%20trace%202026-10-06%20nightly.md)
 
 - 🔴🔑 **2026-10-05 — the article registry finally arrived and it contradicts the model agreed the same day; the rule the client rejected was rebuilt before they were consulted; and the one-character Ri.Ba. fix is still not in the code.** Nightly sweep,
   watermark 2026-10-02T22:00Z, **three days** (the Prod deploy weekend plus Monday). **Three
@@ -32,8 +102,8 @@ Last updated: 2026-10-05 (nightly sweep — the article registry landed, three c
   🟢 **[OI-201](notes/items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)
   resolved in code 06/10:** `E` counts as paid like `P`, as Kreosoft said. The new nightly invoice
   and scadenzario sync (`MexalInvoiceSyncJob`, 03:30) saves each rate as `Scadenza_Fattura__c`,
-  whose `Pagata__c` is `P` or `E`, and drives order line → tranche from it. ⚠ Working tree only,
-  not committed or deployed; verify on one Ri.Ba. invoice in UAT.
+  whose `Pagata__c` is `P` or `E`, and drives order line → tranche from it. ⚠ ~~Working tree only,
+  not committed or deployed~~ — **committed 06/10 as `731c7ac`**; verify on one Ri.Ba. invoice in UAT.
   🟢🔑 **[The Performance Plus UAT](notes/meetings/2026-10-05%20UAT%20Performance%20Plus%20e%20Gestione%20date%20pagamento.md)**
   (15:01 CEST, ~2h01m, Aurel Mrruku · Elena Spini · **Fabrizio Paganelli · Elisa Migliano · Sabatino
   Rinaldi · Marco Montesi**) drove activation end to end and **signed through DocuSign in

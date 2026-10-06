@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-06
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -79,3 +79,50 @@ already records that the tranche carries no amount. A customer-facing quote
 that shows neither a line's list price nor its tranche's value is not a
 commercial document, and the Business Blueprint carrying signature lines for
 both companies is already with them.
+
+## 🟡 2026-10-06 - part of it landed, on the community-page branch
+
+PR **#82** (`DEV_modifycomunityquotepage`, merged `59d4264` at 20:07 CEST)
+carries Rexhina Hysi's three commits, whose own message states the intent:
+_"bundle fic price to be fixed, **added firlds to comunity page**, fic pdf to
+show always field ybder tale"_ (`95d0be0`).
+
+What is verifiable in source:
+
+| Landed | Evidence |
+| --- | --- |
+| 🟢 **Line discount** | new `QuoteLineItem.Discount_Pct__c`, label **`Sconto %`**, percent(5,2) — _"Percentuale di sconto inserita durante la creazione delle tranche Performance Plus. Il prezzo finale rimane memorizzato in UnitPrice per evitare una seconda applicazione dello sconto."_ |
+| 🟢 **The quote PDF** | `QuotePdf.page` +39 then reworked in `30fb71c`, and `QuotePdfController` +19 — the _"show always field under table"_ fix |
+| 🟢 **The quote screen** | `quoteManageProducts` html/js/css reworked (+98 js), `QuoteManageProductsController` +53, `QuoteLineItemsController` +7 |
+| 🟢 **The acceptance community page** | `quoteAcceptancePage` html/css reworked (+117 css), `QuoteAcceptanceController` +169 |
+| 🟢 **A quote-line record page** | new `Quote_Line_Item_Record_Page.flexipage` (377 lines), `f84d356` |
+| 🟢 **Agente** | `Agente__c` added to `Account`, `Lead` and `Quote`; `Quote_Compact_Layout` created |
+
+## 🔴 Why this row stays open
+
+**This sweep did not verify the five named fields against the seven surfaces.**
+What it establishes is that the commercial-fields work started and that the
+**discount** has a field. The row named **unit list price, quantity, unit of
+measure, line discount and net price**, on every layout, community page and
+document, plus the logo:
+
+- **Line discount** — 🟢 has a field now.
+- **Unit list price, quantity, unit of measure, net price** — ⚠ **not confirmed.**
+  Standard `QuoteLineItem` already carries `UnitPrice`, `Quantity` and
+  `TotalPrice`; whether they are now *on the layouts, the community page and the
+  PDF* is a layout and page question this sweep did not open the org to answer.
+- **Unit of measure** — ⚠ no field named in the diff, on `QuoteLineItem` or
+  `Product2`. The likeliest genuine gap.
+- **The logo** — ⚠ nothing in the diff addresses it.
+
+⚠ **Not deployed to Prod** by anything this sweep can see, and
+`Quote_Record_Page.flexipage` *lost* 10 lines in `95d0be0` while
+`Product_Record_Page` lost 10 in `f84d356` — removals this sweep did not read.
+
+🔴 **A test class was edited, not written:** `QuoteCommercialTest.cls` **-6
+lines** in `f84d356`, and `Product2.Is_Plus__c` was deleted (-10). Recorded
+because coverage is the standing brief; **no test was written, proposed or
+scaffolded by this run.**
+
+**To close:** confirm the five fields on each of the seven surfaces in the org,
+and settle unit of measure and the logo.

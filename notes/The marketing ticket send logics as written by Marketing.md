@@ -5,7 +5,7 @@ status: active
 owner: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-06
 depends_on: [OI-134, OI-177, OI-196, OI-197, OI-199]
 source: Slack marketing group DM C0C38JJ9D1T, 2026-10-05 10:44:57 and 10:56:50 CEST
 ---
@@ -71,3 +71,106 @@ distinguishes the two.
 ⚠ The write-back is **Marketing Cloud writing to Salesforce per participant**,
 which is problem #10 of the same table: at volume it risks delays or double
 sends. Unaddressed here.
+
+## 🔑 2026-10-06 - the full funnel, written out
+
+Fabrizio Mastracci posted the whole of flow 1 into the same DM at **14:47:15
+CEST**, headed `FUNNEL INVIO RICHIESTA ISCRIZIONE - NO LOGICHE BUSINESS SOLO
+INVIO NEWSLETTER CON RICHIESTA ISCRIZIONE DA MARKETING CLOUD`. This is the first
+time the shape of the funnel appears anywhere in the records.
+
+### Structure
+
+- **11 communications: 11 email + 11 WhatsApp**
+- **Wait between steps is variable** — 2/3/4/5/6/7/8 days, _"da setting evento"_
+- The exit check is **repeated at every step**, eleven times
+
+### Entry — unchanged from 05/10, and already agreed
+
+First email fires on creation of an `Event_Invitation__c` with
+`Registration_Url__c` NOT NULL, `URL_Status__c = 'Ready'`, and
+`Data_Invio_Biglietto__c` matching the Campaign's — _"popolato solo su campagne
+figlie."_
+
+### Exit — the contact leaves the funnel on any one of
+
+- Click on **Rinuncia**
+- **All** pre-ordered / blocked tickets nominated or completed
+- **Event date passed**
+
+### 🔴 Two questions put to Rebecca Marmo, both unanswered at this watermark
+
+- **WhatsApp: parallel or backup?** _"Invio sempre in parallelo alla email, o
+  solo come backup su: bounce email / email non aperta / email non cliccata"_.
+  ⚠ This doubles or halves the message volume of the whole funnel and nobody has
+  decided it.
+- **Which date stops the sending** — _"Data inizio evento, oppure Data fine
+  evento"_.
+
+### 🔴 The partial-nomination exit rule, and a reversal inside 37 seconds
+
+At 14:34:35 CEST he stated the continue-condition, including a fourth clause:
+
+> _"Il contatto segue nel percorso dell'invio successivo se: ha ancora dei
+> biglietti da nominare · l'evento non è ancora passato · non ha cliccato su
+> Rinuncia · **se non ha completato almeno 1 iscrizione (Iscr effettuate è
+> minore di 1)**"_
+
+Elena Spini answered twice, in the same thread, a **37-second** apart:
+
+| Time | Elena Spini |
+| --- | --- |
+| 14:42:17 | _"a me torna, dice praticamente che hai almeno un biglietto nominato esci dal flusso 1"_ |
+| 14:42:54 | _"**NON mi torna** perchè per me è no sense e rischiano di aver i biglietti nominati a metà ma se va bene a loro................."_ |
+
+So the project manager **read it, accepted it, then rejected it on the merits and
+accepted it anyway** — under protest, deferring to the client. ⚠ Her objection is
+the correct one and it is not recorded anywhere a client can see it: one
+nomination of five ends the follow-ups, and the remaining four tickets are never
+chased.
+
+🔑 **This is not a drafting slip — it is what the client agreed.**
+[The 06/10 session](meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)
+ruled _"Esclusione dei flussi di follow-up per nomine parziali… rinunciando
+temporaneamente ai flussi di follow-up per le nomine parziali in vista del
+go-live."_ Sabatino Rinaldi had proposed dynamic follow-ups and was declined on
+time grounds. So the rule stands, Elena Spini's _"ma se va bene a loro"_ is the
+whole of ROMI's dissent, and
+[OI-196](items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)
+— which exists for exactly this case — carries the consequence.
+
+### Dynamic fields of the first mail
+
+Posted 14:26:47 CEST:
+`Luogo__c`, `Data__Evento__c`, `Data_Inizio_Evento__c`, `Data_Fine_Evento_c`,
+`Indirizzo__c`, `Parcheggio__c`, **ACCETTA (`Registration_Url__c`)**,
+**RINUNCIA ()**.
+
+🔴 **`RINUNCIA` has nothing behind it** — empty parentheses where `ACCETTA`
+names its field. ⚠ **Recorded as uncertain, not as a defect**: the same day's
+session agreed to _remove or redefine_ the direct Rinuncia button in the email
+and send the participant to the web page instead, so the empty slot may be a
+leftover rather than a gap. **Nobody has said which**, and the field list was
+posted three hours after the ruling. Someone must strike it or name its source
+before the first mail goes.
+
+### The Rinuncia button is on the community page, and must be bigger
+
+Rebecca Marmo, relayed by Fabrizio Mastracci at 14:27:17 CEST to `@channel`:
+
+> _"Come indicato da Aurel, il tasto RINUNCIA non potrà essere presente sia nella
+> mail che nella landing page. Pertanto, vi chiederei, se possibile, di rendere
+> il tasto più grande e maggiormente visibile."_
+
+🟢 **Which surface is settled.** Fabrizio Mastracci asked whether "bigger button"
+meant the landing page; Aurel Mrruku answered at 14:33:36 — _"si si tratta della
+pagina di community"_. So the enlargement is a change to the Salesforce community
+page, not to a marketing asset. ⚠ No owner and no commit for it this sweep.
+
+### ⚠ There is no ROMI solution-design template
+
+Fabrizio Mastracci asked for one so he could write the marketing solution up for
+client approval — _"se abbiamo un template romi… ti chiedo di girarmelo cosi
+metto li la soluzione e gliela faccio approvare"_. Elena Spini, 14:41:22:
+**_"non c'è un modello/template"_**. Recorded because the approval artifact for
+the marketing flow will therefore be ad hoc, like the logic document before it.

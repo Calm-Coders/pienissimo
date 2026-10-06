@@ -6,7 +6,7 @@ owner: ROMI
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-10-02
+updated: 2026-10-06
 depends_on: [OI-50]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -205,3 +205,31 @@ _"they say that part of rinuncia but who cares I don't mind."_ See
 [OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md).
 A per-edition `Rinuncia` still has nowhere to live, so the Blueprint's header-level
 rule is also the only one of the two that the current data model can express.
+
+## 🟢 2026-10-06 - the granularity stops moving
+
+[The 06/10 client session](../meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)
+settled the two things this row has been tracking across four restatements in
+four days:
+
+- **`Rinuncia` is per edition.** Stated in the amended client document and
+  demonstrated live. The button is visible while no participant is confirmed for
+  that edition and **hidden and permanently disabled** once one is; later
+  renunciations go to an offline procedure (Tutor aziendale or Assistenza).
+  ⚠ It applies to **the whole block of that edition, not to single tickets** —
+  Elena Spini was explicit, and per-ticket renunciation went to Fase 2.
+- **Availability is per tranche, settled in full.** _"Solo a saldo completo della
+  fattura di tranche (non dell'ordine totale contenente + tranche)"_ — the
+  document's `NOTE IMPORTANTI` 2, re-confirmed in the room: links unlock only
+  against assets paid in full to saldo, and only on the configured send date.
+
+**Chronological sequencing is retained** in the amended document: tranches must
+be settled in date order, so an unpaid September tranche blocks November's
+tickets even where November's invoice is registered. ⚠ Still attributed to
+Pienissimo with **no date or meeting cited**, and
+[OI-198](OI-198%20The%20asset%20does%20not%20say%20which%20tranche%20paid%20for%20it.md)
+still has no tranche field on the asset to evaluate it with.
+
+🟢 The two client-facing documents no longer disagree with each other on this
+point: the Blueprint's header-level `Rinuncia` is superseded by the 06/10
+ruling, which is the later evidence.

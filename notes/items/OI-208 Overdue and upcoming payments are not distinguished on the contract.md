@@ -1,12 +1,12 @@
 ---
 id: OI-208
 type: open-item
-status: open
+status: resolved
 owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-06
 depends_on: [OI-201, OI-206]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
 ---
@@ -69,3 +69,47 @@ is for Fabrizio Paganelli himself.
 `mirko@kreosoft.com`, `amministrazione@` and `fabrizio.p@`. Elena Spini booked
 it in the session; Aurel Mrruku owes test orders prepared in advance.
 ⚠ It overlaps the WooCommerce and Mexal UAT booked 10:00–13:00 the same day.
+
+## 🟢 2026-10-06 - built in source, in the commit that cites this row
+
+`731c7ac` ("Preparazione UAT invio ordine") adds the new `Scadenza_Fattura__c`
+object and with it the exact distinction this row asked for. The field's own
+description names the item:
+
+```
+Stato_Scadenza__c  —  "Pagata, Scaduta (non pagata e oltre la data) o A scadere (OI-208)."
+IF(Pagata__c, "Pagata",
+   IF(AND(NOT(ISBLANK(Data_Scadenza__c)), Data_Scadenza__c < TODAY()), "Scaduta", "A scadere"))
+```
+
+Alongside it:
+
+- **`Giorni_Ritardo__c`** — days elapsed since the due date, for unpaid rates.
+- Three list views: **`Scadenze_scadute`**, **`Scadenze_a_scadere`** and
+  `Tutte_le_scadenze`.
+- A `Scadenze Fatture` tab, and the related list on
+  `Account_Azienda_Two_Column`.
+
+🟢 **The `scaduto` / `a scadere` report Fabrizio Paganelli asked for now has a
+field and two list views behind it**, driven off a persisted due date rather
+than computed at read time.
+
+🟢 **And it reads the right way round.** This row recorded that while
+[OI-201](OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)
+was open the report would have shown every Ri.Ba. payer as overdue — _for the man
+who asked for it_. `Pagata__c` is now set from `P` **or** `E`, so the formula is
+fed correctly.
+
+## ⚠ What is not done
+
+- **Not in Prod.** The invoice sync classes were deployed to Pienissimo UAT with
+  the job **not scheduled**; Prod has no `Integration_Configuration2__c` rows for
+  Mexal and no Mexal job. So the fields exist in source and UAT, and no Prod
+  record is populated.
+- **Unverified against real data.** No Ri.Ba. invoice has been checked end to
+  end; `Scadenziario (GET)` is on the **07/10** client agenda.
+- The contract-level presentation — where the client actually reads
+  `scaduto` vs `a scadere` — is not evidenced by this sweep. The fields and list
+  views exist; nothing says they are on the surface the client was shown.
+
+Resolved on the build, not on the demonstration.

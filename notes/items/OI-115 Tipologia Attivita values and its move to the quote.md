@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Elena Spini
 org: both
 raised: 2026-09-03
-updated: 2026-10-05
+updated: 2026-10-06
 depends_on: [OI-59]
 relates_to: [OI-123]
 requirement: SAL-16
@@ -167,3 +167,43 @@ it as `Mapping con campo Account`.
 back a multiselect picklist, but the workbook states both without saying which
 surface is which, and a mandatory multiselect on the quote is a different
 constraint from a mandatory single-select. Worth settling before building.
+
+## 🟢 2026-10-06 - the client sent the mapping, as a workbook attached to mail
+
+Elisa Migliano mailed it at **06:54:07Z**, the morning after the Lead session
+asked for it — **twice**, as two near-identical messages with different
+recipient sets:
+
+| Thread | Subject | To / cc |
+| --- | --- | --- |
+| `1a10ffdcc543c242` | `Sottocategorie, Categorie , Origine Lead , Tipologia attività ` | Elena Spini, Aurel Mrruku; cc Fabrizio Paganelli, Marco Montesi, Sabatino Rinaldi |
+| `1a10ffdcab74ce05` | `Sottocategoria, categoria, origine lead, tipologia attività` | Elena Spini, Aurel Mrruku; cc Sabatino Rinaldi, Marco Montesi, **Matteo Distaso**, Fabrizio Paganelli |
+
+Both carry the attachment
+**`Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx`** and
+the same body:
+
+> _"In allegato i campi richiesti, potremmo aver aggiunto nel frattempo dei
+> pacchetti e dei campi. Provvederò a farti l'integrazione."_
+
+🔑 **This is the first delivery of the four picklists together** — categoria,
+sottocategoria, origine lead and tipologia attività — and it comes from the
+person whose values the 05/10 session adopted.
+
+## 🔴 The attachment has not been read
+
+It exists **only as a mail attachment**: a Drive search on `Mappatura` returns
+nothing matching, and the sweep has no tool that downloads a Gmail attachment.
+So the values inside are **unread**, and the 21-value `Tipologia di attività`
+list held in
+[the Campi Oggetti workbook](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md)
+**cannot be reconciled against it this run.**
+
+⚠ Elisa Migliano's own caveat — _"potremmo aver aggiunto nel frattempo dei
+pacchetti e dei campi"_ — says the workbook list may already be short. And she
+states she will do the integration herself (_"Provvederò a farti
+l'integrazione"_), which is a commitment with **no date**.
+
+**To unblock:** the file needs to be put in Drive, or opened by someone with the
+mailbox, and the four lists diffed against what the org and the workbook carry.
+Until then the global value set cannot be built with confidence.

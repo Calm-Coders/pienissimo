@@ -5847,3 +5847,114 @@ closed**, three of them by build rather than by decision.
 operational and layout rulings, and the one item of real client input — Marco
 Montesi's acceptance — covers the Blueprint, not `REQUISITI.it.md`. #184
 remains the mechanism.
+
+## 56. Update 2026-10-06 — the rule the client rejected was adopted in the direction it had already been rebuilt, and three gating items closed in code
+
+Nightly `requirements-check`, watermark **2026-10-05T22:00Z**, one day. **One
+client session**, six rulings. Build claims are repository arithmetic against
+`DevMain` **`59d4264`**.
+
+### The contested paragraph is settled, and settled the client's way
+
+[The 06/10 session](../notes/meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)
+ran 10:02 CEST for about an hour and a half — Fabrizio Paganelli, Sabatino
+Rinaldi, Elisa Migliano and **Rebecca Marmo** (present in the notes though not
+on the invitation), with Elena Spini and Aurel Mrruku. It is the consultation
+the link change was deferred to the previous evening, and the first session to
+take up the paragraph the client rejected on 02/10.
+
+The room **adopted one nomination link per edizione, not per order**, and
+settled the `Rinuncia` rule per edition: the button is visible until the first
+participant is confirmed for that edition, then hidden and permanently
+disabled, with later renunciations handled offline through the Tutor aziendale
+or Assistenza. **Both contested points of row 203 are closed.** The corrected
+document went back out at 12:47:00Z with `per Ordine` struck through.
+
+So the rebuild that landed at 17:39 the evening before the consultation is
+**not sunk work**. That vindicates the direction, not the sequence: the outcome
+was decided by the client agreeing the next morning, and had they asked for
+something else the 391 lines would have been wasted.
+
+### Three gating items closed in code on one day
+
+- **Row 201 is fixed on both paths.** `MexalScadenzarioSearchService` now tests
+  `'P' || 'E'`. The fix is Anita Aga's `b74c8c4`, committed **05/10 at 18:46 on
+  an unmerged branch** — which is why four consecutive nights read it as
+  unchanged on `DevMain` and were right to. It merged today through **PR #81**.
+  The new nightly rate records set `Pagata__c` from `P` or `E` as well.
+- **Rows 206 and 208 are built.** `731c7ac` adds **`Fattura__c`** with
+  `Insoluto__c` and **`Scadenza_Fattura__c`** with a persisted `Data_Scadenza__c`
+  per rate, `Stato_Scadenza__c` = `Pagata` / `Scaduta` / `A scadere`,
+  `Giorni_Ritardo__c` and two list views. Both formulas cite their own item
+  number in the metadata. 🔴 **Row 206's reports are still absent** — fields are
+  not the Blueprint's reporting promise.
+- **Nothing is in production.** The classes went to Pienissimo UAT with the job
+  unscheduled; Prod has no Mexal integration configuration rows and no Mexal
+  job. No Ri.Ba.-settled invoice has been checked end to end, and
+  `Scadenziario (GET)` is on the **07/10** client agenda.
+
+### Row 209 got its design a day before the call it was deferred to
+
+Mexal-managed registry fields are **locked in the Salesforce UI**, corrections
+are made **in Mexal**, and a **nightly sync runs through a dedicated user that
+bypasses the lock**; commercial fields stay editable. So Mexal wins on conflict
+and the overwrite question falls away. That is `F-2` of the client's own
+workbook, agreed three months after it was written down. 🔴 Nothing is built —
+no lock, no job, no user — and the exception-queue owner is still unassigned.
+
+### Two long-owed deliveries arrived, and one cannot be read
+
+- **All four Lead picklists** — categoria, sottocategoria, origine lead,
+  tipologia attività — were mailed by Elisa Migliano at 06:54:07Z, twice, to
+  different recipient sets. 🔴 The workbook exists **only as a mail
+  attachment**: it is not in Drive and this sweep has no tool that downloads
+  one, so the values are unread and the 21-value list is unreconciled.
+- **Row 14 moved for the first time in nine weeks.** Matteo Distaso delivered
+  the hidden-field mapping on the morning it was due and documented **two
+  different UTM capture mechanisms** — the two prioritised forms read the UTMs
+  from the address, store them in a cookie and re-append them to the iframe
+  URL, rather than using hidden inputs. 🔴 **The `pienissimolive.it` form "non
+  risulta raggiungibile"**: one of the two, unreachable, no cause and no owner.
+  🔑 The forms must now require **Partita IVA**, so the Anticipay check can run
+  before Mexal.
+
+### The marketing funnel is written out for the first time
+
+**11 email plus 11 WhatsApp**, variable waits of 2 to 8 days taken from the
+event setting, with the exit check repeated at every step. Entry is unchanged
+from 05/10. 🔴 Two questions put to Rebecca Marmo are unanswered: whether
+WhatsApp goes in parallel or only as a backup, and which event date stops the
+sending.
+
+🔴 **One nomination of five ends the funnel.** The session dropped follow-up
+flows for partial nominations for go-live — Sabatino Rinaldi proposed dynamic
+follow-ups and was declined on time grounds. Elena Spini read the exit rule,
+accepted it, rejected it on the merits thirty-seven seconds later and accepted
+it anyway: _"per me è no sense e rischiano di aver i biglietti nominati a metà
+ma se va bene a loro."_ The deferral is marked `temporaneamente` and **no Fase 2
+row carries it forward.**
+
+### Go-live was used to refuse everything structural
+
+Stated in the room as **two weeks away**, and given as the reason to defer
+cambio nominativo, dynamic follow-ups, per-ticket renunciation and the
+notification mail on a full renunciation — all to Fase 2.
+
+### What did not move
+
+🔴 **Row 200, on a second version.** The document was amended and re-sent asking
+again for written confirmation, and the **seven `Open point da confermare con il
+cliente` are still absent**. Two blanks went out with it: the Marketing Cloud
+query condition is empty, and it still prints _"Oggetto per il Flag: Asset ? da
+confermare con Aurel"_ — a question answered and deployed on 05/10. No reply at
+this watermark.
+
+🔴 **New row 211** — Mexal refuses the `N` the client supplied for `Codice
+Fatturazione Elettronica`; Aurel Mrruku reads the admitted values as `P` or `S`,
+explicitly hedged, and has asked Kreosoft. On the order-send path, due at the
+07/10 Mexal call.
+
+🟡 **Row 207 partly landed** via PR #82 — the line discount now has a field, and
+the quote PDF, quote screen, acceptance community page and a new quote-line
+record page were all reworked. ⚠ Unit of measure and the logo are untouched, and
+the other three fields were not verified on the seven surfaces.

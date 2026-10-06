@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Kreosoft
 org: both
 raised: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-06
 depends_on: [OI-58, OI-112]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
 ---
@@ -66,3 +66,47 @@ whereas the behaviour Fabrizio Paganelli described is a send on every order.
   both record.
 
 Due at `[ROMI-PIENISSIMO] - Temi Integrazione Mexal`, **Wed 07/10 12:15**.
+
+## 🟢 2026-10-06 - the design question is answered in the room, a day before the vendor call
+
+At **[the 06/10 client session](../meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)**
+Fabrizio Paganelli opened on exactly this flow, and the room agreed a shape for
+it — without Mirko Merendi, and before the 07/10 technical call it had been
+deferred to:
+
+> _"Gestione blocco interfaccia tra Sales Force e Mexal: i campi anagrafici non
+> impattanti sulla fatturazione vengono bloccati sull'interfaccia utente di Sales
+> Force, demandando le variazioni a Mexal con aggiornamento notturno."_
+
+So the three unresolved questions this note recorded now have answers:
+
+| Question | Ruling |
+| --- | --- |
+| Which system wins on a conflict | **Mexal**, for every registry field that bears on invoicing. Those fields are locked in the Salesforce UI so the conflict cannot arise from the Salesforce side |
+| Whether the nightly read overwrites a Salesforce-side correction | It cannot: the correction is **made in Mexal** by design. Commercial fields stay open in Salesforce and are out of scope of the sync |
+| Who owns the exception queue | ⚠ **Still unassigned.** Nothing in the session names an owner for anomalies from wrong data entry, which is how Fabrizio Paganelli widened it on 05/10 |
+
+🔑 **The sync runs as a dedicated user that bypasses the interface lock** — the
+notes are explicit: _"sincronizzate su Salesforce durante la notte tramite
+un'utenza dedicata che bypassa il blocco."_ Creating the utenze is a next step
+on the whole group.
+
+🟢 **This is `F-2` of the client's own workbook, agreed at last** — three months
+after it was written down. The pattern this note recorded still holds: the design
+came back round to what the client had already specified.
+
+## State after 06/10
+
+- 🔴 **Nothing is built.** No nightly Account read from Mexal exists, the
+  interface lock does not exist, and the dedicated user does not exist. The
+  ruling is a design, agreed in a room, with **two weeks to go-live**.
+- ⚠ **Fabrizio Paganelli owes the field list** — which registry fields stay
+  editable from the Salesforce interface — as his own next step from the session.
+  Without it the lock cannot be configured.
+- The 07/10 12:15 `Temi Integrazione Mexal` call still stands, with Mirko
+  Merendi, Elisa Migliano and Fabrizio Paganelli invited. ⚠ It now has a design
+  to validate rather than a question to open.
+- 🔴 It still compounds
+  [the Mexal write risk](../risks/Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md):
+  the shipping-address write still cannot complete, so the order-triggered leg is
+  unreliable even before the nightly leg is built.

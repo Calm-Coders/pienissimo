@@ -1,12 +1,12 @@
 ---
 id: OI-203
 type: open-item
-status: open
+status: resolved
 owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-02
-updated: 2026-10-05
+updated: 2026-10-06
 depends_on: [OI-197, OI-200]
 blocks: [OI-184, go-live]
 severity: gating
@@ -145,3 +145,48 @@ had conceded the real defect himself — `Event_Invitation__c.Campaign__c` was
 taking _"la prima campagna che ha trovato"_, which is problem #2 of the risk
 table, live in production. **The client's objection was, on the merits,
 correct.**
+
+## 🟢 2026-10-06 - the client adopted the rule, in the direction it had already been rebuilt
+
+At **[the 06/10 client session](../meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)**
+(10:02 CEST, ~1h30m) — the consultation this was deferred to — the room agreed:
+
+> _"Generazione dei link per singola edizione: viene adottata la logica di
+> generare un link di nomina separato per ciascuna edizione inclusa in un ordine
+> anziché un link unico per ordine."_
+
+**Point 1 of the contested paragraph is settled**, and settled as the client
+wanted it: per edition, not per order. Elena Spini presented it, Fabrizio
+Paganelli and Sabatino Rinaldi — the two who rejected it — were in the room, and
+nothing in the notes records a dissent.
+
+**Point 2, the `Rinuncia` part, is settled too.** The rule is now stated per
+edition and conditioned on nomination state: the button is visible while no
+participant has been confirmed for that edition, and **hidden and permanently
+disabled** as soon as one is. Later renunciations go to an offline procedure —
+the Tutor aziendale or Assistenza. Aurel Mrruku demonstrated the behaviour live
+(two nominativi of three, button gone).
+
+### The document was corrected and re-sent the same day
+
+Elena Spini posted the confirmed text into the marketing group DM at 14:40:28
+CEST, prefaced _"questo è stato quello confermato"_, with **`per Ordine` struck
+through and replaced by `per edizione`**. The client-facing
+`PIENISSIMO – Logiche Asset e Invio Biglietti.docx` carries the amended heading
+and was modified at **12:46:10Z**, then re-shared to the five client recipients
+at **12:47:00Z** asking for written confirmation
+([OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md)).
+
+### 🔑 What this says about the 05/10 rebuild
+
+`4a6fe3f` landed at 17:39 CEST on 05/10, before the consultation, and the
+consultation went the way the commit had already gone. **The work is not sunk.**
+That vindicates the direction, not the sequence: the outcome was decided by the
+client agreeing the next morning, not by the commit, and had they asked for
+something else the 391 lines would have been wasted. Recorded as a process
+observation, not as a defect.
+
+⚠ **Still open, and tracked elsewhere:** written confirmation of the amended
+document has been **requested but not received** (OI-200), and the seven
+`Open point da confermare con il cliente` are **still absent** from the client's
+copy. This row closes on the two contested rules only.

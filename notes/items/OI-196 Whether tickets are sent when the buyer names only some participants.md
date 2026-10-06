@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-29
-updated: 2026-10-02
+updated: 2026-10-06
 depends_on: [OI-126, OI-127, OI-78]
 blocks: [OI-194]
 requirement: BIG-06
@@ -191,3 +191,36 @@ the server refresh.
 This is a repository implementation only in this session; it was not deployed.
 It implements the nomination-page half of the 30/09 ruling. The downstream send
 contract and field placement remain tracked separately by OI-197 and OI-199.
+
+## 🔴 2026-10-06 - the follow-up half is given up for go-live
+
+This row resolved the send question: each participant gets their ticket as soon
+as the referente confirms their data, without waiting for the others. **The
+chasing question has now been answered too, and the answer is that nobody
+chases.**
+
+[The 06/10 client session](../meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md),
+`Concordato`:
+
+> _"Esclusione dei flussi di follow-up per nomine parziali: si stabilisce di
+> mantenere la configurazione esistente, rinunciando temporaneamente ai flussi di
+> follow-up per le nomine parziali in vista del go-live."_
+
+Sabatino Rinaldi had proposed the opposite — dynamic follow-ups to chase the
+remaining nominations, plus per-ticket deletion or renunciation. **Elena Spini
+and Elisa Migliano declined on time grounds**, _"la scadenza del go-live fissata
+a 2 settimane"_, and Sabatino Rinaldi and Rebecca Marmo accepted.
+
+### What it means in the funnel
+
+[The send contract](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md)
+implements it as an exit clause: the contact continues only _"se non ha
+completato almeno 1 iscrizione (Iscr effettuate è minore di 1)"_. So **one
+nomination of five ends the eleven-step funnel**, and the other four tickets are
+never chased again.
+
+⚠ Elena Spini stated the consequence herself and accepted it anyway —
+_"per me è no sense e rischiano di aver i biglietti nominati a metà ma se va bene
+a loro"_. **The deferral is marked `temporaneamente` and has no Fase 2 row**: no
+item, no owner and no date carries the follow-up flows forward. If this is meant
+to come back, nothing in the records will bring it back.

@@ -1,12 +1,12 @@
 ---
 id: OI-206
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-06
 depends_on: [OI-141]
 requirement: ORD-07
 source: notes/The Business Blueprint delivered to the client.md
@@ -78,3 +78,40 @@ A decision on where invoice-level data lives (standard `Invoice`, a custom objec
 or fields on the order), then the due date persisted, then the two reports. None
 of it is started. ⚠ The clause is in a document **carrying signature lines for
 ROMI Srl and Pienissimo Srl**.
+
+## 🟢 2026-10-06 - the invoice record and the due date both exist now
+
+`731c7ac` creates **both** things this row said were missing, and the field
+description cites it:
+
+```
+Fattura__c.Insoluto__c  —  "Vero quando almeno una scadenza non pagata e gia scaduta (Business Blueprint, OI-206)."
+AND(NOT(ISBLANK(Prima_Scadenza_Aperta__c)), Prima_Scadenza_Aperta__c < TODAY())
+```
+
+- 🟢 **An invoice record**: new `Fattura__c`, carrying `Numero__c`, `Serie__c`,
+  `Sigla__c`, `Data_Documento__c`, `Totale_Documento__c`, `Importo_Pagato__c`,
+  `Importo_Residuo__c`, `Importo_Scadenze__c`, `Stato_Pagamento__c`,
+  `Causale__c`, `Tipo_Documento__c`, the Mexal keys and the sync stamps. Plus a
+  `Fatture` tab.
+- 🟢 **A persisted due date**: `Scadenza_Fattura__c.Data_Scadenza__c`, one record
+  per rate, with `Numero_Rata__c`, `Importo__c`, `Pagata__c` and
+  `Stato_Pagamento_Mexal__c`.
+- 🟢 **`Prima_Scadenza_Aperta__c`** on both the invoice and the tranche — the
+  earliest unsettled due date, which is what `Insoluto__c` keys off.
+
+They are populated by the nightly `MexalInvoiceSyncJob` (03:30) through
+`MexalInvoiceImportService` and `MexalInvoiceLineImportBatch` — see
+[the Mexal integration](../flows/The%20Mexal%20integration.md).
+
+## ⚠ What is still absent
+
+- 🔴 **The reports themselves.** This row recorded that the Insoluto reports were
+  _built then removed_. The fields are back; **no report is.** Three list views
+  on `Scadenza_Fattura__c` are not the Blueprint's reporting promise.
+- **Not in Prod**, and the job is not scheduled anywhere. UAT carries the
+  classes; Prod has no Mexal integration configuration rows.
+- Unverified against a real unpaid invoice.
+
+Resolved on the data model. The reporting obligation the Blueprint made is
+**not** discharged and is the part to watch.

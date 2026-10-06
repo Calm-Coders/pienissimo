@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-10-05
+updated: 2026-10-06
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -248,3 +248,66 @@ not the form review.
 view, and Sabatino Rinaldi answered that **Fabrizio Paganelli already holds
 that information** from an earlier discussion. It has never reached the
 repository.
+
+## 🟢 2026-10-06 - Matteo Distaso delivered, on the morning it was due
+
+The hidden-field mapping for the two prioritised forms — owed _"by tomorrow
+morning"_ at the 05/10 Lead session, the first dated step on this row in nine
+weeks — **arrived**. Thread `1a1117ac154f6c42`, read in full.
+
+| Time (06/10) | Event |
+| --- | --- |
+| 11:03 CEST | Matteo Distaso asks where to put the fields: _"mi puoi dare istruzioni chiare su dove devo inserirti i campi dei due form concordati? mi sto mettendo ora al lavoro"_ |
+| 12:44 CEST | Elena Spini points him at the form-fields sheet (`1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`), distinct from the data model she had sent the evening before |
+| 15:30 CEST | **Matteo Distaso delivers the mapping** and documents the two UTM capture methods Pienissimo uses |
+| 13:50:09Z | Elena Spini confirms ROMI will build to his logics |
+
+### 🔑 Two UTM mechanisms, not one
+
+His own description, and it matters because the records had assumed one:
+
+- **Method 1** — the form carries hidden `utm_source`, `utm_medium`,
+  `utm_campaign` inputs; page script reads them from the address and writes them
+  in; they post with the rest and land in Zoho Forms' _"tutte le voci"_.
+- **Method 2** — used by **`camerierivenditori.com` and `pienissimolive.it`**,
+  the two prioritised forms. The form has no hidden fields and the page script
+  cannot write into the iframe, so it reads the UTMs from the address, **stores
+  them in a cookie** so they survive navigation, and **re-appends them to the
+  iframe URL**. Zoho reads them from there.
+
+Same result, different path — _"Questa differenza deriva da vari passaggi di
+gestione dei form nel corso degli anni."_ 🔑 **His recommendation is to
+normalise**: configure every form with the three hidden fields.
+
+### 🔴 One of the two forms is not reachable
+
+Elena Spini, 13:50:09Z:
+
+> _"camerierivenditori.com è raggiungibile; mentre il form per pienissimolive.it
+> non risulta raggiungibile."_
+
+So of the two prioritised forms, **one cannot be reached at all.** ⚠ No cause is
+given and no owner is named for fixing it. This is a hard blocker on the form
+half of this row.
+
+### 🔑 Partita IVA becomes a form field
+
+Elena Spini, same mail, carrying the 05/10 ruling into the forms:
+
+> _"come stabilito ieri, con le nuove logiche Salesforce i form **dovranno
+> richiedere la Partita IVA**. Il dato potrà essere modificato in seguito dal
+> tutor, ma è necessario che arrivi su SFDC per consentire la verifica su
+> Anticapy prima del passaggio a Mexal."_
+
+The Anticipay check is the reason, which ties this to
+[OI-202](OI-202%20Anticipay%20does%20not%20recognise%20sole%20traders%20absent%20from%20the%20registro%20imprese.md)
+— sole traders absent from the registro imprese will supply a P.IVA the check
+still rejects.
+
+⚠ **A dedicated marketing meeting was promised** — _"fisseremo a breve un
+meeting dedicato per i punti da te indicati"_ — with no date. It is the same call
+[the 06/10 session](../meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)
+listed as a next step with Rebecca Marmo.
+
+⚠ **The sender-domain authentication is still unanswered** on this thread: the
+last word on it is Fabrizio Mastracci's 18/08 chase.

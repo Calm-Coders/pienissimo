@@ -10,6 +10,52 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-06 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-10-05T22:00Z** (one day). Read in full: the **06/10 client session**
+  Gemini notes (structured sections and all 16 `Dettagli`) and the amended
+  client-facing `PIENISSIMO – Logiche Asset e Invio Biglietti.docx`; the whole
+  marketing follow-up mail thread; 13 marketing-DM messages and three of their
+  threads.
+- **State:** committed to `DevMain`. **One new item OI-211**; one meeting note
+  (`2026-10-06 Form Link per partecipanti`). Updated OI-14, 75, 115, 196, 200,
+  201, 203, 206, 207, 208, 209 and the marketing send-contract note; `MAP.md`,
+  `INDEX.md`, both trackers (row 211 added, 11 rows amended in each), both
+  recaps §56, trace. **Register not amended, stays v1.6.**
+- **The headline: OI-203 is resolved.** The 06/10 session adopted **one
+  nomination link per edizione, not per order**, and `Rinuncia` per edition
+  (hidden permanently after the first confirmed participant). Both contested
+  points closed, the client's way — so `4a6fe3f`'s pre-emptive rebuild is not
+  sunk work. **OI-209's design was also agreed**: Mexal fields locked in the SF
+  UI, corrections in Mexal, nightly sync through a dedicated user that bypasses
+  the lock. Nothing built.
+- **Two claims in the record were wrong and are corrected.** `MAP.md` said the
+  invoice sync was "working tree only, not committed" — it was committed in
+  `731c7ac` the same morning. OI-201 said
+  `MexalScadenzarioSearchService.cls:205` "still reads `== 'P'`" — it reads
+  `'P' || 'E'`, fixed by **Anita Aga's `b74c8c4`, committed 05/10 18:46 on an
+  unmerged branch** and merged today via PR #81. The four nights that reported
+  OI-201 unchanged were right about `DevMain` and blind to the branch; that
+  limit is now written into the trace.
+- **OI-206 and OI-208 are built** by `731c7ac` — `Fattura__c` with
+  `Insoluto__c`, `Scadenza_Fattura__c` with `Stato_Scadenza__c`
+  (`Pagata`/`Scaduta`/`A scadere`), `Giorni_Ritardo__c` and two list views.
+  Both formulas cite their item number. Set to `resolved` on the build only.
+- **Next:** the picklist workbook needs putting in Drive — it arrived 06/10 as a
+  **mail attachment this procedure cannot download**, so OI-115's values are
+  unread. Verify OI-207's five commercial fields against the seven surfaces in
+  the org. Chase written confirmation of the amended logic document (OI-200,
+  still missing its seven open points **and** carrying a blank query condition).
+- **Watch:** 🔴 **one nomination of five now ends the marketing funnel** — the
+  client dropped follow-ups for partial nominations for go-live and the deferral
+  has **no Fase 2 row to bring it back** (OI-196). Elena Spini objected on the
+  merits 37 seconds after accepting it and accepted it anyway. 🔴 New **OI-211**:
+  Mexal refuses `N` for `Codice Fatturazione Elettronica`, `P`/`S` unconfirmed,
+  due at the 07/10 12:15 Mexal call. ⚠ Nothing from this sweep touched OI-64 or
+  OI-66 — **no Apex test was written or proposed** — though note
+  `QuoteCommercialTest.cls` was *edited* (−6 lines) in `f84d356`.
+
 ## 2026-10-06 - claude - Nightly Mexal invoice and scadenzario sync written
 
 - **Did:** split `MexalInvoiceImportService` into `importInvoicesModifiedSince`

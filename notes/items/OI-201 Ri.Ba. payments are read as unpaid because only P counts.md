@@ -180,3 +180,41 @@ still reads `== 'P'`, but nothing scheduled uses it any more.
 - A Ri.Ba. returned unpaid is the `Insoluto` question,
   [OI-206](OI-206%20The%20Insoluto%20concept%20has%20no%20invoice%20due%20date%20and%20no%20invoice%20record.md),
   not this item.
+
+## 🟢 2026-10-06 (nightly sweep) - it is committed, and the old predicate was fixed too
+
+Two corrections to the section above, both verified against `origin/DevMain`
+**`59d4264`**:
+
+🟢 **The code is committed.** `731c7ac` ("Preparazione UAT invio ordine", Aurel
+Mrruku, 20:06 CEST) carries `MexalInvoiceImportService` (635 lines),
+`MexalInvoiceLineImportBatch` (539), `MexalInvoiceSyncJob` (142),
+`MexalInvoiceSyncScheduler`, and the new `Fattura__c` and `Scadenza_Fattura__c`
+objects. The "working tree only, not committed" note above was written before
+that commit and is superseded.
+
+🟢 **`MexalScadenzarioSearchService` no longer tests `'P'` alone.** The sentence
+above — _"still reads `== 'P'`, but nothing scheduled uses it any more"_ — is out
+of date. The predicate now reads:
+
+```apex
+deadline.paid =
+  deadline.paymentStatus == 'P' ||
+  deadline.paymentStatus == 'E';
+```
+
+**Fixed by Anita Aga in `b74c8c4`**, _"Added field for Mexal, added mapping on
+Mexal order creation flux, fixed the logic in anticipay"_, committed **2026-10-05
+at 18:46:01 +0200** — i.e. **before the previous sweep's 22:00Z watermark, on an
+unmerged branch.** The 05/10 report's "did not move at `d526189`" was correct for
+`DevMain` and blind to the branch. It reached `DevMain` today through **PR #81**
+(merge `c9f8ae0`, 12:23 CEST).
+
+So **both** paths now count `E` as paid: the live scadenzario search service and
+the new nightly rate records. The item is resolved in code on the merged branch.
+
+⚠ **Unchanged:** nothing is verified against real data and nothing is in Prod.
+The UAT check on one Ri.Ba.-settled invoice — rate `Pagata`, order line `Paid`,
+tranche follows — is **still owed**, and `Scadenziario (GET)` is on the client
+agenda for **07/10 12:15**. Prod has no `Integration_Configuration2__c` rows for
+Mexal and no Mexal job scheduled.

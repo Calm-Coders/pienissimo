@@ -5,7 +5,7 @@ status: open
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-01
-updated: 2026-10-02
+updated: 2026-10-06
 depends_on: [OI-197]
 blocks: [OI-184]
 source: notes/The agreed Asset and ticket send logic document.md
@@ -103,3 +103,60 @@ now land into an open dispute. Whatever is agreed at the 05/10 meeting has to ca
 the seven points with it, or they stay open into client-autonomous testing. The
 dispute itself is
 [OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md).
+
+## 2026-10-06 - the document was amended and re-sent, and the open points are still not in it
+
+`PIENISSIMO – Logiche Asset e Invio Biglietti.docx`
+(`1p4W9ekBWZbVMh0ts6ui_xSIwOHZLMG4z`) was **modified at 12:46:10Z** and
+re-shared by Elena Spini at **12:47:00Z** to Fabrizio Paganelli,
+`amministrazione@`, Rebecca Marmo, Sabatino Rinaldi and Marco Montesi, cc Aurel
+Mrruku and Fabrizio Mastracci:
+
+> _"A fronte del meeting di oggi vi ri-condivido il link del documento aggiornato
+> per il tema in oggetto relativo alle logiche di invio biglietti. Vi chiedo
+> cortesemente di darmi riscontro a…"_
+
+Read in full this sweep. What changed and what did not:
+
+🟢 **The contested paragraph is amended.** `Aggregazione Multi-Evento per Ordine`
+now reads **per edizione**, and the `Rinuncia` rule is stated per edition —
+the two points of
+[OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md),
+settled at [the 06/10 session](../meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md).
+
+🔴 **The seven `Open point da confermare con il cliente` are still absent.** A
+second client-facing version has now gone out without them. The people meant to
+answer them have still never been shown them — including **when the link goes
+out**, whose wording would open nomination up to eleven months early, a case
+Fabrizio Paganelli excluded at the 30/09 UAT. ⚠ This is the point of this row and
+it has not moved in five days.
+
+🟢 The internal `POSSIBILI PROBLEMI` table is still correctly absent.
+
+### 🔴 Two blanks the client is being asked to confirm
+
+- **The Marketing Cloud selection query has no condition.** Step 3 reads
+  _"Query di Selezione: Eseguire una query per recuperare tutti i record che
+  soddisfano la seguente condizione:"_ — **and then nothing.** The condition is
+  empty in the delivered document. Fabrizio Mastracci wrote the working version
+  himself on 05/10
+  ([the send contract](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md))
+  and it did not reach the document.
+- **The flag's object is still printed as an open question to ROMI's own
+  developer:** _"Oggetto per il Flag: Asset ? da confermare con Aurel"_. That
+  question was **answered and deployed on 05/10** —
+  [OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)
+  is `resolved`, the three fields are on `Asset` in Prod, and the `Order` copies
+  are deleted. The client is reading a stale question about a settled fact.
+
+⚠ The tracking fields named in step 4 — `Ticket_Sent__c` and
+`Ticket_Sent_Date__c` — are now correct against the build, so the document is
+internally inconsistent: step 2 asks which object, step 4 assumes the answer.
+
+### Still owed
+
+**Written confirmation.** Elena Spini asked for it twice now, on 01/10 and
+06/10. The 02/10 reply was a rejection; this sweep found **no reply to the 06/10
+re-send** at the watermark. The document remains unusable as the carrier for
+[OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)
+until it is both complete and confirmed.

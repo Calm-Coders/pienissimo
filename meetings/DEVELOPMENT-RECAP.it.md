@@ -5988,3 +5988,119 @@ CEST, in attesa della call col cliente del 06/10 sul link.
 decisioni operative e di layout, e l'unico apporto reale del cliente — l'accettazione
 di Marco Montesi — riguarda il Blueprint, non `REQUISITI.it.md`. Il #184 resta
 il meccanismo.
+
+## 56. Aggiornamento 06/10/2026 — la regola rifiutata dal cliente è stata adottata nella direzione in cui era già stata ricostruita, e tre punti bloccanti si sono chiusi nel codice
+
+`requirements-check` notturno, watermark **2026-10-05T22:00Z**, un giorno.
+**Una sessione cliente**, sei decisioni. Le affermazioni sul costruito sono
+aritmetica di repository su `DevMain` **`59d4264`**.
+
+### Il paragrafo contestato è definito, e definito come voleva il cliente
+
+[La sessione del 06/10](../notes/meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)
+si è tenuta alle 10:02 CEST per circa un'ora e mezza — Fabrizio Paganelli,
+Sabatino Rinaldi, Elisa Migliano e **Rebecca Marmo** (presente nelle note
+benché non nell'invito), con Elena Spini e Aurel Mrruku. È la consultazione a
+cui la modifica del link era stata rimandata la sera precedente, e la prima
+sessione ad affrontare il paragrafo che il cliente aveva rifiutato il 02/10.
+
+È stata **adottata la logica di un link di nomina per edizione, non per
+ordine**, e definita la `Rinuncia` per edizione: il pulsante è visibile finché
+nessun partecipante è confermato per quell'edizione, poi viene nascosto e
+disabilitato definitivamente, con le rinunce successive gestite offline tramite
+Tutor aziendale o Assistenza. **Entrambi i punti contestati della riga 203 sono
+chiusi.** Il documento corretto è stato re-inviato alle 12:47:00Z con
+`per Ordine` barrato.
+
+Il rifacimento arrivato alle 17:39 della sera prima della consultazione non è
+dunque **lavoro perso**. Questo conferma la direzione, non la sequenza: l'esito
+è stato deciso dal cliente che ha concordato la mattina seguente, e se avesse
+chiesto altro quelle 391 righe sarebbero state buttate.
+
+### Tre punti bloccanti chiusi nel codice in un giorno
+
+- **La riga 201 è corretta su entrambi i percorsi.**
+  `MexalScadenzarioSearchService` ora verifica `'P' || 'E'`. La correzione è
+  `b74c8c4` di Anita Aga, committata il **05/10 alle 18:46 su un branch non
+  unito** — ed è per questo che per quattro notti consecutive risultava immobile
+  su `DevMain`, a ragione. È entrata oggi con la **PR #81**. Anche i nuovi record
+  rata impostano `Pagata__c` da `P` o `E`.
+- **Le righe 206 e 208 sono costruite.** `731c7ac` aggiunge **`Fattura__c`** con
+  `Insoluto__c` e **`Scadenza_Fattura__c`** con una `Data_Scadenza__c` persistita
+  per rata, `Stato_Scadenza__c` = `Pagata` / `Scaduta` / `A scadere`,
+  `Giorni_Ritardo__c` e due viste elenco. Entrambe le formule citano il proprio
+  numero di punto nei metadati. 🔴 **I report della riga 206 restano assenti** —
+  i campi non sono la promessa di reportistica del Blueprint.
+- **Nulla è in produzione.** Le classi sono andate su Pienissimo UAT con il job
+  non schedulato; Prod non ha righe di configurazione dell'integrazione Mexal né
+  job Mexal. Nessuna fattura saldata con Ri.Ba. è stata verificata end to end, e
+  `Scadenziario (GET)` è all'ordine del giorno cliente del **07/10**.
+
+### La riga 209 ha avuto il suo disegno un giorno prima della call a cui era rimandata
+
+I campi anagrafici gestiti da Mexal sono **bloccati sull'interfaccia utente di
+Salesforce**, le correzioni si fanno **su Mexal**, e un **aggiornamento notturno
+passa da un'utenza dedicata che bypassa il blocco**; i campi commerciali restano
+modificabili. Quindi su conflitto vince Mexal e la questione della sovrascrittura
+decade. È l'`F-2` del workbook del cliente, concordato tre mesi dopo essere stato
+scritto. 🔴 Nulla è costruito — né blocco, né job, né utenza — e il responsabile
+della coda delle eccezioni è ancora non assegnato.
+
+### Due consegne attese da tempo sono arrivate, e una non è leggibile
+
+- **Tutte e quattro le picklist del Lead** — categoria, sottocategoria, origine
+  lead, tipologia attività — sono state inviate da Elisa Migliano alle
+  06:54:07Z, due volte, a destinatari diversi. 🔴 Il workbook esiste **solo come
+  allegato di posta**: non è su Drive e questo sweep non ha strumenti per
+  scaricarlo, quindi i valori non sono letti e l'elenco a 21 valori non è
+  riconciliato.
+- **La riga 14 si è mossa per la prima volta in nove settimane.** Matteo Distaso
+  ha consegnato la mappatura dei campi nascosti la mattina in cui era dovuta e
+  ha documentato **due meccanismi diversi di raccolta UTM** — i due form
+  prioritari leggono gli UTM dall'indirizzo, li salvano in un cookie e li
+  riattaccano all'URL dell'iframe, invece di usare campi nascosti. 🔴 **Il form
+  di `pienissimolive.it` "non risulta raggiungibile"**: uno dei due,
+  irraggiungibile, senza causa e senza titolare. 🔑 I form dovranno ora
+  richiedere la **Partita IVA**, perché la verifica Anticipay possa girare prima
+  di Mexal.
+
+### Il funnel marketing è scritto per la prima volta
+
+**11 email più 11 WhatsApp**, attese variabili da 2 a 8 giorni prese dal setting
+dell'evento, con il controllo di uscita ripetuto a ogni passo. L'ingresso è
+invariato dal 05/10. 🔴 Due domande poste a Rebecca Marmo sono senza risposta: se
+WhatsApp vada in parallelo o solo come backup, e quale data evento fermi l'invio.
+
+🔴 **Una nomina su cinque chiude il funnel.** La sessione ha eliminato i flussi
+di follow-up per le nomine parziali in vista del go-live — Sabatino Rinaldi aveva
+proposto follow-up dinamici ed è stato fermato per ragioni di tempo. Elena Spini
+ha letto la regola di uscita, l'ha accettata, l'ha rifiutata nel merito
+trentasette secondi dopo e l'ha accettata comunque: _"per me è no sense e
+rischiano di aver i biglietti nominati a metà ma se va bene a loro."_ Il rinvio è
+marcato `temporaneamente` e **nessuna riga di Fase 2 lo porta avanti.**
+
+### Il go-live è stato usato per rifiutare tutto ciò che è strutturale
+
+Dichiarato in riunione a **due settimane**, e dato come motivo per rimandare il
+cambio nominativo, i follow-up dinamici, la rinuncia per singolo biglietto e la
+mail di notifica sulla rinuncia totale — tutto in Fase 2.
+
+### Cosa non si è mosso
+
+🔴 **La riga 200, su una seconda versione.** Il documento è stato aggiornato e
+re-inviato chiedendo di nuovo conferma scritta, e i **sette `Open point da
+confermare con il cliente` sono ancora assenti**. Con esso sono usciti due vuoti:
+la condizione della query Marketing Cloud è vuota, e riporta ancora _"Oggetto per
+il Flag: Asset ? da confermare con Aurel"_ — una domanda a cui si è risposto e
+che è stata deployata il 05/10. Nessuna risposta a questo watermark.
+
+🔴 **Nuova riga 211** — Mexal rifiuta la `N` fornita dal cliente per `Codice
+Fatturazione Elettronica`; Aurel Mrruku legge i valori ammessi come `P` o `S`,
+esplicitamente in forma ipotetica, e ha scritto a Kreosoft. Sul percorso di invio
+ordine, in agenda alla call Mexal del 07/10.
+
+🟡 **La riga 207 è in parte arrivata** con la PR #82 — lo sconto di riga ha ora un
+campo, e il PDF del preventivo, la schermata preventivo, la pagina community di
+accettazione e una nuova pagina record di riga preventivo sono stati rielaborati.
+⚠ Unità di misura e logo non sono toccati, e gli altri tre campi non sono stati
+verificati sulle sette superfici.
