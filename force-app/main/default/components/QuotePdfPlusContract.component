@@ -62,8 +62,7 @@
       </strong>
       con sede legale in
       <apex:outputText value="{!legalAddress}" />
-      P.IVA
-      <apex:outputText value="{!customer.Partita_IVA__c}" />
+      P.IVA&#160;<apex:outputText value="{!customer.Partita_IVA__c}" />
       rappresentata da
       <apex:outputText value="{!customer.Nome_Legale_Rappresentante__c}" />
       (di seguito &quot;Cliente&quot;).

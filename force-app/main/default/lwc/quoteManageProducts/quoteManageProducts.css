@@ -398,6 +398,10 @@
   padding: 0.45rem 0.6rem;
 }
 
+.tranche-entry-row {
+  grid-template-columns: minmax(8rem, 1fr) 7rem 6.5rem 8rem 8rem;
+}
+
 .tranche-summary-button {
   border-left: 0;
   border-right: 0;
@@ -443,12 +447,17 @@
   min-width: 0;
 }
 
+.tranche-price-input {
+  min-width: 0;
+}
+
 @media (max-width: 520px) {
   .summary,
   .input-grid,
   .selected-row,
   .selected-header,
-  .tranche-summary-row {
+  .tranche-summary-row,
+  .tranche-entry-row {
     grid-template-columns: 1fr;
   }
 

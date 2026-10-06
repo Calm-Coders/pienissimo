@@ -52,6 +52,7 @@ public without sharing class QuotePdfController {
         ListPrice,
         UnitPrice,
         Discount,
+        Discount_Pct__c,
         TotalPrice,
         Data_Scadenza__c,
         Tranche__r.Data_Scadenza__c
@@ -256,6 +257,9 @@ public without sharing class QuotePdfController {
       ',' +
       (parts.size() > 1 ? parts[1].rightPad(2, '0') : '00');
   }
+  public static String percentage(Decimal value) {
+    return value == null ? '' : money(value) + '%';
+  }
   public class LineRow {
     public String name { get; private set; }
     public String description { get; private set; }
@@ -273,9 +277,18 @@ public without sharing class QuotePdfController {
       unitOfMeasure = item.Product2.QuantityUnitOfMeasure;
       quantity = item.Quantity;
       listPrice = money(item.ListPrice);
-      Decimal gross = item.Quantity * item.UnitPrice;
+      Decimal gross =
+        (item.Quantity == null ? 0 : item.Quantity) *
+        (item.ListPrice == null ? 0 : item.ListPrice);
+      Decimal net = item.TotalPrice == null ? 0 : item.TotalPrice;
+      Decimal discountPercent = item.Discount_Pct__c;
+      if (discountPercent == null) {
+        discountPercent = gross == 0
+          ? (item.Discount == null ? 0 : item.Discount)
+          : ((gross - net) / gross) * 100;
+      }
       amount = money(gross);
-      discount = money(gross - item.TotalPrice);
+      discount = percentage(discountPercent);
       total = money(item.TotalPrice);
       dueDate = formatDate(
         item.Data_Scadenza__c != null
@@ -303,7 +316,7 @@ public without sharing class QuotePdfController {
       quantity = parentQuantity * componentQuantity;
       listPrice = money(component.Unit_Spread__c);
       amount = money(totalAmount);
-      discount = money(0);
+      discount = percentage(0);
       total = money(totalAmount);
       dueDate = formatDate(
         parentLine.Data_Scadenza__c != null

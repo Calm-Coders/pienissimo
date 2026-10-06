@@ -122,6 +122,11 @@ public without sharing class ParticipantRegistrationController {
     public Order orderRecord;
   }
 
+  private class ContactResolution {
+    public Map<String, Contact> contactByPhone = new Map<String, Contact>();
+    public Map<String, Contact> contactByEmail = new Map<String, Contact>();
+  }
+
   private class RequestException extends Exception {
   }
 
@@ -488,38 +493,87 @@ public without sharing class ParticipantRegistrationController {
 
     Set<Id> submittedAssetIds = new Set<Id>();
     Map<String, ParticipantInput> participantByEmail = new Map<String, ParticipantInput>();
+    Map<String, ParticipantInput> participantByPhone = new Map<String, ParticipantInput>();
 
     for (ParticipantInput input : inputs) {
       validateParticipant(
         input,
         eligibleAssets,
         submittedAssetIds,
-        participantByEmail
+        participantByEmail,
+        participantByPhone
       );
     }
 
-    Map<String, Contact> contactByEmail = findExistingContacts(
+    ContactResolution existingContacts = findExistingContacts(
       access.account.Id,
-      participantByEmail.keySet()
+      participantByEmail.keySet(),
+      participantByPhone.keySet()
     );
 
     List<Contact> contactsToCreate = new List<Contact>();
+    Map<Id, Contact> contactsToUpdateById = new Map<Id, Contact>();
+    Map<Id, String> phoneByResolvedContactId = new Map<Id, String>();
+    Map<String, Contact> contactByPhone = new Map<String, Contact>();
 
-    for (String email : participantByEmail.keySet()) {
-      if (!contactByEmail.containsKey(email)) {
-        ParticipantInput input = participantByEmail.get(email);
+    for (String phone : participantByPhone.keySet()) {
+      ParticipantInput input = participantByPhone.get(phone);
+      String email = normalizeEmail(input.email);
+      Contact phoneMatch = existingContacts.contactByPhone.get(phone);
+      Contact emailMatch = existingContacts.contactByEmail.get(email);
 
-        Contact participant = new Contact(
+      if (
+        phoneMatch != null &&
+        emailMatch != null &&
+        phoneMatch.Id != emailMatch.Id
+      ) {
+        throw new RequestException(
+          'Il telefono e l\'email inseriti appartengono a contatti diversi. Contatta l\'amministratore di sistema.'
+        );
+      }
+
+      Contact participant = phoneMatch == null ? emailMatch : phoneMatch;
+
+      if (participant == null) {
+        participant = new Contact(
           AccountId = access.account.Id,
           FirstName = input.firstName.trim(),
           LastName = input.lastName.trim(),
           Email = input.email.trim(),
-          Phone = input.phone.trim()
+          Phone = phoneForStorage(input.phone)
         );
 
         contactsToCreate.add(participant);
-        contactByEmail.put(email, participant);
+      } else {
+        String resolvedPhone = phoneByResolvedContactId.get(participant.Id);
+        if (resolvedPhone != null && resolvedPhone != phone) {
+          throw new RequestException(
+            'Lo stesso contatto e stato inserito con numeri di telefono diversi. Contatta l\'amministratore di sistema.'
+          );
+        }
+
+        phoneByResolvedContactId.put(participant.Id, phone);
+        contactsToUpdateById.put(
+          participant.Id,
+          new Contact(
+            Id = participant.Id,
+            FirstName = input.firstName.trim(),
+            LastName = input.lastName.trim(),
+            Email = input.email.trim(),
+            Phone = phoneForStorage(input.phone)
+          )
+        );
       }
+
+      contactByPhone.put(phone, participant);
+    }
+
+    Set<Id> contactIdsAlreadyAssigned = findContactIdsWithAssets(
+      contactsToUpdateById.keySet()
+    );
+
+    if (!contactsToUpdateById.isEmpty()) {
+      update contactsToUpdateById.values();
     }
 
     if (!contactsToCreate.isEmpty()) {
@@ -531,12 +585,16 @@ public without sharing class ParticipantRegistrationController {
 
     for (ParticipantInput input : inputs) {
       Id assetId = parseAssetId(input.assetId);
-      Contact participant = contactByEmail.get(normalizeEmail(input.email));
+      Contact participant = contactByPhone.get(normalizePhone(input.phone));
 
       if (participant == null || participant.Id == null) {
         throw new RequestException(
           'Non e stato possibile associare il partecipante al biglietto.'
         );
+      }
+
+      if (contactIdsAlreadyAssigned.contains(participant.Id)) {
+        continue;
       }
 
       Asset eligibleAsset = eligibleAssets.get(assetId);
@@ -555,6 +613,7 @@ public without sharing class ParticipantRegistrationController {
           Ready_for_Ticket_Dispatch__c = true
         )
       );
+      contactIdsAlreadyAssigned.add(participant.Id);
     }
 
     if (!assetsToUpdate.isEmpty()) {
@@ -564,6 +623,23 @@ public without sharing class ParticipantRegistrationController {
     insertMissingCampaignMembers(contactIdsByCampaignId);
 
     return buildPage(access);
+  }
+
+  private static Set<Id> findContactIdsWithAssets(Set<Id> contactIds) {
+    Set<Id> result = new Set<Id>();
+    if (contactIds == null || contactIds.isEmpty()) {
+      return result;
+    }
+
+    for (Asset linkedAsset : [
+      SELECT ContactId
+      FROM Asset
+      WHERE ContactId IN :contactIds
+    ]) {
+      result.add(linkedAsset.ContactId);
+    }
+
+    return result;
   }
 
   private static void insertMissingCampaignMembers(
@@ -605,35 +681,65 @@ public without sharing class ParticipantRegistrationController {
     }
   }
 
-  private static Map<String, Contact> findExistingContacts(
+  private static ContactResolution findExistingContacts(
     Id accountId,
-    Set<String> emails
+    Set<String> emails,
+    Set<String> phones
   ) {
-    Map<String, Contact> result = new Map<String, Contact>();
+    ContactResolution result = new ContactResolution();
     Set<String> duplicateEmails = new Set<String>();
+    Set<String> duplicatePhones = new Set<String>();
+    Set<String> phoneSearchValues = new Set<String>();
 
-    if (emails == null || emails.isEmpty()) {
+    if (
+      (emails == null || emails.isEmpty()) &&
+      (phones == null || phones.isEmpty())
+    ) {
       return result;
     }
 
-    for (Contact participant : [
-      SELECT Id, Email
-      FROM Contact
-      WHERE AccountId = :accountId AND Email IN :emails
-      ORDER BY CreatedDate ASC
-    ]) {
-      String email = normalizeEmail(participant.Email);
-
-      if (result.containsKey(email)) {
-        duplicateEmails.add(email);
-      } else {
-        result.put(email, participant);
+    if (phones != null) {
+      for (String phone : phones) {
+        if (String.isNotBlank(phone)) {
+          phoneSearchValues.add(phone);
+          phoneSearchValues.add('+' + phone);
+        }
       }
     }
 
-    if (!duplicateEmails.isEmpty()) {
+    for (Contact participant : [
+      SELECT Id, AccountId, FirstName, LastName, Email, Phone
+      FROM Contact
+      WHERE AccountId = :accountId OR Phone IN :phoneSearchValues
+      FOR UPDATE
+    ]) {
+      String email = normalizeEmail(participant.Email);
+      String phone = normalizePhone(participant.Phone);
+
+      if (phones.contains(phone)) {
+        if (participant.AccountId != accountId) {
+          throw contactBelongsToAnotherAccount();
+        }
+
+        if (result.contactByPhone.containsKey(phone)) {
+          duplicatePhones.add(phone);
+        } else {
+          result.contactByPhone.put(phone, participant);
+        }
+      }
+
+      if (participant.AccountId == accountId && emails.contains(email)) {
+        if (result.contactByEmail.containsKey(email)) {
+          duplicateEmails.add(email);
+        } else {
+          result.contactByEmail.put(email, participant);
+        }
+      }
+    }
+
+    if (!duplicatePhones.isEmpty() || !duplicateEmails.isEmpty()) {
       throw new RequestException(
-        'Esistono piu contatti con la stessa email. Contatta il tuo referente.'
+        'Esistono piu contatti con lo stesso telefono o la stessa email. Contatta l\'amministratore di sistema.'
       );
     }
 
@@ -665,7 +771,8 @@ public without sharing class ParticipantRegistrationController {
     ParticipantInput input,
     Map<Id, Asset> eligibleAssets,
     Set<Id> submittedAssetIds,
-    Map<String, ParticipantInput> participantByEmail
+    Map<String, ParticipantInput> participantByEmail,
+    Map<String, ParticipantInput> participantByPhone
   ) {
     if (input == null) {
       throw invalidParticipant();
@@ -682,6 +789,7 @@ public without sharing class ParticipantRegistrationController {
     }
 
     String email = normalizeEmail(input.email);
+    String phone = normalizePhone(input.phone);
 
     if (
       String.isBlank(input.firstName) ||
@@ -715,6 +823,25 @@ public without sharing class ParticipantRegistrationController {
       participantByEmail.put(email, input);
     }
 
+    if (participantByPhone.containsKey(phone)) {
+      ParticipantInput previous = participantByPhone.get(phone);
+      Boolean sameFirstName = previous.firstName
+        .trim()
+        .equalsIgnoreCase(input.firstName.trim());
+      Boolean sameLastName = previous.lastName
+        .trim()
+        .equalsIgnoreCase(input.lastName.trim());
+      Boolean sameEmail = normalizeEmail(previous.email) == email;
+
+      if (!sameFirstName || !sameLastName || !sameEmail) {
+        throw new RequestException(
+          'Lo stesso telefono contiene dati diversi in piu righe.'
+        );
+      }
+    } else {
+      participantByPhone.put(phone, input);
+    }
+
     submittedAssetIds.add(assetId);
   }
 
@@ -739,6 +866,26 @@ public without sharing class ParticipantRegistrationController {
     return email == null ? null : email.trim().toLowerCase();
   }
 
+  private static String normalizePhone(String phone) {
+    if (String.isBlank(phone)) {
+      return null;
+    }
+
+    String normalizedPhone = phone.replaceAll('[^0-9]', '');
+    return String.isBlank(normalizedPhone) ? null : normalizedPhone;
+  }
+
+  private static String phoneForStorage(String phone) {
+    String normalizedPhone = normalizePhone(phone);
+    if (normalizedPhone == null) {
+      return null;
+    }
+
+    return phone.trim().startsWith('+')
+      ? '+' + normalizedPhone
+      : normalizedPhone;
+  }
+
   private static Date displayEventDate(Campaign campaign) {
     if (campaign == null) {
       return null;
@@ -759,7 +906,7 @@ public without sharing class ParticipantRegistrationController {
 
   private static Boolean isValidPhone(String phone) {
     return (!String.isBlank(phone) &&
-    Pattern.matches('^[0-9]{6,15}$', phone.trim()));
+    Pattern.matches('^\\+?[0-9]{6,15}$', phone.trim()));
   }
 
   private static Boolean isValidToken(String token) {
@@ -785,6 +932,12 @@ public without sharing class ParticipantRegistrationController {
   private static RequestException rinunciaBlockedByAssignedTicket() {
     return new RequestException(
       'La rinuncia non e disponibile perche un biglietto del gruppo e gia assegnato.'
+    );
+  }
+
+  private static RequestException contactBelongsToAnotherAccount() {
+    return new RequestException(
+      'Questo contatto esiste gia in un\'altra azienda. Contatta l\'amministratore di sistema per maggiori informazioni.'
     );
   }
 

@@ -6,8 +6,16 @@ export function validRows(rows) {
       Number.isFinite(row.spreadPrice) &&
       row.spreadPrice >= 0 &&
       Math.abs(row.spreadPrice * 100 - Math.round(row.spreadPrice * 100)) <
-        0.00001
+        0.00001 &&
+      hasExactUnitPrice(row)
   );
+}
+
+export function hasExactUnitPrice(row) {
+  if (!Number.isInteger(row.quantity) || row.quantity <= 0) return false;
+  if (!Number.isFinite(row.spreadPrice) || row.spreadPrice < 0) return false;
+  const totalCents = Math.round(row.spreadPrice * 100);
+  return totalCents % row.quantity === 0;
 }
 
 export const PRICING_SOURCE_DISCOUNT = "discount";

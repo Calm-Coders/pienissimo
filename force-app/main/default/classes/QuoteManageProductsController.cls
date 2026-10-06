@@ -146,6 +146,10 @@ public with sharing class QuoteManageProductsController {
   public class TrancheSelection {
     @AuraEnabled
     public Date dueDate { get; set; }
+    @AuraEnabled
+    public Decimal discountPercent { get; set; }
+    @AuraEnabled
+    public Decimal newPrice { get; set; }
   }
 
   private class StandardBundleQuoteLineDraft {
@@ -430,16 +434,12 @@ public with sharing class QuoteManageProductsController {
 
     if (context.isPlusOpportunity) {
       PricebookEntry plusEntry = entriesById.values()[0];
-      Decimal plusUnitPrice = requireSalesUnitPrice(plusEntry);
+      requireSalesUnitPrice(plusEntry);
       Integer configuredTrancheCount = requirePlusTrancheCount(plusEntry);
-      validatePlusTrancheDates(tranches, configuredTrancheCount);
-      List<Tranche__c> plusTranches = buildPlusTranches(
-        quoteRecord,
-        tranches,
-        plusUnitPrice
-      );
+      validatePlusTranches(tranches, configuredTrancheCount);
+      List<Tranche__c> plusTranches = buildPlusTranches(quoteRecord, tranches);
       insert plusTranches;
-      insert buildPlusQuoteLines(quoteId, plusEntry, plusTranches);
+      insert buildPlusQuoteLines(quoteId, plusEntry, plusTranches, tranches);
       return;
     }
 
@@ -511,6 +511,7 @@ public with sharing class QuoteManageProductsController {
         Product__c,
         Product__r.Name,
         Quantity__c,
+        Spread_Price__c,
         Unit_Spread__c,
         Bundle_Tranch__c
       FROM BundleComponent__c
@@ -963,7 +964,7 @@ public with sharing class QuoteManageProductsController {
     }
   }
 
-  private static void validatePlusTrancheDates(
+  private static void validatePlusTranches(
     List<TrancheSelection> tranches,
     Integer expectedCount
   ) {
@@ -979,19 +980,32 @@ public with sharing class QuoteManageProductsController {
           'Inserisci la data di scadenza per ogni tranche del prodotto Plus.'
         );
       }
+      if (
+        tranche.newPrice == null ||
+        tranche.newPrice < 0 ||
+        tranche.newPrice != tranche.newPrice.setScale(2)
+      ) {
+        throw new AuraHandledException(
+          'Inserisci un nuovo prezzo valido, con massimo due decimali, per ogni tranche.'
+        );
+      }
+      if (
+        tranche.discountPercent == null ||
+        tranche.discountPercent > 100 ||
+        tranche.discountPercent != tranche.discountPercent.setScale(2)
+      ) {
+        throw new AuraHandledException(
+          'Inserisci uno sconto valido per ogni tranche.'
+        );
+      }
     }
   }
 
   private static List<Tranche__c> buildPlusTranches(
     Quote quoteRecord,
-    List<TrancheSelection> tranches,
-    Decimal trancheAmount
+    List<TrancheSelection> tranches
   ) {
     Integer trancheCount = tranches.size();
-    Decimal normalizedTrancheAmount = (trancheAmount == null
-        ? 0
-        : trancheAmount)
-      .setScale(2);
     String quoteName = String.isBlank(quoteRecord.Name)
       ? quoteRecord.QuoteNumber
       : quoteRecord.Name;
@@ -1005,7 +1019,7 @@ public with sharing class QuoteManageProductsController {
           Name = 'T' + sequence + ' - ' + quoteName,
           Data_Scadenza__c = tranches[i].dueDate,
           Sequenza__c = sequence,
-          Importo_Previsto__c = normalizedTrancheAmount,
+          Importo_Previsto__c = tranches[i].newPrice.setScale(2),
           Stato__c = 'Aperta',
           Completamente_Pagata__c = false
         )
@@ -1018,16 +1032,19 @@ public with sharing class QuoteManageProductsController {
   private static List<QuoteLineItem> buildPlusQuoteLines(
     Id quoteId,
     PricebookEntry plusEntry,
-    List<Tranche__c> tranches
+    List<Tranche__c> tranches,
+    List<TrancheSelection> selections
   ) {
     List<QuoteLineItem> lines = new List<QuoteLineItem>();
-    for (Tranche__c tranche : tranches) {
+    for (Integer i = 0; i < tranches.size(); i++) {
+      Tranche__c tranche = tranches[i];
       lines.add(
         new QuoteLineItem(
           QuoteId = quoteId,
           PricebookEntryId = plusEntry.Id,
           Quantity = 1,
           UnitPrice = tranche.Importo_Previsto__c,
+          Discount_Pct__c = selections[i].discountPercent,
           Tranche__c = tranche.Id,
           Data_Scadenza__c = tranche.Data_Scadenza__c
         )

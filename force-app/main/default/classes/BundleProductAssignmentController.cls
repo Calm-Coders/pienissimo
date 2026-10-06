@@ -383,6 +383,12 @@ public with sharing class BundleProductAssignmentController {
           'Inserisci una quantita intera positiva e un importo non negativo con massimo due decimali.'
         );
       }
+      Decimal roundedUnitPrice = (spread / quantity).setScale(2);
+      if (roundedUnitPrice * quantity != spread) {
+        throw new AuraHandledException(
+          'Il prezzo totale di ogni riga deve essere divisibile per la quantita con un prezzo unitario di massimo due decimali.'
+        );
+      }
       submittedSpreadTotal += spread;
       Id componentId = String.isBlank(input.id) ? null : (Id) input.id;
       Id productId = String.isBlank(input.productId)

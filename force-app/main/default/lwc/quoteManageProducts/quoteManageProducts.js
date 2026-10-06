@@ -36,6 +36,8 @@ export default class QuoteManageProducts extends NavigationMixin(
   productOptions = [];
   selectedProducts = [];
   selectedTrancheDates = {};
+  selectedTrancheDiscounts = {};
+  selectedTranchePrices = {};
   searchTerm = "";
 
   @api
@@ -111,12 +113,27 @@ export default class QuoteManageProducts extends NavigationMixin(
 
     return Array.from({ length: this.selectedTrancheCount }, (_, index) => {
       const sequence = index + 1;
+      const listPrice = Number(product.unitPrice) || 0;
+      const discountPercent = Object.prototype.hasOwnProperty.call(
+        this.selectedTrancheDiscounts,
+        index
+      )
+        ? this.selectedTrancheDiscounts[index]
+        : 0;
+      const newPrice = Object.prototype.hasOwnProperty.call(
+        this.selectedTranchePrices,
+        index
+      )
+        ? this.selectedTranchePrices[index]
+        : listPrice;
       return {
         key: `selected-tranche-${sequence}`,
         label: `Tranche ${sequence}`,
         index,
         productName: product.productName,
-        amountLabel: this.formatAmount(product.unitPrice),
+        listPriceLabel: this.formatAmount(listPrice),
+        discountPercent,
+        newPrice,
         dueDate: this.selectedTrancheDates[index] || ""
       };
     });
@@ -128,6 +145,22 @@ export default class QuoteManageProducts extends NavigationMixin(
     }
 
     return this.selectedTranchePreviewRows.every((tranche) => tranche.dueDate);
+  }
+
+  get hasValidSelectedTranchePricing() {
+    if (!this.showSelectedTranchePreview || !this.selectedTrancheCount) {
+      return true;
+    }
+
+    return this.selectedTranchePreviewRows.every(
+      (tranche) =>
+        tranche.discountPercent != null &&
+        Number.isFinite(Number(tranche.discountPercent)) &&
+        Number(tranche.discountPercent) <= 100 &&
+        tranche.newPrice != null &&
+        Number.isFinite(Number(tranche.newPrice)) &&
+        Number(tranche.newPrice) >= 0
+    );
   }
 
   get showExistingProducts() {
@@ -162,6 +195,7 @@ export default class QuoteManageProducts extends NavigationMixin(
       !this.hasSelectedProducts ||
       (this.showSelectedTranchePreview && !this.hasValidSelectedTrancheCount) ||
       !this.hasValidSelectedTrancheDates ||
+      !this.hasValidSelectedTranchePricing ||
       this.selectedProducts.some(
         (product) => !product.quantity || Number(product.quantity) <= 0
       )
@@ -335,7 +369,7 @@ export default class QuoteManageProducts extends NavigationMixin(
           quantityDisabled: true
         }
       ];
-      this.selectedTrancheDates = {};
+      this.resetSelectedTrancheValues();
       this.isPickerOpen = false;
       this.closeProductList();
     } else if (option.productType === BUNDLE_TYPE) {
@@ -385,6 +419,48 @@ export default class QuoteManageProducts extends NavigationMixin(
     };
   }
 
+  handleSelectedTrancheDiscountChange(event) {
+    const index = Number(event.target.dataset.index);
+    const discountPercent = this.parseNumber(event.target.value);
+    const listPrice = Number(this.selectedPlusProduct?.unitPrice) || 0;
+    const newPrice =
+      discountPercent == null
+        ? null
+        : this.roundToTwoDecimals(
+            listPrice * (1 - Number(discountPercent) / 100)
+          );
+
+    this.selectedTrancheDiscounts = {
+      ...this.selectedTrancheDiscounts,
+      [index]: discountPercent
+    };
+    this.selectedTranchePrices = {
+      ...this.selectedTranchePrices,
+      [index]: newPrice
+    };
+  }
+
+  handleSelectedTranchePriceChange(event) {
+    const index = Number(event.target.dataset.index);
+    const newPrice = this.parseNumber(event.target.value);
+    const listPrice = Number(this.selectedPlusProduct?.unitPrice) || 0;
+    const discountPercent =
+      newPrice == null
+        ? null
+        : listPrice > 0
+          ? this.roundToTwoDecimals((1 - Number(newPrice) / listPrice) * 100)
+          : 0;
+
+    this.selectedTranchePrices = {
+      ...this.selectedTranchePrices,
+      [index]: newPrice
+    };
+    this.selectedTrancheDiscounts = {
+      ...this.selectedTrancheDiscounts,
+      [index]: discountPercent
+    };
+  }
+
   handleRemoveProduct(event) {
     const pricebookEntryId = event.currentTarget.dataset.id;
     this.removeSelectedProduct(pricebookEntryId);
@@ -412,7 +488,9 @@ export default class QuoteManageProducts extends NavigationMixin(
         })),
         tranches: this.showSelectedTranchePreview
           ? this.selectedTranchePreviewRows.map((tranche) => ({
-              dueDate: tranche.dueDate
+              dueDate: tranche.dueDate,
+              discountPercent: Number(tranche.discountPercent),
+              newPrice: Number(tranche.newPrice)
             }))
           : null
       });
@@ -450,7 +528,21 @@ export default class QuoteManageProducts extends NavigationMixin(
     this.selectedProducts = this.selectedProducts.filter(
       (product) => product.pricebookEntryId !== pricebookEntryId
     );
+    this.resetSelectedTrancheValues();
+  }
+
+  resetSelectedTrancheValues() {
     this.selectedTrancheDates = {};
+    this.selectedTrancheDiscounts = {};
+    this.selectedTranchePrices = {};
+  }
+
+  parseNumber(value) {
+    return value === "" || value == null ? null : Number(value);
+  }
+
+  roundToTwoDecimals(value) {
+    return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
   }
 
   excludeExistingProducts(options) {

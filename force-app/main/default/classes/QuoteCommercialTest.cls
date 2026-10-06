@@ -294,7 +294,6 @@ private class QuoteCommercialTest {
         'BND-PLUS',
         500
       );
-      plusBundle.Is_Plus__c = true;
       plusBundle.Categoria_Articolo__c = 'C10';
       insert plusBundle;
       PricebookEntry plusEntry = TestDataFactory.standardEntry(
@@ -370,7 +369,6 @@ private class QuoteCommercialTest {
         'Plus annuale',
         'PLUS-SRCH'
       );
-      plusItem.Is_Plus__c = true;
       plusItem.Categoria_Articolo__c = 'C10';
       plusItem.Numero_Tranche__c = 2;
       insert plusItem;
@@ -510,7 +508,6 @@ private class QuoteCommercialTest {
       inactive.IsActive = false;
       update inactive;
       Product2 plusItem = TestDataFactory.buildItem('Plus', 'PLUS-BAD');
-      plusItem.Is_Plus__c = true;
       plusItem.Categoria_Articolo__c = 'C10';
       insert plusItem;
       PricebookEntry plusEntry = TestDataFactory.standardEntry(plusItem.Id, 10);
@@ -781,7 +778,6 @@ private class QuoteCommercialTest {
       );
       Quote quoteRecord = TestDataFactory.quote(plus.Id);
       Product2 plusItem = TestDataFactory.buildItem('Plus 12 mesi', 'PLUS-12');
-      plusItem.Is_Plus__c = true;
       plusItem.Categoria_Articolo__c = 'C10';
       plusItem.Numero_Tranche__c = 2;
       insert plusItem;
@@ -865,10 +861,8 @@ private class QuoteCommercialTest {
         'Plus_Attivazione_Rinnovo'
       );
       Product2 noCount = TestDataFactory.buildItem('Plus senza', 'PLUS-NOC');
-      noCount.Is_Plus__c = true;
       noCount.Categoria_Articolo__c = 'C10';
       Product2 tooMany = TestDataFactory.buildItem('Plus troppi', 'PLUS-TOO');
-      tooMany.Is_Plus__c = true;
       tooMany.Categoria_Articolo__c = 'C10';
       tooMany.Numero_Tranche__c = 30;
       insert new List<Product2>{ noCount, tooMany };

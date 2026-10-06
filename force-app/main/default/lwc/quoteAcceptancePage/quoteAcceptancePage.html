@@ -70,46 +70,77 @@
           <h2 id="lines-heading">Righe preventivo</h2>
 
           <template if:true={showLines}>
-            <div class="line-list">
-              <template for:each={lines} for:item="line">
-                <article class="line-card" key={line.id}>
-                  <div>
-                    <p class="line-number">Riga {line.displayNumber}</p>
-                    <h3>{line.productName}</h3>
-                    <p>{line.productCode}</p>
-                  </div>
-                  <dl>
-                    <div>
-                      <dt>Quantita</dt>
-                      <dd>
+            <div class="line-table-wrapper">
+              <table class="line-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Articolo e Descrizione</th>
+                    <th scope="col">Unita di misura</th>
+                    <th scope="col">Quantita</th>
+                    <th scope="col">Prezzo Listino</th>
+                    <th scope="col">Importo</th>
+                    <th scope="col">Sconto</th>
+                    <th scope="col">Totale Netto</th>
+                    <th scope="col">Scadenza Pagamento</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template for:each={lines} for:item="line">
+                    <tr key={line.id}>
+                      <td data-label="Articolo e Descrizione">
+                        <strong>{line.productName}</strong>
+                        <template if:true={line.description}>
+                          <span class="line-description"
+                            >{line.description}</span
+                          >
+                        </template>
+                      </td>
+                      <td data-label="Unita di misura">{line.unitOfMeasure}</td>
+                      <td data-label="Quantita" class="number-cell">
                         <lightning-formatted-number
                           value={line.quantity}
                         ></lightning-formatted-number>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Prezzo</dt>
-                      <dd>
+                      </td>
+                      <td data-label="Prezzo Listino" class="number-cell">
                         <lightning-formatted-number
-                          value={line.unitPrice}
+                          value={line.listPrice}
                           format-style="currency"
                           currency-code="EUR"
                         ></lightning-formatted-number>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Totale</dt>
-                      <dd>
+                      </td>
+                      <td data-label="Importo" class="number-cell">
+                        <lightning-formatted-number
+                          value={line.amount}
+                          format-style="currency"
+                          currency-code="EUR"
+                        ></lightning-formatted-number>
+                      </td>
+                      <td data-label="Sconto" class="number-cell">
+                        <lightning-formatted-number
+                          value={line.discount}
+                          format-style="currency"
+                          currency-code="EUR"
+                        ></lightning-formatted-number>
+                      </td>
+                      <td data-label="Totale Netto" class="number-cell">
                         <lightning-formatted-number
                           value={line.totalPrice}
                           format-style="currency"
                           currency-code="EUR"
                         ></lightning-formatted-number>
-                      </dd>
-                    </div>
-                  </dl>
-                </article>
-              </template>
+                      </td>
+                      <td data-label="Scadenza Pagamento">
+                        <lightning-formatted-date-time
+                          value={line.dueDate}
+                          day="2-digit"
+                          month="2-digit"
+                          year="numeric"
+                        ></lightning-formatted-date-time>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
             </div>
           </template>
 
