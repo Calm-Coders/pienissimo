@@ -740,6 +740,9 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Event_Invitation__c.Order_Key__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Integration_Log__c.Exception_Message__c</field>
         <readable>true</readable>
@@ -976,11 +979,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Mappatura_Edizione__c.Attiva__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Mappatura_Edizione__c.Data_Evento__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1202,11 +1200,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Anno_Solare__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-     <fieldPermissions>
-        <editable>true</editable>
-        <field>Product2.ARTPR__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1689,8 +1682,6 @@
         <modifyAllRecords>true</modifyAllRecords>
         <object>Lead</object>
         <viewAllFields>true</viewAllFields>
-        <object>Integration_Log__c</object>
-        <viewAllFields>true</viewAllFields>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
@@ -1699,8 +1690,8 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
-        <object>Mappatura_Edizione__c</object>
-        <viewAllFields>false</viewAllFields>
+        <object>Integration_Log__c</object>
+        <viewAllFields>true</viewAllFields>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
