@@ -88,7 +88,10 @@ public with sharing class AnticipayErrorNotificationService {
     return '<div style="font-family: Arial, sans-serif; color: #1f2933; line-height: 1.5">' +
       '<h2 style="margin: 0 0 12px; color: #b42318; font-size: 20px">Errore controllo Anticipay</h2>' +
       '<p style="margin: 0 0 16px">Il controllo Anticipay ha restituito un errore e richiede una verifica amministrativa.</p>' +
-      '<p style="margin: 0 0 20px">Link Account Salesforce: <a href="{{accountLink}}" style="color: #1b5f8c">{{accountLink}}</a></p>' +
+      '<table cellpadding="0" cellspacing="0" role="presentation" style="margin: 0 0 20px">' +
+      '<tr><td style="border-radius: 4px; background-color: #1b5f8c">' +
+      '<a href="{{accountLink}}" style="display: inline-block; padding: 12px 20px; color: #ffffff; font-weight: bold; text-decoration: none">Apri Account in Salesforce</a>' +
+      '</td></tr></table>' +
       '<table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 680px">' +
       '<tr><td style="padding: 8px; border: 1px solid #d9e2ec; font-weight: bold">Account</td><td style="padding: 8px; border: 1px solid #d9e2ec">{{accountId}}</td></tr>' +
       '<tr><td style="padding: 8px; border: 1px solid #d9e2ec; font-weight: bold">Stato HTTP</td><td style="padding: 8px; border: 1px solid #d9e2ec">{{httpStatus}}</td></tr>' +

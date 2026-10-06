@@ -58,6 +58,14 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
     }
 
     try {
+      if (
+        stepName == STEP_MEXAL_ORDER &&
+        OrderMexalIntegrationService.excludeZeroValueOrder(orderId)
+      ) {
+        enqueueNextOrder();
+        return;
+      }
+
       runCurrentStep();
       enqueueNextStepOrOrder();
     } catch (Exception error) {

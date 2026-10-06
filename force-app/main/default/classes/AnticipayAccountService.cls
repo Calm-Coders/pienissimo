@@ -197,7 +197,12 @@ public with sharing class AnticipayAccountService {
       return result;
     }
 
-    update mapResponseToAccount(accountId, response.info);
+    try {
+      AccountTriggerHandler.setBypassMexalCustomerUpdate(true);
+      update mapResponseToAccount(accountId, response.info);
+    } finally {
+      AccountTriggerHandler.setBypassMexalCustomerUpdate(false);
+    }
 
     result.success = true;
     result.message = 'Dati Account aggiornati da Anticipay.';

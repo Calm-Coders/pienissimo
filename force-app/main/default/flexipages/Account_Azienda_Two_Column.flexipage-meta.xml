@@ -95,14 +95,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Anticipay_Consolidato__c</fieldItem>
-                <identifier>RecordAnticipay_Consolidato_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
-                        <operator>NE</operator>
-                    </criteria>
-                </visibilityRule>
+                <fieldItem>Record.Agente__c</fieldItem>
+                <identifier>RecordAgente_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -111,8 +105,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Agente__c</fieldItem>
-                <identifier>RecordAgente_cField</identifier>
+                <fieldItem>Record.Industry</fieldItem>
+                <identifier>RecordIndustryField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-account-left</name>
@@ -165,8 +159,30 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Industry</fieldItem>
-                <identifier>RecordIndustryField</identifier>
+                <fieldItem>Record.Anticipay_Consolidato__c</fieldItem>
+                <identifier>RecordAnticipay_Consolidato_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Creato_su_Mexal__c</fieldItem>
+                <identifier>RecordCreato_su_Mexal_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-account-right</name>
@@ -443,6 +459,16 @@
                 <identifier>RecordUltima_Verifica_Anticipay_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Tipologia_Attivita__c</fieldItem>
+                <identifier>RecordTipologia_Attivita_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-contact-right</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -471,10 +497,31 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Zona__c</fieldItem>
+                <identifier>RecordZona_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-status-left</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Categoria_Provvigioni_Cliente__c</fieldItem>
+                <identifier
+        >RecordCategoria_Provvigioni_Cliente_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-status-right</name>
         <type>Facet</type>
     </flexiPageRegions>

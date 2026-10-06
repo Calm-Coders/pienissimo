@@ -9,6 +9,34 @@ public with sharing class OrderTriggerHandler {
   private class TicketGenerationException extends Exception {
   }
 
+  public static void beforeInsert(List<Order> newOrders) {
+    Set<Id> accountIds = new Set<Id>();
+    for (Order orderRecord : newOrders) {
+      if (orderRecord.AccountId != null) {
+        accountIds.add(orderRecord.AccountId);
+      }
+    }
+
+    if (accountIds.isEmpty()) {
+      return;
+    }
+
+    Map<Id, Account> accountsById = new Map<Id, Account>(
+      [
+        SELECT Codice_Agente_Esterno__c
+        FROM Account
+        WHERE Id IN :accountIds
+      ]
+    );
+
+    for (Order orderRecord : newOrders) {
+      Account accountRecord = accountsById.get(orderRecord.AccountId);
+      orderRecord.Codice_Agente__c = accountRecord == null
+        ? null
+        : accountRecord.Codice_Agente_Esterno__c;
+    }
+  }
+
   public static void afterInsert(List<Order> newOrders) {
     OrderMexalIntegrationService.enqueueForCreatedOrders(newOrders);
     closeWonOpportunitiesForConfirmedOrders(newOrders, null);

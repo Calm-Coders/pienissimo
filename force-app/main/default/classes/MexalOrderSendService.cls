@@ -1,10 +1,14 @@
 public with sharing class MexalOrderSendService {
   private static final String DEFAULT_DOCUMENT_TYPE = 'OC';
-  private static final Integer DEFAULT_SERIES = 10;
+  private static final String BOOK_DOCUMENT_TYPE = 'BC';
+  private static final Integer SANDBOX_SERIES = 10;
+  private static final Integer PRODUCTION_SERIES = 1;
   private static final Integer AUTO_NUMBER = 0;
   private static final Integer NEW_LINE_ID = 0;
   private static final String ARTICLE_LINE_TYPE = 'R';
-  private static final String DEFAULT_VAT_CODE = '22';
+  private static final String SERVICE_VAT_CODE = 'E01';
+  private static final String BOOK_VAT_CODE = 'E10';
+  private static Integer resolvedDocumentSeries;
 
   public class Result {
     public Boolean success;
@@ -58,6 +62,7 @@ public with sharing class MexalOrderSendService {
         Id,
         AccountId,
         Account.Codice_Cliente_Mexal__c,
+        Codice_Agente__c,
         EffectiveDate,
         OrderNumber,
         Quote__c,
@@ -98,6 +103,18 @@ public with sharing class MexalOrderSendService {
       );
     }
 
+    if (String.isBlank(orderRecord.Condizione_di_Pagamento__c)) {
+      throw new MexalOrderSendException(
+        'Condizione di pagamento obbligatoria per creare l ordine Mexal.'
+      );
+    }
+
+    if (String.isBlank(orderRecord.Codice_Agente__c)) {
+      throw new MexalOrderSendException(
+        'Codice agente obbligatorio per creare l ordine Mexal.'
+      );
+    }
+
     if (orderRecord.OrderItems == null || orderRecord.OrderItems.isEmpty()) {
       throw new MexalOrderSendException(
         'Ordine senza righe: impossibile inviare a Mexal.'
@@ -114,31 +131,38 @@ public with sharing class MexalOrderSendService {
   }
 
   private static Map<String, Object> buildOrderPayload(Order orderRecord) {
+    String documentType = DEFAULT_DOCUMENT_TYPE;
     Map<String, Object> payload = new Map<String, Object>();
-    payload.put('sigla', DEFAULT_DOCUMENT_TYPE);
-    payload.put('serie', DEFAULT_SERIES);
+    payload.put('sigla', documentType);
+    payload.put('serie', resolveDocumentSeries());
     payload.put('numero', AUTO_NUMBER);
     payload.put('cod_conto', orderRecord.Account.Codice_Cliente_Mexal__c);
+    if (!String.isBlank(orderRecord.Codice_Agente__c)) {
+      payload.put('codice_agente', orderRecord.Codice_Agente__c.trim());
+    }
     payload.put('data_documento', formatDate(orderRecord.EffectiveDate));
     putIntegerValue(
       payload,
       'id_pagamento',
       orderRecord.Condizione_di_Pagamento__c
     );
-    putLineArrays(payload, orderRecord.OrderItems);
+    putLineArrays(payload, orderRecord.OrderItems, documentType);
     return payload;
   }
 
   private static void putLineArrays(
     Map<String, Object> payload,
-    List<OrderItem> orderLines
+    List<OrderItem> orderLines,
+    String documentType
   ) {
     List<Object> lineIds = new List<Object>();
     List<Object> lineTypes = new List<Object>();
     List<Object> articleCodes = new List<Object>();
     List<Object> quantities = new List<Object>();
+    List<Object> prices = new List<Object>();
     List<Object> vatCodes = new List<Object>();
     List<Object> dueDates = new List<Object>();
+    String vatCode = resolveVatCode(documentType);
     Integer lineNumber = 1;
 
     for (OrderItem line : orderLines) {
@@ -148,7 +172,8 @@ public with sharing class MexalOrderSendService {
         new List<Object>{ lineNumber, resolveProductCode(line) }
       );
       quantities.add(new List<Object>{ lineNumber, line.Quantity });
-      vatCodes.add(new List<Object>{ lineNumber, DEFAULT_VAT_CODE });
+      prices.add(new List<Object>{ lineNumber, line.UnitPrice });
+      vatCodes.add(new List<Object>{ lineNumber, vatCode });
       String dueDate = formatDate(line.Data_Scadenza__c);
       if (!String.isBlank(dueDate)) {
         dueDates.add(new List<Object>{ lineNumber, dueDate });
@@ -160,10 +185,23 @@ public with sharing class MexalOrderSendService {
     payload.put('tp_riga', lineTypes);
     payload.put('codice_articolo', articleCodes);
     payload.put('quantita', quantities);
+    payload.put('prezzo', prices);
     payload.put('cod_iva', vatCodes);
     if (!dueDates.isEmpty()) {
       payload.put('dt_sca_riga', dueDates);
     }
+  }
+
+  private static String resolveVatCode(String documentType) {
+    if (documentType == DEFAULT_DOCUMENT_TYPE) {
+      return SERVICE_VAT_CODE;
+    }
+    if (documentType == BOOK_DOCUMENT_TYPE) {
+      return BOOK_VAT_CODE;
+    }
+    throw new MexalOrderSendException(
+      'Codice IVA Mexal non configurato per la sigla ' + documentType + '.'
+    );
   }
 
   private static Map<Id, Integer> buildLineNumberMap(
@@ -209,7 +247,7 @@ public with sharing class MexalOrderSendService {
     Result result = new Result();
     result.orderId = orderRecord.Id;
     result.mexalDocumentSigla = DEFAULT_DOCUMENT_TYPE;
-    result.mexalDocumentSerie = DEFAULT_SERIES;
+    result.mexalDocumentSerie = resolveDocumentSeries();
     result.mexalCustomerCode = orderRecord.Account.Codice_Cliente_Mexal__c;
     result.lineNumbersByOrderItemId = buildLineNumberMap(
       orderRecord.OrderItems
@@ -231,6 +269,20 @@ public with sharing class MexalOrderSendService {
       ? 'Creazione ordine Mexal completata.'
       : 'Creazione ordine Mexal fallita.';
     return result;
+  }
+
+  private static Integer resolveDocumentSeries() {
+    if (resolvedDocumentSeries == null) {
+      Organization currentOrganization = [
+        SELECT IsSandbox
+        FROM Organization
+        LIMIT 1
+      ];
+      resolvedDocumentSeries = currentOrganization.IsSandbox
+        ? SANDBOX_SERIES
+        : PRODUCTION_SERIES;
+    }
+    return resolvedDocumentSeries;
   }
 
   private static String findMexalOrderNumber(
