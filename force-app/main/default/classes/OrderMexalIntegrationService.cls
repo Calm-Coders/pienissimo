@@ -6,7 +6,7 @@ public with sharing class OrderMexalIntegrationService {
   private static final String STATUS_SENT = 'Sent';
   private static final String STATUS_FAILED = 'Failed';
   private static final String STATUS_EXCLUDED = 'Excluded';
-  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = true;
+  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = false;
   private static final Set<Id> ORDER_IDS_QUEUED_IN_TRANSACTION = new Set<Id>();
 
   public class OrderMexalIntegrationException extends Exception {

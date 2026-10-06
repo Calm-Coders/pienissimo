@@ -62,10 +62,12 @@ public with sharing class MexalSearchCalloutService {
   }
 
   public static Result createCustomer(Object requestBody) {
+    preventCreationInSandbox('cliente');
     return sendWrite(CUSTOMER_CREATE_ACTION, requestBody, true);
   }
 
   public static Result createOrder(Object requestBody) {
+    preventCreationInSandbox('ordine');
     return sendWrite(ORDER_CREATE_ACTION, requestBody, true);
   }
 
@@ -168,6 +170,14 @@ public with sharing class MexalSearchCalloutService {
 
     saveLog(logRow, result, insertLog);
     return result;
+  }
+
+  private static void preventCreationInSandbox(String recordType) {
+    if (IS_SANDBOX && !Test.isRunningTest()) {
+      throw new MexalSearchCalloutException(
+        'Creazione ' + recordType + ' Mexal non consentita in sandbox.'
+      );
+    }
   }
 
   public static Result sendWrite(
