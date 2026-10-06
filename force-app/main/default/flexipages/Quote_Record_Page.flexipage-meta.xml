@@ -390,16 +390,6 @@
         >RecordDescrizione_Condizione_di_Pagamento_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Description</fieldItem>
-                <identifier>RecordDescriptionField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-3a12ada5-abc0-4af4-8c20-e7e40460efdd</name>
         <type>Facet</type>
     </flexiPageRegions>

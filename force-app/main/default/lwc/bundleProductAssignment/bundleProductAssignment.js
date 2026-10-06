@@ -10,6 +10,7 @@ import saveComponents from "@salesforce/apex/BundleProductAssignmentController.s
 import {
   calculateDiscountedTotal,
   calculateDiscountPercent,
+  hasExactUnitPrice,
   PRICING_SOURCE_DISCOUNT,
   PRICING_SOURCE_MANUAL,
   resolveRowPrice,
@@ -372,7 +373,7 @@ export default class BundleProductAssignment extends LightningElement {
     if (!validInputs || !validRows([this.editingComponentDraft])) {
       this.showToast(
         "Controlla la riga",
-        "La riga deve avere una quantita intera positiva e un importo non negativo con massimo due decimali.",
+        "La riga deve avere una quantita intera positiva, un importo non negativo con massimo due decimali e un prezzo unitario esatto in centesimi.",
         "error"
       );
       return;
@@ -687,12 +688,17 @@ export default class BundleProductAssignment extends LightningElement {
         Math.abs(
           resolved.spreadPrice * 100 - Math.round(resolved.spreadPrice * 100)
         ) < 0.00001;
-      if (hasValidPrice) return;
+      const hasValidQuantity =
+        Number.isInteger(resolved.quantity) && resolved.quantity > 0;
+      const hasValidUnitPrice =
+        !hasValidPrice || !hasValidQuantity || hasExactUnitPrice(resolved);
+      if (hasValidPrice && hasValidUnitPrice) return;
 
       isValid = false;
       const fields = priceInputsByKey.get(row.key) || {};
-      const message =
-        row.discountDisabled === true
+      const message = hasValidPrice
+        ? "Il prezzo totale deve essere divisibile per la quantita con un prezzo unitario di massimo due decimali."
+        : row.discountDisabled === true
           ? "Inserisci il prezzo totale della riga."
           : "Inserisci uno sconto oppure il prezzo totale della riga.";
       nextErrors[row.key] = message;
@@ -814,7 +820,7 @@ export default class BundleProductAssignment extends LightningElement {
     if (!validRows(this.rows) || this.rows.some((row) => !row.productId)) {
       this.showToast(
         "Controlla le righe",
-        "Ogni riga deve avere un prodotto, una quantita intera positiva e un importo non negativo con massimo due decimali.",
+        "Ogni riga deve avere un prodotto, una quantita intera positiva, un importo non negativo con massimo due decimali e un prezzo unitario esatto in centesimi.",
         "error"
       );
       return false;

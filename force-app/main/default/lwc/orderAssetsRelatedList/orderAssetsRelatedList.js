@@ -98,9 +98,7 @@ export default class OrderAssetsRelatedList extends LightningElement {
       productUrl: this.recordUrl("Product2", row.productId),
       productLabel: this.productLabel(row),
       orderProductUrl: this.recordUrl("OrderItem", row.orderProductId),
-      orderProductLabel: row.orderProductQuantity
-        ? `Riga ordine x ${row.orderProductQuantity}`
-        : "Riga ordine",
+      orderProductLabel: row.productName || "Prodotto ordine",
       campaignUrl: this.recordUrl("Campaign", row.campaignId),
       campaignLabel: row.campaignName || ""
     }));

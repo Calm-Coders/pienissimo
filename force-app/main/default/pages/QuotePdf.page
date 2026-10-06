@@ -314,7 +314,9 @@
             <strong><apex:outputText value="{!tutor}" /></strong>
           </div>
           <div>
-            Importo <apex:outputText value="{!currencyCode}" />
+            Importo&#160;&#160;<apex:outputText
+              value="{!currencyCode}"
+            />&#160;&#160;
             <apex:outputText value="{!totalPrice}" />
           </div>
         </div>
@@ -479,7 +481,9 @@
             <strong><apex:outputText value="{!tutor}" /></strong>
           </div>
           <div>
-            Importo <apex:outputText value="{!currencyCode}" />
+            Importo&#160;&#160;<apex:outputText
+              value="{!currencyCode}"
+            />&#160;&#160;
             <apex:outputText value="{!totalPrice}" />
           </div>
         </div>
@@ -530,6 +534,37 @@
               </tr>
             </apex:repeat>
           </tbody>
+        </table>
+
+        <table class="totals">
+          <tr>
+            <td>Valuta</td>
+            <td class="number"><apex:outputText value="{!currencyCode}" /></td>
+          </tr>
+          <tr>
+            <td>Subtotale</td>
+            <td class="number"><apex:outputText value="{!subtotal}" /></td>
+          </tr>
+          <tr>
+            <td>Totale netto</td>
+            <td class="number"><apex:outputText value="{!totalPrice}" /></td>
+          </tr>
+          <apex:outputPanel layout="none" rendered="{!hasTax}"
+            ><tr>
+              <td>Imposte</td>
+              <td class="number"><apex:outputText value="{!tax}" /></td></tr
+          ></apex:outputPanel>
+          <apex:outputPanel layout="none" rendered="{!hasShipping}"
+            ><tr>
+              <td>Spese di spedizione</td>
+              <td class="number">
+                <apex:outputText value="{!shipping}" />
+              </td></tr
+          ></apex:outputPanel>
+          <tr class="grand-total">
+            <td>Totale complessivo</td>
+            <td class="number"><apex:outputText value="{!grandTotal}" /></td>
+          </tr>
         </table>
 
         <apex:outputPanel

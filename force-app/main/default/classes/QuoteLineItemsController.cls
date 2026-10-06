@@ -243,7 +243,12 @@ public without sharing class QuoteLineItemsController {
     requireDeletableQuote(quoteId);
 
     List<QuoteLineItem> lines = [
-      SELECT Id, QuoteId, Description, Product2.Categoria_Articolo__c
+      SELECT
+        Id,
+        QuoteId,
+        Description,
+        Product2.Categoria_Articolo__c,
+        Product2.RecordType.DeveloperName
       FROM QuoteLineItem
       WHERE Id = :lineId
       LIMIT 1

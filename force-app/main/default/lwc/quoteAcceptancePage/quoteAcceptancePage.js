@@ -123,8 +123,7 @@ export default class QuoteAcceptancePage extends LightningElement {
     this.page = payload || {};
     this.lines = (payload?.lines || []).map((line, index) => ({
       ...line,
-      displayNumber: index + 1,
-      productCode: line.productCode || "-"
+      displayNumber: index + 1
     }));
   }
 

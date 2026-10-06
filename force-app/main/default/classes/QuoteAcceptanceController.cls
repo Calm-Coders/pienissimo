@@ -11,6 +11,7 @@ public without sharing class QuoteAcceptanceController {
   private static final String REJECTED_STATUS = 'Rifiutato';
   private static final String DOCUSIGN_STATUS_SENT = 'Sent';
   private static final String DOCUSIGN_STATUS_COMPLETED = 'Completed';
+  private static final String BUNDLE_RECORD_TYPE = 'Bundle';
   private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
   private static final Set<String> ACTIONABLE_STATUSES = new Set<String>{
     'In Trattativa',
@@ -23,13 +24,21 @@ public without sharing class QuoteAcceptanceController {
     @AuraEnabled
     public String productName { get; set; }
     @AuraEnabled
-    public String productCode { get; set; }
+    public String description { get; set; }
+    @AuraEnabled
+    public String unitOfMeasure { get; set; }
     @AuraEnabled
     public Decimal quantity { get; set; }
     @AuraEnabled
-    public Decimal unitPrice { get; set; }
+    public Decimal listPrice { get; set; }
+    @AuraEnabled
+    public Decimal amount { get; set; }
+    @AuraEnabled
+    public Decimal discount { get; set; }
     @AuraEnabled
     public Decimal totalPrice { get; set; }
+    @AuraEnabled
+    public Date dueDate { get; set; }
   }
 
   public class PageResponse {
@@ -179,31 +188,161 @@ public without sharing class QuoteAcceptanceController {
       ? defaultMessage(response.state)
       : actionMessage;
 
-    for (QuoteLineItem line : [
+    List<QuoteLineItem> quoteLines = [
       SELECT
         Id,
+        Description,
         Quantity,
+        ListPrice,
         UnitPrice,
+        Discount,
+        Discount_Pct__c,
         TotalPrice,
+        Data_Scadenza__c,
+        Tranche__r.Data_Scadenza__c,
+        Product2Id,
         Product2.Name,
-        Product2.ProductCode
+        Product2.QuantityUnitOfMeasure,
+        Product2.RecordType.DeveloperName
       FROM QuoteLineItem
       WHERE QuoteId = :quoteId
       ORDER BY CreatedDate, Id
-    ]) {
-      QuoteLineRow row = new QuoteLineRow();
-      row.id = line.Id;
-      row.productName = line.Product2 == null ? null : line.Product2.Name;
-      row.productCode = line.Product2 == null
-        ? null
-        : line.Product2.ProductCode;
-      row.quantity = line.Quantity;
-      row.unitPrice = line.UnitPrice;
-      row.totalPrice = line.TotalPrice;
-      response.lines.add(row);
+    ];
+
+    Map<Id, List<BundleComponent__c>> componentsByBundleId = bundleComponentsByBundleId(
+      quoteLines
+    );
+    for (QuoteLineItem line : quoteLines) {
+      List<BundleComponent__c> components = componentsByBundleId.get(
+        line.Product2Id
+      );
+      if (isBundleLine(line)) {
+        if (components == null || components.isEmpty()) {
+          throw new RequestException(
+            'Il bundle del preventivo non contiene prodotti collegati. Contatta il tuo referente Pienissimo.'
+          );
+        }
+        for (BundleComponent__c component : components) {
+          response.lines.add(bundleComponentRow(line, component));
+        }
+        continue;
+      }
+
+      response.lines.add(quoteLineRow(line));
     }
 
     return response;
+  }
+
+  private static Map<Id, List<BundleComponent__c>> bundleComponentsByBundleId(
+    List<QuoteLineItem> quoteLines
+  ) {
+    Set<Id> bundleIds = new Set<Id>();
+    for (QuoteLineItem line : quoteLines) {
+      if (isBundleLine(line)) {
+        bundleIds.add(line.Product2Id);
+      }
+    }
+
+    Map<Id, List<BundleComponent__c>> componentsByBundleId = new Map<Id, List<BundleComponent__c>>();
+    if (bundleIds.isEmpty()) {
+      return componentsByBundleId;
+    }
+
+    for (BundleComponent__c component : [
+      SELECT
+        Id,
+        Bundle__c,
+        Quantity__c,
+        Spread_Price__c,
+        Unit_Spread__c,
+        Product__r.Name,
+        Product__r.Description,
+        Product__r.QuantityUnitOfMeasure,
+        Bundle_Tranch__r.Data_Scadenza__c
+      FROM BundleComponent__c
+      WHERE Bundle__c IN :bundleIds
+      ORDER BY Bundle_Tranch__r.Sequenza__c, Product__r.Name, Id
+    ]) {
+      if (!componentsByBundleId.containsKey(component.Bundle__c)) {
+        componentsByBundleId.put(
+          component.Bundle__c,
+          new List<BundleComponent__c>()
+        );
+      }
+      componentsByBundleId.get(component.Bundle__c).add(component);
+    }
+    return componentsByBundleId;
+  }
+
+  private static Boolean isBundleLine(QuoteLineItem line) {
+    return line.Product2 != null &&
+      line.Product2.RecordType != null &&
+      line.Product2.RecordType.DeveloperName == BUNDLE_RECORD_TYPE;
+  }
+
+  private static QuoteLineRow quoteLineRow(QuoteLineItem line) {
+    QuoteLineRow row = new QuoteLineRow();
+    row.id = line.Id;
+    row.productName = line.Product2 == null ? null : line.Product2.Name;
+    row.description = line.Description;
+    row.unitOfMeasure = line.Product2 == null
+      ? null
+      : line.Product2.QuantityUnitOfMeasure;
+    row.quantity = line.Quantity;
+    row.listPrice = line.ListPrice;
+    row.amount =
+      (line.Quantity == null ? 0 : line.Quantity) *
+      (line.ListPrice == null ? 0 : line.ListPrice);
+    row.discount = row.amount - (line.TotalPrice == null ? 0 : line.TotalPrice);
+    row.totalPrice = line.TotalPrice;
+    row.dueDate = quoteLineDueDate(line);
+    return row;
+  }
+
+  private static QuoteLineRow bundleComponentRow(
+    QuoteLineItem bundleLine,
+    BundleComponent__c component
+  ) {
+    Decimal bundleQuantity = bundleLine.Quantity == null
+      ? 0
+      : bundleLine.Quantity;
+    Decimal componentQuantity = component.Quantity__c == null
+      ? 0
+      : component.Quantity__c;
+    Decimal unitPrice = component.Unit_Spread__c == null
+      ? 0
+      : component.Unit_Spread__c;
+
+    QuoteLineRow row = new QuoteLineRow();
+    row.id = component.Id;
+    row.productName = component.Product__r == null
+      ? null
+      : component.Product__r.Name;
+    row.description = component.Product__r == null
+      ? null
+      : component.Product__r.Description;
+    row.unitOfMeasure = component.Product__r == null
+      ? null
+      : component.Product__r.QuantityUnitOfMeasure;
+    row.quantity = bundleQuantity * componentQuantity;
+    row.listPrice = unitPrice;
+    row.amount =
+      bundleQuantity *
+      (component.Spread_Price__c == null ? 0 : component.Spread_Price__c);
+    row.discount = 0;
+    row.totalPrice = row.amount;
+    row.dueDate = quoteLineDueDate(bundleLine);
+    if (row.dueDate == null && component.Bundle_Tranch__r != null) {
+      row.dueDate = component.Bundle_Tranch__r.Data_Scadenza__c;
+    }
+    return row;
+  }
+
+  private static Date quoteLineDueDate(QuoteLineItem line) {
+    return line.Data_Scadenza__c != null
+      ? line.Data_Scadenza__c
+      : (line.Tranche__r == null ? null : line.Tranche__r.Data_Scadenza__c);
   }
 
   private static Quote queryQuote(Id quoteId, Boolean lockRecord) {
