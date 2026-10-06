@@ -459,6 +459,16 @@
                 <identifier>RecordUltima_Verifica_Anticipay_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Tipologia_Attivita__c</fieldItem>
+                <identifier>RecordTipologia_Attivita_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-contact-right</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -487,10 +497,31 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Zona__c</fieldItem>
+                <identifier>RecordZona_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-status-left</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Categoria_Provvigioni_Cliente__c</fieldItem>
+                <identifier
+        >RecordCategoria_Provvigioni_Cliente_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-status-right</name>
         <type>Facet</type>
     </flexiPageRegions>
