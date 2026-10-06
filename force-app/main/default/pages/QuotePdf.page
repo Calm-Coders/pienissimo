@@ -287,8 +287,9 @@
           <tr>
             <td>
               <h1>
-                PREVENTIVO
-                <apex:outputText value="{!quoteRecord.QuoteNumber}" />
+                PREVENTIVO -&#160;<apex:outputText
+                  value="{!quoteRecord.QuoteNumber}"
+                />
               </h1>
               <apex:outputText value="{!generatedDate}" />
             </td>
@@ -297,8 +298,11 @@
                 value="{!customerName}"
               /><br /><apex:outputText
                 value="{!quoteRecord.Account.Nome_Legale_Rappresentante__c}"
-              /><br /><apex:outputText value="{!billingAddress}" /><br />P.IVA
-              <apex:outputText value="{!quoteRecord.Account.Partita_IVA__c}" />
+              /><br /><apex:outputText
+                value="{!billingAddress}"
+              /><br />P.IVA&#160;<apex:outputText
+                value="{!quoteRecord.Account.Partita_IVA__c}"
+              />
             </td>
           </tr>
         </table>
@@ -452,8 +456,9 @@
           <tr>
             <td>
               <h1 class="plus-order-title">
-                PREVENTIVO
-                <apex:outputText value="{!quoteRecord.QuoteNumber}" />
+                PREVENTIVO -&#160;<apex:outputText
+                  value="{!quoteRecord.QuoteNumber}"
+                />
               </h1>
               <apex:outputText value="{!generatedDate}" />
             </td>
@@ -463,8 +468,9 @@
               <apex:outputText
                 value="{!quoteRecord.Account.Nome_Legale_Rappresentante__c}"
               /><br /> <apex:outputText value="{!billingAddress}" /><br />
-              P.IVA
-              <apex:outputText value="{!quoteRecord.Account.Partita_IVA__c}" />
+              P.IVA&#160;<apex:outputText
+                value="{!quoteRecord.Account.Partita_IVA__c}"
+              />
             </td>
           </tr>
         </table>
