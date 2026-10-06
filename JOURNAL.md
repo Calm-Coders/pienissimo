@@ -10,6 +10,50 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-06 - claude - Nightly Mexal invoice and scadenzario sync written
+
+- **Did:** split `MexalInvoiceImportService` into `importInvoicesModifiedSince`
+  and `importScadenzarioModifiedSince` (cursor on `data_ult_mod`); kept
+  `importByDocumentDate` as the backfill. New `MexalInvoiceSyncJob`
+  (Queueable) chains invoices -> `MexalInvoiceLineImportBatch` (new chained
+  constructor) -> scadenzario; the scadenzario step links order lines to their
+  rate (`linkOrderLines`), sets Paid / Unpaid, and the tranche roll-up follows
+  through `OrderItemTriggerHandler`. New `MexalInvoiceSyncScheduler` at 03:30.
+- **Removed `MexalMaggazinoSyncBatch` from `MexalCustomerSyncScheduler`:** it
+  made the same two Mexal searches and only wrote `Mexal_Payment_Status__c`;
+  the class stays in source (tests still reference it).
+- **State:** working tree only, not committed, not deployed. Dry-run deploy to
+  Pienissimo UAT succeeded. Prod has no `Integration_Configuration2__c` rows
+  for Mexal and no Mexal job scheduled.
+- **OI-201 set to `resolved`** (in code, UAT check pending): Aurel Mrruku ruled
+  that Kreosoft's answer is enough, so `E` counts as paid like `P` through
+  `Scadenza_Fattura__c.Pagata__c`. Updated the note, the EN and IT tracker row
+  201, `MAP.md`, `INDEX.md` and the payment roll-up note. `DEVELOPMENT-RECAP*`
+  and `STATUS.md` were not regenerated.
+- **`id_riga` test (UAT, serie 10):** Mexal keeps a numeric `id_riga` sent by
+  Salesforce (OC/10/9 stored 619..628) and rejects the 15-character Id (order
+  00000306 `Failed`). `MexalOrderSendService` now always sends
+  `OrderItemNumber`; deployed to Pienissimo UAT, not committed. Test quotes
+  00000142..00000146 were cloned from 00000141; 00000143 and 00000145 are
+  still `Bozza`. Recorded in `notes/flows/The Mexal integration.md`.
+- **Invoices and rates on the Account:** new lookup `Scadenza_Fattura__c.Account__c`.
+  The invoice takes the Account of its order (line batch), else the one matched
+  by Mexal customer code; each rate takes its invoice's Account. Two tabs,
+  `Fatture` and `Scadenze Fatture`, added to `Account_Azienda_Two_Column`. The
+  repo version of that page was newer than UAT's (commit `5dea08e`) and was
+  deployed over it. Deployed to UAT with the invoice sync classes (job not
+  scheduled); UAT backfill: 346 of 454 rates now carry an Account, the rest
+  belong to invoices with no matched Account. Anticipay toast now shows the
+  Partita IVA checked (deployed to UAT). Not committed.
+
+## 2026-10-06 - Codex (Mexal read authorization)
+
+- **Did:** recorded the user's explicit authorization for Claude Code to run a
+  read-only scan of Mexal order lines and report discount formats in `AGENTS.md`.
+- **Scope:** reads only. No Mexal script was executed and no Mexal data changed.
+  No broad shell allow rule was added: the specific script is not available in
+  the repository. Existing local Claude settings are unchanged.
+
 ## 2026-10-05 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
@@ -37,7 +81,7 @@ Keep the twenty most recent entries here; archive older ones to
   before the 06/10 client consultation it was deferred to**; if they ask for
   something else tomorrow, that work is sunk. ⚠ Three documented client designs
   in four days have been overlooked by the build (`Data invio automatico
-  biglietti`, the commercial quote fields, the `F-2` nightly anagrafica batch)
+biglietti`, the commercial quote fields, the `F-2` nightly anagrafica batch)
   — **read the Campi Oggetti workbook before designing anything new.** ⚠ The
   `Articoli Salesforce.xlsx` extract holds **real catalogue prices**; no value
   was copied and none may be. ⚠ Branch `DevmainRevertParticipationPage` is
@@ -4487,3 +4531,50 @@ mancante`) predates the config row (created 04/10 23:32Z).
   Auth Provider and Named Credential; a Prod deploy of those two files reverts this
   work. The test quote is `Accettato` / `DocuSign_Status__c = Error`; no envelope has
   been sent from production yet.
+
+## 2026-10-06 — claude — Mexal line discount: net price decided, quote-to-order bug fixed in source
+
+- **Question:** does Mexal have a line discount field? Yes: `sconto`, alphanumeric,
+  on each order line. It is confirmed by the live `?info=true` schema in
+  `.org-status-cache/mexal-manual/`. `ManWebapi3_0.pdf` never lists it for order
+  lines, and Andrea Di Cicco's workbook maps it only on `Get Fatture`.
+- **Decision (Aurel Mrruku):** Salesforce sends Mexal the **net** line price and no
+  `sconto`. Recorded in [OI-145](notes/items/OI-145%20Order%20header%20discounts%20are%20removed.md).
+- **Bug found and fixed in source:** `QuoteTriggerHandler` copied
+  `QuoteLineItem.UnitPrice` (before the discount) into `OrderItem.UnitPrice`, so
+  discounted quotes reached the order and Mexal at full price. It now uses
+  `TotalPrice / Quantity`, rounded to 2 decimals. Prettier is clean. A dry-run
+  deploy to Pienissimo UAT succeeded (`0AfMA00000CrWyv0AF`).
+- **Not done:** no real deploy, nothing committed. No test class was written, per
+  the standing instruction. The read-only Mexal scan for real `sconto` values was
+  blocked by the session's permission classifier. Existing orders from discounted
+  quotes were not checked.
+- **Later the same session:** the `QuoteTriggerHandler` fix was deployed to
+  **Pienissimo UAT** (`0AfMA00000CrTjK0AV`, `NoTestRun`) and the class was read back.
+  Before the deploy, UAT's class matched source except for this change. Not in Prod,
+  not committed, and no end-to-end test with a discounted quote.
+- **Test data in Pienissimo UAT for the order send:**
+  - Opportunity `006MA00000KemVSYAZ` and quote `00000138` (`0Q0MA000002yM7l0AE`,
+    `Bozza`), on account `501.01771` (PIENISSIMO SRL, agent code `610.00019`).
+    `Quote.Agente__c` is set to Davide Stefani.
+  - Two lines: SFZC0001 qty 1 at 10% discount, and SFCV0001 qty 3 at 15% discount.
+  - The `USER_DEBUG` trace flag (Finest) on Aurel Mrruku's UAT user is active until
+    2026-10-07 12:29Z.
+  - ⚠ UAT still runs the Mexal queue against the live `PIE` company. Anita Aga's
+    `1f54c40` sandbox block is not deployed there.
+- **Test result:** order `00000296` failed at the Mexal customer `PUT`, which
+  returned HTTP 400: `gest_fatt_el` must be `P` or `S` for this customer, and the
+  San Marino row sent `N`. The order lines carried net prices as intended. As an
+  interim fix, the `SM` row of `Residenza_Fiscale__mdt` was set to `P` in source and
+  deployed to UAT (`0AfMA00000CrUcD0AV`). This is pending the client's choice of `P`
+  or `S`; see [OI-173](notes/items/OI-173%20San%20Marino%20fiscal%20transcoding%20table.md).
+- **Second order test:** quote `00000138` reached the Mexal order `POST` and failed
+  with `Codice articolo non trovato` on `SFZC0001`/`SFCV0001`. These are bundle-only
+  `SF` codes that do not exist in Mexal; choosing them was a test-data error. A
+  read-only article search run from UAT anonymous Apex found `CS-00009`, `CO-0015`,
+  `CS-00141`, `PLUS-000`, `PLUS-010` and `PF000003` live in Mexal. `PF000003` carries
+  VAT `E10` (books).
+  - The customer `PUT` succeeded this time, so Mexal customer `501.01771` now holds
+    the UAT account's data.
+  - New test quote `00000139` (`0Q0MA000002yN8f0AE`, `Bozza`): one line, PF000003,
+    qty 2 at 10% discount, same customer and agent.

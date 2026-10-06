@@ -1,11 +1,11 @@
 ---
 id: OI-201
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-05
+updated: 2026-10-06
 depends_on: [OI-69]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -47,16 +47,16 @@ deadline.paid = deadline.paymentStatus == 'P';
 
 Every step below is in `DevMain` at `6778b58` and reads the flag above.
 
-| Step | Where |
-| --- | --- |
-| `deadline.paid` | `MexalScadenzarioSearchService.mapDeadlines` |
-| `mapping.paid` | `MexalInvoiceOrderLineMappingService.matchPaymentDeadlines` |
-| `OrderItem.Mexal_Payment_Status__c = 'Paid'` | `MexalInvoiceOrderLineMappingService.resolveOrderItemPaymentStatus` |
-| `Tranche__c.Completamente_Pagata__c` / `Stato__c` | `OrderItemTriggerHandler.recalculateTranches` |
-| Asset → `Disponibile` | `OrderItemTriggerHandler.markTicketsAvailableForFullyPaidTranches` |
-| Order → `Incassato` | `OrderItemTriggerHandler.markOrdersCollectedForFullyPaidTranches` |
-| Opportunity → `Chiusa/Vinta` | `OrderTriggerHandler.closeWonOpportunitiesForConfirmedOrders` |
-| Contract `importo incassato` | `PerformancePlusContractService.refreshAmounts` |
+| Step                                              | Where                                                               |
+| ------------------------------------------------- | ------------------------------------------------------------------- |
+| `deadline.paid`                                   | `MexalScadenzarioSearchService.mapDeadlines`                        |
+| `mapping.paid`                                    | `MexalInvoiceOrderLineMappingService.matchPaymentDeadlines`         |
+| `OrderItem.Mexal_Payment_Status__c = 'Paid'`      | `MexalInvoiceOrderLineMappingService.resolveOrderItemPaymentStatus` |
+| `Tranche__c.Completamente_Pagata__c` / `Stato__c` | `OrderItemTriggerHandler.recalculateTranches`                       |
+| Asset → `Disponibile`                             | `OrderItemTriggerHandler.markTicketsAvailableForFullyPaidTranches`  |
+| Order → `Incassato`                               | `OrderItemTriggerHandler.markOrdersCollectedForFullyPaidTranches`   |
+| Opportunity → `Chiusa/Vinta`                      | `OrderTriggerHandler.closeWonOpportunitiesForConfirmedOrders`       |
+| Contract `importo incassato`                      | `PerformancePlusContractService.refreshAmounts`                     |
 
 So for a customer who pays by Ri.Ba.: **the tranche never goes `Pagata`, the
 tickets never go `Disponibile`, the order never reaches `Incassato`, the
@@ -143,3 +143,40 @@ a view built for Fabrizio Paganelli.
 **Next:** `Scadenziario (GET)` is on the WooCommerce/Mexal UAT agenda for
 07/10, and `[ROMI-PIENISSIMO] - Temi Integrazione Mexal` is booked **07/10
 12:15–13:00** with Mirko Merendi in the room. ⚠ The two overlap.
+
+## 🟢 2026-10-06 - resolved in the new invoice import, UAT check pending
+
+**Decision (Aurel Mrruku, 06/10):** Kreosoft's answer is enough. `E` counts as
+paid, like `P`. No further client confirmation is needed for this item.
+
+**Where it is implemented:** the payment state is no longer read from
+`MexalScadenzarioSearchService`. The new import saves each Mexal rate as a
+`Scadenza_Fattura__c` record, and the formula `Scadenza_Fattura__c.Pagata__c`
+is `OR(ISPICKVAL(Stato_Pagamento_Mexal__c, "P"), ISPICKVAL(Stato_Pagamento_Mexal__c, "E"))`.
+The rate then drives the rest of the chain:
+
+| Step                                                    | Where                                                                       |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Rate saved, `Pagata__c` = `P` or `E`                    | `MexalInvoiceImportService.saveDeadlines`                                   |
+| `OrderItem.Mexal_Payment_Status__c` = `Paid` / `Unpaid` | `MexalInvoiceImportService.linkOrderLines`, `ScadenzaFatturaTriggerHandler` |
+| Invoice with no matched rate → `Invoiced`               | `MexalInvoiceLineImportBatch`                                               |
+| Tranche, tickets, order, opportunity                    | `OrderItemTriggerHandler`, unchanged                                        |
+
+This also settles the `Invoiced` question above: a line invoiced but not yet
+matched to a rate is `Invoiced`, a matched rate gives `Paid` or `Unpaid`.
+
+The nightly job `MexalInvoiceSyncJob` (scheduler `MexalInvoiceSyncScheduler`,
+03:30) runs invoices, then their lines, then the scadenzario.
+`MexalMaggazinoSyncBatch`, the only caller of the old `'P'`-only test, has
+been removed from the nightly scheduler. `MexalScadenzarioSearchService.cls:205`
+still reads `== 'P'`, but nothing scheduled uses it any more.
+
+⚠ **What remains:**
+
+- The code is in the working tree only: not committed, not deployed. A
+  dry-run deploy to Pienissimo UAT compiled.
+- Verify in UAT, after the deploy, on one invoice settled by Ri.Ba.: the rate
+  reads `Pagata`, the order line `Paid`, and the tranche follows.
+- A Ri.Ba. returned unpaid is the `Insoluto` question,
+  [OI-206](OI-206%20The%20Insoluto%20concept%20has%20no%20invoice%20due%20date%20and%20no%20invoice%20record.md),
+  not this item.

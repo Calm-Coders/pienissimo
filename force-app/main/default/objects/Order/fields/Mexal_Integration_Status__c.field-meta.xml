@@ -14,27 +14,32 @@
             <value>
                 <fullName>Queued</fullName>
                 <default>false</default>
-                <label>Queued</label>
+                <label>In coda</label>
             </value>
             <value>
                 <fullName>Running</fullName>
                 <default>false</default>
-                <label>Running</label>
+                <label>In esecuzione</label>
             </value>
             <value>
                 <fullName>Sent</fullName>
                 <default>false</default>
-                <label>Sent</label>
+                <label>Inviato</label>
+            </value>
+            <value>
+                <fullName>Sent_Lines_Not_Aligned</fullName>
+                <default>false</default>
+                <label>Inviato - righe non allineate</label>
             </value>
             <value>
                 <fullName>Failed</fullName>
                 <default>false</default>
-                <label>Failed</label>
+                <label>Fallito</label>
             </value>
             <value>
                 <fullName>Excluded</fullName>
                 <default>false</default>
-                <label>Excluded</label>
+                <label>Escluso</label>
             </value>
         </valueSetDefinition>
     </valueSet>

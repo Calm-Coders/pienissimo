@@ -32,7 +32,7 @@
     </values>
     <values>
         <field>Fatturazione_Elettronica__c</field>
-        <value xsi:type="xsd:string">N</value>
+        <value xsi:type="xsd:string">P</value>
     </values>
     <values>
         <field>Nomi_Alternativi__c</field>

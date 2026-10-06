@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Importo_Pagato__c</fullName>
+    <description
+  >Somma delle scadenze pagate: stato Mexal P (pagato) o E (Ri.Ba. emessa).</description>
+    <label>Importo Pagato</label>
+    <summarizedField>Scadenza_Fattura__c.Importo__c</summarizedField>
+    <summaryFilterItems>
+        <field>Scadenza_Fattura__c.Stato_Pagamento_Mexal__c</field>
+        <operation>equals</operation>
+        <value>P, E</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Scadenza_Fattura__c.Fattura__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <type>Summary</type>
+</CustomField>

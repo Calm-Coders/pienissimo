@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description
+  >Rata di una fattura Mexal letta dallo scadenziario: data, importo e stato di pagamento. Base per insoluti e per la distinzione scaduto / a scadere (OI-206, OI-208).</description>
+    <enableActivities>false</enableActivities>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>false</enableSearch>
+    <label>Scadenza Fattura</label>
+    <nameField>
+        <displayFormat>SCAD-{000000}</displayFormat>
+        <label>Numero Scadenza</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Scadenze Fattura</pluralLabel>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

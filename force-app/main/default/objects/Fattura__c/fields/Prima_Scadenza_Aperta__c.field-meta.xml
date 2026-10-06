@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prima_Scadenza_Aperta__c</fullName>
+    <description>Data della prima scadenza non ancora pagata.</description>
+    <label>Prima Scadenza Aperta</label>
+    <summarizedField>Scadenza_Fattura__c.Data_Scadenza__c</summarizedField>
+    <summaryFilterItems>
+        <field>Scadenza_Fattura__c.Stato_Pagamento_Mexal__c</field>
+        <operation>notEqual</operation>
+        <value>P, E</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Scadenza_Fattura__c.Fattura__c</summaryForeignKey>
+    <summaryOperation>min</summaryOperation>
+    <type>Summary</type>
+</CustomField>

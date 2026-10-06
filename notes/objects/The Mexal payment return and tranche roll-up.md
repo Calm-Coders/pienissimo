@@ -5,7 +5,7 @@ status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-15
-updated: 2026-09-25
+updated: 2026-10-06
 depends_on: [OI-50, OI-116, OI-137]
 requirement: [ORD-03, ORD-04, INT-01]
 source: commit 400c195, Anita Aga, 2026-09-15 18:00:39 CEST, PR #45 open against DevMain
@@ -99,3 +99,37 @@ Aurel Mrruku decided that the order goes `Incassato` when **every tranche on it*
 release. The existing `OrderTriggerHandler` then closes the Opportunity. Written on
 `DevMain`, uncommitted, not deployed. Detail and open edges:
 [OI-69](../items/OI-69%20Order%20state%20model.md).
+
+## 2026-10-06 - the invoice and scadenzario pass now saves records and is scheduled
+
+The return leg was rebuilt around records. Invoices, invoice lines and rates
+are now saved as `Fattura__c`, `Riga_Fattura__c` and `Scadenza_Fattura__c`,
+and a nightly job runs them in order:
+
+1. **Invoices:** `MexalInvoiceImportService.importInvoicesModifiedSince`.
+   It reads FT movements whose Mexal `data_ult_mod` is past the cursor.
+2. **Lines:** `MexalInvoiceLineImportBatch`. It links the invoice to the order
+   and each order line to its invoice.
+3. **Scadenzario:** `importScadenzarioModifiedSince`. It saves the rates, and
+   `linkOrderLines` gives each order line its rate and `Paid` / `Unpaid`.
+
+The tranche roll-up above is unchanged and follows from the order lines.
+
+The job is `MexalInvoiceSyncJob`, scheduled by `MexalInvoiceSyncScheduler` at
+03:30. It keeps two cursors on `Integration_Configuration2__c`:
+`Mexal_Movimenti_Magazzino_Ricerca` and `Mexal_Scadenzario_Ricerca`.
+
+🟢 **`MexalMaggazinoSyncBatch` is off `MexalCustomerSyncScheduler`.** It made
+the same two Mexal searches and wrote only `Mexal_Payment_Status__c`, so the
+new job replaces it. The class stays in source because `MexalIntegrationTest`
+still calls it.
+
+🟢 **A rate counts as paid on `P` or `E`**, through the `Pagata__c` formula.
+That closes
+[OI-201](../items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)
+in code.
+
+⚠ **Status:** working tree only, not committed or deployed. The dry-run deploy
+to Pienissimo UAT compiled. Prod has none of the three invoice objects and no
+Mexal row in `Integration_Configuration2__c`. Only `Full_Permission` grants
+access to the three objects.

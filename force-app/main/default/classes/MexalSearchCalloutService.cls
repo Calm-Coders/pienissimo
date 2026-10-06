@@ -11,9 +11,11 @@ public with sharing class MexalSearchCalloutService {
   private static final String CUSTOMER_CREATE_ACTION = 'Mexal_Clienti_Creazione';
   private static final String CUSTOMER_UPDATE_ACTION = 'Mexal_Clienti_Modifica';
   private static final String ORDER_CREATE_ACTION = 'Mexal_Ordini_Creazione';
+  private static final String ORDER_DETAIL_ACTION = 'Mexal_Ordini_Dettaglio';
+  private static final String ORDER_DETAIL_FIELDS = 'sigla,serie,numero,id_riga,tp_riga,codice_articolo,quantita';
   private static final String SHIPPING_ADDRESS_CREATE_ACTION = 'Mexal_Indirizzi_Spedizione_Creazione';
   private static final String CUSTOMER_SEARCH_FIELDS = 'codice,cod_alternativo,cod_paese,codice_fiscale,partita_iva,ragione_sociale,indirizzo,cap,localita,provincia,telefono,fax,email,pec,codice_sdi,cod_agente,tp_nazionalita,cod_listino,valuta,gest_fatt_el';
-  private static final String ARTICLE_SEARCH_FIELDS = 'codice,nr_record,tipologia,descrizione,descr_estesa,descrizione_agg,descr_completa,cod_alternativo,alq_iva,um_principale,dt_creazione,dt_mod,dt_mod_sistema,gest_precanc,gest_annullato,prz_listino,gest_attiva,data_ult_mod';
+  private static final String ARTICLE_SEARCH_FIELDS = 'codice,nr_record,tipologia,descrizione,descr_estesa,descrizione_agg,descr_completa,cod_alternativo,alq_iva,um_principale,dt_creazione,dt_mod,dt_mod_sistema,gest_precanc,gest_annullato,prz_listino,gest_attiva,data_ult_mod,cod_natura';
   private static final Set<String> READ_ONLY_ACTIONS = new Set<String>{
     CUSTOMER_SEARCH_ACTION,
     ARTICLE_SEARCH_ACTION,
@@ -27,6 +29,9 @@ public with sharing class MexalSearchCalloutService {
     ORDER_CREATE_ACTION,
     SHIPPING_ADDRESS_CREATE_ACTION
   };
+
+  // UAT testing (2026-10-06): true lets a sandbox create Mexal customers.
+  private static final Boolean ALLOW_CREATION_IN_SANDBOX = true;
 
   private static final Boolean IS_SANDBOX = [
     SELECT IsSandbox
@@ -66,8 +71,9 @@ public with sharing class MexalSearchCalloutService {
     return sendWrite(CUSTOMER_CREATE_ACTION, requestBody, true);
   }
 
+  // Allowed in sandbox: MexalOrderSendService sends sandbox orders on serie 10,
+  // the test lane agreed with Kreosoft.
   public static Result createOrder(Object requestBody) {
-    preventCreationInSandbox('ordine');
     return sendWrite(ORDER_CREATE_ACTION, requestBody, true);
   }
 
@@ -80,6 +86,18 @@ public with sharing class MexalSearchCalloutService {
     Integer serie,
     Integer numero,
     String customerCode
+  ) {
+    return getMovementDetail(sigla, serie, numero, customerCode, true);
+  }
+
+  // insertLog false lets a caller chain several detail callouts in one
+  // transaction and save the logs once, after the last callout.
+  public static Result getMovementDetail(
+    String sigla,
+    Integer serie,
+    Integer numero,
+    String customerCode,
+    Boolean insertLog
   ) {
     validateMovementDetailKey(sigla, serie, numero, customerCode);
 
@@ -107,7 +125,40 @@ public with sharing class MexalSearchCalloutService {
       'cod_conto',
       customerCode.trim()
     );
-    return send(MOVEMENT_DETAIL_ACTION, config, null, true);
+    return send(MOVEMENT_DETAIL_ACTION, config, null, insertLog);
+  }
+
+  public static Result getOrderDetail(
+    String sigla,
+    Integer serie,
+    Integer numero
+  ) {
+    if (String.isBlank(sigla) || serie == null || numero == null) {
+      throw new MexalSearchCalloutException(
+        'Chiave documento ordine cliente Mexal incompleta.'
+      );
+    }
+
+    Integration_Configuration2__c config = resolveConfiguration(
+      ORDER_DETAIL_ACTION
+    );
+    validateOrderDetailConfiguration(ORDER_DETAIL_ACTION, config);
+    config.Endpoint_Path__c = replacePathParam(
+      config.Endpoint_Path__c,
+      'sigla',
+      sigla.trim()
+    );
+    config.Endpoint_Path__c = replacePathParam(
+      config.Endpoint_Path__c,
+      'serie',
+      String.valueOf(serie)
+    );
+    config.Endpoint_Path__c = replacePathParam(
+      config.Endpoint_Path__c,
+      'numero',
+      String.valueOf(numero)
+    );
+    return send(ORDER_DETAIL_ACTION, config, null, true);
   }
 
   public static Result updateCustomer(String customerCode, Object requestBody) {
@@ -173,7 +224,11 @@ public with sharing class MexalSearchCalloutService {
   }
 
   private static void preventCreationInSandbox(String recordType) {
-    if (IS_SANDBOX && !Test.isRunningTest()) {
+    if (
+      IS_SANDBOX &&
+      ALLOW_CREATION_IN_SANDBOX != true &&
+      !Test.isRunningTest()
+    ) {
       throw new MexalSearchCalloutException(
         'Creazione ' + recordType + ' Mexal non consentita in sandbox.'
       );
@@ -319,6 +374,36 @@ public with sharing class MexalSearchCalloutService {
     }
   }
 
+  private static void validateOrderDetailConfiguration(
+    String actionName,
+    Integration_Configuration2__c config
+  ) {
+    if (config == null) {
+      throw new MexalSearchCalloutException(
+        'Configurazione Mexal non trovata per azione: ' + actionName
+      );
+    }
+    if (String.isBlank(config.Endpoint_Path__c)) {
+      throw new MexalSearchCalloutException(
+        'Endpoint Path obbligatorio per azione Mexal: ' + actionName
+      );
+    }
+    String path = pathWithoutQueryString(config.Endpoint_Path__c);
+    if (
+      !path.startsWith('/webapi/risorse/documenti/ordini-clienti/') ||
+      path.endsWith('/ricerca')
+    ) {
+      throw new MexalSearchCalloutException(
+        'Endpoint dettaglio ordine cliente Mexal non consentito.'
+      );
+    }
+    if (getHttpMethod(config) != 'GET') {
+      throw new MexalSearchCalloutException(
+        'Il dettaglio ordine cliente Mexal deve usare HTTP GET.'
+      );
+    }
+  }
+
   private static void validateMovementDetailConfiguration(
     String actionName,
     Integration_Configuration2__c config
@@ -457,6 +542,8 @@ public with sharing class MexalSearchCalloutService {
       fields = CUSTOMER_SEARCH_FIELDS;
     } else if (actionName == ARTICLE_SEARCH_ACTION) {
       fields = ARTICLE_SEARCH_FIELDS;
+    } else if (actionName == ORDER_DETAIL_ACTION) {
+      fields = ORDER_DETAIL_FIELDS;
     }
 
     if (String.isBlank(fields)) {

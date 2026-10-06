@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Importo__c</fullName>
+    <description
+  >Quantita per prezzo: Mexal non restituisce il totale di riga.</description>
+    <label>Importo</label>
+    <formula>BLANKVALUE(Quantita__c, 0) * BLANKVALUE(Prezzo__c, 0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <precision>18</precision>
+    <scale>2</scale>
+    <type>Currency</type>
+</CustomField>

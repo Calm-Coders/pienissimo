@@ -29,11 +29,11 @@ Last updated: 2026-10-05 (nightly sweep — the article registry landed, three c
   (`dd4e95c`) — [OI-46](notes/items/OI-46%20Bundle%20classification%20picklists.md)'s red is
   discharged; ⚠ but the workbook's new sub-category list names **`Intensive at Home`** and
   **`Cassa Zucchetti`**, which exist nowhere in this project.
-  🔴🔑 **[OI-201](notes/items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)
-  did not move.** `MexalScadenzarioSearchService.cls:205` still tests only `'P'` at `d526189` —
-  three days after the vendor answered in writing, through a production deploy weekend, fourteen
-  commits and five PRs. ⚠ And the client has now been asked for the **same list Mirko Merendi
-  already gave**: Fabrizio Paganelli owes _"tutti i possibili stati e codici"_ of the scadenziario.
+  🟢 **[OI-201](notes/items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)
+  resolved in code 06/10:** `E` counts as paid like `P`, as Kreosoft said. The new nightly invoice
+  and scadenzario sync (`MexalInvoiceSyncJob`, 03:30) saves each rate as `Scadenza_Fattura__c`,
+  whose `Pagata__c` is `P` or `E`, and drives order line → tranche from it. ⚠ Working tree only,
+  not committed or deployed; verify on one Ri.Ba. invoice in UAT.
   🟢🔑 **[The Performance Plus UAT](notes/meetings/2026-10-05%20UAT%20Performance%20Plus%20e%20Gestione%20date%20pagamento.md)**
   (15:01 CEST, ~2h01m, Aurel Mrruku · Elena Spini · **Fabrizio Paganelli · Elisa Migliano · Sabatino
   Rinaldi · Marco Montesi**) drove activation end to end and **signed through DocuSign in
@@ -48,7 +48,7 @@ Last updated: 2026-10-05 (nightly sweep — the article registry landed, three c
   quote screen and the quote**; required on every layout, community page and document, plus the
   logo. ⚠ The client's own workbook specified all of them. 🔴 **New:
   [OI-208](notes/items/OI-208%20Overdue%20and%20upcoming%20payments%20are%20not%20distinguished%20on%20the%20contract.md)**
-  (`scaduto` vs `a scadere`, which OI-201 would report backwards) and
+  (`scaduto` vs `a scadere`) and
   **[OI-209](notes/items/OI-209%20Mexal%20anagrafica%20updates%20only%20propagate%20when%20an%20order%20is%20sent.md)**
   — ⚠ whose fix, a **nightly erp→sfdc anagrafica batch, is `F-2` in the client's own workbook since
   July**, the third documented design in four days that the build overlooked.

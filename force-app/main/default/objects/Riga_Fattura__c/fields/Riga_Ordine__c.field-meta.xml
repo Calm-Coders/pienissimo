@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Riga_Ordine__c</fullName>
+    <description
+  >Riga d ordine Salesforce fatturata da questa riga.</description>
+    <label>Riga Ordine</label>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <referenceTo>OrderItem</referenceTo>
+    <relationshipLabel>Righe Fattura</relationshipLabel>
+    <relationshipName>Righe_Fattura</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>

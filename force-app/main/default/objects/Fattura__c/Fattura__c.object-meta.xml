@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description
+  >Documento emesso da Mexal (fattura o nota di credito), sincronizzato in Salesforce dallo scadenziario e dal dettaglio movimenti. Mexal resta il sistema contabile: i record sono in sola lettura per gli utenti.</description>
+    <enableActivities>false</enableActivities>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Fattura</label>
+    <nameField>
+        <label>Numero Fattura</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Fatture</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -16,6 +16,10 @@ public without sharing class QuoteAcceptanceEmailController {
     public String body;
     @AuraEnabled
     public String acceptanceUrl;
+    // Ticket products without exactly one edition mapping today; a non-empty
+    // list blocks the send.
+    @AuraEnabled
+    public List<String> mappingProblems;
   }
 
   @AuraEnabled
@@ -27,6 +31,10 @@ public without sharing class QuoteAcceptanceEmailController {
     draft.acceptanceUrl = acceptanceUrl(quoteRecord.Id);
     draft.subject = applyQuoteTokens(getSubject(template), quoteRecord);
     draft.body = buildPlainTextBody(quoteRecord);
+    draft.mappingProblems = QuoteEditionMappingValidator.findMappingProblems(
+      quoteRecord.Id,
+      Date.today()
+    );
     return draft;
   }
 
@@ -65,6 +73,20 @@ public without sharing class QuoteAcceptanceEmailController {
     );
   }
 
+  private static void requireEditionMappings(Id quoteId) {
+    List<String> problems = QuoteEditionMappingValidator.findMappingProblems(
+      quoteId,
+      Date.today()
+    );
+    if (!problems.isEmpty()) {
+      throw new AuraHandledException(
+        'Invio bloccato: questi prodotti non hanno una campagna figlia mappata alla data odierna: ' +
+          String.join(problems, '; ') +
+          '.'
+      );
+    }
+  }
+
   private static void sendPreparedEmail(
     Quote quoteRecord,
     String recipient,
@@ -72,6 +94,7 @@ public without sharing class QuoteAcceptanceEmailController {
     String body,
     String htmlBody
   ) {
+    requireEditionMappings(quoteRecord.Id);
     String normalizedRecipient = recipient == null ? null : recipient.trim();
     if (
       String.isBlank(normalizedRecipient) ||

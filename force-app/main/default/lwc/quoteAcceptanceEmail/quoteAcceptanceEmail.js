@@ -13,6 +13,7 @@ export default class QuoteAcceptanceEmail extends LightningElement {
   isSending = false;
   loaded = false;
   errorMessage = "";
+  mappingProblems = [];
 
   @api
   get recordId() {
@@ -28,7 +29,13 @@ export default class QuoteAcceptanceEmail extends LightningElement {
     return this.isLoading || this.isSending;
   }
   get sendDisabled() {
-    return this.busy || !this.loaded;
+    return this.busy || !this.loaded || this.isBlocked;
+  }
+  get isBlocked() {
+    return this.mappingProblems.length > 0;
+  }
+  get showForm() {
+    return this.loaded && !this.isBlocked;
   }
   get missingRecipient() {
     return this.loaded && !this.recipient;
@@ -38,12 +45,14 @@ export default class QuoteAcceptanceEmail extends LightningElement {
     this.isLoading = true;
     this.loaded = false;
     this.errorMessage = "";
+    this.mappingProblems = [];
     try {
       const draft = await getDraft({ quoteId });
       if (quoteId !== this.recordId) return;
       this.recipient = draft.recipient || "";
       this.subject = draft.subject;
       this.body = draft.body || "";
+      this.mappingProblems = draft.mappingProblems || [];
       this.loaded = true;
     } catch (error) {
       if (quoteId === this.recordId) this.errorMessage = this.message(error);

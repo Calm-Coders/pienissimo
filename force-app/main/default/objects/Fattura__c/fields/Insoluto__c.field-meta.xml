@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Insoluto__c</fullName>
+    <description
+  >Vero quando almeno una scadenza non pagata e gia scaduta (Business Blueprint, OI-206).</description>
+    <label>Insoluto</label>
+    <formula
+  >AND(NOT(ISBLANK(Prima_Scadenza_Aperta__c)), Prima_Scadenza_Aperta__c &lt; TODAY())</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <type>Checkbox</type>
+</CustomField>

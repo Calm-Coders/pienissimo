@@ -4,9 +4,12 @@ public with sharing class OrderMexalIntegrationService {
   private static final String STATUS_QUEUED = 'Queued';
   private static final String STATUS_RUNNING = 'Running';
   private static final String STATUS_SENT = 'Sent';
+  private static final String STATUS_SENT_LINES_NOT_ALIGNED = 'Sent_Lines_Not_Aligned';
   private static final String STATUS_FAILED = 'Failed';
   private static final String STATUS_EXCLUDED = 'Excluded';
-  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = false;
+  // UAT testing (2026-10-06): true runs the full integration in sandbox,
+  // customer create/update included, against the live Mexal company.
+  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = true;
   private static final Set<Id> ORDER_IDS_QUEUED_IN_TRANSACTION = new Set<Id>();
 
   public class OrderMexalIntegrationException extends Exception {
@@ -70,6 +73,82 @@ public with sharing class OrderMexalIntegrationService {
     markOrdersQueued(orderIds);
     System.enqueueJob(
       new OrderMexalIntegrationQueueable(orderIds, firstOrderIds)
+    );
+  }
+
+  public static void retryFailedOrder(Id orderId) {
+    if (orderId == null) {
+      throw new OrderMexalIntegrationException('Ordine obbligatorio.');
+    }
+
+    Order orderRecord = [
+      SELECT
+        Id,
+        AccountId,
+        Account.Codice_Cliente_Mexal__c,
+        Mexal_Integration_Status__c,
+        Mexal_Order_Number__c,
+        Mexal_Document_Number__c
+      FROM Order
+      WHERE Id = :orderId
+      LIMIT 1
+    ];
+
+    if (orderRecord.Mexal_Integration_Status__c != STATUS_FAILED) {
+      throw new OrderMexalIntegrationException(
+        'Il reinvio e possibile solo per ordini con integrazione Mexal fallita.'
+      );
+    }
+
+    if (
+      !String.isBlank(orderRecord.Mexal_Order_Number__c) ||
+      orderRecord.Mexal_Document_Number__c != null
+    ) {
+      throw new OrderMexalIntegrationException(
+        'L ordine risulta gia creato su Mexal: reinvio bloccato per evitare un duplicato.'
+      );
+    }
+
+    if (orderRecord.AccountId == null) {
+      throw new OrderMexalIntegrationException(
+        'Ordine senza Account: impossibile inviare a Mexal.'
+      );
+    }
+
+    if (
+      ALLOW_MEXAL_QUEUE_IN_SANDBOX != true &&
+      isSandboxOrg() &&
+      String.isBlank(orderRecord.Account.Codice_Cliente_Mexal__c)
+    ) {
+      throw new OrderMexalIntegrationException(
+        'In sandbox il reinvio richiede un Account con Codice Cliente Mexal: la creazione clienti Mexal e bloccata.'
+      );
+    }
+
+    // Without a Mexal customer code the retry must create the customer, as the
+    // first order of the account would.
+    Set<Id> firstOrderIds = new Set<Id>();
+    if (String.isBlank(orderRecord.Account.Codice_Cliente_Mexal__c)) {
+      Integer ordersInFlight = [
+        SELECT COUNT()
+        FROM Order
+        WHERE
+          AccountId = :orderRecord.AccountId
+          AND Id != :orderId
+          AND Mexal_Integration_Status__c IN (:STATUS_QUEUED, :STATUS_RUNNING)
+      ];
+      if (ordersInFlight > 0) {
+        throw new OrderMexalIntegrationException(
+          'Un altro ordine dello stesso cliente e in invio a Mexal: riprovare tra qualche minuto.'
+        );
+      }
+      firstOrderIds.add(orderId);
+    }
+
+    List<Id> orderIds = new List<Id>{ orderId };
+    markOrdersQueued(orderIds);
+    System.enqueueJob(
+      new OrderMexalIntegrationQueueable(orderIds, firstOrderIds, true)
     );
   }
 
@@ -152,6 +231,12 @@ public with sharing class OrderMexalIntegrationService {
       );
     }
 
+    // Sandbox runs are manual retries: they may create the order on serie 10
+    // but must not modify the customer in the live Mexal registry.
+    if (ALLOW_MEXAL_QUEUE_IN_SANDBOX != true && isSandboxOrg()) {
+      return;
+    }
+
     MexalCustomerCreateService.Result updateResult = MexalCustomerCreateService.updateForAccount(
       accountRecord.Id
     );
@@ -172,6 +257,49 @@ public with sharing class OrderMexalIntegrationService {
       STATUS_SENT,
       result == null ? null : result.mexalOrderNumber
     );
+  }
+
+  // Never throws: the order already exists on Mexal, so a failure here must
+  // not mark it Failed and expose it to a duplicate resend.
+  public static void runMexalOrderLinesStep(Id orderId) {
+    String failureMessage;
+    try {
+      MexalOrderLineSyncService.Result result = MexalOrderLineSyncService.syncOrderLines(
+        orderId
+      );
+      if (result.aligned == true) {
+        return;
+      }
+      failureMessage = result.message;
+    } catch (Exception error) {
+      failureMessage = error.getMessage();
+    }
+
+    try {
+      MexalOrderLineSyncService.clearLineNumbers(orderId);
+    } catch (Exception ignored) {
+      // The status below still flags the order for manual alignment.
+    }
+    updateOrderIntegrationFields(orderId, STATUS_SENT_LINES_NOT_ALIGNED, null);
+
+    try {
+      insert new Integration_Log__c(
+        Flow_Name__c = FLOW_NAME,
+        Inbound_Outbound__c = 'Outbound',
+        Is_Error__c = true,
+        Request_Body__c = JSON.serialize(
+          new Map<String, Object>{
+            'orderId' => orderId,
+            'step' => 'Mexal Order Lines',
+            'blocking' => false
+          }
+        ),
+        Exception_Message__c = 'Righe ordine Mexal non allineate: ' +
+          safeMessage(failureMessage)
+      );
+    } catch (Exception ignored) {
+      // A failed diagnostic log must not stop the queue.
+    }
   }
 
   public static void logFailure(Id orderId, String stepName, Exception error) {
@@ -200,7 +328,11 @@ public with sharing class OrderMexalIntegrationService {
       return true;
     }
 
-    return [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox != true;
+    return !isSandboxOrg();
+  }
+
+  private static Boolean isSandboxOrg() {
+    return [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox == true;
   }
 
   private static void logNonBlockingAnticipayFailure(

@@ -10,3 +10,8 @@ lightning-textarea {
   cursor: default;
   pointer-events: none;
 }
+
+.mapping-alert {
+  text-align: left;
+  justify-content: flex-start;
+}

@@ -221,6 +221,7 @@ public without sharing class QuoteTriggerHandler {
         PricebookEntryId,
         Quantity,
         UnitPrice,
+        TotalPrice,
         Description,
         Tranche__c,
         Data_Scadenza__c
@@ -232,7 +233,7 @@ public without sharing class QuoteTriggerHandler {
           OrderId = orderIdByQuoteId.get(quoteLine.QuoteId),
           PricebookEntryId = quoteLine.PricebookEntryId,
           Quantity = quoteLine.Quantity,
-          UnitPrice = quoteLine.UnitPrice,
+          UnitPrice = netUnitPrice(quoteLine),
           Description = quoteLine.Description,
           Tranche__c = quoteLine.Tranche__c,
           Data_Scadenza__c = quoteLine.Data_Scadenza__c
@@ -247,6 +248,19 @@ public without sharing class QuoteTriggerHandler {
     PerformancePlusContractService.createForOrders(
       new Set<Id>(orderIdByQuoteId.values())
     );
+  }
+
+  // The order carries the discounted price: Mexal receives no separate line discount.
+  private static Decimal netUnitPrice(QuoteLineItem quoteLine) {
+    if (
+      quoteLine.TotalPrice == null ||
+      quoteLine.Quantity == null ||
+      quoteLine.Quantity == 0
+    ) {
+      return quoteLine.UnitPrice;
+    }
+    return (quoteLine.TotalPrice / quoteLine.Quantity)
+      .setScale(2, System.RoundingMode.HALF_UP);
   }
 
   private static void keepOnePrimaryQuotePerOpportunity(

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Mirko Merendi
 org: both
 raised: 2026-09-23
-updated: 2026-10-02
+updated: 2026-10-06
 depends_on: [OI-97, OI-159]
 blocks: [go-live]
 source: notes/meetings/2026-09-23 Check Data Import.md
@@ -155,3 +155,27 @@ Built as agreed on 24/09, deployed to Pienissimo UAT (`0AfMA00000Cq7zN0AR`):
   still send the raw value. In UAT only that one account was misclassified.
 - ⚠ A country change alone does **not** re-send an existing customer to Mexal: the
   update trigger watches only email, phone, P.IVA and name.
+
+## 🔴 2026-10-06 - Mexal rejects the San Marino row's `gest_fatt_el = N`
+
+A UAT test order on a San Marino customer (account `501.01771`, residence `R`) was
+blocked at the customer step. The Mexal integration's customer `PUT` returned
+**HTTP 400**:
+
+> _"6001 - errore gestionale [gest_fatt_el Fattura elettronica a clienti privati:
+> ammessi P=Pdf e S=B2B]"_
+
+The payload carried the `SM` row exactly as delivered: `gest_fatt_el = N`,
+`serie_fatt_el = 1`, `cod_modu_allega = FT`. **Mexal accepts only `P` or `S` here**,
+so every order for one of UAT's 38 `R` accounts stops at the same step, and the
+order itself is never sent.
+
+- 🔴 **The `SM` row needs a value the client chooses**: `P` (PDF) or `S` (B2B). This
+  is accounting policy, owed by Fabrizio Paganelli or Mirko Merendi. It is consistent
+  with Mirko Merendi's 24/09 remark that San Marino internal e-invoicing is coming.
+- ⚠ Whether Mexal also rejects `N` for the `C` (EU) and `E` (extra-EU) rows is
+  **untested**.
+- 🟡 **Interim fix (Aurel Mrruku, 2026-10-06):** the `SM` row now carries
+  `Fatturazione_Elettronica__c = P` (PDF), in source and in Pienissimo UAT (deploy
+  `0AfMA00000CrUcD0AV`, read back). It is **provisional until the client confirms
+  `P` or `S`**. Not in Prod, not committed.

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ID_Ordine_Mexal__c</fullName>
+    <description
+  >Chiave del documento ordine cliente su Mexal (sigla+serie+numero, es. OC+10+7), restituita da Mexal alla creazione dell ordine.</description>
+    <formula>IF(
+  ISBLANK(Mexal_Document_Number__c),
+  NULL,
+  Mexal_Document_Sigla__c &amp; &quot;+&quot; &amp; TEXT(Mexal_Document_Serie__c) &amp; &quot;+&quot; &amp; TEXT(Mexal_Document_Number__c)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>ID Ordine Mexal</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

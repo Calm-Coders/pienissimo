@@ -19,6 +19,9 @@ public with sharing class AnticipayAccountService {
     public String message;
     @AuraEnabled
     public Id accountId;
+    // The Partita IVA sent to Anticipay, shown in the action toast.
+    @AuraEnabled
+    public String partitaIva;
     @AuraEnabled
     public Id sourceRecordId;
     @AuraEnabled
@@ -145,6 +148,9 @@ public with sharing class AnticipayAccountService {
       WHERE Id = :accountId
       LIMIT 1
     ];
+    result.partitaIva = String.isBlank(accountRecord.Partita_IVA__c)
+      ? null
+      : accountRecord.Partita_IVA__c.trim();
 
     if (accountRecord.Anticipay_Consolidato__c) {
       result.success = true;

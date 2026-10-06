@@ -1,5 +1,14 @@
 public with sharing class MexalArticleSyncService {
   public static final String ACTION_NAME = 'Mexal_Articoli_Ricerca';
+  // Mexal natura: B? generates a ticket, ?B is sold only inside bundles.
+  // BB genera biglietto solo bundle, BO genera biglietto altri ordini,
+  // NB non genera biglietto solo bundle, NO non genera biglietto altri ordini.
+  private static final Set<String> NATURE_CODES = new Set<String>{
+    'BB',
+    'BO',
+    'NB',
+    'NO'
+  };
 
   public class Result {
     @AuraEnabled
@@ -34,8 +43,11 @@ public with sharing class MexalArticleSyncService {
     public List<Product2> products;
     @AuraEnabled
     public String message;
+    // Mexal active state per article code, applied only to new products.
+    public Map<String, Boolean> activeByCode;
 
     public Result() {
+      activeByCode = new Map<String, Boolean>();
       success = false;
       bodyLength = 0;
       articlesReturned = 0;
@@ -169,13 +181,18 @@ public with sharing class MexalArticleSyncService {
         continue;
       }
 
-      Product2 product = mapArticleToProduct((Map<String, Object>) article);
+      Map<String, Object> articleMap = (Map<String, Object>) article;
+      Product2 product = mapArticleToProduct(articleMap);
       if (String.isBlank(product.External_Product_Code__c)) {
         result.skippedRows++;
         result.saveErrors.add('Articolo Mexal senza codice articolo.');
         continue;
       }
 
+      result.activeByCode.put(
+        normalizeMatchKey(product.External_Product_Code__c),
+        resolveIsActive(articleMap)
+      );
       result.products.add(product);
     }
 
@@ -228,8 +245,14 @@ public with sharing class MexalArticleSyncService {
         continue;
       }
 
-      if (existingProduct == null && itemRecordTypeId != null) {
-        product.RecordTypeId = itemRecordTypeId;
+      // Existing products keep the active state curated in Salesforce.
+      if (existingProduct == null) {
+        product.IsActive = result.activeByCode.get(
+          normalizeMatchKey(product.External_Product_Code__c)
+        );
+        if (itemRecordTypeId != null) {
+          product.RecordTypeId = itemRecordTypeId;
+        }
       }
       productsToUpsert.add(product);
     }
@@ -265,6 +288,9 @@ public with sharing class MexalArticleSyncService {
     return String.join(messages, ' | ');
   }
 
+  // Only populated Mexal values are written: the classification fields
+  // (category, levels, event, ticket type, tranche count) are curated in
+  // Salesforce and the Mexal API does not carry them, so they are never blanked.
   private static Product2 mapArticleToProduct(Map<String, Object> article) {
     String articleCode = chooseFirstPopulated(
       getString(article, 'codice'),
@@ -275,40 +301,69 @@ public with sharing class MexalArticleSyncService {
       getString(article, 'descrizione'),
       articleCode
     );
-    Decimal price1 = getListinoPrice(article, 1);
-    Decimal price2 = getListinoPrice(article, 2);
 
     Product2 product = new Product2();
     product.External_Product_Code__c = trimToLength(articleCode, 255);
-    product.Name = trimToLength(description, 255);
-    product.Description = trimToLength(
-      chooseFirstPopulated(
-        getExtendedDescription(article),
-        getString(article, 'descrizione_agg'),
-        description
-      ),
-      4000
+    putIfPresent(product, Product2.Name, trimToLength(description, 255));
+    putIfPresent(
+      product,
+      Product2.Description,
+      trimToLength(
+        chooseFirstPopulated(
+          getExtendedDescription(article),
+          getString(article, 'descrizione_agg'),
+          description
+        ),
+        4000
+      )
     );
-    product.StockKeepingUnit = trimToLength(articleCode, 180);
-    product.IsActive = resolveIsActive(article);
-    product.Price_1__c = price1;
-    product.Price_2__c = price2;
-    product.Product_Price__c = price1;
-    product.Tipologia__c = trimToLength(
-      chooseFirstPopulated(
-        getString(article, 'tipologia'),
-        getString(article, 'tipo_articolo')
-      ),
-      255
+    putIfPresent(
+      product,
+      Product2.StockKeepingUnit,
+      trimToLength(articleCode, 180)
     );
-    product.Livello_0__c = trimToLength(getString(article, 'livello_0'), 255);
-    product.Livello_1__c = trimToLength(getString(article, 'livello_1'), 255);
-    product.Livello_2__c = trimToLength(getString(article, 'livello_2'), 255);
-    product.Livello_3__c = trimToLength(getString(article, 'livello_3'), 255);
-    product.Livello_4__c = trimToLength(getString(article, 'livello_4'), 255);
-    product.Livello_5__c = trimToLength(getString(article, 'livello_5'), 255);
-    product.Livello_6__c = trimToLength(getString(article, 'livello_6'), 255);
+    putIfPresent(product, Product2.Price_1__c, getListinoPrice(article, 1));
+    putIfPresent(product, Product2.Price_2__c, getListinoPrice(article, 2));
+    putIfPresent(
+      product,
+      Product2.Product_Price__c,
+      getListinoPrice(article, 1)
+    );
+    putIfPresent(
+      product,
+      Product2.Tipologia__c,
+      trimToLength(
+        chooseFirstPopulated(
+          getString(article, 'tipologia'),
+          getString(article, 'tipo_articolo')
+        ),
+        255
+      )
+    );
+
+    // A blank or unknown natura leaves the flags curated in Salesforce.
+    String natureCode = getString(article, 'cod_natura');
+    natureCode = natureCode == null ? '' : natureCode.trim().toUpperCase();
+    if (NATURE_CODES.contains(natureCode)) {
+      product.Natura__c = natureCode;
+      product.Genera_Biglietto__c = natureCode.startsWith('B');
+      product.Solo_Bundle__c = natureCode.endsWith('B');
+    }
     return product;
+  }
+
+  private static void putIfPresent(
+    Product2 product,
+    Schema.SObjectField field,
+    Object value
+  ) {
+    if (value == null) {
+      return;
+    }
+    if (value instanceof String && String.isBlank((String) value)) {
+      return;
+    }
+    product.put(field, value);
   }
 
   private static Boolean resolveIsActive(Map<String, Object> article) {

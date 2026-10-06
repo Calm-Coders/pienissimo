@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-09-11
+updated: 2026-10-06
 depends_on: [OI-58]
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
@@ -180,7 +180,7 @@ production**, and both worked:
 - `Creazione ordini` → order **`OC11`** on **serie 10**
 
 Fabrizio Paganelli confirmed both on his own Mexal screen. The new order shows
-status `S` (*sospeso*), which he explained is normal and flips when the order is
+status `S` (_sospeso_), which he explained is normal and flips when the order is
 transformed into an invoice.
 
 ### Which Mexal fields carry which project concept
@@ -188,12 +188,12 @@ transformed into an invoice.
 Settled in this session, each verified by editing in Mexal and watching the API
 response change:
 
-| Mexal field            | API name                           | Carries                        | Notes                                                   |
-| ---------------------- | ---------------------------------- | ------------------------------ | ------------------------------------------------------- |
-| `natura`               | `COD_Natura`                       | genera biglietto sì/no         | Lookup to a managed base table, **not free text**       |
-| `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | the event (Campagna Padre)     | **Splits into two API fields**                          |
-| `gruppo merceologico`  | `GRP merch`                        | candidate for tipo biglietto   | Hierarchical in Mexal; **the level did not come over**  |
-| `Gest. annullato`      | `Gest. annullato`                  | product disabled in Salesforce | `n` = active, `S` = cancelled                           |
+| Mexal field            | API name                           | Carries                        | Notes                                                  |
+| ---------------------- | ---------------------------------- | ------------------------------ | ------------------------------------------------------ |
+| `natura`               | `COD_Natura`                       | genera biglietto sì/no         | Lookup to a managed base table, **not free text**      |
+| `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | the event (Campagna Padre)     | **Splits into two API fields**                         |
+| `gruppo merceologico`  | `GRP merch`                        | candidate for tipo biglietto   | Hierarchical in Mexal; **the level did not come over** |
+| `Gest. annullato`      | `Gest. annullato`                  | product disabled in Salesforce | `n` = active, `S` = cancelled                          |
 
 **Mexal offers at most three classification fields on an article**, and they were
 entirely unused before this session. That constraint is why ticket type and
@@ -214,7 +214,7 @@ months** after go-live. Salesforce reads invoices; it does not create them.
 Andrea Di Cicco hit several **mandatory fields absent from the documentation**:
 _"tutti sti campi non c'erano sulla documentazione."_ Two are recorded:
 
-- `tipo nazionalità` — mandatory, and it is *residenza fiscale*. See
+- `tipo nazionalità` — mandatory, and it is _residenza fiscale_. See
   [OI-97](../items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md).
 - `valuta` — set to `1` by trial. **Nobody knows whether `1` is euro.**
 
@@ -238,28 +238,28 @@ were recalled rather than read, which is flagged where it happened.
 
 ### Order header
 
-| Field                     | Rule                                                                                  |
-| ------------------------- | ------------------------------------------------------------------------------------- |
-| `codice conto`            | the customer code                                                                     |
-| `data documento`          | the date the order is created                                                          |
-| `sigla` / `serie` / `numero` | fixed except `numero`; send **0** and Mexal assigns the next value                 |
-| **`sigla`**               | **`OC` for services, `BC` for books** — never mixed in one order                      |
-| **`causale`**             | derived from sigla × fiscal residence — see the table below                            |
-| **magazzino di uscita**   | **1** for `OC`, **2** for `BC`                                                        |
-| **`costi ricavi`**        | **3** (servizi) for `OC`, **1** (materie prime) for `BC`                              |
-| `agente`                  | on the order header                                                                   |
-| `origine`                 | today the Zoho order number; after go-live the Salesforce one                          |
+| Field                        | Rule                                                               |
+| ---------------------------- | ------------------------------------------------------------------ |
+| `codice conto`               | the customer code                                                  |
+| `data documento`             | the date the order is created                                      |
+| `sigla` / `serie` / `numero` | fixed except `numero`; send **0** and Mexal assigns the next value |
+| **`sigla`**                  | **`OC` for services, `BC` for books** — never mixed in one order   |
+| **`causale`**                | derived from sigla × fiscal residence — see the table below        |
+| **magazzino di uscita**      | **1** for `OC`, **2** for `BC`                                     |
+| **`costi ricavi`**           | **3** (servizi) for `OC`, **1** (materie prime) for `BC`           |
+| `agente`                     | on the order header                                                |
+| `origine`                    | today the Zoho order number; after go-live the Salesforce one      |
 
 **Causale by document type and fiscal residence:**
 
-| Causale | Sigla | Applies to                    |
-| ------- | ----- | ----------------------------- |
-| 1       | `OC`  | services, Italy               |
-| 2       | `OC`  | services, San Marino          |
-| 3       | `OC`  | services, everywhere else     |
-| 4       | `BC`  | books, Italy                  |
-| 5       | `BC`  | books, San Marino             |
-| 6       | `BC`  | books, abroad                 |
+| Causale | Sigla | Applies to                |
+| ------- | ----- | ------------------------- |
+| 1       | `OC`  | services, Italy           |
+| 2       | `OC`  | services, San Marino      |
+| 3       | `OC`  | services, everywhere else |
+| 4       | `BC`  | books, Italy              |
+| 5       | `BC`  | books, San Marino         |
+| 6       | `BC`  | books, abroad             |
 
 Elisa Migliano restated it herself to be sure: _"nel caso che l'ordine sia di
 tipo OC, la causale può essere 1 2 o 3… nel caso in cui l'ordine è di tipo BC, la
@@ -294,16 +294,16 @@ and Andrea Di Cicco could not find them** in the field set the read call returns
 
 ### Customer registry
 
-| Field                      | Rule                                                                                     |
-| -------------------------- | ---------------------------------------------------------------------------------------- |
-| `codice paese`             | full country list; a `paese` table in the API holds the codes — **identified, unread**   |
+| Field                                    | Rule                                                                                                                              |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `codice paese`                           | full country list; a `paese` table in the API holds the codes — **identified, unread**                                            |
 | `residenza fiscale` / `tipo nazionalità` | **derived from the country code**, five values — [OI-97](../items/OI-97%20Fiscal%20residence%20on%20the%20customer%20registry.md) |
-| `tipo fattura elettronica` | B2B for Italian companies, **blank** (_"non gestita"_) for all others                     |
-| `PEC`                      | _"fondamentale… è quello che guida la fatturazione elettronica"_                          |
-| `codice agente`            | on **every** customer, for the commission run                                             |
-| `valuta`                   | **Euro only**, fixed — this retires the 26 August _"non so se 1 è euro"_ unknown          |
-| listino                    | **listino 1 only**, confirming 26 August                                                  |
-| `tipo società`, `pubblico` | not used — _"non ci interessa, non la gestiamo"_                                          |
+| `tipo fattura elettronica`               | B2B for Italian companies, **blank** (_"non gestita"_) for all others                                                             |
+| `PEC`                                    | _"fondamentale… è quello che guida la fatturazione elettronica"_                                                                  |
+| `codice agente`                          | on **every** customer, for the commission run                                                                                     |
+| `valuta`                                 | **Euro only**, fixed — this retires the 26 August _"non so se 1 è euro"_ unknown                                                  |
+| listino                                  | **listino 1 only**, confirming 26 August                                                                                          |
+| `tipo società`, `pubblico`               | not used — _"non ci interessa, non la gestiamo"_                                                                                  |
 
 ⚠ **The B2B code was guessed on the call, not read**: _"Potrebbe essere S." —
 "Potrebbe essere S. Sì, esatto."_ They then verified the **other** half properly,
@@ -376,7 +376,7 @@ Aurel Mrruku, Andrea Di Cicco, Fabrizio Mastracci.
 
 ### Authentication and management coordinates
 
-The *coordinate gestionali* go in the request header as **`azienda = PE`** and
+The _coordinate gestionali_ go in the request header as **`azienda = PE`** and
 **`anno = 2025`**, set **statically in code**. Authorization is **basic**: a
 base64 encoding of user then password. Andrea Di Cicco owes Aurel Mrruku the
 documentation fragment.
@@ -401,7 +401,7 @@ JSON size limits**. Agreed: **apply a field filter on retrieval**, and evaluate
 
 ### Customer update requires PUT
 
-🔴 **POST on an existing account fails** with a *partita IVA already exists* error.
+🔴 **POST on an existing account fails** with a _partita IVA already exists_ error.
 **PUT or PATCH is required**, and Andrea Di Cicco is to implement it —
 [OI-125](../items/OI-125%20Mexal%20customer%20update%20needs%20a%20PUT%20method.md).
 
@@ -612,3 +612,27 @@ agent/zone/network question remain exactly where the collection left them on
 [The decision of the same day](../decisions/Decision%20-%20first%20order%20runs%20Anticipay%20before%20Mexal%20customer%20creation.md)
 requires Anticipay → Account update → Mexal create → Order, all queued off the
 first Order of an Account. What shipped is a manual button on the Account.
+
+## 2026-10-06 - Salesforce chooses the order line id sent to Mexal
+
+The `Creazione Ordine cliente` call used to send `id_riga = [position, 0]`,
+and Mexal numbered the lines 1..n. Tested in UAT on serie 10 on 06/10:
+
+| Order              | `id_riga` sent                  | Result                                                      |
+| ------------------ | ------------------------------- | ----------------------------------------------------------- |
+| 00000304 → OC/10/8 | `0`                             | Mexal stored 1..10                                          |
+| 00000305 → OC/10/9 | the `OrderItemNumber`, 619..628 | 🟢 **Mexal stored 619..628 as sent** (read back from Mexal) |
+| 00000306           | the 15-character OrderItem Id   | 🔴 rejected, order `Failed`: Mexal wants a numeric value    |
+
+**Accepted by Aurel Mrruku on 06/10.** `MexalOrderSendService` now always
+sends `OrderItem.OrderItemNumber` as `id_riga`. The number is fixed when the
+line is created, so moving a line changes only its position, not its id;
+deleting and recreating a line gives it a new number. The line identity is
+therefore known before the send, and the invoice
+line's `id_riga_orig` points straight at the order line.
+`MexalOrderLineSyncService` still reads the lines back as a check.
+
+⚠ **Open:** the largest value Mexal accepts in `id_riga`.
+`OrderItemNumber` is a 10-digit autonumber and is at about 630 in UAT. To be
+asked of Mirko Merendi. The change is deployed to UAT only and is not
+committed.

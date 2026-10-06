@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stato_Pagamento_Mexal__c</fullName>
+    <description
+  >stato_pagamento dello scadenziario Mexal: P pagato, E Ri.Ba. emessa (conta come pagato), vuoto non pagato (conferma scritta di Mirko Merendi, 02/10).</description>
+    <label>Stato Pagamento Mexal</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>P</fullName>
+                <default>false</default>
+                <label>P - Pagato</label>
+            </value>
+            <value>
+                <fullName>E</fullName>
+                <default>false</default>
+                <label>E - Ri.Ba. emessa</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

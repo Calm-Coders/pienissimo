@@ -4,7 +4,7 @@ public with sharing class MexalOrderSendService {
   private static final Integer SANDBOX_SERIES = 10;
   private static final Integer PRODUCTION_SERIES = 1;
   private static final Integer AUTO_NUMBER = 0;
-  private static final Integer NEW_LINE_ID = 0;
+  private static final Long NEW_LINE_ID = 0;
   private static final String ARTICLE_LINE_TYPE = 'R';
   private static final String SERVICE_VAT_CODE = 'E01';
   private static final String BOOK_VAT_CODE = 'E10';
@@ -71,6 +71,7 @@ public with sharing class MexalOrderSendService {
         (
           SELECT
             Id,
+            OrderItemNumber,
             Description,
             Quantity,
             UnitPrice,
@@ -166,7 +167,7 @@ public with sharing class MexalOrderSendService {
     Integer lineNumber = 1;
 
     for (OrderItem line : orderLines) {
-      lineIds.add(new List<Object>{ lineNumber, NEW_LINE_ID });
+      lineIds.add(new List<Object>{ lineNumber, resolveLineId(line) });
       lineTypes.add(new List<Object>{ lineNumber, ARTICLE_LINE_TYPE });
       articleCodes.add(
         new List<Object>{ lineNumber, resolveProductCode(line) }
@@ -190,6 +191,15 @@ public with sharing class MexalOrderSendService {
     if (!dueDates.isEmpty()) {
       payload.put('dt_sca_riga', dueDates);
     }
+  }
+
+  // id_riga is the OrderItem autonumber, so the line identity is known before
+  // the send. Mexal keeps a numeric id_riga as sent (test 06/10, OC/10/9) and
+  // rejects a non-numeric one; 0 lets Mexal number the lines by position.
+  private static Long resolveLineId(OrderItem line) {
+    return String.isBlank(line.OrderItemNumber)
+      ? NEW_LINE_ID
+      : Long.valueOf(line.OrderItemNumber);
   }
 
   private static String resolveVatCode(String documentType) {
@@ -218,7 +228,7 @@ public with sharing class MexalOrderSendService {
     return lineNumbersByOrderItemId;
   }
 
-  private static String resolveProductCode(OrderItem line) {
+  public static String resolveProductCode(OrderItem line) {
     if (line.Product2 != null) {
       String productCode = firstNonBlank(
         line.Product2.External_Product_Code__c,

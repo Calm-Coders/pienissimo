@@ -200,6 +200,14 @@ A copy also lives in the `life365` repository; the two can drift.
 
 ## Standing instructions from the user
 
+- **Claude Code is authorized to read Mexal order lines to inspect discount
+  formats** (user instruction, 2026-10-06). Claude may run the read-only script
+  needed to scan order lines and report the discount formats found, without
+  requesting this authorization again. This authorization covers reads only;
+  it does not authorize creating, updating or deleting Mexal data. Keep
+  credentials, personal data, catalogue prices and article-code values out of
+  project records; report only the discount formats and aggregate findings.
+
 - **Claude Code is authorized to write to Pienissimo Prod** (user instruction,
   2026-10-04). For requested work, this includes metadata deployments, Apex
   execution, and record creation, updates, and deletion; no additional

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Riferimento_Ordine_Mexal__c</fullName>
+    <description
+  >Ordine Mexal da cui proviene la riga (sigla+serie+numero ordine). Mexal lo riporta sulla prima riga del blocco: vale per le righe seguenti.</description>
+    <label>Riferimento Ordine Mexal</label>
+    <length>60</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

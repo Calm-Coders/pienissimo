@@ -35,7 +35,9 @@ public with sharing class OrderItemTriggerHandler {
 
       if (
         line.Tranche__c != oldLine.Tranche__c ||
-        line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c
+        line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c ||
+        line.Fattura__c != oldLine.Fattura__c ||
+        line.Scadenza_Fattura__c != oldLine.Scadenza_Fattura__c
       ) {
         if (line.Tranche__c != null) {
           trancheIds.add(line.Tranche__c);
@@ -61,7 +63,13 @@ public with sharing class OrderItemTriggerHandler {
     }
 
     for (OrderItem line : [
-      SELECT Id, Tranche__c, Mexal_Payment_Status__c
+      SELECT
+        Id,
+        Tranche__c,
+        Mexal_Payment_Status__c,
+        Data_Scadenza__c,
+        Fattura__c,
+        Scadenza_Fattura__r.Data_Scadenza__c
       FROM OrderItem
       WHERE Tranche__c IN :trancheIds
     ]) {
@@ -73,6 +81,25 @@ public with sharing class OrderItemTriggerHandler {
       rollup.totalLines++;
       if (line.Mexal_Payment_Status__c == PAYMENT_STATUS_PAID) {
         rollup.paidLines++;
+        continue;
+      }
+
+      // An open line is either still to invoice, or invoiced with a due date:
+      // the Mexal rate's date, else the line's own.
+      if (line.Fattura__c == null) {
+        rollup.linesToInvoice++;
+        continue;
+      }
+      Date dueDate = line.Scadenza_Fattura__r != null &&
+        line.Scadenza_Fattura__r.Data_Scadenza__c != null
+        ? line.Scadenza_Fattura__r.Data_Scadenza__c
+        : line.Data_Scadenza__c;
+      if (
+        dueDate != null &&
+        (rollup.firstOpenDueDate == null ||
+        dueDate < rollup.firstOpenDueDate)
+      ) {
+        rollup.firstOpenDueDate = dueDate;
       }
     }
 
@@ -87,7 +114,9 @@ public with sharing class OrderItemTriggerHandler {
         new Tranche__c(
           Id = trancheId,
           Completamente_Pagata__c = rollup.isFullyPaid(),
-          Stato__c = rollup.status()
+          Stato__c = rollup.status(),
+          Prima_Scadenza_Aperta__c = rollup.firstOpenDueDate,
+          Righe_Da_Fatturare__c = rollup.linesToInvoice
         )
       );
     }
@@ -197,6 +226,8 @@ public with sharing class OrderItemTriggerHandler {
   private class TrancheRollup {
     Integer totalLines = 0;
     Integer paidLines = 0;
+    Integer linesToInvoice = 0;
+    Date firstOpenDueDate;
 
     Boolean isFullyPaid() {
       return totalLines > 0 && paidLines == totalLines;

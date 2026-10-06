@@ -11,7 +11,32 @@
         {errorMessage}
       </div>
     </template>
-    <template lwc:if={loaded}>
+    <template lwc:if={isBlocked}>
+      <div
+        role="alert"
+        class="slds-notify slds-notify_alert slds-alert_error mapping-alert"
+      >
+        <div>
+          <p class="slds-text-heading_small slds-m-bottom_x-small">
+            Invio bloccato: mappatura edizione mancante
+          </p>
+          <p class="slds-m-bottom_x-small">
+            Questi prodotti generano biglietti ma non hanno una campagna figlia
+            mappata alla data odierna. Senza mappatura l'ordine non può essere
+            generato alla firma.
+          </p>
+          <ul class="slds-list_dotted">
+            <template for:each={mappingProblems} for:item="problem">
+              <li key={problem}>{problem}</li>
+            </template>
+          </ul>
+          <p class="slds-m-top_x-small">
+            Aggiungi la mappatura in Mappatura Edizione e riapri l'invio.
+          </p>
+        </div>
+      </div>
+    </template>
+    <template lwc:if={showForm}>
       <template lwc:if={missingRecipient}>
         <p class="slds-m-bottom_small">
           Email del contatto principale non disponibile. Inserisci il

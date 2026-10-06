@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fatture_insolute</fullName>
+    <columns>NAME</columns>
+    <columns>Data_Documento__c</columns>
+    <columns>Account__c</columns>
+    <columns>Ordine__c</columns>
+    <columns>Riferimento_Ordine_Mexal__c</columns>
+    <columns>Totale_Documento__c</columns>
+    <columns>Importo_Residuo__c</columns>
+    <columns>Stato_Pagamento__c</columns>
+    <columns>Insoluto__c</columns>
+    <columns>Prima_Scadenza_Aperta__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Insoluto__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Fatture insolute</label>
+</ListView>
