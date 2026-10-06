@@ -128,10 +128,10 @@
                             label="Telefono"
                             value={ticket.phone}
                             required={ticket.rowRequiresFields}
-                            maxlength="15"
-                            pattern="^[0-9]{6,15}$"
-                            message-when-pattern-mismatch="Inserisci da 6 a 15 cifre, senza spazi, lettere o simboli."
-                            message-when-too-long="Il numero di telefono non può superare 15 cifre."
+                            maxlength="16"
+                            pattern="^\+?[0-9]{6,15}$"
+                            message-when-pattern-mismatch="Inserisci un + facoltativo all'inizio, seguito da 6 a 15 cifre."
+                            message-when-too-long="Il numero di telefono non può superare 15 cifre oltre al + iniziale."
                             autocomplete="tel"
                             onchange={handleInput}
                           ></lightning-input>

@@ -259,7 +259,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
     let value = event.detail?.value ?? event.target.value ?? "";
 
     if (fieldName === "phone") {
-      value = value.replace(/\D/g, "").slice(0, 15);
+      value = this.normalizePhoneInput(value);
       event.target.value = value;
     }
 
@@ -289,11 +289,23 @@ export default class ParticipantRegistrationPage extends LightningElement {
         token: this.token,
         email
       });
+      const currentTicket = this.tickets.find(
+        (ticket) => ticket.assetId === assetId
+      );
 
       this.updateTicket(assetId, {
-        firstName: match?.found ? match.firstName || "" : undefined,
-        lastName: match?.found ? match.lastName || "" : undefined,
-        phone: match?.found ? match.phone || "" : undefined,
+        firstName:
+          match?.found && !this.normalizeValue(currentTicket?.firstName)
+            ? match.firstName || ""
+            : undefined,
+        lastName:
+          match?.found && !this.normalizeValue(currentTicket?.lastName)
+            ? match.lastName || ""
+            : undefined,
+        phone:
+          match?.found && !this.normalizeValue(currentTicket?.phone)
+            ? match.phone || ""
+            : undefined,
         contactRecognized: Boolean(match?.found),
         isLookingUp: false
       });
@@ -335,7 +347,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
       let value = input.value || "";
       if (fieldName === "phone") {
-        value = value.replace(/\D/g, "").slice(0, 15);
+        value = this.normalizePhoneInput(value);
         input.value = value;
       }
 
@@ -510,5 +522,12 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
   normalizeValue(value) {
     return (value || "").trim();
+  }
+
+  normalizePhoneInput(value) {
+    const rawValue = value || "";
+    const prefix = rawValue.startsWith("+") ? "+" : "";
+    const digits = rawValue.replace(/\D/g, "").slice(0, 15);
+    return `${prefix}${digits}`;
   }
 }
