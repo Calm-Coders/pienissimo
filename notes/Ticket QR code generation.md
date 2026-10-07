@@ -2,7 +2,7 @@
 id: ticket-qr-code-generation
 type: reference
 status: active
-updated: 2026-09-29
+updated: 2026-10-07
 source: requirements/pienissimo-requirements.yaml
 ---
 
@@ -11,7 +11,8 @@ source: requirements/pienissimo-requirements.yaml
 This note explains the server-side QR generation used for ticket Assets.
 The implementation is entirely Apex: the QR payload is generated when a
 `CampaignMember` is inserted, converted into a QR matrix, rendered as a BMP
-image, and attached to the matching `Asset` as a Salesforce File.
+image, and attached to the matching `Asset` as a Salesforce File. New QR codes
+encode the matching `Asset.Id`.
 
 ## Source rule
 
@@ -29,9 +30,10 @@ Campaign ID. The relevant entries are:
   and [OI-84 Campaign Member handling for manual check-in](items/OI-84%20Campaign%20Member%20handling%20for%20manual%20check-in.md)
   both state that the QR carries the campaign member id.
 
-So the current code is aligned on payload identity when it encodes
-`CampaignMember.Id`. A QR that encoded only `Campaign.Id` would identify the
-event/edition, not the individual participant.
+The implementation changed on 2026-10-07 by direct user instruction: the QR now
+encodes `Asset.Id`, which still identifies one individual ticket. This differs
+from the `BIG-20` `to_confirm` wording that says Campaign Member Id; the
+requirement register was not silently rewritten.
 
 ## Runtime flow
 
@@ -45,7 +47,6 @@ CampaignMemberQrTrigger
 AssetQrService.syncCampaignMembers(...)
         |
         +-- finds matching Asset by ContactId + Campaign__c
-        +-- writes Asset.QR_Id__c = CampaignMember.Id
         +-- creates ContentVersion with TicketQrImage.generate(...)
         +-- publishes Participant_Document_Request__e per Asset
 ```
@@ -60,12 +61,10 @@ The files involved are:
 - `force-app/main/default/classes/AssetQrService.cls`
 - `force-app/main/default/classes/TicketQrImage.cls`
 - `force-app/main/default/classes/BarcodeGenerator.cls`
-- `force-app/main/default/objects/Asset/fields/QR_Id__c.field-meta.xml`
 - `force-app/main/default/objects/Asset/fields/Campaign__c.field-meta.xml`
 
-The QR payload is the `CampaignMember.Id`. That value is also copied into
-`Asset.QR_Id__c`, so the Asset stores the same participant identifier that the
-QR image encodes.
+The QR payload is the matching `Asset.Id`. No duplicate QR identifier field is
+stored on the Asset.
 
 ## Asset matching
 
@@ -91,15 +90,14 @@ Asset.ContactId + ':' + Asset.Campaign__c
 
 to the Campaign Member key. When they match, the service:
 
-1. Updates `Asset.QR_Id__c` to the `CampaignMember.Id`.
-2. Generates a BMP QR image using `TicketQrImage.generate`.
-3. Inserts a `ContentVersion` attached to the Asset through
+1. Generates a BMP QR image using `TicketQrImage.generate`.
+2. Inserts a `ContentVersion` attached to the Asset through
    `FirstPublishLocationId`.
 
 The inserted file is named like:
 
 ```text
-Ticket-QR-<CampaignMemberId>.bmp
+Ticket-QR-<AssetId>.bmp
 ```
 
 ## What `BarcodeGenerator.getPattern(payload, 'qr')` does
@@ -283,17 +281,16 @@ For every matched Asset, the service creates a file:
 
 ```apex
 new ContentVersion(
-  Title = 'Ticket QR - ' + String.valueOf(memberId),
-  PathOnClient = 'Ticket-QR-' + String.valueOf(memberId) + '.bmp',
-  VersionData = TicketQrImage.generate(String.valueOf(memberId)),
+  Title = 'Ticket QR - ' + String.valueOf(assetRecord.Id),
+  PathOnClient = 'Ticket-QR-' + String.valueOf(assetRecord.Id) + '.bmp',
+  VersionData = TicketQrImage.generate(String.valueOf(assetRecord.Id)),
   FirstPublishLocationId = assetRecord.Id
 )
 ```
 
-The Asset therefore has:
-
-- `QR_Id__c`: the Campaign Member Id as text
-- a Salesforce File: the QR image containing the same Campaign Member Id
+The Asset therefore has a Salesforce File containing a QR image of its own Id.
+The participant PDF and Asset quick action also generate their QR directly from
+`Asset.Id`.
 
 ## Lookup endpoint
 
@@ -308,24 +305,24 @@ POST /services/apexrest/ticket-qr
 Content-Type: application/json
 
 {
-  "qrId": "{CampaignMemberId}"
+  "qrId": "{AssetId}"
 }
 ```
 
 GET path fallback:
 
 ```text
-GET /services/apexrest/ticket-qr/{CampaignMemberId}
+GET /services/apexrest/ticket-qr/{AssetId}
 ```
 
 Query-parameter fallback:
 
 ```text
-GET /services/apexrest/ticket-qr?qrId={CampaignMemberId}
+GET /services/apexrest/ticket-qr?qrId={AssetId}
 ```
 
-The service validates that the supplied value is a real `CampaignMember` Id,
-then returns a stable JSON response containing:
+The service validates that the supplied value is an Asset Id, then returns a
+stable JSON response containing:
 
 - the Contact name, email, phone and account name
 - the Campaign/event name, event date, start time and place
@@ -334,10 +331,13 @@ then returns a stable JSON response containing:
 The response intentionally does not echo Salesforce record ids, including the
 QR payload id.
 
-The Asset lookup first uses `Asset.QR_Id__c = CampaignMember.Id`. If that value
-has not been written yet, it falls back to the same matching rule used by QR
-creation: `Asset.ContactId = CampaignMember.ContactId` and
-`Asset.Campaign__c = CampaignMember.CampaignId`.
+QR images containing the previous `CampaignMember.Id` payload are not accepted.
+They must be regenerated with the Asset payload.
+
+`GET` is read-only. `POST` performs check-in: an `Assegnato` Asset becomes
+`Utilizzato` and receives `Data_CheckIn__c`. A repeated scan of an already
+`Utilizzato` ticket succeeds without replacing the original timestamp. Other
+states return `INVALID_ASSET_STATUS` with HTTP 409.
 
 Every lookup writes an `Integration_Log__c` row with:
 
@@ -347,14 +347,16 @@ Every lookup writes an `Integration_Log__c` row with:
 - request headers in `Request_Headers__c`, with `Authorization` redacted
 - the serialized response in `Response_Body__c`
 - the HTTP status in `Response_State__c`
-- `Is_Error__c = true` for invalid ids, missing Campaign Members, missing
-  Assets, or unexpected exceptions
+- `Is_Error__c = true` for invalid ids, missing Assets, or unexpected exceptions
 
 Unexpected exceptions are converted to `UNEXPECTED_ERROR` responses and log the
 exception message and stack trace.
 
 ## Current boundaries
 
-This implementation generates, stores and resolves ticket QR codes. The lookup
-endpoint is read-only: it does not perform check-in, does not change
-`Asset.Status`, and does not write `Asset.Data_CheckIn__c`.
+This implementation generates, stores and resolves ticket QR codes and performs
+the Fase 1 Asset check-in update. Campaign date validation and the Fase 2
+multi-entry speaking-error rules remain outside this change. The redundant
+`Asset.QR_Id__c` field was removed from source and Pienissimo UAT on 2026-10-07.
+UAT deployment `0AfMA00000CrxUT0AZ` succeeded, and a Tooling API query verified
+that the field is absent. Production is untouched.

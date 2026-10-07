@@ -4,15 +4,18 @@ global with sharing class TicketQrLookupService {
 
   @HttpGet
   global static TicketQrLookupResponse lookup() {
-    return lookupByQrId(qrIdFromRequest(RestContext.request));
+    return lookupByQrId(qrIdFromRequest(RestContext.request), false);
   }
 
   @HttpPost
   global static TicketQrLookupResponse lookupFromBody() {
-    return lookupByQrId(qrIdFromBody(RestContext.request));
+    return lookupByQrId(qrIdFromBody(RestContext.request), true);
   }
 
-  private static TicketQrLookupResponse lookupByQrId(String qrId) {
+  private static TicketQrLookupResponse lookupByQrId(
+    String qrId,
+    Boolean shouldCheckIn
+  ) {
     Integration_Log__c logRec = new Integration_Log__c();
     initializeLog(logRec);
     RestResponse response = RestContext.response;
@@ -21,53 +24,22 @@ global with sharing class TicketQrLookupService {
     }
 
     try {
-      Id campaignMemberId = parseId(qrId, CampaignMember.SObjectType);
-      if (campaignMemberId == null) {
+      Id scannedId = parseId(qrId);
+      if (
+        scannedId == null ||
+        scannedId.getSObjectType() != Asset.SObjectType
+      ) {
         return writeAndReturn(
           logRec,
           errorResponse(
             400,
             'INVALID_QR_ID',
-            'Provide a valid CampaignMember Id from the QR code.'
+            'Provide a valid Asset Id from the QR code.'
           )
         );
       }
 
-      List<CampaignMember> members = [
-        SELECT
-          Id,
-          Status,
-          ContactId,
-          Contact.Name,
-          Contact.Email,
-          Contact.Phone,
-          Contact.AccountId,
-          Contact.Account.Name,
-          CampaignId,
-          Campaign.Name,
-          Campaign.Data_Evento__c,
-          Campaign.Orario_Inizio__c,
-          Campaign.Luogo__c,
-          Campaign.StartDate,
-          Campaign.EndDate
-        FROM CampaignMember
-        WHERE Id = :campaignMemberId
-        LIMIT 1
-      ];
-
-      if (members.isEmpty()) {
-        return writeAndReturn(
-          logRec,
-          errorResponse(
-            404,
-            'CAMPAIGN_MEMBER_NOT_FOUND',
-            'No CampaignMember found for the QR code.'
-          )
-        );
-      }
-
-      CampaignMember member = members[0];
-      Asset ticket = findTicketAsset(member);
+      Asset ticket = findTicketAsset(scannedId);
       if (ticket == null) {
         return writeAndReturn(
           logRec,
@@ -79,10 +51,38 @@ global with sharing class TicketQrLookupService {
         );
       }
 
+      if (
+        shouldCheckIn &&
+        ticket.Status != 'Assegnato' &&
+        ticket.Status != 'Utilizzato'
+      ) {
+        TicketQrLookupResponse invalidStatus = errorResponse(
+          409,
+          'INVALID_ASSET_STATUS',
+          'The ticket Asset must be Assegnato before check-in.'
+        );
+        invalidStatus.contact = new ContactDto(ticket.Contact);
+        invalidStatus.campaign = new CampaignDto(ticket.Campaign__r);
+        invalidStatus.asset = new AssetDto(ticket);
+        return writeAndReturn(logRec, invalidStatus);
+      }
+
+      Boolean wasAlreadyCheckedIn = ticket.Status == 'Utilizzato';
+      if (shouldCheckIn && !wasAlreadyCheckedIn) {
+        ticket.Status = 'Utilizzato';
+        ticket.Data_CheckIn__c = System.now();
+        update ticket;
+      }
+
       TicketQrLookupResponse result = new TicketQrLookupResponse();
       result.success = true;
-      result.contact = new ContactDto(member.Contact);
-      result.campaign = new CampaignDto(member.Campaign);
+      result.message = !shouldCheckIn
+        ? null
+        : wasAlreadyCheckedIn
+            ? 'Ticket was already checked in.'
+            : 'Ticket checked in successfully.';
+      result.contact = new ContactDto(ticket.Contact);
+      result.campaign = new CampaignDto(ticket.Campaign__r);
       result.asset = new AssetDto(ticket);
       setStatusCode(200);
       return writeAndReturn(logRec, result);
@@ -118,25 +118,29 @@ global with sharing class TicketQrLookupService {
     }
   }
 
-  private static Asset findTicketAsset(CampaignMember member) {
-    List<Asset> assetsByQr = [
-      SELECT Id, Name, Status, Campaign__c, Product2.Name
+  private static Asset findTicketAsset(Id assetId) {
+    List<Asset> assets = [
+      SELECT
+        Id,
+        Name,
+        Status,
+        Data_CheckIn__c,
+        Product2.Name,
+        Contact.Name,
+        Contact.Email,
+        Contact.Phone,
+        Contact.Account.Name,
+        Campaign__r.Name,
+        Campaign__r.Data_Evento__c,
+        Campaign__r.Orario_Inizio__c,
+        Campaign__r.Luogo__c,
+        Campaign__r.StartDate,
+        Campaign__r.EndDate
       FROM Asset
-      WHERE QR_Id__c = :String.valueOf(member.Id)
+      WHERE Id = :assetId
       LIMIT 1
     ];
-    if (!assetsByQr.isEmpty()) {
-      return assetsByQr[0];
-    }
-
-    List<Asset> assetsByMember = [
-      SELECT Id, Name, Status, Product2.Name
-      FROM Asset
-      WHERE ContactId = :member.ContactId AND Campaign__c = :member.CampaignId
-      LIMIT 1
-    ];
-
-    return assetsByMember.isEmpty() ? null : assetsByMember[0];
+    return assets.isEmpty() ? null : assets[0];
   }
 
   private static String qrIdFromRequest(RestRequest request) {
@@ -162,14 +166,13 @@ global with sharing class TicketQrLookupService {
       : EncodingUtil.urlDecode(uriParts[uriParts.size() - 1], 'UTF-8').trim();
   }
 
-  private static Id parseId(String rawId, Schema.SObjectType expectedType) {
+  private static Id parseId(String rawId) {
     if (String.isBlank(rawId)) {
       return null;
     }
 
     try {
-      Id recordId = (Id) rawId.trim();
-      return recordId.getSObjectType() == expectedType ? recordId : null;
+      return (Id) rawId.trim();
     } catch (Exception invalidId) {
       return null;
     }
@@ -305,10 +308,12 @@ global with sharing class TicketQrLookupService {
     public String name;
     public String status;
     public String productName;
+    public Datetime checkInDate;
 
     public AssetDto(Asset assetRecord) {
       name = assetRecord.Name;
       status = assetRecord.Status;
+      checkInDate = assetRecord.Data_CheckIn__c;
       productName = assetRecord.Product2 == null
         ? null
         : assetRecord.Product2.Name;

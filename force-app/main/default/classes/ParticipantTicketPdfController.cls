@@ -19,7 +19,6 @@ public without sharing class ParticipantTicketPdfController {
       SELECT
         Id,
         Name,
-        QR_Id__c,
         Account.Name,
         Contact.FirstName,
         Contact.LastName,
@@ -145,7 +144,7 @@ public without sharing class ParticipantTicketPdfController {
 
   public List<QrRow> getQrRows() {
     if (qrRows == null) {
-      qrRows = buildQrRows(ticket.QR_Id__c);
+      qrRows = buildQrRows(String.valueOf(ticket.Id));
     }
     return qrRows;
   }

@@ -479,14 +479,6 @@ private class TicketingTest {
         2,
         [
           SELECT COUNT()
-          FROM Asset
-          WHERE Id IN :ticketIds AND QR_Id__c != NULL
-        ]
-      );
-      System.assertEquals(
-        2,
-        [
-          SELECT COUNT()
           FROM ContentVersion
           WHERE FirstPublishLocationId IN :ticketIds AND Title LIKE 'Ticket QR%'
         ]

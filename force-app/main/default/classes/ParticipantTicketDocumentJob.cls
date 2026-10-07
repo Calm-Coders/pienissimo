@@ -65,16 +65,13 @@ public without sharing class ParticipantTicketDocumentJob implements Queueable, 
     }
 
     for (Asset ticket : [
-      SELECT Id, Name, QR_Id__c
+      SELECT Id
       FROM Asset
       WHERE Id IN :assetIds
       ORDER BY Id
     ]) {
       queriedAssetCount++;
-      String suffix = String.isBlank(ticket.QR_Id__c)
-        ? String.valueOf(ticket.Id)
-        : ticket.QR_Id__c;
-      String title = 'Documenti partecipazione - ' + suffix;
+      String title = 'Documenti partecipazione - ' + String.valueOf(ticket.Id);
       if (
         existingDocumentKeys.contains(String.valueOf(ticket.Id) + ':' + title)
       ) {

@@ -167,10 +167,6 @@ private class ParticipantTicketDocumentTest {
 
       System.assertEquals(
         2,
-        [SELECT COUNT() FROM Asset WHERE Id IN :assetIds AND QR_Id__c != NULL]
-      );
-      System.assertEquals(
-        2,
         [
           SELECT COUNT()
           FROM ContentDocumentLink
@@ -272,11 +268,7 @@ private class ParticipantTicketDocumentTest {
         Parcheggio__c = 'Parcheggio interno'
       );
       update new Product2(Id = ticket.Product2Id, Tipo_Biglietto__c = 'Gold');
-      update new Asset(
-        Id = ticket.Id,
-        ContactId = participant.Id,
-        QR_Id__c = 'QR-TEST-0001'
-      );
+      update new Asset(Id = ticket.Id, ContactId = participant.Id);
 
       ParticipantTicketPdfController controller = openDocumentPage(
         String.valueOf(ticket.Id)
@@ -323,7 +315,7 @@ private class ParticipantTicketDocumentTest {
       System.assertEquals('', controller.getParticipantPhone());
       System.assertEquals('Ingresso', controller.getTicketType());
       System.assertEquals('', controller.getCheckInTime());
-      System.assertEquals(false, controller.getHasQrCode());
+      System.assertEquals(true, controller.getHasQrCode());
     }
   }
 
