@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Kreosoft
 org: both
 raised: 2026-10-05
-updated: 2026-10-06
+updated: 2026-10-07
 depends_on: [OI-58, OI-112]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
 ---
@@ -110,3 +110,45 @@ came back round to what the client had already specified.
   [the Mexal write risk](../risks/Risk%20-%20Mexal%20writes%20fail%20after%20their%20own%20log%20insert.md):
   the shipping-address write still cannot complete, so the order-triggered leg is
   unreliable even before the nightly leg is built.
+
+## Update 2026-10-07 — confirmed with the vendor, and the field list is now a joint task
+
+🟢🔑 **The design was validated in the vendor call it was deferred to.**
+[The 07/10 Mexal call](../meetings/2026-10-07%20Temi%20Integrazione%20Mexal.md)
+recorded as `Concordato`: _"Si concorda di blindare i campi anagrafici chiave su
+Sales Force dopo la prima sincronizzazione con Mexal per impedire modifiche
+manuali non autorizzate."_ Proposed by Fabrizio Paganelli, agreed with Aurel
+Mrruku and Elena Spini, with Mirko Merendi in the room.
+
+🟢 **Four fields are named for the first time:** billing address, partita IVA,
+fiscal residence and agents.
+
+🟢 **The field list has owners and is no longer Fabrizio Paganelli's alone.** The
+next step is assigned to **Fabrizio Paganelli and Elena Spini**: review the
+field-mapping document to decide which registry elements get locked in
+Salesforce. ⚠ Still no date.
+
+### The sync direction, as the transcript has it
+
+⚠ The Gemini summary of the call compresses this to _"l'anagrafica cliente debba
+originare da Salesforce e sincronizzarsi su Mexal"_, which reads as a reversal of
+the 06/10 design. **It is not a reversal.** Aurel Mrruku describes both legs: the
+registry is created in Mexal on the first order send and updated on later sends,
+and _"di notte succede il contrario… se c'è un cambiamento su Mexal, su certi
+campi, quei campi vengono portati anche sull'anagrafica del cliente su
+Salesforce"_. Fabrizio Paganelli confirms the correction path — noticing Italy
+was entered instead of San Marino, they fix country, electronic-invoicing type
+and fiscal residence **in Mexal**, and _"la notte quando c'è il flusso di ritorno
+da Mexal verso SF io mi trovo i dati su SF il giorno dopo corretti"_. So
+corrections are made in Mexal and return nightly, exactly as recorded on 06/10.
+
+⚠ **Aurel Mrruku named the remaining hole himself**: if the billing address is
+changed in Salesforce anyway, the next order send pushes it up to Mexal. The
+lock is what closes that, and the lock is not built.
+
+## Still not built, 14 days before go-live
+
+**Nothing changed in code.** No field lock, no nightly job for the return leg, no
+dedicated bypass user. The design now has vendor assent on top of client assent,
+and that is all it has. ⚠ The **exception-queue owner remains unassigned** — a
+fourth consecutive run.

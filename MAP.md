@@ -2,9 +2,87 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-06 (nightly sweep — the contested rule was adopted as the client wanted it, and three gating items closed in code) · Source of record: [notes/](notes/)
+Last updated: 2026-10-07 (nightly sweep — the order path ran end to end for the first time, and a ruling the same day made the payment code wrong as committed) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟡🔑 **2026-10-07 — the order path ran end to end for the first time, and a ruling made four days of payment code wrong as committed.** Nightly sweep,
+  watermark 2026-10-06T22:00Z. **Two sessions, both with the client** — a 2h18m WooCommerce/Mexal UAT
+  and the 48m Kreosoft call — plus the vendor in the room. Build claims are repository arithmetic
+  against `DevMain` **`391b401`**.
+  🟢🔑 **The whole chain completed and was watched doing it**, at
+  [the WooCommerce UAT](notes/meetings/2026-10-07%20UAT%20Integrazione%20WooCommerce%20e%20Mexal.md)
+  (10:00 CEST — Fabrizio Paganelli · Sabatino Rinaldi · Elisa Migliano, with Elena Spini and Aurel
+  Mrruku): offer → quote → DocuSign → customer and order to Mexal → invoices and scadenzari by
+  scheduled job → order lines and payment links → opportunity closed-won. 🔑 **Fabrizio Paganelli
+  registered a real collection in Mexal and the Salesforce order moved to paid on its own** — the
+  first verification of [OI-206](notes/items/OI-206%20The%20Insoluto%20concept%20has%20no%20invoice%20due%20date%20and%20no%20invoice%20record.md)
+  and [OI-208](notes/items/OI-208%20Overdue%20and%20upcoming%20payments%20are%20not%20distinguished%20on%20the%20contract.md)
+  against live ERP data. ⚠ Only the collection path; the Ri.Ba. case is the one now known broken.
+  🔴🔑 **New: [OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  — gating.** [The Mexal call](notes/meetings/2026-10-07%20Temi%20Integrazione%20Mexal.md) agreed as
+  `Concordato` that a rate in state `E` counts as paid **only if its due date is in the past**.
+  `MexalScadenzarioSearchService.cls:205-207` and `Scadenza_Fattura__c.Pagata__c` both test
+  `P || E` with **no date condition**, so a Ri.Ba. presented on the 20th reads `Pagata` before the
+  money lands — exactly the premature ticket release Fabrizio Paganelli raised. ⚠ So
+  [OI-201](notes/items/OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)
+  stays resolved — its bug was real and is fixed — and the rule it was fixed against was qualified
+  five days later. **The dueDate is already parsed two dozen lines above the predicate.**
+  🔴 **Four failures stopped an order reaching Mexal, each now a row.**
+  **[OI-213](notes/items/OI-213%20Mexal%20order%20lines%20arrive%20suspended%20and%20cannot%20be%20invoiced.md)**
+  — lines arrive `S` (sospeso) and cannot be invoiced; Mirko Merendi named the parameter
+  (`Tipo_B_Stato_Bigga`, transcribed from speech) and owes the customisation for causale,
+  contropartita, goods type and IVA.
+  **[OI-214](notes/items/OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md)**
+  — the agent code is mandatory, ~20% of WooCommerce orders have no agent, 🔴 **no default and the
+  error is invisible on the order screen**; Elisa Migliano must ask Marco Montesi which code.
+  **[OI-217](notes/items/OI-217%20The%20article%20code%20revision%20needs%20direction%20approval.md)**
+  — a bundle article code the shop sells does not exist in Mexal; Fabrizio Paganelli wants direction's
+  approval to revise ~20–30 codes. **The document `causale`** came through unvalued.
+  🔴 **New: [OI-215](notes/items/OI-215%20Anticipay%20does%20not%20cover%20San%20Marino%20addresses.md)** —
+  Anticipay serves **Italian addresses only**, so the room preferred Italy for compatible addresses
+  while the Mexal call an hour later had corrections going the other way (country, e-invoicing type,
+  fiscal residence fixed **in Mexal**). ⚠ Anita Aga's unmerged `577fc5c` hardcodes
+  `BillingCountry = 'IT'` on every Anticipay-enriched account.
+  🔴 **New: [OI-216](notes/items/OI-216%20The%20WooCommerce%20plugin%20flushed%20its%20unsent%20order%20backlog%20into%20Salesforce.md)**
+  — enabling the send by hand flushed **every unsent order**, so past orders for real named customers
+  landed in Salesforce. 🟢 **This answers Aurel Mrruku's 06/10 10:34:40Z question**: they were not
+  client tests. ⚠ It collides with the agreed deletion of ten days of test accounts.
+  🟢🔑 **[OI-209](notes/items/OI-209%20Mexal%20anagrafica%20updates%20only%20propagate%20when%20an%20order%20is%20sent.md)
+  has vendor assent and four named fields** — billing address, partita IVA, fiscal residence, agents —
+  locked in Salesforce after first sync, corrections made in Mexal, nightly return flow. ⚠ The Gemini
+  summary reads as a reversal of the 06/10 design; **the transcript shows it is not**. 🔴 Still nothing
+  built, and the exception-queue owner is unassigned a fourth run.
+  🟡 **[OI-211](notes/items/OI-211%20Mexal%20rejects%20N%20for%20the%20electronic%20invoicing%20code.md)
+  moved but is not closed.** `N` is confirmed rejected and Aurel Mrruku switched to `P`; 🔴 Fabrizio
+  Paganelli had said `M`, a record reads `S`, and **four values appear in one conversation with no
+  transcoding table**. Mirko Merendi owes the country-code / fiscal-residence answer.
+  🔑 **The release calendar is now explicit**: **12/10 16:00–18:00** e2e on the untested paths
+  (bundle, recall tutor, performance plus, renewals) · **13/10** production confirmation ·
+  **16/10** marketing's ticket tests **in production** · **21/10** go-live. ⚠ The Gemini notes date
+  all of it in **August**; October is confirmed by Elena Spini's own calendar invitation.
+  🔴 **New: [OI-218](notes/items/OI-218%20Direction%20has%20not%20seen%20the%20Business%20Blueprint%20before%20the%2013%20October%20confirmation.md)
+  — gating.** Fabrizio Paganelli told the room **direction (Daniela Morgese) has still not read the
+  Business Blueprint**, and doubted the timeline on that ground. It is the only document a client has
+  accepted in writing, delivered 02/10.
+  🔴 **New: [OI-219](notes/items/OI-219%20Default%20payment%20method%20and%20agent%20for%20WooCommerce%20and%20Palco%20orders.md)**
+  — payment methods map (card/PayPal → `2`, transfer → `12`) but the **default for bundles is
+  deferred** pending proposals from Aurel Mrruku and Elisa Migliano, and Palco has none.
+  🟢 **Marco Montesi was finally answered**, 14:57:40Z, two days on — mass Opportunity creation
+  declined to a later phase (⚠ **a Fase 2 candidate created in mail with no Fase 2 row**),
+  Perso/Errato values admin-editable by Fabrizio Paganelli and Elisa Migliano. 🔴 **Question 3 was
+  bounced back** — _"Non ho capito cosa intendi"_ — though **the record already held the answer**
+  from 05/10, and it is now the governance question for the 11+11 funnel.
+  🔑 **The QR check-in contract was delivered by mail** (Rexhina Hysi, 12:35:28Z): **the QR payload
+  is the Asset id, not the `CampaignMember.Id`** the merged note still describes, and
+  `CAMPAIGN_MEMBER_NOT_FOUND` is gone. ⚠ **A live signed JWT and the integration username were
+  circulated by mail** — recorded, never copied; rotate and move to configuration. The matching
+  `b08c9a8` is **not in `DevMain`**.
+  ⚠ **UAT credentials go to Fabrizio Paganelli and Elisa Migliano only**, commercial staff excluded,
+  after Aurel Mrruku warned that testing on real registry data could corrupt both databases.
+  ⚠ **San Marino e-invoicing is optional until year end and mandatory from the new year** (Mirko
+  Merendi). ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **220**.
+  — [trace](notes/traces/Source%20trace%202026-10-07%20nightly.md)
 
 - 🟢🔑 **2026-10-06 — the rule the client rejected was adopted in the direction it had already been rebuilt, and three gating items closed in code on one day.** Nightly sweep,
   watermark 2026-10-05T22:00Z. **One client session**, six rulings; build claims are repository

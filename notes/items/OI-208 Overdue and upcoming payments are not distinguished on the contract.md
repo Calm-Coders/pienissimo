@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: ROMI
 org: both
 raised: 2026-10-05
-updated: 2026-10-06
+updated: 2026-10-07
 depends_on: [OI-201, OI-206]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
 ---
@@ -113,3 +113,25 @@ fed correctly.
   views exist; nothing says they are on the surface the client was shown.
 
 Resolved on the build, not on the demonstration.
+
+## Update 2026-10-07 — demonstrated for collection, broken for Ri.Ba.
+
+🟢 **The demonstration this row was waiting on happened, in part.** At
+[the 07/10 WooCommerce session](../meetings/2026-10-07%20UAT%20Integrazione%20WooCommerce%20e%20Mexal.md)
+a real collection registered in Mexal drove the Salesforce order to paid through
+the nightly sync, with the order lines and history updating. Fabrizio Paganelli
+gave a favourable opinion on the integrated structure of customers, orders,
+tranches and invoicing states.
+
+🔴 **The Ri.Ba. case — the one this row exists for — is now known to be wrong.**
+[The 07/10 Mexal call](../meetings/2026-10-07%20Temi%20Integrazione%20Mexal.md)
+agreed that an `E` rate counts as paid **only when its due date has passed**.
+`Pagata__c` does not test the date, and because `Stato_Scadenza__c` reads
+`IF(Pagata__c, "Pagata", …)` first, a presented-but-not-due rate resolves to
+`Pagata` and the `Scaduta` / `A scadere` distinction this row delivered never
+runs for it. Carried by
+[OI-212](OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md).
+
+⚠ `Scadenziario (GET)` was on the 07/10 agenda and was reached — the state rule
+is what came out of it. The contract-level presentation to the client is still
+not evidenced.

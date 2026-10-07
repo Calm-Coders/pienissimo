@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-06
+updated: 2026-10-07
 depends_on: [OI-141]
 requirement: ORD-07
 source: notes/The Business Blueprint delivered to the client.md
@@ -115,3 +115,25 @@ They are populated by the nightly `MexalInvoiceSyncJob` (03:30) through
 
 Resolved on the data model. The reporting obligation the Blueprint made is
 **not** discharged and is the part to watch.
+
+## Update 2026-10-07 — the sync is verified live, the reports still are not
+
+🟢🔑 **The 03:30 invoice sync ran against real ERP data and worked.** At
+[the 07/10 WooCommerce session](../meetings/2026-10-07%20UAT%20Integrazione%20WooCommerce%20e%20Mexal.md)
+Aurel Mrruku showed the structure that links invoices to customers, orders and
+scadenzari — keyed on the year, the document type and the progressive line
+identifier — tracking residual amount, payment state and days late. Fabrizio
+Paganelli registered a real collection in Mexal; after Aurel Mrruku ran the
+sync, the order's Salesforce state moved to **paid on its own**, updating the
+history and the individual order lines. **"Unverified against a real invoice" is
+discharged** for the collection path, four days after the objects were created.
+
+🔴 **The reports are still absent.** Nothing in either 07/10 session created,
+discussed or promised one. Fourth consecutive run.
+
+🔴 **Still not in Prod**, and still no scheduled job there.
+
+⚠ **A new defect sits on top of this build.** `Scadenza_Fattura__c.Pagata__c`
+tests `P || E` with no date condition, so an `E` rate not yet due resolves to
+`Pagata` and never reaches the `Insoluto__c` / overdue arithmetic at all — see
+[OI-212](OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md).

@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-05
+updated: 2026-10-07
 source: Drive 1oa5iIHxu86wx6v7qZaBjM7g5Sk7bmuK9
 ---
 
@@ -147,3 +147,47 @@ owes a preview-and-personalise feature. So the answer to Marco Montesi is
 
 🔴 **No reply has been sent to any of the three.** They are the only
 constructive client feedback on a signature-bearing document this project has.
+
+## Update 2026-10-07 — Elena Spini answered, two of three
+
+Elena Spini replied to Marco Montesi on the thread at **14:57:40Z**, cc Fabrizio
+Paganelli, `amministrazione@`, Sabatino Rinaldi, Rebecca Marmo, Aurel Mrruku and
+Fabrizio Mastracci — **two days after his message**, and the sweep's standing
+"nobody has replied to Marco Montesi" is discharged.
+
+**1 — mass Opportunity creation for Recall Tutor.** Declined for now:
+_"Attualmente non è stato pensato né richiesto un flusso di creazione massiva di
+Opportunità, consiglio di provare ad utilizzare la piattaforma ed eventualmente
+si potrebbe pensare di includere questo nuovo requisito in una fase
+successiva."_ ⚠ A **Fase 2 candidate created in mail, with no Fase 2 row** — the
+same pattern as [OI-196](items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md).
+⚠ It also contradicts the reading that the Blueprint was accepted whole: Marco
+Montesi's point 1 was a statement about how the business actually works, not a
+request, and the answer is that the platform does not do it.
+
+**2 — editing the Perso/Errato picklist values.** Answered: they can be changed
+_"direttamente dall'amministratore di sistema, nel vostro caso dagli utenti
+Fabrizio/Elisa che useranno l'utenza Amministrazione Pienissimo."_ 🟢 Consistent
+with the same day's ruling that UAT credentials go to those two only, and with
+Elena Spini's 12:34:50Z mail asking Elisa Migliano to verify the address for the
+UAT user.
+
+**3 — the mail and WhatsApp follow-ups. Not answered; bounced back.** Elena
+Spini: _"Non ho capito cosa intendi. Mi puoi dettagliare nello specifico di quale
+flusso parli?"_
+
+🔴 **That is the question the record already had an answer to.** The 05/10
+Performance Plus UAT agreed email templates are editable directly in production
+by the administrator — recorded above. The answer went back as a request for
+clarification instead, and the question is now open on Marco Montesi. ⚠ It
+matters more than it did on 05/10, because the flows he is asking about are the
+**11 email + 11 WhatsApp funnel** written out on 06/10
+([the funnel note](The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md)),
+whose governance — who may change a message, and whether a change needs ROMI —
+is not written anywhere.
+
+⚠ **Direction still has not read the document.** See
+[OI-218](items/OI-218%20Direction%20has%20not%20seen%20the%20Business%20Blueprint%20before%20the%2013%20October%20confirmation.md):
+Fabrizio Paganelli raised it at the 07/10 UAT against the **13 October**
+production confirmation, and Sabatino Rinaldi undertook to forward the Blueprint
+to Daniela Morgese.

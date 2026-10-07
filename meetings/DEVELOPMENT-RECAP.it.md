@@ -6104,3 +6104,232 @@ campo, e il PDF del preventivo, la schermata preventivo, la pagina community di
 accettazione e una nuova pagina record di riga preventivo sono stati rielaborati.
 ⚠ Unità di misura e logo non sono toccati, e gli altri tre campi non sono stati
 verificati sulle sette superfici.
+
+## 57. Aggiornamento 07/10/2026 — il percorso dell'ordine ha funzionato da capo a fondo per la prima volta, e una decisione dello stesso giorno ha reso errato il codice dei pagamenti così come committato
+
+`requirements-check` notturno, watermark **2026-10-06T22:00Z**, un giorno. **Due
+sessioni, entrambe con il cliente** — una UAT WooCommerce/Mexal di 2h18m e la
+call Kreosoft di 48m, con il fornitore dell'ERP presente. Le affermazioni sul
+costruito sono aritmetica di repository su `DevMain` **`391b401`**.
+
+### L'intera catena è andata a termine, e un incasso reale l'ha mossa
+
+[La UAT WooCommerce](../notes/meetings/2026-10-07%20UAT%20Integrazione%20WooCommerce%20e%20Mexal.md)
+si è tenuta dalle 10:00 CEST per circa due ore e un quarto — Fabrizio Paganelli,
+Sabatino Rinaldi ed Elisa Migliano, con Elena Spini e Aurel Mrruku. Per la prima
+volta il ciclo standard si è completato in un'unica seduta: offerta creata,
+preventivo inviato, firma tramite DocuSign, cliente e ordine sincronizzati su
+Mexal, fatture e scadenzari recuperati dai job schedulati, righe d'ordine e link
+di pagamento aggiornati, opportunità impostata a chiusa vinta.
+
+La parte che conta di più è l'ultimo tratto. Aurel Mrruku ha mostrato la
+struttura che collega fatture a clienti, ordini e scadenzari — con chiave su
+anno, tipo documento e identificativo progressivo di riga, e tracciamento di
+importo residuo, stato di pagamento e giorni di ritardo. Fabrizio Paganelli ha
+poi registrato un **incasso reale su Mexal**, e dopo l'esecuzione della
+sincronizzazione lo stato dell'ordine su Salesforce è passato a **pagato da
+solo**, aggiornando lo storico e le singole righe d'ordine. È la prima verifica
+del costruito delle righe 206 e 208 su dati ERP reali, quattro giorni dopo la
+creazione degli oggetti, e Fabrizio Paganelli ha espresso parere favorevole sulla
+struttura integrata.
+
+### E la decisione dello stesso giorno ha reso errato il codice dei pagamenti
+
+Un'ora dopo, [la call Kreosoft](../notes/meetings/2026-10-07%20Temi%20Integrazione%20Mexal.md)
+ha concordato come `Concordato` che una rata dello scadenzario in stato `E` è
+considerata pagata **solo se la data di scadenza è nel passato**, altrimenti
+_"da pagare"_. La ragione di Fabrizio Paganelli era concreta: la generazione del
+flusso bancario il venti del mese porta la rata a `E` — _emesso/presentato_ —
+**senza che il denaro sia arrivato** — e ha dichiarato apertamente di temere che
+i biglietti venissero sbloccati su Salesforce prima del pagamento. Mirko Merendi
+ha confermato che Mexal considera tale rata teoricamente pagata in base ai giorni
+di esposizione.
+
+Il codice committato non verifica la data, su nessuno dei due percorsi:
+
+- `MexalScadenzarioSearchService.cls:205-207` imposta
+  `paid = paymentStatus == 'P' || paymentStatus == 'E'`, senza alcun riferimento
+  al `dueDate` letto una dozzina di righe sopra da `dt_sca_pg`.
+- `Scadenza_Fattura__c.Pagata__c` è
+  `OR(ISPICKVAL(Stato_Pagamento_Mexal__c, "P"), ISPICKVAL(Stato_Pagamento_Mexal__c, "E"))`.
+
+E poiché `Stato_Scadenza__c` valuta prima `IF(Pagata__c, "Pagata", …)`, una rata
+`E` non ancora scaduta risolve a **`Pagata`**, quindi l'aritmetica `Scaduta` /
+`A scadere` consegnata dalla riga 208 — e il concetto di `Insoluto__c` della riga
+206 — non viene mai eseguita per una Ri.Ba. **Nuova riga 212, bloccante.**
+
+Questa è una qualificazione, non un'inversione. Il difetto della riga 201 —
+contava solo `P`, quindi ogni Ri.Ba. risultava non pagata — era reale ed è
+corretto. La risposta Kreosoft del 02/10 era semplicemente senza condizioni, e il
+cliente l'ha qualificata cinque giorni dopo. La riga 201 resta risolta e la riga
+212 porta il nuovo difetto, con entrambe le date citate. ⚠ Una cautela sulla
+fonte: la riga dei _passaggi successivi_ di Gemini omette la qualifica su `E` e
+marcherebbe come pagata una rata scaduta e non pagata. Fa fede il testo del
+`Concordato`.
+
+### Quattro guasti hanno impedito a un ordine di arrivare su Mexal
+
+Ciascuno è ora una riga a sé, e tre hanno una soluzione già individuata:
+
+- **Riga 213 — le righe arrivano sospese.** Le righe d'ordine atterrano in stato
+  `S` (sospeso) anziché `E`, e un ordine sospeso non si converte in fattura.
+  Fabrizio Paganelli ha corretto a mano due ordini di test. Mirko Merendi ha
+  indicato il parametro — `Tipo_B_Stato_Bigga`, ⚠ trascritto dal parlato — e si è
+  impegnato a una personalizzazione che copre insieme stato riga, causale,
+  contropartita, tipo merce e aliquota IVA.
+- **Riga 214 — il codice agente è obbligatorio.** Circa l'80% degli ordini
+  WooCommerce eredita un agente dall'anagrafica cliente; il resto non ha **alcun
+  valore predefinito né coda**, e l'assegnazione ricade sull'ufficio commerciale.
+  Aurel Mrruku ha trovato disattivo l'agente che ha provato ad associare. Elisa
+  Migliano deve chiedere a Marco Montesi quale codice usare. ⚠ Il guasto è
+  visibile solo in `Integration_Log__c`, e Aurel Mrruku ne ha chiesto la
+  visualizzazione nella schermata dell'ordine.
+- **Riga 217 — i codici articolo.** Un codice bundle venduto dallo shop non
+  esiste su Mexal. Fabrizio Paganelli vuole l'approvazione della direzione per
+  rivedere circa 20–30 codici e poi pulire il database Mexal. ⚠ Nessuna data, a
+  fronte di una conferma attesa il 13. **Non è una decisione sulla riga 210** —
+  la contraddizione sul numero di tranche non è stata sollevata per il terzo
+  giorno.
+- **La causale documento** è arrivata non valorizzata, cosa che conta per la
+  fatturazione elettronica di San Marino. Fabrizio Paganelli deve ad Aurel Mrruku
+  il codice corretto.
+
+### Due rilievi sui dati, non sul codice
+
+**Riga 215 — Anticipay non copre San Marino.** Aurel Mrruku ha accertato che
+risolve solo indirizzi italiani, il che ha portato la riunione a preferire lo
+stato Italia per gli indirizzi compatibili. I clienti esteri lo scavalcano,
+andando direttamente da Salesforce a Mexal, e devono avere la partita IVA. La
+spinta è in direzione opposta un'ora dopo: la correzione ordinaria di Fabrizio
+Paganelli consiste nel sistemare nazione, tipo di fatturazione elettronica e
+residenza fiscale **su Mexal** quando è stata inserita l'Italia per errore. ⚠ Il
+`577fc5c` non mergiato di Anita Aga aggiunge
+`accountRecord.BillingCountry = 'IT'` senza condizioni — coerente con il solo
+Italia, e registrato come fatto del diff anziché come difetto, perché se sia
+inteso applicarsi ad account effettivamente sammarinesi non è stato accertato.
+
+**Riga 216 — lo shop ha riversato gli arretrati.** L'attivazione manuale
+dell'invio a Salesforce ha inoltrato **ogni ordine mai trasmesso**, quindi ordini
+passati di clienti reali e nominati sono arrivati in Salesforce durante i test.
+Sabatino Rinaldi lo correggerà nel plugin. 🟢 Questo risponde alla domanda che
+Aurel Mrruku gli aveva posto alle 10:34:40Z del giorno prima e a cui non ha mai
+avuto riscontro per mail: **non** erano test del cliente. ⚠ Rende inoltre la
+cancellazione concordata di dieci giorni di account di test più rischiosa di un
+filtro per prefisso, dato che ordini reali sono mescolati a quell'insieme.
+
+### Il calendario di rilascio è finalmente esplicito
+
+| Data | Cosa |
+| ---- | ---- |
+| **12 ottobre**, 16:00–18:00 | sessione e2e sui percorsi non testati — bundle, recall tutor, performance plus, rinnovi |
+| **13 ottobre** | conferma per il rilascio in produzione, con possibilità di modifiche successive |
+| **16 ottobre** | test marketing sui biglietti **in produzione** |
+| **21 ottobre** | go-live, Fase 1 |
+
+⚠ **Le note di Gemini datano ad agosto ognuna di queste scadenze.** I mesi sono
+un errore di trascrizione: il go-live agli atti è il 21 ottobre, e l'invito a
+calendario inviato da Elena Spini lo stesso giorno colloca la sessione e2e a
+lunedì 12 ottobre 2026 16:00–18:00, coerente con il "dalle 16:00 alle 18:00"
+delle note stesse.
+
+Contro quel calendario, **nuova riga 218, bloccante**: Fabrizio Paganelli ha
+dichiarato in riunione che **la direzione — Daniela Morgese — non ha ancora letto
+il Business Blueprint**, e ha messo in dubbio la tempistica proprio su quella
+base. Il Blueprint è l'unico documento di progetto che un rappresentante del
+cliente abbia accettato per iscritto, ed è stato consegnato il 2 ottobre.
+Sabatino Rinaldi si è impegnato a inoltrarglielo prima della fine della riunione.
+Un'obiezione sollevata dopo il 13 cade tra la conferma per la produzione e i test
+marketing in produzione.
+
+### Cosa è stato concordato, e cosa rinviato
+
+Dalla sessione WooCommerce sono usciti cinque `Concordato`: i codici delle
+modalità di pagamento (carta e PayPal → Mexal `2`, bonifico → `12`), l'agente
+congelato alla creazione dell'ordine, i libri convogliati sull'unico shop, le
+**utenze UAT solo a Fabrizio Paganelli ed Elisa Migliano** con esclusione del
+personale commerciale, e la conferma del 13 ottobre. La call col fornitore ne ha
+aggiunti altri quattro: lo stato di pagamento qualificato dalla data, l'aliquota
+IVA prelevata dall'anagrafica articolo, il campo costi/ricavi lasciato invariato,
+e il blocco dei campi anagrafici.
+
+Quel blocco è la **riga 209 con l'assenso del fornitore**, il giorno dopo che il
+design era stato concordato internamente, e nomina quattro campi per la prima
+volta — indirizzo di fatturazione, partita IVA, residenza fiscale, agenti.
+L'elenco dei campi ha ora due titolari, Fabrizio Paganelli ed Elena Spini. ⚠ Il
+riassunto di Gemini comprime la sincronizzazione in _"l'anagrafica cliente debba
+originare da Salesforce"_, che si legge come un'inversione del design del 06/10;
+la trascrizione mostra che non lo è — le correzioni si fanno su Mexal e tornano
+di notte, esattamente come registrato. ⚠ Aurel Mrruku ha indicato lui stesso il
+buco residuo: un indirizzo modificato in Salesforce viene comunque spinto su
+Mexal al successivo invio ordine, e il blocco è ciò che lo chiude. 🔴 Nulla è
+costruito.
+
+La **nuova riga 219** porta ciò che è stato rinviato: il metodo di pagamento
+predefinito per i bundle è `Da approfondire` in attesa delle proposte di Aurel
+Mrruku ed Elisa Migliano, la tabella di mappatura non è scritta, e Palco non ha
+né agente né metodo predefiniti.
+
+### La riga 211 si è mossa senza chiudersi
+
+La call a cui la riga 211 era in agenda si è tenuta. `N` è confermato rifiutato —
+Aurel Mrruku l'ha provato e Mexal l'ha respinto — e ha cambiato il valore in `P`.
+Ma Fabrizio Paganelli, leggendo un'anagrafica cliente reale, riporta _"fattura
+elettronica B2B S non gestita"_ e dice di aver indicato ad Aurel Mrruku la **`M`**;
+l'unica parola di Mirko Merendi sullo scambio è _"Giusto"_. Quattro valori
+compaiono in una sola conversazione e **nessuna tabella di transcodifica è stata
+prodotta**, quindi la `P` è in uso sulla forza di un singolo tentativo fallito
+anziché di una dichiarazione del fornitore. Mirko Merendi deve la risposta sul
+codice nazione / residenza fiscale.
+
+### Marco Montesi ha finalmente avuto risposta, e una domanda è tornata indietro
+
+Elena Spini ha risposto sul thread del Blueprint alle 14:57:40Z, due giorni dopo
+il suo messaggio — il "nessuno ha risposto a Marco Montesi" che la ricognizione
+portava da tempo è assolto. La creazione massiva di Opportunità per il Recall
+Tutor è stata declinata per ora, _"si potrebbe pensare di includere questo nuovo
+requisito in una fase successiva"_ — ⚠ **un candidato di Fase 2 creato per mail,
+senza una riga di Fase 2**, lo stesso schema della riga 196. Le voci dei filtri
+Perso/Errato sono modificabili dall'amministratore, nel loro caso Fabrizio
+Paganelli ed Elisa Migliano.
+
+🔴 **La domanda 3 è tornata indietro** — _"Non ho capito cosa intendi"_ — benché
+il record contenesse già la risposta dal 05/10, ossia che i template email sono
+modificabili direttamente in produzione. Conta più oggi di allora, perché i
+flussi di cui chiedeva sono il funnel di 11 email + 11 WhatsApp scritto il 06/10,
+la cui governance non è scritta da nessuna parte.
+
+### Agli atti, e una credenziale da ruotare
+
+Il **contratto di check-in QR è stato consegnato per mail** (Rexhina Hysi,
+12:35:28Z): il payload del QR è **l'id dell'Asset, non il `CampaignMember.Id`**
+che la nota mergiata ancora descrive, `CAMPAIGN_MEMBER_NOT_FOUND` è scomparso, le
+scansioni ripetute sono accettate senza sostituire il timestamp originale, e
+l'accesso richiesto per un utente di integrazione dedicato è elencato. ⚠ **La
+mail contiene un'asserzione JWT firmata e valida e lo username di integrazione.**
+Nessuno dei due è riprodotto nei record; che la credenziale sia stata fatta
+circolare per mail il 07/10 è registrato perché possa essere ruotata e spostata
+in configurazione. Il `b08c9a8` corrispondente **non è in `DevMain`**.
+
+Sempre agli atti: **la fatturazione elettronica di San Marino è facoltativa fino
+a fine anno e obbligatoria dall'anno nuovo** (Mirko Merendi); le categorie
+provvigionali non sono native sull'ordine Mexal e stanno sull'anagrafica cliente;
+e gli eventi vetrina (Tour, Food) ammettono partecipanti con dati anagrafici
+sconosciuti o partite IVA fittizie, sollevato e non risolto.
+
+### Cosa non si è mosso
+
+I sette open point della riga 200, la riga 194, la 202, la 204, la 205 e la 210 —
+sulla quale, per la terza notte, non è stato trovato nulla in alcuna fonte. L'org
+non è stata aperta, quindi `STATUS.md` e il mirror Notion restano obsoleti, e
+ogni affermazione sul costruito qui è aritmetica di repository. Nessun test Apex
+è stato scritto, proposto o impostato.
+
+**Registro non modificato; resta alla v1.6.** Le decisioni del giorno sono
+decisioni di integrazione e operative — a quale codice ERP si associa una
+modalità di pagamento, quando si imposta uno stato riga, quando una rata conta
+come pagata. La regola di pagamento qualificata dalla data è quella con portata
+contrattuale, perché governa quando un biglietto diventa disponibile, ed è un
+**candidato per la v1.6** insieme allo scope del link per edizione e agli altri.
+⚠ Il veicolo è ancora bloccato: la conferma scritta del documento di logiche
+emendato è stata richiesta e non ricevuta, e il #184 non può usare un testo non
+confermato.

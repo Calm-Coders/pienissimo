@@ -5958,3 +5958,214 @@ explicitly hedged, and has asked Kreosoft. On the order-send path, due at the
 the quote PDF, quote screen, acceptance community page and a new quote-line
 record page were all reworked. ⚠ Unit of measure and the logo are untouched, and
 the other three fields were not verified on the seven surfaces.
+
+## 57. Update 2026-10-07 — the order path ran end to end for the first time, and a ruling the same day made the payment code wrong as committed
+
+Nightly `requirements-check`, watermark **2026-10-06T22:00Z**, one day. **Two
+sessions, both with the client** — a 2h18m WooCommerce/Mexal UAT and the 48m
+Kreosoft call, with the ERP vendor in the room. Build claims are repository
+arithmetic against `DevMain` **`391b401`**.
+
+### The whole chain completed, and a real collection drove it
+
+[The WooCommerce UAT](../notes/meetings/2026-10-07%20UAT%20Integrazione%20WooCommerce%20e%20Mexal.md)
+ran from 10:00 CEST for about two and a quarter hours — Fabrizio Paganelli,
+Sabatino Rinaldi and Elisa Migliano, with Elena Spini and Aurel Mrruku. For the
+first time the standard cycle completed in one sitting: offer created, quote
+sent, signed through DocuSign, customer and order synchronised to Mexal,
+invoices and scadenzari retrieved by the scheduled jobs, order lines and payment
+links updated, opportunity set to closed-won.
+
+The part that matters most is the last leg. Aurel Mrruku showed the structure
+linking invoices to customers, orders and scadenzari — keyed on the year, the
+document type and the progressive line identifier, tracking residual amount,
+payment state and days late. Fabrizio Paganelli then registered a **real
+collection in Mexal**, and after the sync ran the order's state on Salesforce
+moved to **paid on its own**, updating the history and the individual order
+lines. That is the first verification of the rows 206 and 208 build against live
+ERP data, four days after the objects were created, and Fabrizio Paganelli gave
+a favourable opinion on the integrated structure.
+
+### And the same day's ruling made the payment code wrong
+
+An hour later, [the Kreosoft call](../notes/meetings/2026-10-07%20Temi%20Integrazione%20Mexal.md)
+agreed as `Concordato` that a scadenzario rate in state `E` counts as paid
+**only if its due date is in the past**, and is otherwise _"da pagare"_.
+Fabrizio Paganelli's reason was concrete: generating the bank flow on the
+twentieth of the month moves a rate to `E` — _emesso/presentato_ — **without the
+money arriving** — and he said plainly he feared tickets being released on
+Salesforce before payment. Mirko Merendi confirmed Mexal treats such a rate as
+theoretically paid on days of exposure.
+
+The committed code does not test the date, on either path:
+
+- `MexalScadenzarioSearchService.cls:205-207` sets
+  `paid = paymentStatus == 'P' || paymentStatus == 'E'`, with no reference to the
+  `dueDate` parsed a dozen lines above it from `dt_sca_pg`.
+- `Scadenza_Fattura__c.Pagata__c` is
+  `OR(ISPICKVAL(Stato_Pagamento_Mexal__c, "P"), ISPICKVAL(Stato_Pagamento_Mexal__c, "E"))`.
+
+And because `Stato_Scadenza__c` evaluates `IF(Pagata__c, "Pagata", …)` first, an
+`E` rate that is not yet due resolves to **`Pagata`**, so the `Scaduta` /
+`A scadere` arithmetic that row 208 delivered — and row 206's `Insoluto__c`
+concept — never runs for a Ri.Ba. at all. **New row 212, gating.**
+
+This is a qualification, not a reversal. Row 201's defect — only `P` counted, so
+every Ri.Ba. read as unpaid — was real and is fixed. Kreosoft's 02/10 answer was
+simply unqualified, and the client qualified it five days later. Row 201 stays
+resolved and row 212 carries the new defect, with both dates cited. ⚠ One caveat
+on the source: the Gemini _next steps_ line drops the `E` qualifier and would
+mark an unpaid past-due rate as paid. The `Concordato` wording governs.
+
+### Four failures stopped an order reaching Mexal
+
+Each is now its own row, and three have a named fix:
+
+- **Row 213 — lines arrive suspended.** Order lines land in state `S` (sospeso)
+  rather than `E`, and a suspended order will not convert to an invoice.
+  Fabrizio Paganelli corrected two test orders by hand. Mirko Merendi named the
+  parameter — `Tipo_B_Stato_Bigga`, ⚠ transcribed from speech — and committed to
+  a customisation covering line state, causale, contropartita, goods type and
+  IVA rate together.
+- **Row 214 — the agent code is mandatory.** About 80% of WooCommerce orders
+  inherit an agent from the customer registry; the rest have **no default and no
+  queue**, and the assignment falls to the commercial office. Aurel Mrruku found
+  the agent user he tried was inactive. Elisa Migliano must ask Marco Montesi
+  which code to use. ⚠ The failure is only visible in `Integration_Log__c`, and
+  Aurel Mrruku asked for it on the order screen.
+- **Row 217 — the article codes.** A bundle code the shop sells does not exist in
+  Mexal. Fabrizio Paganelli wants direction's approval to revise roughly 20–30
+  codes and then clean the Mexal database. ⚠ No date, against a confirmation due
+  on the 13th. **It is not a decision on row 210** — the tranche-count
+  contradiction went unraised for a third day.
+- **The document `causale`** came through unvalued, which matters for San Marino
+  electronic invoicing. Fabrizio Paganelli owes Aurel Mrruku the correct code.
+
+### Two findings about the data, not the code
+
+**Row 215 — Anticipay does not cover San Marino.** Aurel Mrruku established it
+resolves Italian addresses only, which led the room to prefer the Italy state for
+compatible addresses. Foreign customers bypass it, going straight from Salesforce
+to Mexal, and must carry a partita IVA. The pull is in the opposite direction an
+hour later: Fabrizio Paganelli's routine correction is to fix country,
+electronic-invoicing type and fiscal residence **in Mexal** when Italy was
+entered by mistake. ⚠ Anita Aga's unmerged `577fc5c` adds
+`accountRecord.BillingCountry = 'IT'` unconditionally — consistent with
+Italy-only, and recorded as a fact of the diff rather than a defect, because
+whether it is meant to apply to genuinely San Marino accounts was not
+established.
+
+**Row 216 — the shop flushed its backlog.** Enabling the send to Salesforce by
+hand forwarded **every order never sent**, so past orders for real named
+customers arrived in Salesforce mid-test. Sabatino Rinaldi will fix it in the
+plugin. 🟢 This answers the question Aurel Mrruku put to him at 10:34:40Z the
+previous day and never got a mail reply to: they were **not** client tests. ⚠ It
+also makes the agreed deletion of ten days of test accounts riskier than a
+prefix filter, since real orders are mixed into that set.
+
+### The release calendar is finally explicit
+
+| Date | What |
+| ---- | ---- |
+| **12 October**, 16:00–18:00 | e2e session on the untested paths — bundle, recall tutor, performance plus, renewals |
+| **13 October** | confirmation for the production release, later changes still possible |
+| **16 October** | marketing's ticket tests **in production** |
+| **21 October** | go-live, Fase 1 |
+
+⚠ **The Gemini notes date every one of these in August.** The months are a
+transcription error: the go-live of record is 21 October, and Elena Spini's own
+calendar invitation of the same day places the e2e session at Mon 12 Oct 2026
+16:00–18:00, matching the notes' own "dalle 16:00 alle 18:00".
+
+Against that calendar, **new row 218, gating**: Fabrizio Paganelli told the room
+that **direction — Daniela Morgese — has still not read the Business
+Blueprint**, and doubted the timeline on exactly that ground. The Blueprint is
+the only project document a client representative has accepted in writing, and
+it was delivered on 2 October. Sabatino Rinaldi undertook to forward it to her
+before the meeting ended. An objection raised after the 13th lands between the
+production confirmation and marketing testing in production.
+
+### What was agreed, and what was deferred
+
+Five `Concordato` rulings came out of the WooCommerce session: the payment-method
+codes (card and PayPal → Mexal `2`, transfer → `12`), the agent frozen at order
+creation, books funnelled onto the single shop, **UAT credentials to Fabrizio
+Paganelli and Elisa Migliano only** with commercial staff excluded, and the 13
+October confirmation. The vendor call added four more: the date-qualified payment
+state, the IVA rate taken from the article registry, the cost/revenue field left
+as it is, and the registry field lock.
+
+That lock is **row 209 with vendor assent**, the day after the design was agreed
+internally, and it names four fields for the first time — billing address,
+partita IVA, fiscal residence, agents. The field list now has two owners,
+Fabrizio Paganelli and Elena Spini. ⚠ The Gemini summary compresses the sync
+into _"l'anagrafica cliente debba originare da Salesforce"_, which reads as a
+reversal of the 06/10 design; the transcript shows it is not — corrections are
+made in Mexal and return nightly, exactly as recorded. ⚠ Aurel Mrruku named the
+remaining hole himself: an address changed in Salesforce is still pushed up on
+the next order send, and the lock is what closes that. 🔴 Nothing is built.
+
+**New row 219** carries what was deferred: the default payment method for
+bundles is `Da approfondire` pending proposals from Aurel Mrruku and Elisa
+Migliano, the mapping table is unwritten, and Palco has no default agent or
+method.
+
+### Row 211 moved without closing
+
+The call row 211 was due at took place. `N` is confirmed rejected — Aurel Mrruku
+tried it and Mexal refused it — and he has switched the value to `P`. But
+Fabrizio Paganelli, reading a live customer record, reports _"fattura elettronica
+B2B S non gestita"_ and says he had told Aurel Mrruku **`M`**; Mirko Merendi's
+only word on the exchange is _"Giusto"_. Four values appear in one conversation
+and **no transcoding table was produced**, so `P` is in use on the strength of
+one failed attempt rather than a vendor statement. Mirko Merendi owes the
+country-code / fiscal-residence answer.
+
+### Marco Montesi was answered at last, and one question bounced back
+
+Elena Spini replied on the Blueprint thread at 14:57:40Z, two days after his
+message — the sweep's standing "nobody has replied to Marco Montesi" is
+discharged. Mass Opportunity creation for Recall Tutor was declined for now,
+_"si potrebbe pensare di includere questo nuovo requisito in una fase
+successiva"_ — ⚠ **a Fase 2 candidate created in mail, with no Fase 2 row**, the
+same pattern as row 196. The Perso/Errato picklist values are admin-editable by
+Fabrizio Paganelli and Elisa Migliano.
+
+🔴 **Question 3 was bounced back** — _"Non ho capito cosa intendi"_ — though the
+record already held the answer from 05/10, that email templates are editable
+directly in production. It matters more now than it did then, because the flows
+he was asking about are the 11 email + 11 WhatsApp funnel written out on 06/10,
+whose governance is not written anywhere.
+
+### Of record, and a credential to rotate
+
+The **QR check-in contract was delivered by mail** (Rexhina Hysi, 12:35:28Z): the
+QR payload is **the Asset id, not the `CampaignMember.Id`** the merged note still
+describes, `CAMPAIGN_MEMBER_NOT_FOUND` is gone, repeated scans are accepted
+without replacing the original timestamp, and a dedicated integration user's
+required access is enumerated. ⚠ **The mail carries a live signed JWT assertion
+and the integration username.** Neither is reproduced in the records; that the
+credential was circulated by mail on 07/10 is recorded so it can be rotated and
+moved into configuration. The matching `b08c9a8` is **not in `DevMain`**.
+
+Also of record: **San Marino electronic invoicing is optional until year end and
+mandatory from the new year** (Mirko Merendi); commission categories are not
+native on the Mexal order and sit on the customer registry; and showcase events
+(Tour, Food) admit participants with unknown registry data or fictitious partite
+IVA, raised and not resolved.
+
+### What did not move
+
+Row 200's seven open points, row 194, row 202, row 204, row 205 and row 210 — on
+which, a third night, nothing was found in any source. The org was not opened, so
+`STATUS.md` and the Notion mirror stay stale, and every build claim here is
+repository arithmetic. No Apex test was written, proposed or scaffolded.
+
+**Register not amended; stays v1.6.** The day's rulings are integration and
+operational rulings — which ERP code a payment method maps to, when a line state
+is set, when a rate counts as paid. The date-qualified payment rule is the one
+with contractual reach, because it governs when a ticket becomes available, and
+it is a **candidate for v1.6** alongside the per-edizione link scope and the
+others. ⚠ The carrier is still blocked: the amended logic document's written
+confirmation has been requested and not received, and #184 cannot use an
+unconfirmed text.

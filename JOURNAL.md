@@ -10,6 +10,52 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-07 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-10-06T22:00Z** (one day). Read in full: **both 07/10 session
+  documents** — the WooCommerce/Mexal UAT's structured sections (five
+  `Concordato`, one `Da approfondire`, nineteen next steps, all `Dettagli` and
+  six numbered topics) and the Kreosoft call **including a targeted search of
+  its verbatim transcript**; Rexhina Hysi's QR API mail; the whole Business
+  Blueprint thread.
+- **State:** committed to `DevMain`. **Eight new items OI-212–OI-219**; two
+  meeting notes. Updated OI-201, 206, 208, 209, 211, the QR lookup endpoint note
+  and the Blueprint note; `MAP.md`, `INDEX.md`, both trackers (rows 212–219
+  added, 5 rows amended in each), both recaps §57, trace. **Register not
+  amended, stays v1.6.** Next free id is **220** (189–193 still reserved).
+- **The headline: the order path completed end to end, and the same day broke
+  the payment code.** At the WooCommerce UAT a **real collection registered in
+  Mexal moved the Salesforce order to paid on its own** — the first live
+  verification of OI-206/OI-208. An hour later the Kreosoft call agreed `E`
+  counts as paid **only if the due date has passed**, and
+  `MexalScadenzarioSearchService.cls:205-207` plus
+  `Scadenza_Fattura__c.Pagata__c` both test `P || E` with **no date
+  condition**. A Ri.Ba. presented on the 20th reads `Pagata` before the money
+  lands — the premature ticket release Fabrizio Paganelli named in the room.
+  **New OI-212, gating.**
+- **Next:** OI-212 is a code change and belongs to Aurel Mrruku — the `dueDate`
+  is already parsed a dozen lines above the predicate, and the formula needs the
+  same test. Then OI-213 (`Tipo_B_Stato_Bigga`, exact API spelling to come from
+  Mirko Merendi's chat message) and OI-214 (no default agent code; Elisa
+  Migliano must ask Marco Montesi). The **13/10 production confirmation** is the
+  binding date: 12/10 e2e session, 16/10 marketing tests in Prod, 21/10 go-live.
+- **Watch:** ⚠ **OI-201 stays `resolved`** — its bug was real and is fixed; the
+  07/10 ruling qualifies the rule rather than reopening the row. Do not merge
+  the two. ⚠ **Three distortions in the Gemini sources** are corrected in the
+  notes and must not be reintroduced: the release dates are rendered in
+  **August** (October confirmed by Elena Spini's calendar invitation); the
+  Mexal call's _next steps_ line drops the `E` qualifier from the payment rule;
+  and its `Dettagli` compress the OI-209 sync into something that reads as a
+  reversal of the 06/10 design, which the verbatim transcript shows it is not.
+  ⚠ **A live signed JWT and the integration username were circulated by mail**
+  on 07/10 (Rexhina Hysi, QR check-in) — recorded, never copied; they want
+  rotating and moving into configuration. ⚠ The QR payload is now the **Asset
+  id**, but `b08c9a8` carrying that change is **not in `DevMain`**, so the
+  merged note still describes the CampaignMember contract. ⚠ Marco Montesi's
+  question 3 was **bounced back** though the record held the answer from 05/10.
+  ⚠ OI-210 found nothing for a third night.
+
 ## 2026-10-06 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark

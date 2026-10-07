@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-06
+updated: 2026-10-07
 depends_on: [OI-69]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -218,3 +218,37 @@ The UAT check on one Ri.Ba.-settled invoice — rate `Pagata`, order line `Paid`
 tranche follows — is **still owed**, and `Scadenziario (GET)` is on the client
 agenda for **07/10 12:15**. Prod has no `Integration_Configuration2__c` rows for
 Mexal and no Mexal job scheduled.
+
+## Update 2026-10-07 — the rule is qualified, and the code now under-tests it
+
+🔑 **The client qualified the vendor's answer.** At
+[the 07/10 Mexal call](../meetings/2026-10-07%20Temi%20Integrazione%20Mexal.md),
+Aurel Mrruku, Fabrizio Paganelli and Mirko Merendi agreed as `Concordato` that a
+rate in state `E` counts as paid **only if its due date is in the past**, and is
+otherwise _"da pagare"_.
+
+Kreosoft's 02/10 written answer was unqualified — _"puoi considerarla pagata al
+pari dello stato P"_ — and Fabrizio Paganelli explained in the call why that is
+not enough: the bank flow generated on the twentieth of the month moves a rate to
+`E` (_emesso/presentato_) **without the money arriving**, and he feared tickets
+being released before payment. Mirko Merendi confirmed Mexal treats such a rate
+as theoretically paid on days of exposure.
+
+**Later evidence wins. Both dates stand:** the 02/10 contract established that
+`E` must count at all (this item, resolved); the 07/10 ruling establishes that it
+counts conditionally.
+
+⚠ **This item stays `resolved`.** The bug it records — only `P` counted, so every
+Ri.Ba. read as unpaid — was real and is fixed on both paths. The new defect is
+the missing date test, carried by
+**[OI-212](OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)**:
+`MexalScadenzarioSearchService.cls:205-207` and
+`Scadenza_Fattura__c.Pagata__c` both test `P || E` unconditionally.
+
+🟢 **The UAT verification owed above is partly discharged** — but for collection,
+not for Ri.Ba. At
+[the 07/10 WooCommerce session](../meetings/2026-10-07%20UAT%20Integrazione%20WooCommerce%20e%20Mexal.md)
+Fabrizio Paganelli registered a real collection in Mexal and, after Aurel Mrruku
+ran the sync, the order's Salesforce state moved to paid on its own, updating the
+order lines. **The Ri.Ba. case specifically — an `E` rate with a future due
+date — is still unverified**, and is now the case OI-212 says is wrong.
