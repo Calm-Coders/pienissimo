@@ -82,6 +82,10 @@ export default class QuoteManageProducts extends NavigationMixin(
     return this.existingTranches.length > 0;
   }
 
+  get showExistingTrancheSummary() {
+    return this.hasExistingTranches && !this.hasSelectedProducts;
+  }
+
   get selectedPlusProduct() {
     return this.isPlusOpportunity && this.hasSelectedProducts
       ? this.selectedProducts[0]
@@ -197,7 +201,10 @@ export default class QuoteManageProducts extends NavigationMixin(
       !this.hasValidSelectedTrancheDates ||
       !this.hasValidSelectedTranchePricing ||
       this.selectedProducts.some(
-        (product) => !product.quantity || Number(product.quantity) <= 0
+        (product) =>
+          !product.quantity ||
+          Number(product.quantity) <= 0 ||
+          (product.requiresTranche && !product.trancheId)
       )
     );
   }
@@ -366,7 +373,10 @@ export default class QuoteManageProducts extends NavigationMixin(
           isExisting: false,
           rowStatus: "Da aggiungere",
           quantity: 1,
-          quantityDisabled: true
+          quantityDisabled: true,
+          trancheId: "",
+          requiresTranche: false,
+          rowClass: "selected-row"
         }
       ];
       this.resetSelectedTrancheValues();
@@ -380,10 +390,15 @@ export default class QuoteManageProducts extends NavigationMixin(
           isExisting: false,
           rowStatus: "Da aggiungere",
           quantity: 1,
-          quantityDisabled: true
+          quantityDisabled: true,
+          trancheId: "",
+          requiresTranche: false,
+          rowClass: "selected-row"
         }
       ];
     } else {
+      const requiresTranche =
+        this.isStandardOpportunity && this.hasExistingTranches;
       this.selectedProducts = [
         ...this.selectedProducts,
         {
@@ -392,7 +407,15 @@ export default class QuoteManageProducts extends NavigationMixin(
           isExisting: false,
           rowStatus: "Da aggiungere",
           quantity: 1,
-          quantityDisabled: false
+          quantityDisabled: false,
+          trancheId: "",
+          requiresTranche,
+          rowClass: requiresTranche
+            ? "selected-row selected-row-with-tranche"
+            : "selected-row",
+          trancheChoices: requiresTranche
+            ? this.buildTrancheChoices(option.pricebookEntryId)
+            : []
         }
       ];
     }
@@ -409,6 +432,43 @@ export default class QuoteManageProducts extends NavigationMixin(
       }
       return product;
     });
+  }
+
+  handleTrancheChoice(event) {
+    const pricebookEntryId = event.currentTarget.dataset.productId;
+    const trancheId = event.currentTarget.dataset.trancheId;
+    this.selectedProducts = this.selectedProducts.map((product) => {
+      if (product.pricebookEntryId !== pricebookEntryId) {
+        return product;
+      }
+      return {
+        ...product,
+        trancheId,
+        trancheChoices: product.trancheChoices.map((choice) => ({
+          ...choice,
+          buttonClass:
+            choice.id === trancheId
+              ? "tranche-choice selected"
+              : "tranche-choice"
+        }))
+      };
+    });
+  }
+
+  buildTrancheChoices(pricebookEntryId) {
+    const choicesById = new Map();
+    this.existingTranches.forEach((tranche) => {
+      if (!choicesById.has(tranche.id)) {
+        choicesById.set(tranche.id, {
+          key: `${pricebookEntryId}-${tranche.id}`,
+          id: tranche.id,
+          label: tranche.label,
+          details: `Scadenza ${tranche.dueDateLabel} · ${tranche.amountLabel}`,
+          buttonClass: "tranche-choice"
+        });
+      }
+    });
+    return [...choicesById.values()];
   }
 
   handleSelectedTrancheDueDateChange(event) {
@@ -484,7 +544,8 @@ export default class QuoteManageProducts extends NavigationMixin(
         quoteId: this.recordId,
         products: this.selectedProducts.map((product) => ({
           pricebookEntryId: product.pricebookEntryId,
-          quantity: Number(product.quantity)
+          quantity: Number(product.quantity),
+          trancheId: product.requiresTranche ? product.trancheId : null
         })),
         tranches: this.showSelectedTranchePreview
           ? this.selectedTranchePreviewRows.map((tranche) => ({

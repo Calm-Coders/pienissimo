@@ -102,7 +102,7 @@
               </div>
             </template>
 
-            <template if:true={hasExistingTranches}>
+            <template if:true={showExistingTrancheSummary}>
               <div class="tranche-panel">
                 <div class="section-label">Tranche generate</div>
                 <div class="tranche-summary">
@@ -155,7 +155,7 @@
                   </div>
                   <div class="selected-body">
                     <template for:each={selectedProducts} for:item="product">
-                      <div class="selected-row" key={product.rowKey}>
+                      <div class={product.rowClass} key={product.rowKey}>
                         <div class="selected-main">
                           <div class="product-title">{product.productName}</div>
                           <div class="product-meta">
@@ -186,6 +186,35 @@
                           data-id={product.pricebookEntryId}
                           onclick={handleRemoveProduct}
                         ></lightning-button-icon>
+                        <template if:true={product.requiresTranche}>
+                          <div class="tranche-choice-box">
+                            <div class="tranche-choice-heading">
+                              Scegli la tranche
+                            </div>
+                            <div class="tranche-choice-list">
+                              <template
+                                for:each={product.trancheChoices}
+                                for:item="choice"
+                              >
+                                <button
+                                  key={choice.key}
+                                  class={choice.buttonClass}
+                                  data-product-id={product.pricebookEntryId}
+                                  data-tranche-id={choice.id}
+                                  type="button"
+                                  onclick={handleTrancheChoice}
+                                >
+                                  <span class="tranche-choice-name"
+                                    >{choice.label}</span
+                                  >
+                                  <span class="tranche-choice-details"
+                                    >{choice.details}</span
+                                  >
+                                </button>
+                              </template>
+                            </div>
+                          </div>
+                        </template>
                       </div>
                     </template>
                   </div>
@@ -314,7 +343,7 @@
                     </div>
                     <div class="selected-body">
                       <template for:each={selectedProducts} for:item="product">
-                        <div class="selected-row" key={product.rowKey}>
+                        <div class={product.rowClass} key={product.rowKey}>
                           <div class="selected-main">
                             <div class="product-title">
                               {product.productName}
@@ -347,6 +376,35 @@
                             data-id={product.pricebookEntryId}
                             onclick={handleRemoveProduct}
                           ></lightning-button-icon>
+                          <template if:true={product.requiresTranche}>
+                            <div class="tranche-choice-box">
+                              <div class="tranche-choice-heading">
+                                Scegli la tranche
+                              </div>
+                              <div class="tranche-choice-list">
+                                <template
+                                  for:each={product.trancheChoices}
+                                  for:item="choice"
+                                >
+                                  <button
+                                    key={choice.key}
+                                    class={choice.buttonClass}
+                                    data-product-id={product.pricebookEntryId}
+                                    data-tranche-id={choice.id}
+                                    type="button"
+                                    onclick={handleTrancheChoice}
+                                  >
+                                    <span class="tranche-choice-name"
+                                      >{choice.label}</span
+                                    >
+                                    <span class="tranche-choice-details"
+                                      >{choice.details}</span
+                                    >
+                                  </button>
+                                </template>
+                              </div>
+                            </div>
+                          </template>
                         </div>
                       </template>
                     </div>

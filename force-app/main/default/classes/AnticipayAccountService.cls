@@ -223,6 +223,7 @@ public with sharing class AnticipayAccountService {
     putString(accountRecord, Account.BillingCity, info.citta);
     putString(accountRecord, Account.BillingState, info.provincia);
     putString(accountRecord, Account.BillingPostalCode, info.cap);
+    accountRecord.BillingCountry = 'IT';
     putString(accountRecord, Account.PEC__c, info.pec);
     putString(accountRecord, Account.Codice_ATECO__c, info.codice_ateco);
     putString(

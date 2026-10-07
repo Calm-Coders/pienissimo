@@ -1,6 +1,6 @@
 public with sharing class AnticipayErrorNotificationService {
   private static final String TEMPLATE_DEVELOPER_NAME = 'Anticipay_Error_Notification';
-  private static final String ADMIN_EMAIL = 'a.aga@romicompany.com';
+  private static final String ADMIN_EMAIL = 'a.mrruku@romicompany.com';
 
   public static void sendIfError(AnticipayAccountService.Result result) {
     if (result == null || !hasErrorLog(result.integrationLogs)) {

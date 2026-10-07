@@ -1,6 +1,6 @@
 public with sharing class MexalCustomerErrorNotificationService {
   private static final String TEMPLATE_DEVELOPER_NAME = 'Mexal_Customer_Error_Notification';
-  private static final String ADMIN_EMAIL = 'a.aga@romicompany.com';
+  private static final String ADMIN_EMAIL = 'a.mrruku@romicompany.com';
 
   public static void sendIfNotLinked(MexalCustomerCreateService.Result result) {
     if (result == null || result.accountUpdated == true) {
