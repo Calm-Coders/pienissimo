@@ -6,6 +6,8 @@ public with sharing class MexalOrderSendService {
   private static final Integer AUTO_NUMBER = 0;
   private static final Long NEW_LINE_ID = 0;
   private static final String ARTICLE_LINE_TYPE = 'R';
+  // tipo_stato_riga: E = evadibile (S sospesa, B bloccata, N annullata).
+  private static final String FULFILLABLE_LINE_STATUS = 'E';
   private static final String SERVICE_VAT_CODE = 'E01';
   private static final String BOOK_VAT_CODE = 'E10';
   private static Integer resolvedDocumentSeries;
@@ -158,6 +160,7 @@ public with sharing class MexalOrderSendService {
   ) {
     List<Object> lineIds = new List<Object>();
     List<Object> lineTypes = new List<Object>();
+    List<Object> lineStatuses = new List<Object>();
     List<Object> articleCodes = new List<Object>();
     List<Object> quantities = new List<Object>();
     List<Object> prices = new List<Object>();
@@ -169,6 +172,7 @@ public with sharing class MexalOrderSendService {
     for (OrderItem line : orderLines) {
       lineIds.add(new List<Object>{ lineNumber, resolveLineId(line) });
       lineTypes.add(new List<Object>{ lineNumber, ARTICLE_LINE_TYPE });
+      lineStatuses.add(new List<Object>{ lineNumber, FULFILLABLE_LINE_STATUS });
       articleCodes.add(
         new List<Object>{ lineNumber, resolveProductCode(line) }
       );
@@ -184,6 +188,7 @@ public with sharing class MexalOrderSendService {
 
     payload.put('id_riga', lineIds);
     payload.put('tp_riga', lineTypes);
+    payload.put('tipo_stato_riga', lineStatuses);
     payload.put('codice_articolo', articleCodes);
     payload.put('quantita', quantities);
     payload.put('prezzo', prices);

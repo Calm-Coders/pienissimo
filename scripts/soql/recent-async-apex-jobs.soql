@@ -1,0 +1,6 @@
+SELECT CreatedDate, ApexClass.Name, JobType, Status, NumberOfErrors, ExtendedStatus
+FROM AsyncApexJob
+WHERE CreatedDate = LAST_N_DAYS:2
+AND JobType IN ('BatchApex', 'Queueable', 'ScheduledApex')
+ORDER BY CreatedDate DESC
+LIMIT 50

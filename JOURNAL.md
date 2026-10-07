@@ -54,7 +54,7 @@ Keep the twenty most recent entries here; archive older ones to
   Mexal refuses `N` for `Codice Fatturazione Elettronica`, `P`/`S` unconfirmed,
   due at the 07/10 12:15 Mexal call. ⚠ Nothing from this sweep touched OI-64 or
   OI-66 — **no Apex test was written or proposed** — though note
-  `QuoteCommercialTest.cls` was *edited* (−6 lines) in `f84d356`.
+  `QuoteCommercialTest.cls` was _edited_ (−6 lines) in `f84d356`.
 
 ## 2026-10-06 - claude - Nightly Mexal invoice and scadenzario sync written
 
@@ -4624,3 +4624,58 @@ mancante`) predates the config row (created 04/10 23:32Z).
     the UAT account's data.
   - New test quote `00000139` (`0Q0MA000002yN8f0AE`, `Bozza`): one line, PF000003,
     qty 2 at 10% discount, same customer and agent.
+
+## 2026-10-07 — claude — Mexal nightly syncs scheduled in UAT
+
+- **Why:** no Integration Log from the night of 06–07/10. In both Pienissimo UAT
+  and Prod the only Apex schedule was `Quote Negotiation Aging - Daily`. Deploying
+  the schedulers does not schedule them, and the repository has no script that
+  does.
+- **Done in Pienissimo UAT** (anonymous Apex, Aurel Mrruku's user, `Europe/Rome`),
+  read back from `CronTrigger`:
+  - `Mexal Articoli Sync - Nightly`, 01:00 (`MexalArticleSyncScheduler`);
+  - `Mexal Sync - Nightly` (customers), 02:00 (`MexalCustomerSyncScheduler`);
+  - `Mexal Fatture e Scadenziario Sync - Nightly`, 03:30 (`MexalInvoiceSyncScheduler`).
+  - First run is the night of 07–08/10. All three only search Mexal and write to
+    Salesforce. ⚠ UAT points at the live `PIE` company, so UAT is reading production
+    Mexal data.
+- **Prod:** not scheduled. The invoice sync classes (`MexalInvoiceSyncJob`,
+  `MexalInvoiceSyncScheduler`, `MexalInvoiceLineImportBatch`) are not deployed there.
+- **Next:** check tomorrow morning for one `Integration_Log__c` per step
+  (`Mexal_Articoli_Sync`, `Mexal_Clienti_Sync`, `Mexal_Fatture_Scadenzario_Sync`).
+  Schedule the same three in Prod after the invoice-sync deploy.
+- **Scripts added to the repository** (not committed), listed in
+  [scripts/README.md](scripts/README.md): `schedule-mexal-nightly-syncs.apex`
+  (re-runnable; it re-created the three UAT jobs at 09:44 local, same times),
+  `unschedule-mexal-nightly-syncs.apex`, `run-mexal-{article,customer,invoice}-sync-now.apex`,
+  and the checks `scheduled-apex-jobs.soql`, `recent-async-apex-jobs.soql`,
+  `mexal-sync-logs-last-2-days.soql`. The schedule script and the three queries were
+  run against UAT; the run-now scripts were not.
+- **Manual run in UAT, 11:36 local** (run-now scripts, articles → customers → invoices),
+  all jobs `Completed`:
+  - articles: 7 returned, 7 upserted;
+  - customers: 37 returned, **logged as error** — 11 Mexal customers match no
+    existing Account and 1 is ambiguous, so the step's cursor did not advance;
+  - invoices: 25 returned, 25 saved, 10 without Account;
+  - scadenzario: 31 returned, 25 rates saved, 6 without invoice, 4 order lines updated.
+- **Second manual run, 11:48 local**, all `Completed`: articles 0, invoices 0,
+  scadenzario 1 rate saved. Customers logged the same 11 unmatched + 1 ambiguous
+  error again, because their cursor does not advance. ⚠ The invoice cursor did
+  advance, so the 10 invoices saved without an Account are not fetched again
+  unless Mexal modifies them; nothing relinks them when the Account appears later.
+- **Test quote copied in UAT:** quote `00000147` (`0Q0MA000002yefl0AA`, `Firmato`)
+  copied as draft `00000149` (`0Q0MA000002yfyP0AQ`, `Bozza`, not primary, DocuSign
+  fields cleared) on the same opportunity `006MA00000KgHyvYAF`, which is already
+  `Chiusa/Vinta`. Four lines; two new `Aperta` tranches with the source's dates and
+  amounts. The original is unchanged. ⚠ `Condizione_di_Pagamento__c` is empty on
+  both, so an order from the copy will fail the Mexal send until it is set.
+- **Order send: `tipo_stato_riga` = `E` on every line** (user request).
+  `MexalOrderSendService.putLineArrays` now sends `tipo_stato_riga` with `E`
+  (evadibile) for each line, alongside `tp_riga`. The field and its values
+  (E/S/B/N) come from the Mexal WebAPI schema in
+  `.org-status-cache/mexal-manual/live-schema.json`. Before the change, UAT's
+  class body matched `HEAD`. First deploy attempt was blocked by the permission
+  classifier; on the user's explicit request it was then **deployed to Pienissimo
+  UAT** (`0AfMA00000Crw700AB`, `NoTestRun`). Not in Prod, not committed. The order
+  sent at 12:37 (OC 10/13) predates the deploy and carries no `tipo_stato_riga`;
+  Mexal's acceptance of the field is still untested.

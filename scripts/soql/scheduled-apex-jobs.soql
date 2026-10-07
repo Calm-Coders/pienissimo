@@ -1,0 +1,3 @@
+SELECT CronJobDetail.Name, State, CronExpression, NextFireTime, PreviousFireTime, CreatedBy.Name
+FROM CronTrigger
+ORDER BY NextFireTime
