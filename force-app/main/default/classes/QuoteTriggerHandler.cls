@@ -10,6 +10,25 @@ public without sharing class QuoteTriggerHandler {
   private static final String INITIAL_ORDER_STATUS = 'Ordinato';
   private static final String SALESFORCE_ORIGIN = 'Salesforce';
   private static final String LOCALE_MISMATCH_ERROR = 'Il Locale del Preventivo deve coincidere con il Locale dell\'Opportunita.';
+  private static final Set<String> PDF_INVALIDATING_QUOTE_STATUSES = new Set<String>{
+    NEGOTIATION_QUOTE_STATUS,
+    AWAITING_ACCEPTANCE_STATUS
+  };
+  private static final Set<String> PDF_INPUT_FIELDS = new Set<String>{
+    'AccountId',
+    'OpportunityId',
+    'ExpirationDate',
+    'BillingName',
+    'BillingStreet',
+    'BillingPostalCode',
+    'BillingCity',
+    'BillingState',
+    'BillingCountry',
+    'Condizione_di_Pagamento__c',
+    'Descrizione_Condizione_di_Pagamento__c',
+    'Tax',
+    'ShippingHandling'
+  };
 
   private static final Set<String> OPPORTUNITY_NEGOTIATION_QUOTE_STATUSES = new Set<String>{
     DRAFT_STATUS,
@@ -23,10 +42,48 @@ public without sharing class QuoteTriggerHandler {
     SIGNED_STATUS
   };
 
-  public static void beforeSave(List<Quote> quotes) {
+  public static void beforeSave(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    resetChangedPdfQuotesToDraft(quotes, oldQuoteMap);
     copyLocaleFromOpportunity(quotes);
     markCompletedDocuSignQuotesAsSigned(quotes);
+    makeSignedQuotesPrimary(quotes);
     markFirstQuotesAsPrimary(quotes);
+  }
+
+  private static void resetChangedPdfQuotesToDraft(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    if (oldQuoteMap == null || oldQuoteMap.isEmpty()) {
+      return;
+    }
+
+    Set<String> fieldsToCompare = new Set<String>(PDF_INPUT_FIELDS);
+    if (
+      Schema.SObjectType.Quote.fields.getMap().containsKey('CurrencyIsoCode')
+    ) {
+      fieldsToCompare.add('CurrencyIsoCode');
+    }
+
+    for (Quote quoteRecord : quotes) {
+      Quote oldQuote = oldQuoteMap.get(quoteRecord.Id);
+      if (
+        oldQuote == null ||
+        !PDF_INVALIDATING_QUOTE_STATUSES.contains(oldQuote.Status)
+      ) {
+        continue;
+      }
+
+      for (String fieldName : fieldsToCompare) {
+        if (quoteRecord.get(fieldName) != oldQuote.get(fieldName)) {
+          quoteRecord.Status = DRAFT_STATUS;
+          break;
+        }
+      }
+    }
   }
 
   public static void afterInsert(List<Quote> quotes) {
@@ -94,6 +151,17 @@ public without sharing class QuoteTriggerHandler {
         if (quoteRecord.Status != SIGNED_STATUS) {
           quoteRecord.Status = SIGNED_STATUS;
         }
+      }
+    }
+  }
+
+  private static void makeSignedQuotesPrimary(List<Quote> quotes) {
+    for (Quote quoteRecord : quotes) {
+      if (
+        quoteRecord.Status == SIGNED_STATUS &&
+        quoteRecord.Is_Primary__c != true
+      ) {
+        quoteRecord.Is_Primary__c = true;
       }
     }
   }
