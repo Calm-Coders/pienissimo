@@ -49,6 +49,14 @@
                 onchange={handleInputChange}
                 required
               ></lightning-input>
+              <lightning-combobox
+                label="Condizione di Pagamento"
+                value={form.paymentCondition}
+                options={paymentConditionOptions}
+                data-field="paymentCondition"
+                onchange={handleInputChange}
+                required
+              ></lightning-combobox>
               <lightning-input
                 type="checkbox"
                 label="Primario"
