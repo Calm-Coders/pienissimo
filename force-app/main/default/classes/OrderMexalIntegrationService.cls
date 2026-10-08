@@ -280,7 +280,14 @@ public without sharing class OrderMexalIntegrationService {
     } catch (Exception ignored) {
       // The status below still flags the order for manual alignment.
     }
-    updateOrderIntegrationFields(orderId, STATUS_SENT_LINES_NOT_ALIGNED, null);
+    String lineAlignmentError =
+      'Righe ordine Mexal non allineate: ' + safeMessage(failureMessage);
+    updateOrderIntegrationFields(
+      orderId,
+      STATUS_SENT_LINES_NOT_ALIGNED,
+      null,
+      lineAlignmentError
+    );
 
     try {
       insert new Integration_Log__c(
@@ -294,8 +301,7 @@ public without sharing class OrderMexalIntegrationService {
             'blocking' => false
           }
         ),
-        Exception_Message__c = 'Righe ordine Mexal non allineate: ' +
-          safeMessage(failureMessage)
+        Exception_Message__c = lineAlignmentError
       );
     } catch (Exception ignored) {
       // A failed diagnostic log must not stop the queue.
@@ -303,7 +309,10 @@ public without sharing class OrderMexalIntegrationService {
   }
 
   public static void logFailure(Id orderId, String stepName, Exception error) {
-    markOrderFailed(orderId);
+    String errorMessage = error == null
+      ? 'Errore integrazione Mexal senza ulteriori dettagli.'
+      : error.getMessage();
+    markOrderFailed(orderId, errorMessage);
 
     try {
       insert new Integration_Log__c(
@@ -313,7 +322,7 @@ public without sharing class OrderMexalIntegrationService {
         Request_Body__c = JSON.serialize(
           new Map<String, Object>{ 'orderId' => orderId, 'step' => stepName }
         ),
-        Exception_Message__c = error == null ? null : error.getMessage(),
+        Exception_Message__c = errorMessage,
         Exception_StackTrace__c = error == null
           ? null
           : error.getStackTraceString()
@@ -368,7 +377,11 @@ public without sharing class OrderMexalIntegrationService {
     List<Order> orderUpdates = new List<Order>();
     for (Id orderId : orderIds) {
       orderUpdates.add(
-        new Order(Id = orderId, Mexal_Integration_Status__c = STATUS_QUEUED)
+        new Order(
+          Id = orderId,
+          Mexal_Integration_Status__c = STATUS_QUEUED,
+          Mexal_Integration_Error__c = null
+        )
       );
     }
 
@@ -377,14 +390,23 @@ public without sharing class OrderMexalIntegrationService {
     }
   }
 
-  private static void markOrderFailed(Id orderId) {
-    updateOrderIntegrationFields(orderId, STATUS_FAILED, null);
+  private static void markOrderFailed(Id orderId, String errorMessage) {
+    updateOrderIntegrationFields(orderId, STATUS_FAILED, null, errorMessage);
   }
 
   private static void updateOrderIntegrationFields(
     Id orderId,
     String status,
     String mexalOrderNumber
+  ) {
+    updateOrderIntegrationFields(orderId, status, mexalOrderNumber, null);
+  }
+
+  private static void updateOrderIntegrationFields(
+    Id orderId,
+    String status,
+    String mexalOrderNumber,
+    String errorMessage
   ) {
     if (orderId == null) {
       return;
@@ -393,7 +415,10 @@ public without sharing class OrderMexalIntegrationService {
     try {
       Order orderUpdate = new Order(
         Id = orderId,
-        Mexal_Integration_Status__c = status
+        Mexal_Integration_Status__c = status,
+        Mexal_Integration_Error__c = String.isBlank(errorMessage)
+          ? null
+          : errorMessage.abbreviate(32768)
       );
       if (!String.isBlank(mexalOrderNumber)) {
         orderUpdate.Mexal_Order_Number__c = mexalOrderNumber.trim();
