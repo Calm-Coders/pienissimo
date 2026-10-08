@@ -6,6 +6,15 @@ global without sharing class WoocommerceOrderService {
   private static final String INITIAL_STATUS = 'Ordinato';
   private static final String TRANCHE_STATUS_OPEN = 'Aperta';
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
+  // Condizione_di_Pagamento value set: 2 = RIMESSA DIRETTA, 12 = BONIFICO DATA FATTURA.
+  private static final String PAYMENT_CONDITION_CARD = '2';
+  private static final String PAYMENT_CONDITION_BANK_TRANSFER = '12';
+  private static final Map<String, String> PAYMENT_CONDITION_BY_METHOD = new Map<String, String>{
+    'bacs' => PAYMENT_CONDITION_BANK_TRANSFER,
+    'stripe' => PAYMENT_CONDITION_CARD,
+    'braintree_paypal' => PAYMENT_CONDITION_CARD,
+    'braintree_credit_card' => PAYMENT_CONDITION_CARD
+  };
 
   @HttpPost
   global static void createOrder() {
@@ -58,7 +67,8 @@ global without sharing class WoocommerceOrderService {
         Pricebook2Id = pricebookId,
         Origine__c = 'WooCommerce',
         OpportunityId = payloadOpportunityId,
-        WooCommerce_Order_Key__c = payload.orderKey()
+        WooCommerce_Order_Key__c = payload.orderKey(),
+        Condizione_di_Pagamento__c = paymentCondition(payload)
       );
 
       insert orderRec;
@@ -1016,6 +1026,38 @@ global without sharing class WoocommerceOrderService {
         'Invalid sf_opportunity_id: ' + payload.sf_opportunity_id
       );
     }
+  }
+
+  private static String paymentCondition(WooCommerceOrderPayload payload) {
+    if (payload == null || payload.payment == null) {
+      return null;
+    }
+
+    String method = clean(payload.payment.method);
+    if (
+      method != null &&
+      PAYMENT_CONDITION_BY_METHOD.containsKey(method.toLowerCase())
+    ) {
+      return PAYMENT_CONDITION_BY_METHOD.get(method.toLowerCase());
+    }
+
+    // Unknown gateway code: fall back on the checkout label WooCommerce sends.
+    String title = clean(payload.payment.method_title);
+    if (title == null) {
+      return null;
+    }
+    title = title.toLowerCase();
+    if (title.contains('bonifico')) {
+      return PAYMENT_CONDITION_BANK_TRANSFER;
+    }
+    if (
+      title.contains('carta') ||
+      title.contains('card') ||
+      title.contains('paypal')
+    ) {
+      return PAYMENT_CONDITION_CARD;
+    }
+    return null;
   }
 
   private static Decimal parseDecimal(String value) {

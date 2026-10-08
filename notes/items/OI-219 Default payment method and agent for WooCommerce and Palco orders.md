@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 blocks: [OI-214, go-live]
 source: notes/meetings/2026-10-07 UAT Integrazione WooCommerce e Mexal.md
 ---
@@ -22,10 +22,10 @@ default for orders arriving from Palco is undefined.**
 
 `Concordato` at [the WooCommerce session](../meetings/2026-10-07%20UAT%20Integrazione%20WooCommerce%20e%20Mexal.md):
 
-| WooCommerce payment | Mexal code | Meaning |
-| ------------------- | ---------- | ------- |
-| Credit card, PayPal (through BrainTree) | `2` | rimessa diretta |
-| Bank transfer | `12` | bonifico data fattura |
+| WooCommerce payment                     | Mexal code | Meaning               |
+| --------------------------------------- | ---------- | --------------------- |
+| Credit card, PayPal (through BrainTree) | `2`        | rimessa diretta       |
+| Bank transfer                           | `12`       | bonifico data fattura |
 
 Fabrizio Paganelli and Elisa Migliano also named **`20`** for _bonifico fine
 mese data fattura_, and later Fabrizio Paganelli raised **`64`** for fine-mese or
@@ -58,3 +58,12 @@ A written mapping of every channel's payment methods to Mexal codes, a named
 default for bundles and for Palco, the point in each flow where the value is
 applied, and the fields protected from arbitrary edits — all agreed with Elisa
 Migliano and Fabrizio Paganelli rather than inferred from the test run.
+
+## Update 08/10
+
+The WooCommerce half of the settled mapping (`2` and `12`) is now applied to
+inbound orders in UAT. See
+[OI-204](OI-204%20WooCommerce%20payment%20codes%20need%20a%20mapping%20table%20to%20Mexal.md)
+for the table and how it was verified. The **default for bundles, the Palco
+default and the field protection are still open**. Nothing on those was
+decided.

@@ -1,12 +1,12 @@
 ---
 id: OI-204
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-08
 depends_on: [OI-160]
 blocks: [go-live]
 source: notes/meetings/2026-10-02 UAT WooCommerce e Bundle.md
@@ -73,3 +73,33 @@ if Mexal's codes change, somebody edits the value set by hand.
 
 ⚠ The WooCommerce and Mexal integration UAT with the client is **Wednesday 07/10,
 10:00–13:00**, and `Creazione Ordini (POST)` towards Mexal is on its agenda.
+
+## 🟢 Built 08/10 - the WooCommerce to Salesforce leg, in UAT only
+
+`WoocommerceOrderService` now sets `Order.Condizione_di_Pagamento__c` from the
+inbound `payment` block, using the 07/10 rulings. It is deployed to **Pienissimo
+UAT only**. It is **not committed and not in Prod**.
+
+| `payment.method` (as sent on 07/10) | `method_title` seen | Code |
+| ----------------------------------- | ------------------- | ---- |
+| `bacs`                              | Bonifico bancario   | `12` |
+| `stripe`                            | Carta, Credit card  | `2`  |
+| `braintree_paypal`                  | PayPal              | `2`  |
+| `braintree_credit_card`             | Carta di Credito    | `2`  |
+
+- The table keys on the **gateway code**, because Stripe sent two different
+  labels for one method on the same morning. If the code is not in the table,
+  the label decides: `bonifico` gives `12`, and `carta`, `card` or `paypal`
+  give `2`.
+- **If neither matches, the field is left blank and the order is still
+  created.** `MexalOrderSendService` then refuses to send it to Mexal
+  (_"Condizione di pagamento obbligatoria"_), so a new gateway shows up at
+  send time and is never silently miscoded.
+- ⚠ **Two card gateways are live**: Stripe and Braintree both sent card
+  payments in the 07/10 UAT logs. The session named only Braintree.
+- The table is an Apex constant, **not custom metadata**. Changing it needs a
+  deploy. Who maintains it and where it should live are still open, as above.
+- **Verified 08/10:** a real 07/10 logged payload was replayed in UAT inside a
+  rolled-back transaction, once per method. All four codes came out as listed,
+  an unknown code with the label "Carta di Credito" gave `2`, and an unknown
+  method gave blank. No records were left behind.

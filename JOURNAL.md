@@ -10,6 +10,33 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-08 - claude - WooCommerce payment method mapped onto the Order
+
+- **Did:** read the 24 `WoocommerceOrderService.createOrder` logs from 07/10
+  in **UAT** (Prod has none). They contain four gateway codes: `bacs` (10),
+  `stripe` (13), `braintree_paypal` (1) and `braintree_credit_card` (1).
+  18 of the 24 calls failed, none of them because of the payment method.
+  Then, at Aurel Mrruku's request, `WoocommerceOrderService` now sets
+  `Order.Condizione_di_Pagamento__c`: `bacs` gives `12`; `stripe` and both
+  Braintree codes give `2`. An unknown code falls back on the label, and if
+  that does not match either, the field is left blank.
+- **State:** **deployed to Pienissimo UAT only.** The change is **uncommitted on
+  `DevMain` and not in Prod**. Before deploying, the UAT class was diffed
+  against `HEAD` and the two were identical. Verified by replaying a real
+  logged payload in UAT inside a rolled-back transaction, once per method. No
+  replay records remain. OI-204 is now `in-progress`, and OI-219 has an update
+  section.
+- **Next:** commit, then deploy to Prod with the next release. OI-219's
+  defaults for bundles and Palco are still undecided.
+- **Watch:** ⚠ **Two card gateways (Stripe and Braintree) are live** in the
+  WooCommerce UAT, and the 07/10 session named only Braintree. ⚠ 6 of the 07/10
+  failures were `DUPLICATES_DETECTED` on the **Account insert in
+  `createAccount`**. The replay reproduced this for a customer whose order had
+  succeeded the day before, so the VAT lookup misses an Account that the
+  duplicate rule then catches. This was not investigated.
+
+---
+
 ## 2026-10-07 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
