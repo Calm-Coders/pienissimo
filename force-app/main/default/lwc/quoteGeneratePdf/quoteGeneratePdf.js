@@ -7,7 +7,6 @@ import {
 import STATUS from "@salesforce/schema/Quote.Status";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { CloseActionScreenEvent } from "lightning/actions";
-import { RefreshEvent } from "lightning/refresh";
 import generatePdf from "@salesforce/apex/QuotePdfService.generatePdf";
 
 export default class QuoteGeneratePdf extends LightningElement {
@@ -56,7 +55,6 @@ export default class QuoteGeneratePdf extends LightningElement {
     try {
       this.documentId = await generatePdf({ quoteId: this.recordId });
       await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
-      this.dispatchEvent(new RefreshEvent());
       this.dispatchEvent(
         new ShowToastEvent({
           title: "PDF generato",
@@ -64,7 +62,10 @@ export default class QuoteGeneratePdf extends LightningElement {
           variant: "success"
         })
       );
-      this.close();
+      // Reload a clean record URL rather than the current quick-action URL;
+      // otherwise Lightning reopens this modal after the reload.
+      this.dispatchEvent(new CloseActionScreenEvent());
+      window.location.replace(`/lightning/r/Quote/${this.recordId}/view`);
     } catch (error) {
       this.error =
         error.body?.message || error.message || "Generazione PDF non riuscita.";
