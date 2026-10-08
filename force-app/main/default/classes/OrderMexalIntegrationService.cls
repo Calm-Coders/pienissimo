@@ -1,4 +1,4 @@
-public with sharing class OrderMexalIntegrationService {
+public without sharing class OrderMexalIntegrationService {
   private static final Boolean AUTOMATIC_MEXAL_CREATION_ENABLED = true;
   private static final String FLOW_NAME = 'OrderMexalIntegration';
   private static final String STATUS_QUEUED = 'Queued';
