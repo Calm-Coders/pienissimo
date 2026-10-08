@@ -1,12 +1,12 @@
 ---
 id: OI-218
 type: open-item
-status: open
+status: resolved
 owner: Sabatino Rinaldi
 with: Daniela Morgese
 org: Pienissimo
 raised: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 depends_on: [OI-124]
 blocks: [go-live]
 severity: gating
@@ -68,3 +68,36 @@ to read it himself _"per prevenire contestazioni da parte della dirigenza"_.
 Daniela Morgese confirms she has read the Blueprint, before 13 October, and
 either accepts it or states her objections in time for them to be answered
 before the production release.
+
+## 🟢 2026-10-08 - resolved: direction confirmed it and it is going to signature
+
+**Elena Spini, in the marketing group DM at 08/10 17:26:28 CEST:**
+
+> _"BBP confermato, lo stanno mandando in firma 🔥"_
+
+and, seventeen seconds later, on the timing:
+
+> _"a 10 gg del go-live ma va bene ahahaa"_
+
+`Business_Blueprint_Pienissimo.docx` was modified the same afternoon at
+**15:50:44Z**, consistent with a final pass before signature.
+
+So the item closes the way it was raised: the party whose approval the 13/10
+production confirmation represents has now taken the document, confirmed it, and
+started a signature process. Sabatino Rinaldi's forwarding commitment of 07/10
+was met.
+
+⚠ **Three qualifications, none of which reopens the row.**
+
+- **The confirmation is reported second-hand**, by ROMI's project manager in an
+  internal chat. No client mail in this sweep carries it and **nothing confirms
+  Daniela Morgese read it** rather than the document simply clearing. The
+  signature is the artifact to look for next.
+- **Elena Spini's own comment is the finding's afterlife**: confirmed ten days
+  before go-live, which is what Fabrizio Paganelli's objection was about. The
+  timeline risk is not retired by the confirmation, it is realised by it.
+- 🔴 **Marco Montesi reopened two points in the same thread the same afternoon**
+  (15:55:11Z) — [OI-222](OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md)
+  and [OI-224](OI-224%20Mass%20Opportunity%20creation%20is%20contested%20as%20a%20Fase%202%20deferral.md).
+  **A document went to signature with two of its precisazioni live**, one of them
+  a requirement surface nobody has specified.

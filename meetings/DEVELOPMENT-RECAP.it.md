@@ -6333,3 +6333,166 @@ contrattuale, perché governa quando un biglietto diventa disponibile, ed è un
 ⚠ Il veicolo è ancora bloccato: la conferma scritta del documento di logiche
 emendato è stata richiesta e non ricevuta, e il #184 non può usare un testo non
 confermato.
+
+## 58. Aggiornamento 08/10/2026 — il Business Blueprint è andato in firma, e il cliente ha riaperto due delle sue precisazioni nella stessa ora
+
+Ricognizione dal watermark **2026-10-07T22:00Z**, un giorno. **Nessuna sessione
+con il cliente** — una sessione di lavoro interna ROMI di circa due ore — e
+**22 commit**, la giornata di sviluppo più intensa del progetto. Ogni
+affermazione sulla build qui sotto è aritmetica di repository contro `DevMain`
+**`8879f08`**; l'org non è stata aperta.
+
+### Il Blueprint è passato, e non è passato
+
+🟢 **Il [#218](open-items.it.md) è risolto.** Elena Spini, nella group DM
+marketing alle 17:26:28 CEST: _"BBP confermato, lo stanno mandando in firma"_ —
+il primo documento di progetto ad arrivare a un processo di firma, con
+`Business_Blueprint_Pienissimo.docx` modificato lo stesso pomeriggio alle
+15:50:44Z. L'impegno di inoltro di Sabatino Rinaldi del 07/10 è stato mantenuto.
+
+⚠ La conferma è **di seconda mano**, riportata in una chat interna, e nulla
+accerta che Daniela Morgese abbia letto il documento invece che l'approvazione
+sia semplicemente passata. ⚠ La frase successiva di Elena Spini è il seguito
+della segnalazione stessa: _"a 10 gg del go-live ma va bene"_. "Confermato dieci
+giorni prima del go-live" è esattamente ciò di cui parlava l'obiezione di
+Fabrizio Paganelli: il rischio sulla tempistica è realizzato, non ritirato.
+
+🔴 **Ventinove minuti prima, Marco Montesi ha riaperto due delle sue tre
+precisazioni** nello stesso thread.
+
+**#222, bloccante — i flussi di notifica commerciale.** Rispondendo alla domanda
+che Elena Spini gli aveva rimandato il 07/10, ha elencato gli invii automatici
+mail e WhatsApp che Zoho esegue **oggi** sul funnel commerciale: un messaggio di
+benvenuto e la presa in carico da parte di un tutor **entro 48 ore** su
+un'opportunità da form; un messaggio di mancata risposta con i recapiti del
+tutor; un messaggio quando un'opportunità passa a `Perso` con motivazione
+`NON RISPONDE`; e messaggi **al cliente e al tutor** nei **5 giorni** di validità
+del preventivo e al suo scadere. ⚠ Ha qualificato lui stesso l'elenco come
+possibilmente incompleto, rimandando a Elisa Migliano. Nulla di tutto questo è
+nel Blueprint, nel registro o nella build, 13 giorni prima del go-live, e **non**
+è il funnel marketing dei biglietti — la sequenza 11+11 parte dalla partecipazione
+all'evento, questi partono da eventi del ciclo di vita di opportunità e
+preventivo. 🔴 **La sua domanda originaria — se siano modificabili senza passare
+dall'assistenza — è senza risposta da tre giorni**, benché il record contenesse
+la risposta sui template dal 05/10.
+
+**#224 — la creazione massiva di opportunità è contestata.** Elena Spini l'aveva
+rinviata a _"una fase successiva"_; lui ha coinvolto Sabatino Rinaldi, _"visto
+che ne abbiamo fatte alcune di recente"_. È una constatazione di prassi corrente,
+non un desiderio: rinviarla rimuove un processo funzionante al go-live. Il
+candidato a Fase 2 che la ricognizione del 07/10 aveva segnalato come privo di
+una riga Fase 2 **non è accettato**.
+
+### Il difetto bloccante sui pagamenti non si è mosso, seconda notte
+
+🔴 **Il [#212](open-items.it.md) è invariato a `8879f08`.** Entrambi i predicati
+verificano ancora `P || E` senza condizione di data —
+`MexalScadenzarioSearchService` e `Scadenza_Fattura__c.Pagata__c` — e `dt_sca_pg`
+è ancora letto in `deadline.dueDate` una dozzina di righe sopra il predicato che
+lo ignora. ⚠ Aurel Mrruku è stato in questi file oggi, e la sessione interna ha
+affrontato _"la logica complessa legata alla data di scadenza e allo stato di
+pagamento"_ per i flussi **senza qualificare per data il test di pagato**. Cinque
+giorni alla conferma per la produzione del 13/10, e questa regola decide quando
+un biglietto si sblocca.
+
+### Cosa ha prodotto la sessione interna
+
+La sessione del 08/10 (10:00 CEST, ~2h — Elena Spini · Aurel Mrruku · Rexhina
+Hysi · Anita Aga) ha portato **sei `Concordato`**: i campi dei form si mappano a
+livello di **opportunità** in una sezione marketing contrassegnata da un colore;
+**l'Italia è il paese predefinito per Anticipay**; circa venti prodotti sono usati
+per i test delle campagne; all'utente UAT vengono assegnati tutti i permessi;
+**il codice dell'aliquota IVA viaggia dall'articolo alla riga d'ordine e di
+preventivo**; e **ogni modifica a un campo del preventivo deve rigenerare il
+PDF**.
+
+🟢🔑 **Ha individuato la causa radice dell'invio ordine fallito — #223.** Le
+classi di integrazione girano con `with sharing`, quindi l'utente in esecuzione
+non aveva visibilità sulla classe di invio degli ordini. Due mail di eccezione
+dal sandbox lo documentano, alle 09:33:59Z e 09:44:48Z, entrambe terminanti in
+`INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY` a
+`OrderMexalIntegrationService.markOrdersQueued` riga 376. ⚠ Elena Spini aveva
+letto lo stesso errore come l'assenza di DocuSign nella creazione dell'ordine.
+Aurel Mrruku l'ha corretto con quattro commit su **circa quaranta classi** — 🔴
+una modifica ampia al modello di sharing fatta in una mattina senza alcun test,
+cinque giorni prima del deploy in produzione, che amplia ciò che i controller
+della community possono raggiungere.
+
+### Tre righe chiuse nel codice
+
+🟢 **L'errore invisibile del #214 è costruito**, esattamente come concordato in
+sessione: il `12959b7` di Anita Aga aggiunge
+`Order.Mexal_Integration_Error__c`, lo colloca sulla pagina dell'ordine e lo
+evidenzia tramite un `uiFormatSpecificationSet` — il colore di sfondo concordato
+anziché una formattazione complessa. 🔴 La metà bloccante del #214 resta: **quale
+codice agente usare per un ordine WooCommerce senza agente** è ancora senza
+risposta, e Marco Montesi ha scritto due volte oggi senza che comparisse.
+
+🟢 **Il #119 è risolto.** Il `ff3e4d4` sostituisce l'indirizzo dello sviluppatore
+scritto nel codice con un nuovo custom setting
+`Integration_Notification_Config__c`, letto da un servizio che valida e
+deduplica, e converte allo stesso modo il servizio di notifica Mexal. È anche la
+**casella dedicata alle notifiche** dovuta ad Aurel Mrruku dal 07/10. ⚠ Un'org
+non configurata ora non invia **nulla** — entrambi i servizi rientrano dopo un
+`System.debug` — e il record di un custom setting è dato, non metadato, quindi va
+impostato a mano in UAT e in produzione.
+
+🟡 **Il #215 si è mosso in entrambe le direzioni.** L'Italia come default
+Anticipay è ora `Concordato`, e il `577fc5c` di Anita Aga che fissa
+`BillingCountry = 'IT'` è entrato in `DevMain`, quindi il valore fisso attua una
+decisione. 🔴 Ma la decisione è stata presa senza cliente presente, e il flusso di
+ritorno notturno del #209 non è ancora costruito.
+
+### Due nuovi difetti, e un inventario finalmente identificato
+
+🔴 **#220** — Aurel Mrruku ha segnalato che una tranche vuota si poteva salvare.
+⚠ Entrambi gli LWC disabilitavano già il Salva per quel caso prima del commit di
+oggi, quindi il percorso che ha usato non è identificato e nessuna regola
+server-side lo impone; il `1468961` di Anita Aga ha aggiunto la spiegazione
+mancante più i blocchi su date duplicate e passate.
+
+🔴 **#221** — il `Concordato` secondo cui ogni modifica a un campo del preventivo
+deve rigenerare il PDF **non è costruito**. Il `090d9e2` di Rexhina Hysi è
+intitolato _"refresh on pdf generation"_ e corregge invece il ricaricamento della
+pagina dopo una generazione manuale.
+
+🟢 **Il [#14](open-items.it.md) ha il suo inventario identificato dopo quindici
+settimane.** L'"Excel dei 100+ form" è `Mappatura_Zoho_Forms_Pienissimo.xlsx`,
+modificato alle 08:05:35Z: **106 form attivi, 1.588 campi**, estratti il 16/07
+dall'account Zoho `segreteria5`, con le colonne del CRM di destinazione **da
+compilare da ROMI**. 🔴 Nessuna data per la revisione di Pienissimo, e quali dei
+1.588 campi siano in ambito non è dichiarato.
+
+🟡 **Il #207 è stato rivisto internamente** — unità di misura inclusa, la lacuna
+registrata nella voce del 06/10 — ma non con il cliente; quella è la sessione e2e
+del 12/10, e il logo non è stato menzionato.
+
+### Agli atti
+
+⚠ **La credenziale QR ha lasciato ROMI.** Rexhina Hysi ha reinviato l'assertion
+JWT attiva e il nome utente di integrazione a Elena Spini alle 15:55:45Z, ed
+**Elena Spini li ha inoltrati a una casella sul dominio del cliente alle
+16:31:15Z**, in cc una casella amministrativa condivisa. Registrato, mai copiato
+— e la rotazione chiesta il 07/10 non è avvenuta, quindi la credenziale è ora
+fuori dal controllo di ROMI. ⚠ Una password UAT è stata pubblicata nella group DM
+di sviluppo alle 09:26:56 CEST; ⚠ si sta adottando Proton Mail per la condivisione
+delle credenziali.
+
+Inoltre: **Elena Spini deve una stima per il supporto post-lancio**, settimanale
+o mensile, perché sia lei sia Aurel Mrruku si aspettano che i clienti non leggano
+la documentazione; il **test di accettazione del preventivo in community continua
+a fallire** con _"Non è stato possibile completare la richiesta"_ e la causa non è
+stata chiarita in sessione; Aurel Mrruku dichiara **completato il 95% dei flussi
+core**; **l'80% dei destinatari apre la mail da mobile**, quindi la pagina di
+accettazione richiede un lavoro mobile senza titolare e senza data; e i vecchi
+prodotti Mexal non aggiornati richiedono ancora una pulizia e una rimappatura.
+
+**Il registro non è emendato; resta alla v1.6.** Le decisioni della giornata sono
+interne e operative — dove sta un campo, su quale paese Anticipay si assesta,
+quando un PDF si rigenera. L'unica voce con portata contrattuale è il **#222**,
+perché gli impegni delle 48 ore e dei 5 giorni sono promesse verso il cliente;
+entra tra i candidati alla v1.6 anziché forzare un emendamento, poiché il
+veicolo resta bloccato sulla conferma scritta mai ricevuta del documento di
+logiche emendato (#184).
+
+**Gli id OI-189–OI-193 restano riservati. Il prossimo id libero è 225.**

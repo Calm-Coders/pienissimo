@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -93,3 +93,34 @@ The `E` state is tested together with the due date on both paths, a rate
 presented but not yet due reads `A scadere` rather than `Pagata`, and the pair
 is exercised on one real Ri.Ba. invoice in UAT. Aurel Mrruku and Fabrizio
 Paganelli agreed to test the payment-state handling the following week.
+
+## 🔴 2026-10-08 - not fixed, second night, and the day had the author in the code
+
+Re-verified against `DevMain` at **`8879f08`**. Both predicates are unchanged:
+
+```apex
+// MexalScadenzarioSearchService.cls
+deadline.paid =
+  deadline.paymentStatus == 'P' ||
+  deadline.paymentStatus == 'E';
+```
+
+```xml
+<!-- Scadenza_Fattura__c/fields/Pagata__c -->
+OR(ISPICKVAL(Stato_Pagamento_Mexal__c, "P"), ISPICKVAL(Stato_Pagamento_Mexal__c, "E"))
+```
+
+No date condition in either. `dt_sca_pg` is still parsed into `deadline.dueDate`
+a dozen lines above the predicate that ignores it.
+
+⚠ **Aurel Mrruku was in these files today.** `MexalOrderSendService`,
+`MexalArticleSyncService` and `WoocommerceOrderService` all changed, and
+`MexalScadenzarioSearchService` was touched by the `without sharing` sweep
+(`f292b72`) — the one-line sharing modifier only.
+[The 08/10 internal session](../meetings/2026-10-08%20Internal%20Test.md) worked
+through _"la logica complessa legata alla data di scadenza e allo stato di
+pagamento impostato su 'da pagare'"_ for the flows and **did not qualify the paid
+test by due date**. The defect was neither raised nor fixed.
+
+**Five days to the 13/10 production confirmation**, and this decides when a
+ticket becomes available.

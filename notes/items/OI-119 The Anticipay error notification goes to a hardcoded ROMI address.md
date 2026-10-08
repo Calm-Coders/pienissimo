@@ -1,12 +1,12 @@
 ---
 id: OI-119
 type: open-item
-status: open
+status: resolved
 owner: Anita Aga
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-09-04
-updated: 2026-09-04
+updated: 2026-10-08
 depends_on: [OI-107]
 blocks: [OI-73]
 requirement: INT-18
@@ -78,3 +78,37 @@ agreed before the mail existed.
 
 **No date.** The build is done; this is a one-line correction plus a decision
 about where the address should live.
+
+## 🟢 2026-10-08 - resolved: the address is a custom setting now
+
+**Anita Aga's `ff3e4d4`** (08/10 14:32 CEST, merged to `DevMain` via PR #88)
+replaces the hardcoded constant with configuration:
+
+```apex
+- private static final String ADMIN_EMAIL = 'a.mrruku@romicompany.com';
++ private static final String NOTIFICATION_CONFIG_NAME = 'Anticipay_RecipientEmail';
+```
+
+New **`Integration_Notification_Config__c`** custom setting with
+`Recipient_Emails__c` and `Enabled__c`, read through a new
+`IntegrationNotificationConfigService.getRecipientEmails(name)` which splits on
+commas, semicolons and newlines, validates each address against a pattern,
+de-duplicates case-insensitively and returns an empty list when the setting is
+missing or disabled. `MexalCustomerErrorNotificationService` was converted the
+same way, under its own configuration name.
+
+🟢 **This also answers the 07/10 request** recorded at
+[the WooCommerce UAT](../meetings/2026-10-07%20UAT%20Integrazione%20WooCommerce%20e%20Mexal.md):
+a dedicated mailbox for automatic system notifications, owed to Aurel Mrruku. It
+is now a configurable recipient list rather than one developer's address.
+
+⚠ **Two things to carry into the Prod deploy, neither reopening the row.**
+
+- 🔴 **An unconfigured org sends nothing.** With no setting record, or
+  `Enabled__c` false, both services return early after a `System.debug` and the
+  error mail is **silently dropped**. The previous behaviour always mailed
+  someone. A custom setting's *record* is data, not metadata, so deploying the
+  object does not create it — **the value must be set in UAT and in Prod by
+  hand**, and nothing in this sweep confirms either has been.
+- The recipient list itself is **not recorded here**, per
+  [docs/publishing.md](../../docs/publishing.md).

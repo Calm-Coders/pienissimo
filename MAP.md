@@ -2,9 +2,93 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-07 (nightly sweep — the order path ran end to end for the first time, and a ruling the same day made the payment code wrong as committed) · Source of record: [notes/](notes/)
+Last updated: 2026-10-08 (nightly sweep — the Blueprint went to signature with two of its precisazioni reopened the same hour, and the gating payment defect is untouched a second night) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟡🔑 **2026-10-08 — the Blueprint went to signature, and the client reopened two of its precisazioni the same hour.** Nightly sweep,
+  watermark 2026-10-07T22:00Z. **No client session** — one ROMI-internal working session of ~2h — but
+  **22 commits**, the heaviest build day of the project. Build claims are repository arithmetic against
+  `DevMain` **`8879f08`**.
+  🟢🔑 **[OI-218](notes/items/OI-218%20Direction%20has%20not%20seen%20the%20Business%20Blueprint%20before%20the%2013%20October%20confirmation.md)
+  is resolved.** Elena Spini, marketing DM 17:26:28 CEST: _"BBP confermato, lo stanno mandando in
+  firma"_ — the **first project document to reach a signature process**, with
+  `Business_Blueprint_Pienissimo.docx` modified 15:50:44Z. ⚠ Reported second-hand in an internal chat;
+  nothing establishes Daniela Morgese read it. ⚠ Her own next line: _"a 10 gg del go-live ma va bene"_.
+  🔴🔑 **Twenty-nine minutes earlier Marco Montesi reopened two of his three precisazioni.**
+  **New: [OI-222](notes/items/OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md)
+  — gating.** Answering the question Elena Spini bounced back on 07/10, he enumerated the automated
+  mail and WhatsApp sends Zoho runs **today** on the commercial funnel: welcome plus a tutor **within
+  48 hours** on a form Opportunity · a no-answer message carrying the tutor's contacts · a message on
+  `Perso` with reason `NON RISPONDE` · messages to customer **and** tutor across the **5 days** of
+  quote validity and at expiry. ⚠ **He says the list is incomplete** and defers to Elisa Migliano.
+  None of it is in the Blueprint, the register or the build. 🔴 **His original question — editable
+  without support? — is unanswered a third day**, though the record held the answer from 05/10.
+  **New: [OI-224](notes/items/OI-224%20Mass%20Opportunity%20creation%20is%20contested%20as%20a%20Fase%202%20deferral.md)**
+  — he escalated the mass-Opportunity deferral to Sabatino Rinaldi, _"visto che ne abbiamo fatte alcune
+  di recente"_: the Fase 2 candidate created in mail on 07/10 is **not accepted**.
+  🔴🔑 **[OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  did not move, second night.** Both predicates still test `P || E` with no date condition at
+  `8879f08`, and `dt_sca_pg` is still parsed a dozen lines above the one that ignores it. ⚠ **Aurel
+  Mrruku was in these files today** and the internal session worked through the due-date and
+  payment-state logic without qualifying the paid test. **Five days to the 13/10 confirmation.**
+  🟢🔑 **[The internal session](notes/meetings/2026-10-08%20Internal%20Test.md)** (10:00 CEST, ~2h —
+  Elena Spini · Aurel Mrruku · Rexhina Hysi · Anita Aga) produced **six `Concordato`** and found the
+  root cause of the failed order send: **new
+  [OI-223](notes/items/OI-223%20The%20Mexal%20order%20send%20failed%20because%20the%20integration%20classes%20ran%20with%20sharing.md)**
+  — the integration classes ran `with sharing`, so the executing user had no visibility on the
+  order-send class. Two sandbox exception mails at 09:33:59Z and 09:44:48Z carry it
+  (`INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY` at `OrderMexalIntegrationService.markOrdersQueued`
+  line 376). Fixed in four commits across **~40 classes** — ⚠ **a broad sharing-model change made in
+  one morning with no test run, five days before the Prod deploy**, and it widens what the community
+  controllers can reach.
+  🟢🔑 **Three records closed in code.**
+  **[OI-214](notes/items/OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md)'s
+  invisible error is built** exactly as agreed — Anita Aga's `12959b7` adds `Order.Mexal_Integration_Error__c`,
+  places it on the order page and highlights it through a `uiFormatSpecificationSet`, the agreed
+  background colour. 🔴 The gating half — **which agent code for an agentless WooCommerce order** —
+  is still unanswered; Marco Montesi wrote twice today and it appears in neither mail.
+  **[OI-119](notes/items/OI-119%20The%20Anticipay%20error%20notification%20goes%20to%20a%20hardcoded%20ROMI%20address.md)
+  is resolved**: `ff3e4d4` replaces the hardcoded developer address with a new
+  `Integration_Notification_Config__c` custom setting — which is also 🟢 **the dedicated notification
+  mailbox owed to Aurel Mrruku on 07/10**. ⚠ **An unconfigured org now sends nothing at all**, and the
+  setting's record is data, not metadata.
+  🟡 **[OI-215](notes/items/OI-215%20Anticipay%20does%20not%20cover%20San%20Marino%20addresses.md)
+  moved both ways**: Italy as the Anticipay default is now `Concordato`, and Anita Aga's `577fc5c`
+  hardcoding `BillingCountry = 'IT'` **merged into `DevMain`** — so the hardcode implements a ruling.
+  🔴 But it was taken **with no client in the room**, and OI-209's nightly return flow that would
+  carry Mexal's correction back is still not built.
+  🟢 **[OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md) has its inventory named
+  after fifteen weeks** — the "100+ form Excel" is
+  [`Mappatura_Zoho_Forms_Pienissimo.xlsx`](notes/The%20Zoho%20Forms%20mapping%20workbook.md), moved
+  08:05:35Z: **106 active forms, 1,588 fields**, and the destination-CRM columns are **ROMI's to
+  fill**. `Concordato` the same morning: the fields map **at Opportunity level**, in a colour-marked
+  marketing section, because the registry already exists after a first submission. 🔴 Still no date
+  for Pienissimo's review, and which of the 1,588 are in scope is unstated.
+  🔴 **New: [OI-220](notes/items/OI-220%20A%20tranche%20with%20no%20products%20was%20reported%20saveable.md)**
+  — Aurel Mrruku reported an empty tranche could be saved; ⚠ **the LWCs already disabled Save for
+  that case before today's commit**, so the path he exercised is unidentified, and no server-side rule
+  enforces it. Anita Aga's `1468961` added the missing explanation plus duplicate- and past-due-date
+  blocks.
+  🔴 **New: [OI-221](notes/items/OI-221%20The%20quote%20PDF%20does%20not%20regenerate%20when%20the%20quote%20changes.md)**
+  — `Concordato` that any change to a quote field must regenerate the PDF, binding the user. ⚠
+  Rexhina Hysi's `090d9e2` is titled _"refresh on pdf generation"_ and **is not this**: it fixes the
+  page reload after a manual generation. **Nothing regenerates a stale PDF.**
+  🟡 **[OI-207](notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)
+  was reviewed internally** — unit of measure included, the 06/10 gap — but **not with the client**;
+  that is the 12/10 e2e session, and the logo went unmentioned.
+  ⚠ **The QR credential left ROMI.** Rexhina Hysi re-sent the live JWT assertion and integration
+  username to Elena Spini at 15:55:45Z, and **Elena Spini forwarded it to `andrea.p@pienissimo.pro`
+  at 16:31:15Z**, cc a shared administration mailbox — recorded, never copied. **The 07/10 rotation
+  request has not happened and is now outside ROMI's control.**
+  ⚠ **A UAT password was posted in the dev group** by Anita Aga at 09:26:56 CEST — recorded, never
+  copied; ⚠ Proton Mail is being adopted for credential sharing.
+  ⚠ Of record: **Elena Spini owes a post-launch support estimate** (weekly or monthly); the
+  **community quote-acceptance test still fails** _"Non è stato possibile completare la richiesta"_,
+  cause unsettled; Aurel Mrruku states **95% of core flows are complete**; **80% of recipients open
+  the mail on mobile**; old un-updated Mexal products still need a clean-up.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **225**.
+  — [trace](notes/traces/Source%20trace%202026-10-08%20nightly.md)
 
 - 🟡🔑 **2026-10-07 — the order path ran end to end for the first time, and a ruling made four days of payment code wrong as committed.** Nightly sweep,
   watermark 2026-10-06T22:00Z. **Two sessions, both with the client** — a 2h18m WooCommerce/Mexal UAT

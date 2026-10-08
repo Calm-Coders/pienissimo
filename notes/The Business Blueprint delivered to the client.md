@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-07
+updated: 2026-10-08
 source: Drive 1oa5iIHxu86wx6v7qZaBjM7g5Sk7bmuK9
 ---
 
@@ -191,3 +191,35 @@ is not written anywhere.
 Fabrizio Paganelli raised it at the 07/10 UAT against the **13 October**
 production confirmation, and Sabatino Rinaldi undertook to forward the Blueprint
 to Daniela Morgese.
+
+## 🟢 2026-10-08 - confirmed and going to signature, with two precisazioni still open
+
+**Elena Spini, marketing group DM, 08/10 17:26:28 CEST:** _"BBP confermato, lo
+stanno mandando in firma 🔥"_ — followed by _"a 10 gg del go-live ma va bene
+ahahaa"_. The file `Business_Blueprint_Pienissimo.docx` was modified the same
+afternoon at **15:50:44Z**.
+
+This is the first project document to reach a signature process.
+[OI-218](items/OI-218%20Direction%20has%20not%20seen%20the%20Business%20Blueprint%20before%20the%2013%20October%20confirmation.md)
+resolves on it.
+
+⚠ **The confirmation is second-hand** — ROMI's project manager in an internal
+chat, with no client mail in this sweep carrying it, and nothing establishing
+that Daniela Morgese read the document rather than the approval simply clearing.
+
+🔴 **Marco Montesi reopened two of his three precisazioni in the thread the same
+afternoon (15:55:11Z), while the document was going to signature:**
+
+- **Precisazione 1 is contested.** He escalated the mass-Opportunity deferral to
+  Sabatino Rinaldi — _"se la funzione 'massiva' è da valutare da subito, visto
+  che ne abbiamo fatte alcune di recente"_. Now
+  [OI-224](items/OI-224%20Mass%20Opportunity%20creation%20is%20contested%20as%20a%20Fase%202%20deferral.md).
+- **Precisazione 2 is accepted** — _"Bene"_ to the Perso/Errato values being
+  administrator-editable.
+- **Precisazione 3 is answered, and it opens a requirement surface.** He
+  enumerated the automated mail and WhatsApp sends Zoho runs today on the
+  commercial funnel — five triggers plus the 5-day quote-validity messages — and
+  said the list may be incomplete. Now
+  [OI-222](items/OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md),
+  gating. ⚠ **His original question — whether these are editable without
+  support — is still unanswered after three days.**

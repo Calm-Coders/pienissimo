@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-10-06
+updated: 2026-10-08
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -311,3 +311,34 @@ listed as a next step with Rebecca Marmo.
 
 ⚠ **The sender-domain authentication is still unanswered** on this thread: the
 last word on it is Fabrizio Mastracci's 18/08 chase.
+
+## 🟢 2026-10-08 - the form inventory is identified at last
+
+**The "100+ form Excel" this item has been blocked on since June is
+`Mappatura_Zoho_Forms_Pienissimo.xlsx`**, Drive id
+`1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`, owner Fabrizio Mastracci, **modified
+2026-10-08T08:05:35Z**. Elena Spini posted it to the marketing group DM at
+10:09:30 CEST for Fabrizio Mastracci. Decoded in
+[the workbook note](../The%20Zoho%20Forms%20mapping%20workbook.md).
+
+It puts numbers on the blocker for the first time: **106 active forms, 1,588
+fields**, extracted 16/07/2026 from the Zoho Forms account `segreteria5`. The
+destination-CRM columns are **ROMI's to fill**, per the workbook's own
+instructions sheet.
+
+🟢 **Where the fields land was decided the same morning.** At
+[the 08/10 internal session](../meetings/2026-10-08%20Internal%20Test.md), as
+`Concordato`: the form fields map **at Opportunity level**, in a dedicated
+marketing-forms section, colour-marked for later clean-up. Elena Spini's reason
+is volume — the registry data already exists after a first submission, so a
+second must create an Opportunity rather than overwrite the Account.
+
+🔴 **What remains blocked.** Which of the 1,588 fields are in scope is
+unstated, the mapping columns' current state is unknown (this sweep read the
+instructions sheet, not the field rows), and **there is still no date for
+Pienissimo's review** — the thing this item has waited on for fifteen weeks,
+now with **13 days to go-live**.
+
+⚠ Matteo Distaso's 06/10 delivery covered the **two prioritised forms**. This
+workbook is the other 104, and the `pienissimolive.it` form he reported
+_"non risulta raggiungibile"_ is still unreachable.

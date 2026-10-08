@@ -10,6 +10,59 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-08 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-10-07T22:00Z** (one day). Read in full: the **08/10 internal session**
+  Gemini notes (six `Concordato`, ten next steps, all `Dettagli`, plus the
+  transcript's opening and field-mapping discussion); the whole Business
+  Blueprint thread; Rexhina Hysi's Italian QR API mail; the Ordine cliente
+  thread. Identified `Mappatura_Zoho_Forms_Pienissimo.xlsx` from its metadata and
+  instructions sheet. Verified today's 22 commits against the repository.
+- **State:** committed to `DevMain`. **Five new items OI-220–OI-224**; one
+  meeting note (`2026-10-08 Internal Test`); one reference note (the Zoho Forms
+  workbook). **OI-218, OI-119 and OI-223 resolved.** Updated OI-14, 207, 212,
+  214, 215, the Blueprint note, the Campi Oggetti note and the QR lookup note;
+  `MAP.md`, `INDEX.md`, both trackers (rows 220–224 added, 2 rows amended in
+  each), both recaps §58, trace. **Register not amended, stays v1.6.** Next free
+  id is **225** (189–193 still reserved).
+- **The headline: the Blueprint went to signature, and the client reopened two of
+  its precisazioni twenty-nine minutes earlier.** Elena Spini at 17:26:28 CEST —
+  _"BBP confermato, lo stanno mandando in firma"_ — closes OI-218, the first
+  project document to reach a signature process. At 15:55:11Z Marco Montesi had
+  answered the question she bounced back on 07/10 by enumerating **five automated
+  mail/WhatsApp sends Zoho runs today** on the commercial funnel, with a
+  **48-hour** tutor commitment and **5-day** quote-validity messages, and said
+  the list was incomplete — **new OI-222, gating**. In the same mail he refused
+  the mass-Opportunity deferral and escalated it to Sabatino Rinaldi — **new
+  OI-224**.
+- **Next:** **OI-212 is still the one to fix** and did not move for a second
+  night — both predicates test `P || E` with no date condition at `8879f08`,
+  `dt_sca_pg` parsed a dozen lines above. Then **OI-223's blast radius**: four
+  commits flipped ~40 classes to `without sharing` in one morning with no test
+  run, including community-reachable controllers, five days before the Prod
+  deploy. Then **OI-222**, because it is a requirement surface with 13 days to
+  go-live. The **13/10 production confirmation** is the binding date; 12/10 e2e,
+  16/10 marketing in Prod, 21/10 go-live.
+- **Watch:** 🔴 **The QR credential left ROMI** — Elena Spini forwarded Rexhina
+  Hysi's live JWT assertion and the integration username to a mailbox on the
+  client's own domain at 16:31:15Z, cc a shared administration mailbox.
+  Recorded, never copied; the 07/10 rotation request has not happened. ⚠ A UAT
+  password was also posted in the dev group at 09:26:56 CEST, and Proton Mail is
+  being adopted for credential sharing. ⚠ **Correction to the 07/10 trace:**
+  `b08c9a8` and `577fc5c` are **both in `DevMain`** now, merged this morning via
+  PRs #83 and #84 — so the Anticipay `BillingCountry = 'IT'` hardcode is live and
+  implements the day's Italy-default ruling. ⚠ **Do not read Rexhina Hysi's
+  `090d9e2` as the PDF ruling**: its message says _"refresh on pdf generation"_
+  but it fixes the page reload after a manual generation; OI-221 is unbuilt.
+  ⚠ **OI-220's report does not match the repository** — Save was already disabled
+  for an empty tranche before today's commit, so the path is unidentified; no
+  owner was invented for it. ⚠ **None of today's six `Concordato` was taken with
+  a client in the room**, the Anticipay country default included. ⚠ OI-210 found
+  nothing for a fourth night.
+
+---
+
 ## 2026-10-08 - claude - WooCommerce payment method mapped onto the Order
 
 - **Did:** read the 24 `WoocommerceOrderService.createOrder` logs from 07/10

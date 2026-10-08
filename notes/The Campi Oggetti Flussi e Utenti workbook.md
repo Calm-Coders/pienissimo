@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-05
+updated: 2026-10-08
 source: Drive 121CTGF0mCkL_hiQIZWL1aYEirqwdSVZs
 ---
 
@@ -167,3 +167,17 @@ Competenza`, `A Data Competenza`, `Indirizzo`, `Link Iscrizione Infopoint`,
   a named company with its VAT number, PEC, administrative email, phone, Mexal
   customer code and named owner, and a named private individual with email and
   mobile. **No value is copied into this repository.**
+
+## 2026-10-08 - it moved, and it was used as the data model in the room
+
+Drive reports **last modified 2026-10-08T08:29:42Z**, replacing the
+2026-10-02T15:04:11Z version this note was written against. Elena Spini posted
+it to the marketing group DM at 10:09:47 CEST with the single word
+_"Data model >>"_, linked to `gid=571873204`, and it was the reference open
+during [the 08/10 internal session](meetings/2026-10-08%20Internal%20Test.md)'s
+review of the marketing form fields.
+
+⚠ **Not re-read.** It still contains live customer records in its example
+columns, and nothing in this sweep required its values; file size is unchanged
+at ~73 KB, so **what changed on 08/10 is not established**. Anyone needing the
+current field list must open the file.

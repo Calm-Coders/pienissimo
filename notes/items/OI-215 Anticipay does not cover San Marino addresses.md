@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 depends_on: [OI-173, OI-211]
 blocks: [go-live]
 source: notes/meetings/2026-10-07 UAT Integrazione WooCommerce e Mexal.md
@@ -77,3 +77,31 @@ A written rule for country and fiscal residence per customer type, agreed with
 Fabrizio Paganelli, that lets Anticipay enrich the records it can without
 corrupting San Marino fiscal data — and one San Marino order transmitting
 cleanly end to end.
+
+## 🟡 2026-10-08 - Italy became the agreed default, and the hardcode merged
+
+Two movements, in the same direction.
+
+🟢 **`Concordato` at [the 08/10 internal session](../meetings/2026-10-08%20Internal%20Test.md):**
+_"È stato stabilito di impostare l'Italia come paese predefinito per le risposte
+di anticipate."_ Aurel Mrruku reported the Anticipay tests on the invoice
+scadenzario and confirmed the Italy default with them. So the "prefer Italy"
+instinct of 07/10 is now a decision of record.
+
+🟢 **Anita Aga's `577fc5c` is in `DevMain`**, merged 08/10 10:14 CEST via
+**PR #84**. The unconditional `accountRecord.BillingCountry = 'IT'` in
+`AnticipayAccountService.cls` is therefore live on the working branch, and it is
+no longer only a fact of an unmerged diff — it implements the ruling above.
+
+🔴 **The collision the item was raised for is untouched.** The ruling settles
+what Anticipay gets; it says nothing about the San Marino fiscal data Mexal
+needs, and it was taken in a **ROMI-internal session with no client present**,
+one day after Fabrizio Paganelli described correcting country, electronic-
+invoicing type and fiscal residence **in Mexal** as routine. An account whose
+real country is San Marino still has `IT` written onto it by every Anticipay
+enrichment, and the nightly return flow of
+[OI-209](OI-209%20Mexal%20anagrafica%20updates%20only%20propagate%20when%20an%20order%20is%20sent.md)
+— which would carry Mexal's correction back — **is still not built**.
+
+⚠ So the two systems still pull the same record in opposite directions; what
+changed is that one of the two pulls is now deliberate and merged.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-06
+updated: 2026-10-08
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -126,3 +126,32 @@ scaffolded by this run.**
 
 **To close:** confirm the five fields on each of the seven surfaces in the org,
 and settle unit of measure and the logo.
+
+## 🟡 2026-10-08 - reviewed internally, not verified with the client
+
+At [the 08/10 internal session](../meetings/2026-10-08%20Internal%20Test.md)
+Elena Spini and Aurel Mrruku went through the quote and community fields and
+**confirmed the presence of unit of measure, quantity, list price, amount, total
+discount, due date and payment method**. That is the list this item was opened
+for, and it includes the **unit of measure** the 06/10 entry recorded as
+untouched.
+
+⚠ **Three reasons this does not close the item.**
+
+- It is a **ROMI-internal review**, four people, no client in the room. What
+  OI-207 asks for is Fabrizio Paganelli seeing the fields on the surfaces he
+  found them missing from — scheduled for the **12/10 e2e session**.
+- **The logo was not mentioned.** It was an explicit part of the 05/10 ruling.
+- **The seven surfaces were not enumerated.** The session reviewed the quote
+  screen and the community page; orders, the PDF and the acceptance page were
+  not walked through field by field.
+
+🟢 Of record from the same session, adjacent to this item: the quote e-mail
+template is split into a dynamic opening with the quote codes and a static tail
+carrying the interaction buttons; and **mobile optimisation of the acceptance
+page matters because 80% of recipients open the mail on a phone** — raised with
+no owner and no date.
+
+🔴 The stale-PDF problem the same session ruled on is
+[OI-221](OI-221%20The%20quote%20PDF%20does%20not%20regenerate%20when%20the%20quote%20changes.md),
+and it is not built.

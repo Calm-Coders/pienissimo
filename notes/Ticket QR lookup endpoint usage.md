@@ -2,7 +2,7 @@
 id: ticket-qr-lookup-endpoint-usage
 type: reference
 status: active
-updated: 2026-10-07
+updated: 2026-10-08
 source: force-app/main/default/classes/TicketQrLookupService.cls
 ---
 
@@ -239,3 +239,32 @@ carries the CampaignMember shape. The two will agree when the branch merges.
 ⚠ The 5-day check-in window recorded on 06/10 — QR check-in writes `utilizzato`
 within 5 days of the event date — is **not** mentioned in the delivered contract.
 Unreconciled.
+
+## ⚠ 2026-10-08 - the same live credential went to the client's own domain
+
+The JWT assertion flagged on 07/10 was circulated twice more on 08/10, and the
+second time it left ROMI:
+
+| Time (UTC) | From → To | Subject |
+| ---------- | --------- | ------- |
+| 15:55:45 | Rexhina Hysi → Elena Spini, cc Aurel Mrruku | _Pienissimo – API UAT per il check-in tramite QR Code_ (the Italian version) |
+| **16:31:15** | **Elena Spini → `andrea.p@pienissimo.pro`**, cc Fabrizio Paganelli, `amministrazione@pienissimo.com`, Aurel Mrruku, Rexhina Hysi | _[ROMI-PIENISSIMO] – API UAT Check-in QR Code_ |
+
+🔴 **The body carries a live signed `urn:ietf:params:oauth:grant-type:jwt-bearer`
+assertion and the integration username in clear, and it is now in a mailbox on
+the client's external domain**, cc'd to a shared administration mailbox. The
+values are **recorded as having been sent and are copied nowhere** — not here,
+not in the trackers, not in `site/`.
+
+**This escalates the 07/10 finding rather than repeating it.** A credential that
+was internal is now outside ROMI's control, in two client mailboxes and a shared
+one. The rotation asked for on 07/10 has not happened and is now more urgent,
+and the assertion should move into configuration rather than a mail body.
+
+🟢 The contract itself matches what is already recorded: `POST` to
+`/services/apexrest/ticket-qr` with `{"qrId": "<Asset id>"}`, the QR carrying
+the Salesforce **Asset** id; an `Assegnato` asset moves to `Utilizzato`,
+`Data_CheckIn__c` is set, and Asset, Contact, Campaign and Product details come
+back. Repeated scans are accepted and keep the original check-in timestamp —
+_"Il check-in del biglietto è già stato effettuato."_ The 07/10 reading needed no
+correction.

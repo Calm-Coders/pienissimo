@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Marco Montesi
 org: both
 raised: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 depends_on: [OI-219]
 blocks: [OI-134, go-live]
 severity: gating
@@ -62,3 +62,33 @@ Marco Montesi names the fallback agent code, the inheritance runs at order
 creation for every channel including WooCommerce and Palco, an order with no
 natural agent still transmits, and the failure is readable on the order record
 rather than only in `Integration_Log__c`.
+
+## 🟢 2026-10-08 - the invisible error was built, exactly as asked
+
+The ⚠ above — the mandatory-agent-code error reaching only
+`Integration_Log__c` — is **closed in code**. Agreed first at
+[the 08/10 internal session](../meetings/2026-10-08%20Internal%20Test.md), where
+Elena Spini and Aurel Mrruku settled on showing the integration log's exceptions
+_"direttamente a livello di ordine nell'interfaccia utente, utilizzando un
+colore di sfondo specifico per evidenziare l'errore anziché una formattazione
+complessa"_ — a background colour rather than elaborate formatting.
+
+**Anita Aga's `12959b7`** (08/10 16:15 CEST, merged to `DevMain` via PR #88)
+delivers it:
+
+| Component | What |
+| --------- | ---- |
+| `Order.Mexal_Integration_Error__c` | new LongTextArea(32768), 5 visible lines, label **Errore Integrazione Mexal**, described as the latest error raised while sending this order |
+| `OrderMexalIntegrationService` | +43 lines writing the field |
+| `Order_Record_Page.flexipage` | the field placed on the order page (198 lines changed) |
+| `Mexal_Integration_Error.uiFormatSpecificationSet` | the conditional highlight — the agreed background colour |
+| `Full_Permission` permission set | field access |
+
+🔴 **The item itself does not close.** The error is now visible; **which agent
+code to use for an agentless WooCommerce order is still unanswered**, and that
+is the gating half. Elisa Migliano had undertaken to ask Marco Montesi, and
+nothing in this sweep shows she has — he wrote twice on 08/10, on other matters,
+and the agent code appears in neither mail.
+
+⚠ **Not verified in an org.** This is repository arithmetic against `DevMain`
+`8879f08`; nobody in this sweep saw the message render on an order.

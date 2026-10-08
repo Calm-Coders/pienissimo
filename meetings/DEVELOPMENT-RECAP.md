@@ -6169,3 +6169,151 @@ it is a **candidate for v1.6** alongside the per-edizione link scope and the
 others. ⚠ The carrier is still blocked: the amended logic document's written
 confirmation has been requested and not received, and #184 cannot use an
 unconfirmed text.
+
+## 58. Update 2026-10-08 — the Business Blueprint went to signature, and the client reopened two of its precisazioni the same hour
+
+Swept from watermark **2026-10-07T22:00Z**, one day. **No client session** — one
+ROMI-internal working session of about two hours — and **22 commits**, the
+heaviest build day of the project. Every build claim below is repository
+arithmetic against `DevMain` **`8879f08`**; the org was not opened.
+
+### The Blueprint cleared, and did not clear
+
+🟢 **[#218](open-items.md) is resolved.** Elena Spini, in the marketing group DM
+at 17:26:28 CEST: _"BBP confermato, lo stanno mandando in firma"_ — the first
+project document to reach a signature process, with
+`Business_Blueprint_Pienissimo.docx` modified the same afternoon at 15:50:44Z.
+Sabatino Rinaldi's forwarding commitment of 07/10 was met.
+
+⚠ The confirmation is **second-hand**, reported in an internal chat, and nothing
+establishes that Daniela Morgese read the document rather than the approval
+simply clearing. ⚠ Elena Spini's own next line is the finding's afterlife:
+_"a 10 gg del go-live ma va bene"_. Confirmed ten days before go-live is what
+Fabrizio Paganelli's objection was about, so the timeline risk is realised
+rather than retired.
+
+🔴 **Twenty-nine minutes earlier, Marco Montesi reopened two of his three
+precisazioni** in the same thread.
+
+**#222, gating — the commercial notification flows.** Answering the question
+Elena Spini bounced back on 07/10, he enumerated the automated mail and WhatsApp
+sends Zoho runs **today** on the commercial funnel: a welcome plus a tutor
+taking the request in hand **within 48 hours** on a form Opportunity; a
+no-answer message carrying the tutor's own contact details; a message when an
+Opportunity goes to `Perso` with reason `NON RISPONDE`; and messages to **both
+customer and tutor** across the **5 days** of quote validity and at expiry. ⚠ He
+qualified the list himself as possibly incomplete and deferred to Elisa
+Migliano. None of it is in the Blueprint, the register or the build, 13 days
+before go-live, and it is **not** the marketing ticket funnel — the 11+11
+sequence fires on event participation, these fire on opportunity and quote
+lifecycle events. 🔴 **His original question — whether these are editable
+without going through support — is unanswered a third day**, though the record
+held the answer for templates from 05/10.
+
+**#224 — mass Opportunity creation is contested.** Elena Spini had declined it
+to _"una fase successiva"_; he escalated to Sabatino Rinaldi, _"visto che ne
+abbiamo fatte alcune di recente"_. That is a statement of current practice, not
+a wish: deferring it removes a working process at go-live. The Fase 2 candidate
+the 07/10 sweep flagged as having no Fase 2 row is **not accepted**.
+
+### The gating payment defect did not move, a second night
+
+🔴 **[#212](open-items.md) is unchanged at `8879f08`.** Both predicates still
+test `P || E` with no date condition — `MexalScadenzarioSearchService` and
+`Scadenza_Fattura__c.Pagata__c` — and `dt_sca_pg` is still parsed into
+`deadline.dueDate` a dozen lines above the predicate that ignores it. ⚠ Aurel
+Mrruku was in these files today, and the internal session worked through _"la
+logica complessa legata alla data di scadenza e allo stato di pagamento"_ for
+the flows **without qualifying the paid test by due date**. Five days to the
+13/10 production confirmation, and this rule decides when a ticket unlocks.
+
+### What the internal session produced
+
+The 08/10 session (10:00 CEST, ~2h — Elena Spini · Aurel Mrruku · Rexhina Hysi ·
+Anita Aga) carried **six `Concordato`**: form fields map at **Opportunity
+level** in a colour-marked marketing section; **Italy is the Anticipay default**;
+about twenty products are used for campaign tests; the UAT user gets every
+permission; **the IVA rate code travels from the article to the order and quote
+line**; and **any change to a quote field must regenerate the PDF**.
+
+🟢🔑 **It found the root cause of the failed order send — #223.** The integration
+classes ran `with sharing`, so the executing user had no visibility on the
+order-send class. Two sandbox exception mails carry it, at 09:33:59Z and
+09:44:48Z, both ending in `INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY` at
+`OrderMexalIntegrationService.markOrdersQueued` line 376. ⚠ Elena Spini had read
+the same failure as DocuSign missing from order creation. Aurel Mrruku fixed it
+in four commits across **roughly forty classes** — 🔴 a broad sharing-model
+change made in one morning with no test run, five days before the Prod deploy,
+widening what the community controllers can reach.
+
+### Three records closed in code
+
+🟢 **#214's invisible error is built**, exactly as the session agreed: Anita
+Aga's `12959b7` adds `Order.Mexal_Integration_Error__c`, places it on the order
+page and highlights it through a `uiFormatSpecificationSet` — the agreed
+background colour rather than elaborate formatting. 🔴 The gating half of #214
+stands: **which agent code to use for an agentless WooCommerce order** is still
+unanswered, and Marco Montesi wrote twice today without it appearing.
+
+🟢 **#119 is resolved.** `ff3e4d4` replaces the hardcoded developer address with
+a new `Integration_Notification_Config__c` custom setting, read through a
+validating, de-duplicating service, and converts the Mexal notification service
+the same way. That is also the **dedicated notification mailbox** owed to Aurel
+Mrruku on 07/10. ⚠ An unconfigured org now sends **nothing at all** — both
+services return early after a `System.debug` — and a custom setting's record is
+data, not metadata, so it must be set by hand in UAT and in Prod.
+
+🟡 **#215 moved both ways.** Italy as the Anticipay default is now `Concordato`,
+and Anita Aga's `577fc5c` hardcoding `BillingCountry = 'IT'` merged into
+`DevMain`, so the hardcode implements a ruling. 🔴 But the ruling was taken with
+no client present, and #209's nightly return flow is still not built.
+
+### Two new defects, and an inventory named at last
+
+🔴 **#220** — Aurel Mrruku reported an empty tranche could be saved. ⚠ Both LWCs
+already disabled Save for that case before today's commit, so the path he
+exercised is unidentified and no server-side rule enforces it; Anita Aga's
+`1468961` added the missing explanation plus duplicate- and past-due-date blocks.
+
+🔴 **#221** — the `Concordato` that any quote-field change must regenerate the
+PDF is **not built**. Rexhina Hysi's `090d9e2` is titled _"refresh on pdf
+generation"_ and fixes the page reload after a manual generation instead.
+
+🟢 **[#14](open-items.md) has its inventory named after fifteen weeks.** The
+"100+ form Excel" is `Mappatura_Zoho_Forms_Pienissimo.xlsx`, modified 08:05:35Z:
+**106 active forms, 1,588 fields**, extracted 16/07 from the Zoho account
+`segreteria5`, with the destination-CRM columns **ROMI's to fill**. 🔴 Still no
+date for Pienissimo's review, and which of the 1,588 fields are in scope is
+unstated.
+
+🟡 **#207 was reviewed internally** — unit of measure included, the gap the
+06/10 entry recorded — but not with the client; that is the 12/10 e2e session,
+and the logo went unmentioned.
+
+### Of record
+
+⚠ **The QR credential left ROMI.** Rexhina Hysi re-sent the live JWT assertion
+and the integration username to Elena Spini at 15:55:45Z, and **Elena Spini
+forwarded it to a mailbox on the client's own domain at 16:31:15Z**, cc a shared
+administration mailbox. Recorded, never copied — and the rotation asked for on
+07/10 has not happened, so the credential is now outside ROMI's control.
+⚠ A UAT password was posted in the dev group at 09:26:56 CEST; ⚠ Proton Mail is
+being adopted for credential sharing.
+
+Also: **Elena Spini owes a post-launch support estimate**, weekly or monthly,
+because both she and Aurel Mrruku expect clients not to read the documentation;
+the **community quote-acceptance test still fails** with _"Non è stato possibile
+completare la richiesta"_ and the cause was not settled in the session; Aurel
+Mrruku states **95% of the core flows are complete**; **80% of recipients open
+the mail on mobile**, so the acceptance page needs mobile work with no owner and
+no date; and the old un-updated Mexal products still need a clean-up and
+re-mapping.
+
+**The register is not amended; it stays v1.6.** The day's rulings are internal
+and operational — where a field sits, which country Anticipay defaults to, when
+a PDF regenerates. The one item with contractual reach is **#222**, because the
+48-hour and 5-day commitments are promises to a customer; it joins the v1.6
+candidates rather than forcing an amendment, since the carrier remains blocked on
+the amended logic document's unreceived written confirmation (#184).
+
+**Item ids OI-189–OI-193 remain reserved. The next free id is 225.**
