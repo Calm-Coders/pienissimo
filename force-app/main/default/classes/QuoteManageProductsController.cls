@@ -141,6 +141,8 @@ public with sharing class QuoteManageProductsController {
     public Id pricebookEntryId { get; set; }
     @AuraEnabled
     public Decimal quantity { get; set; }
+    @AuraEnabled
+    public Id trancheId { get; set; }
   }
 
   public class TrancheSelection {
@@ -424,6 +426,34 @@ public with sharing class QuoteManageProductsController {
       validateNoPlusCategoryProducts(entriesById.values());
     }
 
+    Map<Id, Tranche__c> existingTranchesById = new Map<Id, Tranche__c>();
+    if (context.isStandardOpportunity && itemCount > 0) {
+      existingTranchesById = new Map<Id, Tranche__c>(
+        [
+          SELECT Id, Quote__c, Data_Scadenza__c
+          FROM Tranche__c
+          WHERE Quote__c = :quoteId
+        ]
+      );
+      if (!existingTranchesById.isEmpty()) {
+        requireExistingTrancheAssignmentAccess();
+        for (PricebookEntry entry : entriesById.values()) {
+          if (isBundleEntry(entry)) {
+            continue;
+          }
+          ProductSelection selection = selectionByEntryId.get(entry.Id);
+          if (
+            selection.trancheId == null ||
+            !existingTranchesById.containsKey(selection.trancheId)
+          ) {
+            throw new AuraHandledException(
+              'Seleziona una tranche valida per ogni prodotto Item.'
+            );
+          }
+        }
+      }
+    }
+
     if (bundleCount > 0 && context.hasItemLines) {
       throw new AuraHandledException(
         'Il preventivo contiene gia prodotti Item. Rimuovili prima di aggiungere un bundle.'
@@ -483,17 +513,54 @@ public with sharing class QuoteManageProductsController {
         );
       }
 
-      linesToInsert.add(
-        new QuoteLineItem(
-          QuoteId = quoteId,
-          PricebookEntryId = entry.Id,
-          Quantity = quantity,
-          UnitPrice = unitPrice
-        )
+      QuoteLineItem lineToInsert = new QuoteLineItem(
+        QuoteId = quoteId,
+        PricebookEntryId = entry.Id,
+        Quantity = quantity,
+        UnitPrice = unitPrice
       );
+      if (!isBundle && !existingTranchesById.isEmpty()) {
+        Tranche__c selectedTranche = existingTranchesById.get(
+          selection.trancheId
+        );
+        lineToInsert.Tranche__c = selectedTranche.Id;
+        lineToInsert.Data_Scadenza__c = selectedTranche.Data_Scadenza__c;
+      }
+      linesToInsert.add(lineToInsert);
     }
 
     insert linesToInsert;
+    if (!existingTranchesById.isEmpty()) {
+      recalculateTrancheAmounts(existingTranchesById.keySet());
+    }
+  }
+
+  private static void recalculateTrancheAmounts(Set<Id> trancheIds) {
+    Map<Id, Decimal> amountByTrancheId = new Map<Id, Decimal>();
+    for (AggregateResult result : [
+      SELECT Tranche__c trancheId, SUM(TotalPrice) totalAmount
+      FROM QuoteLineItem
+      WHERE Tranche__c IN :trancheIds
+      GROUP BY Tranche__c
+    ]) {
+      amountByTrancheId.put(
+        (Id) result.get('trancheId'),
+        (Decimal) result.get('totalAmount')
+      );
+    }
+
+    List<Tranche__c> trancheUpdates = new List<Tranche__c>();
+    for (Id trancheId : trancheIds) {
+      trancheUpdates.add(
+        new Tranche__c(
+          Id = trancheId,
+          Importo_Previsto__c = amountByTrancheId.containsKey(trancheId)
+            ? amountByTrancheId.get(trancheId)
+            : 0
+        )
+      );
+    }
+    update trancheUpdates;
   }
 
   private static List<StandardBundleQuoteLineDraft> buildStandardBundleQuoteLineDrafts(
@@ -1107,6 +1174,20 @@ public with sharing class QuoteManageProductsController {
     ) {
       throw new AuraHandledException(
         'Non hai i permessi per creare le tranche del preventivo.'
+      );
+    }
+  }
+
+  private static void requireExistingTrancheAssignmentAccess() {
+    if (
+      !Schema.sObjectType.Tranche__c.isAccessible() ||
+      !Schema.sObjectType.Tranche__c.isUpdateable() ||
+      !Schema.sObjectType.Tranche__c.fields.Importo_Previsto__c.isUpdateable() ||
+      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isCreateable() ||
+      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isCreateable()
+    ) {
+      throw new AuraHandledException(
+        'Non hai i permessi per assegnare i prodotti alle tranche del preventivo.'
       );
     }
   }
