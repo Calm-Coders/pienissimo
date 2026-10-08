@@ -340,6 +340,12 @@ public without sharing class MexalArticleSyncService {
         255
       )
     );
+    // Mexal pads the VAT code (e.g. "E00  ", " 17  "); store it trimmed.
+    putIfPresent(
+      product,
+      Product2.Alq_Iva__c,
+      trimToLength(getString(article, 'alq_iva'), 10)
+    );
 
     // A blank or unknown natura leaves the flags curated in Salesforce.
     String natureCode = getString(article, 'cod_natura');

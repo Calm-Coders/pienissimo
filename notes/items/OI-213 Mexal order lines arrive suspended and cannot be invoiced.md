@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Mirko Merendi
 org: both
 raised: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 blocks: [OI-134, go-live]
 severity: gating
 source: notes/meetings/2026-10-07 Temi Integrazione Mexal.md
@@ -62,3 +62,21 @@ that she owed Mirko Merendi exactly this request.
 Salesforce sets the line state on every transmitted line, an order sent from
 Salesforce converts to an invoice in Mexal with no manual correction, and the
 vendor customisation for causale, contropartita, goods type and IVA is in place.
+
+## Update 08/10 - the IVA code now comes from the article
+
+On the Salesforce side, `MexalOrderSendService` now sends each line's
+`cod_iva` from the article's own VAT code. That code is Mexal's `alq_iva`,
+synced onto `Product2.Alq_Iva__c`; see
+[the article sync note](../objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+A product without a code falls back to the old fixed default, `E01` for `OC`
+and `E10` for `BC`.
+
+- **Deployed to Pienissimo UAT only**, not committed and not in Prod.
+- After the full UAT re-sync on 08/10, **933 of 1,068 Item products carry a
+  code**. The other 135 are blank: 118 have no code in Mexal, and 17 are not in
+  Mexal's response. Those lines still go out with the `E01`/`E10` fallback.
+- ⚠ **Not verified end to end.** Proving it means sending an order to Mexal,
+  and that has not been done.
+- This is the Salesforce half only. Mirko Merendi's vendor customisation, which
+  pulls the IVA code inside Mexal, is separate and still open.

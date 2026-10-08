@@ -20,8 +20,8 @@ Keep the twenty most recent entries here; archive older ones to
   `Order.Condizione_di_Pagamento__c`: `bacs` gives `12`; `stripe` and both
   Braintree codes give `2`. An unknown code falls back on the label, and if
   that does not match either, the field is left blank.
-- **State:** **deployed to Pienissimo UAT only.** The change is **uncommitted on
-  `DevMain` and not in Prod**. Before deploying, the UAT class was diffed
+- **State:** **deployed to Pienissimo UAT only.** The change is committed on
+  `DevMain` as `534d1fb` and is **not in Prod**. Before deploying, the UAT class was diffed
   against `HEAD` and the two were identical. Verified by replaying a real
   logged payload in UAT inside a rolled-back transaction, once per method. No
   replay records remain. OI-204 is now `in-progress`, and OI-219 has an update
@@ -34,6 +34,29 @@ Keep the twenty most recent entries here; archive older ones to
   `createAccount`**. The replay reproduced this for a customer whose order had
   succeeded the day before, so the VAT lookup misses an Account that the
   duplicate rule then catches. This was not investigated.
+- **Later the same session: `alq_iva` on articles.** The Mexal article sync now
+  writes `alq_iva` to a new `Product2.Alq_Iva__c` field, Text(10), labelled
+  "Aliquota IVA". It holds the trimmed Mexal VAT code (`E00`, `17`), not a
+  percentage. The field and `MexalArticleSyncService` are deployed to **UAT
+  only**. In UAT, read access was granted through `Full_Permission` by a
+  `FieldPermissions` record, and the field was added to UAT's own Product page.
+  ⚠ **UAT's page carries `Is_Plus__c`, which is not in the repo**, so the
+  repository flexipage must not be deployed over it. Verified by syncing one
+  `E00` article and one `17` article. Details are in
+  [the article sync note](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+- **Then: `cod_iva` from the article.** `MexalOrderSendService` now sends each
+  line's `cod_iva` from `Product2.Alq_Iva__c`, falling back to `E01` for `OC`
+  and `E10` for `BC` when the product has no code. Before deploying, the UAT
+  class was diffed against `HEAD` and the two were identical. The change is
+  deployed to **UAT only**, uncommitted. ⚠ Only 2 of 1,068 UAT Item products
+  have a code until the articles are re-synced from Mexal. Not verified end to
+  end, because that needs a send to Mexal. See OI-213.
+- **Then: full article re-sync in UAT**, with a cutoff of 2000-01-01 and the
+  cursor untouched. Mexal returned 1,052 articles; 1,051 were upserted, 0
+  failed and 1 was a bundle-code skip. UAT Items now have 914 `E00`, 15 `E10`,
+  4 `17` and 135 blank. Of the blanks, 118 have no code in Mexal itself and 17
+  active products are missing from Mexal's response. ⚠ The synchronous run used
+  9.9 s of the 10 s CPU limit.
 
 ---
 

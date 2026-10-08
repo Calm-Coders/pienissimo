@@ -5,7 +5,7 @@ status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-14
-updated: 2026-09-14
+updated: 2026-10-08
 depends_on: [OI-116, OI-121]
 requirement: [INT-01, BIG-02]
 source: commit e06a1b4 on DevAnita, PR #43, read at 2026-09-14
@@ -37,6 +37,50 @@ new classes, `MexalArticleSyncBatch` (110 lines) and `MexalArticleSyncService`
   away.
 - `syncByArticleCode(String)` exists alongside `syncModifiedSince(Datetime)`, so
   a single article can be refreshed on demand.
+
+## VAT code - `alq_iva` to `Product2.Alq_Iva__c` (08/10)
+
+Added at Aurel Mrruku's request. The sync now writes Mexal's `alq_iva` to a new
+**Text(10)** field, `Alq_Iva__c`, labelled "Aliquota IVA".
+
+- **It is a Mexal VAT code, not a percentage.** In the UAT article logs, Mexal
+  sends the code padded with spaces. Of 219 rows, 215 were the exempt code
+  `E00` and 4 were `17`. The sync trims the padding. What `17` stands for in
+  Mexal's VAT table has **not been asked**.
+- Like the other synced values, a blank `alq_iva` never clears a value already
+  stored.
+- Read-only for everyone, through `Full_Permission` (the same as `Natura__c`),
+  and shown as read-only on the Product record page next to Natura.
+- **Deployed to Pienissimo UAT only, not committed, not in Prod.** Verified by
+  syncing one `E00` article and one `17` article by code in UAT: the stored
+  values were `E00` and `17`.
+- ⚠ **UAT has drifted from the repo on the Product record page.** UAT carries an
+  `Is_Plus__c` field instance (and the field itself) that is not in the
+  repository. The new field was added to UAT's own version of the page so that
+  `Is_Plus__c` stays. Deploying the repository flexipage would remove it. The UAT
+  field permission was granted with a `FieldPermissions` record rather than a
+  permission-set deploy.
+
+### Full re-sync in UAT, 08/10
+
+All articles were synced once, with a cutoff of 2000-01-01 and **without moving
+the nightly cursor**.
+
+- **Results:** Mexal returned **1,052** articles. 1,051 were upserted, 0 failed,
+  and 1 was skipped because its code matches a non-Item Product2.
+- **Mexal's own distribution:** 914 `E00`, 15 `E10`, 4 `17`, and **119 sent with
+  no code**.
+- **UAT Item products after the sync:** 914 `E00`, 15 `E10`, 4 `17`, and 135
+  blank. The 135 blanks break down as:
+  - **118 have no code in Mexal itself** (5 of them active);
+  - **17 active products are not in Mexal's response at all.**
+
+  These lines go to Mexal with the `E01`/`E10` fallback.
+
+- ⚠ **Run synchronously from anonymous Apex, the full sync used 9.9 s of the
+  10 s CPU limit.** The nightly batch runs asynchronously with a 60 s limit, so
+  it is safe. But a long-range `syncModifiedSince` started from the UI will
+  fail as the catalogue grows.
 
 ## 🟢 It guards the bundle boundary
 

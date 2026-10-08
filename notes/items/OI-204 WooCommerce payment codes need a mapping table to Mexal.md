@@ -78,7 +78,7 @@ if Mexal's codes change, somebody edits the value set by hand.
 
 `WoocommerceOrderService` now sets `Order.Condizione_di_Pagamento__c` from the
 inbound `payment` block, using the 07/10 rulings. It is deployed to **Pienissimo
-UAT only**. It is **not committed and not in Prod**.
+UAT only**. It is committed on `DevMain` as `534d1fb` and is **not in Prod**.
 
 | `payment.method` (as sent on 07/10) | `method_title` seen | Code |
 | ----------------------------------- | ------------------- | ---- |

@@ -82,8 +82,10 @@ public without sharing class MexalOrderSendService {
             Product2Id,
             Product2.External_Product_Code__c,
             Product2.ProductCode,
+            Product2.Alq_Iva__c,
             PricebookEntry.Product2.External_Product_Code__c,
-            PricebookEntry.Product2.ProductCode
+            PricebookEntry.Product2.ProductCode,
+            PricebookEntry.Product2.Alq_Iva__c
           FROM OrderItems
           ORDER BY CreatedDate, Id
         )
@@ -166,7 +168,7 @@ public without sharing class MexalOrderSendService {
     List<Object> prices = new List<Object>();
     List<Object> vatCodes = new List<Object>();
     List<Object> dueDates = new List<Object>();
-    String vatCode = resolveVatCode(documentType);
+    String defaultVatCode = resolveVatCode(documentType);
     Integer lineNumber = 1;
 
     for (OrderItem line : orderLines) {
@@ -178,7 +180,12 @@ public without sharing class MexalOrderSendService {
       );
       quantities.add(new List<Object>{ lineNumber, line.Quantity });
       prices.add(new List<Object>{ lineNumber, line.UnitPrice });
-      vatCodes.add(new List<Object>{ lineNumber, vatCode });
+      vatCodes.add(
+        new List<Object>{
+          lineNumber,
+          firstNonBlank(resolveProductVatCode(line), defaultVatCode)
+        }
+      );
       String dueDate = formatDate(line.Data_Scadenza__c);
       if (!String.isBlank(dueDate)) {
         dueDates.add(new List<Object>{ lineNumber, dueDate });
@@ -217,6 +224,21 @@ public without sharing class MexalOrderSendService {
     throw new MexalOrderSendException(
       'Codice IVA Mexal non configurato per la sigla ' + documentType + '.'
     );
+  }
+
+  // The VAT code comes from the article registry (alq_iva, synced onto
+  // Product2.Alq_Iva__c), as agreed with Mexal on 07/10. A product without one
+  // falls back to the document-type default above.
+  private static String resolveProductVatCode(OrderItem line) {
+    if (line.Product2 != null && !String.isBlank(line.Product2.Alq_Iva__c)) {
+      return line.Product2.Alq_Iva__c;
+    }
+
+    if (line.PricebookEntry != null && line.PricebookEntry.Product2 != null) {
+      return line.PricebookEntry.Product2.Alq_Iva__c;
+    }
+
+    return null;
   }
 
   private static Map<Id, Integer> buildLineNumberMap(
