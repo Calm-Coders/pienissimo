@@ -1,12 +1,21 @@
-import { api, LightningElement, wire } from "lwc";
-import { getRecord, getFieldValue } from "lightning/uiRecordApi";
+import { api, LightningElement } from "lwc";
 import { loadScript } from "lightning/platformResourceLoader";
 import { CloseActionScreenEvent } from "lightning/actions";
 import qrGenerator from "@salesforce/resourceUrl/AssetQrGenerator";
-import QR_ID_FIELD from "@salesforce/schema/Asset.QR_Id__c";
 
 export default class AssetTicketQr extends LightningElement {
-  @api recordId;
+  _recordId;
+
+  @api
+  set recordId(value) {
+    this._recordId = value;
+    this.qrId = value;
+    this.renderQr();
+  }
+
+  get recordId() {
+    return this._recordId;
+  }
 
   qrId;
   qrImage;
@@ -24,17 +33,6 @@ export default class AssetTicketQr extends LightningElement {
       });
   }
 
-  @wire(getRecord, { recordId: "$recordId", fields: [QR_ID_FIELD] })
-  wiredAsset({ data, error }) {
-    if (data) {
-      this.qrId = getFieldValue(data, QR_ID_FIELD);
-      this.errorMessage = undefined;
-      this.renderQr();
-    } else if (error) {
-      this.errorMessage = "Impossibile leggere il codice QR del biglietto.";
-    }
-  }
-
   get hasQr() {
     return Boolean(this.qrImage);
   }
@@ -44,9 +42,7 @@ export default class AssetTicketQr extends LightningElement {
   }
 
   get emptyMessage() {
-    return this.qrId
-      ? ""
-      : "Assegna il biglietto a un contatto e a una campagna per generare il QR.";
+    return this.qrId ? "" : "Impossibile identificare il biglietto.";
   }
 
   renderQr() {

@@ -6,7 +6,7 @@ public without sharing class AssetQrService {
 
     Set<Id> contactIds = new Set<Id>();
     Set<Id> campaignIds = new Set<Id>();
-    Map<String, Id> memberIdByTicketKey = new Map<String, Id>();
+    Set<String> campaignMemberTicketKeys = new Set<String>();
 
     for (CampaignMember campaignMember : campaignMembers) {
       if (
@@ -15,11 +15,10 @@ public without sharing class AssetQrService {
       ) {
         contactIds.add(campaignMember.ContactId);
         campaignIds.add(campaignMember.CampaignId);
-        memberIdByTicketKey.put(
+        campaignMemberTicketKeys.add(
           String.valueOf(campaignMember.ContactId) +
             ':' +
-            String.valueOf(campaignMember.CampaignId),
-          campaignMember.Id
+            String.valueOf(campaignMember.CampaignId)
         );
       }
     }
@@ -28,32 +27,26 @@ public without sharing class AssetQrService {
       return;
     }
 
-    List<Asset> assetsToUpdate = new List<Asset>();
     List<ContentVersion> qrFiles = new List<ContentVersion>();
     Set<Id> documentAssetIds = new Set<Id>();
 
     for (Asset assetRecord : [
-      SELECT Id, ContactId, Campaign__c, QR_Id__c
+      SELECT Id, ContactId, Campaign__c
       FROM Asset
       WHERE ContactId IN :contactIds AND Campaign__c IN :campaignIds
     ]) {
-      Id memberId = memberIdByTicketKey.get(
+      String ticketKey =
         String.valueOf(assetRecord.ContactId) +
-          ':' +
-          String.valueOf(assetRecord.Campaign__c)
-      );
+        ':' +
+        String.valueOf(assetRecord.Campaign__c);
 
-      if (memberId != null) {
-        if (assetRecord.QR_Id__c != String.valueOf(memberId)) {
-          assetsToUpdate.add(
-            new Asset(Id = assetRecord.Id, QR_Id__c = String.valueOf(memberId))
-          );
-        }
+      if (campaignMemberTicketKeys.contains(ticketKey)) {
+        String qrId = String.valueOf(assetRecord.Id);
         qrFiles.add(
           new ContentVersion(
-            Title = 'Ticket QR - ' + String.valueOf(memberId),
-            PathOnClient = 'Ticket-QR-' + String.valueOf(memberId) + '.bmp',
-            VersionData = TicketQrImage.generate(String.valueOf(memberId)),
+            Title = 'Ticket QR - ' + qrId,
+            PathOnClient = 'Ticket-QR-' + qrId + '.bmp',
+            VersionData = TicketQrImage.generate(qrId),
             FirstPublishLocationId = assetRecord.Id
           )
         );
@@ -61,9 +54,6 @@ public without sharing class AssetQrService {
       }
     }
 
-    if (!assetsToUpdate.isEmpty()) {
-      update assetsToUpdate;
-    }
     if (!qrFiles.isEmpty()) {
       insert qrFiles;
     }
