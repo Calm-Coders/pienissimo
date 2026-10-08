@@ -131,6 +131,20 @@ export default class QuoteCreateTranche extends LightningElement {
     return this.currentSelectedLines.length > 0;
   }
 
+  get showEmptyTrancheWarning() {
+    return (
+      this.isEditMode &&
+      this.hasPlannedTranches &&
+      !this.hasCurrentSelectedLines
+    );
+  }
+
+  get emptyTrancheMessage() {
+    return this.currentTranche.canDelete === false
+      ? "Questa tranche non contiene prodotti. Aggiungi almeno un prodotto prima di salvare."
+      : "Questa tranche non contiene prodotti. Elimina la tranche oppure aggiungi almeno un prodotto prima di salvare.";
+  }
+
   get hasAvailableQuoteLines() {
     return this.availableQuoteLines.length > 0;
   }
@@ -140,6 +154,27 @@ export default class QuoteCreateTranche extends LightningElement {
       this.plannedTranches.flatMap((tranche) => tranche.quoteLineItemIds || [])
     );
     return this.quoteLines.some((line) => !selectedLineIds.has(line.id));
+  }
+
+  get hasDuplicateDueDates() {
+    const dueDates = this.plannedTranches
+      .map((tranche) => tranche.dueDate)
+      .filter(Boolean);
+    return new Set(dueDates).size !== dueDates.length;
+  }
+
+  get minimumDueDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  get hasPastDueDates() {
+    return this.plannedTranches.some(
+      (tranche) => tranche.dueDate && tranche.dueDate < this.minimumDueDate
+    );
   }
 
   get currentSelectionLabel() {
@@ -194,6 +229,8 @@ export default class QuoteCreateTranche extends LightningElement {
     return (
       this.isSaveDisabledByStatus ||
       !this.hasPlannedTranches ||
+      this.hasDuplicateDueDates ||
+      this.hasPastDueDates ||
       this.plannedTranches.some(
         (tranche) =>
           !tranche.name?.trim() ||

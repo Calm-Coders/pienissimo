@@ -1,6 +1,6 @@
 public without sharing class MexalCustomerErrorNotificationService {
   private static final String TEMPLATE_DEVELOPER_NAME = 'Mexal_Customer_Error_Notification';
-  private static final String ADMIN_EMAIL = 'a.mrruku@romicompany.com';
+  private static final String NOTIFICATION_CONFIG_NAME = 'Mexal_RecipientEmail';
 
   public static void sendIfNotLinked(MexalCustomerCreateService.Result result) {
     if (result == null || result.accountUpdated == true) {
@@ -8,11 +8,22 @@ public without sharing class MexalCustomerErrorNotificationService {
     }
 
     try {
+      List<String> recipients = IntegrationNotificationConfigService.getRecipientEmails(
+        NOTIFICATION_CONFIG_NAME
+      );
+      if (recipients.isEmpty()) {
+        System.debug(
+          LoggingLevel.ERROR,
+          'Destinatari email Mexal non configurati nel Custom Setting Integration Notification Config.'
+        );
+        return;
+      }
+
       EmailTemplate template = getTemplate();
       NotificationContext context = new NotificationContext(result);
 
       Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-      message.setToAddresses(new List<String>{ ADMIN_EMAIL });
+      message.setToAddresses(recipients);
       message.setSaveAsActivity(false);
       message.setSubject(applyTokens(getSubject(template), context, false));
       message.setPlainTextBody(

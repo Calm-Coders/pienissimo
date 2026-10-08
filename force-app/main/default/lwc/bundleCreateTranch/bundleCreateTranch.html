@@ -95,7 +95,26 @@
           <div class="message error">{pageValidationMessage}</div>
         </template>
 
+        <template if:true={hasDuplicateDueDates}>
+          <div class="message error">
+            Ogni tranche deve avere una data di scadenza diversa.
+          </div>
+        </template>
+
+        <template if:true={hasPastDueDates}>
+          <div class="message error">
+            Le date di scadenza non possono essere precedenti a oggi.
+          </div>
+        </template>
+
         <div class="tranche-card">
+          <template if:true={showEmptyTranchWarning}>
+            <div class="message warning">
+              Questa tranche non contiene prodotti. Elimina la tranche oppure
+              aggiungi almeno un prodotto prima di salvare.
+            </div>
+          </template>
+
           <template if:true={showDeleteCurrentPage}>
             <div class="delete-page-actions">
               <lightning-button
@@ -121,6 +140,7 @@
               type="date"
               label="Data scadenza"
               value={currentTranch.dueDate}
+              min={minimumDueDate}
               data-index={currentTranch.index}
               data-current-tranch-due-date
               required

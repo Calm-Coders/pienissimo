@@ -105,7 +105,23 @@
             <div class="message error">{pageValidationMessage}</div>
           </template>
 
+          <template if:true={hasDuplicateDueDates}>
+            <div class="message error">
+              Ogni tranche deve avere una data di scadenza diversa.
+            </div>
+          </template>
+
+          <template if:true={hasPastDueDates}>
+            <div class="message error">
+              Le date di scadenza non possono essere precedenti a oggi.
+            </div>
+          </template>
+
           <div class="tranche-card">
+            <template if:true={showEmptyTrancheWarning}>
+              <div class="message warning">{emptyTrancheMessage}</div>
+            </template>
+
             <template if:true={showDeleteCurrentPage}>
               <div class="delete-page-actions">
                 <lightning-button
@@ -132,6 +148,7 @@
                 type="date"
                 label="Data scadenza"
                 value={currentTranche.dueDate}
+                min={minimumDueDate}
                 data-index={currentTranche.index}
                 data-current-tranche-due-date
                 required

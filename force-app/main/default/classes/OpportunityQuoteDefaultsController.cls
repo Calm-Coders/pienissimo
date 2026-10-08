@@ -119,6 +119,12 @@ public without sharing class OpportunityQuoteDefaultsController {
     if (input.expirationDate == null) {
       throw new AuraHandledException('Expiration Date obbligatoria.');
     }
+    input.paymentCondition = String.isBlank(input.paymentCondition)
+      ? null
+      : input.paymentCondition.trim();
+    if (String.isBlank(input.paymentCondition)) {
+      throw new AuraHandledException('Condizione di Pagamento obbligatoria.');
+    }
 
     Opportunity opportunityRecord = [
       SELECT Id, Account.Agente__c
@@ -135,6 +141,7 @@ public without sharing class OpportunityQuoteDefaultsController {
         : opportunityRecord.Account.Agente__c,
       ExpirationDate = input.expirationDate,
       Status = DRAFT_STATUS,
+      Condizione_di_Pagamento__c = input.paymentCondition,
       ContactId = input.contactId,
       Email = input.email,
       Phone = input.phone,
@@ -218,6 +225,8 @@ public without sharing class OpportunityQuoteDefaultsController {
     public Boolean isPrimary { get; set; }
     @AuraEnabled
     public Date expirationDate { get; set; }
+    @AuraEnabled
+    public String paymentCondition { get; set; }
     @AuraEnabled
     public String accountName { get; set; }
     @AuraEnabled

@@ -38,6 +38,13 @@
   color: #5c6973;
 }
 
+.message.warning {
+  border-color: #f3c65b;
+  background: #fff8e5;
+  color: #8c4b02;
+  margin-bottom: 1rem;
+}
+
 .message.error {
   border-color: #ba0517;
   background: #fef1f2;
