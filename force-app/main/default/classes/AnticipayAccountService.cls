@@ -1,4 +1,4 @@
-public with sharing class AnticipayAccountService {
+public without sharing class AnticipayAccountService {
   private static final String API_NAME = 'Anticipay_Account_Check';
   private static final String ENV_SANDBOX = 'test';
   private static final String ENV_PRODUCTION = 'prod';

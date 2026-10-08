@@ -1,4 +1,4 @@
-public with sharing class MexalCustomerSyncBatch implements Database.Batchable<String>, Database.AllowsCallouts {
+public without sharing class MexalCustomerSyncBatch implements Database.Batchable<String>, Database.AllowsCallouts {
   private static final String FLOW_NAME = 'Mexal_Clienti_Sync';
   private static final Integer FALLBACK_LOOKBACK_HOURS = 24;
 

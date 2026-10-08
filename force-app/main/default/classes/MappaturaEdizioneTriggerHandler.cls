@@ -1,4 +1,4 @@
-public with sharing class MappaturaEdizioneTriggerHandler {
+public without sharing class MappaturaEdizioneTriggerHandler {
   public static void beforeSave(
     List<Mappatura_Edizione__c> newMappings,
     Map<Id, Mappatura_Edizione__c> oldMappingMap

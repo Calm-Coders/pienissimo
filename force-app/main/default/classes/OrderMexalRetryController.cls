@@ -1,4 +1,4 @@
-public with sharing class OrderMexalRetryController {
+public without sharing class OrderMexalRetryController {
   @AuraEnabled
   public static String retryMexalIntegration(Id orderId) {
     try {

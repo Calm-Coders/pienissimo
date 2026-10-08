@@ -7,7 +7,7 @@
 //    their lines (OrderItemTriggerHandler).
 // Each Mexal search runs in its own transaction, since a callout cannot
 // follow DML. Each step keeps its own cursor on Integration_Configuration2__c.
-public with sharing class MexalInvoiceSyncJob implements Queueable, Database.AllowsCallouts {
+public without sharing class MexalInvoiceSyncJob implements Queueable, Database.AllowsCallouts {
   public static final String STEP_INVOICES = 'Fatture';
   public static final String STEP_SCADENZARIO = 'Scadenzario';
   private static final String FLOW_NAME = 'Mexal_Fatture_Scadenzario_Sync';

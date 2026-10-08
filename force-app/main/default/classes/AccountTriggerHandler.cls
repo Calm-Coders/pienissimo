@@ -1,4 +1,4 @@
-public with sharing class AccountTriggerHandler {
+public without sharing class AccountTriggerHandler {
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
   private static final String LOCALE_RECORD_TYPE = 'Locale';
   private static Boolean bypassMexalCustomerUpdate = false;

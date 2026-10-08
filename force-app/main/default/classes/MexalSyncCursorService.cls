@@ -1,4 +1,4 @@
-public with sharing class MexalSyncCursorService {
+public without sharing class MexalSyncCursorService {
   private static final Integer DEFAULT_LOOKBACK_HOURS = 24;
 
   public class CursorException extends Exception {

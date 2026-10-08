@@ -1,4 +1,4 @@
-public with sharing class MexalMaggazinoDetailService {
+public without sharing class MexalMaggazinoDetailService {
   public class Result {
     @AuraEnabled
     public Boolean success;

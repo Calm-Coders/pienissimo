@@ -3,7 +3,7 @@
 // Mexal omits repeated or empty values in row arrays: the order reference sits
 // on the first row of its block and applies to the rows that follow, and a
 // zero price is not returned at all.
-public with sharing class MexalInvoiceLineImportBatch implements Database.Batchable<SObject>, Database.AllowsCallouts {
+public without sharing class MexalInvoiceLineImportBatch implements Database.Batchable<SObject>, Database.AllowsCallouts {
   // One detail callout per invoice; stays well inside the 100-callout limit.
   public static final Integer SCOPE_SIZE = 50;
   private static final String ORDER_SIGLA = 'OC';

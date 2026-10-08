@@ -1,4 +1,4 @@
-public with sharing class MexalOrderSendService {
+public without sharing class MexalOrderSendService {
   private static final String DEFAULT_DOCUMENT_TYPE = 'OC';
   private static final String BOOK_DOCUMENT_TYPE = 'BC';
   private static final Integer SANDBOX_SERIES = 10;

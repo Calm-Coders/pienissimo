@@ -1,4 +1,4 @@
-public with sharing class MexalInvoiceSyncScheduler implements Schedulable {
+public without sharing class MexalInvoiceSyncScheduler implements Schedulable {
   public static final String JOB_NAME = 'Mexal Fatture e Scadenziario Sync - Nightly';
   // After the 02:00 customer sync, so new Mexal customer codes are already on
   // their Accounts when the invoices are linked.

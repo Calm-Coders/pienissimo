@@ -1,4 +1,4 @@
-public with sharing class WooCheckoutEmailController {
+public without sharing class WooCheckoutEmailController {
   private static final String CHECKOUT_TEMPLATE_DEVELOPER_NAME = 'WooCommerce_Checkout_Link';
 
   @AuraEnabled(cacheable=true)

@@ -1,4 +1,4 @@
-public with sharing class AnticipayErrorNotificationService {
+public without sharing class AnticipayErrorNotificationService {
   private static final String TEMPLATE_DEVELOPER_NAME = 'Anticipay_Error_Notification';
   private static final String ADMIN_EMAIL = 'a.mrruku@romicompany.com';
 

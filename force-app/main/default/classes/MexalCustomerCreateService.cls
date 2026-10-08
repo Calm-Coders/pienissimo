@@ -1,4 +1,4 @@
-public with sharing class MexalCustomerCreateService {
+public without sharing class MexalCustomerCreateService {
   private static final String AUTO_CUSTOMER_CODE = '501.AUTO';
 
   public class Result {

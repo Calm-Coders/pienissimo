@@ -1,4 +1,4 @@
-public with sharing class FiscalResidenceResolver {
+public without sharing class FiscalResidenceResolver {
   private static Map<String, Residenza_Fiscale__mdt> rowsByCountryKey;
   private static Residenza_Fiscale__mdt defaultRow;
 

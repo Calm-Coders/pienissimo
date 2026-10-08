@@ -1,4 +1,4 @@
-public with sharing class QuoteManageProductsController {
+public without sharing class QuoteManageProductsController {
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
   private static final String ITEM_RECORD_TYPE_DEVELOPER_NAME = 'Item';
   private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';

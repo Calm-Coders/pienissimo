@@ -1,4 +1,4 @@
-public with sharing class MexalIntegrationLogger {
+public without sharing class MexalIntegrationLogger {
   public static void logInfo(String flowName, String message) {
     insert buildLog(flowName, false, message, null);
   }

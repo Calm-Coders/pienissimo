@@ -1,4 +1,4 @@
-public with sharing class MexalArticleSyncScheduler implements Schedulable {
+public without sharing class MexalArticleSyncScheduler implements Schedulable {
   public static final String JOB_NAME = 'Mexal Articoli Sync - Nightly';
   public static final String NIGHTLY_0100_CRON = '0 0 1 * * ?';
 

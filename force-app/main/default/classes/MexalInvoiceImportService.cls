@@ -4,7 +4,7 @@
 // join on the invoice key sigla + serie + numero + anno documento.
 // The nightly sync (MexalInvoiceSyncJob) runs the invoices first, then their
 // lines (MexalInvoiceLineImportBatch), then the scadenzario.
-public with sharing class MexalInvoiceImportService {
+public without sharing class MexalInvoiceImportService {
   public static final String MOVEMENT_SEARCH_ACTION = 'Mexal_Movimenti_Magazzino_Ricerca';
   public static final String SCADENZARIO_SEARCH_ACTION = 'Mexal_Scadenzario_Ricerca';
   private static final String INVOICE_SIGLA = 'FT';

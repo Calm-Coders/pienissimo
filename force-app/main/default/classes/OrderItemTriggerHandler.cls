@@ -1,4 +1,4 @@
-public with sharing class OrderItemTriggerHandler {
+public without sharing class OrderItemTriggerHandler {
   private static final String PAYMENT_STATUS_PAID = 'Paid';
   private static final String TRANCHE_STATUS_OPEN = 'Aperta';
   private static final String TRANCHE_STATUS_PARTIAL = 'Parzialmente Pagata';

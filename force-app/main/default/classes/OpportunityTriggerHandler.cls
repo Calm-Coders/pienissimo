@@ -1,4 +1,4 @@
-public with sharing class OpportunityTriggerHandler {
+public without sharing class OpportunityTriggerHandler {
   private static final String LOCALE_RECORD_TYPE = 'Locale';
   private static final String QUALIFIED_STAGE = 'Qualificato';
 
