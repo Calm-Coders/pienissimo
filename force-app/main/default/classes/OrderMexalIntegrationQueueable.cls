@@ -1,4 +1,4 @@
-public with sharing class OrderMexalIntegrationQueueable implements Queueable, Database.AllowsCallouts {
+public without sharing class OrderMexalIntegrationQueueable implements Queueable, Database.AllowsCallouts {
   private static final String STEP_MARK_RUNNING = 'Mark Running';
   private static final String STEP_ANTICIPAY = 'Anticipay';
   private static final String STEP_MEXAL_CUSTOMER = 'Mexal Customer';
