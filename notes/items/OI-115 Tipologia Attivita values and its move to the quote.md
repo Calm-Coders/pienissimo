@@ -1,12 +1,12 @@
 ---
 id: OI-115
 type: open-item
-status: open
+status: in-progress
 owner: Elisa Migliano
 with: Elena Spini
 org: both
 raised: 2026-09-03
-updated: 2026-10-06
+updated: 2026-10-08
 depends_on: [OI-59]
 relates_to: [OI-123]
 requirement: SAL-16
@@ -14,6 +14,19 @@ source: notes/meetings/2026-09-03 Data Model Parte 1.md
 ---
 
 # OI-115 - Tipologia Attivita values and its move to the quote
+
+## 8 October source implementation and contradiction
+
+The user's latest field table and explicit instruction to create every missing
+field place `Tipologia_Attivita__c` on Lead and map it to Account at conversion.
+Source now implements that direction with all 21 supplied values and adds the
+three values absent from the existing Account field: `Gelateria`, `Agenzia
+Comunicazione`, and `Attività diversa da somministrazione`.
+
+This conflicts with the earlier agreement preserved below that the field moves
+to Quote. The current source follows the latest user instruction, but it is not
+deployed and the contradiction remains visible rather than being treated as a
+client-confirmed reversal.
 
 **`Tipologia Attività` leaves the customer registry and becomes a field on the
 Preventivo.** Agreed at
@@ -174,10 +187,10 @@ Elisa Migliano mailed it at **06:54:07Z**, the morning after the Lead session
 asked for it — **twice**, as two near-identical messages with different
 recipient sets:
 
-| Thread | Subject | To / cc |
-| --- | --- | --- |
-| `1a10ffdcc543c242` | `Sottocategorie, Categorie , Origine Lead , Tipologia attività ` | Elena Spini, Aurel Mrruku; cc Fabrizio Paganelli, Marco Montesi, Sabatino Rinaldi |
-| `1a10ffdcab74ce05` | `Sottocategoria, categoria, origine lead, tipologia attività` | Elena Spini, Aurel Mrruku; cc Sabatino Rinaldi, Marco Montesi, **Matteo Distaso**, Fabrizio Paganelli |
+| Thread             | Subject                                                          | To / cc                                                                                               |
+| ------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `1a10ffdcc543c242` | `Sottocategorie, Categorie , Origine Lead , Tipologia attività ` | Elena Spini, Aurel Mrruku; cc Fabrizio Paganelli, Marco Montesi, Sabatino Rinaldi                     |
+| `1a10ffdcab74ce05` | `Sottocategoria, categoria, origine lead, tipologia attività`    | Elena Spini, Aurel Mrruku; cc Sabatino Rinaldi, Marco Montesi, **Matteo Distaso**, Fabrizio Paganelli |
 
 Both carry the attachment
 **`Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx`** and

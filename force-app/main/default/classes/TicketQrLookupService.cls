@@ -34,7 +34,7 @@ global with sharing class TicketQrLookupService {
           errorResponse(
             400,
             'INVALID_QR_ID',
-            'Provide a valid Asset Id from the QR code.'
+            'Fornisci un ID Asset valido presente nel codice QR.'
           )
         );
       }
@@ -46,7 +46,7 @@ global with sharing class TicketQrLookupService {
           errorResponse(
             404,
             'TICKET_ASSET_NOT_FOUND',
-            'No ticket Asset found for the QR code.'
+            'Nessun biglietto trovato per il codice QR.'
           )
         );
       }
@@ -59,7 +59,7 @@ global with sharing class TicketQrLookupService {
         TicketQrLookupResponse invalidStatus = errorResponse(
           409,
           'INVALID_ASSET_STATUS',
-          'The ticket Asset must be Assegnato before check-in.'
+          'Il biglietto deve essere in stato Assegnato prima del check-in.'
         );
         invalidStatus.contact = new ContactDto(ticket.Contact);
         invalidStatus.campaign = new CampaignDto(ticket.Campaign__r);
@@ -79,8 +79,8 @@ global with sharing class TicketQrLookupService {
       result.message = !shouldCheckIn
         ? null
         : wasAlreadyCheckedIn
-            ? 'Ticket was already checked in.'
-            : 'Ticket checked in successfully.';
+            ? 'Il check-in del biglietto è già stato effettuato.'
+            : 'Check-in del biglietto effettuato correttamente.';
       result.contact = new ContactDto(ticket.Contact);
       result.campaign = new CampaignDto(ticket.Campaign__r);
       result.asset = new AssetDto(ticket);
@@ -90,7 +90,7 @@ global with sharing class TicketQrLookupService {
       TicketQrLookupResponse result = errorResponse(
         500,
         'UNEXPECTED_ERROR',
-        'Unexpected QR lookup error.'
+        'Si è verificato un errore imprevisto durante la lettura del codice QR.'
       );
       logRec.Exception_Message__c = e.getMessage();
       logRec.Exception_StackTrace__c = e.getStackTraceString();

@@ -1,16 +1,24 @@
 ---
 id: DEC-2026-09-07-consents
 type: decision
-status: resolved
+status: superseded
 owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-09-07
-updated: 2026-09-07
+updated: 2026-10-08
 source: notes/meetings/2026-09-07 Data Model Parte 3.md
 ---
 
 # Decision - consents live on the contact and editions on the campaign
+
+## Superseded on 8 October 2026
+
+The user explicitly instructed that `Consenso_Profilazione__c` and
+`Informativa_Privacy__c` must map from Lead to **Account**, not Contact. The
+source implementation now follows that later instruction. This reverses the
+7 September client decision preserved below; no new client-meeting source was
+provided with the override.
 
 **Agreed with the client at
 [Data Model Parte 3](../meetings/2026-09-07%20Data%20Model%20Parte%203.md), 7
@@ -66,7 +74,7 @@ automatico il flag"_. The consent survives; only the edition is lost.
 ## Not decided
 
 - **Whether consent is also mirrored onto CampaignMember** for audit — the
-  session settled where consent *lives*, not whether a point-in-time copy is kept
+  session settled where consent _lives_, not whether a point-in-time copy is kept
   per edition. GDPR-style questions about proving consent at a given date are not
   addressed anywhere in the record.
 - **What `Non autorizzo` suppresses**, and where that is enforced. A blank default

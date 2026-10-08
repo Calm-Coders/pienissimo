@@ -2,7 +2,7 @@
 id: ticket-qr-lookup-endpoint-usage
 type: reference
 status: active
-updated: 2026-10-07
+updated: 2026-10-08
 source: force-app/main/default/classes/TicketQrLookupService.cls
 ---
 
@@ -173,6 +173,13 @@ is read only by `POST`; put the value in the URL for `GET`.
 `INVALID_ASSET_STATUS` means a `POST` tried to check in an Asset whose status is
 neither `Assegnato` nor the already-completed `Utilizzato`. The response still
 includes the resolved Asset, Contact and Campaign information.
+
+## Italian response messages - source update 2026-10-08
+
+All user-facing `message` values are now Italian in source. The stable
+`errorCode` values and HTTP status codes are unchanged. The successful UAT
+response above is retained as evidence of the response returned before this
+source change. This update is not yet deployed.
 
 ## Logging
 
