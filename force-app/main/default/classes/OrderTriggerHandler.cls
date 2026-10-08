@@ -1,4 +1,4 @@
-public with sharing class OrderTriggerHandler {
+public without sharing class OrderTriggerHandler {
   private static final String CONFIRMED_STATUS = 'Incassato';
   private static final String INITIAL_TICKET_STATUS = 'Ordinato';
   private static final String AVAILABLE_TICKET_STATUS = 'Disponibile';

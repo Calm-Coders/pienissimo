@@ -1,4 +1,4 @@
-public with sharing class OpportunityQuoteDefaultsController {
+public without sharing class OpportunityQuoteDefaultsController {
   private static final String DRAFT_STATUS = 'Bozza';
 
   @AuraEnabled(cacheable=true)

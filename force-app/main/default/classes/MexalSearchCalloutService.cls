@@ -1,4 +1,4 @@
-public with sharing class MexalSearchCalloutService {
+public without sharing class MexalSearchCalloutService {
   private static final String DEFAULT_NAMED_CREDENTIAL = 'Mexal';
   private static final String COORDINATE_GESTIONALE_HEADER = 'Coordinate-Gestionale';
   private static final String CONTENT_TYPE_JSON = 'application/json';

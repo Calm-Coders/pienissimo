@@ -1,4 +1,4 @@
-public with sharing class BundleComponentTriggerHandler {
+public without sharing class BundleComponentTriggerHandler {
   public static void handleAfterInsert(List<BundleComponent__c> newComponents) {
     rejectDuplicateProducts(newComponents);
     recalculateSpreadTotals(collectBundleIds(newComponents, null));

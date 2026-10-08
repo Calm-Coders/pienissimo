@@ -1,4 +1,4 @@
-public with sharing class MexalOrderMappingService {
+public without sharing class MexalOrderMappingService {
   public class MexalOrderMappingException extends Exception {
   }
 

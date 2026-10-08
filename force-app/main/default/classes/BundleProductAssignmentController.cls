@@ -1,4 +1,4 @@
-public with sharing class BundleProductAssignmentController {
+public without sharing class BundleProductAssignmentController {
   private static final Integer MAX_RESULTS = 100;
 
   public class ItemOption {

@@ -1,4 +1,4 @@
-public with sharing class MexalCustomerErrorNotificationService {
+public without sharing class MexalCustomerErrorNotificationService {
   private static final String TEMPLATE_DEVELOPER_NAME = 'Mexal_Customer_Error_Notification';
   private static final String ADMIN_EMAIL = 'a.mrruku@romicompany.com';
 

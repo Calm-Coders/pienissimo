@@ -1,4 +1,4 @@
-public with sharing class MexalInvoiceOrderLineMappingService {
+public without sharing class MexalInvoiceOrderLineMappingService {
   private static final String PAYMENT_STATUS_PAID = 'Paid';
   private static final String PAYMENT_STATUS_UNPAID = 'Unpaid';
   private static final String PAYMENT_STATUS_NO_MATCH = 'No Payment Match';

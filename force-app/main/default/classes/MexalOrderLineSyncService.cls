@@ -1,4 +1,4 @@
-public with sharing class MexalOrderLineSyncService {
+public without sharing class MexalOrderLineSyncService {
   private static final String ARTICLE_LINE_TYPE = 'R';
 
   public class Result {

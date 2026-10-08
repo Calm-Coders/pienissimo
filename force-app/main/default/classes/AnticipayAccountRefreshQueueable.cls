@@ -1,4 +1,4 @@
-public with sharing class AnticipayAccountRefreshQueueable implements Queueable, Database.AllowsCallouts {
+public without sharing class AnticipayAccountRefreshQueueable implements Queueable, Database.AllowsCallouts {
   private final List<Id> accountIds;
   private final List<Id> sourceRecordIds;
 

@@ -1,4 +1,4 @@
-public with sharing class QuoteTrancheController {
+public without sharing class QuoteTrancheController {
   private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Vendita_Standard';
 
   private static final Set<String> EDITABLE_QUOTE_STATUSES = new Set<String>{

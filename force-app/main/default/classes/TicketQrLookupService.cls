@@ -1,5 +1,5 @@
 @RestResource(urlMapping='/ticket-qr/*')
-global with sharing class TicketQrLookupService {
+global without sharing class TicketQrLookupService {
   private static final String FLOW_NAME = 'TicketQrLookupService.lookup';
 
   @HttpGet

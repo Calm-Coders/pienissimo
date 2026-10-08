@@ -1,4 +1,4 @@
-public with sharing class MexalArticleSyncService {
+public without sharing class MexalArticleSyncService {
   public static final String ACTION_NAME = 'Mexal_Articoli_Ricerca';
   // Mexal natura: B? generates a ticket, ?B is sold only inside bundles.
   // BB genera biglietto solo bundle, BO genera biglietto altri ordini,

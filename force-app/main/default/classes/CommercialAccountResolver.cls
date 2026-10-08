@@ -1,4 +1,4 @@
-public with sharing class CommercialAccountResolver {
+public without sharing class CommercialAccountResolver {
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
   private static final String LOCALE_RECORD_TYPE = 'Locale';
 
