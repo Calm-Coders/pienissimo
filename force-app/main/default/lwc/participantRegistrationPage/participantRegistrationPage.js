@@ -1,5 +1,6 @@
 import { api, LightningElement, wire } from "lwc";
 import { CurrentPageReference } from "lightning/navigation";
+import pienissimoLogo from "@salesforce/resourceUrl/QuotePdfLogo";
 import findContact from "@salesforce/apex/ParticipantRegistrationController.findContact";
 import loadPage from "@salesforce/apex/ParticipantRegistrationController.loadPage";
 import markParticipationGroupRinuncia from "@salesforce/apex/ParticipantRegistrationController.markParticipationGroupRinuncia";
@@ -13,6 +14,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
   @api heading = "Registrazione partecipanti";
   @api servicePath;
 
+  logoUrl = pienissimoLogo;
   token;
   page;
   groups = [];

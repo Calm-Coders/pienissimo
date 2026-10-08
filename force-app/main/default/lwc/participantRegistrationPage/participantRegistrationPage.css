@@ -39,7 +39,13 @@
   padding-top: 2rem;
 }
 
-.brand,
+.brand-logo {
+  display: block;
+  height: auto;
+  margin-bottom: 1rem;
+  width: min(15rem, 72vw);
+}
+
 .ticket-number,
 .context-label {
   color: var(--page-primary);
