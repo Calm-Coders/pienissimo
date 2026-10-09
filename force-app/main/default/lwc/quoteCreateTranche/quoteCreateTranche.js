@@ -225,6 +225,10 @@ export default class QuoteCreateTranche extends LightningElement {
     return !this.isEditable || this.isLoading;
   }
 
+  get isTrancheCountDisabled() {
+    return this.isSaveDisabledByStatus || !this.hasQuoteLines;
+  }
+
   get isSaveDisabled() {
     return (
       this.isSaveDisabledByStatus ||

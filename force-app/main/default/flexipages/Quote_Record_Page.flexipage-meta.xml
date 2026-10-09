@@ -7,6 +7,28 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
+                            <value>Quote.Scegli_Locale</value>
+                            <visibilityRule>
+                                <booleanFilter>1 OR 2 OR 3</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Bozza</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>In Trattativa</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue
+                  >In Attesa Accettazione</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Quote.Crea_Tranche</value>
                             <visibilityRule>
                                 <booleanFilter>1 AND 2</booleanFilter>
@@ -118,7 +140,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>numVisibleActions</name>
-                    <value>3</value>
+                    <value>4</value>
                 </componentInstanceProperties>
                 <componentName>force:highlightsPanel</componentName>
                 <identifier>force_highlightsPanel</identifier>
@@ -334,6 +356,16 @@
                 <identifier>RecordGrandTotalField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Locale__c</fieldItem>
+                <identifier>RecordLocale_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-6d6aaa8b-5302-43b5-9e9b-6ba7fe6709c8</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -388,6 +420,16 @@
         >Record.Descrizione_Condizione_di_Pagamento__c</fieldItem>
                 <identifier
         >RecordDescrizione_Condizione_di_Pagamento_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Tipologia_Attivita__c</fieldItem>
+                <identifier>RecordTipologia_Attivita_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-3a12ada5-abc0-4af4-8c20-e7e40460efdd</name>

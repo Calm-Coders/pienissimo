@@ -36,6 +36,13 @@
           </div>
         </template>
 
+        <template if:false={hasQuoteLines}>
+          <div class="message error">
+            Prima di creare le tranche, scegli almeno un prodotto nel
+            preventivo.
+          </div>
+        </template>
+
         <template if:true={isEditMode}>
           <div class="section-header edit-selector-header">
             <h3 class="section-heading">Tranche esistenti</h3>
@@ -74,7 +81,7 @@
               max="20"
               step="1"
               required
-              disabled={isSaveDisabledByStatus}
+              disabled={isTrancheCountDisabled}
               onchange={handleTrancheCountChange}
             ></lightning-input>
           </div>
@@ -233,12 +240,6 @@
                   </div>
                 </template>
               </template>
-            </template>
-
-            <template if:false={hasQuoteLines}>
-              <div class="message">
-                Questo preventivo non contiene righe prodotto.
-              </div>
             </template>
           </div>
         </template>

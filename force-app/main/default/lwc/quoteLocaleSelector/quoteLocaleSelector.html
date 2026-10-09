@@ -1,0 +1,55 @@
+<template>
+  <lightning-quick-action-panel header="Scegli Locale">
+    <template if:true={isLoading}>
+      <lightning-spinner
+        alternative-text="Caricamento locali"
+        size="medium"
+      ></lightning-spinner>
+    </template>
+
+    <template if:false={isLoading}>
+      <template if:true={errorMessage}>
+        <div class="message error" role="alert">{errorMessage}</div>
+      </template>
+
+      <template if:false={isDraft}>
+        <div class="message warning" role="alert">
+          Il Locale puo essere modificato solo quando il preventivo e in Bozza.
+        </div>
+      </template>
+
+      <p class="account-label">Azienda: <strong>{accountName}</strong></p>
+
+      <template if:true={hasLocales}>
+        <lightning-datatable
+          key-field="id"
+          data={localeRows}
+          columns={columns}
+          max-row-selection="1"
+          selected-rows={selectedRows}
+          onrowselection={handleRowSelection}
+        ></lightning-datatable>
+      </template>
+
+      <template if:false={hasLocales}>
+        <div class="message warning" role="status">
+          Non ci sono Locali collegati a questa Azienda.
+        </div>
+      </template>
+    </template>
+
+    <div slot="footer">
+      <lightning-button
+        label="Annulla"
+        onclick={handleCancel}
+      ></lightning-button>
+      <lightning-button
+        class="slds-m-left_small"
+        label="Conferma"
+        variant="brand"
+        disabled={saveDisabled}
+        onclick={handleSave}
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>
