@@ -6,11 +6,19 @@ owner: Aurel Mrruku
 with: Elisa Migliano
 org: both
 raised: 2026-09-07
-updated: 2026-10-08
+updated: 2026-10-09
 source: notes/meetings/2026-09-07 Data Model Parte 3.md
 ---
 
 # Decision - consents live on the contact and editions on the campaign
+
+## Further override on 9 October 2026
+
+The user explicitly instructed that `Consenso_Profilazione__c` must be a flag.
+The source implementation now defines it as a checkbox, defaulting to false, on
+both Lead and Account so the conversion mapping remains type-compatible. This
+supersedes the 7 September agreement that it would be an `Autorizzo` / `Non
+autorizzo` picklist. No new client-meeting source was provided with the override.
 
 ## Superseded on 8 October 2026
 
