@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-10-04
+updated: 2026-10-09
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -331,3 +331,22 @@ and `OrderItemTriggerHandler`; deployed to UAT with `NoTestRun`.
 `OrderTriggerHandlerTest` and `TicketingTest` at Aurel Mrruku's request. UAT
 174/174 at 83.6%; Prod 157/157 at 83.9%, deploy `0AfSW000001Hf1N0AS`. Detail in
 [the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+## 2026-10-09 - `MexalIntegrationTest` fails 7 of 43 in UAT
+
+Observed while deploying the `cod_grp_merc` active-state change to
+[the article sync](../objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+None of the failures involve the article sync:
+
+- `customerUpdateOmitsBlankOptionalMexalFields`: the San Marino e-invoicing
+  assertion fails.
+- `orderSendMapsTheMexalDocumentBack`, `orderSendOmitsBlankPaymentCode` and
+  `orderSendReadsTheNumberFromTheBody`: the fixtures lack an agent code or a
+  payment condition.
+- `paidDeadlineMarksLineTrancheTicketsAndOrderAsCollected`: expected 1, got 0.
+- `schedulerRegistersTheNightlyJob`: `Mexal Sync - Nightly` is already
+  scheduled in the org.
+- `schedulerStartsTheThreeBatches`: expected 3, got 1.
+
+The change itself went to UAT with `NoTestRun`. The new `cod_grp_merc` branch has
+no test. Recorded for the suite task, not acted on.

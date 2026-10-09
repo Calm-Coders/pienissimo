@@ -10,6 +10,23 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-09 - claude (Mexal article group field drives IsActive)
+
+- **Did:** ran a read-only GET scan of Mexal `/articoli` (all 1,076 articles).
+  `cod_grp_merc` holds only `S` (33) or `N` (1,043). Aurel Mrruku then decided
+  that it drives `Product2.IsActive` (`S` = active).
+- **Built:** `MexalArticleSyncService` and `MexalSearchCalloutService` now read
+  `cod_grp_merc` and set `IsActive` on new and existing products. **Deployed to
+  UAT only (`NoTestRun`), not committed, not in Prod.** Verified from UAT that the
+  search returns the field.
+- **Data:** in UAT, 235 `N` Items were deactivated (235/235 succeeded). The 17
+  Items with no Mexal article were left untouched, as were the bundles and Prod
+  (whose two Items are `TEST MKT`, not in Mexal). Detail in
+  [the article sync](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+- **Watch:** 24 `S` articles have no Product2 in UAT. Not verified: whether
+  changing `cod_grp_merc` moves `data_ult_mod`. `MexalIntegrationTest` fails
+  7/43 in UAT, all outside the article sync; recorded in OI-64.
+
 ## 2026-10-08 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark

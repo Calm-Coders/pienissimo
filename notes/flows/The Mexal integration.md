@@ -5,7 +5,7 @@ status: in-progress
 owner: Andrea Di Cicco
 with: Mirko Merendi
 org: both
-updated: 2026-10-06
+updated: 2026-10-09
 depends_on: [OI-58]
 source: notes/meetings/2026-09-02 Follow-up Anagrafica Articoli.md
 ---
@@ -194,6 +194,14 @@ response change:
 | `categoria statistica` | `Sigla cat sta` + `Numero cat sta` | the event (Campagna Padre)     | **Splits into two API fields**                         |
 | `gruppo merceologico`  | `GRP merch`                        | candidate for tipo biglietto   | Hierarchical in Mexal; **the level did not come over** |
 | `Gest. annullato`      | `Gest. annullato`                  | product disabled in Salesforce | `n` = active, `S` = cancelled                          |
+
+🔑 **Live read, 2026-10-09 (GET `/articoli`, read-only, all 1,076 articles):**
+the API field is `cod_grp_merc` ("Codice Gruppo Merceologico") and it holds only
+**`S` (33) or `N` (1,043)** — no group codes. All 33 `S` are not cancelled and sit
+in categories `C10`, `C11`, `E2`–`E4`, `E6`–`E9`, natura `BB`/`BO`/`NB`/`NO`. So it
+is populated, not empty as recorded on 22/09, and is used as a yes/no flag.
+**Same day, Aurel Mrruku decided it drives `Product2.IsActive`** (`S` = active).
+See [the article sync](../objects/The%20Mexal%20article%20sync%20to%20Product2.md).
 
 **Mexal offers at most three classification fields on an article**, and they were
 entirely unused before this session. That constraint is why ticket type and
