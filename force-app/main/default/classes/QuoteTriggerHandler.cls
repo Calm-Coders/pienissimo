@@ -9,7 +9,8 @@ public without sharing class QuoteTriggerHandler {
   private static final String OPPORTUNITY_NEGOTIATION_STAGE = 'In trattativa (Prev inviato)';
   private static final String INITIAL_ORDER_STATUS = 'Ordinato';
   private static final String SALESFORCE_ORIGIN = 'Salesforce';
-  private static final String LOCALE_MISMATCH_ERROR = 'Il Locale del Preventivo deve coincidere con il Locale dell\'Opportunita.';
+  private static final String LOCALE_RECORD_TYPE = 'Locale';
+  private static final String LOCALE_MISMATCH_ERROR = 'Il Locale selezionato deve essere un Account figlio dell\'Azienda del Preventivo.';
   private static final Set<String> PDF_INVALIDATING_QUOTE_STATUSES = new Set<String>{
     NEGOTIATION_QUOTE_STATUS,
     AWAITING_ACCEPTANCE_STATUS
@@ -17,6 +18,7 @@ public without sharing class QuoteTriggerHandler {
   private static final Set<String> PDF_INPUT_FIELDS = new Set<String>{
     'AccountId',
     'OpportunityId',
+    'Locale__c',
     'ExpirationDate',
     'BillingName',
     'BillingStreet',
@@ -47,7 +49,7 @@ public without sharing class QuoteTriggerHandler {
     Map<Id, Quote> oldQuoteMap
   ) {
     resetChangedPdfQuotesToDraft(quotes, oldQuoteMap);
-    copyLocaleFromOpportunity(quotes);
+    defaultValidateAndCopyLocaleActivity(quotes, oldQuoteMap);
     markCompletedDocuSignQuotesAsSigned(quotes);
     makeSignedQuotesPrimary(quotes);
     markFirstQuotesAsPrimary(quotes);
@@ -103,7 +105,10 @@ public without sharing class QuoteTriggerHandler {
     createOrdersForSignedQuotes(quotes, oldQuoteMap);
   }
 
-  private static void copyLocaleFromOpportunity(List<Quote> quotes) {
+  private static void defaultValidateAndCopyLocaleActivity(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
     Set<Id> opportunityIds = new Set<Id>();
     for (Quote quoteRecord : quotes) {
       if (quoteRecord.OpportunityId != null) {
@@ -117,12 +122,13 @@ public without sharing class QuoteTriggerHandler {
 
     Map<Id, Opportunity> opportunitiesById = new Map<Id, Opportunity>(
       [
-        SELECT Id, Locale__c
+        SELECT Id, AccountId, Locale__c
         FROM Opportunity
         WHERE Id IN :opportunityIds
       ]
     );
 
+    Set<Id> localeIds = new Set<Id>();
     for (Quote quoteRecord : quotes) {
       Opportunity opportunityRecord = opportunitiesById.get(
         quoteRecord.OpportunityId
@@ -133,11 +139,57 @@ public without sharing class QuoteTriggerHandler {
 
       if (quoteRecord.Locale__c == null) {
         quoteRecord.Locale__c = opportunityRecord.Locale__c;
+      }
+
+      if (quoteRecord.Locale__c != null) {
+        localeIds.add(quoteRecord.Locale__c);
+      }
+    }
+
+    if (localeIds.isEmpty()) {
+      return;
+    }
+
+    Map<Id, Account> localesById = new Map<Id, Account>(
+      [
+        SELECT
+          Id,
+          ParentId,
+          RecordType.DeveloperName,
+          Tipologia_Attivita_Globale__c
+        FROM Account
+        WHERE Id IN :localeIds
+      ]
+    );
+
+    for (Quote quoteRecord : quotes) {
+      if (quoteRecord.Locale__c == null) {
         continue;
       }
 
-      if (quoteRecord.Locale__c != opportunityRecord.Locale__c) {
+      Opportunity opportunityRecord = opportunitiesById.get(
+        quoteRecord.OpportunityId
+      );
+      Id aziendaId = opportunityRecord == null
+        ? quoteRecord.AccountId
+        : opportunityRecord.AccountId;
+      Account localeRecord = localesById.get(quoteRecord.Locale__c);
+
+      if (
+        localeRecord == null ||
+        localeRecord.ParentId != aziendaId ||
+        localeRecord.RecordType == null ||
+        localeRecord.RecordType.DeveloperName != LOCALE_RECORD_TYPE
+      ) {
         quoteRecord.Locale__c.addError(LOCALE_MISMATCH_ERROR);
+        continue;
+      }
+
+      Quote oldQuote = oldQuoteMap == null
+        ? null
+        : oldQuoteMap.get(quoteRecord.Id);
+      if (oldQuote == null || oldQuote.Locale__c != quoteRecord.Locale__c) {
+        quoteRecord.Tipologia_Attivita__c = localeRecord.Tipologia_Attivita_Globale__c;
       }
     }
   }

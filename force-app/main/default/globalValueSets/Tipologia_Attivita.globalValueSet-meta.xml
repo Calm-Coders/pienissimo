@@ -1,52 +1,112 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <customValue><fullName>Agriturismo</fullName><default>false</default><label
-    >Agriturismo</label></customValue>
-    <customValue><fullName>Agenzia Comunicazione</fullName><default
-    >false</default><label>Agenzia Comunicazione</label></customValue>
-    <customValue><fullName
-    >Attività diversa da somministrazione</fullName><default
-    >false</default><label
-    >Attività diversa da somministrazione</label></customValue>
-    <customValue><fullName>Bar</fullName><default>false</default><label
-    >Bar</label></customValue>
-    <customValue><fullName>Catena di Proprietà</fullName><default
-    >false</default><label>Catena di Proprietà</label></customValue>
-    <customValue><fullName>Cocktail Bar</fullName><default>false</default><label
-    >Cocktail Bar</label></customValue>
-    <customValue><fullName>Fast food</fullName><default>false</default><label
-    >Fast food</label></customValue>
-    <customValue><fullName>Franchising</fullName><default>false</default><label
-    >Franchising</label></customValue>
-    <customValue><fullName>Gelateria</fullName><default>false</default><label
-    >Gelateria</label></customValue>
-    <customValue><fullName>Hotel</fullName><default>false</default><label
-    >Hotel</label></customValue>
-    <customValue><fullName>Locale notturno</fullName><default
-    >false</default><label>Locale notturno</label></customValue>
-    <customValue><fullName>Negozio</fullName><default>false</default><label
-    >Negozio</label></customValue>
-    <customValue><fullName>Pasticceria</fullName><default>false</default><label
-    >Pasticceria</label></customValue>
-    <customValue><fullName>Pizzeria</fullName><default>false</default><label
-    >Pizzeria</label></customValue>
-    <customValue><fullName>Pub</fullName><default>false</default><label
-    >Pub</label></customValue>
-    <customValue><fullName>Ristorante</fullName><default>false</default><label
-    >Ristorante</label></customValue>
-    <customValue><fullName>Ristorante Gourmet</fullName><default
-    >false</default><label>Ristorante Gourmet</label></customValue>
-    <customValue><fullName>Ristorante specialità Carne</fullName><default
-    >false</default><label>Ristorante specialità Carne</label></customValue>
-    <customValue><fullName>Ristorante specialità Pesce</fullName><default
-    >false</default><label>Ristorante specialità Pesce</label></customValue>
-    <customValue><fullName>Spiaggia con servizio Ristorazione</fullName><default
-    >false</default><label
-    >Spiaggia con servizio Ristorazione</label></customValue>
-    <customValue><fullName>Sushi</fullName><default>false</default><label
-    >Sushi</label></customValue>
+    <customValue>
+        <fullName>Agenzia Comunicazione</fullName>
+        <default>false</default>
+        <label>Agenzia Comunicazione</label>
+    </customValue>
+    <customValue>
+        <fullName>Agriturismo</fullName>
+        <default>false</default>
+        <label>Agriturismo</label>
+    </customValue>
+    <customValue>
+        <fullName>Attività diversa da somministrazione</fullName>
+        <default>false</default>
+        <label>Attività diversa da somministrazione</label>
+    </customValue>
+    <customValue>
+        <fullName>Bar</fullName>
+        <default>false</default>
+        <label>Bar</label>
+    </customValue>
+    <customValue>
+        <fullName>Catena di Proprietà</fullName>
+        <default>false</default>
+        <label>Catena di Proprietà</label>
+    </customValue>
+    <customValue>
+        <fullName>Cocktail Bar</fullName>
+        <default>false</default>
+        <label>Cocktail Bar</label>
+    </customValue>
+    <customValue>
+        <fullName>Fast food</fullName>
+        <default>false</default>
+        <label>Fast food</label>
+    </customValue>
+    <customValue>
+        <fullName>Franchising</fullName>
+        <default>false</default>
+        <label>Franchising</label>
+    </customValue>
+    <customValue>
+        <fullName>Gelateria</fullName>
+        <default>false</default>
+        <label>Gelateria</label>
+    </customValue>
+    <customValue>
+        <fullName>Hotel</fullName>
+        <default>false</default>
+        <label>Hotel</label>
+    </customValue>
+    <customValue>
+        <fullName>Locale notturno</fullName>
+        <default>false</default>
+        <label>Locale notturno</label>
+    </customValue>
+    <customValue>
+        <fullName>Negozio</fullName>
+        <default>false</default>
+        <label>Negozio</label>
+    </customValue>
+    <customValue>
+        <fullName>Pasticceria</fullName>
+        <default>false</default>
+        <label>Pasticceria</label>
+    </customValue>
+    <customValue>
+        <fullName>Pizzeria</fullName>
+        <default>false</default>
+        <label>Pizzeria</label>
+    </customValue>
+    <customValue>
+        <fullName>Pub</fullName>
+        <default>false</default>
+        <label>Pub</label>
+    </customValue>
+    <customValue>
+        <fullName>Ristorante</fullName>
+        <default>false</default>
+        <label>Ristorante</label>
+    </customValue>
+    <customValue>
+        <fullName>Ristorante Gourmet</fullName>
+        <default>false</default>
+        <label>Ristorante Gourmet</label>
+    </customValue>
+    <customValue>
+        <fullName>Ristorante specialità Carne</fullName>
+        <default>false</default>
+        <label>Ristorante specialità Carne</label>
+    </customValue>
+    <customValue>
+        <fullName>Ristorante specialità Pesce</fullName>
+        <default>false</default>
+        <label>Ristorante specialità Pesce</label>
+    </customValue>
+    <customValue>
+        <fullName>Spiaggia con servizio Ristorazione</fullName>
+        <default>false</default>
+        <label>Spiaggia con servizio Ristorazione</label>
+    </customValue>
+    <customValue>
+        <fullName>Sushi</fullName>
+        <default>false</default>
+        <label>Sushi</label>
+    </customValue>
     <description
   >Valori condivisi della Tipologia Attività per Lead e Account.</description>
     <masterLabel>Tipologia Attività</masterLabel>
-    <sorted>true</sorted>
+    <sorted>false</sorted>
 </GlobalValueSet>

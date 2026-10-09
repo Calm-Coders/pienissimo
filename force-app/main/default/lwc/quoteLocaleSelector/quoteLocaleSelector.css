@@ -1,0 +1,19 @@
+.account-label {
+  margin-bottom: 0.75rem;
+}
+
+.message {
+  border-radius: 0.25rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+}
+
+.message.error {
+  background: #fef1ee;
+  color: #8e030f;
+}
+
+.message.warning {
+  background: #fff7e5;
+  color: #5f3e02;
+}
