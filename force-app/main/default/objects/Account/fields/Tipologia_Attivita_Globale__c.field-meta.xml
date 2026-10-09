@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tipologia_Attivita_Globale__c</fullName>
+    <description
+  >Tipologia attività condivisa con Lead tramite il Global Value Set Tipologia_Attivita.</description>
+    <label>Tipologia Attività</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Tipologia_Attivita</valueSetName>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

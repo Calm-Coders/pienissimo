@@ -109,6 +109,16 @@
                 <identifier>RecordBundle_Tranch_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Sequenza__c</fieldItem>
+                <identifier>RecordSequenza_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-c3896ef4-5b32-4d71-8b05-93a958648473</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -171,16 +181,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Righe_Da_Fatturare__c</fieldItem>
                 <identifier>RecordRighe_Da_Fatturare_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Sequenza__c</fieldItem>
-                <identifier>RecordSequenza_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-387ec8ae-02e6-4245-af01-1a70972dd4be</name>
