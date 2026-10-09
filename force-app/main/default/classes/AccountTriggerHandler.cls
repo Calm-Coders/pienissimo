@@ -100,6 +100,11 @@ public without sharing class AccountTriggerHandler {
     return accountRecord.Email__c != oldAccount.Email__c ||
       accountRecord.Phone != oldAccount.Phone ||
       accountRecord.Partita_IVA__c != oldAccount.Partita_IVA__c ||
-      accountRecord.Name != oldAccount.Name;
+      accountRecord.Name != oldAccount.Name ||
+      accountRecord.BillingStreet != oldAccount.BillingStreet ||
+      accountRecord.BillingCity != oldAccount.BillingCity ||
+      accountRecord.BillingState != oldAccount.BillingState ||
+      accountRecord.BillingPostalCode != oldAccount.BillingPostalCode ||
+      accountRecord.BillingCountry != oldAccount.BillingCountry;
   }
 }
