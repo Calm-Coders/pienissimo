@@ -157,7 +157,70 @@ public without sharing class OrderMexalIntegrationService {
   }
 
   public static void markOrderRunning(Id orderId) {
+    populateBlankShippingAddressFromBilling(orderId);
     updateOrderIntegrationFields(orderId, STATUS_RUNNING, null);
+  }
+
+  private static void populateBlankShippingAddressFromBilling(Id orderId) {
+    if (orderId == null) {
+      return;
+    }
+
+    Order orderRecord = [
+      SELECT
+        AccountId,
+        Account.BillingStreet,
+        Account.BillingCity,
+        Account.BillingState,
+        Account.BillingPostalCode,
+        Account.BillingCountry,
+        Account.ShippingStreet,
+        Account.ShippingCity,
+        Account.ShippingState,
+        Account.ShippingPostalCode,
+        Account.ShippingCountry
+      FROM Order
+      WHERE Id = :orderId
+      LIMIT 1
+    ];
+
+    if (
+      orderRecord.AccountId == null ||
+      !isShippingAddressBlank(orderRecord.Account) ||
+      !hasBillingAddress(orderRecord.Account)
+    ) {
+      return;
+    }
+
+    try {
+      AccountTriggerHandler.setBypassMexalCustomerUpdate(true);
+      update new Account(
+        Id = orderRecord.AccountId,
+        ShippingStreet = orderRecord.Account.BillingStreet,
+        ShippingCity = orderRecord.Account.BillingCity,
+        ShippingState = orderRecord.Account.BillingState,
+        ShippingPostalCode = orderRecord.Account.BillingPostalCode,
+        ShippingCountry = orderRecord.Account.BillingCountry
+      );
+    } finally {
+      AccountTriggerHandler.setBypassMexalCustomerUpdate(false);
+    }
+  }
+
+  private static Boolean isShippingAddressBlank(Account accountRecord) {
+    return String.isBlank(accountRecord.ShippingStreet) &&
+      String.isBlank(accountRecord.ShippingCity) &&
+      String.isBlank(accountRecord.ShippingState) &&
+      String.isBlank(accountRecord.ShippingPostalCode) &&
+      String.isBlank(accountRecord.ShippingCountry);
+  }
+
+  private static Boolean hasBillingAddress(Account accountRecord) {
+    return !String.isBlank(accountRecord.BillingStreet) ||
+      !String.isBlank(accountRecord.BillingCity) ||
+      !String.isBlank(accountRecord.BillingState) ||
+      !String.isBlank(accountRecord.BillingPostalCode) ||
+      !String.isBlank(accountRecord.BillingCountry);
   }
 
   public static Boolean excludeZeroValueOrder(Id orderId) {
