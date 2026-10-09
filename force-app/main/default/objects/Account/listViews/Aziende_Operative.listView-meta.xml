@@ -8,7 +8,7 @@
     <columns>Email_Contatto_Principale__c</columns>
     <columns>Agente__c</columns>
     <columns>Zona__c</columns>
-    <columns>Tipologia_Attivita__c</columns>
+    <columns>Tipologia_Attivita_Globale__c</columns>
     <columns>CORE.USERS.FIRST_NAME</columns>
     <columns>CORE.USERS.LAST_NAME</columns>
     <filterScope>Everything</filterScope>

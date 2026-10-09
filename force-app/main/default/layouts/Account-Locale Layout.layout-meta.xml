@@ -50,8 +50,12 @@
                 <field>Type</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Required</behavior>
+                <field>Tipologia_Attivita_Globale__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Tipologia_Attivita__c</field>
+                <field>Categoria_Statistica_Mexal__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
