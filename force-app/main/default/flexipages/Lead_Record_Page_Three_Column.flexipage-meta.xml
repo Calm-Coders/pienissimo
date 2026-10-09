@@ -391,6 +391,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Tipologia_Attivita__c</fieldItem>
+                <identifier>RecordTipologia_Attivita_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.UTM_Campaign__c</fieldItem>
                 <identifier>RecordUTM_Campaign_cField</identifier>
             </fieldInstance>
