@@ -324,6 +324,16 @@
                 <identifier>RecordAgente_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.GrandTotal</fieldItem>
+                <identifier>RecordGrandTotalField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-6d6aaa8b-5302-43b5-9e9b-6ba7fe6709c8</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -362,17 +372,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Status</fieldItem>
-                <identifier>RecordStatusField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Condizione_di_Pagamento__c</fieldItem>
                 <identifier>RecordCondizione_di_Pagamento_cField</identifier>

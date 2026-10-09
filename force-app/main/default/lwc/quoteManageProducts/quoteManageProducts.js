@@ -148,7 +148,35 @@ export default class QuoteManageProducts extends NavigationMixin(
       return true;
     }
 
-    return this.selectedTranchePreviewRows.every((tranche) => tranche.dueDate);
+    const dueDates = this.selectedTranchePreviewRows.map(
+      (tranche) => tranche.dueDate
+    );
+    return (
+      dueDates.every(
+        (dueDate) => dueDate && dueDate >= this.minimumTrancheDate
+      ) && new Set(dueDates).size === dueDates.length
+    );
+  }
+
+  get minimumTrancheDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  get hasPastSelectedTrancheDate() {
+    return this.selectedTranchePreviewRows.some(
+      (tranche) => tranche.dueDate && tranche.dueDate < this.minimumTrancheDate
+    );
+  }
+
+  get hasDuplicateSelectedTrancheDates() {
+    const dueDates = this.selectedTranchePreviewRows
+      .map((tranche) => tranche.dueDate)
+      .filter((dueDate) => dueDate);
+    return new Set(dueDates).size !== dueDates.length;
   }
 
   get hasValidSelectedTranchePricing() {

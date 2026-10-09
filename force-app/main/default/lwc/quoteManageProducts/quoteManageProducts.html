@@ -162,6 +162,9 @@
                             <span>{product.productCode}</span>
                             <span>{product.typeLabel}</span>
                             <span>Prezzo {product.unitPrice}</span>
+                            <template if:true={isPlusOpportunity}>
+                              <span>Numero tranche {product.trancheCount}</span>
+                            </template>
                           </div>
                         </div>
                         <lightning-input
@@ -224,6 +227,12 @@
 
             <template if:true={showSelectedTranchePreview}>
               <div class="tranche-panel">
+                <template if:true={hasDuplicateSelectedTrancheDates}>
+                  <div class="message error">
+                    Le date delle tranche devono essere diverse.
+                  </div>
+                </template>
+
                 <div class="section-label">Tranche da creare</div>
                 <div class="tranche-count-box">
                   <span class="box-label">Numero tranche</span>
@@ -281,6 +290,8 @@
                           label="Scadenza"
                           value={tranche.dueDate}
                           data-index={tranche.index}
+                          min={minimumTrancheDate}
+                          message-when-range-underflow="La data non puo essere precedente a oggi."
                           required
                           onchange={handleSelectedTrancheDueDateChange}
                         ></lightning-input>
@@ -292,6 +303,12 @@
                 <template if:false={hasValidSelectedTrancheCount}>
                   <div class="message error">
                     Numero Tranche non configurato sul prodotto Plus.
+                  </div>
+                </template>
+
+                <template if:true={hasPastSelectedTrancheDate}>
+                  <div class="message error">
+                    Le date delle tranche non possono essere precedenti a oggi.
                   </div>
                 </template>
               </div>
@@ -352,6 +369,11 @@
                               <span>{product.productCode}</span>
                               <span>{product.typeLabel}</span>
                               <span>Prezzo {product.unitPrice}</span>
+                              <template if:true={isPlusOpportunity}>
+                                <span
+                                  >Numero tranche {product.trancheCount}</span
+                                >
+                              </template>
                             </div>
                           </div>
                           <lightning-input
@@ -436,6 +458,9 @@
                             <span>{option.productCode}</span>
                             <span>{option.typeLabel}</span>
                             <span>{option.unitPrice}</span>
+                            <template if:true={isPlusOpportunity}>
+                              <span>Numero tranche {option.trancheCount}</span>
+                            </template>
                           </span>
                         </span>
                         <template if:true={option.isSelected}>

@@ -1041,12 +1041,25 @@ public without sharing class QuoteManageProductsController {
       );
     }
 
+    Date minimumDueDate = Date.today();
+    Set<Date> selectedDueDates = new Set<Date>();
     for (TrancheSelection tranche : tranches) {
       if (tranche == null || tranche.dueDate == null) {
         throw new AuraHandledException(
           'Inserisci la data di scadenza per ogni tranche del prodotto Plus.'
         );
       }
+      if (tranche.dueDate < minimumDueDate) {
+        throw new AuraHandledException(
+          'La data di scadenza di una tranche non puo essere precedente alla data odierna.'
+        );
+      }
+      if (selectedDueDates.contains(tranche.dueDate)) {
+        throw new AuraHandledException(
+          'Le date di scadenza delle tranche devono essere diverse.'
+        );
+      }
+      selectedDueDates.add(tranche.dueDate);
       if (
         tranche.newPrice == null ||
         tranche.newPrice < 0 ||
