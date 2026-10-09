@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Elena Spini
 org: both
 raised: 2026-09-03
-updated: 2026-10-08
+updated: 2026-10-09
 depends_on: [OI-59]
 relates_to: [OI-123]
 requirement: SAL-16
@@ -220,3 +220,60 @@ l'integrazione"_), which is a commitment with **no date**.
 **To unblock:** the file needs to be put in Drive, or opened by someone with the
 mailbox, and the four lists diffed against what the org and the workbook carry.
 Until then the global value set cannot be built with confidence.
+
+## 2026-10-09 - shared Lead and Account value set deployed to UAT
+
+At the user's explicit direction, the known 21-value list is now implemented in
+UAT as the restricted Global Value Set `Tipologia_Attivita`. Salesforce cannot
+attach an existing local picklist to an existing global set, so the safe
+migration created `Tipologia_Attivita_Globale__c` on both Lead and Account and
+retained the two legacy fields as rollback data.
+
+All active source references now use the replacement field: Lead conversion,
+Account and Lead layouts and Dynamic Forms pages, Account list views, the
+`Lead_Management`, `Agente`, and `Account_Import_UAT` permission sets, and the
+Account commercial-import preparation script. The first UAT bundle deployed as
+`0AfMA00000CtRgb0AF`.
+
+The idempotent `TipologiaAttivitaMigration` utility copied three active Lead
+records and 182 Account records with no failures. One populated historical Lead
+is already converted and cannot be updated by Salesforce; its value was copied
+to the converted Account instead and remains preserved on the legacy Lead
+field. A final rerun reported zero Lead changes, zero Account changes, and zero
+failures, confirming semantic equality after Salesforce normalized multi-select
+value order.
+
+The old fields are absent from active pages, layouts, permissions, list views,
+conversion logic, and import output, but have not been deleted. The Quote field
+and Locale-to-Quote defaulting remain open, so this item stays in progress.
+
+## 2026-10-09 - required only for Locale
+
+The user explicitly required `Tipologia Attivita` only for Account records of
+record type `Locale`. Source keeps the replacement field schema-optional so it
+remains optional for `Azienda`, marks it required on the Locale layout and
+Dynamic Form, and enforces the record-type-specific rule with
+`Tipologia_Attivita_required_for_Locale`. This does not resolve the still-open
+Quote field or Locale-to-Quote defaulting. UAT dry-run
+`0AfMA00000CtLsx0AF` validated all five dependent components with no errors.
+Deployment `0AfMA00000CtNOU0A3` then succeeded with all five components and no
+errors, activating the Locale-only requirement in UAT.
+
+## 2026-10-09 - legacy fields deleted from UAT
+
+At the user's explicit direction, the migrated legacy fields
+`Account.Tipologia_Attivita__c` and `Lead.Tipologia_Attivita__c` were deleted
+from source and UAT after successful migration. The completed one-time
+`TipologiaAttivitaMigration` class was deleted with them. Salesforce retains
+the deleted custom fields in Deleted Fields because the deployment did not use
+purge-on-delete.
+
+The cleanup exposed a newer UAT `QuoteTriggerHandler` dependency that was not
+yet present in local source. Its Locale validation and Quote defaulting logic
+was reconciled into source and changed to read
+`Account.Tipologia_Attivita_Globale__c`; the Quote destination remains
+`Quote.Tipologia_Attivita__c`. The `Agente`, `Account_Import_UAT`, and
+`Lead_Management` permission sets now grant the replacement Account and Lead
+fields instead of the deleted fields. Dry-run `0AfMA00000CtUPx0AN` and actual
+deployment `0AfMA00000CtUTB0A3` both completed all seven components with no
+errors (`NoTestRun`).

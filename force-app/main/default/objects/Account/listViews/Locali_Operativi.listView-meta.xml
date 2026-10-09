@@ -6,7 +6,7 @@
     <columns>ACCOUNT.ADDRESS1_CITY</columns>
     <columns>ACCOUNT.PHONE1</columns>
     <columns>Email_Contatto_Principale__c</columns>
-    <columns>Tipologia_Attivita__c</columns>
+    <columns>Tipologia_Attivita_Globale__c</columns>
     <columns>Stagionale__c</columns>
     <columns>Agente__c</columns>
     <columns>Zona__c</columns>

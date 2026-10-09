@@ -32,7 +32,7 @@
                 <field>Nome_Locale__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Partita_IVA__c</field>
             </layoutItems>
             <layoutItems>
@@ -107,6 +107,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>Stato_Azienda__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>Phone</field>
             </layoutItems>
             <layoutItems>
@@ -115,7 +119,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Tipologia_Attivita__c</field>
+                <field>Tipologia_Attivita_Globale__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
