@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-30
-updated: 2026-10-05
+updated: 2026-10-09
 depends_on: [OI-126, OI-74, OI-198]
 blocks: [OI-177]
 requirement: BIG-06
@@ -180,3 +180,27 @@ link's granularity is being reopened
 
 ⬛ `Inviato` remains withdrawn; nothing in this sweep revisited it. `AssetStatus`
 stays at seven values.
+
+## ⚠ 2026-10-09 - the org disagrees with this table, and what exists is failing
+
+**Part of the send contract above does exist — org-side, invisible to the
+repository, and broken.** A Salesforce flow error mail at **2026-10-09T05:53:21Z**
+reports a flow named **`Automazione: Invio Biglietto assegnato Flow`** running
+through a ticket email and an `Aggiorna Asset Ticket Sent` element. Full reading
+in [OI-225](OI-225%20The%20ticket%20dispatch%20flow%20sends%20to%20a%20null%20recipient%20and%20fails%20the%20asset%20write.md).
+
+So of the five rows in the table above:
+
+- the **transactional send** and the **asset write-back after the send** are
+  implemented as flow elements and were exercised;
+- the send delivered to **`null`** and the write-back **failed**, so neither
+  works;
+- `force-app/main/default/flows/` is **empty** — the project keeps no flow
+  metadata under source control, which is why this table, written from the
+  repository, reported them absent.
+
+🔑 **The table was not wrong about `force-app`; it was wrong as a statement about
+the system.** Corrected here rather than rewritten, because what the org contains
+has not been inventoried and a flow error mail is not an inventory. **The build
+state of this contract is now unknown rather than "none", and settling it needs
+an org inspection this sweep did not do.**

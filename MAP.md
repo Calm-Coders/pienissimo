@@ -2,9 +2,86 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-08 (nightly sweep — the Blueprint went to signature with two of its precisazioni reopened the same hour, and the gating payment defect is untouched a second night) · Source of record: [notes/](notes/)
+Last updated: 2026-10-09 (nightly sweep — the client agreed and ROMI built the edition mapping rule the same day, a customer-facing ticket send is failing in an unidentified org, and the gating payment defect is untouched a third night) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟡🔑 **2026-10-09 — the client came back to the table, the status channel broke a week of silence, and a customer-facing send is failing in an org nobody has identified.** Nightly sweep,
+  watermark 2026-10-08T22:00Z. **One client session** — a 31m call with Fabrizio Paganelli — **13 commits**,
+  and the first `#tproj-pienissimo` status post in seven days. Build claims are repository arithmetic
+  against `DevMain` **`edc063b`**.
+  🟢🔑 **[OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)'s population rule
+  was agreed with the client and built the same afternoon.** At
+  [the 09/10 call](notes/meetings/2026-10-09%20Accesso%20e%20Tema%20Prodotti.md) Fabrizio Paganelli
+  proposed populating the edition mapping **by categoria merceologica instead of by article code** —
+  _"faccio solo una riga con la categoria merciologica 02"_ — Aurel Mrruku stated the consequence
+  (every article in the category, active or not, attached automatically) and got _"Va bene così."_
+  `c5e4a1e` builds it. 🔑 **One of the few rulings here taken with a client in the room and implemented
+  the same day**, which is the direct corrective to 08/10's closing note. 🔴 The `E10` collision stands.
+  🆕🔴 **New: [OI-225](notes/items/OI-225%20The%20ticket%20dispatch%20flow%20sends%20to%20a%20null%20recipient%20and%20fails%20the%20asset%20write.md)
+  — a ticket send is failing and nobody has noticed.** A flow error mail at 05:53:21Z, **unread**,
+  reports `Automazione: Invio Biglietto assegnato Flow` with **three distinct defects**: `Get Ticket PDF`
+  found nothing and the decision still took **`Si_PDF`**; the email went to **`null`** with tracking on;
+  the asset write-back **failed**, leaving OI-199's re-send guard unwritten. 🔴
+  **`force-app/main/default/flows/` is empty** — this project keeps *no* flow metadata in source
+  control, so the flow is org-only, undiffable and will not travel with a deploy. ⚠ That qualifies
+  [OI-197](notes/items/OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md):
+  two of its five "unbuilt" rows **do exist org-side and are broken**, so the contract's state is
+  *unknown*, not "none". ⚠ **Which org is not established** — `00Dbl000005BSMH`, the base My Domain
+  host without `--partial`, subject not prefixed `Sandbox:`; that id is in no record and the partial
+  sandbox is `00DMA000004nMMr`. Production is the natural reading and **no claim is made**. The
+  **16/10 Marketing UAT** exists to test this send.
+  🆕 **New: [OI-226](notes/items/OI-226%20The%20gruppo%20merceologico%20stands%20in%20for%20the%20flag%20annullato%20only%20for%20the%20tests.md)**
+  — Mexal's gruppo merceologico now drives `Product2.IsActive` because `flag annullato` is live in Zoho
+  (_"sennò viene fuori casino con Zoo"_), **just over 30 active codes**, confirmed by the client as
+  _"in sostituzione provvisoria"_ and committed in `c147aa0`. 🔴 Aurel Mrruku's own warning is the row:
+  reverting it _"devo fare un cambiamento a codici in produzione"_, and _"se dopo 2-3 mesi… io non sono
+  più su sul progetto, lì è un casino. Quindi decidiamo un momento anche con la parte di business."_
+  The answer was _"ce lo ricordiamo"_ — **no decision, no owner, no date**; natural deadline is the
+  **Zoho dismissal 31/10**. ⚠ **Both keys moved by hand in the client's live ERP the same day the code
+  reading them was written** — he also hand-corrected the article **categories** the new mapping keys on.
+  🔴 **[OI-145](notes/items/OI-145%20Order%20header%20discounts%20are%20removed.md)'s open check is
+  answered in the negative, by the client.** Fabrizio Paganelli: _"ho bisogno che ci sia prezzo di
+  listino, lo sconto e il netto evidenziato nelle fatture"_; Aurel Mrruku: _"abbiamo solo un prezzo nel
+  tracciato"_. On a live order they confirmed the one value sent **is the net price** — so the invoice
+  cannot show list price or discount. ⚠ Known once and parked: Mirko Merendi named another Mexal
+  interface and **advised against it over rounding**, which collides with the 18/09 fixed-price ruling
+  adopted *because* of rounding. Call with him **next week**, ⚠ unbooked.
+  🔑 **[OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md) has scoped work after fifteen
+  weeks** — Fabrizio Mastracci was **commissioned two forms**, `camerierivenditori.com` and
+  `pienissimo.live`, needing their fields on Lead plus hidden UTMs and **`Interessato a`, `Categoria`,
+  `Sottocategoria`, `Origine Lead`**. 🔴 _"non ci sono in prod sti campi, li stiamo creando in uat"_, and
+  the Prod creation has **no owner and no date**. 🔑 Four of those are
+  [OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)'s
+  picklists, still attachment-only after four runs — **a Web-to-Lead post cannot write a value the org
+  lacks**, so the unreachable workbook now blocks a committed deliverable. ⚠ The dry run is gated on
+  **Matteo Distaso supplying a WhatsApp number**; `pienissimo.live` is the form reported unreachable on
+  three prior runs and is now a build; `camerierivenditori.com` is a **new domain** with no stated owner.
+  🔴🔑 **[OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  did not move, third night.** Byte-for-byte unchanged at `edc063b`; `dt_sca_pg` still parsed ten lines
+  above the test that ignores it, and the field `description` still documents the unqualified rule as
+  intended. ⚠ Aurel Mrruku was in the Mexal classes again today. **Nothing in any source mentioned it.
+  Four days to the 13/10 confirmation.**
+  🟢 **Elena Spini's status post** (18:45 CEST, first since 02/10) cuts the estimate **25 → 20 days**,
+  confirms the Woo payment mapping (card/PayPal → 2, bonifico → 12), the agent stays the one at order
+  creation, and **books move to the new WooCommerce shop and are not handled in Salesforce for now**.
+  ⚠ **It overstates one thing**: _"Business Blueprint confermato e firmato"_ — the record only has
+  _"lo stanno mandando in firma"_ (08/10). **No signed artifact has been seen.**
+  🆕 **A [manual-steps tracker](notes/Manual%20Steps%20Pienissimo%20tracker.md) exists** (Rexhina Hysi,
+  09:21:27Z) — Lead record-type settings and the **run-as user and batch size of the
+  `ParticipantDocumentRequestTrigger` platform-event subscriber**. 🔴 **Both `Done` in UAT, blank for
+  Prod**, no owner, no date, nine days out. ⚠ Two rows is not the full inventory.
+  ⚠ **UAT now writes to the client's live ERP** — order creation and customer anagrafica left open on
+  Mexal: _"se crei un ordine, fai tutti i step, l'ordine andrà in Mexal."_
+  ⚠ **`Flows & Objects.drawio` moved at 13:37:28Z** after six static runs — still an unparseable
+  `mxfile`, so **what changed is not established**. ⚠ Of record: the `Natura` decode restated as
+  **first letter biglietto, second bundle** (after a false start, so worth a code check); ~10 minutes of
+  a client call spent recovering Salesforce access via Proton Pass, during which the
+  `amministrazione@` user hit _"privilegi sufficienti"_ and Aurel Mrruku did not know what Elena Spini
+  had granted it; **Fathom returned no Pienissimo meeting for a fourteenth run**.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **227**.
+  🔴 **Twenty-one consecutive nightly reports with no human reply.**
+  — [trace](notes/traces/Source%20trace%202026-10-09%20nightly.md)
 
 - 🟡🔑 **2026-10-08 — the Blueprint went to signature, and the client reopened two of its precisazioni the same hour.** Nightly sweep,
   watermark 2026-10-07T22:00Z. **No client session** — one ROMI-internal working session of ~2h — but

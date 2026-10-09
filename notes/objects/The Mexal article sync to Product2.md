@@ -134,3 +134,31 @@ describes, and this is the first code in the project to defend against it.
   catalogue the client owes.** The bundle-only article codes and the catalogue
   prices are still outstanding by mail; whether this sync makes them unnecessary
   is **unasked**, not answered.
+
+## ⚠ Correction, 2026-10-09: the `cod_grp_merc` change is committed
+
+The section above says _"Deployed to Pienissimo UAT only, not committed, not in
+Prod."_ The note was written **in the commit that made the change**, so the
+middle clause was stale on arrival. `c147aa0` (Aurel Mrruku, 09/10 16:56 CEST) is
+**in `DevMain`** via PR #91. `DevMain` head is **`edc063b`**.
+
+🔴 **"not in Prod" still holds.** And the decision it implements is explicitly
+**temporary** — the field is a stand-in for `flag annullato`, adopted so the
+client would not have to touch a field Zoho still depends on, with a production
+code change implied if it is ever reverted. Aurel Mrruku asked for a business
+decision on it in the room and did not get one. That is
+[OI-226](../items/OI-226%20The%20gruppo%20merceologico%20stands%20in%20for%20the%20flag%20annullato%20only%20for%20the%20tests.md),
+and this note should not be read as recording a settled rule.
+
+🟢 **The client reports the Mexal side done.** Fabrizio Paganelli, 09/10
+10:41:49Z: _"ho sistemato l'anagrafica su Mexal… Ho valorizzato a S il campo
+Gruppo Articolo (in sostituzione provvisoria del flag annullato) Così facendo i
+prodotti attivi (per fare i test) sono poco più di 30 codici."_ Aurel Mrruku
+replied at 14:24:35Z that he had made the changes and **updated the products for
+the UAT**. ⚠ _"in sostituzione provvisoria"_ is the client's own wording, so both
+sides have the workaround on record as provisional.
+
+⚠ **Just over 30 active codes** is the client's figure and it is close to, but
+not the same as, the **33 `S` articles** this note records from the Mexal scan.
+Neither number was re-measured after his correction; the article **categories**
+were being hand-fixed in Mexal the same morning too.

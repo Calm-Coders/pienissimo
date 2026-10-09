@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-10-06
+updated: 2026-10-09
 source: notes/meetings/2026-09-18 Data Model Parte 6.md
 ---
 
@@ -85,3 +85,57 @@ Consequences:
   total can differ from the quote by a few cents.
 - ⚠ Orders already created from discounted quotes keep the full price. Whether any
   exist in UAT or Prod is **unchecked**.
+
+## 🔴 2026-10-09 — the client raised it himself, and it is worse than "not verified"
+
+At [the 09/10 call](../meetings/2026-10-09%20Accesso%20e%20Tema%20Prodotti.md)
+(`00:14:07`–`00:16:44`) **Fabrizio Paganelli brought this up unprompted**, and
+the exchange turns the open check above into a known gap.
+
+**His requirement, restated:**
+
+> _"quando escono le fatture io ho bisogno che ci sia prezzo di listino, lo
+> sconto e il netto evidenziato nelle fatture."_
+
+**Aurel Mrruku's answer — the order tracciato has no such fields:**
+
+> _"noi non li passiamo, noi abbiamo solo un prezzo nel tracciato, non ci sono i
+> campi per prezzo di listino eccetera sui campi che ha fornito Mirko."_
+
+Looking at a live test order together, they confirmed the single value Salesforce
+sends **is the net price** (_"è il prezzo scontato quello, è il prezzo netto
+praticamente"_).
+
+🔴 **So the check OI-145 was carrying is answered in the negative.** Of the five
+values Fabrizio Paganelli required on 18/09 — quantity, list price, total value,
+discount applied, net amount — the Mexal order payload carries the net amount and
+**not the list price or the discount**. The quote PDF still derives all five
+(✅ above); the invoice, which is what the customer receives from Mexal, cannot.
+
+⚠ **This was already known once and parked.** Aurel Mrruku recalled asking Mirko
+Merendi exactly this: there is **another Mexal interface** that accepts the
+breakdown, and Mirko Merendi **advised against it over rounding errors** —
+_"ha detto che c'è un altro servizio, ma ha detto che non lo consiglia perché ci
+sono problemi sugli arrotondamenti"_. The 18/09 session had reached the same
+conclusion from the other side: fixed prices are preferred over percentage
+discounts **because** of decimal rounding in Mexal. The rounding objection and
+the invoice requirement are in direct conflict and nobody has resolved them.
+
+🟡 **Two possibilities neither man ruled out**, recorded as open rather than
+answered: that Mexal **derives** the list price and discount itself from the
+article's own listino when it invoices (Fabrizio Paganelli: _"Può darsi che
+questo prezzo qui lo metta lui in automatico"_), and that the field simply exists
+and was missed (Aurel Mrruku: _"guarda se c'è il campo a me 5 minuti costa"_).
+
+**Action, with a date at last:** a call with **Mirko Merendi next week** on
+_"listino, sconto e netto in fattura"_ — on the 09/10 next-step list, in Elena
+Spini's 09/10 status post, and slipped from Friday afternoon because Mirko
+Merendi does not work then. ⚠ **Still no booking**, and the production
+confirmation is 13/10.
+
+🔑 **Why this is now a go-live row and not a tidy-up.** The invoice is the
+document the customer receives and the one Fabrizio Paganelli, who runs
+administration, says must show the discount. If Mexal cannot render it from what
+Salesforce sends, the options are a second Mexal interface its own vendor
+advises against, a derivation nobody has confirmed, or invoices that do not show
+a discount the customer was promised.

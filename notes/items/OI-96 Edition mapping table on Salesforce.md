@@ -377,3 +377,31 @@ same campaign automatically**, with the same Attiva value
   the campaign. Mapping the same product again was refused by the existing
   overlap rule, and a product without a category created 1 mapping. The Apex
   suite could not confirm it: see OI-64, 09/10.
+
+### ⚠ Correction, same day: it is committed
+
+The paragraph above says _"not committed, not in Prod"_. It was **written in the
+commit that built it**, so the first half was stale the moment it landed:
+`c5e4a1e` (Aurel Mrruku, 09/10 19:09 CEST) is **in `DevMain`** via PR #92, and
+PR #93 carried it into `DevAnita09`. `DevMain` head is **`edc063b`**.
+
+It adds `MappaturaEdizioneProductSearch.cls` (218 lines),
+`MappaturaEdizioneTriggerHandler.cls` (145 lines), the
+`mappaturaEdizioneNew` / `mappaturaEdizioneNewModal` LWCs and an Aura override
+for the New button, extends `Mappatura_Edizione__c` and `Product2`, and grants
+access through `Campaign_Management` and `Full_Permission`.
+
+🔴 **"not in Prod" still holds**, and so does the `E10` collision: mapping any
+`E10` product maps the Golden Numbers articles to the same edition. ⚠ **The
+category key itself was being hand-corrected in Mexal the same morning** — see
+[OI-226](OI-226%20The%20gruppo%20merceologico%20stands%20in%20for%20the%20flag%20annullato%20only%20for%20the%20tests.md)
+— so the automatic mapping now rests on a field that changed by hand after the
+UAT verification was done, and has not been re-checked.
+
+🟢 **The client agreed to this population rule in the room** on the morning of the
+same day, before it was built — see
+[the 09/10 call](../meetings/2026-10-09%20Accesso%20e%20Tema%20Prodotti.md).
+Fabrizio Paganelli proposed it, Aurel Mrruku stated the consequence that every
+article sharing the category is attached active or not, and he answered _"Va bene
+così."_ **That makes it one of the few rulings on this project taken with the
+client present and implemented the same day.**

@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-10-08
+updated: 2026-10-09
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -342,3 +342,59 @@ now with **13 days to go-live**.
 ⚠ Matteo Distaso's 06/10 delivery covered the **two prioritised forms**. This
 workbook is the other 104, and the `pienissimolive.it` form he reported
 _"non risulta raggiungibile"_ is still unreachable.
+
+## 🔑 2026-10-09 - two forms are commissioned, and the Lead fields they need are not in Prod
+
+**The first concrete, scoped form work on this item in fifteen weeks — and it
+arrived as a field list, in a chat, with no date.**
+
+In the marketing group DM, **11:51:54 CEST**, Fabrizio Mastracci:
+
+> _"Mi hanno commissionato due form che ti riporto di seguito:
+> (camerierivenditori.com e pienissimo.live/). tutti i campi che vedi in questi
+> form mi servono sui lead poiche atterreranno li. In aggiunta ci sono dei campi
+> nascosti che ti riporto di seguito: utm_campaign, utm_content, utm_medium,
+> utm_source, utm_term, Interessato a, Categoria, Sottocategoria, Origine Lead"_
+
+🟢 **These are the two prioritised forms**, consistent with the 02/10 status post
+(_"si parte da Pienissimo Live e Camerieri Venditori"_) and with Elena Spini's
+09/10 status post, which specifies them as **Web-to-Lead in HTML with `Partita
+IVA` mandatory, hidden UTM fields and a verification pop-up**.
+
+🔴 **The fields are not in production.** He asked outright
+(11:23:59) whether the Lead object in Prod already has every field. Aurel Mrruku:
+_"non abbiamo migrato tutto perche ci stiamo lavorando"_ and, at 11:54:13,
+**_"questo requisitoo ci è arrivato ieri anche a noi, non ci sono in prod sti
+campi, li stiamo creando in uat"_**. Elena Spini's status post carries the
+matching next step: _"Creazione in PROD dei campi Lead necessari ai form di
+Fabrizio M."_ — **no owner, no date.**
+
+🔑 **Four of the hidden fields are OI-115's picklists.** `Categoria`,
+`Sottocategoria`, `Origine Lead` and `Interessato a` are the four Lead picklists
+whose value lists have been owed since 03/09 and are still reachable only as a
+mail attachment — see
+[OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md).
+**A form cannot post into a picklist whose values do not exist**, so the
+unreachable workbook now blocks a committed deliverable rather than a future one.
+
+🔴 **The schedule for them is unsettled, in the same thread.** Fabrizio
+Mastracci asked _"i form sono post live giusto?"_ (12:32:29). Elena Spini: _"io
+in realtà speravo di farli vedere agli UAT, ma nel caso faremo meeting ad hoc"_,
+then _"ovviamente priorità al giro dei flussi"_, then asked for an internal
+pre-UAT run **Tuesday or Wednesday**. His answer: _"Non appena matteo mi da il
+numero per whatsapp"_, and when she asked about a run without WhatsApp,
+**_"Inizio prossima settimana"_**. ⚠ So the forms are between "shown at UAT" and
+"post-live", the marketing flows outrank them, and the dry run is gated on
+**Matteo Distaso supplying a WhatsApp number** — a dependency that appears
+nowhere else in the records.
+
+⚠ `pienissimo.live` **is the form Matteo Distaso reported `non risulta
+raggiungibile`** on three previous runs. It is now a commissioned build rather
+than a broken link, which supersedes the unreachability as a question: nobody
+needs the old form if this one replaces it. **That nobody said so explicitly is
+why both readings are recorded here.**
+
+⚠ `camerierivenditori.com` is a **new domain** on this item. The subdomain work
+this row has tracked since June concerned `pienissimo.com`; nothing states who
+owns `camerierivenditori.com`, whether it needs its own sender authentication, or
+how it relates to the `E07 Camerieri Venditori` article category.

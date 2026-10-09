@@ -277,3 +277,24 @@ was reconciled into source and changed to read
 fields instead of the deleted fields. Dry-run `0AfMA00000CtUPx0AN` and actual
 deployment `0AfMA00000CtUTB0A3` both completed all seven components with no
 errors (`NoTestRun`).
+
+## 🔴 2026-10-09 - the unreachable picklist workbook now blocks a commissioned deliverable
+
+The four Lead picklists this item carries — `Categoria`, `Sottocategoria`,
+`Origine Lead`, `Interessato a` — appear verbatim in **Fabrizio Mastracci's
+hidden-field list for the two commissioned forms** (marketing DM, 11:51:54 CEST;
+see [OI-14](OI-14%20Marketing%20forms%20and%20subdomain.md)).
+
+🔴 **Aurel Mrruku confirmed they are not in production** — _"non ci sono in prod
+sti campi, li stiamo creando in uat"_ (11:54:13) — and Elena Spini's 09/10 status
+post carries _"Creazione in PROD dei campi Lead necessari ai form di Fabrizio
+M."_ as a next step with **no owner and no date**.
+
+**What changes for this row:** `Mappatura_Categorie_Sottocategorie_Origine
+Lead_Tipologiattività.xlsx` has been unreachable for four consecutive sweeps —
+a mail attachment no connected tool can open. Until now that blocked a field
+definition. It now blocks a **form a client has commissioned**, because a
+Web-to-Lead post cannot write a picklist value that does not exist in the org.
+
+**The shortest path is unchanged and still not taken:** ask Elisa Migliano or
+Elena Spini to put the workbook in Drive.

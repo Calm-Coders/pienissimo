@@ -10,6 +10,67 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-09 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-10-08T22:00Z** (one day). Read in full: the **09/10 client session**
+  (Gemini notes *and* the whole 31m transcript — short enough not to be an
+  escalation), the `Anagrafica Prodotti` thread, the **flow error mail's entire
+  interview trace**, and the new `Manual Steps Pienissimo` sheet. Verified
+  today's 13 commits against the repository and re-verified OI-212 byte-for-byte.
+- **State:** committed to `DevMain`. **Two new items OI-225, OI-226**; one
+  meeting note (`2026-10-09 Accesso e Tema Prodotti`); one reference note (the
+  Manual Steps tracker). Updated OI-14, OI-96, OI-115, OI-145, OI-197, OI-212 and
+  the Mexal article sync note; `MAP.md`, `INDEX.md`, both trackers (rows 225–226
+  added, 4 rows amended in each), both recaps §59, trace. **Register not amended,
+  stays v1.6.** Next free id is **227** (189–193 still reserved).
+- **The headline nobody has seen: a customer-facing ticket send is failing, and
+  the error mail is unread.** `Automazione: Invio Biglietto assegnato Flow`
+  (05:53:21Z) found no ticket PDF, **took the `Si_PDF` branch anyway**, emailed
+  **`null`** with click and open tracking on, and then failed the asset
+  write-back that is OI-199's re-send guard — three defects, not one. **OI-225.**
+  🔴 `force-app/main/default/flows/` is **empty**: this project keeps no flow
+  metadata under source control at all, so the flow is org-only, undiffable, and
+  will not travel with a metadata deploy. ⚠ **Which org is not established** —
+  `00Dbl000005BSMH`, the base My Domain host without `--partial`, subject not
+  prefixed `Sandbox:`; that id is in no record and the partial sandbox is
+  `00DMA000004nMMr`. Production is the natural reading and **I made no claim**.
+  The **16/10 Marketing UAT** exists to test this send.
+- **The good news is real and worth naming:** OI-96's population rule was
+  **agreed with the client in the room and built the same afternoon** — by
+  categoria merceologica, not article code (`c5e4a1e`, PR #92). That is the
+  direct corrective to 08/10's closing observation that none of that day's six
+  `Concordato` had a client present.
+- **Next:** **OI-212 is still the one to fix** and did not move for a **third**
+  night — both predicates byte-for-byte unchanged at `edc063b`, `dt_sca_pg`
+  parsed ten lines above the test that ignores it, and the field `description`
+  still documents the unqualified rule as intended. Nothing in any source
+  mentioned it. **Four days to the 13/10 confirmation.** Then: get somebody to
+  identify OI-225's org, and read OI-223's blast radius before the Prod deploy.
+- **Watch:** (1) **two notes you wrote today say "not committed" and are wrong** —
+  OI-96 and the article sync note were each written *inside* the commit that built
+  what they describe, so the clause was stale on arrival; corrected, and the
+  mechanism named so it is recognisable next time. "Not in Prod" still holds in
+  both. (2) **OI-226 is a provisional workaround with no decision behind it** —
+  the gruppo merceologico stands in for `flag annullato`, your own warning in the
+  room was that reverting it needs a production code change and that the risk is
+  it outliving you on the project; the answer was _"ce lo ricordiamo"_. Natural
+  deadline is the Zoho dismissal, **31/10**. (3) **Both Mexal keys moved by hand
+  in the client's live ERP the same day the code reading them was written** — the
+  active flag *and* the article categories the new category mapping keys on;
+  neither re-verified from Salesforce. (4) **OI-145 is answered in the negative**:
+  the order tracciato carries the net price only, so the invoice cannot show list
+  price or discount — and Mirko Merendi's alternative interface was advised
+  against over rounding, which collides with the 18/09 fixed-price ruling adopted
+  *because* of rounding. If next week's call says Mexal cannot carry the
+  breakdown, **signed `ORD` wording will have to change**. (5) `#tproj-pienissimo`
+  reports the Blueprint _"confermato e firmato"_ — **no signed artifact has been
+  seen**; recorded as a discrepancy, not resolved. (6) **OI-197 is qualified, not
+  resolved**: two of its five "unbuilt" rows exist org-side and are broken, so its
+  build state is *unknown*, not "none". (7) `JOURNAL.md` is at **111 entries**
+  against a documented limit of 20 — archiving is overdue and **I left it alone
+  again**.
+
 ## 2026-10-09 - claude (category auto-mapping on Mappatura Edizione)
 
 - **Did:** creating a Mappatura Edizione for a product now also maps every

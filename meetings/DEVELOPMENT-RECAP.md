@@ -6317,3 +6317,207 @@ candidates rather than forcing an amendment, since the carrier remains blocked o
 the amended logic document's unreceived written confirmation (#184).
 
 **Item ids OI-189–OI-193 remain reserved. The next free id is 225.**
+
+## 59. Update 2026-10-09 — the client came back to the table, the status channel broke a week of silence, and a customer-facing send is failing in an org nobody has identified
+
+Swept from watermark **2026-10-08T22:00Z**, one day. **One client session** — a
+31-minute call with Fabrizio Paganelli — **13 commits**, and the first
+`#tproj-pienissimo` status post in seven days. Every build claim below is
+repository arithmetic against `DevMain` **`edc063b`**; the org was not opened.
+
+### A ruling taken with the client, and built the same afternoon
+
+🟢 **[#96](open-items.md)'s population rule is settled and delivered.** At
+[the 09/10 call](../notes/meetings/2026-10-09%20Accesso%20e%20Tema%20Prodotti.md)
+Fabrizio Paganelli proposed populating the edition mapping **by categoria
+merceologica instead of by article code**, because the category groups every
+article code belonging to one event: _"anziché scrivere 1 2 3 4 5 6 righe… faccio
+solo una riga con la categoria merciologica 02."_ Aurel Mrruku accepted it, stated
+the consequence he wanted confirmed — every article sharing that category,
+**active or not**, is attached automatically — and got _"Va bene così."_ Six rows
+a year instead of about fifty.
+
+`c5e4a1e` (19:09 CEST, PR #92) builds it: `MappaturaEdizioneProductSearch`,
+`MappaturaEdizioneTriggerHandler`, the `mappaturaEdizioneNew` LWCs and a New-button
+override. 🔑 **This is one of the few rulings on this project agreed with the
+client present and implemented the same day** — and a corrective to §58's closing
+observation that none of the previous day's six `Concordato` had a client in the
+room.
+
+🔴 **The `E10` collision still applies**: mapping any `E10` product also maps the
+Golden Numbers articles to that edition.
+
+### The workaround that needs a decision nobody has taken
+
+🆕 **[#226](open-items.md).** Fabrizio Paganelli cannot touch `flag annullato` —
+the field the article sync should read — because Zoho still depends on it:
+_"sennò viene fuori casino con Zoo."_ He set Mexal's **gruppo merceologico** to
+`S` on the articles that should be active instead, _"un escamotage solo in questo
+momento"_, leaving **just over 30 active codes** for the tests, and confirmed it
+by mail at 10:41:49Z as _"in sostituzione provvisoria del flag annullato"_.
+`c147aa0` (16:56 CEST, PR #91) makes `cod_grp_merc` drive `Product2.IsActive`.
+
+🔴 **The warning Aurel Mrruku attached is the finding**, in his words:
+_"nel momento in cui decidiamo di non usare più il gruppo merciologico, ma il Fleg
+annullato, io devo fare un cambiamento a codici in produzione, sappialo"_ — and
+_"se dopo 2-3 mesi decidete di non usare più questo flag e io non sono più su sul
+progetto, lì è un casino. Quindi decidiamo un momento anche con la parte di
+business."_ The answer was _"ce lo ricordiamo"_: **a shared memory, not a
+decision, an owner or a date.** The business conversation he asked for has not
+happened; the natural deadline is the **Zoho dismissal on 31/10**.
+
+⚠ **Both keys moved by hand in the client's live ERP on the day the code reading
+them was written.** In the same call Fabrizio Paganelli found the article
+**categories** on Mexal wrong — the same code used for consulenze and for
+Pienissimo Intensive, _"su Maxal adesso ce l'ho un attimo invertito"_ — and
+hand-corrected them. Those categories are the key the new category-wide mapping
+keys on. Neither the flag nor the categories has been re-verified from Salesforce.
+
+### The invoice cannot show a discount, and the client raised it
+
+🔴 **[#145](open-items.md)'s open check is answered in the negative.** Fabrizio
+Paganelli restated his commercial requirement — _"quando escono le fatture io ho
+bisogno che ci sia prezzo di listino, lo sconto e il netto evidenziato nelle
+fatture"_ — and Aurel Mrruku answered that the Mexal order tracciato carries no
+such fields: _"noi abbiamo solo un prezzo nel tracciato, non ci sono i campi per
+prezzo di listino… sui campi che ha fornito Mirko."_ Inspecting a live test order
+together, they confirmed the single value Salesforce sends **is the net price**.
+
+Of the five values required on 18/09 — quantity, list price, total value,
+discount, net — Mexal receives the net amount and **not the list price or the
+discount**. The quote PDF still derives all five; the invoice, which is the
+document the customer receives, cannot.
+
+⚠ **This was known once and parked.** Mirko Merendi had named **another Mexal
+interface** that accepts the breakdown and **advised against it over rounding
+errors** — in direct conflict with the 18/09 preference for fixed prices, which
+was itself adopted because of rounding. Two possibilities were left open rather
+than answered: that Mexal derives the breakdown itself from the article listino,
+and that the field exists and was missed. **Action, with a date at last:** a call
+with Mirko Merendi **next week**, slipped from Friday because he does not work
+Friday afternoons. ⚠ Not booked.
+
+### A customer-facing ticket send is failing, in an org that is not identified
+
+🆕🔴 **[#225](open-items.md).** A flow error mail at **05:53:21Z**, unread at this
+watermark, reports `Automazione: Invio Biglietto assegnato Flow` failing at
+`Aggiorna_Asset_Ticket_Sent`. The interview trace carries **three distinct
+defects**: `Get Ticket PDF` returned _"Impossibile trovare i record"_ and the
+following decision still reported **`Esito eseguito: Si_PDF`**, so the no-records
+branch is unreachable; the email element reports **`Invio Biglietto inviato/a a
+null`**, with click and open tracking on; and the asset write-back **failed**,
+leaving the re-send guard of [#199](open-items.md) unwritten. `$Record` is
+reported null at interview start.
+
+🔴 **`force-app/main/default/flows/` is empty** — this project keeps **no flow
+metadata under source control at all**. The flow exists only in the org, cannot
+be reviewed in a diff, and will not travel with a metadata deploy. ⚠ That also
+qualifies **[#197](open-items.md)**, which lists the whole Salesforce-to-Marketing
+Cloud send contract as unbuilt: it was written from `force-app`, and on two of its
+five rows the org is ahead of the repository — and failing. **The contract's build
+state is now unknown rather than "none".**
+
+⚠ **Which org is not established, and it matters.** The mail names
+`Pienissimo srl (00Dbl000005BSMH)`, links to the **base My Domain host without the
+`--partial` suffix**, and its subject is **not** prefixed `Sandbox:` as the 08/10
+Apex exception mails were. That org id appears nowhere in the project records and
+the partial sandbox is `00DMA000004nMMr`, so this is not the sandbox and
+production is the natural reading — **but no record establishes the production org
+id, so no claim is made.** A mail of the same shape and org id arrived 08/10 at
+06:45:34Z for a different flow and was logged without identifying the org either.
+**If it is Prod, a customer-facing send is broken there twelve days from go-live**,
+and the **16/10 Marketing UAT** is the session that exists to test it.
+
+### Two forms are commissioned, and their fields are not in production
+
+🔑 **[#14](open-items.md) has its first scoped work in fifteen weeks.** Fabrizio
+Mastracci, marketing DM 11:51:54 CEST: _"Mi hanno commissionato due form…
+(camerierivenditori.com e pienissimo.live/). tutti i campi che vedi in questi form
+mi servono sui lead poiche atterreranno li"_, plus hidden `utm_campaign`,
+`utm_content`, `utm_medium`, `utm_source`, `utm_term`, **`Interessato a`,
+`Categoria`, `Sottocategoria`, `Origine Lead`**. Elena Spini's status post
+specifies them as **Web-to-Lead in HTML with `Partita IVA` mandatory, hidden UTMs
+and a verification pop-up**.
+
+🔴 **The fields are not in Prod.** Aurel Mrruku: _"questo requisitoo ci è arrivato
+ieri anche a noi, non ci sono in prod sti campi, li stiamo creando in uat"_, and
+the status post's next step — _"Creazione in PROD dei campi Lead necessari ai form
+di Fabrizio M."_ — has **no owner and no date**.
+
+🔑 **Four of the hidden fields are [#115](open-items.md)'s picklists**, still
+reachable only as a mail attachment after four sweeps. **A Web-to-Lead post cannot
+write a picklist value the org does not have**, so the unreachable workbook now
+blocks a committed deliverable rather than a future one.
+
+🔴 **The schedule is unsettled in the same thread.** He asked _"i form sono post
+live giusto?"_; Elena Spini hoped to show them at the UAT but ruled _"priorità al
+giro dei flussi"_ and asked for an internal dry run Tuesday or Wednesday. His
+answer: _"Non appena matteo mi da il numero per whatsapp"_, then **_"Inizio
+prossima settimana"_** — gated on **Matteo Distaso supplying a WhatsApp number**,
+a dependency that appears in no other record. ⚠ `pienissimo.live` is the form
+reported _"non risulta raggiungibile"_ on three prior runs and is now a
+commissioned build; ⚠ `camerierivenditori.com` is a **new domain** here, with no
+stated owner and no sender authentication.
+
+### The gating payment defect did not move, a third night
+
+🔴 **[#212](open-items.md) is unchanged at `edc063b`.**
+`MexalScadenzarioSearchService.cls:205-207` and `Scadenza_Fattura__c.Pagata__c`
+are byte-for-byte as they were, both testing `P || E` with **no date condition**,
+and `dt_sca_pg` is still parsed into `deadline.dueDate` **ten lines above the test
+that ignores it**. The field's own `description` still documents the unqualified
+rule as intended behaviour. ⚠ Aurel Mrruku was in the Mexal classes again today
+and neither commit touched the predicate. **Nothing in any source tonight
+mentioned it. Four days to the 13/10 confirmation.**
+
+### Of record
+
+🟢 **The status channel broke a seven-day silence.** Elena Spini posted to
+`#tproj-pienissimo` at 18:45 CEST, the first since 02/10. It revises the estimate
+**from 25 to 20 days to finish**, confirms the WooCommerce payment mapping (card
+and PayPal → code 2, bonifico → code 12), records that **the agent stays the one
+present at order creation**, and states that **books move to the new WooCommerce
+shop and are therefore not handled in Salesforce for now**, pending a change
+Sabatino Rinaldi has not scheduled. Next steps: **12/10 end-to-end UAT**,
+**client confirmation for Prod by 13/10**, the Mirko Merendi discount call next
+week, Lead fields in Prod, **16/10 Marketing UAT**, training calendar and the
+Fase 2 proposal.
+
+⚠ **It also overstates one thing.** It reports the Business Blueprint as
+_"confermato e firmato"_ — confirmed **and signed**. The evidence on the record is
+Elena Spini's own 08/10 message that it was *being sent* for signature
+(_"lo stanno mandando in firma"_). **No signed artifact has been seen by any
+sweep**, and §58 recorded the signature as the thing to look for next. Recorded as
+a discrepancy, not resolved.
+
+🆕 **A manual-steps tracker exists**, created by Rexhina Hysi at 09:21:27Z and
+shared the same morning — see
+[the reference note](../notes/Manual%20Steps%20Pienissimo%20tracker.md). It is the
+first artifact on this project collecting the org configuration no metadata deploy
+carries: Lead record-type settings, and the **running user and batch size of the
+platform-event subscriber behind `ParticipantDocumentRequestTrigger`**, which is
+the participant-document run-as user. 🔴 **Both rows are `Done` in UAT and blank
+for Prod**, with no owner and no date, nine days from the production deploy. ⚠ Two
+rows is almost certainly not the full inventory.
+
+⚠ **UAT activity now writes to the client's live ERP.** Aurel Mrruku warned,
+unprompted, that he had left order creation and customer anagrafica open on Mexal,
+so any order Fabrizio Paganelli creates in testing goes through: _"se crei un
+ordine, fai tutti i step, l'ordine andrà in Mexal."_
+
+⚠ **`Flows & Objects.drawio` moved at 13:37:28Z**, after six consecutive sweeps
+reporting it untouched. It is still an `mxfile` the Drive reader cannot parse, so
+**what changed is not established** — and it remains the only picture of the
+flows. A PNG or PDF export is still the ask.
+
+⚠ Also of record: the `Natura` decode was restated in the room — **first letter
+biglietto, second letter bundle** — ⚠ after one false start in the same exchange,
+so it is worth a code check rather than treating it as settled; **about ten
+minutes of a client call went on recovering Salesforce access** through Proton
+Pass, during which the `amministrazione@pienissimo.com` user hit _"privilegi
+sufficienti"_ and Aurel Mrruku said he did not know what access Elena Spini had
+granted it; and **Fathom returned no Pienissimo meeting for a fourteenth
+consecutive run** — the 09/10 session exists only as a Google Meet artifact.
+
+🔴 **Twenty-one consecutive nightly reports with no human reply.** The dev group
+carried one message since the last watermark: this procedure's own 08/10 report.

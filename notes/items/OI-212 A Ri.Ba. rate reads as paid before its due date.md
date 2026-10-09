@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-08
+updated: 2026-10-09
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -124,3 +124,28 @@ test by due date**. The defect was neither raised nor fixed.
 
 **Five days to the 13/10 production confirmation**, and this decides when a
 ticket becomes available.
+
+## 🔴 2026-10-09 — a third night, unmoved, at `edc063b`
+
+Re-verified tonight against `DevMain` **`edc063b`**. **Both predicates are
+byte-for-byte unchanged**:
+
+- `MexalScadenzarioSearchService.cls:205-207` — `deadline.paid =
+  deadline.paymentStatus == 'P' || deadline.paymentStatus == 'E';`
+- `Scadenza_Fattura__c.Pagata__c` — `OR(ISPICKVAL(Stato_Pagamento_Mexal__c,
+  "P"), ISPICKVAL(Stato_Pagamento_Mexal__c, "E"))`
+
+`dt_sca_pg` is still parsed into `deadline.dueDate` at lines 195-197, in the
+same loop, **ten lines above the test that ignores it**. The field's own
+`description` still reads _"Vero quando lo stato Mexal e P o E."_ — the
+unqualified rule, documented as intended behaviour.
+
+⚠ **Aurel Mrruku was in the Mexal classes again today** — `c147aa0` changed
+`MexalArticleSyncService` and `MexalSearchCalloutService`, and `c5e4a1e` added
+`MappaturaEdizioneProductSearch`. Neither touched the payment predicate.
+**Nothing in any source tonight — mail, chat, meeting, commit or ruling —
+mentioned it.**
+
+🔴 **Four days to the 13/10 production confirmation, twelve to go-live.** The
+fix remains what the 07/10 ruling asked for: `E` counts as paid only once
+`dueDate` is in the past. The data is already in the method.
