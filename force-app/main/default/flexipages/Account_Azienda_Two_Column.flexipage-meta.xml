@@ -65,6 +65,16 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.OwnerId</fieldItem>
+                <identifier>RecordOwnerIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.RecordTypeId</fieldItem>
                 <identifier>RecordRecordTypeIdField</identifier>
             </fieldInstance>
@@ -95,16 +105,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Agente__c</fieldItem>
-                <identifier>RecordAgente_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Industry</fieldItem>
                 <identifier>RecordIndustryField</identifier>
             </fieldInstance>
@@ -121,6 +121,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Email_Contatto_Principale__c</fieldItem>
                 <identifier>RecordEmail_Contatto_Principale_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Email__c</fieldItem>
+                <identifier>RecordEmail_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -287,6 +297,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Categoria_Statistica_Mexal__c</fieldItem>
+                <identifier>RecordCategoria_Statistica_Mexal_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Codice_Fiscale__c</fieldItem>
                 <identifier>RecordCodice_Fiscale_cField</identifier>
             </fieldInstance>
@@ -319,7 +339,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Partita_IVA__c</fieldItem>
                 <identifier>RecordPartita_IVA_cField</identifier>
@@ -383,6 +403,16 @@
                 <identifier>RecordCodice_ATECO_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Ateco_Stato_Attivita__c</fieldItem>
+                <identifier>RecordAteco_Stato_Attivita_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-business-left</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -395,6 +425,36 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Azienda_Obsoleta__c</fieldItem>
                 <identifier>RecordAzienda_Obsoleta_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Azienda_Precedente__c</fieldItem>
+                <identifier>RecordAzienda_Precedente_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Stato_Azienda__c</fieldItem>
+                <identifier>RecordStato_Azienda_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Tipologia_Attivita_Globale__c</fieldItem>
+                <identifier>RecordTipologia_Attivita_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-business-right</name>
@@ -443,16 +503,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Id_Zoho__c</fieldItem>
                 <identifier>RecordId_Zoho_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Tipologia_Attivita__c</fieldItem>
-                <identifier>RecordTipologia_Attivita_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-contact-left</name>
@@ -521,10 +571,30 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Agente__c</fieldItem>
+                <identifier>RecordAgente_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Zona__c</fieldItem>
                 <identifier>RecordZona_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Codice_Agente_Esterno__c</fieldItem>
+                <identifier>RecordCodice_Agente_Esterno_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-status-left</name>
@@ -582,7 +652,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Account Information</value>
+                    <value>Informazioni principali</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection_account</identifier>
@@ -600,7 +670,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Address Information</value>
+                    <value>Indirizzi</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection_address</identifier>
@@ -618,7 +688,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Mexal</value>
+                    <value>Dati MEXAL</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection</identifier>

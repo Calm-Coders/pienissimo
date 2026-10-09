@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Partita_IVA_required_for_Azienda</fullName>
+    <active>true</active>
+    <description>Requires Partita IVA only for Azienda accounts.</description>
+    <errorConditionFormula>AND(
+  $RecordType.DeveloperName = "Azienda",
+  ISBLANK(Partita_IVA__c)
+)</errorConditionFormula>
+    <errorDisplayField>Partita_IVA__c</errorDisplayField>
+    <errorMessage>Partita IVA è obbligatoria per una Azienda.</errorMessage>
+</ValidationRule>

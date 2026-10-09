@@ -10,6 +10,46 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-09 - claude (category auto-mapping on Mappatura Edizione)
+
+- **Did:** creating a Mappatura Edizione for a product now also maps every
+  product with the same `Categoria_Articolo__c` to the same child campaign
+  (after-insert trigger). It skips products already mapped there or with an
+  active overlapping mapping. No new field, no form change. Earlier attempts the
+  same day (a lookup object, a picklist, a custom New form) were rejected and
+  removed from source and UAT.
+- **State:** UAT only (`0AfMA00000CtUJV0A3`, `NoTestRun`), not committed, not in
+  Prod. Verified in a rolled-back transaction (E02: 1 → 18).
+- **Also:** `Categoria_Articolo__c` was added to the Product2 search layouts in
+  UAT and source, so the Prodotto lookup can be searched and read by category.
+- **Then:** the New button of Mappatura Edizione opens a custom form whose
+  Prodotto search matches name, code and `Categoria_Articolo__c` while typing.
+  Everything else is the standard save. UAT only.
+- **Left in UAT from the removed attempts:** the object `Categoria_Prodotto__c`
+  (23 records). It can be deleted only after the deleted fields
+  `Categoria_Prodotto_del` / `Categoria_Articolo_del` on Mappatura Edizione are
+  erased in Setup; the API cannot erase them.
+- **Watch:** 3 Account validation rules added to UAT today by "ROMI COMPANY",
+  not in the repo. The Agente one now fails all of `QuoteCommercialTest` and 10
+  `TicketingTest` methods (OI-64).
+
+## 2026-10-09 - claude (Mexal article group field drives IsActive)
+
+- **Did:** ran a read-only GET scan of Mexal `/articoli` (all 1,076 articles).
+  `cod_grp_merc` holds only `S` (33) or `N` (1,043). Aurel Mrruku then decided
+  that it drives `Product2.IsActive` (`S` = active).
+- **Built:** `MexalArticleSyncService` and `MexalSearchCalloutService` now read
+  `cod_grp_merc` and set `IsActive` on new and existing products. **Deployed to
+  UAT only (`NoTestRun`), not committed, not in Prod.** Verified from UAT that the
+  search returns the field.
+- **Data:** in UAT, 235 `N` Items were deactivated (235/235 succeeded). The 17
+  Items with no Mexal article were left untouched, as were the bundles and Prod
+  (whose two Items are `TEST MKT`, not in Mexal). Detail in
+  [the article sync](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+- **Watch:** 24 `S` articles have no Product2 in UAT. Not verified: whether
+  changing `cod_grp_merc` moves `data_ult_mod`. `MexalIntegrationTest` fails
+  7/43 in UAT, all outside the article sync; recorded in OI-64.
+
 ## 2026-10-08 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark

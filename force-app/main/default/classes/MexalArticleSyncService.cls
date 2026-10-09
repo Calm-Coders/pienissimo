@@ -245,11 +245,14 @@ public without sharing class MexalArticleSyncService {
         continue;
       }
 
-      // Existing products keep the active state curated in Salesforce.
+      // Without cod_grp_merc, existing products keep the active state curated
+      // in Salesforce and new ones fall back to the Mexal active state.
       if (existingProduct == null) {
-        product.IsActive = result.activeByCode.get(
-          normalizeMatchKey(product.External_Product_Code__c)
-        );
+        if (!product.isSet(Product2.IsActive)) {
+          product.IsActive = result.activeByCode.get(
+            normalizeMatchKey(product.External_Product_Code__c)
+          );
+        }
         if (itemRecordTypeId != null) {
           product.RecordTypeId = itemRecordTypeId;
         }
@@ -346,6 +349,12 @@ public without sharing class MexalArticleSyncService {
       Product2.Alq_Iva__c,
       trimToLength(getString(article, 'alq_iva'), 10)
     );
+
+    // cod_grp_merc is the Salesforce active flag (user decision, 2026-10-09):
+    // S = active, anything else = inactive, for new and existing products.
+    if (article.containsKey('cod_grp_merc')) {
+      product.IsActive = isMexalYes(getString(article, 'cod_grp_merc'));
+    }
 
     // A blank or unknown natura leaves the flags curated in Salesforce.
     String natureCode = getString(article, 'cod_natura');

@@ -5,7 +5,7 @@ status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-14
-updated: 2026-10-08
+updated: 2026-10-09
 depends_on: [OI-116, OI-121]
 requirement: [INT-01, BIG-02]
 source: commit e06a1b4 on DevAnita, PR #43, read at 2026-09-14
@@ -81,6 +81,33 @@ the nightly cursor**.
   10 s CPU limit.** The nightly batch runs asynchronously with a 60 s limit, so
   it is safe. But a long-range `syncModifiedSince` started from the UI will
   fail as the catalogue grows.
+
+## Active state from `cod_grp_merc` (09/10)
+
+**Decision (Aurel Mrruku, 2026-10-09): Mexal's `cod_grp_merc` decides
+`Product2.IsActive`. `S` = active, anything else = inactive.** Mexal uses the
+field as a yes/no flag, not as a group code
+([the integration](../flows/The%20Mexal%20integration.md)).
+
+- **The sync:** `cod_grp_merc` was added to the article search fields. When the
+  response carries it, it sets `IsActive` on **new and existing** products. It
+  overrides `gest_annullato` / `gest_attiva` and the earlier rule that kept the
+  Salesforce state on existing products. If the key is missing from the response,
+  the old behaviour applies.
+- **Deployed to Pienissimo UAT only, not committed, not in Prod.** Verified from
+  UAT with a read-only `Mexal_Articoli_Ricerca`: status 200, `cod_grp_merc`
+  present. ⚠ The nightly run only picks up articles whose `data_ult_mod` moved.
+  **Not verified:** whether changing `cod_grp_merc` in Mexal moves `data_ult_mod`.
+- **One-off alignment in UAT:** Mexal has 1,076 articles, 33 of them `S`. Of
+  UAT's 1,068 Items, 1,051 match a Mexal article. **235 `N` Items were
+  deactivated** (bulk job `750MA00000RlewvYAB`, 235/235 succeeded). After this,
+  the 9 `S` Items are active and the 1,042 `N` Items are inactive.
+- **Left untouched:** the **17 Items with no Mexal article**, all still active.
+  They are demo and test products created by hand in July and September. Also
+  untouched: the bundles, and **Prod**. Prod's only two Items are the
+  `TEST MKT` products from 04/10, neither of which is in Mexal.
+- 🔴 **24 of the 33 `S` articles have no Product2 in UAT** (none of the 33 is in
+  Prod). The nightly sync will only create them once they are modified in Mexal.
 
 ## 🟢 It guards the bundle boundary
 

@@ -191,12 +191,6 @@
                 <identifier>RecordRecordTypeIdField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.Agente__c</fieldItem>
-                <identifier>RecordAgente__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-locale-main-left</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -243,12 +237,6 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Tipologia_Attivita__c</fieldItem>
-                <identifier>RecordTipologiaAttivitaField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
                 <fieldItem>Record.Stagionale__c</fieldItem>
                 <identifier>RecordStagionaleField</identifier>
             </fieldInstance>
@@ -278,6 +266,161 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-locale-main-columns</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><fieldInstance><fieldInstanceProperties><name
+          >uiBehavior</name><value
+          >required</value></fieldInstanceProperties><fieldItem
+        >Record.Tipologia_Attivita_Globale__c</fieldItem><identifier
+        >RecordTipologiaAttivitaField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Stato_Azienda__c</fieldItem><identifier
+        >RecordStatoAziendaField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Azienda_Obsoleta__c</fieldItem><identifier
+        >RecordAziendaObsoletaField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Azienda_Precedente__c</fieldItem><identifier
+        >RecordAziendaPrecedenteField</identifier></fieldInstance></itemInstances>
+        <name>Facet-locale-commercial-left</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Codice_ATECO__c</fieldItem><identifier
+        >RecordCodiceAtecoField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Descrizione_ATECO__c</fieldItem><identifier
+        >RecordDescrizioneAtecoField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Ateco_Stato_Attivita__c</fieldItem><identifier
+        >RecordAtecoStatoAttivitaField</identifier></fieldInstance></itemInstances>
+        <name>Facet-locale-commercial-right</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><componentInstance><componentInstanceProperties><name
+          >body</name><value
+          >Facet-locale-commercial-left</value></componentInstanceProperties><componentName
+        >flexipage:column</componentName><identifier
+        >flexipage_column_commercial_left</identifier></componentInstance></itemInstances>
+        <itemInstances><componentInstance><componentInstanceProperties><name
+          >body</name><value
+          >Facet-locale-commercial-right</value></componentInstanceProperties><componentName
+        >flexipage:column</componentName><identifier
+        >flexipage_column_commercial_right</identifier></componentInstance></itemInstances>
+        <name>Facet-locale-commercial-columns</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Email__c</fieldItem><identifier
+        >RecordEmailField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Codice_Cliente_Mexal__c</fieldItem><identifier
+        >RecordCodiceClienteMexalField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Codice_Fiscale__c</fieldItem><identifier
+        >RecordCodiceFiscaleField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Codice_Destinatario_SDI__c</fieldItem><identifier
+        >RecordCodiceDestinatarioSdiField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Categoria_Statistica_Mexal__c</fieldItem><identifier
+        >RecordCategoriaStatisticaMexalField</identifier></fieldInstance></itemInstances>
+        <name>Facet-locale-mexal-left</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Partita_IVA__c</fieldItem><identifier
+        >RecordPartitaIvaField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.PEC__c</fieldItem><identifier
+        >RecordPecField</identifier></fieldInstance></itemInstances>
+        <name>Facet-locale-mexal-right</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><componentInstance><componentInstanceProperties><name
+          >body</name><value
+          >Facet-locale-mexal-left</value></componentInstanceProperties><componentName
+        >flexipage:column</componentName><identifier
+        >flexipage_column_mexal_left</identifier></componentInstance></itemInstances>
+        <itemInstances><componentInstance><componentInstanceProperties><name
+          >body</name><value
+          >Facet-locale-mexal-right</value></componentInstanceProperties><componentName
+        >flexipage:column</componentName><identifier
+        >flexipage_column_mexal_right</identifier></componentInstance></itemInstances>
+        <name>Facet-locale-mexal-columns</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><fieldInstance><fieldInstanceProperties><name
+          >uiBehavior</name><value
+          >required</value></fieldInstanceProperties><fieldItem
+        >Record.Agente__c</fieldItem><identifier
+        >RecordAgente__cField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Codice_Agente_Esterno__c</fieldItem><identifier
+        >RecordCodiceAgenteEsternoField</identifier></fieldInstance></itemInstances>
+        <name>Facet-locale-commission-left</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Categoria_Provvigioni_Cliente__c</fieldItem><identifier
+        >RecordCategoriaProvvigioniClienteField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Zona__c</fieldItem><identifier
+        >RecordZonaField</identifier></fieldInstance></itemInstances>
+        <name>Facet-locale-commission-right</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><componentInstance><componentInstanceProperties><name
+          >body</name><value
+          >Facet-locale-commission-left</value></componentInstanceProperties><componentName
+        >flexipage:column</componentName><identifier
+        >flexipage_column_commission_left</identifier></componentInstance></itemInstances>
+        <itemInstances><componentInstance><componentInstanceProperties><name
+          >body</name><value
+          >Facet-locale-commission-right</value></componentInstanceProperties><componentName
+        >flexipage:column</componentName><identifier
+        >flexipage_column_commission_right</identifier></componentInstance></itemInstances>
+        <name>Facet-locale-commission-columns</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Azienda_Test__c</fieldItem><identifier
+        >RecordAziendaTestField</identifier></fieldInstance></itemInstances>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Id_Zoho__c</fieldItem><identifier
+        >RecordIdZohoField</identifier></fieldInstance></itemInstances>
+        <name>Facet-locale-technical-left</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><fieldInstance><fieldItem
+        >Record.Ultima_Verifica_Anticipay__c</fieldItem><identifier
+        >RecordUltimaVerificaAnticipayField</identifier></fieldInstance></itemInstances>
+        <name>Facet-locale-technical-right</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances><componentInstance><componentInstanceProperties><name
+          >body</name><value
+          >Facet-locale-technical-left</value></componentInstanceProperties><componentName
+        >flexipage:column</componentName><identifier
+        >flexipage_column_technical_left</identifier></componentInstance></itemInstances>
+        <itemInstances><componentInstance><componentInstanceProperties><name
+          >body</name><value
+          >Facet-locale-technical-right</value></componentInstanceProperties><componentName
+        >flexipage:column</componentName><identifier
+        >flexipage_column_technical_right</identifier></componentInstance></itemInstances>
+        <name>Facet-locale-technical-columns</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -397,10 +540,28 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Locale Information</value>
+                    <value>Informazioni Locale</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection_locale</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-locale-commercial-columns</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Dati Commerciali</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection_commercial</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -415,10 +576,64 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Address Information</value>
+                    <value>Indirizzi</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection_address</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-locale-mexal-columns</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Dati MEXAL</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection_mexal</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-locale-commission-columns</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>MEXAL - Dati per le provvigioni</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection_commission</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-locale-technical-columns</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Dati Tecnici</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection_technical</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>

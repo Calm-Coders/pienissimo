@@ -67,7 +67,7 @@ public without sharing class LeadConversionTriggerHandler {
             Id = leadRecord.ConvertedAccountId,
             Consenso_Profilazione__c = leadRecord.Consenso_Profilazione__c,
             Informativa_Privacy__c = leadRecord.Informativa_Privacy__c,
-            Tipologia_Attivita__c = leadRecord.Tipologia_Attivita__c
+            Tipologia_Attivita_Globale__c = leadRecord.Tipologia_Attivita_Globale__c
           )
         );
       }

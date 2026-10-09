@@ -324,8 +324,18 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Agente__c</fieldItem>
                 <identifier>RecordAgente__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Codice_Agente_Esterno__c</fieldItem>
+                <identifier>RecordCodiceAgenteEsternoField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -393,6 +403,12 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldItem>Record.Stato_Azienda__c</fieldItem>
+                <identifier>RecordStatoAziendaField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
                     <value>none</value>
@@ -413,7 +429,7 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Tipologia_Attivita__c</fieldItem>
+                <fieldItem>Record.Tipologia_Attivita_Globale__c</fieldItem>
                 <identifier>RecordTipologiaAttivitaField</identifier>
             </fieldInstance>
         </itemInstances>
@@ -451,6 +467,18 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Codice_Cliente_Mexal__c</fieldItem>
                 <identifier>RecordCodice_Cliente_Mexal_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Categoria_Statistica_Mexal__c</fieldItem>
+                <identifier>RecordCategoriaStatisticaMexalField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Codice_Destinatario_SDI__c</fieldItem>
+                <identifier>RecordCodiceDestinatarioSdiField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -517,6 +545,10 @@
                 <identifier>flexipage_column</identifier>
             </componentInstance>
         </itemInstances>
+        <name>Facet-d407a7fa-f8bd-450f-a26c-4f7de68b528c</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
@@ -527,7 +559,7 @@
                 <identifier>flexipage_column10</identifier>
             </componentInstance>
         </itemInstances>
-        <name>Facet-d407a7fa-f8bd-450f-a26c-4f7de68b528c</name>
+        <name>Facet-account-business-mexal-columns</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -719,10 +751,28 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Account Information</value>
+                    <value>Informazioni principali e dati provvigionali</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-account-business-mexal-columns</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Dati commerciali, tecnici e MEXAL</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection_business_mexal</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -737,7 +787,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Additional Information</value>
+                    <value>Altre informazioni</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection2</identifier>
@@ -755,7 +805,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Address Information</value>
+                    <value>Indirizzi</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection4</identifier>

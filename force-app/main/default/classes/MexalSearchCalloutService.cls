@@ -15,7 +15,7 @@ public without sharing class MexalSearchCalloutService {
   private static final String ORDER_DETAIL_FIELDS = 'sigla,serie,numero,id_riga,tp_riga,codice_articolo,quantita';
   private static final String SHIPPING_ADDRESS_CREATE_ACTION = 'Mexal_Indirizzi_Spedizione_Creazione';
   private static final String CUSTOMER_SEARCH_FIELDS = 'codice,cod_alternativo,cod_paese,codice_fiscale,partita_iva,ragione_sociale,indirizzo,cap,localita,provincia,telefono,fax,email,pec,codice_sdi,cod_agente,tp_nazionalita,cod_listino,valuta,gest_fatt_el';
-  private static final String ARTICLE_SEARCH_FIELDS = 'codice,nr_record,tipologia,descrizione,descr_estesa,descrizione_agg,descr_completa,cod_alternativo,alq_iva,um_principale,dt_creazione,dt_mod,dt_mod_sistema,gest_precanc,gest_annullato,prz_listino,gest_attiva,data_ult_mod,cod_natura';
+  private static final String ARTICLE_SEARCH_FIELDS = 'codice,nr_record,tipologia,descrizione,descr_estesa,descrizione_agg,descr_completa,cod_alternativo,alq_iva,um_principale,dt_creazione,dt_mod,dt_mod_sistema,gest_precanc,gest_annullato,prz_listino,gest_attiva,data_ult_mod,cod_natura,cod_grp_merc';
   private static final Set<String> READ_ONLY_ACTIONS = new Set<String>{
     CUSTOMER_SEARCH_ACTION,
     ARTICLE_SEARCH_ACTION,

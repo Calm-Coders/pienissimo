@@ -1,12 +1,12 @@
 ---
 id: OI-114
 type: open-item
-status: open
+status: in-progress
 owner: Elisa Migliano
 with: Marco Montesi
 org: Pienissimo
 raised: 2026-09-03
-updated: 2026-09-03
+updated: 2026-10-09
 depends_on: [OI-24]
 requirement: DAT-02
 source: notes/meetings/2026-09-03 Data Model Parte 1.md
@@ -53,3 +53,16 @@ session this project has minuted**. Routing a decision to him has no established
 path; Elisa Migliano owns getting the answer.
 
 **No date was set.**
+
+## 2026-10-09 - the carrier field is built in the partial sandbox
+
+`Account.Stato_Azienda__c` now exists as the optional restricted picklist
+`Attiva` / `Dormiente`. It is present on the Azienda create/edit layout and the
+dynamic Azienda record page, with edit access through `Full_Permission` and
+`Account_Import_UAT` and read access through `Agente`.
+
+This resolves the missing carrier field only. **DAT-02's native, order-date and
+product-line based RFM calculation is still not implemented**, so the item stays
+in progress rather than resolved. Deployment `0AfMA00000CtDNW0A3` to the
+`partial pienissimo` sandbox succeeded with all nine selected metadata
+components on 2026-10-09.

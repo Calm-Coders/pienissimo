@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tipologia_Attivita_required_for_Locale</fullName>
+    <active>true</active>
+    <description
+  >Requires Tipologia Attivita only for Locale accounts.</description>
+    <errorConditionFormula>AND(
+  $RecordType.DeveloperName = "Locale",
+  ISBLANK(Tipologia_Attivita_Globale__c)
+)</errorConditionFormula>
+    <errorDisplayField>Tipologia_Attivita_Globale__c</errorDisplayField>
+    <errorMessage
+  >Tipologia Attività è obbligatoria per un Locale.</errorMessage>
+</ValidationRule>
