@@ -105,6 +105,11 @@ public without sharing class AccountTriggerHandler {
       accountRecord.BillingCity != oldAccount.BillingCity ||
       accountRecord.BillingState != oldAccount.BillingState ||
       accountRecord.BillingPostalCode != oldAccount.BillingPostalCode ||
-      accountRecord.BillingCountry != oldAccount.BillingCountry;
+      accountRecord.BillingCountry != oldAccount.BillingCountry ||
+      accountRecord.ShippingStreet != oldAccount.ShippingStreet ||
+      accountRecord.ShippingCity != oldAccount.ShippingCity ||
+      accountRecord.ShippingState != oldAccount.ShippingState ||
+      accountRecord.ShippingPostalCode != oldAccount.ShippingPostalCode ||
+      accountRecord.ShippingCountry != oldAccount.ShippingCountry;
   }
 }
