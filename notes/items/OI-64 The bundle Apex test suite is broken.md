@@ -350,3 +350,11 @@ None of the failures involve the article sync:
 
 The change itself went to UAT with `NoTestRun`. The new `cod_grp_merc` branch has
 no test. Recorded for the suite task, not acted on.
+
+🔴 **By the evening of 09/10 the Agente rule had spread through the suite.** In
+UAT, all **19/19 `QuoteCommercialTest`** and **10 `TicketingTest`** methods fail.
+Every one fails at setup on `Agente è obbligatorio`, except
+`wooOrderCreatesCustomerOrderAndCollectsIt`, which returns 500 instead of 200,
+most likely the same cause. Until `TestDataFactory` sets an Agente, or the rules
+are revisited, the suite cannot verify any change in UAT. **If these rules reach
+Prod, they will fail a `RunLocalTests` deploy.**

@@ -164,6 +164,8 @@
         <lookupDialogsAdditionalFields
     >PRODUCT2.CUSTOMER_PRODUCT_ID</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields
+    >Categoria_Articolo__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields
     >PRODUCT2.DESCRIPTION</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields
     >PRODUCT2.FAMILY</lookupDialogsAdditionalFields>
@@ -172,6 +174,8 @@
         <lookupPhoneDialogsAdditionalFields
     >PRODUCT2.CUSTOMER_PRODUCT_ID</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields
+    >Categoria_Articolo__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields
     >PRODUCT2.DESCRIPTION</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields
     >PRODUCT2.FAMILY</lookupPhoneDialogsAdditionalFields>
@@ -179,6 +183,8 @@
     >PRODUCT2.NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
     >PRODUCT2.CUSTOMER_PRODUCT_ID</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields
+    >Categoria_Articolo__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
     >PRODUCT2.DESCRIPTION</searchResultsAdditionalFields>
         <searchResultsAdditionalFields

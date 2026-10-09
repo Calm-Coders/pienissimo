@@ -1,0 +1,21 @@
+<!-- Overrides New on Mappatura Edizione: action overrides need an Aura
+     component, so this only hosts the LWC that opens the standard modal, and
+     passes where New was clicked (a campaign's related list, or a list view). -->
+<aura:component
+  implements="lightning:actionOverride,lightning:isUrlAddressable"
+>
+  <aura:attribute name="campaignId" type="String" />
+  <aura:attribute name="returnUrl" type="String" />
+  <aura:attribute name="openToken" type="String" />
+  <aura:handler name="init" value="{!this}" action="{!c.init}" />
+  <!-- Lightning keeps this page cached: a new New click only changes the
+       page reference, so the token tells the LWC to open the modal again. -->
+  <aura:handler name="change" value="{!v.pageReference}" action="{!c.init}" />
+  <aura:if isTrue="{!not(empty(v.openToken))}">
+    <c:mappaturaEdizioneNew
+      campaignId="{!v.campaignId}"
+      returnUrl="{!v.returnUrl}"
+      openToken="{!v.openToken}"
+    />
+  </aura:if>
+</aura:component>

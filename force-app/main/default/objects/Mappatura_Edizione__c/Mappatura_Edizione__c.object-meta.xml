@@ -90,13 +90,21 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
+        <comment
+    >Ricerca prodotto per nome, codice e Categoria Articolo.</comment>
+        <content>mappaturaEdizioneNewOverride</content>
         <formFactor>Large</formFactor>
-        <type>Default</type>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>LightningComponent</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
+        <comment
+    >Ricerca prodotto per nome, codice e Categoria Articolo.</comment>
+        <content>mappaturaEdizioneNewOverride</content>
         <formFactor>Small</formFactor>
-        <type>Default</type>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>LightningComponent</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>SaveEdit</actionName>

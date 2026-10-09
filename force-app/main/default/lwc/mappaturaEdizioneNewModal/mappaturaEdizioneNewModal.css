@@ -1,0 +1,12 @@
+/* The modal body scrolls, so leave room for the search results to open below
+   the first row instead of being clipped. */
+.form-body {
+  min-height: 20rem;
+}
+
+/* The standard record form draws section headers as rounded grey bars. */
+.section-title {
+  border-radius: 0.25rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}

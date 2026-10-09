@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-10-05
+updated: 2026-10-09
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -165,8 +165,8 @@ A Salesforce sandbox error mail at **08:59:16Z** (partial sandbox
 `ability-customization-52152`, org `00DMA000004nMMr`):
 
 > `OrderItemTrigger: execution of AfterInsert caused by:
-> OrderTriggerHandler.TicketGenerationException: Nessuna mappatura edizione trovata
-> per il prodotto PIENISSIMO LIVE LIVE alla data ordine 2026-09-29.`
+OrderTriggerHandler.TicketGenerationException: Nessuna mappatura edizione trovata
+per il prodotto PIENISSIMO LIVE LIVE alla data ordine 2026-09-29.`
 > `Class.OrderTriggerHandler.assignCampaigns: line 332`
 
 **Third occurrence on the record** — 24/09 in front of the client, 25/09 at the
@@ -239,7 +239,6 @@ database cleanup. 🔴 **Neither carries a date.**
 ⚠ `897b38e` (Anita Aga, 30/09 10:13 CEST) adds _"a new custom listview for
 Mappatura Edizione"_ and reached `DevMain` via PR #70 — a navigation aid, **not the
 logic change agreed six hours later**, and not rows.
-
 
 ## 🔑 2026-10-01 - a hard constraint on the mapping, and a live failure
 
@@ -356,3 +355,25 @@ anywhere**, and it governs whether an Asset is generated at all.
 `Executive`, `Gold`, `Diamond` — and the registry populates it. The competenza
 range remains the mapping window per the 30/09 UAT; nothing in this sweep
 changed that or the sibling-overlap constraint.
+
+## 🔑 2026-10-09 - mapping one product maps its whole category
+
+**Built at Aurel Mrruku's request.** The standard form is unchanged: you pick a
+Prodotto and a child campaign. **When a Mappatura Edizione is created, every
+other product with the same `Product2.Categoria_Articolo__c` is mapped to the
+same campaign automatically**, with the same Attiva value
+(`MappaturaEdizioneTriggerHandler.afterInsert`).
+
+- A product without a category creates only its own mapping.
+- Every product with the code is included, active or not. E02 has 18.
+- A product that is already mapped to that campaign, or already has an active
+  mapping overlapping the window, is **skipped**; it does not block the save.
+- The rows created automatically do not expand again. It runs on insert only:
+  editing or deleting a mapping does not touch its siblings.
+- 🔴 **The `E10` collision above applies.** Mapping any `E10` product would also
+  map the Golden Numbers articles to the same edition.
+- **Deployed to Pienissimo UAT only, not committed, not in Prod.** Verified in a
+  rolled-back transaction: mapping one E02 product created 18 mappings, all on
+  the campaign. Mapping the same product again was refused by the existing
+  overlap rule, and a product without a category created 1 mapping. The Apex
+  suite could not confirm it: see OI-64, 09/10.

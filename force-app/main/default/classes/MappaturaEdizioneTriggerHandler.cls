@@ -1,4 +1,149 @@
 public without sharing class MappaturaEdizioneTriggerHandler {
+  // Set while the category siblings are inserted, so they are not expanded again.
+  private static Boolean isMappingCategory = false;
+
+  // A new mapping also maps every other product with the same
+  // Product2.Categoria_Articolo__c to the same child campaign. A product already
+  // mapped to that campaign, or with an active mapping overlapping the window,
+  // is left as it is.
+  public static void afterInsert(List<Mappatura_Edizione__c> newMappings) {
+    if (isMappingCategory) {
+      return;
+    }
+
+    Set<Id> productIds = new Set<Id>();
+    for (Mappatura_Edizione__c mapping : newMappings) {
+      if (mapping.Prodotto__c != null && mapping.Campagna__c != null) {
+        productIds.add(mapping.Prodotto__c);
+      }
+    }
+    if (productIds.isEmpty()) {
+      return;
+    }
+
+    Map<Id, String> categoryByProductId = new Map<Id, String>();
+    for (Product2 product : [
+      SELECT Id, Categoria_Articolo__c
+      FROM Product2
+      WHERE Id IN :productIds AND Categoria_Articolo__c != NULL
+    ]) {
+      categoryByProductId.put(
+        product.Id,
+        normalizeCategory(product.Categoria_Articolo__c)
+      );
+    }
+    if (categoryByProductId.isEmpty()) {
+      return;
+    }
+
+    Map<String, List<Id>> productIdsByCategory = new Map<String, List<Id>>();
+    for (Product2 product : [
+      SELECT Id, Categoria_Articolo__c
+      FROM Product2
+      WHERE Categoria_Articolo__c IN :categoryByProductId.values()
+      ORDER BY Name, Id
+    ]) {
+      String category = normalizeCategory(product.Categoria_Articolo__c);
+      if (!productIdsByCategory.containsKey(category)) {
+        productIdsByCategory.put(category, new List<Id>());
+      }
+      productIdsByCategory.get(category).add(product.Id);
+    }
+
+    Set<Id> siblingIds = new Set<Id>();
+    for (List<Id> categoryProductIds : productIdsByCategory.values()) {
+      siblingIds.addAll(categoryProductIds);
+    }
+
+    // Existing mappings plus the ones planned here, per product.
+    Map<Id, List<Mappatura_Edizione__c>> mappingsByProductId = new Map<Id, List<Mappatura_Edizione__c>>();
+    for (Mappatura_Edizione__c existing : [
+      SELECT Prodotto__c, Campagna__c, Attiva__c, Data_Inizio__c, Data_Fine__c
+      FROM Mappatura_Edizione__c
+      WHERE Prodotto__c IN :siblingIds
+    ]) {
+      addMapping(mappingsByProductId, existing.Prodotto__c, existing);
+    }
+
+    List<Mappatura_Edizione__c> categoryMappings = new List<Mappatura_Edizione__c>();
+    for (Mappatura_Edizione__c mapping : newMappings) {
+      String category = categoryByProductId.get(mapping.Prodotto__c);
+      if (category == null) {
+        continue;
+      }
+
+      for (Id siblingId : productIdsByCategory.get(category)) {
+        if (isAlreadyMapped(mapping, mappingsByProductId.get(siblingId))) {
+          continue;
+        }
+
+        Mappatura_Edizione__c categoryMapping = new Mappatura_Edizione__c(
+          Prodotto__c = siblingId,
+          Campagna__c = mapping.Campagna__c,
+          Attiva__c = mapping.Attiva__c,
+          Data_Inizio__c = mapping.Data_Inizio__c,
+          Data_Fine__c = mapping.Data_Fine__c
+        );
+        categoryMappings.add(categoryMapping);
+        addMapping(mappingsByProductId, siblingId, categoryMapping);
+      }
+    }
+
+    if (categoryMappings.isEmpty()) {
+      return;
+    }
+
+    isMappingCategory = true;
+    try {
+      insert categoryMappings;
+    } finally {
+      isMappingCategory = false;
+    }
+  }
+
+  private static Boolean isAlreadyMapped(
+    Mappatura_Edizione__c mapping,
+    List<Mappatura_Edizione__c> productMappings
+  ) {
+    if (productMappings == null) {
+      return false;
+    }
+
+    for (Mappatura_Edizione__c other : productMappings) {
+      if (other.Campagna__c == mapping.Campagna__c) {
+        return true;
+      }
+      if (
+        mapping.Attiva__c == true &&
+        other.Attiva__c == true &&
+        mapping.Data_Inizio__c != null &&
+        mapping.Data_Fine__c != null &&
+        other.Data_Inizio__c != null &&
+        other.Data_Fine__c != null &&
+        mapping.Data_Inizio__c <= other.Data_Fine__c &&
+        mapping.Data_Fine__c >= other.Data_Inizio__c
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static void addMapping(
+    Map<Id, List<Mappatura_Edizione__c>> mappingsByProductId,
+    Id productId,
+    Mappatura_Edizione__c mapping
+  ) {
+    if (!mappingsByProductId.containsKey(productId)) {
+      mappingsByProductId.put(productId, new List<Mappatura_Edizione__c>());
+    }
+    mappingsByProductId.get(productId).add(mapping);
+  }
+
+  private static String normalizeCategory(String value) {
+    return String.isBlank(value) ? null : value.trim().toUpperCase();
+  }
+
   public static void beforeSave(
     List<Mappatura_Edizione__c> newMappings,
     Map<Id, Mappatura_Edizione__c> oldMappingMap
