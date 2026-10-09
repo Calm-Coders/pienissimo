@@ -70,7 +70,7 @@ client-facing; this row is stale.
 - **`Articoli (anagrafica)` corroborates two live decisions.** `Unità di misura`
   is listed with example value **NR** — the value Aurel Mrruku settled on at the
   02/10 Pre-UAT, in a document that has carried it since July. `Categoria
-  statistica` is annotated _"evento (da mexal)"_ and `Natura` as
+statistica` is annotated _"evento (da mexal)"_ and `Natura` as
   _"genera biglietto SI/NO (mexal)"_, which is the shape
   [OI-188](items/OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md)
   built. It also lists `Tipo Biglietto` (`Executive`, `Gold`, `Diamond`) and
@@ -79,7 +79,7 @@ client-facing; this row is stale.
 - **`Referente` carries the consent model**: `Consenso Finalita Commerciali` and
   `Consenso Profilazione` (`Autorizzo` / `Non Autorizzo`, default blank), plus
   `Flag Informativa Privacy`, `Flag Condizioni Generali`, `Flag Clausole
-  Contrattuali`, `Flag Consenso Requisiti`, `Ruolo iscrizione`
+Contrattuali`, `Flag Consenso Requisiti`, `Ruolo iscrizione`
   (`Titolare` / `Collaboratore`), `Contatto amministrativo` and `Errato Marketer`.
 - **`Lead`** maps each Salesforce field to its Zoho name and keeps Zoho-only
   columns including `piva`, `quantità biglietti`, `Hai già partecipato`,
@@ -101,7 +101,7 @@ Modified **2026-10-05 at 16:40:32Z**, during or just after
 ### 🟢 New, and authoritative
 
 - **`Origine Lead`**, nine Italian values: `Da Direzione, Da Tutor, Da Cliente,
-  Da libro, Da videocorso, Da Diretta, Da Corso, Da Marketing, Da Referral`.
+Da libro, Da videocorso, Da Diretta, Da Corso, Da Marketing, Da Referral`.
   Answers Matteo Distaso's request in the session for Italian labels.
 - **`Tipologia Attività`**, 21 values, on **both** the Lead and Account sheets,
   typed `Multiselect picklist` on Account and `Global picklist` **mandatory**
@@ -112,10 +112,13 @@ Modified **2026-10-05 at 16:40:32Z**, during or just after
 - **Two Lead consent flags**, both `Mapping con campo Contact`:
   `Flag Consenso Profilazione`, `Flag Informativa Privacy`. Matches the
   session's ruling exactly.
+  **Implementation override, 8 October:** the user explicitly instructed that
+  both fields map to Account instead. The source now follows that later
+  direction; this contradicts the workbook and the 7 September client ruling.
 - **A `Categoria`→`Sottocategoria` dependency.** The `Corso` branch has eleven
   sub-categories including **`Happy Team`** and **`Intensive at Home`**; the
   `Categoria` side adds **`Cassa Zucchetti`** and `Altri Servizi`. `Intensive at
-  Home` and `Cassa Zucchetti` appear nowhere else in this project —
+Home` and `Cassa Zucchetti` appear nowhere else in this project —
   [OI-46](items/OI-46%20Bundle%20classification%20picklists.md).
 
 ### 🔑 `Articoli (anagrafica)` decodes the article registry
@@ -126,7 +129,7 @@ the key to
 
 - **`Natura` = _"genera biglietto SI/NO (mexal)"_** — the article field that
   says whether the article produces a ticket. ⚠ The registry's `Natura
-  Articolo` column holds `BO`, `BB`, `MS`, `HR`, `NM`, `S`, `NO`, `ND`, and
+Articolo` column holds `BO`, `BB`, `MS`, `HR`, `NM`, `S`, `NO`, `ND`, and
   **nothing documents which of those mean yes.** It governs whether an Asset is
   generated at all.
 - **`Tipo Biglietto` = `null, Executive, Gold, Diamond`** — a three-value

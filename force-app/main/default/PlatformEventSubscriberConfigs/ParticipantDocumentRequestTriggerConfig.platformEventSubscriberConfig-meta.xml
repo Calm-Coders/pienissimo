@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<PlatformEventSubscriberConfig xmlns="http://soap.sforce.com/2006/04/metadata">
-    <batchSize>200</batchSize>
-    <masterLabel>ParticipantDocumentRequestTriggerConfig</masterLabel>
-    <platformEventConsumer
-  >ParticipantDocumentRequestTrigger</platformEventConsumer>
-    <user>a.mrruku@pienissimo.uat</user>
-</PlatformEventSubscriberConfig>

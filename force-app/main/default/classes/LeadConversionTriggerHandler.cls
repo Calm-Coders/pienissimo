@@ -18,6 +18,8 @@ public without sharing class LeadConversionTriggerHandler {
     List<Lead> newLeads,
     Map<Id, Lead> oldLeadMap
   ) {
+    copyConvertedFields(newLeads, oldLeadMap);
+
     List<Task> followUpTasks = buildNonRispondeFollowUpTasks(
       newLeads,
       oldLeadMap
@@ -27,6 +29,56 @@ public without sharing class LeadConversionTriggerHandler {
     }
 
     enqueueLeadConversions(newLeads, oldLeadMap);
+  }
+
+  private static void copyConvertedFields(
+    List<Lead> newLeads,
+    Map<Id, Lead> oldLeadMap
+  ) {
+    Map<Id, Opportunity> opportunitiesToUpdate = new Map<Id, Opportunity>();
+    Map<Id, Account> accountsToUpdate = new Map<Id, Account>();
+
+    for (Lead leadRecord : newLeads) {
+      Lead oldLead = oldLeadMap.get(leadRecord.Id);
+      if (oldLead.IsConverted == true || leadRecord.IsConverted != true) {
+        continue;
+      }
+
+      if (leadRecord.ConvertedOpportunityId != null) {
+        opportunitiesToUpdate.put(
+          leadRecord.ConvertedOpportunityId,
+          new Opportunity(
+            Id = leadRecord.ConvertedOpportunityId,
+            Categoria__c = leadRecord.Categoria__c,
+            Sottocategoria__c = leadRecord.Sottocategoria__c,
+            UTM_Campaign__c = leadRecord.UTM_Campaign__c,
+            UTM_Content__c = leadRecord.UTM_Content__c,
+            UTM_Medium__c = leadRecord.UTM_Medium__c,
+            UTM_Source__c = leadRecord.UTM_Source__c,
+            UTM_Term__c = leadRecord.UTM_Term__c
+          )
+        );
+      }
+
+      if (leadRecord.ConvertedAccountId != null) {
+        accountsToUpdate.put(
+          leadRecord.ConvertedAccountId,
+          new Account(
+            Id = leadRecord.ConvertedAccountId,
+            Consenso_Profilazione__c = leadRecord.Consenso_Profilazione__c,
+            Informativa_Privacy__c = leadRecord.Informativa_Privacy__c,
+            Tipologia_Attivita__c = leadRecord.Tipologia_Attivita__c
+          )
+        );
+      }
+    }
+
+    if (!opportunitiesToUpdate.isEmpty()) {
+      update opportunitiesToUpdate.values();
+    }
+    if (!accountsToUpdate.isEmpty()) {
+      update accountsToUpdate.values();
+    }
   }
 
   private static void preventDuplicateOpenLeads(List<Lead> newLeads) {

@@ -1,21 +1,43 @@
 ---
 id: OI-130
 type: open-item
-status: open
+status: in-progress
 owner: Elisa Migliano
 with: Marco Montesi
 org: Pienissimo
 raised: 2026-09-08
-updated: 2026-09-08
+updated: 2026-10-08
 depends_on: [OI-24]
 source: notes/meetings/2026-09-08 Data Model Parte 4.md
 ---
 
 # OI-130 - The opportunity category and subcategory dependency matrix
 
-**Dependent picklists for `categoria` and `sottocategoria` on the Opportunity
-were agreed in Parte 4, conditional on a dependency matrix the client owes. The
-build is blocked on a spreadsheet.**
+**The client supplied the dependency matrix on 8 October. Matching dependent
+picklists are now implemented in source on Lead and Opportunity, together with
+the Lead-conversion copy, but they are not deployed.**
+
+## 8 October implementation
+
+The user supplied the updated two-column matrix directly. It defines four
+categories: `Altri Servizi`, `Cassa Zucchetti`, `Generica`, and `Corso`.
+
+- `Generica` exposes only the `Generica` subcategory.
+- `Corso` exposes `Video corso`, `Pienissimo Live`, `Camerieri Venditori`,
+  `Mastery`, `Academy`, `Sold Out`, `OdB LIVE`, `Happy Team`, `Intensive`,
+  `Intensive at Home`, and `Food marketing Festival`.
+- `Altri Servizi` and `Cassa Zucchetti` are marked _nessuna mappatura - Mostra
+  tutti i valori_; the implementation therefore exposes all twelve subcategory
+  values for each.
+
+Source now contains `Categoria__c` and dependent `Sottocategoria__c` on both
+Lead and Opportunity. Both layouts and the `Lead_Management`,
+`Opportunity_Management`, and `Full_Permission` permission sets include the
+fields. `LeadConversionTriggerHandler` copies both values to the converted
+Opportunity for automatic and manual Lead conversions. UAT validation deploy
+`0AfMA00000Csppq0AB` succeeded with all ten components on 8 October; it was a
+check-only deployment and changed no org metadata. Deployment and org
+verification remain before this item can be resolved.
 
 ## What was agreed
 
@@ -39,7 +61,9 @@ So the pair is the Opportunity's own provenance breakdown, distinct from the
 lead-origin picklist in
 [OI-131](OI-131%20The%20lead%20origin%20picklist%20values.md).
 
-## What is owed
+## Historical dependency
+
+The following was the position before the matrix arrived on 8 October:
 
 - **The dependency matrix** — which `sottocategoria` values are valid under which
   `categoria` — from Elisa Migliano to Aurel Mrruku.

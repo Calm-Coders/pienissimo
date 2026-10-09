@@ -174,6 +174,13 @@ is read only by `POST`; put the value in the URL for `GET`.
 neither `Assegnato` nor the already-completed `Utilizzato`. The response still
 includes the resolved Asset, Contact and Campaign information.
 
+## Italian response messages - source update 2026-10-08
+
+All user-facing `message` values are now Italian in source. The stable
+`errorCode` values and HTTP status codes are unchanged. The successful UAT
+response above is retained as evidence of the response returned before this
+source change. This update is not yet deployed.
+
 ## Logging
 
 Every request creates an `Integration_Log__c` row. The service stores endpoint,
