@@ -6,8 +6,8 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-09-28
-requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
+updated: 2026-10-12
+requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10, SAL-20]
 source: meetings/open-items.md row 59
 ---
 
@@ -60,6 +60,88 @@ not.
 
 Downstream of [OI-68](OI-68%20Quote%20acceptance%20landing%20page.md) in
 [the quote to order flow](../flows/The%20quote%20to%20order%20flow.md).
+
+## 2026-10-12 - the two recontact stages and closed-lost cascade are built in source
+
+The user supplied the current task/Opportunity rules directly and asked for the
+missing generic **`Da ricontattare`** stage in addition to the existing
+**`Da ricontattare - Prev. inviato`** stage.
+
+Source now contains:
+
+- `Da ricontattare`, with a mandatory generic reason and an automatic date;
+- `Da ricontattare - Prev. inviato`, with a separate mandatory reason and
+  automatic date;
+- the editable five-day Quote expiry default and the existing daily ageing job;
+- a `Preventivo Inviato` task, due the next day, plus a configurable client
+  reminder email, processed only after 48 hours from the successful acceptance
+  email send and only while the Quote is neither `Accettato` nor `Rifiutato`;
+- send-cycle management: a successful acceptance-email send stores its exact
+  send timestamp and resets the reminder flag; returning the Quote to `Bozza`
+  preserves that timestamp as the audit record of the last send, marks the old
+  reminder cycle as processed, and clears the negotiation date (and the old
+  expiry unless the tutor entered a new one). Only the later successful resend
+  writes a new timestamp and starts a fresh 48-hour cycle;
+- a bulk cascade that changes every related Quote to `Rifiutato` when the
+  Opportunity moves to `Chiusa/Persa`.
+
+The implementation was deployed to Pienissimo UAT on 2026-10-12
+(`0AfMA00000Ctt1l0AB`, `NoTestRun`). The existing `Quote Negotiation Aging -
+Daily` schedule remained active after deployment: state `WAITING`, next run
+2026-10-13 at 03:00 CEST. Nothing was committed or deployed to Prod. The
+supplied screenshot says Marco Montesi's final reminder copy is still to be
+provided; the deployed source template is therefore deliberately editable.
+
+A later live check on 2026-10-12 found no schedule by that name. The user asked
+to schedule it, so `QuoteNegotiationAgingBatch.scheduleDaily()` created job
+`08eMA00000YU7OfYAL`. It is `WAITING` on cron `0 0 3 * * ?`, with its first run
+on 2026-10-13 at 03:00 CEST.
+
+The first UAT deployment incorrectly measured the reminder from entry into `In
+Trattativa`. The source was corrected the same day after the user clarified
+that the two days start from the actual email send; the correction's deployment
+to Pienissimo UAT succeeded as `0AfMA00000CttRZ0AZ` (`NoTestRun`).
+The follow-up correction preserving the last-send timestamp in `Bozza` was
+deployed to UAT as `0AfMA00000Cttcr0AB` (`NoTestRun`).
+
+The new stage was active in UAT and included in `Sales_Process`. An initial
+inspection also found the org-only standard Path `Default_Opportunity` stale;
+it was retrieved into source and deployed as `0AfMA00000CtuNd0AJ`. The user then
+clarified that the visible path is actually the custom `opportunityCustomPath`
+LWC. That component hardcoded five stages and was the effective cause. It now
+renders `Da ricontattare` as the sixth stage and collects the correct separate
+reason/date pair for both recontact stages. The LWC correction was deployed to
+UAT as `0AfMA00000Ctudl0AB` (`NoTestRun`).
+
+The user subsequently clarified that neither date is user-entered. On every
+transition into the corresponding recontact stage, the Opportunity before
+trigger stamps that stage's date with `Date.today()`. The custom Path asks only
+for the appropriate reason, and both date fields are read-only on the layout
+and in `Opportunity_Management`. This correction was deployed to UAT as
+`0AfMA00000Cttxq0AB` (`NoTestRun`), then included in the consolidated current
+Opportunity/Quote deployment `0AfMA00000CtvMv0AJ`.
+
+The Opportunity Lightning record page now also exposes the four recontact
+fields through Dynamic Forms with stage filters. The generic reason and its
+read-only automatic date appear only in `Da ricontattare`; the preventive
+reason and its read-only automatic date appear only in `Da ricontattare - Prev.
+inviato`. They remain present on the underlying page layout as a fallback for
+the mobile record-detail component. The page validation
+`0AfMA00000Ctwdx0AB` and UAT deployment `0AfMA00000CtwhB0AR` both succeeded
+with `NoTestRun`.
+
+The day-two Task path was exercised against Quote `00000170` on 2026-10-12.
+The first batch run selected the Quote and marked its reminder flag, but the
+Task row failed partial DML because Opportunity `212332` belonged to an inactive
+user (`INACTIVE_OWNER_OR_USER`). `QuoteNegotiationAgingBatch` now keeps the
+Opportunity owner when active and otherwise assigns the Task and email target
+to the active batch-running user. Deployment `0AfMA00000CtwhC0AR` succeeded in
+Pienissimo Partial. After resetting only this Quote's reminder flag and
+backdating its successful-send timestamp to 2026-10-09, batch job
+`707MA00000lzquFYAQ` completed 1/1 with zero errors and created Task
+`00TMA0000097UiX2AU` on Opportunity `212332`, due 2026-10-13 with subtype
+`Da Ricontattare`; the Quote reminder flag is now true. Nothing was deployed to
+Prod.
 
 ## 2026-08-24 - fully specified, and carrying one contradiction
 
@@ -423,7 +505,7 @@ termine sostituito … perché rifiutato, sembra qualche cosa che è incapace il
 da vendere."_
 
 Aurel Mrruku held the state on a case Fabrizio Paganelli accepted — a **single**
-quote on a lost opportunity genuinely *is* refused — and moved the distinction into
+quote on a lost opportunity genuinely _is_ refused — and moved the distinction into
 the reason instead:
 
 > _"Invece di scrivere per scelta [tra] l'altro preventivo, facciamo sostituito."_

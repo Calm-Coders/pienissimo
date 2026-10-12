@@ -138,9 +138,14 @@ public without sharing class QuoteAcceptanceEmailController {
     if (!results[0].isSuccess()) {
       throw new AuraHandledException(results[0].getErrors()[0].getMessage());
     }
-    if (quoteRecord.Email != normalizedRecipient) {
-      update new Quote(Id = quoteRecord.Id, Email = normalizedRecipient);
-    }
+    // The two-day follow-up starts only after Salesforce confirms that this
+    // acceptance email was sent. Every resend starts a fresh 48-hour cycle.
+    update new Quote(
+      Id = quoteRecord.Id,
+      Email = normalizedRecipient,
+      Data_Ora_Invio_Preventivo__c = Datetime.now(),
+      Promemoria_2_Giorni_Inviato__c = false
+    );
   }
 
   private static String acceptanceUrl(Id quoteId) {

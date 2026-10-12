@@ -128,6 +128,18 @@
                 <field>Motivazione_Da_Ricontattare__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Data_Da_Ricontattare__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Motivazione_Da_Ricontattare_Preventivo__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Data_Da_Ricontattare_Preventivo__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>UTM_Source__c</field>
             </layoutItems>

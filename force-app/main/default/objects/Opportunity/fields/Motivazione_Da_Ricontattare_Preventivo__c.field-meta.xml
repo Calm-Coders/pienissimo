@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Motivazione_Da_Ricontattare_Preventivo__c</fullName>
+    <description
+  >Motivo per cui il cliente deve essere ricontattato dopo l'invio del preventivo.</description>
+    <label>Motivo Ricontatto - Prev. Inviato</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Richiamare dopo la stagione</fullName>
+                <default>false</default>
+                <label>Richiamare dopo la stagione</label>
+            </value>
+            <value>
+                <fullName>Ha da fare</fullName>
+                <default>false</default>
+                <label>Ha da fare</label>
+            </value>
+            <value>
+                <fullName>Deve pensarci</fullName>
+                <default>false</default>
+                <label>Deve pensarci</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

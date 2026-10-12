@@ -1726,6 +1726,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Quote.Data_Ora_Invio_Preventivo__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Quote.ExpirationDate</field>
         <readable>true</readable>
@@ -1768,6 +1773,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Motivazione_Da_Ricontattare__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Quote.Numero_Ordine__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Quote.Promemoria_2_Giorni_Inviato__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

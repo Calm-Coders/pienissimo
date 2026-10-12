@@ -2,6 +2,7 @@
 <CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Quote_Compact_Layout</fullName>
     <fields>QuoteNumber</fields>
+    <fields>Numero_Ordine__c</fields>
     <fields>AccountId</fields>
     <fields>OpportunityId</fields>
     <fields>ExpirationDate</fields>
