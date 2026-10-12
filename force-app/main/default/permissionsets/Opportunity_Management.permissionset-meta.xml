@@ -8,6 +8,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Opportunity.Data_Da_Ricontattare__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Opportunity.Data_Da_Ricontattare_Preventivo__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.Motivazione_Chiusa_Persa__c</field>
         <readable>true</readable>
@@ -15,6 +25,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.Motivazione_Da_Ricontattare__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.Motivazione_Da_Ricontattare_Preventivo__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -55,6 +70,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.UTM_Term__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Task.Sottotipo__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>

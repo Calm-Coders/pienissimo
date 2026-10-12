@@ -49,10 +49,52 @@ public without sharing class QuoteTriggerHandler {
     Map<Id, Quote> oldQuoteMap
   ) {
     resetChangedPdfQuotesToDraft(quotes, oldQuoteMap);
+    manageNegotiationCycle(quotes, oldQuoteMap);
     defaultValidateAndCopyLocaleActivity(quotes, oldQuoteMap);
     markCompletedDocuSignQuotesAsSigned(quotes);
     makeSignedQuotesPrimary(quotes);
     markFirstQuotesAsPrimary(quotes);
+  }
+
+  private static void manageNegotiationCycle(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    for (Quote quoteRecord : quotes) {
+      Quote oldQuote = oldQuoteMap == null
+        ? null
+        : oldQuoteMap.get(quoteRecord.Id);
+      Boolean enteringNegotiation =
+        quoteRecord.Status == NEGOTIATION_QUOTE_STATUS &&
+        (oldQuote == null ||
+        oldQuote.Status != NEGOTIATION_QUOTE_STATUS);
+      Boolean returningToDraft =
+        quoteRecord.Status == DRAFT_STATUS &&
+        oldQuote != null &&
+        oldQuote.Status != DRAFT_STATUS;
+
+      if (returningToDraft) {
+        quoteRecord.In_Trattativa_Dal__c = null;
+        quoteRecord.Promemoria_2_Giorni_Inviato__c = false;
+
+        // Keep a new expiry deliberately entered by the tutor. Otherwise clear
+        // the old cycle's date so the next send receives a fresh five-day term.
+        if (quoteRecord.ExpirationDate == oldQuote.ExpirationDate) {
+          quoteRecord.ExpirationDate = null;
+        }
+      }
+
+      if (enteringNegotiation) {
+        quoteRecord.In_Trattativa_Dal__c = Date.today();
+        if (
+          quoteRecord.ExpirationDate == null ||
+          quoteRecord.ExpirationDate <= Date.today()
+        ) {
+          quoteRecord.ExpirationDate = Date.today().addDays(5);
+        }
+        quoteRecord.Promemoria_2_Giorni_Inviato__c = false;
+      }
+    }
   }
 
   private static void resetChangedPdfQuotesToDraft(

@@ -1,0 +1,12 @@
+<div style="font-family: Arial, sans-serif; color: #1f2933; line-height: 1.5">
+  <p>Buongiorno,</p>
+
+  <p>
+    ti ricordiamo che il preventivo {{quoteNumber}} ({{quoteName}}) è disponibile
+    fino al {{expirationDate}}.
+  </p>
+
+  <p>Per qualsiasi chiarimento puoi rispondere direttamente a questa email.</p>
+
+  <p>Grazie,<br />{{tutorName}}</p>
+</div>

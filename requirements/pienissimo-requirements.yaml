@@ -239,6 +239,7 @@ state_machines:
     states:
       [
         Qualificato,
+        "Da ricontattare",
         "In trattativa (Prev inviato)",
         "Da ricontattare - Prev. inviato",
         Chiusa/Vinta,
@@ -249,6 +250,9 @@ state_machines:
       - Multiple quotes allowed per opportunity
       - An existing client's request enters directly as an OPPORTUNITA'
       - "Chiusa/Vinta requires at least one quote sent; payment confirms the win"
+      - "Da ricontattare requires a reason and a recontact date"
+      - "Da ricontattare - Prev. inviato requires its own reason and recontact date"
+      - "Moving to Chiusa/Persa automatically moves every related Quote to Rifiutato"
 
   quote:
     source: [DGM-1, DGM-2]
@@ -817,7 +821,8 @@ requirements:
       pri: S,
       status: to_confirm,
       source: DGM-1,
-      text: "Two 'da ricontattare' tasks to add: after first contact and after the appointment/demo, both with a settable specific date"
+      text: "Two distinct Opportunity parking stages: Da ricontattare after the appointment/demo, and Da ricontattare - Prev. inviato after a quote; each requires its own reason, while its date is populated automatically on entry",
+      tracked_by: [OI-59]
     }
   - {
       id: SAL-21,

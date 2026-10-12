@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Quote_Recontact_Reason</fullName>
+    <active>true</active>
+    <description
+  >Richiede la motivazione quando l'opportunita passa a Da ricontattare - Prev. inviato.</description>
+    <errorConditionFormula
+  >AND(ISPICKVAL(StageName, "Da ricontattare - Prev. inviato"), ISBLANK(TEXT(Motivazione_Da_Ricontattare_Preventivo__c)))</errorConditionFormula>
+    <errorDisplayField
+  >Motivazione_Da_Ricontattare_Preventivo__c</errorDisplayField>
+    <errorMessage
+  >Compila la Motivazione Da Ricontattare - Prev. Inviato.</errorMessage>
+</ValidationRule>

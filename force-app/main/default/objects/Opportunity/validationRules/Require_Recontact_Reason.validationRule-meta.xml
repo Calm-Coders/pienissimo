@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Recontact_Reason</fullName>
+    <active>true</active>
+    <description
+  >Richiede la motivazione quando l'opportunita passa a Da ricontattare.</description>
+    <errorConditionFormula
+  >AND(ISPICKVAL(StageName, "Da ricontattare"), ISBLANK(TEXT(Motivazione_Da_Ricontattare__c)))</errorConditionFormula>
+    <errorDisplayField>Motivazione_Da_Ricontattare__c</errorDisplayField>
+    <errorMessage>Compila la Motivazione Da Ricontattare.</errorMessage>
+</ValidationRule>

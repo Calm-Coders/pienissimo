@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Promemoria_2_Giorni_Inviato__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >Indica che il task e l'email di promemoria del secondo giorno sono stati elaborati.</description>
+    <label>Promemoria 2 Giorni Inviato</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>
