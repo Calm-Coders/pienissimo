@@ -201,13 +201,32 @@ export default class QuoteCreateTranche extends LightningElement {
     );
   }
 
+  get isAddTrancheDisabled() {
+    return (
+      this.isSaveDisabledByStatus ||
+      !this.hasQuoteLines ||
+      this.plannedTranches.length >= 20
+    );
+  }
+
+  get showAddTrancheButton() {
+    const hasBundleDerivedTranches = this.plannedTranches.some(
+      (tranche) => tranche.canDelete === false
+    );
+    return (
+      !hasBundleDerivedTranches &&
+      this.hasPlannedTranches &&
+      this.currentTrancheIndex === this.plannedTranches.length - 1
+    );
+  }
+
   get showDeleteCurrentPage() {
     if (
       this.isEditMode &&
       this.hasPlannedTranches &&
-      this.currentTranche.id &&
       this.currentTranche.canDelete !== false &&
-      !this.hasCurrentSelectedLines
+      !this.hasCurrentSelectedLines &&
+      this.plannedTranches.length > 1
     ) {
       return true;
     }
@@ -353,6 +372,21 @@ export default class QuoteCreateTranche extends LightningElement {
 
   handleSelectEditTranche(event) {
     this.currentTrancheIndex = Number(event.currentTarget.dataset.index);
+    this.pageValidationMessage = "";
+  }
+
+  handleAddTranche() {
+    if (this.isAddTrancheDisabled) {
+      return;
+    }
+
+    const index = this.plannedTranches.length;
+    this.plannedTranches = [
+      ...this.plannedTranches,
+      this.buildPlannedTranche(index)
+    ];
+    this.trancheCount = String(this.plannedTranches.length);
+    this.currentTrancheIndex = index;
     this.pageValidationMessage = "";
   }
 

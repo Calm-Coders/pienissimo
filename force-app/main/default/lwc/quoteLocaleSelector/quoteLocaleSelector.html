@@ -1,5 +1,5 @@
 <template>
-  <lightning-quick-action-panel header="Scegli Locale">
+  <lightning-quick-action-panel header="Scegli il locale">
     <template if:true={isLoading}>
       <lightning-spinner
         alternative-text="Caricamento locali"
@@ -12,44 +12,111 @@
         <div class="message error" role="alert">{errorMessage}</div>
       </template>
 
+      <div class="account-context">
+        <lightning-icon
+          icon-name="standard:account"
+          alternative-text="Azienda"
+          size="small"
+        ></lightning-icon>
+        <div>
+          <span class="context-label">Azienda</span>
+          <p class="account-name">{accountName}</p>
+        </div>
+      </div>
+
+      <template if:true={isDraft}>
+        <template if:true={hasLocales}>
+          <p class="instructions">
+            Seleziona il locale da associare a questo preventivo.
+          </p>
+
+          <div class="locale-list" role="group" aria-label="Locali disponibili">
+            <template for:each={localeRows} for:item="locale">
+              <button
+                key={locale.id}
+                type="button"
+                class={locale.cardClass}
+                data-locale-id={locale.id}
+                aria-pressed={locale.isSelected}
+                onclick={handleLocaleSelection}
+              >
+                <span class="locale-icon" aria-hidden="true">
+                  <lightning-icon
+                    icon-name="standard:account"
+                    size="x-small"
+                    alternative-text=""
+                  ></lightning-icon>
+                </span>
+
+                <span class="locale-details">
+                  <span class="locale-heading">
+                    <span class="locale-name">{locale.localeName}</span>
+                    <template if:true={locale.isSelected}>
+                      <span class="selected-badge">
+                        <lightning-icon
+                          icon-name="utility:check"
+                          size="xx-small"
+                          alternative-text=""
+                        ></lightning-icon>
+                        Selezionato
+                      </span>
+                    </template>
+                  </span>
+
+                  <template if:true={locale.hasActivityType}>
+                    <span class="activity-type">
+                      <span class="activity-label">Tipologia attività:</span>
+                      {locale.activityType}
+                    </span>
+                  </template>
+                  <template if:false={locale.hasActivityType}>
+                    <span class="activity-type empty-value">
+                      <span class="activity-label">Tipologia attività:</span>
+                      Non specificata
+                    </span>
+                  </template>
+                </span>
+              </button>
+            </template>
+          </div>
+        </template>
+
+        <template if:false={hasLocales}>
+          <div class="empty-state" role="status">
+            <lightning-icon
+              icon-name="standard:account"
+              size="small"
+              alternative-text=""
+            ></lightning-icon>
+            <div>
+              <p class="empty-state-title">Nessun locale disponibile</p>
+              <p>Non ci sono Locali collegati a questa Azienda.</p>
+            </div>
+          </div>
+        </template>
+      </template>
+
       <template if:false={isDraft}>
         <div class="message warning" role="alert">
-          Il Locale puo essere modificato solo quando il preventivo e in Bozza.
-        </div>
-      </template>
-
-      <p class="account-label">Azienda: <strong>{accountName}</strong></p>
-
-      <template if:true={hasLocales}>
-        <lightning-datatable
-          key-field="id"
-          data={localeRows}
-          columns={columns}
-          max-row-selection="1"
-          selected-rows={selectedRows}
-          onrowselection={handleRowSelection}
-        ></lightning-datatable>
-      </template>
-
-      <template if:false={hasLocales}>
-        <div class="message warning" role="status">
-          Non ci sono Locali collegati a questa Azienda.
+          Il Locale può essere modificato solo quando il preventivo è in Bozza.
         </div>
       </template>
     </template>
 
     <div slot="footer">
       <lightning-button
-        label="Annulla"
+        label={cancelLabel}
         onclick={handleCancel}
       ></lightning-button>
-      <lightning-button
-        class="slds-m-left_small"
-        label="Conferma"
-        variant="brand"
-        disabled={saveDisabled}
-        onclick={handleSave}
-      ></lightning-button>
+      <template if:true={isDraft}>
+        <lightning-button
+          class="slds-m-left_small"
+          label={confirmLabel}
+          variant="brand"
+          disabled={saveDisabled}
+          onclick={handleSave}
+        ></lightning-button>
+      </template>
     </div>
   </lightning-quick-action-panel>
 </template>
