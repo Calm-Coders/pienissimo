@@ -5,8 +5,8 @@ status: active
 owner: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-05
-updated: 2026-10-06
-depends_on: [OI-134, OI-177, OI-196, OI-197, OI-199]
+updated: 2026-10-12
+depends_on: [OI-134, OI-177, OI-196, OI-197, OI-199, OI-225]
 source: Slack marketing group DM C0C38JJ9D1T, 2026-10-05 10:44:57 and 10:56:50 CEST
 ---
 
@@ -174,3 +174,103 @@ client approval — _"se abbiamo un template romi… ti chiedo di girarmelo cosi
 metto li la soluzione e gliela faccio approvare"_. Elena Spini, 14:41:22:
 **_"non c'è un modello/template"_**. Recorded because the approval artifact for
 the marketing flow will therefore be ad hoc, like the logic document before it.
+
+## 🔑 2026-10-12 - the same two flows, described as built
+
+Fabrizio Mastracci posted both flows again into the same DM at **09:15:18 CEST**,
+this time in the present tense of something that exists and runs. 🔑 **It is the
+first written description of these flows as built**, which matters because the
+project keeps **no flow metadata in source control** —
+`force-app/main/default/flows/` is empty — so until now their behaviour was
+knowable only by opening the org.
+
+### `Invio Richiesta conferma biglietto`
+
+- **Trigger** — on `Invito Evento` when the registration link is populated, the
+  link state is `Pronto` and the ticket send date is filled.
+- **Volume** — _"Invia fino a 11 email al Referente Destinatario: la prima
+  subito, le successive a distanza dei minuti indicati nel campo **Wait
+  Interval** (creato da me) dell'Edizione Evento."_
+- **Exit, re-checked before every send** — it stops if _"esiste almeno un
+  biglietto dello stesso ordine ed edizione con esito (Assegnato, Rinuncia,
+  Utilizzato, Non utilizzato)"_ or _"la data dell'evento è passata"_.
+- **Content** — event name, place, dates, address, and the **ACCETTA** button to
+  the registration link.
+
+### `Invio Biglietto assegnato`
+
+> _"Si attiva quando il biglietto passa ad 'Assegnato', è pronto per l'invio e
+> non è ancora stato inviato. **Dopo 1 minuto** recupera il PDF del biglietto,
+> crea un link pubblico e invia al partecipante l'email con il link per
+> scaricarlo. Al termine marca il biglietto come inviato (con data e ora)."_
+
+## 🔴 What changed since 06/10, and what it costs
+
+### 1. The wait is minutes, not days
+
+The 06/10 version put the gap between the eleven steps at **2/3/4/5/6/7/8 days**,
+_"da setting evento"_. Today it is _"i minuti indicati nel campo Wait Interval"_.
+⚠ **A `Wait Interval` in minutes sends eleven emails inside an hour.** The
+natural reading is that the field is set short for testing and the unit is
+minutes by design; the equally available reading is that the unit is wrong.
+**Nothing establishes which**, and it is one question to the field's author, who
+says he created it.
+
+### 2. 🔑 The 1-minute PDF wait is a candidate root cause for OI-225
+
+[OI-225](items/OI-225%20The%20ticket%20dispatch%20flow%20sends%20to%20a%20null%20recipient%20and%20fails%20the%20asset%20write.md)
+is this second flow failing: `Get Ticket PDF` reported _"Impossibile trovare i
+record"_ and the send went to `null`. This description supplies the mechanism
+that would produce exactly that — the PDF is fetched on a **fixed one-minute
+delay** after the ticket reaches `Assegnato`, and the participant document is
+rendered asynchronously by a platform-event subscriber
+([the manual steps tracker](Manual%20Steps%20Pienissimo%20tracker.md), row 2).
+A fixed wait against an asynchronous render is a race, and a race lost is an
+empty collection.
+⚠ **Candidate, not established.** Nobody has opened the flow, the org behind the
+error mail is still unidentified, and a one-minute wait is only a race if the
+render can take longer than a minute — which this sweep cannot measure.
+
+### 3. The ticket is now a link, not an attachment
+
+The 05/10 version said the ticket _"si trova sull'Asset in allegati"_ and is sent
+from there. Today the flow _"crea un link pubblico"_ and sends the **link**.
+⚠ A public link to a participant document is a different exposure from an
+attachment to a known address, and
+[OI-194](items/OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)
+— the seven-page signed participation document on the same Asset, still gating —
+is on the other end of it. **Nobody has assessed that.**
+
+### 4. WhatsApp has gone quiet
+
+The 06/10 funnel was **11 email + 11 WhatsApp**. Today's description mentions
+only email. 🔴 **Rebecca Marmo's unanswered question — parallel or backup — has
+not been answered; it has been dropped from the description.** Recorded as an
+omission, not as a decision.
+
+### 5. 🟢 The exit rule is now an esito test
+
+The 06/10 continue-condition carried a fourth clause, `Iscr effettuate < 1`.
+Today's is a single test for any ticket of the same order and edition carrying an
+esito, with `Rinuncia` as **one of the esito values** rather than a button click.
+That is cleaner and still implements the partial-nomination rule the 06/10 session
+agreed — so Elena Spini's recorded objection, and
+[OI-196](items/OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md),
+stand unchanged.
+
+## What this does to OI-197
+
+[OI-197](items/OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md)
+listed five pieces of the send contract as unbuilt. The 09/10 sweep qualified
+that to _unknown_ once `flows/` was found empty. **This narrows it further**: the
+two flows exist and their author describes their working behaviour, including the
+`Inviato` stamp — _"Al termine marca il biglietto come inviato (con data e
+ora)"_. ⚠ Still a description, not an inspection: an org-only flow that one
+person describes from memory is not an inventory, and one of the two is **known
+to be failing**.
+
+⚠ Of record, same thread: _"Sto finendo la **testlist degli invii**, domani
+facciamo un giro"_ (09:15:59 CEST). The review slot became the recurring
+**[PIENISSIMO] - Follow-up Interno**, moved to **Tue 13/10 15:30–17:00 CEST** so
+it would fit before Elena Spini stops at 17:00. **The testlist itself is not in
+any source.**

@@ -10,6 +10,49 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-12 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  **2026-10-09T22:00Z** across three days (Fri night → Mon night, weekend
+  inside). Wrote three new items, one meeting note and two reference/object
+  notes; updated eleven existing notes, `MAP.md`, `INDEX.md`, both trackers
+  (rows 14, 48, 59, 98, 197, 212, 214, 217, 225 plus new 227–229) and both
+  recaps (§60). Trace at
+  [notes/traces/Source trace 2026-10-12 nightly.md](notes/traces/Source%20trace%202026-10-12%20nightly.md).
+- **State:** `DevMain` at **`a061f55`**. Four human commits in the window; two of
+  them (`7f8ead3`, `27304d7`) are on `DenAnita12` and
+  `DevAnita_CodiceAgenteEsterno` and are **not in `DevMain`**, with no PR open.
+  **The register was amended by `96d77de` and this sweep did not touch the
+  YAML** — `version` stays 1.6 and the discrepancy is OI-227.
+- **Next:** three things are dated and small. **OI-228 fires at 03:00 CEST on
+  13/10** — confirm which user owns job `08eMA00000YU7OfYAL` and re-schedule the
+  four nightly jobs as the Pienissimo administrator. **OI-212 is one date
+  comparison** in a method that already holds the date, and the 13/10 production
+  confirmation is that morning. **OI-227 needs one answer from whoever was in the
+  room**: was the new `SAL-20` agreed with the client, and when.
+- **Watch:**
+  - **Do not revert the `SAL-20` wording from a note.** The register is a
+    separate authority; OI-227 records the discrepancy and a human decides.
+    The new text may be correct — what is missing is the ruling, not the words.
+  - **OI-59's 12/10 section is the developer's own and is accurate.** A pointer
+    to OI-227 was appended; nothing in it was rewritten. Do not duplicate it.
+  - **The 12/10 client call has no artifact at all** — 59 seconds of greeting.
+    The client's "the screens don't match" complaint is inside that gap. Ask a
+    human rather than inferring.
+  - **The e2e UAT is 14/10 09:00, not 12/10**; a Feedback Test UAT sits at 13/10
+    12:00 and the internal marketing review at 13/10 15:30. The e2e scope line
+    includes `libro/videocorsi`, which the 09/10 status post said had left
+    Salesforce — unresolved, both claims Elena Spini's.
+  - **OI-225's one-minute PDF wait is a candidate, not a cause.** It explains the
+    first of three defects and rests on one person's written description of an
+    org-only flow.
+  - `Regole Codifica Codici Articolo.xlsx` had been in the client's article
+    folder since 21/09 and **eleven sweeps missed it**. When a folder is
+    enumerated, enumerate all of it.
+  - **Next free item id is 230**; OI-189–OI-193 remain reserved.
+
+---
+
 ## 2026-10-09 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark

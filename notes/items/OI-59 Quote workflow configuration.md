@@ -532,3 +532,19 @@ Fabrizio Paganelli had stated:
 row carries against the org is unchanged; what exists now is an agreed wording for
 the reason field. See
 [OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md).
+
+## ⚠ 2026-10-12 (nightly sweep) - the register side of this build is a separate row
+
+The build described above is recorded as its author recorded it and nothing here
+disputes it. One consequence of the same commit is tracked separately:
+`96d77de` also rewrote **`SAL-20`** in
+`requirements/pienissimo-requirements.yaml`, in `REQUIREMENTS.md` and in
+**`REQUISITI.it.md`** — the text the client signs — and added three rules to the
+register's `opportunity` state machine, including the Chiusa/Persa quote cascade.
+The requirement's `status` is still `to_confirm` and the register's `version` is
+still `1.6`.
+
+See [OI-227](OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md).
+⚠ The question there is **not** whether the behaviour is right; it is whether the
+client agreed the words, and the record cannot currently say.
+

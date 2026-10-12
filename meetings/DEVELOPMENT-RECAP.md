@@ -6521,3 +6521,171 @@ consecutive run** — the 09/10 session exists only as a Google Meet artifact.
 
 🔴 **Twenty-one consecutive nightly reports with no human reply.** The dev group
 carried one message since the last watermark: this procedure's own 08/10 report.
+
+## 60. Update 2026-10-12 — a signable requirement was rewritten to match the build, and the client's own end-to-end test left no record
+
+Nightly `requirements-check`, watermark **2026-10-09T22:00Z**, covering three days
+— Friday night to Monday night, a weekend inside them. **One client session that
+produced nothing**, **four commits**, the project channel silent again. Build
+claims below are repository arithmetic against `DevMain` **`a061f55`**; the org
+was not opened.
+
+### 🔴 The register and the signed text moved without a client ruling
+
+`96d77de` (Rexhina Hysi, 12:22 CEST), merged as **PR #94** at 14:41, rewrote
+**`SAL-20`** in `requirements/pienissimo-requirements.yaml`, in
+`REQUIREMENTS.md` and in **`REQUISITI.it.md`** — the text Pienissimo signs:
+
+| | Before | After |
+| --- | --- | --- |
+| Mechanism | two **tasks** "da ricontattare" | two Opportunity **parking stages** |
+| Second trigger | after the **first contact** | after a **quote** |
+| The date | **settable** by the user | **populated automatically** on entry |
+| The reason | not mentioned | **mandatory**, one per stage |
+
+The register's `opportunity` state machine also gained the state
+`"Da ricontattare"` and three rules, one of which is **not in `SAL-20` at all** —
+_"Moving to Chiusa/Persa automatically moves every related Quote to Rifiutato"_ —
+written into the `Opportunity` row of the state table in both documents.
+
+🟢 **The build is sound and fully recorded** by its author in OI-59, which names
+the instruction behind it. 🔴 **What is missing is a ruling behind the words.**
+`status` is still `to_confirm`, `version` is still **1.6**, and no client ruling
+for the new wording exists in any source. #184 exists so that v1.6 reaches the
+client as **one** reviewable change set at UAT close; this edit now sits inside
+the signable text and outside that change set. Tracked as **#227**.
+
+### 🟢 What PR #94 actually delivers
+
+The generic `Da ricontattare` stage beside the existing `Da ricontattare - Prev.
+inviato`, each with a mandatory reason and an automatic, read-only date; a
+`Preventivo Inviato` task due the next day; a configurable reminder email
+processed **48 hours after the successful acceptance-email send** and only while
+the Quote is neither `Accettato` nor `Rifiutato`; send-cycle management that
+preserves the last-send timestamp when a Quote returns to `Bozza`; and a bulk
+cascade moving every related Quote to `Rifiutato` on `Chiusa/Persa`. The
+`opportunityCustomPath` LWC, which hardcoded five stages, now renders six.
+Deployed to Pienissimo UAT over several deployments, all `NoTestRun`; **nothing
+in Prod**. Marco Montesi's reminder copy is still owed, so the template is
+deliberately editable.
+
+### 🔴 The end-to-end UAT ran and left 59 seconds of greeting
+
+The client tested alone over the weekend and the screens did not match. Fabrizio
+Paganelli, 2026-10-12 06:27:47Z: _"abbiamo fatto delle prove ma non ci ritroviamo
+su alcune schermate. Ci aggiorniamo nella call di oggi alle 16."_
+
+The call ran at **16:01 CEST**. Its Gemini transcript stopped at **`00:00:59`** —
+Elena Spini, before the guests arrived: _"Aspetta, facciamo stop"_ — and was
+never restarted; no summary, no details, nothing in Fathom. ⚠ It reads as an
+ordinary courtesy rather than a decision to go off the record, and the
+consequence is the same: **which screens, and against what expectation, is not
+recoverable.**
+
+🔴 Two hours later the e2e was **postponed to Wednesday 14 October, 09:00–11:00**
+(_"Posticipo come richiesto"_) and a new **Feedback Test UAT** inserted for
+**Tuesday 13 October, 12:00**. ⚠ The moved invitation states the e2e scope for
+the first time in writing — standard products, bundles, recall tutor/pack tutor,
+Performance Plus and **`libro/videocorsi`** — and that last item is what Elena
+Spini's own 09/10 status post said had moved to the new WooCommerce shop and left
+Salesforce "for now". **Both statements are hers, three days apart.**
+
+### 🔴 The gating payment defect is untouched a fourth night
+
+**#212** re-verified byte-for-byte at `a061f55`: the predicate still tests only
+the payment state, the due date is still parsed eleven lines above it, the
+formula field and its own `description` still document the unqualified rule as
+intended. No commit touched either file, and no source mentioned it. **The 13
+October production confirmation is tomorrow, and the test that would have
+exercised the payment path is now on the 14th.**
+
+### 🔴 A new manual step whose clock is hours
+
+The manual-steps tracker grew a **third row** at 10:20:03Z: the four nightly jobs
+— `MexalArticleSyncScheduler`, `MexalCustomerSyncScheduler`,
+`MexalInvoiceSyncScheduler`, `QuoteNegotiationAgingBatch` — must be scheduled
+**as the Pienissimo administrator**. It is the first row blank in `Status Uat` as
+well as `Status Prod`. OI-59's own text records
+`QuoteNegotiationAgingBatch.scheduleDaily()` creating job `08eMA00000YU7OfYAL`
+today, `WAITING`, **first run 13 October at 03:00 CEST**. Scheduled Apex runs as
+whoever scheduled it; the row exists because that is usually the wrong user.
+⚠ Same class of failure as **#223**, which cost a UAT order send. Tracked as
+**#228**.
+
+### 🔑 The ticket-send flows are described as built, and one description is a clue
+
+Fabrizio Mastracci posted both flows into the marketing DM at 09:15:18 CEST, in
+the present tense of something that runs — the first written description of them
+as built, which matters because this project keeps **no flow metadata in source
+control**.
+
+**`Invio Richiesta conferma biglietto`** triggers on the event invitation when the
+registration link is populated, the link state is `Pronto` and the send date is
+filled; it sends **up to 11 emails**, the first immediately and the rest spaced by
+a new `Wait Interval` field on the event edition; it stops if any ticket of the
+same order and edition carries an esito, or the event date has passed.
+
+**`Invio Biglietto assegnato`** fires when a ticket reaches `Assegnato`, waits
+**one minute**, fetches the ticket PDF, creates a public link and emails it, then
+stamps the send date.
+
+🔑 **That one-minute wait is a candidate root cause for #225.** The PDF is
+rendered asynchronously by the platform-event subscriber of manual-step row 2; a
+flow that waits a fixed minute and then queries for its output is a race, and
+`"Impossibile trovare i record"` is what losing it looks like — which also
+explains why the failure is intermittent enough to have gone unnoticed.
+⚠ **Candidate only**: nobody has opened the flow, nothing measures the render
+time, and it explains the first of three defects.
+
+🔴 Three changes from the 06/10 contract pass unremarked: the eleven-step wait is
+now in **minutes, not days**; the ticket goes as a **public link, not the Asset
+attachment** — the same Asset carries **#194**'s signed participation document,
+unassessed; and **WhatsApp has disappeared from the description** while Rebecca
+Marmo's parallel-or-backup question is still unanswered. Together they narrow
+**#197** again: the `Inviato` stamp is described as working, and the error mail
+says it failed.
+
+### 🔑 The client's article-coding rule entered the record
+
+`Regole Codifica Codici Articolo.xlsx` has sat in the registry Drive folder since
+21 September, **never opened by a sweep**, and moved on **12 October at
+09:11:19Z**. It is a single fixed-width scheme: event prefix · ticket tier ·
+**bundle flag** · numeric block, with a complete ten-event prefix table.
+
+🟢 It **confirms the `Natura` decode** the 09/10 call restated after a false start
+and MAP flagged for a code check. 🔑 It **delivers the event list** owed by mail
+since the first sweeps. 🔑 It makes **#48**'s twin bundle code **positional**
+rather than a `"(B)"` suffix, and it is the convention **#98** anticipated.
+🔴 Codes exist for **two of the ten events**, so it is a convention and not a
+registry; **#217**'s direction approval is still unrecorded, and the new scheme
+has **no position for a tranche count**, so **#210** is untouched by it.
+
+Alongside it, `Product2.Evento__c` ("Evento di origine") was built on a developer
+branch — a restricted picklist of the same ten events controlled by
+`Anno_Solare__c` — which is **#47/#76**'s "put the meaning in a field" finally
+landing. 🔴 Not in `DevMain`, and nothing populates it.
+
+### 🟡 The agent code now travels through the Quote
+
+`27304d7` adds `Quote.Codice_Agente_Esterno__c`, stamped from the Account's agent
+at quote creation, and the order trigger now prefers the Quote over the Account.
+🟢 That implements the 03/09 ruling that the code freezes on the order for
+commission attribution. 🔴 **#214**'s gating question — which code an agentless
+WooCommerce order uses — is untouched. ⚠ One path for a human: an order with a
+Quote takes the quote's value and `continue`s, so a blank there yields null and
+skips the Account fallback; recorded as a path, not a confirmed regression, with
+no test run attached. 🔴 Not in `DevMain`.
+
+### Of record
+
+🟢 **#14 has its first artifact** — Aurel Mrruku sent Elena Spini a
+`lead-web-to-lead (1).html` at 17:59:37 CEST. 🔴 The Lead fields it posts into
+are still not in Prod and four are **#115**'s picklists, attachment-only a fifth
+run. 🆕 **#229** — Elena Spini created Jira project `PIEN` on 10 October and the
+invitation mail was still unread; `OI-NN` ids map 1:1 onto this tracker's row
+numbers and nothing states how the two relate. ⚠ Elena Spini's _"ho anche una
+notizia bella"_ went into a voice huddle and is unreadable. ⚠
+`Flows & Objects.drawio` moved again and is still an unparseable `mxfile`. 🔴 The
+**30/07 marketing notes 404'd**, with a precise Drive id to ask for.
+**Fathom returned nothing for a fifteenth consecutive run.** The register stays
+at **v1.6** — see **#227** — and the next free item id is **230**.

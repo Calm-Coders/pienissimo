@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-30
-updated: 2026-10-09
+updated: 2026-10-12
 depends_on: [OI-126, OI-74, OI-198]
 blocks: [OI-177]
 requirement: BIG-06
@@ -204,3 +204,38 @@ the system.** Corrected here rather than rewritten, because what the org contain
 has not been inventoried and a flow error mail is not an inventory. **The build
 state of this contract is now unknown rather than "none", and settling it needs
 an org inspection this sweep did not do.**
+
+## 2026-10-12 - narrowed again: the flows exist and their author describes them working
+
+The 09/10 sweep qualified this row from "unbuilt" to **unknown**, on the grounds
+that `force-app/main/default/flows/` is empty and a flow error mail is not an
+inventory. Today narrows it one step further, from the other direction.
+
+Fabrizio Mastracci posted both ticket-send flows into the marketing group DM at
+**09:15:18 CEST**, in the present tense of something that runs — see
+[the specification note](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+His description includes the piece this row is named for:
+
+> _"Al termine marca il biglietto come inviato (con data e ora)."_
+
+So the `Inviato` stamp and its date **are described as built**, by the person who
+consumes them.
+
+⚠ **Three reasons this is not a resolution.**
+
+1. **It is a description, not an inspection.** No flow metadata exists in source
+   control, and no org was opened. One person describing a flow from memory is
+   still not an inventory of what the org contains.
+2. **One of the two flows is known to be failing.**
+   [OI-225](OI-225%20The%20ticket%20dispatch%20flow%20sends%20to%20a%20null%20recipient%20and%20fails%20the%20asset%20write.md)
+   is the error mail reporting this exact write-back as **failed**. The
+   description and the evidence disagree, and the evidence is one observed run.
+3. **The description differs from the agreed contract in two places** — the
+   ticket goes out as a public link rather than the Asset attachment, and the
+   eleven-step wait is now stated in **minutes** rather than days. Both are in
+   the specification note.
+
+**Status stays `open`.** What would close it is a read of the two flows in the
+org, against the five rows this item lists — which is the same org access
+[OI-225](OI-225%20The%20ticket%20dispatch%20flow%20sends%20to%20a%20null%20recipient%20and%20fails%20the%20asset%20write.md)
+needs, and the same reason neither moved tonight.

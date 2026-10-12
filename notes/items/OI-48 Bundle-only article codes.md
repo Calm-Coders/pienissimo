@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-07-23
-updated: 2026-10-05
+updated: 2026-10-12
 blocks: [OI-13]
 source: meetings/open-items.md row 48
 ---
@@ -256,3 +256,27 @@ until the re-created registry is issued; the question to put instead is **when
 the new `E99` generation will exist and whether bundles will carry article
 codes at all**, since `BundleComponent__c.Unit_Spread__c` now prices a bundle
 line from the component rather than from an article.
+
+## 🔑 2026-10-12 - the convention has changed, without anyone saying so
+
+[The Regole Codifica Codici Articolo workbook](../The%20Regole%20Codifica%20Codici%20Articolo%20workbook.md),
+found in Drive this sweep and modified **12/10 at 09:11:19Z**, composes an
+article code from four positions — event, ticket tier, a **bundle flag**, and a
+numeric block.
+
+🔑 **So a bundle-only article is no longer a `"(B)"` name.** It is the same code
+with the bundle position flipped from `N` to `S`. The twin-code rule this row
+records — _"devi per forza avere due prodotti"_, _"avrà il codice A… l'altro…
+avrà il codice B"_ — is implemented **positionally**, and the workbook shows both
+variants present for the two events it covers.
+
+⚠ **Nobody has said the `"(B)"` convention was dropped.** The document simply
+does not use it, and no mail, message or meeting in this sweep mentions the
+workbook at all. Treat the positional flag as the client's current draft, not as
+an agreed replacement.
+
+🟡 **The count still lines up.** This row expects _roughly ten_ bundle-only
+codes, one per event; the workbook's event table lists **exactly ten events**.
+🔴 But codes are populated for **two of them**, so the remaining eight have a
+prefix and nothing behind it — and the 3–5 examples owed to ROMI since July have
+still not been sent as such.
