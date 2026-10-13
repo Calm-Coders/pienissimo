@@ -11,7 +11,11 @@ import QUOTE_ACCOUNT_NAME from "@salesforce/schema/Quote.Account.Name";
 import QUOTE_LOCALE from "@salesforce/schema/Quote.Locale__c";
 import QUOTE_STATUS from "@salesforce/schema/Quote.Status";
 
-const DRAFT_STATUS = "Bozza";
+const EDITABLE_STATUSES = new Set([
+  "Bozza",
+  "In Trattativa",
+  "In Attesa Accettazione"
+]);
 const QUOTE_FIELDS = [
   QUOTE_ACCOUNT_ID,
   QUOTE_ACCOUNT_NAME,
@@ -118,8 +122,8 @@ export default class QuoteLocaleSelector extends LightningElement {
       });
   }
 
-  get isDraft() {
-    return getFieldValue(this.quoteRecord, QUOTE_STATUS) === DRAFT_STATUS;
+  get canEditLocale() {
+    return EDITABLE_STATUSES.has(getFieldValue(this.quoteRecord, QUOTE_STATUS));
   }
 
   get isLoading() {
@@ -135,7 +139,7 @@ export default class QuoteLocaleSelector extends LightningElement {
   }
 
   get cancelLabel() {
-    return this.isDraft ? "Annulla" : "Chiudi";
+    return this.canEditLocale ? "Annulla" : "Chiudi";
   }
 
   get confirmLabel() {
@@ -144,7 +148,10 @@ export default class QuoteLocaleSelector extends LightningElement {
 
   get saveDisabled() {
     return (
-      this.isLoading || this.isSaving || !this.isDraft || !this.selectedLocaleId
+      this.isLoading ||
+      this.isSaving ||
+      !this.canEditLocale ||
+      !this.selectedLocaleId
     );
   }
 

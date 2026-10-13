@@ -2280,7 +2280,7 @@
     </recordTypeVisibilities>
     <recordTypeVisibilities>
         <recordType>Product2.Item</recordType>
-        <visible>true</visible>
+        <visible>false</visible>
     </recordTypeVisibilities>
     <tabSettings>
         <tab>BundleComponent__c</tab>

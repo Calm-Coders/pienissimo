@@ -7,10 +7,10 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
-                            <value>Edit</value>
+                            <value>Delete</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Delete</value>
+                            <value>Account.Nuova_Opportunita</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
