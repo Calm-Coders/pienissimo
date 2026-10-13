@@ -6897,3 +6897,169 @@ ed è ancora un `mxfile` non interpretabile. 🔴 **Gli appunti marketing del 30
 hanno dato 404**, con un id Drive preciso da richiedere. **Fathom non ha
 restituito nulla per il quindicesimo controllo consecutivo.** Il registro resta
 alla **v1.6** — si veda **#227** — e il prossimo id libero è **230**.
+
+## 61. Aggiornamento 13/10/2026 — il cliente ha completato una vendita da capo a fondo per la prima volta, e ha ribaltato il martedì ciò che aveva concordato il venerdì
+
+`requirements-check` notturno, watermark **12/10/2026 22:00Z**. **Una sessione
+cliente di ~1h34m che ha prodotto un verbale completo**, **13 commit**, **5 PR
+unite**. Le affermazioni sulla build sono aritmetica sul repository rispetto a
+`DevMain` **`21d6686`**; l'org non è stata aperta.
+
+### 🟢🔑 Una vendita completa, con il cliente alla tastiera
+
+Il `Feedback Test UAT` inserito dopo il silenzio del 12 ottobre ne è l'immagine
+speculare: verbale Gemini completo, tre decisioni `Concordato` e tredici passi
+successivi. **L'ha eseguita Fabrizio Paganelli, non ROMI** — ha creato un bundle,
+aggiunto i componenti, impostato quantità e sconti di riga perché le righe
+quadrassero con il totale concordato, configurato **quattro rate con scadenza
+31 ottobre, 30 novembre, 31 dicembre e 31 gennaio**, creato un'Opportunità e un
+Preventivo con condizioni di pagamento amministrative, generato il PDF, inviato
+per accettazione, **firmato su DocuSign** e ottenuto un Preventivo completato e
+un Ordine. Aurel Mrruku ha poi **confermato che l'ordine è arrivato a Mexal con
+stato `inviato`**, con gli Asset generati in base alle quantità dell'ordine.
+
+🔑 **È la prima volta che una fonte registra un ordine che arriva a Mexal partendo
+da un preventivo.** La catena ordine-Mexal riporta _«mai eseguita in UAT — 0 di 45
+ordini con uno stato Mexal»_ dal 14 settembre. ⚠ In quale org sia girata non è
+indicato nel verbale, e il verbale Gemini scrive l'ERP come _«Bexal»_.
+
+### 🔴🔑 La regola di popolamento di #96 è stata ribaltata dal cliente che l'aveva concordata
+
+Il 9 ottobre Fabrizio Paganelli aveva accettato, con la conseguenza enunciata
+davanti a lui, che la selezione di una categoria merceologica agganci **tutti**
+gli articoli della categoria, attivi o no — _«Va bene così.»_ Il 13 ottobre si è
+scontrato con il volume che ne deriva (_«l'enorme mole di dati … inclusi quelli
+vecchi o inattivi»_) e ha chiesto l'opposto: **la selezione della categoria
+aggiunge solo i prodotti attivi, e la selezione di un prodotto aggiunge quel solo
+prodotto.** Realizzato lo stesso pomeriggio, `0816bf7`.
+
+🔴 **Il costo arriva prima dell'e2e del 14 ottobre.** Poiché `cod_grp_merc`
+determina `IsActive` e lascia circa 30 articoli attivi, **15 delle 23 categorie in
+UAT non hanno più alcun prodotto attivo, e un salvataggio per categoria su una di
+queste fallisce.** Nessuno ne è responsabile. ⚠ Questo rende anche irrilevante la
+collisione `E10` senza averla risolta.
+
+⚠ Entrambe le decisioni sono state prese con il cliente presente e realizzate lo
+stesso giorno — cosa che il 9 ottobre era stata segnalata come un punto di forza.
+**Quattro giorni è quanto è durata la prima.**
+
+### 🔴🔑 Un secondo flusso in produzione è in errore, e lo è dall'8 ottobre
+
+**#230.** `Invio Richiesta conferma biglietto Flow` chiede a
+`Event_Invitation__c` il campo `Recipient_Contact__r` — che è il nome della
+relazione, non un campo — quindi la query non è valida e l'elemento **non può
+riuscire**. Il campo in sé è in controllo di versione. ⚠ **Lo stesso flusso è
+andato in errore l'8 ottobre alla versione 1 e di nuovo il 13 ottobre alla
+versione 7**: sei revisioni in cinque giorni hanno rimosso un `Loop` e aggiunto un
+secondo `Get`, spostando il guasto visibile a valle **mentre `Get Campaign`, il
+primo elemento, non ha trovato nulla in entrambi i casi**. Quella è la causa
+radice e nessuno l'ha cercata. ⚠ La mail dell'8 ottobre era stata rilevata e
+annotata come nota a margine di **#225**, e **non è stata aperta alcuna riga.**
+🟢 Aurel Mrruku ha inoltrato quella nuova a Fabrizio Mastracci ed Elena Spini — la
+prima reazione documentata a questo flusso.
+
+### 🟢🔑 L'org di #225 è identificata: è la produzione
+
+Per chiave di istanza. Il sandbox parziale e ogni artefatto UAT registrato il
+13 ottobre portano **MA**; le mail di errore di flusso portano **SW**, e così fa
+l'id di record pubblicato da Elena Spini nella DM marketing dentro il resoconto di
+Aurel Mrruku sul secondo lotto TEST MKT **in Pienissimo Prod**. 🔴 **Un invio
+rivolto al cliente finale è quindi in errore in produzione dal 9 ottobre**, a otto
+giorni dal go-live. ⚠ Resta un anello debole, e una persona con accesso all'org lo
+risolverebbe in un minuto.
+
+### 🔴 DocuSign ha chiuso l'onboarding, e il cliente ha chiesto se servisse
+
+**#231.** La consulente di onboarding di DocuSign ha chiuso il progetto il
+13 ottobre per mancata risposta, passando l'account all'Account Team. 🟢 La
+comunicazione conferma che **esiste un account DocuSign di produzione** intestato
+a PIENISSIMO SRL — le licenze sono state acquistate, il che chiude una domanda
+aperta da giugno. 🔑 E il percorso di firma funziona anche senza onboarding, come
+mostra la sessione dello stesso giorno. 🔴 Ciò che la chiusura costa è il supporto
+del fornitore, nel momento peggiore: plafond buste, template e configurazione di
+produzione sono esattamente ciò che un onboarding copre, la stima di ~2.500 buste
+di **#194** non ha ancora un documento a supporto, e la domanda del cliente —
+_«Vi è necessaria per la configurazione di Docusign?»_ — è senza risposta.
+
+### 🔴 Altri due dalla stessa sessione
+
+**#232** — Fabrizio Paganelli ha completato la firma su DocuSign e **si è accorto
+di aver firmato con il nome di Aurel Mrruku**. La busta si è completata e
+l'Ordine è arrivato a Mexal su quella firma. ⚠ Se l'identità del firmatario derivi
+dal contatto del Preventivo o dall'utente che esegue non è accertato; allo stesso
+modo può trattarsi di ordinaria confusione da account di test. Registrato come non
+risolto. Lo stesso percorso firma il documento di partecipazione di **#194**.
+
+**#233** — i tutor non devono poter fare preventivi o ordini sui bundle; la
+definizione di quale profilo ottenga cosa è stata rinviata _«al gruppo»_. ⚠
+**«Tutor» non è un profilo presente in alcun documento di progetto**, quindi la
+richiesta non è realizzabile come formulata, e `recall tutor/pack tutor` è nel
+perimetro dell'e2e del 14 ottobre.
+
+### 🔴 #212 non si è mosso, quinta notte, e la data di conferma è passata
+
+Byte per byte su `21d6686` dopo tredici commit: `paid = P || E`, nessuna
+condizione sulla data, undici righe sotto il `dueDate` che lo stesso metodo
+calcola. ⚠ **La sessione gli è passata accanto**: quattro rate, tutte con
+scadenza futura, su condizioni della famiglia Ri.Ba., e il ritorno dello
+scadenzario non è mai partito. **Il difetto è stato preparato e non innescato.**
+L'e2e è la mattina dopo.
+
+### 🔴 #228: l'esecuzione delle 03:00 è avvenuta e la riga è ancora vuota
+
+Il foglio dei passi manuali è stato modificato alle 09:29:13Z, ha acquisito una
+**quarta** riga, e la riga che richiede che i job notturni girino come
+amministratore Pienissimo **non è stata spuntata** — sei ore e mezza dopo la prima
+esecuzione del job che governa. ⚠ Cosa abbia fatto non è accertato. 🔴 `Status
+Prod` è ora vuoto su **tutte e quattro** le righe. 🔑 Un caso con nome e cognome
+della stessa classe è emerso in un flusso: **#230** gira come `Tech Romi`, un
+utente ROMI, in produzione.
+
+### 🟢 Cosa si è chiuso e cosa è stato costruito
+
+🟢 **Entrambi i rilievi «non in `DevMain`» del 12 ottobre sono chiusi** —
+`Product2.Evento__c` con la PR #95, `Quote.Codice_Agente_Esterno__c` con la
+PR #96. 🟢 **Tre dei tredici passi successivi sono stati realizzati e committati
+lo stesso pomeriggio** — `49b49e5` (il listino standard segue `Price_1__c`, che
+era la causa radice dei componenti bundle a prezzo zero), `0816bf7` (la logica di
+mappatura) e `9e97f46` (i pulsanti delle viste elenco) — e **lo sviluppatore ha
+documentato ciascuno in `JOURNAL.md` e nelle note degli oggetti mentre procedeva.**
+Per una volta la documentazione ha tenuto il passo della build.
+
+🔑 **Decisioni a verbale:** `Price_1__c` è il prezzo di riferimento per la
+fatturazione Mexal e entrambi i campi prezzo Mexal restano sul prodotto · la
+descrizione prodotto è la concatenazione di `descrizione estesa` e `descrizione
+aggiuntiva`, perché il nome ha un limite di 80 caratteri · prezzi a due decimali.
+🔑 **Ed è risolto il timore sulla duplicazione annuale**: gli articoli non si
+duplicano ogni anno, ci pensa la finestra di competenza della campagna, e **la
+campagna deve esistere prima della mappatura.**
+
+### 🔴 #145 riaperto, con la responsabilità sul lato cliente
+
+Fabrizio Paganelli ha sollevato il problema della fattura per la terza volta,
+partendo da una fattura generata dall'ordine che aveva appena creato, e sarà
+**lui** a contattare Mirko Merendi sulla mappatura di prezzo di listino, sconto e
+netto sull'ordine. 🔑 Questo risponde in parte a un punto portato avanti da giorni:
+la call ha un responsabile e una richiesta definita. 🔴 Ancora nessuna data, e
+**l'obiezione di Mirko Merendi sugli arrotondamenti non è stata menzionata**.
+🔑 Un fatto nuovo la rende più piccola: il prezzo di listino è già in Salesforce
+sul prodotto; manca un campo che lo porti sul tracciato ordine.
+
+### Per memoria
+
+🆕 È stata creata dal vivo una coppia di campagne `Pienissimo lab` /
+`Pienissimo lab 2026` (1 ottobre 2026 → 30 settembre 2027, tipologia evento live,
+data invio biglietto 1 dicembre 2026) e mappata sulla categoria **`E11`** — ⚠ una
+chiave di categoria nuova per questi documenti. ⚠ Nel frattempo entrambe le
+edizioni TEST MKT in **produzione** hanno ancora una data invio biglietto del
+**5 ottobre, già passata**, cosa che Aurel Mrruku ha segnalato lui stesso.
+🔴 **`vendita libro` è nella lista di test del 13 ottobre** — una *terza*
+affermazione che riporta i libri nel perimetro Salesforce contro lo status del
+9 ottobre, che nulla ha formalmente ribaltato. ⚠ Il record ordine non si apriva
+per Fabrizio Paganelli; il verbale lo legge sia come problema di browser sia come
+problema di accesso. ⚠ Campi `tipo merce` vuoti nella procedura di sistemazione
+ordini per Mexal, senza responsabile. **Fathom non ha restituito alcuna riunione
+Pienissimo per la sedicesima volta consecutiva**, `#tproj-pienissimo` è stato
+silenzioso per il quarto giorno, il canvas è fermo da sette settimane, e
+`Flows & Objects.drawio` e `Campi Oggetti…xlsx` non si sono mossi. Il registro
+resta alla **v1.6** — vedi **#227** — e il prossimo id libero è **234**.

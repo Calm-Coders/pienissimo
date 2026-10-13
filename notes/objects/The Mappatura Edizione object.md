@@ -211,3 +211,21 @@ longer maps the rest of its category.
 
   ⚠ The "all already mapped" error could not be exercised from anonymous Apex,
   where `AuraHandledException` cannot be thrown. Not tried in a browser.
+
+### Where the active-only rule came from
+
+🔑 **The client asked for it, the same day, hours before it was built.** At
+[the 13/10 Feedback Test UAT](../meetings/2026-10-13%20Feedback%20Test%20UAT.md)
+(`01:13:27`, `01:17:38`) Fabrizio Paganelli hit the volume of inactive products a
+category save produced and asked for active-only; Gemini records it under
+`Concordato`. **It reverses the population rule the same client agreed on
+09/10** — see
+[OI-96](../items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md), which
+carries both dates.
+
+`0816bf7` (15:18 CEST) is **in `DevMain`** at **`21d6686`** via the direct push
+and PR #98 / #100, so the _"not committed"_ note above was stale within the hour.
+Prod still has the older handler.
+
+⚠ **The 15-of-23-categories consequence has no owner and no tracker row**, and
+the client's end-to-end test is the following morning.

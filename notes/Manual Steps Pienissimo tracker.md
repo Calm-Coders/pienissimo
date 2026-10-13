@@ -5,7 +5,7 @@ status: active
 owner: Rexhina Hysi
 org: ROMI
 raised: 2026-10-09
-updated: 2026-10-12
+updated: 2026-10-13
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
 ---
 
@@ -108,3 +108,33 @@ sheet is now growing in the right direction. `Status Prod` is **blank on all
 three rows**, still with no owner and no date, **nine days from go-live**.
 **No credentials, prices or personal data appear in the new row** — it carries
 Apex and job names only.
+
+## 2026-10-13 — a fourth row, and `Status Prod` is still empty on all of them
+
+Modified **2026-10-13T09:29:13Z**. Range is now **`A1:C5`** — a header and
+**four** rows.
+
+| # | Row | `Status Uat` | `Status Prod` |
+| - | --- | ------------ | ------------- |
+| 1 | Lead record-type settings | `Done` | **empty** |
+| 2 | `ParticipantDocumentRequestTrigger` subscriber run-as user and batch size | `Done` | **empty** |
+| 3 | **run all scheduled jobs as `amministratore pienissimo`** | **empty** | **empty** |
+| 4 | 🆕 **remove unnecessary buttons from object list view** | `Done` | **empty** |
+
+**Row 4** is the list-view button work: Change Owner, Import, Printable View and
+Assign Label excluded through `searchLayouts.excludedStandardButtons` across the
+15 objects in the LightningSales nav. 🟢 Unlike the other three it **is** partly
+metadata — it was committed the same day as `9e97f46` — but it stays on this
+sheet because Salesforce refuses several of the exclusions and because the repo
+has no file for Campaign or Lead, so those exist only in UAT. See the developer's
+`JOURNAL.md` entry of 13/10.
+
+🔴 **Row 3 is unchanged and still the only row blank in `Status Uat` too** — and
+the job it governs had its **first run at 03:00 CEST this morning**. See
+[OI-228](items/OI-228%20The%20nightly%20schedulers%20have%20no%20run-as%20user%20and%20the%20first%20run%20is%20imminent.md).
+
+⚠ **The pattern this sheet is establishing matters more than any single row.**
+It has grown from two rows to four in four days, every new row arrives `Done` in
+UAT, and **`Status Prod` has never been filled on any row since the sheet was
+created on 09/10**. Nothing on it names an owner for the production column, and
+go-live is **21/10**.

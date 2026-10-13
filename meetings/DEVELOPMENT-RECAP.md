@@ -6689,3 +6689,158 @@ notizia bella"_ went into a voice huddle and is unreadable. ⚠
 **30/07 marketing notes 404'd**, with a precise Drive id to ask for.
 **Fathom returned nothing for a fifteenth consecutive run.** The register stays
 at **v1.6** — see **#227** — and the next free item id is **230**.
+
+## 61. Update 2026-10-13 — the client completed a sale end to end for the first time, and reversed on Tuesday what he had agreed on Friday
+
+Nightly `requirements-check`, watermark **2026-10-12T22:00Z**. **One client
+session of ~1h34m that produced a full record**, **13 commits**, **5 PRs merged**.
+Build claims are repository arithmetic against `DevMain` **`21d6686`**; the org
+was not opened.
+
+### 🟢🔑 An end-to-end sale, with the client at the keyboard
+
+The `Feedback Test UAT` inserted after 12 October's silence is its mirror image:
+a complete Gemini record, three `Concordato` rulings and thirteen next steps.
+**Fabrizio Paganelli, not ROMI, performed the run** — he built a bundle, added
+its components, set quantities and per-line discounts so the lines summed to the
+agreed total, configured **four payment tranches due 31 October, 30 November,
+31 December and 31 January**, created an Opportunity and a Quote on
+administrative payment terms, generated the PDF, sent it for acceptance,
+**signed it on DocuSign**, and got a completed Quote and an Order. Aurel Mrruku
+then **confirmed the order reached Mexal with status `inviato`**, with Assets
+generated to match the order quantities.
+
+🔑 **This is the first time any source records an order reaching Mexal from a
+quote.** The order-to-Mexal chain has carried _"never run in UAT — 0 of 45 orders
+with a Mexal status"_ since 14 September. ⚠ Which org it ran in is not stated in
+the notes, and the Gemini record writes the ERP as _"Bexal"_ throughout.
+
+### 🔴🔑 The population rule of #96 was reversed by the client who agreed it
+
+On 9 October Fabrizio Paganelli accepted, with the consequence read out to him,
+that selecting a categoria merceologica attaches **every** article in it, active
+or not — _"Va bene così."_ On 13 October he met the volume that produces
+(_"l'enorme mole di dati … inclusi quelli vecchi o inattivi"_) and asked for the
+opposite: **category selection adds active products only, and selecting a product
+adds that product alone.** Built the same afternoon, `0816bf7`.
+
+🔴 **The cost lands before the 14 October e2e.** Because `cod_grp_merc` drives
+`IsActive` and leaves roughly 30 active articles, **15 of UAT's 23 categories now
+have no active product at all, and a category save on any of them fails.**
+Nobody owns that. ⚠ It also makes the `E10` collision moot without fixing it.
+
+⚠ Both rulings were taken with the client in the room and built the same day —
+which was offered as a strength on 9 October. **Four days is how long the first
+one lasted.**
+
+### 🔴🔑 A second production flow is failing, and has been since 8 October
+
+**#230.** `Invio Richiesta conferma biglietto Flow` asks `Event_Invitation__c`
+for `Recipient_Contact__r` — the relationship name, not a field — so the query is
+invalid and the element **can never succeed**. The field itself is in source
+control. ⚠ **The same flow errored on 8 October at version 1 and again on
+13 October at version 7**: six revisions in five days removed a `Loop` and added
+a second `Get`, moving the visible failure downstream **while `Get Campaign`, the
+first element, returned nothing in both**. That is the root cause and nobody has
+chased it. ⚠ The 8 October mail was swept and logged as a footnote to **#225**,
+and **no row was raised.** 🟢 Aurel Mrruku forwarded the new one to Fabrizio
+Mastracci and Elena Spini — the first recorded reaction to this flow.
+
+### 🟢🔑 #225's org is identified: it is production
+
+By instance key. The partial sandbox and every UAT artefact recorded on
+13 October carry **MA**; the flow error mails carry **SW**, and so does the record
+id Elena Spini posted in the marketing DM inside Aurel Mrruku's own report of the
+second TEST MKT batch **in Pienissimo Prod**. 🔴 **A customer-facing send has
+therefore been failing in production since 9 October**, eight days from go-live.
+⚠ One soft link remains, and one person with org access could remove it in a
+minute.
+
+### 🔴 DocuSign closed the onboarding, and the client asked whether it mattered
+
+**#231.** DocuSign's onboarding consultant closed the project on 13 October for
+non-response and passed the account to the Account Team. 🟢 The notice confirms a
+**production DocuSign account exists** for PIENISSIMO SRL — the licences were
+bought, settling a question open since June. 🔑 And the signature path works
+without the onboarding, as the same day's session shows. 🔴 What the closure costs
+is vendor-side support, at the worst moment: envelope allowance, templates and
+production configuration are what an onboarding covers, **#194**'s ~2,500-envelope
+figure still has no document behind it, and the client's own question —
+_"Vi è necessaria per la configurazione di Docusign?"_ — is unanswered.
+
+### 🔴 Two more from the same session
+
+**#232** — Fabrizio Paganelli completed the DocuSign signature and **noticed he
+had signed with Aurel Mrruku's name**. The envelope completed and the Order went
+to Mexal on it. ⚠ Whether the signer identity comes from the Quote contact or the
+running user is not established; equally it may be ordinary test-account
+confusion. Recorded unresolved. The same path signs **#194**'s participation
+document.
+
+**#233** — tutors must not quote or order bundles; defining which profile gets
+what was deferred to _"the group"_. ⚠ **"Tutor" is not a profile in any project
+record**, so the ask cannot be built as stated, and `recall tutor/pack tutor` is
+in the 14 October e2e scope.
+
+### 🔴 #212 did not move, a fifth night, and its confirmation date has passed
+
+Byte-for-byte at `21d6686` after thirteen commits: `paid = P || E`, no date
+condition, eleven lines below the `dueDate` the same method parses. ⚠ **The
+session walked straight past it** — four tranches, all with future due dates, on
+Ri.Ba.-family terms, and the scadenzario return leg never ran. **The defect was
+set up and not triggered.** The e2e is the next morning.
+
+### 🔴 #228: the 03:00 run happened and the row is still blank
+
+The manual-steps sheet was edited at 09:29:13Z, grew a **fourth** row, and the
+row requiring the nightly jobs to run as the Pienissimo administrator **was not
+ticked** — six and a half hours after the job it governs first fired. ⚠ What it
+did is not established. 🔴 `Status Prod` is now blank on **all four** rows.
+🔑 A named instance of the same class turned up in a flow: **#230** runs as
+`Tech Romi`, a ROMI user, in production.
+
+### 🟢 What closed and what was built
+
+🟢 **Both of 12 October's "not in `DevMain`" flags are closed** —
+`Product2.Evento__c` via PR #95, `Quote.Codice_Agente_Esterno__c` via PR #96.
+🟢 **Three of the thirteen next steps were built and committed the same
+afternoon** — `49b49e5` (the standard price book follows `Price_1__c`, which was
+the root cause of the zero-priced bundle components), `0816bf7` (the mapping
+logic) and `9e97f46` (list-view buttons) — and **the developer recorded each in
+`JOURNAL.md` and in the object notes as he went.** For once the record kept pace
+with the build.
+
+🔑 **Rulings of record:** `Price_1__c` is the reference price for Mexal invoicing
+and both Mexal price fields stay on the product · the product description is the
+concatenation of `descrizione estesa` and `descrizione aggiuntiva`, because the
+name has an 80-character limit · prices to two decimals. 🔑 **And the
+annual-duplication worry is answered**: articles are not duplicated per year, the
+campaign's competence window carries it, and **the campaign must exist before the
+mapping.**
+
+### 🔴 #145 reopened, with the owner on the client's side
+
+Fabrizio Paganelli raised the invoice gap a third time, from an invoice produced
+by the order he had just created, and **he** will now contact Mirko Merendi about
+mapping list price, discount and net onto the order. 🔑 That partly answers an
+item carried for days — the call has an owner and a defined ask. 🔴 Still no date,
+and **Mirko Merendi's own rounding objection went unmentioned**. 🔑 One new fact
+makes it smaller: the list price is already in Salesforce on the product; what is
+missing is a field for it on the order tracciato.
+
+### Of record
+
+🆕 A `Pienissimo lab` / `Pienissimo lab 2026` campaign pair was created live
+(1 October 2026 → 30 September 2027, event type live, data invio biglietto
+1 December 2026) and mapped to category **`E11`** — ⚠ a category key new to these
+records. ⚠ Meanwhile both **production** TEST MKT editions still carry a ticket
+send date of **5 October, already past**, which Aurel Mrruku flagged himself.
+🔴 **`vendita libro` is in the 13 October test list** — a *third* statement
+putting books in Salesforce scope against the 9 October status post, which nothing
+has formally reversed. ⚠ The order record would not open for Fabrizio Paganelli;
+the record reads it both as a browser problem and as an access problem. ⚠ Empty
+`tipo merce` fields in the Mexal order-fix procedure, no owner. **Fathom returned
+no Pienissimo meeting for a sixteenth consecutive run**, `#tproj-pienissimo` was
+silent a fourth day, the canvas is static at seven weeks, and
+`Flows & Objects.drawio` and `Campi Oggetti…xlsx` did not move. The register
+stays at **v1.6** — see **#227** — and the next free item id is **234**.

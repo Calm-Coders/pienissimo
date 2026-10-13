@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-10-09
+updated: 2026-10-13
 source: notes/meetings/2026-09-18 Data Model Parte 6.md
 ---
 
@@ -139,3 +139,45 @@ administration, says must show the discount. If Mexal cannot render it from what
 Salesforce sends, the options are a second Mexal interface its own vendor
 advises against, a derivation nobody has confirmed, or invoices that do not show
 a discount the customer was promised.
+
+## 🔴 2026-10-13 — the client raised it a third time, and the owner moved to his side
+
+At [the 13/10 Feedback Test UAT](../meetings/2026-10-13%20Feedback%20Test%20UAT.md)
+(`01:30:04`) Fabrizio Paganelli raised the same gap again, this time looking at an
+invoice produced from the order he had just created end to end:
+
+> _"Fabrizio Paganelli ha sollevato un problema sulla visualizzazione in fattura
+> dei prezzi unitari netti anziché del prezzo di listino con sconto esplicito,
+> concordando con Aurel mrruku di contattare Mirko per valutare l'aggiunta di
+> campi dedicati al prezzo di listino e al calcolo dello sconto."_
+
+🔑 **The action is now assigned to the client.** The next-step list reads:
+
+> **\[Fabrizio Paganelli\] Coordinamento con Mirko:** _contattare Mirko per
+> discutere la mappatura del prezzo unitario, dello sconto e dell'importo netto
+> nell'ordine. Chiedere se è possibile eseguire l'intervento di configurazione
+> necessario per completare i campi dell'ordine._
+
+**That is a change of state, and a partial answer to a standing gap.** The
+09/10 action was ROMI's _"call with Mirko Merendi next week"_, which went unbooked
+for four days and was reported unbooked on every sweep since. It now has an
+owner — **Fabrizio Paganelli, the client** — and a defined ask: whether Mirko
+Merendi can perform the configuration that adds the missing order fields.
+
+🔴 **Still no date**, and two things carried forward are **absent from the 13/10
+record entirely**:
+
+- **Mirko Merendi's own objection** — that the alternative Mexal interface has
+  rounding problems, and he advises against it. Nobody restated it, so the ask
+  goes to him without the counter-argument that stopped it last time.
+- **The rounding ruling of 18/09**, which preferred fixed prices over percentage
+  discounts *because* of Mexal rounding. The direct conflict recorded on 09/10 is
+  unresolved and now unmentioned.
+
+🔑 **One new fact narrows the fix.** The same session agreed that **`Price_1__c`
+is the reference price for Mexal invoicing** and that both Mexal price fields stay
+on the product (`00:36:40`). So the list price Fabrizio Paganelli wants on the
+invoice **is already in Salesforce on the product**; what is missing is a field for
+it on the *order* tracciato. That makes this a mapping question for Mirko Merendi
+rather than a data-availability one, which is the first time the question has been
+that small.

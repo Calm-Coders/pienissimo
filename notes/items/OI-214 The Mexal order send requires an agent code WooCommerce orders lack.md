@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Marco Montesi
 org: both
 raised: 2026-10-07
-updated: 2026-10-12
+updated: 2026-10-13
 depends_on: [OI-219]
 blocks: [OI-134, go-live]
 severity: gating
@@ -150,3 +150,19 @@ here, and no test run is attached to the commit.
 been opened for it. 🟢 The error-surfacing half of this row — the
 `Mexal_Integration_Error__c` field and its highlight, `12959b7` on 08/10 — **is**
 in `DevMain` and is unaffected.
+
+## 🟢 2026-10-13 — now in `DevMain`
+
+`27304d7` reached `DevMain` through **PR #96**, merged as `cfe5fd2` at
+10:47:24 CEST. `Quote.Codice_Agente_Esterno__c` is in source at `DevMain`
+**`21d6686`**. The "not in `DevMain`" finding above is **closed**.
+
+Anita Aga also landed **`f89d68e`** the same morning — _"Get the detailed message
+error from Mexal to appear on Order"_ — which extends the error-surfacing half of
+this row.
+
+🔴 **The gating half is untouched: which agent code an agentless WooCommerce order
+should use is still unanswered**, by anyone, in any source. ⚠ So is the
+`continue`-past-the-Account-fallback path recorded above; nothing tested it, and
+nothing in the 13/10 session or the 14/10 e2e scope exercises a WooCommerce order
+without an agent.

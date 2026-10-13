@@ -5,7 +5,7 @@ status: active
 owner: Anita Aga
 org: ROMI
 raised: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 depends_on: [OI-47, OI-76]
 source: git 7f8ead3, branch DenAnita12, 2026-10-12T17:53:19+02:00
 ---
@@ -66,3 +66,20 @@ says so**, and the inference is recorded as an inference.
 ⚠ `Anno_Solare__c` as the controlling field means the dependency is
 year-of-event, so the same event in two years is two picklist entries to
 maintain. Recorded as a shape, not as an objection.
+
+## 🟢 2026-10-13 — now in `DevMain`
+
+`7f8ead3` reached `DevMain` through **PR #95**, merged as `97cdf4b` at
+10:47:34 CEST. Verified: `git merge-base --is-ancestor 7f8ead3 HEAD` is true at
+`DevMain` **`21d6686`**. The "not in `DevMain`" finding above is **closed**.
+
+🔴 **The rest of the row stands.** Nothing populates `Evento__c`, it is not in
+Prod, and codes exist for only two of the ten events the picklist carries — see
+[the coding workbook](../The%20Regole%20Codifica%20Codici%20Articolo%20workbook.md).
+
+⚠ **A new event appeared the same day and is not in the picklist's ten.** The
+13/10 session created a `Pienissimo lab` campaign pair and mapped category `E11`
+to it — see
+[the session note](../meetings/2026-10-13%20Feedback%20Test%20UAT.md). Whether
+`Pienissimo lab` is one of the ten under another name, or an eleventh event, is
+**not established**.

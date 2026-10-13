@@ -5044,3 +5044,35 @@ mancante`) predates the config row (created 04/10 23:32Z).
   the formula `Tipo_Record_Lista__c`, then a duplicate rule. The script now
   saves accounts and contacts with `allowSave`. Recorded in
   [OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md).
+
+## 2026-10-13 — claude — nightly requirements-check
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-10-12T22:00Z**; drilled the 13/10 `Feedback Test UAT` (108,930 chars,
+  structured sections only, raw transcript not loaded).
+- **State:** OI-230/231/232/233 new; 1 meeting note; OI-96, OI-145, OI-212,
+  OI-214, OI-225, OI-228, the Evento field, the Mappatura Edizione object, the
+  manual-steps tracker and the 12/10 meeting note updated; MAP, INDEX, both
+  trackers (new rows + 6 regenerated rows each), both recaps §61, trace,
+  this entry. **Register untouched — stays v1.6.** Next free id **234**.
+- **Headlines:** 🟢 the client drove a sale end to end — bundle → quote →
+  DocuSign → Order → **Mexal `inviato`**, the first order recorded reaching Mexal
+  from a quote. 🔴 He also **reversed OI-96's population rule four days after
+  agreeing it** (active products only), rebuilt the same afternoon; **15 of 23 UAT
+  categories now fail a category save**, the morning before the e2e. 🔴 **OI-230**:
+  a second production flow queries `Recipient_Contact__r` and can never succeed —
+  **and it failed the same way on 08/10 at version 1**, logged then as a footnote
+  to OI-225 with no row raised. 🟢 **OI-225's org is identified by instance key:
+  `00Dbl000005BSMH` is Pienissimo Prod**, so a customer-facing send has been
+  failing in production since 09/10. 🔴 **OI-231**: DocuSign closed the onboarding
+  for non-response. 🔴 **OI-212 unmoved a fifth night**; its 13/10 confirmation
+  date has passed.
+- **Next:** OI-230's field reference is a one-token org edit nobody can make from
+  here. OI-212 is still one date comparison. The 15-of-23 category failure has no
+  owner and the e2e is 14/10 09:00.
+- **Watch:** OI-230 is a **recurrence, not a new failure** — do not re-report it
+  as new. `Get Campaign` returning nothing in both flows is the unchased root
+  cause, not the SOQL error. The 15-of-23 failure was **deliberately not given a
+  tracker row** (the developer documented it the same hour in the Mappatura note);
+  it is cross-referenced from OI-96. The three 13/10 `Concordato` rulings are
+  v1.6 candidates and were **not** written into the register.

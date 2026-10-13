@@ -6,7 +6,7 @@ owner: Rexhina Hysi
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 depends_on: [OI-59]
 blocks: [go-live]
 severity: gating
@@ -71,3 +71,43 @@ The three Mexal rows and the ageing job are confirmed as scheduled **by the
 Pienissimo administrator** in UAT, `Status Uat` is filled, and the same is done
 and recorded for Prod. ⚠ Nothing on the sheet assigns the Prod column on any of
 its three rows.
+
+## 🔴 2026-10-13 — the first run has happened and the row is still blank
+
+[The tracker](../Manual%20Steps%20Pienissimo%20tracker.md) was modified again
+today at **09:29:13Z**. The sheet is now `A1:C5` — a **fourth** row — and the
+run-as-user row is **unchanged and still the only row blank in both `Status Uat`
+and `Status Prod`**.
+
+So the sequence is on the record:
+
+1. `QuoteNegotiationAgingBatch.scheduleDaily()` created job `08eMA00000YU7OfYAL`
+   on 12/10, `WAITING`, cron `0 0 3 * * ?`.
+2. Its **first run fell at 03:00 CEST on 13/10**.
+3. The sheet was edited **six and a half hours later**, and the row requiring
+   those jobs to run as the Pienissimo administrator **was not ticked**.
+
+🔴 **The job therefore ran as whoever scheduled it, which is what the row exists
+to prevent.** ⚠ **What it did is not established** — this sweep does not open the
+org, and nothing in mail, chat or any meeting mentions the 03:00 run, its outcome,
+or an error from it. **Absence of a failure report is not evidence it succeeded**;
+`QuoteNegotiationAgingBatch` ageing quotes it cannot see fails silently by doing
+nothing.
+
+⚠ The three Mexal schedulers are a separate question: nothing records them as
+scheduled in UAT at all, so there may be no first run to have missed.
+
+🔑 **A named instance of the same class turned up today in a flow rather than a
+job.** [OI-230](OI-230%20The%20ticket%20confirmation%20request%20flow%20queries%20a%20relationship%20name%20as%20a%20field.md)'s
+production flow runs as **`Tech Romi` (`005SW00000PV5Ja`)**, a ROMI user, and
+fails on its first `Get`. ⚠ That is not proof of a sharing problem — the query is
+also malformed — but it is the first time this project has a **named** non-client
+user executing automation in production.
+
+## The fourth row
+
+_"remove unecessary buttons from object list view"_ — `Done` in UAT, blank for
+Prod. Built and committed the same day as `9e97f46`; the developer's `JOURNAL.md`
+entry records which buttons Salesforce refuses to exclude and which objects the
+repo cannot cover. 🔴 **`Status Prod` is now blank on all four rows**, eight days
+from go-live.

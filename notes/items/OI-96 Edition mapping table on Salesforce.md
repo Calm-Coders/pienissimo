@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-10-09
+updated: 2026-10-13
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -405,3 +405,65 @@ Fabrizio Paganelli proposed it, Aurel Mrruku stated the consequence that every
 article sharing the category is attached active or not, and he answered _"Va bene
 così."_ **That makes it one of the few rulings on this project taken with the
 client present and implemented the same day.**
+
+## 🔴 2026-10-13 — the client reversed the population rule he agreed on 09/10
+
+At [the 13/10 Feedback Test UAT](../meetings/2026-10-13%20Feedback%20Test%20UAT.md)
+Fabrizio Paganelli hit the consequence Aurel Mrruku had read out to him four days
+earlier, and asked for the opposite.
+
+**What he saw** (`01:13:27`): _"il problema dell'enorme mole di dati generata
+dall'inclusione di tutti i prodotti di una categoria, inclusi quelli vecchi o
+inattivi."_ That is exactly the consequence stated on 09/10 and accepted with
+_"Va bene così."_
+
+**What was agreed instead** (`01:17:38`, and recorded by Gemini under
+`Concordato`):
+
+> _"la selezione del prodotto aggiunga solo quel determinato articolo, mentre la
+> selezione della categoria aggiunga tutti i relativi prodotti **attivi**."_
+
+🔑 **Later evidence wins, and both dates are on the record:** the rule agreed
+**2026-10-09** was _every product with the category code, active or not_; the rule
+agreed **2026-10-13** is _active products only, and a chosen product maps itself
+alone_. **Four days.** ⚠ The 09/10 ruling is the one the trace notes praised as
+_"taken with the client in the room and implemented the same day"_; so was this
+one. The project can agree a rule with the client and build it before anyone has
+used it.
+
+⚠ **One internal inconsistency in the 13/10 record.** Aurel Mrruku is minuted
+both as confirming _"che il sistema filtrava già i prodotti attivi"_ and as
+committing to change the logic so that it does. The build that followed shows the
+second reading was the operative one.
+
+**Built the same afternoon**, `0816bf7` (Aurel Mrruku, 15:18 CEST), in `DevMain`
+at **`21d6686`** — see
+[the Mappatura Edizione note](../objects/The%20Mappatura%20Edizione%20object.md),
+which the developer updated in the same commit.
+
+### 🔴 The new rule has a cost that lands before the 14/10 e2e
+
+`cod_grp_merc` drives `Product2.IsActive` and leaves roughly 30 active articles
+([OI-226](OI-226%20The%20gruppo%20merceologico%20stands%20in%20for%20the%20flag%20annullato%20only%20for%20the%20tests.md)),
+so filtering to active products empties most categories. The developer's own
+check: **15 of UAT's 23 categories have no active product** — C10, C11, C20, C21,
+C30, C40, C41, E01, E05, **E10**, P10, P20, P30, S10, Z10 — **and a category save
+on any of them now fails** with _"Nessun prodotto attivo della categoria … da
+mappare"_. The picker still offers them, marked "(0 attivi)".
+
+⚠ **Nobody owns this.** It is recorded in the object note and in `JOURNAL.md`, it
+has no tracker row of its own, and the end-to-end test is the next morning. ⚠ It
+also means the `E10` collision this note has carried since 09/10 is **moot for
+now** — E10 has no active product to map — without having been fixed.
+
+### 🆕 E11 and the operating order
+
+The same session created a `Pienissimo lab` / `Pienissimo lab 2026` campaign pair
+(1 Oct 2026 → 30 Sep 2027, event type live, data invio biglietto 1 Dec 2026) and
+mapped **category `E11`** to it. ⚠ **`E11` is new to these records.**
+
+🔑 **And the annual-duplication worry is answered** (`01:05:04`, `01:06:15`):
+articles are not duplicated per year; the campaign's competence window carries it,
+and **the campaign must be created before the mapping** so orders in that window
+attach to the right edition. That is the first time the operating order has been
+stated.

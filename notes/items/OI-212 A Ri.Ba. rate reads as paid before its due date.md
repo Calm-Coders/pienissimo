@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-12
+updated: 2026-10-13
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -175,3 +175,34 @@ end to end — [the 12/10 e2e UAT](../meetings/2026-10-12%20UAT%20Test%20e2e.md)
 
 The correction is unchanged in scope: one date comparison in a method that
 already holds the date, and the same condition on the formula field.
+
+## 🔴 2026-10-13 — unchanged a fifth night, and the confirmation date has passed
+
+Re-verified byte-for-byte against `DevMain` **`21d6686`** after **13 commits**
+today:
+
+- `MexalScadenzarioSearchService.cls:205-207` —
+  `deadline.paid = deadline.paymentStatus == 'P' || deadline.paymentStatus == 'E';`
+  with **no date condition**, eleven lines below `deadline.dueDate` being parsed
+  from `dt_sca_pg` at line 195. The method already holds the date it ignores.
+- `Scadenza_Fattura__c/fields/Pagata__c` —
+  `OR(ISPICKVAL(Stato_Pagamento_Mexal__c, "P"), ISPICKVAL(Stato_Pagamento_Mexal__c, "E"))`,
+  and its `description` still documents the unqualified rule as intended:
+  _"Vero quando lo stato Mexal e P o E."_
+- **No commit touched either file.** Latest on the Apex is `f292b72`, which
+  predates the finding.
+
+🔴 **The 13/10 production confirmation was today and this was not fixed.**
+Nothing in any swept source — mail, chat, meeting, commit or ruling — mentions it.
+**Fifth consecutive night.**
+
+⚠ **And the 13/10 session walked straight past it.** The client built a quote with
+**four payment tranches due 31 October, 30 November, 31 December and 31 January**,
+on payment terms _"RID fine mese data fattura"_ — the Ri.Ba. family this row is
+about — and the order reached Mexal. **Four of those four due dates are in the
+future**, which is precisely the condition under which an `E` state reads as paid.
+The return leg that would expose it (`MexalInvoiceSyncScheduler`, the scadenzario)
+is not recorded as having run against that order, so **the defect was set up and
+not triggered**.
+
+🔴 The e2e that would exercise the payment path is **tomorrow, 14/10**.
