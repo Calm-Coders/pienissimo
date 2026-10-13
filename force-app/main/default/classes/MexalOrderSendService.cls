@@ -300,12 +300,51 @@ public without sharing class MexalOrderSendService {
     result.statusCode = calloutResult.statusCode;
     result.body = calloutResult.body;
     result.integrationLogId = getLastLogId(calloutResult.integrationLogs);
-    result.mexalOrderNumber = findMexalOrderNumber(calloutResult);
+    result.mexalOrderNumber = result.success == true
+      ? findMexalOrderNumber(calloutResult)
+      : null;
     result.mexalDocumentNumber = parseInteger(result.mexalOrderNumber);
     result.message = result.success
       ? 'Creazione ordine Mexal completata.'
-      : 'Creazione ordine Mexal fallita.';
+      : buildFailureMessage(calloutResult);
     return result;
+  }
+
+  private static String buildFailureMessage(
+    MexalSearchCalloutService.Result calloutResult
+  ) {
+    String message = 'Creazione ordine Mexal fallita';
+    if (calloutResult.statusCode != null) {
+      message += ' (HTTP ' + calloutResult.statusCode + ')';
+    }
+    if (!String.isBlank(calloutResult.body)) {
+      try {
+        Object decoded = JSON.deserializeUntyped(calloutResult.body);
+        if (decoded instanceof Map<String, Object>) {
+          Map<String, Object> response = (Map<String, Object>) decoded;
+          Object error = response.get('error');
+          if (error instanceof Map<String, Object>) {
+            Map<String, Object> errorDetails = (Map<String, Object>) error;
+            for (
+              String key : new List<String>{
+                'response-detail',
+                'response-message'
+              }
+            ) {
+              Object detail = errorDetails.get(key);
+              if (
+                detail instanceof String && !String.isBlank((String) detail)
+              ) {
+                return message + ': ' + ((String) detail).trim();
+              }
+            }
+          }
+        }
+      } catch (Exception ignored) {
+        // An unreadable response must not hide the original HTTP failure.
+      }
+    }
+    return message + '.';
   }
 
   private static Integer resolveDocumentSeries() {

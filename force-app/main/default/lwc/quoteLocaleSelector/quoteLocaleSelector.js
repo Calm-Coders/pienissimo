@@ -25,21 +25,9 @@ const LOCALE_FIELDS = [
   "Account.RecordTypeId"
 ];
 const OPTIONAL_LOCALE_FIELDS = ["Account.Tipologia_Attivita_Globale__c"];
-const COLUMNS = [
-  { label: "Nome locale", fieldName: "localeName", type: "text" },
-  { label: "Nome Account", fieldName: "accountName", type: "text" },
-  {
-    label: "Tipologia attività",
-    fieldName: "activityType",
-    type: "text",
-    wrapText: true
-  }
-];
-
 export default class QuoteLocaleSelector extends LightningElement {
   @api recordId;
 
-  columns = COLUMNS;
   quoteRecord;
   childAccounts = [];
   selectedLocaleId;
@@ -110,17 +98,24 @@ export default class QuoteLocaleSelector extends LightningElement {
         (record) =>
           record.fields.RecordTypeId?.value === this.localeRecordTypeId
       )
-      .map((record) => ({
-        id: record.id,
-        accountName: record.fields.Name?.value || "",
-        localeName:
-          record.fields.Nome_Locale__c?.value ||
-          record.fields.Name?.value ||
-          "",
-        activityType: (
+      .map((record) => {
+        const activityType = (
           record.fields.Tipologia_Attivita_Globale__c?.value || ""
-        ).replace(/;/g, ", ")
-      }));
+        ).replace(/;/g, ", ");
+        const isSelected = record.id === this.selectedLocaleId;
+
+        return {
+          id: record.id,
+          localeName:
+            record.fields.Nome_Locale__c?.value ||
+            record.fields.Name?.value ||
+            "",
+          activityType,
+          hasActivityType: Boolean(activityType),
+          isSelected,
+          cardClass: `locale-card${isSelected ? " selected" : ""}`
+        };
+      });
   }
 
   get isDraft() {
@@ -139,8 +134,12 @@ export default class QuoteLocaleSelector extends LightningElement {
     return this.localeRows.length > 0;
   }
 
-  get selectedRows() {
-    return this.selectedLocaleId ? [this.selectedLocaleId] : [];
+  get cancelLabel() {
+    return this.isDraft ? "Annulla" : "Chiudi";
+  }
+
+  get confirmLabel() {
+    return this.isSaving ? "Salvataggio..." : "Usa questo locale";
   }
 
   get saveDisabled() {
@@ -149,8 +148,8 @@ export default class QuoteLocaleSelector extends LightningElement {
     );
   }
 
-  handleRowSelection(event) {
-    this.selectedLocaleId = event.detail.selectedRows[0]?.id || null;
+  handleLocaleSelection(event) {
+    this.selectedLocaleId = event.currentTarget.dataset.localeId;
   }
 
   async handleSave() {

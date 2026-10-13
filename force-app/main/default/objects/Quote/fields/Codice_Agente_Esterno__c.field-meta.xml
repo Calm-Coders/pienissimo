@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Codice_Agente_Esterno__c</fullName>
+    <description
+  >Codice agente esterno copiato dall'agente dell'Account al momento della creazione del preventivo.</description>
+    <label>Codice Agente Esterno</label>
+    <length>40</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+</CustomField>

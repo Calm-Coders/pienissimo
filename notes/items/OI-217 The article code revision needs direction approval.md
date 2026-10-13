@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-12
 depends_on: [OI-210, OI-48]
 blocks: [go-live]
 source: notes/meetings/2026-10-07 UAT Integrazione WooCommerce e Mexal.md
@@ -58,3 +58,30 @@ the tranche-count contradiction; it went unraised for a third consecutive day.
 Direction approves the revision, the code list is cleaned on both sides, the
 bundle codes the shop sells exist in Mexal, and the result is reconciled against
 the registry decode already held in the notes.
+
+## 🔑 2026-10-12 - the revision has a document, and it moved the day before the confirmation
+
+[The Regole Codifica Codici Articolo workbook](../The%20Regole%20Codifica%20Codici%20Articolo%20workbook.md)
+— Drive `1L6RTAi-DF3plieM6oKQbj7KyktX2sAFR`, in the same folder as the registry
+this row's failure came from — was **modified 2026-10-12 at 09:11:19Z**, hours
+before the client call and a day before the 13/10 production confirmation.
+
+It is the artifact this row has been waiting for: a written coding rule, with a
+complete event-prefix table and codes worked out for two events, fifteen rows in
+all. Fabrizio Paganelli put the revision at **20–30 codes**, so fifteen rows for
+two of ten events reads as a draft in progress.
+
+⚠ **Three things remain unestablished, and the row stays open on all three.**
+
+1. **Whether this is what goes to direction.** No mail, message or meeting in the
+   sweep window mentions the workbook. The timing is suggestive and nothing more.
+2. **Whether direction has approved anything.** This row's blocker is approval,
+   not documentation, and no approval appears in any source.
+3. **Whether Mexal has been cleaned.** The second half of the commitment. The
+   client's 12/10 mail — _"abbiamo fatto delle prove ma non ci ritroviamo su
+   alcune schermate"_ — is about screens, not codes.
+
+⚠ **Still no date on either commitment**, and
+[OI-210](OI-210%20The%20delivered%20article%20registry%20carries%20no%20tranche%20count.md)'s
+tranche-count contradiction went unraised for a sixth consecutive night. The new
+scheme does **not** address it: it has no position for a tranche count.

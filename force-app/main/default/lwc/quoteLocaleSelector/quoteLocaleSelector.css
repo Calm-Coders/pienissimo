@@ -1,5 +1,147 @@
-.account-label {
+.account-context {
+  align-items: center;
+  background: #f3f3f3;
+  border-radius: 0.5rem;
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+}
+
+.context-label {
+  color: #5c5c5c;
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.account-name {
+  color: #181818;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+}
+
+.instructions {
+  color: #444;
   margin-bottom: 0.75rem;
+}
+
+.locale-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.locale-card {
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid #c9c9c9;
+  border-radius: 0.5rem;
+  color: #181818;
+  cursor: pointer;
+  display: flex;
+  gap: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease;
+  width: 100%;
+}
+
+.locale-card:hover {
+  border-color: #1b96ff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+}
+
+.locale-card:focus-visible {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px #0176d3;
+  outline: none;
+}
+
+.locale-card.selected {
+  background: #eef4ff;
+  border: 2px solid #0176d3;
+  padding: calc(0.625rem - 1px) calc(0.75rem - 1px);
+}
+
+.locale-icon {
+  align-items: center;
+  background: #eef4ff;
+  border-radius: 50%;
+  display: inline-flex;
+  flex: 0 0 1.75rem;
+  height: 1.75rem;
+  justify-content: center;
+}
+
+.locale-details {
+  display: block;
+  min-width: 0;
+  width: 100%;
+}
+
+.locale-heading {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.locale-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.selected-badge {
+  align-items: center;
+  background: #d8e6fe;
+  border-radius: 1rem;
+  color: #014486;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  font-weight: 700;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+}
+
+.activity-type {
+  color: #444;
+  display: block;
+  font-size: 0.8125rem;
+  margin-top: 0.2rem;
+  overflow-wrap: anywhere;
+}
+
+.activity-label {
+  font-weight: 700;
+  margin-right: 0.25rem;
+}
+
+.empty-value {
+  color: #747474;
+  font-style: italic;
+}
+
+.empty-state {
+  align-items: flex-start;
+  background: #f3f3f3;
+  border-radius: 0.5rem;
+  color: #444;
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.empty-state-title {
+  color: #181818;
+  font-weight: 700;
+  margin-bottom: 0.125rem;
 }
 
 .message {
@@ -16,4 +158,14 @@
 .message.warning {
   background: #fff7e5;
   color: #5f3e02;
+}
+
+@media (max-width: 30rem) {
+  .locale-heading {
+    display: block;
+  }
+
+  .selected-badge {
+    margin-top: 0.35rem;
+  }
 }

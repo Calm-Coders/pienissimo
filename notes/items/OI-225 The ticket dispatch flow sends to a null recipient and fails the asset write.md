@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-12
 depends_on: [OI-197, OI-199]
 blocks: [OI-81]
 requirement: BIG-06
@@ -111,3 +111,69 @@ with `Ready for Ticket Dispatch` true and `ticket_sent` false, the PDF taken fro
 the asset's attachments, then both flag fields moved.
 
 **Nothing in this sweep fixed it; this procedure writes to the knowledge layer.**
+
+## 🔑 2026-10-12 - the flow has a written description, and it supplies a candidate mechanism
+
+Fabrizio Mastracci described both ticket-send flows as built in the marketing
+group DM at **09:15:18 CEST** —
+[the full text and what changed](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+His description of this one is four lines long and the second line is the
+interesting one:
+
+> _"Si attiva quando il biglietto passa ad 'Assegnato', è pronto per l'invio e non
+> è ancora stato inviato. **Dopo 1 minuto** recupera il PDF del biglietto, crea un
+> link pubblico e invia al partecipante l'email con il link per scaricarlo. Al
+> termine marca il biglietto come inviato (con data e ora)."_
+
+### 🔑 A fixed one-minute wait against an asynchronous render
+
+The PDF this flow fetches is produced by the **platform-event subscriber behind
+`ParticipantDocumentRequestTrigger`** — row 2 of
+[the manual steps tracker](../Manual%20Steps%20Pienissimo%20tracker.md), which
+exists because that subscriber's running user and batch size have to be set by
+hand. A flow that waits a **fixed** minute and then queries for the output of an
+asynchronous job is a race, and `Get Ticket PDF` reporting _"Impossibile trovare
+i record"_ is what losing that race looks like.
+
+⚠ **This is a candidate root cause, and it is not established.**
+
+- Nobody has opened the flow. The one-minute wait is one person's description,
+  not a read of the metadata — and there is no metadata to read, because
+  `force-app/main/default/flows/` is still empty.
+- A one-minute wait is only a race if the render can exceed a minute. **Nothing
+  in this sweep measures how long it takes**, and if the subscriber is suspended
+  or running as a user who cannot write the document, the wait is irrelevant and
+  the document never arrives at all.
+- It explains the **first** defect only. The decision still reporting `Si_PDF` on
+  an empty collection, and the asset write-back failing, are separate faults in
+  the same flow and are untouched by it.
+
+🔑 Worth noting what it does explain: **why the failure is intermittent enough to
+have gone unnoticed.** A race fails some of the time, which is consistent with
+one error mail rather than a dead feature.
+
+### Two things the description changes
+
+1. **The ticket is sent as a public link, not as the Asset attachment.** The
+   05/10 specification said the file comes from the Asset's attachments. ⚠ The
+   same Asset carries
+   [OI-194](OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)'s
+   seven-page signed participation document. A public link is a different
+   exposure and nobody has assessed it.
+2. **The `Inviato` stamp is described as working** — _"Al termine marca il
+   biglietto come inviato (con data e ora)"_ — which is the write-back the error
+   mail reports as **failed**. The description and the evidence disagree, and the
+   evidence is one run.
+
+### Still not established, third sweep
+
+- 🔴 **Which org `00Dbl000005BSMH` is.** Unchanged: that id is in no record, the
+  partial sandbox is `00DMA000004nMMr`, production is the natural reading and no
+  claim is made. **It remains the most answerable thing on the unreachable list.**
+- 🔴 **Whether a real participant received a ticketless email.** Needs the org.
+- The error mail of 2026-10-09T05:53:21Z was **still unread** at this watermark,
+  three days on.
+
+⚠ The **16/10 Marketing UAT** that exists to test this send is four days away, and
+the e2e UAT that would have exercised the order side of it
+[was postponed on 12/10](../meetings/2026-10-12%20UAT%20Test%20e2e.md) to 14/10.

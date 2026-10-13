@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-10-09
+updated: 2026-10-12
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -398,3 +398,33 @@ why both readings are recorded here.**
 this row has tracked since June concerned `pienissimo.com`; nothing states who
 owns `camerierivenditori.com`, whether it needs its own sender authentication, or
 how it relates to the `E07 Camerieri Venditori` article category.
+
+## 🟢 2026-10-12 - a Web-to-Lead artifact exists
+
+Aurel Mrruku posted **`lead-web-to-lead (1).html`** (26.8 KB, `text/plain`) into
+his DM with Elena Spini at **17:59:37 CEST**, immediately after a voice huddle she
+opened at 17:51:59 saying _"ho anche una notizia bella però"_.
+
+🟢 **It is the first concrete artifact for the two commissioned forms** —
+`camerierivenditori.com` and `pienissimo.live` — after fifteen weeks in which
+this row had scope but nothing to show. A generated Web-to-Lead HTML is what the
+form builder needs to post into Salesforce.
+
+⚠ **What it contains was not read.** A Web-to-Lead form carries the org id and
+the field ids it posts to; the file was recorded, not opened, and no credential
+or id from it is in this repository.
+
+### 🔴 The blocker underneath it has not moved
+
+The fields that form posts into are still **not in Prod** — Aurel Mrruku's own
+_"non ci sono in prod sti campi, li stiamo creando in uat"_ of 09/10. Four of
+them are
+[OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)'s
+picklists, whose value list is **still a mail attachment only**, a fifth
+consecutive run. **A Web-to-Lead post cannot write a picklist value the org does
+not have**, so a working HTML file does not make a working form.
+
+⚠ Nothing in this sweep's window assigns the Prod field creation an owner or a
+date. ⚠ The dry run is still gated on the WhatsApp number Matteo Distaso owes;
+nothing mentioned it. ⚠ **What the "notizia bella" was is unreadable** — it went
+into voice and appears in no readable source.

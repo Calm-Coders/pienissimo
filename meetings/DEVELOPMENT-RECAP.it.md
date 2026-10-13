@@ -6716,3 +6716,184 @@ Google Meet.
 🔴 **Ventuno report notturni consecutivi senza una risposta umana.** Il gruppo dev
 ha portato un solo messaggio dall'ultimo watermark: il report dell'08/10 di questa
 stessa procedura.
+
+## 60. Aggiornamento 12/10/2026 — un requisito da firmare è stato riscritto per allinearlo alla build, e il test end-to-end del cliente non ha lasciato traccia
+
+`requirements-check` notturno, watermark **09/10/2026 22:00Z**, su tre giorni —
+da venerdì notte a lunedì notte, con un fine settimana dentro. **Una sessione con
+il cliente che non ha prodotto nulla**, **quattro commit**, il canale di progetto
+di nuovo silenzioso. Le affermazioni sulla build sono aritmetica di repository su
+`DevMain` **`a061f55`**; l'org non è stata aperta.
+
+### 🔴 Il registro e il testo da firmare si sono mossi senza una decisione del cliente
+
+`96d77de` (Rexhina Hysi, 12:22 CEST), unito come **PR #94** alle 14:41, ha
+riscritto **`SAL-20`** in `requirements/pienissimo-requirements.yaml`, in
+`REQUIREMENTS.md` e in **`REQUISITI.it.md`** — il testo che Pienissimo firma:
+
+| | Prima | Dopo |
+| --- | --- | --- |
+| Meccanismo | due **task** «da ricontattare» | due **stati di parcheggio** dell'Opportunità |
+| Secondo innesco | dopo il **primo contatto** | dopo un **preventivo** |
+| La data | **impostabile** dall'utente | **popolata automaticamente** all'ingresso |
+| La motivazione | non menzionata | **obbligatoria**, una per stato |
+
+Il blocco `opportunity` del registro ha acquisito anche lo stato
+`"Da ricontattare"` e tre regole, una delle quali **non è in `SAL-20`** —
+_«Chiusa/Persa porta automaticamente tutti i Preventivi collegati a Rifiutato»_ —
+scritta anche nella riga `Opportunità` della tabella degli stati in entrambi i
+documenti.
+
+🟢 **La realizzazione è solida e documentata** dal suo autore in OI-59, che ne
+indica l'istruzione d'origine. 🔴 **Manca una decisione dietro le parole.** Lo
+`status` è ancora `to_confirm`, la `version` è ancora **1.6** e in nessuna fonte
+risulta una decisione del cliente sulla nuova formulazione. Il punto **#184**
+esiste perché la v1.6 arrivi al cliente come **un unico** change set rivedibile
+alla chiusura degli UAT: questa modifica è ora dentro il testo da firmare e fuori
+da quel change set. Tracciato come **#227**.
+
+### 🟢 Cosa consegna davvero la PR #94
+
+Lo stato generico `Da ricontattare` accanto all'esistente `Da ricontattare -
+Prev. inviato`, ciascuno con motivazione obbligatoria e data automatica in sola
+lettura; un task `Preventivo Inviato` con scadenza il giorno successivo; una mail
+di promemoria configurabile elaborata **48 ore dopo l'invio riuscito della mail
+di accettazione** e solo mentre il Preventivo non è né `Accettato` né
+`Rifiutato`; la gestione del ciclo di invio che conserva il timestamp dell'ultimo
+invio quando un Preventivo torna in `Bozza`; e una cascata di massa che porta
+tutti i Preventivi collegati a `Rifiutato` su `Chiusa/Persa`. Il componente
+`opportunityCustomPath`, che aveva cinque stati fissi nel codice, ora ne mostra
+sei. Rilasciato su Pienissimo UAT con più deployment, tutti `NoTestRun`; **nulla
+in Prod**. Il testo del promemoria di Marco Montesi è ancora atteso, quindi il
+template è deliberatamente modificabile.
+
+### 🔴 L'UAT end-to-end si è svolto e ha lasciato 59 secondi di saluti
+
+Il cliente ha fatto prove da solo nel fine settimana e le schermate non
+tornavano. Fabrizio Paganelli, 12/10/2026 06:27:47Z: _«abbiamo fatto delle prove
+ma non ci ritroviamo su alcune schermate. Ci aggiorniamo nella call di oggi alle
+16»_.
+
+La call si è tenuta alle **16:01 CEST**. La trascrizione Gemini si è fermata a
+**`00:00:59`** — Elena Spini, prima che arrivassero gli ospiti: _«Aspetta,
+facciamo stop»_ — e non è più ripresa; nessun riepilogo, nessun dettaglio, nulla
+su Fathom. ⚠ Si legge come una normale cortesia e non come una decisione di
+restare fuori verbale, e la conseguenza è la stessa: **quali schermate, e
+rispetto a quale aspettativa, non è recuperabile.**
+
+🔴 Due ore dopo l'e2e è stato **rinviato a mercoledì 14 ottobre, 09:00–11:00**
+(_«Posticipo come richiesto»_) e un nuovo **Feedback Test UAT** è stato inserito
+per **martedì 13 ottobre alle 12:00**. ⚠ L'invito spostato dichiara per la prima
+volta per iscritto il perimetro dell'e2e — prodotti standard, bundle, recall
+tutor/pack tutor, Performance Plus e **`libro/videocorsi`** — e quest'ultima voce
+è ciò che il post di status del 09/10, della stessa Elena Spini, diceva spostato
+sul nuovo shop WooCommerce e uscito da Salesforce «per ora». **Entrambe le
+affermazioni sono sue, a tre giorni di distanza.**
+
+### 🔴 Il difetto bloccante sui pagamenti è intatto per la quarta notte
+
+**#212** riverificato byte per byte su `a061f55`: il predicato valuta ancora solo
+lo stato di pagamento, la data di scadenza è ancora letta undici righe sopra, e
+il campo formula con la propria `description` documenta ancora la regola non
+qualificata come intenzionale. Nessun commit ha toccato i due file e nessuna
+fonte lo ha menzionato. **La conferma di produzione del 13 ottobre è domani, e il
+test che avrebbe esercitato il percorso dei pagamenti è ora il 14.**
+
+### 🔴 Un nuovo passo manuale il cui orologio si misura in ore
+
+Il tracker dei passi manuali ha acquisito una **terza riga** alle 10:20:03Z: i
+quattro job notturni — `MexalArticleSyncScheduler`,
+`MexalCustomerSyncScheduler`, `MexalInvoiceSyncScheduler`,
+`QuoteNegotiationAgingBatch` — devono essere schedulati **come amministratore
+Pienissimo**. È la prima riga vuota in `Status Uat` oltre che in `Status Prod`. Il
+testo stesso di OI-59 riporta che `QuoteNegotiationAgingBatch.scheduleDaily()` ha
+creato oggi il job `08eMA00000YU7OfYAL`, `WAITING`, **prima esecuzione il 13
+ottobre alle 03:00 CEST**. L'Apex schedulato gira con l'utente che lo ha
+schedulato: la riga esiste perché di norma è quello sbagliato. ⚠ Stessa classe di
+guasto di **#223**, che è costato un invio ordine in UAT. Tracciato come
+**#228**.
+
+### 🔑 I flussi di invio biglietto sono descritti come realizzati, e una descrizione è un indizio
+
+Fabrizio Mastracci ha pubblicato i due flussi nella DM marketing alle 09:15:18
+CEST, al presente di qualcosa che funziona — la prima descrizione scritta di essi
+come realizzati, cosa che conta perché questo progetto non tiene **alcun metadato
+di flusso sotto controllo di versione**.
+
+**`Invio Richiesta conferma biglietto`** si attiva sull'invito evento quando il
+link di registrazione è valorizzato, lo stato del link è `Pronto` e la data di
+invio è compilata; invia **fino a 11 email**, la prima subito e le successive
+distanziate da un nuovo campo `Wait Interval` sull'edizione evento; si interrompe
+se un biglietto dello stesso ordine ed edizione ha un esito, o se la data
+dell'evento è passata.
+
+**`Invio Biglietto assegnato`** si attiva quando un biglietto passa ad
+`Assegnato`, attende **un minuto**, recupera il PDF, crea un link pubblico e lo
+invia, poi imprime la data di invio.
+
+🔑 **Quell'attesa di un minuto è un meccanismo candidato per #225.** Il PDF è
+generato in modo asincrono dal subscriber dell'evento di piattaforma della riga 2
+dei passi manuali; un flusso che attende un minuto fisso e poi interroga il suo
+risultato è una corsa, e `«Impossibile trovare i record»` è l'aspetto che ha
+quando la si perde — il che spiega anche perché il guasto sia abbastanza
+intermittente da essere passato inosservato. ⚠ **Solo un candidato**: nessuno ha
+aperto il flusso, nulla misura il tempo di generazione, e spiega il primo dei tre
+difetti.
+
+🔴 Tre scostamenti dal contratto del 06/10 passano senza commento: l'attesa fra
+gli undici passi è ora in **minuti, non in giorni**; il biglietto viaggia come
+**link pubblico, non come allegato dell'Asset** — sullo stesso Asset c'è il
+documento di partecipazione firmato di **#194**, non valutato; e **WhatsApp è
+sparito dalla descrizione** mentre la domanda di Rebecca Marmo — in parallelo o
+come backup — è ancora senza risposta. Insieme circoscrivono di nuovo **#197**:
+la marcatura `Inviato` è descritta come funzionante, e la mail di errore dice che
+è fallita.
+
+### 🔑 La regola di codifica articoli del cliente è entrata nel record
+
+`Regole Codifica Codici Articolo.xlsx` sta nella cartella Drive dell'anagrafica
+dal 21 settembre, **mai aperto da un controllo**, e si è mosso il **12 ottobre
+alle 09:11:19Z**. È uno schema unico a lunghezza fissa: prefisso evento ·
+tipologia biglietto · **flag bundle** · blocco numerico, con la tabella completa
+dei prefissi di dieci eventi.
+
+🟢 **Conferma la decodifica di `Natura`** che la call del 09/10 ha ribadito dopo
+una falsa partenza e che MAP aveva segnalato per una verifica nel codice.
+🔑 **Consegna l'elenco eventi** dovuto per posta dai primi controlli. 🔑 Rende il
+codice gemello di bundle di **#48** **posizionale** invece di un suffisso
+`"(B)"`, ed è la convenzione prevista da **#98**. 🔴 I codici esistono per **due
+dei dieci eventi**: è una convenzione, non un'anagrafica; l'approvazione della
+direzione di **#217** non risulta ancora, e il nuovo schema **non ha alcuna
+posizione per un conteggio di tranche**, quindi **#210** ne resta intatto.
+
+Accanto a esso, `Product2.Evento__c` («Evento di origine») è stato costruito su
+un branch di sviluppo — un picklist ristretto degli stessi dieci eventi,
+controllato da `Anno_Solare__c` — ed è il «mettere il significato in un campo» di
+**#47/#76** che finalmente arriva. 🔴 Non è in `DevMain`, e nulla lo valorizza.
+
+### 🟡 Il codice agente ora passa per il Preventivo
+
+`27304d7` aggiunge `Quote.Codice_Agente_Esterno__c`, valorizzato dall'agente
+dell'Account alla creazione del preventivo, e il trigger dell'ordine ora
+preferisce il Preventivo all'Account. 🟢 Questo realizza la decisione del 03/09
+per cui il codice si congela sull'ordine ai fini della provvigione. 🔴 La domanda
+bloccante di **#214** — quale codice usi un ordine WooCommerce senza agente — è
+intatta. ⚠ Un percorso da far verificare a una persona: un ordine con Preventivo
+prende il valore del preventivo e fa `continue`, quindi un campo vuoto produce
+null e salta il fallback sull'Account; registrato come percorso, non come
+regressione accertata, e senza test eseguiti. 🔴 Non è in `DevMain`.
+
+### A verbale
+
+🟢 **#14 ha il suo primo artefatto** — Aurel Mrruku ha inviato a Elena Spini un
+`lead-web-to-lead (1).html` alle 17:59:37 CEST. 🔴 I campi Lead su cui scrive non
+sono ancora in Prod e quattro sono i picklist di **#115**, solo allegato di posta
+al quinto controllo. 🆕 **#229** — Elena Spini ha creato il progetto Jira `PIEN`
+il 10 ottobre e la mail di invito era ancora non letta; gli id `OI-NN`
+corrispondono 1:1 ai numeri di riga di questo tracker e nulla dichiara come i due
+si rapportino. ⚠ Il _«ho anche una notizia bella»_ di Elena Spini è finito in una
+chiamata vocale e non è leggibile. ⚠ `Flows & Objects.drawio` si è mosso di nuovo
+ed è ancora un `mxfile` non interpretabile. 🔴 **Gli appunti marketing del 30/07
+hanno dato 404**, con un id Drive preciso da richiedere. **Fathom non ha
+restituito nulla per il quindicesimo controllo consecutivo.** Il registro resta
+alla **v1.6** — si veda **#227** — e il prossimo id libero è **230**.

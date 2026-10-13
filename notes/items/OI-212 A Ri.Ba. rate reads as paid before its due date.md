@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-09
+updated: 2026-10-12
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -149,3 +149,29 @@ mentioned it.**
 🔴 **Four days to the 13/10 production confirmation, twelve to go-live.** The
 fix remains what the 07/10 ruling asked for: `E` counts as paid only once
 `dueDate` is in the past. The data is already in the method.
+
+## 🔴 2026-10-12 - unchanged a fourth night, and the confirmation is tomorrow
+
+Re-verified against `DevMain` at **`a061f55`**:
+
+| Checked | State |
+| ------- | ----- |
+| `MexalScadenzarioSearchService.cls:205-207` | `deadline.paid = deadline.paymentStatus == 'P' \|\| deadline.paymentStatus == 'E';` — **no date condition** |
+| `dueDate` | still parsed at **line 194** from `dt_sca_pg`, eleven lines above the predicate that ignores it |
+| `Scadenza_Fattura__c.Pagata__c` | formula still `OR(ISPICKVAL(…,"P"), ISPICKVAL(…,"E"))` |
+| The field's `description` | still _"Vero quando lo stato Mexal e P o E."_ — the unqualified rule documented as intended |
+| `git log --since 2026-10-09T22:00Z` on both files | **no commits** |
+
+Four commits landed on the project over the weekend window, none of them in these
+files. **Nothing in Gmail, Slack, Drive, Fathom or any commit message mentioned
+this defect**, a fourth consecutive night.
+
+🔴 **The 13 October production confirmation is tomorrow.** The 07/10 Mexal call
+agreed as `Concordato` that state `E` counts as paid **only if the due date has
+passed**; five days later the code still releases a ticket when a Ri.Ba. is
+merely presented. ⚠ The one session that would have exercised the payment path
+end to end — [the 12/10 e2e UAT](../meetings/2026-10-12%20UAT%20Test%20e2e.md) —
+**was postponed to 14 October**, so the confirmation now falls before the test.
+
+The correction is unchanged in scope: one date comparison in a method that
+already holds the date, and the same condition on the formula field.
