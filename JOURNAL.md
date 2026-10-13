@@ -14,7 +14,7 @@ Keep the twenty most recent entries here; archive older ones to
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
   **2026-10-08T22:00Z** (one day). Read in full: the **09/10 client session**
-  (Gemini notes *and* the whole 31m transcript — short enough not to be an
+  (Gemini notes _and_ the whole 31m transcript — short enough not to be an
   escalation), the `Anagrafica Prodotti` thread, the **flow error mail's entire
   interview trace**, and the new `Manual Steps Pienissimo` sheet. Verified
   today's 13 commits against the repository and re-verified OI-212 byte-for-byte.
@@ -48,7 +48,7 @@ Keep the twenty most recent entries here; archive older ones to
   mentioned it. **Four days to the 13/10 confirmation.** Then: get somebody to
   identify OI-225's org, and read OI-223's blast radius before the Prod deploy.
 - **Watch:** (1) **two notes you wrote today say "not committed" and are wrong** —
-  OI-96 and the article sync note were each written *inside* the commit that built
+  OI-96 and the article sync note were each written _inside_ the commit that built
   what they describe, so the clause was stale on arrival; corrected, and the
   mechanism named so it is recognisable next time. "Not in Prod" still holds in
   both. (2) **OI-226 is a provisional workaround with no decision behind it** —
@@ -57,17 +57,17 @@ Keep the twenty most recent entries here; archive older ones to
   it outliving you on the project; the answer was _"ce lo ricordiamo"_. Natural
   deadline is the Zoho dismissal, **31/10**. (3) **Both Mexal keys moved by hand
   in the client's live ERP the same day the code reading them was written** — the
-  active flag *and* the article categories the new category mapping keys on;
+  active flag _and_ the article categories the new category mapping keys on;
   neither re-verified from Salesforce. (4) **OI-145 is answered in the negative**:
   the order tracciato carries the net price only, so the invoice cannot show list
   price or discount — and Mirko Merendi's alternative interface was advised
   against over rounding, which collides with the 18/09 fixed-price ruling adopted
-  *because* of rounding. If next week's call says Mexal cannot carry the
+  _because_ of rounding. If next week's call says Mexal cannot carry the
   breakdown, **signed `ORD` wording will have to change**. (5) `#tproj-pienissimo`
   reports the Blueprint _"confermato e firmato"_ — **no signed artifact has been
   seen**; recorded as a discrepancy, not resolved. (6) **OI-197 is qualified, not
   resolved**: two of its five "unbuilt" rows exist org-side and are broken, so its
-  build state is *unknown*, not "none". (7) `JOURNAL.md` is at **111 entries**
+  build state is _unknown_, not "none". (7) `JOURNAL.md` is at **111 entries**
   against a documented limit of 20 — archiving is overdue and **I left it alone
   again**.
 
@@ -4929,3 +4929,27 @@ mancante`) predates the config row (created 04/10 23:32Z).
   UAT** (`0AfMA00000Crw700AB`, `NoTestRun`). Not in Prod, not committed. The order
   sent at 12:37 (OC 10/13) predates the deploy and carries no `tipo_stato_riga`;
   Mexal's acceptance of the field is still untested.
+
+## 2026-10-13 — claude — Standard price book follows Mexal listino 1
+
+- **Full Mexal article re-sync in Pienissimo UAT** (anonymous Apex,
+  `syncModifiedSince(2000-01-01)`, nightly cursor not moved). 1,078 returned,
+  1,077 upserted, `PACK-95` skipped as a bundle, 0 failed. Names,
+  descriptions and prices were already aligned. Two new Items were created,
+  `PPEN010` and `PPEN011`. `cod_grp_merc` deactivated two Items, `PLUS-041`
+  and `SOES0099`. The pre-run Product2 backup is in the session scratchpad
+  only. CPU use was 9.1 s of 10 s.
+- **Found:** `ProductCodeTrigger` created every new product's standard
+  `PricebookEntry` at zero, and nothing updated it. So Mexal prices never
+  reached quotes. 58 standard entries differ from `Price_1__c`.
+- **Changed (user request):** `ProductCodeTriggerHandler` + `ProductCodeTrigger`.
+  The standard entry is created at `Price_1__c`, and an `after update` path
+  re-prices it when `Price_1__c` changes. **Deployed to UAT only, not
+  committed, not in Prod.** Verified with a rolled-back transaction. No new test
+  class, per the standing instruction. Recorded in
+  [the article sync note](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+- **Backfill in UAT (user request):** the 58 standard entries were set to
+  `Price_1__c` (bulk `750MA00000RqknEYAR`). None differs now. Pre-backfill
+  export is in the scratchpad only.
+- **Open:** 7 active Items have `Product_Price__c` but no Mexal price and stay
+  at zero. Prod deploy and backfill have not been requested.

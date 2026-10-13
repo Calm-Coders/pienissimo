@@ -1,7 +1,8 @@
 trigger ProductCodeTrigger on Product2(
   before insert,
   before update,
-  after insert
+  after insert,
+  after update
 ) {
   if (Trigger.isBefore) {
     if (Trigger.isInsert) {
@@ -13,7 +14,13 @@ trigger ProductCodeTrigger on Product2(
     }
   }
 
-  if (Trigger.isAfter && Trigger.isInsert) {
-    ProductCodeTriggerHandler.afterInsert(Trigger.new);
+  if (Trigger.isAfter) {
+    if (Trigger.isInsert) {
+      ProductCodeTriggerHandler.afterInsert(Trigger.new);
+    }
+
+    if (Trigger.isUpdate) {
+      ProductCodeTriggerHandler.afterUpdate(Trigger.new, Trigger.oldMap);
+    }
   }
 }
