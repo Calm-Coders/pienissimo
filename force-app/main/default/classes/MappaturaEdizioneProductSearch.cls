@@ -142,10 +142,83 @@ public with sharing class MappaturaEdizioneProductSearch {
     return options;
   }
 
-  // The product a category-only mapping is saved on; the trigger then maps the
-  // rest of the category. It must not already be mapped to the campaign or have
-  // an active mapping overlapping the campaign window, or the save would fail.
+  public class CategorySaveResult {
+    @AuraEnabled
+    public Id recordId;
+    @AuraEnabled
+    public String name;
+    @AuraEnabled
+    public Integer mappedCount;
+  }
+
+  // A category-only save maps every available active product of the category
+  // to the campaign, in one transaction: all of them or none. A save on a chosen
+  // product is the form's standard save and maps that product alone.
   @AuraEnabled
+  public static CategorySaveResult saveCategoryMappings(
+    String category,
+    Id campaignId,
+    Boolean isActive
+  ) {
+    if (String.isBlank(category) || campaignId == null) {
+      throw auraError('Scegli una Campagna e una Categoria Prodotto.');
+    }
+
+    Id productId = findProductToMap(category, campaignId);
+    if (productId == null) {
+      throw auraError(
+        'Nessun prodotto attivo della categoria ' +
+          category.trim() +
+          ' da mappare: non ce ne sono, oppure sono già mappati su questa campagna o in date sovrapposte.'
+      );
+    }
+
+    Savepoint savepoint = Database.setSavepoint();
+    try {
+      Mappatura_Edizione__c mapping = new Mappatura_Edizione__c(
+        Prodotto__c = productId,
+        Campagna__c = campaignId,
+        Attiva__c = isActive == true
+      );
+      insert mapping;
+
+      // Re-read for the dates beforeSave copies from the campaign.
+      mapping = [
+        SELECT
+          Id,
+          Name,
+          Prodotto__c,
+          Campagna__c,
+          Attiva__c,
+          Data_Inizio__c,
+          Data_Fine__c
+        FROM Mappatura_Edizione__c
+        WHERE Id = :mapping.Id
+      ];
+      List<Mappatura_Edizione__c> siblings = MappaturaEdizioneTriggerHandler.mapCategorySiblings(
+        new List<Mappatura_Edizione__c>{ mapping }
+      );
+
+      CategorySaveResult result = new CategorySaveResult();
+      result.recordId = mapping.Id;
+      result.name = mapping.Name;
+      result.mappedCount = 1 + siblings.size();
+      return result;
+    } catch (DmlException error) {
+      Database.rollback(savepoint);
+      throw auraError(error.getDmlMessage(0));
+    }
+  }
+
+  private static AuraHandledException auraError(String message) {
+    AuraHandledException error = new AuraHandledException(message);
+    error.setMessage(message);
+    return error;
+  }
+
+  // The active product a category-only mapping is saved on first. It must not
+  // already be mapped to the campaign or have an active mapping overlapping the
+  // campaign window, or the save would fail.
   public static Id findProductToMap(String category, Id campaignId) {
     if (String.isBlank(category) || campaignId == null) {
       return null;
@@ -181,8 +254,8 @@ public with sharing class MappaturaEdizioneProductSearch {
     for (Product2 product : [
       SELECT Id, Categoria_Articolo__c
       FROM Product2
-      WHERE Categoria_Articolo__c = :category.trim()
-      ORDER BY IsActive DESC, Name
+      WHERE Categoria_Articolo__c = :category.trim() AND IsActive = TRUE
+      ORDER BY Name
     ]) {
       if (!unavailable.contains(product.Id)) {
         return product.Id;

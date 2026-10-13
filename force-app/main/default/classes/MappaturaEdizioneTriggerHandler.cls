@@ -1,16 +1,14 @@
 public without sharing class MappaturaEdizioneTriggerHandler {
-  // Set while the category siblings are inserted, so they are not expanded again.
-  private static Boolean isMappingCategory = false;
-
-  // A new mapping also maps every other product with the same
-  // Product2.Categoria_Articolo__c to the same child campaign. A product already
-  // mapped to that campaign, or with an active mapping overlapping the window,
-  // is left as it is.
-  public static void afterInsert(List<Mappatura_Edizione__c> newMappings) {
-    if (isMappingCategory) {
-      return;
-    }
-
+  // Maps every other active product with the same Product2.Categoria_Articolo__c
+  // as the saved mappings to the same child campaign, and returns the new rows.
+  // Called only for a category-only save from the New form; a mapping saved on
+  // a chosen product maps that product alone. A product already mapped to that
+  // campaign, or with an active mapping overlapping the window, is left as it
+  // is. The saved mappings must carry the dates set by beforeSave.
+  public static List<Mappatura_Edizione__c> mapCategorySiblings(
+    List<Mappatura_Edizione__c> newMappings
+  ) {
+    List<Mappatura_Edizione__c> categoryMappings = new List<Mappatura_Edizione__c>();
     Set<Id> productIds = new Set<Id>();
     for (Mappatura_Edizione__c mapping : newMappings) {
       if (mapping.Prodotto__c != null && mapping.Campagna__c != null) {
@@ -18,7 +16,7 @@ public without sharing class MappaturaEdizioneTriggerHandler {
       }
     }
     if (productIds.isEmpty()) {
-      return;
+      return categoryMappings;
     }
 
     Map<Id, String> categoryByProductId = new Map<Id, String>();
@@ -33,14 +31,16 @@ public without sharing class MappaturaEdizioneTriggerHandler {
       );
     }
     if (categoryByProductId.isEmpty()) {
-      return;
+      return categoryMappings;
     }
 
     Map<String, List<Id>> productIdsByCategory = new Map<String, List<Id>>();
     for (Product2 product : [
       SELECT Id, Categoria_Articolo__c
       FROM Product2
-      WHERE Categoria_Articolo__c IN :categoryByProductId.values()
+      WHERE
+        Categoria_Articolo__c IN :categoryByProductId.values()
+        AND IsActive = TRUE
       ORDER BY Name, Id
     ]) {
       String category = normalizeCategory(product.Categoria_Articolo__c);
@@ -65,7 +65,6 @@ public without sharing class MappaturaEdizioneTriggerHandler {
       addMapping(mappingsByProductId, existing.Prodotto__c, existing);
     }
 
-    List<Mappatura_Edizione__c> categoryMappings = new List<Mappatura_Edizione__c>();
     for (Mappatura_Edizione__c mapping : newMappings) {
       String category = categoryByProductId.get(mapping.Prodotto__c);
       if (category == null) {
@@ -89,16 +88,10 @@ public without sharing class MappaturaEdizioneTriggerHandler {
       }
     }
 
-    if (categoryMappings.isEmpty()) {
-      return;
-    }
-
-    isMappingCategory = true;
-    try {
+    if (!categoryMappings.isEmpty()) {
       insert categoryMappings;
-    } finally {
-      isMappingCategory = false;
     }
+    return categoryMappings;
   }
 
   private static Boolean isAlreadyMapped(

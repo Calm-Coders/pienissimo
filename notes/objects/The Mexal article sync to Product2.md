@@ -129,8 +129,9 @@ every article that arrived from Mexal after the 23/09 import was quoted at zero.
   `Price_1__c` whenever that field changes. A cleared `Price_1__c` leaves the
   entry as it is. Omaggi are zero in Mexal, so they stay at zero. Only the
   standard price book is touched.
-- **Deployed to Pienissimo UAT only, not committed, not in Prod.** Before the
-  change, the source matched both UAT and Prod. Verified in UAT inside a
+- **Deployed to Pienissimo UAT. Committed by Aurel Mrruku as `49b49e5`, which is
+  in `DevMain`. Not in Prod.** Before the change, the source matched both UAT
+  and Prod. Verified in UAT inside a
   rolled-back transaction: a price change updated the entry, a cleared price
   left it alone, and an insert created the entry at the product's price. The
   existing product and quote test classes have 63 failures, none of them about

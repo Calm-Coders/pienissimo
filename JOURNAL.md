@@ -4987,8 +4987,8 @@ mancante`) predates the config row (created 04/10 23:32Z).
   reached quotes. 58 standard entries differ from `Price_1__c`.
 - **Changed (user request):** `ProductCodeTriggerHandler` + `ProductCodeTrigger`.
   The standard entry is created at `Price_1__c`, and an `after update` path
-  re-prices it when `Price_1__c` changes. **Deployed to UAT only, not
-  committed, not in Prod.** Verified with a rolled-back transaction. No new test
+  re-prices it when `Price_1__c` changes. **Deployed to UAT. Later committed
+  by the user as `49b49e5`, which is in `DevMain`. Not in Prod.** Verified with a rolled-back transaction. No new test
   class, per the standing instruction. Recorded in
   [the article sync note](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
 - **Backfill in UAT (user request):** the 58 standard entries were set to
@@ -4996,3 +4996,17 @@ mancante`) predates the config row (created 04/10 23:32Z).
   export is in the scratchpad only.
 - **Open:** 7 active Items have `Product_Price__c` but no Mexal price and stay
   at zero. Prod deploy and backfill have not been requested.
+
+## 2026-10-13 — claude — Mappatura Edizione: a chosen product maps only itself
+
+- At the user's request, the category expansion moved out of the
+  `after insert` trigger. Now only a category-only save from the New form
+  expands (`saveCategoryMappings`, all or none). A save on a chosen product
+  maps that product alone.
+- Deployed to UAT only (`0AfMA00000CubCU0AZ`), not committed, not in Prod.
+  Prod never had the expansion. Rolled-back check: 1 mapping for a product
+  save, 18 for an E02 category save. Recorded in
+  [the Mappatura Edizione note](notes/objects/The%20Mappatura%20Edizione%20object.md).
+- Follow-up, same session: category saves now map **active products only**
+  (`0AfMA00000Cuewj0AB`, UAT, not committed). E02: 3 of 18 mapped. 15 of 23 UAT
+  categories have no active product, so a category save on them now errors.
