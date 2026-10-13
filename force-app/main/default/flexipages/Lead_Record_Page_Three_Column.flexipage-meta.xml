@@ -318,6 +318,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Tipologia_Attivita_Globale__c</fieldItem>
+                <identifier>RecordTipologia_Attivita_Globale_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Quantita_Biglietti__c</fieldItem>
                 <identifier>RecordQuantita_Biglietti_cField</identifier>
             </fieldInstance>
@@ -473,16 +483,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UTM_Term__c</fieldItem>
                 <identifier>RecordUTM_Term_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Description</fieldItem>
-                <identifier>RecordDescriptionField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-08d857cc-5c27-407b-8f48-0873c5dda3fc</name>
