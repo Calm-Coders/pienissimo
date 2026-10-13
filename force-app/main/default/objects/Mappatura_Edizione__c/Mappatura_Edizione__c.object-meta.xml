@@ -179,7 +179,13 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Mappature Edizione</pluralLabel>
-    <searchLayouts />
+    <searchLayouts>
+        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Import</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons
+    >MassAssignRecordLabel</excludedStandardButtons></searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

@@ -159,6 +159,7 @@
     >PRODUCT2.CUSTOMER_PRODUCT_ID</customTabListAdditionalFields>
         <customTabListAdditionalFields
     >PRODUCT2.DESCRIPTION</customTabListAdditionalFields>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <lookupDialogsAdditionalFields
     >PRODUCT2.NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields

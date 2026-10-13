@@ -5010,3 +5010,37 @@ mancante`) predates the config row (created 04/10 23:32Z).
 - Follow-up, same session: category saves now map **active products only**
   (`0AfMA00000Cuewj0AB`, UAT, not committed). E02: 3 of 18 mapped. 15 of 23 UAT
   categories have no active product, so a category save on them now errors.
+
+## 2026-10-13 — claude — List view buttons hidden in UAT
+
+- At the user's request, Change Owner, Import, Printable View and Assign Label
+  were hidden from list views through `searchLayouts.excludedStandardButtons`
+  (`MassChangeOwner`, `ChangeOwner`, `Import`, `PrintableListView`,
+  `MassAssignRecordLabel`). This covers the 15 objects in the LightningSales
+  nav. Deployed to UAT as `0AfMA00000CufSz0AJ`, built from UAT's own retrieved
+  object definitions. Not committed, not in Prod.
+- **Salesforce refuses some exclusions**, so these buttons stay:
+  - Change Owner on every standard object;
+  - Import on Asset, Campaign, Order, Product2 and Quote;
+  - Printable View on Asset, Order and Quote;
+  - Assign Label on Asset, Order, Product2 and Quote.
+
+  Lead already had all of them excluded.
+
+- **Repo:** exclusions were added to Opportunity, Product2, Integration_Log__c
+  and Mappatura_Edizione__c. BundleComponent__c, Event_Invitation__c,
+  Fattura__c and Scadenza_Fattura__c got UAT's whole `searchLayouts` block.
+  The repo has stub files for Account and Contact and no file for Campaign or
+  Lead, so their exclusions exist only in UAT. A dry-run of the repo files
+  against UAT passed.
+
+## 2026-10-13 — claude — Second TEST MKT batch in Prod
+
+- At the user's request, ran the new `scripts/apex/seed-test-mkt-orders.apex`
+  in Pienissimo Prod. It created TEST MKT - Azienda 7 to 12 and orders
+  00000107 to 00000112, all `Incassato`, giving 12 `Disponibile` tickets and 6
+  Event Links (`Pending`/`Ready`). `Integration_Log__c` stayed at 9.
+- Two failed attempts before that rolled back completely: a compile error on
+  the formula `Tipo_Record_Lista__c`, then a duplicate rule. The script now
+  saves accounts and contacts with `allowSave`. Recorded in
+  [OI-177](notes/items/OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md).
