@@ -8,8 +8,12 @@ public without sharing class LeadConversionTriggerHandler {
   private static final String TASK_PRIORITY_NORMAL = 'Normal';
   private static final String QUALIFIED_STATUS = 'Qualificato';
   private static Boolean conversionJobEnqueued = false;
+  private static Boolean automationBypassed = false;
 
   public static void beforeSave(List<Lead> newLeads, Map<Id, Lead> oldLeadMap) {
+    if (automationBypassed) {
+      return;
+    }
     preventDuplicateOpenLeads(newLeads);
     preventQualificationAccountConflicts(newLeads, oldLeadMap);
   }
@@ -18,6 +22,9 @@ public without sharing class LeadConversionTriggerHandler {
     List<Lead> newLeads,
     Map<Id, Lead> oldLeadMap
   ) {
+    if (automationBypassed) {
+      return;
+    }
     copyConvertedFields(newLeads, oldLeadMap);
 
     List<Task> followUpTasks = buildNonRispondeFollowUpTasks(
@@ -29,6 +36,10 @@ public without sharing class LeadConversionTriggerHandler {
     }
 
     enqueueLeadConversions(newLeads, oldLeadMap);
+  }
+
+  public static void setAutomationBypassed(Boolean bypassed) {
+    automationBypassed = bypassed == true;
   }
 
   private static void copyConvertedFields(
@@ -309,6 +320,7 @@ public without sharing class LeadConversionTriggerHandler {
     }
 
     List<Id> qualifiedLeadIds = new List<Id>();
+    Map<Id, String> previousStatusByLeadId = new Map<Id, String>();
     for (Lead leadRecord : newLeads) {
       Lead oldLead = oldLeadMap.get(leadRecord.Id);
       if (
@@ -317,12 +329,15 @@ public without sharing class LeadConversionTriggerHandler {
         oldLead.Status != QUALIFIED_STATUS
       ) {
         qualifiedLeadIds.add(leadRecord.Id);
+        previousStatusByLeadId.put(leadRecord.Id, oldLead.Status);
       }
     }
 
     if (!qualifiedLeadIds.isEmpty()) {
       conversionJobEnqueued = true;
-      System.enqueueJob(new LeadConversionQueueable(qualifiedLeadIds));
+      System.enqueueJob(
+        new LeadConversionQueueable(qualifiedLeadIds, previousStatusByLeadId)
+      );
     }
   }
 
