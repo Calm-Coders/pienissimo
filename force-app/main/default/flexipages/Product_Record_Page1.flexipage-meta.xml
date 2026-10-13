@@ -221,8 +221,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Product_Price__c</fieldItem>
-                <identifier>RecordProduct_Price_cField</identifier>
+                <fieldItem>Record.Bundle_Selling_Price__c</fieldItem>
+                <identifier>RecordBundle_Selling_Price_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
