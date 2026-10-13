@@ -24,7 +24,7 @@
         </div>
       </div>
 
-      <template if:true={isDraft}>
+      <template if:true={canEditLocale}>
         <template if:true={hasLocales}>
           <p class="instructions">
             Seleziona il locale da associare a questo preventivo.
@@ -96,9 +96,10 @@
         </template>
       </template>
 
-      <template if:false={isDraft}>
+      <template if:false={canEditLocale}>
         <div class="message warning" role="alert">
-          Il Locale può essere modificato solo quando il preventivo è in Bozza.
+          Il Locale può essere modificato solo quando il preventivo è in Bozza,
+          In Trattativa o In Attesa Accettazione.
         </div>
       </template>
     </template>
@@ -108,7 +109,7 @@
         label={cancelLabel}
         onclick={handleCancel}
       ></lightning-button>
-      <template if:true={isDraft}>
+      <template if:true={canEditLocale}>
         <lightning-button
           class="slds-m-left_small"
           label={confirmLabel}

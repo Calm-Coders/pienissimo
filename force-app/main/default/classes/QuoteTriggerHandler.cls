@@ -18,7 +18,6 @@ public without sharing class QuoteTriggerHandler {
   private static final Set<String> PDF_INPUT_FIELDS = new Set<String>{
     'AccountId',
     'OpportunityId',
-    'Locale__c',
     'ExpirationDate',
     'BillingName',
     'BillingStreet',
