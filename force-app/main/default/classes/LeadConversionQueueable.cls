@@ -17,12 +17,24 @@ public without sharing class LeadConversionQueueable implements Queueable {
   private static final String USER_ID_PREFIX = '005';
 
   private final List<Id> leadIds;
+  private final Map<Id, String> previousStatusByLeadId;
 
   public LeadConversionQueueable(List<Id> leadIds) {
+    this(leadIds, null);
+  }
+
+  public LeadConversionQueueable(
+    List<Id> leadIds,
+    Map<Id, String> previousStatusByLeadId
+  ) {
     this.leadIds = new List<Id>();
+    this.previousStatusByLeadId = new Map<Id, String>();
 
     if (leadIds != null) {
       this.leadIds.addAll(leadIds);
+    }
+    if (previousStatusByLeadId != null) {
+      this.previousStatusByLeadId.putAll(previousStatusByLeadId);
     }
   }
 
@@ -57,6 +69,57 @@ public without sharing class LeadConversionQueueable implements Queueable {
       return;
     }
 
+    Savepoint conversionSavepoint = Database.setSavepoint();
+    try {
+      Map<Id, Id> accountIdsByLeadId = convertQualifiedLeads(leadsToConvert);
+      publishCompletionEvents(leadsToConvert, true, accountIdsByLeadId);
+    } catch (Exception conversionError) {
+      Database.rollback(conversionSavepoint);
+      System.debug(
+        LoggingLevel.ERROR,
+        'Lead conversion transaction rolled back: ' +
+        conversionError.getMessage()
+      );
+      if (!restorePreviousLeadStatuses(leadsToConvert)) {
+        throw conversionError;
+      }
+      publishCompletionEvents(leadsToConvert, false, null);
+    }
+  }
+
+  private static void publishCompletionEvents(
+    List<Lead> processedLeads,
+    Boolean succeeded,
+    Map<Id, Id> accountIdsByLeadId
+  ) {
+    List<Lead_Conversion_Completed__e> completionEvents = new List<Lead_Conversion_Completed__e>();
+    for (Lead leadRecord : processedLeads) {
+      Id accountId = accountIdsByLeadId == null
+        ? null
+        : accountIdsByLeadId.get(leadRecord.Id);
+      completionEvents.add(
+        new Lead_Conversion_Completed__e(
+          Account_Id__c = accountId == null ? null : String.valueOf(accountId),
+          Lead_Id__c = String.valueOf(leadRecord.Id),
+          Succeeded__c = succeeded
+        )
+      );
+    }
+
+    for (
+      Database.SaveResult publishResult : EventBus.publish(completionEvents)
+    ) {
+      if (!publishResult.isSuccess()) {
+        System.debug(
+          LoggingLevel.ERROR,
+          'Lead conversion completion event was not published: ' +
+          publishResult.getErrors()[0].getMessage()
+        );
+      }
+    }
+  }
+
+  private static Map<Id, Id> convertQualifiedLeads(List<Lead> leadsToConvert) {
     Map<Id, Id> accountIdsByLeadId = resolveConversionAccounts(leadsToConvert);
 
     Map<String, Contact> contactsByAccountAndPersonKey = getContactsByAccountAndPersonKey(
@@ -142,6 +205,34 @@ public without sharing class LeadConversionQueueable implements Queueable {
     setConvertedOpportunityTypes(conversionResults, leadOpportunityTypeById);
 
     updateConvertedAccountLeadEmails(conversionResults, leadEmailById);
+
+    Map<Id, Id> convertedAccountIdsByLeadId = new Map<Id, Id>();
+    for (Database.LeadConvertResult result : conversionResults) {
+      convertedAccountIdsByLeadId.put(
+        result.getLeadId(),
+        result.getAccountId()
+      );
+    }
+    return convertedAccountIdsByLeadId;
+  }
+
+  private Boolean restorePreviousLeadStatuses(List<Lead> leadsToRestore) {
+    List<Lead> statusUpdates = new List<Lead>();
+    for (Lead leadRecord : leadsToRestore) {
+      String previousStatus = previousStatusByLeadId.get(leadRecord.Id);
+      if (String.isBlank(previousStatus)) {
+        return false;
+      }
+      statusUpdates.add(new Lead(Id = leadRecord.Id, Status = previousStatus));
+    }
+
+    LeadConversionTriggerHandler.setAutomationBypassed(true);
+    try {
+      update statusUpdates;
+    } finally {
+      LeadConversionTriggerHandler.setAutomationBypassed(false);
+    }
+    return true;
   }
 
   private static List<Database.LeadConvertResult> convertLeads(
@@ -169,6 +260,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     logConversionFailures(conversionResults);
+    requireEveryConversionToSucceed(conversionResults);
 
     return conversionResults;
   }
@@ -302,6 +394,41 @@ public without sharing class LeadConversionQueueable implements Queueable {
             error.getMessage()
         );
       }
+    }
+  }
+
+  private static void requireEveryConversionToSucceed(
+    List<Database.LeadConvertResult> conversionResults
+  ) {
+    Integer failureCount = 0;
+    String firstFailure;
+
+    for (Database.LeadConvertResult result : conversionResults) {
+      if (result.isSuccess()) {
+        continue;
+      }
+
+      failureCount++;
+      if (firstFailure == null) {
+        Database.Error[] errors = result.getErrors();
+        firstFailure = errors.isEmpty()
+          ? 'Unknown conversion error for Lead ' + result.getLeadId()
+          : 'Lead ' +
+            result.getLeadId() +
+            ': ' +
+            errors[0].getStatusCode() +
+            ' - ' +
+            errors[0].getMessage();
+      }
+    }
+
+    if (failureCount > 0) {
+      throw new LeadConversionException(
+        'Lead conversion rolled back because ' +
+          failureCount +
+          ' conversion(s) failed. First failure: ' +
+          firstFailure
+      );
     }
   }
 

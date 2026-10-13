@@ -3,6 +3,8 @@ import { getObjectInfo, getPicklistValues } from "lightning/uiObjectInfoApi";
 import { getFieldValue, getRecord, updateRecord } from "lightning/uiRecordApi";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
+import { onError, subscribe, unsubscribe } from "lightning/empApi";
+import { NavigationMixin } from "lightning/navigation";
 
 import LEAD_OBJECT from "@salesforce/schema/Lead";
 import AGENT_FIELD from "@salesforce/schema/Lead.Agente__c";
@@ -24,6 +26,8 @@ const STANDARD_STAGES = [
 ];
 
 const DIRETTA_STAGES = ["New", "Qualificato"];
+const QUALIFIED_STAGE = "Qualificato";
+const LEAD_CONVERSION_CHANNEL = "/event/Lead_Conversion_Completed__e";
 
 const KEY_FIELDS_BY_STAGE = {
   New: [COMPANY_FIELD],
@@ -41,7 +45,7 @@ const FIELDS = [
   EXIT_REASON_DETAIL_FIELD
 ];
 
-export default class LeadCustomPath extends LightningElement {
+export default class LeadCustomPath extends NavigationMixin(LightningElement) {
   @api recordId;
 
   leadObjectApiName = LEAD_OBJECT;
@@ -54,7 +58,10 @@ export default class LeadCustomPath extends LightningElement {
   exitReason;
   exitReasonDetail;
   isSaving = false;
+  isWaitingForConversion = false;
   showExitReasonModal = false;
+  conversionSubscription;
+  conversionSubscriptionPromise;
 
   exitReasonOptions = [];
   exitReasonDetailOptions = [];
@@ -62,6 +69,28 @@ export default class LeadCustomPath extends LightningElement {
 
   @wire(getObjectInfo, { objectApiName: LEAD_OBJECT })
   objectInfo;
+
+  connectedCallback() {
+    this.conversionSubscriptionPromise = this.subscribeToConversionEvents();
+    onError(() => {
+      if (this.isWaitingForConversion) {
+        this.isWaitingForConversion = false;
+        this.isSaving = false;
+        this.showToast(
+          "Aggiornamento automatico non disponibile",
+          "La conversione continua in background. Aggiorna la pagina tra poco.",
+          "warning"
+        );
+      }
+    });
+  }
+
+  disconnectedCallback() {
+    if (this.conversionSubscription) {
+      unsubscribe(this.conversionSubscription, () => {});
+      this.conversionSubscription = undefined;
+    }
+  }
 
   @wire(getRecord, { recordId: "$recordId", fields: FIELDS })
   wiredLead({ data }) {
@@ -163,6 +192,10 @@ export default class LeadCustomPath extends LightningElement {
   }
 
   get statusText() {
+    if (this.isWaitingForConversion) {
+      return "Conversione Lead in corso...";
+    }
+
     return this.isSaving
       ? "Updating stage..."
       : `Status: ${this.currentStage || ""}`;
@@ -233,6 +266,8 @@ export default class LeadCustomPath extends LightningElement {
 
   async saveStage() {
     this.isSaving = true;
+    const shouldWaitForConversion = this.selectedStage === QUALIFIED_STAGE;
+    this.isWaitingForConversion = shouldWaitForConversion;
     const fields = {
       [ID_FIELD.fieldApiName]: this.recordId,
       [STATUS_FIELD.fieldApiName]: this.selectedStage,
@@ -245,9 +280,23 @@ export default class LeadCustomPath extends LightningElement {
     }
 
     try {
+      if (shouldWaitForConversion) {
+        const subscription = await this.conversionSubscriptionPromise;
+        if (!subscription) {
+          throw new Error(
+            "Impossibile ascoltare il completamento della conversione. Riprova."
+          );
+        }
+      }
+
       await updateRecord({ fields });
       this.currentStage = this.selectedStage;
       this.showExitReasonModal = false;
+
+      if (shouldWaitForConversion) {
+        return;
+      }
+
       this.dispatchEvent(new RefreshEvent());
       this.showToast(
         "Fase aggiornata",
@@ -255,14 +304,71 @@ export default class LeadCustomPath extends LightningElement {
         "success"
       );
     } catch (error) {
+      this.isWaitingForConversion = false;
       this.showToast(
         "Impossibile aggiornare la fase",
         this.errorMessage(error),
         "error"
       );
     } finally {
-      this.isSaving = false;
+      if (!this.isWaitingForConversion) {
+        this.isSaving = false;
+      }
     }
+  }
+
+  subscribeToConversionEvents() {
+    return subscribe(LEAD_CONVERSION_CHANNEL, -1, (message) => {
+      this.handleConversionEvent(message);
+    })
+      .then((subscription) => {
+        this.conversionSubscription = subscription;
+        return subscription;
+      })
+      .catch(() => null);
+  }
+
+  handleConversionEvent(message) {
+    const payload = message?.data?.payload;
+    if (payload?.Lead_Id__c !== this.recordId) {
+      return;
+    }
+
+    this.isWaitingForConversion = false;
+    this.isSaving = false;
+
+    if (payload.Succeeded__c === true) {
+      this.showToast(
+        "Lead convertito",
+        "La conversione del Lead e stata completata.",
+        "success"
+      );
+
+      if (payload.Account_Id__c) {
+        this[NavigationMixin.Navigate](
+          {
+            type: "standard__recordPage",
+            attributes: {
+              recordId: payload.Account_Id__c,
+              objectApiName: "Account",
+              actionName: "view"
+            }
+          },
+          true
+        );
+        return;
+      }
+    } else {
+      this.showToast(
+        "Conversione non completata",
+        "La conversione non e riuscita. Lo stato precedente e stato ripristinato.",
+        "error"
+      );
+      window.location.reload();
+      return;
+    }
+
+    this.dispatchEvent(new RefreshEvent());
   }
 
   showToast(title, message, variant) {
@@ -279,6 +385,7 @@ export default class LeadCustomPath extends LightningElement {
       error?.body?.output?.errors?.[0]?.message ||
       fieldErrorMessages[0] ||
       error?.body?.message ||
+      error?.message ||
       "Si e verificato un errore imprevisto."
     );
   }
