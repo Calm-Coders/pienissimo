@@ -164,6 +164,9 @@
                             <value>QUOTE.NAME</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>QUOTE.STATUS</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>QUOTE.EXPIRATIONDATE</value>
                         </valueListItems>
                     </valueList>
