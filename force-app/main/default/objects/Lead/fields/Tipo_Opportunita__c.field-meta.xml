@@ -17,11 +17,6 @@
                 <label>Vendita da tutor</label>
             </value>
             <value>
-                <fullName>WooCommerce</fullName>
-                <default>false</default>
-                <label>WooCommerce</label>
-            </value>
-            <value>
                 <fullName>Performance Plus - Attivazione</fullName>
                 <default>false</default>
                 <label>Performance Plus - Attivazione</label>

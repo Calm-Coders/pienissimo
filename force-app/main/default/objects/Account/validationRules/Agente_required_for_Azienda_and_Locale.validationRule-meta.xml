@@ -5,10 +5,8 @@
     <description
   >Requires an Agente for both Azienda and Locale accounts.</description>
     <errorConditionFormula>AND(
-  OR(
-    $RecordType.DeveloperName = "Azienda",
-    $RecordType.DeveloperName = "Locale"
-  ),
+$RecordType.DeveloperName = "Azienda"
+  ,
   ISBLANK(Agente__c)
 )</errorConditionFormula>
     <errorDisplayField>Agente__c</errorDisplayField>
