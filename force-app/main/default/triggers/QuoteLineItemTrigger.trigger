@@ -2,7 +2,9 @@ trigger QuoteLineItemTrigger on QuoteLineItem(
   before insert,
   before update,
   after insert,
-  after delete
+  after update,
+  after delete,
+  after undelete
 ) {
   if (Trigger.isBefore) {
     if (Trigger.isInsert) {
@@ -20,5 +22,13 @@ trigger QuoteLineItemTrigger on QuoteLineItem(
 
   if (Trigger.isAfter && Trigger.isInsert) {
     QuoteLineItemTriggerHandler.afterInsert(Trigger.new);
+  }
+
+  if (Trigger.isAfter && Trigger.isUpdate) {
+    QuoteLineItemTriggerHandler.afterUpdate(Trigger.new, Trigger.oldMap);
+  }
+
+  if (Trigger.isAfter && Trigger.isUndelete) {
+    QuoteLineItemTriggerHandler.afterUndelete(Trigger.new);
   }
 }

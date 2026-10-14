@@ -82,7 +82,36 @@ public without sharing class QuoteLineItemTriggerHandler {
       }
     }
 
-    resetQuotesToDraft(quoteIds);
+    updateQuoteCommercialTotals(quoteIds);
+  }
+
+  public static void afterUpdate(
+    List<QuoteLineItem> newLines,
+    Map<Id, QuoteLineItem> oldLineMap
+  ) {
+    if (newLines == null || newLines.isEmpty()) {
+      return;
+    }
+
+    Set<Id> quoteIds = new Set<Id>();
+    for (QuoteLineItem line : newLines) {
+      if (line.QuoteId != null) {
+        quoteIds.add(line.QuoteId);
+      }
+
+      QuoteLineItem oldLine = oldLineMap == null
+        ? null
+        : oldLineMap.get(line.Id);
+      if (oldLine != null && oldLine.QuoteId != null) {
+        quoteIds.add(oldLine.QuoteId);
+      }
+    }
+
+    updateQuoteCommercialTotals(quoteIds);
+  }
+
+  public static void afterUndelete(List<QuoteLineItem> restoredLines) {
+    afterInsert(restoredLines);
   }
 
   public static void afterDelete(List<QuoteLineItem> oldLines) {
@@ -101,7 +130,7 @@ public without sharing class QuoteLineItemTriggerHandler {
       }
     }
 
-    resetQuotesToDraft(quoteIds);
+    updateQuoteCommercialTotals(quoteIds);
 
     if (trancheIds.isEmpty()) {
       return;
@@ -126,25 +155,51 @@ public without sharing class QuoteLineItemTriggerHandler {
     ];
   }
 
-  private static void resetQuotesToDraft(Set<Id> quoteIds) {
+  private static void updateQuoteCommercialTotals(Set<Id> quoteIds) {
     if (quoteIds == null || quoteIds.isEmpty()) {
       return;
     }
 
-    List<Quote> quotesToUpdate = new List<Quote>();
-    for (Quote quoteRecord : [
-      SELECT Id, Status
-      FROM Quote
-      WHERE Id IN :quoteIds AND Status != :DRAFT_QUOTE_STATUS
+    Map<Id, Decimal> listTotalByQuoteId = new Map<Id, Decimal>();
+    Map<Id, Decimal> netTotalByQuoteId = new Map<Id, Decimal>();
+    for (Id quoteId : quoteIds) {
+      listTotalByQuoteId.put(quoteId, 0);
+      netTotalByQuoteId.put(quoteId, 0);
+    }
+
+    for (QuoteLineItem line : [
+      SELECT QuoteId, Quantity, ListPrice, TotalPrice
+      FROM QuoteLineItem
+      WHERE QuoteId IN :quoteIds
     ]) {
-      quotesToUpdate.add(
-        new Quote(Id = quoteRecord.Id, Status = DRAFT_QUOTE_STATUS)
+      Decimal quantity = line.Quantity == null ? 0 : line.Quantity;
+      Decimal listPrice = line.ListPrice == null ? 0 : line.ListPrice;
+      Decimal netPrice = line.TotalPrice == null ? 0 : line.TotalPrice;
+      listTotalByQuoteId.put(
+        line.QuoteId,
+        listTotalByQuoteId.get(line.QuoteId) + (quantity * listPrice)
+      );
+      netTotalByQuoteId.put(
+        line.QuoteId,
+        netTotalByQuoteId.get(line.QuoteId) + netPrice
       );
     }
 
-    if (!quotesToUpdate.isEmpty()) {
-      update quotesToUpdate;
+    List<Quote> quotesToUpdate = new List<Quote>();
+    for (Id quoteId : quoteIds) {
+      Decimal listTotal = listTotalByQuoteId.get(quoteId);
+      Decimal netTotal = netTotalByQuoteId.get(quoteId);
+      quotesToUpdate.add(
+        new Quote(
+          Id = quoteId,
+          Status = DRAFT_QUOTE_STATUS,
+          Totale_Listino__c = listTotal,
+          Sconto_Totale__c = listTotal - netTotal
+        )
+      );
     }
+
+    update quotesToUpdate;
   }
 
   private static Map<Id, QuoteProductMix> initializeMixes(Set<Id> quoteIds) {

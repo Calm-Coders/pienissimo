@@ -377,8 +377,14 @@
             <td class="number"><apex:outputText value="{!currencyCode}" /></td>
           </tr>
           <tr>
-            <td>Subtotale</td>
-            <td class="number"><apex:outputText value="{!subtotal}" /></td>
+            <td>Totale Listino</td>
+            <td class="number">
+              <apex:outputText value="{!listPriceTotal}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Sconto Totale</td>
+            <td class="number"><apex:outputText value="{!discountTotal}" /></td>
           </tr>
           <tr>
             <td>Totale netto</td>
@@ -548,8 +554,14 @@
             <td class="number"><apex:outputText value="{!currencyCode}" /></td>
           </tr>
           <tr>
-            <td>Subtotale</td>
-            <td class="number"><apex:outputText value="{!subtotal}" /></td>
+            <td>Totale Listino</td>
+            <td class="number">
+              <apex:outputText value="{!listPriceTotal}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Sconto Totale</td>
+            <td class="number"><apex:outputText value="{!discountTotal}" /></td>
           </tr>
           <tr>
             <td>Totale netto</td>
