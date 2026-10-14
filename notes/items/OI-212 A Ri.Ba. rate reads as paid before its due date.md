@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-13
+updated: 2026-10-14
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -206,3 +206,49 @@ is not recorded as having run against that order, so **the defect was set up and
 not triggered**.
 
 🔴 The e2e that would exercise the payment path is **tomorrow, 14/10**.
+
+## 🔴 2026-10-14 — sixth night unmoved, and the return leg finally ran without touching it
+
+**Re-verified byte-for-byte at `DevMain` `29d1002`.** Both predicates are
+identical to every previous night:
+
+- `MexalScadenzarioSearchService.cls`, `mapDeadlines`:
+  `deadline.paid = deadline.paymentStatus == 'P' || deadline.paymentStatus == 'E';`
+  — eleven lines below the `dueDate` the same method parses from `dt_sca_pg`.
+- `Scadenza_Fattura__c.Pagata__c`:
+  `OR(ISPICKVAL(Stato_Pagamento_Mexal__c,"P"), ISPICKVAL(Stato_Pagamento_Mexal__c,"E"))`,
+  description still _"Vero quando lo stato Mexal e P o E."_
+
+`git log` on both files is unchanged — last touched by `f292b72` and `731c7ac`.
+**No commit in the window went near either.**
+
+## 🔑 But the return leg ran, for the first time on a real invoice
+
+[The 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) drove the whole
+payment chain that this row has been waiting for a test of
+(`01:07:56`–`01:23:29`): one €20,000 order split into four deferred invoices,
+invoice 10 for €5,000 posted against customer 50171, the scadenzario synced back
+into Salesforce, the amount, tranche and payment state read in the Salesforce UI,
+and a €5,000 collection registered and synced again.
+
+🟢 **Salesforce showed `non pagato`, correctly.**
+
+⚠ **And that is not a test of this defect.** The payment was a **bonifico**. This
+row is about Mexal status **`E`**, which the record associates with the Ri.Ba.
+family — the condition that makes `paid = P || E` wrong is a *future-dated* `E`,
+and a bonifico does not produce one.
+
+🔴 **So the defect has now survived two consecutive sessions that set it up and
+did not trigger it.** On 13/10 the client built four future-dated tranches on
+_"RID fine mese"_ terms and the return leg never ran; on 14/10 the return leg ran
+and the terms were bonifico. **The one combination that fails — Ri.Ba.-family
+terms plus a return leg — has still never been exercised**, and the 13/10
+production confirmation date passed two days ago.
+
+⚠ **The exposure grew today.** The same session agreed to run the scadenzario
+sync **every half hour to an hour**
+([OI-239](OI-239%20The%20Mexal%20scadenzario%20sync%20must%20run%20every%20half%20hour%20and%20nothing%20schedules%20it.md)).
+A predicate that reads a rate as paid before its due date is read 48 times a day
+instead of once, into a field administrators are being taught to trust — and the
+order roll-up it feeds (`incassato`) was shown to the client in this session as a
+headline figure.

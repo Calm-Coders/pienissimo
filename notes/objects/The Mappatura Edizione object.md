@@ -5,7 +5,7 @@ status: active
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-04
-updated: 2026-10-13
+updated: 2026-10-14
 depends_on: [OI-96]
 blocks: [OI-53, OI-84]
 source: git DevMain 68c4342 (PR #34), metadata and Apex read directly 2026-09-04
@@ -229,3 +229,26 @@ Prod still has the older handler.
 
 ⚠ **The 15-of-23-categories consequence has no owner and no tracker row**, and
 the client's end-to-end test is the following morning.
+
+### 2026-10-14 — two of the fifteen empty categories now have an active product
+
+The 15-of-23 consequence above is **two categories smaller**, incidentally rather
+than by design. The 14/10 article-sync work
+([the sync note](The%20Mexal%20article%20sync%20to%20Product2.md)) brought
+`PLUS-N05` in as **`C10`** and `PLUS-N06` as **`C11`**, both **active** — the two
+codes the client created during the e2e. So a category save on `C10` or `C11` can
+now find a product to map.
+
+🔴 **Thirteen still cannot**: C20, C21, C30, C40, C41, E01, E05, E10, P10, P20,
+P30, S10, Z10. ⚠ **The active-only rule was not revisited**, so the failure mode
+is unchanged for any category whose products are all inactive, and it still has
+**no owner and no tracker row**.
+
+🆕 **`E12` is a further new category value** from the same re-sync, and two
+workbook values were overwritten by Mexal (`CS-00007`, `CS000006`: `E03` → `E01`,
+both inactive). ⚠ Neither is mapped to a campaign in any record.
+
+⚠ **A `C10` code mismatch did surface in the e2e** (`00:13:30`, `00:18:36`), and
+`C10` is one of the fifteen — but the record says _"disallineamento nei codici"_,
+not that a category save failed, and nobody in the room named the active-only
+rule. **Recorded as the same category, not established as the same fault.**

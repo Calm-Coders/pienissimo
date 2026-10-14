@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-10-12
+updated: 2026-10-14
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -428,3 +428,29 @@ not have**, so a working HTML file does not make a working form.
 date. ⚠ The dry run is still gated on the WhatsApp number Matteo Distaso owes;
 nothing mentioned it. ⚠ **What the "notizia bella" was is unreadable** — it went
 into voice and appears in no readable source.
+
+## 2026-10-14 — a new web-to-lead, for testing
+
+Aurel Mrruku to Elena Spini, DM, **16:39 CEST**: an image at 16:39:12, then
+_"nuova web to leed"_ (16:39:21) and _"per fare i test"_ (16:39:25).
+
+⚠ **The image was not opened**, so what the new form contains is not established;
+the two lines are all the record carries. It follows the `lead-web-to-lead (1).html`
+Aurel Mrruku sent Elena Spini on 12/10 at 17:59:37 CEST.
+
+🔴 **The blocker is unchanged.** The Lead fields the form posts into are still not
+in Prod, and four of them are the picklists of
+[OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md), whose
+source workbook remains a **mail attachment only — seventh run**.
+
+⚠ **And the lead logic moved today, in the opposite direction.** `dbef4f4`
+(Rexhina Hysi, 16:36:44 CEST, `DevMainOpportunityWork`), _"remove woocommerce from
+lead logic"_, strips WooCommerce handling out of `LeadConversionQueueable` and
+`LeadConversionTriggerHandler`, removes a value from `Lead.Tipo_Opportunita__c`
+and edits the `Diretta` and `Standard` Lead record types and the
+`Partita_IVA_Required_for_Azienda_and_Locale` validation rule. ⚠ **Not in
+`DevMain`**, and **no source explains why** — it is 20 minutes before the
+web-to-lead message and bears on
+[OI-182](OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md),
+which records a WooCommerce Opportunity record type replacing Recall Tutor.
+**Recorded as a fact of the diff; the intent is not established.**

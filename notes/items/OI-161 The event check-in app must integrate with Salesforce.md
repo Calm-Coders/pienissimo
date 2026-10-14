@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-22
-updated: 2026-10-07
+updated: 2026-10-14
 depends_on: [OI-74]
 blocks: [go-live]
 severity: gating
@@ -177,3 +177,23 @@ The package was then deployed to **Pienissimo UAT** with `NoTestRun` as
 `0AfMA00000CrxUT0AZ`. The deployment succeeded, including the destructive field
 deletion. A read-only Tooling API query returned zero `FieldDefinition` rows for
 `Asset.QR_Id__c`, verifying that it is absent. Production was not changed.
+
+## 🔴 2026-10-14 — ROMI chased the test results after six days of silence
+
+Elena Spini wrote to Andrea Parmeggiani (`andrea.p@pienissimo.pro`) at
+**2026-10-14 12:35:25Z**, cc Fabrizio Paganelli,
+`amministrazione@pienissimo.com`, Aurel Mrruku and Rexhina Hysi, in the thread
+_"[ROMI-PIENISSIMO] – API UAT Check-in QR Code"_:
+
+> _"Ciao Andrea, hai avuto modo di verificare quanto condiviso? Ci servirebbe
+> sapere l'esito dei tuoi test per capire se possiamo portare in produzione o se
+> necessitiamo di altre modifiche e/o test."_
+
+🔴 **The UAT credentials and API details went to him on 08/10 at 16:31:15Z and he
+has not replied in six days.** ROMI's own message states the dependency plainly:
+**the production move waits on his test results**, and go-live is 21 October.
+
+⚠ **This is also the sixth sweep in which the QR credential rotation has not
+happened.** The 08/10 mail put authentication details for the partial
+sandbox/UAT environment into a thread with the client, and the record has carried
+_"the rotation has still not happened"_ since. **Eighth day.**

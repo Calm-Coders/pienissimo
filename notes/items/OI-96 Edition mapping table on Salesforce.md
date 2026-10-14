@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-10-13
+updated: 2026-10-14
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -467,3 +467,45 @@ articles are not duplicated per year; the campaign's competence window carries i
 and **the campaign must be created before the mapping** so orders in that window
 attach to the right edition. That is the first time the operating order has been
 stated.
+
+### 🟡 2026-10-14 — two of the fifteen empty categories recovered, as a side effect
+
+**The 15-of-23 consequence recorded last night was not addressed and was partly
+undone by other work.**
+
+The 14/10 e2e hit **exactly the predicted failure**: _"emerge un disallineamento
+nei codici associati alla categoria `C10` per l'attivazione"_ (`00:13:30`,
+`00:18:36`) — and `C10` is one of the fifteen. ⚠ **Whether it was this defect or
+a different category problem is not established**: the record says
+"disallineamento nei codici", not "the save failed", and nobody in the room named
+the active-only rule. **Recorded as the same category, not the same fault.**
+
+🔑 **The root cause the session did expose is a different and larger one**: the
+article sync had **never written `Product2.Categoria_Articolo__c` at all**. Every
+category in UAT came from the July workbook import, so every article Mexal
+created afterwards had none. Aurel Mrruku found and fixed it the same day — Mexal
+holds the value as `sigla_cat_sta` + `nr_cat_sta`, the number zero-padded to two
+digits — and re-synced all articles twice. **His own record is
+[the article sync note](../objects/The%20Mexal%20article%20sync%20to%20Product2.md)**;
+nothing here restates it.
+
+🟢 **Two of the fifteen now have an active product.** `PLUS-N05` arrived as
+**`C10`** and `PLUS-N06` as **`C11`**, _"both active"_ — the two codes Elisa
+Migliano created in the session. So a category save on `C10` or `C11` can now
+find something to map.
+
+🔴 **Thirteen still cannot**: C20, C21, C30, C40, C41, E01, E05, **E10**, P10,
+P20, P30, S10, Z10. ⚠ **And the recovery is incidental** — it happened because a
+client created two products, not because the active-only rule was revisited. The
+next category with no active product fails the same way. **Still no owner and no
+tracker row.**
+
+⚠ **`E10`'s collision remains moot and unfixed** — E10 is not among the two
+recovered.
+
+🆕 **`E12` joins `E11` as a category value new to these records**, from the same
+re-sync (`PPEN010`/`PPEN011` read `E12`, `PPES0099` reads `E11`). ⚠ And two
+values **changed because Mexal disagrees with the workbook**: `CS-00007` and
+`CS000006` moved from `E03` to `E01`, both inactive. Mexal is the source for
+single products, so its values now apply — **a precedent worth noting, because
+the workbook was the authority for ~900 of them.**

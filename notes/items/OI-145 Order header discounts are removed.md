@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-10-13
+updated: 2026-10-14
 source: notes/meetings/2026-09-18 Data Model Parte 6.md
 ---
 
@@ -181,3 +181,37 @@ invoice **is already in Salesforce on the product**; what is missing is a field 
 it on the *order* tracciato. That makes this a mapping question for Mirko Merendi
 rather than a data-availability one, which is the first time the question has been
 that small.
+
+## 2026-10-14 — the quote got the breakdown; the invoice still cannot have it
+
+**The three values were asked for again, by a different person, about a different
+document — and this time they were delivered.**
+
+At [the 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) (`00:44:51`)
+**Elisa Migliano** asked for totale di listino, totale sconti and totale netto on
+the contractual PDF. Built the same evening as
+`Quote.Totale_Listino__c` and `Quote.Sconto_Totale__c` (`8186816`, branch
+`DevMainOpportunityWork`), carried into the PDF, the community acceptance page
+and the Quote layout — see
+[OI-207](OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md).
+
+🔴 **This row is unchanged.** The quote PDF already derived all five values
+before today (✅ above); what today adds is the **portal** and explicit roll-up
+fields. **The Mexal order tracciato still carries the net price and nothing
+else**, so the invoice — the document the customer receives — still cannot show
+the breakdown. Fabrizio Paganelli's ask of 18/09, 09/10 and 13/10 stands.
+
+🔴 **And his 13/10 action has not moved.** He took on contacting Mirko Merendi
+himself about mapping listino, sconto and netto onto the order. **Nothing in any
+source this sweep can read records that contact happening** — no mail, no
+message, no mention in the e2e. ⚠ **No Kreosoft mail at all in the window**, and
+Mirko Merendi does not appear in any source.
+
+🔑 **Two more asks to the same person arrived today**, from Elisa Migliano:
+[OI-236](OI-236%20The%20Mexal%20order%20carries%20no%20tipo%20merce%20and%20no%20provvigioni%20percentage.md)
+(tipo merce and provvigioni missing from the order) and
+[OI-237](OI-237%20Mexal%20invoices%20cite%20the%20preventivo%20instead%20of%20the%20order%20number.md)
+(the invoice reference wording). **Three separate approaches to Mirko Merendi
+about the same tracciato, from two people, with no coordination recorded.** ⚠ The
+rounding objection that stopped this ask in the first place still goes unmentioned
+by anyone.

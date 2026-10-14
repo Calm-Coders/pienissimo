@@ -10,6 +10,60 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-14 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  **2026-10-13T22:00Z**, one day. Drilled
+  [the 14/10 e2e](notes/meetings/2026-10-14%20UAT%20Test%20e2e.md) (123,598 chars,
+  structured sections only). Wrote **nine new items, OI-234 to OI-242**, and one
+  meeting note; updated **fifteen** existing notes (OI-14, 59, 96, 101, 145, 161,
+  207, 210, 212, 214, 215, 222, 227, 231, the Mappatura object and the Mexal
+  payment-return note), `MAP.md`, `INDEX.md`, both trackers (9 new rows + 14
+  refreshed each) and both recaps (§62). Trace at
+  [notes/traces/Source trace 2026-10-14 nightly.md](notes/traces/Source%20trace%202026-10-14%20nightly.md).
+- **State:** `DevMain` at **`29d1002`**. Four human commits in the window; **three
+  are outside `DevMain` with no PR merged** — `8186816` and `dbef4f4` on
+  `DevMainOpportunityWork`, `168e143` on `DevAnita14`. **The register was not
+  touched**; `version` stays 1.6 and `SAL-20` stays as `96d77de` left it.
+- **Next:** three things are dated and small. **OI-227 is now decidable** — Elena
+  Spini has said in her own words she does not know whether the task/email
+  behaviour was built, and has described the pre-rewrite version to the client, so
+  a human can rule and OI-184's change set can be corrected. **OI-212 is still one
+  date comparison** in a method that already holds the date, sixth night, and
+  OI-239 would read it 48 times a day. **The 13 remaining empty categories** still
+  have no owner.
+- **Watch:**
+  - 🔴 **`OI-207`'s note is edited on two branches at once.** `8186816` carries
+    Rexhina Hysi's own fuller account of the `Totale_Listino__c` /
+    `Sconto_Totale__c` build. This sweep appended a dated section to the `DevMain`
+    copy because the client ruling had to be recorded the same night. **When that
+    branch merges, keep her text and delete the overlap from the sweep's section —
+    do not overwrite hers.** A conflict on that file is expected.
+  - **Do not revert the `SAL-20` wording from a note.** The answer that arrived is
+    that **neither** version has a client ruling, which makes the decision a
+    human's, not a sweep's. OI-227 records both sides with quotes and timestamps.
+  - **The developer's 14/10 records are his own and are accurate** — the
+    `JOURNAL.md` entry above this one and
+    [the article sync note](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+    Pointers were added from OI-96, OI-210 and the Mappatura note; **nothing in
+    them was rewritten.** Do not duplicate.
+  - **Two of OI-96's fifteen empty categories recovered incidentally** (`C10`,
+    `C11`, via `PLUS-N05`/`PLUS-N06`). **Thirteen did not, and the active-only rule
+    was not revisited** — do not record the problem as solved.
+  - **The 14/10 session is not a test of OI-212.** The payment was a bonifico; the
+    Ri.Ba.-family `E` branch has now gone untriggered in two consecutive sessions
+    that each set up half of it.
+  - ⚠ **`Flows & Objects.drawio` is now cited as the authority for a requirement**
+    (Elena Spini, 17:14Z mail and 18:53Z DM) and remains an unparseable `mxfile`.
+    Ask for a PNG or PDF export before reasoning about the as-is.
+  - ⚠ **`DTT SHR Mappatura form handler campi.xlsx`** (Elena Spini, Drive,
+    09:36Z, shared with Aurel Mrruku) was treated as another client on its prefix
+    and **not opened**. If `DTT` is Pienissimo, that is a miss and it bears on
+    OI-14.
+  - **Next free item id is 243.** OI-189–OI-193 remain reserved.
+
+---
+
 ## 2026-10-14 - claude (Mexal article category)
 
 - **Did:** at Aurel Mrruku's request (`PLUS-B01` had no category), found that

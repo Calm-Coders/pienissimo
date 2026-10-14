@@ -6898,6 +6898,251 @@ hanno dato 404**, con un id Drive preciso da richiedere. **Fathom non ha
 restituito nulla per il quindicesimo controllo consecutivo.** Il registro resta
 alla **v1.6** — si veda **#227** — e il prossimo id libero è **230**.
 
+## 62. Aggiornamento 14/10/2026 — l'amministrazione ha guidato l'intera catena commerciale, e la project manager di ROMI ha chiesto se un requisito nel testo da firmare esista
+
+**`requirements-check` notturno, watermark `2026-10-13T22:00Z`, un giorno. Una
+sessione cliente di circa due ore — [il test end-to-end](../notes/meetings/2026-10-14%20UAT%20Test%20e2e.md)
+rinviato dal 12 ottobre — quattro commit, nessuna pull request unita, e la prima
+sessione in cui il verbale mostra Elisa Migliano, e non Fabrizio Paganelli, alla
+guida. Le affermazioni sulla build sono aritmetica di repository su `DevMain`
+`29d1002`.**
+
+### 🔑 La gamba finanziaria dell'integrazione ha girato da capo a fondo per la prima volta
+
+Un ordine, `OC 1023`, 20.000 €, è diventato quattro fatture differite su Mexal
+tramite l'*emissione differita documenti*; la fattura 10 da 5.000 € è stata
+contabilizzata sul cliente 50171 con pagamento a bonifico; lo scadenzario è
+rientrato in Salesforce con importo, tranche e stato di pagamento `non pagato`; è
+stato registrato un incasso di 5.000 €; e i totali dell'ordine hanno riconciliato
+a **ordinato 20.000 € · fatturato 5.000 € · incassato 0 € · da fatturare
+15.000 €**. Poi la stessa catena è girata di nuovo per un rinnovo, sul prodotto
+`N07 / plus-06` in quattro tranche.
+
+🔴 **Due volte nella stessa sessione i dati erano aggiornati solo perché qualcuno
+ha incollato Apex in una developer console.** Aurel Mrruku ha fornito due script,
+Elisa Migliano ne ha eseguito uno e ha annotato la procedura. Vedi §62.3.
+
+### 🔴 62.1 — il `SAL-20` ha una risposta, ed è l'opposto di una decisione
+
+L'[OI-227](../notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)
+chiedeva da due giorni se il `SAL-20` riscritto fosse stato concordato con il
+cliente. Due fonti del 14 ottobre, entrambe di Elena Spini, rispondono contro la
+riscrittura.
+
+Alle **17:14:01Z** ha illustrato l'**as-is** a Marco Montesi — _«la sintesi del
+flusso as-is per come è stato condiviso e tracciato nei diagrammi di processo»_ —
+nella forma del modello a **task**: una TASK automatica due giorni dopo che
+l'opportunità entra in `In Trattativa`, oggetto _Preventivo Inviato_, **Task
+Subtype `Da Ricontattare`**, scadenza il giorno successivo, più una mail di
+promemoria al cliente. **È il testo che `96d77de` ha eliminato da
+`REQUISITI.it.md`.**
+
+Poi alle **18:52:58 CEST**, in DM ad Aurel Mrruku, ha citato la stessa specifica e
+ha chiesto se esista affatto — _«questa parte ce l'abbiamo? c'è la creazione di
+task + invio email?»_ — seguito da _«è presente sul grafico di Drawio ma non ne
+abbiamo mai parlato perchè non è stata fatta o perchè non ne abbiamo avuto
+modo?»_ **Nessuna risposta di Aurel Mrruku è a verbale.**
+
+🔑 **Quindi la project manager non conosce lo stato di realizzazione di un
+requisito riscritto nel testo firmabile nove giorni prima, e sta rappresentando al
+cliente la versione precedente alla riscrittura.** ⚠ La sua stessa incertezza
+taglia da entrambe le parti: _«non ne abbiamo mai parlato»_ significa che nemmeno
+il modello a task potrebbe essere stato concordato con il cliente, quindi
+**nessuna delle due versioni ha una decisione del cliente alle spalle** — peggio
+di quanto il punto registrava all'inizio. 🔑 E la riscrittura ha eliminato una
+**e-mail rivolta al cliente** che ROMI attende ancora dal cliente stesso: _«Verrà
+fornito copy da MM»_, _«di questo siamo tuttora in attesa»_.
+
+⚠ **Il registro non è stato emendato, deliberatamente**, per la terza notte.
+Riportare indietro un testo contrattuale sulla base di due messaggi interni non
+spetta a uno sweep; l'[OI-184](../notes/items/OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)
+esiste perché la v1.6 arrivi al cliente come un unico insieme di modifiche
+rivedibile. Ciò che è cambiato è che la decisione ora è informata.
+
+### 🟢 62.2 — i flussi di notifica commerciale hanno una risposta, in negativo
+
+L'[OI-222](../notes/items/OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md),
+aperto dall'8 ottobre, ha avuto risposta nella stessa mail delle 17:14:01Z:
+
+> _«**E-mail incluse:** Sono incluse esclusivamente le e-mail di invio,
+> accettazione e firma del preventivo.»_
+>
+> _«**Altre e-mail e integrazione WhatsApp:** Ulteriori tipologie di e-mail o
+> l'invio di messaggi WhatsApp all'interno del flusso Sales non sono stati
+> previsti né mai definiti nelle specifiche concordate.»_
+
+Offerte come _«extra-perimetro/evolutiva in una fase successiva»_. **Tutti e
+cinque i trigger di Marco Montesi, e WhatsApp, sono fuori perimetro.** 🔑 Uno
+sopravvive, con una dipendenza dal cliente: la mail di promemoria è nell'as-is e
+il suo **copy è dovuto da Marco Montesi**.
+
+⚠ Tre cautele. La decisione di perimetro è **di ROMI, non del cliente**, e lui non
+l'ha accettata. È circoscritta _«all'interno del flusso Sales»_ e quindi **non
+riguarda il funnel marketing a 11 e-mail + 11 WhatsApp**: la domanda
+parallelo-o-backup di Rebecca Marmo e l'[OI-195](../notes/items/OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+restano aperti. E 🔴 **la sua domanda originaria di governance — modificabile
+dall'amministratore o solo tramite assistenza — è senza risposta da dieci
+giorni.**
+
+### 62.3 — tre decisioni, una realizzata la sera stessa, e una sincronizzazione che nessuno pianifica
+
+Tre `Concordato`:
+
+1. **Il preventivo deve mostrare totale di listino, totale degli sconti e totale
+   netto** — sul PDF **e** sul portale, su tutte le tipologie di preventivo,
+   posizionati in modo coerente su desktop e mobile. 🟢 **Realizzato la sera
+   stessa**: `8186816` aggiunge `Quote.Totale_Listino__c` e
+   `Quote.Sconto_Totale__c` e li porta nel PDF, nella pagina di accettazione della
+   community e nel layout Quote. ⚠ **Non in `DevMain`**, e la metà «fattura»
+   dell'[OI-145](../notes/items/OI-145%20Order%20header%20discounts%20are%20removed.md)
+   è intatta: il tracciato dell'ordine Mexal porta ancora il prezzo netto e
+   nient'altro.
+2. **Un preventivo di rinnovo non è modificabile** — per i prodotti bundle e Plus,
+   che generano automaticamente le tranche, una modifica richiede di eliminare e
+   ricreare il preventivo. Il gruppo ha valutato il margine di errore per un tutor
+   al telefono e ha mantenuto il comportamento.
+3. **I rinnovi non prevedono un contratto informatico di sistema**, ma solo il PDF
+   del preventivo.
+
+E l'unico `Da approfondire` della sessione, ora
+[OI-238](../notes/items/OI-238%20The%20tacit%20renewal%20path%20skips%20client%20acceptance%20and%20its%20approval%20workflow%20is%20undecided.md):
+il **workflow di approvazione per i rinnovi taciti** è stato rinviato a Marco
+Montesi. Il comportamento in sé è stato confermato ed eseguito in diretta — per un
+rinnovo tacito Performance Plus il tutor **conferma e accetta il preventivo
+internamente, trasformandolo in un ordine fatturabile senza l'approvazione del
+cliente**. 🔴 Il sistema ha quindi un percorso che va dal clic di un tutor a una
+fattura Mexal senza alcun documento del cliente e senza passaggi di approvazione
+in mezzo, e la persona che deve decidere ha ormai tre risposte in sospeso.
+
+L'[OI-239](../notes/items/OI-239%20The%20Mexal%20scadenzario%20sync%20must%20run%20every%20half%20hour%20and%20nothing%20schedules%20it.md)
+è il corrispettivo operativo. I limiti API sono stati letti **in produzione** —
+3.360.000 richieste al mese, 112.000 al giorno, due chiamate per ciclo — e si è
+concordato di eseguire lo script **ogni mezz'ora o ogni ora**. Il responsabile è
+`[Il gruppo]`, nulla lo pianifica, ed eredita l'utente di esecuzione irrisolto
+dell'[OI-228](../notes/items/OI-228%20The%20nightly%20schedulers%20have%20no%20run-as%20user%20and%20the%20first%20run%20is%20imminent.md)
+**48 volte al giorno**. ⚠ In Prod non esiste alcun job di sincronizzazione Mexal.
+
+### 62.4 — altre sette righe, e una che riconcilia una contraddizione vecchia di un mese
+
+🔴 **[OI-241](../notes/items/OI-241%20Books%20and%20video%20courses%20wait%20on%20a%20WooCommerce%20instance%20move.md)**
+— libri e videocorsi sono stati esclusi _«temporaneamente poiché Sabatino non ha
+ancora trasferito tali ordini nell'istanza corretta di WooCommerce»_. 🔑 **Questo
+riconcilia tre affermazioni che per tutto il mese sono sembrate incompatibili**:
+il post del 09/10 secondo cui i libri avevano lasciato Salesforce, la riga di
+perimetro del 12/10 che nominava `libro/videocorsi`, e l'elenco test del 13/10 che
+nominava `vendita libro`. Gli ordini sono in WooCommerce, sono nel perimetro
+Salesforce, e non sono testati perché risiedono nell'istanza sbagliata. ⚠ È una
+riconciliazione, non una decisione.
+
+🔴 **Tre percorsi di ordine WooCommerce non sono esercitati nello stesso
+momento** — libri e videocorsi, i pacchetti tutor, e le vendite da palco
+([OI-101](../notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md)),
+indicate come ancora mancanti nel minuto di chiusura della sessione. 🔑 **Tutti e
+tre sono il percorso senza agente dell'[OI-214](../notes/items/OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md)**,
+la cui domanda bloccante — quale codice usi un ordine senza agente — non è dunque
+mai stata eseguita, a sette giorni dal go-live. L'altra metà dell'OI-214 si è
+mossa: la regola di ereditarietà è stata enunciata al cliente per la prima volta.
+
+Il resto: **[OI-234](../notes/items/OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)**
+(tranche già fatturate in parte alla società A che devono proseguire sulla B —
+Elena Spini propone la fase 2 e il cliente non ha accettato) ·
+**[OI-235](../notes/items/OI-235%20A%20contract%20is%20linked%20to%20the%20account%20but%20hidden%20in%20the%20tab.md)**
+(un contratto correttamente collegato e invisibile nel tab, attribuito al volume
+di ordini precedenti — ⚠ un'ipotesi formulata una sola volta, e la migrazione è
+all'ordine del giorno della settimana prossima) ·
+**[OI-236](../notes/items/OI-236%20The%20Mexal%20order%20carries%20no%20tipo%20merce%20and%20no%20provvigioni%20percentage.md)**
+e **[OI-237](../notes/items/OI-237%20Mexal%20invoices%20cite%20the%20preventivo%20instead%20of%20the%20order%20number.md)**
+(⚠ **tre richieste separate puntano ora su Mirko Merendi sullo stesso tracciato**,
+da due persone, senza coordinamento a verbale — e il contatto del 13/10 che
+Fabrizio Paganelli si era preso non risulta avvenuto) ·
+**[OI-240](../notes/items/OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)**
+(⚠ **due richieste di accesso in due giorni, nessuna delle quali corrisponde a un
+profilo definito**) ·
+**[OI-242](../notes/items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md)**
+(il testo statico del RINUNCIA, rinviato al rilascio in produzione; ⚠ **una huddle
+alle 15:35:52 potrebbe averlo risolto e la voce non è leggibile**).
+
+### 62.5 — la causa delle categorie era più grande del sintomo
+
+L'e2e ha colpito il guasto previsto la notte prima — un disallineamento di codici
+sulla categoria **`C10`**, una delle quindici categorie senza prodotti attivi. ⚠
+Non accertato come lo stesso guasto: il verbale dice _«disallineamento nei
+codici»_, non che un salvataggio sia fallito, e nessuno in riunione ha nominato la
+regola dei soli prodotti attivi.
+
+🔑 **La causa che invece è emersa è più grande.** La sincronizzazione articoli
+**non aveva mai scritto `Product2.Categoria_Articolo__c`**: ogni categoria in UAT
+veniva dall'import del workbook di luglio, quindi ogni articolo creato da Mexal
+dopo non ne aveva alcuna. Aurel Mrruku l'ha individuato, ha mappato
+`sigla_cat_sta` + `nr_cat_sta` di Mexal con il numero riempito a due cifre, ha
+risincronizzato 1.078 e poi 1.079 articoli senza errori, e **ha documentato tutto
+lui stesso** nella [nota sulla sincronizzazione articoli](../notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+
+🟢 **Due delle quindici categorie vuote dell'OI-96 sono recuperate** — `PLUS-N05`
+come `C10` e `PLUS-N06` come `C11`, entrambi attivi. 🔴 **Tredici restano non
+salvabili**, la regola dei soli attivi non è stata rivista, e il punto non ha
+ancora né responsabile né riga. 🆕 `E12` si aggiunge a `E11` tra i nuovi valori di
+categoria, e ⚠ Mexal ha sovrascritto due valori del workbook.
+
+🔑 **L'[OI-210](../notes/items/OI-210%20The%20delivered%20article%20registry%20carries%20no%20tranche%20count.md)
+si è mosso dopo sette notti silenziose.** La sessione ha usato il modello a
+**campo per il numero di tranche**, quindi il `Concordato` del 05/10 è quello
+operativo. 🔴 Ma il conteggio è stato digitato da uno sviluppatore, prodotto per
+prodotto, in diretta in una sessione cliente; `NR_Tranche` è ancora vuoto su tutte
+le 1.010 righe, e la sincronizzazione non lo scrive.
+
+### 62.6 — Anticipay, e il difetto che due sessioni non sono riuscite a innescare
+
+🔑 **Il limite su San Marino è stato dimostrato al cliente** per la prima volta, e
+il trigger della chiamata è finalmente a verbale: gira **una volta per account, al
+primo ordine**, quando viene generato il codice Mexal, per evitare costi
+superflui. ⚠ Nessuno ha tratto la conseguenza: un cliente i cui dati anagrafici
+cambino dopo non viene mai riarricchito. Un **404 `«Azienda non trovata»`** è
+scattato in UAT alle 08:11Z ed è arrivato solo all'indirizzo ROMI cablato.
+
+🔴 **L'[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+non si è mosso, sesta notte**, byte per byte a `29d1002`. ⚠ **E due sessioni
+consecutive hanno ormai preparato il difetto senza innescarlo**: il 13 ottobre il
+cliente ha costruito quattro tranche future con condizioni della famiglia Ri.Ba. e
+la gamba di ritorno non è mai girata; il 14 ottobre la gamba di ritorno è girata e
+il pagamento era un **bonifico**, che ha letto correttamente `non pagato`. L'unica
+combinazione che fallisce non è ancora mai stata esercitata, la sua data di
+conferma è passata due giorni fa, e l'OI-239 leggerebbe il predicato 48 volte al
+giorno alimentando l'`incassato` mostrato al cliente.
+
+### 62.7 — cosa attende le persone
+
+🔴 **[OI-231](../notes/items/OI-231%20DocuSign%20closed%20the%20Pienissimo%20onboarding%20for%20non-response.md)**
+— Elena Spini ha sollevato internamente la chiusura DocuSign alle 08:31Z, _«tutto
+ok no? non dobbiamo far nulla?»_, **nessuno le ha risposto**, e la domanda del
+cliente del 13 ottobre è senza risposta da due giorni.
+🔴 **[OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)**
+— ROMI ha sollecitato Andrea Parmeggiani alle 12:35Z dopo sei giorni di silenzio;
+**il passaggio in produzione attende i suoi esiti**. La rotazione delle credenziali
+QR: ottavo giorno.
+🆕 **Un meeting `Migrazione e Go-Live` è fissato per giovedì 15 ottobre,
+14:30–15:30** — Migrazione · Go-Live · Utenza per Marco · cambi di ragione sociale
+per fatturazione tranche. ⚠ In riunione la sessione successiva era stata fissata
+per **venerdì 09:30/10:00–12:00**; se la sessione di venerdì resti valida non è
+accertato.
+
+### 62.8 — a verbale
+
+⚠ Il passo successivo _«Segnalare bug»_ dell'e2e **non nomina alcun bug** — seconda
+sessione consecutiva in cui un difetto lato cliente viene richiamato e non
+descritto · `dbef4f4` ha **rimosso WooCommerce dalla logica lead** senza
+motivazione dichiarata, e un nuovo web-to-lead è stato fatto circolare per i test
+nella stessa ora · **Fathom ha restituito zero riunioni per la diciassettesima
+esecuzione consecutiva** · `#tproj-pienissimo` è stato **silenzioso per il quinto
+giorno** · il canvas Slack è **fermo da otto settimane** · `Campi Oggetti…xlsx`,
+`Flows & Objects.drawio` e il **foglio dei passi manuali** **non si sono mossi** ·
+gli id OI-189–OI-193 restano riservati e il prossimo id libero è il **243** ·
+🔴 **ventiquattro report notturni consecutivi senza alcuna risposta umana**.
+
+**Nessun test Apex è stato scritto, proposto o impostato**, come da istruzione
+permanente. L'org non è stato aperto; `STATUS.md` e il suo mirror Notion restano
+non aggiornati.
+
 ## 61. Aggiornamento 13/10/2026 — il cliente ha completato una vendita da capo a fondo per la prima volta, e ha ribaltato il martedì ciò che aveva concordato il venerdì
 
 `requirements-check` notturno, watermark **12/10/2026 22:00Z**. **Una sessione

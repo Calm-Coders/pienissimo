@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Marco Montesi
 org: both
 raised: 2026-10-07
-updated: 2026-10-13
+updated: 2026-10-14
 depends_on: [OI-219]
 blocks: [OI-134, go-live]
 severity: gating
@@ -166,3 +166,33 @@ should use is still unanswered**, by anyone, in any source. ⚠ So is the
 `continue`-past-the-Account-fallback path recorded above; nothing tested it, and
 nothing in the 13/10 session or the 14/10 e2e scope exercises a WooCommerce order
 without an agent.
+
+## 🟢 2026-10-14 — the inheritance rule was stated to the client, and the gap is unchanged
+
+At [the 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) (`00:12:16`) the
+mechanism was explained in the room:
+
+> _"l'agente associato al preventivo viene ereditato dall'account al momento
+> della creazione (come nel caso di Davide Stefani) e rimane indipendente da
+> eventuali variazioni successive dell'anagrafica cliente"_
+
+🟢 **That is `Quote.Codice_Agente_Esterno__c` described as intended behaviour, to
+the client, for the first time** — the field froze the agent at quote creation and
+is now in `DevMain` via PR #96. The record and the build agree, and the client has
+heard the consequence (a later change of agent on the account does not move an
+existing quote).
+
+🔴 **The gating half is untouched: which code an agentless WooCommerce order
+uses.** Nothing in the session exercised it, and the three WooCommerce order
+types that would — stage sales, pacchetti tutor and the book/video-course orders
+— were all **excluded or still to examine**
+([OI-101](OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md),
+[OI-241](OI-241%20Books%20and%20video%20courses%20wait%20on%20a%20WooCommerce%20instance%20move.md)).
+⚠ **Seven days to go-live and the path that has no agent code has never been
+run.**
+
+🔑 **A new reason to care**: provvigioni are agent commission, and
+[OI-236](OI-236%20The%20Mexal%20order%20carries%20no%20tipo%20merce%20and%20no%20provvigioni%20percentage.md)
+records the commission percentage missing from the Mexal order. So Salesforce now
+freezes *which* agent earns while the order carries no rate — and for a
+WooCommerce order it may freeze **neither**.

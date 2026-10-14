@@ -5,7 +5,7 @@ status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-15
-updated: 2026-10-06
+updated: 2026-10-14
 depends_on: [OI-50, OI-116, OI-137]
 requirement: [ORD-03, ORD-04, INT-01]
 source: commit 400c195, Anita Aga, 2026-09-15 18:00:39 CEST, PR #45 open against DevMain
@@ -133,3 +133,40 @@ in code.
 to Pienissimo UAT compiled. Prod has none of the three invoice objects and no
 Mexal row in `Integration_Configuration2__c`. Only `Full_Permission` grants
 access to the three objects.
+
+## 🔑 2026-10-14 — the return leg ran on a real invoice, in front of the client
+
+**Until today no source recorded this path running on anything but a test. The
+[14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) drove it twice in one
+session, with the client's administrative lead at the keyboard.**
+
+The sequence, as the record has it (`01:07:56`–`01:23:29`):
+
+1. One order — `OC 1023`, €20,000 — split into **four invoicing tranches** in
+   Mexal through *emissione differita documenti*, filtered on the RSM services.
+2. A trial print produced **invoice 10, €5,000**, posted automatically against
+   customer **50171** with **bonifico** payment.
+3. The invoice did **not** appear in Salesforce on its own. Aurel Mrruku recalled
+   the **03:00 nightly job** and supplied a script to force the sync by hand in
+   2–3 minutes (developer console → Debug, wait 2–4 minutes).
+4. In Salesforce the **amount, the tranche and the payment state `non pagato`**
+   were read in the scadenze and fatture sections, with the order roll-up showing
+   **ordinato €20,000 · fatturato €5,000 · incassato €0 · da fatturare €15,000**.
+5. Elisa Migliano registered the €5,000 collection to close the accounting
+   entry, and ran a **second** script from the console to update the states.
+
+🟢 **So the roll-up this note describes works on real Mexal data**, and the four
+figures reconcile against a single order split into four tranches.
+
+🔴 **The frequency is the finding.** Twice in one session the data was only
+current because somebody pasted Apex into a console. The session agreed to
+schedule the sync **every half hour to an hour** —
+[OI-239](../items/OI-239%20The%20Mexal%20scadenzario%20sync%20must%20run%20every%20half%20hour%20and%20nothing%20schedules%20it.md)
+— and nothing does. API limits were read on production in the same block:
+**3,360,000 requests a month, 112,000 a day**, with each cycle costing two calls.
+
+⚠ **`E` was still not exercised.** The payment was a bonifico, so
+[OI-212](../items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)'s
+defect — Mexal status `E` reading as paid before the due date — **did not fire
+and was not tested**. A future-dated bonifico correctly read `non pagato`, which
+is the predicate behaving on the one status it handles correctly.

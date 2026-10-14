@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Sabatino Rinaldi
 org: both
 raised: 2026-08-27
-updated: 2026-09-25
+updated: 2026-10-14
 depends_on: [OI-102]
 blocks: [OI-49]
 source: meetings/2026-08-27-integrazione-woocommerce-transcript.it.md
@@ -87,3 +87,27 @@ Fabrizio Paganelli's codes, Sabatino Rinaldi will create the linked WooCommerce 
 **and a non-bundle self-service ticket purchase** will be tested too. Sabatino Rinaldi's
 plugin already has a (disabled) section to forward any self-service order.
 🔴 It depends on OI-181, estimated at one week.
+
+## 🔴 2026-10-14 — still untested, named as missing in the e2e's closing minute
+
+The end-to-end session that tested everything else closed on this gap. Aurel
+Mrruku, [14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) (`01:59:48`),
+while asking Elisa Migliano and Elena Spini to run their own account tests:
+
+> _"evidenziando che **manca ancora la parte relativa agli ordini da palco**"_
+
+🔴 **Seven days to go-live.** The 02/10 live test this row recorded as booked has
+left no artifact in any source, and stage sales have now been named as untested
+in three consecutive sessions' worth of scope lists.
+
+⚠ **It is one of three WooCommerce order paths unexercised at the same time**:
+stage sales, the WooCommerce **pacchetti tutor** (listed in the same session as
+still to examine, `00:03:18`), and books/video courses
+([OI-241](OI-241%20Books%20and%20video%20courses%20wait%20on%20a%20WooCommerce%20instance%20move.md)).
+🔑 **All three are the agentless path** of
+[OI-214](OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md),
+whose gating question — which agent code an order without an agent uses — is
+therefore still unexercised by anything.
+
+⚠ **Stage sales are the one path with no human check** before Mexal, by this
+row's own earlier finding. It is the least supervised flow and the least tested.

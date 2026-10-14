@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-08
-updated: 2026-10-08
+updated: 2026-10-14
 depends_on: [OI-179]
 blocks: [go-live]
 severity: gating
@@ -72,3 +72,74 @@ The complete list — Marco Montesi's five plus whatever Elisa Migliano adds —
 each with its trigger condition, channel, recipient, timing and template, a
 ruling on whether each is Fase 1 or Fase 2, and an answer to who may edit them
 after go-live.
+
+## 🟢 2026-10-14 — answered, in the negative, after nine days
+
+**Elena Spini replied to Marco Montesi at 17:14:01Z, cc Sabatino Rinaldi,
+Rebecca Marmo, Aurel Mrruku and Fabrizio Mastracci. The answer scopes almost all
+of his list out of the project.**
+
+She opened by apologising for the delay — _"perdona innanzitutto il ritardo nella
+risposta dovuto alla lavorazione delle ultime consegne"_ — then set out the
+as-is, and drew the line:
+
+> _"**E-mail incluse:** Sono incluse esclusivamente le e-mail di invio,
+> accettazione e firma del preventivo."_
+>
+> _"**Altre e-mail e integrazione WhatsApp:** Ulteriori tipologie di e-mail o
+> l'invio di messaggi WhatsApp all'interno del flusso Sales **non sono stati
+> previsti né mai definiti nelle specifiche concordate**."_
+>
+> _"Se hai bisogno di integrare queste ulteriori funzionalità, possiamo
+> valutarle volentieri come **extra-perimetro/evolutiva in una fase
+> successiva**."_
+
+### What is now settled
+
+| Of Marco Montesi's list | Ruling |
+| --- | --- |
+| welcome + 48-hour tutor commitment | **out of scope**, extra-perimetro |
+| "a tutor called you" on no answer | **out of scope** |
+| `Perso` / `NON RISPONDE` notification | **out of scope** |
+| messages inside the 5 days of quote validity, to customer and tutor | **out of scope** |
+| quote-expiry message | **out of scope** |
+| WhatsApp, anywhere in the Sales flow | **out of scope** |
+| invio / accettazione / firma preventivo mails | **in scope** |
+
+🔑 **And one thing survives, with a dependency on the client.** The as-is she
+describes does include a reminder email to the customer two days after the
+Opportunity goes to `In Trattativa`:
+
+> _"**Invio e-mail al cliente**: promemoria per l'invio del preventivo (**di
+> questo siamo tuttora in attesa del copy della mail**)."_
+
+🔴 **The copy is owed by Marco Montesi** — _"Verrà fornito copy da MM"_, her own
+words in a DM at 18:52:58 CEST — and it has not arrived. ⚠ A reminder-email copy
+from Marco Montesi was recorded as **received on 25/08**; whether this is the same
+artefact owed again or a different one is **not established**.
+
+### ⚠ Three cautions on reading this as closed
+
+1. **The scope ruling is ROMI's, not the client's.** Marco Montesi has not
+   accepted it in any source, and his previous precisazione was contested for
+   nine days before it was answered. The same is true of
+   [OI-224](OI-224%20Mass%20Opportunity%20creation%20is%20contested%20as%20a%20Fase%202%20deferral.md).
+2. 🔴 **It does not touch the marketing ticket funnel.** Her wording is scoped to
+   _"all'interno del flusso Sales"_. The 11 email + 11 WhatsApp sequence in
+   [the marketing send logics](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md)
+   fires on event participation, has a different owner, and is untouched by this.
+   **Rebecca Marmo's question — whether WhatsApp runs in parallel with email or
+   as a backup — is still unanswered**, and
+   [OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+   still stands.
+3. 🔴 **His original governance question is still unanswered.** Whether these
+   messages are administrator-editable or support-only was what he asked on
+   05/10. Elena Spini answered it for the **Perso/Errato picklists** on 07/10
+   (admin-editable by the Pienissimo administration user) and has never answered
+   it for the templates. **Tenth day.**
+
+🔑 **The deeper consequence is for [OI-227](OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md).**
+The as-is she set out here is the **task** model — Subject `Preventivo Inviato`,
+Task Subtype `Da Ricontattare`, due the next day — which is the wording `96d77de`
+removed from the signable requirements two days earlier. She is describing to the
+client the text the register no longer carries.

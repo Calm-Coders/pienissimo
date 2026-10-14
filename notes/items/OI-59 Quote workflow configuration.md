@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-10-12
+updated: 2026-10-14
 requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10, SAL-20]
 source: meetings/open-items.md row 59
 ---
@@ -548,3 +548,35 @@ See [OI-227](OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requireme
 ⚠ The question there is **not** whether the behaviour is right; it is whether the
 client agreed the words, and the record cannot currently say.
 
+
+## 2026-10-14 — the 5-day expiry was questioned in the room and not answered
+
+**Two facts from [the 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md).**
+
+🟢 **The default is confirmed as built and as editable** (`00:09:56`): the
+Opportunity name is free text and the close date defaults to **5 days** from
+creation, with tutors able to change it by hand against deadlines or events.
+
+🔴 **And then the obvious question was asked and left open** (`00:56:56`): Elisa
+Migliano _"solleva il tema della gestione delle accettazioni dei preventivi oltre
+il termine di scadenza dei 5 giorni"_. **The record carries the question and no
+answer** — nobody in the session states what happens when a customer accepts on
+day six, whether the portal still permits it, or whether the quote state blocks
+it.
+
+⚠ **It intersects two things already open.** The 5-day window is one of the
+timings Marco Montesi's notification list attached customer-facing messages to
+([OI-222](OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md)),
+and those messages have just been scoped out as extra-perimetro — so the customer
+may receive **no** expiry warning while the acceptance behaviour past expiry is
+undefined. And the ageing batch that acts on negotiating quotes is the one whose
+run-as user is unresolved
+([OI-228](OI-228%20The%20nightly%20schedulers%20have%20no%20run-as%20user%20and%20the%20first%20run%20is%20imminent.md)).
+
+⚠ **Also of record from the same session, and unresolved**: Elisa Migliano hit
+**view and edit permission problems** on Salesforce while configuring the new
+products, which Aurel Mrruku fixed by updating the administrative profile's
+permissions mid-session (`00:32:45`). **Which permissions, on which profile, is
+not stated**, and the change was made live in a client session — relevant to
+[OI-186](OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)
+and to anything that must be reproduced in Prod.
