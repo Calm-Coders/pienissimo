@@ -10,6 +10,29 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-14 - claude (Mexal article category)
+
+- **Did:** at Aurel Mrruku's request (`PLUS-B01` had no category), found that
+  the article sync never wrote `Product2.Categoria_Articolo__c`. Mexal holds it
+  as `sigla_cat_sta` + `nr_cat_sta`. Added both to the article search fields and
+  mapped them, with the number zero-padded to two digits (`E2` becomes `E02`).
+  A blank value never clears a stored one. Deployed the two classes to UAT and
+  re-synced all articles: 1,078 upserted, 0 failed, `PLUS-B01` is now `C10`.
+  Details in
+  [the article sync note](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+- **State:** the change is in the working tree of `DevMain`. **It is not
+  committed and not in Prod.**
+- **Watch:** `CS-00007` and `CS000006` moved from `E03` to `E01` because Mexal
+  says so (both inactive). `E11` and `E12` are new category values. Check them
+  against the edition mapping and `Product_Category_Rule__mdt` if they matter.
+- **Later the same session:** ran the nightly article batch once in UAT. It
+  requests the category fields and completed cleanly. Then a second full
+  re-sync after the client added articles: `PLUS-N05` is `C10` and `PLUS-N06`
+  is `C11`. In Prod the article classes are from 04/10 and no Mexal job is
+  scheduled.
+
+---
+
 ## 2026-10-12 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
