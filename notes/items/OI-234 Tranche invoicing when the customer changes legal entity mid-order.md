@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-15
 depends_on: [OI-118]
 source: Gmail thread 1a139e24969cbc8a
 ---
@@ -65,3 +65,47 @@ the Mexal customer code is locked once set
 
 A ruling on whether this is Fase 1 or Fase 2, accepted by the client, and if
 Fase 1 a written procedure for the already-invoiced tranches.
+
+## 🟢 2026-10-15 - the client accepted Fase 2, in the room and in the thread
+
+The acceptance this row was waiting on arrived twice on 15 October.
+
+**In the mail thread** (`Cambi di Ragione Sociale`, Gmail `1a139e24969cbc8a`),
+Elena Spini had proposed on 14/10 at 13:48:59Z: _"Per questo tema propongo di
+accorparlo con i casi limite da gestire in fase 2. Ne parliamo comunque al
+meeting di domani."_
+
+**In [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)**
+(`00:45`) she put it directly and he accepted:
+
+> Elena Spini: _"per quel punto gestione cambi di ragione sociale per la
+> fatturazione della tranche … Se sei d'accordo, lo mettiamo a perimetro della
+> fase due, di quei famosi casi limite che dobbiamo gestire."_
+>
+> Fabrizio Paganelli: _"Va bene, va bene."_
+
+The theme was one of the four on the meeting invitation, so it was reached
+deliberately rather than in passing.
+
+🔑 **So the row's open question — whether the client accepts the deferral — is
+answered yes.** It moves from _"Elena Spini proposes Fase 2, the client has not
+accepted"_ to a deferral agreed by both sides.
+
+⚠ **Two things keep it from being a clean close.**
+
+1. **Elena Spini undercut the agreement herself, seconds later**: _"Anche
+   Fabrizio è mi dice va bene a tutto quello che gli dico. Anche lui stanco."_
+   Recorded because it is her own assessment of the weight of the consent she had
+   just obtained, not as a finding about Fabrizio Paganelli.
+2. **Fase 2 still has no estimate, no offer and no plan** —
+   [OI-83](OI-83%20No%20phase%202%20estimate.md) and
+   [the dispute](../risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
+   🟢 That did change tonight: the 17:35:47Z mail commits in writing to _"un'offerta
+   e un piano di progetto dedicati in un thread separato"_ for Fase 2 — the first
+   such commitment on record. Until it arrives, "agreed into Fase 2" means agreed
+   into a phase with no content.
+
+🔴 **And the business case is unchanged.** Tranches part-invoiced to company A
+still have to continue on company B at some point, whichever phase owns it; the
+scenario Fabrizio Paganelli described is a real one for Performance Plus orders,
+and deferring it does not make the first such order easier to invoice.

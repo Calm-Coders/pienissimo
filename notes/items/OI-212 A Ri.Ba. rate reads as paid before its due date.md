@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-14
+updated: 2026-10-15
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -252,3 +252,39 @@ A predicate that reads a rate as paid before its due date is read 48 times a day
 instead of once, into a field administrators are being taught to trust — and the
 order roll-up it feeds (`incassato`) was shown to the client in this session as a
 headline figure.
+
+## 🔴 2026-10-15 - seventh night, and nothing at all happened
+
+Verified by repository arithmetic against `DevMain` at **`544cbfd`**, which is
+this procedure's own 14/10 commit: **`DevMain` has not advanced in twenty-four
+hours.** Both predicates are byte-for-byte unchanged.
+
+`MexalScadenzarioSearchService.cls:205-207`, last touched by `f292b72` on
+**8 October** — seven days ago, and for an unrelated reason
+(_"without sharing class"_):
+
+```apex
+deadline.paid =
+  deadline.paymentStatus == 'P' ||
+  deadline.paymentStatus == 'E';
+```
+
+`Scadenza_Fattura__c/fields/Pagata__c` last touched by `731c7ac`, **6 October**.
+
+🔴 **No mail, message, meeting, commit or ruling touched it.** The 15/10 session
+ran seventy-seven minutes on migration and go-live and never reached payment
+state. The 13/10 confirmation date is now **three days past**.
+
+⚠ **And the exposure grew tonight rather than shrinking.** The migration method
+agreed in the same session
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md))
+loads ~10,000 historical orders a year and **derives** their invoiced and
+collected state by running this reconciliation against the Mexal id, rather than
+importing it. So a predicate that reads an unpaid Ri.Ba. rate as paid would be
+applied at migration scale, to historical data, on go-live day, with
+[OI-239](OI-239%20The%20Mexal%20scadenzario%20sync%20must%20run%20every%20half%20hour%20and%20nothing%20schedules%20it.md)
+then re-reading it forty-eight times a day. **Nobody has connected these**, and
+the figure it feeds — `incassato` — is the one shown to the client on 14/10.
+
+The correction is still one date comparison, in a method that already holds the
+due date eleven lines above.

@@ -10,6 +10,72 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-15 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  **2026-10-14T22:00Z**, one day. Drilled
+  [the 15/10 Migrazione e Go-Live session](notes/meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+  (73,596 chars, full raw transcript, read once in four slices) and **preserved it
+  verbatim** at `meetings/2026-10-15-migrazione-e-go-live-transcript.it.md` — the
+  first preserved transcript since 27/08. Wrote **seven new items, OI-243 to
+  OI-249**, one new risk note, one meeting note; updated **sixteen** existing
+  notes (OI-79, 83, 124, 128, 161, 165, 169, 172, 186, 207, 212, 222, 226, 227,
+  234, 240 and the Fase 2 scope-dispute risk), `MAP.md`, `INDEX.md`, both
+  trackers (7 new rows + 19 refreshed each) and both recaps (§63). Corrected the
+  transcript-corpus sizes in `AGENTS.md` and `INDEX.md`. Trace at
+  [notes/traces/Source trace 2026-10-15 nightly.md](notes/traces/Source%20trace%202026-10-15%20nightly.md).
+- **State:** `DevMain` at **`544cbfd`** — **unchanged in twenty-four hours**, and
+  that commit is this procedure's own. Two human commits in the window, **both
+  outside `DevMain`**, no PR merged: `583efb4` (Anita Aga, `DevAnita15`, contract
+  status + 12-month default term) and `102c098` (Rexhina Hysi, a merge of
+  **`DevMain` into** `DevMainOpportunityWork`). **The register was not touched**;
+  `version` stays 1.6 and `go_live:` stays `2026-10-21`.
+- **Next:** **the go-live is now 02/11 with a Go/No-Go on 27/10** (OI-243), and
+  three things follow from it that a human has to do.
+  1. **Ask what happens to Zoho after 31 October.** Go-live now falls **two days
+     after** the contract expires; the register still assumes a three-week dual
+     run. One question settles whether this is an administrative detail or the
+     biggest open risk on the project.
+  2. **Answer Elena Spini's 18:33 DM**, which now says she has **sold `SAL-20` as
+     done** and asks for it tomorrow if it does not exist. Third unanswered
+     message in two days, and the only one that can unblock OI-227's register
+     edit — which is now **due**, not deferrable.
+  3. **Tell the client ROMI heard the objection.** Fabrizio Paganelli said twice,
+     on the record, that 02/11 cannot be met on training grounds; the mail sent
+     two hours later carries none of it (OI-246).
+- **Watch:**
+  - 🔴 **The register edit for `CTX-02` is staged and deliberately not made.** The
+    rule is OI-124's: `REQUISITI.it.md` does not move on a proposal awaiting
+    reply. **When the acknowledgement lands, nine places change in one session**
+    across three files — `CTX-02`, the `M` priority key, both milestone tables,
+    the §14 Fase 2 rule, `go_live:` — **plus
+    `requirements/pienissimo-requirements.yaml:469`**, whose _"dual-run window is
+    ~3 weeks"_ is now false in direction, not degree. Do not move one without the
+    other.
+  - 🔴 **`SAL-20`'s YAML was left alone a fourth night, and that reasoning expires
+    tomorrow.** Once it is known whether the task+email behaviour exists in UAT,
+    the register moves to match the build or the build happens and the register
+    moves to match it. Waiting past that is drift.
+  - 🔴 **A pre-existing tracker defect, found tonight and deliberately not
+    fixed.** Rows **163–174 are duplicated** in both `meetings/open-items.md` and
+    `.it.md`, inside the same `## Open` section, and **the two copies differ**
+    (170–172 match; the rest do not). It predates this run. Deleting either copy
+    would lose content, so tonight's refresh was applied to **both** copies of
+    165, 169 and 172. **A human has to say which copy is current** before anyone
+    regenerates these files.
+  - ⚠ **OI-207's note is still edited on two branches at once** and the branch is
+    still unmerged, a third night. When `8186816` merges, **keep Rexhina Hysi's
+    text** and drop the sweep's overlap.
+  - ⚠ **OI-244 feeds OI-212 at volume.** The migration derives `incassato` for
+    ~10,000 historical orders a year through the predicate that reads an unpaid
+    Ri.Ba. rate as paid, on go-live day, with OI-239 re-reading it 48 times a day.
+    Fix the predicate before the migration rehearsal, not after.
+  - ⚠ **`Locali Salesforce.xlsx` moved at 08:11Z** on the day migration was the
+    agenda. It is a client workbook carrying **real customer data** and was
+    recorded as moved and **not opened**, per the publishing rules.
+
+---
+
 ## 2026-10-14 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-25
-updated: 2026-10-05
+updated: 2026-10-15
 blocks: [go-live]
 source: notes/meetings/2026-09-25 Interna post UAT Contratto e Fase Due.md
 ---
@@ -144,3 +144,44 @@ was modified 05/10 at 16:40Z and its `Utenti` sheet still holds only the header
 `Profilo, Visibilità`. **Nothing underneath either.** Three sessions with the
 client on 05/10, two of them about data and fields, and the user list was not
 asked for again — the same omission this item recorded on 28/09.
+
+## 🔴 2026-10-15 - deferred again, explicitly, and now three requirements wait on it
+
+At [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+(`00:10`–`00:15`) the profile question was put directly and postponed with a
+stated reason. Aurel Mrruku:
+
+> _"tutti i flussi fino adesso … abbiamo usato solo il permesso di sistem admin
+> perché avevamo detto confermiamo prima tutto e poi decidiamo chi deve vedere
+> cosa. … se io adesso devo fare i permessi, ma ci sono campi che non servono, ci
+> sono layout che devono cambiare, io li devo rifare ogni volta che cambia un
+> campo perché i permessi sono legati con l'entità."_
+
+🟢 **The engineering reason is sound** and it is the first time the deferral has
+been justified rather than simply observed: permission sets bound to fields and
+layouts have to be rebuilt every time those change, and the build is still
+changing.
+
+🔴 **The consequence is that eighteen days before go-live every person who
+touches the system is a System Admin**, including, from this week, the client's
+commercial lead
+([OI-240](OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)).
+
+**Three requirements now depend on profiles that do not exist:**
+
+| Requirement                                                                                               | Needs                                              |
+| --------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| [OI-247](OI-247%20Only%20the%20responsabile%20commerciale%20may%20edit%20the%20provvigioni%20fields.md)    | a _responsabile commerciale_ profile, uniquely privileged |
+| [OI-233](OI-233%20Bundle%20access%20for%20tutor%20profiles%20is%20undefined.md)                            | a _tutor_ profile that cannot quote or order bundles |
+| [OI-246](OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)       | something to train eight commercial users **on**    |
+
+🔴 **And the deferral collides with the training plan.** Testing and training
+happen under System Admin, against access the users will not have in production.
+Aurel Mrruku named that himself as what he expects to be hardest to explain:
+_"le cose che io mi aspetto che siano difficili da spiegare [sono] i campi che
+non vedono, oppure se abbiamo dato qualche permesso in più, qualche permesso in
+meno quando facciamo i permessi per questi utenti."_ Elena Spini made the same
+point about Marco Montesi specifically.
+
+⚠ **The window for the permissions build is now the same two weeks** as the test
+completion, the training, the production deployment and the migration rehearsal.

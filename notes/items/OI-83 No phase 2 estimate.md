@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-21
+updated: 2026-10-15
 depends_on: [OI-37, OI-38]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -114,3 +114,33 @@ left the status report.
 
 ⚠ Also new in the same post: **`Stima giornate a finire: 30`**. Whether that is
 person-days or calendar days is not stated.
+
+## 🟢 2026-10-15 - ROMI committed in writing to send a Fase 2 offer and plan
+
+Elena Spini's 15/10 17:35:47Z mail to the client
+([OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)):
+
+> _"Eventuali nuove esigenze o Change Request sollevate durante questo periodo
+> saranno prese in carico nella Fase 2, per la quale invieremo un'offerta e un
+> piano di progetto dedicati in un thread separato."_
+
+🟢 **That is the first written commitment on record to produce the thing this row
+has been missing since August** — an offer and a project plan for Fase 2, in a
+thread of their own.
+
+🔴 **No date, and no content.** The sentence promises a document; it does not say
+when, and nothing in any source describes what Fase 2 contains beyond the three
+exclusions on the plan deck (GLS notifications, Teachable video courses, Ordini
+Pienissimo Pro). ⚠ `Pienissimo_Project Plan v3.pptx` carries the same three as
+v2 — **the exclusion list did not grow**, even though the items deferred into
+Fase 2 since September have.
+
+⚠ **Meanwhile the phase is being filled by deferral.** Items agreed or proposed
+into Fase 2 that appear nowhere in its scope documents include
+[OI-234](OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)
+(accepted by the client in the same session), the commercial notification flows
+([OI-222](OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md),
+de-prioritised by Sabatino Rinaldi as _"va fatta in un secondo momento"_), and
+whatever the two-week freeze now catches. **A phase accumulating commitments with
+no estimate is the risk this row exists to carry**, and it got larger tonight,
+not smaller.

@@ -7074,3 +7074,116 @@ no Pienissimo meeting for a sixteenth consecutive run**, `#tproj-pienissimo` was
 silent a fourth day, the canvas is static at seven weeks, and
 `Flows & Objects.drawio` and `Campi Oggetti…xlsx` did not move. The register
 stays at **v1.6** — see **#227** — and the next free item id is **234**.
+
+## 63. Update 2026-10-15 — the go-live moved to 2 November, past the day Zoho dies, and the client had already said the date cannot be met
+
+Source: [the 15/10 Migrazione e Go-Live session](../notes/meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+(full raw transcript, 01:17:40 — the first preserved transcript since August) and
+Elena Spini's mail of 17:35:47Z. Build claims are repository arithmetic against
+`DevMain` **`544cbfd`**, which **did not move in twenty-four hours**: two commits
+landed, both outside `DevMain`, and no PR was merged.
+
+### 🔴 The date moved again, and the register did not
+
+**Go/No-Go _"entro e non oltre il 27/10"_, Go-Live _"in data 02/11"_** — sent into
+the same thread that carried the 6 → 21 October move, with
+`Pienissimo_Project Plan v3.pptx` matching. It carries a **scope freeze**: only
+_"affinamenti minori o piccole correzioni puntuali"_, everything else to Fase 2,
+🟢 for which ROMI committed in writing to send an offer and plan in a separate
+thread — the first such commitment since the Fase 2 perimeter was raised in
+August. See **#243**.
+
+🔴 **Two hours earlier Fabrizio Paganelli said twice that 02/11 cannot be met**,
+and the reason is training rather than build: _"non ce la facciamo a formare 7-8
+persone che ci sono di là nel commerciale … entro il 2 di novembre"_. He can sign
+off **only** orders and invoicing — _"te lo dico solo lato ordini e fatturazione
+che è un po' limitativo"_ — so the 27 October Go/No-Go would be given by two
+people for one third of the system, while Rebecca Marmo, Marco Montesi and
+Sabatino Rinaldi have no login. **None of that is in the mail.** See **#246**.
+
+🔴 **The register stays at 21 October**, on the rule **#124** established and the
+client then validated: `REQUISITI.it.md` is the signable text and does not move
+on a proposal awaiting reply. The mail was four hours old and unanswered. This
+time there is a second reason to wait — the date is already disputed on the
+record by the client.
+
+### 🔴 Zoho expires before the system goes live
+
+**Zoho CRM expires 31 October. Go-live is 2 November.** The dual-run overlap was
+twenty-five days under the signed date, ten after the first move, and is now
+**minus two**. The register still records the assumption as _"~3 weeks"_. The
+pending pipeline is re-keyed **out of Zoho by hand** (**#172**), and the real
+migration load runs **on go-live day**. **Zoho is named nowhere in the session
+and nowhere in the mail.**
+
+### 🟢 Migration has a method, and a new source
+
+The Zoho quote extractions are the stated problem — _"lì c'è da mettere mani"_ —
+so historical **orders now come out of Mexal** as a spreadsheet. Aurel Mrruku
+owes the Order + OrderLine field specification **by the evening of 16 October**;
+the client maps and populates it; state is **derived** by running the existing
+nightly reconciliation against the Mexal id rather than imported; and it loads
+**twice** — UAT now, production on go-live day. ~51,000 order **lines** since
+01/01/2023, thinning to ~10,000 a year. 🟢 Accounts and contacts are **already
+imported in UAT** from Mexal and refresh nightly. See **#244**.
+
+🔴 It rests on a disputed fact (**#245**): whether Mexal retains an order once
+invoiced. Aurel Mrruku, citing Mirko Merendi and an observed API symptom, says it
+is _"rasato via"_; Fabrizio Paganelli says the archive persists and only the
+front end loses it. Both can be true — API surface versus database archive — but
+nobody said so, and the extraction depends on it. **Row states are unmapped**,
+and deriving `incassato` for ~10,000 orders a year runs it through **#212**'s
+broken predicate at volume.
+
+### Permissions, and three requirements waiting on profiles that do not exist
+
+🟢 **Marco Montesi gets System Admin** as an interim, with Elena Spini walking
+him through the lead flow from Monday 19 October (**#240**). 🔴 The profile
+question is deferred with a sound engineering reason — permission sets are bound
+to fields and layouts that still change — but eighteen days out **everyone who
+touches the system is a System Admin** (**#186**), and three requirements now
+depend on undefined profiles: **#247**, **#233** and the training itself.
+
+**New:** **#247** — `Mexal dati per provvigioni` editable by the commercial lead
+**alone**, because the control is customer ownership rather than commission
+values; **#248** — the Account's `codice agente`, `categoria provvigioni` and
+`zona` keep the **old** agent's values after a change, found on screen by the
+client (orders are unaffected: the build reads the User); **#249** — an agent
+reassignment reaches Mexal **only at the next order**, with a create action and
+no update action, against the routine case of bulk reassignment.
+
+### 🔴 #227 got worse: the client has been told it is built
+
+Elena Spini, DM at 18:33:14 CEST: _"domani mi fai sapere se questa cosa c'è in
+UAT please? e se non c'è se la possiamo mettere domani **dato che me la sono
+venuta come fatta**"_. Yesterday the project manager did not know the build state
+of a requirement rewritten into the signable text; tonight she has **sold it as
+done** and asked for it to be built tomorrow — under the freeze announced the
+same evening. **Three messages in two days with no reply**, and in a
+seventy-seven-minute session with both of them present `SAL-20` was never
+mentioned. The register stays **v1.6** and the YAML was left alone a **fourth**
+night — and that reasoning expires tomorrow.
+
+### Answered
+
+🟢 **#222 has a client-side ruling at last** — **Sabatino Rinaldi**, speaking for
+Marco Montesi: _"Rispondo io per Marco, questa non è una priorità"_, after
+confirming only that the automation is **possible**. ⚠ Marco Montesi had not read
+the mail and was not in the room; the texts remain the client's to write; and the
+in-scope reminder mail **is still waiting on his copy**, a fortnight on.
+🟢 **#234 accepted into Fase 2 by the client** — _"Va bene, va bene"_ — ⚠ which
+Elena Spini undercut herself seconds later: _"Anche Fabrizio mi dice va bene a
+tutto quello che gli dico. Anche lui stanco."_
+
+### Carried
+
+🔴 **#207**'s three-totals build is still **outside `DevMain`**, a third night;
+tonight's merge went the wrong way, `DevMain` into `DevMainOpportunityWork`.
+🔴 **#161**: Andrea Parmeggiani silent a seventh day, now to be chased in person.
+🔴 **#226**'s revert window has closed, and the Zoho objection behind the
+workaround expires two days before go-live. ⚠ The duplicate-agent-code problem
+resurfaced and dissolved without a decision (**#169**). ⚠ Fathom is healthy and
+returned no Pienissimo meeting for an eighteenth run; `#tproj-pienissimo` is
+silent a sixth day; the canvas is static at nine weeks; `Campi Oggetti…xlsx`,
+`Flows & Objects.drawio`, the manual-steps sheet and `Testbook…v2_1.xlsx` did not
+move. The register stays at **v1.6** and the next free item id is **250**.

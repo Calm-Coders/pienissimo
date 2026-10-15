@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-22
-updated: 2026-10-14
+updated: 2026-10-15
 depends_on: [OI-74]
 blocks: [go-live]
 severity: gating
@@ -197,3 +197,24 @@ has not replied in six days.** ROMI's own message states the dependency plainly:
 happened.** The 08/10 mail put authentication details for the partial
 sandbox/UAT environment into a thread with the client, and the record has carried
 _"the rotation has still not happened"_ since. **Eighth day.**
+
+## 🔴 2026-10-15 - chased a third time, in the room, and still nothing
+
+At [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+closing minute, Elena Spini raised it unprompted as _"una cosa super
+importante"_:
+
+> _"Aurel ha mandato 7 giorni fa l'[API] per l'autenticazione del Q[R] Code a
+> Andrea. … Io l'ho ripingato e non ci ha risposto."_
+
+Fabrizio Paganelli undertook to chase him **physically**, being in the same
+building: _"adesso mi metto i guantoni da box, vado di là e faccio in modo che vi
+arrivi."_ He framed it as a capacity problem on his own side — _"noi siamo un po'
+piccolini, non è che facciamo solo amministrazione e il resto"_.
+
+🔴 **Seventh day of silence from Andrea Parmeggiani**, against credentials sent
+08/10 16:31Z and chased 14/10 12:35Z. The Prod move still waits on him, and the
+QR credential rotation is now in its **ninth day**.
+
+🟢 The escalation path finally has someone on it who can walk down a corridor,
+which is more than two mails achieved. ⚠ Nothing records an outcome.

@@ -7308,3 +7308,121 @@ Pienissimo per la sedicesima volta consecutiva**, `#tproj-pienissimo` è stato
 silenzioso per il quarto giorno, il canvas è fermo da sette settimane, e
 `Flows & Objects.drawio` e `Campi Oggetti…xlsx` non si sono mossi. Il registro
 resta alla **v1.6** — vedi **#227** — e il prossimo id libero è **234**.
+
+## 63. Aggiornamento 15/10/2026 — il go-live si sposta al 2 novembre, oltre il giorno in cui muore Zoho, e il cliente aveva già detto che la data non è rispettabile
+
+Fonte: [la sessione Migrazione e Go-Live del 15/10](../notes/meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+(trascrizione integrale, 01:17:40 — la prima trascrizione conservata da agosto) e
+la mail di Elena Spini delle 17:35:47Z. Le affermazioni sulla build sono
+aritmetica di repository su `DevMain` **`544cbfd`**, che **non si è mosso in
+ventiquattro ore**: due commit, entrambi fuori da `DevMain`, nessuna PR fusa.
+
+### 🔴 La data si è spostata di nuovo, il registro no
+
+**Go/No-Go _«entro e non oltre il 27/10»_, Go-Live _«in data 02/11»_** — inviata
+nello stesso thread che portava lo spostamento dal 6 al 21 ottobre, con
+`Pienissimo_Project Plan v3.pptx` coerente. Porta con sé un **congelamento del
+perimetro**: solo _«affinamenti minori o piccole correzioni puntuali»_, tutto il
+resto in Fase 2, 🟢 per la quale ROMI si è impegnata per iscritto a inviare
+offerta e piano in un thread separato — il primo impegno di questo tipo da quando
+il perimetro di Fase 2 è stato sollevato in agosto. Vedi **#243**.
+
+🔴 **Due ore prima Fabrizio Paganelli ha detto due volte che il 02/11 non è
+rispettabile**, e la ragione è la formazione, non lo sviluppo: _«non ce la
+facciamo a formare 7-8 persone che ci sono di là nel commerciale … entro il 2 di
+novembre»_. Può approvare **solo** ordini e fatturazione — _«te lo dico solo lato
+ordini e fatturazione che è un po' limitativo»_ — quindi il Go/No-Go del 27
+ottobre sarebbe dato da due persone per un terzo del sistema, mentre Rebecca
+Marmo, Marco Montesi e Sabatino Rinaldi non hanno alcuna utenza. **Nulla di
+questo è nella mail.** Vedi **#246**.
+
+🔴 **Il registro resta al 21 ottobre**, secondo la regola stabilita dal **#124** e
+poi validata dal cliente: `REQUISITI.it.md` è il testo firmabile e non si muove su
+una proposta in attesa di riscontro. La mail aveva quattro ore e nessuna risposta.
+Questa volta vi è una seconda ragione per attendere: la data è già contestata a
+verbale dal cliente.
+
+### 🔴 Zoho scade prima che il sistema vada live
+
+**Zoho CRM scade il 31 ottobre. Il go-live è il 2 novembre.** La sovrapposizione
+dual-run era di venticinque giorni con la data firmata, dieci dopo il primo
+spostamento, ed è ora di **meno due**. Il registro riporta ancora l'assunzione
+come _«~3 settimane»_. La pipeline aperta viene reinserita **a mano da Zoho**
+(**#172**), e il carico reale di migrazione gira **il giorno del go-live**.
+**Zoho non è nominato né nella sessione né nella mail.**
+
+### 🟢 La migrazione ha un metodo, e una nuova fonte
+
+Le estrazioni dei preventivi Zoho sono il problema dichiarato — _«lì c'è da
+mettere mani»_ — quindi gli **ordini storici arrivano ora da Mexal** come foglio
+di calcolo. Aurel Mrruku deve la specifica dei campi Ordine + Riga d'ordine
+**entro la sera del 16 ottobre**; il cliente mappa e popola; lo stato è
+**derivato** facendo girare la riconciliazione notturna sull'id Mexal invece di
+essere importato; e si carica **due volte** — UAT ora, produzione il giorno del
+go-live. ~51.000 **righe** d'ordine dal 01/01/2023, in calo verso ~10.000 l'anno.
+🟢 Account e contatti sono **già importati in UAT** da Mexal e si aggiornano ogni
+notte. Vedi **#244**.
+
+🔴 Poggia su un fatto controverso (**#245**): se Mexal conservi un ordine dopo la
+fatturazione. Aurel Mrruku, citando Mirko Merendi e un sintomo osservato via API,
+dice che viene _«rasato via»_; Fabrizio Paganelli dice che l'archivio persiste e
+che solo il front end lo perde. Entrambe possono essere vere — superficie API
+contro archivio a database — ma nessuno l'ha detto, e l'estrazione dipende da
+questo. **Gli stati delle righe non sono mappati**, e derivare `incassato` per
+~10.000 ordini l'anno lo fa passare dal predicato difettoso del **#212** su
+volumi.
+
+### Permessi, e tre requisiti in attesa di profili che non esistono
+
+🟢 **Marco Montesi riceve System Admin** come soluzione ponte, con Elena Spini che
+lo guida sul flusso lead da lunedì 19 ottobre (**#240**). 🔴 La questione del
+profilo è rinviata con una motivazione tecnica solida — i permission set sono
+legati a campi e layout che cambiano ancora — ma a diciotto giorni dal go-live
+**chiunque usi il sistema è System Admin** (**#186**), e tre requisiti dipendono
+ora da profili non definiti: **#247**, **#233** e la formazione stessa.
+
+**Nuovi:** **#247** — `Mexal dati per provvigioni` modificabili **solo** dal
+responsabile commerciale, perché il controllo riguarda la titolarità dei clienti
+e non i valori delle provvigioni; **#248** — `codice agente`, `categoria
+provvigioni` e `zona` sull'Account mantengono i valori del **vecchio** agente
+dopo un cambio, trovato a schermo dal cliente (gli ordini non sono coinvolti: la
+build legge l'Utente); **#249** — la riassegnazione di un agente arriva su Mexal
+**solo al prossimo ordine**, con un'azione di creazione e nessuna di
+aggiornamento, contro il caso ordinario della riassegnazione massiva.
+
+### 🔴 Il #227 è peggiorato: al cliente è stato detto che è realizzato
+
+Elena Spini, DM alle 18:33:14 CEST: _«domani mi fai sapere se questa cosa c'è in
+UAT please? e se non c'è se la possiamo mettere domani **dato che me la sono
+venuta come fatta**»_. Ieri la project manager non conosceva lo stato di
+realizzazione di un requisito riscritto nel testo firmabile; stasera lo ha
+**venduto come fatto** e ha chiesto di realizzarlo domani — sotto il congelamento
+annunciato la stessa sera. **Tre messaggi in due giorni senza risposta**, e in una
+sessione di settantasette minuti con entrambi presenti `SAL-20` non è mai stato
+menzionato. Il registro resta **v1.6** e lo YAML è stato lasciato intatto una
+**quarta** notte — e quella motivazione scade domani.
+
+### Risposti
+
+🟢 **Il #222 ha finalmente una decisione lato cliente** — **Sabatino Rinaldi**, a
+nome di Marco Montesi: _«Rispondo io per Marco, questa non è una priorità»_, dopo
+aver confermato solo che l'automazione è **possibile**. ⚠ Marco Montesi non aveva
+letto la mail e non era in riunione; i testi restano da scrivere al cliente; e la
+mail di reminder in perimetro **attende ancora il suo copy**, da due settimane.
+🟢 **Il #234 è stato accettato in Fase 2 dal cliente** — _«Va bene, va bene»_ —
+⚠ cosa che Elena Spini ha ridimensionato lei stessa pochi secondi dopo: _«Anche
+Fabrizio mi dice va bene a tutto quello che gli dico. Anche lui stanco»_.
+
+### Trascinati
+
+🔴 Lo sviluppo dei tre totali del **#207** è ancora **fuori da `DevMain`**, terza
+notte; il merge di stanotte è andato nella direzione sbagliata, `DevMain` dentro
+`DevMainOpportunityWork`. 🔴 **#161**: Andrea Parmeggiani in silenzio da sette
+giorni, ora da sollecitare di persona. 🔴 La finestra di ripristino del **#226** si
+è chiusa, e l'obiezione Zoho dietro il workaround scade due giorni prima del
+go-live. ⚠ Il problema dei codici agente duplicati è riemerso e si è dissolto
+senza decisione (**#169**). ⚠ Fathom è funzionante e non ha restituito alcuna
+riunione Pienissimo per la diciottesima volta; `#tproj-pienissimo` è silenzioso da
+sei giorni; la canvas è ferma da nove settimane; `Campi Oggetti…xlsx`,
+`Flows & Objects.drawio`, il foglio degli step manuali e `Testbook…v2_1.xlsx` non
+si sono mossi. Il registro resta alla **v1.6** e il prossimo id libero è **250**.

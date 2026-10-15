@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-12
-updated: 2026-10-14
+updated: 2026-10-15
 depends_on: [OI-59, OI-184]
 blocks: [go-live]
 severity: gating
@@ -155,3 +155,71 @@ exists so v1.6 reaches the client as one reviewable change set. **What has
 changed is that the decision is now informed**: the person who has to make it has
 said in her own words that she does not know whether it was built, and has told
 the client the other version.
+
+## 🔴 2026-10-15 - she has told the client it is built, and asked Aurel Mrruku to make that true
+
+**Elena Spini, DM to Aurel Mrruku, 2026-10-15 18:33:14 CEST (16:33Z):**
+
+> _"poi domani mi fai sapere se questa cosa c'è in UAT please? e se non c'è se la
+> possiamo mettere domani dato che me la sono venuta come fatta 🙂"_
+
+Read as _"me la sono vendut**a** come fatta"_ — _I have sold it as done_. ⚠ The
+dictation is imperfect and that reading is this sweep's; no other reading of the
+sentence is available, and nothing else in the DM qualifies it.
+
+🔑 **This is the escalation, and it is the worst available version of this row.**
+Yesterday the position was that the project manager did not know whether a
+requirement rewritten into the signable text had been built, and was describing
+the pre-rewrite version to the client. Tonight she has told the client it **is**
+built, and is asking the developer to confirm it exists — or to build it tomorrow
+so the statement becomes true.
+
+The sequence, across two days and three surfaces:
+
+| When (CEST)      | Where                     | What                                                                      |
+| ---------------- | ------------------------- | ------------------------------------------------------------------------- |
+| 14/10 19:14      | mail to Marco Montesi     | describes the **as-is** as the TASK model — the wording `96d77de` deleted  |
+| 14/10 20:52      | DM to Aurel Mrruku        | _"questa parte ce l'abbiamo? c'è la creazione di task + invio email?"_     |
+| 14/10 20:53      | DM to Aurel Mrruku        | _"non ne abbiamo mai parlato perchè non è stata fatta o perchè non ne abbiamo avuto modo?"_ |
+| **15/10 18:33**  | **DM to Aurel Mrruku**    | **_"me la sono venuta come fatta"_**, and a request to build it tomorrow if absent |
+
+🔴 **Aurel Mrruku has not replied to any of the three.** The 15/10 session ran for
+seventy-seven minutes with both of them in it and `SAL-20`, the task model and
+the reminder email **are not mentioned once** in the transcript. The automation
+subject came up (`00:11`–`00:20`) but about Marco Montesi's own asks, which
+Sabatino Rinaldi then de-prioritised — see
+[OI-222](OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md).
+The build state of the rewritten requirement was not raised with the one person
+who knows it, in the one place both were present.
+
+## 🔴 What this does to the row
+
+1. **The register question is now urgent rather than merely open.** Three nights
+   of leaving the YAML alone were justified by the decision being uninformed.
+   That argument is gone: a statement has been made to the client, and the
+   register says something different from both what was built and what the client
+   has been told.
+2. **A build may land tomorrow to match a sentence.** _"se la possiamo mettere
+   domani"_ is a request to implement a contract-bound requirement on a day's
+   notice, under a scope freeze announced the same evening
+   ([OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md))
+   that permits only _"affinamenti minori o piccole correzioni puntuali"_. ⚠ If
+   it is built, the register's current text is wrong; if it is not, the client has
+   been told something untrue. **Either way the YAML has to move**, and which way
+   depends on a decision nobody has taken.
+3. ⚠ **It is still not a client ruling.** Nothing in today's sources establishes
+   that the task model was ever agreed with Pienissimo. The row's central finding
+   stands unchanged: **neither version of `SAL-20` has a client ruling behind it.**
+
+### Unchanged by this
+
+⚠ **The YAML was again deliberately not touched**, a fourth night — because the
+correct edit now depends on an answer due tomorrow. **This is the last night that
+reasoning holds.** Once it is known whether the behaviour exists in UAT, the
+register either moves to match the build or the build happens and the register
+moves to match it; waiting past that point is just drift.
+
+🔴 **The reminder email's copy is still owed by Marco Montesi.** Elena Spini
+restated it in the session, a fortnight on: _"abbiamo previsto un invio della
+mail di cui siamo sempre in attesa del suo COP[Y] che non ci ha mai più
+rimandato"_.

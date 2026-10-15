@@ -2,9 +2,111 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-14 (nightly sweep — the e2e ran with the client's administration leading it, one order became four invoices and came back as a scadenzario, and the project manager asked whether a requirement rewritten into the signable text nine days ago was ever built) · Source of record: [notes/](notes/)
+Last updated: 2026-10-15 (nightly sweep — ROMI moved the go-live to 2 November, two days after the Zoho contract expires, and the client's own product lead had already said on the record that the date cannot be met) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🔴🔑 **2026-10-15 — the go-live moved to 2 November, past the day Zoho dies, and the client had already said it cannot be met.** Nightly sweep,
+  watermark 2026-10-14T22:00Z. **One client session of 01:17:40** — [Migrazione e Go-Live](notes/meetings/2026-10-15%20Migrazione%20e%20Go-Live.md),
+  the first full raw transcript since August — **2 commits, both outside `DevMain`**, **0 PRs merged**, and
+  **`DevMain` did not move at all**: it stands at **`544cbfd`**, which is this procedure's own 14/10 commit.
+  Build claims are repository arithmetic against that head.
+  🔴🔑 **[OI-243](notes/items/OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md): go-live
+  is now 02/11, Go/No-Go 27/10** — Elena Spini in writing at 17:35:47Z, into **the same thread** that
+  carried the 6→21 October move, with `Pienissimo_Project Plan v3.pptx` matching. It comes with a
+  **scope freeze**: only _"affinamenti minori o piccole correzioni puntuali"_, everything else to Fase 2 —
+  🟢 for which ROMI **committed in writing to send an offer and plan**, a first ([OI-83](notes/items/OI-83%20No%20phase%202%20estimate.md)).
+  🔴 **Two hours earlier Fabrizio Paganelli said twice, on the record, that 02/11 cannot be met** —
+  _"non ce la facciamo a formare 7-8 persone … entro il 2 di novembre"_ — and **none of it is in the mail**
+  ([OI-246](notes/items/OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)).
+  🔑 He can sign off **only** orders and invoicing, so the **27/10 Go/No-Go would be two people ruling on a
+  third of the system**; Rebecca Marmo, Marco Montesi and Sabatino Rinaldi have no login.
+  🔴 **The register was deliberately not moved** — [OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)'s
+  own rule is that `REQUISITI.it.md` does not move on a proposal awaiting reply, and the mail is unanswered.
+  🔴🔑 **New: [the Zoho gap](notes/risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md) — gating.**
+  **Zoho CRM expires 31/10. Go-live is 02/11.** The dual-run overlap was 25 days, then 10, and is now
+  **minus two**. The register still assumes _"~3 weeks"_. ⚠ **Zoho is named nowhere in the session and
+  nowhere in the mail** — and the pending pipeline is re-keyed **out of Zoho by hand**
+  ([OI-172](notes/items/OI-172%20Historical%20quotes%20and%20offers%20are%20not%20migrated.md)) while the real
+  migration load runs **on go-live day**.
+  🟢🔑 **Migration has a method for the first time, and a new source: [OI-244](notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).**
+  The Zoho quote extractions are _"da mettere mani"_, so historical **orders come out of Mexal** as a
+  spreadsheet instead. **Aurel Mrruku owes the Order + OrderLine field spec by 16/10 evening**; the client
+  maps and populates it; state is **derived** by running the nightly reconciliation, not imported; it loads
+  **twice** — UAT now, production on go-live day. ~51,000 order **lines** since 01/01/23, ~10,000/yr.
+  🟢 Accounts and contacts are **already imported in UAT** from Mexal and refresh nightly.
+  🔴 **But it rests on a disputed fact: [OI-245](notes/items/OI-245%20Whether%20a%20Mexal%20order%20survives%20invoicing%20is%20disputed.md).**
+  Aurel Mrruku, citing Mirko Merendi **and an observed API symptom**, says an invoiced order is _"rasato
+  via"_; Fabrizio Paganelli says the archive persists and only the front end loses it. ⚠ Both may hold —
+  API surface versus database archive — but nobody said so, and the extraction OI-244 promises depends on
+  it. 🔴 **The fourth uncoordinated ask now points at Mirko Merendi**, who has appeared in no source for
+  five runs.
+  🔴 **And OI-244 inherits [OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  at volume.** Seventh night, byte-for-byte unchanged (`MexalScadenzarioSearchService.cls:205-207`, last
+  touched 08/10 for an unrelated reason). Deriving `incassato` for ~10,000 historical orders a year through
+  a predicate that reads an unpaid Ri.Ba. rate as paid, with OI-239 re-reading it 48 times a day, is a new
+  and larger exposure. **Nobody has connected them.**
+  🔴🔑 **[OI-227](notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)
+  got worse: she has told the client it is built.** Elena Spini, DM 18:33:14 CEST: _"domani mi fai sapere se
+  questa cosa c'è in UAT please? e se non c'è se la possiamo mettere domani **dato che me la sono venuta
+  come fatta**"_. 🔑 Yesterday the PM did not know the build state; tonight she has **sold it as done** and
+  asked for it to be built tomorrow — under the freeze announced the same evening. **Three messages in two
+  days, no reply**, and in a 77-minute session with both of them present `SAL-20` was never mentioned.
+  ⚠ The YAML was left alone a **fourth** night, and that reasoning expires tomorrow.
+  🟢 **[OI-222](notes/items/OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md)
+  has a client-side ruling at last** — **Sabatino Rinaldi**, speaking for Marco Montesi: _"Rispondo io per
+  Marco, questa non è una priorità."_ He confirmed only that the automation is **possible**; ⚠ Marco Montesi
+  had not read the mail and is not in the room, and the reminder mail inside the agreed perimeter **is still
+  waiting on his copy**, a fortnight on.
+  🟢 **[OI-240](notes/items/OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md) answered:
+  Marco Montesi gets System Admin** as an interim, with Elena Spini walking him through the lead flow from
+  Mon 19/10. 🔴 **The profile question is deferred, with a sound engineering reason** — permission sets are
+  bound to fields and layouts that still change — but eighteen days out **everyone who touches the system is
+  a System Admin**, and **three requirements now wait on profiles that do not exist**
+  ([OI-186](notes/items/OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)):
+  OI-247, OI-233 and the training itself.
+  🟢 **[OI-234](notes/items/OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)
+  accepted into Fase 2 by the client** — _"Va bene, va bene"_. ⚠ Elena Spini undercut it herself seconds
+  later: _"Anche Fabrizio mi dice va bene a tutto quello che gli dico. Anche lui stanco."_
+  🔴 **New: [OI-247](notes/items/OI-247%20Only%20the%20responsabile%20commerciale%20may%20edit%20the%20provvigioni%20fields.md)**
+  (the commission section editable by **Marco Montesi alone** — the control is **customer ownership**, not
+  commission values; ⚠ undermined in the same breath by _"dopo Marco questa cosa qui non la fa"_) ·
+  **[OI-248](notes/items/OI-248%20The%20Account%20agent%20and%20provvigioni%20fields%20are%20stale%20against%20the%20User%20record.md)**
+  (the client found on screen that `codice agente`/`categoria provvigioni`/`zona` keep the **old** agent's
+  values; 🟢 orders are unaffected — the build reads the User) ·
+  **[OI-249](notes/items/OI-249%20An%20agent%20reassignment%20reaches%20Mexal%20only%20at%20the%20next%20order.md)**
+  (an agent change reaches Mexal **only at the next order**; there is a create action and **no update
+  action**, against bulk reassignment of customer books).
+  ⚠ **The duplicate-agent-code problem resurfaced and dissolved without a decision**
+  ([OI-169](notes/items/OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md)) —
+  the same agent carrying `01` in 2023 and `019` by 2025. Fabrizio Paganelli refused the
+  take-the-latest fallback (_"con gli agenti non facciamo casino"_), then the nightly refresh was accepted as
+  an answer it does not give. **No owner, no row of its own**, and ~10,000 orders a year are about to load
+  carrying agent references.
+  🔴 **[OI-207](notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)'s
+  three-totals build is still outside `DevMain`, a third night** — `Totale_Listino__c` and
+  `Sconto_Totale__c` are absent from `origin/DevMain`, and tonight's `102c098` merged **`DevMain` into**
+  `DevMainOpportunityWork`, which is traffic the wrong way.
+  🔴 **[OI-161](notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md):
+  Andrea Parmeggiani silent a seventh day.** Raised unprompted in the closing minute; 🟢 Fabrizio Paganelli
+  will chase him **in person** — _"adesso mi metto i guantoni da box"_. QR rotation: ninth day.
+  🔴 **[OI-226](notes/items/OI-226%20The%20gruppo%20merceologico%20stands%20in%20for%20the%20flag%20annullato%20only%20for%20the%20tests.md)'s
+  revert window closed while nobody looked** — and ⚠ the Zoho objection that forced the workaround expires
+  **two days before go-live**, so the decision gets easier exactly when it becomes a production change.
+  🟢 **Of record, unprompted**: Aurel Mrruku is confident on flows — _"abbiamo fatto una decina di test, gli
+  ordini sono stati creati in modo automatico"_ — and expects lead conversion and **permissions** to be the
+  hard parts. **Marketing Cloud is in production** but held back from the client's autonomous tests.
+  ⚠ A **UAT session for 16/10** will show the ticket and marketing flows to Marco Montesi, Rebecca Marmo and
+  Sabatino Rinaldi · `Locali Salesforce.xlsx` **moved at 08:11Z** on the day migration was the agenda — a
+  client workbook carrying **real customer data**, recorded as moved and deliberately not opened ·
+  **Fathom is healthy and returned no Pienissimo meeting for an eighteenth run** · `#tproj-pienissimo`
+  **silent a sixth day** · the canvas **static nine weeks** · `Campi Oggetti…xlsx`, `Flows & Objects.drawio`,
+  the manual-steps sheet and `Testbook…v2_1.xlsx` all **did not move**.
+  ⚠ **"Davide Stefani" recurs a second session**, with **"Carmine"/"Carmen Troiano"**, as on-screen agent
+  examples; none has a person note and nothing says whether they are agents, contacts or test records.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **250**.
+  🔴 **Twenty-five consecutive nightly reports with no human reply.**
+  — [trace](notes/traces/Source%20trace%202026-10-15%20nightly.md)
 
 - 🟡🔑 **2026-10-14 — the administration drove the whole commercial chain, and ROMI's own PM asked whether a signed-text requirement exists.** Nightly sweep,
   watermark 2026-10-13T22:00Z. **One client session of ~2h** — [the e2e](notes/meetings/2026-10-14%20UAT%20Test%20e2e.md),

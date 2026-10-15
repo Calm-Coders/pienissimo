@@ -6,7 +6,7 @@ owner: Pienissimo
 with: Elena Spini
 org: Pienissimo
 raised: 2026-09-08
-updated: 2026-09-09
+updated: 2026-10-15
 depends_on: [OI-124, OI-83]
 blocks: [go-live]
 requirement: CTX-02
@@ -158,3 +158,29 @@ as blocking the quote flow and UAT begins in fourteen days.
 
 **This row stays open on the perimeter and on the four decisions. Only the date
 came out of it.**
+
+## 2026-10-15 - the same request, for a new plan, and the same gap
+
+Elena Spini's 15/10 17:35:47Z mail closes with the same ask this row exists for —
+_"vi chiedo cortesemente riscontro per presa visione"_ — now against **2
+November**, a **27 October** Go/No-Go and an explicit freeze on substantial
+changes. See
+[OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md).
+
+**Unanswered at the time of this sweep**, four hours old.
+
+⚠ **The distribution repeats the flaw this row recorded.** The four addressees are
+again Fabrizio Paganelli, `amministrazione@`, Sabatino Rinaldi and Marco Montesi,
+with **Daniela Morgese only in cc** — and she is the person who signs
+commercially. In September the plan closed on one reply out of four, from the
+product lead, with Daniela Morgese's alignment resting on Fabrizio Paganelli
+saying he had spoken to her.
+
+🔴 **And this time the perimeter ask is larger than before.** The mail does not
+merely restate the Fase 2 exclusions; it declares that any new requirement raised
+in the next two weeks goes to Fase 2. A _"presa visione"_ reply would be taken as
+acceptance of that, which is materially more than the September one.
+
+🟢 **One thing improved**: ROMI committed in writing to send a Fase 2 offer and
+project plan in a separate thread — the first such commitment, and the thing
+[OI-83](OI-83%20No%20phase%202%20estimate.md) has been waiting for since August.

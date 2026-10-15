@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-15
 depends_on: [OI-96]
 blocks: [go-live]
 source: notes/meetings/2026-10-09 Accesso e Tema Prodotti.md
@@ -90,3 +90,28 @@ directly in Mexal. Those categories are what
 category-wide edition mapping keys on. **Both the active flag and the category
 key moved by hand, in the client's ERP, on the day the code that reads them was
 written.** Neither has been re-verified from Salesforce since.
+
+## 🔴 2026-10-15 - the revert window closed while nobody was looking
+
+The decision this row asks for — keep the gruppo merceologico or move to `flag
+annullato`, taken _"anche con la parte di business"_ — has still not been made,
+and the arithmetic behind Aurel Mrruku's warning has now changed.
+
+His warning was about timing: _"se succede adesso, in questi giorni, in queste
+settimane, non vedo nessuna difficoltà, ma se dopo 2-3 mesi decidete di non usare
+più questo flag e io non sono più sul progetto, lì è un casino."_
+
+🔴 **The window he was describing is gone.** Go-live moved to **2 November**
+([OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)) under
+a freeze permitting only _"affinamenti minori o piccole correzioni puntuali"_, so
+a change of source field for product activation is now either a Fase 2 change
+request or a code change in production — which is precisely the outcome he asked
+to avoid.
+
+🔴 **And the reason the stand-in exists is about to expire.** `flag annullato`
+cannot be touched because it is live in Zoho and changing it _"viene fuori casino
+con Zo[h]o"_. **Zoho expires 31 October** — two days before go-live
+([the risk](../risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md)).
+⚠ Once Zoho is gone the original objection disappears, which means the decision
+gets easier at exactly the moment it becomes a production change. Nobody has
+noticed, and **this row still has no business owner** five days on.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-08
-updated: 2026-10-14
+updated: 2026-10-15
 depends_on: [OI-179]
 blocks: [go-live]
 severity: gating
@@ -143,3 +143,59 @@ The as-is she set out here is the **task** model — Subject `Preventivo Inviato
 Task Subtype `Da Ricontattare`, due the next day — which is the wording `96d77de`
 removed from the signable requirements two days earlier. She is describing to the
 client the text the register no longer carries.
+
+## 🟢 2026-10-15 - the client's own side de-prioritised it, and that is the first client word on this row
+
+At [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+(`00:11`–`00:20`) Elena Spini raised her 14/10 reply, restating that the
+automations were never specified to ROMI — _"Nessuno l'ha mai detto a noi"_,
+_"ci sono degli automatismi che non sono stati proprio previsti né … mai
+parlati"_. Aurel Mrruku corrected the object in passing: the asks are written
+against **opportunities** and the behaviour belongs to **leads** — _"già ti dico
+che la parola opportunità non mi va bene là. Stiamo parlando di lead."_
+
+🟢 **Sabatino Rinaldi then closed it, explicitly on Marco Montesi's behalf.** He
+asked only whether Salesforce can do this kind of thing at all; Elena Spini
+confirmed it can, through Flows and Marketing Cloud — _"potete fare quello che
+volete … avete veramente la Ferrari"_. On that answer:
+
+> _"sulla base di questo, questo punto lo puoi tranquillamente eliminare perché è
+> una cosa che uno va cambiato rispetto a come lo facciamo ora, due va fatta in
+> un secondo momento che non è una nostra priorità. Rispondo io per per Marco,
+> questa non è una priorità."_
+
+> _"L'importante è che mi confermi che l'automazione si può fare … Non è proprio
+> un punto che mi interessa in questa fase."_
+
+🔑 **This is the first client-side word on this row.** Until tonight it rested on
+ROMI's own _extra-perimetro_ ruling of 14/10; now the client's co-founder has
+said it is not a priority and belongs to a later phase. The two positions agree
+on the outcome.
+
+⚠ **Three caveats, and they are why the row stays open rather than resolving.**
+
+1. **It is Sabatino Rinaldi answering for Marco Montesi, who is not in the room
+   and had not read the mail** — _"io questa mail non l'ho letta perché sono
+   stato a fare un corso in questi giorni"_. The person who raised the asks has
+   still not responded to the ruling on them.
+2. **What he confirmed is capability, not scope.** He was satisfied that the
+   platform _can_ do it, and the texts remain the client's to write — _"quei
+   testi li dobbiamo comunque decidere noi e non è questo il momento di decidere
+   quei testi"_. So the deferral is conditional on nobody needing it at go-live.
+3. **It covers the Sales flow only**, as the 14/10 ruling did. The 11+11
+   marketing funnel and Rebecca Marmo's parallel-or-backup question are untouched
+   by anything said today.
+
+🔴 **The reminder mail inside the agreed perimeter is still blocked, a fortnight
+on.** Elena Spini, same session: _"nel momento in cui è in trattativa abbiamo
+previsto un invio della mail di cui siamo sempre in attesa del suo COP[Y] che non
+ci ha mai più rimandato, quindi … forse anche lui deve tararsi un po' sulle
+aspettative che ha."_ The mechanism is built; the copy from Marco Montesi has
+never arrived. That is the one half of this row that is in scope, and it has not
+moved.
+
+⚠ **Marco Montesi's governance question — whether the texts are admin-editable
+or support-only — is unanswered an eleventh day**, and is now partly answered by
+implication rather than by anyone: Elena Spini told Sabatino Rinaldi the client
+can build these automations themselves _"in autonomia"_, which is a different
+answer from the one Marco Montesi asked for and was not given to him.

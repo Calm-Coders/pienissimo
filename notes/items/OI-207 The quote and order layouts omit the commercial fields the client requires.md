@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-14
+updated: 2026-10-15
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -206,3 +206,24 @@ three times.
 people on the client side have now asked for the same breakdown on two different
 documents, independently. That is corroboration, and it is also a sign nobody has
 told either of them the invoice cannot carry it yet.
+
+## 🔴 2026-10-15 - the three-totals build is still outside DevMain, a third night
+
+`Quote.Totale_Listino__c` and `Quote.Sconto_Totale__c` **do not exist in
+`origin/DevMain`** (verified by `git ls-tree -r origin/DevMain`). They remain
+only on `DevMainOpportunityWork`, carried by Rexhina Hysi's `8186816` of 14/10.
+
+Tonight's commits confirm the branch is being kept alive rather than merged:
+`102c098` (Rexhina Hysi, 10:18) is a **merge of `DevMain` into
+`DevMainOpportunityWork`** — traffic in the wrong direction. **No PR was merged
+in the window and `DevMain` did not move at all.**
+
+🔴 So the `Concordato` taken in the room on 14/10 — the quote must show totale
+listino, sconto and netto, in the PDF and the portal, for every quote type — is
+built and undelivered for a third day, eighteen days before the new go-live and
+under a scope freeze that would classify it as already-delivered work.
+
+⚠ **The merge-conflict warning on this note still stands.** `8186816` carries
+Rexhina Hysi's own fuller account of the build in this file, and the 14/10 sweep
+appended a dated section to the `DevMain` copy. **When that branch merges, keep
+her text and delete the overlap from the sweep's section.**
