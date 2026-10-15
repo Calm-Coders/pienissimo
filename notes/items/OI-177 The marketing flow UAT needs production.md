@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-10-05
+updated: 2026-10-13
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -291,3 +291,26 @@ per-edition the same evening
 specified, and administratively paused** one day after the org was handed over.
 The 16/10 Marketing ticket UAT and the 08/10 four-hour end-to-end check are
 unchanged by this sweep.
+
+## 2026-10-13 - a second batch of TEST MKT orders in Prod
+
+At Aurel Mrruku's request, so marketing can test again. The seed is now a
+re-runnable script, `scripts/apex/seed-test-mkt-orders.apex`. Each run adds
+the next six TEST MKT companies, numbering after the last existing one.
+
+- **Created in Prod:** six companies, TEST MKT - Azienda 7 to 12, each with a
+  principal contact, and orders **00000107 to 00000112**. The orders alternate
+  the two TEST MKT products, with quantities 1, 2, 3. Each went Ordinato to
+  Incassato. The result was **12 `Disponibile` tickets** and **6 Event Links,
+  `Pending`, URL `Ready`**, on the existing 2026 editions.
+- **Contact email:** copied at run time from the existing TEST MKT principal
+  contacts, which marketing re-pointed on 08/10, so the new records reach the
+  same mailbox. The script does not hard-code it.
+- **Nothing reached Mexal.** `Integration_Log__c` was 9 before and after,
+  because `AUTOMATIC_MEXAL_CREATION_ENABLED` is `false` in Prod. A duplicate
+  rule fires on the deliberately shared email, so the script saves with
+  `DuplicateRuleHeader.allowSave`.
+- **State of the 04/10 batch at the time:** 6 tickets `Assegnato`, 4
+  `Disponibile`, 3 `Rinuncia`; 6 Event Links `Pending`.
+- ⚠ The editions' `Data_Invio_Biglietto__c` is still 05/10, already past, so
+  any send logic keyed on that date treats the new links as due now.

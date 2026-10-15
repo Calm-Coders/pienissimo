@@ -292,8 +292,9 @@ public without sharing class MexalArticleSyncService {
   }
 
   // Only populated Mexal values are written: the classification fields
-  // (category, levels, event, ticket type, tranche count) are curated in
-  // Salesforce and the Mexal API does not carry them, so they are never blanked.
+  // (levels, event, ticket type, tranche count) are curated in Salesforce and
+  // the Mexal API does not carry them, so they are never blanked. The category
+  // comes from Mexal when the article has one and is kept otherwise.
   private static Product2 mapArticleToProduct(Map<String, Object> article) {
     String articleCode = chooseFirstPopulated(
       getString(article, 'codice'),
@@ -349,6 +350,11 @@ public without sharing class MexalArticleSyncService {
       Product2.Alq_Iva__c,
       trimToLength(getString(article, 'alq_iva'), 10)
     );
+    putIfPresent(
+      product,
+      Product2.Categoria_Articolo__c,
+      getStatisticalCategory(article)
+    );
 
     // cod_grp_merc is the Salesforce active flag (user decision, 2026-10-09):
     // S = active, anything else = inactive, for new and existing products.
@@ -379,6 +385,26 @@ public without sharing class MexalArticleSyncService {
       return;
     }
     product.put(field, value);
+  }
+
+  // Mexal splits the categoria statistica into sigla_cat_sta ("C") and
+  // nr_cat_sta (10). Salesforce stores them joined with a two-digit number
+  // ("C10", "E02"), the format the edition mapping and Plus rules match on.
+  private static String getStatisticalCategory(Map<String, Object> article) {
+    String prefix = getString(article, 'sigla_cat_sta');
+    Integer categoryNumber = parseInteger(
+      trimToLength(getString(article, 'nr_cat_sta'), 10)
+    );
+    if (
+      String.isBlank(prefix) ||
+      categoryNumber == null ||
+      categoryNumber <= 0
+    ) {
+      return null;
+    }
+
+    return prefix.trim().toUpperCase() +
+      String.valueOf(categoryNumber).leftPad(2, '0');
   }
 
   private static Boolean resolveIsActive(Map<String, Object> article) {

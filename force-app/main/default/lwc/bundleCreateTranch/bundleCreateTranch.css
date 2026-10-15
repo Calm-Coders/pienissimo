@@ -66,6 +66,12 @@
   margin-top: 0.25rem;
 }
 
+.edit-selector-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .edit-tranche-list {
   display: grid;
   gap: 0.5rem;
@@ -225,6 +231,11 @@
 }
 
 @media (max-width: 40rem) {
+  .edit-selector-actions {
+    align-items: flex-end;
+    flex-direction: column;
+  }
+
   .tranche-row {
     grid-template-columns: 2rem minmax(0, 1fr);
   }

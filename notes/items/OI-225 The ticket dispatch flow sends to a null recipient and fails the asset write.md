@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-13
 depends_on: [OI-197, OI-199]
 blocks: [OI-81]
 requirement: BIG-06
@@ -76,6 +76,10 @@ absent; the org disagrees with the repository, and on this row the org is ahead.
 
 ## ⚠ Which org this is, and why it matters
 
+> 🟢 **Settled on 2026-10-13 — it is Pienissimo production.** The evidence chain
+> is at the end of this note; the paragraphs immediately below are the original
+> 09/10 reasoning, kept because they record what was and was not known then.
+
 The mail says `Organizzazione: Pienissimo srl (00Dbl000005BSMH)` and links to
 `ability-customization-52152.my.salesforce.com` — the **base My Domain host,
 without the `--partial` sandbox suffix** — and, unlike the 08/10 Apex exception
@@ -111,3 +115,124 @@ with `Ready for Ticket Dispatch` true and `ticket_sent` false, the PDF taken fro
 the asset's attachments, then both flag fields moved.
 
 **Nothing in this sweep fixed it; this procedure writes to the knowledge layer.**
+
+## 🔑 2026-10-12 - the flow has a written description, and it supplies a candidate mechanism
+
+Fabrizio Mastracci described both ticket-send flows as built in the marketing
+group DM at **09:15:18 CEST** —
+[the full text and what changed](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+His description of this one is four lines long and the second line is the
+interesting one:
+
+> _"Si attiva quando il biglietto passa ad 'Assegnato', è pronto per l'invio e non
+> è ancora stato inviato. **Dopo 1 minuto** recupera il PDF del biglietto, crea un
+> link pubblico e invia al partecipante l'email con il link per scaricarlo. Al
+> termine marca il biglietto come inviato (con data e ora)."_
+
+### 🔑 A fixed one-minute wait against an asynchronous render
+
+The PDF this flow fetches is produced by the **platform-event subscriber behind
+`ParticipantDocumentRequestTrigger`** — row 2 of
+[the manual steps tracker](../Manual%20Steps%20Pienissimo%20tracker.md), which
+exists because that subscriber's running user and batch size have to be set by
+hand. A flow that waits a **fixed** minute and then queries for the output of an
+asynchronous job is a race, and `Get Ticket PDF` reporting _"Impossibile trovare
+i record"_ is what losing that race looks like.
+
+⚠ **This is a candidate root cause, and it is not established.**
+
+- Nobody has opened the flow. The one-minute wait is one person's description,
+  not a read of the metadata — and there is no metadata to read, because
+  `force-app/main/default/flows/` is still empty.
+- A one-minute wait is only a race if the render can exceed a minute. **Nothing
+  in this sweep measures how long it takes**, and if the subscriber is suspended
+  or running as a user who cannot write the document, the wait is irrelevant and
+  the document never arrives at all.
+- It explains the **first** defect only. The decision still reporting `Si_PDF` on
+  an empty collection, and the asset write-back failing, are separate faults in
+  the same flow and are untouched by it.
+
+🔑 Worth noting what it does explain: **why the failure is intermittent enough to
+have gone unnoticed.** A race fails some of the time, which is consistent with
+one error mail rather than a dead feature.
+
+### Two things the description changes
+
+1. **The ticket is sent as a public link, not as the Asset attachment.** The
+   05/10 specification said the file comes from the Asset's attachments. ⚠ The
+   same Asset carries
+   [OI-194](OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)'s
+   seven-page signed participation document. A public link is a different
+   exposure and nobody has assessed it.
+2. **The `Inviato` stamp is described as working** — _"Al termine marca il
+   biglietto come inviato (con data e ora)"_ — which is the write-back the error
+   mail reports as **failed**. The description and the evidence disagree, and the
+   evidence is one run.
+
+### Still not established, third sweep
+
+- 🔴 **Which org `00Dbl000005BSMH` is.** Unchanged: that id is in no record, the
+  partial sandbox is `00DMA000004nMMr`, production is the natural reading and no
+  claim is made. **It remains the most answerable thing on the unreachable list.**
+- 🔴 **Whether a real participant received a ticketless email.** Needs the org.
+- The error mail of 2026-10-09T05:53:21Z was **still unread** at this watermark,
+  three days on.
+
+⚠ The **16/10 Marketing UAT** that exists to test this send is four days away, and
+the e2e UAT that would have exercised the order side of it
+[was postponed on 12/10](../meetings/2026-10-12%20UAT%20Test%20e2e.md) to 14/10.
+
+## 🟢 2026-10-13 — the org is identified, and a second flow is failing in it
+
+### The org: `00Dbl000005BSMH` is Pienissimo production
+
+This row has carried _"which org is not established"_ as its first open question
+since 09/10. **A third flow error mail closes it**, by instance key.
+
+Salesforce embeds a per-org instance key in the ids it issues. The chain:
+
+| Evidence | Key |
+| -------- | --- |
+| The partial sandbox, `00DMA000004nMMr` | **MA** |
+| Every UAT artefact the developer recorded on 13/10 — deploys `0AfMA00000Cuewj0AB`, `0AfMA00000CubCU0AZ`, `0AfMA00000CufSz0AJ`, bulk job `750MA00000RqknEYAR`, cron `08eMA00000YU7OfYAL` | **MA** |
+| The flow error mails — `701SW00000fouUCYAY`, `005SW00000PV5Ja`, `301SW00000g5VW6`, `701SW00000fsgPXYAY` | **SW** |
+| The record id Elena Spini posted in the marketing group DM, 13/10 16:20:46 CEST — `00vSW00001MqCj3YAF` | **SW** |
+| The conversation that id sits in | Aurel Mrruku's own report of the **second TEST MKT batch in Pienissimo Prod**, 16:07:51 CEST, and his journal entry naming `Pienissimo Prod` |
+
+🔑 **So the erroring org is not the partial sandbox, and it is the org the
+marketing conversation was looking at that afternoon — which was explicitly
+production.** Combined with what was already known (org name `Pienissimo srl`,
+the base My Domain host with no `--partial`, no `Sandbox:` subject prefix), the
+identification is **Pienissimo production**.
+
+⚠ **One soft link remains**, stated rather than hidden: Elena Spini's record id
+is tied to production by the conversation it appears in, not by a label on the id
+itself. **It would take one person with org access one minute to confirm, and
+nobody should have to infer this.**
+
+🔴 **The consequence is the one this row warned about.** A customer-facing ticket
+send has been failing in **production** since 09/10, the error mail was unread
+when the 09/10 sweep found it, and go-live is **21/10**.
+
+### The second flow
+
+[OI-230](OI-230%20The%20ticket%20confirmation%20request%20flow%20queries%20a%20relationship%20name%20as%20a%20field.md)
+records `Invio Richiesta conferma biglietto Flow` failing in the same org on
+08/10 and again on 13/10. 🔑 **It shares two of this row's symptoms**: a `Get`
+element returning _"Impossibile trovare i record"_ while the flow carries on, and
+a **`Wait Step`** between trigger and fetch — the architecture
+[Marketing described as built](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+**Two active production flows, both campaign-generated, both run as `Tech Romi`,
+both failing on a `Get`.**
+
+⚠ That raises the candidate cause recorded on 12/10 — a race against an
+asynchronously rendered PDF — from *possible* to *one of two shared symptoms*,
+but **it still explains neither flow's `Get Campaign`**, which fails first and
+needs no PDF. ⚠ Nobody has opened either flow.
+
+### Of record
+
+Aurel Mrruku's 13/10 marketing-DM report notes that the ticket send date on both
+Prod test editions **is still 05/10 and already past**, so _"any send logic based
+on that date will treat the new links as due right away"_ — 6 new Event Links
+were created `Pending` that afternoon.

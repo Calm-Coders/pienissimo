@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-08-26
-updated: 2026-08-26
+updated: 2026-10-12
 blocks: [OI-46, OI-47, OI-48, OI-76, OI-93]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
 ---
@@ -91,3 +91,27 @@ Two things this tells the record, and one it does not:
 question this item has carried since 26 August: what happens to the 280
 `Product2` rows already in UAT, and to the codes the migration must carry across.
 Nothing in the mail addresses it.
+
+## 🔑 2026-10-12 - the new rules are written down
+
+This row records Fabrizio Paganelli's intention to close every current code and
+mint new ones _"in base alle regole che in qualche modo ci siamo dati"_. Those
+rules now exist as a document:
+[the Regole Codifica Codici Articolo workbook](../The%20Regole%20Codifica%20Codici%20Articolo%20workbook.md),
+in the same Drive folder as the registry, **modified 12/10 at 09:11:19Z** — the
+day before the production confirmation.
+
+It specifies a single fixed-width code composed of four positions: event prefix,
+ticket tier, bundle flag, numeric block. That is the convention; it replaces the
+three incompatible shapes
+[the namespace note](../objects/The%20article%20code%20namespace.md) documents.
+
+🔴 **The re-creation itself has not happened.** The workbook populates codes for
+**two of its ten events**. The price-list revision this row also anticipates is
+not mentioned in it at all, and the ~1000 existing codes are untouched.
+
+⚠ **No approval is recorded.** The clean-up still waits on direction, which is
+[OI-217](OI-217%20The%20article%20code%20revision%20needs%20direction%20approval.md),
+and nothing in this sweep's window says the workbook has been put to them —
+though the file moving on 12/10 is consistent with it being prepared for the
+13/10 confirmation. **Not established.**

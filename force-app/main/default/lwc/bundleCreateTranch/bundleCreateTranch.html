@@ -31,7 +31,16 @@
       <template if:true={isEditMode}>
         <div class="section-header edit-selector-header">
           <h3 class="section-heading">Tranch esistenti</h3>
-          <span>Seleziona una tranch da modificare</span>
+          <div class="edit-selector-actions">
+            <span>Seleziona una tranch da modificare</span>
+            <lightning-button
+              label="Aggiungi tranche"
+              icon-name="utility:add"
+              variant="brand-outline"
+              disabled={isAddTranchDisabled}
+              onclick={handleAddTranch}
+            ></lightning-button>
+          </div>
         </div>
         <div class="edit-tranche-list">
           <template for:each={editTranchCards} for:item="tranch">

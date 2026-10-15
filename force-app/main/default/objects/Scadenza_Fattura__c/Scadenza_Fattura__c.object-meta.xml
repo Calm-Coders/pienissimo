@@ -14,6 +14,13 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Scadenze Fattura</pluralLabel>
+    <searchLayouts>
+        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Import</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons
+    >MassAssignRecordLabel</excludedStandardButtons></searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

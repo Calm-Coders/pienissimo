@@ -65,55 +65,83 @@
                 <default>false</default>
                 <label>ND</label>
             </value>
+            <value>
+                <fullName>Camerieri</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Camerieri</label>
+            </value>
+            <value>
+                <fullName>Odb Live</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Odb Live</label>
+            </value>
         </valueSetDefinition>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
             <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Tour</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
             <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Food Marketing Festival</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Pienissimo Live</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
             <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Academy</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
             <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Sold Out</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Odb</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
             <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Camerieri Venditori</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
             <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Mastery</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Happy Team</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>Pienissimo Intensive</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Anno Solare 2026</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2027</controllingFieldValue>
+            <controllingFieldValue>Anno Solare 2028</controllingFieldValue>
             <valueName>ND</valueName>
         </valueSettings>
     </valueSet>

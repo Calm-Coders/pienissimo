@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Marco Montesi
 org: both
 raised: 2026-10-07
-updated: 2026-10-08
+updated: 2026-10-14
 depends_on: [OI-219]
 blocks: [OI-134, go-live]
 severity: gating
@@ -92,3 +92,107 @@ and the agent code appears in neither mail.
 
 ⚠ **Not verified in an org.** This is repository arithmetic against `DevMain`
 `8879f08`; nobody in this sweep saw the message render on an order.
+
+## 🟡 2026-10-12 - the agent code now travels through the Quote, and the gap is not closed
+
+`27304d7` (Anita Aga, 18:21 CEST) adds **`Quote.Codice_Agente_Esterno__c`**,
+a 40-character text field whose own description states the mechanism:
+
+> _"Codice agente esterno copiato dall'agente dell'Account al momento della
+> creazione del preventivo."_
+
+`QuoteTriggerHandler` stamps it on insert from
+`Opportunity.Account.Agente__r.Agente__c`, and `OrderTriggerHandler` now prefers
+the Quote over the Account when it fills `Order.Codice_Agente__c`.
+
+🟢 **What this is good for.** It freezes the agent at quote creation instead of
+reading the Account at order time, which is what the 03/09 Data Model session
+agreed — the code is inherited from the tutor and **freezes on the order for
+commission attribution**. The right fix for that requirement.
+
+### 🔴 It does not answer this row
+
+The gating question is unchanged: **which agent code does an agentless
+WooCommerce order use?** No default was added, and ~20% of WooCommerce orders
+have no agent. Marco Montesi has not answered, and Elisa Migliano's ask of him is
+now five days old.
+
+### ⚠ One path worth a human's eye before this merges
+
+In the new `OrderTriggerHandler` loop, an order **with** a Quote takes the
+quote's value and `continue`s:
+
+```apex
+if (orderRecord.Quote__c != null) {
+  Quote quoteRecord = quotesById.get(orderRecord.Quote__c);
+  orderRecord.Codice_Agente__c = quoteRecord == null
+    ? null
+    : quoteRecord.Codice_Agente_Esterno__c;
+  continue;
+}
+```
+
+So when an order has a Quote whose `Codice_Agente_Esterno__c` is blank — an
+Account with no `Agente__r` at quote creation, or a quote created before this
+field existed — the order gets **`null`**, and the Account fallback below is
+never consulted. Previously the Account was the only source, so such an order
+would have picked up the Account's code if it had one later.
+
+⚠ **Recorded as a path, not as a confirmed regression.** Whether it can happen
+depends on whether an Account can have an agent at order time but not at quote
+time, and on whether existing quotes get backfilled — neither is established
+here, and no test run is attached to the commit.
+
+### Not in `DevMain`
+
+`27304d7` is on **`DevAnita_CodiceAgenteEsterno`**
+(`git merge-base --is-ancestor 27304d7 DevMain` → false at `a061f55`). No PR has
+been opened for it. 🟢 The error-surfacing half of this row — the
+`Mexal_Integration_Error__c` field and its highlight, `12959b7` on 08/10 — **is**
+in `DevMain` and is unaffected.
+
+## 🟢 2026-10-13 — now in `DevMain`
+
+`27304d7` reached `DevMain` through **PR #96**, merged as `cfe5fd2` at
+10:47:24 CEST. `Quote.Codice_Agente_Esterno__c` is in source at `DevMain`
+**`21d6686`**. The "not in `DevMain`" finding above is **closed**.
+
+Anita Aga also landed **`f89d68e`** the same morning — _"Get the detailed message
+error from Mexal to appear on Order"_ — which extends the error-surfacing half of
+this row.
+
+🔴 **The gating half is untouched: which agent code an agentless WooCommerce order
+should use is still unanswered**, by anyone, in any source. ⚠ So is the
+`continue`-past-the-Account-fallback path recorded above; nothing tested it, and
+nothing in the 13/10 session or the 14/10 e2e scope exercises a WooCommerce order
+without an agent.
+
+## 🟢 2026-10-14 — the inheritance rule was stated to the client, and the gap is unchanged
+
+At [the 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) (`00:12:16`) the
+mechanism was explained in the room:
+
+> _"l'agente associato al preventivo viene ereditato dall'account al momento
+> della creazione (come nel caso di Davide Stefani) e rimane indipendente da
+> eventuali variazioni successive dell'anagrafica cliente"_
+
+🟢 **That is `Quote.Codice_Agente_Esterno__c` described as intended behaviour, to
+the client, for the first time** — the field froze the agent at quote creation and
+is now in `DevMain` via PR #96. The record and the build agree, and the client has
+heard the consequence (a later change of agent on the account does not move an
+existing quote).
+
+🔴 **The gating half is untouched: which code an agentless WooCommerce order
+uses.** Nothing in the session exercised it, and the three WooCommerce order
+types that would — stage sales, pacchetti tutor and the book/video-course orders
+— were all **excluded or still to examine**
+([OI-101](OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md),
+[OI-241](OI-241%20Books%20and%20video%20courses%20wait%20on%20a%20WooCommerce%20instance%20move.md)).
+⚠ **Seven days to go-live and the path that has no agent code has never been
+run.**
+
+🔑 **A new reason to care**: provvigioni are agent commission, and
+[OI-236](OI-236%20The%20Mexal%20order%20carries%20no%20tipo%20merce%20and%20no%20provvigioni%20percentage.md)
+records the commission percentage missing from the Mexal order. So Salesforce now
+freezes *which* agent earns while the order carries no rate — and for a
+WooCommerce order it may freeze **neither**.

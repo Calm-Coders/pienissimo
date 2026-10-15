@@ -10,26 +10,47 @@ public without sharing class OrderTriggerHandler {
   }
 
   public static void beforeInsert(List<Order> newOrders) {
+    Set<Id> quoteIds = new Set<Id>();
     Set<Id> accountIds = new Set<Id>();
     for (Order orderRecord : newOrders) {
-      if (orderRecord.AccountId != null) {
+      if (orderRecord.Quote__c != null) {
+        quoteIds.add(orderRecord.Quote__c);
+      } else if (orderRecord.AccountId != null) {
         accountIds.add(orderRecord.AccountId);
       }
     }
 
-    if (accountIds.isEmpty()) {
-      return;
+    Map<Id, Quote> quotesById = new Map<Id, Quote>();
+    if (!quoteIds.isEmpty()) {
+      quotesById = new Map<Id, Quote>(
+        [
+          SELECT Codice_Agente_Esterno__c
+          FROM Quote
+          WHERE Id IN :quoteIds
+        ]
+      );
     }
 
-    Map<Id, Account> accountsById = new Map<Id, Account>(
-      [
-        SELECT Codice_Agente_Esterno__c
-        FROM Account
-        WHERE Id IN :accountIds
-      ]
-    );
+    Map<Id, Account> accountsById = new Map<Id, Account>();
+    if (!accountIds.isEmpty()) {
+      accountsById = new Map<Id, Account>(
+        [
+          SELECT Codice_Agente_Esterno__c
+          FROM Account
+          WHERE Id IN :accountIds
+        ]
+      );
+    }
 
     for (Order orderRecord : newOrders) {
+      if (orderRecord.Quote__c != null) {
+        Quote quoteRecord = quotesById.get(orderRecord.Quote__c);
+        orderRecord.Codice_Agente__c = quoteRecord == null
+          ? null
+          : quoteRecord.Codice_Agente_Esterno__c;
+        continue;
+      }
+
       Account accountRecord = accountsById.get(orderRecord.AccountId);
       orderRecord.Codice_Agente__c = accountRecord == null
         ? null

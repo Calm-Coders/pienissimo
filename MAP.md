@@ -2,9 +2,301 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-09 (nightly sweep — the client agreed and ROMI built the edition mapping rule the same day, a customer-facing ticket send is failing in an unidentified org, and the gating payment defect is untouched a third night) · Source of record: [notes/](notes/)
+Last updated: 2026-10-14 (nightly sweep — the e2e ran with the client's administration leading it, one order became four invoices and came back as a scadenzario, and the project manager asked whether a requirement rewritten into the signable text nine days ago was ever built) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟡🔑 **2026-10-14 — the administration drove the whole commercial chain, and ROMI's own PM asked whether a signed-text requirement exists.** Nightly sweep,
+  watermark 2026-10-13T22:00Z. **One client session of ~2h** — [the e2e](notes/meetings/2026-10-14%20UAT%20Test%20e2e.md),
+  postponed from 12/10 — **4 commits**, **0 PRs merged**, and the first session in which
+  **Elisa Migliano**, not Fabrizio Paganelli, held the screen. Build claims are repository
+  arithmetic against `DevMain` **`29d1002`**.
+  🔑🟢 **The money leg of the integration ran end to end for the first time.** One order
+  (`OC 1023`, €20,000) → four deferred invoices in Mexal → invoice 10 for €5,000 against
+  customer 50171 → **the scadenzario back into Salesforce** with amount, tranche and
+  `non pagato` → a €5,000 collection registered → roll-up reconciling **ordinato 20,000 ·
+  fatturato 5,000 · incassato 0 · da fatturare 15,000**. 🔴 **Twice in one session the data
+  was only current because somebody pasted Apex into a console.**
+  🔴🔑 **[OI-227](notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)
+  is answered, and the answer is the opposite of a ruling.** At 17:14Z Elena Spini described
+  the **as-is** to Marco Montesi as the **TASK** model — `Preventivo Inviato`, subtype
+  `Da Ricontattare`, due next day — _the wording `96d77de` deleted from `REQUISITI.it.md`_.
+  Then at 18:52Z she asked Aurel Mrruku **whether it exists at all**: _"questa parte ce
+  l'abbiamo?"_, _"non ne abbiamo mai parlato perchè non è stata fatta o perchè non ne abbiamo
+  avuto modo?"_ 🔑 **The PM does not know the build state of a requirement rewritten into the
+  signable text nine days ago, and is telling the client the pre-rewrite version.** ⚠ Neither
+  version has a client ruling — worse than the row first recorded. **No reply from Aurel
+  Mrruku.**
+  🟢 **[OI-222](notes/items/OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md)
+  answered after nine days, in the negative.** Only the invio/accettazione/firma preventivo
+  mails are in scope; _"Ulteriori tipologie di e-mail o l'invio di messaggi WhatsApp
+  all'interno del flusso Sales non sono stati previsti né mai definiti nelle specifiche
+  concordate"_ — extra-perimetro. 🔴 **ROMI's ruling, not the client's**, his governance
+  question is unanswered a tenth day, and the surviving reminder mail **waits on copy from
+  Marco Montesi**.
+  🟢🔑 **Three `Concordato`**: the quote must show **totale listino / sconto / netto** (PDF
+  *and* portal, all quote types) · a **renewal quote cannot be edited** — delete and recreate ·
+  **renewals carry no system contract**, only the quote PDF. 🟢 The first was **built the same
+  evening** — `8186816`, `Quote.Totale_Listino__c` + `Quote.Sconto_Totale__c` into the PDF,
+  the community page and the layout. ⚠ **Not in `DevMain`**, and
+  [OI-145](notes/items/OI-145%20Order%20header%20discounts%20are%20removed.md)'s invoice half is
+  untouched.
+  🔴 **New: [OI-238](notes/items/OI-238%20The%20tacit%20renewal%20path%20skips%20client%20acceptance%20and%20its%20approval%20workflow%20is%20undecided.md)
+  — gating.** A Performance Plus tacit renewal needs no DocuSign and no customer approval: the
+  tutor confirms internally and it becomes a billable order. **Driven live in the session.** The
+  approval workflow was deferred to **Marco Montesi**, who now owes three answers.
+  🔴 **New: [OI-239](notes/items/OI-239%20The%20Mexal%20scadenzario%20sync%20must%20run%20every%20half%20hour%20and%20nothing%20schedules%20it.md)
+  — gating.** Agreed to run the sync **every half hour to an hour** (API limits read in Prod:
+  3,360,000/month, 112,000/day, two calls a cycle). Owner is **`[Il gruppo]`**, nothing
+  schedules it, and it inherits [OI-228](notes/items/OI-228%20The%20nightly%20schedulers%20have%20no%20run-as%20user%20and%20the%20first%20run%20is%20imminent.md)'s
+  unresolved run-as user **48 times a day**.
+  🔴 **New: [OI-241](notes/items/OI-241%20Books%20and%20video%20courses%20wait%20on%20a%20WooCommerce%20instance%20move.md)
+  — and it settles a three-way contradiction.** Books and video courses are excluded
+  _"temporaneamente poiché Sabatino non ha ancora trasferito tali ordini nell'istanza corretta
+  di WooCommerce"_. 🔑 So the 09/10 _"left Salesforce"_ post, the 12/10 scope line and the
+  13/10 test list were never in conflict — **the channel moved and the integration has not
+  caught up**.
+  🔴 **Three WooCommerce order paths are unexercised at once**: stage sales
+  ([OI-101](notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md),
+  named as missing in the session's closing minute), pacchetti tutor, and the above. 🔑 **All
+  three are OI-214's agentless path**, whose gating question has therefore still never been run.
+  🔴 **New: [OI-234](notes/items/OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)**
+  (tranches part-invoiced to company A must continue on company B — Elena Spini proposes Fase 2,
+  **the client has not accepted**) · **[OI-235](notes/items/OI-235%20A%20contract%20is%20linked%20to%20the%20account%20but%20hidden%20in%20the%20tab.md)**
+  (the contract is linked and invisible, blamed on earlier-order volume — ⚠ a hypothesis, and
+  migration lands next week) · **[OI-236](notes/items/OI-236%20The%20Mexal%20order%20carries%20no%20tipo%20merce%20and%20no%20provvigioni%20percentage.md)**
+  and **[OI-237](notes/items/OI-237%20Mexal%20invoices%20cite%20the%20preventivo%20instead%20of%20the%20order%20number.md)**
+  (⚠ **three separate asks now point at Mirko Merendi about the same tracciato**, from two
+  people, uncoordinated — and his 13/10 contact is unrecorded) ·
+  **[OI-240](notes/items/OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)**
+  (⚠ **two access requests in two days, neither mapping to a defined profile**) ·
+  **[OI-242](notes/items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md)**
+  (the RINUNCIA static text — deferred to the Prod rollout; ⚠ **a huddle at 15:35:52 may have
+  settled it and voice is unreadable**).
+  🔑 **[OI-210](notes/items/OI-210%20The%20delivered%20article%20registry%20carries%20no%20tranche%20count.md)
+  moved after seven silent nights** — the session used the **tranche-count-field** model, so the
+  05/10 `Concordato` is the operative one. 🔴 But the count was **typed in by a developer, per
+  product, live**; `NR_Tranche` is still blank on all 1,010 rows and the sync does not write it.
+  🔑 **The `C10` category mismatch surfaced in the room and its real cause was bigger**: the
+  article sync had **never written `Categoria_Articolo__c`**. Aurel Mrruku found it, mapped
+  `sigla_cat_sta`+`nr_cat_sta`, re-synced 1,078 then 1,079 articles, and
+  **[recorded it all himself](notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md)**.
+  🟢 **Two of OI-96's fifteen empty categories recovered** — `C10` and `C11` now have an active
+  product. 🔴 **Thirteen still do not**, the rule was not revisited, and it still has **no
+  owner**. 🆕 `E12` joins `E11`; ⚠ Mexal overwrote two workbook values.
+  🔑 **[OI-215](notes/items/OI-215%20Anticipay%20does%20not%20cover%20San%20Marino%20addresses.md):
+  the San Marino gap was shown to the client**, and the trigger is of record at last — the call
+  runs **once per account, at the first order**, to avoid cost. ⚠ So a customer whose data
+  changes later is never re-enriched. A **404 `"Azienda non trovata"`** fired in UAT at 08:11Z
+  and went to the hardcoded ROMI address alone
+  ([OI-119](notes/items/OI-119%20The%20Anticipay%20error%20notification%20goes%20to%20a%20hardcoded%20ROMI%20address.md)).
+  🔴 **[OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  did not move, sixth night** — byte-for-byte at `29d1002`. ⚠ **Two consecutive sessions have now
+  set it up and not triggered it**: 13/10 built four Ri.Ba.-term tranches and never ran the return
+  leg; 14/10 ran the return leg on a **bonifico**. The one failing combination has never been
+  exercised, its confirmation date passed two days ago, and OI-239 would read the predicate
+  **48 times a day**.
+  🔴 **[OI-231](notes/items/OI-231%20DocuSign%20closed%20the%20Pienissimo%20onboarding%20for%20non-response.md):
+  Elena Spini asked internally at 08:31Z — _"tutto ok no? non dobbiamo far nulla?"_ — nobody
+  answered her, and nobody answered the client.** Second day.
+  🔴 **[OI-161](notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md):
+  ROMI chased Andrea Parmeggiani at 12:35Z after six days** — _"Ci servirebbe sapere l'esito dei
+  tuoi test per capire se possiamo portare in produzione"_. **The Prod move waits on him.** QR
+  credential rotation: eighth day.
+  🆕 **A `Migrazione e Go-Live` meeting is booked for Thu 15/10 14:30–15:30** (Migrazione ·
+  Go-Live · Utenza per Marco · cambi di ragione sociale). ⚠ **The room had said Friday
+  09:30/10:00–12:00**; whether the Friday session also stands is unestablished.
+  ⚠ Of record: **the e2e's _"Segnalare bug"_ next step names no bug** — the second session
+  running where a client-side defect is referred to and not described · `dbef4f4` **removed
+  WooCommerce from the lead logic** with no stated reason · **Fathom returned 0 meetings for a
+  seventeenth run** · `#tproj-pienissimo` **silent a fifth day** · the canvas **static eight
+  weeks** · `Campi Oggetti…xlsx`, `Flows & Objects.drawio` and the **manual-steps sheet** all
+  **did not move**.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **243**.
+  🔴 **Twenty-four consecutive nightly reports with no human reply.**
+  — [trace](notes/traces/Source%20trace%202026-10-14%20nightly.md)
+
+- 🟡🔑 **2026-10-13 — the client completed a sale end to end for the first time, and reversed on a Thursday what he agreed on the Friday.** Nightly sweep,
+  watermark 2026-10-12T22:00Z. **One client session of ~1h34m that produced a full record**, **13 commits**,
+  **5 PRs merged**, and the heaviest single day of client-driven testing on the project.
+  Build claims are repository arithmetic against `DevMain` **`21d6686`**.
+  🟢🔑 **[The 13/10 Feedback Test UAT](notes/meetings/2026-10-13%20Feedback%20Test%20UAT.md) is the
+  mirror image of 12/10's silence** — a full Gemini record, three `Concordato` rulings, thirteen next
+  steps. **Fabrizio Paganelli, not ROMI, built a bundle, priced it, set four payment tranches, created
+  an Opportunity and Quote, sent it, signed it on DocuSign, and got an Order** — and Aurel Mrruku
+  **confirmed the order reached Mexal with status `inviato`**, with Assets generated to match the
+  quantities. 🔑 **The first time any source records an order reaching Mexal from a quote**; the
+  [chain note](notes/objects/The%20order%20to%20Mexal%20integration%20chain.md) has read
+  _"never run in UAT, 0 of 45 orders with a Mexal status"_ since 14/09. ⚠ Which org it ran in is not
+  stated in the notes.
+  🔴🔑 **[OI-96](notes/items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md)'s population rule
+  was reversed by the client who agreed it four days earlier.** On 09/10 Fabrizio Paganelli accepted
+  that a category attaches every article in it, _"active or not"_ — _"Va bene così."_ On 13/10 he hit the
+  volume that produces (_"l'enorme mole di dati … inclusi quelli vecchi o inattivi"_) and asked for
+  **active products only**; a chosen product now maps itself alone. Built the same afternoon, `0816bf7`.
+  🔴 **The cost lands before the 14/10 e2e: 15 of UAT's 23 categories have no active product, so a
+  category save on any of them now fails** — and **nobody owns that**. ⚠ It also makes the `E10`
+  collision moot without fixing it.
+  🔴🔑 **New: [OI-230](notes/items/OI-230%20The%20ticket%20confirmation%20request%20flow%20queries%20a%20relationship%20name%20as%20a%20field.md)
+  — a second production flow is failing, and it has been failing since 08/10.**
+  `Invio Richiesta conferma biglietto Flow` asks `Event_Invitation__c` for `Recipient_Contact__r` — the
+  relationship name, not a field — so the query **can never succeed**. The field itself exists in
+  source. ⚠ **It errored on 08/10 at version 1 and again on 13/10 at version 7**: six revisions in five
+  days moved the failure downstream while **`Get Campaign` kept returning nothing in both**, which is
+  the root cause nobody has chased. The 08/10 mail was swept and logged as a footnote to OI-225 and
+  **no item was raised.** 🟢 Aurel Mrruku forwarded today's to Fabrizio Mastracci and Elena Spini at
+  13:38:31Z — the first recorded reaction.
+  🟢🔑 **[OI-225](notes/items/OI-225%20The%20ticket%20dispatch%20flow%20sends%20to%20a%20null%20recipient%20and%20fails%20the%20asset%20write.md)'s
+  org is identified at last: `00Dbl000005BSMH` is Pienissimo production.** By instance key — the partial
+  sandbox and every UAT artefact carry **MA** (`0AfMA…`, `750MA…`, `08eMA…`), the flow errors carry
+  **SW** (`701SW…`, `005SW…`), and so does the record id Elena Spini posted in the marketing DM inside
+  Aurel Mrruku's own report of the **Prod** TEST MKT batch. 🔴 **So a customer-facing send has been
+  failing in production since 09/10**, eight days from go-live. ⚠ One soft link remains and one person
+  with org access could remove it in a minute.
+  🔴🔑 **New: [OI-231](notes/items/OI-231%20DocuSign%20closed%20the%20Pienissimo%20onboarding%20for%20non-response.md)
+  — DocuSign closed the onboarding because nobody answered.** Mavi Carone, 13/10 10:25 CEST:
+  _"non ho ricevuto risposta … completerò il progetto di onboarding"_, account handed to the Account
+  Team. 🟢 It confirms a **production DocuSign account exists** for PIENISSIMO SRL — the licences were
+  bought, a question open since June. 🔴 The client forwarded it to ROMI asking _"Vi è necessaria per la
+  configurazione di Docusign?"_ — **the client does not know whether it mattered**, and nobody has
+  replied. ⚠ Envelope allowance, templates and production configuration are what an onboarding covers,
+  and OI-194's 2,500-envelope figure still has no plan document.
+  🔴 **New: [OI-232](notes/items/OI-232%20A%20DocuSign%20envelope%20was%20signed%20under%20the%20wrong%20signer%20name.md)**
+  — Fabrizio Paganelli completed the signature and **noticed he had signed with Aurel Mrruku's name**.
+  The envelope completed, the Quote accepted, the Order went to Mexal. ⚠ Whether the signer identity
+  comes from the Quote contact or the running user is **not established**; equally it may be ordinary
+  test-account confusion. Recorded unresolved, not as a confirmed regression — but the same path signs
+  OI-194's participation document.
+  🔴 **New: [OI-233](notes/items/OI-233%20Bundle%20access%20for%20tutor%20profiles%20is%20undefined.md)**
+  — tutors must not quote or order bundles; defining which profile gets what was deferred to
+  **`[Il gruppo]`**. ⚠ _"Tutor"_ is **not a profile in any project record**, so the ask cannot be built
+  as stated, and `recall tutor/pack tutor` is in the 14/10 e2e scope.
+  🔴🔑 **[OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  did not move, fifth night — and the 13/10 confirmation date has now passed.** Byte-for-byte at
+  `21d6686` after 13 commits: `paid = P || E`, no date condition, eleven lines below `dueDate`.
+  ⚠ **The session walked straight past it**: the client built four tranches due 31/10, 30/11, 31/12 and
+  31/01 on _"RID fine mese"_ terms — all four in the future, exactly the condition where `E` reads as
+  paid — and the return leg never ran. **The defect was set up and not triggered.** The e2e is tomorrow.
+  🔴 **[OI-228](notes/items/OI-228%20The%20nightly%20schedulers%20have%20no%20run-as%20user%20and%20the%20first%20run%20is%20imminent.md):
+  the 03:00 run happened and the row is still blank.** The sheet was edited 09:29:13Z, grew a **fourth**
+  row, and the run-as-user row was **not ticked** — six and a half hours after the job it governs first
+  fired. ⚠ What it did is not established; a batch ageing quotes it cannot see fails silently.
+  🔴 **`Status Prod` is now blank on all four rows.**
+  🔴 **[OI-145](notes/items/OI-145%20Order%20header%20discounts%20are%20removed.md) reopened, and the
+  owner moved to the client.** Fabrizio Paganelli raised the invoice gap a third time and **he** will
+  contact Mirko Merendi about mapping list price, discount and net onto the order. 🔑 That partly
+  answers the _"Mirko's call is unbooked"_ item carried for days — it has an owner and a defined ask;
+  🔴 still no date, and **Mirko Merendi's own rounding objection went unmentioned**.
+  🟢 **Both of last night's "not in `DevMain`" flags are closed** — `Product2.Evento__c` via PR #95 and
+  `Quote.Codice_Agente_Esterno__c` via PR #96. 🔴 OI-214's gating half — which code an agentless Woo
+  order uses — is still unanswered by anyone.
+  🟢 **Three of the thirteen next steps were built and committed the same afternoon** (`49b49e5` the
+  price book following `Price_1__c`, `0816bf7` the mapping logic, `9e97f46` the list-view buttons), and
+  **the developer recorded each in `JOURNAL.md` and in the object notes as he went** — the record kept
+  pace with the build for once.
+  🔑 **Rulings of record:** `Price_1__c` is the reference price for Mexal invoicing and both Mexal price
+  fields stay on the product · the product description is the concatenation of `descrizione estesa` and
+  `descrizione aggiuntiva` · prices to 2 decimals. 🔑 **And the annual-duplication worry is answered**:
+  articles are not duplicated per year, the campaign's competence window carries it, and **the campaign
+  must exist before the mapping**.
+  🆕 A `Pienissimo lab` / `Pienissimo lab 2026` campaign pair was created live (1 Oct 2026 → 30 Sep
+  2027, event type live, data invio biglietto 1 Dec 2026) and mapped to category **`E11`** — ⚠ a
+  category key new to these records. ⚠ Meanwhile both **Prod** TEST MKT editions still carry a ticket
+  send date of **05/10, already past**, which Aurel Mrruku flagged himself.
+  ⚠ Of record: **`vendita libro` is in the 13/10 test list** — a *third* statement putting books in
+  Salesforce scope against Elena Spini's 09/10 post; **Fathom returned no Pienissimo meeting for a
+  sixteenth run** (it returned one call, for another client); `#tproj-pienissimo` **silent a fourth
+  day**; the canvas **static for seven weeks**; `Flows & Objects.drawio` and `Campi Oggetti…xlsx`
+  **did not move**.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **234**.
+  🔴 **Twenty-three consecutive nightly reports with no human reply.**
+  — [trace](notes/traces/Source%20trace%202026-10-13%20nightly.md)
+
+- 🟡🔑 **2026-10-12 — a signable requirement was rewritten to match the build, and the client's own end-to-end test left no record at all.** Nightly sweep,
+  watermark 2026-10-09T22:00Z. **Three days, Friday night to Monday night, a weekend inside them.**
+  **One client session that produced nothing**, **4 commits**, and the project channel silent again.
+  Build claims are repository arithmetic against `DevMain` **`a061f55`**.
+  🔴🔑 **New: [OI-227](notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)
+  — gating.** `96d77de` (PR #94) rewrote **`SAL-20`** in the contract-bound register **and in both prose
+  documents**, `REQUISITI.it.md` included — _the text Pienissimo signs_. Two "da ricontattare" **tasks**
+  with a **settable** date became two Opportunity **parking stages** with a **mandatory reason** and an
+  **automatic** date, the second trigger moved from first contact to a quote, and the register's
+  `opportunity` state machine gained three rules — one of them, _"Moving to Chiusa/Persa automatically
+  moves every related Quote to Rifiutato"_, **not in `SAL-20` at all**. 🔴 `status` is still `to_confirm`,
+  `version` is still **1.6**, and **no client ruling for the new wording exists in any source**. The build
+  itself is fully recorded by its author in
+  [OI-59](notes/items/OI-59%20Quote%20workflow%20configuration.md) and is not in question. ⚠ The defect is
+  that the record can no longer tell "the client agreed this" from "the build did this, so the requirement
+  was made to match" — and
+  [OI-184](notes/items/OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)
+  exists so v1.6 reaches the client as **one** reviewable change set.
+  🔴🔑 **[The 12/10 e2e UAT](notes/meetings/2026-10-12%20UAT%20Test%20e2e.md) ran and left 59 seconds of
+  greeting.** Elena Spini stopped the transcript at `00:00:59` before the guests arrived — _"Aspetta,
+  facciamo stop"_ — and never restarted it; Gemini produced **no summary and no details**. ⚠ Reads as an
+  ordinary courtesy, not a decision to go off the record; the consequence is the same. It was called
+  because **the client tested alone and the screens did not match**: Fabrizio Paganelli, 06:27:47Z,
+  _"abbiamo fatto delle prove ma non ci ritroviamo su alcune schermate."_ **Which screens is exactly what
+  the missing hour would have said.** 🔴 Two hours later the e2e was **postponed to Wed 14/10 09:00–11:00**
+  (_"Posticipo come richiesto"_) and a new **Feedback Test UAT** inserted for **Tue 13/10 12:00**. ⚠ Its
+  scope line names **`libro/videocorsi`** — which Elena Spini's own 09/10 status post said had moved to the
+  new Woo shop and left Salesforce "for now". **Both statements are hers, three days apart.**
+  🔴🔑 **[OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  did not move, fourth night.** Byte-for-byte at `a061f55`: `paid = P || E` at lines 205-207, `dueDate`
+  parsed at 194, the formula and its `description` unqualified, **no commit touched either file**.
+  **The 13/10 confirmation is tomorrow, and the test that would have exercised the payment path is now
+  on the 14th.**
+  🆕🔴 **New: [OI-228](notes/items/OI-228%20The%20nightly%20schedulers%20have%20no%20run-as%20user%20and%20the%20first%20run%20is%20imminent.md)
+  — gating, and the clock is hours.** [The manual-steps tracker](notes/Manual%20Steps%20Pienissimo%20tracker.md)
+  grew a **third row** at 10:20:03Z — the four nightly jobs must be scheduled **as the Pienissimo
+  administrator** — and it is the **first row blank in `Status Uat` as well as `Status Prod`**. 🔴 OI-59's
+  own text records `QuoteNegotiationAgingBatch.scheduleDaily()` creating job `08eMA00000YU7OfYAL` today,
+  `WAITING`, **first run 13/10 at 03:00 CEST**. Scheduled Apex runs as whoever scheduled it; the row exists
+  because that is usually the wrong user. ⚠ Same class as
+  [OI-223](notes/items/OI-223%20The%20Mexal%20order%20send%20failed%20because%20the%20integration%20classes%20ran%20with%20sharing.md).
+  🔑 **The ticket-send flows are described as built for the first time**, by Fabrizio Mastracci in the
+  marketing DM, 09:15:18 CEST — [the spec note](notes/The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+  🔑 **It gives [OI-225](notes/items/OI-225%20The%20ticket%20dispatch%20flow%20sends%20to%20a%20null%20recipient%20and%20fails%20the%20asset%20write.md)
+  a candidate mechanism**: the flow waits a **fixed one minute** then fetches the PDF an asynchronous
+  subscriber renders — a race, and `"Impossibile trovare i record"` is what losing it looks like. ⚠
+  **Candidate only**: nobody opened the flow, and it explains the first of three defects. 🔴 Three changes
+  from the 06/10 contract go unremarked: the wait is now **minutes, not days**; the ticket goes as a
+  **public link, not the Asset attachment** (and OI-194's signed document is on that Asset); and
+  **WhatsApp has vanished from the description** while Rebecca Marmo's parallel-or-backup question is still
+  unanswered. ⚠ That narrows [OI-197](notes/items/OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md)
+  again — the `Inviato` stamp is described as working, and the error mail says it **failed**.
+  🔑 **[The client's article-coding rule is in the record at last](notes/The%20Regole%20Codifica%20Codici%20Articolo%20workbook.md)**
+  — `Regole Codifica Codici Articolo.xlsx`, in the registry folder since 21/09, **never opened by a sweep**,
+  modified **12/10 09:11:19Z**. A single fixed-width scheme: event prefix · ticket tier · **bundle flag** ·
+  numeric block. 🟢 It **confirms the `Natura` decode** the 09/10 call restated and MAP flagged for a code
+  check, 🔑 delivers **the event list owed since the first sweeps** (ten events), and 🔑 makes
+  [OI-48](notes/items/OI-48%20Bundle-only%20article%20codes.md)'s twin code **positional** rather than a
+  `"(B)"` suffix. 🔴 Codes exist for **two of ten events**, so it is a convention, not a registry —
+  [OI-217](notes/items/OI-217%20The%20article%20code%20revision%20needs%20direction%20approval.md)'s approval
+  is still unrecorded.
+  🔑 **[`Product2.Evento__c` is built](notes/objects/The%20Evento%20field%20on%20the%20product.md)** — a
+  restricted picklist of the same ten events, controlled by `Anno_Solare__c` — which is OI-47/OI-76's
+  "put the meaning in a field" finally landing. 🔴 **Not in `DevMain`** (`DenAnita12`), and nothing
+  populates it.
+  🟡 **[OI-214](notes/items/OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md)
+  gains a mechanism and keeps its gap** — `Quote.Codice_Agente_Esterno__c` freezes the agent at quote
+  creation and the order now prefers the Quote over the Account. 🔴 **Which code an agentless WooCommerce
+  order uses is still unanswered.** ⚠ One path for a human: an order **with** a Quote takes the quote's
+  value and `continue`s, so a blank there yields `null` and **skips the Account fallback**. Recorded as a
+  path, not a confirmed regression. 🔴 **Not in `DevMain`** (`DevAnita_CodiceAgenteEsterno`).
+  🆕 **New: [OI-229](notes/items/OI-229%20A%20Jira%20project%20now%20runs%20alongside%20the%20open%20item%20register.md)**
+  — Elena Spini created Jira project **`PIEN`** and invited Aurel Mrruku on 10/10; the mail was **still
+  unread**. A second tracker nine days out, and **`OI-NN` ids map 1:1 onto the client-facing row numbers**.
+  ⚠ No conflict observed; no connector to look.
+  🟢 **[OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md) has an artifact** — Aurel Mrruku
+  sent Elena Spini a `lead-web-to-lead (1).html` at 17:59:37 CEST. 🔴 The Lead fields it posts into are
+  **still not in Prod**, and four are OI-115's picklists, **attachment-only a fifth run**.
+  ⚠ Of record: **Elena Spini's _"ho anche una notizia bella"_ went into a voice huddle and is unreadable**;
+  `Flows & Objects.drawio` **moved again** (07:43:42Z) and is still an unparseable `mxfile`; **the 30/07
+  marketing notes 404'd** with a precise Drive id to ask for; **Fathom returned nothing for a fifteenth
+  run**; `#tproj-pienissimo` **silent for three days**.
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **230**.
+  🔴 **Twenty-two consecutive nightly reports with no human reply.**
+  — [trace](notes/traces/Source%20trace%202026-10-12%20nightly.md)
 
 - 🟡🔑 **2026-10-09 — the client came back to the table, the status channel broke a week of silence, and a customer-facing send is failing in an org nobody has identified.** Nightly sweep,
   watermark 2026-10-08T22:00Z. **One client session** — a 31m call with Fabrizio Paganelli — **13 commits**,

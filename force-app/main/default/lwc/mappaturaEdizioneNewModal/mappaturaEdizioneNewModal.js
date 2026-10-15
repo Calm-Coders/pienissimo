@@ -2,7 +2,7 @@ import { api } from "lwc";
 import LightningModal from "lightning/modal";
 import searchProducts from "@salesforce/apex/MappaturaEdizioneProductSearch.searchProducts";
 import getCategories from "@salesforce/apex/MappaturaEdizioneProductSearch.getCategories";
-import findProductToMap from "@salesforce/apex/MappaturaEdizioneProductSearch.findProductToMap";
+import saveCategoryMappings from "@salesforce/apex/MappaturaEdizioneProductSearch.saveCategoryMappings";
 
 const SEARCH_DELAY_MS = 300;
 const MAX_RESULTS = 50;
@@ -10,8 +10,8 @@ const MAX_RESULTS = 50;
 // New Mappatura Edizione form, in the standard Salesforce modal. Prodotto
 // searches name, product code and Categoria_Articolo__c while typing;
 // Categoria Prodotto lists the distinct Categoria_Articolo__c values, read live
-// from Product2 each time the modal opens. A category alone is saved on one of
-// its products, and the trigger maps the rest of the category to the campaign.
+// from Product2 each time the modal opens. A chosen product maps that product
+// alone; a category alone maps every available active product of it.
 export default class MappaturaEdizioneNewModal extends LightningModal {
   @api campaignId;
   isActive = true;
@@ -240,30 +240,29 @@ export default class MappaturaEdizioneNewModal extends LightningModal {
 
     if (this.selectedProduct) {
       fields.Prodotto__c = this.selectedProduct.id;
+      this.setSaving(true);
+      this.template.querySelector("lightning-record-edit-form").submit(fields);
     } else if (this.selectedCategory) {
       this.setSaving(true);
       try {
-        fields.Prodotto__c = await findProductToMap({
+        const result = await saveCategoryMappings({
           category: this.selectedCategory.code,
-          campaignId: fields.Campagna__c
+          campaignId: fields.Campagna__c,
+          isActive: fields.Attiva__c
         });
-      } catch {
-        fields.Prodotto__c = null;
-      }
-      if (!fields.Prodotto__c) {
+        this.finishSave({
+          recordId: result.recordId,
+          name: result.name,
+          category: this.selectedCategory.code,
+          mappedCount: result.mappedCount
+        });
+      } catch (error) {
         this.setSaving(false);
-        this.notifyError(
-          `Tutti i prodotti della categoria ${this.selectedCategory.code} sono già mappati su questa campagna o in date sovrapposte.`
-        );
-        return;
+        this.notifyError(error?.body?.message || error?.message);
       }
     } else {
       this.notifyError("Scegli un Prodotto oppure una Categoria Prodotto.");
-      return;
     }
-
-    this.setSaving(true);
-    this.template.querySelector("lightning-record-edit-form").submit(fields);
   }
 
   setSaving(isSaving) {
@@ -271,15 +270,16 @@ export default class MappaturaEdizioneNewModal extends LightningModal {
     this.disableClose = isSaving;
   }
 
+  // The standard save of a mapping on the chosen product.
   handleSuccess(event) {
-    this.setSaving(false);
-    const saved = {
+    this.finishSave({
       recordId: event.detail.id,
-      name: event.detail.fields?.Name?.value,
-      category: this.selectedCategory
-        ? this.selectedCategory.code
-        : this.selectedProduct.category
-    };
+      name: event.detail.fields?.Name?.value
+    });
+  }
+
+  finishSave(saved) {
+    this.setSaving(false);
     // The opener shows the toast: events from a modal do not reach the page.
     this.dispatchEvent(new CustomEvent("saved", { detail: saved }));
 

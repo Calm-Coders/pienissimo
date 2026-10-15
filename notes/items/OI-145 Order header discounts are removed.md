@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-10-09
+updated: 2026-10-14
 source: notes/meetings/2026-09-18 Data Model Parte 6.md
 ---
 
@@ -139,3 +139,79 @@ administration, says must show the discount. If Mexal cannot render it from what
 Salesforce sends, the options are a second Mexal interface its own vendor
 advises against, a derivation nobody has confirmed, or invoices that do not show
 a discount the customer was promised.
+
+## 🔴 2026-10-13 — the client raised it a third time, and the owner moved to his side
+
+At [the 13/10 Feedback Test UAT](../meetings/2026-10-13%20Feedback%20Test%20UAT.md)
+(`01:30:04`) Fabrizio Paganelli raised the same gap again, this time looking at an
+invoice produced from the order he had just created end to end:
+
+> _"Fabrizio Paganelli ha sollevato un problema sulla visualizzazione in fattura
+> dei prezzi unitari netti anziché del prezzo di listino con sconto esplicito,
+> concordando con Aurel mrruku di contattare Mirko per valutare l'aggiunta di
+> campi dedicati al prezzo di listino e al calcolo dello sconto."_
+
+🔑 **The action is now assigned to the client.** The next-step list reads:
+
+> **\[Fabrizio Paganelli\] Coordinamento con Mirko:** _contattare Mirko per
+> discutere la mappatura del prezzo unitario, dello sconto e dell'importo netto
+> nell'ordine. Chiedere se è possibile eseguire l'intervento di configurazione
+> necessario per completare i campi dell'ordine._
+
+**That is a change of state, and a partial answer to a standing gap.** The
+09/10 action was ROMI's _"call with Mirko Merendi next week"_, which went unbooked
+for four days and was reported unbooked on every sweep since. It now has an
+owner — **Fabrizio Paganelli, the client** — and a defined ask: whether Mirko
+Merendi can perform the configuration that adds the missing order fields.
+
+🔴 **Still no date**, and two things carried forward are **absent from the 13/10
+record entirely**:
+
+- **Mirko Merendi's own objection** — that the alternative Mexal interface has
+  rounding problems, and he advises against it. Nobody restated it, so the ask
+  goes to him without the counter-argument that stopped it last time.
+- **The rounding ruling of 18/09**, which preferred fixed prices over percentage
+  discounts *because* of Mexal rounding. The direct conflict recorded on 09/10 is
+  unresolved and now unmentioned.
+
+🔑 **One new fact narrows the fix.** The same session agreed that **`Price_1__c`
+is the reference price for Mexal invoicing** and that both Mexal price fields stay
+on the product (`00:36:40`). So the list price Fabrizio Paganelli wants on the
+invoice **is already in Salesforce on the product**; what is missing is a field for
+it on the *order* tracciato. That makes this a mapping question for Mirko Merendi
+rather than a data-availability one, which is the first time the question has been
+that small.
+
+## 2026-10-14 — the quote got the breakdown; the invoice still cannot have it
+
+**The three values were asked for again, by a different person, about a different
+document — and this time they were delivered.**
+
+At [the 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) (`00:44:51`)
+**Elisa Migliano** asked for totale di listino, totale sconti and totale netto on
+the contractual PDF. Built the same evening as
+`Quote.Totale_Listino__c` and `Quote.Sconto_Totale__c` (`8186816`, branch
+`DevMainOpportunityWork`), carried into the PDF, the community acceptance page
+and the Quote layout — see
+[OI-207](OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md).
+
+🔴 **This row is unchanged.** The quote PDF already derived all five values
+before today (✅ above); what today adds is the **portal** and explicit roll-up
+fields. **The Mexal order tracciato still carries the net price and nothing
+else**, so the invoice — the document the customer receives — still cannot show
+the breakdown. Fabrizio Paganelli's ask of 18/09, 09/10 and 13/10 stands.
+
+🔴 **And his 13/10 action has not moved.** He took on contacting Mirko Merendi
+himself about mapping listino, sconto and netto onto the order. **Nothing in any
+source this sweep can read records that contact happening** — no mail, no
+message, no mention in the e2e. ⚠ **No Kreosoft mail at all in the window**, and
+Mirko Merendi does not appear in any source.
+
+🔑 **Two more asks to the same person arrived today**, from Elisa Migliano:
+[OI-236](OI-236%20The%20Mexal%20order%20carries%20no%20tipo%20merce%20and%20no%20provvigioni%20percentage.md)
+(tipo merce and provvigioni missing from the order) and
+[OI-237](OI-237%20Mexal%20invoices%20cite%20the%20preventivo%20instead%20of%20the%20order%20number.md)
+(the invoice reference wording). **Three separate approaches to Mirko Merendi
+about the same tracciato, from two people, with no coordination recorded.** ⚠ The
+rounding objection that stopped this ask in the first place still goes unmentioned
+by anyone.

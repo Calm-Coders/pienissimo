@@ -184,3 +184,53 @@ the partial sandbox succeeded (`0AfMA00000CvPvd0AF`).
 This does not close OI-207: the order surfaces, participation community pages,
 renewal summary, complete seven-surface review and client verification remain
 open.
+## 🟢 2026-10-14 — the client asked for the three totals and they were built the same evening
+
+**At [the 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) (`00:44:51`)
+Elisa Migliano asked, while generating the contractual PDF, for three distinct
+summary rows: totale di listino, totale degli sconti, totale netto.**
+
+Aurel Mrruku's commitment, in the room (`00:46:06`): the change would be
+implemented **within a day**, on **all quote types** — rinnovo, standard and
+bundle — and would show **both on the PDF and on the portal**. At `00:55:52` it
+was further agreed the three totals must sit consistently in the **desktop and
+mobile** views; the mobile rendering converts the column table into vertical
+blocks (`00:52:17`).
+
+🟢 **It was built the same evening.** `8186816` (Rexhina Hysi, **2026-10-14
+18:14:33 +0200**, branch `DevMainOpportunityWork`), _"2 new fields in quote and
+added to comunity and pdf"_:
+
+| Added | Where |
+| --- | --- |
+| `Quote.Totale_Listino__c` | new field |
+| `Quote.Sconto_Totale__c` | new field |
+| both | `QuotePdf.page`, `QuotePdfController`, the `quoteAcceptancePage` LWC (html + css), `Quote-Quote Layout`, `Full_Permission`, `Landing Page Profile` |
+| the roll-up | `QuoteLineItemTriggerHandler` + `QuoteLineItemTrigger` (+79 / +12 lines) |
+| acceptance | `QuoteAcceptanceController` |
+
+⚠ **Not in `DevMain`**, which is at `29d1002`; no PR observed. 🔑 **The author
+recorded her own account of the change in this note in that commit** — a fuller
+description than this section, which will arrive when the branch merges. **Do not
+duplicate or overwrite it**; this section exists because the sweep had to record
+the client ruling on the night it was given, and the commit is on a branch the
+sweep cannot merge.
+
+### What it does and does not close
+
+🟢 **The quote side of the commercial-fields gap is answered for the first time
+with both a ruling and a build** — and on the **portal** as well as the PDF,
+which no previous round covered.
+
+🔴 **The Mexal invoice side is untouched.**
+[OI-145](OI-145%20Order%20header%20discounts%20are%20removed.md) is the same three
+values on the document the customer actually receives, and the order tracciato
+still has no field for the list price or the discount. ⚠ **The two must not be
+read as one fix**: a quote PDF showing listino/sconto/netto and an invoice showing
+only the net price is precisely the inconsistency Fabrizio Paganelli has raised
+three times.
+
+⚠ **The totals were requested by Elisa Migliano, not Fabrizio Paganelli.** Two
+people on the client side have now asked for the same breakdown on two different
+documents, independently. That is corroboration, and it is also a sign nobody has
+told either of them the invoice cannot carry it yet.

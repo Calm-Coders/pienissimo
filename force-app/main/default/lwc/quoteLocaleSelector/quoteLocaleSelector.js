@@ -11,7 +11,11 @@ import QUOTE_ACCOUNT_NAME from "@salesforce/schema/Quote.Account.Name";
 import QUOTE_LOCALE from "@salesforce/schema/Quote.Locale__c";
 import QUOTE_STATUS from "@salesforce/schema/Quote.Status";
 
-const DRAFT_STATUS = "Bozza";
+const EDITABLE_STATUSES = new Set([
+  "Bozza",
+  "In Trattativa",
+  "In Attesa Accettazione"
+]);
 const QUOTE_FIELDS = [
   QUOTE_ACCOUNT_ID,
   QUOTE_ACCOUNT_NAME,
@@ -25,21 +29,9 @@ const LOCALE_FIELDS = [
   "Account.RecordTypeId"
 ];
 const OPTIONAL_LOCALE_FIELDS = ["Account.Tipologia_Attivita_Globale__c"];
-const COLUMNS = [
-  { label: "Nome locale", fieldName: "localeName", type: "text" },
-  { label: "Nome Account", fieldName: "accountName", type: "text" },
-  {
-    label: "Tipologia attività",
-    fieldName: "activityType",
-    type: "text",
-    wrapText: true
-  }
-];
-
 export default class QuoteLocaleSelector extends LightningElement {
   @api recordId;
 
-  columns = COLUMNS;
   quoteRecord;
   childAccounts = [];
   selectedLocaleId;
@@ -110,21 +102,28 @@ export default class QuoteLocaleSelector extends LightningElement {
         (record) =>
           record.fields.RecordTypeId?.value === this.localeRecordTypeId
       )
-      .map((record) => ({
-        id: record.id,
-        accountName: record.fields.Name?.value || "",
-        localeName:
-          record.fields.Nome_Locale__c?.value ||
-          record.fields.Name?.value ||
-          "",
-        activityType: (
+      .map((record) => {
+        const activityType = (
           record.fields.Tipologia_Attivita_Globale__c?.value || ""
-        ).replace(/;/g, ", ")
-      }));
+        ).replace(/;/g, ", ");
+        const isSelected = record.id === this.selectedLocaleId;
+
+        return {
+          id: record.id,
+          localeName:
+            record.fields.Nome_Locale__c?.value ||
+            record.fields.Name?.value ||
+            "",
+          activityType,
+          hasActivityType: Boolean(activityType),
+          isSelected,
+          cardClass: `locale-card${isSelected ? " selected" : ""}`
+        };
+      });
   }
 
-  get isDraft() {
-    return getFieldValue(this.quoteRecord, QUOTE_STATUS) === DRAFT_STATUS;
+  get canEditLocale() {
+    return EDITABLE_STATUSES.has(getFieldValue(this.quoteRecord, QUOTE_STATUS));
   }
 
   get isLoading() {
@@ -139,18 +138,25 @@ export default class QuoteLocaleSelector extends LightningElement {
     return this.localeRows.length > 0;
   }
 
-  get selectedRows() {
-    return this.selectedLocaleId ? [this.selectedLocaleId] : [];
+  get cancelLabel() {
+    return this.canEditLocale ? "Annulla" : "Chiudi";
+  }
+
+  get confirmLabel() {
+    return this.isSaving ? "Salvataggio..." : "Usa questo locale";
   }
 
   get saveDisabled() {
     return (
-      this.isLoading || this.isSaving || !this.isDraft || !this.selectedLocaleId
+      this.isLoading ||
+      this.isSaving ||
+      !this.canEditLocale ||
+      !this.selectedLocaleId
     );
   }
 
-  handleRowSelection(event) {
-    this.selectedLocaleId = event.detail.selectedRows[0]?.id || null;
+  handleLocaleSelection(event) {
+    this.selectedLocaleId = event.currentTarget.dataset.localeId;
   }
 
   async handleSave() {

@@ -55,7 +55,7 @@ export default class MappaturaEdizioneNew extends NavigationMixin(
           ? `Mappatura Edizione "${saved.name}" was created.`
           : "Mappatura Edizione was created.",
         message: saved.category
-          ? `Mappati i prodotti della categoria ${saved.category}.`
+          ? `Mappati ${saved.mappedCount} prodotti della categoria ${saved.category}.`
           : "",
         variant: "success"
       })

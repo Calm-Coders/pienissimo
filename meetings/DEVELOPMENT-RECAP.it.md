@@ -6716,3 +6716,595 @@ Google Meet.
 🔴 **Ventuno report notturni consecutivi senza una risposta umana.** Il gruppo dev
 ha portato un solo messaggio dall'ultimo watermark: il report dell'08/10 di questa
 stessa procedura.
+
+## 60. Aggiornamento 12/10/2026 — un requisito da firmare è stato riscritto per allinearlo alla build, e il test end-to-end del cliente non ha lasciato traccia
+
+`requirements-check` notturno, watermark **09/10/2026 22:00Z**, su tre giorni —
+da venerdì notte a lunedì notte, con un fine settimana dentro. **Una sessione con
+il cliente che non ha prodotto nulla**, **quattro commit**, il canale di progetto
+di nuovo silenzioso. Le affermazioni sulla build sono aritmetica di repository su
+`DevMain` **`a061f55`**; l'org non è stata aperta.
+
+### 🔴 Il registro e il testo da firmare si sono mossi senza una decisione del cliente
+
+`96d77de` (Rexhina Hysi, 12:22 CEST), unito come **PR #94** alle 14:41, ha
+riscritto **`SAL-20`** in `requirements/pienissimo-requirements.yaml`, in
+`REQUIREMENTS.md` e in **`REQUISITI.it.md`** — il testo che Pienissimo firma:
+
+| | Prima | Dopo |
+| --- | --- | --- |
+| Meccanismo | due **task** «da ricontattare» | due **stati di parcheggio** dell'Opportunità |
+| Secondo innesco | dopo il **primo contatto** | dopo un **preventivo** |
+| La data | **impostabile** dall'utente | **popolata automaticamente** all'ingresso |
+| La motivazione | non menzionata | **obbligatoria**, una per stato |
+
+Il blocco `opportunity` del registro ha acquisito anche lo stato
+`"Da ricontattare"` e tre regole, una delle quali **non è in `SAL-20`** —
+_«Chiusa/Persa porta automaticamente tutti i Preventivi collegati a Rifiutato»_ —
+scritta anche nella riga `Opportunità` della tabella degli stati in entrambi i
+documenti.
+
+🟢 **La realizzazione è solida e documentata** dal suo autore in OI-59, che ne
+indica l'istruzione d'origine. 🔴 **Manca una decisione dietro le parole.** Lo
+`status` è ancora `to_confirm`, la `version` è ancora **1.6** e in nessuna fonte
+risulta una decisione del cliente sulla nuova formulazione. Il punto **#184**
+esiste perché la v1.6 arrivi al cliente come **un unico** change set rivedibile
+alla chiusura degli UAT: questa modifica è ora dentro il testo da firmare e fuori
+da quel change set. Tracciato come **#227**.
+
+### 🟢 Cosa consegna davvero la PR #94
+
+Lo stato generico `Da ricontattare` accanto all'esistente `Da ricontattare -
+Prev. inviato`, ciascuno con motivazione obbligatoria e data automatica in sola
+lettura; un task `Preventivo Inviato` con scadenza il giorno successivo; una mail
+di promemoria configurabile elaborata **48 ore dopo l'invio riuscito della mail
+di accettazione** e solo mentre il Preventivo non è né `Accettato` né
+`Rifiutato`; la gestione del ciclo di invio che conserva il timestamp dell'ultimo
+invio quando un Preventivo torna in `Bozza`; e una cascata di massa che porta
+tutti i Preventivi collegati a `Rifiutato` su `Chiusa/Persa`. Il componente
+`opportunityCustomPath`, che aveva cinque stati fissi nel codice, ora ne mostra
+sei. Rilasciato su Pienissimo UAT con più deployment, tutti `NoTestRun`; **nulla
+in Prod**. Il testo del promemoria di Marco Montesi è ancora atteso, quindi il
+template è deliberatamente modificabile.
+
+### 🔴 L'UAT end-to-end si è svolto e ha lasciato 59 secondi di saluti
+
+Il cliente ha fatto prove da solo nel fine settimana e le schermate non
+tornavano. Fabrizio Paganelli, 12/10/2026 06:27:47Z: _«abbiamo fatto delle prove
+ma non ci ritroviamo su alcune schermate. Ci aggiorniamo nella call di oggi alle
+16»_.
+
+La call si è tenuta alle **16:01 CEST**. La trascrizione Gemini si è fermata a
+**`00:00:59`** — Elena Spini, prima che arrivassero gli ospiti: _«Aspetta,
+facciamo stop»_ — e non è più ripresa; nessun riepilogo, nessun dettaglio, nulla
+su Fathom. ⚠ Si legge come una normale cortesia e non come una decisione di
+restare fuori verbale, e la conseguenza è la stessa: **quali schermate, e
+rispetto a quale aspettativa, non è recuperabile.**
+
+🔴 Due ore dopo l'e2e è stato **rinviato a mercoledì 14 ottobre, 09:00–11:00**
+(_«Posticipo come richiesto»_) e un nuovo **Feedback Test UAT** è stato inserito
+per **martedì 13 ottobre alle 12:00**. ⚠ L'invito spostato dichiara per la prima
+volta per iscritto il perimetro dell'e2e — prodotti standard, bundle, recall
+tutor/pack tutor, Performance Plus e **`libro/videocorsi`** — e quest'ultima voce
+è ciò che il post di status del 09/10, della stessa Elena Spini, diceva spostato
+sul nuovo shop WooCommerce e uscito da Salesforce «per ora». **Entrambe le
+affermazioni sono sue, a tre giorni di distanza.**
+
+### 🔴 Il difetto bloccante sui pagamenti è intatto per la quarta notte
+
+**#212** riverificato byte per byte su `a061f55`: il predicato valuta ancora solo
+lo stato di pagamento, la data di scadenza è ancora letta undici righe sopra, e
+il campo formula con la propria `description` documenta ancora la regola non
+qualificata come intenzionale. Nessun commit ha toccato i due file e nessuna
+fonte lo ha menzionato. **La conferma di produzione del 13 ottobre è domani, e il
+test che avrebbe esercitato il percorso dei pagamenti è ora il 14.**
+
+### 🔴 Un nuovo passo manuale il cui orologio si misura in ore
+
+Il tracker dei passi manuali ha acquisito una **terza riga** alle 10:20:03Z: i
+quattro job notturni — `MexalArticleSyncScheduler`,
+`MexalCustomerSyncScheduler`, `MexalInvoiceSyncScheduler`,
+`QuoteNegotiationAgingBatch` — devono essere schedulati **come amministratore
+Pienissimo**. È la prima riga vuota in `Status Uat` oltre che in `Status Prod`. Il
+testo stesso di OI-59 riporta che `QuoteNegotiationAgingBatch.scheduleDaily()` ha
+creato oggi il job `08eMA00000YU7OfYAL`, `WAITING`, **prima esecuzione il 13
+ottobre alle 03:00 CEST**. L'Apex schedulato gira con l'utente che lo ha
+schedulato: la riga esiste perché di norma è quello sbagliato. ⚠ Stessa classe di
+guasto di **#223**, che è costato un invio ordine in UAT. Tracciato come
+**#228**.
+
+### 🔑 I flussi di invio biglietto sono descritti come realizzati, e una descrizione è un indizio
+
+Fabrizio Mastracci ha pubblicato i due flussi nella DM marketing alle 09:15:18
+CEST, al presente di qualcosa che funziona — la prima descrizione scritta di essi
+come realizzati, cosa che conta perché questo progetto non tiene **alcun metadato
+di flusso sotto controllo di versione**.
+
+**`Invio Richiesta conferma biglietto`** si attiva sull'invito evento quando il
+link di registrazione è valorizzato, lo stato del link è `Pronto` e la data di
+invio è compilata; invia **fino a 11 email**, la prima subito e le successive
+distanziate da un nuovo campo `Wait Interval` sull'edizione evento; si interrompe
+se un biglietto dello stesso ordine ed edizione ha un esito, o se la data
+dell'evento è passata.
+
+**`Invio Biglietto assegnato`** si attiva quando un biglietto passa ad
+`Assegnato`, attende **un minuto**, recupera il PDF, crea un link pubblico e lo
+invia, poi imprime la data di invio.
+
+🔑 **Quell'attesa di un minuto è un meccanismo candidato per #225.** Il PDF è
+generato in modo asincrono dal subscriber dell'evento di piattaforma della riga 2
+dei passi manuali; un flusso che attende un minuto fisso e poi interroga il suo
+risultato è una corsa, e `«Impossibile trovare i record»` è l'aspetto che ha
+quando la si perde — il che spiega anche perché il guasto sia abbastanza
+intermittente da essere passato inosservato. ⚠ **Solo un candidato**: nessuno ha
+aperto il flusso, nulla misura il tempo di generazione, e spiega il primo dei tre
+difetti.
+
+🔴 Tre scostamenti dal contratto del 06/10 passano senza commento: l'attesa fra
+gli undici passi è ora in **minuti, non in giorni**; il biglietto viaggia come
+**link pubblico, non come allegato dell'Asset** — sullo stesso Asset c'è il
+documento di partecipazione firmato di **#194**, non valutato; e **WhatsApp è
+sparito dalla descrizione** mentre la domanda di Rebecca Marmo — in parallelo o
+come backup — è ancora senza risposta. Insieme circoscrivono di nuovo **#197**:
+la marcatura `Inviato` è descritta come funzionante, e la mail di errore dice che
+è fallita.
+
+### 🔑 La regola di codifica articoli del cliente è entrata nel record
+
+`Regole Codifica Codici Articolo.xlsx` sta nella cartella Drive dell'anagrafica
+dal 21 settembre, **mai aperto da un controllo**, e si è mosso il **12 ottobre
+alle 09:11:19Z**. È uno schema unico a lunghezza fissa: prefisso evento ·
+tipologia biglietto · **flag bundle** · blocco numerico, con la tabella completa
+dei prefissi di dieci eventi.
+
+🟢 **Conferma la decodifica di `Natura`** che la call del 09/10 ha ribadito dopo
+una falsa partenza e che MAP aveva segnalato per una verifica nel codice.
+🔑 **Consegna l'elenco eventi** dovuto per posta dai primi controlli. 🔑 Rende il
+codice gemello di bundle di **#48** **posizionale** invece di un suffisso
+`"(B)"`, ed è la convenzione prevista da **#98**. 🔴 I codici esistono per **due
+dei dieci eventi**: è una convenzione, non un'anagrafica; l'approvazione della
+direzione di **#217** non risulta ancora, e il nuovo schema **non ha alcuna
+posizione per un conteggio di tranche**, quindi **#210** ne resta intatto.
+
+Accanto a esso, `Product2.Evento__c` («Evento di origine») è stato costruito su
+un branch di sviluppo — un picklist ristretto degli stessi dieci eventi,
+controllato da `Anno_Solare__c` — ed è il «mettere il significato in un campo» di
+**#47/#76** che finalmente arriva. 🔴 Non è in `DevMain`, e nulla lo valorizza.
+
+### 🟡 Il codice agente ora passa per il Preventivo
+
+`27304d7` aggiunge `Quote.Codice_Agente_Esterno__c`, valorizzato dall'agente
+dell'Account alla creazione del preventivo, e il trigger dell'ordine ora
+preferisce il Preventivo all'Account. 🟢 Questo realizza la decisione del 03/09
+per cui il codice si congela sull'ordine ai fini della provvigione. 🔴 La domanda
+bloccante di **#214** — quale codice usi un ordine WooCommerce senza agente — è
+intatta. ⚠ Un percorso da far verificare a una persona: un ordine con Preventivo
+prende il valore del preventivo e fa `continue`, quindi un campo vuoto produce
+null e salta il fallback sull'Account; registrato come percorso, non come
+regressione accertata, e senza test eseguiti. 🔴 Non è in `DevMain`.
+
+### A verbale
+
+🟢 **#14 ha il suo primo artefatto** — Aurel Mrruku ha inviato a Elena Spini un
+`lead-web-to-lead (1).html` alle 17:59:37 CEST. 🔴 I campi Lead su cui scrive non
+sono ancora in Prod e quattro sono i picklist di **#115**, solo allegato di posta
+al quinto controllo. 🆕 **#229** — Elena Spini ha creato il progetto Jira `PIEN`
+il 10 ottobre e la mail di invito era ancora non letta; gli id `OI-NN`
+corrispondono 1:1 ai numeri di riga di questo tracker e nulla dichiara come i due
+si rapportino. ⚠ Il _«ho anche una notizia bella»_ di Elena Spini è finito in una
+chiamata vocale e non è leggibile. ⚠ `Flows & Objects.drawio` si è mosso di nuovo
+ed è ancora un `mxfile` non interpretabile. 🔴 **Gli appunti marketing del 30/07
+hanno dato 404**, con un id Drive preciso da richiedere. **Fathom non ha
+restituito nulla per il quindicesimo controllo consecutivo.** Il registro resta
+alla **v1.6** — si veda **#227** — e il prossimo id libero è **230**.
+
+## 62. Aggiornamento 14/10/2026 — l'amministrazione ha guidato l'intera catena commerciale, e la project manager di ROMI ha chiesto se un requisito nel testo da firmare esista
+
+**`requirements-check` notturno, watermark `2026-10-13T22:00Z`, un giorno. Una
+sessione cliente di circa due ore — [il test end-to-end](../notes/meetings/2026-10-14%20UAT%20Test%20e2e.md)
+rinviato dal 12 ottobre — quattro commit, nessuna pull request unita, e la prima
+sessione in cui il verbale mostra Elisa Migliano, e non Fabrizio Paganelli, alla
+guida. Le affermazioni sulla build sono aritmetica di repository su `DevMain`
+`29d1002`.**
+
+### 🔑 La gamba finanziaria dell'integrazione ha girato da capo a fondo per la prima volta
+
+Un ordine, `OC 1023`, 20.000 €, è diventato quattro fatture differite su Mexal
+tramite l'*emissione differita documenti*; la fattura 10 da 5.000 € è stata
+contabilizzata sul cliente 50171 con pagamento a bonifico; lo scadenzario è
+rientrato in Salesforce con importo, tranche e stato di pagamento `non pagato`; è
+stato registrato un incasso di 5.000 €; e i totali dell'ordine hanno riconciliato
+a **ordinato 20.000 € · fatturato 5.000 € · incassato 0 € · da fatturare
+15.000 €**. Poi la stessa catena è girata di nuovo per un rinnovo, sul prodotto
+`N07 / plus-06` in quattro tranche.
+
+🔴 **Due volte nella stessa sessione i dati erano aggiornati solo perché qualcuno
+ha incollato Apex in una developer console.** Aurel Mrruku ha fornito due script,
+Elisa Migliano ne ha eseguito uno e ha annotato la procedura. Vedi §62.3.
+
+### 🔴 62.1 — il `SAL-20` ha una risposta, ed è l'opposto di una decisione
+
+L'[OI-227](../notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)
+chiedeva da due giorni se il `SAL-20` riscritto fosse stato concordato con il
+cliente. Due fonti del 14 ottobre, entrambe di Elena Spini, rispondono contro la
+riscrittura.
+
+Alle **17:14:01Z** ha illustrato l'**as-is** a Marco Montesi — _«la sintesi del
+flusso as-is per come è stato condiviso e tracciato nei diagrammi di processo»_ —
+nella forma del modello a **task**: una TASK automatica due giorni dopo che
+l'opportunità entra in `In Trattativa`, oggetto _Preventivo Inviato_, **Task
+Subtype `Da Ricontattare`**, scadenza il giorno successivo, più una mail di
+promemoria al cliente. **È il testo che `96d77de` ha eliminato da
+`REQUISITI.it.md`.**
+
+Poi alle **18:52:58 CEST**, in DM ad Aurel Mrruku, ha citato la stessa specifica e
+ha chiesto se esista affatto — _«questa parte ce l'abbiamo? c'è la creazione di
+task + invio email?»_ — seguito da _«è presente sul grafico di Drawio ma non ne
+abbiamo mai parlato perchè non è stata fatta o perchè non ne abbiamo avuto
+modo?»_ **Nessuna risposta di Aurel Mrruku è a verbale.**
+
+🔑 **Quindi la project manager non conosce lo stato di realizzazione di un
+requisito riscritto nel testo firmabile nove giorni prima, e sta rappresentando al
+cliente la versione precedente alla riscrittura.** ⚠ La sua stessa incertezza
+taglia da entrambe le parti: _«non ne abbiamo mai parlato»_ significa che nemmeno
+il modello a task potrebbe essere stato concordato con il cliente, quindi
+**nessuna delle due versioni ha una decisione del cliente alle spalle** — peggio
+di quanto il punto registrava all'inizio. 🔑 E la riscrittura ha eliminato una
+**e-mail rivolta al cliente** che ROMI attende ancora dal cliente stesso: _«Verrà
+fornito copy da MM»_, _«di questo siamo tuttora in attesa»_.
+
+⚠ **Il registro non è stato emendato, deliberatamente**, per la terza notte.
+Riportare indietro un testo contrattuale sulla base di due messaggi interni non
+spetta a uno sweep; l'[OI-184](../notes/items/OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md)
+esiste perché la v1.6 arrivi al cliente come un unico insieme di modifiche
+rivedibile. Ciò che è cambiato è che la decisione ora è informata.
+
+### 🟢 62.2 — i flussi di notifica commerciale hanno una risposta, in negativo
+
+L'[OI-222](../notes/items/OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md),
+aperto dall'8 ottobre, ha avuto risposta nella stessa mail delle 17:14:01Z:
+
+> _«**E-mail incluse:** Sono incluse esclusivamente le e-mail di invio,
+> accettazione e firma del preventivo.»_
+>
+> _«**Altre e-mail e integrazione WhatsApp:** Ulteriori tipologie di e-mail o
+> l'invio di messaggi WhatsApp all'interno del flusso Sales non sono stati
+> previsti né mai definiti nelle specifiche concordate.»_
+
+Offerte come _«extra-perimetro/evolutiva in una fase successiva»_. **Tutti e
+cinque i trigger di Marco Montesi, e WhatsApp, sono fuori perimetro.** 🔑 Uno
+sopravvive, con una dipendenza dal cliente: la mail di promemoria è nell'as-is e
+il suo **copy è dovuto da Marco Montesi**.
+
+⚠ Tre cautele. La decisione di perimetro è **di ROMI, non del cliente**, e lui non
+l'ha accettata. È circoscritta _«all'interno del flusso Sales»_ e quindi **non
+riguarda il funnel marketing a 11 e-mail + 11 WhatsApp**: la domanda
+parallelo-o-backup di Rebecca Marmo e l'[OI-195](../notes/items/OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+restano aperti. E 🔴 **la sua domanda originaria di governance — modificabile
+dall'amministratore o solo tramite assistenza — è senza risposta da dieci
+giorni.**
+
+### 62.3 — tre decisioni, una realizzata la sera stessa, e una sincronizzazione che nessuno pianifica
+
+Tre `Concordato`:
+
+1. **Il preventivo deve mostrare totale di listino, totale degli sconti e totale
+   netto** — sul PDF **e** sul portale, su tutte le tipologie di preventivo,
+   posizionati in modo coerente su desktop e mobile. 🟢 **Realizzato la sera
+   stessa**: `8186816` aggiunge `Quote.Totale_Listino__c` e
+   `Quote.Sconto_Totale__c` e li porta nel PDF, nella pagina di accettazione della
+   community e nel layout Quote. ⚠ **Non in `DevMain`**, e la metà «fattura»
+   dell'[OI-145](../notes/items/OI-145%20Order%20header%20discounts%20are%20removed.md)
+   è intatta: il tracciato dell'ordine Mexal porta ancora il prezzo netto e
+   nient'altro.
+2. **Un preventivo di rinnovo non è modificabile** — per i prodotti bundle e Plus,
+   che generano automaticamente le tranche, una modifica richiede di eliminare e
+   ricreare il preventivo. Il gruppo ha valutato il margine di errore per un tutor
+   al telefono e ha mantenuto il comportamento.
+3. **I rinnovi non prevedono un contratto informatico di sistema**, ma solo il PDF
+   del preventivo.
+
+E l'unico `Da approfondire` della sessione, ora
+[OI-238](../notes/items/OI-238%20The%20tacit%20renewal%20path%20skips%20client%20acceptance%20and%20its%20approval%20workflow%20is%20undecided.md):
+il **workflow di approvazione per i rinnovi taciti** è stato rinviato a Marco
+Montesi. Il comportamento in sé è stato confermato ed eseguito in diretta — per un
+rinnovo tacito Performance Plus il tutor **conferma e accetta il preventivo
+internamente, trasformandolo in un ordine fatturabile senza l'approvazione del
+cliente**. 🔴 Il sistema ha quindi un percorso che va dal clic di un tutor a una
+fattura Mexal senza alcun documento del cliente e senza passaggi di approvazione
+in mezzo, e la persona che deve decidere ha ormai tre risposte in sospeso.
+
+L'[OI-239](../notes/items/OI-239%20The%20Mexal%20scadenzario%20sync%20must%20run%20every%20half%20hour%20and%20nothing%20schedules%20it.md)
+è il corrispettivo operativo. I limiti API sono stati letti **in produzione** —
+3.360.000 richieste al mese, 112.000 al giorno, due chiamate per ciclo — e si è
+concordato di eseguire lo script **ogni mezz'ora o ogni ora**. Il responsabile è
+`[Il gruppo]`, nulla lo pianifica, ed eredita l'utente di esecuzione irrisolto
+dell'[OI-228](../notes/items/OI-228%20The%20nightly%20schedulers%20have%20no%20run-as%20user%20and%20the%20first%20run%20is%20imminent.md)
+**48 volte al giorno**. ⚠ In Prod non esiste alcun job di sincronizzazione Mexal.
+
+### 62.4 — altre sette righe, e una che riconcilia una contraddizione vecchia di un mese
+
+🔴 **[OI-241](../notes/items/OI-241%20Books%20and%20video%20courses%20wait%20on%20a%20WooCommerce%20instance%20move.md)**
+— libri e videocorsi sono stati esclusi _«temporaneamente poiché Sabatino non ha
+ancora trasferito tali ordini nell'istanza corretta di WooCommerce»_. 🔑 **Questo
+riconcilia tre affermazioni che per tutto il mese sono sembrate incompatibili**:
+il post del 09/10 secondo cui i libri avevano lasciato Salesforce, la riga di
+perimetro del 12/10 che nominava `libro/videocorsi`, e l'elenco test del 13/10 che
+nominava `vendita libro`. Gli ordini sono in WooCommerce, sono nel perimetro
+Salesforce, e non sono testati perché risiedono nell'istanza sbagliata. ⚠ È una
+riconciliazione, non una decisione.
+
+🔴 **Tre percorsi di ordine WooCommerce non sono esercitati nello stesso
+momento** — libri e videocorsi, i pacchetti tutor, e le vendite da palco
+([OI-101](../notes/items/OI-101%20Stage%20sales%20must%20be%20in%20the%20WooCommerce%20test%20set.md)),
+indicate come ancora mancanti nel minuto di chiusura della sessione. 🔑 **Tutti e
+tre sono il percorso senza agente dell'[OI-214](../notes/items/OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md)**,
+la cui domanda bloccante — quale codice usi un ordine senza agente — non è dunque
+mai stata eseguita, a sette giorni dal go-live. L'altra metà dell'OI-214 si è
+mossa: la regola di ereditarietà è stata enunciata al cliente per la prima volta.
+
+Il resto: **[OI-234](../notes/items/OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)**
+(tranche già fatturate in parte alla società A che devono proseguire sulla B —
+Elena Spini propone la fase 2 e il cliente non ha accettato) ·
+**[OI-235](../notes/items/OI-235%20A%20contract%20is%20linked%20to%20the%20account%20but%20hidden%20in%20the%20tab.md)**
+(un contratto correttamente collegato e invisibile nel tab, attribuito al volume
+di ordini precedenti — ⚠ un'ipotesi formulata una sola volta, e la migrazione è
+all'ordine del giorno della settimana prossima) ·
+**[OI-236](../notes/items/OI-236%20The%20Mexal%20order%20carries%20no%20tipo%20merce%20and%20no%20provvigioni%20percentage.md)**
+e **[OI-237](../notes/items/OI-237%20Mexal%20invoices%20cite%20the%20preventivo%20instead%20of%20the%20order%20number.md)**
+(⚠ **tre richieste separate puntano ora su Mirko Merendi sullo stesso tracciato**,
+da due persone, senza coordinamento a verbale — e il contatto del 13/10 che
+Fabrizio Paganelli si era preso non risulta avvenuto) ·
+**[OI-240](../notes/items/OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)**
+(⚠ **due richieste di accesso in due giorni, nessuna delle quali corrisponde a un
+profilo definito**) ·
+**[OI-242](../notes/items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md)**
+(il testo statico del RINUNCIA, rinviato al rilascio in produzione; ⚠ **una huddle
+alle 15:35:52 potrebbe averlo risolto e la voce non è leggibile**).
+
+### 62.5 — la causa delle categorie era più grande del sintomo
+
+L'e2e ha colpito il guasto previsto la notte prima — un disallineamento di codici
+sulla categoria **`C10`**, una delle quindici categorie senza prodotti attivi. ⚠
+Non accertato come lo stesso guasto: il verbale dice _«disallineamento nei
+codici»_, non che un salvataggio sia fallito, e nessuno in riunione ha nominato la
+regola dei soli prodotti attivi.
+
+🔑 **La causa che invece è emersa è più grande.** La sincronizzazione articoli
+**non aveva mai scritto `Product2.Categoria_Articolo__c`**: ogni categoria in UAT
+veniva dall'import del workbook di luglio, quindi ogni articolo creato da Mexal
+dopo non ne aveva alcuna. Aurel Mrruku l'ha individuato, ha mappato
+`sigla_cat_sta` + `nr_cat_sta` di Mexal con il numero riempito a due cifre, ha
+risincronizzato 1.078 e poi 1.079 articoli senza errori, e **ha documentato tutto
+lui stesso** nella [nota sulla sincronizzazione articoli](../notes/objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+
+🟢 **Due delle quindici categorie vuote dell'OI-96 sono recuperate** — `PLUS-N05`
+come `C10` e `PLUS-N06` come `C11`, entrambi attivi. 🔴 **Tredici restano non
+salvabili**, la regola dei soli attivi non è stata rivista, e il punto non ha
+ancora né responsabile né riga. 🆕 `E12` si aggiunge a `E11` tra i nuovi valori di
+categoria, e ⚠ Mexal ha sovrascritto due valori del workbook.
+
+🔑 **L'[OI-210](../notes/items/OI-210%20The%20delivered%20article%20registry%20carries%20no%20tranche%20count.md)
+si è mosso dopo sette notti silenziose.** La sessione ha usato il modello a
+**campo per il numero di tranche**, quindi il `Concordato` del 05/10 è quello
+operativo. 🔴 Ma il conteggio è stato digitato da uno sviluppatore, prodotto per
+prodotto, in diretta in una sessione cliente; `NR_Tranche` è ancora vuoto su tutte
+le 1.010 righe, e la sincronizzazione non lo scrive.
+
+### 62.6 — Anticipay, e il difetto che due sessioni non sono riuscite a innescare
+
+🔑 **Il limite su San Marino è stato dimostrato al cliente** per la prima volta, e
+il trigger della chiamata è finalmente a verbale: gira **una volta per account, al
+primo ordine**, quando viene generato il codice Mexal, per evitare costi
+superflui. ⚠ Nessuno ha tratto la conseguenza: un cliente i cui dati anagrafici
+cambino dopo non viene mai riarricchito. Un **404 `«Azienda non trovata»`** è
+scattato in UAT alle 08:11Z ed è arrivato solo all'indirizzo ROMI cablato.
+
+🔴 **L'[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+non si è mosso, sesta notte**, byte per byte a `29d1002`. ⚠ **E due sessioni
+consecutive hanno ormai preparato il difetto senza innescarlo**: il 13 ottobre il
+cliente ha costruito quattro tranche future con condizioni della famiglia Ri.Ba. e
+la gamba di ritorno non è mai girata; il 14 ottobre la gamba di ritorno è girata e
+il pagamento era un **bonifico**, che ha letto correttamente `non pagato`. L'unica
+combinazione che fallisce non è ancora mai stata esercitata, la sua data di
+conferma è passata due giorni fa, e l'OI-239 leggerebbe il predicato 48 volte al
+giorno alimentando l'`incassato` mostrato al cliente.
+
+### 62.7 — cosa attende le persone
+
+🔴 **[OI-231](../notes/items/OI-231%20DocuSign%20closed%20the%20Pienissimo%20onboarding%20for%20non-response.md)**
+— Elena Spini ha sollevato internamente la chiusura DocuSign alle 08:31Z, _«tutto
+ok no? non dobbiamo far nulla?»_, **nessuno le ha risposto**, e la domanda del
+cliente del 13 ottobre è senza risposta da due giorni.
+🔴 **[OI-161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md)**
+— ROMI ha sollecitato Andrea Parmeggiani alle 12:35Z dopo sei giorni di silenzio;
+**il passaggio in produzione attende i suoi esiti**. La rotazione delle credenziali
+QR: ottavo giorno.
+🆕 **Un meeting `Migrazione e Go-Live` è fissato per giovedì 15 ottobre,
+14:30–15:30** — Migrazione · Go-Live · Utenza per Marco · cambi di ragione sociale
+per fatturazione tranche. ⚠ In riunione la sessione successiva era stata fissata
+per **venerdì 09:30/10:00–12:00**; se la sessione di venerdì resti valida non è
+accertato.
+
+### 62.8 — a verbale
+
+⚠ Il passo successivo _«Segnalare bug»_ dell'e2e **non nomina alcun bug** — seconda
+sessione consecutiva in cui un difetto lato cliente viene richiamato e non
+descritto · `dbef4f4` ha **rimosso WooCommerce dalla logica lead** senza
+motivazione dichiarata, e un nuovo web-to-lead è stato fatto circolare per i test
+nella stessa ora · **Fathom ha restituito zero riunioni per la diciassettesima
+esecuzione consecutiva** · `#tproj-pienissimo` è stato **silenzioso per il quinto
+giorno** · il canvas Slack è **fermo da otto settimane** · `Campi Oggetti…xlsx`,
+`Flows & Objects.drawio` e il **foglio dei passi manuali** **non si sono mossi** ·
+gli id OI-189–OI-193 restano riservati e il prossimo id libero è il **243** ·
+🔴 **ventiquattro report notturni consecutivi senza alcuna risposta umana**.
+
+**Nessun test Apex è stato scritto, proposto o impostato**, come da istruzione
+permanente. L'org non è stato aperto; `STATUS.md` e il suo mirror Notion restano
+non aggiornati.
+
+## 61. Aggiornamento 13/10/2026 — il cliente ha completato una vendita da capo a fondo per la prima volta, e ha ribaltato il martedì ciò che aveva concordato il venerdì
+
+`requirements-check` notturno, watermark **12/10/2026 22:00Z**. **Una sessione
+cliente di ~1h34m che ha prodotto un verbale completo**, **13 commit**, **5 PR
+unite**. Le affermazioni sulla build sono aritmetica sul repository rispetto a
+`DevMain` **`21d6686`**; l'org non è stata aperta.
+
+### 🟢🔑 Una vendita completa, con il cliente alla tastiera
+
+Il `Feedback Test UAT` inserito dopo il silenzio del 12 ottobre ne è l'immagine
+speculare: verbale Gemini completo, tre decisioni `Concordato` e tredici passi
+successivi. **L'ha eseguita Fabrizio Paganelli, non ROMI** — ha creato un bundle,
+aggiunto i componenti, impostato quantità e sconti di riga perché le righe
+quadrassero con il totale concordato, configurato **quattro rate con scadenza
+31 ottobre, 30 novembre, 31 dicembre e 31 gennaio**, creato un'Opportunità e un
+Preventivo con condizioni di pagamento amministrative, generato il PDF, inviato
+per accettazione, **firmato su DocuSign** e ottenuto un Preventivo completato e
+un Ordine. Aurel Mrruku ha poi **confermato che l'ordine è arrivato a Mexal con
+stato `inviato`**, con gli Asset generati in base alle quantità dell'ordine.
+
+🔑 **È la prima volta che una fonte registra un ordine che arriva a Mexal partendo
+da un preventivo.** La catena ordine-Mexal riporta _«mai eseguita in UAT — 0 di 45
+ordini con uno stato Mexal»_ dal 14 settembre. ⚠ In quale org sia girata non è
+indicato nel verbale, e il verbale Gemini scrive l'ERP come _«Bexal»_.
+
+### 🔴🔑 La regola di popolamento di #96 è stata ribaltata dal cliente che l'aveva concordata
+
+Il 9 ottobre Fabrizio Paganelli aveva accettato, con la conseguenza enunciata
+davanti a lui, che la selezione di una categoria merceologica agganci **tutti**
+gli articoli della categoria, attivi o no — _«Va bene così.»_ Il 13 ottobre si è
+scontrato con il volume che ne deriva (_«l'enorme mole di dati … inclusi quelli
+vecchi o inattivi»_) e ha chiesto l'opposto: **la selezione della categoria
+aggiunge solo i prodotti attivi, e la selezione di un prodotto aggiunge quel solo
+prodotto.** Realizzato lo stesso pomeriggio, `0816bf7`.
+
+🔴 **Il costo arriva prima dell'e2e del 14 ottobre.** Poiché `cod_grp_merc`
+determina `IsActive` e lascia circa 30 articoli attivi, **15 delle 23 categorie in
+UAT non hanno più alcun prodotto attivo, e un salvataggio per categoria su una di
+queste fallisce.** Nessuno ne è responsabile. ⚠ Questo rende anche irrilevante la
+collisione `E10` senza averla risolta.
+
+⚠ Entrambe le decisioni sono state prese con il cliente presente e realizzate lo
+stesso giorno — cosa che il 9 ottobre era stata segnalata come un punto di forza.
+**Quattro giorni è quanto è durata la prima.**
+
+### 🔴🔑 Un secondo flusso in produzione è in errore, e lo è dall'8 ottobre
+
+**#230.** `Invio Richiesta conferma biglietto Flow` chiede a
+`Event_Invitation__c` il campo `Recipient_Contact__r` — che è il nome della
+relazione, non un campo — quindi la query non è valida e l'elemento **non può
+riuscire**. Il campo in sé è in controllo di versione. ⚠ **Lo stesso flusso è
+andato in errore l'8 ottobre alla versione 1 e di nuovo il 13 ottobre alla
+versione 7**: sei revisioni in cinque giorni hanno rimosso un `Loop` e aggiunto un
+secondo `Get`, spostando il guasto visibile a valle **mentre `Get Campaign`, il
+primo elemento, non ha trovato nulla in entrambi i casi**. Quella è la causa
+radice e nessuno l'ha cercata. ⚠ La mail dell'8 ottobre era stata rilevata e
+annotata come nota a margine di **#225**, e **non è stata aperta alcuna riga.**
+🟢 Aurel Mrruku ha inoltrato quella nuova a Fabrizio Mastracci ed Elena Spini — la
+prima reazione documentata a questo flusso.
+
+### 🟢🔑 L'org di #225 è identificata: è la produzione
+
+Per chiave di istanza. Il sandbox parziale e ogni artefatto UAT registrato il
+13 ottobre portano **MA**; le mail di errore di flusso portano **SW**, e così fa
+l'id di record pubblicato da Elena Spini nella DM marketing dentro il resoconto di
+Aurel Mrruku sul secondo lotto TEST MKT **in Pienissimo Prod**. 🔴 **Un invio
+rivolto al cliente finale è quindi in errore in produzione dal 9 ottobre**, a otto
+giorni dal go-live. ⚠ Resta un anello debole, e una persona con accesso all'org lo
+risolverebbe in un minuto.
+
+### 🔴 DocuSign ha chiuso l'onboarding, e il cliente ha chiesto se servisse
+
+**#231.** La consulente di onboarding di DocuSign ha chiuso il progetto il
+13 ottobre per mancata risposta, passando l'account all'Account Team. 🟢 La
+comunicazione conferma che **esiste un account DocuSign di produzione** intestato
+a PIENISSIMO SRL — le licenze sono state acquistate, il che chiude una domanda
+aperta da giugno. 🔑 E il percorso di firma funziona anche senza onboarding, come
+mostra la sessione dello stesso giorno. 🔴 Ciò che la chiusura costa è il supporto
+del fornitore, nel momento peggiore: plafond buste, template e configurazione di
+produzione sono esattamente ciò che un onboarding copre, la stima di ~2.500 buste
+di **#194** non ha ancora un documento a supporto, e la domanda del cliente —
+_«Vi è necessaria per la configurazione di Docusign?»_ — è senza risposta.
+
+### 🔴 Altri due dalla stessa sessione
+
+**#232** — Fabrizio Paganelli ha completato la firma su DocuSign e **si è accorto
+di aver firmato con il nome di Aurel Mrruku**. La busta si è completata e
+l'Ordine è arrivato a Mexal su quella firma. ⚠ Se l'identità del firmatario derivi
+dal contatto del Preventivo o dall'utente che esegue non è accertato; allo stesso
+modo può trattarsi di ordinaria confusione da account di test. Registrato come non
+risolto. Lo stesso percorso firma il documento di partecipazione di **#194**.
+
+**#233** — i tutor non devono poter fare preventivi o ordini sui bundle; la
+definizione di quale profilo ottenga cosa è stata rinviata _«al gruppo»_. ⚠
+**«Tutor» non è un profilo presente in alcun documento di progetto**, quindi la
+richiesta non è realizzabile come formulata, e `recall tutor/pack tutor` è nel
+perimetro dell'e2e del 14 ottobre.
+
+### 🔴 #212 non si è mosso, quinta notte, e la data di conferma è passata
+
+Byte per byte su `21d6686` dopo tredici commit: `paid = P || E`, nessuna
+condizione sulla data, undici righe sotto il `dueDate` che lo stesso metodo
+calcola. ⚠ **La sessione gli è passata accanto**: quattro rate, tutte con
+scadenza futura, su condizioni della famiglia Ri.Ba., e il ritorno dello
+scadenzario non è mai partito. **Il difetto è stato preparato e non innescato.**
+L'e2e è la mattina dopo.
+
+### 🔴 #228: l'esecuzione delle 03:00 è avvenuta e la riga è ancora vuota
+
+Il foglio dei passi manuali è stato modificato alle 09:29:13Z, ha acquisito una
+**quarta** riga, e la riga che richiede che i job notturni girino come
+amministratore Pienissimo **non è stata spuntata** — sei ore e mezza dopo la prima
+esecuzione del job che governa. ⚠ Cosa abbia fatto non è accertato. 🔴 `Status
+Prod` è ora vuoto su **tutte e quattro** le righe. 🔑 Un caso con nome e cognome
+della stessa classe è emerso in un flusso: **#230** gira come `Tech Romi`, un
+utente ROMI, in produzione.
+
+### 🟢 Cosa si è chiuso e cosa è stato costruito
+
+🟢 **Entrambi i rilievi «non in `DevMain`» del 12 ottobre sono chiusi** —
+`Product2.Evento__c` con la PR #95, `Quote.Codice_Agente_Esterno__c` con la
+PR #96. 🟢 **Tre dei tredici passi successivi sono stati realizzati e committati
+lo stesso pomeriggio** — `49b49e5` (il listino standard segue `Price_1__c`, che
+era la causa radice dei componenti bundle a prezzo zero), `0816bf7` (la logica di
+mappatura) e `9e97f46` (i pulsanti delle viste elenco) — e **lo sviluppatore ha
+documentato ciascuno in `JOURNAL.md` e nelle note degli oggetti mentre procedeva.**
+Per una volta la documentazione ha tenuto il passo della build.
+
+🔑 **Decisioni a verbale:** `Price_1__c` è il prezzo di riferimento per la
+fatturazione Mexal e entrambi i campi prezzo Mexal restano sul prodotto · la
+descrizione prodotto è la concatenazione di `descrizione estesa` e `descrizione
+aggiuntiva`, perché il nome ha un limite di 80 caratteri · prezzi a due decimali.
+🔑 **Ed è risolto il timore sulla duplicazione annuale**: gli articoli non si
+duplicano ogni anno, ci pensa la finestra di competenza della campagna, e **la
+campagna deve esistere prima della mappatura.**
+
+### 🔴 #145 riaperto, con la responsabilità sul lato cliente
+
+Fabrizio Paganelli ha sollevato il problema della fattura per la terza volta,
+partendo da una fattura generata dall'ordine che aveva appena creato, e sarà
+**lui** a contattare Mirko Merendi sulla mappatura di prezzo di listino, sconto e
+netto sull'ordine. 🔑 Questo risponde in parte a un punto portato avanti da giorni:
+la call ha un responsabile e una richiesta definita. 🔴 Ancora nessuna data, e
+**l'obiezione di Mirko Merendi sugli arrotondamenti non è stata menzionata**.
+🔑 Un fatto nuovo la rende più piccola: il prezzo di listino è già in Salesforce
+sul prodotto; manca un campo che lo porti sul tracciato ordine.
+
+### Per memoria
+
+🆕 È stata creata dal vivo una coppia di campagne `Pienissimo lab` /
+`Pienissimo lab 2026` (1 ottobre 2026 → 30 settembre 2027, tipologia evento live,
+data invio biglietto 1 dicembre 2026) e mappata sulla categoria **`E11`** — ⚠ una
+chiave di categoria nuova per questi documenti. ⚠ Nel frattempo entrambe le
+edizioni TEST MKT in **produzione** hanno ancora una data invio biglietto del
+**5 ottobre, già passata**, cosa che Aurel Mrruku ha segnalato lui stesso.
+🔴 **`vendita libro` è nella lista di test del 13 ottobre** — una *terza*
+affermazione che riporta i libri nel perimetro Salesforce contro lo status del
+9 ottobre, che nulla ha formalmente ribaltato. ⚠ Il record ordine non si apriva
+per Fabrizio Paganelli; il verbale lo legge sia come problema di browser sia come
+problema di accesso. ⚠ Campi `tipo merce` vuoti nella procedura di sistemazione
+ordini per Mexal, senza responsabile. **Fathom non ha restituito alcuna riunione
+Pienissimo per la sedicesima volta consecutiva**, `#tproj-pienissimo` è stato
+silenzioso per il quarto giorno, il canvas è fermo da sette settimane, e
+`Flows & Objects.drawio` e `Campi Oggetti…xlsx` non si sono mossi. Il registro
+resta alla **v1.6** — vedi **#227** — e il prossimo id libero è **234**.

@@ -5,7 +5,7 @@ status: active
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-04
-updated: 2026-10-09
+updated: 2026-10-14
 depends_on: [OI-96]
 blocks: [OI-53, OI-84]
 source: git DevMain 68c4342 (PR #34), metadata and Apex read directly 2026-09-04
@@ -174,3 +174,81 @@ now opens the LWC `mappaturaEdizioneNew` through the Aura wrapper
     behind New) or, failing that, the previous browser page.
   - A token re-opens the modal on every New click, because the override page is
     cached.
+
+## 2026-10-13 - a chosen product maps only itself
+
+**Changed at Aurel Mrruku's request:** saving a mapping on a chosen product no
+longer maps the rest of its category.
+
+- **The trigger** is back to `before insert` / `before update` only. The
+  category expansion is now `MappaturaEdizioneTriggerHandler.mapCategorySiblings`,
+  and only a category-only save calls it.
+- **A category-only save** in the New form calls
+  `MappaturaEdizioneProductSearch.saveCategoryMappings`. That method saves the
+  first available product, then maps the rest of the category, in one
+  transaction: all of them or none. The success toast shows how many products
+  were mapped. `findProductToMap` is no longer `@AuraEnabled`.
+- **Active products only (same day, second change):** a category save now
+  maps only products with `IsActive = true`, both the first product and the
+  rest of the category. It still skips products already on the campaign, or
+  with an active mapping whose dates overlap. When nothing is left to map, the
+  error reads _"Nessun prodotto attivo della categoria … da mappare"_.
+  Deployed to UAT as `0AfMA00000Cuewj0AB`. Rolled-back check: E02 has 18
+  products, 3 of them active, and the save mapped exactly those 3.
+- ⚠ **15 of UAT's 23 categories have no active product**: C10, C11, C20, C21,
+  C30, C40, C41, E01, E05, E10, P10, P20, P30, S10 and Z10. A category save on
+  any of them now fails. This follows from `cod_grp_merc` driving `IsActive`
+  (about 30 `S` articles); see
+  [the article sync](The%20Mexal%20article%20sync%20to%20Product2.md). The
+  category picker still lists them, with "(0 attivi)".
+- **Deployed to Pienissimo UAT only** (`0AfMA00000CubCU0AZ`), not committed.
+  Before the change, UAT matched the source; the modal JS differed only in
+  whitespace. Prod has the older handler, which has no category expansion at
+  all. Checked in UAT inside a rolled-back transaction, on throwaway 2098/2099
+  campaigns:
+  - a product save created 1 mapping;
+  - an E02 category save created 18, as many as E02 has products.
+
+  ⚠ The "all already mapped" error could not be exercised from anonymous Apex,
+  where `AuraHandledException` cannot be thrown. Not tried in a browser.
+
+### Where the active-only rule came from
+
+🔑 **The client asked for it, the same day, hours before it was built.** At
+[the 13/10 Feedback Test UAT](../meetings/2026-10-13%20Feedback%20Test%20UAT.md)
+(`01:13:27`, `01:17:38`) Fabrizio Paganelli hit the volume of inactive products a
+category save produced and asked for active-only; Gemini records it under
+`Concordato`. **It reverses the population rule the same client agreed on
+09/10** — see
+[OI-96](../items/OI-96%20Edition%20mapping%20table%20on%20Salesforce.md), which
+carries both dates.
+
+`0816bf7` (15:18 CEST) is **in `DevMain`** at **`21d6686`** via the direct push
+and PR #98 / #100, so the _"not committed"_ note above was stale within the hour.
+Prod still has the older handler.
+
+⚠ **The 15-of-23-categories consequence has no owner and no tracker row**, and
+the client's end-to-end test is the following morning.
+
+### 2026-10-14 — two of the fifteen empty categories now have an active product
+
+The 15-of-23 consequence above is **two categories smaller**, incidentally rather
+than by design. The 14/10 article-sync work
+([the sync note](The%20Mexal%20article%20sync%20to%20Product2.md)) brought
+`PLUS-N05` in as **`C10`** and `PLUS-N06` as **`C11`**, both **active** — the two
+codes the client created during the e2e. So a category save on `C10` or `C11` can
+now find a product to map.
+
+🔴 **Thirteen still cannot**: C20, C21, C30, C40, C41, E01, E05, E10, P10, P20,
+P30, S10, Z10. ⚠ **The active-only rule was not revisited**, so the failure mode
+is unchanged for any category whose products are all inactive, and it still has
+**no owner and no tracker row**.
+
+🆕 **`E12` is a further new category value** from the same re-sync, and two
+workbook values were overwritten by Mexal (`CS-00007`, `CS000006`: `E03` → `E01`,
+both inactive). ⚠ Neither is mapped to a campaign in any record.
+
+⚠ **A `C10` code mismatch did surface in the e2e** (`00:13:30`, `00:18:36`), and
+`C10` is one of the fifteen — but the record says _"disallineamento nei codici"_,
+not that a category save failed, and nobody in the room named the active-only
+rule. **Recorded as the same category, not established as the same fault.**

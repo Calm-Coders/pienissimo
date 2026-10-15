@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-09
+updated: 2026-10-14
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -149,3 +149,106 @@ mentioned it.**
 🔴 **Four days to the 13/10 production confirmation, twelve to go-live.** The
 fix remains what the 07/10 ruling asked for: `E` counts as paid only once
 `dueDate` is in the past. The data is already in the method.
+
+## 🔴 2026-10-12 - unchanged a fourth night, and the confirmation is tomorrow
+
+Re-verified against `DevMain` at **`a061f55`**:
+
+| Checked | State |
+| ------- | ----- |
+| `MexalScadenzarioSearchService.cls:205-207` | `deadline.paid = deadline.paymentStatus == 'P' \|\| deadline.paymentStatus == 'E';` — **no date condition** |
+| `dueDate` | still parsed at **line 194** from `dt_sca_pg`, eleven lines above the predicate that ignores it |
+| `Scadenza_Fattura__c.Pagata__c` | formula still `OR(ISPICKVAL(…,"P"), ISPICKVAL(…,"E"))` |
+| The field's `description` | still _"Vero quando lo stato Mexal e P o E."_ — the unqualified rule documented as intended |
+| `git log --since 2026-10-09T22:00Z` on both files | **no commits** |
+
+Four commits landed on the project over the weekend window, none of them in these
+files. **Nothing in Gmail, Slack, Drive, Fathom or any commit message mentioned
+this defect**, a fourth consecutive night.
+
+🔴 **The 13 October production confirmation is tomorrow.** The 07/10 Mexal call
+agreed as `Concordato` that state `E` counts as paid **only if the due date has
+passed**; five days later the code still releases a ticket when a Ri.Ba. is
+merely presented. ⚠ The one session that would have exercised the payment path
+end to end — [the 12/10 e2e UAT](../meetings/2026-10-12%20UAT%20Test%20e2e.md) —
+**was postponed to 14 October**, so the confirmation now falls before the test.
+
+The correction is unchanged in scope: one date comparison in a method that
+already holds the date, and the same condition on the formula field.
+
+## 🔴 2026-10-13 — unchanged a fifth night, and the confirmation date has passed
+
+Re-verified byte-for-byte against `DevMain` **`21d6686`** after **13 commits**
+today:
+
+- `MexalScadenzarioSearchService.cls:205-207` —
+  `deadline.paid = deadline.paymentStatus == 'P' || deadline.paymentStatus == 'E';`
+  with **no date condition**, eleven lines below `deadline.dueDate` being parsed
+  from `dt_sca_pg` at line 195. The method already holds the date it ignores.
+- `Scadenza_Fattura__c/fields/Pagata__c` —
+  `OR(ISPICKVAL(Stato_Pagamento_Mexal__c, "P"), ISPICKVAL(Stato_Pagamento_Mexal__c, "E"))`,
+  and its `description` still documents the unqualified rule as intended:
+  _"Vero quando lo stato Mexal e P o E."_
+- **No commit touched either file.** Latest on the Apex is `f292b72`, which
+  predates the finding.
+
+🔴 **The 13/10 production confirmation was today and this was not fixed.**
+Nothing in any swept source — mail, chat, meeting, commit or ruling — mentions it.
+**Fifth consecutive night.**
+
+⚠ **And the 13/10 session walked straight past it.** The client built a quote with
+**four payment tranches due 31 October, 30 November, 31 December and 31 January**,
+on payment terms _"RID fine mese data fattura"_ — the Ri.Ba. family this row is
+about — and the order reached Mexal. **Four of those four due dates are in the
+future**, which is precisely the condition under which an `E` state reads as paid.
+The return leg that would expose it (`MexalInvoiceSyncScheduler`, the scadenzario)
+is not recorded as having run against that order, so **the defect was set up and
+not triggered**.
+
+🔴 The e2e that would exercise the payment path is **tomorrow, 14/10**.
+
+## 🔴 2026-10-14 — sixth night unmoved, and the return leg finally ran without touching it
+
+**Re-verified byte-for-byte at `DevMain` `29d1002`.** Both predicates are
+identical to every previous night:
+
+- `MexalScadenzarioSearchService.cls`, `mapDeadlines`:
+  `deadline.paid = deadline.paymentStatus == 'P' || deadline.paymentStatus == 'E';`
+  — eleven lines below the `dueDate` the same method parses from `dt_sca_pg`.
+- `Scadenza_Fattura__c.Pagata__c`:
+  `OR(ISPICKVAL(Stato_Pagamento_Mexal__c,"P"), ISPICKVAL(Stato_Pagamento_Mexal__c,"E"))`,
+  description still _"Vero quando lo stato Mexal e P o E."_
+
+`git log` on both files is unchanged — last touched by `f292b72` and `731c7ac`.
+**No commit in the window went near either.**
+
+## 🔑 But the return leg ran, for the first time on a real invoice
+
+[The 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) drove the whole
+payment chain that this row has been waiting for a test of
+(`01:07:56`–`01:23:29`): one €20,000 order split into four deferred invoices,
+invoice 10 for €5,000 posted against customer 50171, the scadenzario synced back
+into Salesforce, the amount, tranche and payment state read in the Salesforce UI,
+and a €5,000 collection registered and synced again.
+
+🟢 **Salesforce showed `non pagato`, correctly.**
+
+⚠ **And that is not a test of this defect.** The payment was a **bonifico**. This
+row is about Mexal status **`E`**, which the record associates with the Ri.Ba.
+family — the condition that makes `paid = P || E` wrong is a *future-dated* `E`,
+and a bonifico does not produce one.
+
+🔴 **So the defect has now survived two consecutive sessions that set it up and
+did not trigger it.** On 13/10 the client built four future-dated tranches on
+_"RID fine mese"_ terms and the return leg never ran; on 14/10 the return leg ran
+and the terms were bonifico. **The one combination that fails — Ri.Ba.-family
+terms plus a return leg — has still never been exercised**, and the 13/10
+production confirmation date passed two days ago.
+
+⚠ **The exposure grew today.** The same session agreed to run the scadenzario
+sync **every half hour to an hour**
+([OI-239](OI-239%20The%20Mexal%20scadenzario%20sync%20must%20run%20every%20half%20hour%20and%20nothing%20schedules%20it.md)).
+A predicate that reads a rate as paid before its due date is read 48 times a day
+instead of once, into a field administrators are being taught to trust — and the
+order roll-up it feeds (`incassato`) was shown to the client in this session as a
+headline figure.

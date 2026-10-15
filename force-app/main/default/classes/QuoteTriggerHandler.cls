@@ -18,7 +18,6 @@ public without sharing class QuoteTriggerHandler {
   private static final Set<String> PDF_INPUT_FIELDS = new Set<String>{
     'AccountId',
     'OpportunityId',
-    'Locale__c',
     'ExpirationDate',
     'BillingName',
     'BillingStreet',
@@ -164,7 +163,7 @@ public without sharing class QuoteTriggerHandler {
 
     Map<Id, Opportunity> opportunitiesById = new Map<Id, Opportunity>(
       [
-        SELECT Id, AccountId, Locale__c
+        SELECT Id, AccountId, Account.Agente__r.Agente__c, Locale__c
         FROM Opportunity
         WHERE Id IN :opportunityIds
       ]
@@ -177,6 +176,14 @@ public without sharing class QuoteTriggerHandler {
       );
       if (opportunityRecord == null) {
         continue;
+      }
+
+      if (
+        oldQuoteMap == null &&
+        opportunityRecord.Account != null &&
+        opportunityRecord.Account.Agente__r != null
+      ) {
+        quoteRecord.Codice_Agente_Esterno__c = opportunityRecord.Account.Agente__r.Agente__c;
       }
 
       if (quoteRecord.Locale__c == null) {

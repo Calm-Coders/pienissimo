@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-07
-updated: 2026-10-08
+updated: 2026-10-14
 depends_on: [OI-173, OI-211]
 blocks: [go-live]
 source: notes/meetings/2026-10-07 UAT Integrazione WooCommerce e Mexal.md
@@ -105,3 +105,58 @@ enrichment, and the nightly return flow of
 
 ⚠ So the two systems still pull the same record in opposite directions; what
 changed is that one of the two pulls is now deliberate and merged.
+
+## 2026-10-14 — the San Marino gap was demonstrated to the client, and the call's trigger is now of record
+
+**Two sources the same day.**
+
+### The e2e put it in front of the client
+
+[The 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) (`01:01:30`):
+Aurel Mrruku showed that the Anticipay call
+
+> _"non risulta attiva per un account di San Marino poiché non presente sul
+> database italiano o non gestito in automatico"_
+
+🔑 **This is the first time the limitation is demonstrated to the client rather
+than established internally.** The 07/10 finding was ROMI's; the 08/10 Italy
+default was agreed in a ROMI-internal session with no client present. Elisa
+Migliano saw it happen on 14/10 and did not contest it.
+
+### 🔑 And the call's trigger is stated for the first time
+
+`01:03:00`, Elisa Migliano and Aurel Mrruku together:
+
+> _"la chiamata ad Anticipay viene eseguita esclusivamente al primo ordine di un
+> account quando viene generato il codice Maxal, evitando così costi superflui"_
+
+**Once per account, at the first order, when the Mexal code is generated** — a
+deliberate cost control, and a fact no previous source carried.
+
+⚠ **It has a consequence nobody drew.** If the enrichment runs once and never
+again, then a customer whose registry data changes later is never re-enriched —
+which is the gap [OI-209](OI-209%20Mexal%20anagrafica%20updates%20only%20propagate%20when%20an%20order%20is%20sent.md)
+describes from the other side, and the case
+[OI-234](OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)
+raises. ⚠ It also means the unconditional `BillingCountry = 'IT'` write of
+`577fc5c` lands **once, permanently**, at first order.
+
+### A 404 the same morning
+
+An automated Salesforce mail at **2026-10-14 08:11:09Z**, subject _"Sandbox:
+Errore Anticipay da verificare"_, reports the check failing on account
+`001MA000012gCXsYAM` in the **partial sandbox** —
+`ability-customization-52152--partial` — with **HTTP 404** and message
+_"TEST - Azienda non trovata"_, integration log `a05MA00000GWyvtYAD`.
+
+- 🟢 **The error path works end to end** — the callout failed, the integration log
+  was written, and the notification arrived. That is
+  [OI-107](OI-107%20The%20Anticipay%20error%20path%20does%20not%20reach%20the%20integration%20log%20intact.md)
+  behaving.
+- ⚠ **404 is the documented response for a company Anticipay cannot resolve**, so
+  this is consistent with a test VAT number, with a San Marino company, or with
+  both. **Which cannot be told from the mail**, and the account was not opened.
+- ⚠ **The mail went to `a.mrruku@romicompany.com` only** — the hardcoded ROMI
+  address of [OI-119](OI-119%20The%20Anticipay%20error%20notification%20goes%20to%20a%20hardcoded%20ROMI%20address.md),
+  still unfixed. The message says it _"richiede una verifica amministrativa"_ and
+  no administrator received it.

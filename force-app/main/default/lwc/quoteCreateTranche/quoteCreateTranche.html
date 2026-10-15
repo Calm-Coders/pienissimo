@@ -46,7 +46,18 @@
         <template if:true={isEditMode}>
           <div class="section-header edit-selector-header">
             <h3 class="section-heading">Tranche esistenti</h3>
-            <span>Seleziona una tranche da modificare</span>
+            <div class="edit-selector-actions">
+              <span>Seleziona una tranche da modificare</span>
+              <template if:true={showAddTrancheButton}>
+                <lightning-button
+                  label="Aggiungi tranche"
+                  icon-name="utility:add"
+                  variant="brand-outline"
+                  disabled={isAddTrancheDisabled}
+                  onclick={handleAddTranche}
+                ></lightning-button>
+              </template>
+            </div>
           </div>
           <div class="edit-tranche-list">
             <template for:each={editTrancheCards} for:item="tranche">
@@ -72,18 +83,29 @@
         </template>
 
         <template if:false={isEditMode}>
-          <div class="count-row">
-            <lightning-input
-              type="number"
-              label="Numero di tranche"
-              value={trancheCount}
-              min="1"
-              max="20"
-              step="1"
-              required
-              disabled={isTrancheCountDisabled}
-              onchange={handleTrancheCountChange}
-            ></lightning-input>
+          <div class="count-actions">
+            <div class="count-row">
+              <lightning-input
+                type="number"
+                label="Numero di tranche"
+                value={trancheCount}
+                min="1"
+                max="20"
+                step="1"
+                required
+                disabled={isTrancheCountDisabled}
+                onchange={handleTrancheCountChange}
+              ></lightning-input>
+            </div>
+            <template if:true={showAddTrancheButton}>
+              <lightning-button
+                label="Aggiungi tranche"
+                icon-name="utility:add"
+                variant="brand-outline"
+                disabled={isAddTrancheDisabled}
+                onclick={handleAddTranche}
+              ></lightning-button>
+            </template>
           </div>
         </template>
 

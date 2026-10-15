@@ -166,7 +166,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Codice_Agente__c</fieldItem>
                 <identifier>RecordCodice_Agente_cField</identifier>
