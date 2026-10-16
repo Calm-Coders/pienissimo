@@ -265,17 +265,21 @@ public without sharing class LeadConversionTriggerHandler {
         continue;
       }
 
+      Boolean hasContactOnLeadAccount = false;
+      Boolean hasContactOnDifferentAccount = false;
       for (Contact contactRecord : matchingContacts) {
         Id contactCommercialAccountId = commercialAccountIdsByContactAccountId.get(
           contactRecord.AccountId
         );
-        if (
-          contactCommercialAccountId != null &&
-          contactCommercialAccountId != leadCommercialAccountId
-        ) {
-          leadRecord.Partita_IVA__c.addError(CONTACT_ACCOUNT_CONFLICT_ERROR);
-          break;
+        if (contactCommercialAccountId == leadCommercialAccountId) {
+          hasContactOnLeadAccount = true;
+        } else if (contactCommercialAccountId != null) {
+          hasContactOnDifferentAccount = true;
         }
+      }
+
+      if (!hasContactOnLeadAccount && hasContactOnDifferentAccount) {
+        leadRecord.Partita_IVA__c.addError(CONTACT_ACCOUNT_CONFLICT_ERROR);
       }
     }
   }

@@ -26,15 +26,37 @@
             <p class="eyebrow">Preventivo {page.quoteNumber}</p>
             <h2 id="quote-heading">{quoteLabel}</h2>
           </div>
-          <div class="total-box">
-            <span>Totale</span>
-            <strong>
-              <lightning-formatted-number
-                value={page.grandTotal}
-                format-style="currency"
-                currency-code="EUR"
-              ></lightning-formatted-number>
-            </strong>
+          <div class="totals-grid" aria-label="Totali preventivo">
+            <div class="total-card">
+              <span>Totale Listino</span>
+              <strong>
+                <lightning-formatted-number
+                  value={page.listPriceTotal}
+                  format-style="currency"
+                  currency-code="EUR"
+                ></lightning-formatted-number>
+              </strong>
+            </div>
+            <div class="total-card">
+              <span>Sconto Totale</span>
+              <strong>
+                <lightning-formatted-number
+                  value={page.discountTotal}
+                  format-style="currency"
+                  currency-code="EUR"
+                ></lightning-formatted-number>
+              </strong>
+            </div>
+            <div class="total-card total-net-card">
+              <span>Totale Netto</span>
+              <strong>
+                <lightning-formatted-number
+                  value={page.totalPrice}
+                  format-style="currency"
+                  currency-code="EUR"
+                ></lightning-formatted-number>
+              </strong>
+            </div>
           </div>
         </section>
 

@@ -67,6 +67,10 @@ public without sharing class QuoteAcceptanceController {
     @AuraEnabled
     public Decimal subtotal { get; set; }
     @AuraEnabled
+    public Decimal listPriceTotal { get; set; }
+    @AuraEnabled
+    public Decimal discountTotal { get; set; }
+    @AuraEnabled
     public Decimal totalPrice { get; set; }
     @AuraEnabled
     public Decimal grandTotal { get; set; }
@@ -180,6 +184,8 @@ public without sharing class QuoteAcceptanceController {
       : quoteRecord.Opportunity.Name;
     response.expirationDate = quoteRecord.ExpirationDate;
     response.subtotal = quoteRecord.Subtotal;
+    response.listPriceTotal = quoteRecord.Totale_Listino__c;
+    response.discountTotal = quoteRecord.Sconto_Totale__c;
     response.totalPrice = quoteRecord.TotalPrice;
     response.grandTotal = quoteRecord.GrandTotal;
     response.canAct = canSubmitAction(quoteRecord);
@@ -348,7 +354,8 @@ public without sharing class QuoteAcceptanceController {
   private static Quote queryQuote(Id quoteId, Boolean lockRecord) {
     String queryText =
       'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, Subtotal, ' +
-      'TotalPrice, GrandTotal, DocuSign_Status__c, DocuSign_Envelope_Id__c, ' +
+      'Totale_Listino__c, Sconto_Totale__c, TotalPrice, GrandTotal, ' +
+      'DocuSign_Status__c, DocuSign_Envelope_Id__c, ' +
       'Email, Account.Name, Opportunity.Name, Opportunity.Tipo_Opportunita__c ' +
       'FROM Quote WHERE Id = :quoteId LIMIT 1';
 
