@@ -272,6 +272,22 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Locale__c</fieldItem>
+                <identifier>RecordLocale_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-bda0868e-f60d-43d1-bc15-da4b2cf8d682</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -453,9 +469,15 @@
                 <fieldItem>Record.Checkout_Link__c</fieldItem>
                 <identifier>RecordCheckout_Link_cField</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.CreatedBy.Username}</leftValue>
                         <operator>NE</operator>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.RecordType.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>WooCommerce</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>

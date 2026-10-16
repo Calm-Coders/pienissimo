@@ -217,16 +217,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Website</fieldItem>
-                <identifier>RecordWebsiteField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Type</fieldItem>
                 <identifier>RecordTypeField</identifier>
             </fieldInstance>
@@ -249,7 +239,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>required</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Agente__c</fieldItem>
                 <identifier>RecordAgente__cField</identifier>

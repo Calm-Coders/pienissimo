@@ -43,6 +43,12 @@
           </div>
         </template>
 
+        <template if:true={hasQuoteLines}>
+          <div class="message slds-m-bottom_medium">
+            {trancheCountSuggestion}
+          </div>
+        </template>
+
         <template if:true={isEditMode}>
           <div class="section-header edit-selector-header">
             <h3 class="section-heading">Tranche esistenti</h3>
@@ -90,7 +96,7 @@
                 label="Numero di tranche"
                 value={trancheCount}
                 min="1"
-                max="20"
+                max={maximumTrancheCount}
                 step="1"
                 required
                 disabled={isTrancheCountDisabled}
