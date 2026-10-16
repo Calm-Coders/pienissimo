@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Pienissimo
 org: both
 raised: 2026-10-15
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-246]
 blocks: [go-live]
 severity: gating
@@ -165,3 +165,61 @@ same session** — and the dual-run assumption at
    [OI-128](OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)
    records that Daniela Morgese — who signs commercially — was only ever cc'd.
    She is cc'd again.
+
+## 🟡 2026-10-16 — the client has read it; nobody has accepted it
+
+Two acknowledgements of receipt arrived, both weaker than the written reply
+[OI-124](OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md)'s rule asks
+for.
+
+**1. Verbally, in session.** At the close of
+[the 16/10 UAT](../meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md)
+(`02:09:12`) Elena Spini pressed it and Sabatino Rinaldi confirmed only that he
+had seen it:
+
+> **Elena Spini:** _"Considerate che io ieri ho mandato il piano … quindi
+> qualsiasi vostra decisione poi mette in discussione il piano. … prendete,
+> rivedete la mail, l'ho mandata ieri sera, questo stato avanzamento
+> progetto."_
+>
+> **Sabatino Rinaldi:** _"Ah, sì, sì, sì, sì, l'ho vista prima di entrare in
+> call."_
+
+🔑 **That is receipt, not agreement** — and Sabatino Rinaldi is not the person
+who disputed the date. **Fabrizio Paganelli was in the same call and said
+nothing about it**, having argued the previous day that 02/11 cannot be met
+([OI-246](OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)).
+**No reply has been sent in the mail thread**, which is where the 09/09
+acknowledgement of the previous move landed.
+
+**2. Internally, in ROMI's own status channel.** Elena Spini, `#tproj-pienissimo`
+16/10 19:20 CEST:
+
+> _"Go-live slittato al 02/11 (era il 21/10): ieri (15/10) ho mandato al cliente
+> il nuovo piano. Go/No-Go entro il 27/10, settimana del 19/10 per i test dei key
+> user, formazione dal 26 al 30/10."_
+
+🟢 **This adds detail the mail did not carry**: the key-user test week is
+**19–23/10** and training runs **26–30/10** — so training ends on the Friday
+before a Monday go-live, with no buffer.
+
+🔑🟢 **And it records the objection, which the mail to the client did not:**
+
+> _"Fabrizio P. in call si è preso il ritardo, ma è il primo a dire che forse
+> per il 2 non ce la fanno."_
+
+So ROMI has written down internally that the client's product lead doubts the
+date — see OI-246. ⚠ **It is still not in anything the client has received.**
+
+### The register still does not move
+
+**Unchanged: version stays 1.6, `go_live:` stays `2026-10-21`.** OI-124's rule
+is a written acknowledgement in the thread, and what exists is one verbal
+_"l'ho vista"_ from a participant who is not the objector, with the objection
+itself recorded only on ROMI's side. ⚠ **Moving the register tonight would
+record as contractual a date that one party has disputed on the record and no
+party has accepted in writing.**
+
+⚠ **Second night this has been deferred.** When the acknowledgement lands, the
+nine places listed in the 15/10 trace change in one session, together with
+`requirements/pienissimo-requirements.yaml:469`'s dual-run assumption.

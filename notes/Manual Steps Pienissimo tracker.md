@@ -5,7 +5,7 @@ status: active
 owner: Rexhina Hysi
 org: ROMI
 raised: 2026-10-09
-updated: 2026-10-13
+updated: 2026-10-16
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
 ---
 
@@ -138,3 +138,38 @@ It has grown from two rows to four in four days, every new row arrives `Done` in
 UAT, and **`Status Prod` has never been filled on any row since the sheet was
 created on 09/10**. Nothing on it names an owner for the production column, and
 go-live is **21/10**.
+
+## 2026-10-16 — a fifth row, and `Status Prod` is still empty on every one
+
+Modified **2026-10-16T09:29:19Z**. Range is now **`A1:C6`** — a header and
+**five** rows.
+
+| # | Row | `Status Uat` | `Status Prod` |
+| - | --- | ------------ | ------------- |
+| 1 | Lead record-type settings | `Done` | **empty** |
+| 2 | `ParticipantDocumentRequestTrigger` subscriber run-as user and batch size | `Done` | **empty** |
+| 3 | run all scheduled jobs as `amministratore pienissimo` | **empty** | **empty** |
+| 4 | remove unnecessary buttons from object list view | `Done` | **empty** |
+| 5 | 🆕 **Add the default agent for Accounts and Orders created from WooCommerce** | `Done` | **empty** |
+
+**Row 5 is the configuration half of a build that landed the same morning.**
+`4eadae8` (Anita Aga, 16/10 11:32 CEST, branch `DevAnita15`) adds
+`Integration_Notification_Config__c.Default_Agent_Username__c`, and the value
+that goes in it is a record of a custom setting — **data, not metadata**, so no
+deploy carries it. Exactly the class of step this sheet exists for. See
+[OI-214](items/OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md).
+
+🔴 **This row is the first one on the sheet whose blank Prod cell is a hard
+failure rather than a degraded one.** `WoocommerceOrderService.createAccount`
+**throws** when the configuration is missing or incomplete, so once `4eadae8`
+reaches production a WooCommerce order for a **new** customer fails outright
+until someone fills this in. The order-side path falls back to Quote/Account
+inheritance; the account-side path does not.
+
+⚠ **The pattern is now eight days old and unbroken.** Two rows on 09/10, three
+on 12/10, four on 13/10, five on 16/10; every new row arrives `Done` in UAT; and
+**`Status Prod` has never been filled on any row since the sheet was created.**
+Still no owner for the production column, still no date, and go-live is
+**02/11** with Go/No-Go on **27/10**.
+
+**No credentials, prices or personal data appear in the new row.**

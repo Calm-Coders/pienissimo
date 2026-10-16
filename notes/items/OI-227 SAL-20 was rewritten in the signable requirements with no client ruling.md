@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-12
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-59, OI-184]
 blocks: [go-live]
 severity: gating
@@ -223,3 +223,51 @@ moves to match it; waiting past that point is just drift.
 restated it in the session, a fortnight on: _"abbiamo previsto un invio della
 mail di cui siamo sempre in attesa del suo COP[Y] che non ci ha mai più
 rimandato"_.
+
+## 🔴 2026-10-16 — a fifth night, and the question Elena Spini asked by today went unanswered
+
+**Nothing moved.** The record for the day:
+
+- 🔴 **No reply to the 18:33:14 DM of 15/10.** Elena Spini asked Aurel Mrruku to
+  tell her **today** whether `SAL-20` is in UAT — _"domani mi fai sapere se questa
+  cosa c'è in UAT please"_. The Elena Spini DM carried 14 messages on 16/10
+  (12:22 CEST and 17:43–17:53 CEST); **every one is about LIFE365 documentation
+  and none mentions `SAL-20`, UAT or the parking stages.**
+- 🔴 **Not raised in the session.** `SAL-20`, _"da ricontattare"_ and the
+  Opportunity parking stages appear nowhere in the 02:26:15 of
+  [the 16/10 UAT](../meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md) —
+  which was the marketing flow, so the absence is expected rather than telling.
+- 🔴 **No client ruling in any source.** No mail, no message, no meeting.
+- 🔴 **`DevMain` has not moved**, so the rewritten text stands exactly as PR #94
+  merged it on 12/10.
+
+🔑 **Four messages in three days, none answered.** The escalation recorded on
+15/10 — that she has told the client the behaviour is built, _"me la sono venuta
+come fatta"_ — is therefore **unresolved going into the key-user test week that
+starts on Monday**, and the Opportunity parking stages are part of the
+commercial flow Marco Montesi is shown on 19/10 at 15:00.
+
+### The register, a fifth night
+
+**Not amended. Version stays 1.6; `SAL-20` stays `to_confirm`.**
+
+⚠ **The 15/10 trace said this reasoning expires today, and it has.** The
+argument for leaving the YAML alone was that the correct edit depended on an
+answer Elena Spini had asked for by 16 October. **That answer did not arrive**,
+so the dependency has not resolved — it has simply gone stale.
+
+🔑 **This sweep still does not amend it, for a different and narrower reason:
+there is nothing new to write.** The options have not changed and none of them
+is this procedure's to pick —
+
+| Option | Why it is not an agent's call |
+| --- | --- |
+| Revert `SAL-20` to the pre-`96d77de` wording | Reverses a signable-text edit a ROMI developer made deliberately, against an internal instruction recorded in [OI-59](OI-59%20Quote%20workflow%20configuration.md) |
+| Confirm the new wording | Requires a client ruling that does not exist |
+| Mark `SAL-20` disputed in the register | Writes a project-management state into a contract-bound document |
+
+⚠ **What has changed is the cost of waiting.** The text sits in
+`REQUISITI.it.md` — the document Pienissimo signs — describing behaviour the
+client has never ruled on, **five days on, with the client's own people in the
+system from Monday.** The fix is one answer from Aurel Mrruku about his own
+build, and it has been asked for four times.

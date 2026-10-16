@@ -7187,3 +7187,174 @@ returned no Pienissimo meeting for an eighteenth run; `#tproj-pienissimo` is
 silent a sixth day; the canvas is static at nine weeks; `Campi Oggetti…xlsx`,
 `Flows & Objects.drawio`, the manual-steps sheet and `Testbook…v2_1.xlsx` did not
 move. The register stays at **v1.6** and the next free item id is **250**.
+
+## 64. Update 2026-10-16 — the marketing ticket chain ran end to end in production, the client approved the check-in API, and new build scope was agreed the morning after the freeze
+
+**Source:** the nightly `requirements-check` of 2026-10-16, watermark
+2026-10-15T22:00Z. One client session of **02:26:15** —
+[UAT Flussi MKT Biglietti](../notes/meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md),
+full raw transcript — plus Gmail, Slack, Drive, Fathom and the repository.
+**3 commits, all outside `DevMain`; 0 PRs merged; `DevMain` unmoved for 48
+hours** at `73a9d59`. Every build claim below is repository arithmetic against
+that head; no org was opened.
+
+### 🟢 The check-in integration is unblocked
+
+**Andrea Parmeggiani replied after seven days** — 16/10 07:37:42Z: _"Si ho
+fatto un test e confermo che potete portare in produzione."_ Aurel Mrruku found
+**two** successful calls in the logs, one from Postman and one from the real
+application, the second correctly reporting the ticket as already checked in.
+Fabrizio Paganelli's undertaking to chase him in person is what moved it.
+
+🔴 **The production move is undone and unowned**, campaign-date validity
+checking is still unbuilt, and the **QR credential rotation is in its tenth
+day** — now with production credentials due to travel the same path. See
+[#161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md).
+
+### 🟢 The marketing flow works
+
+Invitation → nomination → **PDF with QR**, demonstrated in **production with
+fake data**, because Marketing Cloud is only testable there. Two Marketing Cloud
+campaigns: the invitation journey (up to 11 sends, exiting on renunciation,
+completion or event date) and the assigned-ticket journey (order line, PDF with
+QR and liberatoria, download mail). Sabatino Rinaldi received the invitation,
+nominated two participants and had the ticket inside a minute.
+
+### 🔴 The client reopened two closed logics, and won one
+
+**Renunciation buttons** ([#242](../notes/items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md)):
+both `accetta` and `rifiuta` go in the invitation mail, **pointing at the same
+landing page** — which is what ROMI advised against, three times. Matteo
+Distaso's business reason is on the record (_"sono pigri … ci troviamo le sale
+vuote"_); so is Aurel Mrruku's objection (_"per sbaglio hai fatto rinuncia, hai
+già spaccato tutto"_). Elena Spini conceded: _"alziamo le mani"_. 🟢 The
+concession back is a **double-confirm pop-up**, which Matteo Distaso asked for
+himself, plus a larger button and a mobile check.
+
+🔴 **The recovery path went to Fase 2 in the same session**
+([#253](../notes/items/OI-253%20Restoring%20a%20ticket%20after%20an%20accidental%20rinuncia%20is%20Fase%202.md)).
+So a one-click, irreversible, customer-facing action ships in Fase 1 while the
+undo does not, the only guard is a pop-up that is itself unbuilt, and **nobody
+in the room connected the two decisions**. ⚠ An existing rule also limits the
+concession: once the first name is entered the first ticket is issued and
+renunciation is no longer possible, so a `rifiuta` button will sometimes land on
+a page with no renunciation control. Elena Spini said so aloud; nobody ruled.
+
+### 🔴 New build scope, one day after the freeze
+
+[#250](../notes/items/OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md).
+The flow has **one** wait interval for all 11 reminders; Rebecca Marmo
+calculates a different gap before each one by hand against the calendar.
+**Agreed: up to 11 interval fields on the Edizione, in days, a blank field
+stopping the sequence.** That is an 11-field schema change plus a journey
+rebuild plus an unresolved permission question — **and the 15/10 freeze limiting
+Fase 1 to _"affinamenti minori"_ was named by nobody.** Elena Spini made the
+process objection without invoking it: _"questa cosa dei weight è uscita al 16
+di ottobre"_. ⚠ Not decided — it waits on the client's own 15:00 internal
+meeting, whose outcome is in no source. ⚠ Both sides believe they specified it
+in writing; neither mail is in this repository.
+
+### 🟢 Streaming events leave the ticket flow
+
+[#251](../notes/items/OI-251%20ODB%20Live%20streaming%20must%20not%20generate%20a%20ticket.md):
+ODB Live is streaming-only, so its Mexal article code is flagged **no ticket** —
+the existing _"genera biglietto sì/no"_ design already covers it and **Fabrizio
+Paganelli took the registry change**. 🔑 He also raised the only real objection:
+no ticket means no QR, no scan and **no attendance record**, so 2028 would be
+indistinguishable from 2027. The answer is **Zoom**, which rests entirely on
+[#255](../notes/items/OI-255%20The%20Salesforce%20to%20Zoom%20connector%20is%20unverified.md)
+— no connector named, subscription tier unknown, no owner, no phase, and a
+**pre-contract claim attributed to Andrea Galotto** doing the load-bearing.
+⚠ Sabatino Rinaldi described Zoom pulling contacts **out** of the CRM, the
+opposite direction from the one the attendance answer needs; nobody separated
+the two.
+
+[#252](../notes/items/OI-252%20The%20Food%20Marketing%20Festival%20needs%20its%20own%20journey%20template.md):
+the Food Marketing Festival is the one event the standard flow does not fit —
+free and paid tickets, three types, funnels launched reactively _"oggi per
+domani"_. It gets a duplicable template **whose entry criteria must never
+change**. Phase unruled; the tour was explicitly cleared as fitting.
+
+### 🔴 The client failed to create records on its own
+
+[#254](../notes/items/OI-254%20Creating%20a%20Referente%20and%20an%20Account%20failed%20for%20the%20client.md).
+Fabrizio Paganelli, 15:07:59Z: _"Abbiamo provato a creare Referente e Account.
+Abbiamo avuto qualche problema"_, with four screenshots and the detail deferred
+to a call. **The first recorded attempt by the client unaided, and it failed** —
+three days before the key-user test week and the 19/10 walkthrough, unanswered.
+The screenshots were deliberately not opened: inline client images that may
+carry customer data.
+
+### 🟡 The WooCommerce default agent was built, and it is a slot rather than an answer
+
+[#214](../notes/items/OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md).
+`4eadae8` (Anita Aga, `DevAnita15`) adds
+`Integration_Notification_Config__c.Default_Agent_Username__c`, resolves it to
+an active User and stamps `Codice_Agente__c` on WooCommerce orders with no
+Opportunity, preserving Quote/Account inheritance when unset. 🔴 **Which code
+goes in it is still unnamed** — Marco Montesi, nine days. 🔴 And
+`WoocommerceOrderService.createAccount` **throws** when it is unset, while the
+`Manual Steps Pienissimo` sheet's Prod column is blank on **all five** rows and
+has been since 09/10 — so in production a WooCommerce order for a new customer
+would fail outright.
+
+### Dates, and what they imply
+
+Elena Spini's `#tproj-pienissimo` status (16/10 19:20 CEST) broke six days of
+channel silence and dated the end of the project for the first time: key-user
+tests **19–23/10**, training **26–30/10**, Go/No-Go **by 27/10**, go-live
+**02/11**, with **18 days to finish** estimated.
+
+🔑 **So Go/No-Go falls on day two of a five-day training week**
+([#246](../notes/items/OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)),
+and the same post records the objection the client-facing mail did not:
+_"Fabrizio P. in call si è preso il ritardo, ma è il primo a dire che forse per
+il 2 non ce la fanno."_ ⚠ Still not in anything the client has received.
+
+🟢 **Fase 2 moved for the first time since August**
+([#83](../notes/items/OI-83%20No%20phase%202%20estimate.md)) — estimate aligned
+with Andrea Galotto on 15/10, offer **per single activity**, 🔴 still unsent
+while the freeze keeps routing work into a phase with no commercial terms.
+
+🟢 **The Marco Montesi walkthrough is booked** —
+_"Test UAT Commerciali"_, Mon 19/10 15:00, to `marco.m@` alone
+([#240](../notes/items/OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)).
+⚠ Nothing confirms the user exists, and _"primo accesso"_ falls on the first day
+of the week he would be training people for.
+
+### 🔴 Unmoved, and the register
+
+- **The go-live is read but not accepted.** Sabatino Rinaldi, in session: _"l'ho
+  vista prima di entrare in call"_ — receipt, from someone who is not the
+  objector. **Fabrizio Paganelli was in the same call and said nothing about the
+  date**, and the mail thread is unanswered. **The register was deliberately not
+  moved a second night**: version stays 1.6, `go_live:` stays `2026-10-21`.
+- **`SAL-20`**: the answer Elena Spini asked for by today did not come. The DM
+  carried 14 messages on 16/10, all about LIFE365. **Four messages in three
+  days, none answered**
+  ([#227](../notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)).
+  The YAML was left alone a fifth night — this time because there is nothing new
+  to write, not because the dependency still holds.
+- **[#212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  unchanged an eighth night**, and the #244 field spec due from Aurel Mrruku
+  yesterday evening is in no source — so the migration rehearsal has not started
+  and the broken predicate is still what it will run on.
+- **[#207](../notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)
+  outside `DevMain` a fourth night** — 🟢 though the client accepted the three
+  totals into Fase 1 in writing, so it is not at risk of deferral.
+- **[#241](../notes/items/OI-241%20Books%20and%20video%20courses%20wait%20on%20a%20WooCommerce%20instance%20move.md)**:
+  Sabatino Rinaldi sat through 02:26 and it was never raised. The instance move
+  now blocks three rows.
+
+### 🔴 A knowledge-layer contradiction on a feature branch
+
+`05cdd3b` (Rexhina Hysi, `Devmain_LeadFix`) rewrites **OI-100** and **OI-163**
+with Aurel Mrruku's lead-conversion rulings and four sandbox deployment ids.
+**The two notes disagree about where the duplicate rules ended up**: OI-100's
+last sections say `Alert` was re-enabled and that local metadata matches the
+org, OI-163's say the rules are report-only — and the **committed metadata is
+`Allow`/`Report` on all three rules**, i.e. report-only. OI-163 is **gating**,
+a blocked Lead conversion is a go-live path, and **none of it is in the vault**
+because the branch is unmerged. **This sweep deliberately did not edit those two
+notes** — writing them in `DevMain` would collide with the authored text on her
+branch. A human must say which state is intended.

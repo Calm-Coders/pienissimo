@@ -7426,3 +7426,189 @@ riunione Pienissimo per la diciottesima volta; `#tproj-pienissimo` è silenzioso
 sei giorni; la canvas è ferma da nove settimane; `Campi Oggetti…xlsx`,
 `Flows & Objects.drawio`, il foglio degli step manuali e `Testbook…v2_1.xlsx` non
 si sono mossi. Il registro resta alla **v1.6** e il prossimo id libero è **250**.
+
+## 64. Aggiornamento 16/10/2026 — la catena marketing dei biglietti ha girato da capo a fondo in produzione, il cliente ha approvato l'API di check-in, e nuovo perimetro di sviluppo è stato concordato la mattina dopo il congelamento
+
+**Fonte:** il `requirements-check` notturno del 16/10/2026, watermark
+15/10/2026T22:00Z. Una sessione cliente di **02:26:15** —
+[UAT Flussi MKT Biglietti](../notes/meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md),
+trascrizione grezza completa — più Gmail, Slack, Drive, Fathom e il repository.
+**3 commit, tutti fuori da `DevMain`; 0 PR integrate; `DevMain` immobile da 48
+ore** a `73a9d59`. Ogni affermazione sulla build qui sotto è aritmetica di
+repository contro quel head; nessun org è stato aperto.
+
+### 🟢 L'integrazione di check-in è sbloccata
+
+**Andrea Parmeggiani ha risposto dopo sette giorni** — 16/10 07:37:42Z: _«Si ho
+fatto un test e confermo che potete portare in produzione»_. Aurel Mrruku ha
+trovato nei log **due** chiamate riuscite, una da Postman e una
+dall'applicazione reale, con la seconda che segnalava correttamente il biglietto
+come già validato. L'impegno di Fabrizio Paganelli a sollecitarlo di persona è
+ciò che ha sbloccato la cosa.
+
+🔴 **Il passaggio in produzione non è fatto e non ha un responsabile**, il
+controllo di validità sulle date della campagna non è realizzato, e la
+**rotazione delle credenziali QR è al decimo giorno** — ora con le credenziali
+di produzione destinate a seguire lo stesso percorso. Vedi
+[#161](../notes/items/OI-161%20The%20event%20check-in%20app%20must%20integrate%20with%20Salesforce.md).
+
+### 🟢 Il flusso marketing funziona
+
+Invito → nomina → **PDF con QR**, dimostrato in **produzione con dati
+fittizi**, perché Marketing Cloud è testabile solo lì. Due campagne Marketing
+Cloud: il journey di invito (fino a 11 invii, con uscita su rinuncia,
+compilazione o superamento delle date) e il journey del biglietto assegnato
+(riga d'ordine, PDF con QR e liberatoria, mail di download). Sabatino Rinaldi ha
+ricevuto l'invito, nominato due partecipanti e ottenuto il biglietto in circa un
+minuto.
+
+### 🔴 Il cliente ha riaperto due logiche già chiuse, e su una ha vinto
+
+**Pulsanti di rinuncia** ([#242](../notes/items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md)):
+in mail vanno **sia** `accetta` **sia** `rifiuta`, **puntando alla stessa pagina
+di atterraggio** — cioè esattamente ciò che ROMI ha sconsigliato, tre volte. La
+ragione commerciale di Matteo Distaso è a verbale (_«sono pigri … ci troviamo le
+sale vuote»_); lo è anche l'obiezione di Aurel Mrruku (_«per sbaglio hai fatto
+rinuncia, hai già spaccato tutto»_). Elena Spini ha ceduto: _«alziamo le mani»_.
+🟢 La concessione di ritorno è un **pop-up di doppia conferma**, chiesto da
+Matteo Distaso stesso, più un pulsante più grande e una verifica su mobile.
+
+🔴 **Il percorso di ripristino è finito in Fase 2 nella stessa sessione**
+([#253](../notes/items/OI-253%20Restoring%20a%20ticket%20after%20an%20accidental%20rinuncia%20is%20Fase%202.md)).
+Quindi un'azione irreversibile rivolta al cliente, a un clic, entra in Fase 1
+mentre l'annullamento no, l'unica protezione è un pop-up non ancora realizzato,
+e **nessuno in riunione ha collegato le due decisioni**. ⚠ Una regola esistente
+limita inoltre la concessione: inserito il primo nominativo il primo biglietto è
+emesso e la rinuncia non è più possibile, quindi un pulsante `rifiuta` atterrerà
+a volte su una pagina senza alcun controllo di rinuncia. Elena Spini l'ha detto
+a voce; nessuno ha deciso.
+
+### 🔴 Nuovo perimetro di sviluppo, un giorno dopo il congelamento
+
+[#250](../notes/items/OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md).
+Il flusso ha **un solo** intervallo di attesa per tutti gli 11 reminder; Rebecca
+Marmo calcola a mano un intervallo diverso prima di ciascuno, sul calendario.
+**Concordato: fino a 11 campi di intervallo sull'Edizione, in giorni, con un
+campo vuoto che interrompe la sequenza.** È una modifica di schema da 11 campi
+più la riscrittura del journey più una questione di permessi irrisolta — **e il
+congelamento del 15/10, che limita la Fase 1 ad _«affinamenti minori»_, non è
+stato nominato da nessuno.** Elena Spini ha sollevato l'obiezione di processo
+senza invocarlo: _«questa cosa dei weight è uscita al 16 di ottobre»_. ⚠ Non
+deciso: attende la riunione interna del cliente alle 15:00, il cui esito non è
+in alcuna fonte. ⚠ Entrambe le parti ritengono di averlo specificato per
+iscritto; nessuna delle due mail è in questo repository.
+
+### 🟢 Gli eventi in streaming escono dal flusso biglietti
+
+[#251](../notes/items/OI-251%20ODB%20Live%20streaming%20must%20not%20generate%20a%20ticket.md):
+ODB Live è solo streaming, quindi il suo codice articolo Mexal viene marcato
+**senza biglietto** — il design esistente _«genera biglietto sì/no»_ lo copre
+già e **Fabrizio Paganelli ha preso in carico la modifica dell'anagrafica**.
+🔑 È lui ad aver sollevato l'unica obiezione reale: senza biglietto non c'è QR,
+non c'è scansione e **non c'è registrazione delle presenze**, quindi il 2028
+sarebbe indistinguibile dal 2027. La risposta è **Zoom**, che dipende
+interamente da
+[#255](../notes/items/OI-255%20The%20Salesforce%20to%20Zoom%20connector%20is%20unverified.md)
+— nessun connettore nominato, livello di abbonamento ignoto, nessun
+responsabile, nessuna fase, e un'**affermazione pre-contrattuale attribuita ad
+Andrea Galotto** che regge tutto. ⚠ Sabatino Rinaldi ha descritto Zoom che
+prende i contatti **dal** CRM, la direzione opposta a quella che serve alla
+risposta sulle presenze; nessuno ha distinto le due cose.
+
+[#252](../notes/items/OI-252%20The%20Food%20Marketing%20Festival%20needs%20its%20own%20journey%20template.md):
+il Food Marketing Festival è l'unico evento che il flusso standard non copre —
+biglietti gratuiti e a pagamento, tre tipologie, funnel avviati in modo reattivo
+_«oggi per domani»_. Riceve un template duplicabile **le cui condizioni di
+ingresso non devono mai cambiare**. Fase non decisa; il tour è stato escluso
+esplicitamente come compatibile.
+
+### 🔴 Il cliente non è riuscito a creare i record da solo
+
+[#254](../notes/items/OI-254%20Creating%20a%20Referente%20and%20an%20Account%20failed%20for%20the%20client.md).
+Fabrizio Paganelli, 15:07:59Z: _«Abbiamo provato a creare Referente e Account.
+Abbiamo avuto qualche problema»_, con quattro screenshot e il dettaglio rinviato
+a una call. **Il primo tentativo documentato del cliente in autonomia, ed è
+fallito** — tre giorni prima della settimana di test dei key user e della
+sessione del 19/10, senza risposta. Gli screenshot non sono stati
+deliberatamente aperti: immagini inline del cliente che possono contenere dati
+di clienti.
+
+### 🟡 L'agente di default WooCommerce è stato realizzato, ed è un contenitore, non una risposta
+
+[#214](../notes/items/OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md).
+`4eadae8` (Anita Aga, `DevAnita15`) aggiunge
+`Integration_Notification_Config__c.Default_Agent_Username__c`, lo risolve in un
+Utente attivo e scrive `Codice_Agente__c` sugli ordini WooCommerce senza
+Opportunità, preservando l'ereditarietà da Preventivo/Account quando non è
+impostato. 🔴 **Quale codice vada dentro è ancora senza nome** — Marco Montesi,
+nove giorni. 🔴 E `WoocommerceOrderService.createAccount` **solleva
+un'eccezione** quando non è impostato, mentre la colonna Prod del foglio
+`Manual Steps Pienissimo` è vuota su **tutte e cinque** le righe dal 09/10 — per
+cui in produzione un ordine WooCommerce per un cliente **nuovo** fallirebbe del
+tutto.
+
+### Le date, e cosa implicano
+
+Lo stato di Elena Spini su `#tproj-pienissimo` (16/10 19:20 CEST) ha rotto sei
+giorni di silenzio del canale e ha datato per la prima volta la fine del
+progetto: test dei key user **19–23/10**, formazione **26–30/10**, Go/No-Go
+**entro il 27/10**, go-live **02/11**, con **18 giornate a finire** stimate.
+
+🔑 **Il Go/No-Go cade quindi al secondo giorno di una settimana di formazione di
+cinque giorni**
+([#246](../notes/items/OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)),
+e lo stesso post registra l'obiezione che la mail al cliente non conteneva:
+_«Fabrizio P. in call si è preso il ritardo, ma è il primo a dire che forse per
+il 2 non ce la fanno»_. ⚠ Non è ancora in nulla che il cliente abbia ricevuto.
+
+🟢 **La Fase 2 si è mossa per la prima volta da agosto**
+([#83](../notes/items/OI-83%20No%20phase%202%20estimate.md)) — stima allineata con
+Andrea Galotto il 15/10, offerta **per singola attività**, 🔴 ancora da inviare
+mentre il congelamento continua a spostare lavoro in una fase senza condizioni
+commerciali.
+
+🟢 **La sessione con Marco Montesi è fissata** — _«Test UAT Commerciali»_, lun
+19/10 15:00, al solo `marco.m@`
+([#240](../notes/items/OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)).
+⚠ Nulla conferma che l'utenza esista, e il _«primo accesso»_ cade il primo
+giorno della settimana in cui dovrebbe formare altre persone.
+
+### 🔴 Immobili, e il registro
+
+- **Il go-live è stato letto ma non accettato.** Sabatino Rinaldi, in sessione:
+  _«l'ho vista prima di entrare in call»_ — presa visione, da parte di chi non è
+  l'obiettore. **Fabrizio Paganelli era nella stessa call e sulla data non ha
+  detto nulla**, e il thread di posta è senza risposta. **Il registro non è
+  stato spostato, deliberatamente, per la seconda notte**: la versione resta
+  1.6, `go_live:` resta `2026-10-21`.
+- **`SAL-20`**: la risposta che Elena Spini aveva chiesto per oggi non è
+  arrivata. La DM ha portato 14 messaggi il 16/10, tutti su LIFE365. **Quattro
+  messaggi in tre giorni, nessuna risposta**
+  ([#227](../notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)).
+  Lo YAML è stato lasciato intatto per la quinta notte — questa volta perché non
+  c'è nulla di nuovo da scrivere, non perché la dipendenza regga ancora.
+- **[#212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  invariato all'ottava notte**, e la specifica dei campi attesa da Aurel Mrruku
+  ieri sera per #244 non è in alcuna fonte — quindi la prova di migrazione non è
+  iniziata e il predicato rotto è ancora quello su cui girerà.
+- **[#207](../notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)
+  fuori da `DevMain` alla quarta notte** — 🟢 anche se il cliente ha accettato i
+  tre totali in Fase 1 per iscritto, quindi non rischia il rinvio.
+- **[#241](../notes/items/OI-241%20Books%20and%20video%20courses%20wait%20on%20a%20WooCommerce%20instance%20move.md)**:
+  Sabatino Rinaldi è stato in call per 02:26 e non è stato sollevato. Lo
+  spostamento di istanza blocca ora tre righe.
+
+### 🔴 Una contraddizione nel livello di conoscenza, su un branch di sviluppo
+
+`05cdd3b` (Rexhina Hysi, `Devmain_LeadFix`) riscrive **OI-100** e **OI-163** con
+le decisioni di Aurel Mrruku sulla conversione dei Lead e quattro id di deploy
+in sandbox. **Le due note non concordano su dove siano finite le regole di
+duplicazione**: le ultime sezioni di OI-100 dicono che l'`Alert` è stato
+riabilitato e che i metadati locali corrispondono all'org, quelle di OI-163
+dicono che le regole sono in sola segnalazione — e i **metadati committati sono
+`Allow`/`Report` su tutte e tre le regole**, cioè sola segnalazione. OI-163 è
+**bloccante**, una conversione Lead bloccata è un percorso di go-live, e **nulla
+di tutto questo è nel vault** perché il branch non è integrato. **Questo sweep
+non ha deliberatamente modificato quelle due note** — scriverle su `DevMain`
+colliderebbe con il testo redatto sul suo branch. Serve una persona che dica
+quale stato sia quello voluto.

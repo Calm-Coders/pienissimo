@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Marco Montesi
 org: both
 raised: 2026-10-07
-updated: 2026-10-14
+updated: 2026-10-16
 depends_on: [OI-219]
 blocks: [OI-134, go-live]
 severity: gating
@@ -196,3 +196,69 @@ run.**
 records the commission percentage missing from the Mexal order. So Salesforce now
 freezes *which* agent earns while the order carries no rate — and for a
 WooCommerce order it may freeze **neither**.
+
+## 🟡🔑 2026-10-16 — a default-agent mechanism was built, and it is not the answer this row asks for
+
+**`4eadae8`** (Anita Aga, 16/10 11:32 CEST, branch **`DevAnita15`**) —
+_"Default Agent for Woocommerce"_ — adds the missing default:
+
+| Component | What |
+| --- | --- |
+| `Integration_Notification_Config__c.Default_Agent_Username__c` | new Text(80). Holds the **Salesforce Username** of the default agent, read from the `WooCommerce` configuration record |
+| `IntegrationNotificationConfigService` | +28 lines. `getDefaultAgent()` resolves that username to an **active** `User`, returning `Agente__c` and `Categoria_Provvigioni_Cliente__c`; `getDefaultAgentCode()` returns the trimmed code |
+| `OrderTriggerHandler.beforeInsert` | +19 lines. When `Origine__c == 'WooCommerce'` **and** `OpportunityId == null`, stamps `Codice_Agente__c` from the default and skips the Quote/Account branch |
+| `WoocommerceOrderService.createAccount` | +14 lines. Stamps `Agente__c` and `Categoria_Provvigioni_Cliente__c` on a newly created Account from the same default |
+
+🟢 **The mechanism is right and it is configurable rather than hard-coded.** The
+field's own description states the fallback contract — _"Missing user or code
+preserves Quote/Account inheritance"_ — and the code honours it: the override
+only fires when `String.isNotBlank(defaultAgentCode)`, so an unconfigured org
+behaves exactly as before.
+
+🟢 **It is tracked as a manual step.** `Manual Steps Pienissimo` gained a row on
+16/10 — _"Add the default agent for Accounts and Orders created from
+WooCommerce"_ — marked **Done** for UAT. See
+[the tracker note](../Manual%20Steps%20Pienissimo%20tracker.md).
+
+### 🔴 The gating question is still unanswered
+
+**Which agent code an agentless WooCommerce order should carry is a business
+answer, and this is a configuration slot for it.** Elisa Migliano undertook to
+ask Marco Montesi on 07/10; **nine days on, no source names a code, a user or a
+rule.** The field is empty until someone decides what goes in it.
+
+### 🔴 And the Prod column is blank
+
+The same `Manual Steps` row records UAT **Done**, Prod **empty**. That matters
+because of how `createAccount` fails:
+
+```apex
+if (defaultAgent == null || String.isBlank(defaultAgent.Agente__c) ||
+    String.isBlank(defaultAgent.Categoria_Provvigioni_Cliente__c)) {
+  throw new WooCommerceOrderException('Configure Default Agent Username …');
+}
+```
+
+⚠ **This is a hard failure, not a fallback.** On the Account-creation path the
+missing configuration **throws** — so once this reaches production, a WooCommerce
+order for a **new** customer fails outright until the config record is
+populated, where today it would create the Account. The order-side path
+degrades gracefully; the account-side path does not. **Recorded as a path read
+from source, not as an observed failure** — no org was opened in this sweep and
+no test accompanies the commit.
+
+### ⚠ One case the override does not cover
+
+The override is keyed on `Origine__c == 'WooCommerce' && OpportunityId == null`.
+A WooCommerce order **with** an Opportunity falls through to the Quote/Account
+branch and can still receive `null` — including by the `continue`-past-the-
+Account-fallback path already recorded in this note for 12/10. Whether an
+agentless WooCommerce order can arrive carrying an Opportunity is not
+established here.
+
+### Not in `DevMain`
+
+`4eadae8` is on **`DevAnita15`** only (`git branch -r --contains` → that branch
+alone). **No PR.** `origin/DevMain` has not moved since this procedure's own
+`73a9d59` on 15/10, so none of the above is on the integration branch — and
+go-live is 2 November.

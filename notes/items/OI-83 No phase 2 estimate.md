@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-08-06
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-37, OI-38]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -144,3 +144,38 @@ de-prioritised by Sabatino Rinaldi as _"va fatta in un secondo momento"_), and
 whatever the two-week freeze now catches. **A phase accumulating commitments with
 no estimate is the risk this row exists to carry**, and it got larger tonight,
 not smaller.
+
+## 🟢 2026-10-16 — the estimate exists internally for the first time; the offer is still unsent
+
+Elena Spini's status post in `#tproj-pienissimo` (16/10 19:20 CEST) states it
+plainly under **Fase 2**:
+
+> _"stima allineata con Andrea G. il 15/10, offerta per singola attività ancora
+> da mandare."_
+
+🟢 **Two firsts in one line.** There is now an **internal estimate**, aligned
+with **Andrea Galotto** on 15 October — the first time in this record that any
+number has been attached to Fase 2 since the holidays commitment of 06/08. And
+the offer is to be **per single activity**, which is a shape, not just a
+promise.
+
+🟢 It follows the written commitment in the 15/10 project-plan mail
+([OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)),
+and the same status post lists sending it as a next step owned by
+**Elena Spini and Andrea Galotto**.
+
+🔴 **The client has not received anything.** _"Ancora da mandare"_, and the
+scope freeze announced on 15/10 is actively pushing work into Fase 2 while the
+commercial terms for Fase 2 do not exist. Items routed there since the freeze:
+[OI-234](OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)
+(15/10) and
+[OI-253](OI-253%20Restoring%20a%20ticket%20after%20an%20accidental%20rinuncia%20is%20Fase%202.md)
+(16/10), with
+[OI-252](OI-252%20The%20Food%20Marketing%20Festival%20needs%20its%20own%20journey%20template.md)
+unruled.
+
+🔴 **The number itself is not in any source this procedure can read**, and
+neither is the activity list it covers. ⚠ The estimate is also **not yet
+anchored to the Fase 2 exclusion list** in `Pienissimo_Project Plan v3.pptx`,
+which the 15/10 sweep found had not grown (GLS, Teachable, Ordini Pienissimo
+Pro) even as items were being deferred into it.

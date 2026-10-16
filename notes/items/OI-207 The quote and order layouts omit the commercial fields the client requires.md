@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -227,3 +227,35 @@ under a scope freeze that would classify it as already-delivered work.
 Rexhina Hysi's own fuller account of the build in this file, and the 14/10 sweep
 appended a dated section to the `DevMain` copy. **When that branch merges, keep
 her text and delete the overlap from the sweep's section.**
+
+## 🔴 2026-10-16 — the three-totals build is outside `DevMain` a fourth night
+
+`git ls-tree -r origin/DevMain` tonight: **`Totale_Listino__c` and
+`Sconto_Totale__c` are absent.** `origin/DevMain` stands at `73a9d59` — this
+procedure's own 15/10 commit — **unmoved for 48 hours**, and no PR was merged
+today.
+
+The three human commits of 16/10 are all on personal branches and none of them
+carries the quote totals:
+
+| Commit | Author | Branch | Subject |
+| --- | --- | --- | --- |
+| `4eadae8` | Anita Aga | `DevAnita15` | Default Agent for Woocommerce |
+| `05cdd3b` | Rexhina Hysi | `Devmain_LeadFix` | Lead_Email__c and chage duplicate rule |
+| `ad73d27` | Anita Aga | `DevAnita15` | Account flexipage |
+
+⚠ **`ad73d27` is an Account flexipage change of 127 added lines**, which is
+layout work on the same commercial surface this row is about — but on the
+**Account**, not the quote or the order, so it is recorded as adjacent rather
+than as progress here.
+
+🔑 **The client accepted these refinements into Fase 1 on the record.** Elena
+Spini's `#tproj-pienissimo` status (16/10 19:20 CEST):
+
+> _"Accettati in Fase 1 alcuni affinamenti (layout prodotti, decimali, totali
+> listino/sconto/netto sul preventivo)."_
+
+🟢 So the three totals are explicitly **inside** the frozen Fase 1 perimeter —
+this row is not at risk of being deferred. 🔴 **But the build has sat outside
+the integration branch for four nights**, seventeen days from go-live, and
+nothing in this sweep opened a PR for it.
