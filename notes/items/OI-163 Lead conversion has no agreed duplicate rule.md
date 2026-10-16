@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-24
+updated: 2026-10-16
 depends_on: [OI-149]
 blocks: [go-live]
 severity: gating
@@ -111,3 +111,35 @@ Aurel Mrruku chose merge; the conversion produced a contact, an account and a
   note's original worry — a mistyped P.IVA or ragione sociale — is unaddressed by the
   name-and-email rule.
 - ⚠ Still no register row covers Lead deduplication.
+
+## 2026-10-16 - ROMI replaces merge with create-new
+
+Aurel Mrruku explicitly changed the conversion rule: **every Lead conversion
+creates a new Contact, even if an existing Contact matches**. Account selection
+remains VAT-first. This supersedes the merge-or-create behaviour demonstrated
+to and accepted by Fabrizio Paganelli on 24 September.
+
+The source now omits `LeadConvert.ContactId` and removes the earlier
+qualification-time Contact/Account conflict guard. The stock
+`Lead.Standard_Rule_for_Leads_with_Duplicate_Contacts` is source-controlled as
+active and report-only on insert so the standard alert does not abort the
+asynchronous conversion. The current source was deployed to the partial sandbox
+on 16 October 2026 (`0AfMA00000CwEwX0AV`; the duplicate rule was unchanged in
+this final two-class deployment).
+
+## 2026-10-16 - Apex conversion behaviour restored
+
+Aurel Mrruku instructed that the trigger and queueable return to their previous
+conversion behaviour, retaining only the new Account email propagation. The
+queueable therefore again reuses an Account-scoped Contact matched by email and
+phone, and the qualification-time cross-Account guard is restored. The Contact
+and Lead duplicate rules remain report-only on insert so a reported match does
+not independently abort conversion. Deployed to the partial sandbox under
+`0AfMA00000CwGa90AF`.
+
+## 2026-10-16 - Alert behaviour restored by Aurel
+
+Aurel Mrruku re-enabled `Alert + Report` on insert and update for the three
+Lead/Contact duplicate rules in the partial sandbox. The retrieved source now
+matches the org. Exact Account-scoped Contact matches are reused by Apex, but a
+new Contact insert remains exposed to platform duplicate alerts.

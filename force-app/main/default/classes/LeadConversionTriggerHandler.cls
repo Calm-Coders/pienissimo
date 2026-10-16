@@ -48,6 +48,7 @@ public without sharing class LeadConversionTriggerHandler {
   ) {
     Map<Id, Opportunity> opportunitiesToUpdate = new Map<Id, Opportunity>();
     Map<Id, Account> accountsToUpdate = new Map<Id, Account>();
+    Map<Id, String> leadEmailByAccountId = new Map<Id, String>();
 
     for (Lead leadRecord : newLeads) {
       Lead oldLead = oldLeadMap.get(leadRecord.Id);
@@ -72,6 +73,14 @@ public without sharing class LeadConversionTriggerHandler {
       }
 
       if (leadRecord.ConvertedAccountId != null) {
+        String normalizedEmail = normalizeEmail(leadRecord.Email);
+        if (normalizedEmail != null) {
+          leadEmailByAccountId.put(
+            leadRecord.ConvertedAccountId,
+            normalizedEmail
+          );
+        }
+
         accountsToUpdate.put(
           leadRecord.ConvertedAccountId,
           new Account(
@@ -88,6 +97,26 @@ public without sharing class LeadConversionTriggerHandler {
       update opportunitiesToUpdate.values();
     }
     if (!accountsToUpdate.isEmpty()) {
+      Set<Id> convertedAccountIds = accountsToUpdate.keySet();
+      for (Account accountRecord : [
+        SELECT Id, Email__c, Lead_Email__c
+        FROM Account
+        WHERE Id IN :convertedAccountIds
+      ]) {
+        if (!leadEmailByAccountId.containsKey(accountRecord.Id)) {
+          continue;
+        }
+
+        String leadEmail = leadEmailByAccountId.get(accountRecord.Id);
+        Account accountUpdate = accountsToUpdate.get(accountRecord.Id);
+        if (String.isBlank(accountRecord.Email__c)) {
+          accountUpdate.Email__c = leadEmail;
+        }
+        if (String.isBlank(accountRecord.Lead_Email__c)) {
+          accountUpdate.Lead_Email__c = leadEmail;
+        }
+      }
+
       update accountsToUpdate.values();
     }
   }
