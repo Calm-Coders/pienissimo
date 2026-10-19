@@ -15,7 +15,7 @@ will exhaust your context before you reach the answer.
 
 ## Read protocol
 
-1. Start with [MAP.md](MAP.md) — current project state, under 5 KB. Always cheap.
+1. Start with [MAP.md](MAP.md) — current project state. ⚠ **It is ~285 KB / ~71k, not the "under 5 KB" this line promised for weeks.** It is append-only with the newest entry first, so **read its first ~120 lines**, not the file.
 2. Route through [INDEX.md](INDEX.md) — one line per artifact, with read costs.
 3. Open only the specific notes in [notes/](notes/) that the task needs.
 4. Escalate to the big documents in `meetings/` or `REQUIREMENTS.md` **only**
@@ -84,11 +84,11 @@ records**. Never edit either.
 
 | Path pattern                          | Size      | Cost     | Instead                              |
 | ------------------------------------- | --------- | -------- | ------------------------------------ |
-| `meetings/*-transcript.it.md`         | ~1.14 MB  | ~298k    | `rg` for the line, read a range      |
-| `meetings/open-items.it.md`           | ~224 KB   | ~56k     | Read the note, or the EN twin's rows |
-| `meetings/open-items.md`              | ~200 KB   | ~50k     | Read `notes/items/`                  |
-| `REQUISITI.it.md` / `REQUIREMENTS.md` | ~86/80 KB | ~21k/20k | `rg` for the requirement id          |
-| `meetings/DEVELOPMENT-RECAP*.md`      | ~74/78 KB | ~18k/20k | Read the relevant notes              |
+| `meetings/*-transcript.it.md`         | ~1.24 MB  | ~325k    | `rg` for the line, read a range      |
+| `meetings/open-items.it.md`           | ~1.75 MB  | ~459k    | Read the note, or the EN twin's rows |
+| `meetings/open-items.md`              | ~1.59 MB  | ~416k    | Read `notes/items/`                  |
+| `REQUISITI.it.md` / `REQUIREMENTS.md` | ~113/105 KB | ~28k/26k | `rg` for the requirement id        |
+| `meetings/DEVELOPMENT-RECAP*.md`      | ~563/528 KB | ~144k/134k | Read the relevant notes          |
 | `anar_PIE_ricla.xlsx`                 | ~476 KB   | binary   | Never; the decode is in the notes    |
 | `node_modules/**`, `.sf/`, `.sfdx/`   | huge      | —        | Generated                            |
 

@@ -158,3 +158,65 @@ email-and-phone Contact only inside the VAT-selected Account. A fresh metadata
 retrieve confirmed that both active Contact duplicate rules are `Allow` +
 `Report`, not blocking alerts; this supersedes the 16 October alert-state
 description above.
+
+
+## 🟢 2026-10-19 — the contradiction with OI-100 is closed, by the author, and it is now in `DevMain`
+
+**The 16/10 sweep reported that this note and
+[OI-100](OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md)
+ended in contradictory states on an unmerged branch, and deliberately did not
+edit either. Both conditions have changed: the branch merged, and Rexhina Hysi
+resolved the contradiction herself before it did.**
+
+🟢 **The resolution is explicit in both notes.** The `2026-10-19` section above
+closes with _"a fresh metadata retrieve confirmed that both active Contact
+duplicate rules are `Allow` + `Report`, not blocking alerts; this supersedes the
+16 October alert-state description above"_, and OI-100's matching section says
+_"this later org inspection supersedes the final 16 October paragraph above that
+described those rules as alerting"_. **Later evidence wins and both notes say
+which paragraph it beats** — so the record is now consistent without this sweep
+touching the authored text.
+
+🟢 **And the committed metadata agrees.** Verified on `origin/DevMain` tonight,
+all three rules:
+
+| Rule | `actionOnInsert` | `operationsOnInsert` | `isActive` |
+| --- | --- | --- | --- |
+| `Contact.Standard_Contact_Duplicate_Rule` | `Allow` | `Report` | `true` |
+| `Contact.Standard_Rule_for_Contacts_with_Duplicate_Leads` | `Allow` | `Report` | `true` |
+| `Lead.Standard_Rule_for_Leads_with_Duplicate_Contacts` | `Allow` | `Report` | `true` |
+
+**So the state is report-only, in the notes, in the source and in the sandbox
+retrieve — three ways.** The 16/10 report that a human had to choose between two
+states is withdrawn: there is one state and it is this one.
+
+## 🟢 The gating work merged
+
+**PR `#104` merged at 12:52 CEST** (`926195c`), bringing `Devmain_LeadFix` into
+`DevMain` with the two duplicate rules, the two notes and the conversion Apex.
+Inside it, `64a51b2` (11:20 CEST) **removes 154 lines from
+`LeadConversionTriggerHandler.cls`** — the qualification-time cross-Account
+conflict guard and its unused lookup helpers — under Aurel Mrruku's 19/10 ruling
+that **VAT selects the destination Azienda even when email and phone match a
+Contact under a different one.** Deployed to the partial sandbox as
+`0AfMA00000Cx0pt0AB`.
+
+🟢 **This row has been `gating` since September and a blocked Lead conversion is a
+go-live path. It is now in the integration branch**, which is the first time any
+of it has been.
+
+## 🔴 What remains open
+
+- 🔴 **Still no register row covers Lead deduplication.** Four rulings have now
+  been made by one person in four days (16/10 ×3, 19/10 ×1), each superseding the
+  last, and **none of them is in `requirements/pienissimo-requirements.yaml` or
+  in either prose document.** The behaviour the client accepted on 24 September —
+  merge-or-create — was reversed, restored and reversed again without the client
+  being told.
+- 🔴 **No test covers any of it.** `#104` ships Apex changes with no test class,
+  per the standing instruction that none is written here; recorded as an absence.
+- ⚠ **P.IVA is still not part of the match**, as this note has said since
+  September.
+- ⚠ **Four reversals in four days is itself the finding.** A human should decide
+  whether the current rule is final, because the next sweep cannot tell a
+  settled design from the fifth iteration.

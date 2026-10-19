@@ -7612,3 +7612,189 @@ di tutto questo è nel vault** perché il branch non è integrato. **Questo swee
 non ha deliberatamente modificato quelle due note** — scriverle su `DevMain`
 colliderebbe con il testo redatto sul suo branch. Serve una persona che dica
 quale stato sia quello voluto.
+
+## 65. Aggiornamento 19/10/2026 — il responsabile commerciale è finalmente entrato, ha trovato dieci difetti, e il cliente ha mandato via ROMI per il resto della settimana di test
+
+**Fonte:** il `requirements-check` notturno del 19/10/2026, watermark
+2026-10-16T22:00Z — una finestra di tre giorni che copre il fine settimana. Una
+sessione cliente di **01:45:49** —
+[Test UAT Commerciali](../notes/meetings/2026-10-19%20Test%20UAT%20Commerciali.md),
+trascrizione integrale — più Gmail, Slack, Drive, Fathom e il repository.
+🟢 **`DevMain` si è mosso per la prima volta in quattro giorni: 6 commit, 4 PR
+mergiate**, `73a9d59` → `926195c`. Ogni affermazione sulla build qui sotto è
+aritmetica sul repository contro quel head; nessun org è stato aperto.
+
+### 🟢 Il walkthrough è avvenuto, e la questione accessi è chiusa
+
+**[OI-240](../notes/items/OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)
+ha risposta.** Elena Spini ha creato l'utenza di Marco Montesi prima della call,
+e lui era dentro Salesforce entro `00:23:10` dopo che la mail di reset password
+non è arrivata due volte e lei l'ha rimandata direttamente. È poi stato portato
+per tutto il percorso commerciale in 01:45 — creazione lead, controllo P.IVA via
+Anticipay, transizioni di stadio, task, motivazioni di non qualifica, conversione
+in Account + Referente + Opportunità, preventivo, prodotti, tranche e
+l'automatismo di scadenza del preventivo.
+
+🔴 **Ma ha il profilo System Administrator**, non quello che avrà — _«per questa
+prima fase di test hai un'utenza da super admin»_ — e l'ha usato in riunione per
+forzare una transizione di stadio che il percorso commerciale rifiuta. **La
+questione del profilo provvisorio rinviata il 15/10 è ancora aperta e ora blocca
+da quattro direzioni** (OI-233, OI-240, OI-247, OI-250).
+
+🔴 **E l'org è collegato a Mexal di produzione.** Elena Spini, con i campi Mexal
+dell'Account modificabili a schermo: _«siamo collegati con l'ambiente di M[ex]al
+di produzione, quindi attenzione a tutto ciò che è M[ex]al»_. Quell'avvertimento è
+l'unico controllo in essere, è stato dato una volta, a voce, e la persona avvisata
+era contemporaneamente su un'altra call. Registrato come
+[rischio](../notes/risks/Risk%20-%20client%20key%20users%20test%20with%20admin%20rights%20against%20Mexal%20production.md).
+Sabatino Rinaldi ha poi chiesto e ottenuto la promessa dello stesso profilo
+amministratore
+([OI-262](../notes/items/OI-262%20Sabatino%20Rinaldi%20needs%20a%20Salesforce%20user.md)).
+
+### 🟢 Tre modifiche sulla qualifica dei lead concordate in riunione
+
+- **[OI-257](../notes/items/OI-257%20Standard%20sector%20picklist%20values%20must%20be%20removed.md)**
+  — i valori di settore standard di Salesforce vanno rimossi. Unanime; Sabatino
+  Rinaldi: _«van tolti senza dubbio. Van tolti tutti»_.
+- **[OI-258](../notes/items/OI-258%20Leads%20from%20a%20communication%20agency%20must%20be%20blacklisted%20automatically.md)**
+  — i lead con tipologia attività `Agenzia di comunicazione` passano
+  automaticamente a non qualificato con motivazione uscita blacklist. Il valore
+  resta nei form pubblici di proposito: _«noi quella lì la teniamo come trappola …
+  chi lo mette viene bannato»_. 🔑 **La motivazione uscita potrebbe già esistere**
+  come `"SW House, Ag. Marketing, Web Agency"` nel registro; nessuno le ha
+  confrontate.
+- **[OI-259](../notes/items/OI-259%20A%20lost%20lead%20marked%20non%20interessato%20must%20carry%20a%20mandatory%20free%20text%20reason.md)**
+  — un campo testuale `Motivazione` diventa obbligatorio quando un lead è perso
+  come `non interessato`. Nome del campo deciso; **il perimetro no** — Sabatino
+  Rinaldi solo su quel valore, Elisa Migliano su tutti.
+
+🔴 **Una di queste porta un conflitto con il testo da firmare.** Marco Montesi ha
+chiesto un menù a tendina dei competitor dietro `Sceglie concorrenza`, che è
+esattamente ciò che `DM-07` già prevede — `Sceglie concorrenza (lista competitor
+da selezionare)` — ed **Elena Spini ha consigliato il testo libero.** ROMI ha
+argomentato contro il proprio registro firmabile davanti al cliente e nessuno se
+n'è accorto.
+
+### 🔴 Sette difetti, nessuno sviluppatore in riunione
+
+🔑 **Aurel Mrruku era invitato e non ha partecipato**, e questo ha condizionato
+tutta la sessione: ogni rilievo è arrivato alla build attraverso gli screenshot di
+Elena Spini, e l'unica diagnostica che contava era illeggibile per lei. Quando il
+PDF del preventivo è andato in errore l'ha detto chiaramente: _«purtroppo arrivano
+tutte le mail ad Aurel, quindi io non non posso neanche vedere cosa è successo»_.
+
+| Rilievo | Riga |
+| --- | --- |
+| `Genera PDF` ha restituito _«si è verificato un errore di server interno»_, in diretta | [OI-260](../notes/items/OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md) |
+| Le righe preventivo non mostrano sconto, unità di misura, listino, netto né totale riga | [OI-207](../notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md) |
+| Codici articolo di test nell'anagrafica; articoli solo-bundle selezionabili | [OI-261](../notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md) |
+| I valori `Categoria`/`Sottocategoria` non corrispondono a quelli del cliente | [OI-265](../notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md) |
+| Etichette di sistema ancora in inglese | [OI-263](../notes/items/OI-263%20Salesforce%20system%20labels%20are%20still%20in%20English.md) |
+| La mail di promemoria scadenza preventivo ha un copy provvisorio | [OI-264](../notes/items/OI-264%20The%20quote%20expiry%20reminder%20email%20copy%20is%20a%20placeholder.md) |
+| La griglia prodotti non si aggiorna dopo l'inserimento di una riga | [OI-266](../notes/items/OI-266%20The%20quote%20product%20grid%20does%20not%20refresh%20after%20adding%20a%20line.md) |
+
+🔴 **E su uno di questi il cliente ha perso la pazienza.** Fabrizio Paganelli,
+sulla linea aperta dopo i saluti: _«a me mi fanno incazzare perché vi dico le
+cose, no? Però anche quella roba degli sconti, quelle robe lì l'avevamo già
+affrontata, l'avevamo già vista, doveva essere a posto»_. **Prima frustrazione del
+cliente registrata per aver dovuto risollevare un punto di sviluppo**, e riguarda
+la riga che lo stesso cliente ha accettato nel perimetro congelato di Fase 1, per
+iscritto, tre giorni prima.
+
+### 🟢 `DevMain` si è mosso, e ha mosso le cose giuste
+
+Quattro PR mergiate tra le 12:34 e le 12:52 CEST:
+
+| PR | Branch | Cosa ha portato |
+| --- | --- | --- |
+| `#101` | `DevAnita14` | Flexipage Azienda, record page Lead/Opportunità, LWC `quoteCreateTranche` |
+| `#102` | `DevMainOpportunityWork` | 🟢 **`Totale_Listino__c` e `Sconto_Totale__c` di OI-207**, `QuoteLineItemTriggerHandler` (+79), `QuotePdf`, il layout Preventivo, la pagina di accettazione |
+| `#103` | `DevAnita15` | 🟡 **`Default_Agent_Username__c` di OI-214** e il fallback lato ordine |
+| `#104` | `Devmain_LeadFix` | 🟢 **Le regole di duplicazione e l'Apex di conversione di OI-163** — gating da settembre, nel branch di integrazione per la prima volta |
+
+🟢 **La contraddizione segnalata da questa procedura il 16/10 è ritirata.** OI-100
+e OI-163 chiudevano quella notte in stati opposti su un branch non mergiato.
+Rexhina Hysi l'ha risolta lei stessa prima del merge: entrambe le note portano ora
+una sezione `2026-10-19` che dichiara un nuovo retrieve dei metadati e nomina il
+paragrafo che supera, e `origin/DevMain` conferma **`Allow` + `Report` in insert e
+update su tutte e tre le regole Lead/Contatto** — solo report, nelle note, nel
+sorgente e nel retrieve. **Nessuna decisione umana è necessaria; lo stato è uno.**
+
+🔴 **Ma quattro decisioni sulla conversione sono state prese da una sola persona in
+quattro giorni**, ciascuna che supera la precedente, e **nessuna è nel registro né
+in uno dei due documenti in prosa.** Il comportamento merge-or-create accettato
+dal cliente il 24 settembre è stato invertito, ripristinato e invertito di nuovo
+senza informarlo.
+
+### 🟡 La riunione di migrazione è fissata e il tracciato che le serve non esiste
+
+🟢 **Mercoledì 21 ottobre, concordato da entrambe le parti** — Fabrizio Paganelli
+l'ha sollevata in riunione, Elena Spini l'ha dimensionata in un'ora, e lui ha
+confermato per mail: _«si, lo slot per mercoledì lo fisserei in ogni caso»_.
+
+🔴 **Il tracciato dei campi di
+[OI-244](../notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)
+è in ritardo di quattro giorni ed è stato ripromesso al cliente per iscritto per
+il 20 ottobre.** Elena Spini ha scritto a Fabrizio Paganelli _«domani Aurel ti
+manderà il file Excel»_, poi ha ricitato l'impegno originale ad Aurel Mrruku in
+DM; la sua risposta: _«ciao, si me lo sono dimenticato»_. 🟢 L'ha portato al gruppo
+dev la stessa sera — **la prima volta che questo deliverable è assegnato a più di
+una persona**.
+
+⚠ **Ha anche ridotto il perimetro, utilmente**: solo ordini fatturati, come storico
+vendite — _«le opportunità, tutte quelle pugnette lì non le possiamo caricare, ma
+almeno le vendite»_ — più stretto di quanto il record assumesse.
+
+🔴 **E il predicato su cui girerebbe è ancora errato.**
+[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+è identico byte per byte per la **nona** notte — `DevMain` si è mosso, questo file
+non era in nulla di tutto ciò. Derivare `incassato` su circa diecimila ordini
+storici attraverso un predicato che legge una rata Ri.Ba. non pagata come pagata
+metterebbe stati di pagamento errati sullo storico vendite del cliente, su volumi,
+due giorni prima della loro revisione di venerdì.
+
+### 🔴 La settimana dei key user procede senza ROMI
+
+Sabatino Rinaldi ha rifiutato una sessione per il resto della settimana: _«non ce
+lo diamo il meeting questa settimana perché vogliamo testarla. Venerdì ci riuniamo
+tutti e la testiamo da noi e dacci il tempo di usarla»_. Quindi **dal 20 al 23
+ottobre si procede internamente al cliente senza alcuna persona ROMI presente**,
+la loro revisione è **venerdì 23/10**, e ciò che emerge allora ha il fine settimana
+prima che la formazione apra il 26/10
+([OI-246](../notes/items/OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)).
+
+🔑 **Il train-the-trainer ha cambiato mano senza essere assegnato.** Il record
+assumeva Marco Montesi; in riunione **Fabrizio Paganelli se ne fa carico da sé** —
+_«io voglio che vedano il giro»_, mostrando il flusso di vendita al suo team la
+mattina del 20/10. ⚠ E non ha testato la metà difficile: _«dopo la vendita dei
+pacchetti, quelli tranche eccetera … ancora non ho neanche testato»_. ⚠ Elisa
+Migliano lavora ancora dalla login di lui; il suo accesso non è verificato.
+
+### 🔴 Cosa quattro persone del cliente non hanno detto in 01:45
+
+- ⚠ **La data di go-live.** Né il 2 novembre né il 21 ottobre sono stati menzionati
+  da nessuno, compreso chi l'ha contestata
+  ([OI-243](../notes/items/OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)).
+  🔑 **Il registro non è stato spostato per la quarta notte** — ma la data firmata è
+  il 21 ottobre, quindi **dal 22 ottobre dichiarerà un go-live che palesemente non
+  è avvenuto.**
+- ⚠ **Nulla su Zoho dopo il 31 ottobre**, in una sessione che ha passato quindici
+  minuti sull'estrazione degli ordini storici da Mexal.
+- ⚠ **`SAL-20`** — non menzionato, in una sessione sul flusso commerciale, al sesto
+  giorno senza risposta
+  ([OI-227](../notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)).
+- ⚠ **Il codice agente di OI-214** — Marco Montesi, che lo deve da dodici giorni,
+  era in riunione e nessuno gliel'ha chiesto.
+
+### Il registro
+
+**Non modificato. La versione resta 1.6, `go_live:` resta `2026-10-21`, `SAL-20`
+resta `to_confirm`.** Sono stati aggiunti solo puntatori di tracciabilità:
+`tracked_by` su `DM-07`, `SAL-09` e `BUN-06`, che collegano le tre nuove righe che
+li citano.
+
+Due rilievi di stanotte toccano il testo da firmare e **sono entrambi conflitti,
+non decisioni** — `SAL-12` contro la richiesta di sconto al tutor, e la lista
+competitor di `DM-07` contro il consiglio di testo libero di Elena Spini.
+Registrare uno dei due come risolto scriverebbe una sola parte di una discussione
+in un documento contrattuale. Sono invece segnalati.

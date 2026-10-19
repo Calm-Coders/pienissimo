@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-15
+updated: 2026-10-19
 depends_on: [OI-245, OI-165]
 blocks: [go-live]
 severity: gating
@@ -124,3 +124,62 @@ replace, the Zoho-side volumes in
 Closing it means: the field spec delivered, the client's file populated, one test
 load into UAT with the state reconciliation verified against known orders, and a
 dated plan for the production run.
+
+
+## 🟡 2026-10-19 — the field spec is four days late, and now promised to the client in writing
+
+**The Excel this row waits on was due on the evening of 16 October. It does not
+exist. Tonight it was re-promised — to the client, in writing, for 20 October —
+and the author confirmed internally that he had forgotten it.**
+
+The sequence, all on 19/10:
+
+1. **In session**, Fabrizio Paganelli asked for the migration meeting
+   ([19/10 walkthrough](../meetings/2026-10-19%20Test%20UAT%20Commerciali.md),
+   `01:26:48`): _"ci dovevamo sentire con Aurel per capire … il tema del
+   dell'importazione massiva degli ordini"_. Elena Spini sized it — _"un'oretta
+   per quello lo fisserei"_ — and took the scheduling. Wednesday was agreed in
+   the room over Thursday.
+2. **Elena Spini to the client, 15:10:55Z** (Gmail `1a154a97e004a741`), making it
+   a commitment ROMI now owns in front of Pienissimo:
+
+   > _"domani Aurel ti manderà il file Excel indicando tutti i campi necessari
+   > (sia per l'ordine che per la riga d'ordine) per effettuare i test di
+   > migrazione dei dati storici da Mexal. Fisso comunque lo slot per
+   > mercoledì?"_
+
+3. 🟢 **Fabrizio Paganelli confirmed the slot, 16:10:07Z**: _"si, lo slot per
+   mercoledì lo fisserei in ogni caso"_. **So the migration meeting is agreed by
+   both sides for Wednesday 21 October.**
+4. **Elena Spini to Aurel Mrruku in DM, 16:55:45 CEST**, quoting the original
+   undertaking back at him verbatim — _"eravamo rimasti che dovevi fare l'excel
+   no? >> Creare un file Excel di tracciato …"_ — and adding _"ha chiesto news
+   anche di questo Fabrizio"_. His answer, 17:01:08: **_"ciao, si me lo sono
+   dimenticato"_**. Hers, 17:02:59: _"gli dico che glielo mandi domani 😉"_.
+5. 🟢 **And he carried it to the dev group the same evening**, 18:05:55 CEST:
+   _"neser mos te harrojm duhet mi dergu ne nje eksel te gjitha fushat qe do na
+   duhen me migru order e order item"_ — tomorrow, let us not forget, we have to
+   send in an Excel all the fields we will need to migrate order and order item.
+   **First time this row's deliverable has been assigned to more than one
+   person.**
+
+## 🔴 What has not changed
+
+- 🔴 **Nothing has been migrated, and nothing has been rehearsed.** The spec is
+  the first of four steps in this row's closing condition and it is not written.
+- 🔴 **The predicate the rehearsal would run on is still wrong.**
+  [OI-212](OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  is byte-for-byte unchanged a **ninth** night. Deriving `incassato` for the
+  historical orders through it would produce wrong figures at volume, and
+  **Wednesday's meeting is three days before the training week.**
+- ⚠ **Fabrizio Paganelli owes the archive file in the right format**, which he
+  restated on the open line: _"ti passo sto archivio, qui è il campo, quello è il
+  campo, qui è una questione formati"_. Recorded as his undertaking in the Gemini
+  notes — _"Condividere il file dell'archivio storico con il formato corretto"_ —
+  with no date.
+- ⚠ **He also scoped the ask down, usefully**: invoiced orders only, as sales
+  history — _"almeno gli ordini che sono stati anche fatturati ce li portiamo
+  dentro come storico … le opportunità, tutte quelle pugnette lì non le possiamo
+  caricare, ma almeno le vendite"_. **That is narrower than this row assumed**
+  and is the client's own framing, so it should shape the field list rather than
+  be discovered on Wednesday.

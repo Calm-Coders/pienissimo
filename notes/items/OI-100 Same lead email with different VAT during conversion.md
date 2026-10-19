@@ -127,3 +127,25 @@ The two active Contact duplicate rules were retrieved from the sandbox before
 deployment and are `Allow` + `Report` on insert and update, so they record but
 do not block the new Contact. This later org inspection supersedes the final
 16 October paragraph above that described those rules as alerting.
+
+
+## 🟢 2026-10-19 — merged into `DevMain`, and the reported contradiction is withdrawn
+
+**`#104` merged at 12:52 CEST.** The 16/10 sweep reported that this note's
+closing sections and
+[OI-163](OI-163%20Lead%20conversion%20has%20no%20agreed%20duplicate%20rule.md)'s
+said different things about the duplicate rules — alerting here, report-only
+there — and left both alone because the branch was unmerged.
+
+🟢 **Rexhina Hysi resolved it herself in the `2026-10-19` section above**, which
+states the later org inspection and names the paragraph it supersedes. The
+committed metadata on `origin/DevMain` confirms it: `Allow` + `Report` on insert
+and update, on all three Lead/Contact rules. **Report-only. One state, not two.**
+
+⚠ **So the _"Alert failure reproduced with synthetic data"_ section above is
+history, not current behaviour** — the alerts it depended on were turned back off
+before the branch merged. It is kept because it records a real experiment, but it
+no longer describes the system, and it should not be cited as a live failure
+mode. It was the standing lead for
+[OI-254](OI-254%20Creating%20a%20Referente%20and%20an%20Account%20failed%20for%20the%20client.md),
+and that lead is now dead.

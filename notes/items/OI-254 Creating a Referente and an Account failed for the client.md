@@ -1,12 +1,12 @@
 ---
 id: OI-254
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-16
-updated: 2026-10-16
+updated: 2026-10-19
 blocks: [go-live]
 source: Gmail 1a1454177ff30250, 2026-10-16T15:07:59Z
 ---
@@ -86,3 +86,76 @@ lead for the person who opens the screenshots**, not as a diagnosis.
 The screenshots are read, the failure is reproduced or explained, and the client
 is told — before 19 October — whether it can create these records in the
 key-user test.
+
+
+## 🟡 2026-10-19 — explained in session, without the error ever being read
+
+**Elena Spini opened the mail at the start of the 19/10 walkthrough and went
+through the screenshots with Fabrizio Paganelli. Both halves got an explanation.
+Neither explanation came from the error text, because the error text was never
+produced — and on the evidence there may not have been an error at all.**
+
+### Half one: a Referente with no Account is expected behaviour
+
+At [the session](../meetings/2026-10-19%20Test%20UAT%20Commerciali.md)
+`00:07:11`, Elena Spini: _"il primo screenshot, referente senza account, è una
+cosa normale in Sales[force]"_. Fabrizio Paganelli reconstructed what he had
+done — created the Contact first, then the Account, then linked them — and she
+confirmed that is a supported order: _"hai fatto contact new e quindi qua hai la
+libertà di collegare l'account che vuoi"_.
+
+She then offered to remove the possibility and **the room chose to keep it**
+(`00:10:31`), because a tutor meeting a new referente at an existing company
+needs it: _"io forse lo lascerei, poi magari vi può servire"_. Fabrizio Paganelli
+accepted — _"adesso ho capito. Va bene"_ — and Elena Spini separated the genuinely
+account-less case out as a **Lead**, not a Contact.
+
+🟢 **So half one is not a defect.** It is the product behaving as designed,
+reported as a problem by a first-time user, and the design was explicitly
+re-affirmed in front of him.
+
+### Half two: the agent fields were empty because his user has none
+
+Fabrizio Paganelli's actual complaint (`00:12:53`) was that creating an Account
+left the commercial fields blank when they should inherit from the owning tutor:
+
+> _"quando io creo un nuovo account e sono Marco Montesi e creo l'account, i quei
+> campi agente, classificatore[,] rete[,] zona dovrebbero essere precompilati."_
+
+Elena Spini's answer: _"sono quelli dell'utente. Sì, ma tu non ce l'avevi … vedi
+che [è] vuoto?"_ — the fields populate from the creating user's own agent data,
+and **his test user had none set**. He accepted it: _"quindi avrei dovuto … ok,
+ho capito"_.
+
+🟢 **And it drew a build response the same day.** `10fa31e` (Anita Aga,
+`DevAnita19`, **19/10 17:43 CEST** — 57 minutes after the session ended) is
+titled _"Logic to populate the agent related fields on account"_ and touches
+`AccountTriggerHandler.cls` (+52), the Azienda flexipage, the Account layout and
+the `Categoria_Provvigioni_Cliente__c` / `Codice_Agente_Esterno__c` field
+definitions. `fc8a86d` adds a custom component for New Account two minutes later.
+🔴 **Both are on `DevAnita19` with no PR**, so the fix is outside the integration
+branch and untested against his case.
+
+## What this row now carries
+
+- 🟢 **Downgraded from a blocking unknown to two explained observations.** The
+  `blocks: [go-live]` flag is left in place deliberately — see below.
+- 🔴 **The four screenshots were still never opened**, in this sweep or any other.
+  The explanations above are reconstructions from the conversation, and **both
+  parties were working from Fabrizio Paganelli's memory of what he did**, not from
+  the images. If a third screenshot showed something else, nobody has looked.
+- 🔴 **No error text exists in any source.** His original mail said
+  _"abbiamo avuto qualche problema"_ and nothing more. **On this evidence the word
+  _failed_ in this row's title is stronger than what the record supports** — but
+  it is kept, because the id and title are cited in the trackers and in the
+  client-facing numbering, and the correction belongs in the body.
+- ⚠ **The 16/10 lead that this might be the duplicate-alert failure is now
+  dead.** That lead rested on OI-100's reproduced synthetic-data failure, and
+  the merged 19/10 metadata and note text both settle the rules as
+  `Allow` + `Report` — report-only, non-blocking. **It was not that.**
+
+## What closing it looks like, restated
+
+A person opens the four screenshots and confirms they contain nothing beyond the
+two explanations above. Until that happens the flag stays, because what the
+client reported and what was explained were never actually compared.

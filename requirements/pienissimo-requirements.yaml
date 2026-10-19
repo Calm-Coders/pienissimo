@@ -553,7 +553,8 @@ requirements:
       pri: M,
       status: agreed,
       text: "Mandatory loss reason with two distinct picklist sets",
-      picklists: [opportunity_chiusa_persa, lead_motivazione_uscita]
+      picklists: [opportunity_chiusa_persa, lead_motivazione_uscita],
+      tracked_by: [OI-259]
     }
   - {
       id: DM-08,
@@ -733,7 +734,7 @@ requirements:
       pri: M,
       status: agreed,
       text: "Automatic alerts on day 2 after send and at expiry, to tutor and client",
-      tracked_by: [OI-59]
+      tracked_by: [OI-59, OI-264]
     }
   - {
       id: SAL-10,
@@ -896,7 +897,7 @@ requirements:
       pri: M,
       status: agreed,
       text: "Bundles created by administration only; products stay configured in Mexal",
-      tracked_by: [decision-products-from-mexal-bundles-in-salesforce]
+      tracked_by: [decision-products-from-mexal-bundles-in-salesforce, OI-261]
     }
   - {
       id: BUN-07,

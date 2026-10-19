@@ -1,12 +1,12 @@
 ---
 id: OI-240
 type: open-item
-status: open
+status: in-progress
 owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-14
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-186, OI-180]
 source: Gmail thread 1a13b044107768b4
 ---
@@ -144,3 +144,54 @@ _"Referente e Account"_ failure
 ([OI-254](OI-254%20Creating%20a%20Referente%20and%20an%20Account%20failed%20for%20the%20client.md))
 arrived on 16/10 unanswered — **a record-creation problem in the commercial flow
 Marco Montesi is being shown on 19/10 at 15:00.**
+
+
+## 🟢 2026-10-19 — the user exists, he logged in, and the profile question does not
+
+**The walkthrough happened and the access question this row was raised to answer
+is answered.** At [the 19/10 session](../meetings/2026-10-19%20Test%20UAT%20Commerciali.md),
+Elena Spini had created the user before the call — _"Marco, a noi dovresti aver
+ricevuto una mail. Ti ho creato l'utenza"_ — and Marco Montesi was inside
+Salesforce by `00:23:10`.
+
+⚠ **Getting him in took seven minutes and a workaround.** The password-reset mail
+did not arrive — he tried twice, _"e non mi è arrivata la mail"_, and checked
+spam — until Elena Spini re-sent it directly to `marco.m@pienissimo.com`. **The
+cause was not investigated**, and the same reset path serves every user created
+from here on, including Sabatino Rinaldi
+([OI-262](OI-262%20Sabatino%20Rinaldi%20needs%20a%20Salesforce%20user.md)) and the
+eight training users.
+
+🟢 He was then taken through the whole commercial path in 01:45 — lead creation,
+P.IVA check, stage transitions, task creation, non-qualified reasons,
+conversion to Account + Referente + Opportunity, quote, products, tranches, and
+the quote-expiry automation. **That is the full _"giro completo del flusso"_
+promised on 15/10.**
+
+## 🔴 What this row still carries
+
+- 🔴 **The interim profile is still undecided, four days on.** He holds **System
+  Administrator** — _"per questa prima fase di test hai un'utenza da super
+  admin"_ — and used it to force a stage transition the commercial path refuses.
+  So **the key-user test is not a test of the permissions he will hold**, and the
+  profile question deferred on 15/10 is now blocking from three directions
+  (OI-233, OI-247, OI-250). Recorded as
+  [a risk](../risks/Risk%20-%20client%20key%20users%20test%20with%20admin%20rights%20against%20Mexal%20production.md)
+  because the org's Account fields are wired to **Mexal production**.
+- 🔴 **Train-the-trainer is still unaccepted.** Second row-touch with this
+  question open: nothing in the session asked him to train anyone, and **it is
+  Fabrizio Paganelli, not Marco Montesi, who is showing the sale flow to the
+  team on the morning of 20/10** — _"magari prima lo guardo con loro anche domani
+  mattina che c'ho la riunione"_. The role this row assumed he would take has
+  quietly gone to someone else.
+- 🔑 **He was in the room and was not asked for the agent code.** OI-214 has
+  waited twelve days on Marco Montesi naming the default agent for agentless
+  WooCommerce orders. **Nobody raised it**, in 01:45, with him present.
+- ⚠ **He was on a second call for much of the session** — see the meeting note's
+  reading caveats — which bears on what he can be said to have been shown.
+
+## What closing it looks like, restated
+
+The user exists, so what remains is: the commercial profile decided and assigned,
+and a person confirming whether Marco Montesi or Fabrizio Paganelli owns training
+the tutors.

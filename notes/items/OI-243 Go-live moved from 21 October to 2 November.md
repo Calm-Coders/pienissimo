@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Pienissimo
 org: both
 raised: 2026-10-15
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-246]
 blocks: [go-live]
 severity: gating
@@ -222,4 +222,35 @@ party has accepted in writing.**
 
 ⚠ **Second night this has been deferred.** When the acknowledgement lands, the
 nine places listed in the 15/10 trace change in one session, together with
+`requirements/pienissimo-requirements.yaml:469`'s dual-run assumption.
+
+
+## 🔴 2026-10-19 — three client people, 01:45, and nobody said the date
+
+**The strongest negative yet.** [The 19/10 walkthrough](../meetings/2026-10-19%20Test%20UAT%20Commerciali.md)
+put **Fabrizio Paganelli, Sabatino Rinaldi, Elisa Migliano and Marco Montesi** in
+one call with Elena Spini for 01:45:49, on the first day of the key-user test
+week, and **2 November was never mentioned by anyone.** Neither was 21 October.
+The only forward-looking commitments made were this week's: the client's own
+Friday review and the Wednesday migration meeting.
+
+🔴 **Fabrizio Paganelli — the person who disputed the date — talked about
+timetables twice in the session** (declining a ROMI meeting this week, booking
+Wednesday) **and did not refer to go-live either time.** The mail thread remains
+unanswered.
+
+🔴 **So the register was deliberately not moved a fourth night.** OI-124's rule is
+a written acknowledgement in the mail thread. What exists is still one verbal
+_"l'ho vista prima di entrare in call"_ from Sabatino Rinaldi on 16/10, from
+someone who is not the objector. **Moving `go_live:` to 2026-11-02 tonight would
+record as contractual a date one party disputed on the record and no party has
+accepted in writing** — and it would be the second contract-bound date to move
+without the client's signature in two weeks.
+
+⚠ **The window is closing on the ordinary reading.** Today is 19 October; the
+signed date is 21 October, two days away. **From 22 October the register will
+state a go-live that has demonstrably not happened**, which is a different and
+worse kind of wrong than stating a date the client has not yet acknowledged.
+When the acknowledgement lands — or on 22 October, whichever comes first — the
+nine places listed in the 15/10 trace change in one session, plus
 `requirements/pienissimo-requirements.yaml:469`'s dual-run assumption.

@@ -10,6 +10,54 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-19 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  **2026-10-16T22:00Z** — three days, covering the weekend. Drilled
+  **[Test UAT Commerciali](notes/meetings/2026-10-19%20Test%20UAT%20Commerciali.md)**
+  (19/10 15:01 CEST, **01:45:49**, 107,044 chars, read in full in one pass,
+  preserved at `meetings/2026-10-19-test-uat-commerciali-transcript.it.md`).
+  Wrote **OI-257–OI-266** and one risk note; updated OI-100, OI-163, OI-207,
+  OI-212, OI-214, OI-227, OI-240, OI-243, OI-244, OI-246, OI-254; MAP, INDEX,
+  both trackers (10 new rows + 11 refreshed each) and both recaps §65; trace;
+  this entry.
+- **State:** 🟢 **OI-240 is answered** — Marco Montesi has a user and was taken
+  through the whole commercial path, **on System Administrator, in an org wired
+  to Mexal production** (new risk note; the interim profile now blocks OI-233,
+  OI-240, OI-247 and OI-250). 🔑 **Aurel Mrruku was invited and did not attend**,
+  so the session's ten findings reached the build only through Elena Spini's
+  screenshots. 🟢 **`DevMain` moved for the first time since 15/10** —
+  `73a9d59` → **`926195c`**, four PRs: `#102` ended OI-207's four nights outside
+  the branch, `#103` landed OI-214's slot, `#104` brought OI-163's gating work
+  in. 🟢 **The OI-100/OI-163 contradiction reported on 16/10 is withdrawn** — its
+  author resolved it before the merge and the merged metadata agrees
+  (`Allow`/`Report`, report-only). 🔴 New defects OI-260 (quote PDF failed live;
+  the exception is unread), OI-261, OI-263, OI-264, OI-265, OI-266; three agreed
+  lead changes OI-257, OI-258, OI-259. 🔴 The client **declined a ROMI session
+  for 20–23/10** and booked migration for **Wed 21/10**, whose field spec is four
+  days late (_"me lo sono dimenticato"_). 🔴 OI-212 unchanged a ninth night;
+  `SAL-20` unanswered a sixth.
+- **Next:** **open three images** — Elena Spini's 15:10:55Z picklist screenshot
+  (the only thing that settles OI-265), and her two Slack screenshots of
+  16:12:56 and 16:20:11 CEST (the second is the `Genera PDF` exception). Then
+  **decide the commercial profile**: it is one decision that unblocks four rows
+  and makes the key-user test a test of real permissions.
+- **Watch:** **22 October is a trigger, not a date to wait out.** The register
+  still says `go_live: 2026-10-21` because OI-124 requires written
+  acknowledgement and none exists — but from 22/10 it states a go-live that
+  demonstrably has not happened, which is worse. Change the nine places listed
+  in the 15/10 trace then. ⚠ **Two findings conflict with signable text and
+  neither is a decision**: `SAL-12` forbids the tutor discounts the client asked
+  for (OI-207), and `DM-07` specifies the competitor list ROMI advised against
+  (OI-259). The register carries **only** `tracked_by` additions — do not read
+  those as scope changes. ⚠ **Row 163 is in the duplicated 163–174 range and was
+  touched tonight**; both copies got the same update deliberately, so neither is
+  stale and neither is preferred. ⚠ OI-254's title overstates the record — no
+  error text exists in any source — and the title is kept only because the
+  number is cited client-side.
+
+---
+
 ## 2026-10-16 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark

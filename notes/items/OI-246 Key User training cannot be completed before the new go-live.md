@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-15
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-240, OI-186]
 blocks: [go-live]
 severity: gating
@@ -153,3 +153,43 @@ only orders and invoicing. The 16/10 session showed the marketing flows to
 Sabatino Rinaldi, Matteo Distaso and Rebecca Marmo for the first time — so three
 more people have now seen a flow they cannot sign off, and **none of them has a
 login.**
+
+
+## 🔴 2026-10-19 — the key-user week started, and the client sent ROMI away for it
+
+**Day one of the 19–23/10 key-user window happened, and the shape it will take is
+not the one this row assumed.** At [the 19/10 session](../meetings/2026-10-19%20Test%20UAT%20Commerciali.md)
+`01:26:48` Sabatino Rinaldi declined a ROMI meeting for the rest of the week:
+
+> _"non ce lo diamo il meeting questa settimana perché vogliamo testarla. Venerdì
+> ci riuniamo tutti e la testiamo da noi e dacci il tempo di usarla."_
+
+🔴 **So 20–23 October runs client-internal with no ROMI person present**, and
+their own review is **Friday 23/10** — the last day of the window and three days
+before training starts on 26/10. **Any defect they find on Friday has the
+weekend and nothing else before the training week opens.**
+
+🟢 **One ROMI session survives**: Wednesday 21/10 on historical order migration
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)),
+confirmed in writing by Fabrizio Paganelli. It is a migration meeting, not a
+training or UAT one.
+
+🔑 **And the train-the-trainer assumption has quietly changed hands.** This row
+and [OI-240](OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)
+both assumed Marco Montesi would train the tutors. In the session it is
+**Fabrizio Paganelli** who takes it: _"magari prima lo guardo con loro anche
+domani mattina che c'ho la riunione, magari fagli fare … la vendita standard"_,
+and _"io voglio che vedano il giro"_. **Nobody assigned this; he assigned
+himself**, and nobody asked Marco Montesi to do it.
+
+⚠ **Fabrizio Paganelli has not tested the hard half himself.** Same passage:
+_"dopo la vendita dei pacchetti, quelli tranche eccetera eccetera … ancora non ho
+neanche testato"_. So the person training the tutors on 20/10 has not yet run the
+bundle-and-tranche path he will have to teach.
+
+⚠ **Elisa Migliano's own access is still unverified** — she is working through
+Fabrizio Paganelli's login, and Elena Spini asked for a real test: _"giusto per
+poi effettivamente capire se anche lei poi riesce ad accedere"_.
+
+🔴 **The contracted training hours are still unknown**, third run with this
+question, and the window is five days for eight users.

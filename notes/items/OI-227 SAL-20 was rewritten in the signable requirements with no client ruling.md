@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-12
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-59, OI-184]
 blocks: [go-live]
 severity: gating
@@ -271,3 +271,24 @@ is this procedure's to pick —
 client has never ruled on, **five days on, with the client's own people in the
 system from Monday.** The fix is one answer from Aurel Mrruku about his own
 build, and it has been asked for four times.
+
+
+## 🔴 2026-10-19 — sixth night, and the key-user week has started
+
+**No answer.** Elena Spini's DM carried seven messages on 19/10 and **`SAL-20`
+is in none of them** — they are the quote discounts, a live error screenshot and
+the Mexal migration tracciato. The 01:45 commercial-flow session with four client
+people never mentioned it either, in a session that walked the entire
+quote-to-tranche path `SAL-20` sits in.
+
+🔴 **Five messages in four days, none answered.** The question Elena Spini asked
+to be answered by 16 October is now three days overdue, and **the rewritten
+signable text stands while the client's own key users test the system it
+describes** — their window opened today and runs to 23/10.
+
+⚠ **The YAML was left alone a sixth night, for the reason given on 16/10 and not
+a new one: there is nothing new to write.** The three available moves are
+unchanged — revert a deliberate developer edit to signable text, confirm wording
+with no client ruling, or record a project-management state in a contract-bound
+document. **None of them is an agent's call.** What has changed is only the cost
+of waiting.

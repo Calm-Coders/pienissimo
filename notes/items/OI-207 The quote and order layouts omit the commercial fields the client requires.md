@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -287,3 +287,101 @@ Spini's `#tproj-pienissimo` status (16/10 19:20 CEST):
 this row is not at risk of being deferred. 🔴 **But the build has sat outside
 the integration branch for four nights**, seventeen days from go-live, and
 nothing in this sweep opened a PR for it.
+
+
+## 🟢🔴 2026-10-19 — the totals landed in `DevMain`, and the client said they are still missing
+
+**Two things happened three hours apart and they point opposite ways.**
+
+### 🟢 The build reached the integration branch
+
+**PR `#102` merged into `DevMain` at 12:35 CEST** (`bbe61a2`, from
+`DevMainOpportunityWork`), ending four nights of this row's build sitting on a
+personal branch. `git ls-tree -r origin/DevMain` now returns both fields:
+
+- `force-app/main/default/objects/Quote/fields/Totale_Listino__c.field-meta.xml`
+- `force-app/main/default/objects/Quote/fields/Sconto_Totale__c.field-meta.xml`
+
+and the same PR carries the surfaces they feed: `QuoteLineItemTriggerHandler.cls`
+(+79), `QuoteLineItemTrigger.trigger`, `QuotePdfController.cls`, `QuotePdf.page`,
+`Quote-Quote Layout.layout-meta.xml` (+8), and the acceptance page's HTML and
+CSS. `QuoteLineItem` already carries `Discount_Pct__c`. **`DevMain` moved for the
+first time since 15/10**, from `73a9d59` to `926195c`, across four merged PRs.
+
+⚠ The merge also resolved this note's own standing conflict warning: Rexhina
+Hysi's text and the sweep's appended section are now in one file on `DevMain`.
+**Read the merged body, not the branch history, from here on.**
+
+### 🔴 The client, at 15:01 CEST, reported the same absence
+
+At [the 19/10 walkthrough](../meetings/2026-10-19%20Test%20UAT%20Commerciali.md)
+`01:09:05`, Fabrizio Paganelli, watching Marco Montesi add a product:
+
+> _"vedo che non è comparsa la possibilità di mettere degli sconti … manca un po'
+> quello che c'era anche di là: unità di misura, quantità, prezzo di prezzo di
+> listino, sconto, prezzo netto, in modo tale che mano a mano che il tutor
+> inserisce ulteriori righe articolo nel preventivo, [abbia] anche un minimo la
+> visione di quello che sta per preventivare il cliente."_
+
+And on the quantity case specifically (`01:10:27`): _"se qui il tutor decide di
+mettere tre biglietti, bisogna che abbia la visione del prezzo di listino totale
+e anche la possibilità di inserire uno sconto."_
+
+Elena Spini confirmed the agreed shape from the bundle work — _"o metti il prezzo
+che vuoi o metti la percentuale, e se metti il prezzo che vuoi ti calcola la
+percentuale in automatico"_, **at line level** (both she and Marco Montesi said
+_"a livello di riga"_) — and undertook to check it with Aurel Mrruku, who was not
+in the call.
+
+### Reading the two together
+
+⚠ **Whether the UAT org carried `#102` at 15:01 CEST is not established** — this
+sweep did not open the org. Three readings are live and nobody has separated
+them:
+
+1. **The deploy had not reached UAT**, so the client saw the pre-`#102` layout.
+2. **It had, and the header totals are built while the _line editor_ is not** —
+   the merged work adds `Totale_Listino__c` and `Sconto_Totale__c` to the
+   **Quote**, and `Discount_Pct__c` exists on the line, but nothing in the diff
+   adds unit of measure or net price to the add-products experience.
+3. **It had, and the grid simply did not render** —
+   [OI-266](OI-266%20The%20quote%20product%20grid%20does%20not%20refresh%20after%20adding%20a%20line.md)
+   records that the lines were invisible until a manual reload, and after the
+   reload the `totale complessivo` **did** appear (_"ecco qui così compare"_).
+
+🔑 **Reading 3 is partly confirmed and it matters**: at least some of what the
+client called missing was present but unrendered. **It does not cover the
+discount control**, which Fabrizio Paganelli checked again after the refresh and
+still found absent: _"però vedi anche qui manca. Se io gli voglio fare uno sconto,
+non c'ha la possibilità di inserirlo."_
+
+### 🔴 The conflict nobody has noticed
+
+🔑 **The client is asking for something the signable register forbids.**
+`requirements/pienissimo-requirements.yaml` carries, with `status: agreed`:
+
+> **`SAL-12`** — _"Tutors on fixed price list, no discretionary discounts"_
+
+What Fabrizio Paganelli asked for on 19/10 is a **discount control on the quote
+line, operated by the tutor** — _"sicuramente gli verranno fatti degli sconti"_ —
+and Marco Montesi backed him. **That is discretionary discounting by tutors, by
+name.** Neither party cited `SAL-12`; Elena Spini treated the ask as a build gap,
+not as a change to agreed scope.
+
+⚠ **This is not an agent's call to resolve.** Either `SAL-12` no longer reflects
+what the client wants and the Italian signable text must change, or the discount
+control belongs to a role the tutors do not hold and the ask should be refused.
+**A human must rule it**, and the register is left untouched tonight for that
+reason.
+
+### 🔴 And the client is visibly out of patience
+
+Off the main thread, after the goodbyes (`01:32:28`):
+
+> _"a me mi fanno incazzare perché vi dico le cose, no? Però anche quella roba
+> degli sconti, quelle robe lì l'avevamo già affrontata, l'avevamo già vista,
+> doveva essere a posto."_
+
+**First recorded client frustration at having to re-raise a build item** — and it
+is about the row the same client accepted into the frozen Fase 1 perimeter in
+writing on 16 October.

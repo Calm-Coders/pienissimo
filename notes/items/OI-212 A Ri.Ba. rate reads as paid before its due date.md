@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -315,3 +315,24 @@ year, through this predicate, with the production load on go-live day.
 🔑 **And the field spec that starts that load was due from Aurel Mrruku
 yesterday evening** — nothing in this sweep shows it sent, so the migration
 rehearsal has not begun and the predicate is still the thing it will run on.
+
+
+## 🔴 2026-10-19 — unchanged a ninth night, and now three days from the migration meeting
+
+`MexalScadenzarioSearchService.cls` is byte-for-byte unchanged on
+`origin/DevMain`; `git log` still names `f292b72` (08/10, an unrelated
+`without sharing` change) as its last touch. **`DevMain` did move tonight** —
+four PRs merged, `73a9d59` → `926195c` — so the branch was not frozen; **this
+file simply was not in any of them.**
+
+🔑 **The deadline for this to matter is now dated.** The historical-order
+migration meeting is agreed by both sides for **Wednesday 21 October**
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)),
+and the field spec it runs on is promised to the client for 20 October. Deriving
+`incassato` across roughly ten thousand historical orders through a predicate
+that reads an unpaid Ri.Ba. rate as paid would put wrong payment states on the
+client's own sales history, at volume, in the week its key users are testing.
+
+🔴 **Nothing was found on it in any source tonight** — not the 01:45 session, not
+the Gmail thread, not the dev group, not a commit. The confirmation date is eight
+days past. **The correction is a code change and belongs to Aurel Mrruku.**

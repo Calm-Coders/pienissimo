@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Marco Montesi
 org: both
 raised: 2026-10-07
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-219]
 blocks: [OI-134, go-live]
 severity: gating
@@ -262,3 +262,32 @@ established here.
 alone). **No PR.** `origin/DevMain` has not moved since this procedure's own
 `73a9d59` on 15/10, so none of the above is on the integration branch — and
 go-live is 2 November.
+
+
+## 🟡 2026-10-19 — the slot merged, the answer is twelve days old, and the man who owes it was in the room
+
+🟢 **`#103` merged at 12:35 CEST** (`18785c1`, from `DevAnita15`), so
+`Default_Agent_Username__c` and its order-side fallback are now on
+`origin/DevMain` rather than on a personal branch —
+`OrderTriggerHandler.cls` (+19), `WoocommerceOrderService.cls` (+14),
+`PerformancePlusContractService.cls` (+12) and the field definition.
+**The configuration slot is in the integration branch.**
+
+🔴 **The value that goes in it is still unnamed, twelve days after Elisa Migliano
+undertook to ask Marco Montesi for it.** 🔑 **And Marco Montesi spent 01:45 in a
+Salesforce session today** — [the 19/10 walkthrough](../meetings/2026-10-19%20Test%20UAT%20Commerciali.md)
+— with Elena Spini, Fabrizio Paganelli, Elisa Migliano and Sabatino Rinaldi all
+present, **and nobody asked him.** The topic did not come up once.
+
+🔴 **The production exposure is unchanged.** `createAccount` throws when the
+config is unset, and the `Manual Steps Pienissimo` sheet's `Status Prod` column
+has been blank on all five rows since 09/10 — the file did not move today. So a
+WooCommerce order for a new customer would still fail outright in production.
+
+⚠ **Adjacent build, same surface.** `10fa31e` (Anita Aga, `DevAnita19`, 17:43
+CEST) adds trigger logic to populate the agent-related fields on the Account,
+answering a different complaint from the same session
+([OI-254](OI-254%20Creating%20a%20Referente%20and%20an%20Account%20failed%20for%20the%20client.md)).
+🔴 **It is unmerged and has no PR.** Whether it also covers the WooCommerce path
+this row is about was not checked — it is Account-side, not Order-side — and it
+ships without tests.

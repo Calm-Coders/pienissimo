@@ -2,9 +2,98 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-16 (nightly sweep — the marketing ticket chain ran end to end in production, the check-in API was approved for production by the client, and a new 11-field build was agreed the morning after the scope freeze) · Source of record: [notes/](notes/)
+Last updated: 2026-10-19 (nightly sweep — the commercial lead finally got into Salesforce, found ten defects in 01:45 with no developer present, and the client sent ROMI away for the rest of the key-user test week) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟡🔑 **2026-10-19 — the commercial lead finally got into Salesforce, found ten defects in 01:45 with no developer in the room, and the client sent ROMI away for the rest of the key-user test week.** Nightly sweep,
+  watermark 2026-10-16T22:00Z, **three days** covering the weekend. **One client session of 01:45:49** — [Test UAT Commerciali](notes/meetings/2026-10-19%20Test%20UAT%20Commerciali.md),
+  the third full raw transcript in five days — and 🟢 **`DevMain` moved for the first time in four days**: **6 commits, 4 PRs merged**,
+  **`73a9d59` → `926195c`**. Build claims are repository arithmetic against that head; no org was opened.
+  🟢🔑 **[OI-240](notes/items/OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md) is answered.**
+  Elena Spini created the user before the call, Marco Montesi was in by `00:23:10` after **two password resets that never
+  arrived**, and he was walked from lead creation through the Anticipay P.IVA check, stages, tasks, non-qualified reasons,
+  conversion into Account + Referente + Opportunity, quote, products and tranches. 🔴 **But he holds System Administrator**,
+  not the profile he will have — he forced a stage transition the commercial path refuses — and **the interim-profile question
+  deferred on 15/10 now blocks from four directions** (OI-233, OI-240, OI-247, OI-250).
+  🔴🔑 **The org is wired to Mexal production and the key users are in it with admin rights.** Elena Spini,
+  with those fields editable on screen: _"siamo collegati con l'ambiente di M[ex]al di produzione"_ — **one verbal warning,
+  given once, to someone who was simultaneously on another call**
+  ([the risk](notes/risks/Risk%20-%20client%20key%20users%20test%20with%20admin%20rights%20against%20Mexal%20production.md)).
+  Sabatino Rinaldi was promised the same profile ([OI-262](notes/items/OI-262%20Sabatino%20Rinaldi%20needs%20a%20Salesforce%20user.md)).
+  🔑 **Aurel Mrruku was invited and did not attend**, which shaped everything: all ten findings reached the build through
+  Elena Spini's screenshots, and when `Genera PDF` failed live she could not even read the error —
+  _"purtroppo arrivano tutte le mail ad Aurel"_ — and her message to him went unanswered.
+  🔴 **New defects: [OI-260](notes/items/OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md)**
+  (the quote PDF returned _"errore di server interno"_ in front of four client people; it worked hours earlier; `#102` had
+  redeployed `QuotePdfController` at 12:35 and the session opened at 15:01 — **the exception has still not been read**) ·
+  **[OI-261](notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md)** (Aurel Mrruku's test article
+  codes survived the Mexal import and bundle-only articles are selectable on a normal order — 🟢 though Fabrizio Paganelli
+  reading the flags off the screen **corroborates OI-251's design exactly**) ·
+  **[OI-265](notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md)**
+  (_"i campi Categoria e Sottocategoria non sono aggiornati"_ by mail ten minutes after the call; Elena Spini replied with a
+  screenshot of the values and **he did not answer** — 🔴 **the cost of the picklist workbook being a mail attachment only for
+  ten sweeps: neither party can point at a shared copy**) ·
+  **[OI-263](notes/items/OI-263%20Salesforce%20system%20labels%20are%20still%20in%20English.md)** ·
+  **[OI-264](notes/items/OI-264%20The%20quote%20expiry%20reminder%20email%20copy%20is%20a%20placeholder.md)** ·
+  **[OI-266](notes/items/OI-266%20The%20quote%20product%20grid%20does%20not%20refresh%20after%20adding%20a%20line.md)**.
+  🟢 **Three lead-qualification changes agreed in the room**:
+  [OI-257](notes/items/OI-257%20Standard%20sector%20picklist%20values%20must%20be%20removed.md) (stock sector values deleted,
+  unanimous) · [OI-258](notes/items/OI-258%20Leads%20from%20a%20communication%20agency%20must%20be%20blacklisted%20automatically.md)
+  (`Agenzia di comunicazione` is a **deliberate trap** in the public forms and must auto-blacklist — 🔑 the exit reason may
+  already exist as the register's `"SW House, Ag. Marketing, Web Agency"`, and nobody compared them) ·
+  [OI-259](notes/items/OI-259%20A%20lost%20lead%20marked%20non%20interessato%20must%20carry%20a%20mandatory%20free%20text%20reason.md)
+  (mandatory `Motivazione` on `non interessato`; **scope undecided**).
+  🔴🔑 **Two findings conflict with signable text and both are conflicts, not decisions.** `SAL-12` reads _"Tutors on fixed
+  price list, no discretionary discounts"_, `status: agreed`, while the client asked for a **tutor-operated line discount**
+  ([OI-207](notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)) —
+  **neither party cited it**; and `DM-07` already specifies a competitor list where **ROMI advised free text instead**
+  (OI-259). A human must rule both; the register carries only `tracked_by` additions.
+  🟢🔑 **`DevMain` moved and it moved the right things.** `#102` landed **OI-207's `Totale_Listino__c` and `Sconto_Totale__c`**
+  (four nights outside the branch, ended) · `#103` **OI-214's `Default_Agent_Username__c`** · `#104` **OI-163's gating
+  duplicate-rule and conversion work, in the integration branch for the first time** · `#101` the Azienda flexipage and the
+  tranche LWC. 🔴 But at 15:01 Fabrizio Paganelli still reported the quote lines missing sconto, unità di misura, listino and
+  netto, and 🔑 **he is out of patience**: _"a me mi fanno incazzare perché vi dico le cose … l'avevamo già affrontata, doveva
+  essere a posto"_ — **first recorded client frustration at re-raising a build item**, about the row they accepted into
+  frozen Fase 1 three days earlier.
+  🟢🔑 **The OI-100/OI-163 contradiction reported on 16/10 is withdrawn.** Rexhina Hysi resolved it herself before the merge:
+  both notes carry a `2026-10-19` section stating a fresh retrieve and naming the paragraph it supersedes, and `origin/DevMain`
+  confirms **`Allow` + `Report` on all three rules** — report-only, three ways. **No human ruling needed.** 🔴 Though **four
+  conversion rulings in four days by one person**, each superseding the last, are **in no register row and in neither prose
+  document** — and the merge-or-create behaviour the client accepted on 24/09 was reversed, restored and reversed again
+  without being told.
+  🟡 **[OI-244](notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md): the meeting
+  is booked for Wednesday 21/10, confirmed by the client in writing** — 🔴 **and the field spec is four days late.** Elena
+  Spini promised it to Fabrizio Paganelli for 20/10, then quoted the undertaking back at Aurel Mrruku in DM; his answer:
+  _"ciao, si me lo sono dimenticato"_. 🟢 He carried it to the dev group at 18:05 CEST, **the first time it has been assigned
+  to more than one person**. ⚠ He also scoped the ask down usefully — **invoiced orders only, as sales history**.
+  🔴 **[OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md) unchanged a ninth night**
+  — `DevMain` moved, this file was in none of it — and it is now **two days from a migration rehearsal that would derive
+  `incassato` for ~10,000 historical orders through it.**
+  🔴 **[OI-246](notes/items/OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md): the client
+  sent ROMI away.** Sabatino Rinaldi: _"non ce lo diamo il meeting questa settimana … dacci il tempo di usarla"_ — so
+  **20–23/10 runs client-internal with nobody from ROMI present**, their own review is **Friday 23/10**, and anything found
+  then has the weekend before training opens on 26/10. 🔑 **Train-the-trainer changed hands without being assigned**:
+  Fabrizio Paganelli takes it himself for 20/10 — ⚠ **having not yet tested the bundle-and-tranche path he will teach.**
+  ⚠ Elisa Migliano is still on his login; her own access is unverified.
+  🟡 **[OI-254](notes/items/OI-254%20Creating%20a%20Referente%20and%20an%20Account%20failed%20for%20the%20client.md): explained,
+  without the error ever being read.** A Referente with no Account is **expected behaviour** and the room chose to keep it;
+  the blank agente/classificatore/rete/zona fields inherit from the creating user, whose agent data was unset. 🟢 `10fa31e`
+  (Anita Aga, `DevAnita19`, **57 minutes after the session ended**) builds that inheritance — 🔴 unmerged, no PR, no tests.
+  🔴 **The four screenshots were still never opened**, and **no error text exists in any source.**
+  ⚠ **Four client people sat through 01:45 and the go-live date was never mentioned** — not 2 November, not 21 October, not by
+  the objector ([OI-243](notes/items/OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)). 🔴 **The register was
+  deliberately not moved a fourth night** — but the signed date is **21 October**, so **from 22 October it states a go-live
+  that demonstrably has not happened.** ⚠ Nothing on Zoho after 31/10, in a session that spent fifteen minutes extracting
+  historical orders from Mexal · 🔴 **`SAL-20` unanswered a sixth night**
+  ([OI-227](notes/items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md)),
+  never mentioned in a commercial-flow session · 🔑 **Marco Montesi owed OI-214's agent code for twelve days, was in the room,
+  and nobody asked him** · 🔴 **Fathom returned nothing at all** — a widened probe returns only the 15/10 247 meeting, so
+  **the window is genuinely empty of every meeting**, Pienissimo's own 01:45 session included: **twentieth run with no
+  Pienissimo meeting** · the canvas **static ten weeks** · `#tproj-pienissimo` **silent** · ⚠ the dev group carried **one**
+  human message and **still no reply to any nightly report — twenty-nine nights.**
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **267**.
+  — [trace](notes/traces/Source%20trace%202026-10-19%20nightly.md)
 
 - 🟡🔑 **2026-10-16 — the marketing half of the ticket chain ran end to end in production, the client approved the check-in API, and new build scope was agreed the morning after the freeze.** Nightly sweep,
   watermark 2026-10-15T22:00Z. **One client session of 02:26:15** — [UAT Flussi MKT Biglietti](notes/meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md),
