@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-14
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-186, OI-180]
 source: Gmail thread 1a13b044107768b4
 ---
@@ -117,3 +117,30 @@ no exposure to the build and a week to acquire it before the 27 October decision
 — see [OI-246](OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md).
 
 **Row kept open** for the profile, which is the half that blocks go-live.
+
+## 🟢 2026-10-16 — the walkthrough is booked
+
+Elena Spini sent a calendar invitation at **2026-10-16 07:24:10Z** —
+_"[ROMI-PIENISSIMO] - Test UAT Commerciali"_, **Monday 19 October 2026,
+15:00–16:00 CEST** — **to `marco.m@pienissimo.com`**, cc Aurel Mrruku,
+`amministrazione@pienissimo.com` and Fabrizio Paganelli, with a Google Meet
+link.
+
+🟢 **The undertaking given on 15/10 — that Elena Spini would walk Marco Montesi
+through the lead flow from Monday 19/10 — is now a booked session with the right
+single invitee.** It is the first calendar artefact in the record aimed at him.
+
+🟢 Her `#tproj-pienissimo` status the same evening restates it as the week's
+first step: _"19/10 – primo accesso e giro completo del flusso con Marco."_
+**_Primo accesso_** — so the user is expected to exist by Monday.
+
+🔴 **Nothing confirms the user has been created.** No source in this sweep shows
+the System Admin user provisioned, and the interim-profile decision recorded on
+15/10 is unchanged: the profile question stays deferred.
+
+⚠ **Two things now land on the same Monday.** The same status post puts the
+key-user autonomous tests in the **19–23/10** window, and Fabrizio Paganelli's
+_"Referente e Account"_ failure
+([OI-254](OI-254%20Creating%20a%20Referente%20and%20an%20Account%20failed%20for%20the%20client.md))
+arrived on 16/10 unanswered — **a record-creation problem in the commercial flow
+Marco Montesi is being shown on 19/10 at 15:00.**

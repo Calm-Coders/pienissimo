@@ -10,15 +10,26 @@ public without sharing class OrderTriggerHandler {
   }
 
   public static void beforeInsert(List<Order> newOrders) {
+    Boolean needsDefaultAgent = false;
     Set<Id> quoteIds = new Set<Id>();
     Set<Id> accountIds = new Set<Id>();
     for (Order orderRecord : newOrders) {
+      if (
+        orderRecord.Origine__c == 'WooCommerce' &&
+        orderRecord.OpportunityId == null
+      ) {
+        needsDefaultAgent = true;
+      }
       if (orderRecord.Quote__c != null) {
         quoteIds.add(orderRecord.Quote__c);
       } else if (orderRecord.AccountId != null) {
         accountIds.add(orderRecord.AccountId);
       }
     }
+
+    String defaultAgentCode = needsDefaultAgent
+      ? IntegrationNotificationConfigService.getDefaultAgentCode('WooCommerce')
+      : null;
 
     Map<Id, Quote> quotesById = new Map<Id, Quote>();
     if (!quoteIds.isEmpty()) {
@@ -43,6 +54,14 @@ public without sharing class OrderTriggerHandler {
     }
 
     for (Order orderRecord : newOrders) {
+      if (
+        orderRecord.Origine__c == 'WooCommerce' &&
+        orderRecord.OpportunityId == null &&
+        String.isNotBlank(defaultAgentCode)
+      ) {
+        orderRecord.Codice_Agente__c = defaultAgentCode;
+        continue;
+      }
       if (orderRecord.Quote__c != null) {
         Quote quoteRecord = quotesById.get(orderRecord.Quote__c);
         orderRecord.Codice_Agente__c = quoteRecord == null

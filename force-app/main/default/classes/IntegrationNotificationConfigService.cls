@@ -36,6 +36,34 @@ public with sharing class IntegrationNotificationConfigService {
     return recipients;
   }
 
+  public static String getDefaultAgentCode(String configurationName) {
+    User agent = getDefaultAgent(configurationName);
+    return agent == null || String.isBlank(agent.Agente__c)
+      ? null
+      : agent.Agente__c.trim();
+  }
+
+  public static User getDefaultAgent(String configurationName) {
+    Integration_Notification_Config__c configuration = getConfiguration(
+      configurationName
+    );
+    if (
+      configuration == null ||
+      String.isBlank(configuration.Default_Agent_Username__c)
+    ) {
+      return null;
+    }
+
+    String username = configuration.Default_Agent_Username__c.trim();
+    List<User> agents = [
+      SELECT Id, Agente__c, Categoria_Provvigioni_Cliente__c
+      FROM User
+      WHERE Username = :username AND IsActive = TRUE
+      LIMIT 1
+    ];
+    return agents.isEmpty() ? null : agents[0];
+  }
+
   private static Integration_Notification_Config__c getConfiguration(
     String configurationName
   ) {

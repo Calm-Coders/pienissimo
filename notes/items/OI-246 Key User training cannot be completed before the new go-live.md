@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-15
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-240, OI-186]
 blocks: [go-live]
 severity: gating
@@ -105,3 +105,51 @@ the right person: _"anche qui ti dovrebbe rispondere Marco e non io"_.
 Closing it means a named training schedule with Marco Montesi's agreement, a
 profile for the users being trained, and either a date the client accepts or a
 recorded decision to go live with the commercial team untrained.
+
+## 🟢 2026-10-16 — ROMI wrote the objection down, and the training window is now dated
+
+Elena Spini's `#tproj-pienissimo` status (16/10 19:20 CEST) does two things this
+row was waiting for.
+
+🟢 **It records Fabrizio Paganelli's objection in a ROMI-side written source**,
+where previously it existed only in the 15/10 transcript:
+
+> _"Fabrizio P. in call si è preso il ritardo, ma è il primo a dire che forse
+> per il 2 non ce la fanno."_
+
+🟢 **It dates the training**, which the project plan did not:
+
+| Window | Dates |
+| --- | --- |
+| Key-user tests | **19–23 October** |
+| Training | **26–30 October** |
+| Go/No-Go | **by 27 October** |
+| Go-live | **2 November** |
+
+### 🔴 What the dates expose
+
+🔑 **Go/No-Go falls on 27 October — the second day of a training week that runs
+to the 30th.** So the decision to go live is taken with training four days from
+finished, which is the same ordering problem this row was raised about, now with
+dates attached.
+
+🔴 **The capacity objection is untouched.** Fabrizio Paganelli's _"non ce la
+facciamo a formare 7-8 persone"_ gets a five-day window for 7–8 people across
+orders, invoicing, commercial and marketing. Nothing says how the five days are
+divided, by whom, or whether the people are available.
+
+🔴 **The contracted training hours are still unknown** — second run on the
+unreachable list — so nobody can say whether 26–30/10 is enough or even
+purchased.
+
+🔴 **Whether Marco Montesi accepts the train-the-trainer role is still
+unanswered**, second run. He was invited to the 16/10 session and did not
+attend; his own first access is now **19/10 15:00**
+([OI-240](OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)),
+**the first day of the key-user test week he would be training people for.**
+
+⚠ **And the sign-off perimeter is unchanged.** Fabrizio Paganelli can approve
+only orders and invoicing. The 16/10 session showed the marketing flows to
+Sabatino Rinaldi, Matteo Distaso and Rebecca Marmo for the first time — so three
+more people have now seen a flow they cannot sign off, and **none of them has a
+login.**

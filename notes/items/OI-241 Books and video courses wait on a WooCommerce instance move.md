@@ -5,7 +5,7 @@ status: open
 owner: Sabatino Rinaldi
 org: Pienissimo
 raised: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-16
 depends_on: [OI-182]
 blocks: [go-live]
 source: notes/meetings/2026-10-14 UAT Test e2e.md
@@ -67,3 +67,30 @@ happens.
 
 Sabatino Rinaldi names the target instance and a date, the orders move, and one
 book order and one video-course order transit WooCommerce to Salesforce to Mexal.
+
+## 🔴 2026-10-16 — restated to the whole team, still with the same owner and no date
+
+Elena Spini's `#tproj-pienissimo` status (16/10 19:20 CEST), in the UAT e2e
+paragraph:
+
+> _"libri e videocorsi fermi finché Sabatino non sposta gli ordini sul
+> WooCommerce integrato."_
+
+🟢 **The explanation and the owner are now stated in the project's own status
+channel**, not only in a session transcript — so it is visible to everyone on
+the project rather than inferable from the 14/10 e2e.
+
+🔴 **Nothing has moved.** Second day with the same sentence, no date, and
+**Sabatino Rinaldi was present for the whole 02:26 of the 16/10 UAT session and
+it was never raised** — not by him, not by ROMI. The question of which
+WooCommerce instance is correct remains on the unreachable list for a second
+run.
+
+⚠ **It now blocks more than its own test.** The books-and-videocorsi orders are
+one of the three WooCommerce order paths that would exercise the agentless
+default-agent logic built the same day
+([OI-214](OI-214%20The%20Mexal%20order%20send%20requires%20an%20agent%20code%20WooCommerce%20orders%20lack.md)),
+and digital products are also where the no-ticket article flag matters
+([OI-251](OI-251%20ODB%20Live%20streaming%20must%20not%20generate%20a%20ticket.md)).
+**Three rows now wait on one unscheduled instance move, seventeen days from
+go-live.**

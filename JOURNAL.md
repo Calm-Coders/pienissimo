@@ -10,6 +10,62 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-16 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  **2026-10-15T22:00Z**, one day. Drilled
+  [the 16/10 UAT Flussi MKT Biglietti session](notes/meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md)
+  (139,821 chars, Gemini notes **plus** the full verbatim transcript, 02:26:15,
+  read once in nine slices) and **preserved it verbatim** at
+  `meetings/2026-10-16-uat-flussi-mkt-biglietti-transcript.it.md` — the second
+  preserved transcript in two days. Wrote **seven new items, OI-250 to OI-256**,
+  one meeting note; updated **thirteen** existing notes (OI-83, 161, 207, 212,
+  214, 222, 227, 240, 241, 242, 243, 246 and the Manual Steps tracker),
+  `MAP.md`, `INDEX.md`, both trackers (7 new rows + 12 refreshed each) and both
+  recaps (§64). Corrected the transcript-corpus sizes in `AGENTS.md` and
+  `INDEX.md` (~1.03 MB → ~1.14 MB, ~258k → ~298k). Trace at
+  [notes/traces/Source trace 2026-10-16 nightly.md](notes/traces/Source%20trace%202026-10-16%20nightly.md).
+- **State:** `origin/DevMain` at **`73a9d59`** — **unmoved for 48 hours**, and
+  that commit is this procedure's own. Three human commits in the window, **all
+  outside `DevMain`**, no PR merged: `4eadae8` (Anita Aga, `DevAnita15`, 11:32,
+  _"Default Agent for Woocommerce"_ — the WooCommerce default-agent mechanism),
+  `05cdd3b` (Rexhina Hysi, `Devmain_LeadFix`, 14:50, lead-conversion Apex +
+  duplicate rules + **~130 lines appended to OI-100 and OI-163**), `ad73d27`
+  (Anita Aga, `DevAnita15`, 17:46, Account flexipage).
+  🟢 **OI-161 is unblocked** — Andrea Parmeggiani approved the production move in
+  writing at 07:37:42Z after seven days, with two successful calls in the logs.
+  🟢 **The marketing ticket chain ran end to end in production** with fake data.
+  🔴 **OI-242: the client won** — both `accetta` and `rifiuta` go in the mail
+  against ROMI's advice, with the recovery path deferred to Fase 2 (OI-253) in
+  the same session. 🔴 **OI-250 is new build scope agreed the morning after the
+  freeze** and nobody named the freeze. 🔴 **OI-254: the client failed to create
+  a Referente and an Account**, unanswered, three days before the key-user week.
+  🟢 OI-83 moved for the first time since August; OI-240's walkthrough is booked
+  for Mon 19/10 15:00; OI-246 gained dates — **Go/No-Go falls on day two of a
+  five-day training week**. 🔴 OI-212 unmoved an eighth night; OI-207 outside
+  `DevMain` a fourth; OI-227 unanswered a fifth.
+- **Next:** the client's 15:00 internal meeting of 16/10 decides OI-250 and
+  OI-252 and its outcome is in no source. The four `Referente e Account`
+  screenshots are the only place that error text exists. OI-244's field spec was
+  due yesterday evening and is in no source, so the migration rehearsal has not
+  started and OI-212 is still what it would run on.
+- **Watch:** 🔴 **`05cdd3b`'s two notes contradict each other** — OI-100 ends
+  saying duplicate `Alert` was re-enabled and that local metadata matches the
+  org; OI-163 says the rules are report-only; the **committed metadata is
+  `Allow`/`Report` on all three rules**, i.e. report-only. OI-163 is gating.
+  **This run deliberately did not edit OI-100 or OI-163** — they are being
+  authored on an unmerged branch and writing them in `DevMain` would collide
+  with her text. A human must say which state is intended. ⚠ The register was
+  **deliberately not moved** a second night: Sabatino Rinaldi's _"l'ho vista"_ is
+  receipt from someone who is not the objector, and Fabrizio Paganelli was in
+  the same call and said nothing about the date. ⚠ `SAL-20`'s YAML left alone a
+  **fifth** night — the 15/10 reasoning expired, and the new reason is narrower:
+  there is nothing new to write. ⚠ **Fathom returned nothing at all tonight**, so
+  unlike 15/10 the empty Pienissimo result is **not** a demonstrated negative.
+  ⚠ The duplicated tracker rows **163–174** are unchanged and were again not
+  "fixed"; no row was touched twice this run. ⚠ Next free id is **257**;
+  OI-189–OI-193 stay reserved.
+
 ## 2026-10-15 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark

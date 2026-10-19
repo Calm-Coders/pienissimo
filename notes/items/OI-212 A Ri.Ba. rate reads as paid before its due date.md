@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -288,3 +288,30 @@ the figure it feeds — `incassato` — is the one shown to the client on 14/10.
 
 The correction is still one date comparison, in a method that already holds the
 due date eleven lines above.
+
+## 🔴 2026-10-16 — eighth night, byte-for-byte unchanged
+
+Re-read tonight at `MexalScadenzarioSearchService.cls:205-207`:
+
+```apex
+deadline.paid =
+  deadline.paymentStatus == 'P' ||
+  deadline.paymentStatus == 'E';
+```
+
+**No date condition.** The class's last commit is still `f292b72`
+(Aurel Mrruku, 08/10) for an unrelated reason — _"without sharing class"_ — and
+`Pagata__c` still `731c7ac` (06/10). `origin/DevMain` has not moved since 15/10.
+
+🔴 **Nothing in any source touched it today**: not a mail, not a message, not
+the 02:26:15 session, not a commit, not a ruling. **Its 13/10 confirmation date
+is four days past.**
+
+⚠ **The migration exposure recorded on 15/10 is unchanged and now closer.** The
+historical-order load
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md))
+derives `incassato` by running the nightly reconciliation over ~10,000 orders a
+year, through this predicate, with the production load on go-live day.
+🔑 **And the field spec that starts that load was due from Aurel Mrruku
+yesterday evening** — nothing in this sweep shows it sent, so the migration
+rehearsal has not begun and the predicate is still the thing it will run on.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-08
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-179]
 blocks: [go-live]
 severity: gating
@@ -199,3 +199,35 @@ or support-only — is unanswered an eleventh day**, and is now partly answered 
 implication rather than by anyone: Elena Spini told Sabatino Rinaldi the client
 can build these automations themselves _"in autonomia"_, which is a different
 answer from the one Marco Montesi asked for and was not given to him.
+
+## 🟡 2026-10-16 — WhatsApp has owners and a place in the flow, one day after being ruled "not a priority"
+
+At [the 16/10 UAT session](../meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md)
+(`00:12:23`) Fabrizio Mastracci described the invitation flow as already
+designed to carry it:
+
+> _"va praticamente a mandare delle newsletter al quale poi non appena con
+> Matteo configureremo anche il WhatsApp manderà newsletter più WhatsApp per 11
+> volte"_
+
+🟢 **So WhatsApp is inside the ticket invitation journey, alongside each of the
+11 sends**, and the Gemini next steps name the pair who own it — **Matteo
+Distaso and Fabrizio Mastracci**: _"Configurare l'integrazione del canale
+WhatsApp nei flussi di automazione degli eventi."_ That is the first owner this
+row has had on the WhatsApp half.
+
+⚠ **It sits awkwardly against the 15/10 ruling.** Sabatino Rinaldi, speaking for
+Marco Montesi the previous day, said the commercial notification automation
+_"non è una priorità"_. The ticket-invitation WhatsApp channel is a different
+thing from the commercial reminder mail this row was raised for — but **both are
+WhatsApp in this project, the record has one row for them, and nobody has
+distinguished them aloud.**
+
+🔴 **Nothing is built and no date is set.** No commit in this sweep touches a
+WhatsApp channel, no provider or template approval is named, and WhatsApp
+business templates need provider-side approval lead time that nobody has
+mentioned.
+
+🔴 **The commercial half is unchanged**: the in-scope reminder mail still waits
+on Marco Montesi's own reading of the 02/10 mail, now a fortnight old. He was on
+the 16/10 invitation and did not attend.

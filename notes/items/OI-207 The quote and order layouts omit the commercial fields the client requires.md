@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -89,14 +89,14 @@ show always field ybder tale"_ (`95d0be0`).
 
 What is verifiable in source:
 
-| Landed | Evidence |
-| --- | --- |
-| 🟢 **Line discount** | new `QuoteLineItem.Discount_Pct__c`, label **`Sconto %`**, percent(5,2) — _"Percentuale di sconto inserita durante la creazione delle tranche Performance Plus. Il prezzo finale rimane memorizzato in UnitPrice per evitare una seconda applicazione dello sconto."_ |
-| 🟢 **The quote PDF** | `QuotePdf.page` +39 then reworked in `30fb71c`, and `QuotePdfController` +19 — the _"show always field under table"_ fix |
-| 🟢 **The quote screen** | `quoteManageProducts` html/js/css reworked (+98 js), `QuoteManageProductsController` +53, `QuoteLineItemsController` +7 |
-| 🟢 **The acceptance community page** | `quoteAcceptancePage` html/css reworked (+117 css), `QuoteAcceptanceController` +169 |
-| 🟢 **A quote-line record page** | new `Quote_Line_Item_Record_Page.flexipage` (377 lines), `f84d356` |
-| 🟢 **Agente** | `Agente__c` added to `Account`, `Lead` and `Quote`; `Quote_Compact_Layout` created |
+| Landed                               | Evidence                                                                                                                                                                                                                                                              |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🟢 **Line discount**                 | new `QuoteLineItem.Discount_Pct__c`, label **`Sconto %`**, percent(5,2) — _"Percentuale di sconto inserita durante la creazione delle tranche Performance Plus. Il prezzo finale rimane memorizzato in UnitPrice per evitare una seconda applicazione dello sconto."_ |
+| 🟢 **The quote PDF**                 | `QuotePdf.page` +39 then reworked in `30fb71c`, and `QuotePdfController` +19 — the _"show always field under table"_ fix                                                                                                                                              |
+| 🟢 **The quote screen**              | `quoteManageProducts` html/js/css reworked (+98 js), `QuoteManageProductsController` +53, `QuoteLineItemsController` +7                                                                                                                                               |
+| 🟢 **The acceptance community page** | `quoteAcceptancePage` html/css reworked (+117 css), `QuoteAcceptanceController` +169                                                                                                                                                                                  |
+| 🟢 **A quote-line record page**      | new `Quote_Line_Item_Record_Page.flexipage` (377 lines), `f84d356`                                                                                                                                                                                                    |
+| 🟢 **Agente**                        | `Agente__c` added to `Account`, `Lead` and `Quote`; `Quote_Compact_Layout` created                                                                                                                                                                                    |
 
 ## 🔴 Why this row stays open
 
@@ -109,14 +109,14 @@ document, plus the logo:
 - **Line discount** — 🟢 has a field now.
 - **Unit list price, quantity, unit of measure, net price** — ⚠ **not confirmed.**
   Standard `QuoteLineItem` already carries `UnitPrice`, `Quantity` and
-  `TotalPrice`; whether they are now *on the layouts, the community page and the
-  PDF* is a layout and page question this sweep did not open the org to answer.
+  `TotalPrice`; whether they are now _on the layouts, the community page and the
+  PDF_ is a layout and page question this sweep did not open the org to answer.
 - **Unit of measure** — ⚠ no field named in the diff, on `QuoteLineItem` or
   `Product2`. The likeliest genuine gap.
 - **The logo** — ⚠ nothing in the diff addresses it.
 
 ⚠ **Not deployed to Prod** by anything this sweep can see, and
-`Quote_Record_Page.flexipage` *lost* 10 lines in `95d0be0` while
+`Quote_Record_Page.flexipage` _lost_ 10 lines in `95d0be0` while
 `Product_Record_Page` lost 10 in `f84d356` — removals this sweep did not read.
 
 🔴 **A test class was edited, not written:** `QuoteCommercialTest.cls` **-6
@@ -156,6 +156,34 @@ no owner and no date.
 [OI-221](OI-221%20The%20quote%20PDF%20does%20not%20regenerate%20when%20the%20quote%20changes.md),
 and it is not built.
 
+## 2026-10-14 - quote commercial totals implemented locally
+
+The Quote now has stored currency fields for **Totale Listino** and **Sconto
+Totale**. The existing quote-line trigger recalculates them in bulk whenever a
+line is inserted, updated, deleted or restored:
+
+- `Totale Listino` is the sum of list price multiplied by quantity;
+- `Sconto Totale` is `Totale Listino` minus the sum of the net line totals;
+- the standard Quote `TotalPrice` remains **Totale Netto**.
+
+The two stored fields are read-only on the Quote layout and are rendered with
+`TotalPrice` on both the quote-acceptance community page and both variants of
+the quote PDF. The community guest profile and the full permission set have
+read access. A check-only deployment compiled all 11 components successfully
+(`0AfMA00000CvNYr0AN`, no tests run), followed by a successful deployment to
+the **partial sandbox** (`0AfMA00000CvO3V0AV`, `NoTestRun`). **Not deployed to
+Prod, committed or pushed.** Existing Quote rows still require a line change
+or an explicit backfill before the new stored fields are populated.
+
+The acceptance page summary was then changed from one combined panel to
+**three separate responsive cards**. Totale Listino and Sconto Totale use
+light cards; Totale Netto is emphasized with the dark brand treatment. They
+appear in one row on desktop and stack on mobile. The LWC-only deployment to
+the partial sandbox succeeded (`0AfMA00000CvPvd0AF`).
+
+This does not close OI-207: the order surfaces, participation community pages,
+renewal summary, complete seven-surface review and client verification remain
+open.
 ## 🟢 2026-10-14 — the client asked for the three totals and they were built the same evening
 
 **At [the 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md) (`00:44:51`)
@@ -227,3 +255,35 @@ under a scope freeze that would classify it as already-delivered work.
 Rexhina Hysi's own fuller account of the build in this file, and the 14/10 sweep
 appended a dated section to the `DevMain` copy. **When that branch merges, keep
 her text and delete the overlap from the sweep's section.**
+
+## 🔴 2026-10-16 — the three-totals build is outside `DevMain` a fourth night
+
+`git ls-tree -r origin/DevMain` tonight: **`Totale_Listino__c` and
+`Sconto_Totale__c` are absent.** `origin/DevMain` stands at `73a9d59` — this
+procedure's own 15/10 commit — **unmoved for 48 hours**, and no PR was merged
+today.
+
+The three human commits of 16/10 are all on personal branches and none of them
+carries the quote totals:
+
+| Commit | Author | Branch | Subject |
+| --- | --- | --- | --- |
+| `4eadae8` | Anita Aga | `DevAnita15` | Default Agent for Woocommerce |
+| `05cdd3b` | Rexhina Hysi | `Devmain_LeadFix` | Lead_Email__c and chage duplicate rule |
+| `ad73d27` | Anita Aga | `DevAnita15` | Account flexipage |
+
+⚠ **`ad73d27` is an Account flexipage change of 127 added lines**, which is
+layout work on the same commercial surface this row is about — but on the
+**Account**, not the quote or the order, so it is recorded as adjacent rather
+than as progress here.
+
+🔑 **The client accepted these refinements into Fase 1 on the record.** Elena
+Spini's `#tproj-pienissimo` status (16/10 19:20 CEST):
+
+> _"Accettati in Fase 1 alcuni affinamenti (layout prodotti, decimali, totali
+> listino/sconto/netto sul preventivo)."_
+
+🟢 So the three totals are explicitly **inside** the frozen Fase 1 perimeter —
+this row is not at risk of being deferred. 🔴 **But the build has sat outside
+the integration branch for four nights**, seventeen days from go-live, and
+nothing in this sweep opened a PR for it.

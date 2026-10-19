@@ -1,12 +1,12 @@
 ---
 id: OI-242
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-16
 depends_on: [OI-147]
 source: Slack C0C38JJ9D1T 2026-10-14
 ---
@@ -76,3 +76,77 @@ request as unreasoned, and there have now been several.
 
 A ruling on whether the confirmation text is Fase 1 or waits, and if it is Fase 1
 a design that separates the data-writing action from the page the visitor sees.
+
+## 🔑 2026-10-16 — ruled on in session, and the client won
+
+**The deferral closed. The 16 October UAT put the renunciation design in front
+of the people who own it, and the outcome is the opposite of ROMI's stated
+advice.** See
+[the session](../meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md),
+`00:22:38`–`01:05:15`.
+
+### What was decided
+
+| Change | Owner | Status |
+| --- | --- | --- |
+| **Both `accetta` and `rifiuta` buttons in the invitation mail**, pointing at the **same** landing page | Matteo Distaso, Rebecca Marmo (copy); ROMI builds | 🔴 Agreed, not built |
+| **A double-confirm pop-up** on the renunciation page — _"La rinuncia è definitiva. Sei veramente sicuro?"_ | Aurel Mrruku | 🔴 Agreed, not built |
+| **Enlarge the renunciation button**, and check the mobile rendering | Aurel Mrruku | 🔴 Agreed, not built |
+
+### Why it matters that the client won
+
+🔑 **Elena Spini's own position — recorded in this note on 14/10 and restated
+three times in the session — was that two buttons landing on one page is
+misleading.** She conceded explicitly (`00:41:43`):
+
+> _"se per i vostri clienti pensate che va bene così alziamo le mani e ci
+> veniamo incontro in questo modo. Fare questo Fabrizio e Aurel non penso sia un
+> problema."_
+
+**Matteo Distaso's reason is a business one and it is on the record**: a refusal
+hidden a page deep will not be used, so the refusal data will be wrong and the
+rooms will be empty —
+
+> _"i tassi di rifiuta noi dalla mail crolleranno … e noi attribuiremo sta cosa
+> al fatto che la gente vuol venire ma poi ci troviamo le sale vuote"_
+
+**Aurel Mrruku's objection is also on the record, unanswered:**
+
+> _"Tu apri la mail in un cellulare, hai attiva rinuncia, per sbaglio hai fatto
+> rinuncia, hai già spaccato tutto e hai perso tutti i biglietti."_
+>
+> _"cerchiamo di fare le cose non solo i happy path"_
+
+🟢 **The double-confirm pop-up is the concession back**, and it was Matteo
+Distaso who asked for it (`01:02:30`) — _"mettiamo un bel pop-up che dice 'La
+rinuncia è definitiva. Sei veramente sicuro?'"_ — after Aurel Mrruku raised the
+accidental-click case. Aurel Mrruku confirmed it costs nothing: _"è
+completamente è tutta custom questa pagina, quindi possiamo fare tutto quello
+che serve"_.
+
+### 🔴 Three things the decision leaves open
+
+1. **The recovery path went to Fase 2 in the same session** —
+   [OI-253](OI-253%20Restoring%20a%20ticket%20after%20an%20accidental%20rinuncia%20is%20Fase%202.md).
+   So the button ships in Fase 1 and the undo does not.
+2. **Two of Aurel Mrruku's four 14/10 consequences were never addressed**: that
+   an `accetta` click should remove the renunciation option, and that a holder
+   invited to two events can open the older mail and renounce a booking already
+   accepted. He raised both again on 16/10 (`00:39:17`); the conversation moved
+   on.
+3. ⚠ **An existing rule limits the new button.** Once the first participant name
+   is entered the first ticket is issued and **renunciation is no longer
+   possible for that block** (`00:25:11`). A `rifiuta` button in the mail will
+   therefore sometimes land on a page with no renunciation control. Elena Spini
+   said so aloud — _"ho già messo un nome, non vedrò mai più rinuncia"_ — and
+   added _"forse sarebbe meglio togliere questo bottone"_. **Nobody ruled on
+   it.**
+
+### What is still unanswered from 14/10
+
+🟢 **The huddle question is partly answered**: the 14/10 15:35:52 voice huddle is
+no longer the only record of the renunciation design, because the 16/10 session
+re-decided it in text. ⚠ **But the original ask in this note — landing the
+visitor on the text published at `pienissimo.com/rifiuta-evento` — was never
+mentioned on 16/10.** The published-copy requirement is neither confirmed nor
+withdrawn. It is now the only part of this row with no ruling at all.

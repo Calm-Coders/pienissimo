@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-22
-updated: 2026-10-15
+updated: 2026-10-16
 depends_on: [OI-74]
 blocks: [go-live]
 severity: gating
@@ -218,3 +218,56 @@ QR credential rotation is now in its **ninth day**.
 
 🟢 The escalation path finally has someone on it who can walk down a corridor,
 which is more than two mails achieved. ⚠ Nothing records an outcome.
+
+## 🟢🔑 2026-10-16 — Andrea Parmeggiani replied, the test passed, and the production move is approved
+
+**Eight days after the credentials went out and two days after ROMI chased, he
+answered — and it works.**
+
+`andrea.p@pienissimo.pro`, **2026-10-16 07:37:42Z**, replying to Elena Spini in
+the thread _"[ROMI-PIENISSIMO] – API UAT Check-in QR Code"_, cc Fabrizio
+Paganelli, `amministrazione@pienissimo.com`, Aurel Mrruku and Rexhina Hysi:
+
+> _"Ciao Elena, Si ho fatto un test e confermo che potete portare in
+> produzione. Grazie"_
+
+🟢 **Corroborated from the logs, in the room, the same morning.** At
+[the 16/10 UAT session](../meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md)
+(`00:04:05`) Aurel Mrruku checked and found **two** successful calls on 15/10,
+not one:
+
+> _"ci ha provato alle 6 di pomeriggio, poi ci ha provato alle 10:54 di sera …
+> moltamente ha fatto un test da Postman, poi ha fatto un test reale
+> dall'applicazione."_
+
+So the endpoint was exercised from Postman **and** from the real application,
+and the second scan correctly reported the ticket as already checked in — _"gli
+abbiamo detto il check del biglietto è già stato effettu[ato]"_.
+
+🟢 **Fabrizio Paganelli's corridor escalation is what moved it.** Elena Spini:
+_"Quindi ha funzionato il tuo pressing ieri, Fabrizio. Bravo!"_ The undertaking
+recorded on 15/10 — _"adesso mi metto i guantoni da box"_ — produced a result
+within a day, where two mails over eight days had not.
+
+🟢 **Independently confirmed to the client side.** Elena Spini's status post in
+`#tproj-pienissimo` (16/10 19:20 CEST): _"il QR è stato validato sull'app di
+check-in. Andrea P. ci ha dato l'ok per portare l'API in produzione."_
+
+### What this closes, and what it does not
+
+| | State |
+| --- | --- |
+| Andrea Parmeggiani's silence | 🟢 **Closed.** Seven days, ended 16/10 07:37Z |
+| The scan-updates-Salesforce contract, UAT | 🟢 **Verified by the counterpart**, from Postman and from the app |
+| Client approval to go to production | 🟢 **Given, in writing** |
+| The production move itself | 🔴 **Not done.** Nothing in this sweep deploys it |
+| Campaign-date validity checking (Fase 1 point 2 above) | 🔴 **Still open.** Neither mail nor session mentions it, and no test exercised a code from the wrong edition |
+| Pre/post-event test window breaking the date filter | 🔴 **Still unspecified** |
+| Fase 2 speaking errors for incomplete entries | 🔴 Out of scope, unchanged |
+| **The QR credential rotation** | 🔴 **Tenth day.** The 08/10 mail still carries UAT authentication details in a client thread, and now that the client has approved production, **production credentials will follow the same path unless someone changes it** |
+
+🔑 **This item stops being blocked on a person and becomes blocked on a
+deployment.** It stays `in-progress` and `gating`: the agreed Fase 1 scope has
+four points and only the first is demonstrated. ⚠ **Nobody has said who moves
+it to production, or when** — and the approval arrived on the day the UAT
+session confirmed the flow end to end.

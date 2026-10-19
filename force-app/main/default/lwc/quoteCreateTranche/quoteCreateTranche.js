@@ -81,6 +81,13 @@ export default class QuoteCreateTranche extends LightningElement {
     return this.quoteLines.length > 0;
   }
 
+  get trancheCountSuggestion() {
+    const count = this.quoteLines.length;
+    return count === 1
+      ? "Il preventivo contiene 1 prodotto. Ti consigliamo di non creare più di 1 tranche."
+      : `Il preventivo contiene ${count} prodotti. Ti consigliamo di non creare più di ${count} tranche.`;
+  }
+
   get currentTranche() {
     return this.plannedTranches[this.currentTrancheIndex] || {};
   }
@@ -201,11 +208,15 @@ export default class QuoteCreateTranche extends LightningElement {
     );
   }
 
+  get maximumTrancheCount() {
+    return Math.min(this.quoteLines.length, 20);
+  }
+
   get isAddTrancheDisabled() {
     return (
       this.isSaveDisabledByStatus ||
       !this.hasQuoteLines ||
-      this.plannedTranches.length >= 20
+      this.plannedTranches.length >= this.maximumTrancheCount
     );
   }
 
@@ -314,7 +325,9 @@ export default class QuoteCreateTranche extends LightningElement {
       this.currentTrancheIndex = 0;
       return;
     }
-    const normalizedCount = Math.min(count, 20);
+    const normalizedCount = Math.min(count, this.maximumTrancheCount);
+    this.trancheCount = String(normalizedCount);
+    event.target.value = this.trancheCount;
     const removedExistingTranches = this.plannedTranches
       .slice(normalizedCount)
       .filter((tranche) => tranche.id);
@@ -400,17 +413,11 @@ export default class QuoteCreateTranche extends LightningElement {
   }
 
   handlePreviousTranche() {
-    if (!this.validateCurrentTranche()) {
-      return;
-    }
     this.pageValidationMessage = "";
     this.currentTrancheIndex = Math.max(0, this.currentTrancheIndex - 1);
   }
 
   handleNextTranche() {
-    if (!this.validateCurrentTranche()) {
-      return;
-    }
     this.pageValidationMessage = "";
     this.currentTrancheIndex = Math.min(
       this.plannedTranches.length - 1,
@@ -440,17 +447,6 @@ export default class QuoteCreateTranche extends LightningElement {
       nextPlannedTranches.length - 1
     );
     this.pageValidationMessage = "";
-  }
-
-  validateCurrentTranche() {
-    const inputs = [
-      ...this.template.querySelectorAll("[data-current-tranche-due-date]")
-    ];
-    const isValid = inputs.every((input) => input.reportValidity());
-    this.pageValidationMessage = isValid
-      ? ""
-      : "Completa la data di scadenza prima di passare a un'altra tranche.";
-    return isValid;
   }
 
   updatePlannedTranche(event, fieldName) {
