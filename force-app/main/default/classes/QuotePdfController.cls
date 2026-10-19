@@ -23,7 +23,7 @@ public without sharing class QuotePdfController {
     String queryText =
       'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, ' +
       'BillingName, BillingStreet, BillingPostalCode, BillingCity, BillingState, BillingCountry, ' +
-      'Subtotal, TotalPrice, Tax, ShippingHandling, GrandTotal, ' +
+      'Subtotal, Totale_Listino__c, Sconto_Totale__c, TotalPrice, Tax, ShippingHandling, GrandTotal, ' +
       'toLabel(Condizione_di_Pagamento__c), Descrizione_Condizione_di_Pagamento__c, ' +
       'Account.Name, Account.BillingStreet, Account.BillingPostalCode, Account.BillingCity, ' +
       'Account.BillingState, Account.BillingCountry, Account.Partita_IVA__c, ' +
@@ -174,6 +174,12 @@ public without sharing class QuotePdfController {
   }
   public String getSubtotal() {
     return money(quoteRecord.Subtotal);
+  }
+  public String getListPriceTotal() {
+    return money(quoteRecord.Totale_Listino__c);
+  }
+  public String getDiscountTotal() {
+    return money(quoteRecord.Sconto_Totale__c);
   }
   public String getTotalPrice() {
     return money(quoteRecord.TotalPrice);
