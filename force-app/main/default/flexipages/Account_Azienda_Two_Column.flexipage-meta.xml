@@ -565,6 +565,12 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Zona__c</fieldItem>
                 <identifier>RecordZona_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -784,12 +790,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection_status</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
-                        <operator>NE</operator>
-                    </criteria>
-                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>
