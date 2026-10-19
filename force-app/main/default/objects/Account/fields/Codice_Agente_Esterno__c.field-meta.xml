@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Codice_Agente_Esterno__c</fullName>
     <description
-  >Valore originale di Codice_agente per singolo Account nel foglio Account_NEW; puo differire dal codice sull'utente agente.</description>
+  >Codice copiato dall'utente Agente alla creazione dell'Account con agente o quando cambia Agente; viene svuotato se Agente viene rimosso. Senza assegnazione o cambio agente conserva il valore esistente o importato.</description>
     <label>Codice Agente Esterno</label>
     <length>40</length>
     <required>false</required>

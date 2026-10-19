@@ -99,6 +99,16 @@
                 <identifier>RecordTypeField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Zona__c</fieldItem>
+                <identifier>RecordZona_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-account-left</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -561,26 +571,16 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Zona__c</fieldItem>
-                <identifier>RecordZona_cField</identifier>
+                <fieldItem>Record.Codice_Agente_Esterno__c</fieldItem>
+                <identifier>RecordCodice_Agente_Esterno_cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.CreatedBy.Username}</leftValue>
                         <operator>NE</operator>
                     </criteria>
                 </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Codice_Agente_Esterno__c</fieldItem>
-                <identifier>RecordCodice_Agente_Esterno_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-status-left</name>
@@ -591,11 +591,17 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Categoria_Provvigioni_Cliente__c</fieldItem>
                 <identifier
         >RecordCategoria_Provvigioni_Cliente_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-status-right</name>
