@@ -1,11 +1,11 @@
 ---
 id: OI-100
 type: open-item
-status: in-progress
+status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-27
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-72, OI-80]
 blocks: [lead-conversion]
 source: user question, 2026-08-27 Codex session
@@ -108,3 +108,22 @@ VAT, so the queueable could not reuse that Contact inside the resolved Account.
 Qualification enqueued conversion; the queueable completed its handled-failure
 path and restored the Lead to `New`, unconverted. This confirms that the
 restored alerts can still block the new-Contact path.
+
+## 2026-10-19 - VAT-selected Azienda wins across Accounts
+
+Aurel Mrruku ruled the concrete cross-Account case: when the Lead VAT resolves
+to Azienda A but the same email and phone identify a Contact under Azienda B,
+conversion must continue against Azienda A. It creates a new Contact there and
+creates the Opportunity there; the Contact under Azienda B does not block the
+conversion.
+
+The qualification-time Contact/Account conflict guard was removed from
+`LeadConversionTriggerHandler` and deployed to the Pienissimo partial sandbox
+as `0AfMA00000Cx0pt0AB`. `LeadConversionQueueable` remains VAT-first and still
+reuses a matching Contact only when that Contact is already under the
+VAT-selected Account.
+
+The two active Contact duplicate rules were retrieved from the sandbox before
+deployment and are `Allow` + `Report` on insert and update, so they record but
+do not block the new Contact. This later org inspection supersedes the final
+16 October paragraph above that described those rules as alerting.

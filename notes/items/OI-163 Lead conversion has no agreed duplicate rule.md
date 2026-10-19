@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-10-16
+updated: 2026-10-19
 depends_on: [OI-149]
 blocks: [go-live]
 severity: gating
@@ -143,3 +143,18 @@ Aurel Mrruku re-enabled `Alert + Report` on insert and update for the three
 Lead/Contact duplicate rules in the partial sandbox. The retrieved source now
 matches the org. Exact Account-scoped Contact matches are reused by Apex, but a
 new Contact insert remains exposed to platform duplicate alerts.
+
+## 2026-10-19 - Cross-Account conflict no longer blocks conversion
+
+Aurel Mrruku ruled that VAT selects the destination Azienda even when the
+Lead's email and phone match a Contact under another Azienda. Conversion must
+create a Contact and Opportunity under the VAT-selected Azienda instead of
+raising the cross-Account conflict error.
+
+The conflict guard and its unused lookup helpers were removed from
+`LeadConversionTriggerHandler` and deployed to the Pienissimo partial sandbox
+as `0AfMA00000Cx0pt0AB`. The queueable continues to reuse an exact
+email-and-phone Contact only inside the VAT-selected Account. A fresh metadata
+retrieve confirmed that both active Contact duplicate rules are `Allow` +
+`Report`, not blocking alerts; this supersedes the 16 October alert-state
+description above.
