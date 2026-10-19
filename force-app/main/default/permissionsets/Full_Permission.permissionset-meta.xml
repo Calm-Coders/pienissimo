@@ -131,7 +131,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Categoria_Provvigioni_Cliente__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -146,7 +146,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Codice_Agente_Esterno__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1823,6 +1823,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Status</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Quote.Sconto_Totale__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Quote.Totale_Listino__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

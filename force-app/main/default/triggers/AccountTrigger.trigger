@@ -5,7 +5,7 @@ trigger AccountTrigger on Account(
   after update
 ) {
   if (Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)) {
-    AccountTriggerHandler.beforeSave(Trigger.new);
+    AccountTriggerHandler.beforeSave(Trigger.new, Trigger.oldMap);
   }
 
   if (Trigger.isBefore && Trigger.isDelete) {
