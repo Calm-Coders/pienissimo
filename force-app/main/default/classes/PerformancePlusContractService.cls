@@ -4,6 +4,8 @@ public without sharing class PerformancePlusContractService {
   private static final String NEW_CONTRACT = 'Nuovo';
   private static final String RENEWAL_CONTRACT = 'Rinnovo';
   private static final String INITIAL_STATUS = 'Draft';
+  private static final String ACTIVATED_STATUS = 'Activated';
+  private static final Integer CONTRACT_TERM_MONTHS = 12;
   private static final String STATE_CREATED = 'Creato';
   private static final String STATE_PARTIALLY_COLLECTED = 'Parzialmente Incassato';
   private static final String STATE_COLLECTED = 'Incassato';
@@ -90,6 +92,7 @@ public without sharing class PerformancePlusContractService {
             .left(80),
           Status = INITIAL_STATUS,
           StartDate = orderRecord.EffectiveDate,
+          ContractTerm = CONTRACT_TERM_MONTHS,
           Tipo_Contratto__c = contractType,
           Fatturato__c = 0,
           Incassato__c = 0,
@@ -103,6 +106,15 @@ public without sharing class PerformancePlusContractService {
     }
 
     insert contracts;
+
+    // Salesforce requires insertion in Draft, then a status-only activation.
+    List<Contract> contractsToActivate = new List<Contract>();
+    for (Contract contractRecord : contracts) {
+      contractsToActivate.add(
+        new Contract(Id = contractRecord.Id, Status = ACTIVATED_STATUS)
+      );
+    }
+    update contractsToActivate;
 
     // Account <- Contract <- Order: link the order back to its contract.
     for (Integer i = 0; i < orders.size(); i++) {

@@ -256,8 +256,22 @@ global without sharing class WoocommerceOrderService {
   }
 
   private static Account createAccount(WooCommerceOrderPayload payload) {
+    User defaultAgent = IntegrationNotificationConfigService.getDefaultAgent(
+      'WooCommerce'
+    );
+    if (
+      defaultAgent == null ||
+      String.isBlank(defaultAgent.Agente__c) ||
+      String.isBlank(defaultAgent.Categoria_Provvigioni_Cliente__c)
+    ) {
+      throw new WooCommerceOrderException(
+        'Configure Default Agent Username on the WooCommerce Integration Notification Config record with an active user who has an agent code and customer commission category.'
+      );
+    }
     Account accountRecord = new Account(
       Name = limitLength(customerAccountName(payload), 255),
+      Agente__c = defaultAgent.Id,
+      Categoria_Provvigioni_Cliente__c = defaultAgent.Categoria_Provvigioni_Cliente__c.trim(),
       RecordTypeId = getAziendaAccountRecordTypeId(),
       Lead_Email__c = payload.email(),
       Email__c = payload.email(),
