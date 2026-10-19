@@ -1,7 +1,7 @@
 ---
 id: OI-100
 type: open-item
-status: resolved
+status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-27
