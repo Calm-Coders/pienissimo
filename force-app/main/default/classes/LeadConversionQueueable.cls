@@ -126,17 +126,9 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
     List<Database.LeadConvert> conversionRequests = new List<Database.LeadConvert>();
 
-    Map<Id, String> leadEmailById = new Map<Id, String>();
-
     Map<Id, String> leadOpportunityTypeById = new Map<Id, String>();
 
     for (Lead leadRecord : leadsToConvert) {
-      String normalizedEmail = normalizeEmail(leadRecord.Email);
-
-      if (normalizedEmail != null) {
-        leadEmailById.put(leadRecord.Id, normalizedEmail);
-      }
-
       leadOpportunityTypeById.put(
         leadRecord.Id,
         normalizeOpportunityType(leadRecord.Tipo_Opportunita__c)
@@ -200,8 +192,6 @@ public without sharing class LeadConversionQueueable implements Queueable {
     );
 
     setConvertedOpportunityTypes(conversionResults, leadOpportunityTypeById);
-
-    updateConvertedAccountLeadEmails(conversionResults, leadEmailById);
 
     Map<Id, Id> convertedAccountIdsByLeadId = new Map<Id, Id>();
     for (Database.LeadConvertResult result : conversionResults) {
@@ -479,7 +469,6 @@ public without sharing class LeadConversionQueueable implements Queueable {
         new Account(
           Name = buildAccountName(leadRecord),
           RecordTypeId = aziendaRecordTypeId,
-          Lead_Email__c = normalizeEmail(leadRecord.Email),
           Partita_IVA__c = normalizeVat(leadRecord.Partita_IVA__c),
           Phone = leadRecord.Phone,
           Agente__c = leadRecord.Agente__c
@@ -599,56 +588,6 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     return emails;
-  }
-
-  private static void updateConvertedAccountLeadEmails(
-    List<Database.LeadConvertResult> conversionResults,
-    Map<Id, String> leadEmailById
-  ) {
-    Set<Id> accountIds = new Set<Id>();
-
-    Map<Id, String> leadEmailByAccountId = new Map<Id, String>();
-
-    for (Database.LeadConvertResult result : conversionResults) {
-      if (!result.isSuccess() || result.getAccountId() == null) {
-        continue;
-      }
-
-      String email = leadEmailById.get(result.getLeadId());
-
-      if (email == null) {
-        continue;
-      }
-
-      accountIds.add(result.getAccountId());
-
-      leadEmailByAccountId.put(result.getAccountId(), email);
-    }
-
-    if (accountIds.isEmpty()) {
-      return;
-    }
-
-    List<Account> accountsToUpdate = new List<Account>();
-
-    for (Account accountRecord : [
-      SELECT Id, Lead_Email__c
-      FROM Account
-      WHERE Id IN :accountIds
-    ]) {
-      if (String.isBlank(accountRecord.Lead_Email__c)) {
-        accountsToUpdate.add(
-          new Account(
-            Id = accountRecord.Id,
-            Lead_Email__c = leadEmailByAccountId.get(accountRecord.Id)
-          )
-        );
-      }
-    }
-
-    if (!accountsToUpdate.isEmpty()) {
-      update accountsToUpdate;
-    }
   }
 
   private static String normalizeEmail(String email) {

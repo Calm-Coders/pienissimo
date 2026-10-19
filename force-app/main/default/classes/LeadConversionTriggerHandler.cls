@@ -1,7 +1,6 @@
 public without sharing class LeadConversionTriggerHandler {
   private static final String NON_RISPONDE_STATUS = 'Non Risponde';
   private static final String DUPLICATE_LEAD_ERROR = 'Esiste gia un Lead aperto con la stessa Partita IVA oppure con la stessa email e lo stesso telefono.';
-  private static final String CONTACT_ACCOUNT_CONFLICT_ERROR = 'La Partita IVA del Lead appartiene a una Azienda diversa dal Contact trovato con la stessa email e lo stesso telefono.';
   private static final String FOLLOW_UP_TASK_SUBJECT = 'Ricontattare Lead - Non Risponde';
   private static final String FOLLOW_UP_TASK_DESCRIPTION = 'Il Lead e stato spostato in Non Risponde. Ricontattare il prospect.';
   private static final String TASK_STATUS_OPEN = 'Open';
@@ -15,7 +14,6 @@ public without sharing class LeadConversionTriggerHandler {
       return;
     }
     preventDuplicateOpenLeads(newLeads);
-    preventQualificationAccountConflicts(newLeads, oldLeadMap);
   }
 
   public static void afterUpdate(
@@ -48,6 +46,7 @@ public without sharing class LeadConversionTriggerHandler {
   ) {
     Map<Id, Opportunity> opportunitiesToUpdate = new Map<Id, Opportunity>();
     Map<Id, Account> accountsToUpdate = new Map<Id, Account>();
+    Map<Id, String> leadEmailByAccountId = new Map<Id, String>();
 
     for (Lead leadRecord : newLeads) {
       Lead oldLead = oldLeadMap.get(leadRecord.Id);
@@ -72,6 +71,14 @@ public without sharing class LeadConversionTriggerHandler {
       }
 
       if (leadRecord.ConvertedAccountId != null) {
+        String normalizedEmail = normalizeEmail(leadRecord.Email);
+        if (normalizedEmail != null) {
+          leadEmailByAccountId.put(
+            leadRecord.ConvertedAccountId,
+            normalizedEmail
+          );
+        }
+
         accountsToUpdate.put(
           leadRecord.ConvertedAccountId,
           new Account(
@@ -88,6 +95,26 @@ public without sharing class LeadConversionTriggerHandler {
       update opportunitiesToUpdate.values();
     }
     if (!accountsToUpdate.isEmpty()) {
+      Set<Id> convertedAccountIds = accountsToUpdate.keySet();
+      for (Account accountRecord : [
+        SELECT Id, Email__c, Lead_Email__c
+        FROM Account
+        WHERE Id IN :convertedAccountIds
+      ]) {
+        if (!leadEmailByAccountId.containsKey(accountRecord.Id)) {
+          continue;
+        }
+
+        String leadEmail = leadEmailByAccountId.get(accountRecord.Id);
+        Account accountUpdate = accountsToUpdate.get(accountRecord.Id);
+        if (String.isBlank(accountRecord.Email__c)) {
+          accountUpdate.Email__c = leadEmail;
+        }
+        if (String.isBlank(accountRecord.Lead_Email__c)) {
+          accountUpdate.Lead_Email__c = leadEmail;
+        }
+      }
+
       update accountsToUpdate.values();
     }
   }
@@ -188,102 +215,6 @@ public without sharing class LeadConversionTriggerHandler {
     }
   }
 
-  private static void preventQualificationAccountConflicts(
-    List<Lead> newLeads,
-    Map<Id, Lead> oldLeadMap
-  ) {
-    List<Lead> leadsToCheck = new List<Lead>();
-    Set<String> emails = new Set<String>();
-    Set<String> vatNumbers = new Set<String>();
-
-    for (Lead leadRecord : newLeads) {
-      Lead oldLead = oldLeadMap == null ? null : oldLeadMap.get(leadRecord.Id);
-      Boolean isNewQualification =
-        leadRecord.IsConverted != true &&
-        leadRecord.Status == QUALIFIED_STATUS &&
-        (oldLead == null ||
-        oldLead.Status != QUALIFIED_STATUS);
-
-      String email = normalizeEmail(leadRecord.Email);
-      String phone = normalizePhone(leadRecord.Phone);
-      String vatNumber = normalizeVat(leadRecord.Partita_IVA__c);
-      if (
-        !isNewQualification ||
-        email == null ||
-        phone == null ||
-        vatNumber == null
-      ) {
-        continue;
-      }
-
-      leadsToCheck.add(leadRecord);
-      emails.add(email);
-      vatNumbers.add(vatNumber);
-    }
-
-    if (leadsToCheck.isEmpty()) {
-      return;
-    }
-
-    Map<String, Account> accountsByVat = getAccountsByVat(vatNumbers);
-    Map<Id, Id> commercialAccountIdsByAccountId = resolveAccountIds(
-      accountsByVat.values()
-    );
-    Map<String, List<Contact>> contactsByPersonKey = getContactsByPersonKey(
-      emails
-    );
-
-    Set<Id> contactAccountIds = new Set<Id>();
-    for (List<Contact> contactGroup : contactsByPersonKey.values()) {
-      for (Contact contactRecord : contactGroup) {
-        if (contactRecord.AccountId != null) {
-          contactAccountIds.add(contactRecord.AccountId);
-        }
-      }
-    }
-    Map<Id, Id> commercialAccountIdsByContactAccountId = CommercialAccountResolver.resolveAll(
-      contactAccountIds
-    );
-
-    for (Lead leadRecord : leadsToCheck) {
-      Account accountByVat = accountsByVat.get(
-        normalizeVat(leadRecord.Partita_IVA__c)
-      );
-      if (accountByVat == null) {
-        continue;
-      }
-
-      Id leadCommercialAccountId = commercialAccountIdsByAccountId.get(
-        accountByVat.Id
-      );
-      String personKey = buildPersonKey(
-        normalizeEmail(leadRecord.Email),
-        normalizePhone(leadRecord.Phone)
-      );
-      List<Contact> matchingContacts = contactsByPersonKey.get(personKey);
-      if (matchingContacts == null) {
-        continue;
-      }
-
-      Boolean hasContactOnLeadAccount = false;
-      Boolean hasContactOnDifferentAccount = false;
-      for (Contact contactRecord : matchingContacts) {
-        Id contactCommercialAccountId = commercialAccountIdsByContactAccountId.get(
-          contactRecord.AccountId
-        );
-        if (contactCommercialAccountId == leadCommercialAccountId) {
-          hasContactOnLeadAccount = true;
-        } else if (contactCommercialAccountId != null) {
-          hasContactOnDifferentAccount = true;
-        }
-      }
-
-      if (!hasContactOnLeadAccount && hasContactOnDifferentAccount) {
-        leadRecord.Partita_IVA__c.addError(CONTACT_ACCOUNT_CONFLICT_ERROR);
-      }
-    }
-  }
-
   private static List<Task> buildNonRispondeFollowUpTasks(
     List<Lead> newLeads,
     Map<Id, Lead> oldLeadMap
@@ -343,66 +274,6 @@ public without sharing class LeadConversionTriggerHandler {
         new LeadConversionQueueable(qualifiedLeadIds, previousStatusByLeadId)
       );
     }
-  }
-
-  private static Map<String, Account> getAccountsByVat(Set<String> vatNumbers) {
-    Map<String, Account> accountsByVat = new Map<String, Account>();
-    if (vatNumbers.isEmpty()) {
-      return accountsByVat;
-    }
-
-    for (Account accountRecord : [
-      SELECT Id, Partita_IVA__c
-      FROM Account
-      WHERE Partita_IVA__c IN :vatNumbers
-      ORDER BY CreatedDate, Id
-    ]) {
-      String vatNumber = normalizeVat(accountRecord.Partita_IVA__c);
-      if (vatNumber != null && !accountsByVat.containsKey(vatNumber)) {
-        accountsByVat.put(vatNumber, accountRecord);
-      }
-    }
-
-    return accountsByVat;
-  }
-
-  private static Map<Id, Id> resolveAccountIds(List<Account> accountRecords) {
-    Set<Id> accountIds = new Set<Id>();
-    for (Account accountRecord : accountRecords) {
-      accountIds.add(accountRecord.Id);
-    }
-
-    return CommercialAccountResolver.resolveAll(accountIds);
-  }
-
-  private static Map<String, List<Contact>> getContactsByPersonKey(
-    Set<String> emails
-  ) {
-    Map<String, List<Contact>> contactsByPersonKey = new Map<String, List<Contact>>();
-    if (emails.isEmpty()) {
-      return contactsByPersonKey;
-    }
-
-    for (Contact contactRecord : [
-      SELECT Id, AccountId, Email, Phone
-      FROM Contact
-      WHERE Email IN :emails
-      ORDER BY CreatedDate, Id
-    ]) {
-      String email = normalizeEmail(contactRecord.Email);
-      String phone = normalizePhone(contactRecord.Phone);
-      if (email == null || phone == null) {
-        continue;
-      }
-
-      String personKey = buildPersonKey(email, phone);
-      if (!contactsByPersonKey.containsKey(personKey)) {
-        contactsByPersonKey.put(personKey, new List<Contact>());
-      }
-      contactsByPersonKey.get(personKey).add(contactRecord);
-    }
-
-    return contactsByPersonKey;
   }
 
   private static String buildPersonKey(String email, String phone) {
