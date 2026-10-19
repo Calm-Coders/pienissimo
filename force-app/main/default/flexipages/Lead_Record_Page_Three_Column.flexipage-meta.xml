@@ -132,16 +132,6 @@
                 <identifier>RecordMobilePhoneField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Tipo_Opportunita__c</fieldItem>
-                <identifier>RecordTipo_Opportunita_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-51506e76-f7ca-486c-9ec7-bac0793a6797</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -204,6 +194,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.LeadSource</fieldItem>
                 <identifier>RecordLeadSourceField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Tipo_Opportunita__c</fieldItem>
+                <identifier>RecordTipo_Opportunita_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-323b10d7-2201-4ed4-927d-d0e1d70f1d5e</name>
@@ -310,16 +310,6 @@
                         <operator>NE</operator>
                     </criteria>
                 </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Tipologia_Attivita_Globale__c</fieldItem>
-                <identifier>RecordTipologia_Attivita_Globale_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -635,6 +625,12 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection5</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-8c199177-fbe1-4c31-8510-bfe0d1f7a620</name>
