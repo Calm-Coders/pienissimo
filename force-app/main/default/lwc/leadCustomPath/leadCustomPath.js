@@ -15,6 +15,7 @@ import RECORD_TYPE_ID_FIELD from "@salesforce/schema/Lead.RecordTypeId";
 import RECORD_TYPE_DEVELOPER_NAME_FIELD from "@salesforce/schema/Lead.RecordType.DeveloperName";
 import EXIT_REASON_FIELD from "@salesforce/schema/Lead.Motivazione_Uscita__c";
 import EXIT_REASON_DETAIL_FIELD from "@salesforce/schema/Lead.Dettaglio_Motivazione_Uscita__c";
+import MOTIVAZIONE_FIELD from "@salesforce/schema/Lead.Motivazione__c";
 
 const STANDARD_STAGES = [
   "New",
@@ -42,7 +43,8 @@ const FIELDS = [
   COMPANY_FIELD,
   AGENT_FIELD,
   EXIT_REASON_FIELD,
-  EXIT_REASON_DETAIL_FIELD
+  EXIT_REASON_DETAIL_FIELD,
+  MOTIVAZIONE_FIELD
 ];
 
 export default class LeadCustomPath extends NavigationMixin(LightningElement) {
@@ -57,6 +59,7 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
   agentId;
   exitReason;
   exitReasonDetail;
+  motivazione;
   isSaving = false;
   isWaitingForConversion = false;
   showExitReasonModal = false;
@@ -109,6 +112,7 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
     this.agentId = data.fields.Agente__c.value;
     this.exitReason = data.fields.Motivazione_Uscita__c.value;
     this.exitReasonDetail = data.fields.Dettaglio_Motivazione_Uscita__c.value;
+    this.motivazione = getFieldValue(data, MOTIVAZIONE_FIELD);
   }
 
   @wire(getPicklistValues, {
@@ -218,6 +222,19 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
     return !this.exitReason;
   }
 
+  get requiresMotivazione() {
+    return (
+      this.exitReason === "Perso" && this.exitReasonDetail === "Non interessato"
+    );
+  }
+
+  get showMotivazione() {
+    return (
+      this.selectedOrCurrentStage === "Non qualificato" &&
+      this.requiresMotivazione
+    );
+  }
+
   handleStageSelect(event) {
     this.selectedStage = event.currentTarget.dataset.stage;
   }
@@ -277,6 +294,7 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
     if (this.selectedStage === "Non qualificato") {
       fields[EXIT_REASON_FIELD.fieldApiName] = this.exitReason;
       fields[EXIT_REASON_DETAIL_FIELD.fieldApiName] = this.exitReasonDetail;
+      fields[MOTIVAZIONE_FIELD.fieldApiName] = this.motivazione;
     }
 
     try {
@@ -426,6 +444,8 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
       this.exitReasonDetail = undefined;
     } else if (fieldName === EXIT_REASON_DETAIL_FIELD.fieldApiName) {
       this.exitReasonDetail = normalizedValue;
+    } else if (fieldName === MOTIVAZIONE_FIELD.fieldApiName) {
+      this.motivazione = normalizedValue?.trim();
     }
   }
 

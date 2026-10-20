@@ -404,6 +404,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Motivazione__c</fieldItem>
+                <identifier>RecordMotivazione_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Dettaglio_Motivazione_Uscita__c</fieldItem>
                 <identifier
         >RecordDettaglio_Motivazione_Uscita_cField</identifier>

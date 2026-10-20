@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Motivazione__c</fullName>
+    <description
+  >Spiegazione obbligatoria per i Lead non qualificati con dettaglio Non interessato.</description>
+    <label>Dettaglio non interesse</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>
