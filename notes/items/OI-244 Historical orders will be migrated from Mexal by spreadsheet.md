@@ -6,8 +6,8 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-19
-depends_on: [OI-245, OI-165]
+updated: 2026-10-20
+depends_on: [OI-245, OI-165, OI-267]
 blocks: [go-live]
 severity: gating
 source: notes/meetings/2026-10-15 Migrazione e Go-Live.md
@@ -76,11 +76,11 @@ esattamente cosa non è andato bene e cerchiamo di farlo a mano a sto punto"_.
 
 Two figures were given a minute apart and the transcript does not reconcile them:
 
-| Figure                | Scope as stated                                      |
-| --------------------- | ---------------------------------------------------- |
-| _"20.000 record"_     | Fabrizio Paganelli's first guess, _"un numero a caso"_ |
-| **~51,000**           | order **lines**, _"dal primo gennaio 23 ad oggi"_     |
-| **~10,000 per year**  | his own reading of the recent years                   |
+| Figure               | Scope as stated                                        |
+| -------------------- | ------------------------------------------------------ |
+| _"20.000 record"_    | Fabrizio Paganelli's first guess, _"un numero a caso"_ |
+| **~51,000**          | order **lines**, _"dal primo gennaio 23 ad oggi"_      |
+| **~10,000 per year** | his own reading of the recent years                    |
 
 He attributes the difference to volume history — 2023 and 2024 carry many more
 lines because the platform sale no longer runs. ⚠ **Orders and order lines are
@@ -124,7 +124,6 @@ replace, the Zoho-side volumes in
 Closing it means: the field spec delivered, the client's file populated, one test
 load into UAT with the state reconciliation verified against known orders, and a
 dated plan for the production run.
-
 
 ## 🟡 2026-10-19 — the field spec is four days late, and now promised to the client in writing
 
@@ -183,3 +182,29 @@ The sequence, all on 19/10:
   caricare, ma almeno le vendite"_. **That is narrower than this row assumed**
   and is the client's own framing, so it should shape the field list rather than
   be discovered on Wednesday.
+
+## 🟢 2026-10-20 — the field spec exists
+
+**The Excel this row waited on was written on 20/10**, the day promised to the
+client, at `output/migrazione-ordini-mexal/` in Italian
+(`Tracciato migrazione ordini Mexal - Salesforce.xlsx`) and English. It is a
+draft for the 21/10 meeting, **not yet sent** at the time of writing.
+
+- **Two sheets joined by a computed key** — `SIGLA-SERIE-ANNO-NUMERO` — as agreed
+  on 15/10, plus a field spec, allowed values, the cases the first batch must
+  cover and eleven questions for the meeting.
+- **Scoped to invoiced orders since 01/01/2023** (start date to confirm), per
+  Fabrizio Paganelli's 19/10 framing. Invoices and scadenzari are excluded.
+- **The line carries Mexal's internal `id_riga`**, because that is what
+  `MexalInvoiceLineImportBatch` matches the invoice's origin line against
+  (`Mexal_Line_Number__c`); without it the batch falls back to article plus
+  quantity.
+- **The net unit price loads**; list price and the discount as written in Mexal
+  are control columns, because `OrderItem` has no discount field.
+- **Order state is not asked for** — it stays derived, per step 6 above. Invoice
+  references ride on the lines for verification only.
+- **All example values are invented.**
+
+🔴 **Nothing can be loaded yet**: inserting an order today pushes it to Mexal
+from any org and creates tickets from its lines —
+[OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md).

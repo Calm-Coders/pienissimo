@@ -10,6 +10,26 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-20 - claude (Mexal order migration spec)
+
+- **Did:** wrote the historical-order field spec owed to Fabrizio Paganelli
+  under [OI-244](notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md):
+  `output/migrazione-ordini-mexal/` (IT for the client, EN twin). Read the
+  order triggers and the Mexal invoice matcher, described Order/OrderItem in
+  Prod and UAT, and counted reference data (read-only). Wrote
+  [OI-267](notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md).
+- **State:** 🟢 the spec exists, unsent at the time of writing. 🔴 **No load is
+  possible yet**: an inserted Order is queued to Mexal from any org (sandbox
+  included), its lines create tickets, and the agent is overwritten with the
+  current one. There is no external-id key for Mexal orders, Prod lacks seven
+  fields plus `Fattura__c`/`Riga_Fattura__c`, has no Mexal-coded Accounts and
+  two price book entries.
+- **Next:** send the spec before the 21/10 meeting; build the migration bypass
+  and keys (OI-267) and deploy to UAT before the first test batch; answer the
+  sheet's open questions in the meeting (yearly numbering, `id_riga`, OI-245).
+
+---
+
 ## 2026-10-19 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
