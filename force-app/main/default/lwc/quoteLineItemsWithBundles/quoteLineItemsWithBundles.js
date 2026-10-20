@@ -1,13 +1,71 @@
-import { api, LightningElement } from "lwc";
+import { api, LightningElement, wire } from "lwc";
+import { refreshApex } from "@salesforce/apex";
+import {
+  APPLICATION_SCOPE,
+  MessageContext,
+  subscribe,
+  unsubscribe
+} from "lightning/messageService";
+import QUOTE_PRODUCTS_CHANGED from "@salesforce/messageChannel/QuoteProductsChanged__c";
 import LightningConfirm from "lightning/confirm";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
-import { RefreshEvent } from "lightning/refresh";
+import {
+  RefreshEvent,
+  registerRefreshHandler,
+  unregisterRefreshHandler
+} from "lightning/refresh";
 import deleteBundle from "@salesforce/apex/QuoteLineItemsController.deleteBundle";
 import deleteLine from "@salesforce/apex/QuoteLineItemsController.deleteLine";
 import getContext from "@salesforce/apex/QuoteLineItemsController.getContext";
 
 export default class QuoteLineItemsWithBundles extends LightningElement {
   _recordId;
+  contextResult;
+  refreshHandlerId;
+  messageContext;
+  productChangeSubscription;
+
+  @wire(MessageContext)
+  wiredMessageContext(context) {
+    this.messageContext = context;
+    this.subscribeToProductChanges();
+  }
+
+  connectedCallback() {
+    this.subscribeToProductChanges();
+    this.refreshHandlerId = registerRefreshHandler(this, () =>
+      this.loadContext()
+    );
+  }
+
+  disconnectedCallback() {
+    if (this.productChangeSubscription) {
+      unsubscribe(this.productChangeSubscription);
+      this.productChangeSubscription = undefined;
+    }
+    unregisterRefreshHandler(this.refreshHandlerId);
+    this.refreshHandlerId = undefined;
+  }
+
+  subscribeToProductChanges() {
+    if (
+      !this.isConnected ||
+      !this.messageContext ||
+      this.productChangeSubscription
+    ) {
+      return;
+    }
+    this.productChangeSubscription = subscribe(
+      this.messageContext,
+      QUOTE_PRODUCTS_CHANGED,
+      (message) => {
+        if (message.quoteId === this.recordId) {
+          this.loadContext();
+        }
+      },
+      { scope: APPLICATION_SCOPE }
+    );
+  }
 
   isLoading = false;
   hasLoaded = false;
@@ -63,7 +121,7 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
   set recordId(value) {
     this._recordId = value;
     if (value) {
-      this.loadContext();
+      this.isLoading = true;
     }
   }
 
@@ -138,12 +196,33 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
     });
   }
 
+  @wire(getContext, { quoteId: "$_recordId" })
+  wiredContext(result) {
+    this.contextResult = result;
+    if (result.data) {
+      this.applyContext(result.data);
+    } else if (result.error) {
+      this.showToast("Errore", this.reduceError(result.error), "error");
+    } else {
+      return;
+    }
+    this.hasLoaded = true;
+    this.isLoading = false;
+  }
+
   async loadContext() {
+    if (!this.contextResult) {
+      return true;
+    }
     this.isLoading = true;
     try {
-      this.applyContext(await getContext({ quoteId: this.recordId }));
-    } catch (error) {
-      this.showToast("Errore", this.reduceError(error), "error");
+      await refreshApex(this.contextResult);
+      if (this.contextResult.data) {
+        this.applyContext(this.contextResult.data);
+      }
+      return !this.contextResult.error;
+    } catch {
+      return false;
     } finally {
       this.hasLoaded = true;
       this.isLoading = false;
@@ -211,6 +290,7 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
           : "Riga preventivo eliminata.",
         "success"
       );
+      await this.loadContext();
       this.dispatchEvent(new RefreshEvent());
     } catch (error) {
       this.showToast("Errore", this.reduceError(error), "error");

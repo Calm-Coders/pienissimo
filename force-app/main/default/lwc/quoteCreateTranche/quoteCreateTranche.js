@@ -2,6 +2,7 @@ import { api, LightningElement } from "lwc";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
+import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
 import createTranches from "@salesforce/apex/QuoteTrancheController.createTranches";
 import getContext from "@salesforce/apex/QuoteTrancheController.getContext";
 
@@ -577,6 +578,14 @@ export default class QuoteCreateTranche extends LightningElement {
         wasEditMode ? "Tranche aggiornate." : "Tranche create correttamente.",
         "success"
       );
+      const changedRecordIds = new Set([
+        this.recordId,
+        ...this.quoteLines.map((line) => line.id),
+        ...this.existingTranches.map((tranche) => tranche.id)
+      ]);
+      await notifyRecordUpdateAvailable(
+        [...changedRecordIds].filter(Boolean).map((recordId) => ({ recordId }))
+      );
       this.closeAndRefresh();
     } catch (error) {
       this.showToast("Errore", this.reduceError(error), "error");
@@ -590,8 +599,8 @@ export default class QuoteCreateTranche extends LightningElement {
   }
 
   closeAndRefresh() {
-    this.dispatchEvent(new CloseActionScreenEvent());
     this.dispatchEvent(new RefreshEvent());
+    this.dispatchEvent(new CloseActionScreenEvent());
   }
 
   showToast(title, message, variant) {

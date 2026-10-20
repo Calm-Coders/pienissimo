@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>Quote Products Changed</masterLabel>
+    <isExposed>false</isExposed>
+    <description
+  >Refresh quote product data after a successful product save.</description>
+    <lightningMessageFields>
+        <fieldName>quoteId</fieldName>
+        <description>The quote whose product lines changed.</description>
+    </lightningMessageFields>
+</LightningMessageChannel>
