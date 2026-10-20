@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-14
-updated: 2026-10-16
+updated: 2026-10-20
 depends_on: [OI-147]
 source: Slack C0C38JJ9D1T 2026-10-14
 ---
@@ -150,3 +150,39 @@ re-decided it in text. ⚠ **But the original ask in this note — landing the
 visitor on the text published at `pienissimo.com/rifiuta-evento` — was never
 mentioned on 16/10.** The published-copy requirement is neither confirmed nor
 withdrawn. It is now the only part of this row with no ruling at all.
+
+## 🟢 2026-10-20 — the client confirmed it in writing, and took the reconciliation
+
+**The behaviour ruled in session on 16 October is now confirmed by the client in
+their own words, and they have accepted the operational consequence ROMI warned
+about.**
+
+[Their 20/10 mail](../items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md),
+§3, Sabatino Rinaldi:
+
+> _"Rinuncia: confermiamo il funzionamento proposto (il tasto traccia la rinuncia
+> senza cancellare il biglietto dal CRM; la riconciliazione la facciamo noi dopo
+> l'evento)."_
+
+Elena Spini read it out at [the 17:01 internal call](../meetings/2026-10-20%20Follow-up%20Interno.md)
+with visible resignation — _"Hanno confermato sto cavolo di bottone"_ — which is
+the same posture as her 16/10 concession _"alziamo le mani"_.
+
+🟢 **Two things are now settled that were not:**
+
+1. **The button tracks the refusal without deleting the ticket** — so the CRM keeps
+   the record, which was ROMI's position on data integrity.
+2. 🔑 **The client owns post-event reconciliation.** _"la riconciliazione la
+   facciamo noi dopo l'evento"_ — in writing, for the first time. That is the
+   manual work Aurel Mrruku's objection implied somebody would have to do, and the
+   client has taken it rather than asked ROMI to automate it.
+
+## 🔴 What is unchanged
+
+- 🔴 **The undo is still Fase 2.** [OI-253](OI-253%20Restoring%20a%20ticket%20after%20an%20accidental%20rinuncia%20is%20Fase%202.md)
+  stands, so a one-click irreversible customer-facing action still ships in Fase 1
+  without its recovery path — and the client's confirmation of the button makes no
+  mention of it. **Nobody has connected the two in either direction yet.**
+- ⚠ The double-confirm pop-up Matteo Distaso asked for on 16/10 is **not mentioned
+  in the confirmation** and is not in any 20/10 commit. It is the only mitigation on
+  the record and it remains unbuilt and unrestated.

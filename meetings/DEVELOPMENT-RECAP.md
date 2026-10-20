@@ -7535,3 +7535,225 @@ decisions** — `SAL-12` against the tutor discount ask, and `DM-07`'s competito
 list against Elena Spini's free-text advice. Recording either as settled would
 write one side of an argument into a contract-bound document. They are reported
 instead.
+
+## 66. Update 2026-10-20 — the client sent their own go-live calendar, and it invoices on Zoho after the contract ends
+
+**Source:** the nightly `requirements-check` of 2026-10-20, watermark
+2026-10-19T22:00Z — one day. One ROMI-internal session of **00:29:47** —
+[Follow-up Interno](../notes/meetings/2026-10-20%20Follow-up%20Interno.md), full
+raw transcript — plus Gmail, Slack, Drive, Fathom and the repository.
+🟢 **`DevMain` moved to `25629af`, but only in the knowledge layer**, and
+🔑 **a human wrote it**: Aurel Mrruku committed OI-244, a new OI-267 and a
+`JOURNAL.md` entry himself at 18:29 CEST. **Anita Aga's seven commits are all
+unmerged; 0 PRs merged.** Every build claim below is repository arithmetic
+against that head and the named branches; no org was opened.
+
+### 🔴 The client proposed 16 November, and put invoicing on Zoho until the 13th
+
+**[OI-268](../notes/items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)
+is the third date on this project and the first one the client proposed.**
+Sabatino Rinaldi to Elena Spini at 11:31 CEST, forwarded to Aurel Mrruku with
+one word — _"FYI"_:
+
+- migration across the **13–15 November weekend** — _"siete disponibili anche nel
+  week end?"_;
+- production released **16 November**, with ROMI's project activities closed;
+- internal training and the Pienissimo Live and LAB events _"fino al 13
+  novembre"_, and in that period _"**la fatturazione resta su Zoho e Mexal**"_.
+
+🔴 **Zoho expires 31 October.** The overlap goes from −2 days to **−16**, thirteen
+of them with invoicing explicitly assigned to Zoho —
+[the risk](../notes/risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md).
+🔑 **This is the first time Zoho appears in a go-live plan from either side**, and
+the client wrote it there. **The expiry is named neither in their mail nor
+anywhere in ROMI's 29-minute internal call about that mail.** The shape of the
+risk has changed, not only its size: the client has now **scheduled work inside
+the gap**, which means either they hold a contract ROMI does not know about, or
+their calendar invoices on an expired system for a fortnight. **Nothing in any
+source distinguishes those two readings**, four runs after the question was first
+asked.
+
+⚠ Two internal inconsistencies in the client's own text: the rationale argues for
+arriving at **1 December** with trained staff while proposing operational start
+on **16 November**, and **Pienissimo Live runs 24–26 November** — after the date
+they propose, inside the period the rationale says to protect.
+
+### 🔴 ROMI's answer was agreed internally and not sent
+
+- **Counter with a 9 November release.** Elena Spini: _"io gli vorrei dire di fare
+  la settimana prima … che facciamo il 9 rilascio, il 16 se vogliono possono avere
+  la produzione pronta, ma noi il rilascio lo facciamo prima."_ Aurel Mrruku:
+  _"siamo costretti a farlo prima … perché si deve fare anche la migrazione dei
+  dati"_, plus connected apps and the WooCommerce integration.
+- 🟢 **The release is not the constraint**: _"il rilascio in produzione si può fare
+  molto prima. Basta che loro ci diano la conferma che le cose stanno bene, io lo
+  faccio anche domani."_
+- 🔴 **All three refused the weekend inside nine minutes** — _"io non ci sono nei
+  weekend"_ · _"per 2 dati del cavolo mo il weekend?"_ · _"io non voglio
+  esserci"_ — on the advice of a colleague the transcript renders as **Giampaolo**:
+  accept the postponement as the client's own request, refuse the weekend.
+- 🔴 **The project manager declined the proposed go-live day itself**: _"io non ci
+  sono il 16"_, unavailable 16–18 November.
+
+⚠ She said _"entro sera manderò una risposta"_ and then at 19:33:53 asked the
+team for feedback first — _"vorrei mandare una risposta asap domani mattina"_ —
+so **the client's proposal is unanswered.** 🔑 Her reaction to the manner is on
+the record: _"non mi è mai capitato MAI che fosse il cliente a mandarmi il
+calendario delle azioni e delle cose da fare per il golive"_.
+
+### 🟢 Six build items settled in twenty-nine minutes
+
+The most productive half hour in the recent record, with no client present:
+
+- 🟢 **[#207](../notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)
+  has a design at last** — the line discount is built _"come abbiamo fatto per la
+  parte bundle e performance plus. Stessa logica"_, the unit price carrying the
+  discounted price. 🔴 **But `SAL-12` still reads _"no discretionary discounts"_,
+  `status: agreed`, and nobody cited it — the third session running.** Unità di
+  misura and net price remain unaddressed, and nothing was built for the discount
+  today.
+- 🟢 **[#263](../notes/items/OI-263%20Salesforce%20system%20labels%20are%20still%20in%20English.md)
+  decided and built in 62 minutes** — `Mark Current Stage` becomes a custom
+  `Cambia stato` on both the lead and the opportunity path (`750978a`).
+- 🟢 **[#266](../notes/items/OI-266%20The%20quote%20product%20grid%20does%20not%20refresh%20after%20adding%20a%20line.md)
+  was never a regression** — the auto-refresh only ever covered PDF generation,
+  and the expectation was the PM's own: _"l'ho pensato io."_ Fixed in `bac9f6f`
+  via a new Lightning message channel **with a 143-line jest suite**.
+- 🟢 **[#242](../notes/items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md)
+  confirmed in writing**, and 🔑 **the client took post-event reconciliation
+  themselves.**
+- 🟡 **[#259](../notes/items/OI-259%20A%20lost%20lead%20marked%20non%20interessato%20must%20carry%20a%20mandatory%20free%20text%20reason.md)'s
+  scope settled at four values**, and Aurel Mrruku called it a change request —
+  _"digli che è una CR."_
+- 🔴 **[#250](../notes/items/OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md)
+  grew from 11 interval fields to 15.**
+
+### 🔴 Two pieces of scope grew and neither was called a change request
+
+**#250** went to **15 fields** with templates now _"completamente
+personalizzabili"_, and its unresolved permission question is answered by **a
+manual edit in production that is then overwritten** — the same pattern two
+standing risks already describe. New
+**[#269](../notes/items/OI-269%20Event%20communications%20must%20be%20differentiated%20by%20ticket%20type.md)**
+asks for communications per ticket type, _"sappiamo che è previsto più avanti, ma
+per noi è un requisito"_ — 🔴 **and the Asset carries no ticket type**: the
+article has a restricted `tipo biglietto` picklist that ticket generation does not
+copy across, _"che nessuno l'ha detto"_. 🔑 **Neither ROMI person could establish
+what the requirement contains**: _"cioè che requisito è?"_ Both landed five days
+after the Fase 1 freeze, and **neither has been costed or put to the client as a
+CR.** #259 **was** called one internally and the client was not told.
+
+### 🟡 #259's scope is four values and the build covers one
+
+The decision is mandatory detail on **four** values, blocking the save. ⚠ **Which
+four is never stated** — `Lead.Dettaglio_Motivazione_Uscita__c` carries ten, so
+four is a subset somebody chose, and the likeliest reading is the four debated on
+19/10. **Marked uncertain.** 🔴 `baa8597`, committed four and a half hours *before*
+the decision, gates the field on `Perso` + `Non interessato` alone, with the
+mandatory behaviour in the LWC rather than the metadata — so it binds the custom
+path and not an API write. 🔑 **And if `Sceglie concorrenza` is one of the four,
+this now builds free text over `DM-07`'s signable dropdown.**
+
+### 🟢 The migration spec was sent, and nothing can still be loaded
+
+**[#244](../notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)'s
+field spec went out at 16:28:41Z** — `Tracciato migrazione ordini Mexal -
+Salesforce.xlsx`, 164.6 KB — on the day re-promised, four days late against the
+original undertaking. 🔴 **But
+[#267](../notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+is gating and unchanged** — an inserted order is queued to Mexal from any org and
+its lines generate tickets — and 🔴 **[#212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+is unchanged a tenth night.** 🔑 **And the client has now put the derived-state
+plan in writing**: _"Lo storico ORDINI viene caricato tramite il tracciato
+concordato con Aurel. Poi in base al numero ordine saranno aggiornati anche i dati
+di Fatturazione e Scadenzario."_ **Both parties are now on the record deriving
+scadenzario through a predicate the records say is wrong — with the rehearsal at
+10:00 tomorrow**, which Elena Spini warns is wider than migration: _"ci vuole
+parlare di diversi open point che ha e problemi."_
+
+### 🟢 The 10:20Z error mails are test traffic, not a failure
+
+Two automated mails arrived from the partial sandbox — `Errore controllo
+Anticipay`, `404`, `TEST - Azienda non trovata`, and `Errore creazione cliente
+Mexal`, `400` — on the same Account. 🟢 **The internal call establishes they are
+Aurel Mrruku's own tests**: _"stiamo facendo dei test … perché sto ricevendo 404.
+Testa azienda non trovata"_ — and 🟢 **the notification path is confirmed
+working**, which the PM did not know: _"non sapevo se effettivamente
+funzionava."_ 🔑 **Worth recording because anyone sweeping Gmail and stopping at
+the subject lines would record a live Anticipay and Mexal failure the day before a
+migration rehearsal.** ⚠ He is refusing the error-mail layout work without
+mockups.
+
+### 🔴 Four more client asks, one of them a blocker
+
+- **[#270](../notes/items/OI-270%20The%20client%20wants%20a%20test%20company%20created%20in%20production.md)**
+  — a test company **in production** with their own emails, because Automation is
+  only testable there (🟢 which is true, and how the 16/10 chain was proved). ROMI's
+  unstated addition is that it needs **fake collected orders** behind it. ⚠ **Nobody
+  has asked whether a test order created in production would reach live Mexal** —
+  exactly what #267 documents for any inserted order.
+- **[#271](../notes/items/OI-271%20WhatsApp%20cannot%20be%20connected%20to%20Salesforce.md)**
+  — 🔴 **WhatsApp will not connect**: the number sits on a _"utente metà
+  bloccato"_, so it cannot be registered or linked. 🔑 **Reported on the same
+  morning the client's mail took ownership of configuring the WhatsApp messages**,
+  and ⚠ **no register row covers WhatsApp at all.**
+- **[#272](../notes/items/OI-272%20A%20standard%20contract%20expiry%20alert%20rule%20is%20requested.md)**
+  — contract-expiry alerts 15–30 days out, to the tutor and the salesperson.
+  🟢 **It arrives with a clean client pass on Performance Plus**: activation,
+  contract and renewal _"sono andati bene"_.
+- **[#273](../notes/items/OI-273%20How%20the%20event%20date%20fields%20must%20be%20filled%20for%20multi-day%20events%20is%20unanswered.md)**
+  — the multi-day date fields. 🟡 ROMI has the answer (`data evento` is the start
+  date, and exists in that shape because the client asked for the label) **and has
+  not sent it.**
+
+### 🟡 The client asked ROMI back in for Friday
+
+**[#246](../notes/items/OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)**:
+thirty hours after sending ROMI away, §8 asks for support at the first training
+session on **23 October**, the same day as their internal review — and 🟢 **they
+undertook to send ROMI a written summary of the outcomes, the first time the
+client has promised to report test results back.** ⚠ Unanswered, and no hour was
+given. 🔴 **The training window moved with the date**: _"fino al 13 novembre:
+formazione interna"_, three and a half weeks against this row's ten days —
+🟢 **the client acting on exactly the constraint it records.**
+
+### 🔑 A Fase 2 draft exists, unshared, still dated 21 October
+
+Elena Spini showed a _"super mega bozza"_ authored by a **Claudio** — themes
+already shared, points raised, go-live, **four releases with day estimates** — and
+her own assessment: _"praticamente gli costerà come lo stesso progetto che non
+vorranno mai."_ 🔴 **It still carries 21 October as the go-live**, two moves out of
+date, and it is **not in Drive and not shared.** ⚠ Aurel Mrruku's two unanswered
+points on it: **45 days is far too little** for a four-or-five-person team
+including marketing, and **a maintenance phase for what is already built is
+unscoped.**
+
+🔴 **He also put the marketing failure on the record**, first-hand: _"L'abbiamo
+gestito malissimo la parte di marketing … abbiamo fatto lo stesso errore
+sull'API. È iniziato con Andrea … abbiamo buttato via del tempo prezioso."_
+⚠ An internal flow review with Elena Spini, Anita Aga and Rexhina Hysi was
+**proposed and not scheduled.**
+
+### The register
+
+**Not amended in substance. Version stays 1.6, `go_live:` stays `2026-10-21`.**
+The only edits are traceability pointers: `tracked_by` on `CTX-02` and `DM-19`.
+
+🔴 **The go-live was not moved, and the reasoning has changed.** The OI-124 rule —
+signable text does not follow a proposal awaiting a reply — **holds tonight with
+the proposer reversed**: 16 November is the client's proposal, ROMI has not
+accepted it, and internally refuses two of its three load-bearing elements.
+**Three dates are on the table and none is agreed**, and the only one inside the
+Zoho contract is the register's own 21 October, which is tomorrow.
+
+🔑 **The 22 October trigger now has client-side written proof behind it** — their
+mail schedules internal training _"fino al 13 novembre"_, which is documentary
+evidence they are not going live on the 21st. **From 22 October the register
+states a go-live that demonstrably did not happen.** This run did not move it
+because the decision is a human's and the replacement date is contested; it is
+nine places plus the dual-run assumption, in both languages, in one session.
+🔴 **And the 27 October Go/No-Go has lapsed unmentioned by both sides.**
+
+⚠ One finding touches signable text and it is a conflict, not a decision:
+**`SAL-12` against the discount design agreed on 20/10.** `DM-07`'s competitor
+list is unchanged and sharper. Both reported for a human.

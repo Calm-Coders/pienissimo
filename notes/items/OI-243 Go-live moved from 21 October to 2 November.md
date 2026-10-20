@@ -1,17 +1,18 @@
 ---
 id: OI-243
 type: open-item
-status: open
+status: superseded
 owner: Elena Spini
 with: Pienissimo
 org: both
 raised: 2026-10-15
-updated: 2026-10-19
+updated: 2026-10-20
 depends_on: [OI-246]
 blocks: [go-live]
 severity: gating
 requirement: CTX-02
 supersedes: [OI-124]
+superseded_by: [OI-268]
 source: notes/meetings/2026-10-15 Migrazione e Go-Live.md
 ---
 
@@ -254,3 +255,35 @@ worse kind of wrong than stating a date the client has not yet acknowledged.
 When the acknowledgement lands — or on 22 October, whichever comes first — the
 nine places listed in the 15/10 trace change in one session, plus
 `requirements/pienissimo-requirements.yaml:469`'s dual-run assumption.
+
+## 🔴 2026-10-20 — superseded: the client proposed 16 November instead
+
+**This row's date never received the written acknowledgement it asked for, and on
+20 October the client replaced it with a calendar of their own.** 2 November was
+proposed on 15 October and was never accepted, disputed, or acknowledged in any
+source. It is now overtaken.
+
+Tracked from here as
+[OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md).
+`status:` moves to `superseded`; the row stays because its numbering is cited in
+the client-facing tracker and because two of its findings outlive the date:
+
+1. 🔴 **The unilateral Fase 1 scope freeze is still unilateral**, and two more
+   pieces of new build scope have landed since
+   ([OI-250](OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md)
+   at 15 interval fields,
+   [OI-269](OI-269%20Event%20communications%20must%20be%20differentiated%20by%20ticket%20type.md)
+   the ticket-type communications) without either being called a change request to
+   the client. A third,
+   [OI-259](OI-259%20A%20lost%20lead%20marked%20non%20interessato%20must%20carry%20a%20mandatory%20free%20text%20reason.md),
+   **was** called a CR internally — _"digli che è una CR"_ — and the client was
+   not told.
+2. 🔴 **The written commitment to send a Fase 2 offer and plan is unmet.** The only
+   internal artefact is the unshared draft described in
+   [the 20/10 call](../meetings/2026-10-20%20Follow-up%20Interno.md), which still
+   carries **21 October** as the go-live.
+
+🔑 **And the Go/No-Go of 27 October has quietly lapsed.** This row set
+_"Approvazione Fase 1 (Go/No-Go) entro e non oltre il 27/10"_. The client's new
+calendar does not mention a Go/No-Go at all, and no source replaces it. **A
+decision gate that both parties have stopped referring to is not a gate.**

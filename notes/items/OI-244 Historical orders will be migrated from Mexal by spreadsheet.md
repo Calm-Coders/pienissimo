@@ -208,3 +208,65 @@ draft for the 21/10 meeting, **not yet sent** at the time of writing.
 🔴 **Nothing can be loaded yet**: inserting an order today pushes it to Mexal
 from any org and creates tickets from its lines —
 [OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md).
+
+## 🟢 2026-10-20 — the spec was sent, on the day promised
+
+**The field specification was delivered to the client at 16:28:41Z**, closing the
+first of this row's four steps four days late against the original 16 October
+undertaking and **on time** against the 20 October re-promise Elena Spini made in
+writing on 19/10.
+
+- **By mail**, into the calendar thread for Wednesday's meeting (Gmail
+  `1a15817bd8832c8e`), to Elena Spini, cc `amministrazione@pienissimo.com` and
+  `fabrizio.p@pienissimo.com`: _"Ciao Fabrizio, Allego qui il file exel con i
+  campi che ci servono per la migrazione del ordine e le righe d'ordine."_
+- **The attachment is `Tracciato migrazione ordini Mexal - Salesforce.xlsx`**,
+  164.6 KB, also posted to Elena Spini in Slack at 18:06:33 CEST (file
+  `F0CAJ40LM99`) when he could not find the thread: _"pardon riesci per cortesia
+  ad indicarmi il thread per mandare l exel con i campi"_ … _"oppure manda te
+  direttamente"_. He then found it himself — 18:32:51 _"ho fatto sulla mail della
+  call"_ — and she acknowledged at 18:33:04: _"visto perfetto thanks 😉"_.
+- 🟢 **Elena Spini chased it at 09:16:24 CEST** — _"reminder Excel ordini per
+  Fabrizio Pienissimo"_ — and it went out the same day.
+- 🟢 **A separate field list exists in Drive**: `Order/OrderItem Salesforce
+  Fields` (`1XCD2STp3HW3ryn8k4m9VH72QlPFtFDlQl5Xhb9HpbBg`), created by Anita Aga
+  at 08:00:40Z and shared with Aurel Mrruku at 08:49:52Z — **16 Order columns and
+  14 OrderItem columns, headers only, no data.** ⚠ Two artefacts now describe the
+  same mapping; **the workbook sent to the client is the authority**, and the
+  Drive sheet is the morning's draft.
+- ⚠ **The Drive sheet's OrderItem columns include `ListPrice`, `UnitPrice` and
+  `TotalPrice`** — which is the three-price shape
+  [OI-207](OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)
+  has been asking for on the quote side — and `Stato_Scadenza__c` plus
+  `Mexal_Payment_Status__c`, the two fields the derived-state plan writes through.
+
+## 🔴 What the delivery does not change
+
+- 🔴 **Nothing can still be loaded.** [OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+  is unchanged and gating: an inserted order is queued to Mexal from any org and
+  its lines generate tickets.
+- 🔴 **[OI-212](OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  is unchanged a tenth night.** `MexalScadenzarioSearchService.cls` was last
+  touched by `f292b72` on 08/10 and is in none of the 20/10 commits. **The
+  rehearsal is tomorrow.**
+- 🔑 **And the client has now put the derived-state plan in writing**, in
+  [their 20/10 mail](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)
+  §7: _"Lo storico ORDINI viene caricato tramite il tracciato concordato con
+  Aurel. Poi in base al numero ordine saranno aggiornati anche i dati di
+  Fatturazione e Scadenzario."_ **So both parties are now committed on the record
+  to deriving scadenzario data through a predicate the records say is wrong.**
+- 🟡 **The open opportunities and quotes move by hand**, same section: _"Le
+  opportunità aperte e i preventivi in corso li trasferiremo manualmente:
+  concordiamo insieme le date precise, perché nel frattempo la fatturazione
+  continua."_ ⚠ A `Opportunità_Zoho_CRM_` spreadsheet appeared in Drive the same
+  morning (created by Anita Aga 08:17:19Z, ~4.4 MB, Drive
+  `15EItrzNDIyCj7-ivmiif2-S7IxvKJJFrtidPau16tMg`). **Recorded as existing and not
+  opened** — it is a Zoho export and will contain real customer records.
+- ⚠ **The real load date is no longer 2 November.** It is pinned to go-live day,
+  and the client has proposed **16 November** with migration across 13–15
+  November — which ROMI has internally refused
+  ([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)).
+  **The migration date is therefore unagreed again.**
+- ⚠ **Tomorrow's meeting is wider than this row.** Elena Spini, 17:01 CEST:
+  _"domani 10-11 ci vuole parlare del tema migrazione e ci vuole parlare di
+  diversi open point che ha e problemi."_

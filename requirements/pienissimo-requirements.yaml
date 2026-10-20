@@ -459,7 +459,8 @@ requirements:
       area: context,
       pri: M,
       status: agreed,
-      text: "Go-live 21 October 2026, focused on WooCommerce and Mexal"
+      text: "Go-live 21 October 2026, focused on WooCommerce and Mexal",
+      tracked_by: [OI-124, OI-128, OI-243, OI-268, DEC-2026-09-08-go-live-21-october]
     }
   - {
       id: CTX-03,
@@ -641,7 +642,8 @@ requirements:
       area: data_model,
       pri: S,
       status: agreed,
-      text: "Contract object for Performance Plus with renewal and collection tracking"
+      text: "Contract object for Performance Plus with renewal and collection tracking",
+      tracked_by: [OI-272]
     }
   - {
       id: DM-20,

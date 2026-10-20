@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-16
-updated: 2026-10-16
+updated: 2026-10-20
 depends_on: [OI-186]
 blocks: [go-live]
 severity: gating
@@ -129,3 +129,46 @@ blank-stops-the-sequence rule are confirmed; a profile or permission set is
 named for who edits them; the fields ship to production; and the journey reads
 them. Whether it is Fase 1 at all is a scope ruling under the freeze, and that
 is a human's call.
+
+## 🔴 2026-10-20 — the client accepted the design and the field count grew to 15
+
+**The client confirmed the hybrid design in writing and widened it in the same
+sentence: the set is now 11 to 15 communications, not 11.** Aurel Mrruku read the
+consequence straight off it and owns the build.
+
+[Their 20/10 mail](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md),
+§3, Sabatino Rinaldi:
+
+> _"Per gli eventi a pagamento (Camerieri Venditori, Academy, Pienissimo Live,
+> Mastery, Happy Team) va bene la vostra proposta: un set di 11–15 comunicazioni
+> con ritardi orari impostati a livello di edizione. Vi chiediamo di procedere
+> con la configurazione e con il lavoro sui template, che devono essere
+> completamente personalizzabili."_
+
+🟢 **So the shape agreed on 16 October stands** — per-edizione intervals, client
+configurable — and it is now authorised for build with five event families named.
+
+🔴 **But the schema change is bigger than this row recorded.** At
+[the 17:01 internal call](../meetings/2026-10-20%20Follow-up%20Interno.md):
+
+> Aurel Mrruku: _"Ma quindi campi? 15 campi."_ — Elena Spini: _"15 campi.
+> Esatto."_
+
+- **He builds the fields himself**: _"Faccio io i campi e basta."_
+- 🔴 **Straight to production, with permissions set by hand**: _"Li faccio, li
+  porto in prod i campi, però sarà un casino. Poi col permesso facciamo a mano in
+  produzione il permesso e poi lo sovrascrivo."_ ⚠ That is a deliberate
+  hand-edit in production followed by a source overwrite — **the sequence that
+  [the credentials-in-the-org risk](../risks/Risk%20-%20integration%20credentials%20exist%20only%20in%20the%20org.md)
+  and [the Mexal order risk](../risks/Risk%20-%20the%20Mexal%20order%20integration%20exists%20only%20in%20the%20org.md)
+  both describe.** The permission question this row flagged as unresolved on
+  16/10 is therefore answered by a manual step, not a design.
+- ⚠ **`completamente personalizzabili` is new and unestimated.** The template
+  work is now explicitly in scope alongside the interval fields, and nothing
+  sizes it.
+
+🔑 **It also arrived with a second piece of new scope in the same section** —
+[OI-269](OI-269%20Event%20communications%20must%20be%20differentiated%20by%20ticket%20type.md),
+communications differentiated by ticket type, which would branch the same journey
+this row rebuilds. **Neither was costed and neither was called a change request
+to the client**, four days after the Fase 1 freeze.

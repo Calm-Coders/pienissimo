@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Elisa Migliano
 org: both
 raised: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-20
 requirement: DM-07
 source: notes/meetings/2026-10-19 Test UAT Commerciali.md
 ---
@@ -81,3 +81,77 @@ The `Motivazione` field is created and the validation built for `Non
 interessato`; a person rules whether it extends to the other reasons; and the
 `Sceglie concorrenza` conflict between the register and Elena Spini's advice is
 settled in both prose documents if the register moves.
+
+## 🟢🔴 2026-10-20 — scope settled at four values, called a change request internally, and built for one
+
+**The client widened the rule from one reason to four and ROMI accepted it in
+under a minute. Aurel Mrruku classified it as a change request in the same breath
+— and the build that shipped four and a half hours earlier implements the single
+original case.**
+
+At [the 17:01 internal call](../meetings/2026-10-20%20Follow-up%20Interno.md),
+Elena Spini reported the new ask:
+
+> _"Invece adesso hanno chiesto dettaglio di non interesse obbligatorio per tutti
+> … per tutti questi quattro valori diversi."_
+>
+> _"obbligatorio perché sennò non puoi andare avanti, per tutti e quattro."_
+
+Aurel Mrruku, immediately: **_"digli che è una CR. Sì, sì, lo mettiamo, non è un
+problema … lo mettiamo obbligatorio."_**
+
+- 🟢 **So the open question from 19/10 is closed**: it is not one reason, and not
+  all ten. It is **four**, mandatory, blocking the save.
+- 🔑 **And ROMI's own position is that this is a change request** — _"digli che è
+  una CR"_, said to the PM, four days after the Fase 1 scope freeze. ⚠ **It is
+  recorded as a CR nowhere**, and no source says the client was told. The instruction
+  was to tell them; whether anyone did is unverified.
+
+### ⚠ Which four is not stated
+
+The transcript says _"questi quattro valori"_ while Elena Spini was sharing her
+screen, and **names none of them**. `Lead.Dettaglio_Motivazione_Uscita__c` carries
+**ten** values on `origin/DevMain` (`Non interessato`, `Prezzo alto`, `Sceglie
+concorrenza`, `Servizio non adatto`, `Ha già P.Pro`, `Già in contatto`, `Dati per
+il contatto inesatti`, `Duplicato da CRM`, `Non in target`, `Richiesta inviata per
+errore`), so four is a subset somebody chose.
+
+**The likeliest reading — and it is a reading, not a fact — is the four debated in
+the room on 19/10**: `Non interessato`, `Prezzo alto`, `Sceglie concorrenza`,
+`Servizio non adatto`, which are also the first four in picklist order and the
+only ones any participant argued for. ⚠ **Marked uncertain. It must be confirmed
+before the build, because building the wrong four is indistinguishable from
+building the right four until a tutor hits the fifth.**
+
+### 🔴 The build implements one of the four
+
+`baa8597` (Anita Aga, `DevAnita19`, 20/10 **12:27:43 CEST** — four and a half
+hours *before* the decision) adds `Lead.Motivazione__c` and gates it in
+`leadCustomPath.js`:
+
+```js
+get requiresMotivazione() {
+  return (
+    this.exitReason === "Perso" && this.exitReasonDetail === "Non interessato"
+  );
+}
+```
+
+- **So it fires on exactly one detail value**, the 19/10 minimum — correct when
+  written, superseded the same afternoon.
+- ⚠ The field is `<required>false</required>` in metadata and `TextArea`; the
+  mandatory behaviour lives in the LWC, so **it binds only the custom path, not an
+  API write or a list-view edit.**
+- ⚠ Its label is `Dettaglio non interesse` and its description names the single
+  case — both will read wrong once it covers four reasons.
+- ⚠ The commit message, _"Added Motivazione field for Leads Non Qualificato/Perso/
+  Non Interessato"_, reads as three values but is one path: stage `Non
+  qualificato`, reason `Perso`, detail `Non interessato`.
+- 🔴 **Unmerged.** On `DevAnita19`, no PR.
+
+🔑 **The competitor-list conflict with `DM-07` is untouched by any of this.** The
+register still specifies `Sceglie concorrenza (lista competitor da selezionare)`
+and Elena Spini still advised free text instead. **If `Sceglie concorrenza` is one
+of the four, this row now builds free text over a signable dropdown.** Still a
+human's ruling; the register carries only the `tracked_by: [OI-259]` pointer added
+on 19/10.

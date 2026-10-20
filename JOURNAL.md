@@ -10,6 +10,47 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-20 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  2026-10-19T22:00Z. Drilled the 20/10 ROMI-internal call
+  ([Follow-up Interno](notes/meetings/2026-10-20%20Follow-up%20Interno.md),
+  00:29:47, transcript preserved at
+  `meetings/2026-10-20-follow-up-interno-transcript.it.md`). Wrote OI-268–OI-273,
+  updated OI-207, OI-242, OI-243, OI-244, OI-246, OI-250, OI-259, OI-263, OI-266
+  and the Zoho-expiry risk; MAP, INDEX, both trackers (6 new rows + 9 refreshed
+  each), both recaps §66, trace, this entry.
+- **State:** 🔴 **The client proposed a go-live of 16 November**
+  ([OI-268](notes/items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)),
+  with migration over the 13–15 November weekend and invoicing left on Zoho
+  _"fino al 13 novembre"_ — **13 days past the 31 October expiry**, a −16-day gap,
+  and **neither party has named the expiry**. ROMI has not replied; internally the
+  weekend and the 16th are both refused and the counter is a 9 November release.
+  OI-243 is now `superseded`; its 27 October Go/No-Go has lapsed unmentioned.
+  🟢 The 17:01 call settled six build items — OI-207 has a discount design
+  (_"stessa logica"_ as bundle/Performance Plus), OI-263 built as `Cambia stato`,
+  OI-266 was never a regression, OI-259 widened to four values, OI-250 grown to 15
+  fields, OI-242 confirmed. 🟢 OI-244's spec **was sent** at 16:28:41Z.
+  🔴 OI-267 gating, OI-212 unchanged a tenth night, and both parties are now
+  committed in writing to deriving scadenzario through it — **rehearsal 21/10
+  10:00**.
+- **Next:** the go-live register change is **due** — three dates, none agreed, and
+  from 22 October the register states a go-live that did not happen; nine places
+  plus `requirements/pienissimo-requirements.yaml:469`, both languages, one
+  session. Ask the client whether they hold Zoho past 31 October. Confirm **which
+  four** `Dettaglio_Motivazione_Uscita__c` values OI-259 means before the build
+  widens. Get `SAL-12` ruled before the discount is built.
+- **Watch:** 🔑 **the id sequence is no longer this procedure's alone** — `25629af`
+  allocated OI-267 outside the nightly run, so read the max id from
+  `notes/items/` every time. Next free id is **274**; OI-189–OI-193 stay reserved.
+  ⚠ The two 10:20Z sandbox 404/400 mails are **Aurel Mrruku's own tests**, not a
+  live failure — only the transcript says so. ⚠ Anita Aga's seven commits are all
+  unmerged (`DevAnita19`/`DevAnita20`, no PRs); `origin/DevMain` `25629af` is
+  knowledge-only. ⚠ No Apex was written or proposed, and none was committed by
+  anyone today.
+
+---
+
 ## 2026-10-20 - claude (Mexal order migration spec)
 
 - **Did:** wrote the historical-order field spec owed to Fabrizio Paganelli

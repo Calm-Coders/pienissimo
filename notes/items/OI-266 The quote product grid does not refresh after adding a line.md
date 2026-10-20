@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-20
 source: notes/meetings/2026-10-19 Test UAT Commerciali.md
 ---
 
@@ -62,3 +62,57 @@ the ordinary cause of exactly this symptom.
 
 The product-management action refreshes the related lists and the header total
 without a manual reload, verified by adding two lines in a row in UAT.
+
+## 🟢 2026-10-20 — explained, and nothing had regressed
+
+**The missing refresh was never built. Aurel Mrruku had wired auto-refresh only to
+PDF generation, and Elena Spini's expectation that it also covered adding a product
+was her own. The fix was committed the same afternoon, with tests.**
+
+At [the 17:01 internal call](../meetings/2026-10-20%20Follow-up%20Interno.md):
+
+> Elena Spini: _"E non c'era il refresh automatico."_
+>
+> Aurel Mrruku: _"Sì, ma quando c'era flash [refresh] automatico? Refresh
+> automatico l'avevo fatto solo sulla generazione del PDF."_
+>
+> Elena Spini: _"No, no, l'ho pensato io, l'ho pensato io."_
+
+🟢 **So this is a gap, not a regression** — which matters, because the row was
+raised on the day `#102` redeployed `QuoteLineItemTriggerHandler.cls` and a
+trigger-side recalculation was the ordinary suspect. **It was not that.** He
+confirmed it was straightforward: _"Sì che lo posso mettere."_
+
+🟢 **Built in `bac9f6f`** (Anita Aga, `DevAnita19`, 20/10 15:05:02 CEST) —
+_"refresh after products selection and tranche creation"_, two hours *before* the
+call, via a new Lightning message channel:
+
+| File | Change |
+| ---- | ------ |
+| `QuoteProductsChanged.messageChannel-meta.xml` | **new** — the publish/subscribe channel |
+| `quoteLineItemsWithBundles.js` | +92 — subscribes and refreshes |
+| `quoteManageProducts.js` | +9 — publishes on product change |
+| `quoteCreateTranche.js` | +11 — publishes on tranche creation |
+| `__tests__/quoteLineItemsWithBundles.test.js` | **+143 — LWC jest coverage** |
+
+🟢 **It is tested.** A 143-line jest suite ships with it — notable in a project
+whose Apex coverage is
+[a gating risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+This is LWC jest, not Apex, so it is a `npm run test:unit` matter and touches
+nothing in that standing instruction.
+
+🟢 **And it covers the tranche total too**, which this row recorded as resolving
+itself a minute later on 19/10 — so both stale reads are addressed by one channel.
+
+## 🔴 What is still open
+
+- 🔴 **Unmerged.** On `DevAnita19`, no PR. `origin/DevMain` stands at `25629af`
+  and does not carry it.
+- ⚠ **The ambiguity this row created for
+  [OI-207](OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)
+  is not retrospectively resolved.** The refresh existing from today does not tell
+  anyone what Fabrizio Paganelli was looking at on 19/10. The discount control he
+  re-checked after a manual reload was genuinely absent, and
+  [that is what was designed on 20/10](OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md).
+- ⚠ **Not verified in any org**, in UAT or production. The claim above is
+  repository arithmetic against the commit.

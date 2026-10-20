@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-19
+updated: 2026-10-20
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -385,3 +385,65 @@ Off the main thread, after the goodbyes (`01:32:28`):
 **First recorded client frustration at having to re-raise a build item** — and it
 is about the row the same client accepted into the frozen Fase 1 perimeter in
 writing on 16 October.
+
+## 🟢 2026-10-20 — the discount design was decided, and it reuses what already works
+
+**The line discount Fabrizio Paganelli has asked for three times now has an agreed
+design: the same mechanism already shipped for bundles and Performance Plus. It was
+settled internally on 20 October and relayed to the dev group the same evening.**
+
+At [the 17:01 internal call](../meetings/2026-10-20%20Follow-up%20Interno.md),
+Aurel Mrruku stated the requirement as he now understands it:
+
+> _"quando mettiamo i prodotti su una quot[e] standard vogliono anche lo sconto …
+> quindi quando c'è la quantità, c'è il prezzo, vogliono anche lo sconto là."_
+
+Elena Spini gave the design in one line and he accepted it:
+
+> _"Prezzo unitario è praticamente il prezzo dello sconto, come abbiamo fatto per
+> la parte bundle e performance plus. **Stessa logica.**"_
+
+🟢 **So the answer is not a new field but an existing pattern**: the unit price on
+the line carries the discounted price, as on the bundle and Performance Plus paths.
+That is the first time this row has had a design rather than a restatement of the
+gap.
+
+🟢 **And he carried it to the dev group**, Slack `C0BQD34LLF4`, 20/10 17:24 CEST,
+three messages in twelve seconds:
+
+> _"duan dhe skonton kur vendos produktet"_ · _"te quota"_ · _"e kemi pass po sesht
+> me"_
+
+The first two are Albanian for *they want the discount too when you place the
+products* / *on the quote*. ⚠ **The third is not reliably translatable from the
+record** — it reads as *we had it but it is not there any more*, which would imply
+a regression, and nothing else in any source supports that. **Recorded verbatim,
+glossed as uncertain, and not treated as a finding.**
+
+## 🔴 What this does not settle
+
+- 🔴 **`SAL-12` is still in direct conflict with it, and still uncited.** The
+  register reads _"Tutors on fixed price list, no discretionary discounts"_,
+  `status: agreed`. A tutor-operated discount control on the quote line is the
+  opposite. **Neither the client nor ROMI has mentioned `SAL-12` in any of the
+  three sessions where the discount was asked for**, and the 20/10 call designed
+  the build without anyone raising it. The register is unchanged and the conflict
+  is still a human's to rule.
+- 🔴 **Unit of measure and net price are still not addressed.** The 19/10 report
+  was that the quote lines lack `sconto`, `unità di misura`, `listino` and `netto`;
+  the 20/10 design covers the discount, and `Totale_Listino__c` / `Sconto_Totale__c`
+  landed on 19/10 as header totals. **No source mentions unità di misura at all**,
+  and `QuoteLineItem` still carries no net-price field.
+  🔑 ⚠ **The migration field list drafted the same morning does carry the shape
+  the quote lacks** — its OrderItem sheet lists `ListPrice`, `UnitPrice` and
+  `TotalPrice` ([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)).
+  So the order side models three prices per line while the quote side models one.
+  Nobody has connected the two.
+- 🔴 **Nothing was built for it on 20/10.** None of Anita Aga's seven commits
+  touches the discount; `origin/DevMain` stands at `25629af`, a knowledge-only
+  commit. **The design exists; the field does not.**
+- ⚠ **The client has not been told.** Fabrizio Paganelli's _"a me mi fanno
+  incazzare perché vi dico le cose … l'avevamo già affrontata, doveva essere a
+  posto"_ of 19/10 is unanswered, and tomorrow's 10:00 meeting is the first
+  opportunity — Elena Spini has flagged it will cover _"diversi open point che ha
+  e problemi"_.

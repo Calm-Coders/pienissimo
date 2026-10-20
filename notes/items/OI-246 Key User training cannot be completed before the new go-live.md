@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-15
-updated: 2026-10-19
+updated: 2026-10-20
 depends_on: [OI-240, OI-186]
 blocks: [go-live]
 severity: gating
@@ -193,3 +193,64 @@ poi effettivamente capire se anche lei poi riesce ad accedere"_.
 
 🔴 **The contracted training hours are still unknown**, third run with this
 question, and the window is five days for eight users.
+
+## 🟡 2026-10-20 — the client asked ROMI back in, for Friday
+
+**Thirty hours after sending ROMI away for the week, the client asked for ROMI
+support at the first training session — on Friday 23 October, the same day as their
+internal review.**
+
+[Their 20/10 mail](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)
+sets out the week and then asks for help inside it:
+
+- §2: _"capiprogetto dal 19 al 23 ottobre: test individuali e per reparto (vendite
+  da palco, record tutor, vendite standard, biglietti, integrazione con Mexal); 23
+  ottobre: riunione interna di allineamento sugli esiti, di cui vi invieremo un
+  riepilogo."_
+- §8: _"Per la prima sessione di formazione del 23 Ottobre (circa un'ora, che
+  registreremo) ci farebbe piacere un vostro supporto."_
+
+🔑 **So 23 October now carries both their internal review and the first training
+session**, and ROMI is invited to the second. 🟢 **They also committed to sending
+ROMI a written summary of the review outcomes** — the first time the client has
+undertaken to report test results back.
+
+🟡 **This softens but does not reverse the 19/10 position.** Sabatino Rinaldi's
+_"non ce lo diamo il meeting questa settimana … dacci il tempo di usarla"_ still
+stands for 20–22 October; what changed is Friday.
+
+## 🔴 Nobody at ROMI has answered, and the date is two days out
+
+Elena Spini put it to the internal group at 19:33:53 CEST (Slack `C0C38JJ9D1T`) as
+the fourth of four open questions:
+
+> _"in più chiedono supporto marketing per il 23 (peccato che non hanno dato una
+> data -.- Fabri te ci sei la mattina confermi?"_
+
+- ⚠ **No time was given by the client** — her _"non hanno dato una data"_ means the
+  hour, since the day is stated.
+- ⚠ **It is asked of Fabrizio Mastracci and unanswered** as at this sweep.
+- 🔑 **It is marketing support, not sales.** The training the client is scheduling
+  is _"la prima sessione di formazione"_ generally; what they asked ROMI for lands
+  on the marketing side, where
+  [OI-269](OI-269%20Event%20communications%20must%20be%20differentiated%20by%20ticket%20type.md)
+  and [OI-250](OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md)
+  are both open and unbuilt.
+
+## 🔴 And the training window moved with the date
+
+The client's proposed calendar puts _"fino al 13 novembre: formazione interna, presa
+di confidenza con lo strumento"_ — **three and a half weeks of internal training**,
+against the ten days this row was raised about. 🟢 **That is the client acting on
+exactly the constraint Fabrizio Paganelli stated on 15/10** and this row recorded:
+seven or eight commercial staff cannot be trained in two weeks.
+
+⚠ **So the gating logic of this row is now bound to
+[OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md).**
+If the 16 November calendar holds, the training objection is answered by the
+calendar. If ROMI's 9 November counter holds, it is not. **Neither is agreed**, so
+this row stays gating.
+
+⚠ **Train-the-trainer is still unassigned in any record.** The 19/10 finding was
+that Fabrizio Paganelli took it himself for 20/10 without it being allocated;
+nothing in the 20/10 sources says whether that session happened.
