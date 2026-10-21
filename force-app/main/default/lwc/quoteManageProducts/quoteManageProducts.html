@@ -189,6 +189,35 @@
                           data-id={product.pricebookEntryId}
                           onclick={handleRemoveProduct}
                         ></lightning-button-icon>
+                        <template if:true={product.hasItemPricing}>
+                          <div class="item-pricing">
+                            <div class="tranche-summary-value">
+                              <span class="box-label">Prezzo listino</span>
+                              <span>{product.unitPrice}</span>
+                            </div>
+                            <lightning-input
+                              type="number"
+                              label="Sconto %"
+                              value={product.discountPercent}
+                              data-id={product.pricebookEntryId}
+                              max="100"
+                              step="0.01"
+                              required
+                              onchange={handleItemDiscountChange}
+                            ></lightning-input>
+                            <lightning-input
+                              type="number"
+                              label="Nuovo prezzo"
+                              value={product.newPrice}
+                              data-id={product.pricebookEntryId}
+                              min="0"
+                              step="0.01"
+                              formatter="currency"
+                              required
+                              onchange={handleItemPriceChange}
+                            ></lightning-input>
+                          </div>
+                        </template>
                         <template if:true={product.requiresTranche}>
                           <div class="tranche-choice-box">
                             <div class="tranche-choice-heading">
@@ -398,6 +427,35 @@
                             data-id={product.pricebookEntryId}
                             onclick={handleRemoveProduct}
                           ></lightning-button-icon>
+                          <template if:true={product.hasItemPricing}>
+                            <div class="item-pricing">
+                              <div class="tranche-summary-value">
+                                <span class="box-label">Prezzo listino</span>
+                                <span>{product.unitPrice}</span>
+                              </div>
+                              <lightning-input
+                                type="number"
+                                label="Sconto %"
+                                value={product.discountPercent}
+                                data-id={product.pricebookEntryId}
+                                max="100"
+                                step="0.01"
+                                required
+                                onchange={handleItemDiscountChange}
+                              ></lightning-input>
+                              <lightning-input
+                                type="number"
+                                label="Nuovo prezzo"
+                                value={product.newPrice}
+                                data-id={product.pricebookEntryId}
+                                min="0"
+                                step="0.01"
+                                formatter="currency"
+                                required
+                                onchange={handleItemPriceChange}
+                              ></lightning-input>
+                            </div>
+                          </template>
                           <template if:true={product.requiresTranche}>
                             <div class="tranche-choice-box">
                               <div class="tranche-choice-heading">
