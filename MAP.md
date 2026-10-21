@@ -2,9 +2,58 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-20 (nightly sweep — the client sent their own go-live calendar proposing 16 November, which puts invoicing on Zoho for thirteen days after the contract ends, and ROMI has not replied) · Source of record: [notes/](notes/)
+Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November in a recorded client call, the migration was designed end to end, and the ticket-balance blocker nobody had raised surfaced in the same room) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟢🔑 **2026-10-21 — the go-live was agreed at 16 November, the whole migration was designed end to end, and the blocker nobody had raised surfaced in the same room.** Nightly sweep,
+  watermark 2026-10-20T22:00Z. **4 hours 43 minutes of client call in one day**, both drilled from full raw transcripts:
+  [Check Dati Migrazione e OP](notes/meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md) (10:01 CEST, **02:46:16**, the longest session in the project record — Fabrizio Paganelli,
+  Elisa Migliano and Sabatino Rinaldi for Pienissimo) and [Tema Migrazione](notes/meetings/2026-10-21%20Tema%20Migrazione.md) (14:31 CEST, **01:57:34**).
+  🟢🔑 **[OI-268](notes/items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md) is settled: 16 November, agreed by both sides in the room.** The two things ROMI
+  internally refused are both gone — 🟢 **the weekend migration** (_"cerchiamo di non lasciare mai le immigrazioni e i deploy in weekend"_, undefended) and 🟢 **the operational freeze the
+  client had refused outright**, which is what unblocked the date: a **two-phase import** separates the release from the order migration, _"Dividiamo le tematiche … e così siamo tranquilli e non
+  ci fermiamo manco un giorno, manco un secondo"_ — Fabrizio Paganelli, _"Se è così va bene. Per me va bene."_ **Agreed calendar: technical release ~9 Nov · Zoho invoicing 9–12 Nov with the
+  first import in parallel · second extract Fri 13 Nov 09:00 · Salesforce live Mon 16 Nov 09:00**, all four principals on duty with a 10-minute response undertaking.
+  ⚠ **No contingency day** — Aurel Mrruku asked for Friday 13 *and* Monday 16 as freeze days and did not get them. ⚠ **ROMI's written reply exists and is not in this mailbox** (sent from
+  `e.spini@romicompany.com`), so the acceptance in evidence is verbal. 🟢 **The register was moved** — `go_live: 2026-11-16` in the YAML, `CTX-02` and both prose documents, nine places;
+  🔑 **the OI-124 rule's condition is now met** (the proposal is no longer awaiting a reply) and **the Italian wording needs a human's eye.**
+  🔴🔑 **The blocker: [OI-274](notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md) — ~1,000 paid, unused tickets have no path into Salesforce.** A bulk import
+  creates no Asset, no asset state and no marketing link, because all three come from the quote-acceptance automation, and the edizione binding derives from the order creation date.
+  🔑 **It was never in scope and both sides said so** — _"portare i biglietti da Zo[ho] in Sales Force? Mai"_ · _"c'è tanto di documento, di email … in cui si è parlato di migrazione solo di
+  queste cose"_ — and 🔴 **Sabatino Rinaldi, called in mid-call, put it on ROMI**: _"non è possibile arriva a sto punto dove non ci siam posti prima sto problema … mi aspetto da parte vostra
+  dovete portarci una soluzione."_ ⚠ **No ruling on whose omission it was, and nobody called it a CR.** 🔑 He also offered **`Pienissimo 360`**, a client platform that **appears in no project
+  record**, as an API route in.
+  🟢🔑 **The afternoon produced the first end-to-end migration design this project has had.** Import key = `sigla` + `serie` + `numero documento` + **`data ordine`**
+  ([OI-275](notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md); Mexal restarts numbering yearly, and Kreosoft confirmed the field mid-call in 9 minutes) ·
+  **Mexal transmission blocked for the import** with the Mexal key stored instead — 🟢 **the bypass [OI-267](notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+  was waiting for** · **editions matched on invoice date**, not order date · **dummy "Pippo"/"Import" editions** carry the history and their tickets are mass-deleted
+  ([OI-276](notes/items/OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)) · **Performance Plus contract automation bypassed**
+  ([OI-280](notes/items/OI-280%20Performance%20Plus%20contract%20generation%20must%20be%20bypassed%20for%20migrated%20orders.md)) · fields cut to the minimum, **net price only, no payment status**
+  ([OI-244](notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)). 🟢 **Pienissimo Live 2026 leaves Salesforce entirely** — its edizione will not be created
+  and the 23–26 November event runs on Zoho. 🔴 **None of it is built**; 2–4 days in UAT alone, against a first import on ~9 November.
+  🔴 **And it all runs through [OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md), unchanged an eleventh night.** The payment status was deliberately removed from
+  the client's extract because the scadenzario supplies it, so Salesforce will derive the collection state of **~15,000–30,000 historical article lines** through the predicate this record calls
+  wrong — and ⚠ **the `P` convention was restated unchanged, to the client, uncontradicted.** The Asset state, i.e. whether a customer is handed a ticket, derives from the same chain.
+  🔴 **The Zoho gap is now a joint plan, not a proposal**: invoicing on Zoho to 12 November against a 31 October expiry — **12 days** — plus **Pienissimo Live ticketed from Zoho three weeks
+  past expiry**, and the migration extract itself pulled from Zoho on 12–13 November. ⚠ **Zoho was not named once in 4h43 of client call** ([the risk](notes/risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md)) — **fifth run the question is unasked.**
+  🟢 **Settled and built**: [OI-261](notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md) — the four `natura` values on the record in the client's words (`BO`/`NO` only on a
+  standard sale), 🔑 **Aurel Mrruku had it backwards in the room and was corrected**, which independently confirms the deployed `Solo_Bundle__c` filter ·
+  [OI-207](notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md) — full column set stated, **editability settled** (nothing editable in a bundle,
+  **list price locked** on a standard sale), and `4a5a4a0` shipped the discount with **370 lines of LWC jest** · 🟢 **[OI-260](notes/items/OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md)
+  resolved** — missing field-level permissions, **not** the `QuotePdfController` redeploy the 19/10 record suspected and **not** the bad products OI-261 suspected; ⚠ nobody told the client.
+  🟢 **The Anticipay 404 mails are expected UAT behaviour** — the call is redirected at the client's own database to save credits, so an unknown VAT always 404s. **Four such mails in two days**;
+  anyone reading only the subject lines would log a live outage.
+  🔴 **New scope**: [OI-277](notes/items/OI-277%20A%20read-only%20Mandato%20RID%20field%20is%20required%20on%20the%20account.md) (read-only `Mandato RID`, Mexal field names supplied by Kreosoft) ·
+  [OI-278](notes/items/OI-278%20The%20account%20layout%20omits%20the%20legal%20representative%20data.md) (fields exist, not on the page; **client suspended it pending their lawyer**) ·
+  [OI-279](notes/items/OI-279%20The%20tutor%20account%20creation%20screen%20must%20be%20simplified.md) (nine layout changes) ·
+  [OI-281](notes/items/OI-281%20Tutors%20must%20use%20Aggiorna%20Anticipay%20when%20creating%20an%20account.md) (a tutor can send a contract carrying a made-up company name — 🔴 **three technical controls
+  considered, all three dropped, control delivered by training alone**) · [OI-282](notes/items/OI-282%20The%20client%20is%20owed%20a%20technical%20integration%20document.md) (a technical document, no date or scope).
+  🟢 **`DevMain` moved `25629af` → `228be1d`**: 4 commits, **PR #107 merged** plus #105 and #106 — the BB/NB filter and the line discount. ⚠ **Nothing was built for OI-212, OI-267 or OI-274.**
+  ⚠ **Row #267 was missing from both trackers entirely** — written by a human commit outside the nightly run on 20/10 while rows #268–#273 cite it; **backfilled this run.**
+  ⚠ **Fathom returned nothing a twenty-second run** (one meeting, another client) · the canvas **static eleven weeks** · `#tproj-pienissimo` **silent** · the marketing DM **silent** ·
+  ⚠ **no reply to any nightly report — thirty-one nights.** ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **283**.
+  — [trace](notes/traces/Source%20trace%202026-10-21%20nightly.md)
 
 - 🔴🔑 **2026-10-20 — the client sent their own go-live calendar, proposing 16 November, and it keeps invoicing on Zoho for thirteen days after the contract expires.** Nightly sweep,
   watermark 2026-10-19T22:00Z. 🔑 **The client proposed the date this time** — [OI-268](notes/items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md),

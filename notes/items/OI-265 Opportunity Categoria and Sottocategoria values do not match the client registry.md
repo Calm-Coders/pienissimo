@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-21
 depends_on: [OI-96]
 source: Gmail thread 1a154a97e004a741, 2026-10-19T14:55:54Z
 ---
@@ -104,3 +104,31 @@ not in a form anything can diff.
 The workbook lands in Drive, the org values are diffed against it, the delta is
 deployed, and the reporting design records that `Categoria`/`Sottocategoria` —
 not the opportunity name — is the reporting key.
+
+
+## 2026-10-21 — the client's commercial lead says the file went astray
+
+🟡 **First movement in two days, and it points at the workbook, not the values.**
+Marco Montesi replied on the `Opportunity` thread at **15:39:56Z** (Gmail
+`1a15f1e833a5d293`), two days after Elena Spini's screenshot of the picklist
+values went unanswered:
+
+> _"Ciao Elena, chiedo a @Elisa se ti può rimandare il file, qui deve essere
+> saltato qualcosa."_
+
+So the client's reading is that **the file they sent is not the file ROMI holds**
+— _"qui deve essere saltato qualcosa"_ — and Elisa Migliano is asked to resend it.
+That is consistent with the standing finding here: the picklist workbook has only
+ever existed as a mail attachment, so neither side can point at a shared copy and
+check.
+
+⚠ **Nothing is resolved.** No file has arrived, no values are reconciled, and
+🔴 **the workbook is now unshared for a twelfth consecutive sweep.** The message
+also does not say which values are wrong — it assumes a transmission problem
+rather than naming a discrepancy.
+
+⚠ **Marco Montesi's reply does not go to Aurel Mrruku's address as a recipient**;
+he is cc'd. The ask lands on Elena Spini and Elisa Migliano.
+
+🟡 **This is the cheapest open item on the project to close** — one shared Drive
+link in place of an attachment — and it has survived twelve sweeps.

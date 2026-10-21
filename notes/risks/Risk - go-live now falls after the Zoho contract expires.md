@@ -5,8 +5,8 @@ status: open
 owner: Elena Spini
 org: both
 raised: 2026-10-15
-updated: 2026-10-20
-depends_on: [OI-243, OI-268]
+updated: 2026-10-21
+depends_on: [OI-243, OI-268, OI-274]
 blocks: [go-live]
 severity: gating
 source: notes/items/OI-243 Go-live moved from 21 October to 2 November.md
@@ -133,3 +133,51 @@ sequencing, not from the contract.
 So the position tonight is: **three dates on the table, the only one that fits
 inside the Zoho contract is the one that is already in the register and already
 overtaken.**
+
+
+## 2026-10-21 — the gap is no longer a proposal
+
+🔴🔑 **Both parties agreed the calendar that invoices on Zoho after the contract
+ends.** At [the 10:01 client session](../meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md)
+16 November was confirmed as the go-live, with invoicing on Zoho through
+**Thursday 12 November** and Salesforce taking over Monday 16. Zoho expires
+**31 October**.
+
+| | |
+| --- | --- |
+| Zoho contract ends | 2026-10-31 |
+| Last invoicing day on Zoho, as agreed | 2026-11-12 |
+| Salesforce invoicing starts | 2026-11-16 |
+| **Overrun on an expired system** | **12 days of invoicing, 16 days to go-live** |
+
+The shape has changed twice. On 20 October it was a client proposal with
+*planned work* inside the gap. Today it is **a joint plan**, designed in detail
+by both sides, with the days named.
+
+🔴 **Zoho was not mentioned once in either 21/10 client session** — 4 hours
+43 minutes of recorded call across the morning migration rehearsal and the
+afternoon design session, both entirely about moving off Zoho, in neither of
+which the contract date is named. It was not named in the 20/10 internal call
+either. **Five nightly runs have now recorded the question as unasked.**
+
+⚠ **And the plan is more dependent on Zoho than the previous one.** Two decisions
+taken on 21 October put live business on Zoho past the expiry:
+
+1. 🔑 **Pienissimo Live 2026 runs entirely on Zoho** — the edizione will not be
+   created in Salesforce and the tickets for the 23–26 November event go out from
+   Zoho ([the afternoon note](../meetings/2026-10-21%20Tema%20Migrazione.md)).
+   Fabrizio Paganelli: _"Per il pienissimo live del 24 25 26 di novembre lavoriamo
+   tutto su Zo[ho] … anche perché abbiamo tutto là."_ **That is three to four
+   weeks past the expiry, for the client's largest event.**
+2. The historical extract is taken from Zoho's analytics warehouse on
+   12–13 November, so the data pull itself depends on the system still being
+   reachable.
+
+So the exposure is no longer only *invoicing after expiry*. It is **ticketing a
+flagship event, and extracting the migration source, on a CRM whose contract
+ended 24 days earlier.**
+
+⚠ **Still unknown, and now five runs old**: whether Pienissimo hold Zoho beyond
+31 October. Either they do — in which case nothing here is a risk and one
+sentence closes it — or the plan both parties just agreed cannot be executed.
+**No source distinguishes these.**

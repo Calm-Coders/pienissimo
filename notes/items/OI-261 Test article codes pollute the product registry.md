@@ -116,3 +116,57 @@ change still needs tutor-profile verification before the UAT finding can close.
 The test articles are identified and removed (or deactivated), the Mexal import
 is re-run and reconciled against the client's registry count, and a tutor-profile
 user is shown adding a line and seeing only the sellable codes.
+
+
+## 2026-10-21 — the rule was stated by the client, and the filter reached DevMain
+
+🟢🔑 **The selector rule is now on the record in the client's own words**, from
+[the 10:01 session](../meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md)
+(`01:06:48`–`01:10:12`). Fabrizio Paganelli read the four `natura` values
+straight off the Mexal registry:
+
+| `natura` | Meaning | Selectable on a standard sale |
+| -------- | ------- | ----------------------------- |
+| `BO` | generates a ticket, not bundle-only | 🟢 yes |
+| `NO` | generates no ticket, not bundle-only | 🟢 yes |
+| `BB` | generates a ticket, **bundle only** | 🔴 no |
+| `NB` | generates no ticket, **bundle only** | 🔴 no |
+
+> _"quando un tutor fa un ordine standard può comparire solo BO o NO."_
+
+🔑 **Aurel Mrruku had the behaviour backwards in the room** and was corrected:
+_"sono i bundle non vuol dire che non può essere da standard … quelli da standard
+li vedi i BB."_ Fabrizio Paganelli: _"No, bisogna che lo togliamo quello"_, with
+the reason — _"corriamo il rischio che il tutor venda un prodotto che deve andare
+in un band[le], lo mette in una vendita normale."_ Aurel Mrruku then restated the
+predicate correctly: _"se ha il bundle il true, allora non deve essere incluso."_
+This **confirms the `Solo_Bundle__c = true` filter already deployed** is the right
+rule, independently of how it was derived.
+
+He relayed it to the dev group at 11:09–11:11 CEST in three Albanian messages,
+~2 hours after it was agreed: _"i prodotti BB duhet te jen vetem kur krijohet
+boundle"_ · _"dhe NB gjothashtu"_ · _"mnjf po ka boundle true nuk duhet te mund
+te zgjidhet"_ — BB products only when a bundle is created, NB likewise, and if
+bundle-true it must not be selectable. Both the first and third drew a ✅.
+
+🟢 **It is merged.** `b204661` (Rexhina Hysi, 12:35:07) and `4a5a4a0`
+(Anita Aga, 16:26:36) landed on `DevMain` via **PR #107** (`228be1d`, 18:11:43)
+from `Devmain_BBAndNbProducts`. So the filter is no longer only in the sandbox —
+it is in the integration branch.
+
+⚠ **Also requested in the same call and not in the build**: a **full** product
+re-sync. Fabrizio Paganelli: _"se puoi farla su tutti direi … di farla su tutti."_
+Aurel Mrruku confirmed the nightly sync is off (_"ho tolto la s[incronizza]zione
+notturna"_) and will be re-enabled, and that he runs it manually on demand.
+
+### 🟢 Correction: this is not the cause of OI-260
+
+The open item above speculated that the bad products caused the quote-PDF
+failure. **They did not** —
+[OI-260](OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md)
+was missing field-level permissions on the client users and is resolved. That
+line in the `Open` list above is superseded.
+
+🔴 **The test-article cleanup is still open and still undated**, which is the
+original subject of this note. The filter hides bundle-only articles; it does not
+remove Aurel Mrruku's test codes from the registry.

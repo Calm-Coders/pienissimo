@@ -1,18 +1,19 @@
 ---
 id: OI-268
 type: open-item
-status: open
+status: resolved
 owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-20
-updated: 2026-10-20
-depends_on: [OI-246, OI-244, OI-267]
+updated: 2026-10-21
+depends_on: [OI-246, OI-244, OI-267, OI-274]
 blocks: [go-live]
 severity: gating
 requirement: CTX-02
 supersedes: [OI-243]
 source: Gmail 1a158b6e3e4cee81
+also_source: notes/meetings/2026-10-21 Check Dati Migrazione e OP.md
 ---
 
 # OI-268 - The client proposed a go-live calendar of 16 November
@@ -166,8 +167,78 @@ the Ri.Ba. unpaid-instalment test and scadenzario variations go to Fase 2, with
 the ticket returning to _"non disponibile"_ on a missed collection; Performance
 Plus activation, contract and renewal tests _"sono andati bene"_.
 
+## 2026-10-21 — agreed, with the weekend removed and the freeze removed
+
+🟢🔑 **This is settled.** At
+[the 10:01 client session](../meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md)
+both sides confirmed **16 November 2026** as the operational go-live, and the two
+elements ROMI had internally refused were both resolved in ROMI's favour.
+
+**The agreed calendar:**
+
+| When | What |
+| ---- | ---- |
+| ~**9 November** (Mon) | Technical release to production, plus the manual configuration steps. A release, not a go-live — Elena Spini: _"un rilascio tecnico per permetterci di arrivare poi il 16 a dire 'Ok, è tutto pronto'."_ |
+| 9–12 November | 🟢 **The client keeps invoicing on Zoho.** First historical-order import runs in parallel, from the data available. |
+| Thu **12 November** | Last invoicing day on Zoho. |
+| Fri **13 November**, 09:00 | Client hands over the second extract; second import runs. |
+| Mon **16 November**, 09:00 | 🔴 **Invoicing live on Salesforce.** Aurel Mrruku, Elena Spini, Fabrizio Paganelli and Sabatino Rinaldi all on duty, 10-minute response undertaking. |
+
+**What changed from the client's 20 October proposal:**
+
+- 🟢 **The 13–15 November weekend migration is gone.** Aurel Mrruku: _"cerchiamo
+  di non lasciare mai le immigrazioni e i deploy in weekend. Perché non abbiamo
+  mai tutti i membri dei team operativi."_ Elena Spini: _"il 14[-]15 è weekend."_
+  Nobody defended it.
+- 🟢 **The operational freeze the client refused is gone**, which is what
+  unblocked the date. The two-phase import separates the Salesforce release from
+  the order migration: _"puoi avere una settimana di ordini non migrati in sales
+  force. Dividiamo le tematiche … e così siamo tranquilli e non ci fermiamo manco
+  un giorno, manco un secondo."_ Fabrizio Paganelli: _"Se è così va bene. Se è
+  così va bene. Per me va bene."_
+- 🟢 **ROMI's refusal of the 16th itself is withdrawn.** Elena Spini had said
+  privately _"io non ci sono il 16"_; in the call she and the group committed to
+  being on it.
+
+**Where the client's date came from.** Fabrizio Paganelli: _"è una proposta questa
+che … l'abbiamo ragionata ieri anche con la direzione che era qui"_ — settled with
+their management on 19 October, the day before the mail. Elena Spini's objection
+was the notice, not the date: _"nessuno mi aveva anticipato il tema … ci eravamo
+sentiti lunedì, me lo potevate anticipare."_
+
+⚠ **ROMI's written reply exists and is not in the swept mailbox.** Elena Spini
+refers to it repeatedly — _"io ho risposto anche alla mail che mi ha mandato
+Sabatino"_, _"come abbiamo scritto anche nella mail"_ — but it was sent from
+`e.spini@romicompany.com` and this procedure sweeps `a.mrruku@romicompany.com`.
+Its exact wording, and therefore whether 16 November is accepted in writing or
+only verbally, is **not in evidence here.**
+
+⚠ **There is no contingency day.** Aurel Mrruku asked for two freeze days, Friday
+13 **and** Monday 16 — _"la cosa migliore è di prevedere due giorni di fermo, non
+uno … venerdì e lunedì"_ — and did not get them: the client needs the 16th as a
+working invoicing day. If the second import fails, it fails on a live day.
+
+🔴 **The Zoho gap is now a fact, not a proposal.** Invoicing runs on Zoho to
+12 November against a contract expiring 31 October: a **12-day** overrun, agreed
+by both parties, and **Zoho was not mentioned once in either of the two client
+sessions** —
+[the risk](../risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md).
+
+🔴 **And it is agreed on top of a gating unknown.** The ticket-balance migration
+([OI-274](OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md))
+surfaced in the same call, has no built solution, and sits on the critical path
+to the 16th.
+
 ## What closing it looks like
 
-One date, agreed by both parties in writing, with the weekend question settled
-and the Zoho gap either closed or consciously accepted — then the register moved
-in both languages in the same session.
+🟢 The date is agreed. What remains is the paperwork and the build:
+
+1. **The register still says 21 October** — today, and from tomorrow a date that
+   demonstrably did not happen. This run moved it to 16 November in the YAML and
+   both prose documents; **the Italian wording needs a human's eye** because it
+   is the text the client signs.
+2. The 27 October Go/No-Go set by
+   [OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)
+   has lapsed and nothing replaced it. ⚠ **Neither 21/10 session mentioned a
+   Go/No-Go at all.**
+3. Someone has to ask the client whether they hold Zoho past 31 October.

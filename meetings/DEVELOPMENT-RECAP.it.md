@@ -8032,3 +8032,186 @@ del 27 ottobre è decaduto senza che nessuna delle due parti lo citasse.**
 **`SAL-12` contro il disegno dello sconto concordato il 20/10.** La lista
 competitor del `DM-07` è invariata e più acuta. Entrambi riportati per una
 decisione umana.
+
+---
+
+## 67. Aggiornamento 21/10/2026 — il go-live è stato concordato al 16 novembre, la migrazione è stata disegnata end to end, e nella stessa stanza è emerso il blocco che nessuno aveva sollevato
+
+**Fonti:** due sessioni cliente, entrambe analizzate dalle trascrizioni integrali —
+[Check Dati Migrazione e OP](../notes/meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md)
+(10:01 CEST, **02:46:16**, la sessione più lunga a verbale su questo progetto) e
+[Tema Migrazione](../notes/meetings/2026-10-21%20Tema%20Migrazione.md)
+(14:31 CEST, **01:57:34**). **4 ore e 43 minuti di call col cliente in un giorno.**
+Trascrizioni conservate in
+[meetings/2026-10-21-check-dati-migrazione-e-op-transcript.it.md](../meetings/2026-10-21-check-dati-migrazione-e-op-transcript.it.md)
+e
+[meetings/2026-10-21-tema-migrazione-transcript.it.md](../meetings/2026-10-21-tema-migrazione-transcript.it.md).
+In più Gmail (il thread Kreosoft `Mandato RID`, la prima bozza di migrazione del
+cliente, il thread `Opportunity`), Slack e il repository a `origin/DevMain`
+`228be1d`. Nessuna org è stata aperta.
+
+### 🟢🔑 La data
+
+**Il go-live concordato è il 16 novembre 2026.** Entrambe le parti lo hanno
+confermato nella sessione del mattino e i due elementi che ROMI rifiutava
+internamente sono stati risolti a favore di ROMI.
+
+| Quando | Cosa |
+| ------ | ---- |
+| ~**9 novembre** | Rilascio tecnico in produzione, più i passaggi di configurazione manuale |
+| 9-12 novembre | 🟢 Il cliente continua a fatturare su Zoho; il primo import storico gira in parallelo |
+| gio **12 novembre** | Ultimo giorno di fatturazione su Zoho |
+| ven **13 novembre** 09:00 | Il cliente consegna la seconda estrazione; gira il secondo import |
+| lun **16 novembre** 09:00 | 🔴 Fatturazione attiva su Salesforce, tutti e quattro i referenti operativi |
+
+🟢 **La migrazione nel weekend è caduta** — _«cerchiamo di non lasciare mai le
+immigrazioni e i deploy in weekend»_ — e nessuno l'ha difesa.
+🟢 **Il fermo operativo che il cliente rifiutava è caduto**, ed è ciò che ha
+sbloccato la data: _«Dividiamo le tematiche … e così siamo tranquilli e non ci
+fermiamo manco un giorno, manco un secondo»_. Fabrizio Paganelli: _«Se è così va
+bene. Per me va bene»_.
+⚠ **Non c'è un giorno di riserva.** Aurel Mrruku aveva chiesto venerdì 13 **e**
+lunedì 16 come giorni di fermo e non li ha ottenuti; il 16 è insieme go-live e
+giorno di fatturazione vivo.
+⚠ **La risposta scritta di ROMI esiste e non è nella casella scansionata** —
+inviata da `e.spini@romicompany.com` — quindi l'accettazione a verbale qui è
+verbale.
+
+### 🔴 Il blocco
+
+**[OI-274](../notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md):
+circa mille biglietti pagati e non usati non hanno un percorso verso Salesforce.**
+Un import massivo non crea né l'Asset, né il suo stato, né il link di marketing,
+perché tutti e tre nascono dall'automatismo di accettazione preventivo; e il
+legame con l'edizione deriva dalla data di creazione dell'ordine, che in un
+caricamento massivo è la data del caricamento.
+
+🔑 **Non è mai stato in perimetro e lo hanno detto entrambe le parti** — Aurel
+Mrruku: _«portare i biglietti da Zo[ho] in Sales Force? Mai»_; Elena Spini: _«c'è
+tanto di documento, di email, di qualsiasi cosa in cui si è parlato di migrazione
+solo di queste cose»_; il cliente non ha contestato.
+🔴 **Sabatino Rinaldi è stato chiamato in call e ne ha attribuito la
+responsabilità a ROMI** — l'escalation cliente più netta a verbale: _«non è
+possibile arriva a sto punto dove non ci siam posti prima sto problema … mi
+aspetto da parte vostra dovete portarci una soluzione»_. ⚠ **Nessuna decisione su
+di chi sia l'omissione, e nessuno l'ha chiamata change request.**
+🔑 Ha anche proposto `Pienissimo 360`, una piattaforma del cliente che **non
+compare in nessun record di progetto**, come via d'ingresso via API.
+
+### 🟢 Il disegno di migrazione, che stamattina non esisteva
+
+La sessione del pomeriggio ha prodotto il primo disegno end to end di questo
+progetto:
+
+- **Chiave di import** — `sigla` + `serie` + `numero documento` + **`data
+  ordine`**
+  ([OI-275](../notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md)).
+  Mexal riparte con la numerazione ogni anno, quindi la tripla si ripete;
+  Kreosoft ha confermato che la data ordine è presente lato fattura dell'API, in
+  call, in 9 minuti.
+- **Invio a Mexal bloccato durante l'import**, con la chiave Mexal salvata per
+  l'aggancio successivo delle fatture — 🟢 **è il bypass che
+  [OI-267](../notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+  attendeva.**
+- **Edizioni agganciate sulla data fattura**, non sulla data ordine, solo per
+  l'import.
+- **Edizioni fittizie «Pippo»/«Import»** portano lo storico, e i loro biglietti
+  vengono cancellati in massa
+  ([OI-276](../notes/items/OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)).
+  ⚠ Due nomi candidati, nessuna convenzione fissata — e il nome è la chiave su
+  cui si fa la cancellazione.
+- **Automatismo contratti Performance Plus bypassato**
+  ([OI-280](../notes/items/OI-280%20Performance%20Plus%20contract%20generation%20must%20be%20bypassed%20for%20migrated%20orders.md)).
+- **Campi di testata e riga ridotti al minimo**, solo prezzo netto, nessuno
+  stato di pagamento — lo fornisce lo scadenzario
+  ([OI-244](../notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)).
+
+🟢 **Pienissimo Live 2026 esce del tutto da Salesforce** — l'edizione non verrà
+creata e l'evento del 23-26 novembre gira su Zoho. ⚠ Se i suoi biglietti siano
+già stati inviati è stato risposto **in due modi opposti dentro la stessa call**.
+
+🔴 **Nulla di tutto questo è sviluppato.** Aurel Mrruku stima 2-4 giorni solo in
+UAT, contro un primo import verso il 9 novembre.
+
+### 🔴 Su cosa si appoggia il disegno
+
+**[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+è invariato da undici notti, e ora la migrazione ci passa attraverso.** Lo stato
+di pagamento è stato deliberatamente tolto dall'estrazione del cliente perché
+lo fornisce lo scadenzario — _«lo stato io ce l'ho nello scadenziario»_ — quindi
+Salesforce dedurrà lo stato incassi di **~15.000-30.000 righe articolo storiche**
+attraverso il predicato che questo record segnala come errato. ⚠ **La convenzione
+`P` è stata ribadita invariata, al cliente, senza che nessuno la
+contraddicesse.** E lo stato dell'Asset — se a un cliente viene consegnato un
+biglietto — deriva dalla stessa catena.
+
+### 🟢 Cosa è stato definito e sviluppato
+
+- **[OI-261](../notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md)**
+  — i quattro valori `natura` sono a verbale nelle parole del cliente: su una
+  vendita standard solo `BO` e `NO`, `BB` e `NB` solo bundle. 🔑 Aurel Mrruku lo
+  aveva al contrario in call ed è stato corretto, il che **conferma in modo
+  indipendente che il filtro `Solo_Bundle__c` già deployato è la regola giusta.**
+  Mergiato su `DevMain` nella **PR #107**.
+- **[OI-207](../notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)**
+  — insieme completo di colonne enunciato alla lettera, bundle inclusi, e
+  **modificabilità definita**: dentro un bundle nulla è modificabile, su una
+  vendita standard quantità/sconto/netto lo sono, **il listino è bloccato**.
+  `4a5a4a0` ha rilasciato lo sconto con **370 righe di jest LWC**.
+- **[OI-260](../notes/items/OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md)
+  è risolto** — erano permessi mancanti a livello campo, non il redeploy di
+  `QuotePdfController` sospettato dal record del 19/10, né i prodotti sporchi
+  sospettati dal
+  [OI-261](../notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md).
+  ⚠ Nessuno l'ha detto al cliente, ed è per questo che l'ha risollevato.
+- 🟢 **Le mail Anticipay 404 sono comportamento atteso in UAT, non un difetto** —
+  la chiamata è reindirizzata sul database del cliente per non consumare crediti,
+  quindi qualunque partita IVA non già presente restituisce 404. Sono arrivate
+  quattro mail così in due giorni e **chi leggesse solo gli oggetti registrerebbe
+  un guasto vivo dell'integrazione.**
+
+### Nuovo perimetro
+
+[OI-277](../notes/items/OI-277%20A%20read-only%20Mandato%20RID%20field%20is%20required%20on%20the%20account.md)
+(`Mandato RID` in sola lettura, nomi dei campi Mexal forniti da Kreosoft) ·
+[OI-278](../notes/items/OI-278%20The%20account%20layout%20omits%20the%20legal%20representative%20data.md)
+(la sezione legale rappresentante — i campi esistono, non sono a schermo, e il
+cliente l'ha sospesa in attesa del proprio avvocato) ·
+[OI-279](../notes/items/OI-279%20The%20tutor%20account%20creation%20screen%20must%20be%20simplified.md)
+(nove modifiche di layout) ·
+[OI-281](../notes/items/OI-281%20Tutors%20must%20use%20Aggiorna%20Anticipay%20when%20creating%20an%20account.md)
+(un tutor può inviare un contratto con una ragione sociale inventata — 🔴 **tre
+controlli tecnici valutati, tutti e tre scartati, controllo affidato alla sola
+formazione**) ·
+[OI-282](../notes/items/OI-282%20The%20client%20is%20owed%20a%20technical%20integration%20document.md)
+(un documento tecnico, promesso senza data né perimetro).
+
+⚠ **La riga #267 mancava del tutto in entrambi i tracker** — la nota è stata
+scritta da un commit umano fuori dal run notturno il 20/10 e non è mai stata
+aggiunta una riga, mentre le righe #268-#273 la citano. Inserita in questo run.
+
+### Il registro
+
+🟢 **`go_live` spostato dal 2026-10-21 al 2026-11-16**, in
+`requirements/pienissimo-requirements.yaml` (testata e `CTX-02`) e in **entrambi**
+i documenti in prosa — definizione di priorità, riga `CTX-02`, tabella delle
+milestone e regola di change control. La tabella milestone riporta ora il
+calendario concordato completo, mantenendo visibile la riga superata del 21
+ottobre.
+
+**Perché si è mosso stanotte dopo che otto run precedenti lo avevano tenuto
+fermo:** la regola OI-124 è che il testo firmabile non segue una *proposta in
+attesa di risposta*. Quella condizione ora è soddisfatta — il cliente ha proposto
+il 16 novembre per iscritto il 20 ottobre e ROMI lo ha accettato in una sessione
+cliente registrata il 21 ottobre, con il piano di consegna costruito intorno.
+🔑 **Il testo italiano va riletto da una persona**, perché `REQUISITI.it.md` è il
+documento presentato per la firma, e la risposta scritta di ROMI non è in
+evidenza in questa casella.
+
+🔴 **`SAL-12` è invariato e non citato per la quarta sessione** — _«no
+discretionary discounts»_, `status: agreed`, contro uno sconto riga modificabile
+dal tutor già rilasciato, e **nessuna delle due parti lo ha nominato in nessuna
+delle due call del 21/10.** La lista concorrenti del `DM-07` è invariata. Entrambi
+richiedono ancora la decisione di una persona.
+🔴 **Il Go/No-Go del 27 ottobre è decaduto e nessuna delle due sessioni del 21/10
+ha nominato un Go/No-Go.**

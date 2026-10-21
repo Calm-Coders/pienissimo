@@ -7757,3 +7757,176 @@ nine places plus the dual-run assumption, in both languages, in one session.
 ⚠ One finding touches signable text and it is a conflict, not a decision:
 **`SAL-12` against the discount design agreed on 20/10.** `DM-07`'s competitor
 list is unchanged and sharper. Both reported for a human.
+
+---
+
+## 67. Update 2026-10-21 — the go-live was agreed at 16 November, the migration was designed end to end, and the blocker nobody had raised surfaced in the same room
+
+**Sources:** two client sessions, both drilled from full raw transcripts —
+[Check Dati Migrazione e OP](../notes/meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md)
+(10:01 CEST, **02:46:16**, the longest session in the project record) and
+[Tema Migrazione](../notes/meetings/2026-10-21%20Tema%20Migrazione.md)
+(14:31 CEST, **01:57:34**). **4 hours 43 minutes of client call in one day.**
+Transcripts preserved at
+[meetings/2026-10-21-check-dati-migrazione-e-op-transcript.it.md](../meetings/2026-10-21-check-dati-migrazione-e-op-transcript.it.md)
+and
+[meetings/2026-10-21-tema-migrazione-transcript.it.md](../meetings/2026-10-21-tema-migrazione-transcript.it.md).
+Plus Gmail (the Kreosoft `Mandato RID` thread, the client's first migration
+draft, the `Opportunity` thread), Slack and the repository at `origin/DevMain`
+`228be1d`. No org was opened.
+
+### 🟢🔑 The date
+
+**16 November 2026 is the agreed go-live.** Both sides confirmed it in the
+morning session and the two elements ROMI had internally refused were resolved
+in ROMI's favour.
+
+| When | What |
+| ---- | ---- |
+| ~**9 November** | Technical release to production, plus the manual configuration steps |
+| 9–12 November | 🟢 Client keeps invoicing on Zoho; first historical import runs in parallel |
+| Thu **12 November** | Last invoicing day on Zoho |
+| Fri **13 November** 09:00 | Client hands over the second extract; second import runs |
+| Mon **16 November** 09:00 | 🔴 Invoicing live on Salesforce, all four principals on duty |
+
+🟢 **The weekend migration is gone** — _"cerchiamo di non lasciare mai le
+immigrazioni e i deploy in weekend"_ — and nobody defended it.
+🟢 **The operational freeze the client refused is gone**, which is what unblocked
+the date: _"Dividiamo le tematiche … e così siamo tranquilli e non ci fermiamo
+manco un giorno, manco un secondo."_ Fabrizio Paganelli: _"Se è così va bene.
+Per me va bene."_
+⚠ **There is no contingency day.** Aurel Mrruku asked for Friday 13 **and**
+Monday 16 as freeze days and did not get them; the 16th is both go-live and a
+live invoicing day.
+⚠ **ROMI's written reply exists and is not in the swept mailbox** — sent from
+`e.spini@romicompany.com` — so the acceptance in evidence here is verbal.
+
+### 🔴 The blocker
+
+**[OI-274](../notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md):
+about a thousand paid, unused tickets have no path into Salesforce.** A bulk
+import creates no Asset, no asset state and no marketing link, because all three
+come from the quote-acceptance automation; and the edizione binding derives from
+the order creation date, which in a bulk load is the load date.
+
+🔑 **It was never in scope and both sides said so** — Aurel Mrruku: _"portare i
+biglietti da Zo[ho] in Sales Force? Mai"_; Elena Spini: _"c'è tanto di documento,
+di email, di qualsiasi cosa in cui si è parlato di migrazione solo di queste
+cose"_; the client did not contest it.
+🔴 **Sabatino Rinaldi was called in mid-call and put it on ROMI** — the sharpest
+client escalation on record: _"non è possibile arriva a sto punto dove non ci
+siam posti prima sto problema … mi aspetto da parte vostra dovete portarci una
+soluzione."_ ⚠ **No ruling on whose omission it was, and nobody called it a change
+request.**
+🔑 He also offered `Pienissimo 360`, a client platform that **appears in no
+project record**, as an API route into Salesforce.
+
+### 🟢 The migration design, which did not exist this morning
+
+The afternoon session produced the first end-to-end design this project has had:
+
+- **Import key** — `sigla` + `serie` + `numero documento` + **`data ordine`**
+  ([OI-275](../notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md)).
+  Mexal restarts numbering each year, so the triple repeats; Kreosoft confirmed
+  the order date is on the invoice side of the API, mid-call, in 9 minutes.
+- **Mexal transmission blocked for the import**, with the Mexal key stored for
+  later invoice matching — 🟢 **the bypass
+  [OI-267](../notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+  was waiting for.**
+- **Editions matched on invoice date**, not order date, for the import only.
+- **Dummy "Pippo"/"Import" editions** carry the history, and their tickets are
+  mass-deleted afterwards
+  ([OI-276](../notes/items/OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)).
+  ⚠ Two candidate names, no convention fixed — and the name is what the deletion
+  keys on.
+- **Performance Plus contract automation bypassed**
+  ([OI-280](../notes/items/OI-280%20Performance%20Plus%20contract%20generation%20must%20be%20bypassed%20for%20migrated%20orders.md)).
+- **Order and line fields cut down to the minimum**, net price only, no payment
+  status — the scadenzario supplies it
+  ([OI-244](../notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)).
+
+🟢 **Pienissimo Live 2026 is taken out of Salesforce entirely** — the edizione
+will not be created and the 23–26 November event runs on Zoho. ⚠ Whether its
+tickets have already been sent was answered **both ways inside one call**.
+
+🔴 **Nothing of this is built.** Aurel Mrruku estimates 2–4 days in UAT alone,
+against a first import on ~9 November.
+
+### 🔴 What the design rests on
+
+**[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+is unchanged an eleventh night, and the migration now runs through it.** The
+payment status was deliberately removed from the client's extract because the
+scadenzario supplies it — _"lo stato io ce l'ho nello scadenziario"_ — so
+Salesforce will derive the collection state of **~15,000–30,000 historical
+article lines** through the predicate this record reports as wrong. ⚠ **The `P`
+convention was restated unchanged, to the client, with nobody contradicting it.**
+And the Asset state — whether a customer is handed a ticket — derives from the
+same chain.
+
+### 🟢 What was settled and built
+
+- **[OI-261](../notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md)**
+  — the four `natura` values are on the record in the client's own words: only
+  `BO` and `NO` on a standard sale, `BB` and `NB` bundle-only. 🔑 Aurel Mrruku had
+  it backwards in the room and was corrected, which **independently confirms the
+  already-deployed `Solo_Bundle__c` filter is the right rule.** Merged to
+  `DevMain` in **PR #107**.
+- **[OI-207](../notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)**
+  — the full column set stated verbatim, bundles included, and **editability
+  settled**: nothing editable inside a bundle, quantity/discount/net editable on
+  a standard sale, **list price locked**. `4a5a4a0` shipped the discount with
+  **370 lines of LWC jest**.
+- **[OI-260](../notes/items/OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md)
+  is resolved** — it was missing field-level permissions, not the `QuotePdfController`
+  redeploy the 19/10 record suspected, and not the bad products
+  [OI-261](../notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md)
+  suspected. ⚠ Nobody told the client, which is why he re-raised it.
+- 🟢 **The Anticipay 404 mails are expected UAT behaviour, not a defect** — the
+  call is redirected at the client's own database to avoid burning credits, so any
+  VAT number not already held returns 404. Four such mails have now arrived over
+  two days and **anyone reading only the subject lines would log a live
+  integration outage.**
+
+### New scope
+
+[OI-277](../notes/items/OI-277%20A%20read-only%20Mandato%20RID%20field%20is%20required%20on%20the%20account.md)
+(read-only `Mandato RID`, Mexal field names supplied by Kreosoft) ·
+[OI-278](../notes/items/OI-278%20The%20account%20layout%20omits%20the%20legal%20representative%20data.md)
+(the legal-representative section — fields exist, are not on the page, and the
+client suspended it pending their lawyer) ·
+[OI-279](../notes/items/OI-279%20The%20tutor%20account%20creation%20screen%20must%20be%20simplified.md)
+(nine layout changes) ·
+[OI-281](../notes/items/OI-281%20Tutors%20must%20use%20Aggiorna%20Anticipay%20when%20creating%20an%20account.md)
+(a tutor can send a contract carrying a made-up company name — 🔴 **three
+technical controls considered, all three dropped, control delivered by training
+alone**) ·
+[OI-282](../notes/items/OI-282%20The%20client%20is%20owed%20a%20technical%20integration%20document.md)
+(a technical document, undertaken with no date or scope).
+
+⚠ **Row #267 was missing from both trackers entirely** — the note was written by
+a human commit outside the nightly run on 20/10 and no row was ever added, while
+rows #268–#273 cite it. Backfilled this run.
+
+### The register
+
+🟢 **`go_live` moved from 2026-10-21 to 2026-11-16**, in
+`requirements/pienissimo-requirements.yaml` (header and `CTX-02`) and in **both**
+prose documents — the priority definition, the `CTX-02` row, the milestone table
+and the change-control rule. The milestone table now carries the full agreed
+calendar with the superseded 21 October line kept visible.
+
+**Why it moved tonight when eight previous runs held it:** the OI-124 rule is
+that signable text does not follow a *proposal awaiting a reply*. That condition
+is now met — the client proposed 16 November in writing on 20 October and ROMI
+accepted it in a recorded client session on 21 October, with the delivery plan
+built around it. 🔑 **The Italian wording needs a human's eye**, because
+`REQUISITI.it.md` is the text presented for signature, and ROMI's own written
+reply is not in evidence in this mailbox.
+
+🔴 **`SAL-12` is unchanged and uncited for a fourth session** — _"no discretionary
+discounts"_, `status: agreed`, against a shipped tutor-editable line discount, and
+**neither party mentioned it in either 21/10 client call.** `DM-07`'s competitor
+list is unchanged. Both still need a human's ruling.
+🔴 **The 27 October Go/No-Go has lapsed and neither 21/10 session mentioned a
+Go/No-Go at all.**

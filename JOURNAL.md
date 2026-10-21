@@ -10,6 +10,82 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-21 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
+  2026-10-20T22:00Z. **Drilled two client sessions totalling 4h43**, both from
+  full raw transcripts, preserved at
+  `meetings/2026-10-21-check-dati-migrazione-e-op-transcript.it.md` (02:46:16,
+  the longest session in the project record) and
+  `meetings/2026-10-21-tema-migrazione-transcript.it.md` (01:57:34). Wrote
+  [Check Dati Migrazione e OP](notes/meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md),
+  [Tema Migrazione](notes/meetings/2026-10-21%20Tema%20Migrazione.md) and
+  OI-274–OI-282; updated OI-207, OI-212, OI-244, OI-246, OI-260, OI-261, OI-265,
+  OI-267, OI-268 and the Zoho-expiry risk. **Moved the register's `go_live` to
+  2026-11-16** in the YAML and both prose documents. MAP, INDEX, both trackers
+  (10 new rows incl. a backfilled #267, + 8 refreshed each), both recaps §67,
+  trace, this entry.
+- **State:** 🟢🔑 **The go-live is agreed: 16 November, confirmed by both sides in
+  the room** ([OI-268](notes/items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)),
+  and **both** of ROMI's internal objections fell — the weekend migration is gone
+  undefended, and the operational freeze the client had refused is gone, replaced
+  by a **two-phase import**: technical release ~9 Nov · Zoho invoicing 9–12 Nov
+  with the first import in parallel · second extract Fri 13 Nov 09:00 · Salesforce
+  live Mon 16 Nov 09:00. ⚠ **No contingency day** — Aurel Mrruku asked for Friday
+  *and* Monday as freeze days and did not get them.
+  🔴🔑 **New gating blocker:
+  [OI-274](notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md)
+  — ~1,000 paid, unused tickets have no path into Salesforce.** A bulk import
+  creates no Asset, no asset state and no marketing link. **It was never in scope
+  and both sides said so**; Sabatino Rinaldi was called in mid-call and put it on
+  ROMI — the sharpest client escalation on record — and ⚠ **nobody called it a
+  change request.**
+  🟢🔑 **The afternoon produced the first end-to-end migration design this project
+  has had**: the import key (OI-275, confirmed against the Mexal API mid-call in
+  9 minutes), the Mexal-transmission bypass (**OI-267's**, at last), editions
+  matched on invoice date, dummy "Pippo"/"Import" editions (OI-276), the field
+  cut-down to net price only (OI-244), the Performance Plus contract bypass
+  (OI-280), and 🟢 **Pienissimo Live 2026 kept off Salesforce entirely.**
+  🔴 **None of it is built** — 2–4 days in UAT alone against a 9 November import.
+  🔴 **And it all derives historical collection state through
+  [OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md),
+  unchanged an eleventh night**: ~15,000–30,000 article lines, and ⚠ the `P`
+  convention was restated unchanged, to the client, uncontradicted.
+  🟢 Settled and built: OI-261's `natura` rule (🔑 Aurel Mrruku had it backwards in
+  the room and was corrected, confirming the deployed filter) and OI-207's
+  editability + the discount (`4a5a4a0`, 370 lines of jest), both merged in
+  **PR #107**, `DevMain` `25629af` → `228be1d`. 🟢 **OI-260 resolved** — field
+  permissions, not the redeploy and not the bad products. 🟢 **The Anticipay 404
+  mails are expected UAT behaviour**, four over two days.
+- **Next:** **ask Pienissimo whether they hold Zoho past 31 October** — the agreed
+  plan invoices on it to 12 Nov, tickets Pienissimo Live from it three weeks past
+  expiry, and pulls the migration extract from it; ⚠ **Zoho was not named once in
+  4h43 of client call, fifth run the question is unasked.** Then: answer the
+  client's 17:01 migration draft (he asked for 15–30 minutes on 22/10, unanswered)
+  · build OI-274 · rule on `SAL-12` before the shipped discount goes further ·
+  decide the ~80 Performance Plus contracts · fix OI-212.
+- **Watch:** 🔑 **I moved the register's go-live date**, which eight previous runs
+  held. The OI-124 rule gates on *a proposal awaiting a reply*, and that condition
+  is now met from both sides — client proposal in writing 20/10, ROMI acceptance
+  in a recorded session 21/10. **The Italian wording in `REQUISITI.it.md` still
+  needs a human's eye**, and ⚠ **ROMI's own written reply is not in this mailbox**
+  (sent from `e.spini@romicompany.com`), so the acceptance in evidence is verbal
+  from a recorded call. Revert it if a human disagrees; do not re-litigate it
+  silently. ⚠ **Row #267 was missing from both trackers** — OI-267 was written by
+  a human commit outside this procedure on 20/10 and no row was ever added, while
+  #268–#273 cite it; backfilled. **Second consequence of the same cause as the
+  20/10 id-sequence finding: a human writing notes does not regenerate the views.**
+  ⚠ Three **migration-only code conditions** are being added days before a live
+  go-live and **nothing records who removes them.** ⚠ `Pienissimo 360` is a client
+  platform offered as an API route in, **in no project record**, and ROMI had
+  never heard of it. ⚠ Whether the Pienissimo Live tickets have been sent is
+  answered **both ways inside one call**; recorded as contradictory, not resolved.
+  ⚠ `Referenti Salesforce.xlsx` (10 MB, real customer contacts) recorded and
+  deliberately not opened. ⚠ No Apex test written or proposed; today's commits add
+  Apex and 370 lines of **LWC** jest, so the untested-Apex surface grew.
+
+---
+
 ## 2026-10-20 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark

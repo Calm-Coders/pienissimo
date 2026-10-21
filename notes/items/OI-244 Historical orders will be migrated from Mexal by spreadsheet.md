@@ -6,8 +6,8 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-20
-depends_on: [OI-245, OI-165, OI-267]
+updated: 2026-10-21
+depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
 source: notes/meetings/2026-10-15 Migrazione e Go-Live.md
@@ -270,3 +270,101 @@ writing on 19/10.
 - ⚠ **Tomorrow's meeting is wider than this row.** Elena Spini, 17:01 CEST:
   _"domani 10-11 ci vuole parlare del tema migrazione e ci vuole parlare di
   diversi open point che ha e problemi."_
+
+
+## 2026-10-21 — the field spec was worked through line by line, and the client started filling it
+
+🟢 **Two client sessions totalling 4h43 turned the workbook into an agreed
+spec.** [The morning rehearsal](../meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md)
+established the plan and surfaced the blockers;
+[the afternoon design session](../meetings/2026-10-21%20Tema%20Migrazione.md) cut
+the columns down field by field with the workbook open on screen.
+
+### The agreed order key
+
+`sigla` + `serie` + `numero documento` + **`data ordine`**, the date in Mexal's
+compact eight-digit form. The fourth element is new and necessary —
+[OI-275](OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md).
+Confirmed against the Mexal API mid-call by Mirko Merendi at Kreosoft. The
+customer code is **not** part of the key.
+
+### Order header
+
+**Dropped:** `codice cliente` (already on the order), `codice destinazione`,
+`tipo ordine`, `totale imponibile` (recomputed from the lines).
+**Kept:** `codice agente` — _"mi serve per forza"_ — the four payment codes
+Salesforce already knows, and the cancellation flag carrying `N`
+(_"La stessa N vuol dire non annullato"_); cancelled orders are excluded,
+_"A cosa ti servono gli ordini annullati?"_
+
+### Order lines
+
+**Dropped:** `tipo riga`, `descrizione articolo`, `unità di misura`, `prezzo di
+listino` (read from the product), `totale riga`, `codice IVA`.
+**Kept:** `codice articolo` — the whole product link runs through it — the Mexal
+line id, and the line **due date**, from which Aurel Mrruku generates the
+tranches.
+🔑 **Net price only, no list price and no discount.** _"se tu mi passi il prezzo
+net[t]o … verrà calcolato lo sconto in modo automatico. Passami sul prezzo netto,
+siamo a posto."_
+🔑 **The payment status need not be supplied at all**: _"non mi deve manche
+passare lo stato, perché lo stato io ce l'ho nello scadenziario e lo prenderai in
+automatico."_
+
+### How the import will run
+
+1. Editions and product mappings created **first**, including the dummy ones —
+   [OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md).
+2. Orders inserted in bulk with **automatic Mexal transmission blocked** — the
+   bypass [OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+   was waiting for — and the Mexal key stored for later invoice matching.
+3. Edizione binding reversed onto the **invoice date** for the import only:
+   _"anziché data ordine considera data fattura."_
+4. Tranches generated from the line due dates; Assets generated per line.
+5. Performance Plus contract automation bypassed —
+   [OI-280](OI-280%20Performance%20Plus%20contract%20generation%20must%20be%20bypassed%20for%20migrated%20orders.md).
+6. A full scadenzario run from the start of 2025, not the usual rolling window,
+   to settle invoices and collections. **Estimated 3–4 hours.**
+7. Tickets against the dummy editions mass-deleted.
+
+🟢 **Everything comes in as a standard order**, bundles included — _"I bundle
+saranno standard"_ — losing the type distinction on history by explicit client
+acceptance.
+
+### Volumes, read off the client's warehouse live
+
+| Period | Article lines |
+| ------ | ------------- |
+| From 1 Jan 2024 | ~30,000 |
+| After 2024 | ~9,000 |
+| **2024 alone** | **~21,000**, reducible to _"una quindicina di migliaia"_ once the software-platform lines are stripped |
+
+🟡 **How far back is still open.** Fabrizio Paganelli moved from 2025 to
+considering 2024 during the call, for a three-year commercial history —
+_"sarebbe anche corretto che loro vedano 24 25 26 … almeno hanno gli ultimi 3
+anni di vendita"_ — caveated by 2024 data quality: _"nel 24 avevamo un sacco di
+porcheria, avevamo la vendita dei prodotti della software."_ He will decide after
+inspecting it. Aurel Mrruku's answer was to send everything: _"passaci tutto."_
+
+🟢 **The client has started.** Mail at **17:01:16Z**, subject _Importazione dati
+Storici_, to Aurel Mrruku and Elena Spini: _"io ho fatto una prima bozza. Avete
+15-30 minuti domani? Avrei piacere di capire se siamo sulla strada giusta."_
+⚠ **No attachment on that mail** and ⚠ **nobody has answered it** as of this
+sweep. A 22/10 slot is requested and unconfirmed.
+
+### 🔑 A premise that was wrong
+
+Aurel Mrruku had been working on the belief that Mexal discards the order once
+it is invoiced — _"Mirko da quello che m'ha detto che quando viene creata una
+fattura quell'ordine non esiste più"_ — and Fabrizio Paganelli disproved it on
+screen from the Zoho Analytics warehouse, where each invoice line carries
+`sigla ordine`, `serie ordine`, `numero ordine`, `data ordine` and the shared
+customer code. **The whole key design depends on this correction.**
+
+### Timing
+
+Aurel Mrruku: _"spero che due tre massimo 4 giorni riesco a fare tutta sta cosa
+in ambiente di UAT"_ — so UAT only, and the production run is separate. Against
+a first import on ~9 November that leaves roughly two weeks, with
+[OI-274](OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md)
+unbuilt inside it.

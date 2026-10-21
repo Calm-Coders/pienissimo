@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-20
+updated: 2026-10-21
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -447,3 +447,44 @@ glossed as uncertain, and not treated as a finding.**
   posto"_ of 19/10 is unanswered, and tomorrow's 10:00 meeting is the first
   opportunity — Elena Spini has flagged it will cover _"diversi open point che ha
   e problemi"_.
+
+
+## 2026-10-21 — the full column set was stated, editability settled, and the discount shipped
+
+🟢 **The required columns, verbatim from the client**, at `01:11:16` of
+[the 10:01 session](../meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md):
+
+> _"Codice articolo, unità di misura, quantità, prezzo di listino, totale di
+> listino, sconto e totale netto. Quelle lì sono cose che ci devono essere
+> sempre."_
+
+**On every surface** — the Salesforce screen, the quote, the generated PDF — and
+🔑 **inside bundles too**, which had been ambiguous: _"codice articolo, prezzo di
+listino e lo sconto e il netto c'è sempre anche nei bundle."_
+
+🟢🔑 **Editability is now settled, which it was not after the 20/10 internal
+call:**
+
+| Context | Editable |
+| ------- | -------- |
+| Lines inside a bundle | **Nothing.** They appear automatically and are locked — only Fabrizio Paganelli changes them, when he builds the bundle: _"Lo posso cambiare solo io quando creo il bundle."_ |
+| Standard sale line | Quantity, discount %, net amount |
+| Standard sale list price | 🔴 **Locked.** _"il listino deve essere non modificabile."_ Aurel Mrruku: _"Per forza."_ |
+
+🟢 **The build landed the same day.** `4a5a4a0` (Anita Aga, 16:26:36, _"Added the
+sconto on the Gestici Prodotti"_) adds the discount to `quoteManageProducts` and
+`quoteLineItemsWithBundles` with **370 lines of LWC jest** across two new test
+files, and merged to `DevMain` in **PR #107** (`228be1d`). Aurel Mrruku had
+promised it in the call: _"abbiamo già iniziato molto prob[abil]mente entro oggi
+lo finiamo."_
+
+⚠ **Still not visibly addressed in that commit:** `unità di misura`, `prezzo di
+listino`, `totale di listino` and `totale netto` as displayed columns, and the PDF
+template. The commit's name and contents are about the discount. **Not verified
+against the org** — this is repository arithmetic only.
+
+🔴 **`SAL-12` is unchanged and uncited for a fourth session.** It reads _"Tutors
+on fixed price list, no discretionary discounts"_, `status: agreed`, while the
+build now ships a tutor-editable line discount. **Neither party mentioned it in
+either of the two 21/10 client calls.** A human must rule whether the register is
+amended or the build is wrong; this run did not touch `SAL-12`.

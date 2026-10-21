@@ -1,12 +1,12 @@
 ---
 id: OI-260
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-21
 blocks: [go-live]
 source: notes/meetings/2026-10-19 Test UAT Commerciali.md
 ---
@@ -75,3 +75,29 @@ no reply: _"gliel'ho chiesto e vediamo, però non mi sta rispondendo."_
 The exception is read, the cause named, the fix deployed, and one clean
 end-to-end quote-to-PDF run recorded in UAT — before Fabrizio Paganelli's team
 reaches the quote step in their own tests.
+
+
+## 2026-10-21 — resolved: it was user permissions
+
+🟢 **Cause found and fixed, confirmed by the client that it works.** At
+[the 10:01 session](../meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md)
+(`01:25:17`) Aurel Mrruku explained it:
+
+> _"erano dei permessi, ma l'abbiamo aggiustato in teoria … stavamo facendo i
+> permessi per le vostre utenze, mancavano dei campi sui permessi, per quello
+> andava in errori."_
+
+Fabrizio Paganelli confirmed it started working the same evening as the 19/10
+failure: _"infatti ho visto che dopo la sera mi funzionava, quindi immaginavo che
+ci stavate lavorando sopra."_
+
+So the suspicion recorded on 19/10 — that `#102`'s 12:35 redeploy of
+`QuotePdfController` had broken it — is **wrong**. The redeploy was concurrent
+with field-level permission work on the client users, and the missing field
+permissions were the cause. ⚠ **The exception text was never read**; the diagnosis
+is Aurel Mrruku's account, not a log.
+
+⚠ **Nobody told the client it was fixed**, which is why he re-raised it. Elena
+Spini: _"Mi sono dimenticata di avvisarti alla fine, Fabrizio, ti volevo scrivere
+che riprova e poi alla fine mi sono persa."_ The same gap as the 19/10 finding
+that the error mails all reach Aurel Mrruku and the client cannot see them.

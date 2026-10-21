@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-19
+updated: 2026-10-21
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -336,3 +336,45 @@ client's own sales history, at volume, in the week its key users are testing.
 🔴 **Nothing was found on it in any source tonight** — not the 01:45 session, not
 the Gmail thread, not the dev group, not a commit. The confirmation date is eight
 days past. **The correction is a code change and belongs to Aurel Mrruku.**
+
+
+## 2026-10-21 — load-bearing for the migration, restated unchanged, still not fixed
+
+🔴 **Eleventh night without a code change.** `MexalScadenzarioSearchService.cls`
+is still at `f292b72` (08/10) on `origin/DevMain` `228be1d`; none of today's four
+commits touches it.
+
+🔑 **And the migration design now runs the whole historical collection state
+through it.** At [the afternoon session](../meetings/2026-10-21%20Tema%20Migrazione.md)
+Aurel Mrruku took the line payment status *out* of the client's extract
+specifically because this file supplies it:
+
+> _"Non mi deve manche passare lo stato, perché lo stato io ce l'ho nello
+> scadenziario e lo prenderai in automatico … quello che devo fare io adesso è
+> prendere i scadenziari dal 2025, così aggiorno tutti ordini, tutte le fatture."_
+
+So instead of the client asserting what is paid, Salesforce will **derive** it for
+three years of history — estimated 3–4 hours of processing — through the predicate
+this note reports as wrong.
+
+⚠ **The `P` convention was restated in the same call, unchanged:**
+
+> Fabrizio Paganelli: _"[P]E era pagato e vuol dire che c'era la riba o r[i]d[,]
+> vuol dire che doveva …"_
+> Aurel Mrruku: _"ma anche quello l'ho tra[t]tato come pagato, se ti ricordi.
+> Quindi se lo stato è nullo vuol dire che non è stato pagato."_
+
+**That is the defect, described by its author as the design, to the client, with
+no contradiction from anyone in the room.** A Ri.Ba. instalment carrying `P` is
+presented as collected; this note records that `P` is set when the instalment is
+*presented to the bank*, not when it clears.
+
+🔴 **The consequence has grown.** Previously this mis-stated the collection state
+of new orders. From the 9 November import it mis-states it across **~15,000–30,000
+historical article lines**, and the Asset state — and therefore whether a customer
+is handed a ticket — is derived from the same chain:
+_"Se i biglietti sono stati assegnati, quindi sono stati pagati"_
+([OI-274](OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md)).
+
+**The fix remains a code change and belongs to Aurel Mrruku.** This run did not
+attempt it.

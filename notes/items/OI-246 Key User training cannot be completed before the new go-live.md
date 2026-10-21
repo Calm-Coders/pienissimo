@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-15
-updated: 2026-10-20
+updated: 2026-10-21
 depends_on: [OI-240, OI-186]
 blocks: [go-live]
 severity: gating
@@ -254,3 +254,28 @@ this row stays gating.
 ⚠ **Train-the-trainer is still unassigned in any record.** The 19/10 finding was
 that Fabrizio Paganelli took it himself for 20/10 without it being allocated;
 nothing in the 20/10 sources says whether that session happened.
+
+
+## 2026-10-21 — the training window is now the client's own calendar
+
+🟡 **The agreed go-live gives training a definite shape for the first time.** With
+16 November fixed ([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)),
+the client's own calendar reserves the period to **13 November** for internal
+training, and the technical release lands ~9 November. So the sequence is now:
+release 9 November → client trains to 12 November → live 16 November.
+
+⚠ **Nothing was said in either 21/10 client session about scheduling it**, who
+delivers it, or how many hours. The 23 October marketing support session asked
+for on 20/10 was **not mentioned either** and remains unconfirmed with no hour
+given.
+
+🔑 **One training obligation was created today and it has no slot.**
+[OI-281](OI-281%20Tutors%20must%20use%20Aggiorna%20Anticipay%20when%20creating%20an%20account.md)
+resolves a real data-integrity exposure *entirely* by instructing tutors to press
+`Aggiorna Anticipay` when creating an account — three technical controls were
+considered and all three dropped. Fabrizio Paganelli will deliver it himself:
+_"quando faremo la formazione gli diciamo noi."_ **So a contract-correctness
+control now depends on training that is not scheduled.**
+
+⚠ The client also undertook on 20/10 to send a written summary of their key-user
+review. **Not received.**
