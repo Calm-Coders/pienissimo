@@ -353,6 +353,7 @@ public without sharing class QuoteManageProductsController {
           Product2.Spread_Total__c,
           Product2.Categoria_Articolo__c,
           Product2.Numero_Tranche__c,
+          Product2.Solo_Bundle__c,
           Product2.RecordType.DeveloperName
         FROM PricebookEntry
         WHERE
@@ -371,6 +372,11 @@ public without sharing class QuoteManageProductsController {
     Integer bundleCount = 0;
     Integer itemCount = 0;
     for (PricebookEntry entry : entriesById.values()) {
+      if (entry.Product2.Solo_Bundle__c) {
+        throw new AuraHandledException(
+          'I prodotti utilizzabili solo nei bundle non possono essere aggiunti direttamente al preventivo.'
+        );
+      }
       if (selectedPricebook2Id == null) {
         selectedPricebook2Id = entry.Pricebook2Id;
       }
@@ -750,6 +756,7 @@ public without sharing class QuoteManageProductsController {
     List<String> conditions = new List<String>{
       'IsActive = TRUE',
       'Product2.IsActive = TRUE',
+      'Product2.Solo_Bundle__c = FALSE',
       'Product2.RecordType.DeveloperName IN :allowedTypes',
       '(Product2.Name LIKE :normalizedSearchTerm OR Product2.ProductCode LIKE :normalizedSearchTerm)'
     };
