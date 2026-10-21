@@ -31,6 +31,18 @@
               onchange={handleKeyFieldChange}
             ></lightning-input-field>
           </template>
+          <template if:true={showMotivazione}>
+            <lightning-textarea
+              class="key-field"
+              data-field-name="Motivazione__c"
+              label="Dettaglio non interesse"
+              maxlength="255"
+              message-when-value-missing="Spiega perche il Lead non e interessato."
+              required
+              value={motivazione}
+              onchange={handleKeyFieldChange}
+            ></lightning-textarea>
+          </template>
         </div>
       </lightning-record-edit-form>
     </template>
@@ -39,7 +51,7 @@
       <p class={statusClass}>{statusText}</p>
       <lightning-button
         disabled={markDisabled}
-        label="Mark as Current Stage"
+        label="Cambia stato"
         onclick={handleMarkCurrent}
         variant="brand"
       ></lightning-button>
@@ -104,6 +116,18 @@
             value={exitReasonDetail}
             onchange={handleExitReasonDetailChange}
           ></lightning-combobox>
+          <template if:true={requiresMotivazione}>
+            <lightning-textarea
+              class="exit-reason-field slds-m-top_medium"
+              data-field-name="Motivazione__c"
+              label="Dettaglio non interesse"
+              maxlength="255"
+              message-when-value-missing="Spiega perche il Lead non e interessato."
+              required
+              value={motivazione}
+              onchange={handleKeyFieldChange}
+            ></lightning-textarea>
+          </template>
         </div>
         <footer class="slds-modal__footer">
           <lightning-button

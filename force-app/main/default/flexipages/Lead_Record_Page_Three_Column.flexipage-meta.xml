@@ -122,16 +122,6 @@
                 <identifier>RecordPhoneField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MobilePhone</fieldItem>
-                <identifier>RecordMobilePhoneField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-51506e76-f7ca-486c-9ec7-bac0793a6797</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -390,6 +380,22 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Data_Ricontatto__c</fieldItem>
                 <identifier>RecordData_Ricontatto_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Motivazione__c</fieldItem>
+                <identifier>RecordMotivazione_cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.CreatedBy.Username}</leftValue>

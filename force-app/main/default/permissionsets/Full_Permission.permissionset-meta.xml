@@ -1097,6 +1097,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Lead.Motivazione__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Lead.Motivazione_Uscita__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1833,6 +1838,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Status</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Quote.Sconto_Totale__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

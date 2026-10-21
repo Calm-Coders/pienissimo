@@ -1,4 +1,6 @@
-import { api, LightningElement } from "lwc";
+import { api, LightningElement, wire } from "lwc";
+import { MessageContext, publish } from "lightning/messageService";
+import QUOTE_PRODUCTS_CHANGED from "@salesforce/messageChannel/QuoteProductsChanged__c";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { NavigationMixin } from "lightning/navigation";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
@@ -17,6 +19,8 @@ export default class QuoteManageProducts extends NavigationMixin(
   LightningElement
 ) {
   _recordId;
+  @wire(MessageContext)
+  messageContext;
   searchRequestId = 0;
   saveInProgress = false;
 
@@ -592,6 +596,9 @@ export default class QuoteManageProducts extends NavigationMixin(
         })
       );
       await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
+      publish(this.messageContext, QUOTE_PRODUCTS_CHANGED, {
+        quoteId: this.recordId
+      });
       this.dispatchEvent(new RefreshEvent());
       this.dispatchEvent(new CloseActionScreenEvent());
     } catch (error) {
