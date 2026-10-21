@@ -1,0 +1,203 @@
+<template>
+  <template lwc:if={formOpen}>
+    <section
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="account-modal-title"
+      tabindex="-1"
+      class="slds-modal slds-fade-in-open slds-modal_medium account-modal"
+      onkeydown={handleModalKeydown}
+    >
+      <div class="slds-modal__container">
+        <span
+          tabindex="0"
+          class="slds-assistive-text"
+          onfocus={focusLastControl}
+        ></span>
+        <header class="slds-modal__header">
+          <lightning-button-icon
+            class="slds-modal__close"
+            icon-name="utility:close"
+            variant="bare"
+            alternative-text="Chiudi"
+            title="Chiudi"
+            onclick={handleCancel}
+            disabled={saving}
+          ></lightning-button-icon>
+          <h2 id="account-modal-title" class="slds-text-heading_medium">
+            {modalTitle}
+          </h2>
+        </header>
+        <template lwc:if={showForm}>
+          <lightning-record-edit-form
+            object-api-name="Account"
+            record-type-id={effectiveRecordTypeId}
+            density="compact"
+            onload={handleLoad}
+            onsubmit={handleSubmit}
+            onsuccess={handleSuccess}
+            onerror={handleError}
+          >
+            <div class="slds-modal__content account-form-content">
+              <p class="required-note">
+                <abbr class="slds-required" title="obbligatorio">*</abbr> =
+                Informazioni obbligatorie
+              </p>
+              <lightning-messages></lightning-messages>
+              <template for:each={sections} for:item="section">
+                <section key={section.key} class="form-section">
+                  <h3 class="section-heading">{section.label}</h3>
+                  <div class="field-grid">
+                    <template for:each={section.columns} for:item="column">
+                      <div key={column.key} class="field-column">
+                        <template for:each={column.fields} for:item="field">
+                          <div key={field.name} class="field-cell">
+                            <template lwc:if={field.isOwner}>
+                              <lightning-record-picker
+                                label="Account Owner"
+                                object-api-name="User"
+                                value={selectedOwnerId}
+                                filter={ownerFilter}
+                                disabled
+                              ></lightning-record-picker>
+                            </template>
+                            <template lwc:elseif={field.isAgent}>
+                              <lightning-input-field
+                                field-name="Agente__c"
+                                value={selectedAgentId}
+                                onchange={handleAgentChange}
+                                required={field.required}
+                              ></lightning-input-field>
+                            </template>
+                            <template lwc:elseif={field.isAgentCode}>
+                              <lightning-input
+                                label="Codice Agente Esterno"
+                                variant="label-inline"
+                                value={agentCode}
+                                read-only
+                              ></lightning-input>
+                            </template>
+                            <template lwc:elseif={field.isCategory}>
+                              <lightning-input
+                                label="Categoria Provvigioni Cliente"
+                                variant="label-inline"
+                                value={category}
+                                read-only
+                              ></lightning-input>
+                            </template>
+                            <template lwc:else>
+                              <lightning-input-field
+                                field-name={field.name}
+                                required={field.required}
+                              ></lightning-input-field>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
+                  </div>
+                  <template lwc:if={section.isAgentSection}>
+                    <template lwc:if={agentLoading}
+                      ><p class="agent-status" role="status">
+                        Caricamento dati agente...
+                      </p></template
+                    >
+                    <template lwc:if={agentError}
+                      ><p
+                        class="agent-status slds-text-color_error"
+                        role="alert"
+                      >
+                        {agentError}
+                      </p></template
+                    >
+                  </template>
+                </section>
+              </template>
+            </div>
+            <footer class="slds-modal__footer">
+              <lightning-button
+                label="Annulla"
+                onclick={handleCancel}
+                disabled={saving}
+              ></lightning-button>
+              <lightning-button
+                class="slds-m-left_small"
+                label="Salva"
+                variant="brand"
+                type="submit"
+                disabled={saveDisabled}
+              ></lightning-button>
+            </footer>
+          </lightning-record-edit-form>
+        </template>
+        <template lwc:else>
+          <div
+            class="slds-modal__content slds-p-around_medium account-form-status"
+          >
+            <template lwc:if={errorMessage}
+              ><p role="alert" class="slds-text-color_error">
+                {errorMessage}
+              </p></template
+            >
+            <template lwc:if={needsRecordType}>
+              <lightning-combobox
+                label="Tipo di Account"
+                options={recordTypeOptions}
+                onchange={handleRecordTypeChange}
+              ></lightning-combobox>
+            </template>
+            <template lwc:if={formLoading}
+              ><lightning-spinner
+                alternative-text="Caricamento modulo Account"
+                size="small"
+              ></lightning-spinner
+            ></template>
+          </div>
+          <footer class="slds-modal__footer">
+            <lightning-button
+              label="Annulla"
+              onclick={handleCancel}
+            ></lightning-button>
+          </footer>
+        </template>
+        <span
+          tabindex="0"
+          class="slds-assistive-text"
+          onfocus={focusFirstControl}
+        ></span>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+  <template lwc:elseif={showButton}>
+    <lightning-card title="Nuovo Account" icon-name="standard:account">
+      <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+        <template lwc:if={hasError}>
+          <p role="alert" class="slds-m-bottom_small">
+            Impossibile leggere i dati agente dell'utente corrente. Scegli
+            l'agente manualmente nel modulo Account.
+          </p>
+        </template>
+        <lightning-button
+          label="Nuovo Account"
+          variant="brand"
+          disabled={isLoading}
+          onclick={openAccountForm}
+        ></lightning-button>
+        <template lwc:if={showReturnButton}>
+          <lightning-button
+            class="slds-m-left_small"
+            label="Torna agli Account"
+            onclick={returnToAccounts}
+          ></lightning-button>
+        </template>
+      </div>
+    </lightning-card>
+  </template>
+  <template lwc:elseif={showOpeningSpinner}>
+    <lightning-spinner
+      alternative-text="Apertura nuovo Account"
+      size="small"
+    ></lightning-spinner>
+  </template>
+</template>
