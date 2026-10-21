@@ -85,6 +85,156 @@ describe("quote product refresh", () => {
     jest.resetAllMocks();
   });
 
+  it("shows saved discounts even when they differ from a price calculation", async () => {
+    const element = await mount([
+      {
+        ...row("discounted"),
+        listPrice: 200,
+        discountPercent: 15,
+        unitPrice: 175
+      },
+      { ...row("free"), listPrice: 0, discountPercent: 0, unitPrice: 0 },
+      row("legacy")
+    ]);
+    const grid = element.shadowRoot.querySelector("lightning-tree-grid");
+    expect(grid.columns.map((column) => column.label)).toEqual(
+      expect.arrayContaining(["Prezzo listino", "Sconto %", "Prezzo unitario"])
+    );
+    const currency = (value) =>
+      new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: "EUR"
+      }).format(value);
+    expect(grid.data[0]).toMatchObject({
+      listPriceLabel: currency(200),
+      discountPercentLabel: "15%",
+      unitPriceLabel: currency(175)
+    });
+    expect(grid.data[1]).toMatchObject({
+      listPriceLabel: currency(0),
+      discountPercentLabel: "0%"
+    });
+    expect(grid.data[2]).toMatchObject({
+      listPriceLabel: "-",
+      discountPercentLabel: "-"
+    });
+  });
+
+  it("shows the total list price in the bundle summary and keeps child discounts", async () => {
+    const element = await mount([
+      {
+        ...row("child"),
+        bundleName: "Test bundle",
+        listPrice: 100,
+        unitPrice: 98,
+        totalPrice: 98,
+        discountPercent: -392.46
+      }
+    ]);
+    const summary = element.shadowRoot.querySelector("lightning-tree-grid")
+      .data[0];
+    expect(summary).toMatchObject({
+      listPriceLabel: new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: "EUR"
+      }).format(100),
+      discountPercentLabel: "2%"
+    });
+    expect(summary._children[0].discountPercentLabel).toBe("-392.46%");
+  });
+
+  it("totals list prices using quantities separately for each bundle without double counting nested components", async () => {
+    const element = await mount([
+      { ...row("first"), bundleName: "A", listPrice: 100, quantity: 3 },
+      { ...row("second"), bundleName: "A", listPrice: 50, quantity: 2 },
+      {
+        ...row("nested"),
+        isComponent: true,
+        parentLineId: "first",
+        listPrice: 900,
+        quantity: 1
+      },
+      { ...row("other"), bundleName: "B", listPrice: 20, quantity: 2 },
+      { ...row("unknown"), bundleName: "C", listPrice: null },
+      { ...row("known"), bundleName: "C", listPrice: 10 }
+    ]);
+    const summaries = element.shadowRoot.querySelector(
+      "lightning-tree-grid"
+    ).data;
+    expect(summaries.map((summary) => summary.listPrice)).toEqual([
+      400,
+      40,
+      null
+    ]);
+    expect(summaries[2].listPriceLabel).toBe("-");
+    expect(summaries[0]._children[0].listPrice).toBe(100);
+  });
+
+  it("calculates the overall discount from bundle totals instead of averaging child discounts", async () => {
+    const element = await mount([
+      {
+        ...row("first"),
+        bundleName: "Weighted",
+        listPrice: 100,
+        quantity: 3,
+        unitPrice: 50,
+        discountPercent: 50,
+        totalPrice: 150
+      },
+      {
+        ...row("second"),
+        bundleName: "Weighted",
+        listPrice: 50,
+        quantity: 2,
+        unitPrice: 50,
+        discountPercent: 0,
+        totalPrice: 100
+      },
+      { ...row("missing"), bundleName: "Unknown", listPrice: null },
+      {
+        ...row("zero"),
+        bundleName: "Zero",
+        listPrice: 0,
+        unitPrice: 0,
+        totalPrice: 0
+      }
+    ]);
+    const summaries = element.shadowRoot.querySelector(
+      "lightning-tree-grid"
+    ).data;
+    expect(summaries[0]).toMatchObject({
+      listPrice: 400,
+      totalPrice: 250,
+      discountPercentLabel: "37.5%"
+    });
+    expect(
+      summaries[0]._children.map((child) => child.discountPercentLabel)
+    ).toEqual(["50%", "0%"]);
+    expect(summaries[1].discountPercentLabel).toBe("-");
+    expect(summaries[2].discountPercentLabel).toBe("0%");
+  });
+
+  it("formats saved percentages and leaves missing discounts blank", async () => {
+    const element = await mount([
+      { ...row("free"), listPrice: 100, unitPrice: 0, discountPercent: 100 },
+      {
+        ...row("markup"),
+        listPrice: 100,
+        unitPrice: 120,
+        discountPercent: -20
+      },
+      { ...row("zero-list"), listPrice: 0, unitPrice: 10 },
+      { ...row("rounded"), listPrice: 3, unitPrice: 2, discountPercent: 33.33 }
+    ]);
+    const data = element.shadowRoot.querySelector("lightning-tree-grid").data;
+    expect(data.map((entry) => entry.discountPercentLabel)).toEqual([
+      "100%",
+      "-20%",
+      "-",
+      "33.33%"
+    ]);
+  });
+
   it("refreshes on successive saves for this quote and ignores other quotes", async () => {
     const element = await mount();
     const onProductsChanged = subscribe.mock.calls[0][2];

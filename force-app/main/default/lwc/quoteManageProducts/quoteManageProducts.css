@@ -352,6 +352,14 @@
   padding: 0.65rem 0.75rem;
 }
 
+.item-pricing {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 7rem) minmax(0, 6rem) minmax(0, 8rem);
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .tranche-choice-heading {
   color: #032d60;
   font-size: 0.75rem;
@@ -514,6 +522,7 @@
 @media (max-width: 520px) {
   .summary,
   .input-grid,
+  .item-pricing,
   .selected-row,
   .selected-header,
   .tranche-summary-row,

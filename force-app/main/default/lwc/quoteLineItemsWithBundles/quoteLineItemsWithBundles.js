@@ -96,6 +96,16 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       type: "text"
     },
     {
+      label: "Prezzo listino",
+      fieldName: "listPriceLabel",
+      type: "text"
+    },
+    {
+      label: "Sconto %",
+      fieldName: "discountPercentLabel",
+      type: "text"
+    },
+    {
       label: "Prezzo unitario",
       fieldName: "unitPriceLabel",
       type: "text"
@@ -144,6 +154,7 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       }
 
       const treeRow = this.decorateTreeRow(row);
+      treeRow._children = [];
       const bundleName =
         row.bundleName || this.bundleNameFromDescription(row.description);
       if (bundleName) {
@@ -158,7 +169,21 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
           parentRows.push(visualBundleRow);
         }
         visualBundleRow.totalPrice += Number(row.totalPrice) || 0;
+        visualBundleRow.listPrice =
+          visualBundleRow.listPrice == null ||
+          row.listPrice == null ||
+          row.quantity == null
+            ? null
+            : visualBundleRow.listPrice +
+              Number(row.listPrice) * Number(row.quantity);
+        visualBundleRow.listPriceLabel = this.formatAmount(
+          visualBundleRow.listPrice
+        );
         visualBundleRow.unitPrice = visualBundleRow.totalPrice;
+        visualBundleRow.discountPercentLabel = this.formatDiscount(
+          visualBundleRow.listPrice,
+          visualBundleRow.totalPrice
+        );
         visualBundleRow.unitPriceLabel = this.formatAmount(
           visualBundleRow.unitPrice
         );
@@ -170,7 +195,6 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
         continue;
       }
 
-      treeRow._children = [];
       linesById.set(row.id, treeRow);
       parentRows.push(treeRow);
     }
@@ -311,6 +335,11 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       productName: row.productName || "Prodotto senza nome",
       productCode: row.productCode || "Nessun codice",
       quantityLabel: this.formatNumber(row.quantity),
+      listPriceLabel: this.formatAmount(row.listPrice),
+      discountPercentLabel:
+        row.discountPercent == null
+          ? "-"
+          : `${this.formatNumber(row.discountPercent)}%`,
       unitPriceLabel: this.formatAmount(row.unitPrice),
       totalPriceLabel: this.formatAmount(row.totalPrice),
       quoteLineUrl: lineUrl,
@@ -343,9 +372,12 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       productCode: bundleCode || "Bundle",
       description: "Totale bundle",
       quantity: 1,
+      listPrice: 0,
       unitPrice: 0,
       totalPrice: 0,
       quantityLabel: this.formatNumber(1),
+      listPriceLabel: "-",
+      discountPercentLabel: "-",
       unitPriceLabel: this.formatAmount(0),
       totalPriceLabel: this.formatAmount(0),
       quoteLineUrl: bundleId ? `/lightning/r/Product2/${bundleId}/view` : "#",
@@ -371,6 +403,22 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       return "";
     }
     return description.slice(prefix.length).trim();
+  }
+
+  formatDiscount(listPrice, unitPrice) {
+    if (listPrice == null || unitPrice == null) {
+      return "-";
+    }
+    const list = Number(listPrice);
+    const unit = Number(unitPrice);
+    if (!Number.isFinite(list) || !Number.isFinite(unit) || list < 0) {
+      return "-";
+    }
+    if (list === 0) {
+      return unit === 0 ? "0%" : "-";
+    }
+    const discount = Math.round((1 - unit / list) * 10000) / 100 || 0;
+    return `${this.formatNumber(discount)}%`;
   }
 
   formatAmount(value) {

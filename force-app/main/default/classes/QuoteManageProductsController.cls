@@ -143,6 +143,10 @@ public without sharing class QuoteManageProductsController {
     public Decimal quantity { get; set; }
     @AuraEnabled
     public Id trancheId { get; set; }
+    @AuraEnabled
+    public Decimal discountPercent { get; set; }
+    @AuraEnabled
+    public Decimal newPrice { get; set; }
   }
 
   public class TrancheSelection {
@@ -353,6 +357,7 @@ public without sharing class QuoteManageProductsController {
           Product2.Spread_Total__c,
           Product2.Categoria_Articolo__c,
           Product2.Numero_Tranche__c,
+          Product2.Solo_Bundle__c,
           Product2.RecordType.DeveloperName
         FROM PricebookEntry
         WHERE
@@ -371,6 +376,11 @@ public without sharing class QuoteManageProductsController {
     Integer bundleCount = 0;
     Integer itemCount = 0;
     for (PricebookEntry entry : entriesById.values()) {
+      if (entry.Product2.Solo_Bundle__c) {
+        throw new AuraHandledException(
+          'I prodotti utilizzabili solo nei bundle non possono essere aggiunti direttamente al preventivo.'
+        );
+      }
       if (selectedPricebook2Id == null) {
         selectedPricebook2Id = entry.Pricebook2Id;
       }
@@ -507,6 +517,29 @@ public without sharing class QuoteManageProductsController {
       Boolean isBundle = isBundleEntry(entry);
       Decimal quantity = isBundle ? 1 : selection.quantity;
       Decimal unitPrice = requireSalesUnitPrice(entry);
+      Boolean hasItemPricing = context.isStandardOpportunity && !isBundle;
+      Decimal discountPercent;
+      if (hasItemPricing) {
+        // Keep older callers that omit pricing at the catalogue price.
+        Boolean hasPricing =
+          selection.newPrice != null ||
+          selection.discountPercent != null;
+        discountPercent = hasPricing ? selection.discountPercent : 0;
+        Decimal newPrice = hasPricing ? selection.newPrice : unitPrice;
+        if (
+          newPrice == null ||
+          newPrice < 0 ||
+          newPrice != newPrice.setScale(2) ||
+          discountPercent == null ||
+          discountPercent > 100 ||
+          discountPercent != discountPercent.setScale(2)
+        ) {
+          throw new AuraHandledException(
+            'Inserisci un nuovo prezzo e uno sconto validi, con massimo due decimali, per ogni prodotto Item.'
+          );
+        }
+        unitPrice = newPrice.setScale(2);
+      }
       if (quantity == null || quantity <= 0) {
         throw new AuraHandledException(
           'Inserisci una quantita maggiore di zero.'
@@ -519,6 +552,9 @@ public without sharing class QuoteManageProductsController {
         Quantity = quantity,
         UnitPrice = unitPrice
       );
+      if (hasItemPricing) {
+        lineToInsert.Discount_Pct__c = discountPercent;
+      }
       if (!isBundle && !existingTranchesById.isEmpty()) {
         Tranche__c selectedTranche = existingTranchesById.get(
           selection.trancheId
@@ -600,7 +636,7 @@ public without sharing class QuoteManageProductsController {
 
     Map<Id, PricebookEntry> entryByProductId = new Map<Id, PricebookEntry>();
     for (PricebookEntry componentEntry : [
-      SELECT Id, Product2Id
+      SELECT Id, Product2Id, UnitPrice
       FROM PricebookEntry
       WHERE
         Pricebook2Id = :pricebook2Id
@@ -634,6 +670,18 @@ public without sharing class QuoteManageProductsController {
         );
       }
 
+      Decimal discountPercent;
+      if (componentEntry.UnitPrice != null && componentEntry.UnitPrice > 0) {
+        discountPercent = ((1 -
+          component.Unit_Spread__c / componentEntry.UnitPrice) * 100)
+          .setScale(2, RoundingMode.HALF_UP);
+      } else if (
+        componentEntry.UnitPrice == 0 &&
+        component.Unit_Spread__c == 0
+      ) {
+        discountPercent = 0;
+      }
+
       lineDrafts.add(
         new StandardBundleQuoteLineDraft(
           new QuoteLineItem(
@@ -641,6 +689,7 @@ public without sharing class QuoteManageProductsController {
             PricebookEntryId = componentEntry.Id,
             Quantity = component.Quantity__c,
             UnitPrice = component.Unit_Spread__c,
+            Discount_Pct__c = discountPercent,
             Description = 'Bundle: ' + bundleEntry.Product2.Name
           ),
           component.Bundle_Tranch__c
@@ -750,6 +799,7 @@ public without sharing class QuoteManageProductsController {
     List<String> conditions = new List<String>{
       'IsActive = TRUE',
       'Product2.IsActive = TRUE',
+      'Product2.Solo_Bundle__c = FALSE',
       'Product2.RecordType.DeveloperName IN :allowedTypes',
       '(Product2.Name LIKE :normalizedSearchTerm OR Product2.ProductCode LIKE :normalizedSearchTerm)'
     };

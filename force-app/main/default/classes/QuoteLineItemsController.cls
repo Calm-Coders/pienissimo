@@ -44,6 +44,10 @@ public without sharing class QuoteLineItemsController {
     @AuraEnabled
     public Decimal quantity;
     @AuraEnabled
+    public Decimal listPrice;
+    @AuraEnabled
+    public Decimal discountPercent;
+    @AuraEnabled
     public Decimal unitPrice;
     @AuraEnabled
     public Decimal totalPrice;
@@ -68,6 +72,8 @@ public without sharing class QuoteLineItemsController {
       bundleId = bundle == null ? null : bundle.Id;
       bundleCode = bundle == null ? null : bundle.ProductCode;
       quantity = line.Quantity;
+      listPrice = line.ListPrice;
+      discountPercent = line.Discount_Pct__c;
       unitPrice = salesUnitPrice(line, components);
       totalPrice = isBundleLine(line) && unitPrice != null
         ? (quantity == null ? 0 : quantity) * unitPrice
@@ -121,6 +127,8 @@ public without sharing class QuoteLineItemsController {
         Id,
         Product2Id,
         Quantity,
+        ListPrice,
+        Discount_Pct__c,
         UnitPrice,
         TotalPrice,
         Description,

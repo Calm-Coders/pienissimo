@@ -267,6 +267,7 @@ public without sharing class BundleProductAssignmentController {
           WHERE
             RecordTypeId = :itemRecordTypeId
             AND IsActive = TRUE
+            AND Solo_Bundle__c = TRUE
             AND Id NOT IN :alreadyLinked
           ORDER BY Name
           LIMIT :MAX_RESULTS
@@ -277,6 +278,7 @@ public without sharing class BundleProductAssignmentController {
           WHERE
             RecordTypeId = :itemRecordTypeId
             AND IsActive = TRUE
+            AND Solo_Bundle__c = TRUE
             AND Id NOT IN :alreadyLinked
             AND (Name LIKE :normalizedSearchTerm
             OR ProductCode LIKE :normalizedSearchTerm)

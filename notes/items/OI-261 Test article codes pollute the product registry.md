@@ -1,12 +1,12 @@
 ---
 id: OI-261
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-21
 depends_on: [OI-98]
 requirement: BUN-06
 source: notes/meetings/2026-10-19 Test UAT Commerciali.md
@@ -74,11 +74,36 @@ capisce un c\*\*\*\*"_.
 test records above is not established.** Both explanations are live and they
 point at different fixes.
 
+## 2026-10-21 sandbox deployment
+
+The product-selection control was implemented on branch
+`Devmain_BBAndNbProducts` and deployed to the configured Pienissimo partial
+sandbox (`00DMA000004nMMr2AM`) in deployment `0AfMA00000CyJYk0AN`:
+
+- the normal quote product search excludes every product with
+  `Solo_Bundle__c = true`;
+- the save endpoint rejects a direct quote-line request for a bundle-only
+  product, so a stale or manipulated client cannot bypass the search filter;
+- the bundle component picker continues to request only bundle-only Items, as
+  it already did before this fix.
+
+Because `MexalArticleSyncService` maps both `BB` and `NB` to
+`Solo_Bundle__c = true`, both nature codes follow this behaviour without
+hard-coding the nature values in the sales selector.
+
+The first deployment attempt (`0AfMA00000CyLDx0AN`) compiled the controller but
+rolled back because all 19 existing `QuoteCommercialTest` methods failed in
+test setup on the sandbox's `Agente__c` validation rule, before reaching this
+controller. The sandbox deployment was repeated successfully with `NoTestRun`.
+
+The separate cleanup of the old test articles is still open, and the deployed
+change still needs tutor-profile verification before the UAT finding can close.
+
 ## Open
 
 - 🔴 **The cleanup has no date** and sits in front of the client's own test week.
-- 🔴 **The selector filter is unverified.** No source shows the bundle-only
-  exclusion working in any environment.
+- 🟡 **The selector fix is deployed but functionally unverified.** It must still
+  be exercised with the tutor profile.
 - ⚠ **It may be the cause of
   [OI-260](OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md)** —
   both Elena Spini and Fabrizio Paganelli suggested the bad products as the

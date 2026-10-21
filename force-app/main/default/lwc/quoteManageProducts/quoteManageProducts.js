@@ -236,6 +236,13 @@ export default class QuoteManageProducts extends NavigationMixin(
         (product) =>
           !product.quantity ||
           Number(product.quantity) <= 0 ||
+          (product.hasItemPricing &&
+            (product.discountPercent == null ||
+              !Number.isFinite(product.discountPercent) ||
+              product.discountPercent > 100 ||
+              product.newPrice == null ||
+              !Number.isFinite(product.newPrice) ||
+              product.newPrice < 0)) ||
           (product.requiresTranche && !product.trancheId)
       )
     );
@@ -440,6 +447,9 @@ export default class QuoteManageProducts extends NavigationMixin(
           rowStatus: "Da aggiungere",
           quantity: 1,
           quantityDisabled: false,
+          hasItemPricing: this.isStandardOpportunity,
+          discountPercent: 0,
+          newPrice: Number(option.unitPrice),
           trancheId: "",
           requiresTranche,
           rowClass: requiresTranche
@@ -463,6 +473,38 @@ export default class QuoteManageProducts extends NavigationMixin(
         return { ...product, quantity };
       }
       return product;
+    });
+  }
+
+  handleItemDiscountChange(event) {
+    this.updateItemPricing(event, true);
+  }
+
+  handleItemPriceChange(event) {
+    this.updateItemPricing(event, false);
+  }
+
+  updateItemPricing(event, isDiscountChange) {
+    const entryId = event.target.dataset.id;
+    const value = this.parseNumber(event.target.value);
+    this.selectedProducts = this.selectedProducts.map((product) => {
+      if (product.pricebookEntryId !== entryId || !product.hasItemPricing) {
+        return product;
+      }
+      const listPrice = Number(product.unitPrice) || 0;
+      const discountPercent = isDiscountChange
+        ? value
+        : value == null
+          ? null
+          : listPrice > 0
+            ? this.roundToTwoDecimals((1 - value / listPrice) * 100)
+            : 0;
+      const newPrice = isDiscountChange
+        ? value == null
+          ? null
+          : this.roundToTwoDecimals(listPrice * (1 - value / 100))
+        : value;
+      return { ...product, discountPercent, newPrice };
     });
   }
 
@@ -577,6 +619,12 @@ export default class QuoteManageProducts extends NavigationMixin(
         products: this.selectedProducts.map((product) => ({
           pricebookEntryId: product.pricebookEntryId,
           quantity: Number(product.quantity),
+          ...(product.hasItemPricing
+            ? {
+                discountPercent: product.discountPercent,
+                newPrice: product.newPrice
+              }
+            : {}),
           trancheId: product.requiresTranche ? product.trancheId : null
         })),
         tranches: this.showSelectedTranchePreview
