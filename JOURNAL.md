@@ -10,6 +10,37 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-22 - claude (product page: description, levels, gruppo merceologico)
+
+- **Did:** built the 13/10, 19/10 and 21/10 product-page requests in **UAT**:
+  - `Description` is **fixed, not removed** (it was removed first, then put
+    back on Aurel's instruction). It is now `descr_completa` plus
+    `descr_estesa` when present; before, it held only the `descrizione_agg`
+    tail of names Mexal splits at 30 characters. 713 UAT descriptions were
+    rewritten from Mexal.
+  - A new section, _"Classificazione statistica prodotti"_, holds
+    `Categoria_Articolo__c`, `Livello_0…6__c` and the new read-only
+    `Gruppo_Merceologico__c`.
+  - `MexalArticleSyncService` now stores `cod_grp_merc` in that field.
+  - The field was filled on 1,080 UAT products from Mexal: 37 `S`, 1,043 `N`,
+    and 20 left blank because Mexal doesn't return them.
+  - Details are in OI-279 and the 13/10 meeting note.
+- **Page drift found:** the UAT page had been edited in the org on 12/10 and
+  differed from source. The change was rebuilt on top of the **UAT** version,
+  and source now holds that version plus the new section.
+- ⚠ **Incident, repaired:** deploying a minimal `Full_Permission` (one grant)
+  **replaced** the whole permission set in UAT. Field grants fell from 434 to
+  29, and object, class and tab access dropped to 0, for the 6 assigned users.
+  It was restored minutes later from the repository version, without
+  `Quote.Tipologia_Attivita__c`, which is in HEAD but missing in UAT. The result
+  is 435 field grants (434 + the new one), 16 object permissions and 19
+  setup-entity accesses. **Lesson: a permission set deploy is a full replace —
+  never deploy a partial file.**
+- **Not done:** Prod. The sync class needs an Apex deploy, and that is gated on
+  coverage. Nothing was committed.
+
+---
+
 ## 2026-10-22 - codex (Claude stale-invoice cleanup authorization)
 
 - **Did:** reviewed the scratchpad `clean_stale.apex` and recorded the user's

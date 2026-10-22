@@ -6,6 +6,13 @@ Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November 
 
 ## Where the project stands
 
+- 🟡 **2026-10-22: the product page is done in UAT, not in Prod.** Description
+  fixed: full Mexal name plus extended description, no longer the truncated
+  tail. New _"Classificazione statistica prodotti"_ section with categoria,
+  livelli 0–6 and a new `Gruppo_Merceologico__c` synced from Mexal
+  ([OI-279](notes/items/OI-279%20The%20tutor%20account%20creation%20screen%20must%20be%20simplified.md)).
+  ⚠ A partial permission-set deploy wiped UAT `Full_Permission` for a few
+  minutes. It was restored; see JOURNAL.
 - 🟡 **2026-10-22: the four-part Mexal order key is built and in UAT, not in Prod.**
   [OI-275](notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md):
   new `Order.Mexal_Document_Date__c`, set at send time. `ID_Ordine_Mexal__c` is

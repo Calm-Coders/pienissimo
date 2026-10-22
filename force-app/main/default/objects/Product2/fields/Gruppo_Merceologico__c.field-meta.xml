@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Gruppo_Merceologico__c</fullName>
+    <description
+  >Gruppo merceologico dell articolo su Mexal (cod_grp_merc), aggiornato dalla sincronizzazione articoli. Per i test UAT il valore S decide anche se il prodotto e attivo (OI-226).</description>
+    <externalId>false</externalId>
+    <label>Gruppo Merceologico</label>
+    <length>20</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
