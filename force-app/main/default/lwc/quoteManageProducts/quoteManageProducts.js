@@ -58,6 +58,10 @@ export default class QuoteManageProducts extends NavigationMixin(
     return this.itemEditorDisabled || this.hasSelectedProducts;
   }
 
+  get editQuantityDisabled() {
+    return this.itemEditorDisabled || this.editingItem?.isPlus;
+  }
+
   handleEditItem(event) {
     if (this.itemEditorDisabled || this.hasSelectedProducts) return;
     const product = this.existingProducts.find(
@@ -77,6 +81,13 @@ export default class QuoteManageProducts extends NavigationMixin(
 
   handleExistingItemChange(event) {
     const field = event.target.dataset.field;
+    if (field === "trancheDueDate") {
+      this.editingItem = {
+        ...this.editingItem,
+        trancheDueDate: event.target.value
+      };
+      return;
+    }
     const value = this.parseNumber(event.target.value);
     const draft = { ...this.editingItem, [field]: value };
     const listPrice = Number(draft.listPrice) || 0;
@@ -109,10 +120,20 @@ export default class QuoteManageProducts extends NavigationMixin(
         lineId: this.editingItem.quoteLineItemId,
         quantity: this.editingItem.quantity,
         discountPercent: this.editingItem.discountPercent,
-        newPrice: this.editingItem.newPrice
+        newPrice: this.editingItem.newPrice,
+        ...(this.editingItem.isPlus
+          ? { dueDate: this.editingItem.trancheDueDate }
+          : {})
       });
+      const changedIds = [
+        this.recordId,
+        this.editingItem.quoteLineItemId,
+        this.editingItem.trancheId
+      ];
       this.editingItem = undefined;
-      await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
+      await notifyRecordUpdateAvailable(
+        changedIds.filter(Boolean).map((recordId) => ({ recordId }))
+      );
       publish(this.messageContext, QUOTE_PRODUCTS_CHANGED, {
         quoteId: this.recordId
       });
@@ -800,7 +821,7 @@ export default class QuoteManageProducts extends NavigationMixin(
       productCode: line.productCode || "Nessun codice",
       productType: line.productType,
       typeLabel: line.productType === BUNDLE_TYPE ? "Bundle" : "Item",
-      isPlus: false,
+      isPlus: this.isPlusOpportunity,
       unitPrice: line.unitPrice,
       listPrice: line.listPrice,
       discountPercent: line.discountPercent,
@@ -822,7 +843,8 @@ export default class QuoteManageProducts extends NavigationMixin(
       canEditItem:
         line.canEditItem === true &&
         this.isEditable &&
-        this.isStandardOpportunity &&
+        (this.isStandardOpportunity ||
+          (this.isPlusOpportunity && !!line.trancheId)) &&
         ["Bozza", "In Trattativa"].includes(this.quoteStatus)
     }));
   }

@@ -122,6 +122,72 @@ describe("Standard Item pricing", () => {
     return element;
   }
 
+  it("edits a Plus tranche discount and price while keeping quantity fixed at one", async () => {
+    const element = await mountExisting({
+      opportunityRecordTypeDeveloperName: "Plus_Attivazione_Rinnovo",
+      hasPlusLine: true,
+      existingLines: [
+        {
+          ...item("entry1"),
+          quoteLineItemId: "plus1",
+          canEditItem: true,
+          quantity: 1,
+          listPrice: 200,
+          unitPrice: 180,
+          discountPercent: 10,
+          trancheId: "tranche1",
+          trancheDueDate: "2099-01-01",
+          trancheSequence: 1,
+          trancheAmount: 180
+        },
+        {
+          ...item("entry1"),
+          quoteLineItemId: "plus2",
+          canEditItem: true,
+          quantity: 1,
+          listPrice: 200,
+          unitPrice: 200,
+          discountPercent: 0,
+          trancheId: "tranche2",
+          trancheSequence: 2,
+          trancheAmount: 200
+        }
+      ]
+    });
+    [...element.shadowRoot.querySelectorAll("lightning-button-icon")]
+      .find((icon) => icon.iconName === "utility:edit")
+      .click();
+    await flush();
+    const input = (name) =>
+      element.shadowRoot.querySelector(`lightning-input[data-field="${name}"]`);
+    expect(input("quantity").disabled).toBe(true);
+    expect(input("quantity").value).toBe(1);
+    expect(input("trancheDueDate").value).toBe("2099-01-01");
+    expect(input("trancheDueDate").required).toBe(true);
+    await change(input("trancheDueDate"), "2099-02-01");
+    await change(input("discountPercent"), "25");
+    expect(input("newPrice").value).toBe(150);
+    await change(input("newPrice"), "160");
+    expect(input("discountPercent").value).toBe(20);
+    [
+      ...element.shadowRoot.querySelectorAll(".item-editor lightning-input")
+    ].forEach((field) => {
+      field.reportValidity = jest.fn(() => true);
+    });
+    updateItemLine.mockResolvedValue();
+    button(element, "Salva modifica").click();
+    await flush();
+    expect(updateItemLine).toHaveBeenCalledWith({
+      quoteId: "quote1",
+      lineId: "plus1",
+      quantity: 1,
+      discountPercent: 20,
+      newPrice: 160,
+      dueDate: "2099-02-01"
+    });
+    expect(saveProducts).not.toHaveBeenCalled();
+  });
+
   it("edits an existing Item without inserting another line and refreshes the overview", async () => {
     const element = await mountExisting();
     [...element.shadowRoot.querySelectorAll("lightning-button-icon")]

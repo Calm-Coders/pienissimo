@@ -258,7 +258,8 @@ public without sharing class QuoteManageProductsController {
     Id lineId,
     Decimal quantity,
     Decimal discountPercent,
-    Decimal newPrice
+    Decimal newPrice,
+    Date dueDate
   ) {
     validateQuoteId(quoteId);
     if (
@@ -286,12 +287,13 @@ public without sharing class QuoteManageProductsController {
       FOR UPDATE
     ];
     if (
-      !isStandardOpportunity(quoteRecord) ||
+      (!isStandardOpportunity(quoteRecord) &&
+      !isPlusOpportunity(quoteRecord)) ||
       (quoteRecord.Status != 'Bozza' &&
       quoteRecord.Status != 'In Trattativa')
     ) {
       throw new AuraHandledException(
-        'Puoi modificare gli Item di una vendita Standard solo in Bozza o In Trattativa.'
+        'Puoi modificare gli Item Standard o Plus solo in Bozza o In Trattativa.'
       );
     }
     List<QuoteLineItem> lines = [
@@ -333,6 +335,15 @@ public without sharing class QuoteManageProductsController {
     }
     QuoteLineItem line = lines[0];
     if (
+      isPlusOpportunity(quoteRecord) &&
+      (quantity != 1 ||
+      line.Tranche__c == null)
+    ) {
+      throw new AuraHandledException(
+        'Per Plus modifica il prezzo della singola tranche mantenendo quantita 1.'
+      );
+    }
+    if (
       line.Tranche__c != null &&
       (!Schema.sObjectType.Tranche__c.isUpdateable() ||
       !Schema.sObjectType.Tranche__c.fields.Importo_Previsto__c.isUpdateable())
@@ -341,12 +352,61 @@ public without sharing class QuoteManageProductsController {
         'Non hai i permessi per aggiornare l importo della tranche.'
       );
     }
-    update as user new QuoteLineItem(
+    QuoteLineItem changedLine = new QuoteLineItem(
       Id = line.Id,
       Quantity = quantity,
       UnitPrice = newPrice,
       Discount_Pct__c = discountPercent
     );
+    List<QuoteLineItem> lineUpdates = new List<QuoteLineItem>{ changedLine };
+    if (isPlusOpportunity(quoteRecord)) {
+      if (
+        !Schema.sObjectType.Tranche__c.fields.Data_Scadenza__c.isUpdateable() ||
+        !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isUpdateable()
+      ) {
+        throw new AuraHandledException(
+          'Non hai i permessi per modificare la scadenza della tranche.'
+        );
+      }
+      if (dueDate == null || dueDate < Date.today()) {
+        throw new AuraHandledException(
+          'Inserisci una scadenza non precedente alla data odierna.'
+        );
+      }
+      if (
+        [
+          SELECT COUNT()
+          FROM Tranche__c
+          WHERE
+            Quote__c = :quoteId
+            AND Id != :line.Tranche__c
+            AND Data_Scadenza__c = :dueDate
+        ] > 0
+      ) {
+        throw new AuraHandledException(
+          'Le date di scadenza delle tranche devono essere diverse.'
+        );
+      }
+      changedLine.Data_Scadenza__c = dueDate;
+      for (QuoteLineItem linkedLine : [
+        SELECT Id
+        FROM QuoteLineItem
+        WHERE
+          QuoteId = :quoteId
+          AND Tranche__c = :line.Tranche__c
+          AND Id != :line.Id
+        WITH USER_MODE
+      ]) {
+        lineUpdates.add(
+          new QuoteLineItem(Id = linkedLine.Id, Data_Scadenza__c = dueDate)
+        );
+      }
+      update as user new Tranche__c(
+        Id = line.Tranche__c,
+        Data_Scadenza__c = dueDate
+      );
+    }
+    update as user lineUpdates;
     if (line.Tranche__c != null)
       recalculateTrancheAmounts(new Set<Id>{ line.Tranche__c });
   }

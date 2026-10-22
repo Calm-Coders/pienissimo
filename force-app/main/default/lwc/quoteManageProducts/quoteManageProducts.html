@@ -136,6 +136,9 @@
                         <div class="product-meta">
                           <span>{editingItem.productCode}</span>
                           <span>{editingItem.typeLabel}</span>
+                          <template if:true={editingItem.hasTranche}>
+                            <span>{editingItem.trancheLabel}</span>
+                          </template>
                           <span>Prezzo {editingItem.unitPriceLabel}</span>
                         </div>
                       </div>
@@ -149,7 +152,7 @@
                         min="0.01"
                         step="0.01"
                         required
-                        disabled={itemEditorDisabled}
+                        disabled={editQuantityDisabled}
                         onchange={handleExistingItemChange}
                       ></lightning-input>
                       <span class="row-status">In modifica</span>
@@ -182,6 +185,20 @@
                           onchange={handleExistingItemChange}
                         ></lightning-input>
                       </div>
+                      <template if:true={editingItem.isPlus}>
+                        <div class="tranche-choice-box">
+                          <lightning-input
+                            type="date"
+                            label="Scadenza tranche"
+                            data-field="trancheDueDate"
+                            value={editingItem.trancheDueDate}
+                            min={minimumTrancheDate}
+                            required
+                            disabled={itemEditorDisabled}
+                            onchange={handleExistingItemChange}
+                          ></lightning-input>
+                        </div>
+                      </template>
                     </div>
                   </div>
                 </div>
