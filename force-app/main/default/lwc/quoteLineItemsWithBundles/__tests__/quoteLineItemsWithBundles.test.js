@@ -237,9 +237,12 @@ describe("quote product refresh", () => {
 
   it("refreshes on successive saves for this quote and ignores other quotes", async () => {
     const element = await mount();
+    const pageRefresh = jest.fn();
+    element.addEventListener("lightning__refresh", pageRefresh);
     const onProductsChanged = subscribe.mock.calls[0][2];
     onProductsChanged({ quoteId: "another-quote" });
     expect(refreshApex).not.toHaveBeenCalled();
+    expect(pageRefresh).not.toHaveBeenCalled();
 
     refreshApex.mockImplementationOnce(async () =>
       getContext.emit(context([row("first")]))
@@ -259,6 +262,9 @@ describe("quote product refresh", () => {
       element.shadowRoot.querySelector("lightning-tree-grid").data
     ).toHaveLength(2);
     expect(refreshApex).toHaveBeenCalledTimes(2);
+    expect(pageRefresh).toHaveBeenCalledTimes(2);
+    expect(pageRefresh.mock.calls[0][0].bubbles).toBe(true);
+    expect(pageRefresh.mock.calls[0][0].composed).toBe(true);
 
     element.remove();
     expect(unsubscribe).toHaveBeenCalledWith({ id: "subscription" });

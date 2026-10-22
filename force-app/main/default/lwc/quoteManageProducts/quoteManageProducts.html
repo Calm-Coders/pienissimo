@@ -94,10 +94,110 @@
                           >
                         </template>
                         <span class="row-status">{product.rowStatus}</span>
-                        <span></span>
+                        <span class="existing-item-actions">
+                          <template if:true={product.canEditItem}>
+                            <lightning-button-icon
+                              icon-name="utility:edit"
+                              alternative-text="Modifica prodotto"
+                              title="Modifica prodotto"
+                              variant="bare"
+                              data-id={product.quoteLineItemId}
+                              disabled={existingEditDisabled}
+                              onclick={handleEditItem}
+                            ></lightning-button-icon>
+                          </template>
+                        </span>
                       </div>
                     </template>
                   </div>
+                </div>
+              </div>
+            </template>
+
+            <template if:true={showItemEditor}>
+              <div class="selected-panel new-selection-panel item-editor">
+                <div class="selected-panel-heading">
+                  <div>
+                    <div class="section-label">Modifica prodotto</div>
+                    <div class="selected-subtitle">1 prodotto selezionato</div>
+                  </div>
+                </div>
+                <div class="selected-table">
+                  <div class="selected-header">
+                    <span>Prodotto</span><span>Qta</span><span>Stato</span
+                    ><span></span>
+                  </div>
+                  <div class="selected-body">
+                    <div class="selected-row selected-row-with-tranche">
+                      <div class="selected-main">
+                        <div class="product-title">
+                          {editingItem.productName}
+                        </div>
+                        <div class="product-meta">
+                          <span>{editingItem.productCode}</span>
+                          <span>{editingItem.typeLabel}</span>
+                          <span>Prezzo {editingItem.unitPriceLabel}</span>
+                        </div>
+                      </div>
+                      <lightning-input
+                        class="quantity-input"
+                        type="number"
+                        label="Quantita"
+                        variant="label-hidden"
+                        data-field="quantity"
+                        value={editingItem.quantity}
+                        min="0.01"
+                        step="0.01"
+                        required
+                        disabled={itemEditorDisabled}
+                        onchange={handleExistingItemChange}
+                      ></lightning-input>
+                      <span class="row-status">In modifica</span>
+                      <span></span>
+                      <div class="item-pricing">
+                        <div class="tranche-summary-value">
+                          <span class="box-label">Prezzo listino</span>
+                          <span>{editingItem.listPrice}</span>
+                        </div>
+                        <lightning-input
+                          type="number"
+                          label="Sconto %"
+                          data-field="discountPercent"
+                          value={editingItem.discountPercent}
+                          max="100"
+                          step="0.01"
+                          required
+                          disabled={itemEditorDisabled}
+                          onchange={handleExistingItemChange}
+                        ></lightning-input>
+                        <lightning-input
+                          type="number"
+                          label="Nuovo prezzo"
+                          data-field="newPrice"
+                          value={editingItem.newPrice}
+                          min="0"
+                          step="0.01"
+                          required
+                          disabled={itemEditorDisabled}
+                          onchange={handleExistingItemChange}
+                        ></lightning-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-m-top_medium">
+                  <lightning-button
+                    label="Annulla modifica"
+                    disabled={itemEditorDisabled}
+                    onclick={handleCancelItemEdit}
+                  ></lightning-button>
+                  <lightning-button
+                    label="Salva modifica"
+                    variant="brand"
+                    class="slds-m-left_small"
+                    disabled={itemEditorDisabled}
+                    onclick={handleSaveItemEdit}
+                  ></lightning-button>
                 </div>
               </div>
             </template>
