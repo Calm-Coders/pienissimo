@@ -26,7 +26,7 @@ const STANDARD_STAGES = [
   "Non qualificato"
 ];
 
-const DIRETTA_STAGES = ["New", "Qualificato"];
+const DIRETTA_STAGES = ["New", "Qualificato", "Non qualificato"];
 const QUALIFIED_STAGE = "Qualificato";
 const LEAD_CONVERSION_CHANNEL = "/event/Lead_Conversion_Completed__e";
 
@@ -201,8 +201,8 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
     }
 
     return this.isSaving
-      ? "Updating stage..."
-      : `Status: ${this.currentStage || ""}`;
+      ? "Aggiornamento fase..."
+      : `Stato: ${this.currentStage || ""}`;
   }
 
   get filteredExitReasonDetailOptions() {
@@ -257,10 +257,14 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
   handleExitReasonChange(event) {
     this.exitReason = event.detail.value;
     this.exitReasonDetail = undefined;
+    this.motivazione = "";
   }
 
   handleExitReasonDetailChange(event) {
     this.exitReasonDetail = event.detail.value;
+    if (!this.requiresMotivazione) {
+      this.motivazione = "";
+    }
   }
 
   handleExitReasonSave() {

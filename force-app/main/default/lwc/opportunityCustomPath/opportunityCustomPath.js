@@ -161,8 +161,8 @@ export default class OpportunityCustomPath extends LightningElement {
 
   get statusText() {
     return this.isSaving
-      ? "Updating stage..."
-      : `Status: ${this.currentStage || ""}`;
+      ? "Aggiornamento fase..."
+      : `Stato: ${this.currentStage || ""}`;
   }
 
   get selectedReasonConfig() {

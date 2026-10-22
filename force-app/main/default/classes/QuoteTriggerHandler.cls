@@ -238,7 +238,7 @@ public without sharing class QuoteTriggerHandler {
         ? null
         : oldQuoteMap.get(quoteRecord.Id);
       if (oldQuote == null || oldQuote.Locale__c != quoteRecord.Locale__c) {
-        quoteRecord.Tipologia_Attivita__c = localeRecord.Tipologia_Attivita_Globale__c;
+        quoteRecord.Tipologia_Attivita_Globale__c = localeRecord.Tipologia_Attivita_Globale__c;
       }
     }
   }

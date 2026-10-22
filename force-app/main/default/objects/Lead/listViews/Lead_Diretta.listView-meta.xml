@@ -16,5 +16,10 @@
         <operation>equals</operation>
         <value>Diretta</value>
     </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Non qualificato</value>
+    </filters>
     <label>Lead - Diretta</label>
 </ListView>
