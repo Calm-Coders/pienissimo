@@ -4,15 +4,28 @@ type: reference
 status: in-progress
 org: ROMI
 raised: 2026-09-16
-updated: 2026-10-01
+updated: 2026-10-22
 source: User request and locally supplied seven-page sample PDF, 2026-09-16
 ---
 
 # Quote PDF generation for Bozza quotes
 
-Implemented in local source on 16 September 2026. Not deployed or verified in
-Salesforce. The user explicitly requested no test classes, no deployment and
-no edits to existing Markdown files; this new note is the session handoff.
+Implemented in local source on 16 September 2026 and subsequently deployed.
+The 22 October UAT correction is recorded below.
+
+## 2026-10-22 - date and Italian-label correction
+
+The 13 October feedback reported American dates and incorrect translations.
+Inspection found that the controller already formats generated, expiration and
+payment-due dates as `dd/MM/yyyy`. The remaining source defect was inconsistent
+Italian copy in the Performance Plus branch of the Visualforce page:
+`Il preventivo e valido`, `Quantita` and `MODALITA' PAGAMENTO`.
+
+The page now renders `Il preventivo è valido`, `Quantità` and
+`MODALITÀ DI PAGAMENTO`, consistently with the standard branch. The page and
+the unchanged date-format controller compiled in Salesforce and were deployed
+to the `pienissimo partial` UAT org in deployment `0AfMA00000CzHMn0AN`.
+Visual PDF review with a representative Quote remains the acceptance check.
 
 ## Behavior
 

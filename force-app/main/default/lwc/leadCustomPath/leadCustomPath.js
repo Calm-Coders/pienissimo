@@ -36,9 +36,12 @@ const KEY_FIELDS_BY_STAGE = {
   "Non qualificato": [EXIT_REASON_FIELD, EXIT_REASON_DETAIL_FIELD]
 };
 
-const FIELDS = [
-  STATUS_FIELD,
-  RECORD_TYPE_ID_FIELD,
+const REQUIRED_FIELDS = [STATUS_FIELD, RECORD_TYPE_ID_FIELD];
+
+// These fields enrich the component, but none of them should prevent the Lead
+// itself from loading when a user's FLS changes. UI API omits inaccessible
+// optional fields instead of rejecting the entire getRecord request.
+const OPTIONAL_FIELDS = [
   RECORD_TYPE_DEVELOPER_NAME_FIELD,
   COMPANY_FIELD,
   AGENT_FIELD,
@@ -50,7 +53,11 @@ const FIELDS = [
 export default class LeadCustomPath extends NavigationMixin(LightningElement) {
   @api recordId;
 
-  leadObjectApiName = LEAD_OBJECT;
+  leadObjectApiName = LEAD_OBJECT.objectApiName;
+  leadObjectInfo;
+  objectInfoErrorMessage;
+  recordLoadErrorMessage;
+  formLoadErrorMessage;
   currentStage;
   selectedStage;
   leadRecordTypeId;
@@ -71,7 +78,16 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
   exitReasonDetailControllerValues = {};
 
   @wire(getObjectInfo, { objectApiName: LEAD_OBJECT })
-  objectInfo;
+  wiredObjectInfo({ data, error }) {
+    if (data) {
+      this.leadObjectInfo = data;
+      this.objectInfoErrorMessage = undefined;
+      this.syncRecordTypeDeveloperName();
+    } else if (error) {
+      this.leadObjectInfo = undefined;
+      this.objectInfoErrorMessage = this.errorMessage(error);
+    }
+  }
 
   connectedCallback() {
     this.conversionSubscriptionPromise = this.subscribeToConversionEvents();
@@ -95,23 +111,34 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
     }
   }
 
-  @wire(getRecord, { recordId: "$recordId", fields: FIELDS })
-  wiredLead({ data }) {
+  @wire(getRecord, {
+    recordId: "$recordId",
+    fields: REQUIRED_FIELDS,
+    optionalFields: OPTIONAL_FIELDS
+  })
+  wiredLead({ data, error }) {
+    if (error) {
+      this.recordLoadErrorMessage = this.errorMessage(error);
+      return;
+    }
+
     if (!data) {
       return;
     }
 
-    this.currentStage = data.fields.Status.value;
+    this.recordLoadErrorMessage = undefined;
+    this.currentStage = getFieldValue(data, STATUS_FIELD);
     this.selectedStage = this.selectedStage || this.currentStage;
-    this.leadRecordTypeId = data.fields.RecordTypeId.value;
+    this.leadRecordTypeId = getFieldValue(data, RECORD_TYPE_ID_FIELD);
     this.leadRecordTypeDeveloperName = getFieldValue(
       data,
       RECORD_TYPE_DEVELOPER_NAME_FIELD
     );
-    this.company = data.fields.Company.value;
-    this.agentId = data.fields.Agente__c.value;
-    this.exitReason = data.fields.Motivazione_Uscita__c.value;
-    this.exitReasonDetail = data.fields.Dettaglio_Motivazione_Uscita__c.value;
+    this.syncRecordTypeDeveloperName();
+    this.company = getFieldValue(data, COMPANY_FIELD);
+    this.agentId = getFieldValue(data, AGENT_FIELD);
+    this.exitReason = getFieldValue(data, EXIT_REASON_FIELD);
+    this.exitReasonDetail = getFieldValue(data, EXIT_REASON_DETAIL_FIELD);
     this.motivazione = getFieldValue(data, MOTIVAZIONE_FIELD);
   }
 
@@ -146,17 +173,59 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
     return this.selectedStage || this.currentStage;
   }
 
+  get requestedKeyFields() {
+    return KEY_FIELDS_BY_STAGE[this.selectedOrCurrentStage] || [];
+  }
+
   get keyFields() {
-    return (KEY_FIELDS_BY_STAGE[this.selectedOrCurrentStage] || []).map(
-      (field) => ({
+    const fieldMetadata = this.leadObjectInfo?.fields || {};
+
+    return this.requestedKeyFields
+      .filter((field) => fieldMetadata[field.fieldApiName]?.updateable === true)
+      .map((field) => ({
         fieldName: field.fieldApiName,
         required: true
-      })
-    );
+      }));
   }
 
   get showKeyFields() {
-    return this.keyFields.length > 0;
+    return this.requestedKeyFields.length > 0;
+  }
+
+  get canRenderKeyFields() {
+    return Boolean(this.leadObjectInfo) && this.keyFields.length > 0;
+  }
+
+  get showFieldLoading() {
+    return (
+      this.showKeyFields && !this.leadObjectInfo && !this.objectInfoErrorMessage
+    );
+  }
+
+  get keyFieldPermissionErrorMessage() {
+    if (!this.leadObjectInfo || !this.showKeyFields) {
+      return undefined;
+    }
+
+    const availableFields = new Set(
+      this.keyFields.map((field) => field.fieldName)
+    );
+    const unavailableFields = this.requestedKeyFields
+      .map((field) => field.fieldApiName)
+      .filter((fieldName) => !availableFields.has(fieldName));
+
+    return unavailableFields.length
+      ? `Accesso in modifica non disponibile per: ${unavailableFields.join(", ")}.`
+      : undefined;
+  }
+
+  get componentErrorMessage() {
+    return (
+      this.formLoadErrorMessage ||
+      this.recordLoadErrorMessage ||
+      this.objectInfoErrorMessage ||
+      this.keyFieldPermissionErrorMessage
+    );
   }
 
   get stageItems() {
@@ -237,6 +306,15 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
 
   handleStageSelect(event) {
     this.selectedStage = event.currentTarget.dataset.stage;
+    this.formLoadErrorMessage = undefined;
+  }
+
+  handleFormLoad() {
+    this.formLoadErrorMessage = undefined;
+  }
+
+  handleFormError(event) {
+    this.formLoadErrorMessage = this.errorMessage(event.detail);
   }
 
   handleMarkCurrent() {
@@ -398,18 +476,32 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
   }
 
   errorMessage(error) {
-    const fieldErrors = error?.body?.output?.fieldErrors || {};
+    const output =
+      error?.body?.output || error?.output || error?.detail?.output || {};
+    const fieldErrors = output.fieldErrors || {};
     const fieldErrorMessages = Object.values(fieldErrors)
       .flat()
       .map((fieldError) => fieldError.message);
 
     return (
-      error?.body?.output?.errors?.[0]?.message ||
+      output.errors?.[0]?.message ||
       fieldErrorMessages[0] ||
       error?.body?.message ||
+      error?.detail?.message ||
       error?.message ||
       "Si e verificato un errore imprevisto."
     );
+  }
+
+  syncRecordTypeDeveloperName() {
+    if (this.leadRecordTypeDeveloperName || !this.leadRecordTypeId) {
+      return;
+    }
+
+    const recordTypeInfo =
+      this.leadObjectInfo?.recordTypeInfos?.[this.leadRecordTypeId];
+    this.leadRecordTypeDeveloperName =
+      recordTypeInfo?.developerName || recordTypeInfo?.name;
   }
 
   reportKeyFieldValidity() {
