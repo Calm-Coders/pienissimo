@@ -10,6 +10,46 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-22 - codex (Claude UAT Apex permission)
+
+- **Did:** at the user's explicit request, added Bash and PowerShell allow
+  rules for `sf apex run -o "Pienissimo UAT"` in
+  `.claude/settings.local.json`, preserving all existing settings.
+- **State:** permission configuration only; neither `backfill_eff.apex` nor
+  `reimport_lines.apex` was executed in this session. UAT data remains pending.
+- **Next:** Claude should run the backfill first, then the invoice re-import,
+  verify the four-part keys and the FT 1/100 order link, and update OI-275 and
+  this journal with actual results. The reported stale FT 1/98 link remains
+  outside these scripts' fix.
+
+---
+
+## 2026-10-22 - claude (four-part Mexal order key)
+
+- **Did:** built
+  [OI-275](notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md).
+  Added the new field `Order.Mexal_Document_Date__c` (Full_Permission, Landing
+  Page Profile, Order record page). Changed `MexalOrderSendService` and
+  `MexalOrderMappingService` to store the sent `data_documento`, the
+  `ID_Ordine_Mexal__c` formula to `sigla+serie+numero+aaaammgg` (empty without a
+  date), and `MexalInvoiceLineImportBatch` to read `data_ordine`, carrying each
+  part over between blocks. Updated the descriptions of the `Riferimento_Ordine_Mexal__c`
+  fields. Deployed to **Pienissimo UAT** (deploy `0AfMA00000Cz5770AB`, nine
+  components; the profile was not deployed).
+- **Verified:** real UAT invoice details carry `data_ordine` as `yyyyMMdd` on the
+  first row of each block. `Formula.recalculateFormulas` in UAT gave
+  `OC+1+44203+20230725`, `OC+1+44203+20260105` and blank for the no-date case.
+- **UAT data fix (user-approved):** the 29 orders already sent to Mexal were
+  backfilled from `EffectiveDate`, because Mexal answers 404 for series 10, and
+  all 29 now have a key. The line import was re-run over all 520 invoices (job
+  `707MA00000mf1EgYAI`, 0 errors). Only FT 1/100 and FT 1/98 are left on the
+  three-part reference, as stale test documents that Mexal no longer serves; see
+  OI-275.
+- **Not done:** Prod is untouched because it has no invoice stack. Nothing was
+  committed.
+
+---
+
 ## 2026-10-21 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
@@ -32,7 +72,7 @@ Keep the twenty most recent entries here; archive older ones to
   by a **two-phase import**: technical release ~9 Nov · Zoho invoicing 9–12 Nov
   with the first import in parallel · second extract Fri 13 Nov 09:00 · Salesforce
   live Mon 16 Nov 09:00. ⚠ **No contingency day** — Aurel Mrruku asked for Friday
-  *and* Monday as freeze days and did not get them.
+  _and_ Monday as freeze days and did not get them.
   🔴🔑 **New gating blocker:
   [OI-274](notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md)
   — ~1,000 paid, unused tickets have no path into Salesforce.** A bulk import
@@ -65,7 +105,7 @@ Keep the twenty most recent entries here; archive older ones to
   · build OI-274 · rule on `SAL-12` before the shipped discount goes further ·
   decide the ~80 Performance Plus contracts · fix OI-212.
 - **Watch:** 🔑 **I moved the register's go-live date**, which eight previous runs
-  held. The OI-124 rule gates on *a proposal awaiting a reply*, and that condition
+  held. The OI-124 rule gates on _a proposal awaiting a reply_, and that condition
   is now met from both sides — client proposal in writing 20/10, ROMI acceptance
   in a recorded session 21/10. **The Italian wording in `REQUISITI.it.md` still
   needs a human's eye**, and ⚠ **ROMI's own written reply is not in this mailbox**

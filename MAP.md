@@ -6,6 +6,13 @@ Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November 
 
 ## Where the project stands
 
+- 🟡 **2026-10-22: the four-part Mexal order key is built and in UAT, not in Prod.**
+  [OI-275](notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md):
+  new `Order.Mexal_Document_Date__c`, set at send time. `ID_Ordine_Mexal__c` is
+  now `sigla+serie+numero+aaaammgg` and stays empty without a date, and the
+  invoice-line import matches on `data_ordine`. ⚠ Prod has no invoice stack at
+  all, so the key ships with it. 🟢 The UAT data is fixed: the 29 orders were
+  backfilled and the 520 invoices re-imported with 0 errors.
 - 🟢🔑 **2026-10-21 — the go-live was agreed at 16 November, the whole migration was designed end to end, and the blocker nobody had raised surfaced in the same room.** Nightly sweep,
   watermark 2026-10-20T22:00Z. **4 hours 43 minutes of client call in one day**, both drilled from full raw transcripts:
   [Check Dati Migrazione e OP](notes/meetings/2026-10-21%20Check%20Dati%20Migrazione%20e%20OP.md) (10:01 CEST, **02:46:16**, the longest session in the project record — Fabrizio Paganelli,
@@ -15,7 +22,7 @@ Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November 
   client had refused outright**, which is what unblocked the date: a **two-phase import** separates the release from the order migration, _"Dividiamo le tematiche … e così siamo tranquilli e non
   ci fermiamo manco un giorno, manco un secondo"_ — Fabrizio Paganelli, _"Se è così va bene. Per me va bene."_ **Agreed calendar: technical release ~9 Nov · Zoho invoicing 9–12 Nov with the
   first import in parallel · second extract Fri 13 Nov 09:00 · Salesforce live Mon 16 Nov 09:00**, all four principals on duty with a 10-minute response undertaking.
-  ⚠ **No contingency day** — Aurel Mrruku asked for Friday 13 *and* Monday 16 as freeze days and did not get them. ⚠ **ROMI's written reply exists and is not in this mailbox** (sent from
+  ⚠ **No contingency day** — Aurel Mrruku asked for Friday 13 _and_ Monday 16 as freeze days and did not get them. ⚠ **ROMI's written reply exists and is not in this mailbox** (sent from
   `e.spini@romicompany.com`), so the acceptance in evidence is verbal. 🟢 **The register was moved** — `go_live: 2026-11-16` in the YAML, `CTX-02` and both prose documents, nine places;
   🔑 **the OI-124 rule's condition is now met** (the proposal is no longer awaiting a reply) and **the Italian wording needs a human's eye.**
   🔴🔑 **The blocker: [OI-274](notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md) — ~1,000 paid, unused tickets have no path into Salesforce.** A bulk import
@@ -441,7 +448,7 @@ Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November 
   question is unanswered a tenth day, and the surviving reminder mail **waits on copy from
   Marco Montesi**.
   🟢🔑 **Three `Concordato`**: the quote must show **totale listino / sconto / netto** (PDF
-  *and* portal, all quote types) · a **renewal quote cannot be edited** — delete and recreate ·
+  _and_ portal, all quote types) · a **renewal quote cannot be edited** — delete and recreate ·
   **renewals carry no system contract**, only the quote PDF. 🟢 The first was **built the same
   evening** — `8186816`, `Quote.Totale_Listino__c` + `Quote.Sconto_Totale__c` into the PDF,
   the community page and the layout. ⚠ **Not in `DevMain`**, and
@@ -609,7 +616,7 @@ Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November 
   2027, event type live, data invio biglietto 1 Dec 2026) and mapped to category **`E11`** — ⚠ a
   category key new to these records. ⚠ Meanwhile both **Prod** TEST MKT editions still carry a ticket
   send date of **05/10, already past**, which Aurel Mrruku flagged himself.
-  ⚠ Of record: **`vendita libro` is in the 13/10 test list** — a *third* statement putting books in
+  ⚠ Of record: **`vendita libro` is in the 13/10 test list** — a _third_ statement putting books in
   Salesforce scope against Elena Spini's 09/10 post; **Fathom returned no Pienissimo meeting for a
   sixteenth run** (it returned one call, for another client); `#tproj-pienissimo` **silent a fourth
   day**; the canvas **static for seven weeks**; `Flows & Objects.drawio` and `Campi Oggetti…xlsx`
@@ -721,11 +728,11 @@ Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November 
   reports `Automazione: Invio Biglietto assegnato Flow` with **three distinct defects**: `Get Ticket PDF`
   found nothing and the decision still took **`Si_PDF`**; the email went to **`null`** with tracking on;
   the asset write-back **failed**, leaving OI-199's re-send guard unwritten. 🔴
-  **`force-app/main/default/flows/` is empty** — this project keeps *no* flow metadata in source
+  **`force-app/main/default/flows/` is empty** — this project keeps _no_ flow metadata in source
   control, so the flow is org-only, undiffable and will not travel with a deploy. ⚠ That qualifies
   [OI-197](notes/items/OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md):
   two of its five "unbuilt" rows **do exist org-side and are broken**, so the contract's state is
-  *unknown*, not "none". ⚠ **Which org is not established** — `00Dbl000005BSMH`, the base My Domain
+  _unknown_, not "none". ⚠ **Which org is not established** — `00Dbl000005BSMH`, the base My Domain
   host without `--partial`, subject not prefixed `Sandbox:`; that id is in no record and the partial
   sandbox is `00DMA000004nMMr`. Production is the natural reading and **no claim is made**. The
   **16/10 Marketing UAT** exists to test this send.
@@ -744,7 +751,7 @@ Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November 
   tracciato"_. On a live order they confirmed the one value sent **is the net price** — so the invoice
   cannot show list price or discount. ⚠ Known once and parked: Mirko Merendi named another Mexal
   interface and **advised against it over rounding**, which collides with the 18/09 fixed-price ruling
-  adopted *because* of rounding. Call with him **next week**, ⚠ unbooked.
+  adopted _because_ of rounding. Call with him **next week**, ⚠ unbooked.
   🔑 **[OI-14](notes/items/OI-14%20Marketing%20forms%20and%20subdomain.md) has scoped work after fifteen
   weeks** — Fabrizio Mastracci was **commissioned two forms**, `camerierivenditori.com` and
   `pienissimo.live`, needing their fields on Lead plus hidden UTMs and **`Interessato a`, `Categoria`,
@@ -968,7 +975,7 @@ Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November 
   has its design, agreed a day before the vendor call it was deferred to**: Mexal-managed registry
   fields locked in the Salesforce UI, corrections made in Mexal, **a nightly sync through a
   dedicated user that bypasses the lock**. That is `F-2` of the client's own workbook, three months
-  on. 🔴 **Nothing is built**, and the exception-queue owner is *still* unassigned.
+  on. 🔴 **Nothing is built**, and the exception-queue owner is _still_ unassigned.
   🟢 **[OI-115](notes/items/OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md):
   Elisa Migliano sent all four picklists** at 06:54:07Z — categoria, sottocategoria, origine lead,
   tipologia attività. 🔴 **As a mail attachment this sweep cannot open**, so the values are unread
