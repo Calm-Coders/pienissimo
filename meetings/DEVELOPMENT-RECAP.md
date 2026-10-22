@@ -7930,3 +7930,105 @@ discounts"_, `status: agreed`, against a shipped tutor-editable line discount, a
 list is unchanged. Both still need a human's ruling.
 🔴 **The 27 October Go/No-Go has lapsed and neither 21/10 session mentioned a
 Go/No-Go at all.**
+
+---
+
+## 68. Update 2026-10-22 — the migration moved from design to data, and the import key turned out not to be unique on its own
+
+Nightly `requirements-check`, watermark **2026-10-21T22:00Z**. **One new client
+call**: [Check Excel Migrazione](../notes/meetings/2026-10-22%20Check%20Excel%20Migrazione.md),
+15:00 CEST, **00:40:19**, Fabrizio Paganelli alone for Pienissimo with Elena
+Spini and Aurel Mrruku. Drilled from the full raw transcript, preserved at
+`meetings/2026-10-22-check-excel-migrazione-transcript.it.md`. He walked his
+populated migration spreadsheet line by line — the first time this project has
+had migration **data** rather than migration design.
+
+### 🟢 The exclusion rules, agreed
+
+The scope question open since 15/10 is answered: **the extract starts 1 January
+2024** — ~30,000 order lines from 2024, ~9,000 from 2025.
+
+| Rule | Status |
+| ---- | ------ |
+| Rows whose order key fields are empty are **excluded** | ✅ agreed |
+| All invoices and scadenzario entries import **regardless** of an order | ✅ agreed |
+| Tranche date = **invoice date** | ✅ agreed |
+| Payment condition **forced to `12`** on all history | ✅ agreed |
+| Missing agent code → **existing code `610`**, never invented | ✅ agreed |
+| **Credit notes excluded** to a later phase, kept in a separate file | ✅ agreed |
+| **~1,000 `SW` platform-sale lines deleted** | ✅ agreed |
+| Orders load **before** lines | ✅ agreed |
+
+⚠ **The costs were not priced.** 2024 credit notes are _"parecchie"_ by the
+client's own account, so the migrated history overstates net sales for that
+year; `12` and `610` are fabricated values on every row that lacked one, and
+commission reporting over history will attribute those sales to the secretariat.
+See [OI-244](../notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+
+### 🔴 The import key is not unique on its own
+
+Fabrizio Paganelli showed on screen that `sigla` + `serie` + `numero` +
+`data ordine` **repeats across different customers**, because invoices issued
+with no preliminary order leave all four fields empty. Two repairs were refused
+— adding the customer code (the line-level structure will not carry it) and
+inventing the missing numbers (the key must match what Mexal later sends) — and
+it is fixed by **excluding the rows**.
+
+🔑 **So the key's uniqueness is now a property of the client's spreadsheet, not
+of the design.** Nothing in Salesforce enforces or detects it, and a later
+extract produced without that filter — by another person, or for the second
+import on 13 November — re-opens it silently. See
+[OI-275](../notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md).
+
+### 🔴 Two new rows
+
+- **[OI-283](../notes/items/OI-283%20Discounts%20cannot%20be%20edited%20on%20an%20existing%20order.md)
+  — discounts cannot be edited on an existing order.** `Gestisci Prodotti`
+  implements add and delete; edit was never built. Confirmed in the room. ⚠ The
+  client **declined to say what the right behaviour is**, so the requirement is
+  still unstated, and the quote path was not tested.
+- **[OI-284](../notes/items/OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md)
+  — the listino / sconto / netto mapping for Mexal orders is undefined**, and
+  blocks go-live. Salesforce has the fields; the Mexal fields are unnamed. 🔴 The
+  two sides **disagree in the open**: Aurel Mrruku wants net + list with the
+  discount derived, on ERP rounding; Fabrizio Paganelli wants percentages. 🟢 A
+  client call is requested for **Monday 26 October**, accepted, ⚠ **no hour
+  fixed**.
+
+### 🟢 The picklist workbook arrived, and ROMI cannot use it
+
+After thirteen sweeps, Elisa Migliano sent
+`Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx` at
+07:42:18Z — resent, not corrected. 🔴 Elena Spini's reading, in DM the same
+morning: _"quel file fa cagare quindi capire che vogliono"_, with the question to
+the client assigned to Aurel Mrruku and ⚠ unanswered. 🔑 **The problem has
+changed**: not whose list is current, but that the client's own source file does
+not say. See [OI-265](../notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md).
+
+### 🟡 A competing edizione mechanism, and a precondition
+
+Aurel Mrruku offered an `old` flag on the real edizione instead of the dummy
+editions agreed on 21/10. The client did not engage and **neither was
+withdrawn**. A new precondition was stated twice and accepted: **every product
+must be active before the load**, with ⚠ nobody saying who reverses it — the
+fourth migration-only condition with no owner for its removal. See
+[OI-276](../notes/items/OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md).
+
+### 🔴 What did not move
+
+- **[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  is unchanged a twelfth night** — and the call restated the collection chain
+  through it end to end, with the client working it out aloud and agreeing it.
+  ~30,000 historical lines will acquire their state that way.
+- **[OI-267](../notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+  is unbuilt** — `AUTOMATIC_MEXAL_CREATION_ENABLED` is still `true`.
+- ⚠ **[OI-274](../notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md),
+  escalated to ROMI by the client's project lead the previous day, was not
+  mentioned once.**
+- ⚠ **Zoho was not named**, a sixth consecutive run.
+
+🔴 **`SAL-12` is uncited for a fifth session** — _"no discretionary discounts"_,
+`status: agreed`, now against two rows (OI-283, OI-284) built on the contrary
+assumption and a client call booked to define how discounts reach the ERP.
+**No requirement was amended by this run.** `DM-07`'s competitor list is
+unchanged. Both still need a human's ruling.

@@ -2,9 +2,36 @@
 
 Entry point. Keep under 5 KB; if it grows, move detail into a note and link it.
 
-Last updated: 2026-10-21 (nightly sweep - the go-live was agreed at 16 November in a recorded client call, the migration was designed end to end, and the ticket-balance blocker nobody had raised surfaced in the same room) · Source of record: [notes/](notes/)
+Last updated: 2026-10-22 (nightly sweep - the migration moved from design to data in a 40-minute client call, the import key turned out not to be unique on its own, and the picklist workbook arrived after thirteen sweeps and cannot be used) · Source of record: [notes/](notes/)
 
 ## Where the project stands
+
+- 🟢🔑 **2026-10-22 — the migration moved from design to data, and the import key turned out not to be unique on its own.** Nightly sweep,
+  watermark 2026-10-21T22:00Z. **One new client call, 00:40:19** — [Check Excel Migrazione](notes/meetings/2026-10-22%20Check%20Excel%20Migrazione.md)
+  (15:00 CEST, Fabrizio Paganelli alone for Pienissimo), drilled from the full raw transcript. He walked his populated spreadsheet line by line, and
+  🟢 **the scope question [OI-244](notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md) has carried since 15/10 is answered: the extract starts 1 January 2024.**
+  **Exclusion rules agreed**: rows with empty order keys dropped · all invoices and scadenzari imported anyway · tranche date = invoice date · payment condition forced to `12`
+  · missing agent → existing code `610` · **credit notes excluded** to a later phase · ~1,000 `SW` platform lines deleted.
+  🔴🔑 **[OI-275](notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md) — the four-part key repeats across customers**, because invoices issued without an order leave all four fields empty.
+  **Both repairs were refused** (customer code can't join the line-level key; inventing numbers breaks the later invoice match) and 🟢 **it is fixed by excluding the rows** — so
+  🔑 **the key's uniqueness now lives in the client's spreadsheet, not in the system**, with nothing detecting a violation if a later extract omits the filter.
+  🔴 **New: [OI-283](notes/items/OI-283%20Discounts%20cannot%20be%20edited%20on%20an%20existing%20order.md)** — a tutor who generates the PDF and then spots a missing discount cannot add it;
+  `Gestisci Prodotti` does add and delete, **not edit**, confirmed in the room — and ⚠ **the client declined to say what the right behaviour is**, so the requirement is still unstated.
+  🔴 **New: [OI-284](notes/items/OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md)** — orders must carry listino, sconto and netto into Mexal,
+  the Mexal fields are unnamed, and **the two sides disagree in the open**: Aurel Mrruku wants net + list with the discount derived (rounding), Fabrizio Paganelli wants percentages.
+  🟢 **A client call is requested for Monday 26 October** and ⚠ **no hour is fixed**. 🔴 **`SAL-12` is uncited for a fifth session.**
+  🟢🔑 **[OI-265](notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md): the picklist workbook arrived after thirteen sweeps** — Elisa Migliano, 07:42:18Z,
+  `Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx` — and 🔴 **ROMI cannot use it**: Elena Spini in DM, _"quel file fa cagare quindi capire che vogliono"_.
+  **The blocking step is now a question to the client**, owned by Aurel Mrruku, unanswered. ⚠ Still an attachment, not a Drive file.
+  🟡 **[OI-276](notes/items/OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md) has a second, competing mechanism** — an `old` flag on the real edizione instead of dummy editions; the client did not engage and
+  **neither was withdrawn** · and a new precondition: **every product must be activated before the load**, with ⚠ nobody saying who reverses it. **Fourth migration-only condition with no owner for its removal.**
+  🔴 **[OI-212](notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md) unchanged a twelfth night**, and the call restated the collection chain through it with the client agreeing it aloud.
+  🔴 **[OI-267](notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md) unbuilt**; ⚠ **[OI-274](notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md) was not mentioned once** the day after it was escalated to ROMI.
+  🟢 **`DevMain` moved `228be1d` → `653f8e2`**, 4 commits, **all by Aurel Mrruku, no PRs** — the four-part key, the product page and layouts; 4 more commits unmerged on `DevAnita22` and `Devmain_LeadChecks`.
+  ⚠ **Fathom returned nothing a twenty-third run** · the canvas **unchanged since 20.08.2026, 63 days** · `#tproj-pienissimo` **silent** · the marketing DM **silent a second day** ·
+  ⚠ **no reply to any nightly report — thirty-two nights.** 🟢 `DTT_SHR_Mappatura_form_handler_campi_v3.xlsx` is **classified at last: another client** (Pardot form handlers, brands EL/SHR/WL/LBT/DTT).
+  ⚠ **Item ids OI-189–OI-193 remain reserved**; the next free id is **285**.
+  — [trace](notes/traces/Source%20trace%202026-10-22%20nightly.md)
 
 - 🟡 **2026-10-22: the product page is done in UAT, not in Prod.** Description
   fixed: full Mexal name plus extended description, no longer the truncated

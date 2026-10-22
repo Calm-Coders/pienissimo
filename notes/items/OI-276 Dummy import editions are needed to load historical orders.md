@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-22
 depends_on: [OI-244]
 blocks: [OI-274, go-live]
 severity: gating
@@ -96,3 +96,38 @@ dummy edizione spans 1 January 2025 to 24 March 2026.
 - ⚠ The naming convention, as above.
 - ⚠ Whether the dummy editions must also be deleted afterwards, or stay as
   inert history. Not discussed.
+
+## 🟡 2026-10-22 — a second mechanism was offered, and a precondition was added
+
+At `00:16:10` of
+[the 22/10 session](../meetings/2026-10-22%20Check%20Excel%20Migrazione.md) Aurel
+Mrruku proposed a **flag on the real edizione** instead of throwaway editions:
+
+> _"se vuoi ti faccio un campo sull'edizione lo chiamo `old`, quindi vecchio,
+> edizione vecchia. E per non generare il link sulle edizioni vecchie, intendo"_
+
+⚠ **Fabrizio Paganelli did not engage with it** — _"adesso io faccio fatica a
+seguirti perché sto pensando a questo tracciato"_ — and the call moved on.
+🔴 **So two mechanisms for the same problem are on the record and neither has
+been withdrawn**: the dummy `Pippo`/`Import` editions agreed on 21/10, and this
+flag. They are not equivalent: the flag suppresses link generation on a real
+edizione and leaves no tickets to mass-delete, which would make the 21/10
+deletion step unnecessary — and would remove the naming-convention risk this row
+already carries.
+
+🔑 **A new precondition was stated twice and accepted**: every product in the
+historical orders must be **active** before the edizione mapping can be done.
+
+> _"per mettere i prodotti sulla ma[pp]atura i prodotti devono essere attivi
+> praticamente. Io ti devo abilitare prima tutti i prodotti"_
+
+and as a closing action: _"E dobbiamo abilitare tutti i prodotti."_ Fabrizio
+Paganelli accepted it as temporary — _"se è una cosa temporanea, non è un
+problema"_.
+
+⚠ **Nobody said what activating the whole catalogue does to the live product
+list tutors see, or who reverses it.** This is the fourth migration-only
+condition with no named owner for its removal, alongside the Mexal-send bypass
+([OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)),
+the edizione date reversal and the Performance Plus contract bypass
+([OI-280](OI-280%20Performance%20Plus%20contract%20generation%20must%20be%20bypassed%20for%20migrated%20orders.md)).

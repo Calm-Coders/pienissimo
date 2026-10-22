@@ -8215,3 +8215,111 @@ delle due call del 21/10.** La lista concorrenti del `DM-07` è invariata. Entra
 richiedono ancora la decisione di una persona.
 🔴 **Il Go/No-Go del 27 ottobre è decaduto e nessuna delle due sessioni del 21/10
 ha nominato un Go/No-Go.**
+
+---
+
+## 68. Aggiornamento 22/10/2026 — la migrazione è passata dal disegno ai dati, e la chiave di import si è rivelata non unica da sola
+
+`requirements-check` notturno, watermark **2026-10-21T22:00Z**. **Una nuova call
+col cliente**: [Check Excel Migrazione](../notes/meetings/2026-10-22%20Check%20Excel%20Migrazione.md),
+15:00 CEST, **00:40:19**, Fabrizio Paganelli da solo per Pienissimo con Elena
+Spini e Aurel Mrruku. Analizzata dalla trascrizione grezza completa, conservata
+in `meetings/2026-10-22-check-excel-migrazione-transcript.it.md`. Ha percorso
+riga per riga il foglio di migrazione compilato — la prima volta che il progetto
+ha **dati** di migrazione e non solo un disegno.
+
+### 🟢 Le regole di esclusione, concordate
+
+La domanda di perimetro aperta dal 15/10 ha risposta: **l'estrazione parte dal
+1° gennaio 2024** — ~30.000 righe d'ordine dal 2024, ~9.000 dal 2025.
+
+| Regola | Stato |
+| ------ | ----- |
+| Le righe con i campi chiave d'ordine vuoti sono **escluse** | ✅ concordato |
+| Tutte le fatture e gli scadenzari entrano **comunque**, con o senza ordine | ✅ concordato |
+| Data tranche = **data fattura** | ✅ concordato |
+| Condizione di pagamento **forzata a `12`** su tutto lo storico | ✅ concordato |
+| Codice agente mancante → **codice esistente `610`**, mai inventato | ✅ concordato |
+| **Note di credito escluse** e rinviate, conservate in un file a parte | ✅ concordato |
+| **~1.000 righe `SW`** di vendita piattaforma eliminate | ✅ concordato |
+| Prima le testate, **poi** le righe | ✅ concordato |
+
+⚠ **I costi non sono stati quantificati.** Nel 2024 le note di credito sono
+_«parecchie»_ per ammissione del cliente, quindi lo storico migrato sovrastima
+il venduto netto di quell'anno; `12` e `610` sono valori inventati su ogni riga
+che ne era priva, e la reportistica provvigionale sullo storico attribuirà quelle
+vendite alla segreteria. Vedi
+[OI-244](../notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+
+### 🔴 La chiave di import non è unica da sola
+
+Fabrizio Paganelli ha mostrato a schermo che `sigla` + `serie` + `numero` +
+`data ordine` **si ripete su clienti diversi**, perché le fatture emesse senza
+ordine preliminare lasciano vuoti tutti e quattro i campi. Due rimedi sono stati
+respinti — aggiungere il codice cliente (la struttura a livello di riga non lo
+regge) e inventare i numeri mancanti (la chiave deve coincidere con quanto Mexal
+invierà poi) — e si risolve **escludendo le righe**.
+
+🔑 **Quindi l'unicità della chiave è ora una proprietà del foglio del cliente,
+non del disegno.** Nulla in Salesforce la impone o la rileva, e una futura
+estrazione prodotta senza quel filtro — da un'altra persona, o per il secondo
+import del 13 novembre — riapre il problema in silenzio. Vedi
+[OI-275](../notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md).
+
+### 🔴 Due righe nuove
+
+- **[OI-283](../notes/items/OI-283%20Discounts%20cannot%20be%20edited%20on%20an%20existing%20order.md)
+  — gli sconti non si possono modificare su un ordine esistente.**
+  `Gestisci Prodotti` implementa aggiunta e cancellazione; la modifica non è mai
+  stata costruita. Confermato in riunione. ⚠ Il cliente **ha rifiutato di dire
+  quale sia il comportamento corretto**, quindi il requisito resta non espresso,
+  e il percorso del preventivo non è stato provato.
+- **[OI-284](../notes/items/OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md)
+  — la mappatura listino / sconto / netto sugli ordini Mexal non è definita**, e
+  blocca il go-live. Salesforce ha i campi; i campi Mexal non sono stati
+  indicati. 🔴 Le due parti **non concordano, apertamente**: Aurel Mrruku vuole
+  netto + listino con lo sconto derivato, per gli arrotondamenti dell'ERP;
+  Fabrizio Paganelli vuole le percentuali. 🟢 È stata chiesta una call per
+  **lunedì 26 ottobre**, accettata, ⚠ **senza orario fissato**.
+
+### 🟢 Il file delle picklist è arrivato, e ROMI non riesce a usarlo
+
+Dopo tredici sweep, Elisa Migliano ha inviato
+`Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx` alle
+07:42:18Z — rinviato, non corretto. 🔴 La lettura di Elena Spini, in DM la stessa
+mattina: _«quel file fa cagare quindi capire che vogliono»_, con la domanda al
+cliente assegnata ad Aurel Mrruku e ⚠ senza seguito. 🔑 **Il problema è
+cambiato**: non quale lista sia corrente, ma che il file di origine del cliente
+non lo dica. Vedi
+[OI-265](../notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md).
+
+### 🟡 Un meccanismo edizione concorrente, e una precondizione
+
+Aurel Mrruku ha proposto un flag `old` sull'edizione reale al posto delle
+edizioni fittizie concordate il 21/10. Il cliente non ha raccolto e **nessuno dei
+due è stato ritirato**. È stata dichiarata due volte e accettata una nuova
+precondizione: **tutti i prodotti devono essere attivi prima del caricamento**,
+con ⚠ nessuno che dica chi la riporta indietro — quarta condizione solo-migrazione
+senza un titolare per la rimozione. Vedi
+[OI-276](../notes/items/OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md).
+
+### 🔴 Cosa non si è mosso
+
+- **[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  è invariato per la dodicesima notte** — e la call ha ripercorso per intero la
+  catena degli incassi che vi passa attraverso, col cliente che la ricostruisce
+  ad alta voce e la condivide. ~30.000 righe storiche acquisiranno così il loro
+  stato.
+- **[OI-267](../notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+  non è costruito** — `AUTOMATIC_MEXAL_CREATION_ENABLED` è ancora `true`.
+- ⚠ **[OI-274](../notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md),
+  scalato a ROMI dal project lead del cliente il giorno prima, non è stato
+  nominato una sola volta.**
+- ⚠ **Zoho non è stato nominato**, sesta tornata consecutiva.
+
+🔴 **`SAL-12` non è citato per la quinta sessione** — _«nessuno sconto
+discrezionale»_, `status: agreed`, ora contro due righe (OI-283, OI-284)
+costruite sull'assunto opposto e una call col cliente fissata per definire come
+gli sconti arrivano all'ERP. **Questa tornata non ha modificato alcun
+requisito.** La lista concorrenti del `DM-07` è invariata. Entrambi richiedono
+una decisione umana.

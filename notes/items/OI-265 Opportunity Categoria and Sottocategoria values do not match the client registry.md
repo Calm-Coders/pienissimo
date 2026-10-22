@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-19
-updated: 2026-10-21
+updated: 2026-10-22
 depends_on: [OI-96]
 source: Gmail thread 1a154a97e004a741, 2026-10-19T14:55:54Z
 ---
@@ -132,3 +132,57 @@ he is cc'd. The ask lands on Elena Spini and Elisa Migliano.
 
 🟡 **This is the cheapest open item on the project to close** — one shared Drive
 link in place of an attachment — and it has survived twelve sweeps.
+
+## 🟢 2026-10-22 — the workbook arrived, and ROMI cannot use it
+
+**After thirteen consecutive sweeps asking for it, the picklist workbook was
+sent.** Elisa Migliano, from `amministrazione@pienissimo.com`, **07:42:18Z** on
+the same `Opportunity` thread (Gmail `1a1628f97114b701`), to Elena Spini, cc
+Aurel Mrruku, Fabrizio Paganelli and Marco Montesi:
+
+> _"Allego nuovamente il file, all'interno di esso sono presenti tutte le
+> specifiche"_
+
+The attachment is
+**`Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx`** —
+the same filename this row has been naming since 19/10. It answers Marco
+Montesi's 21/10 _"qui deve essere saltato qualcosa"_: the file was resent, not
+corrected.
+
+🟢 **So the twelve-sweep "unshared" finding is closed.** ⚠ **But it is still a
+mail attachment, not a Drive document** — nothing shared, nothing linkable,
+nothing diffable, which is the condition this row has been asking to change.
+
+### 🔴 And ROMI's reading of it is that it is unusable
+
+Elena Spini to Aurel Mrruku in DM the same morning, **10:40:26 and 10:41:06
+CEST**:
+
+> _"poi ti chiederei anche di chiedergli info sul file che ci ha girato Elisa -
+> thread >> **Opportunity**"_
+
+> _"vogliono cambiare i valori di un campo picklist su lead e opty ma quel file
+> fa cagare quindi capire che vogliono"_
+
+Aurel Mrruku, 11:26:54: _"appena ho del tempo do un'occhiata"_. ⚠ **Unanswered
+at the time of this sweep, and nobody has replied to Elisa Migliano.**
+
+🔑 **This is a different problem from the one this row opened with.** The dispute
+was whose list is current. The answer now on the record is that the client's own
+source file does not state it clearly enough for ROMI to act — so neither list
+can be called current, and the reconciliation this row waits on cannot be done
+from the artifact that was supposed to settle it.
+
+⚠ **The workbook's contents are not recorded here.** This sweep has no tool that
+reads a Gmail attachment; its existence, filename, sender and date are recorded,
+its values are not. The mail also carries eight inline images and a
+`~WRD0003.jpg`, all unopened.
+
+### Where that leaves it
+
+- 🟢 The file exists and is identified, with a message id anyone can open.
+- 🔴 **Nobody has gone back to the client to ask what they actually want**, which
+  is now the single blocking step and sits with Aurel Mrruku by Elena Spini's
+  own request.
+- 🔴 The values are still unreconciled, **fourteen days after the complaint**.
+- ⚠ Still not in Drive.

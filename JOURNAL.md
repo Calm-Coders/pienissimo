@@ -10,6 +10,50 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-22 - claude (nightly requirements-check)
+
+- **Did:** scheduled nightly sweep, watermark **2026-10-21T22:00Z** → new
+  watermark **2026-10-22T22:00Z**. Gmail, Drive, Slack (dev group,
+  `#tproj-pienissimo`, marketing DM, Elena Spini DM, canvas), Fathom, git.
+- **Found:** one new client call, **Check Excel Migrazione**, 15:00 CEST,
+  00:40:19 — drilled from the full raw transcript, preserved at
+  `meetings/2026-10-22-check-excel-migrazione-transcript.it.md`.
+  - 🟢 **OI-244's scope question is answered**: the historical extract starts
+    **1 January 2024**, with eight exclusion rules agreed (keyless rows dropped,
+    all invoices/scadenzari in regardless, tranche date = invoice date, payment
+    condition `12`, agent `610`, credit notes deferred, ~1,000 `SW` lines
+    deleted, orders before lines).
+  - 🔴 **OI-275 corrected, not reopened**: the four-part key repeats across
+    customers on rows that have no order. Both structural repairs were refused;
+    it is fixed by **excluding the rows**, so the key's uniqueness now lives in
+    the client's spreadsheet and nothing in Salesforce detects a violation.
+  - 🔴 **New OI-283** — discounts cannot be edited on an existing order;
+    `Gestisci Prodotti` does add and delete. Confirmed in the room. The client
+    **declined to state the right behaviour**.
+  - 🔴 **New OI-284** — listino/sconto/netto has no Mexal mapping, and the two
+    sides disagree (amount vs percentage). Client call requested for **26
+    October**, accepted, **no hour**.
+  - 🟢 **OI-265**: the picklist workbook arrived after thirteen sweeps and
+    **ROMI judges it unusable** — the blocking step is now a question to the
+    client, owned by Aurel Mrruku, unanswered.
+  - 🟡 **OI-276**: a competing `old`-flag mechanism was offered and neither was
+    withdrawn; new precondition that **all products be activated**, with no
+    owner for reversing it.
+- **State:** notes written/updated (OI-244, OI-265, OI-275, OI-276, OI-207,
+  new OI-283, OI-284, new meeting note); MAP, INDEX, both trackers and both
+  recaps (§68) regenerated for the affected rows; trace note written;
+  `vault:check` run before committing. **Next free item id is 285.**
+- **Next:** the 26/10 call needs an hour; someone must go back to the client on
+  the picklist file; a human must rule on `SAL-12`, now contradicted by two
+  further rows.
+- **Watch:** 🔴 **OI-212 unchanged a twelfth night** and the 22/10 call put the
+  *client* on record agreeing the collection chain that runs through it, for
+  ~30,000 historical lines. 🔴 OI-267 unbuilt. ⚠ **OI-274 was not mentioned
+  once**, the day after the client escalated it. ⚠ **No requirement was
+  amended** — the register is as the 21/10 run left it. ⚠ Zoho unnamed, sixth
+  run. ⚠ **No Apex test written or proposed**, per the standing instruction,
+  though today's commits added four more Apex classes to the untested surface.
+
 ## 2026-10-22 - claude (product page: description, levels, gruppo merceologico)
 
 - **Did:** built the 13/10, 19/10 and 21/10 product-page requests in **UAT**:

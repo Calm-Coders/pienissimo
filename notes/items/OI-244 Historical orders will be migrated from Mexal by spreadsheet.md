@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-21
+updated: 2026-10-22
 depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
@@ -368,3 +368,73 @@ in ambiente di UAT"_ — so UAT only, and the production run is separate. Agains
 a first import on ~9 November that leaves roughly two weeks, with
 [OI-274](OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md)
 unbuilt inside it.
+
+## 🟢 2026-10-22 — the client walked his populated file, and the exclusion rules were agreed
+
+**The draft promised on 21/10 was reviewed line by line in a 40-minute call**
+([Check Excel Migrazione](../meetings/2026-10-22%20Check%20Excel%20Migrazione.md),
+15:00 CEST). This is the first time the migration has moved from design to data.
+Everything below is the client proposing and Aurel Mrruku accepting.
+
+### 🟢 The scope question this row has carried since 15/10 is answered
+
+**The extract starts 1 January 2024.** Fabrizio Paganelli: _"ho fatto una prova
+dal primo di gennaio del 2024"_ — so three commercial years, with 2024 included
+despite its data quality. The volumes he read off are consistent with 21/10:
+**~30,000 order lines from 2024, ~9,000 from 2025**, less ~1,000 `SW` lines.
+
+### The agreed rules
+
+| Rule | Why |
+| ---- | --- |
+| **Rows with empty order key fields are excluded** | They are invoices issued with no order; their key is empty and collides across customers. See [OI-275](OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md) |
+| **All invoices and scadenzario entries import anyway** | _"io le fatture li prenderò a prescindere … solo che quelle fatture non sono collegate ai ordini"_ |
+| **Tranche date = invoice date** | Confirmed as coherent; different line dates create different tranches |
+| **Payment condition forced to `12`** (bonifico data fattura) | Aurel Mrruku: _"Non ci dà problemi, basta che ci sia un valore"_ |
+| **Missing agent code → existing code `610`** | Never invent one: _"non inventi codici agenti nuovi perché poi mi causa problemi a trovare l'utente che è un agente"_. `610` is the generic secretariat agent |
+| **Credit notes excluded**, kept in a separate Excel | Deferred with the credit-note feature itself to Fase 2/3 — _"li importiamo quando implementiamo note di credito"_ |
+| **~1,000 `SW` platform-sale lines deleted** | Mostly 2024; accepted on the condition nothing references a missing code |
+| **Orders are loaded before lines** | _"mi deve passare prima l'ordine, poi il riferimento"_ |
+
+🟡 **Open orders are a much smaller problem than assumed.** Orders entered and
+not yet invoiced today number **five** — he then counted seven on screen, and
+the transcript does not reconcile the two. He expects more at the real
+migration.
+
+### ⚠ What the rules cost, and nobody priced
+
+- 🔴 **Credit notes leave the migration entirely.** 2024 has _"parecchie"_ of
+  them by his own account, against Elena Spini's recollection that they were few
+  per year. **The migrated history will overstate net sales for 2024 by the
+  value of every credit note**, and no source says whether anyone reading the
+  history will know that.
+- ⚠ **Payment condition `12` on every historical row** is a fabricated value by
+  agreement. It is harmless only for as long as nothing reports on it.
+- ⚠ **Agent `610` on every row that lacked one** attributes those sales to the
+  secretariat. Commission reporting over history will reflect that.
+- 🔴 **The exclusion filter is the only thing keeping the import key unique**,
+  and it lives in the client's spreadsheet, not in the system — see OI-275.
+
+### 🔴 Still unbuilt, still running through OI-212
+
+The call restated the collection chain end to end, with Fabrizio Paganelli
+working it out aloud and agreeing it:
+
+> _"tu leggi prima lo scadenziario, vedi quali sono le fatture che sono state
+> pagate o no e … nelle fatture recuperi il numero dell'ordine e quindi aggiorni
+> se è pagato o no"_
+
+🔴 **That is the chain
+[OI-212](OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+records as wrong, unchanged a twelfth night**, and it is now how ~30,000
+historical lines will acquire their collection state.
+
+### Next steps as recorded
+
+1. **[Fabrizio Paganelli]** send the finished list to Aurel Mrruku — _"appena
+   finisci mandami l'el[enco]"_. ⚠ No date.
+2. **[Both]** activate all products before the load — see
+   [OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md).
+3. **[Fabrizio Paganelli]** settle the price/discount mapping with Kreosoft —
+   now [OI-284](OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md),
+   with a call requested for 26 October.

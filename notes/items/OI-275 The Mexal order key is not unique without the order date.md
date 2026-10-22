@@ -121,3 +121,46 @@ real customer record and are deliberately not reproduced.
 - ⚠ The same thread also produced the SEPA mandate field names, which are a
   different item —
   [OI-277](OI-277%20A%20read-only%20Mandato%20RID%20field%20is%20required%20on%20the%20account.md).
+
+## 🔴 2026-10-22 — the key is not unique on its own, and the fix lives outside Salesforce
+
+**The day after this row was built and closed, the client demonstrated on screen
+that `sigla` + `serie` + `numero` + `data ordine` repeats across different
+customers.** Found at `00:04:26`–`00:06:59` and `00:21:31` of
+[the 22/10 session](../meetings/2026-10-22%20Check%20Excel%20Migrazione.md).
+
+The collision is not between two real orders. It is between **rows that have no
+order at all**: invoices Pienissimo issued directly in Mexal without a
+preliminary order — _"ci arriva l'ordine direttamente su Ma[x]al e noi lo
+fatturiamo"_ — which leave `sigla` null, `serie` `0`, `numero` null and no date.
+Every such row therefore carries the same empty key, on whatever customer.
+
+Fabrizio Paganelli's own test is the clearest statement of it:
+
+> _"è vero che … sigla serie numero e data, è un duplicato su clienti diversi.
+> Però a livello di cliente non ho due duplicati sullo stesso cliente, quindi la
+> chiave sarebbe stata unica se si poteva considerare anche il codice
+> all'interno della chiave, però se non si può amen."_
+
+### 🔴 Both repairs were refused, for good reasons, and the third was accepted
+
+| Proposed                                   | Outcome                                                                                                   |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| **Add the customer code to the key**       | Refused. The customer attaches to the order, not the line — _"la struttura che abbiamo implementato non ci permette di fare sta cosa."_ |
+| **Invent the missing order numbers** — _"Va bene, me lo invento io"_ | Refused. The key must match what Mexal later sends on the invoice: _"deve essere sul database perché poi quando arriverà la fattura per collegarsi a quell'ordine deve coincidere."_ |
+| **Exclude the rows from the extract**      | 🟢 **Accepted** — _"io questi non te li passo così non abbiamo anomalie"_ / _"ok, ok, perfetto."_         |
+
+### 🔑 What this changes about this row
+
+**The key's uniqueness is now a property of the client's extract, not of the
+design.** Nothing in Salesforce enforces it, nothing detects a violation, and
+`ID_Ordine_Mexal__c` stays empty rather than colliding only because the empty
+rows never arrive. ⚠ **If a later extract is produced without that filter — by a
+different person, or for the second import on 13 November — the collision
+returns silently.** No source records the filter as a documented step.
+
+⚠ **The excluded rows are not nothing.** Their invoices and scadenzario entries
+are still imported, unlinked to any order line — Aurel Mrruku: _"io le fatture
+li prenderò a prescindere … solo che quelle fatture non sono collegate ai
+ordini."_ So the migrated history will contain invoices with no order behind
+them. **What a user sees in that case was not discussed.**
