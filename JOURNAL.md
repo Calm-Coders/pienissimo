@@ -10,6 +10,21 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-22 - codex (Claude stale-invoice cleanup authorization)
+
+- **Did:** reviewed the scratchpad `clean_stale.apex` and recorded the user's
+  explicit authorization in AGENTS.md for its FT 1/98 and FT 1/100 deletions,
+  link cleanup, Account reassignment and affected order-line payment resets
+  in Pienissimo UAT. Existing local Bash and PowerShell allow rules already
+  cover `sf apex run -o "Pienissimo UAT"`; no broader permissions were added.
+- **State:** the cleanup script was not executed in this session. No UAT
+  cleanup result is claimed.
+- **Next:** Claude should retry the reviewed script against Pienissimo UAT,
+  check the debug output for rollback as well as command success, verify
+  record counts, links and payment status, then update OI-275 and the journal.
+
+---
+
 ## 2026-10-22 - codex (Claude UAT Apex permission)
 
 - **Did:** at the user's explicit request, added Bash and PowerShell allow
@@ -42,9 +57,11 @@ Keep the twenty most recent entries here; archive older ones to
 - **UAT data fix (user-approved):** the 29 orders already sent to Mexal were
   backfilled from `EffectiveDate`, because Mexal answers 404 for series 10, and
   all 29 now have a key. The line import was re-run over all 520 invoices (job
-  `707MA00000mf1EgYAI`, 0 errors). Only FT 1/100 and FT 1/98 are left on the
-  three-part reference, as stale test documents that Mexal no longer serves; see
-  OI-275.
+  `707MA00000mf1EgYAI`, 0 errors). Then cleaned FT 1/100 and FT 1/98, two stale
+  test documents that Mexal no longer serves, on user request. FT 1/100 was
+  deleted. FT 1/98 lost its 4 old lines and its order link. 5 order lines went
+  from Paid back to empty. No three-part reference remains in UAT; details are
+  in OI-275.
 - **Not done:** Prod is untouched because it has no invoice stack. Nothing was
   committed.
 

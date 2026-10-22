@@ -97,13 +97,23 @@ real customer record and are deliberately not reproduced.
   over all 520 UAT invoices (job `707MA00000mf1EgYAI`, 11/11 chunks, 0 errors).
   The invoice references are now four-part, for example FT 1/102 →
   `OC+1+77859+20261014`.
-- ⚠ **Two UAT test invoices still carry stale three-part references.**
-  - **FT 1/100** keeps `OC+10+23` and its link to order 00000367. Mexal now
-    answers 404 for it, so the import skips it.
-  - **FT 1/98** keeps 4 old lines and its link to order 00000318. Mexal now
-    returns it with no order reference, and the import neither deletes lines
-    Mexal no longer returns nor clears an existing invoice → order link.
-  - Neither is a key defect. Both are left untouched.
+- 🟢 **The two stale UAT test invoices were cleaned on 2026-10-22, on user
+  request, in one transaction.**
+  - **FT 1/100** no longer exists in Mexal (404). It was deleted with its 1
+    line and its 1 rate.
+  - **FT 1/98** is now a different, real Mexal invoice with no order
+    reference. Its 4 old test lines (`OC+10+12`) were deleted, and the invoice
+    and its rate lost the link to order 00000318. Their Account now comes from
+    the Mexal customer code.
+  - The 5 order lines those invoices had marked Paid (00000318 lines 662–665,
+    00000367 line 783) lost the invoice and rate link, and their payment status
+    is now empty.
+  - No three-part reference is left anywhere in UAT.
+  - ⚠ Not touched: lines 784–786 of order 00000367 were already Paid with no
+    invoice before this work, origin unknown.
+- ⚠ **Import gap found during the cleanup:** `MexalInvoiceLineImportBatch`
+  never deletes invoice lines Mexal stops returning, and never clears an
+  existing invoice → order link. Stale links survive a re-import.
 - ⚠ **No live invoice has matched an order on the new key yet.** The UAT
   invoices that come from real orders reference series 1 (production)
   orders, which do not exist in UAT. The first real match will be the next

@@ -82,15 +82,15 @@ records**. Never edit either.
 
 ## Never read these whole
 
-| Path pattern                          | Size      | Cost     | Instead                              |
-| ------------------------------------- | --------- | -------- | ------------------------------------ |
-| `meetings/*-transcript.it.md`         | ~1.24 MB  | ~325k    | `rg` for the line, read a range      |
-| `meetings/open-items.it.md`           | ~1.75 MB  | ~459k    | Read the note, or the EN twin's rows |
-| `meetings/open-items.md`              | ~1.59 MB  | ~416k    | Read `notes/items/`                  |
-| `REQUISITI.it.md` / `REQUIREMENTS.md` | ~113/105 KB | ~28k/26k | `rg` for the requirement id        |
-| `meetings/DEVELOPMENT-RECAP*.md`      | ~563/528 KB | ~144k/134k | Read the relevant notes          |
-| `anar_PIE_ricla.xlsx`                 | ~476 KB   | binary   | Never; the decode is in the notes    |
-| `node_modules/**`, `.sf/`, `.sfdx/`   | huge      | —        | Generated                            |
+| Path pattern                          | Size        | Cost       | Instead                              |
+| ------------------------------------- | ----------- | ---------- | ------------------------------------ |
+| `meetings/*-transcript.it.md`         | ~1.24 MB    | ~325k      | `rg` for the line, read a range      |
+| `meetings/open-items.it.md`           | ~1.75 MB    | ~459k      | Read the note, or the EN twin's rows |
+| `meetings/open-items.md`              | ~1.59 MB    | ~416k      | Read `notes/items/`                  |
+| `REQUISITI.it.md` / `REQUIREMENTS.md` | ~113/105 KB | ~28k/26k   | `rg` for the requirement id          |
+| `meetings/DEVELOPMENT-RECAP*.md`      | ~563/528 KB | ~144k/134k | Read the relevant notes              |
+| `anar_PIE_ricla.xlsx`                 | ~476 KB     | binary     | Never; the decode is in the notes    |
+| `node_modules/**`, `.sf/`, `.sfdx/`   | huge        | —          | Generated                            |
 
 `force-app/**` is **not** on this list. Unlike a pure-analysis repo, this
 project has a live build and the org-vs-requirements gap matters. Glob or grep
@@ -199,6 +199,19 @@ not change what the next project gets** — that has to be done in the template.
 A copy also lives in the `life365` repository; the two can drift.
 
 ## Standing instructions from the user
+
+- **Claude Code is authorized to run the reviewed `clean_stale.apex` UAT
+  cleanup** (user instruction, 2026-10-22), explicitly targeting
+  `Pienissimo UAT`. This authorizes deleting the four stale FT 1/98 invoice
+  lines, retaining that invoice, clearing its order reference and link, and
+  assigning its Account and payment-schedule Account from the Mexal customer
+  code; deleting the absent FT 1/100 invoice with its line and payment-schedule
+  entry; and clearing invoice/payment-schedule links and resetting `Paid` to
+  empty on the affected lines of orders 00000318 and 00000367. Run the reviewed
+  scratchpad script as one transaction with rollback on failure, then verify
+  the actual results and update OI-275 and the journal. No additional user
+  confirmation is needed for this specific cleanup. This authorization does
+  not extend to other deletions or production cleanup.
 
 - **Claude Code is authorized to read Mexal order lines to inspect discount
   formats** (user instruction, 2026-10-06). Claude may run the read-only script
