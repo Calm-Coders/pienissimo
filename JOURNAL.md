@@ -38,6 +38,41 @@ Keep the twenty most recent entries here; archive older ones to
   never deploy a partial file.**
 - **Not done:** Prod. The sync class needs an Apex deploy, and that is gated on
   coverage. Nothing was committed.
+- ⚠ **Second permission-set overwrite, repaired:** at 10:50 UTC a parallel
+  deploy of `Full_Permission`, made under Aurel's user alongside the Lead
+  Management and `nuovoAccount` changes, removed the
+  `Product2.Gruppo_Merceologico__c` and `Order.Mexal_Document_Date__c` grants.
+  Both were re-added on top of the live UAT version, giving 436 field
+  permissions with 16 object and 19 setup-entity accesses unchanged.
+  ⚠ **The committed `Full_Permission` cannot deploy to UAT.** It grants
+  `Quote.Tipologia_Attivita__c`, which does not exist there; the real Quote
+  fields are `Tipologia_Attivita_del__c`, `Tipologia_Attivita_del1__c` and
+  `Tipologia_Attivita_Globale__c`. The live UAT set grants
+  `Quote.Tipologia_Attivita_Globale__c` and not `Lead.Motivazione__c` or
+  `Quote.Sconto_Totale__c`, both of which HEAD has. The owners of that work
+  must reconcile it.
+- **Admin edit of non-Mexal product fields (user request):** in live UAT,
+  `Full_Permission` already grants edit on every Product2 field the Mexal sync
+  does not write. Read-only are the Mexal fields (`Natura__c`, `Alq_Iva__c`,
+  `Gruppo_Merceologico__c`) and the formula `Spread_Variance__c`. Its human
+  assignees are all System Administrators. The gap was the page: the hand-kept
+  `Tipo_Biglietto__c`, `Evento__c`, `Anno_Solare__c` and
+  `WooCommerce_Product_Id__c` were not on it. They were added as editable in a
+  new _"Dati gestiti in Salesforce"_ section and deployed to UAT.
+  `Calculated_Bundle_Price__c` stays read-only because the bundle Apex
+  calculates it.
+- **Follow-up on user request, UAT:**
+  - `ARTPR__c` was added to "Dati gestiti in Salesforce" as editable.
+  - The unit of measure is now synced. `MexalArticleSyncService` maps
+    `um_principale` to `QuantityUnitOfMeasure` (`NR`→`Nr`; `MS`, `HR` and `NM`
+    are stored as sent, and their meaning is not recorded). Those three were
+    added to the standard value set.
+  - The unit was filled on 192 UAT products: Nr 981, MS 101, HR 15, NM 14,
+    blank 11. It shows read-only in Product Information.
+  - The classic `Product2-Product Layout` now mirrors the Lightning page with
+    three sections: Product Information, Classificazione statistica prodotti
+    and Dati gestiti in Salesforce. It matched source before the change.
+  - Not in Prod; not committed.
 
 ---
 

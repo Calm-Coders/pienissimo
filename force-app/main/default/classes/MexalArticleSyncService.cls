@@ -343,6 +343,13 @@ public without sharing class MexalArticleSyncService {
         255
       )
     );
+    // um_principale: NR maps onto the existing "Nr" value; MS, HR and NM are
+    // stored as Mexal sends them. A blank unit keeps the Salesforce value.
+    putIfPresent(
+      product,
+      Product2.QuantityUnitOfMeasure,
+      toUnitOfMeasure(getString(article, 'um_principale'))
+    );
     // Mexal pads the VAT code (e.g. "E00  ", " 17  "); store it trimmed.
     putIfPresent(
       product,
@@ -605,6 +612,15 @@ public without sharing class MexalArticleSyncService {
     return trimmedValue.length() > maxLength
       ? trimmedValue.substring(0, maxLength)
       : trimmedValue;
+  }
+
+  private static String toUnitOfMeasure(String mexalUnit) {
+    String unit = trimToLength(mexalUnit, 10);
+    if (unit == null) {
+      return null;
+    }
+    unit = unit.toUpperCase();
+    return unit == 'NR' ? 'Nr' : unit;
   }
 
   private static String joinDescription(String name, String extended) {
