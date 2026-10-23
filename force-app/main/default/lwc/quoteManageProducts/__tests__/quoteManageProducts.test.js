@@ -3,6 +3,13 @@ import QuoteManageProducts from "c/quoteManageProducts";
 import getContext from "@salesforce/apex/QuoteManageProductsController.getContext";
 import searchProducts from "@salesforce/apex/QuoteManageProductsController.searchProducts";
 import saveProducts from "@salesforce/apex/QuoteManageProductsController.saveProducts";
+import updateItemLine from "@salesforce/apex/QuoteManageProductsController.updateItemLine";
+
+jest.mock(
+  "@salesforce/apex/QuoteManageProductsController.updateItemLine",
+  () => ({ default: jest.fn() }),
+  { virtual: true }
+);
 
 jest.mock(
   "lightning/actions",
@@ -86,6 +93,177 @@ async function mount(
 }
 
 describe("Standard Item pricing", () => {
+  async function mountExisting(overrides = {}) {
+    getContext.mockResolvedValue({
+      isEditable: true,
+      quoteStatus: "Bozza",
+      opportunityRecordTypeDeveloperName: "Vendita_Standard",
+      existingLines: [
+        {
+          quoteLineItemId: "line1",
+          pricebookEntryId: "entry1",
+          productName: "Item",
+          productType: "Item",
+          canEditItem: true,
+          quantity: 2,
+          listPrice: 200,
+          unitPrice: 180,
+          discountPercent: 10
+        }
+      ],
+      ...overrides
+    });
+    const element = createElement("c-quote-manage-products", {
+      is: QuoteManageProducts
+    });
+    element.recordId = "quote1";
+    document.body.appendChild(element);
+    await flush();
+    return element;
+  }
+
+  it("edits a Plus tranche discount and price while keeping quantity fixed at one", async () => {
+    const element = await mountExisting({
+      opportunityRecordTypeDeveloperName: "Plus_Attivazione_Rinnovo",
+      hasPlusLine: true,
+      existingLines: [
+        {
+          ...item("entry1"),
+          quoteLineItemId: "plus1",
+          canEditItem: true,
+          quantity: 1,
+          listPrice: 200,
+          unitPrice: 180,
+          discountPercent: 10,
+          trancheId: "tranche1",
+          trancheDueDate: "2099-01-01",
+          trancheSequence: 1,
+          trancheAmount: 180
+        },
+        {
+          ...item("entry1"),
+          quoteLineItemId: "plus2",
+          canEditItem: true,
+          quantity: 1,
+          listPrice: 200,
+          unitPrice: 200,
+          discountPercent: 0,
+          trancheId: "tranche2",
+          trancheSequence: 2,
+          trancheAmount: 200
+        }
+      ]
+    });
+    [...element.shadowRoot.querySelectorAll("lightning-button-icon")]
+      .find((icon) => icon.iconName === "utility:edit")
+      .click();
+    await flush();
+    const input = (name) =>
+      element.shadowRoot.querySelector(`lightning-input[data-field="${name}"]`);
+    expect(input("quantity").disabled).toBe(true);
+    expect(input("quantity").value).toBe(1);
+    expect(input("trancheDueDate").value).toBe("2099-01-01");
+    expect(input("trancheDueDate").required).toBe(true);
+    await change(input("trancheDueDate"), "2099-02-01");
+    await change(input("discountPercent"), "25");
+    expect(input("newPrice").value).toBe(150);
+    await change(input("newPrice"), "160");
+    expect(input("discountPercent").value).toBe(20);
+    [
+      ...element.shadowRoot.querySelectorAll(".item-editor lightning-input")
+    ].forEach((field) => {
+      field.reportValidity = jest.fn(() => true);
+    });
+    updateItemLine.mockResolvedValue();
+    button(element, "Salva modifica").click();
+    await flush();
+    expect(updateItemLine).toHaveBeenCalledWith({
+      quoteId: "quote1",
+      lineId: "plus1",
+      quantity: 1,
+      discountPercent: 20,
+      newPrice: 160,
+      dueDate: "2099-02-01"
+    });
+    expect(saveProducts).not.toHaveBeenCalled();
+  });
+
+  it("edits an existing Item without inserting another line and refreshes the overview", async () => {
+    const element = await mountExisting();
+    [...element.shadowRoot.querySelectorAll("lightning-button-icon")]
+      .find((icon) => icon.iconName === "utility:edit")
+      .click();
+    await flush();
+    const input = (field) =>
+      element.shadowRoot.querySelector(
+        `lightning-input[data-field="${field}"]`
+      );
+    expect(input("quantity").value).toBe(2);
+    expect(input("newPrice").value).toBe(180);
+    await change(input("discountPercent"), "25");
+    expect(input("newPrice").value).toBe(150);
+    await change(input("newPrice"), "160");
+    expect(input("discountPercent").value).toBe(20);
+    await change(input("quantity"), "3");
+    for (const field of ["quantity", "discountPercent", "newPrice"]) {
+      input(field).reportValidity = jest.fn(() => true);
+    }
+    updateItemLine.mockResolvedValue();
+    button(element, "Salva modifica").click();
+    await flush();
+    expect(updateItemLine).toHaveBeenCalledWith({
+      quoteId: "quote1",
+      lineId: "line1",
+      quantity: 3,
+      discountPercent: 20,
+      newPrice: 160
+    });
+    expect(saveProducts).not.toHaveBeenCalled();
+    expect(element.shadowRoot.querySelector(".item-editor")).toBeNull();
+    expect(getContext).toHaveBeenCalledTimes(2);
+  });
+
+  it("cancels an Item edit without saving and does not offer edits for accepted quotes", async () => {
+    const element = await mountExisting();
+    [...element.shadowRoot.querySelectorAll("lightning-button-icon")]
+      .find((icon) => icon.iconName === "utility:edit")
+      .click();
+    await flush();
+    button(element, "Annulla modifica").click();
+    await flush();
+    expect(element.shadowRoot.querySelector(".item-editor")).toBeNull();
+    expect(updateItemLine).not.toHaveBeenCalled();
+    document.body.replaceChildren();
+    const accepted = await mountExisting({ quoteStatus: "Accettato" });
+    expect(
+      [...accepted.shadowRoot.querySelectorAll("lightning-button-icon")].find(
+        (icon) => icon.iconName === "utility:edit"
+      )
+    ).toBeUndefined();
+  });
+
+  it("keeps the Item draft after a server error and blocks invalid input", async () => {
+    const element = await mountExisting();
+    [...element.shadowRoot.querySelectorAll("lightning-button-icon")]
+      .find((icon) => icon.iconName === "utility:edit")
+      .click();
+    await flush();
+    const inputs = [
+      ...element.shadowRoot.querySelectorAll(".item-editor lightning-input")
+    ];
+    inputs.forEach((input) => {
+      input.reportValidity = jest.fn(() => false);
+    });
+    button(element, "Salva modifica").click();
+    await flush();
+    expect(updateItemLine).not.toHaveBeenCalled();
+    inputs.forEach((input) => input.reportValidity.mockReturnValue(true));
+    updateItemLine.mockRejectedValue({ body: { message: "Cannot update" } });
+    button(element, "Salva modifica").click();
+    await flush();
+    expect(element.shadowRoot.querySelector(".item-editor")).not.toBeNull();
+    expect(button(element, "Salva modifica").disabled).toBe(false);
+  });
   afterEach(() => {
     document.body.replaceChildren();
     jest.resetAllMocks();

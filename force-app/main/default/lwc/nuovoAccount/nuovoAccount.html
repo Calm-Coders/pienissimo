@@ -61,6 +61,29 @@
                                 disabled
                               ></lightning-record-picker>
                             </template>
+                            <template lwc:elseif={field.isRecordType}>
+                              <lightning-input
+                                label="Tipo di record Account"
+                                value={recordTypeLabel}
+                                variant="label-inline"
+                                read-only
+                              ></lightning-input>
+                            </template>
+                            <template lwc:elseif={field.isAddress}>
+                              <lightning-input-address
+                                data-prefix={field.addressPrefix}
+                                address-label={field.addressLabel}
+                                street-label="Via e numero civico"
+                                city-label="Citta"
+                                province-label="Provincia"
+                                country-label="Paese"
+                                postal-code-label="CAP"
+                                address-lookup-placeholder="Cerca un indirizzo"
+                                show-address-lookup
+                                required={field.required}
+                                disabled={field.readOnly}
+                              ></lightning-input-address>
+                            </template>
                             <template lwc:elseif={field.isAgent}>
                               <lightning-input-field
                                 field-name="Agente__c"
@@ -71,7 +94,7 @@
                             </template>
                             <template lwc:elseif={field.isAgentCode}>
                               <lightning-input
-                                label="Codice Agente Esterno"
+                                label="Codice Agente"
                                 variant="label-inline"
                                 value={agentCode}
                                 read-only
@@ -88,6 +111,7 @@
                             <template lwc:else>
                               <lightning-input-field
                                 field-name={field.name}
+                                disabled={field.readOnly}
                                 required={field.required}
                               ></lightning-input-field>
                             </template>

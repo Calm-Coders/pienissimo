@@ -334,6 +334,7 @@ public without sharing class QuoteTrancheController {
         Quote__c = :quoteId
         AND Sequenza__c IN :sequences
         AND Id NOT IN :inputTrancheIds
+        AND Id NOT IN :deletedTrancheIds
       FOR UPDATE
     ]) {
       throw new AuraHandledException(

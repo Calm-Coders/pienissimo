@@ -136,12 +136,26 @@ public without sharing class QuoteLineItemTriggerHandler {
       return;
     }
 
-    for (QuoteLineItem remainingLine : [
-      SELECT Tranche__c
+    List<Tranche__c> trancheUpdates = new List<Tranche__c>();
+    for (AggregateResult result : [
+      SELECT Tranche__c trancheId, SUM(TotalPrice) totalAmount
       FROM QuoteLineItem
       WHERE Tranche__c IN :trancheIds
+      GROUP BY Tranche__c
     ]) {
-      trancheIds.remove(remainingLine.Tranche__c);
+      Id trancheId = (Id) result.get('trancheId');
+      Decimal totalAmount = (Decimal) result.get('totalAmount');
+      trancheUpdates.add(
+        new Tranche__c(
+          Id = trancheId,
+          Importo_Previsto__c = totalAmount == null ? 0 : totalAmount
+        )
+      );
+      trancheIds.remove(trancheId);
+    }
+
+    if (!trancheUpdates.isEmpty()) {
+      update trancheUpdates;
     }
 
     if (trancheIds.isEmpty()) {

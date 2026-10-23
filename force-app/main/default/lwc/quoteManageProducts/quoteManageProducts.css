@@ -414,6 +414,10 @@
   font-weight: 700;
 }
 
+.existing-item-actions {
+  padding-left: 1rem;
+}
+
 .row-status {
   background: #eef4fb;
   border-radius: 999px;

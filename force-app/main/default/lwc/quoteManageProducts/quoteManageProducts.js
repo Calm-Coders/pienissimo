@@ -9,6 +9,7 @@ import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
 import getContext from "@salesforce/apex/QuoteManageProductsController.getContext";
 import saveProducts from "@salesforce/apex/QuoteManageProductsController.saveProducts";
 import searchProducts from "@salesforce/apex/QuoteManageProductsController.searchProducts";
+import updateItemLine from "@salesforce/apex/QuoteManageProductsController.updateItemLine";
 
 const BUNDLE_TYPE = "Bundle";
 const ITEM_TYPE = "Item";
@@ -43,6 +44,114 @@ export default class QuoteManageProducts extends NavigationMixin(
   selectedTrancheDiscounts = {};
   selectedTranchePrices = {};
   searchTerm = "";
+  editingItem;
+
+  get showItemEditor() {
+    return !!this.editingItem;
+  }
+
+  get itemEditorDisabled() {
+    return this.isLoading || this.saveInProgress;
+  }
+
+  get existingEditDisabled() {
+    return this.itemEditorDisabled || this.hasSelectedProducts;
+  }
+
+  get editQuantityDisabled() {
+    return this.itemEditorDisabled || this.editingItem?.isPlus;
+  }
+
+  handleEditItem(event) {
+    if (this.itemEditorDisabled || this.hasSelectedProducts) return;
+    const product = this.existingProducts.find(
+      (row) => row.quoteLineItemId === event.currentTarget.dataset.id
+    );
+    if (!product?.canEditItem) return;
+    this.editingItem = {
+      ...product,
+      newPrice: Number(product.unitPrice),
+      discountPercent: Number(product.discountPercent) || 0
+    };
+  }
+
+  handleCancelItemEdit() {
+    if (!this.saveInProgress) this.editingItem = undefined;
+  }
+
+  handleExistingItemChange(event) {
+    const field = event.target.dataset.field;
+    if (field === "trancheDueDate") {
+      this.editingItem = {
+        ...this.editingItem,
+        trancheDueDate: event.target.value
+      };
+      return;
+    }
+    const value = this.parseNumber(event.target.value);
+    const draft = { ...this.editingItem, [field]: value };
+    const listPrice = Number(draft.listPrice) || 0;
+    if (field === "discountPercent") {
+      draft.newPrice =
+        value == null
+          ? null
+          : this.roundToTwoDecimals(listPrice * (1 - value / 100));
+    } else if (field === "newPrice") {
+      draft.discountPercent =
+        value == null
+          ? null
+          : listPrice > 0
+            ? this.roundToTwoDecimals((1 - value / listPrice) * 100)
+            : 0;
+    }
+    this.editingItem = draft;
+  }
+
+  async handleSaveItemEdit() {
+    if (!this.editingItem || this.itemEditorDisabled) return;
+    const inputs = [
+      ...this.template.querySelectorAll(".item-editor lightning-input")
+    ];
+    if (!inputs.map((input) => input.reportValidity()).every(Boolean)) return;
+    this.saveInProgress = true;
+    try {
+      await updateItemLine({
+        quoteId: this.recordId,
+        lineId: this.editingItem.quoteLineItemId,
+        quantity: this.editingItem.quantity,
+        discountPercent: this.editingItem.discountPercent,
+        newPrice: this.editingItem.newPrice,
+        ...(this.editingItem.isPlus
+          ? { dueDate: this.editingItem.trancheDueDate }
+          : {})
+      });
+      const changedIds = [
+        this.recordId,
+        this.editingItem.quoteLineItemId,
+        this.editingItem.trancheId
+      ];
+      this.editingItem = undefined;
+      await notifyRecordUpdateAvailable(
+        changedIds.filter(Boolean).map((recordId) => ({ recordId }))
+      );
+      publish(this.messageContext, QUOTE_PRODUCTS_CHANGED, {
+        quoteId: this.recordId
+      });
+      this.dispatchEvent(new RefreshEvent());
+      await this.loadContext();
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "Prodotto aggiornato",
+          message: "La riga del preventivo e stata aggiornata.",
+          variant: "success"
+        })
+      );
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.saveInProgress = false;
+    }
+  }
 
   @api
   get recordId() {
@@ -303,7 +412,12 @@ export default class QuoteManageProducts extends NavigationMixin(
   }
 
   get addProductsDisabled() {
-    return this.isFormDisabled || this.isLoading || this.saveInProgress;
+    return (
+      this.isFormDisabled ||
+      this.isLoading ||
+      this.saveInProgress ||
+      this.showItemEditor
+    );
   }
 
   get statusClass() {
@@ -707,8 +821,10 @@ export default class QuoteManageProducts extends NavigationMixin(
       productCode: line.productCode || "Nessun codice",
       productType: line.productType,
       typeLabel: line.productType === BUNDLE_TYPE ? "Bundle" : "Item",
-      isPlus: false,
+      isPlus: this.isPlusOpportunity,
       unitPrice: line.unitPrice,
+      listPrice: line.listPrice,
+      discountPercent: line.discountPercent,
       unitPriceLabel: this.formatAmount(line.unitPrice),
       quantity: line.quantity,
       quantityDisabled: true,
@@ -723,7 +839,13 @@ export default class QuoteManageProducts extends NavigationMixin(
       hasTranche: !!line.trancheId,
       trancheLabel: this.formatTrancheLabel(line),
       isExisting: true,
-      rowStatus: "Gia nel preventivo"
+      rowStatus: "Gia nel preventivo",
+      canEditItem:
+        line.canEditItem === true &&
+        this.isEditable &&
+        (this.isStandardOpportunity ||
+          (this.isPlusOpportunity && !!line.trancheId)) &&
+        ["Bozza", "In Trattativa"].includes(this.quoteStatus)
     }));
   }
 
