@@ -1,12 +1,12 @@
 ---
 id: OI-186
 type: open-item
-status: open
+status: in-progress
 owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-25
-updated: 2026-10-15
+updated: 2026-10-22
 blocks: [go-live]
 source: notes/meetings/2026-09-25 Interna post UAT Contratto e Fase Due.md
 ---
@@ -67,7 +67,7 @@ permissions**.
 
 He reached for segregation first — _"i commerciali dovranno vedere delle cose che …
 noi in amministrazione vediamo cose che i commerciali non possono vedere"_ — and
-reversed once Aurel Mrruku spelled out what *everyone sees everything* meant at
+reversed once Aurel Mrruku spelled out what _everyone sees everything_ meant at
 record level (a commerciale seeing another commerciale's orders and accounts):
 
 > _"adesso è così, eh, e tutti i commerciali vedono tutto … è una modalità che non
@@ -169,11 +169,11 @@ commercial lead
 
 **Three requirements now depend on profiles that do not exist:**
 
-| Requirement                                                                                               | Needs                                              |
-| --------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| [OI-247](OI-247%20Only%20the%20responsabile%20commerciale%20may%20edit%20the%20provvigioni%20fields.md)    | a _responsabile commerciale_ profile, uniquely privileged |
-| [OI-233](OI-233%20Bundle%20access%20for%20tutor%20profiles%20is%20undefined.md)                            | a _tutor_ profile that cannot quote or order bundles |
-| [OI-246](OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)       | something to train eight commercial users **on**    |
+| Requirement                                                                                             | Needs                                                     |
+| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [OI-247](OI-247%20Only%20the%20responsabile%20commerciale%20may%20edit%20the%20provvigioni%20fields.md) | a _responsabile commerciale_ profile, uniquely privileged |
+| [OI-233](OI-233%20Bundle%20access%20for%20tutor%20profiles%20is%20undefined.md)                         | a _tutor_ profile that cannot quote or order bundles      |
+| [OI-246](OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)    | something to train eight commercial users **on**          |
 
 🔴 **And the deferral collides with the training plan.** Testing and training
 happen under System Admin, against access the users will not have in production.
@@ -185,3 +185,64 @@ point about Marco Montesi specifically.
 
 ⚠ **The window for the permissions build is now the same two weeks** as the test
 completion, the training, the production deployment and the migration rehearsal.
+
+## 2026-10-22 - the Agente access boundary is implemented in UAT
+
+Aurel Mrruku instructed that an Agente must operate the commercial flow from
+Lead through quote preparation and order creation, but must have **read-only
+access to the Order and every operational object after it**. He then confirmed
+that **no Order field is editable** for the Agente.
+
+The repository's `Agente` profile carried almost no object access. The access
+model is now implemented directly in that **profile**, as requested:
+
+- create/read/edit, without delete, on Account, Contact, Lead, Opportunity and
+  Quote;
+- create/read/edit/delete for quote lines and pre-order tranche preparation;
+- read only on Order, Order Product, Contract, Asset, Invoice, Invoice Line and
+  Invoice Deadline;
+- read only on products and price books;
+- the Apex controllers, record types and tabs needed for the commercial path.
+
+The corrected profile and the restored minimal permission set passed UAT
+check-only deployment `0AfMA00000CzEC10AN` and were deployed to the partial
+sandbox as `0AfMA00000CzEDd0AN`. A live permission query then confirmed the
+profile's Order access is `read=true`, `create/edit/delete=false`, with zero
+editable Order fields. The separate `Agente` permission set grants only Account
+read access, 19 Account fields and two User fields. A one-time cleanup deployment
+(`0AfMA00000CzEaD0AV`) explicitly removed the broad field grants materialized by
+the superseded permission-set attempt.
+
+The first implementation attempt had put the commercial access in the assigned
+permission set (`0AfMA00000CzAwP0AV`). That contradicted Aurel's explicit request
+for a profile and was corrected in the same session. The UAT profile currently
+has one active user and eight inactive users.
+
+Aurel then requested explicit **View All Records** access for Account and Lead.
+The profile change passed check-only deployment `0AfMA00000CzFCv0AN`, deployed
+as `0AfMA00000CzFHl0AN`, and a live query confirmed
+`PermissionsViewAllRecords=true` on both objects. Filters defined inside an
+individual list view still restrict the rows shown by that view.
+
+The `Nuova Opportunità` Account action then exposed a profile-specific layout
+gap: its `lightning-record-edit-form` returned `Layout contains no sections`
+because the three enabled Opportunity record types had no explicit layout
+assignment on the profile. All three are now mapped to the populated
+`Opportunity-Opportunity Layout`. Check-only deployment `0AfMA00000CzFmP0AV`
+and UAT deployment `0AfMA00000CzFpd0AF` succeeded; a post-deploy metadata
+retrieval confirmed the mappings for `Plus_Attivazione_Rinnovo`,
+`Vendita_Standard` and `WooCommerce`.
+
+A same-day Lead-path check exposed the identical gap on Lead. The custom path's
+`lightning-record-edit-form` returned `One or more profiles have no page layout
+assigned for the 'Lead' Object` for an Agente user. Live UAT Tooling API evidence
+showed **zero** `ProfileLayout` rows for `Profile.Name = 'Agente'` and
+`TableEnumOrId = 'Lead'`, although the org has a populated `Lead Layout`; the
+source profile also had no Lead layout assignment. The local source now maps the
+default, `Lead.Diretta` and `Lead.Standard` cases to `Lead-Lead Layout`. This
+follow-up is **not deployed**.
+
+⚠ This does **not** settle the complete client user list, the production
+assignments, the separate responsabile-commerciale exception in OI-247, or
+whether the Agente profile is the tutor profile discussed in OI-233. This item
+therefore moves to `in-progress`, not resolved.

@@ -15,36 +15,57 @@
       </template>
     </div>
 
-    <template if:true={showKeyFields}>
-      <lightning-record-edit-form
-        object-api-name={leadObjectApiName}
-        record-id={recordId}
+    <template if:true={componentErrorMessage}>
+      <div
+        class="slds-notify slds-notify_alert slds-alert_error slds-m-top_small"
+        role="alert"
       >
-        <div class="key-fields" aria-label="Campi principali della fase">
-          <template for:each={keyFields} for:item="field">
-            <lightning-input-field
-              key={field.fieldName}
-              class="key-field"
-              data-field-name={field.fieldName}
-              field-name={field.fieldName}
-              required={field.required}
-              onchange={handleKeyFieldChange}
-            ></lightning-input-field>
-          </template>
-          <template if:true={showMotivazione}>
-            <lightning-textarea
-              class="key-field"
-              data-field-name="Motivazione__c"
-              label="Dettaglio non interesse"
-              maxlength="255"
-              message-when-value-missing="Spiega perche il Lead non e interessato."
-              required
-              value={motivazione}
-              onchange={handleKeyFieldChange}
-            ></lightning-textarea>
-          </template>
-        </div>
-      </lightning-record-edit-form>
+        <span class="slds-assistive-text">Errore</span>
+        <span>{componentErrorMessage}</span>
+      </div>
+    </template>
+
+    <template if:true={showKeyFields}>
+      <template if:true={canRenderKeyFields}>
+        <lightning-record-edit-form
+          object-api-name={leadObjectApiName}
+          record-id={recordId}
+          onerror={handleFormError}
+          onload={handleFormLoad}
+        >
+          <lightning-messages></lightning-messages>
+          <div class="key-fields" aria-label="Campi principali della fase">
+            <template for:each={keyFields} for:item="field">
+              <lightning-input-field
+                key={field.fieldName}
+                class="key-field"
+                data-field-name={field.fieldName}
+                field-name={field.fieldName}
+                required={field.required}
+                onchange={handleKeyFieldChange}
+              ></lightning-input-field>
+            </template>
+            <template if:true={showMotivazione}>
+              <lightning-textarea
+                class="key-field"
+                data-field-name="Motivazione__c"
+                label="Motivazione"
+                maxlength="255"
+                message-when-value-missing="Spiega perche il Lead non e interessato."
+                required
+                value={motivazione}
+                onchange={handleKeyFieldChange}
+              ></lightning-textarea>
+            </template>
+          </div>
+        </lightning-record-edit-form>
+      </template>
+      <template if:true={showFieldLoading}>
+        <lightning-spinner
+          alternative-text="Caricamento campi principali"
+          size="small"
+        ></lightning-spinner>
+      </template>
     </template>
 
     <div class="action-row">
@@ -120,7 +141,7 @@
             <lightning-textarea
               class="exit-reason-field slds-m-top_medium"
               data-field-name="Motivazione__c"
-              label="Dettaglio non interesse"
+              label="Motivazione"
               maxlength="255"
               message-when-value-missing="Spiega perche il Lead non e interessato."
               required

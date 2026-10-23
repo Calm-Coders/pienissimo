@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Motivation_When_Not_Interested</fullName>
+    <active>true</active>
+    <description
+  >Requires a free-text motivation when a Lead is marked Non qualificato with the Perso - Non interessato reason.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Non qualificato&quot;),
+    ISPICKVAL(Motivazione_Uscita__c, &quot;Perso&quot;),
+    ISPICKVAL(Dettaglio_Motivazione_Uscita__c, &quot;Non interessato&quot;),
+    ISBLANK(Motivazione__c)
+)</errorConditionFormula>
+    <errorDisplayField>Motivazione__c</errorDisplayField>
+    <errorMessage
+  >Inserisci la motivazione prima di salvare il Lead come Non interessato.</errorMessage>
+</ValidationRule>

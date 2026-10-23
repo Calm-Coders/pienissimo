@@ -130,6 +130,26 @@ h2 {
   padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 1rem;
 }
 
+.rinuncia-button {
+  min-width: auto;
+  flex-shrink: 0;
+
+  --slds-c-button-color-background: #ffffff;
+  --slds-c-button-color-border: #c63832;
+  --slds-c-button-text-color: #c63832;
+
+  --slds-c-button-color-background-hover: #fff5f5;
+  --slds-c-button-color-border-hover: #a52a25;
+  --slds-c-button-text-color-hover: #a52a25;
+
+  --slds-c-button-radius-border: 0.375rem;
+
+  --slds-c-button-spacing-block-start: 0.45rem;
+  --slds-c-button-spacing-block-end: 0.45rem;
+  --slds-c-button-spacing-inline-start: 1rem;
+  --slds-c-button-spacing-inline-end: 1rem;
+}
+
 .ticket-list {
   display: grid;
   gap: 1rem;
@@ -309,6 +329,10 @@ h2 {
   margin-bottom: 0.75rem;
 }
 
+.rinuncia-confirmation-card {
+  border-top: 0.4rem solid #ba0517;
+}
+
 .confirmation-actions {
   display: flex;
   gap: 0.75rem;
@@ -340,5 +364,9 @@ h2 {
 
   .ticket-header {
     flex-direction: column;
+  }
+
+  .rinuncia-button {
+    width: 100%;
   }
 }

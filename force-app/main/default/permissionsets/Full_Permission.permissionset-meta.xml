@@ -1872,7 +1872,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Quote.Tipologia_Attivita__c</field>
+        <field>Quote.Tipologia_Attivita_Globale__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

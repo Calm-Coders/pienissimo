@@ -4,13 +4,23 @@ type: reference
 status: open
 org: ROMI
 raised: 2026-09-07
-updated: 2026-10-05
+updated: 2026-10-22
 depends_on: [OI-78, OI-81, OI-121]
 source: User conversation with Codex on 2026-09-07
-uncertain: Invitation foundation implemented in local source only; Growth provisioning and flow configuration were not inspected; email timing remains open.
+uncertain: Salesforce invitation and dual-link support is deployed to UAT; the Growth email asset is absent from UAT and its production campaign asset was not accessible; email timing remains open.
 ---
 
 # Proposed event invitations for participant registration
+
+> **Implementation update, 22 October 2026:** UAT now exposes separate
+> generated `Link Accetta` and `Link Rifiuta` URL fields. Both point to the same
+> participant-registration LWC with an action parameter. The refusal entry
+> opens a double-confirm modal before the existing mutation, and the on-page
+> refusal button is enlarged for desktop and mobile. Deployment
+> `0AfMA00000CzHMn0AN` succeeded and live schema/FLS checks passed. The actual
+> email buttons are not built: UAT contains no invitation email template,
+> generated marketing Flow or outbound-engagement content resource. The
+> production Growth campaign asset was not accessible in this session.
 
 > **Implementation update, 5 October 2026:** invitation identity is now one
 > Order-Campaign pair rather than Account-Campaign, and `Stato Raccolta` is now
@@ -71,7 +81,9 @@ fields are listed below; dispatch tracking remains proposed future work.
 | Account_Campaign_Key__c                               | Unique external ID composed from the two IDs, for repeatable bulk upserts.                                                       |
 | Send_After__c                                         | Earliest request time, derived from the event and configurable offset.                                                           |
 | Status__c                                             | Collection states: Pending, Ready, Completed, Cancelled.                                                                         |
-| Registration_Url__c                                   | Ordinary URL field populated by Apex from runtime discovery; no formula or hardcoded host.                                       |
+| Registration_Url__c                                   | Backward-compatible acceptance URL populated by Apex from runtime discovery; no formula or hardcoded host.                       |
+| Acceptance_Url__c                                     | Generated acceptance link intended for the Marketing Cloud Growth `Accetta` button.                                              |
+| Refusal_Url__c                                        | Generated refusal link intended for the `Rifiuta` button; opens confirmation before mutation.                                    |
 | URL_Status__c, URL_Refreshed_At__c, Last_URL_Error__c | Implemented URL preparation status, last attempt time and sanitised failure reason.                                              |
 | Dispatch tracking                                     | Communication key/cycle, processing state, attempt time, send outcome and sanitised error. Keep separate from collection status. |
 
@@ -175,12 +187,13 @@ Inside the marketing flow:
    message is not proof of delivery. Prevent repeated record updates from
    duplicating the same invitation's communication.
 
-| Template variable | Flow value                                        |
-| ----------------- | ------------------------------------------------- |
-| RegistrationUrl   | Exact invitation's refreshed Registration_Url__c. |
-| EventName         | Invitation's event-edition Campaign name.         |
-| EventDate         | Relevant event date from that Campaign.           |
-| RecipientName     | Selected commercial referent.                     |
+| Template variable | Flow value                                      |
+| ----------------- | ----------------------------------------------- |
+| AcceptanceUrl     | Exact invitation's refreshed Acceptance_Url__c. |
+| RefusalUrl        | Exact invitation's refreshed Refusal_Url__c.    |
+| EventName         | Invitation's event-edition Campaign name.       |
+| EventDate         | Relevant event date from that Campaign.         |
+| RecipientName     | Selected commercial referent.                   |
 
 A template record variable can also be used if available in its data-source
 selector; map its record ID. Scalar variables keep URL and event selection

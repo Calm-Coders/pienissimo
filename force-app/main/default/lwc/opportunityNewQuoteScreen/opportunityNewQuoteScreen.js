@@ -74,7 +74,7 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
   }
 
   get saveButtonLabel() {
-    return this.isSaving ? "Saving" : "Save";
+    return this.isSaving ? "Salvataggio..." : "Salva";
   }
 
   get isSaveDisabled() {
