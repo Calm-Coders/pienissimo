@@ -41,6 +41,11 @@
         <visible>true</visible>
     </applicationVisibilities>
     <applicationVisibilities>
+        <application>standard__Audience360</application>
+        <default>false</default>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <applicationVisibilities>
         <application>standard__Chatter</application>
         <default>false</default>
         <visible>true</visible>
@@ -627,7 +632,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Anticipay_Consolidato__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -662,7 +667,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Categoria_Statistica_Mexal__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -677,12 +682,12 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Codice_Cliente_Mexal__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Codice_Destinatario_SDI__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -692,7 +697,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Codice_Fiscale__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -702,7 +707,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Creato_su_Mexal__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -822,7 +827,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Residenza_Fiscale__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -887,7 +892,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Zona__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -3162,7 +3167,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Quote.Tipologia_Attivita_Globale__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -3578,6 +3583,9 @@
         <layout>ContactPointPhone-Contact Point Phone Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Contract-Contract Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>CreditMemo-Layout Nota di credito</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -3649,6 +3657,12 @@
         <layout>OpportunityContactRole-Opportunity Contact Role Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Order-Order Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OrderItem-Order Product Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Payment-Layout Pagamento</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -3683,6 +3697,12 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Product_Category_Rule__mdt-Product Category Rule Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Quote-Quote Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>QuoteLineItem-Quote Line Item Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Refund-Layout Rimborso</layout>
@@ -3941,8 +3961,8 @@
     </objectPermissions>
     <objectPermissions>
         <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>Tranche__c</object>
