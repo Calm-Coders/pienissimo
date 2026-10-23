@@ -10,6 +10,13 @@ public without sharing class OrderItemTriggerHandler {
 
   public static void afterInsert(List<OrderItem> newLines) {
     OrderTriggerHandler.createTicketsForOrderLines(newLines);
+    Set<Id> orderIds = new Set<Id>();
+    for (OrderItem line : newLines) {
+      if (line.Mexal_Payment_Status__c == PAYMENT_STATUS_PAID) {
+        orderIds.add(line.OrderId);
+      }
+    }
+    markOrdersCollectedWithoutTranches(orderIds);
   }
 
   public static void afterUpdate(
@@ -18,6 +25,7 @@ public without sharing class OrderItemTriggerHandler {
   ) {
     Set<Id> trancheIds = new Set<Id>();
     Set<Id> contractOrderIds = new Set<Id>();
+    Set<Id> paymentOrderIds = new Set<Id>();
 
     for (OrderItem line : newLines) {
       OrderItem oldLine = oldLineMap == null ? null : oldLineMap.get(line.Id);
@@ -31,6 +39,13 @@ public without sharing class OrderItemTriggerHandler {
         line.Data_Scadenza__c != oldLine.Data_Scadenza__c
       ) {
         contractOrderIds.add(line.OrderId);
+      }
+
+      if (
+        line.Tranche__c != oldLine.Tranche__c ||
+        line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c
+      ) {
+        paymentOrderIds.add(line.OrderId);
       }
 
       if (
@@ -49,7 +64,49 @@ public without sharing class OrderItemTriggerHandler {
     }
 
     recalculateTranches(trancheIds);
+    markOrdersCollectedWithoutTranches(paymentOrderIds);
     PerformancePlusContractService.refreshAmounts(contractOrderIds);
+  }
+
+  // Without tranches, collection requires every line on the order to be paid.
+  private static void markOrdersCollectedWithoutTranches(Set<Id> orderIds) {
+    if (orderIds == null || orderIds.isEmpty()) {
+      return;
+    }
+
+    Set<Id> ordersWithLines = new Set<Id>();
+    Set<Id> blockedOrderIds = new Set<Id>();
+    for (OrderItem line : [
+      SELECT OrderId, Tranche__c, Mexal_Payment_Status__c
+      FROM OrderItem
+      WHERE OrderId IN :orderIds
+    ]) {
+      ordersWithLines.add(line.OrderId);
+      if (
+        line.Tranche__c != null ||
+        line.Mexal_Payment_Status__c != PAYMENT_STATUS_PAID
+      ) {
+        blockedOrderIds.add(line.OrderId);
+      }
+    }
+    ordersWithLines.removeAll(blockedOrderIds);
+    if (ordersWithLines.isEmpty()) {
+      return;
+    }
+
+    List<Order> orderUpdates = new List<Order>();
+    for (Order orderRecord : [
+      SELECT Id
+      FROM Order
+      WHERE Id IN :ordersWithLines AND Status != :ORDER_STATUS_COLLECTED
+    ]) {
+      orderUpdates.add(
+        new Order(Id = orderRecord.Id, Status = ORDER_STATUS_COLLECTED)
+      );
+    }
+    if (!orderUpdates.isEmpty()) {
+      update orderUpdates;
+    }
   }
 
   private static void recalculateTranches(Set<Id> trancheIds) {
