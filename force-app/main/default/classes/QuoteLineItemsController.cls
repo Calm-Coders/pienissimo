@@ -113,7 +113,6 @@ public without sharing class QuoteLineItemsController {
   @AuraEnabled(cacheable=true)
   public static QuoteLinesContext getContext(Id quoteId) {
     validateQuoteId(quoteId);
-    requireReadAccess();
 
     Quote quoteRecord = [
       SELECT Id, Name, QuoteNumber, Status
@@ -348,21 +347,7 @@ public without sharing class QuoteLineItemsController {
     }
   }
 
-  private static void requireReadAccess() {
-    if (
-      !Schema.sObjectType.Quote.isAccessible() ||
-      !Schema.sObjectType.QuoteLineItem.isAccessible() ||
-      !Schema.sObjectType.Product2.isAccessible() ||
-      !Schema.sObjectType.BundleComponent__c.isAccessible()
-    ) {
-      throw new AuraHandledException(
-        'Non hai i permessi necessari per leggere le righe preventivo.'
-      );
-    }
-  }
-
   private static void requireDeleteAccess() {
-    requireReadAccess();
     if (!Schema.sObjectType.QuoteLineItem.isDeletable()) {
       throw new AuraHandledException(
         'Non hai i permessi necessari per eliminare le righe preventivo.'
