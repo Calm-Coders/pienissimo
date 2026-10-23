@@ -10,6 +10,63 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-23 - claude (nightly requirements-check)
+
+- **Did:** scheduled nightly sweep, watermark **2026-10-22T22:00Z** → new
+  watermark **2026-10-23T22:00Z**. Gmail, Drive, Slack (dev group,
+  `#tproj-pienissimo`, marketing DM + thread, Elena Spini DM, canvas), Fathom,
+  git, repo diffs, register greps.
+- **Found:** one new client call, **Import Ordini Migrazione**, 16:00 CEST,
+  **00:06:29** — drilled from the full raw transcript, preserved at
+  `meetings/2026-10-23-import-ordini-migrazione-transcript.it.md`; the Gemini
+  doc carried notes and transcript together, so one fetch sufficed.
+  🟢🔑 **The go-live calendar is now agreed in writing by both sides** — ROMI's
+  21/10 reply is finally in this mailbox, ROMI accepted 16/11 in writing, the
+  client wrote the plan back and accepted it signed _"Sabatino/Fabrizio"_, and
+  ROMI added a **9/11 production deploy** and a **13/11 09:00 order-file
+  deadline**. 🟢🔑 **The migration data arrived** (1.1 MB, provisional,
+  unopened). 🔴🔑 **The product sync flows are switched off in UAT**, so a mail
+  from the client is the only link between Kreosoft's mass update and ROMI's
+  re-import. 🟢🔑 **OI-284 is narrower than it read** — `netto` already reaches
+  Mexal, the gap is `listino` on the order line, and the Monday call now has an
+  hour with Kreosoft invited for the first time.
+- **State:** two new notes, **OI-285** (ROMI asked the client to route future
+  out-of-scope requirements through Change Requests — first time the mechanism
+  is put to the client at all; 🔴 the client answered the calendar paragraph of
+  the same mail and ignored this one) and **OI-286** (lead conversion throws in
+  UAT on an unguarded Task insert, rolling back the user's Lead edit; a matching
+  permission fix exists on `Devmain_LeadChecks`, unmerged). Updated OI-212,
+  OI-242, OI-244, OI-250, OI-265, OI-268, OI-274, OI-276, OI-283, OI-284 and the
+  Zoho risk. MAP, INDEX, both trackers, both recaps (§69), trace,
+  this entry. `vault:check` green — **487 notes, all links resolve**, 14
+  pre-existing trace warnings unchanged.
+- **Next:** three things need a person, not an agent. (1) **Open
+  `Esempio SCONTI.pdf` before Monday 11:00 CET** — it is the agenda document for
+  the Kreosoft call and this procedure cannot read a real customer invoice.
+  (2) **Check that the 22/10 exclusion rules were applied to
+  `Import Ordini (versione del 23.10.26).xlsx`** — OI-275's key uniqueness now
+  lives in that spreadsheet and nothing in Salesforce detects a violation.
+  (3) **Rule on `SAL-12`**, uncited for a sixth session while a client call is
+  booked to define how discounts reach the ERP.
+- **Watch:** 🔴 **`DevMain` did not move** — still `ebc2c5b`, last night's own
+  nightly commit. Six commits today, all on personal branches, **no PRs**, and
+  **both fixes this run identified are among them** (`3c66b27` for OI-283,
+  `42602a8` for OI-286). 🔴🔑 **OI-212's suspect predicate spread**: `9512ee0`
+  makes an Order read `Incassato` from `Mexal_Payment_Status__c = PAID`, so the
+  ~15,000–30,000 historical article lines loaded from ~9 November inherit the
+  defect at order level. Nothing in the commit cites the row. 🔑 **OI-242 was
+  reversed without being called a reversal** — the published `rifiuta-evento`
+  text is gone from the ask and the four technical consequences are unaddressed,
+  not withdrawn; do not reinstate the 14/10 wording as current. ⚠ **No Apex test
+  was written or proposed**, per the standing instruction, and today's commits
+  grew the untested Apex surface again.
+- **Housekeeping, unactioned:** ⚠ **this file holds 132 entries against the
+  protocol's "keep the twenty most recent"** and is ~390 KB. Archiving to
+  `notes/sessions/YYYY-QN.md` is a restructuring no sweep has done and this one
+  did not either — flagged rather than performed. ⚠ Both recaps' precedence
+  header is still stale at §45 while the files end at §69 (editorial, not
+  mechanical). ⚠ Tracker rows 163–174 still duplicated and differing.
+
 ## 2026-10-22 - claude (nightly requirements-check)
 
 - **Did:** scheduled nightly sweep, watermark **2026-10-21T22:00Z** → new

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-19
-updated: 2026-10-22
+updated: 2026-10-23
 depends_on: [OI-96]
 source: Gmail thread 1a154a97e004a741, 2026-10-19T14:55:54Z
 ---
@@ -186,3 +186,25 @@ its values are not. The mail also carries eight inline images and a
   own request.
 - 🔴 The values are still unreconciled, **fourteen days after the complaint**.
 - ⚠ Still not in Drive.
+
+## 2026-10-23 - nothing moved, second day
+
+🔴 **No reply to Elisa Migliano**, whose workbook arrived 22/10 at 07:42:18Z.
+🔴 **The question to the client Elena Spini assigned to Aurel Mrruku on 22/10 —
+_"capire che vogliono"_ — is still unasked.** Nothing on the `Opportunity`
+thread (`1a154a97e004a741`) since 22/10, no Slack message about it, and the
+23/10 client call did not raise it.
+
+⚠ **The workbook is still unopened** —
+`Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx`, a Gmail
+attachment, and this procedure has no tool that fetches one. 🔑 **It is still an
+attachment and not a Drive file**, so nobody can read it without going through
+the mailbox.
+
+🔑 **A near miss worth recording.**
+[The 16:00 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md) spent
+six minutes on `categoria` values with Fabrizio Paganelli — and **on the other
+registry.** The Mexal `categoria statistica` that identifies an event and the
+Opportunity `Categoria`/`Sottocategoria` picklists are different things;
+**nobody connected them, and nothing says whether the client's workbook bears
+on both.** Recorded as an open question, not as a link.

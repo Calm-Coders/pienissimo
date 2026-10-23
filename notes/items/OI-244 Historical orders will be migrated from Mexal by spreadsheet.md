@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-22
+updated: 2026-10-23
 depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
@@ -438,3 +438,79 @@ historical lines will acquire their collection state.
 3. **[Fabrizio Paganelli]** settle the price/discount mapping with Kreosoft —
    now [OI-284](OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md),
    with a call requested for 26 October.
+
+## 2026-10-23 - the data arrived, and it is explicitly provisional
+
+🟢🔑 **The spreadsheet this row has been about since 15 October exists and has
+been delivered.** Fabrizio Paganelli, Gmail `1a168166785585be`,
+**2026-10-23T09:27:39Z**, to Aurel Mrruku and Elena Spini:
+
+> _"vi inoltro i dati per fare i test di importazione ordini._
+>
+> _Come abbiamo detto si tratta di dati provvisori in quanto poi l'importazione
+> dovremo ripeterla quando passeremo in produzione_
+>
+> _Vi chiedo se mi potere chiamare, perché dovrei configurare i prodotti e le
+> edizioni"_
+
+| | |
+| --- | --- |
+| **Attachment** | `Import Ordini (versione del 23.10.26).xlsx`, **1,103,461 bytes** |
+| **Also in Drive** | `1ls-nh7tz5SzW6ALhBW0lWlOn15kfEKMo`, owner `a.mrruku@romicompany.com`, created and modified 2026-10-23T09:27:39Z — the same file, saved out of the mail |
+| **Status** | 🟢 Elena Spini 13:09:30Z: _"ok analizzeremo il file e torneremo da te"_ |
+
+⚠ **Not opened by this sweep.** It is the live historical order and invoice
+extract — real customers, real amounts, article codes. Recorded by filename,
+size, ids and timestamps only, per the standing constraint. 🔑 **So nothing in
+this record states whether the eight exclusion rules agreed on 22/10 were
+actually applied to it**, including the one the key's uniqueness now depends on
+([OI-275](OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md)).
+**A human has to check that.**
+
+🔑 **"dati provvisori … l'importazione dovremo ripeterla quando passeremo in
+produzione"** is the client confirming the two-phase import in their own
+writing. It matches the agreed calendar: this file is the 9 November rehearsal,
+and the real one is due **13 November at 09:00**
+([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)).
+
+### 🟢 The edizione mapping is unblocked and has a sequence
+
+Elena Spini, 13:09:30Z: _"Ti confermo che puoi procedere con la configurazione
+di edizione e mappatura-edizione."_ 🟢 **So the precondition
+[OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)
+records — all products active before the mapping — is satisfied**, confirmed
+again at 13:15:52Z: _"I prodotti sono già tutti attivi in ambiente di UAT,
+quindi puoi procedere."_
+
+🔴 **But that was not the client's blocker**, and four mails in forty minutes
+failed to establish what was. Fabrizio Paganelli, 13:21:14Z:
+
+> _"Non mi sono spiegato. Per i prodotti che sono già attivi su Salesforce devo
+> modificare alcuni attributi (categoria, natura, ecc), altrimenti non posso
+> fare la mappatura. Questo lavoro lo faccio su Mexal e poi, in notte, viene
+> aggiornato Salesforce?"_
+
+Resolved in [the 16:00 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md).
+The agreed handoff chain — **Fabrizio Paganelli extracts and edits the Mexal
+registry (expects to finish Monday) → Mirko Merendi mass-updates Mexal →
+Fabrizio Paganelli mails Aurel Mrruku → Aurel Mrruku re-imports into
+Salesforce** — and only then can the edizione mapping be built on correct
+`categoria statistica` values.
+
+### 🔴 The chain has a single point of failure, and it is a mail
+
+🔑 **The product synchronisation flows are switched off in UAT.** Aurel Mrruku:
+_"li ho disabilit[ati] ci sto lavorando per quello."_ The client's written
+assumption was the opposite — _"poi, in notte, viene aggiornato Salesforce?"_ —
+and **the answer is no.**
+
+🔴 **So step 4 of the chain, a mail from the client, is the only thing that
+tells Salesforce the ERP has changed.** If it is missed or delayed, the edizione
+mapping is built against stale categories and
+[OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)'s
+single point of failure — _"se non trovi l'edizione esplode e devo rifare da
+capo"_ — fires on the real import. ⚠ **Nobody said when the flows go back on.**
+
+⚠ **The window is tight**: the registry edit lands Monday 26 October at the
+earliest, Kreosoft's mass update after that, and the first import is ~9
+November.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-14
-updated: 2026-10-20
+updated: 2026-10-23
 depends_on: [OI-147]
 source: Slack C0C38JJ9D1T 2026-10-14
 ---
@@ -186,3 +186,66 @@ the same posture as her 16/10 concession _"alziamo le mani"_.
 - ⚠ The double-confirm pop-up Matteo Distaso asked for on 16/10 is **not mentioned
   in the confirmation** and is not in any 20/10 commit. It is the only mitigation on
   the record and it remains unbuilt and unrestated.
+
+## 🔑 2026-10-23 - the ask was reversed, in the same channel, without being called a reversal
+
+🔴 **The public refusal text is gone from the requirement.** Marketing group DM
+`C0C38JJ9D1T`, 23 October, in a thread Elena Spini opened at **14:21:27 CEST**
+addressed to Fabrizio Mastracci:
+
+> _"**Marketing:** confermati gli 11-15 reminder per edizione e il tasto
+> rinuncia. @Aurel mrruku farà i campi su Campaign"_
+
+Fabrizio Mastracci asked what the button actually has to do, **14:35:26**:
+
+> _"Rinuncia deve rimandare al link generico e io da li li devo buttare fuori
+> dal journey se hanno cliccato quel bottone? appena so queste cose e ho i campi
+> mi attivo"_
+
+Elena Spini's answer, **15:06:49**, is the specification as it now stands:
+
+> _"RINUNCIA bottone che rimanda alla community (come il bottone di ACCETTA) -
+> se rinuncia deve uscire dal journey fine"_
+
+### What changed between 14 October and 23 October
+
+| | 14 October (this note's title) | 23 October |
+| --- | --- | --- |
+| Destination | the published text at `pienissimo.com/rifiuta-evento` | **the community**, _"come il bottone di ACCETTA"_ |
+| Journey | not discussed | **exit the journey on click** |
+| Pages | Aurel Mrruku's four consequences: split the link, two community pages, hide the button on the normal path, the mobile view | not mentioned |
+
+🔑 **Later evidence wins, so the requirement is now the 23 October wording** —
+and the reversal is recorded rather than silently applied, because the title of
+this row and its whole 14 October account describe something nobody is now
+asking for. ⚠ **Neither party said it was a change.** The word used is
+_"confermati"_, which reads as a confirmation of the earlier ask and is not one.
+
+⚠ **The four technical consequences Aurel Mrruku set out on 14 October are
+unaddressed, not withdrawn.** If `RINUNCIA` lands on the community exactly like
+`ACCETTA`, the behaviour that writes the asset to `rinunciato` still has to live
+somewhere, and nothing in the 23/10 exchange says where.
+
+### 🔑 Fabrizio Mastracci's objection is of record
+
+**15:07:21**, with a ✅ reaction:
+
+> _"ok quindi un bottone rosso e un bottone verde che fanno esattamente la stessa
+> cosa. TOP"_
+
+🔑 **It is a design objection, not a quip**: two buttons with opposite meanings
+routed to the same destination. **It was not answered**, and the reaction marks
+it as read, not resolved. ⚠ This is the second time in this row's history that
+Fabrizio Mastracci has recorded a client-side request as unreasoned (see the
+14 October note above).
+
+### 🔴 What it is blocked on
+
+> _"appena so queste cose e ho i campi mi attivo"_
+
+**Marketing cannot start until Aurel Mrruku delivers the Campaign fields.** That
+is the same dependency
+[OI-250](OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md)
+carries, assigned in the same two-line message, with no date. ⚠ **Nothing in
+the repository shows those fields built**: `origin/DevMain` is `ebc2c5b` and
+carries no Campaign field work from 23 October.

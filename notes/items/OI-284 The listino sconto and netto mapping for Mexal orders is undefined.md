@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Mirko Merendi
 org: both
 raised: 2026-10-22
-updated: 2026-10-22
+updated: 2026-10-23
 depends_on: [OI-207, OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-22 Check Excel Migrazione.md
@@ -95,3 +95,82 @@ Kreosoft names the Mexal fields for list price, discount and net; the percentage
 vs amount question is decided on the record with the rounding exposure stated;
 the mapping is built and one order is verified end to end in UAT against a Mexal
 invoice.
+
+## 2026-10-23 - the call has an hour, the gap is narrower than this note said
+
+### 🟢 The meeting is fixed
+
+| | |
+| --- | --- |
+| **Title** | `[ROMI-PIENISSIMO] - Tema Ordini Mexal` |
+| **When** | **Monday 26 October 2026, 11:00–12:00 (GMT+1)** |
+| **Agenda, verbatim from the invite** | _"Tema prezzo di listino, sconti, e importo netto da passare sugli ordini"_ |
+| **Invited** | Aurel Mrruku, `amministrazione@pienissimo.com`, **Mirko Merendi (`mirko@kreosoft.com`)**, Fabrizio Paganelli |
+| **Sent** | Elena Spini, 2026-10-23T07:40:11Z (Gmail `1a167b3fe401b85f`) |
+
+How it was settled: Fabrizio Paganelli 06:23:24Z — _"Per me sarebbe meglio la
+mattina dalle 11.00 in poi"_; Elena Spini 07:40:44Z — _"Ho mandato il meeting,
+se dovessero esserci problemi di orario, fatemi sapere."_
+
+🟢 **The "no hour fixed" warning above is closed.** ⚠ Note the invite says
+**GMT+1**: European summer time ends on 25 October, so this is 11:00 CET, the
+day the clocks change.
+
+🔑 **Kreosoft is in the room.** This is the first meeting in the record that
+invites Mirko Merendi, which is what the 22/10 blocker needed — the Mexal field
+names are his to give.
+
+### 🟢🔑 `netto` already reaches Mexal — the gap is the list price
+
+From [the 16:00 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md),
+Aurel Mrruku:
+
+> _"io aspetto a sto punto solo Mirco [Mirko] di indicarmi qual è il campo
+> sull'ordine, sulla riga dell'ordine più che sull'ordine te la posso far passare
+> anche l'amount netto, quindi di listino, scusa che il netto lo passiamo già"_
+
+Three corrections to the 22/10 account:
+
+1. 🟢 **`netto` is not missing.** _"il netto lo passiamo già"_ — it is already
+   transmitted. What is undefined is **listino** (and therefore the discount).
+2. 🔑 **The missing field is on the order _line_**, not the header — _"sulla
+   riga dell'ordine più che sull'ordine."_
+3. 🟢 **ROMI's only dependency is Kreosoft.** _"aspetto … solo Mirco"_ — no ROMI
+   build work is blocked on anything else.
+
+### 🟢 The client sent a worked example for the call
+
+Fabrizio Paganelli, 2026-10-23T13:15:53Z on the `Richiesta Call` thread
+(`1a16424bb89d3e8a`), to Elena Spini and Aurel Mrruku, cc
+`amministrazione@pienissimo.com` and Mirko Merendi:
+
+> _"Per l'incontro di lunedì, vi inoltro un esempio di Fattura, dove nelle due
+> righe potete vedere le 2 modalità di gestione degli sconti."_
+
+Attachment: **`Esempio SCONTI.pdf`**, ~880 KB.
+
+🔑 **It is the first artifact in the record that shows both discount forms
+side by side on one document**, which is exactly the thing the 22/10
+disagreement lacked — the percentage form and the negative-absolute form on two
+lines of the same invoice.
+
+⚠ **It was not opened by this sweep.** It is a **real customer invoice**: it
+carries a customer, catalogue prices and article-code values, all of which the
+publishing rules keep out of these records. Recorded by filename, sender,
+recipients, timestamp and stated purpose only.
+🔴 **A human has to open it before Monday** — it is the agenda document.
+
+### ⚠ Unchanged
+
+- 🔴 **The percentage-versus-amount disagreement was not reopened** on 23/10 and
+  stands exactly as the table above records it.
+- ⚠ **Still nothing records what Mirko Merendi told Fabrizio Paganelli** on
+  22 October. Three sources now refer to that conversation — the 22/10 mail, the
+  23/10 invite agenda and the call — and **none contains its content.**
+- 🔴 **`SAL-12` is uncited for a sixth session.** A client call with the ERP
+  vendor is now booked to define how discounts travel, while the register reads
+  _"no discretionary discounts"_, `status: agreed`. Reported for a human, as on
+  19/10, 20/10, 21/10 and 22/10 — the register is not amended from a note.
+- 🔴 Against a **9 November production deploy** and **16 November live**
+  ([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)),
+  the mapping has 14 days to be agreed, built and verified end to end.

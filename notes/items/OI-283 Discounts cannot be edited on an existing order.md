@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-22
-updated: 2026-10-22
+updated: 2026-10-23
 depends_on: [OI-207]
 source: notes/meetings/2026-10-22 Check Excel Migrazione.md
 ---
@@ -95,3 +95,63 @@ be edited are all unasked.
 The edit path is built on `Gestisci Prodotti` for both quote and order, the
 tranche recalculation behaviour is stated, and the client confirms the corrected
 PDF is what he expects. **`SAL-12` is reconciled first or in the same pass.**
+
+## 2026-10-23 - the quote path is answered, an edit path was shown, nothing is merged
+
+This note left three things open. One is answered, one moved, one did not.
+
+### 🟢 The quote path **does** share the gap — question answered
+
+The note said _"Unknown whether the same gap exists on the quote … Nobody
+tested it."_ The client tested it the next morning and reported it live in
+[the 16:00 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md),
+on a **new Opportunity**, not an order:
+
+> _"vado direttamente a a inserire una nuova opportunità sull'azienda … prezzo
+> di listino, sconto e nuovo prezzo. Se io qui ci metto il 20%, vedi, non si non
+> si aggiornava sta cosa"_
+
+🔑 **It is the same component and the same incomplete work, one object earlier.**
+Recorded here rather than as a new row because the fact is the one this note
+already holds: the discount column on `Gestisci Prodotti` is finished for add
+and delete and not for change. The symptom differs — on the quote the typed
+percentage does not recalculate the price on screen — and the cause is the same
+component, by Aurel Mrruku's own account: _"sto lavorando proprio su questo
+componente"_, _"questo stavo aggiustando stamattina."_
+
+### 🟡 An edit path was demonstrated and accepted, and it does not close this
+
+Aurel Mrruku walked the client to it in the call: _"Fai gestisci i prodotti
+adesso. Eh, vedi che c'è la matita a destra?"_ → _"Fai modifica, vedi che la
+puoi modificare."_ Fabrizio Paganelli accepted it — _"Ah, perfetto. Così lo
+posso modificare"_, _"Va benissimo, dai, va benissimo."_
+
+🔴 **Three reasons it stays open:**
+
+1. **It was shown on the quote**, not on the existing order after a generated
+   PDF, which is the scenario this row was raised against. That path was not
+   retried in the call.
+2. **It is work in progress by his own statement**, twice in the same minute —
+   _"È proprio su questa schermata che sto lavorando."_
+3. 🔴 **It is not on `DevMain`.** `origin/DevMain` is still `ebc2c5b`.
+
+### 🔴 The build exists and is unmerged
+
+Anita Aga, **`3c66b27`** _"Modified the Gestici Prodotti Component"_, 23/10
+16:26 CEST on `DevAnita22` — 25 minutes after the call ended — touching
+`quoteManageProducts.html`, `.js`, `.css` and `QuoteManageProductsController`
+(+76/−7). The two earlier commits on the same branch the same day (`9512ee0`,
+`6e7dacb`) are other work.
+
+⚠ **No pull request.** ⚠ **No LWC jest in these three commits**, against 370
+lines added for the discount itself in `4a5a4a0`.
+
+### Unchanged
+
+- 🔴 **The requirement is still unstated.** The client declined on 22/10 and
+  nothing on 23/10 asked again. What an edit does to the tranche, to a generated
+  PDF, or to an order already sent to Mexal remains unasked.
+- 🔴 **No ROMI owner of record and no date.** Anita Aga's commit is evidence of
+  who is doing it, not of an assignment.
+- 🔴 **`SAL-12`** still reads _"no discretionary discounts"_, `status: agreed`.
+  **Sixth session on discounting with the requirement uncited.**

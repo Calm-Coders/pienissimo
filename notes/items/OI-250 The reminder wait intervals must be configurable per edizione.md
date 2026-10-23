@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-16
-updated: 2026-10-20
+updated: 2026-10-23
 depends_on: [OI-186]
 blocks: [go-live]
 severity: gating
@@ -172,3 +172,30 @@ configurable — and it is now authorised for build with five event families nam
 communications differentiated by ticket type, which would branch the same journey
 this row rebuilds. **Neither was costed and neither was called a change request
 to the client**, four days after the Fase 1 freeze.
+
+## 2026-10-23 - confirmed to marketing, and the fields are the blocker
+
+🟢 **The scope is restated and confirmed.** Elena Spini to Fabrizio Mastracci,
+marketing group DM `C0C38JJ9D1T`, **14:21:27 CEST**:
+
+> _"**Marketing:** confermati gli 11-15 reminder per edizione e il tasto
+> rinuncia. @Aurel mrruku farà i campi su Campaign"_
+
+Two things to read off it:
+
+- 🟢 **The "11-15" range is confirmed in writing**, which matches the 20 October
+  finding that 11 interval fields had become 15. **It is still a range, not a
+  number** — nothing says whether the build targets 11, 15, or a variable count.
+- 🔑 **The fields are assigned to Aurel Mrruku**, on the **Campaign** object, in
+  one clause and with no date.
+
+🔴 **Marketing is blocked on them.** Fabrizio Mastracci, 14:35:26:
+_"appena so queste cose e ho i campi mi attivo."_ So the Marketing Cloud journey
+work — the thing this row exists to enable — cannot start, and the dependency is
+a single ROMI build item with no deadline against a **9 November production
+deploy**.
+
+⚠ **Nothing in the repository shows the Campaign fields built.**
+`origin/DevMain` is still `ebc2c5b` and no commit since the watermark touches
+Campaign metadata. ⚠ **And the 20 October warning stands**: the permissions for
+these fields go in by hand in production and are then overwritten.

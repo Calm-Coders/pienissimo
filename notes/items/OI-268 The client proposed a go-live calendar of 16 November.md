@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-20
-updated: 2026-10-21
+updated: 2026-10-23
 depends_on: [OI-246, OI-244, OI-267, OI-274]
 blocks: [go-live]
 severity: gating
@@ -242,3 +242,86 @@ to the 16th.
    has lapsed and nothing replaced it. ⚠ **Neither 21/10 session mentioned a
    Go/No-Go at all.**
 3. Someone has to ask the client whether they hold Zoho past 31 October.
+
+## 2026-10-23 - the calendar is now agreed in writing by both sides
+
+🟢🔑 **This is the written confirmation the 21/10 entry said was missing.** Four
+messages on Gmail thread `1a158b6e3e4cee81` on 23 October close the evidential
+gap: ROMI's own reply is now in the swept mailbox, the client restated the
+calendar in their own words and accepted it, and ROMI confirmed it point by
+point. **Nothing about the dates changed; the agreement stopped being verbal.**
+
+### What arrived, in order
+
+| When (UTC) | Who | What |
+| ---------- | --- | ---- |
+| **10:06:07** | Elena Spini → Aurel Mrruku, Fabrizio Mastracci | Forwards her own reply of **21 October 09:53** with _"FYI"_ — 🟢 **the mail the 21/10 entry recorded as not in evidence here.** ⚠ And with it the reason: _"avendo fatto rispondi a tutti purtroppo non eravate in copia (comunque NON hanno risposto e ora sto sollecitando e vi metto in cc)"_ |
+| **10:09:04** | Elena Spini → Sabatino Rinaldi, Fabrizio Paganelli, cc the client's whole group + Aurel Mrruku + Fabrizio Mastracci | The chase. 🟢 _"riteniamo che la data del 16/11 rimanga per noi un target del tutto raggiungibile"_ — **ROMI's written acceptance of 16 November.** Also carries the ticket-scope position and the Change Request ask, tracked at [OI-285](OI-285%20ROMI%20asked%20the%20client%20to%20route%20future%20out%20of%20scope%20requirements%20through%20change%20requests.md) |
+| **10:41:34** | Fabrizio Paganelli, _"ti rispondiamo io e Sabatino"_ | 🟢🔑 **The client restates the calendar and accepts it** (verbatim below) |
+| **13:14:42** | Elena Spini | Point-by-point confirmation, adding the two ROMI-side commitments |
+
+### 🟢🔑 The client's own restatement, verbatim
+
+> _"Dal 9 al 11 novembre i commerciali e l'amministrazione continuano a lavorare
+> su Zoho_
+>
+> _Il 12 – 13 novembre interrompiamo la fatturazione e procediamo con la
+> migrazione degli ordini non fatturati da Mexal a Salesforce. Dobbiamo anche
+> caricare i dati storici come da mail di questa mattina._
+>
+> _Il 16 novembre lavoriamo tutti su Salesforce (marketing, commerciale,
+> amministrazione)_
+>
+> _Se il giro è questo procediamo come da voi indicato."_
+
+🔑 **This is the strongest acceptance in the record** — the client writing the
+plan back in their own words and committing to it, signed _"Sabatino/Fabrizio"_,
+i.e. including the project lead who escalated on 21 October.
+
+### 🟢 ROMI's two added commitments
+
+> 1. _"Dal 9 al 11 novembre i commerciali e l'amministrazione continuano a
+>    lavorare su Zoho **>> ok, il 9/11 noi procederemo con il deploy in
+>    Produzione**"_
+> 2. _"Il 12 – 13 novembre … **>> entro il 13/11 mattina ore 9 noi dobbiamo
+>    ricevere il file con gli ordini da caricare in Produzione.**"_
+> 3. _"Il 16 novembre … **>> ok**"_
+
+🔑 **The 13 November 09:00 extract deadline is now stated to the client**, not
+just agreed in a call. It is the hard edge of the whole migration: everything in
+[OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md),
+[OI-275](OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md)
+and [OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)
+has to be built, tested and runnable against a file that arrives that morning.
+
+### ⚠ Small drift from the 21/10 table, recorded not reconciled
+
+The 21/10 call minuted _"9–12 November: the client keeps invoicing on Zoho"_
+with **12 November the last invoicing day**. The client's written version says
+Zoho runs **9–11 November** and invoicing **stops on the 12th**, with 12–13
+November given to the migration. 🔑 **One day moves**, nobody noted it, and
+**the written version is the later evidence** — so the register's
+`go_live: 2026-11-16` is unaffected but the intermediate dates should be read
+from this thread, not from the 21/10 note.
+
+### 🔴 Zoho, a seventh run unasked
+
+The agreed plan now has the client **invoicing on Zoho from 9 to 11 November in
+their own writing**, against `zoho_expiry: 2026-10-31` in the register — and
+🔴 **Zoho is still not named by anyone as a problem**, in this thread or in
+[the 23/10 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md).
+That is now seven consecutive sweeps where the question is unasked while both
+sides write plans that depend on the answer. See
+[the risk](../risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md).
+
+### 🟢 Status
+
+**Resolved and now evidenced in writing on both sides.** What the "what closing
+it looks like" list below still leaves open:
+
+1. 🟢 The register was moved on 21/10 and the move is now backed by written
+   mutual agreement rather than a verbal one. ⚠ **The Italian wording in
+   `REQUISITI.it.md` still needs a human's eye** — unchanged, three runs on.
+2. ⚠ The lapsed 27 October Go/No-Go is **still** unreplaced. Neither the
+   thread nor the 23/10 call mentions a Go/No-Go.
+3. 🔴 Nobody has asked about Zoho — see above.

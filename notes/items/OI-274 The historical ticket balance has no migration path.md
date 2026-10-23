@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-23
 depends_on: [OI-244, OI-267, OI-276]
 blocks: [go-live]
 severity: gating
@@ -141,3 +141,54 @@ From [the afternoon session](../meetings/2026-10-21%20Tema%20Migrazione.md):
   call; see the afternoon note.
 - ⚠ `Pienissimo 360`, offered by Sabatino Rinaldi as an alternative route into
   Salesforce by API, appears in no project record and nobody has evaluated it.
+
+## 2026-10-23 - ROMI answered in writing, and the subject vanished from the room
+
+🟢🔑 **The escalation has a written answer.** Elena Spini, Gmail
+`1a158b6e3e4cee81` message `1a1683c78db0218b`, **10:09:04Z**, to Sabatino
+Rinaldi and Fabrizio Paganelli with the client's whole project group in copy:
+
+> _"ci tengo a segnalare che stiamo facendo il possibile per includere anche i
+> requisiti per la migrazione dei biglietti arrivati in settimana, sebbene non
+> fossero previsti nella pianificazione iniziale né nel BBP approvato"_
+
+This is the first ROMI reply to _"mi aspetto da parte vostra dovete portarci una
+soluzione"_ and it does two things at once:
+
+- 🟢 **Accepts the work** — _"stiamo facendo il possibile per includere"_.
+- 🔑 **Puts the scope objection on the record, naming the approved BBP**, which
+  is stronger than the verbal _"Mai"_ of 21 October because it cites a document
+  rather than a recollection.
+
+⚠ **It still does not answer his question.** He asked *how* the tickets get into
+Salesforce. The mail gives **no mechanism, no date and no owner**, and
+🔴 **nothing has been built** since.
+
+⚠ **It is not called a change request.** The CR ask in the same mail is
+explicitly _"in futuro"_ —
+[OI-285](OI-285%20ROMI%20asked%20the%20client%20to%20route%20future%20out%20of%20scope%20requirements%20through%20change%20requests.md).
+🔑 **So this item is being absorbed with the objection recorded and no
+commercial consequence attached.** That is a deliberate choice and it is
+nobody's stated decision.
+
+🔴 **The client did not respond to this paragraph.** They answered the calendar
+part of the same thread at 10:41:34Z and said nothing about the tickets or the
+BBP — see [OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md).
+
+### ⚠ And it was not mentioned in the day's client call
+
+[The 16:00 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md) ran
+six minutes on the product registry and never reached it. **Second consecutive
+client call with no mention**, two days after the client's own project lead made
+it ROMI's problem, and on the day ROMI answered it in writing. Nothing from
+Fabrizio Paganelli's side acknowledges the answer.
+
+### Still unanswered from the 21/10 list
+
+- ⚠ The client's **ticket field and value structure** — undertaken by Fabrizio
+  Paganelli, **not sent**, now three days.
+- ⚠ **`Pienissimo 360`** — still appears in no project record and nobody has
+  evaluated it.
+- 🔴 **2–3 days of UAT build**, unstarted, against a first import on ~9 November
+  and a production extract due **13 November 09:00**
+  ([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)).
