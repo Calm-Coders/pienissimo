@@ -92,6 +92,8 @@ public without sharing class QuoteManageProductsController {
     @AuraEnabled
     public Decimal discountPercent;
     @AuraEnabled
+    public Decimal totalPrice;
+    @AuraEnabled
     public Boolean canEditItem;
 
     public ExistingQuoteLine(QuoteLineItem line) {
@@ -109,6 +111,7 @@ public without sharing class QuoteManageProductsController {
       unitPrice = line.UnitPrice;
       listPrice = line.PricebookEntry.UnitPrice;
       discountPercent = line.Discount_Pct__c == null ? 0 : line.Discount_Pct__c;
+      totalPrice = line.TotalPrice;
       canEditItem =
         productType == ITEM_RECORD_TYPE_DEVELOPER_NAME &&
         !isBundleComponentLine(line);
@@ -218,6 +221,7 @@ public without sharing class QuoteManageProductsController {
         Quantity,
         UnitPrice,
         Discount_Pct__c,
+        TotalPrice,
         PricebookEntry.UnitPrice,
         Product2.Name,
         Product2.ProductCode,

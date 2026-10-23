@@ -67,16 +67,21 @@
             <template if:true={showExistingProducts}>
               <div class="selected-panel">
                 <div class="section-label">Righe gia nel preventivo</div>
-                <div class="selected-table">
-                  <div class="selected-header">
+                <div class="selected-table existing-products-table">
+                  <div class="selected-header existing-header">
                     <span>Prodotto</span>
-                    <span>Qta</span>
+                    <span class="existing-number">Qta</span>
+                    <span class="existing-number">Sconto %</span>
+                    <span class="existing-number">Prezzo totale</span>
                     <span>Stato</span>
                     <span></span>
                   </div>
                   <div class="selected-body">
                     <template for:each={existingProducts} for:item="product">
-                      <div class="selected-row" key={product.rowKey}>
+                      <div
+                        class="selected-row existing-product-row"
+                        key={product.rowKey}
+                      >
                         <div class="selected-main">
                           <div class="product-title">{product.productName}</div>
                           <div class="product-meta">
@@ -85,14 +90,23 @@
                             <template if:true={product.hasTranche}>
                               <span>{product.trancheLabel}</span>
                             </template>
-                            <span>Prezzo {product.unitPriceLabel}</span>
                           </div>
                         </div>
                         <template if:true={product.isExisting}>
-                          <span class="quantity-static"
+                          <span class="quantity-static existing-number"
                             >{product.quantity}</span
                           >
                         </template>
+                        <span
+                          class="existing-price existing-number"
+                          data-label="Sconto"
+                          >{product.discountLabel}</span
+                        >
+                        <span
+                          class="existing-price existing-number"
+                          data-label="Prezzo totale"
+                          >{product.totalPriceLabel}</span
+                        >
                         <span class="row-status">{product.rowStatus}</span>
                         <span class="existing-item-actions">
                           <template if:true={product.canEditItem}>
@@ -139,7 +153,6 @@
                           <template if:true={editingItem.hasTranche}>
                             <span>{editingItem.trancheLabel}</span>
                           </template>
-                          <span>Prezzo {editingItem.unitPriceLabel}</span>
                         </div>
                       </div>
                       <lightning-input

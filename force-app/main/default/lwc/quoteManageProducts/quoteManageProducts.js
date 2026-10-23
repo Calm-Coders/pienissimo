@@ -825,7 +825,12 @@ export default class QuoteManageProducts extends NavigationMixin(
       unitPrice: line.unitPrice,
       listPrice: line.listPrice,
       discountPercent: line.discountPercent,
+      discountLabel: `${new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 2
+      }).format(line.discountPercent ?? 0)}%`,
+      totalPriceLabel: this.formatAmount(line.totalPrice),
       unitPriceLabel: this.formatAmount(line.unitPrice),
+      listPriceLabel: this.formatAmount(line.listPrice),
       quantity: line.quantity,
       quantityDisabled: true,
       trancheId: line.trancheId,
