@@ -5,7 +5,7 @@ status: resolved
 owner: Elena Spini
 org: both
 raised: 2026-10-13
-updated: 2026-10-13
+updated: 2026-10-22
 source: Google Drive 1Lbc5Ypm-ktbSW2Sqp4ilZymvC4T-68sKoJ5FwgPScEI
 ---
 
@@ -76,18 +76,18 @@ has UAT writing to the client's live Mexal since 09/10.
 
 ## What the client found wrong
 
-| Finding | Where | State |
-| ------- | ----- | ----- |
-| Description truncated by Mexal's two-field split | `00:01:08` | 🟢 fixed in the call by concatenation |
-| Statistical classification levels 1–4 missing from the layout | `00:13:23` | next step, Aurel Mrruku |
-| `gruppo merceologico` and `categoria merceologica` not on the layout | `00:21:00` | next step, Aurel Mrruku |
-| Bundle components priced at zero | `00:28:22` | 🟢 root cause found and fixed in the call — the standard price book never followed the Mexal price. Committed as `49b49e5` |
-| Prices shown with inconsistent decimals | `00:35:43` | 🟢 agreed at 2 decimals |
-| Screen width 60% too narrow for standard monitors | `00:51:44` | 🟢 raised to 70–75% |
-| Quote PDF shows American date format and bad translations | `01:21:32` | next step, Aurel Mrruku |
-| Order record would not open for Fabrizio Paganelli | `01:24:11` | ⚠ the Dettagli read it as a browser issue solved by opening a new tab; the next-step list calls it _"il problema di accesso"_ and asks for an investigation. **Both readings are in the same record** |
-| Invoice shows the net unit price, not list price plus discount | `01:30:04` | 🔴 [OI-145](../items/OI-145%20Order%20header%20discounts%20are%20removed.md), reopened — see below |
-| Empty `tipo merce` fields in the Mexal order-fix procedure | `01:31:11` | ⚠ _"da verificare successivamente"_, no owner |
+| Finding                                                              | Where      | State                                                                                                                                                                                                 |
+| -------------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Description truncated by Mexal's two-field split                     | `00:01:08` | 🟢 fixed in the call by concatenation                                                                                                                                                                 |
+| Statistical classification levels 1–4 missing from the layout        | `00:13:23` | 🟡 done in UAT 2026-10-22: _"Classificazione statistica prodotti"_ section with levels 0–6; not in Prod                                                                                               |
+| `gruppo merceologico` and `categoria merceologica` not on the layout | `00:21:00` | 🟡 done in UAT 2026-10-22: new `Gruppo_Merceologico__c` (from `cod_grp_merc`); the categoria merceologica is `Categoria_Articolo__c`, confirmed by Aurel Mrruku; not in Prod                          |
+| Bundle components priced at zero                                     | `00:28:22` | 🟢 root cause found and fixed in the call — the standard price book never followed the Mexal price. Committed as `49b49e5`                                                                            |
+| Prices shown with inconsistent decimals                              | `00:35:43` | 🟢 agreed at 2 decimals                                                                                                                                                                               |
+| Screen width 60% too narrow for standard monitors                    | `00:51:44` | 🟢 raised to 70–75%                                                                                                                                                                                   |
+| Quote PDF shows American date format and bad translations            | `01:21:32` | next step, Aurel Mrruku                                                                                                                                                                               |
+| Order record would not open for Fabrizio Paganelli                   | `01:24:11` | ⚠ the Dettagli read it as a browser issue solved by opening a new tab; the next-step list calls it _"il problema di accesso"_ and asks for an investigation. **Both readings are in the same record** |
+| Invoice shows the net unit price, not list price plus discount       | `01:30:04` | 🔴 [OI-145](../items/OI-145%20Order%20header%20discounts%20are%20removed.md), reopened — see below                                                                                                    |
+| Empty `tipo merce` fields in the Mexal order-fix procedure           | `01:31:11` | ⚠ _"da verificare successivamente"_, no owner                                                                                                                                                         |
 
 ## 🔑 The edition-mapping mechanics, stated plainly for the first time
 
@@ -108,14 +108,14 @@ has UAT writing to the client's live Mexal since 09/10.
 
 ## 🔑 A campaign structure was created live
 
-| Field | Value |
-| ----- | ----- |
-| Parent campaign | _"Pienissimo lab"_, flagged active |
-| Child campaign | _"Pienissimo lab 2026"_ |
-| Window | **1 October 2026 → 30 September 2027** |
-| Event type | **live** |
+| Field                    | Value                                                   |
+| ------------------------ | ------------------------------------------------------- |
+| Parent campaign          | _"Pienissimo lab"_, flagged active                      |
+| Child campaign           | _"Pienissimo lab 2026"_                                 |
+| Window                   | **1 October 2026 → 30 September 2027**                  |
+| Event type               | **live**                                                |
 | **Data invio biglietto** | **1 December 2026** — set on Aurel Mrruku's instruction |
-| Edition mapping | category **E11** |
+| Edition mapping          | category **E11**                                        |
 
 (`01:09:11`, `01:10:18`). ⚠ **`E11` is a category key the records have not
 carried before.** Aurel Mrruku also added the creation-date field to the view.
@@ -145,21 +145,21 @@ mentioned in this session at all.
 
 ## Next steps as recorded
 
-| Owner | Step |
-| ----- | ---- |
-| Aurel Mrruku | concatenate the two description fields |
-| Aurel Mrruku | add a _"Classificazione statistica prodotti"_ layout section before system information |
-| Aurel Mrruku | add `gruppo merceologico` to the layout |
-| Aurel Mrruku | automate the price-list update on every product price change |
-| Aurel Mrruku | standardise prices to 2 decimals |
-| Aurel Mrruku | set screen width to 75% |
-| Aurel Mrruku | category selection adds **active products only** |
-| Aurel Mrruku | fix translations and date formats in the quote PDF |
-| Aurel Mrruku | investigate the order-record access problem |
-| Fabrizio Paganelli | adjust product discounts so the bundle totals reconcile |
-| Fabrizio Paganelli | contact Mirko Merendi on list price / discount / net in the order |
-| the group | define bundle access permissions per profile |
-| the group | 🔑 **test order creation for `plus`, `rinnovo`, `attivazione`, WooCommerce, `vendita libro` and `vendita da palco`** |
+| Owner              | Step                                                                                                                 |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Aurel Mrruku       | concatenate the two description fields                                                                               |
+| Aurel Mrruku       | add a _"Classificazione statistica prodotti"_ layout section before system information                               |
+| Aurel Mrruku       | add `gruppo merceologico` to the layout                                                                              |
+| Aurel Mrruku       | automate the price-list update on every product price change                                                         |
+| Aurel Mrruku       | standardise prices to 2 decimals                                                                                     |
+| Aurel Mrruku       | set screen width to 75%                                                                                              |
+| Aurel Mrruku       | category selection adds **active products only**                                                                     |
+| Aurel Mrruku       | fix translations and date formats in the quote PDF                                                                   |
+| Aurel Mrruku       | investigate the order-record access problem                                                                          |
+| Fabrizio Paganelli | adjust product discounts so the bundle totals reconcile                                                              |
+| Fabrizio Paganelli | contact Mirko Merendi on list price / discount / net in the order                                                    |
+| the group          | define bundle access permissions per profile                                                                         |
+| the group          | 🔑 **test order creation for `plus`, `rinnovo`, `attivazione`, WooCommerce, `vendita libro` and `vendita da palco`** |
 
 🔴 **`vendita libro` is in that test list.** It is the **third** statement
 putting books in Salesforce scope — after the 14/10 e2e invitation's

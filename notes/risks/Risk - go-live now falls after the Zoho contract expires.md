@@ -5,7 +5,7 @@ status: open
 owner: Elena Spini
 org: both
 raised: 2026-10-15
-updated: 2026-10-21
+updated: 2026-10-23
 depends_on: [OI-243, OI-268, OI-274]
 blocks: [go-live]
 severity: gating
@@ -181,3 +181,35 @@ ended 24 days earlier.**
 31 October. Either they do — in which case nothing here is a risk and one
 sentence closes it — or the plan both parties just agreed cannot be executed.
 **No source distinguishes these.**
+
+## 🔴 2026-10-23 - now written down by both parties, and still unasked
+
+🔑 **The gap stopped being a minuted verbal plan and became a written one.** On
+Gmail thread `1a158b6e3e4cee81` the client set the calendar out themselves at
+10:41:34Z and ROMI confirmed it point by point at 13:14:42Z
+([OI-268](../items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)).
+The client's own sentence:
+
+> _"Dal 9 al 11 novembre i commerciali e l'amministrazione continuano a lavorare
+> su Zoho"_
+
+and ROMI's reply to it: _">> ok, il 9/11 noi procederemo con il deploy in
+Produzione."_
+
+| | |
+| --- | --- |
+| `zoho_expiry` in the register | **2026-10-31** |
+| Last day the client states they work on Zoho | **2026-11-11** |
+| Overrun agreed **in writing by both sides** | **11 days** |
+| Plus | Pienissimo Live, 24–26 November, ticketed from Zoho — **three weeks past expiry** |
+| Plus | the migration extract itself, pulled from Zoho on 12–13 November |
+
+🔴 **Nobody has asked the question.** Not in this thread, not in
+[the 23/10 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md).
+**Seventh consecutive nightly run.** It is one sentence to either Sabatino
+Rinaldi or Fabrizio Paganelli: *do you hold Zoho past 31 October?*
+
+🔑 **The escalation this run is evidential, not factual.** The exposure has not
+grown; what has changed is that it is now in a mail both parties have agreed to,
+addressed to the client's whole project group including their project lead —
+so if the answer is no, the plan in writing is the one that fails.

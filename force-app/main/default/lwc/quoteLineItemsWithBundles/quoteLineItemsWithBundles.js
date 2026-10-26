@@ -61,6 +61,9 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       (message) => {
         if (message.quoteId === this.recordId) {
           this.loadContext();
+          // The record-page component can reach the page refresh container;
+          // the screen quick action publishing this message is in an overlay.
+          this.dispatchEvent(new RefreshEvent());
         }
       },
       { scope: APPLICATION_SCOPE }

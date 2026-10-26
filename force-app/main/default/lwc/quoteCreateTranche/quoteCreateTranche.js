@@ -1,4 +1,6 @@
-import { api, LightningElement } from "lwc";
+import { api, LightningElement, wire } from "lwc";
+import { MessageContext, publish } from "lightning/messageService";
+import QUOTE_PRODUCTS_CHANGED from "@salesforce/messageChannel/QuoteProductsChanged__c";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
@@ -8,6 +10,8 @@ import getContext from "@salesforce/apex/QuoteTrancheController.getContext";
 
 export default class QuoteCreateTranche extends LightningElement {
   _recordId;
+  @wire(MessageContext)
+  messageContext;
 
   isLoading = false;
   hasLoaded = false;
@@ -581,11 +585,14 @@ export default class QuoteCreateTranche extends LightningElement {
       const changedRecordIds = new Set([
         this.recordId,
         ...this.quoteLines.map((line) => line.id),
-        ...this.existingTranches.map((tranche) => tranche.id)
+        ...this.existingTranches.map((tranche) => tranche.trancheId)
       ]);
       await notifyRecordUpdateAvailable(
         [...changedRecordIds].filter(Boolean).map((recordId) => ({ recordId }))
       );
+      publish(this.messageContext, QUOTE_PRODUCTS_CHANGED, {
+        quoteId: this.recordId
+      });
       this.closeAndRefresh();
     } catch (error) {
       this.showToast("Errore", this.reduceError(error), "error");

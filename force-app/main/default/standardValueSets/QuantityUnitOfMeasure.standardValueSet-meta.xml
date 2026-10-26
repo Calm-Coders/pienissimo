@@ -6,4 +6,19 @@
         <default>false</default>
         <label>Nr</label>
     </standardValue>
+    <standardValue>
+        <fullName>MS</fullName>
+        <default>false</default>
+        <label>MS</label>
+    </standardValue>
+    <standardValue>
+        <fullName>HR</fullName>
+        <default>false</default>
+        <label>HR</label>
+    </standardValue>
+    <standardValue>
+        <fullName>NM</fullName>
+        <default>false</default>
+        <label>NM</label>
+    </standardValue>
 </StandardValueSet>

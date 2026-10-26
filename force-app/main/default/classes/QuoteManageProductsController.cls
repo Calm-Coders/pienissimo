@@ -87,6 +87,14 @@ public without sharing class QuoteManageProductsController {
     public Date trancheDueDate;
     @AuraEnabled
     public Decimal trancheAmount;
+    @AuraEnabled
+    public Decimal listPrice;
+    @AuraEnabled
+    public Decimal discountPercent;
+    @AuraEnabled
+    public Decimal totalPrice;
+    @AuraEnabled
+    public Boolean canEditItem;
 
     public ExistingQuoteLine(QuoteLineItem line) {
       quoteLineItemId = line.Id;
@@ -101,6 +109,12 @@ public without sharing class QuoteManageProductsController {
       isPlus = false;
       quantity = line.Quantity;
       unitPrice = line.UnitPrice;
+      listPrice = line.PricebookEntry.UnitPrice;
+      discountPercent = line.Discount_Pct__c == null ? 0 : line.Discount_Pct__c;
+      totalPrice = line.TotalPrice;
+      canEditItem =
+        productType == ITEM_RECORD_TYPE_DEVELOPER_NAME &&
+        !isBundleComponentLine(line);
       trancheId = line.Tranche__c;
       trancheName = line.Tranche__r == null ? null : line.Tranche__r.Name;
       trancheSequence = line.Tranche__r == null
@@ -177,7 +191,6 @@ public without sharing class QuoteManageProductsController {
   @AuraEnabled
   public static QuoteProductsContext getContext(Id quoteId) {
     validateQuoteId(quoteId);
-    requireReadAccess();
 
     Quote quoteRecord = [
       SELECT Id, Name, QuoteNumber, Status, Opportunity.RecordType.DeveloperName
@@ -207,6 +220,9 @@ public without sharing class QuoteManageProductsController {
         PricebookEntryId,
         Quantity,
         UnitPrice,
+        Discount_Pct__c,
+        TotalPrice,
+        PricebookEntry.UnitPrice,
         Product2.Name,
         Product2.ProductCode,
         PricebookEntry.Product2.RecordType.DeveloperName,
@@ -240,12 +256,137 @@ public without sharing class QuoteManageProductsController {
   }
 
   @AuraEnabled
+  public static void updateItemLine(
+    Id quoteId,
+    Id lineId,
+    Decimal quantity,
+    Decimal discountPercent,
+    Decimal newPrice,
+    Date dueDate
+  ) {
+    validateQuoteId(quoteId);
+    if (
+      lineId == null ||
+      lineId.getSObjectType() != QuoteLineItem.SObjectType
+    ) {
+      throw new AuraHandledException('Seleziona una riga preventivo valida.');
+    }
+    Quote quoteRecord = [
+      SELECT Id, Status, Opportunity.RecordType.DeveloperName
+      FROM Quote
+      WHERE Id = :quoteId
+      LIMIT 1
+      FOR UPDATE
+    ];
+    if (
+      (!isStandardOpportunity(quoteRecord) &&
+      !isPlusOpportunity(quoteRecord)) ||
+      (quoteRecord.Status != 'Bozza' &&
+      quoteRecord.Status != 'In Trattativa')
+    ) {
+      throw new AuraHandledException(
+        'Puoi modificare gli Item Standard o Plus solo in Bozza o In Trattativa.'
+      );
+    }
+    List<QuoteLineItem> lines = [
+      SELECT
+        Id,
+        Description,
+        Tranche__c,
+        PricebookEntry.Product2.RecordType.DeveloperName
+      FROM QuoteLineItem
+      WHERE Id = :lineId AND QuoteId = :quoteId
+      LIMIT 1
+      FOR UPDATE
+    ];
+    if (
+      lines.isEmpty() ||
+      isBundleComponentLine(lines[0]) ||
+      lines[0].PricebookEntry.Product2.RecordType.DeveloperName !=
+      ITEM_RECORD_TYPE_DEVELOPER_NAME
+    ) {
+      throw new AuraHandledException(
+        'Seleziona un Item singolo di questo preventivo.'
+      );
+    }
+    if (
+      quantity == null ||
+      quantity <= 0 ||
+      quantity != quantity.setScale(2) ||
+      newPrice == null ||
+      newPrice < 0 ||
+      newPrice != newPrice.setScale(2) ||
+      discountPercent == null ||
+      discountPercent > 100 ||
+      discountPercent != discountPercent.setScale(2)
+    ) {
+      throw new AuraHandledException(
+        'Inserisci quantita positiva, prezzo non negativo e sconto non superiore al 100%, con massimo due decimali.'
+      );
+    }
+    QuoteLineItem line = lines[0];
+    if (
+      isPlusOpportunity(quoteRecord) &&
+      (quantity != 1 ||
+      line.Tranche__c == null)
+    ) {
+      throw new AuraHandledException(
+        'Per Plus modifica il prezzo della singola tranche mantenendo quantita 1.'
+      );
+    }
+    QuoteLineItem changedLine = new QuoteLineItem(
+      Id = line.Id,
+      Quantity = quantity,
+      UnitPrice = newPrice,
+      Discount_Pct__c = discountPercent
+    );
+    List<QuoteLineItem> lineUpdates = new List<QuoteLineItem>{ changedLine };
+    if (isPlusOpportunity(quoteRecord)) {
+      if (dueDate == null || dueDate < Date.today()) {
+        throw new AuraHandledException(
+          'Inserisci una scadenza non precedente alla data odierna.'
+        );
+      }
+      if (
+        [
+          SELECT COUNT()
+          FROM Tranche__c
+          WHERE
+            Quote__c = :quoteId
+            AND Id != :line.Tranche__c
+            AND Data_Scadenza__c = :dueDate
+        ] > 0
+      ) {
+        throw new AuraHandledException(
+          'Le date di scadenza delle tranche devono essere diverse.'
+        );
+      }
+      changedLine.Data_Scadenza__c = dueDate;
+      for (QuoteLineItem linkedLine : [
+        SELECT Id
+        FROM QuoteLineItem
+        WHERE
+          QuoteId = :quoteId
+          AND Tranche__c = :line.Tranche__c
+          AND Id != :line.Id
+      ]) {
+        lineUpdates.add(
+          new QuoteLineItem(Id = linkedLine.Id, Data_Scadenza__c = dueDate)
+        );
+      }
+      update new Tranche__c(Id = line.Tranche__c, Data_Scadenza__c = dueDate);
+    }
+    update lineUpdates;
+    if (line.Tranche__c != null)
+      recalculateTrancheAmounts(new Set<Id>{ line.Tranche__c });
+  }
+
+  @AuraEnabled
   public static List<ProductOption> searchProducts(
     Id quoteId,
     String searchTerm
   ) {
     validateQuoteId(quoteId);
-    requireReadAccess();
 
     Quote quoteRecord = [
       SELECT
@@ -329,8 +470,6 @@ public without sharing class QuoteManageProductsController {
       FOR UPDATE
     ];
 
-    requireSaveAccess();
-
     QuoteProductsContext context = getContext(quoteId);
     if (context.existingBundleLine != null) {
       throw new AuraHandledException(
@@ -412,7 +551,6 @@ public without sharing class QuoteManageProductsController {
     }
 
     if (context.isPlusOpportunity) {
-      requireTrancheCreateAccess();
       validateNoExistingPlusTranches(quoteId);
       if (context.hasPlusLine || entriesById.size() > 1) {
         throw new AuraHandledException(
@@ -446,7 +584,6 @@ public without sharing class QuoteManageProductsController {
         ]
       );
       if (!existingTranchesById.isEmpty()) {
-        requireExistingTrancheAssignmentAccess();
         for (PricebookEntry entry : entriesById.values()) {
           if (isBundleEntry(entry)) {
             continue;
@@ -714,9 +851,6 @@ public without sharing class QuoteManageProductsController {
     if (templates.isEmpty()) {
       return;
     }
-
-    requireTrancheCreateAccess();
-    requireBundleTemplateTrancheCreateAccess();
 
     Map<Id, Bundle_Tranch__c> templateById = new Map<Id, Bundle_Tranch__c>(
       templates
@@ -1195,75 +1329,6 @@ public without sharing class QuoteManageProductsController {
       pricebookEntryId.getSObjectType() != PricebookEntry.SObjectType
     ) {
       throw new AuraHandledException('Seleziona un prodotto.');
-    }
-  }
-
-  private static void requireReadAccess() {
-    if (
-      !Schema.sObjectType.Quote.isAccessible() ||
-      !Schema.sObjectType.QuoteLineItem.isAccessible() ||
-      !Schema.sObjectType.PricebookEntry.isAccessible() ||
-      !Schema.sObjectType.Product2.isAccessible()
-    ) {
-      throw new AuraHandledException(
-        'Non hai i permessi per visualizzare i prodotti del preventivo.'
-      );
-    }
-  }
-
-  private static void requireSaveAccess() {
-    requireReadAccess();
-
-    if (!Schema.sObjectType.QuoteLineItem.isCreateable()) {
-      throw new AuraHandledException(
-        'Non hai i permessi per salvare i prodotti del preventivo.'
-      );
-    }
-  }
-
-  private static void requireTrancheCreateAccess() {
-    if (
-      !Schema.sObjectType.Tranche__c.isAccessible() ||
-      !Schema.sObjectType.Tranche__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Quote__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Name.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Data_Scadenza__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Sequenza__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Importo_Previsto__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Stato__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Completamente_Pagata__c.isCreateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isCreateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isCreateable()
-    ) {
-      throw new AuraHandledException(
-        'Non hai i permessi per creare le tranche del preventivo.'
-      );
-    }
-  }
-
-  private static void requireExistingTrancheAssignmentAccess() {
-    if (
-      !Schema.sObjectType.Tranche__c.isAccessible() ||
-      !Schema.sObjectType.Tranche__c.isUpdateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Importo_Previsto__c.isUpdateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isCreateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isCreateable()
-    ) {
-      throw new AuraHandledException(
-        'Non hai i permessi per assegnare i prodotti alle tranche del preventivo.'
-      );
-    }
-  }
-
-  private static void requireBundleTemplateTrancheCreateAccess() {
-    if (
-      !Schema.sObjectType.Tranche__c.fields.Bundle_Tranch__c.isCreateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isUpdateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isUpdateable()
-    ) {
-      throw new AuraHandledException(
-        'Non hai i permessi per creare le tranche del bundle sul preventivo.'
-      );
     }
   }
 }

@@ -22,6 +22,8 @@ public without sharing class MexalOrderSendService {
     public String mexalDocumentSigla;
     public Integer mexalDocumentSerie;
     public Integer mexalDocumentNumber;
+    // The data_documento sent; with sigla, serie and numero it keys the order.
+    public Date mexalDocumentDate;
     public String mexalCustomerCode;
     public Map<Id, Integer> lineNumbersByOrderItemId;
     public Map<String, Object> requestPayload;
@@ -285,6 +287,7 @@ public without sharing class MexalOrderSendService {
     result.orderId = orderRecord.Id;
     result.mexalDocumentSigla = DEFAULT_DOCUMENT_TYPE;
     result.mexalDocumentSerie = resolveDocumentSeries();
+    result.mexalDocumentDate = orderRecord.EffectiveDate;
     result.mexalCustomerCode = orderRecord.Account.Codice_Cliente_Mexal__c;
     result.lineNumbersByOrderItemId = buildLineNumberMap(
       orderRecord.OrderItems

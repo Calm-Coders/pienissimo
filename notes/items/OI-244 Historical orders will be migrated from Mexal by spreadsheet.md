@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-21
+updated: 2026-10-23
 depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
@@ -368,3 +368,149 @@ in ambiente di UAT"_ — so UAT only, and the production run is separate. Agains
 a first import on ~9 November that leaves roughly two weeks, with
 [OI-274](OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md)
 unbuilt inside it.
+
+## 🟢 2026-10-22 — the client walked his populated file, and the exclusion rules were agreed
+
+**The draft promised on 21/10 was reviewed line by line in a 40-minute call**
+([Check Excel Migrazione](../meetings/2026-10-22%20Check%20Excel%20Migrazione.md),
+15:00 CEST). This is the first time the migration has moved from design to data.
+Everything below is the client proposing and Aurel Mrruku accepting.
+
+### 🟢 The scope question this row has carried since 15/10 is answered
+
+**The extract starts 1 January 2024.** Fabrizio Paganelli: _"ho fatto una prova
+dal primo di gennaio del 2024"_ — so three commercial years, with 2024 included
+despite its data quality. The volumes he read off are consistent with 21/10:
+**~30,000 order lines from 2024, ~9,000 from 2025**, less ~1,000 `SW` lines.
+
+### The agreed rules
+
+| Rule | Why |
+| ---- | --- |
+| **Rows with empty order key fields are excluded** | They are invoices issued with no order; their key is empty and collides across customers. See [OI-275](OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md) |
+| **All invoices and scadenzario entries import anyway** | _"io le fatture li prenderò a prescindere … solo che quelle fatture non sono collegate ai ordini"_ |
+| **Tranche date = invoice date** | Confirmed as coherent; different line dates create different tranches |
+| **Payment condition forced to `12`** (bonifico data fattura) | Aurel Mrruku: _"Non ci dà problemi, basta che ci sia un valore"_ |
+| **Missing agent code → existing code `610`** | Never invent one: _"non inventi codici agenti nuovi perché poi mi causa problemi a trovare l'utente che è un agente"_. `610` is the generic secretariat agent |
+| **Credit notes excluded**, kept in a separate Excel | Deferred with the credit-note feature itself to Fase 2/3 — _"li importiamo quando implementiamo note di credito"_ |
+| **~1,000 `SW` platform-sale lines deleted** | Mostly 2024; accepted on the condition nothing references a missing code |
+| **Orders are loaded before lines** | _"mi deve passare prima l'ordine, poi il riferimento"_ |
+
+🟡 **Open orders are a much smaller problem than assumed.** Orders entered and
+not yet invoiced today number **five** — he then counted seven on screen, and
+the transcript does not reconcile the two. He expects more at the real
+migration.
+
+### ⚠ What the rules cost, and nobody priced
+
+- 🔴 **Credit notes leave the migration entirely.** 2024 has _"parecchie"_ of
+  them by his own account, against Elena Spini's recollection that they were few
+  per year. **The migrated history will overstate net sales for 2024 by the
+  value of every credit note**, and no source says whether anyone reading the
+  history will know that.
+- ⚠ **Payment condition `12` on every historical row** is a fabricated value by
+  agreement. It is harmless only for as long as nothing reports on it.
+- ⚠ **Agent `610` on every row that lacked one** attributes those sales to the
+  secretariat. Commission reporting over history will reflect that.
+- 🔴 **The exclusion filter is the only thing keeping the import key unique**,
+  and it lives in the client's spreadsheet, not in the system — see OI-275.
+
+### 🔴 Still unbuilt, still running through OI-212
+
+The call restated the collection chain end to end, with Fabrizio Paganelli
+working it out aloud and agreeing it:
+
+> _"tu leggi prima lo scadenziario, vedi quali sono le fatture che sono state
+> pagate o no e … nelle fatture recuperi il numero dell'ordine e quindi aggiorni
+> se è pagato o no"_
+
+🔴 **That is the chain
+[OI-212](OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+records as wrong, unchanged a twelfth night**, and it is now how ~30,000
+historical lines will acquire their collection state.
+
+### Next steps as recorded
+
+1. **[Fabrizio Paganelli]** send the finished list to Aurel Mrruku — _"appena
+   finisci mandami l'el[enco]"_. ⚠ No date.
+2. **[Both]** activate all products before the load — see
+   [OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md).
+3. **[Fabrizio Paganelli]** settle the price/discount mapping with Kreosoft —
+   now [OI-284](OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md),
+   with a call requested for 26 October.
+
+## 2026-10-23 - the data arrived, and it is explicitly provisional
+
+🟢🔑 **The spreadsheet this row has been about since 15 October exists and has
+been delivered.** Fabrizio Paganelli, Gmail `1a168166785585be`,
+**2026-10-23T09:27:39Z**, to Aurel Mrruku and Elena Spini:
+
+> _"vi inoltro i dati per fare i test di importazione ordini._
+>
+> _Come abbiamo detto si tratta di dati provvisori in quanto poi l'importazione
+> dovremo ripeterla quando passeremo in produzione_
+>
+> _Vi chiedo se mi potere chiamare, perché dovrei configurare i prodotti e le
+> edizioni"_
+
+| | |
+| --- | --- |
+| **Attachment** | `Import Ordini (versione del 23.10.26).xlsx`, **1,103,461 bytes** |
+| **Also in Drive** | `1ls-nh7tz5SzW6ALhBW0lWlOn15kfEKMo`, owner `a.mrruku@romicompany.com`, created and modified 2026-10-23T09:27:39Z — the same file, saved out of the mail |
+| **Status** | 🟢 Elena Spini 13:09:30Z: _"ok analizzeremo il file e torneremo da te"_ |
+
+⚠ **Not opened by this sweep.** It is the live historical order and invoice
+extract — real customers, real amounts, article codes. Recorded by filename,
+size, ids and timestamps only, per the standing constraint. 🔑 **So nothing in
+this record states whether the eight exclusion rules agreed on 22/10 were
+actually applied to it**, including the one the key's uniqueness now depends on
+([OI-275](OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md)).
+**A human has to check that.**
+
+🔑 **"dati provvisori … l'importazione dovremo ripeterla quando passeremo in
+produzione"** is the client confirming the two-phase import in their own
+writing. It matches the agreed calendar: this file is the 9 November rehearsal,
+and the real one is due **13 November at 09:00**
+([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)).
+
+### 🟢 The edizione mapping is unblocked and has a sequence
+
+Elena Spini, 13:09:30Z: _"Ti confermo che puoi procedere con la configurazione
+di edizione e mappatura-edizione."_ 🟢 **So the precondition
+[OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)
+records — all products active before the mapping — is satisfied**, confirmed
+again at 13:15:52Z: _"I prodotti sono già tutti attivi in ambiente di UAT,
+quindi puoi procedere."_
+
+🔴 **But that was not the client's blocker**, and four mails in forty minutes
+failed to establish what was. Fabrizio Paganelli, 13:21:14Z:
+
+> _"Non mi sono spiegato. Per i prodotti che sono già attivi su Salesforce devo
+> modificare alcuni attributi (categoria, natura, ecc), altrimenti non posso
+> fare la mappatura. Questo lavoro lo faccio su Mexal e poi, in notte, viene
+> aggiornato Salesforce?"_
+
+Resolved in [the 16:00 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md).
+The agreed handoff chain — **Fabrizio Paganelli extracts and edits the Mexal
+registry (expects to finish Monday) → Mirko Merendi mass-updates Mexal →
+Fabrizio Paganelli mails Aurel Mrruku → Aurel Mrruku re-imports into
+Salesforce** — and only then can the edizione mapping be built on correct
+`categoria statistica` values.
+
+### 🔴 The chain has a single point of failure, and it is a mail
+
+🔑 **The product synchronisation flows are switched off in UAT.** Aurel Mrruku:
+_"li ho disabilit[ati] ci sto lavorando per quello."_ The client's written
+assumption was the opposite — _"poi, in notte, viene aggiornato Salesforce?"_ —
+and **the answer is no.**
+
+🔴 **So step 4 of the chain, a mail from the client, is the only thing that
+tells Salesforce the ERP has changed.** If it is missed or delayed, the edizione
+mapping is built against stale categories and
+[OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)'s
+single point of failure — _"se non trovi l'edizione esplode e devo rifare da
+capo"_ — fires on the real import. ⚠ **Nobody said when the flows go back on.**
+
+⚠ **The window is tight**: the registry edit lands Monday 26 October at the
+earliest, Kreosoft's mass update after that, and the first import is ~9
+November.

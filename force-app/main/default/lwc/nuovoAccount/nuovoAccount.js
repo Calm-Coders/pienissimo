@@ -15,13 +15,13 @@ import USER_NAME from "@salesforce/schema/User.Name";
 import AGENT_CODE from "@salesforce/schema/User.Agente__c";
 import COMMISSION_CATEGORY from "@salesforce/schema/User.Categoria_Provvigioni_Cliente__c";
 
-// Azienda FlexiPage sections, trimmed for the Account creation form.
+// Follow the Azienda page with creation-specific visibility and required rules.
 const AZIENDA_SECTIONS = [
   {
     label: "Informazioni principali",
     columns: [
-      ["Name", "OwnerId", "RecordTypeId", "Phone", "Type", "Zona__c"],
-      ["Email__c", "Industry", "IBAN__c"]
+      ["Name", "OwnerId", "RecordTypeId", "Partita_IVA__c"],
+      ["Email__c", "Phone", "PEC__c"]
     ]
   },
   {
@@ -32,12 +32,17 @@ const AZIENDA_SECTIONS = [
     label: "Dati MEXAL",
     columns: [
       [
+        "Codice_Cliente_Mexal__c",
         "Categoria_Statistica_Mexal__c",
-        "Codice_Fiscale__c",
-        "Codice_Destinatario_SDI__c",
-        "Residenza_Fiscale__c"
+        "Anticipay_Consolidato__c",
+        "Codice_Fiscale__c"
       ],
-      ["Partita_IVA__c", "PEC__c"]
+      [
+        "Zona__c",
+        "Residenza_Fiscale__c",
+        "Codice_Destinatario_SDI__c",
+        "Creato_su_Mexal__c"
+      ]
     ]
   },
   {
@@ -53,6 +58,13 @@ const AZIENDA_SECTIONS = [
     ]
   },
   {
+    label: "Dati Tecnici",
+    columns: [
+      ["Azienda_Test__c", "Id_Zoho__c", "Informativa_Privacy__c"],
+      ["Ultima_Verifica_Anticipay__c", "Consenso_Profilazione__c"]
+    ]
+  },
+  {
     label: "MEXAL - Dati per le provvigioni",
     columns: [
       ["Agente__c", "Codice_Agente_Esterno__c"],
@@ -64,6 +76,33 @@ const AZIENDA_SECTIONS = [
     columns: [["CreatedById"], ["LastModifiedById"]]
   }
 ];
+const AZIENDA_REQUIRED_FIELDS = new Set([
+  "Name",
+  "Partita_IVA__c",
+  "Agente__c"
+]);
+const CREATION_OPTIONAL_FIELDS = new Set([
+  "Anticipay_Consolidato__c",
+  "Creato_su_Mexal__c",
+  "Azienda_Test__c",
+  "Informativa_Privacy__c",
+  "Consenso_Profilazione__c",
+  "Azienda_Obsoleta__c"
+]);
+const ADDRESS_PARTS = {
+  street: "Street",
+  city: "City",
+  province: "State",
+  country: "Country",
+  postalCode: "PostalCode"
+};
+const AZIENDA_READ_ONLY_FIELDS = new Set([
+  "OwnerId",
+  "RecordTypeId",
+  "Residenza_Fiscale__c",
+  "Codice_Agente_Esterno__c",
+  "Categoria_Provvigioni_Cliente__c"
+]);
 
 export default class NuovoAccount extends NavigationMixin(LightningElement) {
   @api recordTypeId;
@@ -128,6 +167,10 @@ export default class NuovoAccount extends NavigationMixin(LightningElement) {
   get modalTitle() {
     const type = this.objectInfo?.recordTypeInfos?.[this.effectiveRecordTypeId];
     return type?.name ? `Nuovo Account: ${type.name}` : "Nuovo Account";
+  }
+
+  get recordTypeLabel() {
+    return this.objectInfo?.recordTypeInfos?.[this.effectiveRecordTypeId]?.name;
   }
 
   handleModalKeydown(event) {
@@ -407,58 +450,71 @@ export default class NuovoAccount extends NavigationMixin(LightningElement) {
         }
       }
     }
-    return AZIENDA_SECTIONS.map((section, sectionIndex) => {
-      let columns = section.columns.map((names, columnIndex) => ({
-        key: String(columnIndex),
-        fields: names
-          .filter((name) => {
-            const derived =
-              name === "Codice_Agente_Esterno__c" ||
-              name === "Categoria_Provvigioni_Cliente__c";
-            const writableAddress =
-              (name === "BillingAddress" || name === "ShippingAddress") &&
-              Object.values(metadata).some(
-                (field) => field.compoundFieldName === name && field.createable
+    return AZIENDA_SECTIONS.filter((section) => section.label !== "Dati MEXAL")
+      .map((section, sectionIndex) => {
+        const columns = section.columns.map((names, columnIndex) => ({
+          key: String(columnIndex),
+          fields: names
+            .filter((name) => {
+              if (name === "RecordTypeId") return Boolean(this.recordTypeLabel);
+              const derived =
+                name === "Codice_Agente_Esterno__c" ||
+                name === "Categoria_Provvigioni_Cliente__c";
+              const writableAddress =
+                (name === "BillingAddress" || name === "ShippingAddress") &&
+                Object.values(metadata).some(
+                  (field) =>
+                    field.compoundFieldName === name && field.createable
+                );
+              return (
+                metadata[name] &&
+                (derived ||
+                  writableAddress ||
+                  (metadata[name].createable &&
+                    (name === "OwnerId" ||
+                      layoutRules.get(name)?.editableForNew !== false)))
               );
-            return (
-              metadata[name] &&
-              (derived ||
-                writableAddress ||
-                (metadata[name].createable &&
-                  (name === "OwnerId" ||
-                    layoutRules.get(name)?.editableForNew !== false))) &&
-              name !== "RecordTypeId"
-            );
-          })
-          .map((name) => ({
-            name,
-            required: Boolean(
-              name !== "Azienda_Obsoleta__c" &&
-              (layoutRules.get(name)?.required || metadata[name].required)
-            ),
-            isOwner: name === "OwnerId",
-            isAgent: name === "Agente__c",
-            isAgentCode: name === "Codice_Agente_Esterno__c",
-            isCategory: name === "Categoria_Provvigioni_Cliente__c"
-          }))
-      }));
-      const visibleFields = columns.flatMap((column) => column.fields);
-      const midpoint = Math.ceil(visibleFields.length / 2);
-      columns = [
-        { key: "0", fields: visibleFields.slice(0, midpoint) },
-        { key: "1", fields: visibleFields.slice(midpoint) }
-      ];
-      return {
-        key: String(sectionIndex),
-        label: section.label,
-        isAgentSection: section.columns.some((names) =>
-          names.includes("Agente__c")
-        ),
-        columns
-      };
-    }).filter((section) =>
-      section.columns.some((column) => column.fields.length)
-    );
+            })
+            .map((name) => ({
+              name,
+              required: Boolean(
+                !CREATION_OPTIONAL_FIELDS.has(name) &&
+                (AZIENDA_REQUIRED_FIELDS.has(name) ||
+                  layoutRules.get(name)?.required ||
+                  metadata[name]?.required)
+              ),
+              readOnly: AZIENDA_READ_ONLY_FIELDS.has(name),
+              isOwner: name === "OwnerId",
+              isRecordType: name === "RecordTypeId",
+              isAddress:
+                (name === "BillingAddress" || name === "ShippingAddress") &&
+                Object.values(ADDRESS_PARTS).every(
+                  (suffix) =>
+                    metadata[name.replace("Address", suffix)]?.createable
+                ),
+              addressPrefix: name.replace("Address", ""),
+              addressLabel:
+                metadata[name]?.label ||
+                (name === "BillingAddress"
+                  ? "Indirizzo di fatturazione"
+                  : "Indirizzo di spedizione"),
+              isAgent: name === "Agente__c",
+              isAgentCode: name === "Codice_Agente_Esterno__c",
+              isCategory: name === "Categoria_Provvigioni_Cliente__c"
+            }))
+        }));
+        return {
+          key: String(sectionIndex),
+          label: section.label,
+          isAgentSection: section.columns.some((names) =>
+            names.includes("Agente__c")
+          ),
+          columns
+        };
+      })
+      .filter((section) =>
+        section.columns.some((column) => column.fields.length)
+      );
   }
 
   handleLoad() {
@@ -480,6 +536,13 @@ export default class NuovoAccount extends NavigationMixin(LightningElement) {
         input.value = defaults[input.fieldName];
       }
     });
+    this.template
+      .querySelectorAll("lightning-input-address")
+      .forEach((input) => {
+        for (const [property, suffix] of Object.entries(ADDRESS_PARTS)) {
+          input[property] = defaults[`${input.dataset.prefix}${suffix}`] || "";
+        }
+      });
   }
 
   handleSubmit(event) {
@@ -492,6 +555,18 @@ export default class NuovoAccount extends NavigationMixin(LightningElement) {
       )
     );
     Object.assign(fields, event.detail.fields);
+    let addressesValid = true;
+    this.template
+      .querySelectorAll("lightning-input-address")
+      .forEach((input) => {
+        if (!input.reportValidity()) addressesValid = false;
+        for (const [property, suffix] of Object.entries(ADDRESS_PARTS)) {
+          const name = `${input.dataset.prefix}${suffix}`;
+          if (metadata[name]?.createable)
+            fields[name] = input[property] || null;
+        }
+      });
+    if (!addressesValid) return;
     if (metadata.OwnerId?.createable) fields.OwnerId = this.selectedOwnerId;
     fields.RecordTypeId = this.effectiveRecordTypeId;
     fields.Agente__c = this.selectedAgentId || null;

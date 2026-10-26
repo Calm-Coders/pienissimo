@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Pienissimo
 org: both
 raised: 2026-10-05
-updated: 2026-10-21
+updated: 2026-10-22
 depends_on: [OI-205]
 blocks: [go-live]
 source: notes/meetings/2026-10-05 UAT Performance Plus e Gestione date pagamento.md
@@ -488,3 +488,27 @@ on fixed price list, no discretionary discounts"_, `status: agreed`, while the
 build now ships a tutor-editable line discount. **Neither party mentioned it in
 either of the two 21/10 client calls.** A human must rule whether the register is
 amended or the build is wrong; this run did not touch `SAL-12`.
+
+## 🔴 2026-10-22 — the shipped discount covers add and delete, not edit
+
+**The client found the gap himself in UAT the day after `4a5a4a0` shipped.** A
+tutor who inserts an order, generates the PDF and then notices a missing
+discount cannot go back and apply it; `Gestisci Prodotti` implements the
+discount on **add** and a delete button, and the edit path was never built.
+Confirmed in the room by Aurel Mrruku from the developers — _"hanno fatto fino
+adesso solo quando li aggiungi, quindi non quando li modifichi"_.
+
+Recorded as its own row,
+[OI-283](OI-283%20Discounts%20cannot%20be%20edited%20on%20an%20existing%20order.md),
+because it is incomplete work rather than a missing column. ⚠ **Whether the same
+gap exists on the quote, which shares `quoteManageProducts`, was not tested.**
+
+🔴 **A second, separate requirement surfaced in the same call**: an order leaving
+Salesforce must carry list price, discount **and** net price into Mexal —
+_"non possiamo fare delle fatture solo al netto"_. The Salesforce fields exist;
+the Mexal mapping does not, and ROMI and the client disagree about whether the
+discount travels as a percentage or an amount. That is
+[OI-284](OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md),
+with a client-requested call for 26 October.
+
+⚠ **`SAL-12` is uncited for a fifth session.**

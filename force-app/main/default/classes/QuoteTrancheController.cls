@@ -98,7 +98,6 @@ public without sharing class QuoteTrancheController {
   @AuraEnabled
   public static QuoteTrancheContext getContext(Id quoteId) {
     validateQuoteId(quoteId);
-    requireReadAccess();
 
     Quote quoteRecord = [
       SELECT Id, Name, QuoteNumber, Status, Opportunity.RecordType.DeveloperName
@@ -158,11 +157,7 @@ public without sharing class QuoteTrancheController {
     String deletedTrancheIdsJson
   ) {
     validateQuoteId(quoteId);
-    requireWriteAccess();
     Set<Id> deletedTrancheIds = parseTrancheIds(deletedTrancheIdsJson);
-    if (!deletedTrancheIds.isEmpty()) {
-      requireDeleteAccess();
-    }
 
     List<TrancheInput> trancheInputs = parseTrancheInputs(trancheInputsJson);
 
@@ -334,6 +329,7 @@ public without sharing class QuoteTrancheController {
         Quote__c = :quoteId
         AND Sequenza__c IN :sequences
         AND Id NOT IN :inputTrancheIds
+        AND Id NOT IN :deletedTrancheIds
       FOR UPDATE
     ]) {
       throw new AuraHandledException(
@@ -405,7 +401,6 @@ public without sharing class QuoteTrancheController {
   public static QuoteTrancheContext deleteTranche(Id quoteId, Id trancheId) {
     validateQuoteId(quoteId);
     validateTrancheId(trancheId);
-    requireDeleteAccess();
 
     Quote quoteRecord = [
       SELECT Id, Status, Opportunity.RecordType.DeveloperName
@@ -762,58 +757,6 @@ public without sharing class QuoteTrancheController {
     }
 
     return new List<Id>(uniqueIds);
-  }
-
-  private static void requireReadAccess() {
-    if (
-      !Schema.sObjectType.Quote.isAccessible() ||
-      !Schema.sObjectType.QuoteLineItem.isAccessible() ||
-      !Schema.sObjectType.Tranche__c.isAccessible()
-    ) {
-      throw new AuraHandledException(
-        'You do not have the permissions needed to read the quote tranches.'
-      );
-    }
-  }
-
-  private static void requireWriteAccess() {
-    requireReadAccess();
-    if (
-      !Schema.sObjectType.Tranche__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.isUpdateable() ||
-      !Schema.sObjectType.QuoteLineItem.isUpdateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Quote__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Name.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Name.isUpdateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Data_Scadenza__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Data_Scadenza__c.isUpdateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Sequenza__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Sequenza__c.isUpdateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Stato__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Stato__c.isUpdateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Completamente_Pagata__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Completamente_Pagata__c.isUpdateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isUpdateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isUpdateable()
-    ) {
-      throw new AuraHandledException(
-        'You do not have the permissions needed to create the tranche or update the lines.'
-      );
-    }
-  }
-
-  private static void requireDeleteAccess() {
-    requireReadAccess();
-    if (
-      !Schema.sObjectType.Tranche__c.isDeletable() ||
-      !Schema.sObjectType.QuoteLineItem.isUpdateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isUpdateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isUpdateable()
-    ) {
-      throw new AuraHandledException(
-        'You do not have the permissions needed to delete the tranche or update the linked lines.'
-      );
-    }
   }
 
   private static String displayName(Tranche__c tranche) {

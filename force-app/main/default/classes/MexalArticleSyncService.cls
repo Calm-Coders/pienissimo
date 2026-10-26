@@ -309,15 +309,14 @@ public without sharing class MexalArticleSyncService {
     Product2 product = new Product2();
     product.External_Product_Code__c = trimToLength(articleCode, 255);
     putIfPresent(product, Product2.Name, trimToLength(description, 255));
+    // Description = the full name, then Mexal's extended description when there
+    // is one. descrizione_agg is only the tail of a name Mexal split at 30
+    // characters, already inside descr_completa, so it is not used on its own.
     putIfPresent(
       product,
       Product2.Description,
       trimToLength(
-        chooseFirstPopulated(
-          getExtendedDescription(article),
-          getString(article, 'descrizione_agg'),
-          description
-        ),
+        joinDescription(description, getExtendedDescription(article)),
         4000
       )
     );
@@ -344,6 +343,13 @@ public without sharing class MexalArticleSyncService {
         255
       )
     );
+    // um_principale: NR maps onto the existing "Nr" value; MS, HR and NM are
+    // stored as Mexal sends them. A blank unit keeps the Salesforce value.
+    putIfPresent(
+      product,
+      Product2.QuantityUnitOfMeasure,
+      toUnitOfMeasure(getString(article, 'um_principale'))
+    );
     // Mexal pads the VAT code (e.g. "E00  ", " 17  "); store it trimmed.
     putIfPresent(
       product,
@@ -360,6 +366,10 @@ public without sharing class MexalArticleSyncService {
     // S = active, anything else = inactive, for new and existing products.
     if (article.containsKey('cod_grp_merc')) {
       product.IsActive = isMexalYes(getString(article, 'cod_grp_merc'));
+      product.Gruppo_Merceologico__c = trimToLength(
+        getString(article, 'cod_grp_merc'),
+        20
+      );
     }
 
     // A blank or unknown natura leaves the flags curated in Salesforce.
@@ -602,6 +612,25 @@ public without sharing class MexalArticleSyncService {
     return trimmedValue.length() > maxLength
       ? trimmedValue.substring(0, maxLength)
       : trimmedValue;
+  }
+
+  private static String toUnitOfMeasure(String mexalUnit) {
+    String unit = trimToLength(mexalUnit, 10);
+    if (unit == null) {
+      return null;
+    }
+    unit = unit.toUpperCase();
+    return unit == 'NR' ? 'Nr' : unit;
+  }
+
+  private static String joinDescription(String name, String extended) {
+    if (String.isBlank(extended) || extended.trim() == name?.trim()) {
+      return name;
+    }
+    if (String.isBlank(name)) {
+      return extended;
+    }
+    return name.trim() + '\n' + extended.trim();
   }
 
   private static String getExtendedDescription(Map<String, Object> article) {

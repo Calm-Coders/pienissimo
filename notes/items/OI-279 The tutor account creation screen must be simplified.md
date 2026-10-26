@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-22
 depends_on: []
 blocks: []
 severity: normal
@@ -30,18 +30,18 @@ creo un nuovo account."_
 
 Relayed verbatim in her DM to Aurel Mrruku at 12:49:07 CEST:
 
-| # | Change |
-| - | ------ |
-| 1 | Filter the product picker to `BO` or `NO` only — everything bundle-only hidden. _(tracked separately as [OI-261](OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md))_ |
-| 2 | Opportunity record type: `Plus Rinnovo/attivazione` == `Performance Plus` |
-| 3a | Move the `Zona` field down, into the Mexal / commission-data section |
-| 3b | Remove the standard fields `Tipo` and `Settore` |
-| 4 | Delete the `IBAN` field |
-| 5 | Move `P.IVA` and `PEC` up, above the addresses |
-| 6 | Remove the Mexal data block from the account **creation** screen |
-| 7 | Move `Anticipay consolidato` down into the Mexal section |
-| 8 | Rename `Codice Agente Esterno` → `Codice Agente`, and `Codice Cliente Mexal` → `Codice Cliente` |
-| 9 | Add the `Mandato RID` field — _(tracked separately as [OI-277](OI-277%20A%20read-only%20Mandato%20RID%20field%20is%20required%20on%20the%20account.md))_ |
+| #   | Change                                                                                                                                                                                      |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Filter the product picker to `BO` or `NO` only — everything bundle-only hidden. _(tracked separately as [OI-261](OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md))_ |
+| 2   | Opportunity record type: `Plus Rinnovo/attivazione` == `Performance Plus`                                                                                                                   |
+| 3a  | Move the `Zona` field down, into the Mexal / commission-data section                                                                                                                        |
+| 3b  | Remove the standard fields `Tipo` and `Settore`                                                                                                                                             |
+| 4   | Delete the `IBAN` field                                                                                                                                                                     |
+| 5   | Move `P.IVA` and `PEC` up, above the addresses                                                                                                                                              |
+| 6   | Remove the Mexal data block from the account **creation** screen                                                                                                                            |
+| 7   | Move `Anticipay consolidato` down into the Mexal section                                                                                                                                    |
+| 8   | Rename `Codice Agente Esterno` → `Codice Agente`, and `Codice Cliente Mexal` → `Codice Cliente`                                                                                             |
+| 9   | Add the `Mandato RID` field — _(tracked separately as [OI-277](OI-277%20A%20read-only%20Mandato%20RID%20field%20is%20required%20on%20the%20account.md))_                                    |
 
 🔑 **Items 3b and 7 apply to two screens, not one.** Aurel Mrruku flagged the
 distinction and Fabrizio Paganelli asked for both: _"prima è la schermata di
@@ -76,9 +76,25 @@ inserimento, questo è la schermata di dettaglio" … "gli togliamo anche da qua
 - 🔴 Nothing is built. Aurel Mrruku is holding all screen changes for a single
   cumulative push to avoid conflicts: _"stiamo facendo dei cambiamenti su tutte
   le schermate e andrà tutto un stesso push, altrimenti ho dei conflitti."_
-- ⚠ Two further screen items were raised and belong to the same push but are
-  **not** in Elena Spini's nine: the **truncated product description**, and the
-  `livelli 0–6` from the tracciato, still missing from the product page. Aurel
-  Mrruku: _"non l'ho aggiornato io."_
+- 🟢 **Two further screen items were raised that are not in Elena Spini's nine:
+  the truncated product description, and the `livelli 0–6` from the tracciato.
+  Both were done in UAT on 2026-10-22.** **Description is fixed, not removed**
+  (Aurel Mrruku's call, against Fabrizio Paganelli's "remove it" on 19/10).
+  - **Cause:** Mexal splits a long name, with the first 30 characters in
+    `descrizione` and the tail in `descrizione_agg`. The sync wrote that tail
+    alone into `Description`, e.g. `IVE`.
+  - **Fix:** `Description` now holds the full name (`descr_completa`), plus
+    Mexal's extended description `descr_estesa` on a new line when there is
+    one. No article has one today.
+  - **UAT data:** 713 product descriptions were rewritten from Mexal.
+
+  On the product page (`Product_Record_Page`, Item record type), a new section, _"Classificazione statistica prodotti"_,
+  sits before system information and holds `Categoria_Articolo__c`, `Livello_0…6__c`
+  and a new read-only `Gruppo_Merceologico__c`. The article sync now stores
+  Mexal's `cod_grp_merc` in that field, and it was filled on 1,080 UAT products.
+  ⚠ **Not in Prod.** 🟢 The 13/10 _"categoria merceologica"_ is
+  `Categoria_Articolo__c`, the Mexal categoria statistica (`sigla_cat_sta` +
+  `nr_cat_sta`). Confirmed by Aurel Mrruku on 2026-10-22.
+
 - ⚠ The `Zona` reversal should be reconciled against whatever the Mirko Merendi
   call recorded. No record of that call names the field.
