@@ -499,6 +499,7 @@ private class QuoteLinesAndTranchesTest {
       input.email = defaults.email;
       input.accountName = defaults.accountName;
       input.billingCity = defaults.billingCity;
+      input.paymentCondition = '64';
       Id quoteId = OpportunityQuoteDefaultsController.createQuote(
         opportunityRecord.Id,
         input

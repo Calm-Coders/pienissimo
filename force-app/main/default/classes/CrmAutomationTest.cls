@@ -71,7 +71,9 @@ private class CrmAutomationTest {
   }
 
   @isTest
-  static void qualifyingALeadWhoseContactBelongsToAnotherAziendaIsRefused() {
+  // The conflict check was removed on 19/10 (64a51b2): a Lead converts even
+  // when its email and phone match a Contact of another Azienda.
+  static void qualifyingALeadWhoseContactBelongsToAnotherAziendaIsAllowed() {
     System.runAs(TestDataFactory.runner()) {
       Account vatOwner = TestDataFactory.buildAzienda('Titolare IVA');
       vatOwner.Partita_IVA__c = 'IT03030303030';
@@ -94,7 +96,7 @@ private class CrmAutomationTest {
       qualify(leadRecord, 'Vendita da tutor');
 
       Database.SaveResult result = save(leadRecord);
-      System.assertEquals(false, result.isSuccess());
+      System.assertEquals(true, result.isSuccess(), result.getErrors() + '');
     }
   }
 
@@ -131,7 +133,7 @@ private class CrmAutomationTest {
       save(leadRecord);
 
       Test.startTest();
-      qualify(leadRecord, 'WooCommerce');
+      qualify(leadRecord, 'Vendita da tutor');
       System.assert(save(leadRecord).isSuccess());
       Test.stopTest();
 
@@ -173,10 +175,13 @@ private class CrmAutomationTest {
         WHERE Id = :converted.ConvertedOpportunityId
       ];
       System.assertEquals(
-        'WooCommerce',
+        'Vendita_Standard',
         opportunityRecord.RecordType.DeveloperName
       );
-      System.assertEquals('WooCommerce', opportunityRecord.Tipo_Opportunita__c);
+      System.assertEquals(
+        'Vendita da tutor',
+        opportunityRecord.Tipo_Opportunita__c
+      );
     }
   }
 
@@ -251,9 +256,11 @@ private class CrmAutomationTest {
   }
 
   @isTest
-  static void queueConvertsALeadWithoutCompanyOrVat() {
+  // The Lead still needs a Partita IVA: the Azienda it converts into cannot
+  // be saved without one (Partita_IVA_required_for_Azienda, OI-72).
+  static void queueConvertsALeadWithoutCompany() {
     System.runAs(TestDataFactory.runner()) {
-      Lead leadRecord = buildLead(null, 'privato@example.com', null);
+      Lead leadRecord = buildLead(null, 'privato@example.com', 'IT05050505050');
       leadRecord.Company = TestDataFactory.unique('Privato');
       save(leadRecord);
       leadRecord.Status = 'Qualificato';
@@ -446,6 +453,83 @@ private class CrmAutomationTest {
         Attiva__c = false
       );
       System.assertEquals(true, Database.insert(inactive, false).isSuccess());
+    }
+  }
+
+  @isTest
+  static void categorySearchDescribesAndMapsAWholeCategory() {
+    System.runAs(TestDataFactory.runner()) {
+      List<Product2> products = new List<Product2>();
+      for (Integer i = 1; i <= 3; i++) {
+        Product2 live = TestDataFactory.buildItem(
+          'Live Tappa ' + i,
+          'ART-CAT-' + i
+        );
+        live.Categoria_Articolo__c = 'C20';
+        live.Livello_0__c = 'B) Eventi';
+        products.add(live);
+      }
+      Product2 book = TestDataFactory.buildItem('Manuale', 'ART-CAT-X');
+      book.Categoria_Articolo__c = 'C21';
+      book.Livello_0__c = 'C) Editoria';
+      products.add(book);
+      insert products;
+
+      System.assert(
+        MappaturaEdizioneProductSearch.searchProducts('L', null).isEmpty(),
+        'A term shorter than two characters searches nothing'
+      );
+      System.assertEquals(
+        3,
+        MappaturaEdizioneProductSearch.searchProducts('Live', null).size()
+      );
+      System.assertEquals(
+        3,
+        MappaturaEdizioneProductSearch.searchProducts('', 'C20').size()
+      );
+
+      Map<String, MappaturaEdizioneProductSearch.CategoryOption> categories = new Map<String, MappaturaEdizioneProductSearch.CategoryOption>();
+      for (
+        MappaturaEdizioneProductSearch.CategoryOption option : MappaturaEdizioneProductSearch.getCategories()
+      ) {
+        categories.put(option.code, option);
+      }
+      // Without an event name, Livello 0 describes it, minus its sort letter.
+      System.assertEquals('Eventi', categories.get('C20').description);
+      System.assertEquals(3, categories.get('C20').activeCount);
+      System.assertEquals('Editoria', categories.get('C21').description);
+
+      Campaign edition = TestDataFactory.childCampaign(
+        'Edizione Live',
+        TestDataFactory.parentCampaign('Pienissimo Live').Id
+      );
+      MappaturaEdizioneProductSearch.CategorySaveResult saved = MappaturaEdizioneProductSearch.saveCategoryMappings(
+        'C20',
+        edition.Id,
+        true
+      );
+      System.assertEquals(
+        saved.mappedCount,
+        [
+          SELECT COUNT()
+          FROM Mappatura_Edizione__c
+          WHERE Campagna__c = :edition.Id
+        ]
+      );
+
+      Integer failures = 0;
+      for (String category : new List<String>{ 'C20', null }) {
+        try {
+          MappaturaEdizioneProductSearch.saveCategoryMappings(
+            category,
+            edition.Id,
+            true
+          );
+        } catch (AuraHandledException error) {
+          failures++;
+        }
+      }
+      System.assertEquals(2, failures, 'A mapped or blank category is refused');
     }
   }
 }

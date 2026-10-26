@@ -265,6 +265,11 @@ private class OrderTriggerHandlerTest {
       'Item'
     );
     makeMapping(eventComponent, makeCampaign('Pienissimo Live Edition'));
+    // Bundle components must be active bundle-only Items (Product__c filter).
+    update new List<Product2>{
+      new Product2(Id = eventComponent.Id, Solo_Bundle__c = true),
+      new Product2(Id = nonEventComponent.Id, Solo_Bundle__c = true)
+    };
 
     insert new List<BundleComponent__c>{
       new BundleComponent__c(
@@ -327,6 +332,7 @@ private class OrderTriggerHandlerTest {
     Product2 bundle = makeProduct('Academy Bundle', true, 'Bundle');
     Product2 eventComponent = makeProduct('Academy Event', true, 'Item');
     makeMapping(eventComponent, makeCampaign('Academy Event Edition'));
+    update new Product2(Id = eventComponent.Id, Solo_Bundle__c = true);
 
     insert new BundleComponent__c(
       Bundle__c = bundle.Id,

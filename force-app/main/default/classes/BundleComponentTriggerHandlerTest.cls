@@ -25,10 +25,12 @@ private class BundleComponentTriggerHandlerTest {
     String code,
     Decimal listPrice
   ) {
+    // Bundle components must be active bundle-only Items (Product__c filter).
     return new Product2(
       Name = name,
       ProductCode = code,
       IsActive = true,
+      Solo_Bundle__c = true,
       RecordTypeId = recordTypeId('Item'),
       Product_Price__c = listPrice
     );

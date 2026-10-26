@@ -48,10 +48,14 @@ public class TestDataFactory {
   // ---------------------------------------------------------------- Accounts
 
   // Names carry a sequence suffix: production runs an Account duplicate rule.
+  // An Azienda needs an Agente (Agente_required_for_Azienda_and_Locale); the
+  // runner is one, with the agent code and commission category the lookup
+  // filter on Account.Agente__c asks for.
   public static Account buildAzienda(String name) {
     Account accountRecord = new Account(
       Name = unique(name),
       RecordTypeId = recordTypeId('Account', 'Azienda'),
+      Agente__c = runner().Id,
       Partita_IVA__c = unique('IT0000000'),
       Email__c = 'azienda' + String.valueOf(sequence) + '@example.com',
       Phone = '0212345' + String.valueOf(sequence),
@@ -74,7 +78,8 @@ public class TestDataFactory {
     Account accountRecord = new Account(
       Name = unique(name),
       RecordTypeId = recordTypeId('Account', 'Locale'),
-      ParentId = parentId
+      ParentId = parentId,
+      Tipologia_Attivita_Globale__c = 'Agriturismo'
     );
     insertAllowingDuplicates(accountRecord);
     return accountRecord;
@@ -150,7 +155,9 @@ public class TestDataFactory {
       LocaleSidKey = 'it_IT',
       EmailEncodingKey = 'UTF-8',
       LanguageLocaleKey = 'it',
-      Agente__c = 'TEST-AGENTE'
+      Agente__c = 'TEST-AGENTE',
+      // Mexal reads the category as cod_cat_pr, an integer.
+      Categoria_Provvigioni_Cliente__c = '1'
     );
     insert adminUser;
     List<PermissionSet> permissionSets = [
@@ -241,6 +248,8 @@ public class TestDataFactory {
     Id productId,
     Decimal spread
   ) {
+    // The Product__c lookup filter admits only active bundle-only Items.
+    update new Product2(Id = productId, Solo_Bundle__c = true);
     BundleComponent__c component = new BundleComponent__c(
       Bundle__c = bundleId,
       Product__c = productId,
@@ -312,7 +321,9 @@ public class TestDataFactory {
       AccountId = accountId,
       EffectiveDate = Date.today(),
       Status = 'Ordinato',
-      Pricebook2Id = Test.getStandardPricebookId()
+      Pricebook2Id = Test.getStandardPricebookId(),
+      // Mexal refuses an order without a payment condition.
+      Condizione_di_Pagamento__c = '64'
     );
     insert orderRecord;
     return orderRecord;
@@ -453,6 +464,11 @@ public class TestDataFactory {
         'Mexal_Ordini_Creazione',
         'POST',
         '/webapi/risorse/documenti/ordini-clienti'
+      ),
+      integrationConfig(
+        'Mexal_Ordini_Dettaglio',
+        'GET',
+        '/webapi/risorse/documenti/ordini-clienti/{sigla}+{serie}+{numero}'
       ),
       integrationConfig(
         'Mexal_Indirizzi_Spedizione_Creazione',

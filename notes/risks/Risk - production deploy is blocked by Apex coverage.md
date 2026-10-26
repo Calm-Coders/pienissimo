@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-10-04
+updated: 2026-10-26
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -542,3 +542,84 @@ and the `QuantityUnitOfMeasure` value set.
   Setup click** - the API refuses record-type deletion.
 - Open from the run: `Send_After__c` is no longer populated on invitations since
   `5b19caa`; the assertion was removed, not the question answered.
+
+## 2026-10-26 - reopened: the full DevMain validation against Prod fails at 22%
+
+🔴 **The gate is back.** Aurel Mrruku asked for all of DevMain (`477cb0a`) in
+Prod. Validation `0AfSW000001K4TV0A0` (RunLocalTests) compiled every component
+and failed on tests: **org-wide coverage 22%** (75% required) and **six triggers
+at 0%** — `ParticipantDocumentRequestTrigger`, `QuoteLineItemTrigger`,
+`QuoteTrigger`, `BundleComponentTrigger`, `CampaignMemberQrTrigger`,
+`ScadenzaFatturaTrigger`. **Nothing was deployed.**
+
+The coverage collapsed because most test methods now fail before they run the
+code under test, on two rules committed after the 4 October deploy:
+
+- **`Account.Agente_required_for_Azienda_and_Locale`** (last touched `dbef4f4`,
+  14/10): test data creates Azienda/Locale accounts with no `Agente__c` — _"Agente
+  è obbligatorio"_. Hits MexalIntegrationTest, QuoteCommercialTest,
+  QuoteDocumentsTest, QuoteLinesAndTranchesTest, TicketingTest,
+  ParticipantTicketDocumentTest, CrmAutomationTest.
+- **`BundleComponent__c.Product__c` lookup filter** (`b204661`, 21/10): _"Only
+  active bundle-only Item products can be bundle components"_ — test products do
+  not satisfy it. Hits BundleComponentTriggerHandlerTest,
+  BundleProductAssignmentControllerTest, OrderTriggerHandlerTest and the bundle
+  cases elsewhere.
+- Smaller: `MexalIntegrationTest.articleSyncUpsertsItemsAndSkipsBundlesAndBadRows`
+  and `schedulerStartsTheThreeBatches` assert values the code no longer
+  produces; `TicketingTest.wooOrderCreatesCustomerOrderAndCollectsIt` gets 500.
+
+Also found on the way, and handled:
+
+- The Prod scheduled job **Quote Negotiation Aging - Daily** blocks any deploy of
+  the classes around it. It was aborted for the validation and **rescheduled
+  identically** (same name, `0 0 3 * * ?` Europe/Rome, owner Tech Romi; new
+  CronTrigger `08eSW00000S9KCHYA3`). The next real deploy needs the same
+  abort/reschedule, or the Deployment Settings bypass.
+- `lwc/orderMexalErrorBanner`, used by `Order_Record_Page`, existed only in UAT
+  (deployed 08/10, never committed). Retrieved into source.
+- Excluded from any Prod package: DocuSign named credential and auth provider
+  (source points at DocuSign demo, Prod at production), the community
+  (network, site, digital experience — in sync, and the network would change
+  the sender address), the guest profile, and the Agente profile (assigns a
+  layout for `Categoria_Prodotto__c`, an object in neither source nor Prod).
+
+## 2026-10-26 - resolved again: DevMain deployed to Prod at 77.9%
+
+🟢 **At Aurel Mrruku's request ("prepare everything and deploy in prod") the
+suite was repaired and all of DevMain went to Prod the same day.**
+
+- **Prod validation `0AfSW000001K5Ft0AK`**: 751/751 components, **168/168
+  tests, 77.9% coverage**; **quick-deployed as `0AfSW000001K5Kj0AK`** at
+  2026-10-26 15:47Z. Seven validation rounds: 111 → 24 → 5 → 3 → 1 → 0
+  failures, coverage 22% → 67% → 71% → 76.5% → 77.9%.
+- **Test data aligned to the rules added since 4 October** (no production code
+  changed for the tests): an Agente on every Azienda and a runner with a
+  numeric commission category; Tipologia Attività on every Locale; bundle-only
+  products as bundle components; a payment condition on test orders; the
+  WooCommerce default-agent setting; one phone per participant.
+- **Assertions updated to deliberate behaviour changes**: article description
+  = name + extended; the customer scheduler starts one batch; Mexal order series
+  1 in production; payment condition mandatory; the lead/contact conflict check
+  removed on 19/10 (`64a51b2`); a Lead converts only with a Partita IVA; a quote
+  Locale may be any Locale of the Azienda; Plus tranches carry price and
+  discount; the acceptance link is a send-time footer; DocuSign sends
+  `Preventivo-<QuoteNumber>`; invitations with available tickets are `Ready`;
+  payment deadlines match per invoice and need the document date; San Marino
+  e-invoicing is `P` (OI-211).
+- **New tests** for code at 0%: `ScadenzaFatturaTrigger`, the Mexal invoice and
+  scadenzario import, the order-line sync, the ticket QR check-in, the
+  Mappatura category search, and the Mexal line discount (OI-284).
+- The scheduled job _Quote Negotiation Aging - Daily_ was aborted for each
+  round and **rescheduled identically** after the deploy (next run 27/10 03:00
+  Europe/Rome). The next Prod deploy needs the same.
+- **Side effect**: the source `Campaign Layout` (Evento) replaced Prod's, which
+  drops `Wait_Interval__c` and `Orario_Fine__c` from the Evento layout. The
+  Edizione layout keeps `Orario_Fine__c`.
+
+⚠ **Findings left for a human, not changed:**
+
+- A Mexal customer with no Partita IVA blanks the VAT of its Azienda on sync,
+  and the update then fails the Azienda VAT rule.
+- A qualified Lead without a Partita IVA does not convert: the queueable fails
+  on the Azienda VAT rule and only logs it.

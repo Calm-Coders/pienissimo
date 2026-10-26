@@ -212,11 +212,23 @@ because Mexal subtracts the discount from `prezzo`, `prezzo` must now be the
   `discount_total` is not mapped.
 - **Orders already converted** before this change have no value and send no
   discount.
-- **The decimal form** of the string (`"-12.5"`, dot separator) is untested
-  against Mexal.
+- 🟢 **The decimal form is answered.** Mirko Merendi to Aurel Mrruku by mail,
+  26/10: **comma** separator, **at most two decimals**. `MexalOrderSendService`
+  now sends `"-1500"`, `"-12,5"`, `"-0,05"` (checked in UAT by anonymous Apex);
+  the amount is already rounded to two decimals. ⚠ Still not sent to Mexal
+  end to end.
 - **[OI-283](OI-283%20Discounts%20cannot%20be%20edited%20on%20an%20existing%20order.md)**:
   when discount editing on an existing order is built, it must maintain
   `Prezzo_Listino__c` too.
 - **Prod lacks `QuoteLineItem.Discount_Pct__c`**, so this ships with the quote
   discount feature, and as Apex it falls under
   [the coverage gate](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+## 2026-10-26 - deployed to Prod
+
+🟢 `OrderItem.Prezzo_Listino__c`, `QuoteLineItem.Discount_Pct__c`, the
+conversion and the `sconto` send went to Prod with the DevMain deploy
+`0AfSW000001K5Kj0AK`; a test covers the payload (`prezzo` = list price,
+`sconto` = `"-100,5"`). ⚠ **Still no discounted order sent to Mexal end to
+end**, and `Full_Permission` read access on the new field came with the
+permission-set deploy.

@@ -29,6 +29,10 @@ private class QuoteCommercialTest {
   private static QuoteManageProductsController.TrancheSelection due(Date d) {
     QuoteManageProductsController.TrancheSelection row = new QuoteManageProductsController.TrancheSelection();
     row.dueDate = d;
+    // Each tranche carries its own price and discount; the catalogue price
+    // with no discount keeps the expected amounts.
+    row.newPrice = 300;
+    row.discountPercent = 0;
     return row;
   }
 
@@ -168,10 +172,19 @@ private class QuoteCommercialTest {
         [SELECT Locale__c FROM Quote WHERE Id = :inherited.Id].Locale__c
       );
 
+      // Any Locale of the same Azienda is accepted; one of another is not.
+      Quote sibling = new Quote(
+        Name = 'Locale Fratello',
+        OpportunityId = opportunityRecord.Id,
+        Locale__c = periferia.Id
+      );
+      System.assertEquals(true, Database.insert(sibling, false).isSuccess());
+
+      Account altrove = TestDataFactory.locale('Altrove', azienda().Id);
       Quote mismatched = new Quote(
         Name = 'Altro Locale',
         OpportunityId = opportunityRecord.Id,
-        Locale__c = periferia.Id
+        Locale__c = altrove.Id
       );
       System.assertEquals(
         false,
@@ -573,8 +586,12 @@ private class QuoteCommercialTest {
   private static Product2 bundleWithComponents(Boolean withTemplates) {
     Product2 bundle = TestDataFactory.bundle('Bundle Stage', 'BND-STG', 1000);
     TestDataFactory.standardEntry(bundle.Id, 0);
-    Product2 first = TestDataFactory.item('Modulo A', 'ART-STG-A');
-    Product2 second = TestDataFactory.item('Modulo B', 'ART-STG-B');
+    Product2 first = TestDataFactory.buildItem('Modulo A', 'ART-STG-A');
+    Product2 second = TestDataFactory.buildItem('Modulo B', 'ART-STG-B');
+    // Bundle components must be active bundle-only Items (Product__c filter).
+    first.Solo_Bundle__c = true;
+    second.Solo_Bundle__c = true;
+    insert new List<Product2>{ first, second };
     TestDataFactory.standardEntry(first.Id, 700);
     TestDataFactory.standardEntry(second.Id, 500);
     Bundle_Tranch__c firstTranch;
@@ -960,7 +977,23 @@ private class QuoteCommercialTest {
         )
       };
 
+      // Entering negotiation always resets the expiry to five days ahead, and
+      // editing it in negotiation returns the quote to draft, so the expired
+      // quote reaches the batch as the row its query would return.
+      Quote expiredRow = new Quote(
+        Id = stale.Id,
+        Status = 'In Trattativa',
+        ExpirationDate = Date.today().addDays(-1),
+        In_Trattativa_Dal__c = Date.today().addDays(-10),
+        Promemoria_2_Giorni_Inviato__c = true
+      );
+
       Test.startTest();
+      new QuoteNegotiationAgingBatch()
+        .execute(
+          (Database.BatchableContext) null,
+          new List<SObject>{ expiredRow }
+        );
       new QuoteNegotiationAgingBatch().execute((SchedulableContext) null);
       // The org may already run the daily job; schedule names are unique.
       for (CronTrigger existing : [
