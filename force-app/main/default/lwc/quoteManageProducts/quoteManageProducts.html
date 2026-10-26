@@ -67,16 +67,21 @@
             <template if:true={showExistingProducts}>
               <div class="selected-panel">
                 <div class="section-label">Righe gia nel preventivo</div>
-                <div class="selected-table">
-                  <div class="selected-header">
+                <div class="selected-table existing-products-table">
+                  <div class="selected-header existing-header">
                     <span>Prodotto</span>
-                    <span>Qta</span>
+                    <span class="existing-number">Qta</span>
+                    <span class="existing-number">Sconto %</span>
+                    <span class="existing-number">Prezzo totale</span>
                     <span>Stato</span>
                     <span></span>
                   </div>
                   <div class="selected-body">
                     <template for:each={existingProducts} for:item="product">
-                      <div class="selected-row" key={product.rowKey}>
+                      <div
+                        class="selected-row existing-product-row"
+                        key={product.rowKey}
+                      >
                         <div class="selected-main">
                           <div class="product-title">{product.productName}</div>
                           <div class="product-meta">
@@ -85,16 +90,37 @@
                             <template if:true={product.hasTranche}>
                               <span>{product.trancheLabel}</span>
                             </template>
-                            <span>Prezzo {product.unitPriceLabel}</span>
                           </div>
                         </div>
                         <template if:true={product.isExisting}>
-                          <span class="quantity-static"
+                          <span class="quantity-static existing-number"
                             >{product.quantity}</span
                           >
                         </template>
+                        <span
+                          class="existing-price existing-number"
+                          data-label="Sconto"
+                          >{product.discountLabel}</span
+                        >
+                        <span
+                          class="existing-price existing-number"
+                          data-label="Prezzo totale"
+                          >{product.totalPriceLabel}</span
+                        >
                         <span class="row-status">{product.rowStatus}</span>
-                        <span></span>
+                        <span class="existing-item-actions">
+                          <template if:true={product.canEditItem}>
+                            <lightning-button-icon
+                              icon-name="utility:edit"
+                              alternative-text="Modifica prodotto"
+                              title="Modifica prodotto"
+                              variant="bare"
+                              data-id={product.quoteLineItemId}
+                              disabled={existingEditDisabled}
+                              onclick={handleEditItem}
+                            ></lightning-button-icon>
+                          </template>
+                        </span>
                       </div>
                     </template>
                   </div>
@@ -102,7 +128,111 @@
               </div>
             </template>
 
-            <template if:true={hasExistingTranches}>
+            <template if:true={showItemEditor}>
+              <div class="selected-panel new-selection-panel item-editor">
+                <div class="selected-panel-heading">
+                  <div>
+                    <div class="section-label">Modifica prodotto</div>
+                    <div class="selected-subtitle">1 prodotto selezionato</div>
+                  </div>
+                </div>
+                <div class="selected-table">
+                  <div class="selected-header">
+                    <span>Prodotto</span><span>Qta</span><span>Stato</span
+                    ><span></span>
+                  </div>
+                  <div class="selected-body">
+                    <div class="selected-row selected-row-with-tranche">
+                      <div class="selected-main">
+                        <div class="product-title">
+                          {editingItem.productName}
+                        </div>
+                        <div class="product-meta">
+                          <span>{editingItem.productCode}</span>
+                          <span>{editingItem.typeLabel}</span>
+                          <template if:true={editingItem.hasTranche}>
+                            <span>{editingItem.trancheLabel}</span>
+                          </template>
+                        </div>
+                      </div>
+                      <lightning-input
+                        class="quantity-input"
+                        type="number"
+                        label="Quantita"
+                        variant="label-hidden"
+                        data-field="quantity"
+                        value={editingItem.quantity}
+                        min="0.01"
+                        step="0.01"
+                        required
+                        disabled={editQuantityDisabled}
+                        onchange={handleExistingItemChange}
+                      ></lightning-input>
+                      <span class="row-status">In modifica</span>
+                      <span></span>
+                      <div class="item-pricing">
+                        <div class="tranche-summary-value">
+                          <span class="box-label">Prezzo listino</span>
+                          <span>{editingItem.listPrice}</span>
+                        </div>
+                        <lightning-input
+                          type="number"
+                          label="Sconto %"
+                          data-field="discountPercent"
+                          value={editingItem.discountPercent}
+                          max="100"
+                          step="0.01"
+                          required
+                          disabled={itemEditorDisabled}
+                          onchange={handleExistingItemChange}
+                        ></lightning-input>
+                        <lightning-input
+                          type="number"
+                          label="Nuovo prezzo"
+                          data-field="newPrice"
+                          value={editingItem.newPrice}
+                          min="0"
+                          step="0.01"
+                          required
+                          disabled={itemEditorDisabled}
+                          onchange={handleExistingItemChange}
+                        ></lightning-input>
+                      </div>
+                      <template if:true={editingItem.isPlus}>
+                        <div class="tranche-choice-box">
+                          <lightning-input
+                            type="date"
+                            label="Scadenza tranche"
+                            data-field="trancheDueDate"
+                            value={editingItem.trancheDueDate}
+                            min={minimumTrancheDate}
+                            required
+                            disabled={itemEditorDisabled}
+                            onchange={handleExistingItemChange}
+                          ></lightning-input>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-m-top_medium">
+                  <lightning-button
+                    label="Annulla modifica"
+                    disabled={itemEditorDisabled}
+                    onclick={handleCancelItemEdit}
+                  ></lightning-button>
+                  <lightning-button
+                    label="Salva modifica"
+                    variant="brand"
+                    class="slds-m-left_small"
+                    disabled={itemEditorDisabled}
+                    onclick={handleSaveItemEdit}
+                  ></lightning-button>
+                </div>
+              </div>
+            </template>
+
+            <template if:true={showExistingTrancheSummary}>
               <div class="tranche-panel">
                 <div class="section-label">Tranche generate</div>
                 <div class="tranche-summary">
@@ -136,7 +266,16 @@
 
             <template if:true={showNewSelection}>
               <div class="selected-panel new-selection-panel">
-                <div class="section-label">Prodotti scelti da aggiungere</div>
+                <div class="selected-panel-heading">
+                  <div>
+                    <div class="section-label">
+                      Prodotti scelti da aggiungere
+                    </div>
+                    <div class="selected-subtitle">
+                      {selectedProductCountLabel}
+                    </div>
+                  </div>
+                </div>
                 <div class="selected-table">
                   <div class="selected-header">
                     <span>Prodotto</span>
@@ -146,13 +285,16 @@
                   </div>
                   <div class="selected-body">
                     <template for:each={selectedProducts} for:item="product">
-                      <div class="selected-row" key={product.rowKey}>
+                      <div class={product.rowClass} key={product.rowKey}>
                         <div class="selected-main">
                           <div class="product-title">{product.productName}</div>
                           <div class="product-meta">
                             <span>{product.productCode}</span>
                             <span>{product.typeLabel}</span>
                             <span>Prezzo {product.unitPrice}</span>
+                            <template if:true={isPlusOpportunity}>
+                              <span>Numero tranche {product.trancheCount}</span>
+                            </template>
                           </div>
                         </div>
                         <lightning-input
@@ -177,6 +319,64 @@
                           data-id={product.pricebookEntryId}
                           onclick={handleRemoveProduct}
                         ></lightning-button-icon>
+                        <template if:true={product.hasItemPricing}>
+                          <div class="item-pricing">
+                            <div class="tranche-summary-value">
+                              <span class="box-label">Prezzo listino</span>
+                              <span>{product.unitPrice}</span>
+                            </div>
+                            <lightning-input
+                              type="number"
+                              label="Sconto %"
+                              value={product.discountPercent}
+                              data-id={product.pricebookEntryId}
+                              max="100"
+                              step="0.01"
+                              required
+                              onchange={handleItemDiscountChange}
+                            ></lightning-input>
+                            <lightning-input
+                              type="number"
+                              label="Nuovo prezzo"
+                              value={product.newPrice}
+                              data-id={product.pricebookEntryId}
+                              min="0"
+                              step="0.01"
+                              formatter="currency"
+                              required
+                              onchange={handleItemPriceChange}
+                            ></lightning-input>
+                          </div>
+                        </template>
+                        <template if:true={product.requiresTranche}>
+                          <div class="tranche-choice-box">
+                            <div class="tranche-choice-heading">
+                              Scegli la tranche
+                            </div>
+                            <div class="tranche-choice-list">
+                              <template
+                                for:each={product.trancheChoices}
+                                for:item="choice"
+                              >
+                                <button
+                                  key={choice.key}
+                                  class={choice.buttonClass}
+                                  data-product-id={product.pricebookEntryId}
+                                  data-tranche-id={choice.id}
+                                  type="button"
+                                  onclick={handleTrancheChoice}
+                                >
+                                  <span class="tranche-choice-name"
+                                    >{choice.label}</span
+                                  >
+                                  <span class="tranche-choice-details"
+                                    >{choice.details}</span
+                                  >
+                                </button>
+                              </template>
+                            </div>
+                          </div>
+                        </template>
                       </div>
                     </template>
                   </div>
@@ -186,6 +386,12 @@
 
             <template if:true={showSelectedTranchePreview}>
               <div class="tranche-panel">
+                <template if:true={hasDuplicateSelectedTrancheDates}>
+                  <div class="message error">
+                    Le date delle tranche devono essere diverse.
+                  </div>
+                </template>
+
                 <div class="section-label">Tranche da creare</div>
                 <div class="tranche-count-box">
                   <span class="box-label">Numero tranche</span>
@@ -198,7 +404,10 @@
                       for:each={selectedTranchePreviewRows}
                       for:item="tranche"
                     >
-                      <div class="tranche-summary-row" key={tranche.key}>
+                      <div
+                        class="tranche-summary-row tranche-entry-row"
+                        key={tranche.key}
+                      >
                         <div class="tranche-summary-main">
                           <div class="tranche-summary-title">
                             {tranche.label}
@@ -208,15 +417,40 @@
                           </div>
                         </div>
                         <div class="tranche-summary-value">
-                          <span class="box-label">Prezzo</span>
-                          <span>{tranche.amountLabel}</span>
+                          <span class="box-label">Prezzo listino</span>
+                          <span>{tranche.listPriceLabel}</span>
                         </div>
+                        <lightning-input
+                          class="tranche-price-input"
+                          type="number"
+                          label="Sconto %"
+                          value={tranche.discountPercent}
+                          data-index={tranche.index}
+                          max="100"
+                          step="0.01"
+                          required
+                          onchange={handleSelectedTrancheDiscountChange}
+                        ></lightning-input>
+                        <lightning-input
+                          class="tranche-price-input"
+                          type="number"
+                          label="Nuovo prezzo"
+                          value={tranche.newPrice}
+                          data-index={tranche.index}
+                          min="0"
+                          step="0.01"
+                          formatter="currency"
+                          required
+                          onchange={handleSelectedTranchePriceChange}
+                        ></lightning-input>
                         <lightning-input
                           class="due-date-input"
                           type="date"
                           label="Scadenza"
                           value={tranche.dueDate}
                           data-index={tranche.index}
+                          min={minimumTrancheDate}
+                          message-when-range-underflow="La data non puo essere precedente a oggi."
                           required
                           onchange={handleSelectedTrancheDueDateChange}
                         ></lightning-input>
@@ -228,6 +462,12 @@
                 <template if:false={hasValidSelectedTrancheCount}>
                   <div class="message error">
                     Numero Tranche non configurato sul prodotto Plus.
+                  </div>
+                </template>
+
+                <template if:true={hasPastSelectedTrancheDate}>
+                  <div class="message error">
+                    Le date delle tranche non possono essere precedenti a oggi.
                   </div>
                 </template>
               </div>
@@ -256,6 +496,132 @@
                 onchange={handleSearchChange}
               ></lightning-input>
 
+              <template if:true={showPickerSelection}>
+                <div
+                  class="selected-panel new-selection-panel picker-selection-panel"
+                >
+                  <div class="selected-panel-heading">
+                    <div>
+                      <div class="section-label">
+                        Prodotti scelti da aggiungere
+                      </div>
+                      <div class="selected-subtitle">
+                        {selectedProductCountLabel}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="selected-table">
+                    <div class="selected-header">
+                      <span>Prodotto</span>
+                      <span>Qta</span>
+                      <span>Stato</span>
+                      <span></span>
+                    </div>
+                    <div class="selected-body">
+                      <template for:each={selectedProducts} for:item="product">
+                        <div class={product.rowClass} key={product.rowKey}>
+                          <div class="selected-main">
+                            <div class="product-title">
+                              {product.productName}
+                            </div>
+                            <div class="product-meta">
+                              <span>{product.productCode}</span>
+                              <span>{product.typeLabel}</span>
+                              <span>Prezzo {product.unitPrice}</span>
+                              <template if:true={isPlusOpportunity}>
+                                <span
+                                  >Numero tranche {product.trancheCount}</span
+                                >
+                              </template>
+                            </div>
+                          </div>
+                          <lightning-input
+                            class="quantity-input"
+                            type="number"
+                            label="Quantita"
+                            value={product.quantity}
+                            min="0.01"
+                            step="0.01"
+                            data-id={product.pricebookEntryId}
+                            variant="label-hidden"
+                            disabled={product.quantityDisabled}
+                            required
+                            onchange={handleQuantityChange}
+                          ></lightning-input>
+                          <span class="row-status">{product.rowStatus}</span>
+                          <lightning-button-icon
+                            icon-name="utility:delete"
+                            alternative-text="Rimuovi"
+                            title="Rimuovi"
+                            variant="bare"
+                            data-id={product.pricebookEntryId}
+                            onclick={handleRemoveProduct}
+                          ></lightning-button-icon>
+                          <template if:true={product.hasItemPricing}>
+                            <div class="item-pricing">
+                              <div class="tranche-summary-value">
+                                <span class="box-label">Prezzo listino</span>
+                                <span>{product.unitPrice}</span>
+                              </div>
+                              <lightning-input
+                                type="number"
+                                label="Sconto %"
+                                value={product.discountPercent}
+                                data-id={product.pricebookEntryId}
+                                max="100"
+                                step="0.01"
+                                required
+                                onchange={handleItemDiscountChange}
+                              ></lightning-input>
+                              <lightning-input
+                                type="number"
+                                label="Nuovo prezzo"
+                                value={product.newPrice}
+                                data-id={product.pricebookEntryId}
+                                min="0"
+                                step="0.01"
+                                formatter="currency"
+                                required
+                                onchange={handleItemPriceChange}
+                              ></lightning-input>
+                            </div>
+                          </template>
+                          <template if:true={product.requiresTranche}>
+                            <div class="tranche-choice-box">
+                              <div class="tranche-choice-heading">
+                                Scegli la tranche
+                              </div>
+                              <div class="tranche-choice-list">
+                                <template
+                                  for:each={product.trancheChoices}
+                                  for:item="choice"
+                                >
+                                  <button
+                                    key={choice.key}
+                                    class={choice.buttonClass}
+                                    data-product-id={product.pricebookEntryId}
+                                    data-tranche-id={choice.id}
+                                    type="button"
+                                    onclick={handleTrancheChoice}
+                                  >
+                                    <span class="tranche-choice-name"
+                                      >{choice.label}</span
+                                    >
+                                    <span class="tranche-choice-details"
+                                      >{choice.details}</span
+                                    >
+                                  </button>
+                                </template>
+                              </div>
+                            </div>
+                          </template>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
               <template if:true={hasProductOptions}>
                 <div class="available-table">
                   <div class="available-header">
@@ -280,6 +646,9 @@
                             <span>{option.productCode}</span>
                             <span>{option.typeLabel}</span>
                             <span>{option.unitPrice}</span>
+                            <template if:true={isPlusOpportunity}>
+                              <span>Numero tranche {option.trancheCount}</span>
+                            </template>
                           </span>
                         </span>
                         <template if:true={option.isSelected}>

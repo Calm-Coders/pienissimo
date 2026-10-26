@@ -20,35 +20,43 @@
             <div class="section-title">Dati Preventivo</div>
             <div class="grid">
               <lightning-input
-                label="Quote Name"
+                label="Nome preventivo"
                 value={form.quoteName}
                 data-field="quoteName"
                 onchange={handleInputChange}
                 required
               ></lightning-input>
               <lightning-input
-                label="Opportunity Name"
+                label="Nome opportunità"
                 value={form.opportunityName}
                 disabled
               ></lightning-input>
               <lightning-input
-                label="Account Name"
+                label="Nome account"
                 value={form.accountName}
                 disabled
               ></lightning-input>
               <lightning-input
-                label="Status"
+                label="Stato"
                 value={form.status}
                 disabled
               ></lightning-input>
               <lightning-input
                 type="date"
-                label="Expiration Date"
+                label="Data di scadenza"
                 value={form.expirationDate}
                 data-field="expirationDate"
                 onchange={handleInputChange}
                 required
               ></lightning-input>
+              <lightning-combobox
+                label="Condizione di Pagamento"
+                value={form.paymentCondition}
+                options={paymentConditionOptions}
+                data-field="paymentCondition"
+                onchange={handleInputChange}
+                required
+              ></lightning-combobox>
               <lightning-input
                 type="checkbox"
                 label="Primario"
@@ -59,85 +67,13 @@
               ></lightning-input>
             </div>
           </section>
-
-          <section class="section">
-            <div class="section-title">Indirizzo Fatturazione</div>
-            <div class="grid">
-              <lightning-textarea
-                label="Street"
-                value={form.billingStreet}
-                data-field="billingStreet"
-                onchange={handleInputChange}
-              ></lightning-textarea>
-              <lightning-input
-                label="City"
-                value={form.billingCity}
-                data-field="billingCity"
-                onchange={handleInputChange}
-              ></lightning-input>
-              <lightning-input
-                label="State/Province"
-                value={form.billingState}
-                data-field="billingState"
-                onchange={handleInputChange}
-              ></lightning-input>
-              <lightning-input
-                label="Postal Code"
-                value={form.billingPostalCode}
-                data-field="billingPostalCode"
-                onchange={handleInputChange}
-              ></lightning-input>
-              <lightning-input
-                label="Country"
-                value={form.billingCountry}
-                data-field="billingCountry"
-                onchange={handleInputChange}
-              ></lightning-input>
-            </div>
-          </section>
-
-          <section class="section">
-            <div class="section-title">Indirizzo Spedizione</div>
-            <div class="grid">
-              <lightning-textarea
-                label="Street"
-                value={form.shippingStreet}
-                data-field="shippingStreet"
-                onchange={handleInputChange}
-              ></lightning-textarea>
-              <lightning-input
-                label="City"
-                value={form.shippingCity}
-                data-field="shippingCity"
-                onchange={handleInputChange}
-              ></lightning-input>
-              <lightning-input
-                label="State/Province"
-                value={form.shippingState}
-                data-field="shippingState"
-                onchange={handleInputChange}
-              ></lightning-input>
-              <lightning-input
-                label="Postal Code"
-                value={form.shippingPostalCode}
-                data-field="shippingPostalCode"
-                onchange={handleInputChange}
-              ></lightning-input>
-              <lightning-input
-                label="Country"
-                value={form.shippingCountry}
-                data-field="shippingCountry"
-                onchange={handleInputChange}
-              ></lightning-input>
-            </div>
-          </section>
         </template>
       </template>
     </div>
 
     <div slot="footer">
       <lightning-button
-        label="Cancel"
+        label="Annulla"
         onclick={handleCancel}
       ></lightning-button>
       <lightning-button

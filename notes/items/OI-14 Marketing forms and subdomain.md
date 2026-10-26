@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Sabatino Rinaldi
 org: both
 raised: 2026-06-23
-updated: 2026-09-21
+updated: 2026-10-14
 blocks: [OI-81]
 source: meetings/open-items.md row 14
 ---
@@ -219,3 +219,238 @@ Sabatino Rinaldi's web-form validation **with priority agreed on the core forms*
 while the ticket flows are being configured by Fabrizio Mastracci and Aurel Mrruku.
 
 ⚠ **Marketing Cloud UAT is 2 October**, and the forms are its input.
+
+## 2026-10-05 - the form mapping finally has an owner and a date
+
+At [the 05/10 Lead session](../meetings/2026-10-05%20Check%20Data%20Import%20Lead%20e%20Contact.md),
+Sabatino Rinaldi assigned **Matteo Distaso** to flag the hidden and non-hidden
+fields for the two forms he had prioritised in writing on 02/10 —
+`Pienissimo Live` and `Camerieri Venditori` — **by the morning of 06/10**, in
+Elena Spini's shared file, checked against the data model.
+
+🟢 **First dated step on this workstream in nine weeks.** And the field-level
+decisions were taken in the session rather than deferred: UTM parameters
+(`campaign`, `content`, `medium`, `source` — ⚠ the workbook carries a fifth,
+`utm_term`) stay hidden and auto-populate from the URL, never visible to the
+customer; **visitor score, `ID campagna Z` and postcode are removed** from the
+forms; consents reduce to the privacy notice (mandatory) and commercial
+profiling (optional).
+
+Who builds what was also settled: _"i moduli principali saranno configurati
+dalla squadra tecnica mentre gli utenti potranno crearne autonomamente di
+nuovi."_
+
+🔴 **Still outstanding and not raised:** the 100+ form review, the DNS records,
+the funnel screenshots and the graphics. Two forms with a mapping deadline is
+not the form review.
+
+⚠ Elena Spini said plainly she cannot follow the form logic without an overall
+view, and Sabatino Rinaldi answered that **Fabrizio Paganelli already holds
+that information** from an earlier discussion. It has never reached the
+repository.
+
+## 🟢 2026-10-06 - Matteo Distaso delivered, on the morning it was due
+
+The hidden-field mapping for the two prioritised forms — owed _"by tomorrow
+morning"_ at the 05/10 Lead session, the first dated step on this row in nine
+weeks — **arrived**. Thread `1a1117ac154f6c42`, read in full.
+
+| Time (06/10) | Event |
+| --- | --- |
+| 11:03 CEST | Matteo Distaso asks where to put the fields: _"mi puoi dare istruzioni chiare su dove devo inserirti i campi dei due form concordati? mi sto mettendo ora al lavoro"_ |
+| 12:44 CEST | Elena Spini points him at the form-fields sheet (`1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`), distinct from the data model she had sent the evening before |
+| 15:30 CEST | **Matteo Distaso delivers the mapping** and documents the two UTM capture methods Pienissimo uses |
+| 13:50:09Z | Elena Spini confirms ROMI will build to his logics |
+
+### 🔑 Two UTM mechanisms, not one
+
+His own description, and it matters because the records had assumed one:
+
+- **Method 1** — the form carries hidden `utm_source`, `utm_medium`,
+  `utm_campaign` inputs; page script reads them from the address and writes them
+  in; they post with the rest and land in Zoho Forms' _"tutte le voci"_.
+- **Method 2** — used by **`camerierivenditori.com` and `pienissimolive.it`**,
+  the two prioritised forms. The form has no hidden fields and the page script
+  cannot write into the iframe, so it reads the UTMs from the address, **stores
+  them in a cookie** so they survive navigation, and **re-appends them to the
+  iframe URL**. Zoho reads them from there.
+
+Same result, different path — _"Questa differenza deriva da vari passaggi di
+gestione dei form nel corso degli anni."_ 🔑 **His recommendation is to
+normalise**: configure every form with the three hidden fields.
+
+### 🔴 One of the two forms is not reachable
+
+Elena Spini, 13:50:09Z:
+
+> _"camerierivenditori.com è raggiungibile; mentre il form per pienissimolive.it
+> non risulta raggiungibile."_
+
+So of the two prioritised forms, **one cannot be reached at all.** ⚠ No cause is
+given and no owner is named for fixing it. This is a hard blocker on the form
+half of this row.
+
+### 🔑 Partita IVA becomes a form field
+
+Elena Spini, same mail, carrying the 05/10 ruling into the forms:
+
+> _"come stabilito ieri, con le nuove logiche Salesforce i form **dovranno
+> richiedere la Partita IVA**. Il dato potrà essere modificato in seguito dal
+> tutor, ma è necessario che arrivi su SFDC per consentire la verifica su
+> Anticapy prima del passaggio a Mexal."_
+
+The Anticipay check is the reason, which ties this to
+[OI-202](OI-202%20Anticipay%20does%20not%20recognise%20sole%20traders%20absent%20from%20the%20registro%20imprese.md)
+— sole traders absent from the registro imprese will supply a P.IVA the check
+still rejects.
+
+⚠ **A dedicated marketing meeting was promised** — _"fisseremo a breve un
+meeting dedicato per i punti da te indicati"_ — with no date. It is the same call
+[the 06/10 session](../meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)
+listed as a next step with Rebecca Marmo.
+
+⚠ **The sender-domain authentication is still unanswered** on this thread: the
+last word on it is Fabrizio Mastracci's 18/08 chase.
+
+## 🟢 2026-10-08 - the form inventory is identified at last
+
+**The "100+ form Excel" this item has been blocked on since June is
+`Mappatura_Zoho_Forms_Pienissimo.xlsx`**, Drive id
+`1KPZ8pwEg3FFyXDdKu-gkXPtI13Yb5fGi`, owner Fabrizio Mastracci, **modified
+2026-10-08T08:05:35Z**. Elena Spini posted it to the marketing group DM at
+10:09:30 CEST for Fabrizio Mastracci. Decoded in
+[the workbook note](../The%20Zoho%20Forms%20mapping%20workbook.md).
+
+It puts numbers on the blocker for the first time: **106 active forms, 1,588
+fields**, extracted 16/07/2026 from the Zoho Forms account `segreteria5`. The
+destination-CRM columns are **ROMI's to fill**, per the workbook's own
+instructions sheet.
+
+🟢 **Where the fields land was decided the same morning.** At
+[the 08/10 internal session](../meetings/2026-10-08%20Internal%20Test.md), as
+`Concordato`: the form fields map **at Opportunity level**, in a dedicated
+marketing-forms section, colour-marked for later clean-up. Elena Spini's reason
+is volume — the registry data already exists after a first submission, so a
+second must create an Opportunity rather than overwrite the Account.
+
+🔴 **What remains blocked.** Which of the 1,588 fields are in scope is
+unstated, the mapping columns' current state is unknown (this sweep read the
+instructions sheet, not the field rows), and **there is still no date for
+Pienissimo's review** — the thing this item has waited on for fifteen weeks,
+now with **13 days to go-live**.
+
+⚠ Matteo Distaso's 06/10 delivery covered the **two prioritised forms**. This
+workbook is the other 104, and the `pienissimolive.it` form he reported
+_"non risulta raggiungibile"_ is still unreachable.
+
+## 🔑 2026-10-09 - two forms are commissioned, and the Lead fields they need are not in Prod
+
+**The first concrete, scoped form work on this item in fifteen weeks — and it
+arrived as a field list, in a chat, with no date.**
+
+In the marketing group DM, **11:51:54 CEST**, Fabrizio Mastracci:
+
+> _"Mi hanno commissionato due form che ti riporto di seguito:
+> (camerierivenditori.com e pienissimo.live/). tutti i campi che vedi in questi
+> form mi servono sui lead poiche atterreranno li. In aggiunta ci sono dei campi
+> nascosti che ti riporto di seguito: utm_campaign, utm_content, utm_medium,
+> utm_source, utm_term, Interessato a, Categoria, Sottocategoria, Origine Lead"_
+
+🟢 **These are the two prioritised forms**, consistent with the 02/10 status post
+(_"si parte da Pienissimo Live e Camerieri Venditori"_) and with Elena Spini's
+09/10 status post, which specifies them as **Web-to-Lead in HTML with `Partita
+IVA` mandatory, hidden UTM fields and a verification pop-up**.
+
+🔴 **The fields are not in production.** He asked outright
+(11:23:59) whether the Lead object in Prod already has every field. Aurel Mrruku:
+_"non abbiamo migrato tutto perche ci stiamo lavorando"_ and, at 11:54:13,
+**_"questo requisitoo ci è arrivato ieri anche a noi, non ci sono in prod sti
+campi, li stiamo creando in uat"_**. Elena Spini's status post carries the
+matching next step: _"Creazione in PROD dei campi Lead necessari ai form di
+Fabrizio M."_ — **no owner, no date.**
+
+🔑 **Four of the hidden fields are OI-115's picklists.** `Categoria`,
+`Sottocategoria`, `Origine Lead` and `Interessato a` are the four Lead picklists
+whose value lists have been owed since 03/09 and are still reachable only as a
+mail attachment — see
+[OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md).
+**A form cannot post into a picklist whose values do not exist**, so the
+unreachable workbook now blocks a committed deliverable rather than a future one.
+
+🔴 **The schedule for them is unsettled, in the same thread.** Fabrizio
+Mastracci asked _"i form sono post live giusto?"_ (12:32:29). Elena Spini: _"io
+in realtà speravo di farli vedere agli UAT, ma nel caso faremo meeting ad hoc"_,
+then _"ovviamente priorità al giro dei flussi"_, then asked for an internal
+pre-UAT run **Tuesday or Wednesday**. His answer: _"Non appena matteo mi da il
+numero per whatsapp"_, and when she asked about a run without WhatsApp,
+**_"Inizio prossima settimana"_**. ⚠ So the forms are between "shown at UAT" and
+"post-live", the marketing flows outrank them, and the dry run is gated on
+**Matteo Distaso supplying a WhatsApp number** — a dependency that appears
+nowhere else in the records.
+
+⚠ `pienissimo.live` **is the form Matteo Distaso reported `non risulta
+raggiungibile`** on three previous runs. It is now a commissioned build rather
+than a broken link, which supersedes the unreachability as a question: nobody
+needs the old form if this one replaces it. **That nobody said so explicitly is
+why both readings are recorded here.**
+
+⚠ `camerierivenditori.com` is a **new domain** on this item. The subdomain work
+this row has tracked since June concerned `pienissimo.com`; nothing states who
+owns `camerierivenditori.com`, whether it needs its own sender authentication, or
+how it relates to the `E07 Camerieri Venditori` article category.
+
+## 🟢 2026-10-12 - a Web-to-Lead artifact exists
+
+Aurel Mrruku posted **`lead-web-to-lead (1).html`** (26.8 KB, `text/plain`) into
+his DM with Elena Spini at **17:59:37 CEST**, immediately after a voice huddle she
+opened at 17:51:59 saying _"ho anche una notizia bella però"_.
+
+🟢 **It is the first concrete artifact for the two commissioned forms** —
+`camerierivenditori.com` and `pienissimo.live` — after fifteen weeks in which
+this row had scope but nothing to show. A generated Web-to-Lead HTML is what the
+form builder needs to post into Salesforce.
+
+⚠ **What it contains was not read.** A Web-to-Lead form carries the org id and
+the field ids it posts to; the file was recorded, not opened, and no credential
+or id from it is in this repository.
+
+### 🔴 The blocker underneath it has not moved
+
+The fields that form posts into are still **not in Prod** — Aurel Mrruku's own
+_"non ci sono in prod sti campi, li stiamo creando in uat"_ of 09/10. Four of
+them are
+[OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md)'s
+picklists, whose value list is **still a mail attachment only**, a fifth
+consecutive run. **A Web-to-Lead post cannot write a picklist value the org does
+not have**, so a working HTML file does not make a working form.
+
+⚠ Nothing in this sweep's window assigns the Prod field creation an owner or a
+date. ⚠ The dry run is still gated on the WhatsApp number Matteo Distaso owes;
+nothing mentioned it. ⚠ **What the "notizia bella" was is unreadable** — it went
+into voice and appears in no readable source.
+
+## 2026-10-14 — a new web-to-lead, for testing
+
+Aurel Mrruku to Elena Spini, DM, **16:39 CEST**: an image at 16:39:12, then
+_"nuova web to leed"_ (16:39:21) and _"per fare i test"_ (16:39:25).
+
+⚠ **The image was not opened**, so what the new form contains is not established;
+the two lines are all the record carries. It follows the `lead-web-to-lead (1).html`
+Aurel Mrruku sent Elena Spini on 12/10 at 17:59:37 CEST.
+
+🔴 **The blocker is unchanged.** The Lead fields the form posts into are still not
+in Prod, and four of them are the picklists of
+[OI-115](OI-115%20Tipologia%20Attivita%20values%20and%20its%20move%20to%20the%20quote.md), whose
+source workbook remains a **mail attachment only — seventh run**.
+
+⚠ **And the lead logic moved today, in the opposite direction.** `dbef4f4`
+(Rexhina Hysi, 16:36:44 CEST, `DevMainOpportunityWork`), _"remove woocommerce from
+lead logic"_, strips WooCommerce handling out of `LeadConversionQueueable` and
+`LeadConversionTriggerHandler`, removes a value from `Lead.Tipo_Opportunita__c`
+and edits the `Diretta` and `Standard` Lead record types and the
+`Partita_IVA_Required_for_Azienda_and_Locale` validation rule. ⚠ **Not in
+`DevMain`**, and **no source explains why** — it is 20 minutes before the
+web-to-lead message and bears on
+[OI-182](OI-182%20A%20WooCommerce%20opportunity%20record%20type%20replaces%20Recall%20Tutor.md),
+which records a WooCommerce Opportunity record type replacing Recall Tutor.
+**Recorded as a fact of the diff; the intent is not established.**

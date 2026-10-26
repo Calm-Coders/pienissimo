@@ -131,7 +131,7 @@ private class CrmAutomationTest {
       save(leadRecord);
 
       Test.startTest();
-      qualify(leadRecord, 'Recall tutor');
+      qualify(leadRecord, 'WooCommerce');
       System.assert(save(leadRecord).isSuccess());
       Test.stopTest();
 
@@ -173,13 +173,10 @@ private class CrmAutomationTest {
         WHERE Id = :converted.ConvertedOpportunityId
       ];
       System.assertEquals(
-        'Recall_Tutor',
+        'WooCommerce',
         opportunityRecord.RecordType.DeveloperName
       );
-      System.assertEquals(
-        'Recall tutor',
-        opportunityRecord.Tipo_Opportunita__c
-      );
+      System.assertEquals('WooCommerce', opportunityRecord.Tipo_Opportunita__c);
     }
   }
 
@@ -391,8 +388,8 @@ private class CrmAutomationTest {
       Campaign first = TestDataFactory.childCampaign('Milano', parent.Id);
       Campaign overlapping = TestDataFactory.childCampaign('Torino', parent.Id);
       Campaign later = TestDataFactory.childCampaign('Roma', parent.Id);
-      later.StartDate = Date.today().addDays(30);
-      later.EndDate = Date.today().addDays(40);
+      later.Da_Data_Competenza__c = Date.today().addDays(30);
+      later.A_Data_Competenza__c = Date.today().addDays(40);
       later.Data_Evento__c = Date.today().addDays(40);
       update later;
 
@@ -405,8 +402,8 @@ private class CrmAutomationTest {
         FROM Mappatura_Edizione__c
         WHERE Id = :mapping.Id
       ];
-      System.assertEquals(first.StartDate, saved.Data_Inizio__c);
-      System.assertEquals(first.EndDate, saved.Data_Fine__c);
+      System.assertEquals(first.Da_Data_Competenza__c, saved.Data_Inizio__c);
+      System.assertEquals(first.A_Data_Competenza__c, saved.Data_Fine__c);
 
       Mappatura_Edizione__c clash = new Mappatura_Edizione__c(
         Prodotto__c = product.Id,

@@ -4,35 +4,46 @@
   relatedToType="Opportunity"
 >
   <messaging:htmlEmailBody>
-    <p>Gentile cliente,</p>
+    <p>Gentile {!BLANKVALUE(relatedTo.Account.Name, "cliente")},</p>
 
     <p>
-      La invitiamo a utilizzare il link qui sotto per completare il checkout del
-      suo ordine Pienissimo.
+      La invitiamo a completare il checkout del suo ordine Pienissimo tramite il
+      pulsante qui sotto.
     </p>
 
-    <p><strong>Completa il checkout:</strong></p>
+    <p style="margin: 24px 0;">
+      <a
+        href="{!relatedTo.Checkout_Link__c}"
+        style="background-color: #1f4e79; color: #ffffff; display: inline-block; font-weight: bold; padding: 12px 20px; text-decoration: none;"
+      >Completa il checkout</a>
+    </p>
 
     <p>
-      <a href="{!relatedTo.Checkout_Link__c}">{!relatedTo.Checkout_Link__c}</a>
+      Il checkout e' collegato alla sua pratica Pienissimo: utilizzi questo
+      pulsante senza inoltrare l'email ad altri destinatari.
     </p>
 
     <p>Per qualsiasi necessita' di assistenza, non esiti a contattarci.</p>
 
-    <p>Cordiali saluti,<br /><strong>Il team Pienissimo</strong></p>
+    <p>
+      Cordiali saluti,<br />
+      <strong>{!IF(ISBLANK(relatedTo.Account.Agente__c), relatedTo.Owner.Name, relatedTo.Account.Agente__r.Name)}</strong>
+    </p>
   </messaging:htmlEmailBody>
   <messaging:plainTextEmailBody>
-Gentile cliente,
+Gentile {!BLANKVALUE(relatedTo.Account.Name, "cliente")},
 
-La invitiamo a utilizzare il link qui sotto per completare il checkout del suo ordine Pienissimo.
+La invitiamo a completare il checkout del suo ordine Pienissimo tramite il collegamento qui sotto.
 
 Completa il checkout:
 
 {!relatedTo.Checkout_Link__c}
 
+Il checkout e' collegato alla sua pratica Pienissimo: utilizzi questo collegamento senza inoltrare l'email ad altri destinatari.
+
 Per qualsiasi necessita' di assistenza, non esiti a contattarci.
 
 Cordiali saluti,
-Il team Pienissimo
+{!IF(ISBLANK(relatedTo.Account.Agente__c), relatedTo.Owner.Name, relatedTo.Account.Agente__r.Name)}
   </messaging:plainTextEmailBody>
 </messaging:emailTemplate>

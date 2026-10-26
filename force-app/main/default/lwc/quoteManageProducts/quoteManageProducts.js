@@ -1,4 +1,6 @@
-import { api, LightningElement } from "lwc";
+import { api, LightningElement, wire } from "lwc";
+import { MessageContext, publish } from "lightning/messageService";
+import QUOTE_PRODUCTS_CHANGED from "@salesforce/messageChannel/QuoteProductsChanged__c";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { NavigationMixin } from "lightning/navigation";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
@@ -7,16 +9,19 @@ import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
 import getContext from "@salesforce/apex/QuoteManageProductsController.getContext";
 import saveProducts from "@salesforce/apex/QuoteManageProductsController.saveProducts";
 import searchProducts from "@salesforce/apex/QuoteManageProductsController.searchProducts";
+import updateItemLine from "@salesforce/apex/QuoteManageProductsController.updateItemLine";
 
 const BUNDLE_TYPE = "Bundle";
 const ITEM_TYPE = "Item";
 const PLUS_OPPORTUNITY_RECORD_TYPE = "Plus_Attivazione_Rinnovo";
-const STANDARD_OPPORTUNITY_RECORD_TYPE = "Standart";
+const STANDARD_OPPORTUNITY_RECORD_TYPE = "Vendita_Standard";
 
 export default class QuoteManageProducts extends NavigationMixin(
   LightningElement
 ) {
   _recordId;
+  @wire(MessageContext)
+  messageContext;
   searchRequestId = 0;
   saveInProgress = false;
 
@@ -36,7 +41,117 @@ export default class QuoteManageProducts extends NavigationMixin(
   productOptions = [];
   selectedProducts = [];
   selectedTrancheDates = {};
+  selectedTrancheDiscounts = {};
+  selectedTranchePrices = {};
   searchTerm = "";
+  editingItem;
+
+  get showItemEditor() {
+    return !!this.editingItem;
+  }
+
+  get itemEditorDisabled() {
+    return this.isLoading || this.saveInProgress;
+  }
+
+  get existingEditDisabled() {
+    return this.itemEditorDisabled || this.hasSelectedProducts;
+  }
+
+  get editQuantityDisabled() {
+    return this.itemEditorDisabled || this.editingItem?.isPlus;
+  }
+
+  handleEditItem(event) {
+    if (this.itemEditorDisabled || this.hasSelectedProducts) return;
+    const product = this.existingProducts.find(
+      (row) => row.quoteLineItemId === event.currentTarget.dataset.id
+    );
+    if (!product?.canEditItem) return;
+    this.editingItem = {
+      ...product,
+      newPrice: Number(product.unitPrice),
+      discountPercent: Number(product.discountPercent) || 0
+    };
+  }
+
+  handleCancelItemEdit() {
+    if (!this.saveInProgress) this.editingItem = undefined;
+  }
+
+  handleExistingItemChange(event) {
+    const field = event.target.dataset.field;
+    if (field === "trancheDueDate") {
+      this.editingItem = {
+        ...this.editingItem,
+        trancheDueDate: event.target.value
+      };
+      return;
+    }
+    const value = this.parseNumber(event.target.value);
+    const draft = { ...this.editingItem, [field]: value };
+    const listPrice = Number(draft.listPrice) || 0;
+    if (field === "discountPercent") {
+      draft.newPrice =
+        value == null
+          ? null
+          : this.roundToTwoDecimals(listPrice * (1 - value / 100));
+    } else if (field === "newPrice") {
+      draft.discountPercent =
+        value == null
+          ? null
+          : listPrice > 0
+            ? this.roundToTwoDecimals((1 - value / listPrice) * 100)
+            : 0;
+    }
+    this.editingItem = draft;
+  }
+
+  async handleSaveItemEdit() {
+    if (!this.editingItem || this.itemEditorDisabled) return;
+    const inputs = [
+      ...this.template.querySelectorAll(".item-editor lightning-input")
+    ];
+    if (!inputs.map((input) => input.reportValidity()).every(Boolean)) return;
+    this.saveInProgress = true;
+    try {
+      await updateItemLine({
+        quoteId: this.recordId,
+        lineId: this.editingItem.quoteLineItemId,
+        quantity: this.editingItem.quantity,
+        discountPercent: this.editingItem.discountPercent,
+        newPrice: this.editingItem.newPrice,
+        ...(this.editingItem.isPlus
+          ? { dueDate: this.editingItem.trancheDueDate }
+          : {})
+      });
+      const changedIds = [
+        this.recordId,
+        this.editingItem.quoteLineItemId,
+        this.editingItem.trancheId
+      ];
+      this.editingItem = undefined;
+      await notifyRecordUpdateAvailable(
+        changedIds.filter(Boolean).map((recordId) => ({ recordId }))
+      );
+      publish(this.messageContext, QUOTE_PRODUCTS_CHANGED, {
+        quoteId: this.recordId
+      });
+      this.dispatchEvent(new RefreshEvent());
+      await this.loadContext();
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "Prodotto aggiornato",
+          message: "La riga del preventivo e stata aggiornata.",
+          variant: "success"
+        })
+      );
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.saveInProgress = false;
+    }
+  }
 
   @api
   get recordId() {
@@ -66,12 +181,22 @@ export default class QuoteManageProducts extends NavigationMixin(
     return this.selectedProducts.length > 0;
   }
 
+  get selectedProductCountLabel() {
+    return this.selectedProducts.length === 1
+      ? "1 prodotto selezionato"
+      : `${this.selectedProducts.length} prodotti selezionati`;
+  }
+
   get hasExistingProducts() {
     return this.existingProducts.length > 0;
   }
 
   get hasExistingTranches() {
     return this.existingTranches.length > 0;
+  }
+
+  get showExistingTrancheSummary() {
+    return this.hasExistingTranches && !this.hasSelectedProducts;
   }
 
   get selectedPlusProduct() {
@@ -105,12 +230,27 @@ export default class QuoteManageProducts extends NavigationMixin(
 
     return Array.from({ length: this.selectedTrancheCount }, (_, index) => {
       const sequence = index + 1;
+      const listPrice = Number(product.unitPrice) || 0;
+      const discountPercent = Object.prototype.hasOwnProperty.call(
+        this.selectedTrancheDiscounts,
+        index
+      )
+        ? this.selectedTrancheDiscounts[index]
+        : 0;
+      const newPrice = Object.prototype.hasOwnProperty.call(
+        this.selectedTranchePrices,
+        index
+      )
+        ? this.selectedTranchePrices[index]
+        : listPrice;
       return {
         key: `selected-tranche-${sequence}`,
         label: `Tranche ${sequence}`,
         index,
         productName: product.productName,
-        amountLabel: this.formatAmount(product.unitPrice),
+        listPriceLabel: this.formatAmount(listPrice),
+        discountPercent,
+        newPrice,
         dueDate: this.selectedTrancheDates[index] || ""
       };
     });
@@ -121,7 +261,51 @@ export default class QuoteManageProducts extends NavigationMixin(
       return true;
     }
 
-    return this.selectedTranchePreviewRows.every((tranche) => tranche.dueDate);
+    const dueDates = this.selectedTranchePreviewRows.map(
+      (tranche) => tranche.dueDate
+    );
+    return (
+      dueDates.every(
+        (dueDate) => dueDate && dueDate >= this.minimumTrancheDate
+      ) && new Set(dueDates).size === dueDates.length
+    );
+  }
+
+  get minimumTrancheDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  get hasPastSelectedTrancheDate() {
+    return this.selectedTranchePreviewRows.some(
+      (tranche) => tranche.dueDate && tranche.dueDate < this.minimumTrancheDate
+    );
+  }
+
+  get hasDuplicateSelectedTrancheDates() {
+    const dueDates = this.selectedTranchePreviewRows
+      .map((tranche) => tranche.dueDate)
+      .filter((dueDate) => dueDate);
+    return new Set(dueDates).size !== dueDates.length;
+  }
+
+  get hasValidSelectedTranchePricing() {
+    if (!this.showSelectedTranchePreview || !this.selectedTrancheCount) {
+      return true;
+    }
+
+    return this.selectedTranchePreviewRows.every(
+      (tranche) =>
+        tranche.discountPercent != null &&
+        Number.isFinite(Number(tranche.discountPercent)) &&
+        Number(tranche.discountPercent) <= 100 &&
+        tranche.newPrice != null &&
+        Number.isFinite(Number(tranche.newPrice)) &&
+        Number(tranche.newPrice) >= 0
+    );
   }
 
   get showExistingProducts() {
@@ -130,6 +314,10 @@ export default class QuoteManageProducts extends NavigationMixin(
 
   get showNewSelection() {
     return !this.isPickerOpen && this.hasSelectedProducts;
+  }
+
+  get showPickerSelection() {
+    return this.isPickerOpen && this.hasSelectedProducts;
   }
 
   get isFormDisabled() {
@@ -152,8 +340,19 @@ export default class QuoteManageProducts extends NavigationMixin(
       !this.hasSelectedProducts ||
       (this.showSelectedTranchePreview && !this.hasValidSelectedTrancheCount) ||
       !this.hasValidSelectedTrancheDates ||
+      !this.hasValidSelectedTranchePricing ||
       this.selectedProducts.some(
-        (product) => !product.quantity || Number(product.quantity) <= 0
+        (product) =>
+          !product.quantity ||
+          Number(product.quantity) <= 0 ||
+          (product.hasItemPricing &&
+            (product.discountPercent == null ||
+              !Number.isFinite(product.discountPercent) ||
+              product.discountPercent > 100 ||
+              product.newPrice == null ||
+              !Number.isFinite(product.newPrice) ||
+              product.newPrice < 0)) ||
+          (product.requiresTranche && !product.trancheId)
       )
     );
   }
@@ -213,7 +412,12 @@ export default class QuoteManageProducts extends NavigationMixin(
   }
 
   get addProductsDisabled() {
-    return this.isFormDisabled || this.isLoading || this.saveInProgress;
+    return (
+      this.isFormDisabled ||
+      this.isLoading ||
+      this.saveInProgress ||
+      this.showItemEditor
+    );
   }
 
   get statusClass() {
@@ -322,10 +526,13 @@ export default class QuoteManageProducts extends NavigationMixin(
           isExisting: false,
           rowStatus: "Da aggiungere",
           quantity: 1,
-          quantityDisabled: true
+          quantityDisabled: true,
+          trancheId: "",
+          requiresTranche: false,
+          rowClass: "selected-row"
         }
       ];
-      this.selectedTrancheDates = {};
+      this.resetSelectedTrancheValues();
       this.isPickerOpen = false;
       this.closeProductList();
     } else if (option.productType === BUNDLE_TYPE) {
@@ -336,10 +543,15 @@ export default class QuoteManageProducts extends NavigationMixin(
           isExisting: false,
           rowStatus: "Da aggiungere",
           quantity: 1,
-          quantityDisabled: true
+          quantityDisabled: true,
+          trancheId: "",
+          requiresTranche: false,
+          rowClass: "selected-row"
         }
       ];
     } else {
+      const requiresTranche =
+        this.isStandardOpportunity && this.hasExistingTranches;
       this.selectedProducts = [
         ...this.selectedProducts,
         {
@@ -348,7 +560,18 @@ export default class QuoteManageProducts extends NavigationMixin(
           isExisting: false,
           rowStatus: "Da aggiungere",
           quantity: 1,
-          quantityDisabled: false
+          quantityDisabled: false,
+          hasItemPricing: this.isStandardOpportunity,
+          discountPercent: 0,
+          newPrice: Number(option.unitPrice),
+          trancheId: "",
+          requiresTranche,
+          rowClass: requiresTranche
+            ? "selected-row selected-row-with-tranche"
+            : "selected-row",
+          trancheChoices: requiresTranche
+            ? this.buildTrancheChoices(option.pricebookEntryId)
+            : []
         }
       ];
     }
@@ -367,11 +590,122 @@ export default class QuoteManageProducts extends NavigationMixin(
     });
   }
 
+  handleItemDiscountChange(event) {
+    this.updateItemPricing(event, true);
+  }
+
+  handleItemPriceChange(event) {
+    this.updateItemPricing(event, false);
+  }
+
+  updateItemPricing(event, isDiscountChange) {
+    const entryId = event.target.dataset.id;
+    const value = this.parseNumber(event.target.value);
+    this.selectedProducts = this.selectedProducts.map((product) => {
+      if (product.pricebookEntryId !== entryId || !product.hasItemPricing) {
+        return product;
+      }
+      const listPrice = Number(product.unitPrice) || 0;
+      const discountPercent = isDiscountChange
+        ? value
+        : value == null
+          ? null
+          : listPrice > 0
+            ? this.roundToTwoDecimals((1 - value / listPrice) * 100)
+            : 0;
+      const newPrice = isDiscountChange
+        ? value == null
+          ? null
+          : this.roundToTwoDecimals(listPrice * (1 - value / 100))
+        : value;
+      return { ...product, discountPercent, newPrice };
+    });
+  }
+
+  handleTrancheChoice(event) {
+    const pricebookEntryId = event.currentTarget.dataset.productId;
+    const trancheId = event.currentTarget.dataset.trancheId;
+    this.selectedProducts = this.selectedProducts.map((product) => {
+      if (product.pricebookEntryId !== pricebookEntryId) {
+        return product;
+      }
+      return {
+        ...product,
+        trancheId,
+        trancheChoices: product.trancheChoices.map((choice) => ({
+          ...choice,
+          buttonClass:
+            choice.id === trancheId
+              ? "tranche-choice selected"
+              : "tranche-choice"
+        }))
+      };
+    });
+  }
+
+  buildTrancheChoices(pricebookEntryId) {
+    const choicesById = new Map();
+    this.existingTranches.forEach((tranche) => {
+      if (!choicesById.has(tranche.id)) {
+        choicesById.set(tranche.id, {
+          key: `${pricebookEntryId}-${tranche.id}`,
+          id: tranche.id,
+          label: tranche.label,
+          details: `Scadenza ${tranche.dueDateLabel} · ${tranche.amountLabel}`,
+          buttonClass: "tranche-choice"
+        });
+      }
+    });
+    return [...choicesById.values()];
+  }
+
   handleSelectedTrancheDueDateChange(event) {
     const index = Number(event.target.dataset.index);
     this.selectedTrancheDates = {
       ...this.selectedTrancheDates,
       [index]: event.detail.value
+    };
+  }
+
+  handleSelectedTrancheDiscountChange(event) {
+    const index = Number(event.target.dataset.index);
+    const discountPercent = this.parseNumber(event.target.value);
+    const listPrice = Number(this.selectedPlusProduct?.unitPrice) || 0;
+    const newPrice =
+      discountPercent == null
+        ? null
+        : this.roundToTwoDecimals(
+            listPrice * (1 - Number(discountPercent) / 100)
+          );
+
+    this.selectedTrancheDiscounts = {
+      ...this.selectedTrancheDiscounts,
+      [index]: discountPercent
+    };
+    this.selectedTranchePrices = {
+      ...this.selectedTranchePrices,
+      [index]: newPrice
+    };
+  }
+
+  handleSelectedTranchePriceChange(event) {
+    const index = Number(event.target.dataset.index);
+    const newPrice = this.parseNumber(event.target.value);
+    const listPrice = Number(this.selectedPlusProduct?.unitPrice) || 0;
+    const discountPercent =
+      newPrice == null
+        ? null
+        : listPrice > 0
+          ? this.roundToTwoDecimals((1 - Number(newPrice) / listPrice) * 100)
+          : 0;
+
+    this.selectedTranchePrices = {
+      ...this.selectedTranchePrices,
+      [index]: newPrice
+    };
+    this.selectedTrancheDiscounts = {
+      ...this.selectedTrancheDiscounts,
+      [index]: discountPercent
     };
   }
 
@@ -398,11 +732,20 @@ export default class QuoteManageProducts extends NavigationMixin(
         quoteId: this.recordId,
         products: this.selectedProducts.map((product) => ({
           pricebookEntryId: product.pricebookEntryId,
-          quantity: Number(product.quantity)
+          quantity: Number(product.quantity),
+          ...(product.hasItemPricing
+            ? {
+                discountPercent: product.discountPercent,
+                newPrice: product.newPrice
+              }
+            : {}),
+          trancheId: product.requiresTranche ? product.trancheId : null
         })),
         tranches: this.showSelectedTranchePreview
           ? this.selectedTranchePreviewRows.map((tranche) => ({
-              dueDate: tranche.dueDate
+              dueDate: tranche.dueDate,
+              discountPercent: Number(tranche.discountPercent),
+              newPrice: Number(tranche.newPrice)
             }))
           : null
       });
@@ -415,6 +758,9 @@ export default class QuoteManageProducts extends NavigationMixin(
         })
       );
       await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
+      publish(this.messageContext, QUOTE_PRODUCTS_CHANGED, {
+        quoteId: this.recordId
+      });
       this.dispatchEvent(new RefreshEvent());
       this.dispatchEvent(new CloseActionScreenEvent());
     } catch (error) {
@@ -440,7 +786,21 @@ export default class QuoteManageProducts extends NavigationMixin(
     this.selectedProducts = this.selectedProducts.filter(
       (product) => product.pricebookEntryId !== pricebookEntryId
     );
+    this.resetSelectedTrancheValues();
+  }
+
+  resetSelectedTrancheValues() {
     this.selectedTrancheDates = {};
+    this.selectedTrancheDiscounts = {};
+    this.selectedTranchePrices = {};
+  }
+
+  parseNumber(value) {
+    return value === "" || value == null ? null : Number(value);
+  }
+
+  roundToTwoDecimals(value) {
+    return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
   }
 
   excludeExistingProducts(options) {
@@ -460,15 +820,17 @@ export default class QuoteManageProducts extends NavigationMixin(
       productName: line.productName || "Prodotto senza nome",
       productCode: line.productCode || "Nessun codice",
       productType: line.productType,
-      typeLabel:
-        line.isPlus === true
-          ? "Plus"
-          : line.productType === BUNDLE_TYPE
-            ? "Bundle"
-            : "Item",
-      isPlus: line.isPlus === true,
+      typeLabel: line.productType === BUNDLE_TYPE ? "Bundle" : "Item",
+      isPlus: this.isPlusOpportunity,
       unitPrice: line.unitPrice,
+      listPrice: line.listPrice,
+      discountPercent: line.discountPercent,
+      discountLabel: `${new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 2
+      }).format(line.discountPercent ?? 0)}%`,
+      totalPriceLabel: this.formatAmount(line.totalPrice),
       unitPriceLabel: this.formatAmount(line.unitPrice),
+      listPriceLabel: this.formatAmount(line.listPrice),
       quantity: line.quantity,
       quantityDisabled: true,
       trancheId: line.trancheId,
@@ -482,7 +844,13 @@ export default class QuoteManageProducts extends NavigationMixin(
       hasTranche: !!line.trancheId,
       trancheLabel: this.formatTrancheLabel(line),
       isExisting: true,
-      rowStatus: "Gia nel preventivo"
+      rowStatus: "Gia nel preventivo",
+      canEditItem:
+        line.canEditItem === true &&
+        this.isEditable &&
+        (this.isStandardOpportunity ||
+          (this.isPlusOpportunity && !!line.trancheId)) &&
+        ["Bozza", "In Trattativa"].includes(this.quoteStatus)
     }));
   }
 
@@ -526,9 +894,6 @@ export default class QuoteManageProducts extends NavigationMixin(
     const hasSelectedItems = this.selectedProducts.some(
       (product) => product.productType === ITEM_TYPE
     );
-    const hasSelectedPlus = this.selectedProducts.some(
-      (product) => product.isPlus === true
-    );
     const selectedPricebook2Id = this.selectedProducts[0]?.pricebook2Id;
 
     return options.map((option) => {
@@ -536,21 +901,14 @@ export default class QuoteManageProducts extends NavigationMixin(
       const typeConflict =
         (hasSelectedBundle && option.productType === ITEM_TYPE) ||
         (hasSelectedItems && option.productType === BUNDLE_TYPE);
-      const plusConflict = this.isPlusOpportunity && hasSelectedPlus;
       const pricebookConflict =
         selectedPricebook2Id && option.pricebook2Id !== selectedPricebook2Id;
-      const isDisabled =
-        !isSelected && (typeConflict || plusConflict || pricebookConflict);
+      const isDisabled = !isSelected && (typeConflict || pricebookConflict);
       return {
         ...option,
         isSelected,
         isDisabled,
-        typeLabel:
-          option.isPlus === true
-            ? "Plus"
-            : option.productType === BUNDLE_TYPE
-              ? "Bundle"
-              : "Item",
+        typeLabel: option.productType === BUNDLE_TYPE ? "Bundle" : "Item",
         buttonClass: isSelected ? "option selected removable" : "option"
       };
     });

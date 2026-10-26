@@ -5,7 +5,7 @@ status: active
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-08-24
-updated: 2026-08-26
+updated: 2026-10-12
 source: Prodotti e Bundle.xlsx, sheets "Lista Prodotti" and "Esempio di Bundle"
 ---
 
@@ -104,3 +104,37 @@ Two consequences for this note:
 
 ⚠ [Normalising an article code merges two products](../risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)
 applies with more force after a re-coding, not less.
+
+## 🔑 2026-10-12 - the replacement namespace is written down
+
+The namespace this note decodes is the **current** one, and §"this namespace is
+scheduled to be replaced" anticipated a successor minted against agreed rules.
+That successor now exists as a document:
+[the Regole Codifica Codici Articolo workbook](../The%20Regole%20Codifica%20Codici%20Articolo%20workbook.md),
+modified **2026-10-12 at 09:11:19Z**.
+
+It is **single and fixed-width** — event prefix, ticket tier, bundle flag,
+numeric block — which designs out the three coexisting `CS…` / `CS-…` shapes
+documented above, and puts the prefix apparatus (`CS`, `BLO-`, `PACK-`) aside
+entirely.
+
+🟢 **Two of this note's open readings are confirmed by it.**
+
+1. **The twin-code rule is part of the namespace**, exactly as §2 of the 08/26
+   section says — but as a **position**, not a `"(B)"` suffix. See
+   [OI-48](../items/OI-48%20Bundle-only%20article%20codes.md).
+2. **The `Natura` decode is right.** The 09/10 call restated it as _first letter
+   biglietto, second bundle_ and [MAP.md](../../MAP.md) flagged it for a code
+   check; the client's own document puts the tier at position 3 and the bundle
+   flag at position 4.
+
+🔴 **The instruction to treat `_ARCOD` as an opaque string does not relax.** The
+old codes are still in the org and in Mexal, the re-coding has not happened
+([OI-98](../items/OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)),
+and across two coexisting namespaces
+[the normalisation risk](../risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)
+is larger, not smaller. **Do not build the positional decode into code**: that is
+what [OI-47](../items/OI-47%20Product%20flags%20at%20import.md) and
+[OI-76](../items/OI-76%20Ticket%20type%20picklist%20on%20the%20product.md) exist to
+prevent, and the field that would hold the event properly now exists — see
+[the Evento field on the product](The%20Evento%20field%20on%20the%20product.md).

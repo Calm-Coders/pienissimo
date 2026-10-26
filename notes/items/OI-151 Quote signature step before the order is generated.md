@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-09-21
-updated: 2026-09-25
+updated: 2026-10-05
 depends_on: [OI-59]
 requirement: [INT-19]
 source: notes/meetings/2026-09-21 Test Interni Pre-UAT.md
@@ -132,3 +132,35 @@ Drill-me decision by Aurel Mrruku: `state_machines.quote` gains `Firmato`, with 
 the order is generated at `Firmato`). The **other** labels still disagree with the org
 (`DIV-07`); that is unchanged. 🔴 `Firmato` is **still not in `force-app`** at `ab318f3`.
 See [OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md).
+
+## 🟢🔑 2026-09-29 — `Firmato` is in `force-app`, after five flags
+
+`f53016d` (**Anita Aga**, 29/09 11:18 CEST) — _"Added Firmato as a status on Quote,
+changed the logics to use this status"_ — adds `Firmato` to
+`QuoteStatus.standardValueSet-meta.xml` and rewires the logic to it across
+`QuoteTriggerHandler.cls` (+43/−…), `DocuSignQuoteEnvelopeService.cls`,
+`QuoteAcceptanceController.cls`, `QuoteCommercialTest.cls` and
+`QuoteDocumentsTest.cls`. It reached `DevMain` at **17:49 CEST via PR #68**
+(`4c9b121`).
+
+**This closes the gap this note, [OI-168](OI-168%20Contract%20logic%20is%20not%20started%20and%20is%20on%20the%205%20October%20UAT.md)
+and `MAP.md` have carried since 24/09.** The state agreed at the first UAT session
+now exists in source, five sweeps after it was agreed.
+
+⚠ **Verified as source, not as behaviour.** Nothing in this repository shows the
+order being generated at `Firmato` end to end, and no run is recorded. The Contract
+creation that [OI-141](OI-141%20Contract%20object%20for%20Performance%20Plus%20orders.md)
+hangs off this state is still unbuilt, with its UAT on **05/10**.
+
+⚠ The 29/09 org status check (10:17–10:25 UTC) reported UAT ahead of `DevMain` on
+exactly this point. **That reading was correct when it was taken** — the commit was
+on `DevAnita28/09` at the time and merged six hours later. See
+[the reserved ids](../Item%20ids%20189%20to%20193%20are%20reserved%20by%20an%20uncommitted%20org%20status%20check.md).
+
+## 2026-10-05 - Performance Plus Rinnovo exception
+
+By direct user instruction, the signature step no longer applies when
+`Opportunity.Tipo_Opportunita__c` is exactly `Performance Plus - Rinnovo`.
+Customer acceptance moves the Quote directly to `Firmato`, without DocuSign, so
+the existing order-generation transition still runs. Attivazione and non-Plus
+Quotes retain the signed flow. See [the decision](../decisions/Decision%20-%20Performance%20Plus%20Rinnovo%20bypasses%20conditions%20and%20signature.md).

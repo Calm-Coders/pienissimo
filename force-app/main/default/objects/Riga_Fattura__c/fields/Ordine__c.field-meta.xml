@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ordine__c</fullName>
+    <description>Ordine Salesforce con lo stesso ID Ordine Mexal.</description>
+    <label>Ordine</label>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <referenceTo>Order</referenceTo>
+    <relationshipLabel>Righe Fattura</relationshipLabel>
+    <relationshipName>Righe_Fattura</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>

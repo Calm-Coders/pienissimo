@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prima_Scadenza_Aperta__c</fullName>
+    <description
+  >Data della prima rata Mexal non pagata tra le righe fatturate della tranche. Calcolata dalle righe d ordine (OrderItemTriggerHandler).</description>
+    <label>Prima Scadenza Aperta</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

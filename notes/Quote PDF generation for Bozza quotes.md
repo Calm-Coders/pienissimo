@@ -4,23 +4,38 @@ type: reference
 status: in-progress
 org: ROMI
 raised: 2026-09-16
-updated: 2026-09-17
+updated: 2026-10-22
 source: User request and locally supplied seven-page sample PDF, 2026-09-16
 ---
 
 # Quote PDF generation for Bozza quotes
 
-Implemented in local source on 16 September 2026. Not deployed or verified in
-Salesforce. The user explicitly requested no test classes, no deployment and
-no edits to existing Markdown files; this new note is the session handoff.
+Implemented in local source on 16 September 2026 and subsequently deployed.
+The 22 October UAT correction is recorded below.
+
+## 2026-10-22 - date and Italian-label correction
+
+The 13 October feedback reported American dates and incorrect translations.
+Inspection found that the controller already formats generated, expiration and
+payment-due dates as `dd/MM/yyyy`. The remaining source defect was inconsistent
+Italian copy in the Performance Plus branch of the Visualforce page:
+`Il preventivo e valido`, `Quantita` and `MODALITA' PAGAMENTO`.
+
+The page now renders `Il preventivo è valido`, `Quantità` and
+`MODALITÀ DI PAGAMENTO`, consistently with the standard branch. The page and
+the unchanged date-format controller compiled in Salesforce and were deployed
+to the `pienissimo partial` UAT org in deployment `0AfMA00000CzHMn0AN`.
+Visual PDF review with a representative Quote remains the acceptance check.
 
 ## Behavior
 
 - **Genera PDF** appears on the Quote record page only for `Status = Bozza`.
   The action and Visualforce controller independently enforce that status.
-- The action no longer asks for payment instructions. Any existing
-  `Quote.Modalita_Pagamento_PDF__c` value can still render in the PDF, but it is
-  not edited in this UI.
+- Payment information is stored separately as
+  `Quote.Condizione_di_Pagamento__c` and
+  `Quote.Descrizione_Condizione_di_Pagamento__c`. The first picklist currently
+  contains only `RID FINE MESE DF`; both fields are editable on the Quote record
+  page and render in the PDF when populated.
 - Apex renders the Visualforce page and creates a new Salesforce File linked
   to the Quote. The file title includes `da firmare`. Before saving the new
   document, the service deletes existing Quote files whose title contains
@@ -64,8 +79,8 @@ No sample customer identity, catalogue prices or article codes are recorded here
 | Payment deadline                    | Line `Data_Scadenza__c`, otherwise tranche `Data_Scadenza__c`             |
 | Totals                              | Quote `Subtotal`, `TotalPrice`, `Tax`, `ShippingHandling`, `GrandTotal`   |
 | Currency                            | Quote currency when multi-currency is enabled, otherwise default currency |
-| Payment instructions                | `Quote.Modalita_Pagamento_PDF__c`, rendered if already populated          |
-| Notes                               | `Quote.Description`                                                       |
+| Payment method section              | `Quote.Condizione_di_Pagamento__c`, rendered as `MODALITÀ PAGAMENTO`      |
+| Notes section                       | `Quote.Descrizione_Condizione_di_Pagamento__c`, rendered as `NOTE`        |
 
 Lines preserve Salesforce sort order, with creation time and ID as deterministic
 tie-breakers. The line table repeats its header across pages. Dates use

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-22
-updated: 2026-09-24
+updated: 2026-10-15
 depends_on: [OI-159]
 blocks: [go-live]
 source: notes/meetings/2026-09-22 Test Mexal.md
@@ -202,3 +202,42 @@ open). **What the client was shown is the second.** →
 🔑 **`zona` and `categoria provvigioni cliente` now have Mexal API names.** Mirko Merendi,
 24/09 08:46:51Z: customer `cod_agente`, **`cod_zona`**, **`cod_cat_pr`**; order
 `codice_agente`. Neither branch carries the two missing fields.
+
+## ⚠ 2026-10-15 - the duplicate-agent-code problem resurfaced and dissolved without a decision
+
+Raised again by Aurel Mrruku at [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+(`00:50`), against the account import, with a concrete example:
+
+> _"Il primo account che è stato creato nel 2023 aveva il codice agente 01, che
+> corrispondeva a Fabrizio. Nel 2025 ho visto che … un account collegato con
+> l'agente Fabrizio non ha più il codice 01, ma il codice 019 perché per qualche
+> motivo qualcuno ha cambiato il codice dell'agente per lo stesso user."_
+
+His proposed fallback was to take the most recent code per agent — _"se un agente
+ha due codici, prendo il codice più recente"_.
+
+🔴 **Fabrizio Paganelli refused that outright**: _"con gli agenti non facciamo
+casino. Facciamo una cosa fatta bene."_ He then asked for a second extraction
+guaranteeing one code per agent.
+
+⚠ **And then it dissolved rather than resolving.** Fabrizio Paganelli pointed out
+that accounts come from Mexal and refresh nightly, so the live state should
+already be clean; Aurel Mrruku accepted that — _"allora va bene, non mi
+preoccupo"_ — and the exchange moved on to the field list.
+
+**That is not a resolution.** The case he described is an account still carrying a
+code whose agent now has a different one, which a nightly refresh of the account
+does not repair. He could not reproduce it on demand (_"adesso devo trovare la
+mail"_) and undertook to reply in the thread; nothing records that he has.
+
+🔴 **It is about to matter at volume.** ~10,000 historical orders a year are to be
+loaded carrying agent references
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)),
+and the commission attribution for all of them derives from the agent on the
+customer. ⚠ A related and separate defect was found on screen in the same session:
+the Account's own copies of `codice agente`, `categoria provvigioni` and `zona` go
+stale when the agent changes —
+[OI-248](OI-248%20The%20Account%20agent%20and%20provvigioni%20fields%20are%20stale%20against%20the%20User%20record.md).
+
+**No owner, no date, no row of its own** — recorded here because this row holds
+the rule it threatens.

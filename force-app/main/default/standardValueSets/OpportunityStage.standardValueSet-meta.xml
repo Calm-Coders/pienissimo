@@ -11,6 +11,15 @@
         <won>false</won>
     </standardValue>
     <standardValue>
+        <fullName>Da ricontattare</fullName>
+        <default>false</default>
+        <label>Da ricontattare</label>
+        <closed>false</closed>
+        <forecastCategory>Pipeline</forecastCategory>
+        <probability>25</probability>
+        <won>false</won>
+    </standardValue>
+    <standardValue>
         <fullName>In trattativa (Prev inviato)</fullName>
         <default>false</default>
         <label>In trattativa (Prev inviato)</label>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Informativa_Privacy__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >Indica che il Lead ha accettato l informativa privacy.</description>
+    <label>Informativa Privacy</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,6 +1,6 @@
-public with sharing class AnticipayErrorNotificationService {
+public without sharing class AnticipayErrorNotificationService {
   private static final String TEMPLATE_DEVELOPER_NAME = 'Anticipay_Error_Notification';
-  private static final String ADMIN_EMAIL = 'a.aga@romicompany.com';
+  private static final String NOTIFICATION_CONFIG_NAME = 'Anticipay_RecipientEmail';
 
   public static void sendIfError(AnticipayAccountService.Result result) {
     if (result == null || !hasErrorLog(result.integrationLogs)) {
@@ -8,11 +8,22 @@ public with sharing class AnticipayErrorNotificationService {
     }
 
     try {
+      List<String> recipients = IntegrationNotificationConfigService.getRecipientEmails(
+        NOTIFICATION_CONFIG_NAME
+      );
+      if (recipients.isEmpty()) {
+        System.debug(
+          LoggingLevel.ERROR,
+          'Destinatari email Anticipay non configurati nel Custom Setting Integration Notification Config.'
+        );
+        return;
+      }
+
       EmailTemplate template = getTemplate();
       NotificationContext context = new NotificationContext(result);
 
       Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-      message.setToAddresses(new List<String>{ ADMIN_EMAIL });
+      message.setToAddresses(recipients);
       message.setSaveAsActivity(false);
       message.setSubject(applyTokens(getSubject(template), context, false));
       message.setPlainTextBody(
@@ -88,7 +99,10 @@ public with sharing class AnticipayErrorNotificationService {
     return '<div style="font-family: Arial, sans-serif; color: #1f2933; line-height: 1.5">' +
       '<h2 style="margin: 0 0 12px; color: #b42318; font-size: 20px">Errore controllo Anticipay</h2>' +
       '<p style="margin: 0 0 16px">Il controllo Anticipay ha restituito un errore e richiede una verifica amministrativa.</p>' +
-      '<p style="margin: 0 0 20px">Link Account Salesforce: <a href="{{accountLink}}" style="color: #1b5f8c">{{accountLink}}</a></p>' +
+      '<table cellpadding="0" cellspacing="0" role="presentation" style="margin: 0 0 20px">' +
+      '<tr><td style="border-radius: 4px; background-color: #1b5f8c">' +
+      '<a href="{{accountLink}}" style="display: inline-block; padding: 12px 20px; color: #ffffff; font-weight: bold; text-decoration: none">Apri Account in Salesforce</a>' +
+      '</td></tr></table>' +
       '<table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 680px">' +
       '<tr><td style="padding: 8px; border: 1px solid #d9e2ec; font-weight: bold">Account</td><td style="padding: 8px; border: 1px solid #d9e2ec">{{accountId}}</td></tr>' +
       '<tr><td style="padding: 8px; border: 1px solid #d9e2ec; font-weight: bold">Stato HTTP</td><td style="padding: 8px; border: 1px solid #d9e2ec">{{httpStatus}}</td></tr>' +

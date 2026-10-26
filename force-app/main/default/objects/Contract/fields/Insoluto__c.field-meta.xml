@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Insoluto__c</fullName>
+    <description
+  >Vero se c e una fattura emessa e non pagata oltre la scadenza.</description>
+    <formula
+  >AND(NOT(ISBLANK(Prima_Scadenza_Non_Pagata__c)), Prima_Scadenza_Non_Pagata__c &lt; TODAY())</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Insoluto</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

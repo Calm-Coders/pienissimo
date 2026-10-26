@@ -5,7 +5,10 @@ trigger QuoteTrigger on Quote(
   after update
 ) {
   if (Trigger.isBefore) {
-    QuoteTriggerHandler.beforeSave(Trigger.new);
+    QuoteTriggerHandler.beforeSave(
+      Trigger.new,
+      Trigger.isUpdate ? Trigger.oldMap : null
+    );
   }
 
   if (Trigger.isAfter && Trigger.isInsert) {

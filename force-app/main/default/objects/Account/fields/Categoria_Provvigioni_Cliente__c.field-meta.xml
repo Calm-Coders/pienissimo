@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Categoria_Provvigioni_Cliente__c</fullName>
     <description
-  >Categoria provvigionale del cliente dal foglio Account_NEW; dato commerciale della scheda Account.</description>
+  >Categoria provvigionale copiata dall'utente Agente alla creazione dell'Account con agente o quando cambia Agente; viene svuotata se Agente viene rimosso. Senza assegnazione o cambio agente conserva il valore esistente o importato.</description>
     <label>Categoria Provvigioni Cliente</label>
     <length>40</length>
     <required>false</required>

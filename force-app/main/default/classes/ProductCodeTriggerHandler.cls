@@ -11,7 +11,10 @@
  * External_Product_Code__c does that atomically at commit, including across
  * parallel Bulk API batches, which no trigger can guarantee.
  *
- * No SOQL and no DML - a before-save assignment, so it costs nothing in bulk.
+ * The code copy is a before-save assignment with no SOQL and no DML. After
+ * save, the standard price book entry follows Price_1__c (Mexal listino 1, the
+ * only listino in use): it is created at that price and updated when it
+ * changes, so quotes and orders price the article as Mexal does.
  */
 public without sharing class ProductCodeTriggerHandler {
   public static void beforeInsert(List<Product2> newProducts) {
@@ -24,6 +27,13 @@ public without sharing class ProductCodeTriggerHandler {
 
   public static void afterInsert(List<Product2> newProducts) {
     createStandardPricebookEntries(newProducts);
+  }
+
+  public static void afterUpdate(
+    List<Product2> newProducts,
+    Map<Id, Product2> oldProductsById
+  ) {
+    updateStandardPricebookEntries(newProducts, oldProductsById);
   }
 
   private static void syncProductCode(List<Product2> newProducts) {
@@ -75,7 +85,7 @@ public without sharing class ProductCodeTriggerHandler {
         new PricebookEntry(
           Pricebook2Id = standardPricebookId,
           Product2Id = productRec.Id,
-          UnitPrice = 0,
+          UnitPrice = productRec.Price_1__c == null ? 0 : productRec.Price_1__c,
           IsActive = true
         )
       );
@@ -83,6 +93,52 @@ public without sharing class ProductCodeTriggerHandler {
 
     if (!entriesToInsert.isEmpty()) {
       insert entriesToInsert;
+    }
+  }
+
+  // A cleared Price_1__c leaves the entry as it is: a blank price is missing
+  // data, not a price of zero. Omaggi are zero in Mexal, so they stay zero.
+  private static void updateStandardPricebookEntries(
+    List<Product2> newProducts,
+    Map<Id, Product2> oldProductsById
+  ) {
+    Map<Id, Decimal> newPriceByProductId = new Map<Id, Decimal>();
+    for (Product2 productRec : newProducts) {
+      Decimal newPrice = productRec.Price_1__c;
+      if (
+        newPrice != null &&
+        newPrice != oldProductsById.get(productRec.Id).Price_1__c
+      ) {
+        newPriceByProductId.put(productRec.Id, newPrice);
+      }
+    }
+
+    if (newPriceByProductId.isEmpty()) {
+      return;
+    }
+
+    Id standardPricebookId = getStandardPricebookId();
+    if (standardPricebookId == null) {
+      return;
+    }
+
+    List<PricebookEntry> entriesToUpdate = new List<PricebookEntry>();
+    for (PricebookEntry entry : [
+      SELECT Id, Product2Id, UnitPrice
+      FROM PricebookEntry
+      WHERE
+        Pricebook2Id = :standardPricebookId
+        AND Product2Id IN :newPriceByProductId.keySet()
+    ]) {
+      Decimal newPrice = newPriceByProductId.get(entry.Product2Id);
+      if (entry.UnitPrice != newPrice) {
+        entry.UnitPrice = newPrice;
+        entriesToUpdate.add(entry);
+      }
+    }
+
+    if (!entriesToUpdate.isEmpty()) {
+      update entriesToUpdate;
     }
   }
 

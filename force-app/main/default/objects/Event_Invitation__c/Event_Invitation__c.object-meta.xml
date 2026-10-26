@@ -2,7 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <deploymentStatus>Deployed</deploymentStatus>
     <description
-  >Invito alla registrazione partecipanti per una azienda e una edizione evento.</description>
+  >Link alla registrazione partecipanti associato in modo univoco a un ordine e a una campagna evento.</description>
     <enableActivities>false</enableActivities>
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
@@ -14,6 +14,13 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Inviti Evento</pluralLabel>
+    <searchLayouts>
+        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Import</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons
+    >MassAssignRecordLabel</excludedStandardButtons></searchLayouts>
     <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

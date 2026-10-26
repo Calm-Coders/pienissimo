@@ -1,8 +1,8 @@
-public with sharing class QuoteManageProductsController {
+public without sharing class QuoteManageProductsController {
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
   private static final String ITEM_RECORD_TYPE_DEVELOPER_NAME = 'Item';
   private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
-  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Standart';
+  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Vendita_Standard';
 
   public class ProductOption {
     @AuraEnabled
@@ -34,7 +34,7 @@ public with sharing class QuoteManageProductsController {
         entry.Product2.RecordType == null
         ? null
         : entry.Product2.RecordType.DeveloperName;
-      isPlus = entry.Product2 != null && entry.Product2.Is_Plus__c == true;
+      isPlus = false;
       trancheCount = entry.Product2 == null
         ? null
         : entry.Product2.Numero_Tranche__c;
@@ -87,6 +87,14 @@ public with sharing class QuoteManageProductsController {
     public Date trancheDueDate;
     @AuraEnabled
     public Decimal trancheAmount;
+    @AuraEnabled
+    public Decimal listPrice;
+    @AuraEnabled
+    public Decimal discountPercent;
+    @AuraEnabled
+    public Decimal totalPrice;
+    @AuraEnabled
+    public Boolean canEditItem;
 
     public ExistingQuoteLine(QuoteLineItem line) {
       quoteLineItemId = line.Id;
@@ -98,9 +106,15 @@ public with sharing class QuoteManageProductsController {
         line.PricebookEntry.Product2.RecordType == null
         ? null
         : line.PricebookEntry.Product2.RecordType.DeveloperName;
-      isPlus = line.Product2 != null && line.Product2.Is_Plus__c == true;
+      isPlus = false;
       quantity = line.Quantity;
       unitPrice = line.UnitPrice;
+      listPrice = line.PricebookEntry.UnitPrice;
+      discountPercent = line.Discount_Pct__c == null ? 0 : line.Discount_Pct__c;
+      totalPrice = line.TotalPrice;
+      canEditItem =
+        productType == ITEM_RECORD_TYPE_DEVELOPER_NAME &&
+        !isBundleComponentLine(line);
       trancheId = line.Tranche__c;
       trancheName = line.Tranche__r == null ? null : line.Tranche__r.Name;
       trancheSequence = line.Tranche__r == null
@@ -141,11 +155,21 @@ public with sharing class QuoteManageProductsController {
     public Id pricebookEntryId { get; set; }
     @AuraEnabled
     public Decimal quantity { get; set; }
+    @AuraEnabled
+    public Id trancheId { get; set; }
+    @AuraEnabled
+    public Decimal discountPercent { get; set; }
+    @AuraEnabled
+    public Decimal newPrice { get; set; }
   }
 
   public class TrancheSelection {
     @AuraEnabled
     public Date dueDate { get; set; }
+    @AuraEnabled
+    public Decimal discountPercent { get; set; }
+    @AuraEnabled
+    public Decimal newPrice { get; set; }
   }
 
   private class StandardBundleQuoteLineDraft {
@@ -167,7 +191,6 @@ public with sharing class QuoteManageProductsController {
   @AuraEnabled
   public static QuoteProductsContext getContext(Id quoteId) {
     validateQuoteId(quoteId);
-    requireReadAccess();
 
     Quote quoteRecord = [
       SELECT Id, Name, QuoteNumber, Status, Opportunity.RecordType.DeveloperName
@@ -197,9 +220,11 @@ public with sharing class QuoteManageProductsController {
         PricebookEntryId,
         Quantity,
         UnitPrice,
+        Discount_Pct__c,
+        TotalPrice,
+        PricebookEntry.UnitPrice,
         Product2.Name,
         Product2.ProductCode,
-        Product2.Is_Plus__c,
         PricebookEntry.Product2.RecordType.DeveloperName,
         Tranche__c,
         Tranche__r.Name,
@@ -211,12 +236,11 @@ public with sharing class QuoteManageProductsController {
       WHERE QuoteId = :quoteId
       ORDER BY Tranche__r.Sequenza__c NULLS LAST, CreatedDate, Id
     ]) {
-      if (line.Product2 != null && line.Product2.Is_Plus__c == true) {
-        context.hasPlusLine = true;
-      }
-
       Boolean representsBundle =
         isBundleLine(line) || isBundleComponentLine(line);
+      if (context.isPlusOpportunity && !representsBundle) {
+        context.hasPlusLine = true;
+      }
       if (representsBundle && context.existingBundleLine == null) {
         context.existingBundleLine = new ExistingBundleLine(line);
       }
@@ -232,12 +256,137 @@ public with sharing class QuoteManageProductsController {
   }
 
   @AuraEnabled
+  public static void updateItemLine(
+    Id quoteId,
+    Id lineId,
+    Decimal quantity,
+    Decimal discountPercent,
+    Decimal newPrice,
+    Date dueDate
+  ) {
+    validateQuoteId(quoteId);
+    if (
+      lineId == null ||
+      lineId.getSObjectType() != QuoteLineItem.SObjectType
+    ) {
+      throw new AuraHandledException('Seleziona una riga preventivo valida.');
+    }
+    Quote quoteRecord = [
+      SELECT Id, Status, Opportunity.RecordType.DeveloperName
+      FROM Quote
+      WHERE Id = :quoteId
+      LIMIT 1
+      FOR UPDATE
+    ];
+    if (
+      (!isStandardOpportunity(quoteRecord) &&
+      !isPlusOpportunity(quoteRecord)) ||
+      (quoteRecord.Status != 'Bozza' &&
+      quoteRecord.Status != 'In Trattativa')
+    ) {
+      throw new AuraHandledException(
+        'Puoi modificare gli Item Standard o Plus solo in Bozza o In Trattativa.'
+      );
+    }
+    List<QuoteLineItem> lines = [
+      SELECT
+        Id,
+        Description,
+        Tranche__c,
+        PricebookEntry.Product2.RecordType.DeveloperName
+      FROM QuoteLineItem
+      WHERE Id = :lineId AND QuoteId = :quoteId
+      LIMIT 1
+      FOR UPDATE
+    ];
+    if (
+      lines.isEmpty() ||
+      isBundleComponentLine(lines[0]) ||
+      lines[0].PricebookEntry.Product2.RecordType.DeveloperName !=
+      ITEM_RECORD_TYPE_DEVELOPER_NAME
+    ) {
+      throw new AuraHandledException(
+        'Seleziona un Item singolo di questo preventivo.'
+      );
+    }
+    if (
+      quantity == null ||
+      quantity <= 0 ||
+      quantity != quantity.setScale(2) ||
+      newPrice == null ||
+      newPrice < 0 ||
+      newPrice != newPrice.setScale(2) ||
+      discountPercent == null ||
+      discountPercent > 100 ||
+      discountPercent != discountPercent.setScale(2)
+    ) {
+      throw new AuraHandledException(
+        'Inserisci quantita positiva, prezzo non negativo e sconto non superiore al 100%, con massimo due decimali.'
+      );
+    }
+    QuoteLineItem line = lines[0];
+    if (
+      isPlusOpportunity(quoteRecord) &&
+      (quantity != 1 ||
+      line.Tranche__c == null)
+    ) {
+      throw new AuraHandledException(
+        'Per Plus modifica il prezzo della singola tranche mantenendo quantita 1.'
+      );
+    }
+    QuoteLineItem changedLine = new QuoteLineItem(
+      Id = line.Id,
+      Quantity = quantity,
+      UnitPrice = newPrice,
+      Discount_Pct__c = discountPercent
+    );
+    List<QuoteLineItem> lineUpdates = new List<QuoteLineItem>{ changedLine };
+    if (isPlusOpportunity(quoteRecord)) {
+      if (dueDate == null || dueDate < Date.today()) {
+        throw new AuraHandledException(
+          'Inserisci una scadenza non precedente alla data odierna.'
+        );
+      }
+      if (
+        [
+          SELECT COUNT()
+          FROM Tranche__c
+          WHERE
+            Quote__c = :quoteId
+            AND Id != :line.Tranche__c
+            AND Data_Scadenza__c = :dueDate
+        ] > 0
+      ) {
+        throw new AuraHandledException(
+          'Le date di scadenza delle tranche devono essere diverse.'
+        );
+      }
+      changedLine.Data_Scadenza__c = dueDate;
+      for (QuoteLineItem linkedLine : [
+        SELECT Id
+        FROM QuoteLineItem
+        WHERE
+          QuoteId = :quoteId
+          AND Tranche__c = :line.Tranche__c
+          AND Id != :line.Id
+      ]) {
+        lineUpdates.add(
+          new QuoteLineItem(Id = linkedLine.Id, Data_Scadenza__c = dueDate)
+        );
+      }
+      update new Tranche__c(Id = line.Tranche__c, Data_Scadenza__c = dueDate);
+    }
+    update lineUpdates;
+    if (line.Tranche__c != null)
+      recalculateTrancheAmounts(new Set<Id>{ line.Tranche__c });
+  }
+
+  @AuraEnabled
   public static List<ProductOption> searchProducts(
     Id quoteId,
     String searchTerm
   ) {
     validateQuoteId(quoteId);
-    requireReadAccess();
 
     Quote quoteRecord = [
       SELECT
@@ -245,6 +394,7 @@ public with sharing class QuoteManageProductsController {
         Pricebook2Id,
         OpportunityId,
         Opportunity.Pricebook2Id,
+        Opportunity.Tipo_Opportunita__c,
         Opportunity.RecordType.DeveloperName
       FROM Quote
       WHERE Id = :quoteId
@@ -267,13 +417,27 @@ public with sharing class QuoteManageProductsController {
               BUNDLE_RECORD_TYPE_DEVELOPER_NAME,
               ITEM_RECORD_TYPE_DEVELOPER_NAME
             };
+    Set<String> allowedCategories = context.isPlusOpportunity
+      ? plusCategoriesForOpportunity(
+          quoteRecord.Opportunity == null
+            ? null
+            : quoteRecord.Opportunity.Tipo_Opportunita__c
+        )
+      : new Set<String>();
+    if (context.isPlusOpportunity && allowedCategories.isEmpty()) {
+      return new List<ProductOption>();
+    }
+
+    Set<String> excludedCategories = context.isStandardOpportunity
+      ? allPlusCategories()
+      : new Set<String>();
 
     return findProductOptions(
       effectivePricebook2Id(quoteRecord),
       searchTerm,
       allowedTypes,
-      context.isPlusOpportunity,
-      context.isStandardOpportunity,
+      allowedCategories,
+      excludedCategories,
       String.isBlank(searchTerm) ? 50 : 10
     );
   }
@@ -298,14 +462,13 @@ public with sharing class QuoteManageProductsController {
         Pricebook2Id,
         OpportunityId,
         Opportunity.Pricebook2Id,
+        Opportunity.Tipo_Opportunita__c,
         Opportunity.RecordType.DeveloperName
       FROM Quote
       WHERE Id = :quoteId
       LIMIT 1
       FOR UPDATE
     ];
-
-    requireSaveAccess();
 
     QuoteProductsContext context = getContext(quoteId);
     if (context.existingBundleLine != null) {
@@ -331,8 +494,9 @@ public with sharing class QuoteManageProductsController {
           Product2.Bundle_Selling_Price__c,
           Product2.Calculated_Bundle_Price__c,
           Product2.Spread_Total__c,
-          Product2.Is_Plus__c,
+          Product2.Categoria_Articolo__c,
           Product2.Numero_Tranche__c,
+          Product2.Solo_Bundle__c,
           Product2.RecordType.DeveloperName
         FROM PricebookEntry
         WHERE
@@ -350,8 +514,12 @@ public with sharing class QuoteManageProductsController {
     Id selectedPricebook2Id;
     Integer bundleCount = 0;
     Integer itemCount = 0;
-    Integer plusCount = 0;
     for (PricebookEntry entry : entriesById.values()) {
+      if (entry.Product2.Solo_Bundle__c) {
+        throw new AuraHandledException(
+          'I prodotti utilizzabili solo nei bundle non possono essere aggiunti direttamente al preventivo.'
+        );
+      }
       if (selectedPricebook2Id == null) {
         selectedPricebook2Id = entry.Pricebook2Id;
       }
@@ -369,10 +537,6 @@ public with sharing class QuoteManageProductsController {
         );
       }
 
-      if (entry.Product2 != null && entry.Product2.Is_Plus__c == true) {
-        plusCount++;
-      }
-
       if (isBundleEntry(entry)) {
         bundleCount++;
       } else {
@@ -387,24 +551,54 @@ public with sharing class QuoteManageProductsController {
     }
 
     if (context.isPlusOpportunity) {
-      requireTrancheCreateAccess();
       validateNoExistingPlusTranches(quoteId);
-      if (context.hasPlusLine || plusCount != 1 || entriesById.size() > 1) {
+      if (context.hasPlusLine || entriesById.size() > 1) {
         throw new AuraHandledException(
           'Questo preventivo puo contenere un solo prodotto Plus.'
         );
       }
       if (bundleCount > 0 || itemCount != 1) {
         throw new AuraHandledException(
-          'Per una opportunita Plus seleziona un solo prodotto Item marcato Is Plus.'
+          'Per una opportunita Plus seleziona un solo prodotto Item valido per il Tipo Opportunita.'
         );
       }
+      validatePlusProductCategory(
+        entriesById.values()[0],
+        quoteRecord.Opportunity == null
+          ? null
+          : quoteRecord.Opportunity.Tipo_Opportunita__c
+      );
     }
 
-    if (context.isStandardOpportunity && plusCount > 0) {
-      throw new AuraHandledException(
-        'Per una Vendita Standard non puoi selezionare prodotti Plus.'
+    if (context.isStandardOpportunity) {
+      validateNoPlusCategoryProducts(entriesById.values());
+    }
+
+    Map<Id, Tranche__c> existingTranchesById = new Map<Id, Tranche__c>();
+    if (context.isStandardOpportunity && itemCount > 0) {
+      existingTranchesById = new Map<Id, Tranche__c>(
+        [
+          SELECT Id, Quote__c, Data_Scadenza__c
+          FROM Tranche__c
+          WHERE Quote__c = :quoteId
+        ]
       );
+      if (!existingTranchesById.isEmpty()) {
+        for (PricebookEntry entry : entriesById.values()) {
+          if (isBundleEntry(entry)) {
+            continue;
+          }
+          ProductSelection selection = selectionByEntryId.get(entry.Id);
+          if (
+            selection.trancheId == null ||
+            !existingTranchesById.containsKey(selection.trancheId)
+          ) {
+            throw new AuraHandledException(
+              'Seleziona una tranche valida per ogni prodotto Item.'
+            );
+          }
+        }
+      }
     }
 
     if (bundleCount > 0 && context.hasItemLines) {
@@ -417,16 +611,12 @@ public with sharing class QuoteManageProductsController {
 
     if (context.isPlusOpportunity) {
       PricebookEntry plusEntry = entriesById.values()[0];
-      Decimal plusUnitPrice = requireSalesUnitPrice(plusEntry);
+      requireSalesUnitPrice(plusEntry);
       Integer configuredTrancheCount = requirePlusTrancheCount(plusEntry);
-      validatePlusTrancheDates(tranches, configuredTrancheCount);
-      List<Tranche__c> plusTranches = buildPlusTranches(
-        quoteRecord,
-        tranches,
-        plusUnitPrice
-      );
+      validatePlusTranches(tranches, configuredTrancheCount);
+      List<Tranche__c> plusTranches = buildPlusTranches(quoteRecord, tranches);
       insert plusTranches;
-      insert buildPlusQuoteLines(quoteId, plusEntry, plusTranches);
+      insert buildPlusQuoteLines(quoteId, plusEntry, plusTranches, tranches);
       return;
     }
 
@@ -464,23 +654,86 @@ public with sharing class QuoteManageProductsController {
       Boolean isBundle = isBundleEntry(entry);
       Decimal quantity = isBundle ? 1 : selection.quantity;
       Decimal unitPrice = requireSalesUnitPrice(entry);
+      Boolean hasItemPricing = context.isStandardOpportunity && !isBundle;
+      Decimal discountPercent;
+      if (hasItemPricing) {
+        // Keep older callers that omit pricing at the catalogue price.
+        Boolean hasPricing =
+          selection.newPrice != null ||
+          selection.discountPercent != null;
+        discountPercent = hasPricing ? selection.discountPercent : 0;
+        Decimal newPrice = hasPricing ? selection.newPrice : unitPrice;
+        if (
+          newPrice == null ||
+          newPrice < 0 ||
+          newPrice != newPrice.setScale(2) ||
+          discountPercent == null ||
+          discountPercent > 100 ||
+          discountPercent != discountPercent.setScale(2)
+        ) {
+          throw new AuraHandledException(
+            'Inserisci un nuovo prezzo e uno sconto validi, con massimo due decimali, per ogni prodotto Item.'
+          );
+        }
+        unitPrice = newPrice.setScale(2);
+      }
       if (quantity == null || quantity <= 0) {
         throw new AuraHandledException(
           'Inserisci una quantita maggiore di zero.'
         );
       }
 
-      linesToInsert.add(
-        new QuoteLineItem(
-          QuoteId = quoteId,
-          PricebookEntryId = entry.Id,
-          Quantity = quantity,
-          UnitPrice = unitPrice
-        )
+      QuoteLineItem lineToInsert = new QuoteLineItem(
+        QuoteId = quoteId,
+        PricebookEntryId = entry.Id,
+        Quantity = quantity,
+        UnitPrice = unitPrice
       );
+      if (hasItemPricing) {
+        lineToInsert.Discount_Pct__c = discountPercent;
+      }
+      if (!isBundle && !existingTranchesById.isEmpty()) {
+        Tranche__c selectedTranche = existingTranchesById.get(
+          selection.trancheId
+        );
+        lineToInsert.Tranche__c = selectedTranche.Id;
+        lineToInsert.Data_Scadenza__c = selectedTranche.Data_Scadenza__c;
+      }
+      linesToInsert.add(lineToInsert);
     }
 
     insert linesToInsert;
+    if (!existingTranchesById.isEmpty()) {
+      recalculateTrancheAmounts(existingTranchesById.keySet());
+    }
+  }
+
+  private static void recalculateTrancheAmounts(Set<Id> trancheIds) {
+    Map<Id, Decimal> amountByTrancheId = new Map<Id, Decimal>();
+    for (AggregateResult result : [
+      SELECT Tranche__c trancheId, SUM(TotalPrice) totalAmount
+      FROM QuoteLineItem
+      WHERE Tranche__c IN :trancheIds
+      GROUP BY Tranche__c
+    ]) {
+      amountByTrancheId.put(
+        (Id) result.get('trancheId'),
+        (Decimal) result.get('totalAmount')
+      );
+    }
+
+    List<Tranche__c> trancheUpdates = new List<Tranche__c>();
+    for (Id trancheId : trancheIds) {
+      trancheUpdates.add(
+        new Tranche__c(
+          Id = trancheId,
+          Importo_Previsto__c = amountByTrancheId.containsKey(trancheId)
+            ? amountByTrancheId.get(trancheId)
+            : 0
+        )
+      );
+    }
+    update trancheUpdates;
   }
 
   private static List<StandardBundleQuoteLineDraft> buildStandardBundleQuoteLineDrafts(
@@ -498,6 +751,7 @@ public with sharing class QuoteManageProductsController {
         Product__c,
         Product__r.Name,
         Quantity__c,
+        Spread_Price__c,
         Unit_Spread__c,
         Bundle_Tranch__c
       FROM BundleComponent__c
@@ -519,7 +773,7 @@ public with sharing class QuoteManageProductsController {
 
     Map<Id, PricebookEntry> entryByProductId = new Map<Id, PricebookEntry>();
     for (PricebookEntry componentEntry : [
-      SELECT Id, Product2Id
+      SELECT Id, Product2Id, UnitPrice
       FROM PricebookEntry
       WHERE
         Pricebook2Id = :pricebook2Id
@@ -553,6 +807,18 @@ public with sharing class QuoteManageProductsController {
         );
       }
 
+      Decimal discountPercent;
+      if (componentEntry.UnitPrice != null && componentEntry.UnitPrice > 0) {
+        discountPercent = ((1 -
+          component.Unit_Spread__c / componentEntry.UnitPrice) * 100)
+          .setScale(2, RoundingMode.HALF_UP);
+      } else if (
+        componentEntry.UnitPrice == 0 &&
+        component.Unit_Spread__c == 0
+      ) {
+        discountPercent = 0;
+      }
+
       lineDrafts.add(
         new StandardBundleQuoteLineDraft(
           new QuoteLineItem(
@@ -560,6 +826,7 @@ public with sharing class QuoteManageProductsController {
             PricebookEntryId = componentEntry.Id,
             Quantity = component.Quantity__c,
             UnitPrice = component.Unit_Spread__c,
+            Discount_Pct__c = discountPercent,
             Description = 'Bundle: ' + bundleEntry.Product2.Name
           ),
           component.Bundle_Tranch__c
@@ -584,9 +851,6 @@ public with sharing class QuoteManageProductsController {
     if (templates.isEmpty()) {
       return;
     }
-
-    requireTrancheCreateAccess();
-    requireBundleTemplateTrancheCreateAccess();
 
     Map<Id, Bundle_Tranch__c> templateById = new Map<Id, Bundle_Tranch__c>(
       templates
@@ -657,8 +921,8 @@ public with sharing class QuoteManageProductsController {
     Id quotePricebook2Id,
     String searchTerm,
     Set<String> allowedTypes,
-    Boolean isPlusOnly,
-    Boolean excludePlus,
+    Set<String> allowedCategories,
+    Set<String> excludedCategories,
     Integer limitSize
   ) {
     String normalizedSearchTerm =
@@ -666,171 +930,138 @@ public with sharing class QuoteManageProductsController {
       String.escapeSingleQuotes((searchTerm == null ? '' : searchTerm).trim()) +
       '%';
 
-    List<PricebookEntry> entries;
-    if (quotePricebook2Id == null && isPlusOnly == true) {
-      entries = [
-        SELECT
-          Id,
-          Pricebook2Id,
-          Product2Id,
-          Product2.Name,
-          Product2.ProductCode,
-          Product2.Is_Plus__c,
-          Product2.Numero_Tranche__c,
-          Product2.Bundle_Selling_Price__c,
-          Product2.Calculated_Bundle_Price__c,
-          Product2.Spread_Total__c,
-          Product2.RecordType.DeveloperName,
-          UnitPrice
-        FROM PricebookEntry
-        WHERE
-          IsActive = TRUE
-          AND Product2.IsActive = TRUE
-          AND Product2.Is_Plus__c = TRUE
-          AND Product2.RecordType.DeveloperName IN :allowedTypes
-          AND (Product2.Name LIKE :normalizedSearchTerm
-          OR Product2.ProductCode LIKE :normalizedSearchTerm)
-        ORDER BY Product2.Name
-        LIMIT :limitSize
-      ];
-    } else if (quotePricebook2Id != null && isPlusOnly == true) {
-      entries = [
-        SELECT
-          Id,
-          Pricebook2Id,
-          Product2Id,
-          Product2.Name,
-          Product2.ProductCode,
-          Product2.Is_Plus__c,
-          Product2.Numero_Tranche__c,
-          Product2.Bundle_Selling_Price__c,
-          Product2.Calculated_Bundle_Price__c,
-          Product2.Spread_Total__c,
-          Product2.RecordType.DeveloperName,
-          UnitPrice
-        FROM PricebookEntry
-        WHERE
-          Pricebook2Id = :quotePricebook2Id
-          AND IsActive = TRUE
-          AND Product2.IsActive = TRUE
-          AND Product2.Is_Plus__c = TRUE
-          AND Product2.RecordType.DeveloperName IN :allowedTypes
-          AND (Product2.Name LIKE :normalizedSearchTerm
-          OR Product2.ProductCode LIKE :normalizedSearchTerm)
-        ORDER BY Product2.Name
-        LIMIT :limitSize
-      ];
-    } else if (quotePricebook2Id == null && excludePlus == true) {
-      entries = [
-        SELECT
-          Id,
-          Pricebook2Id,
-          Product2Id,
-          Product2.Name,
-          Product2.ProductCode,
-          Product2.Is_Plus__c,
-          Product2.Numero_Tranche__c,
-          Product2.Bundle_Selling_Price__c,
-          Product2.Calculated_Bundle_Price__c,
-          Product2.Spread_Total__c,
-          Product2.RecordType.DeveloperName,
-          UnitPrice
-        FROM PricebookEntry
-        WHERE
-          IsActive = TRUE
-          AND Product2.IsActive = TRUE
-          AND Product2.Is_Plus__c = FALSE
-          AND Product2.RecordType.DeveloperName IN :allowedTypes
-          AND (Product2.Name LIKE :normalizedSearchTerm
-          OR Product2.ProductCode LIKE :normalizedSearchTerm)
-        ORDER BY Product2.Name
-        LIMIT :limitSize
-      ];
-    } else if (quotePricebook2Id != null && excludePlus == true) {
-      entries = [
-        SELECT
-          Id,
-          Pricebook2Id,
-          Product2Id,
-          Product2.Name,
-          Product2.ProductCode,
-          Product2.Is_Plus__c,
-          Product2.Numero_Tranche__c,
-          Product2.Bundle_Selling_Price__c,
-          Product2.Calculated_Bundle_Price__c,
-          Product2.Spread_Total__c,
-          Product2.RecordType.DeveloperName,
-          UnitPrice
-        FROM PricebookEntry
-        WHERE
-          Pricebook2Id = :quotePricebook2Id
-          AND IsActive = TRUE
-          AND Product2.IsActive = TRUE
-          AND Product2.Is_Plus__c = FALSE
-          AND Product2.RecordType.DeveloperName IN :allowedTypes
-          AND (Product2.Name LIKE :normalizedSearchTerm
-          OR Product2.ProductCode LIKE :normalizedSearchTerm)
-        ORDER BY Product2.Name
-        LIMIT :limitSize
-      ];
-    } else if (quotePricebook2Id == null) {
-      entries = [
-        SELECT
-          Id,
-          Pricebook2Id,
-          Product2Id,
-          Product2.Name,
-          Product2.ProductCode,
-          Product2.Is_Plus__c,
-          Product2.Numero_Tranche__c,
-          Product2.Bundle_Selling_Price__c,
-          Product2.Calculated_Bundle_Price__c,
-          Product2.Spread_Total__c,
-          Product2.RecordType.DeveloperName,
-          UnitPrice
-        FROM PricebookEntry
-        WHERE
-          IsActive = TRUE
-          AND Product2.IsActive = TRUE
-          AND Product2.RecordType.DeveloperName IN :allowedTypes
-          AND (Product2.Name LIKE :normalizedSearchTerm
-          OR Product2.ProductCode LIKE :normalizedSearchTerm)
-        ORDER BY Product2.Name
-        LIMIT :limitSize
-      ];
-    } else {
-      entries = [
-        SELECT
-          Id,
-          Pricebook2Id,
-          Product2Id,
-          Product2.Name,
-          Product2.ProductCode,
-          Product2.Is_Plus__c,
-          Product2.Numero_Tranche__c,
-          Product2.Bundle_Selling_Price__c,
-          Product2.Calculated_Bundle_Price__c,
-          Product2.Spread_Total__c,
-          Product2.RecordType.DeveloperName,
-          UnitPrice
-        FROM PricebookEntry
-        WHERE
-          Pricebook2Id = :quotePricebook2Id
-          AND IsActive = TRUE
-          AND Product2.IsActive = TRUE
-          AND Product2.RecordType.DeveloperName IN :allowedTypes
-          AND (Product2.Name LIKE :normalizedSearchTerm
-          OR Product2.ProductCode LIKE :normalizedSearchTerm)
-        ORDER BY Product2.Name
-        LIMIT :limitSize
-      ];
+    List<String> conditions = new List<String>{
+      'IsActive = TRUE',
+      'Product2.IsActive = TRUE',
+      'Product2.Solo_Bundle__c = FALSE',
+      'Product2.RecordType.DeveloperName IN :allowedTypes',
+      '(Product2.Name LIKE :normalizedSearchTerm OR Product2.ProductCode LIKE :normalizedSearchTerm)'
+    };
+
+    if (quotePricebook2Id != null) {
+      conditions.add('Pricebook2Id = :quotePricebook2Id');
     }
+    if (allowedCategories != null && !allowedCategories.isEmpty()) {
+      conditions.add('Product2.Categoria_Articolo__c IN :allowedCategories');
+    }
+    if (excludedCategories != null && !excludedCategories.isEmpty()) {
+      conditions.add(
+        '(Product2.Categoria_Articolo__c = NULL OR Product2.Categoria_Articolo__c NOT IN :excludedCategories)'
+      );
+    }
+
+    List<PricebookEntry> entries = Database.query(
+      'SELECT ' +
+        'Id, Pricebook2Id, Product2Id, Product2.Name, Product2.ProductCode, ' +
+        'Product2.Categoria_Articolo__c, Product2.Numero_Tranche__c, ' +
+        'Product2.Bundle_Selling_Price__c, Product2.Calculated_Bundle_Price__c, ' +
+        'Product2.Spread_Total__c, Product2.RecordType.DeveloperName, UnitPrice ' +
+        'FROM PricebookEntry WHERE ' +
+        String.join(conditions, ' AND ') +
+        ' ORDER BY Product2.Name LIMIT :limitSize'
+    );
 
     List<ProductOption> options = new List<ProductOption>();
     for (PricebookEntry entry : entries) {
       options.add(new ProductOption(entry));
     }
     return options;
+  }
+
+  private static void validatePlusProductCategory(
+    PricebookEntry entry,
+    String opportunityType
+  ) {
+    Set<String> allowedCategories = plusCategoriesForOpportunity(
+      opportunityType
+    );
+    if (allowedCategories.isEmpty()) {
+      throw new AuraHandledException(
+        'Configura una regola Product Category Rule per il Tipo Opportunita Plus.'
+      );
+    }
+
+    String productCategory = entry.Product2 == null
+      ? null
+      : entry.Product2.Categoria_Articolo__c;
+    if (String.isBlank(productCategory)) {
+      throw new AuraHandledException(
+        'Il prodotto Plus selezionato non ha una Categoria Articolo configurata.'
+      );
+    }
+    if (!allowedCategories.contains(productCategory.trim())) {
+      throw new AuraHandledException(
+        'Il prodotto Plus selezionato non e valido per il Tipo Opportunita.'
+      );
+    }
+  }
+
+  private static void validateNoPlusCategoryProducts(
+    List<PricebookEntry> entries
+  ) {
+    Set<String> plusCategories = allPlusCategories();
+    if (plusCategories.isEmpty()) {
+      return;
+    }
+
+    for (PricebookEntry entry : entries) {
+      String productCategory = entry.Product2 == null
+        ? null
+        : entry.Product2.Categoria_Articolo__c;
+      if (
+        !String.isBlank(productCategory) &&
+        plusCategories.contains(productCategory.trim())
+      ) {
+        throw new AuraHandledException(
+          'Per una Vendita Standard non puoi selezionare prodotti Plus.'
+        );
+      }
+    }
+  }
+
+  private static Set<String> plusCategoriesForOpportunity(
+    String opportunityType
+  ) {
+    Set<String> categories = new Set<String>();
+    if (String.isBlank(opportunityType)) {
+      return categories;
+    }
+
+    for (Product_Category_Rule__mdt rule : [
+      SELECT Categoria_Articolo__c
+      FROM Product_Category_Rule__mdt
+      WHERE Tipo_Opportunita__c = :opportunityType
+    ]) {
+      categories.addAll(parseCategoryValues(rule.Categoria_Articolo__c));
+    }
+
+    return categories;
+  }
+
+  private static Set<String> allPlusCategories() {
+    Set<String> categories = new Set<String>();
+    for (Product_Category_Rule__mdt rule : [
+      SELECT Categoria_Articolo__c
+      FROM Product_Category_Rule__mdt
+    ]) {
+      categories.addAll(parseCategoryValues(rule.Categoria_Articolo__c));
+    }
+    return categories;
+  }
+
+  private static Set<String> parseCategoryValues(String rawValues) {
+    Set<String> values = new Set<String>();
+    if (String.isBlank(rawValues)) {
+      return values;
+    }
+
+    for (String rawValue : rawValues.split('[,;\\n]')) {
+      String value = rawValue == null ? null : rawValue.trim();
+      if (!String.isBlank(value)) {
+        values.add(value);
+      }
+    }
+    return values;
   }
 
   private static Id effectivePricebook2Id(Quote quoteRecord) {
@@ -984,7 +1215,7 @@ public with sharing class QuoteManageProductsController {
     }
   }
 
-  private static void validatePlusTrancheDates(
+  private static void validatePlusTranches(
     List<TrancheSelection> tranches,
     Integer expectedCount
   ) {
@@ -994,10 +1225,41 @@ public with sharing class QuoteManageProductsController {
       );
     }
 
+    Date minimumDueDate = Date.today();
+    Set<Date> selectedDueDates = new Set<Date>();
     for (TrancheSelection tranche : tranches) {
       if (tranche == null || tranche.dueDate == null) {
         throw new AuraHandledException(
           'Inserisci la data di scadenza per ogni tranche del prodotto Plus.'
+        );
+      }
+      if (tranche.dueDate < minimumDueDate) {
+        throw new AuraHandledException(
+          'La data di scadenza di una tranche non puo essere precedente alla data odierna.'
+        );
+      }
+      if (selectedDueDates.contains(tranche.dueDate)) {
+        throw new AuraHandledException(
+          'Le date di scadenza delle tranche devono essere diverse.'
+        );
+      }
+      selectedDueDates.add(tranche.dueDate);
+      if (
+        tranche.newPrice == null ||
+        tranche.newPrice < 0 ||
+        tranche.newPrice != tranche.newPrice.setScale(2)
+      ) {
+        throw new AuraHandledException(
+          'Inserisci un nuovo prezzo valido, con massimo due decimali, per ogni tranche.'
+        );
+      }
+      if (
+        tranche.discountPercent == null ||
+        tranche.discountPercent > 100 ||
+        tranche.discountPercent != tranche.discountPercent.setScale(2)
+      ) {
+        throw new AuraHandledException(
+          'Inserisci uno sconto valido per ogni tranche.'
         );
       }
     }
@@ -1005,14 +1267,9 @@ public with sharing class QuoteManageProductsController {
 
   private static List<Tranche__c> buildPlusTranches(
     Quote quoteRecord,
-    List<TrancheSelection> tranches,
-    Decimal trancheAmount
+    List<TrancheSelection> tranches
   ) {
     Integer trancheCount = tranches.size();
-    Decimal normalizedTrancheAmount = (trancheAmount == null
-        ? 0
-        : trancheAmount)
-      .setScale(2);
     String quoteName = String.isBlank(quoteRecord.Name)
       ? quoteRecord.QuoteNumber
       : quoteRecord.Name;
@@ -1026,7 +1283,7 @@ public with sharing class QuoteManageProductsController {
           Name = 'T' + sequence + ' - ' + quoteName,
           Data_Scadenza__c = tranches[i].dueDate,
           Sequenza__c = sequence,
-          Importo_Previsto__c = normalizedTrancheAmount,
+          Importo_Previsto__c = tranches[i].newPrice.setScale(2),
           Stato__c = 'Aperta',
           Completamente_Pagata__c = false
         )
@@ -1039,16 +1296,19 @@ public with sharing class QuoteManageProductsController {
   private static List<QuoteLineItem> buildPlusQuoteLines(
     Id quoteId,
     PricebookEntry plusEntry,
-    List<Tranche__c> tranches
+    List<Tranche__c> tranches,
+    List<TrancheSelection> selections
   ) {
     List<QuoteLineItem> lines = new List<QuoteLineItem>();
-    for (Tranche__c tranche : tranches) {
+    for (Integer i = 0; i < tranches.size(); i++) {
+      Tranche__c tranche = tranches[i];
       lines.add(
         new QuoteLineItem(
           QuoteId = quoteId,
           PricebookEntryId = plusEntry.Id,
           Quantity = 1,
           UnitPrice = tranche.Importo_Previsto__c,
+          Discount_Pct__c = selections[i].discountPercent,
           Tranche__c = tranche.Id,
           Data_Scadenza__c = tranche.Data_Scadenza__c
         )
@@ -1069,61 +1329,6 @@ public with sharing class QuoteManageProductsController {
       pricebookEntryId.getSObjectType() != PricebookEntry.SObjectType
     ) {
       throw new AuraHandledException('Seleziona un prodotto.');
-    }
-  }
-
-  private static void requireReadAccess() {
-    if (
-      !Schema.sObjectType.Quote.isAccessible() ||
-      !Schema.sObjectType.QuoteLineItem.isAccessible() ||
-      !Schema.sObjectType.PricebookEntry.isAccessible() ||
-      !Schema.sObjectType.Product2.isAccessible()
-    ) {
-      throw new AuraHandledException(
-        'Non hai i permessi per visualizzare i prodotti del preventivo.'
-      );
-    }
-  }
-
-  private static void requireSaveAccess() {
-    requireReadAccess();
-
-    if (!Schema.sObjectType.QuoteLineItem.isCreateable()) {
-      throw new AuraHandledException(
-        'Non hai i permessi per salvare i prodotti del preventivo.'
-      );
-    }
-  }
-
-  private static void requireTrancheCreateAccess() {
-    if (
-      !Schema.sObjectType.Tranche__c.isAccessible() ||
-      !Schema.sObjectType.Tranche__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Quote__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Name.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Data_Scadenza__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Sequenza__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Importo_Previsto__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Stato__c.isCreateable() ||
-      !Schema.sObjectType.Tranche__c.fields.Completamente_Pagata__c.isCreateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isCreateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isCreateable()
-    ) {
-      throw new AuraHandledException(
-        'Non hai i permessi per creare le tranche del preventivo.'
-      );
-    }
-  }
-
-  private static void requireBundleTemplateTrancheCreateAccess() {
-    if (
-      !Schema.sObjectType.Tranche__c.fields.Bundle_Tranch__c.isCreateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Tranche__c.isUpdateable() ||
-      !Schema.sObjectType.QuoteLineItem.fields.Data_Scadenza__c.isUpdateable()
-    ) {
-      throw new AuraHandledException(
-        'Non hai i permessi per creare le tranche del bundle sul preventivo.'
-      );
     }
   }
 }

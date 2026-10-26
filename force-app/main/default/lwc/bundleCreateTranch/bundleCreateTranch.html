@@ -31,7 +31,16 @@
       <template if:true={isEditMode}>
         <div class="section-header edit-selector-header">
           <h3 class="section-heading">Tranch esistenti</h3>
-          <span>Seleziona una tranch da modificare</span>
+          <div class="edit-selector-actions">
+            <span>Seleziona una tranch da modificare</span>
+            <lightning-button
+              label="Aggiungi tranche"
+              icon-name="utility:add"
+              variant="brand-outline"
+              disabled={isAddTranchDisabled}
+              onclick={handleAddTranch}
+            ></lightning-button>
+          </div>
         </div>
         <div class="edit-tranche-list">
           <template for:each={editTranchCards} for:item="tranch">
@@ -95,7 +104,26 @@
           <div class="message error">{pageValidationMessage}</div>
         </template>
 
+        <template if:true={hasDuplicateDueDates}>
+          <div class="message error">
+            Ogni tranche deve avere una data di scadenza diversa.
+          </div>
+        </template>
+
+        <template if:true={hasPastDueDates}>
+          <div class="message error">
+            Le date di scadenza non possono essere precedenti a oggi.
+          </div>
+        </template>
+
         <div class="tranche-card">
+          <template if:true={showEmptyTranchWarning}>
+            <div class="message warning">
+              Questa tranche non contiene prodotti. Elimina la tranche oppure
+              aggiungi almeno un prodotto prima di salvare.
+            </div>
+          </template>
+
           <template if:true={showDeleteCurrentPage}>
             <div class="delete-page-actions">
               <lightning-button
@@ -121,6 +149,7 @@
               type="date"
               label="Data scadenza"
               value={currentTranch.dueDate}
+              min={minimumDueDate}
               data-index={currentTranch.index}
               data-current-tranch-due-date
               required

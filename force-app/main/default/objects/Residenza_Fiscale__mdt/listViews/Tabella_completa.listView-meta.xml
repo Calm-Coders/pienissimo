@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tabella_completa</fullName>
+    <columns>MasterLabel</columns>
+    <columns>Codice_Paese__c</columns>
+    <columns>Codice_ISO3__c</columns>
+    <columns>Descrizione_Paese__c</columns>
+    <columns>Nomi_Alternativi__c</columns>
+    <columns>Codice_Residenza_Fiscale__c</columns>
+    <columns>Descrizione_Residenza_Fiscale__c</columns>
+    <columns>Fatturazione_Elettronica__c</columns>
+    <columns>Sezionale_IVA__c</columns>
+    <columns>Allegato_PDF__c</columns>
+    <columns>Predefinito__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>Tabella completa</label>
+</ListView>

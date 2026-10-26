@@ -1,11 +1,80 @@
-public with sharing class OrderTriggerHandler {
+public without sharing class OrderTriggerHandler {
   private static final String CONFIRMED_STATUS = 'Incassato';
   private static final String INITIAL_TICKET_STATUS = 'Ordinato';
+  private static final String AVAILABLE_TICKET_STATUS = 'Disponibile';
   private static final String OPPORTUNITY_WON_STAGE = 'Chiusa/Vinta';
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
   private static Id ticketRecordTypeId;
 
   private class TicketGenerationException extends Exception {
+  }
+
+  public static void beforeInsert(List<Order> newOrders) {
+    Boolean needsDefaultAgent = false;
+    Set<Id> quoteIds = new Set<Id>();
+    Set<Id> accountIds = new Set<Id>();
+    for (Order orderRecord : newOrders) {
+      if (
+        orderRecord.Origine__c == 'WooCommerce' &&
+        orderRecord.OpportunityId == null
+      ) {
+        needsDefaultAgent = true;
+      }
+      if (orderRecord.Quote__c != null) {
+        quoteIds.add(orderRecord.Quote__c);
+      } else if (orderRecord.AccountId != null) {
+        accountIds.add(orderRecord.AccountId);
+      }
+    }
+
+    String defaultAgentCode = needsDefaultAgent
+      ? IntegrationNotificationConfigService.getDefaultAgentCode('WooCommerce')
+      : null;
+
+    Map<Id, Quote> quotesById = new Map<Id, Quote>();
+    if (!quoteIds.isEmpty()) {
+      quotesById = new Map<Id, Quote>(
+        [
+          SELECT Codice_Agente_Esterno__c
+          FROM Quote
+          WHERE Id IN :quoteIds
+        ]
+      );
+    }
+
+    Map<Id, Account> accountsById = new Map<Id, Account>();
+    if (!accountIds.isEmpty()) {
+      accountsById = new Map<Id, Account>(
+        [
+          SELECT Codice_Agente_Esterno__c
+          FROM Account
+          WHERE Id IN :accountIds
+        ]
+      );
+    }
+
+    for (Order orderRecord : newOrders) {
+      if (
+        orderRecord.Origine__c == 'WooCommerce' &&
+        orderRecord.OpportunityId == null &&
+        String.isNotBlank(defaultAgentCode)
+      ) {
+        orderRecord.Codice_Agente__c = defaultAgentCode;
+        continue;
+      }
+      if (orderRecord.Quote__c != null) {
+        Quote quoteRecord = quotesById.get(orderRecord.Quote__c);
+        orderRecord.Codice_Agente__c = quoteRecord == null
+          ? null
+          : quoteRecord.Codice_Agente_Esterno__c;
+        continue;
+      }
+
+      Account accountRecord = accountsById.get(orderRecord.AccountId);
+      orderRecord.Codice_Agente__c = accountRecord == null
+        ? null
+        : accountRecord.Codice_Agente_Esterno__c;
+    }
   }
 
   public static void afterInsert(List<Order> newOrders) {
@@ -18,6 +87,69 @@ public with sharing class OrderTriggerHandler {
     Map<Id, Order> oldOrderMap
   ) {
     closeWonOpportunitiesForConfirmedOrders(newOrders, oldOrderMap);
+    makeTicketsAvailableForCollectedOrdersWithoutTranches(
+      newOrders,
+      oldOrderMap
+    );
+  }
+
+  private static void makeTicketsAvailableForCollectedOrdersWithoutTranches(
+    List<Order> orders,
+    Map<Id, Order> oldOrderMap
+  ) {
+    Set<Id> collectedOrderIds = new Set<Id>();
+
+    for (Order orderRecord : orders) {
+      Order oldOrder = oldOrderMap == null
+        ? null
+        : oldOrderMap.get(orderRecord.Id);
+
+      if (
+        orderRecord.Status == CONFIRMED_STATUS &&
+        oldOrder != null &&
+        oldOrder.Status != CONFIRMED_STATUS
+      ) {
+        collectedOrderIds.add(orderRecord.Id);
+      }
+    }
+
+    if (collectedOrderIds.isEmpty()) {
+      return;
+    }
+
+    for (OrderItem trancheLine : [
+      SELECT OrderId
+      FROM OrderItem
+      WHERE OrderId IN :collectedOrderIds AND Tranche__c != NULL
+    ]) {
+      collectedOrderIds.remove(trancheLine.OrderId);
+    }
+
+    if (collectedOrderIds.isEmpty()) {
+      return;
+    }
+
+    List<Asset> ticketUpdates = new List<Asset>();
+    for (Asset ticket : [
+      SELECT Id
+      FROM Asset
+      WHERE
+        Order_Product__r.OrderId IN :collectedOrderIds
+        AND RecordType.DeveloperName = :TICKET_RECORD_TYPE_DEVELOPER_NAME
+        AND Status = :INITIAL_TICKET_STATUS
+    ]) {
+      ticketUpdates.add(
+        new Asset(
+          Id = ticket.Id,
+          Status = AVAILABLE_TICKET_STATUS,
+          Fattura_Pagata__c = true
+        )
+      );
+    }
+
+    if (!ticketUpdates.isEmpty()) {
+      update ticketUpdates;
+    }
   }
 
   private static void closeWonOpportunitiesForConfirmedOrders(

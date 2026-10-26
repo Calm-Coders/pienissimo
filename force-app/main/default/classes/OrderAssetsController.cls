@@ -1,4 +1,4 @@
-public with sharing class OrderAssetsController {
+public without sharing class OrderAssetsController {
   public class AssetRow {
     @AuraEnabled
     public Id id;

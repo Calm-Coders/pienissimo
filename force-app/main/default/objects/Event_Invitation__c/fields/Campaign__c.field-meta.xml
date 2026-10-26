@@ -6,7 +6,7 @@
     <referenceTo>Campaign</referenceTo>
     <relationshipLabel>Inviti Evento</relationshipLabel>
     <relationshipName>Event_Invitations</relationshipName>
-    <required>true</required>
+    <required>false</required>
     <trackHistory>true</trackHistory>
     <type>Lookup</type>
 </CustomField>

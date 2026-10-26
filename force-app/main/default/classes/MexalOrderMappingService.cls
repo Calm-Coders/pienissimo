@@ -1,4 +1,4 @@
-public with sharing class MexalOrderMappingService {
+public without sharing class MexalOrderMappingService {
   public class MexalOrderMappingException extends Exception {
   }
 
@@ -23,6 +23,7 @@ public with sharing class MexalOrderMappingService {
       Mexal_Document_Sigla__c = sendResult.mexalDocumentSigla,
       Mexal_Document_Serie__c = toDecimal(sendResult.mexalDocumentSerie),
       Mexal_Document_Number__c = toDecimal(sendResult.mexalDocumentNumber),
+      Mexal_Document_Date__c = sendResult.mexalDocumentDate,
       Mexal_Customer_Code__c = sendResult.mexalCustomerCode
     );
 

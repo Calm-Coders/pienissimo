@@ -36,10 +36,34 @@
           </div>
         </template>
 
+        <template if:false={hasQuoteLines}>
+          <div class="message error">
+            Prima di creare le tranche, scegli almeno un prodotto nel
+            preventivo.
+          </div>
+        </template>
+
+        <template if:true={hasQuoteLines}>
+          <div class="message slds-m-bottom_medium">
+            {trancheCountSuggestion}
+          </div>
+        </template>
+
         <template if:true={isEditMode}>
           <div class="section-header edit-selector-header">
             <h3 class="section-heading">Tranche esistenti</h3>
-            <span>Seleziona una tranche da modificare</span>
+            <div class="edit-selector-actions">
+              <span>Seleziona una tranche da modificare</span>
+              <template if:true={showAddTrancheButton}>
+                <lightning-button
+                  label="Aggiungi tranche"
+                  icon-name="utility:add"
+                  variant="brand-outline"
+                  disabled={isAddTrancheDisabled}
+                  onclick={handleAddTranche}
+                ></lightning-button>
+              </template>
+            </div>
           </div>
           <div class="edit-tranche-list">
             <template for:each={editTrancheCards} for:item="tranche">
@@ -65,18 +89,29 @@
         </template>
 
         <template if:false={isEditMode}>
-          <div class="count-row">
-            <lightning-input
-              type="number"
-              label="Numero di tranche"
-              value={trancheCount}
-              min="1"
-              max="20"
-              step="1"
-              required
-              disabled={isSaveDisabledByStatus}
-              onchange={handleTrancheCountChange}
-            ></lightning-input>
+          <div class="count-actions">
+            <div class="count-row">
+              <lightning-input
+                type="number"
+                label="Numero di tranche"
+                value={trancheCount}
+                min="1"
+                max={maximumTrancheCount}
+                step="1"
+                required
+                disabled={isTrancheCountDisabled}
+                onchange={handleTrancheCountChange}
+              ></lightning-input>
+            </div>
+            <template if:true={showAddTrancheButton}>
+              <lightning-button
+                label="Aggiungi tranche"
+                icon-name="utility:add"
+                variant="brand-outline"
+                disabled={isAddTrancheDisabled}
+                onclick={handleAddTranche}
+              ></lightning-button>
+            </template>
           </div>
         </template>
 
@@ -105,7 +140,23 @@
             <div class="message error">{pageValidationMessage}</div>
           </template>
 
+          <template if:true={hasDuplicateDueDates}>
+            <div class="message error">
+              Ogni tranche deve avere una data di scadenza diversa.
+            </div>
+          </template>
+
+          <template if:true={hasPastDueDates}>
+            <div class="message error">
+              Le date di scadenza non possono essere precedenti a oggi.
+            </div>
+          </template>
+
           <div class="tranche-card">
+            <template if:true={showEmptyTrancheWarning}>
+              <div class="message warning">{emptyTrancheMessage}</div>
+            </template>
+
             <template if:true={showDeleteCurrentPage}>
               <div class="delete-page-actions">
                 <lightning-button
@@ -132,6 +183,7 @@
                 type="date"
                 label="Data scadenza"
                 value={currentTranche.dueDate}
+                min={minimumDueDate}
                 data-index={currentTranche.index}
                 data-current-tranche-due-date
                 required
@@ -216,12 +268,6 @@
                   </div>
                 </template>
               </template>
-            </template>
-
-            <template if:false={hasQuoteLines}>
-              <div class="message">
-                Questo preventivo non contiene righe prodotto.
-              </div>
             </template>
           </div>
         </template>

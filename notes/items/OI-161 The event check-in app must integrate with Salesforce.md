@@ -1,12 +1,12 @@
 ---
 id: OI-161
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Andrea Parmeggiani
 org: both
 raised: 2026-09-22
-updated: 2026-09-23
+updated: 2026-10-16
 depends_on: [OI-74]
 blocks: [go-live]
 severity: gating
@@ -63,8 +63,7 @@ Read-only check of Pienissimo UAT, 08:01–08:40Z, `DevMain` at `61f2a53`. Nothi
 
 - 🔴 **No ticket in UAT has a QR:** **0 of 31** Assets carry `QR_Id__c` (23 `Ordinato`, 4 `Assegnato`, 3 `Rinuncia`, 1 `Disponibile`). `Asset.Data_CheckIn__c` and `QR_Id__c` exist, but nothing fills either, and no inbound check-in endpoint exists. `BIG-11` (check-in by QR scan) cannot be shown. **Ticket UAT is 30/09.** (verified)
 
-
-## 2026-09-23 — the first statement of what the integration is *for*
+## 2026-09-23 — the first statement of what the integration is _for_
 
 **[Check Data Import](../meetings/2026-09-23%20Check%20Data%20Import.md), `01:56:20`–`02:01:26`.**
 
@@ -81,7 +80,7 @@ updating the asset. This is the first evidence it is a **request/response valida
 endpoint**, which is a materially larger build.
 
 ⚠ **It is Fase 2, and the auto-summary says otherwise.** The Gemini notes list
-_"\[Aurel Mrruku\] Implementare errori QR"_ under *Passaggi successivi*, as though it
+_"\[Aurel Mrruku\] Implementare errori QR"_ under _Passaggi successivi_, as though it
 were in flight. The transcript does not support that: Elena Spini closed the topic as
 Fase 2 and Aurel Mrruku himself said the data model for it is missing. **Fase 1 scope is
 unchanged — the asset update only** — and
@@ -93,3 +92,182 @@ name and Elena Spini supplied it. The 23/09 Pienissimo org chart places him as
 **Maintenance Manager at Pienissimo Software Srl**.
 
 🔴 **Unchanged and still gating: nothing is built, and ticket UAT is 30/09.**
+
+## 🔑 2026-09-28 - Infopoint is confirmed Fase 2, and the Salesforce side of the endpoint exists
+
+Two movements, from two different sources.
+
+### 🟢 The client-facing split is now stated in writing
+
+Elena Spini's project status in **`#tproj-pienissimo`** (28/09 09:07 CEST — the
+channel is findable again, see the trace) separates the two halves of this note:
+
+> _"QR Code: l'app aggiornerà Salesforce tramite API, mentre è stato confermato che
+> la parte Infopoint (app custom di Pienissimo che ci è stata presentata in
+> settimana -.-), anche se fondamentale per la gestione dei check-in degli eventi,
+> passerà alla Fase 2."_
+
+- 🟢 **The scan-updates-Salesforce-by-API design is confirmed** — the direction this
+  note established on 22/09.
+- 🔑 **Infopoint moves to Fase 2, and is named for the first time.** Her own
+  annotation — _"app custom di Pienissimo che ci è stata presentata in settimana"_,
+  with a visible `-.-` — matches the 22/09 finding that the app had never been
+  mentioned. ⚠ **She calls it fundamental to event check-in and defers it anyway.**
+  That is a scope decision with a consequence: **at go-live there is no check-in
+  path**, and the tickets it would scan are Fase 1.
+- ⚠ **The `Link_Iscrizione_Infopoint__c` Campaign field reached `DevMain` on
+  25/09** in PR #62, so a field naming Infopoint ships in Fase 1 while the
+  integration behind it does not.
+
+### 🟢🔑 The Salesforce-side lookup endpoint has been written
+
+**`807ed4e`** (Rexhina Hysi, 28/09 17:49 CEST) — _"expose endpoint to get info
+based on campaign member id"_ — adds **`TicketQrLookupService.cls` (317 lines)**,
+together with two notes the author wrote herself:
+`notes/Ticket QR lookup endpoint usage.md` (new, 109 lines) and an update to
+`notes/Ticket QR code generation.md`.
+
+🔴 **It is on the branch `DevMain_exposeEndpoint` and is NOT on `DevMain`.** No PR
+was open for it at the time of this sweep. **Its two notes are therefore not in the
+vault either**, which is why this section describes the commit rather than linking
+them.
+
+⚠ **This was not drilled.** The class and its notes were identified by commit, and
+whether the endpoint matches the contract Andrea Parmeggiani needs — the _speaking
+error when a previous block's entries are incomplete_, recorded above from 23/09 —
+**was not verified.** That is a read for whoever merges it.
+
+🟢 **QR generation itself landed the same morning**: `e887b15` and `b40db42`
+(Rexhina Hysi, 09:41 and 10:12 CEST) add `AssetQrService.cls`,
+`BarcodeGenerator.cls` (796 lines, with a vendored `Portwood-DocGen` licence under
+`docs/third-party/`) and `TicketQrImage.cls`. See
+[OI-185](OI-185%20The%20participant%20name%20change%20regenerates%20the%20ticket%20as%20a%20new%20asset.md).
+
+## 2026-10-07 - Asset-based QR check-in is implemented in source
+
+The QR generation and REST contract now use the ticket **Asset Id** for new QR
+codes. `GET /services/apexrest/ticket-qr/{AssetId}` returns the Asset, Contact and
+Campaign information without writing. `POST /services/apexrest/ticket-qr` performs
+the Fase 1 check-in transition from `Assegnato` to `Utilizzato` and writes
+`Data_CheckIn__c`; repeated scans preserve the first timestamp. Legacy QR codes
+containing a Campaign Member Id are not supported and must be regenerated.
+
+The two changed Apex classes compile in a dry-run against the configured
+Pienissimo partial sandbox (`0AfMA00000CrsGH0AZ`). No Apex test class was
+written. Later the same day, the user supplied the result of a successful UAT
+`POST` for Asset `02iMA00000A624fYAB`: the response returned `Utilizzato` and
+`Data_CheckIn__c = 2026-10-07T08:54:56.140Z`. The deployment operation and id
+were not supplied, so only the runtime result is recorded as user-reported.
+Campaign-date validation and the Fase 2 multi-entry speaking-error rules are
+still open, so this item is `in-progress`, not resolved.
+
+Later on 2026-10-07 the user removed the redundant `Asset.QR_Id__c` design.
+`AssetQrService`, the Asset quick action, the participant PDF and the document
+job now generate from `Asset.Id` directly; the endpoint accepts Asset Ids only.
+The field metadata, layout and permission references were removed from source,
+with a destructive manifest. The combined metadata
+and destructive package compiles in the partial sandbox with `NoTestRun`
+(`0AfMA00000Crwzp0AB`). A second dry run with the two affected existing test
+classes (`0AfMA00000Crx1R0AR`) passed 21/23 methods but failed on two pre-existing
+`TicketingTest` state assertions (`Pending` vs `Ready`, `COMPLETED` vs `READY`);
+it also reports the known 0% coverage for `TicketQrLookupService`. No new test
+class was added in this task.
+
+The package was then deployed to **Pienissimo UAT** with `NoTestRun` as
+`0AfMA00000CrxUT0AZ`. The deployment succeeded, including the destructive field
+deletion. A read-only Tooling API query returned zero `FieldDefinition` rows for
+`Asset.QR_Id__c`, verifying that it is absent. Production was not changed.
+
+## 🔴 2026-10-14 — ROMI chased the test results after six days of silence
+
+Elena Spini wrote to Andrea Parmeggiani (`andrea.p@pienissimo.pro`) at
+**2026-10-14 12:35:25Z**, cc Fabrizio Paganelli,
+`amministrazione@pienissimo.com`, Aurel Mrruku and Rexhina Hysi, in the thread
+_"[ROMI-PIENISSIMO] – API UAT Check-in QR Code"_:
+
+> _"Ciao Andrea, hai avuto modo di verificare quanto condiviso? Ci servirebbe
+> sapere l'esito dei tuoi test per capire se possiamo portare in produzione o se
+> necessitiamo di altre modifiche e/o test."_
+
+🔴 **The UAT credentials and API details went to him on 08/10 at 16:31:15Z and he
+has not replied in six days.** ROMI's own message states the dependency plainly:
+**the production move waits on his test results**, and go-live is 21 October.
+
+⚠ **This is also the sixth sweep in which the QR credential rotation has not
+happened.** The 08/10 mail put authentication details for the partial
+sandbox/UAT environment into a thread with the client, and the record has carried
+_"the rotation has still not happened"_ since. **Eighth day.**
+
+## 🔴 2026-10-15 - chased a third time, in the room, and still nothing
+
+At [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+closing minute, Elena Spini raised it unprompted as _"una cosa super
+importante"_:
+
+> _"Aurel ha mandato 7 giorni fa l'[API] per l'autenticazione del Q[R] Code a
+> Andrea. … Io l'ho ripingato e non ci ha risposto."_
+
+Fabrizio Paganelli undertook to chase him **physically**, being in the same
+building: _"adesso mi metto i guantoni da box, vado di là e faccio in modo che vi
+arrivi."_ He framed it as a capacity problem on his own side — _"noi siamo un po'
+piccolini, non è che facciamo solo amministrazione e il resto"_.
+
+🔴 **Seventh day of silence from Andrea Parmeggiani**, against credentials sent
+08/10 16:31Z and chased 14/10 12:35Z. The Prod move still waits on him, and the
+QR credential rotation is now in its **ninth day**.
+
+🟢 The escalation path finally has someone on it who can walk down a corridor,
+which is more than two mails achieved. ⚠ Nothing records an outcome.
+
+## 🟢🔑 2026-10-16 — Andrea Parmeggiani replied, the test passed, and the production move is approved
+
+**Eight days after the credentials went out and two days after ROMI chased, he
+answered — and it works.**
+
+`andrea.p@pienissimo.pro`, **2026-10-16 07:37:42Z**, replying to Elena Spini in
+the thread _"[ROMI-PIENISSIMO] – API UAT Check-in QR Code"_, cc Fabrizio
+Paganelli, `amministrazione@pienissimo.com`, Aurel Mrruku and Rexhina Hysi:
+
+> _"Ciao Elena, Si ho fatto un test e confermo che potete portare in
+> produzione. Grazie"_
+
+🟢 **Corroborated from the logs, in the room, the same morning.** At
+[the 16/10 UAT session](../meetings/2026-10-16%20UAT%20Flussi%20MKT%20Biglietti.md)
+(`00:04:05`) Aurel Mrruku checked and found **two** successful calls on 15/10,
+not one:
+
+> _"ci ha provato alle 6 di pomeriggio, poi ci ha provato alle 10:54 di sera …
+> moltamente ha fatto un test da Postman, poi ha fatto un test reale
+> dall'applicazione."_
+
+So the endpoint was exercised from Postman **and** from the real application,
+and the second scan correctly reported the ticket as already checked in — _"gli
+abbiamo detto il check del biglietto è già stato effettu[ato]"_.
+
+🟢 **Fabrizio Paganelli's corridor escalation is what moved it.** Elena Spini:
+_"Quindi ha funzionato il tuo pressing ieri, Fabrizio. Bravo!"_ The undertaking
+recorded on 15/10 — _"adesso mi metto i guantoni da box"_ — produced a result
+within a day, where two mails over eight days had not.
+
+🟢 **Independently confirmed to the client side.** Elena Spini's status post in
+`#tproj-pienissimo` (16/10 19:20 CEST): _"il QR è stato validato sull'app di
+check-in. Andrea P. ci ha dato l'ok per portare l'API in produzione."_
+
+### What this closes, and what it does not
+
+| | State |
+| --- | --- |
+| Andrea Parmeggiani's silence | 🟢 **Closed.** Seven days, ended 16/10 07:37Z |
+| The scan-updates-Salesforce contract, UAT | 🟢 **Verified by the counterpart**, from Postman and from the app |
+| Client approval to go to production | 🟢 **Given, in writing** |
+| The production move itself | 🔴 **Not done.** Nothing in this sweep deploys it |
+| Campaign-date validity checking (Fase 1 point 2 above) | 🔴 **Still open.** Neither mail nor session mentions it, and no test exercised a code from the wrong edition |
+| Pre/post-event test window breaking the date filter | 🔴 **Still unspecified** |
+| Fase 2 speaking errors for incomplete entries | 🔴 Out of scope, unchanged |
+| **The QR credential rotation** | 🔴 **Tenth day.** The 08/10 mail still carries UAT authentication details in a client thread, and now that the client has approved production, **production credentials will follow the same path unless someone changes it** |
+
+🔑 **This item stops being blocked on a person and becomes blocked on a
+deployment.** It stays `in-progress` and `gating`: the agreed Fase 1 scope has
+four points and only the first is demonstrated. ⚠ **Nobody has said who moves
+it to production, or when** — and the approval arrived on the day the UAT
+session confirmed the flow end to end.

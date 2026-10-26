@@ -1,4 +1,4 @@
-public with sharing class MexalCustomerUpdateQueueable implements Queueable, Database.AllowsCallouts {
+public without sharing class MexalCustomerUpdateQueueable implements Queueable, Database.AllowsCallouts {
   private static final String FLOW_NAME = 'Mexal_Clienti_Modifica';
 
   private final List<Id> accountIds;

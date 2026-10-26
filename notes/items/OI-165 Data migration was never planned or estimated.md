@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-24
+updated: 2026-10-15
 depends_on: [OI-154, OI-24]
 blocks: [go-live]
 severity: gating
@@ -178,3 +178,38 @@ cut-over owner, no date for the orders/migration session that was postponed on 2
 `02:04:26`, spent **about six hours** loading the accounts into a Partial Copy sandbox and
 still had fields to correct — and bad input (wrong email addresses, missing P.IVA) breaks
 order generation downstream.
+
+## 🟢 2026-10-15 - a method exists at last, and the source moved to Mexal
+
+[The 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md) was
+convened for migration and produced the first concrete method this row has ever
+been able to record. Full detail in
+[OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md);
+in summary:
+
+- **The source changed from Zoho to Mexal.** The Zoho quote extractions are the
+  stated problem — _"lì c'è da mettere mani"_ — so historical **orders** come out
+  of Mexal as a spreadsheet instead.
+- **Aurel Mrruku owes the field specification by the evening of 16 October**;
+  Fabrizio Paganelli maps and populates it.
+- **Two loads**: a test load into UAT now, the real one **on go-live day**.
+- **State is derived** by running the existing nightly reconciliation against the
+  Mexal id, not imported.
+- **Volumes**: ~51,000 order **lines** since 01/01/2023, thinning to ~10,000 a
+  year; an earlier figure of 20,000 in the same exchange was an explicit guess.
+- 🟢 **Accounts and contacts are already imported in UAT** from Mexal and refresh
+  nightly — the first part of migration with evidence behind it.
+
+🔴 **It is still not planned or estimated in the sense this row means.** There is
+a method and one dated deliverable; there is no effort figure, no owner for
+verification, no acceptance criterion, and the only date attached to the
+production run is the go-live itself. The row stays open.
+
+🔴 **And the new plan inherits two problems from the same evening.** The
+production load now falls on **2 November**
+([OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)),
+which is **after** the Zoho contract expires
+([the risk](../risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md)),
+so there is no fallback system behind the migration; and the whole method rests on
+a disputed fact about whether Mexal retains invoiced orders at all
+([OI-245](OI-245%20Whether%20a%20Mexal%20order%20survives%20invoicing%20is%20disputed.md)).

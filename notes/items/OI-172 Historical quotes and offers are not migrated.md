@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-09-23
-updated: 2026-09-23
+updated: 2026-10-15
 depends_on: [OI-165]
 blocks: [go-live]
 severity: gating
@@ -54,3 +54,30 @@ room**, and the group's own action item is to tell him at the next meeting.
   was never migrated — nothing covers this.
 - ⚠ No register row covers the migration perimeter. **Allocating a requirement id is a
   human's call.**
+
+## 🔴 2026-10-15 - the operational cost is named: the users re-key them by hand
+
+The rule held at [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+(`00:40`), and for the first time somebody said out loud what it costs. Fabrizio
+Paganelli, on the offers the client has not yet confirmed:
+
+> _"in quel caso lì in linea teorica, loro tutti gli utenti una volta imparato a
+> usare il sistema dovrebbero prendere e andare a vedere tutte le offerte che
+> hanno pending su Zo[h]o e inserirle anche su Sales Force."_
+
+Elena Spini: _"sì, chiaro, è chiaro."_ He raised it as one of his reasons for
+saying the go-live date will not be met.
+
+🔴 **So the rule's consequence is manual re-entry of the open pipeline by the
+commercial team, and it has no owner, no volume and no window.** Nobody said how
+many pending offers there are — [OI-79](OI-79%20Migration%20volumes%20and%20mapping%20method.md)
+carries no figure for them — nor who checks that the pipeline arrived complete.
+
+🔴 **The window is now impossible as scheduled.** The work requires a readable
+Zoho and trained users. Zoho expires **31 October**; the users are trained in the
+two weeks before **2 November** and are not expected to be ready
+([OI-246](OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md));
+and go-live is now after the expiry
+([the risk](../risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md)).
+**Either this is done before 31 October by people still learning the system, or
+the open pipeline is read out of a dead CRM.** No source has noticed.

@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-09-23
+updated: 2026-09-30
 depends_on: [OI-24]
 source: notes/meetings/2026-09-18 Data Model Parte 6.md
 ---
@@ -129,3 +129,34 @@ expectation match for the first time since 18/09.
 entry in Fase 1, and **ticket UAT is 30/09**. That belongs to the Fase 2 perimeter and to
 [OI-162](OI-162%20Infopoint%20and%20orphan%20tickets%20are%20deferred%20to%20Fase%202.md),
 which already carries the deferral, not to this row.
+
+## 🔴 2026-09-30 — confirmed live with the client, still undecided, and the first case is seven weeks out
+
+Raised by Rebecca Marmo at [the ticket UAT](../meetings/2026-09-30%20UAT%20Biglietti%20Asset%20Campagne%20ed%20Eventi.md)
+(`00:16:03`–`00:18:31`) from the practical end: what does `data evento` hold for a
+three-day event? Elena Spini deferred it — _"quella parte la dobbiamo ancora un po'
+sviscerare bene"_ — after first suggesting there were no multi-day events in the
+near term, which Rebecca Marmo corrected.
+
+🔑 **The facts the room established, none of them previously dated in this note:**
+
+- **Pienissimo Live starts 24 November 2026 and runs three days** — 24, 25, 26.
+  Fabrizio Paganelli: today there is **a single check-in**, scanned on day one,
+  and _"gli vale per tutti e tre i giorni"_.
+- **Mastery is the split case**: two months, **April and May**, three consecutive
+  days in each — _"in più edizioni, tra virgolette"_. Its ticket is the one that
+  must give **multiple entries**.
+- Elena Spini drew the distinction cleanly: a multi-day event uses **the same
+  ticket** for every day; Mastery's multiple sessions are what the _ingressi_
+  question was actually about.
+- The **option** exists so that _"se la direzione decide di volere che i clienti
+  checkinino in tutti i giorni dell'evento"_ the entries mechanism is available.
+  **Direction has not decided.**
+
+🔴 **The nearest multi-day event is 24 November, and go-live is 6 October.** The
+deferral is now against a dated event rather than an open horizon, and Elena Spini
+promised only to _"riaggiornarvi su questo"_ with no date attached.
+
+⚠ Consistent with [the standing decision](../decisions/Decision%20-%20ingressi%20live%20on%20the%20campaign%20edition%20and%20are%20Fase%202.md)
+that _ingressi_ live on the campaign edition and are Fase 2 — nothing on 30/09
+moved them into Fase 1, and nothing contradicted that decision either.

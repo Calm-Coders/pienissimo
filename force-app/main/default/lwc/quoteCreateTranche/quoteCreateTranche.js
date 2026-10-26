@@ -1,12 +1,17 @@
-import { api, LightningElement } from "lwc";
+import { api, LightningElement, wire } from "lwc";
+import { MessageContext, publish } from "lightning/messageService";
+import QUOTE_PRODUCTS_CHANGED from "@salesforce/messageChannel/QuoteProductsChanged__c";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
+import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
 import createTranches from "@salesforce/apex/QuoteTrancheController.createTranches";
 import getContext from "@salesforce/apex/QuoteTrancheController.getContext";
 
 export default class QuoteCreateTranche extends LightningElement {
   _recordId;
+  @wire(MessageContext)
+  messageContext;
 
   isLoading = false;
   hasLoaded = false;
@@ -81,6 +86,13 @@ export default class QuoteCreateTranche extends LightningElement {
     return this.quoteLines.length > 0;
   }
 
+  get trancheCountSuggestion() {
+    const count = this.quoteLines.length;
+    return count === 1
+      ? "Il preventivo contiene 1 prodotto. Ti consigliamo di non creare più di 1 tranche."
+      : `Il preventivo contiene ${count} prodotti. Ti consigliamo di non creare più di ${count} tranche.`;
+  }
+
   get currentTranche() {
     return this.plannedTranches[this.currentTrancheIndex] || {};
   }
@@ -131,6 +143,20 @@ export default class QuoteCreateTranche extends LightningElement {
     return this.currentSelectedLines.length > 0;
   }
 
+  get showEmptyTrancheWarning() {
+    return (
+      this.isEditMode &&
+      this.hasPlannedTranches &&
+      !this.hasCurrentSelectedLines
+    );
+  }
+
+  get emptyTrancheMessage() {
+    return this.currentTranche.canDelete === false
+      ? "Questa tranche non contiene prodotti. Aggiungi almeno un prodotto prima di salvare."
+      : "Questa tranche non contiene prodotti. Elimina la tranche oppure aggiungi almeno un prodotto prima di salvare.";
+  }
+
   get hasAvailableQuoteLines() {
     return this.availableQuoteLines.length > 0;
   }
@@ -140,6 +166,27 @@ export default class QuoteCreateTranche extends LightningElement {
       this.plannedTranches.flatMap((tranche) => tranche.quoteLineItemIds || [])
     );
     return this.quoteLines.some((line) => !selectedLineIds.has(line.id));
+  }
+
+  get hasDuplicateDueDates() {
+    const dueDates = this.plannedTranches
+      .map((tranche) => tranche.dueDate)
+      .filter(Boolean);
+    return new Set(dueDates).size !== dueDates.length;
+  }
+
+  get minimumDueDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  get hasPastDueDates() {
+    return this.plannedTranches.some(
+      (tranche) => tranche.dueDate && tranche.dueDate < this.minimumDueDate
+    );
   }
 
   get currentSelectionLabel() {
@@ -159,15 +206,43 @@ export default class QuoteCreateTranche extends LightningElement {
   }
 
   get isDeleteCurrentPageDisabled() {
-    return this.isSaveDisabledByStatus || this.plannedTranches.length <= 1;
+    return (
+      this.isSaveDisabledByStatus ||
+      this.plannedTranches.length <= 1 ||
+      this.currentTranche.canDelete === false
+    );
+  }
+
+  get maximumTrancheCount() {
+    return Math.min(this.quoteLines.length, 20);
+  }
+
+  get isAddTrancheDisabled() {
+    return (
+      this.isSaveDisabledByStatus ||
+      !this.hasQuoteLines ||
+      this.plannedTranches.length >= this.maximumTrancheCount
+    );
+  }
+
+  get showAddTrancheButton() {
+    const hasBundleDerivedTranches = this.plannedTranches.some(
+      (tranche) => tranche.canDelete === false
+    );
+    return (
+      !hasBundleDerivedTranches &&
+      this.hasPlannedTranches &&
+      this.currentTrancheIndex === this.plannedTranches.length - 1
+    );
   }
 
   get showDeleteCurrentPage() {
     if (
       this.isEditMode &&
       this.hasPlannedTranches &&
-      this.currentTranche.id &&
-      !this.hasCurrentSelectedLines
+      this.currentTranche.canDelete !== false &&
+      !this.hasCurrentSelectedLines &&
+      this.plannedTranches.length > 1
     ) {
       return true;
     }
@@ -185,10 +260,16 @@ export default class QuoteCreateTranche extends LightningElement {
     return !this.isEditable || this.isLoading;
   }
 
+  get isTrancheCountDisabled() {
+    return this.isSaveDisabledByStatus || !this.hasQuoteLines;
+  }
+
   get isSaveDisabled() {
     return (
       this.isSaveDisabledByStatus ||
       !this.hasPlannedTranches ||
+      this.hasDuplicateDueDates ||
+      this.hasPastDueDates ||
       this.plannedTranches.some(
         (tranche) =>
           !tranche.name?.trim() ||
@@ -249,7 +330,20 @@ export default class QuoteCreateTranche extends LightningElement {
       this.currentTrancheIndex = 0;
       return;
     }
-    const normalizedCount = Math.min(count, 20);
+    const normalizedCount = Math.min(count, this.maximumTrancheCount);
+    this.trancheCount = String(normalizedCount);
+    event.target.value = this.trancheCount;
+    const removedExistingTranches = this.plannedTranches
+      .slice(normalizedCount)
+      .filter((tranche) => tranche.id);
+    if (
+      removedExistingTranches.some((tranche) => tranche.canDelete === false)
+    ) {
+      this.pageValidationMessage =
+        "Le tranche ereditate dal bundle non possono essere eliminate.";
+      this.trancheCount = String(this.plannedTranches.length);
+      return;
+    }
     const removedExistingIds = this.plannedTranches
       .slice(normalizedCount)
       .map((tranche) => tranche.id)
@@ -299,6 +393,21 @@ export default class QuoteCreateTranche extends LightningElement {
     this.pageValidationMessage = "";
   }
 
+  handleAddTranche() {
+    if (this.isAddTrancheDisabled) {
+      return;
+    }
+
+    const index = this.plannedTranches.length;
+    this.plannedTranches = [
+      ...this.plannedTranches,
+      this.buildPlannedTranche(index)
+    ];
+    this.trancheCount = String(this.plannedTranches.length);
+    this.currentTrancheIndex = index;
+    this.pageValidationMessage = "";
+  }
+
   updateCurrentSelectedLineIds(lineIds) {
     this.plannedTranches = this.plannedTranches.map((tranche) => {
       if (tranche.index === this.currentTrancheIndex) {
@@ -309,17 +418,11 @@ export default class QuoteCreateTranche extends LightningElement {
   }
 
   handlePreviousTranche() {
-    if (!this.validateCurrentTranche()) {
-      return;
-    }
     this.pageValidationMessage = "";
     this.currentTrancheIndex = Math.max(0, this.currentTrancheIndex - 1);
   }
 
   handleNextTranche() {
-    if (!this.validateCurrentTranche()) {
-      return;
-    }
     this.pageValidationMessage = "";
     this.currentTrancheIndex = Math.min(
       this.plannedTranches.length - 1,
@@ -349,17 +452,6 @@ export default class QuoteCreateTranche extends LightningElement {
       nextPlannedTranches.length - 1
     );
     this.pageValidationMessage = "";
-  }
-
-  validateCurrentTranche() {
-    const inputs = [
-      ...this.template.querySelectorAll("[data-current-tranche-due-date]")
-    ];
-    const isValid = inputs.every((input) => input.reportValidity());
-    this.pageValidationMessage = isValid
-      ? ""
-      : "Completa la data di scadenza prima di passare a un'altra tranche.";
-    return isValid;
   }
 
   updatePlannedTranche(event, fieldName) {
@@ -393,6 +485,7 @@ export default class QuoteCreateTranche extends LightningElement {
       sequence: index + 1,
       name: tranche.trancheName,
       dueDate: tranche.dueDate || "",
+      canDelete: tranche.canDelete !== false,
       quoteLineItemIds: this.quoteLines
         .filter((line) => line.trancheId === tranche.trancheId)
         .map((line) => line.id)
@@ -489,6 +582,17 @@ export default class QuoteCreateTranche extends LightningElement {
         wasEditMode ? "Tranche aggiornate." : "Tranche create correttamente.",
         "success"
       );
+      const changedRecordIds = new Set([
+        this.recordId,
+        ...this.quoteLines.map((line) => line.id),
+        ...this.existingTranches.map((tranche) => tranche.trancheId)
+      ]);
+      await notifyRecordUpdateAvailable(
+        [...changedRecordIds].filter(Boolean).map((recordId) => ({ recordId }))
+      );
+      publish(this.messageContext, QUOTE_PRODUCTS_CHANGED, {
+        quoteId: this.recordId
+      });
       this.closeAndRefresh();
     } catch (error) {
       this.showToast("Errore", this.reduceError(error), "error");
@@ -502,8 +606,8 @@ export default class QuoteCreateTranche extends LightningElement {
   }
 
   closeAndRefresh() {
-    this.dispatchEvent(new CloseActionScreenEvent());
     this.dispatchEvent(new RefreshEvent());
+    this.dispatchEvent(new CloseActionScreenEvent());
   }
 
   showToast(title, message, variant) {

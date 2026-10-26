@@ -60,7 +60,18 @@ private class BundleProductAssignmentControllerTest {
     Id bundleId,
     List<BundleProductAssignmentController.ComponentInput> components
   ) {
-    return save(bundleId, null, components);
+    Decimal spreadTotal;
+    if (components != null) {
+      spreadTotal = 0;
+      for (
+        BundleProductAssignmentController.ComponentInput component : components
+      ) {
+        if (component != null && component.spreadPrice != null) {
+          spreadTotal += component.spreadPrice;
+        }
+      }
+    }
+    return save(bundleId, spreadTotal, components);
   }
 
   private static BundleProductAssignmentController.BundleContext save(
@@ -290,9 +301,7 @@ private class BundleProductAssignmentControllerTest {
   }
 
   @isTest
-  // Since 7eab757 the configurator no longer sends a selling price, and
-  // saveComponents ignores the fixedPrice argument it still accepts.
-  static void saveComponentsLeavesBundleSellingPriceAlone() {
+  static void saveComponentsUpdatesBundleSellingPrice() {
     Product2 bundle = makeBundle('Stage bundle', 1000);
     insert bundle;
     Product2 item = makeItem('Item A', 'TEST-A', 600);
@@ -303,14 +312,14 @@ private class BundleProductAssignmentControllerTest {
       bundle.Id,
       1200,
       new List<BundleProductAssignmentController.ComponentInput>{
-        input(null, item.Id, 600)
+        input(null, item.Id, 1200)
       }
     );
     Test.stopTest();
 
-    System.assertEquals(1000, context.fixedPrice);
+    System.assertEquals(1200, context.fixedPrice);
     System.assertEquals(
-      1000,
+      1200,
       [
         SELECT Bundle_Selling_Price__c
         FROM Product2
@@ -319,9 +328,9 @@ private class BundleProductAssignmentControllerTest {
       .Bundle_Selling_Price__c
     );
     System.assertEquals(
-      400,
+      0,
       context.variance,
-      'Variance should use the stored bundle selling price'
+      'The saved component spread should reconcile to the edited bundle price'
     );
   }
 

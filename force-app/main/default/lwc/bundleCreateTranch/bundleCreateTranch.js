@@ -121,6 +121,14 @@ export default class BundleCreateTranch extends LightningElement {
     return this.currentSelectedComponents.length > 0;
   }
 
+  get showEmptyTranchWarning() {
+    return (
+      this.isEditMode &&
+      this.hasPlannedTranches &&
+      !this.hasCurrentSelectedComponents
+    );
+  }
+
   get hasAvailableComponents() {
     return this.availableComponents.length > 0;
   }
@@ -131,6 +139,27 @@ export default class BundleCreateTranch extends LightningElement {
     );
     return this.components.some(
       (component) => !selectedComponentIds.has(component.id)
+    );
+  }
+
+  get hasDuplicateDueDates() {
+    const dueDates = this.plannedTranches
+      .map((tranch) => tranch.dueDate)
+      .filter(Boolean);
+    return new Set(dueDates).size !== dueDates.length;
+  }
+
+  get minimumDueDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  get hasPastDueDates() {
+    return this.plannedTranches.some(
+      (tranch) => tranch.dueDate && tranch.dueDate < this.minimumDueDate
     );
   }
 
@@ -156,18 +185,12 @@ export default class BundleCreateTranch extends LightningElement {
     return this.isLoading || this.plannedTranches.length <= 1;
   }
 
-  get showDeleteCurrentPage() {
-    if (
-      this.isEditMode &&
-      this.hasPlannedTranches &&
-      this.currentTranch.id &&
-      !this.hasCurrentSelectedComponents
-    ) {
-      return true;
-    }
+  get isAddTranchDisabled() {
+    return this.isLoading || this.plannedTranches.length >= 20;
+  }
 
+  get showDeleteCurrentPage() {
     return (
-      !this.isEditMode &&
       this.hasPlannedTranches &&
       !this.hasCurrentSelectedComponents &&
       !this.hasAvailableComponents &&
@@ -179,6 +202,8 @@ export default class BundleCreateTranch extends LightningElement {
     return (
       this.isLoading ||
       !this.hasPlannedTranches ||
+      this.hasDuplicateDueDates ||
+      this.hasPastDueDates ||
       this.plannedTranches.some(
         (tranch) =>
           !tranch.name?.trim() ||
@@ -276,6 +301,21 @@ export default class BundleCreateTranch extends LightningElement {
 
   handleSelectEditTranch(event) {
     this.currentTranchIndex = Number(event.currentTarget.dataset.index);
+    this.pageValidationMessage = "";
+  }
+
+  handleAddTranch() {
+    if (this.isAddTranchDisabled) {
+      return;
+    }
+
+    const index = this.plannedTranches.length;
+    this.plannedTranches = [
+      ...this.plannedTranches,
+      this.buildPlannedTranch(index)
+    ];
+    this.tranchCount = String(this.plannedTranches.length);
+    this.currentTranchIndex = index;
     this.pageValidationMessage = "";
   }
 

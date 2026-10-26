@@ -6,8 +6,8 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-07-31
-updated: 2026-09-21
-requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10]
+updated: 2026-10-14
+requirement: [SAL-07, SAL-06, SAL-08, SAL-09, SAL-10, SAL-20]
 source: meetings/open-items.md row 59
 ---
 
@@ -60,6 +60,88 @@ not.
 
 Downstream of [OI-68](OI-68%20Quote%20acceptance%20landing%20page.md) in
 [the quote to order flow](../flows/The%20quote%20to%20order%20flow.md).
+
+## 2026-10-12 - the two recontact stages and closed-lost cascade are built in source
+
+The user supplied the current task/Opportunity rules directly and asked for the
+missing generic **`Da ricontattare`** stage in addition to the existing
+**`Da ricontattare - Prev. inviato`** stage.
+
+Source now contains:
+
+- `Da ricontattare`, with a mandatory generic reason and an automatic date;
+- `Da ricontattare - Prev. inviato`, with a separate mandatory reason and
+  automatic date;
+- the editable five-day Quote expiry default and the existing daily ageing job;
+- a `Preventivo Inviato` task, due the next day, plus a configurable client
+  reminder email, processed only after 48 hours from the successful acceptance
+  email send and only while the Quote is neither `Accettato` nor `Rifiutato`;
+- send-cycle management: a successful acceptance-email send stores its exact
+  send timestamp and resets the reminder flag; returning the Quote to `Bozza`
+  preserves that timestamp as the audit record of the last send, marks the old
+  reminder cycle as processed, and clears the negotiation date (and the old
+  expiry unless the tutor entered a new one). Only the later successful resend
+  writes a new timestamp and starts a fresh 48-hour cycle;
+- a bulk cascade that changes every related Quote to `Rifiutato` when the
+  Opportunity moves to `Chiusa/Persa`.
+
+The implementation was deployed to Pienissimo UAT on 2026-10-12
+(`0AfMA00000Ctt1l0AB`, `NoTestRun`). The existing `Quote Negotiation Aging -
+Daily` schedule remained active after deployment: state `WAITING`, next run
+2026-10-13 at 03:00 CEST. Nothing was committed or deployed to Prod. The
+supplied screenshot says Marco Montesi's final reminder copy is still to be
+provided; the deployed source template is therefore deliberately editable.
+
+A later live check on 2026-10-12 found no schedule by that name. The user asked
+to schedule it, so `QuoteNegotiationAgingBatch.scheduleDaily()` created job
+`08eMA00000YU7OfYAL`. It is `WAITING` on cron `0 0 3 * * ?`, with its first run
+on 2026-10-13 at 03:00 CEST.
+
+The first UAT deployment incorrectly measured the reminder from entry into `In
+Trattativa`. The source was corrected the same day after the user clarified
+that the two days start from the actual email send; the correction's deployment
+to Pienissimo UAT succeeded as `0AfMA00000CttRZ0AZ` (`NoTestRun`).
+The follow-up correction preserving the last-send timestamp in `Bozza` was
+deployed to UAT as `0AfMA00000Cttcr0AB` (`NoTestRun`).
+
+The new stage was active in UAT and included in `Sales_Process`. An initial
+inspection also found the org-only standard Path `Default_Opportunity` stale;
+it was retrieved into source and deployed as `0AfMA00000CtuNd0AJ`. The user then
+clarified that the visible path is actually the custom `opportunityCustomPath`
+LWC. That component hardcoded five stages and was the effective cause. It now
+renders `Da ricontattare` as the sixth stage and collects the correct separate
+reason/date pair for both recontact stages. The LWC correction was deployed to
+UAT as `0AfMA00000Ctudl0AB` (`NoTestRun`).
+
+The user subsequently clarified that neither date is user-entered. On every
+transition into the corresponding recontact stage, the Opportunity before
+trigger stamps that stage's date with `Date.today()`. The custom Path asks only
+for the appropriate reason, and both date fields are read-only on the layout
+and in `Opportunity_Management`. This correction was deployed to UAT as
+`0AfMA00000Cttxq0AB` (`NoTestRun`), then included in the consolidated current
+Opportunity/Quote deployment `0AfMA00000CtvMv0AJ`.
+
+The Opportunity Lightning record page now also exposes the four recontact
+fields through Dynamic Forms with stage filters. The generic reason and its
+read-only automatic date appear only in `Da ricontattare`; the preventive
+reason and its read-only automatic date appear only in `Da ricontattare - Prev.
+inviato`. They remain present on the underlying page layout as a fallback for
+the mobile record-detail component. The page validation
+`0AfMA00000Ctwdx0AB` and UAT deployment `0AfMA00000CtwhB0AR` both succeeded
+with `NoTestRun`.
+
+The day-two Task path was exercised against Quote `00000170` on 2026-10-12.
+The first batch run selected the Quote and marked its reminder flag, but the
+Task row failed partial DML because Opportunity `212332` belonged to an inactive
+user (`INACTIVE_OWNER_OR_USER`). `QuoteNegotiationAgingBatch` now keeps the
+Opportunity owner when active and otherwise assigns the Task and email target
+to the active batch-running user. Deployment `0AfMA00000CtwhC0AR` succeeded in
+Pienissimo Partial. After resetting only this Quote's reminder flag and
+backdating its successful-send timestamp to 2026-10-09, batch job
+`707MA00000lzquFYAQ` completed 1/1 with zero errors and created Task
+`00TMA0000097UiX2AU` on Opportunity `212332`, due 2026-10-13 with subtype
+`Da Ricontattare`; the Quote reminder flag is now true. Nothing was deployed to
+Prod.
 
 ## 2026-08-24 - fully specified, and carrying one contradiction
 
@@ -409,3 +491,92 @@ something else.
 ⚠ **This row has been unruled for eleven days** while four classes hard-code the
 status spellings and a fifth state is now added on top. **Quote UAT is 25
 September.**
+
+## 🟢 2026-09-28 - `rifiutato` is settled: the state stays, the reason carries the meaning
+
+The wording reopened on 24/09 — Fabrizio Paganelli and Marco Montesi both objected
+that a superseded quote marked `rifiutato` reads as the tutor's failure — was
+resolved with the client at
+[the 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(`01:00:00`).
+
+Fabrizio Paganelli restated the objection and his preferred word: _"a me mi piace il
+termine sostituito … perché rifiutato, sembra qualche cosa che è incapace il tutor
+da vendere."_
+
+Aurel Mrruku held the state on a case Fabrizio Paganelli accepted — a **single**
+quote on a lost opportunity genuinely _is_ refused — and moved the distinction into
+the reason instead:
+
+> _"Invece di scrivere per scelta [tra] l'altro preventivo, facciamo sostituito."_
+
+🔑 **The agreed shape:**
+
+- The quote state stays **`Rifiutato`**. No sixth value, no rename.
+- The accompanying flag/reason changes from **`per scelta altro preventivo`** to
+  **`sostituito da altro preventivo`**. Elena Spini took it down in those words.
+- When one quote is signed, **the others move to `Rifiutato` carrying that reason
+  automatically**. Aurel Mrruku noted the statistic then falls out of the flag
+  rather than needing a separate state.
+
+🟢 **Two related confirmations in the same passage**, correcting an assumption
+Fabrizio Paganelli had stated:
+
+- Several quotes can be worked **in parallel** on one opportunity — it is not a
+  strict version chain. Aurel Mrruku: _"tu puoi contemporaneamente lavorare anche
+  su n preventivi."_
+- A quote can be **edited and made primary** rather than superseded by a new one,
+  _"per non perdere tempo a rifare tutto il giro."_
+
+🔴 **Nothing is built and nothing is labelled.** The `rifiutato` label question this
+row carries against the org is unchanged; what exists now is an agreed wording for
+the reason field. See
+[OI-184](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md).
+
+## ⚠ 2026-10-12 (nightly sweep) - the register side of this build is a separate row
+
+The build described above is recorded as its author recorded it and nothing here
+disputes it. One consequence of the same commit is tracked separately:
+`96d77de` also rewrote **`SAL-20`** in
+`requirements/pienissimo-requirements.yaml`, in `REQUIREMENTS.md` and in
+**`REQUISITI.it.md`** — the text the client signs — and added three rules to the
+register's `opportunity` state machine, including the Chiusa/Persa quote cascade.
+The requirement's `status` is still `to_confirm` and the register's `version` is
+still `1.6`.
+
+See [OI-227](OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md).
+⚠ The question there is **not** whether the behaviour is right; it is whether the
+client agreed the words, and the record cannot currently say.
+
+
+## 2026-10-14 — the 5-day expiry was questioned in the room and not answered
+
+**Two facts from [the 14/10 e2e](../meetings/2026-10-14%20UAT%20Test%20e2e.md).**
+
+🟢 **The default is confirmed as built and as editable** (`00:09:56`): the
+Opportunity name is free text and the close date defaults to **5 days** from
+creation, with tutors able to change it by hand against deadlines or events.
+
+🔴 **And then the obvious question was asked and left open** (`00:56:56`): Elisa
+Migliano _"solleva il tema della gestione delle accettazioni dei preventivi oltre
+il termine di scadenza dei 5 giorni"_. **The record carries the question and no
+answer** — nobody in the session states what happens when a customer accepts on
+day six, whether the portal still permits it, or whether the quote state blocks
+it.
+
+⚠ **It intersects two things already open.** The 5-day window is one of the
+timings Marco Montesi's notification list attached customer-facing messages to
+([OI-222](OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md)),
+and those messages have just been scoped out as extra-perimetro — so the customer
+may receive **no** expiry warning while the acceptance behaviour past expiry is
+undefined. And the ageing batch that acts on negotiating quotes is the one whose
+run-as user is unresolved
+([OI-228](OI-228%20The%20nightly%20schedulers%20have%20no%20run-as%20user%20and%20the%20first%20run%20is%20imminent.md)).
+
+⚠ **Also of record from the same session, and unresolved**: Elisa Migliano hit
+**view and edit permission problems** on Salesforce while configuring the new
+products, which Aurel Mrruku fixed by updating the administrative profile's
+permissions mid-session (`00:32:45`). **Which permissions, on which profile, is
+not stated**, and the change was made live in a client session — relevant to
+[OI-186](OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)
+and to anything that must be reproduced in Prod.

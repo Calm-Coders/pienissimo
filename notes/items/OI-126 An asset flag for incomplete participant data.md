@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-07
-updated: 2026-09-08
+updated: 2026-10-01
 depends_on: [OI-78]
 requirement: BIG-06
 source: notes/meetings/2026-09-07 Interna Flussi MKT.md
@@ -99,3 +99,80 @@ declined to invent a field name, and so does this row.
 
 ⚠ It interacts with the tag scheme: `<EVENT>_I` is set **per contact on first
 completion**, which is the same aggregate seen from the marketing side.
+
+## 2026-09-29 — the send rule was designed without this row in the room
+
+At [the pre-UAT marketing session](../meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+Aurel Mrruku and Fabrizio Mastracci agreed tickets are sent **only when every
+participant is named** — and neither raised the client's own exit rule quoted above,
+which says a buyer who completes one of three leaves the funnel.
+
+🔴 So the two documents now disagree about the same buyer: the client's says stop
+chasing them, the 29/09 design says send them nothing. Split out as
+[OI-196](OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md)
+and put on the **30/09** client agenda.
+
+⚠ **This row is still unowned and unbuilt.** No completeness flag exists on `Asset`
+or on `Event_Invitation__c` in `force-app` at `4c9b121`, and the aggregate the
+segment actually needs — tickets held versus tickets completed, per contact per
+campaign — has still not been chosen or placed.
+
+## 🔑 2026-09-30 — the send flag was specified; this row's aggregate still was not
+
+Two sessions on 30/09 settled the **send** side and left this row's question where
+it was.
+
+🟢 **The flag exists as a specification now.** At
+[the Post UAT](../meetings/2026-09-30%20Post%20UAT.md) (`01:06:17`) Elena Spini
+recapped: on confirmation of **at least one** participant's data, Aurel Mrruku
+sets a **boolean flag to `true`**, and Marketing Cloud queries for records
+carrying it (`01:07:56`). After the send, Fabrizio Mastracci writes a field back on
+the asset so the ticket is not re-sent. Carried as
+[OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md).
+
+🟢 **The 29/09 contradiction this row raised is resolved in the client's favour.**
+Fabrizio Paganelli and Rebecca Marmo ruled that a buyer who names three of five
+**gets the three**, the other two staying `Disponibile` until burned near the
+event — so the client's own exit rule, quoted above from
+`SEGMENTI FUNNEL BIGLIETTI.docx`, stands and the all-or-nothing design is dead.
+See [OI-196](OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md).
+
+🔑 **And the reminder ladder turns out not to work the way this row assumed.**
+Rebecca Marmo runs it with configured delays — _"metto un ritardo orario che
+decido io di 2 5 7 8 10 giorni"_ — and **already checks whether the contact has
+made partial registrations**: _"io controllo anche se ha già effettuato delle
+iscrizioni, cioè se ha già nominato altri biglietti."_ She was describing existing
+Marketing Cloud practice, not a requirement on Salesforce.
+
+⚠ **So the question narrows rather than closes.** What she checks today is
+completeness as Marketing Cloud can see it; what this row asks for is the
+Salesforce-side aggregate — **tickets held versus tickets completed, per contact
+per campaign** — and that was still not chosen, named or placed in either session.
+
+🔴 **Nothing was built.** At `DevMain` `0b6b828` there is still no completeness
+flag on `Asset` or on `Event_Invitation__c`, and no send flag either.
+
+
+## 🔴 2026-10-01 - the reminder stop rule is an open point, and it is unanswered
+
+Open point 3 of
+[the written logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md):
+
+> _"Reminder: si interrompono quando il referente ha nominato almeno un biglietto
+> dell'ordine o della singola edizione?"_
+
+That is this row's aggregate question, asked in writing for the first time — and
+**order-versus-edition is exactly the granularity this row says is unplaced**.
+🔴 It was removed from the copy sent to the client
+([OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md)),
+so Rebecca Marmo, who runs the ladder, has not been asked.
+
+⚠ **The internal review makes it worse than a gap.** Its problem #3: when a later
+tranche unlocks new assets, no mail is triggered, **and** Rebecca Marmo's existing
+filter skips anyone who has already named someone. A referent who names one
+ticket in tranche one is therefore never told that tranche two's tickets are
+waiting, and never chased about them.
+
+🟢 The new field `Asset.Ready_for_Ticket_Dispatch__c` is a per-asset
+confirmed-or-not signal and is the natural input to the aggregate this row wants.
+Nothing reads it for that purpose yet.

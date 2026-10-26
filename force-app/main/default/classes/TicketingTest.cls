@@ -188,6 +188,71 @@ private class TicketingTest {
   }
 
   @isTest
+  static void wooOrderRollsBackWhenTicketMappingIsMissing() {
+    System.runAs(TestDataFactory.runner()) {
+      TestDataFactory.activateStandardPricebook();
+      Product2 product = TestDataFactory.item(
+        'Ticket senza mappatura',
+        'SC-NOMAP'
+      );
+      product.Genera_Biglietto__c = true;
+      update product;
+      TestDataFactory.standardEntry(product.Id, 75);
+      Account accountRecord = TestDataFactory.azienda('Cliente No Map');
+      Opportunity opportunityRecord = TestDataFactory.opportunity(
+        accountRecord.Id
+      );
+
+      Test.startTest();
+      callWoo(wooPayload('wc_order_nomap', 'SC-NOMAP', opportunityRecord.Id));
+      Test.stopTest();
+
+      System.assertEquals(
+        500,
+        RestContext.response.statusCode,
+        'Missing ticket mapping should return an integration error.'
+      );
+      System.assertEquals(
+        0,
+        [
+          SELECT COUNT()
+          FROM Order
+          WHERE WooCommerce_Order_Key__c = 'wc_order_nomap'
+        ],
+        'Failed WooCommerce order creation must roll back the parent Order.'
+      );
+      System.assertEquals(
+        1,
+        [
+          SELECT COUNT()
+          FROM Integration_Log__c
+          WHERE
+            Flow_Name__c = 'WoocommerceOrderService.createOrder'
+            AND Is_Error__c = TRUE
+        ],
+        'The rollback must not remove the error integration log.'
+      );
+      Integration_Log__c logRow = [
+        SELECT Is_Error__c, Exception_Message__c
+        FROM Integration_Log__c
+        WHERE Flow_Name__c = 'WoocommerceOrderService.createOrder'
+        LIMIT 1
+      ];
+      System.assertEquals(
+        true,
+        logRow.Is_Error__c,
+        'The saved integration log should be marked as an error.'
+      );
+      System.assert(
+        logRow.Exception_Message__c.contains(
+          'Nessuna mappatura edizione trovata'
+        ),
+        'The integration log should keep the ticket-mapping failure reason.'
+      );
+    }
+  }
+
+  @isTest
   static void wooOrderRejectsInvalidPayloads() {
     System.runAs(TestDataFactory.runner()) {
       TestDataFactory.activateStandardPricebook();
@@ -290,6 +355,14 @@ private class TicketingTest {
       'Ingresso',
       TestDataFactory.unique('ART-TKT')
     );
+    // Event Links are created per Order-Campaign pair, so every ticket needs
+    // an order line.
+    Order orderRecord = TestDataFactory.order(result.accountRecord.Id);
+    OrderItem line = TestDataFactory.orderItem(
+      orderRecord.Id,
+      TestDataFactory.standardEntry(product.Id, 100),
+      Math.max(ticketCount, 1)
+    );
     result.tickets = new List<Asset>();
     for (Integer i = 1; i <= ticketCount; i++) {
       result.tickets.add(
@@ -297,8 +370,9 @@ private class TicketingTest {
           Name = 'Biglietto ' + i,
           AccountId = result.accountRecord.Id,
           Product2Id = product.Id,
+          Order_Product__c = line.Id,
           Campaign__c = result.campaign.Id,
-          Status = 'Ordinato',
+          Status = 'Disponibile',
           RecordTypeId = TestDataFactory.recordTypeId('Asset', 'Ticket')
         )
       );
@@ -356,13 +430,37 @@ private class TicketingTest {
         ParticipantRegistrationController.findContact(inv.token, 'x@y.it').found
       );
 
+      Test.startTest();
+      ParticipantRegistrationController.PageResponse partiallySaved = ParticipantRegistrationController.savePage(
+        inv.token,
+        new List<ParticipantRegistrationController.ParticipantInput>{
+          participant(inv.tickets[0].Id, 'noto@example.com')
+        }
+      );
+      System.assertEquals('READY', partiallySaved.state);
+      System.assertEquals(2, partiallySaved.tickets.size());
+      System.assertEquals(
+        'Assegnato',
+        [SELECT Status FROM Asset WHERE Id = :inv.tickets[0].Id].Status
+      );
+      System.assertEquals(
+        'Disponibile',
+        [SELECT Status FROM Asset WHERE Id = :inv.tickets[1].Id].Status
+      );
+
       ParticipantRegistrationController.PageResponse saved = ParticipantRegistrationController.savePage(
         inv.token,
         new List<ParticipantRegistrationController.ParticipantInput>{
-          participant(inv.tickets[0].Id, 'noto@example.com'),
           participant(inv.tickets[1].Id, 'nuovo.partecipante@example.com')
         }
       );
+      // Delivers the document requests; their trigger queues the first job.
+      Test.getEventBus().deliver();
+      Test.stopTest();
+      Set<Id> ticketIds = new Set<Id>();
+      for (Asset ticket : inv.tickets) {
+        ticketIds.add(ticket.Id);
+      }
 
       System.assertEquals('COMPLETED', saved.state);
       System.assertEquals(
@@ -377,6 +475,52 @@ private class TicketingTest {
         2,
         [SELECT COUNT() FROM CampaignMember WHERE CampaignId = :inv.campaign.Id]
       );
+      System.assertEquals(
+        2,
+        [
+          SELECT COUNT()
+          FROM ContentVersion
+          WHERE FirstPublishLocationId IN :ticketIds AND Title LIKE 'Ticket QR%'
+        ]
+      );
+      // One document per job: the first job files one, the next is chained.
+      System.assertEquals(
+        1,
+        [
+          SELECT COUNT()
+          FROM ContentDocumentLink
+          WHERE
+            LinkedEntityId IN :ticketIds
+            AND ContentDocument.Title LIKE 'Documenti partecipazione%'
+        ]
+      );
+
+      PageReference participantDocumentPage = new PageReference(
+        '/apex/ParticipantTicketPdf'
+      );
+      participantDocumentPage.getParameters()
+        .put('id', String.valueOf(inv.tickets[1].Id));
+      Test.setCurrentPage(participantDocumentPage);
+      ParticipantTicketPdfController pdfController = new ParticipantTicketPdfController();
+      System.assertEquals('Tappa Milano', pdfController.getEventName());
+      System.assertEquals('Paolo Gialli', pdfController.getParticipantName());
+      System.assertEquals(
+        inv.accountRecord.Name,
+        pdfController.getAccountName()
+      );
+      System.assertEquals('Biglietto 2', pdfController.getTicketName());
+
+      ParticipantTicketDocumentJob.generate(ticketIds);
+      System.assertEquals(
+        2,
+        [
+          SELECT COUNT()
+          FROM ContentDocumentLink
+          WHERE
+            LinkedEntityId IN :ticketIds
+            AND ContentDocument.Title LIKE 'Documenti partecipazione%'
+        ]
+      );
     }
   }
 
@@ -389,9 +533,6 @@ private class TicketingTest {
 
       List<List<ParticipantRegistrationController.ParticipantInput>> invalid = new List<List<ParticipantRegistrationController.ParticipantInput>>{
         null,
-        new List<ParticipantRegistrationController.ParticipantInput>{
-          participant(inv.tickets[0].Id, 'a@example.com')
-        },
         new List<ParticipantRegistrationController.ParticipantInput>{
           participant(inv.tickets[0].Id, 'a@example.com'),
           participant(inv.tickets[0].Id, 'b@example.com')
@@ -418,6 +559,16 @@ private class TicketingTest {
         new List<ParticipantRegistrationController.ParticipantInput>{
           participant(inv.tickets[0].Id, 'stessa@example.com'),
           conflicting
+        }
+      );
+      ParticipantRegistrationController.ParticipantInput invalidPhone = participant(
+        inv.tickets[0].Id,
+        'telefono@example.com'
+      );
+      invalidPhone.phone = 'non-un-numero';
+      invalid.add(
+        new List<ParticipantRegistrationController.ParticipantInput>{
+          invalidPhone
         }
       );
       for (
@@ -499,13 +650,12 @@ private class TicketingTest {
     System.runAs(TestDataFactory.runner()) {
       Invitation inv = invitation(1);
       Event_Invitation__c invitationRecord = [
-        SELECT Id, Token__c, Status__c, URL_Status__c, Send_After__c
+        SELECT Id, Token__c, Status__c, URL_Status__c
         FROM Event_Invitation__c
         WHERE Token__c = :inv.token
       ];
       System.assertEquals(64, invitationRecord.Token__c.length());
       System.assertEquals('Pending', invitationRecord.Status__c);
-      System.assertNotEquals(null, invitationRecord.Send_After__c);
 
       invitationRecord.Token__c = null;
       update invitationRecord;

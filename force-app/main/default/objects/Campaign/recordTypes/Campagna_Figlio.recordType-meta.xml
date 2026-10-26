@@ -2,11 +2,19 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Campagna_Figlio</fullName>
     <active>true</active>
-    <label>Campagna Figlio</label>
+    <label>Edizione</label>
     <picklistValues>
         <picklist>Anno_Accademico__c</picklist>
         <values>
-            <fullName>2026/2027</fullName>
+            <fullName>2026%2F2027</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>2027%2F2028</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2028%2F2029</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -14,7 +22,7 @@
         <picklist>Tipologia_Evento__c</picklist>
         <values>
             <fullName>Live</fullName>
-            <default>false</default>
+            <default>true</default>
         </values>
         <values>
             <fullName>Online</fullName>

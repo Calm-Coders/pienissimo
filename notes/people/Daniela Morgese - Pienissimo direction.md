@@ -3,7 +3,7 @@ id: person-daniela-morgese
 type: person
 status: active
 org: Pienissimo
-updated: 2026-09-09
+updated: 2026-10-02
 ---
 
 # Daniela Morgese - Pienissimo direction
@@ -51,3 +51,16 @@ to decide on ([OI-83](../items/OI-83%20No%20phase%202%20estimate.md)). What she 
 been sent presents the perimeter as settled and does not mention that her own
 company has disputed part of it since July —
 [the dispute](../risks/Risk%20-%20the%20phase%202%20scope%20dispute%20is%20unresolved.md).
+
+## 2026-10-02 - named as the approval gate for the integration logics
+
+At [the 02/10 client UAT](../meetings/2026-10-02%20UAT%20WooCommerce%20e%20Bundle.md)
+the formal approval of the integration logics was made conditional on **Daniela's
+verification and validation on Monday**. Fabrizio Paganelli, Elisa Migliano and
+Sabatino Rinaldi review the WooCommerce logic document first and then present it to
+her; Sabatino Rinaldi separately owes a check with her that the link, tickets and
+logics hang together.
+
+⚠ **The transcript and the Gemini notes say only "Daniela".** She is the only
+Daniela in the records and the role fits, but no source in this sweep states the
+surname. Treat the identification as probable, not attested.

@@ -1,0 +1,281 @@
+---
+id: OI-246
+type: open-item
+status: open
+owner: Elena Spini
+with: Marco Montesi
+org: both
+raised: 2026-10-15
+updated: 2026-10-21
+depends_on: [OI-240, OI-186]
+blocks: [go-live]
+severity: gating
+source: notes/meetings/2026-10-15 Migrazione e Go-Live.md
+---
+
+# OI-246 - Key User training cannot be completed before the new go-live
+
+**The client's product lead said on the record that seven or eight commercial
+staff cannot be trained between 15 October and 2 November, and that he can only
+sign off the administrative half. ROMI's plan, sent two hours later, schedules
+the training into those two weeks and says nothing about the objection.**
+
+Stated at [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+(`00:10`, `00:40`–`00:45`).
+
+## What the client said
+
+Fabrizio Paganelli, twice:
+
+> _"se noi vogliamo iniziare a usare Sales force il due, quindi con tutto il
+> ciclo degli ordini, la fatturazione eccetera eccetera, bisogna che tutte le
+> persone internamente siano formate su questo e da oggi che il 15 di ottobre al
+> 2 di novembre non ce la facciamo … Non non ce la facciamo a a formare 7-8
+> persone che ci sono di là nel commerciale ad utilizzare Sales Force entro il 2
+> di novembre."_
+
+> _"son sicuro che per il due non ce la facciamo, dai. Però, ecco, lavoriamo per
+> quello, però non illudiamoci di riuscire a farcela."_
+
+And on the limit of what his own sign-off is worth:
+
+> _"Va bene anche che il 27 ci diciamo sì andiamo in go[-l]ive oppure no … però
+> bisogna che anche le altre persone … abbiano l'utenza e siano in qualche modo
+> formate nell'utilizzo della piattaforma perché sennò te lo dico io, sì, ma te
+> lo dico solo lato ordini e fatturazione che è un po' limitativo."_
+
+🔑 **So the 27 October Go/No-Go would be given by two people, for one third of
+the system.** Fabrizio Paganelli is confident he and Elisa Migliano can finish
+the administrative tests in the week 19–23 October. Rebecca Marmo, Marco Montesi
+and Sabatino Rinaldi have no login at all.
+
+⚠ **Capacity is the stated cause, and he put it bluntly**: _"Siamo solo io e
+lei"_ — he and Elisa Migliano are the whole administration, and _"ci siamo
+trovati a fare i call da soli, a portare avanti il progetto da soli
+praticamente"_. He was explicit that the remark was aimed at his own side.
+
+## ROMI's plan for it
+
+**Train the trainer.** Elena Spini: show the platform to one master user who then
+teaches the agents, rather than running group sessions — _"io, Aurel, anche voi,
+insomma una call in cui facciamo vedere a Marco come dovrà fare dal due in
+avanti i preventivi, … e poi sarà lui a insegnare direttamente agli utenti"_.
+Her reason is that she would use vocabulary the users do not have, where Marco
+Montesi can give _"esempi un po' più concreti e reali nei casi d'uso"_.
+
+The shape, as proposed in the room:
+
+| When            | What                                                     |
+| --------------- | -------------------------------------------------------- |
+| Mon **19/10**   | Elena Spini and Marco Montesi one to one, lead flow      |
+| 19–23/10        | Fabrizio Paganelli and Elisa Migliano finish admin tests |
+| **26–30/10**    | dedicated training sessions, _"se volete"_               |
+| **27/10**       | Go/No-Go                                                 |
+| **02/11**       | go-live                                                  |
+
+_"abbiamo comunque ore di formazione a disposizione"_ — contracted training
+hours exist. ⚠ **How many, and whether they cover eight users, is in no source
+this repository holds.**
+
+Fabrizio Paganelli accepted the shape conditionally and pushed the decision to
+the right person: _"anche qui ti dovrebbe rispondere Marco e non io"_.
+
+## 🔴 Why it is a gating row
+
+1. **The written plan does not carry the objection.** The 17:35:47Z mail
+   ([OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md))
+   presents the two weeks as _"per svolgere le sessioni di formazione dedicate ai
+   Key User"_ and asks only for acknowledgement. The client has not been told
+   that ROMI heard him say it will not fit.
+2. **Training depends on users, which depend on profiles, which do not exist.**
+   [OI-240](OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)
+   is answered only by giving Marco Montesi **System Admin** as an interim, and
+   [OI-186](OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)
+   records that the user list and profiles were never agreed. **Training eight
+   commercial users on a profile nobody has defined cannot start**, and Aurel
+   Mrruku named exactly that as the hard part: _"le cose che io mi aspetto che
+   siano difficili da spiegare [sono] i campi che non vedono, oppure se abbiamo
+   dato qualche permesso in più, qualche permesso in meno."_
+3. **The same two weeks carry the test completion, the permissions build, the
+   production deployment and the migration rehearsal.** They are not two weeks of
+   training.
+4. ⚠ **Marketing is held back from autonomous testing** in the same session —
+   configuration unfinished — so one of the three audiences cannot even begin.
+
+Closing it means a named training schedule with Marco Montesi's agreement, a
+profile for the users being trained, and either a date the client accepts or a
+recorded decision to go live with the commercial team untrained.
+
+## 🟢 2026-10-16 — ROMI wrote the objection down, and the training window is now dated
+
+Elena Spini's `#tproj-pienissimo` status (16/10 19:20 CEST) does two things this
+row was waiting for.
+
+🟢 **It records Fabrizio Paganelli's objection in a ROMI-side written source**,
+where previously it existed only in the 15/10 transcript:
+
+> _"Fabrizio P. in call si è preso il ritardo, ma è il primo a dire che forse
+> per il 2 non ce la fanno."_
+
+🟢 **It dates the training**, which the project plan did not:
+
+| Window | Dates |
+| --- | --- |
+| Key-user tests | **19–23 October** |
+| Training | **26–30 October** |
+| Go/No-Go | **by 27 October** |
+| Go-live | **2 November** |
+
+### 🔴 What the dates expose
+
+🔑 **Go/No-Go falls on 27 October — the second day of a training week that runs
+to the 30th.** So the decision to go live is taken with training four days from
+finished, which is the same ordering problem this row was raised about, now with
+dates attached.
+
+🔴 **The capacity objection is untouched.** Fabrizio Paganelli's _"non ce la
+facciamo a formare 7-8 persone"_ gets a five-day window for 7–8 people across
+orders, invoicing, commercial and marketing. Nothing says how the five days are
+divided, by whom, or whether the people are available.
+
+🔴 **The contracted training hours are still unknown** — second run on the
+unreachable list — so nobody can say whether 26–30/10 is enough or even
+purchased.
+
+🔴 **Whether Marco Montesi accepts the train-the-trainer role is still
+unanswered**, second run. He was invited to the 16/10 session and did not
+attend; his own first access is now **19/10 15:00**
+([OI-240](OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)),
+**the first day of the key-user test week he would be training people for.**
+
+⚠ **And the sign-off perimeter is unchanged.** Fabrizio Paganelli can approve
+only orders and invoicing. The 16/10 session showed the marketing flows to
+Sabatino Rinaldi, Matteo Distaso and Rebecca Marmo for the first time — so three
+more people have now seen a flow they cannot sign off, and **none of them has a
+login.**
+
+
+## 🔴 2026-10-19 — the key-user week started, and the client sent ROMI away for it
+
+**Day one of the 19–23/10 key-user window happened, and the shape it will take is
+not the one this row assumed.** At [the 19/10 session](../meetings/2026-10-19%20Test%20UAT%20Commerciali.md)
+`01:26:48` Sabatino Rinaldi declined a ROMI meeting for the rest of the week:
+
+> _"non ce lo diamo il meeting questa settimana perché vogliamo testarla. Venerdì
+> ci riuniamo tutti e la testiamo da noi e dacci il tempo di usarla."_
+
+🔴 **So 20–23 October runs client-internal with no ROMI person present**, and
+their own review is **Friday 23/10** — the last day of the window and three days
+before training starts on 26/10. **Any defect they find on Friday has the
+weekend and nothing else before the training week opens.**
+
+🟢 **One ROMI session survives**: Wednesday 21/10 on historical order migration
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)),
+confirmed in writing by Fabrizio Paganelli. It is a migration meeting, not a
+training or UAT one.
+
+🔑 **And the train-the-trainer assumption has quietly changed hands.** This row
+and [OI-240](OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)
+both assumed Marco Montesi would train the tutors. In the session it is
+**Fabrizio Paganelli** who takes it: _"magari prima lo guardo con loro anche
+domani mattina che c'ho la riunione, magari fagli fare … la vendita standard"_,
+and _"io voglio che vedano il giro"_. **Nobody assigned this; he assigned
+himself**, and nobody asked Marco Montesi to do it.
+
+⚠ **Fabrizio Paganelli has not tested the hard half himself.** Same passage:
+_"dopo la vendita dei pacchetti, quelli tranche eccetera eccetera … ancora non ho
+neanche testato"_. So the person training the tutors on 20/10 has not yet run the
+bundle-and-tranche path he will have to teach.
+
+⚠ **Elisa Migliano's own access is still unverified** — she is working through
+Fabrizio Paganelli's login, and Elena Spini asked for a real test: _"giusto per
+poi effettivamente capire se anche lei poi riesce ad accedere"_.
+
+🔴 **The contracted training hours are still unknown**, third run with this
+question, and the window is five days for eight users.
+
+## 🟡 2026-10-20 — the client asked ROMI back in, for Friday
+
+**Thirty hours after sending ROMI away for the week, the client asked for ROMI
+support at the first training session — on Friday 23 October, the same day as their
+internal review.**
+
+[Their 20/10 mail](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)
+sets out the week and then asks for help inside it:
+
+- §2: _"capiprogetto dal 19 al 23 ottobre: test individuali e per reparto (vendite
+  da palco, record tutor, vendite standard, biglietti, integrazione con Mexal); 23
+  ottobre: riunione interna di allineamento sugli esiti, di cui vi invieremo un
+  riepilogo."_
+- §8: _"Per la prima sessione di formazione del 23 Ottobre (circa un'ora, che
+  registreremo) ci farebbe piacere un vostro supporto."_
+
+🔑 **So 23 October now carries both their internal review and the first training
+session**, and ROMI is invited to the second. 🟢 **They also committed to sending
+ROMI a written summary of the review outcomes** — the first time the client has
+undertaken to report test results back.
+
+🟡 **This softens but does not reverse the 19/10 position.** Sabatino Rinaldi's
+_"non ce lo diamo il meeting questa settimana … dacci il tempo di usarla"_ still
+stands for 20–22 October; what changed is Friday.
+
+## 🔴 Nobody at ROMI has answered, and the date is two days out
+
+Elena Spini put it to the internal group at 19:33:53 CEST (Slack `C0C38JJ9D1T`) as
+the fourth of four open questions:
+
+> _"in più chiedono supporto marketing per il 23 (peccato che non hanno dato una
+> data -.- Fabri te ci sei la mattina confermi?"_
+
+- ⚠ **No time was given by the client** — her _"non hanno dato una data"_ means the
+  hour, since the day is stated.
+- ⚠ **It is asked of Fabrizio Mastracci and unanswered** as at this sweep.
+- 🔑 **It is marketing support, not sales.** The training the client is scheduling
+  is _"la prima sessione di formazione"_ generally; what they asked ROMI for lands
+  on the marketing side, where
+  [OI-269](OI-269%20Event%20communications%20must%20be%20differentiated%20by%20ticket%20type.md)
+  and [OI-250](OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md)
+  are both open and unbuilt.
+
+## 🔴 And the training window moved with the date
+
+The client's proposed calendar puts _"fino al 13 novembre: formazione interna, presa
+di confidenza con lo strumento"_ — **three and a half weeks of internal training**,
+against the ten days this row was raised about. 🟢 **That is the client acting on
+exactly the constraint Fabrizio Paganelli stated on 15/10** and this row recorded:
+seven or eight commercial staff cannot be trained in two weeks.
+
+⚠ **So the gating logic of this row is now bound to
+[OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md).**
+If the 16 November calendar holds, the training objection is answered by the
+calendar. If ROMI's 9 November counter holds, it is not. **Neither is agreed**, so
+this row stays gating.
+
+⚠ **Train-the-trainer is still unassigned in any record.** The 19/10 finding was
+that Fabrizio Paganelli took it himself for 20/10 without it being allocated;
+nothing in the 20/10 sources says whether that session happened.
+
+
+## 2026-10-21 — the training window is now the client's own calendar
+
+🟡 **The agreed go-live gives training a definite shape for the first time.** With
+16 November fixed ([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)),
+the client's own calendar reserves the period to **13 November** for internal
+training, and the technical release lands ~9 November. So the sequence is now:
+release 9 November → client trains to 12 November → live 16 November.
+
+⚠ **Nothing was said in either 21/10 client session about scheduling it**, who
+delivers it, or how many hours. The 23 October marketing support session asked
+for on 20/10 was **not mentioned either** and remains unconfirmed with no hour
+given.
+
+🔑 **One training obligation was created today and it has no slot.**
+[OI-281](OI-281%20Tutors%20must%20use%20Aggiorna%20Anticipay%20when%20creating%20an%20account.md)
+resolves a real data-integrity exposure *entirely* by instructing tutors to press
+`Aggiorna Anticipay` when creating an account — three technical controls were
+considered and all three dropped. Fabrizio Paganelli will deliver it himself:
+_"quando faremo la formazione gli diciamo noi."_ **So a contract-correctness
+control now depends on training that is not scheduled.**
+
+⚠ The client also undertook on 20/10 to send a written summary of their key-user
+review. **Not received.**

@@ -1,0 +1,280 @@
+<template>
+  <lightning-modal-header
+    label="New Mappatura Edizione"
+  ></lightning-modal-header>
+  <lightning-modal-body>
+    <lightning-record-edit-form
+      object-api-name="Mappatura_Edizione__c"
+      onsuccess={handleSuccess}
+      onerror={handleError}
+    >
+      <div class="form-body">
+        <div
+          class="slds-text-align_right slds-text-body_small slds-m-bottom_x-small"
+        >
+          <abbr class="slds-required" title="required">*</abbr> = Required
+          Information
+        </div>
+
+        <div class="slds-section slds-is-open">
+          <h3 class="slds-section__title slds-theme_shade section-title">
+            <span class="slds-truncate slds-p-horizontal_small"
+              >Informazioni Mappatura Edizione</span
+            >
+          </h3>
+          <div class="slds-section__content">
+            <div class="slds-grid slds-wrap slds-gutters_small">
+              <!-- Prodotto -->
+              <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                <div class="slds-form-element slds-form-element_horizontal">
+                  <span class="slds-form-element__label">Prodotto</span>
+                  <div class="slds-form-element__control">
+                    <template lwc:if={selectedProduct}>
+                      <lightning-pill
+                        label={selectedProduct.name}
+                        onremove={handleClearProduct}
+                      ></lightning-pill>
+                      <div class="slds-text-body_small slds-text-color_weak">
+                        {selectedProduct.meta}
+                      </div>
+                    </template>
+                    <template lwc:else>
+                      <div class="slds-combobox_container">
+                        <div class={productComboboxClass}>
+                          <div
+                            class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                            role="none"
+                          >
+                            <input
+                              type="text"
+                              class="slds-input slds-combobox__input"
+                              role="combobox"
+                              aria-label="Prodotto"
+                              aria-autocomplete="list"
+                              aria-expanded={productExpanded}
+                              autocomplete="off"
+                              placeholder={productPlaceholder}
+                              value={productTerm}
+                              oninput={handleProductInput}
+                              onfocus={handleProductFocus}
+                              onblur={handleProductBlur}
+                            />
+                            <span
+                              class="slds-icon_container slds-input__icon slds-input__icon_right"
+                            >
+                              <lightning-icon
+                                icon-name="utility:search"
+                                size="x-small"
+                                alternative-text="Search"
+                              ></lightning-icon>
+                            </span>
+                          </div>
+                          <div
+                            class="slds-dropdown slds-dropdown_length-with-icon-5 slds-dropdown_fluid"
+                            role="listbox"
+                          >
+                            <ul class="slds-listbox slds-listbox_vertical">
+                              <template
+                                for:each={productResults}
+                                for:item="product"
+                              >
+                                <li
+                                  key={product.id}
+                                  role="presentation"
+                                  class="slds-listbox__item"
+                                >
+                                  <div
+                                    role="option"
+                                    class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                    data-id={product.id}
+                                    onmousedown={handleProductSelect}
+                                  >
+                                    <span
+                                      class="slds-media__figure slds-listbox__option-icon"
+                                    >
+                                      <lightning-icon
+                                        icon-name="standard:product"
+                                        size="small"
+                                      ></lightning-icon>
+                                    </span>
+                                    <span class="slds-media__body">
+                                      <span
+                                        class="slds-listbox__option-text slds-listbox__option-text_entity"
+                                        >{product.name}</span
+                                      >
+                                      <span
+                                        class="slds-listbox__option-meta slds-listbox__option-meta_entity"
+                                        >{product.meta}</span
+                                      >
+                                    </span>
+                                  </div>
+                                </li>
+                              </template>
+                              <template lwc:if={showNoProducts}>
+                                <li
+                                  class="slds-listbox__item slds-p-around_small"
+                                >
+                                  Nessun prodotto trovato.
+                                </li>
+                              </template>
+                              <template lwc:if={showTooManyProducts}>
+                                <li
+                                  class="slds-listbox__item slds-p-around_small slds-text-color_weak"
+                                >
+                                  Primi 50 risultati: affina la ricerca.
+                                </li>
+                              </template>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Categoria Prodotto -->
+              <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                <div class="slds-form-element slds-form-element_horizontal">
+                  <span class="slds-form-element__label"
+                    >Categoria Prodotto</span
+                  >
+                  <div class="slds-form-element__control">
+                    <template lwc:if={selectedCategory}>
+                      <lightning-pill
+                        label={selectedCategory.title}
+                        onremove={handleClearCategory}
+                      ></lightning-pill>
+                      <div class="slds-text-body_small slds-text-color_weak">
+                        {selectedCategory.meta}
+                      </div>
+                    </template>
+                    <template lwc:else>
+                      <div class="slds-combobox_container">
+                        <div class={categoryComboboxClass}>
+                          <div
+                            class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                            role="none"
+                          >
+                            <input
+                              type="text"
+                              class="slds-input slds-combobox__input"
+                              role="combobox"
+                              aria-label="Categoria Prodotto"
+                              aria-autocomplete="list"
+                              aria-expanded={categoryExpanded}
+                              autocomplete="off"
+                              placeholder="Search Categorie..."
+                              value={categoryTerm}
+                              oninput={handleCategoryInput}
+                              onfocus={handleCategoryFocus}
+                              onblur={handleCategoryBlur}
+                            />
+                            <span
+                              class="slds-icon_container slds-input__icon slds-input__icon_right"
+                            >
+                              <lightning-icon
+                                icon-name="utility:search"
+                                size="x-small"
+                                alternative-text="Search"
+                              ></lightning-icon>
+                            </span>
+                          </div>
+                          <div
+                            class="slds-dropdown slds-dropdown_length-with-icon-5 slds-dropdown_fluid"
+                            role="listbox"
+                          >
+                            <ul class="slds-listbox slds-listbox_vertical">
+                              <template
+                                for:each={filteredCategories}
+                                for:item="category"
+                              >
+                                <li
+                                  key={category.code}
+                                  role="presentation"
+                                  class="slds-listbox__item"
+                                >
+                                  <div
+                                    role="option"
+                                    class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                    data-code={category.code}
+                                    onmousedown={handleCategorySelect}
+                                  >
+                                    <span
+                                      class="slds-media__figure slds-listbox__option-icon"
+                                    >
+                                      <lightning-icon
+                                        icon-name="standard:category"
+                                        size="small"
+                                      ></lightning-icon>
+                                    </span>
+                                    <span class="slds-media__body">
+                                      <span
+                                        class="slds-listbox__option-text slds-listbox__option-text_entity"
+                                        >{category.title}</span
+                                      >
+                                      <span
+                                        class="slds-listbox__option-meta slds-listbox__option-meta_entity"
+                                        >{category.meta}</span
+                                      >
+                                    </span>
+                                  </div>
+                                </li>
+                              </template>
+                              <template lwc:if={showNoCategories}>
+                                <li
+                                  class="slds-listbox__item slds-p-around_small"
+                                >
+                                  Nessuna categoria trovata.
+                                </li>
+                              </template>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Campagna -->
+              <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                <lightning-input-field
+                  field-name="Campagna__c"
+                  value={campaignId}
+                  variant="label-inline"
+                  required
+                ></lightning-input-field>
+              </div>
+
+              <!-- Attiva -->
+              <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                <lightning-input-field
+                  field-name="Attiva__c"
+                  value={isActive}
+                  variant="label-inline"
+                ></lightning-input-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </lightning-record-edit-form>
+  </lightning-modal-body>
+  <lightning-modal-footer>
+    <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+    <lightning-button
+      label="Save &amp; New"
+      class="slds-m-left_x-small"
+      disabled={isSaving}
+      onclick={handleSaveAndNew}
+    ></lightning-button>
+    <lightning-button
+      variant="brand"
+      label="Save"
+      class="slds-m-left_x-small"
+      disabled={isSaving}
+      onclick={handleSave}
+    ></lightning-button>
+  </lightning-modal-footer>
+</template>

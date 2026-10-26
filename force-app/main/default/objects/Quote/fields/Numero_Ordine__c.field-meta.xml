@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Numero_Ordine__c</fullName>
+    <description
+  >Numero progressivo del preventivo nel formato SO - 00001.</description>
+    <displayFormat>SO - {00000}</displayFormat>
+    <label>Numero Ordine</label>
+    <startingNumber>1</startingNumber>
+    <type>AutoNumber</type>
+</CustomField>

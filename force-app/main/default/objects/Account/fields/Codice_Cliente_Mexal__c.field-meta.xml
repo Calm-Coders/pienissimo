@@ -4,7 +4,7 @@
     <description
   >Codice cliente assegnato da Mexal e usato come identificativo esterno del cliente.</description>
     <externalId>true</externalId>
-    <label>Codice Cliente Mexal</label>
+    <label>Codice Cliente</label>
     <length>50</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>

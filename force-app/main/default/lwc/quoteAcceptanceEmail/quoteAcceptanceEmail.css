@@ -1,3 +1,17 @@
 lightning-textarea {
   --slds-c-textarea-sizing-min-height: 16rem;
 }
+
+.system-footer-preview {
+  background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+}
+
+.preview-button {
+  cursor: default;
+  pointer-events: none;
+}
+
+.mapping-alert {
+  text-align: left;
+  justify-content: flex-start;
+}

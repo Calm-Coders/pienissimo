@@ -1,12 +1,12 @@
 ---
 id: OI-115
 type: open-item
-status: open
+status: in-progress
 owner: Elisa Migliano
 with: Elena Spini
 org: both
 raised: 2026-09-03
-updated: 2026-09-24
+updated: 2026-10-09
 depends_on: [OI-59]
 relates_to: [OI-123]
 requirement: SAL-16
@@ -14,6 +14,19 @@ source: notes/meetings/2026-09-03 Data Model Parte 1.md
 ---
 
 # OI-115 - Tipologia Attivita values and its move to the quote
+
+## 8 October source implementation and contradiction
+
+The user's latest field table and explicit instruction to create every missing
+field place `Tipologia_Attivita__c` on Lead and map it to Account at conversion.
+Source now implements that direction with all 21 supplied values and adds the
+three values absent from the existing Account field: `Gelateria`, `Agenzia
+Comunicazione`, and `Attività diversa da somministrazione`.
+
+This conflicts with the earlier agreement preserved below that the field moves
+to Quote. The current source follows the latest user instruction, but it is not
+deployed and the contradiction remains visible rather than being treated as a
+client-confirmed reversal.
 
 **`Tipologia Attività` leaves the customer registry and becomes a field on the
 Preventivo.** Agreed at
@@ -137,3 +150,151 @@ Accounts; no Locale rows were part of this source load. This new Account data
 does not by itself build the Quote field or its Locale-to-Quote defaulting,
 which remain open in this item. The source values are observed in the client
 extract, not a separately confirmed complete value set for future use.
+
+## 🟢🔑 2026-10-05 - the value list arrived, and it is twenty-one values
+
+Agreed at
+[the 05/10 Lead session](../meetings/2026-10-05%20Check%20Data%20Import%20Lead%20e%20Contact.md):
+the standard `Settore` field is **replaced** by `Tipologia di attività`, a
+**multiselect picklist**, with the generic Salesforce industry values deleted.
+Elisa Migliano and Sabatino Rinaldi drove it; gourmet restaurants were added in
+the closing minutes.
+
+[The Campi Oggetti workbook](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md),
+modified the same day at 16:40Z, now carries the list on **both the `Lead` and
+the `Account` sheets**, identically, 21 values:
+
+Ristorante · Ristorante Gourmet · Ristorante specialità Carne · Ristorante
+specialità Pesce · Pizzeria · Pub · Fast food · Agriturismo · Sushi · Locale
+notturno · Pasticceria · Gelateria · Hotel · Franchising · Catena di Proprietà
+· Spiaggia con servizio Ristorazione · Bar · Cocktail Bar · Negozio · Agenzia
+Comunicazione · Attività diversa da somministrazione
+
+The `Account` sheet types it `Multiselect picklist` and the `Preventivo` sheet
+types it `Global picklist` and marks it **mandatory** — 🔑 so the move to the
+quote that this item is about is specified in the client's own document, as a
+**global** value set shared by Lead, Account and Quote. The Lead sheet records
+it as `Mapping con campo Account`.
+
+⚠ **Global and multiselect are not the same thing.** A global value set can
+back a multiselect picklist, but the workbook states both without saying which
+surface is which, and a mandatory multiselect on the quote is a different
+constraint from a mandatory single-select. Worth settling before building.
+
+## 🟢 2026-10-06 - the client sent the mapping, as a workbook attached to mail
+
+Elisa Migliano mailed it at **06:54:07Z**, the morning after the Lead session
+asked for it — **twice**, as two near-identical messages with different
+recipient sets:
+
+| Thread             | Subject                                                          | To / cc                                                                                               |
+| ------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `1a10ffdcc543c242` | `Sottocategorie, Categorie , Origine Lead , Tipologia attività ` | Elena Spini, Aurel Mrruku; cc Fabrizio Paganelli, Marco Montesi, Sabatino Rinaldi                     |
+| `1a10ffdcab74ce05` | `Sottocategoria, categoria, origine lead, tipologia attività`    | Elena Spini, Aurel Mrruku; cc Sabatino Rinaldi, Marco Montesi, **Matteo Distaso**, Fabrizio Paganelli |
+
+Both carry the attachment
+**`Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx`** and
+the same body:
+
+> _"In allegato i campi richiesti, potremmo aver aggiunto nel frattempo dei
+> pacchetti e dei campi. Provvederò a farti l'integrazione."_
+
+🔑 **This is the first delivery of the four picklists together** — categoria,
+sottocategoria, origine lead and tipologia attività — and it comes from the
+person whose values the 05/10 session adopted.
+
+## 🔴 The attachment has not been read
+
+It exists **only as a mail attachment**: a Drive search on `Mappatura` returns
+nothing matching, and the sweep has no tool that downloads a Gmail attachment.
+So the values inside are **unread**, and the 21-value `Tipologia di attività`
+list held in
+[the Campi Oggetti workbook](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md)
+**cannot be reconciled against it this run.**
+
+⚠ Elisa Migliano's own caveat — _"potremmo aver aggiunto nel frattempo dei
+pacchetti e dei campi"_ — says the workbook list may already be short. And she
+states she will do the integration herself (_"Provvederò a farti
+l'integrazione"_), which is a commitment with **no date**.
+
+**To unblock:** the file needs to be put in Drive, or opened by someone with the
+mailbox, and the four lists diffed against what the org and the workbook carry.
+Until then the global value set cannot be built with confidence.
+
+## 2026-10-09 - shared Lead and Account value set deployed to UAT
+
+At the user's explicit direction, the known 21-value list is now implemented in
+UAT as the restricted Global Value Set `Tipologia_Attivita`. Salesforce cannot
+attach an existing local picklist to an existing global set, so the safe
+migration created `Tipologia_Attivita_Globale__c` on both Lead and Account and
+retained the two legacy fields as rollback data.
+
+All active source references now use the replacement field: Lead conversion,
+Account and Lead layouts and Dynamic Forms pages, Account list views, the
+`Lead_Management`, `Agente`, and `Account_Import_UAT` permission sets, and the
+Account commercial-import preparation script. The first UAT bundle deployed as
+`0AfMA00000CtRgb0AF`.
+
+The idempotent `TipologiaAttivitaMigration` utility copied three active Lead
+records and 182 Account records with no failures. One populated historical Lead
+is already converted and cannot be updated by Salesforce; its value was copied
+to the converted Account instead and remains preserved on the legacy Lead
+field. A final rerun reported zero Lead changes, zero Account changes, and zero
+failures, confirming semantic equality after Salesforce normalized multi-select
+value order.
+
+The old fields are absent from active pages, layouts, permissions, list views,
+conversion logic, and import output, but have not been deleted. The Quote field
+and Locale-to-Quote defaulting remain open, so this item stays in progress.
+
+## 2026-10-09 - required only for Locale
+
+The user explicitly required `Tipologia Attivita` only for Account records of
+record type `Locale`. Source keeps the replacement field schema-optional so it
+remains optional for `Azienda`, marks it required on the Locale layout and
+Dynamic Form, and enforces the record-type-specific rule with
+`Tipologia_Attivita_required_for_Locale`. This does not resolve the still-open
+Quote field or Locale-to-Quote defaulting. UAT dry-run
+`0AfMA00000CtLsx0AF` validated all five dependent components with no errors.
+Deployment `0AfMA00000CtNOU0A3` then succeeded with all five components and no
+errors, activating the Locale-only requirement in UAT.
+
+## 2026-10-09 - legacy fields deleted from UAT
+
+At the user's explicit direction, the migrated legacy fields
+`Account.Tipologia_Attivita__c` and `Lead.Tipologia_Attivita__c` were deleted
+from source and UAT after successful migration. The completed one-time
+`TipologiaAttivitaMigration` class was deleted with them. Salesforce retains
+the deleted custom fields in Deleted Fields because the deployment did not use
+purge-on-delete.
+
+The cleanup exposed a newer UAT `QuoteTriggerHandler` dependency that was not
+yet present in local source. Its Locale validation and Quote defaulting logic
+was reconciled into source and changed to read
+`Account.Tipologia_Attivita_Globale__c`; the Quote destination remains
+`Quote.Tipologia_Attivita__c`. The `Agente`, `Account_Import_UAT`, and
+`Lead_Management` permission sets now grant the replacement Account and Lead
+fields instead of the deleted fields. Dry-run `0AfMA00000CtUPx0AN` and actual
+deployment `0AfMA00000CtUTB0A3` both completed all seven components with no
+errors (`NoTestRun`).
+
+## 🔴 2026-10-09 - the unreachable picklist workbook now blocks a commissioned deliverable
+
+The four Lead picklists this item carries — `Categoria`, `Sottocategoria`,
+`Origine Lead`, `Interessato a` — appear verbatim in **Fabrizio Mastracci's
+hidden-field list for the two commissioned forms** (marketing DM, 11:51:54 CEST;
+see [OI-14](OI-14%20Marketing%20forms%20and%20subdomain.md)).
+
+🔴 **Aurel Mrruku confirmed they are not in production** — _"non ci sono in prod
+sti campi, li stiamo creando in uat"_ (11:54:13) — and Elena Spini's 09/10 status
+post carries _"Creazione in PROD dei campi Lead necessari ai form di Fabrizio
+M."_ as a next step with **no owner and no date**.
+
+**What changes for this row:** `Mappatura_Categorie_Sottocategorie_Origine
+Lead_Tipologiattività.xlsx` has been unreachable for four consecutive sweeps —
+a mail attachment no connected tool can open. Until now that blocked a field
+definition. It now blocks a **form a client has commissioned**, because a
+Web-to-Lead post cannot write a picklist value that does not exist in the org.
+
+**The shortest path is unchanged and still not taken:** ask Elisa Migliano or
+Elena Spini to put the workbook in Drive.

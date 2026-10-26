@@ -8,6 +8,6 @@
     <relationshipLabel>Ticket Assets</relationshipLabel>
     <relationshipName>Ticket_Assets</relationshipName>
     <required>false</required>
-    <trackTrending>false</trackTrending>
+    <trackHistory>false</trackHistory>
     <type>Lookup</type>
 </CustomField>

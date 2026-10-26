@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-08-26
-updated: 2026-09-25
+updated: 2026-10-14
 depends_on: [OI-46, OI-77]
 blocks: [OI-53, OI-84]
 source: notes/meetings/2026-08-26 Review Temi Integrazione Mexal.md
@@ -158,3 +158,354 @@ test."_ PR #60 (the handler rewrite) **merged at 08:17Z**. Anita Aga (Slack, 10:
 only one test bundle has a mapping. Gemini action for Aurel Mrruku: _"Completare la
 mappatura dei prodotti alle campagne e alle edizioni necessarie per i test"_.
 **Ticket UAT is 30/09.**
+
+## 🔴 2026-09-29 — the same exception, in the sandbox, the day before ticket UAT
+
+A Salesforce sandbox error mail at **08:59:16Z** (partial sandbox
+`ability-customization-52152`, org `00DMA000004nMMr`):
+
+> `OrderItemTrigger: execution of AfterInsert caused by:
+OrderTriggerHandler.TicketGenerationException: Nessuna mappatura edizione trovata
+per il prodotto PIENISSIMO LIVE LIVE alla data ordine 2026-09-29.`
+> `Class.OrderTriggerHandler.assignCampaigns: line 332`
+
+**Third occurrence on the record** — 24/09 in front of the client, 25/09 at the
+Recall Tutor UAT, now 29/09. The rewritten `MappaturaEdizioneTriggerHandler` from
+PR #60 did not change the failure mode, because the fault is **missing rows, not
+broken code**: the handler still throws rather than degrading, so an unmapped
+product aborts the whole order-item insert.
+
+🔴 **Ticket UAT is 30/09, 14:00–16:00 CEST**, with Fabrizio Paganelli, Elisa
+Migliano and Rebecca Marmo invited, and the mapping last read at **13 of 51**. The
+failing product is named — `PIENISSIMO LIVE LIVE` — so this one is a row somebody
+can add before the session.
+
+⚠ `2ed8a56` (Anita Aga, 29/09 18:19 CEST, `DevAnita28/09`, **unmerged**) touches
+`MappaturaEdizioneTriggerHandler.cls` (+17/−…). Not read line by line here, and not
+on `DevMain`.
+
+## 🔑 2026-09-30 — the client changed the window's source, and reversed a property he set on 26 August
+
+At [the ticket UAT](../meetings/2026-09-30%20UAT%20Biglietti%20Asset%20Campagne%20ed%20Eventi.md)
+(`00:29:10`, restated at `00:34:10`) Fabrizio Paganelli objected to associating
+article codes that run across years to single editions, and asked for the window
+fields to be **the campaign's `data inizio` / `data fine competenza`** instead of
+the event's start and end dates:
+
+> _"potresti riprenderle anziché da data inizio evento a data fine evento, da data
+> inizio competenza a data fine competenza… sarebbero l'intervallo iniziale finale
+> che se un ordine è compreso in quell'intervallo di date, l'ordine con quel
+> codice prodotto deve confluire nella campagna"_
+
+His worked example: an order generated 1 December 2025 lands in Pienissimo Live
+26; one generated in the following September lands in the next edition.
+
+🟢 **Aurel Mrruku accepted it and costed it at half a day** — _"per me è in metà
+giornata ti cambia la logica perché c'ho già tutti gli elementi"_ — and said he
+would search on the **parent** campaign rather than the child (`00:30:31`).
+
+🔴 **It reverses property 1 of this note.** Aurel Mrruku named the cost in the
+room: under this model _"non possiamo avere diversi biglietti su diverse edizioni
+sullo stesso ordine"_. Fabrizio Paganelli answered _"Ma infatti deve essere
+così."_
+
+**That is the opposite of what he confirmed on 26 August**, when Elena Spini asked
+and he said the table resolves _"a livello di riga ordine"_ precisely so one order
+could split across editions — the reason the _"one active child campaign per
+parent"_ rule was killed. Later evidence wins, so the 30/09 ruling stands, but
+**both dates are on the record and the reversal was not acknowledged by either man.**
+
+⚠ **Consequences nobody worked through:**
+
+- **A bundle spanning two events was the original reason for per-line
+  resolution.** [OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)
+  prices bundle components against tranches that deliberately fall in different
+  months, and the payment gate agreed the same afternoon assumes exactly that. How
+  a one-edition-per-order rule and a multi-event bundle coexist was **not asked**.
+- The built object resolves **per order line and per bundle component**
+  ([the build note](../objects/The%20Mappatura%20Edizione%20object.md)). Whether
+  the new rule removes that or merely constrains the data is unstated.
+- The before-save guard **refusing overlapping active windows** becomes far more
+  load-bearing: with competenza dates as the window, two editions may not share a
+  date range at all.
+
+🔴 **Unbuilt, and the rows are still missing.** Nothing in the session added
+mapping rows; the mapping stood at **13 of 51** at the 23/09 org check and the
+29/09 `PIENISSIMO LIVE LIVE` exception was **not mentioned in the UAT at all**.
+Fabrizio Paganelli and Elena Spini took the action item to map products to
+campaigns by hand, and Elena Spini owes Aurel Mrruku the updated product list for
+database cleanup. 🔴 **Neither carries a date.**
+
+⚠ `897b38e` (Anita Aga, 30/09 10:13 CEST) adds _"a new custom listview for
+Mappatura Edizione"_ and reached `DevMain` via PR #70 — a navigation aid, **not the
+logic change agreed six hours later**, and not rows.
+
+## 🔑 2026-10-01 - a hard constraint on the mapping, and a live failure
+
+[The Pre UAT build session](../meetings/2026-10-01%20Pre%20UAT.md) exercised the
+mapping end to end and produced two things this row did not have.
+
+🔴 **Competenza ranges may not overlap between sibling editions.** A bundle
+product mapped to a 2027 campaign threw an error in the test. Elena Spini asked
+whether an earlier competenza date could simply be set; Aurel Mrruku ruled it out
+— **overlapping competenza dates are not permitted on child entities sharing the
+same parent** (`01:08:59`). Rexhina Hysi remapped the product to resolve it.
+
+This is the operative constraint behind the 30/09 UAT ruling that made the
+mapping window the competenza dates. It means the mapping is not free-form: the
+editions of one event must partition the timeline.
+
+**The association rule, read back from the blueprint by Elena Spini:** an order is
+attached to an edition when **the order date falls inside that edition's
+competenza range**.
+
+⚠ **The year-boundary case is mitigated by convention only.** Aurel Mrruku raised
+an offer issued in one year and paid or registered in the next; Elena Spini's
+answer is that competenza ranges are widened preventively. Nothing in the system
+enforces or checks that widening, and widening ranges collides directly with the
+no-overlap constraint above.
+
+🟢 **Rexhina Hysi configured child campaigns for 2026 and 2027** for Academy and
+Camerieri Venditori during the session, with competenza dates, and associated the
+products. The mapping count was not restated; the 13-of-51 figure from 29/09 has
+not been superseded by anything this sweep saw.
+
+⚠ Elena Spini recalled a conversation with Fabrizio Paganelli about mapping
+through _"il codice denominato natura"_ (`00:58:04`). **Not pursued in the
+session and not resolvable from the record** — flagged, not interpreted.
+
+🔴 **Aurel Mrruku owns the edition-mapping section of the blueprint** as a Pre UAT
+action item, **with no date**.
+
+### ⬛ The custom metadata type was not for this
+
+`4f672a2` on `DevAnita30` — flagged on 30/09 as _"worth a diff next run"_ because
+a custom metadata type is the shape question here — **merged to `DevMain` via PR
+#72** at 01/10 10:03 CEST. Diffed: it is
+`Product_Category_Rule__mdt`, and it serves
+[OI-188](OI-188%20Performance%20Plus%20products%20are%20identified%20by%20the%20Mexal%20article%20category.md),
+**not this row**. The edition mapping remains org-side configuration of child
+campaigns, with no metadata-driven table.
+
+## 🔑 2026-10-02 - the client agreed to map everything, and the mechanism was restated
+
+At [the 02/10 client UAT](../meetings/2026-10-02%20UAT%20WooCommerce%20e%20Bundle.md)
+this moved from a ROMI setup task to a standing client obligation. The agreed
+wording:
+
+> _"Tutti i codici articolo e i bundle devono essere mappati nella tabella di
+> mappatura edizione associandoli all'intervallo temporale delle date di
+> competenza."_
+
+🔴 **The case for it was made by a live failure in the same session.** An order
+placed autonomously on WooCommerce for the new `pienissimo lab` product did not
+land, because its code was not in Salesforce; Aurel Mrruku had to map `ST054` by
+hand mid-call before Sabatino Rinaldi's retry with `Pack 1009` succeeded.
+
+🔑 **The mechanism, stated by Aurel Mrruku** at
+[the 12:22 Interna](../meetings/2026-10-02%20Interna.md), correcting a draft
+Blueprint sentence: _"i dati della mappatura devono essere inseriti manualmente per
+poter fare la mappatura in modo automatico quando si crea l'ordine."_ Manual data
+entry, automatic association at order creation. ⚠ **The Blueprint as delivered 95
+minutes later still says the association itself is manual**, because Elena Spini
+deferred the correction.
+
+His closing priority at the Pre-UAT the same evening was the same thing: _"Make
+sure they know how to configure the edizione, very important … documentation at the
+end, explain to them."_ No such documentation exists yet.
+
+⚠ `Da Data Competenza` and `A Data Competenza` are confirmed in the Blueprint as
+**Administration's responsibility alone**, because the dates drive which edition an
+order lands on.
+
+## 🔴🔑 2026-10-05 - the mapping has an authoritative source now, and it contains a collision
+
+[`Articoli Salesforce.xlsx`](../The%20Articoli%20Salesforce%20article%20registry.md)
+arrived 05/10 09:24:17Z and is the first authoritative statement of what the
+articles actually are. It changes the size and the shape of this task.
+
+🔑 **Scope.** 1,010 articles, of which **197 are active**. Of those, **42 are
+event articles** across nine categories: `E02` Food Marketing Festival 9,
+`E03` Pienissimo Live 4, `E04` Academy 4, `E05` Sold Out 3, `E06` ODB Live 3,
+`E07` Camerieri Venditori 4, `E08` Happy Team 3, `E09` Mastery 4, `E10`
+Pienissimo Intensive 8. `E01` Tour has **no** active article. Any "mapped N of
+M" figure should be measured against 42 live event articles, not against the
+whole registry.
+
+🔴 **`E10` names two different events** — `Golden Numbers` (5 articles, all
+cancelled) and `Pienissimo Intensive` (14 cancelled, 8 active). The category
+code is the natural key for an article→edition rule and **it is not unique**.
+Nothing in the registry distinguishes the two beyond the description text, and
+normalising an article's meaning out of its text is what
+[the article-code risk](../risks/Risk%20-%20normalising%20an%20article%20code%20merges%20two%20products.md)
+forbids. A rule keyed on `E10` will map Golden Numbers articles to Pienissimo
+Intensive or refuse both.
+
+🔴 **Not one active `E99` `blocco`.** All 469 are cancelled — see
+[OI-48](OI-48%20Bundle-only%20article%20codes.md).
+
+🔑 **The decode of `Natura Articolo`.** The Campi Oggetti workbook's
+`Articoli (anagrafica)` sheet defines `Natura` as **"genera biglietto SI/NO
+(mexal)"** — the article field that says whether the article produces a ticket.
+The registry's `Natura Articolo` column carries `BO`, `BB`, `MS`, `HR`, `NM`,
+`S`, `NO`, `ND`. ⚠ The mapping from those codes to yes/no is **not documented
+anywhere**, and it governs whether an Asset is generated at all.
+
+⚠ Also new in the same workbook: `Tipo Biglietto` is a three-value picklist —
+`Executive`, `Gold`, `Diamond` — and the registry populates it. The competenza
+range remains the mapping window per the 30/09 UAT; nothing in this sweep
+changed that or the sibling-overlap constraint.
+
+## 🔑 2026-10-09 - mapping one product maps its whole category
+
+**Built at Aurel Mrruku's request.** The standard form is unchanged: you pick a
+Prodotto and a child campaign. **When a Mappatura Edizione is created, every
+other product with the same `Product2.Categoria_Articolo__c` is mapped to the
+same campaign automatically**, with the same Attiva value
+(`MappaturaEdizioneTriggerHandler.afterInsert`).
+
+- A product without a category creates only its own mapping.
+- Every product with the code is included, active or not. E02 has 18.
+- A product that is already mapped to that campaign, or already has an active
+  mapping overlapping the window, is **skipped**; it does not block the save.
+- The rows created automatically do not expand again. It runs on insert only:
+  editing or deleting a mapping does not touch its siblings.
+- 🔴 **The `E10` collision above applies.** Mapping any `E10` product would also
+  map the Golden Numbers articles to the same edition.
+- **Deployed to Pienissimo UAT only, not committed, not in Prod.** Verified in a
+  rolled-back transaction: mapping one E02 product created 18 mappings, all on
+  the campaign. Mapping the same product again was refused by the existing
+  overlap rule, and a product without a category created 1 mapping. The Apex
+  suite could not confirm it: see OI-64, 09/10.
+
+### ⚠ Correction, same day: it is committed
+
+The paragraph above says _"not committed, not in Prod"_. It was **written in the
+commit that built it**, so the first half was stale the moment it landed:
+`c5e4a1e` (Aurel Mrruku, 09/10 19:09 CEST) is **in `DevMain`** via PR #92, and
+PR #93 carried it into `DevAnita09`. `DevMain` head is **`edc063b`**.
+
+It adds `MappaturaEdizioneProductSearch.cls` (218 lines),
+`MappaturaEdizioneTriggerHandler.cls` (145 lines), the
+`mappaturaEdizioneNew` / `mappaturaEdizioneNewModal` LWCs and an Aura override
+for the New button, extends `Mappatura_Edizione__c` and `Product2`, and grants
+access through `Campaign_Management` and `Full_Permission`.
+
+🔴 **"not in Prod" still holds**, and so does the `E10` collision: mapping any
+`E10` product maps the Golden Numbers articles to the same edition. ⚠ **The
+category key itself was being hand-corrected in Mexal the same morning** — see
+[OI-226](OI-226%20The%20gruppo%20merceologico%20stands%20in%20for%20the%20flag%20annullato%20only%20for%20the%20tests.md)
+— so the automatic mapping now rests on a field that changed by hand after the
+UAT verification was done, and has not been re-checked.
+
+🟢 **The client agreed to this population rule in the room** on the morning of the
+same day, before it was built — see
+[the 09/10 call](../meetings/2026-10-09%20Accesso%20e%20Tema%20Prodotti.md).
+Fabrizio Paganelli proposed it, Aurel Mrruku stated the consequence that every
+article sharing the category is attached active or not, and he answered _"Va bene
+così."_ **That makes it one of the few rulings on this project taken with the
+client present and implemented the same day.**
+
+## 🔴 2026-10-13 — the client reversed the population rule he agreed on 09/10
+
+At [the 13/10 Feedback Test UAT](../meetings/2026-10-13%20Feedback%20Test%20UAT.md)
+Fabrizio Paganelli hit the consequence Aurel Mrruku had read out to him four days
+earlier, and asked for the opposite.
+
+**What he saw** (`01:13:27`): _"il problema dell'enorme mole di dati generata
+dall'inclusione di tutti i prodotti di una categoria, inclusi quelli vecchi o
+inattivi."_ That is exactly the consequence stated on 09/10 and accepted with
+_"Va bene così."_
+
+**What was agreed instead** (`01:17:38`, and recorded by Gemini under
+`Concordato`):
+
+> _"la selezione del prodotto aggiunga solo quel determinato articolo, mentre la
+> selezione della categoria aggiunga tutti i relativi prodotti **attivi**."_
+
+🔑 **Later evidence wins, and both dates are on the record:** the rule agreed
+**2026-10-09** was _every product with the category code, active or not_; the rule
+agreed **2026-10-13** is _active products only, and a chosen product maps itself
+alone_. **Four days.** ⚠ The 09/10 ruling is the one the trace notes praised as
+_"taken with the client in the room and implemented the same day"_; so was this
+one. The project can agree a rule with the client and build it before anyone has
+used it.
+
+⚠ **One internal inconsistency in the 13/10 record.** Aurel Mrruku is minuted
+both as confirming _"che il sistema filtrava già i prodotti attivi"_ and as
+committing to change the logic so that it does. The build that followed shows the
+second reading was the operative one.
+
+**Built the same afternoon**, `0816bf7` (Aurel Mrruku, 15:18 CEST), in `DevMain`
+at **`21d6686`** — see
+[the Mappatura Edizione note](../objects/The%20Mappatura%20Edizione%20object.md),
+which the developer updated in the same commit.
+
+### 🔴 The new rule has a cost that lands before the 14/10 e2e
+
+`cod_grp_merc` drives `Product2.IsActive` and leaves roughly 30 active articles
+([OI-226](OI-226%20The%20gruppo%20merceologico%20stands%20in%20for%20the%20flag%20annullato%20only%20for%20the%20tests.md)),
+so filtering to active products empties most categories. The developer's own
+check: **15 of UAT's 23 categories have no active product** — C10, C11, C20, C21,
+C30, C40, C41, E01, E05, **E10**, P10, P20, P30, S10, Z10 — **and a category save
+on any of them now fails** with _"Nessun prodotto attivo della categoria … da
+mappare"_. The picker still offers them, marked "(0 attivi)".
+
+⚠ **Nobody owns this.** It is recorded in the object note and in `JOURNAL.md`, it
+has no tracker row of its own, and the end-to-end test is the next morning. ⚠ It
+also means the `E10` collision this note has carried since 09/10 is **moot for
+now** — E10 has no active product to map — without having been fixed.
+
+### 🆕 E11 and the operating order
+
+The same session created a `Pienissimo lab` / `Pienissimo lab 2026` campaign pair
+(1 Oct 2026 → 30 Sep 2027, event type live, data invio biglietto 1 Dec 2026) and
+mapped **category `E11`** to it. ⚠ **`E11` is new to these records.**
+
+🔑 **And the annual-duplication worry is answered** (`01:05:04`, `01:06:15`):
+articles are not duplicated per year; the campaign's competence window carries it,
+and **the campaign must be created before the mapping** so orders in that window
+attach to the right edition. That is the first time the operating order has been
+stated.
+
+### 🟡 2026-10-14 — two of the fifteen empty categories recovered, as a side effect
+
+**The 15-of-23 consequence recorded last night was not addressed and was partly
+undone by other work.**
+
+The 14/10 e2e hit **exactly the predicted failure**: _"emerge un disallineamento
+nei codici associati alla categoria `C10` per l'attivazione"_ (`00:13:30`,
+`00:18:36`) — and `C10` is one of the fifteen. ⚠ **Whether it was this defect or
+a different category problem is not established**: the record says
+"disallineamento nei codici", not "the save failed", and nobody in the room named
+the active-only rule. **Recorded as the same category, not the same fault.**
+
+🔑 **The root cause the session did expose is a different and larger one**: the
+article sync had **never written `Product2.Categoria_Articolo__c` at all**. Every
+category in UAT came from the July workbook import, so every article Mexal
+created afterwards had none. Aurel Mrruku found and fixed it the same day — Mexal
+holds the value as `sigla_cat_sta` + `nr_cat_sta`, the number zero-padded to two
+digits — and re-synced all articles twice. **His own record is
+[the article sync note](../objects/The%20Mexal%20article%20sync%20to%20Product2.md)**;
+nothing here restates it.
+
+🟢 **Two of the fifteen now have an active product.** `PLUS-N05` arrived as
+**`C10`** and `PLUS-N06` as **`C11`**, _"both active"_ — the two codes Elisa
+Migliano created in the session. So a category save on `C10` or `C11` can now
+find something to map.
+
+🔴 **Thirteen still cannot**: C20, C21, C30, C40, C41, E01, E05, **E10**, P10,
+P20, P30, S10, Z10. ⚠ **And the recovery is incidental** — it happened because a
+client created two products, not because the active-only rule was revisited. The
+next category with no active product fails the same way. **Still no owner and no
+tracker row.**
+
+⚠ **`E10`'s collision remains moot and unfixed** — E10 is not among the two
+recovered.
+
+🆕 **`E12` joins `E11` as a category value new to these records**, from the same
+re-sync (`PPEN010`/`PPEN011` read `E12`, `PPES0099` reads `E11`). ⚠ And two
+values **changed because Mexal disagrees with the workbook**: `CS-00007` and
+`CS000006` moved from `E03` to `E01`, both inactive. Mexal is the source for
+single products, so its values now apply — **a precedent worth noting, because
+the workbook was the authority for ~900 of them.**

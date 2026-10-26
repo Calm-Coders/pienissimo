@@ -11,10 +11,6 @@
             <default>true</default>
         </values>
         <values>
-            <fullName>Recall tutor</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Performance Plus - Attivazione</fullName>
             <default>false</default>
         </values>

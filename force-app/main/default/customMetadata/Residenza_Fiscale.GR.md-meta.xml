@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>GR - Grecia</label>
+    <protected>false</protected>
+    <values>
+        <field>Allegato_PDF__c</field>
+        <value xsi:type="xsd:string">FT</value>
+    </values>
+    <values>
+        <field>Codice_ISO3__c</field>
+        <value xsi:type="xsd:string">GRC</value>
+    </values>
+    <values>
+        <field>Codice_Paese__c</field>
+        <value xsi:type="xsd:string">GR</value>
+    </values>
+    <values>
+        <field>Codice_Residenza_Fiscale__c</field>
+        <value xsi:type="xsd:string">C</value>
+    </values>
+    <values>
+        <field>Descrizione_Paese__c</field>
+        <value xsi:type="xsd:string">GRECIA</value>
+    </values>
+    <values>
+        <field>Descrizione_Residenza_Fiscale__c</field>
+        <value xsi:type="xsd:string">Estero CEE</value>
+    </values>
+    <values>
+        <field>Fatturazione_Elettronica__c</field>
+        <value xsi:type="xsd:string">N</value>
+    </values>
+    <values>
+        <field>Nomi_Alternativi__c</field>
+        <value xsi:type="xsd:string">GREECE</value>
+    </values>
+    <values>
+        <field>Predefinito__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Sezionale_IVA__c</field>
+        <value xsi:type="xsd:double">1</value>
+    </values>
+</CustomMetadata>

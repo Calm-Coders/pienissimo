@@ -1,4 +1,4 @@
-public with sharing class EventInvitationUrlJob implements Queueable {
+public without sharing class EventInvitationUrlJob implements Queueable {
   private List<Id> invitationIds;
 
   public EventInvitationUrlJob(List<Id> invitationIds) {

@@ -12,11 +12,15 @@ export default class WooCheckoutEmail extends LightningElement {
   isSending = false;
   context;
   contextError;
+  hasEditedRecipient = false;
 
   @wire(getContext, { opportunityId: "$recordId" })
   wiredContext({ data, error }) {
     this.context = data;
     this.contextError = error;
+    if (data && !this.hasEditedRecipient) {
+      this.recipientEmail = data.recipientEmail || "";
+    }
   }
 
   get opportunityName() {
@@ -57,6 +61,7 @@ export default class WooCheckoutEmail extends LightningElement {
   }
 
   handleRecipientEmailChange(event) {
+    this.hasEditedRecipient = true;
     this.recipientEmail = event.detail.value || "";
     this.validationMessage = "";
   }

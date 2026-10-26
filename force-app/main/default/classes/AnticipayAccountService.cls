@@ -1,4 +1,4 @@
-public with sharing class AnticipayAccountService {
+public without sharing class AnticipayAccountService {
   private static final String API_NAME = 'Anticipay_Account_Check';
   private static final String ENV_SANDBOX = 'test';
   private static final String ENV_PRODUCTION = 'prod';
@@ -19,6 +19,9 @@ public with sharing class AnticipayAccountService {
     public String message;
     @AuraEnabled
     public Id accountId;
+    // The Partita IVA sent to Anticipay, shown in the action toast.
+    @AuraEnabled
+    public String partitaIva;
     @AuraEnabled
     public Id sourceRecordId;
     @AuraEnabled
@@ -145,6 +148,9 @@ public with sharing class AnticipayAccountService {
       WHERE Id = :accountId
       LIMIT 1
     ];
+    result.partitaIva = String.isBlank(accountRecord.Partita_IVA__c)
+      ? null
+      : accountRecord.Partita_IVA__c.trim();
 
     if (accountRecord.Anticipay_Consolidato__c) {
       result.success = true;
@@ -197,7 +203,12 @@ public with sharing class AnticipayAccountService {
       return result;
     }
 
-    update mapResponseToAccount(accountId, response.info);
+    try {
+      AccountTriggerHandler.setBypassMexalCustomerUpdate(true);
+      update mapResponseToAccount(accountId, response.info);
+    } finally {
+      AccountTriggerHandler.setBypassMexalCustomerUpdate(false);
+    }
 
     result.success = true;
     result.message = 'Dati Account aggiornati da Anticipay.';
@@ -212,6 +223,7 @@ public with sharing class AnticipayAccountService {
     putString(accountRecord, Account.BillingCity, info.citta);
     putString(accountRecord, Account.BillingState, info.provincia);
     putString(accountRecord, Account.BillingPostalCode, info.cap);
+    accountRecord.BillingCountry = 'IT';
     putString(accountRecord, Account.PEC__c, info.pec);
     putString(accountRecord, Account.Codice_ATECO__c, info.codice_ateco);
     putString(

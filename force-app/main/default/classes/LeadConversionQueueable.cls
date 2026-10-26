@@ -3,26 +3,35 @@ public without sharing class LeadConversionQueueable implements Queueable {
   private static final String CONVERTED_STATUS = 'Convertito';
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
 
-  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Standart';
+  private static final String STANDARD_OPPORTUNITY_RECORD_TYPE = 'Vendita_Standard';
   private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
-  private static final String RECALL_OPPORTUNITY_RECORD_TYPE = 'Recall_Tutor';
-
   private static final String STANDARD_OPPORTUNITY_TYPE = 'Vendita da tutor';
   private static final String PLUS_ACTIVATION_OPPORTUNITY_TYPE = 'Performance Plus - Attivazione';
   private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
-  private static final String RECALL_OPPORTUNITY_TYPE = 'Recall tutor';
 
   private static final Integer OPPORTUNITY_NAME_LIMIT = 120;
   private static final Integer LEAD_CONVERT_BATCH_SIZE = 100;
   private static final String USER_ID_PREFIX = '005';
 
   private final List<Id> leadIds;
+  private final Map<Id, String> previousStatusByLeadId;
 
   public LeadConversionQueueable(List<Id> leadIds) {
+    this(leadIds, null);
+  }
+
+  public LeadConversionQueueable(
+    List<Id> leadIds,
+    Map<Id, String> previousStatusByLeadId
+  ) {
     this.leadIds = new List<Id>();
+    this.previousStatusByLeadId = new Map<Id, String>();
 
     if (leadIds != null) {
       this.leadIds.addAll(leadIds);
+    }
+    if (previousStatusByLeadId != null) {
+      this.previousStatusByLeadId.putAll(previousStatusByLeadId);
     }
   }
 
@@ -57,6 +66,57 @@ public without sharing class LeadConversionQueueable implements Queueable {
       return;
     }
 
+    Savepoint conversionSavepoint = Database.setSavepoint();
+    try {
+      Map<Id, Id> accountIdsByLeadId = convertQualifiedLeads(leadsToConvert);
+      publishCompletionEvents(leadsToConvert, true, accountIdsByLeadId);
+    } catch (Exception conversionError) {
+      Database.rollback(conversionSavepoint);
+      System.debug(
+        LoggingLevel.ERROR,
+        'Lead conversion transaction rolled back: ' +
+        conversionError.getMessage()
+      );
+      if (!restorePreviousLeadStatuses(leadsToConvert)) {
+        throw conversionError;
+      }
+      publishCompletionEvents(leadsToConvert, false, null);
+    }
+  }
+
+  private static void publishCompletionEvents(
+    List<Lead> processedLeads,
+    Boolean succeeded,
+    Map<Id, Id> accountIdsByLeadId
+  ) {
+    List<Lead_Conversion_Completed__e> completionEvents = new List<Lead_Conversion_Completed__e>();
+    for (Lead leadRecord : processedLeads) {
+      Id accountId = accountIdsByLeadId == null
+        ? null
+        : accountIdsByLeadId.get(leadRecord.Id);
+      completionEvents.add(
+        new Lead_Conversion_Completed__e(
+          Account_Id__c = accountId == null ? null : String.valueOf(accountId),
+          Lead_Id__c = String.valueOf(leadRecord.Id),
+          Succeeded__c = succeeded
+        )
+      );
+    }
+
+    for (
+      Database.SaveResult publishResult : EventBus.publish(completionEvents)
+    ) {
+      if (!publishResult.isSuccess()) {
+        System.debug(
+          LoggingLevel.ERROR,
+          'Lead conversion completion event was not published: ' +
+          publishResult.getErrors()[0].getMessage()
+        );
+      }
+    }
+  }
+
+  private static Map<Id, Id> convertQualifiedLeads(List<Lead> leadsToConvert) {
     Map<Id, Id> accountIdsByLeadId = resolveConversionAccounts(leadsToConvert);
 
     Map<String, Contact> contactsByAccountAndPersonKey = getContactsByAccountAndPersonKey(
@@ -66,17 +126,9 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
     List<Database.LeadConvert> conversionRequests = new List<Database.LeadConvert>();
 
-    Map<Id, String> leadEmailById = new Map<Id, String>();
-
     Map<Id, String> leadOpportunityTypeById = new Map<Id, String>();
 
     for (Lead leadRecord : leadsToConvert) {
-      String normalizedEmail = normalizeEmail(leadRecord.Email);
-
-      if (normalizedEmail != null) {
-        leadEmailById.put(leadRecord.Id, normalizedEmail);
-      }
-
       leadOpportunityTypeById.put(
         leadRecord.Id,
         normalizeOpportunityType(leadRecord.Tipo_Opportunita__c)
@@ -141,7 +193,33 @@ public without sharing class LeadConversionQueueable implements Queueable {
 
     setConvertedOpportunityTypes(conversionResults, leadOpportunityTypeById);
 
-    updateConvertedAccountLeadEmails(conversionResults, leadEmailById);
+    Map<Id, Id> convertedAccountIdsByLeadId = new Map<Id, Id>();
+    for (Database.LeadConvertResult result : conversionResults) {
+      convertedAccountIdsByLeadId.put(
+        result.getLeadId(),
+        result.getAccountId()
+      );
+    }
+    return convertedAccountIdsByLeadId;
+  }
+
+  private Boolean restorePreviousLeadStatuses(List<Lead> leadsToRestore) {
+    List<Lead> statusUpdates = new List<Lead>();
+    for (Lead leadRecord : leadsToRestore) {
+      String previousStatus = previousStatusByLeadId.get(leadRecord.Id);
+      if (String.isBlank(previousStatus)) {
+        return false;
+      }
+      statusUpdates.add(new Lead(Id = leadRecord.Id, Status = previousStatus));
+    }
+
+    LeadConversionTriggerHandler.setAutomationBypassed(true);
+    try {
+      update statusUpdates;
+    } finally {
+      LeadConversionTriggerHandler.setAutomationBypassed(false);
+    }
+    return true;
   }
 
   private static List<Database.LeadConvertResult> convertLeads(
@@ -169,6 +247,7 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     logConversionFailures(conversionResults);
+    requireEveryConversionToSucceed(conversionResults);
 
     return conversionResults;
   }
@@ -305,6 +384,41 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
   }
 
+  private static void requireEveryConversionToSucceed(
+    List<Database.LeadConvertResult> conversionResults
+  ) {
+    Integer failureCount = 0;
+    String firstFailure;
+
+    for (Database.LeadConvertResult result : conversionResults) {
+      if (result.isSuccess()) {
+        continue;
+      }
+
+      failureCount++;
+      if (firstFailure == null) {
+        Database.Error[] errors = result.getErrors();
+        firstFailure = errors.isEmpty()
+          ? 'Unknown conversion error for Lead ' + result.getLeadId()
+          : 'Lead ' +
+            result.getLeadId() +
+            ': ' +
+            errors[0].getStatusCode() +
+            ' - ' +
+            errors[0].getMessage();
+      }
+    }
+
+    if (failureCount > 0) {
+      throw new LeadConversionException(
+        'Lead conversion rolled back because ' +
+          failureCount +
+          ' conversion(s) failed. First failure: ' +
+          firstFailure
+      );
+    }
+  }
+
   private static Map<Id, Id> resolveConversionAccounts(List<Lead> leads) {
     Map<Id, Id> accountIdsByLeadId = new Map<Id, Id>();
 
@@ -355,7 +469,6 @@ public without sharing class LeadConversionQueueable implements Queueable {
         new Account(
           Name = buildAccountName(leadRecord),
           RecordTypeId = aziendaRecordTypeId,
-          Lead_Email__c = normalizeEmail(leadRecord.Email),
           Partita_IVA__c = normalizeVat(leadRecord.Partita_IVA__c),
           Phone = leadRecord.Phone,
           Agente__c = leadRecord.Agente__c
@@ -475,56 +588,6 @@ public without sharing class LeadConversionQueueable implements Queueable {
     }
 
     return emails;
-  }
-
-  private static void updateConvertedAccountLeadEmails(
-    List<Database.LeadConvertResult> conversionResults,
-    Map<Id, String> leadEmailById
-  ) {
-    Set<Id> accountIds = new Set<Id>();
-
-    Map<Id, String> leadEmailByAccountId = new Map<Id, String>();
-
-    for (Database.LeadConvertResult result : conversionResults) {
-      if (!result.isSuccess() || result.getAccountId() == null) {
-        continue;
-      }
-
-      String email = leadEmailById.get(result.getLeadId());
-
-      if (email == null) {
-        continue;
-      }
-
-      accountIds.add(result.getAccountId());
-
-      leadEmailByAccountId.put(result.getAccountId(), email);
-    }
-
-    if (accountIds.isEmpty()) {
-      return;
-    }
-
-    List<Account> accountsToUpdate = new List<Account>();
-
-    for (Account accountRecord : [
-      SELECT Id, Lead_Email__c
-      FROM Account
-      WHERE Id IN :accountIds
-    ]) {
-      if (String.isBlank(accountRecord.Lead_Email__c)) {
-        accountsToUpdate.add(
-          new Account(
-            Id = accountRecord.Id,
-            Lead_Email__c = leadEmailByAccountId.get(accountRecord.Id)
-          )
-        );
-      }
-    }
-
-    if (!accountsToUpdate.isEmpty()) {
-      update accountsToUpdate;
-    }
   }
 
   private static String normalizeEmail(String email) {
@@ -649,10 +712,6 @@ public without sharing class LeadConversionQueueable implements Queueable {
   private static String getOpportunityRecordTypeDeveloperName(
     String opportunityType
   ) {
-    if (opportunityType == RECALL_OPPORTUNITY_TYPE) {
-      return RECALL_OPPORTUNITY_RECORD_TYPE;
-    }
-
     if (
       opportunityType == PLUS_ACTIVATION_OPPORTUNITY_TYPE ||
       opportunityType == PLUS_RENEWAL_OPPORTUNITY_TYPE
