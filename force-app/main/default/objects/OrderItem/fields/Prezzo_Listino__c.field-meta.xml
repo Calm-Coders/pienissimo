@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prezzo_Listino__c</fullName>
+    <description
+  >Prezzo unitario prima dello sconto, valorizzato dalla conversione del preventivo quando la riga ha uno sconto. UnitPrice resta il netto; la differenza per la quantita e lo sconto di riga inviato a Mexal.</description>
+    <externalId>false</externalId>
+    <label>Prezzo Listino</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

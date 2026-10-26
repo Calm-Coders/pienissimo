@@ -80,6 +80,7 @@ public without sharing class MexalOrderSendService {
             Quantity,
             UnitPrice,
             TotalPrice,
+            Prezzo_Listino__c,
             Data_Scadenza__c,
             Product2Id,
             Product2.External_Product_Code__c,
@@ -168,6 +169,7 @@ public without sharing class MexalOrderSendService {
     List<Object> articleCodes = new List<Object>();
     List<Object> quantities = new List<Object>();
     List<Object> prices = new List<Object>();
+    List<Object> discounts = new List<Object>();
     List<Object> vatCodes = new List<Object>();
     List<Object> dueDates = new List<Object>();
     String defaultVatCode = resolveVatCode(documentType);
@@ -181,7 +183,18 @@ public without sharing class MexalOrderSendService {
         new List<Object>{ lineNumber, resolveProductCode(line) }
       );
       quantities.add(new List<Object>{ lineNumber, line.Quantity });
-      prices.add(new List<Object>{ lineNumber, line.UnitPrice });
+      Decimal lineDiscount = resolveLineDiscount(line);
+      if (lineDiscount == null) {
+        prices.add(new List<Object>{ lineNumber, line.UnitPrice });
+      } else {
+        prices.add(new List<Object>{ lineNumber, line.Prezzo_Listino__c });
+        discounts.add(
+          new List<Object>{
+            lineNumber,
+            '-' + lineDiscount.stripTrailingZeros().toPlainString()
+          }
+        );
+      }
       vatCodes.add(
         new List<Object>{
           lineNumber,
@@ -201,10 +214,30 @@ public without sharing class MexalOrderSendService {
     payload.put('codice_articolo', articleCodes);
     payload.put('quantita', quantities);
     payload.put('prezzo', prices);
+    if (!discounts.isEmpty()) {
+      payload.put('sconto', discounts);
+    }
     payload.put('cod_iva', vatCodes);
     if (!dueDates.isEmpty()) {
       payload.put('dt_sca_riga', dueDates);
     }
+  }
+
+  // Mexal reads a sconto prefixed with '-' as an amount, not a percentage, and
+  // divides it by the line quantity (format given by Mexal, 26/10). prezzo then
+  // carries the pre-discount price, so Mexal lands on the same net UnitPrice.
+  private static Decimal resolveLineDiscount(OrderItem line) {
+    if (
+      line.Prezzo_Listino__c == null ||
+      line.UnitPrice == null ||
+      line.Quantity == null ||
+      line.Quantity <= 0 ||
+      line.Prezzo_Listino__c <= line.UnitPrice
+    ) {
+      return null;
+    }
+    return ((line.Prezzo_Listino__c - line.UnitPrice) * line.Quantity)
+      .setScale(2, System.RoundingMode.HALF_UP);
   }
 
   // id_riga is the OrderItem autonumber, so the line identity is known before

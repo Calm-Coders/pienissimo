@@ -390,19 +390,23 @@ public without sharing class QuoteTriggerHandler {
         PricebookEntryId,
         Quantity,
         UnitPrice,
+        ListPrice,
         TotalPrice,
+        Discount_Pct__c,
         Description,
         Tranche__c,
         Data_Scadenza__c
       FROM QuoteLineItem
       WHERE QuoteId IN :orderIdByQuoteId.keySet()
     ]) {
+      Decimal netPrice = netUnitPrice(quoteLine);
       orderItemsToInsert.add(
         new OrderItem(
           OrderId = orderIdByQuoteId.get(quoteLine.QuoteId),
           PricebookEntryId = quoteLine.PricebookEntryId,
           Quantity = quoteLine.Quantity,
-          UnitPrice = netUnitPrice(quoteLine),
+          UnitPrice = netPrice,
+          Prezzo_Listino__c = grossUnitPrice(quoteLine, netPrice),
           Description = quoteLine.Description,
           Tranche__c = quoteLine.Tranche__c,
           Data_Scadenza__c = quoteLine.Data_Scadenza__c
@@ -419,7 +423,8 @@ public without sharing class QuoteTriggerHandler {
     );
   }
 
-  // The order carries the discounted price: Mexal receives no separate line discount.
+  // The order carries the discounted price; the pre-discount price is kept in
+  // Prezzo_Listino__c so Mexal can receive the line discount separately.
   private static Decimal netUnitPrice(QuoteLineItem quoteLine) {
     if (
       quoteLine.TotalPrice == null ||
@@ -430,6 +435,43 @@ public without sharing class QuoteTriggerHandler {
     }
     return (quoteLine.TotalPrice / quoteLine.Quantity)
       .setScale(2, System.RoundingMode.HALF_UP);
+  }
+
+  // The quote line stores the net price in UnitPrice and the percentage in
+  // Discount_Pct__c, so the pre-discount price is rebuilt from the two. Items
+  // and bundle components take the percentage off the catalogue ListPrice,
+  // which is used when it matches; a Plus tranche takes it off the tranche
+  // amount, which only the rebuilt price gives. No discount, no value.
+  private static Decimal grossUnitPrice(
+    QuoteLineItem quoteLine,
+    Decimal netPrice
+  ) {
+    Decimal discountPercent = quoteLine.Discount_Pct__c;
+    if (
+      netPrice == null ||
+      discountPercent == null ||
+      discountPercent <= 0 ||
+      discountPercent > 100
+    ) {
+      return null;
+    }
+
+    Decimal listPrice = quoteLine.ListPrice;
+    if (discountPercent == 100) {
+      return listPrice != null && listPrice > 0 ? listPrice : null;
+    }
+
+    Decimal grossPrice = (netPrice / (1 - discountPercent / 100))
+      .setScale(2, System.RoundingMode.HALF_UP);
+    // Both net price and percentage are rounded to two decimals, so the
+    // rebuilt price can miss the catalogue one by a little.
+    if (
+      listPrice != null &&
+      (listPrice - grossPrice).abs() <= 0.01 + listPrice * 0.001
+    ) {
+      return listPrice;
+    }
+    return grossPrice > netPrice ? grossPrice : null;
   }
 
   private static void keepOnePrimaryQuotePerOpportunity(

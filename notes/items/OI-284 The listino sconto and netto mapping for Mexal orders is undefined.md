@@ -1,12 +1,12 @@
 ---
 id: OI-284
 type: open-item
-status: open
+status: in-progress
 owner: Fabrizio Paganelli
 with: Mirko Merendi
 org: both
 raised: 2026-10-22
-updated: 2026-10-23
+updated: 2026-10-26
 depends_on: [OI-207, OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-22 Check Excel Migrazione.md
@@ -49,10 +49,10 @@ _"manda direttamente una mail adesso a Mirko, così ci indica."_
 
 This is the substance and it is **unresolved**.
 
-| Party              | Position                                                                 |
-| ------------------ | ------------------------------------------------------------------------ |
-| **Aurel Mrruku**   | Send **net price and list price only**; derive the discount. _"sconto viene calcolato in automatico per non avere problemi di scontistica."_ Rounding is why: _"25,2% in [Sales]force non coincide con 25,2% in ERP."_ |
-| **Fabrizio Paganelli** | _"sarebbe più corretto usare solo la percentuale"_, dismissing the rounding exposure — _"se è 0,01 di differenza sul totale fattura cambia poco."_ |
+| Party                  | Position                                                                                                                                                                                                               |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Aurel Mrruku**       | Send **net price and list price only**; derive the discount. _"sconto viene calcolato in automatico per non avere problemi di scontistica."_ Rounding is why: _"25,2% in [Sales]force non coincide con 25,2% in ERP."_ |
+| **Fabrizio Paganelli** | _"sarebbe più corretto usare solo la percentuale"_, dismissing the rounding exposure — _"se è 0,01 di differenza sul totale fattura cambia poco."_                                                                     |
 
 🔑 **Mexal's own input rules make both forms necessary and neither sufficient**,
 as he described them: a percentage discount is entered as `20`, a direct price
@@ -64,10 +64,10 @@ scappare"_ — not because anything was settled.
 
 ## 🟢 It produced an action the same day
 
-| When (UTC)   | What                                                                                     |
-| ------------ | ---------------------------------------------------------------------------------------- |
+| When (UTC)   | What                                                                                                                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **15:04:49** | Fabrizio Paganelli → Elena Spini, cc Mirko Merendi, `amministrazione@`, Aurel Mrruku (Gmail `1a16424bb89d3e8a`): _"ho parlato con Mirko poco fa per il tema prezzo di listino, sconti, e importo netto da passare sugli ordini. Avreste disponibilità per una call il prossimo lunedì 26, per definire la questione?"_ |
-| **16:54:27** | Elena Spini: _"per noi è ok, avete preferenze di orario? … per noi è ok tranne 14-15."_ |
+| **16:54:27** | Elena Spini: _"per noi è ok, avete preferenze di orario? … per noi è ok tranne 14-15."_                                                                                                                                                                                                                                |
 
 ⚠ **No slot was fixed** at the time of this sweep, and ⚠ **nothing records what
 Mirko Merendi told him** — the mail reports the conversation, not its content.
@@ -100,13 +100,13 @@ invoice.
 
 ### 🟢 The meeting is fixed
 
-| | |
-| --- | --- |
-| **Title** | `[ROMI-PIENISSIMO] - Tema Ordini Mexal` |
-| **When** | **Monday 26 October 2026, 11:00–12:00 (GMT+1)** |
-| **Agenda, verbatim from the invite** | _"Tema prezzo di listino, sconti, e importo netto da passare sugli ordini"_ |
-| **Invited** | Aurel Mrruku, `amministrazione@pienissimo.com`, **Mirko Merendi (`mirko@kreosoft.com`)**, Fabrizio Paganelli |
-| **Sent** | Elena Spini, 2026-10-23T07:40:11Z (Gmail `1a167b3fe401b85f`) |
+|                                      |                                                                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| **Title**                            | `[ROMI-PIENISSIMO] - Tema Ordini Mexal`                                                                      |
+| **When**                             | **Monday 26 October 2026, 11:00–12:00 (GMT+1)**                                                              |
+| **Agenda, verbatim from the invite** | _"Tema prezzo di listino, sconti, e importo netto da passare sugli ordini"_                                  |
+| **Invited**                          | Aurel Mrruku, `amministrazione@pienissimo.com`, **Mirko Merendi (`mirko@kreosoft.com`)**, Fabrizio Paganelli |
+| **Sent**                             | Elena Spini, 2026-10-23T07:40:11Z (Gmail `1a167b3fe401b85f`)                                                 |
 
 How it was settled: Fabrizio Paganelli 06:23:24Z — _"Per me sarebbe meglio la
 mattina dalle 11.00 in poi"_; Elena Spini 07:40:44Z — _"Ho mandato il meeting,
@@ -174,3 +174,49 @@ recipients, timestamp and stated purpose only.
 - 🔴 Against a **9 November production deploy** and **16 November live**
   ([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)),
   the mapping has 14 days to be agreed, built and verified end to end.
+
+## 2026-10-26 - Mexal gave the format, and it is built in source
+
+🟢 **The format is settled.** Aurel Mrruku, relaying Mexal on 26/10 (the day of
+the `Tema Ordini Mexal` call; ⚠ the call itself is not drilled in this record):
+the order carries a line-level `sconto` array, one `[line number, "-amount"]`
+pair per discounted line. The leading `-` means an **amount, not a
+percentage**, and Mexal **divides it by the line quantity** — a `"-1000"`
+discount on a quantity-2 line is 500 per item.
+
+🔑 **So the percentage-versus-amount question above is closed: amount.** And
+because Mexal subtracts the discount from `prezzo`, `prezzo` must now be the
+**pre-discount** price — sending the net, as before, would discount twice.
+
+**What was built (source only, not deployed, not committed):**
+
+- **`OrderItem.Prezzo_Listino__c`** (Currency) — the unit price before the
+  discount. `UnitPrice` stays the net, so totals, tranches, payment schedules
+  and invoice matching are unchanged.
+- **`QuoteTriggerHandler`** fills it at quote-to-order conversion from the quote
+  line: net `UnitPrice` and `Discount_Pct__c` rebuild the pre-discount price;
+  the catalogue `ListPrice` is used when it matches (Items, bundle
+  components), the rebuilt price otherwise (Plus tranches, whose `ListPrice` is
+  the whole product's). A line with no discount gets no value.
+- **`MexalOrderSendService`**: for a line with `Prezzo_Listino__c` above
+  `UnitPrice`, `prezzo` is the pre-discount price and `sconto` is
+  `-(Prezzo_Listino__c - UnitPrice) × Quantity`; Mexal's division lands
+  exactly on the net. Lines without it are sent as before, and `sconto` is
+  omitted when no line has one.
+- `Full_Permission` read-only FLS on the new field. Validated by dry run in UAT.
+
+⚠ **Open:**
+
+- **Only quote-converted orders carry the discount.** WooCommerce and migrated
+  orders have no `Prezzo_Listino__c` and are sent as before; WooCommerce's
+  `discount_total` is not mapped.
+- **Orders already converted** before this change have no value and send no
+  discount.
+- **The decimal form** of the string (`"-12.5"`, dot separator) is untested
+  against Mexal.
+- **[OI-283](OI-283%20Discounts%20cannot%20be%20edited%20on%20an%20existing%20order.md)**:
+  when discount editing on an existing order is built, it must maintain
+  `Prezzo_Listino__c` too.
+- **Prod lacks `QuoteLineItem.Discount_Pct__c`**, so this ships with the quote
+  discount feature, and as Apex it falls under
+  [the coverage gate](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).

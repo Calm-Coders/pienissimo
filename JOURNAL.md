@@ -10,6 +10,21 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-26 - claude (OI-284 Mexal line discount)
+
+- **Did:** Mexal's line discount format (`"sconto": [[n, "-amount"]]`, amount
+  divided by quantity by Mexal) built in source: new
+  `OrderItem.Prezzo_Listino__c`, filled at quote conversion in
+  `QuoteTriggerHandler` from `Discount_Pct__c` / `ListPrice`;
+  `MexalOrderSendService` sends `prezzo` = pre-discount and `sconto` =
+  `-(Prezzo_Listino__c - UnitPrice) × Quantity`. `Full_Permission` read FLS.
+  Dry-run validated in UAT.
+- **State:** OI-284 → `in-progress`. **Not deployed, not committed.**
+- **Next:** deploy to UAT and send one discounted order end to end; confirm
+  Mexal accepts decimals in the `sconto` string.
+
+---
+
 ## 2026-10-26 - claude (OI-250 Wait Interval fields)
 
 - **Did:** created `Campaign.Wait_Interval_1__c` … `Wait_Interval_15__c`
