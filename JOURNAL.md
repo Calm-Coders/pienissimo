@@ -10,6 +10,18 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-26 - codex (production manual-step table)
+
+- **Did:** copied the user's production manual-step table and Agente page-layout
+  reminder verbatim into
+  [Manual Steps Pienissimo tracker](notes/Manual%20Steps%20Pienissimo%20tracker.md).
+- **State:** no interpretation or status changes were added. No org change was
+  made.
+- **Clarified:** added how to read the status cells: `Done` is a literal sheet
+  value, while **empty** means only that the tracker cell was blank. The 16/10
+  source records row 5 as UAT `Done` and Prod empty; a row-5 table with both
+  cells blank is not that preserved snapshot.
+
 ## 2026-10-21 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and the repository from watermark
@@ -32,7 +44,7 @@ Keep the twenty most recent entries here; archive older ones to
   by a **two-phase import**: technical release ~9 Nov · Zoho invoicing 9–12 Nov
   with the first import in parallel · second extract Fri 13 Nov 09:00 · Salesforce
   live Mon 16 Nov 09:00. ⚠ **No contingency day** — Aurel Mrruku asked for Friday
-  *and* Monday as freeze days and did not get them.
+  _and_ Monday as freeze days and did not get them.
   🔴🔑 **New gating blocker:
   [OI-274](notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md)
   — ~1,000 paid, unused tickets have no path into Salesforce.** A bulk import
@@ -65,7 +77,7 @@ Keep the twenty most recent entries here; archive older ones to
   · build OI-274 · rule on `SAL-12` before the shipped discount goes further ·
   decide the ~80 Performance Plus contracts · fix OI-212.
 - **Watch:** 🔑 **I moved the register's go-live date**, which eight previous runs
-  held. The OI-124 rule gates on *a proposal awaiting a reply*, and that condition
+  held. The OI-124 rule gates on _a proposal awaiting a reply_, and that condition
   is now met from both sides — client proposal in writing 20/10, ROMI acceptance
   in a recorded session 21/10. **The Italian wording in `REQUISITI.it.md` still
   needs a human's eye**, and ⚠ **ROMI's own written reply is not in this mailbox**
