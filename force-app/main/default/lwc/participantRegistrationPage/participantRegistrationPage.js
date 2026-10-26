@@ -16,6 +16,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
   logoUrl = pienissimoLogo;
   token;
+  requestedAction;
   page;
   groups = [];
   assignedTickets = [];
@@ -25,6 +26,9 @@ export default class ParticipantRegistrationPage extends LightningElement {
   rinunciaAssetId;
   isSubmitting = false;
   showConfirmation = false;
+  showRinunciaConfirmation = false;
+  rinunciaConfirmationGroupId;
+  requestedActionHandled = false;
   errorMessage;
   initializedFor;
 
@@ -35,11 +39,19 @@ export default class ParticipantRegistrationPage extends LightningElement {
     }
 
     const state = pageReference.state || {};
-    this.token = state.c__token || state.token;
+    const token = state.c__token || state.token;
+    const requestedAction = (
+      state.c__action ||
+      state.action ||
+      ""
+    ).toLowerCase();
 
-    const initializationKey = this.token || "";
+    const initializationKey = `${token || ""}|${requestedAction}`;
     if (initializationKey !== this.initializedFor) {
       this.initializedFor = initializationKey;
+      this.token = token;
+      this.requestedAction = requestedAction;
+      this.requestedActionHandled = false;
       this.loadParticipants();
     }
   }
@@ -175,6 +187,8 @@ export default class ParticipantRegistrationPage extends LightningElement {
     this.tickets = decoratedTickets;
     this.assignedTickets = decoratedTickets.filter((ticket) => ticket.assigned);
     this.waivedTickets = decoratedTickets.filter((ticket) => ticket.isRinuncia);
+
+    this.openRequestedAction();
 
     if (
       payload?.state !== READY &&
@@ -426,6 +440,39 @@ export default class ParticipantRegistrationPage extends LightningElement {
     this.showConfirmation = false;
   }
 
+  openRequestedAction() {
+    if (
+      this.requestedActionHandled ||
+      !["rifiuta", "rinuncia", "refuse"].includes(this.requestedAction)
+    ) {
+      return;
+    }
+
+    this.requestedActionHandled = true;
+    const group = this.groups.find((candidate) => candidate.showRinunciaAction);
+    if (group) {
+      this.openRinunciaConfirmationForGroup(group.groupId);
+    }
+  }
+
+  openRinunciaConfirmation(event) {
+    this.openRinunciaConfirmationForGroup(event.currentTarget.dataset.groupId);
+  }
+
+  openRinunciaConfirmationForGroup(groupId) {
+    if (!groupId || this.rinunciaActionDisabled) {
+      return;
+    }
+    this.errorMessage = null;
+    this.rinunciaConfirmationGroupId = groupId;
+    this.showRinunciaConfirmation = true;
+  }
+
+  closeRinunciaConfirmation() {
+    this.showRinunciaConfirmation = false;
+    this.rinunciaConfirmationGroupId = null;
+  }
+
   async confirmSubmission() {
     this.showConfirmation = false;
     this.isSubmitting = true;
@@ -454,12 +501,13 @@ export default class ParticipantRegistrationPage extends LightningElement {
     }
   }
 
-  async handleMarkParticipationGroupRinuncia(event) {
-    const groupAssetId = event.currentTarget.dataset.groupId;
+  async confirmParticipationGroupRinuncia() {
+    const groupAssetId = this.rinunciaConfirmationGroupId;
     if (!groupAssetId) {
       return;
     }
 
+    this.showRinunciaConfirmation = false;
     const participantDrafts = this.captureParticipantDrafts();
     this.rinunciaAssetId = groupAssetId;
     this.errorMessage = null;
@@ -475,6 +523,7 @@ export default class ParticipantRegistrationPage extends LightningElement {
       this.errorMessage = this.normalizeError(error);
     } finally {
       this.rinunciaAssetId = null;
+      this.rinunciaConfirmationGroupId = null;
       this.refreshTicketDecorations();
     }
   }
@@ -510,7 +559,11 @@ export default class ParticipantRegistrationPage extends LightningElement {
 
   handleModalKeydown(event) {
     if (event.key === "Escape") {
-      this.closeConfirmation();
+      if (this.showRinunciaConfirmation) {
+        this.closeRinunciaConfirmation();
+      } else {
+        this.closeConfirmation();
+      }
     }
   }
 

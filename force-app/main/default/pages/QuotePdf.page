@@ -410,7 +410,7 @@
         <apex:outputPanel
           layout="block"
           rendered="{!NOT(ISBLANK(quoteRecord.Condizione_di_Pagamento__c))}"
-          ><div class="section-title">MODALITÀ PAGAMENTO</div>
+          ><div class="section-title">MODALITÀ DI PAGAMENTO</div>
           <div class="notes">
             <apex:outputText
               value="{!quoteRecord.Condizione_di_Pagamento__c}"
@@ -485,7 +485,7 @@
           <apex:outputPanel
             layout="block"
             rendered="{!NOT(ISBLANK(quoteRecord.ExpirationDate))}"
-            >Il preventivo e valido fino al
+            >Il preventivo è valido fino al
             <strong><apex:outputText value="{!expirationDate}" /></strong
           ></apex:outputPanel>
           <div>
@@ -505,7 +505,7 @@
             <tr>
               <th style="width: 22%">Articolo e Descrizione</th>
               <th style="width: 7%">Unità di misura</th>
-              <th style="width: 7%">Quantita</th>
+              <th style="width: 7%">Quantità</th>
               <th style="width: 12%">Prezzo Listino</th>
               <th style="width: 12%">Importo</th>
               <th style="width: 10%">Sconto</th>
@@ -588,7 +588,7 @@
         <apex:outputPanel
           layout="block"
           rendered="{!NOT(ISBLANK(quoteRecord.Condizione_di_Pagamento__c))}"
-          ><div class="section-title">MODALITA' PAGAMENTO</div>
+          ><div class="section-title">MODALITÀ DI PAGAMENTO</div>
           <div class="notes">
             <apex:outputText
               value="{!quoteRecord.Condizione_di_Pagamento__c}"

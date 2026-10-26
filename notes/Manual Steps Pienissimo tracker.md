@@ -5,7 +5,7 @@ status: active
 owner: Rexhina Hysi
 org: ROMI
 raised: 2026-10-09
-updated: 2026-10-16
+updated: 2026-10-26
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
 ---
 
@@ -23,11 +23,11 @@ One sheet, `Foglio1`, range `A1:C3` — a header and **two rows**.
 
 ## The shape
 
-| Column | Meaning |
-| ------ | ------- |
+| Column        | Meaning                                     |
+| ------------- | ------------------------------------------- |
 | `Manual Step` | the click-path, written as Setup navigation |
-| `Status Uat` | `Done` on both rows |
-| `Status Prod` | **empty on both rows** |
+| `Status Uat`  | `Done` on both rows                         |
+| `Status Prod` | **empty on both rows**                      |
 
 ## The two steps
 
@@ -114,12 +114,12 @@ Apex and job names only.
 Modified **2026-10-13T09:29:13Z**. Range is now **`A1:C5`** — a header and
 **four** rows.
 
-| # | Row | `Status Uat` | `Status Prod` |
-| - | --- | ------------ | ------------- |
-| 1 | Lead record-type settings | `Done` | **empty** |
-| 2 | `ParticipantDocumentRequestTrigger` subscriber run-as user and batch size | `Done` | **empty** |
-| 3 | **run all scheduled jobs as `amministratore pienissimo`** | **empty** | **empty** |
-| 4 | 🆕 **remove unnecessary buttons from object list view** | `Done` | **empty** |
+| #   | Row                                                                       | `Status Uat` | `Status Prod` |
+| --- | ------------------------------------------------------------------------- | ------------ | ------------- |
+| 1   | Lead record-type settings                                                 | `Done`       | **empty**     |
+| 2   | `ParticipantDocumentRequestTrigger` subscriber run-as user and batch size | `Done`       | **empty**     |
+| 3   | **run all scheduled jobs as `amministratore pienissimo`**                 | **empty**    | **empty**     |
+| 4   | 🆕 **remove unnecessary buttons from object list view**                   | `Done`       | **empty**     |
 
 **Row 4** is the list-view button work: Change Owner, Import, Printable View and
 Assign Label excluded through `searchLayouts.excludedStandardButtons` across the
@@ -144,13 +144,31 @@ go-live is **21/10**.
 Modified **2026-10-16T09:29:19Z**. Range is now **`A1:C6`** — a header and
 **five** rows.
 
-| # | Row | `Status Uat` | `Status Prod` |
-| - | --- | ------------ | ------------- |
-| 1 | Lead record-type settings | `Done` | **empty** |
-| 2 | `ParticipantDocumentRequestTrigger` subscriber run-as user and batch size | `Done` | **empty** |
-| 3 | run all scheduled jobs as `amministratore pienissimo` | **empty** | **empty** |
-| 4 | remove unnecessary buttons from object list view | `Done` | **empty** |
-| 5 | 🆕 **Add the default agent for Accounts and Orders created from WooCommerce** | `Done` | **empty** |
+| #   | Row                                                                           | `Status Uat` | `Status Prod` |
+| --- | ----------------------------------------------------------------------------- | ------------ | ------------- |
+| 1   | Lead record-type settings                                                     | `Done`       | **empty**     |
+| 2   | `ParticipantDocumentRequestTrigger` subscriber run-as user and batch size     | `Done`       | **empty**     |
+| 3   | run all scheduled jobs as `amministratore pienissimo`                         | **empty**    | **empty**     |
+| 4   | remove unnecessary buttons from object list view                              | `Done`       | **empty**     |
+| 5   | 🆕 **Add the default agent for Accounts and Orders created from WooCommerce** | `Done`       | **empty**     |
+
+### Why the statuses look like this
+
+This table is a transcription of the Google Sheet at
+**2026-10-16T09:29:19Z**, not an independent assessment of either org:
+
+- `Done` means the corresponding sheet cell literally contained `Done`.
+- **empty** means the sheet cell was blank. It means **no completion was
+  recorded in the tracker**; it does not by itself prove that nobody performed
+  the step in the org.
+- Rows 1 and 2 already had UAT `Done` on 09/10. Row 3 was added on 12/10 with
+  both cells blank. Row 4 was added on 13/10 with UAT `Done`. Row 5 was added on
+  16/10 with UAT `Done` and Prod blank.
+- Therefore, a version showing both cells blank for row 5 is not the recorded
+  16/10 snapshot. The preserved source trace states UAT `Done` and Prod empty.
+  A different value would need a newer dated reading of the source sheet.
+- All five Prod cells were blank in that snapshot, so none could be marked
+  complete from the tracker alone.
 
 **Row 5 is the configuration half of a build that landed the same morning.**
 `4eadae8` (Anita Aga, 16/10 11:32 CEST, branch `DevAnita15`) adds
@@ -173,3 +191,15 @@ Still no owner for the production column, still no date, and go-live is
 **02/11** with Go/No-Go on **27/10**.
 
 **No credentials, prices or personal data appear in the new row.**
+
+## 2026-10-26
+
+| Manual Step                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Status Uat | Status Prod |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------- |
+| Setup → Feature Settings → Marketing → Lead Settings → Record Type Settings → Keep the existing record type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Done       |             |
+| Go to Setup → Event Studio.<br>Open the platform event used by ParticipantDocumentRequestTrigger.<br>Open Apex Trigger Details for the subscriber.<br>Click Edit.<br>Select the correct active Production user.<br>Keep Batch Size = 200 and save.<br>Go to Setup → Platform Events → [event] → Subscriptions.<br>Click Manage beside ParticipantDocumentRequestTrigger, then Suspend and Resume so the new configuration takes effect immediately.                                                                                                                                                                                                                                                                         | Done       |             |
+| run all scheduled jobs as amministratore pienissimo <br>Set\<String> pienissimoJobNames = new Set\<String>{<br> MexalArticleSyncScheduler.JOB_NAME,<br> MexalCustomerSyncScheduler.JOB_NAME,<br> MexalInvoiceSyncScheduler.JOB_NAME,<br> QuoteNegotiationAgingBatch.JOB_NAME<br>};<br>for (CronTrigger existingJob : [<br> SELECT Id<br> FROM CronTrigger<br> WHERE CronJobDetail.Name IN :pienissimoJobNames<br>]) {<br> System.abortJob(existingJob.Id);<br>}<br>System.debug(MexalArticleSyncScheduler.scheduleNightly());<br>System.debug(MexalCustomerSyncScheduler.scheduleNightly());<br>System.debug(QuoteNegotiationAgingBatch.scheduleDaily());<br>System.debug(MexalInvoiceSyncScheduler.scheduleNightly());<br> |            |             |
+| remove unecessary buttons from object list view                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Done       |             |
+| Add the default agent for Accounts and Orders created from WooCommerce                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Done       |             |
+
+&#x20;all this are nmanual steps to be done in prod should consider also that might need to add the page layouts to the agente profile i do not know if is retrieved this manual step write in a file under notes

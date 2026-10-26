@@ -55,11 +55,12 @@
                   </div>
                   <template if:true={group.showRinunciaAction}>
                     <lightning-button
+                      class="rinuncia-button"
                       label="Rinuncia"
                       variant="destructive"
                       data-group-id={group.groupId}
                       disabled={group.rinunciaDisabled}
-                      onclick={handleMarkParticipationGroupRinuncia}
+                      onclick={openRinunciaConfirmation}
                     ></lightning-button>
                   </template>
                 </header>
@@ -279,6 +280,36 @@
             label="Conferma"
             variant="brand"
             onclick={confirmSubmission}
+          ></lightning-button>
+        </div>
+      </div>
+    </section>
+    <div class="backdrop"></div>
+  </template>
+
+  <template if:true={showRinunciaConfirmation}>
+    <section
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rinuncia-confirmation-heading"
+      tabindex="-1"
+      onkeydown={handleModalKeydown}
+    >
+      <div class="confirmation-card rinuncia-confirmation-card">
+        <h2 id="rinuncia-confirmation-heading">Conferma rinuncia</h2>
+        <p>
+          La rinuncia è definitiva. Sei veramente sicuro di voler rinunciare?
+        </p>
+        <div class="confirmation-actions">
+          <lightning-button
+            label="Annulla"
+            onclick={closeRinunciaConfirmation}
+          ></lightning-button>
+          <lightning-button
+            label="Conferma rinuncia"
+            variant="destructive"
+            onclick={confirmParticipationGroupRinuncia}
           ></lightning-button>
         </div>
       </div>

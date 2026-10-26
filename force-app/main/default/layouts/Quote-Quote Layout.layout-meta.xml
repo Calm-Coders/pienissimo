@@ -62,7 +62,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Tipologia_Attivita__c</field>
+                <field>Tipologia_Attivita_Globale__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>

@@ -23,21 +23,21 @@ deferred to the production rollout rather than ruled on.**
 Marketing group DM, **14 October**, Elena Spini with Aurel Mrruku and Fabrizio
 Mastracci. Times CEST.
 
-| Time | Who | What |
-| --- | --- | --- |
-| 15:13:54 | Elena Spini | _"post clicl sul tasto rinuncia degli biglietti della community mi riesci a far vedere questo testo?"_ with the `pienissimo.com/rifiuta-evento` link |
-| 15:14:32 | Elena Spini | _"ovviamente so che è fattibile BUT facilmente?"_ |
-| 15:20:01 | Aurel Mrruku | _"io posso fare tutto ma non adesso"_ — half a day just to retest every flow |
-| 15:20:49 | Aurel Mrruku | _"abbiamo fatto gli UAT, ci hano detto che va bene …"_ |
-| 15:25:12 | Elena Spini | Friday she will say that clicking RINUNCIA shows that text, _"FINE ---- massimo delle modifiche che possiamo fare"_ |
-| 15:25:46 | Elena Spini | _"venerdì non ci sarà il testo glielo faremo vedere quando porteremo tutti in PROD"_ |
-| 15:27:17 | Aurel Mrruku | _"il button rinuncia ha dietro un action che fa delle modifiche sui dati"_ |
-| 15:31:44 | Elena Spini | _"asp Aurel ho detto che non si cambia nulla infatti"_ |
-| 15:33:39 | Aurel Mrruku | _"devo togliere il button quando non clicki rinuncia ma fai il giro normale. devo dividere il link e creare 2 pagine sulla community"_ |
-| 15:34:31 | Aurel Mrruku | _"la pagina del rinuncia deve avere una logicha sulla renderizazione che ti manda in rinunciato i asset ecc"_ |
-| 15:34:46 | Aurel Mrruku | _"si deve cambiare anche la parte mobile"_ |
-| 15:35:25 | Elena Spini | voice note: _"non è cambiato niente, cioè, semplicemente il tasto rinuncia è quello che avevi già fatto. Punto."_ |
-| 15:35:52 | — | a huddle starts; **what was settled in it is unreadable** |
+| Time     | Who          | What                                                                                                                                                 |
+| -------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 15:13:54 | Elena Spini  | _"post clicl sul tasto rinuncia degli biglietti della community mi riesci a far vedere questo testo?"_ with the `pienissimo.com/rifiuta-evento` link |
+| 15:14:32 | Elena Spini  | _"ovviamente so che è fattibile BUT facilmente?"_                                                                                                    |
+| 15:20:01 | Aurel Mrruku | _"io posso fare tutto ma non adesso"_ — half a day just to retest every flow                                                                         |
+| 15:20:49 | Aurel Mrruku | _"abbiamo fatto gli UAT, ci hano detto che va bene …"_                                                                                               |
+| 15:25:12 | Elena Spini  | Friday she will say that clicking RINUNCIA shows that text, _"FINE ---- massimo delle modifiche che possiamo fare"_                                  |
+| 15:25:46 | Elena Spini  | _"venerdì non ci sarà il testo glielo faremo vedere quando porteremo tutti in PROD"_                                                                 |
+| 15:27:17 | Aurel Mrruku | _"il button rinuncia ha dietro un action che fa delle modifiche sui dati"_                                                                           |
+| 15:31:44 | Elena Spini  | _"asp Aurel ho detto che non si cambia nulla infatti"_                                                                                               |
+| 15:33:39 | Aurel Mrruku | _"devo togliere il button quando non clicki rinuncia ma fai il giro normale. devo dividere il link e creare 2 pagine sulla community"_               |
+| 15:34:31 | Aurel Mrruku | _"la pagina del rinuncia deve avere una logicha sulla renderizazione che ti manda in rinunciato i asset ecc"_                                        |
+| 15:34:46 | Aurel Mrruku | _"si deve cambiare anche la parte mobile"_                                                                                                           |
+| 15:35:25 | Elena Spini  | voice note: _"non è cambiato niente, cioè, semplicemente il tasto rinuncia è quello che avevi già fatto. Punto."_                                    |
+| 15:35:52 | —            | a huddle starts; **what was settled in it is unreadable**                                                                                            |
 
 ## What the disagreement actually is
 
@@ -87,11 +87,11 @@ advice.** See
 
 ### What was decided
 
-| Change | Owner | Status |
-| --- | --- | --- |
-| **Both `accetta` and `rifiuta` buttons in the invitation mail**, pointing at the **same** landing page | Matteo Distaso, Rebecca Marmo (copy); ROMI builds | 🔴 Agreed, not built |
-| **A double-confirm pop-up** on the renunciation page — _"La rinuncia è definitiva. Sei veramente sicuro?"_ | Aurel Mrruku | 🔴 Agreed, not built |
-| **Enlarge the renunciation button**, and check the mobile rendering | Aurel Mrruku | 🔴 Agreed, not built |
+| Change                                                                                                     | Owner                                             | Status               |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------- |
+| **Both `accetta` and `rifiuta` buttons in the invitation mail**, pointing at the **same** landing page     | Matteo Distaso, Rebecca Marmo (copy); ROMI builds | 🔴 Agreed, not built |
+| **A double-confirm pop-up** on the renunciation page — _"La rinuncia è definitiva. Sei veramente sicuro?"_ | Aurel Mrruku                                      | 🔴 Agreed, not built |
+| **Enlarge the renunciation button**, and check the mobile rendering                                        | Aurel Mrruku                                      | 🔴 Agreed, not built |
 
 ### Why it matters that the client won
 
