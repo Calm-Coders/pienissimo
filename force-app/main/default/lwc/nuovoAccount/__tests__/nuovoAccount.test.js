@@ -97,7 +97,9 @@ function emitAgent(id, code, category) {
   );
 }
 function inputs(element) {
-  return [...element.shadowRoot.querySelectorAll("lightning-input")];
+  return [...element.shadowRoot.querySelectorAll("lightning-input")].filter(
+    (input) => input.label !== "Tipo di record Account"
+  );
 }
 function saveButton(element) {
   return [...element.shadowRoot.querySelectorAll("lightning-button")].find(
@@ -115,6 +117,144 @@ afterEach(() => {
 });
 
 describe("live agent fields in custom Account form", () => {
+  it("prefills searchable addresses and saves their current values independently", async () => {
+    const element = await mount("AZIENDA", { BillingStreet: "Initial street" });
+    const addressFields = {};
+    for (const prefix of ["Billing", "Shipping"]) {
+      addressFields[`${prefix}Address`] = { createable: false, compound: true };
+      for (const suffix of [
+        "Street",
+        "City",
+        "State",
+        "Country",
+        "PostalCode"
+      ]) {
+        addressFields[`${prefix}${suffix}`] = {
+          createable: true,
+          compoundFieldName: `${prefix}Address`
+        };
+      }
+    }
+    getRecordCreateDefaults.emit({
+      ...defaults,
+      objectInfos: {
+        Account: {
+          ...metadata,
+          fields: { ...metadata.fields, ...addressFields }
+        }
+      }
+    });
+    await Promise.resolve();
+    const form = element.shadowRoot.querySelector("lightning-record-edit-form");
+    form.dispatchEvent(new CustomEvent("load"));
+    const addresses = [
+      ...element.shadowRoot.querySelectorAll("lightning-input-address")
+    ];
+    expect(addresses).toHaveLength(2);
+    expect(addresses[0].street).toBe("Initial street");
+    for (const address of addresses) {
+      expect(address.showAddressLookup).toBe(true);
+      jest.spyOn(address, "reportValidity").mockReturnValue(true);
+    }
+    Object.assign(addresses[0], {
+      street: "Via Roma 1",
+      city: "Roma",
+      province: "RM",
+      country: "Italy",
+      postalCode: "00100"
+    });
+    Object.assign(addresses[1], {
+      street: "Via Milano 2",
+      city: "Milano",
+      province: "MI",
+      country: "Italy",
+      postalCode: "20100"
+    });
+    const submit = jest.spyOn(form, "submit");
+    const save = () =>
+      form.dispatchEvent(
+        new CustomEvent("submit", {
+          cancelable: true,
+          detail: { fields: { Name: "Company" } }
+        })
+      );
+    addresses[0].reportValidity.mockReturnValue(false);
+    save();
+    expect(submit).not.toHaveBeenCalled();
+    addresses[0].reportValidity.mockReturnValue(true);
+    save();
+    expect(submit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        BillingStreet: "Via Roma 1",
+        BillingCity: "Roma",
+        BillingState: "RM",
+        BillingCountry: "Italy",
+        BillingPostalCode: "00100",
+        ShippingStreet: "Via Milano 2",
+        ShippingCity: "Milano",
+        ShippingState: "MI",
+        ShippingCountry: "Italy",
+        ShippingPostalCode: "20100"
+      })
+    );
+  });
+  it("shows the selected record type below the owner and keeps creation checkboxes optional", async () => {
+    const element = await mount();
+    const optionalFields = [
+      "Azienda_Test__c",
+      "Informativa_Privacy__c",
+      "Consenso_Profilazione__c"
+    ];
+    getRecordCreateDefaults.emit({
+      ...defaults,
+      objectInfos: {
+        Account: {
+          ...metadata,
+          fields: {
+            ...metadata.fields,
+            OwnerId: { createable: true },
+            Email_Contatto_Principale__c: { createable: true },
+            Codice_Cliente_Mexal__c: { createable: true },
+            ...Object.fromEntries(
+              optionalFields.map((name) => [
+                name,
+                { createable: true, required: true }
+              ])
+            )
+          }
+        }
+      }
+    });
+    await Promise.resolve();
+    const recordType = [
+      ...element.shadowRoot.querySelectorAll("lightning-input")
+    ].find((input) => input.label === "Tipo di record Account");
+    expect(recordType.value).toBe("Azienda");
+    expect(recordType.readOnly).toBe(true);
+    const cells = [
+      ...recordType.closest(".field-column").querySelectorAll(".field-cell")
+    ];
+    const typeIndex = cells.indexOf(recordType.closest(".field-cell"));
+    expect(
+      cells[typeIndex - 1].querySelector("lightning-record-picker").label
+    ).toBe("Account Owner");
+    const fields = [
+      ...element.shadowRoot.querySelectorAll("lightning-input-field")
+    ];
+    expect(
+      fields.some((input) => input.fieldName === "Email_Contatto_Principale__c")
+    ).toBe(false);
+    expect(
+      [...element.shadowRoot.querySelectorAll("h3")].some(
+        (heading) => heading.textContent === "Dati MEXAL"
+      )
+    ).toBe(false);
+    for (const name of optionalFields) {
+      expect(fields.find((input) => input.fieldName === name).required).toBe(
+        false
+      );
+    }
+  });
   it("shows compound address inputs when their underlying fields are createable", async () => {
     const element = await mount();
     getRecordCreateDefaults.emit({

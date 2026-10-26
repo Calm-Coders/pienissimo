@@ -3,7 +3,7 @@
     <fullName>Codice_Agente_Esterno__c</fullName>
     <description
   >Codice copiato dall'utente Agente alla creazione dell'Account con agente o quando cambia Agente; viene svuotato se Agente viene rimosso. Senza assegnazione o cambio agente conserva il valore esistente o importato.</description>
-    <label>Codice Agente Esterno</label>
+    <label>Codice Agente</label>
     <length>40</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>

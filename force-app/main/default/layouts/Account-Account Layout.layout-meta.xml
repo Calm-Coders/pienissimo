@@ -146,10 +146,6 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>IBAN__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>Codice_ATECO__c</field>
             </layoutItems>
             <layoutItems>

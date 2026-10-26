@@ -303,6 +303,44 @@
   text-transform: uppercase;
 }
 
+.existing-products-table .existing-header,
+.existing-products-table .existing-product-row {
+  grid-template-columns: minmax(0, 1fr) 2.5rem 3.5rem 5.5rem 6rem 2.5rem;
+  gap: 0.5rem;
+}
+
+.existing-products-table {
+  max-height: 11rem;
+  overflow-y: auto;
+}
+
+.existing-products-table .selected-body {
+  max-height: none;
+  overflow: visible;
+}
+
+.existing-products-table .existing-header {
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.existing-number {
+  justify-self: end;
+  text-align: right;
+}
+
+.existing-products-table .existing-item-actions {
+  justify-self: end;
+  padding-left: 0;
+}
+
+.existing-price {
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
 .selected-body {
   display: grid;
   max-height: 8rem;
@@ -414,6 +452,10 @@
   font-weight: 700;
 }
 
+.existing-item-actions {
+  padding-left: 1rem;
+}
+
 .row-status {
   background: #eef4fb;
   border-radius: 999px;
@@ -520,6 +562,15 @@
 }
 
 @media (max-width: 520px) {
+  .existing-products-table .existing-header,
+  .existing-products-table .existing-product-row {
+    grid-template-columns: 1fr;
+  }
+
+  .existing-price::before {
+    content: attr(data-label) ": ";
+  }
+
   .summary,
   .input-grid,
   .item-pricing,
