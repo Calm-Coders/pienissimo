@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-23
 depends_on: [OI-244]
 blocks: [OI-274, go-live]
 severity: gating
@@ -96,3 +96,68 @@ dummy edizione spans 1 January 2025 to 24 March 2026.
 - ⚠ The naming convention, as above.
 - ⚠ Whether the dummy editions must also be deleted afterwards, or stay as
   inert history. Not discussed.
+
+## 🟡 2026-10-22 — a second mechanism was offered, and a precondition was added
+
+At `00:16:10` of
+[the 22/10 session](../meetings/2026-10-22%20Check%20Excel%20Migrazione.md) Aurel
+Mrruku proposed a **flag on the real edizione** instead of throwaway editions:
+
+> _"se vuoi ti faccio un campo sull'edizione lo chiamo `old`, quindi vecchio,
+> edizione vecchia. E per non generare il link sulle edizioni vecchie, intendo"_
+
+⚠ **Fabrizio Paganelli did not engage with it** — _"adesso io faccio fatica a
+seguirti perché sto pensando a questo tracciato"_ — and the call moved on.
+🔴 **So two mechanisms for the same problem are on the record and neither has
+been withdrawn**: the dummy `Pippo`/`Import` editions agreed on 21/10, and this
+flag. They are not equivalent: the flag suppresses link generation on a real
+edizione and leaves no tickets to mass-delete, which would make the 21/10
+deletion step unnecessary — and would remove the naming-convention risk this row
+already carries.
+
+🔑 **A new precondition was stated twice and accepted**: every product in the
+historical orders must be **active** before the edizione mapping can be done.
+
+> _"per mettere i prodotti sulla ma[pp]atura i prodotti devono essere attivi
+> praticamente. Io ti devo abilitare prima tutti i prodotti"_
+
+and as a closing action: _"E dobbiamo abilitare tutti i prodotti."_ Fabrizio
+Paganelli accepted it as temporary — _"se è una cosa temporanea, non è un
+problema"_.
+
+⚠ **Nobody said what activating the whole catalogue does to the live product
+list tutors see, or who reverses it.** This is the fourth migration-only
+condition with no named owner for its removal, alongside the Mexal-send bypass
+([OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)),
+the edizione date reversal and the Performance Plus contract bypass
+([OI-280](OI-280%20Performance%20Plus%20contract%20generation%20must%20be%20bypassed%20for%20migrated%20orders.md)).
+
+## 2026-10-23 - the activation happened, and a fifth condition appeared
+
+🟢 **The precondition above is satisfied.** Elena Spini to the client,
+13:15:52Z (Gmail `1a168166785585be`): _"I prodotti sono già tutti attivi in
+ambiente di UAT, quindi puoi procedere"_, and Aurel Mrruku in
+[the 16:00 call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md):
+_"ieri ti avevo detto ti metto tutti i prodotti attivi in sales force … adesso
+anche i prodotti vecchi attivi."_ 🟢 **The mapping is formally unblocked** —
+_"puoi procedere con la configurazione di edizione e mappatura-edizione."_
+
+⚠ **Still nobody named to reverse it**, and nothing says what the whole active
+catalogue does to the product list tutors see. Unchanged from 22/10.
+
+🔴🔑 **A fifth migration-only condition is now on the record: the Mexal product
+synchronisation flows are disabled.** Aurel Mrruku, same call: _"li ho
+disabilit[ati] ci sto lavorando per quello"_, confirming the client's
+observation _"adesso i flussi di sincronizzazione sono disabilitati,
+chiaramente."_
+
+🟢 **Unlike the other four it has an owner by his own statement** — he disabled
+it and is working inside it. ⚠ **It still has no date for reversal and nothing
+that checks**, and it has an immediate consequence for this row: the client's
+`categoria statistica` edits in Mexal **do not reach Salesforce by themselves**,
+so the mapping this note depends on must be built after a manual re-import. See
+[OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+
+⚠ **The naming convention is still unreconciled** (`Academy Pippo` vs
+`Academy Import 2026`), and ⚠ **neither mechanism has been withdrawn** — the
+`old` flag was not mentioned on 23/10 either.

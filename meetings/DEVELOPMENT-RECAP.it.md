@@ -8215,3 +8215,303 @@ delle due call del 21/10.** La lista concorrenti del `DM-07` è invariata. Entra
 richiedono ancora la decisione di una persona.
 🔴 **Il Go/No-Go del 27 ottobre è decaduto e nessuna delle due sessioni del 21/10
 ha nominato un Go/No-Go.**
+
+---
+
+## 68. Aggiornamento 22/10/2026 — la migrazione è passata dal disegno ai dati, e la chiave di import si è rivelata non unica da sola
+
+`requirements-check` notturno, watermark **2026-10-21T22:00Z**. **Una nuova call
+col cliente**: [Check Excel Migrazione](../notes/meetings/2026-10-22%20Check%20Excel%20Migrazione.md),
+15:00 CEST, **00:40:19**, Fabrizio Paganelli da solo per Pienissimo con Elena
+Spini e Aurel Mrruku. Analizzata dalla trascrizione grezza completa, conservata
+in `meetings/2026-10-22-check-excel-migrazione-transcript.it.md`. Ha percorso
+riga per riga il foglio di migrazione compilato — la prima volta che il progetto
+ha **dati** di migrazione e non solo un disegno.
+
+### 🟢 Le regole di esclusione, concordate
+
+La domanda di perimetro aperta dal 15/10 ha risposta: **l'estrazione parte dal
+1° gennaio 2024** — ~30.000 righe d'ordine dal 2024, ~9.000 dal 2025.
+
+| Regola | Stato |
+| ------ | ----- |
+| Le righe con i campi chiave d'ordine vuoti sono **escluse** | ✅ concordato |
+| Tutte le fatture e gli scadenzari entrano **comunque**, con o senza ordine | ✅ concordato |
+| Data tranche = **data fattura** | ✅ concordato |
+| Condizione di pagamento **forzata a `12`** su tutto lo storico | ✅ concordato |
+| Codice agente mancante → **codice esistente `610`**, mai inventato | ✅ concordato |
+| **Note di credito escluse** e rinviate, conservate in un file a parte | ✅ concordato |
+| **~1.000 righe `SW`** di vendita piattaforma eliminate | ✅ concordato |
+| Prima le testate, **poi** le righe | ✅ concordato |
+
+⚠ **I costi non sono stati quantificati.** Nel 2024 le note di credito sono
+_«parecchie»_ per ammissione del cliente, quindi lo storico migrato sovrastima
+il venduto netto di quell'anno; `12` e `610` sono valori inventati su ogni riga
+che ne era priva, e la reportistica provvigionale sullo storico attribuirà quelle
+vendite alla segreteria. Vedi
+[OI-244](../notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+
+### 🔴 La chiave di import non è unica da sola
+
+Fabrizio Paganelli ha mostrato a schermo che `sigla` + `serie` + `numero` +
+`data ordine` **si ripete su clienti diversi**, perché le fatture emesse senza
+ordine preliminare lasciano vuoti tutti e quattro i campi. Due rimedi sono stati
+respinti — aggiungere il codice cliente (la struttura a livello di riga non lo
+regge) e inventare i numeri mancanti (la chiave deve coincidere con quanto Mexal
+invierà poi) — e si risolve **escludendo le righe**.
+
+🔑 **Quindi l'unicità della chiave è ora una proprietà del foglio del cliente,
+non del disegno.** Nulla in Salesforce la impone o la rileva, e una futura
+estrazione prodotta senza quel filtro — da un'altra persona, o per il secondo
+import del 13 novembre — riapre il problema in silenzio. Vedi
+[OI-275](../notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md).
+
+### 🔴 Due righe nuove
+
+- **[OI-283](../notes/items/OI-283%20Discounts%20cannot%20be%20edited%20on%20an%20existing%20order.md)
+  — gli sconti non si possono modificare su un ordine esistente.**
+  `Gestisci Prodotti` implementa aggiunta e cancellazione; la modifica non è mai
+  stata costruita. Confermato in riunione. ⚠ Il cliente **ha rifiutato di dire
+  quale sia il comportamento corretto**, quindi il requisito resta non espresso,
+  e il percorso del preventivo non è stato provato.
+- **[OI-284](../notes/items/OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md)
+  — la mappatura listino / sconto / netto sugli ordini Mexal non è definita**, e
+  blocca il go-live. Salesforce ha i campi; i campi Mexal non sono stati
+  indicati. 🔴 Le due parti **non concordano, apertamente**: Aurel Mrruku vuole
+  netto + listino con lo sconto derivato, per gli arrotondamenti dell'ERP;
+  Fabrizio Paganelli vuole le percentuali. 🟢 È stata chiesta una call per
+  **lunedì 26 ottobre**, accettata, ⚠ **senza orario fissato**.
+
+### 🟢 Il file delle picklist è arrivato, e ROMI non riesce a usarlo
+
+Dopo tredici sweep, Elisa Migliano ha inviato
+`Mappatura_Categorie_Sottocategorie_Origine Lead_Tipologiattività.xlsx` alle
+07:42:18Z — rinviato, non corretto. 🔴 La lettura di Elena Spini, in DM la stessa
+mattina: _«quel file fa cagare quindi capire che vogliono»_, con la domanda al
+cliente assegnata ad Aurel Mrruku e ⚠ senza seguito. 🔑 **Il problema è
+cambiato**: non quale lista sia corrente, ma che il file di origine del cliente
+non lo dica. Vedi
+[OI-265](../notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md).
+
+### 🟡 Un meccanismo edizione concorrente, e una precondizione
+
+Aurel Mrruku ha proposto un flag `old` sull'edizione reale al posto delle
+edizioni fittizie concordate il 21/10. Il cliente non ha raccolto e **nessuno dei
+due è stato ritirato**. È stata dichiarata due volte e accettata una nuova
+precondizione: **tutti i prodotti devono essere attivi prima del caricamento**,
+con ⚠ nessuno che dica chi la riporta indietro — quarta condizione solo-migrazione
+senza un titolare per la rimozione. Vedi
+[OI-276](../notes/items/OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md).
+
+### 🔴 Cosa non si è mosso
+
+- **[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  è invariato per la dodicesima notte** — e la call ha ripercorso per intero la
+  catena degli incassi che vi passa attraverso, col cliente che la ricostruisce
+  ad alta voce e la condivide. ~30.000 righe storiche acquisiranno così il loro
+  stato.
+- **[OI-267](../notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+  non è costruito** — `AUTOMATIC_MEXAL_CREATION_ENABLED` è ancora `true`.
+- ⚠ **[OI-274](../notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md),
+  scalato a ROMI dal project lead del cliente il giorno prima, non è stato
+  nominato una sola volta.**
+- ⚠ **Zoho non è stato nominato**, sesta tornata consecutiva.
+
+🔴 **`SAL-12` non è citato per la quinta sessione** — _«nessuno sconto
+discrezionale»_, `status: agreed`, ora contro due righe (OI-283, OI-284)
+costruite sull'assunto opposto e una call col cliente fissata per definire come
+gli sconti arrivano all'ERP. **Questa tornata non ha modificato alcun
+requisito.** La lista concorrenti del `DM-07` è invariata. Entrambi richiedono
+una decisione umana.
+
+## 69. Aggiornamento 23/10/2026 — il calendario di go-live è concordato per iscritto da entrambe le parti, i dati della migrazione sono arrivati e non sono stati aperti, e ROMI ha posto per la prima volta la questione del perimetro al cliente
+
+**Fonte:** `requirements-check` notturno, watermark `2026-10-22T22:00Z`. Una
+nuova call col cliente, **00:06:29** —
+[Import Ordini Migrazione](../notes/meetings/2026-10-23%20Import%20Ordini%20Migrazione.md),
+16:00 CEST, Fabrizio Paganelli e Aurel Mrruku, lavorata sulla trascrizione
+integrale conservata in
+[meetings/2026-10-23-import-ordini-migrazione-transcript.it.md](2026-10-23-import-ordini-migrazione-transcript.it.md).
+⚠ Elena Spini l'ha fissata e non ha partecipato. Inoltre quattro messaggi sul
+thread del go-live, il thread `Import Ordini`, il thread `Richiesta Call`, una
+mail di errore Salesforce, la DM marketing e sei commit.
+
+### 🟢🔑 Il calendario è ora scritto, reciproco e accettato
+
+Quattro messaggi su Gmail `1a158b6e3e4cee81` colmano il vuoto probatorio
+segnalato dal §67.
+
+- 🟢 **La risposta di ROMI è finalmente nella casella esaminata** — Elena Spini
+  ha inoltrato alle 10:06:07Z la propria mail del 21/10 09:53, ⚠ con la
+  spiegazione: _«avendo fatto rispondi a tutti purtroppo non eravate in copia
+  (comunque NON hanno risposto e ora sto sollecitando e vi metto in cc)»_. Il
+  cliente l'aveva lasciata lì per due giorni.
+- 🟢 **ROMI ha accettato il 16 novembre per iscritto**, 10:09:04Z: _«riteniamo
+  che la data del 16/11 rimanga per noi un target del tutto raggiungibile»_.
+- 🟢🔑 **Il cliente ha riscritto il piano e lo ha accettato**, 10:41:34Z, firmato
+  _«Sabatino/Fabrizio»_ — quindi anche dal project lead che il 21 ottobre aveva
+  fatto l'escalation: _«Dal 9 al 11 novembre i commerciali e l'amministrazione
+  continuano a lavorare su Zoho · Il 12 – 13 novembre interrompiamo la
+  fatturazione e procediamo con la migrazione degli ordini non fatturati da
+  Mexal a Salesforce … · Il 16 novembre lavoriamo tutti su Salesforce … Se il
+  giro è questo procediamo come da voi indicato»_.
+- 🔑 **ROMI ha aggiunto due impegni**, 13:14:42Z: _«il 9/11 noi procederemo con
+  il deploy in Produzione»_ e _«entro il 13/11 mattina ore 9 noi dobbiamo
+  ricevere il file con gli ordini da caricare in Produzione»_.
+
+⚠ **Un giorno è slittato** rispetto alla tabella del §67 — Zoho fino all'11,
+fatturazione ferma dal 12. Vale la versione scritta più recente. **Il registro è
+invariato**: `go_live: 2026-11-16`, versione 1.6. Vedi
+[OI-268](../notes/items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md).
+
+### 🔴🔑 ROMI ha chiesto un regime di change request, e il cliente ha ignorato la richiesta
+
+La stessa mail delle 10:09:04Z contiene due elementi nuovi per questo progetto —
+[OI-285](../notes/items/OI-285%20ROMI%20asked%20the%20client%20to%20route%20future%20out%20of%20scope%20requirements%20through%20change%20requests.md).
+
+1. **La migrazione dei biglietti è messa agli atti come fuori perimetro, pur
+   essendo accettata**: _«stiamo facendo il possibile per includere anche i
+   requisiti per la migrazione dei biglietti arrivati in settimana, sebbene non
+   fossero previsti nella pianificazione iniziale né nel BBP approvato»_. 🔑 È la
+   prima risposta scritta di ROMI all'escalation di Sabatino Rinaldi e cita un
+   documento invece di un ricordo — ma ⚠ **non risponde a nulla di ciò che lui
+   aveva chiesto**: nessun meccanismo, nessuna data, nessun titolare, nulla di
+   costruito.
+2. **Il regime stesso**: _«vorremmo concordare che in futuro eventuali requisiti
+   fuori ambito non definiti a monte dovranno essere gestiti formalmente tramite
+   Change Request (CR)»_. 🔑 **È la prima volta che il meccanismo delle CR viene
+   posto al cliente** — il _«digli che è una CR»_ dell'OI-259 non è mai uscito
+   dalla stanza.
+
+🔴 **Il cliente ha risposto al paragrafo sul calendario della stessa mail e non
+ha detto nulla su nessuno dei due.** L'adesione selettiva è il rilievo. ⚠ E in
+questo record non esiste alcun processo di CR: né modulo, né approvatore, né
+base di prezzo, né tempi.
+
+### 🟢🔑 La migrazione ha i dati, e qui nessuno li ha guardati
+
+`Import Ordini (versione del 23.10.26).xlsx`, **1.103.461 byte**, 09:27:39Z —
+_«si tratta di dati provvisori in quanto poi l'importazione dovremo ripeterla
+quando passeremo in produzione»_. ⚠ **Non aperto**: ordini, importi e codici
+articolo di clienti reali. 🔑 **Quindi nulla qui attesta se le otto regole di
+esclusione concordate il 22/10 siano state applicate**, compresa quella da cui
+dipende ora l'unicità della chiave
+([OI-275](../notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md)).
+**Deve verificarlo una persona.** Vedi
+[OI-244](../notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+
+### 🔴🔑 I flussi di sincronizzazione prodotti sono disattivati
+
+Quattro mail in quaranta minuti non sono bastate a capire su cosa il cliente
+fosse realmente bloccato: da qui la call — _«facci fare una call che con questo
+non se ne esce»_. Il suo blocco: i vecchi codici articolo non hanno
+`categoria statistica`, e _«la categoria statistica individua l'evento»_, quindi
+la mappatura edizioni non si può costruire senza.
+
+**Catena concordata:** il cliente estrae e corregge l'anagrafica su Mexal
+(prevede lunedì) → Mirko Merendi fa l'update massivo su Mexal → il cliente
+scrive ad Aurel Mrruku → Aurel Mrruku reimporta in Salesforce.
+
+🔴 **E la sincronizzazione è spenta.** Aurel Mrruku: _«li ho disabilit[ati] ci
+sto lavorando per quello»_. L'assunto scritto dal cliente era l'opposto —
+_«poi, in notte, viene aggiornato Salesforce?»_ — ed **è falso**: quindi **una
+mail del cliente è l'unica cosa che collega l'update di Kreosoft alla
+reimportazione di ROMI.** Se salta, la mappatura si costruisce su categorie
+vecchie, che è il punto unico di rottura dell'
+[OI-276](../notes/items/OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md).
+È la **quinta** condizione valida solo per la migrazione, e 🟢 la prima con un
+titolare per sua stessa dichiarazione. ⚠ Nessuna data di riattivazione.
+
+🟢 L'attivazione dell'intero catalogo è confermata e la mappatura edizioni è
+formalmente sbloccata: _«puoi procedere con la configurazione di edizione e
+mappatura-edizione»_.
+
+### 🟢 La mappatura degli sconti è più stretta di quanto diceva il §68, e la call ha un'ora
+
+[OI-284](../notes/items/OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md):
+
+- 🟢 **Il netto arriva già a Mexal** — _«il netto lo passiamo già»_. Il campo
+  mancante è il **listino**.
+- 🔑 Sta sulla **riga** dell'ordine, non sulla testata — _«sulla riga
+  dell'ordine più che sull'ordine»_.
+- 🟢 **L'unica dipendenza di ROMI è Kreosoft** — _«aspetto a sto punto solo
+  Mirco [Mirko] di indicarmi qual è il campo»_.
+- 🟢 **La call è fissata**: `[ROMI-PIENISSIMO] - Tema Ordini Mexal`, **lunedì 26
+  ottobre 11:00–12:00 (GMT+1, cioè 11:00 CET — l'ora legale finisce il 25/10)**,
+  e 🔑 **`mirko@kreosoft.com` è invitato: la prima riunione agli atti che
+  includa Kreosoft.**
+- 🟢 Il cliente ha mandato **`Esempio SCONTI.pdf`** per l'incontro: una fattura
+  che mostra le due forme di sconto su due righe. ⚠ **Non aperto — è la fattura
+  di un cliente reale.** 🔴 Una persona deve leggerlo prima di lunedì: è il
+  documento di riferimento della riunione.
+
+⚠ Il disaccordo percentuale/importo non è stato riaperto. ⚠ **Tre fonti
+rimandano ora a ciò che Mirko Merendi ha detto il 22/10 e nessuna lo contiene.**
+
+### 🟡 La modifica dello sconto: domanda con risposta, build non integrata
+
+L'[OI-283](../notes/items/OI-283%20Discounts%20cannot%20be%20edited%20on%20an%20existing%20order.md)
+chiedeva se il preventivo condividesse il problema. **Lo condivide** — il cliente
+ha provato una nuova Opportunità e il 20% digitato non ha ricalcolato: _«Se io
+qui ci metto il 20%, vedi, non si non si aggiornava sta cosa»_. 🟢 È stato
+mostrato e accettato un percorso di modifica tramite la matita in
+`Gestisci Prodotti`. 🔴 Non chiude la riga: è stato mostrato sul **preventivo**,
+non su un ordine esistente dopo un PDF generato; è lavoro in corso per sua
+stessa ammissione; e **la build non è integrata** — il `3c66b27` di Anita Aga,
+25 minuti dopo la call, su `DevAnita22`, senza PR e senza jest.
+
+### 🔑 Il tasto Rinuncia è stato ribaltato senza che si chiamasse ribaltamento
+
+[OI-242](../notes/items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md):
+Elena Spini al marketing, 15:06:49 CEST — _«RINUNCIA bottone che rimanda alla
+community (come il bottone di ACCETTA) - se rinuncia deve uscire dal journey
+fine»_. 🔴 **Il testo pubblicato su `pienissimo.com/rifiuta-evento` è scomparso
+dalla richiesta**, e il termine usato è _«confermati»_. ⚠ Le quattro conseguenze
+indicate da Aurel Mrruku il 14/10 restano non affrontate, non ritirate. 🔑
+Fabrizio Mastracci, senza risposta: _«ok quindi un bottone rosso e un bottone
+verde che fanno esattamente la stessa cosa. TOP»_. 🔴 **Il marketing è bloccato
+sui campi Campaign dovuti da Aurel Mrruku, senza data** — così come nell'
+[OI-250](../notes/items/OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md),
+dove _«gli 11-15 reminder per edizione»_ sono confermati ma ⚠ restano un
+intervallo, non un numero.
+
+### 🔴 Nuovo difetto: la conversione dei lead muore su una Task che non può creare
+
+[OI-286](../notes/items/OI-286%20Lead%20conversion%20throws%20in%20UAT%20when%20the%20user%20cannot%20create%20a%20Task.md).
+Un aggiornamento di Lead è andato in errore nella partial sandbox alle
+14:43:05Z: `LeadConversionTriggerHandler.afterUpdate:33` è l'`insert
+followUpTasks;` non protetto della Task di follow-up `Non Risponde`, quindi un
+utente senza accesso a Task **si vede annullare l'intera modifica del Lead**.
+🟢 Il `42602a8` di Rexhina Hysi aggiunge esattamente quei permessi su Task 1h21
+dopo — ⚠ **correlazione, non causa accertata**, e **non integrato, senza PR**.
+🔴 È toccato solo `Agente`; nessun altro profilo è stato verificato, e il codice
+resta fragile a prescindere dai permessi.
+
+### 🔴 Cosa non si è mosso
+
+- **L'[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+  è invariato per la tredicesima notte** — e 🔑 **il predicato sospetto si è
+  propagato.** Il `9512ee0` di Anita Aga porta un Ordine in `Incassato` quando
+  non ha tranche e tutte le righe sono `Mexal_Payment_Status__c = PAID`: la
+  conclusione della catena che questa riga giudica errata determina ora uno
+  stato **a livello di ordine** — e le ~15.000–30.000 righe articolo storiche
+  caricate dal 9 novembre lo erediteranno. Nel commit non c'è alcun riferimento
+  alla riga; nessun test Apex.
+- **L'[OI-274](../notes/items/OI-274%20The%20historical%20ticket%20balance%20has%20no%20migration%20path.md)
+  non è stato citato nella call del giorno** — la seconda consecutiva, proprio
+  il giorno in cui ROMI ha risposto per iscritto.
+- **L'[OI-265](../notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md)
+  è fermo da due giorni** — nessuno ha risposto a Elisa Migliano e la domanda al
+  cliente non è stata posta. 🔑 La call ha dedicato sei minuti ai valori di
+  `categoria` **nell'anagrafica Mexal, non nelle picklist di Opportunità**, e
+  nessuno ha collegato le due cose.
+- ⚠ **Zoho non è stato nominato**, settima tornata consecutiva — ora contro un
+  piano che entrambe le parti hanno messo per iscritto.
+- 🔴 **`DevMain` non si è mosso**: è ancora `ebc2c5b`, il commit notturno di
+  ieri. Sei commit oggi, tutti su rami personali, **nessuna pull request**.
+
+🔴 **`SAL-12` non è citato per la sesta sessione** — _«nessuno sconto
+discrezionale»_, `status: agreed`, mentre è fissata una call col fornitore
+dell'ERP per definire come viaggiano gli sconti. **Questa tornata non ha
+modificato alcun requisito.** La lista concorrenti del `DM-07` è invariata.
+Entrambi richiedono una decisione umana.

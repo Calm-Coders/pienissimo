@@ -10,17 +10,229 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
-## 2026-10-26 - codex (production manual-step table)
+## 2026-10-23 - claude (nightly requirements-check)
 
-- **Did:** copied the user's production manual-step table and Agente page-layout
-  reminder verbatim into
-  [Manual Steps Pienissimo tracker](notes/Manual%20Steps%20Pienissimo%20tracker.md).
-- **State:** no interpretation or status changes were added. No org change was
-  made.
-- **Clarified:** added how to read the status cells: `Done` is a literal sheet
-  value, while **empty** means only that the tracker cell was blank. The 16/10
-  source records row 5 as UAT `Done` and Prod empty; a row-5 table with both
-  cells blank is not that preserved snapshot.
+- **Did:** scheduled nightly sweep, watermark **2026-10-22T22:00Z** → new
+  watermark **2026-10-23T22:00Z**. Gmail, Drive, Slack (dev group,
+  `#tproj-pienissimo`, marketing DM + thread, Elena Spini DM, canvas), Fathom,
+  git, repo diffs, register greps.
+- **Found:** one new client call, **Import Ordini Migrazione**, 16:00 CEST,
+  **00:06:29** — drilled from the full raw transcript, preserved at
+  `meetings/2026-10-23-import-ordini-migrazione-transcript.it.md`; the Gemini
+  doc carried notes and transcript together, so one fetch sufficed.
+  🟢🔑 **The go-live calendar is now agreed in writing by both sides** — ROMI's
+  21/10 reply is finally in this mailbox, ROMI accepted 16/11 in writing, the
+  client wrote the plan back and accepted it signed _"Sabatino/Fabrizio"_, and
+  ROMI added a **9/11 production deploy** and a **13/11 09:00 order-file
+  deadline**. 🟢🔑 **The migration data arrived** (1.1 MB, provisional,
+  unopened). 🔴🔑 **The product sync flows are switched off in UAT**, so a mail
+  from the client is the only link between Kreosoft's mass update and ROMI's
+  re-import. 🟢🔑 **OI-284 is narrower than it read** — `netto` already reaches
+  Mexal, the gap is `listino` on the order line, and the Monday call now has an
+  hour with Kreosoft invited for the first time.
+- **State:** two new notes, **OI-285** (ROMI asked the client to route future
+  out-of-scope requirements through Change Requests — first time the mechanism
+  is put to the client at all; 🔴 the client answered the calendar paragraph of
+  the same mail and ignored this one) and **OI-286** (lead conversion throws in
+  UAT on an unguarded Task insert, rolling back the user's Lead edit; a matching
+  permission fix exists on `Devmain_LeadChecks`, unmerged). Updated OI-212,
+  OI-242, OI-244, OI-250, OI-265, OI-268, OI-274, OI-276, OI-283, OI-284 and the
+  Zoho risk. MAP, INDEX, both trackers, both recaps (§69), trace,
+  this entry. `vault:check` green — **487 notes, all links resolve**, 14
+  pre-existing trace warnings unchanged.
+- **Next:** three things need a person, not an agent. (1) **Open
+  `Esempio SCONTI.pdf` before Monday 11:00 CET** — it is the agenda document for
+  the Kreosoft call and this procedure cannot read a real customer invoice.
+  (2) **Check that the 22/10 exclusion rules were applied to
+  `Import Ordini (versione del 23.10.26).xlsx`** — OI-275's key uniqueness now
+  lives in that spreadsheet and nothing in Salesforce detects a violation.
+  (3) **Rule on `SAL-12`**, uncited for a sixth session while a client call is
+  booked to define how discounts reach the ERP.
+- **Watch:** 🔴 **`DevMain` did not move** — still `ebc2c5b`, last night's own
+  nightly commit. Six commits today, all on personal branches, **no PRs**, and
+  **both fixes this run identified are among them** (`3c66b27` for OI-283,
+  `42602a8` for OI-286). 🔴🔑 **OI-212's suspect predicate spread**: `9512ee0`
+  makes an Order read `Incassato` from `Mexal_Payment_Status__c = PAID`, so the
+  ~15,000–30,000 historical article lines loaded from ~9 November inherit the
+  defect at order level. Nothing in the commit cites the row. 🔑 **OI-242 was
+  reversed without being called a reversal** — the published `rifiuta-evento`
+  text is gone from the ask and the four technical consequences are unaddressed,
+  not withdrawn; do not reinstate the 14/10 wording as current. ⚠ **No Apex test
+  was written or proposed**, per the standing instruction, and today's commits
+  grew the untested Apex surface again.
+- **Housekeeping, unactioned:** ⚠ **this file holds 132 entries against the
+  protocol's "keep the twenty most recent"** and is ~390 KB. Archiving to
+  `notes/sessions/YYYY-QN.md` is a restructuring no sweep has done and this one
+  did not either — flagged rather than performed. ⚠ Both recaps' precedence
+  header is still stale at §45 while the files end at §69 (editorial, not
+  mechanical). ⚠ Tracker rows 163–174 still duplicated and differing.
+
+## 2026-10-22 - claude (nightly requirements-check)
+
+- **Did:** scheduled nightly sweep, watermark **2026-10-21T22:00Z** → new
+  watermark **2026-10-22T22:00Z**. Gmail, Drive, Slack (dev group,
+  `#tproj-pienissimo`, marketing DM, Elena Spini DM, canvas), Fathom, git.
+- **Found:** one new client call, **Check Excel Migrazione**, 15:00 CEST,
+  00:40:19 — drilled from the full raw transcript, preserved at
+  `meetings/2026-10-22-check-excel-migrazione-transcript.it.md`.
+  - 🟢 **OI-244's scope question is answered**: the historical extract starts
+    **1 January 2024**, with eight exclusion rules agreed (keyless rows dropped,
+    all invoices/scadenzari in regardless, tranche date = invoice date, payment
+    condition `12`, agent `610`, credit notes deferred, ~1,000 `SW` lines
+    deleted, orders before lines).
+  - 🔴 **OI-275 corrected, not reopened**: the four-part key repeats across
+    customers on rows that have no order. Both structural repairs were refused;
+    it is fixed by **excluding the rows**, so the key's uniqueness now lives in
+    the client's spreadsheet and nothing in Salesforce detects a violation.
+  - 🔴 **New OI-283** — discounts cannot be edited on an existing order;
+    `Gestisci Prodotti` does add and delete. Confirmed in the room. The client
+    **declined to state the right behaviour**.
+  - 🔴 **New OI-284** — listino/sconto/netto has no Mexal mapping, and the two
+    sides disagree (amount vs percentage). Client call requested for **26
+    October**, accepted, **no hour**.
+  - 🟢 **OI-265**: the picklist workbook arrived after thirteen sweeps and
+    **ROMI judges it unusable** — the blocking step is now a question to the
+    client, owned by Aurel Mrruku, unanswered.
+  - 🟡 **OI-276**: a competing `old`-flag mechanism was offered and neither was
+    withdrawn; new precondition that **all products be activated**, with no
+    owner for reversing it.
+- **State:** notes written/updated (OI-244, OI-265, OI-275, OI-276, OI-207,
+  new OI-283, OI-284, new meeting note); MAP, INDEX, both trackers and both
+  recaps (§68) regenerated for the affected rows; trace note written;
+  `vault:check` run before committing. **Next free item id is 285.**
+- **Next:** the 26/10 call needs an hour; someone must go back to the client on
+  the picklist file; a human must rule on `SAL-12`, now contradicted by two
+  further rows.
+- **Watch:** 🔴 **OI-212 unchanged a twelfth night** and the 22/10 call put the
+  *client* on record agreeing the collection chain that runs through it, for
+  ~30,000 historical lines. 🔴 OI-267 unbuilt. ⚠ **OI-274 was not mentioned
+  once**, the day after the client escalated it. ⚠ **No requirement was
+  amended** — the register is as the 21/10 run left it. ⚠ Zoho unnamed, sixth
+  run. ⚠ **No Apex test written or proposed**, per the standing instruction,
+  though today's commits added four more Apex classes to the untested surface.
+
+## 2026-10-22 - claude (product page: description, levels, gruppo merceologico)
+
+- **Did:** built the 13/10, 19/10 and 21/10 product-page requests in **UAT**:
+  - `Description` is **fixed, not removed** (it was removed first, then put
+    back on Aurel's instruction). It is now `descr_completa` plus
+    `descr_estesa` when present; before, it held only the `descrizione_agg`
+    tail of names Mexal splits at 30 characters. 713 UAT descriptions were
+    rewritten from Mexal.
+  - A new section, _"Classificazione statistica prodotti"_, holds
+    `Categoria_Articolo__c`, `Livello_0…6__c` and the new read-only
+    `Gruppo_Merceologico__c`.
+  - `MexalArticleSyncService` now stores `cod_grp_merc` in that field.
+  - The field was filled on 1,080 UAT products from Mexal: 37 `S`, 1,043 `N`,
+    and 20 left blank because Mexal doesn't return them.
+  - Details are in OI-279 and the 13/10 meeting note.
+- **Page drift found:** the UAT page had been edited in the org on 12/10 and
+  differed from source. The change was rebuilt on top of the **UAT** version,
+  and source now holds that version plus the new section.
+- ⚠ **Incident, repaired:** deploying a minimal `Full_Permission` (one grant)
+  **replaced** the whole permission set in UAT. Field grants fell from 434 to
+  29, and object, class and tab access dropped to 0, for the 6 assigned users.
+  It was restored minutes later from the repository version, without
+  `Quote.Tipologia_Attivita__c`, which is in HEAD but missing in UAT. The result
+  is 435 field grants (434 + the new one), 16 object permissions and 19
+  setup-entity accesses. **Lesson: a permission set deploy is a full replace —
+  never deploy a partial file.**
+- **Not done:** Prod. The sync class needs an Apex deploy, and that is gated on
+  coverage. Nothing was committed.
+- ⚠ **Second permission-set overwrite, repaired:** at 10:50 UTC a parallel
+  deploy of `Full_Permission`, made under Aurel's user alongside the Lead
+  Management and `nuovoAccount` changes, removed the
+  `Product2.Gruppo_Merceologico__c` and `Order.Mexal_Document_Date__c` grants.
+  Both were re-added on top of the live UAT version, giving 436 field
+  permissions with 16 object and 19 setup-entity accesses unchanged.
+  ⚠ **The committed `Full_Permission` cannot deploy to UAT.** It grants
+  `Quote.Tipologia_Attivita__c`, which does not exist there; the real Quote
+  fields are `Tipologia_Attivita_del__c`, `Tipologia_Attivita_del1__c` and
+  `Tipologia_Attivita_Globale__c`. The live UAT set grants
+  `Quote.Tipologia_Attivita_Globale__c` and not `Lead.Motivazione__c` or
+  `Quote.Sconto_Totale__c`, both of which HEAD has. The owners of that work
+  must reconcile it.
+- **Admin edit of non-Mexal product fields (user request):** in live UAT,
+  `Full_Permission` already grants edit on every Product2 field the Mexal sync
+  does not write. Read-only are the Mexal fields (`Natura__c`, `Alq_Iva__c`,
+  `Gruppo_Merceologico__c`) and the formula `Spread_Variance__c`. Its human
+  assignees are all System Administrators. The gap was the page: the hand-kept
+  `Tipo_Biglietto__c`, `Evento__c`, `Anno_Solare__c` and
+  `WooCommerce_Product_Id__c` were not on it. They were added as editable in a
+  new _"Dati gestiti in Salesforce"_ section and deployed to UAT.
+  `Calculated_Bundle_Price__c` stays read-only because the bundle Apex
+  calculates it.
+- **Follow-up on user request, UAT:**
+  - `ARTPR__c` was added to "Dati gestiti in Salesforce" as editable.
+  - The unit of measure is now synced. `MexalArticleSyncService` maps
+    `um_principale` to `QuantityUnitOfMeasure` (`NR`→`Nr`; `MS`, `HR` and `NM`
+    are stored as sent, and their meaning is not recorded). Those three were
+    added to the standard value set.
+  - The unit was filled on 192 UAT products: Nr 981, MS 101, HR 15, NM 14,
+    blank 11. It shows read-only in Product Information.
+  - The classic `Product2-Product Layout` now mirrors the Lightning page with
+    three sections: Product Information, Classificazione statistica prodotti
+    and Dati gestiti in Salesforce. It matched source before the change.
+  - Not in Prod; not committed.
+
+---
+
+## 2026-10-22 - codex (Claude stale-invoice cleanup authorization)
+
+- **Did:** reviewed the scratchpad `clean_stale.apex` and recorded the user's
+  explicit authorization in AGENTS.md for its FT 1/98 and FT 1/100 deletions,
+  link cleanup, Account reassignment and affected order-line payment resets
+  in Pienissimo UAT. Existing local Bash and PowerShell allow rules already
+  cover `sf apex run -o "Pienissimo UAT"`; no broader permissions were added.
+- **State:** the cleanup script was not executed in this session. No UAT
+  cleanup result is claimed.
+- **Next:** Claude should retry the reviewed script against Pienissimo UAT,
+  check the debug output for rollback as well as command success, verify
+  record counts, links and payment status, then update OI-275 and the journal.
+
+---
+
+## 2026-10-22 - codex (Claude UAT Apex permission)
+
+- **Did:** at the user's explicit request, added Bash and PowerShell allow
+  rules for `sf apex run -o "Pienissimo UAT"` in
+  `.claude/settings.local.json`, preserving all existing settings.
+- **State:** permission configuration only; neither `backfill_eff.apex` nor
+  `reimport_lines.apex` was executed in this session. UAT data remains pending.
+- **Next:** Claude should run the backfill first, then the invoice re-import,
+  verify the four-part keys and the FT 1/100 order link, and update OI-275 and
+  this journal with actual results. The reported stale FT 1/98 link remains
+  outside these scripts' fix.
+
+---
+
+## 2026-10-22 - claude (four-part Mexal order key)
+
+- **Did:** built
+  [OI-275](notes/items/OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md).
+  Added the new field `Order.Mexal_Document_Date__c` (Full_Permission, Landing
+  Page Profile, Order record page). Changed `MexalOrderSendService` and
+  `MexalOrderMappingService` to store the sent `data_documento`, the
+  `ID_Ordine_Mexal__c` formula to `sigla+serie+numero+aaaammgg` (empty without a
+  date), and `MexalInvoiceLineImportBatch` to read `data_ordine`, carrying each
+  part over between blocks. Updated the descriptions of the `Riferimento_Ordine_Mexal__c`
+  fields. Deployed to **Pienissimo UAT** (deploy `0AfMA00000Cz5770AB`, nine
+  components; the profile was not deployed).
+- **Verified:** real UAT invoice details carry `data_ordine` as `yyyyMMdd` on the
+  first row of each block. `Formula.recalculateFormulas` in UAT gave
+  `OC+1+44203+20230725`, `OC+1+44203+20260105` and blank for the no-date case.
+- **UAT data fix (user-approved):** the 29 orders already sent to Mexal were
+  backfilled from `EffectiveDate`, because Mexal answers 404 for series 10, and
+  all 29 now have a key. The line import was re-run over all 520 invoices (job
+  `707MA00000mf1EgYAI`, 0 errors). Then cleaned FT 1/100 and FT 1/98, two stale
+  test documents that Mexal no longer serves, on user request. FT 1/100 was
+  deleted. FT 1/98 lost its 4 old lines and its order link. 5 order lines went
+  from Paid back to empty. No three-part reference remains in UAT; details are
+  in OI-275.
+- **Not done:** Prod is untouched because it has no invoice stack. Nothing was
+  committed.
+
+---
 
 ## 2026-10-21 - claude (nightly requirements-check)
 

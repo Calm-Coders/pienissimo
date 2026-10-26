@@ -83,30 +83,10 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Phone</fieldItem>
-                <identifier>RecordPhoneField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Type</fieldItem>
-                <identifier>RecordTypeField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Zona__c</fieldItem>
-                <identifier>RecordZona_cField</identifier>
+                <fieldItem>Record.Partita_IVA__c</fieldItem>
+                <identifier>RecordPartita_IVA_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-account-left</name>
@@ -139,8 +119,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Industry</fieldItem>
-                <identifier>RecordIndustryField</identifier>
+                <fieldItem>Record.Phone</fieldItem>
+                <identifier>RecordPhoneField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -149,40 +129,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.IBAN__c</fieldItem>
-                <identifier>RecordIBAN_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Anticipay_Consolidato__c</fieldItem>
-                <identifier>RecordAnticipay_Consolidato_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
-                        <operator>NE</operator>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Creato_su_Mexal__c</fieldItem>
-                <identifier>RecordCreato_su_Mexal_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
-                        <operator>NE</operator>
-                    </criteria>
-                </visibilityRule>
+                <fieldItem>Record.PEC__c</fieldItem>
+                <identifier>RecordPEC_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-account-right</name>
@@ -273,12 +221,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Codice_Cliente_Mexal__c</fieldItem>
                 <identifier>RecordCodice_Cliente_Mexal_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
-                        <operator>NE</operator>
-                    </criteria>
-                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -297,16 +239,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Codice_Fiscale__c</fieldItem>
-                <identifier>RecordCodice_Fiscale_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Codice_Destinatario_SDI__c</fieldItem>
                 <identifier>RecordCodice_Destinatario_SDI_cField</identifier>
             </fieldInstance>
@@ -315,10 +247,10 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Residenza_Fiscale__c</fieldItem>
-                <identifier>RecordResidenza_Fiscale_cField</identifier>
+                <fieldItem>Record.Codice_Fiscale__c</fieldItem>
+                <identifier>RecordCodice_Fiscale_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-d0a3b329-1f23-4c0e-a49e-c95d86f3fb5e</name>
@@ -329,10 +261,10 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>required</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Partita_IVA__c</fieldItem>
-                <identifier>RecordPartita_IVA_cField</identifier>
+                <fieldItem>Record.Residenza_Fiscale__c</fieldItem>
+                <identifier>RecordResidenza_Fiscale_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -341,8 +273,40 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.PEC__c</fieldItem>
-                <identifier>RecordPEC_cField</identifier>
+                <fieldItem>Record.Creato_su_Mexal__c</fieldItem>
+                <identifier>RecordCreato_su_Mexal_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Anticipay_Consolidato__c</fieldItem>
+                <identifier>RecordAnticipay_Consolidato_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Zona__c</fieldItem>
+                <identifier>RecordZona_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-f3ae3390-fc43-4797-8af0-9bd06784af82</name>
@@ -495,6 +459,16 @@
                 <identifier>RecordId_Zoho_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Informativa_Privacy__c</fieldItem>
+                <identifier>RecordInformativa_Privacy_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-contact-left</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -517,16 +491,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Consenso_Profilazione__c</fieldItem>
                 <identifier>RecordConsenso_Profilazione_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Informativa_Privacy__c</fieldItem>
-                <identifier>RecordInformativa_Privacy_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-azienda-contact-right</name>
@@ -736,6 +700,12 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>

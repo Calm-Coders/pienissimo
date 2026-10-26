@@ -380,6 +380,7 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
     Map<Integer, Object> orderSiglas = indexValues(body.get('sigla_ordine'));
     Map<Integer, Object> orderSeries = indexValues(body.get('serie_ordine'));
     Map<Integer, Object> orderNumbers = indexValues(body.get('numero_ordine'));
+    Map<Integer, Object> orderDates = indexValues(body.get('data_ordine'));
     Map<Integer, Object> originSiglas = indexValues(body.get('sigla_doc_orig'));
     Map<Integer, Object> originSeries = indexValues(body.get('serie_doc_orig'));
     Map<Integer, Object> originNumbers = indexValues(
@@ -394,14 +395,35 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
     String currentOrderKey;
     String currentOriginSigla;
     String currentOriginKey;
+    // A new order block repeats only what changed: each part of the order
+    // reference carries over from the previous block until Mexal sends it.
+    Object orderSigla;
+    Object orderSerie;
+    Object orderNumber;
+    Object orderDate;
     for (Integer rowIndex : rowIndexes) {
       if (
-        orderSiglas.containsKey(rowIndex) || orderNumbers.containsKey(rowIndex)
+        orderSiglas.containsKey(rowIndex) ||
+        orderNumbers.containsKey(rowIndex) ||
+        orderDates.containsKey(rowIndex)
       ) {
-        currentOrderKey = documentKey(
-          orderSiglas.get(rowIndex),
-          orderSeries.get(rowIndex),
-          orderNumbers.get(rowIndex)
+        if (orderSiglas.containsKey(rowIndex)) {
+          orderSigla = orderSiglas.get(rowIndex);
+        }
+        if (orderSeries.containsKey(rowIndex)) {
+          orderSerie = orderSeries.get(rowIndex);
+        }
+        if (orderNumbers.containsKey(rowIndex)) {
+          orderNumber = orderNumbers.get(rowIndex);
+        }
+        if (orderDates.containsKey(rowIndex)) {
+          orderDate = orderDates.get(rowIndex);
+        }
+        currentOrderKey = orderKey(
+          orderSigla,
+          orderSerie,
+          orderNumber,
+          orderDate
         );
       }
       if (
@@ -435,6 +457,28 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
       lines.add(line);
     }
     return lines;
+  }
+
+  // Order.ID_Ordine_Mexal__c: sigla+serie+numero+yyyyMMdd. Mexal restarts the
+  // numbering every year, so without data_ordine the order is not identified
+  // and the line stays unlinked rather than risk the wrong year's order.
+  private static String orderKey(
+    Object sigla,
+    Object serie,
+    Object numero,
+    Object orderDate
+  ) {
+    String key = documentKey(sigla, serie, numero);
+    String dateValue = asString(orderDate);
+    if (
+      key == null ||
+      String.isBlank(dateValue) ||
+      dateValue.length() < 8 ||
+      !dateValue.substring(0, 8).isNumeric()
+    ) {
+      return null;
+    }
+    return key + '+' + dateValue.substring(0, 8);
   }
 
   private static String documentKey(Object sigla, Object serie, Object numero) {

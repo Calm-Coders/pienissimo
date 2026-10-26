@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-21
+updated: 2026-10-23
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -378,3 +378,55 @@ _"Se i biglietti sono stati assegnati, quindi sono stati pagati"_
 
 **The fix remains a code change and belongs to Aurel Mrruku.** This run did not
 attempt it.
+
+## 🔴 2026-10-23 - unchanged a thirteenth night, and the predicate just spread
+
+**Unchanged.** `git log -1 origin/DevMain -- MexalScadenzarioSearchService.cls`
+is still `f292b72`, 8 October. Thirteen consecutive nightly runs with no code
+change, and it was not mentioned in
+[the 23/10 client call](../meetings/2026-10-23%20Import%20Ordini%20Migrazione.md).
+
+🔴🔑 **What is new is that the suspect predicate now drives a second thing.**
+Anita Aga, **`9512ee0`** _"Added logic for Orders without tranches to go in
+Incassato"_, 23/10 10:03:41 CEST on `DevAnita22` — 57 lines added to
+`OrderItemTriggerHandler.cls`, unmerged, no pull request.
+
+What it does: on insert and on update of an order line, if every line on the
+order has **no** tranche and `Mexal_Payment_Status__c == PAYMENT_STATUS_PAID`,
+the Order's `Status` is set to `Incassato`.
+
+```apex
+// Without tranches, collection requires every line on the order to be paid.
+if (line.Tranche__c != null ||
+    line.Mexal_Payment_Status__c != PAYMENT_STATUS_PAID) {
+  blockedOrderIds.add(line.OrderId);
+}
+```
+
+🔑 **`Mexal_Payment_Status__c == PAID` is the conclusion of the chain this row
+says is wrong.** The scadenzario's `P` convention feeds the invoice, the invoice
+feeds the order line's payment status, and from 23 October that status also
+decides whether the **whole order** reads as collected. So the effect of the
+defect widens from a line-level flag to an order-level state that is visible to
+users and reportable.
+
+🟢 **It is a different code path and not itself the defect.** The logic here is
+sound *given* a correct payment status — an order with no instalments is
+collected when all its lines are paid. ⚠ **The record contains no sign that
+whoever wrote it knew about this row**, and nothing cites it.
+
+🔴 **Why it matters now and not later.** The agreed calendar loads **~15,000–
+30,000 historical article lines** whose collection state is derived through
+exactly this chain, with the first import ~9 November
+([OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)).
+🔑 **Every historical order without tranches will get its `Incassato` state from
+this predicate on load.** The migration deliberately omits payment status from
+the client's extract because the scadenzario supplies it — so the defect is on
+the critical path for the whole history, not just for new Ri.Ba. orders.
+
+⚠ **No Apex test accompanies `9512ee0`**, and none was written or proposed here,
+per the standing instruction. Recorded as an absence.
+
+⚠ **Not verified against the org.** This is repository arithmetic against
+`origin/DevMain` `ebc2c5b` and the unmerged branch; the deployed behaviour in
+UAT was not inspected.

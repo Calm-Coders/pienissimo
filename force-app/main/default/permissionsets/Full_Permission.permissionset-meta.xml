@@ -1432,6 +1432,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Order.Mexal_Document_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Order.Mexal_Document_Number__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1543,6 +1548,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Genera_Biglietto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Product2.Gruppo_Merceologico__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
