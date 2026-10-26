@@ -189,10 +189,7 @@ public without sharing class MexalOrderSendService {
       } else {
         prices.add(new List<Object>{ lineNumber, line.Prezzo_Listino__c });
         discounts.add(
-          new List<Object>{
-            lineNumber,
-            '-' + lineDiscount.stripTrailingZeros().toPlainString()
-          }
+          new List<Object>{ lineNumber, formatDiscount(lineDiscount) }
         );
       }
       vatCodes.add(
@@ -238,6 +235,13 @@ public without sharing class MexalOrderSendService {
     }
     return ((line.Prezzo_Listino__c - line.UnitPrice) * line.Quantity)
       .setScale(2, System.RoundingMode.HALF_UP);
+  }
+
+  // Mexal takes the sconto amount with a comma decimal separator and at most
+  // two decimals (Mirko Merendi, 26/10): 1500 -> "-1500", 12.50 -> "-12,5".
+  private static String formatDiscount(Decimal amount) {
+    return '-' +
+      amount.setScale(2).stripTrailingZeros().toPlainString().replace('.', ',');
   }
 
   // id_riga is the OrderItem autonumber, so the line identity is known before

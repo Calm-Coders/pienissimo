@@ -10,6 +10,79 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-26 - claude (test suite repaired, DevMain in Prod)
+
+- **Did:** repaired the Apex test suite against the rules added since 4/10 and
+  added tests for 0%-covered code; **deployed all of DevMain to Pienissimo
+  Prod** (validation `0AfSW000001K5Ft0AK`, quick deploy `0AfSW000001K5Kj0AK`,
+  751 components, 168/168 tests, 77.9%). Excluded: credentials (DocuSign
+  source points at demo), community/network/site, guest and Agente profiles.
+  The aging job was aborted per round and rescheduled identically.
+- **State:** coverage risk `resolved`; OI-64 and OI-284 updated. Source
+  changes (test classes, `orderMexalErrorBanner` LWC, discount format) are
+  **uncommitted**.
+- **Next:** commit; send one discounted order to Mexal end to end; decide on
+  the two findings in the coverage risk note and on `Orario_Fine__c` now absent
+  from the Evento layout.
+
+---
+
+## 2026-10-26 - claude (UAT full Mexal article re-sync, all products active)
+
+- **Did:** at the user's request, rewound the UAT `Mexal_Articoli_Ricerca`
+  cursor to 2000-01-01 and ran `MexalArticleSyncBatch` (job
+  `707MA00000mwlIP`): Returned=1080, upserted=1079, one skipped (`PACK-95`
+  matches a Bundle). The four nightly runs before it had returned 0.
+  The sync left 593 Items inactive (from `cod_grp_merc`); then set **every**
+  UAT Product2 active as the user asked, "for now".
+- **State:** UAT 1122 Product2, all active; cursor back at 2026-10-26 15:27
+  UTC, `Success`. Prod untouched.
+- **Caveat:** an incremental sync of an article with `cod_grp_merc` can set it
+  inactive again; the forced-active state is temporary, not a rule.
+
+---
+
+## 2026-10-26 - claude (full DevMain to Prod attempt)
+
+- **Did:** validated all of DevMain against **Pienissimo Prod** at the user's
+  request. Aborted and then **rescheduled identically** the Prod job _Quote
+  Negotiation Aging - Daily_ (blocked the deploy); retrieved the uncommitted
+  `orderMexalErrorBanner` LWC from UAT into source.
+- **Result:** validation `0AfSW000001K4TV0A0` compiles but fails tests —
+  **22% coverage**, six triggers at 0%. **Nothing deployed to Prod.** Causes and
+  the exclusion list are in the coverage risk note, now `open`.
+- **State:** `force-app/main/default/lwc/orderMexalErrorBanner/` uncommitted.
+- **Next:** the test suite is the gate; per standing instruction it is a
+  separate task the user requests.
+- **Later:** Mirko Merendi confirmed the `sconto` decimal format (comma, max 2
+  decimals); `MexalOrderSendService` formats it so (`"-12,5"`). Source only,
+  uncommitted; OI-284 updated.
+
+---
+
+## 2026-10-26 - codex (Claude production deployment unblock authorization)
+
+- **Did:** recorded the user's explicit authorization in `AGENTS.md` for
+  Claude Code to cancel only `Quote Negotiation Aging - Daily` in
+  `Pienissimo Prod`, rerun full DevMain validation with `RunLocalTests`, deploy
+  if successful and restore the schedule as Tech Romi at 03:00 Europe/Rome.
+  Added explicit production Apex command prefixes to the local Claude
+  permission allowlist, retaining existing permissions.
+- **Scope:** early production behaviour changes are authorized; retain the
+  DocuSign credential, community, whole guest-profile and Agente-profile
+  exclusions. Do not change the org-wide deployment setting. Restore the job
+  even if validation or deployment fails. No new Apex tests authorized.
+- **State:** permissions and instructions changed only. The failed validation
+  and scheduled-job blocker are reported by the user, not independently
+  inspected in this session. No Salesforce job or metadata was changed here;
+  this does not establish a successful full production deployment.
+- **Next:** Claude reads the updated authorization, captures the current job
+  identity/cron/timezone/owner and performs the authorized sequence with
+  verification. Any further permission denial must be reported with its exact
+  rule/reason, without bypassing the permission control.
+
+---
+
 ## 2026-10-26 - claude (OI-284 Mexal line discount)
 
 - **Did:** Mexal's line discount format (`"sconto": [[n, "-amount"]]`, amount

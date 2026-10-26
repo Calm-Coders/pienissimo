@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-10-09
+updated: 2026-10-26
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -358,3 +358,11 @@ Every one fails at setup on `Agente è obbligatorio`, except
 most likely the same cause. Until `TestDataFactory` sets an Agente, or the rules
 are revisited, the suite cannot verify any change in UAT. **If these rules reach
 Prod, they will fail a `RunLocalTests` deploy.**
+
+## 2026-10-26 - broke again on the 21/10 bundle filter, repaired and deployed
+
+The `BundleComponent__c.Product__c` lookup filter (`b204661`, 21/10: active
+bundle-only Items only) failed every test that built a bundle from ordinary
+Items. Test products used as components are now `Solo_Bundle__c = true`, and
+the whole suite passed in Prod (168/168, 77.9%). See
+[the coverage risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).

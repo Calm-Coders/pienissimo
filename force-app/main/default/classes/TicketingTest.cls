@@ -53,7 +53,25 @@ private class TicketingTest {
     };
   }
 
+  // A WooCommerce customer Account takes its Agente from the configured
+  // default agent; the runner has the agent code and commission category.
+  private static void configureWooDefaultAgent() {
+    if (Integration_Notification_Config__c.getValues('WooCommerce') != null) {
+      return;
+    }
+    insert new Integration_Notification_Config__c(
+      Name = 'WooCommerce',
+      Default_Agent_Username__c = [
+        SELECT Username
+        FROM User
+        WHERE Id = :TestDataFactory.runner().Id
+      ]
+      .Username
+    );
+  }
+
   private static void callWoo(Object payload) {
+    configureWooDefaultAgent();
     RestRequest request = new RestRequest();
     request.requestURI = '/services/apexrest/woocommerce/orders/';
     request.httpMethod = 'POST';
@@ -399,7 +417,11 @@ private class TicketingTest {
     input.firstName = 'Paolo';
     input.lastName = 'Gialli';
     input.email = email;
-    input.phone = '3471234567';
+    // One phone per participant: the page matches Contacts by phone too.
+    input.phone =
+      '347' +
+      String.valueOf(Math.mod(Math.abs(email.hashCode()), 10000000))
+        .leftPad(7, '0');
     return input;
   }
 
@@ -462,7 +484,11 @@ private class TicketingTest {
         ticketIds.add(ticket.Id);
       }
 
-      System.assertEquals('COMPLETED', saved.state);
+      System.assertEquals(
+        'COMPLETED',
+        saved.state,
+        JSON.serialize(saved.tickets)
+      );
       System.assertEquals(
         known.Id,
         [SELECT ContactId FROM Asset WHERE Id = :inv.tickets[0].Id].ContactId
@@ -643,6 +669,84 @@ private class TicketingTest {
     }
   }
 
+  // ------------------------------------------------------------- QR check-in
+
+  private static TicketQrLookupService.TicketQrLookupResponse scanQr(
+    String qrId,
+    Boolean checkIn
+  ) {
+    RestRequest request = new RestRequest();
+    request.requestURI = '/services/apexrest/ticket-qr/' + qrId;
+    request.httpMethod = checkIn ? 'POST' : 'GET';
+    if (checkIn) {
+      request.requestBody = Blob.valueOf(
+        JSON.serialize(new Map<String, Object>{ 'qrId' => qrId })
+      );
+    }
+    RestContext.request = request;
+    RestContext.response = new RestResponse();
+    return checkIn
+      ? TicketQrLookupService.lookupFromBody()
+      : TicketQrLookupService.lookup();
+  }
+
+  @isTest
+  static void qrScanReadsTheTicketAndChecksInOnlyAnAssignedOne() {
+    System.runAs(TestDataFactory.runner()) {
+      Invitation inv = invitation(1);
+      String ticketId = String.valueOf(inv.tickets[0].Id);
+
+      System.assertEquals(
+        'INVALID_QR_ID',
+        scanQr('not-an-id', false).errorCode
+      );
+      System.assertEquals(400, RestContext.response.statusCode);
+      System.assertEquals(
+        'TICKET_ASSET_NOT_FOUND',
+        scanQr('02i000000000000AAA', false).errorCode
+      );
+
+      TicketQrLookupService.TicketQrLookupResponse read = scanQr(
+        ticketId,
+        false
+      );
+      System.assertEquals(true, read.success);
+      System.assertEquals('Tappa Milano', read.campaign.name);
+
+      // A ticket still Disponibile has no participant to check in.
+      System.assertEquals(
+        'INVALID_ASSET_STATUS',
+        scanQr(ticketId, true).errorCode
+      );
+      System.assertEquals(409, RestContext.response.statusCode);
+
+      ParticipantRegistrationController.savePage(
+        inv.token,
+        new List<ParticipantRegistrationController.ParticipantInput>{
+          participant(inv.tickets[0].Id, 'qr.partecipante@example.com')
+        }
+      );
+
+      TicketQrLookupService.TicketQrLookupResponse checkedIn = scanQr(
+        ticketId,
+        true
+      );
+      System.assertEquals(true, checkedIn.success, checkedIn.message);
+      System.assertEquals('Utilizzato', checkedIn.asset.status);
+      System.assertEquals(
+        'qr.partecipante@example.com',
+        checkedIn.contact.email
+      );
+
+      TicketQrLookupService.TicketQrLookupResponse again = scanQr(
+        ticketId,
+        true
+      );
+      System.assertEquals(true, again.success);
+      System.assert(again.message.contains('già'), again.message);
+    }
+  }
+
   // ---------------------------------------------------- invitation links
 
   @isTest
@@ -655,7 +759,8 @@ private class TicketingTest {
         WHERE Token__c = :inv.token
       ];
       System.assertEquals(64, invitationRecord.Token__c.length());
-      System.assertEquals('Pending', invitationRecord.Status__c);
+      // Available tickets make the invitation Ready (EventInvitationService).
+      System.assertEquals('Ready', invitationRecord.Status__c);
 
       invitationRecord.Token__c = null;
       update invitationRecord;

@@ -200,6 +200,31 @@ A copy also lives in the `life365` repository; the two can drift.
 
 ## Standing instructions from the user
 
+- **Claude Code is authorized to unblock and complete the full DevMain
+  production deployment** (user instruction, 2026-10-26), explicitly targeting
+  `Pienissimo Prod`. Choose option 1: inspect and cancel only the scheduled job
+  **`Quote Negotiation Aging - Daily`**, for `QuoteNegotiationAgingBatch`,
+  owned by **Tech Romi**, currently scheduled daily at **03:00 Europe/Rome**.
+  Capture and verify its current identity, owner, cron and timezone before
+  cancelling it with `System.abortJob`. Rerun full DevMain validation with
+  `RunLocalTests`; deploy only after validation succeeds and Salesforce's
+  required production coverage is met. This explicitly authorizes the early
+  production release and its stated behaviour changes: Mexal production
+  series 1, signed-quote locking and reminders, ahead of the planned 9 November
+  technical release. Preserve these deployment exclusions: DocuSign auth
+  provider and named credentials, Network/Site/Digital Experience metadata,
+  the whole guest profile, and the Agente profile with its invalid
+  `Categoria_Prodotto__c` layout reference. Do not enable the org-wide
+  deployment setting for pending/in-progress Apex jobs.
+  Restore the job using `QuoteNegotiationAgingBatch.scheduleDaily()` as Tech
+  Romi, preserving its name, 03:00 Europe/Rome schedule and owner; verify the
+  actual scheduled job afterwards. Restore it also if validation/deployment
+  fails or the release is abandoned. Use direct `sf apex run` and
+  `sf project deploy` commands with an explicit `Pienissimo Prod` target;
+  local permission rules include explicit Apex command prefixes. No further
+  user confirmation is required within this scope. This is authorization,
+  not evidence that any job was cancelled or any deployment succeeded.
+
 - **Claude Code is authorized to run the reviewed `clean_stale.apex` UAT
   cleanup** (user instruction, 2026-10-22), explicitly targeting
   `Pienissimo UAT`. This authorizes deleting the four stale FT 1/98 invoice
