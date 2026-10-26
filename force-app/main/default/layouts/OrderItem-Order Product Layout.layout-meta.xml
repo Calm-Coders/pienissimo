@@ -49,6 +49,10 @@
                 <behavior>Readonly</behavior>
                 <field>Mexal_Payment_Status__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Mexal_Line_Number__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-09-24
-updated: 2026-09-25
+updated: 2026-10-13
 blocks: [go-live]
 severity: gating
 source: Slack DM D0B5QHS2T7H, Elena Spini 2026-09-24 20:18 CEST
@@ -94,8 +94,8 @@ the 7/10 marketing session. 🔴 Not yet communicated to her; nothing records he
 nineteen minutes**, both by Elena Spini, on the same calendar event (same Meet link,
 same `eid`):
 
-| Sent   | New slot                          |
-| ------ | --------------------------------- |
+| Sent   | New slot                             |
+| ------ | ------------------------------------ |
 | 16:34Z | **Thu 15 October**, 10:00-12:00 CEST |
 | 16:52Z | **Fri 16 October**, 10:00-12:00 CEST |
 
@@ -134,3 +134,183 @@ is no longer a problem to solve — it is the plan.
   and the `Campagna_Figlio` record type reached `DevMain` this evening
   ([OI-181](OI-181%20Stage-sale%20bundles%20need%20their%20tranches%20defined%20at%20bundle%20creation.md)),
   so that half is not affected by this move.
+
+## 🔑 2026-09-28 - a PROD date now exists for it, and PROD already happened
+
+Elena Spini's project status in **`#tproj-pienissimo`** (28/09 09:07 CEST) puts a
+date on the production dependency this note is about, for the first time:
+
+> _"16/10 – UAT: flussi Marketing Biglietti >> obiettivo arrivare in PROD il 12/10
+> per permettere a Fabrizio di lavorare sui flussi Marketing"_
+
+🟢 **So the 16/10 marketing UAT has a stated precondition: production by 12/10.**
+That is the first time the sequencing recorded here — marketing cannot be tested
+without PROD — has been given a deliverable date rather than an argument.
+
+🔑 **And PROD arrived two weeks early.** `DevMain` was deployed to Pienissimo
+Production on **28/09 at 11:28Z** (deploy `0AfSW000001H1aD0AS`, 461 components, 142
+tests, 88.8% coverage) — see [MAP.md](../../MAP.md) and the
+[coverage risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+⚠ **That is not the same thing as Fabrizio Mastracci being able to work in it.**
+The org is deployed and **unusable as delivered**: `Full_Permission` has zero
+assignments, the `Integration_Configuration2__c` rows are absent, and the DocuSign
+Named Credential still points at `demo.docusign.net`. **Until those are done, 12/10
+is a deploy date that has been met and an access date that has not.**
+
+⚠ **Elena Spini was not told about the deploy** — recorded in the 28/09 JOURNAL
+entry — and her status post, written that morning, still frames PROD as a 12/10
+objective. **She is planning against a state the org has already left.**
+
+🔴 **The acceptance-window problem recorded above is unchanged.** 16/10 is still
+past the **13/10** approval deadline, and the client has still not been told its
+marketing approval is conditional.
+
+## 2026-09-29 — a production date for marketing, and the reason it was always needed
+
+🟢 **Aurel Mrruku committed to a date.** At
+[the 29/09 pre-UAT marketing session](../meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+he undertook to put the ticket and campaign objects plus a clean test record set
+into **production by Monday 5 October** — _"quando dico lunedì io lo faccio venerdì
+e ci lavoro nel weekend"_ — and a session is booked to verify it there:
+**`PIENISSIMO - Interna Check PROD per MKT`, Mon 05/10 09:30–10:30 CEST** (invited
+29/09 07:51Z, Aurel Mrruku and Fabrizio Mastracci).
+
+🔑 **The reason production is unavoidable is now on the record explicitly:**
+Marketing Cloud **cannot be installed in the UAT sandbox** — Fabrizio Mastracci,
+24/09 in the MKT group DM, _"in uat non posso installare mc e per questo non riesco
+a creare il flusso secondo le logiche che prendo dall'oggetto che ha creato Aurel"_,
+discovered with Carol on 23/09. That is the mechanism behind
+[OI-134](OI-134%20The%20marketing%20flows%20cannot%20be%20tested%20before%20a%20production%20release.md).
+
+⚠ **He refused the same request on 25/09** — _"portare i sviluppi come sono in prod
+chiede tanto effort aggiuntivo, e poi sarebbe un doppio lavoro di pulizia"_ — and
+reversed after the 28/09 Prod deploy made the structures available. Four days.
+
+🔴 **Two new risks land inside the 16/10 window**, neither costed:
+[OI-194](OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md)
+(the ticket is a multi-page document, not a QR code) and
+[OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md)
+(WhatsApp implies a mobile community nobody designed). ⚠ The **WhatsApp templates
+are still not built** — Fabrizio Mastracci, asked directly: _"non ho ancora fatto."_
+
+## 🟢 2026-09-30 — the Monday production release was committed a second time, in a second session
+
+Fabrizio Mastracci asked for timing at [the Post UAT](../meetings/2026-09-30%20Post%20UAT.md)
+(`01:03:47`) and Aurel Mrruku confirmed **the structures and the data will be in
+production for Monday** — 05/10, the date this row already carried from the 29/09
+MKT DM, now committed in a recorded session with the marketing owner present.
+
+`PIENISSIMO - Interna Check PROD per MKT` stays booked **Mon 05/10 09:30–10:30
+CEST** (Aurel Mrruku + Fabrizio Mastracci).
+
+🔴 **What has to be in that release grew on 30/09.** The Post UAT specified a send
+contract whose Salesforce half does not exist — a boolean send flag, a paid-tranche
+field on the asset, and an eighth asset state `Inviato`
+([OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md),
+[OI-198](OI-198%20The%20asset%20does%20not%20say%20which%20tranche%20paid%20for%20it.md)).
+Marketing cannot be configured against structures that are not there, and
+**marketing UAT is 16/10**.
+
+⚠ **The invoicing half will be simulated.** Aurel Mrruku will **force invoices
+manually and simulate their payment** to test the billing path (`01:22:43`), so the
+tranche payment gate that the whole send now depends on will first be exercised
+against forced data rather than against Mexal.
+
+## 🟢 2026-10-01 - the production route is now a weekend deploy
+
+[The Pre UAT](../meetings/2026-10-01%20Pre%20UAT.md) turned the 05/10 commitment
+into a mechanism. Aurel Mrruku committed to completing the outstanding
+integrations and **deploying everything to production across the weekend of
+03–04/10**, so that **records can be created in production from Monday 05/10**
+(`01:24:24`, `01:27:19`). It was minuted as an agreed decision, not a hope.
+
+`PIENISSIMO - Interna Check PROD per MKT` remains booked for **Mon 05/10**; the
+invitation was **re-issued on 01/10 at 17:41Z** as an update, moving it to
+**10:00–11:00 CEST** (from 09:30), to Aurel Mrruku and Fabrizio Mastracci.
+
+🟢 **A second, larger checkpoint now exists:** a **four-hour end-to-end check on
+Thursday 08/10, 10:00–13:00**, whole team, agreed by Aurel Mrruku and Elena
+Spini. His stated reason: recent changes and _"la necessità di colmare i ritardi
+sulle integrazioni"_.
+
+⚠ **It is two days after go-live on 06/10.** The first full end-to-end exercise of
+the flow is scheduled after the date the project is supposed to be live.
+
+🔴 The weekend deploy will carry
+[OI-199](OI-199%20The%20ticket%20send%20flag%20fields%20are%20split%20across%20Asset%20and%20Order.md)
+into production unless the object question is settled first.
+
+## 2026-10-04 - Prod is ready for the marketing round trip
+
+Built by Claude Code at Aurel Mrruku's request, recorded in
+[JOURNAL.md](../../JOURNAL.md):
+
+- **The community exists in Prod and is published.** The Landing Page LWR site was
+  published (job `08PSW00000WggaD2AR`); before that a guest was sent to the login page.
+- **The guest profile can run the page.** `ParticipantRegistrationController`,
+  `AssetQrService` and `QuoteAcceptanceController` granted to `Landing Page Profile`
+  in Prod (deploy `0AfSW000001Hfqz0AC`). Class access only — the controllers run in
+  system mode, so no guest field access was added.
+- **Test data**, all prefixed `TEST MKT`: two parent campaigns and two 2026 editions
+  (event 19/11/2026, send date 05/10/2026), two ticket products, six companies with
+  principal contacts on `+mkt1`–`+mkt6` aliases of Aurel Mrruku's mailbox, six
+  `Incassato` orders, 13 `Disponibile` tickets and six Event Links `Pending/Ready`
+  with Prod registration URLs. Nothing reached Mexal (`Integration_Log__c` 0).
+- ⚠ Still open for the round trip: whether Marketing Cloud in production can send
+  (authenticated domain), and `Send_After__c`, which is no longer populated on
+  Event Links since `5b19caa`.
+
+## 2026-10-05 - the production handover happened, and the first send is held
+
+`PIENISSIMO - Interna Check PROD per MKT` ran **05/10 10:01 CEST** as booked —
+[the note](../meetings/2026-10-05%20Interna%20Check%20PROD%20per%20MKT.md). Aurel
+Mrruku, Elena Spini, Fabrizio Mastracci.
+
+🟢 **Fabrizio Mastracci got what he needed to write the send logics**, and
+wrote them the same morning —
+[the marketing send contract](../The%20marketing%20ticket%20send%20logics%20as%20written%20by%20Marketing.md).
+The `Data invio biglietti` question that blocked flow 1 was answered in the
+session.
+
+🔴 **Production was not clean.** Aurel Mrruku finished at 04:00, could not sign
+in to the production DocuSign account — _"username password non vanno bene"_ —
+and so **created orders directly in Prod with fields bypassed** to give
+Fabrizio Mastracci records to look at: _"volevo proprio fare un giro pulito"_
+and could not reach `Firmato`. The DocuSign block cleared five hours later, live
+in the client UAT ([OI-111](OI-111%20DocuSign%20licences%20are%20not%20confirmed%20with%20the%20client.md)).
+
+⏸ **The first marketing mail is stopped.** Elena Spini, marketing group DM,
+18:28:50 CEST: _"<Fabrizio Mastracci> non mandare la mail perchè dobbiamo
+ancora sentirli per il tema link invio partecipanti ecc"_ — held pending the
+client call `[ROMI-PIENISSIMO] - Form: Link per partecipanti`, **06/10
+10:00–11:00**, because the link's granularity moved from per-order to
+per-edition the same evening
+([OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md)).
+
+⚠ So the production round trip this item exists to enable is **built,
+specified, and administratively paused** one day after the org was handed over.
+The 16/10 Marketing ticket UAT and the 08/10 four-hour end-to-end check are
+unchanged by this sweep.
+
+## 2026-10-13 - a second batch of TEST MKT orders in Prod
+
+At Aurel Mrruku's request, so marketing can test again. The seed is now a
+re-runnable script, `scripts/apex/seed-test-mkt-orders.apex`. Each run adds
+the next six TEST MKT companies, numbering after the last existing one.
+
+- **Created in Prod:** six companies, TEST MKT - Azienda 7 to 12, each with a
+  principal contact, and orders **00000107 to 00000112**. The orders alternate
+  the two TEST MKT products, with quantities 1, 2, 3. Each went Ordinato to
+  Incassato. The result was **12 `Disponibile` tickets** and **6 Event Links,
+  `Pending`, URL `Ready`**, on the existing 2026 editions.
+- **Contact email:** copied at run time from the existing TEST MKT principal
+  contacts, which marketing re-pointed on 08/10, so the new records reach the
+  same mailbox. The script does not hard-code it.
+- **Nothing reached Mexal.** `Integration_Log__c` was 9 before and after,
+  because `AUTOMATIC_MEXAL_CREATION_ENABLED` is `false` in Prod. A duplicate
+  rule fires on the deliberately shared email, so the script saves with
+  `DuplicateRuleHeader.allowSave`.
+- **State of the 04/10 batch at the time:** 6 tickets `Assegnato`, 4
+  `Disponibile`, 3 `Rinuncia`; 6 Event Links `Pending`.
+- ⚠ The editions' `Data_Invio_Biglietto__c` is still 05/10, already past, so
+  any send logic keyed on that date treats the new links as due now.

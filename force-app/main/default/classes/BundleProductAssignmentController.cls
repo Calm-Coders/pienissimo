@@ -1,4 +1,4 @@
-public with sharing class BundleProductAssignmentController {
+public without sharing class BundleProductAssignmentController {
   private static final Integer MAX_RESULTS = 100;
 
   public class ItemOption {
@@ -267,6 +267,7 @@ public with sharing class BundleProductAssignmentController {
           WHERE
             RecordTypeId = :itemRecordTypeId
             AND IsActive = TRUE
+            AND Solo_Bundle__c = TRUE
             AND Id NOT IN :alreadyLinked
           ORDER BY Name
           LIMIT :MAX_RESULTS
@@ -277,6 +278,7 @@ public with sharing class BundleProductAssignmentController {
           WHERE
             RecordTypeId = :itemRecordTypeId
             AND IsActive = TRUE
+            AND Solo_Bundle__c = TRUE
             AND Id NOT IN :alreadyLinked
             AND (Name LIKE :normalizedSearchTerm
             OR ProductCode LIKE :normalizedSearchTerm)
@@ -309,6 +311,15 @@ public with sharing class BundleProductAssignmentController {
   ) {
     if (bundleId == null) {
       throw new AuraHandledException('Missing bundle record id.');
+    }
+    if (
+      fixedPrice == null ||
+      fixedPrice < 0 ||
+      fixedPrice != fixedPrice.setScale(2)
+    ) {
+      throw new AuraHandledException(
+        'Inserisci un prezzo bundle non negativo con massimo due decimali.'
+      );
     }
     List<ComponentInput> components = new List<ComponentInput>();
     if (!String.isBlank(componentsJson)) {
@@ -347,6 +358,7 @@ public with sharing class BundleProductAssignmentController {
 
     List<BundleComponent__c> toUpsert = new List<BundleComponent__c>();
     Set<Id> keptIds = new Set<Id>();
+    Decimal submittedSpreadTotal = 0;
 
     for (ComponentInput input : components) {
       if (input == null) {
@@ -373,6 +385,13 @@ public with sharing class BundleProductAssignmentController {
           'Inserisci una quantita intera positiva e un importo non negativo con massimo due decimali.'
         );
       }
+      Decimal roundedUnitPrice = (spread / quantity).setScale(2);
+      if (roundedUnitPrice * quantity != spread) {
+        throw new AuraHandledException(
+          'Il prezzo totale di ogni riga deve essere divisibile per la quantita con un prezzo unitario di massimo due decimali.'
+        );
+      }
+      submittedSpreadTotal += spread;
       Id componentId = String.isBlank(input.id) ? null : (Id) input.id;
       Id productId = String.isBlank(input.productId)
         ? null
@@ -448,6 +467,12 @@ public with sharing class BundleProductAssignmentController {
       }
     }
 
+    if (submittedSpreadTotal != fixedPrice) {
+      throw new AuraHandledException(
+        'Il Totale assegnato deve essere uguale al Prezzo prodotto bundle prima di salvare.'
+      );
+    }
+
     List<BundleComponent__c> toDelete = new List<BundleComponent__c>();
     for (Id existingId : existingById.keySet()) {
       if (!keptIds.contains(existingId)) {
@@ -458,9 +483,17 @@ public with sharing class BundleProductAssignmentController {
     if (!toDelete.isEmpty()) {
       delete toDelete;
     }
+    if (components.isEmpty() && !validBundleTranchIds.isEmpty()) {
+      delete [
+        SELECT Id
+        FROM Bundle_Tranch__c
+        WHERE Bundle__c = :bundleId
+      ];
+    }
     if (!toUpsert.isEmpty()) {
       upsert toUpsert;
     }
+    update new Product2(Id = bundleId, Bundle_Selling_Price__c = fixedPrice);
     return getBundleContext(bundleId);
   }
 

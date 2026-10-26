@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Alq_Iva__c</fullName>
+    <description
+  >Codice aliquota IVA dell articolo Mexal (alq_iva), sincronizzato da MexalArticleSyncService. E un codice Mexal, non una percentuale: ad esempio E00 per esente.</description>
+    <externalId>false</externalId>
+    <label>Aliquota IVA</label>
+    <length>10</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

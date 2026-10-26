@@ -83,6 +83,21 @@ public without sharing class API_Callout_Engine {
 
       // Make HTTP request
       HttpRequest req = buildRequest(config, reqJson, pathParams);
+      if (apiName == 'Anticipay_Account_Check') {
+        logRow.Request_Endpoint__c = abbreviate(req.getEndpoint());
+        Map<String, String> requestHeaders = new Map<String, String>();
+        // Content-Type is the header explicitly set by this engine.
+        String contentType = req.getHeader('Content-Type');
+        if (!String.isBlank(contentType)) {
+          requestHeaders.put('Content-Type', contentType);
+        }
+        // Named Credential authentication is added by Salesforce at send time.
+        // Never persist an authentication value if it is visible on the request.
+        if (!String.isBlank(req.getHeader('Authorization'))) {
+          requestHeaders.put('Authorization', '[REDACTED]');
+        }
+        logRow.Request_Headers__c = abbreviate(JSON.serialize(requestHeaders));
+      }
 
       HttpResponse res;
       Long timestampCallout = DateTime.now().getTime();

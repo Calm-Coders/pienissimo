@@ -9,10 +9,12 @@ import ID_FIELD from "@salesforce/schema/Opportunity.Id";
 import STAGE_FIELD from "@salesforce/schema/Opportunity.StageName";
 import CLOSE_DATE_FIELD from "@salesforce/schema/Opportunity.CloseDate";
 import RECALL_REASON_FIELD from "@salesforce/schema/Opportunity.Motivazione_Da_Ricontattare__c";
+import QUOTE_RECALL_REASON_FIELD from "@salesforce/schema/Opportunity.Motivazione_Da_Ricontattare_Preventivo__c";
 import LOST_REASON_FIELD from "@salesforce/schema/Opportunity.Motivazione_Chiusa_Persa__c";
 
 const STAGES = [
   "Qualificato",
+  "Da ricontattare",
   "In trattativa (Prev inviato)",
   "Da ricontattare - Prev. inviato",
   "Chiusa/Vinta",
@@ -20,13 +22,21 @@ const STAGES = [
 ];
 
 const REASON_BY_STAGE = {
-  "Da ricontattare - Prev. inviato": {
+  "Da ricontattare": {
     field: RECALL_REASON_FIELD,
     label: "Motivazione da ricontattare",
     title: "Sposta a Da ricontattare",
     guidance:
       "Compila la motivazione prima di spostare l'opportunità a Da ricontattare.",
     missingMessage: "Seleziona la motivazione da ricontattare."
+  },
+  "Da ricontattare - Prev. inviato": {
+    field: QUOTE_RECALL_REASON_FIELD,
+    label: "Motivo ricontatto - Prev. inviato",
+    title: "Sposta a Da ricontattare - Prev. inviato",
+    guidance:
+      "Compila la motivazione prima di spostare l'opportunità a Da ricontattare - Prev. inviato.",
+    missingMessage: "Seleziona il motivo del ricontatto."
   },
   "Chiusa/Persa": {
     field: LOST_REASON_FIELD,
@@ -42,6 +52,7 @@ const FIELDS = [
   STAGE_FIELD,
   CLOSE_DATE_FIELD,
   RECALL_REASON_FIELD,
+  QUOTE_RECALL_REASON_FIELD,
   LOST_REASON_FIELD
 ];
 
@@ -52,11 +63,13 @@ export default class OpportunityCustomPath extends LightningElement {
   selectedStage;
   closeDate;
   recallReason;
+  quoteRecallReason;
   lostReason;
   isSaving = false;
   showReasonModal = false;
 
   recallReasonOptions = [];
+  quoteRecallReasonOptions = [];
   lostReasonOptions = [];
 
   @wire(getObjectInfo, { objectApiName: OPPORTUNITY_OBJECT })
@@ -72,6 +85,8 @@ export default class OpportunityCustomPath extends LightningElement {
     this.selectedStage = this.selectedStage || this.currentStage;
     this.closeDate = data.fields.CloseDate.value;
     this.recallReason = data.fields.Motivazione_Da_Ricontattare__c.value;
+    this.quoteRecallReason =
+      data.fields.Motivazione_Da_Ricontattare_Preventivo__c.value;
     this.lostReason = data.fields.Motivazione_Chiusa_Persa__c.value;
   }
 
@@ -82,6 +97,16 @@ export default class OpportunityCustomPath extends LightningElement {
   wiredRecallReasons({ data }) {
     if (data) {
       this.recallReasonOptions = data.values;
+    }
+  }
+
+  @wire(getPicklistValues, {
+    recordTypeId: "$objectInfo.data.defaultRecordTypeId",
+    fieldApiName: QUOTE_RECALL_REASON_FIELD
+  })
+  wiredQuoteRecallReasons({ data }) {
+    if (data) {
+      this.quoteRecallReasonOptions = data.values;
     }
   }
 
@@ -136,8 +161,8 @@ export default class OpportunityCustomPath extends LightningElement {
 
   get statusText() {
     return this.isSaving
-      ? "Updating stage..."
-      : `Status: ${this.currentStage || ""}`;
+      ? "Aggiornamento fase..."
+      : `Stato: ${this.currentStage || ""}`;
   }
 
   get selectedReasonConfig() {
@@ -161,14 +186,20 @@ export default class OpportunityCustomPath extends LightningElement {
   }
 
   get reasonOptions() {
-    return this.selectedStage === "Chiusa/Persa"
-      ? this.lostReasonOptions
+    if (this.selectedStage === "Chiusa/Persa") {
+      return this.lostReasonOptions;
+    }
+    return this.selectedStage === "Da ricontattare - Prev. inviato"
+      ? this.quoteRecallReasonOptions
       : this.recallReasonOptions;
   }
 
   get reasonValue() {
-    return this.selectedStage === "Chiusa/Persa"
-      ? this.lostReason
+    if (this.selectedStage === "Chiusa/Persa") {
+      return this.lostReason;
+    }
+    return this.selectedStage === "Da ricontattare - Prev. inviato"
+      ? this.quoteRecallReason
       : this.recallReason;
   }
 
@@ -188,6 +219,8 @@ export default class OpportunityCustomPath extends LightningElement {
   handleReasonChange(event) {
     if (this.selectedStage === "Chiusa/Persa") {
       this.lostReason = event.detail.value;
+    } else if (this.selectedStage === "Da ricontattare - Prev. inviato") {
+      this.quoteRecallReason = event.detail.value;
     } else {
       this.recallReason = event.detail.value;
     }
@@ -213,8 +246,12 @@ export default class OpportunityCustomPath extends LightningElement {
       [STAGE_FIELD.fieldApiName]: this.selectedStage
     };
 
-    if (this.selectedStage === "Da ricontattare - Prev. inviato") {
+    if (this.selectedStage === "Da ricontattare") {
       fields[RECALL_REASON_FIELD.fieldApiName] = this.recallReason;
+    }
+
+    if (this.selectedStage === "Da ricontattare - Prev. inviato") {
+      fields[QUOTE_RECALL_REASON_FIELD.fieldApiName] = this.quoteRecallReason;
     }
 
     if (this.selectedStage === "Chiusa/Persa") {

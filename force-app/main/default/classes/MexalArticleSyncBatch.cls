@@ -1,4 +1,4 @@
-public with sharing class MexalArticleSyncBatch implements Database.Batchable<String>, Database.AllowsCallouts {
+public without sharing class MexalArticleSyncBatch implements Database.Batchable<String>, Database.AllowsCallouts {
   private static final String FLOW_NAME = 'Mexal_Articoli_Sync';
   private static final Integer FALLBACK_LOOKBACK_HOURS = 24;
 
@@ -64,8 +64,7 @@ public with sharing class MexalArticleSyncBatch implements Database.Batchable<St
     return result != null &&
       result.success &&
       result.failedSaves == 0 &&
-      result.skippedRows == 0 &&
-      result.skippedBundleMatches == 0;
+      result.skippedRows == 0;
   }
 
   private static String buildSuccessMessage(
@@ -75,6 +74,11 @@ public with sharing class MexalArticleSyncBatch implements Database.Batchable<St
       result.articlesReturned +
       ', upserted=' +
       result.upsertedProducts +
+      ', skippedBundleMatches=' +
+      result.skippedBundleMatches +
+      (result.skippedBundleMatches == 0
+        ? ''
+        : ' (' + String.join(result.saveErrors, ' | ') + ')') +
       ', requestValue=' +
       result.requestValue +
       '.';

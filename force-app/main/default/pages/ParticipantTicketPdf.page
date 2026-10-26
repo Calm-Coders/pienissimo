@@ -1,0 +1,1749 @@
+<apex:page
+  controller="ParticipantTicketPdfController"
+  renderAs="pdf"
+  showHeader="false"
+  sidebar="false"
+  standardStylesheets="false"
+  readOnly="true"
+  cache="false"
+  language="it"
+  applyHtmlTag="false"
+  applyBodyTag="false"
+>
+  <html>
+    <head>
+      <style type="text/css">
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          color: #111;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        .qr-dark {
+          background: #000;
+        }
+        .qr-light {
+          background: #fff;
+        }
+
+        /* The ticket keeps its fixed four-region print layout. */
+        .ticket-sheet {
+          position: relative;
+          width: 595pt;
+          height: 841pt;
+          overflow: hidden;
+          page-break-after: always;
+        }
+        .ticket-vline {
+          position: absolute;
+          left: 297.5pt;
+          top: 12pt;
+          height: 681pt;
+          border-left: 0.6pt dashed #777;
+        }
+        .ticket-hline {
+          position: absolute;
+          left: 12pt;
+          top: 397pt;
+          width: 571pt;
+          border-top: 0.6pt dashed #777;
+        }
+        .ticket-label {
+          position: absolute;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #111;
+        }
+        .ticket-label .h {
+          font-size: 10pt;
+          font-weight: bold;
+          line-height: 1.1;
+        }
+        .ticket-label .v {
+          margin-top: 2pt;
+          font-size: 6.4pt;
+          line-height: 1.2;
+          white-space: normal;
+        }
+        .ticket-logo {
+          position: absolute;
+          left: 323pt;
+          top: 80pt;
+          width: 226pt;
+          height: auto;
+        }
+        .ticket-event-center {
+          position: absolute;
+          left: 321pt;
+          top: 202pt;
+          width: 230pt;
+          text-align: center;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #555;
+        }
+        .ticket-event-center .name {
+          font-size: 8.5pt;
+          line-height: 1.2;
+        }
+        .ticket-event-center .date {
+          margin-top: 38pt;
+          font-size: 8pt;
+        }
+        .ticket-event-center .location {
+          margin-top: 19pt;
+          font-size: 7.2pt;
+          line-height: 1.25;
+          white-space: normal;
+        }
+        .ticket-qr {
+          border-collapse: collapse;
+          position: absolute;
+          left: 95pt;
+          top: 224pt;
+        }
+        .ticket-qr td {
+          width: 3.6pt;
+          height: 3.6pt;
+          line-height: 3.6pt;
+          padding: 0;
+          margin: 0;
+        }
+        .ticket-bottom-title {
+          position: absolute;
+          top: 422pt;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 9pt;
+          font-weight: bold;
+        }
+        .ticket-info-box {
+          position: absolute;
+          border: 0.6pt solid #999;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #111;
+        }
+        .ticket-additional {
+          left: 29pt;
+          top: 447pt;
+          width: 201.6pt;
+          height: 132.6pt;
+          padding: 10pt 9pt;
+          font-size: 8.4pt;
+          line-height: 1.22;
+        }
+        .ticket-organizer {
+          left: 315pt;
+          top: 447pt;
+          width: 201.6pt;
+          height: 222.6pt;
+          padding: 8pt 8pt;
+          font-size: 8.1pt;
+          line-height: 1.18;
+        }
+        .ticket-organizer p {
+          margin: 0 0 4pt 0;
+        }
+        .ticket-organizer ul {
+          margin: 4pt 0 5pt 13pt;
+          padding: 0;
+        }
+        .ticket-organizer li {
+          margin: 0 0 2pt 0;
+        }
+        .ticket-organizer-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 6pt;
+        }
+        .ticket-organizer-table td {
+          vertical-align: top;
+          padding: 1.5pt 0;
+          font-size: 7.4pt;
+          line-height: 1.18;
+        }
+        .ticket-organizer-table .k {
+          width: 79pt;
+          font-weight: bold;
+          padding-right: 4pt;
+        }
+        .ticket-organizer-table .v {
+          white-space: normal;
+          word-wrap: break-word;
+        }
+
+        /* ============================================= */
+        /* DOCUMENT PAGES                                */
+        /* ============================================= */
+
+        .document-page {
+          position: relative;
+          width: 595pt;
+          height: 841pt;
+          overflow: hidden;
+          page-break-after: always;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #111;
+        }
+
+        .document-page.last {
+          page-break-after: auto;
+        }
+
+        /* HEADER */
+
+        .doc-header {
+          position: absolute;
+          left: 56pt;
+          top: 17pt;
+          width: 483pt;
+          height: 55pt;
+          border-collapse: collapse;
+        }
+
+        .doc-header td {
+          padding: 0;
+          vertical-align: middle;
+        }
+
+        .doc-logo {
+          width: 165pt;
+          height: auto;
+        }
+
+        .doc-header-title {
+          width: 220pt;
+          text-align: right;
+          font-size: 11pt;
+          line-height: 1.15;
+          font-style: italic;
+        }
+
+        /* CONTENT */
+
+        .page-content {
+          margin-left: 56pt;
+          margin-right: 56pt;
+          padding-top: 95pt;
+          padding-bottom: 55pt;
+
+          font-size: 10.3pt;
+          line-height: 1.28;
+        }
+
+        .page-content p {
+          margin: 0 0 8pt 0;
+          padding: 0;
+        }
+
+        .page-content h2 {
+          margin: 0 0 7pt 0;
+          text-align: center;
+          font-size: 9.5pt;
+          line-height: 1.1;
+        }
+
+        .page-content h3 {
+          margin: 6pt 0 3pt 0;
+          font-size: inherit;
+        }
+
+        /* NUMBERED TABLE LIST */
+
+        .numbered-list {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 10pt 0 14pt 0;
+        }
+
+        .numbered-list td {
+          vertical-align: top;
+          padding: 0 0 8pt 0;
+          line-height: 1.28;
+        }
+
+        .numbered-list .number {
+          width: 20pt;
+          padding-right: 5pt;
+        }
+
+        .numbered-list .text {
+          width: auto;
+        }
+
+        .document-list-bold .number,
+        .document-list-bold .text {
+          font-weight: bold;
+          font-style: italic;
+        }
+
+        /* DECLARATIONS */
+
+        .declaration-list {
+          margin: 6pt 0 12pt 15pt;
+          padding: 0;
+        }
+
+        .declaration-list li {
+          margin: 0 0 6pt 0;
+        }
+
+        /* LEGAL */
+
+        .legal-content {
+          font-size: 7.8pt;
+          line-height: 1.12;
+        }
+
+        .legal .page-content p {
+          margin: 0 0 3pt 0;
+        }
+
+        .legal .page-content h2 {
+          margin: 0 0 5pt 0;
+          font-size: 9pt;
+          line-height: 1.1;
+        }
+
+        .legal .page-content h3 {
+          margin: 4pt 0 2pt 0;
+          font-size: 8pt;
+          line-height: 1.1;
+        }
+
+        /* FORM */
+
+        .participant-form {
+          margin-top: 25pt;
+          margin-bottom: 18pt;
+        }
+
+        .form-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 10pt;
+        }
+
+        .form-table td {
+          height: 21pt;
+          vertical-align: bottom;
+        }
+
+        .form-label {
+          width: 1%;
+          white-space: nowrap;
+          padding-right: 7pt;
+        }
+
+        .form-line {
+          border-bottom: 0.7pt solid #111;
+        }
+
+        .form-gap {
+          width: 18pt;
+        }
+
+        /* CHOICES */
+
+        .choice-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 9pt 0;
+        }
+
+        .choice-table td {
+          width: 50%;
+          padding: 0;
+        }
+
+        .checkbox {
+          display: inline-block;
+          width: 8pt;
+          height: 8pt;
+          line-height: 8pt;
+          font-size: 1pt;
+          border: 0.7pt solid #111;
+          margin-right: 4pt;
+          vertical-align: middle;
+        }
+
+        /* SIGNATURE */
+
+        .signature-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 18pt 0 10pt;
+        }
+
+        .signature-table td {
+          width: 45%;
+          padding: 0;
+          vertical-align: bottom;
+        }
+
+        .signature-table .signature-gap {
+          width: 10%;
+        }
+
+        .signature-line {
+          height: 16pt;
+          border-bottom: 0.7pt solid #111;
+        }
+
+        .signature-label {
+          margin-top: 3pt;
+          text-align: center;
+          font-size: 6pt;
+          font-style: italic;
+        }
+
+        /* FOOTER */
+
+        .doc-footer {
+          position: absolute;
+          left: 56pt;
+          bottom: 25pt;
+          width: 483pt;
+          border-collapse: collapse;
+          font-size: 8pt;
+        }
+
+        .doc-footer td {
+          padding: 0;
+        }
+
+        .footer-version {
+          width: 95pt;
+        }
+
+        .footer-name {
+          text-align: center;
+          font-style: italic;
+        }
+
+        .footer-page {
+          width: 30pt;
+          text-align: right;
+        }
+
+        /* UTILITIES */
+
+        .center {
+          text-align: center;
+        }
+
+        .blue-text {
+          color: #0563c1;
+          text-decoration: underline;
+        }
+
+        .choice-table,
+        .signature-table {
+          page-break-inside: avoid;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="ticket-sheet">
+        <span class="ticket-vline"></span>
+        <span class="ticket-hline"></span>
+
+        <div class="ticket-label" style="left: 28pt; top: 24pt; width: 190pt">
+          <div class="h">EVENTO</div>
+          <div class="v"><apex:outputText value="{!eventName}" /></div>
+          <div class="v"><apex:outputText value="{!eventDate}" /></div>
+        </div>
+
+        <div class="ticket-label" style="left: 28pt; top: 73pt; width: 190pt">
+          <div class="h">PARTECIPANTE</div>
+          <div class="v"><apex:outputText value="{!participantName}" /></div>
+          <div class="v"><apex:outputText value="{!participantEmail}" /></div>
+          <div class="v"><apex:outputText value="{!accountName}" /></div>
+        </div>
+
+        <div class="ticket-label" style="left: 28pt; top: 132pt; width: 190pt">
+          <div class="h">TICKET</div>
+          <div class="v"><apex:outputText value="{!ticketName}" /></div>
+        </div>
+
+        <apex:image
+          value="{!URLFOR($Resource.QuotePdfLogo)}"
+          styleClass="ticket-logo"
+        />
+
+        <div class="ticket-event-center">
+          <div class="name"><apex:outputText value="{!eventName}" /></div>
+          <div class="date"><apex:outputText value="{!eventDate}" /></div>
+          <div class="location">
+            <apex:outputText value="{!eventLocationLine}" />
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!hasQrCode}" layout="none">
+          <table class="ticket-qr">
+            <apex:repeat value="{!qrRows}" var="qrRow">
+              <tr>
+                <apex:repeat value="{!qrRow.modules}" var="module">
+                  <td class="{!IF(module, 'qr-dark', 'qr-light')}"></td>
+                </apex:repeat>
+              </tr>
+            </apex:repeat>
+          </table>
+        </apex:outputPanel>
+
+        <div class="ticket-bottom-title" style="left: 29pt">
+          INFORMAZIONI AGGIUNTIVE
+        </div>
+        <div class="ticket-info-box ticket-additional">
+          <div>Diamond e Vip hanno ingresso dedicato.</div>
+          <div style="margin-top: 9pt">
+            Grazie per aver scelto di partecipare agli eventi di Pienissimo.
+          </div>
+          <div style="margin-top: 9pt">
+            In caso di difficoltà o imprevisti che ti impediscono di partecipare
+            all'evento puoi sempre far riferimento alla nostra assistenza alla
+            pagina
+            <br />https://www.pienissimo.com/assistenza dove, se necessario,
+            contattare il nostro staff in Live Chat. In alternativa puoi
+            contattare il tuo Tutor di riferimento.
+          </div>
+        </div>
+
+        <div class="ticket-bottom-title" style="left: 315pt">
+          MESSAGGIO DALL'ORGANIZZATORE
+        </div>
+        <div class="ticket-info-box ticket-organizer">
+          <p>
+            <b>Il biglietto è nominativo e personale.</b><br />Non puoi cederlo
+            a terzi.
+          </p>
+          <p>
+            Quindi,
+            <b>per accedere a&#160;<apex:outputText value="{!eventName}" /></b
+            ><br />dovrai presentarti al check-in con:
+          </p>
+          <ul>
+            <li>il <b>presente biglietto</b> stampato;</li>
+            <li>
+              i <b>Documenti di Iscrizione al corso</b> che sono 7 pagine da
+              consegnare al personale al check-in;
+            </li>
+            <li>
+              un <b>Documento d'Identità</b> valido per l'identificazione del
+              partecipante;
+            </li>
+          </ul>
+          <p>
+            Inoltre, qui trovi ricapitolate alcune informazioni che possono
+            esserti utili:
+          </p>
+          <table class="ticket-organizer-table">
+            <tr>
+              <td class="k">Orario Inizio Check-In:</td>
+              <td class="v"><apex:outputText value="{!checkInTime}" /></td>
+            </tr>
+            <tr>
+              <td class="k">Luogo dell'evento:</td>
+              <td class="v">
+                <apex:outputText value="{!eventLocationLine}" />
+              </td>
+            </tr>
+            <tr>
+              <td class="k">Parcheggio:</td>
+              <td class="v"><apex:outputText value="{!parking}" /></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="document-page" id="instructions">
+        <table class="doc-header">
+          <tr>
+            <td>
+              <apex:image
+                value="{!URLFOR($Resource.QuotePdfLogo)}"
+                styleClass="doc-logo"
+              />
+            </td>
+            <td class="doc-header-title">
+              DOCUMENTI PER<br />PARTECIPAZIONE EVENTI
+            </td>
+          </tr>
+        </table>
+        <div class="page-content">
+          <p>
+            Gentilissimo Cliente,<br />di seguito trovi i seguenti documenti per
+            la partecipazione agli eventi Pienissimo:
+          </p>
+          <table class="numbered-list document-list-bold">
+            <tr>
+              <td class="number">1.</td>
+              <td class="text">SCHEDA DI PARTECIPAZIONE;</td>
+            </tr>
+            <tr>
+              <td class="number">2.</td>
+              <td class="text">
+                INFORMATIVA PER IL TRATTAMENTO DEI DATI PERSONALI (ALLEGATO A);
+              </td>
+            </tr>
+            <tr>
+              <td class="number">3.</td>
+              <td class="text">LIBERATORIA PER FOTO/VIDEO;</td>
+            </tr>
+            <tr>
+              <td class="number">4.</td>
+              <td class="text">CONDIZIONI GENERALI;</td>
+            </tr>
+          </table>
+          <p>Per poter prender parte agli eventi Pienissimo devi:</p>
+          <table class="numbered-list">
+            <tr>
+              <td class="number">1.</td>
+              <td class="text">Stampare l’intero documento;</td>
+            </tr>
+            <tr>
+              <td class="number">2.</td>
+              <td class="text">
+                Verificare la correttezza dei dati pre-compilati con i dati da
+                lei forniti, compilare lo spazio
+                <strong><em>“LUOGO E DATA”</em></strong> e firmare lo spazio
+                <strong><em>“FIRMA”</em></strong> a pagina 1 del documento
+                <strong><em>“SCHEDA DI PARTECIPAZIONE”</em></strong
+                >;
+              </td>
+            </tr>
+            <tr>
+              <td class="number">3.</td>
+              <td class="text">
+                Verificare la correttezza dei dati pre-compilati con i dati da
+                lei forniti, compilare lo spazio
+                <strong><em>“LUOGO E DATA”</em></strong> e firmare lo spazio
+                <strong><em>“FIRMA”</em></strong> a pagina 2 del documento
+                <strong
+                  ><em
+                    >“INFORMATIVA PER IL TRATTAMENTO DEI DATI PERSONALI
+                    (ALLEGATO A)”</em
+                  ></strong
+                >;
+              </td>
+            </tr>
+            <tr>
+              <td class="number">4.</td>
+              <td class="text">
+                Verificare la correttezza dei dati pre-compilati con i dati da
+                lei forniti, compilare entrambi gli spazi
+                <strong><em>“LUOGO E DATA”</em></strong> e firmare entrambi gli
+                spazi <strong><em>“FIRMA”</em></strong> a pagina 1 del documento
+                <strong><em>“LIBERATORIA PER FOTO/VIDEO”</em></strong
+                >;
+              </td>
+            </tr>
+            <tr>
+              <td class="number">5.</td>
+              <td class="text">
+                Compilare entrambi gli spazi
+                <strong><em>“LUOGO E DATA”</em></strong> e firmare entrambi gli
+                spazi <strong><em>“FIRMA”</em></strong> a pagina 2 del documento
+                <strong><em>“CONDIZIONI GENERALI”</em></strong
+                >.
+              </td>
+            </tr>
+          </table>
+          <p><strong>Durante il check-in</strong> dell’evento dovrai:</p>
+          <table class="numbered-list">
+            <tr>
+              <td class="number">1.</td>
+              <td class="text">
+                <strong>Consegnare tutti i documenti</strong>, correttamente
+                compilati;
+              </td>
+            </tr>
+            <tr>
+              <td class="number">2.</td>
+              <td class="text">
+                <strong>Mostrare un tuo documento di identità;</strong>
+              </td>
+            </tr>
+            <tr>
+              <td class="number">3.</td>
+              <td class="text">
+                <strong>Mostrare il biglietto con Qr-Code</strong> nominativo
+                che hai ricevuto in allegato insieme a questo documento.
+              </td>
+            </tr>
+          </table>
+          <p>
+            Per qualsiasi difficoltà puoi rivolgerti alla nostra assistenza alla
+            pagina
+            <span class="blue-text">pienissimo.com/assistenza</span> oppure
+            chiamare al numero +39 371 343 6677
+          </p>
+        </div>
+        <table class="doc-footer">
+          <tr>
+            <td class="footer-version">Versione 27.05</td>
+            <td class="footer-name">- Documenti per Partecipazione Eventi -</td>
+            <td class="footer-page">1</td>
+          </tr>
+        </table>
+      </div>
+      <div class="document-page" id="participation">
+        <table class="doc-header">
+          <tr>
+            <td>
+              <apex:image
+                value="{!URLFOR($Resource.QuotePdfLogo)}"
+                styleClass="doc-logo"
+              />
+            </td>
+            <td class="doc-header-title">SCHEDA DI PARTECIPAZIONE</td>
+          </tr>
+        </table>
+        <div class="page-content">
+          <h2>SCHEDA DI PARTECIPAZIONE<br />EVENTI PIENISSIMO</h2>
+          <div class="participant-form">
+            <table class="form-table">
+              <tr>
+                <td class="form-label">Il sottoscritto</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">nato a</td>
+                <td class="form-line">&#160;</td>
+                <td class="form-gap"></td>
+                <td class="form-label">il</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">residente a</td>
+                <td class="form-line">&#160;</td>
+                <td class="form-gap"></td>
+                <td class="form-label">in via</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">telefono</td>
+                <td class="form-line">&#160;</td>
+                <td class="form-gap"></td>
+                <td class="form-label">e-mail</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">nome attività</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">ragione sociale</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+          </div>
+          <table class="choice-table">
+            <tr>
+              <td><span class="checkbox">&#160;</span> Titolare</td>
+              <td><span class="checkbox">&#160;</span> Collaboratore</td>
+            </tr>
+          </table>
+          <h3>Dichiara</h3>
+          <ul class="declaration-list">
+            <li>
+              di essere in possesso dei requisiti soggettivi previsti dall’art.
+              1 delle condizioni generali di contratto per la partecipazione al
+              corso e di non trovarsi in alcuna delle situazioni di esclusione
+              espressamente previste;
+            </li>
+            <li>
+              di aver visionato, letto ed approvato le condizioni generali che
+              regolano l’iscrizione e la partecipazione ai corsi organizzati da
+              Pienissimo S.r.l.;
+            </li>
+            <li>
+              di aver preso visione dell’Allegato A (Informativa sulla Privacy e
+              Autorizzazione trattamento immagini) e di averne compreso i
+              contenuti ed avere con la presente espresso il consenso.
+            </li>
+          </ul>
+          <p>
+            Moduli disponibili e scaricabili anche sul sito
+            <a class="blue-text" href="http://www.pienissimo.com"
+              >www.pienissimo.com</a
+            >
+          </p>
+          <p>
+            <strong
+              >SI IMPEGNA ad accedere all’area di registrazione munito di idoneo
+              documento di riconoscimento in corso</strong
+            >
+            <strong>di validità.</strong>
+          </p>
+          <table class="signature-table">
+            <tr>
+              <td>
+                <div class="signature-line">&#160;</div>
+                <div class="signature-label">LUOGO E DATA</div>
+              </td>
+              <td class="signature-gap"></td>
+              <td>
+                <div class="signature-line">&#160;</div>
+                <div class="signature-label">FIRMA</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <table class="doc-footer">
+          <tr>
+            <td class="footer-version">Versione 05.21</td>
+            <td class="footer-name">- Scheda di Partecipazione -</td>
+            <td class="footer-page">1</td>
+          </tr>
+        </table>
+      </div>
+      <div class="document-page legal" id="privacy-1">
+        <table class="doc-header">
+          <tr>
+            <td>
+              <apex:image
+                value="{!URLFOR($Resource.QuotePdfLogo)}"
+                styleClass="doc-logo"
+              />
+            </td>
+            <td class="doc-header-title">ALLEGATO A</td>
+          </tr>
+        </table>
+        <div class="page-content legal-content">
+          <h2>
+            <strong>INFORMATIVA PER IL TRATTAMENTO DEI DATI PERSONALI</strong>
+          </h2>
+          <p class="center">
+            <strong
+              >ai sensi degli artt. 13 e 14 del Regolamento UE n. 679/2016 e
+              della legge RSM n. 171/2018</strong
+            >
+          </p>
+          <p>
+            La informiamo che il trattamento dei suoi dati personali avverrà con
+            correttezza e trasparenza, per fini leciti, tutelando la sua
+            riservatezza ed i suoi diritti in conformità alla normativa vigente.
+          </p>
+          <p>
+            Ai sensi degli artt. 13 e 14 del Regolamento Europeo n. 679/2016 in
+            materia di protezione dei dati personali (di seguito solo GDPR) e
+            degli artt. 13 e 14 della legge sammarinese n. 171/2018 (di seguito
+            solo legge RSM) provvediamo pertanto a fornirle le seguenti
+            informazioni:
+          </p>
+          <h3><strong>1.</strong> <strong>Acquisizione dei dati</strong></h3>
+          <p>
+            I suoi dati personali oggetto di trattamento sono acquisiti da
+            PIENISSIMO s.r.l., con sede nel territorio della Repubblica di San
+            Marino, in occasione dei corsi e degli incontri a carattere
+            formativo organizzati dalla nostra società a cui ha liberamente
+            deciso di prendere parte.
+          </p>
+          <h3>
+            <strong>2.</strong> <strong>Dati oggetto del trattamento</strong>
+          </h3>
+          <p>
+            I dati personali che saranno trattati, sono i suoi dati
+            identificativi e di contatto, quali a titolo esemplificativo:
+            cognome, nome, numero di telefono, indirizzo e-mail oltre ad ogni
+            altro dato personale, funzionale alla sua iscrizione e
+            partecipazione ai corsi ed agli incontri formativi pianificati dalla
+            nostra società.
+          </p>
+          <h3><strong>3.</strong> <strong>Modalità di trattamento</strong></h3>
+          <p>
+            Il trattamento sarà effettuato anche, ma non solo, con l’ausilio di
+            mezzi informatici e/o automatizzati, con modalità idonee a garantire
+            la sicurezza, la protezione e la riservatezza dei dati ed a
+            prevenire e limitare il rischio di perdita, deterioramento,
+            sottrazione dei dati e ad assicurarne in tempi ragionevoli il
+            ripristino in caso di “data breach”.
+          </p>
+          <p>
+            Il trattamento avrà luogo mediante operazioni di: raccolta,
+            registrazione, organizzazione, strutturazione, conservazione,
+            adattamento o modifica, estrazione, consultazione, uso,
+            comunicazione, raffronto o interconnessione, limitazione,
+            cancellazione e distruzione dei dati.
+          </p>
+          <h3><strong>4.</strong> <strong>Finalità del trattamento</strong></h3>
+          <p>
+            I suoi dati personali saranno trattati per scopi connessi o
+            strumentali all’attività formativa da noi prestata. Le operazioni
+            sopra indicate verranno infatti poste in essere:
+          </p>
+          <p>
+            - senza il suo consenso espresso per il perseguimento delle seguenti
+            finalità:
+          </p>
+          <p>
+            a) per una puntuale e corretta pianificazione dei corsi e degli
+            eventi a carattere formativo da noi programmati e per finalizzare la
+            sua iscrizione. In tal caso non è necessario il suo consenso, poiché
+            il trattamento dei dati è funzionale ad evadere la sua richiesta di
+            partecipazione;
+          </p>
+          <p>
+            b) adempiere agli obblighi previsti dalla legge, da un regolamento,
+            dalla normativa dell’Unione Europea nonché da disposizioni di
+            Autorità a ciò legittimate o da competenti Organi di vigilanza o di
+            controllo (ad esempio obblighi relativi alle normative fiscali o per
+            i registri antiriciclaggio). In tal caso il suo consenso non è
+            necessario in quanto il trattamento dei dati è correlato al rispetto
+            di tali obblighi/disposizioni;
+          </p>
+          <p>
+            c) gestire l’eventuale contenzioso (inadempimenti contrattuali,
+            diffide, transazioni, recupero crediti, arbitrati ecc). In tal caso
+            il suo consenso non è necessario poiché il trattamento dei dati è
+            funzionale al diritto di far valere in giudizio gli interessi del
+            Titolare oltre che al diritto di difesa;
+          </p>
+          <p>
+            d) adempiere agli obblighi correlati alla tutela dell’ordine
+            pubblico, all’accertamento ed alla repressione dei reati. In tal
+            caso il suo consenso non è necessario in virtù del prevalente
+            interesse pubblico.
+          </p>
+          <p>- solo previo consenso espresso per la seguente finalità:</p>
+          <p>
+            e) per finalità commerciali dirette, ossia per fornirle informazioni
+            e materiale commerciale e pubblicitario (anche mediante tecniche di
+            comunicazione a distanza quali sms, messaggi di posta elettronica e
+            di altro tipo) in ordine a nuovi corsi, eventi ed iniziative
+            pianificati dalla nostra società;
+          </p>
+          <p>
+            f) per finalità di profilazione ossia per la creazione di profili
+            (individuali e/o aggregati) sulla base del suo profilo e delle sue
+            preferenze, per la trasmissione di comunicazioni personalizzate in
+            ordine a nuovi corsi, eventi ed iniziative pianificati dalla nostra
+            società;
+          </p>
+          <p>
+            g) per finalità commerciali indirette, ossia per comunicare i suoi
+            dati a soggetti terzi affinchè svolgano proprie autonome attività
+            commerciali e pubblicitarie ossia per fornirle informazioni e
+            materiale commerciale/promozionale (anche mediante tecniche di
+            comunicazione a distanza quali ad esempio newsletter) su propri
+            prodotti, servizi o iniziative, per promuovere gli stessi e per
+            applicarle uno o più profili.
+          </p>
+          <h3>
+            <strong>5.</strong> <strong>Base giuridica del trattamento</strong>
+          </h3>
+          <p>Il trattamento dei suoi dati personali verrà effettuato:</p>
+          <p>
+            a) in quanto necessario per adempimenti precontrattuali o
+            contrattuali legati alla sua partecipazione ai corsi e agli incontri
+            formativi organizzati da PIENISSIMO s.r.l. (quali l’iscrizione
+            all’evento);
+          </p>
+          <p>b) sul consenso da lei liberamente e regolarmente prestato;</p>
+          <p>
+            c) sull’adempimento di un obbligo previsto dalla normativa vigente;
+          </p>
+          <p>d) sul perseguimento di legittimi interessi del Titolare.</p>
+          <p>
+            Più in dettaglio: la base giuridica per la finalità sub a) di cui
+            all’art. 4 è l’art. 6.1 b del GDPR (art. 5.1 b della legge RSM), per
+            la finalità sub b) è rappresentata dall’art. 6.1 c (art. 5.1. c
+            della legge RSM), per la finalità sub c) è rappresentata dall’art.
+            6.1 f (5.1 f della legge RSM), per la finalità sub d) è
+            rappresentata dall’art. 6.1 e (5.1. e della legge RSM) e per le
+            finalità sub e) f) e g) è rappresentata dall’art. 6.1 a (5.1 a della
+            legge RSM).
+          </p>
+          <h3>
+            <strong>6.</strong>
+            <strong>Natura obbligatoria o facoltativa del trattamento</strong>
+          </h3>
+          <p>
+            Il conferimento dei suoi dati per le finalità dettagliate al
+            precedente punto 4 “Finalità del trattamento” lettere a), b), c) e
+            d) è obbligatorio, pertanto il suo eventuale rifiuto comporterà
+            l’impossibilità di partecipare ai nostri corsi. E’ fatto salvo
+            comunque il suo diritto di revocare il consenso in qualsiasi momento
+            opponendosi al trattamento. Il rilascio dei dati per le altre
+            finalità sopra indicate è invece facoltativo, può quindi decidere di
+            non fornire alcun dato senza pregiudicare la sua partecipazione ai
+            corsi organizzati dalla nostra società.
+          </p>
+          <h3>
+            <strong>7.</strong> <strong>Destinatari dei dati personali</strong>
+          </h3>
+          <p>
+            I dati personali raccolti saranno trattati all’interno della società
+            ad opera di nostri dipendenti e/o collaboratori strettamente
+            autorizzati ed opportunamente istruiti (ex art. 29 del GDPR ed ex
+            art. 30 della legge RSM) nell’ambito delle relative mansioni.
+          </p>
+          <p>
+            All’esterno della società i dati potranno invece essere comunicati e
+            trattati da tutte quelle persone fisiche e/o giuridiche (in qualità
+            di Responsabili) impegnate a svolgere, per conto della nostra
+            società, attività necessarie e/o strumentali a garantire
+            l’operatività della stessa. L’elenco completo dei Responsabili è
+            archiviato presso la nostra sede ed è disponibile e visionabile
+            dietro richiesta. I suoi dati non saranno oggetto di diffusione ma
+            potranno essere comunicati ad organi ispettivi preposti a verifiche
+            e controlli inerenti alla regolarità degli adempimenti di legge.
+          </p>
+        </div>
+        <table class="doc-footer">
+          <tr>
+            <td class="footer-version">Versione 05.21</td>
+            <td class="footer-name">- Allegato A -</td>
+            <td class="footer-page">1</td>
+          </tr>
+        </table>
+      </div>
+      <div class="document-page legal" id="privacy-2">
+        <table class="doc-header">
+          <tr>
+            <td>
+              <apex:image
+                value="{!URLFOR($Resource.QuotePdfLogo)}"
+                styleClass="doc-logo"
+              />
+            </td>
+            <td class="doc-header-title">ALLEGATO A</td>
+          </tr>
+        </table>
+        <div class="page-content legal-content">
+          <h3>
+            <strong>8.</strong>
+            <strong>Trasferimento dati ad un paese terzo</strong>
+          </h3>
+          <p>
+            Per quanto concerne l’eventuale trasferimento dei dati verso Paesi
+            Terzi, tra cui Paesi che potrebbero non garantire il medesimo
+            livello di tutela previsto dal Regolamento e dalla legge RSM, il
+            trattamento avverrà comunque sulla base di una delle condizioni
+            definite dalla normativa vigente in ossequio agli artt. 44 e
+            seguenti GDPR (45 e seguenti legge RSM), operando in conformità alle
+            disposizioni di legge applicabili.
+          </p>
+          <h3>
+            <strong>9.</strong>
+            <strong>Periodo di conservazione dei dati</strong>
+          </h3>
+          <p>
+            I suoi dati personali saranno trattati per il tempo strettamente
+            necessario a garantire l’adempimento di tutte le obbligazioni
+            assunte in forza del rapporto contrattuale tra noi in essere, salvo
+            il caso di espresso e specifico consenso anche in relazione alle
+            operazioni di cui al punto 4 lettere e) f) e g), nel qual caso i
+            dati verranno trattati fino a successiva revoca del consenso e
+            comunque non oltre due anni da quando è stato rilasciato o rinnovato
+            il consenso per i dati forniti per attività commerciali, non oltre
+            un anno per i dati utilizzati per offerte commerciali
+            personalizzate.
+          </p>
+          <p>
+            I suoi dati saranno inoltre conservati dal Titolare, per il tempo
+            necessario a garantire la reciproca tutela in sede giudiziaria dei
+            diritti nonché per ottemperare agli obblighi di legge fra cui quelli
+            di natura tributaria.
+          </p>
+          <h3>
+            <strong>10.</strong> <strong>Diritti dell’interessato</strong>
+          </h3>
+          <p>
+            La informiamo che, in qualsiasi momento, ai sensi degli artt. 15-22
+            del Regolamento UE n. 679/2016 e della legge RSM potrà esercitare i
+            seguenti diritti:
+          </p>
+          <p>
+            1) avere conferma dell’esistenza o meno di un trattamento di dati
+            personali che la riguardano e, in tal caso, ottenere l’accesso ai
+            medesimi dati ed a tutte le informazioni relative al trattamento
+            stesso (
+            <strong>diritto di accesso ex art. 15 GDPR e legge RSM</strong> );
+          </p>
+          <p>
+            2) ottenere la rettifica dei dati personali inesatti, senza
+            ingiustificato ritardo e l’integrazione di quelli incompleti anche
+            mediante dichiarazione integrativa (
+            <strong>diritto di rettifica ex art. 16 GDPR e legge RSM</strong> );
+          </p>
+          <p>
+            3) ottenere la cancellazione dei suoi dati personali senza
+            ingiustificato ritardo se: i dati non sono più necessari rispetto
+            alle finalità per le quali sono stati raccolti o trattati; sono
+            stati trattati illecitamente; devono essere cancellati per adempiere
+            ad un obbligo legale; ha revocato il consenso o si oppone al
+            trattamento (
+            <strong>diritto all’oblio ex art. 17 GDPR e legge RSM)</strong> ;
+          </p>
+          <p>
+            4) ottenere la limitazione del trattamento quando ricorre una delle
+            seguenti ipotesi: se contesta l’esattezza dei dati personali, per il
+            periodo necessario al Titolare del trattamento per verificare detta
+            esattezza; se il trattamento è illecito e lei si oppone alla
+            cancellazione dei dati e chiede invece che ne sia limitato
+            l’utilizzo; benché il Titolare del trattamento non ne abbia più
+            bisogno ai fini del trattamento, i dati personali le siano necessari
+            per l’accertamento o l’esercizio di un diritto in sede giudiziaria;
+            se lei si è opposto al trattamento, in attesa della verifica in
+            merito all’eventuale prevalenza dei motivi legittimi del Titolare
+            del trattamento rispetto ai suoi (
+            <strong>diritto di limitazione ex art. 18 GDPR e legge RSM</strong>
+            );
+          </p>
+          <p>
+            5) di ricevere in un formato strutturato, di uso comune e leggibile
+            da dispositivo automatico i dati personali che la riguardano e di
+            trasmettere tali dati ad un altro Titolare del trattamento, senza
+            impedimenti da parte del Titolare del trattamento cui li ha forniti
+            ( <strong>diritto alla portabilità ex art. 20</strong>
+            <strong>GDPR e legge RSM)</strong> ;
+          </p>
+          <p>
+            6) di opporsi, in tutto o in parte, al trattamento. Qualora i dati
+            personali siano trattati per finalità di marketing diretto, lei ha
+            il diritto di opporsi in qualsiasi momento al trattamento, compresa
+            la profilazione nella misura in cui sia connessa a tale marketing
+            diretto. Qualora i dati personali siano trattati a fini di ricerca
+            scientifica o storica o a fini statistici, per motivi connessi alla
+            sua situazione particolare, ha il diritto di opporsi al trattamento,
+            salvo che il trattamento sia necessario per l’esecuzione di un
+            compito di interesse pubblico (
+            <strong>diritto di opposizione ex art. 21 GDPR e legge RSM)</strong>
+            ;
+          </p>
+          <p>7) di revocare in qualsiasi momento il consenso prestato;</p>
+          <p>
+            8) di proporre reclamo all’Autorità Garante per la protezione dei
+            dati personali.
+          </p>
+          <h3>
+            <strong>11.</strong>
+            <strong
+              >Titolare del trattamento e suo rappresentante nell’Unione
+              Europea</strong
+            >
+          </h3>
+          <p>
+            Per far valere i diritti sopra descritti potrà rivolgersi, in
+            qualsiasi momento, al Titolare del trattamento PIENISSIMO s.r.l.
+            mediante comunicazione da trasmettersi, a mezzo e-mail, al seguente
+            indirizzo di posta elettronica
+            <a class="blue-text" href="mailto:amministrazione@pienissimo.com"
+              >amministrazione@pienissimo.com</a
+            >
+            o, a mezzo raccomandata r.r., al seguente indirizzo: Strada dei
+            Censiti, 1/B – 47891 Falciano (RSM) o, al suo rappresentante
+            nell’Unione Europea, Dott. Nathaniel Casadei (c.f. CSDNHN82S13H294O)
+            reperibile, al seguente indirizzo di posta elettronica
+            <a class="blue-text" href="mailto:pienissimo@novapoesis.it"
+              >pienissimo@novapoesis.it</a
+            >
+            o, a mezzo raccomandata r.r., al seguente indirizzo: Via Pomposa n.
+            43/I, 47924 Rimini (RN).
+          </p>
+          <p>
+            <strong>IL Titolare del trattamento</strong>
+            <strong>PIENISSIMO s.r.l.</strong>
+          </p>
+          <h3><strong>Acquisizione del consenso del cliente</strong></h3>
+          <p>
+            Io sottoscritto/a …………………………………………………….…………., letta attentamente
+            l’informativa che precede, fornita ai sensi degli artt. 13 e 14 del
+            Regolamento UE n. 679/2016 e degli artt. 13 e 14 della legge
+            sammarinese n. 171/2018, presto il consenso al trattamento dei miei
+            dati personali per le finalità di cui al punto 4, lettere e) f) e g)
+            ovvero:
+          </p>
+          <div>
+            <p>
+              Per finalità commerciali dirette ovvero per ricevere informazioni
+              e materiale commerciale e pubblicitario (anche mediante tecniche
+              di comunicazione a distanza) in odine a nuovi corsi, eventi ed
+              iniziative organizzati da PIENISSIMO s.r.l.
+            </p>
+            <table class="choice-table">
+              <tr>
+                <td>
+                  <span class="checkbox">&#160;</span>
+                  <strong>Autorizzo</strong>
+                </td>
+                <td><span class="checkbox">&#160;</span> Non autorizzo</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <p>
+              per finalità di profilazione ovvero per la creazione di profili
+              (individuali e/o aggregati) sulla base del mio profilo e delle mie
+              preferenze e per la trasmissione di comunicazioni personalizzate.
+            </p>
+            <table class="choice-table">
+              <tr>
+                <td>
+                  <span class="checkbox">&#160;</span>
+                  <strong>Autorizzo</strong>
+                </td>
+                <td><span class="checkbox">&#160;</span> Non autorizzo</td>
+              </tr>
+            </table>
+            <table class="signature-table">
+              <tr>
+                <td>
+                  <div class="signature-line">&#160;</div>
+                  <div class="signature-label">LUOGO E DATA</div>
+                </td>
+                <td class="signature-gap"></td>
+                <td>
+                  <div class="signature-line">&#160;</div>
+                  <div class="signature-label">FIRMA</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <table class="doc-footer">
+          <tr>
+            <td class="footer-version">Versione 05.21</td>
+            <td class="footer-name">- Allegato A -</td>
+            <td class="footer-page">2</td>
+          </tr>
+        </table>
+      </div>
+      <div class="document-page legal" id="photo-release">
+        <table class="doc-header">
+          <tr>
+            <td>
+              <apex:image
+                value="{!URLFOR($Resource.QuotePdfLogo)}"
+                styleClass="doc-logo"
+              />
+            </td>
+            <td class="doc-header-title">LIBERATORIA PER FOTO/VIDEO</td>
+          </tr>
+        </table>
+        <div class="page-content legal-content">
+          <h2>
+            <strong
+              >LIBERATORIA/AUTORIZZAZIONE PER LA PUBBLICAZIONE DI FOTO E
+              VIDEO</strong
+            >
+          </h2>
+          <div class="participant-form">
+            <table class="form-table">
+              <tr>
+                <td class="form-label">Il sottoscritto</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">nato a</td>
+                <td class="form-line">&#160;</td>
+                <td class="form-gap"></td>
+                <td class="form-label">, il</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">residente a</td>
+                <td class="form-line">&#160;</td>
+                <td class="form-gap"></td>
+                <td class="form-label">in via</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">telefono</td>
+                <td class="form-line">&#160;</td>
+                <td class="form-gap"></td>
+                <td class="form-label">e-mail</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">nome attività</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+            <table class="form-table">
+              <tr>
+                <td class="form-label">ragione sociale</td>
+                <td class="form-line">&#160;</td>
+              </tr>
+            </table>
+          </div>
+          <p>
+            <strong
+              >con riferimento alle immagini (foto e video) scattate e/o riprese
+              in occasione dell’evento Pienissimo</strong
+            >
+          </p>
+          <h3 class="center"><strong>PRENDE ATTO</strong></h3>
+          <p>
+            Il Partecipante prende atto che, durante lo svolgimento dei corsi,
+            potranno essere effettuate riprese audio e video e che potrebbe,
+            pertanto, essere ripreso sia occasionalmente (di seguito le
+            “Immagini Occasionali”) sia con intenzione per la realizzazione di
+            testimonianze (di seguito le “Testimonianze”). Il Partecipante
+            acconsente, sin da ora, che, nell’ambito delle giornate formative,
+            l’Organizzazione avrà la facoltà di effettuare fotografie e/o
+            riprese riguardanti la propria persona e/o la propria storia
+            personale (le “Immagini Non Occasionali” che, congiuntamente alle
+            Immagini Occasionali, sono le “Immagini”). Il Partecipante autorizza
+            la Società a raccontare e pubblicare le storie e i casi di successo
+            facenti parte del bagaglio esperienziale del Partecipante medesimo.
+            Il Partecipante acconsente e autorizza, sin da ora, la Società e/o i
+            suoi successori e/o aventi causa, o i terzi autorizzati dalla
+            Società, a riprodurre, pubblicare, divulgare, comunicare al
+            pubblico, condividere e utilizzare a scopo promozionale e
+            pubblicitario nonché per uso divulgativo, le Immagini in ogni canale
+            televisivo, radiofonico, on-line e in ogni supporto digitale e/o
+            cartaceo, concedendo alla Società, e/o ai suoi successori e/o aventi
+            causa i diritti sopra descritti sulle, e in relazione alle, Immagini
+            per tutto il mondo e a tempo indeterminato; restando inteso che la
+            Società non sarà in alcun modo obbligata a riprodurre, diffondere
+            e/o sfruttare le Immagini. La Società avrà il diritto di trasferire
+            la presente liberatoria e i diritti con la medesima ceduti a
+            qualsiasi terzo per le medesime finalità di utilizzo. In nessun caso
+            il Partecipante potrà rivalersi sulla Società e/o sui terzi
+            autorizzati ai sensi delle disposizioni che precedono, per il
+            risarcimento di eventuali danni morali e/o materiali causati da
+            soggetti terzi o derivati dall’utilizzo autorizzato delle Immagini.
+          </p>
+          <div>
+            <p>
+              La presente liberatoria/autorizzazione potrà essere revocata in
+              ogni tempo con comunicazione scritta da inviare via e-mail
+              all’indirizzo
+              <a class="blue-text" href="mailto:amministrazione@pienissimo.com"
+                >amministrazione@pienissimo.com</a
+              >
+            </p>
+            <table class="signature-table">
+              <tr>
+                <td>
+                  <div class="signature-line">&#160;</div>
+                  <div class="signature-label">LUOGO E DATA</div>
+                </td>
+                <td class="signature-gap"></td>
+                <td>
+                  <div class="signature-line">&#160;</div>
+                  <div class="signature-label">FIRMA</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <h3><strong>Informativa per la pubblicazione dei dati</strong></h3>
+          <p>
+            Informativa ai sensi dell’art. 13 del Reg. Ue n. 679/2016 (GDPR) e
+            dell’art. 13 della legge sammarinese n. 171/2018 in materia di
+            protezione dei dati personali. Si informa che i dati personali
+            conferiti con la presente liberatoria saranno trattati con modalità
+            cartacee e telematiche nel rispetto della vigente normativa e dei
+            principi di correttezza, liceità, trasparenza e riservatezza; in
+            tale ottica i dati forniti, ivi incluso il ritratto contenuto nelle
+            fotografie suindicate, verranno utilizzati per le finalità
+            strettamente connesse e strumentali alle attività come indicate
+            nella su estesa liberatoria. Il conferimento del consenso al
+            trattamento dei dati personali è facoltativo. In qualsiasi momento è
+            possibile esercitare tutti i diritti indicati dalle normative
+            soprarichiamate in corrispondenza degli artt. 15 e ss., in
+            particolare la cancellazione, la rettifica o l’integrazione dei
+            dati. Tali diritti potranno essere esercitati inviando comunicazione
+            scritta.
+          </p>
+          <div>
+            <table class="choice-table">
+              <tr>
+                <td>
+                  <span class="checkbox">&#160;</span>
+                  <strong>Presto il consenso</strong>
+                </td>
+                <td><span class="checkbox">&#160;</span> Nego il consenso</td>
+              </tr>
+            </table>
+            <table class="signature-table">
+              <tr>
+                <td>
+                  <div class="signature-line">&#160;</div>
+                  <div class="signature-label">LUOGO E DATA</div>
+                </td>
+                <td class="signature-gap"></td>
+                <td>
+                  <div class="signature-line">&#160;</div>
+                  <div class="signature-label">FIRMA</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <table class="doc-footer">
+          <tr>
+            <td class="footer-version">Versione 09.25</td>
+            <td class="footer-name">- Liberatoria per Foto/Video -</td>
+            <td class="footer-page">1</td>
+          </tr>
+        </table>
+      </div>
+      <div class="document-page legal" id="conditions-1">
+        <table class="doc-header">
+          <tr>
+            <td>
+              <apex:image
+                value="{!URLFOR($Resource.QuotePdfLogo)}"
+                styleClass="doc-logo"
+              />
+            </td>
+            <td class="doc-header-title">CONDIZIONI GENERALI</td>
+          </tr>
+        </table>
+        <div class="page-content legal-content">
+          <h2>
+            <strong
+              >CONDIZIONI GENERALI CHE REGOLANO L’ISCRIZIONE E LA
+              PARTECIPAZIONE</strong
+            >
+            <strong
+              >AI SINGOLI CORSI/EVENTI ORGANIZZATI DA PIENISSIMO S.R.L.</strong
+            >
+          </h2>
+          <h3><strong>1. Oggetto della prestazione</strong></h3>
+          <p>
+            Il presente contratto disciplina la partecipazione dell’Azienda
+            Cliente al corso/evento organizzato da Pienissimo S.r.l. (in seguito
+            anche denominata “la Società”), per come identificato e descritto
+            nel frontespizio del presente documento.
+          </p>
+          <p>
+            La partecipazione è riservata esclusivamente a titolari, esercenti e
+            addetti del settore ristorazione, inclusi dipendenti, nonché a
+            operatori di banqueting, catering e servizi di somministrazione
+            alimenti e bevande. È espressamente esclusa la partecipazione di
+            soggetti operanti, direttamente o indirettamente, nell’ambito
+            marketing, comunicazione, web marketing, consulenza per la
+            ristorazione o formazione nel settore, anche per via indiretta.
+          </p>
+          <p>
+            In caso di violazione di tali restrizioni, il Cliente sarà tenuto al
+            pagamento di una penale ex art. 1382 c.c. pari a € 100.000,00, oltre
+            al risarcimento di eventuali ulteriori danni.
+          </p>
+          <h3>
+            <strong>2. Quota di partecipazione e modalità di pagamento</strong>
+          </h3>
+          <p>
+            La presente clausola non si applica agli eventi gratuiti quali ad
+            esempio Food Marketing Festival, Tour, Sold Out ed eventuali altri
+            eventi pubblicizzati come gratuiti.
+          </p>
+          <p>
+            La quota di partecipazione è indicata nella scheda d’ordine e dovrà
+            essere corrisposta in un’unica soluzione al momento della
+            sottoscrizione del contratto, salvo diversa pattuizione scritta.
+            L’obbligazione di pagamento sorge al momento della sottoscrizione
+            del contratto ed è anticipata. In caso di mancato pagamento nei
+            termini, Pienissimo S.r.l. si riserva il diritto di sospendere
+            l’erogazione del corso e di risolvere il contratto mediante semplice
+            comunicazione, con diritto ad ottenere quanto dovuto.
+          </p>
+          <p>
+            Il mancato pagamento anche di una sola rata (ove concordato il
+            pagamento rateale) comporta la decadenza dal beneficio del termine e
+            la richiesta dell’intero importo dovuto. In caso di ritardo o
+            inadempimento, saranno dovuti gli interessi moratori ex D.Lgs.
+            231/2002, oltre al rimborso dei costi sostenuti per il recupero del
+            credito.
+          </p>
+          <p>
+            La mancata partecipazione al corso, per qualsiasi causa non
+            imputabile a Pienissimo S.r.l., non dà diritto a rimborsi o
+            riduzioni del prezzo. È facoltà della società, ove previsto,
+            permettere il recupero della partecipazione nell’edizione successiva
+            del medesimo corso.
+          </p>
+          <h3><strong>3. Promozioni ed esclusioni</strong></h3>
+          <p>
+            Eventuali promozioni, sconti o dilazioni sono condizionate al
+            rispetto delle scadenze e delle condizioni contrattuali. Sono
+            esclusi dalla quota di partecipazione tutti i servizi non
+            espressamente inclusi nell’offerta commerciale sottoscritta.
+          </p>
+          <h3><strong>4. Rinvio, annullamento e forza maggiore</strong></h3>
+          <p>
+            Pienissimo S.r.l. si riserva il diritto di modificare modalità,
+            data, sede o di annullare il corso per cause di forza maggiore o
+            motivi organizzativi.
+          </p>
+          <p>
+            In caso di annullamento definitivo, le somme versate verranno
+            convertite in credito da utilizzare per altro corso/evento
+            organizzato dalla società, senza ulteriori responsabilità di
+            Pienissimo S.r.l..
+          </p>
+          <p>
+            Nessun ulteriore risarcimento o indennizzo potrà essere richiesto
+            dal Cliente.
+          </p>
+          <h3>
+            <strong
+              >5. Patto di riservatezza e proprietà intellettuale - regole di
+              partecipazione e comportamento</strong
+            >
+          </h3>
+          <p>
+            Il Cliente si impegna a non effettuare registrazioni audio/video del
+            corso, a non riprodurre, divulgare o utilizzare per fini diversi
+            dalla propria formazione interna i materiali ricevuti e i contenuti
+            del corso, salvo autorizzazione scritta di Pienissimo S.r.l.. È
+            vietata qualsiasi diffusione, anche a titolo gratuito, dei contenuti
+            del corso a terzi.
+          </p>
+          <p>
+            Eventuali violazioni comportano la facoltà per Pienissimo S.r.l. di
+            agire a tutela dei propri diritti, compreso il diritto alla
+            distruzione delle copie illecite, l’allontanamento dall’evento e la
+            richiesta di risarcimento danni.
+          </p>
+          <p>
+            La società si riserva la facoltà di escludere in qualsiasi momento
+            dal corso, senza diritto a rimborso, il partecipante che tenga
+            comportamenti contrari alle regole di buona condotta, al decoro o
+            che arrechino pregiudizio agli altri partecipanti o alla società
+            stessa, o che si pongano in palese violazione delle norme di
+            condotta sopra esplicitate.
+          </p>
+          <h3><strong>6. Patto di non concorrenza</strong></h3>
+          <p>
+            Le Parti convengono che, per un periodo di 5 anni dalla data del
+            corso, il Partecipante si impegna a non svolgere, direttamente o
+            indirettamente, attività di formazione (ad esempio organizzare e
+            gestire seminari o corsi, anche via web o formati digitali) in
+            materia di marketing e comunicazione per la ristorazione nell’ambito
+            dell’intero territorio nazionale, salvo espressa autorizzazione
+            scritta di Pienissimo S.r.l.. La presente clausola è stata oggetto
+            di specifica trattativa tra le Parti, come da dichiarazione
+            allegata. In caso di violazione, il Partecipante sarà tenuto a
+            corrispondere una penale di euro 100.000,00, salvo il risarcimento
+            del maggior danno dimostrato.&quot;
+          </p>
+          <p>
+            La presente clausola di non concorrenza è pattuita tra le Parti in
+            quanto, durante la partecipazione ai corsi e nell’ambito del
+            rapporto contrattuale, il Cliente entra in possesso di know-how,
+            informazioni riservate, strategie commerciali, materiali didattici e
+            tecniche operative di Pienissimo S.r.l., specificamente sviluppate e
+            dotate di elevato valore competitivo nel settore della ristorazione
+            e del marketing per la ristorazione. Al fine di tutelare
+            l’investimento formativo, la reputazione e il vantaggio competitivo
+            di Pienissimo S.r.l. e di evitare che tali conoscenze vengano
+            impiegate a detrimento dei legittimi interessi della Società, le
+            Parti riconoscono la necessità di un vincolo di non concorrenza.
+          </p>
+          <p>
+            La durata di 5 (cinque) anni è ritenuta congrua e proporzionata
+            rispetto al tempo in cui le informazioni acquisite mantengono
+            rilevanza e attualità nel mercato di riferimento, anche in
+            considerazione della natura specialistica e dell’innovatività dei
+            contenuti trasmessi.
+          </p>
+          <p>
+            L’estensione territoriale al territorio nazionale si giustifica in
+            ragione dell’operatività di Pienissimo S.r.l., che svolge la propria
+            attività di formazione e consulenza su scala nazionale, nonché della
+            natura dei servizi e dei corsi, accessibili e replicabili in tutto
+            il territorio italiano, anche attraverso piattaforme digitali e
+            modalità online.
+          </p>
+          <p>
+            La presente clausola è stata oggetto di specifica trattativa tra le
+            Parti ed è ritenuta essenziale per la tutela dell’interesse
+            economico e professionale di Pienissimo S.r.l
+          </p>
+        </div>
+        <table class="doc-footer">
+          <tr>
+            <td class="footer-version">Versione 09.25</td>
+            <td class="footer-name">- Condizioni Generali -</td>
+            <td class="footer-page">1</td>
+          </tr>
+        </table>
+      </div>
+      <div class="document-page legal last" id="conditions-2">
+        <table class="doc-header">
+          <tr>
+            <td>
+              <apex:image
+                value="{!URLFOR($Resource.QuotePdfLogo)}"
+                styleClass="doc-logo"
+              />
+            </td>
+            <td class="doc-header-title">CONDIZIONI GENERALI</td>
+          </tr>
+        </table>
+        <div class="page-content legal-content">
+          <h3><strong>7. Cessione del contratto</strong></h3>
+          <p>
+            Pienissimo S.r.l. può cedere il presente contratto a terzi, previa
+            comunicazione scritta al Cliente. Non è ammessa la cessione della
+            partecipazione al corso da parte del Cliente senza consenso scritto
+            della società.
+          </p>
+          <h3><strong>8. Clausola di tolleranza</strong></h3>
+          <p>
+            L’eventuale tolleranza della società verso comportamenti
+            inadempienti del Cliente non costituisce rinuncia ai propri diritti,
+            né modifica le condizioni contrattuali.
+          </p>
+          <h3><strong>9. Clausola “solve et repete”</strong></h3>
+          <p>
+            Il Cliente è obbligato a corrispondere integralmente e
+            tempestivamente le somme dovute, anche in presenza di contestazioni.
+            Eventuali contestazioni potranno essere sollevate solo a saldo
+            avvenuto.
+          </p>
+          <h3><strong>10. Responsabilità</strong></h3>
+          <p>
+            I corsi hanno esclusiva finalità formativa. Pienissimo S.r.l. non
+            risponde per danni diretti o indiretti derivanti dall’applicazione
+            delle nozioni apprese.
+          </p>
+          <p>
+            La responsabilità della società, ove accertata, sarà limitata ai
+            casi di dolo o colpa grave, e comunque non potrà eccedere il valore
+            del presente contratto, escluso ogni altro risarcimento.
+          </p>
+          <p>
+            Il Cliente si impegna a utilizzare materiali e attrezzature con
+            diligenza e rispettare le regole impartite dalla società.
+          </p>
+          <h3><strong>11. Trattamento dei dati personali</strong></h3>
+          <p>
+            Il trattamento dei dati personali avverrà in conformità alla
+            normativa vigente, secondo informativa allegata (Allegato A).
+          </p>
+          <p>
+            Il Cliente autorizza l’utilizzo di immagini, video e testimonianze
+            raccolte durante il corso per fini promozionali, salvo diversa
+            comunicazione scritta.
+          </p>
+          <p>
+            Il Partecipante prende atto che, durante lo svolgimento dei corsi,
+            potranno essere effettuate riprese audio e video e che potrebbe,
+            pertanto, essere ripreso sia occasionalmente (di seguito le
+            “Immagini Occasionali”) sia con intenzione per la realizzazione di
+            testimonianze (di seguito le “Testimonianze”). Il Partecipante
+            acconsente, sin da ora, che, nell’ambito delle giornate formative,
+            l’Organizzazione avrà la facoltà di effettuare fotografie e/o
+            riprese riguardanti la propria persona e/o la propria storia
+            personale (le “Immagini Non Occasionali” che, congiuntamente alle
+            Immagini Occasionali, sono le “Immagini”). Il Partecipante autorizza
+            la Società a raccontare e pubblicare le storie e i casi di successo
+            facenti parte del bagaglio esperienziale del Partecipante medesimo.
+            Il Partecipante acconsente e autorizza, sin da ora, la Società e/o i
+            suoi successori e/o aventi causa, o i terzi autorizzati dalla
+            Società, a riprodurre, pubblicare, divulgare, comunicare al
+            pubblico, condividere e utilizzare a scopo promozionale e
+            pubblicitario nonché per uso divulgativo, le Immagini in ogni canale
+            televisivo, radiofonico, on-line e in ogni supporto digitale e/o
+            cartaceo, concedendo alla Società, e/o ai suoi successori e/o aventi
+            causa i diritti sopra descritti sulle, e in relazione alle, Immagini
+            per tutto il mondo e a tempo indeterminato; restando inteso che la
+            Società non sarà in alcun modo obbligata a riprodurre, diffondere
+            e/o sfruttare le Immagini. La Società avrà il diritto di trasferire
+            la presente liberatoria e i diritti con la medesima ceduti a terzo
+            per le medesime finalità di utilizzo. In nessun caso il Partecipante
+            potrà rivalersi sulla Società e/o sui terzi autorizzati ai sensi
+            delle disposizioni che precedono, per il risarcimento di eventuali
+            danni morali e/o materiali causati da soggetti terzi o derivati
+            dall’utilizzo autorizzato delle Immagini.
+          </p>
+          <h3><strong>12. Legge applicabile e foro competente</strong></h3>
+          <p>
+            Il presente contratto è regolato dalla legge italiana. Per ogni
+            controversia sarà competente in via esclusiva il Foro di Rimini.
+          </p>
+          <h3><strong>13. Clausole finali</strong></h3>
+          <p>
+            Gli allegati costituiscono parte integrante del presente contratto.
+          </p>
+          <p>
+            Eventuali modifiche dovranno essere effettuate per iscritto e
+            sottoscritte da entrambe le parti.
+          </p>
+          <p>
+            La nullità o inefficacia di singole clausole non comporta la nullità
+            dell’intero contratto.
+          </p>
+          <p>
+            Il presente contratto sostituisce ogni precedente accordo fra le
+            parti.
+          </p>
+          <table class="signature-table">
+            <tr>
+              <td>
+                <div class="signature-line">&#160;</div>
+                <div class="signature-label">LUOGO E DATA</div>
+              </td>
+              <td class="signature-gap"></td>
+              <td>
+                <div class="signature-line">&#160;</div>
+                <div class="signature-label">FIRMA</div>
+              </td>
+            </tr>
+          </table>
+          <div>
+            <p>
+              Ai sensi degli artt. 1341 e 1342 c.c. il sottoscritto dichiara di
+              aver letto ed approvato specificatamente le clausole contrattuali
+              riportate qui di seguito e in particolare gli artt.: 1.Oggetto
+              della prestazione offerta da Pienissimo 4.Rinvio e Annullamento
+              dell’Organizzazione, 5.Rinvio, Disdetta o Recesso del Cliente,
+              6.Patto di riservatezza e non concorrenza, 7.Cessione del
+              contratto, 8.Responsabilità, 10.Legge applicabile e Foro
+              competente
+            </p>
+            <table class="signature-table">
+              <tr>
+                <td>
+                  <div class="signature-line">&#160;</div>
+                  <div class="signature-label">LUOGO E DATA</div>
+                </td>
+                <td class="signature-gap"></td>
+                <td>
+                  <div class="signature-line">&#160;</div>
+                  <div class="signature-label">FIRMA</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <table class="doc-footer">
+          <tr>
+            <td class="footer-version">Versione 09.25</td>
+            <td class="footer-name">- Condizioni Generali -</td>
+            <td class="footer-page">2</td>
+          </tr>
+        </table>
+      </div>
+    </body>
+  </html>
+</apex:page>

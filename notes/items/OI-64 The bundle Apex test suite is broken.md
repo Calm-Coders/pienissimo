@@ -5,7 +5,7 @@ status: resolved
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-09-28
+updated: 2026-10-26
 blocks: [go-live]
 severity: gating
 source: meetings/open-items.md row 64
@@ -282,3 +282,87 @@ reads the standard pricebook entry, and since `7eab757` the selling price is no
 longer saved from the configurator. The whole suite was written in one pass:
 **142 tests pass in Prod, 88.8% coverage**. Details are in
 [the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+## ⚠ 2026-09-29 — a regression in the suite, recorded only
+
+The `Standart` → `Standard` record-type rename of 28/09 left
+**`TestDataFactory.cls:257`** calling `opportunity(accountId, 'Standart')`, against
+record types that no longer exist. Flagged as a risk in the 28/09 sweep; **now
+confirmed as an actual failure.** From the `JOURNAL.md` entry in `1e1ab6d` (Aurel
+Mrruku, 29/09): _"`TicketingTest`'s 4 WooCommerce tests fail in UAT on an
+Opportunity record type in `TestDataFactory.opportunity`."_
+
+So the 88.8% Prod figure below was measured **before** that rename reached the
+factory, and four tests are red in UAT today. The comment two lines down
+(`// Record types: Standart, Plus_Attivazione_Rinnovo, Recall_Tutor.`) is stale for
+the same reason.
+
+**Recorded for the test-suite task, per the standing instruction. Nothing was
+written, proposed or scaffolded here.** The fix is a one-token change in the
+factory, and it belongs to whoever is asked for the suite.
+
+## 2026-10-02 - `QuoteCommercialTest` fails in UAT
+
+Observed while deploying the payment-condition change
+([OI-160](OI-160%20Payment%20conditions%20cannot%20vary%20by%20order%20line.md)):
+**`QuoteCommercialTest` fails 15 of 19 methods in Pienissimo UAT with the code already
+in the org**, 14 on `INVALID_CROSS_REFERENCE_KEY ... [RecordTypeId]` at insert and one
+`AuraHandledException` (`plusProductCreatesOneTrancheAndLinePerDueDate`). The record-type
+id the fixtures use is not valid for the running user in UAT. `QuoteDocumentsTest` and
+`QuoteLinesAndTranchesTest` exist in source but **not in UAT**, so `QuoteTriggerHandler`
+and `QuotePdfController` show 0% coverage there under `RunSpecifiedTests`. Recorded, not
+acted on — the suite is a separate task.
+
+Same day, the fiscal-residence deploy
+([OI-173](OI-173%20San%20Marino%20fiscal%20transcoding%20table.md)) passed
+`MexalIntegrationTest` 50/50 but measured **`AccountTriggerHandler` at 49%** and
+**`MexalCustomerCreateService` at 74.6%** in UAT under `RunSpecifiedTests`; it went with
+`NoTestRun`. The new `FiscalResidenceResolver` has no dedicated test class. Recorded for
+the suite task.
+
+The Contract build (same day) adds **`PerformancePlusContractService`** with no test
+class (8.5% coverage from `MexalIntegrationTest`), and changes `QuoteTriggerHandler`
+and `OrderItemTriggerHandler`; deployed to UAT with `NoTestRun`.
+
+## 2026-10-04 - repaired and deployed to Prod
+
+51 of 174 tests failed in UAT after the 09-28 to 10-02 changes; fixed in
+`TestDataFactory`, `CrmAutomationTest`, `QuoteCommercialTest`,
+`OrderTriggerHandlerTest` and `TicketingTest` at Aurel Mrruku's request. UAT
+174/174 at 83.6%; Prod 157/157 at 83.9%, deploy `0AfSW000001Hf1N0AS`. Detail in
+[the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+## 2026-10-09 - `MexalIntegrationTest` fails 7 of 43 in UAT
+
+Observed while deploying the `cod_grp_merc` active-state change to
+[the article sync](../objects/The%20Mexal%20article%20sync%20to%20Product2.md).
+None of the failures involve the article sync:
+
+- `customerUpdateOmitsBlankOptionalMexalFields`: the San Marino e-invoicing
+  assertion fails.
+- `orderSendMapsTheMexalDocumentBack`, `orderSendOmitsBlankPaymentCode` and
+  `orderSendReadsTheNumberFromTheBody`: the fixtures lack an agent code or a
+  payment condition.
+- `paidDeadlineMarksLineTrancheTicketsAndOrderAsCollected`: expected 1, got 0.
+- `schedulerRegistersTheNightlyJob`: `Mexal Sync - Nightly` is already
+  scheduled in the org.
+- `schedulerStartsTheThreeBatches`: expected 3, got 1.
+
+The change itself went to UAT with `NoTestRun`. The new `cod_grp_merc` branch has
+no test. Recorded for the suite task, not acted on.
+
+🔴 **By the evening of 09/10 the Agente rule had spread through the suite.** In
+UAT, all **19/19 `QuoteCommercialTest`** and **10 `TicketingTest`** methods fail.
+Every one fails at setup on `Agente è obbligatorio`, except
+`wooOrderCreatesCustomerOrderAndCollectsIt`, which returns 500 instead of 200,
+most likely the same cause. Until `TestDataFactory` sets an Agente, or the rules
+are revisited, the suite cannot verify any change in UAT. **If these rules reach
+Prod, they will fail a `RunLocalTests` deploy.**
+
+## 2026-10-26 - broke again on the 21/10 bundle filter, repaired and deployed
+
+The `BundleComponent__c.Product__c` lookup filter (`b204661`, 21/10: active
+bundle-only Items only) failed every test that built a bundle from ordinary
+Items. Test products used as components are now `Solo_Bundle__c = true`, and
+the whole suite passed in Prod (168/168, 77.9%). See
+[the coverage risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stato_Pagamento__c</fullName>
+    <description
+  >Stato di pagamento della fattura calcolato dalle scadenze.</description>
+    <label>Stato Pagamento</label>
+    <formula
+  >IF(Importo_Scadenze__c = 0, &quot;Senza scadenze&quot;, IF(Importo_Residuo__c &lt;= 0, &quot;Pagata&quot;, IF(Importo_Pagato__c &gt; 0, &quot;Parzialmente pagata&quot;, &quot;Non pagata&quot;)))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <type>Text</type>
+</CustomField>

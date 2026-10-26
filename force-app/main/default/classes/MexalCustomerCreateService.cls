@@ -1,4 +1,4 @@
-public with sharing class MexalCustomerCreateService {
+public without sharing class MexalCustomerCreateService {
   private static final String AUTO_CUSTOMER_CODE = '501.AUTO';
 
   public class Result {
@@ -69,7 +69,9 @@ public with sharing class MexalCustomerCreateService {
 
     Result result = buildResult(account.Id, payload, calloutResult);
     updateAccountWithGeneratedCode(account, result);
-    syncShippingAddress(account, result);
+    MexalCustomerErrorNotificationService.sendIfNotLinked(result);
+    // Temporarily disabled: the shipping-address call must run in a separate transaction.
+    // syncShippingAddress(account, result);
     return result;
   }
 
@@ -96,7 +98,8 @@ public with sharing class MexalCustomerCreateService {
     result.message = result.success
       ? 'Modifica cliente Mexal completata.'
       : 'Modifica cliente Mexal fallita.';
-    syncShippingAddress(account, result);
+    // Temporarily disabled: Account registry updates must not recreate shipping addresses.
+    // syncShippingAddress(account, result);
     return result;
   }
 
@@ -123,6 +126,9 @@ public with sharing class MexalCustomerCreateService {
         Email__c,
         PEC__c,
         Codice_Destinatario_SDI__c,
+        Codice_Agente_Esterno__c,
+        Zona__c,
+        Categoria_Provvigioni_Cliente__c,
         Azienda_Precedente__r.Codice_Cliente_Mexal__c
       FROM Account
       WHERE Id = :accountId
@@ -140,7 +146,18 @@ public with sharing class MexalCustomerCreateService {
         ? null
         : account.Azienda_Precedente__r.Codice_Cliente_Mexal__c
     );
-    putValue(payload, 'cod_paese', account.BillingCountry);
+    // Residence and e-invoicing settings come from the Residenza_Fiscale__mdt table.
+    Residenza_Fiscale__mdt fiscalResidence = FiscalResidenceResolver.forCountry(
+      account.BillingCountry
+    );
+    // Mexal wants the two-letter code, whatever form the address search wrote.
+    putValue(
+      payload,
+      'cod_paese',
+      fiscalResidence == null || fiscalResidence.Predefinito__c
+        ? account.BillingCountry
+        : fiscalResidence.Codice_Paese__c
+    );
     putValue(payload, 'codice_fiscale', account.Codice_Fiscale__c);
     putValue(payload, 'partita_iva', account.Partita_IVA__c);
     putValue(payload, 'ragione_sociale', account.Name);
@@ -153,13 +170,39 @@ public with sharing class MexalCustomerCreateService {
     putValue(payload, 'email', account.Email__c);
     putValue(payload, 'pec', account.PEC__c);
     putValue(payload, 'codice_sdi', account.Codice_Destinatario_SDI__c);
-    putValue(payload, 'cod_agente', null);
-    putValue(payload, 'tp_nazionalita', deriveFiscalResidenceCode(account));
+    putValue(payload, 'cod_agente', account.Codice_Agente_Esterno__c);
+    putIntegerValue(payload, 'cod_zona', account.Zona__c);
+    putIntegerValue(
+      payload,
+      'cod_cat_pr',
+      account.Categoria_Provvigioni_Cliente__c
+    );
+    putValue(
+      payload,
+      'tp_nazionalita',
+      fiscalResidence?.Codice_Residenza_Fiscale__c
+    );
 
     // Settled by the customer-registry review: Pienissimo uses listino 1 and Euro only.
     payload.put('cod_listino', 1);
     payload.put('valuta', 1);
-    putValue(payload, 'gest_fatt_el', deriveElectronicInvoiceType(account));
+    putOptionalTextValue(
+      payload,
+      'gest_fatt_el',
+      fiscalResidence?.Fatturazione_Elettronica__c
+    );
+    putIntegerValue(
+      payload,
+      'serie_fatt_el',
+      fiscalResidence?.Sezionale_IVA__c == null
+        ? null
+        : String.valueOf(fiscalResidence.Sezionale_IVA__c.intValue())
+    );
+    putOptionalTextValue(
+      payload,
+      'cod_modu_allega',
+      fiscalResidence?.Allegato_PDF__c
+    );
     return payload;
   }
 
@@ -209,22 +252,6 @@ public with sharing class MexalCustomerCreateService {
     return String.isBlank(city) ? 'Sede operativa' : 'Sede operativa ' + city;
   }
 
-  private static String deriveFiscalResidenceCode(Account account) {
-    String country = normalizeCountry(account.BillingCountry);
-    if (country == 'IT' || country == 'ITALIA' || country == 'ITALY') {
-      return 'I';
-    }
-    return null;
-  }
-
-  private static String deriveElectronicInvoiceType(Account account) {
-    return deriveFiscalResidenceCode(account) == 'I' ? 'S' : null;
-  }
-
-  private static String normalizeCountry(String value) {
-    return String.isBlank(value) ? null : value.trim().toUpperCase();
-  }
-
   private static String firstNonBlank(String firstValue, String secondValue) {
     if (!String.isBlank(firstValue)) {
       return firstValue.trim();
@@ -239,6 +266,34 @@ public with sharing class MexalCustomerCreateService {
     String value
   ) {
     payload.put(fieldName, String.isBlank(value) ? '' : value.trim());
+  }
+
+  private static void putOptionalTextValue(
+    Map<String, Object> payload,
+    String fieldName,
+    String value
+  ) {
+    if (!String.isBlank(value)) {
+      payload.put(fieldName, value.trim());
+    }
+  }
+
+  private static void putIntegerValue(
+    Map<String, Object> payload,
+    String fieldName,
+    String value
+  ) {
+    if (String.isBlank(value)) {
+      return;
+    }
+
+    try {
+      payload.put(fieldName, Integer.valueOf(value.trim()));
+    } catch (Exception error) {
+      throw new MexalCustomerCreateException(
+        'Valore numerico non valido per ' + fieldName + ': ' + value
+      );
+    }
   }
 
   private static Result buildResult(
@@ -284,7 +339,8 @@ public with sharing class MexalCustomerCreateService {
 
     update new Account(
       Id = account.Id,
-      Codice_Cliente_Mexal__c = result.generatedCustomerCode
+      Codice_Cliente_Mexal__c = result.generatedCustomerCode,
+      Creato_su_Mexal__c = true
     );
     result.accountUpdated = true;
   }

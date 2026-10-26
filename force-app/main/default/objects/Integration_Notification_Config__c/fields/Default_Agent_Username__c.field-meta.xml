@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Default_Agent_Username__c</fullName>
+    <description
+  >Salesforce Username of the default agent. New WooCommerce orders without an Opportunity copy the active user's current Agente__c code. Use the WooCommerce setting record. Independent of notification Enabled. Missing user or code preserves Quote/Account inheritance.</description>
+    <externalId>false</externalId>
+    <label>Default Agent Username</label>
+    <length>80</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

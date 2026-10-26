@@ -1,7 +1,10 @@
-import { api, LightningElement } from "lwc";
+import { api, LightningElement, wire } from "lwc";
 import { NavigationMixin } from "lightning/navigation";
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import { getObjectInfo, getPicklistValues } from "lightning/uiObjectInfoApi";
+import QUOTE_OBJECT from "@salesforce/schema/Quote";
+import PAYMENT_CONDITION_FIELD from "@salesforce/schema/Quote.Condizione_di_Pagamento__c";
 import createQuote from "@salesforce/apex/OpportunityQuoteDefaultsController.createQuote";
 import getDefaults from "@salesforce/apex/OpportunityQuoteDefaultsController.getDefaults";
 
@@ -14,6 +17,15 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
   errorMessage = "";
   isLoading = true;
   isSaving = false;
+
+  @wire(getObjectInfo, { objectApiName: QUOTE_OBJECT })
+  quoteObjectInfo;
+
+  @wire(getPicklistValues, {
+    recordTypeId: "$quoteRecordTypeId",
+    fieldApiName: PAYMENT_CONDITION_FIELD
+  })
+  paymentConditionPicklist;
 
   @api
   get recordId() {
@@ -40,7 +52,8 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
         accountName: defaults?.accountName || "",
         status: defaults?.status || "",
         isPrimary: defaults?.isPrimary === true,
-        expirationDate: "",
+        expirationDate: this.getDefaultExpirationDate(),
+        paymentCondition: "",
         localeId: defaults?.localeId || null,
         billingStreet: defaults?.billingStreet || "",
         billingCity: defaults?.billingCity || "",
@@ -61,13 +74,31 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
   }
 
   get saveButtonLabel() {
-    return this.isSaving ? "Saving" : "Save";
+    return this.isSaving ? "Salvataggio..." : "Salva";
   }
 
   get isSaveDisabled() {
     return (
-      this.isLoading || this.isSaving || !this._recordId || !this.form.quoteName
+      this.isLoading ||
+      this.isSaving ||
+      !this._recordId ||
+      !this.form.quoteName ||
+      !this.form.paymentCondition
     );
+  }
+
+  get quoteRecordTypeId() {
+    return this.quoteObjectInfo?.data?.defaultRecordTypeId;
+  }
+
+  get paymentConditionOptions() {
+    return this.paymentConditionPicklist?.data?.values || [];
+  }
+
+  getDefaultExpirationDate() {
+    const date = new Date();
+    date.setDate(date.getDate() + 5);
+    return date.toISOString().slice(0, 10);
   }
 
   handleInputChange(event) {
@@ -84,7 +115,9 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
   async handleSave() {
     this.syncFormFromInputs();
     const inputs = [
-      ...this.template.querySelectorAll("lightning-input, lightning-textarea")
+      ...this.template.querySelectorAll(
+        "lightning-input, lightning-textarea, lightning-combobox"
+      )
     ];
     const isValid = inputs
       .map((input) => input.reportValidity())
@@ -147,6 +180,7 @@ export default class OpportunityNewQuoteScreen extends NavigationMixin(
       quoteName: this.form.quoteName,
       isPrimary: this.form.isPrimary === true,
       expirationDate: this.form.expirationDate || null,
+      paymentCondition: this.form.paymentCondition,
       accountName: this.form.accountName,
       localeId: this.form.localeId,
       billingStreet: this.form.billingStreet,

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pagata__c</fullName>
+    <description>Vero quando lo stato Mexal e P o E.</description>
+    <label>Pagata</label>
+    <formula
+  >OR(ISPICKVAL(Stato_Pagamento_Mexal__c, &quot;P&quot;), ISPICKVAL(Stato_Pagamento_Mexal__c, &quot;E&quot;))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <type>Checkbox</type>
+</CustomField>

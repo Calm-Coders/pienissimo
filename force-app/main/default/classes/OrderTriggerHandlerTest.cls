@@ -130,6 +130,8 @@ private class OrderTriggerHandlerTest {
       ParentId = parentCampaign.Id,
       StartDate = Date.today().addDays(-1),
       EndDate = Date.today().addDays(1),
+      Da_Data_Competenza__c = Date.today().addDays(-1),
+      A_Data_Competenza__c = Date.today().addDays(1),
       Data_Evento__c = Date.today().addDays(1),
       Data_Invio_Biglietto__c = Date.today()
     );
@@ -180,12 +182,14 @@ private class OrderTriggerHandlerTest {
       'Only the flagged event product line should generate tickets'
     );
 
+    // An order without tranche lines is paid as a whole: its tickets are
+    // available as soon as it is Incassato.
     for (Asset ticket : tickets) {
-      System.assertEquals('Ordinato', ticket.Status);
+      System.assertEquals('Disponibile', ticket.Status);
       System.assertEquals(assetTicketRecordTypeId(), ticket.RecordTypeId);
       System.assertEquals(eventProduct.Id, ticket.Product2Id);
       System.assertEquals(eventLine.Id, ticket.Order_Product__c);
-      System.assertEquals(false, ticket.Fattura_Pagata__c);
+      System.assertEquals(true, ticket.Fattura_Pagata__c);
     }
   }
 
@@ -261,6 +265,11 @@ private class OrderTriggerHandlerTest {
       'Item'
     );
     makeMapping(eventComponent, makeCampaign('Pienissimo Live Edition'));
+    // Bundle components must be active bundle-only Items (Product__c filter).
+    update new List<Product2>{
+      new Product2(Id = eventComponent.Id, Solo_Bundle__c = true),
+      new Product2(Id = nonEventComponent.Id, Solo_Bundle__c = true)
+    };
 
     insert new List<BundleComponent__c>{
       new BundleComponent__c(
@@ -323,6 +332,7 @@ private class OrderTriggerHandlerTest {
     Product2 bundle = makeProduct('Academy Bundle', true, 'Bundle');
     Product2 eventComponent = makeProduct('Academy Event', true, 'Item');
     makeMapping(eventComponent, makeCampaign('Academy Event Edition'));
+    update new Product2(Id = eventComponent.Id, Solo_Bundle__c = true);
 
     insert new BundleComponent__c(
       Bundle__c = bundle.Id,

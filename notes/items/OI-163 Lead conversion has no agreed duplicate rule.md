@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-09-22
-updated: 2026-09-24
+updated: 2026-10-19
 depends_on: [OI-149]
 blocks: [go-live]
 severity: gating
@@ -111,3 +111,112 @@ Aurel Mrruku chose merge; the conversion produced a contact, an account and a
   note's original worry — a mistyped P.IVA or ragione sociale — is unaddressed by the
   name-and-email rule.
 - ⚠ Still no register row covers Lead deduplication.
+
+## 2026-10-16 - ROMI replaces merge with create-new
+
+Aurel Mrruku explicitly changed the conversion rule: **every Lead conversion
+creates a new Contact, even if an existing Contact matches**. Account selection
+remains VAT-first. This supersedes the merge-or-create behaviour demonstrated
+to and accepted by Fabrizio Paganelli on 24 September.
+
+The source now omits `LeadConvert.ContactId` and removes the earlier
+qualification-time Contact/Account conflict guard. The stock
+`Lead.Standard_Rule_for_Leads_with_Duplicate_Contacts` is source-controlled as
+active and report-only on insert so the standard alert does not abort the
+asynchronous conversion. The current source was deployed to the partial sandbox
+on 16 October 2026 (`0AfMA00000CwEwX0AV`; the duplicate rule was unchanged in
+this final two-class deployment).
+
+## 2026-10-16 - Apex conversion behaviour restored
+
+Aurel Mrruku instructed that the trigger and queueable return to their previous
+conversion behaviour, retaining only the new Account email propagation. The
+queueable therefore again reuses an Account-scoped Contact matched by email and
+phone, and the qualification-time cross-Account guard is restored. The Contact
+and Lead duplicate rules remain report-only on insert so a reported match does
+not independently abort conversion. Deployed to the partial sandbox under
+`0AfMA00000CwGa90AF`.
+
+## 2026-10-16 - Alert behaviour restored by Aurel
+
+Aurel Mrruku re-enabled `Alert + Report` on insert and update for the three
+Lead/Contact duplicate rules in the partial sandbox. The retrieved source now
+matches the org. Exact Account-scoped Contact matches are reused by Apex, but a
+new Contact insert remains exposed to platform duplicate alerts.
+
+## 2026-10-19 - Cross-Account conflict no longer blocks conversion
+
+Aurel Mrruku ruled that VAT selects the destination Azienda even when the
+Lead's email and phone match a Contact under another Azienda. Conversion must
+create a Contact and Opportunity under the VAT-selected Azienda instead of
+raising the cross-Account conflict error.
+
+The conflict guard and its unused lookup helpers were removed from
+`LeadConversionTriggerHandler` and deployed to the Pienissimo partial sandbox
+as `0AfMA00000Cx0pt0AB`. The queueable continues to reuse an exact
+email-and-phone Contact only inside the VAT-selected Account. A fresh metadata
+retrieve confirmed that both active Contact duplicate rules are `Allow` +
+`Report`, not blocking alerts; this supersedes the 16 October alert-state
+description above.
+
+
+## 🟢 2026-10-19 — the contradiction with OI-100 is closed, by the author, and it is now in `DevMain`
+
+**The 16/10 sweep reported that this note and
+[OI-100](OI-100%20Same%20lead%20email%20with%20different%20VAT%20during%20conversion.md)
+ended in contradictory states on an unmerged branch, and deliberately did not
+edit either. Both conditions have changed: the branch merged, and Rexhina Hysi
+resolved the contradiction herself before it did.**
+
+🟢 **The resolution is explicit in both notes.** The `2026-10-19` section above
+closes with _"a fresh metadata retrieve confirmed that both active Contact
+duplicate rules are `Allow` + `Report`, not blocking alerts; this supersedes the
+16 October alert-state description above"_, and OI-100's matching section says
+_"this later org inspection supersedes the final 16 October paragraph above that
+described those rules as alerting"_. **Later evidence wins and both notes say
+which paragraph it beats** — so the record is now consistent without this sweep
+touching the authored text.
+
+🟢 **And the committed metadata agrees.** Verified on `origin/DevMain` tonight,
+all three rules:
+
+| Rule | `actionOnInsert` | `operationsOnInsert` | `isActive` |
+| --- | --- | --- | --- |
+| `Contact.Standard_Contact_Duplicate_Rule` | `Allow` | `Report` | `true` |
+| `Contact.Standard_Rule_for_Contacts_with_Duplicate_Leads` | `Allow` | `Report` | `true` |
+| `Lead.Standard_Rule_for_Leads_with_Duplicate_Contacts` | `Allow` | `Report` | `true` |
+
+**So the state is report-only, in the notes, in the source and in the sandbox
+retrieve — three ways.** The 16/10 report that a human had to choose between two
+states is withdrawn: there is one state and it is this one.
+
+## 🟢 The gating work merged
+
+**PR `#104` merged at 12:52 CEST** (`926195c`), bringing `Devmain_LeadFix` into
+`DevMain` with the two duplicate rules, the two notes and the conversion Apex.
+Inside it, `64a51b2` (11:20 CEST) **removes 154 lines from
+`LeadConversionTriggerHandler.cls`** — the qualification-time cross-Account
+conflict guard and its unused lookup helpers — under Aurel Mrruku's 19/10 ruling
+that **VAT selects the destination Azienda even when email and phone match a
+Contact under a different one.** Deployed to the partial sandbox as
+`0AfMA00000Cx0pt0AB`.
+
+🟢 **This row has been `gating` since September and a blocked Lead conversion is a
+go-live path. It is now in the integration branch**, which is the first time any
+of it has been.
+
+## 🔴 What remains open
+
+- 🔴 **Still no register row covers Lead deduplication.** Four rulings have now
+  been made by one person in four days (16/10 ×3, 19/10 ×1), each superseding the
+  last, and **none of them is in `requirements/pienissimo-requirements.yaml` or
+  in either prose document.** The behaviour the client accepted on 24 September —
+  merge-or-create — was reversed, restored and reversed again without the client
+  being told.
+- 🔴 **No test covers any of it.** `#104` ships Apex changes with no test class,
+  per the standing instruction that none is written here; recorded as an absence.
+- ⚠ **P.IVA is still not part of the match**, as this note has said since
+  September.
+- ⚠ **Four reversals in four days is itself the finding.** A human should decide
+  whether the current rule is final, because the next sweep cannot tell a
+  settled design from the fifth iteration.

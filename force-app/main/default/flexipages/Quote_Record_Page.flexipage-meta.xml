@@ -7,6 +7,28 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
+                            <value>Quote.Scegli_Locale</value>
+                            <visibilityRule>
+                                <booleanFilter>1 OR 2 OR 3</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Bozza</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>In Trattativa</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue
+                  >In Attesa Accettazione</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Quote.Crea_Tranche</value>
                             <visibilityRule>
                                 <booleanFilter>1 AND 2</booleanFilter>
@@ -43,7 +65,7 @@
                                     <leftValue
                   >{!Record.Opportunity.RecordType.DeveloperName}</leftValue>
                                     <operator>CONTAINS</operator>
-                                    <rightValue>Standart</rightValue>
+                                    <rightValue>Vendita_Standard</rightValue>
                                 </criteria>
                                 <criteria>
                                     <leftValue
@@ -67,7 +89,7 @@
                                     <leftValue
                   >{!Record.Opportunity.RecordType.DeveloperName}</leftValue>
                                     <operator>CONTAINS</operator>
-                                    <rightValue>Standart</rightValue>
+                                    <rightValue>Vendita_Standard</rightValue>
                                 </criteria>
                                 <criteria>
                                     <leftValue
@@ -118,7 +140,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>numVisibleActions</name>
-                    <value>3</value>
+                    <value>4</value>
                 </componentInstanceProperties>
                 <componentName>force:highlightsPanel</componentName>
                 <identifier>force_highlightsPanel</identifier>
@@ -318,10 +340,30 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Agente__c</fieldItem>
                 <identifier>RecordAgente_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.GrandTotal</fieldItem>
+                <identifier>RecordGrandTotalField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Locale__c</fieldItem>
+                <identifier>RecordLocale_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-6d6aaa8b-5302-43b5-9e9b-6ba7fe6709c8</name>
@@ -362,10 +404,10 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Status</fieldItem>
-                <identifier>RecordStatusField</identifier>
+                <fieldItem>Record.Condizione_di_Pagamento__c</fieldItem>
+                <identifier>RecordCondizione_di_Pagamento_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -374,8 +416,30 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Description</fieldItem>
-                <identifier>RecordDescriptionField</identifier>
+                <fieldItem
+        >Record.Descrizione_Condizione_di_Pagamento__c</fieldItem>
+                <identifier
+        >RecordDescrizione_Condizione_di_Pagamento_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Tipologia_Attivita_Globale__c</fieldItem>
+                <identifier>RecordTipologia_Attivita_Globale_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Codice_Agente_Esterno__c</fieldItem>
+                <identifier>RecordCodice_Agente_Esterno_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-3a12ada5-abc0-4af4-8c20-e7e40460efdd</name>
@@ -403,98 +467,6 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-50eeb92d-1765-4d60-a528-3c63bfecfb27</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Subtotal</fieldItem>
-                <identifier>RecordSubtotalField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Discount</fieldItem>
-                <identifier>RecordDiscountField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.TotalPrice</fieldItem>
-                <identifier>RecordTotalPriceField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-c8e148a8-2f39-4b76-aa64-ed6f30521dc1</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Tax</fieldItem>
-                <identifier>RecordTaxField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ShippingHandling</fieldItem>
-                <identifier>RecordShippingHandlingField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.GrandTotal</fieldItem>
-                <identifier>RecordGrandTotalField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-0680cdfa-cfa6-48d9-adbe-1fea72a4da77</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-c8e148a8-2f39-4b76-aa64-ed6f30521dc1</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column3</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-0680cdfa-cfa6-48d9-adbe-1fea72a4da77</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column4</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-aaa00b51-f7ea-4d61-a790-efdacd90c243</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -710,24 +682,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-aaa00b51-f7ea-4d61-a790-efdacd90c243</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>@@@SFDCTotalsSFDC@@@</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection2</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>

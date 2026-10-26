@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Scadenze_a_scadere</fullName>
+    <columns>NAME</columns>
+    <columns>Fattura__c</columns>
+    <columns>Riferimento_Ordine_Mexal__c</columns>
+    <columns>Numero_Rata__c</columns>
+    <columns>Data_Scadenza__c</columns>
+    <columns>Importo__c</columns>
+    <columns>Stato_Pagamento_Mexal__c</columns>
+    <columns>Stato_Scadenza__c</columns>
+    <columns>Giorni_Ritardo__c</columns>
+    <columns>Tranche__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Stato_Scadenza__c</field>
+        <operation>equals</operation>
+        <value>A scadere</value>
+    </filters>
+    <label>A scadere</label>
+</ListView>

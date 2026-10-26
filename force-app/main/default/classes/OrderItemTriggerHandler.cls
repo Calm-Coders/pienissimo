@@ -1,14 +1,22 @@
-public with sharing class OrderItemTriggerHandler {
+public without sharing class OrderItemTriggerHandler {
   private static final String PAYMENT_STATUS_PAID = 'Paid';
   private static final String TRANCHE_STATUS_OPEN = 'Aperta';
   private static final String TRANCHE_STATUS_PARTIAL = 'Parzialmente Pagata';
   private static final String TRANCHE_STATUS_PAID = 'Pagata';
   private static final String TICKET_RECORD_TYPE_DEVELOPER_NAME = 'Ticket';
+  private static final String TICKET_STATUS_ORDERED = 'Ordinato';
   private static final String TICKET_STATUS_AVAILABLE = 'Disponibile';
   private static final String ORDER_STATUS_COLLECTED = 'Incassato';
 
   public static void afterInsert(List<OrderItem> newLines) {
     OrderTriggerHandler.createTicketsForOrderLines(newLines);
+    Set<Id> orderIds = new Set<Id>();
+    for (OrderItem line : newLines) {
+      if (line.Mexal_Payment_Status__c == PAYMENT_STATUS_PAID) {
+        orderIds.add(line.OrderId);
+      }
+    }
+    markOrdersCollectedWithoutTranches(orderIds);
   }
 
   public static void afterUpdate(
@@ -16,6 +24,8 @@ public with sharing class OrderItemTriggerHandler {
     Map<Id, OrderItem> oldLineMap
   ) {
     Set<Id> trancheIds = new Set<Id>();
+    Set<Id> contractOrderIds = new Set<Id>();
+    Set<Id> paymentOrderIds = new Set<Id>();
 
     for (OrderItem line : newLines) {
       OrderItem oldLine = oldLineMap == null ? null : oldLineMap.get(line.Id);
@@ -24,8 +34,25 @@ public with sharing class OrderItemTriggerHandler {
       }
 
       if (
+        line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c ||
+        line.TotalPrice != oldLine.TotalPrice ||
+        line.Data_Scadenza__c != oldLine.Data_Scadenza__c
+      ) {
+        contractOrderIds.add(line.OrderId);
+      }
+
+      if (
         line.Tranche__c != oldLine.Tranche__c ||
         line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c
+      ) {
+        paymentOrderIds.add(line.OrderId);
+      }
+
+      if (
+        line.Tranche__c != oldLine.Tranche__c ||
+        line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c ||
+        line.Fattura__c != oldLine.Fattura__c ||
+        line.Scadenza_Fattura__c != oldLine.Scadenza_Fattura__c
       ) {
         if (line.Tranche__c != null) {
           trancheIds.add(line.Tranche__c);
@@ -37,6 +64,49 @@ public with sharing class OrderItemTriggerHandler {
     }
 
     recalculateTranches(trancheIds);
+    markOrdersCollectedWithoutTranches(paymentOrderIds);
+    PerformancePlusContractService.refreshAmounts(contractOrderIds);
+  }
+
+  // Without tranches, collection requires every line on the order to be paid.
+  private static void markOrdersCollectedWithoutTranches(Set<Id> orderIds) {
+    if (orderIds == null || orderIds.isEmpty()) {
+      return;
+    }
+
+    Set<Id> ordersWithLines = new Set<Id>();
+    Set<Id> blockedOrderIds = new Set<Id>();
+    for (OrderItem line : [
+      SELECT OrderId, Tranche__c, Mexal_Payment_Status__c
+      FROM OrderItem
+      WHERE OrderId IN :orderIds
+    ]) {
+      ordersWithLines.add(line.OrderId);
+      if (
+        line.Tranche__c != null ||
+        line.Mexal_Payment_Status__c != PAYMENT_STATUS_PAID
+      ) {
+        blockedOrderIds.add(line.OrderId);
+      }
+    }
+    ordersWithLines.removeAll(blockedOrderIds);
+    if (ordersWithLines.isEmpty()) {
+      return;
+    }
+
+    List<Order> orderUpdates = new List<Order>();
+    for (Order orderRecord : [
+      SELECT Id
+      FROM Order
+      WHERE Id IN :ordersWithLines AND Status != :ORDER_STATUS_COLLECTED
+    ]) {
+      orderUpdates.add(
+        new Order(Id = orderRecord.Id, Status = ORDER_STATUS_COLLECTED)
+      );
+    }
+    if (!orderUpdates.isEmpty()) {
+      update orderUpdates;
+    }
   }
 
   private static void recalculateTranches(Set<Id> trancheIds) {
@@ -50,7 +120,13 @@ public with sharing class OrderItemTriggerHandler {
     }
 
     for (OrderItem line : [
-      SELECT Id, Tranche__c, Mexal_Payment_Status__c
+      SELECT
+        Id,
+        Tranche__c,
+        Mexal_Payment_Status__c,
+        Data_Scadenza__c,
+        Fattura__c,
+        Scadenza_Fattura__r.Data_Scadenza__c
       FROM OrderItem
       WHERE Tranche__c IN :trancheIds
     ]) {
@@ -62,6 +138,25 @@ public with sharing class OrderItemTriggerHandler {
       rollup.totalLines++;
       if (line.Mexal_Payment_Status__c == PAYMENT_STATUS_PAID) {
         rollup.paidLines++;
+        continue;
+      }
+
+      // An open line is either still to invoice, or invoiced with a due date:
+      // the Mexal rate's date, else the line's own.
+      if (line.Fattura__c == null) {
+        rollup.linesToInvoice++;
+        continue;
+      }
+      Date dueDate = line.Scadenza_Fattura__r != null &&
+        line.Scadenza_Fattura__r.Data_Scadenza__c != null
+        ? line.Scadenza_Fattura__r.Data_Scadenza__c
+        : line.Data_Scadenza__c;
+      if (
+        dueDate != null &&
+        (rollup.firstOpenDueDate == null ||
+        dueDate < rollup.firstOpenDueDate)
+      ) {
+        rollup.firstOpenDueDate = dueDate;
       }
     }
 
@@ -76,7 +171,9 @@ public with sharing class OrderItemTriggerHandler {
         new Tranche__c(
           Id = trancheId,
           Completamente_Pagata__c = rollup.isFullyPaid(),
-          Stato__c = rollup.status()
+          Stato__c = rollup.status(),
+          Prima_Scadenza_Aperta__c = rollup.firstOpenDueDate,
+          Righe_Da_Fatturare__c = rollup.linesToInvoice
         )
       );
     }
@@ -166,7 +263,7 @@ public with sharing class OrderItemTriggerHandler {
       WHERE
         Order_Product__c IN :paidOrderItemIds
         AND RecordType.DeveloperName = :TICKET_RECORD_TYPE_DEVELOPER_NAME
-        AND (Status != :TICKET_STATUS_AVAILABLE
+        AND (Status = :TICKET_STATUS_ORDERED
         OR Fattura_Pagata__c = FALSE)
     ]) {
       ticketUpdates.add(
@@ -186,6 +283,8 @@ public with sharing class OrderItemTriggerHandler {
   private class TrancheRollup {
     Integer totalLines = 0;
     Integer paidLines = 0;
+    Integer linesToInvoice = 0;
+    Date firstOpenDueDate;
 
     Boolean isFullyPaid() {
       return totalLines > 0 && paidLines == totalLines;

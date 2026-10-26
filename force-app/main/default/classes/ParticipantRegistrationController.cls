@@ -1,20 +1,12 @@
 public without sharing class ParticipantRegistrationController {
   private static final String COMPLETED_STATE = 'COMPLETED';
   private static final String READY_STATE = 'READY';
-  private static final String ORDERED_STATUS = 'Ordinato';
+  private static final String AVAILABLE_STATUS = 'Disponibile';
   private static final String ASSIGNED_STATUS = 'Assegnato';
   private static final String WAIVED_STATUS = 'Rinuncia';
 
-  private static final Set<String> VISIBLE_STATUSES = new Set<String>{
-    ORDERED_STATUS,
-    'Disponibile',
-    'Assegnato',
-    WAIVED_STATUS
-  };
   private static final Set<String> PARTICIPANT_EDITABLE_STATUSES = new Set<String>{
-    'Ordinato',
-    'Disponibile',
-    'Assegnato'
+    AVAILABLE_STATUS
   };
 
   public class TicketRow {
@@ -56,6 +48,10 @@ public without sharing class ParticipantRegistrationController {
     @AuraEnabled
     public String accountName { get; set; }
     @AuraEnabled
+    public String orderId { get; set; }
+    @AuraEnabled
+    public String orderNumber { get; set; }
+    @AuraEnabled
     public String campaignId { get; set; }
     @AuraEnabled
     public String campaignName { get; set; }
@@ -65,9 +61,30 @@ public without sharing class ParticipantRegistrationController {
     public Date eventEndDate { get; set; }
     @AuraEnabled
     public List<TicketRow> tickets { get; set; }
+    @AuraEnabled
+    public List<ParticipationGroup> groups { get; set; }
 
     public PageResponse() {
       tickets = new List<TicketRow>();
+      groups = new List<ParticipationGroup>();
+    }
+  }
+
+  public class ParticipationGroup {
+    @AuraEnabled
+    public String groupId { get; set; }
+    @AuraEnabled
+    public String campaignName { get; set; }
+    @AuraEnabled
+    public Date eventStartDate { get; set; }
+    @AuraEnabled
+    public Boolean canRinuncia { get; set; }
+    @AuraEnabled
+    public List<TicketRow> tickets { get; set; }
+
+    public ParticipationGroup() {
+      tickets = new List<TicketRow>();
+      canRinuncia = true;
     }
   }
 
@@ -102,7 +119,12 @@ public without sharing class ParticipantRegistrationController {
   private class AccessContext {
     public Event_Invitation__c invitation;
     public Account account;
-    public Campaign campaign;
+    public Order orderRecord;
+  }
+
+  private class ContactResolution {
+    public Map<String, Contact> contactByPhone = new Map<String, Contact>();
+    public Map<String, Contact> contactByEmail = new Map<String, Contact>();
   }
 
   private class RequestException extends Exception {
@@ -189,45 +211,67 @@ public without sharing class ParticipantRegistrationController {
 
   @AuraEnabled
   public static PageResponse markTicketRinuncia(String token, String assetId) {
+    return markParticipationGroupRinuncia(token, assetId);
+  }
+
+  @AuraEnabled
+  public static PageResponse markParticipationGroupRinuncia(
+    String token,
+    String groupAssetId
+  ) {
     Savepoint savepoint = Database.setSavepoint();
 
     try {
       AccessContext access = resolveAccess(token);
-      Id parsedAssetId = parseAssetId(assetId);
+      Id parsedAssetId = parseAssetId(groupAssetId);
       if (parsedAssetId == null) {
         throw staleTickets();
       }
 
-      List<Asset> invitationTickets = queryInvitationAssets(
-        access.account.Id,
-        access.campaign.Id,
-        true,
-        false
+      List<Asset> orderTickets = queryOrderAssets(
+        access.orderRecord.Id,
+        access.invitation.Campaign__c,
+        true
       );
-
-      if (invitationTickets.isEmpty()) {
+      Asset selectedTicket;
+      for (Asset ticket : orderTickets) {
+        if (ticket.Id == parsedAssetId) {
+          selectedTicket = ticket;
+          break;
+        }
+      }
+      if (selectedTicket == null) {
+        throw staleTickets();
+      }
+      if (selectedTicket.Status != AVAILABLE_STATUS) {
         throw staleTickets();
       }
 
-      Boolean requestedTicketBelongsToInvitation = false;
       List<Asset> ticketsToUpdate = new List<Asset>();
-      for (Asset ticket : invitationTickets) {
-        if (ticket.Id == parsedAssetId) {
-          requestedTicketBelongsToInvitation = true;
+      for (Asset ticket : orderTickets) {
+        if (ticket.Campaign__c != selectedTicket.Campaign__c) {
+          continue;
         }
-        if (ticket.Status != ORDERED_STATUS) {
-          throw staleTickets();
+        if (ticket.Status == ASSIGNED_STATUS) {
+          throw rinunciaBlockedByAssignedTicket();
         }
-        ticketsToUpdate.add(new Asset(Id = ticket.Id, Status = WAIVED_STATUS));
+        if (ticket.Status != WAIVED_STATUS) {
+          ticketsToUpdate.add(
+            new Asset(Id = ticket.Id, Status = WAIVED_STATUS)
+          );
+        }
       }
 
-      if (!requestedTicketBelongsToInvitation) {
+      if (ticketsToUpdate.isEmpty()) {
         throw staleTickets();
       }
 
       update ticketsToUpdate;
 
       PageResponse response = buildPage(access);
+      if (response.tickets.isEmpty()) {
+        response.state = COMPLETED_STATE;
+      }
       response.message = 'Rinuncia registrata.';
       return response;
     } catch (RequestException requestError) {
@@ -258,7 +302,11 @@ public without sharing class ParticipantRegistrationController {
         Campaign__r.Name,
         Campaign__r.Data_Evento__c,
         Campaign__r.StartDate,
-        Campaign__r.EndDate
+        Campaign__r.EndDate,
+        Order__c,
+        Order__r.Id,
+        Order__r.OrderNumber,
+        Order__r.AccountId
       FROM Event_Invitation__c
       WHERE Token__c = :token
       LIMIT 2
@@ -272,8 +320,9 @@ public without sharing class ParticipantRegistrationController {
     if (
       invitation.Account__c == null ||
       invitation.Account__r == null ||
-      invitation.Campaign__c == null ||
-      invitation.Campaign__r == null ||
+      invitation.Order__c == null ||
+      invitation.Order__r == null ||
+      invitation.Order__r.AccountId != invitation.Account__c ||
       invitation.Status__c == 'Cancelled'
     ) {
       throw invalidLink();
@@ -285,13 +334,7 @@ public without sharing class ParticipantRegistrationController {
       Id = invitation.Account__c,
       Name = invitation.Account__r.Name
     );
-    result.campaign = new Campaign(
-      Id = invitation.Campaign__c,
-      Name = invitation.Campaign__r.Name,
-      Data_Evento__c = invitation.Campaign__r.Data_Evento__c,
-      StartDate = invitation.Campaign__r.StartDate,
-      EndDate = invitation.Campaign__r.EndDate
-    );
+    result.orderRecord = invitation.Order__r;
     return result;
   }
 
@@ -299,24 +342,50 @@ public without sharing class ParticipantRegistrationController {
     PageResponse response = new PageResponse();
     response.accountId = access.account.Id;
     response.accountName = access.account.Name;
-    response.campaignId = access.campaign.Id;
-    response.campaignName = access.campaign.Name;
-    response.eventStartDate = displayEventDate(access.campaign);
-    response.eventEndDate = access.campaign.EndDate;
+    response.orderId = access.orderRecord.Id;
+    response.orderNumber = access.orderRecord.OrderNumber;
+    response.campaignId = access.invitation.Campaign__c;
+    response.campaignName = access.invitation.Campaign__r == null
+      ? null
+      : access.invitation.Campaign__r.Name;
+    response.eventStartDate = access.invitation.Campaign__r == null
+      ? null
+      : displayEventDate(access.invitation.Campaign__r);
+    response.eventEndDate = access.invitation.Campaign__r == null
+      ? null
+      : access.invitation.Campaign__r.EndDate;
 
-    List<Asset> tickets = queryVisibleAssets(
-      access.account.Id,
-      access.campaign.Id,
+    List<Asset> orderTickets = queryOrderAssets(
+      access.orderRecord.Id,
+      access.invitation.Campaign__c,
       false
     );
-    Boolean allInvitationTicketsAreOrdered = allInvitationTicketsAreOrdered(
-      access.account.Id,
-      access.campaign.Id
-    );
+    Map<Id, ParticipationGroup> groupsByCampaignId = new Map<Id, ParticipationGroup>();
+    Set<Id> campaignsWithAssignedTickets = new Set<Id>();
+    Boolean ungroupedTicketsIncludeAssigned = false;
+
+    for (Asset ticket : orderTickets) {
+      if (ticket.Status != ASSIGNED_STATUS) {
+        continue;
+      }
+      if (ticket.Campaign__c == null) {
+        ungroupedTicketsIncludeAssigned = true;
+      } else {
+        campaignsWithAssignedTickets.add(ticket.Campaign__c);
+      }
+    }
 
     Integer requiredParticipantCount = 0;
 
-    for (Asset ticket : tickets) {
+    for (Asset ticket : orderTickets) {
+      if (
+        ticket.Status != AVAILABLE_STATUS &&
+        ticket.Status != ASSIGNED_STATUS &&
+        ticket.Status != WAIVED_STATUS
+      ) {
+        continue;
+      }
+
       TicketRow row = new TicketRow();
       row.assetId = ticket.Id;
       row.ticketName = ticket.Name;
@@ -328,11 +397,12 @@ public without sharing class ParticipantRegistrationController {
       row.eventStartDate = ticket.Campaign__r == null
         ? null
         : displayEventDate(ticket.Campaign__r);
-      row.assigned = ticket.ContactId != null;
+      row.assigned = ticket.Status == ASSIGNED_STATUS;
       row.editable =
         !row.assigned && PARTICIPANT_EDITABLE_STATUSES.contains(ticket.Status);
-      row.canRinuncia =
-        allInvitationTicketsAreOrdered && ticket.Status == ORDERED_STATUS;
+      row.canRinuncia = ticket.Campaign__c == null
+        ? !ungroupedTicketsIncludeAssigned
+        : !campaignsWithAssignedTickets.contains(ticket.Campaign__c);
 
       if (row.editable) {
         requiredParticipantCount++;
@@ -346,9 +416,32 @@ public without sharing class ParticipantRegistrationController {
       }
 
       response.tickets.add(row);
+
+      // Assigned and waived tickets remain visible in read-only summaries at
+      // the bottom of the page, but are not part of the editable groups.
+      if (row.assigned || ticket.Status == WAIVED_STATUS) {
+        continue;
+      }
+
+      ParticipationGroup participationGroup = groupsByCampaignId.get(
+        ticket.Campaign__c
+      );
+      if (participationGroup == null) {
+        participationGroup = new ParticipationGroup();
+        participationGroup.groupId = ticket.Id;
+        participationGroup.campaignName = row.campaignName == null
+          ? 'Partecipazione'
+          : row.campaignName;
+        participationGroup.eventStartDate = row.eventStartDate;
+        groupsByCampaignId.put(ticket.Campaign__c, participationGroup);
+        response.groups.add(participationGroup);
+      }
+      participationGroup.tickets.add(row);
+      participationGroup.canRinuncia =
+        participationGroup.canRinuncia && row.canRinuncia;
     }
 
-    if (tickets.isEmpty()) {
+    if (response.tickets.isEmpty()) {
       response.state = 'NO_TICKETS';
       response.message = 'Non ci sono biglietti disponibili per questo account.';
       return response;
@@ -357,9 +450,16 @@ public without sharing class ParticipantRegistrationController {
     response.state = requiredParticipantCount > 0
       ? READY_STATE
       : COMPLETED_STATE;
+    Boolean onlyWaivedTickets =
+      requiredParticipantCount == 0 &&
+      !response.tickets.isEmpty() &&
+      campaignsWithAssignedTickets.isEmpty() &&
+      !ungroupedTicketsIncludeAssigned;
     response.message = requiredParticipantCount > 0
       ? null
-      : 'La lista dei partecipanti e gia stata inviata.';
+      : onlyWaivedTickets
+          ? 'La rinuncia e gia stata registrata.'
+          : 'La lista dei partecipanti e gia stata inviata.';
 
     return response;
   }
@@ -370,13 +470,13 @@ public without sharing class ParticipantRegistrationController {
   ) {
     if (inputs == null || inputs.isEmpty()) {
       throw new RequestException(
-        'Completa tutti i biglietti prima di salvare.'
+        'Inserisci almeno un partecipante prima di salvare.'
       );
     }
 
-    List<Asset> visibleAssets = queryVisibleAssets(
-      access.account.Id,
-      access.campaign.Id,
+    List<Asset> visibleAssets = queryOrderAssets(
+      access.orderRecord.Id,
+      access.invitation.Campaign__c,
       true
     );
 
@@ -391,44 +491,89 @@ public without sharing class ParticipantRegistrationController {
       }
     }
 
-    if (inputs.size() != eligibleAssets.size()) {
-      throw staleTickets();
-    }
-
     Set<Id> submittedAssetIds = new Set<Id>();
     Map<String, ParticipantInput> participantByEmail = new Map<String, ParticipantInput>();
+    Map<String, ParticipantInput> participantByPhone = new Map<String, ParticipantInput>();
 
     for (ParticipantInput input : inputs) {
       validateParticipant(
         input,
         eligibleAssets,
         submittedAssetIds,
-        participantByEmail
+        participantByEmail,
+        participantByPhone
       );
     }
 
-    Map<String, Contact> contactByEmail = findExistingContacts(
+    ContactResolution existingContacts = findExistingContacts(
       access.account.Id,
-      participantByEmail.keySet()
+      participantByEmail.keySet(),
+      participantByPhone.keySet()
     );
 
     List<Contact> contactsToCreate = new List<Contact>();
+    Map<Id, Contact> contactsToUpdateById = new Map<Id, Contact>();
+    Map<Id, String> phoneByResolvedContactId = new Map<Id, String>();
+    Map<String, Contact> contactByPhone = new Map<String, Contact>();
 
-    for (String email : participantByEmail.keySet()) {
-      if (!contactByEmail.containsKey(email)) {
-        ParticipantInput input = participantByEmail.get(email);
+    for (String phone : participantByPhone.keySet()) {
+      ParticipantInput input = participantByPhone.get(phone);
+      String email = normalizeEmail(input.email);
+      Contact phoneMatch = existingContacts.contactByPhone.get(phone);
+      Contact emailMatch = existingContacts.contactByEmail.get(email);
 
-        Contact participant = new Contact(
+      if (
+        phoneMatch != null &&
+        emailMatch != null &&
+        phoneMatch.Id != emailMatch.Id
+      ) {
+        throw new RequestException(
+          'Il telefono e l\'email inseriti appartengono a contatti diversi. Contatta l\'amministratore di sistema.'
+        );
+      }
+
+      Contact participant = phoneMatch == null ? emailMatch : phoneMatch;
+
+      if (participant == null) {
+        participant = new Contact(
           AccountId = access.account.Id,
           FirstName = input.firstName.trim(),
           LastName = input.lastName.trim(),
           Email = input.email.trim(),
-          Phone = input.phone.trim()
+          Phone = phoneForStorage(input.phone)
         );
 
         contactsToCreate.add(participant);
-        contactByEmail.put(email, participant);
+      } else {
+        String resolvedPhone = phoneByResolvedContactId.get(participant.Id);
+        if (resolvedPhone != null && resolvedPhone != phone) {
+          throw new RequestException(
+            'Lo stesso contatto e stato inserito con numeri di telefono diversi. Contatta l\'amministratore di sistema.'
+          );
+        }
+
+        phoneByResolvedContactId.put(participant.Id, phone);
+        contactsToUpdateById.put(
+          participant.Id,
+          new Contact(
+            Id = participant.Id,
+            FirstName = input.firstName.trim(),
+            LastName = input.lastName.trim(),
+            Email = input.email.trim(),
+            Phone = phoneForStorage(input.phone)
+          )
+        );
       }
+
+      contactByPhone.put(phone, participant);
+    }
+
+    Set<Id> contactIdsAlreadyAssigned = findContactIdsWithAssets(
+      contactsToUpdateById.keySet()
+    );
+
+    if (!contactsToUpdateById.isEmpty()) {
+      update contactsToUpdateById.values();
     }
 
     if (!contactsToCreate.isEmpty()) {
@@ -436,11 +581,11 @@ public without sharing class ParticipantRegistrationController {
     }
 
     List<Asset> assetsToUpdate = new List<Asset>();
-    Set<Id> participantContactIds = new Set<Id>();
+    Map<Id, Set<Id>> contactIdsByCampaignId = new Map<Id, Set<Id>>();
 
     for (ParticipantInput input : inputs) {
       Id assetId = parseAssetId(input.assetId);
-      Contact participant = contactByEmail.get(normalizeEmail(input.email));
+      Contact participant = contactByPhone.get(normalizePhone(input.phone));
 
       if (participant == null || participant.Id == null) {
         throw new RequestException(
@@ -448,50 +593,86 @@ public without sharing class ParticipantRegistrationController {
         );
       }
 
-      participantContactIds.add(participant.Id);
+      if (contactIdsAlreadyAssigned.contains(participant.Id)) {
+        continue;
+      }
+
+      Asset eligibleAsset = eligibleAssets.get(assetId);
+      if (eligibleAsset.Campaign__c != null) {
+        if (!contactIdsByCampaignId.containsKey(eligibleAsset.Campaign__c)) {
+          contactIdsByCampaignId.put(eligibleAsset.Campaign__c, new Set<Id>());
+        }
+        contactIdsByCampaignId.get(eligibleAsset.Campaign__c)
+          .add(participant.Id);
+      }
       assetsToUpdate.add(
         new Asset(
           Id = assetId,
           ContactId = participant.Id,
-          Status = ASSIGNED_STATUS
+          Status = ASSIGNED_STATUS,
+          Ready_for_Ticket_Dispatch__c = true
         )
       );
+      contactIdsAlreadyAssigned.add(participant.Id);
     }
-
-    insertMissingCampaignMembers(access.campaign.Id, participantContactIds);
 
     if (!assetsToUpdate.isEmpty()) {
       update assetsToUpdate;
     }
 
+    insertMissingCampaignMembers(contactIdsByCampaignId);
+
     return buildPage(access);
   }
 
-  private static void insertMissingCampaignMembers(
-    Id campaignId,
-    Set<Id> contactIds
-  ) {
+  private static Set<Id> findContactIdsWithAssets(Set<Id> contactIds) {
+    Set<Id> result = new Set<Id>();
     if (contactIds == null || contactIds.isEmpty()) {
+      return result;
+    }
+
+    for (Asset linkedAsset : [
+      SELECT ContactId
+      FROM Asset
+      WHERE ContactId IN :contactIds
+    ]) {
+      result.add(linkedAsset.ContactId);
+    }
+
+    return result;
+  }
+
+  private static void insertMissingCampaignMembers(
+    Map<Id, Set<Id>> contactIdsByCampaignId
+  ) {
+    if (contactIdsByCampaignId == null || contactIdsByCampaignId.isEmpty()) {
       return;
     }
 
-    Set<Id> existingContactIds = new Set<Id>();
+    Set<Id> allContactIds = new Set<Id>();
+    Set<Id> campaignIds = contactIdsByCampaignId.keySet();
+    for (Set<Id> contactIds : contactIdsByCampaignId.values()) {
+      allContactIds.addAll(contactIds);
+    }
+    Set<String> existingKeys = new Set<String>();
 
     for (CampaignMember member : [
-      SELECT ContactId
+      SELECT CampaignId, ContactId
       FROM CampaignMember
-      WHERE CampaignId = :campaignId AND ContactId IN :contactIds
+      WHERE CampaignId IN :campaignIds AND ContactId IN :allContactIds
     ]) {
-      existingContactIds.add(member.ContactId);
+      existingKeys.add(member.CampaignId + ':' + member.ContactId);
     }
 
     List<CampaignMember> membersToCreate = new List<CampaignMember>();
 
-    for (Id contactId : contactIds) {
-      if (!existingContactIds.contains(contactId)) {
-        membersToCreate.add(
-          new CampaignMember(CampaignId = campaignId, ContactId = contactId)
-        );
+    for (Id campaignId : contactIdsByCampaignId.keySet()) {
+      for (Id contactId : contactIdsByCampaignId.get(campaignId)) {
+        if (!existingKeys.contains(campaignId + ':' + contactId)) {
+          membersToCreate.add(
+            new CampaignMember(CampaignId = campaignId, ContactId = contactId)
+          );
+        }
       }
     }
 
@@ -500,64 +681,82 @@ public without sharing class ParticipantRegistrationController {
     }
   }
 
-  private static Map<String, Contact> findExistingContacts(
+  private static ContactResolution findExistingContacts(
     Id accountId,
-    Set<String> emails
+    Set<String> emails,
+    Set<String> phones
   ) {
-    Map<String, Contact> result = new Map<String, Contact>();
+    ContactResolution result = new ContactResolution();
     Set<String> duplicateEmails = new Set<String>();
+    Set<String> duplicatePhones = new Set<String>();
+    Set<String> phoneSearchValues = new Set<String>();
 
-    if (emails == null || emails.isEmpty()) {
+    if (
+      (emails == null || emails.isEmpty()) &&
+      (phones == null || phones.isEmpty())
+    ) {
       return result;
     }
 
-    for (Contact participant : [
-      SELECT Id, Email
-      FROM Contact
-      WHERE AccountId = :accountId AND Email IN :emails
-      ORDER BY CreatedDate ASC
-    ]) {
-      String email = normalizeEmail(participant.Email);
-
-      if (result.containsKey(email)) {
-        duplicateEmails.add(email);
-      } else {
-        result.put(email, participant);
+    if (phones != null) {
+      for (String phone : phones) {
+        if (String.isNotBlank(phone)) {
+          phoneSearchValues.add(phone);
+          phoneSearchValues.add('+' + phone);
+        }
       }
     }
 
-    if (!duplicateEmails.isEmpty()) {
+    for (Contact participant : [
+      SELECT Id, AccountId, FirstName, LastName, Email, Phone
+      FROM Contact
+      WHERE AccountId = :accountId OR Phone IN :phoneSearchValues
+      FOR UPDATE
+    ]) {
+      String email = normalizeEmail(participant.Email);
+      String phone = normalizePhone(participant.Phone);
+
+      if (phones.contains(phone)) {
+        if (participant.AccountId != accountId) {
+          throw contactBelongsToAnotherAccount();
+        }
+
+        if (result.contactByPhone.containsKey(phone)) {
+          duplicatePhones.add(phone);
+        } else {
+          result.contactByPhone.put(phone, participant);
+        }
+      }
+
+      if (participant.AccountId == accountId && emails.contains(email)) {
+        if (result.contactByEmail.containsKey(email)) {
+          duplicateEmails.add(email);
+        } else {
+          result.contactByEmail.put(email, participant);
+        }
+      }
+    }
+
+    if (!duplicatePhones.isEmpty() || !duplicateEmails.isEmpty()) {
       throw new RequestException(
-        'Esistono piu contatti con la stessa email. Contatta il tuo referente.'
+        'Esistono piu contatti con lo stesso telefono o la stessa email. Contatta l\'amministratore di sistema.'
       );
     }
 
     return result;
   }
 
-  private static List<Asset> queryVisibleAssets(
-    Id accountId,
+  private static List<Asset> queryOrderAssets(
+    Id orderId,
     Id campaignId,
     Boolean lockRecords
-  ) {
-    return queryInvitationAssets(accountId, campaignId, lockRecords, true);
-  }
-
-  private static List<Asset> queryInvitationAssets(
-    Id accountId,
-    Id campaignId,
-    Boolean lockRecords,
-    Boolean visibleOnly
   ) {
     String queryText =
       'SELECT Id, Name, Status, ContactId, Campaign__c, Campaign__r.Name, ' +
       'Campaign__r.Data_Evento__c, Campaign__r.StartDate, Campaign__r.EndDate, Contact.FirstName, ' +
-      'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name ' +
-      'FROM Asset WHERE AccountId = :accountId AND Campaign__c = :campaignId ';
-
-    if (visibleOnly) {
-      queryText += 'AND Status IN :VISIBLE_STATUSES ';
-    }
+      'Contact.LastName, Contact.Email, Contact.Phone, Product2.Name, Order_Product__c ' +
+      'FROM Asset WHERE Order_Product__r.OrderId = :orderId ' +
+      'AND Campaign__c = :campaignId ';
 
     if (lockRecords) {
       queryText += 'FOR UPDATE';
@@ -568,32 +767,12 @@ public without sharing class ParticipantRegistrationController {
     return Database.query(queryText);
   }
 
-  private static Boolean allInvitationTicketsAreOrdered(
-    Id accountId,
-    Id campaignId
-  ) {
-    Integer totalTickets = [
-      SELECT COUNT()
-      FROM Asset
-      WHERE AccountId = :accountId AND Campaign__c = :campaignId
-    ];
-    Integer nonOrderedTickets = [
-      SELECT COUNT()
-      FROM Asset
-      WHERE
-        AccountId = :accountId
-        AND Campaign__c = :campaignId
-        AND Status != :ORDERED_STATUS
-    ];
-
-    return totalTickets > 0 && nonOrderedTickets == 0;
-  }
-
   private static void validateParticipant(
     ParticipantInput input,
     Map<Id, Asset> eligibleAssets,
     Set<Id> submittedAssetIds,
-    Map<String, ParticipantInput> participantByEmail
+    Map<String, ParticipantInput> participantByEmail,
+    Map<String, ParticipantInput> participantByPhone
   ) {
     if (input == null) {
       throw invalidParticipant();
@@ -610,6 +789,7 @@ public without sharing class ParticipantRegistrationController {
     }
 
     String email = normalizeEmail(input.email);
+    String phone = normalizePhone(input.phone);
 
     if (
       String.isBlank(input.firstName) ||
@@ -618,7 +798,7 @@ public without sharing class ParticipantRegistrationController {
       input.lastName.trim().length() > 80 ||
       !isValidEmail(email) ||
       email.length() > 80 ||
-      String.isBlank(input.phone) ||
+      !isValidPhone(input.phone) ||
       input.phone.trim().length() > 40
     ) {
       throw invalidParticipant();
@@ -641,6 +821,25 @@ public without sharing class ParticipantRegistrationController {
       }
     } else {
       participantByEmail.put(email, input);
+    }
+
+    if (participantByPhone.containsKey(phone)) {
+      ParticipantInput previous = participantByPhone.get(phone);
+      Boolean sameFirstName = previous.firstName
+        .trim()
+        .equalsIgnoreCase(input.firstName.trim());
+      Boolean sameLastName = previous.lastName
+        .trim()
+        .equalsIgnoreCase(input.lastName.trim());
+      Boolean sameEmail = normalizeEmail(previous.email) == email;
+
+      if (!sameFirstName || !sameLastName || !sameEmail) {
+        throw new RequestException(
+          'Lo stesso telefono contiene dati diversi in piu righe.'
+        );
+      }
+    } else {
+      participantByPhone.put(phone, input);
     }
 
     submittedAssetIds.add(assetId);
@@ -667,6 +866,26 @@ public without sharing class ParticipantRegistrationController {
     return email == null ? null : email.trim().toLowerCase();
   }
 
+  private static String normalizePhone(String phone) {
+    if (String.isBlank(phone)) {
+      return null;
+    }
+
+    String normalizedPhone = phone.replaceAll('[^0-9]', '');
+    return String.isBlank(normalizedPhone) ? null : normalizedPhone;
+  }
+
+  private static String phoneForStorage(String phone) {
+    String normalizedPhone = normalizePhone(phone);
+    if (normalizedPhone == null) {
+      return null;
+    }
+
+    return phone.trim().startsWith('+')
+      ? '+' + normalizedPhone
+      : normalizedPhone;
+  }
+
   private static Date displayEventDate(Campaign campaign) {
     if (campaign == null) {
       return null;
@@ -685,6 +904,11 @@ public without sharing class ParticipantRegistrationController {
     Pattern.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$', email));
   }
 
+  private static Boolean isValidPhone(String phone) {
+    return (!String.isBlank(phone) &&
+    Pattern.matches('^\\+?[0-9]{6,15}$', phone.trim()));
+  }
+
   private static Boolean isValidToken(String token) {
     return !String.isBlank(token) && Pattern.matches('^[0-9a-f]{64}$', token);
   }
@@ -695,13 +919,25 @@ public without sharing class ParticipantRegistrationController {
 
   private static RequestException invalidParticipant() {
     return new RequestException(
-      'Completa nome, cognome, email e telefono per ogni partecipante.'
+      'Completa nome, cognome, email e telefono e verifica che i formati siano validi.'
     );
   }
 
   private static RequestException staleTickets() {
     return new RequestException(
       'La lista dei biglietti e cambiata. Ricarica la pagina prima di continuare.'
+    );
+  }
+
+  private static RequestException rinunciaBlockedByAssignedTicket() {
+    return new RequestException(
+      'La rinuncia non e disponibile perche un biglietto del gruppo e gia assegnato.'
+    );
+  }
+
+  private static RequestException contactBelongsToAnotherAccount() {
+    return new RequestException(
+      'Questo contatto esiste gia in un\'altra azienda. Contatta l\'amministratore di sistema per maggiori informazioni.'
     );
   }
 

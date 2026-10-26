@@ -4,7 +4,7 @@
     <description
   >Mexal order line number sent for this Salesforce order product, used to match invoice lines back to the original order row.</description>
     <externalId>false</externalId>
-    <label>Mexal Line Number</label>
+    <label>ID Riga Mexal</label>
     <precision>9</precision>
     <required>false</required>
     <scale>0</scale>

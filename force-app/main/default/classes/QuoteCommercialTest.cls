@@ -29,6 +29,10 @@ private class QuoteCommercialTest {
   private static QuoteManageProductsController.TrancheSelection due(Date d) {
     QuoteManageProductsController.TrancheSelection row = new QuoteManageProductsController.TrancheSelection();
     row.dueDate = d;
+    // Each tranche carries its own price and discount; the catalogue price
+    // with no discount keeps the expected amounts.
+    row.newPrice = 300;
+    row.discountPercent = 0;
     return row;
   }
 
@@ -56,7 +60,11 @@ private class QuoteCommercialTest {
 
       Opportunity opportunityRecord = new Opportunity(
         Name = 'Da Locale',
-        AccountId = locale.Id
+        AccountId = locale.Id,
+        RecordTypeId = TestDataFactory.recordTypeId(
+          'Opportunity',
+          'Vendita_Standard'
+        )
       );
       insert opportunityRecord;
 
@@ -164,10 +172,19 @@ private class QuoteCommercialTest {
         [SELECT Locale__c FROM Quote WHERE Id = :inherited.Id].Locale__c
       );
 
+      // Any Locale of the same Azienda is accepted; one of another is not.
+      Quote sibling = new Quote(
+        Name = 'Locale Fratello',
+        OpportunityId = opportunityRecord.Id,
+        Locale__c = periferia.Id
+      );
+      System.assertEquals(true, Database.insert(sibling, false).isSuccess());
+
+      Account altrove = TestDataFactory.locale('Altrove', azienda().Id);
       Quote mismatched = new Quote(
         Name = 'Altro Locale',
         OpportunityId = opportunityRecord.Id,
-        Locale__c = periferia.Id
+        Locale__c = altrove.Id
       );
       System.assertEquals(
         false,
@@ -181,6 +198,8 @@ private class QuoteCommercialTest {
     System.runAs(TestDataFactory.runner()) {
       Opportunity opportunityRecord = TestDataFactory.opportunity(azienda().Id);
       Quote quoteRecord = TestDataFactory.quote(opportunityRecord.Id);
+      quoteRecord.Condizione_di_Pagamento__c = '64';
+      update quoteRecord;
       Tranche__c trancheRecord = TestDataFactory.tranche(quoteRecord.Id, 1);
       QuoteLineItem line = new QuoteLineItem(
         QuoteId = quoteRecord.Id,
@@ -195,7 +214,7 @@ private class QuoteCommercialTest {
       Test.startTest();
       update new Quote(
         Id = quoteRecord.Id,
-        Status = 'Accettato',
+        Status = 'Firmato',
         DocuSign_Status__c = 'Completed'
       );
       Test.stopTest();
@@ -211,6 +230,7 @@ private class QuoteCommercialTest {
           Status,
           OpportunityId,
           Origine__c,
+          Condizione_di_Pagamento__c,
           (SELECT Quantity, UnitPrice, Tranche__c FROM OrderItems)
         FROM Order
         WHERE Quote__c = :quoteRecord.Id
@@ -218,6 +238,7 @@ private class QuoteCommercialTest {
       System.assertEquals('Ordinato', generated.Status);
       System.assertEquals('Salesforce', generated.Origine__c);
       System.assertEquals(opportunityRecord.Id, generated.OpportunityId);
+      System.assertEquals('64', generated.Condizione_di_Pagamento__c);
       System.assertEquals(1, generated.OrderItems.size());
       System.assertEquals(trancheRecord.Id, generated.OrderItems[0].Tranche__c);
       System.assertEquals(
@@ -286,7 +307,7 @@ private class QuoteCommercialTest {
         'BND-PLUS',
         500
       );
-      plusBundle.Is_Plus__c = true;
+      plusBundle.Categoria_Articolo__c = 'C10';
       insert plusBundle;
       PricebookEntry plusEntry = TestDataFactory.standardEntry(
         plusBundle.Id,
@@ -361,7 +382,7 @@ private class QuoteCommercialTest {
         'Plus annuale',
         'PLUS-SRCH'
       );
-      plusItem.Is_Plus__c = true;
+      plusItem.Categoria_Articolo__c = 'C10';
       plusItem.Numero_Tranche__c = 2;
       insert plusItem;
       TestDataFactory.standardEntry(plusItem.Id, 1200);
@@ -395,7 +416,7 @@ private class QuoteCommercialTest {
       );
       Opportunity recall = TestDataFactory.opportunity(
         accountRecord.Id,
-        'Recall_Tutor'
+        'WooCommerce'
       );
       List<QuoteManageProductsController.ProductOption> recallOptions = QuoteManageProductsController.searchProducts(
         TestDataFactory.quote(recall.Id).Id,
@@ -429,7 +450,6 @@ private class QuoteCommercialTest {
         }
       }
       System.assertEquals(1, plusOptions.size());
-      System.assertEquals(true, plusOptions[0].isPlus);
       System.assertEquals(2, plusOptions[0].trancheCount);
       System.assert(
         recallOptions.size() >= 3,
@@ -501,7 +521,7 @@ private class QuoteCommercialTest {
       inactive.IsActive = false;
       update inactive;
       Product2 plusItem = TestDataFactory.buildItem('Plus', 'PLUS-BAD');
-      plusItem.Is_Plus__c = true;
+      plusItem.Categoria_Articolo__c = 'C10';
       insert plusItem;
       PricebookEntry plusEntry = TestDataFactory.standardEntry(plusItem.Id, 10);
 
@@ -566,8 +586,12 @@ private class QuoteCommercialTest {
   private static Product2 bundleWithComponents(Boolean withTemplates) {
     Product2 bundle = TestDataFactory.bundle('Bundle Stage', 'BND-STG', 1000);
     TestDataFactory.standardEntry(bundle.Id, 0);
-    Product2 first = TestDataFactory.item('Modulo A', 'ART-STG-A');
-    Product2 second = TestDataFactory.item('Modulo B', 'ART-STG-B');
+    Product2 first = TestDataFactory.buildItem('Modulo A', 'ART-STG-A');
+    Product2 second = TestDataFactory.buildItem('Modulo B', 'ART-STG-B');
+    // Bundle components must be active bundle-only Items (Product__c filter).
+    first.Solo_Bundle__c = true;
+    second.Solo_Bundle__c = true;
+    insert new List<Product2>{ first, second };
     TestDataFactory.standardEntry(first.Id, 700);
     TestDataFactory.standardEntry(second.Id, 500);
     Bundle_Tranch__c firstTranch;
@@ -771,7 +795,7 @@ private class QuoteCommercialTest {
       );
       Quote quoteRecord = TestDataFactory.quote(plus.Id);
       Product2 plusItem = TestDataFactory.buildItem('Plus 12 mesi', 'PLUS-12');
-      plusItem.Is_Plus__c = true;
+      plusItem.Categoria_Articolo__c = 'C10';
       plusItem.Numero_Tranche__c = 2;
       insert plusItem;
       PricebookEntry plusEntry = TestDataFactory.standardEntry(
@@ -854,9 +878,9 @@ private class QuoteCommercialTest {
         'Plus_Attivazione_Rinnovo'
       );
       Product2 noCount = TestDataFactory.buildItem('Plus senza', 'PLUS-NOC');
-      noCount.Is_Plus__c = true;
+      noCount.Categoria_Articolo__c = 'C10';
       Product2 tooMany = TestDataFactory.buildItem('Plus troppi', 'PLUS-TOO');
-      tooMany.Is_Plus__c = true;
+      tooMany.Categoria_Articolo__c = 'C10';
       tooMany.Numero_Tranche__c = 30;
       insert new List<Product2>{ noCount, tooMany };
 
@@ -894,7 +918,7 @@ private class QuoteCommercialTest {
         CloseDate = Date.today().addDays(5),
         RecordTypeId = TestDataFactory.recordTypeId(
           'Opportunity',
-          'Recall_Tutor'
+          'WooCommerce'
         )
       );
       insert opportunityRecord;
@@ -953,8 +977,32 @@ private class QuoteCommercialTest {
         )
       };
 
+      // Entering negotiation always resets the expiry to five days ahead, and
+      // editing it in negotiation returns the quote to draft, so the expired
+      // quote reaches the batch as the row its query would return.
+      Quote expiredRow = new Quote(
+        Id = stale.Id,
+        Status = 'In Trattativa',
+        ExpirationDate = Date.today().addDays(-1),
+        In_Trattativa_Dal__c = Date.today().addDays(-10),
+        Promemoria_2_Giorni_Inviato__c = true
+      );
+
       Test.startTest();
+      new QuoteNegotiationAgingBatch()
+        .execute(
+          (Database.BatchableContext) null,
+          new List<SObject>{ expiredRow }
+        );
       new QuoteNegotiationAgingBatch().execute((SchedulableContext) null);
+      // The org may already run the daily job; schedule names are unique.
+      for (CronTrigger existing : [
+        SELECT Id
+        FROM CronTrigger
+        WHERE CronJobDetail.Name = :QuoteNegotiationAgingBatch.JOB_NAME
+      ]) {
+        System.abortJob(existing.Id);
+      }
       Id jobId = QuoteNegotiationAgingBatch.scheduleDaily();
       Test.stopTest();
 

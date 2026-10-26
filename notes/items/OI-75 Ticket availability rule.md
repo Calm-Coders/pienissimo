@@ -6,7 +6,7 @@ owner: ROMI
 with: Elisa Migliano
 org: both
 raised: 2026-08-06
-updated: 2026-08-26
+updated: 2026-10-06
 depends_on: [OI-50]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -133,3 +133,103 @@ needs — though its semantics are still unasked.
 
 **This is the first question for the 26 August 16:00 Mexal review**, and it can
 now be asked with a URL beside it rather than as a mapping abstraction.
+
+## 🔑 2026-10-01 - the rule is in writing, with the client, and `Rinuncia` is per edition
+
+[The written logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md)
+is now the authoritative statement of this rule and has gone to the client for
+confirmation. Three changes against this row as it stood:
+
+- 🔑 **Chronological sequencing.** Tranches must be settled in date order; an
+  unpaid earlier tranche blocks a later tranche's tickets even if that later
+  invoice is paid. ⚠ Attributed to Pienissimo in the document, with **no meeting
+  or date cited**, and this sweep found no source for the confirmation.
+- 🟢 **Orders without tranches** release on the order reaching **`Incassato`**.
+  Worked out live at [the 01/10 Interna](../meetings/2026-10-01%20Interna.md),
+  where both Aurel Mrruku and Elena Spini were initially unsure between
+  `Fatturato` and `Incassato`; `Fatturato` is the multi-tranche state.
+- 🔑 **`Rinuncia` is per edition.** Settled at the 01/10 Interna after moving
+  through header and asset granularity in the same call. The button is visible per
+  edition until the first participant of that edition is confirmed, then hidden
+  and disabled permanently; renouncing an edition renounces **every ticket of that
+  edition, including ones a later tranche has not yet revealed**. Later
+  withdrawals go through an offline procedure.
+
+🔴 **A per-edition `Rinuncia` still has nowhere to live.** The internal review's
+problem #8 puts it precisely: the link is per order, so the renunciation must be
+tracked **on the assets of the edition, not on `Event_Invitation__c`**, or the
+reminder ladder cannot be stopped for just that edition. The
+`Rinuncia`-as-an-asset-state question remains unruled.
+
+⚠ **The trigger date for the link is an open point the client was not shown.**
+The document ties the link only to the first `Disponibile` asset; the internal
+review's first problem is that this ignores the edition's
+`Data_Invio_Biglietto__c` and would open nomination up to eleven months early,
+a case Fabrizio Paganelli excluded at the 30/09 UAT. See
+[OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md).
+
+## 2026-10-02 - tranche-less release built in the repository
+
+`OrderTriggerHandler.afterUpdate` now handles the documented tranche-less case.
+When an Order transitions to `Incassato`, the handler first excludes every Order
+that has any line linked to a `Tranche__c`. For each remaining Order it changes
+ticket Assets still in `Ordinato` to `Disponibile` and sets
+`Fattura_Pagata__c = true`.
+
+This is a repository-only implementation, not an org verification. Mixed Orders
+remain on the tranche path, and the wider chronological-tranche rule above is
+unchanged and still open.
+
+## 🔴 2026-10-02 - the two client-facing documents disagree on `Rinuncia`
+
+[The Business Blueprint](../The%20Business%20Blueprint%20delivered%20to%20the%20client.md),
+delivered to Pienissimo at 13:55:56Z on 02/10, states `Rinuncia` at **header
+level**, §7.4:
+
+> _"La conferma della rinuncia ha effetto su **tutti i partecipanti associati
+> all'acquisto**: tutti i titoli d'accesso (asset/biglietti) riconducibili al
+> referente principale verranno automaticamente aggiornati allo stato
+> 'Rinuncia'."_
+
+[The logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md),
+mailed to the same five people the previous evening, says **per edition**.
+
+🔴 **So the client holds two documents, one day apart, stating different
+granularities for the same button** — and this is the fourth statement of it in
+four days (header → asset → edition → header). Neither document marks itself as
+superseding the other, and the Blueprint is the one carrying signature lines.
+
+⚠ **The client has objected to the `Rinuncia` part.** Elena Spini, reporting
+Fabrizio Paganelli's reply at [the 02/10 Pre-UAT](../meetings/2026-10-02%20Interna%20Pre-UAT%20Plus.md):
+_"they say that part of rinuncia but who cares I don't mind."_ See
+[OI-203](OI-203%20The%20client%20contested%20the%20agreed%20ticket%20logics%20before%20confirming%20them.md).
+A per-edition `Rinuncia` still has nowhere to live, so the Blueprint's header-level
+rule is also the only one of the two that the current data model can express.
+
+## 🟢 2026-10-06 - the granularity stops moving
+
+[The 06/10 client session](../meetings/2026-10-06%20Form%20Link%20per%20partecipanti.md)
+settled the two things this row has been tracking across four restatements in
+four days:
+
+- **`Rinuncia` is per edition.** Stated in the amended client document and
+  demonstrated live. The button is visible while no participant is confirmed for
+  that edition and **hidden and permanently disabled** once one is; later
+  renunciations go to an offline procedure (Tutor aziendale or Assistenza).
+  ⚠ It applies to **the whole block of that edition, not to single tickets** —
+  Elena Spini was explicit, and per-ticket renunciation went to Fase 2.
+- **Availability is per tranche, settled in full.** _"Solo a saldo completo della
+  fattura di tranche (non dell'ordine totale contenente + tranche)"_ — the
+  document's `NOTE IMPORTANTI` 2, re-confirmed in the room: links unlock only
+  against assets paid in full to saldo, and only on the configured send date.
+
+**Chronological sequencing is retained** in the amended document: tranches must
+be settled in date order, so an unpaid September tranche blocks November's
+tickets even where November's invoice is registered. ⚠ Still attributed to
+Pienissimo with **no date or meeting cited**, and
+[OI-198](OI-198%20The%20asset%20does%20not%20say%20which%20tranche%20paid%20for%20it.md)
+still has no tranche field on the asset to evaluate it with.
+
+🟢 The two client-facing documents no longer disagree with each other on this
+point: the Blueprint's header-level `Rinuncia` is superseded by the 06/10
+ruling, which is the later evidence.

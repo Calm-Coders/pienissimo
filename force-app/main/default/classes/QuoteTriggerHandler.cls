@@ -1,28 +1,194 @@
 public without sharing class QuoteTriggerHandler {
   private static final String ACCEPTED_STATUS = 'Accettato';
+  private static final String SIGNED_STATUS = 'Firmato';
   private static final String AWAITING_ACCEPTANCE_STATUS = 'In Attesa Accettazione';
   private static final String DRAFT_STATUS = 'Bozza';
   private static final String DOCUSIGN_COMPLETED_STATUS = 'Completed';
   private static final String NEGOTIATION_QUOTE_STATUS = 'In Trattativa';
-  private static final String NEW_QUOTE_STATUS = 'Nuovo Preventivo';
   private static final String OPPORTUNITY_QUALIFIED_STAGE = 'Qualificato';
   private static final String OPPORTUNITY_NEGOTIATION_STAGE = 'In trattativa (Prev inviato)';
   private static final String INITIAL_ORDER_STATUS = 'Ordinato';
   private static final String SALESFORCE_ORIGIN = 'Salesforce';
-  private static final String LOCALE_MISMATCH_ERROR = 'Il Locale del Preventivo deve coincidere con il Locale dell\'Opportunita.';
+  private static final String LOCALE_RECORD_TYPE = 'Locale';
+  private static final String LOCALE_MISMATCH_ERROR = 'Il Locale selezionato deve essere un Account figlio dell\'Azienda del Preventivo.';
+  private static final String LOCKED_QUOTE_ERROR = 'Il preventivo accettato o firmato non puo essere modificato.';
+  private static final Set<String> LOCKED_QUOTE_STATUSES = new Set<String>{
+    ACCEPTED_STATUS,
+    SIGNED_STATUS
+  };
+  private static final Set<String> LOCKED_QUOTE_FIELDS = new Set<String>{
+    'QuoteNumber',
+    'Name',
+    'OpportunityId',
+    'AccountId',
+    'Agente__c',
+    'GrandTotal',
+    'Locale__c',
+    'ExpirationDate',
+    'IsSyncing',
+    'Condizione_di_Pagamento__c',
+    'Descrizione_Condizione_di_Pagamento__c',
+    'Tipologia_Attivita_Globale__c',
+    'Codice_Agente_Esterno__c',
+    'ContactId',
+    'Email_Contatto_Principale__c',
+    'Phone',
+    'Fax',
+    'BillingName',
+    'BillingStreet',
+    'BillingPostalCode',
+    'BillingCity',
+    'BillingState',
+    'BillingCountry',
+    'ShippingName',
+    'ShippingStreet',
+    'ShippingPostalCode',
+    'ShippingCity',
+    'ShippingState',
+    'ShippingCountry'
+  };
+  private static final Set<String> PDF_INVALIDATING_QUOTE_STATUSES = new Set<String>{
+    NEGOTIATION_QUOTE_STATUS,
+    AWAITING_ACCEPTANCE_STATUS
+  };
+  private static final Set<String> PDF_INPUT_FIELDS = new Set<String>{
+    'AccountId',
+    'OpportunityId',
+    'ExpirationDate',
+    'BillingName',
+    'BillingStreet',
+    'BillingPostalCode',
+    'BillingCity',
+    'BillingState',
+    'BillingCountry',
+    'Condizione_di_Pagamento__c',
+    'Descrizione_Condizione_di_Pagamento__c',
+    'Tax',
+    'ShippingHandling'
+  };
 
   private static final Set<String> OPPORTUNITY_NEGOTIATION_QUOTE_STATUSES = new Set<String>{
     DRAFT_STATUS,
-    NEW_QUOTE_STATUS,
     NEGOTIATION_QUOTE_STATUS,
     AWAITING_ACCEPTANCE_STATUS,
-    ACCEPTED_STATUS
+    ACCEPTED_STATUS,
+    SIGNED_STATUS
+  };
+  private static final Set<String> ACCEPTED_REVENUE_QUOTE_STATUSES = new Set<String>{
+    ACCEPTED_STATUS,
+    SIGNED_STATUS
   };
 
-  public static void beforeSave(List<Quote> quotes) {
-    copyLocaleFromOpportunity(quotes);
+  public static void beforeSave(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    resetChangedPdfQuotesToDraft(quotes, oldQuoteMap);
+    manageNegotiationCycle(quotes, oldQuoteMap);
+    defaultValidateAndCopyLocaleActivity(quotes, oldQuoteMap);
     markCompletedDocuSignQuotesAsSigned(quotes);
+    makeSignedQuotesPrimary(quotes);
     markFirstQuotesAsPrimary(quotes);
+    lockAcceptedAndSignedQuotes(quotes, oldQuoteMap);
+  }
+
+  private static void lockAcceptedAndSignedQuotes(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    if (oldQuoteMap == null || oldQuoteMap.isEmpty()) {
+      return;
+    }
+
+    for (Quote quoteRecord : quotes) {
+      Quote oldQuote = oldQuoteMap.get(quoteRecord.Id);
+      if (
+        oldQuote == null || !LOCKED_QUOTE_STATUSES.contains(oldQuote.Status)
+      ) {
+        continue;
+      }
+
+      for (String fieldName : LOCKED_QUOTE_FIELDS) {
+        if (quoteRecord.get(fieldName) != oldQuote.get(fieldName)) {
+          quoteRecord.addError(LOCKED_QUOTE_ERROR);
+          break;
+        }
+      }
+    }
+  }
+
+  private static void manageNegotiationCycle(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    for (Quote quoteRecord : quotes) {
+      Quote oldQuote = oldQuoteMap == null
+        ? null
+        : oldQuoteMap.get(quoteRecord.Id);
+      Boolean enteringNegotiation =
+        quoteRecord.Status == NEGOTIATION_QUOTE_STATUS &&
+        (oldQuote == null ||
+        oldQuote.Status != NEGOTIATION_QUOTE_STATUS);
+      Boolean returningToDraft =
+        quoteRecord.Status == DRAFT_STATUS &&
+        oldQuote != null &&
+        oldQuote.Status != DRAFT_STATUS;
+
+      if (returningToDraft) {
+        quoteRecord.In_Trattativa_Dal__c = null;
+        quoteRecord.Promemoria_2_Giorni_Inviato__c = false;
+
+        // Keep a new expiry deliberately entered by the tutor. Otherwise clear
+        // the old cycle's date so the next send receives a fresh five-day term.
+        if (quoteRecord.ExpirationDate == oldQuote.ExpirationDate) {
+          quoteRecord.ExpirationDate = null;
+        }
+      }
+
+      if (enteringNegotiation) {
+        quoteRecord.In_Trattativa_Dal__c = Date.today();
+        if (
+          quoteRecord.ExpirationDate == null ||
+          quoteRecord.ExpirationDate <= Date.today()
+        ) {
+          quoteRecord.ExpirationDate = Date.today().addDays(5);
+        }
+        quoteRecord.Promemoria_2_Giorni_Inviato__c = false;
+      }
+    }
+  }
+
+  private static void resetChangedPdfQuotesToDraft(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    if (oldQuoteMap == null || oldQuoteMap.isEmpty()) {
+      return;
+    }
+
+    Set<String> fieldsToCompare = new Set<String>(PDF_INPUT_FIELDS);
+    if (
+      Schema.SObjectType.Quote.fields.getMap().containsKey('CurrencyIsoCode')
+    ) {
+      fieldsToCompare.add('CurrencyIsoCode');
+    }
+
+    for (Quote quoteRecord : quotes) {
+      Quote oldQuote = oldQuoteMap.get(quoteRecord.Id);
+      if (
+        oldQuote == null ||
+        !PDF_INVALIDATING_QUOTE_STATUSES.contains(oldQuote.Status)
+      ) {
+        continue;
+      }
+
+      for (String fieldName : fieldsToCompare) {
+        if (quoteRecord.get(fieldName) != oldQuote.get(fieldName)) {
+          quoteRecord.Status = DRAFT_STATUS;
+          break;
+        }
+      }
+    }
   }
 
   public static void afterInsert(List<Quote> quotes) {
@@ -39,10 +205,13 @@ public without sharing class QuoteTriggerHandler {
     keepOnePrimaryQuotePerOpportunity(quotes, oldQuoteMap);
     updatePrimaryQuoteLookups(quotes, oldQuoteMap);
     updateOpportunityAmountsFromAcceptedPrimaryQuotes(quotes, oldQuoteMap);
-    createOrdersForAcceptedQuotes(quotes, oldQuoteMap);
+    createOrdersForSignedQuotes(quotes, oldQuoteMap);
   }
 
-  private static void copyLocaleFromOpportunity(List<Quote> quotes) {
+  private static void defaultValidateAndCopyLocaleActivity(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
     Set<Id> opportunityIds = new Set<Id>();
     for (Quote quoteRecord : quotes) {
       if (quoteRecord.OpportunityId != null) {
@@ -56,12 +225,13 @@ public without sharing class QuoteTriggerHandler {
 
     Map<Id, Opportunity> opportunitiesById = new Map<Id, Opportunity>(
       [
-        SELECT Id, Locale__c
+        SELECT Id, AccountId, Account.Agente__r.Agente__c, Locale__c
         FROM Opportunity
         WHERE Id IN :opportunityIds
       ]
     );
 
+    Set<Id> localeIds = new Set<Id>();
     for (Quote quoteRecord : quotes) {
       Opportunity opportunityRecord = opportunitiesById.get(
         quoteRecord.OpportunityId
@@ -70,24 +240,91 @@ public without sharing class QuoteTriggerHandler {
         continue;
       }
 
+      if (
+        oldQuoteMap == null &&
+        opportunityRecord.Account != null &&
+        opportunityRecord.Account.Agente__r != null
+      ) {
+        quoteRecord.Codice_Agente_Esterno__c = opportunityRecord.Account.Agente__r.Agente__c;
+      }
+
       if (quoteRecord.Locale__c == null) {
         quoteRecord.Locale__c = opportunityRecord.Locale__c;
+      }
+
+      if (quoteRecord.Locale__c != null) {
+        localeIds.add(quoteRecord.Locale__c);
+      }
+    }
+
+    if (localeIds.isEmpty()) {
+      return;
+    }
+
+    Map<Id, Account> localesById = new Map<Id, Account>(
+      [
+        SELECT
+          Id,
+          ParentId,
+          RecordType.DeveloperName,
+          Tipologia_Attivita_Globale__c
+        FROM Account
+        WHERE Id IN :localeIds
+      ]
+    );
+
+    for (Quote quoteRecord : quotes) {
+      if (quoteRecord.Locale__c == null) {
         continue;
       }
 
-      if (quoteRecord.Locale__c != opportunityRecord.Locale__c) {
+      Opportunity opportunityRecord = opportunitiesById.get(
+        quoteRecord.OpportunityId
+      );
+      Id aziendaId = opportunityRecord == null
+        ? quoteRecord.AccountId
+        : opportunityRecord.AccountId;
+      Account localeRecord = localesById.get(quoteRecord.Locale__c);
+
+      if (
+        localeRecord == null ||
+        localeRecord.ParentId != aziendaId ||
+        localeRecord.RecordType == null ||
+        localeRecord.RecordType.DeveloperName != LOCALE_RECORD_TYPE
+      ) {
         quoteRecord.Locale__c.addError(LOCALE_MISMATCH_ERROR);
+        continue;
+      }
+
+      Quote oldQuote = oldQuoteMap == null
+        ? null
+        : oldQuoteMap.get(quoteRecord.Id);
+      if (oldQuote == null || oldQuote.Locale__c != quoteRecord.Locale__c) {
+        quoteRecord.Tipologia_Attivita_Globale__c = localeRecord.Tipologia_Attivita_Globale__c;
       }
     }
   }
 
   private static void markCompletedDocuSignQuotesAsSigned(List<Quote> quotes) {
     for (Quote quoteRecord : quotes) {
+      if (quoteRecord.DocuSign_Status__c == DOCUSIGN_COMPLETED_STATUS) {
+        if (quoteRecord.Is_Signed__c != true) {
+          quoteRecord.Is_Signed__c = true;
+        }
+        if (quoteRecord.Status != SIGNED_STATUS) {
+          quoteRecord.Status = SIGNED_STATUS;
+        }
+      }
+    }
+  }
+
+  private static void makeSignedQuotesPrimary(List<Quote> quotes) {
+    for (Quote quoteRecord : quotes) {
       if (
-        quoteRecord.DocuSign_Status__c == DOCUSIGN_COMPLETED_STATUS &&
-        quoteRecord.Is_Signed__c != true
+        quoteRecord.Status == SIGNED_STATUS &&
+        quoteRecord.Is_Primary__c != true
       ) {
-        quoteRecord.Is_Signed__c = true;
+        quoteRecord.Is_Primary__c = true;
       }
     }
   }
@@ -132,24 +369,25 @@ public without sharing class QuoteTriggerHandler {
     }
   }
 
-  private static void createOrdersForAcceptedQuotes(
+  private static void createOrdersForSignedQuotes(
     List<Quote> quotes,
     Map<Id, Quote> oldQuoteMap
   ) {
-    Set<Id> acceptedQuoteIds = new Set<Id>();
+    Set<Id> signedQuoteIds = new Set<Id>();
     for (Quote quoteRecord : quotes) {
       Quote oldQuote = oldQuoteMap.get(quoteRecord.Id);
       if (
-        quoteRecord.Status == ACCEPTED_STATUS &&
+        quoteRecord.Status == SIGNED_STATUS &&
         quoteRecord.Is_Signed__c == true &&
         oldQuote != null &&
-        oldQuote.Is_Signed__c != true
+        (oldQuote.Status != SIGNED_STATUS ||
+        oldQuote.Is_Signed__c != true)
       ) {
-        acceptedQuoteIds.add(quoteRecord.Id);
+        signedQuoteIds.add(quoteRecord.Id);
       }
     }
 
-    if (acceptedQuoteIds.isEmpty()) {
+    if (signedQuoteIds.isEmpty()) {
       return;
     }
 
@@ -157,16 +395,22 @@ public without sharing class QuoteTriggerHandler {
     for (Order existingOrder : [
       SELECT Id, Quote__c
       FROM Order
-      WHERE Quote__c IN :acceptedQuoteIds
+      WHERE Quote__c IN :signedQuoteIds
     ]) {
       quotedOrderIds.add(existingOrder.Quote__c);
     }
 
     Map<Id, Quote> quotesToConvert = new Map<Id, Quote>();
     for (Quote quoteRecord : [
-      SELECT Id, AccountId, OpportunityId, Pricebook2Id, Locale__c
+      SELECT
+        Id,
+        AccountId,
+        OpportunityId,
+        Pricebook2Id,
+        Locale__c,
+        Condizione_di_Pagamento__c
       FROM Quote
-      WHERE Id IN :acceptedQuoteIds
+      WHERE Id IN :signedQuoteIds
     ]) {
       if (!quotedOrderIds.contains(quoteRecord.Id)) {
         quotesToConvert.put(quoteRecord.Id, quoteRecord);
@@ -188,6 +432,7 @@ public without sharing class QuoteTriggerHandler {
           Status = INITIAL_ORDER_STATUS,
           Quote__c = quoteRecord.Id,
           Locale__c = quoteRecord.Locale__c,
+          Condizione_di_Pagamento__c = quoteRecord.Condizione_di_Pagamento__c,
           Origine__c = SALESFORCE_ORIGIN
         )
       );
@@ -207,18 +452,23 @@ public without sharing class QuoteTriggerHandler {
         PricebookEntryId,
         Quantity,
         UnitPrice,
+        ListPrice,
+        TotalPrice,
+        Discount_Pct__c,
         Description,
         Tranche__c,
         Data_Scadenza__c
       FROM QuoteLineItem
       WHERE QuoteId IN :orderIdByQuoteId.keySet()
     ]) {
+      Decimal netPrice = netUnitPrice(quoteLine);
       orderItemsToInsert.add(
         new OrderItem(
           OrderId = orderIdByQuoteId.get(quoteLine.QuoteId),
           PricebookEntryId = quoteLine.PricebookEntryId,
           Quantity = quoteLine.Quantity,
-          UnitPrice = quoteLine.UnitPrice,
+          UnitPrice = netPrice,
+          Prezzo_Listino__c = grossUnitPrice(quoteLine, netPrice),
           Description = quoteLine.Description,
           Tranche__c = quoteLine.Tranche__c,
           Data_Scadenza__c = quoteLine.Data_Scadenza__c
@@ -229,6 +479,61 @@ public without sharing class QuoteTriggerHandler {
     if (!orderItemsToInsert.isEmpty()) {
       insert orderItemsToInsert;
     }
+
+    PerformancePlusContractService.createForOrders(
+      new Set<Id>(orderIdByQuoteId.values())
+    );
+  }
+
+  // The order carries the discounted price; the pre-discount price is kept in
+  // Prezzo_Listino__c so Mexal can receive the line discount separately.
+  private static Decimal netUnitPrice(QuoteLineItem quoteLine) {
+    if (
+      quoteLine.TotalPrice == null ||
+      quoteLine.Quantity == null ||
+      quoteLine.Quantity == 0
+    ) {
+      return quoteLine.UnitPrice;
+    }
+    return (quoteLine.TotalPrice / quoteLine.Quantity)
+      .setScale(2, System.RoundingMode.HALF_UP);
+  }
+
+  // The quote line stores the net price in UnitPrice and the percentage in
+  // Discount_Pct__c, so the pre-discount price is rebuilt from the two. Items
+  // and bundle components take the percentage off the catalogue ListPrice,
+  // which is used when it matches; a Plus tranche takes it off the tranche
+  // amount, which only the rebuilt price gives. No discount, no value.
+  private static Decimal grossUnitPrice(
+    QuoteLineItem quoteLine,
+    Decimal netPrice
+  ) {
+    Decimal discountPercent = quoteLine.Discount_Pct__c;
+    if (
+      netPrice == null ||
+      discountPercent == null ||
+      discountPercent <= 0 ||
+      discountPercent > 100
+    ) {
+      return null;
+    }
+
+    Decimal listPrice = quoteLine.ListPrice;
+    if (discountPercent == 100) {
+      return listPrice != null && listPrice > 0 ? listPrice : null;
+    }
+
+    Decimal grossPrice = (netPrice / (1 - discountPercent / 100))
+      .setScale(2, System.RoundingMode.HALF_UP);
+    // Both net price and percentage are rounded to two decimals, so the
+    // rebuilt price can miss the catalogue one by a little.
+    if (
+      listPrice != null &&
+      (listPrice - grossPrice).abs() <= 0.01 + listPrice * 0.001
+    ) {
+      return listPrice;
+    }
+    return grossPrice > netPrice ? grossPrice : null;
   }
 
   private static void keepOnePrimaryQuotePerOpportunity(
@@ -290,8 +595,8 @@ public without sharing class QuoteTriggerHandler {
       if (
         oldQuote == null ||
         quoteRecord.OpportunityId == null ||
-        quoteRecord.Status != ACCEPTED_STATUS ||
-        oldQuote.Status == ACCEPTED_STATUS ||
+        !ACCEPTED_REVENUE_QUOTE_STATUSES.contains(quoteRecord.Status) ||
+        ACCEPTED_REVENUE_QUOTE_STATUSES.contains(oldQuote.Status) ||
         quoteRecord.Is_Primary__c != true
       ) {
         continue;

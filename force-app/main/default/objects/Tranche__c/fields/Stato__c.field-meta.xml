@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Stato__c</fullName>
-    <description>Stato di pagamento della tranche, calcolato in base alle righe collegate.</description>
+    <description
+  >Stato di pagamento della tranche, calcolato in base alle righe collegate.</description>
     <label>Stato</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

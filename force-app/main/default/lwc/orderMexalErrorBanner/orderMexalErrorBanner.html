@@ -1,0 +1,16 @@
+<template>
+  <template if:true={hasError}>
+    <section class="error-banner" role="alert">
+      <lightning-icon
+        icon-name="utility:error"
+        alternative-text="Errore"
+        variant="inverse"
+        size="small"
+      ></lightning-icon>
+      <div class="error-content">
+        <h2>Errore integrazione Mexal</h2>
+        <p>{errorMessage}</p>
+      </div>
+    </section>
+  </template>
+</template>

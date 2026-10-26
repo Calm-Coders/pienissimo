@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Pienissimo
 org: both
 raised: 2026-09-07
-updated: 2026-09-21
+updated: 2026-10-15
 blocks: [go-live]
 requirement: CTX-02
 source: Gmail thread 1a0815f9a43d3b87, 2026-09-08 14:15Z and 2026-09-09 07:08Z
@@ -211,3 +211,24 @@ about the Fase 2 perimeter.
 October, go-live 21 October.** Elena Spini's 21/09 `#tproj-pienissimo` post finally
 carries `21.10` too, ending seventeen days in which the team channel still said 6
 October.
+
+## 2026-10-15 - superseded: the date moved again, to 2 November
+
+The date this row settled held for thirty-seven days. On 15 October Elena Spini
+moved it again, to **2 November**, with a Go/No-Go by **27 October**, in the same
+thread and asking for the same acknowledgement. See
+[OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md).
+
+🔑 **This row's own instruction is what governed the second move.** It wrote that
+the register is _"not moved by a mail that is still awaiting reply"_, and that
+rule was followed again tonight: the register stays at 21 October while the
+15/10 mail is unanswered.
+
+⚠ **The §14 escalation rule has now been re-dated twice and re-examined never** —
+and the 15/10 mail converts it into a blanket freeze on substantial changes. The
+_"unless the go-live date is explicitly renegotiated"_ clause has been triggered
+twice by the party the rule was written to constrain.
+
+🔴 **The Zoho warning in this row has gone from narrow to negative.** It recorded
+the margin shrinking from twenty-five days to ten. It is now **minus two**:
+[the risk](../risks/Risk%20-%20go-live%20now%20falls%20after%20the%20Zoho%20contract%20expires.md).

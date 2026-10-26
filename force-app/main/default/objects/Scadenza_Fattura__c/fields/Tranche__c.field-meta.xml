@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tranche__c</fullName>
+    <description
+  >Tranche Salesforce a cui corrisponde la rata, abbinata tramite la data di scadenza delle righe ordine.</description>
+    <label>Tranche</label>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <referenceTo>Tranche__c</referenceTo>
+    <relationshipLabel>Scadenze Fattura</relationshipLabel>
+    <relationshipName>Scadenze_Fattura</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>

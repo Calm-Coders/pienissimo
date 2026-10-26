@@ -1,5 +1,14 @@
-public with sharing class MexalArticleSyncService {
+public without sharing class MexalArticleSyncService {
   public static final String ACTION_NAME = 'Mexal_Articoli_Ricerca';
+  // Mexal natura: B? generates a ticket, ?B is sold only inside bundles.
+  // BB genera biglietto solo bundle, BO genera biglietto altri ordini,
+  // NB non genera biglietto solo bundle, NO non genera biglietto altri ordini.
+  private static final Set<String> NATURE_CODES = new Set<String>{
+    'BB',
+    'BO',
+    'NB',
+    'NO'
+  };
 
   public class Result {
     @AuraEnabled
@@ -34,8 +43,11 @@ public with sharing class MexalArticleSyncService {
     public List<Product2> products;
     @AuraEnabled
     public String message;
+    // Mexal active state per article code, applied only to new products.
+    public Map<String, Boolean> activeByCode;
 
     public Result() {
+      activeByCode = new Map<String, Boolean>();
       success = false;
       bodyLength = 0;
       articlesReturned = 0;
@@ -169,13 +181,18 @@ public with sharing class MexalArticleSyncService {
         continue;
       }
 
-      Product2 product = mapArticleToProduct((Map<String, Object>) article);
+      Map<String, Object> articleMap = (Map<String, Object>) article;
+      Product2 product = mapArticleToProduct(articleMap);
       if (String.isBlank(product.External_Product_Code__c)) {
         result.skippedRows++;
         result.saveErrors.add('Articolo Mexal senza codice articolo.');
         continue;
       }
 
+      result.activeByCode.put(
+        normalizeMatchKey(product.External_Product_Code__c),
+        resolveIsActive(articleMap)
+      );
       result.products.add(product);
     }
 
@@ -228,8 +245,17 @@ public with sharing class MexalArticleSyncService {
         continue;
       }
 
-      if (existingProduct == null && itemRecordTypeId != null) {
-        product.RecordTypeId = itemRecordTypeId;
+      // Without cod_grp_merc, existing products keep the active state curated
+      // in Salesforce and new ones fall back to the Mexal active state.
+      if (existingProduct == null) {
+        if (!product.isSet(Product2.IsActive)) {
+          product.IsActive = result.activeByCode.get(
+            normalizeMatchKey(product.External_Product_Code__c)
+          );
+        }
+        if (itemRecordTypeId != null) {
+          product.RecordTypeId = itemRecordTypeId;
+        }
       }
       productsToUpsert.add(product);
     }
@@ -265,6 +291,10 @@ public with sharing class MexalArticleSyncService {
     return String.join(messages, ' | ');
   }
 
+  // Only populated Mexal values are written: the classification fields
+  // (levels, event, ticket type, tranche count) are curated in Salesforce and
+  // the Mexal API does not carry them, so they are never blanked. The category
+  // comes from Mexal when the article has one and is kept otherwise.
   private static Product2 mapArticleToProduct(Map<String, Object> article) {
     String articleCode = chooseFirstPopulated(
       getString(article, 'codice'),
@@ -275,40 +305,116 @@ public with sharing class MexalArticleSyncService {
       getString(article, 'descrizione'),
       articleCode
     );
-    Decimal price1 = getListinoPrice(article, 1);
-    Decimal price2 = getListinoPrice(article, 2);
 
     Product2 product = new Product2();
     product.External_Product_Code__c = trimToLength(articleCode, 255);
-    product.Name = trimToLength(description, 255);
-    product.Description = trimToLength(
-      chooseFirstPopulated(
-        getExtendedDescription(article),
-        getString(article, 'descrizione_agg'),
-        description
-      ),
-      4000
+    putIfPresent(product, Product2.Name, trimToLength(description, 255));
+    // Description = the full name, then Mexal's extended description when there
+    // is one. descrizione_agg is only the tail of a name Mexal split at 30
+    // characters, already inside descr_completa, so it is not used on its own.
+    putIfPresent(
+      product,
+      Product2.Description,
+      trimToLength(
+        joinDescription(description, getExtendedDescription(article)),
+        4000
+      )
     );
-    product.StockKeepingUnit = trimToLength(articleCode, 180);
-    product.IsActive = resolveIsActive(article);
-    product.Price_1__c = price1;
-    product.Price_2__c = price2;
-    product.Product_Price__c = price1;
-    product.Tipologia__c = trimToLength(
-      chooseFirstPopulated(
-        getString(article, 'tipologia'),
-        getString(article, 'tipo_articolo')
-      ),
-      255
+    putIfPresent(
+      product,
+      Product2.StockKeepingUnit,
+      trimToLength(articleCode, 180)
     );
-    product.Livello_0__c = trimToLength(getString(article, 'livello_0'), 255);
-    product.Livello_1__c = trimToLength(getString(article, 'livello_1'), 255);
-    product.Livello_2__c = trimToLength(getString(article, 'livello_2'), 255);
-    product.Livello_3__c = trimToLength(getString(article, 'livello_3'), 255);
-    product.Livello_4__c = trimToLength(getString(article, 'livello_4'), 255);
-    product.Livello_5__c = trimToLength(getString(article, 'livello_5'), 255);
-    product.Livello_6__c = trimToLength(getString(article, 'livello_6'), 255);
+    putIfPresent(product, Product2.Price_1__c, getListinoPrice(article, 1));
+    putIfPresent(product, Product2.Price_2__c, getListinoPrice(article, 2));
+    putIfPresent(
+      product,
+      Product2.Product_Price__c,
+      getListinoPrice(article, 1)
+    );
+    putIfPresent(
+      product,
+      Product2.Tipologia__c,
+      trimToLength(
+        chooseFirstPopulated(
+          getString(article, 'tipologia'),
+          getString(article, 'tipo_articolo')
+        ),
+        255
+      )
+    );
+    // um_principale: NR maps onto the existing "Nr" value; MS, HR and NM are
+    // stored as Mexal sends them. A blank unit keeps the Salesforce value.
+    putIfPresent(
+      product,
+      Product2.QuantityUnitOfMeasure,
+      toUnitOfMeasure(getString(article, 'um_principale'))
+    );
+    // Mexal pads the VAT code (e.g. "E00  ", " 17  "); store it trimmed.
+    putIfPresent(
+      product,
+      Product2.Alq_Iva__c,
+      trimToLength(getString(article, 'alq_iva'), 10)
+    );
+    putIfPresent(
+      product,
+      Product2.Categoria_Articolo__c,
+      getStatisticalCategory(article)
+    );
+
+    // cod_grp_merc is the Salesforce active flag (user decision, 2026-10-09):
+    // S = active, anything else = inactive, for new and existing products.
+    if (article.containsKey('cod_grp_merc')) {
+      product.IsActive = isMexalYes(getString(article, 'cod_grp_merc'));
+      product.Gruppo_Merceologico__c = trimToLength(
+        getString(article, 'cod_grp_merc'),
+        20
+      );
+    }
+
+    // A blank or unknown natura leaves the flags curated in Salesforce.
+    String natureCode = getString(article, 'cod_natura');
+    natureCode = natureCode == null ? '' : natureCode.trim().toUpperCase();
+    if (NATURE_CODES.contains(natureCode)) {
+      product.Natura__c = natureCode;
+      product.Genera_Biglietto__c = natureCode.startsWith('B');
+      product.Solo_Bundle__c = natureCode.endsWith('B');
+    }
     return product;
+  }
+
+  private static void putIfPresent(
+    Product2 product,
+    Schema.SObjectField field,
+    Object value
+  ) {
+    if (value == null) {
+      return;
+    }
+    if (value instanceof String && String.isBlank((String) value)) {
+      return;
+    }
+    product.put(field, value);
+  }
+
+  // Mexal splits the categoria statistica into sigla_cat_sta ("C") and
+  // nr_cat_sta (10). Salesforce stores them joined with a two-digit number
+  // ("C10", "E02"), the format the edition mapping and Plus rules match on.
+  private static String getStatisticalCategory(Map<String, Object> article) {
+    String prefix = getString(article, 'sigla_cat_sta');
+    Integer categoryNumber = parseInteger(
+      trimToLength(getString(article, 'nr_cat_sta'), 10)
+    );
+    if (
+      String.isBlank(prefix) ||
+      categoryNumber == null ||
+      categoryNumber <= 0
+    ) {
+      return null;
+    }
+
+    return prefix.trim().toUpperCase() +
+      String.valueOf(categoryNumber).leftPad(2, '0');
   }
 
   private static Boolean resolveIsActive(Map<String, Object> article) {
@@ -506,6 +612,25 @@ public with sharing class MexalArticleSyncService {
     return trimmedValue.length() > maxLength
       ? trimmedValue.substring(0, maxLength)
       : trimmedValue;
+  }
+
+  private static String toUnitOfMeasure(String mexalUnit) {
+    String unit = trimToLength(mexalUnit, 10);
+    if (unit == null) {
+      return null;
+    }
+    unit = unit.toUpperCase();
+    return unit == 'NR' ? 'Nr' : unit;
+  }
+
+  private static String joinDescription(String name, String extended) {
+    if (String.isBlank(extended) || extended.trim() == name?.trim()) {
+      return name;
+    }
+    if (String.isBlank(name)) {
+      return extended;
+    }
+    return name.trim() + '\n' + extended.trim();
   }
 
   private static String getExtendedDescription(Map<String, Object> article) {

@@ -1,7 +1,61 @@
-public with sharing class AccountTriggerHandler {
+public without sharing class AccountTriggerHandler {
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
   private static final String LOCALE_RECORD_TYPE = 'Locale';
   private static Boolean bypassMexalCustomerUpdate = false;
+
+  public static void beforeSave(
+    List<Account> newAccounts,
+    Map<Id, Account> oldAccountMap
+  ) {
+    FiscalResidenceResolver.applyToAccounts(newAccounts);
+    copySelectedAgentFields(newAccounts, oldAccountMap);
+  }
+
+  private static void copySelectedAgentFields(
+    List<Account> newAccounts,
+    Map<Id, Account> oldAccountMap
+  ) {
+    Set<Id> agentIds = new Set<Id>();
+    List<Account> accountsToSync = new List<Account>();
+    for (Account accountRecord : newAccounts) {
+      Account oldAccount = oldAccountMap == null
+        ? null
+        : oldAccountMap.get(accountRecord.Id);
+      if (oldAccount == null) {
+        if (accountRecord.Agente__c == null) {
+          continue;
+        }
+      } else if (accountRecord.Agente__c == oldAccount.Agente__c) {
+        continue;
+      }
+
+      accountsToSync.add(accountRecord);
+      if (accountRecord.Agente__c != null) {
+        agentIds.add(accountRecord.Agente__c);
+      }
+    }
+
+    Map<Id, User> agentsById = new Map<Id, User>();
+    if (!agentIds.isEmpty()) {
+      agentsById = new Map<Id, User>(
+        [
+          SELECT Id, Agente__c, Categoria_Provvigioni_Cliente__c
+          FROM User
+          WHERE Id IN :agentIds
+        ]
+      );
+    }
+
+    for (Account accountRecord : accountsToSync) {
+      User agent = agentsById.get(accountRecord.Agente__c);
+      accountRecord.Codice_Agente_Esterno__c = agent == null
+        ? null
+        : agent.Agente__c;
+      accountRecord.Categoria_Provvigioni_Cliente__c = agent == null
+        ? null
+        : agent.Categoria_Provvigioni_Cliente__c;
+    }
+  }
 
   public static void afterUpdate(
     List<Account> newAccounts,
@@ -96,6 +150,16 @@ public with sharing class AccountTriggerHandler {
     return accountRecord.Email__c != oldAccount.Email__c ||
       accountRecord.Phone != oldAccount.Phone ||
       accountRecord.Partita_IVA__c != oldAccount.Partita_IVA__c ||
-      accountRecord.Name != oldAccount.Name;
+      accountRecord.Name != oldAccount.Name ||
+      accountRecord.BillingStreet != oldAccount.BillingStreet ||
+      accountRecord.BillingCity != oldAccount.BillingCity ||
+      accountRecord.BillingState != oldAccount.BillingState ||
+      accountRecord.BillingPostalCode != oldAccount.BillingPostalCode ||
+      accountRecord.BillingCountry != oldAccount.BillingCountry ||
+      accountRecord.ShippingStreet != oldAccount.ShippingStreet ||
+      accountRecord.ShippingCity != oldAccount.ShippingCity ||
+      accountRecord.ShippingState != oldAccount.ShippingState ||
+      accountRecord.ShippingPostalCode != oldAccount.ShippingPostalCode ||
+      accountRecord.ShippingCountry != oldAccount.ShippingCountry;
   }
 }

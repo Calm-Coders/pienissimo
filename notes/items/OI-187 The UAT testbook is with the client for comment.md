@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Pienissimo
 org: both
 raised: 2026-09-25
-updated: 2026-09-25
+updated: 2026-09-28
 source: Gmail thread 1a0d99b822c16651, 2026-09-25 17:27Z
 ---
 
@@ -64,3 +64,20 @@ The reason given to the client is the new specification, not a ROMI delay.
 - ⚠ **Rebecca Marmo is cc'd on a UAT thread for the first time.** Consistent with
   her taking the marketing session
   ([OI-177](OI-177%20The%20marketing%20flow%20UAT%20needs%20production.md)).
+
+## 2026-09-28 - the workbook was modified, and nobody knows by whom
+
+`Testbook_UAT_Lead_Opportunita_2026-09-24_v2_1.xlsx` (Drive
+`1zIWOoF2-imiEPONbnMrLEYQDDnRUe9Ba`, owner Elena Spini) was **modified at
+2026-09-28 09:03:13Z**, three days after it went to the client asking for comments.
+
+⚠ **Whether that edit is the client's review or Elena Spini's own revision is
+unknown.** The file was **deliberately not opened** — it is a client-facing
+workbook that may carry customer records, the standing decision since 25/09. Drive
+metadata gives the modification time, not the author of the change.
+
+🔴 **Still no date has been put to the client's comments**, and Elena Spini's
+28/09 `#tproj-pienissimo` status reports the recap and testbook as sent _"chiedendo
+i loro commenti/revisione"_ with no deadline attached. **A human opening this file
+would settle in one minute whether the client has responded** — worth doing before
+the 30/09 session.

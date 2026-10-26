@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: both
 raised: 2026-09-18
-updated: 2026-09-25
+updated: 2026-10-01
 source: notes/meetings/2026-09-18 Interna Temi Mexal.md
 ---
 
@@ -103,3 +103,94 @@ Elena Spini reports Fabrizio Paganelli _"non vuole spendere"_.
 🔴 **So the topic has moved from "out of plan by accident" to "in Fase 2 by ROMI
 decision, unconfirmed by the client."** That is an improvement in the record and not
 yet an agreement.
+
+## 🟢 2026-09-28 - the client confirmed Fase 2, and gave a reason nobody had
+
+The sentence immediately above is now out of date. At
+[the 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(`00:27:00`) Elena Spini put the deferral to Fabrizio Paganelli and he agreed in
+his own words:
+
+> _"rimandiamo sia al tema della nota di credito che questo qui alla fase due."_
+
+🟢 **So it is now in Fase 2 by client agreement, not by ROMI decision alone.** Both
+items were named: the **credit note** and the **wrong-payment correction** (an
+administration mis-registration that has already flowed through to the ticket,
+needing the asset state walked back and the invoice re-applied).
+
+**His two reasons, both new to the record:**
+
+1. **Volume.** _"la nota di credito ne facciamo poche, quindi fortunatamente …
+   possiamo anche posticiparla e dare priorità ad altre cose."_
+2. 🔑 **Mexal has no order behind a credit note**, which makes the whole flow
+   different in kind from invoicing: _"mentre per le fatture abbiamo un ordine
+   sottostante … per le note di credito su Mexal non passano gli ordini, quindi noi
+   dovremmo fare la nota di credito a mano su Salesforce e la nota di credito a
+   mano su Mexal."_ He contrasted it with a previous employer's returns-order type
+   and called the gestionale _"un po' particolare"_ here.
+
+⚠ **Point 2 is his recollection and he asked for it to be verified** —
+_"questa cosa qui verifichiamola bene"_. 🔴 **Nobody was assigned the
+verification.** It matters beyond Fase 2 scoping: if Mexal genuinely has no credit
+note order type, then a credit note is dual manual entry forever, and that is a
+design constraint rather than a build task.
+
+🟢 **Fase 2 will be released incrementally.** Elena Spini proposed prioritising
+within it — _"possiamo fare rilasci dedicati pezzettino per pezzettino"_ — and
+Aurel Mrruku backed it: _"il problema è strutturare bene il data model e non
+mettere cose a metà"_, because production bonifiche cost more than staged
+delivery. He drew the contrast explicitly: **Fase 1 cannot be staged**, because all
+the structures must exist for the Excel migration to map onto.
+
+🔴 **Fabrizio Paganelli asked which months Fase 2 covers and did not get an
+answer.** Elena Spini said the quotation is still to be done and undertook to send
+the updated plan and a proposal **this week**. Still no dates, and the client is
+now asking for them.
+
+## 🔑 2026-09-30 — the client gave the credit-note path a trigger and an asset outcome
+
+At [the ticket UAT](../meetings/2026-09-30%20UAT%20Biglietti%20Asset%20Campagne%20ed%20Eventi.md)
+(`01:48:32`–`01:52:25`) Rebecca Marmo raised the case this row needed: quotes that
+tutors **sign and never pay**, leaving assets in `Ordinato` from October to May
+without ever becoming available.
+
+Fabrizio Paganelli stated the administrative procedure:
+
+- **The order is generated on acceptance and signature, and the invoice is issued
+  immediately — regardless of collection** (`01:51:15`).
+- On non-payment followed by a withdrawal agreed with the customer, a **credit
+  note** is issued and **the asset is moved to a dedicated cancelled state on
+  Salesforce to keep traceability** (`01:52:25`).
+
+🟢 **That is the first client-stated trigger for a credit note on this record**, and
+it is consistent with `Annullato`'s recorded credit-note transition in
+[OI-74](OI-74%20Asset%20state%20machine.md).
+
+⚠ **It does not lift this row out of Fase 2**, and nothing on 30/09 said it did.
+What it changes is that the Fase 1 build now has an **asset consequence** to
+honour even while the credit-note mechanics stay deferred: an asset stranded in
+`Ordinato` must be cancellable.
+
+🔴 **The Mexal question this row carries is untouched.** Fabrizio Paganelli's own
+28/09 point — that Mexal has no order behind a credit note, so entry is dual and
+manual — was **not raised**, and **nobody is still assigned** to verify it.
+
+
+## 🔴 2026-10-01 - now an open point on a document the client is confirming
+
+Open point 7 of
+[the written logic document](../The%20agreed%20Asset%20and%20ticket%20send%20logic%20document.md),
+verbatim:
+
+> _"Nota di credito / annullamento: quale stato assume l'asset, distinto da
+> Rinuncia e Annullato?"_
+
+🔴 **The client was not shown it.** The `Open point` section was removed from the
+copy mailed on 01/10, which asked for confirmation of the logics —
+[OI-200](OI-200%20The%20client%20was%20asked%20to%20confirm%20logics%20whose%20open%20points%20were%20removed.md).
+
+This row remains Fase 2 and this sweep does not change that. What changed is that
+it is now a **named gap in the document that will become the agreed baseline**,
+rather than a deferred topic — and the 30/09 UAT already established that the
+invoice is issued on signature regardless of collection, so a withdrawal always
+produces a credit note and therefore always needs this state.

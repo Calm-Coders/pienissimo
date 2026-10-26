@@ -1,4 +1,4 @@
-public with sharing class BundleTranchController {
+public without sharing class BundleTranchController {
   public class ComponentRow {
     @AuraEnabled
     public Id id;

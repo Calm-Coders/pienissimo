@@ -20,7 +20,15 @@ meta:
   # Go-live renegotiated 6 -> 21 October by ROMI in writing on 2026-09-08
   # (Gmail 1a0815f9a43d3b87); "presa visione" from Fabrizio Paganelli 2026-09-09.
   # See notes/items/OI-124. Original signed date: 2026-10-06.
-  go_live: 2026-10-21
+  # Renegotiated again 21 October -> 16 November: proposed by the CLIENT in writing
+  # on 2026-10-20 (Gmail 1a158b6e3e4cee81, Sabatino Rinaldi) and agreed by both
+  # parties in the recorded client session of 2026-10-21 10:01 CEST. Technical
+  # release ~9 November; invoicing stays on Zoho to 12 November; two-phase order
+  # import 9-13 November; Salesforce invoicing from Monday 16 November.
+  # See notes/items/OI-268. ROMI's written reply was sent from e.spini@romicompany.com
+  # and is not held in the swept mailbox, so the acceptance in evidence is verbal.
+  # The intervening 2 November proposal (OI-243) was superseded and never agreed.
+  go_live: 2026-11-16
   zoho_expiry: 2026-10-31
   prose_documents:
     it: REQUISITI.it.md # authoritative, client-facing
@@ -239,6 +247,7 @@ state_machines:
     states:
       [
         Qualificato,
+        "Da ricontattare",
         "In trattativa (Prev inviato)",
         "Da ricontattare - Prev. inviato",
         Chiusa/Vinta,
@@ -249,6 +258,9 @@ state_machines:
       - Multiple quotes allowed per opportunity
       - An existing client's request enters directly as an OPPORTUNITA'
       - "Chiusa/Vinta requires at least one quote sent; payment confirms the win"
+      - "Da ricontattare requires a reason and a recontact date"
+      - "Da ricontattare - Prev. inviato requires its own reason and recontact date"
+      - "Moving to Chiusa/Persa automatically moves every related Quote to Rifiutato"
 
   quote:
     source: [DGM-1, DGM-2]
@@ -455,7 +467,8 @@ requirements:
       area: context,
       pri: M,
       status: agreed,
-      text: "Go-live 21 October 2026, focused on WooCommerce and Mexal"
+      text: "Go-live 16 November 2026, focused on WooCommerce and Mexal",
+      tracked_by: [OI-124, OI-128, OI-243, OI-268, DEC-2026-09-08-go-live-21-october]
     }
   - {
       id: CTX-03,
@@ -549,7 +562,8 @@ requirements:
       pri: M,
       status: agreed,
       text: "Mandatory loss reason with two distinct picklist sets",
-      picklists: [opportunity_chiusa_persa, lead_motivazione_uscita]
+      picklists: [opportunity_chiusa_persa, lead_motivazione_uscita],
+      tracked_by: [OI-259]
     }
   - {
       id: DM-08,
@@ -636,7 +650,8 @@ requirements:
       area: data_model,
       pri: S,
       status: agreed,
-      text: "Contract object for Performance Plus with renewal and collection tracking"
+      text: "Contract object for Performance Plus with renewal and collection tracking",
+      tracked_by: [OI-272]
     }
   - {
       id: DM-20,
@@ -729,7 +744,7 @@ requirements:
       pri: M,
       status: agreed,
       text: "Automatic alerts on day 2 after send and at expiry, to tutor and client",
-      tracked_by: [OI-59]
+      tracked_by: [OI-59, OI-264]
     }
   - {
       id: SAL-10,
@@ -817,7 +832,8 @@ requirements:
       pri: S,
       status: to_confirm,
       source: DGM-1,
-      text: "Two 'da ricontattare' tasks to add: after first contact and after the appointment/demo, both with a settable specific date"
+      text: "Two distinct Opportunity parking stages: Da ricontattare after the appointment/demo, and Da ricontattare - Prev. inviato after a quote; each requires its own reason, while its date is populated automatically on entry",
+      tracked_by: [OI-59]
     }
   - {
       id: SAL-21,
@@ -891,7 +907,7 @@ requirements:
       pri: M,
       status: agreed,
       text: "Bundles created by administration only; products stay configured in Mexal",
-      tracked_by: [decision-products-from-mexal-bundles-in-salesforce]
+      tracked_by: [decision-products-from-mexal-bundles-in-salesforce, OI-261]
     }
   - {
       id: BUN-07,
@@ -1050,7 +1066,7 @@ requirements:
       status: conflict,
       text: "Reminder funnel cadence",
       conflict: RC-03,
-      tracked_by: [OI-81, OI-126]
+      tracked_by: [OI-81, OI-126, OI-225]
     }
   - {
       id: BIG-07,

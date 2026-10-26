@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stato_Scadenza__c</fullName>
+    <description
+  >Pagata, Scaduta (non pagata e oltre la data) o A scadere (OI-208).</description>
+    <label>Stato Scadenza</label>
+    <formula
+  >IF(Pagata__c, &quot;Pagata&quot;, IF(AND(NOT(ISBLANK(Data_Scadenza__c)), Data_Scadenza__c &lt; TODAY()), &quot;Scaduta&quot;, &quot;A scadere&quot;))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <type>Text</type>
+</CustomField>

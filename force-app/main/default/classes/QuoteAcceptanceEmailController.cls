@@ -16,6 +16,10 @@ public without sharing class QuoteAcceptanceEmailController {
     public String body;
     @AuraEnabled
     public String acceptanceUrl;
+    // Ticket products without exactly one edition mapping today; a non-empty
+    // list blocks the send.
+    @AuraEnabled
+    public List<String> mappingProblems;
   }
 
   @AuraEnabled
@@ -23,18 +27,74 @@ public without sharing class QuoteAcceptanceEmailController {
     Quote quoteRecord = loadSendableQuote(quoteId);
     EmailDraft draft = new EmailDraft();
     EmailTemplate template = getTemplate();
-    draft.recipient = String.isBlank(quoteRecord.Email)
-      ? quoteRecord.Account.Email_Contatto_Principale__c
-      : quoteRecord.Email;
+    draft.recipient = quoteRecord.Account.Email_Contatto_Principale__c;
     draft.acceptanceUrl = acceptanceUrl(quoteRecord.Id);
     draft.subject = applyQuoteTokens(getSubject(template), quoteRecord);
-    draft.body = buildPlainTextBody(quoteRecord, draft.acceptanceUrl);
+    draft.body = buildPlainTextBody(quoteRecord);
+    draft.mappingProblems = QuoteEditionMappingValidator.findMappingProblems(
+      quoteRecord.Id,
+      Date.today()
+    );
     return draft;
   }
 
   @AuraEnabled
   public static void sendEmail(Id quoteId, String recipient, String subject) {
     Quote quoteRecord = loadSendableQuote(quoteId);
+    String link = acceptanceUrl(quoteRecord.Id);
+    sendPreparedEmail(
+      quoteRecord,
+      recipient,
+      subject,
+      appendAcceptanceFooter(buildPlainTextBody(quoteRecord), link),
+      buildHtmlBody(getTemplate(), quoteRecord, link)
+    );
+  }
+
+  @AuraEnabled
+  public static void sendEditedEmail(
+    Id quoteId,
+    String recipient,
+    String subject,
+    String body
+  ) {
+    Quote quoteRecord = loadSendableQuote(quoteId);
+    if (String.isBlank(body)) {
+      throw new AuraHandledException('Inserisci il messaggio dell email.');
+    }
+    String link = acceptanceUrl(quoteRecord.Id);
+    String finalBody = appendAcceptanceFooter(body, link);
+    sendPreparedEmail(
+      quoteRecord,
+      recipient,
+      subject,
+      finalBody,
+      buildEditableHtmlBody(body, link)
+    );
+  }
+
+  private static void requireEditionMappings(Id quoteId) {
+    List<String> problems = QuoteEditionMappingValidator.findMappingProblems(
+      quoteId,
+      Date.today()
+    );
+    if (!problems.isEmpty()) {
+      throw new AuraHandledException(
+        'Invio bloccato: questi prodotti non hanno una campagna figlia mappata alla data odierna: ' +
+          String.join(problems, '; ') +
+          '.'
+      );
+    }
+  }
+
+  private static void sendPreparedEmail(
+    Quote quoteRecord,
+    String recipient,
+    String subject,
+    String body,
+    String htmlBody
+  ) {
+    requireEditionMappings(quoteRecord.Id);
     String normalizedRecipient = recipient == null ? null : recipient.trim();
     if (
       String.isBlank(normalizedRecipient) ||
@@ -58,16 +118,19 @@ public without sharing class QuoteAcceptanceEmailController {
         'Inserisci un oggetto valido, massimo 255 caratteri e su una sola riga.'
       );
     }
-    String link = acceptanceUrl(quoteRecord.Id);
-    EmailTemplate template = getTemplate();
+    if (String.isBlank(body) || body.length() > 32000) {
+      throw new AuraHandledException(
+        'Inserisci un messaggio valido, massimo 32000 caratteri.'
+      );
+    }
     Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
     email.setTargetObjectId(UserInfo.getUserId());
     email.setTreatTargetObjectAsRecipient(false);
     email.setToAddresses(new List<String>{ normalizedRecipient });
     email.setWhatId(quoteRecord.Id);
     email.setSubject(subject.trim());
-    email.setPlainTextBody(buildPlainTextBody(quoteRecord, link));
-    email.setHtmlBody(buildHtmlBody(template, quoteRecord, link));
+    email.setPlainTextBody(body);
+    email.setHtmlBody(htmlBody);
     email.setSaveAsActivity(true);
     Messaging.SendEmailResult[] results = Messaging.sendEmail(
       new List<Messaging.SingleEmailMessage>{ email }
@@ -75,9 +138,14 @@ public without sharing class QuoteAcceptanceEmailController {
     if (!results[0].isSuccess()) {
       throw new AuraHandledException(results[0].getErrors()[0].getMessage());
     }
-    if (quoteRecord.Email != normalizedRecipient) {
-      update new Quote(Id = quoteRecord.Id, Email = normalizedRecipient);
-    }
+    // The two-day follow-up starts only after Salesforce confirms that this
+    // acceptance email was sent. Every resend starts a fresh 48-hour cycle.
+    update new Quote(
+      Id = quoteRecord.Id,
+      Email = normalizedRecipient,
+      Data_Ora_Invio_Preventivo__c = Datetime.now(),
+      Promemoria_2_Giorni_Inviato__c = false
+    );
   }
 
   private static String acceptanceUrl(Id quoteId) {
@@ -102,7 +170,6 @@ public without sharing class QuoteAcceptanceEmailController {
         Account.Email_Contatto_Principale__c
       FROM Quote
       WHERE Id = :quoteId
-      WITH USER_MODE
       LIMIT 1
     ];
     if (records.isEmpty()) {
@@ -171,14 +238,19 @@ public without sharing class QuoteAcceptanceEmailController {
       .replace('{{quoteName}}', text(quoteRecord.Name));
   }
 
-  private static String buildPlainTextBody(Quote quoteRecord, String link) {
+  private static String buildPlainTextBody(Quote quoteRecord) {
     return 'Buongiorno,\n\n' +
       'ti inviamo il preventivo ' +
       text(quoteRecord.QuoteNumber) +
       ' (' +
       text(quoteRecord.Name) +
-      ').\n\n' +
-      'Puoi consultare, accettare o rifiutare il preventivo:\n' +
+      ').';
+  }
+
+  private static String appendAcceptanceFooter(String body, String link) {
+    String message = body == null ? '' : body.trim();
+    return message +
+      '\n\nPuoi consultare, accettare o rifiutare il preventivo:\n' +
       link +
       '\n\nGrazie,\nIl team Pienissimo';
   }
@@ -191,6 +263,27 @@ public without sharing class QuoteAcceptanceEmailController {
       ' (' +
       html(quoteRecord.Name) +
       ').</p>' +
+      '<p>Puoi consultare, accettare o rifiutare il preventivo:</p>' +
+      '<p style="margin: 20px 0"><a href="' +
+      link.escapeHtml4() +
+      '" style="background-color: #0176d3; border-radius: 4px; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 40px; min-width: 120px; padding: 0 18px; text-align: center; text-decoration: none;">Apri il preventivo</a></p>' +
+      '<p>Grazie,<br/>Il team Pienissimo</p>' +
+      '</div>';
+  }
+
+  private static String buildEditableHtmlBody(String body, String link) {
+    if (body == null) {
+      return null;
+    }
+    String escapedBody = body
+      .escapeHtml4()
+      .replace('\r\n', '\n')
+      .replace('\r', '\n')
+      .replace('\n', '<br/>');
+    return '<div style="font-family: Arial, sans-serif; color: #1f2933; line-height: 1.5">' +
+      '<p>' +
+      escapedBody +
+      '</p>' +
       '<p>Puoi consultare, accettare o rifiutare il preventivo:</p>' +
       '<p style="margin: 20px 0"><a href="' +
       link.escapeHtml4() +

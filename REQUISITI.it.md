@@ -26,7 +26,7 @@ Ogni requisito ha un identificativo stabile (es. `SAL-04`), una priorità e uno 
 
 | Priorità | Significato                                                    |
 | :------: | -------------------------------------------------------------- |
-|  **M**   | _Must_ — indispensabile al go-live del 21 ottobre 2026.        |
+|  **M**   | _Must_ — indispensabile al go-live del 16 novembre 2026.       |
 |  **S**   | _Should_ — importante, ma il go-live può avvenire senza.       |
 |  **C**   | _Could_ — desiderabile, realizzabile se i tempi lo consentono. |
 |  **F2**  | Rinviato esplicitamente alla **Fase 2**, post go-live.         |
@@ -40,7 +40,7 @@ Ogni requisito ha un identificativo stabile (es. `SAL-04`), una priorità e uno 
 | ID     | Requisito                                                                                                                                                                                   | Pri. | Stato |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :---: |
 | CTX-01 | Sostituire Zoho CRM con Salesforce come unico CRM operativo di Pienissimo.                                                                                                                  |  M   |  ✅   |
-| CTX-02 | **Data di go-live: 21 ottobre 2026**, con focus sulle integrazioni WooCommerce e Mexal. Le integrazioni minori sono rinviate alla Fase 2.                                                   |  M   |  ✅   |
+| CTX-02 | **Data di go-live: 16 novembre 2026**, con focus sulle integrazioni WooCommerce e Mexal. Le integrazioni minori sono rinviate alla Fase 2. Spostata dal 21 ottobre: proposta da Pienissimo per iscritto il 20 ottobre 2026 e concordata tra le parti il 21 ottobre 2026. |  M   |  ✅   |
 | CTX-03 | Il contratto Zoho scade il **31 ottobre 2026**. La finestra di funzionamento in parallelo (dual-run) è quindi di circa tre settimane e non è prorogabile.                                   |  M   |  ✅   |
 | CTX-04 | Durante il dual-run i biglietti sono inseriti in doppio (Zoho + Salesforce) e la fatturazione delle vendite da palco resta su Zoho fino al Food Marketing Festival del 29 settembre.        |  M   |  ✅   |
 | CTX-05 | Principio guida: **nessun "accrocchio"**. I processi vengono ridisegnati per Salesforce, non replicati da Zoho. Si parte semplici e manuali, si automatizza ciò che si dimostra ripetitivo. |  M   |  ✅   |
@@ -55,7 +55,12 @@ Ogni requisito ha un identificativo stabile (es. `SAL-04`), una priorità e uno 
 | ~1 settembre 2026   | Import dati in Salesforce                | Preceduto dalla bonifica: ~6.000 lead/account contro ~7.500 clienti paganti |
 | 7–19 settembre 2026 | Tour (eventi gratuiti)                   | ~90% pubblico nuovo, dati digitati dal cliente                              |
 | 29 settembre 2026   | Food Marketing Festival                  | Picchi di 100–150 fatture al giorno                                         |
-| **21 ottobre 2026** | **Go-live**                              | WooCommerce + Mexal operativi                                               |
+| 21 ottobre 2026     | ~~Go-live~~ (superata)                   | Data del testo firmato; non eseguita                                        |
+| ~9 novembre 2026    | **Rilascio tecnico in produzione**       | Più i passaggi di configurazione manuale                                    |
+| 9–12 novembre 2026  | Primo import degli ordini storici        | La fatturazione resta su Zoho; nessun fermo operativo                       |
+| 12 novembre 2026    | Ultimo giorno di fatturazione su Zoho    |                                                                             |
+| 13 novembre 2026    | Secondo import degli ordini storici      | Estrazione consegnata dal cliente alle 09:00                                |
+| **16 novembre 2026** | **Go-live**                             | Fatturazione attiva su Salesforce; WooCommerce + Mexal operativi            |
 | 29 ottobre 2026     | Evento di lancio, 1.500+ partecipanti    | Primo evento a pieno regime su Salesforce                                   |
 | 31 ottobre 2026     | Scadenza contratto Zoho                  | Fine del dual-run                                                           |
 | 3 novembre 2026 🔴  | Camerieri Venditori — o rinvio ad aprile | Data da confermare                                                          |
@@ -378,7 +383,7 @@ Il progetto si considera conforme ai requisiti quando tutte le condizioni seguen
 1. Ogni richiesta di modifica successiva alla firma è formalizzata per iscritto a ROMI.
 2. ROMI risponde con una valutazione di impatto su **perimetro, tempi e costi** entro cinque giorni lavorativi.
 3. La modifica entra in lavorazione **solo dopo approvazione scritta** di Pienissimo.
-4. Le richieste che mettono a rischio la data del 21 ottobre 2026 sono automaticamente candidate alla Fase 2, salvo diverso accordo esplicito sulla data di go-live.
+4. Le richieste che mettono a rischio la data del 16 novembre 2026 sono automaticamente candidate alla Fase 2, salvo diverso accordo esplicito sulla data di go-live.
 5. Gli elementi elencati al §2.2 restano fuori perimetro fino a quotazione e accettazione separata.
 
 ---
@@ -407,14 +412,14 @@ I due file draw.io contengono decisioni che non sono mai state messe a verbale. 
 
 Un record entra come **Lead**, diventa **Opportunità**, porta un **Preventivo**, si trasforma in **Ordine** con le sue tranche ed emette un **Biglietto**.
 
-| Oggetto     | Stati, nell'ordine in cui si attraversano                                                                                                                                                             |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lead        | New → In Lavorazione → Primo contatto → Qualificato · oppure Non Risponde (task automatico con promemoria a 48h, poi si torna in lavorazione) · oppure Non qualificato                                |
-| Opportunità | Qualificato → In trattativa (preventivo inviato) → Chiusa/Vinta · con Da ricontattare come parcheggio e Chiusa/Persa come uscita                                                                      |
-| Preventivo  | Bozza → In trattativa (validità 5 giorni) → **In attesa di accettazione** → Accettato (copia contabile ricevuta) → **Firmato** (firmato; viene generato l'ordine) · oppure Rifiutata                  |
-| Ordine      | Ordinato → Fatturato → **Incassato**, automaticamente quando tutte le tranche dell'ordine sono pagate (v1.6); l'Opportunità passa quindi a Chiusa/Vinta. Gli ordini WooCommerce nascono già Incassato |
-| Tranche     | Creata nel Preventivo → integralmente pagata quando tutte le righe incluse sono pagate. ⚠ Valore API finale aperto: `Pagata`/`Incassata` oppure legacy `CHIUSO/ACQUISITO`.                            |
-| Biglietto   | Ordinato → Disponibile → Assegnato → Utilizzato · oppure Non utilizzato · oppure Annullato                                                                                                            |
+| Oggetto     | Stati, nell'ordine in cui si attraversano                                                                                                                                                                                                                                                                     |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lead        | New → In Lavorazione → Primo contatto → Qualificato · oppure Non Risponde (task automatico con promemoria a 48h, poi si torna in lavorazione) · oppure Non qualificato                                                                                                                                        |
+| Opportunità | Qualificato → In trattativa (preventivo inviato) → Chiusa/Vinta · con **Da ricontattare** dopo appuntamento/demo e **Da ricontattare - Prev. inviato** dopo un preventivo, ciascuno con motivazione e data proprie obbligatorie · Chiusa/Persa porta automaticamente tutti i Preventivi collegati a Rifiutato |
+| Preventivo  | Bozza → In trattativa (validità 5 giorni) → **In attesa di accettazione** → Accettato (copia contabile ricevuta) → **Firmato** (firmato; viene generato l'ordine) · oppure Rifiutata                                                                                                                          |
+| Ordine      | Ordinato → Fatturato → **Incassato**, automaticamente quando tutte le tranche dell'ordine sono pagate (v1.6); l'Opportunità passa quindi a Chiusa/Vinta. Gli ordini WooCommerce nascono già Incassato                                                                                                         |
+| Tranche     | Creata nel Preventivo → integralmente pagata quando tutte le righe incluse sono pagate. ⚠ Valore API finale aperto: `Pagata`/`Incassata` oppure legacy `CHIUSO/ACQUISITO`.                                                                                                                                    |
+| Biglietto   | Ordinato → Disponibile → Assegnato → Utilizzato · oppure Non utilizzato · oppure Annullato                                                                                                                                                                                                                    |
 
 ⚠ **«In attesa di accettazione» è il nuovo nome di «preventivo scaduto».** In stanza si continuerà a dire "scaduto" per mesi: è la stessa cosa.
 
@@ -453,7 +458,7 @@ Esistono solo nei disegni e non sono mai stati discussi in riunione. Con la firm
 | ID     | Requisito                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Pri. |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--: |
 | SAL-19 | Un preventivo scaduto deve poter tornare in trattativa in autonomia dal tutor.                                                                                                                                                                                                                                                                                                                                                                               |  S   |
-| SAL-20 | Due task «da ricontattare» da aggiungere: dopo il primo contatto e dopo l'appuntamento, con data impostabile.                                                                                                                                                                                                                                                                                                                                                |  S   |
+| SAL-20 | Due stati distinti di parcheggio dell'Opportunità: **Da ricontattare** dopo appuntamento/demo e **Da ricontattare - Prev. inviato** dopo un preventivo; ciascuno richiede una motivazione propria, mentre la relativa data viene popolata automaticamente all'ingresso nello stato.                                                                                                                                                                          |  S   |
 | SAL-21 | Tipo opportunità: «Standard», «WooCommerce» (origine obbligatoria Recall Tutor o Pack Tutor) e «Plus Attivazione/Rinnovo» (v1.6).                                                                                                                                                                                                                                                                                                                            |  S   |
 | SAL-22 | Un campo INFO che spiega come usare le motivazioni di uscita.                                                                                                                                                                                                                                                                                                                                                                                                |  C   |
 | SAL-23 | Attivare la funzione standard che porta l'opportunità in «preventivo inviato» automaticamente.                                                                                                                                                                                                                                                                                                                                                               |  S   |

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Preventivi_WooCommerce</fullName>
+    <columns>QUOTE.NAME</columns>
+    <columns>QUOTE.STATUS</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>Is_Primary__c</columns>
+    <columns>QUOTE.EXPIRATIONDATE</columns>
+    <columns>QUOTE.TOTALPRICE</columns>
+    <columns>Condizione_di_Pagamento__c</columns>
+    <columns>DocuSign_Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Tipo_Opportunita_Lista__c</field>
+        <operation>equals</operation>
+        <value>WooCommerce</value>
+    </filters>
+    <label>Preventivi - WooCommerce</label>
+</ListView>

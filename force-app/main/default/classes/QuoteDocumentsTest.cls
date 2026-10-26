@@ -43,9 +43,13 @@ private class QuoteDocumentsTest {
     ];
   }
 
+  // DocuSign sends the file titled exactly "Preventivo-<QuoteNumber>", the
+  // name QuotePdfService gives it.
   private static void attachSigningPdf(Id quoteId) {
     insert new ContentVersion(
-      Title = 'Preventivo-Q-da firmare-20260928',
+      Title = 'Preventivo-' +
+        [SELECT QuoteNumber FROM Quote WHERE Id = :quoteId]
+        .QuoteNumber,
       PathOnClient = 'preventivo.pdf',
       VersionData = Blob.valueOf('%PDF-1.4'),
       FirstPublishLocationId = quoteId
@@ -275,7 +279,7 @@ private class QuoteDocumentsTest {
         FROM Quote
         WHERE Id = :completed.Id
       ];
-      System.assertEquals('Accettato', signed.Status);
+      System.assertEquals('Firmato', signed.Status);
       System.assertEquals(true, signed.Is_Signed__c);
       System.assertEquals(
         1,
@@ -418,7 +422,9 @@ private class QuoteDocumentsTest {
       System.assert(
         draft.acceptanceUrl.endsWith(String.valueOf(quoteRecord.Id))
       );
-      System.assert(draft.body.contains(draft.acceptanceUrl));
+      // The draft body is the editable text; the acceptance link is appended
+      // as a footer when the email is sent.
+      System.assert(!String.isBlank(draft.body));
       System.assert(!String.isBlank(draft.subject));
     }
   }
@@ -677,9 +683,11 @@ private class QuoteDocumentsTest {
   @isTest
   static void anticipayGuardsItsInputs() {
     System.runAs(TestDataFactory.runner()) {
-      Account noVat = TestDataFactory.buildAzienda('Senza IVA');
-      noVat.Partita_IVA__c = null;
-      TestDataFactory.insertAllowingDuplicates(noVat);
+      // An Azienda cannot be saved without a Partita IVA; a Locale can.
+      Account noVat = TestDataFactory.locale(
+        'Senza IVA',
+        TestDataFactory.azienda('Capogruppo').Id
+      );
       Order orderRecord = TestDataFactory.order(noVat.Id);
       Contact contactRecord = TestDataFactory.contact(
         noVat.Id,

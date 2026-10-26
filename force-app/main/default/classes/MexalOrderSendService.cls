@@ -1,10 +1,16 @@
-public with sharing class MexalOrderSendService {
+public without sharing class MexalOrderSendService {
   private static final String DEFAULT_DOCUMENT_TYPE = 'OC';
-  private static final Integer DEFAULT_SERIES = 10;
+  private static final String BOOK_DOCUMENT_TYPE = 'BC';
+  private static final Integer SANDBOX_SERIES = 10;
+  private static final Integer PRODUCTION_SERIES = 1;
   private static final Integer AUTO_NUMBER = 0;
-  private static final Integer NEW_LINE_ID = 0;
+  private static final Long NEW_LINE_ID = 0;
   private static final String ARTICLE_LINE_TYPE = 'R';
-  private static final String DEFAULT_VAT_CODE = '22';
+  // tipo_stato_riga: E = evadibile (S sospesa, B bloccata, N annullata).
+  private static final String FULFILLABLE_LINE_STATUS = 'E';
+  private static final String SERVICE_VAT_CODE = 'E01';
+  private static final String BOOK_VAT_CODE = 'E10';
+  private static Integer resolvedDocumentSeries;
 
   public class Result {
     public Boolean success;
@@ -16,6 +22,8 @@ public with sharing class MexalOrderSendService {
     public String mexalDocumentSigla;
     public Integer mexalDocumentSerie;
     public Integer mexalDocumentNumber;
+    // The data_documento sent; with sigla, serie and numero it keys the order.
+    public Date mexalDocumentDate;
     public String mexalCustomerCode;
     public Map<Id, Integer> lineNumbersByOrderItemId;
     public Map<String, Object> requestPayload;
@@ -58,23 +66,29 @@ public with sharing class MexalOrderSendService {
         Id,
         AccountId,
         Account.Codice_Cliente_Mexal__c,
+        Codice_Agente__c,
         EffectiveDate,
         OrderNumber,
         Quote__c,
+        Condizione_di_Pagamento__c,
         WooCommerce_Order_Key__c,
         (
           SELECT
             Id,
+            OrderItemNumber,
             Description,
             Quantity,
             UnitPrice,
             TotalPrice,
+            Prezzo_Listino__c,
             Data_Scadenza__c,
             Product2Id,
             Product2.External_Product_Code__c,
             Product2.ProductCode,
+            Product2.Alq_Iva__c,
             PricebookEntry.Product2.External_Product_Code__c,
-            PricebookEntry.Product2.ProductCode
+            PricebookEntry.Product2.ProductCode,
+            PricebookEntry.Product2.Alq_Iva__c
           FROM OrderItems
           ORDER BY CreatedDate, Id
         )
@@ -97,6 +111,18 @@ public with sharing class MexalOrderSendService {
       );
     }
 
+    if (String.isBlank(orderRecord.Condizione_di_Pagamento__c)) {
+      throw new MexalOrderSendException(
+        'Condizione di pagamento obbligatoria per creare l ordine Mexal.'
+      );
+    }
+
+    if (String.isBlank(orderRecord.Codice_Agente__c)) {
+      throw new MexalOrderSendException(
+        'Codice agente obbligatorio per creare l ordine Mexal.'
+      );
+    }
+
     if (orderRecord.OrderItems == null || orderRecord.OrderItems.isEmpty()) {
       throw new MexalOrderSendException(
         'Ordine senza righe: impossibile inviare a Mexal.'
@@ -113,43 +139,145 @@ public with sharing class MexalOrderSendService {
   }
 
   private static Map<String, Object> buildOrderPayload(Order orderRecord) {
+    String documentType = DEFAULT_DOCUMENT_TYPE;
     Map<String, Object> payload = new Map<String, Object>();
-    payload.put('sigla', DEFAULT_DOCUMENT_TYPE);
-    payload.put('serie', DEFAULT_SERIES);
+    payload.put('sigla', documentType);
+    payload.put('serie', resolveDocumentSeries());
     payload.put('numero', AUTO_NUMBER);
     payload.put('cod_conto', orderRecord.Account.Codice_Cliente_Mexal__c);
+    if (!String.isBlank(orderRecord.Codice_Agente__c)) {
+      payload.put('codice_agente', orderRecord.Codice_Agente__c.trim());
+    }
     payload.put('data_documento', formatDate(orderRecord.EffectiveDate));
-    putLineArrays(payload, orderRecord.OrderItems);
+    putIntegerValue(
+      payload,
+      'id_pagamento',
+      orderRecord.Condizione_di_Pagamento__c
+    );
+    putLineArrays(payload, orderRecord.OrderItems, documentType);
     return payload;
   }
 
   private static void putLineArrays(
     Map<String, Object> payload,
-    List<OrderItem> orderLines
+    List<OrderItem> orderLines,
+    String documentType
   ) {
     List<Object> lineIds = new List<Object>();
     List<Object> lineTypes = new List<Object>();
+    List<Object> lineStatuses = new List<Object>();
     List<Object> articleCodes = new List<Object>();
     List<Object> quantities = new List<Object>();
+    List<Object> prices = new List<Object>();
+    List<Object> discounts = new List<Object>();
     List<Object> vatCodes = new List<Object>();
+    List<Object> dueDates = new List<Object>();
+    String defaultVatCode = resolveVatCode(documentType);
     Integer lineNumber = 1;
 
     for (OrderItem line : orderLines) {
-      lineIds.add(new List<Object>{ lineNumber, NEW_LINE_ID });
+      lineIds.add(new List<Object>{ lineNumber, resolveLineId(line) });
       lineTypes.add(new List<Object>{ lineNumber, ARTICLE_LINE_TYPE });
+      lineStatuses.add(new List<Object>{ lineNumber, FULFILLABLE_LINE_STATUS });
       articleCodes.add(
         new List<Object>{ lineNumber, resolveProductCode(line) }
       );
       quantities.add(new List<Object>{ lineNumber, line.Quantity });
-      vatCodes.add(new List<Object>{ lineNumber, DEFAULT_VAT_CODE });
+      Decimal lineDiscount = resolveLineDiscount(line);
+      if (lineDiscount == null) {
+        prices.add(new List<Object>{ lineNumber, line.UnitPrice });
+      } else {
+        prices.add(new List<Object>{ lineNumber, line.Prezzo_Listino__c });
+        discounts.add(
+          new List<Object>{ lineNumber, formatDiscount(lineDiscount) }
+        );
+      }
+      vatCodes.add(
+        new List<Object>{
+          lineNumber,
+          firstNonBlank(resolveProductVatCode(line), defaultVatCode)
+        }
+      );
+      String dueDate = formatDate(line.Data_Scadenza__c);
+      if (!String.isBlank(dueDate)) {
+        dueDates.add(new List<Object>{ lineNumber, dueDate });
+      }
       lineNumber++;
     }
 
     payload.put('id_riga', lineIds);
     payload.put('tp_riga', lineTypes);
+    payload.put('tipo_stato_riga', lineStatuses);
     payload.put('codice_articolo', articleCodes);
     payload.put('quantita', quantities);
+    payload.put('prezzo', prices);
+    if (!discounts.isEmpty()) {
+      payload.put('sconto', discounts);
+    }
     payload.put('cod_iva', vatCodes);
+    if (!dueDates.isEmpty()) {
+      payload.put('dt_sca_riga', dueDates);
+    }
+  }
+
+  // Mexal reads a sconto prefixed with '-' as an amount, not a percentage, and
+  // divides it by the line quantity (format given by Mexal, 26/10). prezzo then
+  // carries the pre-discount price, so Mexal lands on the same net UnitPrice.
+  private static Decimal resolveLineDiscount(OrderItem line) {
+    if (
+      line.Prezzo_Listino__c == null ||
+      line.UnitPrice == null ||
+      line.Quantity == null ||
+      line.Quantity <= 0 ||
+      line.Prezzo_Listino__c <= line.UnitPrice
+    ) {
+      return null;
+    }
+    return ((line.Prezzo_Listino__c - line.UnitPrice) * line.Quantity)
+      .setScale(2, System.RoundingMode.HALF_UP);
+  }
+
+  // Mexal takes the sconto amount with a comma decimal separator and at most
+  // two decimals (Mirko Merendi, 26/10): 1500 -> "-1500", 12.50 -> "-12,5".
+  private static String formatDiscount(Decimal amount) {
+    return '-' +
+      amount.setScale(2).stripTrailingZeros().toPlainString().replace('.', ',');
+  }
+
+  // id_riga is the OrderItem autonumber, so the line identity is known before
+  // the send. Mexal keeps a numeric id_riga as sent (test 06/10, OC/10/9) and
+  // rejects a non-numeric one; 0 lets Mexal number the lines by position.
+  private static Long resolveLineId(OrderItem line) {
+    return String.isBlank(line.OrderItemNumber)
+      ? NEW_LINE_ID
+      : Long.valueOf(line.OrderItemNumber);
+  }
+
+  private static String resolveVatCode(String documentType) {
+    if (documentType == DEFAULT_DOCUMENT_TYPE) {
+      return SERVICE_VAT_CODE;
+    }
+    if (documentType == BOOK_DOCUMENT_TYPE) {
+      return BOOK_VAT_CODE;
+    }
+    throw new MexalOrderSendException(
+      'Codice IVA Mexal non configurato per la sigla ' + documentType + '.'
+    );
+  }
+
+  // The VAT code comes from the article registry (alq_iva, synced onto
+  // Product2.Alq_Iva__c), as agreed with Mexal on 07/10. A product without one
+  // falls back to the document-type default above.
+  private static String resolveProductVatCode(OrderItem line) {
+    if (line.Product2 != null && !String.isBlank(line.Product2.Alq_Iva__c)) {
+      return line.Product2.Alq_Iva__c;
+    }
+
+    if (line.PricebookEntry != null && line.PricebookEntry.Product2 != null) {
+      return line.PricebookEntry.Product2.Alq_Iva__c;
+    }
+
+    return null;
   }
 
   private static Map<Id, Integer> buildLineNumberMap(
@@ -166,7 +294,7 @@ public with sharing class MexalOrderSendService {
     return lineNumbersByOrderItemId;
   }
 
-  private static String resolveProductCode(OrderItem line) {
+  public static String resolveProductCode(OrderItem line) {
     if (line.Product2 != null) {
       String productCode = firstNonBlank(
         line.Product2.External_Product_Code__c,
@@ -195,7 +323,8 @@ public with sharing class MexalOrderSendService {
     Result result = new Result();
     result.orderId = orderRecord.Id;
     result.mexalDocumentSigla = DEFAULT_DOCUMENT_TYPE;
-    result.mexalDocumentSerie = DEFAULT_SERIES;
+    result.mexalDocumentSerie = resolveDocumentSeries();
+    result.mexalDocumentDate = orderRecord.EffectiveDate;
     result.mexalCustomerCode = orderRecord.Account.Codice_Cliente_Mexal__c;
     result.lineNumbersByOrderItemId = buildLineNumberMap(
       orderRecord.OrderItems
@@ -211,12 +340,65 @@ public with sharing class MexalOrderSendService {
     result.statusCode = calloutResult.statusCode;
     result.body = calloutResult.body;
     result.integrationLogId = getLastLogId(calloutResult.integrationLogs);
-    result.mexalOrderNumber = findMexalOrderNumber(calloutResult);
+    result.mexalOrderNumber = result.success == true
+      ? findMexalOrderNumber(calloutResult)
+      : null;
     result.mexalDocumentNumber = parseInteger(result.mexalOrderNumber);
     result.message = result.success
       ? 'Creazione ordine Mexal completata.'
-      : 'Creazione ordine Mexal fallita.';
+      : buildFailureMessage(calloutResult);
     return result;
+  }
+
+  private static String buildFailureMessage(
+    MexalSearchCalloutService.Result calloutResult
+  ) {
+    String message = 'Creazione ordine Mexal fallita';
+    if (calloutResult.statusCode != null) {
+      message += ' (HTTP ' + calloutResult.statusCode + ')';
+    }
+    if (!String.isBlank(calloutResult.body)) {
+      try {
+        Object decoded = JSON.deserializeUntyped(calloutResult.body);
+        if (decoded instanceof Map<String, Object>) {
+          Map<String, Object> response = (Map<String, Object>) decoded;
+          Object error = response.get('error');
+          if (error instanceof Map<String, Object>) {
+            Map<String, Object> errorDetails = (Map<String, Object>) error;
+            for (
+              String key : new List<String>{
+                'response-detail',
+                'response-message'
+              }
+            ) {
+              Object detail = errorDetails.get(key);
+              if (
+                detail instanceof String && !String.isBlank((String) detail)
+              ) {
+                return message + ': ' + ((String) detail).trim();
+              }
+            }
+          }
+        }
+      } catch (Exception ignored) {
+        // An unreadable response must not hide the original HTTP failure.
+      }
+    }
+    return message + '.';
+  }
+
+  private static Integer resolveDocumentSeries() {
+    if (resolvedDocumentSeries == null) {
+      Organization currentOrganization = [
+        SELECT IsSandbox
+        FROM Organization
+        LIMIT 1
+      ];
+      resolvedDocumentSeries = currentOrganization.IsSandbox
+        ? SANDBOX_SERIES
+        : PRODUCTION_SERIES;
+    }
+    return resolvedDocumentSeries;
   }
 
   private static String findMexalOrderNumber(
@@ -251,6 +433,12 @@ public with sharing class MexalOrderSendService {
 
       String headerName = parts[0].toLowerCase();
       String headerValue = parts[1].trim();
+      if (headerName == 'location') {
+        String numberFromLocation = findMexalOrderNumberInLocation(headerValue);
+        if (!String.isBlank(numberFromLocation)) {
+          return numberFromLocation;
+        }
+      }
       if (
         headerName.contains('numero') ||
         headerName.contains('ordine') ||
@@ -261,6 +449,26 @@ public with sharing class MexalOrderSendService {
     }
 
     return null;
+  }
+
+  private static String findMexalOrderNumberInLocation(String location) {
+    if (String.isBlank(location)) {
+      return null;
+    }
+
+    String documentKey = location.trim();
+    Integer queryIndex = documentKey.indexOf('?');
+    if (queryIndex >= 0) {
+      documentKey = documentKey.substring(0, queryIndex);
+    }
+
+    Integer slashIndex = documentKey.lastIndexOf('/');
+    if (slashIndex >= 0) {
+      documentKey = documentKey.substring(slashIndex + 1);
+    }
+
+    List<String> parts = documentKey.split('\\+');
+    return parts.size() >= 3 ? parts[2].trim() : null;
   }
 
   private static String findMexalOrderNumberInBody(String body) {
@@ -306,6 +514,32 @@ public with sharing class MexalOrderSendService {
     }
 
     return String.isBlank(secondValue) ? null : secondValue.trim();
+  }
+
+  private static void putValue(
+    Map<String, Object> payload,
+    String fieldName,
+    String value
+  ) {
+    payload.put(fieldName, String.isBlank(value) ? '' : value.trim());
+  }
+
+  private static void putIntegerValue(
+    Map<String, Object> payload,
+    String fieldName,
+    String value
+  ) {
+    if (String.isBlank(value)) {
+      return;
+    }
+
+    try {
+      payload.put(fieldName, Integer.valueOf(value.trim()));
+    } catch (Exception error) {
+      throw new MexalOrderSendException(
+        'Valore numerico non valido per ' + fieldName + ': ' + value
+      );
+    }
   }
 
   private static Integer parseInteger(String value) {

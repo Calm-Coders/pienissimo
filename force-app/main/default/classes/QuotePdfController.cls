@@ -1,7 +1,9 @@
 public without sharing class QuotePdfController {
   private static final Integer MAX_LINES = 500;
+  private static final String EMPTY_QUOTE_ERROR = 'Questo preventivo non contiene righe prodotto. Aggiungi almeno un prodotto prima di generare il PDF.';
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
-  private static final String PLUS_OPPORTUNITY_RECORD_TYPE = 'Plus_Attivazione_Rinnovo';
+  private static final String PLUS_OPPORTUNITY_TYPE_PREFIX = 'Performance Plus -';
+  private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
   public Quote quoteRecord { get; private set; }
   public List<LineRow> lines { get; private set; }
   public String currencyCode { get; private set; }
@@ -19,13 +21,14 @@ public without sharing class QuotePdfController {
     Boolean multiCurrency = Schema.SObjectType.Quote.fields.getMap()
       .containsKey('CurrencyIsoCode');
     String queryText =
-      'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, Description, ' +
+      'SELECT Id, Name, QuoteNumber, Status, ExpirationDate, ' +
       'BillingName, BillingStreet, BillingPostalCode, BillingCity, BillingState, BillingCountry, ' +
-      'Subtotal, TotalPrice, Tax, ShippingHandling, GrandTotal, Modalita_Pagamento_PDF__c, ' +
+      'Subtotal, Totale_Listino__c, Sconto_Totale__c, TotalPrice, Tax, ShippingHandling, GrandTotal, ' +
+      'toLabel(Condizione_di_Pagamento__c), Descrizione_Condizione_di_Pagamento__c, ' +
       'Account.Name, Account.BillingStreet, Account.BillingPostalCode, Account.BillingCity, ' +
       'Account.BillingState, Account.BillingCountry, Account.Partita_IVA__c, ' +
       'Account.Nome_Legale_Rappresentante__c, Account.PEC__c, Opportunity.Owner.Name, ' +
-      'Opportunity.RecordType.DeveloperName' +
+      'Opportunity.Tipo_Opportunita__c' +
       (multiCurrency ? ', CurrencyIsoCode' : '') +
       ' FROM Quote WHERE Id = :quoteId';
     quoteRecord = (Quote) Database.queryWithBinds(
@@ -42,25 +45,24 @@ public without sharing class QuotePdfController {
         Id,
         Product2Id,
         Product2.Name,
+        Product2.QuantityUnitOfMeasure,
         Product2.RecordType.DeveloperName,
         Description,
         Quantity,
         ListPrice,
         UnitPrice,
         Discount,
+        Discount_Pct__c,
         TotalPrice,
         Data_Scadenza__c,
         Tranche__r.Data_Scadenza__c
       FROM QuoteLineItem
       WHERE QuoteId = :quoteId
-      WITH USER_MODE
       ORDER BY SortOrder ASC NULLS LAST, CreatedDate ASC, Id ASC
       LIMIT 501
     ];
     if (items.isEmpty()) {
-      throw new QuotePdfException(
-        'Aggiungi almeno una riga al preventivo prima di generare il PDF.'
-      );
+      throw new QuotePdfException(EMPTY_QUOTE_ERROR);
     }
     if (items.size() > MAX_LINES) {
       throw new QuotePdfException(
@@ -84,10 +86,10 @@ public without sharing class QuotePdfController {
           Quantity__c,
           Unit_Spread__c,
           Spread_Price__c,
-          Product__r.Name
+          Product__r.Name,
+          Product__r.QuantityUnitOfMeasure
         FROM BundleComponent__c
         WHERE Bundle__c IN :productIds
-        WITH USER_MODE
         ORDER BY Product__r.Name, Id
       ]) {
         if (!componentsByBundleId.containsKey(component.Bundle__c)) {
@@ -120,10 +122,9 @@ public without sharing class QuotePdfController {
       throw new QuotePdfException('Preventivo non valido.');
     }
     List<Quote> records = [
-      SELECT Id, QuoteNumber, Status
+      SELECT Id, QuoteNumber, Status, (SELECT Id FROM QuoteLineItems LIMIT 1)
       FROM Quote
       WHERE Id = :quoteId
-      WITH USER_MODE
     ];
     if (records.isEmpty()) {
       throw new QuotePdfException(
@@ -134,6 +135,9 @@ public without sharing class QuotePdfController {
       throw new QuotePdfException(
         'Il PDF puo essere generato solo quando il preventivo e in Bozza.'
       );
+    }
+    if (records[0].QuoteLineItems.isEmpty()) {
+      throw new QuotePdfException(EMPTY_QUOTE_ERROR);
     }
     return records[0];
   }
@@ -171,6 +175,12 @@ public without sharing class QuotePdfController {
   public String getSubtotal() {
     return money(quoteRecord.Subtotal);
   }
+  public String getListPriceTotal() {
+    return money(quoteRecord.Totale_Listino__c);
+  }
+  public String getDiscountTotal() {
+    return money(quoteRecord.Sconto_Totale__c);
+  }
   public String getTotalPrice() {
     return money(quoteRecord.TotalPrice);
   }
@@ -197,9 +207,15 @@ public without sharing class QuotePdfController {
   }
   public Boolean getIsPlusOpportunity() {
     return quoteRecord.Opportunity != null &&
-      quoteRecord.Opportunity.RecordType != null &&
-      quoteRecord.Opportunity.RecordType.DeveloperName ==
-      PLUS_OPPORTUNITY_RECORD_TYPE;
+      String.isNotBlank(quoteRecord.Opportunity.Tipo_Opportunita__c) &&
+      quoteRecord.Opportunity.Tipo_Opportunita__c.startsWith(
+        PLUS_OPPORTUNITY_TYPE_PREFIX
+      );
+  }
+  public Boolean getIsPerformancePlusRenewal() {
+    return quoteRecord.Opportunity != null &&
+      quoteRecord.Opportunity.Tipo_Opportunita__c ==
+      PLUS_RENEWAL_OPPORTUNITY_TYPE;
   }
 
   private static String address(
@@ -247,9 +263,13 @@ public without sharing class QuotePdfController {
       ',' +
       (parts.size() > 1 ? parts[1].rightPad(2, '0') : '00');
   }
+  public static String percentage(Decimal value) {
+    return value == null ? '' : money(value) + '%';
+  }
   public class LineRow {
     public String name { get; private set; }
     public String description { get; private set; }
+    public String unitOfMeasure { get; private set; }
     public Decimal quantity { get; private set; }
     public String listPrice { get; private set; }
     public String amount { get; private set; }
@@ -260,11 +280,21 @@ public without sharing class QuotePdfController {
     public LineRow(QuoteLineItem item) {
       name = item.Product2.Name;
       description = item.Description;
+      unitOfMeasure = item.Product2.QuantityUnitOfMeasure;
       quantity = item.Quantity;
       listPrice = money(item.ListPrice);
-      Decimal gross = item.Quantity * item.UnitPrice;
+      Decimal gross =
+        (item.Quantity == null ? 0 : item.Quantity) *
+        (item.ListPrice == null ? 0 : item.ListPrice);
+      Decimal net = item.TotalPrice == null ? 0 : item.TotalPrice;
+      Decimal discountPercent = item.Discount_Pct__c;
+      if (discountPercent == null) {
+        discountPercent = gross == 0
+          ? (item.Discount == null ? 0 : item.Discount)
+          : ((gross - net) / gross) * 100;
+      }
       amount = money(gross);
-      discount = money(gross - item.TotalPrice);
+      discount = percentage(discountPercent);
       total = money(item.TotalPrice);
       dueDate = formatDate(
         item.Data_Scadenza__c != null
@@ -286,10 +316,13 @@ public without sharing class QuotePdfController {
 
       name = component.Product__r == null ? '' : component.Product__r.Name;
       description = 'Componente bundle: ' + parentLine.Product2.Name;
+      unitOfMeasure = component.Product__r == null
+        ? ''
+        : component.Product__r.QuantityUnitOfMeasure;
       quantity = parentQuantity * componentQuantity;
       listPrice = money(component.Unit_Spread__c);
       amount = money(totalAmount);
-      discount = money(0);
+      discount = percentage(0);
       total = money(totalAmount);
       dueDate = formatDate(
         parentLine.Data_Scadenza__c != null

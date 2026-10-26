@@ -4,7 +4,7 @@ type: reference
 status: active
 org: ROMI
 raised: 2026-09-15
-updated: 2026-09-15
+updated: 2026-10-01
 depends_on: [OI-78, OI-81, OI-126]
 source: User instruction to Codex on 2026-09-15
 ---
@@ -18,6 +18,11 @@ by Aurel Mrruku.
 This is the single markdown recap for the work done in this conversation. It
 records implementation state and UAT deploys; it does not by itself prove client
 acceptance or production readiness.
+
+> **Superseded on 1 October 2026:** the Account + Campaign invitation identity,
+> page-level `Rinuncia`, and multi-status eligibility described below are retained
+> as implementation history only. The current rule is
+> [Event Links belong to Orders](../decisions/Decision%20-%20Event%20Links%20belong%20to%20Orders.md).
 
 ## What was created
 

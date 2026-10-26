@@ -6,14 +6,16 @@ Canonical instructions for **any** AI coding agent working in this repository
 to this file. Edit this file, not the pointers.
 
 This is a Salesforce DX project for the ROMI → Pienissimo delivery (Zoho CRM →
-Salesforce, Zoho contract expires **31 October 2026**, go-live **6 October
-2026**). It carries both a real metadata build and a very large body of project
-knowledge in markdown. The markdown is big enough that reading it carelessly
+Salesforce, Zoho contract expires **31 October 2026**, go-live Fase 1 **21
+October 2026** — moved from 6 October by ROMI in writing on 2026-09-08, see
+[OI-124](notes/items/OI-124%20Go-live%20moved%20from%206%20to%2021%20October.md);
+the UAT window closes 6 October, which is a different date). It carries both a
+real metadata build and a very large body of project knowledge in markdown. The markdown is big enough that reading it carelessly
 will exhaust your context before you reach the answer.
 
 ## Read protocol
 
-1. Start with [MAP.md](MAP.md) — current project state, under 5 KB. Always cheap.
+1. Start with [MAP.md](MAP.md) — current project state. ⚠ **It is ~285 KB / ~71k, not the "under 5 KB" this line promised for weeks.** It is append-only with the newest entry first, so **read its first ~120 lines**, not the file.
 2. Route through [INDEX.md](INDEX.md) — one line per artifact, with read costs.
 3. Open only the specific notes in [notes/](notes/) that the task needs.
 4. Escalate to the big documents in `meetings/` or `REQUIREMENTS.md` **only**
@@ -80,15 +82,15 @@ records**. Never edit either.
 
 ## Never read these whole
 
-| Path pattern                          | Size      | Cost     | Instead                              |
-| ------------------------------------- | --------- | -------- | ------------------------------------ |
-| `meetings/*-transcript.it.md`         | ~955 KB   | ~239k    | `rg` for the line, read a range      |
-| `meetings/open-items.it.md`           | ~224 KB   | ~56k     | Read the note, or the EN twin's rows |
-| `meetings/open-items.md`              | ~200 KB   | ~50k     | Read `notes/items/`                  |
-| `REQUISITI.it.md` / `REQUIREMENTS.md` | ~86/80 KB | ~21k/20k | `rg` for the requirement id          |
-| `meetings/DEVELOPMENT-RECAP*.md`      | ~74/78 KB | ~18k/20k | Read the relevant notes              |
-| `anar_PIE_ricla.xlsx`                 | ~476 KB   | binary   | Never; the decode is in the notes    |
-| `node_modules/**`, `.sf/`, `.sfdx/`   | huge      | —        | Generated                            |
+| Path pattern                          | Size        | Cost       | Instead                              |
+| ------------------------------------- | ----------- | ---------- | ------------------------------------ |
+| `meetings/*-transcript.it.md`         | ~1.24 MB    | ~325k      | `rg` for the line, read a range      |
+| `meetings/open-items.it.md`           | ~1.75 MB    | ~459k      | Read the note, or the EN twin's rows |
+| `meetings/open-items.md`              | ~1.59 MB    | ~416k      | Read `notes/items/`                  |
+| `REQUISITI.it.md` / `REQUIREMENTS.md` | ~113/105 KB | ~28k/26k   | `rg` for the requirement id          |
+| `meetings/DEVELOPMENT-RECAP*.md`      | ~563/528 KB | ~144k/134k | Read the relevant notes              |
+| `anar_PIE_ricla.xlsx`                 | ~476 KB     | binary     | Never; the decode is in the notes    |
+| `node_modules/**`, `.sf/`, `.sfdx/`   | huge        | —          | Generated                            |
 
 `force-app/**` is **not** on this list. Unlike a pure-analysis repo, this
 project has a live build and the org-vs-requirements gap matters. Glob or grep
@@ -197,6 +199,85 @@ not change what the next project gets** — that has to be done in the template.
 A copy also lives in the `life365` repository; the two can drift.
 
 ## Standing instructions from the user
+
+- **Claude Code is authorized to unblock and complete the full DevMain
+  production deployment** (user instruction, 2026-10-26), explicitly targeting
+  `Pienissimo Prod`. Choose option 1: inspect and cancel only the scheduled job
+  **`Quote Negotiation Aging - Daily`**, for `QuoteNegotiationAgingBatch`,
+  owned by **Tech Romi**, currently scheduled daily at **03:00 Europe/Rome**.
+  Capture and verify its current identity, owner, cron and timezone before
+  cancelling it with `System.abortJob`. Rerun full DevMain validation with
+  `RunLocalTests`; deploy only after validation succeeds and Salesforce's
+  required production coverage is met. This explicitly authorizes the early
+  production release and its stated behaviour changes: Mexal production
+  series 1, signed-quote locking and reminders, ahead of the planned 9 November
+  technical release. Preserve these deployment exclusions: DocuSign auth
+  provider and named credentials, Network/Site/Digital Experience metadata,
+  the whole guest profile, and the Agente profile with its invalid
+  `Categoria_Prodotto__c` layout reference. Do not enable the org-wide
+  deployment setting for pending/in-progress Apex jobs.
+  Restore the job using `QuoteNegotiationAgingBatch.scheduleDaily()` as Tech
+  Romi, preserving its name, 03:00 Europe/Rome schedule and owner; verify the
+  actual scheduled job afterwards. Restore it also if validation/deployment
+  fails or the release is abandoned. Use direct `sf apex run` and
+  `sf project deploy` commands with an explicit `Pienissimo Prod` target;
+  local permission rules include explicit Apex command prefixes. No further
+  user confirmation is required within this scope. This is authorization,
+  not evidence that any job was cancelled or any deployment succeeded.
+
+- **Claude Code is authorized to run the reviewed `clean_stale.apex` UAT
+  cleanup** (user instruction, 2026-10-22), explicitly targeting
+  `Pienissimo UAT`. This authorizes deleting the four stale FT 1/98 invoice
+  lines, retaining that invoice, clearing its order reference and link, and
+  assigning its Account and payment-schedule Account from the Mexal customer
+  code; deleting the absent FT 1/100 invoice with its line and payment-schedule
+  entry; and clearing invoice/payment-schedule links and resetting `Paid` to
+  empty on the affected lines of orders 00000318 and 00000367. Run the reviewed
+  scratchpad script as one transaction with rollback on failure, then verify
+  the actual results and update OI-275 and the journal. No additional user
+  confirmation is needed for this specific cleanup. This authorization does
+  not extend to other deletions or production cleanup.
+
+- **Claude Code is authorized to read Mexal order lines to inspect discount
+  formats** (user instruction, 2026-10-06). Claude may run the read-only script
+  needed to scan order lines and report the discount formats found, without
+  requesting this authorization again. This authorization covers reads only;
+  it does not authorize creating, updating or deleting Mexal data. Keep
+  credentials, personal data, catalogue prices and article-code values out of
+  project records; report only the discount formats and aggregate findings.
+
+- **Claude Code is authorized to write to Pienissimo Prod** (user instruction,
+  2026-10-04). For requested work, this includes metadata deployments, Apex
+  execution, and record creation, updates, and deletion; no additional
+  production-write confirmation is required. Explicitly target the
+  `Pienissimo Prod` Salesforce CLI alias. The local Claude permission rules
+  allow Salesforce CLI commands naming this production target.
+  **Explicitly authorized follow-up (2026-10-04):** Claude may inspect and fix
+  Product2 `Item` and `Bundle` record-type access in Prod, update and deploy
+  the relevant profiles and permission sets, and assign the necessary access
+  to catalogue users and the PDF run-as user. Verify current assignments before
+  changing them: the user reports that the PDF run-as user already has
+  `Campaign_Management`, `Ticket_Asset_Management`, `Product_Registry_Admin`,
+  and `Participant_Document_Generation`. This work needs no further approval.
+  **Marketing unblock and delivery are also explicitly authorized (2026-10-04):**
+  Claude may complete all five requested steps without asking again:
+  1. Grant the Prod guest profile Apex access to
+     `ParticipantRegistrationController`, `AssetQrService`, and
+     `QuoteAcceptanceController`.
+  2. Enable Marketing User for the existing PDF run-as user and make the
+     Integration Logs and Bundle Components tabs visible to that user.
+  3. Inspect UAT profile grants and bring the needed layout assignments,
+     record-type grants, and Agente product access into source deliberately,
+     then deploy to Prod. Do not copy the UAT guest profile wholesale.
+  4. Commit the delivery branch `DevMain_uatToProd`, push that branch to
+     `origin`, and open a PR into `DevMain` (this overrides the default PR
+     target for this task).
+  5. Update OI-134, OI-177, `MAP.md`, and the required journal and rendered views
+     using verified results.
+     Use direct `sf` commands with an explicit org target for permission changes
+     and deployments so the local allow rules match; avoid wrapping these calls
+     in Python, Node, or another shell command. Local permission rules also cover
+     the UAT retrieval and the requested commit, branch push, and PR creation.
 
 - **Never write Apex test classes unprompted, and never offer to.** Aurel
   requests the test suite **separately, as its own task, before the production

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Importo_Scadenze__c</fullName>
+    <description>Somma degli importi delle scadenze della fattura.</description>
+    <label>Importo Scadenze</label>
+    <summarizedField>Scadenza_Fattura__c.Importo__c</summarizedField>
+    <summaryForeignKey>Scadenza_Fattura__c.Fattura__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <type>Summary</type>
+</CustomField>

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Rebecca Marmo
 org: both
 raised: 2026-08-06
-updated: 2026-09-08
+updated: 2026-10-01
 blocks: [OI-86]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 requirement: BIG-06
@@ -85,7 +85,7 @@ Fabrizio)"_ — the two-flow design above is **confirmed**, and
 [Fabrizio Mastracci](../people/Fabrizio%20Mastracci%20-%20marketing%20automation%20ROMI.md)
 is building it.
 
-🔴 **`30 vs 60` is still not settled by this.** The status confirms *two flows*;
+🔴 **`30 vs 60` is still not settled by this.** The status confirms _two flows_;
 it says nothing about the number, and no source since 19 August records Elisa
 Migliano or Rebecca Marmo confirming it with Matteo Distaso. The first flow's
 trigger point remains **undecided while it is being built** — that is the thing
@@ -126,7 +126,7 @@ minuted as such, not slipped in.
 
 ⚠ Recorded from the calendar invitation alone. **No agenda was published**, so
 what this meeting will actually cover is not known — the two items above are what
-the record says *should* be on it, not what is.
+the record says _should_ be on it, not what is.
 
 ## 2026-09-07 - the session ran, and the number is settled without the client
 
@@ -202,12 +202,12 @@ new Drive folder `02 Marketing` during the call.
 `SEGMENTI FUNNEL BIGLIETTI.docx` completes the vocabulary Parte 3 half-decoded.
 Using `FMF_2026` as the worked example:
 
-| Tag | Meaning |
-| --- | ------- |
-| `<EVENT>` | the **contatto principale holding at least one ticket** for the event |
+| Tag         | Meaning                                                                             |
+| ----------- | ----------------------------------------------------------------------------------- |
+| `<EVENT>`   | the **contatto principale holding at least one ticket** for the event               |
 | `<EVENT>_I` | the contact — principal or not — **once participant data is entered** on the ticket |
-| `<EVENT>CP` | the **contatto principale** once *their own* participant data is entered |
-| `<EVENT>_R` | the contact who **renounces** the event |
+| `<EVENT>CP` | the **contatto principale** once _their own_ participant data is entered            |
+| `<EVENT>_R` | the contact who **renounces** the event                                             |
 
 ⚠ **Only `_R` is a Tag Associati value.** The other three are written by the CRM
 into Automation's **contact properties** — so three of the four are integration
@@ -222,8 +222,8 @@ Salesforce side.
 
 **Partial completion exits the funnel.** That is the operative criterion behind
 [OI-126](OI-126%20An%20asset%20flag%20for%20incomplete%20participant%20data.md) and
-it is stricter than a per-ticket flag: the segment turns on *iscrizioni
-effettuate* against tickets held, not on any one ticket's state.
+it is stricter than a per-ticket flag: the segment turns on _iscrizioni
+effettuate_ against tickets held, not on any one ticket's state.
 
 ### 🟢 The 60-day question is answered by data, not by a flow
 
@@ -243,3 +243,83 @@ pattern this row has carried since August.
 
 ⚠ **The plain-text style constraint was still not restated** to Fabrizio
 Mastracci, for the second session running.
+
+## 2026-09-29 - the two-campaign shape is confirmed, and one ticket goes to one participant
+
+[The pre-UAT marketing session](../meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md)
+settled two things this note had left implicit.
+
+🟢 **Two campaigns, technically, not two marketing flows on one.** Fabrizio
+Mastracci put the model and Aurel Mrruku confirmed it word for word: flow 1 runs on
+**the Account's principal contact — not on campaign members** — and each ticket line
+subsequently created becomes a campaign member of a **second** campaign, which is
+where the tickets go. _"dobbiamo a livello tecnico creare una seconda campagna dove
+entrano compilati e mando i biglietti di conferma."_ This matches
+[the campaign parent and child model](../objects/The%20campaign%20parent%20and%20child%20model.md)
+and is the first time the marketing builder and the Salesforce builder have stated
+it together.
+
+🟢 **Delivery is per participant, and the referente is not copied.** Elena Spini:
+_"Ogni partecipante riceve il suo biglietto personale."_ Aurel Mrruku proposed
+copying the principal contact and withdrew it; **no flow notifies the buyer that the
+tickets went out**, and Elena Spini judged that acceptable — _"glielo chiederà a
+voce ai suoi collaboratori."_
+
+🟢 **The send can be transactional.** Aurel Mrruku had assumed a nightly job sweeping
+for fully-confirmed orders; Fabrizio Mastracci can instead listen to record creation
+— _"posso leggere quando si crea quell'informazione, una sorta di transazionale"_ —
+which Aurel Mrruku preferred: _"sarebbe ottimo."_ Not yet built either way.
+
+⚠ **The plain-text style constraint was still not restated**, for the **third**
+session running. Fabrizio Mastracci wrote it himself in the 20 August recap and was
+in the room; nobody said it aloud, and nobody has confirmed it as an instruction to
+the build.
+
+🔴 **Flow 1's reminder ladder is where WhatsApp bites.** Up to 10–11 communications
+at WhatsApp rates is the reason Fabrizio Mastracci wants the channel delivered dark
+— see [OI-195](OI-195%20WhatsApp%20sends%20imply%20a%20mobile%20community%20that%20was%20never%20designed.md).
+
+## 2026-10-01 - Marketing Cloud send confirmation is stored on the Order
+
+Aurel Mrruku requested two Order fields for Marketing Cloud to populate after
+ticket delivery: the default-false checkbox `Ticket_Sent__c` and the date/time
+field `Ticket_Sent_Date__c`. Both fields and editable access through
+`Integration_Management` and `Full_Permission` are now represented in
+`force-app`.
+## 🟢 2026-09-30 — the 60-day figure finally has an author, and the send becomes transactional
+
+**Two things this row has carried without provenance are now sourced.**
+
+🔑 **The ~60-days-before instruction is Sabatino Rinaldi's, from the 27 May
+kickoff.** At [the Post UAT](../meetings/2026-09-30%20Post%20UAT.md) (`00:37:26`,
+`00:49:36`) Aurel Mrruku read his own kickoff notes back to settle a discrepancy
+about when the nomination link goes out. This answers the warning this row has
+carried since 07/09 — that the single figure was **ROMI choosing for the client**.
+It was not: it was the client's project lead, at the first meeting, and the date
+_"può variare in base all'evento e al calendario festivo"_.
+
+🟢 **Elena Spini added the operational half:** **Rebecca Marmo runs the
+campaigns**, and repeated sends close to the event are needed to catch late
+purchases (`00:38:45`) — which the client corroborated independently at the UAT,
+where Fabrizio Paganelli described the send as _"tra virgolette manuale"_,
+launched on a chosen day and stepped up near the event.
+
+🔑 **The ticket send itself is now transactional, not scheduled.** Elena Spini
+raised Marketing Cloud credit cost; Fabrizio Mastracci answered that a QR ticket
+needs no branching logic and is sent as soon as a record is updated with the send
+flag; the room agreed and **dropped the nightly batch**
+(`01:14:05`–`01:16:02`). So the funnel now has two different timing regimes: the
+**nomination request** on the 60/30-day calendar, and the **ticket delivery**
+immediately on confirmation.
+→ [OI-197](OI-197%20The%20ticket%20send%20flag%20and%20the%20Inviato%20asset%20state%20are%20agreed%20and%20unbuilt.md)
+
+🔑 **Each participant gets their own ticket at their own address** — Fabrizio
+Mastracci, `00:24:47` — consistent with the 29/09 ruling that the referente is not
+copied.
+
+🔴 **Late purchases get a mechanism, not a build.** Elisa Migliano reported clients
+paying the day before an event; Sabatino Rinaldi proposed **Salesforce tags
+maintained by nightly asynchronous jobs**, with a **manual override** of the tag
+for purchases right against the event (UAT `01:23:50`, `01:27:02`). Aurel Mrruku
+confirmed feasibility and flagged the complexity of tranches, invoices and
+Marketing Cloud tracking. **Nobody was assigned and no date was set.**

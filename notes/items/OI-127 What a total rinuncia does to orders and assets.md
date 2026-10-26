@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Rebecca Marmo
 org: both
 raised: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-29
 depends_on: [OI-74]
 blocks: [OI-78]
 source: notes/meetings/2026-09-07 Interna Flussi MKT.md
@@ -81,3 +81,27 @@ scheduled and the page was built without it. She did join
 [Data Model Parte 3](../meetings/2026-09-07%20Data%20Model%20Parte%203.md) for two
 minutes by telephone and settled a consent question immediately. **She answers
 things fast when she is in the room.**
+
+## 2026-09-29 — the credit reappears, from the other side, still unspecified
+
+Fabrizio Mastracci reached this row's third question independently at
+[the pre-UAT marketing session](../meetings/2026-09-29%20Pre%20UAT%20Check%20giro%20MKT.md),
+worrying not about rinuncia but about **silence**:
+
+> _"rimane in credito di due biglietti perché non li ha compilati e quindi la
+> campagna dopo lui ha praticamente da compilare quei due mancanti più altri che
+> potrebbe aver comprato e diventa un casino gestirlo così."_
+
+**Same object, same balance, same absence of a definition** — reached by not
+renouncing rather than by renouncing. Aurel Mrruku had raised the buy-five-use-four
+case minutes earlier and both called it unmanageable.
+
+🔴 **Rebecca Marmo is still owed a call — the fourth recorded commitment.** She is
+invited to the **30/09** ticket UAT, which is the first session she and this
+question are in the same room.
+
+⚠ A new question for the same owner: **rinuncia after partial entry**. Elena Spini
+wants the button live at any point; Aurel Mrruku objects that it changes the asset
+state and the QR, and would require an **asset status history** to keep post-event
+statistics honest. Undecided — see
+[OI-196](OI-196%20Whether%20tickets%20are%20sent%20when%20the%20buyer%20names%20only%20some%20participants.md).

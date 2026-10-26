@@ -1,13 +1,74 @@
-import { api, LightningElement } from "lwc";
+import { api, LightningElement, wire } from "lwc";
+import { refreshApex } from "@salesforce/apex";
+import {
+  APPLICATION_SCOPE,
+  MessageContext,
+  subscribe,
+  unsubscribe
+} from "lightning/messageService";
+import QUOTE_PRODUCTS_CHANGED from "@salesforce/messageChannel/QuoteProductsChanged__c";
 import LightningConfirm from "lightning/confirm";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
-import { RefreshEvent } from "lightning/refresh";
+import {
+  RefreshEvent,
+  registerRefreshHandler,
+  unregisterRefreshHandler
+} from "lightning/refresh";
 import deleteBundle from "@salesforce/apex/QuoteLineItemsController.deleteBundle";
 import deleteLine from "@salesforce/apex/QuoteLineItemsController.deleteLine";
 import getContext from "@salesforce/apex/QuoteLineItemsController.getContext";
 
 export default class QuoteLineItemsWithBundles extends LightningElement {
   _recordId;
+  contextResult;
+  refreshHandlerId;
+  messageContext;
+  productChangeSubscription;
+
+  @wire(MessageContext)
+  wiredMessageContext(context) {
+    this.messageContext = context;
+    this.subscribeToProductChanges();
+  }
+
+  connectedCallback() {
+    this.subscribeToProductChanges();
+    this.refreshHandlerId = registerRefreshHandler(this, () =>
+      this.loadContext()
+    );
+  }
+
+  disconnectedCallback() {
+    if (this.productChangeSubscription) {
+      unsubscribe(this.productChangeSubscription);
+      this.productChangeSubscription = undefined;
+    }
+    unregisterRefreshHandler(this.refreshHandlerId);
+    this.refreshHandlerId = undefined;
+  }
+
+  subscribeToProductChanges() {
+    if (
+      !this.isConnected ||
+      !this.messageContext ||
+      this.productChangeSubscription
+    ) {
+      return;
+    }
+    this.productChangeSubscription = subscribe(
+      this.messageContext,
+      QUOTE_PRODUCTS_CHANGED,
+      (message) => {
+        if (message.quoteId === this.recordId) {
+          this.loadContext();
+          // The record-page component can reach the page refresh container;
+          // the screen quick action publishing this message is in an overlay.
+          this.dispatchEvent(new RefreshEvent());
+        }
+      },
+      { scope: APPLICATION_SCOPE }
+    );
+  }
 
   isLoading = false;
   hasLoaded = false;
@@ -38,6 +99,16 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       type: "text"
     },
     {
+      label: "Prezzo listino",
+      fieldName: "listPriceLabel",
+      type: "text"
+    },
+    {
+      label: "Sconto %",
+      fieldName: "discountPercentLabel",
+      type: "text"
+    },
+    {
       label: "Prezzo unitario",
       fieldName: "unitPriceLabel",
       type: "text"
@@ -63,7 +134,7 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
   set recordId(value) {
     this._recordId = value;
     if (value) {
-      this.loadContext();
+      this.isLoading = true;
     }
   }
 
@@ -86,6 +157,7 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       }
 
       const treeRow = this.decorateTreeRow(row);
+      treeRow._children = [];
       const bundleName =
         row.bundleName || this.bundleNameFromDescription(row.description);
       if (bundleName) {
@@ -100,7 +172,21 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
           parentRows.push(visualBundleRow);
         }
         visualBundleRow.totalPrice += Number(row.totalPrice) || 0;
+        visualBundleRow.listPrice =
+          visualBundleRow.listPrice == null ||
+          row.listPrice == null ||
+          row.quantity == null
+            ? null
+            : visualBundleRow.listPrice +
+              Number(row.listPrice) * Number(row.quantity);
+        visualBundleRow.listPriceLabel = this.formatAmount(
+          visualBundleRow.listPrice
+        );
         visualBundleRow.unitPrice = visualBundleRow.totalPrice;
+        visualBundleRow.discountPercentLabel = this.formatDiscount(
+          visualBundleRow.listPrice,
+          visualBundleRow.totalPrice
+        );
         visualBundleRow.unitPriceLabel = this.formatAmount(
           visualBundleRow.unitPrice
         );
@@ -112,7 +198,6 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
         continue;
       }
 
-      treeRow._children = [];
       linesById.set(row.id, treeRow);
       parentRows.push(treeRow);
     }
@@ -138,12 +223,33 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
     });
   }
 
+  @wire(getContext, { quoteId: "$_recordId" })
+  wiredContext(result) {
+    this.contextResult = result;
+    if (result.data) {
+      this.applyContext(result.data);
+    } else if (result.error) {
+      this.showToast("Errore", this.reduceError(result.error), "error");
+    } else {
+      return;
+    }
+    this.hasLoaded = true;
+    this.isLoading = false;
+  }
+
   async loadContext() {
+    if (!this.contextResult) {
+      return true;
+    }
     this.isLoading = true;
     try {
-      this.applyContext(await getContext({ quoteId: this.recordId }));
-    } catch (error) {
-      this.showToast("Errore", this.reduceError(error), "error");
+      await refreshApex(this.contextResult);
+      if (this.contextResult.data) {
+        this.applyContext(this.contextResult.data);
+      }
+      return !this.contextResult.error;
+    } catch {
+      return false;
     } finally {
       this.hasLoaded = true;
       this.isLoading = false;
@@ -211,6 +317,7 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
           : "Riga preventivo eliminata.",
         "success"
       );
+      await this.loadContext();
       this.dispatchEvent(new RefreshEvent());
     } catch (error) {
       this.showToast("Errore", this.reduceError(error), "error");
@@ -231,6 +338,11 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       productName: row.productName || "Prodotto senza nome",
       productCode: row.productCode || "Nessun codice",
       quantityLabel: this.formatNumber(row.quantity),
+      listPriceLabel: this.formatAmount(row.listPrice),
+      discountPercentLabel:
+        row.discountPercent == null
+          ? "-"
+          : `${this.formatNumber(row.discountPercent)}%`,
       unitPriceLabel: this.formatAmount(row.unitPrice),
       totalPriceLabel: this.formatAmount(row.totalPrice),
       quoteLineUrl: lineUrl,
@@ -263,9 +375,12 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       productCode: bundleCode || "Bundle",
       description: "Totale bundle",
       quantity: 1,
+      listPrice: 0,
       unitPrice: 0,
       totalPrice: 0,
       quantityLabel: this.formatNumber(1),
+      listPriceLabel: "-",
+      discountPercentLabel: "-",
       unitPriceLabel: this.formatAmount(0),
       totalPriceLabel: this.formatAmount(0),
       quoteLineUrl: bundleId ? `/lightning/r/Product2/${bundleId}/view` : "#",
@@ -291,6 +406,22 @@ export default class QuoteLineItemsWithBundles extends LightningElement {
       return "";
     }
     return description.slice(prefix.length).trim();
+  }
+
+  formatDiscount(listPrice, unitPrice) {
+    if (listPrice == null || unitPrice == null) {
+      return "-";
+    }
+    const list = Number(listPrice);
+    const unit = Number(unitPrice);
+    if (!Number.isFinite(list) || !Number.isFinite(unit) || list < 0) {
+      return "-";
+    }
+    if (list === 0) {
+      return unit === 0 ? "0%" : "-";
+    }
+    const discount = Math.round((1 - unit / list) * 10000) / 100 || 0;
+    return `${this.formatNumber(discount)}%`;
   }
 
   formatAmount(value) {

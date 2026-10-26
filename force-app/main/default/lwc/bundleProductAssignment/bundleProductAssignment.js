@@ -7,7 +7,15 @@ import LightningConfirm from "lightning/confirm";
 import getBundleContext from "@salesforce/apex/BundleProductAssignmentController.getBundleContext";
 import searchProducts from "@salesforce/apex/BundleProductAssignmentController.searchProducts";
 import saveComponents from "@salesforce/apex/BundleProductAssignmentController.saveComponents";
-import { validRows } from "./pricing";
+import {
+  calculateDiscountedTotal,
+  calculateDiscountPercent,
+  hasExactUnitPrice,
+  PRICING_SOURCE_DISCOUNT,
+  PRICING_SOURCE_MANUAL,
+  resolveRowPrice,
+  validRows
+} from "./pricing";
 
 const currency = { currencyCode: "EUR", minimumFractionDigits: 2 };
 export default class BundleProductAssignment extends LightningElement {
@@ -16,7 +24,8 @@ export default class BundleProductAssignment extends LightningElement {
     { label: "Codice", fieldName: "productCode" },
     {
       label: "Listino unitario",
-      fieldName: "productPriceDisplay"
+      fieldName: "productPriceDisplay",
+      initialWidth: 150
     },
     {
       type: "button",
@@ -36,11 +45,16 @@ export default class BundleProductAssignment extends LightningElement {
   errorMessage = "";
   searchError = "";
   bundleName = "";
+  fixedPrice = null;
   bundleTranches = [];
   rows = [];
   savedRows = [];
   products = [];
   selectedProducts = [];
+  selectedSearchProducts = [];
+  editingComponentKey = null;
+  editingComponentDraft = null;
+  pendingPriceErrors = {};
   searchTerm = "";
   isChoosingProduct = true;
   hasMore = false;
@@ -62,21 +76,29 @@ export default class BundleProductAssignment extends LightningElement {
 
   get spreadTotal() {
     return [
-      ...this.rows,
+      ...this.rowsForTotals,
       ...this.selectedProducts.map((row) => this.resolvePendingRow(row))
     ].reduce((sum, row) => sum + (Number(row.spreadPrice) || 0), 0);
   }
   get listTotal() {
-    return [...this.rows, ...this.selectedProducts].reduce(
+    return [...this.rowsForTotals, ...this.selectedProducts].reduce(
       (sum, row) =>
         sum + (Number(row.listPrice) || 0) * Number(row.quantity || 0),
       0
     );
   }
   get hasMissingListPrices() {
-    return [...this.rows, ...this.selectedProducts].some(
+    return [...this.rowsForTotals, ...this.selectedProducts].some(
       (row) => row.listPrice == null
     );
+  }
+  get rowsForTotals() {
+    if (!this.hasEditingComponent) return this.rows;
+    return this.rows.map((row) => {
+      return row.key === this.editingComponentKey
+        ? this.editingComponentDraft
+        : row;
+    });
   }
   get hasRows() {
     return this.rows.length > 0;
@@ -107,7 +129,6 @@ export default class BundleProductAssignment extends LightningElement {
         label: "Quantita",
         fieldName: "quantity",
         type: "number",
-        editable: true,
         initialWidth: 95
       },
       {
@@ -120,8 +141,7 @@ export default class BundleProductAssignment extends LightningElement {
         label: "Importo assegnato alla riga",
         fieldName: "spreadPrice",
         type: "currency",
-        typeAttributes: currency,
-        editable: true
+        typeAttributes: currency
       },
       {
         label: "Importo per unita",
@@ -130,6 +150,17 @@ export default class BundleProductAssignment extends LightningElement {
         typeAttributes: currency
       },
       { label: "Sconto", fieldName: "discountLabel" },
+      {
+        type: "button-icon",
+        fixedWidth: 44,
+        typeAttributes: {
+          iconName: "utility:edit",
+          name: "edit",
+          alternativeText: "Modifica",
+          title: "Modifica",
+          variant: "border-filled"
+        }
+      },
       {
         type: "button-icon",
         fixedWidth: 44,
@@ -173,6 +204,15 @@ export default class BundleProductAssignment extends LightningElement {
   get selectedLabel() {
     return "Prodotti da aggiungere (" + this.selectedProducts.length + ")";
   }
+  get selectedSearchProductIds() {
+    return this.selectedSearchProducts.map((product) => product.id);
+  }
+  get addSearchSelectionDisabled() {
+    return this.isSearching || this.selectedSearchProducts.length === 0;
+  }
+  get searchSelectionLabel() {
+    return "Aggiungi selezionati (" + this.selectedSearchProducts.length + ")";
+  }
   get resultLabel() {
     return this.products.length + " prodotti visualizzati";
   }
@@ -189,6 +229,12 @@ export default class BundleProductAssignment extends LightningElement {
     return this.isDirty
       ? "Modifiche da salvare"
       : "Nessuna modifica in sospeso";
+  }
+  get editingComponent() {
+    return this.editingComponentDraft;
+  }
+  get hasEditingComponent() {
+    return this.editingComponent != null;
   }
 
   async loadContext() {
@@ -210,27 +256,44 @@ export default class BundleProductAssignment extends LightningElement {
   }
   applyContext(context) {
     this.bundleName = context.bundleName;
+    this.fixedPrice = context.fixedPrice;
     this.bundleTranches = context.bundleTranches || [];
     this.rows = (context.components || []).map((row) => this.decorate(row));
     this.savedRows = this.rows.map((row) => ({ ...row }));
     this.isDirty = false;
   }
+  handleFixedPriceChange(event) {
+    const value = event.target.value;
+    this.fixedPrice = value === "" || value == null ? null : Number(value);
+    this.isDirty = true;
+  }
   decorate(row) {
     const quantity = Number(row.quantity);
-    const spreadPrice = Number(row.spreadPrice);
+    const spreadPrice =
+      row.spreadPrice == null ? null : Number(row.spreadPrice);
     const lineListPrice = (Number(row.listPrice) || 0) * quantity;
+    const discountPercent =
+      row.discountPercent == null && spreadPrice != null && lineListPrice > 0
+        ? Math.round((1 - spreadPrice / lineListPrice) * 10000) / 100
+        : row.discountPercent;
     return {
       ...row,
       quantity,
       spreadPrice,
+      discountPercent,
+      pricingSource:
+        row.pricingSource ||
+        (spreadPrice == null ? null : PRICING_SOURCE_MANUAL),
       lineListPrice,
-      unitSpread: quantity > 0 ? spreadPrice / quantity : 0,
+      unitSpread:
+        quantity > 0 && spreadPrice != null ? spreadPrice / quantity : null,
       key: row.id || "new-" + row.productId,
       bundleTranchName: this.resolveBundleTranchName(row.bundleTranchId),
+      discountDisabled: row.listPrice == null || Number(row.listPrice) <= 0,
       discountLabel:
-        lineListPrice === 0
+        lineListPrice === 0 || discountPercent == null
           ? "-"
-          : ((1 - spreadPrice / lineListPrice) * 100).toFixed(2) + "%"
+          : discountPercent.toFixed(2) + "%"
     };
   }
   handleCellChange(event) {
@@ -245,10 +308,87 @@ export default class BundleProductAssignment extends LightningElement {
     if (table) table.draftValues = [];
   }
   handleRowAction(event) {
+    if (event.detail.action.name === "edit") {
+      this.editingComponentKey = event.detail.row.key;
+      this.editingComponentDraft = { ...event.detail.row };
+      return;
+    }
     if (event.detail.action.name === "remove") {
       this.rows = this.rows.filter((row) => row.key !== event.detail.row.key);
+      if (this.editingComponentKey === event.detail.row.key) {
+        this.editingComponentKey = null;
+        this.editingComponentDraft = null;
+      }
       this.isDirty = true;
     }
+  }
+  handleComponentEditChange(event) {
+    const { field } = event.target.dataset;
+    const value = event.target.value;
+    const updated = {
+      ...this.editingComponentDraft,
+      [field]:
+        field === "bundleTranchId"
+          ? value || null
+          : value === "" || value == null
+            ? null
+            : Number(value)
+    };
+    if (field === "discountPercent") {
+      updated.pricingSource =
+        updated.discountPercent == null ? null : PRICING_SOURCE_DISCOUNT;
+      updated.spreadPrice =
+        updated.discountPercent == null
+          ? null
+          : this.calculateDiscountedTotal(updated);
+    }
+    if (field === "spreadPrice") {
+      updated.pricingSource =
+        updated.spreadPrice == null ? null : PRICING_SOURCE_MANUAL;
+      updated.discountPercent =
+        updated.spreadPrice == null
+          ? null
+          : this.calculateDiscountPercent(updated);
+    }
+    if (field === "quantity" && updated.spreadPrice != null) {
+      if (
+        updated.pricingSource === PRICING_SOURCE_DISCOUNT &&
+        updated.discountPercent != null
+      ) {
+        updated.spreadPrice = this.calculateDiscountedTotal(updated);
+      } else {
+        updated.discountPercent = this.calculateDiscountPercent(updated);
+      }
+    }
+    this.editingComponentDraft = this.decorate(updated);
+  }
+  handleSaveComponentEdit() {
+    const inputs = [
+      ...this.template.querySelectorAll("[data-component-editor]")
+    ];
+    const validInputs = inputs.reduce(
+      (valid, input) => input.reportValidity() && valid,
+      true
+    );
+    if (!validInputs || !validRows([this.editingComponentDraft])) {
+      this.showToast(
+        "Controlla la riga",
+        "La riga deve avere una quantita intera positiva, un importo non negativo con massimo due decimali e un prezzo unitario esatto in centesimi.",
+        "error"
+      );
+      return;
+    }
+    this.rows = this.rows.map((row) => {
+      return row.key === this.editingComponentKey
+        ? this.editingComponentDraft
+        : row;
+    });
+    this.isDirty = true;
+    this.handleCloseComponentEditor();
+  }
+  handleCloseComponentEditor() {
+    this.editingComponentKey = null;
+    this.editingComponentDraft = null;
   }
   handleAddComponent() {
     this.isPickerOpen = true;
@@ -280,6 +420,8 @@ export default class BundleProductAssignment extends LightningElement {
     this.isSearching = false;
     this.isPickerOpen = false;
     this.selectedProducts = [];
+    this.selectedSearchProducts = [];
+    this.pendingPriceErrors = {};
   }
   handleSearchInput(event) {
     this.searchTerm = event.target.value;
@@ -297,6 +439,7 @@ export default class BundleProductAssignment extends LightningElement {
     this.searchError = "";
     if (!append) {
       this.products = [];
+      this.selectedSearchProducts = [];
       this.hasMore = false;
       this.nextCursor = null;
     }
@@ -330,15 +473,37 @@ export default class BundleProductAssignment extends LightningElement {
   }
   handleChooseProduct(event) {
     if (this.isLoading || event.detail.action.name !== "choose") return;
-    const product = event.detail.row;
+    this.addProductsFromSearch([event.detail.row]);
+  }
+  handleProductSelection(event) {
+    this.selectedSearchProducts = event.detail.selectedRows || [];
+  }
+  handleAddSearchSelection() {
+    if (this.addSearchSelectionDisabled) return;
+    this.addProductsFromSearch(this.selectedSearchProducts);
+  }
+  addProductsFromSearch(products) {
+    const pendingRows = products
+      .map((product) => this.buildPendingRow(product))
+      .filter((row) => row != null);
+    if (pendingRows.length === 0) return;
+    const addedProductIds = new Set(pendingRows.map((row) => row.productId));
+    const decoratedRows = pendingRows.map((row) => this.decoratePending(row));
+    this.selectedProducts = [...this.selectedProducts, ...decoratedRows];
+    this.products = this.products.filter(
+      (product) => !addedProductIds.has(product.id)
+    );
+    this.selectedSearchProducts = [];
+  }
+  buildPendingRow(product) {
     if (
       [...this.rows, ...this.selectedProducts].some(
         (row) => row.productId === product.id
       )
     )
-      return;
+      return null;
     const saved = this.savedRows.find((row) => row.productId === product.id);
-    const row = saved
+    return saved
       ? { ...saved }
       : {
           productId: product.id,
@@ -347,20 +512,21 @@ export default class BundleProductAssignment extends LightningElement {
           listPrice: product.productPrice,
           quantity: 1,
           spreadPrice: null,
+          pricingSource: null,
           bundleTranchId: null,
           key: "new-" + product.id
         };
-    this.selectedProducts = [
-      ...this.selectedProducts,
-      this.decoratePending(row)
-    ];
-    this.isChoosingProduct = false;
-    ++this.searchVersion;
-    this.isSearching = false;
   }
   handlePendingChange(event) {
     const { key, field } = event.target.dataset;
     const value = event.target.value;
+    event.target.setCustomValidity("");
+    this.clearPendingPriceErrorStateForRow(key);
+    if (field === "discountPercent" || field === "spreadPrice") {
+      this.clearPendingPriceErrorsForRow(key);
+    } else {
+      event.target.reportValidity();
+    }
     this.selectedProducts = this.selectedProducts.map((row) => {
       if (row.key !== key) return row;
       const updated = {
@@ -372,11 +538,31 @@ export default class BundleProductAssignment extends LightningElement {
               ? null
               : Number(value)
       };
-      if (field === "discountPercent" && updated.discountPercent != null) {
-        updated.spreadPrice = null;
+      if (field === "discountPercent") {
+        updated.pricingSource =
+          updated.discountPercent == null ? null : PRICING_SOURCE_DISCOUNT;
+        updated.spreadPrice =
+          updated.discountPercent == null
+            ? null
+            : this.calculateDiscountedTotal(updated);
       }
-      if (field === "spreadPrice" && updated.spreadPrice != null) {
-        updated.discountPercent = null;
+      if (field === "spreadPrice") {
+        updated.pricingSource =
+          updated.spreadPrice == null ? null : PRICING_SOURCE_MANUAL;
+        updated.discountPercent =
+          updated.spreadPrice == null
+            ? null
+            : this.calculateDiscountPercent(updated);
+      }
+      if (field === "quantity" && updated.spreadPrice != null) {
+        if (
+          updated.pricingSource === PRICING_SOURCE_DISCOUNT &&
+          updated.discountPercent != null
+        ) {
+          updated.spreadPrice = this.calculateDiscountedTotal(updated);
+        } else {
+          updated.discountPercent = this.calculateDiscountPercent(updated);
+        }
       }
       return this.decoratePending(updated);
     });
@@ -387,10 +573,22 @@ export default class BundleProductAssignment extends LightningElement {
       Number(row.listPrice) > 0 &&
       row.discountPercent == null &&
       row.spreadPrice == null;
+    const resolved = this.resolvePendingRow(row);
     return {
       ...row,
+      pendingPriceError: this.pendingPriceErrors[row.key],
       bundleTranchName: this.resolveBundleTranchName(row.bundleTranchId),
       hasListPrice,
+      listPriceDisplay: hasListPrice
+        ? this.formatCurrency(row.listPrice)
+        : "Non disponibile",
+      quantityDisplay: Number(row.quantity) || 0,
+      selectedPriceDisplay:
+        resolved.spreadPrice == null
+          ? "-"
+          : this.formatCurrency(resolved.spreadPrice),
+      selectedDiscountDisplay:
+        row.discountPercent == null ? "-" : row.discountPercent + "%",
       discountDisabled: !hasListPrice || Number(row.listPrice) <= 0,
       discountRequired: needsChoice,
       rowPriceRequired:
@@ -398,33 +596,126 @@ export default class BundleProductAssignment extends LightningElement {
     };
   }
   resolvePendingRow(row) {
-    if (row.discountPercent == null) return row;
-    const total =
-      Number(row.listPrice) *
-      Number(row.quantity) *
-      (1 - Number(row.discountPercent) / 100);
-    return { ...row, spreadPrice: Math.round(total * 100) / 100 };
+    return resolveRowPrice(row);
+  }
+  calculateDiscountedTotal(row) {
+    return calculateDiscountedTotal(row);
+  }
+  calculateDiscountPercent(row) {
+    return calculateDiscountPercent(row);
   }
   handleRemovePending(event) {
+    const key = event.currentTarget.dataset.key;
     this.selectedProducts = this.selectedProducts.filter(
-      (row) => row.key !== event.currentTarget.dataset.key
+      (row) => row.key !== key
     );
+    this.clearPendingPriceErrorStateForRow(key);
     if (!this.hasSelection) this.isChoosingProduct = true;
     if (this.isChoosingProduct) this.fetchProducts();
   }
   validateSelection({ requireTranch } = { requireTranch: false }) {
     const inputs = [...this.template.querySelectorAll("[data-pending]")];
+    this.clearPendingPriceErrors(inputs);
     const validInputs = inputs.reduce(
       (valid, input) => input.reportValidity() && valid,
       true
     );
+    const validPricing = this.validatePendingPricing(inputs);
     return (
       validInputs &&
+      validPricing &&
       (!requireTranch ||
         !this.hasBundleTranches ||
         this.selectedProducts.every((row) => row.bundleTranchId)) &&
       validRows(this.selectedProducts.map((row) => this.resolvePendingRow(row)))
     );
+  }
+  clearPendingPriceErrors(inputs) {
+    inputs
+      .filter(
+        (input) =>
+          input.dataset.field === "discountPercent" ||
+          input.dataset.field === "spreadPrice"
+      )
+      .forEach((input) => {
+        input.setCustomValidity("");
+      });
+  }
+  clearPendingPriceErrorsForRow(key) {
+    this.template
+      .querySelectorAll(
+        `[data-key="${key}"][data-field="discountPercent"], ` +
+          `[data-key="${key}"][data-field="spreadPrice"]`
+      )
+      .forEach((input) => {
+        input.setCustomValidity("");
+        input.reportValidity();
+      });
+  }
+  clearPendingPriceErrorStateForRow(key) {
+    if (!this.pendingPriceErrors[key]) return;
+    const remainingErrors = { ...this.pendingPriceErrors };
+    delete remainingErrors[key];
+    this.pendingPriceErrors = remainingErrors;
+  }
+  refreshPendingDecorations() {
+    this.selectedProducts = this.selectedProducts.map((row) =>
+      this.decoratePending(row)
+    );
+  }
+  validatePendingPricing(inputs) {
+    const priceInputsByKey = new Map();
+    inputs
+      .filter(
+        (input) =>
+          input.dataset.field === "discountPercent" ||
+          input.dataset.field === "spreadPrice"
+      )
+      .forEach((input) => {
+        const key = input.dataset.key;
+        const fields = priceInputsByKey.get(key) || {};
+        fields[input.dataset.field] = input;
+        priceInputsByKey.set(key, fields);
+      });
+
+    let isValid = true;
+    const nextErrors = {};
+    this.selectedProducts.forEach((row) => {
+      const resolved = this.resolvePendingRow(row);
+      const hasValidPrice =
+        Number.isFinite(resolved.spreadPrice) &&
+        resolved.spreadPrice >= 0 &&
+        Math.abs(
+          resolved.spreadPrice * 100 - Math.round(resolved.spreadPrice * 100)
+        ) < 0.00001;
+      const hasValidQuantity =
+        Number.isInteger(resolved.quantity) && resolved.quantity > 0;
+      const hasValidUnitPrice =
+        !hasValidPrice || !hasValidQuantity || hasExactUnitPrice(resolved);
+      if (hasValidPrice && hasValidUnitPrice) return;
+
+      isValid = false;
+      const fields = priceInputsByKey.get(row.key) || {};
+      const message = hasValidPrice
+        ? "Il prezzo totale deve essere divisibile per la quantita con un prezzo unitario di massimo due decimali."
+        : row.discountDisabled === true
+          ? "Inserisci il prezzo totale della riga."
+          : "Inserisci uno sconto oppure il prezzo totale della riga.";
+      nextErrors[row.key] = message;
+      if (fields.discountPercent && row.discountDisabled !== true) {
+        fields.discountPercent.setCustomValidity(message);
+        fields.discountPercent.reportValidity();
+      }
+      if (fields.spreadPrice) {
+        fields.spreadPrice.setCustomValidity(message);
+        fields.spreadPrice.reportValidity();
+      }
+    });
+    this.pendingPriceErrors = nextErrors;
+    if (!isValid) {
+      this.refreshPendingDecorations();
+    }
+    return isValid;
   }
   handleAddAnother() {
     if (this.isLoading || !this.validateSelection()) return;
@@ -489,6 +780,31 @@ export default class BundleProductAssignment extends LightningElement {
   }
   async saveBundle({ closeAfterSave, allowMissingTranch = false }) {
     if (this.saveDisabled) return false;
+    if (this.hasEditingComponent) {
+      this.showToast(
+        "Salva la modifica",
+        "Salva o chiudi la modifica del prodotto aperto prima di salvare il bundle.",
+        "error"
+      );
+      return false;
+    }
+    const bundlePriceInput = this.template.querySelector(
+      '[data-id="bundle-price"]'
+    );
+    if (
+      !bundlePriceInput?.reportValidity() ||
+      !Number.isFinite(this.fixedPrice) ||
+      this.fixedPrice < 0 ||
+      Math.abs(this.fixedPrice * 100 - Math.round(this.fixedPrice * 100)) >=
+        0.00001
+    ) {
+      this.showToast(
+        "Prezzo bundle non valido",
+        "Inserisci un prezzo bundle non negativo con massimo due decimali.",
+        "error"
+      );
+      return false;
+    }
     if (
       !allowMissingTranch &&
       this.hasBundleTranches &&
@@ -504,7 +820,15 @@ export default class BundleProductAssignment extends LightningElement {
     if (!validRows(this.rows) || this.rows.some((row) => !row.productId)) {
       this.showToast(
         "Controlla le righe",
-        "Ogni riga deve avere un prodotto, una quantita intera positiva e un importo non negativo con massimo due decimali.",
+        "Ogni riga deve avere un prodotto, una quantita intera positiva, un importo non negativo con massimo due decimali e un prezzo unitario esatto in centesimi.",
+        "error"
+      );
+      return false;
+    }
+    if (this.hasRows && !this.bundleTotalsMatch()) {
+      this.showToast(
+        "Totale non coerente",
+        "Il Totale assegnato deve essere uguale al Prezzo prodotto bundle prima di salvare.",
         "error"
       );
       return false;
@@ -514,6 +838,7 @@ export default class BundleProductAssignment extends LightningElement {
       this.applyContext(
         await saveComponents({
           bundleId: this.recordId,
+          fixedPrice: this.fixedPrice,
           componentsJson: JSON.stringify(
             this.rows.map((row) => ({
               id: row.id,
@@ -583,6 +908,18 @@ export default class BundleProductAssignment extends LightningElement {
   }
   closeWithoutRefresh() {
     this.dispatchEvent(new CloseActionScreenEvent());
+  }
+  bundleTotalsMatch() {
+    if (this.fixedPrice == null) {
+      return false;
+    }
+    return (
+      this.toCurrencyCents(this.fixedPrice) ===
+      this.toCurrencyCents(this.spreadTotal)
+    );
+  }
+  toCurrencyCents(value) {
+    return Math.round((Number(value) || 0) * 100);
   }
   formatCurrency(value) {
     return new Intl.NumberFormat("it-IT", {

@@ -1,4 +1,4 @@
-public with sharing class MexalMaggazinoSyncBatch implements Database.Batchable<String>, Database.AllowsCallouts {
+public without sharing class MexalMaggazinoSyncBatch implements Database.Batchable<String>, Database.AllowsCallouts {
   private static final String FLOW_NAME = 'Mexal_Movimenti_Magazzino_Sync';
   private static final Integer FALLBACK_LOOKBACK_HOURS = 24;
   private static final Integer MAX_DETAIL_CALLOUTS_PER_EXECUTE = 90;

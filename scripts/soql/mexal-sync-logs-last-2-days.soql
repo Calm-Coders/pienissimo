@@ -1,0 +1,5 @@
+SELECT CreatedDate, Flow_Name__c, Is_Error__c, Response_Body__c, Exception_Message__c
+FROM Integration_Log__c
+WHERE CreatedDate = LAST_N_DAYS:2
+AND Flow_Name__c IN ('Mexal_Articoli_Sync', 'Mexal_Clienti_Sync', 'Mexal_Fatture_Scadenzario_Sync')
+ORDER BY CreatedDate DESC

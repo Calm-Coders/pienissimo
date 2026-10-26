@@ -1,4 +1,4 @@
-public with sharing class MexalCustomerSearchService {
+public without sharing class MexalCustomerSearchService {
   public static final String ACTION_NAME = 'Mexal_Clienti_Ricerca';
 
   public class Result {

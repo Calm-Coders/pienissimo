@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contratto_bloccato_dopo_fatturazione</fullName>
+    <active>true</active>
+    <description
+  >Dopo la prima fattura il contratto e storico: ordine, cliente, tipo e data inizio non si modificano. Restano modificabili data di attivazione, strategist e digital.</description>
+    <errorConditionFormula>AND(
+  NOT(ISNEW()),
+  PRIORVALUE(Fatturato__c) &gt; 0,
+  OR(
+    ISCHANGED(Ordine__c),
+    ISCHANGED(AccountId),
+    ISCHANGED(Tipo_Contratto__c),
+    ISCHANGED(StartDate)
+  )
+)</errorConditionFormula>
+    <errorMessage
+  >Il contratto e gia stato fatturato: ordine, cliente, tipo e data inizio non si possono piu modificare.</errorMessage>
+</ValidationRule>

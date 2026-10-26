@@ -29,6 +29,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
+                <field>Condizione_di_Pagamento__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
                 <field>EffectiveDate</field>
             </layoutItems>
             <layoutItems>
@@ -161,16 +165,11 @@
         <fields>Tranche__c</fields>
         <fields>Data_Scadenza__c</fields>
         <fields>TotalPrice</fields>
-        <fields>Description</fields>
+        <fields>Mexal_Payment_Status__c</fields>
+        <fields>Mexal_Line_Number__c</fields>
+        <fields>Fattura__c</fields>
+        <fields>Stato_Scadenza__c</fields>
         <relatedList>RelatedOrderItemList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>Name</fields>
-        <fields>BillingAccount</fields>
-        <fields>TotalAmount</fields>
-        <fields>TotalAmountWithTax</fields>
-        <fields>InvoiceDate</fields>
-        <relatedList>Invoices</relatedList>
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedEntityHistoryList</relatedList>

@@ -2,12 +2,12 @@ public without sharing class DocuSignQuoteEnvelopeService {
   private static final String ACTION_CREATE_ENVELOPE = 'DocuSign_Create_Envelope';
   private static final String DEFAULT_NAMED_CREDENTIAL = 'DocuSign';
   private static final String CONTENT_TYPE_JSON = 'application/json';
-  private static final String SIGNATURE_TITLE_TOKEN = 'da firmare';
+  private static final String QUOTE_DOCUMENT_TITLE_PREFIX = 'Preventivo-';
   private static final String STATUS_SENT = 'Sent';
   private static final String STATUS_COMPLETED = 'Completed';
   private static final String STATUS_DECLINED = 'Declined';
   private static final String STATUS_ERROR = 'Error';
-  private static final String QUOTE_ACCEPTED_STATUS = 'Accettato';
+  private static final String QUOTE_SIGNED_STATUS = 'Firmato';
 
   private static final Boolean IS_SANDBOX = [
     SELECT IsSandbox
@@ -34,7 +34,10 @@ public without sharing class DocuSignQuoteEnvelopeService {
       Quote quoteRecord = loadQuote(quoteId, true);
       validateReadyToSend(quoteRecord);
 
-      SigningDocument document = loadSigningDocument(quoteId);
+      SigningDocument document = loadSigningDocument(
+        quoteId,
+        quoteRecord.QuoteNumber
+      );
       String requestBody = buildEnvelopeRequest(quoteRecord, document);
       HttpRequest request = buildRequest(requestBody);
       Integration_Log__c logRow = buildLog(request);
@@ -91,7 +94,7 @@ public without sharing class DocuSignQuoteEnvelopeService {
     update new Quote(
       Id = quotes[0].Id,
       DocuSign_Status__c = STATUS_COMPLETED,
-      Status = QUOTE_ACCEPTED_STATUS,
+      Status = QUOTE_SIGNED_STATUS,
       Is_Signed__c = true
     );
   }
@@ -162,8 +165,11 @@ public without sharing class DocuSignQuoteEnvelopeService {
     }
   }
 
-  private static SigningDocument loadSigningDocument(Id quoteId) {
-    String titlePattern = '%' + SIGNATURE_TITLE_TOKEN + '%';
+  private static SigningDocument loadSigningDocument(
+    Id quoteId,
+    String quoteNumber
+  ) {
+    String expectedTitle = QUOTE_DOCUMENT_TITLE_PREFIX + quoteNumber;
     List<ContentDocumentLink> links = [
       SELECT
         ContentDocumentId,
@@ -172,7 +178,8 @@ public without sharing class DocuSignQuoteEnvelopeService {
       FROM ContentDocumentLink
       WHERE
         LinkedEntityId = :quoteId
-        AND ContentDocument.Title LIKE :titlePattern
+        AND ContentDocument.Title = :expectedTitle
+        AND ContentDocument.FileExtension = 'pdf'
       ORDER BY ContentDocument.LastModifiedDate DESC
       LIMIT 1
     ];

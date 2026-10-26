@@ -1,19 +1,32 @@
-public with sharing class OrderMexalIntegrationQueueable implements Queueable, Database.AllowsCallouts {
+public without sharing class OrderMexalIntegrationQueueable implements Queueable, Database.AllowsCallouts {
   private static final String STEP_MARK_RUNNING = 'Mark Running';
   private static final String STEP_ANTICIPAY = 'Anticipay';
   private static final String STEP_MEXAL_CUSTOMER = 'Mexal Customer';
   private static final String STEP_MEXAL_ORDER = 'Mexal Order';
+  private static final String STEP_MEXAL_ORDER_LINES = 'Mexal Order Lines';
+  private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = true;
 
   private final Id orderId;
   private final String stepName;
   private final Boolean firstOrder;
   private final List<Id> remainingOrderIds;
   private final Set<Id> firstOrderIds;
+  // Set by the manual "Reinvia a Mexal" retry, which may run in a sandbox.
+  private final Boolean manualRun;
 
   public OrderMexalIntegrationQueueable(
     List<Id> orderIds,
     Set<Id> firstOrderIds
   ) {
+    this(orderIds, firstOrderIds, false);
+  }
+
+  public OrderMexalIntegrationQueueable(
+    List<Id> orderIds,
+    Set<Id> firstOrderIds,
+    Boolean manualRun
+  ) {
+    this.manualRun = manualRun == true;
     List<Id> safeOrderIds = orderIds == null ? new List<Id>() : orderIds;
     this.orderId = safeOrderIds.isEmpty() ? null : safeOrderIds[0];
     this.stepName = initialStep(this.orderId, firstOrderIds);
@@ -33,8 +46,10 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
     String stepName,
     Boolean firstOrder,
     List<Id> remainingOrderIds,
-    Set<Id> firstOrderIds
+    Set<Id> firstOrderIds,
+    Boolean manualRun
   ) {
+    this.manualRun = manualRun == true;
     this.orderId = orderId;
     this.stepName = stepName;
     this.firstOrder = firstOrder == true;
@@ -47,12 +62,24 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
   }
 
   public void execute(QueueableContext context) {
+    if (!shouldRunInThisOrg()) {
+      return;
+    }
+
     if (orderId == null) {
       enqueueNextOrder();
       return;
     }
 
     try {
+      if (
+        stepName == STEP_MEXAL_ORDER &&
+        OrderMexalIntegrationService.excludeZeroValueOrder(orderId)
+      ) {
+        enqueueNextOrder();
+        return;
+      }
+
       runCurrentStep();
       enqueueNextStepOrOrder();
     } catch (Exception error) {
@@ -79,6 +106,11 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
 
     if (stepName == STEP_MEXAL_ORDER) {
       OrderMexalIntegrationService.runMexalOrderStep(orderId);
+      return;
+    }
+
+    if (stepName == STEP_MEXAL_ORDER_LINES) {
+      OrderMexalIntegrationService.runMexalOrderLinesStep(orderId);
     }
   }
 
@@ -91,7 +123,8 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
           nextStep,
           firstOrder,
           remainingOrderIds,
-          firstOrderIds
+          firstOrderIds,
+          manualRun
         )
       );
       return;
@@ -103,7 +136,11 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
   private void enqueueNextOrder() {
     if (!remainingOrderIds.isEmpty()) {
       System.enqueueJob(
-        new OrderMexalIntegrationQueueable(remainingOrderIds, firstOrderIds)
+        new OrderMexalIntegrationQueueable(
+          remainingOrderIds,
+          firstOrderIds,
+          manualRun
+        )
       );
     }
   }
@@ -121,10 +158,30 @@ public with sharing class OrderMexalIntegrationQueueable implements Queueable, D
       return STEP_MEXAL_ORDER;
     }
 
+    if (stepName == STEP_MEXAL_ORDER) {
+      return STEP_MEXAL_ORDER_LINES;
+    }
+
     return null;
   }
 
   private static String initialStep(Id orderId, Set<Id> firstOrderIds) {
     return STEP_MARK_RUNNING;
+  }
+
+  private Boolean shouldRunInThisOrg() {
+    if (Test.isRunningTest()) {
+      return true;
+    }
+
+    if (!OrderMexalIntegrationService.isAutomaticMexalCreationEnabled()) {
+      return false;
+    }
+
+    if (ALLOW_MEXAL_QUEUE_IN_SANDBOX == true || manualRun) {
+      return true;
+    }
+
+    return [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox != true;
   }
 }

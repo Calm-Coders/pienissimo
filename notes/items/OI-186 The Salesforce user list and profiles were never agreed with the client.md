@@ -1,12 +1,12 @@
 ---
 id: OI-186
 type: open-item
-status: open
+status: in-progress
 owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-09-25
-updated: 2026-09-25
+updated: 2026-10-22
 blocks: [go-live]
 source: notes/meetings/2026-09-25 Interna post UAT Contratto e Fase Due.md
 ---
@@ -57,3 +57,192 @@ caveat: everyone seeing everything is not the same as everyone being able to
   That row waits on Daniela Morgese's review; **this one waits on a list that does
   not exist**, which is the harder of the two.
 - ⚠ No register row covers profiles, roles or permission sets.
+
+## 🔑 2026-09-28 - the client ruled on visibility, and the user list is still missing
+
+Half of this note is answered. At
+[the 28/09 session](../meetings/2026-09-28%20Tema%20Contratti%20e%20Open%20Point.md)
+(`00:33:00`-`00:38:00`) Fabrizio Paganelli gave **the first client statement on
+permissions**.
+
+He reached for segregation first — _"i commerciali dovranno vedere delle cose che …
+noi in amministrazione vediamo cose che i commerciali non possono vedere"_ — and
+reversed once Aurel Mrruku spelled out what _everyone sees everything_ meant at
+record level (a commerciale seeing another commerciale's orders and accounts):
+
+> _"adesso è così, eh, e tutti i commerciali vedono tutto … è una modalità che non
+> mi sento di disapplicare, nel senso che poi dopo corriamo il rischio che
+> stravolgiamo troppo il modo di lavorare."_
+
+🔑 **The rule, in his words:** _"facciamo che al momento tutti vedono tutto e poi
+l'importante è che non tutti possano modificare tutto."_ **Read access is open
+across records; edit access is what gets restricted**, with field-level exceptions.
+
+### 🔑 His reason is itself a requirement
+
+He wants configuration structures locked to named people, because at Zoho someone
+changed configuration without telling anyone and **his invoicing stopped for days**:
+
+> _"uno per risolvere una cosa del suo reparto faceva i danni agli altri … mi si è
+> bloccata la fatturazione perché Tizio era andato dentro, aveva toccato
+> determinate cose."_
+
+His ask: _"sarei più favorevole a blindare determinati profili, a fare determinate
+cose, solo le cose del loro reparto"_, with a request route for exceptions. **This
+is a stated client requirement about configuration change control, not a
+preference.** Nothing in `requirements/` covers it.
+
+### 🟢 The shape, agreed
+
+Elena Spini proposed _"forse uno o due profili, ma … forse già solo uno e poi
+andiamo di permessi"_. Aurel Mrruku ruled **role hierarchy out entirely** —
+_"ruoli poco, siccome tutti vedono tutto, non vedo utilità."_
+
+**So: one profile plus permission sets, and no role hierarchy.** 🟢 This
+**supersedes the four profiles inferred from the org chart** recorded above — the
+inference is no longer load-bearing.
+
+🔴 **Which functions get an ad-hoc permission is deliberately deferred to after
+UAT**, once the record life cycles are visible. Aurel Mrruku: _"alla fine dei test
+dobbiamo definire … ci dovete dire questa roba si deve fare solo da questa
+persona."_ Fabrizio Paganelli agreed. **That is a decision dated after 13 October
+approval**, on a go-live of 21 October.
+
+### 🔴 The user list was not asked for
+
+Getting it was the **second purpose of this session**. Elena Spini had named it a
+red flag in `#tproj-pienissimo` ninety minutes earlier — _"Il cliente deve ancora
+fornire i template dei Web Form (Sabatino) e la lista degli utenti"_ — and **it did
+not come up in the call at all.** Fabrizio Paganelli was the right person and was
+on the line for an hour.
+
+🔴 **Still: no user list, no named people, ~18 agent codes.** Go-live 21/10.
+Pienissimo is unreachable 29/09; the next contact is 30/09, a UAT session.
+
+## 2026-10-05 - two rulings on users, and the source sheets are still empty
+
+🔑 **From [the Performance Plus UAT](../meetings/2026-10-05%20UAT%20Performance%20Plus%20e%20Gestione%20date%20pagamento.md):**
+
+- **Strategists share one user account.** Agreed as a `Concordato`:
+  _"Gli strategist utilizzeranno un account utente condiviso per
+  l'aggiornamento dei campi contrattuali al fine di ottimizzare i costi delle
+  licenze."_ The strategist is also the role that fills the contract's
+  `data di attivazione`. ⚠ A shared login makes `LastModifiedBy` useless on
+  exactly the field the contract's twelve months run from, and the 28/09 ruling
+  was `tutti vedono tutto` at record level with **edit** access as the thing
+  restricted — a shared account restricts nothing and audits nothing. Nobody
+  raised either point.
+- **The `digital` field is hidden** in the contract interface, kept in the
+  database, because task management belongs to the strategist. `strategist` and
+  `digital` were the two text fields added on 28/09 for ~15 people with no
+  licences; one of them is now invisible.
+
+🔴 **The client's own source for this is still blank.**
+[The Campi Oggetti workbook](../The%20Campi%20Oggetti%20Flussi%20e%20Utenti%20workbook.md)
+was modified 05/10 at 16:40Z and its `Utenti` sheet still holds only the header
+`Nome, Cognome, Email, Ruolo, Visibilità`, its `Profili` sheet only
+`Profilo, Visibilità`. **Nothing underneath either.** Three sessions with the
+client on 05/10, two of them about data and fields, and the user list was not
+asked for again — the same omission this item recorded on 28/09.
+
+## 🔴 2026-10-15 - deferred again, explicitly, and now three requirements wait on it
+
+At [the 15/10 session](../meetings/2026-10-15%20Migrazione%20e%20Go-Live.md)
+(`00:10`–`00:15`) the profile question was put directly and postponed with a
+stated reason. Aurel Mrruku:
+
+> _"tutti i flussi fino adesso … abbiamo usato solo il permesso di sistem admin
+> perché avevamo detto confermiamo prima tutto e poi decidiamo chi deve vedere
+> cosa. … se io adesso devo fare i permessi, ma ci sono campi che non servono, ci
+> sono layout che devono cambiare, io li devo rifare ogni volta che cambia un
+> campo perché i permessi sono legati con l'entità."_
+
+🟢 **The engineering reason is sound** and it is the first time the deferral has
+been justified rather than simply observed: permission sets bound to fields and
+layouts have to be rebuilt every time those change, and the build is still
+changing.
+
+🔴 **The consequence is that eighteen days before go-live every person who
+touches the system is a System Admin**, including, from this week, the client's
+commercial lead
+([OI-240](OI-240%20Marco%20Montesi%20needs%20a%20Salesforce%20user%20before%20go-live.md)).
+
+**Three requirements now depend on profiles that do not exist:**
+
+| Requirement                                                                                             | Needs                                                     |
+| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [OI-247](OI-247%20Only%20the%20responsabile%20commerciale%20may%20edit%20the%20provvigioni%20fields.md) | a _responsabile commerciale_ profile, uniquely privileged |
+| [OI-233](OI-233%20Bundle%20access%20for%20tutor%20profiles%20is%20undefined.md)                         | a _tutor_ profile that cannot quote or order bundles      |
+| [OI-246](OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md)    | something to train eight commercial users **on**          |
+
+🔴 **And the deferral collides with the training plan.** Testing and training
+happen under System Admin, against access the users will not have in production.
+Aurel Mrruku named that himself as what he expects to be hardest to explain:
+_"le cose che io mi aspetto che siano difficili da spiegare [sono] i campi che
+non vedono, oppure se abbiamo dato qualche permesso in più, qualche permesso in
+meno quando facciamo i permessi per questi utenti."_ Elena Spini made the same
+point about Marco Montesi specifically.
+
+⚠ **The window for the permissions build is now the same two weeks** as the test
+completion, the training, the production deployment and the migration rehearsal.
+
+## 2026-10-22 - the Agente access boundary is implemented in UAT
+
+Aurel Mrruku instructed that an Agente must operate the commercial flow from
+Lead through quote preparation and order creation, but must have **read-only
+access to the Order and every operational object after it**. He then confirmed
+that **no Order field is editable** for the Agente.
+
+The repository's `Agente` profile carried almost no object access. The access
+model is now implemented directly in that **profile**, as requested:
+
+- create/read/edit, without delete, on Account, Contact, Lead, Opportunity and
+  Quote;
+- create/read/edit/delete for quote lines and pre-order tranche preparation;
+- read only on Order, Order Product, Contract, Asset, Invoice, Invoice Line and
+  Invoice Deadline;
+- read only on products and price books;
+- the Apex controllers, record types and tabs needed for the commercial path.
+
+The corrected profile and the restored minimal permission set passed UAT
+check-only deployment `0AfMA00000CzEC10AN` and were deployed to the partial
+sandbox as `0AfMA00000CzEDd0AN`. A live permission query then confirmed the
+profile's Order access is `read=true`, `create/edit/delete=false`, with zero
+editable Order fields. The separate `Agente` permission set grants only Account
+read access, 19 Account fields and two User fields. A one-time cleanup deployment
+(`0AfMA00000CzEaD0AV`) explicitly removed the broad field grants materialized by
+the superseded permission-set attempt.
+
+The first implementation attempt had put the commercial access in the assigned
+permission set (`0AfMA00000CzAwP0AV`). That contradicted Aurel's explicit request
+for a profile and was corrected in the same session. The UAT profile currently
+has one active user and eight inactive users.
+
+Aurel then requested explicit **View All Records** access for Account and Lead.
+The profile change passed check-only deployment `0AfMA00000CzFCv0AN`, deployed
+as `0AfMA00000CzFHl0AN`, and a live query confirmed
+`PermissionsViewAllRecords=true` on both objects. Filters defined inside an
+individual list view still restrict the rows shown by that view.
+
+The `Nuova Opportunità` Account action then exposed a profile-specific layout
+gap: its `lightning-record-edit-form` returned `Layout contains no sections`
+because the three enabled Opportunity record types had no explicit layout
+assignment on the profile. All three are now mapped to the populated
+`Opportunity-Opportunity Layout`. Check-only deployment `0AfMA00000CzFmP0AV`
+and UAT deployment `0AfMA00000CzFpd0AF` succeeded; a post-deploy metadata
+retrieval confirmed the mappings for `Plus_Attivazione_Rinnovo`,
+`Vendita_Standard` and `WooCommerce`.
+
+A same-day Lead-path check exposed the identical gap on Lead. The custom path's
+`lightning-record-edit-form` returned `One or more profiles have no page layout
+assigned for the 'Lead' Object` for an Agente user. Live UAT Tooling API evidence
+showed **zero** `ProfileLayout` rows for `Profile.Name = 'Agente'` and
+`TableEnumOrId = 'Lead'`, although the org has a populated `Lead Layout`; the
+source profile also had no Lead layout assignment. The local source now maps the
+default, `Lead.Diretta` and `Lead.Standard` cases to `Lead-Lead Layout`. This
+follow-up is **not deployed**.
+
+⚠ This does **not** settle the complete client user list, the production
+assignments, the separate responsabile-commerciale exception in OI-247, or
+whether the Agente profile is the tutor profile discussed in OI-233. This item
+therefore moves to `in-progress`, not resolved.

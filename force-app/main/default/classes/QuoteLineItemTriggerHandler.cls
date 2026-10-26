@@ -82,7 +82,36 @@ public without sharing class QuoteLineItemTriggerHandler {
       }
     }
 
-    resetQuotesToDraft(quoteIds);
+    updateQuoteCommercialTotals(quoteIds);
+  }
+
+  public static void afterUpdate(
+    List<QuoteLineItem> newLines,
+    Map<Id, QuoteLineItem> oldLineMap
+  ) {
+    if (newLines == null || newLines.isEmpty()) {
+      return;
+    }
+
+    Set<Id> quoteIds = new Set<Id>();
+    for (QuoteLineItem line : newLines) {
+      if (line.QuoteId != null) {
+        quoteIds.add(line.QuoteId);
+      }
+
+      QuoteLineItem oldLine = oldLineMap == null
+        ? null
+        : oldLineMap.get(line.Id);
+      if (oldLine != null && oldLine.QuoteId != null) {
+        quoteIds.add(oldLine.QuoteId);
+      }
+    }
+
+    updateQuoteCommercialTotals(quoteIds);
+  }
+
+  public static void afterUndelete(List<QuoteLineItem> restoredLines) {
+    afterInsert(restoredLines);
   }
 
   public static void afterDelete(List<QuoteLineItem> oldLines) {
@@ -101,18 +130,32 @@ public without sharing class QuoteLineItemTriggerHandler {
       }
     }
 
-    resetQuotesToDraft(quoteIds);
+    updateQuoteCommercialTotals(quoteIds);
 
     if (trancheIds.isEmpty()) {
       return;
     }
 
-    for (QuoteLineItem remainingLine : [
-      SELECT Tranche__c
+    List<Tranche__c> trancheUpdates = new List<Tranche__c>();
+    for (AggregateResult result : [
+      SELECT Tranche__c trancheId, SUM(TotalPrice) totalAmount
       FROM QuoteLineItem
       WHERE Tranche__c IN :trancheIds
+      GROUP BY Tranche__c
     ]) {
-      trancheIds.remove(remainingLine.Tranche__c);
+      Id trancheId = (Id) result.get('trancheId');
+      Decimal totalAmount = (Decimal) result.get('totalAmount');
+      trancheUpdates.add(
+        new Tranche__c(
+          Id = trancheId,
+          Importo_Previsto__c = totalAmount == null ? 0 : totalAmount
+        )
+      );
+      trancheIds.remove(trancheId);
+    }
+
+    if (!trancheUpdates.isEmpty()) {
+      update trancheUpdates;
     }
 
     if (trancheIds.isEmpty()) {
@@ -126,25 +169,51 @@ public without sharing class QuoteLineItemTriggerHandler {
     ];
   }
 
-  private static void resetQuotesToDraft(Set<Id> quoteIds) {
+  private static void updateQuoteCommercialTotals(Set<Id> quoteIds) {
     if (quoteIds == null || quoteIds.isEmpty()) {
       return;
     }
 
-    List<Quote> quotesToUpdate = new List<Quote>();
-    for (Quote quoteRecord : [
-      SELECT Id, Status
-      FROM Quote
-      WHERE Id IN :quoteIds AND Status != :DRAFT_QUOTE_STATUS
+    Map<Id, Decimal> listTotalByQuoteId = new Map<Id, Decimal>();
+    Map<Id, Decimal> netTotalByQuoteId = new Map<Id, Decimal>();
+    for (Id quoteId : quoteIds) {
+      listTotalByQuoteId.put(quoteId, 0);
+      netTotalByQuoteId.put(quoteId, 0);
+    }
+
+    for (QuoteLineItem line : [
+      SELECT QuoteId, Quantity, ListPrice, TotalPrice
+      FROM QuoteLineItem
+      WHERE QuoteId IN :quoteIds
     ]) {
-      quotesToUpdate.add(
-        new Quote(Id = quoteRecord.Id, Status = DRAFT_QUOTE_STATUS)
+      Decimal quantity = line.Quantity == null ? 0 : line.Quantity;
+      Decimal listPrice = line.ListPrice == null ? 0 : line.ListPrice;
+      Decimal netPrice = line.TotalPrice == null ? 0 : line.TotalPrice;
+      listTotalByQuoteId.put(
+        line.QuoteId,
+        listTotalByQuoteId.get(line.QuoteId) + (quantity * listPrice)
+      );
+      netTotalByQuoteId.put(
+        line.QuoteId,
+        netTotalByQuoteId.get(line.QuoteId) + netPrice
       );
     }
 
-    if (!quotesToUpdate.isEmpty()) {
-      update quotesToUpdate;
+    List<Quote> quotesToUpdate = new List<Quote>();
+    for (Id quoteId : quoteIds) {
+      Decimal listTotal = listTotalByQuoteId.get(quoteId);
+      Decimal netTotal = netTotalByQuoteId.get(quoteId);
+      quotesToUpdate.add(
+        new Quote(
+          Id = quoteId,
+          Status = DRAFT_QUOTE_STATUS,
+          Totale_Listino__c = listTotal,
+          Sconto_Totale__c = listTotal - netTotal
+        )
+      );
     }
+
+    update quotesToUpdate;
   }
 
   private static Map<Id, QuoteProductMix> initializeMixes(Set<Id> quoteIds) {
@@ -164,7 +233,7 @@ public without sharing class QuoteLineItemTriggerHandler {
     }
 
     for (PricebookEntry entry : [
-      SELECT Id, Product2.Is_Plus__c, Product2.RecordType.DeveloperName
+      SELECT Id, Product2.RecordType.DeveloperName
       FROM PricebookEntry
       WHERE Id IN :pricebookEntryIds
     ]) {
@@ -186,20 +255,12 @@ public without sharing class QuoteLineItemTriggerHandler {
     List<QuoteLineItem> existingLines = replacedLineIds == null ||
       replacedLineIds.isEmpty()
       ? [
-          SELECT
-            Id,
-            QuoteId,
-            PricebookEntry.Product2.RecordType.DeveloperName,
-            PricebookEntry.Product2.Is_Plus__c
+          SELECT Id, QuoteId, PricebookEntry.Product2.RecordType.DeveloperName
           FROM QuoteLineItem
           WHERE QuoteId IN :quoteIds
         ]
       : [
-          SELECT
-            Id,
-            QuoteId,
-            PricebookEntry.Product2.RecordType.DeveloperName,
-            PricebookEntry.Product2.Is_Plus__c
+          SELECT Id, QuoteId, PricebookEntry.Product2.RecordType.DeveloperName
           FROM QuoteLineItem
           WHERE QuoteId IN :quoteIds AND Id NOT IN :replacedLineIds
         ];
@@ -254,16 +315,10 @@ public without sharing class QuoteLineItemTriggerHandler {
   private class QuoteProductMix {
     Integer bundleLineCount = 0;
     Integer itemLineCount = 0;
-    Integer plusBundleLineCount = 0;
 
     void addLine(ProductLineKind kind) {
       if (kind == null) {
         itemLineCount++;
-        return;
-      }
-
-      if (kind.isPlusBundle) {
-        plusBundleLineCount++;
         return;
       }
 
@@ -276,10 +331,6 @@ public without sharing class QuoteLineItemTriggerHandler {
     }
 
     Boolean isValid() {
-      if (plusBundleLineCount > 0) {
-        return bundleLineCount == 0 && itemLineCount == 0;
-      }
-
       return bundleLineCount <= 1 &&
         (bundleLineCount == 0 ||
         itemLineCount == 0);
@@ -288,22 +339,13 @@ public without sharing class QuoteLineItemTriggerHandler {
 
   private class ProductLineKind {
     Boolean isBundle;
-    Boolean isPlusBundle;
 
     ProductLineKind(PricebookEntry entry) {
       isBundle = isBundle(entry);
-      isPlusBundle =
-        isBundle &&
-        entry.Product2 != null &&
-        entry.Product2.Is_Plus__c == true;
     }
 
     ProductLineKind(QuoteLineItem line) {
       isBundle = isBundle(line);
-      isPlusBundle =
-        isBundle &&
-        line.PricebookEntry.Product2 != null &&
-        line.PricebookEntry.Product2.Is_Plus__c == true;
     }
   }
 }

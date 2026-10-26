@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Di Cicco
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-21
+updated: 2026-10-16
 depends_on: [OI-37, OI-38]
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -114,3 +114,68 @@ left the status report.
 
 ⚠ Also new in the same post: **`Stima giornate a finire: 30`**. Whether that is
 person-days or calendar days is not stated.
+
+## 🟢 2026-10-15 - ROMI committed in writing to send a Fase 2 offer and plan
+
+Elena Spini's 15/10 17:35:47Z mail to the client
+([OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)):
+
+> _"Eventuali nuove esigenze o Change Request sollevate durante questo periodo
+> saranno prese in carico nella Fase 2, per la quale invieremo un'offerta e un
+> piano di progetto dedicati in un thread separato."_
+
+🟢 **That is the first written commitment on record to produce the thing this row
+has been missing since August** — an offer and a project plan for Fase 2, in a
+thread of their own.
+
+🔴 **No date, and no content.** The sentence promises a document; it does not say
+when, and nothing in any source describes what Fase 2 contains beyond the three
+exclusions on the plan deck (GLS notifications, Teachable video courses, Ordini
+Pienissimo Pro). ⚠ `Pienissimo_Project Plan v3.pptx` carries the same three as
+v2 — **the exclusion list did not grow**, even though the items deferred into
+Fase 2 since September have.
+
+⚠ **Meanwhile the phase is being filled by deferral.** Items agreed or proposed
+into Fase 2 that appear nowhere in its scope documents include
+[OI-234](OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)
+(accepted by the client in the same session), the commercial notification flows
+([OI-222](OI-222%20The%20commercial%20mail%20and%20WhatsApp%20notification%20flows%20are%20unspecified.md),
+de-prioritised by Sabatino Rinaldi as _"va fatta in un secondo momento"_), and
+whatever the two-week freeze now catches. **A phase accumulating commitments with
+no estimate is the risk this row exists to carry**, and it got larger tonight,
+not smaller.
+
+## 🟢 2026-10-16 — the estimate exists internally for the first time; the offer is still unsent
+
+Elena Spini's status post in `#tproj-pienissimo` (16/10 19:20 CEST) states it
+plainly under **Fase 2**:
+
+> _"stima allineata con Andrea G. il 15/10, offerta per singola attività ancora
+> da mandare."_
+
+🟢 **Two firsts in one line.** There is now an **internal estimate**, aligned
+with **Andrea Galotto** on 15 October — the first time in this record that any
+number has been attached to Fase 2 since the holidays commitment of 06/08. And
+the offer is to be **per single activity**, which is a shape, not just a
+promise.
+
+🟢 It follows the written commitment in the 15/10 project-plan mail
+([OI-243](OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md)),
+and the same status post lists sending it as a next step owned by
+**Elena Spini and Andrea Galotto**.
+
+🔴 **The client has not received anything.** _"Ancora da mandare"_, and the
+scope freeze announced on 15/10 is actively pushing work into Fase 2 while the
+commercial terms for Fase 2 do not exist. Items routed there since the freeze:
+[OI-234](OI-234%20Tranche%20invoicing%20when%20the%20customer%20changes%20legal%20entity%20mid-order.md)
+(15/10) and
+[OI-253](OI-253%20Restoring%20a%20ticket%20after%20an%20accidental%20rinuncia%20is%20Fase%202.md)
+(16/10), with
+[OI-252](OI-252%20The%20Food%20Marketing%20Festival%20needs%20its%20own%20journey%20template.md)
+unruled.
+
+🔴 **The number itself is not in any source this procedure can read**, and
+neither is the activity list it covers. ⚠ The estimate is also **not yet
+anchored to the Fase 2 exclusion list** in `Pienissimo_Project Plan v3.pptx`,
+which the 15/10 sweep found had not grown (GLS, Teachable, Ordini Pienissimo
+Pro) even as items were being deferred into it.

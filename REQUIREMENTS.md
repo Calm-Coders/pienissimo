@@ -28,7 +28,7 @@ Every requirement carries a stable identifier (e.g. `SAL-04`), a priority and a 
 
 | Priority | Meaning                                                  |
 | :------: | -------------------------------------------------------- |
-|  **M**   | _Must_ — indispensable for the 21 October 2026 go-live.  |
+|  **M**   | _Must_ — indispensable for the 16 November 2026 go-live. |
 |  **S**   | _Should_ — important, but go-live can happen without it. |
 |  **C**   | _Could_ — desirable, delivered if time allows.           |
 |  **F2**  | Explicitly deferred to **Phase 2**, after go-live.       |
@@ -42,7 +42,7 @@ Every requirement carries a stable identifier (e.g. `SAL-04`), a priority and a 
 | ID     | Requirement                                                                                                                                                         | Pri. | Status |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :----: |
 | CTX-01 | Replace Zoho CRM with Salesforce as Pienissimo's single operational CRM.                                                                                            |  M   |   ✅   |
-| CTX-02 | **Go-live date: 21 October 2026**, focused on the WooCommerce and Mexal integrations. Minor integrations move to Phase 2.                                           |  M   |   ✅   |
+| CTX-02 | **Go-live date: 16 November 2026**, focused on the WooCommerce and Mexal integrations. Minor integrations move to Phase 2. Moved from 21 October: proposed by Pienissimo in writing 20 October 2026 and agreed by both parties on 21 October 2026. |  M   |   ✅   |
 | CTX-03 | The Zoho contract expires **31 October 2026**. The parallel-running window is therefore roughly three weeks and cannot be extended.                                 |  M   |   ✅   |
 | CTX-04 | During dual-run, tickets are entered twice (Zoho + Salesforce) and stage-sale invoicing stays on Zoho through the Food Marketing Festival on 29 September.          |  M   |   ✅   |
 | CTX-05 | Guiding principle: **no workarounds**. Processes are redesigned for Salesforce, not replicated from Zoho. Start simple and manual; automate what proves repetitive. |  M   |   ✅   |
@@ -57,7 +57,12 @@ Every requirement carries a stable identifier (e.g. `SAL-04`), a priority and a 
 | ~1 September 2026   | Data import into Salesforce                 | Preceded by cleanup: ~6,000 leads/accounts against ~7,500 paying clients |
 | 7–19 September 2026 | Tour (free events)                          | ~90% new audience, client-typed data                                     |
 | 29 September 2026   | Food Marketing Festival                     | Peaks of 100–150 invoices per day                                        |
-| **21 October 2026** | **Go-live**                                 | WooCommerce + Mexal operational                                          |
+| 21 October 2026     | ~~Go-live~~ (superseded)                    | Date in the signed text; not executed                                    |
+| ~9 November 2026    | **Technical release to production**         | Plus the manual configuration steps                                      |
+| 9–12 November 2026  | First historical-order import               | Invoicing stays on Zoho; no operational freeze                           |
+| 12 November 2026    | Last invoicing day on Zoho                  |                                                                          |
+| 13 November 2026    | Second historical-order import              | Client extract handed over at 09:00                                      |
+| **16 November 2026** | **Go-live**                                | Invoicing live on Salesforce; WooCommerce + Mexal operational            |
 | 29 October 2026     | Launch event, 1,500+ attendees              | First full-scale event on Salesforce                                     |
 | 31 October 2026     | Zoho contract expiry                        | End of dual-run                                                          |
 | 3 November 2026 🔴  | Camerieri Venditori — or postponed to April | Date to confirm                                                          |
@@ -380,7 +385,7 @@ The project is considered compliant when all of the following are verified in th
 1. Every change request after signature is submitted to ROMI in writing.
 2. ROMI responds with an impact assessment on **scope, time and cost** within five working days.
 3. Work starts **only after written approval** from Pienissimo.
-4. Requests that endanger the 21 October 2026 date are automatically candidates for Phase 2, unless the go-live date is explicitly renegotiated.
+4. Requests that endanger the 16 November 2026 date are automatically candidates for Phase 2, unless the go-live date is explicitly renegotiated.
 5. The items in §2.2 stay out of scope until separately quoted and accepted.
 
 ---
@@ -409,14 +414,14 @@ The two draw.io files carry decisions that were never minuted. From here on they
 
 A record enters as a **Lead**, becomes an **Opportunity**, carries a **Quote**, turns into an **Order** with its tranches, and emits a **Ticket**.
 
-| Object      | States, in the order they are traversed                                                                                                                                                      |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lead        | New → In Lavorazione → Primo contatto → Qualificato · or Non Risponde (automatic task with a 48h reminder, then back into In Lavorazione) · or Non qualificato                               |
-| Opportunity | Qualificato → In trattativa (quote sent) → Chiusa/Vinta · with Da ricontattare as a parking state and Chiusa/Persa as the exit                                                               |
-| Quote       | Bozza → In trattativa (5-day validity) → **In attesa di accettazione** → Accettato (accounting copy received) → **Firmato** (signed; the order is generated) · or Rifiutata                  |
-| Order       | Ordinato → Fatturato → **Incassato**, automatically when every tranche on the order is paid (v1.6); the Opportunity then goes Chiusa/Vinta. WooCommerce orders are created already Incassato |
-| Tranche     | Created on the Quote → fully paid when every included line is paid. ⚠ Final API value open: `Pagata`/`Incassata` vs legacy `CHIUSO/ACQUISITO`.                                               |
-| Ticket      | Ordinato → Disponibile → Assegnato → Utilizzato · or Non utilizzato · or Annullato                                                                                                           |
+| Object      | States, in the order they are traversed                                                                                                                                                                                                                |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Lead        | New → In Lavorazione → Primo contatto → Qualificato · or Non Risponde (automatic task with a 48h reminder, then back into In Lavorazione) · or Non qualificato                                                                                         |
+| Opportunity | Qualificato → In trattativa (quote sent) → Chiusa/Vinta · with **Da ricontattare** after the appointment/demo and **Da ricontattare - Prev. inviato** after a quote, each requiring its own reason and date · Chiusa/Persa rejects every related Quote |
+| Quote       | Bozza → In trattativa (5-day validity) → **In attesa di accettazione** → Accettato (accounting copy received) → **Firmato** (signed; the order is generated) · or Rifiutata                                                                            |
+| Order       | Ordinato → Fatturato → **Incassato**, automatically when every tranche on the order is paid (v1.6); the Opportunity then goes Chiusa/Vinta. WooCommerce orders are created already Incassato                                                           |
+| Tranche     | Created on the Quote → fully paid when every included line is paid. ⚠ Final API value open: `Pagata`/`Incassata` vs legacy `CHIUSO/ACQUISITO`.                                                                                                         |
+| Ticket      | Ordinato → Disponibile → Assegnato → Utilizzato · or Non utilizzato · or Annullato                                                                                                                                                                     |
 
 ⚠ **“In attesa di accettazione” is the new name for “preventivo scaduto”.** The room will keep saying “scaduto” for months: it is the same thing.
 
@@ -455,7 +460,7 @@ They exist only in the drawings and have never been discussed in a meeting. Sign
 | ID     | Requirement                                                                                                                                                                                                                                                                                                                                                                                                                                              | Pri. |
 | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: |
 | SAL-19 | An expired quote must be returnable to negotiation by the tutor alone.                                                                                                                                                                                                                                                                                                                                                                                   |  S   |
-| SAL-20 | Two “to recall” tasks to add: after first contact and after the appointment, with a settable date.                                                                                                                                                                                                                                                                                                                                                       |  S   |
+| SAL-20 | Two distinct Opportunity parking stages: **Da ricontattare** after the appointment/demo and **Da ricontattare - Prev. inviato** after a quote; each requires its own reason, while its date is populated automatically on entry.                                                                                                                                                                                                                         |  S   |
 | SAL-21 | Opportunity type: “Standard”, “WooCommerce” (mandatory origin Recall Tutor or Pack Tutor) and “Plus Attivazione/Rinnovo” (v1.6).                                                                                                                                                                                                                                                                                                                         |  S   |
 | SAL-22 | An INFO field explaining how to use the exit reasons.                                                                                                                                                                                                                                                                                                                                                                                                    |  C   |
 | SAL-23 | Enable the standard behaviour moving the opportunity to “quote sent” automatically.                                                                                                                                                                                                                                                                                                                                                                      |  S   |

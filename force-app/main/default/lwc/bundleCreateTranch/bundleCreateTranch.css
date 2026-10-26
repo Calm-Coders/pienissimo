@@ -38,6 +38,13 @@
   color: #5c6973;
 }
 
+.message.warning {
+  border-color: #f3c65b;
+  background: #fff8e5;
+  color: #8c4b02;
+  margin-bottom: 1rem;
+}
+
 .message.error {
   border-color: #ba0517;
   background: #fef1f2;
@@ -57,6 +64,12 @@
 
 .edit-selector-header {
   margin-top: 0.25rem;
+}
+
+.edit-selector-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .edit-tranche-list {
@@ -218,6 +231,11 @@
 }
 
 @media (max-width: 40rem) {
+  .edit-selector-actions {
+    align-items: flex-end;
+    flex-direction: column;
+  }
+
   .tranche-row {
     grid-template-columns: 2rem minmax(0, 1fr);
   }

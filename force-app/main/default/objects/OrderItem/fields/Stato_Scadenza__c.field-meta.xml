@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stato_Scadenza__c</fullName>
+    <description
+  >Pagata, Scaduta, A scadere (dalla rata Mexal), Fatturata (fattura senza rata abbinata) o Da fatturare.</description>
+    <label>Stato Scadenza</label>
+    <formula
+  >IF(ISPICKVAL(Mexal_Payment_Status__c, &quot;Paid&quot;), &quot;Pagata&quot;, IF(ISBLANK(Fattura__c), &quot;Da fatturare&quot;, IF(ISBLANK(Scadenza_Fattura__c), &quot;Fatturata&quot;, Scadenza_Fattura__r.Stato_Scadenza__c)))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

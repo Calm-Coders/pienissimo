@@ -27,7 +27,11 @@ export default class AnticipayAccountRefreshAction extends LightningElement {
     try {
       const result = await refreshRecord({ recordId: this.recordId });
       const isSuccess = result?.success === true;
-      const message = result?.message || "Aggiornamento Anticipay completato.";
+      const baseMessage =
+        result?.message || "Aggiornamento Anticipay completato.";
+      const message = result?.partitaIva
+        ? `${baseMessage} (P.IVA verificata: ${result.partitaIva})`
+        : baseMessage;
 
       if (isSuccess) {
         const recordsToRefresh = [{ recordId: this.recordId }];

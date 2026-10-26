@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prodotto__c</fullName>
+    <description
+  >Prodotto Salesforce con lo stesso codice articolo.</description>
+    <label>Prodotto</label>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <referenceTo>Product2</referenceTo>
+    <relationshipLabel>Righe Fattura</relationshipLabel>
+    <relationshipName>Righe_Fattura</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>

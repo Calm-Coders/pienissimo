@@ -285,8 +285,11 @@ private class MexalIntegrationTest {
               'provincia' => 'TO',
               'cod_paese' => 'IT'
             },
+            // An Azienda must keep a Partita IVA, and the sync copies
+            // Mexal's value over it, so the code match carries one too.
             new Map<String, Object>{
               'codice' => '501.00009',
+              'partita_iva' => 'IT22222222222',
               'ragione_sociale' => 'Per Codice'
             },
             new Map<String, Object>{
@@ -480,7 +483,8 @@ private class MexalIntegrationTest {
     System.assertEquals(12.5, first.Price_1__c);
     System.assertEquals(1234.56, first.Price_2__c);
     System.assertEquals(true, first.IsActive);
-    System.assertEquals('Riga uno\nRiga due', first.Description);
+    // Description is the name, then Mexal's extended description.
+    System.assertEquals('Corso base\nRiga uno\nRiga due', first.Description);
     System.assertEquals('ART-001', first.ProductCode);
     System.assertEquals(
       false,
@@ -741,6 +745,7 @@ private class MexalIntegrationTest {
             'sigla' => 'FT',
             'serie' => 1,
             'numero' => 55,
+            'data_documento' => '20260901',
             'cod_conto' => CUSTOMER_CODE,
             'id_riga' => new List<Object>{
               new List<Object>{ 1, 1 },
@@ -788,8 +793,9 @@ private class MexalIntegrationTest {
     document.customerCode = CUSTOMER_CODE;
     document.serie = 1;
     document.numero = 55;
+    document.documentDate = '20260901';
+    // One installment: several cannot yet be allocated to order lines.
     document.deadlines.add(deadline);
-    document.deadlines.add(new MexalScadenzarioSearchService.PaymentDeadline());
 
     Test.startTest();
     MexalInvoiceOrderLineMappingService.Result mapping = MexalInvoiceOrderLineMappingService.mapInvoiceDetail(
@@ -807,8 +813,10 @@ private class MexalIntegrationTest {
     System.assertEquals(2, mapping.invoiceLinesReturned);
     System.assertEquals(1, mapping.matchedLines);
     System.assertEquals(1, mapping.unmatchedLines);
-    System.assertEquals(1, mapping.paidLines);
-    System.assertEquals(1, mapping.linesWithoutPaymentMatch);
+    // The payment matches on the invoice key, so both invoice lines read paid;
+    // only the line matched to Salesforce is updated.
+    System.assertEquals(2, mapping.paidLines);
+    System.assertEquals(0, mapping.linesWithoutPaymentMatch);
     System.assertEquals(1, updates);
     System.assertEquals(
       'Paid',
@@ -826,6 +834,181 @@ private class MexalIntegrationTest {
       'Incassato',
       [SELECT Status FROM Order WHERE Id = :line.OrderId].Status
     );
+  }
+
+  @isTest
+  static void paidScadenzaFatturaMarksItsOrderLinesPaid() {
+    OrderItem line = mexalOrderLine(null, Date.today().addMonths(1));
+    Fattura__c invoice = new Fattura__c(Name = 'FT 1/55');
+    insert invoice;
+    Scadenza_Fattura__c deadline = new Scadenza_Fattura__c(
+      Fattura__c = invoice.Id,
+      // No Mexal state yet: Pagata__c is true only for P or E.
+      Data_Scadenza__c = Date.today().addMonths(1)
+    );
+    insert deadline;
+    update new OrderItem(Id = line.Id, Scadenza_Fattura__c = deadline.Id);
+
+    Test.startTest();
+    // Pagata__c is a formula on the Mexal payment state.
+    deadline.Stato_Pagamento_Mexal__c = 'P';
+    update deadline;
+    Test.stopTest();
+
+    System.assertEquals(
+      'Paid',
+      [SELECT Mexal_Payment_Status__c FROM OrderItem WHERE Id = :line.Id]
+      .Mexal_Payment_Status__c
+    );
+  }
+
+  // ------------------------------------------------------- invoice import
+
+  private static String invoiceSearchBody() {
+    return JSON.serialize(
+      new Map<String, Object>{
+        'dati' => new List<Object>{
+          new Map<String, Object>{
+            'serie' => 1,
+            'numero' => 55,
+            'cod_conto' => CUSTOMER_CODE,
+            'data_documento' => '20260901',
+            'data_ult_mod' => '20260902 101500'
+          },
+          new Map<String, Object>{ 'numero' => 56 }
+        }
+      }
+    );
+  }
+
+  private static String scadenzarioSearchBody() {
+    return JSON.serialize(
+      new Map<String, Object>{
+        'dati' => new List<Object>{
+          new Map<String, Object>{
+            'serie' => 1,
+            'numero' => 55,
+            'data_documento' => '20260901',
+            'dt_sca_pg' => new List<Object>{
+              new List<Object>{ 1, '20261001' }
+            },
+            'imp_scadenza' => new List<Object>{ new List<Object>{ 1, 500 } },
+            'stato_pagamento' => new List<Object>{ new List<Object>{ 1, 'p' } }
+          },
+          // A rate of an invoice Salesforce does not hold is left out.
+          new Map<String, Object>{
+            'serie' => 2,
+            'numero' => 99,
+            'data_documento' => '20260901',
+            'dt_sca_pg' => new List<Object>{ new List<Object>{ 1, '20261001' } }
+          },
+          new Map<String, Object>{ 'numero' => 7 }
+        }
+      }
+    );
+  }
+
+  @isTest
+  static void invoiceImportSavesTheHeaderOnTheCustomerAccount() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    TestHttpMock.install()
+      .when('/movimenti-magazzino/ricerca', 200, invoiceSearchBody());
+
+    Test.startTest();
+    MexalInvoiceImportService.Result result = MexalInvoiceImportService.importInvoicesModifiedSince(
+      System.now().addDays(-1)
+    );
+    Test.stopTest();
+
+    System.assertEquals(2, result.invoicesReturned);
+    System.assertEquals(1, result.invoicesSaved, result.errors + '');
+    System.assertEquals(1, result.errors.size(), 'The row without serie');
+    Fattura__c invoice = [
+      SELECT Name, Account__c, Data_Documento__c, Chiave_Mexal__c
+      FROM Fattura__c
+    ];
+    System.assertEquals('FT 1/55', invoice.Name);
+    System.assertEquals('FT+1+55+2026', invoice.Chiave_Mexal__c);
+    System.assertEquals(
+      Date.newInstance(2026, 9, 1),
+      invoice.Data_Documento__c
+    );
+    System.assertEquals(
+      [SELECT AccountId FROM Order WHERE Id = :orderRecord.Id].AccountId,
+      invoice.Account__c
+    );
+  }
+
+  @isTest
+  static void scadenzarioImportSavesRatesAndPaysTheInvoicedLines() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    Fattura__c invoice = new Fattura__c(
+      Name = 'FT 1/55',
+      Chiave_Mexal__c = 'FT+1+55+2026'
+    );
+    insert invoice;
+    OrderItem line = [SELECT Id FROM OrderItem WHERE OrderId = :orderRecord.Id];
+    update new OrderItem(Id = line.Id, Fattura__c = invoice.Id);
+    TestHttpMock.install()
+      .when('/scadenzario/ricerca', 200, scadenzarioSearchBody());
+
+    Test.startTest();
+    MexalInvoiceImportService.Result result = MexalInvoiceImportService.importScadenzarioModifiedSince(
+      System.now().addDays(-1)
+    );
+    Test.stopTest();
+
+    System.assertEquals(3, result.scadenzarioDocumentsReturned);
+    System.assertEquals(1, result.deadlinesSaved, result.errors + '');
+    System.assertEquals(1, result.deadlinesWithoutInvoice);
+    System.assertEquals(1, result.orderLinesUpdated, result.errors + '');
+    Scadenza_Fattura__c rate = [
+      SELECT Importo__c, Pagata__c, Data_Scadenza__c
+      FROM Scadenza_Fattura__c
+      WHERE Fattura__c = :invoice.Id
+    ];
+    System.assertEquals(500, rate.Importo__c);
+    System.assertEquals(true, rate.Pagata__c);
+    System.assertEquals(
+      'Paid',
+      [SELECT Mexal_Payment_Status__c FROM OrderItem WHERE Id = :line.Id]
+      .Mexal_Payment_Status__c
+    );
+  }
+
+  @isTest
+  static void invoiceBackfillByDocumentDateRunsBothSearches() {
+    orderForMexal(CUSTOMER_CODE, true);
+    TestHttpMock.install()
+      .when('/movimenti-magazzino/ricerca', 200, invoiceSearchBody())
+      .when('/scadenzario/ricerca', 200, scadenzarioSearchBody());
+
+    Test.startTest();
+    MexalInvoiceImportService.Result result = MexalInvoiceImportService.importByDocumentDate(
+      Date.newInstance(2026, 9, 1)
+    );
+    Test.stopTest();
+
+    System.assertEquals(1, result.invoicesSaved, result.errors + '');
+    System.assertEquals(1, result.deadlinesSaved, result.errors + '');
+
+    Integer refused = 0;
+    try {
+      MexalInvoiceImportService.importInvoicesModifiedSince(null);
+    } catch (MexalInvoiceImportService.MexalInvoiceImportException error) {
+      refused++;
+    }
+    try {
+      MexalInvoiceImportService.importScadenzarioModifiedSince(null);
+    } catch (MexalInvoiceImportService.MexalInvoiceImportException error) {
+      refused++;
+    }
+    try {
+      MexalInvoiceImportService.importByDocumentDate(null);
+    } catch (MexalInvoiceImportService.MexalInvoiceImportException error) {
+      refused++;
+    }
+    System.assertEquals(3, refused);
   }
 
   @isTest
@@ -894,6 +1077,7 @@ private class MexalIntegrationTest {
     document.sigla = 'FT';
     document.serie = 1;
     document.numero = 55;
+    document.documentDate = '20260901';
     document.customerCode = CUSTOMER_CODE;
 
     Test.startTest();
@@ -1081,15 +1265,16 @@ private class MexalIntegrationTest {
   }
 
   @isTest
-  static void schedulerStartsTheThreeBatches() {
+  static void schedulerStartsTheCustomerBatch() {
     TestHttpMock.install();
 
     Test.startTest();
     new MexalCustomerSyncScheduler().execute(null);
     Test.stopTest();
 
+    // Articles and invoices run on their own schedulers.
     System.assertEquals(
-      3,
+      1,
       [
         SELECT COUNT()
         FROM AsyncApexJob
@@ -1142,12 +1327,7 @@ private class MexalIntegrationTest {
       );
 
     Test.startTest();
-    Exception shippingFailure;
-    try {
-      MexalCustomerCreateService.createForAccount(accountRecord.Id);
-    } catch (MexalCustomerCreateService.MexalCustomerCreateException e) {
-      shippingFailure = e;
-    }
+    MexalCustomerCreateService.createForAccount(accountRecord.Id);
     Test.stopTest();
 
     System.assertEquals(
@@ -1155,9 +1335,6 @@ private class MexalIntegrationTest {
       [SELECT Codice_Cliente_Mexal__c FROM Account WHERE Id = :accountRecord.Id]
       .Codice_Cliente_Mexal__c
     );
-    // The shipping-address callout follows the Account update in the same
-    // transaction and cannot be sent; the service reports it as a failure.
-    System.assertNotEquals(null, shippingFailure);
   }
 
   @isTest
@@ -1167,11 +1344,7 @@ private class MexalIntegrationTest {
       .when('/webapi/risorse/clienti', 201, '{"codice_cliente":"501.00078"}');
 
     Test.startTest();
-    try {
-      MexalCustomerCreateService.createForAccount(accountRecord.Id);
-    } catch (MexalCustomerCreateService.MexalCustomerCreateException e) {
-      System.assert(e.getMessage().contains('spedizione'));
-    }
+    MexalCustomerCreateService.createForAccount(accountRecord.Id);
     Test.stopTest();
 
     System.assertEquals(
@@ -1192,11 +1365,7 @@ private class MexalIntegrationTest {
       );
 
     Test.startTest();
-    try {
-      MexalCustomerCreateService.createForAccount(accountRecord.Id);
-    } catch (MexalCustomerCreateService.MexalCustomerCreateException e) {
-      System.assert(e.getMessage().contains('spedizione'));
-    }
+    MexalCustomerCreateService.createForAccount(accountRecord.Id);
     Test.stopTest();
 
     System.assertEquals(
@@ -1260,22 +1429,36 @@ private class MexalIntegrationTest {
     System.assertEquals(4, errors.size());
   }
 
+  // Inserting an Account with an Agente copies the agent code and commission
+  // category from that user; a later edit that keeps the Agente does not.
+  private static void setMexalAgentFields(
+    Id accountId,
+    String agentCode,
+    String zone,
+    String commissionCategory
+  ) {
+    AccountTriggerHandler.setBypassMexalCustomerUpdate(true);
+    update new Account(
+      Id = accountId,
+      Codice_Agente_Esterno__c = agentCode,
+      Zona__c = zone,
+      Categoria_Provvigioni_Cliente__c = commissionCategory
+    );
+    AccountTriggerHandler.setBypassMexalCustomerUpdate(false);
+  }
+
   @isTest
   static void customerUpdatePutsToTheCustomerResource() {
     Account accountRecord = TestDataFactory.buildAzienda('Da aggiornare');
     accountRecord.Codice_Cliente_Mexal__c = CUSTOMER_CODE;
-    accountRecord.BillingCountry = 'Francia';
+    accountRecord.BillingCountry = 'IT';
     TestDataFactory.insertAllowingDuplicates(accountRecord);
+    setMexalAgentFields(accountRecord.Id, 'AG001', '7', '19');
     TestHttpMock mock = TestHttpMock.install()
       .when('/clienti/501.00001', 204, '');
 
     Test.startTest();
-    Exception shippingFailure;
-    try {
-      MexalCustomerCreateService.updateForAccount(accountRecord.Id);
-    } catch (MexalCustomerCreateService.MexalCustomerCreateException e) {
-      shippingFailure = e;
-    }
+    MexalCustomerCreateService.updateForAccount(accountRecord.Id);
     Test.stopTest();
 
     System.assertEquals('PUT', mock.requests[0].getMethod());
@@ -1283,7 +1466,80 @@ private class MexalIntegrationTest {
       !mock.requests[0].getBody().contains('"codice":'),
       'An update never sends the generated-code placeholder'
     );
-    System.assertNotEquals(null, shippingFailure);
+    System.assert(
+      mock.requests[0].getBody().contains('"cod_agente":"AG001"'),
+      'The customer update should send the Account agent code'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"cod_zona":7'),
+      'The customer update should send the Account zone'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"cod_cat_pr":19'),
+      'The customer update should send the Account commission category'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"gest_fatt_el":"S"'),
+      'Italian customers should enable electronic invoicing'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"serie_fatt_el":3'),
+      'Italian customers should send the agreed electronic invoice series'
+    );
+    System.assert(
+      mock.requests[0].getBody().contains('"cod_modu_allega":"FT"'),
+      'Italian customers should send the agreed PDF attachment module'
+    );
+  }
+
+  @isTest
+  static void customerUpdateOmitsBlankOptionalMexalFields() {
+    Account accountRecord = TestDataFactory.buildAzienda('San Marino');
+    accountRecord.Codice_Cliente_Mexal__c = CUSTOMER_CODE;
+    accountRecord.BillingCountry = 'SM';
+    TestDataFactory.insertAllowingDuplicates(accountRecord);
+    setMexalAgentFields(accountRecord.Id, '610.00019', null, null);
+    TestHttpMock mock = TestHttpMock.install()
+      .when('/clienti/501.00001', 204, '');
+
+    Test.startTest();
+    MexalCustomerCreateService.updateForAccount(accountRecord.Id);
+    Test.stopTest();
+
+    String requestBody = mock.requests[0].getBody();
+    System.assert(
+      requestBody.contains('"cod_listino":1'),
+      'Customer updates should still send the fixed price-list code'
+    );
+    System.assert(
+      requestBody.contains('"valuta":1'),
+      'Customer updates should still send the fixed currency code'
+    );
+    System.assert(
+      requestBody.contains('"tp_nazionalita":"R"'),
+      'San Marino customers should send the Mexal fiscal-residence code'
+    );
+    System.assert(
+      !requestBody.contains('"cod_zona":'),
+      'Blank numeric optional fields should be omitted'
+    );
+    System.assert(
+      !requestBody.contains('"cod_cat_pr":'),
+      'Blank numeric optional fields should be omitted'
+    );
+    System.assert(
+      // Mexal refuses N (OI-211); San Marino now carries P.
+      requestBody.contains('"gest_fatt_el":"P"'),
+      'San Marino customers should send the e-invoicing code P'
+    );
+    System.assert(
+      requestBody.contains('"serie_fatt_el":1'),
+      'San Marino customers should send VAT sectional 1'
+    );
+    System.assert(
+      requestBody.contains('"cod_modu_allega":"FT"'),
+      'San Marino customers should send the FT attachment module'
+    );
   }
 
   @isTest
@@ -1375,11 +1631,13 @@ private class MexalIntegrationTest {
         'Corso Ordine',
         TestDataFactory.unique('ART-ORD')
       );
-      TestDataFactory.orderItem(
+      OrderItem line = TestDataFactory.orderItem(
         orderRecord.Id,
         TestDataFactory.standardEntry(product.Id, 250),
         2
       );
+      line.Data_Scadenza__c = Date.today().addDays(30);
+      update line;
     }
     return orderRecord;
   }
@@ -1387,12 +1645,16 @@ private class MexalIntegrationTest {
   @isTest
   static void orderSendMapsTheMexalDocumentBack() {
     Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    orderRecord.Condizione_di_Pagamento__c = '64';
+    update orderRecord;
     TestHttpMock mock = TestHttpMock.install()
       .when(
         '/ordini-clienti',
         201,
         '',
-        new Map<String, String>{ 'X-Numero-Documento' => '77' }
+        new Map<String, String>{
+          'location' => '/webapi/risorse/documenti/ordini-clienti/OC+10+77'
+        }
       );
 
     Test.startTest();
@@ -1415,7 +1677,11 @@ private class MexalIntegrationTest {
     // insert also queues the full Mexal chain, which runs at stopTest.
     System.assertEquals('77', sent.Mexal_Order_Number__c);
     System.assertEquals('OC', sent.Mexal_Document_Sigla__c);
-    System.assertEquals(10, sent.Mexal_Document_Serie__c);
+    // Series 10 in a sandbox, 1 in production (MexalOrderSendService).
+    System.assertEquals(
+      [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox ? 10 : 1,
+      sent.Mexal_Document_Serie__c
+    );
     System.assertEquals(77, sent.Mexal_Document_Number__c);
     System.assertEquals(CUSTOMER_CODE, sent.Mexal_Customer_Code__c);
     System.assertEquals(1, sent.OrderItems[0].Mexal_Line_Number__c);
@@ -1423,6 +1689,194 @@ private class MexalIntegrationTest {
       mock.requests[0].getBody()
     );
     System.assertEquals(CUSTOMER_CODE, payload.get('cod_conto'));
+    System.assertEquals(64, payload.get('id_pagamento'));
+    List<Object> lineDueDates = (List<Object>) payload.get('dt_sca_riga');
+    List<Object> firstLineDueDate = (List<Object>) lineDueDates[0];
+    System.assertEquals(1, firstLineDueDate[0]);
+    System.assertEquals(
+      formatDate(Date.today().addDays(30)),
+      firstLineDueDate[1]
+    );
+  }
+
+  @isTest
+  static void orderSendOmitsBlankLineDueDates() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    List<OrderItem> lines = [
+      SELECT Id, Data_Scadenza__c
+      FROM OrderItem
+      WHERE OrderId = :orderRecord.Id
+    ];
+    for (OrderItem line : lines) {
+      line.Data_Scadenza__c = null;
+    }
+    update lines;
+    TestHttpMock mock = TestHttpMock.install().when('/ordini-clienti', 201, '');
+
+    Test.startTest();
+    MexalOrderSendService.Result result = MexalOrderSendService.sendOrder(
+      orderRecord.Id
+    );
+    Test.stopTest();
+
+    System.assertEquals(true, result.success);
+    System.assert(
+      !mock.requests[0].getBody().contains('"dt_sca_riga":'),
+      'Blank line due dates should not be sent to Mexal'
+    );
+  }
+
+  @isTest
+  static void orderSendCarriesTheListPriceAndLineDiscount() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    // Unit price 250 from the helper; 300 before the discount, quantity 2.
+    update new OrderItem(
+      Id = [SELECT Id FROM OrderItem WHERE OrderId = :orderRecord.Id]
+      .Id,
+      Prezzo_Listino__c = 300.25
+    );
+    TestHttpMock mock = TestHttpMock.install().when('/ordini-clienti', 201, '');
+
+    Test.startTest();
+    MexalOrderSendService.sendOrder(orderRecord.Id);
+    Test.stopTest();
+
+    Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(
+      mock.requests[0].getBody()
+    );
+    List<Object> firstPrice = (List<Object>) ((List<Object>) payload.get(
+      'prezzo'
+    ))[0];
+    List<Object> firstDiscount = (List<Object>) ((List<Object>) payload.get(
+      'sconto'
+    ))[0];
+    System.assertEquals(300.25, (Decimal) firstPrice[1]);
+    // (300.25 - 250) x 2, as an amount with a comma decimal separator.
+    System.assertEquals('-100,5', firstDiscount[1]);
+  }
+
+  private static String orderDetailBody(String articleCode, Integer quantity) {
+    return JSON.serialize(
+      new Map<String, Object>{
+        'dati' => new List<Object>{
+          new Map<String, Object>{
+            'id_riga' => new List<Object>{
+              new List<Object>{ 1, 555 },
+              new List<Object>{ 2, 556 }
+            },
+            // A descriptive row is skipped: only article rows (R) are lines.
+            'tp_riga' => new List<Object>{
+              new List<Object>{ 1, 'R' },
+              new List<Object>{ 2, 'D' }
+            },
+            'codice_articolo' => new List<Object>{
+              new List<Object>{ 1, articleCode }
+            },
+            'quantita' => new List<Object>{ new List<Object>{ 1, quantity } }
+          }
+        }
+      }
+    );
+  }
+
+  @isTest
+  static void orderLineSyncStoresMexalLineIdsAndRefusesMismatches() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    OrderItem line = [
+      SELECT Id, Product2.External_Product_Code__c
+      FROM OrderItem
+      WHERE OrderId = :orderRecord.Id
+    ];
+    String articleCode = line.Product2.External_Product_Code__c;
+    update new Order(
+      Id = orderRecord.Id,
+      Mexal_Document_Sigla__c = 'OC',
+      Mexal_Document_Serie__c = 10,
+      Mexal_Document_Number__c = 77
+    );
+    TestHttpMock.install()
+      .when('/ordini-clienti/OC', 200, orderDetailBody(articleCode, 2));
+
+    // One callout per transaction: the read logs, and no callout may follow.
+    Test.startTest();
+    MexalOrderLineSyncService.Result aligned = MexalOrderLineSyncService.syncOrderLines(
+      orderRecord.Id
+    );
+    Test.stopTest();
+
+    System.assertEquals(true, aligned.aligned, aligned.message);
+    System.assertEquals(1, aligned.linesUpdated);
+    System.assertEquals(
+      555,
+      [SELECT Mexal_Line_Number__c FROM OrderItem WHERE Id = :line.Id]
+      .Mexal_Line_Number__c
+    );
+
+    MexalOrderLineSyncService.clearLineNumbers(orderRecord.Id);
+    System.assertEquals(
+      null,
+      [SELECT Mexal_Line_Number__c FROM OrderItem WHERE Id = :line.Id]
+      .Mexal_Line_Number__c
+    );
+  }
+
+  @isTest
+  static void orderLineSyncRefusesAQuantityMismatch() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    String articleCode = [
+      SELECT Product2.External_Product_Code__c
+      FROM OrderItem
+      WHERE OrderId = :orderRecord.Id
+    ]
+    .Product2.External_Product_Code__c;
+    update new Order(
+      Id = orderRecord.Id,
+      Mexal_Document_Sigla__c = 'OC',
+      Mexal_Document_Serie__c = 10,
+      Mexal_Document_Number__c = 77
+    );
+    TestHttpMock.install()
+      .when('/ordini-clienti/OC', 200, orderDetailBody(articleCode, 3));
+
+    Test.startTest();
+    MexalOrderLineSyncService.Result mismatched = MexalOrderLineSyncService.syncOrderLines(
+      orderRecord.Id
+    );
+    Test.stopTest();
+
+    System.assertEquals(false, mismatched.aligned);
+    TestDataFactory.assertContains(mismatched.message, 'quantita');
+  }
+
+  @isTest
+  static void orderLineSyncNeedsTheMexalDocumentKey() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    String message;
+    try {
+      MexalOrderLineSyncService.syncOrderLines(orderRecord.Id);
+    } catch (MexalOrderLineSyncService.MexalOrderLineSyncException error) {
+      message = error.getMessage();
+    }
+    TestDataFactory.assertContains(message, 'Chiave documento');
+  }
+
+  @isTest
+  static void orderSendRequiresAPaymentCode() {
+    Order orderRecord = orderForMexal(CUSTOMER_CODE, true);
+    orderRecord.Condizione_di_Pagamento__c = null;
+    update orderRecord;
+    TestHttpMock.install().when('/ordini-clienti', 201, '');
+
+    String message;
+    Test.startTest();
+    try {
+      MexalOrderSendService.sendOrder(orderRecord.Id);
+    } catch (MexalOrderSendService.MexalOrderSendException error) {
+      message = error.getMessage();
+    }
+    Test.stopTest();
+
+    TestDataFactory.assertContains(message, 'Condizione di pagamento');
   }
 
   @isTest
@@ -1561,5 +2015,13 @@ private class MexalIntegrationTest {
       .Mexal_Integration_Status__c
     );
     new OrderMexalIntegrationQueueable(null, null).execute(null);
+  }
+
+  private static String formatDate(Date value) {
+    return value == null
+      ? null
+      : String.valueOf(value.year()).leftPad(4, '0') +
+        String.valueOf(value.month()).leftPad(2, '0') +
+        String.valueOf(value.day()).leftPad(2, '0');
   }
 }

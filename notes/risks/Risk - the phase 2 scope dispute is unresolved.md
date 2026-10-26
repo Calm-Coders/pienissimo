@@ -6,7 +6,7 @@ severity: high
 owner: Elena Spini
 org: both
 raised: 2026-07-10
-updated: 2026-09-09
+updated: 2026-10-15
 depends_on: [OI-37, OI-38, OI-83, OI-94]
 source: meetings/open-items.md status updates 2026-08-03 and 2026-08-06
 ---
@@ -284,3 +284,46 @@ out of scope.**
 
 **Status unchanged: open, high.** What changed is reach, not agreement — and
 reach without a quotation is the same standstill with a wider audience.
+
+## 2026-10-15 - the perimeter hardened into a freeze, unilaterally
+
+Elena Spini's 15/10 17:35:47Z mail
+([OI-243](../items/OI-243%20Go-live%20moved%20from%2021%20October%20to%202%20November.md))
+goes further than the September one this risk was raised against. It does not
+only restate the Fase 2 exclusions; it closes the door for the remaining two
+weeks:
+
+> _"Potranno essere presi in carico solo affinamenti minori o piccole correzioni
+> puntuali; non potranno pertanto essere accettate o incluse ulteriori modifiche
+> sostanziali rispetto a quanto già sviluppato e consegnato. Eventuali nuove
+> esigenze o Change Request sollevate durante questo periodo saranno prese in
+> carico nella Fase 2."_
+
+🟢 **One half of this risk improved**: ROMI committed in writing to send a Fase 2
+offer and project plan in a separate thread — see
+[OI-83](../items/OI-83%20No%20phase%202%20estimate.md). A perimeter with a priced
+alternative behind it is a far weaker dispute than a perimeter with nothing.
+
+🔴 **The other half got worse.** The freeze is ROMI's declaration, made the same
+evening, and **the client has agreed to nothing**. The request attached to it is
+only for _"riscontro per presa visione"_ — the same phrase that in September was
+later treated as acceptance of the plan
+([OI-128](../items/OI-128%20Client%20confirmation%20of%20the%2021%20October%20plan%20and%20the%20Fase%202%20perimeter.md)).
+A reading of a _"presa visione"_ reply as acceptance of a scope freeze is a
+larger inference than the one this risk already flags.
+
+⚠ **Two things make the freeze's boundary immediately contentious.**
+
+1. **Live asks fall on the wrong side of it.** The `RINUNCIA` static text
+   ([OI-242](../items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md))
+   was already deferred to the production rollout; the tacit-renewal approval
+   workflow ([OI-238](../items/OI-238%20The%20tacit%20renewal%20path%20skips%20client%20acceptance%20and%20its%20approval%20workflow%20is%20undecided.md))
+   and tutor bundle access ([OI-233](../items/OI-233%20Bundle%20access%20for%20tutor%20profiles%20is%20undefined.md))
+   are both gating and both undecided. Whether an undecided gating item counts as
+   _"già sviluppato e consegnato"_ is not a question the mail answers.
+2. ⚠ **ROMI's own project manager asked for a change inside the freeze on the
+   same evening.** Her 18:33 DM asks whether the `SAL-20` behaviour exists in UAT
+   and, if not, _"se la possiamo mettere domani"_ —
+   [OI-227](../items/OI-227%20SAL-20%20was%20rewritten%20in%20the%20signable%20requirements%20with%20no%20client%20ruling.md).
+   Recorded because it bears on how the freeze will be applied in practice, not
+   as a criticism of the request.

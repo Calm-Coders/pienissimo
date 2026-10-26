@@ -1,4 +1,4 @@
-public with sharing class MexalScadenzarioSearchService {
+public without sharing class MexalScadenzarioSearchService {
   public static final String ACTION_NAME = 'Mexal_Scadenzario_Ricerca';
 
   public class Result {
@@ -202,7 +202,9 @@ public with sharing class MexalScadenzarioSearchService {
         'stato_pagamento',
         rowIndex
       );
-      deadline.paid = deadline.paymentStatus == 'P';
+      deadline.paid =
+        deadline.paymentStatus == 'P' ||
+        deadline.paymentStatus == 'E';
       deadlines.add(deadline);
     }
     return deadlines;

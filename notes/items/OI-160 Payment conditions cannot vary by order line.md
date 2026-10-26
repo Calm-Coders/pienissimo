@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: both
 raised: 2026-09-22
-updated: 2026-09-22
+updated: 2026-10-02
 depends_on: [OI-143]
 blocks: [go-live]
 source: notes/meetings/2026-09-22 Test Mexal.md
@@ -65,3 +65,53 @@ plans.
   Salesforce.
 - ⚠ Elena Spini left the Test Mexal session before this was closed and flagged the
   topic for a later pass with Aurel Mrruku and Fabrizio Paganelli.
+
+## 2026-10-02 - the four Mexal payment codes are live in UAT
+
+Aurel Mrruku supplied `Codici Pagamento.xlsx` (Fabrizio Paganelli, 24/09 10:08:51Z,
+_"sono solo 4"_) and set the design: **picklist API name = Mexal code, label =
+description**, the API name goes to Mexal, the field keeps the name **Condizione di
+Pagamento**, and the values live in a **Global Value Set** so Quote and Order share them.
+
+- New GVS `Condizione_di_Pagamento` with the four codes. `Condizione_di_Pagamento__c`
+  on **Quote** now uses it; a new field of the same name on **Order** uses it too.
+- The quote → order copy (`QuoteTriggerHandler`) and the Mexal send
+  (`MexalOrderSendService`, `id_pagamento`) now read `Condizione_di_Pagamento__c`.
+  The PDF prints its label via `toLabel`. Both page layouts show it.
+- `Codice_Pagamento_Mexal__c` (text, Quote + Order), the earlier carrier of the code,
+  was empty and unreferenced, and was **deleted from source and from UAT** the same day
+  (destructive deploy `0AfMA00000Cq4Bv0AJ`; it sits in Deleted Fields for 15 days). It
+  never existed in Prod.
+- 🟢 **Deployed to Pienissimo UAT** (`0AfMA00000CpvqB0AR`, `NoTestRun`) after Aurel
+  Mrruku promoted the Quote field's local picklist to the GVS in Setup — the Metadata
+  API refuses that conversion (_"Cannot change which global value set this picklist
+  uses"_). Both fields verified restricted with the four values.
+  `MexalIntegrationTest` passed against the change (50/50) in a rolled-back run; the
+  deploy went without tests because UAT enforces per-class coverage and the classes
+  covering `QuoteTriggerHandler` / `QuotePdfController` are not in UAT, while
+  `QuoteCommercialTest` fails **15 of 19 in UAT before and after this change**
+  (`INVALID_CROSS_REFERENCE_KEY` on `RecordTypeId`) — see
+  [OI-64](OI-64%20The%20bundle%20Apex%20test%20suite%20is%20broken.md).
+- The one UAT test quote holding the retired value `RID FINE MESE DF` was re-set to `64`
+  (RID FINE MESE DATA FATTURA), at Aurel Mrruku's request.
+- In Prod neither field exists; a deploy creates both directly on the GVS.
+- ⚠ The five-vs-four discrepancy from the 24/09 call is still unreconciled, and the
+  **new structured codes** promised on 22/09 have not arrived — these four are the
+  24/09 file.
+
+## 2026-10-02 - no API sync, and a second mapping is still needed
+
+Two things this row should carry now that the Global Value Set is built.
+
+🟢 **There is no Mexal sync for these codes, by design.** Elena Spini had drafted a
+daily GET of the payment-conditions table into the integration UAT agenda;
+Aurel Mrruku removed it at [the 12:22 Interna](../meetings/2026-10-02%20Interna.md).
+The four codes arrived **by spreadsheet** from Fabrizio Paganelli on 24/09 and
+`condizione di pagamento` is an order-level picklist, not an entity with its own
+call: _"i dati li ha passati tramite Excel, la tabella l'ha passato tramite Excel."_
+If Mexal's codes change, somebody edits the value set by hand.
+
+🔴 **The inbound leg is not covered.** WooCommerce sends its own payment-method
+codes, which are not Mexal's, so a conversion table in front of this one was agreed
+with the client the same morning —
+[OI-204](OI-204%20WooCommerce%20payment%20codes%20need%20a%20mapping%20table%20to%20Mexal.md).

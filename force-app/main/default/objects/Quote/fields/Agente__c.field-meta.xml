@@ -3,6 +3,23 @@
     <fullName>Agente__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <label>Agente</label>
+    <lookupFilter>
+        <active>true</active>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <errorMessage
+    >Seleziona un utente con Codice Agente e Categoria Provvigioni Cliente valorizzati.</errorMessage>
+        <filterItems>
+            <field>User.Agente__c</field>
+            <operation>notEqual</operation>
+            <value />
+        </filterItems>
+        <filterItems>
+            <field>User.Categoria_Provvigioni_Cliente__c</field>
+            <operation>notEqual</operation>
+            <value />
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
     <referenceTo>User</referenceTo>
     <relationshipName>Quotes</relationshipName>
     <required>false</required>

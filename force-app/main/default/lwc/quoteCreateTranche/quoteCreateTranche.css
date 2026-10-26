@@ -81,8 +81,20 @@
   max-width: 14rem;
 }
 
+.count-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
 .edit-selector-header {
   margin-top: 0.25rem;
+}
+
+.edit-selector-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .edit-tranche-list {
@@ -254,6 +266,16 @@
 }
 
 @media (max-width: 40rem) {
+  .count-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .edit-selector-actions {
+    align-items: flex-end;
+    flex-direction: column;
+  }
+
   .tranche-row {
     grid-template-columns: 2rem minmax(0, 1fr);
   }

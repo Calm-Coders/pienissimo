@@ -1,5 +1,6 @@
 import { api, LightningElement, wire } from "lwc";
 import { CurrentPageReference } from "lightning/navigation";
+import pienissimoLogo from "@salesforce/resourceUrl/QuotePdfLogo";
 import loadPage from "@salesforce/apex/QuoteAcceptanceController.loadPage";
 import submitAction from "@salesforce/apex/QuoteAcceptanceController.submitAction";
 
@@ -11,6 +12,7 @@ export default class QuoteAcceptancePage extends LightningElement {
   @api heading = "Gestione preventivo";
   @api servicePath;
 
+  logoUrl = pienissimoLogo;
   quoteId;
   page;
   lines = [];
@@ -123,8 +125,7 @@ export default class QuoteAcceptancePage extends LightningElement {
     this.page = payload || {};
     this.lines = (payload?.lines || []).map((line, index) => ({
       ...line,
-      displayNumber: index + 1,
-      productCode: line.productCode || "-"
+      displayNumber: index + 1
     }));
   }
 
