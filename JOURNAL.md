@@ -10,6 +10,35 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-26 - claude (OI-250 Wait Interval fields)
+
+- **Did:** created `Campaign.Wait_Interval_1__c` … `Wait_Interval_15__c`
+  (Number 3,0) and a new `Campaign-Edizione Layout` (Prod `Campaign Layout` +
+  a `Wait Interval` section), assigned to the Edizione record type on seven
+  internal profiles; FLS on Admin profile, `Full_Permission`,
+  `Campaign_Management`. Deployed to **Pienissimo Prod** from a minimal
+  metadata package (deploy `0AfSW000001K2wL0AS`), permission-set FLS by
+  anonymous Apex; verified fields, FLS and assignments in the org.
+- **State:** OI-250 → `in-progress`. Source updated (fields, layout, Admin and
+  Agente profiles, both permission sets); **uncommitted**. UAT not deployed.
+- **Then:** removed Prod-only `Wait_Interval__c` / `Orario_Fine__c` from the
+  Edizione layout (deploy `0AfSW000001K34P0AS`, verified); the layout now
+  deploys from source. Aurel Mrruku then kept **`Orario_Fine__c`**: retrieved
+  into source, back on the Edizione layout (Prod `0AfSW000001K3Ar0AK`).
+  **`Wait_Interval__c` is to be deleted at the go-live deploy** — not done.
+- **UAT:** same build deployed and verified (`0AfMA00000D0cdh0AB`,
+  `0AfMA00000D0Wzi0AF`): 15 fields + `Orario_Fine__c`, Edizione layout and
+  assignments, FLS (32 permission-set rows by Apex), and a `Wait Interval`
+  section plus `Orario_Fine__c` on the Dynamic Forms `Campaign_Record_Page`,
+  visible on `Campagna_Figlio` only.
+- **FLS check:** `Full_Permission` and `Campaign_Management` have read+edit on
+  all 16 fields in both orgs (Prod was missing `Orario_Fine__c` on the two
+  sets; 2 rows added). Aurel Mrruku confirmed he sees the fields in UAT.
+- **Next:** Fabrizio Mastracci wires the journey to the 15 fields. Delete
+  `Wait_Interval__c` at go-live after clearing its references.
+
+---
+
 ## 2026-10-23 - claude (nightly requirements-check)
 
 - **Did:** scheduled nightly sweep, watermark **2026-10-22T22:00Z** → new
@@ -104,7 +133,7 @@ Keep the twenty most recent entries here; archive older ones to
   the picklist file; a human must rule on `SAL-12`, now contradicted by two
   further rows.
 - **Watch:** 🔴 **OI-212 unchanged a twelfth night** and the 22/10 call put the
-  *client* on record agreeing the collection chain that runs through it, for
+  _client_ on record agreeing the collection chain that runs through it, for
   ~30,000 historical lines. 🔴 OI-267 unbuilt. ⚠ **OI-274 was not mentioned
   once**, the day after the client escalated it. ⚠ **No requirement was
   amended** — the register is as the 21/10 run left it. ⚠ Zoho unnamed, sixth

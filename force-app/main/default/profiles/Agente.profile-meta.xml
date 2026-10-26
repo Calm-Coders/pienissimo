@@ -3568,6 +3568,17 @@
         <layout>BusinessBrand-Business Brand Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Campaign-Campaign Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Campaign Layout</layout>
+        <recordType>Campaign.Campagna_Padre</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Edizione Layout</layout>
+        <recordType>Campaign.Campagna_Figlio</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>CardPaymentMethod-Layout Metodo di pagamento con carta</layout>
     </layoutAssignments>
     <layoutAssignments>

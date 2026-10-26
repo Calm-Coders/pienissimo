@@ -1,12 +1,12 @@
 ---
 id: OI-250
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-16
-updated: 2026-10-23
+updated: 2026-10-26
 depends_on: [OI-186]
 blocks: [go-live]
 severity: gating
@@ -67,13 +67,13 @@ and he accepted.
 Elena Spini proposed the flatter form (`01:28:19`) and Fabrizio Mastracci closed
 on it (`01:31:13`):
 
-| | Agreed |
-| --- | --- |
-| Where | **Up to 11 interval fields on the Edizione campaign** |
-| Unit | **Days of waiting**, not dates |
-| Default | Prefilled — Fabrizio Mastracci referred to a default of `2` |
+|                     | Agreed                                                                             |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| Where               | **Up to 11 interval fields on the Edizione campaign**                              |
+| Unit                | **Days of waiting**, not dates                                                     |
+| Default             | Prefilled — Fabrizio Mastracci referred to a default of `2`                        |
 | Fewer than 11 sends | **A blank field stops the sequence there.** Five filled fields mean five reminders |
-| Who fills them | The campaign owner, at campaign creation |
+| Who fills them      | The campaign owner, at campaign creation                                           |
 
 > **Fabrizio Mastracci:** _"Schermata iniziale dove hai un massimo di 11 campi
 > che devi compilare tu … Dove non li compili vuol dire che il valore è assente
@@ -199,3 +199,53 @@ deploy**.
 `origin/DevMain` is still `ebc2c5b` and no commit since the watermark touches
 Campaign metadata. ⚠ **And the 20 October warning stands**: the permissions for
 these fields go in by hand in production and are then overwritten.
+
+## 2026-10-26 - the 15 fields are built and live in Prod
+
+🟢 **Aurel Mrruku asked for exactly 15 numbered fields, visible on the Edizione
+layout only, and explicitly not reusing any field already in Prod.** Built and
+deployed to `Pienissimo Prod` (deploy `0AfSW000001K2wL0AS`, 23 components, 0
+errors), and verified in the org afterwards:
+
+- **`Campaign.Wait_Interval_1__c` … `Wait_Interval_15__c`**, Number(3,0), no
+  default, not required. The description says days of waiting before reminder
+  _N_, blank stops the sequence.
+- **A new `Campaign-Edizione Layout`** — a copy of the Prod `Campaign Layout`
+  with a `Wait Interval` section (1-8 left, 9-15 right). It is assigned to the
+  **Edizione** record type (`Campagna_Figlio`) for System Administrator,
+  Standard User, Marketing User, Contract Manager, Solution Manager, Read Only
+  and Agente. Evento and the master assignment stay on `Campaign Layout`, so
+  **Evento does not show the fields**.
+- **FLS read+edit** on the System Administrator profile and the
+  `Full_Permission` and `Campaign_Management` permission sets (30 rows inserted
+  by anonymous Apex on the two sets — additive, nothing else touched).
+
+⚠ **Still open:**
+
+- **Prod has no Campaign Lightning record page**; the Dynamic Forms
+  `Campaign_Record_Page` exists only in source and UAT, so Prod shows the
+  fields through the layout and UAT through the page.
+- **The old single `Wait_Interval__c` and `Orario_Fine__c` exist only in Prod**,
+  not in source. Same day, at Aurel Mrruku's request, both were **removed from
+  the Edizione layout** (deploy `0AfSW000001K34P0AS`, verified), so the layout
+  now references only source-backed fields and deploys from source.
+- 🔴 **Aurel Mrruku: `Wait_Interval__c` is to be deleted at the go-live
+  deploy** (_"sono campi che si devono cancellare quando si andrà in prod"_).
+  Not done yet; it is still on the shared `Campaign Layout` (Evento), and any
+  journey reference has to go before Salesforce will allow the delete.
+- 🟢 **`Orario_Fine__c` stays** — he reversed it minutes later (_"lascia
+  l'orario fine"_). It was retrieved from Prod into source, put back on the
+  Edizione layout (Prod deploy `0AfSW000001K3Ar0AK`), and added to the UAT
+  record page next to Orario Inizio with the Edizione visibility rule.
+- 🟢 **UAT now has the same build** (deploys `0AfMA00000D0cdh0AB` and
+  `0AfMA00000D0Wzi0AF`, verified): the 15 fields plus `Orario_Fine__c`, the
+  Edizione layout and its assignments on the same seven profiles, the same
+  FLS, and — because UAT's Campaign page is the Dynamic Forms
+  `Campaign_Record_Page` — a `Wait Interval` section on that page, visible
+  only when the record type is `Campagna_Figlio`.
+- **Who may edit the fields** is still the [OI-186](OI-186%20The%20Salesforce%20user%20list%20and%20profiles%20were%20never%20agreed%20with%20the%20client.md)
+  question; the grants above follow the existing Campaign pattern, not a
+  client decision.
+- **Unit:** the 20/10 client mail says _"ritardi orari"_; the fields are
+  described as days, per the 16/10 agreement. Fabrizio Mastracci's journey has
+  to read them — that work is unblocked from today.
