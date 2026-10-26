@@ -11,6 +11,42 @@ public without sharing class QuoteTriggerHandler {
   private static final String SALESFORCE_ORIGIN = 'Salesforce';
   private static final String LOCALE_RECORD_TYPE = 'Locale';
   private static final String LOCALE_MISMATCH_ERROR = 'Il Locale selezionato deve essere un Account figlio dell\'Azienda del Preventivo.';
+  private static final String LOCKED_QUOTE_ERROR = 'Il preventivo accettato o firmato non puo essere modificato.';
+  private static final Set<String> LOCKED_QUOTE_STATUSES = new Set<String>{
+    ACCEPTED_STATUS,
+    SIGNED_STATUS
+  };
+  private static final Set<String> LOCKED_QUOTE_FIELDS = new Set<String>{
+    'QuoteNumber',
+    'Name',
+    'OpportunityId',
+    'AccountId',
+    'Agente__c',
+    'GrandTotal',
+    'Locale__c',
+    'ExpirationDate',
+    'IsSyncing',
+    'Condizione_di_Pagamento__c',
+    'Descrizione_Condizione_di_Pagamento__c',
+    'Tipologia_Attivita_Globale__c',
+    'Codice_Agente_Esterno__c',
+    'ContactId',
+    'Email_Contatto_Principale__c',
+    'Phone',
+    'Fax',
+    'BillingName',
+    'BillingStreet',
+    'BillingPostalCode',
+    'BillingCity',
+    'BillingState',
+    'BillingCountry',
+    'ShippingName',
+    'ShippingStreet',
+    'ShippingPostalCode',
+    'ShippingCity',
+    'ShippingState',
+    'ShippingCountry'
+  };
   private static final Set<String> PDF_INVALIDATING_QUOTE_STATUSES = new Set<String>{
     NEGOTIATION_QUOTE_STATUS,
     AWAITING_ACCEPTANCE_STATUS
@@ -53,6 +89,32 @@ public without sharing class QuoteTriggerHandler {
     markCompletedDocuSignQuotesAsSigned(quotes);
     makeSignedQuotesPrimary(quotes);
     markFirstQuotesAsPrimary(quotes);
+    lockAcceptedAndSignedQuotes(quotes, oldQuoteMap);
+  }
+
+  private static void lockAcceptedAndSignedQuotes(
+    List<Quote> quotes,
+    Map<Id, Quote> oldQuoteMap
+  ) {
+    if (oldQuoteMap == null || oldQuoteMap.isEmpty()) {
+      return;
+    }
+
+    for (Quote quoteRecord : quotes) {
+      Quote oldQuote = oldQuoteMap.get(quoteRecord.Id);
+      if (
+        oldQuote == null || !LOCKED_QUOTE_STATUSES.contains(oldQuote.Status)
+      ) {
+        continue;
+      }
+
+      for (String fieldName : LOCKED_QUOTE_FIELDS) {
+        if (quoteRecord.get(fieldName) != oldQuote.get(fieldName)) {
+          quoteRecord.addError(LOCKED_QUOTE_ERROR);
+          break;
+        }
+      }
+    }
   }
 
   private static void manageNegotiationCycle(
