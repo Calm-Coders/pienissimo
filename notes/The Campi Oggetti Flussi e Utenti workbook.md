@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-08
+updated: 2026-10-26
 source: Drive 121CTGF0mCkL_hiQIZWL1aYEirqwdSVZs
 ---
 
@@ -184,3 +184,22 @@ review of the marketing form fields.
 columns, and nothing in this sweep required its values; file size is unchanged
 at ~73 KB, so **what changed on 08/10 is not established**. Anyone needing the
 current field list must open the file.
+
+## 2026-10-26 - it is now the migration tracciato for Lead and Referenti
+
+🔑 **Modified 2026-10-26T13:27:45Z** (owner Elena Spini, 73,541 bytes,
+`121CTGF0mCkL_hiQIZWL1aYEirqwdSVZs`) and promoted from a reference to a
+**deliverable the client is asked to fill against**. Elena Spini's mail to
+Sabatino Rinaldi the same day (Gmail `1a1786a9c1a23757`, 13:33:24Z) cites it as
+_"il datamodel che avevamo già condiviso"_ and the structure for the Lead and
+Referenti extracts — see
+[OI-290](items/OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md).
+
+🔴 **Known problem with using it this way**: Fabrizio Paganelli said in
+[the 26/10 call](meetings/2026-10-26%20Tema%20Ordini%20Mexal.md) that it contains
+fields Zoho does not hold — _"questi qui sono campi che sono stati aggiunti e io
+su Zoo [Zoho] non ce li ho e io non ve li do vuoti dopo"_ — so as a data tracciato
+it over-specifies the source system. Nobody decided what happens to those
+columns.
+
+⚠ **Not opened in this run.** Recorded by id, owner, size and timestamp only.

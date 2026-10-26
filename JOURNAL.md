@@ -10,6 +10,57 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-26 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and the repository against
+  watermark **2026-10-23T22:00Z** (three days; 24-25/10 were the weekend and no
+  sweep ran). Drilled the **26/10 `Tema Ordini Mexal`** call from its full raw
+  transcript (00:32:14, preserved at
+  `meetings/2026-10-26-tema-ordini-mexal-transcript.it.md`) - **the first
+  meeting in the record that Kreosoft attended.**
+- **Found, headline:** 🔴🔑 **OI-287 - the Mexal line discount is sent as a line
+  total where Kreosoft said it is per unit.** Mirko Merendi said twice _"devi
+  dividere per le quantità"_ and Fabrizio Paganelli restated it with
+  _"sbagliamo veramente a fatturare"_; `MexalOrderSendService.resolveLineDiscount`
+  ships `(Prezzo_Listino__c - UnitPrice) * Quantity` with a comment claiming
+  Mexal divides. Both operands are per-unit by their own definitions
+  (`Prezzo_Listino__c` = _"Prezzo unitario prima dello sconto"_,
+  `netUnitPrice` = `TotalPrice / Quantity`), so every discounted line with
+  quantity > 1 over-discounts by the quantity. **It is in Prod**
+  (`0AfSW000001K5Kj0AK`) and quantity 1 agrees, which is why the test passes.
+- **Also new:** 🔴 **OI-288** `ContactTriggerHandler.cls:203` is a bare `update`
+  on the Account, so the active rule `Agente_required_for_Azienda_and_Locale`
+  rolled a user's Contact edit back **in Prod at 16:28:17Z** - the exact shape
+  OI-286 predicted · 🔴 **OI-289** the **active** Prod flow _Automazione: Invio
+  Biglietto assegnato_ failed twice on _"Schema field not found. Entity: Asset,
+  Field: QR_Id__c"_; that field is in no source file and **the flow is org-only**
+  · 🔴 **OI-290** Lead and Referenti migration is scope in no plan, and Fabrizio
+  Paganelli refused to own the extract (_"Bisogna che parliate con Sabatino"_).
+- **Settled:** 🟢 **OI-284 is answered** - `prezzo` = listino, `sconto` with a
+  leading minus for an amount, bare for a percentage, comma separator, two
+  decimals; the 22/10 percentage-vs-amount argument resolved itself; Mexal
+  rounding is not configurable and both sides waived the cent aloud. 🟢 **OI-276
+  has its real rule at last**: _"la data non sia nel futuro, perché altrimenti
+  marketing prenderà il link"_ (third mechanism, none withdrawn). 🟢 OI-286's fix
+  merged via PR #109, in a **permission set**, not the excluded `Agente` profile.
+  🟢 New decision note: Gianpaolo Motta, _"spostagliele alla fase 2"_ - and
+  OI-290 went to the client twenty minutes later **not** as a CR.
+- **State:** OI-287/288/289/290 written, next free id **291**; OI-284, OI-276,
+  OI-269, OI-285, OI-286 and the Campi Oggetti workbook note updated; MAP,
+  INDEX, both trackers and both recaps (§70) carry it; trace at
+  `notes/traces/Source trace 2026-10-26 nightly.md`. **Register unchanged, v1.6.**
+- **Next:** 🔴 **send one discounted order to Mexal at quantity 2** - that single
+  test settles OI-287 either way. Then open the org for the two questions a
+  sweep cannot answer: does `Asset.QR_Id__c` exist in Prod, and how many Azienda
+  accounts have a blank `Agente__c`.
+- **Watch:** OI-287 rests on vendor testimony restated by the client against an
+  unsourced code comment - recorded as an unresolved contradiction, **not** as a
+  measured defect. The org was not opened; both error mails prove events, never
+  standing states. `SAL-12` uncited a seventh session while a defined discount
+  mechanism now runs in production.
+
+---
+
 ## 2026-10-26 - claude (test suite repaired, DevMain in Prod)
 
 - **Did:** repaired the Apex test suite against the rules added since 4/10 and

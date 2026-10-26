@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-20
-updated: 2026-10-20
+updated: 2026-10-26
 depends_on: [OI-250, OI-186]
 blocks: [go-live]
 source: Gmail 1a158b6e3e4cee81
@@ -88,3 +88,23 @@ whether the product picklist already models them; the type is carried onto the
 Asset at generation; and the sends branch on it — or the item is put to the
 client as Fase 2 with the freeze cited, which is the one thing ROMI has not yet
 done with it.
+
+## 2026-10-26 - restated internally, still unspecified
+
+⚠ **No movement, and it is now a tracked ROMI red flag.** Elena Spini's weekly
+status in `#tproj-pienissimo` (24/10 11:00:01 CEST) records it among the
+requests that arrived late:
+
+> _"nella stessa mail della richiesta di posticipare il go-live, Sabatino dice:
+> 'le comunicazioni diverse per tipo di biglietto (Gold/Executive) diventano un
+> requisito', la richiesta non è mai emersa prima: **abbiamo chiesto ulteriori
+> dettagli e capiremo se è possibile gestirlo in questa fase**."_
+
+🟢 So ROMI did ask the client for detail — which this row recorded as missing on
+20/10. ⚠ **No answer is in evidence**, and the status itself leaves the phase
+open (_"capiremo se è possibile"_).
+
+🔑 **It is now caught by a ruling made two days later**:
+[ROMI will absorb no further scope in Fase 1](../decisions/ROMI%20will%20absorb%20no%20further%20scope%20in%20Fase%201.md)
+— Gianpaolo Motta, 26/10, _"spostagliele alla fase 2"_. ⚠ Nothing records this
+row being moved, and the client has not been told.

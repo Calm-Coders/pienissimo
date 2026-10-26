@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-10-21
-updated: 2026-10-23
+updated: 2026-10-26
 depends_on: [OI-244]
 blocks: [OI-274, go-live]
 severity: gating
@@ -161,3 +161,38 @@ so the mapping this note depends on must be built after a manual re-import. See
 ⚠ **The naming convention is still unreconciled** (`Academy Pippo` vs
 `Academy Import 2026`), and ⚠ **neither mechanism has been withdrawn** — the
 `old` flag was not mentioned on 23/10 either.
+
+## 2026-10-26 - a third mechanism, and the first usable constraint
+
+🔴 **The mechanism drifted again** in
+[the 11:00 call](../meetings/2026-10-26%20Tema%20Ordini%20Mexal.md), `00:29`.
+Aurel Mrruku offered the `old` flag a second time — _"vuoi che ti metto un flag
+edizione vecchia? Così non genero il link"_ — and **Fabrizio Paganelli did not
+remember it at all**: _"sinceramente non mi ricordo il tema del flag."_ He
+described a third shape instead, an _"edizione bidone"_ bounded by dates:
+_"creavo un'edizione bidone con la data dell'ordine antecedente alla data inizio
+del p[i]enissimo live 26."_
+
+🟢🔑 **The useful part is the constraint Aurel Mrruku then stated**, which no
+earlier record contains and which explains why any of the three variants works:
+
+> _"L'importante è che **la data non sia nel futuro**, perché altrimenti
+> marketing prenderà il link."_
+
+So the requirement is not the flag, the name or the bin edition as such — it is
+that a historical edizione's dates must lie in the past, because the marketing
+journey selects on future dates. Any mechanism satisfying that will do; 🔑 **this
+is the first time the underlying rule is on the record rather than one of its
+implementations.**
+
+⚠ **Nothing was chosen.** _"dopo magari ci risentiamo su come devo creare queste
+mappature."_ Three variants now coexist — dummy `Pippo`/`Import` editions, an
+`old` flag, a past-dated _edizione bidone_ — and **none has been withdrawn**, a
+second consecutive session.
+
+🟢 **Its blocking precondition cleared.** The whole-catalogue activation is done
+and confirmed twice on 26/10: in the call (_"Ho già abilitato tutti i
+prodotti"_) and by mail at 15:54:22Z. ⚠ **Still nobody says who reverses it**,
+and ⚠ **still nothing says the product synchronisation flows are switched back
+on** — the 23/10 finding stands, and this round trip ran manually through
+Kreosoft.

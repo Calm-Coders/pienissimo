@@ -8213,3 +8213,113 @@ profile has been checked, and the code stays brittle regardless of permissions.
 `status: agreed`, while a client call with the ERP vendor is booked to define
 how discounts travel. **No requirement was amended by this run.** `DM-07`'s
 competitor list is unchanged. Both still need a human's ruling.
+
+## 70. Update 2026-10-26 — all of DevMain went to production, and the release left three live faults behind it
+
+**Source:** nightly `requirements-check`, watermark 2026-10-23T22:00Z, three
+days (24–25/10 were the weekend and no sweep ran). One client call drilled from
+its full raw transcript, plus the repository at `origin/DevMain` `428f42b`.
+
+### The release
+
+🟢🔑 **`DevMain` is in production.** 751 components, 168/168 tests, **77.9%
+coverage** (validation `0AfSW000001K5Ft0AK`, quick deploy
+`0AfSW000001K5Kj0AK`), then promoted `DevMain` → `UAT` → `Prod` by PRs #113 and
+#114. The Apex coverage risk that had gated this since August is **resolved**;
+the `Quote Negotiation Aging - Daily` job was aborted for the deploy and
+rescheduled identically. Excluded as planned: DocuSign credentials,
+community/network/site metadata, the guest profile and the `Agente` profile.
+`DevMain` moved `ebc2c5b` → `428f42b` — **14 commits, 4 PRs merged** (#108,
+#109, #111, #112).
+
+### What the release took with it
+
+🔴🔑 **The Mexal line discount is sent as a line total where Kreosoft said it is
+per unit** (§[#287](open-items.md)). Mirko Merendi, twice in the 11:00 call:
+_"lo sconto a valore va sulla quantità, quindi se ci sono due quantità e c'è lo
+sconto di €400 **devi mettere -200, devi dividere per le quantità**"_. Fabrizio
+Paganelli restated it and named the consequence: _"**Altrimenti dopo sbagliamo
+veramente a fatturare** se non è così."_ `MexalOrderSendService` ships
+`-(Prezzo_Listino__c - UnitPrice) × Quantity` with a comment asserting that
+Mexal divides — **a claim nothing in this record supports**. Both operands are
+per-unit by the repository's own definitions, so the code sends the line total
+into a field applied per unit: on Kreosoft's own example (list 2,000, net 1,500,
+quantity 2) the discount applied is 2,000 instead of 1,000. **Quantity 1 agrees,
+which is why it passes a casual test** — and the client says quantity 2 occurs
+often, against Kreosoft's guess of _"al 95% quantità uno"_. **No discounted
+order has ever been sent to Mexal end to end.**
+
+🔴 **Editing a Contact fails in production when the Account has no Agente**
+(§#288). At **16:28:17Z**, 90 minutes after the release,
+`ContactTriggerHandler.cls:203` — a bare `update` on the Account — tripped the
+active rule `Agente_required_for_Azienda_and_Locale` and **rolled a user's
+Contact edit back**. Both halves of the cause are in source. 🔑 It is the exact
+defect shape §#286 predicted four days earlier, and **permissions cannot fix
+it**: the blocker is data, not access.
+
+🔴 **The production ticket dispatch flow references a field that does not
+exist** (§#289). The **active** autolaunched flow _Automazione: Invio Biglietto
+assegnato_ failed at **17:01:19Z and 17:25:19Z** on _"Schema field not found.
+Entity: Asset, Field: `QR_Id__c`"_. That field is in **no** metadata file and in
+**no** Asset field directory, and **the flow itself is not in source** — it is
+org-only. Ticket delivery is the outcome the whole Biglietto chain exists to
+produce, and the client's Academy tickets start from Salesforce in January.
+
+### What was settled
+
+🟢🔑 **The Mexal price breakdown is defined** (§#284). Kreosoft attended a
+meeting for the first time in this project's record: `prezzo` carries the list
+price, `sconto` the discount, **leading minus for an amount, bare number for a
+percentage**, **comma separator and at most two decimals** (by mail, 14:27Z).
+The 22/10 percentage-versus-amount disagreement **resolved itself** — Aurel
+Mrruku took the amount form and Fabrizio Paganelli did not reopen it. Mexal
+rounding is **not configurable** and both sides **waived the one-cent exposure
+aloud**: _"se c'è un centesimo non me ne frega niente. L'importante è che non si
+fermino gli ordini."_ ⚠ The Mexal field name was pasted into the meeting chat,
+which the transcript does not capture — a fourth source referring to it without
+containing it.
+
+🟢🔑 **The real rule behind the dummy import editions is on the record at last**
+(§#276). The mechanism drifted to a third variant — a past-dated _"edizione
+bidone"_, Fabrizio Paganelli having forgotten the `old` flag entirely — but
+Aurel Mrruku stated the constraint that makes any of them work: _"l'importante è
+che **la data non sia nel futuro**, perché altrimenti marketing prenderà il
+link."_ ⚠ Nothing was chosen and none of the three variants was withdrawn. 🟢 Its
+precondition cleared: all products are active, confirmed in the call and by mail.
+
+🟢 **§#286's permission fix merged** through PR #109 — and 🔑 it rode a
+**permission set**, not the `Agente` profile the production deploy excluded.
+
+### New scope, and a boundary
+
+🔴🔑 **Lead and Referenti migration is scope nobody had written down** (§#290).
+Until this call the record covered orders, invoices and tickets only. The
+client's own project manager **refused to own the extract** — _"io su questi
+aspetti qua non so nulla. Bisogna che parliate con Sabatino"_ — and Sabatino
+Rinaldi, the person it was pushed to, was absent. Elena Spini mailed him at
+13:33Z; ⚠ unanswered, no date, against the **13 November 09:00** file deadline.
+🔴 Zoho **cannot fill the agreed field set**, and 🔑 **consents ride on the Lead**,
+which nothing addresses.
+
+🟢🔑 **ROMI set its own scope boundary.** Gianpaolo Motta, who signs off this
+project's staffing, in `#tproj-pienissimo`: _"su questo progetto non abbiamo più
+margine per assorbire cose in più, **spostagliele alla fase 2**"_. 🔴 **Twenty
+minutes later §#290 went to the client as a plain request**, not a Change
+Request — so §#285's mechanism now exists in two places and **has still never
+been applied to anything.** The client remains silent on the CR paragraph a
+third day, and Fase 2 planning is itself _"slittato alla settimana prossima"_.
+
+### Unchanged
+
+🔴 **§#212 is unchanged a fourteenth night — and it is now in production**,
+inside the 751-component release, together with `9512ee0`'s order-level
+`Incassato` state that the ~15,000–30,000 historical lines will inherit on load.
+🔴 **Nobody has asked whether Pienissimo hold a Zoho contract past 31 October** —
+an eighth run, against a plan both sides have signed off in writing.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for a
+seventh session** — _"no discretionary discounts"_, `status: agreed`, while a
+defined discount mechanism is now built into production. `DM-07`'s competitor
+list is unchanged. Both still need a human's ruling. 🔑 And two absences remain
+findings in themselves: no register row covers the **order-to-Mexal price
+breakdown**, and none covers **Lead or Contact migration**.
