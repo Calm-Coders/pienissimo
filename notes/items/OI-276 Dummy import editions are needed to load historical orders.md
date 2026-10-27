@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-10-21
-updated: 2026-10-26
+updated: 2026-10-27
 depends_on: [OI-244]
 blocks: [OI-274, go-live]
 severity: gating
@@ -196,3 +196,36 @@ prodotti"_) and by mail at 15:54:22Z. ⚠ **Still nobody says who reverses it**,
 and ⚠ **still nothing says the product synchronisation flows are switched back
 on** — the 23/10 finding stands, and this round trip ran manually through
 Kreosoft.
+
+## 2026-10-27 - the mirror-image rule, for future events
+
+🔑 **The same automation was discussed from the other direction, and the rule
+inverts.** [The 27/10 Anagrafica Articoli call](../meetings/2026-10-27%20Anagrafica%20Articoli.md),
+`00:08:27`, on an event whose date is not yet fixed (Food Marketing Festival
+2027):
+
+> **Aurel Mrruku:** _"nessuno ti vieta di mettere una data troppo in là e poi la
+> modifichi nel momento in cui tu hai la data precisa … **metti una data molto in
+> là**, quindi che sai che **non scatta l'automatismo dell'invio dei
+> biglietti**."_
+
+So:
+
+- **Historical import** → the date must **not** be in the future, _"perché
+  altrimenti marketing prenderà il link"_ (26/10, this row above).
+- **Future unscheduled event** → the date must be **far** in the future, so the
+  send does not fire early.
+
+🟢 **Both are the same guard seen from two sides** — the ticket-send automation
+keys off the edizione date — and together they are the clearest statement of that
+rule the record holds. ⚠ **Neither is in the requirement register.**
+
+🔴 **And the far-future workaround guarantees later manual repair.** Every
+edizione created with a placeholder date will need its ~20 product mappings
+hand-edited when the real date arrives —
+[OI-291](OI-291%20Changing%20an%20edizione%20date%20does%20not%20update%20its%20product%20mappings.md).
+The two rules were agreed in the same conversation and **the compounding was not
+raised by either side.**
+
+⚠ **Still three competing dummy-edizione mechanisms**, none withdrawn. Nothing on
+27/10 chose between them.

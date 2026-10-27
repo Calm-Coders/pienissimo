@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-16
-updated: 2026-10-26
+updated: 2026-10-27
 depends_on: [OI-186]
 blocks: [go-live]
 severity: gating
@@ -249,3 +249,44 @@ errors), and verified in the org afterwards:
 - **Unit:** the 20/10 client mail says _"ritardi orari"_; the fields are
   described as days, per the 16/10 agreement. Fabrizio Mastracci's journey has
   to read them — that work is unblocked from today.
+
+## 2026-10-27 - the client accepted the 11-15 set, and asked for customisable templates
+
+🟢🔑 **The count question is answered: a set of 11–15, with the delays set on the
+edizione.** Sabatino Rinaldi's reply, quoted verbatim by Elena Spini in the ROMI
+marketing group DM `C0C38JJ9D1T` at **09:18:10 CET**:
+
+> _"Per gli eventi a pagamento (Camerieri Venditori, Academy, Pienissimo Live,
+> Mastery, Happy Team) va bene la vostra proposta: **un set di 11–15
+> comunicazioni con ritardi orari impostati a livello di edizione**. Vi chiediamo
+> di procedere con la configurazione e con il lavoro sui template, **che devono
+> essere completamente personalizzabili**."_
+
+Three things follow:
+
+1. 🟢 **The mechanism this row describes is accepted** — per-edizione delays, not
+   per-journey hard-coding. The build is what the client agreed to.
+2. 🟢 **The event set is named** for the first time: Camerieri Venditori,
+   Academy, Pienissimo Live, Mastery, Happy Team. 🔑 **Food Marketing Festival
+   and Tour are explicitly excluded and deferred to Fase 2 by the client itself**
+   — _"li rimandiamo a una fase 2 (eventi di settembre), anche perché dobbiamo
+   ancora definire il modello di biglietteria."_
+3. 🆕 **A new requirement rides in: templates "completamente personalizzabili".**
+   Nothing in this row, in the register or in the recaps covers template
+   editability, and no note says what it means — who edits, in what tool, with
+   what guardrails. **Unowned and undated.**
+
+⚠ **The unit is still "ritardi orari".** The client has now written *hourly*
+delays twice (20/10 and here) against fields agreed on 16/10 as days. **Third
+sweep flagged, unreconciled** — and now with configuration work formally
+requested on top of it.
+
+🔴 **The blocking dependency is unchanged:** Fabrizio Mastracci's journey work
+cannot start until the Campaign fields are usable to him, and he was out of the
+27/10 alignment (_"i pomeriggi sono impegnato su altri fronti"_) — see
+[the staffing risk](../risks/Risk%20-%20the%20delivery%20team%20shrinks%20before%20Fase%202.md).
+
+⚠ **Source caveat.** Sabatino Rinaldi's mail **is not in this mailbox**; it is
+known only through the quotation above and **its date is unknown**. See the same
+caveat on
+[OI-242](OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md).

@@ -10,6 +10,91 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-27 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and the repository against
+  watermark **2026-10-26T22:00Z** (one day). Drilled **both** of the day's
+  Pienissimo meetings from their full raw transcripts, each read once and
+  preserved verbatim: **`Anagrafica Articoli`** (12:00 CET, 00:28:08, ~22 KB,
+  `meetings/2026-10-27-anagrafica-articoli-transcript.it.md`) and
+  **`Follow-up Interno`** (17:03 CET, 00:43:26, ~49 KB,
+  `meetings/2026-10-27-follow-up-interno-transcript.it.md`). Wrote **OI-291**,
+  **OI-292**, **OI-293**, two decision notes, one risk note, the Fase 2
+  reference note and a person note for Gianpaolo Motta; updated **OI-242,
+  OI-250, OI-269, OI-272, OI-276, OI-287, OI-290**; regenerated the affected
+  rows of both trackers and added **§71** to both recaps; `MAP.md`, `INDEX.md`,
+  trace, journal.
+- **State:** 🟢🔑 **the client finally answered — and the mail is not in this
+  mailbox.** Sabatino Rinaldi replied on the ticketing and communications points;
+  it is known only through Elena Spini's verbatim quotation in the marketing
+  group DM at 09:18:10 CET, and **its date is unknown**. It settles **OI-250**
+  (a set of 11-15 communications with per-edizione delays, accepted; paid-event
+  set named; 🆕 **plus a new requirement - templates "completamente
+  personalizzabili"** - in no row and no register entry) and **OI-242** (the
+  button tracks the renunciation, the ticket is not deleted, the client
+  reconciles after the event), and it restated **OI-269** without specifying it -
+  whereupon ROMI decided the same morning to block it (_"la 2 bloccala, la 1 e
+  la 3 ok"_) **without telling the client.**
+  🟢🔑 **Fase 2 has a man-day estimate for the first time** (`The Fase 2
+  estimate.md`): ~20 days for the first package, 13-15 for credit notes and
+  scadenzario, 10 for edition moves with Aurel Mrruku's dissent on the record,
+  10 multi-edition, 3-5 Ordini Pienissimo Pro, 3-5 GLS+Teachable, 5-10 analysis.
+  🔴 **The finding is that it absorbs open Fase 1 rows** - OI-269, OI-272, the
+  Ri.Ba. territory of OI-212, the credit notes excluded on 22/10 - i.e.
+  Gianpaolo Motta's 26/10 ruling executed internally, with nothing said to the
+  client about what moved. Authorship resolved: Elena Spini with **Claudio**.
+  🔑 **The production load finishes tomorrow** (_"entro domani sera"_), with the
+  order import straight after; 15 fields in Prod, the `Agente` permission set
+  narrowed, seven commercial users created and granted it the same evening.
+  🔴 WooCommerce production endpoints needed, not yet requested.
+  **New:** 🔴 **OI-291** - an edizione date change leaves its ~20 product
+  mappings behind (the range is copied into each mapping at creation), conceded
+  as _"e un casino"_ and handed to the client; the far-future-date workaround
+  agreed in the same conversation guarantees the work. 🔴 **OI-293** - one agent
+  code carries two agent names, a complete list including retired agents was
+  asked for twice, seven rows of current staff arrived; the codes are
+  `610.000NN`, so the migration's _"code 610"_ default names a **prefix**.
+  🟢 **OI-292** - the Notes related lists are promised to the client in writing
+  and not built. 🟢 Two decisions published to the client: notes in a related
+  list rather than a field, and **no Zoho calendar migration** - the first new
+  request declined outright since the scope ruling, though not as a CR.
+  🟢 **OI-290 has a deadline, Monday 2 November**, and the Account join is the
+  `codice cliente esterno`; ⚠ the follow-up mail was not sent, and Sabatino
+  Rinaldi answered the ticketing thread but not this one.
+  🔴🔑 **The team shrinks:** Rexhina Hysi moves to another project, Fabrizio
+  Mastracci's afternoons are elsewhere, and the Fase 2 estimate assumes no
+  staffing. `DevMain` `428f42b` -> `c3002a3` (PR #115); 4 commits unmerged on
+  `DevAnita27`. **vault:check green, 505 notes, all links resolve** (14
+  pre-existing trace warnings, unchanged).
+- **Next:** 🔴 **send one discounted order to Mexal at quantity 2** - OI-287 is
+  unchanged in code a second night in production, and the identical per-unit
+  question was asked and answered *correctly* on the import side the same day
+  (_"Basta che divido per la quantita"_), which makes it an oversight in one
+  code path rather than a disagreement. Tomorrow's end-to-end production flows
+  are the opportunity **if the test order carries a discount and quantity > 1**.
+  Then: open the org (sync flows on or off, `Asset.QR_Id__c`, blank `Agente__c`
+  population, the seven new users), chase Sabatino Rinaldi before Monday, and
+  get a human to rule on `SAL-12`.
+- **Watch:** ⚠ **Aurel Mrruku told the client the nightly Mexal alignment works**
+  (_"corretto, corretto"_) while the 23/10 record says the product sync flows
+  were switched off and nothing said they were back on. **Recorded as an
+  unresolved contradiction, not a correction** - do not reinstate either side
+  without opening the org. ⚠ **`Gruppo Merceologico = S` means "moved since
+  1 January 2024", not "sellable"** - ROMI did not know this until today.
+  ⚠ **`Contatti_Zoho_CRM_` (10.7 MB, 16:48Z) is not evidence the client
+  delivered** - provenance unestablished, and it was not opened. ⚠ The 26/10
+  "missing columns" in the import tracciato would have been a **false finding**:
+  the file is sorted and its leading rows are zero-value omaggio lines.
+  ⚠ In the Follow-up transcript **Fabrizio Paganelli speaks through a
+  speakerphone with no label of his own**, so his lines appear under Elena
+  Spini's - every quotation attributed to him was placed by content. 🔴 **New
+  pre-existing defect: the Risks table in `INDEX.md` is malformed** (separator
+  row after two data rows); tonight's row was placed in a well-formed position
+  and the malformation left for a human, like the duplicated tracker rows
+  163-174.
+
+---
+
 ## 2026-10-26 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Drive, Slack, Fathom and the repository against

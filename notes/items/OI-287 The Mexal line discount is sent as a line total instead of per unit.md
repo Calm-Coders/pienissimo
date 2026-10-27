@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-26
-updated: 2026-10-26
+updated: 2026-10-27
 depends_on: [OI-284]
 blocks: [go-live]
 severity: gating
@@ -135,3 +135,51 @@ this row says the test must not use quantity 1.
   same call: Mexal's rounding is not configurable (_"gli arrotondamenti non si
   toccano"_) and a one-cent difference was waived aloud by Fabrizio Paganelli.
   That is a decision, not a defect.
+
+## 2026-10-27 - unchanged in code, and the same question was answered correctly elsewhere
+
+🔴 **No fix.** `resolveLineDiscount` in `MexalOrderSendService.cls` still returns
+`(Prezzo_Listino__c - UnitPrice) * Quantity` and still carries the comment
+asserting that Mexal divides. `DevMain` moved `428f42b` → `c3002a3` today; the
+two commits are a Campaign `ParentId` filter and its merge. **Second night in
+production, and still no discounted order sent to Mexal end to end.**
+
+🔑🔴 **The same per-unit-versus-line-total question came up on the inbound side
+and was handled correctly within one exchange.** [The 27/10 internal
+follow-up](../meetings/2026-10-27%20Follow-up%20Interno.md), `00:09:35`–`00:10:52`,
+on the historical order import file:
+
+> **Elena Spini:** _"in[1] porto netto io l'ho inteso come il prodotto del prezzo
+> unitario per la quantità. **È corretto o volete il prezzo netto unitario?**"_
+>
+> **Aurel Mrruku:** _"la riga ha il prodotto che ha un prezzo di listino e un
+> prezzo netto. Poi la riga se viene moltiplicata per due, ma lo posso anche
+> trovare io, non è un problema. **Basta che divido per la quantità** e c'ho il
+> prezzo netto, vero?"_
+
+So on the **import**, `importo netto` is a line total and ROMI divides by
+quantity to recover the unit price. On the **send**, per-unit operands are
+multiplied by quantity. 🔑 **The distinction is plainly understood by the same
+engineer, on the same day, in the opposite direction** — which makes this an
+oversight in one code path rather than a conceptual disagreement, and strengthens
+the reading that the outbound multiplication is simply wrong.
+
+⚠ **Neither call mentioned OI-287.** It was not raised in the client call, in the
+internal follow-up, or in either Slack channel. **Nobody has read this row since
+it was written.**
+
+⚠ **The settling test is still not run.** One discounted order at quantity 2 ends
+it. Aurel Mrruku's stated next step for 28–29/10 is a full end-to-end flow in
+production — _"a livello di flusso io domani inizio a fare dei flussi completi
+anche in produzione"_ — which is the opportunity, **if the test order carries a
+discount and a quantity above one.** Nothing says it will.
+
+🔑 **A new wrinkle from the import file:** zero-price lines exist in volume
+(complimentary product codes). `resolveLineDiscount` returns early when
+`Prezzo_Listino__c <= UnitPrice`, so a zero-price line sends no discount — but
+**no note or test covers what the Mexal send does with a zero-value line**, and
+Aurel Mrruku was surprised such orders exist at all.
+
+---
+
+[1] The transcript reads _"in porto netto"_; the field is `importo netto`.

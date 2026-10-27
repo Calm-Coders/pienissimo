@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-20
-updated: 2026-10-20
+updated: 2026-10-27
 requirement: DM-19
 source: Gmail 1a158b6e3e4cee81
 ---
@@ -56,3 +56,18 @@ that stack.
 ROMI inspects the org, answers the question, and either delivers the rule or
 confirms in writing that the client owns it — naming the two notification
 recipients and where they come from.
+
+## 2026-10-27 - priced into Fase 2 as "easy"
+
+🟢 **It has a home at last.** _"Avviso di scadenza dei contratti Performance
+Plus"_ appears in the scope list of
+[the Fase 2 estimate](../The%20Fase%202%20estimate.md), reviewed by Elena Spini and
+Aurel Mrruku on 27/10 — her comment, `00:33:16`: _"Vabbè, **questo è facile**."_
+
+⚠ **That is a placement, not an answer.** This row's actual question — whether a
+standard contract-expiry alert rule already exists in the org — is still
+unasked and unanswered, and the org was not opened. Estimating the work as easy
+without checking whether it is already there is the risk, not the reassurance.
+
+⚠ **The client has not been told it moved to Fase 2**, and the ~80 live
+Performance Plus contracts still have no stated migration path.

@@ -8637,3 +8637,163 @@ lista concorrenti del `DM-07` è invariata. Entrambi richiedono una decisione
 umana. 🔑 E due assenze restano esse stesse rilievi: nessuna riga del registro
 copre la **scomposizione dei prezzi verso Mexal**, e nessuna copre la
 **migrazione di Lead o Referenti**.
+
+---
+
+## 71. Aggiornamento 27/10/2026 — il cliente ha risposto sulle domande dei biglietti, ROMI ha quotato la Fase 2, e il caricamento in produzione ha una data: domani
+
+Ricognizione notturna, watermark **2026-10-26T22:00Z**. **Due riunioni
+Pienissimo, entrambe analizzate dalle trascrizioni integrali**, oltre alla
+giornata di posta più densa da settimane e tre canali Slack che erano silenti.
+
+### Il cliente ha finalmente risposto — su tre delle domande aperte sui biglietti
+
+🔑 **La risposta di Sabatino Rinaldi esiste e questa casella non la contiene.** È
+nota unicamente attraverso la citazione letterale di Elena Spini nella DM di
+gruppo marketing ROMI alle **09:18:10 CET**, e **la sua data è ignota**. Una
+ricerca Gmail a 14 giorni sul suo indirizzo restituisce solo mail *a* lui. Il
+thread è quello su cui Elena Spini aveva annotato il 23/10 che Aurel Mrruku e
+Fabrizio Mastracci non erano in copia.
+
+- 🟢🔑 **Il §#250 ha risposta: un set di 11–15 comunicazioni con i ritardi
+  impostati a livello di edizione**, accettato per gli eventi a pagamento, ora
+  nominati — Camerieri Venditori, Academy, Pienissimo Live, Mastery, Happy Team.
+  A ROMI è chiesto di procedere con la configurazione e il lavoro sui template.
+  🆕 **Ed entra un requisito: template _"completamente personalizzabili"_**, che
+  non compare in alcuna riga, voce di registro o recap. ⚠ Il cliente ha scritto
+  _"ritardi orari"_ per la seconda volta, contro campi concordati in giorni.
+- 🟢🔑 **Il §#242 è confermato**: _"il tasto traccia la rinuncia senza cancellare
+  il biglietto dal CRM; la riconciliazione la facciamo noi dopo l'evento."_
+  L'asset non viene cancellato, quindi la scrittura è un cambio di stato — ⚠ dove
+  risieda resta non accertato.
+- 🔴🔑 **Il §#269 è stato ribadito come requisito, non specificato** — _"sappiamo
+  che è previsto più avanti, ma **per noi è un requisito**"_ — e ROMI ha deciso
+  la stessa mattina di bloccarlo: Elena Spini _"sarà per forza fase 2 … **ma come
+  deve essere gestita?**"_, Fabrizio Mastracci _"la 2 bloccala, la 1 e la 3 ok."_
+  **Punti 1 e 3 accettati, punto 2 rifiutato per la Fase 1, e al cliente non è
+  stato detto.**
+- 🟢🔑 **Il cliente ha spostato da sé del perimetro alla Fase 2**: Food Marketing
+  Festival e Tour, _"anche perché dobbiamo ancora definire il modello di
+  biglietteria."_
+
+### La Fase 2 ha per la prima volta una stima in giornate uomo
+
+[La stima di Fase 2](../notes/The%20Fase%202%20estimate.md), rivista voce per voce
+nel follow-up interno delle 17:03. 🟢🔑 **La paternità è finalmente a verbale** —
+Elena Spini: _"io e **Claudio** abbiamo partorito questo documento."_ Valori,
+approssimativi e non ancora ricontati: **20** giorni per il primo pacchetto,
+**13–15** per note di credito / incassi errati / scadenzario, **10** per gli
+spostamenti tra edizioni (🔴 Aurel Mrruku ne voleva 15–20 e ha messo a verbale il
+dissenso — _"Non sono per niente d'accordo, però va bene"_), **10** per gli
+eventi multiedizione, **3–5** per gli Ordini Pienissimo Pro, **3–5** (forse 5–7)
+per GLS e Teachable, **5–10** per l'analisi.
+
+🔴🔑 **Il rilievo non è l'aritmetica. È che la stima assorbe righe aperte di Fase
+1** — §#269, §#272, il territorio Ri.Ba./scadenzario del §#212 e le note di
+credito escluse dallo storico 2024 il 22/10. **È la decisione di Gianpaolo Motta
+del 26/10 che viene eseguita internamente**, e ⚠ **nulla dice che al cliente sia
+stato comunicato quali voci si sono spostate.** Il documento va a _"Andrea"_, poi
+a Daniela Morgese; ⚠ quale Andrea non è accertato.
+
+🔑 La condizione posta da Elena Spini per la Fase 2 è un blueprint firmato prima
+di ogni sviluppo — _"questa volta l'analisi mi devono dire subito che cacchio
+vogliono … e glielo faccio subito confermare"_ — risposta diretta all'esperienza
+di questo progetto. Si attende che il cliente tagli tutto.
+
+### Il caricamento in produzione si chiude domani
+
+Aurel Mrruku, al cliente alle 12:00 CET e internamente alle 17:03: _"da ieri che
+mi sto occupando di quello … **entro domani sera finisco il rilascio in
+produzione**"_, poi _"domani, dopodomani produzione, **import degli ordini**."_
+**15 campi sono in produzione**, esiste un permission set `Agente` che è stato
+ristretto, e sette utenze commerciali sono state create e abilitate la stessa
+sera. 🔴 **Gli endpoint di produzione WooCommerce servono e non erano ancora
+stati richiesti.** ⚠ **Se l'import degli ordini sia la migrazione vera o una
+prova non è dichiarato**, e il calendario concordato pone la seconda estrazione
+al 13/11 ore 09:00 con go-live il 16.
+
+### Righe nuove
+
+- 🔴 **§#291 — modificare la data di un'edizione non aggiorna le relative
+  mappature prodotto.** L'intervallo di date viene copiato in ogni mappatura alla
+  creazione e l'ordine si lega all'intervallo **della mappatura**: una data
+  evento confermata comporta la modifica a mano di ~20 record. Ammesso in
+  riunione come _"è un casino"_ e affidato al cliente. 🔑 **Il workaround
+  concordato garantisce quel lavoro**: un evento senza data riceve una data
+  deliberatamente molto in là perché non scatti l'automatismo di invio biglietti
+  (§#276), quindi ogni edizione così creata richiederà poi questa correzione. Le
+  due regole sono state concordate nella stessa conversazione e l'effetto
+  combinato non è stato sollevato.
+- 🔴 **§#293 — l'anagrafica agenti per il caricamento in produzione potrebbe
+  essere incompleta.** Uno stesso codice agente porta due nomi diversi nello
+  storico del cliente: per questo è stato chiesto un elenco pulito — _"**anche
+  quelli che non ci sono più**"_, due volte. Quello arrivato 22 minuti dopo sono
+  sette righe di personale commerciale attuale. 🔑 **I codici sono `610.000NN`,
+  quindi il default di import registrato il 22/10 come "codice 610" nomina un
+  prefisso**, e a quale codice si risolva non è detto.
+- 🟢 **§#292 — le related list Note sono promesse al cliente e non realizzate.**
+  ROMI ha rifiutato un campo note libero su ordini e preventivi (Elena Spini:
+  _"aiutatemi a fare muro"_, perché gli accordi di pagamento finiscono scritti in
+  prosa) e ha concesso al suo posto la related list standard Note su Lead,
+  Account e Opportunità, per iscritto alle 17:27:02Z con la precisazione che non
+  attiva alcun automatismo. ⚠ La riunione ne aveva concordati due; la mail al
+  cliente ne nomina tre, e il testo successivo prevale.
+- 🟢 **Il calendario Zoho dei tutor non sarà migrato** — _"non è prevista
+  un'importazione o sincronizzazione automatica"_; gli impegni esistenti vanno
+  reinseriti a mano come Eventi. 🟢 **Prima richiesta nuova del cliente respinta
+  senza riserve** dopo la decisione sul perimetro del 26/10. ⚠ Respinta, non
+  incanalata come Change Request, e il reinserimento manuale non ha responsabile.
+
+### Altro, risolto o appreso
+
+🟢 **Il file di import ordini non manca di campi** — era un artefatto
+dell'ordinamento; le prime righe sono a valore zero. 🔑 **`importo netto` è prezzo
+× quantità e ROMI dividerà** — _"Basta che divido per la quantità"_ — che è 🔴 **la
+stessa domanda sull'unitario che il §#287 sbaglia sul lato in uscita, posta e
+risolta correttamente lo stesso giorno dallo stesso sviluppatore.** ⚠ Nessuna
+delle due riunioni ha menzionato il §#287. 🔑 **Esistono in volume righe a prezzo
+zero (omaggi)** e nulla copre il comportamento dell'invio a Mexal su di esse.
+
+🟢 **Il §#290 ha una scadenza — lunedì 2 novembre** — e il collegamento
+all'Account è identificato nel **`codice cliente esterno`**, provato su
+un'azienda di test, ⚠ in attesa di conferma del cliente. ⚠ La mail di sollecito
+non risultava inviata. 🔑 Sabatino Rinaldi ha risposto sul thread dei biglietti e
+non su questo: **il silenzio è selettivo.**
+
+🟢 **Il filtro sulle campagne padre è stato segnalato alle 10:28 CET e corretto
+alle 12:00** — `5faac77` di Anita Aga, merge PR #115. 🔑 **`Gruppo Merceologico =
+S` significa "movimentato dal 1° gennaio 2024", non "vendibile"** — Aurel Mrruku:
+_"Non lo sapevo."_ 🔑 **Un amministratore del cliente è stato guidato nel Setup
+per aggiungere valori di picklist** per l'anno accademico; nessuna nota o
+procedura copre quel percorso. ⚠ **Record di mappatura di test sono stati
+cancellati in diretta mentre colleghi ROMI ci stavano testando sopra.**
+
+🔴 **Aurel Mrruku ha confermato al cliente l'allineamento notturno con Mexal** —
+_"corretto, corretto"_ — il che **contraddice il verbale del 23/10**, secondo cui
+i flussi di sincronizzazione prodotti erano disattivati e mai dichiarati
+riattivati. Un'assicurazione verbale non è una prova; l'org non è stata aperta.
+
+🔴🔑 **Il team di consegna si riduce**: _"Regina [Rexhina Hysi] andrà su un altro
+progetto … se c'è una fase due a breve saremo solo in due, non in tre"_ — detto
+la sera stessa in cui lei lavorava sui permessi in produzione — e i pomeriggi di
+Fabrizio Mastracci sono impegnati altrove. **La stima di Fase 2 non dichiara
+alcuna ipotesi di organico.**
+
+### Invariato
+
+🔴 **Il §#212 è invariato per la quindicesima notte**, in produzione. 🔴 **Il
+§#287 è invariato nel codice per la seconda notte in produzione**; `DevMain` è
+passato da `428f42b` a `c3002a3` e i due commit sono un filtro su Campagna e il
+relativo merge. 🔴 **Il §#265 è fermo da sei giorni.** 🔴 **Il meccanismo delle
+Change Request del §#285 non è ancora stato applicato a nulla**, e il cliente
+tace su di esso da quattro giorni. 🔴 **Nessuno ha chiesto se Pienissimo abbia un
+contratto Zoho oltre il 31 ottobre** — nona tornata, a quattro giorni dalla
+scadenza.
+
+**Questa tornata non ha modificato alcun requisito.** 🔴 **`SAL-12` non è citato
+per l'ottava sessione** — _"nessuno sconto discrezionale"_, `status: agreed`,
+mentre il meccanismo di sconto è in produzione. La lista concorrenti del `DM-07`
+è invariata. 🔑 E tre assenze restano esse stesse rilievi: nessuna riga del
+registro copre la **scomposizione dei prezzi verso Mexal**, nessuna copre la
+**migrazione di Lead o Referenti**, e 🆕 nessuna copre **l'annotazione** o **la
+modificabilità dei template**.

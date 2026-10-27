@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-14
-updated: 2026-10-23
+updated: 2026-10-27
 depends_on: [OI-147]
 source: Slack C0C38JJ9D1T 2026-10-14
 ---
@@ -249,3 +249,34 @@ is the same dependency
 carries, assigned in the same two-line message, with no date. ⚠ **Nothing in
 the repository shows those fields built**: `origin/DevMain` is `ebc2c5b` and
 carries no Campaign field work from 23 October.
+
+## 2026-10-27 - the client confirmed the behaviour in writing
+
+🟢🔑 **Settled on the client's side.** Sabatino Rinaldi's reply, quoted verbatim
+by Elena Spini in the ROMI marketing group DM `C0C38JJ9D1T` at **09:18:10 CET**:
+
+> _"**Rinuncia**: confermiamo il funzionamento proposto (il tasto traccia la
+> rinuncia senza cancellare il biglietto dal CRM; la riconciliazione la facciamo
+> noi dopo l'evento)."_
+
+So the agreed behaviour is: **the button records the renunciation, the ticket is
+not deleted from the CRM, and the client reconciles manually after the event.**
+That is the first client confirmation this row has had, and it is consistent with
+the 23/10 reversal — the ask is no longer the public `rifiuta-evento` text but a
+tracked state.
+
+🔑 **It also narrows the open `rinunciato` question.** The asset is not removed,
+so the write is a state change, not a delete. ⚠ **Where that write lives is still
+not established**, and nothing says the button has been built to do it.
+
+⚠ **Source caveat.** Sabatino Rinaldi's mail **is not in this mailbox.** A Gmail
+sweep of the last 14 days on `sabatino.r@pienissimo.com` returns only mail *to*
+him and the older go-live thread. It is known solely through Elena Spini's
+quotation above, and **its date is unknown** — Elena Spini called it _"la mail di
+Sabatino"_ on 27/10 and it reads as a point-by-point reply to ROMI's 16/10
+internal-meeting mail, the thread on which she noted on 23/10 that Aurel Mrruku
+and Fabrizio Mastracci _"non eravate in copia"_. **Inferred, not established.**
+
+⚠ **Fabrizio Mastracci's 23/10 design objection is still unanswered** — two
+buttons with opposite labels reaching the same destination. The client's
+confirmation does not address it.
