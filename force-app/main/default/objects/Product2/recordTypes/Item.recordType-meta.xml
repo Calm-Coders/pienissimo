@@ -2,6 +2,7 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Item</fullName>
     <active>true</active>
+    <compactLayoutAssignment>Bundle_Compact_Layout</compactLayoutAssignment>
     <label>Item</label>
     <picklistValues>
         <picklist>Family</picklist>

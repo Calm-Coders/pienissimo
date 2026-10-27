@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campign_Edizione</fullName>
+    <fields>Name</fields>
+    <fields>IsActive</fields>
+    <fields>RecordTypeId</fields>
+    <fields>Da_Data_Competenza__c</fields>
+    <fields>A_Data_Competenza__c</fields>
+    <fields>Anno_Accademico__c</fields>
+    <label>Campign Edizione</label>
+</CompactLayout>
