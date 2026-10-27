@@ -82,6 +82,11 @@
     </externalCredentialPrincipalAccesses>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Account.Mandato_RID__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Account.AccountNumber</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -213,11 +218,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.Fax</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Account.IBAN__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

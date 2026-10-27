@@ -8,6 +8,11 @@
   >Accesso operativo per le utenze agente: Account, creazione e qualificazione Lead, lookup agente e generazione PDF preventivo. Nessun permesso di amministrazione o integrazione.</description>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Account.Mandato_RID__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Account.Agente__c</field>
         <readable>true</readable>
     </fieldPermissions>
