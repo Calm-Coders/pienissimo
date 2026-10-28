@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-26
-updated: 2026-10-27
+updated: 2026-10-28
 depends_on: [OI-284]
 blocks: [go-live]
 severity: gating
@@ -183,3 +183,23 @@ Aurel Mrruku was surprised such orders exist at all.
 ---
 
 [1] The transcript reads _"in porto netto"_; the field is `importo netto`.
+
+## 🔴 2026-10-28 - unchanged a third night, and the test that would settle it did not happen
+
+`resolveLineDiscount` on `DevMain` `d9d18e3` still returns
+`(Prezzo_Listino__c - UnitPrice) * Quantity`, and the comment asserting that
+Mexal divides is still beside it. **Third consecutive night in production.**
+
+🔴 **The opportunity flagged on 27/10 was missed.** The client's 09:48:49Z mail
+asked to run exactly the E2E test that would settle this — _"volevamo fare oggi
+dei test, compreso emissione fatture e registrazione incassi"_ — and ROMI's reply
+**blocked the Mexal integrations for the day** so the historical load could run
+without duplicating 7,721 orders
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)).
+The order API was reopened at 16:19:55Z with an invitation to resume testing; ⚠
+**nothing in the record says a discounted, quantity-above-one order was sent.**
+
+⚠ **Neither the mail nor the call mentioned the discount.** Three days of dense
+Mexal correspondence — the line id, the accounting year, the agent codes — and
+the one arithmetic defect that mis-invoices in silence has not been named by
+anybody but these records.

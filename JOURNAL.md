@@ -10,6 +10,44 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-28 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark
+  **2026-10-27T22:00Z**. Twelve new mail messages across six threads, five
+  Pienissimo Drive items, 32 Slack messages across three surfaces, 5 commits.
+- **Found:** 🟢 the **full order-to-invoice cycle loaded in UAT** (7,721 orders ·
+  10,806 invoices · 17,299/17,299 lines linked) and 🔑 **it was a rehearsal, not
+  the migration** — `Prod`/`UAT` unmoved since 26/10, target slipped to Friday
+  30/10 · 🔴 **the 14:07 client call cannot be drilled**: Gemini transcribed an
+  Italian call as English filler, and 🔑 Sabatino Rinaldi is labelled as speaking
+  in it · 🟢 **OI-290 moved twice** — the follow-up mail went and the client
+  committed in writing to **29 October**, and `Referenti Salesforce_V2.xlsx`
+  arrived · 🟢 **the `610` agent default resolves to `610.00001`**, with the
+  client applying it at source · 🔑 **the 2024 cut-off is on the invoice, not the
+  order**, correcting five runs of record · 🆕 **Mexal archives documents by
+  accounting year**, learned from code and never put to Kreosoft.
+- **Wrote:** new **OI-294** (client asks to run the invoice/incassi jobs itself,
+  unanswered), **OI-295** (migrated Leads must be distinguishable from post-16/11
+  ones; `Lead from Zoho` checkbox decided internally, not built, client not
+  told), **OI-296** (Mexal customer create failed HTTP 400 in UAT, account send
+  switched off with no recorded re-enable), **OI-297** (OLD edizione links
+  unresolved), the **2026-10-28 Import Ordini** meeting note (explicitly *not*
+  drilled) and the **Mexal accounting-year** object note. Updated OI-244, OI-287,
+  OI-290, OI-292, OI-293 and the Zoho-calendar decision; `MAP.md`, `INDEX.md`,
+  both trackers, both recaps (**§72**).
+- **State:** register untouched — v1.6, `go_live: 2026-11-16`. Next free id
+  **298**. `vault:check` run before committing.
+- **Next:** somebody must watch the 380 MB recording — it is the week's largest
+  hole. Build the `Lead from Zoho` field **before** the Lead load. Check whether
+  account send to Mexal is still off in UAT and read integration log
+  `a05MA00000GqqcPYAR`. Decide the OLD-edizione links before the production run.
+- **Watch:** 🔴 the client was told the Mexal block was *temporary* while the
+  repository gained a *permanent* `Origine__c == 'Mexal'` skip — both may be
+  true, only the filter is in source. ⚠ Nothing from the Import Ordini
+  auto-summary was written into any item; it asserts content its own transcript
+  does not support. 🔴 OI-287 unchanged a third night in production, and the E2E
+  test that would settle it was blocked by the load.
+
 ## 2026-10-28 - codex (requested UAT Campaign cleanup)
 
 - **Did:** on explicit user request and confirmation of **Pienissimo UAT**,

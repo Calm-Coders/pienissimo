@@ -132,3 +132,40 @@ repeatable from the same callout.
 ⚠ This is the **current** customer master. It shows which codes customers
 point to today, not which codes historical orders carry, so it does not by
 itself settle the one-code-two-names problem above.
+
+## 🟢 2026-10-28 - the default is named, and the client will apply it at source
+
+Aurel Mrruku put the live distribution to the client, Gmail `1a17d328d1758cb0`,
+**11:46:54Z** — the same 16 `610.000NN` codes the UAT scan found, each with its
+customer count, and the question stated plainly:
+
+> _"mi serve capire come associare i codici agenti non indicati su Excel con
+> quelli che esistono sul Excel **per non fare esplodere la migrazione in
+> prod**."_
+
+Fabrizio Paganelli answered twenty minutes later, **12:06:40Z**:
+
+> _"i codici agenti che trovi negli ordini ma che non sono presenti nella lista
+> degli agenti che ti ho passato ieri, **li puoi forzare tutti su `610.00001`**.
+> Me lo segno così quanto ti invierò **i movimenti definitivi da portare in
+> produzione** farò già questa trasformazione."_
+
+🟢 **This closes problem 3.** The 22/10 default recorded as _"existing code 610"_
+resolves to **`610.00001`** — the code with 783 customers, and the only one the
+client names.
+
+🔑 **And it changes who applies it.** The client has undertaken to do the
+transformation **in the production movements file**, before ROMI receives it. So
+the ROMI-side fallback must not also fire on that file, or the rule is applied
+twice; and if the client's file arrives without the transformation, the fallback
+is the only thing standing between the load and orphaned agent codes. ⚠ **Nothing
+states which of the two will be authoritative on 13 November**, and the
+production extract is the one covered by the
+[agreed calendar](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md).
+
+🔴 **Problems 1, 2, 4 and 5 are untouched.** Sixteen codes are in use against
+seven rows delivered; nothing says the retired codes are in the list; the
+one-code-two-names ambiguity is unresolved — and **this answer does not resolve
+it, it routes around it**, by collapsing every unmatched code onto one agent
+rather than disambiguating any. ⚠ The 783 customers already on `610.00001` and
+the migrated rows forced onto it will be indistinguishable afterwards.

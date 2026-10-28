@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-10-27
+updated: 2026-10-28
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -169,6 +169,64 @@ timestamp only. 🔑 **Its provenance is not established**: nothing states wheth
 it is the client's delivery against this request, an earlier export Fabrizio
 Paganelli had already shared, or ROMI's own conversion of one. **It is not
 evidence that the client has delivered.**
+
+🔴 **Unchanged:** the Zoho source still cannot fill the agreed field set, nobody
+has decided what happens to the fields it cannot fill, consent migration is
+unaddressed, and no register row covers Lead or Contact migration.
+
+## 🟢 2026-10-28 - the Referenti file arrived, and the deadline moved forward
+
+🟢 **The follow-up mail was sent.** Elena Spini, Gmail `1a1786a9c1a23757`,
+**09:18:11Z**, to Sabatino Rinaldi and Fabrizio Paganelli, cc
+`amministrazione@pienissimo.com` and Aurel Mrruku — a chase on the 26/10 request,
+tying it to the go-live date. ⚠ The 27/10 record noted it had **not** been sent;
+it was sent the next morning.
+
+🟢🔑 **The client answered within ninety seconds, and it was not Sabatino
+Rinaldi.** `amministrazione@pienissimo.com` (Elisa Migliano), **09:19:28Z**:
+
+> _"Ciao Elena, **ci stiamo lavorando io e Sabatino, entro domani provvederemo a
+> passarvi la lista**. Rimaniamo a disposizione per ulteriori informazioni"_
+
+Elena Spini acknowledged at 10:37:13Z. 🔑 **So the commitment is Thursday
+29 October** — three days earlier than the Monday 2 November ROMI had set for
+itself internally on 27/10, and this one **is** a client commitment in writing,
+which the Monday date never was. ⚠ It covers _"la lista"_, singular; whether that
+means Lead, Referenti or both is not stated.
+
+🟢🔑 **The Referenti half was delivered the same afternoon.** Fabrizio Paganelli,
+in the Import Ordini thread (`1a183243caec3e01`, **15:32:30Z**, cc Elena Spini,
+Sabatino Rinaldi, `amministrazione@`):
+
+> _"**Abbiamo ricreato il file dei referenti salesforce. È il V2**"_
+
+The file is **`Referenti Salesforce_V2.xlsx`**,
+`1tHPebvZvnPh0DwDSbmxtEpgOkfY_XDs-`, **14,239,851 bytes**, owner
+`fabrizio.pienissimo@gmail.com`, created **15:30:32Z**, in the client's own
+`REFERENTI` folder beside the 21/10 `Referenti Salesforce.xlsx` it supersedes.
+Elena Spini posted the link in the ROMI DM at 16:38:29 CET as _"file referenti
+che hanno dato Fabrizio e Sabatino"_ — 🔑 **naming Sabatino Rinaldi as a
+co-author**, which is the first evidence in these records of him acting on this
+request.
+
+⚠ **Not opened.** It holds real contact records — see
+[docs/publishing.md](../../docs/publishing.md). Recorded by id, size, owner and
+timestamp only. ⚠ **It has not been checked**: Aurel Mrruku, Slack 16:40:40 CET,
+_"si ho visto la mail ma lo devo analizzare appena finisco con le fatture."_
+Whether it carries the `codice cliente esterno` join — the whole point of
+problem 3 — is **unverified**.
+
+🔴 **The Lead half is still outstanding**, and it grew a requirement the same
+evening: see
+[OI-295](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md).
+
+🔑 **Sabatino Rinaldi appears to have attended the 14:07 call**
+([Import Ordini](../meetings/2026-10-28%20Import%20Ordini.md)), whose meeting
+chat shows the data-model workbook being opened at the half-hour mark — so the
+field mapping was very likely walked with him. ⚠ **The transcript is unusable**,
+so what he agreed to is not recorded. The "selective silence" reading of 27/10 is
+superseded: he is now engaged on this thread, through Elisa Migliano and in
+person.
 
 🔴 **Unchanged:** the Zoho source still cannot fill the agreed field set, nobody
 has decided what happens to the fields it cannot fill, consent migration is

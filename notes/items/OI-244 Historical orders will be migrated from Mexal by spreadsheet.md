@@ -800,3 +800,75 @@ The 3,042 invoices without an order split two ways:
   provisional: about 17,300 lines against the roughly 39,000 announced on
   22/10. Those orders are missing from the extract, which is for Fabrizio
   Paganelli to explain.
+
+### 🟢 2026-10-28 - what was said to the client, and the three things the mail settles
+
+The load above was reported to the client as it ran, in the **Import Ordini**
+thread (Gmail `1a168166785585be`). Four facts in that correspondence are not
+derivable from the org work:
+
+🟢🔑 **The 2024 cut-off is on the invoice, not on the order.** Aurel Mrruku asked
+why the file holds orders dated 2022 and 2023 (**12:00:30Z**, _"ci sono ordini
+con DATA_DOC nel 2022 e 2023. Come mai? Mi aspettavo solo ordini dal 2024 in
+poi"_). Fabrizio Paganelli, **12:13:25Z**:
+
+> _"Per fare l'import dello storico sono partito **dalle fatture emesse a partire
+> dal 01.01.2024**. Queste possono fare riferimento a ordini antecedenti il
+> 01.01.2024 (questo il motivo per cui nella data ordine trovi anche gli anni
+> 2022 e 2023)"_
+
+🔑 **This corrects the scope rule as this record has carried it since 20/10** —
+_"scoped to invoiced orders since 01/01/2023"_ and the 22/10 rules' order-date
+framing. The extract is an **invoice**-driven set; order dates run back further
+by construction, and the pre-2024 orders are not stragglers to be excluded.
+
+🔴 **The `ID riga Mexal` column was challenged and the challenge was not
+resolved in writing.** Aurel Mrruku, **11:52:31Z**: _"nel file Excel 'Import
+Ordini' abbiamo riscontrato che il campo 'ID riga Mexal' non risulta valorizzato
+correttamente … questo dato è fondamentale per poter procedere con
+l'aggiornamento delle righe di fattura."_ Fabrizio Paganelli, **12:11:26Z**: _"In
+che senso non è valorizzato correttamente? Non vedo righe nulle. Magari chiamami
+nel pomeriggio."_ The call followed at 14:07 CET
+([Import Ordini](../meetings/2026-10-28%20Import%20Ordini.md)) and ⚠ **its
+transcript is unusable**, so what was agreed about the column is not in the
+record. The load ran to completion afterwards.
+
+🟢🔑 **The missing-agent default is resolved, and it is `610.00001`.** Aurel
+Mrruku sent the live distribution (**11:46:54Z**, 16 codes of the form
+`610.000NN` with their customer counts); Fabrizio Paganelli answered at
+**12:06:40Z**:
+
+> _"i codici agenti che trovi negli ordini ma che non sono presenti nella lista
+> degli agenti che ti ho passato ieri, **li puoi forzare tutti su 610.00001**. Me
+> lo segno così quanto ti invierò **i movimenti definitivi da portare in
+> produzione** farò già questa trasformazione."_
+
+So the 22/10 rule recorded as _"missing agent → existing code 610"_ now has its
+full value, and 🔑 **the client has undertaken to apply the transformation in the
+production file himself** — which means the rule must *not* be applied twice.
+See [OI-293](OI-293%20The%20agent%20registry%20for%20the%20production%20load%20may%20be%20incomplete.md).
+
+⚠ **The integrations were blocked for the duration, and the client was told so.**
+Aurel Mrruku, **11:27:59Z**: _"Per evitare la creazione duplicata di 7.721 ordini
+su Mexal, è necessario **bloccare temporaneamente le integrazioni**."_ 🔑 **In
+the repository the guard is not temporary**: `OrderMexalIntegrationService` gained
+a permanent skip on `Origine__c == 'Mexal'` the same day, commented _"Orders
+migrated from Mexal already exist there: sending them would duplicate them."_
+Both can be true — a standing origin filter plus a session switch — but **only
+the standing filter is in source**, and the Mexal order API was reported reopened
+at **16:19:55Z** (_"Ho anche apperto le api verso mexal se vuooi proseguire con i
+test"_). Account sending is a separate switch and is covered by
+[OI-296](OI-296%20Account%20creation%20to%20Mexal%20failed%20in%20UAT%20and%20account%20send%20was%20switched%20off.md).
+
+🟢 **The client acknowledged the result**: Fabrizio Paganelli, **16:21:38Z**,
+_"Bene! Ottimo lavoro."_ ⚠ Sabatino Rinaldi and `amministrazione@` were cc'd from
+15:32Z onward, so the load figures are now in front of the client's data owner.
+
+⚠ **This was UAT.** Aurel Mrruku's own wording at 15:24:37Z — _"concludo tutto il
+ciclo **in UAT**"_ — against his 11:27:59Z framing of the day as _"il deploy in
+produzione e il caricamento degli ordini"_. 🔑 **The `Prod` and `UAT` git branches
+have not moved since 26 October**, and the production target was restated the
+same afternoon as **Friday** (Slack `C0C38JJ9D1T`, 15:24:14 CET: _"spero entro
+venerdì finiamo tutto così hai la produzione up & running"_), where 27/10 had it
+as _"entro domani sera"_. **The answer to "is the 28–29/10 import the migration
+or a rehearsal" is: a rehearsal, in UAT.**
