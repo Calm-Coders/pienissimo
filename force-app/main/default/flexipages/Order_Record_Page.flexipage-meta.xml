@@ -189,7 +189,7 @@
                         <leftValue
             >{!Record.Opportunity.RecordType.Name}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>Plus Attivazione/Rinnovo</rightValue>
+                        <rightValue>Performance Plus</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>

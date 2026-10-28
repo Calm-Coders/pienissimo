@@ -8,6 +8,6 @@
     <columns>Data_Inizio__c</columns>
     <columns>Data_Fine__c</columns>
     <columns>Product_Code__c</columns>
-    <filterScope>Mine</filterScope>
+    <filterScope>Everything</filterScope>
     <label>All Mappatura Edizione</label>
 </ListView>
