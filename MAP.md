@@ -6,10 +6,16 @@ Last updated: 2026-10-27 (nightly sweep - the client answered three of the open 
 
 ## Where the project stands
 
+- **2026-10-28 — requested UAT Campaign cleanup completed:** deleted 4 Campaigns
+  matching the user's creator-name filter, 82 blocking event invitations and
+  25 campaign members. All 181 linked Assets remain with an empty Campaign
+  lookup; all 36 administrator-created Campaigns remain. Production untouched.
+  [Evidence](notes/objects/UAT%20Campaign%20cleanup%20on%2028%20October%202026.md).
+
 - 🟢🔑 **2026-10-27 — the client answered three of the open ticketing questions, ROMI priced Fase 2 and quietly moved open Fase 1 rows into it, and the production load was given a date of tomorrow.** Nightly sweep,
   watermark 2026-10-26T22:00Z. **Two Pienissimo meetings, both drilled from full raw transcripts** — [Anagrafica Articoli](notes/meetings/2026-10-27%20Anagrafica%20Articoli.md) (12:00 CET, **00:28:08**, Fabrizio Paganelli) and
   [Follow-up Interno](notes/meetings/2026-10-27%20Follow-up%20Interno.md) (17:03 CET, **00:43:26**, ROMI-internal, ⚠ Fabrizio Mastracci invited and absent) — plus the busiest mail day in weeks and **three Slack surfaces that had been silent**.
-  🟢🔑 **Sabatino Rinaldi finally replied, and this mailbox does not hold the mail.** It is known only through Elena Spini's verbatim quotation in the marketing DM at 09:18:10 CET, and ⚠ **its date is unknown** — a 14-day Gmail sweep on his address returns only mail *to* him.
+  🟢🔑 **Sabatino Rinaldi finally replied, and this mailbox does not hold the mail.** It is known only through Elena Spini's verbatim quotation in the marketing DM at 09:18:10 CET, and ⚠ **its date is unknown** — a 14-day Gmail sweep on his address returns only mail _to_ him.
   It settles three rows: 🟢 **[OI-250](notes/items/OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md) — _"un set di 11–15 comunicazioni con ritardi orari impostati a livello di edizione"_, accepted**, the paid-event set named at last, 🆕 **and a new requirement riding in: templates _"completamente personalizzabili"_**, in no row and no register entry ·
   🟢 **[OI-242](notes/items/OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md) confirmed** — _"il tasto traccia la rinuncia senza cancellare il biglietto dal CRM; la riconciliazione la facciamo noi dopo l'evento"_ ·
   🔴🔑 **[OI-269](notes/items/OI-269%20Event%20communications%20must%20be%20differentiated%20by%20ticket%20type.md) was restated, not specified** — _"sappiamo che è previsto più avanti, ma **per noi è un requisito**"_ — and **ROMI decided the same morning to block it**: Fabrizio Mastracci, _"la 2 bloccala, la 1 e la 3 ok"_. 🔴 **The client has not been told**, a third day of internal rulings. 🟢 The client itself deferred **Food Marketing Festival and Tour** to Fase 2.

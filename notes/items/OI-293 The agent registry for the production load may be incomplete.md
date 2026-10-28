@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-27 Anagrafica Articoli.md
@@ -110,3 +110,25 @@ is recorded here is the shape: seven rows, one of them a generic shared account,
    [OI-288](OI-288%20Editing%20a%20Contact%20fails%20in%20production%20when%20the%20Account%20has%20no%20Agente.md).
 5. ⚠ **Not verified in the org.** That the users and the permission set exist is
    taken from the Slack exchange above, not from an inspection.
+
+## 2026-10-28 - what the live Mexal customer registry carries
+
+Read-only scan at the user's request, anonymous Apex run through **Pienissimo
+UAT** (Prod holds no Mexal `Integration_Configuration2__c` rows, only
+DocuSign). One `clienti/ricerca` call, company `PIE`, fields `codice` and
+`cod_agente` only, no DML and no integration log; Mexal stamped it
+`data_ric_elab` 20261028 123741.
+
+- **8,726 customers** returned in one page (no continuation key).
+- **2,394 carry no agent code.**
+- **16 distinct agent codes**, all of the form `610.000NN`, used by between 1
+  and ~1,500 customers each.
+
+🔴 **Sixteen codes in use against seven rows delivered.** Even allowing for
+one person holding two codes, the 27/10 list cannot cover every code a
+customer is attached to. The codes are not reproduced here; the scan is
+repeatable from the same callout.
+
+⚠ This is the **current** customer master. It shows which codes customers
+point to today, not which codes historical orders carry, so it does not by
+itself settle the one-code-two-names problem above.

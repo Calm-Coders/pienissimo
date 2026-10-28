@@ -40,7 +40,8 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
             Serie__c,
             Numero__c,
             Codice_Cliente_Mexal__c,
-            Account__c
+            Account__c,
+            Data_Documento__c
           FROM Fattura__c
           WHERE Id IN :invoiceIds
         ]
@@ -56,7 +57,8 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
             Serie__c,
             Numero__c,
             Codice_Cliente_Mexal__c,
-            Account__c
+            Account__c,
+            Data_Documento__c
           FROM Fattura__c
           WHERE Id NOT IN (SELECT Fattura__c FROM Riga_Fattura__c)
         ]
@@ -71,7 +73,8 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
           Serie__c,
           Numero__c,
           Codice_Cliente_Mexal__c,
-          Account__c
+          Account__c,
+          Data_Documento__c
         FROM Fattura__c
       ]
     );
@@ -124,6 +127,11 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
       }
       MexalSearchCalloutService.Result detail;
       try {
+        // The detail lives in the archive of the invoice's own year.
+        MexalSearchCalloutService.accountingYear = invoice.Data_Documento__c ==
+          null
+          ? null
+          : invoice.Data_Documento__c.year();
         detail = MexalSearchCalloutService.getMovementDetail(
           invoice.Sigla__c,
           invoice.Serie__c.intValue(),
@@ -160,6 +168,8 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
         totalByInvoiceId.put(invoice.Id, total);
       }
     }
+
+    MexalSearchCalloutService.accountingYear = null;
 
     Map<Id, Fattura__c> invoicesById = new Map<Id, Fattura__c>(invoices);
     Set<String> orderKeys = new Set<String>();

@@ -99,6 +99,12 @@ public without sharing class MexalInvoiceImportService {
   // Backfill by document date, in one transaction: both searches run before
   // any DML. Run MexalInvoiceLineImportBatch afterwards for the lines.
   public static Result importByDocumentDate(Date fromDate) {
+    return importByDocumentDate(fromDate, null);
+  }
+
+  // Window [fromDate, toDate): invoices are searched in the archive of
+  // fromDate's year, so a window must not cross a year end.
+  public static Result importByDocumentDate(Date fromDate, Date toDate) {
     if (fromDate == null) {
       throw new MexalInvoiceImportException('Data iniziale obbligatoria.');
     }
@@ -107,22 +113,35 @@ public without sharing class MexalInvoiceImportService {
         Time.newInstance(0, 0, 0, 0)
       )
       .format('yyyyMMdd');
+    List<Object> movementFilters = new List<Object>{
+      filter('sigla', '=', INVOICE_SIGLA),
+      filter('data_documento', '>=', mexalDate)
+    };
+    List<Object> scadenzarioFilters = new List<Object>{
+      filter('causale', '=', INVOICE_CAUSALE),
+      filter('data_documento', '>=', mexalDate)
+    };
+    if (toDate != null) {
+      String mexalToDate = Datetime.newInstance(
+          toDate,
+          Time.newInstance(0, 0, 0, 0)
+        )
+        .format('yyyyMMdd');
+      movementFilters.add(filter('data_documento', '<', mexalToDate));
+      scadenzarioFilters.add(filter('data_documento', '<', mexalToDate));
+    }
 
-    List<Object> movementRows = search(
-      MOVEMENT_SEARCH_ACTION,
-      new List<Object>{
-        filter('sigla', '=', INVOICE_SIGLA),
-        filter('data_documento', '>=', mexalDate)
-      },
-      false
-    );
+    List<Object> movementRows;
+    MexalSearchCalloutService.accountingYear = fromDate.year();
+    try {
+      movementRows = search(MOVEMENT_SEARCH_ACTION, movementFilters, false);
+    } finally {
+      MexalSearchCalloutService.accountingYear = null;
+    }
     // Only the last callout logs: a log insert before a callout is not allowed.
     List<Object> scadenzarioRows = search(
       SCADENZARIO_SEARCH_ACTION,
-      new List<Object>{
-        filter('causale', '=', INVOICE_CAUSALE),
-        filter('data_documento', '>=', mexalDate)
-      },
+      scadenzarioFilters,
       true
     );
 
