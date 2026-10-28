@@ -3,7 +3,7 @@
     <fullName>Plus_Attivazione_Rinnovo</fullName>
     <active>true</active>
     <businessProcess>Sales_Process</businessProcess>
-    <label>Plus Attivazione/Rinnovo</label>
+    <label>Performance Plus</label>
     <picklistValues>
         <picklist>Tipo_Opportunita__c</picklist>
         <values>
