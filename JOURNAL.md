@@ -35,10 +35,12 @@ Keep the twenty most recent entries here; archive older ones to
 - **Left in UAT on purpose:** `Categoria_Prodotto__c` (23 records; the user
   uses it - but no branch code reads it, the mapping search filters on
   `Product2.Categoria_Articolo__c`, and it is in neither source nor Prod).
-  Pending the user's decision: `anticipayAccountRefresh` LWC +
-  `Account.Refresh_Anticipay` (never committed, superseded by
-  `anticipayAccountRefreshAction` / `Aggiorna_Anticipay`) and
-  `Product2.Is_Plus__c` (0 flagged).
+- **Deleted from UAT** at the user's request (destructive deploy
+  `0AfMA00000D27Fd0AJ`, 11:09Z, dry-run first): `anticipayAccountRefresh` LWC
+  and its `Account.Refresh_Anticipay` quick action (created in UAT 03/09, never
+  committed, superseded by `anticipayAccountRefreshAction` /
+  `Aggiorna_Anticipay`, which remain) and `Product2.Is_Plus__c` (0 flagged,
+  removed from the branch in `f84d356`). Verified absent afterwards.
 - **Not applied by deploy (cosmetic):** tab `Scadenza_Fattura__c` icon,
   `Qualificato` as default stage.
 - **State:** six source files changed, **uncommitted**.
