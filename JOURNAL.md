@@ -10,6 +10,41 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-28 - claude (UAT aligned to DevMain)
+
+- **Did:** compared DevMain (`4c1b36b`) with **Pienissimo UAT** by retrieving
+  every `force-app` component from UAT and diffing element by element
+  (formatting noise filtered). UAT was behind on the Mexal line discount
+  (`OrderItem.Prezzo_Listino__c` absent), `WoocommerceOrderService`,
+  `TicketQrLookupService` sharing, the bundle-only lookup filter, layouts and
+  pages; it also kept residues the branch had removed.
+- **Pulled from UAT into source first** (newer in UAT than in git): list views
+  `Product2.AllProducts` and `Campaign.Edizione`, record type
+  `Campagna_Figlio` (edited by the client admin 27/10, not in Prod), and, at the
+  user's choice, the Tranche layout (`Stato__c`/`Quote__c` read-only) and the
+  Quote page Tranche list without action bar. The Contact page stays the
+  branch's. Fixed `Account_Import_UAT`, which granted a non-existent
+  `Account.Tipologia_Attivita__c`; it now grants `Tipologia_Attivita_Globale__c`.
+- **Deployed to UAT:** `0AfMA00000D23dR0AR`, 763/763, NoTestRun, 2026-10-28
+  10:23Z. Excluded as for Prod: DocuSign auth provider, all named/external
+  credentials, Network/Site/Digital Experience, guest and Agente profiles. The
+  aging job did not block; verified still `0 0 3 * * ?` Europe/Rome, owner
+  Aurel Mrruku. Re-retrieve after deploy: all Apex identical.
+- **Also:** `Lead.Tipo_Opportunita__c` values `Recall tutor` and `WooCommerce`
+  deactivated in UAT (`0AfMA00000D24WH0AZ`; 0 Leads used them).
+- **Left in UAT on purpose:** `Categoria_Prodotto__c` (23 records; the user
+  uses it - but no branch code reads it, the mapping search filters on
+  `Product2.Categoria_Articolo__c`, and it is in neither source nor Prod).
+  Pending the user's decision: `anticipayAccountRefresh` LWC +
+  `Account.Refresh_Anticipay` (never committed, superseded by
+  `anticipayAccountRefreshAction` / `Aggiorna_Anticipay`) and
+  `Product2.Is_Plus__c` (0 flagged).
+- **Not applied by deploy (cosmetic):** tab `Scadenza_Fattura__c` icon,
+  `Qualificato` as default stage.
+- **State:** six source files changed, **uncommitted**.
+
+---
+
 ## 2026-10-27 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Drive, Slack, Fathom and the repository against
@@ -36,7 +71,7 @@ Keep the twenty most recent entries here; archive older ones to
   whereupon ROMI decided the same morning to block it (_"la 2 bloccala, la 1 e
   la 3 ok"_) **without telling the client.**
   🟢🔑 **Fase 2 has a man-day estimate for the first time** (`The Fase 2
-  estimate.md`): ~20 days for the first package, 13-15 for credit notes and
+estimate.md`): ~20 days for the first package, 13-15 for credit notes and
   scadenzario, 10 for edition moves with Aurel Mrruku's dissent on the record,
   10 multi-edition, 3-5 Ordini Pienissimo Pro, 3-5 GLS+Teachable, 5-10 analysis.
   🔴 **The finding is that it absorbs open Fase 1 rows** - OI-269, OI-272, the
@@ -68,7 +103,7 @@ Keep the twenty most recent entries here; archive older ones to
   pre-existing trace warnings, unchanged).
 - **Next:** 🔴 **send one discounted order to Mexal at quantity 2** - OI-287 is
   unchanged in code a second night in production, and the identical per-unit
-  question was asked and answered *correctly* on the import side the same day
+  question was asked and answered _correctly_ on the import side the same day
   (_"Basta che divido per la quantita"_), which makes it an oversight in one
   code path rather than a disagreement. Tomorrow's end-to-end production flows
   are the opportunity **if the test order carries a discount and quantity > 1**.
