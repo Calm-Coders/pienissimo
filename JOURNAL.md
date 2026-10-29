@@ -10,6 +10,340 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-29 - claude (branch delta deployed to Prod)
+
+- **Did:** compared `force-app` at `882f53c` with Pienissimo Prod (retrieve of all
+  808 components, XML-canonical diff): 739 identical, the rest the 9 `force-app`
+  commits since `428f42b` plus older Prod-side drift. On the user's order deployed
+  **only the differing components**, standing exclusions kept (credentials,
+  network/site/Digital Experience, guest and Agente profiles, LWC tests):
+  validation `0AfSW000001KQQn0AO` (433 components, 168/168 tests, 77.8%), quick
+  deploy `0AfSW000001KQU20AO`. The scheduled aging job was not touched (its class
+  was not in the delta). Verified after: the 6 Apex classes identical to the
+  branch, record type label `Performance Plus`, `Account.Mandato_RID__c` present.
+- **In Prod now:** Mexal-origin order send bypass, prior-year invoice fetch,
+  invoice-level line payment state, `Mandato_RID__c`, Campaign `ParentId` filter,
+  the 27-28/10 pages, layouts and list views.
+- **Overwritten in Prod, as the user chose:** `Lead.Tipo_Opportunita__c` values
+  `Recall tutor` and `WooCommerce` deactivated (0 Leads used them);
+  `Discount_Pct__c` precision back to the branch; `Qualificato` default stage.
+- **Test touched to deploy:** `MexalIntegrationTest.paidScadenzaFatturaMarksItsOrderLinesPaid`
+  fixture now sets `Fattura__c` on the line (the new rule reaches rates through the
+  invoice). Two failed validations first: manifest API 62.0 (fixed to 66.0), then
+  that test. **Uncommitted.**
+
+## 2026-10-29 - claude (order-line payment state from the whole invoice)
+
+- **Did (UAT only, not committed):** replaced the date-based rate match with an
+  invoice-level rule in `MexalInvoiceImportService`, `MexalInvoiceLineImportBatch`
+  and `ScadenzaFatturaTriggerHandler` (Paid when every rate of the line's invoice
+  is paid; rate link only for single-rate invoices; stale rates deleted), then
+  recomputed the 7,763 invoices of the loaded orders: lines 16,714 Paid / 585
+  Unpaid / 0 Invoiced, orders 7,536 Incassato / 185 Ordinato, tickets 19,279
+  Disponibile. Details in OI-244.
+- **Found:** the 03:30 nightly invoice sync gets HTTP 500 from Mexal on most
+  nights (9 of 15); daytime replay returns 200. Not yet acted on.
+
+## 2026-10-28 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark
+  **2026-10-27T22:00Z**. Twelve new mail messages across six threads, five
+  Pienissimo Drive items, 32 Slack messages across three surfaces, 5 commits.
+- **Found:** 🟢 the **full order-to-invoice cycle loaded in UAT** (7,721 orders ·
+  10,806 invoices · 17,299/17,299 lines linked) and 🔑 **it was a rehearsal, not
+  the migration** — `Prod`/`UAT` unmoved since 26/10, target slipped to Friday
+  30/10 · 🔴 **the 14:07 client call cannot be drilled**: Gemini transcribed an
+  Italian call as English filler, and 🔑 Sabatino Rinaldi is labelled as speaking
+  in it · 🟢 **OI-290 moved twice** — the follow-up mail went and the client
+  committed in writing to **29 October**, and `Referenti Salesforce_V2.xlsx`
+  arrived · 🟢 **the `610` agent default resolves to `610.00001`**, with the
+  client applying it at source · 🔑 **the 2024 cut-off is on the invoice, not the
+  order**, correcting five runs of record · 🆕 **Mexal archives documents by
+  accounting year**, learned from code and never put to Kreosoft.
+- **Wrote:** new **OI-294** (client asks to run the invoice/incassi jobs itself,
+  unanswered), **OI-295** (migrated Leads must be distinguishable from post-16/11
+  ones; `Lead from Zoho` checkbox decided internally, not built, client not
+  told), **OI-296** (Mexal customer create failed HTTP 400 in UAT, account send
+  switched off with no recorded re-enable), **OI-297** (OLD edizione links
+  unresolved), the **2026-10-28 Import Ordini** meeting note (explicitly _not_
+  drilled) and the **Mexal accounting-year** object note. Updated OI-244, OI-287,
+  OI-290, OI-292, OI-293 and the Zoho-calendar decision; `MAP.md`, `INDEX.md`,
+  both trackers, both recaps (**§72**).
+- **State:** register untouched — v1.6, `go_live: 2026-11-16`. Next free id
+  **298**. `vault:check` run before committing.
+- **Next:** somebody must watch the 380 MB recording — it is the week's largest
+  hole. Build the `Lead from Zoho` field **before** the Lead load. Check whether
+  account send to Mexal is still off in UAT and read integration log
+  `a05MA00000GqqcPYAR`. Decide the OLD-edizione links before the production run.
+- **Watch:** 🔴 the client was told the Mexal block was _temporary_ while the
+  repository gained a _permanent_ `Origine__c == 'Mexal'` skip — both may be
+  true, only the filter is in source. ⚠ Nothing from the Import Ordini
+  auto-summary was written into any item; it asserts content its own transcript
+  does not support. 🔴 OI-287 unchanged a third night in production, and the E2E
+  test that would settle it was blocked by the load.
+
+## 2026-10-28 - codex (requested UAT Campaign cleanup)
+
+- **Did:** on explicit user request and confirmation of **Pienissimo UAT**,
+  deleted the 4 Campaigns matching `CreatedBy.Name != 'Amministratore Pienissimo'`,
+  plus 82 blocking event invitations and 25 cascading campaign members, in one
+  transaction with org/selection guards and rollback on failure.
+- **Verified:** 0 matches remain; all 36 administrator-created Campaigns remain;
+  all 181 original linked Assets remain with an empty Campaign lookup. No
+  callouts, email invocations or queued jobs. Production untouched.
+- **Record:** [cleanup evidence](notes/objects/UAT%20Campaign%20cleanup%20on%2028%20October%202026.md).
+  Recovery snapshots and execution result in ignored `.sf/campaign-cleanup-2026-10-28/`.
+  No commit or push; prior working-tree changes preserved.
+
+## 2026-10-28 - claude (Mexal agent codes scanned)
+
+- **Did:** read-only scan of the live Mexal customer registry for agent codes,
+  via anonymous Apex in Pienissimo UAT (fields `codice`, `cod_agente` only; no
+  DML, no integration log). 8,726 customers, 2,394 without an agent, 16
+  distinct `610.000NN` codes. Recorded the aggregate on
+  [OI-293](notes/items/OI-293%20The%20agent%20registry%20for%20the%20production%20load%20may%20be%20incomplete.md).
+- **Found:** Pienissimo Prod has **no Mexal `Integration_Configuration2__c`
+  rows** (DocuSign only) and no `Integration_Log__c` rows in the last 14 days.
+  Any Mexal callout from Prod would fail on the missing configuration. Not
+  fixed; reported to the user.
+- **State:** not committed. Script in the session scratchpad only.
+
+## 2026-10-28 - claude (historical order file checked)
+
+- **Did:** checked `Import Ordini (versione del 23.10.26).xlsx` (7,721 orders,
+  17,300 lines) and compared it read-only with **Pienissimo UAT**. Nothing
+  loaded. Findings in
+  [OI-244](notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+- **Result:** the four-part Mexal key is unique and complete; all articles exist;
+  72 customers are missing. Loading is blocked by the unbuilt Mexal-send bypass
+  (OI-267) and the edizione/invoice-date handling (OI-276).
+- **Open with the client:** zero-amount lines (61%), the single generic agent
+  code, 6 duplicate line ids, tranche dates before order dates.
+- **Then, on request:** re-pulled all Mexal customers into UAT (read-only Mexal
+  search, anonymous Apex in code ranges, dry run first): 129 Accounts inserted
+  (all 72 missing order customers), 6,530 updated, 453 without P.IVA skipped,
+  2 failures. Mexal-update bypass on; no integration log after 11:00Z. The
+  order file now has 0 missing customers.
+- **Edizione re-check after the user's cleanup:** the first check had used
+  `sf data query --all-rows`, which returns deleted rows - 281 of its 604
+  mappings were already deleted, and they caused all 532 overlaps. On the 323
+  live mappings: 0 overlaps, 8,909 lines OK, 2,345 with no edizione (1,769
+  orders): pre-2024 dates (OLD editions start 01/01/2024) and FMF 2024-2026
+  (only FMF 2027 is mapped). Customer/product/key checks re-run on live data,
+  unchanged. Never use `--all-rows` for a live-state check. After FMF OLD was
+  added: 740 lines (419 orders, all pre-2024) still without an edizione.
+- **Then, on request, wrote to UAT:** moved `Da_Data_Competenza__c` of the 7
+  OLD editions to 01/12/2022 and re-saved their 132 mappings (one Apex
+  transaction, rollback on failure). Re-check: 11,254/11,254 ticket lines OK,
+  0 failing orders. 1,446 lines still land on a future event.
+- **Mexal send bypassed in UAT:** `OrderMexalIntegrationService` skips orders
+  with `Origine__c = 'Mexal'` (OI-267). Deployed to UAT only, not committed;
+  rolled-back insert confirmed no queueable. Agent reassignment for Accounts
+  whose Mexal agent has no SF user: user chose to fix only the 8 coded Accounts
+  without a valid agent (5 -> 610.00001, 3 code filled); 3,886 left as is.
+- **Full dry run of the order load in UAT** (anonymous Apex chunks, forced
+  rollback): 7,721 orders, 7,761 tranches, 17,300 lines, 19,873 tickets, 9,715
+  invitations, 0 Mexal queued, nothing left behind. Real load not run - waiting
+  for the user's go-ahead. Loader scripts are in the session scratchpad.
+- **Real load run on the user's go-ahead** (OC 1/50020 duplicate riga 5
+  dropped): 7,721 orders, 7,761 tranches, 17,299 lines, 19,871 tickets, 9,715
+  invitations; all 7,721 orders have a blank Mexal status. Two integration logs
+  (`Mexal_Clienti_Creazione`, `OrderMexalIntegration`) appeared at 15:12Z, one
+  minute after the load ended - origin NOT yet established.
+- **All Mexal calls blocked in UAT on the user's order:** named credential
+  `Mexal` set to `calloutStatus = Disabled` (backup: Enabled, same URL), and the
+  three nightly Mexal jobs aborted (crons `0 0 1`, `0 0 2`, `0 30 3 * * ?`, owner
+  `005MA00000FidRdYAJ`). A read-only probe now fails with no HTTP status.
+  The 15:12 email came from a quote signed on a new UAT Account (Salesforce-origin
+  order, Mexal customer creation rejected 400), not from the load.
+- **Linked the UAT invoices to the loaded orders** (stored data only, rules of
+  `MexalInvoiceLineImportBatch`): 445/548 invoices, 1,210/1,360 lines, 489/593
+  rates; 319 orders `Incassato`, 635 tickets `Disponibile`. First slicing pass
+  skipped keys (filter shrank the key list); re-running from index 0 recovered
+  them, final state equals the dry run.
+- **Mexal reopened (named credential Enabled; nightly jobs still off) and the
+  2024-2026 invoices pulled into UAT.** Found that the header always sent the
+  current year, so prior-year invoices were unreachable; added an accounting-year
+  override in 3 classes (deployed to UAT, not committed). 10,806 invoices, 15,492
+  rates, 32,294 lines; all 17,299 loaded order lines and all 7,721 orders link by
+  themselves; 6,407 orders `Incassato`. 1,424 invoices reference orders missing
+  from the file (1,363 from 2024).
+- **Nightly Mexal jobs rescheduled** on request (`scheduleNightly()`, same names,
+  crons 01:00/02:00/03:30 Europe/Rome, owner Aurel Mrruku, WAITING).
+
+## 2026-10-28 - claude (UAT aligned to DevMain)
+
+- **Did:** compared DevMain (`4c1b36b`) with **Pienissimo UAT** by retrieving
+  every `force-app` component from UAT and diffing element by element
+  (formatting noise filtered). UAT was behind on the Mexal line discount
+  (`OrderItem.Prezzo_Listino__c` absent), `WoocommerceOrderService`,
+  `TicketQrLookupService` sharing, the bundle-only lookup filter, layouts and
+  pages; it also kept residues the branch had removed.
+- **Pulled from UAT into source first** (newer in UAT than in git): list views
+  `Product2.AllProducts` and `Campaign.Edizione`, record type
+  `Campagna_Figlio` (edited by the client admin 27/10, not in Prod), and, at the
+  user's choice, the Tranche layout (`Stato__c`/`Quote__c` read-only) and the
+  Quote page Tranche list without action bar. The Contact page stays the
+  branch's. Fixed `Account_Import_UAT`, which granted a non-existent
+  `Account.Tipologia_Attivita__c`; it now grants `Tipologia_Attivita_Globale__c`.
+- **Deployed to UAT:** `0AfMA00000D23dR0AR`, 763/763, NoTestRun, 2026-10-28
+  10:23Z. Excluded as for Prod: DocuSign auth provider, all named/external
+  credentials, Network/Site/Digital Experience, guest and Agente profiles. The
+  aging job did not block; verified still `0 0 3 * * ?` Europe/Rome, owner
+  Aurel Mrruku. Re-retrieve after deploy: all Apex identical.
+- **Also:** `Lead.Tipo_Opportunita__c` values `Recall tutor` and `WooCommerce`
+  deactivated in UAT (`0AfMA00000D24WH0AZ`; 0 Leads used them).
+- **Left in UAT on purpose:** `Categoria_Prodotto__c` (23 records; the user
+  uses it - but no branch code reads it, the mapping search filters on
+  `Product2.Categoria_Articolo__c`, and it is in neither source nor Prod).
+- **Deleted from UAT** at the user's request (destructive deploy
+  `0AfMA00000D27Fd0AJ`, 11:09Z, dry-run first): `anticipayAccountRefresh` LWC
+  and its `Account.Refresh_Anticipay` quick action (created in UAT 03/09, never
+  committed, superseded by `anticipayAccountRefreshAction` /
+  `Aggiorna_Anticipay`, which remain) and `Product2.Is_Plus__c` (0 flagged,
+  removed from the branch in `f84d356`). Verified absent afterwards.
+- **Not applied by deploy (cosmetic):** tab `Scadenza_Fattura__c` icon,
+  `Qualificato` as default stage.
+- **State:** six source files changed, **uncommitted**.
+
+---
+
+## 2026-10-27 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and the repository against
+  watermark **2026-10-26T22:00Z** (one day). Drilled **both** of the day's
+  Pienissimo meetings from their full raw transcripts, each read once and
+  preserved verbatim: **`Anagrafica Articoli`** (12:00 CET, 00:28:08, ~22 KB,
+  `meetings/2026-10-27-anagrafica-articoli-transcript.it.md`) and
+  **`Follow-up Interno`** (17:03 CET, 00:43:26, ~49 KB,
+  `meetings/2026-10-27-follow-up-interno-transcript.it.md`). Wrote **OI-291**,
+  **OI-292**, **OI-293**, two decision notes, one risk note, the Fase 2
+  reference note and a person note for Gianpaolo Motta; updated **OI-242,
+  OI-250, OI-269, OI-272, OI-276, OI-287, OI-290**; regenerated the affected
+  rows of both trackers and added **§71** to both recaps; `MAP.md`, `INDEX.md`,
+  trace, journal.
+- **State:** 🟢🔑 **the client finally answered — and the mail is not in this
+  mailbox.** Sabatino Rinaldi replied on the ticketing and communications points;
+  it is known only through Elena Spini's verbatim quotation in the marketing
+  group DM at 09:18:10 CET, and **its date is unknown**. It settles **OI-250**
+  (a set of 11-15 communications with per-edizione delays, accepted; paid-event
+  set named; 🆕 **plus a new requirement - templates "completamente
+  personalizzabili"** - in no row and no register entry) and **OI-242** (the
+  button tracks the renunciation, the ticket is not deleted, the client
+  reconciles after the event), and it restated **OI-269** without specifying it -
+  whereupon ROMI decided the same morning to block it (_"la 2 bloccala, la 1 e
+  la 3 ok"_) **without telling the client.**
+  🟢🔑 **Fase 2 has a man-day estimate for the first time** (`The Fase 2
+estimate.md`): ~20 days for the first package, 13-15 for credit notes and
+  scadenzario, 10 for edition moves with Aurel Mrruku's dissent on the record,
+  10 multi-edition, 3-5 Ordini Pienissimo Pro, 3-5 GLS+Teachable, 5-10 analysis.
+  🔴 **The finding is that it absorbs open Fase 1 rows** - OI-269, OI-272, the
+  Ri.Ba. territory of OI-212, the credit notes excluded on 22/10 - i.e.
+  Gianpaolo Motta's 26/10 ruling executed internally, with nothing said to the
+  client about what moved. Authorship resolved: Elena Spini with **Claudio**.
+  🔑 **The production load finishes tomorrow** (_"entro domani sera"_), with the
+  order import straight after; 15 fields in Prod, the `Agente` permission set
+  narrowed, seven commercial users created and granted it the same evening.
+  🔴 WooCommerce production endpoints needed, not yet requested.
+  **New:** 🔴 **OI-291** - an edizione date change leaves its ~20 product
+  mappings behind (the range is copied into each mapping at creation), conceded
+  as _"e un casino"_ and handed to the client; the far-future-date workaround
+  agreed in the same conversation guarantees the work. 🔴 **OI-293** - one agent
+  code carries two agent names, a complete list including retired agents was
+  asked for twice, seven rows of current staff arrived; the codes are
+  `610.000NN`, so the migration's _"code 610"_ default names a **prefix**.
+  🟢 **OI-292** - the Notes related lists are promised to the client in writing
+  and not built. 🟢 Two decisions published to the client: notes in a related
+  list rather than a field, and **no Zoho calendar migration** - the first new
+  request declined outright since the scope ruling, though not as a CR.
+  🟢 **OI-290 has a deadline, Monday 2 November**, and the Account join is the
+  `codice cliente esterno`; ⚠ the follow-up mail was not sent, and Sabatino
+  Rinaldi answered the ticketing thread but not this one.
+  🔴🔑 **The team shrinks:** Rexhina Hysi moves to another project, Fabrizio
+  Mastracci's afternoons are elsewhere, and the Fase 2 estimate assumes no
+  staffing. `DevMain` `428f42b` -> `c3002a3` (PR #115); 4 commits unmerged on
+  `DevAnita27`. **vault:check green, 505 notes, all links resolve** (14
+  pre-existing trace warnings, unchanged).
+- **Next:** 🔴 **send one discounted order to Mexal at quantity 2** - OI-287 is
+  unchanged in code a second night in production, and the identical per-unit
+  question was asked and answered _correctly_ on the import side the same day
+  (_"Basta che divido per la quantita"_), which makes it an oversight in one
+  code path rather than a disagreement. Tomorrow's end-to-end production flows
+  are the opportunity **if the test order carries a discount and quantity > 1**.
+  Then: open the org (sync flows on or off, `Asset.QR_Id__c`, blank `Agente__c`
+  population, the seven new users), chase Sabatino Rinaldi before Monday, and
+  get a human to rule on `SAL-12`.
+- **Watch:** ⚠ **Aurel Mrruku told the client the nightly Mexal alignment works**
+  (_"corretto, corretto"_) while the 23/10 record says the product sync flows
+  were switched off and nothing said they were back on. **Recorded as an
+  unresolved contradiction, not a correction** - do not reinstate either side
+  without opening the org. ⚠ **`Gruppo Merceologico = S` means "moved since
+  1 January 2024", not "sellable"** - ROMI did not know this until today.
+  ⚠ **`Contatti_Zoho_CRM_` (10.7 MB, 16:48Z) is not evidence the client
+  delivered** - provenance unestablished, and it was not opened. ⚠ The 26/10
+  "missing columns" in the import tracciato would have been a **false finding**:
+  the file is sorted and its leading rows are zero-value omaggio lines.
+  ⚠ In the Follow-up transcript **Fabrizio Paganelli speaks through a
+  speakerphone with no label of his own**, so his lines appear under Elena
+  Spini's - every quotation attributed to him was placed by content. 🔴 **New
+  pre-existing defect: the Risks table in `INDEX.md` is malformed** (separator
+  row after two data rows); tonight's row was placed in a well-formed position
+  and the malformation left for a human, like the duplicated tracker rows
+  163-174.
+
+---
+
+## 2026-10-26 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and the repository against
+  watermark **2026-10-23T22:00Z** (three days; 24-25/10 were the weekend and no
+  sweep ran). Drilled the **26/10 `Tema Ordini Mexal`** call from its full raw
+  transcript (00:32:14, preserved at
+  `meetings/2026-10-26-tema-ordini-mexal-transcript.it.md`) - **the first
+  meeting in the record that Kreosoft attended.**
+- **Found, headline:** 🔴🔑 **OI-287 - the Mexal line discount is sent as a line
+  total where Kreosoft said it is per unit.** Mirko Merendi said twice _"devi
+  dividere per le quantità"_ and Fabrizio Paganelli restated it with
+  _"sbagliamo veramente a fatturare"_; `MexalOrderSendService.resolveLineDiscount`
+  ships `(Prezzo_Listino__c - UnitPrice) * Quantity` with a comment claiming
+  Mexal divides. Both operands are per-unit by their own definitions
+  (`Prezzo_Listino__c` = _"Prezzo unitario prima dello sconto"_,
+  `netUnitPrice` = `TotalPrice / Quantity`), so every discounted line with
+  quantity > 1 over-discounts by the quantity. **It is in Prod**
+  (`0AfSW000001K5Kj0AK`) and quantity 1 agrees, which is why the test passes.
+- **Also new:** 🔴 **OI-288** `ContactTriggerHandler.cls:203` is a bare `update`
+  on the Account, so the active rule `Agente_required_for_Azienda_and_Locale`
+  rolled a user's Contact edit back **in Prod at 16:28:17Z** - the exact shape
+  OI-286 predicted · 🔴 **OI-289** the **active** Prod flow _Automazione: Invio
+  Biglietto assegnato_ failed twice on _"Schema field not found. Entity: Asset,
+  Field: QR_Id__c"_; that field is in no source file and **the flow is org-only**
+  · 🔴 **OI-290** Lead and Referenti migration is scope in no plan, and Fabrizio
+  Paganelli refused to own the extract (_"Bisogna che parliate con Sabatino"_).
+- **Settled:** 🟢 **OI-284 is answered** - `prezzo` = listino, `sconto` with a
+  leading minus for an amount, bare for a percentage, comma separator, two
+  decimals; the 22/10 percentage-vs-amount argument resolved itself; Mexal
+  rounding is not configurable and both sides waived the cent aloud. 🟢 **OI-276
+  has its real rule at last**: _"la data non sia nel futuro, perché altrimenti
+  marketing prenderà il link"_ (third mechanism, none withdrawn). 🟢 OI-286's fix
+  merged via PR #109, in a **permission set**, not the excluded `Agente` profile.
+  🟢 New decision note: Gianpaolo Motta, _"spostagliele alla fase 2"_ - and
+  OI-290 went to the client twenty minutes later **not** as a CR.
+- **State:** OI-287/288/289/290 written, next free id **291**; OI-284, OI-276,
+  OI-269, OI-285, OI-286 and the Campi Oggetti workbook note updated; MAP,
+  INDEX, both trackers and both recaps (§70) carry it; trace at
+  `notes/traces/Source trace 2026-10-26 nightly.md`. **Register unchanged, v1.6.**
+- **Next:** 🔴 **send one discounted order to Mexal at quantity 2** - that single
+  test settles OI-287 either way. Then open the org for the two questions a
+  sweep cannot answer: does `Asset.QR_Id__c` exist in Prod, and how many Azienda
+  accounts have a blank `Agente__c`.
+- **Watch:** OI-287 rests on vendor testimony restated by the client against an
+  unsourced code comment - recorded as an unresolved contradiction, **not** as a
+  measured defect. The org was not opened; both error mails prove events, never
+  standing states. `SAL-12` uncited a seventh session while a defined discount
+  mechanism now runs in production.
+
+---
+
 ## 2026-10-26 - claude (test suite repaired, DevMain in Prod)
 
 - **Did:** repaired the Apex test suite against the rules added since 4/10 and

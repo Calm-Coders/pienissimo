@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Mandato_RID__c</fullName>
+    <description
+  >Numero del mandato RID del cliente; dato di origine Mexal nr_mandato_sepa.</description>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Verificare la presenza del mandato prima di scegliere RID come modalita di pagamento. Il campo non blocca la scelta della modalita di pagamento.</inlineHelpText>
+    <label>Mandato RID</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

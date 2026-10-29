@@ -4,9 +4,16 @@
     <columns>PRODUCT2.NAME</columns>
     <columns>PRODUCT2.CUSTOMER_PRODUCT_ID</columns>
     <columns>Bundle_Selling_Price__c</columns>
+    <columns>Calculated_Bundle_Price__c</columns>
     <columns>Spread_Total__c</columns>
     <columns>Spread_Variance__c</columns>
     <columns>PRODUCT2.ACTIVE</columns>
+    <columns>Categoria_Articolo__c</columns>
+    <columns>Livello_0__c</columns>
+    <columns>Livello_6__c</columns>
+    <columns>Presenza_Piattaforma__c</columns>
+    <columns>PRODUCT2.DESCRIPTION</columns>
+    <columns>Price_1__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>PRODUCT2.RECORD_TYPE</field>

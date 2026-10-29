@@ -2,9 +2,14 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Campagna_Figlio</fullName>
     <active>true</active>
+    <compactLayoutAssignment>Campign_Edizione</compactLayoutAssignment>
     <label>Edizione</label>
     <picklistValues>
         <picklist>Anno_Accademico__c</picklist>
+        <values>
+            <fullName>2025%2F2026</fullName>
+            <default>false</default>
+        </values>
         <values>
             <fullName>2026%2F2027</fullName>
             <default>true</default>
@@ -19,6 +24,25 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>Status</picklist>
+        <values>
+            <fullName>Aborted</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Completed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In Progress</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Planned</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Tipologia_Evento__c</picklist>
         <values>
             <fullName>Live</fullName>
@@ -26,6 +50,45 @@
         </values>
         <values>
             <fullName>Online</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Demo Signup %2F Trial</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Email</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Event</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Referral Program</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Search</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Social Media</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Thought Leadership</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Website Direct</fullName>
             <default>false</default>
         </values>
     </picklistValues>

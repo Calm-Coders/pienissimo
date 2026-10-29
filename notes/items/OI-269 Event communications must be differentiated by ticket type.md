@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-20
-updated: 2026-10-20
+updated: 2026-10-27
 depends_on: [OI-250, OI-186]
 blocks: [go-live]
 source: Gmail 1a158b6e3e4cee81
@@ -88,3 +88,77 @@ whether the product picklist already models them; the type is carried onto the
 Asset at generation; and the sends branch on it — or the item is put to the
 client as Fase 2 with the freeze cited, which is the one thing ROMI has not yet
 done with it.
+
+## 2026-10-26 - restated internally, still unspecified
+
+⚠ **No movement, and it is now a tracked ROMI red flag.** Elena Spini's weekly
+status in `#tproj-pienissimo` (24/10 11:00:01 CEST) records it among the
+requests that arrived late:
+
+> _"nella stessa mail della richiesta di posticipare il go-live, Sabatino dice:
+> 'le comunicazioni diverse per tipo di biglietto (Gold/Executive) diventano un
+> requisito', la richiesta non è mai emersa prima: **abbiamo chiesto ulteriori
+> dettagli e capiremo se è possibile gestirlo in questa fase**."_
+
+🟢 So ROMI did ask the client for detail — which this row recorded as missing on
+20/10. ⚠ **No answer is in evidence**, and the status itself leaves the phase
+open (_"capiremo se è possibile"_).
+
+🔑 **It is now caught by a ruling made two days later**:
+[ROMI will absorb no further scope in Fase 1](../decisions/ROMI%20will%20absorb%20no%20further%20scope%20in%20Fase%201.md)
+— Gianpaolo Motta, 26/10, _"spostagliele alla fase 2"_. ⚠ Nothing records this
+row being moved, and the client has not been told.
+
+## 2026-10-27 - the client made it a requirement again, and ROMI decided to block it
+
+🔴🔑 **The client did not supply the detail ROMI asked for. It restated the
+requirement.** Sabatino Rinaldi's reply, quoted verbatim by Elena Spini in the
+ROMI marketing group DM `C0C38JJ9D1T` at **09:18:10 CET**:
+
+> _"Vi ricordiamo la necessità di differenziare le comunicazioni in base al tipo
+> di biglietto (es. Gold ed Executive): **sappiamo che è previsto più avanti, ma
+> per noi è un requisito**."_
+
+🔑 **Note what the client concedes and what it does not.** It accepts that the
+work sits later in the plan, and refuses to drop it. That is a position, not the
+specification this row has needed since 20 October.
+
+🔴 **ROMI's internal answer, the same morning, was to block it.** Elena Spini,
+09:19:09 CET:
+
+> _"tipo questa cosa mai sentita prima **sarà per forza fase 2** >> la necessità
+> di differenziare le comunicazioni in base al tipo di biglietto (es. Gold ed
+> Executive) - **ma come deve essere gestita?**"_
+
+Fabrizio Mastracci, 09:23:33 CET, on the three points she had relayed:
+
+> _"No infatti **la 2 bloccala**, la 1 e la 3 ok"_
+
+Point 2 is this one. So: **points 1 (the 11–15 communications set,
+[OI-250](OI-250%20The%20reminder%20wait%20intervals%20must%20be%20configurable%20per%20edizione.md))
+and 3 (rinuncia,
+[OI-242](OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md))
+were accepted; this one was refused for Fase 1.**
+
+🟢 **And it is now priced into Fase 2.** _"Differenziare la comunicazione"_ appears
+in the scope list of [the Fase 2 estimate](../The%20Fase%202%20estimate.md),
+reviewed at 17:03 CET the same day. So the ruling is being executed
+([no further absorption in Fase 1](../decisions/ROMI%20will%20absorb%20no%20further%20scope%20in%20Fase%201.md)).
+
+## 🔴 What is still wrong with this row
+
+1. **Nobody has told the client.** Three days of internal rulings — Gianpaolo
+   Motta's on 26/10, Elena Spini's and Fabrizio Mastracci's on 27/10 — and the
+   client's last word on the record is _"per noi è un requisito"_. **No reply, no
+   Fase 2 statement, no Change Request.**
+2. **ROMI still does not know what the requirement is.** _"ma come deve essere
+   gestita?"_ — asked internally, four days after asking the client, and
+   unanswered. **A Fase 2 estimate now carries a number for work nobody has
+   specified.**
+3. ⚠ **The deferral has no mechanism.** OI-285's Change Request route exists on
+   paper and has never been applied; the client has been silent on it for four
+   days.
+
+⚠ **Source caveat.** Sabatino Rinaldi's mail **is not in this mailbox** and **its
+date is unknown**; see the caveat on
+[OI-242](OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md).

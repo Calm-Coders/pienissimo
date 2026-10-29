@@ -8213,3 +8213,404 @@ profile has been checked, and the code stays brittle regardless of permissions.
 `status: agreed`, while a client call with the ERP vendor is booked to define
 how discounts travel. **No requirement was amended by this run.** `DM-07`'s
 competitor list is unchanged. Both still need a human's ruling.
+
+## 70. Update 2026-10-26 — all of DevMain went to production, and the release left three live faults behind it
+
+**Source:** nightly `requirements-check`, watermark 2026-10-23T22:00Z, three
+days (24–25/10 were the weekend and no sweep ran). One client call drilled from
+its full raw transcript, plus the repository at `origin/DevMain` `428f42b`.
+
+### The release
+
+🟢🔑 **`DevMain` is in production.** 751 components, 168/168 tests, **77.9%
+coverage** (validation `0AfSW000001K5Ft0AK`, quick deploy
+`0AfSW000001K5Kj0AK`), then promoted `DevMain` → `UAT` → `Prod` by PRs #113 and
+#114. The Apex coverage risk that had gated this since August is **resolved**;
+the `Quote Negotiation Aging - Daily` job was aborted for the deploy and
+rescheduled identically. Excluded as planned: DocuSign credentials,
+community/network/site metadata, the guest profile and the `Agente` profile.
+`DevMain` moved `ebc2c5b` → `428f42b` — **14 commits, 4 PRs merged** (#108,
+#109, #111, #112).
+
+### What the release took with it
+
+🔴🔑 **The Mexal line discount is sent as a line total where Kreosoft said it is
+per unit** (§[#287](open-items.md)). Mirko Merendi, twice in the 11:00 call:
+_"lo sconto a valore va sulla quantità, quindi se ci sono due quantità e c'è lo
+sconto di €400 **devi mettere -200, devi dividere per le quantità**"_. Fabrizio
+Paganelli restated it and named the consequence: _"**Altrimenti dopo sbagliamo
+veramente a fatturare** se non è così."_ `MexalOrderSendService` ships
+`-(Prezzo_Listino__c - UnitPrice) × Quantity` with a comment asserting that
+Mexal divides — **a claim nothing in this record supports**. Both operands are
+per-unit by the repository's own definitions, so the code sends the line total
+into a field applied per unit: on Kreosoft's own example (list 2,000, net 1,500,
+quantity 2) the discount applied is 2,000 instead of 1,000. **Quantity 1 agrees,
+which is why it passes a casual test** — and the client says quantity 2 occurs
+often, against Kreosoft's guess of _"al 95% quantità uno"_. **No discounted
+order has ever been sent to Mexal end to end.**
+
+🔴 **Editing a Contact fails in production when the Account has no Agente**
+(§#288). At **16:28:17Z**, 90 minutes after the release,
+`ContactTriggerHandler.cls:203` — a bare `update` on the Account — tripped the
+active rule `Agente_required_for_Azienda_and_Locale` and **rolled a user's
+Contact edit back**. Both halves of the cause are in source. 🔑 It is the exact
+defect shape §#286 predicted four days earlier, and **permissions cannot fix
+it**: the blocker is data, not access.
+
+🔴 **The production ticket dispatch flow references a field that does not
+exist** (§#289). The **active** autolaunched flow _Automazione: Invio Biglietto
+assegnato_ failed at **17:01:19Z and 17:25:19Z** on _"Schema field not found.
+Entity: Asset, Field: `QR_Id__c`"_. That field is in **no** metadata file and in
+**no** Asset field directory, and **the flow itself is not in source** — it is
+org-only. Ticket delivery is the outcome the whole Biglietto chain exists to
+produce, and the client's Academy tickets start from Salesforce in January.
+
+### What was settled
+
+🟢🔑 **The Mexal price breakdown is defined** (§#284). Kreosoft attended a
+meeting for the first time in this project's record: `prezzo` carries the list
+price, `sconto` the discount, **leading minus for an amount, bare number for a
+percentage**, **comma separator and at most two decimals** (by mail, 14:27Z).
+The 22/10 percentage-versus-amount disagreement **resolved itself** — Aurel
+Mrruku took the amount form and Fabrizio Paganelli did not reopen it. Mexal
+rounding is **not configurable** and both sides **waived the one-cent exposure
+aloud**: _"se c'è un centesimo non me ne frega niente. L'importante è che non si
+fermino gli ordini."_ ⚠ The Mexal field name was pasted into the meeting chat,
+which the transcript does not capture — a fourth source referring to it without
+containing it.
+
+🟢🔑 **The real rule behind the dummy import editions is on the record at last**
+(§#276). The mechanism drifted to a third variant — a past-dated _"edizione
+bidone"_, Fabrizio Paganelli having forgotten the `old` flag entirely — but
+Aurel Mrruku stated the constraint that makes any of them work: _"l'importante è
+che **la data non sia nel futuro**, perché altrimenti marketing prenderà il
+link."_ ⚠ Nothing was chosen and none of the three variants was withdrawn. 🟢 Its
+precondition cleared: all products are active, confirmed in the call and by mail.
+
+🟢 **§#286's permission fix merged** through PR #109 — and 🔑 it rode a
+**permission set**, not the `Agente` profile the production deploy excluded.
+
+### New scope, and a boundary
+
+🔴🔑 **Lead and Referenti migration is scope nobody had written down** (§#290).
+Until this call the record covered orders, invoices and tickets only. The
+client's own project manager **refused to own the extract** — _"io su questi
+aspetti qua non so nulla. Bisogna che parliate con Sabatino"_ — and Sabatino
+Rinaldi, the person it was pushed to, was absent. Elena Spini mailed him at
+13:33Z; ⚠ unanswered, no date, against the **13 November 09:00** file deadline.
+🔴 Zoho **cannot fill the agreed field set**, and 🔑 **consents ride on the Lead**,
+which nothing addresses.
+
+🟢🔑 **ROMI set its own scope boundary.** Gianpaolo Motta, who signs off this
+project's staffing, in `#tproj-pienissimo`: _"su questo progetto non abbiamo più
+margine per assorbire cose in più, **spostagliele alla fase 2**"_. 🔴 **Twenty
+minutes later §#290 went to the client as a plain request**, not a Change
+Request — so §#285's mechanism now exists in two places and **has still never
+been applied to anything.** The client remains silent on the CR paragraph a
+third day, and Fase 2 planning is itself _"slittato alla settimana prossima"_.
+
+### Unchanged
+
+🔴 **§#212 is unchanged a fourteenth night — and it is now in production**,
+inside the 751-component release, together with `9512ee0`'s order-level
+`Incassato` state that the ~15,000–30,000 historical lines will inherit on load.
+🔴 **Nobody has asked whether Pienissimo hold a Zoho contract past 31 October** —
+an eighth run, against a plan both sides have signed off in writing.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for a
+seventh session** — _"no discretionary discounts"_, `status: agreed`, while a
+defined discount mechanism is now built into production. `DM-07`'s competitor
+list is unchanged. Both still need a human's ruling. 🔑 And two absences remain
+findings in themselves: no register row covers the **order-to-Mexal price
+breakdown**, and none covers **Lead or Contact migration**.
+
+---
+
+## 71. Update 2026-10-27 — the client answered the ticketing questions, ROMI priced Fase 2, and the production load was given a date of tomorrow
+
+Nightly sweep, watermark **2026-10-26T22:00Z**. **Two Pienissimo meetings, both
+drilled from full raw transcripts**, plus the busiest mail day in weeks and three
+Slack surfaces that had been silent.
+
+### The client finally answered — on three of the open ticketing questions
+
+🔑 **Sabatino Rinaldi's reply exists and this mailbox does not hold it.** It is
+known only through Elena Spini's verbatim quotation in the ROMI marketing group
+DM at **09:18:10 CET**, and **its date is unknown**. A 14-day Gmail sweep on his
+address returns only mail *to* him. The thread is the one Elena Spini noted on
+23/10 that Aurel Mrruku and Fabrizio Mastracci were not copied on.
+
+- 🟢🔑 **§#250 is answered: a set of 11–15 communications with the delays set on
+  the edizione**, accepted for the paid events, now named — Camerieri Venditori,
+  Academy, Pienissimo Live, Mastery, Happy Team. ROMI is asked to proceed with
+  configuration and template work. 🆕 **And a requirement rides in: templates
+  _"completamente personalizzabili"_**, which appears in no row, no register
+  entry and no recap. ⚠ The client wrote _"ritardi orari"_ a second time against
+  fields agreed as days.
+- 🟢🔑 **§#242 is confirmed**: _"il tasto traccia la rinuncia senza cancellare il
+  biglietto dal CRM; la riconciliazione la facciamo noi dopo l'evento."_ The
+  asset is not deleted, so the write is a state change — ⚠ where it lives is
+  still unestablished.
+- 🔴🔑 **§#269 was restated as a requirement, not specified** — _"sappiamo che è
+  previsto più avanti, ma **per noi è un requisito**"_ — and ROMI decided the
+  same morning to block it: Elena Spini _"sarà per forza fase 2 … **ma come deve
+  essere gestita?**"_, Fabrizio Mastracci _"la 2 bloccala, la 1 e la 3 ok."_
+  **Points 1 and 3 accepted, point 2 refused for Fase 1, and the client has not
+  been told.**
+- 🟢🔑 **The client itself moved scope to Fase 2**: Food Marketing Festival and
+  Tour, _"anche perché dobbiamo ancora definire il modello di biglietteria."_
+
+### Fase 2 has a man-day estimate for the first time
+
+[The Fase 2 estimate](../notes/The%20Fase%202%20estimate.md), reviewed line by
+line in the 17:03 internal follow-up. 🟢🔑 **Authorship is on the record at last**
+— Elena Spini: _"io e **Claudio** abbiamo partorito questo documento."_ Figures,
+approximate and not yet recounted: **20** days for the first package, **13–15**
+for credit notes / wrong collections / scadenzario, **10** for edition moves
+(🔴 Aurel Mrruku wanted 15–20 and recorded dissent — _"Non sono per niente
+d'accordo, però va bene"_), **10** for multi-edition events, **3–5** for Ordini
+Pienissimo Pro, **3–5** (possibly 5–7) for GLS and Teachable, **5–10** for
+analysis.
+
+🔴🔑 **The finding is not the arithmetic. It is that the estimate absorbs open
+Fase 1 rows** — §#269, §#272, the Ri.Ba./scadenzario territory of §#212, and the
+credit notes excluded from the 2024 history on 22/10. **This is Gianpaolo Motta's
+26/10 ruling being executed internally**, and ⚠ **nothing says the client has
+been told which items moved.** The deck routes to _"Andrea"_, then Daniela
+Morgese; ⚠ which Andrea is unestablished.
+
+🔑 Elena Spini's own condition for Fase 2 is a signed blueprint before any build
+— _"questa volta l'analisi mi devono dire subito che cacchio vogliono … e glielo
+faccio subito confermare"_ — a direct response to this project's experience. She
+expects the client to cut the whole thing.
+
+### The production load is being finished tomorrow
+
+Aurel Mrruku, to the client at 12:00 CET and internally at 17:03: _"da ieri che
+mi sto occupando di quello … **entro domani sera finisco il rilascio in
+produzione**"_, then _"domani, dopodomani produzione, **import degli ordini**."_
+**15 fields are in production**, an `Agente` permission set exists and has been
+narrowed, and seven commercial users were created and granted it the same
+evening. 🔴 **WooCommerce production endpoints are needed and had not been
+requested.** ⚠ **Whether the order import is the migration proper or a rehearsal
+is not stated**, and the agreed calendar puts the second extract at 13/11 09:00
+with go-live on the 16th.
+
+### New rows
+
+- 🔴 **§#291 — changing an edizione date does not update its product mappings.**
+  The date range is copied into each mapping at creation and an order binds to
+  the **mapping's** range, so a confirmed event date means hand-editing ~20
+  records. Conceded in the room as _"è un casino"_ and handed to the client.
+  🔑 **The agreed workaround guarantees the work**: an unscheduled event gets a
+  deliberately far-future date so the ticket-send automation does not fire
+  (§#276), which means every such edizione will need this repair later. Both
+  rules were agreed in the same conversation and the compounding was not raised.
+- 🔴 **§#293 — the agent registry for the production load may be incomplete.**
+  One agent code carries two different agent names in the client's history, which
+  is why a clean list was asked for — _"**anche quelli che non ci sono più**"_,
+  twice. What arrived 22 minutes later is seven rows of current commercial staff.
+  🔑 **The codes are `610.000NN`, so the 22/10 import default recorded as "code
+  610" names a prefix**, and which code it resolves to is unstated.
+- 🟢 **§#292 — the Notes related lists are promised to the client and not built.**
+  ROMI refused a free-text note field on orders and quotes (Elena Spini:
+  _"aiutatemi a fare muro"_, because payment arrangements end up typed into
+  prose) and granted the standard Notes related list on Lead, Account and
+  Opportunity instead, in writing at 17:27:02Z with the caveat that it triggers
+  no automation. ⚠ The meeting agreed two objects; the client-facing mail names
+  three, and the later text governs.
+- 🟢 **The Zoho tutor calendar will not be migrated** — _"non è prevista
+  un'importazione o sincronizzazione automatica"_; existing commitments must be
+  re-entered by hand as Events. 🟢 **The first new client request declined
+  outright** since the 26/10 scope ruling. ⚠ Declined, not routed as a Change
+  Request, and the manual re-entry is unowned.
+
+### Also settled or learned
+
+🟢 **The order import file is not missing fields** — a sorting artefact; the
+leading rows are zero-value. 🔑 **`importo netto` is price × quantity and ROMI
+will divide** — _"Basta che divido per la quantità"_ — which is 🔴 **the same
+per-unit question §#287 gets backwards on the outbound side, asked and answered
+correctly on the same day by the same engineer.** ⚠ Neither meeting mentioned
+§#287. 🔑 **Zero-price complimentary lines exist in volume** and nothing covers
+what the Mexal send does with them.
+
+🟢 **§#290 has a deadline — Monday 2 November** — and the Account join is
+identified as the **`codice cliente esterno`**, proven on one test company,
+⚠ awaiting client confirmation. ⚠ The follow-up mail had not been sent. 🔑
+Sabatino Rinaldi answered the ticketing thread and not this one: **the silence is
+selective.**
+
+🟢 **The parent-campaign filter was raised at 10:28 CET and fixed at 12:00** —
+Anita Aga's `5faac77`, merged as PR #115. 🔑 **`Gruppo Merceologico = S` means
+"moved since 1 January 2024", not "sellable"** — Aurel Mrruku: _"Non lo sapevo."_
+🔑 **A client administrator was walked through Setup to add picklist values** for
+anno accademico; no note or runbook covers that path. ⚠ **Test mapping records
+were deleted live while ROMI colleagues were testing against them.**
+
+🔴 **Aurel Mrruku confirmed the nightly Mexal alignment to the client** —
+_"corretto, corretto"_ — which **contradicts the 23/10 record** that the product
+sync flows were switched off and never said to be back on. A verbal assurance is
+not evidence; the org was not opened.
+
+🔴🔑 **The delivery team shrinks**: _"Regina [Rexhina Hysi] andrà su un altro
+progetto … se c'è una fase due a breve saremo solo in due, non in tre"_ — said
+the same evening she was doing production permission work — and Fabrizio
+Mastracci's afternoons are committed elsewhere. **The Fase 2 estimate states no
+staffing assumption.**
+
+### Unchanged
+
+🔴 **§#212 is unchanged a fifteenth night**, in production. 🔴 **§#287 is
+unchanged in code a second night in production**; `DevMain` moved
+`428f42b` → `c3002a3` and the two commits are a Campaign filter and its merge.
+🔴 **§#265 unmoved a sixth day.** 🔴 **§#285's Change Request mechanism has still
+never been applied to anything**, and the client has been silent on it for four
+days. 🔴 **Nobody has asked whether Pienissimo hold a Zoho contract past 31
+October** — a ninth run, four days before it expires.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for an
+eighth session** — _"no discretionary discounts"_, `status: agreed`, while the
+discount mechanism runs in production. `DM-07`'s competitor list is unchanged.
+🔑 And three absences remain findings in themselves: no register row covers the
+**order-to-Mexal price breakdown**, none covers **Lead or Contact migration**,
+and 🆕 none covers **note capture** or **template editability**.
+
+---
+
+## 72. Update 2026-10-28 — the historical load ran end to end in UAT, not in production; the client delivered the Referenti file; and the day's one client call was lost to a broken transcript
+
+Nightly sweep, watermark **2026-10-27T22:00Z**. One day. **One client meeting,
+which could not be drilled**, a dense mail day, two Slack surfaces live, and
+three commits on `DevMain`.
+
+### The load ran, and it was a rehearsal
+
+🟢🔑 **The whole order-to-invoice cycle loaded cleanly in UAT**, reported to the
+client as it ran (§#244):
+
+| | |
+| --- | --- |
+| Orders · tranche · lines | **7,721 · 7,761 · 17,299** |
+| Tickets · invitations | **19,871 · 9,715** |
+| Invoices | **10,806** — 2024: 6,161 · 2025: 2,292 · 2026: 2,353, all with their Account |
+| Scadenze · invoice lines | **15,492 · 32,294** |
+| Order lines linked to an invoice | **17,299 / 17,299** |
+| Orders with an invoice | **7,721 / 7,721** |
+| Orders `Incassato` / `Ordinato` | 6,407 / 1,314 |
+| Tickets `Disponibile` / `Ordinato` | 16,970 / 2,901 |
+
+Fabrizio Paganelli: _"Bene! Ottimo lavoro."_
+
+🔑 **This answers the question the 27/10 sweep could not: it was a rehearsal.**
+Aurel Mrruku's own wording — _"concludo tutto il ciclo **in UAT**"_ — against his
+11:27Z framing of the day to the client as _"il deploy in produzione e il
+caricamento degli ordini"_. 🔴 **The `Prod` and `UAT` branches have not moved
+since 26 October**, and the production target slipped the same afternoon from
+_"entro domani sera"_ (27/10) to **_"spero entro venerdì"_** — 30 October.
+
+### Three things the mail settles, and one it does not
+
+🔑 **The 2024 cut-off is on the invoice, not on the order.** _"sono partito dalle
+fatture emesse a partire dal 01.01.2024. Queste possono fare riferimento a ordini
+antecedenti il 01.01.2024 (questo il motivo per cui nella data ordine trovi anche
+gli anni 2022 e 2023)."_ **This corrects the scope rule this record has carried
+since 20/10**: the pre-2024 orders are not stragglers to exclude, they are the
+shape of an invoice-driven extract.
+
+🟢🔑 **The missing-agent default is named — `610.00001`** (§#293) — and 🔑 **the
+client will apply the transformation in the production file himself**, so the
+ROMI-side fallback must not fire twice, and nothing says which is authoritative
+on 13 November. 🔴 It routes around the one-code-two-names problem rather than
+resolving it: **16 codes in use against 7 rows delivered.**
+
+🔴 **The `ID riga Mexal` challenge is unresolved in writing.** It was raised at
+11:52Z, disputed at 12:11Z (_"In che senso non è valorizzato correttamente? Non
+vedo righe nulle"_), taken to a call — and the call's transcript captured
+nothing. The load ran afterwards.
+
+### The client's data arrived, and the Lead half grew a requirement
+
+🟢🔑 **§#290 moved twice in one day.** Elena Spini sent the follow-up mail at last
+(09:18:11Z) and the client answered **in ninety seconds** — Elisa Migliano,
+_"ci stiamo lavorando io e Sabatino, **entro domani** provvederemo a passarvi la
+lista"_. **That is a written client commitment for 29 October**, three days ahead
+of the Monday ROMI had set itself internally and never sent. 🟢 **`Referenti
+Salesforce_V2.xlsx` landed at 15:30Z**, 14.2 MB, in the client's own folder,
+described by Elena Spini as _"file referenti che hanno dato Fabrizio e
+Sabatino"_ — the first evidence in this record of Sabatino Rinaldi acting on the
+request. ⚠ **Not opened** (real contact records) and ⚠ **not yet checked**, so
+the `codice cliente esterno` join remains unverified.
+
+🆕🔴 **New §#295 — migrated Leads must be distinguishable from post-16/11 ones.**
+Sabatino Rinaldi asked **privately**, relayed by Elena Spini: _"per lui è ok se
+stanno a NEW but devono essere diversi dai new che entreranno dopo il 16/11."_
+ROMI settled internally on a **`Lead from Zoho` checkbox** plus list-view
+filters, with cleanup handed back to the client. 🔴 **Nothing is built** — and the
+field has to exist before the Lead load — 🔴 **and the client has not been told
+what was decided.**
+
+### The call that cannot be read
+
+🔴🔑 **A 57-minute client call is effectively unrecorded.** _Import Ordini_,
+14:07 CET, the week's longest, and 🔑 **Sabatino Rinaldi is labelled as speaking
+in it** — the first call in this record he takes part in. ⚠ **Gemini transcribed
+an Italian meeting as English and produced nothing usable**, and its auto-summary
+asserts content the transcript does not support. **Nothing from it has been
+written into any item.** 🟢 The **meeting chat survived** and shows the data-model
+workbook opened at the half-hour mark, so the Lead/Referenti mapping was walked —
+a fact about the chat log, not about the words. **Somebody has to watch the
+380 MB recording.**
+
+### Two switches moved, one accounted for
+
+🆕 **New §#294 — the client asked to launch the invoice and incassi update jobs
+itself**, so a test shows its result immediately. **The reply answered a
+different question** (the Mexal block for the load) and the thread closed on
+_"Ok, grazie, attendiamo vostre."_ No register row covers a client-side trigger.
+
+🆕🔴 **New §#296 — a Mexal customer create failed HTTP 400 in UAT at 15:12Z**
+while the client was testing, and **account sending was switched off** twelve
+minutes later rather than diagnosed. The order API was explicitly reopened at
+16:19:55Z; **account send was not mentioned.** 🔑 The sandbox calls the **live**
+Mexal company.
+
+🆕🔴 **New §#297 — the OLD edizione links are left live**, with _delete_ and
+_change state_ both on the table and the decision deferred to "domani". 🔑 In the
+exchange "link" is never defined; it is not guessed here.
+
+### New domain knowledge, from code rather than from anybody
+
+🔑 **Mexal archives documents by accounting year.** A WEBAPI call reads only the
+year in its `Coordinate-Gestionale` header, so **every Mexal read this project
+made before 28 October was silently scoped to the current year**. The backfill
+had to switch year per batch because the invoices span 2024–2026. ⚠ **Never
+confirmed with Kreosoft**, and the constraint applies again at the 13 November
+extract.
+
+### Unchanged
+
+🔴 **§#287 is unchanged a third night in production** — and **the test that would
+settle it was blocked**: the client asked to run exactly that E2E cycle and the
+Mexal integrations were closed for the day so the load could run. ⚠ Nothing
+records a discounted, quantity-above-one order being sent after they reopened.
+🔴 **§#212 is unchanged a sixteenth night**, in production. 🔴 **§#265 unmoved a
+seventh day.** 🔴 **§#285's Change Request mechanism has still never been applied
+to anything**, a fifth day. 🔴 **Nobody has asked whether Pienissimo hold a Zoho
+contract past 31 October** — a tenth run, three days out.
+
+⚠ **§#292: the client may not want it after all** — _"l'ho trovata, poi vedremo
+se lasciarla o no"_ — but the written promise stands and nothing is configured.
+🟢 The Zoho calendar decision is accepted and owned: _"faranno il trasferimento a
+mano"_, ⚠ unowned and unsized.
+
+🔑 **The migration has cost more than ten man-days and no line covers it.** Aurel
+Mrruku internally: _"solo di migrazione abbiamo speso una 10 di gg"_, with
+_"tutti"_ on it; Elena Spini: _"10gg e chi ci ha lavorato? perché poi Gianpaolo
+chiede a me…."_ It sits outside the Fase 2 estimate and outside any Fase 1 line.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for a ninth
+session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences hold —
+no register row covers the **order-to-Mexal price breakdown**, **Lead or Contact
+migration**, **note capture** or **template editability** — and 🆕 **none covers
+a client-side run of the invoice and incassi jobs** either.

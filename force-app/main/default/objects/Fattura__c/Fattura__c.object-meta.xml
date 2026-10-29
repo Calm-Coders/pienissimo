@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <compactLayoutAssignment>Fattura_Compact_Layout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description
   >Documento emesso da Mexal (fattura o nota di credito), sincronizzato in Salesforce dallo scadenziario e dal dettaglio movimenti. Mexal resta il sistema contabile: i record sono in sola lettura per gli utenti.</description>
