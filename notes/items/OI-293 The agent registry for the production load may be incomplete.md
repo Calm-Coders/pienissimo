@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-27 Anagrafica Articoli.md
@@ -110,3 +110,62 @@ is recorded here is the shape: seven rows, one of them a generic shared account,
    [OI-288](OI-288%20Editing%20a%20Contact%20fails%20in%20production%20when%20the%20Account%20has%20no%20Agente.md).
 5. ⚠ **Not verified in the org.** That the users and the permission set exist is
    taken from the Slack exchange above, not from an inspection.
+
+## 2026-10-28 - what the live Mexal customer registry carries
+
+Read-only scan at the user's request, anonymous Apex run through **Pienissimo
+UAT** (Prod holds no Mexal `Integration_Configuration2__c` rows, only
+DocuSign). One `clienti/ricerca` call, company `PIE`, fields `codice` and
+`cod_agente` only, no DML and no integration log; Mexal stamped it
+`data_ric_elab` 20261028 123741.
+
+- **8,726 customers** returned in one page (no continuation key).
+- **2,394 carry no agent code.**
+- **16 distinct agent codes**, all of the form `610.000NN`, used by between 1
+  and ~1,500 customers each.
+
+🔴 **Sixteen codes in use against seven rows delivered.** Even allowing for
+one person holding two codes, the 27/10 list cannot cover every code a
+customer is attached to. The codes are not reproduced here; the scan is
+repeatable from the same callout.
+
+⚠ This is the **current** customer master. It shows which codes customers
+point to today, not which codes historical orders carry, so it does not by
+itself settle the one-code-two-names problem above.
+
+## 🟢 2026-10-28 - the default is named, and the client will apply it at source
+
+Aurel Mrruku put the live distribution to the client, Gmail `1a17d328d1758cb0`,
+**11:46:54Z** — the same 16 `610.000NN` codes the UAT scan found, each with its
+customer count, and the question stated plainly:
+
+> _"mi serve capire come associare i codici agenti non indicati su Excel con
+> quelli che esistono sul Excel **per non fare esplodere la migrazione in
+> prod**."_
+
+Fabrizio Paganelli answered twenty minutes later, **12:06:40Z**:
+
+> _"i codici agenti che trovi negli ordini ma che non sono presenti nella lista
+> degli agenti che ti ho passato ieri, **li puoi forzare tutti su `610.00001`**.
+> Me lo segno così quanto ti invierò **i movimenti definitivi da portare in
+> produzione** farò già questa trasformazione."_
+
+🟢 **This closes problem 3.** The 22/10 default recorded as _"existing code 610"_
+resolves to **`610.00001`** — the code with 783 customers, and the only one the
+client names.
+
+🔑 **And it changes who applies it.** The client has undertaken to do the
+transformation **in the production movements file**, before ROMI receives it. So
+the ROMI-side fallback must not also fire on that file, or the rule is applied
+twice; and if the client's file arrives without the transformation, the fallback
+is the only thing standing between the load and orphaned agent codes. ⚠ **Nothing
+states which of the two will be authoritative on 13 November**, and the
+production extract is the one covered by the
+[agreed calendar](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md).
+
+🔴 **Problems 1, 2, 4 and 5 are untouched.** Sixteen codes are in use against
+seven rows delivered; nothing says the retired codes are in the list; the
+one-code-two-names ambiguity is unresolved — and **this answer does not resolve
+it, it routes around it**, by collapsing every unmatched code onto one agent
+rather than disambiguating any. ⚠ The 783 customers already on `610.00001` and
+the migrated rows forced onto it will be indistinguishable afterwards.

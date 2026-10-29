@@ -3,6 +3,9 @@ public without sharing class MexalSearchCalloutService {
   private static final String COORDINATE_GESTIONALE_HEADER = 'Coordinate-Gestionale';
   private static final String CONTENT_TYPE_JSON = 'application/json';
   private static final String MEXAL_COMPANY = 'PIE';
+  // Mexal keeps documents in one archive per accounting year: a backfill of a
+  // prior year's invoices sets it, everything else uses the current year.
+  public static Integer accountingYear;
   private static final String CUSTOMER_SEARCH_ACTION = 'Mexal_Clienti_Ricerca';
   private static final String ARTICLE_SEARCH_ACTION = 'Mexal_Articoli_Ricerca';
   private static final String MOVEMENT_SEARCH_ACTION = 'Mexal_Movimenti_Magazzino_Ricerca';
@@ -504,7 +507,9 @@ public without sharing class MexalSearchCalloutService {
       'Azienda=' +
         MEXAL_COMPANY +
         ' Anno=' +
-        String.valueOf(Date.today().year())
+        String.valueOf(
+          accountingYear == null ? Date.today().year() : accountingYear
+        )
     );
     if (httpMethod != 'GET') {
       request.setBody(requestJson);

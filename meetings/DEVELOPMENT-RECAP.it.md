@@ -8797,3 +8797,149 @@ mentre il meccanismo di sconto è in produzione. La lista concorrenti del `DM-07
 registro copre la **scomposizione dei prezzi verso Mexal**, nessuna copre la
 **migrazione di Lead o Referenti**, e 🆕 nessuna copre **l'annotazione** o **la
 modificabilità dei template**.
+
+---
+
+## 72. Aggiornamento 28/10/2026 — il caricamento storico è andato a termine in UAT, non in produzione; il cliente ha consegnato il file dei Referenti; e l'unica call con il cliente è andata persa per una trascrizione inservibile
+
+Ricognizione notturna, watermark **2026-10-27T22:00Z**. Un giorno. **Una riunione
+con il cliente, che non è stato possibile analizzare**, una giornata di posta
+densa, due canali Slack attivi e tre commit su `DevMain`.
+
+### Il caricamento è andato a termine, ed era una prova
+
+🟢🔑 **L'intero ciclo ordine-fattura è stato caricato senza errori in UAT**,
+comunicato al cliente mentre procedeva (§#244):
+
+| | |
+| --- | --- |
+| Ordini · tranche · righe | **7.721 · 7.761 · 17.299** |
+| Biglietti · inviti | **19.871 · 9.715** |
+| Fatture | **10.806** — 2024: 6.161 · 2025: 2.292 · 2026: 2.353, tutte con il loro Account |
+| Scadenze · righe fattura | **15.492 · 32.294** |
+| Righe ordine collegate a una fattura | **17.299 / 17.299** |
+| Ordini con fattura | **7.721 / 7.721** |
+| Ordini `Incassato` / `Ordinato` | 6.407 / 1.314 |
+| Biglietti `Disponibile` / `Ordinato` | 16.970 / 2.901 |
+
+Fabrizio Paganelli: _"Bene! Ottimo lavoro."_
+
+🔑 **Questo risponde alla domanda che la ricognizione del 27/10 non poteva
+chiudere: era una prova.** Parole di Aurel Mrruku — _"concludo tutto il ciclo
+**in UAT**"_ — contro la sua presentazione della giornata al cliente alle 11:27Z
+come _"il deploy in produzione e il caricamento degli ordini"_. 🔴 **I rami `Prod`
+e `UAT` non si muovono dal 26 ottobre**, e il traguardo produzione è slittato nel
+pomeriggio stesso da _"entro domani sera"_ (27/10) a **_"spero entro venerdì"_**,
+cioè il 30 ottobre.
+
+### Tre punti che la posta chiarisce, e uno che resta aperto
+
+🔑 **Il taglio del 2024 è sulla fattura, non sull'ordine.** _"sono partito dalle
+fatture emesse a partire dal 01.01.2024. Queste possono fare riferimento a ordini
+antecedenti il 01.01.2024 (questo il motivo per cui nella data ordine trovi anche
+gli anni 2022 e 2023)."_ **Corregge la regola di perimetro che questo registro
+porta dal 20/10**: gli ordini ante 2024 non sono residui da escludere, sono la
+forma naturale di un'estrazione guidata dalle fatture.
+
+🟢🔑 **Il default per l'agente mancante ha un valore — `610.00001`** (§#293) — e
+🔑 **sarà il cliente ad applicare la trasformazione nel file di produzione**:
+quindi il fallback lato ROMI non deve scattare una seconda volta, e nulla dice
+quale dei due faccia fede il 13 novembre. 🔴 Aggira il problema di un codice con
+due agenti invece di risolverlo: **16 codici in uso contro 7 righe consegnate.**
+
+🔴 **La contestazione su `ID riga Mexal` non è risolta per iscritto.** Sollevata
+alle 11:52Z, contestata alle 12:11Z (_"In che senso non è valorizzato
+correttamente? Non vedo righe nulle"_), portata in call — e la trascrizione della
+call non ha registrato nulla. Il caricamento è partito subito dopo.
+
+### I dati del cliente sono arrivati, e la parte Lead ha generato un requisito
+
+🟢🔑 **Il §#290 si è mosso due volte in un giorno.** Elena Spini ha finalmente
+inviato il sollecito (09:18:11Z) e il cliente ha risposto **in novanta secondi**
+— Elisa Migliano, _"ci stiamo lavorando io e Sabatino, **entro domani**
+provvederemo a passarvi la lista"_. **È un impegno scritto del cliente per il 29
+ottobre**, tre giorni prima del lunedì che ROMI si era data internamente senza
+mai comunicarlo. 🟢 **`Referenti Salesforce_V2.xlsx` è arrivato alle 15:30Z**,
+14,2 MB, nella cartella del cliente, descritto da Elena Spini come _"file
+referenti che hanno dato Fabrizio e Sabatino"_ — prima evidenza in questo
+registro di Sabatino Rinaldi attivo sulla richiesta. ⚠ **Non aperto** (dati di
+contatto reali) e ⚠ **non ancora verificato**: il join sul `codice cliente
+esterno` resta non confermato.
+
+🆕🔴 **Nuovo §#295 — i Lead migrati devono essere distinguibili da quelli
+successivi al 16/11.** Sabatino Rinaldi lo ha chiesto **in privato**, riportato
+da Elena Spini: _"per lui è ok se stanno a NEW but devono essere diversi dai new
+che entreranno dopo il 16/11."_ ROMI ha deciso internamente per una **checkbox
+`Lead from Zoho`** con filtri nelle list view e la bonifica rimessa al cliente.
+🔴 **Nulla è realizzato** — e il campo deve esistere prima del caricamento dei
+Lead — 🔴 **e al cliente non è stato detto cosa è stato deciso.**
+
+### La call che non si può leggere
+
+🔴🔑 **Una call con il cliente di 57 minuti è di fatto non registrata.** _Import
+Ordini_, 14:07 CET, la più lunga della settimana, e 🔑 **Sabatino Rinaldi risulta
+tra chi parla** — la prima call in questo registro a cui partecipi. ⚠ **Gemini ha
+trascritto in inglese una riunione in italiano e non ha prodotto nulla di
+utilizzabile**, e il riassunto automatico afferma contenuti che la trascrizione
+non sostiene. **Nulla di esso è stato riportato in alcun punto aperto.** 🟢 La
+**chat della riunione è invece integra** e mostra il workbook del data model
+aperto a metà call: quindi la mappatura Lead/Referenti è stata percorsa — fatto
+che riguarda la chat, non le parole. **Qualcuno deve guardare la registrazione da
+380 MB.**
+
+### Due interruttori spostati, uno solo tracciato
+
+🆕 **Nuovo §#294 — il cliente ha chiesto di poter lanciare da solo le
+elaborazioni di fatture e incassi**, per vedere subito l'esito dei test. **La
+risposta ha parlato d'altro** (il blocco Mexal per il caricamento) e il thread si
+è chiuso con _"Ok, grazie, attendiamo vostre."_ Nessuna riga del registro copre
+un lancio lato cliente.
+
+🆕🔴 **Nuovo §#296 — una creazione cliente su Mexal è fallita con HTTP 400 in UAT
+alle 15:12Z** mentre il cliente faceva test, e **l'invio degli account è stato
+disattivato** dodici minuti dopo invece di essere diagnosticato. Le API ordini
+sono state riaperte alle 16:19:55Z; **dell'invio account non si parla.** 🔑 La
+sandbox chiama la società Mexal **reale**.
+
+🆕🔴 **Nuovo §#297 — i link delle edizioni OLD restano attivi**, con
+_cancellazione_ e _cambio di stato_ entrambi sul tavolo e la decisione rinviata a
+"domani". 🔑 Nel dialogo "link" non viene mai definito; qui non è stato indovinato.
+
+### Conoscenza nuova, arrivata dal codice e non da una persona
+
+🔑 **Mexal archivia i documenti per anno contabile.** Una chiamata WEBAPI legge
+solo l'anno indicato nell'header `Coordinate-Gestionale`: quindi **ogni lettura
+Mexal fatta da questo progetto prima del 28 ottobre era silenziosamente limitata
+all'anno corrente**. Il recupero storico ha dovuto cambiare anno per blocchi,
+perché le fatture coprono 2024–2026. ⚠ **Mai confermato con Kreosoft**, e il
+vincolo si ripresenta all'estrazione del 13 novembre.
+
+### Invariati
+
+🔴 **Il §#287 è invariato per la terza notte in produzione** — e **il test che lo
+chiuderebbe è stato bloccato**: il cliente aveva chiesto proprio quel ciclo E2E e
+le integrazioni Mexal sono state chiuse per la giornata. ⚠ Nulla documenta
+l'invio di un ordine scontato con quantità maggiore di uno dopo la riapertura.
+🔴 **Il §#212 è invariato per la sedicesima notte**, in produzione. 🔴 **Il §#265
+è fermo da sette giorni.** 🔴 **Il meccanismo di Change Request del §#285 non è
+ancora stato applicato a nulla**, quinto giorno. 🔴 **Nessuno ha chiesto se
+Pienissimo abbia un contratto Zoho oltre il 31 ottobre** — decima ricognizione, a
+tre giorni dalla scadenza.
+
+⚠ **§#292: il cliente potrebbe non volerla** — _"l'ho trovata, poi vedremo se
+lasciarla o no"_ — ma l'impegno scritto resta e nulla è configurato. 🟢 La
+decisione sul calendario Zoho è accettata e presa in carico: _"faranno il
+trasferimento a mano"_, ⚠ senza responsabile né stima.
+
+🔑 **La migrazione è costata più di dieci giornate uomo e nessuna voce la
+copre.** Aurel Mrruku, internamente: _"solo di migrazione abbiamo speso una 10 di
+gg"_, con _"tutti"_ coinvolti; Elena Spini: _"10gg e chi ci ha lavorato? perché
+poi Gianpaolo chiede a me…."_ Resta fuori dalla stima di Fase 2 e da ogni voce di
+Fase 1.
+
+**Nessun requisito è stato modificato da questa ricognizione.** 🔴 **`SAL-12` non
+è citato da nove sessioni.** La lista concorrenti di `DM-07` è invariata. 🔑 Le
+assenze note restano — nessuna riga del registro copre la **scomposizione prezzo
+verso Mexal**, la **migrazione di Lead o Contatti**, la **gestione delle note** o
+la **personalizzazione dei template** — e 🆕 **nessuna copre il lancio lato
+cliente delle elaborazioni di fatture e incassi.**

@@ -5,7 +5,7 @@ status: resolved
 owner: Elena Spini
 org: ROMI
 raised: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 depends_on: []
 blocks: []
 source: notes/meetings/2026-10-27 Follow-up Interno.md
@@ -57,3 +57,13 @@ never been applied to anything.**
 exist in the Zoho calendars, who re-enters them, or by when — and the manual
 re-entry falls in the same window as the go-live. No open item was raised by
 either side.
+
+## 🟢 2026-10-28 - accepted by the client
+
+Marco Montesi, Gmail `1a181f71b664c0a6`, **10:03:36Z**, inline under Elena
+Spini's answer: _"**Ok, qui faranno il trasferimento a mano.**"_
+
+So the decision is accepted without argument, and the manual re-entry is the
+client's own work. ⚠ **Still unowned and unsized**: nothing says how many
+commitments sit in the tutors' Zoho calendars, who re-types them, or whether it
+happens before 16 November.

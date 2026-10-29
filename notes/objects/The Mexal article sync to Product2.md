@@ -62,9 +62,10 @@ Added at Aurel Mrruku's request. The sync now writes Mexal's `alq_iva` to a new
   permission-set deploy.
 - **Superseded 2026-10-28:** DevMain was deployed to UAT
   (`0AfMA00000D23dR0AR`), so UAT's Product page is now the repository's and no
-  longer shows `Is_Plus__c`. The field itself still exists in UAT (0 products
-  flagged, no code reference); Plus products are recognised through
-  `Product_Category_Rule__mdt` on `Categoria_Articolo__c`.
+  longer shows `Is_Plus__c`, and the field itself was deleted from UAT the same
+  day (`0AfMA00000D27Fd0AJ`; 0 products flagged, no code reference). Plus
+  products are recognised through `Product_Category_Rule__mdt` on
+  `Categoria_Articolo__c`.
 
 ### Full re-sync in UAT, 08/10
 

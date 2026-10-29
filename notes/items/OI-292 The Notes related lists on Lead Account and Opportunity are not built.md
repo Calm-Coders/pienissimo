@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 depends_on: []
 blocks: []
 source: notes/meetings/2026-10-27 Follow-up Interno.md
@@ -74,3 +74,29 @@ an **unrecorded 27/10 morning session with the whole commercial team**, whose
 first question was where the note field was.
 
 ⚠ **Not in the requirement register.** No row covers note capture on any object.
+
+## ⚠ 2026-10-28 - the client replied, and may not want it after all
+
+Marco Montesi answered Elena Spini's 27/10 point-by-point mail inline, Gmail
+`1a181f71b664c0a6`, **10:03:36Z**:
+
+> on the Notes object — _"So che Fabrizio non è molto propenso ad abilitare questa
+> funzione, in realtà spataccandoci **l'ho trovata**, poi vedremo se lasciarla o
+> no. Grazie"_
+>
+> on the Zoho calendar — _"Ok, qui **faranno il trasferimento a mano**."_
+
+Two things follow:
+
+1. ⚠ **The commitment may be unwanted.** The requester says he has already found
+   the Notes feature himself and that the client will decide later whether to
+   keep it, while naming Fabrizio Paganelli as opposed — which matches ROMI's own
+   reluctance (_"aiutatemi a fare muro"_). 🔑 **Nobody has withdrawn the written
+   promise**, so the item stays open: ROMI undertook in writing on 27/10 to
+   enable the related lists on Lead, Account and Opportunity, and nothing is
+   configured.
+2. 🟢 **The Zoho calendar decision is accepted and owned.** The client will
+   re-enter the tutors' commitments by hand — see
+   [the decision](../decisions/The%20Zoho%20tutor%20calendar%20is%20not%20migrated%20to%20Salesforce.md).
+   ⚠ **How many commitments that is remains unknown**, and nobody has given the
+   work a date or a person.

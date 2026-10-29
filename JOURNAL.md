@@ -10,6 +10,133 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-28 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark
+  **2026-10-27T22:00Z**. Twelve new mail messages across six threads, five
+  Pienissimo Drive items, 32 Slack messages across three surfaces, 5 commits.
+- **Found:** 🟢 the **full order-to-invoice cycle loaded in UAT** (7,721 orders ·
+  10,806 invoices · 17,299/17,299 lines linked) and 🔑 **it was a rehearsal, not
+  the migration** — `Prod`/`UAT` unmoved since 26/10, target slipped to Friday
+  30/10 · 🔴 **the 14:07 client call cannot be drilled**: Gemini transcribed an
+  Italian call as English filler, and 🔑 Sabatino Rinaldi is labelled as speaking
+  in it · 🟢 **OI-290 moved twice** — the follow-up mail went and the client
+  committed in writing to **29 October**, and `Referenti Salesforce_V2.xlsx`
+  arrived · 🟢 **the `610` agent default resolves to `610.00001`**, with the
+  client applying it at source · 🔑 **the 2024 cut-off is on the invoice, not the
+  order**, correcting five runs of record · 🆕 **Mexal archives documents by
+  accounting year**, learned from code and never put to Kreosoft.
+- **Wrote:** new **OI-294** (client asks to run the invoice/incassi jobs itself,
+  unanswered), **OI-295** (migrated Leads must be distinguishable from post-16/11
+  ones; `Lead from Zoho` checkbox decided internally, not built, client not
+  told), **OI-296** (Mexal customer create failed HTTP 400 in UAT, account send
+  switched off with no recorded re-enable), **OI-297** (OLD edizione links
+  unresolved), the **2026-10-28 Import Ordini** meeting note (explicitly *not*
+  drilled) and the **Mexal accounting-year** object note. Updated OI-244, OI-287,
+  OI-290, OI-292, OI-293 and the Zoho-calendar decision; `MAP.md`, `INDEX.md`,
+  both trackers, both recaps (**§72**).
+- **State:** register untouched — v1.6, `go_live: 2026-11-16`. Next free id
+  **298**. `vault:check` run before committing.
+- **Next:** somebody must watch the 380 MB recording — it is the week's largest
+  hole. Build the `Lead from Zoho` field **before** the Lead load. Check whether
+  account send to Mexal is still off in UAT and read integration log
+  `a05MA00000GqqcPYAR`. Decide the OLD-edizione links before the production run.
+- **Watch:** 🔴 the client was told the Mexal block was *temporary* while the
+  repository gained a *permanent* `Origine__c == 'Mexal'` skip — both may be
+  true, only the filter is in source. ⚠ Nothing from the Import Ordini
+  auto-summary was written into any item; it asserts content its own transcript
+  does not support. 🔴 OI-287 unchanged a third night in production, and the E2E
+  test that would settle it was blocked by the load.
+
+## 2026-10-28 - codex (requested UAT Campaign cleanup)
+
+- **Did:** on explicit user request and confirmation of **Pienissimo UAT**,
+  deleted the 4 Campaigns matching `CreatedBy.Name != 'Amministratore Pienissimo'`,
+  plus 82 blocking event invitations and 25 cascading campaign members, in one
+  transaction with org/selection guards and rollback on failure.
+- **Verified:** 0 matches remain; all 36 administrator-created Campaigns remain;
+  all 181 original linked Assets remain with an empty Campaign lookup. No
+  callouts, email invocations or queued jobs. Production untouched.
+- **Record:** [cleanup evidence](notes/objects/UAT%20Campaign%20cleanup%20on%2028%20October%202026.md).
+  Recovery snapshots and execution result in ignored `.sf/campaign-cleanup-2026-10-28/`.
+  No commit or push; prior working-tree changes preserved.
+
+## 2026-10-28 - claude (Mexal agent codes scanned)
+
+- **Did:** read-only scan of the live Mexal customer registry for agent codes,
+  via anonymous Apex in Pienissimo UAT (fields `codice`, `cod_agente` only; no
+  DML, no integration log). 8,726 customers, 2,394 without an agent, 16
+  distinct `610.000NN` codes. Recorded the aggregate on
+  [OI-293](notes/items/OI-293%20The%20agent%20registry%20for%20the%20production%20load%20may%20be%20incomplete.md).
+- **Found:** Pienissimo Prod has **no Mexal `Integration_Configuration2__c`
+  rows** (DocuSign only) and no `Integration_Log__c` rows in the last 14 days.
+  Any Mexal callout from Prod would fail on the missing configuration. Not
+  fixed; reported to the user.
+- **State:** not committed. Script in the session scratchpad only.
+
+## 2026-10-28 - claude (historical order file checked)
+
+- **Did:** checked `Import Ordini (versione del 23.10.26).xlsx` (7,721 orders,
+  17,300 lines) and compared it read-only with **Pienissimo UAT**. Nothing
+  loaded. Findings in
+  [OI-244](notes/items/OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+- **Result:** the four-part Mexal key is unique and complete; all articles exist;
+  72 customers are missing. Loading is blocked by the unbuilt Mexal-send bypass
+  (OI-267) and the edizione/invoice-date handling (OI-276).
+- **Open with the client:** zero-amount lines (61%), the single generic agent
+  code, 6 duplicate line ids, tranche dates before order dates.
+- **Then, on request:** re-pulled all Mexal customers into UAT (read-only Mexal
+  search, anonymous Apex in code ranges, dry run first): 129 Accounts inserted
+  (all 72 missing order customers), 6,530 updated, 453 without P.IVA skipped,
+  2 failures. Mexal-update bypass on; no integration log after 11:00Z. The
+  order file now has 0 missing customers.
+- **Edizione re-check after the user's cleanup:** the first check had used
+  `sf data query --all-rows`, which returns deleted rows - 281 of its 604
+  mappings were already deleted, and they caused all 532 overlaps. On the 323
+  live mappings: 0 overlaps, 8,909 lines OK, 2,345 with no edizione (1,769
+  orders): pre-2024 dates (OLD editions start 01/01/2024) and FMF 2024-2026
+  (only FMF 2027 is mapped). Customer/product/key checks re-run on live data,
+  unchanged. Never use `--all-rows` for a live-state check. After FMF OLD was
+  added: 740 lines (419 orders, all pre-2024) still without an edizione.
+- **Then, on request, wrote to UAT:** moved `Da_Data_Competenza__c` of the 7
+  OLD editions to 01/12/2022 and re-saved their 132 mappings (one Apex
+  transaction, rollback on failure). Re-check: 11,254/11,254 ticket lines OK,
+  0 failing orders. 1,446 lines still land on a future event.
+- **Mexal send bypassed in UAT:** `OrderMexalIntegrationService` skips orders
+  with `Origine__c = 'Mexal'` (OI-267). Deployed to UAT only, not committed;
+  rolled-back insert confirmed no queueable. Agent reassignment for Accounts
+  whose Mexal agent has no SF user: user chose to fix only the 8 coded Accounts
+  without a valid agent (5 -> 610.00001, 3 code filled); 3,886 left as is.
+- **Full dry run of the order load in UAT** (anonymous Apex chunks, forced
+  rollback): 7,721 orders, 7,761 tranches, 17,300 lines, 19,873 tickets, 9,715
+  invitations, 0 Mexal queued, nothing left behind. Real load not run - waiting
+  for the user's go-ahead. Loader scripts are in the session scratchpad.
+- **Real load run on the user's go-ahead** (OC 1/50020 duplicate riga 5
+  dropped): 7,721 orders, 7,761 tranches, 17,299 lines, 19,871 tickets, 9,715
+  invitations; all 7,721 orders have a blank Mexal status. Two integration logs
+  (`Mexal_Clienti_Creazione`, `OrderMexalIntegration`) appeared at 15:12Z, one
+  minute after the load ended - origin NOT yet established.
+- **All Mexal calls blocked in UAT on the user's order:** named credential
+  `Mexal` set to `calloutStatus = Disabled` (backup: Enabled, same URL), and the
+  three nightly Mexal jobs aborted (crons `0 0 1`, `0 0 2`, `0 30 3 * * ?`, owner
+  `005MA00000FidRdYAJ`). A read-only probe now fails with no HTTP status.
+  The 15:12 email came from a quote signed on a new UAT Account (Salesforce-origin
+  order, Mexal customer creation rejected 400), not from the load.
+- **Linked the UAT invoices to the loaded orders** (stored data only, rules of
+  `MexalInvoiceLineImportBatch`): 445/548 invoices, 1,210/1,360 lines, 489/593
+  rates; 319 orders `Incassato`, 635 tickets `Disponibile`. First slicing pass
+  skipped keys (filter shrank the key list); re-running from index 0 recovered
+  them, final state equals the dry run.
+- **Mexal reopened (named credential Enabled; nightly jobs still off) and the
+  2024-2026 invoices pulled into UAT.** Found that the header always sent the
+  current year, so prior-year invoices were unreachable; added an accounting-year
+  override in 3 classes (deployed to UAT, not committed). 10,806 invoices, 15,492
+  rates, 32,294 lines; all 17,299 loaded order lines and all 7,721 orders link by
+  themselves; 6,407 orders `Incassato`. 1,424 invoices reference orders missing
+  from the file (1,363 from 2024).
+- **Nightly Mexal jobs rescheduled** on request (`scheduleNightly()`, same names,
+  crons 01:00/02:00/03:30 Europe/Rome, owner Aurel Mrruku, WAITING).
+
 ## 2026-10-28 - claude (UAT aligned to DevMain)
 
 - **Did:** compared DevMain (`4c1b36b`) with **Pienissimo UAT** by retrieving
@@ -35,10 +162,12 @@ Keep the twenty most recent entries here; archive older ones to
 - **Left in UAT on purpose:** `Categoria_Prodotto__c` (23 records; the user
   uses it - but no branch code reads it, the mapping search filters on
   `Product2.Categoria_Articolo__c`, and it is in neither source nor Prod).
-  Pending the user's decision: `anticipayAccountRefresh` LWC +
-  `Account.Refresh_Anticipay` (never committed, superseded by
-  `anticipayAccountRefreshAction` / `Aggiorna_Anticipay`) and
-  `Product2.Is_Plus__c` (0 flagged).
+- **Deleted from UAT** at the user's request (destructive deploy
+  `0AfMA00000D27Fd0AJ`, 11:09Z, dry-run first): `anticipayAccountRefresh` LWC
+  and its `Account.Refresh_Anticipay` quick action (created in UAT 03/09, never
+  committed, superseded by `anticipayAccountRefreshAction` /
+  `Aggiorna_Anticipay`, which remain) and `Product2.Is_Plus__c` (0 flagged,
+  removed from the branch in `f84d356`). Verified absent afterwards.
 - **Not applied by deploy (cosmetic):** tab `Scadenza_Fattura__c` icon,
   `Qualificato` as default stage.
 - **State:** six source files changed, **uncommitted**.
