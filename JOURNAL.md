@@ -10,6 +10,22 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-29 - claude (Mexal configuration rows in Prod)
+
+- **Did:** on the user's request inserted the 10 Mexal `Integration_Configuration2__c`
+  rows into Pienissimo Prod, copied from UAT (same paths, methods, timeouts,
+  `Mexal` named credential; sync cursors left empty). Verified by query: 11 rows
+  (10 Mexal + DocuSign).
+- **Found:** Prod is still not connected. A read-only article search as Tech Romi
+  fails with `Field Mexal_External_Credential.MexalToken does not exist`: the token
+  is not entered on the Prod `Mexal_Principal` (access via `Full_Permission` is
+  in place). No Mexal nightly job is scheduled in Prod. No Mexal call has ever
+  succeeded from Prod (integration log is DocuSign only).
+- **Later the same day:** the token was entered in Prod; the read-only ping
+  returned HTTP 200 with data. **Prod is connected to Mexal.**
+- **Next:** a decision on UAT writes (same Mexal company) and scheduling the
+  Prod nightly jobs. See [OI-267](notes/items/OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md).
+
 ## 2026-10-29 - claude (branch delta deployed to Prod)
 
 - **Did:** compared `force-app` at `882f53c` with Pienissimo Prod (retrieve of all

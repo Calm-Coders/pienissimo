@@ -150,3 +150,19 @@ The `Origine__c = 'Mexal'` send bypass stays in place.
 🟢 **2026-10-29 - the `Origine__c = 'Mexal'` send bypass is in Prod** (quick deploy
 `0AfSW000001KQU20AO`, 168/168 tests). The production load is no longer blocked
 by the Mexal send; the agent overwrite and ticket generation still apply.
+
+🟡 **2026-10-29 - Prod has the Mexal action configuration, but no token.** On
+Aurel Mrruku's request the 10 `Integration_Configuration2__c` Mexal rows were
+copied from UAT to Prod, without sync cursors (empty API-key and token fields
+in UAT too). A read-only article search from Prod as Tech Romi then failed
+before sending: `Field Mexal_External_Credential.MexalToken does not exist`.
+Tech Romi does have access to `Mexal_Principal` through `Full_Permission`, so the
+`MexalToken` authentication parameter has not been entered on the Prod
+principal yet. That is a manual Setup step. Until it is done, every Prod Mexal
+call (customer, order, invoice) fails, and no Mexal nightly job is scheduled in Prod.
+
+🟢 **2026-10-29 (later) - Prod reaches Mexal.** After the token was entered on the
+Prod principal, the same read-only article search from Prod returned HTTP 200
+with data. From now on, Prod customer and order creation sends to Mexal for real.
+Still open: whether UAT stops writing to the same Mexal company, and
+scheduling the Prod nightly jobs.
