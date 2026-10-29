@@ -291,21 +291,26 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
           invoiceUpdate.Account__c = orderRecord.AccountId;
         }
         if (orderLine != null) {
-          Scadenza_Fattura__c deadline = MexalInvoiceImportService.matchDeadline(
-            deadlinesByInvoiceId.get(invoiceId),
-            orderLine.Data_Scadenza__c
+          List<Scadenza_Fattura__c> deadlines = deadlinesByInvoiceId.get(
+            invoiceId
           );
-          OrderItem orderItemUpdate = new OrderItem(
-            Id = orderLine.Id,
-            Fattura__c = invoiceId,
-            Scadenza_Fattura__c = deadline == null ? null : deadline.Id
+          Scadenza_Fattura__c deadline = MexalInvoiceImportService.singleDeadline(
+            deadlines
           );
-          // The line's payment state follows its Mexal rate; the tranche
-          // follows its lines (OrderItemTriggerHandler).
-          orderItemUpdate.Mexal_Payment_Status__c = deadline == null
-            ? 'Invoiced'
-            : (deadline.Pagata__c ? 'Paid' : 'Unpaid');
-          orderItemUpdates.put(orderLine.Id, orderItemUpdate);
+          // The line's payment state follows its whole invoice: a Mexal rate
+          // has no line reference. The tranche follows its lines
+          // (OrderItemTriggerHandler).
+          orderItemUpdates.put(
+            orderLine.Id,
+            new OrderItem(
+              Id = orderLine.Id,
+              Fattura__c = invoiceId,
+              Scadenza_Fattura__c = deadline == null ? null : deadline.Id,
+              Mexal_Payment_Status__c = MexalInvoiceImportService.invoicePaymentStatus(
+                deadlines
+              )
+            )
+          );
         }
       }
       invoiceUpdate.Riferimento_Ordine_Mexal__c = invoiceOrderKeys.isEmpty()

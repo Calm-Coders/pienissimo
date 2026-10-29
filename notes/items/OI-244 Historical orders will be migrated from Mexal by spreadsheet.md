@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-28
+updated: 2026-10-29
 depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
@@ -845,7 +845,7 @@ Mrruku sent the live distribution (**11:46:54Z**, 16 codes of the form
 
 So the 22/10 rule recorded as _"missing agent → existing code 610"_ now has its
 full value, and 🔑 **the client has undertaken to apply the transformation in the
-production file himself** — which means the rule must *not* be applied twice.
+production file himself** — which means the rule must _not_ be applied twice.
 See [OI-293](OI-293%20The%20agent%20registry%20for%20the%20production%20load%20may%20be%20incomplete.md).
 
 ⚠ **The integrations were blocked for the duration, and the client was told so.**
@@ -872,3 +872,59 @@ same afternoon as **Friday** (Slack `C0C38JJ9D1T`, 15:24:14 CET: _"spero entro
 venerdì finiamo tutto così hai la produzione up & running"_), where 27/10 had it
 as _"entro domani sera"_. **The answer to "is the 28–29/10 import the migration
 or a rehearsal" is: a rehearsal, in UAT.**
+
+### 🟢 2026-10-29 - an order line now takes the payment state of its whole invoice
+
+**Why.** In all 17,299 loaded lines `DATA_TRANCHE` equals the invoice's
+document date: a tranche is the billing event, not a payment due date. The
+old rule (`matchDeadline`) attached a line to the rate carrying the line's
+date. On an invoice with several rates it found nothing for 1,465 lines,
+which stayed `Invoiced` for good. One of them is OC 1/50638 (order 00009100):
+FT 3/1377/2024 has 3 rates, all paid, none dated on the invoice date.
+
+The Mexal scadenzario cannot link a rate to a line. Each document is one
+invoice with all its rates, and it has no order or line field
+(`serie`, `numero`, `data_documento`, `codice`, `dt_sca_pg`, `imp_scadenza`,
+`stato_pagamento`, ...). Aurel Mrruku therefore chose the link through line
+IDs: order line → invoice line → invoice → every rate of that invoice, with
+no date involved.
+
+**Change**, deployed to UAT only, in the repository and not committed:
+
+- **`MexalInvoiceImportService`**:
+  - `invoicePaymentStatus`: `Paid` once every rate is paid, `Unpaid` while one
+    is open, `Invoiced` with no rate yet.
+  - `singleDeadline`: the line points to a rate only when the invoice has
+    exactly one.
+  - `linkOrderLines` rewritten on that basis. All rates of an invoice whose
+    lines sit on one tranche are linked to that tranche.
+  - `deleteStaleDeadlines`: rates Mexal no longer sends for an invoice are
+    deleted, so a re-split invoice cannot stay unpaid for ever.
+  - `matchDeadline` removed.
+- **`MexalInvoiceLineImportBatch`**: uses the same two methods.
+- **`ScadenzaFatturaTriggerHandler`**: a rate change now recomputes every line
+  of its invoice, not only the lines linked to that rate.
+
+Before the change UAT had no invoice whose lines sat on different rates, and
+no Salesforce-origin order with an invoice. No case relied on the per-date
+granularity.
+
+**Recompute on the loaded orders**: 7,763 invoices in 20 chunks, 0 errors.
+
+|                                | Before               | After                |
+| ------------------------------ | -------------------- | -------------------- |
+| Lines Paid / Unpaid / Invoiced | 15,487 / 350 / 1,462 | **16,714 / 585 / 0** |
+| Orders Incassato / Ordinato    | 6,407 / 1,314        | **7,536 / 185**      |
+| Tranches Pagata / Aperta       | -                    | 7,566 / 195          |
+| Tickets Disponibile / Ordinato | 16,970 / 2,901       | **19,279 / 592**     |
+
+Order 00009100 is now `Incassato`, its tranche `Pagata` and both tickets
+`Disponibile`.
+
+⚠ **Separate, pre-existing problem: the nightly invoice sync often fails.**
+At 03:30 Europe/Rome both Mexal searches returned HTTP 500 on 9 of the last
+15 nights, 29/10 included. The articles job at 01:00 and the customers job at
+02:00 succeed, and the same searches replayed by day return 200. A failed run
+keeps its cursor, so nothing is lost, but payments recorded in Mexal reach
+Salesforce late. Rescheduling the job, or adding a retry, is still to be
+decided.

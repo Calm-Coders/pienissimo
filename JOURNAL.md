@@ -10,6 +10,18 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-29 - claude (order-line payment state from the whole invoice)
+
+- **Did (UAT only, not committed):** replaced the date-based rate match with an
+  invoice-level rule in `MexalInvoiceImportService`, `MexalInvoiceLineImportBatch`
+  and `ScadenzaFatturaTriggerHandler` (Paid when every rate of the line's invoice
+  is paid; rate link only for single-rate invoices; stale rates deleted), then
+  recomputed the 7,763 invoices of the loaded orders: lines 16,714 Paid / 585
+  Unpaid / 0 Invoiced, orders 7,536 Incassato / 185 Ordinato, tickets 19,279
+  Disponibile. Details in OI-244.
+- **Found:** the 03:30 nightly invoice sync gets HTTP 500 from Mexal on most
+  nights (9 of 15); daytime replay returns 200. Not yet acted on.
+
 ## 2026-10-28 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark
@@ -31,7 +43,7 @@ Keep the twenty most recent entries here; archive older ones to
   ones; `Lead from Zoho` checkbox decided internally, not built, client not
   told), **OI-296** (Mexal customer create failed HTTP 400 in UAT, account send
   switched off with no recorded re-enable), **OI-297** (OLD edizione links
-  unresolved), the **2026-10-28 Import Ordini** meeting note (explicitly *not*
+  unresolved), the **2026-10-28 Import Ordini** meeting note (explicitly _not_
   drilled) and the **Mexal accounting-year** object note. Updated OI-244, OI-287,
   OI-290, OI-292, OI-293 and the Zoho-calendar decision; `MAP.md`, `INDEX.md`,
   both trackers, both recaps (**§72**).
@@ -41,8 +53,8 @@ Keep the twenty most recent entries here; archive older ones to
   hole. Build the `Lead from Zoho` field **before** the Lead load. Check whether
   account send to Mexal is still off in UAT and read integration log
   `a05MA00000GqqcPYAR`. Decide the OLD-edizione links before the production run.
-- **Watch:** 🔴 the client was told the Mexal block was *temporary* while the
-  repository gained a *permanent* `Origine__c == 'Mexal'` skip — both may be
+- **Watch:** 🔴 the client was told the Mexal block was _temporary_ while the
+  repository gained a _permanent_ `Origine__c == 'Mexal'` skip — both may be
   true, only the filter is in source. ⚠ Nothing from the Import Ordini
   auto-summary was written into any item; it asserts content its own transcript
   does not support. 🔴 OI-287 unchanged a third night in production, and the E2E
