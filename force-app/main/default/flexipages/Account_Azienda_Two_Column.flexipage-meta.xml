@@ -133,6 +133,16 @@
                 <identifier>RecordPEC_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Mandato_RID__c</fieldItem>
+                <identifier>RecordMandatoRIDField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-azienda-account-right</name>
         <type>Facet</type>
     </flexiPageRegions>

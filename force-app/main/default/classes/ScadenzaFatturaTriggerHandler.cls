@@ -1,10 +1,7 @@
-// A Mexal rate drives the order lines it pays: when its payment state changes,
-// the linked OrderItems take Paid / Unpaid, and OrderItemTriggerHandler rolls
-// that up onto the tranche, the tickets and the order.
+// A Mexal rate drives the order lines of its invoice: when its payment state
+// changes, those OrderItems take the invoice's Paid / Unpaid, and
+// OrderItemTriggerHandler rolls that up onto the tranche, the tickets and the order.
 public without sharing class ScadenzaFatturaTriggerHandler {
-  private static final String PAYMENT_STATUS_PAID = 'Paid';
-  private static final String PAYMENT_STATUS_UNPAID = 'Unpaid';
-
   public static void afterUpdate(
     List<Scadenza_Fattura__c> deadlines,
     Map<Id, Scadenza_Fattura__c> oldDeadlines
@@ -24,29 +21,29 @@ public without sharing class ScadenzaFatturaTriggerHandler {
     syncOrderLines(changedIds);
   }
 
+  // A rate has no line reference: every order line of its invoice takes the
+  // invoice's payment state again.
   public static void syncOrderLines(Set<Id> deadlineIds) {
     if (deadlineIds == null || deadlineIds.isEmpty()) {
       return;
     }
 
-    List<OrderItem> updates = new List<OrderItem>();
-    for (OrderItem line : [
-      SELECT Id, Mexal_Payment_Status__c, Scadenza_Fattura__r.Pagata__c
-      FROM OrderItem
-      WHERE Scadenza_Fattura__c IN :deadlineIds
+    Set<Id> invoiceIds = new Set<Id>();
+    for (Scadenza_Fattura__c deadline : [
+      SELECT Fattura__c
+      FROM Scadenza_Fattura__c
+      WHERE Id IN :deadlineIds AND Fattura__c != NULL
     ]) {
-      String status = line.Scadenza_Fattura__r.Pagata__c
-        ? PAYMENT_STATUS_PAID
-        : PAYMENT_STATUS_UNPAID;
-      if (line.Mexal_Payment_Status__c != status) {
-        updates.add(
-          new OrderItem(Id = line.Id, Mexal_Payment_Status__c = status)
-        );
-      }
+      invoiceIds.add(deadline.Fattura__c);
     }
 
-    if (!updates.isEmpty()) {
-      update updates;
+    List<String> errors = new List<String>();
+    MexalInvoiceImportService.linkOrderLines(invoiceIds, errors);
+    if (!errors.isEmpty()) {
+      throw new ScadenzaFatturaSyncException(String.join(errors, '\n'));
     }
+  }
+
+  public class ScadenzaFatturaSyncException extends Exception {
   }
 }

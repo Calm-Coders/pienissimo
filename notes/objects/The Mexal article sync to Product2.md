@@ -5,7 +5,7 @@ status: in-progress
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-14
-updated: 2026-10-14
+updated: 2026-10-28
 depends_on: [OI-116, OI-121]
 requirement: [INT-01, BIG-02]
 source: commit e06a1b4 on DevAnita, PR #43, read at 2026-09-14
@@ -60,6 +60,12 @@ Added at Aurel Mrruku's request. The sync now writes Mexal's `alq_iva` to a new
   `Is_Plus__c` stays. Deploying the repository flexipage would remove it. The UAT
   field permission was granted with a `FieldPermissions` record rather than a
   permission-set deploy.
+- **Superseded 2026-10-28:** DevMain was deployed to UAT
+  (`0AfMA00000D23dR0AR`), so UAT's Product page is now the repository's and no
+  longer shows `Is_Plus__c`, and the field itself was deleted from UAT the same
+  day (`0AfMA00000D27Fd0AJ`; 0 products flagged, no code reference). Plus
+  products are recognised through `Product_Category_Rule__mdt` on
+  `Categoria_Articolo__c`.
 
 ### Full re-sync in UAT, 08/10
 

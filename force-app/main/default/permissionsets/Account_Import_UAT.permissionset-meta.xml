@@ -29,7 +29,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Account.Tipologia_Attivita__c</field>
+        <field>Account.Tipologia_Attivita_Globale__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

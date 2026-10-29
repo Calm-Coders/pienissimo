@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: ROMI
 raised: 2026-10-23
-updated: 2026-10-23
+updated: 2026-10-26
 depends_on: [OI-274]
 source: Gmail 1a158b6e3e4cee81, message 1a1683c78db0218b, 2026-10-23T10:09:04Z
 ---
@@ -120,3 +120,25 @@ The client replies accepting or refusing the CR route; if accepted, the process
 is written down somewhere both sides can cite, and the already-grown scope is
 either billed, waived, or explicitly left as it is. **Until then nothing has
 changed except that ROMI's position is on the record.**
+
+## 2026-10-26 - ROMI answered its own question internally
+
+🔑 **The client is still silent on the CR paragraph** — three days, and nothing
+in this sweep's mail or chat addresses it.
+
+🟢🔑 **ROMI set the boundary for itself instead.** `#tproj-pienissimo`, 26/10
+13:13:44 CET, Gianpaolo Motta to Elena Spini: _"su questo progetto non abbiamo
+più margine per assorbire cose in più, spostagliele alla fase 2"_ (one 👍, no
+reply). Recorded as
+[a decision](../decisions/ROMI%20will%20absorb%20no%20further%20scope%20in%20Fase%201.md).
+It is a staffing-authority ruling, not an opinion — the same person signs off
+the project's remaining days.
+
+🔴 **The gap this row identified is unchanged and now demonstrable.** Twenty
+minutes after that instruction, Elena Spini mailed the client asking for Lead
+and Referenti migration data
+([OI-290](OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md))
+— scope that appears in no plan and no BBP — **without calling it a Change
+Request or a Fase 2 item.** ⚠ Whether she had read the instruction is not
+established. Either way: **the mechanism exists in two places now, internally and
+in a mail to the client, and it has still never been applied to anything.**

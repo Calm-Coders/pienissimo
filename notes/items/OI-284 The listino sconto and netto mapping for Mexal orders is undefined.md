@@ -232,3 +232,58 @@ conversion and the `sconto` send went to Prod with the DevMain deploy
 `sconto` = `"-100,5"`). ⚠ **Still no discounted order sent to Mexal end to
 end**, and `Full_Permission` read access on the new field came with the
 permission-set deploy.
+
+## 2026-10-26 - the mapping is defined, and the build contradicts it
+
+🟢🔑 **This row's question is answered.** Kreosoft attended
+[the 11:00 call](../meetings/2026-10-26%20Tema%20Ordini%20Mexal.md) — the first
+meeting in the record that includes them — and Mirko Merendi named the mechanism
+at `00:05:00`: `prezzo` carries the **list price**, `sconto` carries the
+discount, and Mexal derives the line value — _"c'ha il prezzo e c'ha lo sconto e
+poi lui ricalcola il valore della riga."_ Two forms, distinguished by sign: an
+**amount** with a leading minus (_"Basta che te passi lo sconto con il meno
+davanti"_), a **percentage** as a bare number (_"basta che passi il numero senza
+il meno"_).
+
+🟢 **The 22/10 disagreement resolved itself**: Aurel Mrruku took the amount form
+— _"se ti passo sconto valore ancora meglio"_ — and Fabrizio Paganelli, who had
+argued for percentages, did not reopen it.
+
+🟢 **The decimal form came by mail the same day.** Mirko Merendi to Aurel Mrruku,
+14:27:33Z (Gmail `1a1789d5116a2788`), answering a question sent at 13:39:55Z:
+**comma** separator, **at most two decimals**. And at 11:56:24Z, before the
+details: _"Nel prezzo unitario su Mexal devi inserire il prezzo di listino e poi
+applicare lo sconto. In questo modo, Mexal calcolerà automaticamente il prezzo
+totale della riga del prodotto."_ 🔑 So the **unit-price field now carries
+listino where it used to carry netto** — the same field, different content.
+
+🔴🔑 **But the per-unit rule was missed, and the build is wrong.** Mirko Merendi
+said twice that the value discount applies **per unit** and the sender must
+divide by the line quantity, and Fabrizio Paganelli restated it and named the
+consequence — _"Altrimenti dopo sbagliamo veramente a fatturare se non è così."_
+The code committed at 14:30 CET and deployed to production that afternoon
+**multiplies** by quantity instead. Raised as
+[OI-287](OI-287%20The%20Mexal%20line%20discount%20is%20sent%20as%20a%20line%20total%20instead%20of%20per%20unit.md),
+which supersedes the claim in this note's own 26/10 build section that _"Mexal
+divides it by the line quantity"_ — ⚠ **that sentence is unsourced and is
+contradicted by the call it cites.**
+
+🟢 **Rounding is settled as a tolerance, not a mechanism.** Mexal's rounding is
+not configurable — _"gli arrotondamenti non si toccano"_ — and both sides waived
+the exposure aloud: Fabrizio Paganelli, _"quando facciamo la fattura, se c'è un
+centesimo non me ne frega niente. L'importante è che non si fermino gli
+ordini."_ ⚠ Aurel Mrruku's worked case (a €1,000 discount over three units, _"per
+tre periodico"_) was acknowledged and not solved.
+
+⚠ **Quantities above one are not rare.** Mirko Merendi guessed _"al 95% loro
+hanno sempre quantità uno"_; Fabrizio Paganelli corrected him on the spot —
+_"abbiamo anche spesso diversi casi dove abbiamo le quantità due"_, possibly
+three.
+
+⚠ **The Mexal field name is still not in this record.** Aurel Mrruku asked for
+it and Mirko Merendi **pasted an example into the Google Meet chat**, which the
+transcript does not capture. Four sources now refer to what Kreosoft specified
+and none contains the field name.
+
+🔴 **Still no discounted order sent to Mexal end to end** — and when one is sent,
+it must use **quantity 2**, or it will pass while wrong.

@@ -1,0 +1,205 @@
+---
+id: OI-287
+type: open-item
+status: open
+owner: Aurel Mrruku
+org: ROMI
+raised: 2026-10-26
+updated: 2026-10-28
+depends_on: [OI-284]
+blocks: [go-live]
+severity: gating
+source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
+---
+
+# OI-287 - The Mexal line discount is sent as a line total instead of per unit
+
+**Kreosoft said the `sconto` value is applied per unit and the sender must
+divide it by the line quantity. The code committed and deployed to production
+the same day multiplies by the quantity instead, on a stated belief that Mexal
+divides — which nothing in this record supports. Every discounted order line
+with a quantity above one would carry a discount the quantity over, and the
+client says quantity two happens often.**
+
+## What Kreosoft specified
+
+[The 26/10 call](../meetings/2026-10-26%20Tema%20Ordini%20Mexal.md), `00:05:00`
+onward. Mirko Merendi, twice:
+
+> _"lo sconto a valore va sulla quantità, quindi se ci sono due quantità e c'è
+> lo sconto di €400 **devi mettere -200, devi dividere per le quantità**, hai
+> capito?"_
+>
+> _"è uno sconto che va sulla quantità, quindi devi devi sempre dividere sulla …
+> Quindi se è meno €1500 e ce ne sono tre, **devi dividere per tre**."_
+
+Fabrizio Paganelli restated it back and named the consequence of getting it
+wrong:
+
+> _"se tu passi uno sconto totale sulla riga di €1500, quello sconto totale
+> quando lo passi a Mexal **lo devi dividere per le quantità** sempre di quella
+> riga. **Altrimenti dopo sbagliamo veramente a fatturare** se non è così."_
+
+So the number written into `sconto` is a **per-unit** reduction. Mexal applies
+it across the line quantity; the sender divides.
+
+## What was built
+
+`MexalOrderSendService.resolveLineDiscount`, committed by Aurel Mrruku in
+`e9919fb` (26/10 14:30 CET) and deployed to `Pienissimo Prod` the same
+afternoon:
+
+```apex
+return ((line.Prezzo_Listino__c - line.UnitPrice) * line.Quantity)
+  .setScale(2, System.RoundingMode.HALF_UP);
+```
+
+with the comment:
+
+> `// Mexal reads a sconto prefixed with '-' as an amount, not a percentage, and`
+> `// divides it by the line quantity (format given by Mexal, 26/10).`
+
+🔴 **The comment asserts the opposite of what the call established**, and the
+code follows the comment.
+
+## Why the arithmetic is wrong
+
+Both operands are per-unit, by the repository's own definitions:
+
+- `OrderItem.Prezzo_Listino__c` is described in its own metadata as
+  _"Prezzo **unitario** prima dello sconto"_.
+- `UnitPrice` is the net **unit** price;
+  `QuoteTriggerHandler.netUnitPrice` computes it as `TotalPrice / Quantity`.
+
+So `Prezzo_Listino__c - UnitPrice` is already the **per-unit** discount, which
+is exactly the value Mexal wants. Multiplying it by `Quantity` produces the
+**line total**. Sent into a field Mexal reads per unit, the discount applied
+becomes the line total × quantity.
+
+**Worked example**, using Mirko Merendi's own numbers: list 2,000, net 1,500,
+quantity 2.
+
+| | Per unit | Line |
+| --- | --- | --- |
+| Correct `sconto` | `-500` | Mexal applies 500 × 2 = **1,000** |
+| What the code sends | `-1000` | Mexal applies 1,000 × 2 = **2,000** |
+
+The invoice is discounted twice over. At quantity 3 it is three times over. At
+quantity 1 — which Mirko Merendi guessed covers ~95% of lines — the two agree,
+which is why a casual test would pass.
+
+## Why it is not already caught
+
+- 🔴 **It is in production.** It shipped in the DevMain deploy
+  `0AfSW000001K5Kj0AK` (26/10), with
+  `OrderItem.Prezzo_Listino__c` and `QuoteLineItem.Discount_Pct__c`.
+- 🔴 **No discounted order has been sent to Mexal end to end** — stated in
+  [OI-284](OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md)
+  and in the 26/10 journal entries, both times as the next step.
+- ⚠ **The Apex test asserts the payload, not the correctness.** The test that
+  came with the deploy checks `sconto` = `"-100,5"` against a computed
+  expectation; it encodes the same assumption as the code.
+- 🟢 The quantity-1 path, the decimal form (comma, two decimals) and the
+  negative-sign convention are all **right** — this row is only the quantity
+  factor.
+
+## What is uncertain, stated as uncertainty
+
+⚠ **Nobody has observed Mexal's behaviour on a quantity-above-one discounted
+line.** This row rests on what the ERP vendor said in the call and what the
+client repeated back, against what the code's comment claims without a cited
+source. Those cannot both be true. The call is the better evidence — it is
+first-hand from the vendor, it was restated and confirmed by the client, and
+the comment's _"format given by Mexal, 26/10"_ points at that same call.
+
+⚠ Aurel Mrruku's own line at `00:10` is the likely origin of the inversion:
+_"io il prezzo di listino prezzo netto ce l'ho moltiplicato per quantità, quindi
+faccio la stessa cosa anch'io. Quindi anche lo sconto è praticamente
+moltiplicato per quantità."_ It went unchallenged. But the field he then built
+is per-unit by its own description, so the premise does not hold for the code
+that exists.
+
+## What settles it
+
+One discounted order with **quantity 2** sent to Mexal, and a look at the
+resulting document. That is already the open next step for
+[OI-284](OI-284%20The%20listino%20sconto%20and%20netto%20mapping%20for%20Mexal%20orders%20is%20undefined.md);
+this row says the test must not use quantity 1.
+
+## Related
+
+- ⚠ **`SAL-12` still reads _"Tutors on fixed price list, no discretionary
+  discounts"_, `status: agreed`** — a seventh session in which discounting is
+  built and the register is not cited.
+- The rounding exposure is separate and was **accepted by both sides** in the
+  same call: Mexal's rounding is not configurable (_"gli arrotondamenti non si
+  toccano"_) and a one-cent difference was waived aloud by Fabrizio Paganelli.
+  That is a decision, not a defect.
+
+## 2026-10-27 - unchanged in code, and the same question was answered correctly elsewhere
+
+🔴 **No fix.** `resolveLineDiscount` in `MexalOrderSendService.cls` still returns
+`(Prezzo_Listino__c - UnitPrice) * Quantity` and still carries the comment
+asserting that Mexal divides. `DevMain` moved `428f42b` → `c3002a3` today; the
+two commits are a Campaign `ParentId` filter and its merge. **Second night in
+production, and still no discounted order sent to Mexal end to end.**
+
+🔑🔴 **The same per-unit-versus-line-total question came up on the inbound side
+and was handled correctly within one exchange.** [The 27/10 internal
+follow-up](../meetings/2026-10-27%20Follow-up%20Interno.md), `00:09:35`–`00:10:52`,
+on the historical order import file:
+
+> **Elena Spini:** _"in[1] porto netto io l'ho inteso come il prodotto del prezzo
+> unitario per la quantità. **È corretto o volete il prezzo netto unitario?**"_
+>
+> **Aurel Mrruku:** _"la riga ha il prodotto che ha un prezzo di listino e un
+> prezzo netto. Poi la riga se viene moltiplicata per due, ma lo posso anche
+> trovare io, non è un problema. **Basta che divido per la quantità** e c'ho il
+> prezzo netto, vero?"_
+
+So on the **import**, `importo netto` is a line total and ROMI divides by
+quantity to recover the unit price. On the **send**, per-unit operands are
+multiplied by quantity. 🔑 **The distinction is plainly understood by the same
+engineer, on the same day, in the opposite direction** — which makes this an
+oversight in one code path rather than a conceptual disagreement, and strengthens
+the reading that the outbound multiplication is simply wrong.
+
+⚠ **Neither call mentioned OI-287.** It was not raised in the client call, in the
+internal follow-up, or in either Slack channel. **Nobody has read this row since
+it was written.**
+
+⚠ **The settling test is still not run.** One discounted order at quantity 2 ends
+it. Aurel Mrruku's stated next step for 28–29/10 is a full end-to-end flow in
+production — _"a livello di flusso io domani inizio a fare dei flussi completi
+anche in produzione"_ — which is the opportunity, **if the test order carries a
+discount and a quantity above one.** Nothing says it will.
+
+🔑 **A new wrinkle from the import file:** zero-price lines exist in volume
+(complimentary product codes). `resolveLineDiscount` returns early when
+`Prezzo_Listino__c <= UnitPrice`, so a zero-price line sends no discount — but
+**no note or test covers what the Mexal send does with a zero-value line**, and
+Aurel Mrruku was surprised such orders exist at all.
+
+---
+
+[1] The transcript reads _"in porto netto"_; the field is `importo netto`.
+
+## 🔴 2026-10-28 - unchanged a third night, and the test that would settle it did not happen
+
+`resolveLineDiscount` on `DevMain` `d9d18e3` still returns
+`(Prezzo_Listino__c - UnitPrice) * Quantity`, and the comment asserting that
+Mexal divides is still beside it. **Third consecutive night in production.**
+
+🔴 **The opportunity flagged on 27/10 was missed.** The client's 09:48:49Z mail
+asked to run exactly the E2E test that would settle this — _"volevamo fare oggi
+dei test, compreso emissione fatture e registrazione incassi"_ — and ROMI's reply
+**blocked the Mexal integrations for the day** so the historical load could run
+without duplicating 7,721 orders
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)).
+The order API was reopened at 16:19:55Z with an invitation to resume testing; ⚠
+**nothing in the record says a discounted, quantity-above-one order was sent.**
+
+⚠ **Neither the mail nor the call mentioned the discount.** Three days of dense
+Mexal correspondence — the line id, the accounting year, the agent codes — and
+the one arithmetic defect that mis-invoices in silence has not been named by
+anybody but these records.

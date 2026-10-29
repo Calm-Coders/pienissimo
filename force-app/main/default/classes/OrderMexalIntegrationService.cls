@@ -7,6 +7,8 @@ public without sharing class OrderMexalIntegrationService {
   private static final String STATUS_SENT_LINES_NOT_ALIGNED = 'Sent_Lines_Not_Aligned';
   private static final String STATUS_FAILED = 'Failed';
   private static final String STATUS_EXCLUDED = 'Excluded';
+  // Orders migrated from Mexal already exist there: sending them would duplicate them.
+  private static final String MEXAL_ORIGIN = 'Mexal';
   // UAT testing (2026-10-06): true runs the full integration in sandbox,
   // customer create/update included, against the live Mexal company.
   private static final Boolean ALLOW_MEXAL_QUEUE_IN_SANDBOX = true;
@@ -37,6 +39,7 @@ public without sharing class OrderMexalIntegrationService {
       if (
         orderRecord.Id == null ||
         orderRecord.AccountId == null ||
+        orderRecord.Origine__c == MEXAL_ORIGIN ||
         ORDER_IDS_QUEUED_IN_TRANSACTION.contains(orderRecord.Id)
       ) {
         continue;

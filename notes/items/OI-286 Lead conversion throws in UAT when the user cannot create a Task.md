@@ -6,7 +6,7 @@ owner: Rexhina Hysi
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-10-23
-updated: 2026-10-23
+updated: 2026-10-26
 depends_on: [OI-163]
 source: Salesforce error mail, 2026-10-23T14:43:05Z, Gmail 1a169372a34e3a64
 ---
@@ -121,3 +121,27 @@ standing state** — the lesson the August note was overturned by.
 **Do not write an Apex test for this.** Coverage is a separate task Aurel Mrruku
 requests in one pass before the production deploy —
 [the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+## 2026-10-26 - the permission fix reached DevMain, and a sibling defect reached production
+
+🟢 **The fix is merged.** `Devmain_LeadChecks` came into `DevMain` through **PR
+#109** (`a40da94`, 11:31 CET), so `Agente.permissionset-meta.xml` on
+`origin/DevMain` `428f42b` now carries `CreateTask` and the Task fields.
+🔑 **It is a permission set, not the `Agente` profile** — which matters, because
+the production deploy of the same afternoon explicitly **excluded the Agente
+profile** and did not exclude permission sets. ⚠ **Not verified in the org**;
+this is repository and deploy-record arithmetic only.
+
+⚠ **The three reservations in this row all stand**: the user-to-profile link is
+still a correlation, only `Agente` was touched, and the unguarded `insert` in an
+after-trigger is still unguarded.
+
+🔴🔑 **And the third reservation just came true in production.**
+[OI-288](OI-288%20Editing%20a%20Contact%20fails%20in%20production%20when%20the%20Account%20has%20no%20Agente.md):
+`ContactTriggerHandler.cls:203` is a bare `update` on the Account, and at
+16:28:17Z on 26/10 an active validation rule — not a permission — rolled a
+user's Contact edit back in `Pienissimo Prod`. **Same defect shape, different
+trigger, and permissions cannot fix it.** This row predicted _"an unguarded
+`insert` in an after-trigger will fail the same way for the next cause (a
+validation rule, a required field, a Task trigger)"_; the next cause was a
+validation rule, four days later.

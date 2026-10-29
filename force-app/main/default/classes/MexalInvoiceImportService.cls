@@ -11,6 +11,7 @@ public without sharing class MexalInvoiceImportService {
   private static final String INVOICE_CAUSALE = 'FE';
   private static final String PAYMENT_STATUS_PAID = 'Paid';
   private static final String PAYMENT_STATUS_UNPAID = 'Unpaid';
+  private static final String PAYMENT_STATUS_INVOICED = 'Invoiced';
   private static final Set<String> PAYMENT_STATUSES = new Set<String>{
     'P',
     'E'
@@ -99,6 +100,12 @@ public without sharing class MexalInvoiceImportService {
   // Backfill by document date, in one transaction: both searches run before
   // any DML. Run MexalInvoiceLineImportBatch afterwards for the lines.
   public static Result importByDocumentDate(Date fromDate) {
+    return importByDocumentDate(fromDate, null);
+  }
+
+  // Window [fromDate, toDate): invoices are searched in the archive of
+  // fromDate's year, so a window must not cross a year end.
+  public static Result importByDocumentDate(Date fromDate, Date toDate) {
     if (fromDate == null) {
       throw new MexalInvoiceImportException('Data iniziale obbligatoria.');
     }
@@ -107,22 +114,35 @@ public without sharing class MexalInvoiceImportService {
         Time.newInstance(0, 0, 0, 0)
       )
       .format('yyyyMMdd');
+    List<Object> movementFilters = new List<Object>{
+      filter('sigla', '=', INVOICE_SIGLA),
+      filter('data_documento', '>=', mexalDate)
+    };
+    List<Object> scadenzarioFilters = new List<Object>{
+      filter('causale', '=', INVOICE_CAUSALE),
+      filter('data_documento', '>=', mexalDate)
+    };
+    if (toDate != null) {
+      String mexalToDate = Datetime.newInstance(
+          toDate,
+          Time.newInstance(0, 0, 0, 0)
+        )
+        .format('yyyyMMdd');
+      movementFilters.add(filter('data_documento', '<', mexalToDate));
+      scadenzarioFilters.add(filter('data_documento', '<', mexalToDate));
+    }
 
-    List<Object> movementRows = search(
-      MOVEMENT_SEARCH_ACTION,
-      new List<Object>{
-        filter('sigla', '=', INVOICE_SIGLA),
-        filter('data_documento', '>=', mexalDate)
-      },
-      false
-    );
+    List<Object> movementRows;
+    MexalSearchCalloutService.accountingYear = fromDate.year();
+    try {
+      movementRows = search(MOVEMENT_SEARCH_ACTION, movementFilters, false);
+    } finally {
+      MexalSearchCalloutService.accountingYear = null;
+    }
     // Only the last callout logs: a log insert before a callout is not allowed.
     List<Object> scadenzarioRows = search(
       SCADENZARIO_SEARCH_ACTION,
-      new List<Object>{
-        filter('causale', '=', INVOICE_CAUSALE),
-        filter('data_documento', '>=', mexalDate)
-      },
+      scadenzarioFilters,
       true
     );
 
@@ -298,17 +318,51 @@ public without sharing class MexalInvoiceImportService {
     );
 
     Set<Id> invoiceIds = new Set<Id>();
+    Set<String> receivedKeys = new Set<String>();
     for (Scadenza_Fattura__c deadline : deadlines) {
+      receivedKeys.add(deadline.Chiave_Mexal__c);
       if (savedDeadlineIds.contains(deadline.Id)) {
         invoiceIds.add(deadline.Fattura__c);
       }
     }
+    deleteStaleDeadlines(invoiceIds, receivedKeys, result.errors);
     result.orderLinesUpdated = linkOrderLines(invoiceIds, result.errors);
   }
 
-  // Each invoiced order line takes its rate and Paid / Unpaid from it; the
-  // tranche follows its lines (OrderItemTriggerHandler). A rate whose lines
-  // all sit on one tranche is linked to that tranche.
+  // A scadenzario document carries every rate of its invoice: a rate Mexal no
+  // longer sends (the invoice was re-split) would otherwise keep the invoice
+  // unpaid for ever. Its order lines lose the link (SetNull) and are relinked.
+  private static void deleteStaleDeadlines(
+    Set<Id> invoiceIds,
+    Set<String> receivedKeys,
+    List<String> errors
+  ) {
+    if (invoiceIds.isEmpty()) {
+      return;
+    }
+    List<Scadenza_Fattura__c> stale = [
+      SELECT Id
+      FROM Scadenza_Fattura__c
+      WHERE Fattura__c IN :invoiceIds AND Chiave_Mexal__c NOT IN :receivedKeys
+    ];
+    if (stale.isEmpty()) {
+      return;
+    }
+    for (Database.DeleteResult deleted : Database.delete(stale, false)) {
+      if (!deleted.isSuccess()) {
+        errors.add(
+          'Rata non piu presente in Mexal non eliminata: ' +
+          deleted.getErrors()[0].getMessage()
+        );
+      }
+    }
+  }
+
+  // A Mexal rate carries no order or line reference: each invoiced order line
+  // takes the payment state of its whole invoice, and links to a rate only
+  // when the invoice has just one. The tranche follows its lines
+  // (OrderItemTriggerHandler). The rates of an invoice whose lines all sit on
+  // one tranche are linked to that tranche.
   public static Integer linkOrderLines(
     Set<Id> invoiceIds,
     List<String> errors
@@ -318,9 +372,8 @@ public without sharing class MexalInvoiceImportService {
     }
 
     Map<Id, List<Scadenza_Fattura__c>> deadlinesByInvoiceId = new Map<Id, List<Scadenza_Fattura__c>>();
-    Map<Id, Scadenza_Fattura__c> deadlinesById = new Map<Id, Scadenza_Fattura__c>();
     for (Scadenza_Fattura__c deadline : [
-      SELECT Id, Fattura__c, Data_Scadenza__c, Pagata__c, Tranche__c
+      SELECT Id, Fattura__c, Pagata__c, Tranche__c
       FROM Scadenza_Fattura__c
       WHERE Fattura__c IN :invoiceIds
       ORDER BY Numero_Rata__c
@@ -332,45 +385,39 @@ public without sharing class MexalInvoiceImportService {
         );
       }
       deadlinesByInvoiceId.get(deadline.Fattura__c).add(deadline);
-      deadlinesById.put(deadline.Id, deadline);
     }
 
     List<OrderItem> lineUpdates = new List<OrderItem>();
-    Map<Id, Set<Id>> trancheIdsByDeadlineId = new Map<Id, Set<Id>>();
+    Map<Id, Set<Id>> trancheIdsByInvoiceId = new Map<Id, Set<Id>>();
     for (OrderItem line : [
       SELECT
         Id,
         Fattura__c,
-        Data_Scadenza__c,
         Tranche__c,
         Scadenza_Fattura__c,
         Mexal_Payment_Status__c
       FROM OrderItem
       WHERE Fattura__c IN :invoiceIds
     ]) {
-      Scadenza_Fattura__c deadline = matchDeadline(
-        deadlinesByInvoiceId.get(line.Fattura__c),
-        line.Data_Scadenza__c
+      List<Scadenza_Fattura__c> deadlines = deadlinesByInvoiceId.get(
+        line.Fattura__c
       );
-      if (deadline == null) {
-        continue;
+      if (!trancheIdsByInvoiceId.containsKey(line.Fattura__c)) {
+        trancheIdsByInvoiceId.put(line.Fattura__c, new Set<Id>());
       }
-      if (!trancheIdsByDeadlineId.containsKey(deadline.Id)) {
-        trancheIdsByDeadlineId.put(deadline.Id, new Set<Id>());
-      }
-      trancheIdsByDeadlineId.get(deadline.Id).add(line.Tranche__c);
+      trancheIdsByInvoiceId.get(line.Fattura__c).add(line.Tranche__c);
 
-      String status = deadline.Pagata__c
-        ? PAYMENT_STATUS_PAID
-        : PAYMENT_STATUS_UNPAID;
+      Scadenza_Fattura__c deadline = singleDeadline(deadlines);
+      Id deadlineId = deadline == null ? null : deadline.Id;
+      String status = invoicePaymentStatus(deadlines);
       if (
-        line.Scadenza_Fattura__c != deadline.Id ||
+        line.Scadenza_Fattura__c != deadlineId ||
         line.Mexal_Payment_Status__c != status
       ) {
         lineUpdates.add(
           new OrderItem(
             Id = line.Id,
-            Scadenza_Fattura__c = deadline.Id,
+            Scadenza_Fattura__c = deadlineId,
             Mexal_Payment_Status__c = status
           )
         );
@@ -378,16 +425,22 @@ public without sharing class MexalInvoiceImportService {
     }
 
     List<Scadenza_Fattura__c> deadlineUpdates = new List<Scadenza_Fattura__c>();
-    for (Id deadlineId : trancheIdsByDeadlineId.keySet()) {
-      Set<Id> trancheIds = trancheIdsByDeadlineId.get(deadlineId);
-      if (trancheIds.size() != 1 || trancheIds.contains(null)) {
+    for (Id invoiceId : trancheIdsByInvoiceId.keySet()) {
+      Set<Id> trancheIds = trancheIdsByInvoiceId.get(invoiceId);
+      if (
+        trancheIds.size() != 1 ||
+        trancheIds.contains(null) ||
+        !deadlinesByInvoiceId.containsKey(invoiceId)
+      ) {
         continue;
       }
       Id trancheId = new List<Id>(trancheIds)[0];
-      if (deadlinesById.get(deadlineId).Tranche__c != trancheId) {
-        deadlineUpdates.add(
-          new Scadenza_Fattura__c(Id = deadlineId, Tranche__c = trancheId)
-        );
+      for (Scadenza_Fattura__c deadline : deadlinesByInvoiceId.get(invoiceId)) {
+        if (deadline.Tranche__c != trancheId) {
+          deadlineUpdates.add(
+            new Scadenza_Fattura__c(Id = deadline.Id, Tranche__c = trancheId)
+          );
+        }
       }
     }
 
@@ -400,24 +453,28 @@ public without sharing class MexalInvoiceImportService {
     return updated;
   }
 
-  // The rate with the line's due date (Salesforce sends it as dt_sca_riga and
-  // Mexal raises one rate per date); an invoice with a single rate pays all its lines.
-  public static Scadenza_Fattura__c matchDeadline(
-    List<Scadenza_Fattura__c> deadlines,
-    Date lineDueDate
+  // Paid once every rate of the invoice is paid; Invoiced while Mexal has no
+  // rate for it yet.
+  public static String invoicePaymentStatus(
+    List<Scadenza_Fattura__c> deadlines
   ) {
     if (deadlines == null || deadlines.isEmpty()) {
-      return null;
-    }
-    if (deadlines.size() == 1) {
-      return deadlines[0];
+      return PAYMENT_STATUS_INVOICED;
     }
     for (Scadenza_Fattura__c deadline : deadlines) {
-      if (lineDueDate != null && deadline.Data_Scadenza__c == lineDueDate) {
-        return deadline;
+      if (!deadline.Pagata__c) {
+        return PAYMENT_STATUS_UNPAID;
       }
     }
-    return null;
+    return PAYMENT_STATUS_PAID;
+  }
+
+  // The rate an order line can point to: only an invoice's one and only rate
+  // is certainly the line's.
+  public static Scadenza_Fattura__c singleDeadline(
+    List<Scadenza_Fattura__c> deadlines
+  ) {
+    return deadlines != null && deadlines.size() == 1 ? deadlines[0] : null;
   }
 
   private static String invoiceKey(

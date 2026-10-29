@@ -40,7 +40,8 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
             Serie__c,
             Numero__c,
             Codice_Cliente_Mexal__c,
-            Account__c
+            Account__c,
+            Data_Documento__c
           FROM Fattura__c
           WHERE Id IN :invoiceIds
         ]
@@ -56,7 +57,8 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
             Serie__c,
             Numero__c,
             Codice_Cliente_Mexal__c,
-            Account__c
+            Account__c,
+            Data_Documento__c
           FROM Fattura__c
           WHERE Id NOT IN (SELECT Fattura__c FROM Riga_Fattura__c)
         ]
@@ -71,7 +73,8 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
           Serie__c,
           Numero__c,
           Codice_Cliente_Mexal__c,
-          Account__c
+          Account__c,
+          Data_Documento__c
         FROM Fattura__c
       ]
     );
@@ -124,6 +127,11 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
       }
       MexalSearchCalloutService.Result detail;
       try {
+        // The detail lives in the archive of the invoice's own year.
+        MexalSearchCalloutService.accountingYear = invoice.Data_Documento__c ==
+          null
+          ? null
+          : invoice.Data_Documento__c.year();
         detail = MexalSearchCalloutService.getMovementDetail(
           invoice.Sigla__c,
           invoice.Serie__c.intValue(),
@@ -160,6 +168,8 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
         totalByInvoiceId.put(invoice.Id, total);
       }
     }
+
+    MexalSearchCalloutService.accountingYear = null;
 
     Map<Id, Fattura__c> invoicesById = new Map<Id, Fattura__c>(invoices);
     Set<String> orderKeys = new Set<String>();
@@ -281,21 +291,26 @@ public without sharing class MexalInvoiceLineImportBatch implements Database.Bat
           invoiceUpdate.Account__c = orderRecord.AccountId;
         }
         if (orderLine != null) {
-          Scadenza_Fattura__c deadline = MexalInvoiceImportService.matchDeadline(
-            deadlinesByInvoiceId.get(invoiceId),
-            orderLine.Data_Scadenza__c
+          List<Scadenza_Fattura__c> deadlines = deadlinesByInvoiceId.get(
+            invoiceId
           );
-          OrderItem orderItemUpdate = new OrderItem(
-            Id = orderLine.Id,
-            Fattura__c = invoiceId,
-            Scadenza_Fattura__c = deadline == null ? null : deadline.Id
+          Scadenza_Fattura__c deadline = MexalInvoiceImportService.singleDeadline(
+            deadlines
           );
-          // The line's payment state follows its Mexal rate; the tranche
-          // follows its lines (OrderItemTriggerHandler).
-          orderItemUpdate.Mexal_Payment_Status__c = deadline == null
-            ? 'Invoiced'
-            : (deadline.Pagata__c ? 'Paid' : 'Unpaid');
-          orderItemUpdates.put(orderLine.Id, orderItemUpdate);
+          // The line's payment state follows its whole invoice: a Mexal rate
+          // has no line reference. The tranche follows its lines
+          // (OrderItemTriggerHandler).
+          orderItemUpdates.put(
+            orderLine.Id,
+            new OrderItem(
+              Id = orderLine.Id,
+              Fattura__c = invoiceId,
+              Scadenza_Fattura__c = deadline == null ? null : deadline.Id,
+              Mexal_Payment_Status__c = MexalInvoiceImportService.invoicePaymentStatus(
+                deadlines
+              )
+            )
+          );
         }
       }
       invoiceUpdate.Riferimento_Ordine_Mexal__c = invoiceOrderKeys.isEmpty()

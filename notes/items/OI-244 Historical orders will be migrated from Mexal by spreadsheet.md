@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-23
+updated: 2026-10-29
 depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
@@ -229,7 +229,7 @@ writing on 19/10.
 - 🟢 **Elena Spini chased it at 09:16:24 CEST** — _"reminder Excel ordini per
   Fabrizio Pienissimo"_ — and it went out the same day.
 - 🟢 **A separate field list exists in Drive**: `Order/OrderItem Salesforce
-  Fields` (`1XCD2STp3HW3ryn8k4m9VH72QlPFtFDlQl5Xhb9HpbBg`), created by Anita Aga
+Fields` (`1XCD2STp3HW3ryn8k4m9VH72QlPFtFDlQl5Xhb9HpbBg`), created by Anita Aga
   at 08:00:40Z and shared with Aurel Mrruku at 08:49:52Z — **16 Order columns and
   14 OrderItem columns, headers only, no data.** ⚠ Two artefacts now describe the
   same mapping; **the workbook sent to the client is the authority**, and the
@@ -270,7 +270,6 @@ writing on 19/10.
 - ⚠ **Tomorrow's meeting is wider than this row.** Elena Spini, 17:01 CEST:
   _"domani 10-11 ci vuole parlare del tema migrazione e ci vuole parlare di
   diversi open point che ha e problemi."_
-
 
 ## 2026-10-21 — the field spec was worked through line by line, and the client started filling it
 
@@ -333,11 +332,11 @@ acceptance.
 
 ### Volumes, read off the client's warehouse live
 
-| Period | Article lines |
-| ------ | ------------- |
-| From 1 Jan 2024 | ~30,000 |
-| After 2024 | ~9,000 |
-| **2024 alone** | **~21,000**, reducible to _"una quindicina di migliaia"_ once the software-platform lines are stripped |
+| Period          | Article lines                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
+| From 1 Jan 2024 | ~30,000                                                                                                |
+| After 2024      | ~9,000                                                                                                 |
+| **2024 alone**  | **~21,000**, reducible to _"una quindicina di migliaia"_ once the software-platform lines are stripped |
 
 🟡 **How far back is still open.** Fabrizio Paganelli moved from 2025 to
 considering 2024 during the call, for a three-year commercial history —
@@ -385,16 +384,16 @@ despite its data quality. The volumes he read off are consistent with 21/10:
 
 ### The agreed rules
 
-| Rule | Why |
-| ---- | --- |
-| **Rows with empty order key fields are excluded** | They are invoices issued with no order; their key is empty and collides across customers. See [OI-275](OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md) |
-| **All invoices and scadenzario entries import anyway** | _"io le fatture li prenderò a prescindere … solo che quelle fatture non sono collegate ai ordini"_ |
-| **Tranche date = invoice date** | Confirmed as coherent; different line dates create different tranches |
-| **Payment condition forced to `12`** (bonifico data fattura) | Aurel Mrruku: _"Non ci dà problemi, basta che ci sia un valore"_ |
-| **Missing agent code → existing code `610`** | Never invent one: _"non inventi codici agenti nuovi perché poi mi causa problemi a trovare l'utente che è un agente"_. `610` is the generic secretariat agent |
-| **Credit notes excluded**, kept in a separate Excel | Deferred with the credit-note feature itself to Fase 2/3 — _"li importiamo quando implementiamo note di credito"_ |
-| **~1,000 `SW` platform-sale lines deleted** | Mostly 2024; accepted on the condition nothing references a missing code |
-| **Orders are loaded before lines** | _"mi deve passare prima l'ordine, poi il riferimento"_ |
+| Rule                                                         | Why                                                                                                                                                                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Rows with empty order key fields are excluded**            | They are invoices issued with no order; their key is empty and collides across customers. See [OI-275](OI-275%20The%20Mexal%20order%20key%20is%20not%20unique%20without%20the%20order%20date.md) |
+| **All invoices and scadenzario entries import anyway**       | _"io le fatture li prenderò a prescindere … solo che quelle fatture non sono collegate ai ordini"_                                                                                               |
+| **Tranche date = invoice date**                              | Confirmed as coherent; different line dates create different tranches                                                                                                                            |
+| **Payment condition forced to `12`** (bonifico data fattura) | Aurel Mrruku: _"Non ci dà problemi, basta che ci sia un valore"_                                                                                                                                 |
+| **Missing agent code → existing code `610`**                 | Never invent one: _"non inventi codici agenti nuovi perché poi mi causa problemi a trovare l'utente che è un agente"_. `610` is the generic secretariat agent                                    |
+| **Credit notes excluded**, kept in a separate Excel          | Deferred with the credit-note feature itself to Fase 2/3 — _"li importiamo quando implementiamo note di credito"_                                                                                |
+| **~1,000 `SW` platform-sale lines deleted**                  | Mostly 2024; accepted on the condition nothing references a missing code                                                                                                                         |
+| **Orders are loaded before lines**                           | _"mi deve passare prima l'ordine, poi il riferimento"_                                                                                                                                           |
 
 🟡 **Open orders are a much smaller problem than assumed.** Orders entered and
 not yet invoiced today number **five** — he then counted seven on screen, and
@@ -453,11 +452,11 @@ been delivered.** Fabrizio Paganelli, Gmail `1a168166785585be`,
 > _Vi chiedo se mi potere chiamare, perché dovrei configurare i prodotti e le
 > edizioni"_
 
-| | |
-| --- | --- |
-| **Attachment** | `Import Ordini (versione del 23.10.26).xlsx`, **1,103,461 bytes** |
+|                   |                                                                                                                                                         |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Attachment**    | `Import Ordini (versione del 23.10.26).xlsx`, **1,103,461 bytes**                                                                                       |
 | **Also in Drive** | `1ls-nh7tz5SzW6ALhBW0lWlOn15kfEKMo`, owner `a.mrruku@romicompany.com`, created and modified 2026-10-23T09:27:39Z — the same file, saved out of the mail |
-| **Status** | 🟢 Elena Spini 13:09:30Z: _"ok analizzeremo il file e torneremo da te"_ |
+| **Status**        | 🟢 Elena Spini 13:09:30Z: _"ok analizzeremo il file e torneremo da te"_                                                                                 |
 
 ⚠ **Not opened by this sweep.** It is the live historical order and invoice
 extract — real customers, real amounts, article codes. Recorded by filename,
@@ -514,3 +513,422 @@ capo"_ — fires on the real import. ⚠ **Nobody said when the flows go back on
 ⚠ **The window is tight**: the registry edit lands Monday 26 October at the
 earliest, Kreosoft's mass update after that, and the first import is ~9
 November.
+
+## 2026-10-28 - the 23/10 file was checked, and it can be loaded into UAT once the bypasses exist
+
+Checked by Claude Code at Aurel Mrruku's request, against the file and against
+**Pienissimo UAT** (read-only; nothing loaded). Aggregates only; no customer,
+article or amount values are recorded.
+
+🟢 **The order key is clean.** 7,721 orders, all `OC`, series 1 (7,685), 2 (33,
+all 2023) and 3 (3). No empty key part, no invalid date, **no duplicate**
+`sigla+serie+numero+data`, no triple repeating across dates. The 22/10 exclusion
+rules were applied: no cancelled orders, no `SW` lines, payment code `12`
+everywhere. 17,300 lines, every line has its order and every order has lines.
+None of the keys already exists on a UAT order (35 keyed orders there).
+
+🟢 **The UAT registry covers it almost entirely.** All 397 article codes match
+exactly one active product with a standard price book entry; none is a bundle
+with components, so no double ticket generation. 2,845 of 2,917 customer codes
+exist on an Account.
+
+🔴 / ⚠ **What has to be decided or built first:**
+
+| #   | Finding                                                                                                                                      | Effect                                                                                                                                                                              |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `AUTOMATIC_MEXAL_CREATION_ENABLED` is still `true` and nothing reads `Origine__c = Mexal`                                                    | Inserting today queues every order to Mexal. [OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md) bypass still unbuilt |
+| 2   | Ticket edizione is chosen from `Order.EffectiveDate`; the agreed reversal to the invoice date is not built, and dummy editions are undecided | [OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md); assets also call `EventInvitationService`                                         |
+| 3   | ~~72 customer codes (140 orders, 112 of them 2026) have no Account in UAT~~                                                                  | 🟢 Resolved the same day, see below                                                                                                                                                 |
+| 4   | `CODICE_AGENTE` is one generic code on every order, and `OrderTriggerHandler.beforeInsert` overwrites the agent from the Account anyway      | History gets each customer's current agent, not the historical one                                                                                                                  |
+| 5   | 10,485 lines (61%) have net amount 0; 1,855 orders are entirely zero                                                                         | 🟢 Aurel Mrruku, 28/10: they are **omaggi and will be loaded**                                                                                                                      |
+| 6   | Net amount behaves as a **line total** (qty 2 ≈ 2× qty 1 on 12 of 24 comparable articles)                                                    | 🟢 Aurel Mrruku, 28/10: confirmed line total; `UnitPrice` = amount / quantity. All 6,815 non-zero lines divide exactly to two decimals, so no rounding difference                   |
+| 7   | 6 duplicate Mexal line ids within one order (1 identical row, 5 different articles)                                                          | Ambiguous invoice-line matching on `Mexal_Line_Number__c`                                                                                                                           |
+| 8   | 1,351 lines carry a tranche date before the order date (mostly within 30 days); 447 orders are dated before 2024                             | Plausible, to confirm with the client                                                                                                                                               |
+
+🟢 **Tranches**: 7,683 orders have one tranche date, 37 have two, one has four.
+Per Aurel Mrruku: one `Tranche__c` per order and date, holding that date's lines.
+`PerformancePlusContractService.createForOrders` runs only from
+`QuoteTriggerHandler`, so a direct order insert does not generate Performance
+Plus contracts ([OI-280](OI-280%20Performance%20Plus%20contract%20generation%20must%20be%20bypassed%20for%20migrated%20orders.md)).
+
+### 🟢 2026-10-28 - UAT customers re-pulled from Mexal; every order customer now exists
+
+At Aurel Mrruku's request, Claude Code read the whole Mexal customer registry
+(read-only search, `MexalSearchCalloutService.sendReadOnly`, no log rows) from
+UAT in nine code ranges and wrote it into **Pienissimo UAT** by anonymous Apex,
+after a full dry run with rollback. Window 11:38-11:39Z.
+
+|                      |                                                                                                                                                                                                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Mexal customers read | 8,726 (UAT had 8,146 coded Accounts)                                                                                                                                                                                                                                     |
+| **Inserted**         | **129** Accounts with a Partita IVA, `Azienda`, owner `Amministratore Pienissimo`, agent user from `cod_agente` (`610.00019` → the user already used for 1,810 Accounts; 13 with no matching user → Segreteria `610.00001`) - **all 72 order-file customers among them** |
+| **Updated**          | 6,530 existing Accounts, only Mexal-mastered fields that differ, never blanking a value: mostly `Phone`/`Fax` that were empty in UAT; also ~40 names, ~90 SDI codes, ~80 billing streets                                                                                 |
+| Skipped              | 453 Mexal customers without Partita IVA (the `Azienda` validation rule requires it; same outcome as the 24/09 import); 54 multi-address emails not written; 1 code duplicated in UAT left alone                                                                          |
+| Failed               | 2 updates: one email Salesforce rejects, one Account whose agent user fails the lookup filter                                                                                                                                                                            |
+| Mexal side           | 🟢 `AccountTriggerHandler.setBypassMexalCustomerUpdate(true)` around every update; no `MexalCustomerUpdateQueueable` job and **no integration log after 11:00Z**                                                                                                         |
+
+16 of the inserts matched the standard Account duplicate rule (fuzzy name or
+address) and were saved with `AllowSave`, because the Mexal code is the
+customer's identity. ⚠ Agent codes on existing Accounts were **not** touched:
+Mexal's `cod_agente` is blank or different on most of them, and the 24/09
+import took the agent from the Zoho-side file.
+
+🟢 **Re-check of the order file**: 2,917 of 2,917 customers present, 0 orders
+blocked by a missing Account. Two order customers have no agent code on the
+Account, so `OrderTriggerHandler.beforeInsert` will leave those orders' agent
+empty.
+
+### 🔴 2026-10-28 - edizione check by order date: one order in four would fail
+
+Aurel Mrruku's rule: **the edizione is chosen by `DATA_DOC`**, the Mexal order
+date. That is what the code already does - `OrderTriggerHandler.assignCampaigns`
+matches `Order.EffectiveDate` against an active `Mappatura_Edizione__c`
+(`Data_Inizio__c` ≤ date ≤ `Data_Fine__c`) for every line whose product has
+`Genera_Biglietto__c` - so it needs `EffectiveDate = DATA_DOC` and no code
+change. ⚠ This replaces the invoice-date reversal agreed on 21/10.
+
+Checked against the 604 active UAT mappings (read-only). 53 ticket products
+appear in the file, all with at least one mapping; no file article is a bundle
+with components.
+
+| Order year | Exactly one edizione | None      | More than one |
+| ---------- | -------------------- | --------- | ------------- |
+| 2022       | 0                    | 7         | 0             |
+| 2023       | 0                    | 733       | 0             |
+| 2024       | 4,711                | 549       | 0             |
+| 2025       | 2,202                | 459       | 0             |
+| 2026       | 1,464                | 597       | 532           |
+| **Total**  | **8,377**            | **2,345** | **532**       |
+
+🔴 **2,105 of 7,721 orders have at least one failing ticket line**, and the
+trigger throws on the first one, so the insert of that line fails.
+
+- **No edizione for the date**: nothing covers 2022-2023, and the Food
+  Marketing Festival products are mapped only from 30/09/2026 (FMF 2027), so
+  every earlier FMF sale has no edizione. Same pattern on the 2025 `CS0001xx`
+  products.
+- **Overlaps, all in 2026**: test editions (`Test Edizione Accademy 2026` over
+  Academy/Mastery/Sold Out/Live, `test figlio rexhina` over Live 2026), Lab
+  2026 over Intensive 2026/2027, and one product with Lab 2026 mapped twice.
+- ⚠ 1,076 matching lines land on an edizione whose event date is in the
+  future, which is the ticket-send condition [OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)
+  warns about.
+
+### 🟡 2026-10-28 - edizione re-check after the cleanup: overlaps gone, FMF and pre-2024 still uncovered
+
+The first check above read the mappings with `sf data query --all-rows`, which
+**includes deleted records**: 281 of its 604 mappings had already been deleted
+(280 on 27/10, 1 on 13/10). The 532 overlaps came from those deleted rows. The
+customer, product and existing-order-key checks used the same flag but those
+objects have no deleted rows, so their results stand (re-run on live data:
+2,917/2,917 customers, 397/397 articles, 0 key collisions).
+
+Re-run against the **323 live mappings**, after Aurel Mrruku's edizione
+cleanup in UAT:
+
+| Order year | Exactly one edizione | None      | More than one |
+| ---------- | -------------------- | --------- | ------------- |
+| 2022       | 0                    | 7         | 0             |
+| 2023       | 0                    | 733       | 0             |
+| 2024       | 4,711                | 549       | 0             |
+| 2025       | 2,202                | 459       | 0             |
+| 2026       | 1,996                | 597       | 0             |
+| **Total**  | **8,909**            | **2,345** | **0**         |
+
+**1,769 of 7,721 orders** still have at least one line with no edizione. The
+causes are two, and both are mapping windows, not code:
+
+- **Pre-2024 (740 lines, 419 orders)**: every `OLD` edizione starts on
+  01/01/2024, and the earliest `DATA_DOC` is 01/12/2022.
+- **Food Marketing Festival, 2024-2026 (1,605 lines)**: the nine FMF ticket
+  products are mapped only to FMF 2027, from 30/09/2026. There is no FMF `OLD`
+  edizione, so every earlier FMF sale has nowhere to land.
+- ⚠ 1,448 matching lines land on an edizione whose event date is in the
+  future (the 2027 editions, Live/Intensive/Lab 2026), the ticket-send case
+  [OI-276](OI-276%20Dummy%20import%20editions%20are%20needed%20to%20load%20historical%20orders.md)
+  warns about.
+
+**Second re-check, same day**, after Aurel Mrruku added `Food Marketing
+Festival OLD` (category E02, 01/01/2024-30/09/2026; FMF 2027 now starts
+01/10/2026): 346 live mappings, 0 overlaps, **10,514 lines OK and 740 without
+an edizione, all dated before 2024 (419 orders)**. 2024-2026 is fully covered.
+What remains is moving the start of the seven `OLD` category mappings (E02-E07,
+E09) from 01/01/2024 to 01/12/2022. 1,446 matching lines still land on a
+future event.
+
+🟢 **Closed the same day, on Aurel Mrruku's request**: in Pienissimo UAT,
+`Da_Data_Competenza__c` of the seven `OLD` editions (Sold Out, Mastery,
+Academy, ODB Live, Camerieri Venditori, Pienissimo Live, Food Marketing
+Festival) was moved from 01/01/2024 to 01/12/2022, and their 132 mappings were
+re-saved so the trigger copied the new start. This ran as one anonymous Apex
+transaction with assertions and rollback; no integration log was written. Re-check: **11,254 of 11,254
+ticket lines find exactly one edizione, 0 orders fail**. Still open: 1,446
+lines land on a future event.
+
+**Agents on Mexal-coded Accounts, same day (UAT write, on Aurel Mrruku's
+request).** Every coded UAT Account already points to an existing agent user,
+except 8. Five were moved to Segreteria (`610.00001`): four linked to a test
+administrator and one linked to an agent user with no code. Three linked to a
+real agent (`610.00017`) only lacked `Codice_Agente_Esterno__c`, which was
+filled from that agent. The Mexal-update bypass was on, and there were no
+callouts or queueables.
+
+Not done, by choice: on the Mexal side, 5,177 customers carry an agent code
+with no Salesforce user (`610.00006/08/11/13` and a few others, or blank), and
+3,886 of them are assigned to a real agent in Salesforce. Those assignments
+were left as they are.
+
+### 🟢 2026-10-28 - full dry run of the UAT load: all 7,721 orders insert cleanly
+
+Aurel Mrruku's decisions for the load: ticket lines **do** generate tickets, and
+the duplicate `ID_RIGA_MEXAL` values are not a blocker. A re-check found 6
+duplicates in 4 orders, so for those lines the invoice match falls back to
+article and quantity.
+
+The loader is anonymous Apex in UAT. It runs in chunks of at most 250 orders,
+kept under the ~32k-character script limit, and each chunk is all-or-nothing.
+It writes:
+
+- **Orders**: `Status = Ordinato`, `Origine__c = Mexal`, `EffectiveDate` =
+  `DATA_DOC` and the four key fields. Orders whose key already exists are
+  skipped.
+- **Tranches**: one `Tranche__c` per order and `DATA_TRANCHE`, numbered by
+  date, with `Importo_Previsto__c` = the sum of its lines.
+- **Lines**: `OrderItem` with `UnitPrice` = amount / quantity,
+  `Mexal_Line_Number__c` = `ID_RIGA_MEXAL`, `Tranche__c` and `Data_Scadenza__c`.
+
+The one Mexal code with two Accounts (`501.08293`) is resolved to the Account
+whose P.IVA matches Mexal.
+
+The dry run executed every chunk and then threw, so the whole transaction
+rolled back, async jobs included. Nothing remained afterwards: 0 `Mexal`-origin
+orders, 0 tranches, no integration log.
+
+| Created                 | Count  |
+| ----------------------- | ------ |
+| Orders                  | 7,721  |
+| Tranches                | 7,761  |
+| Order lines             | 17,300 |
+| Ticket assets           | 19,873 |
+| Event invitations       | 9,715  |
+| Orders queued for Mexal | **0**  |
+
+Peak per chunk: CPU 2.5 s, 59 SOQL, 1,495 DML rows. Remaining caveats:
+
+- The invitations are only created; sending is the Marketing Cloud Growth path,
+  which is not active in UAT. In Prod, invitations on past events would be due
+  at once.
+- The existing UAT invoices will not relink by themselves (see
+  [OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)).
+
+### 🟢 2026-10-28 - loaded into UAT, and the invoices already there are linked
+
+**The load ran** on Aurel Mrruku's go-ahead, between 15:05 and 15:11 UTC, in 53
+chunks with no failures. The duplicate riga 5 of OC 1/50020 was dropped and
+the most recent row kept. Result:
+
+- **Orders**: 7,721, one per key, all with a blank Mexal status. Their
+  `TotalAmount` matches the file's line sum to the cent.
+- **Rest of the load**: 7,761 tranches, 17,299 lines, 19,871 tickets and 9,715
+  invitations.
+
+**Then the invoices already in UAT were linked**, from stored data only and with
+no Mexal call. The rules are those of `MexalInvoiceLineImportBatch`: the order
+by `Riferimento_Ordine_Mexal__c`, then the line by article and quantity, since
+every origin is the invoice itself. Each line then takes its rate and the
+payment state of that rate.
+
+|                                            | Linked / total |
+| ------------------------------------------ | -------------- |
+| Invoices                                   | 445 / 548      |
+| Invoice lines                              | 1,210 / 1,360  |
+| Rates                                      | 489 / 593      |
+| Order lines `Paid` / `Unpaid` / `Invoiced` | 837 / 301 / 72 |
+| Orders now `Incassato` (tranches `Pagata`) | 319            |
+| Tickets now `Disponibile`                  | 635            |
+
+Unlinked, as expected: 48 lines reference 17 orders dated 12-26/10/2026, which
+are not in the 23/10 file, and 12 are description rows. UAT holds only 548
+invoices, so about 460 of the 7,721 orders have one. The rest stay `Ordinato`
+until the invoice sync imports their invoices, and that sync is now blocked
+(see [OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)).
+
+### 🟢 2026-10-28 - invoices 2024-2026 pulled from Mexal: every loaded order links by itself
+
+On Aurel Mrruku's request the Mexal calls were reopened, with the named
+credential back to `Enabled`. The three nightly jobs are still off. The full
+invoice history was then pulled into UAT.
+
+🔑 **Finding: before this change the integration could never fetch a
+prior-year invoice.** Mexal keeps warehouse documents, invoices included, in
+one archive per accounting year, and `MexalSearchCalloutService` always sent
+`Coordinate-Gestionale: Azienda=PIE Anno=<current year>`. The invoice search
+returned 0 rows for 2024 and 2025, and 543 for January 2024 with `Anno=2024`.
+The scadenzario is not split by year.
+
+The fix is deployed to UAT, in the repository and **not committed**:
+
+- `MexalSearchCalloutService.accountingYear`, an optional override of the
+  year in the header;
+- `MexalInvoiceLineImportBatch`, which asks for each invoice detail in the
+  invoice's own year;
+- `MexalInvoiceImportService.importByDocumentDate(from, to)`, a bounded window
+  searched in the year of its start date.
+
+**Run** (all reads from Mexal): headers and scadenzario in 149 weekly windows,
+01/01/2024-29/10/2026, then the existing line batch over the 10,258 invoices
+without lines (206/206 chunks, 0 errors).
+
+|                                                               | Result                                                                |
+| ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Invoices imported                                             | 10,806 (2024: 6,161 · 2025: 2,292 · 2026: 2,353), all with an Account |
+| Due dates                                                     | 15,492                                                                |
+| Invoice lines                                                 | 32,294 (30,362 with an order reference)                               |
+| **Loaded order lines linked to an invoice line**              | **17,299 / 17,299**                                                   |
+| **Loaded orders with an invoice**                             | **7,721 / 7,721**                                                     |
+| Invoices linked to an order                                   | 7,764 / 10,806                                                        |
+| Order lines `Paid` / `Unpaid` / `Invoiced` (no matching rate) | 15,487 / 350 / 1,462                                                  |
+| Orders `Incassato` / `Ordinato`                               | 6,407 / 1,314                                                         |
+| Tickets `Disponibile` / `Ordinato`                            | 16,970 / 2,901                                                        |
+
+The 3,042 invoices without an order split two ways:
+
+- **1,618 carry no order reference.** They were issued without an order, so
+  this is expected.
+- 🔴 **1,424 reference an order the 23/10 file does not contain**: 1,363 from
+  2024, 22 from 2025, 21 from 2026 and 16 from 2023. This fits the file being
+  provisional: about 17,300 lines against the roughly 39,000 announced on
+  22/10. Those orders are missing from the extract, which is for Fabrizio
+  Paganelli to explain.
+
+### 🟢 2026-10-28 - what was said to the client, and the three things the mail settles
+
+The load above was reported to the client as it ran, in the **Import Ordini**
+thread (Gmail `1a168166785585be`). Four facts in that correspondence are not
+derivable from the org work:
+
+🟢🔑 **The 2024 cut-off is on the invoice, not on the order.** Aurel Mrruku asked
+why the file holds orders dated 2022 and 2023 (**12:00:30Z**, _"ci sono ordini
+con DATA_DOC nel 2022 e 2023. Come mai? Mi aspettavo solo ordini dal 2024 in
+poi"_). Fabrizio Paganelli, **12:13:25Z**:
+
+> _"Per fare l'import dello storico sono partito **dalle fatture emesse a partire
+> dal 01.01.2024**. Queste possono fare riferimento a ordini antecedenti il
+> 01.01.2024 (questo il motivo per cui nella data ordine trovi anche gli anni
+> 2022 e 2023)"_
+
+🔑 **This corrects the scope rule as this record has carried it since 20/10** —
+_"scoped to invoiced orders since 01/01/2023"_ and the 22/10 rules' order-date
+framing. The extract is an **invoice**-driven set; order dates run back further
+by construction, and the pre-2024 orders are not stragglers to be excluded.
+
+🔴 **The `ID riga Mexal` column was challenged and the challenge was not
+resolved in writing.** Aurel Mrruku, **11:52:31Z**: _"nel file Excel 'Import
+Ordini' abbiamo riscontrato che il campo 'ID riga Mexal' non risulta valorizzato
+correttamente … questo dato è fondamentale per poter procedere con
+l'aggiornamento delle righe di fattura."_ Fabrizio Paganelli, **12:11:26Z**: _"In
+che senso non è valorizzato correttamente? Non vedo righe nulle. Magari chiamami
+nel pomeriggio."_ The call followed at 14:07 CET
+([Import Ordini](../meetings/2026-10-28%20Import%20Ordini.md)) and ⚠ **its
+transcript is unusable**, so what was agreed about the column is not in the
+record. The load ran to completion afterwards.
+
+🟢🔑 **The missing-agent default is resolved, and it is `610.00001`.** Aurel
+Mrruku sent the live distribution (**11:46:54Z**, 16 codes of the form
+`610.000NN` with their customer counts); Fabrizio Paganelli answered at
+**12:06:40Z**:
+
+> _"i codici agenti che trovi negli ordini ma che non sono presenti nella lista
+> degli agenti che ti ho passato ieri, **li puoi forzare tutti su 610.00001**. Me
+> lo segno così quanto ti invierò **i movimenti definitivi da portare in
+> produzione** farò già questa trasformazione."_
+
+So the 22/10 rule recorded as _"missing agent → existing code 610"_ now has its
+full value, and 🔑 **the client has undertaken to apply the transformation in the
+production file himself** — which means the rule must _not_ be applied twice.
+See [OI-293](OI-293%20The%20agent%20registry%20for%20the%20production%20load%20may%20be%20incomplete.md).
+
+⚠ **The integrations were blocked for the duration, and the client was told so.**
+Aurel Mrruku, **11:27:59Z**: _"Per evitare la creazione duplicata di 7.721 ordini
+su Mexal, è necessario **bloccare temporaneamente le integrazioni**."_ 🔑 **In
+the repository the guard is not temporary**: `OrderMexalIntegrationService` gained
+a permanent skip on `Origine__c == 'Mexal'` the same day, commented _"Orders
+migrated from Mexal already exist there: sending them would duplicate them."_
+Both can be true — a standing origin filter plus a session switch — but **only
+the standing filter is in source**, and the Mexal order API was reported reopened
+at **16:19:55Z** (_"Ho anche apperto le api verso mexal se vuooi proseguire con i
+test"_). Account sending is a separate switch and is covered by
+[OI-296](OI-296%20Account%20creation%20to%20Mexal%20failed%20in%20UAT%20and%20account%20send%20was%20switched%20off.md).
+
+🟢 **The client acknowledged the result**: Fabrizio Paganelli, **16:21:38Z**,
+_"Bene! Ottimo lavoro."_ ⚠ Sabatino Rinaldi and `amministrazione@` were cc'd from
+15:32Z onward, so the load figures are now in front of the client's data owner.
+
+⚠ **This was UAT.** Aurel Mrruku's own wording at 15:24:37Z — _"concludo tutto il
+ciclo **in UAT**"_ — against his 11:27:59Z framing of the day as _"il deploy in
+produzione e il caricamento degli ordini"_. 🔑 **The `Prod` and `UAT` git branches
+have not moved since 26 October**, and the production target was restated the
+same afternoon as **Friday** (Slack `C0C38JJ9D1T`, 15:24:14 CET: _"spero entro
+venerdì finiamo tutto così hai la produzione up & running"_), where 27/10 had it
+as _"entro domani sera"_. **The answer to "is the 28–29/10 import the migration
+or a rehearsal" is: a rehearsal, in UAT.**
+
+### 🟢 2026-10-29 - an order line now takes the payment state of its whole invoice
+
+**Why.** In all 17,299 loaded lines `DATA_TRANCHE` equals the invoice's
+document date: a tranche is the billing event, not a payment due date. The
+old rule (`matchDeadline`) attached a line to the rate carrying the line's
+date. On an invoice with several rates it found nothing for 1,465 lines,
+which stayed `Invoiced` for good. One of them is OC 1/50638 (order 00009100):
+FT 3/1377/2024 has 3 rates, all paid, none dated on the invoice date.
+
+The Mexal scadenzario cannot link a rate to a line. Each document is one
+invoice with all its rates, and it has no order or line field
+(`serie`, `numero`, `data_documento`, `codice`, `dt_sca_pg`, `imp_scadenza`,
+`stato_pagamento`, ...). Aurel Mrruku therefore chose the link through line
+IDs: order line → invoice line → invoice → every rate of that invoice, with
+no date involved.
+
+**Change**, deployed to UAT only, in the repository and not committed:
+
+- **`MexalInvoiceImportService`**:
+  - `invoicePaymentStatus`: `Paid` once every rate is paid, `Unpaid` while one
+    is open, `Invoiced` with no rate yet.
+  - `singleDeadline`: the line points to a rate only when the invoice has
+    exactly one.
+  - `linkOrderLines` rewritten on that basis. All rates of an invoice whose
+    lines sit on one tranche are linked to that tranche.
+  - `deleteStaleDeadlines`: rates Mexal no longer sends for an invoice are
+    deleted, so a re-split invoice cannot stay unpaid for ever.
+  - `matchDeadline` removed.
+- **`MexalInvoiceLineImportBatch`**: uses the same two methods.
+- **`ScadenzaFatturaTriggerHandler`**: a rate change now recomputes every line
+  of its invoice, not only the lines linked to that rate.
+
+Before the change UAT had no invoice whose lines sat on different rates, and
+no Salesforce-origin order with an invoice. No case relied on the per-date
+granularity.
+
+**Recompute on the loaded orders**: 7,763 invoices in 20 chunks, 0 errors.
+
+|                                | Before               | After                |
+| ------------------------------ | -------------------- | -------------------- |
+| Lines Paid / Unpaid / Invoiced | 15,487 / 350 / 1,462 | **16,714 / 585 / 0** |
+| Orders Incassato / Ordinato    | 6,407 / 1,314        | **7,536 / 185**      |
+| Tranches Pagata / Aperta       | -                    | 7,566 / 195          |
+| Tickets Disponibile / Ordinato | 16,970 / 2,901       | **19,279 / 592**     |
+
+Order 00009100 is now `Incassato`, its tranche `Pagata` and both tickets
+`Disponibile`.
+
+⚠ **Separate, pre-existing problem: the nightly invoice sync often fails.**
+At 03:30 Europe/Rome both Mexal searches returned HTTP 500 on 9 of the last
+15 nights, 29/10 included. The articles job at 01:00 and the customers job at
+02:00 succeed, and the same searches replayed by day return 200. A failed run
+keeps its cursor, so nothing is lost, but payments recorded in Mexal reach
+Salesforce late. Rescheduling the job, or adding a retry, is still to be
+decided.
+
+🟢 **2026-10-29 - in Prod:** the prior-year invoice fetch and the invoice-level
+payment rule were deployed to Pienissimo Prod with the rest of the branch delta
+(quick deploy `0AfSW000001KQU20AO`). Prod has no Mexal nightly jobs scheduled.

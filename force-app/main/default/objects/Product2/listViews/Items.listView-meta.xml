@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Items</fullName>
+    <columns>PRODUCT2.ACTIVE</columns>
     <columns>PRODUCT2.NAME</columns>
     <columns>PRODUCT2.CUSTOMER_PRODUCT_ID</columns>
-    <columns>PRODUCT2.FAMILY</columns>
-    <columns>Product_Price__c</columns>
-    <columns>PRODUCT2.ACTIVE</columns>
+    <columns>Natura__c</columns>
+    <columns>Gruppo_Merceologico__c</columns>
+    <columns>Categoria_Articolo__c</columns>
+    <columns>Numero_Tranche__c</columns>
+    <columns>Tipo_Biglietto__c</columns>
+    <columns>Livello_0__c</columns>
+    <columns>Genera_Biglietto__c</columns>
+    <columns>Evento__c</columns>
+    <columns>PRODUCT2.DESCRIPTION</columns>
+    <columns>Anno_Solare__c</columns>
+    <columns>Alq_Iva__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>PRODUCT2.RECORD_TYPE</field>

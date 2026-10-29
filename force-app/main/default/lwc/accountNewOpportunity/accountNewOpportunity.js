@@ -81,7 +81,7 @@ export default class AccountNewOpportunity extends NavigationMixin(
   get isPlusRecordType() {
     return (
       this.selectedRecordTypeDeveloperName === PLUS_RECORD_TYPE ||
-      this.selectedRecordTypeName === "Plus Attivazione/Rinnovo"
+      this.selectedRecordTypeName === "Performance Plus"
     );
   }
 

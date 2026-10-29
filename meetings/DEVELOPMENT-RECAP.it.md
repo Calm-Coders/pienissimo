@@ -8515,3 +8515,431 @@ discrezionale»_, `status: agreed`, mentre è fissata una call col fornitore
 dell'ERP per definire come viaggiano gli sconti. **Questa tornata non ha
 modificato alcun requisito.** La lista concorrenti del `DM-07` è invariata.
 Entrambi richiedono una decisione umana.
+
+## 70. Aggiornamento 26/10/2026 — tutto DevMain è andato in produzione, e il rilascio ha lasciato dietro di sé tre guasti attivi
+
+**Fonte:** `requirements-check` notturno, watermark 23/10/2026T22:00Z, tre
+giorni (il 24 e 25/10 erano il fine settimana e nessuna tornata è stata
+eseguita). Una call cliente analizzata dalla trascrizione integrale, più il
+repository su `origin/DevMain` `428f42b`.
+
+### Il rilascio
+
+🟢🔑 **`DevMain` è in produzione.** 751 componenti, 168/168 test, **copertura
+77,9%** (validazione `0AfSW000001K5Ft0AK`, quick deploy `0AfSW000001K5Kj0AK`),
+con promozione `DevMain` → `UAT` → `Prod` tramite le PR #113 e #114. Il rischio
+di copertura Apex che bloccava il rilascio da agosto è **risolto**; il job
+`Quote Negotiation Aging - Daily` è stato interrotto per il deploy e
+rischedulato in modo identico. Escluse come previsto: le credenziali DocuSign,
+i metadati community/network/site, il profilo guest e il profilo `Agente`.
+`DevMain` è passato da `ebc2c5b` a `428f42b` — **14 commit, 4 PR integrate**
+(#108, #109, #111, #112).
+
+### Cosa il rilascio ha portato con sé
+
+🔴🔑 **Lo sconto di riga verso Mexal è inviato come totale di riga, mentre
+Kreosoft ha detto che è per unità** (§[#287](open-items.it.md)). Mirko Merendi,
+due volte nella call delle 11:00: _"lo sconto a valore va sulla quantità, quindi
+se ci sono due quantità e c'è lo sconto di €400 **devi mettere -200, devi
+dividere per le quantità**"_. Fabrizio Paganelli l'ha ripetuto indicandone la
+conseguenza: _"**Altrimenti dopo sbagliamo veramente a fatturare** se non è
+così."_ `MexalOrderSendService` invia `-(Prezzo_Listino__c - UnitPrice) ×
+Quantity` con un commento che afferma che è Mexal a dividere — **affermazione che
+nulla in questo verbale sostiene**. Entrambi gli operandi sono per unità secondo
+le definizioni del repository stesso, quindi il codice invia il totale di riga in
+un campo applicato per unità: sull'esempio di Kreosoft (listino 2.000, netto
+1.500, quantità 2) lo sconto applicato è 2.000 invece di 1.000. **A quantità 1 i
+due coincidono, ed è per questo che un test superficiale passa** — e il cliente
+afferma che la quantità 2 è frequente, contro la stima di Kreosoft _"al 95%
+quantità uno"_. **Nessun ordine scontato è mai stato inviato a Mexal end to
+end.**
+
+🔴 **La modifica di un Referente va in errore in produzione se l'Azienda non ha
+Agente** (§#288). Alle **16:28:17Z**, 90 minuti dopo il rilascio,
+`ContactTriggerHandler.cls:203` — un `update` nudo sull'Account — ha fatto
+scattare la regola attiva `Agente_required_for_Azienda_and_Locale`
+**annullando la modifica di un utente**. Entrambe le metà della causa sono nel
+codice sorgente. 🔑 È esattamente la forma del difetto previsto dalla §#286
+quattro giorni prima, e **non si risolve con i permessi**: l'ostacolo sono i
+dati, non gli accessi.
+
+🔴 **Il flusso di invio biglietti in produzione richiama un campo che non
+esiste** (§#289). Il flusso autolaunched **attivo** _Automazione: Invio Biglietto
+assegnato_ è andato in errore alle **17:01:19Z e 17:25:19Z** su _"Schema field
+not found. Entity: Asset, Field: `QR_Id__c`"_. Quel campo non è in **nessun**
+file di metadati né in **nessuna** directory dei campi Asset, e **il flusso
+stesso non è a sorgente**: esiste solo nell'org. La consegna del biglietto è il
+risultato per cui esiste tutta la catena Biglietto, e i biglietti dell'Academy
+del cliente partono da Salesforce in gennaio.
+
+### Cosa è stato definito
+
+🟢🔑 **La scomposizione dei prezzi verso Mexal è definita** (§#284). Kreosoft ha
+partecipato a un incontro per la prima volta nella storia di questo progetto:
+`prezzo` porta il prezzo di listino, `sconto` lo sconto, **meno davanti per un
+valore, numero semplice per una percentuale**, **separatore virgola e massimo
+due decimali** (per mail, 14:27Z). Il disaccordo del 22/10 fra percentuale e
+valore **si è risolto da sé**: Aurel Mrruku ha scelto la forma a valore e
+Fabrizio Paganelli non l'ha riaperto. Gli arrotondamenti in Mexal **non sono
+configurabili** ed entrambe le parti hanno **rinunciato a voce all'esposizione
+del centesimo**: _"se c'è un centesimo non me ne frega niente. L'importante è che
+non si fermino gli ordini."_ ⚠ Il nome del campo Mexal è stato incollato nella
+chat dell'incontro, che la trascrizione non registra — quarta fonte che lo
+richiama senza contenerlo.
+
+🟢🔑 **La regola reale dietro le edizioni fittizie di import è finalmente a
+verbale** (§#276). Il meccanismo è slittato a una terza variante — un'_"edizione
+bidone"_ con date passate, avendo Fabrizio Paganelli dimenticato del tutto il
+flag `old` — ma Aurel Mrruku ha enunciato il vincolo che le fa funzionare tutte:
+_"l'importante è che **la data non sia nel futuro**, perché altrimenti marketing
+prenderà il link."_ ⚠ Non è stato scelto nulla e nessuna delle tre varianti è
+stata ritirata. 🟢 La precondizione è superata: tutti i prodotti sono attivi,
+confermato in call e per mail.
+
+🟢 **La correzione dei permessi della §#286 è stata integrata** con la PR #109 —
+e 🔑 è passata da un **permission set**, non dal profilo `Agente` escluso dal
+deploy in produzione.
+
+### Nuovo perimetro, e un limite
+
+🔴🔑 **La migrazione di Lead e Referenti è un ambito che nessuno aveva messo per
+iscritto** (§#290). Fino a questa call il verbale copriva solo ordini, fatture e
+biglietti. Il project manager del cliente **ha rifiutato di farsi carico
+dell'estrazione** — _"io su questi aspetti qua non so nulla. Bisogna che parliate
+con Sabatino"_ — e Sabatino Rinaldi, la persona a cui è stata rimandata, era
+assente. Elena Spini gli ha scritto alle 13:33Z; ⚠ senza risposta, senza data,
+contro la scadenza del file del **13 novembre ore 09:00**. 🔴 Zoho **non può
+popolare il set di campi concordato**, e 🔑 **i consensi viaggiano sul Lead**,
+cosa che nulla affronta.
+
+🟢🔑 **ROMI ha fissato il proprio limite di perimetro.** Gianpaolo Motta, che
+approva lo staffing di questo progetto, su `#tproj-pienissimo`: _"su questo
+progetto non abbiamo più margine per assorbire cose in più, **spostagliele alla
+fase 2**"_. 🔴 **Venti minuti dopo la §#290 è andata al cliente come semplice
+richiesta**, non come Change Request — quindi il meccanismo della §#285 esiste
+ora in due luoghi e **non è ancora stato applicato a nulla.** Il cliente tace
+sul paragrafo CR da tre giorni, e la pianificazione della Fase 2 è essa stessa
+_"slittato alla settimana prossima"_.
+
+### Invariato
+
+🔴 **La §#212 è invariata per la quattordicesima notte — e ora è in produzione**,
+dentro il rilascio da 751 componenti, insieme allo stato `Incassato` a livello di
+ordine introdotto da `9512ee0`, che le ~15.000–30.000 righe storiche
+erediteranno al caricamento. 🔴 **Nessuno ha chiesto se Pienissimo abbia un
+contratto Zoho oltre il 31 ottobre** — ottava tornata, contro una pianificazione
+che entrambe le parti hanno confermato per iscritto.
+
+**Questa tornata non ha modificato alcun requisito.** 🔴 **`SAL-12` non è citato
+per la settima sessione** — _"nessuno sconto discrezionale"_, `status: agreed`,
+mentre un meccanismo di sconto definito è ormai realizzato in produzione. La
+lista concorrenti del `DM-07` è invariata. Entrambi richiedono una decisione
+umana. 🔑 E due assenze restano esse stesse rilievi: nessuna riga del registro
+copre la **scomposizione dei prezzi verso Mexal**, e nessuna copre la
+**migrazione di Lead o Referenti**.
+
+---
+
+## 71. Aggiornamento 27/10/2026 — il cliente ha risposto sulle domande dei biglietti, ROMI ha quotato la Fase 2, e il caricamento in produzione ha una data: domani
+
+Ricognizione notturna, watermark **2026-10-26T22:00Z**. **Due riunioni
+Pienissimo, entrambe analizzate dalle trascrizioni integrali**, oltre alla
+giornata di posta più densa da settimane e tre canali Slack che erano silenti.
+
+### Il cliente ha finalmente risposto — su tre delle domande aperte sui biglietti
+
+🔑 **La risposta di Sabatino Rinaldi esiste e questa casella non la contiene.** È
+nota unicamente attraverso la citazione letterale di Elena Spini nella DM di
+gruppo marketing ROMI alle **09:18:10 CET**, e **la sua data è ignota**. Una
+ricerca Gmail a 14 giorni sul suo indirizzo restituisce solo mail *a* lui. Il
+thread è quello su cui Elena Spini aveva annotato il 23/10 che Aurel Mrruku e
+Fabrizio Mastracci non erano in copia.
+
+- 🟢🔑 **Il §#250 ha risposta: un set di 11–15 comunicazioni con i ritardi
+  impostati a livello di edizione**, accettato per gli eventi a pagamento, ora
+  nominati — Camerieri Venditori, Academy, Pienissimo Live, Mastery, Happy Team.
+  A ROMI è chiesto di procedere con la configurazione e il lavoro sui template.
+  🆕 **Ed entra un requisito: template _"completamente personalizzabili"_**, che
+  non compare in alcuna riga, voce di registro o recap. ⚠ Il cliente ha scritto
+  _"ritardi orari"_ per la seconda volta, contro campi concordati in giorni.
+- 🟢🔑 **Il §#242 è confermato**: _"il tasto traccia la rinuncia senza cancellare
+  il biglietto dal CRM; la riconciliazione la facciamo noi dopo l'evento."_
+  L'asset non viene cancellato, quindi la scrittura è un cambio di stato — ⚠ dove
+  risieda resta non accertato.
+- 🔴🔑 **Il §#269 è stato ribadito come requisito, non specificato** — _"sappiamo
+  che è previsto più avanti, ma **per noi è un requisito**"_ — e ROMI ha deciso
+  la stessa mattina di bloccarlo: Elena Spini _"sarà per forza fase 2 … **ma come
+  deve essere gestita?**"_, Fabrizio Mastracci _"la 2 bloccala, la 1 e la 3 ok."_
+  **Punti 1 e 3 accettati, punto 2 rifiutato per la Fase 1, e al cliente non è
+  stato detto.**
+- 🟢🔑 **Il cliente ha spostato da sé del perimetro alla Fase 2**: Food Marketing
+  Festival e Tour, _"anche perché dobbiamo ancora definire il modello di
+  biglietteria."_
+
+### La Fase 2 ha per la prima volta una stima in giornate uomo
+
+[La stima di Fase 2](../notes/The%20Fase%202%20estimate.md), rivista voce per voce
+nel follow-up interno delle 17:03. 🟢🔑 **La paternità è finalmente a verbale** —
+Elena Spini: _"io e **Claudio** abbiamo partorito questo documento."_ Valori,
+approssimativi e non ancora ricontati: **20** giorni per il primo pacchetto,
+**13–15** per note di credito / incassi errati / scadenzario, **10** per gli
+spostamenti tra edizioni (🔴 Aurel Mrruku ne voleva 15–20 e ha messo a verbale il
+dissenso — _"Non sono per niente d'accordo, però va bene"_), **10** per gli
+eventi multiedizione, **3–5** per gli Ordini Pienissimo Pro, **3–5** (forse 5–7)
+per GLS e Teachable, **5–10** per l'analisi.
+
+🔴🔑 **Il rilievo non è l'aritmetica. È che la stima assorbe righe aperte di Fase
+1** — §#269, §#272, il territorio Ri.Ba./scadenzario del §#212 e le note di
+credito escluse dallo storico 2024 il 22/10. **È la decisione di Gianpaolo Motta
+del 26/10 che viene eseguita internamente**, e ⚠ **nulla dice che al cliente sia
+stato comunicato quali voci si sono spostate.** Il documento va a _"Andrea"_, poi
+a Daniela Morgese; ⚠ quale Andrea non è accertato.
+
+🔑 La condizione posta da Elena Spini per la Fase 2 è un blueprint firmato prima
+di ogni sviluppo — _"questa volta l'analisi mi devono dire subito che cacchio
+vogliono … e glielo faccio subito confermare"_ — risposta diretta all'esperienza
+di questo progetto. Si attende che il cliente tagli tutto.
+
+### Il caricamento in produzione si chiude domani
+
+Aurel Mrruku, al cliente alle 12:00 CET e internamente alle 17:03: _"da ieri che
+mi sto occupando di quello … **entro domani sera finisco il rilascio in
+produzione**"_, poi _"domani, dopodomani produzione, **import degli ordini**."_
+**15 campi sono in produzione**, esiste un permission set `Agente` che è stato
+ristretto, e sette utenze commerciali sono state create e abilitate la stessa
+sera. 🔴 **Gli endpoint di produzione WooCommerce servono e non erano ancora
+stati richiesti.** ⚠ **Se l'import degli ordini sia la migrazione vera o una
+prova non è dichiarato**, e il calendario concordato pone la seconda estrazione
+al 13/11 ore 09:00 con go-live il 16.
+
+### Righe nuove
+
+- 🔴 **§#291 — modificare la data di un'edizione non aggiorna le relative
+  mappature prodotto.** L'intervallo di date viene copiato in ogni mappatura alla
+  creazione e l'ordine si lega all'intervallo **della mappatura**: una data
+  evento confermata comporta la modifica a mano di ~20 record. Ammesso in
+  riunione come _"è un casino"_ e affidato al cliente. 🔑 **Il workaround
+  concordato garantisce quel lavoro**: un evento senza data riceve una data
+  deliberatamente molto in là perché non scatti l'automatismo di invio biglietti
+  (§#276), quindi ogni edizione così creata richiederà poi questa correzione. Le
+  due regole sono state concordate nella stessa conversazione e l'effetto
+  combinato non è stato sollevato.
+- 🔴 **§#293 — l'anagrafica agenti per il caricamento in produzione potrebbe
+  essere incompleta.** Uno stesso codice agente porta due nomi diversi nello
+  storico del cliente: per questo è stato chiesto un elenco pulito — _"**anche
+  quelli che non ci sono più**"_, due volte. Quello arrivato 22 minuti dopo sono
+  sette righe di personale commerciale attuale. 🔑 **I codici sono `610.000NN`,
+  quindi il default di import registrato il 22/10 come "codice 610" nomina un
+  prefisso**, e a quale codice si risolva non è detto.
+- 🟢 **§#292 — le related list Note sono promesse al cliente e non realizzate.**
+  ROMI ha rifiutato un campo note libero su ordini e preventivi (Elena Spini:
+  _"aiutatemi a fare muro"_, perché gli accordi di pagamento finiscono scritti in
+  prosa) e ha concesso al suo posto la related list standard Note su Lead,
+  Account e Opportunità, per iscritto alle 17:27:02Z con la precisazione che non
+  attiva alcun automatismo. ⚠ La riunione ne aveva concordati due; la mail al
+  cliente ne nomina tre, e il testo successivo prevale.
+- 🟢 **Il calendario Zoho dei tutor non sarà migrato** — _"non è prevista
+  un'importazione o sincronizzazione automatica"_; gli impegni esistenti vanno
+  reinseriti a mano come Eventi. 🟢 **Prima richiesta nuova del cliente respinta
+  senza riserve** dopo la decisione sul perimetro del 26/10. ⚠ Respinta, non
+  incanalata come Change Request, e il reinserimento manuale non ha responsabile.
+
+### Altro, risolto o appreso
+
+🟢 **Il file di import ordini non manca di campi** — era un artefatto
+dell'ordinamento; le prime righe sono a valore zero. 🔑 **`importo netto` è prezzo
+× quantità e ROMI dividerà** — _"Basta che divido per la quantità"_ — che è 🔴 **la
+stessa domanda sull'unitario che il §#287 sbaglia sul lato in uscita, posta e
+risolta correttamente lo stesso giorno dallo stesso sviluppatore.** ⚠ Nessuna
+delle due riunioni ha menzionato il §#287. 🔑 **Esistono in volume righe a prezzo
+zero (omaggi)** e nulla copre il comportamento dell'invio a Mexal su di esse.
+
+🟢 **Il §#290 ha una scadenza — lunedì 2 novembre** — e il collegamento
+all'Account è identificato nel **`codice cliente esterno`**, provato su
+un'azienda di test, ⚠ in attesa di conferma del cliente. ⚠ La mail di sollecito
+non risultava inviata. 🔑 Sabatino Rinaldi ha risposto sul thread dei biglietti e
+non su questo: **il silenzio è selettivo.**
+
+🟢 **Il filtro sulle campagne padre è stato segnalato alle 10:28 CET e corretto
+alle 12:00** — `5faac77` di Anita Aga, merge PR #115. 🔑 **`Gruppo Merceologico =
+S` significa "movimentato dal 1° gennaio 2024", non "vendibile"** — Aurel Mrruku:
+_"Non lo sapevo."_ 🔑 **Un amministratore del cliente è stato guidato nel Setup
+per aggiungere valori di picklist** per l'anno accademico; nessuna nota o
+procedura copre quel percorso. ⚠ **Record di mappatura di test sono stati
+cancellati in diretta mentre colleghi ROMI ci stavano testando sopra.**
+
+🔴 **Aurel Mrruku ha confermato al cliente l'allineamento notturno con Mexal** —
+_"corretto, corretto"_ — il che **contraddice il verbale del 23/10**, secondo cui
+i flussi di sincronizzazione prodotti erano disattivati e mai dichiarati
+riattivati. Un'assicurazione verbale non è una prova; l'org non è stata aperta.
+
+🔴🔑 **Il team di consegna si riduce**: _"Regina [Rexhina Hysi] andrà su un altro
+progetto … se c'è una fase due a breve saremo solo in due, non in tre"_ — detto
+la sera stessa in cui lei lavorava sui permessi in produzione — e i pomeriggi di
+Fabrizio Mastracci sono impegnati altrove. **La stima di Fase 2 non dichiara
+alcuna ipotesi di organico.**
+
+### Invariato
+
+🔴 **Il §#212 è invariato per la quindicesima notte**, in produzione. 🔴 **Il
+§#287 è invariato nel codice per la seconda notte in produzione**; `DevMain` è
+passato da `428f42b` a `c3002a3` e i due commit sono un filtro su Campagna e il
+relativo merge. 🔴 **Il §#265 è fermo da sei giorni.** 🔴 **Il meccanismo delle
+Change Request del §#285 non è ancora stato applicato a nulla**, e il cliente
+tace su di esso da quattro giorni. 🔴 **Nessuno ha chiesto se Pienissimo abbia un
+contratto Zoho oltre il 31 ottobre** — nona tornata, a quattro giorni dalla
+scadenza.
+
+**Questa tornata non ha modificato alcun requisito.** 🔴 **`SAL-12` non è citato
+per l'ottava sessione** — _"nessuno sconto discrezionale"_, `status: agreed`,
+mentre il meccanismo di sconto è in produzione. La lista concorrenti del `DM-07`
+è invariata. 🔑 E tre assenze restano esse stesse rilievi: nessuna riga del
+registro copre la **scomposizione dei prezzi verso Mexal**, nessuna copre la
+**migrazione di Lead o Referenti**, e 🆕 nessuna copre **l'annotazione** o **la
+modificabilità dei template**.
+
+---
+
+## 72. Aggiornamento 28/10/2026 — il caricamento storico è andato a termine in UAT, non in produzione; il cliente ha consegnato il file dei Referenti; e l'unica call con il cliente è andata persa per una trascrizione inservibile
+
+Ricognizione notturna, watermark **2026-10-27T22:00Z**. Un giorno. **Una riunione
+con il cliente, che non è stato possibile analizzare**, una giornata di posta
+densa, due canali Slack attivi e tre commit su `DevMain`.
+
+### Il caricamento è andato a termine, ed era una prova
+
+🟢🔑 **L'intero ciclo ordine-fattura è stato caricato senza errori in UAT**,
+comunicato al cliente mentre procedeva (§#244):
+
+| | |
+| --- | --- |
+| Ordini · tranche · righe | **7.721 · 7.761 · 17.299** |
+| Biglietti · inviti | **19.871 · 9.715** |
+| Fatture | **10.806** — 2024: 6.161 · 2025: 2.292 · 2026: 2.353, tutte con il loro Account |
+| Scadenze · righe fattura | **15.492 · 32.294** |
+| Righe ordine collegate a una fattura | **17.299 / 17.299** |
+| Ordini con fattura | **7.721 / 7.721** |
+| Ordini `Incassato` / `Ordinato` | 6.407 / 1.314 |
+| Biglietti `Disponibile` / `Ordinato` | 16.970 / 2.901 |
+
+Fabrizio Paganelli: _"Bene! Ottimo lavoro."_
+
+🔑 **Questo risponde alla domanda che la ricognizione del 27/10 non poteva
+chiudere: era una prova.** Parole di Aurel Mrruku — _"concludo tutto il ciclo
+**in UAT**"_ — contro la sua presentazione della giornata al cliente alle 11:27Z
+come _"il deploy in produzione e il caricamento degli ordini"_. 🔴 **I rami `Prod`
+e `UAT` non si muovono dal 26 ottobre**, e il traguardo produzione è slittato nel
+pomeriggio stesso da _"entro domani sera"_ (27/10) a **_"spero entro venerdì"_**,
+cioè il 30 ottobre.
+
+### Tre punti che la posta chiarisce, e uno che resta aperto
+
+🔑 **Il taglio del 2024 è sulla fattura, non sull'ordine.** _"sono partito dalle
+fatture emesse a partire dal 01.01.2024. Queste possono fare riferimento a ordini
+antecedenti il 01.01.2024 (questo il motivo per cui nella data ordine trovi anche
+gli anni 2022 e 2023)."_ **Corregge la regola di perimetro che questo registro
+porta dal 20/10**: gli ordini ante 2024 non sono residui da escludere, sono la
+forma naturale di un'estrazione guidata dalle fatture.
+
+🟢🔑 **Il default per l'agente mancante ha un valore — `610.00001`** (§#293) — e
+🔑 **sarà il cliente ad applicare la trasformazione nel file di produzione**:
+quindi il fallback lato ROMI non deve scattare una seconda volta, e nulla dice
+quale dei due faccia fede il 13 novembre. 🔴 Aggira il problema di un codice con
+due agenti invece di risolverlo: **16 codici in uso contro 7 righe consegnate.**
+
+🔴 **La contestazione su `ID riga Mexal` non è risolta per iscritto.** Sollevata
+alle 11:52Z, contestata alle 12:11Z (_"In che senso non è valorizzato
+correttamente? Non vedo righe nulle"_), portata in call — e la trascrizione della
+call non ha registrato nulla. Il caricamento è partito subito dopo.
+
+### I dati del cliente sono arrivati, e la parte Lead ha generato un requisito
+
+🟢🔑 **Il §#290 si è mosso due volte in un giorno.** Elena Spini ha finalmente
+inviato il sollecito (09:18:11Z) e il cliente ha risposto **in novanta secondi**
+— Elisa Migliano, _"ci stiamo lavorando io e Sabatino, **entro domani**
+provvederemo a passarvi la lista"_. **È un impegno scritto del cliente per il 29
+ottobre**, tre giorni prima del lunedì che ROMI si era data internamente senza
+mai comunicarlo. 🟢 **`Referenti Salesforce_V2.xlsx` è arrivato alle 15:30Z**,
+14,2 MB, nella cartella del cliente, descritto da Elena Spini come _"file
+referenti che hanno dato Fabrizio e Sabatino"_ — prima evidenza in questo
+registro di Sabatino Rinaldi attivo sulla richiesta. ⚠ **Non aperto** (dati di
+contatto reali) e ⚠ **non ancora verificato**: il join sul `codice cliente
+esterno` resta non confermato.
+
+🆕🔴 **Nuovo §#295 — i Lead migrati devono essere distinguibili da quelli
+successivi al 16/11.** Sabatino Rinaldi lo ha chiesto **in privato**, riportato
+da Elena Spini: _"per lui è ok se stanno a NEW but devono essere diversi dai new
+che entreranno dopo il 16/11."_ ROMI ha deciso internamente per una **checkbox
+`Lead from Zoho`** con filtri nelle list view e la bonifica rimessa al cliente.
+🔴 **Nulla è realizzato** — e il campo deve esistere prima del caricamento dei
+Lead — 🔴 **e al cliente non è stato detto cosa è stato deciso.**
+
+### La call che non si può leggere
+
+🔴🔑 **Una call con il cliente di 57 minuti è di fatto non registrata.** _Import
+Ordini_, 14:07 CET, la più lunga della settimana, e 🔑 **Sabatino Rinaldi risulta
+tra chi parla** — la prima call in questo registro a cui partecipi. ⚠ **Gemini ha
+trascritto in inglese una riunione in italiano e non ha prodotto nulla di
+utilizzabile**, e il riassunto automatico afferma contenuti che la trascrizione
+non sostiene. **Nulla di esso è stato riportato in alcun punto aperto.** 🟢 La
+**chat della riunione è invece integra** e mostra il workbook del data model
+aperto a metà call: quindi la mappatura Lead/Referenti è stata percorsa — fatto
+che riguarda la chat, non le parole. **Qualcuno deve guardare la registrazione da
+380 MB.**
+
+### Due interruttori spostati, uno solo tracciato
+
+🆕 **Nuovo §#294 — il cliente ha chiesto di poter lanciare da solo le
+elaborazioni di fatture e incassi**, per vedere subito l'esito dei test. **La
+risposta ha parlato d'altro** (il blocco Mexal per il caricamento) e il thread si
+è chiuso con _"Ok, grazie, attendiamo vostre."_ Nessuna riga del registro copre
+un lancio lato cliente.
+
+🆕🔴 **Nuovo §#296 — una creazione cliente su Mexal è fallita con HTTP 400 in UAT
+alle 15:12Z** mentre il cliente faceva test, e **l'invio degli account è stato
+disattivato** dodici minuti dopo invece di essere diagnosticato. Le API ordini
+sono state riaperte alle 16:19:55Z; **dell'invio account non si parla.** 🔑 La
+sandbox chiama la società Mexal **reale**.
+
+🆕🔴 **Nuovo §#297 — i link delle edizioni OLD restano attivi**, con
+_cancellazione_ e _cambio di stato_ entrambi sul tavolo e la decisione rinviata a
+"domani". 🔑 Nel dialogo "link" non viene mai definito; qui non è stato indovinato.
+
+### Conoscenza nuova, arrivata dal codice e non da una persona
+
+🔑 **Mexal archivia i documenti per anno contabile.** Una chiamata WEBAPI legge
+solo l'anno indicato nell'header `Coordinate-Gestionale`: quindi **ogni lettura
+Mexal fatta da questo progetto prima del 28 ottobre era silenziosamente limitata
+all'anno corrente**. Il recupero storico ha dovuto cambiare anno per blocchi,
+perché le fatture coprono 2024–2026. ⚠ **Mai confermato con Kreosoft**, e il
+vincolo si ripresenta all'estrazione del 13 novembre.
+
+### Invariati
+
+🔴 **Il §#287 è invariato per la terza notte in produzione** — e **il test che lo
+chiuderebbe è stato bloccato**: il cliente aveva chiesto proprio quel ciclo E2E e
+le integrazioni Mexal sono state chiuse per la giornata. ⚠ Nulla documenta
+l'invio di un ordine scontato con quantità maggiore di uno dopo la riapertura.
+🔴 **Il §#212 è invariato per la sedicesima notte**, in produzione. 🔴 **Il §#265
+è fermo da sette giorni.** 🔴 **Il meccanismo di Change Request del §#285 non è
+ancora stato applicato a nulla**, quinto giorno. 🔴 **Nessuno ha chiesto se
+Pienissimo abbia un contratto Zoho oltre il 31 ottobre** — decima ricognizione, a
+tre giorni dalla scadenza.
+
+⚠ **§#292: il cliente potrebbe non volerla** — _"l'ho trovata, poi vedremo se
+lasciarla o no"_ — ma l'impegno scritto resta e nulla è configurato. 🟢 La
+decisione sul calendario Zoho è accettata e presa in carico: _"faranno il
+trasferimento a mano"_, ⚠ senza responsabile né stima.
+
+🔑 **La migrazione è costata più di dieci giornate uomo e nessuna voce la
+copre.** Aurel Mrruku, internamente: _"solo di migrazione abbiamo speso una 10 di
+gg"_, con _"tutti"_ coinvolti; Elena Spini: _"10gg e chi ci ha lavorato? perché
+poi Gianpaolo chiede a me…."_ Resta fuori dalla stima di Fase 2 e da ogni voce di
+Fase 1.
+
+**Nessun requisito è stato modificato da questa ricognizione.** 🔴 **`SAL-12` non
+è citato da nove sessioni.** La lista concorrenti di `DM-07` è invariata. 🔑 Le
+assenze note restano — nessuna riga del registro copre la **scomposizione prezzo
+verso Mexal**, la **migrazione di Lead o Contatti**, la **gestione delle note** o
+la **personalizzazione dei template** — e 🆕 **nessuna copre il lancio lato
+cliente delle elaborazioni di fatture e incassi.**
