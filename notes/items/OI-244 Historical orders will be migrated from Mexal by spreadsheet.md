@@ -928,3 +928,7 @@ At 03:30 Europe/Rome both Mexal searches returned HTTP 500 on 9 of the last
 keeps its cursor, so nothing is lost, but payments recorded in Mexal reach
 Salesforce late. Rescheduling the job, or adding a retry, is still to be
 decided.
+
+🟢 **2026-10-29 - in Prod:** the prior-year invoice fetch and the invoice-level
+payment rule were deployed to Pienissimo Prod with the rest of the branch delta
+(quick deploy `0AfSW000001KQU20AO`). Prod has no Mexal nightly jobs scheduled.

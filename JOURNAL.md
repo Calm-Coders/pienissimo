@@ -10,6 +10,28 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-29 - claude (branch delta deployed to Prod)
+
+- **Did:** compared `force-app` at `882f53c` with Pienissimo Prod (retrieve of all
+  808 components, XML-canonical diff): 739 identical, the rest the 9 `force-app`
+  commits since `428f42b` plus older Prod-side drift. On the user's order deployed
+  **only the differing components**, standing exclusions kept (credentials,
+  network/site/Digital Experience, guest and Agente profiles, LWC tests):
+  validation `0AfSW000001KQQn0AO` (433 components, 168/168 tests, 77.8%), quick
+  deploy `0AfSW000001KQU20AO`. The scheduled aging job was not touched (its class
+  was not in the delta). Verified after: the 6 Apex classes identical to the
+  branch, record type label `Performance Plus`, `Account.Mandato_RID__c` present.
+- **In Prod now:** Mexal-origin order send bypass, prior-year invoice fetch,
+  invoice-level line payment state, `Mandato_RID__c`, Campaign `ParentId` filter,
+  the 27-28/10 pages, layouts and list views.
+- **Overwritten in Prod, as the user chose:** `Lead.Tipo_Opportunita__c` values
+  `Recall tutor` and `WooCommerce` deactivated (0 Leads used them);
+  `Discount_Pct__c` precision back to the branch; `Qualificato` default stage.
+- **Test touched to deploy:** `MexalIntegrationTest.paidScadenzaFatturaMarksItsOrderLinesPaid`
+  fixture now sets `Fattura__c` on the line (the new rule reaches rates through the
+  invoice). Two failed validations first: manifest API 62.0 (fixed to 66.0), then
+  that test. **Uncommitted.**
+
 ## 2026-10-29 - claude (order-line payment state from the whole invoice)
 
 - **Did (UAT only, not committed):** replaced the date-based rate match with an

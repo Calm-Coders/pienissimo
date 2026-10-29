@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-20
-updated: 2026-10-28
+updated: 2026-10-29
 depends_on: []
 blocks: [OI-244, OI-274, go-live]
 severity: gating
@@ -146,3 +146,7 @@ nightly jobs were rescheduled through each scheduler's `scheduleNightly()`,
 with the same names, crons and owner (Aurel Mrruku) and timezone
 Europe/Rome; all three are in `WAITING`. The first run is the night of 29/10.
 The `Origine__c = 'Mexal'` send bypass stays in place.
+
+🟢 **2026-10-29 - the `Origine__c = 'Mexal'` send bypass is in Prod** (quick deploy
+`0AfSW000001KQU20AO`, 168/168 tests). The production load is no longer blocked
+by the Mexal send; the agent overwrite and ticket generation still apply.

@@ -847,7 +847,12 @@ private class MexalIntegrationTest {
       Data_Scadenza__c = Date.today().addMonths(1)
     );
     insert deadline;
-    update new OrderItem(Id = line.Id, Scadenza_Fattura__c = deadline.Id);
+    // The line reaches its rates through its invoice.
+    update new OrderItem(
+      Id = line.Id,
+      Fattura__c = invoice.Id,
+      Scadenza_Fattura__c = deadline.Id
+    );
 
     Test.startTest();
     // Pagata__c is a formula on the Mexal payment state.
