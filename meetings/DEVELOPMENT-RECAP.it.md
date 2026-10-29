@@ -8943,3 +8943,116 @@ assenze note restano — nessuna riga del registro copre la **scomposizione prez
 verso Mexal**, la **migrazione di Lead o Contatti**, la **gestione delle note** o
 la **personalizzazione dei template** — e 🆕 **nessuna copre il lancio lato
 cliente delle elaborazioni di fatture e incassi.**
+
+## 73. Aggiornamento 29/10/2026 — il rilascio è arrivato in produzione, la produzione ora dialoga con Mexal per davvero, il cliente ha consegnato il file dei Lead nel giorno promesso, e si sono aperti tre nuovi guasti
+
+Ricognizione notturna, watermark **2026-10-28T22:00Z**. Un giorno. **Nessuna call
+con il cliente**, una giornata densa di mail, tre superfici Slack attive e cinque
+commit che hanno mosso tutti i branch che contano.
+
+### Il rilascio è andato in porto
+
+🟢🔑 **`UAT` e `Prod` si sono mossi entrambi, per la prima volta dal 26 ottobre.**
+
+| Commit | Ora (CET) | Contenuto |
+| ------ | --------- | --------- |
+| `882f53c` | 12:30 | _"fix match fattura con id righa"_ — l'abbinamento fattura/scadenza passa dalla data all'id di riga |
+| `cd8dc4c` | 14:30 | _"deploy on prod"_ |
+| `8f039ce` | 16:50 | **PR #118**, `DevMain` → `UAT` |
+| `7905945` | 16:51 | **PR #119**, `UAT` → `Prod` |
+| `7f648a8` | 18:03 | _"abbilitato le integrazioni mexal"_ — sola documentazione; l'attivazione è avvenuta nell'org |
+
+🔑 **Il bug data-contro-id è quello che Aurel Mrruku ha descritto mentre lo
+trovava**, Slack 12:27–12:29 CET: _"avevo un bel bug su pienissimo … il problame
+di prima non era legato al contatto ma alla data fattura … si faceva il check
+sulla data di scadenza non con l id --- ed ero sicuro di averlo cambiato --- **ma
+a quanto pare no**."_
+
+🟢🔑 **E la produzione raggiunge Mexal.** Il `MexalToken` è stato inserito sul
+principal di Prod e una ricerca articoli in sola lettura ha restituito HTTP 200
+con dati (§#267). 🔑 **La conseguenza non è amministrativa**: da ora un cliente o
+un ordine creati in produzione vengono inviati a Mexal per davvero, quindi **un
+ordine di test in produzione è un documento Mexal reale** — e nessuno ha indicato
+chi debba bonificarli.
+
+### Il cliente ha rispettato l'impegno, e con voce propria
+
+🟢🔑 **`lead-da-importare.csv` è arrivato alle 09:27:06Z**, da **Sabatino Rinaldi
+in persona** (§#290). L'_"entro domani"_ scritto da Elisa Migliano il 28 ottobre
+indicava giovedì 29 ottobre, e il file è arrivato quella mattina. **Entrambe le
+metà dei dati di migrazione sono ora consegnate**: Referenti V2 il 28/10, Lead il
+29/10.
+
+🔑 **È il primo messaggio con parole sue a raggiungere questa casella.** Ogni
+riferimento precedente era un riporto di terzi: il resoconto di una DM da parte di
+Elena Spini, Fabrizio Paganelli che rimandava a lui, un nome su un invito.
+
+🟢🔑 **E risolve un problema aperto dal record del 28/10.** Enuncia
+spontaneamente la decisione `Lead from Zoho = TRUE`, la attribuisce a una
+telefonata con Elena Spini e ne dà da sé la ragione operativa — _"i commerciali
+sanno che non sono da lavorare (per il momento)"_ — quindi il _"il cliente non è
+stato informato"_ del §#295 non vale più. 🔴 **Il campo continua a non esistere, e
+il file che deve marcare è ora in mano nostra.** Va realizzato prima del
+caricamento.
+
+⚠ **Due giri di correzione e nessuna verifica.** Aurel Mrruku ha chiesto di
+eliminare i caratteri speciali e di avere il file in Excel; la risposta alle
+13:08:02Z è stata _"Credo che adesso sia corretto"_. **"Credo" non è un
+controllo**, e nessuno dei due file è stato aperto: contengono record Lead reali.
+
+### Tre nuovi guasti, e uno risponde a una domanda vecchia
+
+🔴 **§#298 — un ordine bundle da WooCommerce con cliente nuovo non arriva in
+Salesforce.** Il cliente lo ha segnalato senza indicare il sintomo (_"c'è qualcosa
+che non mi torna"_) chiedendo una call; la diagnosi è arrivata da Elena Spini dopo
+averla presa, con il log di integrazione `a05MA00000GsbhJYAR` nella sandbox
+**UAT**. 🔴 **Il log non è stato letto.** 🟢 La sessione WooCommerce del 30 ottobre
+è stata estesa per trattare anche questo.
+
+🔴🔑 **Il §#289 è fallito una terza volta, dopo il rilascio — ed è proprio questo
+il dato.** Stesso flusso, stesso errore, stessa org di produzione, 07:29 ora org.
+🔑 **Dunque `Asset.QR_Id__c` non esiste in produzione**: una domanda che questi
+record portavano come irraggiungibile dal 26 ottobre, ora risolta. 🔑 **E non è
+indotto dal rilascio**: un secondo rilascio è arrivato lo stesso giorno e il
+flusso fallisce in modo identico, perché il flusso esiste solo nell'org e nessun
+deploy lo tocca. ⚠ **Tre notifiche in tre giorni non hanno prodotto alcuna azione
+registrata.**
+
+🔴 **§#301 — una checklist ROMI nuova per questi record lascia tre passi di
+produzione non spuntati.** `Manual Steps Pienissimo`, ultima modifica 15:06:07Z:
+il subscriber `ParticipantDocumentRequestTrigger` non ha un utente di produzione,
+l'agente di default WooCommerce non è impostato in Prod, e **i job notturni Mexal
+risultano non spuntati per entrambi gli ambienti** — confermato da una verifica in
+produzione dello stesso giorno che non ha trovato alcun job Mexal pianificato. ⚠
+**Una cella vuota non prova che un passo sia stato saltato**, e l'org non è stata
+aperta.
+
+### Il cliente sta testando, e chiede
+
+🟢 **Un test end-to-end in produzione è fissato per martedì 3 novembre,
+09:30–11:30 CET**, con Elisa Migliano, Fabrizio Paganelli e Sabatino Rinaldi
+invitati (§#268): il primo test dell'org di produzione con il cliente presente. 🟢
+**Ha autorizzato un numero illimitato di ordini di test e ha rinunciato
+all'obiezione sul costo DocuSign**, ⚠ con un tetto scherzoso di _"fino a 10€"_ che
+non è un budget.
+
+🟡 **§#299 — la creazione del Bundle propone ancora gli anni solari in `Anno
+Accademico`**, `Bundle Type` ha solo due valori, e il cliente ha chiesto una
+schermata 16:9. ⚠ **Non ha indicato con cosa sostituire né l'uno né l'altro
+picklist.**
+
+🟡 **§#300 — la formazione dei tutor non ha un piano, e il cliente ha chiesto se
+tutti i tutor debbano fare i test con il suo account.** 🔴 **Una proposta di
+credenziali condivise, proveniente dal cliente, senza risposta in alcun senso.**
+
+🔑 **E una decisione che ha raggiunto il cliente lo stesso giorno in cui è stata
+presa**: le modifiche UI non si prendono più una alla volta. Il cliente le
+raccoglie in un unico file — quello di Marco Montesi — per un solo rilascio ad
+hoc. ⚠ **Il rilascio non ha una data, e non è una decisione sul regime di Change
+Request**; la risposta del cliente su quel regime è ora attesa da sei giorni.
+
+**Nessun requisito è stato modificato da questa esecuzione.** 🔴 **`SAL-12` è
+privo di citazione per la decima sessione.** La lista concorrenti di `DM-07` è
+invariata. 🔑 Le assenze consolidate permangono, e le due nuove richieste del
+cliente di oggi — contenuto dei picklist del Bundle e formazione dei tutor —
+**ricadono nella stessa lacuna**: nessuna riga del registro copre l'una o l'altra.

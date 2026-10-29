@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-26
-updated: 2026-10-26
+updated: 2026-10-29
 blocks: [go-live]
 severity: gating
 source: Gmail 1a17928d0e292e07
@@ -93,3 +93,47 @@ receiving the errors.
 ⚠ Note the **second** failure in the same interview: the `ContentVersion` lookup
 found no PDF before the schema error. Whether the PDF generation it waited on
 also failed is unknown, and would be a separate fault on the same path.
+
+## 🔴 2026-10-29 - it failed again, after the release, and the field is still absent
+
+**A third failure, and the first since the production release of the same day.**
+Salesforce flow-error mail to `a.mrruku@romicompany.com`, Gmail
+`1a188112eb9acee3`, sent **2026-10-29 14:29:49Z**, reporting an interview that
+started **07:28** and errored **07:29** org time:
+
+> _"Errore nell'elemento Get_Ticket_PDF (FlowRecordLookup). **Schema field not
+> found. Entity: Asset, Field: QR_Id\_\_c**"_
+
+Everything identifying the flow is unchanged from the 26/10 pair: API name
+`flow_701SW00000fsgPXYAY_1791487932100`, flow id `301SW00000gDd57`, **AutoLaunched**,
+**Version 5**, **Attivo**, organisation **Pienissimo srl (`00Dbl000005BSMH`)** —
+production — running as **Tech Romi (`005SW00000PV5Ja`)**. The interview again
+paused at _"Attesa Generazione PDF"_, resumed, and the `Get Ticket PDF` lookup over
+`ContentVersion` again returned _"Impossibile trovare i record"_ **before** the
+schema error.
+
+🔑 **This answers a question these records have carried as unreachable since
+26 October: `Asset.QR_Id__c` does not exist in production.** Not "is not in
+source" — Salesforce itself cannot resolve it in the org, three days later and
+after a full release.
+
+🔑 **And it closes reading 3 of the section above.** The 26/10 note left open
+whether that day's release caused this, noting the flow is org-only and was not in
+the deploy's scope. Another release landed on 29 October — the `UAT` and `Prod`
+branches both moved (PR #118 and PR #119) and a quick deploy went to production —
+and **the flow still fails identically**. 🔑 **So it is not release-induced.** It is
+a standing fault that no deployment has touched because the flow lives only in the
+org.
+
+⚠ **Unchanged and still unknown:** whether the `ContentVersion` miss is a second
+fault or the same one, and **whether anyone has seen these mails.** Three
+notifications across three days have produced no recorded action.
+
+⚠ **Possibly connected, not established:** step 2 of
+[OI-301](OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md) —
+the `ParticipantDocumentRequestTrigger` platform-event subscriber has no
+production user set. An unconfigured document subscriber would produce exactly the
+missing `ContentVersion` seen here. It would **not** explain the missing field.
+
+⚠ **The org was not opened in this run either.** This is the mail plus the branch
+and deploy record.

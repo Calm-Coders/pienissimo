@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-28
-updated: 2026-10-28
+updated: 2026-10-29
 depends_on: []
 blocks: []
 source: Gmail message 1a18311817f3381e
@@ -68,3 +68,33 @@ was running in the same org.
 5. ⚠ **One occurrence is all the record holds.** Whether this is a single bad
    record or a class of failures is unestablished; the notification is per-record
    and only one arrived in the sweep window.
+
+## 🟡 2026-10-29 - the integrations were re-enabled, but not in words that reach this item
+
+🟡 **A commit says the Mexal integrations are on.** `7f648a8`, Aurel Mrruku,
+**2026-10-29 18:03 CET**, titled _"abbilitato le integrazioni mexal"_. ⚠ **It
+changes no code** — only `JOURNAL.md` and
+[OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)
+— so the enabling happened in an org and the commit records it.
+
+⚠ **It does not answer problem 2 of this note.** What OI-267 gained that day is
+about **production**: the Mexal action configuration rows were copied in, the
+`MexalToken` was entered on the Prod principal, and a read-only article search
+returned HTTP 200. 🔑 **This note is about account sending in the UAT sandbox**,
+switched off at 15:24Z on 28/10. Neither the commit title nor the OI-267 text names
+UAT account send, so **the switch still has no recorded re-enable.**
+
+🔴 **And the environment question got sharper, not softer.** OI-267's own 29/10
+entry closes on _"Still open: whether UAT stops writing to the same Mexal
+company"_ — so UAT and production share a Mexal company, and turning UAT account
+send back on is now a decision with a production consequence rather than a toggle.
+
+🔴 **The HTTP 400 cause is still unknown.** Integration log `a05MA00000GqqcPYAR` is
+**still unread**; the org was not opened in this run either. Four days on, nothing
+says why Mexal rejected that customer.
+
+⚠ **A second integration log now exists on a different path** —
+`a05MA00000GsbhJYAR`, a WooCommerce order from a new customer that never reached
+Salesforce ([OI-298](OI-298%20WooCommerce%20bundle%20orders%20from%20a%20new%20customer%20do%20not%20reach%20Salesforce.md)).
+**Both are new-account failures and both logs are unread.** Recorded as a shape
+worth checking together, **not as a shared cause**.

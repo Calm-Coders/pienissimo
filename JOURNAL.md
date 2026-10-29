@@ -10,6 +10,47 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-29 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark
+  **2026-10-28T22:00Z**. Nine new mail messages across six threads, four Pienissimo
+  Drive items, 14 Slack messages across three surfaces, 6 commits. 🔑 **The three
+  repo commits of 29/10 already updated their own notes, so that work was not
+  re-ingested.**
+- **Found:** 🟢 **the release reached `Prod`** — `UAT` and `Prod` both moved for the
+  first time since 26/10 (PR #118, PR #119) — and 🔑 **production reaches Mexal for
+  real**, so a production test order is now a real Mexal document · 🟢🔑 **the client
+  met his written commitment**: `lead-da-importare.csv` arrived 09:27Z from
+  **Sabatino Rinaldi himself**, the first mail in his own words to reach this
+  mailbox, and he states the `Lead from Zoho = TRUE` decision unprompted —
+  **superseding OI-295's "the client has not been told"** · 🔴 **OI-289 failed a
+  third time after the release**, which 🔑 **answers a standing unreachable:
+  `Asset.QR_Id__c` does not exist in production**, and the fault is **not**
+  release-induced · 🔑 **`--partial` is the UAT sandbox**, so OI-298 and OI-296 are
+  same-org new-customer failures one day apart, both logs unread.
+- **Wrote:** new **OI-298** (WooCommerce bundle order from a new customer never
+  reaches Salesforce; log `a05MA00000GsbhJYAR` unread; on the 30/10 Woo agenda),
+  **OI-299** (bundle creation still offers calendar years in `Anno Accademico`,
+  `Bundle Type` has two values, 16:9 ask deferred), **OI-300** (tutor training
+  unplanned, and the client proposed all tutors test under one account),
+  **OI-301** (a newly-surfaced ROMI checklist leaves three Prod setup steps
+  unticked, the nightly Mexal jobs among them), and the decision
+  **UI changes are batched into one ad hoc release**. Updated OI-268 (3 Nov
+  `Test e2e PROD`, unlimited test orders authorized, DocuSign cost waived),
+  OI-289, OI-290, OI-295 and OI-296; `MAP.md`, `INDEX.md`, both trackers, both
+  recaps (**§73**).
+- **State:** register untouched — v1.6, `go_live: 2026-11-16`,
+  `zoho_expiry: 2026-10-31` (**two days away**). Next free id **302**.
+  `vault:check` run before committing.
+- **Next:** open the org. Five of tonight's findings need it and none can be
+  settled from mail: the two unread integration logs, whether `Asset.QR_Id__c` can
+  simply be created in Prod, whether OI-301's three steps are genuinely undone, and
+  whether account send is back on in UAT.
+- **Watch:** 🔴 **OI-287 is unchanged on its fourth night and is now in a production
+  org that reaches Mexal for real** — the per-unit/line-total discount bug sends
+  real documents now. ⚠ **A decision taken by phone leaves no trace in these
+  sources**: OI-295 was only caught because the client repeated it back.
+
 ## 2026-10-29 - claude (Mexal configuration rows in Prod)
 
 - **Did:** on the user's request inserted the 10 Mexal `Integration_Configuration2__c`

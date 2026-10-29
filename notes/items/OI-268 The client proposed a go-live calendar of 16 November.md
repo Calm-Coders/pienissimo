@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-20
-updated: 2026-10-23
+updated: 2026-10-29
 depends_on: [OI-246, OI-244, OI-267, OI-274]
 blocks: [go-live]
 severity: gating
@@ -325,3 +325,39 @@ it looks like" list below still leaves open:
 2. ⚠ The lapsed 27 October Go/No-Go is **still** unreplaced. Neither the
    thread nor the 23/10 call mentions a Go/No-Go.
 3. 🔴 Nobody has asked about Zoho — see above.
+
+## 🟢 2026-10-29 - the calendar gains an end-to-end production test, and the client lifts the cost objection
+
+🟢🔑 **A production end-to-end test is booked for Tuesday 3 November.** Calendar
+invitation from Elena Spini, Gmail `1a18822d71394556`, sent **2026-10-29 14:49:06Z**:
+**`[ROMI-PIENISSIMO] - Test e2e PROD`, Tuesday 3 November 2026, 09:30–11:30 CET**.
+Guests: Elena Spini (organiser), `amministrazione@pienissimo.com` (Elisa
+Migliano), Aurel Mrruku, Fabrizio Paganelli, and Sabatino Rinaldi as optional.
+
+🔑 **It is the first test of the production org with the client in the room**, and
+it sits thirteen days before the agreed 16 November go-live.
+
+🟢🔑 **And the client confirmed it with two concessions.** Elena Spini, Slack DM
+`D0B5QHS2T7H`, **16:02:51 CET**, reporting her call with Fabrizio Paganelli:
+
+> _"**Confermati i test e2e in PROD per martedì** + ha detto che **possiamo testare
+> tutti gli ordini/giri che vogliamo e no problem per il costo di DocuSign** (poi
+> ha aggiunto fino a 10€ ahaha)"_
+
+Two things the records have wanted:
+
+1. 🟢 **Unlimited test orders in production are authorized by the client.** Earlier
+   runs recorded the production-test question as open — whether a test order
+   created in production reaches live Mexal, and which production user the
+   marketing tests would use. The client has now removed the permission half of
+   it. ⚠ **The mechanical half stands**: production now reaches Mexal for real
+   ([OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)),
+   so a test order in production **is** a real Mexal document, and nobody has said
+   who cleans those up.
+2. 🟢 **The DocuSign envelope cost is accepted.** ⚠ **With a joke attached** —
+   _"fino a 10€"_ — which is a ceiling stated in humour and is not a commercial
+   agreement. Recorded as the client waving the objection away, not as a budget.
+
+⚠ **This is a relay.** Fabrizio Paganelli's confirmation reached these records
+through Elena Spini's summary in a ROMI DM; the written invitation covers the
+meeting, not the two concessions.

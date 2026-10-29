@@ -8614,3 +8614,107 @@ session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences ho
 no register row covers the **order-to-Mexal price breakdown**, **Lead or Contact
 migration**, **note capture** or **template editability** — and 🆕 **none covers
 a client-side run of the invoice and incassi jobs** either.
+
+## 73. Update 2026-10-29 — the release reached production, production now talks to Mexal for real, the client delivered the Lead file on the day he promised it, and three new faults opened
+
+Nightly sweep, watermark **2026-10-28T22:00Z**. One day. **No client meeting**,
+a busy mail day, three Slack surfaces live, and five commits that moved every
+branch that matters.
+
+### The release landed
+
+🟢🔑 **`UAT` and `Prod` both moved, for the first time since 26 October.**
+
+| Commit | Time (CET) | What |
+| ------ | ---------- | ---- |
+| `882f53c` | 12:30 | _"fix match fattura con id righa"_ — the invoice/rate match moved off the date and onto the line id |
+| `cd8dc4c` | 14:30 | _"deploy on prod"_ |
+| `8f039ce` | 16:50 | **PR #118**, `DevMain` → `UAT` |
+| `7905945` | 16:51 | **PR #119**, `UAT` → `Prod` |
+| `7f648a8` | 18:03 | _"abbilitato le integrazioni mexal"_ — documentation only; the enabling happened in the org |
+
+🔑 **The date-versus-id bug is the one Aurel Mrruku described as he found it**,
+Slack 12:27–12:29 CET: _"avevo un bel bug su pienissimo … il problame di prima
+non era legato al contatto ma alla data fattura … si faceva il check sulla data
+di scadenza non con l id --- ed ero sicuro di averlo cambiato --- **ma a quanto
+pare no**."_
+
+🟢🔑 **And production reaches Mexal.** The `MexalToken` was entered on the Prod
+principal and a read-only article search returned HTTP 200 with data (§#267).
+🔑 **The consequence is not administrative**: from now on a customer or order
+created in production sends to Mexal for real, so **a test order in production
+is a real Mexal document** — and nobody has said who cleans those up.
+
+### The client met his commitment, with his own voice
+
+🟢🔑 **`lead-da-importare.csv` arrived at 09:27:06Z**, from **Sabatino Rinaldi
+himself** (§#290). Elisa Migliano's written _"entro domani"_ of 28 October meant
+Thursday 29 October, and the file came that Thursday morning. **Both halves of
+the migration data are now delivered** — Referenti V2 on 28/10, Lead on 29/10.
+
+🔑 **It is the first message in his own words to reach this mailbox.** Every
+earlier reference to him was a relay: Elena Spini's report of a DM, Fabrizio
+Paganelli pointing at him, a name on an invitation.
+
+🟢🔑 **And it settles a problem the 28/10 record had opened.** He states the
+`Lead from Zoho = TRUE` decision unprompted, attributes it to a phone call with
+Elena Spini, and gives the operational reason himself — _"i commerciali sanno
+che non sono da lavorare (per il momento)"_ — so §#295's _"the client has not
+been told"_ no longer holds. 🔴 **The field still does not exist, and the file it
+must mark is now in hand.** It has to be built before the load.
+
+⚠ **Two rounds of correction and no verification.** Aurel Mrruku asked for the
+special characters to be stripped and the file as Excel; the reply at 13:08:02Z
+was _"Credo che adesso sia corretto"_. **"Credo" is not a check**, and neither
+file was opened — they hold real Lead records.
+
+### Three new faults, and one of them answers an old question
+
+🔴 **§#298 — a WooCommerce bundle order from a new customer never reaches
+Salesforce.** The client reported it without a symptom (_"c'è qualcosa che non mi
+torna"_) and asked for a call; the diagnosis came from Elena Spini after she took
+it, with integration log `a05MA00000GsbhJYAR` in the **UAT** sandbox. 🔴 **The log
+is unread.** 🟢 The 30 October WooCommerce session was widened to cover it.
+
+🔴🔑 **§#289 failed a third time, after the release — and that is the finding.**
+Same flow, same error, same production org, 07:29 org time. 🔑 **So
+`Asset.QR_Id__c` does not exist in production** — a question these records have
+carried as unreachable since 26 October, now answered. 🔑 **And it is not
+release-induced**: a second release landed the same day and the flow fails
+identically, because the flow lives only in the org and no deploy touches it.
+⚠ **Three notifications in three days have produced no recorded action.**
+
+🔴 **§#301 — a ROMI checklist new to these records leaves three production steps
+unticked.** `Manual Steps Pienissimo`, last modified 15:06:07Z: the
+`ParticipantDocumentRequestTrigger` subscriber has no production user, the
+WooCommerce default agent is not set in Prod, and **the nightly Mexal jobs are
+unticked for both environments** — corroborated by a production inspection the
+same day that found no Mexal job scheduled at all. ⚠ **A blank cell is not proof
+a step was skipped**, and the org was not opened.
+
+### The client is testing, and asking
+
+🟢 **An end-to-end production test is booked for Tuesday 3 November, 09:30–11:30
+CET**, with Elisa Migliano, Fabrizio Paganelli and Sabatino Rinaldi invited
+(§#268) — the first test of the production org with the client in the room. 🟢
+**He authorized unlimited test orders and waved away the DocuSign cost**,
+⚠ with a joke ceiling of _"fino a 10€"_ that is not a budget.
+
+🟡 **§#299 — bundle creation still offers calendar years in `Anno Accademico`**,
+`Bundle Type` holds only two values, and the client asked for a 16:9 screen.
+⚠ **He did not say what should replace either picklist.**
+
+🟡 **§#300 — tutor training has no plan, and the client asked whether all tutors
+should test under his own account.** 🔴 **A shared-credentials proposal, from the
+client, unanswered either way.**
+
+🔑 **And a ruling that reached the client the same day it was made**: UI changes
+are no longer taken one at a time. The client collects them into a single file —
+Marco Montesi's — for one ad hoc release. ⚠ **The release has no date, and this
+is not a Change Request ruling**; the client's answer on that regime is now six
+days outstanding.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for a tenth
+session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences hold,
+and the two new client asks of today — bundle picklist content and tutor
+training — **land in the same gap**: no register row covers either.

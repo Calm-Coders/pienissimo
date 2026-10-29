@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-10-28
+updated: 2026-10-29
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -231,3 +231,69 @@ person.
 🔴 **Unchanged:** the Zoho source still cannot fill the agreed field set, nobody
 has decided what happens to the fields it cannot fill, consent migration is
 unaddressed, and no register row covers Lead or Contact migration.
+
+## 🟢 2026-10-29 - the Lead half arrived, from Sabatino Rinaldi himself, on the day he committed to
+
+🟢🔑 **The client met the commitment.** Sabatino Rinaldi, Gmail `1a186fc3e17d7577`,
+**2026-10-29 09:27:06Z**, to Aurel Mrruku, cc Elena Spini,
+`amministrazione@pienissimo.com` and Fabrizio Paganelli, with
+**`lead-da-importare.csv`** attached:
+
+> _"Buogniorno, **ho preparato il CSV dei Lead da importare**, secondo le
+> indicazioni che ci siamo dati ieri. **Questi Lead sono utenti che non hanno mai
+> acquistato nulla in Pienissimo.**"_
+
+Elisa Migliano's _"entro domani"_ of 28/10 09:19Z meant Thursday 29 October, and the
+file came at 09:27Z that Thursday. 🔑 **Both halves are now delivered** — Referenti
+V2 on 28/10, Lead on 29/10.
+
+🔑 **And it came from Sabatino Rinaldi directly.** Every prior reference to him in
+these records was a relay — Elena Spini's report of a DM, Fabrizio Paganelli
+pointing at him, a name on an invitation. **This is the first message in his own
+words to reach this mailbox**, and it supersedes the "selective silence" reading
+that the 27/10 record raised and the 28/10 record had already overtaken.
+
+### The file, and what the record holds about it
+
+- **`lead-da-importare.csv`**, attached to the 09:27:06Z mail; also in Drive as
+  `1P7oWyZrfg5SlKVbTJtMDK1HDllYjs5ZH`, **1,621,714 bytes**, owner
+  `a.mrruku@romicompany.com`, created 09:27:06Z.
+- A Google Sheet conversion, `lead-da-importare`,
+  `1yLlFmZNfn1rURAR0hHfyvlg729c1H0crX7w_jsRXTAw`, **565,809 bytes**, created
+  **09:51:52Z** — so it was converted within half an hour of arriving.
+- ⚠ **Neither was opened.** They hold real Lead records — see
+  [docs/publishing.md](../../docs/publishing.md). Recorded by id, size, owner and
+  timestamp only. **Row count unknown.**
+
+### Two rounds of correction the same day
+
+Aurel Mrruku, **09:55:32Z**:
+
+> _"riesci per cortesia ad **escludere i carattiri speciali** perche mi faranno
+> esplodere l'import. E ti chiedo la cortesia di **condividere il file in formato
+> exel**."_
+
+Sabatino Rinaldi, **09:56:37Z**: _"Ok a breve sistemo"_. Then **13:08:02Z**, with a
+fresh attachment: _"Credo che adesso sia corretto"_.
+
+⚠ **"Credo" is not a verification.** Nothing in the record says the second file was
+checked, that the special characters are gone, or that it arrived as Excel rather
+than CSV. ⚠ **The 13:08 attachment was not opened either**, for the same reason.
+
+### What the delivery does not settle
+
+1. 🔴 **The `codice cliente esterno` join is still unverified** — on the Referenti
+   V2 of 28/10 and on this Lead file. It was the whole point of problem 3 above and
+   nobody has opened either file to check.
+2. 🔴 **`Lead from Zoho` still does not exist.** Every row in this file carries
+   status `New` by the client's own account, which is precisely the condition
+   [OI-295](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md)
+   exists to resolve — **and the field must be built before this file is loaded.**
+3. 🔴 **Unchanged:** the Zoho source still cannot fill the agreed field set, nobody
+   decided what happens to the fields it cannot fill, consent migration is
+   unaddressed, and **no register row covers Lead or Contact migration.**
+4. ⚠ **"Utenti che non hanno mai acquistato nulla" is a scope statement nobody
+   agreed.** The client has decided which Zoho records count as Leads — the
+   never-purchased ones. That is a reasonable rule and it is **his** rule; it is
+   recorded nowhere else, and it implies the remaining Zoho contacts are expected
+   to arrive as Accounts or Referenti instead.

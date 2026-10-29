@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-28
-updated: 2026-10-28
+updated: 2026-10-29
 depends_on: [OI-290]
 blocks: [go-live]
 source: Slack D0B5QHS2T7H 2026-10-28 17:03 CET
@@ -77,3 +77,50 @@ te come li vuoi gestire (possiamo creare un campo a doc)"_.
   — the migration this rides on; the Referenti half was delivered the same day.
 - [OI-268](OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)
   — the 16 November boundary the client named.
+
+## 🟢 2026-10-29 - the client has been told, in his own words, and the field is still not built
+
+🟢🔑 **Problem 2 above is resolved.** Sabatino Rinaldi states the decision himself,
+unprompted, in the mail that delivers the Lead file — Gmail `1a186fc3e17d7577`,
+**2026-10-29 09:27:06Z**:
+
+> _"Ieri ho sentito Elena, spiego brevemente quello che ci siamo detti e la
+> soluzione che mi ha dato:_
+>
+> _Io nella colonna status ho messo a tutti news ma in realtà non sono news perché
+> sono lead che abbiamo anche da anni e Elena mi ha dato questa soluzione:_
+>
+> _"possiamo fare li importiamo come NEW ma mettiamo **un campo di checkbox Lead
+> from Zoho = TRUE**" In modo tale che **i commerciali sanno che non sono da
+> lavorare (per il momento)**."_
+
+🔑 **Three things this settles.** The client knows the shape — a checkbox, named —
+so the note's "has not been told" no longer holds. The channel is identified: a
+**phone call with Elena Spini on 28 October** (_"ieri ho sentito Elena"_), which is
+why no written answer appears in the records. And he states the operational
+consequence himself — the sales team will know these are not to be worked — which
+is the list-view filtering half of Elena Spini's proposal, understood and accepted.
+
+🔑 **His _"per il momento"_ carries the cleanup hand-back**, in his own words. The
+note recorded that _"piano piano li sistemate se vorrete"_ had not been put to him;
+his parenthesis shows he understands the flag as provisional. ⚠ **It does not show
+he has accepted owning the cleanup** — only that he expects the state to change
+eventually. The hand-back itself is still not stated to him in writing.
+
+### What is still open
+
+1. 🔴 **Nothing is built.** No `Lead` checkbox of this name exists in `force-app/`.
+   🔴 **And the file it must mark has now arrived** —
+   [OI-290](OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md),
+   delivered 09:27Z the same morning, every row at status `New` by his own account.
+   **The field has to exist before that file is loaded**, and the load is the next
+   step in front of it.
+2. ⚠ **The checkbox-versus-document-field question is answered by default.** He
+   names a checkbox and nobody corrected him, so the checkbox is what the client
+   expects. That is not the same as ROMI having decided — point 4 above stands,
+   now with the client's expectation attached to one of the two options.
+3. ⚠ **The exact API name is still nobody's decision on record.** _"Lead from
+   Zoho"_ is a label in an Italian sentence inside a quotation of a phone call.
+4. 🔑 **Consent is still unconnected.** Point 5 above is unchanged: a flag that
+   marks a Lead as migrated says nothing about whether its consent state survived,
+   and the file that would carry it has now been delivered unopened.
