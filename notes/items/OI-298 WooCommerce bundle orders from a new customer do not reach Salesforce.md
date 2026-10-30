@@ -1,12 +1,12 @@
 ---
 id: OI-298
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-29
-updated: 2026-10-29
+updated: 2026-10-30
 depends_on: []
 blocks: [go-live]
 source: Gmail 1a187fc40582fdda
@@ -93,3 +93,65 @@ failure is in the environment the client has been testing in all week.
   WooCommerce"_ is marked done in UAT and **blank for production**. That is a
   different environment from the one failing here, so it does not explain this
   failure — but it is the same path, unfinished, in the org that goes live.
+
+## 🟢 2026-10-30 - there was no fault; the order had arrived and the log was a success
+
+🔑 **The log was read on screen and it reports success.**
+[The 30 October internal alignment](../meetings/2026-10-30%20Rapido%20Allineamento%20Aurel%20Elena.md),
+Aurel Mrruku opening `a05MA00000GsbhJYAR` while Elena Spini watched:
+
+> _"**Ha già fatto tutto, ha già creato l'ordine.**"_ … _"ordine Wcommerce
+> ordinato. **Fatto il 29.**"_
+
+Elena Spini accepted the correction in the same breath — _"Response non era 200,
+non era l'errore. … Io ho visto una cosa boa di popolato 200, ho detto vabbè in
+errore sicuro. **Che scema.**"_ ⚠ The transcription garbles the polarity of the
+`is_error` reading, but the conclusion is stated three ways and the order number
+was read back aloud.
+
+**So the symptom this note was opened on — _"quando fa un ordine bundle con cliente
+nuovo non scende in SFDC"_ — did not happen.** Marked `resolved`.
+
+### Three premises of the 29/10 record were wrong
+
+1. 🔑 **The order reached Salesforce.** It was created on 29 October with a
+   WooCommerce order number, status `Ordinato`.
+2. 🔑 **The customer was not new.** The account and its contact **already existed,
+   created on 20 October** by `amministrazione` — Aurel Mrruku: _"Il contatto è
+   stato creato … il 20 [ottobre] … **non è vero perché [Salesforce] non ti lascia
+   mentire**"_, against Fabrizio Paganelli's account that he had entered all-new
+   information to simulate a new customer. **The discriminating condition this note
+   recorded was never met.**
+3. 🔑 **There were four orders, not one.** _"ne ha fatti di ordini chiamati test
+   Fabrizio. Ne ha fatti quattro."_ All present.
+
+### What the real problem was
+
+🔴 **The client could not find his own orders.** Aurel Mrruku's remedy, in the
+call: **a WooCommerce list view on Orders** — _"negli ordini facciamo un list view
+[woo]commerce e così li vede sempre"_. Elena Spini had spent ten minutes on the
+phone the previous day trying to get him to sort the list by order number:
+_"non riusciva neanche a riordinare … ci abbiamo messo 10 minuti per fargli
+ordinare."_
+
+⚠ **The list view is not built.** Nothing on `DevMain` at `52ddc4c` or
+`DevAnita30` at `4fb8092` adds one, and it has no owner. **The underlying
+complaint — a client who cannot locate WooCommerce orders in the org he is
+testing — is unresolved**, and it is a findability problem, not an integration
+one.
+
+### What this corrects elsewhere
+
+- ⚠ **The OI-296 connection falls away as evidence.** This note read the two as
+  same-org, one-day-apart new-customer failures. **One of the two was not a
+  failure and did not involve a new customer**, so nothing links them.
+  [OI-296](OI-296%20Account%20creation%20to%20Mexal%20failed%20in%20UAT%20and%20account%20send%20was%20switched%20off.md)
+  stands entirely on its own, and its log `a05MA00000GqqcPYAR` **is still unread**.
+- 🔑 **A real WooCommerce account-matching fault was found the same afternoon**, and
+  it is not this one:
+  [OI-302](OI-302%20WooCommerce%20matches%20customers%20by%20email%20instead%20of%20partita%20IVA.md)
+  — orders binding to the wrong company by email address.
+- 🔑 **The lesson is about reading logs.** A populated response body was taken for
+  an error, reported up as a client-facing fault, written into these records as a
+  gating item, and carried for a day. 🔑 **The cost was one unread field**, and the
+  org was not opened in the 29/10 run to check it.

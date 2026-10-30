@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-26
-updated: 2026-10-28
+updated: 2026-10-30
 depends_on: [OI-284]
 blocks: [go-live]
 severity: gating
@@ -203,3 +203,43 @@ The order API was reopened at 16:19:55Z with an invitation to resume testing; �
 Mexal correspondence — the line id, the accounting year, the agent codes — and
 the one arithmetic defect that mis-invoices in silence has not been named by
 anybody but these records.
+
+## 🔴 2026-10-30 - the project is being told the logic is closed, and the code still multiplies
+
+🔴 **`resolveLineDiscount` on `DevMain` `52ddc4c` is unchanged** — still
+`(Prezzo_Listino__c - UnitPrice) * Quantity`, still beside the comment asserting
+that Mexal divides. **Fifth consecutive night, in a production org that now reaches
+Mexal for real.** `DevAnita30` does not touch the class.
+
+🔑 **And the finding tonight is not the absence of a fix. It is that the project is
+being told the opposite.** Elena Spini, `#tproj-pienissimo`, **2026-10-30 15:30
+CET**, under _Migrazione_:
+
+> _"Il 26/10 con Fabrizio P. e Mirko **abbiamo chiuso la logica degli sconti verso
+> Mexal: passano a valore sulla riga, divisi per la quantità.**"_
+
+Three things follow.
+
+1. 🔑 **The ruling in the status report is the one this note has recorded all
+   along** — a value on the line, **divided by the quantity**. It matches Mirko
+   Merendi's _"devi dividere per le quantità"_ word for word in substance. **The
+   requirement is not in doubt and never was.**
+2. 🔴 **It is reported as _closed_.** _"Abbiamo chiuso la logica"_ is the language of
+   a settled item, published to the whole project group four days after the call.
+   **The code implements the inverse of what the sentence says.** So the project's
+   own status reporting now actively conceals the defect: anybody reading that line
+   has no reason to look.
+3. ⚠ **Closed may mean the specification, not the implementation.** The sentence
+   sits under _Migrazione_ among decisions taken, not under delivered work, and
+   Elena Spini is reporting an agreement reached with the vendor and the client.
+   **That reading is available and this note does not claim otherwise.** What is not
+   available is a reading in which the shipped arithmetic is correct.
+
+🔴 **Nothing was tested.** The 30 October WooCommerce call sent live orders through
+to Mexal and watched the logs — the one occasion all week where a discounted
+quantity-above-one line would have been visible — and ⚠ **the discount is not
+mentioned anywhere in that session's record.** The faults found were the email
+matching, the opportunity cookie, the province validation and the agent code.
+
+⚠ **Five nights, two production releases, one vendor specification, one status
+report asserting closure, and the multiplication is still there.**

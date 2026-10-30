@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-10-29
+updated: 2026-10-30
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -297,3 +297,61 @@ than CSV. ⚠ **The 13:08 attachment was not opened either**, for the same reaso
    never-purchased ones. That is a reasonable rule and it is **his** rule; it is
    recorded nowhere else, and it implies the remaining Zoho contacts are expected
    to arrive as Accounts or Referenti instead.
+
+## 🔴 2026-10-30 - the Referenti half is NOT delivered, and the 29/10 record was wrong
+
+🔴🔑 **The "both halves are delivered" reading of 29 October does not hold.** Three
+independent sources on 30 October say the Referenti/Contatti tracciato is still
+outstanding.
+
+**1. Elena Spini by mail**, Gmail `1a18be1a3980c8bd`, **08:16:11Z**, to Sabatino
+Rinaldi and Fabrizio Paganelli, cc Aurel Mrruku and
+`amministrazione@pienissimo.com`:
+
+> _"Ok Sabatino grazie, torniamo da te in caso di problemi. Mentre vi ricordo che
+> **rimaniamo in attesa del tracciato dei referenti/contatti.**"_
+
+**2. The internal call**, [10:01 CET](../meetings/2026-10-30%20Rapido%20Allineamento%20Aurel%20Elena.md),
+where the confusion is named outright:
+
+> Elena Spini: _"**Io ho chiesto i contatti, lui ha mandato i lead.**"_
+>
+> Aurel Mrruku: _"Ma **il discorso l'avevamo fatto su contatti, non sui lead**."_
+
+**3. The project channel**, `#tproj-pienissimo` **15:30 CET**, under _Dati del
+cliente_: _"**il tracciato dei Referenti non è ancora arrivato.** Lead ok."_
+
+### What this corrects
+
+🔑 **`Referenti Salesforce_V2.xlsx`, delivered 28/10 15:30Z, is not the tracciato.**
+The 28/10 and 29/10 records treated its arrival as satisfying the Referenti half.
+It was never opened — it holds real contact records — and ROMI, who can see it, are
+still asking for the deliverable. ⚠ **Whether V2 is wrong, incomplete, or simply
+not what was asked for is not stated by anyone.** What is stated is that they are
+waiting.
+
+🔑 **And the 29/10 Lead file was delivered against a request for Contacts.** Sabatino
+Rinaldi met a commitment — but not the one Elena Spini had made. The Lead file is
+accepted (_"Lead ok"_, _"Sembra meglio di quella schifezza che ci aveva mandato"_);
+the Contacts are owed.
+
+### The new commitment
+
+**2 November — Sabatino Rinaldi and Fabrizio Paganelli to deliver the Referenti
+tracciato**, per the `#tproj-pienissimo` next steps. 🔑 **That is two days before the
+13 November single-pass production import** confirmed in the same recap, and
+🔴 **the join question this note opened on — whether a Referente carries the Mexal
+customer code — is still unanswered**, because no tracciato has arrived to carry it.
+
+### The Lead half
+
+🟢 Delivered and accepted. The corrected Excel is **`lead-da-importare.xlsx`**,
+`1M11As2y1bzSAWEAlqDx4qEviuSguSg6Q`, **1,002,783 B**, created 29/10 13:08:02Z,
+opened by the account holder on 30/10 09:23:13Z. ⚠ **Not opened by this run** — real
+Lead records; recorded by id, size and timestamp only, **row count still unknown**.
+
+🔴 **Two things now block the Lead load**, neither of them the client's:
+[OI-307](OI-307%20The%20Lead%20import%20needs%20the%20duplicate%20rules%20disabled.md)
+(the masked VAT placeholders trip the duplicate rules) and
+[OI-295](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md)
+(the marker field is built but sits on an unmerged branch).

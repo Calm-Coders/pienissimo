@@ -8718,3 +8718,148 @@ days outstanding.
 session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences hold,
 and the two new client asks of today — bundle picklist content and tutor
 training — **land in the same gap**: no register row covers either.
+
+## 74. Update 2026-10-30 — the fault behind yesterday's report did not exist, go-live is confirmed with the whole import collapsed into one pass, and the project has been told its margin is gone
+
+Nightly `requirements-check`, watermark **2026-10-29T22:00Z**, one day. **Two
+meetings drilled, one gating item withdrawn, seven opened.**
+
+### The withdrawal
+
+🟢🔑 **[#298](open-items.md) was never a fault.** Aurel Mrruku opened integration
+log `a05MA00000GsbhJYAR` on screen in the 10:01 internal call: _"**Ha già fatto
+tutto, ha già creato l'ordine**"_ … _"ordine Wcommerce ordinato. **Fatto il
+29.**"_ Elena Spini, who had reported it, accepted the correction at once —
+_"Response non era 200, non era l'errore … **Che scema.**"_
+
+🔑 **Three premises of the 29/10 record were wrong.** The order reached Salesforce
+on 29 October with its number and status `Ordinato`. The customer was **not new**:
+the account and contact were **created on 20 October** by `amministrazione`,
+against Fabrizio Paganelli's account of entering all-new data — _"non è vero perché
+[Salesforce] non ti lascia mentire"_. And there were **four** test orders, not one.
+
+🔴 **The real problem is findability.** The client could not locate his own orders;
+Elena Spini had spent ten minutes on the phone trying to get him to sort the list.
+The remedy named — **a WooCommerce list view on Orders** — ⚠ **is not built and has
+no owner.**
+
+🔑 **A populated response body was read as an error, escalated as a client-facing
+fault, and carried in these records as gating for a day. The cost was one unread
+field**, and the org was not opened on 29/10 to check it. The #296 pairing that
+rested on it falls away; `a05MA00000GqqcPYAR` is still unread.
+
+### The plan, published
+
+🟢🔑 **`#tproj-pienissimo` broke a long silence with a full status report at 15:30
+CET**, and it is the densest source of the sweep.
+
+| | |
+| --- | --- |
+| Go-live for users | **16 November**, confirmed, as the client proposed |
+| Final data import | 🆕 **13 November, a single pass** — _"non più in due momenti, perché le prove in UAT sono andate bene"_ |
+| Days to finish | **15**, down from 26 — the 10 migration days absorbed |
+| Red flag | 🔴 **_"Margine finito"_** — Gianpaolo Motta, 26/10: the project can absorb nothing more, so everything new goes to Fase 2 |
+| Positive news | _"Nulla questa settimana."_ |
+
+🆕🔑 **The single-pass import is the consequential line.** A two-stage plan existed
+to de-risk the load; the risk has been retired on the strength of **one** successful
+sandbox rehearsal, three days before go-live, with ⚠ **no rollback recorded** —
+7,721 orders and their chain, 10,806 invoices with 15,492 scadenze and 32,294
+lines, the Lead file and a Referenti tracciato that has not arrived.
+
+### The discount, reported closed
+
+🔴🔑 **[#287](open-items.md) is now worse than unfixed.** The same recap: _"Il 26/10
+con Fabrizio P. e Mirko **abbiamo chiuso la logica degli sconti verso Mexal:
+passano a valore sulla riga, divisi per la quantità**."_
+
+🔑 **That ruling is exactly what this record has said the requirement is** — and
+**the inverse of what the code does**. `resolveLineDiscount` still multiplies by
+`Quantity`, fifth night, after two production releases. 🔴 **Reported as _closed_ to
+the whole project group, the status reporting now conceals the defect.** ⚠ _"Closed"_
+may mean the specification rather than the implementation, and that reading is
+available; a reading in which the shipped arithmetic is right is not.
+
+### The client data, corrected
+
+🔴🔑 **The Referenti tracciato is NOT delivered, and the 29/10 record was wrong.**
+Three sources on one day: Elena Spini's 08:16Z mail (_"rimaniamo in attesa del
+tracciato dei referenti/contatti"_), the internal call (_"**Io ho chiesto i
+contatti, lui ha mandato i lead**"_), and the recap (_"il tracciato dei Referenti
+non è ancora arrivato. Lead ok"_).
+
+🔑 So `Referenti Salesforce_V2.xlsx` is **not** the deliverable, and the Lead file
+met a commitment ROMI had not made. **Now promised for 2 November.**
+
+### Built, on a branch nobody merged
+
+🟢🔑 **`Lead_from_Zoho__c` exists** — Anita Aga, `0717486`, 15:10 CET, on
+`DevAnita30`: a checkbox labelled _"Lead from Zoho"_, on the Lead page and granted
+on the `Agente` and `Full_Permission` sets. Three of [#295](open-items.md)'s open
+points close. 🔴 **It is on that branch and nowhere else**, and ⚠ **nothing sets
+it** — a field that defaults false and is never written is indistinguishable from
+no field.
+
+🟡 **[#299](open-items.md) got labels, not values.** `Anno_Solare__c`'s value labels
+became `Anno Accademico 2026/2027/2028`; the API values are still `Anno Solare
+NNNN` and still single calendar years. ⚠ **Nobody has shown the client.**
+
+### Seven new items, five from one client call
+
+The 30 October `Connessione WooCommerce` session placed live orders and watched
+them through to Mexal.
+
+- 🔴 **[#302](open-items.md)** — WooCommerce binds orders to the wrong company **by
+  email**; one customer can hold several premises with different VAT numbers on one
+  address. Agreed to key on **partita IVA**; ⚠ no code change in the repository.
+- 🟢 **[#303](open-items.md)** — the plugin kept the opportunity id in cookies and
+  sessions for **30 days** across completed purchases. Sabatino Rinaldi shipped the
+  fix during the call; ⚠ thirty days of possibly mis-attributed orders were not
+  swept.
+- 🔴 **[#304](open-items.md)** — **no contract is generated for stage sales**, and
+  ~**€20,000** impulse purchases cannot be held for a signature, so **no prior
+  digital signature is required**: a status flag and a chasing report replace it.
+  🔴 **Neither exists.** Own meeting 2 November 09:30.
+- 🔴 **[#305](open-items.md)** — **Anticipay does not answer in UAT** for test data
+  or for **San Marino**, the client's own jurisdiction, so no full new-customer test
+  cycle is possible there. The workaround removes the very path the client reports
+  faults on.
+- 🔑 **[#306](open-items.md)** — the Woo order number must print on the Mexal
+  document for invoice matching. **Kreosoft named the field in four minutes: `nota`
+  lato API.** Client-sized at half an hour; not built.
+- 🔴 **[#307](open-items.md)** — the Lead file's masked `XXXXXXXXXXX` VAT values will
+  trip the duplicate rules, so they will be switched off **for the import**. 🔴 **No
+  re-enable step exists anywhere.** ⚠ The consent flags also arrive uniformly
+  `true`, by the client's own instruction.
+- 🔴 **[#308](open-items.md)** — **maintenance was omitted from the Fase 2 estimate
+  already sent.** Aurel Mrruku expects 3–4 days a month and warns a retained day is
+  not priced like scattered hours. 🔑 **The Andrea is Andrea Galotto.**
+
+### People and answers
+
+🟢🔑 **[#300](open-items.md) is answered on both counts and the shared account is
+refused in substance** — _"Anche gli altri tutor avranno un'utenza dedicata e
+profilata"_. Permissions walk 3/11 14:30, Marco Montesi off admin 4/11, training
+5/11 or the week after. 🔴 Licences unconfirmed, 🔴 nobody knows how many tutors
+there are, 🔴 and a question is back with the client.
+
+🔴🔑 **Rexhina Hysi is off the project full time** — _"Regina ormai è su un altro
+progetto full time"_ — leaving **Anita Aga as the only developer**, seventeen days
+from go-live. 🔑 A reassignment, not the departure earlier runs read. Her two
+branches remain unmerged and unowned.
+
+### Unchanged
+
+🔴 **[#212](open-items.md)** an eighteenth night, in production · 🔴 **[#265](open-items.md)**
+an eighth day · 🔴 **[#289](open-items.md)** — no fourth failure notification arrived
+today · 🔴 **Zoho expires tomorrow** and nobody has asked whether a contract exists
+past it, a twelfth run, with go-live seventeen days after · 🔴 **[#285](open-items.md)**'s
+CR mechanism applied to nothing, a sixth day · 🔴 **`DevMain` did not move**; all of
+today's work sits on `DevAnita30` with no PR · 🔴 **the dev group has not replied to
+a nightly report in forty nights**.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for an eleventh
+session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences hold, and
+**five new ones join**: no register row covers WooCommerce customer identity,
+contract generation for WooCommerce orders, the Mexal order header note,
+duplicate-rule handling for migration, or Fase 2 maintenance.

@@ -10,6 +10,65 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-10-30 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and git from **2026-10-29T22:00Z**.
+  **Drilled two meetings** — the ROMI-internal `Rapido Allineamento` (10:01,
+  00:27:40, full Italian transcript) and the client `Connessione WooCommerce`
+  (15:01, read from the Gemini summary and `Dettagli`; the 84 KB raw transcript was
+  **not** read line by line). **Withdrew OI-298**, opened **OI-302-OI-308**, updated
+  OI-268, OI-287, OI-290, OI-292, OI-295, OI-299, OI-300, two person notes, a new
+  decision note, MAP, INDEX, both trackers and both recaps (§74).
+- **State:** 🟢🔑 **OI-298 was never a fault.** Aurel Mrruku read the log on screen —
+  _"Ha già fatto tutto, ha già creato l'ordine"_ — and **three premises of the 29/10
+  record were wrong**: the order arrived, the customer was **not new** (account and
+  contact created 20 October), and there were **four** test orders. 🔴 The real
+  problem is **findability**; the WooCommerce list view that would fix it is not
+  built. **A populated response body was read as an error and carried here as gating
+  for a day.**
+  🟢🔑 **`#tproj-pienissimo` broke a long silence at 15:30 CET**: **go-live 16/11
+  confirmed**, 🆕 **the final import collapses to a single pass on 13/11** on the
+  strength of one UAT rehearsal, ⚠ **no rollback recorded**; **15 days to finish,
+  down from 26**; 🔴 **_"Margine finito"_** — everything new goes to Fase 2
+  (decision note written).
+  🔴🔑 **OI-287 is now worse than unfixed**: the same recap reports the discount logic
+  as **closed** — _"divisi per la quantità"_, exactly the requirement — while the
+  code still multiplies by `Quantity`. **Fifth night, two production releases.**
+  🔴🔑 **The Referenti tracciato is NOT delivered** and the 29/10 record was wrong;
+  three sources say so. `Referenti Salesforce_V2.xlsx` is not the deliverable.
+  Promised **2 November**.
+  🟢 **`Lead_from_Zoho__c` was built** (`0717486`, `DevAnita30`) — 🔴 on that branch
+  only, and ⚠ nothing sets it. 🟡 **OI-299 got labels, not values.**
+  🆕 **OI-302-OI-308**: Woo email-vs-VAT matching · the 30-day opportunity cookie
+  (fixed in-call) · no contract for stage sales plus the no-prior-signature decision
+  · Anticipay failing in UAT and for San Marino · the Mexal header note field
+  **`nota`** · the Lead duplicate rules with **no re-enable step** · Fase 2
+  maintenance omitted from the estimate.
+  🔴 **Rexhina Hysi is off the project full time** — Anita Aga is the only developer,
+  seventeen days out. 🔑 A reassignment, not a departure.
+- **Next:** 🔴 **Open the org.** Five findings need it: whether the Woo list view
+  exists, whether the `Agente` permissions are as Rexhina Hysi left them, what
+  `a05MA00000GqqcPYAR` says, whether OI-301's three manual steps are done, whether
+  the nightly Mexal jobs are scheduled. 🔴 **Merge `DevAnita30`** — the Lead field and
+  the picklists are stranded there with no PR, and the Lead load needs them.
+  🔴 **Fix OI-287 or say publicly that it is not fixed**, because the project has now
+  been told it is closed. 🔴 **Decide who re-enables the Lead duplicate rules**
+  (OI-307) and put it on the Manual Steps tracker. 🔴 **Ask whether Pienissimo hold a
+  Zoho contract past 31 October — it expires tomorrow**, twelfth run unasked.
+- **Watch:** ⚠ **The WooCommerce environment decision is recorded twice in opposite
+  directions** inside one meeting; Gemini's own `Concordato` list carries both. Do
+  not resolve it from the record — ask. ⚠ **Tutor training is sized at one hour and
+  two hours by the same person on the same day.** ⚠ **Gemini names a _"Giuliano
+  Lanzetti"_ in the Woo call; the note was deliberately NOT renamed** — the same
+  transcripts render Rexhina as _"Regina Ana"_ and Mexal as _"Maxal"_, and no
+  Lanzetti is on the invite. ⚠ **OI-306 and OI-292 both decide a note on an order
+  within one hour** — probably distinct, nobody has said so; the 2/11 contract
+  meeting could reverse one by applying the other. ⚠ **Credentials were mailed**
+  (14:00:57Z); recorded, never copied. ⚠ `JOURNAL.md` is ~427 KB with ~141 entries
+  against the protocol's twenty — **sixth run flagged.**
+
+---
+
 ## 2026-10-29 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark

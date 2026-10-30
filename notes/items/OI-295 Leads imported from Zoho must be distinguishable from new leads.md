@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-28
-updated: 2026-10-29
+updated: 2026-10-30
 depends_on: [OI-290]
 blocks: [go-live]
 source: Slack D0B5QHS2T7H 2026-10-28 17:03 CET
@@ -124,3 +124,58 @@ eventually. The hand-back itself is still not stated to him in writing.
 4. 🔑 **Consent is still unconnected.** Point 5 above is unchanged: a flag that
    marks a Lead as migrated says nothing about whether its consent state survived,
    and the file that would carry it has now been delivered unopened.
+
+## 🟢 2026-10-30 - the field exists, with a name, on a branch nobody has merged
+
+🟢🔑 **`Lead_from_Zoho__c` was built.** Anita Aga, commit `0717486` _"Added field
+on Lead"_, **30 October 15:10:59 CET**, on branch **`DevAnita30`**:
+
+```xml
+<fullName>Lead_from_Zoho__c</fullName>
+<defaultValue>false</defaultValue>
+<description>Identifies Leads migrated from Zoho. Set to true when importing Zoho Leads.</description>
+<label>Lead from Zoho</label>
+<type>Checkbox</type>
+```
+
+🔑 **Three of this note's open points close at once.** It is a **checkbox**, not a
+document field, so point 2 is answered as the client expected. The **API name is
+`Lead_from_Zoho__c`** and the label is exactly the client's words, so point 3 is
+answered. And the commit also adds it to the `Lead_Record_Page_Three_Column`
+flexipage and grants it on the **`Agente`** and **`Full_Permission`** permission
+sets — so the sales team can see and filter on it, which was the operational
+purpose Sabatino Rinaldi stated.
+
+### How the name was settled, which is less than it looks
+
+[The 30 October internal alignment](../meetings/2026-10-30%20Rapido%20Allineamento%20Aurel%20Elena.md),
+about four hours earlier. Aurel Mrruku wanted an **origin** field; Elena Spini
+wanted the checkbox the client had already been promised:
+
+> Aurel Mrruku: _"l'origine non ti è piaciuto l'origine che t'ho detto? … Quando
+> dici lead from è origine del[la lead] che è Zo[ho]"_
+>
+> Elena Spini: _"**chiamalo come vuoi**, perché l'aveva condiviso con Sabatino, solo
+> per quello. **Se lo vuoi cambiare cambialo, non mi interessa.**"_
+
+🔑 **The client's wording governed because the client had already been told it** —
+not because anyone preferred it. ⚠ Neither of them recorded a decision; Anita Aga
+built the label from the sentence.
+
+### What is still open
+
+1. 🔴 **It is on `DevAnita30` and nowhere else.** `DevMain` is still `52ddc4c`,
+   `UAT` is `8f039ce` and `Prod` is `7905945` — **none of them carries the field**.
+   No PR for `DevAnita30` was seen in this sweep. **The Lead load cannot mark
+   anything until this merges and deploys.**
+2. 🔴 **The load itself is now blocked for a second reason** —
+   [OI-307](OI-307%20The%20Lead%20import%20needs%20the%20duplicate%20rules%20disabled.md):
+   the masked VAT placeholders will trip the duplicate rules.
+3. ⚠ **Nothing sets the field.** The checkbox defaults to `false` and the import
+   must write `true`; no import definition, data loader mapping or script in this
+   record does so. 🔑 **A field that exists and is never set is indistinguishable
+   from no field at all**, and the client's whole requirement is the marking.
+4. 🔑 **Consent is still unconnected** — point 5 of the original note, unchanged,
+   and now sharper: the delivered file sets both consent flags `true` on every row
+   by the client's own instruction. See
+   [OI-307](OI-307%20The%20Lead%20import%20needs%20the%20duplicate%20rules%20disabled.md).

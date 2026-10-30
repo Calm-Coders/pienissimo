@@ -9056,3 +9056,159 @@ privo di citazione per la decima sessione.** La lista concorrenti di `DM-07` è
 invariata. 🔑 Le assenze consolidate permangono, e le due nuove richieste del
 cliente di oggi — contenuto dei picklist del Bundle e formazione dei tutor —
 **ricadono nella stessa lacuna**: nessuna riga del registro copre l'una o l'altra.
+
+## 74. Aggiornamento 30/10/2026 — il guasto dietro al report di ieri non esisteva, il go-live è confermato con tutto l'import ridotto a un unico passaggio, e al progetto è stato detto che il margine è finito
+
+`requirements-check` notturno, watermark **2026-10-29T22:00Z**, un giorno. **Due
+riunioni analizzate, un punto bloccante ritirato, sette aperti.**
+
+### Il ritiro
+
+🟢🔑 **Il [#298](open-items.it.md) non è mai stato un guasto.** Aurel Mrruku ha
+aperto a schermo l'integration log `a05MA00000GsbhJYAR` nella call interna delle
+10:01: _"**Ha già fatto tutto, ha già creato l'ordine**"_ … _"ordine Wcommerce
+ordinato. **Fatto il 29.**"_ Elena Spini, che l'aveva segnalato, ha accettato subito
+la correzione — _"Response non era 200, non era l'errore … **Che scema.**"_
+
+🔑 **Tre premesse del record del 29/10 erano sbagliate.** L'ordine è arrivato in
+Salesforce il 29 ottobre con il suo numero e stato `Ordinato`. Il cliente **non era
+nuovo**: account e contatto sono stati **creati il 20 ottobre** da
+`amministrazione`, contro il racconto di Fabrizio Paganelli di aver inserito dati
+tutti nuovi — _"non è vero perché [Salesforce] non ti lascia mentire"_. E gli ordini
+di prova erano **quattro**, non uno.
+
+🔴 **Il problema vero è la reperibilità.** Il cliente non riusciva a trovare i propri
+ordini; Elena Spini aveva passato dieci minuti al telefono per fargli ordinare la
+lista. Il rimedio indicato — **una list view WooCommerce sugli Ordini** — ⚠ **non è
+realizzato e non ha un responsabile.**
+
+🔑 **Un response body popolato è stato letto come un errore, portato al cliente come
+guasto e tenuto in questi record come bloccante per un giorno. Il costo è stato un
+campo non letto**, e il 29/10 l'org non è stata aperta per controllarlo.
+L'accostamento al #296 che vi si appoggiava cade; `a05MA00000GqqcPYAR` è ancora da
+leggere.
+
+### Il piano, pubblicato
+
+🟢🔑 **`#tproj-pienissimo` ha rotto un lungo silenzio con un report di stato completo
+alle 15:30 CET**, ed è la fonte più densa della sweep.
+
+| | |
+| --- | --- |
+| Go-live per gli utenti | **16 novembre**, confermato, come proposto dal cliente |
+| Import dati finale | 🆕 **13 novembre, un unico passaggio** — _"non più in due momenti, perché le prove in UAT sono andate bene"_ |
+| Giornate a finire | **15**, da 26 — le 10 della migrazione assorbite |
+| Red flag | 🔴 **_"Margine finito"_** — Gianpaolo Motta, 26/10: il progetto non può assorbire altro, quindi tutto il nuovo va in Fase 2 |
+| Notizie positive | _"Nulla questa settimana."_ |
+
+🆕🔑 **L'import unico è la riga che conta.** Un piano in due fasi esisteva per ridurre
+il rischio del caricamento; il rischio è stato ritirato sulla base di **una sola**
+prova in sandbox riuscita, tre giorni prima del go-live, con ⚠ **nessun piano di
+rollback registrato** — 7.721 ordini con la loro catena, 10.806 fatture con 15.492
+scadenze e 32.294 righe, il file dei Lead e un tracciato Referenti che non è
+arrivato.
+
+### Lo sconto, riportato come chiuso
+
+🔴🔑 **Il [#287](open-items.it.md) è ora peggio che non corretto.** Dallo stesso
+recap: _"Il 26/10 con Fabrizio P. e Mirko **abbiamo chiuso la logica degli sconti
+verso Mexal: passano a valore sulla riga, divisi per la quantità**."_
+
+🔑 **Quel pronunciamento è esattamente ciò che questo record dice essere il
+requisito** — e **l'inverso di ciò che fa il codice**. `resolveLineDiscount`
+moltiplica ancora per `Quantity`, quinta notte, dopo due rilasci in produzione.
+🔴 **Riportato come _chiuso_ a tutto il gruppo di progetto, la reportistica di stato
+ora nasconde il difetto.** ⚠ _"Chiuso"_ può riferirsi alla specifica e non
+all'implementazione, e questa lettura è disponibile; non è disponibile una lettura in
+cui l'aritmetica rilasciata sia corretta.
+
+### I dati del cliente, corretti
+
+🔴🔑 **Il tracciato Referenti NON è consegnato, e il record del 29/10 era errato.**
+Tre fonti in un giorno: la mail di Elena Spini alle 08:16Z (_"rimaniamo in attesa del
+tracciato dei referenti/contatti"_), la call interna (_"**Io ho chiesto i contatti,
+lui ha mandato i lead**"_), e il recap (_"il tracciato dei Referenti non è ancora
+arrivato. Lead ok"_).
+
+🔑 Quindi `Referenti Salesforce_V2.xlsx` **non** è il deliverable, e il file dei Lead
+ha soddisfatto un impegno che ROMI non aveva preso. **Ora promesso per il 2
+novembre.**
+
+### Realizzato, su un branch che nessuno ha unito
+
+🟢🔑 **`Lead_from_Zoho__c` esiste** — Anita Aga, `0717486`, 15:10 CET, su
+`DevAnita30`: una checkbox con etichetta _"Lead from Zoho"_, sulla pagina del Lead e
+abilitata sui permission set `Agente` e `Full_Permission`. Si chiudono tre punti
+aperti del [#295](open-items.it.md). 🔴 **È su quel branch e in nessun altro posto**,
+e ⚠ **nulla lo valorizza** — un campo che ha default false e non viene mai scritto è
+indistinguibile dall'assenza del campo.
+
+🟡 **Il [#299](open-items.it.md) ha ricevuto etichette, non valori.** Le etichette dei
+valori di `Anno_Solare__c` sono diventate `Anno Accademico 2026/2027/2028`; i valori
+API restano `Anno Solare NNNN` e restano singoli anni solari. ⚠ **Nessuno l'ha
+mostrato al cliente.**
+
+### Sette nuovi punti, cinque da una sola call col cliente
+
+La sessione `Connessione WooCommerce` del 30 ottobre ha inserito ordini reali
+seguendoli fino a Mexal.
+
+- 🔴 **[#302](open-items.it.md)** — WooCommerce lega gli ordini all'azienda sbagliata
+  **per email**; un cliente può avere più locali con partite IVA differenti sullo
+  stesso indirizzo. Concordato di usare la **partita IVA**; ⚠ nessuna modifica di
+  codice nel repository.
+- 🟢 **[#303](open-items.it.md)** — il plugin teneva l'ID opportunità nei cookie e
+  nelle sessioni per **30 giorni** anche dopo acquisti completati. Sabatino Rinaldi
+  ha rilasciato la correzione durante la call; ⚠ trenta giorni di ordini
+  potenzialmente mal attribuiti non sono stati verificati.
+- 🔴 **[#304](open-items.it.md)** — **nessun contratto viene generato per le vendite
+  da palco**, e acquisti d'impulso da ~**20.000 euro** non possono essere bloccati in
+  attesa di una firma: quindi **non è richiesta la firma digitale preventiva**, e al
+  suo posto un flag di stato e una reportistica di sollecito. 🔴 **Nessuno dei due
+  esiste.** Riunione dedicata il 2 novembre alle 09:30.
+- 🔴 **[#305](open-items.it.md)** — **Anticipay non risponde in UAT** per dati di test
+  né per **San Marino**, la giurisdizione di casa del cliente, quindi lì non è
+  possibile un ciclo di test completo con cliente nuovo. Il workaround elimina
+  proprio il percorso su cui il cliente segnala i guasti.
+- 🔑 **[#306](open-items.it.md)** — il numero d'ordine WooCommerce deve comparire sul
+  documento Mexal per il riscontro in fatturazione. **Kreosoft ha indicato il campo in
+  quattro minuti: `nota` lato API.** Stimato dal cliente in mezz'ora; non sviluppato.
+- 🔴 **[#307](open-items.it.md)** — i valori di partita IVA mascherati `XXXXXXXXXXX`
+  del file dei Lead faranno scattare le regole di duplicazione, che verranno
+  disattivate **solo per l'import**. 🔴 **Nessun passo di riattivazione esiste da
+  nessuna parte.** ⚠ Anche i flag di consenso arrivano uniformemente a `true`, per
+  istruzione del cliente stesso.
+- 🔴 **[#308](open-items.it.md)** — **la manutenzione è stata omessa dalla stima di
+  Fase 2 già inviata.** Aurel Mrruku prevede 3-4 giorni al mese e avverte che una
+  giornata a retainer non si prezza come ore sparse. 🔑 **L'Andrea è Andrea Galotto.**
+
+### Persone e risposte
+
+🟢🔑 **Il [#300](open-items.it.md) ha risposta su entrambi i punti e l'account
+condiviso è rifiutato nella sostanza** — _"Anche gli altri tutor avranno un'utenza
+dedicata e profilata"_. Revisione dei permessi il 3/11 alle 14:30, Marco Montesi
+perde l'admin il 4/11, formazione il 5/11 o la settimana dopo. 🔴 Licenze non
+confermate, 🔴 nessuno sa quanti siano i tutor, 🔴 e una domanda è tornata al cliente.
+
+🔴🔑 **Rexhina Hysi è fuori dal progetto a tempo pieno** — _"Regina ormai è su un
+altro progetto full time"_ — lasciando **Anita Aga come unica sviluppatrice**, a
+diciassette giorni dal go-live. 🔑 Una riassegnazione, non l'uscita che le esecuzioni
+precedenti avevano letto. I suoi due branch restano non uniti e senza proprietario.
+
+### Invariati
+
+🔴 **[#212](open-items.it.md)** alla diciottesima notte, in produzione · 🔴
+**[#265](open-items.it.md)** all'ottavo giorno · 🔴 **[#289](open-items.it.md)** —
+oggi non è arrivata una quarta notifica di errore · 🔴 **Zoho scade domani** e nessuno
+ha chiesto se esista un contratto oltre quella data, dodicesima esecuzione, con il
+go-live diciassette giorni dopo · 🔴 **[#285](open-items.it.md)**, il meccanismo delle
+Change Request applicato a nulla, sesto giorno · 🔴 **`DevMain` non si è mosso**;
+tutto il lavoro di oggi è su `DevAnita30` senza PR · 🔴 **il gruppo dev non risponde a
+un report notturno da quaranta notti**.
+
+**Nessun requisito è stato modificato da questa esecuzione.** 🔴 **`SAL-12` è privo di
+citazione per l'undicesima sessione.** La lista concorrenti di `DM-07` è invariata.
+🔑 Le assenze consolidate permangono, e **se ne aggiungono cinque**: nessuna riga del
+registro copre l'identità del cliente WooCommerce, la generazione dei contratti per
+gli ordini WooCommerce, le note di testata Mexal, la gestione delle regole di
+duplicazione in migrazione o la manutenzione di Fase 2.
