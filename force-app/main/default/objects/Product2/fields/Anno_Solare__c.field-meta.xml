@@ -12,17 +12,17 @@
             <value>
                 <fullName>Anno Solare 2026</fullName>
                 <default>false</default>
-                <label>Anno Solare 2026</label>
+                <label>Anno Accademico 2026</label>
             </value>
             <value>
                 <fullName>Anno Solare 2027</fullName>
                 <default>false</default>
-                <label>Anno Solare 2027</label>
+                <label>Anno Accademico 2027</label>
             </value>
             <value>
                 <fullName>Anno Solare 2028</fullName>
                 <default>false</default>
-                <label>Anno Solare 2028</label>
+                <label>Anno Accademico 2028</label>
             </value>
         </valueSetDefinition>
     </valueSet>

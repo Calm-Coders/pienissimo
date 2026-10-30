@@ -162,16 +162,6 @@
                 <identifier>RecordBillingAddressField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Codice_Agente__c</fieldItem>
-                <identifier>RecordCodice_Agente_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-3f190e9d-8658-48c7-995c-515372c49dec</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -212,16 +202,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Type</fieldItem>
                 <identifier>RecordTypeField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Origine__c</fieldItem>
-                <identifier>RecordOrigine_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -280,8 +260,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ActivatedDate</fieldItem>
-                <identifier>RecordActivatedDateField</identifier>
+                <fieldItem>Record.Codice_Agente__c</fieldItem>
+                <identifier>RecordCodice_Agente_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-e0ce408e-850d-456a-be59-abb19a099b5c</name>
