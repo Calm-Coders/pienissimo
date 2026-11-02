@@ -1756,8 +1756,9 @@ private class MexalIntegrationTest {
       'sconto'
     ))[0];
     System.assertEquals(300.25, (Decimal) firstPrice[1]);
-    // (300.25 - 250) x 2, as an amount with a comma decimal separator.
-    System.assertEquals('-100,5', firstDiscount[1]);
+    // 300.25 - 250 per unit, not times the quantity of 2, as an amount with a
+    // comma decimal separator.
+    System.assertEquals('-50,25', firstDiscount[1]);
   }
 
   private static String orderDetailBody(String articleCode, Integer quantity) {

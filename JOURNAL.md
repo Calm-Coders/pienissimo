@@ -10,6 +10,28 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-02 - claude (OI-287 fix after a UAT Mexal rejection)
+
+- **Did:** read UAT Integration Log `a05MA00000GwEO4YAN`. Order `00016059`, at
+  quantity 4, was rejected by Mexal with _"6001 - Il valore dello sconto supera il
+  prezzo unitario"_ because `sconto` carried the per-unit discount × quantity.
+  Removed the `* Quantity` from `MexalOrderSendService.resolveLineDiscount`,
+  corrected its comment and updated the test expectation (`-100,5` → `-50,25`).
+  Deployed both classes to `Pienissimo UAT` (`0AfMA00000D4kBG0AZ`) after checking
+  that UAT matched `HEAD`. Updated OI-287 (now `in-progress`).
+- **State:** 🟢 Mexal itself confirmed that `sconto` is per unit, so OI-287 is
+  settled on the facts. 🟢 Fixed in source, UAT and **Prod**
+  (`0AfSW000001Kqeb0AC`, `MexalIntegrationTest` 59/59). 🟢 No production order
+  line with quantity above 1 and a list price has been through the Mexal
+  integration, so no wrong discount reached Mexal. 🔴 **Not committed.**
+- **Next:** commit the two classes. Resend `00016059` from UAT (the retry button;
+  it is `Failed` with no Mexal number) and check the Mexal document, then close
+  OI-287. ⚠ `MexalIntegrationTest.schedulerRegistersTheNightlyJob` fails in UAT
+  because a job named _"Mexal Sync - Nightly"_ is already scheduled there. Prod
+  has no such job today, but the test will fail there too once one is scheduled.
+
+---
+
 ## 2026-10-30 - claude (nightly requirements-check)
 
 - **Did:** swept Gmail, Drive, Slack, Fathom and git from **2026-10-29T22:00Z**.
