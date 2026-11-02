@@ -9057,6 +9057,86 @@ invariata. 🔑 Le assenze consolidate permangono, e le due nuove richieste del
 cliente di oggi — contenuto dei picklist del Bundle e formazione dei tutor —
 **ricadono nella stessa lacuna**: nessuna riga del registro copre l'una o l'altra.
 
+## 75. Aggiornamento 02/11/2026 — il flusso dei contratti da palco è diventato il rilascio R0 di una Fase 2 che ora ha un'offerta, un calendario e nessuna voce di manutenzione
+
+**`requirements-check` notturno, watermark 2026-10-30T22:00Z — tre giorni, senza esecuzioni il 31 ottobre e il 1° novembre.** Un incontro Pienissimo, drillato dalla trascrizione integrale; due nuovi messaggi di posta; tre conversazioni Slack, due delle quali erano in silenzio; due commit.
+
+### L'incontro a cui era stato rinviato tutto ha prodotto qualcosa
+
+🟢🔑 **[`[ROMI-PIENISSIMO]` - Tema Contratti WooCommerce](../notes/meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md)**, 09:32 CET, **00:49:50**, con Aurel Mrruku, Elena Spini, Elisa Migliano e Fabrizio Paganelli. 🔴 **Sabatino Rinaldi assente.** È la call a cui il punto [#304](open-items.it.md) era stato rinviato il 30 ottobre, e risponde a quasi tutto ciò che quella riga lasciava aperto.
+
+**Il flusso, disegnato nella call.** Ordine WooCommerce → Salesforce → Mexal; **quando Mexal restituisce l'id dell'ordine**, Salesforce genera il PDF del contratto e un automatismo lo invia via DocuSign; il firmato torna e viene tracciato. Gli stati ordine non si toccano, perché si muovono sullo scadenzario. Il lavoro è **un secondo template PDF puntato sull'Ordine invece che sul Preventivo** — oggi tutta la generazione legge il Preventivo — più 🆕 **un pulsante di rinvio visibile solo dopo un invio fallito**. Aurel Mrruku lo ha stimato in _"2 3 4 giorni"_ più test e un rilascio separato in produzione, _"stiamo parlando di una settimana"_.
+
+🟢 **La questione del momento del pagamento è chiusa.** L'ha risolta Elisa Migliano: WooCommerce inoltra solo ordini in stato `completato`, quindi _"Se ti passa [a Mexal] vuol dire che il cliente ha già pagato"_.
+
+🟢🔑 **Il problema delle tranche Performance Plus è stato aggirato, non risolto.** Il componente bundle non esplode il `numero di tranche` e non verrà modificato. Fabrizio Paganelli ha proposto invece dodici codici solo-bundle Plus — **uno per tranche, nessuno con numero di tranche** — e Aurel Mrruku ha accettato: _"funziona. Non devo fare nessun intervento a livello di bundle."_ Ha poi verificato a schermo, sul codice `PLUS_B01` già esistente del cliente, che un prodotto con bundle true è già escluso dall'offerta Plus standard. **Per questa parte non serve quindi nessun intervento Salesforce**, e 🟢 **i dodici codici sono stati creati la mattina stessa** ([#48](open-items.it.md)) — Fabrizio Paganelli alle 09:31:40Z: _"ho creato i 12 codici prodotto per PPLUS da utilizzare solo nei bundle. Se vuoi puoi già importare. **Non dovremmo creare nuovi codici prodotto.**"_
+
+🔑 **Una regola di dominio detta per la prima volta: non si fanno bundle misti.** _"in un bundle c'è solo la P+ … oppure ci sono solo i corsi, non facciamo bundle misti."_
+
+### Ora è lavoro a pagamento, e la prima applicazione della decisione sul margine
+
+🔴 **Elena Spini l'ha dichiarato Fase 2 durante la call, con il cliente presente** — _"questo però deve passare come primo rilascio della fase due, perché io queste giornate poi le devo mettere da qualche parte. Noi abbiamo già finito tutte le giornate possibili immaginabili."_ Fabrizio Paganelli ha acconsentito. Vedi [la decisione](../notes/decisions/Decision%20-%20stage%20sale%20contracts%20are%20release%20R0%20of%20Fase%202.md).
+
+🟢 **È la prima volta che la decisione di Gianpaolo Motta del 26 ottobre viene applicata a qualcosa, e la prima volta che è stata detta al cliente.** Per una settimana non era stata applicata a nulla.
+
+⚠ **Il perimetro accettato dal cliente può essere più ristretto di quello quotato.** La sua frase completa era _"Sono d'accordo che lo devi aggiungere **solo per la parte della Plus corsi**"_; entrambi i documenti di Fase 2 quotano R0 per i corsi standard **e** per la Performance Plus. Nessuno ha sollevato la differenza.
+
+🔴 **Nulla è confermato per iscritto.** Un documento di soluzione o un'integrazione al blueprint è attesa dal cliente **mercoledì 4 novembre** — la ragione, parole di Aurel Mrruku: _"non vogliamo cadere gli stessi errori di prima"_.
+
+🔴 **E i due meccanismi su cui si regge la decisione del 30 ottobre non sono mai stati menzionati.** La firma preventiva era stata sostituita da un flag di stato e da una reportistica di sollecito; cinquanta minuti di disegno non ci sono tornati sopra. **Nessun nome di campo, nessun responsabile del report, nessuna cadenza.**
+
+### La Fase 2 ha un'offerta, un calendario e una contraddizione
+
+🟢🔑 **`Pienissimo Offerta Fase 2` esiste** — creata da **Andrea Galotto** alle 09:21Z del 2 novembre, modificata alle 14:45Z, accanto al `Pienissimo_Project_Plan_Fase2` di Elena Spini aggiornato alle 09:40Z. Letti integralmente: [l'offerta di Fase 2](../notes/The%20Fase%202%20offer.md).
+
+**Sei rilasci fino al 26 marzo 2027**: Analisi (dic), **R0 Contratti da palco (nov, prima di Pienissimo Live 24-26/11)**, R1 Info Point e biglietti (15/01), R2 Note di credito e Ri.Ba. (12/02), R3 Eventi multi-edizione (26/02), R4 Pienissimo Pro → Zoho (12/03), R5 Integrazioni e notifiche (26/03). Ogni rilascio include un mese gratuito di supporto post go-live.
+
+🆕🔑 **Le date della Fase 1 sono per la prima volta in un documento destinato al cliente**: _"go-live tecnico **09/11**, migrazione dati **12-13/11**, avvio operativo su Salesforce **16/11**"_. 🆕🔑 **E una scadenza che qui non c'era: _"Approvazione Fase 2 entro il 13/11"_** — la stessa mattina della consegna dati. 🆕 **Date eventi**: Pienissimo Live **24-26/11**, Academy **19-21/01**, Camerieri e Venditori **06/04**.
+
+🔴 **I due documenti divergono sul conteggio delle giornate di un fattore due** — l'offerta dice `150 giornate`, il project plan totalizza `58 - 78`. Entrambi aggiornati il 2 novembre, entrambi destinati al cliente, e nulla li riconcilia.
+
+🔑 **Punti su cui ROMI aveva deciso internamente sono ora scritti in un documento per il cliente.** Il [#269](open-items.it.md), bloccato internamente il 27 ottobre e mai comunicato, è la _"Comunicazioni mirate"_ di R1 al 15 gennaio 2027. Il [#272](open-items.it.md) riceve la sua prima specifica — _"notifica al tutor e al commerciale di riferimento 15-30 giorni prima della scadenza"_ — in R5 al 26 marzo. Lo spostamento tra edizioni del [#291](open-items.it.md) è in R1. 🔴 **E il tema Ri.Ba. è R2 al 12 febbraio 2027, mentre il [#212](open-items.it.md) è ancora un difetto non corretto in produzione** — ventunesima notte.
+
+🔴🔑 **Nessuno dei due documenti quota la manutenzione, e lo stesso giorno al cliente è stato detto che uno lo fa.** Elena Spini nella call: _"C'è anche la parte di maintenance nella proposta"_. Aurel Mrruku l'ha dimensionata al cliente in _"quei **8 ora al mese**"_ — contro le **tre o quattro giornate al mese** che aveva scritto il 30 ottobre. ⚠ Nessuno ha riconciliato le due cifre, e il cliente ha sentito la più bassa. [#308](open-items.it.md).
+
+### Il difetto sullo sconto è corretto, rilasciato e committato
+
+🟢🔑 **Il [#287](open-items.it.md) è chiuso sui fatti.** Aurel Mrruku ha letto il log di integrazione UAT `a05MA00000GwEO4YAN`: l'ordine `00016059` a quantità 4 è stato **rifiutato da Mexal** con _"6001 - Il valore dello sconto supera il prezzo unitario"_, perché lo `sconto` portava lo sconto unitario moltiplicato per la quantità. **Mexal stesso ha risolto la domanda che questo record ha portato come bloccante per sei notti.** `resolveLineDiscount` non moltiplica più; rilasciato in **UAT** e in **produzione** (`MexalIntegrationTest` 59/59) e **committato su `DevMain` come `d4c2082`** alle 17:48:57 CET. 🟢 **Nessun ordine di produzione è stato coinvolto** — nessuna riga con quantità superiore a 1 e prezzo di listino era passata dall'integrazione.
+
+🔴 **L'ordine `00016059` non è stato rinviato.** È ancora `Failed` senza numero Mexal; un documento Mexal andato a buon fine è l'unica prova end-to-end. ⚠ **E con la correzione viaggia un fallimento latente**: `MexalIntegrationTest.schedulerRegistersTheNightlyJob` fallisce dove esiste un job chiamato _"Mexal Sync - Nightly"_ — vero oggi in UAT, e vero in produzione nel momento in cui i job notturni del [#301](open-items.it.md) verranno schedulati.
+
+### Due cambiamenti sulla migrazione, e il buco Referenti per la quarta volta
+
+🆕 **Il caricamento in produzione guadagna un pre-caricamento.** Un caricamento completo costa _"3-4 ore"_, quindi Aurel Mrruku ha chiesto di anticipare anagrafica prodotti, account e contatti e ridurre il 12-13 novembre a solo delta — _"così io ho un buffer di qualche giorno"_. Fabrizio Paganelli depositerà un file di interfaccia aggiornato, _"versione produzione"_; ⚠ **la finestra è "mercoledì, giovedì o lunedì" e nessuna data è stata concordata.** [#310](open-items.it.md). 🟢 L'anagrafica prodotti è **stabile**; 🔴 gli account no. 🟢 La fiducia sul caricamento ordini è alta — il rischio dichiarato è la **durata, non la correttezza**.
+
+🔴 **Il tracciato dei Referenti ha mancato la data del 2 novembre**, e Aurel Mrruku credeva che fosse arrivato finché Elena Spini non l'ha corretto in call: _"I lead li ha mandati, i referenti mancano."_ **Quarto record consecutivo.** 🔑 **E il file dei Lead consegnato il 29 ottobre non è ancora caricato in produzione** — _"però gli devo caricare in produzione adesso"_. 🆕 Nuova data: **mercoledì 4 novembre 09:00-09:30**, promessa da **Fabrizio Paganelli per un Sabatino Rinaldi assente**. 🆕🔑 **Si attende ora un secondo estratto, più recente**, in aggiunta. [#290](open-items.it.md).
+
+### Un criterio che nessuno aveva messo per iscritto
+
+🆕🔑 **Salesforce decide se un articolo Mexal è attivo dal `gruppo merceologico`, non dal flag `annullato` di Mexal** — in UAT e in produzione, come soluzione per il primo caricamento. Passare al flag è **un rilascio in produzione, non un'impostazione**: _"in ambiente [U]AT si fa in un minuto, in produzione quel minuto diventa 2 ore"_. 🔴 **La data la deve dare Fabrizio Paganelli**, che si è preso l'azione e ha buttato lì il **1 febbraio 2027** smentendolo come _"una data a caso"_. [#309](open-items.it.md). 🟢 Il suo timore che annullare i prodotti in Mexal bloccasse la fatturazione degli ordini Mexal aperti è risolto: in Mexal non tocca nulla.
+
+### Licenze, risposto
+
+🟢🔑 **Dodici licenze Salesforce in totale**, con l'allocazione fatta a schermo: **7 commerciale/tutor · 1 amministrazione · 1 marketing · 1 PL/digital = 11**, e delle due residue **una è di ROMI** come utenza di lavoro. 🔴 **La domanda supera già l'offerta** — servirebbero a Rebecca e a Giordano — **e la risposta è stata condividere le utenze**, lo schema che il [#300](open-items.it.md) ha rifiutato nella sostanza cinque giorni fa. ⚠ **Elisa Migliano ha obiettato senza ricevere risposta.**
+
+### La build si è mossa su un ramo che nessuno ha unito
+
+🟢 **`DevAnita30` ha guadagnato `b0e69c5`** (Anita Aga, 14:21 CET): la creazione cliente Mexal è ora racchiusa in una gestione d'errore che **registra il fallimento e lo restituisce invece di rilanciarlo** — la diagnostica che mancava il 28 ottobre ([#296](open-items.it.md)) — più un filtro di lookup su `Azienda_Precedente__c` che limita il riferimento al record type `Azienda`.
+
+🔴 **E il permission set `Agente` è cambiato in entrambe le direzioni**: **acquisisce** l'accesso Apex a `MexalCustomerCreateService` e `AnticipayAccountService`, i due principal di credenziale esterna e la lettura su `UserExternalCredential` — quindi il click di un commerciale può ora arrivare a Mexal e ad Anticipay, cosa che **nessun incontro, mail o messaggio ha chiesto**. **Perde** la modificabilità su `Account.Agente__c`, `Opportunity.Categoria__c`, `Sottocategoria__c` e i cinque campi UTM. ⚠ Bloccare `Categoria__c` va nella direzione opposta al [#265](open-items.it.md), fermo da undici giorni. [Dettaglio](../notes/objects/The%20Agente%20permission%20set%20gained%20Mexal%20and%20Anticipay%20access.md).
+
+🔴 **Tutto questo è su un ramo senza PR**, con `Lead_from_Zoho__c` ([#295](open-items.it.md)) ancora bloccato lì, **il giorno prima della sessione permessi con il cliente**.
+
+### Il flusso marketing, e ciò che resta in silenzio
+
+🟢 **La DM di gruppo marketing ha rotto il silenzio.** Fabrizio Mastracci ha _"quasi terminato"_ l'aggiornamento del suo flusso e promette **un recap scritto delle logiche che gestisce** — il primo che qualcuno abbia offerto. 🔴 **È bloccato sui dati di test**: _"Mi servono dei record puliti, anche 4-5 vanno bene"_, e la sola offerta sul tavolo sono gli **ordini di prova del 3 novembre, in produzione contro un Mexal vivo**. [#311](open-items.it.md). ⚠ Quale flusso sia non è stato detto, ed è segnato come incerto invece di indovinato.
+
+🔴 **`#tproj-pienissimo` è di nuovo in silenzio.** 🔴 **Il gruppo dev non ha ancora risposto a nessun report notturno** — il post del 30 ottobre resta senza risposta e da allora nessuna persona ha scritto nel canale. ⚠ **Fathom non ha restituito nulla per la trentesima esecuzione.** La canvas è **invariata dal 20.08.2026, 74 giorni**.
+
+🔴 **Zoho CRM è scaduto il 31 ottobre e nessuna fonte di questa finestra lo menziona** — tredicesima esecuzione con la domanda non posta, due giorni dopo il fatto. 🔴 **Il meccanismo di change request del [#285](open-items.it.md) non è ancora applicato a nulla**, sebbene R0 sia la prima decisione di perimetro che avrebbe potuto usarlo. ⚠ **`SAL-12` non citato per la dodicesima sessione.**
+
+---
+
 ## 74. Aggiornamento 30/10/2026 — il guasto dietro al report di ieri non esisteva, il go-live è confermato con tutto l'import ridotto a un unico passaggio, e al progetto è stato detto che il margine è finito
 
 `requirements-check` notturno, watermark **2026-10-29T22:00Z**, un giorno. **Due

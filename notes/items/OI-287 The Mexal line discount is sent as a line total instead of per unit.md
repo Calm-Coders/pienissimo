@@ -289,3 +289,31 @@ integration, so no order with a multiplied discount reached Mexal.
 
 Still open: 🔴 the change is **not committed**, and ⚠ order `00016059` in UAT
 has not been resent to confirm the fix end to end.
+
+### 🟢 2026-11-02 (nightly sweep) - committed
+
+🟢 **The fix is now in source control.** Aurel Mrruku committed it to `DevMain` as
+**`d4c2082`** _"fix discount uat and prod"_ at **17:48:57 CET**, carrying
+`MexalOrderSendService.cls`, `MexalIntegrationTest.cls`, this note and the journal
+entry. Verified by `git show`: `resolveLineDiscount` returns
+`(line.Prezzo_Listino__c - line.UnitPrice).setScale(2, …)` with no `* Quantity`,
+and the comment now cites Mirko Merendi, 26/10, _"devi dividere per le quantità"_
+plus the UAT rejection `6001` of 02/11.
+
+🔑 **So the one defect this record has carried as gating for six nights — and which
+`#tproj-pienissimo` announced as _"chiusa"_ on 30 October — is fixed in source, UAT
+and production, and the source now agrees with the announcement.**
+
+🔴 **One thing is still owed and it is the only proof that matters:** order
+`00016059` in UAT has **not** been resent. It is still `Failed` with no Mexal
+number, the retry button is available, and nothing has confirmed end to end that
+Mexal accepts the per-unit `sconto` and lands on the right net price. ⚠ **The
+arithmetic is right by Mexal's own error message, not by a successful document.**
+
+⚠ **A latent test failure travels with the fix.**
+`MexalIntegrationTest.schedulerRegistersTheNightlyJob` fails in UAT because a job
+named _"Mexal Sync - Nightly"_ is already scheduled there. Production has no such
+job today — so the test passes there **until the nightly Mexal jobs of
+[OI-301](OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md)
+are scheduled**, at which point every production deployment that runs this class
+fails. **Nobody has been told.**

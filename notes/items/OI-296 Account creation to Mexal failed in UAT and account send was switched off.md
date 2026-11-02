@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-28
-updated: 2026-10-29
+updated: 2026-11-02
 depends_on: []
 blocks: []
 source: Gmail message 1a18311817f3381e
@@ -98,3 +98,32 @@ says why Mexal rejected that customer.
 Salesforce ([OI-298](OI-298%20WooCommerce%20bundle%20orders%20from%20a%20new%20customer%20do%20not%20reach%20Salesforce.md)).
 **Both are new-account failures and both logs are unread.** Recorded as a shape
 worth checking together, **not as a shared cause**.
+
+## 🟢 2026-11-02 - the failure is now logged instead of lost
+
+🟢 **Anita Aga wrapped the Mexal customer create in error handling**, commit
+**`b0e69c5`** on `DevAnita30`, 14:21:04 CET — _"Added some logic to register logs
+from action of Mexal on Account, lookup filter, edits of agente permission"_.
+Verified by `git show`.
+
+`MexalCustomerCreateService` now builds the payload and makes the callout inside a
+`try`, and on any exception inserts an `Integration_Log__c` row
+(`Flow_Name__c = 'Mexal_Clienti_Creazione'`, `Is_Error__c = true`, exception message
+and stack trace, each truncated to 131,072 characters) and **returns a failure
+Result carrying that log id** rather than rethrowing. Her own comment gives the
+reason: _"an unhandled exception would roll back the error log along with the
+action's transaction."_
+
+🔑 **This is the diagnostic that was missing on 28 October**, when a Mexal customer
+create failed HTTP 400 while the client tested and the only trace was the client
+saying so. A repeat now leaves a readable row and a log id on the Result.
+
+🔴 **It does not close the item, and it changes nothing in any org yet.**
+
+1. 🔴 **It is on `DevAnita30`, which has no PR** — the same branch that strands
+   `Lead_from_Zoho__c`. Not in `DevMain`, not in UAT, not in production.
+2. 🔴 **Account send to Mexal is still switched off in UAT as far as this record
+   knows**, and no re-enable is recorded. The order API was reopened on 28 October;
+   account send was not mentioned then and has not been mentioned since.
+3. ⚠ **The HTTP 400 itself is unexplained.** Logging the next one is not the same
+   as knowing why the last one happened.

@@ -10,6 +10,55 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-02 - claude (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark
+  **2026-10-30T22:00Z** — **three days**, no run on 31/10 or 01/11. Drilled the
+  **02/11 `Tema Contratti WooCommerce`** client call from its **full 00:49:50
+  transcript** (preserved at
+  `meetings/2026-11-02-tema-contratti-woocommerce-transcript.it.md`), read both
+  **Fase 2 decks** in Drive, and inspected both new commits. Wrote
+  [the meeting note](notes/meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md),
+  [the Fase 2 offer](notes/The%20Fase%202%20offer.md),
+  [the R0 decision](notes/decisions/Decision%20-%20stage%20sale%20contracts%20are%20release%20R0%20of%20Fase%202.md),
+  [the Agente permission note](notes/objects/The%20Agente%20permission%20set%20gained%20Mexal%20and%20Anticipay%20access.md)
+  and **OI-309 / OI-310 / OI-311**; updated OI-48, OI-212, OI-265, OI-268, OI-269,
+  OI-272, OI-287, OI-290, OI-295, OI-296, OI-300, OI-304, OI-308 and the Fase 2
+  estimate; regenerated §75 of both `DEVELOPMENT-RECAP` files and the affected rows
+  of both `open-items` trackers; `MAP.md`, `INDEX.md`, trace note.
+- **State:** 🟢🔑 **The deferred contract meeting delivered.** The stage-sale
+  contract flow has a design (second PDF template on the Order, sent on the Mexal
+  order id, DocuSign, resend button), and the Performance Plus tranche problem is
+  **routed around with twelve bundle-only codes rather than built** — verified live
+  against `PLUS_B01`, so **no Salesforce change is needed** and the codes arrived the
+  same morning. 🔴 **It is Fase 2 R0, 5-7 days, declared to the client** — the first
+  application of the 26/10 margin ruling. 🟢🔑 **The Fase 2 offer exists** (Andrea
+  Galotto, 02/11) with six releases to 26/03/2027, Fase 1's dates client-facing for
+  the first time (**technical 09/11, migration 12-13/11, operational 16/11**) and
+  🆕 **an approval deadline of 13/11**. 🔴 **The two decks disagree on days — 150
+  against 58-78 — and neither prices maintenance, which Elena Spini told the client
+  it does.** 🟢 **OI-287 is fixed, in UAT and Prod, and committed** (`d4c2082`);
+  Mexal's own `6001` rejection settled it. 🔴 **Referenti tracciato missed 2/11, a
+  fourth record, and the Lead file is loaded nowhere.** 🔴 **`DevAnita30` still has
+  no PR** and now carries `Agente` permission changes that reach Mexal and Anticipay.
+- **Next:** (1) **get the R0 blueprint addendum to the client on Wednesday 4/11** —
+  nothing is in writing. (2) **Define the contract status flag and the chasing
+  report**; they were never mentioned in fifty minutes of design. (3) **Resolve the
+  150-vs-58-78 day count and add a maintenance line before 13 November.** (4) **Open
+  a PR for `DevAnita30`** before tomorrow's 14:30 permissions walk. (5) **Resend UAT
+  order `00016059`** and check the Mexal document — the only end-to-end proof for
+  OI-287. (6) **Ask Fabrizio Paganelli for the `annullato` switch date** (OI-309) and
+  **the refreshed interface file** (OI-310).
+- **Watch:** ⚠ **Fabrizio Paganelli agreed to R0 _"solo per la parte della Plus
+  corsi"_** while both decks price courses **and** Performance Plus — do not record
+  the wider scope as agreed. ⚠ **`MexalIntegrationTest.schedulerRegistersTheNightlyJob`
+  will fail in production the moment OI-301's nightly Mexal jobs are scheduled.**
+  ⚠ **Locking `Opportunity.Categoria__c` for `Agente` points the opposite way from
+  OI-265** — flag it rather than assuming it was deliberate. 🔴 **Zoho CRM expired on
+  31 October and no source in this window mentions it.**
+
+---
+
 ## 2026-11-02 - claude (OI-287 fix after a UAT Mexal rejection)
 
 - **Did:** read UAT Integration Log `a05MA00000GwEO4YAN`. Order `00016059`, at

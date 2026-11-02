@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-28
-updated: 2026-10-30
+updated: 2026-11-02
 depends_on: [OI-290]
 blocks: [go-live]
 source: Slack D0B5QHS2T7H 2026-10-28 17:03 CET
@@ -179,3 +179,20 @@ built the label from the sentence.
    and now sharper: the delivered file sets both consent flags `true` on every row
    by the client's own instruction. See
    [OI-307](OI-307%20The%20Lead%20import%20needs%20the%20duplicate%20rules%20disabled.md).
+
+## 🔴 2026-11-02 - still stranded, and the file it must mark is still not loaded
+
+🔴 **`Lead_from_Zoho__c` is on `DevAnita30` and nowhere else, a fourth day.** The
+branch moved again on 2 November (`b0e69c5`, 14:21 CET) and **still has no PR**;
+`DevMain` moved the same day (`d4c2082`, Aurel Mrruku) and does not carry the field.
+
+🔑 **And the thing it exists to mark has not happened.** Aurel Mrruku, on
+[the 09:32 call](../meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md), about
+the Lead file delivered on 29 October: _"però gli devo caricare in produzione
+adesso."_ **Four days after delivery the Leads are loaded nowhere**, so the field
+being absent has cost nothing yet — and 🔴 **nothing still writes it**.
+
+⚠ **A refreshed Lead extract is now expected** for the pre-load
+([OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md)),
+which means the marking has to be designed for a file that does not exist yet
+rather than for the one in hand.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-29
-updated: 2026-10-30
+updated: 2026-11-02
 depends_on: []
 blocks: []
 source: Gmail 1a1884b8e0d02735
@@ -135,3 +135,49 @@ project**, leaving Anita Aga as the only developer on Pienissimo.
 5. 🔑 **A separate tutor test session is booked for the same Tuesday**, `Test PS
    Tutor` 14:30–15:30, cc Rexhina Hysi — **two hours after the production e2e test
    with the client** at 09:30–11:30. Both land on 3 November.
+
+## 🟢🔑 2026-11-02 - the licence count is answered: twelve, with one spare
+
+The question this row has carried as _"licences unconfirmed"_ was settled on
+[the 09:32 call](../meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md), with
+Elena Spini sharing the figures on screen.
+
+🟢 **Twelve Salesforce licences in total.** Aurel Mrruku: _"12 rimangono ancora
+due, ma tieni in considerazione che la nostra poi deve essere tolta."_
+
+The allocation was walked aloud and comes to eleven:
+
+| Area | Count |
+| --- | --- |
+| Commerciale / tutor | **7** |
+| Amministrazione | 1 |
+| Marketing | 1 |
+| PL / digital | 1 |
+| **Allocated** | **11** |
+
+Of the remaining two, **one is ROMI's own** working licence — Aurel Mrruku:
+_"uno vostro per forza, perché devo agganciare tutte le integrazioni … mi serve
+un'utenza per andare in produzione"_, _"fin quando finisco tutti i rilasci"_. So
+**one genuinely spare**.
+
+🔑 **The seven commerciali are partly named at last** — Fabrizio Paganelli listed
+_"la Barbara, la Martina e la Carmen, la Valentina e la Sara, Marco"_ among the
+tutors, six names plus one unnamed, _"quindi nel commerciale sono sette"_. ⚠ **This
+is a licence allocation, not a tutor headcount**; how many tutors exist is still
+unanswered.
+
+🔴 **Demand already exceeds supply and the answer was to share accounts.** Marco
+Montesi asked on Friday for a licence for someone working on Performance Plus;
+Fabrizio Paganelli named **Rebecca and Giordano** as the two people who would need
+one in addition. The resolution: **Giordano on the PL account** (_"potrebbe usare
+quello dei PL tranquillamente"_), **Rebecca probably marketing**.
+
+⚠ **Elisa Migliano objected and was not answered**: _"la Rebecca non so se è
+corretto che lei utilizzi quello del marketing."_ 🔑 **This is the shared-account
+pattern this row already refused in substance on 30 October** — _"Anche gli altri
+tutor avranno un'utenza dedicata e profilata"_ — reappearing for named individuals
+five days later, with nobody noticing the contradiction.
+
+🔴 **Still open from 30 October**: the Tue 3/11 14:30 permissions walk, Marco
+Montesi off admin Wed 4/11, training from Thu 5/11, and **the client's answer on
+whether test access is needed for every agent in `Utenti Area Commerciale.xlsx`**.

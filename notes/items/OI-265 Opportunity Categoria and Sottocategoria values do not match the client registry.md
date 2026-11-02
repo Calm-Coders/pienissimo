@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-19
-updated: 2026-10-23
+updated: 2026-11-02
 depends_on: [OI-96]
 source: Gmail thread 1a154a97e004a741, 2026-10-19T14:55:54Z
 ---
@@ -208,3 +208,20 @@ registry.** The Mexal `categoria statistica` that identifies an event and the
 Opportunity `Categoria`/`Sottocategoria` picklists are different things;
 **nobody connected them, and nothing says whether the client's workbook bears
 on both.** Recorded as an open question, not as a link.
+
+## ⚠ 2026-11-02 - the fields were made read-only for the people who would fix them
+
+🔴 **Unmoved an eleventh day.** The picklist workbook is still unopened and no value
+change has been made.
+
+⚠ **And the direction of travel reversed.** Commit `b0e69c5` on `DevAnita30`
+(Anita Aga, 2 November 14:21 CET) sets `Opportunity.Categoria__c` and
+`Opportunity.Sottocategoria__c` to **read-only for the `Agente` permission set and
+the `Agente` profile** — see
+[the permission change](../objects/The%20Agente%20permission%20set%20gained%20Mexal%20and%20Anticipay%20access.md).
+
+🔑 **Nobody has connected the two.** The commit message calls it _"edits of agente
+permission"_ and no source this sweep mentions these picklists at all. Making them
+uneditable is not wrong on its own — the values are supposed to come from the
+client's registry — but **the registry values have not been loaded**, so the result
+is a mismatched picklist that the sales team can no longer correct.

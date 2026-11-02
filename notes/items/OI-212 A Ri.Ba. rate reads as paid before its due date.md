@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-10-23
+updated: 2026-11-02
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -430,3 +430,23 @@ per the standing instruction. Recorded as an absence.
 ⚠ **Not verified against the org.** This is repository arithmetic against
 `origin/DevMain` `ebc2c5b` and the unmerged branch; the deployed behaviour in
 UAT was not inspected.
+
+## 🔴🔑 2026-11-02 - the Ri.Ba. territory is now priced into Fase 2 R2, and this defect is still unfixed in production
+
+[`Pienissimo_Project_Plan_Fase2`](../The%20Fase%202%20offer.md) and the offer deck,
+both touched on 2 November, put **_"Note di credito, incassi errati, variazioni di
+scadenziario e insoluti Ri.Ba. (SFDC ⇆ Mexal)"_** in **R2**, go-live
+**12 February 2027**, at **10-13 days**.
+
+🔴 **This row is a defect in production, and the only Ri.Ba. work on any plan is a
+paid Fase 2 release three months away.** ⚠ **Nothing in either document says whether
+this fault is inside R2 or outside it.** R2's wording covers _insoluti_ (money that
+did not arrive) and _variazioni di scadenziario_; this row is a rate reading as
+**paid** before its due date — the opposite direction. **Adjacent, not the same.**
+
+🔑 **The absorption was first visible on 27 October**, when the Fase 2 estimate took
+in _"the Ri.Ba. territory of OI-212"_ without anyone naming which items had moved.
+The 2 November documents are that absorption in client-facing form.
+
+🔴 **Unchanged in production a twenty-first night.** No commit, no org change, no
+mention in any source this sweep.

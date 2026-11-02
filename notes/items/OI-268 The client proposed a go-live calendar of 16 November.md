@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-20
-updated: 2026-10-30
+updated: 2026-11-02
 depends_on: [OI-246, OI-244, OI-267, OI-274]
 blocks: [go-live]
 severity: gating
@@ -414,3 +414,46 @@ November**
 nobody has asked whether Pienissimo hold a contract past it**, and the recap of 30
 October does not mention Zoho at all. **Go-live is seventeen days after the
 expiry.**
+
+## 🟢🔑 2026-11-02 - the calendar is in a client-facing document, with a Fase 2 approval deadline inside it
+
+[`Pienissimo_Project_Plan_Fase2`](../The%20Fase%202%20offer.md), updated 09:40Z on
+2 November, states the Fase 1 dates in writing for the first time:
+
+> _"Fase 1: deploy in produzione (go-live tecnico) **09/11**, migrazione dati
+> **12-13/11**, avvio operativo su Salesforce **16/11**."_
+
+🟢 **So the three dates this row has carried separately are one published sequence**,
+and the 9 November technical release is confirmed as the production deploy rather
+than a planning note. Corroborated on
+[the 09:32 call](../meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md):
+Fabrizio Paganelli _"siamo tutti su sales force anche dal 9"_, Aurel Mrruku
+_"Il 16 parte il live"_.
+
+🆕🔑 **A deadline nobody here had: _"Approvazione Fase 2 entro il 13/11"_.** The
+client must approve Fase 2 on the same day as the data handover. ⚠ **Nothing records
+it being said to the client, and the 13 November morning is already committed to the
+extract.**
+
+🆕 **The event calendar is now dated**: **Pienissimo Live 24-26/11**, **Academy
+19-21/01**, **Camerieri e Venditori 06/04**. 🔑 **Pienissimo Live is the binding
+constraint on
+[OI-304](OI-304%20Contracts%20for%20WooCommerce%20stage%20sales%20are%20not%20generated.md)** —
+the bundle for it must be built **Monday 23 November**.
+
+🟢 **The 12-13 November handover is reconfirmed by both sides on the call** — Elena
+Spini: _"il 12 avevamo detto che era l'ultimo giorno che Fabrizio va a fatturare su
+Mexal e il 13 mattina ore 9 si aspetta la consegna di tutto."_ 🔑 **But the single
+pass is being softened in practice**: most volume moves to a pre-load and 12-13
+becomes a delta —
+[OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md).
+
+🟢 **The 3 November client test session is confirmed from a second source.** Elena
+Spini in the marketing DM at 11:42:55 CET: _"domani faremo degli ordini di prova con
+il cliente"_. 🔴 **Those are production orders against a live Mexal**, and they are
+now also the candidate test data for
+[OI-311](OI-311%20The%20marketing%20flow%20update%20needs%20clean%20test%20records.md).
+
+🔴 **Aurel Mrruku's capacity warning, on the record to the client**: production
+already holds _"il 90% delle cose"_, another release follows next week, and on the
+go-live week _"forse avremo metà giornata per fare dei test e basta"_.

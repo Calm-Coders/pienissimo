@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-10-27
-updated: 2026-10-27
+updated: 2026-11-02
 depends_on: [OI-269, OI-272]
 blocks: []
 source: notes/meetings/2026-10-27 Follow-up Interno.md
@@ -132,3 +132,30 @@ which items moved. The deck routes internally first: to **Andrea**, who will cal
 5. ⚠ **A March go-live was mentioned in passing** — Aurel Mrruku, _"con live
    marzo"_; Elena Spini, _"sarebbe l'[go] live di tutte le fasi"_. **Not a
    commitment and not a date anyone set.**
+
+## 🔑 2026-11-02 - superseded as the working figure by two client-facing decks
+
+**This estimate is no longer where the Fase 2 numbers live.** On 2 November
+Andrea Galotto created `Pienissimo Offerta Fase 2` and Elena Spini updated
+`Pienissimo_Project_Plan_Fase2`; both are client-facing and both carry a release
+plan with dates. See [the Fase 2 offer](The%20Fase%202%20offer.md).
+
+What changed against the figures below:
+
+- 🆕 **A release R0 was added at the front** — the stage-sale contract flow, 5-7
+  days, November 2026, before Pienissimo Live. It did not exist when this estimate
+  was written. See
+  [the decision](decisions/Decision%20-%20stage%20sale%20contracts%20are%20release%20R0%20of%20Fase%202.md).
+- 🔴 **Edition moves fell to 8-10 days** as R3, from the **10** recorded here that
+  Aurel Mrruku already dissented from, wanting 15-20. ⚠ **Nothing records that
+  reduction being put to him.**
+- 🔴 **The totals do not agree with each other.** The project plan totals
+  **58-78 days**; the offer deck states **150 giornate**. ⚠ No reconciliation
+  exists.
+- 🔴 **Maintenance is still absent from both** — the omission
+  [OI-308](items/OI-308%20Fase%202%20maintenance%20was%20left%20out%20of%20the%20estimate.md)
+  records, now against two documents rather than one, and contradicted out loud to
+  the client the same day.
+
+**Keep this note as the internal working record of how the packages were first
+sized**, not as the current plan.

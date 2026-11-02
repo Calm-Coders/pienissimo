@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-10-30
+updated: 2026-11-02
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -355,3 +355,43 @@ Lead records; recorded by id, size and timestamp only, **row count still unknown
 (the masked VAT placeholders trip the duplicate rules) and
 [OI-295](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md)
 (the marker field is built but sits on an unmerged branch).
+
+## 🔴 2026-11-02 - the Referenti tracciato missed its 2 November date, and the Lead file is not loaded
+
+Two corrections from
+[the Tema Contratti WooCommerce call](../meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md),
+both from the transcript.
+
+🔴 **The Referenti tracciato did not arrive on 2 November.** Aurel Mrruku believed
+it had — _"ha già inviato tutto, ha fatto un check, sembra che tutto sia a posto"_ —
+and **Elena Spini corrected him on the call**: _"I lead li ha mandati, i referenti
+mancano … Quindi quelli ci mancano ancora."_ **Fourth consecutive record** on which
+ROMI, who can open the files, say the Referenti half is outstanding.
+
+🔑 **And the Lead file is still not in production.** Aurel Mrruku, same breath:
+_"però gli devo caricare in produzione adesso."_ The file arrived 29 October; four
+days later it is loaded nowhere. 🔴 **`Lead_from_Zoho__c`, the field that must mark
+these rows, is still only on `DevAnita30`
+([OI-295](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md)),
+and nothing writes it.**
+
+🆕 **A new date: Wednesday 4 November, 09:00-09:30.** Fabrizio Paganelli:
+_"Adesso oggi sabatino non c'è, però io per mercoledì non c'è problema … Mercoledì
+mattina alle 9:00"_; Aurel Mrruku: _"Sì, 9:30, non un problema."_ ⚠ **The commitment
+comes from Fabrizio Paganelli on behalf of an absent Sabatino Rinaldi**, which is
+how the 2 November date was set too.
+
+🆕🔑 **A second extract is now expected, not just the missing half.** Aurel Mrruku
+asked for _"tutti i lead e tutti [i] contatti fino a quel momento"_ to go in with
+the pre-load — _"anche con quello vado su nello stesso momento"_ — so the delivered
+Lead file becomes a first pass and a **refreshed Lead + Referenti extract** is owed
+for the production run. See
+[OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md).
+
+🔑 **The vocabulary gap that caused the original confusion was named out loud** —
+Aurel Mrruku: _"Sai che ci sono i referenti che noi gli chiamiamo contatti."_ ⚠ It
+is the fourth time this has had to be explained, and it is why a Lead file was sent
+against a Contact request.
+
+🔴 **Eleven days to the handover** (12-13 November), with **Fase 2 approval due the
+same day**.
