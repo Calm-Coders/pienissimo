@@ -42,6 +42,10 @@
                 <behavior>Required</behavior>
                 <field>Condizione_di_Pagamento__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Note_Preventivo__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

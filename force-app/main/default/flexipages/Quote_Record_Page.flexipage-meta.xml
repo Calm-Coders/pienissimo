@@ -366,6 +366,16 @@
                 <identifier>RecordLocale_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Note_Preventivo__c</fieldItem>
+                <identifier>RecordNote_Preventivo__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-6d6aaa8b-5302-43b5-9e9b-6ba7fe6709c8</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -416,18 +426,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem
-        >Record.Descrizione_Condizione_di_Pagamento__c</fieldItem>
-                <identifier
-        >RecordDescrizione_Condizione_di_Pagamento_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Tipologia_Attivita_Globale__c</fieldItem>
                 <identifier>RecordTipologia_Attivita_Globale_cField</identifier>
             </fieldInstance>
@@ -440,6 +438,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Codice_Agente_Esterno__c</fieldItem>
                 <identifier>RecordCodice_Agente_Esterno_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Note_Preventivo__c</fieldItem>
+                <identifier>RecordNote_Preventivo_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-3a12ada5-abc0-4af4-8c20-e7e40460efdd</name>

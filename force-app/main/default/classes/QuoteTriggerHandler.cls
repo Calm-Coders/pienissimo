@@ -27,7 +27,7 @@ public without sharing class QuoteTriggerHandler {
     'ExpirationDate',
     'IsSyncing',
     'Condizione_di_Pagamento__c',
-    'Descrizione_Condizione_di_Pagamento__c',
+    'Note_Preventivo__c',
     'Tipologia_Attivita_Globale__c',
     'Codice_Agente_Esterno__c',
     'ContactId',
@@ -62,7 +62,7 @@ public without sharing class QuoteTriggerHandler {
     'BillingState',
     'BillingCountry',
     'Condizione_di_Pagamento__c',
-    'Descrizione_Condizione_di_Pagamento__c',
+    'Note_Preventivo__c',
     'Tax',
     'ShippingHandling'
   };
