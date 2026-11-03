@@ -5,6 +5,16 @@
     <description
   >Account azienda precedente usato per mantenere la continuita del cliente dopo un cambio di ragione sociale o societa.</description>
     <label>Azienda Precedente</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>Seleziona un Account di tipo Azienda.</errorMessage>
+        <filterItems>
+            <field>Account.RecordType.Name</field>
+            <operation>equals</operation>
+            <value>Azienda</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Aziende Successive</relationshipLabel>
     <relationshipName>Aziende_Successive</relationshipName>
