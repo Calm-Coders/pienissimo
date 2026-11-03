@@ -46,6 +46,28 @@ export default class QuoteManageProducts extends NavigationMixin(
   searchTerm = "";
   editingItem;
 
+  get selectedProductsWithAmounts() {
+    return this.selectedProducts.map((product) => ({
+      ...product,
+      netAmount: this.calculateNetAmount(product.quantity, product.newPrice)
+    }));
+  }
+
+  get editingNetAmount() {
+    return this.calculateNetAmount(
+      this.editingItem?.quantity,
+      this.editingItem?.newPrice
+    );
+  }
+
+  calculateNetAmount(quantity, price) {
+    if (quantity == null || quantity === "" || price == null || price === "") {
+      return null;
+    }
+    const amount = Number(quantity) * Number(price);
+    return Number.isFinite(amount) ? this.roundToTwoDecimals(amount) : null;
+  }
+
   get showItemEditor() {
     return !!this.editingItem;
   }
@@ -112,7 +134,12 @@ export default class QuoteManageProducts extends NavigationMixin(
     const inputs = [
       ...this.template.querySelectorAll(".item-editor lightning-input")
     ];
-    if (!inputs.map((input) => input.reportValidity()).every(Boolean)) return;
+    if (
+      !inputs
+        .filter((input) => !input.disabled)
+        .every((input) => input.reportValidity())
+    )
+      return;
     this.saveInProgress = true;
     try {
       await updateItemLine({
@@ -251,6 +278,7 @@ export default class QuoteManageProducts extends NavigationMixin(
         listPriceLabel: this.formatAmount(listPrice),
         discountPercent,
         newPrice,
+        netAmount: this.calculateNetAmount(product.quantity, newPrice),
         dueDate: this.selectedTrancheDates[index] || ""
       };
     });
@@ -721,7 +749,11 @@ export default class QuoteManageProducts extends NavigationMixin(
     }
 
     const inputs = [...this.template.querySelectorAll("lightning-input")];
-    if (!inputs.every((input) => input.reportValidity())) {
+    if (
+      !inputs
+        .filter((input) => !input.disabled)
+        .every((input) => input.reportValidity())
+    ) {
       return;
     }
 

@@ -274,13 +274,21 @@ describe("Standard Item pricing", () => {
     element.shadowRoot.querySelector('button[data-id="item2"]').click();
     await flush();
     await change(queryInput(element, "Sconto %"), "12.5");
-    expect(queryInput(element, "Nuovo prezzo").value).toBe(175);
-    expect(queryInput(element, "Nuovo prezzo", "item2").value).toBe(80);
+    expect(queryInput(element, "Prezzo Neto").value).toBe(175);
+    await change(queryInput(element, "Quantita"), "3");
+    expect(element.shadowRoot.querySelector(".net-amount input").value).toBe(
+      "525"
+    );
+    expect(queryInput(element, "Prezzo Neto", "item2").value).toBe(80);
     button(element, "Torna indietro").click();
     await flush();
     expect(queryInput(element, "Sconto %").value).toBe(12.5);
-    await change(queryInput(element, "Nuovo prezzo"), "150");
+    await change(queryInput(element, "Prezzo Neto"), "150");
     expect(queryInput(element, "Sconto %").value).toBe(25);
+    expect(element.shadowRoot.querySelector(".net-amount input").value).toBe(
+      "450"
+    );
+    await change(queryInput(element, "Quantita"), "1");
     [...element.shadowRoot.querySelectorAll("lightning-input")].forEach(
       (input) => {
         input.reportValidity = jest.fn(() => true);
@@ -365,16 +373,16 @@ describe("Standard Item pricing", () => {
     expect(button(element, "Salva").disabled).toBe(true);
     await change(queryInput(element, "Sconto %"), "101");
     expect(button(element, "Salva").disabled).toBe(true);
-    await change(queryInput(element, "Nuovo prezzo"), "-1");
+    await change(queryInput(element, "Prezzo Neto"), "-1");
     expect(button(element, "Salva").disabled).toBe(true);
-    await change(queryInput(element, "Nuovo prezzo"), "0");
+    await change(queryInput(element, "Prezzo Neto"), "0");
     expect(queryInput(element, "Sconto %").value).toBe(100);
     expect(button(element, "Salva").disabled).toBe(false);
   });
 
   it("handles a zero catalogue price without invalid percentages", async () => {
     const element = await mount("Vendita_Standard", [item("item1", 0)]);
-    await change(queryInput(element, "Nuovo prezzo"), "10");
+    await change(queryInput(element, "Prezzo Neto"), "10");
     expect(queryInput(element, "Sconto %").value).toBe(0);
     expect(button(element, "Salva").disabled).toBe(false);
   });

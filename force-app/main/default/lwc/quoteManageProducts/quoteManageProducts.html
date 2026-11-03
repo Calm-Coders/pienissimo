@@ -188,7 +188,7 @@
                         ></lightning-input>
                         <lightning-input
                           type="number"
-                          label="Nuovo prezzo"
+                          label="Prezzo Neto"
                           data-field="newPrice"
                           value={editingItem.newPrice}
                           min="0"
@@ -197,6 +197,20 @@
                           disabled={itemEditorDisabled}
                           onchange={handleExistingItemChange}
                         ></lightning-input>
+                        <label class="slds-form-element net-amount">
+                          <span class="slds-form-element__label"
+                            >Importo Netto</span
+                          >
+                          <span class="slds-form-element__control">
+                            <input
+                              class="slds-input"
+                              type="text"
+                              aria-label="Importo Netto"
+                              value={editingNetAmount}
+                              readonly
+                            />
+                          </span>
+                        </label>
                       </div>
                       <template if:true={editingItem.isPlus}>
                         <div class="tranche-choice-box">
@@ -284,7 +298,10 @@
                     <span></span>
                   </div>
                   <div class="selected-body">
-                    <template for:each={selectedProducts} for:item="product">
+                    <template
+                      for:each={selectedProductsWithAmounts}
+                      for:item="product"
+                    >
                       <div class={product.rowClass} key={product.rowKey}>
                         <div class="selected-main">
                           <div class="product-title">{product.productName}</div>
@@ -337,7 +354,7 @@
                             ></lightning-input>
                             <lightning-input
                               type="number"
-                              label="Nuovo prezzo"
+                              label="Prezzo Neto"
                               value={product.newPrice}
                               data-id={product.pricebookEntryId}
                               min="0"
@@ -346,6 +363,20 @@
                               required
                               onchange={handleItemPriceChange}
                             ></lightning-input>
+                            <label class="slds-form-element net-amount">
+                              <span class="slds-form-element__label"
+                                >Importo Netto</span
+                              >
+                              <span class="slds-form-element__control">
+                                <input
+                                  class="slds-input"
+                                  type="text"
+                                  aria-label="Importo Netto"
+                                  value={product.netAmount}
+                                  readonly
+                                />
+                              </span>
+                            </label>
                           </div>
                         </template>
                         <template if:true={product.requiresTranche}>
@@ -434,7 +465,7 @@
                         <lightning-input
                           class="tranche-price-input"
                           type="number"
-                          label="Nuovo prezzo"
+                          label="Prezzo Neto"
                           value={tranche.newPrice}
                           data-index={tranche.index}
                           min="0"
@@ -443,6 +474,20 @@
                           required
                           onchange={handleSelectedTranchePriceChange}
                         ></lightning-input>
+                        <label class="slds-form-element net-amount">
+                          <span class="slds-form-element__label"
+                            >Importo Netto</span
+                          >
+                          <span class="slds-form-element__control">
+                            <input
+                              class="slds-input"
+                              type="text"
+                              aria-label="Importo Netto"
+                              value={tranche.netAmount}
+                              readonly
+                            />
+                          </span>
+                        </label>
                         <lightning-input
                           class="due-date-input"
                           type="date"
@@ -518,7 +563,10 @@
                       <span></span>
                     </div>
                     <div class="selected-body">
-                      <template for:each={selectedProducts} for:item="product">
+                      <template
+                        for:each={selectedProductsWithAmounts}
+                        for:item="product"
+                      >
                         <div class={product.rowClass} key={product.rowKey}>
                           <div class="selected-main">
                             <div class="product-title">
@@ -575,7 +623,7 @@
                               ></lightning-input>
                               <lightning-input
                                 type="number"
-                                label="Nuovo prezzo"
+                                label="Prezzo Neto"
                                 value={product.newPrice}
                                 data-id={product.pricebookEntryId}
                                 min="0"
@@ -584,6 +632,20 @@
                                 required
                                 onchange={handleItemPriceChange}
                               ></lightning-input>
+                              <label class="slds-form-element net-amount">
+                                <span class="slds-form-element__label"
+                                  >Importo Netto</span
+                                >
+                                <span class="slds-form-element__control">
+                                  <input
+                                    class="slds-input"
+                                    type="text"
+                                    aria-label="Importo Netto"
+                                    value={product.netAmount}
+                                    readonly
+                                  />
+                                </span>
+                              </label>
                             </div>
                           </template>
                           <template if:true={product.requiresTranche}>
