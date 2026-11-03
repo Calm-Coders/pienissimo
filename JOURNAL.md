@@ -9,6 +9,52 @@ Keep the twenty most recent entries here; archive older ones to
 `notes/sessions/YYYY-QN.md`.
 
 ---
+## 2026-11-03 — claude-opus-5 (nightly requirements-check)
+
+- **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark **2026-11-02T22:00Z**.
+  Drilled **two meetings from their full transcripts** — `Test e2e PROD` (02:49:39, the
+  longest session the project has, 128 KB of transcript read in order in six slices) and
+  `Follow-up Interno` (00:36:20) — read the **R0 functional analysis** sent to the client,
+  and read nine mail threads and three Slack conversations in full.
+- **State:** **17 new items, OI-312 to OI-328**, next free id **329**. Two meeting notes,
+  one reference note ([the stage-sale contract functional analysis](notes/The%20stage%20sale%20contract%20functional%20analysis.md)),
+  two decision notes (My Domain unchanged; asset states stay as built). Both transcripts
+  preserved in `meetings/`. Updated OI-48, OI-300, OI-304, OI-306, OI-309, OI-311, the
+  Agente permission note, the R0 decision and the Fase 2 offer. Tracker rows added and
+  updated in **both** languages; `DEVELOPMENT-RECAP` §76 in both; MAP, INDEX and the trace
+  note written.
+- **Headline:** 🟢 **the whole chain ran end to end in production** — quote → DocuSign →
+  Salesforce order 113 → Mexal `OC155` with correct discounts → invoice → new Mexal
+  customer → invoice back unpaid. 🔴 **And almost everything around it failed**: Anticipay
+  times out in production after confirming production in writing (OI-312); test orders
+  cannot be deleted (OI-315); the UAT mappings cannot be migrated because Evento and
+  Edizione have no external id (OI-320); and a ticket-nomination mail reached the client
+  for assets still `ordinato` because the event link hit `pronto` (OI-313).
+- **Next:** 🔴 **R0 confirmation is due from the client on 05/11** and the 12:00-12:30
+  meeting that day closes the four open points — OP-1 (order fields for the template) is
+  **Aurel Mrruku's and not started**. The e2e continuation is **04/11 14:30-16:00**, Aurel
+  Mrruku and Fabrizio Paganelli alone, and Fabrizio Paganelli owes the **data tracciati
+  tomorrow morning**. ROMI owes the client an answer on the 12:33 ticket mail.
+- **Watch:**
+  - 🔴 **The delivered R0 document is narrower than the work.** Three pieces of scope were
+    discussed and left out — the RF1 product check, **two PDF templates not one** (OI-326),
+    and **the DocuSign return-trigger rewiring** (OI-322) with the bundle Plus
+    classification it needs (OI-328). **Do not treat RF1-RF7 as the whole build.**
+  - 🔴 **The chasing report of the 30 October decision was deleted, not forgotten** — Aurel
+    Mrruku had it struck from the draft. Do not reinstate it as an oversight; it is a
+    decision, and the client was never told it was in scope.
+  - 🔴 **R0 is 6-7 days, Aurel Mrruku does not believe it, and he is alone on it.**
+  - 🟢 **The 02/11 scope worry is retired**: the contract covers courses **and** Plus,
+    verified by Aurel Mrruku against the 02/11 transcript. Do not reopen it.
+  - ⚠ **The payment-timing claim of 02/11 was withdrawn** — ROMI does not hold the payment
+    fact. The order-state rule stands.
+  - 🟢 **Three standing unknowns closed**: Anticipay does **not** answer in production; the
+    My Domain stays unchanged; the product sync flows are off **by decision**.
+  - ⚠ **The Gemini auto-notes for the e2e session contradict the transcript in four
+    places**, listed in the meeting note. If you re-drill that session, use the transcript.
+  - ⚠ **Training is set for Mon 09/11 and Wed 11/11, which are the technical go-live and
+    the eve of the migration. Nobody has noticed.**
+  - ⚠ **`DevAnita30` is merged** (PR #120, `f77a850`) — the 02/11 "no PR" reading is stale.
 
 ## 2026-11-02 - claude (nightly requirements-check)
 

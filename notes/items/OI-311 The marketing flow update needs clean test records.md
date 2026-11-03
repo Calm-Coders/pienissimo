@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini
 org: ROMI
 raised: 2026-11-02
-updated: 2026-11-02
+updated: 2026-11-03
 depends_on: []
 blocks: [OI-81]
 uncertain: which flow
@@ -57,3 +57,36 @@ a ✅.
    about the import rather than a porting: _"alla fine verrà fatto in un volta
    pre-golive"_. **Whether "porting" means the data import or something else is
    not established.**
+
+## 2026-11-03 - the clean records slipped a day, and the dirty ones caused an incident
+
+**The marketing group DM moved twice.** At **12:57 CET**, after Elena Spini and Aurel
+Mrruku worked through the spurious ticket mail, she wrote _"mmmmm…peggio mi sento allora
+ahah lo vediamo dopo in call"_ — ⚠ **the call is not identified and no outcome is
+recorded.**
+
+🆕 At **18:14 CET** Elena Spini set the next step to Fabrizio Mastracci:
+
+> _"quando ci vogliamo fissare un momento con Aurel per fare un giro completo? domani
+> finiamo i test per creazione di ordini da usare come **"test corretti-non sporchi"**"_
+
+🔑 **So the clean records this row waits on are tomorrow's — 4 November — not today's**,
+and they come out of
+[the continuation session](../meetings/2026-11-03%20Test%20e2e%20PROD.md) at
+14:30-16:00. A three-way walkthrough with Aurel Mrruku is to be scheduled and has no
+date.
+
+🔴🔑 **Meanwhile the unclean production data produced a live send to the client.** A
+ticket-nomination email fired at 12:33 CET for an order whose assets were still
+`ordinato`, because the event link had reached `pronto` — see
+[OI-313](OI-313%20The%20ticket%20nomination%20email%20fired%20for%20assets%20still%20in%20ordinato.md).
+Elena Spini diagnosed it in this same DM at 12:46 CET: _"secondo me il problema qui è
+che il link era in PRONTO."_
+
+⚠ **Which flow Fabrizio Mastracci has rebuilt is still not stated**, a second day, and
+it is now impossible to say from the record whether his rebuild is implicated in the
+12:33 send or not.
+
+🟢 **Aurel Mrruku brought the community into production during the day** — _"e ho portato
+su la community"_, 12:48 CET — which was one of the session's own next steps. 🔴 **The
+Notes object is still not released.**

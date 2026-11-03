@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-30
-updated: 2026-10-30
+updated: 2026-11-03
 depends_on: []
 blocks: []
 source: notes/meetings/2026-10-30 Connessione WooCommerce.md
@@ -73,3 +73,37 @@ contract meeting does not reverse one by applying the other.
 - [The Mexal integration mapping workbook](../The%20Mexal%20integration%20mapping%20workbook.md)
 - [OI-287](OI-287%20The%20Mexal%20line%20discount%20is%20sent%20as%20a%20line%20total%20instead%20of%20per%20unit.md)
   — the other Kreosoft field ruling, still not implemented as specified.
+
+## 🔑 2026-11-03 - the purpose is confirmed by the client, and it is still not built
+
+In [the e2e production session](../meetings/2026-11-03%20Test%20e2e%20PROD.md)
+Fabrizio Paganelli raised it himself and explained **why**, which answers point 3
+above:
+
+> _"ti ricordi Aurel che c'eravamo fatti dare da Mirko il codice di quel campo che fa
+> riferimento alle note di testata dell'ordine?"_ … _"L'altro giorno con Mirko ci siamo
+> scambiati una mail."_
+
+The reason: the customer signs the quote, the signed document carries the **Salesforce
+order number**, and when amministrazione raises the invoice _"qui c'è il riferimento al
+preventivo dove questo qui è il numero dell'ordine di Mexal. Quindi qua nelle note
+bisognerebbe mettere il riferimento"_.
+
+🔑 **So what goes in the field is now specified**: the **quote reference and the Mexal
+order number**, so the invoice document carries both. Fabrizio Paganelli would accept
+the order code alone — _"Va bene anche mettere solo [il codice], dai"_.
+
+🔴 **Nothing is built, four days on.** Aurel Mrruku, twice: _"Sì, sì, ma non l'ho fatto
+ancora"_, _"T'ho detto che quello non l'ho fatto"_, and his own list of what production
+is still missing: **_"Mi mancano la community, le note, alcuni layout."_**
+
+⚠ **Point 4 is still open** — whether it applies to every order or only WooCommerce
+ones. The 3 November discussion was about a **standard** sale, which cuts against
+"WooCommerce only", but nobody said so.
+
+🔑 **The tension flagged above sharpened rather than resolved.** The same session agreed
+to turn the quote's payment-condition description into a **`note preventivo`** free-text
+field — see
+[OI-317](OI-317%20The%20payment%20condition%20description%20field%20must%20become%20quote%20notes.md)
+— which is the third decision about note fields on quotes and orders in five days, in
+the third direction.

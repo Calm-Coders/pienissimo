@@ -5,7 +5,7 @@ status: open
 owner: Anita Aga
 org: ROMI
 raised: 2026-11-02
-updated: 2026-11-02
+updated: 2026-11-03
 depends_on: [OI-296]
 blocks: []
 source: git b0e69c5 on DevAnita30, 2026-11-02 14:21 CET
@@ -83,3 +83,53 @@ Also in `b0e69c5`: an `Azienda_Precedente__c` lookup filter restricting the
 reference to Accounts with record type `Azienda` (error message _"Seleziona un
 Account di tipo Azienda."_, `isOptional` false), and a reworked
 `Account_Azienda_Two_Column` flexipage.
+
+## 🟢🔑 2026-11-03 - the first evidence it is in a live org, from the client's own mail
+
+**The 2 November reading — that this branch had no PR and the org did not hold it —
+needs qualifying. At least the field-level half is in production.**
+
+Elena Spini to Marco Montesi at **17:20:08Z**, Gmail `1a1a26d14b6484d1`, cc Fabrizio
+Paganelli and `amministrazione@pienissimo.com`:
+
+> _"per quanto riguarda il tuo account, come concordato, siamo passati dal profilo di
+> **System Administrator** a quello corretto da **Agente**. A livello pratico:
+> **Visibilità:** non cambia nulla … **Permessi di modifica:** sono stati disabilitati i
+> campi riservati all'amministrazione. Non vedrai più l'icona della matita per la
+> modifica diretta su alcune informazioni sensibili; ad esempio, nella scheda degli
+> account, **i campi sincronizzati con Mexal non sono più editabili manualmente da
+> layout** per preservare la coerenza dell'integrazione."_
+
+🔑 **That is this branch's behaviour, described to the client as live**: the loss of
+editability on Mexal-synced Account fields, `Account.Agente__c` among them. 🟢 **And it
+is now the documented, agreed rationale** — integration consistency — which no commit
+message or meeting had supplied.
+
+⚠ **This is evidence about the profile and the field-level permissions, not about the
+Apex half.** Nothing on 3 November says whether the `Agente` permission set's new access
+to `MexalCustomerCreateService`, `AnticipayAccountService` and `UserExternalCredential`
+is in production. 🔴 **The question of who asked for that remains unanswered**, and no
+meeting, mail or message has yet requested it.
+
+⚠ **`DevAnita30` still has no PR.** The org appears to hold the behaviour by a route the
+repository does not record.
+
+🔑 **And the question this note raised is answered in practice**: **who sets
+`Account.Agente__c` now that agents cannot?** Fabrizio Paganelli's answer, from
+[the e2e session](../meetings/2026-11-03%20Test%20e2e%20PROD.md), is that **a fallback
+`pienissimo commerciale` user with the Agente profile** is the assignee of record for
+accounts with no agent or duplicate agents, communicated to the agents by his own mail.
+⚠ Its code was spoken as `001`, `006` and `00` at different moments and **the exact
+value is uncertain**. ⚠ **It does not say who may edit the field**, only who it points
+at.
+
+⚠ **The OI-265 tension is unchanged.** Locking `Opportunity.Categoria__c` still points
+the opposite way from
+[OI-265](../items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md),
+**twelfth day**.
+
+🔑 **One further permission fact from the same session**: Fabrizio Paganelli's own admin
+user had **no access to child campaigns** despite holding what Aurel Mrruku called full
+permissions, and Aurel Mrruku himself **lacks field-level access to `data invio
+biglietto`** in production — _"Devo fare per forza un rilascio"_. See
+[OI-319](../items/OI-319%20Data%20invio%20biglietto%20is%20missing%20from%20the%20campaign%20page%20in%20production.md).

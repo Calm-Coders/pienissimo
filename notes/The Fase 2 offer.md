@@ -6,7 +6,7 @@ owner: Andrea Galotto
 with: Elena Spini
 org: ROMI
 raised: 2026-11-02
-updated: 2026-11-02
+updated: 2026-11-03
 depends_on: [OI-308]
 source: Drive 1T1gExUUq4_fUkXjJY3b_fa66kPrHNmI6N_3wLXbldaY and 1b329SMXkcG3kivDfvoziCFuk2I19DlQQqS_UTQtKFeA
 ---
@@ -118,3 +118,65 @@ working figure these decks descend from. The packages are recognisable but the
 numbers moved, and the earlier estimate's **10 days for edition moves** — the line
 Aurel Mrruku recorded dissent on, wanting 15-20 — now appears as **R3 at 8-10**.
 ⚠ **Nothing records that reduction being discussed with him.**
+
+## 2026-11-03 - R0 now has its own document, and the day count is still unreconciled
+
+🟢🔑 **R0 is specified separately and does not wait on this offer.**
+[The stage-sale contract functional analysis](The%20stage%20sale%20contract%20functional%20analysis.md)
+went to the client at **18:00:14Z** and asks, as **OP-3**, for **written confirmation
+of the R0 classification by 5 November** — explicitly noting that _"La proposta di Fase
+2 era attesa entro il 13/11"_. 🔑 **So the 13 November approval deadline this note
+records is not a gate on R0**; development begins the week of 9 November on the
+standalone confirmation.
+
+🆕 **R0's dates are now fixed and sit outside the Fase 1 go-live**: development week of
+**09/11**, joint tests week of **16/11**, **release 18 or 19 November**, final check
+**23/11**, Pienissimo Live **24-26/11**. _"Lo sviluppo non entra nel go-live del 16/11:
+Aurel non vuole rischiare la parte già in produzione."_
+
+🆕 **A recap meeting**: **Thursday 5 November 12:00-12:30**, covering the Fase 2 contents
+_"compreso questo primo rilascio"_.
+
+### 🔴 The 150 vs 58-78 discrepancy is known to ROMI and unresolved
+
+🔑 **It is not an oversight.** In
+[the internal follow-up](meetings/2026-11-03%20Follow-up%20Interno.md):
+
+> **Aurel Mrruku:** _"Sai cosa faranno qua? Metteranno una media o il 58?"_
+> **Elena Spini:** _"in realtà mi sa che poi lui ha detto la media … lo scopriremo."_
+
+Aurel Mrruku's verdict: _"è un bagno di sangue."_ ⚠ **So both figures stand, nobody has
+reconciled them, and ROMI expects to be told which applies** rather than deciding.
+
+🆕🔑 **The governance route was set the same morning.** On
+[the e2e call](meetings/2026-11-03%20Test%20e2e%20PROD.md), Elena Spini reported that
+**Andrea Galotto** — ROMI, sales side, who interfaces with **Daniela** — told her to do a
+pass with whoever runs the project before a direct call with Daniela. Fabrizio Paganelli
+agreed: _"Facciamo un passaggio prima io e te, dai, prima di coinvolgere loro due."_
+
+- **Step 1**: Elena Spini and Fabrizio Paganelli review the activity list, which Elena
+  Spini says **is already defined** — _"la lista dell'attività ed è già definita, però poi
+  c'è il preventivo"_.
+- **Step 2**: **Andrea Galotto and Daniela** take the quote and the numbers.
+
+⚠ **Daniela appears to be Pienissimo-side** — Fabrizio Paganelli asked _"Andrea, chi è
+Andrea? Andrea vostro"_ about Andrea Galotto, and undertook to brief Daniela himself.
+**Inferred, not established.**
+
+### 🔴 The maintenance line is unchanged
+
+⚠ **Nothing on 3 November added one, mentioned one, or revisited the figure.** The
+offer's only recurring commitment is still one month of post-go-live support per
+release, and the client has still heard _"quei 8 ore al mese"_ against the three to four
+days a month in
+[the estimate](items/OI-308%20Fase%202%20maintenance%20was%20left%20out%20of%20the%20estimate.md).
+**Ten days to the 13 November approval deadline.**
+
+### ⚠ R0's price is understated against its own scope
+
+🔴 **6-7 days, _"diciamo 7 giorni alla fine"_**, against 5-7 in this offer — and the
+analysis omits the DocuSign return-trigger rewiring, the second PDF template and the
+bundle classification, all of which Aurel Mrruku named as required. Aurel Mrruku:
+_"Ho la paura che abbiamo messo davvero poche giornate."_ Elena Spini: _"non posso
+chiedere più i giorni."_ 🔴 **And he has no one to share it with** —
+_"il lavoro lo devo fare io"_.

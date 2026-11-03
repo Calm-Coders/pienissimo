@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-29
-updated: 2026-11-02
+updated: 2026-11-03
 depends_on: []
 blocks: []
 source: Gmail 1a1884b8e0d02735
@@ -181,3 +181,67 @@ five days later, with nobody noticing the contradiction.
 🔴 **Still open from 30 October**: the Tue 3/11 14:30 permissions walk, Marco
 Montesi off admin Wed 4/11, training from Thu 5/11, and **the client's answer on
 whether test access is needed for every agent in `Utenti Area Commerciale.xlsx`**.
+
+## 🟢🔑 2026-11-03 - users went out, training has dates, and the shared-account idea died the same day
+
+**Three of the four things this row was waiting on happened.**
+
+🟢 **Seven agent users were provisioned in production** during
+[the e2e session](../meetings/2026-11-03%20Test%20e2e%20PROD.md) — Carmen, Davide S.,
+Barbara, Segreteria, Sara D., Martina, Valentina V. Fabrizio Paganelli wrote the
+covering mail live, ending _"mi raccomando, non toccate nulla in ambiente produzione"_
+because ROMI is still configuring. 🟢 **Four had already completed verification by the
+end of the call.** ⚠ **Links expire after 72 hours**, so the rest must act by
+6 November.
+
+🔴🔑 **Note where this happened: production, not a test environment.** The 30 October
+undertaking was _"l'accesso all'ambiente di test"_ and _"poter testare in autonomia"_;
+what was actually given is production access with an instruction to touch nothing.
+⚠ **Nobody reconciled the two**, and Elena Spini's own aside on the call — _"dei test
+che poi dovremmo fare, se Marco mi risponde, mi conferma, saranno poi in ambiente, non
+questo"_ — suggests she still means a different environment.
+
+🟢 **Marco Montesi is off System Administrator**, a day early against the Wed 4/11 date
+this row carried. Elena Spini told him at **17:20Z** (Gmail `1a1a26d14b6484d1`):
+
+> _"come concordato, siamo passati dal profilo di **System Administrator** a quello
+> corretto da **Agente**"_ — visibility unchanged, _"sono stati disabilitati i campi
+> riservati all'amministrazione … i campi sincronizzati con Mexal non sono più editabili
+> manualmente da layout per preservare la coerenza dell'integrazione"_
+
+🔑 **This is the first evidence that the `Agente` permission changes are in a live org**
+— see [the permission note](../objects/The%20Agente%20permission%20set%20gained%20Mexal%20and%20Anticipay%20access.md).
+
+🟢🔑 **The shared-account pattern was proposed again and superseded within hours.** On
+the call, because Marco Montesi has no agent code — _"lui è responsabile, diciamo, non ha
+un codice agente"_ — Fabrizio Paganelli's answer was that he should use the
+**`segreteria`** user: _"teniamo segreteria a Marco. Gli facciamo utilizzare
+segreteria."_ ⚠ Only **Martina** and **Elisa Migliano** can read that mailbox. Fabrizio
+Paganelli: _"Che casino, che casinisti che siamo."_ **Elena Spini objected —
+_"secondo me Marco deve avere la sua utenza"_ — and she was right: by 17:20Z he had his
+own Agente user.** 🔑 **So this row's objection to shared accounts prevailed on this
+one**, in practice if not in principle; Giordano on the PL licence and Rebecca on
+marketing are **unchanged**.
+
+🆕 **Training has candidate dates.** The thread ran four messages on 3 November:
+
+- Marco Montesi, 11:18Z: a course on 4 and 5, so **next week** — _"due incontri
+  ravvicinati, tipo lunedì e mercoledì"_. 🟢 He **confirms six users**.
+- Elena Spini, 14:57Z: **sessions of an hour and a half**, _"possiamo iniziare così e
+  verificare come va"_.
+- Marco Montesi, 16:51Z: **mornings**, because one tutor is away in the afternoons —
+  **11:30-13:00**, subject to confirmation.
+- Elena Spini, 17:20Z: _"la fascia 11:30 - 13:00 per lunedì e mercoledì per me è
+  perfetta. Resto in attesa della tua conferma definitiva con i tutor."_
+
+🔑 **So training is Monday 9 and Wednesday 11 November, 11:30-13:00, 1.5 hours each,
+awaiting Marco Montesi's final confirmation.** ⚠ **Monday 9 November is the technical
+go-live** and Wednesday 11 is the eve of the data migration. Nobody noted the collision.
+⚠ It also moves off the _"from Thu 5/11"_ this row carried.
+
+🔴 **Still unanswered**: whether test access is needed for every agent in `Utenti Area
+Commerciale.xlsx` — asked on 30 October, **fifth day**. ⚠ Marco Montesi's _"6 utenze"_
+against the **seven** provisioned is unexplained; `Segreteria` being a mailbox rather
+than a person would reconcile it, and nobody said so.
+
+🔴 **And the headcount question stands**: how many tutors exist is still unknown.

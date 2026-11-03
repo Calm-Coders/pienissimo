@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-11-02
-updated: 2026-11-02
+updated: 2026-11-03
 depends_on: [OI-98]
 blocks: []
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -77,3 +77,37 @@ flag … di gruppo merceologico"_.
    load. **Nothing records which products that is, in which org, as of today.**
 
 ⚠ **No register row covers the product-activation criterion.**
+
+## 🔑 2026-11-03 - confirmed from the production org, with numbers
+
+[The e2e production session](../meetings/2026-11-03%20Test%20e2e%20PROD.md)
+corroborates this row from a live inspection rather than from a meeting. Aurel Mrruku,
+describing how he had enabled the products the evening before:
+
+> _"Ovviamente sul campo, non su `annullato`, ma sull'altro, quello codice, ho
+> dimenticato come si chiama l'altro campo"_
+
+and Fabrizio Paganelli supplied the name: **_"gruppo merceologico"_**.
+
+🔑 **The numbers, counted live:**
+
+- **1093 products** loaded in production — _"In totale sono 1093."_
+- About **500** carry the activating value — _"erano tipo 500 qualcosa"_.
+
+🔴🔑 **And the first consequence has already happened.** Fabrizio Paganelli had set the
+whole `blow` code family to the wrong value and activated it by accident — _"Li ho
+messi a S, invece dovevo metterli a N"_ — see
+[OI-327](OI-327%20The%20blow%20product%20codes%20carry%20the%20wrong%20gruppo%20merceologico.md).
+**That is the risk this row describes, demonstrated in production nine days before the
+migration**: a registry classification mistake silently activates a product family,
+where reading Mexal's `annullato` flag would not.
+
+🔑 **Correcting it in Mexal is not enough.** Aurel Mrruku: _"Gli devo cancellare e poi
+li devo rimettere"_, because **the nightly refresh and the API integrations are
+deliberately switched off in production** — _"non voglio spaccare qualcosa adesso perché
+dobbiamo fare dei giri completi, poi alla fine devo abilitare gli API"_. Elena Spini
+pushed to enable them to test and was overruled.
+
+⚠ **Fabrizio Paganelli still owes the switch date.** Nothing on 3 November moved it; his
+**1 February 2027**, disclaimed as _"una data a caso"_ in the same breath, stands as the
+only figure.

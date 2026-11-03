@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-02
-updated: 2026-11-02
+updated: 2026-11-03
 depends_on: [OI-304]
 blocks: []
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -62,3 +62,79 @@ Mrruku _"si"_ → _"6-7gg??"_ → _"si"_.
 4. ⚠ **Nobody has said whether R0 is contingent on the client approving Fase 2.**
    The project plan sets _"Approvazione Fase 2 entro il 13/11"_, which falls
    **before** R0's build window. **The dependency is unstated.**
+
+## 🟢🔑 2026-11-03 - the classification is in front of the client in writing
+
+[The functional analysis](../The%20stage%20sale%20contract%20functional%20analysis.md)
+went to Fabrizio Paganelli, `amministrazione@pienissimo.com` and Sabatino Rinaldi at
+**18:00:14Z**, and states it plainly:
+
+> _"Impatto sulla Fase 2. **Le giornate della Fase 1 sono esaurite.** L'intervento entra
+> come **primo rilascio ufficiale della Fase 2** e si aggiunge alla stima in
+> preparazione."_
+
+🔑 **This is the first time the 26 October margin ruling has been put to the client in a
+document.** Until now it had been said once on a call.
+
+🆕🔑 **And it asks for written confirmation, with a date and an owner.** **OP-3**:
+_"Conferma scritta dell'inserimento nella Fase 2 come primo rilascio di questa nuova
+funzionalità, **prima dell'inizio dello sviluppo**. La proposta di Fase 2 era attesa
+entro il 13/11."_ — owner **Pienissimo**, due **05/11**.
+
+🟢 **So the open question of whether R0 depends on the 13 November Fase 2 approval is
+answered**: ROMI is not waiting on it. It seeks a standalone R0 confirmation by
+5 November, eight days ahead of the proposal deadline, and development starts the week
+of 9 November on that confirmation alone.
+
+🆕 **A meeting to close it**: **Thursday 5 November 12:00-12:30**, a Fase 2 recap
+_"compreso questo primo rilascio, così chiudiamo insieme gli Open Point"_.
+
+### The sizing, and why it is thin
+
+**6-7 days**, settled in the internal follow-up — Aurel Mrruku: _"Fai così, fai 6-7
+giorni … diciamo 7 giorni alla fine."_ Both Fase 2 decks say 5-7.
+
+🔴 **Aurel Mrruku does not believe it**, and said so twice:
+
+> _"Ho la paura che abbiamo messo davvero poche giornate … Sai quanto mettevo per un
+> template? **da 10 a 15 giorni**"_ — _"2-3 giorni"_ with AI.
+
+🔴 **Elena Spini cannot ask for more**: _"E non posso chiedere più i giorni, mi sa che
+già m'ammazzano."_
+
+🔴 **And the seven days cover more than the document describes** — the new Order template
+built from scratch, the **DocuSign return-trigger rewiring**
+([OI-322](../items/OI-322%20The%20DocuSign%20return%20trigger%20only%20handles%20quotes%20not%20orders.md)),
+**two templates rather than one**
+([OI-326](../items/OI-326%20A%20second%20PDF%20template%20is%20needed%20for%20corsi%20and%20for%20Plus.md)),
+the **bundle Plus classification**
+([OI-328](../items/OI-328%20A%20bundle%20containing%20a%20Plus%20product%20must%20be%20flagged%20as%20a%20Plus%20bundle.md)),
+and the signature status the client has yet to specify.
+
+🔴 **Aurel Mrruku is alone on it.** _"c'ho un sacco di progetti che sono partiti adesso.
+Eh, Regina su un progetto, Ana e Sara su un altro che durerà tipo 6-7 mesi **e il lavoro
+lo devo fare io**. Amen."_ ⚠ Names as transcribed and **uncertain**; almost certainly
+Rexhina Hysi, Anita Aga and Sara Aga.
+
+🟢🔑 **The scope ambiguity this decision carried is resolved in ROMI's favour.** Aurel
+Mrruku checked the 2 November transcript himself and confirmed the contract is wanted for
+**all** stage sales, courses and Plus alike — so pricing both in R0 matches the
+agreement, and Fabrizio Paganelli's _"solo per la parte della Plus corsi"_ did not narrow
+it.
+
+### ⚠ The Fase 2 day count is still unreconciled, and they know
+
+> **Aurel Mrruku:** _"Sai cosa faranno qua? Metteranno una media o il 58?"_
+> **Elena Spini:** _"mi sa che poi lui ha detto la media … lo scopriremo."_
+
+**150 giornate** in the offer against **58 - 78** in the plan. 🔑 **Not an oversight
+nobody noticed — ROMI is aware and waiting to be told.** Aurel Mrruku: _"è un bagno di
+sangue."_
+
+🆕🔑 **And the route to settling it was fixed on the e2e call.** Andrea Galotto told Elena
+Spini to do a pass with the project's owner before taking a call with **Daniela**.
+Agreed: **Elena Spini and Fabrizio Paganelli review the activity list first** — _"la
+lista delle attività è già definita, però poi c'è il preventivo"_ — then **Andrea Galotto
+and Daniela handle the quote and the numbers**. ⚠ **Daniela appears to be
+Pienissimo-side** — Fabrizio Paganelli undertook to brief her — but this is **inferred,
+not established**.

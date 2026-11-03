@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-30
-updated: 2026-11-02
+updated: 2026-11-03
 depends_on: []
 blocks: [go-live]
 severity: gating
@@ -163,3 +163,110 @@ P+ … oppure ci sono solo i corsi, non facciamo bundle misti."_
 
 ⚠ **No register row covers it still**, and 🔑 **the €20,000 figure was not repeated
 on the call** — it rests on the 30 October record alone.
+
+## 🟢🔑 2026-11-03 - it is specified in writing, a day early, and the scope question is answered
+
+[The functional analysis](../The%20stage%20sale%20contract%20functional%20analysis.md)
+went to Fabrizio Paganelli, `amministrazione@pienissimo.com` and Sabatino Rinaldi at
+**18:00:14Z** (Gmail `1a1a291d143128a7`), cc Aurel Mrruku — **one day before the
+Wednesday 4 November deadline point 4 above recorded.** It was drafted line by line in
+[the internal follow-up](../meetings/2026-11-03%20Follow-up%20Interno.md), 00:36:20,
+ending twenty-five minutes before it was sent.
+
+🟢 **Point 5 is answered. Paper and electronic are now separated.** `contratto
+informatico` is **the Salesforce Contract record**, as against the PDF, and it applies
+**to Performance Plus only** — **RF7**. Aurel Mrruku: _"sia il contratto informatico
+che lo chiama lui, quindi il record del contratto, che il PDF."_
+
+🟢🔑 **The point 3 scope worry is retired.** Aurel Mrruku opened the drafting session
+believing only Plus generates a contract, Elena Spini challenged it, and **he checked
+the 2 November transcript himself**: _"il contratto lo vuole per tutte le vendite da
+palco, quindi sia per i corsi sia per la plus."_ **So the pricing of courses and Plus
+in both decks matches the agreement.** Fabrizio Paganelli's _"solo per la parte della
+Plus corsi"_ did not narrow it.
+
+🟢 **Point 2 is closed too** — the twelve bundle-only codes exist and **RF5** records
+them. ⚠ But the document still lists _"Fabrizio: creazione dei 12 codici articolo Plus
+su Mexal"_ as an outstanding client dependency, which is stale by a day.
+
+🆕 **Dates, now written**: Pienissimo confirms **by 05/11** · development **week of
+09/11** · joint tests **week of 16/11** · **release 18 or 19/11** · final check and
+event bundle **23/11** · Pienissimo Live **24-26/11**. 🔑 **Explicitly outside the
+16 November go-live** — _"Aurel non vuole rischiare la parte già in produzione."_ This
+settles point 2 of the previous section: **18 or 19 November, with OP-4 asking the
+client to pick.**
+
+🆕 **A new meeting**: **Thursday 5 November 12:00-12:30**, a Fase 2 recap _"compreso
+questo primo rilascio, così chiudiamo insieme gli Open Point"_.
+
+### 🟢 Point 1 — the status flag finally has an owner and a date
+
+**OP-2 of the document**: _"Tracciamento della firma sull'ordine: stato o flag, e dove
+si salva il PDF firmato (in Fase 1 sul preventivo, con stato Firmato)"_ — owner
+**Fabrizio Paganelli**, due **05/11**.
+
+🔑 **It was pushed to the client on purpose.** Aurel Mrruku: _"non ce l'hai uno status
+la firma sull'ordine … dobbiamo fare un flag in qualche modo che ti dice che è
+firmato."_ Elena Spini: _"Qua gli lasciamo l'open point, ci faranno sapere … cacchio
+ce ne dobbiamo fare noi, ce lo dobbiamo dire loro."_
+
+### 🔴 And the chasing report was deleted, not forgotten
+
+🔑 **This corrects the 2 November reading.** The draft carried _"Cliente che non firma
+… solleciti senza blocchi"_ as Open Point 5. **Aurel Mrruku had it struck out**:
+_"toglili pure di tutto che poi là non finiamo mai"_. Elena Spini deleted the row.
+
+🔴 **So the report half of the 30 October decision is now explicitly out of scope, and
+the client has never been told it was ever in.** The unsigned-contract population the
+decision creates still has nothing tracking it.
+
+### 🔴 Three pieces of scope were left out of the document
+
+All three were discussed in drafting and deliberately or silently omitted:
+
+1. **The product check in RF1** — Aurel Mrruku: _"non tutti i prodotti che arrivano da
+   WooCommerce devono generare un contratto."_ Elena Spini noted its absence and sent
+   it anyway.
+2. **Two templates, not one** →
+   [OI-326](OI-326%20A%20second%20PDF%20template%20is%20needed%20for%20corsi%20and%20for%20Plus.md).
+   The open point was removed because it had never been raised with the client.
+3. **The DocuSign return trigger rewiring** →
+   [OI-322](OI-322%20The%20DocuSign%20return%20trigger%20only%20handles%20quotes%20not%20orders.md),
+   plus the bundle classification →
+   [OI-328](OI-328%20A%20bundle%20containing%20a%20Plus%20product%20must%20be%20flagged%20as%20a%20Plus%20bundle.md).
+
+🔴🔑 **And R0 is sized at 6-7 days — _"diciamo 7 giorni alla fine"_ — for all of it.**
+Aurel Mrruku: _"Ho la paura che abbiamo messo davvero poche giornate … Sai quanto
+mettevo per un template? da 10 a 15 giorni."_ Elena Spini: _"non posso chiedere più i
+giorni, mi sa che già m'ammazzano."_ ⚠ **And he is alone on it** — _"Regina su un
+progetto, Ana e Sara su un altro … e il lavoro lo devo fare io"_ (names as
+transcribed, uncertain).
+
+🟢 **One thing already exists**: the resend button, _"ce l'abbiamo già sull'ordine"_.
+⚠ Positioned on order creation/send rather than PDF generation, because without the
+Mexal id no PDF exists.
+
+### ⚠ The payment-timing claim was withdrawn
+
+🔑 **Aurel Mrruku struck Elisa Migliano's 2 November statement from the draft.** Elena
+Spini had written that if the order reaches Mexal the customer has paid; he refused it:
+_"Non è detto … **Noi non ce l'abbiamo l'informazione** … lo sappiamo a mezzanotte"_,
+and _"il punto due non mi piace per niente"_.
+
+**The order-state rule stands** — WooCommerce forwards only `completato`, card orders
+complete immediately, **transfers sit in `Sospeso` until amministrazione confirms** —
+but ROMI does not hold the payment fact. ⚠ The document marks the unconfirmed-transfer
+case **_"Dedotto, da confermare"_** even though Aurel Mrruku said _"corretto"_ in
+drafting.
+
+### ⚠ And the Anticipay edge case is now the normal path
+
+The document records, as _"Dedotto, da confermare"_: a failed P.IVA check sends the
+Fase 1 mail to amministrazione, **the order reaches Mexal anyway and the contract is
+generated**. Aurel Mrruku confirmed the mechanics on
+[the e2e call](../meetings/2026-11-03%20Test%20e2e%20PROD.md) the same morning —
+and 🔴 **Anticipay times out in production**
+([OI-312](OI-312%20Anticipay%20times%20out%20in%20production.md)), so the failure branch
+is what actually happens today, not an edge case. ⚠ Elena Spini named the consequence
+and nobody answered it: a contract going out with a wrong P.IVA. _"È un caso limite,
+però devono saperlo."_

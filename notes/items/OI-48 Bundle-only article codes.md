@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-07-23
-updated: 2026-11-02
+updated: 2026-11-03
 blocks: [OI-13]
 source: meetings/open-items.md row 48
 ---
@@ -331,3 +331,38 @@ been re-checked.
 unasked**: the `SFPL0001` name _PIENISSIMO LIVE LIVE_, whether Pienissimo Intensive
 is deliberately without a bundle twin, and now a fourth — **whether the ten `SF`
 codes and the twelve `PLUS_B` codes are one scheme or two.** Nobody has said.
+
+## 2026-11-03 - the twelve codes are now a contractual requirement, and one document is stale
+
+🟢 **The twelve codes are confirmed in use.** In
+[the internal follow-up](../meetings/2026-11-03%20Follow-up%20Interno.md) Aurel Mrruku
+confirmed he had seen them — _"ha già fatto lui dei prodotti e abbiamo anche visto"_ —
+and Elena Spini corrected her own draft from future to past tense: _"Fabrizio creerà —
+crea — **anzi ha creato** 12 [codici] articolo plus con flag bundle, uno per tranche,
+senza numero di tranche."_
+
+🔑 **They are now written into a client-facing specification** as **RF5** of
+[the stage-sale contract analysis](../The%20stage%20sale%20contract%20functional%20analysis.md):
+_"Per la Plus: 12 codici articolo dedicati ai bundle, senza numero di tranche"_, each
+inserted once. **So the workaround is contractual, not just convenient.**
+
+⚠ **But the same document lists _"Fabrizio: creazione dei 12 codici articolo Plus su
+Mexal"_ as an outstanding client dependency** — stale by a day, and the client has
+received it that way.
+
+🔑 **A clarification on the starting position.** Elena Spini's draft said the bundle Plus
+product _"non ha tranche"_; Aurel Mrruku corrected her: that was the position **before**
+Fabrizio Paganelli's change — _"adesso ha tranche con la sua modifica"_ — one code per
+tranche, none carrying a count.
+
+🔴 **The code values are still not held** and the `PLUS_B` / `SF` scheme question is
+**unasked for a second day**. ⚠ The `image001.png` attachment on the 2 November mail is
+**still unopened**.
+
+🟢 **Fresh context from the org**: production holds **1093 products**, about **500**
+activated — see
+[OI-309](OI-309%20The%20product%20activation%20criterion%20must%20switch%20from%20gruppo%20merceologico%20to%20the%20Mexal%20flag.md).
+⚠ 🔴 **And the registry is not clean**: Fabrizio Paganelli mis-set the whole `blow`
+family, which undercuts _"Non dovremmo creare nuovi codici prodotto"_ as a claim about
+the registry's readiness — see
+[OI-327](OI-327%20The%20blow%20product%20codes%20carry%20the%20wrong%20gruppo%20merceologico.md).
