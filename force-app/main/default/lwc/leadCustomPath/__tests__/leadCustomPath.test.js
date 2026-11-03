@@ -72,6 +72,71 @@ describe("Lead key fields", () => {
     jest.clearAllMocks();
   });
 
+  it.each([
+    "Non interessato",
+    "Prezzo alto",
+    "Sceglie concorrenza",
+    "Servizio non adatto"
+  ])("requires motivation for Perso with detail %s", async (detail) => {
+    const element = await mount({
+      lead: {
+        fields: {
+          ...LEAD.fields,
+          Status: { value: "Non qualificato" },
+          Motivazione_Uscita__c: { value: "Perso" },
+          Dettaglio_Motivazione_Uscita__c: { value: detail }
+        }
+      }
+    });
+    const motivation = element.shadowRoot.querySelector(
+      'lightning-textarea[data-field-name="Motivazione__c"]'
+    );
+    expect(motivation).not.toBeNull();
+    expect(motivation.required).toBe(true);
+  });
+
+  it("hides motivation until a Perso detail is selected", async () => {
+    const fields = {
+      ...LEAD.fields,
+      Status: { value: "Non qualificato" },
+      Motivazione_Uscita__c: { value: "Perso" },
+      Dettaglio_Motivazione_Uscita__c: { value: null }
+    };
+    const element = await mount({ lead: { fields } });
+    const motivation = () =>
+      element.shadowRoot.querySelector(
+        'lightning-textarea[data-field-name="Motivazione__c"]'
+      );
+    expect(motivation()).toBeNull();
+    getRecord.emit({
+      fields: {
+        ...fields,
+        Dettaglio_Motivazione_Uscita__c: { value: "Prezzo alto" }
+      }
+    });
+    await flush();
+    expect(motivation()).not.toBeNull();
+    expect(motivation().required).toBe(true);
+  });
+
+  it("does not require motivation for Errato", async () => {
+    const element = await mount({
+      lead: {
+        fields: {
+          ...LEAD.fields,
+          Status: { value: "Non qualificato" },
+          Motivazione_Uscita__c: { value: "Errato" },
+          Dettaglio_Motivazione_Uscita__c: { value: "Test" }
+        }
+      }
+    });
+    expect(
+      element.shadowRoot.querySelector(
+        'lightning-textarea[data-field-name="Motivazione__c"]'
+      )
+    ).toBeNull();
+  });
+
   it("renders the configured field for each selected stage", async () => {
     const element = await mount();
     const recordConfig = getRecord.getLastConfig();

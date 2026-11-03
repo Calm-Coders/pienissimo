@@ -292,9 +292,7 @@ export default class LeadCustomPath extends NavigationMixin(LightningElement) {
   }
 
   get requiresMotivazione() {
-    return (
-      this.exitReason === "Perso" && this.exitReasonDetail === "Non interessato"
-    );
+    return this.exitReason === "Perso" && !!this.exitReasonDetail;
   }
 
   get showMotivazione() {

@@ -122,6 +122,16 @@
                 <identifier>RecordPhoneField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Company</fieldItem>
+                <identifier>RecordCompanyField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-51506e76-f7ca-486c-9ec7-bac0793a6797</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -144,26 +154,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Website</fieldItem>
                 <identifier>RecordWebsiteField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Company</fieldItem>
-                <identifier>RecordCompanyField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Industry</fieldItem>
-                <identifier>RecordIndustryField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -194,6 +184,12 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Lead_from_Zoho__c</fieldItem>
                 <identifier>RecordLead_from_Zoho_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Username}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
