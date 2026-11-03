@@ -3,14 +3,13 @@
     <fullName>Require_Motivation_When_Not_Interested</fullName>
     <active>true</active>
     <description
-  >Requires a free-text motivation when a Lead is marked Non qualificato with the Perso - Non interessato reason.</description>
+  >Requires a free-text motivation for every exit detail when a Lead is marked Non qualificato with the Perso reason.</description>
     <errorConditionFormula>AND(
     ISPICKVAL(Status, &quot;Non qualificato&quot;),
     ISPICKVAL(Motivazione_Uscita__c, &quot;Perso&quot;),
-    ISPICKVAL(Dettaglio_Motivazione_Uscita__c, &quot;Non interessato&quot;),
     ISBLANK(Motivazione__c)
 )</errorConditionFormula>
     <errorDisplayField>Motivazione__c</errorDisplayField>
     <errorMessage
-  >Inserisci la motivazione prima di salvare il Lead come Non interessato.</errorMessage>
+  >Inserisci la motivazione prima di salvare il Lead come Perso.</errorMessage>
 </ValidationRule>
