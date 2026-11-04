@@ -70,6 +70,7 @@ public without sharing class MexalOrderSendService {
         EffectiveDate,
         OrderNumber,
         Quote__c,
+        Quote__r.QuoteNumber,
         Condizione_di_Pagamento__c,
         WooCommerce_Order_Key__c,
         (
@@ -149,6 +150,11 @@ public without sharing class MexalOrderSendService {
       payload.put('codice_agente', orderRecord.Codice_Agente__c.trim());
     }
     payload.put('data_documento', formatDate(orderRecord.EffectiveDate));
+    // Header note ("Note di Testata", named by Kreosoft 30/10): the quote
+    // number, so amministrazione can match the invoice to the signed quote.
+    if (!String.isBlank(orderRecord.Quote__r?.QuoteNumber)) {
+      payload.put('nota', orderRecord.Quote__r.QuoteNumber);
+    }
     putIntegerValue(
       payload,
       'id_pagamento',

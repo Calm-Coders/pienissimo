@@ -1,12 +1,12 @@
 ---
 id: OI-306
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-30
-updated: 2026-11-03
+updated: 2026-11-04
 depends_on: []
 blocks: []
 source: notes/meetings/2026-10-30 Connessione WooCommerce.md
@@ -107,3 +107,23 @@ field — see
 [OI-317](OI-317%20The%20payment%20condition%20description%20field%20must%20become%20quote%20notes.md)
 — which is the third decision about note fields on quotes and orders in five days, in
 the third direction.
+
+## 2026-11-04 - built in source, not deployed
+
+🔑 **Aurel Mrruku chose the content: the bare Salesforce quote number** (format
+`00000005`, the standard `QuoteNumber` auto-number). This settles point 3.
+
+- `MexalOrderSendService.loadOrder` now selects `Quote__r.QuoteNumber`;
+  `buildOrderPayload` sends it as **`nota`** in the order header.
+- **The key is omitted when the order has no linked quote**, so orders created
+  without one (including WooCommerce orders) send no note. That answers point 4 in
+  effect: the note appears only on quote-backed orders.
+- ✅ Compiles: dry-run deploy to `Pienissimo UAT`, `NoTestRun`, 2026-11-04.
+- ✅ **Deployed to `Pienissimo UAT`** 2026-11-04 09:29Z, deploy id
+  `0AfMA00000D5kii0AB`, `NoTestRun`; the live class body was re-read and carries the
+  `nota` line.
+- 🔴 **Not deployed to Prod and not tested against Mexal.** The maximum length of
+  `nota` is still unrecorded; an 8-digit number is unlikely to hit it.
+
+**Closing it:** a quote-backed order sent to Mexal whose header note, and the invoice
+printed from it, shows the quote number.

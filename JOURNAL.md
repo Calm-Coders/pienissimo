@@ -9,6 +9,23 @@ Keep the twenty most recent entries here; archive older ones to
 `notes/sessions/YYYY-QN.md`.
 
 ---
+
+## 2026-11-04 - claude-opus-5-5 (OI-306 Mexal header note)
+
+- **Did:** wired the Mexal order header note. `MexalOrderSendService` now selects
+  `Quote__r.QuoteNumber` and sends it as **`nota`** (the field Kreosoft named on 30/10);
+  the key is omitted when the order has no linked quote. Aurel Mrruku chose the **bare
+  quote number** as the content. Dry-run deploy to `Pienissimo UAT` succeeded (compile
+  only, `NoTestRun`, deploy id `0AfMA00000D5nJz0AJ`).
+- **State:** [OI-306](notes/items/OI-306%20The%20WooCommerce%20order%20number%20must%20reach%20Mexal%20in%20the%20order%20header%20note.md)
+  → `in-progress`. Uncommitted on `DevMain`. **Deployed to UAT** (09:29Z, deploy id
+  `0AfMA00000D5kii0AB`, live body verified); **not deployed to Prod**.
+- **Next:** in UAT send one quote-backed order, and confirm the quote number shows in
+  the Mexal header note and on the printed invoice. `nota` length limit still unknown.
+  Tracker rows for OI-306 not yet regenerated.
+
+---
+
 ## 2026-11-03 — claude-opus-5 (nightly requirements-check)
 
 - **Did:** swept Gmail, Drive, Slack, Fathom and git from watermark **2026-11-02T22:00Z**.
