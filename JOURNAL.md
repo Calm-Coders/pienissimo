@@ -48,6 +48,11 @@ Keep the twenty most recent entries here; archive older ones to
 - **Next:** send one quote-backed order, and confirm the quote number shows in
   the Mexal header note and on the printed invoice. `nota` length limit still unknown.
   Tracker rows for OI-306 not yet regenerated.
+- **Correction (later 2026-11-04):** the first UAT send was rejected with HTTP 400
+  `Campo array 'nota' formato passaggio valori non corretto`. `nota` is an array field;
+  it now goes as `[[1, "<quote number>"]]`. Deployed to UAT (deploy id
+  `0AfMA00000D60XJ0AZ`). **Prod still sends the string form and rejects every
+  quote-backed order** until the fix is deployed there.
 
 ---
 

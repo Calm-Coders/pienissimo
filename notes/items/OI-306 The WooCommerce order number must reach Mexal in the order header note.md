@@ -129,5 +129,16 @@ the third direction.
 - 🔴 **Not yet seen working in Mexal.** No order has been sent with the note. The
   maximum length of `nota` is still unrecorded; an 8-digit number is unlikely to hit it.
 
+## 2026-11-04 - the first send was rejected: nota is an array field
+
+- 🔴 The first UAT send (series 10) sent `nota` as a plain string. Mexal answered
+  HTTP 400 `6001 - errore gestionale [Campo array 'nota' formato passaggio valori
+non corretto]`. So `nota` is an array of note lines, like the line fields.
+- ✅ Fixed in source: `nota` now goes as `[[1, "<quote number>"]]`. **Deployed to
+  `Pienissimo UAT`** 2026-11-04, deploy id `0AfMA00000D60XJ0AZ`, `NoTestRun`.
+- 🔴 **Prod still has the string version**, so every quote-backed order sent from
+  Prod is rejected the same way until the fix is deployed there. The array form has
+  not yet been accepted by Mexal either; it awaits a UAT resend.
+
 **Closing it:** a quote-backed order sent to Mexal whose header note, and the invoice
 printed from it, shows the quote number.

@@ -152,8 +152,14 @@ public without sharing class MexalOrderSendService {
     payload.put('data_documento', formatDate(orderRecord.EffectiveDate));
     // Header note ("Note di Testata", named by Kreosoft 30/10): the quote
     // number, so amministrazione can match the invoice to the signed quote.
+    // Mexal treats nota as an array of note lines, so it goes as [[1, value]].
     if (!String.isBlank(orderRecord.Quote__r?.QuoteNumber)) {
-      payload.put('nota', orderRecord.Quote__r.QuoteNumber);
+      payload.put(
+        'nota',
+        new List<Object>{
+          new List<Object>{ 1, orderRecord.Quote__r.QuoteNumber }
+        }
+      );
     }
     putIntegerValue(
       payload,
