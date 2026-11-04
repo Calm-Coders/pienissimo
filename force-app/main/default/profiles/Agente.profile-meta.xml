@@ -286,30 +286,6 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LightningForgotPasswordController</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LightningForgotPasswordControllerTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LightningLoginFormController</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LightningLoginFormControllerTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LightningSelfRegisterController</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LightningSelfRegisterControllerTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>MappaturaEdizioneProductSearch</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -1804,11 +1780,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Event.Location</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Event.Sottotipo__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -3418,11 +3389,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Task.Sottotipo__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Task.Type</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -3567,9 +3533,6 @@
         <layout>CardPaymentMethod-Layout Metodo di pagamento con carta</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Categoria_Prodotto__c-Categoria Prodotto Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>ContactPointAddress-Contact Point Address Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -3603,9 +3566,6 @@
         <layout>Fattura__c-Fattura Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>FlowRecord-Layout Flusso</layout>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>Individual-Individual Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -3613,9 +3573,6 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Invoice-Layout Fattura</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>InvoiceAddressGroup-Layout Gruppo di indirizzi fattura</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>InvoiceLine-Layout Voce in fattura</layout>
@@ -3645,9 +3602,6 @@
     <layoutAssignments>
         <layout>Opportunity-Opportunity Layout</layout>
         <recordType>Opportunity.WooCommerce</recordType>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>OpportunityContactRole-Opportunity Contact Role Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Order-Order Layout</layout>
@@ -3794,16 +3748,6 @@
         <object>Campaign</object>
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions>
-    <objectPermissions>
-        <allowCreate>false</allowCreate>
-        <allowDelete>false</allowDelete>
-        <allowEdit>false</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
-        <object>Categoria_Prodotto__c</object>
-        <viewAllFields>true</viewAllFields>
-        <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>true</allowCreate>
