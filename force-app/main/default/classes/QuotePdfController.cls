@@ -1,6 +1,7 @@
 public without sharing class QuotePdfController {
   private static final Integer MAX_LINES = 500;
   private static final String EMPTY_QUOTE_ERROR = 'Questo preventivo non contiene righe prodotto. Aggiungi almeno un prodotto prima di generare il PDF.';
+  private static final String MISSING_TRANCHES_ERROR = 'Il preventivo non contiene tranche. Crea almeno una tranche prima di generare il PDF.';
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
   private static final String PLUS_OPPORTUNITY_TYPE_PREFIX = 'Performance Plus -';
   private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
@@ -139,7 +140,14 @@ public without sharing class QuotePdfController {
     if (records[0].QuoteLineItems.isEmpty()) {
       throw new QuotePdfException(EMPTY_QUOTE_ERROR);
     }
+    requireTranches(quoteId);
     return records[0];
+  }
+
+  public static void requireTranches(Id quoteId) {
+    if ([SELECT COUNT() FROM Tranche__c WHERE Quote__c = :quoteId] == 0) {
+      throw new QuotePdfException(MISSING_TRANCHES_ERROR);
+    }
   }
 
   public String getCustomerName() {
