@@ -1,12 +1,12 @@
 ---
 id: OI-317
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-03
-updated: 2026-11-03
+updated: 2026-11-04
 depends_on: []
 blocks: []
 source: notes/meetings/2026-11-03 Test e2e PROD.md
@@ -47,11 +47,11 @@ matters:
 
 So:
 
-| Change | Detail |
-| ------ | ------ |
-| **Obscure** `descrizione condizioni di pagamento` | The structured payment condition itself stays; only the free-text description goes. |
-| **Rename to `note preventivo`** | Aurel Mrruku supplied the name. |
-| **Enlarge it** | _"mettere un campo più grande qua, di modo tale che quando scrivono le note, che a volte possono essere anche molto lunghe, hanno la visibilità completa"_ |
+| Change                                            | Detail                                                                                                                                                     |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Obscure** `descrizione condizioni di pagamento` | The structured payment condition itself stays; only the free-text description goes.                                                                        |
+| **Rename to `note preventivo`**                   | Aurel Mrruku supplied the name.                                                                                                                            |
+| **Enlarge it**                                    | _"mettere un campo più grande qua, di modo tale che quando scrivono le note, che a volte possono essere anche molto lunghe, hanno la visibilità completa"_ |
 
 🔑 **Elena Spini confirmed the original field was deliberate** — _"era un campo che
 avevamo detto a livello di data model"_ — so this is a reversal of a Fase 1 decision,
@@ -79,3 +79,20 @@ should not discover the 30 October ruling afterwards.**
    returns the quote to **`Bozza`** and the PDF must be regenerated. Aurel Mrruku:
    _"ogni volta che te fai dei cambiamenti che hanno a che fare con i dati che sono
    sulla fattura"_.
+
+## 2026-11-04 - built and in production
+
+🟢 **Built by Anita Aga** (`e91c5cb`, `320c9b2`, 03/11): new field `Quote.Note_Preventivo__c`
+on the Quote layout and record page; `QuotePdfController` and `QuoteTriggerHandler`
+switched from `Descrizione_Condizione_di_Pagamento__c` to it; **the quote PDF prints it**
+when it is not blank — which answers point 2.
+
+🟢 **Deployed to `Pienissimo Prod`** 2026-11-04 in the UAT-alignment release, deploy id
+`0AfSW000001L2kb0AC` (validation `0AfSW000001L2fl0AC`, `RunLocalTests`, 168 tests, 0
+failures). Already in UAT. Re-retrieved from Prod and matched against `DevMain`.
+
+🔴 **`Descrizione_Condizione_di_Pagamento__c` still exists in Prod.** The branch deleted it,
+but a deploy does not delete fields; it needs a destructive change, after checking no
+production quote holds text in it that should move to the new field.
+
+🔴 **Not yet smoke-tested in Prod**: a quote with a note, regenerated PDF, note printed.

@@ -122,8 +122,12 @@ the third direction.
 - ✅ **Deployed to `Pienissimo UAT`** 2026-11-04 09:29Z, deploy id
   `0AfMA00000D5kii0AB`, `NoTestRun`; the live class body was re-read and carries the
   `nota` line.
-- 🔴 **Not deployed to Prod and not tested against Mexal.** The maximum length of
-  `nota` is still unrecorded; an 8-digit number is unlikely to hit it.
+- ✅ **Deployed to `Pienissimo Prod`** 2026-11-04 09:34Z, deploy id
+  `0AfSW000001L2MP0A0`, `RunSpecifiedTests MexalIntegrationTest` — 59 tests, 0
+  failures, `MexalOrderSendService` 246/298 lines covered (83%); the live class body
+  was re-read and carries the `nota` line.
+- 🔴 **Not yet seen working in Mexal.** No order has been sent with the note. The
+  maximum length of `nota` is still unrecorded; an 8-digit number is unlikely to hit it.
 
 **Closing it:** a quote-backed order sent to Mexal whose header note, and the invoice
 printed from it, shows the quote number.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-28
-updated: 2026-11-02
+updated: 2026-11-04
 depends_on: [OI-290]
 blocks: [go-live]
 source: Slack D0B5QHS2T7H 2026-10-28 17:03 CET
@@ -196,3 +196,9 @@ being absent has cost nothing yet — and 🔴 **nothing still writes it**.
 ([OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md)),
 which means the marking has to be designed for a file that does not exist yet
 rather than for the one in hand.
+
+## 2026-11-04 - the field is in production
+
+🟢 `Lead.Lead_from_Zoho__c` (`0717486`) is **deployed to `Pienissimo Prod`** with its Lead
+record page placement and its Full_Permission and Agente field permissions — deploy id
+`0AfSW000001L2kb0AC`, 2026-11-04. 🔴 **Nothing sets it yet**; the import must populate it.

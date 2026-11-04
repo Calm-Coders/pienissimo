@@ -10,6 +10,29 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-04 - claude-opus-5-5 (Prod aligned with UAT)
+
+- **Did:** compared `DevMain`, UAT and Prod by retrieving every `force-app` component
+  from both orgs and diffing semantically (comparison scripts and retrieves are in the
+  session scratchpad, not the repo). Prod was missing two weeks of work; UAT matched the
+  branch except for a few record pages and settings. On Aurel Mrruku's instruction (agreed
+  with Anita Aga) **pulled the UAT versions into `force-app`** — Order and Quote record
+  pages, Campaign `AllActiveCampaigns` list view, `OpportunityStage`, the Scadenza Fattura
+  tab, `Ateco_Stato_Attivita__c`, `Discount_Pct__c`, plus the new `Integration_Log__c`
+  `All` list view — **except the Quote layout**, where Aurel Mrruku kept Create Order,
+  Create Contract and Deep Clone hidden. Formatted them with Prettier. Then deployed a
+  29-component release to Prod: validation `0AfSW000001L2fl0AC` (`RunLocalTests`, 168
+  tests, 0 failures; `RunSpecifiedTests` had failed on `MexalCustomerCreateService` at
+  70.6% coverage), quick deploy **`0AfSW000001L2kb0AC`**, re-retrieved and matched.
+- **State:** OI-317 → `in-progress`, OI-295 and MAP updated. The UAT-pulled files are
+  **uncommitted on `DevMain`**. The scheduled job did not block this release.
+- **Next:** destructive change for `Descrizione_Condizione_di_Pagamento__c` in Prod
+  (check data first); smoke-test the quote note on the PDF, Gestisci Prodotti and the Lead
+  `Perso` rule in Prod; tell the client about the label and rule changes. Tracker rows
+  not regenerated.
+
+---
+
 ## 2026-11-04 - claude-opus-5-5 (OI-306 Mexal header note)
 
 - **Did:** wired the Mexal order header note. `MexalOrderSendService` now selects
@@ -19,8 +42,10 @@ Keep the twenty most recent entries here; archive older ones to
   only, `NoTestRun`, deploy id `0AfMA00000D5nJz0AJ`).
 - **State:** [OI-306](notes/items/OI-306%20The%20WooCommerce%20order%20number%20must%20reach%20Mexal%20in%20the%20order%20header%20note.md)
   → `in-progress`. Uncommitted on `DevMain`. **Deployed to UAT** (09:29Z, deploy id
-  `0AfMA00000D5kii0AB`, live body verified); **not deployed to Prod**.
-- **Next:** in UAT send one quote-backed order, and confirm the quote number shows in
+  `0AfMA00000D5kii0AB`, live body verified) and **to Prod** (09:34Z, deploy id
+  `0AfSW000001L2MP0A0`, `MexalIntegrationTest` 59/59 passed, class 83% covered, live
+  body verified).
+- **Next:** send one quote-backed order, and confirm the quote number shows in
   the Mexal header note and on the printed invoice. `nota` length limit still unknown.
   Tracker rows for OI-306 not yet regenerated.
 
