@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-02
-updated: 2026-11-02
+updated: 2026-11-04
 depends_on: [OI-244, OI-290]
 blocks: [go-live]
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -73,3 +73,62 @@ correctness**.
    from the UAT rehearsal of 28 October.
 4. ⚠ **No rollback is recorded**, for the pre-load or for the delta — unchanged
    since the single-pass plan was adopted.
+
+## 🟢🔑 2026-11-04 - three of the four interface files arrived, and the dates hardened
+
+**The pre-load's missing precondition — open point 1 above, "no date for the
+refreshed interface files" — is now mostly answered. Three files came by mail
+within fifty minutes of
+[the 04/11 session](../meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md)
+closing, against Aurel Mrruku's list: _"aspetto i vostri dati, quindi account,
+ordini, contatti."_**
+
+| Time (UTC) | Mail                             | Attachment                                     | Note                                 |
+| ---------- | -------------------------------- | ---------------------------------------------- | ------------------------------------ |
+| 15:39      | `Anagrafica Account`             | `Account Salesforce (rev Agente).xlsx`         | _"vi giro l'anagrafica degli account tramite mail, mi viene più comodo"_ |
+| 15:50      | `Lista Locali`                   | `Locali Salesforce.xlsx`                       | _"Anche questa è provvisoria"_ → [OI-333](OI-333%20Locali%20without%20a%20Mexal%20customer%20code%20will%20not%20be%20loaded.md) |
+| 16:30      | `Import ORDINI - Testata e Riga` | `Import Ordini (versione del 2026.11.04).xlsx` | TESTATA + RIGA sheets — _"Fateci sapere se va tutto a buon fine"_ |
+
+⚠ **All three hold real customer records. Their existence and their filenames are
+recorded; no values are copied into the repository and none of the three was
+opened.**
+
+🔴 **The fourth — Referenti — did not arrive**, and the client's answer was to reuse
+the 27/28 October extract and refresh it next week
+([OI-290](OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md)).
+So the pre-load's contact half is a week stale by design.
+
+🟢 **Two preconditions confirmed closed on the call:**
+
+- **Articles need no file** — _"gli articoli non c'è bisogno che te li do perché li
+  prendi da Mexal"_, confirmed by Aurel Mrruku.
+- **Campaigns are already in production**, and Fabrizio Paganelli rebuilt the
+  edition mappings and product-code links by hand the same morning — _"stamattina ho
+  fatto anche tutta la mappatura delle campagne, delle edizioni e l'aggancio con i
+  singoli codici prodotto"_, the manual work
+  [OI-320](OI-320%20Event%20and%20Edizione%20mappings%20cannot%20be%20moved%20between%20orgs.md)
+  forced on him. ⚠ No volume, no duration.
+
+## 🔑 The 12-13 November window, in the client's own words
+
+> _"il 12 e il 13 dobbiamo ricaricare di nuovo tutto … **è il 12 e il 13 che noi
+> stacchiamo tutti i bottoni e loro fanno le importazioni.** Giovedì venerdì fanno
+> tutto."_
+
+His availability: **absent Monday 9**, _"martedì e mercoledì sono in ufficio … full
+su sta roba"_. ⚠ **Which collides with the training sessions of Monday 9 and
+Wednesday 11, 11:30-13:00**, and with the 9 November technical go-live.
+
+🔴 **A load nobody had costed is in the same window**: Fabrizio Paganelli also
+carries the Pienissimo 360 migration — _"dal mio lato c'ho anche Pienissimo 360,
+devo portarmi tutte le opportunity, tutte le robe"_ — plus _"performance plus class
+da mettere su ancora"_, and has to _"fare una fotografia di Zoho fino all'11 di
+novembre"_ with every open opportunity. He asked for help and nobody answered:
+_"**Non posso fare tutto da solo.**"_
+
+🆕 **The invoice numerators have to change before go-live** — _"dobbiamo modificare
+i numeratori"_, said in passing when a test invoice took a real number. ⚠ **No
+owner, no date, and it appears in no other record.**
+
+⚠ **Open points 3 and 4 above are unchanged**: the 3-4 hour figure is still only
+from the 28 October UAT rehearsal, and **no rollback is recorded** for either pass.

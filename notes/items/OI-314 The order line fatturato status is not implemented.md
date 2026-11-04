@@ -114,3 +114,27 @@ On Aurel Mrruku's instruction (_"procedi con la regola concordata"_),
 - 🔴 **Still uncommitted on `DevMain`.** ⚠ No backfill: orders already invoiced move to
   `Fatturato` only when one of their lines is next touched. ⚠ Not yet seen working on a
   real order.
+
+## ⚠ 2026-11-04 - the rule was not yet live during the day's production test
+
+Timeline matters for anyone reading the 04/11 evidence. In
+[the e2e session](../meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md),
+while the first invoice was coming back from Mexal, Aurel Mrruku said:
+_"**Ancora non ho fatto la cosa del fatturato** e ce l'ho in ambiente di \[test\],
+ma lo faccio oggi."_
+
+So the partial-invoice behaviour observed that afternoon — order invoiced for one
+tranche, `Scadenza Fattura` `pagato`, **one asset to `Disponibile` and the rest
+left `ordinato`** — was produced **without** the `Fatturato` rule in play. It was
+deployed to Prod later the same day (`0AfSW000001L5Lt0AK`, 103/103).
+
+🔑 **Which means the rule still has not been seen on a real order**, and the
+afternoon's orders are not evidence for it. ⚠ **It also means the first order to
+exercise it will be one created after the deploy, in a production org where
+[no Mexal sync job is scheduled](OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md)**,
+so the status will only move when somebody runs the sync by hand.
+
+⚠ Related and unresolved: the rule deliberately never touches `Incassato`, which is
+precisely the state
+[OI-331](OI-331%20A%20reversed%20collection%20cannot%20move%20the%20order%20and%20asset%20states%20back.md)
+now needs to be reversible.

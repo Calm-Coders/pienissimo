@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-29
-updated: 2026-11-03
+updated: 2026-11-04
 depends_on: []
 blocks: []
 source: Gmail 1a1884b8e0d02735
@@ -245,3 +245,33 @@ against the **seven** provisioned is unexplained; `Segreteria` being a mailbox r
 than a person would reconcile it, and nobody said so.
 
 🔴 **And the headcount question stands**: how many tutors exist is still unknown.
+
+## 🟢 2026-11-04 - training confirmed and invited, and a new question nobody answered
+
+🟢 **Marco Montesi confirmed, 08:59Z**, in the `Trasferimento dati` thread:
+_"per la formazione ti confermo **lunedì 9 e mercoledì 11 dalle 11:30 alle
+13:00**. Gira pure a me il link meet che lo passo ai tutor."_ So the dates and the
+window are final.
+
+🟢 **Elena Spini sent the invitations, 17:31Z**: _"Inviti inviati."_
+
+🆕🔑 **And asked the question this item exists for, in one line:**
+
+> _"Le utenze dei tutor **le creo dopo il training o procedo già adesso?**"_
+
+🔴 **Unanswered at this sweep.** It is the tutor-access half of this row reaching
+the client in writing for the first time — and it arrives **five days** after the
+original question about test access for every agent in `Utenti Area Commerciale.xlsx`,
+which is still unanswered.
+
+⚠ **The collision stands and is now committed, not just proposed.** Monday 9
+November is the technical go-live and Wednesday 11 is the eve of the migration; the
+client's own man is **absent on Monday 9** and _"full"_ on the 10th and 11th
+([OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md)).
+Nobody has yet named the collision to anybody.
+
+🆕 **Fabrizio Paganelli wants to attend the Wednesday 11 session** — _"io
+parteciperei alla riunione che abbiamo prestabilito per anche il commerciale
+mercoledì 11"_ — and had no invitation when he asked; Aurel Mrruku had none either
+and guessed Elena Spini was waiting on Marco Montesi, which the 08:59Z mail had
+already settled hours earlier.

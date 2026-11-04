@@ -10,6 +10,54 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-04 - claude-opus-5 (nightly requirements-check)
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-11-03T22:00Z**; drilled the 04/11 `Continuazione Test e2e PROD`
+  (01:49:12) from the full transcript, which arrives **inside the Gemini notes
+  document** (97,357 chars, read in slices) because **no recording and no separate
+  transcript exist — third session in a row**.
+- **State:** OI-329 to OI-336 new; 1 meeting note + preserved transcript; OI-205,
+  OI-290, OI-300, OI-306 (**→ `resolved`**), OI-310, OI-311, OI-312, OI-313,
+  OI-314 updated; MAP, INDEX, both trackers (8 new rows + 9 regenerated rows
+  each), both recaps **§77**, trace, this entry. **Register untouched — stays
+  v1.6.** Next free id **337**.
+- **Headlines:** 🟢🔑 **the production chain proved divisible** — one tranche
+  invoiced and collected moved **exactly one asset** to `Disponibile`, the rest
+  left `ordinato`; a second order went through in full. 🟢 **OI-306 is finished**:
+  the array fix reached Prod before lunch and the quote number was read off Mexal
+  order `OC157` and off the invoice printed from it. 🔴🔑 **And the same session
+  showed the state machine has no reverse gear** — collection deleted, due date
+  reopened, **asset stayed `Disponibile`** — which is the client's **monthly Ri.Ba.
+  return cycle**, not an edge case, and the ticket may already have gone (OI-331,
+  routed to Fase 2, no date). 🔴 **OI-313 reproduced during the test** and the
+  diagnosis moved onto the **marketing flow's own filter**, 1.5 months stale;
+  **the client has still been told nothing, 30 hours on**. 🔴🔑 **No `Mexal%`
+  CronTrigger exists in Prod at all** (OI-334), so every 3-4 November result came
+  from a hand-run sync, twelve days from the 16/11 user go-live. 🟡 **OI-290
+  reversed**: the client says the file already sent **is** the Referenti
+  deliverable, dated 27-28 October, and asked ROMI to verify the Mexal code —
+  unanswered.
+- **Next:** OI-329 and OI-330 are Aurel Mrruku's own undertakings and **nothing is
+  in the repository** — he was building the tranche block on the evening of 04/11,
+  so check for it before re-reporting. The 05/11 marketing test with Fabrizio
+  Mastracci should settle OI-311 and OI-313 together. R0 confirmation is due
+  **05/11** with a 12:00-12:30 meeting. The three migration workbooks are in the
+  mailbox and **unopened by design**.
+- **Watch:** 🔑 **OI-331 is the one to carry forward** — it sits upstream of OI-212,
+  OI-201 and OI-206, and the Ri.Ba. territory is priced into Fase 2 R2 at
+  12/02/2027, i.e. **after** the manual reversal is in daily use. ⚠ **OI-314's rule
+  was NOT live during the 04/11 test**, so the afternoon's orders are not evidence
+  for it — do not cite them as such. ⚠ The Gemini auto-notes invent a
+  **"FileMaker"** from a mis-transcription inside a sentence about the Mexal `nota`
+  field, and place the Pienissimo 360 insoluti conversation inside the meeting when
+  it happened **after Aurel Mrruku left**, between Pienissimo staff — ROMI was not
+  party to it (OI-335). ⚠ The tranche obligation is a **v1.7 register candidate,
+  deliberately not written in**. ⚠ `JOURNAL.md` holds far more than the twenty
+  entries the protocol specifies; not pruned here.
+
+---
+
 ## 2026-11-04 - claude-opus-5-5 (Prod Mexal invoice + scadenzario re-sync, last week)
 
 - **Did:** on request, moved both cursors on `Integration_Configuration2__c`

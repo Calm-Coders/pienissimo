@@ -1,7 +1,7 @@
 ---
 id: OI-306
 type: open-item
-status: in-progress
+status: resolved
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
@@ -142,3 +142,31 @@ non corretto]`. So `nota` is an array of note lines, like the line fields.
 
 **Closing it:** a quote-backed order sent to Mexal whose header note, and the invoice
 printed from it, shows the quote number.
+
+## 🟢🔑 2026-11-04 - resolved: the quote number is on the Mexal document in production
+
+The array fix went to production the same morning, before the session —
+Aurel Mrruku: _"Ho avuto tanti problemi su quella nota perché la struttura che ci
+ha dato lui non andava bene, ma finalmente ho trovato serviva un array … prima di
+pranzo sono andato in produzione."_
+
+🟢 **Then it was read off the Mexal screen with the client driving**, in
+[the 04/11 production session](../meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md):
+a quote signed through DocuSign produced Salesforce order → **Mexal order
+`OC157`**, and Aurel Mrruku: _"Vai, aprilo. E hai anche nota. **Vedi nota 07?**"_ →
+Fabrizio Paganelli: _"Ah, perfetto, perfetto."_
+
+🟢 **And it survived onto the invoice printed from that order** — Fabrizio
+Paganelli, invoicing the first tranche: _"Qui c'è la nota riferimento al preventivo
+numero del …"_, which is the purpose the client asked for on 30 October: matching
+an order at invoicing time.
+
+**So the item closes on its own terms.** The string-versus-array defect recorded
+above is superseded: Prod now sends the array form, and Mexal accepted it.
+
+⚠ **One sub-question stays open and is deliberately not closed with it:** the
+maximum length of `nota` is still unrecorded. An 8-digit quote number is far
+inside any plausible limit, so it does not block anything today.
+
+⚠ **No order was re-sent from UAT** to prove the array form there independently;
+the production evidence is what carries this.

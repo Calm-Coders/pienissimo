@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini
 org: ROMI
 raised: 2026-11-02
-updated: 2026-11-03
+updated: 2026-11-04
 depends_on: []
 blocks: [OI-81]
 uncertain: which flow
@@ -90,3 +90,35 @@ it is now impossible to say from the record whether his rebuild is implicated in
 🟢 **Aurel Mrruku brought the community into production during the day** — _"e ho portato
 su la community"_, 12:48 CET — which was one of the session's own next steps. 🔴 **The
 Notes object is still not released.**
+
+## 🟢🔑 2026-11-04 - the records exist now, and they were made on purpose
+
+**The blocker is cleared.** The orders put through production in
+[the 04/11 e2e session](../meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md)
+were created explicitly for this, and Aurel Mrruku said so twice on the call:
+
+> _"così prepariamo anche dei biglietti per Fabrizio di Romi, così lui può già
+> mettere in piedi \[le logiche\] … non ha mai testato coi dati reali in produzione
+> l'invio delle mail con i biglietti."_
+>
+> _"mi servono questi biglietti perché quando faremo i test con marketing domani
+> siano dei dati reali."_
+
+The brief he gave the client was specific: _"una decina di biglietti con tre ordini
+diversi"_, then _"quattro cinque prodotti in due tre tranche"_ with _"quantità tipo
+quattro a ciascuno"_. Two orders were completed and fully settled, with assets
+reaching `Disponibile` in production.
+
+🆕 **A marketing test is scheduled for 5 November** — Aurel Mrruku: _"quando faremo
+i test con marketing domani"_, with himself, Fabrizio Mastracci and Elena Spini,
+_"che non abbiamo mai fatto un test in produzione reale"_. ⚠ **No time is recorded
+and no invitation was found in this sweep.**
+
+🔴 **And the fault this item was waiting to exclude reproduced during the very
+session that made the records.** The ticket email fired again for `ordinato`
+assets, and Aurel Mrruku's diagnosis this time names **the marketing flow's own
+filter**, on a version _"fatto un mese e mezzo fa"_ that was never updated — see
+[OI-313](OI-313%20The%20ticket%20nomination%20email%20fired%20for%20assets%20still%20in%20ordinato.md).
+🔑 **So the clean records arrive at the same moment the flow is implicated**, and
+the question point 2 above kept open — which flow Fabrizio Mastracci rebuilt — is
+still unanswered in writing.

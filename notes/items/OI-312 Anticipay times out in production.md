@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Andrea
 org: both
 raised: 2026-11-03
-updated: 2026-11-03
+updated: 2026-11-04
 depends_on: []
 blocks: [go-live]
 severity: gating
@@ -75,3 +75,28 @@ side.** Not established.
 ## Related
 
 - [The Anticipay middleware API contract](../The%20Anticipay%20middleware%20API%20contract.md)
+
+## 🔴 2026-11-04 - a second day, no progress and still no date
+
+Aurel Mrruku asked directly in
+[the 04/11 session](../meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md):
+_"Hai avuto notizie riguardo a quel time out limit che ricevevamo da Anticipay?"_
+
+Fabrizio Paganelli: _"No, no. Oggi, domani abbiamo un evento, quindi **Andrea non
+c'è** e ieri doveva preparare la cosa e **non ce l'ha fatta.**"_
+
+So:
+
+- 🔴 **Nothing was done on 3 November** despite the undertaking given on the call.
+- 🔴 **Nothing will be done on 4 or 5 November** — Andrea is at an event.
+- 🔴 **Still no date**, a second consecutive record.
+
+🟡 **The workaround stands and is now the operating assumption**, not a stopgap —
+Fabrizio Paganelli: _"a sto punto io continuerei a usare questo \[canale\] qui."_
+The whole 04/11 production chain ran on it without incident, which means **the
+production path is being proved out on a configuration that is not the intended
+one.**
+
+⚠ The two unanswered questions from 03/11 are unchanged: whether Pienissimo already
+checks Anticipay on the WooCommerce side, and which domain the client owes
+([OI-323](OI-323%20The%20production%20domain%20has%20not%20been%20supplied%20by%20the%20client.md)).

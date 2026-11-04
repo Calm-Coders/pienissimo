@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-11-02
+updated: 2026-11-04
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -395,3 +395,73 @@ against a Contact request.
 
 🔴 **Eleven days to the handover** (12-13 November), with **Fase 2 approval due the
 same day**.
+
+## 🟡🔑 2026-11-04 - the client's answer: reuse the file we already sent, update next week
+
+**The 9:00-9:30 slot promised for 4 November produced nothing. The answer came by
+mail in the afternoon instead, and it is a reversal of what ROMI has been told
+for five days.**
+
+🔑 **Fabrizio Paganelli, 15:56Z, subject `Referenti`, to Aurel Mrruku and Elena
+Spini, cc amministrazione and Sabatino Rinaldi:**
+
+> _"Per i Referenti considerate il file che vi abbiamo inviato l'ultima volta. **La
+> settimana prossima con Sabatino vi invieremo l'aggiornamento.**"_
+
+🔑 **So `Referenti_V2` is the deliverable after all.** For five consecutive records
+ROMI, who can open the files, has said the Referenti half was outstanding —
+_"I lead li ha mandati, i referenti mancano"_ (30/10, 02/11). The client's position
+is that it was delivered and only needs refreshing. **Later evidence wins on the
+question of intent: there is no second tracciato coming before next week.**
+
+## 🔴 And Aurel Mrruku says the file cannot be used
+
+Same thread, 16:05Z:
+
+> _"i referenti non hanno il codice mexal del account… **Non li posso collegare in
+> produzione senza quel valore.**"_
+
+Which is the exact join this item was opened for on 26 October. Fabrizio
+Paganelli's reply at 16:21Z puts the burden back on ROMI:
+
+> _"Se non ricordo male, vi avevamo già inviato un file con il codice mexal
+> dell'account. **Potete verificare?**"_
+
+🔴 **Unanswered at this sweep.** ⚠ **The verification is a repository action nobody
+has done**: the delivered workbook has not been opened here (it holds real
+customer records) and no note records which columns it carries.
+
+## 🔑 The file is a week stale, and dated for the first time
+
+From the open line after
+[the 04/11 session](../meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md),
+Pienissimo staff among themselves: the extract ROMI holds is from **27 or 28
+October** — _"quello che hai fatto te, che avevamo fatto l'altra volta, era del 27
+o 28 ottobre se non ricordo male"_ — so roughly **a week of new contacts is
+missing**, which they also quantified: _"in pratica una settimana in più abbiamo di
+contatti."_
+
+🟢 **Their plan matches the mail**: hand over the stale file now, refresh next week,
+and re-deliver everything — _"te inizia a dargli quello, poi glielo abbiamo
+aggiornato"_, _"gli dobbiamo ridare tutto dopo"_, including both the contacts
+already imported and the new ones.
+
+🔴 **And the client's own man says he cannot do it alone:** _"ho bisogno che
+qualcuno su sta roba dei contatti mi dà una mano. **Non posso fare tutto da
+solo.**"_ He has 12-13 November for the load and the Pienissimo 360 migration in
+the same window.
+
+## What Aurel Mrruku actually needs, restated on the call
+
+> _"i contatti principali che si collegano agli account … **devono avere il codice
+> Mexal al posto dell'ID dell'account, quindi ID Mexal sulla colonna account**, non
+> i lead, i contatti, **i referenti**."_
+
+And the owner, in his words: _"i contatti che mi deve passare Sabatino."_
+⚠ **Sabatino Rinaldi has still not appeared in any source in this window**, and
+Fabrizio Paganelli volunteered to produce them himself instead — _"vedo di darteli
+io"_ — which is how the two previous dates were set and missed.
+
+🔴 **Eight days to the handover** (12-13 November), **Fase 2 approval due the same
+day**, and the Lead file delivered on 29 October is still not loaded into
+production.

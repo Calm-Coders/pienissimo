@@ -9029,3 +9029,86 @@ duplicate-rule handling for migration, or Fase 2 maintenance.
 🔴 **Still owed to production by Aurel Mrruku, in his own words**: _"Mi mancano la community, le note, alcuni layout."_ 🟢 **He brought the community up during the day**; the Notes object and the layouts are not released. 🔴 **The full order synchronisation to Mexal has never been run** — only the last five days ever have, and the whole set takes about five hours ([#321](open-items.md)). 🔴 **And the Mexal order header note of [#306](open-items.md) is still not built**, four days after Kreosoft named the field, though its purpose is now specified: the invoice must carry the quote reference and the Mexal order number.
 
 **No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for a thirteenth session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences hold, and **seventeen new rows join them** — no register row covers Anticipay availability in production, ticket-send gating, order line states, production test data, quote line layout, quote notes, field labels, the campaign ticket-send date, cross-org mapping migration, the order sync, the DocuSign document routing, the production domain, licence handover, order line due dates, contract templates, registry classification errors, or bundle Plus classification.
+
+## 77. Update 2026-11-04 — the chain ran further than ever and proved it has no reverse gear
+
+Sources: [the 4 November Continuazione Test e2e PROD session](../notes/meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md) (14:28 CET, 01:49:12, drilled from the full transcript), nine mail threads, three Slack conversations, and a production inspection of the Mexal scheduled jobs. Watermark 2026-11-03T22:00Z.
+
+### 🟢🔑 The production chain, divisible
+
+On 3 November the chain was proved whole. On 4 November it was proved **divisible**, which is the result the Performance Plus model actually depends on.
+
+Fabrizio Paganelli drove it again from his own production user, with Elisa Migliano beside him: opportunity → quote (`bonifico fine mese data fattura`) → Academy 2 and Mastery at 10% → **two tranche**, one due 31/12/2026 → quote PDF → sent → **signed through the real DocuSign connector** → Salesforce order `Ordinato` → **Mexal order `OC157`** → **one tranche invoiced, 4.830 €**, discount correct and the e-invoice reference present → invoice back in Salesforce → **manual cash collection registered in Mexal** → `Scadenza Fattura` `pagato` → **only that tranche's asset reached `Disponibile`**, the rest left `ordinato`.
+
+> _"Gli asset sono disponibili perché ho fatturato prima la maschera."_ — Fabrizio Paganelli
+>
+> _"Ah, è fatturato solo una tranche. Perfetto, perfetto. **Sta funzionando.**"_ — Aurel Mrruku
+
+A second, larger order (five Mastery, ~34.000 €) was then invoiced and collected in full, with the same outcome: _"vai sugli asset per vedere se sono diventati disponibili"_ → _"Disponibili."_ → _"Una meraviglia."_
+
+### 🟢🔑 [#306](open-items.md) is finished — the quote number is on the Mexal document
+
+The array fix went to production before the call: _"Ho avuto tanti problemi su quella nota perché la struttura che ci ha dato lui non andava bene, ma finalmente ho trovato serviva un array … prima di pranzo sono andato in produzione."_ Then it was read off the Mexal screen — _"E hai anche nota. **Vedi nota 07?**"_ → _"Ah, perfetto, perfetto"_ — and off the invoice printed from that order, _"Qui c'è la nota riferimento al preventivo numero del …"_, which is the matching-at-invoicing purpose the client asked for on 30 October. ⚠ The `nota` maximum length is still unrecorded.
+
+### 🔴🔑 And then the reverse, which does not exist
+
+Fabrizio Paganelli asked the question any administrator asks — _"se io mi accorgo che questo incasso l'ho registrato male, cosa facciamo noi? Eliminiamo l'incasso. Questa rata qui che l'avevo chiusa, la riapro"_ — and then did it on screen. The due date reopened. **The asset stayed `Disponibile`.**
+
+> _"se sei andato in incassato noi abbiamo fatto in modo che tu non puoi tornare mai più dietro indietro … è tutto il meccanismo che era con un path, quindi con una via sola in avanti. **Adesso dobbiamo fare in modo che anche se sei incassato tu devi poter tornare indietro se aggiorni lo scadenzario.**"_ — Aurel Mrruku
+
+🔑 **This is the client's monthly banking cycle, not a corner case.** Ri.Ba. goes out on the 20th and closes the rate _"salvo buon fine"_; on the 1st the bank returns which ones were never collected, and the rate is reopened — _"Facciamo in modo automatico quello che hai visto fare manualmente a me adesso."_ So the behaviour demonstrated once by hand arrives **in bulk, automatically, every month**.
+
+🔴 **And the ticket may already be gone**: _"Tu pensi di aver aggiustato la fattura, ma è già partito il biglietto."_ The evening-batch remedy was rejected for the normal case — _"i biglietti non possono essere mandati via ogni sera"_ — and nothing replaced it. 🟢 The exposure is bounded to collections reversed inside the ticket-send window, which is near the event. Routed to **Fase 2** by agreement, with a meeting owed to Elena Spini, Fabrizio Mastracci and Rebecca and **no date** — [#331](open-items.md).
+
+### 🔴 The ticket email fired again, and the diagnosis moved
+
+Mid-test, assets still `ordinato`: _"Qui mi sono arrivati i biglietti. **Sono già arrivati.**"_ So [#313](open-items.md) is **reproducible**, two days running, in production.
+
+🔑 Aurel Mrruku moved the diagnosis off the event-link state and onto **the marketing flow's own filter** — _"Molto probabilmente sta facendo il filtro in modo sbagliato marketing e che non è disponibile"_ — on a version _"fatto un mese e mezzo fa, penso che non l'ha aggiornato"_. ⚠ And a confound that strengthens the case: the mapping's ticket-send date had been set deliberately to **31/12/27**, so the send happened outside any plausible window.
+
+🔴 **ROMI has still told the client nothing, thirty hours after promising to.** Elena Spini asked Aurel Mrruku to write to the client; he declined — _"oggi no, domani faccio dei controlli"_ — and she escalated internally to Fabrizio Mastracci at 18:26 instead, with details owed on 5 November. 🟢 The clean test records [#311](open-items.md) was blocked on **now exist**, created deliberately during this very session, with a marketing test set for 5 November.
+
+### 🆕 Four build requests, all accepted on the call
+
+1. 🔑 **Tranches become mandatory** — [#329](open-items.md). A reversal: _"avevamo detto che puoi fare anche preventivi senza tranche."_ The client's reason is the tutors, _"degli smanettoni \[che\] si dimenticano di metterci le tranche"_, and the enforcement point is **`Genera PDF` refusing when any line lacks a due date**. Aurel Mrruku flagged it as severe and deferred — _"è un po' forte … Ok, siete voi il cliente"_ — then undertook it, and was building it that evening.
+2. **The product selection screen** — [#330](open-items.md): horizontal or split layout, a delete icon present on one screen only, wider columns to kill the inner scroll, **a line-total discount in value**, and a quick action to create a Locale from its parent Account. None built.
+3. 🟢 **[#205](open-items.md)'s attribution is confirmed.** The client asked for the tranche amount on the order himself; Aurel Mrruku agreed the shape — _"devo fare un collegamento degli item con le tranche, devo fare una formula"_ — and deprioritised it _"se me lo ricordi poi"_, ⚠ with nobody named to remind him.
+4. 🆕 **The quote PDF's `allegato B` has no signature field** — [#336](open-items.md). Aurel Mrruku said one was never specified there, then that every test had carried two; the contradiction was left standing. A line-by-line review is owed by Fabrizio Paganelli and Elisa Migliano with **no date**, and `prezzo neto` is misspelled on the client-facing document.
+
+### 🔑 The migration moved, and the Referenti answer reversed five days of record
+
+Three files arrived by mail within fifty minutes of the call, against Aurel Mrruku's closing list (_"account, ordini, contatti"_): `Account Salesforce (rev Agente).xlsx` 15:39Z, `Locali Salesforce.xlsx` 15:50Z (_"Anche questa è provvisoria"_), and `Import Ordini (versione del 2026.11.04).xlsx` 16:30Z with **TESTATA and RIGA** sheets. ⚠ **All three hold real customer records; their existence is recorded and none was opened.**
+
+🔑 **The Referenti answer**: _"Per i Referenti considerate il file che vi abbiamo inviato l'ultima volta. La settimana prossima con Sabatino vi invieremo l'aggiornamento."_ So `Referenti_V2` **is** the deliverable, against five consecutive records saying the half was outstanding — and 🔴 Aurel Mrruku answered that it carries no Mexal code, _"Non li posso collegare in produzione senza quel valore"_, to which the client replied **_"Potete verificare?"_**, still unanswered. 🔑 The file is dated for the first time: **27 or 28 October**, roughly a week stale — [#290](open-items.md).
+
+🔑 **And the account import rule is finally on the record** — [#332](open-items.md). The script reads `codice agente` only, ignores the owner-name column, resolves duplicates to the most recent Salesforce user and **falls back to `01`**; the client's Zoho export carries shared and wrong codes, so **a mis-assignment is silent, not an error**. He took the correction; ⚠ the corrected file was not opened, so nothing verifies it.
+
+🆕 **Locali with no Mexal code will not be loaded** — [#333](open-items.md), decided by mail in thirty-one minutes: _"per non rischiare di avere record zombi in produzione"_ → **_"Caricate allora solo quelli che hanno codice mexal"_**. ⚠ Nobody knows how many rows that excludes or what becomes of them.
+
+🔑 **The window is fixed**: _"è il 12 e il 13 che noi stacchiamo tutti i bottoni e loro fanno le importazioni."_ ⚠ The client's own man is absent on Monday 9, _"full"_ on the 10th and 11th, carries the Pienissimo 360 migration in the same window, and said plainly: _"**Non posso fare tutto da solo.**"_ 🆕 **The invoice numerators must change before go-live** — no owner, no date, in no other record.
+
+### 🔴🔑 Nothing in production is scheduled to keep itself current
+
+Aurel Mrruku told the client the Mexal sync _"li ho lasciati solo alle 3:00 di mattina"_ and asked how often it should run. Shapes were canvassed — every six hours, 07:00 for the tutors, 20:00 to close the day, every two hours — the load was sized and dismissed as a risk (_"500 ordini al giorno non succederà mai"_), and **no frequency was chosen**: _"adesso ci penseremo."_
+
+🔴 **A production inspection the same morning found no `Mexal%` CronTrigger in Prod at all.** The invoice and scadenzario sync completed only because it was enqueued by hand. 🔑 **So every result of 3 and 4 November came from a hand-run sync**, twelve days from the 16 November user go-live, and nothing keeps invoices, due dates, asset availability or the order `Fatturato`/`Incassato` states current on its own — [#334](open-items.md).
+
+### 🔴 Anticipay, a second day
+
+_"Oggi, domani abbiamo un evento, quindi Andrea non c'è e ieri doveva preparare la cosa e non ce l'ha fatta."_ Nothing done, nothing scheduled, **still no date** — [#312](open-items.md). 🟡 And the workaround is now the operating assumption: the whole production chain of 4 November ran on it, so **the production path is being validated on a configuration that is not the intended one**.
+
+### 🟢 Training, and a question nobody answered
+
+Marco Montesi confirmed **Monday 9 and Wednesday 11 November, 11:30-13:00**, and Elena Spini sent the invitations. 🆕 In the same message she asked **_"Le utenze dei tutor le creo dopo il training o procedo già adesso?"_** — 🔴 unanswered, and the tutor-access half of [#300](open-items.md) reaching the client in writing for the first time. ⚠ **The collision is now committed, not proposed**: the 9th is the technical go-live and the 11th the eve of the migration, and nobody has named it to anybody.
+
+### 🔴 A test page showed the client's management 280.000 € of insoluti
+
+Said on the open line after Aurel Mrruku left, between Pienissimo staff; ROMI was not party to it. Daniela Morgese photographed an unreleased insoluto-chasing page showing ~280.000 € and phoned to ask whether it was real. It is not — _"non è assolutamente vero quel numero lì"_ — and its own builder could not trace the figure. Agreed: Fabrizio Paganelli explains it is a test and Sabatino Rinaldi hides the section; ⚠ neither action is confirmed done — [#335](open-items.md).
+
+### Process and record
+
+⚠ **Third consecutive session with no recording and no separate transcript document.** The Drive meeting folder holds one shortcut, to a Gemini notes document that carries the transcript on a second tab. ⚠ Four of the auto-notes' claims are wrong and are listed in the meeting note, including a non-existent "FileMaker" produced by a mis-transcription inside a sentence about the Mexal `nota` field.
+
+🔴 **`#tproj-pienissimo` silent a third consecutive sweep.** 🟢 The dev group received its first human post in days — Aurel Mrruku's pre-deploy warning at 10:42 CET, one acknowledgement and no reply — but **no nightly report has ever been answered**. ⚠ **Fathom returned nothing for a thirty-second run**, on a day with a recorded client call. The canvas is unchanged since 20.08.2026, **76 days**.
+
+**No requirement was amended by this run — the register stays v1.6.** The tranche obligation of [#329](open-items.md) changes agreed behaviour and is recorded as a **v1.7 candidate, deliberately not written into the register**, which is contract-bound and is not restructured from a note. 🔴 **`SAL-12` is uncited for a fourteenth session.** 🔑 **Eight new rows join the standing absences** — no register row covers tranche obligation, quote line entry ergonomics, state reversibility after a reversed collection, owner assignment on import, Locale parent resolution, integration scheduling frequency, client-side reporting screens, or quote document signature placement.

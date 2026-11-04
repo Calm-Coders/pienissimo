@@ -9378,3 +9378,86 @@ In produzione sono caricati **1093 prodotti**, circa **500** con il valore che l
 🔴 **Ancora dovuto alla produzione da Aurel Mrruku, parole sue**: _"Mi mancano la community, le note, alcuni layout."_ 🟢 **La community l'ha portata su in giornata**; l'oggetto Note e i layout non sono rilasciati. 🔴 **La sincronizzazione completa degli ordini verso Mexal non è mai stata eseguita** — solo gli ultimi cinque giorni, e l'insieme completo richiede circa cinque ore ([#321](open-items.it.md)). 🔴 **E la nota di testata ordine del [#306](open-items.it.md) non è ancora implementata**, a quattro giorni da quando Kreosoft ha nominato il campo, pur essendone ora specificato lo scopo: la fattura deve portare il riferimento al preventivo e il numero d'ordine Mexal.
 
 **Nessun requisito è stato modificato da questo run.** 🔴 **`SAL-12` è non citato per la tredicesima sessione.** La lista concorrenti di `DM-07` è invariata. 🔑 Le assenze storiche tengono, e **se ne aggiungono diciassette** — nessuna riga di registro copre la disponibilità di Anticipay in produzione, il gating sull'invio biglietti, gli stati della riga d'ordine, i dati di test in produzione, il layout della riga preventivo, le note preventivo, le etichette dei campi, la data di invio biglietto sulla campagna, la migrazione delle mappature tra org, la sincronizzazione ordini, l'instradamento dei documenti DocuSign, il dominio di produzione, il passaggio di licenza, le scadenze di riga d'ordine, i template di contratto, gli errori di classificazione in anagrafica, o la classificazione dei bundle Plus.
+
+## 77. Aggiornamento 04/11/2026 — la catena è andata più avanti che mai e ha dimostrato di non avere la retromarcia
+
+Fonti: [la sessione Continuazione Test e2e PROD del 4 novembre](../notes/meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md) (14:28 CET, 01:49:12, drillata dalla trascrizione completa), nove thread di posta, tre conversazioni Slack e un'ispezione in produzione dei job pianificati Mexal. Watermark 2026-11-03T22:00Z.
+
+### 🟢🔑 La catena di produzione, divisibile
+
+Il 3 novembre la catena è stata provata intera. Il 4 novembre è stata provata **divisibile**, che è il risultato da cui dipende davvero il modello Performance Plus.
+
+Fabrizio Paganelli l'ha guidata di nuovo dalla propria utenza di produzione, con Elisa Migliano accanto: opportunità → preventivo (`bonifico fine mese data fattura`) → Academy 2 e Mastery al 10% → **due tranche**, una con scadenza 31/12/2026 → PDF del preventivo → invio → **firma con il connettore DocuSign reale** → ordine Salesforce `Ordinato` → **ordine Mexal `OC157`** → **una sola tranche fatturata, 4.830 €**, sconto corretto e riferimenti di fatturazione elettronica presenti → fattura rientrata in Salesforce → **incasso registrato manualmente in Mexal** → `Scadenza Fattura` `pagato` → **solo l'asset di quella tranche è arrivato a `Disponibile`**, gli altri sono rimasti in `ordinato`.
+
+> _"Gli asset sono disponibili perché ho fatturato prima la maschera."_ — Fabrizio Paganelli
+>
+> _"Ah, è fatturato solo una tranche. Perfetto, perfetto. **Sta funzionando.**"_ — Aurel Mrruku
+
+Un secondo ordine più grande (cinque Mastery, ~34.000 €) è stato poi fatturato e incassato per intero, con lo stesso esito: _"vai sugli asset per vedere se sono diventati disponibili"_ → _"Disponibili."_ → _"Una meraviglia."_
+
+### 🟢🔑 Il [#306](open-items.it.md) è chiuso — il numero del preventivo è sul documento Mexal
+
+La correzione ad array è andata in produzione prima della call: _"Ho avuto tanti problemi su quella nota perché la struttura che ci ha dato lui non andava bene, ma finalmente ho trovato serviva un array … prima di pranzo sono andato in produzione."_ Poi è stata letta a schermo su Mexal — _"E hai anche nota. **Vedi nota 07?**"_ → _"Ah, perfetto, perfetto"_ — e sulla fattura stampata da quell'ordine, _"Qui c'è la nota riferimento al preventivo numero del …"_, che è lo scopo di riconciliazione in fatturazione chiesto dal cliente il 30 ottobre. ⚠ La lunghezza massima di `nota` resta non registrata.
+
+### 🔴🔑 E poi la retromarcia, che non esiste
+
+Fabrizio Paganelli ha posto la domanda che farebbe qualunque amministrativo — _"se io mi accorgo che questo incasso l'ho registrato male, cosa facciamo noi? Eliminiamo l'incasso. Questa rata qui che l'avevo chiusa, la riapro"_ — e poi l'ha fatto a schermo. La scadenza si è riaperta. **L'asset è rimasto `Disponibile`.**
+
+> _"se sei andato in incassato noi abbiamo fatto in modo che tu non puoi tornare mai più dietro indietro … è tutto il meccanismo che era con un path, quindi con una via sola in avanti. **Adesso dobbiamo fare in modo che anche se sei incassato tu devi poter tornare indietro se aggiorni lo scadenzario.**"_ — Aurel Mrruku
+
+🔑 **È il ciclo bancario mensile del cliente, non un caso limite.** La Ri.Ba. parte il 20 e chiude la rata _"salvo buon fine"_; il primo del mese la banca restituisce quelle mai incassate e la rata viene riaperta — _"Facciamo in modo automatico quello che hai visto fare manualmente a me adesso."_ Quindi il comportamento mostrato una volta a mano arriverà **in blocco, automaticamente, ogni mese**.
+
+🔴 **E il biglietto potrebbe essere già partito**: _"Tu pensi di aver aggiustato la fattura, ma è già partito il biglietto."_ Il rimedio dell'invio serale è stato respinto per il caso normale — _"i biglietti non possono essere mandati via ogni sera"_ — e nulla l'ha sostituito. 🟢 L'esposizione è limitata agli storni dentro la finestra di invio biglietti, che è vicina all'evento. Instradato in **Fase 2** per accordo, con una riunione dovuta a Elena Spini, Fabrizio Mastracci e Rebecca e **nessuna data** — [#331](open-items.it.md).
+
+### 🔴 La mail dei biglietti è partita di nuovo, e la diagnosi si è spostata
+
+A metà test, asset ancora in `ordinato`: _"Qui mi sono arrivati i biglietti. **Sono già arrivati.**"_ Quindi il [#313](open-items.it.md) è **riproducibile**, due giorni di fila, in produzione.
+
+🔑 Aurel Mrruku ha spostato la diagnosi dallo stato dell'event link **al filtro del flusso di marketing** — _"Molto probabilmente sta facendo il filtro in modo sbagliato marketing e che non è disponibile"_ — su una versione _"fatto un mese e mezzo fa, penso che non l'ha aggiornato"_. ⚠ E un elemento che rafforza la tesi: la data di invio biglietto nella mappatura era stata messa deliberatamente al **31/12/27**, quindi l'invio è avvenuto fuori da qualsiasi finestra plausibile.
+
+🔴 **ROMI non ha ancora detto nulla al cliente, trenta ore dopo averlo promesso.** Elena Spini ha chiesto ad Aurel Mrruku di scrivere al cliente; lui ha rifiutato — _"oggi no, domani faccio dei controlli"_ — e alle 18:26 ha scalato internamente a Fabrizio Mastracci, con i dettagli dovuti il 5 novembre. 🟢 I record di test puliti su cui il [#311](open-items.it.md) era bloccato **ora esistono**, creati deliberatamente proprio in questa sessione, con un test di marketing fissato per il 5 novembre.
+
+### 🆕 Quattro richieste di sviluppo, tutte accettate in call
+
+1. 🔑 **Le tranche diventano obbligatorie** — [#329](open-items.it.md). Un'inversione: _"avevamo detto che puoi fare anche preventivi senza tranche."_ La ragione del cliente sono i tutor, _"degli smanettoni \[che\] si dimenticano di metterci le tranche"_, e il punto di controllo è **`Genera PDF` che rifiuta se a una riga manca la data di scadenza**. Aurel Mrruku l'ha segnalato come severo e ha rimesso la scelta — _"è un po' forte … Ok, siete voi il cliente"_ — poi se n'è impegnato, e ci stava lavorando la sera stessa.
+2. **La schermata di selezione prodotti** — [#330](open-items.it.md): layout orizzontale o diviso, un'icona di eliminazione presente su una sola schermata, colonne più larghe per eliminare lo scroll interno, **uno sconto totale di riga a valore**, e un pulsante rapido per creare un Locale dall'account padre. Nessuna realizzata.
+3. 🟢 **L'attribuzione del [#205](open-items.it.md) è confermata.** L'importo della tranche sull'ordine l'ha chiesto il cliente stesso; Aurel Mrruku ne ha confermato la forma — _"devo fare un collegamento degli item con le tranche, devo fare una formula"_ — e l'ha deprioritizzato _"se me lo ricordi poi"_, ⚠ senza che nessuno sia stato nominato per ricordarglielo.
+4. 🆕 **L'`allegato B` del PDF del preventivo non ha il campo firma** — [#336](open-items.it.md). Aurel Mrruku ha detto che non era prevista, poi che tutti i test avevano sempre avuto due firme; la contraddizione è rimasta aperta. Una revisione riga per riga è dovuta da Fabrizio Paganelli ed Elisa Migliano senza **nessuna data**, e `prezzo neto` è scritto male sul documento che arriva al cliente.
+
+### 🔑 La migrazione si è mossa, e la risposta sui Referenti ribalta cinque giorni di record
+
+Tre file sono arrivati per mail entro cinquanta minuti dalla call, rispetto all'elenco finale di Aurel Mrruku (_"account, ordini, contatti"_): `Account Salesforce (rev Agente).xlsx` 15:39Z, `Locali Salesforce.xlsx` 15:50Z (_"Anche questa è provvisoria"_) e `Import Ordini (versione del 2026.11.04).xlsx` 16:30Z con i fogli **TESTATA e RIGA**. ⚠ **Tutti e tre contengono dati reali di clienti; se ne registra l'esistenza e nessuno è stato aperto.**
+
+🔑 **La risposta sui Referenti**: _"Per i Referenti considerate il file che vi abbiamo inviato l'ultima volta. La settimana prossima con Sabatino vi invieremo l'aggiornamento."_ Quindi `Referenti_V2` **è** il deliverable, contro cinque record consecutivi che davano quella metà come mancante — e 🔴 Aurel Mrruku ha risposto che non porta il codice Mexal, _"Non li posso collegare in produzione senza quel valore"_, al che il cliente ha replicato **_"Potete verificare?"_**, ancora senza risposta. 🔑 Il file ha una data per la prima volta: **27 o 28 ottobre**, vecchio di circa una settimana — [#290](open-items.it.md).
+
+🔑 **E la regola dell'import account è finalmente a verbale** — [#332](open-items.it.md). Lo script legge solo il `codice agente`, ignora la colonna con il nome del proprietario, risolve i duplicati sull'utente Salesforce più recente e **ricade su `01`**; l'estrazione da Zoho del cliente porta codici condivisi e sbagliati, quindi **un'assegnazione errata è silenziosa, non un errore**. Si è preso la correzione; ⚠ il file corretto non è stato aperto, quindi nulla lo verifica.
+
+🆕 **I locali senza codice Mexal non verranno caricati** — [#333](open-items.it.md), deciso per mail in trentuno minuti: _"per non rischiare di avere record zombi in produzione"_ → **_"Caricate allora solo quelli che hanno codice mexal"_**. ⚠ Nessuno sa quante righe restino fuori né che fine facciano.
+
+🔑 **La finestra è fissata**: _"è il 12 e il 13 che noi stacchiamo tutti i bottoni e loro fanno le importazioni."_ ⚠ L'uomo del cliente è assente lunedì 9, _"full"_ il 10 e l'11, porta la migrazione di Pienissimo 360 nella stessa finestra, e l'ha detto chiaramente: _"**Non posso fare tutto da solo.**"_ 🆕 **I numeratori delle fatture vanno cambiati prima del go-live** — nessun titolare, nessuna data, in nessun altro record.
+
+### 🔴🔑 In produzione non c'è nulla di pianificato che si tenga aggiornato da solo
+
+Aurel Mrruku ha detto al cliente che la sincronizzazione Mexal _"li ho lasciati solo alle 3:00 di mattina"_ e ha chiesto ogni quanto dovesse girare. Sono state valutate diverse ipotesi — ogni sei ore, 07:00 per i tutor, 20:00 per chiudere la giornata, ogni due ore — il carico è stato dimensionato e scartato come rischio (_"500 ordini al giorno non succederà mai"_), e **nessuna frequenza è stata scelta**: _"adesso ci penseremo."_
+
+🔴 **Un'ispezione in produzione la stessa mattina non ha trovato alcun `CronTrigger` `Mexal%` in Prod.** La sincronizzazione di fatture e scadenzario è andata a termine solo perché accodata a mano. 🔑 **Quindi tutti i risultati del 3 e 4 novembre vengono da una sincronizzazione lanciata a mano**, a dodici giorni dall'avvio utenti del 16 novembre, e nulla tiene aggiornati da sé fatture, scadenze, disponibilità degli asset e gli stati `Fatturato`/`Incassato` dell'ordine — [#334](open-items.it.md).
+
+### 🔴 Anticipay, secondo giorno
+
+_"Oggi, domani abbiamo un evento, quindi Andrea non c'è e ieri doveva preparare la cosa e non ce l'ha fatta."_ Nulla fatto, nulla pianificato, **ancora nessuna data** — [#312](open-items.it.md). 🟡 E il workaround è ormai l'assetto operativo: tutta la catena di produzione del 4 novembre ci ha girato sopra, quindi **il percorso di produzione si sta validando su una configurazione che non è quella prevista**.
+
+### 🟢 La formazione, e una domanda senza risposta
+
+Marco Montesi ha confermato **lunedì 9 e mercoledì 11 novembre, 11:30-13:00**, ed Elena Spini ha inviato gli inviti. 🆕 Nello stesso messaggio ha chiesto **_"Le utenze dei tutor le creo dopo il training o procedo già adesso?"_** — 🔴 senza risposta, ed è la parte sugli accessi dei tutor del [#300](open-items.it.md) che arriva al cliente per iscritto per la prima volta. ⚠ **La collisione ora è impegnata, non proposta**: il 9 è il go-live tecnico e l'11 la vigilia della migrazione, e nessuno l'ha fatto notare a nessuno.
+
+### 🔴 Una pagina di test ha mostrato alla direzione del cliente 280.000 € di insoluti
+
+Detto sulla linea aperta dopo l'uscita di Aurel Mrruku, tra persone di Pienissimo; ROMI non era parte della conversazione. Daniela Morgese ha fotografato una pagina di sollecito insoluti non rilasciata con ~280.000 € e ha telefonato per chiedere se fosse vero. Non lo è — _"non è assolutamente vero quel numero lì"_ — e chi l'ha costruita non ha ritrovato la cifra. Concordato: Fabrizio Paganelli spiega che è un test e Sabatino Rinaldi nasconde la sezione; ⚠ nessuna delle due azioni risulta eseguita — [#335](open-items.it.md).
+
+### Processo e record
+
+⚠ **Terza sessione consecutiva senza registrazione e senza documento di trascrizione separato.** La cartella Drive della riunione contiene un solo collegamento, agli appunti di Gemini, che portano la trascrizione in una seconda scheda. ⚠ Quattro affermazioni degli appunti automatici sono sbagliate e sono elencate nella nota di riunione, incluso un inesistente "FileMaker" nato da un errore di trascrizione in una frase sul campo `nota` di Mexal.
+
+🔴 **`#tproj-pienissimo` silenzioso per il terzo sweep consecutivo.** 🟢 Il gruppo dev ha ricevuto il primo messaggio umano da giorni — l'avviso pre-deploy di Aurel Mrruku alle 10:42 CET, una conferma e nessuna risposta — ma **nessun report notturno ha mai avuto risposta**. ⚠ **Fathom non ha restituito nulla per il trentaduesimo run**, in un giorno con una call cliente registrata. Il canvas è invariato dal 20.08.2026, **76 giorni**.
+
+**Nessun requisito è stato modificato da questo run — il registro resta v1.6.** L'obbligatorietà delle tranche del [#329](open-items.it.md) modifica un comportamento concordato ed è registrata come **candidato v1.7, deliberatamente non scritto nel registro**, che è vincolato contrattualmente e non si ristruttura a partire da una nota. 🔴 **`SAL-12` è non citato per la quattordicesima sessione.** 🔑 **Otto nuove righe si aggiungono alle assenze storiche** — nessuna riga di registro copre l'obbligatorietà delle tranche, l'ergonomia di inserimento righe preventivo, la reversibilità degli stati dopo uno storno di incasso, l'assegnazione del proprietario in import, la risoluzione del padre di un Locale, la frequenza di pianificazione delle integrazioni, le schermate di reportistica lato cliente, o il posizionamento delle firme sul documento di preventivo.
