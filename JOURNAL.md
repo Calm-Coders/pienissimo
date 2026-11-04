@@ -10,6 +10,41 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-04 - claude-opus-5-5 (Prod Mexal invoice + scadenzario re-sync, last week)
+
+- **Did:** on request, moved both cursors on `Integration_Configuration2__c`
+  (`Mexal_Movimenti_Magazzino_Ricerca`, `Mexal_Scadenzario_Ricerca`) back to
+  2026-10-28 00:00 Europe/Rome and enqueued `MexalInvoiceSyncJob` in Prod. Chain
+  completed, 0 errors, both cursors back to `Success`.
+- **Result:** fatture returned/saved 110/110, `withoutAccount=108`; scadenzario
+  returned 182, saved 122, `withoutInvoice=73`, order lines updated 6. Prod now holds
+  111 `Fattura__c` (+8) and 123 `Scadenza_Fattura__c` (+7). Every invoice has lines; 108
+  of 111 have no Account and no Order.
+- **Found:** **no `Mexal Fatture e Scadenziario Sync - Nightly` job is scheduled in Prod**
+  (no `Mexal%` CronTrigger at all) — the sync runs only when started by hand. The 108
+  account-less invoices mean Prod Accounts mostly lack `Codice_Cliente_Mexal__c`.
+- **Next:** decide whether to schedule the nightly job (`MexalInvoiceSyncScheduler.scheduleNightly()`)
+  and the customer sync in Prod; not recorded in a note yet.
+
+---
+
+## 2026-11-04 - claude-opus-5-5 (OI-314 order Fatturato rule)
+
+- **Did:** built the 03/11 agreed rule in `OrderItemTriggerHandler.syncOrdersInvoicedStatus`:
+  every order line invoiced (`Fattura__c`) and at least one not `Paid` → Order
+  `Fatturato`. Moves only between `Ordinato` and `Fatturato`, never touches `Incassato`,
+  runs after the `Incassato` rules. Check-only validation on UAT `0AfMA00000D61wQ0AR`:
+  102/103, the one failure is the known `schedulerRegistersTheNightlyJob` collision.
+- **Deployed** on Aurel Mrruku's instruction: UAT `0AfMA00000D68t50AB` (`NoTestRun`),
+  Prod **`0AfSW000001L5Lt0AK`** (`RunSpecifiedTests`, five classes, 103/103). The live
+  class carries the new method in both orgs.
+- **State:** OI-314 → `in-progress`, OI-69 updated. **Uncommitted on `DevMain`.** No
+  backfill for orders already invoiced.
+- **Next:** decide whether to backfill existing invoiced orders; watch the first real
+  order reach `Fatturato`; tracker rows not regenerated.
+
+---
+
 ## 2026-11-04 - claude-opus-5-5 (Prod aligned with UAT)
 
 - **Did:** compared `DevMain`, UAT and Prod by retrieving every `force-app` component

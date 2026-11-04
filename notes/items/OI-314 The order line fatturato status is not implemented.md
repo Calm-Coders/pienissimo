@@ -1,12 +1,12 @@
 ---
 id: OI-314
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-03
-updated: 2026-11-03
+updated: 2026-11-04
 depends_on: []
 blocks: []
 source: notes/meetings/2026-11-03 Test e2e PROD.md
@@ -70,7 +70,47 @@ one-to-one link exists.
 
 ## Why it is open
 
-1. 🔴 **Nothing is built.** Aurel Mrruku: _"non l'ho messo in piedi questa logica."_
+1. ~~🔴 **Nothing is built.**~~ Built in source 2026-11-04, see below.
 2. ⚠ **No date.** It was not given a release or a slot, and it is not in the R0
    window.
 3. ⚠ **No register row covers order line states.**
+
+## 2026-11-04 - built in source, validated in UAT, not deployed
+
+On Aurel Mrruku's instruction (_"procedi con la regola concordata"_),
+`OrderItemTriggerHandler.syncOrdersInvoicedStatus` implements the agreed rule:
+
+- **Every line of the order has `Fattura__c` set and at least one line has
+  `Mexal_Payment_Status__c` ≠ `Paid` → `Fatturato`.** Whole order, not per tranche,
+  as agreed.
+- It runs on line insert, and on line update when `Fattura__c` or
+  `Mexal_Payment_Status__c` changes — the fields the Mexal invoice-line batch writes.
+  It runs **after** the `Incassato` rules, so an order they just collected is skipped.
+- 🔑 **It only moves between `Ordinato` and `Fatturato`.** `Incassato` is never
+  touched, so collection is not undone. ⚠ **ROMI choice, not minuted:** a `Fatturato`
+  order steps back to `Ordinato` if a line loses its invoice link (the OI-275 kind of
+  cleanup) or a new uninvoiced line is added. An order with every line invoiced and
+  paid is left where it is, for the `Incassato` rules to decide.
+- ⚠ Orders already invoiced in the org change state only when one of their lines is
+  next touched; there is no backfill.
+- Check-only validation against **Pienissimo UAT**, `0AfMA00000D61wQ0AR`, five
+  related test classes: **102/103 passed**. The one failure is
+  `MexalIntegrationTest.schedulerRegistersTheNightlyJob`, which collides with the
+  "Mexal Sync - Nightly" job already scheduled in UAT — the latent failure recorded
+  under [OI-287](OI-287%20The%20Mexal%20line%20discount%20is%20sent%20as%20a%20line%20total%20instead%20of%20per%20unit.md),
+  unrelated to this change. No test class was written, per the standing
+  instruction.
+- ~~🔴 **Uncommitted on `DevMain`, deployed nowhere.**~~ Deployed the same day on
+  Aurel Mrruku's instruction, see below.
+
+## 2026-11-04 - deployed to UAT and Prod
+
+- **UAT:** deploy `0AfMA00000D68t50AB`, `NoTestRun` (sandbox, validated above).
+- **Prod:** deploy **`0AfSW000001L5Lt0AK`**, `RunSpecifiedTests` on the same five
+  classes, **103/103 passed** — the scheduler test passes in Prod because no
+  "Mexal Sync - Nightly" job is scheduled there yet.
+- Verified in both orgs: the live `OrderItemTriggerHandler` contains
+  `syncOrdersInvoicedStatus`.
+- 🔴 **Still uncommitted on `DevMain`.** ⚠ No backfill: orders already invoiced move to
+  `Fatturato` only when one of their lines is next touched. ⚠ Not yet seen working on a
+  real order.
