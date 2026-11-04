@@ -118,8 +118,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Quantity</fieldItem>
-                <identifier>RecordQuantityField</identifier>
+                <fieldItem>Record.Quantity_Display__c</fieldItem>
+                <identifier>RecordQuantityDisplayField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-73726843-af42-4c12-8634-2991a754a0ed</name>
