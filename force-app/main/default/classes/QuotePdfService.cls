@@ -28,6 +28,7 @@ public without sharing class QuotePdfService {
           'Lo stato del preventivo e cambiato. Il PDF non e stato salvato.'
         );
       }
+      QuotePdfController.requireTranches(quoteId);
       deleteExistingSigningFiles(quoteId);
       String title = 'Preventivo-' + quoteRecord.QuoteNumber;
       ContentVersion file = new ContentVersion(

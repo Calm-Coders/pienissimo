@@ -1,0 +1,31 @@
+/* Limit the override to the quick action containing this component. */
+.slds-modal:has(c-quote-manage-products) .slds-modal__container {
+  width: calc(100vw - 4rem);
+  max-width: 100rem;
+  min-width: 0;
+}
+
+/* Hide modal and panel scrollbars while retaining scroll access and list bars. */
+.slds-modal:has(c-quote-manage-products),
+.slds-modal:has(c-quote-manage-products) .slds-modal__content {
+  scrollbar-width: none;
+}
+
+.slds-modal:has(c-quote-manage-products)::-webkit-scrollbar,
+.slds-modal:has(c-quote-manage-products)
+  .slds-modal__content::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.slds-modal__content:has(c-quote-manage-products) {
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .slds-modal:has(c-quote-manage-products) .slds-modal__container {
+    width: calc(100vw - 1rem);
+    margin-inline: 0.5rem;
+  }
+}

@@ -7,11 +7,6 @@
       ></lightning-spinner>
     </template>
     <p>Il documento viene salvato nei File del preventivo.</p>
-    <template lwc:if={error}
-      ><p class="slds-text-color_error slds-m-top_medium" role="alert">
-        {error}
-      </p></template
-    >
     <template lwc:if={documentId}>
       <p class="slds-m-top_medium" role="status">PDF generato e salvato.</p>
     </template>

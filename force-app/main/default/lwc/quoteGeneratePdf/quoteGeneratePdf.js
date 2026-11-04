@@ -69,6 +69,15 @@ export default class QuoteGeneratePdf extends LightningElement {
     } catch (error) {
       this.error =
         error.body?.message || error.message || "Generazione PDF non riuscita.";
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "PDF non generato",
+          message: this.error,
+          variant: "error",
+          mode: "sticky"
+        })
+      );
+      this.dispatchEvent(new CloseActionScreenEvent());
     } finally {
       this.busy = false;
     }
