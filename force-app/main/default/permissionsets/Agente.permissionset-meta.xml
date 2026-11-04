@@ -9,6 +9,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>OrderMexalRetryController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>QuotePdfController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1201,11 +1205,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Quote.Descrizione_Condizione_di_Pagamento__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Quote.Discount</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1272,6 +1271,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Motivazione_Da_Ricontattare__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Quote.Note_Preventivo__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1382,6 +1386,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>QuoteLineItem.ProductCode</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>QuoteLineItem.Quantity_Display__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -2827,11 +2827,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Product2.Is_Plus__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Livello_0__c</field>
         <readable>true</readable>
@@ -3019,11 +3014,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Quote.Description</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Quote.Descrizione_Condizione_di_Pagamento__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
