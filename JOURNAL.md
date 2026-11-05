@@ -10,6 +10,44 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-05 - codex - production consent flow inspection
+
+- **Did:** read Prod FlowDefinition, active Flow metadata, subscription/channel
+  configuration and SetupAuditTrail for `Update_Contact_Consent`.
+- **Verified:** created by ROMI COMPANY on 31/07 at 10:22 Europe/Rome; active v1
+  creates Marketing Email OptIn when no matching email consent is returned.
+- **Watch:** start metadata says Email equals boolean false; lookup checks email
+  only, not subscription/status. Runtime not tested; no org changes. Findings in
+  [the flow note](notes/flows/The%20Update%20Contact%20Consent%20flow%20in%20production.md),
+  linked from INDEX. No requirement or rendered tracker change.
+
+## 2026-11-05 - claude-opus-5-5 (Aziende, Locali and Referenti pre-load into Prod)
+
+- **Did:** inserted 8,262 `Azienda` Accounts into **Pienissimo Prod** from
+  `Account Salesforce (rev Agente).xlsx` (Bulk API `750SW00000bMkdBYAS` sample,
+  `750SW00000bMkgPYAS` rest; 0 failures). Skipped 457 without Partita IVA, 4 with a
+  Mexal code repeated in the file, 1 already in Prod. Details in
+  [OI-310](notes/items/OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md).
+- **Verified:** Account insert never calls Mexal (no after-insert handler; Prod
+  handler classes identical to source); no `AsyncApexJob` and no
+  `Integration_Log__c` after the load. All 7 agent codes resolved, no `01`
+  fallback ([OI-332](notes/items/OI-332%20The%20account%20import%20keys%20on%20the%20Salesforce%20agent%20code%20and%20the%20client%20file%20is%20mis-coded.md)).
+- **Watch:** any later **update** of Mexal-tracked fields on these Accounts queues a
+  Mexal customer update; the 12-13/11 delta must use the Apex bypass.
+- **Locali loaded:** 3,918 of 4,686 inserted into Prod under their Azienda (0
+  failures, no Mexal activity); 768 without a Mexal code skipped; Tipologia inherited
+  for 187 and defaulted to `Attività diversa da somministrazione` for 3,731 on Aurel
+  Mrruku's choice - placeholders the client must replace, see
+  [OI-333](notes/items/OI-333%20Locali%20without%20a%20Mexal%20customer%20code%20will%20not%20be%20loaded.md).
+- **Referenti loaded:** 17,652 of 67,547 into Prod by Mexal code (0 failures); 49,895
+  skipped. New `Contact.External_CRM_ID__c` (deploy `0AfSW000001LDbB0AW`) holds the Zoho
+  id. ⚠ `Update_Contact_Consent` was off during the load and is now **v2 active**
+  (v1 cannot be reactivated); details in
+  [OI-290](notes/items/OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md).
+  `Full_Permission` gained the field in source: **uncommitted**.
+- **Next:** client answers on the 457 VAT-less Aziende, the 2 duplicated codes, the 768
+  uncoded Locali, the real Tipologie and the 49,788 uncoded Referenti; then orders.
+
 ## 2026-11-05 - claude-opus-5-5 (DevMain delta deployed to Prod after a metadata check)
 
 - **Did:** on Aurel Mrruku's request, checked metadata first: retrieved all 815 `force-app`

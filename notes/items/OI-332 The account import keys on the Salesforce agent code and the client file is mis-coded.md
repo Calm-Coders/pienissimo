@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-11-04
-updated: 2026-11-04
+updated: 2026-11-05
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-11-04 Continuazione Test e2e PROD.md
@@ -110,3 +110,12 @@ resolved to a shared code.
 
 **Closing it:** a production load whose owner assignments reconcile against the
 client's own agent list, with the `01` fallbacks counted and reviewed.
+
+## 🟢 2026-11-05 - the `rev Agente` file resolved cleanly in Prod
+
+The corrected file carries exactly 7 agent codes, each with one owner name and one
+commission category, and each matching exactly one active Prod agent user. **No
+row fell back to `01` and no code matched two users** in the 8,262-row Aziende
+load ([OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md)).
+⚠ This proves the codes resolve, not that each customer belongs to the right
+tutor - that is still the client's own correction to vouch for.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-02
-updated: 2026-11-04
+updated: 2026-11-05
 depends_on: [OI-244, OI-290]
 blocks: [go-live]
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -83,11 +83,11 @@ within fifty minutes of
 closing, against Aurel Mrruku's list: _"aspetto i vostri dati, quindi account,
 ordini, contatti."_**
 
-| Time (UTC) | Mail                             | Attachment                                     | Note                                 |
-| ---------- | -------------------------------- | ---------------------------------------------- | ------------------------------------ |
-| 15:39      | `Anagrafica Account`             | `Account Salesforce (rev Agente).xlsx`         | _"vi giro l'anagrafica degli account tramite mail, mi viene più comodo"_ |
+| Time (UTC) | Mail                             | Attachment                                     | Note                                                                                                                             |
+| ---------- | -------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| 15:39      | `Anagrafica Account`             | `Account Salesforce (rev Agente).xlsx`         | _"vi giro l'anagrafica degli account tramite mail, mi viene più comodo"_                                                         |
 | 15:50      | `Lista Locali`                   | `Locali Salesforce.xlsx`                       | _"Anche questa è provvisoria"_ → [OI-333](OI-333%20Locali%20without%20a%20Mexal%20customer%20code%20will%20not%20be%20loaded.md) |
-| 16:30      | `Import ORDINI - Testata e Riga` | `Import Ordini (versione del 2026.11.04).xlsx` | TESTATA + RIGA sheets — _"Fateci sapere se va tutto a buon fine"_ |
+| 16:30      | `Import ORDINI - Testata e Riga` | `Import Ordini (versione del 2026.11.04).xlsx` | TESTATA + RIGA sheets — _"Fateci sapere se va tutto a buon fine"_                                                                |
 
 ⚠ **All three hold real customer records. Their existence and their filenames are
 recorded; no values are copied into the repository and none of the three was
@@ -132,3 +132,58 @@ owner, no date, and it appears in no other record.**
 
 ⚠ **Open points 3 and 4 above are unchanged**: the 3-4 hour figure is still only
 from the 28 October UAT rehearsal, and **no rollback is recorded** for either pass.
+
+## 🟢 2026-11-05 - an Account insert does not reach Mexal; an update does
+
+Checked in source and in **Pienissimo Prod** (read-only, 2026-11-05): Prod's
+`AccountTrigger`, `AccountTriggerHandler` and `ContactTriggerHandler` are
+identical to `DevMain`, and the only active Account/Contact flow is
+`Update_Contact_Consent`.
+
+- 🟢 **Insert is safe.** `AccountTrigger` has no after-insert handler, and Mexal
+  customer creation runs only from an order's first send or the manual
+  `mexalCustomerCreateAction` button. Inserting Aziende and Locali, coded or not,
+  makes no Mexal call.
+- 🟢 **Contacts are safe.** The principal-email sync updates only
+  `Email_Contatto_Principale__c`, which is not a Mexal-tracked field.
+- 🔴 **An update is not.** `AccountTriggerHandler.afterUpdate` queues
+  `MexalCustomerUpdateQueueable` for any Mexal-coded Account whose name, VAT,
+  email, phone, billing or shipping address changes. The only bypass is the static
+  `setBypassMexalCustomerUpdate(true)`, which Data Loader cannot set. So the
+  pre-load must be an **insert**, not an upsert, and the 12-13 November delta must
+  run through anonymous Apex with the bypass on, or the bypass must become a
+  switch an import user can set.
+- ⚠ **Prod already holds 3 Mexal-coded Aziende** (18 Aziende, 2 Locali, 3 with no
+  record type). `Codice_Cliente_Mexal__c` is an external id but **not unique**, so an
+  insert of the same code duplicates silently and an upsert updates and pushes.
+  Exclude those codes from the file or handle them separately.
+
+## 🟢 2026-11-05 - the Aziende pre-load is in Prod: 8,262 inserted, no Mexal call
+
+Loaded by Claude Code at Aurel Mrruku's request from `Account Salesforce (rev
+Agente).xlsx` (the 04/11 mail; values not copied here). **Insert only**, Bulk API
+jobs `750SW00000bMkdBYAS` (1-row sample, checked first) and `750SW00000bMkgPYAS`
+(8,261), 15:53-16:00Z. **8,262 succeeded, 0 failed.**
+
+| Of 8,724 source rows                          | Rows  |
+| --------------------------------------------- | ----- |
+| Inserted as `Azienda`                         | 8,262 |
+| Skipped - no Partita IVA (validation rule)    | 457   |
+| Skipped - Mexal code repeated in the file     | 4     |
+| Skipped - Mexal code already on a Prod record | 1     |
+
+- Mapping as the UAT import: owner `Amministratore Pienissimo`, `Agente__c` from
+  `Codice_agente` against `User.Agente__c`. All 7 codes in the file matched exactly
+  one active Prod agent user, so **no row fell back to `01`**
+  ([OI-332](OI-332%20The%20account%20import%20keys%20on%20the%20Salesforce%20agent%20code%20and%20the%20client%20file%20is%20mis-coded.md)).
+  The trigger set the agent code and commission category from the user; the
+  per-agent counts match the file's own `Agente` sheet less the skipped rows.
+- Also loaded: `Stato_Azienda__c`, `Ateco_Stato_Attivita__c`,
+  `Tipologia_Attivita_Globale__c`. One invalid PEC was left blank.
+- 🟢 **No `AsyncApexJob` and no `Integration_Log__c` row since the load began** -
+  nothing reached Mexal. Prod now holds 8,265 Mexal-coded Accounts, all codes
+  distinct.
+- ⚠ **Open:** the 457 VAT-less customers (63 with only a Codice Fiscale) and the 2
+  codes duplicated in the file need a client answer; the exception list and the
+  created-id list are kept outside the repository. Not loaded: Locali, Referenti,
+  orders.

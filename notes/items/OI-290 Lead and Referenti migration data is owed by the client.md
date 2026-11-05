@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-11-04
+updated: 2026-11-05
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -129,7 +129,7 @@ acknowledged her original mail carried no deadline. **The deadline is a ROMI
 intention, not yet a client commitment.**
 
 ⚠ **Sabatino Rinaldi has still not answered the 26/10 request** — second day. He
-*has* replied on the ticketing and communications thread (quoted in Slack on
+_has_ replied on the ticketing and communications thread (quoted in Slack on
 27/10; see
 [OI-242](OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md)
 for the source caveat), so he is reachable and responsive on other subjects. 🔑
@@ -465,3 +465,45 @@ io"_ — which is how the two previous dates were set and missed.
 🔴 **Eight days to the handover** (12-13 November), **Fase 2 approval due the same
 day**, and the Lead file delivered on 29 October is still not loaded into
 production.
+
+## 🟢 2026-11-05 - 17,652 Referenti loaded into Prod, each under its Azienda
+
+`Referenti Salesforce_V2.xlsx` **does** carry a `Codice cliente Mexal` column, filled
+on 17,759 of 67,547 rows. On Aurel Mrruku's rule — link by Mexal code, no link no
+insert — Claude Code loaded every resolvable row into **Pienissimo Prod**. Values
+are not copied here.
+
+| Of 67,547 rows                                     | Rows   |
+| -------------------------------------------------- | ------ |
+| Inserted, `AccountId` = the Azienda with that code | 17,652 |
+| Skipped - no Mexal code                            | 49,788 |
+| Skipped - code not on any Prod Azienda             | 107    |
+
+- **Bulk API** `750SW00000bMjSfYAK` (1-row sample, checked first) and
+  `750SW00000bMr6pYAC` (17,651), 17:00-17:25Z: **0 failures.** 6,872 Aziende now
+  have Referenti. No `AsyncApexJob`, no `Integration_Log__c`.
+- 🆕 **`Contact.External_CRM_ID__c`** (text 18, external id, unique) created to hold
+  the Zoho id, so the 12-13/11 delta can upsert instead of duplicating: deploy
+  `0AfSW000001LDbB0AW`; read/edit through `Full_Permission` (FieldPermissions row
+  added in Prod, same entry added to source).
+- 🔑 **The `Update_Contact_Consent` flow was switched off for the load**, on Aurel
+  Mrruku's choice, so the import created no Marketing email Opt-In for contacts
+  without consent ([the flow](../flows/The%20Update%20Contact%20Consent%20flow%20in%20production.md)).
+  ⚠ This flow type **cannot be reactivated**: it was restored as **version 2**,
+  logic identical to v1 (Tooling metadata compared), plus a description, deploy
+  `0AfSW000001LDjF0AW`, then activated. **Active version now `301SW00000hKT1uYAG`.**
+- Mapping: owner `Amministratore Pienissimo`; `Opt-out e-mail` →
+  `HasOptedOutOfEmail` (960); `Contatto amministrativo` → `Ruolo__c =
+Amministrativo`; `Ruolo iscrizione` → `Ruolo_Iscrizione__c`; two-digit birth years
+  read as 19xx, or 20xx up to 2008. **Where an Azienda had several principal
+  contacts (143 Aziende, 158 rows) only the most recently created stayed principal**
+  — the trigger keeps one anyway. 1,975 principals; 1,935 Aziende got
+  `Email_Contatto_Principale__c`.
+- 🔴 **Not loaded for lack of a Contact field**: the consent and privacy flags,
+  `Consenso Finalita Commerciali`/`Profilazione`, `Keap Id Esterno`, `Nome Locale`,
+  secondary email, owner and Tutor. ⚠ The consents are a data-protection question
+  for the client; they are in the file and nowhere in Salesforce.
+- The exceptions went to the client as an Excel (kept outside the repository).
+
+**Still open:** the 49,788 uncoded Referenti — the client's own answer on 04/11 was
+that the file would be refreshed _"la settimana prossima con Sabatino"_.
