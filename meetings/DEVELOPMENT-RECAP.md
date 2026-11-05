@@ -8614,3 +8614,501 @@ session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences ho
 no register row covers the **order-to-Mexal price breakdown**, **Lead or Contact
 migration**, **note capture** or **template editability** — and 🆕 **none covers
 a client-side run of the invoice and incassi jobs** either.
+
+## 73. Update 2026-10-29 — the release reached production, production now talks to Mexal for real, the client delivered the Lead file on the day he promised it, and three new faults opened
+
+Nightly sweep, watermark **2026-10-28T22:00Z**. One day. **No client meeting**,
+a busy mail day, three Slack surfaces live, and five commits that moved every
+branch that matters.
+
+### The release landed
+
+🟢🔑 **`UAT` and `Prod` both moved, for the first time since 26 October.**
+
+| Commit | Time (CET) | What |
+| ------ | ---------- | ---- |
+| `882f53c` | 12:30 | _"fix match fattura con id righa"_ — the invoice/rate match moved off the date and onto the line id |
+| `cd8dc4c` | 14:30 | _"deploy on prod"_ |
+| `8f039ce` | 16:50 | **PR #118**, `DevMain` → `UAT` |
+| `7905945` | 16:51 | **PR #119**, `UAT` → `Prod` |
+| `7f648a8` | 18:03 | _"abbilitato le integrazioni mexal"_ — documentation only; the enabling happened in the org |
+
+🔑 **The date-versus-id bug is the one Aurel Mrruku described as he found it**,
+Slack 12:27–12:29 CET: _"avevo un bel bug su pienissimo … il problame di prima
+non era legato al contatto ma alla data fattura … si faceva il check sulla data
+di scadenza non con l id --- ed ero sicuro di averlo cambiato --- **ma a quanto
+pare no**."_
+
+🟢🔑 **And production reaches Mexal.** The `MexalToken` was entered on the Prod
+principal and a read-only article search returned HTTP 200 with data (§#267).
+🔑 **The consequence is not administrative**: from now on a customer or order
+created in production sends to Mexal for real, so **a test order in production
+is a real Mexal document** — and nobody has said who cleans those up.
+
+### The client met his commitment, with his own voice
+
+🟢🔑 **`lead-da-importare.csv` arrived at 09:27:06Z**, from **Sabatino Rinaldi
+himself** (§#290). Elisa Migliano's written _"entro domani"_ of 28 October meant
+Thursday 29 October, and the file came that Thursday morning. **Both halves of
+the migration data are now delivered** — Referenti V2 on 28/10, Lead on 29/10.
+
+🔑 **It is the first message in his own words to reach this mailbox.** Every
+earlier reference to him was a relay: Elena Spini's report of a DM, Fabrizio
+Paganelli pointing at him, a name on an invitation.
+
+🟢🔑 **And it settles a problem the 28/10 record had opened.** He states the
+`Lead from Zoho = TRUE` decision unprompted, attributes it to a phone call with
+Elena Spini, and gives the operational reason himself — _"i commerciali sanno
+che non sono da lavorare (per il momento)"_ — so §#295's _"the client has not
+been told"_ no longer holds. 🔴 **The field still does not exist, and the file it
+must mark is now in hand.** It has to be built before the load.
+
+⚠ **Two rounds of correction and no verification.** Aurel Mrruku asked for the
+special characters to be stripped and the file as Excel; the reply at 13:08:02Z
+was _"Credo che adesso sia corretto"_. **"Credo" is not a check**, and neither
+file was opened — they hold real Lead records.
+
+### Three new faults, and one of them answers an old question
+
+🔴 **§#298 — a WooCommerce bundle order from a new customer never reaches
+Salesforce.** The client reported it without a symptom (_"c'è qualcosa che non mi
+torna"_) and asked for a call; the diagnosis came from Elena Spini after she took
+it, with integration log `a05MA00000GsbhJYAR` in the **UAT** sandbox. 🔴 **The log
+is unread.** 🟢 The 30 October WooCommerce session was widened to cover it.
+
+🔴🔑 **§#289 failed a third time, after the release — and that is the finding.**
+Same flow, same error, same production org, 07:29 org time. 🔑 **So
+`Asset.QR_Id__c` does not exist in production** — a question these records have
+carried as unreachable since 26 October, now answered. 🔑 **And it is not
+release-induced**: a second release landed the same day and the flow fails
+identically, because the flow lives only in the org and no deploy touches it.
+⚠ **Three notifications in three days have produced no recorded action.**
+
+🔴 **§#301 — a ROMI checklist new to these records leaves three production steps
+unticked.** `Manual Steps Pienissimo`, last modified 15:06:07Z: the
+`ParticipantDocumentRequestTrigger` subscriber has no production user, the
+WooCommerce default agent is not set in Prod, and **the nightly Mexal jobs are
+unticked for both environments** — corroborated by a production inspection the
+same day that found no Mexal job scheduled at all. ⚠ **A blank cell is not proof
+a step was skipped**, and the org was not opened.
+
+### The client is testing, and asking
+
+🟢 **An end-to-end production test is booked for Tuesday 3 November, 09:30–11:30
+CET**, with Elisa Migliano, Fabrizio Paganelli and Sabatino Rinaldi invited
+(§#268) — the first test of the production org with the client in the room. 🟢
+**He authorized unlimited test orders and waved away the DocuSign cost**,
+⚠ with a joke ceiling of _"fino a 10€"_ that is not a budget.
+
+🟡 **§#299 — bundle creation still offers calendar years in `Anno Accademico`**,
+`Bundle Type` holds only two values, and the client asked for a 16:9 screen.
+⚠ **He did not say what should replace either picklist.**
+
+🟡 **§#300 — tutor training has no plan, and the client asked whether all tutors
+should test under his own account.** 🔴 **A shared-credentials proposal, from the
+client, unanswered either way.**
+
+🔑 **And a ruling that reached the client the same day it was made**: UI changes
+are no longer taken one at a time. The client collects them into a single file —
+Marco Montesi's — for one ad hoc release. ⚠ **The release has no date, and this
+is not a Change Request ruling**; the client's answer on that regime is now six
+days outstanding.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for a tenth
+session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences hold,
+and the two new client asks of today — bundle picklist content and tutor
+training — **land in the same gap**: no register row covers either.
+
+## 75. Update 2026-11-02 — the stage-sale contract flow became release R0 of a Fase 2 that now has an offer, a calendar and no maintenance line
+
+**Nightly `requirements-check`, watermark 2026-10-30T22:00Z — three days, with no run on 31 October or 1 November.** One Pienissimo meeting, drilled from its full transcript; two new mail messages; three Slack conversations, two of which had been silent; two commits.
+
+### The meeting that was deferred to today delivered
+
+🟢🔑 **[`[ROMI-PIENISSIMO]` - Tema Contratti WooCommerce](../notes/meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md)**, 09:32 CET, **00:49:50**, with Aurel Mrruku, Elena Spini, Elisa Migliano and Fabrizio Paganelli. 🔴 **Sabatino Rinaldi absent.** It is the meeting [#304](open-items.md) was deferred to on 30 October, and it answers most of what that row left open.
+
+**The flow, designed on the call.** WooCommerce order → Salesforce → Mexal; **when Mexal returns the order id**, Salesforce generates the contract PDF and an automation sends it through DocuSign; the signed copy comes back and is tracked. Order statuses are untouched, because they move on the scadenzario. The build is **a second PDF template pointing at the Order instead of the Quote** — today all generation reads the Quote — plus 🆕 **a resend button visible only after a failed send**. Aurel Mrruku sized it at _"2 3 4 giorni"_ plus testing and a separate production release, _"stiamo parlando di una settimana"_.
+
+🟢 **The payment-timing question is settled.** Elisa Migliano closed it: WooCommerce only forwards orders in state `completato`, so _"Se ti passa [a Mexal] vuol dire che il cliente ha già pagato"_.
+
+🟢🔑 **The Performance Plus tranche problem was routed around rather than solved.** The bundle component does not explode `numero di tranche` and will not be changed. Fabrizio Paganelli offered twelve bundle-only Plus codes instead — **one per tranche, none carrying a tranche count** — and Aurel Mrruku took it: _"funziona. Non devo fare nessun intervento a livello di bundle."_ He then verified on screen, against the client's existing `PLUS_B01`, that a bundle-true product is already excluded from the standard Plus offer. **So no Salesforce change is needed for this part at all**, and 🟢 **the twelve codes were created the same morning** ([#48](open-items.md)) — Fabrizio Paganelli at 09:31:40Z: _"ho creato i 12 codici prodotto per PPLUS da utilizzare solo nei bundle. Se vuoi puoi già importare. **Non dovremmo creare nuovi codici prodotto.**"_
+
+🔑 **A domain rule stated for the first time: there are no mixed bundles.** _"in un bundle c'è solo la P+ … oppure ci sono solo i corsi, non facciamo bundle misti."_
+
+### It is chargeable work now, and it is the first application of the margin ruling
+
+🔴 **Elena Spini declared it Fase 2 on the call, with the client in the room** — _"questo però deve passare come primo rilascio della fase due, perché io queste giornate poi le devo mettere da qualche parte. Noi abbiamo già finito tutte le giornate possibili immaginabili."_ Fabrizio Paganelli accepted. See [the decision](../notes/decisions/Decision%20-%20stage%20sale%20contracts%20are%20release%20R0%20of%20Fase%202.md).
+
+🟢 **It is the first time Gianpaolo Motta's 26 October ruling has been applied to anything, and the first time it has been said to the client.** It had been applied to nothing for a week.
+
+⚠ **The scope the client agreed to may be narrower than the scope priced.** His full sentence was _"Sono d'accordo che lo devi aggiungere **solo per la parte della Plus corsi**"_; both Fase 2 documents price R0 for standard courses **and** Performance Plus. Nobody raised the difference.
+
+🔴 **Nothing is confirmed in writing.** A solution document or blueprint addendum is owed to the client **Wednesday 4 November** — Aurel Mrruku's reason being _"non vogliamo cadere gli stessi errori di prima"_.
+
+🔴 **And the two mechanisms the 30 October decision rested on were never mentioned.** The signature gate was replaced by a status flag and a chasing report; fifty minutes of design discussion did not come back to either. **Still no field name, no report owner, no cadence.**
+
+### Fase 2 has an offer, a calendar, and a contradiction
+
+🟢🔑 **`Pienissimo Offerta Fase 2` exists** — created by **Andrea Galotto** at 09:21Z on 2 November, last touched 14:45Z, beside Elena Spini's `Pienissimo_Project_Plan_Fase2` updated 09:40Z. Read in full: [the Fase 2 offer](../notes/The%20Fase%202%20offer.md).
+
+**Six releases to 26 March 2027**: Analisi (Dec), **R0 Contratti da palco (Nov, before Pienissimo Live 24-26/11)**, R1 Info Point e biglietti (15/01), R2 Note di credito e Ri.Ba. (12/02), R3 Eventi multi-edizione (26/02), R4 Pienissimo Pro → Zoho (12/03), R5 Integrazioni e notifiche (26/03). Every release carries one free month of post-go-live support.
+
+🆕🔑 **Fase 1's dates are in a client-facing document for the first time**: _"go-live tecnico **09/11**, migrazione dati **12-13/11**, avvio operativo su Salesforce **16/11**"_. 🆕🔑 **And a deadline nobody here had: _"Approvazione Fase 2 entro il 13/11"_** — the same morning as the data handover. 🆕 **Event dates**: Pienissimo Live **24-26/11**, Academy **19-21/01**, Camerieri e Venditori **06/04**.
+
+🔴 **The two decks disagree on the day count by a factor of two** — the offer says `150 giornate`, the project plan totals `58 - 78`. Both were touched on 2 November, both are client-facing, and nothing reconciles them.
+
+🔑 **Items ROMI had ruled on internally are now written into a client document.** [#269](open-items.md), blocked internally on 27 October and never communicated, is R1's _"Comunicazioni mirate"_ at 15 January 2027. [#272](open-items.md) gains its first specification — _"notifica al tutor e al commerciale di riferimento 15-30 giorni prima della scadenza"_ — in R5 at 26 March. The edition-move work of [#291](open-items.md) is in R1. 🔴 **And the Ri.Ba. territory is R2 at 12 February 2027, while [#212](open-items.md) is still an unfixed defect in production** — twenty-first night.
+
+🔴🔑 **Neither document prices maintenance, and the client was told on the same day that one does.** Elena Spini on the call: _"C'è anche la parte di maintenance nella proposta"_. Aurel Mrruku sized it to the client as _"quei **8 ora al mese**"_ — against the **three to four days a month** he had written on 30 October. ⚠ Nobody reconciled the two, and the client has heard the lower figure. [#308](open-items.md).
+
+### The discount defect is fixed, deployed and committed
+
+🟢🔑 **[#287](open-items.md) is closed on the facts.** Aurel Mrruku read UAT integration log `a05MA00000GwEO4YAN`: order `00016059` at quantity 4 was **rejected by Mexal** with _"6001 - Il valore dello sconto supera il prezzo unitario"_, because `sconto` carried the per-unit discount multiplied by the quantity. **Mexal itself settled the question the record had carried as gating for six nights.** `resolveLineDiscount` no longer multiplies; deployed to **UAT** and **production** (`MexalIntegrationTest` 59/59) and **committed to `DevMain` as `d4c2082`** at 17:48:57 CET. 🟢 **No production order was affected** — no line with quantity above 1 and a list price had been through the integration.
+
+🔴 **Order `00016059` has not been resent.** It is still `Failed` with no Mexal number; a successful Mexal document is the only end-to-end proof. ⚠ **And a latent failure travels with the fix**: `MexalIntegrationTest.schedulerRegistersTheNightlyJob` fails wherever a job named _"Mexal Sync - Nightly"_ exists — true in UAT today, and true in production the moment [#301](open-items.md)'s nightly jobs are scheduled.
+
+### Two migration changes, and the Referenti gap a fourth time
+
+🆕 **The production load gains a pre-load.** A full load costs _"3-4 ore"_, so Aurel Mrruku asked to bring the product registry, accounts and contacts forward and make 12-13 November a delta only — _"così io ho un buffer di qualche giorno"_. Fabrizio Paganelli will deposit a refreshed _"versione produzione"_ interface file; ⚠ **the window is "Wednesday, Thursday or Monday" and no date was agreed.** [#310](open-items.md). 🟢 The product registry is **stable**; 🔴 accounts are not. 🟢 Confidence in the order load is high — the stated risk is **duration, not correctness**.
+
+🔴 **The Referenti tracciato missed its 2 November date**, and Aurel Mrruku believed it had arrived until Elena Spini corrected him on the call: _"I lead li ha mandati, i referenti mancano."_ **Fourth consecutive record.** 🔑 **And the Lead file delivered on 29 October is still not loaded into production** — _"però gli devo caricare in produzione adesso"_. 🆕 New date: **Wednesday 4 November 09:00-09:30**, promised by **Fabrizio Paganelli for an absent Sabatino Rinaldi**. 🆕🔑 **A second, later extract is now expected** on top of it. [#290](open-items.md).
+
+### A criterion nobody had written down
+
+🆕🔑 **Salesforce decides whether a Mexal article is active from `gruppo merceologico`, not from Mexal's `annullato` flag** — in both UAT and production, as a first-load arrangement. Switching to the flag is **a production release, not a setting**: _"in ambiente [U]AT si fa in un minuto, in produzione quel minuto diventa 2 ore"_. 🔴 **Fabrizio Paganelli owes the date**, accepted the action, and offered **1 February 2027** while disclaiming it as _"una data a caso"_. [#309](open-items.md). 🟢 His worry that cancelling products in Mexal would block invoicing the open Mexal orders is answered: he touches nothing in Mexal.
+
+### Licences, answered
+
+🟢🔑 **Twelve Salesforce licences in total**, with the allocation walked on screen: **7 commerciale/tutor · 1 amministrazione · 1 marketing · 1 PL/digital = 11**, and of the two left **one is ROMI's own** working licence. 🔴 **Demand already exceeds supply** — Rebecca and Giordano both want one — **and the answer was to share accounts**, which is the pattern [#300](open-items.md) refused in substance five days ago. ⚠ **Elisa Migliano objected and was not answered.**
+
+### The build moved on a branch nobody has merged
+
+🟢 **`DevAnita30` gained `b0e69c5`** (Anita Aga, 14:21 CET): the Mexal customer create is now wrapped in error handling that **logs the failure and returns it instead of rethrowing** — the diagnostic that was missing on 28 October ([#296](open-items.md)) — plus an `Azienda_Precedente__c` lookup filter restricting the reference to record type `Azienda`.
+
+🔴 **And the `Agente` permission set changed in both directions**: it **gains** Apex access to `MexalCustomerCreateService` and `AnticipayAccountService`, both external credential principals, and read on `UserExternalCredential` — so a salesperson's own click can now reach Mexal and Anticipay, which **no meeting, mail or message asked for**. It **loses** editability on `Account.Agente__c`, `Opportunity.Categoria__c`, `Sottocategoria__c` and the five UTM fields. ⚠ Locking `Categoria__c` points the opposite way from [#265](open-items.md), unmoved an eleventh day. [Detail](../notes/objects/The%20Agente%20permission%20set%20gained%20Mexal%20and%20Anticipay%20access.md).
+
+🔴 **All of it is on a branch with no PR**, with `Lead_from_Zoho__c` ([#295](open-items.md)) still stranded there, **the day before the client's permissions walk**.
+
+### The marketing flow, and what is still silent
+
+🟢 **The marketing group DM broke its silence.** Fabrizio Mastracci has _"quasi terminato"_ his flow update and promises **a written recap of the logic it handles** — the first anyone has offered. 🔴 **He is blocked on test data**: _"Mi servono dei record puliti, anche 4-5 vanno bene"_, and the only offer on the table is the **3 November client test orders, in production against a live Mexal**. [#311](open-items.md). ⚠ Which flow this is was not stated, and is marked uncertain rather than guessed.
+
+🔴 **`#tproj-pienissimo` is silent again.** 🔴 **The dev group has still not replied to any nightly report** — the 30 October post stands unanswered and no human has written in the channel since. ⚠ **Fathom returned nothing a thirtieth run.** The canvas is **unchanged since 20.08.2026, 74 days**.
+
+🔴 **Zoho CRM expired on 31 October and no source in this window mentions it** — a thirteenth run with the question unasked, two days after the fact. 🔴 **[#285](open-items.md)'s change-request mechanism is still applied to nothing**, although R0 is the first scope decision that could have used it. ⚠ **`SAL-12` uncited a twelfth session.**
+
+---
+
+## 74. Update 2026-10-30 — the fault behind yesterday's report did not exist, go-live is confirmed with the whole import collapsed into one pass, and the project has been told its margin is gone
+
+Nightly `requirements-check`, watermark **2026-10-29T22:00Z**, one day. **Two
+meetings drilled, one gating item withdrawn, seven opened.**
+
+### The withdrawal
+
+🟢🔑 **[#298](open-items.md) was never a fault.** Aurel Mrruku opened integration
+log `a05MA00000GsbhJYAR` on screen in the 10:01 internal call: _"**Ha già fatto
+tutto, ha già creato l'ordine**"_ … _"ordine Wcommerce ordinato. **Fatto il
+29.**"_ Elena Spini, who had reported it, accepted the correction at once —
+_"Response non era 200, non era l'errore … **Che scema.**"_
+
+🔑 **Three premises of the 29/10 record were wrong.** The order reached Salesforce
+on 29 October with its number and status `Ordinato`. The customer was **not new**:
+the account and contact were **created on 20 October** by `amministrazione`,
+against Fabrizio Paganelli's account of entering all-new data — _"non è vero perché
+[Salesforce] non ti lascia mentire"_. And there were **four** test orders, not one.
+
+🔴 **The real problem is findability.** The client could not locate his own orders;
+Elena Spini had spent ten minutes on the phone trying to get him to sort the list.
+The remedy named — **a WooCommerce list view on Orders** — ⚠ **is not built and has
+no owner.**
+
+🔑 **A populated response body was read as an error, escalated as a client-facing
+fault, and carried in these records as gating for a day. The cost was one unread
+field**, and the org was not opened on 29/10 to check it. The #296 pairing that
+rested on it falls away; `a05MA00000GqqcPYAR` is still unread.
+
+### The plan, published
+
+🟢🔑 **`#tproj-pienissimo` broke a long silence with a full status report at 15:30
+CET**, and it is the densest source of the sweep.
+
+| | |
+| --- | --- |
+| Go-live for users | **16 November**, confirmed, as the client proposed |
+| Final data import | 🆕 **13 November, a single pass** — _"non più in due momenti, perché le prove in UAT sono andate bene"_ |
+| Days to finish | **15**, down from 26 — the 10 migration days absorbed |
+| Red flag | 🔴 **_"Margine finito"_** — Gianpaolo Motta, 26/10: the project can absorb nothing more, so everything new goes to Fase 2 |
+| Positive news | _"Nulla questa settimana."_ |
+
+🆕🔑 **The single-pass import is the consequential line.** A two-stage plan existed
+to de-risk the load; the risk has been retired on the strength of **one** successful
+sandbox rehearsal, three days before go-live, with ⚠ **no rollback recorded** —
+7,721 orders and their chain, 10,806 invoices with 15,492 scadenze and 32,294
+lines, the Lead file and a Referenti tracciato that has not arrived.
+
+### The discount, reported closed
+
+🔴🔑 **[#287](open-items.md) is now worse than unfixed.** The same recap: _"Il 26/10
+con Fabrizio P. e Mirko **abbiamo chiuso la logica degli sconti verso Mexal:
+passano a valore sulla riga, divisi per la quantità**."_
+
+🔑 **That ruling is exactly what this record has said the requirement is** — and
+**the inverse of what the code does**. `resolveLineDiscount` still multiplies by
+`Quantity`, fifth night, after two production releases. 🔴 **Reported as _closed_ to
+the whole project group, the status reporting now conceals the defect.** ⚠ _"Closed"_
+may mean the specification rather than the implementation, and that reading is
+available; a reading in which the shipped arithmetic is right is not.
+
+### The client data, corrected
+
+🔴🔑 **The Referenti tracciato is NOT delivered, and the 29/10 record was wrong.**
+Three sources on one day: Elena Spini's 08:16Z mail (_"rimaniamo in attesa del
+tracciato dei referenti/contatti"_), the internal call (_"**Io ho chiesto i
+contatti, lui ha mandato i lead**"_), and the recap (_"il tracciato dei Referenti
+non è ancora arrivato. Lead ok"_).
+
+🔑 So `Referenti Salesforce_V2.xlsx` is **not** the deliverable, and the Lead file
+met a commitment ROMI had not made. **Now promised for 2 November.**
+
+### Built, on a branch nobody merged
+
+🟢🔑 **`Lead_from_Zoho__c` exists** — Anita Aga, `0717486`, 15:10 CET, on
+`DevAnita30`: a checkbox labelled _"Lead from Zoho"_, on the Lead page and granted
+on the `Agente` and `Full_Permission` sets. Three of [#295](open-items.md)'s open
+points close. 🔴 **It is on that branch and nowhere else**, and ⚠ **nothing sets
+it** — a field that defaults false and is never written is indistinguishable from
+no field.
+
+🟡 **[#299](open-items.md) got labels, not values.** `Anno_Solare__c`'s value labels
+became `Anno Accademico 2026/2027/2028`; the API values are still `Anno Solare
+NNNN` and still single calendar years. ⚠ **Nobody has shown the client.**
+
+### Seven new items, five from one client call
+
+The 30 October `Connessione WooCommerce` session placed live orders and watched
+them through to Mexal.
+
+- 🔴 **[#302](open-items.md)** — WooCommerce binds orders to the wrong company **by
+  email**; one customer can hold several premises with different VAT numbers on one
+  address. Agreed to key on **partita IVA**; ⚠ no code change in the repository.
+- 🟢 **[#303](open-items.md)** — the plugin kept the opportunity id in cookies and
+  sessions for **30 days** across completed purchases. Sabatino Rinaldi shipped the
+  fix during the call; ⚠ thirty days of possibly mis-attributed orders were not
+  swept.
+- 🔴 **[#304](open-items.md)** — **no contract is generated for stage sales**, and
+  ~**€20,000** impulse purchases cannot be held for a signature, so **no prior
+  digital signature is required**: a status flag and a chasing report replace it.
+  🔴 **Neither exists.** Own meeting 2 November 09:30.
+- 🔴 **[#305](open-items.md)** — **Anticipay does not answer in UAT** for test data
+  or for **San Marino**, the client's own jurisdiction, so no full new-customer test
+  cycle is possible there. The workaround removes the very path the client reports
+  faults on.
+- 🔑 **[#306](open-items.md)** — the Woo order number must print on the Mexal
+  document for invoice matching. **Kreosoft named the field in four minutes: `nota`
+  lato API.** Client-sized at half an hour; not built.
+- 🔴 **[#307](open-items.md)** — the Lead file's masked `XXXXXXXXXXX` VAT values will
+  trip the duplicate rules, so they will be switched off **for the import**. 🔴 **No
+  re-enable step exists anywhere.** ⚠ The consent flags also arrive uniformly
+  `true`, by the client's own instruction.
+- 🔴 **[#308](open-items.md)** — **maintenance was omitted from the Fase 2 estimate
+  already sent.** Aurel Mrruku expects 3–4 days a month and warns a retained day is
+  not priced like scattered hours. 🔑 **The Andrea is Andrea Galotto.**
+
+### People and answers
+
+🟢🔑 **[#300](open-items.md) is answered on both counts and the shared account is
+refused in substance** — _"Anche gli altri tutor avranno un'utenza dedicata e
+profilata"_. Permissions walk 3/11 14:30, Marco Montesi off admin 4/11, training
+5/11 or the week after. 🔴 Licences unconfirmed, 🔴 nobody knows how many tutors
+there are, 🔴 and a question is back with the client.
+
+🔴🔑 **Rexhina Hysi is off the project full time** — _"Regina ormai è su un altro
+progetto full time"_ — leaving **Anita Aga as the only developer**, seventeen days
+from go-live. 🔑 A reassignment, not the departure earlier runs read. Her two
+branches remain unmerged and unowned.
+
+### Unchanged
+
+🔴 **[#212](open-items.md)** an eighteenth night, in production · 🔴 **[#265](open-items.md)**
+an eighth day · 🔴 **[#289](open-items.md)** — no fourth failure notification arrived
+today · 🔴 **Zoho expires tomorrow** and nobody has asked whether a contract exists
+past it, a twelfth run, with go-live seventeen days after · 🔴 **[#285](open-items.md)**'s
+CR mechanism applied to nothing, a sixth day · 🔴 **`DevMain` did not move**; all of
+today's work sits on `DevAnita30` with no PR · 🔴 **the dev group has not replied to
+a nightly report in forty nights**.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for an eleventh
+session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences hold, and
+**five new ones join**: no register row covers WooCommerce customer identity,
+contract generation for WooCommerce orders, the Mexal order header note,
+duplicate-rule handling for migration, or Fase 2 maintenance.
+
+## 76. Update 2026-11-03 — the whole chain ran end to end in production, and everything around it broke
+
+**Nightly `requirements-check`, watermark 2026-11-02T22:00Z — one day, the densest in the project record.** Two meetings, both drilled from their full transcripts: a **02:49:39** end-to-end production test with the client, the longest session the project has, and a 00:36:20 ROMI-internal drafting session. Nine mail threads moved, three Slack conversations, and the R0 specification went to the client a day early. **Seventeen new items, #312 to #328.**
+
+### 🟢 The chain works in production
+
+🟢🔑 **[`[ROMI-PIENISSIMO]` - Test e2e PROD](../notes/meetings/2026-11-03%20Test%20e2e%20PROD.md)**, 09:31 CET, **02:49:39**, Aurel Mrruku, Elena Spini and Fabrizio Paganelli — who **joined 25 minutes late having forgotten it**. 🔴 Sabatino Rinaldi absent again, Elisa Migliano unable to join.
+
+**Fabrizio Paganelli drove it himself from his own user**, and the whole path completed: account → opportunity → quote with two tranche → PDF → sent for acceptance → **DocuSign, the real connector, signed** → quote `Firmato` asynchronously → **Salesforce order 113** → `Mexal Integration Status = inviato` → **Mexal order `OC155` with the discounts applied correctly** → invoice issued, payment condition code 20 → **new Mexal customer created, fiscal residence RSM** → invoice synced back into Salesforce unpaid, with its due date.
+
+🟢🔑 **This is the first demonstration of the full Salesforce → Mexal → invoice path in production**, and Aurel Mrruku had never tested a discounted order before — _"incrociamo le dita che va tutto su Mexal perché non avevo mai fatto un test con lo sconto"_. It reconciled.
+
+### 🔴 And almost everything around the chain did not
+
+🔴🔑 **Anticipay times out in production** — the P.IVA call waits 120 seconds and gets nothing ([#312](open-items.md)). **Anticipay had confirmed production in writing**: _"ha detto confermo, tutto ok, portate direttamente in produzione"_. The pointings are theirs, not ROMI's — _"Sono loro che danno i puntamenti"_. Fabrizio Paganelli phoned Andrea live; no deadline, no update by end of day. The session continued without it. 🔑 **This answers a question carried as unreachable for weeks, the wrong way.** 🔑 **And what Anticipay is was stated plainly for the first time**: not a validation but a lookup — a result only for an Italian P.IVA it can find, _"fallisce sempre"_ otherwise, **only on an account's first order**, and a failure never blocks the order.
+
+🔴 **Production could not be cleaned.** Aurel Mrruku cleared about twenty records but **orders would not delete** — _"non hai i permessi perché abbiamo fatto in modo che non puoi cancellare gli ordini"_ — and the accounts are held by the orders ([#315](open-items.md)). Fabrizio Paganelli asked again by mail at 14:04Z, because he will not start the real configuration until the test rows are gone.
+
+🔴 **The UAT mappings cannot be moved, and it cost the client a day's work.** Sending the quote failed on _"mappatura mancante"_ — 🟢 the guard worked. But the mappings cannot be migrated: production events and editions have different ids and **there is no external id to join on** — _"Se avessi un ID esterno l'avrei fatto in 10 minuti"_ ([#320](open-items.md)). Fabrizio Paganelli: _"Però è un lavoro cinese. Io l'avevo detto che era una cosa che non dovevamo rifare"_, and twice, half in jest, that he would invoice ROMI for the hours.
+
+🔴 **Twelve minutes after the call ended, production emailed the client to say his tickets were ready** — for an order whose assets were still `ordinato` and whose tickets do not exist ([#313](open-items.md)). Elena Spini diagnosed it the same hour: **the event link had reached `pronto`**. Clicking the buttons lands on the community showing _"Non ci sono biglietti disponibili per questo account."_ She promised the client an answer; none was sent.
+
+### 🔑 The product registry, counted from the org
+
+**1093 products** are loaded in production, about **500** carrying the value that activates them. 🔑 **The activation criterion of [#309](open-items.md) is now confirmed from a live inspection** — Aurel Mrruku: _"sul campo, non su `annullato`, ma sull'altro"_; Fabrizio Paganelli supplied the name, **`gruppo merceologico`**.
+
+🔴🔑 **And that item's risk has already materialised.** Fabrizio Paganelli had set the whole `blow` code family to the wrong value, activating it by accident: _"Ho sbagliato io. Li ho messi a S, invece dovevo metterli a N"_ ([#327](open-items.md)). Correcting Mexal is not enough — Aurel Mrruku must delete and re-insert, because **the nightly refresh and the API integrations are deliberately switched off in production**: _"non voglio spaccare qualcosa adesso perché dobbiamo fare dei giri completi, poi alla fine devo abilitare gli API."_ Elena Spini pushed to enable them and was overruled. 🔑 **So the product synchronisation flows are off by decision, not oversight** — another standing question answered.
+
+### 🆕 Four layout and field changes, and one real requirements dispute
+
+🆕 **`importo netto`** — a line total, quantity × net price, because a tutor on the phone cannot see one and computes it _"con la macchinetta"_; `nuovo prezzo` becomes `prezzo netto` ([#316](open-items.md)). 🆕 **The payment-condition description is obscured and becomes `note preventivo`, enlarged** ([#317](open-items.md)) — Fabrizio Paganelli demonstrated tutors writing bespoke instalment plans into it, and Aurel Mrruku's verdict was _"E buona fortuna poi con le fatture"_. 🆕 **`data competenza` → `da data ordine` / `a data ordine`**, asked _"74 volte"_, agreed once and reversed ([#318](open-items.md)). 🔴 **`data invio biglietto` is missing from the campaign page in production and Aurel Mrruku has no field permission on it himself** — _"Devo fare per forza un rilascio"_ ([#319](open-items.md)).
+
+🔴🔑 **The substantive dispute was the asset states.** Fabrizio Paganelli: _"noi abbiamo tre step. Arriva l'ordine, è ordinato. Poi dopo l'ordine io lo fatturo, diventa fatturato"_ — against a build in which an asset is `ordinato` until the invoice is **collected**, with no `fatturato` at all. 🔑 **His concern was reporting, not accounting**: whoever pulls a list of available assets cannot tell an invoiced-not-collected one from an untouched one. 🔑 **The technical obstacle is real** — an asset is not an invoice line, several assets hang off one order line, so no one-to-one link exists.
+
+🟢 **It was closed by mail the same afternoon, in ROMI's favour.** Aurel Mrruku left for another call, Fabrizio Paganelli phoned Rebecca, and at 12:37 CET wrote: _"mi sono confrontato con Rebecca per gli stati dell'asset. **Va bene così come impostato ad oggi.**"_ **The label stays and nothing is built on the asset** ([the decision](../notes/decisions/Decision%20-%20asset%20states%20stay%20as%20built%20and%20the%20ordinato%20label%20is%20not%20renamed.md)). 🆕 **What survives is an order-level `fatturato` status driven from Mexal, independent of payment** ([#314](open-items.md)) — ⚠ **agreed knowing it is imperfect**: it keys on all order lines, so a partially invoiced order shows nothing, and Fabrizio Paganelli said so — _"E dopo diamo un'informazione distorta lo stesso"_ — and it was adopted anyway.
+
+### 🟢 Users, licences and two closed questions
+
+🟢 **Seven agent users were provisioned in production** and four had verified by the end of the call; links expire after 72 hours ([#300](open-items.md)). 🔴 **Note where: production, not a test environment**, against the 30 October undertaking, and nobody reconciled the two.
+
+🟢🔑 **Marco Montesi is off System Administrator a day early** — Elena Spini told him at 17:20Z that his user now carries the **Agente** profile and that _"i campi sincronizzati con Mexal non sono più editabili manualmente da layout per preservare la coerenza dell'integrazione"_. 🔑 **That is the first evidence the `Agente` field-level changes are in a live org**, and the first documented rationale for them. ⚠ **It says nothing about the Apex half** — the new access to `MexalCustomerCreateService` and `AnticipayAccountService` that no meeting ever requested.
+
+🟢🔑 **The shared-account pattern was proposed again and died within hours.** Because Marco Montesi has no agent code, the call's answer was that he use the `segreteria` user, readable only by Martina and Elisa Migliano; Fabrizio Paganelli's own comment was _"Che casino, che casinisti che siamo"_. **Elena Spini objected and prevailed.** 🔴 One of the seven agents ceases his engagement on **31 December** and the licence must be reassigned ([#324](open-items.md)).
+
+🆕 **Training has dates**: **Monday 9 and Wednesday 11 November, 11:30-13:00**, 1.5-hour sessions, awaiting Marco Montesi's confirmation with the tutors. ⚠🔑 **Monday 9 November is the technical go-live and Wednesday 11 is the eve of the data migration. Nobody noted the collision.**
+
+🟢 **Two standing unknowns closed.** The **Salesforce My Domain stays unchanged** — Fabrizio Paganelli refused the customisation because tutors who have configured their key would have to regenerate it ([the decision](../notes/decisions/Decision%20-%20the%20Salesforce%20My%20Domain%20stays%20unchanged.md)). ⚠ **But a different domain is still owed by the client and nobody could say what it is for** ([#323](open-items.md)).
+
+### 🔑 R0 is specified in writing, a day early — and the document is narrower than the work
+
+🟢🔑 **[The stage-sale contract functional analysis](../notes/The%20stage%20sale%20contract%20functional%20analysis.md)** went to Fabrizio Paganelli, amministrazione and Sabatino Rinaldi at **18:00:14Z**, against the Wednesday 4 November deadline [#304](open-items.md) carried. **Seven functional requirements, four open points, release 18 or 19 November, confirmation due 5 November**, and 🆕 **a new meeting Thursday 5 November 12:00-12:30** to close the open points.
+
+🟢 **Paper and electronic are separated at last**: `contratto informatico` is **the Salesforce Contract record**, and it applies **to Performance Plus only** — **RF7**. 🟢🔑 **And the scope worry of 2 November is retired.** In **[the internal follow-up](../notes/meetings/2026-11-03%20Follow-up%20Interno.md)** Aurel Mrruku opened believing only Plus generates a contract, Elena Spini challenged him, and **he checked the 2 November transcript himself**: _"il contratto lo vuole per tutte le vendite da palco, quindi sia per i corsi sia per la plus."_ **So pricing courses and Plus in R0 matches what was agreed.**
+
+🟢 **The status flag finally has an owner and a date** — **OP-2**, owner **Fabrizio Paganelli**, due **5 November** — and it was pushed to the client deliberately: _"cacchio ce ne dobbiamo fare noi, ce lo dobbiamo dire loro."_
+
+🔴🔑 **But the chasing report was deleted, not forgotten.** It stood in the draft as Open Point 5 — _"Cliente che non firma … solleciti senza blocchi"_ — and **Aurel Mrruku had it struck**: _"toglili pure di tutto che poi là non finiamo mai."_ **So the report half of the 30 October decision is now out of scope, and the client has never been told it was ever in.**
+
+🔴 **Three further pieces of scope were discussed and left out of the document.** The **product check in RF1** — _"non tutti i prodotti che arrivano da WooCommerce devono generare un contratto"_, whose absence Elena Spini noted before sending. **Two PDF templates rather than one** ([#326](open-items.md)), confirmed by Aurel Mrruku and then deleted because it had never been raised with the client. And the **DocuSign return-trigger rewiring** ([#322](open-items.md)) with the **bundle Plus classification** it needs ([#328](open-items.md)).
+
+🔴🔑 **R0 is sized at 6-7 days for all of it, and Aurel Mrruku does not believe it.** _"Ho la paura che abbiamo messo davvero poche giornate … Sai quanto mettevo per un template? **da 10 a 15 giorni**"_, _"2-3 giorni"_ with AI. Elena Spini: _"**E non posso chiedere più i giorni, mi sa che già m'ammazzano.**"_ 🔴 **And he has nobody to share it with** — _"c'ho un sacco di progetti che sono partiti adesso … e il lavoro lo devo fare io. Amen."_ ⚠ The colleagues he names are transcribed as "Regina", "Ana" and "Sara" and the attribution is **uncertain**.
+
+🔑 **The DocuSign problem is the sharpest of them.** Today a trigger resolves the signed document to an Opportunity and a Quote and sets the quote to `Firmata`; **an order has no Quote**. _"Ogni volta che ci arriva un documento da DocuSign dobbiamo capire se quel documento fa parte a un ordine oppure fa parte di una quota. E qua sarà un bagno di sangue perché non l'ho mai fatto."_ 🟢 **One piece of luck**: _"meno male che non abbiamo usato il preventivo standard"_ — the custom quote object is what makes the order path possible at all.
+
+⚠ **And the payment-timing claim of 2 November was withdrawn.** Aurel Mrruku struck Elisa Migliano's sentence from the draft: _"Non è detto … **Noi non ce l'abbiamo l'informazione** … lo sappiamo a mezzanotte."_ The order-state rule stands — card completes immediately, **transfer sits in `Sospeso` until amministrazione confirms** — but ROMI does not hold the payment fact.
+
+### ⚠ Fase 2, and the governance that will settle it
+
+⚠ **The 150 vs 58-78 discrepancy is known to ROMI and unresolved.** Aurel Mrruku: _"Sai cosa faranno qua? Metteranno una media o il 58?"_ Elena Spini: _"lo scopriremo."_ **Not an oversight nobody noticed.**
+
+🆕🔑 **The route was fixed on the e2e call.** **Andrea Galotto** — ROMI, sales side — told Elena Spini to do a pass with the project's owner before a direct call with **Daniela**. Agreed: **Elena Spini and Fabrizio Paganelli review the activity list first**, which Elena Spini says is already defined, then **Andrea Galotto and Daniela take the quote and the numbers**. ⚠ Daniela appears to be Pienissimo-side, since Fabrizio Paganelli undertook to brief her — **inferred, not established**.
+
+🔴 **The maintenance line is unchanged.** Nothing on 3 November added one, mentioned one or revisited the figure. **Ten days to the 13 November approval deadline**, and the client has heard _"quei 8 ore al mese"_ against three to four days a month.
+
+### 🔴 What the client said about the state of it
+
+> _"rifacciamole queste test perché, come hai visto, anche oggi **mancava la metà delle robe**"_
+
+> _"Dobbiamo secondo me **rivedere la Performance Plus, i pacchetti**, cioè sono cose importanti queste."_
+
+🔴 **Performance Plus and the bundles have not been tested at all**, and a further session with **Rebecca** is owed on the asset labels and the invoicing logic. 🆕 **The continuation is Wednesday 4 November 14:30-16:00**, capped at 90 minutes on Aurel Mrruku's insistence; Elena Spini is unavailable, so **Aurel Mrruku and Fabrizio Paganelli continue alone**. 🔑 **Fabrizio Paganelli also owes the data tracciati tomorrow morning** — _"Vi devo dare tutti i tracciati dati"_ — which corroborates the 4 November 09:00-09:30 Referenti slot.
+
+🔴 **Still owed to production by Aurel Mrruku, in his own words**: _"Mi mancano la community, le note, alcuni layout."_ 🟢 **He brought the community up during the day**; the Notes object and the layouts are not released. 🔴 **The full order synchronisation to Mexal has never been run** — only the last five days ever have, and the whole set takes about five hours ([#321](open-items.md)). 🔴 **And the Mexal order header note of [#306](open-items.md) is still not built**, four days after Kreosoft named the field, though its purpose is now specified: the invoice must carry the quote reference and the Mexal order number.
+
+**No requirement was amended by this run.** 🔴 **`SAL-12` is uncited for a thirteenth session.** `DM-07`'s competitor list is unchanged. 🔑 The standing absences hold, and **seventeen new rows join them** — no register row covers Anticipay availability in production, ticket-send gating, order line states, production test data, quote line layout, quote notes, field labels, the campaign ticket-send date, cross-org mapping migration, the order sync, the DocuSign document routing, the production domain, licence handover, order line due dates, contract templates, registry classification errors, or bundle Plus classification.
+
+## 77. Update 2026-11-04 — the chain ran further than ever and proved it has no reverse gear
+
+Sources: [the 4 November Continuazione Test e2e PROD session](../notes/meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md) (14:28 CET, 01:49:12, drilled from the full transcript), nine mail threads, three Slack conversations, and a production inspection of the Mexal scheduled jobs. Watermark 2026-11-03T22:00Z.
+
+### 🟢🔑 The production chain, divisible
+
+On 3 November the chain was proved whole. On 4 November it was proved **divisible**, which is the result the Performance Plus model actually depends on.
+
+Fabrizio Paganelli drove it again from his own production user, with Elisa Migliano beside him: opportunity → quote (`bonifico fine mese data fattura`) → Academy 2 and Mastery at 10% → **two tranche**, one due 31/12/2026 → quote PDF → sent → **signed through the real DocuSign connector** → Salesforce order `Ordinato` → **Mexal order `OC157`** → **one tranche invoiced, 4.830 €**, discount correct and the e-invoice reference present → invoice back in Salesforce → **manual cash collection registered in Mexal** → `Scadenza Fattura` `pagato` → **only that tranche's asset reached `Disponibile`**, the rest left `ordinato`.
+
+> _"Gli asset sono disponibili perché ho fatturato prima la maschera."_ — Fabrizio Paganelli
+>
+> _"Ah, è fatturato solo una tranche. Perfetto, perfetto. **Sta funzionando.**"_ — Aurel Mrruku
+
+A second, larger order (five Mastery, ~34.000 €) was then invoiced and collected in full, with the same outcome: _"vai sugli asset per vedere se sono diventati disponibili"_ → _"Disponibili."_ → _"Una meraviglia."_
+
+### 🟢🔑 [#306](open-items.md) is finished — the quote number is on the Mexal document
+
+The array fix went to production before the call: _"Ho avuto tanti problemi su quella nota perché la struttura che ci ha dato lui non andava bene, ma finalmente ho trovato serviva un array … prima di pranzo sono andato in produzione."_ Then it was read off the Mexal screen — _"E hai anche nota. **Vedi nota 07?**"_ → _"Ah, perfetto, perfetto"_ — and off the invoice printed from that order, _"Qui c'è la nota riferimento al preventivo numero del …"_, which is the matching-at-invoicing purpose the client asked for on 30 October. ⚠ The `nota` maximum length is still unrecorded.
+
+### 🔴🔑 And then the reverse, which does not exist
+
+Fabrizio Paganelli asked the question any administrator asks — _"se io mi accorgo che questo incasso l'ho registrato male, cosa facciamo noi? Eliminiamo l'incasso. Questa rata qui che l'avevo chiusa, la riapro"_ — and then did it on screen. The due date reopened. **The asset stayed `Disponibile`.**
+
+> _"se sei andato in incassato noi abbiamo fatto in modo che tu non puoi tornare mai più dietro indietro … è tutto il meccanismo che era con un path, quindi con una via sola in avanti. **Adesso dobbiamo fare in modo che anche se sei incassato tu devi poter tornare indietro se aggiorni lo scadenzario.**"_ — Aurel Mrruku
+
+🔑 **This is the client's monthly banking cycle, not a corner case.** Ri.Ba. goes out on the 20th and closes the rate _"salvo buon fine"_; on the 1st the bank returns which ones were never collected, and the rate is reopened — _"Facciamo in modo automatico quello che hai visto fare manualmente a me adesso."_ So the behaviour demonstrated once by hand arrives **in bulk, automatically, every month**.
+
+🔴 **And the ticket may already be gone**: _"Tu pensi di aver aggiustato la fattura, ma è già partito il biglietto."_ The evening-batch remedy was rejected for the normal case — _"i biglietti non possono essere mandati via ogni sera"_ — and nothing replaced it. 🟢 The exposure is bounded to collections reversed inside the ticket-send window, which is near the event. Routed to **Fase 2** by agreement, with a meeting owed to Elena Spini, Fabrizio Mastracci and Rebecca and **no date** — [#331](open-items.md).
+
+### 🔴 The ticket email fired again, and the diagnosis moved
+
+Mid-test, assets still `ordinato`: _"Qui mi sono arrivati i biglietti. **Sono già arrivati.**"_ So [#313](open-items.md) is **reproducible**, two days running, in production.
+
+🔑 Aurel Mrruku moved the diagnosis off the event-link state and onto **the marketing flow's own filter** — _"Molto probabilmente sta facendo il filtro in modo sbagliato marketing e che non è disponibile"_ — on a version _"fatto un mese e mezzo fa, penso che non l'ha aggiornato"_. ⚠ And a confound that strengthens the case: the mapping's ticket-send date had been set deliberately to **31/12/27**, so the send happened outside any plausible window.
+
+🔴 **ROMI has still told the client nothing, thirty hours after promising to.** Elena Spini asked Aurel Mrruku to write to the client; he declined — _"oggi no, domani faccio dei controlli"_ — and she escalated internally to Fabrizio Mastracci at 18:26 instead, with details owed on 5 November. 🟢 The clean test records [#311](open-items.md) was blocked on **now exist**, created deliberately during this very session, with a marketing test set for 5 November.
+
+### 🆕 Four build requests, all accepted on the call
+
+1. 🔑 **Tranches become mandatory** — [#329](open-items.md). A reversal: _"avevamo detto che puoi fare anche preventivi senza tranche."_ The client's reason is the tutors, _"degli smanettoni \[che\] si dimenticano di metterci le tranche"_, and the enforcement point is **`Genera PDF` refusing when any line lacks a due date**. Aurel Mrruku flagged it as severe and deferred — _"è un po' forte … Ok, siete voi il cliente"_ — then undertook it, and was building it that evening.
+2. **The product selection screen** — [#330](open-items.md): horizontal or split layout, a delete icon present on one screen only, wider columns to kill the inner scroll, **a line-total discount in value**, and a quick action to create a Locale from its parent Account. None built.
+3. 🟢 **[#205](open-items.md)'s attribution is confirmed.** The client asked for the tranche amount on the order himself; Aurel Mrruku agreed the shape — _"devo fare un collegamento degli item con le tranche, devo fare una formula"_ — and deprioritised it _"se me lo ricordi poi"_, ⚠ with nobody named to remind him.
+4. 🆕 **The quote PDF's `allegato B` has no signature field** — [#336](open-items.md). Aurel Mrruku said one was never specified there, then that every test had carried two; the contradiction was left standing. A line-by-line review is owed by Fabrizio Paganelli and Elisa Migliano with **no date**, and `prezzo neto` is misspelled on the client-facing document.
+
+### 🔑 The migration moved, and the Referenti answer reversed five days of record
+
+Three files arrived by mail within fifty minutes of the call, against Aurel Mrruku's closing list (_"account, ordini, contatti"_): `Account Salesforce (rev Agente).xlsx` 15:39Z, `Locali Salesforce.xlsx` 15:50Z (_"Anche questa è provvisoria"_), and `Import Ordini (versione del 2026.11.04).xlsx` 16:30Z with **TESTATA and RIGA** sheets. ⚠ **All three hold real customer records; their existence is recorded and none was opened.**
+
+🔑 **The Referenti answer**: _"Per i Referenti considerate il file che vi abbiamo inviato l'ultima volta. La settimana prossima con Sabatino vi invieremo l'aggiornamento."_ So `Referenti_V2` **is** the deliverable, against five consecutive records saying the half was outstanding — and 🔴 Aurel Mrruku answered that it carries no Mexal code, _"Non li posso collegare in produzione senza quel valore"_, to which the client replied **_"Potete verificare?"_**, still unanswered. 🔑 The file is dated for the first time: **27 or 28 October**, roughly a week stale — [#290](open-items.md).
+
+🔑 **And the account import rule is finally on the record** — [#332](open-items.md). The script reads `codice agente` only, ignores the owner-name column, resolves duplicates to the most recent Salesforce user and **falls back to `01`**; the client's Zoho export carries shared and wrong codes, so **a mis-assignment is silent, not an error**. He took the correction; ⚠ the corrected file was not opened, so nothing verifies it.
+
+🆕 **Locali with no Mexal code will not be loaded** — [#333](open-items.md), decided by mail in thirty-one minutes: _"per non rischiare di avere record zombi in produzione"_ → **_"Caricate allora solo quelli che hanno codice mexal"_**. ⚠ Nobody knows how many rows that excludes or what becomes of them.
+
+🔑 **The window is fixed**: _"è il 12 e il 13 che noi stacchiamo tutti i bottoni e loro fanno le importazioni."_ ⚠ The client's own man is absent on Monday 9, _"full"_ on the 10th and 11th, carries the Pienissimo 360 migration in the same window, and said plainly: _"**Non posso fare tutto da solo.**"_ 🆕 **The invoice numerators must change before go-live** — no owner, no date, in no other record.
+
+### 🔴🔑 Nothing in production is scheduled to keep itself current
+
+Aurel Mrruku told the client the Mexal sync _"li ho lasciati solo alle 3:00 di mattina"_ and asked how often it should run. Shapes were canvassed — every six hours, 07:00 for the tutors, 20:00 to close the day, every two hours — the load was sized and dismissed as a risk (_"500 ordini al giorno non succederà mai"_), and **no frequency was chosen**: _"adesso ci penseremo."_
+
+🔴 **A production inspection the same morning found no `Mexal%` CronTrigger in Prod at all.** The invoice and scadenzario sync completed only because it was enqueued by hand. 🔑 **So every result of 3 and 4 November came from a hand-run sync**, twelve days from the 16 November user go-live, and nothing keeps invoices, due dates, asset availability or the order `Fatturato`/`Incassato` states current on its own — [#334](open-items.md).
+
+### 🔴 Anticipay, a second day
+
+_"Oggi, domani abbiamo un evento, quindi Andrea non c'è e ieri doveva preparare la cosa e non ce l'ha fatta."_ Nothing done, nothing scheduled, **still no date** — [#312](open-items.md). 🟡 And the workaround is now the operating assumption: the whole production chain of 4 November ran on it, so **the production path is being validated on a configuration that is not the intended one**.
+
+### 🟢 Training, and a question nobody answered
+
+Marco Montesi confirmed **Monday 9 and Wednesday 11 November, 11:30-13:00**, and Elena Spini sent the invitations. 🆕 In the same message she asked **_"Le utenze dei tutor le creo dopo il training o procedo già adesso?"_** — 🔴 unanswered, and the tutor-access half of [#300](open-items.md) reaching the client in writing for the first time. ⚠ **The collision is now committed, not proposed**: the 9th is the technical go-live and the 11th the eve of the migration, and nobody has named it to anybody.
+
+### 🔴 A test page showed the client's management 280.000 € of insoluti
+
+Said on the open line after Aurel Mrruku left, between Pienissimo staff; ROMI was not party to it. Daniela Morgese photographed an unreleased insoluto-chasing page showing ~280.000 € and phoned to ask whether it was real. It is not — _"non è assolutamente vero quel numero lì"_ — and its own builder could not trace the figure. Agreed: Fabrizio Paganelli explains it is a test and Sabatino Rinaldi hides the section; ⚠ neither action is confirmed done — [#335](open-items.md).
+
+### Process and record
+
+⚠ **Third consecutive session with no recording and no separate transcript document.** The Drive meeting folder holds one shortcut, to a Gemini notes document that carries the transcript on a second tab. ⚠ Four of the auto-notes' claims are wrong and are listed in the meeting note, including a non-existent "FileMaker" produced by a mis-transcription inside a sentence about the Mexal `nota` field.
+
+🔴 **`#tproj-pienissimo` silent a third consecutive sweep.** 🟢 The dev group received its first human post in days — Aurel Mrruku's pre-deploy warning at 10:42 CET, one acknowledgement and no reply — but **no nightly report has ever been answered**. ⚠ **Fathom returned nothing for a thirty-second run**, on a day with a recorded client call. The canvas is unchanged since 20.08.2026, **76 days**.
+
+**No requirement was amended by this run — the register stays v1.6.** The tranche obligation of [#329](open-items.md) changes agreed behaviour and is recorded as a **v1.7 candidate, deliberately not written into the register**, which is contract-bound and is not restructured from a note. 🔴 **`SAL-12` is uncited for a fourteenth session.** 🔑 **Eight new rows join the standing absences** — no register row covers tranche obligation, quote line entry ergonomics, state reversibility after a reversed collection, owner assignment on import, Locale parent resolution, integration scheduling frequency, client-side reporting screens, or quote document signature placement.

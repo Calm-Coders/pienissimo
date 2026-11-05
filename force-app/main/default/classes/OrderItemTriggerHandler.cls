@@ -7,16 +7,22 @@ public without sharing class OrderItemTriggerHandler {
   private static final String TICKET_STATUS_ORDERED = 'Ordinato';
   private static final String TICKET_STATUS_AVAILABLE = 'Disponibile';
   private static final String ORDER_STATUS_COLLECTED = 'Incassato';
+  private static final String ORDER_STATUS_INVOICED = 'Fatturato';
+  private static final String ORDER_STATUS_ORDERED = 'Ordinato';
 
   public static void afterInsert(List<OrderItem> newLines) {
     OrderTriggerHandler.createTicketsForOrderLines(newLines);
     Set<Id> orderIds = new Set<Id>();
+    Set<Id> invoiceOrderIds = new Set<Id>();
     for (OrderItem line : newLines) {
       if (line.Mexal_Payment_Status__c == PAYMENT_STATUS_PAID) {
         orderIds.add(line.OrderId);
       }
+      // A new line can complete or break the "every line invoiced" rule.
+      invoiceOrderIds.add(line.OrderId);
     }
     markOrdersCollectedWithoutTranches(orderIds);
+    syncOrdersInvoicedStatus(invoiceOrderIds);
   }
 
   public static void afterUpdate(
@@ -26,6 +32,7 @@ public without sharing class OrderItemTriggerHandler {
     Set<Id> trancheIds = new Set<Id>();
     Set<Id> contractOrderIds = new Set<Id>();
     Set<Id> paymentOrderIds = new Set<Id>();
+    Set<Id> invoiceOrderIds = new Set<Id>();
 
     for (OrderItem line : newLines) {
       OrderItem oldLine = oldLineMap == null ? null : oldLineMap.get(line.Id);
@@ -49,6 +56,13 @@ public without sharing class OrderItemTriggerHandler {
       }
 
       if (
+        line.Fattura__c != oldLine.Fattura__c ||
+        line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c
+      ) {
+        invoiceOrderIds.add(line.OrderId);
+      }
+
+      if (
         line.Tranche__c != oldLine.Tranche__c ||
         line.Mexal_Payment_Status__c != oldLine.Mexal_Payment_Status__c ||
         line.Fattura__c != oldLine.Fattura__c ||
@@ -65,7 +79,63 @@ public without sharing class OrderItemTriggerHandler {
 
     recalculateTranches(trancheIds);
     markOrdersCollectedWithoutTranches(paymentOrderIds);
+    // After the Incassato rules, so an order they just collected is skipped.
+    syncOrdersInvoicedStatus(invoiceOrderIds);
     PerformancePlusContractService.refreshAmounts(contractOrderIds);
+  }
+
+  // OI-314: an order is Fatturato when every line carries a Mexal invoice link
+  // and at least one line is not yet paid. Whole order, not per tranche: a
+  // partly invoiced order stays Ordinato. Moves only between Ordinato and
+  // Fatturato; Incassato is never touched, so collection is never undone here.
+  private static void syncOrdersInvoicedStatus(Set<Id> orderIds) {
+    if (orderIds == null || orderIds.isEmpty()) {
+      return;
+    }
+
+    Set<Id> ordersWithLines = new Set<Id>();
+    Set<Id> ordersWithUninvoicedLine = new Set<Id>();
+    Set<Id> ordersWithUnpaidLine = new Set<Id>();
+    for (OrderItem line : [
+      SELECT OrderId, Fattura__c, Mexal_Payment_Status__c
+      FROM OrderItem
+      WHERE OrderId IN :orderIds
+    ]) {
+      ordersWithLines.add(line.OrderId);
+      if (line.Fattura__c == null) {
+        ordersWithUninvoicedLine.add(line.OrderId);
+      }
+      if (line.Mexal_Payment_Status__c != PAYMENT_STATUS_PAID) {
+        ordersWithUnpaidLine.add(line.OrderId);
+      }
+    }
+
+    List<Order> orderUpdates = new List<Order>();
+    for (Order orderRecord : [
+      SELECT Id, Status
+      FROM Order
+      WHERE
+        Id IN :orderIds
+        AND Status IN (:ORDER_STATUS_ORDERED, :ORDER_STATUS_INVOICED)
+    ]) {
+      if (!ordersWithLines.contains(orderRecord.Id)) {
+        continue;
+      }
+      // Every line invoiced and every line paid is the Incassato rules'
+      // case: leave the order where it is rather than step it back.
+      String target = ordersWithUninvoicedLine.contains(orderRecord.Id)
+        ? ORDER_STATUS_ORDERED
+        : ordersWithUnpaidLine.contains(orderRecord.Id)
+            ? ORDER_STATUS_INVOICED
+            : orderRecord.Status;
+      if (orderRecord.Status != target) {
+        orderUpdates.add(new Order(Id = orderRecord.Id, Status = target));
+      }
+    }
+
+    if (!orderUpdates.isEmpty()) {
+      update orderUpdates;
+    }
   }
 
   // Without tranches, collection requires every line on the order to be paid.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: ROMI
 raised: 2026-10-27
-updated: 2026-10-28
+updated: 2026-10-30
 depends_on: []
 blocks: []
 source: notes/meetings/2026-10-27 Follow-up Interno.md
@@ -100,3 +100,40 @@ Two things follow:
    [the decision](../decisions/The%20Zoho%20tutor%20calendar%20is%20not%20migrated%20to%20Salesforce.md).
    ⚠ **How many commitments that is remains unknown**, and nobody has given the
    work a date or a person.
+
+## 🟡 2026-10-30 - restated as a decision, with a boundary the client did not ask for
+
+🔑 **ROMI published the ruling to the project channel.** Elena Spini,
+`#tproj-pienissimo`, **2026-10-30 15:30 CET**, under _Richieste dal cliente_:
+
+> _"Sulle note **abilitiamo l'oggetto standard su lead, account e opportunità**.
+> **Niente campo note libero su ordini e preventivi**, come richiesto da Fabrizio
+> per limitarne l'uso non corretto dei commerciali."_
+
+### What is new in it
+
+1. 🟢 **The commitment is reaffirmed** three days on, in ROMI's own status reporting
+   — the standard Notes object on **Lead, Account and Opportunity**. ⚠ **Still
+   nothing is configured.** The promise is now three days old and restated rather
+   than delivered.
+2. 🆕🔑 **A second, narrower ruling rides with it: no free note field on Orders or
+   Quotes.** That boundary is **Fabrizio Paganelli's own request**, to stop the
+   sales team misusing it — so it is a client-side restriction, not a ROMI refusal.
+   ⚠ **It does not appear in the 27/10 mail to Marco Montesi**, which spoke only of
+   Lead, Account and Opportunity. **Marco Montesi asked where a tutor writes notes
+   on a lead or account; the Orders and Quotes exclusion answers a question he did
+   not ask**, and nothing records it being told to him.
+3. ⚠ **The two clients of this note now want different things.** Marco Montesi
+   (sales) wants somewhere to write; Fabrizio Paganelli (product) wants the writing
+   constrained. Both are Pienissimo. **ROMI has sided with the second**, and only
+   the first has been written to.
+
+### A collision worth watching
+
+⚠ **Forty minutes after this ruling, Fabrizio Paganelli asked Kreosoft for the
+Mexal order header note field** so the WooCommerce order number can be written into
+it — [OI-306](OI-306%20The%20WooCommerce%20order%20number%20must%20reach%20Mexal%20in%20the%20order%20header%20note.md).
+🔑 **These are almost certainly different things** — an integration-written Mexal
+field against a Salesforce field the sales team could type into — **but they are a
+note on an order either way, decided within the hour, and nobody has said they are
+distinct.**

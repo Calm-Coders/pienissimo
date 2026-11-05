@@ -62,10 +62,35 @@ public without sharing class MexalCustomerCreateService {
       );
     }
 
-    Map<String, Object> payload = buildCreatePayload(account);
-    MexalSearchCalloutService.Result calloutResult = MexalSearchCalloutService.createCustomer(
-      payload
-    );
+    Map<String, Object> payload;
+    MexalSearchCalloutService.Result calloutResult;
+    try {
+      payload = buildCreatePayload(account);
+      calloutResult = MexalSearchCalloutService.createCustomer(payload);
+    } catch (Exception error) {
+      // Return a failure instead of rethrowing: an unhandled exception would
+      // roll back the error log along with the action's transaction.
+      Integration_Log__c logRow = new Integration_Log__c(
+        Flow_Name__c = 'Mexal_Clienti_Creazione',
+        Inbound_Outbound__c = 'Outbound',
+        Is_Error__c = true,
+        Request_Body__c = JSON.serialize(
+          new Map<String, Object>{ 'accountId' => accountId }
+        ),
+        Exception_Message__c = (error.getTypeName() +
+          '\n' +
+          error.getMessage())
+          .left(131072),
+        Exception_StackTrace__c = error.getStackTraceString().left(131072)
+      );
+      insert logRow;
+
+      Result failure = new Result();
+      failure.accountId = accountId;
+      failure.integrationLogId = logRow.Id;
+      failure.message = error.getMessage();
+      return failure;
+    }
 
     Result result = buildResult(account.Id, payload, calloutResult);
     updateAccountWithGeneratedCode(account, result);

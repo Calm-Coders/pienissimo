@@ -6,10 +6,15 @@ import { NavigationMixin } from "lightning/navigation";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { RefreshEvent } from "lightning/refresh";
 import { notifyRecordUpdateAvailable } from "lightning/uiRecordApi";
+import { loadStyle } from "lightning/platformResourceLoader";
+import quoteManageProductsModal from "@salesforce/resourceUrl/QuoteManageProductsModal";
 import getContext from "@salesforce/apex/QuoteManageProductsController.getContext";
 import saveProducts from "@salesforce/apex/QuoteManageProductsController.saveProducts";
 import searchProducts from "@salesforce/apex/QuoteManageProductsController.searchProducts";
 import updateItemLine from "@salesforce/apex/QuoteManageProductsController.updateItemLine";
+import deleteLine from "@salesforce/apex/QuoteLineItemsController.deleteLine";
+import deleteBundle from "@salesforce/apex/QuoteLineItemsController.deleteBundle";
+import LightningConfirm from "lightning/confirm";
 
 const BUNDLE_TYPE = "Bundle";
 const ITEM_TYPE = "Item";
@@ -20,6 +25,16 @@ export default class QuoteManageProducts extends NavigationMixin(
   LightningElement
 ) {
   _recordId;
+  modalStylesRequested = false;
+
+  renderedCallback() {
+    if (this.modalStylesRequested) return;
+    this.modalStylesRequested = true;
+    loadStyle(this, quoteManageProductsModal).catch((error) => {
+      this.showError(error);
+    });
+  }
+
   @wire(MessageContext)
   messageContext;
   searchRequestId = 0;
@@ -46,6 +61,32 @@ export default class QuoteManageProducts extends NavigationMixin(
   searchTerm = "";
   editingItem;
 
+  get contentClass() {
+    return this.isPlusOpportunity ? "content plus-content" : "content";
+  }
+
+  get selectedProductsWithAmounts() {
+    return this.selectedProducts.map((product) => ({
+      ...product,
+      netAmount: this.calculateNetAmount(product.quantity, product.newPrice)
+    }));
+  }
+
+  get editingNetAmount() {
+    return this.calculateNetAmount(
+      this.editingItem?.quantity,
+      this.editingItem?.newPrice
+    );
+  }
+
+  calculateNetAmount(quantity, price) {
+    if (quantity == null || quantity === "" || price == null || price === "") {
+      return null;
+    }
+    const amount = Number(quantity) * Number(price);
+    return Number.isFinite(amount) ? this.roundToTwoDecimals(amount) : null;
+  }
+
   get showItemEditor() {
     return !!this.editingItem;
   }
@@ -56,6 +97,79 @@ export default class QuoteManageProducts extends NavigationMixin(
 
   get existingEditDisabled() {
     return this.itemEditorDisabled || this.hasSelectedProducts;
+  }
+
+  get existingDeleteDisabled() {
+    return this.existingEditDisabled || this.showItemEditor;
+  }
+
+  get canDeleteExistingBundle() {
+    return (
+      this.hasExistingBundle &&
+      this.isEditable &&
+      ["Bozza", "In Trattativa"].includes(this.quoteStatus)
+    );
+  }
+
+  async handleDeleteExistingBundle() {
+    if (!this.canDeleteExistingBundle || this.existingDeleteDisabled) return;
+    await this.deleteSavedProduct(this.existingBundleLine, true);
+  }
+
+  async handleDeleteExistingProduct(event) {
+    if (this.existingDeleteDisabled) return;
+    const product = this.existingProducts.find(
+      (row) => row.quoteLineItemId === event.currentTarget.dataset.id
+    );
+    if (!product?.canEditItem) return;
+    await this.deleteSavedProduct(product, false);
+  }
+
+  async deleteSavedProduct(product, isBundle) {
+    this.saveInProgress = true;
+    try {
+      const confirmed = await LightningConfirm.open({
+        label: isBundle ? "Elimina bundle" : "Elimina prodotto",
+        message: isBundle
+          ? `Eliminare il bundle ${product.productName} e tutti i suoi componenti dal preventivo?`
+          : this.isPlusOpportunity
+            ? "Eliminare il prodotto Plus? Saranno eliminate tutte le righe del preventivo e le relative tranche rimaste senza prodotti."
+            : `Eliminare ${product.productName} dal preventivo?`,
+        variant: "header"
+      });
+      if (!confirmed) return;
+
+      if (isBundle) {
+        await deleteBundle({
+          quoteId: this.recordId,
+          bundleName: product.productName
+        });
+      } else {
+        await deleteLine({
+          quoteId: this.recordId,
+          lineId: product.quoteLineItemId
+        });
+      }
+      await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
+      publish(this.messageContext, QUOTE_PRODUCTS_CHANGED, {
+        quoteId: this.recordId
+      });
+      this.dispatchEvent(new RefreshEvent());
+      await this.loadContext();
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: isBundle ? "Bundle eliminato" : "Prodotto eliminato",
+          message: isBundle
+            ? "Il bundle e i suoi componenti sono stati eliminati dal preventivo."
+            : "Il prodotto e stato eliminato dal preventivo.",
+          variant: "success"
+        })
+      );
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.saveInProgress = false;
+    }
   }
 
   get editQuantityDisabled() {
@@ -112,7 +226,12 @@ export default class QuoteManageProducts extends NavigationMixin(
     const inputs = [
       ...this.template.querySelectorAll(".item-editor lightning-input")
     ];
-    if (!inputs.map((input) => input.reportValidity()).every(Boolean)) return;
+    if (
+      !inputs
+        .filter((input) => !input.disabled)
+        .every((input) => input.reportValidity())
+    )
+      return;
     this.saveInProgress = true;
     try {
       await updateItemLine({
@@ -251,6 +370,7 @@ export default class QuoteManageProducts extends NavigationMixin(
         listPriceLabel: this.formatAmount(listPrice),
         discountPercent,
         newPrice,
+        netAmount: this.calculateNetAmount(product.quantity, newPrice),
         dueDate: this.selectedTrancheDates[index] || ""
       };
     });
@@ -721,7 +841,11 @@ export default class QuoteManageProducts extends NavigationMixin(
     }
 
     const inputs = [...this.template.querySelectorAll("lightning-input")];
-    if (!inputs.every((input) => input.reportValidity())) {
+    if (
+      !inputs
+        .filter((input) => !input.disabled)
+        .every((input) => input.reportValidity())
+    ) {
       return;
     }
 

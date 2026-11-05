@@ -1623,11 +1623,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Quote.Descrizione_Condizione_di_Pagamento__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Quote.Condizione_di_Pagamento__c</field>
         <readable>true</readable>
     </fieldPermissions>

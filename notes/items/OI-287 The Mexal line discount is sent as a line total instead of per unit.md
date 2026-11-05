@@ -1,11 +1,11 @@
 ---
 id: OI-287
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-26
-updated: 2026-10-28
+updated: 2026-11-02
 depends_on: [OI-284]
 blocks: [go-live]
 severity: gating
@@ -79,10 +79,10 @@ becomes the line total × quantity.
 **Worked example**, using Mirko Merendi's own numbers: list 2,000, net 1,500,
 quantity 2.
 
-| | Per unit | Line |
-| --- | --- | --- |
-| Correct `sconto` | `-500` | Mexal applies 500 × 2 = **1,000** |
-| What the code sends | `-1000` | Mexal applies 1,000 × 2 = **2,000** |
+|                     | Per unit | Line                                |
+| ------------------- | -------- | ----------------------------------- |
+| Correct `sconto`    | `-500`   | Mexal applies 500 × 2 = **1,000**   |
+| What the code sends | `-1000`  | Mexal applies 1,000 × 2 = **2,000** |
 
 The invoice is discounted twice over. At quantity 3 it is three times over. At
 quantity 1 — which Mirko Merendi guessed covers ~95% of lines — the two agree,
@@ -203,3 +203,117 @@ The order API was reopened at 16:19:55Z with an invitation to resume testing; �
 Mexal correspondence — the line id, the accounting year, the agent codes — and
 the one arithmetic defect that mis-invoices in silence has not been named by
 anybody but these records.
+
+## 🔴 2026-10-30 - the project is being told the logic is closed, and the code still multiplies
+
+🔴 **`resolveLineDiscount` on `DevMain` `52ddc4c` is unchanged** — still
+`(Prezzo_Listino__c - UnitPrice) * Quantity`, still beside the comment asserting
+that Mexal divides. **Fifth consecutive night, in a production org that now reaches
+Mexal for real.** `DevAnita30` does not touch the class.
+
+🔑 **And the finding tonight is not the absence of a fix. It is that the project is
+being told the opposite.** Elena Spini, `#tproj-pienissimo`, **2026-10-30 15:30
+CET**, under _Migrazione_:
+
+> _"Il 26/10 con Fabrizio P. e Mirko **abbiamo chiuso la logica degli sconti verso
+> Mexal: passano a valore sulla riga, divisi per la quantità.**"_
+
+Three things follow.
+
+1. 🔑 **The ruling in the status report is the one this note has recorded all
+   along** — a value on the line, **divided by the quantity**. It matches Mirko
+   Merendi's _"devi dividere per le quantità"_ word for word in substance. **The
+   requirement is not in doubt and never was.**
+2. 🔴 **It is reported as _closed_.** _"Abbiamo chiuso la logica"_ is the language of
+   a settled item, published to the whole project group four days after the call.
+   **The code implements the inverse of what the sentence says.** So the project's
+   own status reporting now actively conceals the defect: anybody reading that line
+   has no reason to look.
+3. ⚠ **Closed may mean the specification, not the implementation.** The sentence
+   sits under _Migrazione_ among decisions taken, not under delivered work, and
+   Elena Spini is reporting an agreement reached with the vendor and the client.
+   **That reading is available and this note does not claim otherwise.** What is not
+   available is a reading in which the shipped arithmetic is correct.
+
+🔴 **Nothing was tested.** The 30 October WooCommerce call sent live orders through
+to Mexal and watched the logs — the one occasion all week where a discounted
+quantity-above-one line would have been visible — and ⚠ **the discount is not
+mentioned anywhere in that session's record.** The faults found were the email
+matching, the opportunity cookie, the province validation and the agent code.
+
+⚠ **Five nights, two production releases, one vendor specification, one status
+report asserting closure, and the multiplication is still there.**
+
+## 🟢 2026-11-02 - Mexal rejected the multiplied discount in UAT; fixed in source and UAT, not yet in production
+
+🔑 **The settling test happened, by accident, and Mexal confirmed the per-unit
+reading.** UAT Integration Log `a05MA00000GwEO4YAN` (`IL-00001225`, flow
+`Mexal_Ordini_Creazione`, 02/11 15:37 UTC), order `00016059`, one line at
+**quantity 4**: the code sent `prezzo` = the list unit price and `sconto` =
+`-9660`, which is the per-unit discount × 4. Mexal answered **400**:
+
+> _"6001 - errore gestionale [Il valore dello sconto supera il prezzo unitario
+> (riga 1)]"_
+
+Mexal compares `sconto` with the **unit** price, so it is per unit. A smaller
+multiplied discount would have been **accepted and over-applied in silence**.
+This one was larger than the unit price, so the order was rejected instead.
+
+**Fix:** `resolveLineDiscount` now returns `Prezzo_Listino__c - UnitPrice`
+with no `* Quantity`. The comment that said Mexal divides is corrected, and
+`MexalIntegrationTest.orderSendCarriesTheListPriceAndLineDiscount` now expects
+`-50,25` (per unit, quantity 2) instead of `-100,5`.
+
+- 🟢 **Deployed to `Pienissimo UAT`** (`0AfMA00000D4kBG0AZ`, NoTestRun). A
+  validation run beforehand passed **58 of 59** `MexalIntegrationTest` methods,
+  including the discount test. The only failure,
+  `schedulerRegistersTheNightlyJob`, is unrelated: UAT already has a scheduled
+  job named _"Mexal Sync - Nightly"_.
+- 🔴 **Not committed, not deployed to production.** Production still
+  multiplies.
+- ⚠ **Order `00016059` has not been resent yet.** It is `Failed` with no Mexal
+  number, so the retry button is allowed. A successful resend is the
+  end-to-end proof.
+
+### 2026-11-02 (later) - deployed to production
+
+🟢 **Deployed to `Pienissimo Prod`** (`0AfSW000001Kqeb0AC`, RunSpecifiedTests
+`MexalIntegrationTest`, **59/59 passed**). Before the deploy, production matched
+`HEAD` for both classes. A retrieve afterwards shows the per-unit return live.
+Production has no scheduled Mexal job, so `schedulerRegistersTheNightlyJob`
+passes there.
+
+🟢 **No production order was affected.** No production order line with
+`Quantity > 1` and a `Prezzo_Listino__c` has been through the Mexal
+integration, so no order with a multiplied discount reached Mexal.
+
+Still open: 🔴 the change is **not committed**, and ⚠ order `00016059` in UAT
+has not been resent to confirm the fix end to end.
+
+### 🟢 2026-11-02 (nightly sweep) - committed
+
+🟢 **The fix is now in source control.** Aurel Mrruku committed it to `DevMain` as
+**`d4c2082`** _"fix discount uat and prod"_ at **17:48:57 CET**, carrying
+`MexalOrderSendService.cls`, `MexalIntegrationTest.cls`, this note and the journal
+entry. Verified by `git show`: `resolveLineDiscount` returns
+`(line.Prezzo_Listino__c - line.UnitPrice).setScale(2, …)` with no `* Quantity`,
+and the comment now cites Mirko Merendi, 26/10, _"devi dividere per le quantità"_
+plus the UAT rejection `6001` of 02/11.
+
+🔑 **So the one defect this record has carried as gating for six nights — and which
+`#tproj-pienissimo` announced as _"chiusa"_ on 30 October — is fixed in source, UAT
+and production, and the source now agrees with the announcement.**
+
+🔴 **One thing is still owed and it is the only proof that matters:** order
+`00016059` in UAT has **not** been resent. It is still `Failed` with no Mexal
+number, the retry button is available, and nothing has confirmed end to end that
+Mexal accepts the per-unit `sconto` and lands on the right net price. ⚠ **The
+arithmetic is right by Mexal's own error message, not by a successful document.**
+
+⚠ **A latent test failure travels with the fix.**
+`MexalIntegrationTest.schedulerRegistersTheNightlyJob` fails in UAT because a job
+named _"Mexal Sync - Nightly"_ is already scheduled there. Production has no such
+job today — so the test passes there **until the nightly Mexal jobs of
+[OI-301](OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md)
+are scheduled**, at which point every production deployment that runs this class
+fails. **Nobody has been told.**

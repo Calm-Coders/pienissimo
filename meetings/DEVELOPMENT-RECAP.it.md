@@ -8943,3 +8943,521 @@ assenze note restano — nessuna riga del registro copre la **scomposizione prez
 verso Mexal**, la **migrazione di Lead o Contatti**, la **gestione delle note** o
 la **personalizzazione dei template** — e 🆕 **nessuna copre il lancio lato
 cliente delle elaborazioni di fatture e incassi.**
+
+## 73. Aggiornamento 29/10/2026 — il rilascio è arrivato in produzione, la produzione ora dialoga con Mexal per davvero, il cliente ha consegnato il file dei Lead nel giorno promesso, e si sono aperti tre nuovi guasti
+
+Ricognizione notturna, watermark **2026-10-28T22:00Z**. Un giorno. **Nessuna call
+con il cliente**, una giornata densa di mail, tre superfici Slack attive e cinque
+commit che hanno mosso tutti i branch che contano.
+
+### Il rilascio è andato in porto
+
+🟢🔑 **`UAT` e `Prod` si sono mossi entrambi, per la prima volta dal 26 ottobre.**
+
+| Commit | Ora (CET) | Contenuto |
+| ------ | --------- | --------- |
+| `882f53c` | 12:30 | _"fix match fattura con id righa"_ — l'abbinamento fattura/scadenza passa dalla data all'id di riga |
+| `cd8dc4c` | 14:30 | _"deploy on prod"_ |
+| `8f039ce` | 16:50 | **PR #118**, `DevMain` → `UAT` |
+| `7905945` | 16:51 | **PR #119**, `UAT` → `Prod` |
+| `7f648a8` | 18:03 | _"abbilitato le integrazioni mexal"_ — sola documentazione; l'attivazione è avvenuta nell'org |
+
+🔑 **Il bug data-contro-id è quello che Aurel Mrruku ha descritto mentre lo
+trovava**, Slack 12:27–12:29 CET: _"avevo un bel bug su pienissimo … il problame
+di prima non era legato al contatto ma alla data fattura … si faceva il check
+sulla data di scadenza non con l id --- ed ero sicuro di averlo cambiato --- **ma
+a quanto pare no**."_
+
+🟢🔑 **E la produzione raggiunge Mexal.** Il `MexalToken` è stato inserito sul
+principal di Prod e una ricerca articoli in sola lettura ha restituito HTTP 200
+con dati (§#267). 🔑 **La conseguenza non è amministrativa**: da ora un cliente o
+un ordine creati in produzione vengono inviati a Mexal per davvero, quindi **un
+ordine di test in produzione è un documento Mexal reale** — e nessuno ha indicato
+chi debba bonificarli.
+
+### Il cliente ha rispettato l'impegno, e con voce propria
+
+🟢🔑 **`lead-da-importare.csv` è arrivato alle 09:27:06Z**, da **Sabatino Rinaldi
+in persona** (§#290). L'_"entro domani"_ scritto da Elisa Migliano il 28 ottobre
+indicava giovedì 29 ottobre, e il file è arrivato quella mattina. **Entrambe le
+metà dei dati di migrazione sono ora consegnate**: Referenti V2 il 28/10, Lead il
+29/10.
+
+🔑 **È il primo messaggio con parole sue a raggiungere questa casella.** Ogni
+riferimento precedente era un riporto di terzi: il resoconto di una DM da parte di
+Elena Spini, Fabrizio Paganelli che rimandava a lui, un nome su un invito.
+
+🟢🔑 **E risolve un problema aperto dal record del 28/10.** Enuncia
+spontaneamente la decisione `Lead from Zoho = TRUE`, la attribuisce a una
+telefonata con Elena Spini e ne dà da sé la ragione operativa — _"i commerciali
+sanno che non sono da lavorare (per il momento)"_ — quindi il _"il cliente non è
+stato informato"_ del §#295 non vale più. 🔴 **Il campo continua a non esistere, e
+il file che deve marcare è ora in mano nostra.** Va realizzato prima del
+caricamento.
+
+⚠ **Due giri di correzione e nessuna verifica.** Aurel Mrruku ha chiesto di
+eliminare i caratteri speciali e di avere il file in Excel; la risposta alle
+13:08:02Z è stata _"Credo che adesso sia corretto"_. **"Credo" non è un
+controllo**, e nessuno dei due file è stato aperto: contengono record Lead reali.
+
+### Tre nuovi guasti, e uno risponde a una domanda vecchia
+
+🔴 **§#298 — un ordine bundle da WooCommerce con cliente nuovo non arriva in
+Salesforce.** Il cliente lo ha segnalato senza indicare il sintomo (_"c'è qualcosa
+che non mi torna"_) chiedendo una call; la diagnosi è arrivata da Elena Spini dopo
+averla presa, con il log di integrazione `a05MA00000GsbhJYAR` nella sandbox
+**UAT**. 🔴 **Il log non è stato letto.** 🟢 La sessione WooCommerce del 30 ottobre
+è stata estesa per trattare anche questo.
+
+🔴🔑 **Il §#289 è fallito una terza volta, dopo il rilascio — ed è proprio questo
+il dato.** Stesso flusso, stesso errore, stessa org di produzione, 07:29 ora org.
+🔑 **Dunque `Asset.QR_Id__c` non esiste in produzione**: una domanda che questi
+record portavano come irraggiungibile dal 26 ottobre, ora risolta. 🔑 **E non è
+indotto dal rilascio**: un secondo rilascio è arrivato lo stesso giorno e il
+flusso fallisce in modo identico, perché il flusso esiste solo nell'org e nessun
+deploy lo tocca. ⚠ **Tre notifiche in tre giorni non hanno prodotto alcuna azione
+registrata.**
+
+🔴 **§#301 — una checklist ROMI nuova per questi record lascia tre passi di
+produzione non spuntati.** `Manual Steps Pienissimo`, ultima modifica 15:06:07Z:
+il subscriber `ParticipantDocumentRequestTrigger` non ha un utente di produzione,
+l'agente di default WooCommerce non è impostato in Prod, e **i job notturni Mexal
+risultano non spuntati per entrambi gli ambienti** — confermato da una verifica in
+produzione dello stesso giorno che non ha trovato alcun job Mexal pianificato. ⚠
+**Una cella vuota non prova che un passo sia stato saltato**, e l'org non è stata
+aperta.
+
+### Il cliente sta testando, e chiede
+
+🟢 **Un test end-to-end in produzione è fissato per martedì 3 novembre,
+09:30–11:30 CET**, con Elisa Migliano, Fabrizio Paganelli e Sabatino Rinaldi
+invitati (§#268): il primo test dell'org di produzione con il cliente presente. 🟢
+**Ha autorizzato un numero illimitato di ordini di test e ha rinunciato
+all'obiezione sul costo DocuSign**, ⚠ con un tetto scherzoso di _"fino a 10€"_ che
+non è un budget.
+
+🟡 **§#299 — la creazione del Bundle propone ancora gli anni solari in `Anno
+Accademico`**, `Bundle Type` ha solo due valori, e il cliente ha chiesto una
+schermata 16:9. ⚠ **Non ha indicato con cosa sostituire né l'uno né l'altro
+picklist.**
+
+🟡 **§#300 — la formazione dei tutor non ha un piano, e il cliente ha chiesto se
+tutti i tutor debbano fare i test con il suo account.** 🔴 **Una proposta di
+credenziali condivise, proveniente dal cliente, senza risposta in alcun senso.**
+
+🔑 **E una decisione che ha raggiunto il cliente lo stesso giorno in cui è stata
+presa**: le modifiche UI non si prendono più una alla volta. Il cliente le
+raccoglie in un unico file — quello di Marco Montesi — per un solo rilascio ad
+hoc. ⚠ **Il rilascio non ha una data, e non è una decisione sul regime di Change
+Request**; la risposta del cliente su quel regime è ora attesa da sei giorni.
+
+**Nessun requisito è stato modificato da questa esecuzione.** 🔴 **`SAL-12` è
+privo di citazione per la decima sessione.** La lista concorrenti di `DM-07` è
+invariata. 🔑 Le assenze consolidate permangono, e le due nuove richieste del
+cliente di oggi — contenuto dei picklist del Bundle e formazione dei tutor —
+**ricadono nella stessa lacuna**: nessuna riga del registro copre l'una o l'altra.
+
+## 75. Aggiornamento 02/11/2026 — il flusso dei contratti da palco è diventato il rilascio R0 di una Fase 2 che ora ha un'offerta, un calendario e nessuna voce di manutenzione
+
+**`requirements-check` notturno, watermark 2026-10-30T22:00Z — tre giorni, senza esecuzioni il 31 ottobre e il 1° novembre.** Un incontro Pienissimo, drillato dalla trascrizione integrale; due nuovi messaggi di posta; tre conversazioni Slack, due delle quali erano in silenzio; due commit.
+
+### L'incontro a cui era stato rinviato tutto ha prodotto qualcosa
+
+🟢🔑 **[`[ROMI-PIENISSIMO]` - Tema Contratti WooCommerce](../notes/meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md)**, 09:32 CET, **00:49:50**, con Aurel Mrruku, Elena Spini, Elisa Migliano e Fabrizio Paganelli. 🔴 **Sabatino Rinaldi assente.** È la call a cui il punto [#304](open-items.it.md) era stato rinviato il 30 ottobre, e risponde a quasi tutto ciò che quella riga lasciava aperto.
+
+**Il flusso, disegnato nella call.** Ordine WooCommerce → Salesforce → Mexal; **quando Mexal restituisce l'id dell'ordine**, Salesforce genera il PDF del contratto e un automatismo lo invia via DocuSign; il firmato torna e viene tracciato. Gli stati ordine non si toccano, perché si muovono sullo scadenzario. Il lavoro è **un secondo template PDF puntato sull'Ordine invece che sul Preventivo** — oggi tutta la generazione legge il Preventivo — più 🆕 **un pulsante di rinvio visibile solo dopo un invio fallito**. Aurel Mrruku lo ha stimato in _"2 3 4 giorni"_ più test e un rilascio separato in produzione, _"stiamo parlando di una settimana"_.
+
+🟢 **La questione del momento del pagamento è chiusa.** L'ha risolta Elisa Migliano: WooCommerce inoltra solo ordini in stato `completato`, quindi _"Se ti passa [a Mexal] vuol dire che il cliente ha già pagato"_.
+
+🟢🔑 **Il problema delle tranche Performance Plus è stato aggirato, non risolto.** Il componente bundle non esplode il `numero di tranche` e non verrà modificato. Fabrizio Paganelli ha proposto invece dodici codici solo-bundle Plus — **uno per tranche, nessuno con numero di tranche** — e Aurel Mrruku ha accettato: _"funziona. Non devo fare nessun intervento a livello di bundle."_ Ha poi verificato a schermo, sul codice `PLUS_B01` già esistente del cliente, che un prodotto con bundle true è già escluso dall'offerta Plus standard. **Per questa parte non serve quindi nessun intervento Salesforce**, e 🟢 **i dodici codici sono stati creati la mattina stessa** ([#48](open-items.it.md)) — Fabrizio Paganelli alle 09:31:40Z: _"ho creato i 12 codici prodotto per PPLUS da utilizzare solo nei bundle. Se vuoi puoi già importare. **Non dovremmo creare nuovi codici prodotto.**"_
+
+🔑 **Una regola di dominio detta per la prima volta: non si fanno bundle misti.** _"in un bundle c'è solo la P+ … oppure ci sono solo i corsi, non facciamo bundle misti."_
+
+### Ora è lavoro a pagamento, e la prima applicazione della decisione sul margine
+
+🔴 **Elena Spini l'ha dichiarato Fase 2 durante la call, con il cliente presente** — _"questo però deve passare come primo rilascio della fase due, perché io queste giornate poi le devo mettere da qualche parte. Noi abbiamo già finito tutte le giornate possibili immaginabili."_ Fabrizio Paganelli ha acconsentito. Vedi [la decisione](../notes/decisions/Decision%20-%20stage%20sale%20contracts%20are%20release%20R0%20of%20Fase%202.md).
+
+🟢 **È la prima volta che la decisione di Gianpaolo Motta del 26 ottobre viene applicata a qualcosa, e la prima volta che è stata detta al cliente.** Per una settimana non era stata applicata a nulla.
+
+⚠ **Il perimetro accettato dal cliente può essere più ristretto di quello quotato.** La sua frase completa era _"Sono d'accordo che lo devi aggiungere **solo per la parte della Plus corsi**"_; entrambi i documenti di Fase 2 quotano R0 per i corsi standard **e** per la Performance Plus. Nessuno ha sollevato la differenza.
+
+🔴 **Nulla è confermato per iscritto.** Un documento di soluzione o un'integrazione al blueprint è attesa dal cliente **mercoledì 4 novembre** — la ragione, parole di Aurel Mrruku: _"non vogliamo cadere gli stessi errori di prima"_.
+
+🔴 **E i due meccanismi su cui si regge la decisione del 30 ottobre non sono mai stati menzionati.** La firma preventiva era stata sostituita da un flag di stato e da una reportistica di sollecito; cinquanta minuti di disegno non ci sono tornati sopra. **Nessun nome di campo, nessun responsabile del report, nessuna cadenza.**
+
+### La Fase 2 ha un'offerta, un calendario e una contraddizione
+
+🟢🔑 **`Pienissimo Offerta Fase 2` esiste** — creata da **Andrea Galotto** alle 09:21Z del 2 novembre, modificata alle 14:45Z, accanto al `Pienissimo_Project_Plan_Fase2` di Elena Spini aggiornato alle 09:40Z. Letti integralmente: [l'offerta di Fase 2](../notes/The%20Fase%202%20offer.md).
+
+**Sei rilasci fino al 26 marzo 2027**: Analisi (dic), **R0 Contratti da palco (nov, prima di Pienissimo Live 24-26/11)**, R1 Info Point e biglietti (15/01), R2 Note di credito e Ri.Ba. (12/02), R3 Eventi multi-edizione (26/02), R4 Pienissimo Pro → Zoho (12/03), R5 Integrazioni e notifiche (26/03). Ogni rilascio include un mese gratuito di supporto post go-live.
+
+🆕🔑 **Le date della Fase 1 sono per la prima volta in un documento destinato al cliente**: _"go-live tecnico **09/11**, migrazione dati **12-13/11**, avvio operativo su Salesforce **16/11**"_. 🆕🔑 **E una scadenza che qui non c'era: _"Approvazione Fase 2 entro il 13/11"_** — la stessa mattina della consegna dati. 🆕 **Date eventi**: Pienissimo Live **24-26/11**, Academy **19-21/01**, Camerieri e Venditori **06/04**.
+
+🔴 **I due documenti divergono sul conteggio delle giornate di un fattore due** — l'offerta dice `150 giornate`, il project plan totalizza `58 - 78`. Entrambi aggiornati il 2 novembre, entrambi destinati al cliente, e nulla li riconcilia.
+
+🔑 **Punti su cui ROMI aveva deciso internamente sono ora scritti in un documento per il cliente.** Il [#269](open-items.it.md), bloccato internamente il 27 ottobre e mai comunicato, è la _"Comunicazioni mirate"_ di R1 al 15 gennaio 2027. Il [#272](open-items.it.md) riceve la sua prima specifica — _"notifica al tutor e al commerciale di riferimento 15-30 giorni prima della scadenza"_ — in R5 al 26 marzo. Lo spostamento tra edizioni del [#291](open-items.it.md) è in R1. 🔴 **E il tema Ri.Ba. è R2 al 12 febbraio 2027, mentre il [#212](open-items.it.md) è ancora un difetto non corretto in produzione** — ventunesima notte.
+
+🔴🔑 **Nessuno dei due documenti quota la manutenzione, e lo stesso giorno al cliente è stato detto che uno lo fa.** Elena Spini nella call: _"C'è anche la parte di maintenance nella proposta"_. Aurel Mrruku l'ha dimensionata al cliente in _"quei **8 ora al mese**"_ — contro le **tre o quattro giornate al mese** che aveva scritto il 30 ottobre. ⚠ Nessuno ha riconciliato le due cifre, e il cliente ha sentito la più bassa. [#308](open-items.it.md).
+
+### Il difetto sullo sconto è corretto, rilasciato e committato
+
+🟢🔑 **Il [#287](open-items.it.md) è chiuso sui fatti.** Aurel Mrruku ha letto il log di integrazione UAT `a05MA00000GwEO4YAN`: l'ordine `00016059` a quantità 4 è stato **rifiutato da Mexal** con _"6001 - Il valore dello sconto supera il prezzo unitario"_, perché lo `sconto` portava lo sconto unitario moltiplicato per la quantità. **Mexal stesso ha risolto la domanda che questo record ha portato come bloccante per sei notti.** `resolveLineDiscount` non moltiplica più; rilasciato in **UAT** e in **produzione** (`MexalIntegrationTest` 59/59) e **committato su `DevMain` come `d4c2082`** alle 17:48:57 CET. 🟢 **Nessun ordine di produzione è stato coinvolto** — nessuna riga con quantità superiore a 1 e prezzo di listino era passata dall'integrazione.
+
+🔴 **L'ordine `00016059` non è stato rinviato.** È ancora `Failed` senza numero Mexal; un documento Mexal andato a buon fine è l'unica prova end-to-end. ⚠ **E con la correzione viaggia un fallimento latente**: `MexalIntegrationTest.schedulerRegistersTheNightlyJob` fallisce dove esiste un job chiamato _"Mexal Sync - Nightly"_ — vero oggi in UAT, e vero in produzione nel momento in cui i job notturni del [#301](open-items.it.md) verranno schedulati.
+
+### Due cambiamenti sulla migrazione, e il buco Referenti per la quarta volta
+
+🆕 **Il caricamento in produzione guadagna un pre-caricamento.** Un caricamento completo costa _"3-4 ore"_, quindi Aurel Mrruku ha chiesto di anticipare anagrafica prodotti, account e contatti e ridurre il 12-13 novembre a solo delta — _"così io ho un buffer di qualche giorno"_. Fabrizio Paganelli depositerà un file di interfaccia aggiornato, _"versione produzione"_; ⚠ **la finestra è "mercoledì, giovedì o lunedì" e nessuna data è stata concordata.** [#310](open-items.it.md). 🟢 L'anagrafica prodotti è **stabile**; 🔴 gli account no. 🟢 La fiducia sul caricamento ordini è alta — il rischio dichiarato è la **durata, non la correttezza**.
+
+🔴 **Il tracciato dei Referenti ha mancato la data del 2 novembre**, e Aurel Mrruku credeva che fosse arrivato finché Elena Spini non l'ha corretto in call: _"I lead li ha mandati, i referenti mancano."_ **Quarto record consecutivo.** 🔑 **E il file dei Lead consegnato il 29 ottobre non è ancora caricato in produzione** — _"però gli devo caricare in produzione adesso"_. 🆕 Nuova data: **mercoledì 4 novembre 09:00-09:30**, promessa da **Fabrizio Paganelli per un Sabatino Rinaldi assente**. 🆕🔑 **Si attende ora un secondo estratto, più recente**, in aggiunta. [#290](open-items.it.md).
+
+### Un criterio che nessuno aveva messo per iscritto
+
+🆕🔑 **Salesforce decide se un articolo Mexal è attivo dal `gruppo merceologico`, non dal flag `annullato` di Mexal** — in UAT e in produzione, come soluzione per il primo caricamento. Passare al flag è **un rilascio in produzione, non un'impostazione**: _"in ambiente [U]AT si fa in un minuto, in produzione quel minuto diventa 2 ore"_. 🔴 **La data la deve dare Fabrizio Paganelli**, che si è preso l'azione e ha buttato lì il **1 febbraio 2027** smentendolo come _"una data a caso"_. [#309](open-items.it.md). 🟢 Il suo timore che annullare i prodotti in Mexal bloccasse la fatturazione degli ordini Mexal aperti è risolto: in Mexal non tocca nulla.
+
+### Licenze, risposto
+
+🟢🔑 **Dodici licenze Salesforce in totale**, con l'allocazione fatta a schermo: **7 commerciale/tutor · 1 amministrazione · 1 marketing · 1 PL/digital = 11**, e delle due residue **una è di ROMI** come utenza di lavoro. 🔴 **La domanda supera già l'offerta** — servirebbero a Rebecca e a Giordano — **e la risposta è stata condividere le utenze**, lo schema che il [#300](open-items.it.md) ha rifiutato nella sostanza cinque giorni fa. ⚠ **Elisa Migliano ha obiettato senza ricevere risposta.**
+
+### La build si è mossa su un ramo che nessuno ha unito
+
+🟢 **`DevAnita30` ha guadagnato `b0e69c5`** (Anita Aga, 14:21 CET): la creazione cliente Mexal è ora racchiusa in una gestione d'errore che **registra il fallimento e lo restituisce invece di rilanciarlo** — la diagnostica che mancava il 28 ottobre ([#296](open-items.it.md)) — più un filtro di lookup su `Azienda_Precedente__c` che limita il riferimento al record type `Azienda`.
+
+🔴 **E il permission set `Agente` è cambiato in entrambe le direzioni**: **acquisisce** l'accesso Apex a `MexalCustomerCreateService` e `AnticipayAccountService`, i due principal di credenziale esterna e la lettura su `UserExternalCredential` — quindi il click di un commerciale può ora arrivare a Mexal e ad Anticipay, cosa che **nessun incontro, mail o messaggio ha chiesto**. **Perde** la modificabilità su `Account.Agente__c`, `Opportunity.Categoria__c`, `Sottocategoria__c` e i cinque campi UTM. ⚠ Bloccare `Categoria__c` va nella direzione opposta al [#265](open-items.it.md), fermo da undici giorni. [Dettaglio](../notes/objects/The%20Agente%20permission%20set%20gained%20Mexal%20and%20Anticipay%20access.md).
+
+🔴 **Tutto questo è su un ramo senza PR**, con `Lead_from_Zoho__c` ([#295](open-items.it.md)) ancora bloccato lì, **il giorno prima della sessione permessi con il cliente**.
+
+### Il flusso marketing, e ciò che resta in silenzio
+
+🟢 **La DM di gruppo marketing ha rotto il silenzio.** Fabrizio Mastracci ha _"quasi terminato"_ l'aggiornamento del suo flusso e promette **un recap scritto delle logiche che gestisce** — il primo che qualcuno abbia offerto. 🔴 **È bloccato sui dati di test**: _"Mi servono dei record puliti, anche 4-5 vanno bene"_, e la sola offerta sul tavolo sono gli **ordini di prova del 3 novembre, in produzione contro un Mexal vivo**. [#311](open-items.it.md). ⚠ Quale flusso sia non è stato detto, ed è segnato come incerto invece di indovinato.
+
+🔴 **`#tproj-pienissimo` è di nuovo in silenzio.** 🔴 **Il gruppo dev non ha ancora risposto a nessun report notturno** — il post del 30 ottobre resta senza risposta e da allora nessuna persona ha scritto nel canale. ⚠ **Fathom non ha restituito nulla per la trentesima esecuzione.** La canvas è **invariata dal 20.08.2026, 74 giorni**.
+
+🔴 **Zoho CRM è scaduto il 31 ottobre e nessuna fonte di questa finestra lo menziona** — tredicesima esecuzione con la domanda non posta, due giorni dopo il fatto. 🔴 **Il meccanismo di change request del [#285](open-items.it.md) non è ancora applicato a nulla**, sebbene R0 sia la prima decisione di perimetro che avrebbe potuto usarlo. ⚠ **`SAL-12` non citato per la dodicesima sessione.**
+
+---
+
+## 74. Aggiornamento 30/10/2026 — il guasto dietro al report di ieri non esisteva, il go-live è confermato con tutto l'import ridotto a un unico passaggio, e al progetto è stato detto che il margine è finito
+
+`requirements-check` notturno, watermark **2026-10-29T22:00Z**, un giorno. **Due
+riunioni analizzate, un punto bloccante ritirato, sette aperti.**
+
+### Il ritiro
+
+🟢🔑 **Il [#298](open-items.it.md) non è mai stato un guasto.** Aurel Mrruku ha
+aperto a schermo l'integration log `a05MA00000GsbhJYAR` nella call interna delle
+10:01: _"**Ha già fatto tutto, ha già creato l'ordine**"_ … _"ordine Wcommerce
+ordinato. **Fatto il 29.**"_ Elena Spini, che l'aveva segnalato, ha accettato subito
+la correzione — _"Response non era 200, non era l'errore … **Che scema.**"_
+
+🔑 **Tre premesse del record del 29/10 erano sbagliate.** L'ordine è arrivato in
+Salesforce il 29 ottobre con il suo numero e stato `Ordinato`. Il cliente **non era
+nuovo**: account e contatto sono stati **creati il 20 ottobre** da
+`amministrazione`, contro il racconto di Fabrizio Paganelli di aver inserito dati
+tutti nuovi — _"non è vero perché [Salesforce] non ti lascia mentire"_. E gli ordini
+di prova erano **quattro**, non uno.
+
+🔴 **Il problema vero è la reperibilità.** Il cliente non riusciva a trovare i propri
+ordini; Elena Spini aveva passato dieci minuti al telefono per fargli ordinare la
+lista. Il rimedio indicato — **una list view WooCommerce sugli Ordini** — ⚠ **non è
+realizzato e non ha un responsabile.**
+
+🔑 **Un response body popolato è stato letto come un errore, portato al cliente come
+guasto e tenuto in questi record come bloccante per un giorno. Il costo è stato un
+campo non letto**, e il 29/10 l'org non è stata aperta per controllarlo.
+L'accostamento al #296 che vi si appoggiava cade; `a05MA00000GqqcPYAR` è ancora da
+leggere.
+
+### Il piano, pubblicato
+
+🟢🔑 **`#tproj-pienissimo` ha rotto un lungo silenzio con un report di stato completo
+alle 15:30 CET**, ed è la fonte più densa della sweep.
+
+| | |
+| --- | --- |
+| Go-live per gli utenti | **16 novembre**, confermato, come proposto dal cliente |
+| Import dati finale | 🆕 **13 novembre, un unico passaggio** — _"non più in due momenti, perché le prove in UAT sono andate bene"_ |
+| Giornate a finire | **15**, da 26 — le 10 della migrazione assorbite |
+| Red flag | 🔴 **_"Margine finito"_** — Gianpaolo Motta, 26/10: il progetto non può assorbire altro, quindi tutto il nuovo va in Fase 2 |
+| Notizie positive | _"Nulla questa settimana."_ |
+
+🆕🔑 **L'import unico è la riga che conta.** Un piano in due fasi esisteva per ridurre
+il rischio del caricamento; il rischio è stato ritirato sulla base di **una sola**
+prova in sandbox riuscita, tre giorni prima del go-live, con ⚠ **nessun piano di
+rollback registrato** — 7.721 ordini con la loro catena, 10.806 fatture con 15.492
+scadenze e 32.294 righe, il file dei Lead e un tracciato Referenti che non è
+arrivato.
+
+### Lo sconto, riportato come chiuso
+
+🔴🔑 **Il [#287](open-items.it.md) è ora peggio che non corretto.** Dallo stesso
+recap: _"Il 26/10 con Fabrizio P. e Mirko **abbiamo chiuso la logica degli sconti
+verso Mexal: passano a valore sulla riga, divisi per la quantità**."_
+
+🔑 **Quel pronunciamento è esattamente ciò che questo record dice essere il
+requisito** — e **l'inverso di ciò che fa il codice**. `resolveLineDiscount`
+moltiplica ancora per `Quantity`, quinta notte, dopo due rilasci in produzione.
+🔴 **Riportato come _chiuso_ a tutto il gruppo di progetto, la reportistica di stato
+ora nasconde il difetto.** ⚠ _"Chiuso"_ può riferirsi alla specifica e non
+all'implementazione, e questa lettura è disponibile; non è disponibile una lettura in
+cui l'aritmetica rilasciata sia corretta.
+
+### I dati del cliente, corretti
+
+🔴🔑 **Il tracciato Referenti NON è consegnato, e il record del 29/10 era errato.**
+Tre fonti in un giorno: la mail di Elena Spini alle 08:16Z (_"rimaniamo in attesa del
+tracciato dei referenti/contatti"_), la call interna (_"**Io ho chiesto i contatti,
+lui ha mandato i lead**"_), e il recap (_"il tracciato dei Referenti non è ancora
+arrivato. Lead ok"_).
+
+🔑 Quindi `Referenti Salesforce_V2.xlsx` **non** è il deliverable, e il file dei Lead
+ha soddisfatto un impegno che ROMI non aveva preso. **Ora promesso per il 2
+novembre.**
+
+### Realizzato, su un branch che nessuno ha unito
+
+🟢🔑 **`Lead_from_Zoho__c` esiste** — Anita Aga, `0717486`, 15:10 CET, su
+`DevAnita30`: una checkbox con etichetta _"Lead from Zoho"_, sulla pagina del Lead e
+abilitata sui permission set `Agente` e `Full_Permission`. Si chiudono tre punti
+aperti del [#295](open-items.it.md). 🔴 **È su quel branch e in nessun altro posto**,
+e ⚠ **nulla lo valorizza** — un campo che ha default false e non viene mai scritto è
+indistinguibile dall'assenza del campo.
+
+🟡 **Il [#299](open-items.it.md) ha ricevuto etichette, non valori.** Le etichette dei
+valori di `Anno_Solare__c` sono diventate `Anno Accademico 2026/2027/2028`; i valori
+API restano `Anno Solare NNNN` e restano singoli anni solari. ⚠ **Nessuno l'ha
+mostrato al cliente.**
+
+### Sette nuovi punti, cinque da una sola call col cliente
+
+La sessione `Connessione WooCommerce` del 30 ottobre ha inserito ordini reali
+seguendoli fino a Mexal.
+
+- 🔴 **[#302](open-items.it.md)** — WooCommerce lega gli ordini all'azienda sbagliata
+  **per email**; un cliente può avere più locali con partite IVA differenti sullo
+  stesso indirizzo. Concordato di usare la **partita IVA**; ⚠ nessuna modifica di
+  codice nel repository.
+- 🟢 **[#303](open-items.it.md)** — il plugin teneva l'ID opportunità nei cookie e
+  nelle sessioni per **30 giorni** anche dopo acquisti completati. Sabatino Rinaldi
+  ha rilasciato la correzione durante la call; ⚠ trenta giorni di ordini
+  potenzialmente mal attribuiti non sono stati verificati.
+- 🔴 **[#304](open-items.it.md)** — **nessun contratto viene generato per le vendite
+  da palco**, e acquisti d'impulso da ~**20.000 euro** non possono essere bloccati in
+  attesa di una firma: quindi **non è richiesta la firma digitale preventiva**, e al
+  suo posto un flag di stato e una reportistica di sollecito. 🔴 **Nessuno dei due
+  esiste.** Riunione dedicata il 2 novembre alle 09:30.
+- 🔴 **[#305](open-items.it.md)** — **Anticipay non risponde in UAT** per dati di test
+  né per **San Marino**, la giurisdizione di casa del cliente, quindi lì non è
+  possibile un ciclo di test completo con cliente nuovo. Il workaround elimina
+  proprio il percorso su cui il cliente segnala i guasti.
+- 🔑 **[#306](open-items.it.md)** — il numero d'ordine WooCommerce deve comparire sul
+  documento Mexal per il riscontro in fatturazione. **Kreosoft ha indicato il campo in
+  quattro minuti: `nota` lato API.** Stimato dal cliente in mezz'ora; non sviluppato.
+- 🔴 **[#307](open-items.it.md)** — i valori di partita IVA mascherati `XXXXXXXXXXX`
+  del file dei Lead faranno scattare le regole di duplicazione, che verranno
+  disattivate **solo per l'import**. 🔴 **Nessun passo di riattivazione esiste da
+  nessuna parte.** ⚠ Anche i flag di consenso arrivano uniformemente a `true`, per
+  istruzione del cliente stesso.
+- 🔴 **[#308](open-items.it.md)** — **la manutenzione è stata omessa dalla stima di
+  Fase 2 già inviata.** Aurel Mrruku prevede 3-4 giorni al mese e avverte che una
+  giornata a retainer non si prezza come ore sparse. 🔑 **L'Andrea è Andrea Galotto.**
+
+### Persone e risposte
+
+🟢🔑 **Il [#300](open-items.it.md) ha risposta su entrambi i punti e l'account
+condiviso è rifiutato nella sostanza** — _"Anche gli altri tutor avranno un'utenza
+dedicata e profilata"_. Revisione dei permessi il 3/11 alle 14:30, Marco Montesi
+perde l'admin il 4/11, formazione il 5/11 o la settimana dopo. 🔴 Licenze non
+confermate, 🔴 nessuno sa quanti siano i tutor, 🔴 e una domanda è tornata al cliente.
+
+🔴🔑 **Rexhina Hysi è fuori dal progetto a tempo pieno** — _"Regina ormai è su un
+altro progetto full time"_ — lasciando **Anita Aga come unica sviluppatrice**, a
+diciassette giorni dal go-live. 🔑 Una riassegnazione, non l'uscita che le esecuzioni
+precedenti avevano letto. I suoi due branch restano non uniti e senza proprietario.
+
+### Invariati
+
+🔴 **[#212](open-items.it.md)** alla diciottesima notte, in produzione · 🔴
+**[#265](open-items.it.md)** all'ottavo giorno · 🔴 **[#289](open-items.it.md)** —
+oggi non è arrivata una quarta notifica di errore · 🔴 **Zoho scade domani** e nessuno
+ha chiesto se esista un contratto oltre quella data, dodicesima esecuzione, con il
+go-live diciassette giorni dopo · 🔴 **[#285](open-items.it.md)**, il meccanismo delle
+Change Request applicato a nulla, sesto giorno · 🔴 **`DevMain` non si è mosso**;
+tutto il lavoro di oggi è su `DevAnita30` senza PR · 🔴 **il gruppo dev non risponde a
+un report notturno da quaranta notti**.
+
+**Nessun requisito è stato modificato da questa esecuzione.** 🔴 **`SAL-12` è privo di
+citazione per l'undicesima sessione.** La lista concorrenti di `DM-07` è invariata.
+🔑 Le assenze consolidate permangono, e **se ne aggiungono cinque**: nessuna riga del
+registro copre l'identità del cliente WooCommerce, la generazione dei contratti per
+gli ordini WooCommerce, le note di testata Mexal, la gestione delle regole di
+duplicazione in migrazione o la manutenzione di Fase 2.
+
+## 76. Aggiornamento 03/11/2026 — l'intera catena ha girato end to end in produzione, e tutto ciò che le sta intorno si è rotto
+
+**`requirements-check` notturno, watermark 02/11/2026T22:00Z — un solo giorno, il più denso del progetto.** Due riunioni, entrambe lavorate dalle trascrizioni complete: un test end-to-end in produzione con il cliente di **02:49:39**, la sessione più lunga che il progetto abbia, e una sessione interna ROMI di redazione da 00:36:20. Nove thread di posta, tre conversazioni Slack, e la specifica R0 è andata al cliente un giorno prima. **Diciassette nuovi item, dal #312 al #328.**
+
+### 🟢 La catena funziona in produzione
+
+🟢🔑 **[`[ROMI-PIENISSIMO]` - Test e2e PROD](../notes/meetings/2026-11-03%20Test%20e2e%20PROD.md)**, 09:31 CET, **02:49:39**, Aurel Mrruku, Elena Spini e Fabrizio Paganelli — che si è **collegato 25 minuti in ritardo, essendosene dimenticato**. 🔴 Sabatino Rinaldi di nuovo assente, Elisa Migliano impossibilitata.
+
+**Fabrizio Paganelli ha guidato lui stesso dalla propria utenza**, e l'intero percorso si è completato: account → opportunità → preventivo con due tranche → PDF → invio per accettazione → **DocuSign, il connettore reale, firmato** → preventivo `Firmato` in modo asincrono → **ordine Salesforce 113** → `Mexal Integration Status = inviato` → **ordine Mexal `OC155` con gli sconti applicati correttamente** → fattura emessa, condizione di pagamento codice 20 → **nuovo cliente creato su Mexal, residenza fiscale RSM** → fattura risincronizzata su Salesforce come non pagata, con la sua scadenza.
+
+🟢🔑 **È la prima dimostrazione dell'intero percorso Salesforce → Mexal → fattura in produzione**, e Aurel Mrruku non aveva mai testato un ordine con sconto — _"incrociamo le dita che va tutto su Mexal perché non avevo mai fatto un test con lo sconto"_. I conti tornano.
+
+### 🔴 E quasi tutto ciò che sta intorno alla catena non ha funzionato
+
+🔴🔑 **Anticipay va in time out in produzione** — la chiamata sulla partita IVA attende 120 secondi e non riceve nulla ([#312](open-items.it.md)). **Anticipay aveva confermato per iscritto che la produzione era pronta**: _"ha detto confermo, tutto ok, portate direttamente in produzione"_. I puntamenti sono loro, non di ROMI — _"Sono loro che danno i puntamenti"_. Fabrizio Paganelli ha chiamato Andrea in diretta; nessuna scadenza, nessun aggiornamento entro fine giornata. La sessione è proseguita senza. 🔑 **Risponde a una domanda rimasta aperta per settimane, nel modo peggiore.** 🔑 **E cos'è Anticipay è stato detto chiaramente per la prima volta**: non un controllo ma una lettura — un risultato solo per una partita IVA italiana che riesce a trovare, altrimenti _"fallisce sempre"_, **solo sul primo ordine di un account**, e un errore non blocca mai l'ordine.
+
+🔴 **La produzione non si è potuta ripulire.** Aurel Mrruku ha cancellato circa venti record ma **gli ordini non si eliminano** — _"non hai i permessi perché abbiamo fatto in modo che non puoi cancellare gli ordini"_ — e gli account sono trattenuti dagli ordini ([#315](open-items.it.md)). Fabrizio Paganelli ha richiesto di nuovo per mail alle 14:04Z, perché non inizia la configurazione reale finché i record di test non sono rimossi.
+
+🔴 **Le mappature di UAT non si possono spostare, ed è costato al cliente una giornata di lavoro.** L'invio del preventivo è fallito su _"mappatura mancante"_ — 🟢 il blocco ha funzionato. Ma le mappature non sono migrabili: eventi ed edizioni in produzione hanno ID diversi e **non esiste un ID esterno su cui agganciarsi** — _"Se avessi un ID esterno l'avrei fatto in 10 minuti"_ ([#320](open-items.it.md)). Fabrizio Paganelli: _"Però è un lavoro cinese. Io l'avevo detto che era una cosa che non dovevamo rifare"_, e due volte, mezzo scherzando, che avrebbe fatturato a ROMI le ore.
+
+🔴 **Dodici minuti dopo la fine della call, la produzione ha scritto al cliente che i suoi biglietti erano pronti** — per un ordine con asset ancora in `ordinato` e biglietti che non esistono ([#313](open-items.it.md)). Elena Spini l'ha diagnosticato nella stessa ora: **l'event link era arrivato a `pronto`**. Cliccando i pulsanti si atterra sulla community con il messaggio _"Non ci sono biglietti disponibili per questo account."_ Ha promesso al cliente una risposta; non è stata data.
+
+### 🔑 L'anagrafica prodotti, contata dall'org
+
+In produzione sono caricati **1093 prodotti**, circa **500** con il valore che li attiva. 🔑 **Il criterio di attivazione del [#309](open-items.it.md) è ora confermato da un'ispezione reale** — Aurel Mrruku: _"sul campo, non su `annullato`, ma sull'altro"_; Fabrizio Paganelli ha fornito il nome, **`gruppo merceologico`**.
+
+🔴🔑 **E il rischio di quell'item si è già materializzato.** Fabrizio Paganelli aveva impostato l'intera famiglia di codici `blow` sul valore sbagliato, attivandola per errore: _"Ho sbagliato io. Li ho messi a S, invece dovevo metterli a N"_ ([#327](open-items.it.md)). Correggere Mexal non basta — Aurel Mrruku deve cancellare e reinserire, perché **l'aggiornamento notturno e le integrazioni API sono deliberatamente disattivati in produzione**: _"non voglio spaccare qualcosa adesso perché dobbiamo fare dei giri completi, poi alla fine devo abilitare gli API."_ Elena Spini ha spinto per abilitarli ed è stata scavalcata. 🔑 **Quindi i flussi di sincronizzazione prodotti sono spenti per decisione, non per dimenticanza** — un'altra domanda aperta che trova risposta.
+
+### 🆕 Quattro modifiche di layout e campi, e una vera divergenza di requisiti
+
+🆕 **`importo netto`** — un totale di riga, quantità × prezzo netto, perché un tutor al telefono non lo vede e lo calcola _"con la macchinetta"_; `nuovo prezzo` diventa `prezzo netto` ([#316](open-items.it.md)). 🆕 **La descrizione condizioni di pagamento viene oscurata e diventa `note preventivo`, più grande** ([#317](open-items.it.md)) — Fabrizio Paganelli ha mostrato i tutor che ci scrivono piani di rateizzazione su misura, e il commento di Aurel Mrruku è stato _"E buona fortuna poi con le fatture"_. 🆕 **`data competenza` → `da data ordine` / `a data ordine`**, chiesto _"74 volte"_, concordato una volta e revocato ([#318](open-items.it.md)). 🔴 **`data invio biglietto` manca dalla pagina campagna in produzione e Aurel Mrruku non ha i permessi sul campo nemmeno lui** — _"Devo fare per forza un rilascio"_ ([#319](open-items.it.md)).
+
+🔴🔑 **La divergenza sostanziale erano gli stati degli asset.** Fabrizio Paganelli: _"noi abbiamo tre step. Arriva l'ordine, è ordinato. Poi dopo l'ordine io lo fatturo, diventa fatturato"_ — contro una realizzazione in cui l'asset resta `ordinato` finché la fattura non è **incassata**, senza alcun `fatturato`. 🔑 **La sua preoccupazione era la reportistica, non la contabilità**: chi estrae un elenco degli asset disponibili non distingue un asset fatturato e non incassato da uno intonso. 🔑 **L'ostacolo tecnico è reale** — un asset non è una riga di fattura, più asset pendono dalla stessa riga d'ordine, quindi un legame uno a uno non esiste.
+
+🟢 **Si è chiuso per mail nel pomeriggio, a favore di ROMI.** Aurel Mrruku è dovuto andare a un'altra call, Fabrizio Paganelli ha chiamato Rebecca, e alle 12:37 CET ha scritto: _"mi sono confrontato con Rebecca per gli stati dell'asset. **Va bene così come impostato ad oggi.**"_ **L'etichetta resta e sull'asset non si costruisce nulla** ([la decisione](../notes/decisions/Decision%20-%20asset%20states%20stay%20as%20built%20and%20the%20ordinato%20label%20is%20not%20renamed.md)). 🆕 **Ciò che sopravvive è uno stato `fatturato` a livello di ordine, guidato da Mexal e indipendente dal pagamento** ([#314](open-items.it.md)) — ⚠ **concordato sapendolo imperfetto**: si basa su tutte le righe d'ordine, quindi un ordine parzialmente fatturato non mostra nulla, e Fabrizio Paganelli l'ha detto — _"E dopo diamo un'informazione distorta lo stesso"_ — ed è stato adottato comunque.
+
+### 🟢 Utenze, licenze e due domande chiuse
+
+🟢 **Sette utenze agente sono state create in produzione** e quattro avevano verificato a fine call; i link scadono dopo 72 ore ([#300](open-items.it.md)). 🔴 **Si noti dove: in produzione, non in un ambiente di test**, contro l'impegno del 30/10, e nessuno ha riconciliato le due cose.
+
+🟢🔑 **Marco Montesi è fuori da System Administrator un giorno prima** — Elena Spini gli ha scritto alle 17:20Z che la sua utenza porta ora il profilo **Agente** e che _"i campi sincronizzati con Mexal non sono più editabili manualmente da layout per preservare la coerenza dell'integrazione"_. 🔑 **È la prima evidenza che le modifiche `Agente` a livello di campo siano in un'org reale**, e la prima motivazione documentata. ⚠ **Non dice nulla sulla metà Apex** — il nuovo accesso a `MexalCustomerCreateService` e `AnticipayAccountService` che nessuna riunione ha mai chiesto.
+
+🟢🔑 **Lo schema degli account condivisi è stato riproposto e si è spento in poche ore.** Poiché Marco Montesi non ha codice agente, la risposta in call era di fargli usare l'utenza `segreteria`, leggibile solo da Martina ed Elisa Migliano; il commento dello stesso Fabrizio Paganelli è stato _"Che casino, che casinisti che siamo"_. **Elena Spini ha obiettato e ha avuto ragione.** 🔴 Uno dei sette agenti cessa l'attività il **31 dicembre** e la licenza va riassegnata ([#324](open-items.it.md)).
+
+🆕 **La formazione ha delle date**: **lunedì 9 e mercoledì 11 novembre, 11:30-13:00**, sessioni da un'ora e mezza, in attesa della conferma di Marco Montesi con i tutor. ⚠🔑 **Lunedì 9 novembre è il go-live tecnico e mercoledì 11 la vigilia della migrazione dati. Nessuno ha notato la sovrapposizione.**
+
+🟢 **Due incognite di lunga data chiuse.** Il **My Domain Salesforce resta invariato** — Fabrizio Paganelli ha rifiutato la personalizzazione perché i tutor che hanno già configurato la chiave dovrebbero rigenerarla ([la decisione](../notes/decisions/Decision%20-%20the%20Salesforce%20My%20Domain%20stays%20unchanged.md)). ⚠ **Ma un dominio diverso è ancora dovuto dal cliente e nessuno sapeva dire a cosa serva** ([#323](open-items.it.md)).
+
+### 🔑 R0 è specificato per iscritto, un giorno prima — e il documento è più stretto del lavoro
+
+🟢🔑 **[L'analisi funzionale sul contratto post-vendita da palco](../notes/The%20stage%20sale%20contract%20functional%20analysis.md)** è andata a Fabrizio Paganelli, amministrazione e Sabatino Rinaldi alle **18:00:14Z**, contro la scadenza di mercoledì 4 novembre che il [#304](open-items.it.md) portava. **Sette requisiti funzionali, quattro open point, rilascio 18 o 19 novembre, conferma entro il 5 novembre**, e 🆕 **una nuova riunione giovedì 5 novembre 12:00-12:30** per chiudere gli open point.
+
+🟢 **Cartaceo e informatico sono finalmente distinti**: `contratto informatico` è **il record Contratto su Salesforce**, e vale **solo per la Performance Plus** — **RF7**. 🟢🔑 **E il dubbio sul perimetro del 2 novembre è superato.** Nel **[follow-up interno](../notes/meetings/2026-11-03%20Follow-up%20Interno.md)** Aurel Mrruku ha aperto convinto che solo la Plus generi un contratto, Elena Spini l'ha contestato, e **lui ha verificato personalmente la trascrizione del 2 novembre**: _"il contratto lo vuole per tutte le vendite da palco, quindi sia per i corsi sia per la plus."_ **Quindi quotare corsi e Plus in R0 corrisponde a quanto concordato.**
+
+🟢 **Il flag di stato ha finalmente un titolare e una data** — **OP-2**, owner **Fabrizio Paganelli**, entro il **5 novembre** — e il punto è stato girato al cliente di proposito: _"cacchio ce ne dobbiamo fare noi, ce lo dobbiamo dire loro."_
+
+🔴🔑 **Ma la reportistica di sollecito è stata cancellata, non dimenticata.** Era nella bozza come Open Point 5 — _"Cliente che non firma … solleciti senza blocchi"_ — e **Aurel Mrruku l'ha fatta togliere**: _"toglili pure di tutto che poi là non finiamo mai."_ **Quindi la metà \"report\" della decisione del 30 ottobre è ora fuori perimetro, e al cliente non è mai stato detto che ci fosse.**
+
+🔴 **Altri tre pezzi di perimetro sono stati discussi e lasciati fuori dal documento.** Il **controllo prodotto in RF1** — _"non tutti i prodotti che arrivano da WooCommerce devono generare un contratto"_, la cui assenza Elena Spini ha notato prima di inviare. **Due template PDF e non uno** ([#326](open-items.it.md)), confermato da Aurel Mrruku e poi cancellato perché non era mai stato posto al cliente. E la **riscrittura del trigger di ritorno DocuSign** ([#322](open-items.it.md)) con la **classificazione del bundle Plus** che richiede ([#328](open-items.it.md)).
+
+🔴🔑 **R0 è stimato 6-7 giorni per tutto questo, e Aurel Mrruku non ci crede.** _"Ho la paura che abbiamo messo davvero poche giornate … Sai quanto mettevo per un template? **da 10 a 15 giorni**"_, _"2-3 giorni"_ con l'AI. Elena Spini: _"**E non posso chiedere più i giorni, mi sa che già m'ammazzano.**"_ 🔴 **E non ha nessuno con cui dividerlo** — _"c'ho un sacco di progetti che sono partiti adesso … e il lavoro lo devo fare io. Amen."_ ⚠ I colleghi che nomina sono trascritti come "Regina", "Ana" e "Sara" e l'attribuzione è **incerta**.
+
+🔑 **Il problema DocuSign è il più acuto.** Oggi un trigger risolve il documento firmato su un'Opportunità e un Preventivo e porta il preventivo in `Firmata`; **un ordine non ha un Preventivo**. _"Ogni volta che ci arriva un documento da DocuSign dobbiamo capire se quel documento fa parte a un ordine oppure fa parte di una quota. E qua sarà un bagno di sangue perché non l'ho mai fatto."_ 🟢 **Un colpo di fortuna**: _"meno male che non abbiamo usato il preventivo standard"_ — l'oggetto preventivo custom è ciò che rende possibile il percorso su ordine.
+
+⚠ **E l'affermazione sui tempi di pagamento del 2 novembre è stata ritirata.** Aurel Mrruku ha tolto dalla bozza la frase di Elisa Migliano: _"Non è detto … **Noi non ce l'abbiamo l'informazione** … lo sappiamo a mezzanotte."_ Resta la regola sugli stati ordine — la carta completa subito, **il bonifico resta in `Sospeso` fino alla conferma dell'amministrazione** — ma ROMI non dispone del dato di pagamento.
+
+### ⚠ La Fase 2, e la governance che la deciderà
+
+⚠ **La discrepanza 150 contro 58-78 è nota a ROMI e irrisolta.** Aurel Mrruku: _"Sai cosa faranno qua? Metteranno una media o il 58?"_ Elena Spini: _"lo scopriremo."_ **Non è una disattenzione sfuggita a tutti.**
+
+🆕🔑 **Il percorso è stato fissato nella call e2e.** **Andrea Galotto** — ROMI, parte sales — ha detto a Elena Spini di fare un passaggio con chi segue il progetto prima di una call diretta con **Daniela**. Concordato: **prima Elena Spini e Fabrizio Paganelli rivedono la lista delle attività**, che Elena Spini dice già definita, poi **Andrea Galotto e Daniela prendono il preventivo e i numeri**. ⚠ Daniela sembra essere lato Pienissimo, dato che Fabrizio Paganelli si è impegnato a informarla — **dedotto, non accertato**.
+
+🔴 **La voce di manutenzione è invariata.** Il 3 novembre non ne ha aggiunta una, non l'ha menzionata e non ha rivisto la cifra. **Dieci giorni alla scadenza di approvazione del 13 novembre**, e il cliente ha sentito _"quei 8 ore al mese"_ contro tre o quattro giorni al mese.
+
+### 🔴 Cosa ha detto il cliente sullo stato delle cose
+
+> _"rifacciamole queste test perché, come hai visto, anche oggi **mancava la metà delle robe**"_
+
+> _"Dobbiamo secondo me **rivedere la Performance Plus, i pacchetti**, cioè sono cose importanti queste."_
+
+🔴 **La Performance Plus e i bundle non sono stati testati affatto**, e resta dovuta un'ulteriore sessione con **Rebecca** sulle etichette degli asset e sulle logiche di fatturazione. 🆕 **La continuazione è mercoledì 4 novembre 14:30-16:00**, limitata a 90 minuti su insistenza di Aurel Mrruku; Elena Spini non è disponibile, quindi **proseguono Aurel Mrruku e Fabrizio Paganelli da soli**. 🔑 **Fabrizio Paganelli deve anche i tracciati dati domani mattina** — _"Vi devo dare tutti i tracciati dati"_ — cosa che conferma lo slot Referenti del 4 novembre 09:00-09:30.
+
+🔴 **Ancora dovuto alla produzione da Aurel Mrruku, parole sue**: _"Mi mancano la community, le note, alcuni layout."_ 🟢 **La community l'ha portata su in giornata**; l'oggetto Note e i layout non sono rilasciati. 🔴 **La sincronizzazione completa degli ordini verso Mexal non è mai stata eseguita** — solo gli ultimi cinque giorni, e l'insieme completo richiede circa cinque ore ([#321](open-items.it.md)). 🔴 **E la nota di testata ordine del [#306](open-items.it.md) non è ancora implementata**, a quattro giorni da quando Kreosoft ha nominato il campo, pur essendone ora specificato lo scopo: la fattura deve portare il riferimento al preventivo e il numero d'ordine Mexal.
+
+**Nessun requisito è stato modificato da questo run.** 🔴 **`SAL-12` è non citato per la tredicesima sessione.** La lista concorrenti di `DM-07` è invariata. 🔑 Le assenze storiche tengono, e **se ne aggiungono diciassette** — nessuna riga di registro copre la disponibilità di Anticipay in produzione, il gating sull'invio biglietti, gli stati della riga d'ordine, i dati di test in produzione, il layout della riga preventivo, le note preventivo, le etichette dei campi, la data di invio biglietto sulla campagna, la migrazione delle mappature tra org, la sincronizzazione ordini, l'instradamento dei documenti DocuSign, il dominio di produzione, il passaggio di licenza, le scadenze di riga d'ordine, i template di contratto, gli errori di classificazione in anagrafica, o la classificazione dei bundle Plus.
+
+## 77. Aggiornamento 04/11/2026 — la catena è andata più avanti che mai e ha dimostrato di non avere la retromarcia
+
+Fonti: [la sessione Continuazione Test e2e PROD del 4 novembre](../notes/meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md) (14:28 CET, 01:49:12, drillata dalla trascrizione completa), nove thread di posta, tre conversazioni Slack e un'ispezione in produzione dei job pianificati Mexal. Watermark 2026-11-03T22:00Z.
+
+### 🟢🔑 La catena di produzione, divisibile
+
+Il 3 novembre la catena è stata provata intera. Il 4 novembre è stata provata **divisibile**, che è il risultato da cui dipende davvero il modello Performance Plus.
+
+Fabrizio Paganelli l'ha guidata di nuovo dalla propria utenza di produzione, con Elisa Migliano accanto: opportunità → preventivo (`bonifico fine mese data fattura`) → Academy 2 e Mastery al 10% → **due tranche**, una con scadenza 31/12/2026 → PDF del preventivo → invio → **firma con il connettore DocuSign reale** → ordine Salesforce `Ordinato` → **ordine Mexal `OC157`** → **una sola tranche fatturata, 4.830 €**, sconto corretto e riferimenti di fatturazione elettronica presenti → fattura rientrata in Salesforce → **incasso registrato manualmente in Mexal** → `Scadenza Fattura` `pagato` → **solo l'asset di quella tranche è arrivato a `Disponibile`**, gli altri sono rimasti in `ordinato`.
+
+> _"Gli asset sono disponibili perché ho fatturato prima la maschera."_ — Fabrizio Paganelli
+>
+> _"Ah, è fatturato solo una tranche. Perfetto, perfetto. **Sta funzionando.**"_ — Aurel Mrruku
+
+Un secondo ordine più grande (cinque Mastery, ~34.000 €) è stato poi fatturato e incassato per intero, con lo stesso esito: _"vai sugli asset per vedere se sono diventati disponibili"_ → _"Disponibili."_ → _"Una meraviglia."_
+
+### 🟢🔑 Il [#306](open-items.it.md) è chiuso — il numero del preventivo è sul documento Mexal
+
+La correzione ad array è andata in produzione prima della call: _"Ho avuto tanti problemi su quella nota perché la struttura che ci ha dato lui non andava bene, ma finalmente ho trovato serviva un array … prima di pranzo sono andato in produzione."_ Poi è stata letta a schermo su Mexal — _"E hai anche nota. **Vedi nota 07?**"_ → _"Ah, perfetto, perfetto"_ — e sulla fattura stampata da quell'ordine, _"Qui c'è la nota riferimento al preventivo numero del …"_, che è lo scopo di riconciliazione in fatturazione chiesto dal cliente il 30 ottobre. ⚠ La lunghezza massima di `nota` resta non registrata.
+
+### 🔴🔑 E poi la retromarcia, che non esiste
+
+Fabrizio Paganelli ha posto la domanda che farebbe qualunque amministrativo — _"se io mi accorgo che questo incasso l'ho registrato male, cosa facciamo noi? Eliminiamo l'incasso. Questa rata qui che l'avevo chiusa, la riapro"_ — e poi l'ha fatto a schermo. La scadenza si è riaperta. **L'asset è rimasto `Disponibile`.**
+
+> _"se sei andato in incassato noi abbiamo fatto in modo che tu non puoi tornare mai più dietro indietro … è tutto il meccanismo che era con un path, quindi con una via sola in avanti. **Adesso dobbiamo fare in modo che anche se sei incassato tu devi poter tornare indietro se aggiorni lo scadenzario.**"_ — Aurel Mrruku
+
+🔑 **È il ciclo bancario mensile del cliente, non un caso limite.** La Ri.Ba. parte il 20 e chiude la rata _"salvo buon fine"_; il primo del mese la banca restituisce quelle mai incassate e la rata viene riaperta — _"Facciamo in modo automatico quello che hai visto fare manualmente a me adesso."_ Quindi il comportamento mostrato una volta a mano arriverà **in blocco, automaticamente, ogni mese**.
+
+🔴 **E il biglietto potrebbe essere già partito**: _"Tu pensi di aver aggiustato la fattura, ma è già partito il biglietto."_ Il rimedio dell'invio serale è stato respinto per il caso normale — _"i biglietti non possono essere mandati via ogni sera"_ — e nulla l'ha sostituito. 🟢 L'esposizione è limitata agli storni dentro la finestra di invio biglietti, che è vicina all'evento. Instradato in **Fase 2** per accordo, con una riunione dovuta a Elena Spini, Fabrizio Mastracci e Rebecca e **nessuna data** — [#331](open-items.it.md).
+
+### 🔴 La mail dei biglietti è partita di nuovo, e la diagnosi si è spostata
+
+A metà test, asset ancora in `ordinato`: _"Qui mi sono arrivati i biglietti. **Sono già arrivati.**"_ Quindi il [#313](open-items.it.md) è **riproducibile**, due giorni di fila, in produzione.
+
+🔑 Aurel Mrruku ha spostato la diagnosi dallo stato dell'event link **al filtro del flusso di marketing** — _"Molto probabilmente sta facendo il filtro in modo sbagliato marketing e che non è disponibile"_ — su una versione _"fatto un mese e mezzo fa, penso che non l'ha aggiornato"_. ⚠ E un elemento che rafforza la tesi: la data di invio biglietto nella mappatura era stata messa deliberatamente al **31/12/27**, quindi l'invio è avvenuto fuori da qualsiasi finestra plausibile.
+
+🔴 **ROMI non ha ancora detto nulla al cliente, trenta ore dopo averlo promesso.** Elena Spini ha chiesto ad Aurel Mrruku di scrivere al cliente; lui ha rifiutato — _"oggi no, domani faccio dei controlli"_ — e alle 18:26 ha scalato internamente a Fabrizio Mastracci, con i dettagli dovuti il 5 novembre. 🟢 I record di test puliti su cui il [#311](open-items.it.md) era bloccato **ora esistono**, creati deliberatamente proprio in questa sessione, con un test di marketing fissato per il 5 novembre.
+
+### 🆕 Quattro richieste di sviluppo, tutte accettate in call
+
+1. 🔑 **Le tranche diventano obbligatorie** — [#329](open-items.it.md). Un'inversione: _"avevamo detto che puoi fare anche preventivi senza tranche."_ La ragione del cliente sono i tutor, _"degli smanettoni \[che\] si dimenticano di metterci le tranche"_, e il punto di controllo è **`Genera PDF` che rifiuta se a una riga manca la data di scadenza**. Aurel Mrruku l'ha segnalato come severo e ha rimesso la scelta — _"è un po' forte … Ok, siete voi il cliente"_ — poi se n'è impegnato, e ci stava lavorando la sera stessa.
+2. **La schermata di selezione prodotti** — [#330](open-items.it.md): layout orizzontale o diviso, un'icona di eliminazione presente su una sola schermata, colonne più larghe per eliminare lo scroll interno, **uno sconto totale di riga a valore**, e un pulsante rapido per creare un Locale dall'account padre. Nessuna realizzata.
+3. 🟢 **L'attribuzione del [#205](open-items.it.md) è confermata.** L'importo della tranche sull'ordine l'ha chiesto il cliente stesso; Aurel Mrruku ne ha confermato la forma — _"devo fare un collegamento degli item con le tranche, devo fare una formula"_ — e l'ha deprioritizzato _"se me lo ricordi poi"_, ⚠ senza che nessuno sia stato nominato per ricordarglielo.
+4. 🆕 **L'`allegato B` del PDF del preventivo non ha il campo firma** — [#336](open-items.it.md). Aurel Mrruku ha detto che non era prevista, poi che tutti i test avevano sempre avuto due firme; la contraddizione è rimasta aperta. Una revisione riga per riga è dovuta da Fabrizio Paganelli ed Elisa Migliano senza **nessuna data**, e `prezzo neto` è scritto male sul documento che arriva al cliente.
+
+### 🔑 La migrazione si è mossa, e la risposta sui Referenti ribalta cinque giorni di record
+
+Tre file sono arrivati per mail entro cinquanta minuti dalla call, rispetto all'elenco finale di Aurel Mrruku (_"account, ordini, contatti"_): `Account Salesforce (rev Agente).xlsx` 15:39Z, `Locali Salesforce.xlsx` 15:50Z (_"Anche questa è provvisoria"_) e `Import Ordini (versione del 2026.11.04).xlsx` 16:30Z con i fogli **TESTATA e RIGA**. ⚠ **Tutti e tre contengono dati reali di clienti; se ne registra l'esistenza e nessuno è stato aperto.**
+
+🔑 **La risposta sui Referenti**: _"Per i Referenti considerate il file che vi abbiamo inviato l'ultima volta. La settimana prossima con Sabatino vi invieremo l'aggiornamento."_ Quindi `Referenti_V2` **è** il deliverable, contro cinque record consecutivi che davano quella metà come mancante — e 🔴 Aurel Mrruku ha risposto che non porta il codice Mexal, _"Non li posso collegare in produzione senza quel valore"_, al che il cliente ha replicato **_"Potete verificare?"_**, ancora senza risposta. 🔑 Il file ha una data per la prima volta: **27 o 28 ottobre**, vecchio di circa una settimana — [#290](open-items.it.md).
+
+🔑 **E la regola dell'import account è finalmente a verbale** — [#332](open-items.it.md). Lo script legge solo il `codice agente`, ignora la colonna con il nome del proprietario, risolve i duplicati sull'utente Salesforce più recente e **ricade su `01`**; l'estrazione da Zoho del cliente porta codici condivisi e sbagliati, quindi **un'assegnazione errata è silenziosa, non un errore**. Si è preso la correzione; ⚠ il file corretto non è stato aperto, quindi nulla lo verifica.
+
+🆕 **I locali senza codice Mexal non verranno caricati** — [#333](open-items.it.md), deciso per mail in trentuno minuti: _"per non rischiare di avere record zombi in produzione"_ → **_"Caricate allora solo quelli che hanno codice mexal"_**. ⚠ Nessuno sa quante righe restino fuori né che fine facciano.
+
+🔑 **La finestra è fissata**: _"è il 12 e il 13 che noi stacchiamo tutti i bottoni e loro fanno le importazioni."_ ⚠ L'uomo del cliente è assente lunedì 9, _"full"_ il 10 e l'11, porta la migrazione di Pienissimo 360 nella stessa finestra, e l'ha detto chiaramente: _"**Non posso fare tutto da solo.**"_ 🆕 **I numeratori delle fatture vanno cambiati prima del go-live** — nessun titolare, nessuna data, in nessun altro record.
+
+### 🔴🔑 In produzione non c'è nulla di pianificato che si tenga aggiornato da solo
+
+Aurel Mrruku ha detto al cliente che la sincronizzazione Mexal _"li ho lasciati solo alle 3:00 di mattina"_ e ha chiesto ogni quanto dovesse girare. Sono state valutate diverse ipotesi — ogni sei ore, 07:00 per i tutor, 20:00 per chiudere la giornata, ogni due ore — il carico è stato dimensionato e scartato come rischio (_"500 ordini al giorno non succederà mai"_), e **nessuna frequenza è stata scelta**: _"adesso ci penseremo."_
+
+🔴 **Un'ispezione in produzione la stessa mattina non ha trovato alcun `CronTrigger` `Mexal%` in Prod.** La sincronizzazione di fatture e scadenzario è andata a termine solo perché accodata a mano. 🔑 **Quindi tutti i risultati del 3 e 4 novembre vengono da una sincronizzazione lanciata a mano**, a dodici giorni dall'avvio utenti del 16 novembre, e nulla tiene aggiornati da sé fatture, scadenze, disponibilità degli asset e gli stati `Fatturato`/`Incassato` dell'ordine — [#334](open-items.it.md).
+
+### 🔴 Anticipay, secondo giorno
+
+_"Oggi, domani abbiamo un evento, quindi Andrea non c'è e ieri doveva preparare la cosa e non ce l'ha fatta."_ Nulla fatto, nulla pianificato, **ancora nessuna data** — [#312](open-items.it.md). 🟡 E il workaround è ormai l'assetto operativo: tutta la catena di produzione del 4 novembre ci ha girato sopra, quindi **il percorso di produzione si sta validando su una configurazione che non è quella prevista**.
+
+### 🟢 La formazione, e una domanda senza risposta
+
+Marco Montesi ha confermato **lunedì 9 e mercoledì 11 novembre, 11:30-13:00**, ed Elena Spini ha inviato gli inviti. 🆕 Nello stesso messaggio ha chiesto **_"Le utenze dei tutor le creo dopo il training o procedo già adesso?"_** — 🔴 senza risposta, ed è la parte sugli accessi dei tutor del [#300](open-items.it.md) che arriva al cliente per iscritto per la prima volta. ⚠ **La collisione ora è impegnata, non proposta**: il 9 è il go-live tecnico e l'11 la vigilia della migrazione, e nessuno l'ha fatto notare a nessuno.
+
+### 🔴 Una pagina di test ha mostrato alla direzione del cliente 280.000 € di insoluti
+
+Detto sulla linea aperta dopo l'uscita di Aurel Mrruku, tra persone di Pienissimo; ROMI non era parte della conversazione. Daniela Morgese ha fotografato una pagina di sollecito insoluti non rilasciata con ~280.000 € e ha telefonato per chiedere se fosse vero. Non lo è — _"non è assolutamente vero quel numero lì"_ — e chi l'ha costruita non ha ritrovato la cifra. Concordato: Fabrizio Paganelli spiega che è un test e Sabatino Rinaldi nasconde la sezione; ⚠ nessuna delle due azioni risulta eseguita — [#335](open-items.it.md).
+
+### Processo e record
+
+⚠ **Terza sessione consecutiva senza registrazione e senza documento di trascrizione separato.** La cartella Drive della riunione contiene un solo collegamento, agli appunti di Gemini, che portano la trascrizione in una seconda scheda. ⚠ Quattro affermazioni degli appunti automatici sono sbagliate e sono elencate nella nota di riunione, incluso un inesistente "FileMaker" nato da un errore di trascrizione in una frase sul campo `nota` di Mexal.
+
+🔴 **`#tproj-pienissimo` silenzioso per il terzo sweep consecutivo.** 🟢 Il gruppo dev ha ricevuto il primo messaggio umano da giorni — l'avviso pre-deploy di Aurel Mrruku alle 10:42 CET, una conferma e nessuna risposta — ma **nessun report notturno ha mai avuto risposta**. ⚠ **Fathom non ha restituito nulla per il trentaduesimo run**, in un giorno con una call cliente registrata. Il canvas è invariato dal 20.08.2026, **76 giorni**.
+
+**Nessun requisito è stato modificato da questo run — il registro resta v1.6.** L'obbligatorietà delle tranche del [#329](open-items.it.md) modifica un comportamento concordato ed è registrata come **candidato v1.7, deliberatamente non scritto nel registro**, che è vincolato contrattualmente e non si ristruttura a partire da una nota. 🔴 **`SAL-12` è non citato per la quattordicesima sessione.** 🔑 **Otto nuove righe si aggiungono alle assenze storiche** — nessuna riga di registro copre l'obbligatorietà delle tranche, l'ergonomia di inserimento righe preventivo, la reversibilità degli stati dopo uno storno di incasso, l'assegnazione del proprietario in import, la risoluzione del padre di un Locale, la frequenza di pianificazione delle integrazioni, le schermate di reportistica lato cliente, o il posizionamento delle firme sul documento di preventivo.

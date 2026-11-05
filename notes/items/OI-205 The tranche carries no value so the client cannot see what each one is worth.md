@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-02
-updated: 2026-10-02
+updated: 2026-11-04
 depends_on: [OI-69]
 source: notes/meetings/2026-10-02 Interna Pre-UAT Plus.md
 ---
@@ -58,3 +58,36 @@ summary is the obvious shape, but `Tranche__c` is not a master-detail parent of
 - ⚠ Attributed to the client — _"they asked"_ — but this sweep found **no meeting,
   mail or minute naming who asked or when**. Treat the attribution as unconfirmed
   until someone produces it.
+
+## 🟢🔑 2026-11-04 - the client asked for it himself, in his own words
+
+**The unconfirmed attribution at the bottom of this note is now confirmed.** In
+[the 04/11 production session](../meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md),
+with the signed order open on screen, Fabrizio Paganelli: _"guardavo qui che non
+vedo … l'importo della tranche, però forse non si può mettere, non mi ricordo."_
+
+Aurel Mrruku confirmed the gap, the cause and the remedy — and the remedy is the
+one this note already proposed:
+
+> _"non l'abbiamo lasciato l'importo della tranche. Vabbè, si può mettere in
+> teoria."_
+>
+> _"non gli importa perché la tranche qua è un record di Salesforce, non è
+> l'insieme \[delle righe\] … **devo fare un collegamento degli item con le
+> tranche, devo fare una formula.**"_
+
+🔑 **So the shape is agreed**: total the `OrderItem` rows carrying the `Tranche__c`
+lookup, exactly the pass `OrderItemTriggerHandler.recalculateTranches` already
+makes.
+
+🔴 **It was explicitly deprioritised on the call, conditional on being chased.**
+Aurel Mrruku: _"si può fare, se me lo ricordi poi, ma cerchiamo di andare
+avanti"_; Fabrizio Paganelli accepted: _"queste qui sono cose più di rifinitura."_
+⚠ **So the item now depends on somebody reminding him, and nobody was named to do
+it.**
+
+Related: the same session produced a parallel ask for a **line-total discount in
+value** on the product-entry screen —
+[OI-330](OI-330%20The%20product%20selection%20screen%20is%20unusable%20for%20multiple%20products.md),
+ask 4 — the same complaint about values the client can read against percentages the
+system prefers.

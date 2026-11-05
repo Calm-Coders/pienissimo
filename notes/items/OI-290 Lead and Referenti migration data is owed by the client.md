@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-10-28
+updated: 2026-11-05
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -129,7 +129,7 @@ acknowledged her original mail carried no deadline. **The deadline is a ROMI
 intention, not yet a client commitment.**
 
 ⚠ **Sabatino Rinaldi has still not answered the 26/10 request** — second day. He
-*has* replied on the ticketing and communications thread (quoted in Slack on
+_has_ replied on the ticketing and communications thread (quoted in Slack on
 27/10; see
 [OI-242](OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md)
 for the source caveat), so he is reachable and responsive on other subjects. 🔑
@@ -231,3 +231,279 @@ person.
 🔴 **Unchanged:** the Zoho source still cannot fill the agreed field set, nobody
 has decided what happens to the fields it cannot fill, consent migration is
 unaddressed, and no register row covers Lead or Contact migration.
+
+## 🟢 2026-10-29 - the Lead half arrived, from Sabatino Rinaldi himself, on the day he committed to
+
+🟢🔑 **The client met the commitment.** Sabatino Rinaldi, Gmail `1a186fc3e17d7577`,
+**2026-10-29 09:27:06Z**, to Aurel Mrruku, cc Elena Spini,
+`amministrazione@pienissimo.com` and Fabrizio Paganelli, with
+**`lead-da-importare.csv`** attached:
+
+> _"Buogniorno, **ho preparato il CSV dei Lead da importare**, secondo le
+> indicazioni che ci siamo dati ieri. **Questi Lead sono utenti che non hanno mai
+> acquistato nulla in Pienissimo.**"_
+
+Elisa Migliano's _"entro domani"_ of 28/10 09:19Z meant Thursday 29 October, and the
+file came at 09:27Z that Thursday. 🔑 **Both halves are now delivered** — Referenti
+V2 on 28/10, Lead on 29/10.
+
+🔑 **And it came from Sabatino Rinaldi directly.** Every prior reference to him in
+these records was a relay — Elena Spini's report of a DM, Fabrizio Paganelli
+pointing at him, a name on an invitation. **This is the first message in his own
+words to reach this mailbox**, and it supersedes the "selective silence" reading
+that the 27/10 record raised and the 28/10 record had already overtaken.
+
+### The file, and what the record holds about it
+
+- **`lead-da-importare.csv`**, attached to the 09:27:06Z mail; also in Drive as
+  `1P7oWyZrfg5SlKVbTJtMDK1HDllYjs5ZH`, **1,621,714 bytes**, owner
+  `a.mrruku@romicompany.com`, created 09:27:06Z.
+- A Google Sheet conversion, `lead-da-importare`,
+  `1yLlFmZNfn1rURAR0hHfyvlg729c1H0crX7w_jsRXTAw`, **565,809 bytes**, created
+  **09:51:52Z** — so it was converted within half an hour of arriving.
+- ⚠ **Neither was opened.** They hold real Lead records — see
+  [docs/publishing.md](../../docs/publishing.md). Recorded by id, size, owner and
+  timestamp only. **Row count unknown.**
+
+### Two rounds of correction the same day
+
+Aurel Mrruku, **09:55:32Z**:
+
+> _"riesci per cortesia ad **escludere i carattiri speciali** perche mi faranno
+> esplodere l'import. E ti chiedo la cortesia di **condividere il file in formato
+> exel**."_
+
+Sabatino Rinaldi, **09:56:37Z**: _"Ok a breve sistemo"_. Then **13:08:02Z**, with a
+fresh attachment: _"Credo che adesso sia corretto"_.
+
+⚠ **"Credo" is not a verification.** Nothing in the record says the second file was
+checked, that the special characters are gone, or that it arrived as Excel rather
+than CSV. ⚠ **The 13:08 attachment was not opened either**, for the same reason.
+
+### What the delivery does not settle
+
+1. 🔴 **The `codice cliente esterno` join is still unverified** — on the Referenti
+   V2 of 28/10 and on this Lead file. It was the whole point of problem 3 above and
+   nobody has opened either file to check.
+2. 🔴 **`Lead from Zoho` still does not exist.** Every row in this file carries
+   status `New` by the client's own account, which is precisely the condition
+   [OI-295](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md)
+   exists to resolve — **and the field must be built before this file is loaded.**
+3. 🔴 **Unchanged:** the Zoho source still cannot fill the agreed field set, nobody
+   decided what happens to the fields it cannot fill, consent migration is
+   unaddressed, and **no register row covers Lead or Contact migration.**
+4. ⚠ **"Utenti che non hanno mai acquistato nulla" is a scope statement nobody
+   agreed.** The client has decided which Zoho records count as Leads — the
+   never-purchased ones. That is a reasonable rule and it is **his** rule; it is
+   recorded nowhere else, and it implies the remaining Zoho contacts are expected
+   to arrive as Accounts or Referenti instead.
+
+## 🔴 2026-10-30 - the Referenti half is NOT delivered, and the 29/10 record was wrong
+
+🔴🔑 **The "both halves are delivered" reading of 29 October does not hold.** Three
+independent sources on 30 October say the Referenti/Contatti tracciato is still
+outstanding.
+
+**1. Elena Spini by mail**, Gmail `1a18be1a3980c8bd`, **08:16:11Z**, to Sabatino
+Rinaldi and Fabrizio Paganelli, cc Aurel Mrruku and
+`amministrazione@pienissimo.com`:
+
+> _"Ok Sabatino grazie, torniamo da te in caso di problemi. Mentre vi ricordo che
+> **rimaniamo in attesa del tracciato dei referenti/contatti.**"_
+
+**2. The internal call**, [10:01 CET](../meetings/2026-10-30%20Rapido%20Allineamento%20Aurel%20Elena.md),
+where the confusion is named outright:
+
+> Elena Spini: _"**Io ho chiesto i contatti, lui ha mandato i lead.**"_
+>
+> Aurel Mrruku: _"Ma **il discorso l'avevamo fatto su contatti, non sui lead**."_
+
+**3. The project channel**, `#tproj-pienissimo` **15:30 CET**, under _Dati del
+cliente_: _"**il tracciato dei Referenti non è ancora arrivato.** Lead ok."_
+
+### What this corrects
+
+🔑 **`Referenti Salesforce_V2.xlsx`, delivered 28/10 15:30Z, is not the tracciato.**
+The 28/10 and 29/10 records treated its arrival as satisfying the Referenti half.
+It was never opened — it holds real contact records — and ROMI, who can see it, are
+still asking for the deliverable. ⚠ **Whether V2 is wrong, incomplete, or simply
+not what was asked for is not stated by anyone.** What is stated is that they are
+waiting.
+
+🔑 **And the 29/10 Lead file was delivered against a request for Contacts.** Sabatino
+Rinaldi met a commitment — but not the one Elena Spini had made. The Lead file is
+accepted (_"Lead ok"_, _"Sembra meglio di quella schifezza che ci aveva mandato"_);
+the Contacts are owed.
+
+### The new commitment
+
+**2 November — Sabatino Rinaldi and Fabrizio Paganelli to deliver the Referenti
+tracciato**, per the `#tproj-pienissimo` next steps. 🔑 **That is two days before the
+13 November single-pass production import** confirmed in the same recap, and
+🔴 **the join question this note opened on — whether a Referente carries the Mexal
+customer code — is still unanswered**, because no tracciato has arrived to carry it.
+
+### The Lead half
+
+🟢 Delivered and accepted. The corrected Excel is **`lead-da-importare.xlsx`**,
+`1M11As2y1bzSAWEAlqDx4qEviuSguSg6Q`, **1,002,783 B**, created 29/10 13:08:02Z,
+opened by the account holder on 30/10 09:23:13Z. ⚠ **Not opened by this run** — real
+Lead records; recorded by id, size and timestamp only, **row count still unknown**.
+
+🔴 **Two things now block the Lead load**, neither of them the client's:
+[OI-307](OI-307%20The%20Lead%20import%20needs%20the%20duplicate%20rules%20disabled.md)
+(the masked VAT placeholders trip the duplicate rules) and
+[OI-295](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md)
+(the marker field is built but sits on an unmerged branch).
+
+## 🔴 2026-11-02 - the Referenti tracciato missed its 2 November date, and the Lead file is not loaded
+
+Two corrections from
+[the Tema Contratti WooCommerce call](../meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md),
+both from the transcript.
+
+🔴 **The Referenti tracciato did not arrive on 2 November.** Aurel Mrruku believed
+it had — _"ha già inviato tutto, ha fatto un check, sembra che tutto sia a posto"_ —
+and **Elena Spini corrected him on the call**: _"I lead li ha mandati, i referenti
+mancano … Quindi quelli ci mancano ancora."_ **Fourth consecutive record** on which
+ROMI, who can open the files, say the Referenti half is outstanding.
+
+🔑 **And the Lead file is still not in production.** Aurel Mrruku, same breath:
+_"però gli devo caricare in produzione adesso."_ The file arrived 29 October; four
+days later it is loaded nowhere. 🔴 **`Lead_from_Zoho__c`, the field that must mark
+these rows, is still only on `DevAnita30`
+([OI-295](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md)),
+and nothing writes it.**
+
+🆕 **A new date: Wednesday 4 November, 09:00-09:30.** Fabrizio Paganelli:
+_"Adesso oggi sabatino non c'è, però io per mercoledì non c'è problema … Mercoledì
+mattina alle 9:00"_; Aurel Mrruku: _"Sì, 9:30, non un problema."_ ⚠ **The commitment
+comes from Fabrizio Paganelli on behalf of an absent Sabatino Rinaldi**, which is
+how the 2 November date was set too.
+
+🆕🔑 **A second extract is now expected, not just the missing half.** Aurel Mrruku
+asked for _"tutti i lead e tutti [i] contatti fino a quel momento"_ to go in with
+the pre-load — _"anche con quello vado su nello stesso momento"_ — so the delivered
+Lead file becomes a first pass and a **refreshed Lead + Referenti extract** is owed
+for the production run. See
+[OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md).
+
+🔑 **The vocabulary gap that caused the original confusion was named out loud** —
+Aurel Mrruku: _"Sai che ci sono i referenti che noi gli chiamiamo contatti."_ ⚠ It
+is the fourth time this has had to be explained, and it is why a Lead file was sent
+against a Contact request.
+
+🔴 **Eleven days to the handover** (12-13 November), with **Fase 2 approval due the
+same day**.
+
+## 🟡🔑 2026-11-04 - the client's answer: reuse the file we already sent, update next week
+
+**The 9:00-9:30 slot promised for 4 November produced nothing. The answer came by
+mail in the afternoon instead, and it is a reversal of what ROMI has been told
+for five days.**
+
+🔑 **Fabrizio Paganelli, 15:56Z, subject `Referenti`, to Aurel Mrruku and Elena
+Spini, cc amministrazione and Sabatino Rinaldi:**
+
+> _"Per i Referenti considerate il file che vi abbiamo inviato l'ultima volta. **La
+> settimana prossima con Sabatino vi invieremo l'aggiornamento.**"_
+
+🔑 **So `Referenti_V2` is the deliverable after all.** For five consecutive records
+ROMI, who can open the files, has said the Referenti half was outstanding —
+_"I lead li ha mandati, i referenti mancano"_ (30/10, 02/11). The client's position
+is that it was delivered and only needs refreshing. **Later evidence wins on the
+question of intent: there is no second tracciato coming before next week.**
+
+## 🔴 And Aurel Mrruku says the file cannot be used
+
+Same thread, 16:05Z:
+
+> _"i referenti non hanno il codice mexal del account… **Non li posso collegare in
+> produzione senza quel valore.**"_
+
+Which is the exact join this item was opened for on 26 October. Fabrizio
+Paganelli's reply at 16:21Z puts the burden back on ROMI:
+
+> _"Se non ricordo male, vi avevamo già inviato un file con il codice mexal
+> dell'account. **Potete verificare?**"_
+
+🔴 **Unanswered at this sweep.** ⚠ **The verification is a repository action nobody
+has done**: the delivered workbook has not been opened here (it holds real
+customer records) and no note records which columns it carries.
+
+## 🔑 The file is a week stale, and dated for the first time
+
+From the open line after
+[the 04/11 session](../meetings/2026-11-04%20Continuazione%20Test%20e2e%20PROD.md),
+Pienissimo staff among themselves: the extract ROMI holds is from **27 or 28
+October** — _"quello che hai fatto te, che avevamo fatto l'altra volta, era del 27
+o 28 ottobre se non ricordo male"_ — so roughly **a week of new contacts is
+missing**, which they also quantified: _"in pratica una settimana in più abbiamo di
+contatti."_
+
+🟢 **Their plan matches the mail**: hand over the stale file now, refresh next week,
+and re-deliver everything — _"te inizia a dargli quello, poi glielo abbiamo
+aggiornato"_, _"gli dobbiamo ridare tutto dopo"_, including both the contacts
+already imported and the new ones.
+
+🔴 **And the client's own man says he cannot do it alone:** _"ho bisogno che
+qualcuno su sta roba dei contatti mi dà una mano. **Non posso fare tutto da
+solo.**"_ He has 12-13 November for the load and the Pienissimo 360 migration in
+the same window.
+
+## What Aurel Mrruku actually needs, restated on the call
+
+> _"i contatti principali che si collegano agli account … **devono avere il codice
+> Mexal al posto dell'ID dell'account, quindi ID Mexal sulla colonna account**, non
+> i lead, i contatti, **i referenti**."_
+
+And the owner, in his words: _"i contatti che mi deve passare Sabatino."_
+⚠ **Sabatino Rinaldi has still not appeared in any source in this window**, and
+Fabrizio Paganelli volunteered to produce them himself instead — _"vedo di darteli
+io"_ — which is how the two previous dates were set and missed.
+
+🔴 **Eight days to the handover** (12-13 November), **Fase 2 approval due the same
+day**, and the Lead file delivered on 29 October is still not loaded into
+production.
+
+## 🟢 2026-11-05 - 17,652 Referenti loaded into Prod, each under its Azienda
+
+`Referenti Salesforce_V2.xlsx` **does** carry a `Codice cliente Mexal` column, filled
+on 17,759 of 67,547 rows. On Aurel Mrruku's rule — link by Mexal code, no link no
+insert — Claude Code loaded every resolvable row into **Pienissimo Prod**. Values
+are not copied here.
+
+| Of 67,547 rows                                     | Rows   |
+| -------------------------------------------------- | ------ |
+| Inserted, `AccountId` = the Azienda with that code | 17,652 |
+| Skipped - no Mexal code                            | 49,788 |
+| Skipped - code not on any Prod Azienda             | 107    |
+
+- **Bulk API** `750SW00000bMjSfYAK` (1-row sample, checked first) and
+  `750SW00000bMr6pYAC` (17,651), 17:00-17:25Z: **0 failures.** 6,872 Aziende now
+  have Referenti. No `AsyncApexJob`, no `Integration_Log__c`.
+- 🆕 **`Contact.External_CRM_ID__c`** (text 18, external id, unique) created to hold
+  the Zoho id, so the 12-13/11 delta can upsert instead of duplicating: deploy
+  `0AfSW000001LDbB0AW`; read/edit through `Full_Permission` (FieldPermissions row
+  added in Prod, same entry added to source).
+- 🔑 **The `Update_Contact_Consent` flow was switched off for the load**, on Aurel
+  Mrruku's choice, so the import created no Marketing email Opt-In for contacts
+  without consent ([the flow](../flows/The%20Update%20Contact%20Consent%20flow%20in%20production.md)).
+  ⚠ This flow type **cannot be reactivated**: it was restored as **version 2**,
+  logic identical to v1 (Tooling metadata compared), plus a description, deploy
+  `0AfSW000001LDjF0AW`, then activated. **Active version now `301SW00000hKT1uYAG`.**
+- Mapping: owner `Amministratore Pienissimo`; `Opt-out e-mail` →
+  `HasOptedOutOfEmail` (960); `Contatto amministrativo` → `Ruolo__c =
+Amministrativo`; `Ruolo iscrizione` → `Ruolo_Iscrizione__c`; two-digit birth years
+  read as 19xx, or 20xx up to 2008. **Where an Azienda had several principal
+  contacts (143 Aziende, 158 rows) only the most recently created stayed principal**
+  — the trigger keeps one anyway. 1,975 principals; 1,935 Aziende got
+  `Email_Contatto_Principale__c`.
+- 🔴 **Not loaded for lack of a Contact field**: the consent and privacy flags,
+  `Consenso Finalita Commerciali`/`Profilazione`, `Keap Id Esterno`, `Nome Locale`,
+  secondary email, owner and Tutor. ⚠ The consents are a data-protection question
+  for the client; they are in the file and nowhere in Salesforce.
+- The exceptions went to the client as an Excel (kept outside the repository).
+
+**Still open:** the 49,788 uncoded Referenti — the client's own answer on 04/11 was
+that the file would be refreshed _"la settimana prossima con Sabatino"_.

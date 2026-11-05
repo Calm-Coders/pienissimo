@@ -4,7 +4,7 @@ type: person
 status: active
 org: ROMI
 team: Calm-Coders
-updated: 2026-09-03
+updated: 2026-10-30
 ---
 
 # Rexhina Hysi - Salesforce developer ROMI
@@ -72,3 +72,40 @@ external-facing pages the project has been designing since 6 August.
 
 ⚠ The Notion access question is settled and should stop being carried as an
 oversight — Aurel Mrruku removed her while reorganising it, on cost.
+
+## 🔴 2026-10-30 - reassigned off the project, full time
+
+🔑 **She is no longer working on Pienissimo.** Aurel Mrruku, to Elena Spini in
+[the 30 October alignment](../meetings/2026-10-30%20Rapido%20Allineamento%20Aurel%20Elena.md):
+
+> _"c'è solo **Anita** perché **Regina ormai è su un altro progetto full time**"_
+
+⚠ _"Regina"_ is the transcript's rendering of her name; the same session also gives
+_"Regina Ana"_ and _"Anna"_ for Anita Aga. The referent is unambiguous from context
+— the developer who built the agent permissions.
+
+🔑 **She has not left ROMI.** Earlier runs of these records carried _"Rexhina
+Hysi's leaving date"_ as an open question, on the strength of a 26/10 remark. **This
+is a reassignment, not a departure**, and it supersedes the departure reading.
+⚠ She is still invited, as optional, to the `Test PS Tutor` permissions session of
+3 November (Gmail `1a18c2bf516096d6`, cc `r.hysi@romicompany.com`), and she owns the
+`Manual Steps Pienissimo` sheet behind
+[OI-301](../items/OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md),
+touched 29/10.
+
+### What she leaves behind
+
+🔑 **The `Agente` profile and permission set are hers**, with the restrictive test
+users that could not touch bundles or orders — the whole basis of the tutor access
+plan in
+[OI-300](../items/OI-300%20Tutor%20training%20and%20tutor%20test%20access%20are%20unplanned.md).
+Aurel Mrruku has not tested them himself: _"io personalmente non l'ho fatto, ma
+l'ha fatto Regina"_.
+
+🔴 **Two of her branches are unmerged and now unowned**: `Devmain_LeadChecks`
+(`5302d29`, 26/10) and `Devmain_QuoteTriggerChanges` (`1c40cd9`, 26/10). ⚠ **Nobody
+is recorded as inheriting them.**
+
+🔴 **Anita Aga is now the only developer on Pienissimo**, seventeen days from
+go-live, carrying the Lead field, the picklists, the lookup filter and whatever the
+2 November contract meeting produces.

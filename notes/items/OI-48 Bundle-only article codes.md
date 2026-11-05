@@ -5,7 +5,7 @@ status: open
 owner: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-07-23
-updated: 2026-10-12
+updated: 2026-11-03
 blocks: [OI-13]
 source: meetings/open-items.md row 48
 ---
@@ -280,3 +280,89 @@ codes, one per event; the workbook's event table lists **exactly ten events**.
 🔴 But codes are populated for **two of them**, so the remaining eight have a
 prefix and nothing behind it — and the 3–5 examples owed to ROMI since July have
 still not been sent as such.
+
+## 🟢🔑 2026-11-02 - twelve PPLUS bundle-only codes delivered, and the client says the registry is done
+
+**Fabrizio Paganelli mailed at 09:31:40Z**, nine minutes after
+[the Tema Contratti WooCommerce call](../meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md)
+ended (Gmail `1a19b99ad8a32714`, to Aurel Mrruku and Elena Spini, cc
+`amministrazione@pienissimo.com`), in full:
+
+> _"ho creato i 12 codici prodotto per PPLUS da utilizzare solo nei bundle. Se vuoi
+> puoi già importare. **Non dovremmo creare nuovi codici prodotto.**"_
+
+🔑 **This is a different generation again, and a different shape of ask.** It is
+not the ten `SF`-prefixed codes of 2 September, not the `(B)` suffix of 23 July, not
+the `codice A`/`codice B` of 26 August, and not the positional bundle flag of the
+12 October codifica workbook. It is **twelve codes for one product family —
+Performance Plus — one per tranche**, on a `PLUS_B` pattern.
+
+🔑 **Why twelve, and why the count is the point.** The bundle component does not
+explode `numero di tranche`; that logic exists only on the Plus
+attivazione/rinnovo offer. Rather than build it, Fabrizio Paganelli offered to mint
+one bundle-only code per tranche with **no tranche count on any of them** —
+_"ne creo 12 di codici che possono essere utilizzati solo nei bundle che non hanno
+le trance"_ — and Aurel Mrruku took it: _"funziona. Non devo fare nessun intervento
+a livello di bundle."_ The twelve are a **workaround for missing Salesforce logic**,
+not a registry decision.
+
+🟢 **The exclusion the codes depend on already works, verified live.** Aurel Mrruku
+shared his screen, built a bundle against the client's pre-existing **`PLUS_B01`**,
+and read back that it can be chosen on a bundle and **cannot** be chosen on the
+standard `Plus attivazione rinnovo` offer: _"quindi siamo già coperti"_. His stated
+worry a minute earlier — that a Plus product would appear in the Plus offer list
+and generate no tranches — is retired by that check.
+
+⚠ **The twelve code values are not in the record and were not asked for.** The mail
+carries only the signature image; nothing lists them. They exist in Mexal, so they
+reach Salesforce through
+[the article sync](../objects/The%20Mexal%20article%20sync%20to%20Product2.md),
+not by hand. **No value is copied here.**
+
+🔑 **_"Non dovremmo creare nuovi codici prodotto"_ is a claim about the whole
+registry**, made nine days before the production extract, by the person who owns it.
+If it holds, the long-running question of
+[when the new `E99` generation will exist](OI-98%20The%20Mexal%20article%20registry%20is%20being%20re-created.md)
+is answered by _it already does_. ⚠ **Unverified against the registry**, and the
+2026-10-05 reading — 469 `Z2) Blocchi` articles all `Flag_Annullato = S` — has not
+been re-checked.
+
+🔴 **The three cheap questions this row has carried since 2 September are still
+unasked**: the `SFPL0001` name _PIENISSIMO LIVE LIVE_, whether Pienissimo Intensive
+is deliberately without a bundle twin, and now a fourth — **whether the ten `SF`
+codes and the twelve `PLUS_B` codes are one scheme or two.** Nobody has said.
+
+## 2026-11-03 - the twelve codes are now a contractual requirement, and one document is stale
+
+🟢 **The twelve codes are confirmed in use.** In
+[the internal follow-up](../meetings/2026-11-03%20Follow-up%20Interno.md) Aurel Mrruku
+confirmed he had seen them — _"ha già fatto lui dei prodotti e abbiamo anche visto"_ —
+and Elena Spini corrected her own draft from future to past tense: _"Fabrizio creerà —
+crea — **anzi ha creato** 12 [codici] articolo plus con flag bundle, uno per tranche,
+senza numero di tranche."_
+
+🔑 **They are now written into a client-facing specification** as **RF5** of
+[the stage-sale contract analysis](../The%20stage%20sale%20contract%20functional%20analysis.md):
+_"Per la Plus: 12 codici articolo dedicati ai bundle, senza numero di tranche"_, each
+inserted once. **So the workaround is contractual, not just convenient.**
+
+⚠ **But the same document lists _"Fabrizio: creazione dei 12 codici articolo Plus su
+Mexal"_ as an outstanding client dependency** — stale by a day, and the client has
+received it that way.
+
+🔑 **A clarification on the starting position.** Elena Spini's draft said the bundle Plus
+product _"non ha tranche"_; Aurel Mrruku corrected her: that was the position **before**
+Fabrizio Paganelli's change — _"adesso ha tranche con la sua modifica"_ — one code per
+tranche, none carrying a count.
+
+🔴 **The code values are still not held** and the `PLUS_B` / `SF` scheme question is
+**unasked for a second day**. ⚠ The `image001.png` attachment on the 2 November mail is
+**still unopened**.
+
+🟢 **Fresh context from the org**: production holds **1093 products**, about **500**
+activated — see
+[OI-309](OI-309%20The%20product%20activation%20criterion%20must%20switch%20from%20gruppo%20merceologico%20to%20the%20Mexal%20flag.md).
+⚠ 🔴 **And the registry is not clean**: Fabrizio Paganelli mis-set the whole `blow`
+family, which undercuts _"Non dovremmo creare nuovi codici prodotto"_ as a claim about
+the registry's readiness — see
+[OI-327](OI-327%20The%20blow%20product%20codes%20carry%20the%20wrong%20gruppo%20merceologico.md).

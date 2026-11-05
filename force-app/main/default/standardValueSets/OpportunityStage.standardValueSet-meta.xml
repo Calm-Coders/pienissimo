@@ -3,7 +3,7 @@
     <sorted>false</sorted>
     <standardValue>
         <fullName>Qualificato</fullName>
-        <default>true</default>
+        <default>false</default>
         <label>Qualificato</label>
         <closed>false</closed>
         <forecastCategory>Pipeline</forecastCategory>

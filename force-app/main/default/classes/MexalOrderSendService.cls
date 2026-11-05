@@ -70,6 +70,7 @@ public without sharing class MexalOrderSendService {
         EffectiveDate,
         OrderNumber,
         Quote__c,
+        Quote__r.QuoteNumber,
         Condizione_di_Pagamento__c,
         WooCommerce_Order_Key__c,
         (
@@ -149,6 +150,17 @@ public without sharing class MexalOrderSendService {
       payload.put('codice_agente', orderRecord.Codice_Agente__c.trim());
     }
     payload.put('data_documento', formatDate(orderRecord.EffectiveDate));
+    // Header note ("Note di Testata", named by Kreosoft 30/10): the quote
+    // number, so amministrazione can match the invoice to the signed quote.
+    // Mexal treats nota as an array of note lines, so it goes as [[1, value]].
+    if (!String.isBlank(orderRecord.Quote__r?.QuoteNumber)) {
+      payload.put(
+        'nota',
+        new List<Object>{
+          new List<Object>{ 1, orderRecord.Quote__r.QuoteNumber }
+        }
+      );
+    }
     putIntegerValue(
       payload,
       'id_pagamento',
@@ -221,8 +233,10 @@ public without sharing class MexalOrderSendService {
   }
 
   // Mexal reads a sconto prefixed with '-' as an amount, not a percentage, and
-  // divides it by the line quantity (format given by Mexal, 26/10). prezzo then
-  // carries the pre-discount price, so Mexal lands on the same net UnitPrice.
+  // applies it to each unit (Mirko Merendi, 26/10: "devi dividere per le
+  // quantità"), so it carries the per-unit discount. A line total is rejected
+  // once it exceeds the unit price (6001, UAT 02/11). prezzo then carries the
+  // pre-discount price, so Mexal lands on the same net UnitPrice.
   private static Decimal resolveLineDiscount(OrderItem line) {
     if (
       line.Prezzo_Listino__c == null ||
@@ -233,7 +247,7 @@ public without sharing class MexalOrderSendService {
     ) {
       return null;
     }
-    return ((line.Prezzo_Listino__c - line.UnitPrice) * line.Quantity)
+    return (line.Prezzo_Listino__c - line.UnitPrice)
       .setScale(2, System.RoundingMode.HALF_UP);
   }
 

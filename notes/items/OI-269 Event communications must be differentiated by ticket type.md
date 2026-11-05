@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-20
-updated: 2026-10-27
+updated: 2026-11-02
 depends_on: [OI-250, OI-186]
 blocks: [go-live]
 source: Gmail 1a158b6e3e4cee81
@@ -162,3 +162,28 @@ reviewed at 17:03 CET the same day. So the ruling is being executed
 ⚠ **Source caveat.** Sabatino Rinaldi's mail **is not in this mailbox** and **its
 date is unknown**; see the caveat on
 [OI-242](OI-242%20The%20community%20Rinuncia%20button%20must%20show%20the%20public%20refusal%20text.md).
+
+## 🔑 2026-11-02 - it is priced into Fase 2 R1, and the client still has not been told in words
+
+[`Pienissimo_Project_Plan_Fase2`](../The%20Fase%202%20offer.md), updated 2 November,
+lists this item under **_"Nuovi punti emersi negli UAT, proposti in Fase 2"_**:
+
+> _"Differenziare le comunicazioni in base al tipo di biglietto — Es. Gold ed
+> Executive"_
+
+and the offer deck carries it inside **R1 · Info Point e biglietti**, go-live
+**15 January 2027**, as _"Comunicazioni mirate"_.
+
+🔑 **So ROMI's 27 October internal ruling — Fabrizio Mastracci, _"la 2 bloccala"_ —
+is now written into a client-facing document.** That is the first time the decision
+has existed anywhere the client could read it.
+
+🔴 **Nobody has told the client in a message, a mail or a call.** The client's own
+position, relayed by Elena Spini on 27 October, was _"sappiamo che è previsto più
+avanti, ma per noi è un requisito"_. The answer to that is a slide in a deck whose
+delivery to the client is not recorded, and ⚠ **whose approval deadline is
+13 November**.
+
+⚠ **R1 is dated 15 January 2027**, which is before the **Academy of 19-21 January**
+but after every event in 2026 — so on this plan no 2026 event gets differentiated
+communications.

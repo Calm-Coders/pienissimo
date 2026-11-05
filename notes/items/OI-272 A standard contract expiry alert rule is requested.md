@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-20
-updated: 2026-10-27
+updated: 2026-11-02
 requirement: DM-19
 source: Gmail 1a158b6e3e4cee81
 ---
@@ -71,3 +71,23 @@ without checking whether it is already there is the risk, not the reassurance.
 
 ⚠ **The client has not been told it moved to Fase 2**, and the ~80 live
 Performance Plus contracts still have no stated migration path.
+
+## 🟢🔑 2026-11-02 - specified for the first time, in Fase 2 R5
+
+[`Pienissimo_Project_Plan_Fase2`](../The%20Fase%202%20offer.md), updated 2 November,
+gives this item its first stated specification:
+
+> _"Avvisi di scadenza per contratti Performance Plus — Es. notifica al **tutor** e
+> al **commerciale di riferimento** **15-30 giorni prima** della scadenza"_
+
+🟢 **Two recipients and a window, where the record previously had neither.** The
+offer deck carries it in **R5 · Integrazioni e notifiche**, go-live **26 March
+2027**, alongside _"Email e WhatsApp transazionali, con affiancamento ROMI"_.
+
+🔴 **So it is Fase 2, dated the last release of the phase**, four and a half months
+after go-live. ⚠ **The client has not been told that, and this row was absorbed into
+the Fase 2 estimate on 27 October without anyone saying which items moved.**
+
+⚠ **The specification is an example, not a rule** — _"Es. … 15-30 giorni"_ is a
+range in a bullet on a slide, not an agreed trigger. **Whether a rule exists in the
+org at all is still unverified**, as it has been since this row was raised.

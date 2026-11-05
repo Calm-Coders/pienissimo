@@ -418,12 +418,10 @@
         ></apex:outputPanel>
         <apex:outputPanel
           layout="block"
-          rendered="{!NOT(ISBLANK(quoteRecord.Descrizione_Condizione_di_Pagamento__c))}"
+          rendered="{!NOT(ISBLANK(quoteRecord.Note_Preventivo__c))}"
           ><div class="section-title">NOTE</div>
           <div class="notes">
-            <apex:outputText
-              value="{!quoteRecord.Descrizione_Condizione_di_Pagamento__c}"
-            /></div
+            <apex:outputText value="{!quoteRecord.Note_Preventivo__c}" /></div
         ></apex:outputPanel>
       </apex:outputPanel>
 
@@ -596,12 +594,10 @@
         ></apex:outputPanel>
         <apex:outputPanel
           layout="block"
-          rendered="{!NOT(ISBLANK(quoteRecord.Descrizione_Condizione_di_Pagamento__c))}"
+          rendered="{!NOT(ISBLANK(quoteRecord.Note_Preventivo__c))}"
           ><div class="section-title">NOTE</div>
           <div class="notes">
-            <apex:outputText
-              value="{!quoteRecord.Descrizione_Condizione_di_Pagamento__c}"
-            /></div
+            <apex:outputText value="{!quoteRecord.Note_Preventivo__c}" /></div
         ></apex:outputPanel>
       </apex:outputPanel>
     </body>

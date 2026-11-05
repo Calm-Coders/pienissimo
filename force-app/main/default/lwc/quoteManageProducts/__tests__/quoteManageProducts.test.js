@@ -4,6 +4,35 @@ import getContext from "@salesforce/apex/QuoteManageProductsController.getContex
 import searchProducts from "@salesforce/apex/QuoteManageProductsController.searchProducts";
 import saveProducts from "@salesforce/apex/QuoteManageProductsController.saveProducts";
 import updateItemLine from "@salesforce/apex/QuoteManageProductsController.updateItemLine";
+import { loadStyle } from "lightning/platformResourceLoader";
+import deleteLine from "@salesforce/apex/QuoteLineItemsController.deleteLine";
+import deleteBundle from "@salesforce/apex/QuoteLineItemsController.deleteBundle";
+import LightningConfirm from "lightning/confirm";
+
+jest.mock("lightning/confirm", () => ({
+  __esModule: true,
+  default: { open: jest.fn() }
+}));
+
+jest.mock(
+  "@salesforce/apex/QuoteLineItemsController.deleteBundle",
+  () => ({ default: jest.fn() }),
+  { virtual: true }
+);
+
+jest.mock(
+  "@salesforce/apex/QuoteLineItemsController.deleteLine",
+  () => ({ default: jest.fn() }),
+  { virtual: true }
+);
+
+jest.mock("lightning/platformResourceLoader", () => ({
+  loadStyle: jest.fn()
+}));
+
+beforeEach(() => {
+  loadStyle.mockResolvedValue();
+});
 
 jest.mock(
   "@salesforce/apex/QuoteManageProductsController.updateItemLine",
@@ -121,6 +150,124 @@ describe("Standard Item pricing", () => {
     await flush();
     return element;
   }
+
+  it("confirms deletion of the whole bundle and reloads the empty quote", async () => {
+    const element = await mountExisting({
+      existingBundleLine: {
+        quoteLineItemId: "bundleLine",
+        productName: "Bundle demo"
+      }
+    });
+    LightningConfirm.open.mockResolvedValue(true);
+    deleteBundle.mockResolvedValue({});
+    getContext.mockResolvedValue({
+      isEditable: true,
+      quoteStatus: "Bozza",
+      opportunityRecordTypeDeveloperName: "Vendita_Standard",
+      existingLines: []
+    });
+    button(element, "Elimina bundle").click();
+    await flush();
+    expect(LightningConfirm.open).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining("tutti i suoi componenti")
+      })
+    );
+    expect(deleteBundle).toHaveBeenCalledWith({
+      quoteId: "quote1",
+      bundleName: "Bundle demo"
+    });
+    expect(deleteLine).not.toHaveBeenCalled();
+    expect(button(element, "Elimina bundle")).toBeUndefined();
+    expect(button(element, "Aggiungi prodotti").disabled).toBe(false);
+  });
+
+  it("keeps a bundle after cancellation or a server rejection", async () => {
+    const element = await mountExisting({
+      existingBundleLine: {
+        quoteLineItemId: "bundleLine",
+        productName: "Bundle demo"
+      }
+    });
+    LightningConfirm.open.mockResolvedValue(false);
+    button(element, "Elimina bundle").click();
+    await flush();
+    expect(deleteBundle).not.toHaveBeenCalled();
+    LightningConfirm.open.mockResolvedValue(true);
+    deleteBundle.mockRejectedValue({
+      body: { message: "Eliminazione non consentita" }
+    });
+    button(element, "Elimina bundle").click();
+    await flush();
+    expect(button(element, "Elimina bundle").disabled).toBe(false);
+    expect(element.shadowRoot.querySelector(".existing-box")).not.toBeNull();
+  });
+
+  it("does not offer bundle deletion on an accepted quote", async () => {
+    const element = await mountExisting({
+      quoteStatus: "Accettato",
+      existingBundleLine: {
+        quoteLineItemId: "bundleLine",
+        productName: "Bundle demo"
+      }
+    });
+    expect(button(element, "Elimina bundle")).toBeUndefined();
+  });
+
+  it("deletes a saved Item only after confirmation and reloads the quote", async () => {
+    const element = await mountExisting();
+    LightningConfirm.open.mockResolvedValue(true);
+    deleteLine.mockResolvedValue({});
+    getContext.mockResolvedValue({
+      isEditable: true,
+      quoteStatus: "Bozza",
+      opportunityRecordTypeDeveloperName: "Vendita_Standard",
+      existingLines: []
+    });
+    element.shadowRoot
+      .querySelector('lightning-button-icon[title="Elimina prodotto"]')
+      .click();
+    await flush();
+    expect(deleteLine).toHaveBeenCalledWith({
+      quoteId: "quote1",
+      lineId: "line1"
+    });
+    expect(
+      element.shadowRoot.querySelector(
+        'lightning-button-icon[title="Elimina prodotto"]'
+      )
+    ).toBeNull();
+  });
+
+  it("keeps the saved product when deletion is cancelled or fails", async () => {
+    const element = await mountExisting();
+    const remove = element.shadowRoot.querySelector(
+      'lightning-button-icon[title="Elimina prodotto"]'
+    );
+    LightningConfirm.open.mockResolvedValue(false);
+    remove.click();
+    await flush();
+    expect(deleteLine).not.toHaveBeenCalled();
+    LightningConfirm.open.mockResolvedValue(true);
+    deleteLine.mockRejectedValue({
+      body: { message: "Eliminazione non consentita" }
+    });
+    remove.click();
+    await flush();
+    expect(
+      element.shadowRoot.querySelector(".existing-product-row")
+    ).not.toBeNull();
+    expect(remove.disabled).toBe(false);
+  });
+
+  it("does not offer deletion on an accepted quote", async () => {
+    const element = await mountExisting({ quoteStatus: "Accettato" });
+    expect(
+      element.shadowRoot.querySelector(
+        'lightning-button-icon[title="Elimina prodotto"]'
+      )
+    ).toBeNull();
+  });
 
   it("edits a Plus tranche discount and price while keeping quantity fixed at one", async () => {
     const element = await mountExisting({
@@ -274,13 +421,21 @@ describe("Standard Item pricing", () => {
     element.shadowRoot.querySelector('button[data-id="item2"]').click();
     await flush();
     await change(queryInput(element, "Sconto %"), "12.5");
-    expect(queryInput(element, "Nuovo prezzo").value).toBe(175);
-    expect(queryInput(element, "Nuovo prezzo", "item2").value).toBe(80);
+    expect(queryInput(element, "Prezzo netto").value).toBe(175);
+    await change(queryInput(element, "Quantita"), "3");
+    expect(element.shadowRoot.querySelector(".net-amount input").value).toBe(
+      "525"
+    );
+    expect(queryInput(element, "Prezzo netto", "item2").value).toBe(80);
     button(element, "Torna indietro").click();
     await flush();
     expect(queryInput(element, "Sconto %").value).toBe(12.5);
-    await change(queryInput(element, "Nuovo prezzo"), "150");
+    await change(queryInput(element, "Prezzo netto"), "150");
     expect(queryInput(element, "Sconto %").value).toBe(25);
+    expect(element.shadowRoot.querySelector(".net-amount input").value).toBe(
+      "450"
+    );
+    await change(queryInput(element, "Quantita"), "1");
     [...element.shadowRoot.querySelectorAll("lightning-input")].forEach(
       (input) => {
         input.reportValidity = jest.fn(() => true);
@@ -365,16 +520,16 @@ describe("Standard Item pricing", () => {
     expect(button(element, "Salva").disabled).toBe(true);
     await change(queryInput(element, "Sconto %"), "101");
     expect(button(element, "Salva").disabled).toBe(true);
-    await change(queryInput(element, "Nuovo prezzo"), "-1");
+    await change(queryInput(element, "Prezzo netto"), "-1");
     expect(button(element, "Salva").disabled).toBe(true);
-    await change(queryInput(element, "Nuovo prezzo"), "0");
+    await change(queryInput(element, "Prezzo netto"), "0");
     expect(queryInput(element, "Sconto %").value).toBe(100);
     expect(button(element, "Salva").disabled).toBe(false);
   });
 
   it("handles a zero catalogue price without invalid percentages", async () => {
     const element = await mount("Vendita_Standard", [item("item1", 0)]);
-    await change(queryInput(element, "Nuovo prezzo"), "10");
+    await change(queryInput(element, "Prezzo netto"), "10");
     expect(queryInput(element, "Sconto %").value).toBe(0);
     expect(button(element, "Salva").disabled).toBe(false);
   });

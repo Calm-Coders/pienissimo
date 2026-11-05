@@ -416,10 +416,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem
-        >Record.Descrizione_Condizione_di_Pagamento__c</fieldItem>
-                <identifier
-        >RecordDescrizione_Condizione_di_Pagamento_cField</identifier>
+                <fieldItem>Record.Note_Preventivo__c</fieldItem>
+                <identifier>RecordNote_Preventivo_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

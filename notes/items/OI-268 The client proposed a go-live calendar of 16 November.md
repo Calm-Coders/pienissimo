@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Sabatino Rinaldi
 org: both
 raised: 2026-10-20
-updated: 2026-10-23
+updated: 2026-11-02
 depends_on: [OI-246, OI-244, OI-267, OI-274]
 blocks: [go-live]
 severity: gating
@@ -325,3 +325,135 @@ it looks like" list below still leaves open:
 2. ⚠ The lapsed 27 October Go/No-Go is **still** unreplaced. Neither the
    thread nor the 23/10 call mentions a Go/No-Go.
 3. 🔴 Nobody has asked about Zoho — see above.
+
+## 🟢 2026-10-29 - the calendar gains an end-to-end production test, and the client lifts the cost objection
+
+🟢🔑 **A production end-to-end test is booked for Tuesday 3 November.** Calendar
+invitation from Elena Spini, Gmail `1a18822d71394556`, sent **2026-10-29 14:49:06Z**:
+**`[ROMI-PIENISSIMO] - Test e2e PROD`, Tuesday 3 November 2026, 09:30–11:30 CET**.
+Guests: Elena Spini (organiser), `amministrazione@pienissimo.com` (Elisa
+Migliano), Aurel Mrruku, Fabrizio Paganelli, and Sabatino Rinaldi as optional.
+
+🔑 **It is the first test of the production org with the client in the room**, and
+it sits thirteen days before the agreed 16 November go-live.
+
+🟢🔑 **And the client confirmed it with two concessions.** Elena Spini, Slack DM
+`D0B5QHS2T7H`, **16:02:51 CET**, reporting her call with Fabrizio Paganelli:
+
+> _"**Confermati i test e2e in PROD per martedì** + ha detto che **possiamo testare
+> tutti gli ordini/giri che vogliamo e no problem per il costo di DocuSign** (poi
+> ha aggiunto fino a 10€ ahaha)"_
+
+Two things the records have wanted:
+
+1. 🟢 **Unlimited test orders in production are authorized by the client.** Earlier
+   runs recorded the production-test question as open — whether a test order
+   created in production reaches live Mexal, and which production user the
+   marketing tests would use. The client has now removed the permission half of
+   it. ⚠ **The mechanical half stands**: production now reaches Mexal for real
+   ([OI-267](OI-267%20Loading%20historical%20orders%20would%20push%20them%20to%20Mexal%20and%20generate%20tickets.md)),
+   so a test order in production **is** a real Mexal document, and nobody has said
+   who cleans those up.
+2. 🟢 **The DocuSign envelope cost is accepted.** ⚠ **With a joke attached** —
+   _"fino a 10€"_ — which is a ceiling stated in humour and is not a commercial
+   agreement. Recorded as the client waving the objection away, not as a budget.
+
+⚠ **This is a relay.** Fabrizio Paganelli's confirmation reached these records
+through Elena Spini's summary in a ROMI DM; the written invitation covers the
+meeting, not the two concessions.
+
+## 🟢 2026-10-30 - go-live confirmed, and the import collapses into one pass on 13 November
+
+🟢🔑 **ROMI confirmed the date internally and published the plan.** Elena Spini,
+`#tproj-pienissimo`, **2026-10-30 15:30 CET**:
+
+> _"**Go-live:** confermato il **16/11** per gli utenti, come da proposta del
+> cliente. L'import dati finale lo facciamo direttamente il **13/11**, in **un'unica
+> volta e non più in due momenti**, perché le prove in UAT sono andate bene."_
+
+| | |
+| --- | --- |
+| Go-live for users | **16 November 2026** (confirmed, client's proposal) |
+| Final data import | **13 November 2026**, single pass |
+| Previously | two separate moments |
+| Reason for collapsing it | the UAT rehearsals succeeded |
+| Estimated days to finish | **15** (down from 26 — 10 consumed by the migration) |
+
+🆕🔑 **The 13 November single-pass import is new to these records**, and it is the
+most consequential line in the recap. The two-stage plan existed to de-risk the
+load; **the risk has been retired on the strength of the UAT rehearsal of 28
+October**, which is one successful run, in a sandbox, by one person.
+
+🔴 **What rides on that single pass, three days before go-live:** 7,721 orders with
+their tranche, lines, tickets and invitations; 10,806 invoices with 15,492 scadenze
+and 32,294 lines
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md));
+the Lead file, which still needs
+[a field merged](OI-295%20Leads%20imported%20from%20Zoho%20must%20be%20distinguishable%20from%20new%20leads.md)
+and [the duplicate rules suspended](OI-307%20The%20Lead%20import%20needs%20the%20duplicate%20rules%20disabled.md);
+and the Referenti tracciato, 🔴 **which has not arrived and is promised for 2
+November**
+([OI-290](OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md)).
+⚠ **Nothing records a rollback plan for 13 November.**
+
+### The dates now standing
+
+| Date | What |
+| ---- | ---- |
+| **Mon 2 Nov 09:30** | `Tema Contratti WooCommerce` with Fabrizio Paganelli — [OI-304](OI-304%20Contracts%20for%20WooCommerce%20stage%20sales%20are%20not%20generated.md). ⚠ Clashes with an internal `Allineamento` at the same hour |
+| **Mon 2 Nov 10:00** | `Allineamento Aurel / Elena`, internal |
+| **Mon 2 Nov** | Referenti tracciato due from Sabatino Rinaldi and Fabrizio Paganelli |
+| **Tue 3 Nov 09:30–11:30** | `Test e2e PROD` with the client — first production test |
+| **Tue 3 Nov 14:30–15:30** | `Test PS Tutor`, ROMI-internal permissions walk — [OI-300](OI-300%20Tutor%20training%20and%20tutor%20test%20access%20are%20unplanned.md) |
+| **Wed 4 Nov** | Marco Montesi's user switched from admin to the `Agente` profile |
+| **Thu 5 Nov onward, or w/c 9 Nov** | tutor training, before go-live |
+| **Fri 13 Nov** | final data import, single pass |
+| **Mon 16 Nov** | go-live for users |
+
+🔴 **And Zoho expires 31 October — tomorrow.** ⚠ **Eleven runs have reported that
+nobody has asked whether Pienissimo hold a contract past it**, and the recap of 30
+October does not mention Zoho at all. **Go-live is seventeen days after the
+expiry.**
+
+## 🟢🔑 2026-11-02 - the calendar is in a client-facing document, with a Fase 2 approval deadline inside it
+
+[`Pienissimo_Project_Plan_Fase2`](../The%20Fase%202%20offer.md), updated 09:40Z on
+2 November, states the Fase 1 dates in writing for the first time:
+
+> _"Fase 1: deploy in produzione (go-live tecnico) **09/11**, migrazione dati
+> **12-13/11**, avvio operativo su Salesforce **16/11**."_
+
+🟢 **So the three dates this row has carried separately are one published sequence**,
+and the 9 November technical release is confirmed as the production deploy rather
+than a planning note. Corroborated on
+[the 09:32 call](../meetings/2026-11-02%20Tema%20Contratti%20WooCommerce.md):
+Fabrizio Paganelli _"siamo tutti su sales force anche dal 9"_, Aurel Mrruku
+_"Il 16 parte il live"_.
+
+🆕🔑 **A deadline nobody here had: _"Approvazione Fase 2 entro il 13/11"_.** The
+client must approve Fase 2 on the same day as the data handover. ⚠ **Nothing records
+it being said to the client, and the 13 November morning is already committed to the
+extract.**
+
+🆕 **The event calendar is now dated**: **Pienissimo Live 24-26/11**, **Academy
+19-21/01**, **Camerieri e Venditori 06/04**. 🔑 **Pienissimo Live is the binding
+constraint on
+[OI-304](OI-304%20Contracts%20for%20WooCommerce%20stage%20sales%20are%20not%20generated.md)** —
+the bundle for it must be built **Monday 23 November**.
+
+🟢 **The 12-13 November handover is reconfirmed by both sides on the call** — Elena
+Spini: _"il 12 avevamo detto che era l'ultimo giorno che Fabrizio va a fatturare su
+Mexal e il 13 mattina ore 9 si aspetta la consegna di tutto."_ 🔑 **But the single
+pass is being softened in practice**: most volume moves to a pre-load and 12-13
+becomes a delta —
+[OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md).
+
+🟢 **The 3 November client test session is confirmed from a second source.** Elena
+Spini in the marketing DM at 11:42:55 CET: _"domani faremo degli ordini di prova con
+il cliente"_. 🔴 **Those are production orders against a live Mexal**, and they are
+now also the candidate test data for
+[OI-311](OI-311%20The%20marketing%20flow%20update%20needs%20clean%20test%20records.md).
+
+🔴 **Aurel Mrruku's capacity warning, on the record to the client**: production
+already holds _"il 90% delle cose"_, another release follows next week, and on the
+go-live week _"forse avremo metà giornata per fare dei test e basta"_.

@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-09-25
+updated: 2026-11-04
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -126,7 +126,9 @@ tranche, not the first.
 - ⚠ **Lines with no tranche are ignored.** An order whose lines are only partly assigned
   to tranches goes `Incassato` when the assigned ones are paid. Not decided whether that
   is right.
-- ⚠ **Nothing sets `Fatturato`.** The order jumps from `Ordinato` to `Incassato`.
+- ~~⚠ **Nothing sets `Fatturato`.**~~ 2026-11-04: deployed to UAT and Prod —
+  `Fatturato` when every line is invoiced and at least one is unpaid
+  ([OI-314](OI-314%20The%20order%20line%20fatturato%20status%20is%20not%20implemented.md)).
 - ⚠ **No way back.** A payment later reversed in Mexal moves the tranche back but leaves
   the order `Incassato` and the Opportunity won
   ([OI-92](OI-92%20Mexal%20Scadenziario%20as%20the%20trigger%20to%20reverse%20an%20asset.md),
