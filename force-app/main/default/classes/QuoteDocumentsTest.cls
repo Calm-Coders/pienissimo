@@ -75,6 +75,9 @@ private class QuoteDocumentsTest {
         1,
         800
       );
+      // The PDF refuses a quote without tranches.
+      TestDataFactory.tranche(quoteRecord.Id, 1);
+      TestDataFactory.tranche(bundleQuote.Id, 1);
 
       Test.setCurrentPage(Page.QuotePdf);
       ApexPages.currentPage().getParameters().put('id', quoteRecord.Id);

@@ -10,6 +10,41 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-05 - claude-opus-5-5 (DevMain delta deployed to Prod after a metadata check)
+
+- **Did:** on Aurel Mrruku's request, checked metadata first: retrieved all 815 `force-app`
+  components from **Pienissimo Prod** and diffed them against `DevMain` at `0f73245`.
+  The diff parsed the XML, ignored element order, and dropped `false` defaults and
+  record-type picklist values that a deploy does not remove. 473 files were identical.
+  The branch changes not yet in Prod were **7 components**: `QuotePdfController`,
+  `QuotePdfService` (no PDF without a tranche), LWCs `quoteGeneratePdf` and
+  `quoteManageProducts`, the new static resource `QuoteManageProductsModal`, and
+  permission sets `Agente` and `Full_Permission`. Everything else committed since
+  `c1e71b5` was already in Prod.
+- **Test touched to deploy (user's choice):** the first validation, `0AfSW000001LCVR0A4`,
+  failed 167/168 on `QuoteDocumentsTest.pdfControllerRendersLinesAndFormatsMoney`. The
+  test's quotes had no tranche, so the new guard rejected them. The fixture now adds one
+  tranche per quote and the assertions are unchanged. **Uncommitted on `DevMain`.**
+- **Deployed:** validation `0AfSW000001LCYf0AO` (`RunLocalTests`, 8/8 components,
+  168/168 tests, no coverage warnings), quick deploy **`0AfSW000001LCgj0AG`**
+  (2026-11-05 15:01Z). After the deploy, the 8 components were retrieved again and all 17
+  files match the branch. The aging job did not block the deploy and was not touched.
+- **Deliberately not deployed (Prod is newer or the item is excluded):**
+  `standard__LightningSales.app` (Prod has profile record-page assignments for
+  Account Azienda/Locale and Contact that source lacks); `Product_Record_Page1` (Prod has an
+  Edit header action); Product2 `AllProducts` and `All_Mappatura_Edizione` list views (last
+  changed in git 27-28/10, so these are Prod-side edits); `Account-Locale Layout` (Prod has
+  an extra `ParentId` related lookup); object search layouts (Prod hides `New` on Order,
+  `NewQuote` on Quote, `Add` on Product2). Also kept out, as the standing exclusions require:
+  the **Agente profile**, where source would move Agente users from `Account-Locale Layout`
+  to `Account-Account Layout` on Locale accounts, while Prod has the right assignment; the guest
+  profile; DocuSign auth provider/named credential; and network, site and Digital Experience.
+- **Next:** commit the test fixture; retrieve the Prod-side edits above into `force-app` so
+  the next full-branch deploy does not revert them; fix the Agente profile's Locale layout
+  assignment in source.
+
+---
+
 ## 2026-11-04 - claude-opus-5 (nightly requirements-check)
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
