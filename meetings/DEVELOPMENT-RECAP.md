@@ -9112,3 +9112,61 @@ Said on the open line after Aurel Mrruku left, between Pienissimo staff; ROMI wa
 🔴 **`#tproj-pienissimo` silent a third consecutive sweep.** 🟢 The dev group received its first human post in days — Aurel Mrruku's pre-deploy warning at 10:42 CET, one acknowledgement and no reply — but **no nightly report has ever been answered**. ⚠ **Fathom returned nothing for a thirty-second run**, on a day with a recorded client call. The canvas is unchanged since 20.08.2026, **76 days**.
 
 **No requirement was amended by this run — the register stays v1.6.** The tranche obligation of [#329](open-items.md) changes agreed behaviour and is recorded as a **v1.7 candidate, deliberately not written into the register**, which is contract-bound and is not restructured from a note. 🔴 **`SAL-12` is uncited for a fourteenth session.** 🔑 **Eight new rows join the standing absences** — no register row covers tranche obligation, quote line entry ergonomics, state reversibility after a reversed collection, owner assignment on import, Locale parent resolution, integration scheduling frequency, client-side reporting screens, or quote document signature placement.
+
+## 78. Update 2026-11-05 — the migration answered the client in numbers, and then shut him out of the org
+
+Sources: nine mail threads (all bodies read in full), four Slack conversations and their threads, the Slack canvas, three Drive searches with two document reads, and the repository. Watermark 2026-11-04T22:00Z, **one day**. No meeting was recorded or transcribed on this day; **no org was opened**.
+
+### 🟢🔑 Both exception lists went back to Pienissimo, with a reason per row
+
+The production pre-load of 8,262 Aziende, 3,918 Locali and 17,652 Referenti was reported in [JOURNAL.md](../JOURNAL.md) earlier the same day. In the evening both exclusion lists were mailed to the client:
+
+| Referenti, mailed 18:18 CET | Rows |
+| --- | --- |
+| Inserted, linked to the Azienda with that Mexal code | 17,652 |
+| Not inserted — Mexal code missing | 49,788 |
+| Not inserted — **the Mexal code matches no Azienda in Prod** | **107** |
+
+🆕 **The 107 are new to the record.** They carry a code that resolves to nothing in production, which is a different defect from an absent code, and it has no owner. The Locali list went out at 16:46Z as `Locali non inseriti in Salesforce.xlsx`, _"con la loro mottivazione nella prima colona"_. ⚠ Neither attachment was opened — real customer records — and neither mail states a count in its body.
+
+🔑 **The client's own question of 4 November is answered, internally.** Fabrizio Paganelli had insisted _"vi avevamo già inviato un file con il codice mexal dell'account"_. Aurel Mrruku checked: _"ieri ha detto che ha passato i contatti con id mexal dei account / **A me non risulta**"_, and on being shown a screenshot, **_"no quello e id zohe"_** — the identifier in the file is the Zoho id. 🔴 **That answer has not been sent to him.** The file is finally identified: `Referenti Salesforce_V2.xlsx`, created 28 October, **modified 5 November 15:28Z**; ⚠ what changed in it today is unknown.
+
+🆕🔑 **Elena Spini escalated the remainder to Pienissimo's marketing team**, 17:29Z, to Sabatino Rinaldi and Matteo Distaso: _"per poter procedere con l'import finale effettivo, dobbiamo definire insieme come preferite gestire i contatti restanti"_ — a stated blocker on the final import, seven days before the migration window.
+
+### 🔴🔑 And the client was locked out of production until Monday
+
+While the load ran and the Mexal API calls were being switched off around it, Aurel Mrruku stopped the client working in Prod — _"non deve fare test in prod oggi"_, _"produzione non e per fare test a tapetto"_, _"poi devo cancellare tutto …"_ — and Elena Spini telephoned him: **_"Fabrizio bloccato in PROD fino a lunedì"_**. 🔴 **Nothing was sent in writing**, and the data ROMI needs back from him is due on **6 November** — _"ci devono fornire i datti entro venerdì"_ — a deadline that is also in no mail. Her own objection stands unanswered: _"comunque prima di andare live ovviamente deve fare tutto il giro"_, _"non è testa tutto il 16"_. See [#339](open-items.md).
+
+⚠ Whose work the _"porcherie diretamente in prod"_ were is **not established**; the phrasing fits both Fabrizios and no attribution is made.
+
+### 🔴 Lead conversion threw in production
+
+At 08:38:04Z, in the live org: `LeadConversionTrigger: execution of AfterUpdate caused by: System.DmlException: Operation failed due to fields being inaccessible on Sobject Opportunity`, at `LeadConversionTriggerHandler.copyConvertedFields: line 95` — the unguarded `update` of `Categoria__c`, `Sottocategoria__c` and the five `UTM_*` fields on the converted Opportunity, run in the user's own context. 🔑 **It is the same defect class as #286, whose fix has sat on an unmerged branch since 23 October.** ⚠ Which field and which user: unestablished. See [#337](open-items.md).
+
+### 🟡🔑 The ticket-nomination fault reversed direction
+
+A production flow **entry rule** was changed on 4 November — _"prima era un campo status url … e ora `status__c`"_ — Fabrizio Mastracci retested and it behaved exactly as specified, and he then offered a third explanation against the second: _"Possiamo affermare al 99% che **non hanno fatto i test**"_, _"loro non si sono mai mandati biglietti"_. 🔴 **That is not reconciled with the 4 November reproduction in the room**, and 🔴 **the client has still been told nothing — third day**. ⚠ The Prod edit is not known to be in source. See [#313](open-items.md).
+
+### 🆕🔴 Two live website forms discard the marketing consent
+
+Fabrizio Mastracci built the Camerieri Venditori and Pienissimo Live forms and they deliver leads into Salesforce. The consent tick has nowhere to land: _"in Salesforce manca il campo dove salvarla … altrimenti quella spunta non viene registrata"_. 🟢 **The fields offered do exist** — `Consenso_Profilazione__c` and `Informativa_Privacy__c`, on Lead and Account, already carried across on conversion — so the gap is the undecided mapping, _"quindi profilazione = marketing?"_, unanswered. ⚠ Two contradictory ROMI answers on `Interessato a` were given in the same hour, neither to the person building the form. See [#340](open-items.md).
+
+🔑 In the same conversation the `Update_Contact_Consent` flow was **deliberately deactivated for the bulk load** with its owner's agreement — _"sisi, non cancellarlo"_ / _"lo disattivo perche sto facendo caricamento massivo"_ — and restored as version 2 with its two configuration concerns unchanged.
+
+### 🟢🔑 The tutor users exist — before the training, in UAT, and only just
+
+Marco Montesi chose (_"direi di attivare adesso le utenze"_) and the six UAT users were confirmed active at 18:13:22Z, with a 24-hour password link and **mandatory MFA/passkey setup at first login**. 🔴 **UAT only; the tutors have no production users**, with the operational start on 16 November. 🔴 Creating them hit `LICENSE_LIMIT_EXCEEDED` and other UAT users were deactivated to make room on a blanket _"lascia la mia utenza, per il resto procedi pure"_, **with no list kept**; 🔑 **production has never been counted**. See [#300](open-items.md), [#341](open-items.md).
+
+### 🔴 Fase 2: a second offer that disagrees with itself, and four open points that fell due unanswered
+
+`Pienissimo Offerta Fase 2_V.2` was created at 11:52Z, **five minutes before the 12:00-12:30 recap call**, and states three release orderings at once — R1 as Info Point on its summary band, R1 as Scadenziario on its detail slides and timeline, with the superseded slides left in as `RILASCIO X`. 🔑 **The content that moved is the Ri.Ba., insoluti and scadenziario work**, dated December 2026, 15 January 2027 and 12 February 2027 in the same deck, with [#331](open-items.md) named in neither document. **Approval is due 13 November.** See [#342](open-items.md).
+
+🔴 **R0's four open points all carried a due date of 5 November and none was answered**: Elena Spini had to chase — _"nel documento ci sono OP con scadenza oggi ancora da chiarire"_ — including OP-3, the written confirmation that R0 is the first release of Fase 2 that development starting the week of 9 November was to rest on. ⚠ **The recap call happened and left no record at all** — no minutes, no recording, no Drive folder. 🟡 A verbal OK on _"il deploy del 18"_ is promised for the morning of 6 November.
+
+### 🆕 And the client cannot maintain his own product registry
+
+`Tipo Biglietto` is not editable by him in Prod. Escalated twice, a Prod permission change reported done at 14:24 CET, and 🔴 **Elena Spini still asking at 15:44**, refused on priority. ⚠ Another undocumented direct Prod edit, not known to be in source. See [#338](open-items.md).
+
+### Unchanged
+
+🔴 `#tproj-pienissimo` silent a fourth consecutive sweep · ⚠ Fathom returned nothing a thirty-third consecutive run · the Slack canvas is unchanged since 20.08.2026, **77 days** · 🔴 [#212](open-items.md) unchanged a twenty-third night, in production · 🔴 [#312](open-items.md) Anticipay was not mentioned by any source in this window — a third day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a fifteenth run · **the requirement register is untouched and stays v1.6**; the tranche obligation remains the v1.7 candidate.

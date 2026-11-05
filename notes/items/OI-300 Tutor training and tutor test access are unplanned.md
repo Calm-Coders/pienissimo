@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-29
-updated: 2026-11-04
+updated: 2026-11-05
 depends_on: []
 blocks: []
 source: Gmail 1a1884b8e0d02735
@@ -275,3 +275,41 @@ parteciperei alla riunione che abbiamo prestabilito per anche il commerciale
 mercoledì 11"_ — and had no invitation when he asked; Aurel Mrruku had none either
 and guessed Elena Spini was waiting on Marco Montesi, which the 08:59Z mail had
 already settled hours earlier.
+
+## 🟢🔑 2026-11-05 - the question is answered: the users exist, before the training, in UAT
+
+🟢 **Marco Montesi chose, 09:04 CET**: _"inviti ricevuti, **direi di attivare adesso
+le utenze**, grazie."_ So the answer to _"le creo dopo il training o procedo già
+adesso?"_ is **now**, and it is the client's call, in writing.
+
+🟢 **Elena Spini confirmed at 18:13:22Z** (Gmail `1a1acea8a4ffcff0`):
+
+> _"ti confermo che **le utenze in ambiente UAT per i 6 tutor richiesti sono state
+> attivate**. Ognuno di loro ha appena ricevuto l'email con il link per impostare la
+> password (ricorda che il link ha una validità di **24 ore**)."_
+
+Two operational facts arrive with it:
+
+- 🔑 **MFA is mandatory at first login** — _"Salesforce richiederà obbligatoriamente
+  la configurazione di un metodo di verifica (MFA / passkey)"_ — with a
+  `Guida Gestione Passkey` document shared
+  (`1HQrxKbVXQz1Nk5kvq6JJhYd_To45KBa6daTDwVbleew`). **Six people must complete a
+  passkey setup before they can be trained**, and the password link expires in 24
+  hours, i.e. before the Monday session.
+- 🔴 **It is UAT, not Prod.** The tutors will train on 9 and 11 November in the
+  sandbox; **no production users exist for them**, with the operational start on
+  16 November.
+
+🔴 **And it nearly did not happen**: creating them hit `LICENSE_LIMIT_EXCEEDED` and
+existing UAT users were deactivated to make room —
+[OI-341](OI-341%20The%20UAT%20org%20ran%20out%20of%20Salesforce%20licences.md).
+
+⚠ **The collisions in this row are unchanged.** Nobody has yet told anybody that the
+training sits on the technical go-live and the eve of the migration, and 🆕 **two more
+meetings were put into Monday morning the same evening** — an internal Fase 2 review
+at **10:00-10:30** and one with the client at **10:30-11:30** (Gmail
+`1a1acbb192f4f8ba`, `1a1acbab3267bdb0`, both sent 17:21Z) — immediately before the
+11:30-13:00 training, on the day Fabrizio Paganelli is absent.
+
+⚠ **Still unanswered**: test access for every agent in `Utenti Area Commerciale.xlsx`,
+now **seven days** old.

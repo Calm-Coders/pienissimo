@@ -131,3 +131,17 @@ active. **Inactive Locali were loaded too** (all 3,918).
 Cliente`, `Tipo Cliente` and `Tipo Locale` were not loaded (no Prod field).
 
 **Still open:** the 768 uncoded Locali (open point 2) and the real Tipologie.
+
+## 🟢 2026-11-05 16:46Z - the exclusion list is with the client
+
+Aurel Mrruku mailed `Locali non inseriti in Salesforce.xlsx` to Fabrizio Paganelli,
+Elena Spini and amministrazione in copy (Gmail `1a1ac9aaf31e501d`):
+
+> _"allego qui la lista dei locali non inserito con la loro mottivazione nella prima
+> colona."_
+
+🟢 **So open point 2 — what becomes of the excluded rows — is now in the client's
+hands with a reason per row**, the same pattern used for the Referenti the same
+evening. ⚠ **The mail states no count**, and the attachment was not opened (real
+customer records); the 768 figure comes from the load record above, not from this
+mail. 🔴 **No reply, and no date asked for one.**

@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-11-03
-updated: 2026-11-03
+updated: 2026-11-05
 depends_on: [OI-304]
 blocks: [go-live]
 source: notes/meetings/2026-11-03 Follow-up Interno.md
@@ -173,3 +173,36 @@ received it as an outstanding dependency.**
 - [Decision - stage sale contracts are release R0 of Fase 2](decisions/Decision%20-%20stage%20sale%20contracts%20are%20release%20R0%20of%20Fase%202.md)
 - [The Fase 2 offer](The%20Fase%202%20offer.md) · [The Fase 2 estimate](The%20Fase%202%20estimate.md)
 - [The Business Blueprint delivered to the client](The%20Business%20Blueprint%20delivered%20to%20the%20client.md) — which does **not** contain these seven requirements
+
+## 🔴 2026-11-05 - the open points fell due and the client has not answered
+
+**All four open points carried a due date of 5 November. On the day, Elena Spini had
+to chase them, and the chase is the last word in the record.**
+
+🔴 **Elena Spini → Fabrizio Paganelli, amministrazione and Sabatino Rinaldi,
+13:00:05Z** (Gmail thread `1a1a291d143128a7`), reopening the delivery mail of 3
+November:
+
+> _"vi ricordo di darci un feedback su questo tema, considerano anche **nel documento
+> ci sono OP con scadenza oggi ancora da chiarire**."_
+
+🔑 **So OP-1 to OP-4 were still open at 14:00 CET on their own due date**, including
+**OP-3**, the written confirmation that R0 is the first release of Fase 2 — the
+confirmation that development starting in the week of 9 November was supposed to rest
+on.
+
+⚠ **The recap call happened.** Elena Spini, 13:05 CET in the DM: _"ho appena fatto la
+call con loro per la fase 2 🤢"_ — the 12:00-12:30 slot this note records. **What was
+agreed on it is nowhere**: no minutes, no recording, no Drive folder for it, and the
+chase mail went out after it.
+
+⚠ **The document itself has not moved** — `1A-sYQEZvbp2ShVbVL1XQPkPottBQKCuI` is
+still at its 2026-11-03 17:58Z modification, so nothing was edited into it. Drive
+comments would not show in that timestamp, and none is reported in mail or chat.
+
+🟡 **OP-4 has a partial answer, second-hand.** Aurel Mrruku, DM 18:02 CET: _"t ah
+risposto per il **deploy del 18**? che era sulla fase 2"_ → Elena Spini: _"ha detto
+che **domani mattina manda l OK** e se ha problemi dubbi ci scrive / chiama"_. So a
+verbal OK on the 18th is expected on the morning of **6 November**; ⚠ the
+conversation does not say whether it also covers OP-3's written confirmation, and
+nothing identifies which release _"il deploy del 18"_ is.

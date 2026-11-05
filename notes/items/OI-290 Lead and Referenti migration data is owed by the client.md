@@ -507,3 +507,50 @@ Amministrativo`; `Ruolo iscrizione` → `Ruolo_Iscrizione__c`; two-digit birth y
 
 **Still open:** the 49,788 uncoded Referenti — the client's own answer on 04/11 was
 that the file would be refreshed _"la settimana prossima con Sabatino"_.
+
+## 🔑 2026-11-05 evening - the figures went to the client, and the Mexal-code claim is answered
+
+🟢 **Aurel Mrruku sent the exception breakdown by mail at 18:18 CET** (quoted in
+Gmail thread `1a1a746c8e63d5ac`), with a reason per row in the attachment's first
+column:
+
+| Referenti | Rows |
+| --- | --- |
+| Inserted, linked to the Azienda with that Mexal code | 17,652 |
+| Not inserted - Mexal code missing | 49,788 |
+| Not inserted - **the Mexal code matches no Azienda in Prod** | **107** |
+
+🆕 **The 107 are new.** They are not the uncoded half: they carry a code that
+resolves to nothing in production, which is a different defect from an absent code
+and has no owner.
+
+🔑 **The client's `"Potete verificare?"` of 4 November is answered, internally.**
+Fabrizio Paganelli's claim was _"vi avevamo già inviato un file con il codice mexal
+dell'account"_. Aurel Mrruku checked and reported in the DM with Elena Spini,
+12:12 CET: _"ieri ha detto che ha passato i contatti con id mexal dei account / **A me
+non risulta**"_; she produced a screenshot at 13:06 (_"forse questo booo"_) and he
+answered at 14:07: **_"no quello e id zohe"_** — the identifier in the file is the
+**Zoho id**, not the Mexal customer code. 🔴 **This answer has not been sent to the
+client**; the mail that went out states the counts, not the diagnosis.
+
+🟢 **The file is identified at last.** `Referenti Salesforce_V2.xlsx`, Drive
+`1tHPebvZvnPh0DwDSbmxtEpgOkfY_XDs-`, owner `fabrizio.pienissimo@gmail.com`, created
+**2026-10-28 15:30Z**, **modified 2026-11-05 15:28Z** — so it moved today, and Elena
+Spini re-surfaced it in the DM at 16:32 CET: _"c'è la versione 2 che ci avevano
+condiviso, anche io l'avevo dimenticata"_, with _"vanno importati solo quelli con
+codice mexal popolato"_. ⚠ **Not opened** — it holds real customer records. **What
+changed in it today is unknown.**
+
+🆕🔑 **Elena Spini escalated it to Pienissimo's marketing team**, 17:29:21Z, to
+**Sabatino Rinaldi and Matteo Distaso** with Fabrizio Paganelli and amministrazione in
+copy:
+
+> _"soltanto **17.652 righe** sono state inserite correttamente … per poter procedere
+> con l'import finale effettivo, dobbiamo **definire insieme come preferite gestire i
+> contatti restanti** che risultano privi di un'azienda/codice Mexal di
+> riferimento."_
+
+🔑 **So the decision is now formally the client's and is stated as a blocker on the
+final import** — seven days before the 12-13 November migration. ⚠ The refresh
+promised _"la settimana prossima con Sabatino"_ has no date, and the week it refers
+to is the migration week itself.

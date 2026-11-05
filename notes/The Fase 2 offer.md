@@ -6,7 +6,7 @@ owner: Andrea Galotto
 with: Elena Spini
 org: ROMI
 raised: 2026-11-02
-updated: 2026-11-03
+updated: 2026-11-05
 depends_on: [OI-308]
 source: Drive 1T1gExUUq4_fUkXjJY3b_fa66kPrHNmI6N_3wLXbldaY and 1b329SMXkcG3kivDfvoziCFuk2I19DlQQqS_UTQtKFeA
 ---
@@ -180,3 +180,41 @@ bundle classification, all of which Aurel Mrruku named as required. Aurel Mrruku
 _"Ho la paura che abbiamo messo davvero poche giornate."_ Elena Spini: _"non posso
 chiedere più i giorni."_ 🔴 **And he has no one to share it with** —
 _"il lavoro lo devo fare io"_.
+
+## 🔴 2026-11-05 - a V.2 exists, it renumbers the releases, and it disagrees with itself
+
+**`Pienissimo Offerta Fase 2_V.2`, Drive `1_ilgbQZf_2TXHrJ2DNiRQdgc9ZY4FtQAq7tDqLvZ6j0`,
+created by Elena Spini at 11:52Z on 5 November and last modified 11:57Z — five
+minutes before the 12:00-12:30 recap call. V1 was itself touched at 11:51Z.**
+
+The release plan recorded above is **no longer stable**: the detail slides and the
+timeline now put the **scadenziario, note di credito, incassi errati and insoluti**
+work in **R1**, and Info Point / annullamento in **R2**, while the deck's own summary
+band still carries the old order. One slide dates that R1 _"dicembre 2026"_. The two
+superseded slides survive in the file, retitled `RILASCIO X`. Full detail and the
+four conflicting dates are in
+[OI-342](items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md).
+
+🟢 **Unchanged in V.2**: six releases, `150 giornate`, Fase 2 complete 26/03/2027,
+R0 contratti da palco in November _"In produzione prima di Pienissimo Live
+(24-26/11)"_, the analysis and Business Blueprint in December 2026, one month of free
+post-go-live support per release, €35,000 + IVA total, three instalments
+40% / 30% / 30%, five months from start. R0 now carries its own per-release line.
+
+🔴 **Still no maintenance line** ([OI-308](items/OI-308%20Fase%202%20maintenance%20was%20left%20out%20of%20the%20estimate.md)),
+and 🔴 **the `150` against the project plan's `58 - 78` is still unreconciled** —
+eight days before the 13 November approval deadline this note records.
+
+🆕 **The Fase 2 governance now has meetings.** Elena Spini held the recap call on
+5 November (_"ho appena fatto la call con loro per la fase 2 🤢"_, 13:05 CET) and the
+same evening sent invitations for Monday 9 November: an **internal** `[PIENISSIMO] -
+INTERNA Review temi Fase 2` at **10:00-10:30** and `[ROMI-PIENISSIMO] - Review temi
+Fase 2` with the client at **10:30-11:30** (Gmail `1a1acbb192f4f8ba`,
+`1a1acbab3267bdb0`). ⚠ Both sit immediately before the 11:30-13:00 tutor training on
+the technical go-live day, and Fabrizio Paganelli is recorded absent on the 9th.
+
+🆕 **A deploy on the 18th is waiting on the client's word.** Aurel Mrruku to Elena
+Spini, 18:02 CET: _"t ah risposto per il deploy del 18? che era sulla fase 2"_ → _"ha
+detto che domani mattina manda l OK e se ha problemi dubbi ci scrive / chiama"_. ⚠
+**Which release that is, and whether it is the R0 release of 18-19 November already
+recorded below, is not stated.** The OK is promised for the morning of 6 November.

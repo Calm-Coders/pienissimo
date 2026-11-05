@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini
 org: both
 raised: 2026-11-03
-updated: 2026-11-04
+updated: 2026-11-05
 depends_on: []
 blocks: []
 severity: gating
@@ -130,3 +130,49 @@ window**. That is direct evidence the date gate is not being read either.
 🔑 **So the client has been told nothing for two days on a production send to a real
 mailbox, while ROMI has now reproduced it internally.** The details Fabrizio
 Mastracci was promised are owed by Aurel Mrruku on **5 November**.
+
+## 🟡🔑 2026-11-05 - the flow was changed in Prod, the retest passes, and the diagnosis moves again
+
+🟢 **A production flow change was made on 4 November, early afternoon.** Aurel
+Mrruku in the marketing group DM, 11:55 CET: _"abbiamo fatto un aggiornamento del
+flow in prod, sul nomina biglietto deve essere ok"_; Elena Spini confirmed the
+timing: _"l'ha fatto Aurel ieri primo pomeriggio"_. 🆕 Fabrizio Mastracci named what
+changed, 11:56: _"abbiamo cambiato una **regola di ingresso** che prima era un campo
+status url (cosi mi era stato detto) e ora **`status__c`**"_. ⚠ **Nothing says the
+change is in source**, and this is a direct Prod edit of the kind
+[JOURNAL.md](../../JOURNAL.md) already lists as undeployed drift since 29/10.
+
+🟢 **Fabrizio Mastracci retested and it behaved as specified**, 11:49-11:51 CET:
+_"abbiamo rifatto io ed Aurel un giro di compilazione del biglietto e abbiamo visto
+lo storico degli invii email da Marketing cloud"_ → _"sembra che funzioni ESATTAMENTE
+come ci hanno chiesto che funzionasse … se rinuncio o compilo almeno un biglietto
+vado fuori dal flow"_. He tested on `Event_Invitation__c` `a03SW00000ewEtOYAU`.
+
+🔑 **And he offered a third explanation, against the second.** 11:50-11:52 CET:
+
+> _"Quello che abbiamo notato è che **loro non si sono mai mandati biglietti**, quindi
+> di fatto non hanno mai confermato."_
+>
+> _"Possiamo affermare al 99% che **non hanno fatto i test** / o che hanno **confuso
+> il link di richiesta biglietto** con quelle che effettivamente inviano in allegato
+> il biglietto."_
+
+⚠ **This is not reconciled with the 04/11 evidence.** Aurel Mrruku was in the room
+when it fired during the test — _"Sono già arrivati"_, assets `ordinato` — and
+attributed it to the marketing flow's own filter on a version 1.5 months old. A
+retest passing after a Prod entry-rule change is consistent with the fault having
+been real and fixed; the _"non hanno fatto i test"_ reading says it was never real.
+🔴 **Nobody has stated which it is**, and the 03/11 occurrence was a mail to the
+client's own mailbox, so at least one send is not in doubt.
+
+🔴 **The client has still been told nothing — third day.** Everything above happened
+in a ROMI-internal DM. No mail in this window goes to Pienissimo about it, and Elena
+Spini's _"Verifichiamo e vi faremo sapere"_ of 3 November is still outstanding. ⚠ The
+details Aurel Mrruku owed Fabrizio Mastracci on 5 November were delivered as a call
+instead (_"adesso ci sono se vuoi ci sentiamo in una call"_, 10:15 CET); what was
+agreed on it is not recorded.
+
+⚠ **Residual, and untested**: the empty-field rendering noted above and the
+`SPAM EDIZIONE TEST:` subject prefix were not revisited, and the deliberate 31/12/27
+send date in the mapping — the evidence that the date gate is not read — is not
+addressed by an entry-rule change.

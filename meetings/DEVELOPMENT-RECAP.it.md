@@ -9461,3 +9461,61 @@ Detto sulla linea aperta dopo l'uscita di Aurel Mrruku, tra persone di Pienissim
 🔴 **`#tproj-pienissimo` silenzioso per il terzo sweep consecutivo.** 🟢 Il gruppo dev ha ricevuto il primo messaggio umano da giorni — l'avviso pre-deploy di Aurel Mrruku alle 10:42 CET, una conferma e nessuna risposta — ma **nessun report notturno ha mai avuto risposta**. ⚠ **Fathom non ha restituito nulla per il trentaduesimo run**, in un giorno con una call cliente registrata. Il canvas è invariato dal 20.08.2026, **76 giorni**.
 
 **Nessun requisito è stato modificato da questo run — il registro resta v1.6.** L'obbligatorietà delle tranche del [#329](open-items.it.md) modifica un comportamento concordato ed è registrata come **candidato v1.7, deliberatamente non scritto nel registro**, che è vincolato contrattualmente e non si ristruttura a partire da una nota. 🔴 **`SAL-12` è non citato per la quattordicesima sessione.** 🔑 **Otto nuove righe si aggiungono alle assenze storiche** — nessuna riga di registro copre l'obbligatorietà delle tranche, l'ergonomia di inserimento righe preventivo, la reversibilità degli stati dopo uno storno di incasso, l'assegnazione del proprietario in import, la risoluzione del padre di un Locale, la frequenza di pianificazione delle integrazioni, le schermate di reportistica lato cliente, o il posizionamento delle firme sul documento di preventivo.
+
+## 78. Aggiornamento 05/11/2026 — la migrazione ha risposto al cliente con i numeri, e poi lo ha escluso dall'org
+
+Fonti: nove thread di posta (tutti i corpi letti per intero), quattro conversazioni Slack con i loro thread, il canvas Slack, tre ricerche su Drive con due letture di documenti, e il repository. Watermark 2026-11-04T22:00Z, **un giorno**. In questa giornata nessuna riunione è stata registrata o trascritta; **nessuna org è stata aperta**.
+
+### 🟢🔑 Entrambe le liste delle eccezioni sono tornate a Pienissimo, con una motivazione per riga
+
+Il pre-load in produzione di 8.262 Aziende, 3.918 Locali e 17.652 Referenti è riportato in [JOURNAL.md](../JOURNAL.md) nella stessa giornata. In serata entrambe le liste di esclusione sono state inviate al cliente:
+
+| Referenti, inviati alle 18:18 CET | Righe |
+| --- | --- |
+| Inseriti, collegati all'Azienda con quel codice Mexal | 17.652 |
+| Non inseriti — codice Mexal mancante | 49.788 |
+| Non inseriti — **il codice Mexal non corrisponde a nessuna Azienda in Prod** | **107** |
+
+🆕 **I 107 sono nuovi nel verbale.** Portano un codice che non risolve nulla in produzione, un difetto diverso dall'assenza di codice, e non ha un responsabile. La lista Locali è partita alle 16:46Z come `Locali non inseriti in Salesforce.xlsx`, _"con la loro mottivazione nella prima colona"_. ⚠ Nessuno dei due allegati è stato aperto — dati reali di clienti — e nessuna delle due mail indica un conteggio nel corpo.
+
+🔑 **La domanda del cliente del 4 novembre ha una risposta, interna.** Fabrizio Paganelli aveva insistito: _"vi avevamo già inviato un file con il codice mexal dell'account"_. Aurel Mrruku ha verificato: _"ieri ha detto che ha passato i contatti con id mexal dei account / **A me non risulta**"_, e davanti a uno screenshot, **_"no quello e id zohe"_** — l'identificativo nel file è l'id Zoho. 🔴 **Questa risposta non gli è stata inviata.** Il file è finalmente identificato: `Referenti Salesforce_V2.xlsx`, creato il 28 ottobre, **modificato il 5 novembre alle 15:28Z**; ⚠ cosa sia cambiato oggi non si sa.
+
+🆕🔑 **Elena Spini ha portato il resto al team marketing di Pienissimo**, alle 17:29Z, a Sabatino Rinaldi e Matteo Distaso: _"per poter procedere con l'import finale effettivo, dobbiamo definire insieme come preferite gestire i contatti restanti"_ — un blocco dichiarato sull'import finale, a sette giorni dalla finestra di migrazione.
+
+### 🔴🔑 E il cliente è stato escluso dalla produzione fino a lunedì
+
+Mentre il caricamento girava e le chiamate API Mexal venivano disattivate, Aurel Mrruku ha fermato il lavoro del cliente in Prod — _"non deve fare test in prod oggi"_, _"produzione non e per fare test a tapetto"_, _"poi devo cancellare tutto …"_ — ed Elena Spini lo ha chiamato al telefono: **_"Fabrizio bloccato in PROD fino a lunedì"_**. 🔴 **Nulla è stato comunicato per iscritto**, e i dati che ROMI attende da lui sono dovuti il **6 novembre** — _"ci devono fornire i datti entro venerdì"_ — scadenza anch'essa in nessuna mail. La sua obiezione resta senza risposta: _"comunque prima di andare live ovviamente deve fare tutto il giro"_, _"non è testa tutto il 16"_. Vedi [#339](open-items.it.md).
+
+⚠ Di chi fossero le _"porcherie diretamente in prod"_ **non è stabilito**: l'espressione si adatta a entrambi i Fabrizio e non viene fatta alcuna attribuzione.
+
+### 🔴 La conversione del lead è andata in errore in produzione
+
+Alle 08:38:04Z, nell'org live: `LeadConversionTrigger: execution of AfterUpdate caused by: System.DmlException: Operation failed due to fields being inaccessible on Sobject Opportunity`, in `LeadConversionTriggerHandler.copyConvertedFields: line 95` — l'`update` senza guardia di `Categoria__c`, `Sottocategoria__c` e dei cinque campi `UTM_*` sull'Opportunity convertita, eseguito nel contesto dell'utente. 🔑 **È la stessa classe di difetto del #286, la cui correzione è ferma su un branch non integrato dal 23 ottobre.** ⚠ Quale campo e quale utente: non stabilito. Vedi [#337](open-items.it.md).
+
+### 🟡🔑 Il guasto sull'invio dei biglietti ha cambiato direzione
+
+Una **regola di ingresso** del flow di produzione è stata cambiata il 4 novembre — _"prima era un campo status url … e ora `status__c`"_ — Fabrizio Mastracci ha ripetuto il test e il comportamento è esattamente quello richiesto, e ha poi proposto una terza spiegazione contro la seconda: _"Possiamo affermare al 99% che **non hanno fatto i test**"_, _"loro non si sono mai mandati biglietti"_. 🔴 **Non è conciliata con la riproduzione in riunione del 4 novembre**, e 🔴 **al cliente non è stato detto nulla — terzo giorno**. ⚠ La modifica in Prod non risulta essere a sorgente. Vedi [#313](open-items.it.md).
+
+### 🆕🔴 Due form del sito attivi scartano il consenso marketing
+
+Fabrizio Mastracci ha costruito i form Camerieri Venditori e Pienissimo Live e consegnano lead in Salesforce. La spunta del consenso non ha dove finire: _"in Salesforce manca il campo dove salvarla … altrimenti quella spunta non viene registrata"_. 🟢 **I campi offerti esistono** — `Consenso_Profilazione__c` e `Informativa_Privacy__c`, su Lead e Account, già riportati sull'Account in conversione — quindi il problema è la mappatura non decisa, _"quindi profilazione = marketing?"_, senza risposta. ⚠ Due risposte ROMI contraddittorie su `Interessato a` nella stessa ora, nessuna delle due a chi costruisce il form. Vedi [#340](open-items.it.md).
+
+🔑 Nella stessa conversazione il flow `Update_Contact_Consent` è stato **disattivato deliberatamente per il caricamento massivo** con l'accordo del suo proprietario — _"sisi, non cancellarlo"_ / _"lo disattivo perche sto facendo caricamento massivo"_ — e ripristinato come versione 2 con le sue due criticità di configurazione invariate.
+
+### 🟢🔑 Le utenze tutor esistono — prima della formazione, in UAT, e per un soffio
+
+Marco Montesi ha scelto (_"direi di attivare adesso le utenze"_) e le sei utenze UAT sono state confermate attive alle 18:13:22Z, con link password valido 24 ore e **configurazione MFA/passkey obbligatoria al primo accesso**. 🔴 **Solo UAT: i tutor non hanno utenze di produzione**, con l'avvio operativo al 16 novembre. 🔴 La creazione ha incontrato `LICENSE_LIMIT_EXCEEDED` e altre utenze UAT sono state disattivate per fare spazio con un _"lascia la mia utenza, per il resto procedi pure"_, **senza tenerne l'elenco**; 🔑 **la produzione non è mai stata contata**. Vedi [#300](open-items.it.md), [#341](open-items.it.md).
+
+### 🔴 Fase 2: una seconda offerta che si contraddice, e quattro punti aperti scaduti senza risposta
+
+`Pienissimo Offerta Fase 2_V.2` è stata creata alle 11:52Z, **cinque minuti prima della call di recap delle 12:00-12:30**, e afferma tre ordinamenti dei rilasci insieme — R1 come Info Point nella fascia di sintesi, R1 come Scadenziario nelle slide di dettaglio e nella timeline, con le slide superate lasciate dentro come `RILASCIO X`. 🔑 **Il contenuto che si è spostato è il lavoro Ri.Ba., insoluti e scadenziario**, datato dicembre 2026, 15 gennaio 2027 e 12 febbraio 2027 nello stesso documento, con [#331](open-items.it.md) nominato in nessuno dei due. **L'approvazione è attesa entro il 13 novembre.** Vedi [#342](open-items.it.md).
+
+🔴 **I quattro punti aperti di R0 avevano tutti scadenza 5 novembre e nessuno ha avuto risposta**: Elena Spini ha dovuto sollecitare — _"nel documento ci sono OP con scadenza oggi ancora da chiarire"_ — compreso OP-3, la conferma scritta che R0 è il primo rilascio di Fase 2 su cui doveva poggiare lo sviluppo dalla settimana del 9 novembre. ⚠ **La call di recap si è svolta e non ha lasciato alcun verbale** — nessun appunto, nessuna registrazione, nessuna cartella su Drive. 🟡 Un OK verbale su _"il deploy del 18"_ è promesso per la mattina del 6 novembre.
+
+### 🆕 E il cliente non può mantenere la propria anagrafica prodotti
+
+`Tipo Biglietto` non è modificabile da lui in Prod. Sollecitato due volte, una modifica di permessi in Prod dichiarata fatta alle 14:24 CET, e 🔴 **Elena Spini che alle 15:44 chiede ancora**, con un rifiuto per priorità. ⚠ Un'altra modifica diretta a Prod non documentata, che non risulta essere a sorgente. Vedi [#338](open-items.it.md).
+
+### Invariati
+
+🔴 `#tproj-pienissimo` silenzioso per il quarto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentatreesimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **77 giorni** · 🔴 [#212](open-items.it.md) invariato per la ventitreesima notte, in produzione · 🔴 [#312](open-items.it.md) Anticipay non è stato menzionato da nessuna fonte in questa finestra — terzo giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, quindicesimo run · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche resta candidata v1.7.

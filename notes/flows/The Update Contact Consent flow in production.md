@@ -50,3 +50,34 @@ filter. Thus an existing matching consent causes the flow to stop regardless of
 its status or subscription. If the create branch is reached, OptIn is fixed;
 there is no check of `HasOptedOutOfEmail` or other explicit consent flag in this
 flow. This is configuration evidence, not proof of any actual consent created.
+
+## 2026-11-05 evening - it was deactivated for the bulk load, with marketing's agreement
+
+The record above describes the version read in production on the morning of
+5 November. That evening it was switched off deliberately. In the marketing group DM:
+
+| Time (CET) | Who | Said |
+| --- | --- | --- |
+| 17:55 | Aurel Mrruku | _"hai fatto te sto flow in prod? update_contact_consent ti serve?"_, after pasting the inspection findings above |
+| 17:58 | Fabrizio Mastracci | _"sisi, **non cancellarlo**"_ |
+| 17:59 | Aurel Mrruku | _"**lo disattivo** perche sto facendo caricamento massivo"_ |
+| 17:59 | Fabrizio Mastracci | _"ok, no problem"_ |
+
+🟢 **So the deactivation was agreed, not unilateral**, and the owner is now on the
+record: **Fabrizio Mastracci** confirms the flow is his and is needed, which the
+provenance above could only attribute to the `ROMI COMPANY` account.
+
+🔑 **It was restored as version 2, because this flow type cannot be reactivated.**
+Version 2 is logic-identical to v1 (Tooling metadata compared) plus a description;
+deploy `0AfSW000001LDjF0AW`, active version **`301SW00000hKT1uYAG`**. The
+17,652-contact Referenti load therefore ran with no consent flow and created no
+Marketing email Opt-In — see
+[OI-290](../items/OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md).
+
+⚠ **The configuration concerns above are unchanged in v2** — the `Email EqualTo
+boolean false` start condition and the email-only lookup were carried over, not
+fixed. 🔑 They now matter more: the two public website forms collect a consent tick
+that has no field to land in
+([OI-340](../items/OI-340%20The%20website%20lead%20forms%20have%20no%20field%20for%20the%20marketing%20consent.md)),
+so this flow is the only thing creating marketing consent for a new contact, and it
+creates `OptIn` without reading any explicit consent flag.

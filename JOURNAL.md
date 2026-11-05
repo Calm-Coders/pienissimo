@@ -10,6 +10,36 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-05 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-11-04T22:00Z**.
+  Nine mail threads, four Slack conversations plus threads, the canvas, three Drive
+  searches, two document reads. **No meeting was recorded or transcribed today.**
+- **Opened OI-337 → OI-342:** lead conversion throwing in **Prod** at 08:38Z
+  (`copyConvertedFields:95`, the unguarded Opportunity `update` — same class as the
+  still-unmerged OI-286 fix); `Tipo Biglietto` not editable by the client in Prod;
+  **the client blocked out of Prod until Monday 9/11** while the load ran; the two
+  live website forms **discarding the marketing consent**; UAT out of Salesforce
+  licences; and the **Fase 2 offer V.2 stating three release orderings**.
+- **Updated:** OI-290 (Referenti **17,652 / 49,788 / 107**; the client's file carries
+  the **Zoho id**, not the Mexal code — *not yet told to him*; escalated to Sabatino
+  Rinaldi and Matteo Distaso as a blocker on the final import), OI-300 (**six UAT
+  tutor users active**, before the training, 24-hour link, mandatory MFA; **no Prod
+  users**), OI-310, OI-313 (**Prod entry rule changed to `status__c`, retest passes,
+  a third diagnosis — unreconciled**), OI-333, the Fase 2 offer, the R0 analysis
+  (**all four OPs fell due today unanswered**), the consent flow (**deactivated for
+  the load with its owner's agreement, restored as v2**).
+- **State:** `vault:check` green, 579 notes, all links resolve (14 pre-existing trace
+  warnings, unchanged). MAP, INDEX, both trackers (6 new + 5 regenerated rows each)
+  and both recaps (**§78**) updated. **Register untouched — v1.6.**
+- **Next:** the Fase 2 ordering must be settled before the **13/11** approval; the
+  client owes migration data on **6/11** while locked out of Prod; OI-337 needs a
+  field and an owner.
+- **Watch:** three Prod changes this week are **not known to be in source** — the
+  flow entry rule, the `Tipo Biglietto` permission and the 29/10-onward drift already
+  listed. ⚠ Do not read OI-313's retest as closing it: the 04/11 reproduction stands.
+  Next free item id **343**.
+
 ## 2026-11-05 - codex - production consent flow inspection
 
 - **Did:** read Prod FlowDefinition, active Flow metadata, subscription/channel

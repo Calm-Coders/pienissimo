@@ -187,3 +187,30 @@ jobs `750SW00000bMkdBYAS` (1-row sample, checked first) and `750SW00000bMkgPYAS`
   codes duplicated in the file need a client answer; the exception list and the
   created-id list are kept outside the repository. Not loaded: Locali, Referenti,
   orders.
+
+## 2026-11-05 evening - the exception lists went back to the client, and the client is out of Prod
+
+🟢 **Both exclusion lists were mailed the same evening**, each with a reason per row:
+the Locali at 16:46Z
+([OI-333](OI-333%20Locali%20without%20a%20Mexal%20customer%20code%20will%20not%20be%20loaded.md))
+and the Referenti at 18:18 CET with the counts 17,652 / 49,788 / **107 whose Mexal
+code matches no Azienda in Prod**
+([OI-290](OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md)).
+🟢 Aurel Mrruku also acknowledged the account file at 16:07Z: _"Procedo con le
+verifiche del file excel relativo a Salesforce."_
+
+🔴 **Orders are still not loaded.** `Import Ordini (versione del 2026.11.04).xlsx`
+arrived on 4 November and nothing in this window says it was opened or run.
+
+🔑 **The client owes the remaining data by Friday 6 November** — Aurel Mrruku, DM
+16:11 CET: _"ci devono fornire i datti entro venerdì"_, _"abbiamo delle date
+condivise con loro"_, _"abbiamo già dato un giorno"_. ⚠ **That deadline is in no mail
+to the client in this window.**
+
+🔴 **And the person who owes it was blocked out of production until Monday** while
+the load ran and the Mexal API calls were switched off around it —
+[OI-339](OI-339%20The%20client%20was%20locked%20out%20of%20production%20during%20the%20migration%20load.md).
+Aurel Mrruku, 16:10 CET: _"ma non possono, sto caricando centinaia di account e devo
+impedire che vadano su mexal"_. 🔑 **The delta run this row exists for is therefore
+being set up in an org the client cannot touch, eight days before the migration
+window.**
