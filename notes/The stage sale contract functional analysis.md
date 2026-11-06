@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-11-03
-updated: 2026-11-05
+updated: 2026-11-06
 depends_on: [OI-304]
 blocks: [go-live]
 source: notes/meetings/2026-11-03 Follow-up Interno.md
@@ -206,3 +206,45 @@ che **domani mattina manda l OK** e se ha problemi dubbi ci scrive / chiama"_. S
 verbal OK on the 18th is expected on the morning of **6 November**; ⚠ the
 conversation does not say whether it also covers OP-3's written confirmation, and
 nothing identifies which release _"il deploy del 18"_ is.
+
+## 2026-11-06 — the OK arrived, approving the specification and rejecting its premise
+
+🟢 **The promised OK came, on the morning it was promised.** Fabrizio Paganelli,
+Gmail `1a1b03ba790c53c6`, **09:41:00Z**, to Elena Spini, `amministrazione@` and
+Sabatino Rinaldi, cc Aurel Mrruku:
+
+> _"L'unico punto sul quale non sono d'accordo e che "La richiesta e emersa nella
+> call del 02/11/2026 e non era prevista nel Blueprint di Fase 1", ma questo e un
+> altro tema_
+>
+> _Per il resto, per me va bene quanto indicato nelle specifiche del documento"_
+
+**So the seven functional requirements and the solution are accepted by the client
+in writing.** This is the first client approval of any Fase 2 content.
+
+### What it does to the four open points
+
+| | Status after 06/11 |
+| --- | --- |
+| **OP-1** — fields on the Order to populate the template, Aurel Mrruku to verify | 🔴 **Unanswered.** Nothing in this window reports the verification |
+| **OP-2** — signature tracking on the order: status or flag, and where the signed PDF is stored | 🔴 **Unanswered.** It was Fabrizio Paganelli's to answer and his mail does not touch it |
+| **OP-3** — written confirmation that this is the first release of Fase 2, before development starts | 🟡 **Half answered.** The specification is confirmed; the Fase 2 premise is explicitly rejected → [OI-343](items/OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md) |
+| **OP-4** — release date 18 or 19/11 and client availability for testing in the week of 16/11 | 🔴 **Unanswered in writing.** The mail names no date and no availability |
+
+🔑 **The approval and the dispute are the same four lines**, and the disputed
+sentence is the one OP-3 exists to secure. **ROMI read the mail as a confirmation.**
+Elena Spini, Aurel Mrruku DM **11:02:26 CET**: _"Tema Contratti Post-Vendita Da
+Palco >> **Fabrizio ha confermato (a modo suo -.-)**"_; Aurel Mrruku 11:04:42: _"mi
+preoccupa "a modo suo""_; she pasted the disputed sentence back; 11:08:00: _"che
+trovi la call dove lha detto..."_ — ⚠ **ROMI believes the attribution is on a
+recording; which call is not identified and no transcript was opened.**
+
+🔴 **Development was authorised in the same exchange, on an emoji.** Aurel Mrruku,
+**11:04:55 CET**: _"posso iniziare coi sviluppi?"_ → a ✅ reaction from Elena Spini
+and no words. **So R0 development starts with OP-1, OP-2 and OP-4 open**, OP-2 being
+the one design question in the four — where the signature status and the signed PDF
+live on the order.
+
+⚠ **The document still has not moved**: `1A-sYQEZvbp2ShVbVL1XQPkPottBQKCuI` remains
+at 2026-11-03 17:58:18Z, checked again on 6 November. The approval is in the mail,
+not in the artifact, and the client left no comment in it.

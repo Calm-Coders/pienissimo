@@ -1047,3 +1047,50 @@ become `Fatturato`/`Incassato` and the paid tickets `Disponibile`; schedule the
 Prod nightly jobs; then decide what happens to invitations for past events
 **before** the two marketing flows are reactivated (versions 6 and 24), because
 reactivated flows would mail customers as tickets turn `Disponibile`.
+
+## 🟢 2026-11-06 - the client was told, and the invoice jobs are gated on the 12-13/11 delta
+
+Aurel Mrruku to Fabrizio Paganelli, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, cc
+Elena Spini and `amministrazione@`, attaching
+**`Ordini non inseriti in Salesforce.xlsx`** (⚠ **not opened** — customer records):
+
+> _"Abbiamo caricato in Salesforce il file Import Ordini (versione del 2026.11.04):
+> **8.162 ordini su 8.193**, con 18.006 righe e le relative tranche. **Nessun ordine
+> e stato inviato a Mexal.**"_
+
+Stated to him, matching this note's figures: **31 orders (73 lines) of 7 customers**
+not inserted because the customer code is absent from the 04/11 account file;
+**141 orders** inserted with payment code `12` because theirs (`4`, `60`, `62`) does
+not exist in Salesforce; **one identical duplicate line** loaded once.
+
+🔑 **And a sequencing commitment the record did not hold:**
+
+> _"**I job notturni che importano fatture e scadenziari da Mexal in produzione li
+> attiveremo solo dopo aver caricato tutti gli ordini, quindi dopo il delta del
+> 12-13 novembre.** Il motivo e che, quando arrivano fatture e incassi, gli ordini
+> passano a fatturato o incassato e i biglietti diventano disponibili. Questo fa
+> partire le comunicazioni marketing di conferma e invio biglietto. **Per lo stesso
+> motivo abbiamo disattivato temporaneamente i due flussi marketing** … Finche sono
+> spenti **non partono email nemmeno sugli ordini nuovi**. Fino ad allora gli ordini
+> storici risultano in Salesforce nello stato **Ordinato**."_
+
+So the invoice and scadenzario pull, the Prod nightly jobs and the reactivation of
+the two marketing flows are all **after the 12-13 November delta**, and the client
+has been told so in writing. 🔴 **That is three days before the 16 November user
+start**, and the flows being off also suppresses mail on **new** orders meanwhile.
+
+⚠ **Who switched the flows off is recorded two ways.** In the marketing group DM,
+**16:53:39 CET** Aurel Mrruku: _"sto per caricare dei ordini in prod, forse e meglio
+se spendiamo i flussi di marketing?"_ — _"il caricamento crea circa 20k asset"_,
+_"con circa 10k inviti"_ — Fabrizio Mastracci **16:58:54**: _"sisi assolutamente,
+**li spengo**"_; then Aurel Mrruku _"ci provo"_, **17:04:52** _"**da cloude no** ma
+provo manualmente"_, **17:07:57** _"Done"_. **The owner agreed and the deactivation
+was done manually**; this note's earlier entry attributes it to the agent session.
+Both are recorded; the discrepancy is not resolved here.
+
+🔴 **The 01/01/2021 tranche dates are the client's data, and he has now been told by
+telephone.** Aurel Mrruku, Elena Spini DM **17:47:55-17:48:26 CET**: _"ho gia
+chiamatto fabrizio"_, _"pienissimo altrimenti non ne uscivo"_, _"**ha messo delle
+tranche del 1/1/2021 sui ordini dek 2026**"_. ⚠ **The call left no written record**
+and no correction to the file has been promised; the placeholder dates are loaded in
+Prod as they stand.

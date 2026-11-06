@@ -10,6 +10,47 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-06 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-11-05T22:00Z**.
+  Nine mail threads (four moved, all read in full), four Slack conversations plus one
+  thread, the canvas, three Drive searches, three metadata checks and one document
+  read. **No meeting was recorded or transcribed today.**
+- **Opened OI-343 -> OI-345:** the client **approved the Fase 2 R0 specification in
+  writing and rejected the one sentence that classifies it as Fase 2** (_"non era
+  prevista nel Blueprint di Fase 1 ... ma questo e un altro tema"_); **sixteen Sales
+  flow changes** arrived from Marco Montesi with the `Lavorato` column empty and no
+  source acknowledging them; and **lead qualification blocked all six UAT tutors**
+  because their users were created without agent codes.
+- **State:** OI-343/344/345 written; OI-244, OI-265, OI-300, OI-333 and the R0
+  analysis note updated; MAP/INDEX, both trackers (3 new + 4 regenerated rows each)
+  and both recaps (new **Sec. 79**) regenerated; trace at
+  `notes/traces/Source trace 2026-11-06 nightly.md`. **Register untouched - v1.6.**
+  Next free item id **346**.
+- **Next:** three things need a human answer, none of which exists yet. **(1)** Nobody
+  has replied to the client on the Blueprint claim, and R0 development was authorised
+  on a emoji reaction with **OP-1, OP-2 and OP-4 still open** - OP-2 (where the
+  signature status and signed PDF live on the order) is the design question.
+  **(2)** The sixteen Sales flow rows need triage into defect / usability /
+  requirement change; at least three are requirement changes and are **v1.7
+  candidates** alongside the OI-329 tranche obligation. **(3)** OI-265's two rows
+  demand the picklists become mandatory while `b0e69c5` made them read-only for
+  `Agente` - those cannot both stand.
+- **Watch:** the order load was reported to the client at 16:51Z and **gated the
+  nightly invoice/scadenzario jobs and both marketing flows on the 12-13 November
+  delta** - three days before the 16 November user start, so the flows are off for
+  new orders too. The 01/01/2021 tranche dates are the **client's** data, raised with
+  him **by telephone only**. `Locali Salesforce.xlsx` was edited by the client at
+  10:33Z and nobody knows what changed. `Devmain_LeadChecks` carries the OI-286 fix
+  **unmerged a fourteenth day** while OI-337 still has no owner. The dev group's own
+  05/11 report is **unanswered a second day**.
+- **Not done:** org not opened, so `STATUS.md` and its Notion mirror are **stale**;
+  no Apex test class written or proposed (standing instruction); no customer-data
+  workbook or attachment opened; the 3CX/Zucchetti DM item belongs to **another
+  client** and was excluded.
+
+---
+
 ## 2026-11-06 - codex - Claude REST command permission
 
 - **Did:** at the user's request, added explicit local Claude allow rules in

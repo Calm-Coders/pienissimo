@@ -9519,3 +9519,55 @@ Marco Montesi ha scelto (_"direi di attivare adesso le utenze"_) e le sei utenze
 ### Invariati
 
 🔴 `#tproj-pienissimo` silenzioso per il quarto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentatreesimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **77 giorni** · 🔴 [#212](open-items.it.md) invariato per la ventitreesima notte, in produzione · 🔴 [#312](open-items.it.md) Anticipay non è stato menzionato da nessuna fonte in questa finestra — terzo giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, quindicesimo run · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche resta candidata v1.7.
+
+## 79. Aggiornamento 06/11/2026 — il cliente ha approvato le specifiche R0 di Fase 2 e ha rifiutato la frase che le rende Fase 2
+
+Fonti: nove thread di posta (i quattro che si sono mossi letti per intero), quattro conversazioni Slack più un thread, il canvas Slack, tre ricerche Drive, tre verifiche di metadati e una lettura di documento, e il repository. Watermark 2026-11-05T22:00Z, **un giorno**. Nessuna riunione è stata registrata né trascritta in questa giornata; **nessuna org è stata aperta**.
+
+### 🟢🔑 L'OK è arrivato, e approva le specifiche negandone la premessa
+
+Fabrizio Paganelli, Gmail `1a1b03ba790c53c6`, **09:41:00Z**, a Elena Spini, `amministrazione@pienissimo.com` e Sabatino Rinaldi, cc Aurel Mrruku:
+
+> _"L'unico punto sul quale non sono d'accordo è che "La richiesta è emersa nella call del 02/11/2026 e **non era prevista nel Blueprint di Fase 1**", ma questo è un altro tema_
+>
+> _Per il resto, **per me va bene quanto indicato nelle specifiche del documento**"_
+
+🟢 **È la prima approvazione del cliente su un contenuto di Fase 2** — i sette requisiti funzionali dell'analisi del contratto da palco, accettati per iscritto, la mattina in cui era stata promessa.
+
+🔴 **E l'unica frase che rifiuta è la premessa di tutta la classificazione R0.** Se la richiesta era nel Blueprint di Fase 1 è lavoro già pagato; se non lo era, è il primo rilascio di una Fase 2 che il cliente deve ancora approvare entro il 13 novembre. L'`OP-3` esiste proprio per ottenere quella conferma scritta, quindi è **risolto a metà**. `OP-1` (Aurel Mrruku, i campi sull'Ordine), `OP-2` (**suo** — lo stato firma e dove risiede il PDF firmato) e `OP-4` (data di rilascio, disponibilità ai test) sono **senza risposta**.
+
+🔑 **ROMI ha letto la mail come una conferma e non gli ha risposto.** Elena Spini, DM 11:02:26 CET: _"Fabrizio ha confermato (a modo suo -.-)"_ → Aurel Mrruku 11:04:42 _"mi preoccupa "a modo suo""_ → lei ha rincollato la frase contestata → 11:08:00 _"che trovi la call dove lha detto..."_. ⚠ **ROMI ritiene che l'attribuzione sia documentata in una registrazione; quale call non è identificato e nessuna trascrizione è stata aperta.**
+
+🔴 **Lo sviluppo è stato autorizzato nello stesso scambio, con una emoji.** 11:04:55 CET: _"posso iniziare coi sviluppi?"_ — risposta ✅ e nessuna parola. ⚠ Il documento è invariato dal 03/11 17:58Z e non porta alcun commento del cliente: l'approvazione sta nella mail. Vedi [#343](open-items.it.md).
+
+### 🆕🔴 Sono arrivate sedici modifiche al flusso Sales dal cliente, e nessuna è stata triagiata
+
+`Modifiche flussi Sales`, Drive `1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8`, proprietà `marco.m@pienissimo.com`. **Creato il 28 ottobre alle 16:27Z**, 🔑 **condiviso con ROMI solo il 6 novembre alle 10:03Z**, e **modificato di nuovo alle 16:55Z** dello stesso giorno. Foglio `Romi`, sedici righe di `Macro` / `Attività` / `Lavorato` — e 🔴 **`Lavorato` è vuota su tutte le righe**, senza che nessuna mail, messaggio o riunione in questa finestra nomini il file.
+
+🔑 **Le sue prime due righe sono la prima risposta scritta del cliente al [#265](open-items.it.md)**, aperto dal 19 ottobre: _"Lista voci incompleta → **lista completa già inviata** + compilazione da rendere obbligatoria"_ per `Categorie` e `Sottocategorie`. ⚠ Non dice quando né a chi sia stata inviata, e il workbook delle picklist è atteso da quindici giorni. 🆕 **La richiesta di obbligatorietà si scontra frontalmente con `b0e69c5` del 2 novembre**, che ha reso entrambe le picklist in sola lettura per `Agente`: un campo obbligatorio che il commerciale non può modificare non può essere compilato.
+
+Il resto: la lista `Fonte` del Lead da rivedere e tradurre — la stessa che ha costretto a usare `Website` invece di `Sito` sui form pubblici ([#340](open-items.it.md)); un'anteprima del preventivo che non generi il PDF; il valore economico reso visibile in cinque punti dove si inseriscono ed elencano righe preventivo e tranche; testo, oggetto e un campo cc della mail di accettazione, più la mail di anteprima e il suo popup; e tre domande di usabilità, una delle quali chiede esattamente l'indicatore che Elena Spini il 27 ottobre gli aveva detto che le Note **non** avrebbero dato.
+
+⚠ **Almeno tre righe sono modifiche ai requisiti, non difetti**, quindi sono candidati v1.7; ⚠ nel foglio non compare alcuna cifra di catalogo e nessuna è trascritta. ⚠ Se la lista sia rimedio di Fase 1 o scope di Fase 2 **non è dichiarato da nessuna parte** — la stessa domanda senza risposta del #343, a dieci giorni dall'avvio utenti del 16 novembre. Vedi [#344](open-items.it.md).
+
+### 🔴 I sei tutor hanno usato l'org per la prima volta, e la prima cosa che hanno toccato non ha funzionato
+
+Marco Montesi, Gmail `1a1b0134c558b416`, 08:56:56Z: _"sia da loro ma anche da me, che al momento della **qualifica del lead non mi fa inserire l'agente**, bloccando il proseguimento delle azioni dato che è obbligatorio"_. 🟢 Elena Spini ha indicato la causa come propria e l'ha risolta in ottanta minuti: _"**Errore mio**, avevo creato le utenze senza i codici agenti ieri sera"_.
+
+🟢 **Non è un difetto di build** — l'agente è obbligatorio in qualifica per disegno e la lookup era vuota. 🔑 **La procedura di creazione utenze ha omesso il codice**, su utenze create la notte prima contro un tetto di licenze ([#341](open-items.it.md)) disattivando altre utenze UAT per fare spazio. 🔴 **Le utenze di produzione non esistono ancora**, lo stesso campo va impostato per l'avvio del 16 novembre, e l'elenco dei sette codici agente non è mai stato fornito ([#332](open-items.it.md)); ⚠ quali codici siano stati usati il 6 novembre non è registrato da nessuna parte. Vedi [#345](open-items.it.md).
+
+### 🟢 Il caricamento degli ordini è stato comunicato al cliente, con i job fatture vincolati al delta del 12-13 novembre
+
+Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non inseriti in Salesforce.xlsx` (⚠ non aperto): 8.162 ordini su 8.193, 18.006 righe, **nulla inviato a Mexal**, i 31 ordini dei 7 clienti mancanti, i 141 forzati al codice pagamento `12`, l'unica riga duplicata.
+
+🔑 **E un impegno di sequenza che il record non aveva**: i job notturni di fatture e scadenziari saranno attivati _"solo dopo aver caricato tutti gli ordini, quindi **dopo il delta del 12-13 novembre**"_, i due flussi marketing restano spenti fino ad allora — _"non partono email nemmeno sugli ordini nuovi"_ — e gli ordini storici restano `Ordinato`. 🔴 **Sono tre giorni prima dell'avvio utenti del 16 novembre.**
+
+⚠ **Chi ha spento i flussi è registrato in due modi**: il proprietario Fabrizio Mastracci ha acconsentito (_"sisi assolutamente, li spengo"_) e Aurel Mrruku lo ha fatto manualmente (_"da cloude no ma provo manualmente"_ → _"Done"_), mentre il journal lo attribuisce alla sessione agent. 🔴 **Le date tranche 01/01/2021 sono dati del cliente** e gli è stato detto per telefono — _"ha messo delle tranche del 1/1/2021 sui ordini dek 2026"_ — ⚠ senza alcun verbale e senza correzione promessa. Vedi [#244](open-items.it.md).
+
+### ⚠ E il cliente ha modificato il proprio file Locali il giorno dopo aver ricevuto la lista delle eccezioni
+
+`Locali Salesforce.xlsx` è stato **modificato alle 10:33:36Z**, un giorno dopo che la lista delle righe non caricabili gli è tornata indietro. ⚠ Cosa sia cambiato non si sa — dati di clienti, **non aperto** — e nessuna fonte annuncia una lista rivista, quindi il report delle eccezioni potrebbe già essere calcolato su un file superato. Vedi [#333](open-items.it.md).
+
+### Invariati
+
+🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.

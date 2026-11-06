@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-19
-updated: 2026-11-02
+updated: 2026-11-06
 depends_on: [OI-96]
 source: Gmail thread 1a154a97e004a741, 2026-10-19T14:55:54Z
 ---
@@ -225,3 +225,33 @@ permission"_ and no source this sweep mentions these picklists at all. Making th
 uneditable is not wrong on its own — the values are supposed to come from the
 client's registry — but **the registry values have not been loaded**, so the result
 is a mismatched picklist that the sales team can no longer correct.
+
+## 🔑 2026-11-06 — the client finally answered, in a spreadsheet nobody asked for
+
+**Elena Spini's 19 October question — _"ci sono i valori che ci avete condiviso
+ultimamente, non vi torna?"_ — has an answer eighteen days later.** It is rows 1 and
+2 of `Modifiche flussi Sales`, the change list Marco Montesi shared on 6 November at
+10:03Z →
+[OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md):
+
+| Macro | Activity |
+| --- | --- |
+| Categorie | _"Lista voci incompleta → **lista completa gia inviata** + compilazione da rendere obbligatoria"_ |
+| Sottocategorie | _"Lista voci incompleta → **lista completa gia inviata** + compilazione da rendere obbligatoria"_ |
+
+🔑 **So the client's position is stated: the values in the org are incomplete, and
+the complete list has already been sent.** ⚠ **He does not say when or to whom**, and
+the picklist workbook this record has been waiting for is now **fifteen days** owed.
+The disagreement is therefore still a disagreement about whose transmission is
+current — but for the first time it is in writing from the client's side, and it is
+Marco Montesi's claim, the same person Fabrizio Paganelli was quoting on 19 October
+(_"Sentito Marco, i campi Categoria e Sottocategoria non sono aggiornati"_).
+
+🆕 **And a new requirement rides on it: both fields must become mandatory.** That is
+a register change if accepted, and it collides directly with the 2 November
+permission change: `b0e69c5` made both fields **read-only** for the `Agente`
+permission set and profile. 🔴 **A mandatory field the sales team cannot edit cannot
+be filled**, so the two requests cannot both stand as they are.
+
+**Still owed:** the complete value list as a file, identified; a ruling on the
+mandatory request; and reconciliation with the read-only grant.

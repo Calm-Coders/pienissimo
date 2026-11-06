@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-11-04
-updated: 2026-11-05
+updated: 2026-11-06
 depends_on: [OI-310]
 blocks: [go-live]
 source: notes/meetings/2026-11-04 Continuazione Test e2e PROD.md
@@ -145,3 +145,19 @@ hands with a reason per row**, the same pattern used for the Referenti the same
 evening. ⚠ **The mail states no count**, and the attachment was not opened (real
 customer records); the 768 figure comes from the load record above, not from this
 mail. 🔴 **No reply, and no date asked for one.**
+
+## 2026-11-06 — the client edited the Locali file the day after getting the exception list
+
+🔑 **`Locali Salesforce.xlsx` was modified on 6 November at 10:33:36Z**, Drive
+`1GaL_3UR7S7yjZm3bbQ-RMkYmxjXdt_hl`, owner `fabrizio.pienissimo@gmail.com` — the
+day after the list of rows that could not be loaded went back to him with a reason
+per row (`Locali non inseriti in Salesforce.xlsx`, mailed 05/11 16:46:20Z).
+
+⚠ **What changed is not known.** The workbook holds customer records and was **not
+opened**; only its existence and modification time are recorded. No mail or message
+in this window announces a revised Locali file, and the version ROMI holds is still
+the provisional 4 November one.
+
+🔴 **So there may now be a newer client list than the one the exception report was
+computed against**, and nobody has said so either way. The question to ask him is
+whether the 6 November edit is the promised correction of the uncoded rows.

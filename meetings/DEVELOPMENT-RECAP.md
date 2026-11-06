@@ -9170,3 +9170,55 @@ Marco Montesi chose (_"direi di attivare adesso le utenze"_) and the six UAT use
 ### Unchanged
 
 🔴 `#tproj-pienissimo` silent a fourth consecutive sweep · ⚠ Fathom returned nothing a thirty-third consecutive run · the Slack canvas is unchanged since 20.08.2026, **77 days** · 🔴 [#212](open-items.md) unchanged a twenty-third night, in production · 🔴 [#312](open-items.md) Anticipay was not mentioned by any source in this window — a third day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a fifteenth run · **the requirement register is untouched and stays v1.6**; the tranche obligation remains the v1.7 candidate.
+
+## 79. Update 2026-11-06 — the client approved the Fase 2 R0 specification and rejected the sentence that makes it Fase 2
+
+Sources: nine mail threads (the four that moved read in full), four Slack conversations plus one thread, the Slack canvas, three Drive searches, three metadata checks and one document read, and the repository. Watermark 2026-11-05T22:00Z, **one day**. No meeting was recorded or transcribed on this day; **no org was opened**.
+
+### 🟢🔑 The OK arrived, and it approves the specification while denying the premise
+
+Fabrizio Paganelli, Gmail `1a1b03ba790c53c6`, **09:41:00Z**, to Elena Spini, `amministrazione@pienissimo.com` and Sabatino Rinaldi, cc Aurel Mrruku:
+
+> _"L'unico punto sul quale non sono d'accordo è che "La richiesta è emersa nella call del 02/11/2026 e **non era prevista nel Blueprint di Fase 1**", ma questo è un altro tema_
+>
+> _Per il resto, **per me va bene quanto indicato nelle specifiche del documento**"_
+
+🟢 **This is the first client approval of any Fase 2 content** — the seven functional requirements of the stage-sale contract analysis, accepted in writing, on the morning it was promised.
+
+🔴 **And the one sentence he rejects is the premise of the whole R0 classification.** If the request was in the Fase 1 Blueprint it is work already paid for; if it was not, it is the first release of a Fase 2 the client must still approve by 13 November. `OP-3` exists precisely to secure that in writing, so it is **half answered**. `OP-1` (Aurel Mrruku, the Order fields), `OP-2` (**his own** — the signature status and where the signed PDF lives) and `OP-4` (release date, testing availability) are **unanswered**.
+
+🔑 **ROMI read the mail as a confirmation and has not replied to him.** Elena Spini, DM 11:02:26 CET: _"Fabrizio ha confermato (a modo suo -.-)"_ → Aurel Mrruku 11:04:42 _"mi preoccupa "a modo suo""_ → she pasted the disputed sentence back → 11:08:00 _"che trovi la call dove lha detto..."_. ⚠ **ROMI believes the attribution is evidenced on a recording; which call is not identified and no transcript was opened.**
+
+🔴 **Development was authorised in the same exchange, on an emoji.** 11:04:55 CET: _"posso iniziare coi sviluppi?"_ — answered with a ✅ and no words. ⚠ The document itself is unchanged since 03/11 17:58Z and carries no client comment: the approval lives in the mail. See [#343](open-items.md).
+
+### 🆕🔴 Sixteen Sales flow changes arrived from the client, and none is triaged
+
+`Modifiche flussi Sales`, Drive `1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8`, owner `marco.m@pienissimo.com`. **Created 28 October 16:27Z**, 🔑 **shared with ROMI only on 6 November at 10:03Z**, and **modified again at 16:55Z** the same day. Sheet `Romi`, sixteen rows of `Macro` / `Attività` / `Lavorato` — and 🔴 **`Lavorato` is empty on every row**, with no mail, message or meeting in this window mentioning the file.
+
+🔑 **Its first two rows are the client's first written answer to [#265](open-items.md)**, open since 19 October: _"Lista voci incompleta → **lista completa già inviata** + compilazione da rendere obbligatoria"_ for both `Categorie` and `Sottocategorie`. ⚠ He does not say when or to whom it was sent, and the picklist workbook is now fifteen days owed. 🆕 **The mandatory-field demand collides head-on with `b0e69c5` of 2 November**, which made both picklists read-only for `Agente`: a mandatory field the sales team cannot edit cannot be filled.
+
+The rest: the Lead `Fonte` list to be revised and translated — the same list that forced `Website` instead of `Sito` on the public forms ([#340](open-items.md)); a quote preview that does not generate the PDF; money made visible in five places where quote lines and tranches are entered and listed; the acceptance mail's text, subject and a cc field, plus the preview mail and its popup; and three usability questions, one of which asks for exactly the indicator Elena Spini told him on 27 October that Notes would **not** give.
+
+⚠ **At least three rows are requirement changes, not defects**, so they are v1.7 candidates; ⚠ no catalogue figures appear in the sheet and none is transcribed. ⚠ Whether the list is Fase 1 remediation or Fase 2 scope is **stated nowhere** — the same unanswered question as #343, ten days before the 16 November user start. See [#344](open-items.md).
+
+### 🔴 The six tutors used the org for the first time, and the first thing they touched failed
+
+Marco Montesi, Gmail `1a1b0134c558b416`, 08:56:56Z: _"sia da loro ma anche da me, che al momento della **qualifica del lead non mi fa inserire l'agente**, bloccando il proseguimento delle azioni dato che è obbligatorio"_. 🟢 Elena Spini named the cause as her own and fixed it in eighty minutes: _"**Errore mio**, avevo creato le utenze senza i codici agenti ieri sera"_.
+
+🟢 **Not a build defect** — the agent is mandatory at qualification by design and the lookup was empty. 🔑 **The user-creation procedure omitted the code**, on users created the previous night against a licence ceiling ([#341](open-items.md)) with other UAT users deactivated to make room. 🔴 **Production users do not exist yet**, the same field must be set for the 16 November start, and the seven-agent code list has never been supplied ([#332](open-items.md)); ⚠ which codes were used on 6 November is recorded nowhere. See [#345](open-items.md).
+
+### 🟢 The order load was reported to the client, with the invoice jobs gated on the 12-13 November delta
+
+Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, attaching `Ordini non inseriti in Salesforce.xlsx` (⚠ not opened): 8,162 orders of 8,193, 18,006 lines, **nothing sent to Mexal**, the 31 orders of 7 missing customers, the 141 forced to payment code `12`, the one duplicate line.
+
+🔑 **And a sequencing commitment the record did not hold**: the nightly invoice and scadenzario jobs will be activated _"solo dopo aver caricato tutti gli ordini, quindi **dopo il delta del 12-13 novembre**"_, the two marketing flows stay off until then — _"non partono email nemmeno sugli ordini nuovi"_ — and the historical orders stay `Ordinato`. 🔴 **That is three days before the 16 November user start.**
+
+⚠ **Who switched the flows off is recorded two ways**: the owner Fabrizio Mastracci agreed (_"sisi assolutamente, li spengo"_) and Aurel Mrruku did it manually (_"da cloude no ma provo manualmente"_ → _"Done"_), while the journal attributes it to the agent session. 🔴 **The 01/01/2021 tranche dates are the client's own data** and he was told by telephone — _"ha messo delle tranche del 1/1/2021 sui ordini dek 2026"_ — ⚠ with no written record and no correction promised. See [#244](open-items.md).
+
+### ⚠ And the client edited his Locali file the day after getting the exception list
+
+`Locali Salesforce.xlsx` was **modified at 10:33:36Z**, one day after the list of unloadable rows went back to him. ⚠ What changed is unknown — customer records, **not opened** — and no source announces a revised list, so the exception report may already be computed against a superseded file. See [#333](open-items.md).
+
+### Unchanged
+
+🔴 `#tproj-pienissimo` silent a fifth consecutive sweep · ⚠ Fathom returned nothing a thirty-fourth consecutive run · the Slack canvas is unchanged since 20.08.2026, **78 days** · 🔴 the dev group's own 5 November report is **unanswered a second day** · 🔴 [#337](open-items.md) lead conversion in Prod has no owner and the #286 fix on `Devmain_LeadChecks` is unmerged a fourteenth day · 🔴 [#313](open-items.md) the client has still been told nothing, a fourth day · 🔴 [#312](open-items.md) Anticipay unmentioned by any source, a fourth day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a sixteenth run · 🔴 `lead-web-to-lead (2).html` still unopened and unexplained · **the requirement register is untouched and stays v1.6**; the tranche obligation and now the two mandatory picklists are the v1.7 candidates.

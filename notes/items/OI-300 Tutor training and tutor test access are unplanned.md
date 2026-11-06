@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-29
-updated: 2026-11-05
+updated: 2026-11-06
 depends_on: []
 blocks: []
 source: Gmail 1a1884b8e0d02735
@@ -313,3 +313,25 @@ at **10:00-10:30** and one with the client at **10:30-11:30** (Gmail
 
 ⚠ **Still unanswered**: test access for every agent in `Utenti Area Commerciale.xlsx`,
 now **seven days** old.
+
+## 2026-11-06 — the tutors used the org and the first thing they touched failed
+
+🟢 **All six tutors were in the org on the morning of 6 November**, two working days
+before their training, and Marco Montesi had chased them to complete the password
+and MFA setup: _"ho ricordato a tutti i tutor di gestire la cosa prima possibile
+oggi"_ (Gmail `1a1b0134c558b416`, 08:56:56Z).
+
+🔴 **Lead qualification would not let any of them enter the agent**, which is
+mandatory, so the flow stopped — the users had been created the previous evening
+without agent codes. Elena Spini named it as her own error and fixed it inside
+eighty minutes →
+[OI-345](OI-345%20Lead%20qualification%20was%20blocked%20in%20UAT%20because%20the%20tutor%20users%20had%20no%20agent%20code.md).
+
+⚠ **Whether the MFA/passkey setup was actually completed by all six is still
+unreported** — the 24-hour password link issued at ~19:13 CET on 5 November expired
+on the evening of 6 November, and no source confirms six successful enrolments.
+
+🟡 **The training slots are confirmed by the client**: Monday **9** and Wednesday
+**11 November, 11:30-13:00** (Marco Montesi, 04/11 09:59 CET). The Monday collision
+with the two Fase 2 reviews and the technical go-live is unchanged, and still
+unmentioned to anyone.
