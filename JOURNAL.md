@@ -10,6 +10,43 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-06 - codex - Claude REST command permission
+
+- **Did:** at the user's request, added explicit local Claude allow rules in
+  `.claude/settings.local.json` for `sf api request rest` with the quoted
+  `Pienissimo Prod` target, using `--target-org` or `-o`, `sf` or `sf.cmd`,
+  in Bash and PowerShell. Existing permissions preserved.
+- **State:** permission configuration only; no Salesforce command executed.
+  The requested deactivation and org verification remain with the user/Claude.
+
+---
+
+## 2026-11-06 - claude-opus-5-5 - production order file checked
+
+- **Did:** profiled `Import Ordini (versione del 2026.11.04).xlsx` against
+  Pienissimo Prod (aggregates only), then **loaded it into Prod** on the
+  user's go-ahead: 8,162 orders, 18,006 lines, 8,202 tranches, 20,202 tickets,
+  9,896 invitations; 38/38 chunks OK after a rolled-back dry run; 0 integration
+  logs, no Mexal job. 31 orders of 7 customers missing from the account file
+  not loaded. Loader scripts in the session scratchpad.
+- **Decision recorded (OI-244):** payment codes not in Prod's restricted
+  `Condizione_di_Pagamento__c` (`2`, `12`, `20`, `64`) are forced to `12` -
+  141 orders with `4`, `60`, `62`. Agent code: migrated orders carry the file's
+  `CODICE_AGENTE`, set by an update after insert (the trigger overwrites only
+  on insert); new orders keep the Account agent (OI-169).
+- **Prod write (on request):** deactivated the two Marketing Cloud Growth flows
+  `Automazione: Invio Biglietto assegnato Flow` (Asset, v6) and `Invio Richiesta
+conferma biglietto Flow` (Invito Evento, v24); verified inactive. 🔴 Reactivate
+  both after the order load and invoice relink (OI-244 has the restore table).
+- **Next (OI-244):** invoice and scadenzario pull 2024-2026 into Prod and relink
+  of the 111 existing invoices; Prod nightly jobs; decide past-event invitations
+  before reactivating the marketing flows. 2021 placeholder tranche date loaded
+  as is (user's choice). Still open: 7 customer codes without an Account (31 orders, none in the
+  04/11 account file); delta key normalisation (`1` vs `1.0`) and exclusion of Salesforce-origin
+  orders; loader to rebuild; no rollback plan (OI-310).
+
+---
+
 ## 2026-11-05 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-11-04T22:00Z**.
@@ -22,7 +59,7 @@ Keep the twenty most recent entries here; archive older ones to
   live website forms **discarding the marketing consent**; UAT out of Salesforce
   licences; and the **Fase 2 offer V.2 stating three release orderings**.
 - **Updated:** OI-290 (Referenti **17,652 / 49,788 / 107**; the client's file carries
-  the **Zoho id**, not the Mexal code — *not yet told to him*; escalated to Sabatino
+  the **Zoho id**, not the Mexal code — _not yet told to him_; escalated to Sabatino
   Rinaldi and Matteo Distaso as a blocker on the final import), OI-300 (**six UAT
   tutor users active**, before the training, 24-hour link, mandatory MFA; **no Prod
   users**), OI-310, OI-313 (**Prod entry rule changed to `status__c`, retest passes,

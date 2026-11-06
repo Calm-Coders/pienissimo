@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-10-29
+updated: 2026-11-06
 depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
@@ -932,3 +932,118 @@ decided.
 🟢 **2026-10-29 - in Prod:** the prior-year invoice fetch and the invoice-level
 payment rule were deployed to Pienissimo Prod with the rest of the branch delta
 (quick deploy `0AfSW000001KQU20AO`). Prod has no Mexal nightly jobs scheduled.
+
+## 2026-11-06 - the production file: payment codes not in Prod are forced to `12`
+
+Profiled `Import Ordini (versione del 2026.11.04).xlsx` (the 04/11 mail, see
+[OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md))
+against **Pienissimo Prod**, read-only. Aggregates only; no values copied.
+
+🔑 **Decision, Aurel Mrruku, 06/11: a `CODICE_PAGAMENTO` that is not a value of
+`Order.Condizione_di_Pagamento__c` in Prod is forced to `12`** by the loader.
+The Prod picklist is restricted and holds `2`, `12`, `20`, `64`. The file no
+longer applies the 22/10 "force `12`" rule to recent orders: it carries `12`
+(7,918 orders), `64` (133), `20` (1) - loaded as they are - and `4` (127), `60`
+(10), `62` (4), **141 orders from 2025-2026, forced to `12`**. Codes that
+already exist in Prod are kept, not overwritten.
+
+Other findings from the same check, still open:
+
+- 8,193 orders / 18,080 lines (UAT rehearsal: 7,721 / 17,300). Key clean: all
+  `OC`, none cancelled, no duplicate key, no orphan line, no `SW` line.
+- 🔴 **557 lines (361 orders, 2025-2026) share one placeholder `DATA_TRANCHE` in
+  2021**, likely orders not yet invoiced. Needs a client answer before load.
+- 🔴 **7 customer codes have no Prod Account** (31 orders, 73 lines). None of
+  the 7 is in the 04/11 account file at all - they are not among the VAT-less
+  or duplicated rows that were skipped. The list was given to Aurel Mrruku
+  outside the repository.
+- 🟢 `CODICE_AGENTE` is `610.00001` on 7,834 orders; `OrderTriggerHandler`
+  overwrites it with the Account's current agent, which differs on 7,695.
+  **Decision, Aurel Mrruku, 06/11: the migrated order carries the file's
+  `CODICE_AGENTE`, not the Account's agent.** This departs, for historical
+  orders only, from the customer-owned agent rule of
+  [OI-169](OI-169%20Agent%20code%20and%20commissions%20come%20from%20the%20customer%20record.md),
+  which still governs new orders. No code change: `OrderTriggerHandler`
+  rewrites `Codice_Agente__c` on **before insert only** (no update handler), so
+  the loader inserts the order and then updates `Codice_Agente__c` to the file
+  value in the same chunk. `Order` has no agent-user lookup; the association is
+  the code, which matches `User.Agente__c` for all 7 codes in the file.
+  ⚠ 7,834 orders carry `610.00001` (Segreteria), the default the client applied
+  to agents not in his list (28/10 mail).
+- 🟡 **Two active Marketing Cloud Growth campaign flows in Prod sent customer
+  mail on Event Invitation and Asset.** The load creates ~20k tickets and ~10k
+  invitations; UAT had no marketing send. **Deactivated in Pienissimo Prod on
+  06/11 at Aurel Mrruku's request** (Tooling API, `FlowDefinition`
+  `activeVersionNumber = 0`), verified afterwards: no active flow remains on
+  Event Invitation, Asset, Order or Tranche.
+
+  | Flow                                        | Trigger       | Restore to version | FlowDefinition       |
+  | ------------------------------------------- | ------------- | ------------------ | -------------------- |
+  | Automazione: Invio Biglietto assegnato Flow | Asset         | 6                  | `300SW0000147knXYAQ` |
+  | Invio Richiesta conferma biglietto Flow     | Invito Evento | 24                 | `300SW0000140YQcYAM` |
+
+  `Invio Sollecito Biglietti Flow` was already inactive and was not touched.
+  🔴 **They must be reactivated after the load and the invoice relink** - while
+  off, real confirmation and ticket mails do not go out either (Prod had 5
+  `Ready` and 6 `Pending` invitations at the time). ⚠ Reactivation through the
+  Tooling API is untested for campaign flows; the campaign screen is the
+  fallback.
+
+- ⚠ Prod already holds 7 `Salesforce`-origin orders sent to Mexal as OC series 1
+  (03-06/11), and stores the series as `1.0`: the 12-13/11 delta must normalise
+  the key and exclude them.
+- 🟢 428/428 articles match one product with an active standard entry; 11,517/11,517
+  ticket lines find exactly one edizione among Prod's 176 mappings; all 7 agent
+  codes match an active user; no key collides with Prod.
+- The 28/10 UAT loader scripts lived in a session scratchpad and are gone; the
+  loader has to be rebuilt.
+- 🟢 **Verified 06/11: the order load makes no Mexal or Anticipay call.** In Prod,
+  `OrderMexalIntegrationService`, `OrderMexalIntegrationQueueable`,
+  `OrderTriggerHandler`, `OrderItemTriggerHandler`, `AccountTriggerHandler`,
+  `EventInvitationService` and `EventInvitationUrlJob` are identical to
+  `DevMain`. `enqueueForCreatedOrders` skips `Origine__c = 'Mexal'` before
+  queueing, and that queueable is the only automatic path to the order send, the
+  first-order Mexal customer creation and the Anticipay check. Nothing on the
+  load path writes an Account; the agent-code update after insert fires only
+  `Order` after-update logic, which makes no callout. ⚠ **This holds only if the
+  loader sets `Origine__c = 'Mexal'` on insert**; the dry run must show no
+  `OrderMexalIntegrationQueueable`, `MexalCustomerUpdateQueueable` or
+  `Integration_Log__c` row. The later invoice pull does call Mexal, read-only.
+
+## 🟢 2026-11-06 - the historical orders are in Prod: 8,162 orders, nothing reached Mexal
+
+Loaded by Claude Code at Aurel Mrruku's request from `Import Ordini (versione
+del 2026.11.04).xlsx`, into **Pienissimo Prod**, 16:33-16:39Z. Anonymous Apex
+in 38 chunks of at most 250 orders, each all-or-nothing and skipping any key
+already in Prod; **38/38 succeeded**. A dry run of chunk 1 with forced rollback
+came first and left nothing behind (0 orders, tranches, assets, logs or jobs).
+
+| Created                       | Count                                         |
+| ----------------------------- | --------------------------------------------- |
+| Orders (`Origine__c = Mexal`) | **8,162**, all `Ordinato`, blank Mexal status |
+| Order lines                   | **18,006**, every one on a tranche            |
+| Tranches                      | **8,202** (`Aperta`)                          |
+| Ticket assets                 | 20,202 (`Ordinato`)                           |
+| Event invitations             | 9,896 (`Pending`)                             |
+| Integration logs              | **0**                                         |
+| Async jobs                    | only `EventInvitationUrlJob` (109, completed) |
+
+- `TotalAmount` across the loaded orders equals the file's line sum to the cent.
+- Keys: `ID_Ordine_Mexal__c` is unique across all 8,169 keyed Prod orders (the
+  8,162 plus the 7 Salesforce-origin ones).
+- Rules applied: payment codes outside the Prod picklist forced to `12` (141;
+  result `12` 8,028 · `64` 133 · `20` 1); agent = the file's `CODICE_AGENTE`,
+  set by an update after insert and asserted per chunk; the 01/01/2021
+  placeholder tranche date loaded as it is, on Aurel Mrruku's choice; one
+  identical duplicate line dropped; `UnitPrice` = amount / quantity.
+- **Not loaded: 31 orders (73 lines) of the 7 customers absent from the account
+  file.** They load with the same script once the Accounts exist.
+- Tranche name `T<n> - OC <serie>/<numero>`, `Righe_Da_Fatturare__c` = its line
+  count, as in the UAT load.
+
+🔴 **Still to do, in this order:** pull the 2024-2026 invoices and scadenzario
+from Mexal into Prod and relink the 111 invoices already there, so the orders
+become `Fatturato`/`Incassato` and the paid tickets `Disponibile`; schedule the
+Prod nightly jobs; then decide what happens to invitations for past events
+**before** the two marketing flows are reactivated (versions 6 and 24), because
+reactivated flows would mail customers as tickets turn `Disponibile`.

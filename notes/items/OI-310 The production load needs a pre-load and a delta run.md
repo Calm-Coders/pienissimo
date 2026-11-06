@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-02
-updated: 2026-11-05
+updated: 2026-11-06
 depends_on: [OI-244, OI-290]
 blocks: [go-live]
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -214,3 +214,17 @@ Aurel Mrruku, 16:10 CET: _"ma non possono, sto caricando centinaia di account e 
 impedire che vadano su mexal"_. 🔑 **The delta run this row exists for is therefore
 being set up in an org the client cannot touch, eight days before the migration
 window.**
+
+## 🟢 2026-11-06 - the order pre-load is in Prod
+
+8,162 historical orders, 18,006 lines and 8,202 tranches loaded from the 04/11
+file in 38 all-or-nothing chunks, about six minutes in total, with no Mexal call
+
+- detail in
+  [OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+  🔑 **The order part of the 12-13 November delta is therefore only the new
+  orders**; the loader skips keys already in Prod, but it must normalise the series
+  (`1` vs `1.0`) and exclude Salesforce-origin orders already sent to Mexal.
+  ⚠ Changes in Mexal to orders already loaded are not picked up by a key-skip
+  delta. ⚠ The 3-4 hour figure belongs to the invoice pull, which has not run in
+  Prod yet.
