@@ -60,12 +60,17 @@ global without sharing class WoocommerceOrderService {
         payloadOpportunityId
       );
 
+      String contractPdfType = OrderPdfService.classify(
+        new Map<Id, Product2>(productsByScCode.values()).keySet()
+      );
+
       Order orderRec = new Order(
         AccountId = customer.accountId,
         EffectiveDate = payload.orderDate(),
         Status = INITIAL_STATUS,
         Pricebook2Id = pricebookId,
         Origine__c = 'WooCommerce',
+        Contract_Pdf_Type__c = contractPdfType,
         OpportunityId = payloadOpportunityId,
         WooCommerce_Order_Key__c = payload.orderKey(),
         Condizione_di_Pagamento__c = paymentCondition(payload)
@@ -75,12 +80,23 @@ global without sharing class WoocommerceOrderService {
 
       insertOrderLines(orderRec.Id, orderBuildPlan, entriesByProductId);
 
-      if (!orderBuildPlan.hasBundleTranches()) {
+      // Plus purchases must await collection, even without bundle tranche templates.
+      if (
+        contractPdfType != OrderPdfService.PLUS &&
+        !orderBuildPlan.hasBundleTranches()
+      ) {
         orderRec.Status = CREATED_STATUS;
         update orderRec;
       }
 
+      if (contractPdfType == OrderPdfService.PLUS) {
+        PerformancePlusContractService.createForOrders(
+          new Set<Id>{ orderRec.Id }
+        );
+      }
+
       updateOpportunity(payload, orderRec.Id);
+      // The Mexal queue generates the PDF and sends it to DocuSign after successful registration.
       writeSuccess(
         logRec,
         orderRec.Id,
@@ -462,6 +478,9 @@ global without sharing class WoocommerceOrderService {
             productRec.Id,
             line.quantity,
             line.unitPrice(),
+            productRec.RecordType?.DeveloperName == 'Item'
+              ? line.listUnitPrice()
+              : null,
             null,
             null
           )
@@ -541,6 +560,7 @@ global without sharing class WoocommerceOrderService {
             component.Product__c,
             component.Quantity__c * bundleQuantity,
             component.Unit_Spread__c,
+            null,
             component.Bundle_Tranch__c,
             'Bundle: ' + productRec.Name
           )
@@ -639,7 +659,7 @@ global without sharing class WoocommerceOrderService {
   ) {
     Map<Id, PricebookEntry> entriesByProductId = new Map<Id, PricebookEntry>();
     for (PricebookEntry entry : [
-      SELECT Id, Product2Id
+      SELECT Id, Product2Id, UnitPrice
       FROM PricebookEntry
       WHERE
         Pricebook2Id = :pricebookId
@@ -686,6 +706,11 @@ global without sharing class WoocommerceOrderService {
           PricebookEntryId = entry.Id,
           Quantity = line.quantity,
           UnitPrice = line.unitPrice,
+          // Bundle components retain their pricebook price before the bundle allocation.
+          // Individual Items keep the pre-discount price supplied by WooCommerce.
+          Prezzo_Listino__c = line.bundleTranchId != null
+            ? entry.UnitPrice
+            : line.listUnitPrice,
           Description = line.description,
           Tranche__c = tranche == null ? null : tranche.Id,
           Data_Scadenza__c = tranche == null ? null : tranche.Data_Scadenza__c
@@ -941,6 +966,7 @@ global without sharing class WoocommerceOrderService {
     public Id productId;
     public Decimal quantity;
     public Decimal unitPrice;
+    public Decimal listUnitPrice;
     public Id bundleTranchId;
     public String description;
 
@@ -948,12 +974,14 @@ global without sharing class WoocommerceOrderService {
       Id productId,
       Decimal quantity,
       Decimal unitPrice,
+      Decimal listUnitPrice,
       Id bundleTranchId,
       String description
     ) {
       this.productId = productId;
       this.quantity = quantity;
       this.unitPrice = unitPrice;
+      this.listUnitPrice = listUnitPrice;
       this.bundleTranchId = bundleTranchId;
       this.description = description;
     }
@@ -1079,23 +1107,6 @@ global without sharing class WoocommerceOrderService {
     return String.isBlank(cleanValue) ? null : Decimal.valueOf(cleanValue);
   }
 
-  private static Date firstDate(List<String> values) {
-    for (String value : values) {
-      String cleanValue = clean(value);
-      if (String.isBlank(cleanValue) || cleanValue.length() < 10) {
-        continue;
-      }
-
-      try {
-        return Date.valueOf(cleanValue.substring(0, 10));
-      } catch (Exception e) {
-        continue;
-      }
-    }
-
-    return Date.today();
-  }
-
   public class WooCommerceOrderPayload {
     public String event;
     public String sf_opportunity_id;
@@ -1128,17 +1139,17 @@ global without sharing class WoocommerceOrderService {
     }
 
     public Date orderDate() {
-      if (order == null) {
+      String createdDate = order == null ? null : clean(order.date_created);
+      if (String.isBlank(createdDate)) {
         return Date.today();
       }
-      return firstDate(
-        new List<String>{
-          order.date_paid,
-          order.date_completed,
-          order.date_created,
-          order.date_modified
-        }
-      );
+      try {
+        return Date.valueOf(createdDate.substring(0, 10));
+      } catch (Exception error) {
+        throw new WooCommerceOrderException(
+          'WooCommerce order.date_created must contain a valid date in YYYY-MM-DD format'
+        );
+      }
     }
 
     public List<WooCommerceOrderLinePayload> orderLines() {
@@ -1377,6 +1388,17 @@ global without sharing class WoocommerceOrderService {
         quantity == 0
         ? null
         : amount / quantity;
+    }
+
+    public Decimal listUnitPrice() {
+      // WooCommerce subtotal is before discounts; total is after discounts.
+      // Without a subtotal, retain the known net price rather than inventing a discount.
+      Decimal amount = parseDecimal(subtotal);
+      return amount == null ||
+        quantity == null ||
+        quantity <= 0
+        ? unitPrice()
+        : (amount / quantity).setScale(2, System.RoundingMode.HALF_UP);
     }
   }
 

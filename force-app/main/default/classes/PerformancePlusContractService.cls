@@ -17,7 +17,8 @@ public without sharing class PerformancePlusContractService {
     UNPAID_PAYMENT_STATUS
   };
 
-  // One Contract per Performance Plus order, created when the quote is signed.
+  // One Contract per Performance Plus order, created when the quote is signed
+  // or after a WooCommerce Plus order and its lines have been saved.
   // An order is Performance Plus when a line carries a Mexal article category
   // mapped to a "Performance Plus - ..." type in Product_Category_Rule__mdt
   // (C10 attivazione, C11 rinnovo). The Contract lives in Salesforce only.
@@ -237,7 +238,7 @@ public without sharing class PerformancePlusContractService {
     return value == null ? 0 : value;
   }
 
-  private static Map<String, String> contractTypeByCategory() {
+  public static Map<String, String> contractTypeByCategory() {
     Map<String, String> contractTypeByCategory = new Map<String, String>();
     for (
       Product_Category_Rule__mdt rule : Product_Category_Rule__mdt.getAll()

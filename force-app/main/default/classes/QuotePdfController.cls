@@ -5,6 +5,7 @@ public without sharing class QuotePdfController {
   private static final String BUNDLE_RECORD_TYPE_DEVELOPER_NAME = 'Bundle';
   private static final String PLUS_OPPORTUNITY_TYPE_PREFIX = 'Performance Plus -';
   private static final String PLUS_RENEWAL_OPPORTUNITY_TYPE = 'Performance Plus - Rinnovo';
+  private OrderPdfService orderPdf;
   public Quote quoteRecord { get; private set; }
   public List<LineRow> lines { get; private set; }
   public String currencyCode { get; private set; }
@@ -17,6 +18,17 @@ public without sharing class QuotePdfController {
       quoteId = (Id) rawId;
     } catch (Exception e) {
       throw new QuotePdfException('Preventivo non valido.');
+    }
+    if (quoteId != null && quoteId.getSObjectType() == Order.SObjectType) {
+      // The Order service also enforces WooCommerce origin for direct page access.
+      orderPdf = new OrderPdfService();
+      currencyCode = orderPdf.currencyCode;
+      generatedDate = orderPdf.generatedDate;
+      lines = new List<LineRow>();
+      for (OrderPdfService.LineRow row : orderPdf.lines) {
+        lines.add(new LineRow(row));
+      }
+      return;
     }
     requireDraft(quoteId);
     Boolean multiCurrency = Schema.SObjectType.Quote.fields.getMap()
@@ -151,11 +163,17 @@ public without sharing class QuotePdfController {
   }
 
   public String getCustomerName() {
+    if (orderPdf != null) {
+      return orderPdf.getCustomerName();
+    }
     return quoteRecord.Account == null
       ? quoteRecord.BillingName
       : quoteRecord.Account.Name;
   }
   public String getLegalAddress() {
+    if (orderPdf != null) {
+      return orderPdf.getLegalAddress();
+    }
     Account customer = quoteRecord.Account;
     return customer == null
       ? ''
@@ -168,6 +186,9 @@ public without sharing class QuotePdfController {
         );
   }
   public String getBillingAddress() {
+    if (orderPdf != null) {
+      return orderPdf.getBillingAddress();
+    }
     String result = address(
       quoteRecord.BillingStreet,
       quoteRecord.BillingPostalCode,
@@ -178,52 +199,121 @@ public without sharing class QuotePdfController {
     return String.isBlank(result) ? getLegalAddress() : result;
   }
   public String getExpirationDate() {
+    if (orderPdf != null) {
+      return '';
+    }
     return formatDate(quoteRecord.ExpirationDate);
   }
   public String getSubtotal() {
+    if (orderPdf != null) {
+      return orderPdf.getTotalPrice();
+    }
     return money(quoteRecord.Subtotal);
   }
   public String getListPriceTotal() {
+    if (orderPdf != null) {
+      return orderPdf.getListPriceTotal();
+    }
     return money(quoteRecord.Totale_Listino__c);
   }
   public String getDiscountTotal() {
+    if (orderPdf != null) {
+      return orderPdf.getDiscountTotal();
+    }
     return money(quoteRecord.Sconto_Totale__c);
   }
   public String getTotalPrice() {
+    if (orderPdf != null) {
+      return orderPdf.getTotalPrice();
+    }
     return money(quoteRecord.TotalPrice);
   }
   public String getTax() {
+    if (orderPdf != null) {
+      return '';
+    }
     return money(quoteRecord.Tax);
   }
   public String getShipping() {
+    if (orderPdf != null) {
+      return '';
+    }
     return money(quoteRecord.ShippingHandling);
   }
   public String getGrandTotal() {
+    if (orderPdf != null) {
+      return orderPdf.getGrandTotal();
+    }
     return money(quoteRecord.GrandTotal);
   }
   public Boolean getHasTax() {
+    if (orderPdf != null) {
+      return false;
+    }
     return quoteRecord.Tax != null && quoteRecord.Tax != 0;
   }
   public Boolean getHasShipping() {
+    if (orderPdf != null) {
+      return false;
+    }
     return quoteRecord.ShippingHandling != null &&
       quoteRecord.ShippingHandling != 0;
   }
   public String getTutor() {
+    if (orderPdf != null) {
+      return orderPdf.getTutor();
+    }
     return quoteRecord.Opportunity == null
       ? ''
       : quoteRecord.Opportunity.Owner.Name;
   }
   public Boolean getIsPlusOpportunity() {
+    if (orderPdf != null) {
+      return orderPdf.getIsPlusOpportunity();
+    }
     return quoteRecord.Opportunity != null &&
       String.isNotBlank(quoteRecord.Opportunity.Tipo_Opportunita__c) &&
       quoteRecord.Opportunity.Tipo_Opportunita__c.startsWith(
         PLUS_OPPORTUNITY_TYPE_PREFIX
       );
   }
+  public Boolean getIsOrderDocument() {
+    return orderPdf != null;
+  }
+
   public Boolean getIsPerformancePlusRenewal() {
+    if (orderPdf != null) {
+      return orderPdf.getIsPerformancePlusRenewal();
+    }
     return quoteRecord.Opportunity != null &&
       quoteRecord.Opportunity.Tipo_Opportunita__c ==
       PLUS_RENEWAL_OPPORTUNITY_TYPE;
+  }
+
+  // Common page bindings keep the same layout for Quotes and WooCommerce Orders.
+  public Account getCustomerAccount() {
+    return orderPdf == null
+      ? quoteRecord.Account
+      : orderPdf.orderRecord.Account;
+  }
+  public String getDocumentNumber() {
+    return orderPdf == null
+      ? quoteRecord.QuoteNumber
+      : orderPdf.orderRecord.OrderNumber;
+  }
+  public String getDocumentTitle() {
+    return orderPdf == null ? 'PREVENTIVO' : 'ORDINE';
+  }
+  public Boolean getHasExpirationDate() {
+    return orderPdf == null && quoteRecord.ExpirationDate != null;
+  }
+  public String getPaymentCondition() {
+    return orderPdf == null
+      ? quoteRecord.Condizione_di_Pagamento__c
+      : orderPdf.orderRecord.Condizione_di_Pagamento__c;
+  }
+  public String getDocumentNotes() {
+    return orderPdf == null ? quoteRecord.Note_Preventivo__c : null;
   }
 
   private static String address(
@@ -284,6 +374,18 @@ public without sharing class QuotePdfController {
     public String discount { get; private set; }
     public String total { get; private set; }
     public String dueDate { get; private set; }
+
+    public LineRow(OrderPdfService.LineRow row) {
+      name = row.name;
+      description = row.description;
+      unitOfMeasure = row.unitOfMeasure;
+      quantity = row.quantity;
+      listPrice = row.listPrice;
+      amount = row.amount;
+      discount = row.discount;
+      total = row.total;
+      dueDate = row.dueDate;
+    }
 
     public LineRow(QuoteLineItem item) {
       name = item.Product2.Name;
