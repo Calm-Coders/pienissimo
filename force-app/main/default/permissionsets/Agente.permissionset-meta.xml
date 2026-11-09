@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
+        <apexClass>DocuSignOrderEnvelopeService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>AnticipayAccountService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -18,6 +22,11 @@
     </classAccesses>
     <description
   >Accesso operativo per le utenze agente: Account, creazione e qualificazione Lead, lookup agente e generazione PDF preventivo. Nessun permesso di amministrazione o integrazione.</description>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal
+    >DocuSign_External_Credential-DocuSign Principal</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
         <externalCredentialPrincipal
@@ -1086,6 +1095,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>OpportunityLineItem.TotalPrice</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Order.DocuSign_Envelope_Id__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Order.DocuSign_Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
