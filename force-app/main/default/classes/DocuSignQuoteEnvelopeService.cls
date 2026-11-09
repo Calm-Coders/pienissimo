@@ -280,7 +280,7 @@ public without sharing class DocuSignQuoteEnvelopeService {
     return quoteRecord.Account == null ? 'Cliente' : quoteRecord.Account.Name;
   }
 
-  private static HttpRequest buildRequest(String requestBody) {
+  public static HttpRequest buildRequest(String requestBody) {
     Integration_Configuration2__c config = resolveConfiguration();
     if (config == null || String.isBlank(config.Endpoint_Path__c)) {
       throw new DocuSignEnvelopeException(
