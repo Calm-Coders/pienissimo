@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Andrea
 org: both
 raised: 2026-11-03
-updated: 2026-11-04
+updated: 2026-11-09
 depends_on: []
 blocks: [go-live]
 severity: gating
@@ -100,3 +100,71 @@ one.**
 ⚠ The two unanswered questions from 03/11 are unchanged: whether Pienissimo already
 checks Anticipay on the WooCommerce side, and which domain the client owes
 ([OI-323](OI-323%20The%20production%20domain%20has%20not%20been%20supplied%20by%20the%20client.md)).
+
+
+## 🔴🔑 2026-11-09 - the supplier says there is nothing wrong, and the ball is back with ROMI
+
+**Six days on, the first movement — and it is a denial.** The thread, Gmail
+`1a1bfc2c0e27f7d3`, all on 9 November:
+
+- **10:02:53Z** — Fabrizio Paganelli to Andrea Parmeggiani, cc Aurel Mrruku and
+  Elena Spini: _"Ciao Andrea, **hai avuto modo di verificare?** Fammi sapere"_
+- **10:31:50Z** — Andrea Parmeggiani: 🔴 _"Ciao Fabrizio, **Avevo già verificato
+  che non avevo rilevato problemi**"_
+- **10:52:13Z** — Fabrizio Paganelli: _"Ok, **Aurel puoi specificare tu ad Andrea
+  ciò che non funziona?** Grazie"_
+
+🔑 **So the position is now symmetrical and stuck**: ROMI observed a 120-second
+timeout in production on 3 November; the supplier says he checked and found
+nothing; and **the next move is ROMI's**, to say precisely what fails. ⚠ **Nothing
+in this sweep shows Aurel Mrruku answering.**
+
+### 🆕 Two production-style alerts fired in the sandbox the same day
+
+Two Salesforce notification mails reached `a.mrruku@romicompany.com`, both subject
+_"**Sandbox**: Errore Anticipay da verificare"_, both _"Il controllo Anticipay ha
+restituito un errore e richiede una verifica amministrativa"_:
+
+| Mail | Time | Account | Stato HTTP |
+| --- | --- | --- | --- |
+| `1a1c0036cd5095c6` | **11:13:32Z** | `001MA000014QQP5YAO` | **404** |
+| `1a1c0a434bcc2e97` | **14:09:08Z** | `001MA000015FFD8YAO` | **404** |
+
+🔑 **This is new evidence of a different failure mode.** Production fails by
+**timeout**; the sandbox fails with **HTTP 404**, which is a routing or endpoint
+answer, not a hang. ⚠ The message body carries _"TEST -"_, so these are test
+records, and 🟢 **the admin-notification path itself works** — the error is being
+surfaced as designed.
+
+⚠ **Whether the 404 and the production timeout are the same defect is not
+established.** They are recorded as two observations.
+
+### 🔑 What the 09/11 call settled about the other timeout
+
+[The client review](../meetings/2026-11-09%20Review%20temi%20Fase%202.md) cleared up a
+confusion these records carried. Elena Spini remembered production timeouts
+against **Info Point** and the **QR scanner**; Aurel Mrruku corrected both:
+
+> _"Quello di q\[uel\] \[QR\] cod\[e\] è il contrario. Loro scanarizzano il
+> biglietto, **ci chiamano** per \[ag\]giornare il biglietto"_ — and the timeout
+> _"era Anticipay"_.
+
+🔑 **And both systems are the same man's.** The Anticipay call and the
+ticket-scanning app are Andrea Parmeggiani's — _"quello che gestisce app … Ah, è
+sempre Andrea."_ So one unanswered supplier holds **two** production integrations.
+
+🟢 **Escalation was agreed on the call**: Fabrizio Paganelli had written that
+morning, cc'd both, told Aurel Mrruku _"chiamalo anche tu, scrivigli anche tu"_,
+and said he would **go to Andrea Parmeggiani in person** immediately afterwards —
+_"quando finiamo la call vado di là di persona e glielo chiedo"_. ⚠ **No outcome
+of that visit appears in any source in this window.**
+
+### Where it stands
+
+- 🔴 **Still no date, a seventh day.** The go-live is not gated on it, but the data
+  enrichment silently does not happen in production.
+- 🔴 **Aurel Mrruku owes Andrea Parmeggiani a precise failure description** — now
+  an explicit client request.
+- ⚠ **The production Info Point connection has no separate finding any more**; the
+  timeout attributed to it was Anticipay's. **Info Point's own integration does not
+  exist yet** and is release R3, February 2027.

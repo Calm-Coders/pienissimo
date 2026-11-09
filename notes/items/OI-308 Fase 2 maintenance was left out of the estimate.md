@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-10-30
-updated: 2026-11-02
+updated: 2026-11-09
 depends_on: []
 blocks: []
 source: notes/meetings/2026-10-30 Rapido Allineamento Aurel Elena.md
@@ -105,3 +105,60 @@ _"anche dopo, anche se non ci sono sviluppi"_ — is ongoing and is in no docume
 il 13/11"_, so whatever the client approves on 13 November is what the maintenance
 arrangement is. ⚠ **Nothing records Elena Spini going back to Andrea Galotto** — a
 third day.
+
+
+## 🟢🔑 2026-11-09 - maintenance is now in both documents, at ten days
+
+**The omission is closed as an omission.** Both Fase 2 documents, as modified on
+9 November, carry a maintenance line:
+
+| Document | The line |
+| --- | --- |
+| `Pienissimo Offerta Fase 2_V.4` (Andrea Galotto, created 20:34Z) | A whole slide, **`Maintenance di rilascio`**, _"COPERTURA **10 giornate, da R0 a R6**"_, priced as its own item beside the seven releases |
+| `Pienissimo_Project_Plan_Fase2` (modified 14:15:44Z) | A new estimate row, **`Maintenance`** — _"2 giorni al mese (fino ad aprile)"_ — at **`10`** gg, and the per-release transversal line raised from `7 - 9` to **`9 - 11`** gg |
+
+🔑 **The ten days were agreed in the internal half-hour that morning.** Elena
+Spini, in [the 09/11 internal review](../meetings/2026-11-09%20INTERNA%20Review%20temi%20Fase%202.md):
+_"due giorni al mese da dicembre … per ora facciamo fino ad aprile"_ → _"forse
+facciamo 10"_. **December to April at two days a month is ten days**, so the
+figure and its derivation are both on the record for the first time.
+
+🟢 **And the client was told it belongs in the documentation.** Per
+[the client review](../meetings/2026-11-09%20Review%20temi%20Fase%202.md), Elena
+Spini said _"occorre includere formalmente la gestione della manutenzione
+all'interno della documentazione dei rilasci"_ — which is what the two documents
+now do. The 2 November contradiction, where she told the client maintenance was in
+a proposal that did not price it, is resolved by the proposal catching up.
+
+### What the offer says about how it is consumed
+
+> _"La maintenance di rilascio è **rendicontata a ogni SAL**; le attività **oltre
+> le 10 giornate sono quotate a parte**."_
+
+And the pre-existing value-add is unchanged and distinct: _"al termine dell'ultimo
+rilascio è incluso senza costi aggiuntivi **un mese di supporto post go-live**."_
+
+### 🔴 What is still wrong with it
+
+1. 🔴 **It is below the figure Aurel Mrruku gave twice.** On 30 October he put it
+   at **three to four days a month**; on 9 November he repeated the floor —
+   _"Mant\[enenza\] deve prevedere **come minimo due giorni al mese, come minimo
+   ogni mese**"_. Ten days to April is the minimum of his minimum, and it **stops
+   in April** while he described an arrangement that continues _"anche dopo, anche
+   se non ci sono sviluppi"_.
+2. ⚠ **It is still not what the client heard.** On 2 November Aurel Mrruku sized
+   it to Fabrizio Paganelli as _"quei 8 ora al mese"_ — about one day. **Nobody
+   has corrected that to his face**, and the gap is now in a document he is asked
+   to approve by **13 November**.
+3. ⚠ **Whether the ten days sit inside or outside the offer's `150 giornate` is
+   not stated.** The pricing slide lists maintenance as a separate line beside the
+   seven releases, which reads as additional; the plan writes its total as
+   `60 - 80 + 10`, which reads as additional too. **The offer never says.**
+4. 🔴 **It is Fase 2 maintenance only.** Fase 1 support after the 16 November user
+   start is in neither document with a figure against it →
+   [OI-348](OI-348%20Fase%201%20post%20go-live%20support%20is%20unassigned%20and%20unpriced.md).
+
+⚠ **Elena Spini going back to Andrea Galotto is finally evidenced** — the client
+review assigns her _"Consultare Andrea per gestione stima"_ and the V.4 deck he
+owns appeared that evening. **Whether the day total moved is a separate question,
+and it did not: `150 giornate` is unchanged.**

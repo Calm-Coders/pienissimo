@@ -6,7 +6,7 @@ owner: Marco Montesi
 with: Elena Spini
 org: both
 raised: 2026-11-06
-updated: 2026-11-06
+updated: 2026-11-09
 depends_on: [OI-265]
 blocks: [go-live]
 source: Drive 1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8, read 2026-11-06
@@ -114,3 +114,70 @@ with no activity text.
 - A ruling on the two mandatory-field requests and the complete picklist list the
   client says he already sent (OI-265).
 - A statement of which rows are in scope before the 16 November user start.
+
+
+## 🟡🔑 2026-11-09 - the sheet grew to seventeen rows, triage started, and ROMI has a rule
+
+**Three days on, the file has moved and so has ROMI's position — but the two have
+not met.**
+
+### What changed in the sheet
+
+Re-read 2026-11-09, **last modified 2026-11-09 15:30:13Z**. The range is now
+**`A1:D19`**, not `A1:C18`:
+
+1. 🆕 **A fourth column exists.** Unlabelled, carrying one value: **`CR`** against
+   the quote-preview-without-PDF row.
+2. 🆕 **One row was added** — `Preventivo` · _"Dentro la tabella preventivo dei
+   correlati sarebbe utile avere **il valore di ogni riga**"_ — and row 10's text
+   was split, so the per-row and grand-total requests are now separate asks.
+   **Seventeen activity rows.**
+3. 🆕 **The empty `Task` row is now filled**: _"**Lasciare solo funzioni
+   necessarie**"_. It was a macro with no activity text on 6 November.
+4. 🟡 **`Lavorato` is no longer empty.** Four rows are marked:
+
+| Row | Marked |
+| --- | --- |
+| `Task` — leave only the necessary functions | **SI** |
+| `Preventivo` — per-line value in the related list | **SI** |
+| `Tranche` — per-tranche value in the related list | **SI** |
+| `Preventivo` — preview without generating the PDF | **TBD**, and **`CR`** in column D |
+
+🔴 **Thirteen of seventeen rows are still blank.**
+
+⚠ **Who marked them is not established.** The sheet is client-owned and
+ROMI-editable, and Drive metadata does not attribute a cell. **`CR` is read here as
+_change request_** — ⚠ an inference, not a stated key — which would make it the
+first row anyone has classified as scope rather than remedy.
+
+### 🔑 ROMI's triage rule, stated for the first time
+
+Elena Spini, `#tproj-pienissimo`, **2026-11-09 09:00:06 CET**:
+
+> _"Dal foglio che Marco ha mandato il 6/11 (**una quindicina di punti**) **le
+> modifiche di layout e di campi le facciamo in Fase 1, il resto va in una Fase 2
+> successiva.**"_
+
+🟢 **That is the ruling this item asked for**, and it answers the Fase 1 / Fase 2
+question in principle. 🔴 **But it is a rule, not a triage**: no row has been
+assigned to a side of it, and the rule does not obviously decide most of the
+seventeen rows — a grand total inside a related list is neither a layout change nor
+a field, and the five money-visibility asks are the bulk of the sheet.
+
+🟢 **And she owns the next step**, from her own Next step list: _"Elena – **sentire
+Marco sul foglio delle modifiche**: chiarire i punti poco chiari e confermare cosa
+entra in Fase 1."_ ⚠ **Nothing in this window shows that conversation happening**,
+and she told the marketing group at 17:19:43 CET only _"poi vi chiedo domani"_.
+
+### Where it stands
+
+- 🔴 **Seven days before the 16 November user start**, four of seventeen rows are
+  marked and none is scheduled.
+- 🔴 **Rows 1 and 2 are unmarked** — the `Categoria`/`Sottocategoria` lists and the
+  mandatory-field request, which still collides head-on with `b0e69c5` making both
+  read-only for `Agente`
+  ([OI-265](OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md)).
+  **Sixteenth day** without the picklist workbook.
+- ⚠ **The register stays v1.6.** The mandatory picklists and the revised `Fonte`
+  list remain **v1.7 candidates**; the `CR` marking is the first sign anyone agrees
+  one of these is a change, and it is on a different row.

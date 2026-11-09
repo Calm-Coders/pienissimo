@@ -9571,3 +9571,191 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 ### Invariati
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
+
+## 80. Aggiornamento 09/11/2026 — la roadmap di Fase 2 ha guadagnato un rilascio, una retromarcia e un mese, e l'unico sviluppatore ha detto che dicembre non lo può fare
+
+`requirements-check` notturno, watermark **2026-11-06T22:00Z**, **tre giorni** —
+nessun run il 07/11 o l'08/11. **Due sessioni Pienissimo sono state registrate ed
+entrambe analizzate**, le prime da giorni:
+[la review interna](../notes/meetings/2026-11-09%20INTERNA%20Review%20temi%20Fase%202.md)
+(10:01 CET, 00:26:39, Aurel Mrruku ed Elena Spini da soli, **trascrizione
+integrale**) e
+[la review con il cliente](../notes/meetings/2026-11-09%20Review%20temi%20Fase%202.md)
+(10:29 CET, 00:56:14). 🔴 **Della sessione con il cliente la trascrizione esiste solo
+da `00:30:41`**; la prima mezz'ora è retta dal solo auto-riassunto Gemini, che in
+questo progetto è già stato colto a contraddire le trascrizioni, ed è segnalata come
+tale.
+
+### 🟢🔑 Sette rilasci, accettati, fino al 12 aprile 2027
+
+| Rilascio | Contenuto | Go-live |
+| --- | --- | --- |
+| R0 | Contratti post-vendita da palco | **nov 2026**, prima di Pienissimo Live 24-26/11 |
+| **R1** | **Aggiornamento scadenziario** | **14/12/2026** |
+| R2 | Annullamento e cambio nome, più l'import contatti provvisorio | **14/01/2027**, prima dell'Academy del 19/01 |
+| R3 | Info Point ⇆ Salesforce | **15/02/2027** |
+| R4 | Eventi multi-edizione e multi-giorno (Mastery) | **08/03/2027** |
+| R5 | Integrazioni e notifiche (Zoho, GLS, Teachable, WhatsApp) | **22/03/2027** |
+| R6 | Note di credito | **12/04/2027** |
+
+**`Pienissimo Offerta Fase 2_V.4`** è comparsa alle **20:34:39Z** di quella sera,
+creata da Andrea Galotto e ancora in modifica alle 21:43:06Z. 🟢 **Risolve tutto ciò
+per cui era aperto
+[OI-342](../notes/items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md)**:
+un solo ordinamento su fascia riassuntiva, slide di dettaglio e timeline; slide
+`RILASCIO X` duplicate eliminate; lo scadenziario datato una volta sola.
+
+🔴 **E il project plan, modificato sei ore prima, descrive ancora sei rilasci fino al
+26/03**, con un significato diverso per ogni numero di rilascio e `60 - 80 + 10` gg
+contro le `150 giornate` dell'offerta. 🔴 **Porta inoltre due slide di stima che si
+contraddicono**, la superata non rimossa — lo stesso difetto della V.2. ⚠ **Quale dei
+due documenti il cliente approvi il 13 novembre non è accertato.**
+
+🔴 **Le `150 giornate` non si sono mosse**, benché Elena Spini avesse detto al cliente
+in call che la stima _"aumenterà, non può diminuire"_ passando da cinque a sette
+rilasci.
+
+### 🟢🔑 R1 è la retromarcia, prezzata e specificata
+
+[OI-331](../notes/items/OI-331%20A%20reversed%20collection%20cannot%20move%20the%20order%20and%20asset%20states%20back.md),
+la cosa irrisolta più grande della sessione di produzione del 4 novembre, è ora lo
+scope di R1 messo per iscritto: controllo notturno delle rate su Mexal e 🔑 _"**Rata
+non più pagata: l'asset torna da Disponibile a Ordinato**. Nessun ingresso senza
+incasso registrato"_, con _"**Incassi registrati per errore**"_ — questo punto alla
+lettera — tra i casi coperti, e _"**Nessuna email**: aggiornamento dello stato del
+record"_.
+
+🟢 **Il cliente ha anticipato l'analisi tecnica di dettaglio a prima di giovedì
+12 novembre** e Aurel Mrruku ha chiesto di partire subito. 🔴 **Ma la questione delle
+mail resta senza risposta**: la sua obiezione — _"se sono inviate le comunicazioni
+come faremo?"_ — è stata girata a Rebecca Marmo, che non era in nessuna delle due
+call
+([OI-350](../notes/items/OI-350%20The%20R2%20date%20and%20the%20ticket%20email%20timing%20conditions%20need%20Rebecca.md)).
+⚠ Il cliente ritiene il lavoro _"super facile"_.
+
+### 🔴🔑 Nessuno è impegnato a costruirlo
+
+Aurel Mrruku, internamente, quattro giorni prima che al cliente si chieda di firmare:
+
+> _"**Ti dico già che non lo posso fare dicembre.**"_ · _"devo iniziare per forza su
+> **un altro progetto che è enorme** … non ho le risorse a disposizione"_ · Rexhina
+> Hysi, Sara Aga e Anita Aga tutte impegnate altrove · assente **dal 17 al
+> 22 dicembre** · _"**Non facciamo la fase due, Elena, basta, consegniamo fase
+> uno.**"_
+
+La risposta di Elena Spini è stata _"dovrò capire con Giampaolo"_ e ⚠ **nulla
+registra che lo abbia fatto**; il planning tecnico settimanale ROMI dello stesso
+pomeriggio è stato verificato e non contiene alcuna discussione di staffing su
+Pienissimo →
+[OI-349](../notes/items/OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).
+
+### 🟢🔑 La manutenzione è prezzata, il supporto di Fase 1 no
+
+🟢 **Entrambi i documenti hanno ora una voce di manutenzione** — l'offerta una slide
+intera, _"COPERTURA **10 giornate, da R0 a R6**"_, rendicontata a ogni SAL e con le
+attività oltre le dieci giornate quotate a parte; il plan una riga `Maintenance`,
+_"2 giorni al mese (fino ad aprile)"_, `10` gg, con la riga trasversale per rilascio
+alzata da `7 - 9` a `9 - 11`. 🔑 **Entrambe le cifre sono state concordate nella
+mezz'ora interna di quella mattina.**
+[OI-308](../notes/items/OI-308%20Fase%202%20maintenance%20was%20left%20out%20of%20the%20estimate.md)
+si chiude come omissione.
+
+🔴 **Resta sotto il minimo dichiarato da Aurel Mrruku, si ferma ad aprile e resta
+diverso da quanto ha sentito il cliente** (_"8 ore al mese"_, non corretto).
+⚠ **Se le dieci giornate siano dentro o fuori le `150` non è mai detto.**
+
+🆕🔴 **E il supporto di Fase 1 dopo l'avvio utenti del 16 novembre non ha una cifra in
+nessun documento** — Elena Spini: _"qua non l'aveva più messo … E lo dobbiamo
+mettere. **Non gliel'ho detto, alla fine non l'ha promesso**"_ →
+[OI-348](../notes/items/OI-348%20Fase%201%20post%20go-live%20support%20is%20unassigned%20and%20unpriced.md).
+🔑 Aurel Mrruku ha detto al cliente lo stesso giorno che la manutenzione di
+produzione ha priorità sullo sviluppo di Fase 2.
+
+### 🆕🔑 Il contratto deve essere firmato dal legale rappresentante
+
+Nuovo scope su R0, che è già in sviluppo: _"il contratto lo deve firmare **il legale
+rappresentante dell'account** … **mi informo anche meglio con l'avvocato**"_. I campi
+che lo identificano potrebbero non essere mai stati costruiti; Aurel Mrruku ha
+proposto il meccanismo del contatto principale già esistente ed entrambi hanno
+rinviato a una verifica congiunta →
+[OI-346](../notes/items/OI-346%20The%20contract%20must%20be%20signed%20by%20the%20account%20legal%20representative.md).
+🟢 **La parte ragione sociale è già risolta** dal codice azienda precedente
+sull'Account, verificato a schermo. 🔑 Si sovrappone all'`OP-2` aperto.
+
+### 🔑 Le carte di ROMI contraddicono la posizione di ROMI sul Blueprint
+
+🟢 **`#tproj-pienissimo` ha rotto un silenzio di cinque sweep** con un report di stato
+completo alle 09:00:06 CET: go-live **16/11 invariato**, delta finale dei dati
+**12-13/11**, **12 giornate a finire**, e una red flag: se il contratto da palco non è
+in produzione prima di Pienissimo Live, le vendite da palco restano senza contratto
+automatico.
+
+🔴 **E data il requisito del contratto da palco al 30 ottobre** — _"Contratti da
+palco: nuovo requisito emerso il 30/10"_ — mentre l'analisi funzionale contestata dal
+cliente dice che la richiesta _"è emersa nella call del 02/11/2026"_. ⚠ Questo non
+risolve se fosse previsto nel Blueprint di Fase 1, **ma toglie la versione facile
+della risposta di ROMI**, la registrazione che Aurel Mrruku proponeva di trovare
+([OI-343](../notes/items/OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md)).
+🔴 **Quarto giorno senza risposta al cliente**, mentre R0 è in costruzione e ha appena
+acquisito un requisito di firma.
+
+### 🟡 La lista di modifiche Sales si è mossa, e anche la posizione di ROMI
+
+🔑 **Lo stesso report di stato porta la prima regola di triage**: _"**le modifiche di
+layout e di campi le facciamo in Fase 1, il resto va in una Fase 2 successiva**"_.
+🟡 **E il foglio è cresciuto** — intervallo ora `A1:D19`, **diciassette righe**, la
+riga `Task` prima vuota compilata, una nuova richiesta sul valore di riga del
+preventivo, una quarta colonna con **`CR`** e **quattro righe marcate** (`SI`, `SI`,
+`SI`, `TBD`). 🔴 **Tredici su diciassette restano vuote**, nessuna riga è assegnata a
+un lato della regola, e ⚠ **chi le ha marcate non è accertato** →
+[OI-344](../notes/items/OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md).
+
+### 🔴 Anticipay si è mosso, e in peggio
+
+Andrea Parmeggiani, sollecitato da Fabrizio Paganelli: 🔴 _"**Avevo già verificato che
+non avevo rilevato problemi**"_ — così Fabrizio Paganelli ha chiesto ad **Aurel
+Mrruku** di specificare cosa non funziona, e ⚠ nulla mostra una sua risposta.
+🆕 **Due alert in sandbox lo stesso giorno con HTTP 404**, un modo di fallire diverso
+dal timeout di produzione. 🔑 **Il timeout del QR scanner che ricordava Elena Spini
+era di Anticipay**, ed entrambi i sistemi sono dello stesso fornitore. 🟢 Fabrizio
+Paganelli è andato da lui di persona dopo la call; ⚠ nessun esito compare da nessuna
+parte. 🔴 **Settimo giorno, ancora senza data**
+([OI-312](../notes/items/OI-312%20Anticipay%20times%20out%20in%20production.md)).
+
+### 🔴 La risposta sui Referenti esiste e non si riesce a raggiungerla
+
+Sabatino Rinaldi ha scritto a Elena Spini **su WhatsApp venerdì** che una soluzione è
+stata decisa con Daniela Morgese — _"la mail che gli ho chiesto di inviarmi non è
+arrivata, quindi **non so ancora cosa vogliano**"_. **49.788 righe senza codice Mexal
+e 107 non abbinate** sono in attesa, il delta è il **12-13/11**, ed è il terzo record
+consecutivo in cui si deve una risposta scritta
+([OI-290](../notes/items/OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md)).
+
+### 🆕 Due cose minori
+
+- **Salesforce ha segnalato una login SOAP API non supportata** sull'org di
+  produzione, risolta in 73 secondi a memoria invece che con un'ispezione, e con la
+  data limite dell'avviso mai registrata →
+  [OI-347](../notes/items/OI-347%20Salesforce%20flagged%20an%20unsupported%20SOAP%20API%20login%20in%20the%20production%20org.md).
+- 🟢 **Il flusso di richiesta conferma biglietto è documentato dal suo autore** — tre
+  condizioni di avvio, cinque di arresto e un tetto di quindici mail, con la cadenza
+  tenuta nei campi Wait Interval per campagna →
+  [il flusso](../notes/flows/The%20ticket%20confirmation%20request%20flow.md). ⚠🔴 **È anche
+  il flusso che [OI-230](../notes/items/OI-230%20The%20ticket%20confirmation%20request%20flow%20queries%20a%20relationship%20name%20as%20a%20field.md)
+  porta come bloccante dal 13 ottobre**, per una query che non può riuscire — la
+  descrizione non menziona alcun difetto e **non è prova di una correzione**, e i
+  flussi tornano attivi al delta del 12-13/11. ⚠ Le landing page promesse la stessa
+  mattina non sono comparse.
+
+### Invariato
+
+🔴 Il gruppo dev non ha avuto **nessun messaggio umano per il terzo giorno** e nessun
+report notturno ha mai ricevuto risposta · ⚠ **Fathom non ha restituito nulla per il
+trentacinquesimo run consecutivo**, in un giorno con due call registrate · il canvas
+Slack è invariato dal 20.08.2026, **81 giorni** · 🔴
+[OI-212](../notes/items/OI-212%20A%20Ri.Ba.%20rate%20reads%20as%20paid%20before%20its%20due%20date.md)
+**invariato da ventisei notti**, ora con un rimedio datato 14/12 e nessuno sviluppatore
+dietro · 🔴 **Zoho è scaduto il 31 ottobre e nessuna fonte lo menziona da diciassette
+sweep**, mentre l'R5 dell'offerta si impegna a integrare Zoho a marzo 2027 · ⚠ il
+registro resta a **v1.6** · ⚠ **nessuna registrazione né trascrizione esiste per la
+formazione commerciale 11:30-13:00** dello stesso giorno.

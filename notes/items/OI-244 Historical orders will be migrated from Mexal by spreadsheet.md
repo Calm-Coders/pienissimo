@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-11-06
+updated: 2026-11-09
 depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
@@ -1094,3 +1094,49 @@ chiamatto fabrizio"_, _"pienissimo altrimenti non ne uscivo"_, _"**ha messo dell
 tranche del 1/1/2021 sui ordini dek 2026**"_. ⚠ **The call left no written record**
 and no correction to the file has been promised; the placeholder dates are loaded in
 Prod as they stand.
+
+
+## 🔑 2026-11-09 - the definitive import is upsert plus insert, and a differing Mexal code makes a new order
+
+**The load was reported to the client on the call, and the mechanics of the
+12-13 November delta were stated for the first time.** From
+[the 09/11 client review](../meetings/2026-11-09%20Review%20temi%20Fase%202.md):
+
+1. 🔑 **The delta is `upsert` for what is missing and `insert` for what is new** —
+   _"l'import definitivo utilizzerà un **aggiornamento di tipo upsert per i dati
+   mancanti e insert per i nuovi record**"_.
+2. 🔴 **A changed Mexal code produces a second order, not an update** — _"i codici
+   Ma\[Me\]xal differenti vengono trattati come **nuovi ordini anziché
+   sovrascritti**"_. Fabrizio Paganelli had asked specifically about removed lines,
+   deleted orders and changed article statistical categories; Aurel Mrruku offered
+   **analysis and update scripts** where needed, which is now one of his action
+   items.
+3. 🟢 **The client proposed his own reconciliation**: an **export from Salesforce**
+   to check the test orders line up between the systems. ⚠ **Unassigned** in the
+   summary's own next-step list.
+4. 🟢 **Why the full chain was not run is on the record**: _"il flusso completo di
+   fatturazione e scadenziario non è stato eseguito per evitare problemi
+   operativi"_ — consistent with the gating already held here.
+
+⚠ **The order count reported on the call was `18.000`**, with _"altrettante
+righe"_. **That is the Gemini summary conflating orders with lines** — this record
+holds **8,162 orders and 18,006 lines** from the load itself and from the 16:51:35Z
+mail of 6 November. The `31` orders without an account and the payment codes forced
+to `12` match exactly.
+
+### 🔑 The commercial data is owed Thursday morning
+
+Fabrizio Paganelli's action item from the same call: _"**Trasmettere dati
+commerciali alla squadra: entro giovedì mattina**"_ — **Thursday 12 November**,
+the first day of the delta window. ⚠ **Which file this is was not named on the
+call**; it is the data the delta loads.
+
+### Status of the switched-off automation
+
+🔴 **Unchanged and unmentioned by any source in this window.** The nightly invoice
+and scadenzario jobs and the two marketing flows remain gated on the 12-13 November
+delta, **three days before the 16 November user start**, and
+[the ticket confirmation request flow](../flows/The%20ticket%20confirmation%20request%20flow.md) —
+documented on 9 November, up to fifteen mails per participant — is one of them.
+⚠ **Nothing records whether the Mexal API calls switched off for the load were
+switched back on.**

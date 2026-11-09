@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-04
-updated: 2026-11-04
+updated: 2026-11-09
 depends_on: [OI-201, OI-212]
 blocks: []
 severity: gating
@@ -128,3 +128,67 @@ la Rebecca."_
 **Closing it:** a collection reversed in Mexal, and the Salesforce order, tranche
 and asset all returning to the state they held before it — with a recorded answer
 for the ticket that was already sent.
+
+
+## 🟢🔑 2026-11-09 - this is now release R1, dated 14 December, and the scope is written down
+
+**The single largest unsolved thing in the 4 November production session has a
+release, a date and a specification.** It is **R1 of Fase 2**, go-live
+**14 December 2026**, and the client forced it to the front of the queue.
+
+### The scope, as the offer states it
+
+`Pienissimo Offerta Fase 2_V.4`, slide `RILASCIO 1 - Aggiornamento scadenziario`,
+_"Una sola procedura che tiene allineati scadenziario Mexal e disponibilità dei
+biglietti su Salesforce"_:
+
+| | |
+| --- | --- |
+| **Controllo notturno** | _"Ogni notte verifica dello stato delle rate in Mexal (pagata / non pagata)"_ with synchronisation to Salesforce |
+| 🔑 **Disponibilità dei biglietti** | _"**Rata non più pagata: l'asset torna da Disponibile a Ordinato**. Nessun ingresso senza incasso registrato"_ |
+| **Casi coperti** | _"Variazioni delle scadenze di pagamento · **Incassi registrati per errore** · Insoluti rilevati da Mexal"_ |
+| **Verifiche di sistema** | _"**Nessuna email**: aggiornamento dello stato del record · Controllo degli automatismi legati al cambio di stato"_ |
+
+🔑 **`Incassi registrati per errore` is this item verbatim** — the case Fabrizio
+Paganelli performed on screen on 4 November. 🔑 **And `Nessuna email` answers the
+objection**: the reversal is specified to move the record state without sending
+anything.
+
+### What the client confirmed, and what was pulled forward
+
+On [the 09/11 client review](../meetings/2026-11-09%20Review%20temi%20Fase%202.md)
+Fabrizio Paganelli and Aurel Mrruku agreed that a payment change does not trigger
+asset or order and that **an asset status update is required, at Fabrizio
+Paganelli's request**. Aurel Mrruku required _"un'analisi tecnica e funzionale
+dettagliata che includa anche la parte di marketing"_, and 🟢 **the client pulled
+that analysis forward to before Thursday 12 November** — _"ha proposto di
+anticipare l'analisi tecnica di dettaglio nei giorni precedenti a giovedì,
+trovando il pieno accordo di Aurel Mrruku, il quale ha chiesto di procedere al più
+presto"_.
+
+The design problem is stated in the same summary in the author's own terms: states
+_"avanzavano linearmente (ordine, asset, fattura, scadenziario, invio
+biglietto/link), mentre **ora occorre gestire passaggi all'indietro e la
+cancellazione o modifica dei record**"_.
+
+### 🔴 What this does not resolve
+
+1. 🔴 **`Nessuna email` is a specification, not a finding.** The real question —
+   what happens when the confirmation mails have **already** gone out — was raised
+   by Aurel Mrruku internally that morning (_"se sono inviate le comunicazioni come
+   faremo?"_) and routed to Rebecca Marmo, unanswered →
+   [OI-350](OI-350%20The%20R2%20date%20and%20the%20ticket%20email%20timing%20conditions%20need%20Rebecca.md).
+   [The ticket confirmation request flow](../flows/The%20ticket%20confirmation%20request%20flow.md)
+   stops at the event date, not at payment.
+2. 🔴 **Nobody is assigned to build it and the developer has refused December** →
+   [OI-349](OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).
+   Aurel Mrruku: _"Ti dico già che non lo posso fare dicembre."_
+3. 🔴 **It is priced in a document the client has not approved**, due 13 November,
+   and **the project plan still puts this content in its own R2 at `feb - mar`** →
+   [OI-342](OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md).
+4. ⚠ **The client believes it is small.** Reported by Elena Spini: _"lui ha detto
+   che è **super facile** … in realtà è una cosa è un aggiornamento e basta"_,
+   against Aurel Mrruku's _"dobbiamo far tornare indietro tutto il flusso
+   dell'ordine e degli asset e dei link"_.
+5. ⚠ **It is still unfixed in production**, where the 1st-of-the-month banking
+   cycle reverses collections.

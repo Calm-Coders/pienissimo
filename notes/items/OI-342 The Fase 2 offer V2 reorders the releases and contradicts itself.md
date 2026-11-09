@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Galotto
 org: ROMI
 raised: 2026-11-05
-updated: 2026-11-05
+updated: 2026-11-09
 depends_on: [OI-308]
 blocks: []
 source: Drive 1_ilgbQZf_2TXHrJ2DNiRQdgc9ZY4FtQAq7tDqLvZ6j0, read 2026-11-05
@@ -82,3 +82,85 @@ statements are quoted as they stand.
   12 February 2027.
 - A statement of whether OI-331 is inside that release or outside Fase 2's priced
   scope.
+
+
+## 🟡🔑 2026-11-09 - V.3 and V.4 appeared, the deck is now consistent, and the contradiction moved to the plan
+
+**The internal contradiction this item was opened for is gone. A larger one took
+its place: the offer and the project plan now describe different projects, and both
+were touched on 9 November.**
+
+### The four versions
+
+| Document | Id | Owner | Created | Modified |
+| --- | --- | --- | --- | --- |
+| `Pienissimo Offerta Fase 2` (V1) | `1T1gExUUq4_...` | Andrea Galotto | 02/11 09:21Z | 05/11 11:51Z |
+| `..._V.2` | `1_ilgbQZf_...` | Elena Spini | 05/11 11:52Z | **08/11 17:42:19Z** — touched on the Sunday |
+| `..._V.3pptx` | `1HIm9q3a_hJf2uJp_vhM3rvC3iz8aNRsC` | **Elena Spini** | **09/11 14:31:39Z** | 09/11 14:33:46Z — ⚠ an **uploaded `.pptx`**, not a native deck; not opened |
+| **`..._V.4`** | `1nE19jesbBpP2JXdnDOZfAnB--fhaEKMCMrgf9RxkWbY` | **Andrea Galotto** | **09/11 20:34:39Z** | **09/11 21:43:06Z** |
+
+🔑 **V.4 was created in the evening, after both of the day's meetings**, by the
+person who owns the commercial offer, and was still being edited minutes before
+this sweep ran.
+
+### 🟢 What V.4 fixes
+
+1. 🟢 **One ordering, stated identically on the summary band, the seven detail
+   slides and the timeline.** The duplicate `RILASCIO X` leftovers are gone.
+2. 🟢 **The scadenziario release has a single date: `14 dicembre 2026`**, as R1 —
+   the question this item asked. On the client call Elena Spini presented it as
+   _"ipotizzato per il 14 dicembre"_.
+3. 🟢 **OI-331 is explicitly inside R1's priced scope** — _"Rata non più pagata:
+   l'asset torna da Disponibile a Ordinato"_, with _"Incassi registrati per
+   errore"_ among the covered cases. **The third question this item asked, answered.**
+4. 🟢 **A maintenance line exists** — `10 giornate, da R0 a R6` →
+   [OI-308](OI-308%20Fase%202%20maintenance%20was%20left%20out%20of%20the%20estimate.md).
+5. 🟢 **Info Point keeps its own release** (R3) with its full content restored —
+   check-in, orphan tickets and the post-event anomaly report — which the V.2 swap
+   had orphaned on a superseded slide.
+
+The seven releases are recorded in
+[the Fase 2 offer](../The%20Fase%202%20offer.md).
+
+### 🔴 The new contradiction: the offer and the plan disagree about everything
+
+`Pienissimo_Project_Plan_Fase2` was modified **09/11 14:15:44Z**, six hours before
+V.4, and still carries the **six-release** plan:
+
+| | Offer V.4 | Project plan |
+| --- | --- | --- |
+| Releases | **7** (R0-R6) | **6** (R0-R5) |
+| R1 | **Scadenziario**, 14/12/2026 | **Info Point + biglietti**, 15/01 |
+| R2 | Annullamento e cambio nome, 14/01/2027 | **Note di credito e Ri.Ba.**, 12/02 |
+| R3 | Info Point, 15/02/2027 | Eventi multi-edizione, 26/02 |
+| Fase 2 complete | **12 aprile 2027** | **26/03** |
+| Day total | **`150 giornate`** | **`60 - 80` + `10`** |
+
+🔴 **So the same release number means different work in the two documents**, and
+the end date differs by seventeen days. ⚠ **Which one the client is asked to
+approve on 13 November is not established** — Elena Spini's own words were _"noi
+mandiamo il tutto"_, which reads as both.
+
+🔴 **And the plan contradicts itself too.** It now carries **two** `Piano rilasci e
+stima indicativa` slides: the old one (transversal `7 - 9`, total `58 - 78`) and a
+new one (transversal `9 - 11`, new `Maintenance` row at `10`, total `60 - 80 + 10`).
+**The superseded slide was not removed** — the same failure mode as V.2.
+
+### 🔴 The day count did not move, and Elena Spini said it had to
+
+On the client call she said the estimate _"**aumenterà, non può diminuire**"_,
+having gone from five releases to seven. **V.4 still reads `150 giornate`**, the
+figure V1 and V2 carried for six releases. ⚠ **No figures beyond the day counts and
+the instalment structure are transcribed here**; the payment terms are unchanged at
+three instalments, 40% on signature, 30% at 60 days, 30% on delivery, _"5 mesi
+dallo start dei lavori"_.
+
+### What is still owed, four days before approval
+
+- **One release plan, in one place** — the offer and the plan reconciled, and the
+  plan's duplicate estimate slide removed.
+- **A statement of whether the `10` maintenance days are inside or outside the
+  `150`.**
+- **A ruling on whether `150 giornate` is still the number** after +1 release and
+  +17 days.
+- **A developer for R1** → [OI-349](OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).

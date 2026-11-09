@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-11-03
-updated: 2026-11-06
+updated: 2026-11-09
 depends_on: [OI-304]
 blocks: [go-live]
 source: notes/meetings/2026-11-03 Follow-up Interno.md
@@ -248,3 +248,31 @@ live on the order.
 ⚠ **The document still has not moved**: `1A-sYQEZvbp2ShVbVL1XQPkPottBQKCuI` remains
 at 2026-11-03 17:58:18Z, checked again on 6 November. The approval is in the mail,
 not in the artifact, and the client left no comment in it.
+
+
+## 🔑 2026-11-09 - R0 is in development, and it has grown a signature requirement
+
+**Three movements, none of them an answer to the four open points.**
+
+1. 🟢 **Development has started and is being reported as such.** The 9 November
+   client review describes _"il **rilascio zero** per i contratti da palco **su cui
+   Aurel mrruku sta già lavorando**"_, and Elena Spini's `#tproj-pienissimo` status
+   the same morning: _"Lo trattiamo come primo rilascio della Fase 2, **da portare
+   in produzione prima di Pienissimo Live (24-26/11)**."_
+2. 🆕🔴 **A new requirement landed on it.** The contract must be signed by the
+   **account's legal representative**, the identifying fields may not exist, and
+   Fabrizio Paganelli is taking it to a lawyer →
+   [OI-346](items/OI-346%20The%20contract%20must%20be%20signed%20by%20the%20account%20legal%20representative.md).
+   🔑 **This overlaps `OP-2` directly** — where the signature status and the signed
+   PDF live on the order — which was already his to answer.
+3. 🔴 **The document is unchanged** since 03/11 17:58:18Z, a sixth day. `OP-1`,
+   `OP-2` and `OP-4` carry no answers, and **the premise `OP-3` exists to settle is
+   now contradicted by ROMI's own status line**, which dates the requirement to
+   **30 October** rather than the 2 November call →
+   [OI-343](items/OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md).
+
+🔴 **The release date in the offer is `Novembre 2026`** with no day against it, and
+**R0 has no developer assigned beyond Aurel Mrruku's own time**, which he has said
+is committed elsewhere from December →
+[OI-349](items/OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).
+Pienissimo Live is **15 days** away.

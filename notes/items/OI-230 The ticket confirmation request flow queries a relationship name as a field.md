@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-13
-updated: 2026-10-13
+updated: 2026-11-09
 depends_on: [OI-197, OI-199]
 blocks: [go-live]
 severity: gating
@@ -135,3 +135,26 @@ completing.
   Salesforce suppresses repeat flow-error mail per version.
 - ⚠ **Who revised it six times**, and against what. No commit can show it: the
   flow is not in source control.
+
+
+## ⚠ 2026-11-09 - the flow was described as working, by its author, with no mention of this
+
+**Fabrizio Mastracci wrote out the whole behaviour of this flow** in the marketing
+group DM at **16:41:43 CET**, in answer to Elena Spini: when it starts, what it
+sends, five stop conditions, the fifteen-mail ceiling and the dynamic mail fields.
+See [the flow](../flows/The%20ticket%20confirmation%20request%20flow.md).
+
+🔴 **Nothing in it mentions a defect**, and this item has been **gating and open
+since 13 October** on a deterministic query error that cannot succeed.
+
+⚠ **This is not evidence that the error was fixed.** The message is a
+configuration explanation, not a status report, and it is written entirely in
+business terms — no API names, no flow version. **Nothing in this window states the
+query was corrected, and the org was not opened in this session.**
+
+🔑 **It needs reconciling, and the window is narrow.** The marketing flows are
+switched off until the **12-13 November delta**
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)),
+so this flow is not firing now; when it is switched back on, **three days before the
+16 November user start**, either the fix is in or a customer-facing flow resumes
+failing deterministically.

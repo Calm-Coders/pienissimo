@@ -6,9 +6,9 @@ owner: Andrea Galotto
 with: Elena Spini
 org: ROMI
 raised: 2026-11-02
-updated: 2026-11-05
+updated: 2026-11-09
 depends_on: [OI-308]
-source: Drive 1T1gExUUq4_fUkXjJY3b_fa66kPrHNmI6N_3wLXbldaY and 1b329SMXkcG3kivDfvoziCFuk2I19DlQQqS_UTQtKFeA
+source: Drive 1nE19jesbBpP2JXdnDOZfAnB--fhaEKMCMrgf9RxkWbY and 1b329SMXkcG3kivDfvoziCFuk2I19DlQQqS_UTQtKFeA
 ---
 
 # The Fase 2 offer
@@ -218,3 +218,79 @@ Spini, 18:02 CET: _"t ah risposto per il deploy del 18? che era sulla fase 2"_ �
 detto che domani mattina manda l OK e se ha problemi dubbi ci scrive / chiama"_. ⚠
 **Which release that is, and whether it is the R0 release of 18-19 November already
 recorded below, is not stated.** The OK is promised for the morning of 6 November.
+
+
+## 🔑 2026-11-09 - the offer is now seven releases to 12 April 2027, with maintenance
+
+**`Pienissimo Offerta Fase 2_V.4`, created by Andrea Galotto at 20:34:39Z on
+9 November and last modified 21:43:06Z**, is the current offer. It supersedes V1,
+V.2 and the `.pptx` V.3. Read from Drive on 2026-11-09; **no euro figures are
+transcribed here**, per the standing rule.
+
+The client saw this plan on
+[the 09/11 review](meetings/2026-11-09%20Review%20temi%20Fase%202.md) and accepted
+it. ⚠ **He has not been sent the deck** — Elena Spini owed a final check with
+Andrea Galotto first, after which _"Andrea manda \[a\] Daniela"_.
+
+### The seven releases
+
+| Release | Content | Go-live |
+| --- | --- | --- |
+| Analisi | Workshop, solution design, Business Blueprint; requirements for R1-R6 _"a partire dallo scadenziario"_ | **nov - dic 2026** |
+| **R0** | Contratti post-vendita da palco | **Nov 2026**, _"in produzione prima di Pienissimo Live (24-26/11)"_ |
+| **R1** | **Aggiornamento scadenziario** — nightly Mexal rate check, and 🔑 _"Rata non più pagata: **l'asset torna da Disponibile a Ordinato**"_ | **14/12/2026** |
+| **R2** | Annullamento e cambio nome biglietti; annullo before send; spostamento tra edizioni; **import contatti provvisorio** | **14/01/2027**, _"prima dell'Academy (19/01/2027)"_ |
+| **R3** | **Info Point** ⇆ Salesforce: check-in, contatti non iscritti, biglietti orfani, multiple endpoints both ways, post-event anomaly report | **15/02/2027** |
+| **R4** | Eventi multi-edizione e multi-giorno, reference case **Mastery**; check-in per day | **08/03/2027** |
+| **R5** | Pienissimo Pro → Zoho; GLS → Salesforce; Teachable → Salesforce; Performance Plus expiry alerts; email and WhatsApp transactional; per-ticket-type communications | **22/03/2027** |
+| **R6** | Note di credito: button on the order, partial storni on multi-event bundles, manual asset annullo, tranche rectification, Mexal alignment | **12/04/2027** |
+
+🔑 **`150 giornate`, `7 rilasci in produzione`, `12 aprile 2027` for the complete
+Fase 2 go-live** — the day count unchanged from the six-release version.
+
+### 🟢🔑 Maintenance exists now
+
+A dedicated slide, **`Maintenance di rilascio`**, _"COPERTURA **10 giornate, da R0
+a R6**"_: post-go-live optimisation of fields, layouts, automations and
+communications; monitoring of what is already in production at each release;
+integration monitoring for **Mexal, Info Point, Zoho, GLS and Teachable**; and
+adaptation to Salesforce releases. _"La maintenance di rilascio è rendicontata a
+ogni SAL; le attività oltre le 10 giornate sono quotate a parte."_
+
+The separate value-add is unchanged: **one free month of post-go-live support after
+the last release**. → [OI-308](items/OI-308%20Fase%202%20maintenance%20was%20left%20out%20of%20the%20estimate.md)
+
+### Caveats the deck states about itself
+
+> _"Rilasci incrementali: ogni release va in produzione dopo i propri UAT. **Date
+> indicative, da consolidare nella Business Blueprint; l'ordine dei rilasci può
+> seguire le priorità di Pienissimo.**"_
+
+⚠ So every date above is explicitly provisional, which is how the scadenziario
+came to be moved to the front in the first place.
+
+### The project plan has not followed
+
+🔴 **`Pienissimo_Project_Plan_Fase2`, modified 09/11 14:15:44Z, still carries six
+releases ending 26/03** and a different meaning for each release number, plus **two
+estimate slides that disagree with each other**. Its new estimate slide does carry
+the maintenance row — _"2 giorni al mese (fino ad aprile)"_, `10` gg — and raises
+the per-release transversal line from `7 - 9` to `9 - 11` gg, giving `60 - 80 + 10`.
+→ [OI-342](items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md)
+
+🔑 **The plan still carries the Fase 1 dates and the approval deadline**: go-live
+tecnico **09/11** — today — migration **12-13/11**, operational start **16/11**,
+and **_"Approvazione Fase 2 entro il 13/11"_**.
+
+### 🔑 Two things the roadmap implies that no item covers yet
+
+1. 🔑 **Zoho is in Fase 2 as a live destination.** R5 sends Pienissimo Pro orders
+   from Salesforce **to Zoho (Pienissimo Software SRL)**, go-live 22/03/2027.
+   ⚠ **The Zoho CRM contract expired on 31 October** and no source has mentioned it
+   for a seventeenth sweep; this deck commits to integrating with it sixteen months
+   later. **Which Zoho tenancy is meant — the expired CRM or Pienissimo Software's
+   own — is not stated.**
+2. ⚠ **R4's multi-entry tracking may be dropped.** Fabrizio Paganelli on the call:
+   _"c'è caso che sia anche un elemento che viene soppresso, perché se la direzione
+   dice 'No, no, a me non me ne frega niente del multiingresso'"_; Elena Spini
+   agreed it can be removed. **It is priced inside R4 regardless.**

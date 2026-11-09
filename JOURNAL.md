@@ -10,6 +10,64 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-09 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-11-06T22:00Z**
+  — **three days**, no run on 07/11 or 08/11. Eight mail threads (four moved, all read
+  in full), four Slack conversations plus one thread, the canvas, two Drive searches
+  and six document reads. 🟢 **Two Pienissimo meetings of 09/11 drilled**: the
+  ROMI-internal `INTERNA Review temi Fase 2` (10:01 CET, 00:26:39, **full
+  transcript**) and the client `Review temi Fase 2` (10:29 CET, 00:56:14) — 🔴 **the
+  client session's transcript exists only from `00:30:41`**, its first half hour held
+  on the Gemini auto-summary alone and marked as such.
+- **Opened OI-346 -> OI-350:** the contract **must be signed by the account's legal
+  representative** (new scope on R0, going to a lawyer); Salesforce flagged an
+  **unsupported SOAP API `login()`** on the production org, answered in 73 seconds
+  from memory; **Fase 1 post go-live support is unassigned and unpriced** seven days
+  before users start; **Fase 2 has no developer committed for December**; and **the R2
+  date and the ticket-email timing both need Rebecca Marmo**, who was on neither call.
+- **State:** the Fase 2 roadmap is now **seven releases ending 12 April 2027** and the
+  client accepted it — R1 is the **scadenziario on 14/12**, which is OI-331's reverse
+  gear, _"l'asset torna da Disponibile a Ordinato"_, with the detailed analysis pulled
+  forward to **before Thursday 12/11**. `Offerta Fase 2_V.4` (created 20:34Z tonight)
+  fixes every contradiction OI-342 was opened for, **and the project plan modified six
+  hours earlier still describes six releases ending 26/03** — the contradiction moved
+  between documents instead of closing. **OI-308 closes as an omission**: maintenance
+  is priced at `10 giornate` in both documents. Notes written for both meetings, five
+  items, one flow, one decision; ten notes updated; MAP/INDEX, both trackers (5 new +
+  9 regenerated rows each, plus a header note) and both recaps (new **Sec. 80**)
+  regenerated; trace at `notes/traces/Source trace 2026-11-09 nightly.md`. **Register
+  untouched - v1.6.** Next free item id **351**.
+- **Next:** four things need a human and none of them exists yet. **(1)** Nobody is
+  assigned to build R1 by 14 December, four days before the client is asked to approve
+  it; Aurel Mrruku said in terms _"non lo posso fare dicembre"_ and Elena Spini's
+  _"dovrò capire con Giampaolo"_ is not evidenced anywhere. **(2)** The offer and the
+  project plan must be reconciled before 13/11, and somebody must rule on whether
+  `150 giornate` still stands after +1 release and +17 days. **(3)** Rebecca Marmo owes
+  the timing rule between the ticket emails and the event date **before** the
+  scadenziario analysis is written, because that is what decides whether a reversal has
+  to unsend mail. **(4)** Still no reply to the client on the Blueprint claim, a fourth
+  day - and ROMI's own status post now dates the requirement to **30/10**, not the
+  02/11 call the disputed sentence cites.
+- **Watch:** Fase 1 support after 16/11 is in no document with a figure, while Aurel
+  Mrruku told the client that production maintenance takes priority over Fase 2 - the
+  same person, no costed line. Anticipay went backwards: Andrea Parmeggiani _"Avevo già
+  verificato che non avevo rilevato problemi"_, so the client asked **Aurel** to say
+  what fails, and two sandbox alerts fired the same day with **HTTP 404** rather than a
+  timeout. The Referenti solution was decided with Daniela Morgese and relayed **by
+  WhatsApp**; the mail Elena Spini asked for never came, with 49,788 + 107 rows and the
+  delta on 12-13/11. `#tproj-pienissimo` broke a five-sweep silence with a full status
+  post (12 gg to finish, go-live 16/11 unchanged).
+- **Not done:** org not opened, so `STATUS.md` and its Notion mirror are **stale** -
+  which matters more than usual, because **today was the technical go-live** and
+  nothing in this run verifies production; no Apex test class written or proposed
+  (standing instruction); no customer-data workbook opened; no euro figures transcribed
+  from the offer; the `V.3pptx` not opened; the LIFE365 lead question and the
+  _"analisi ASP"_ line in the Elena Spini DM belong to **another project** and were
+  excluded.
+
+---
+
 ## 2026-11-06 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-11-05T22:00Z**.

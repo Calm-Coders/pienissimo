@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-11-02
+updated: 2026-11-09
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -450,3 +450,26 @@ The 2 November documents are that absorption in client-facing form.
 
 🔴 **Unchanged in production a twenty-first night.** No commit, no org change, no
 mention in any source this sweep.
+
+
+## 🔴 2026-11-09 - the remedy finally has a date, and the defect is unchanged a twenty-sixth night
+
+🟢 **The release that carries this territory is now dated.** The 9 November Fase 2
+offer puts the scadenziario work in **R1, go-live 14 December 2026**, with
+_"Variazioni delle scadenze di pagamento"_ and _"Insoluti rilevati da Mexal"_
+among its covered cases — see
+[OI-331](OI-331%20A%20reversed%20collection%20cannot%20move%20the%20order%20and%20asset%20states%20back.md)
+and [the Fase 2 offer](../The%20Fase%202%20offer.md). On 2 November the same content
+sat in R2 at 12 February 2027, so **the remedy moved two months earlier** —
+because the client demanded it, not because this defect was raised.
+
+🔴 **The defect itself is untouched.** No source in this window mentions it. It has
+now stood **unchanged since 19 October in production**, through the historical
+order load of 8,162 orders, and the nightly invoice and scadenzario jobs are
+switched off until the 12-13 November delta
+([OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)),
+which means **the predicate has not been exercised against the migrated data at
+all.**
+
+⚠ **And R1 has no developer.** See
+[OI-349](OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).

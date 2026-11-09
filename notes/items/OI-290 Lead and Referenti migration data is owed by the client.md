@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-11-05
+updated: 2026-11-09
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -554,3 +554,40 @@ copy:
 final import** — seven days before the 12-13 November migration. ⚠ The refresh
 promised _"la settimana prossima con Sabatino"_ has no date, and the week it refers
 to is the migration week itself.
+
+
+## 🔴🔑 2026-11-09 - the client decided how to handle the uncoded Referenti, by WhatsApp, and the written answer never came
+
+**Elena Spini's status post in `#tproj-pienissimo`, 2026-11-09 09:00:06 CET, is the
+first word on this since the exception list went out**, and it says the answer
+exists and cannot be reached:
+
+> _"dei referenti **17.652 righe sono in Salesforce, 49.788 sono senza codice Mexal
+> e 107 con un codice che non trova l'azienda**. **Sabatino mi ha scritto su
+> WhatsApp venerdì che hanno una soluzione decisa con Daniela**, ma **non sono
+> riuscita a sentirlo e la mail che gli ho chiesto di inviarmi non è arrivata**,
+> quindi **non so ancora cosa vogliano**."_
+
+🔑 **Three things this establishes:**
+
+1. 🟢 **Pienissimo has decided**, at direction level — _"una soluzione decisa con
+   Daniela"_ — so the question is no longer open on their side.
+2. 🔴 **ROMI does not know what the decision is.** It was communicated on **Friday
+   6 November by WhatsApp**, a channel outside every source this record sweeps, and
+   **the mail Elena Spini asked for has not arrived.**
+3. 🔑 **The figures are confirmed unchanged** from the 5 November load: 17,652
+   loaded, **49,788 without a Mexal code**, **107 with a code that matches no
+   company**.
+
+🔴 **This is the third consecutive record of Sabatino Rinaldi owing a written
+answer**, and the pattern is now the substance of the item: decisions are taken
+and relayed verbally, so ROMI cannot act on them. ⚠ **No date was given for the
+mail**, and her own Next step list carries it as _"Sabatino – mandare via mail la
+soluzione sui referenti senza codice Mexal, decisa con Daniela."_
+
+⚠ **The timing matters.** The final data delta is **12-13 November** and users
+start on **16 November**. A handling rule for 49,895 rows that arrives after the
+delta arrives too late to be part of it.
+
+See [Sabatino Rinaldi](../people/Sabatino%20Rinaldi%20-%20Pienissimo%20project%20lead.md) and
+[Daniela Morgese](../people/Daniela%20Morgese%20-%20Pienissimo%20direction.md).
