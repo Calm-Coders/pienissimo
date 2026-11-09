@@ -69,6 +69,7 @@ public without sharing class MexalOrderSendService {
         Codice_Agente__c,
         EffectiveDate,
         OrderNumber,
+        Origine__c,
         Quote__c,
         Quote__r.QuoteNumber,
         Condizione_di_Pagamento__c,
@@ -150,15 +151,15 @@ public without sharing class MexalOrderSendService {
       payload.put('codice_agente', orderRecord.Codice_Agente__c.trim());
     }
     payload.put('data_documento', formatDate(orderRecord.EffectiveDate));
-    // Header note ("Note di Testata", named by Kreosoft 30/10): the quote
-    // number, so amministrazione can match the invoice to the signed quote.
+    // WooCommerce orders carry the Salesforce order number; other orders retain the quote reference.
     // Mexal treats nota as an array of note lines, so it goes as [[1, value]].
-    if (!String.isBlank(orderRecord.Quote__r?.QuoteNumber)) {
+    String noteReference = orderRecord.Origine__c == 'WooCommerce'
+      ? orderRecord.OrderNumber
+      : orderRecord.Quote__r?.QuoteNumber;
+    if (!String.isBlank(noteReference)) {
       payload.put(
         'nota',
-        new List<Object>{
-          new List<Object>{ 1, orderRecord.Quote__r.QuoteNumber }
-        }
+        new List<Object>{ new List<Object>{ 1, noteReference } }
       );
     }
     putIntegerValue(

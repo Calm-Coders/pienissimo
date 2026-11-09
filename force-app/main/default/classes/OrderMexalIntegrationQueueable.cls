@@ -130,7 +130,18 @@ public without sharing class OrderMexalIntegrationQueueable implements Queueable
       return;
     }
 
-    enqueueNextOrder();
+    // DocuSign owns the next two jobs (PDF, then HTTP send), then resumes
+    // the remaining Mexal orders. Its failures never mark this order Failed.
+    Queueable continuation = remainingOrderIds.isEmpty()
+      ? null
+      : new OrderMexalIntegrationQueueable(
+          remainingOrderIds,
+          firstOrderIds,
+          manualRun
+        );
+    System.enqueueJob(
+      new DocuSignOrderEnvelopeQueueable(orderId, continuation)
+    );
   }
 
   private void enqueueNextOrder() {
