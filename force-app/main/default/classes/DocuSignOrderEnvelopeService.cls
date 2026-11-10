@@ -13,6 +13,46 @@ public without sharing class DocuSignOrderEnvelopeService {
     System.enqueueJob(new DocuSignOrderEnvelopeQueueable(orderId));
   }
 
+  @AuraEnabled(cacheable=true)
+  public static String getLatestErrorMessage(Id orderId) {
+    Map<String, String> details = getLatestErrorDetails(orderId);
+    return details == null ? null : details.get('message');
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static Map<String, String> getLatestErrorDetails(Id orderId) {
+    if (orderId == null) {
+      return null;
+    }
+    List<Order> orders = [
+      SELECT Id, DocuSign_Status__c, DocuSign_Error__c
+      FROM Order
+      WHERE Id = :orderId
+      WITH USER_MODE
+      LIMIT 1
+    ];
+    if (orders.isEmpty() || orders[0].DocuSign_Status__c != 'Error') {
+      return null;
+    }
+    // Older failures predate the Order error field. After checking access to the
+    // Order and its error fields, expose only that Order's latest error message and log ID.
+    String errorFlow = flowName(orderId) + '_Error';
+    List<Integration_Log__c> errors = [
+      SELECT Id, Exception_Message__c
+      FROM Integration_Log__c
+      WHERE Flow_Name__c = :errorFlow AND Is_Error__c = TRUE
+      ORDER BY CreatedDate DESC, Id DESC
+      LIMIT 1
+    ];
+    String message = String.isNotBlank(orders[0].DocuSign_Error__c)
+      ? orders[0].DocuSign_Error__c
+      : (errors.isEmpty() ? null : errors[0].Exception_Message__c);
+    return new Map<String, String>{
+      'message' => message,
+      'logId' => errors.isEmpty() ? null : String.valueOf(errors[0].Id)
+    };
+  }
+
   @AuraEnabled
   public static String retryDocuSign(Id orderId) {
     try {
@@ -199,7 +239,8 @@ public without sharing class DocuSignOrderEnvelopeService {
       update new Order(
         Id = orderId,
         DocuSign_Envelope_Id__c = envelopeId,
-        DocuSign_Status__c = 'Sent'
+        DocuSign_Status__c = 'Sent',
+        DocuSign_Error__c = null
       );
     } catch (Exception error) {
       // Sent means an envelope is known to exist; never create another one.
@@ -226,7 +267,11 @@ public without sharing class DocuSignOrderEnvelopeService {
     if (hasEnvelope(record)) {
       return;
     }
-    update new Order(Id = orderId, DocuSign_Status__c = 'Error');
+    update new Order(
+      Id = orderId,
+      DocuSign_Status__c = 'Error',
+      DocuSign_Error__c = error.getMessage().abbreviate(131072)
+    );
     insert new Integration_Log__c(
       Flow_Name__c = flowName(orderId) + '_Error',
       Inbound_Outbound__c = 'Outbound',
@@ -318,7 +363,7 @@ public without sharing class DocuSignOrderEnvelopeService {
     ];
     if (contacts.size() != 1) {
       throw new OrderEnvelopeException(
-        'Configurare un solo contatto principale sull Account per inviare il contratto.'
+        'Configurare un contatto principale sull\'Account per inviare il contratto.'
       );
     }
     if (String.isBlank(contacts[0].Email)) {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Discount_Pct__c</fullName>
+    <description
+  >Discount percentage derived from the pre-discount unit price and net UnitPrice. Blank when the list price is missing or zero. For bundle components, shows the reduction from list price to the allocated bundle price.</description>
+    <formula
+  >IF(OR(ISBLANK(Prezzo_Listino__c), Prezzo_Listino__c = 0), NULL, (Prezzo_Listino__c - UnitPrice) / Prezzo_Listino__c)</formula>
+    <formulaTreatBlanksAs>BlankAsBlank</formulaTreatBlanksAs>
+    <label>Sconto</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Percent</type>
+</CustomField>

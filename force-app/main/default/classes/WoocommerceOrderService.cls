@@ -367,7 +367,8 @@ global without sharing class WoocommerceOrderService {
       }
     }
 
-    setAsPrincipalContactWhenMissing(accountId, matchingContact);
+    // Billing details identify a Contact, not the authorised contract signer.
+    // DocuSign requires an explicitly selected primary Contact on the Account.
     return matchingContact;
   }
 
@@ -379,25 +380,6 @@ global without sharing class WoocommerceOrderService {
       throw new WooCommerceOrderException(
         'Unable to create Contact: ' + result.getErrors()[0].getMessage()
       );
-    }
-  }
-
-  private static void setAsPrincipalContactWhenMissing(
-    Id accountId,
-    Contact contactRecord
-  ) {
-    if (contactRecord.Contatto_Principale__c == true) {
-      return;
-    }
-
-    Integer principalContacts = [
-      SELECT COUNT()
-      FROM Contact
-      WHERE AccountId = :accountId AND Contatto_Principale__c = TRUE
-    ];
-    if (principalContacts == 0) {
-      update new Contact(Id = contactRecord.Id, Contatto_Principale__c = true);
-      contactRecord.Contatto_Principale__c = true;
     }
   }
 
