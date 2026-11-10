@@ -1,0 +1,19 @@
+<template>
+  <template if:true={hasError}>
+    <section class="error-banner" role="alert">
+      <lightning-icon
+        icon-name="utility:error"
+        alternative-text="Errore DocuSign"
+        variant="inverse"
+        size="small"
+      ></lightning-icon>
+      <div class="error-content">
+        <h2>Errore invio contratto DocuSign</h2>
+        <p>{message}</p>
+        <template if:true={logId}>
+          <a class="log-link" href={logUrl}>Integration Log: {logId}</a>
+        </template>
+      </div>
+    </section>
+  </template>
+</template>

@@ -899,6 +899,19 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>orderDocuSignErrorBanner</componentName>
+                <identifier>c_orderDocuSignErrorBanner</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Origine__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>WooCommerce</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>label</name>
                     <value>Tabs</value>
