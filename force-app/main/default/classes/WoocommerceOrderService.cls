@@ -356,6 +356,7 @@ global without sharing class WoocommerceOrderService {
           FirstName = limitLength(payload.firstName(), 40),
           LastName = limitLength(customerContactLastName(payload), 80),
           Email = email,
+          Contatto_Principale__c = true,
           Phone = payload.phone(),
           MailingStreet = payload.billingStreet(),
           MailingCity = payload.billingCity(),
@@ -367,7 +368,8 @@ global without sharing class WoocommerceOrderService {
       }
     }
 
-    setAsPrincipalContactWhenMissing(accountId, matchingContact);
+    // Without an Opportunity, a newly created billing Contact is the primary
+    // Contact for the WooCommerce contract. Matched Contacts retain their flag.
     return matchingContact;
   }
 
@@ -379,25 +381,6 @@ global without sharing class WoocommerceOrderService {
       throw new WooCommerceOrderException(
         'Unable to create Contact: ' + result.getErrors()[0].getMessage()
       );
-    }
-  }
-
-  private static void setAsPrincipalContactWhenMissing(
-    Id accountId,
-    Contact contactRecord
-  ) {
-    if (contactRecord.Contatto_Principale__c == true) {
-      return;
-    }
-
-    Integer principalContacts = [
-      SELECT COUNT()
-      FROM Contact
-      WHERE AccountId = :accountId AND Contatto_Principale__c = TRUE
-    ];
-    if (principalContacts == 0) {
-      update new Contact(Id = contactRecord.Id, Contatto_Principale__c = true);
-      contactRecord.Contatto_Principale__c = true;
     }
   }
 

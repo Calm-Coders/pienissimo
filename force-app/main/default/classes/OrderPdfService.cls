@@ -241,7 +241,8 @@ public without sharing class OrderPdfService implements Queueable, Database.Allo
         Product2.Categoria_Articolo__c,
         Description,
         Quantity,
-        ListPrice,
+        Prezzo_Listino__c,
+        Discount_Pct__c,
         UnitPrice,
         TotalPrice,
         Data_Scadenza__c,
@@ -261,9 +262,7 @@ public without sharing class OrderPdfService implements Queueable, Database.Allo
     for (OrderItem item : items) {
       LineRow row = new LineRow(item);
       lines.add(row);
-      grossTotal +=
-        item.Quantity *
-        (item.ListPrice == null ? item.UnitPrice : item.ListPrice);
+      grossTotal += item.Quantity * resolveUnitListPrice(item);
       if (
         plusCategories.get(item.Product2.Categoria_Articolo__c) == 'Rinnovo'
       ) {
@@ -319,6 +318,14 @@ public without sharing class OrderPdfService implements Queueable, Database.Allo
     return plusRenewal;
   }
 
+  private static Decimal resolveUnitListPrice(OrderItem item) {
+    // Use the original price captured by the import. For historical lines with
+    // no captured list price, retain the net price rather than invent a discount.
+    return item.Prezzo_Listino__c == null
+      ? item.UnitPrice
+      : item.Prezzo_Listino__c;
+  }
+
   private static String address(
     String street,
     String postalCode,
@@ -353,15 +360,11 @@ public without sharing class OrderPdfService implements Queueable, Database.Allo
       description = item.Description;
       unitOfMeasure = item.Product2.QuantityUnitOfMeasure;
       quantity = item.Quantity;
-      Decimal unitListPrice = item.ListPrice == null
-        ? item.UnitPrice
-        : item.ListPrice;
+      Decimal unitListPrice = OrderPdfService.resolveUnitListPrice(item);
       Decimal gross = item.Quantity * unitListPrice;
       listPrice = QuotePdfController.money(unitListPrice);
       amount = QuotePdfController.money(gross);
-      discount = QuotePdfController.percentage(
-        gross == 0 ? 0 : ((gross - item.TotalPrice) / gross) * 100
-      );
+      discount = QuotePdfController.percentage(item.Discount_Pct__c);
       total = QuotePdfController.money(item.TotalPrice);
       dueDate = QuotePdfController.formatDate(
         item.Data_Scadenza__c != null
