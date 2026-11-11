@@ -356,6 +356,7 @@ global without sharing class WoocommerceOrderService {
           FirstName = limitLength(payload.firstName(), 40),
           LastName = limitLength(customerContactLastName(payload), 80),
           Email = email,
+          Contatto_Principale__c = true,
           Phone = payload.phone(),
           MailingStreet = payload.billingStreet(),
           MailingCity = payload.billingCity(),
@@ -367,8 +368,8 @@ global without sharing class WoocommerceOrderService {
       }
     }
 
-    // Billing details identify a Contact, not the authorised contract signer.
-    // DocuSign requires an explicitly selected primary Contact on the Account.
+    // Without an Opportunity, a newly created billing Contact is the primary
+    // Contact for the WooCommerce contract. Matched Contacts retain their flag.
     return matchingContact;
   }
 
