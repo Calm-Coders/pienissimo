@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-04
-updated: 2026-11-04
+updated: 2026-11-12
 depends_on: []
 blocks: [go-live]
 requirement: ORD-01
@@ -91,3 +91,31 @@ contract-bound and is not restructured from a note, the same handling the three
 
 **Closing it:** a quote line with no payment due date, and `Genera PDF` refusing
 with a message the tutor can act on — demonstrated in UAT, then in production.
+
+## 🔑 2026-11-12 - the rule bit the client on his own products
+
+**The mandatory-tranche rule is live in production and the client hit it the same
+afternoon, on the product registry rather than the quote.**
+
+Fabrizio Paganelli, **2026-11-12 16:51:13Z**, `Anagrafica Articoli`
+(`1a1d0abac99f5ad4`):
+
+> _"state lavorando sull'anagrafica articoli? Perche ci sono alcune cose su cui non
+> mi ritrovo, **anche rispetto ai test che avevo fatto**"_
+
+Aurel Mrruku, 17:14:53Z: _"Sto facendo dei rilasci in prod in questo momento. Mi
+puoi spiegare cosa non torna? **I prodotti plus devono avere delle tranche.**"_
+
+🔑 The mail was read live on the
+[internal call](../meetings/2026-11-12%20INTERNA%20Modifiche%20Marco.md) and
+diagnosed from the screenshot: the error is **`Numero tranche non configurato sul
+prodotto plus`**, with `Numero tranche` at zero. The cause is configuration, not
+code — the value must be set **on the product in Salesforce**, not in Mexal:
+_"i prodotti … quando avvengono su sales force deve mettere il numero
+tran\[che\]"_ · Elena Spini: _"lui deve andare su Performance \[Plus\] tranche
+mensile … 1 deve mettere, quindi mi aspetto che non l'abbia fatto."_
+
+⚠ **No reply had been sent to him when this sweep ran.** The diagnosis exists only
+in the internal call. 🔑 And it is a predictable consequence of making tranches
+mandatory: every existing `plus` product in the registry needs `Numero tranche`
+set, and nothing records a sweep of them.

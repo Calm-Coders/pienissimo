@@ -5,7 +5,7 @@ status: active
 owner: Fabrizio Mastracci
 org: ROMI
 raised: 2026-11-09
-updated: 2026-11-09
+updated: 2026-11-12
 depends_on: []
 blocks: []
 source: Slack C0C38JJ9D1T, 2026-11-09 16:41 CET
@@ -113,3 +113,67 @@ reconciled by someone who can open the flow.**
 - ⚠ **The landing pages.** Fabrizio Mastracci undertook the same morning, 09:02:24
   CET: _"entro fine gg ti passo le landing page"_. **Nothing in this sweep shows
   them delivered.**
+
+## 🔑 2026-11-10 - walked on screen, and two rules were added
+
+**On the [10/11 follow-up](../meetings/2026-11-10%20Follow-up%20Interno.md) Fabrizio
+Mastracci showed the draft flow and the three descriptions above were confirmed
+field by field — then two rules were found missing and added.**
+
+### The entry conditions, as confirmed
+
+| Condition | Field |
+| --- | --- |
+| Registration link present and published | `Link registrazione` |
+| Collection state ready | label `Stato raccolta`, **API `status_G`** — _"la label e stato raccolta, ma l'API e status_G"_ |
+| Send date reached | `Data invio biglietto`, **equal or greater than today** |
+
+🔑 **It is an automatism on the record, not a batch**: _"e un automatismo sul record
+che quando trova queste tre condizioni … parte l'invio."_ The loop runs on a step
+counter: _"ogni step viene aggiunto un piu uno e la persona quindi a seconda dello
+step riceve la stessa mail qui dentro, quindi lo step 1 riceve la mail 1, lo step 2
+riceve la mail 2."_
+
+🔑 **Fifteen reminders, not eleven** — _"ci sono 15 reminder. Non piu 11."_ The first
+mail goes out immediately on entry; each later one is spaced by its wait interval,
+which the client sets per campaign.
+
+### The two rules that were missing
+
+1. 🆕 **A send date in the future never fired.** Aurel Mrruku pressed it for eight
+   minutes — _"deve succedere qualcosa per svegliare l'automatismo, per dire 'Guarda
+   che oggi e il momento di inviare il primo reminder'"_ — and a formula will not do
+   it: _"non fa scattare i flow, i trigger."_ Fabrizio Mastracci had only required
+   the field to be non-empty: _"la data invio biglietto non deve essere vuota."_
+   🆕 Field **`Invio_Oggi__c` on Event Invitation**, created the same evening, now
+   carries the comparison — _"mi serve per calcolare che la data di invio biglietto
+   sia uguale a oggi cosi passano solo biglietti della data corrente"_.
+2. 🆕 **The exit on event end date had been written and lost.** Aurel Mrruku: _"se la
+   data di fine evento … deve uscire da questo ciclo"_. Fabrizio Mastracci: _"La
+   avevo messo la regola … perche quella e una regola vecchia. **Mi ero
+   dimenticato.**"_
+
+🔑 So the full window is **from `Data invio biglietto` to `Data fine evento`** —
+_"il tempo in cui vengono mandate queste mail e dalla data invio biglietto fino alla
+data del fine dell'evento"_ — and that is why backdating the end date suppresses the
+flow entirely ([OI-353](../items/OI-353%20Production%20event%20end%20dates%20are%20backdated%20to%20stop%20ticket%20mails%20during%20the%20load.md)).
+
+🟢 Reported complete on 12/11, relayed by Elena Spini on the client call: _"la logica
+e gia stata fatta … quindi per invio dei biglietti tutto ok."_
+
+### ⚠ Two test guards still in place
+
+- **The recipient filter holds two ROMI addresses only** — Fabrizio Mastracci's and
+  Elena Spini's — deliberately kept through the migration: _"non vorrei
+  sinceramente che arrivassero cose ai clienti finali."_
+- **The wait intervals are in minutes, not days**: _"adesso e messo a minuti perche
+  siamo in fase di test."_
+
+Both must come off when the flows are reactivated.
+
+### 🔴 And the gating defect is still unnamed
+
+[OI-230](../items/OI-230%20The%20ticket%20confirmation%20request%20flow%20queries%20a%20relationship%20name%20as%20a%20field.md)
+has been gating since 13 October on a query that cannot succeed. **It was not
+mentioned in this session either** — a second consecutive hour of work on this flow
+without it coming up.

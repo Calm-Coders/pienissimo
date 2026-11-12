@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini
 org: both
 raised: 2026-11-05
-updated: 2026-11-05
+updated: 2026-11-12
 depends_on: []
 blocks: []
 source: Slack C0C38JJ9D1T, 2026-11-05 17:26 CET thread
@@ -89,3 +89,26 @@ The timing and subject are compatible; nobody has said so.
 - [OI-176](OI-176%20Web%20to%20Lead%20assigns%20every%20lead%20the%20Diretta%20record%20type.md)
 - [The Zoho Forms mapping workbook](../The%20Zoho%20Forms%20mapping%20workbook.md)
 - [The Update Contact Consent flow in production](../flows/The%20Update%20Contact%20Consent%20flow%20in%20production.md)
+
+## ⚠ 2026-11-12 - a third window with no decision, and the owner is leaving
+
+The mapping question — whether `profilazione` is the marketing consent, and which of
+`Consenso_Profilazione__c` or `Informativa_Privacy__c` the public forms should write
+— is **unmentioned by any source in this window**.
+
+🔴 Two things have changed around it:
+
+1. **Sabatino Rinaldi, who owns the two live forms, is leaving** →
+   [OI-357](OI-357%20The%20client%20commercial%20lead%20and%20the%20web%20counterpart%20are%20both%20leaving.md).
+   He holds the site configuration and was the counterpart for the HTML.
+2. ⚠ **The landing-page HTML forms are still not evidenced delivered.** Fabrizio
+   Mastracci was to send them directly to Sabatino Rinaldi and Matteo Distaso in a
+   new chat on 10/11 — _"Mandagli direttamente te … dicendo che dovranno mettere
+   l'HTML nel loro sito"_ — and nothing in this sweep shows it done. They were
+   promised _"entro fine gg"_ on 09/11 and again on 10/11.
+
+🔑 **The adjacent field question did get an answer, for a different field.** On the
+lead source, Fabrizio Mastracci's position of 5 November was quoted back on the
+12/11 internal call: the forms send `sito`, Salesforce has no such value, and he set
+`website` as a stopgap → [the lead source values](../The%20Pienissimo%20lead%20source%20values.md).
+That list is still not reconciled with what the forms actually send.

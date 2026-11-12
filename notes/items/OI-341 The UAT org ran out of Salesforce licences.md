@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-11-05
-updated: 2026-11-05
+updated: 2026-11-12
 depends_on: [OI-300]
 blocks: []
 source: Slack DM D0B5QHS2T7H, 2026-11-05 18:57 CET
@@ -55,3 +55,30 @@ that the six UAT tutor users were active and had their password links — see
    window inspected Prod.
 4. ⚠ The UAT org is also where the tutors will train on 9 and 11 November, so a
    licence pool trimmed to fit six is the environment the training runs in.
+
+## 🟢🔑 2026-11-12 - the production licences are counted
+
+**Read live out of the production org by Aurel Mrruku on the
+[Check Pre-Import call](../meetings/2026-11-12%20Check%20Pre-Import.md), answering
+for Prod the question this item asked for UAT.**
+
+| | |
+| --- | --- |
+| Licences in production | **12** |
+| Used | **10** · _"sono 10 usati da 12"_, refined to _"comunque sono **nove licenze**"_ in real use |
+| Free | **3** · _"da 12 sono tre libere"_ |
+| Recoverable | 🟢 **two more** — the old `Romi Company` system admin (_"lo possiamo anche togliere"_, pending record-ownership cleanup) and ROMI's own working licence, which Aurel Mrruku offered to give back: _"anche la licenza nostra di Tech\[y\] puo essere riciclata … uso la vostra utenza per fare i rila\[s\]ci"_ |
+
+Who holds them: seven agents (the generic commercial user, Sara, Barbara, Martina,
+Davide, Carmen, Valentina), `amministrazione` used by Fabrizio Paganelli and Elisa
+Migliano, and two system admins.
+
+🟢 **So licences are not the constraint for go-live.** What is missing is the
+marketing and Performance Plus **users and profiles** →
+[OI-363](OI-363%20The%20marketing%20and%20Performance%20Plus%20profiles%20do%20not%20exist.md),
+[OI-356](OI-356%20The%20definitive%20list%20of%20production%20users%20is%20still%20incomplete.md).
+Fabrizio Paganelli wanted one kept spare: _"se un domani fanno nuove
+\[as\]sunzioni … ce l'abbiamo libera."_
+
+⚠ **The UAT side of this item is unchanged** — nothing in this window says which
+UAT users were deactivated to make room for the six tutors.

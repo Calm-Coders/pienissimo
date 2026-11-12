@@ -9572,6 +9572,108 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 81. Aggiornamento 12/11/2026 — la migrazione si carica domani, e il referente commerciale del cliente è dimissionario
+
+`requirements-check` notturno, watermark **2026-11-09T22:00Z**, tre giorni. ⚠ **Un run è stato
+eseguito il 10 novembre e il suo lavoro non è mai arrivato nel repository**: il commit
+`17b3bc1` è stato bloccato due volte dal classifier dell'ambiente, quindi gli item
+**#351 → #356 sono stati annunciati al gruppo dev ROMI su Slack e qui non sono mai esistiti.**
+Sono ricostruiti in questa sezione e nel tracker dalle fonti originali, non da quel report.
+
+**Quattro riunioni Pienissimo analizzate, tutte da trascrizione integrale**: la call Referenti
+del 10/11 (14:35 CET, 00:12:27), il follow-up interno del 10/11 (16:02 CET, 00:41:42), il
+**Check Pre-Import** col cliente del 12/11 (11:03 CET, **02:06:02**, cinque persone — la
+sessione cliente più lunga dal 3 novembre) e la call Modifiche Marco del 12/11 (17:44 CET,
+00:46:31).
+
+### Il referente commerciale e il referente web del cliente se ne vanno entrambi
+
+**Marco Montesi è dimissionario** e **anche Sabatino Rinaldi se ne va**, entrambi detti da
+Fabrizio Paganelli nella call del 12/11 — _"Marco è di[missio]nario. **Marco Montesi**"_ e
+_"**Sabatino va via**"_. ROMI l'ha appreso in riunione; la reazione di Elena Spini a verbale è
+una parola. Marco Montesi è titolare di tutte e venti le richieste di modifica Sales, della
+coda di lavoro in home e dell'elenco fonti lead; Sabatino Rinaldi detiene il plugin
+WooCommerce, le credenziali dello shop, i due form lead pubblici e il file di migrazione Lead.
+**Per nessuno dei due esiste una data di uscita, un successore o un passaggio di consegne**
+(#357).
+
+### La migrazione
+
+Piano definitivo, carico **venerdì 13 novembre** con il weekend come riserva e tutto pronto per
+**lunedì 16 novembre alle 09:00**. Il cliente ha smesso di lavorare su Zoho il 12-13 novembre e
+deve reinserire a mano quei due giorni il lunedì; quegli ordini non arrivano a Mexal. Il 12
+novembre sono arrivati quattro file — Account, **Referenti (67.154 righe)**, Locali con i codici
+Mexal e il workbook ordini — e nessuno è stato aperto, perché tutti e quattro contengono dati
+reali di clienti.
+
+Due cambiamenti sostanziali. **Tredici ordini reali annullati su Mexal vanno prima cancellati
+dalla produzione**, in un'org costruita deliberatamente perché gli ordini non si possano
+cancellare: ognuno si porta dietro asset, link evento e biglietti, via script, in produzione,
+alla vigilia del go-live (#360). E **il delta non è più solo in inserimento** — il cliente ha
+richiesto l'aggiornamento dei 19 ordini modificati, e Aurel Mrruku ha accettato: _"Ok, vado in
+modifica"_ (#310).
+
+### La decisione sui referenti, e cosa è costata
+
+La risposta che il #290 attendeva dal 4 novembre è arrivata per iscritto il 10 novembre ed è
+stata confermata dal cliente l'11 novembre: i referenti senza codice diventano Lead standard con
+`Lead from Zoho` e `Referenti Marketing` valorizzati, esposti in una list view, con la bonifica a
+carico del cliente (#351). **Il #290 chiude.**
+
+Quello che è costato è il #352. `Company` e `Partita IVA` sono obbligatori su Lead, cosa che
+nessuno aveva verificato prima di inviare l'impegno — il dubbio è arrivato 33 minuti dopo la
+mail. La soluzione è scrivere valori progressivi inventati in entrambi i campi per circa 50.000
+record di produzione. La prima risposta di Aurel Mrruku è stata _"nop"_; è stata messa per
+iscritto al cliente l'11 novembre e **approvata**. Nessuna delle due opzioni di bonifica è stata
+scelta, la visibilità non ha un disegno, e le 107 righe mal codificate non sono state menzionate.
+
+### Cosa è andato bene
+
+**Anticipay funziona in produzione e il #312 chiude.** Un ordine WooCommerce reale nella call del
+12/11 ha percorso tutta la catena — shop → Salesforce → Anticipay (verifica alle 11:40, ATECO
+restituito) → Mexal — il primo percorso completo in produzione, confermato al fornitore la stessa
+mattina. Nulla dice cosa sia cambiato: il fornitore aveva negato ogni problema, e la descrizione
+del guasto chiesta a ROMI non è mai stata scritta, quindi l'item chiude su un risultato
+funzionante e non su una diagnosi. **WooCommerce stesso è attivo**, collegato dal cliente l'11
+novembre (#354), anche se lo shop accetta ancora una provincia non valida che rompe Mexal in
+silenzio, ormai due volte.
+
+**Il flusso biglietti ha ricevuto le sue due regole mancanti** — una data di invio futura non
+scattava mai, e l'uscita su data fine evento era stata scritta e dimenticata. Il #230, bloccante
+dal 13 ottobre, non è stato nominato per una seconda ora consecutiva di lavoro su quello stesso
+flusso.
+
+### Due buchi senza alcun meccanismo
+
+**Un contratto interrotto non si può disfare** (#359). Un cliente che si ferma a sei tranche su
+dodici lascia tranche, asset sbloccati e link evento inviati senza nulla che li annulli, e una
+nota di credito richiede che i biglietti siano annullati e non solo non disponibili: _"Per il
+momento non l'abbiamo previsto."_ È la stessa retromarcia mancante del #331 ma più ampia, ed è
+stata parcheggiata su una lista della spesa di Fase 2 in cui non compare in nessun documento.
+
+**Le presenze di Pienissimo Live non possono arrivare in Salesforce** (#361). I biglietti e i QR
+code dell'evento del 24-26 novembre sono tutti di Zoho, il fornitore non ha costruito niente, e
+~450 presenze saranno ricostruite con un incrocio manuale di ID, con il Campaign Member
+abbandonato per quell'edizione.
+
+### Quattro giorni al go-live, e la produzione non è pronta
+
+L'org **non è mai stata impostata sull'italiano** — date in ordine americano, separatori
+invertiti, nessuno spazio prima del simbolo dell'euro — trovato dai tutor in formazione e non da
+un test (#358). **I profili marketing e Performance Plus non esistono** e sono previsti per la
+settimana dopo l'avvio degli utenti, con il walkthrough marketing fissato al 19 novembre, prima
+del profilo che gli serve (#363). **Tre job schedulati su quattro non sono schedulati** in
+produzione, confermato nel tracker di ROMI e attribuito ad Aurel Mrruku (#334, #301). **Non c'è
+il logo.** **Gli agenti non vedono né il calendario né alcuna pagina iniziale**, e la home non è
+mai stata progettata (#364). Le licenze, almeno, non sono il vincolo: dodici, nove in uso, tre
+libere (#341).
+
+Tutte le richieste di modifica post-formazione sono state rinviate alla settimana prossima e il
+cliente è stato informato la stessa sera, con
+[un recap di dodici righe](../notes/The%20Pienissimo%20recap%20of%20open%20changes.md) che è la
+prima risposta formale di ROMI al #344 — il cui foglio ora porta un verdetto sulla maggior parte
+delle sue venti righe.
+
 ## 80. Aggiornamento 09/11/2026 — la roadmap di Fase 2 ha guadagnato un rilascio, una retromarcia e un mese, e l'unico sviluppatore ha detto che dicembre non lo può fare
 
 `requirements-check` notturno, watermark **2026-11-06T22:00Z**, **tre giorni** —

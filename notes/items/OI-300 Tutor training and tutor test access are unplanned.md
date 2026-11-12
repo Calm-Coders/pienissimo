@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-29
-updated: 2026-11-06
+updated: 2026-11-12
 depends_on: []
 blocks: []
 source: Gmail 1a1884b8e0d02735
@@ -335,3 +335,34 @@ on the evening of 6 November, and no source confirms six successful enrolments.
 **11 November, 11:30-13:00** (Marco Montesi, 04/11 09:59 CET). The Monday collision
 with the two Fase 2 reviews and the technical go-live is unchanged, and still
 unmentioned to anyone.
+
+## 🟢 2026-11-11 - the training happened, and produced the change list
+
+**The second tutor session ran on Wednesday 11 November as scheduled. It is the
+origin of everything in [the recap of open changes](../The%20Pienissimo%20recap%20of%20open%20changes.md):
+Elena Spini took the requests live during it — _"Questo sono cose che scrivevo
+durante il training"_ — and they were sized on 12/11 and sent to the client.**
+
+What the users found, which no test had:
+
+- 🔴 **Italian date and number formats were never enabled** →
+  [OI-358](OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md)
+- 🔴 **The agents cannot see the home page or the calendar** →
+  [OI-364](OI-364%20Agents%20cannot%20see%20the%20home%20page%20or%20the%20calendar%20in%20production.md)
+- 🔴 **The quote and pop-up wording is wrong**, reported by Marco Montesi after
+  re-running the procedure: _"le diciture sia del preventivo generato che del pop up
+  erano tutti sballati"_
+- 🟢 Attendees named in the 12/11 call: Martina, who asked for the lead/opportunity
+  work queue, and Valentina, both agents
+
+🔴 **The marketing half of the training never happened.** It was sought for the week
+of 10/11 and slipped repeatedly — Elena Spini, _"ora quando gli vogliamo far vedere
+un giro a loro mi viene da piangere sta settimana"_ — and was finally booked on
+12/11 for **Thursday 19 November 09:30**, with Matteo Distaso and Rebecca Marmo.
+⚠ That is **three days after the operational start**, and before the marketing
+profile Rebecca Marmo needs exists
+([OI-363](OI-363%20The%20marketing%20and%20Performance%20Plus%20profiles%20do%20not%20exist.md)).
+
+⚠ **Still no production users for any tutor**, and MFA/passkey completion is still
+unevidenced for anyone but Fabrizio Paganelli. The six users created on 05/11 are
+**UAT** users.

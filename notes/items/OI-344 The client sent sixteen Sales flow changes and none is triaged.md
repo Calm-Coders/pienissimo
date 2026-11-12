@@ -1,12 +1,12 @@
 ---
 id: OI-344
 type: open-item
-status: open
+status: in-progress
 owner: Marco Montesi
 with: Elena Spini
 org: both
 raised: 2026-11-06
-updated: 2026-11-09
+updated: 2026-11-12
 depends_on: [OI-265]
 blocks: [go-live]
 source: Drive 1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8, read 2026-11-06
@@ -181,3 +181,55 @@ and she told the marketing group at 17:19:43 CET only _"poi vi chiedo domani"_.
 - ⚠ **The register stays v1.6.** The mandatory picklists and the revised `Fonte`
   list remain **v1.7 candidates**; the `CR` marking is the first sign anyone agrees
   one of these is a change, and it is on a different row.
+
+## 🟡🔑 2026-11-12 - the sheet is triaged at last, and ROMI answered it formally
+
+**`Modifiche flussi Sales` (`1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8`),
+modified 2026-11-12 17:21:50Z, now reads `A1:E21` — twenty request rows — and the
+`CR` column of 09/11 has been replaced by a `Lavorato` column with a verdict on
+most rows.**
+
+| Verdict | Count | Rows |
+| --- | --- | --- |
+| `SI` | 5 | Correlati back-navigation · Task cleanup · per-row value in the quote table · column + general totals in the quote table · per-tranche value in the tranche list |
+| `IN LAVORAZIONE` | 6 | Categorie · Sottocategorie (both still _"lista completa gia inviata + compilazione da rendere obbligatoria"_) · identifying the primary quote · running total while inserting products · general total in the tranche table · the Note-created indicator |
+| `NON SI FA` | 2 | quote **preview without generating the PDF** — _"grossa modifica strutturale, rimane cosi"_ · **`Aggiunta campo cc`** |
+| blank | 7 | lead source list · both _"Rivedere testo e oggetto mail"_ rows · both preview-mail rows · tranche creation values · the OPPORTUNITY work queue — five of these annotated _"inviato indicazione via mail"_ |
+
+🟢🔑 **And ROMI answered it formally**, in
+[the recap sent to the client at 18:43Z](../The%20Pienissimo%20recap%20of%20open%20changes.md):
+twelve rows with a state, a feasibility note and a date — simple changes at the
+start of next week, CC and multiple recipients **after go-live in maintenance**, two
+items needing dedicated development, one declared impossible.
+
+### 🔴 The one contradiction
+
+The client's sheet marks **`Aggiunta campo cc` as `NON SI FA`**; ROMI's recap
+schedules the same request for maintenance after go-live. On the internal call it
+was confirmed that the feature **was built and then removed at the client's own
+request** — Aurel Mrruku: _"Han detto no non lo vogliamo cosi"_ → _"Se lo vuoi lo
+faremo appena abbiamo del tempo dopo Go Live."_ ⚠ Not reconciled with the sheet.
+
+### What the triage rule did and did not do
+
+ROMI's own rule of 09/11 — _"le modifiche di layout e di campi le facciamo in Fase
+1, il resto va in una Fase 2 successiva"_ — is now **effectively applied** in the
+recap, but by a different vocabulary (next week / maintenance / to be planned /
+not feasible) and 🔴 **no row is labelled Fase 1 or Fase 2 anywhere**. The home-page
+work queue, the largest request, is simply _"da definire"_
+([OI-364](OI-364%20Agents%20cannot%20see%20the%20home%20page%20or%20the%20calendar%20in%20production.md)).
+
+### 🔴 The requester is leaving
+
+Marco Montesi, whose sheet and whose mail of 11/11 15:32Z this is, has resigned →
+[OI-357](OI-357%20The%20client%20commercial%20lead%20and%20the%20web%20counterpart%20are%20both%20leaving.md).
+Internally the question of whether the list survives him was raised and left open:
+_"Secondo me se te li dimentichi non nessuno si ricorda"_ → _"purtroppo c'era anche
+Fabrizio ahime, quindi siam fregati."_ The recap went to the client regardless.
+
+🟢 **Two of the blanks were filled by his 11/11 mail**: the lead-source values →
+[the list](../The%20Pienissimo%20lead%20source%20values.md), and the tranche-creation
+values — _"È necessario che mentre si creano le tranche, si veda il valore della
+singola tranche ma anche il totale che si va a creare"_. 🔴 He also reported the
+quote and pop-up wording **still wrong**: _"le diciture sia del preventivo generato
+che del pop up erano tutti sballati, forse ci stavate lavorando."_

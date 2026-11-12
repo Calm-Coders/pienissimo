@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-04
-updated: 2026-11-09
+updated: 2026-11-12
 depends_on: [OI-201, OI-212]
 blocks: []
 severity: gating
@@ -192,3 +192,26 @@ cancellazione o modifica dei record**"_.
    dell'ordine e degli asset e dei link"_.
 5. ⚠ **It is still unfixed in production**, where the 1st-of-the-month banking
    cycle reverses collections.
+
+## 🔑 2026-11-12 - a sibling case, from the client, with no reverse gear either
+
+**[OI-359](OI-359%20An%20interrupted%20contract%20cannot%20unwind%20its%20tranches%20assets%20and%20tickets.md)
+was opened on the 12/11 client call: when a customer stops a multi-tranche contract
+part way through, the remaining tranches, the assets already released and the event
+links already sent cannot be cancelled.**
+
+Same missing mechanism, different trigger and a wider blast radius. Aurel Mrruku's
+answer — _"**Per il momento non l'abbiamo previsto** … forse dobbiamo creare uno
+stato dell'ordine … in automatico devi cambiare lo stato delle tranche, cambiare
+stati degli asset e cambiare i stati dei link evento"_ — describes the same cascade
+this item needs, driven from an order state rather than a collection.
+
+Elisa Migliano added that after a credit note a ticket must be **annullato**, not
+merely unavailable, and Aurel Mrruku extended it to the marketing event links.
+
+🔴 **It was parked on the Fase 2 shopping list and is in no Fase 2 document.** R1,
+which this item is, is dated **14 December**; R6 _note di credito_ is **12 April
+2027**; nothing says which one covers the interruption case.
+
+⚠ **The detailed technical analysis of this item was pulled forward by the client to
+before Thursday 12 November.** Nothing in this window shows it written.

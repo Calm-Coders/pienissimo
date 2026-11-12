@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: ROMI
 raised: 2026-10-07
-updated: 2026-11-09
+updated: 2026-11-12
 depends_on: [OI-201]
 blocks: [OI-75, OI-141, go-live]
 severity: gating
@@ -473,3 +473,15 @@ all.**
 
 ⚠ **And R1 has no developer.** See
 [OI-349](OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).
+
+## 🔴 2026-11-12 - unchanged, a twenty-seventh night
+
+Not mentioned by any source in this window — three days of mail, four Slack
+conversations, four meetings and the Drive sweep. It remains open in **production**,
+with the client's own users starting on 16 November.
+
+🔑 Two items now sit in front of it, both about the same missing reverse gear:
+[OI-331](OI-331%20A%20reversed%20collection%20cannot%20move%20the%20order%20and%20asset%20states%20back.md),
+dated release **R1 on 14 December**, and
+[OI-359](OI-359%20An%20interrupted%20contract%20cannot%20unwind%20its%20tranches%20assets%20and%20tickets.md),
+opened on 12/11 and in no Fase 2 document at all.

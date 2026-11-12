@@ -1,12 +1,12 @@
 ---
 id: OI-290
 type: open-item
-status: open
+status: resolved
 owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-11-09
+updated: 2026-11-12
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -591,3 +591,34 @@ delta arrives too late to be part of it.
 
 See [Sabatino Rinaldi](../people/Sabatino%20Rinaldi%20-%20Pienissimo%20project%20lead.md) and
 [Daniela Morgese](../people/Daniela%20Morgese%20-%20Pienissimo%20direction.md).
+
+## 🟢🔑 2026-11-10 to 12 - the answer arrived, in writing, and the item closes
+
+**What this item has been waiting for since 4 November is now written down and
+confirmed by the client.** It closes into two successors:
+
+| | |
+| --- | --- |
+| The design | [OI-351](OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md) — standard Lead, `Lead from Zoho` + `Referenti Marketing`, list view `Lead - Referenti Marketing`, cleanup on the client |
+| The blocker and its workaround | [OI-352](OI-352%20The%20fifty%20thousand%20referenti%20leads%20are%20loaded%20with%20fake%20company%20and%20VAT%20values.md) — `Company` and `Partita IVA` are mandatory, so ~50,000 rows load with invented progressive values |
+
+Sabatino Rinaldi, **2026-11-10 08:07:34Z**: _"la decisione presa con la direzione e
+quella di inserirli come lead con un flag Zoho: true … Questi Lead non dovranno
+essere lavorati dai commerciali ma saranno lead del marketing"_. Elena Spini's
+mapping recap followed at 18:41:48Z; the client confirmed the whole procedure,
+fake values included, on **2026-11-11 14:32:21Z** — _"Si Elena, va bene"_.
+
+🟢 **The WhatsApp problem is gone.** The decision taken with Daniela Morgese and
+relayed to Elena Spini by WhatsApp on 6 November is now on the record in mail.
+
+### What remains, carried by the successors
+
+- 🔴 **49,800** referenti without a Mexal code (counted on the 12/11 call), of
+  **67,154** rows in the file delivered 12/11 10:30Z. ⚠ The workbook was not opened.
+- 🔴 **The 107 rows whose Mexal code matches no Azienda in production** are
+  **unmentioned in this window** and still have no handling rule.
+- 🔴 Neither cleanup option (A or B) has been chosen by the client.
+- 🔴 Visibility — _"non lavorati dai commerciali"_ — has no design.
+- 🟢 The lead lot proper is confirmed as the file of **29 October**: Elena Spini,
+  _"Per i lead va bene quella che ci avevi mandato anche per l'import di
+  produzione?"_ → Sabatino Rinaldi, _"Sisi"_.

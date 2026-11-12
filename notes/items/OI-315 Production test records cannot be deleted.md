@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-11-03
-updated: 2026-11-03
+updated: 2026-11-12
 depends_on: []
 blocks: [go-live]
 source: notes/meetings/2026-11-03 Test e2e PROD.md
@@ -69,3 +69,33 @@ fields are displayed. **Not answered on 3 November.**
 4. ⚠ **It compounds [OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md)**:
    the pre-load moves the product registry, accounts and contacts into production
    early, into an org that already holds test accounts that cannot be deleted.
+
+## 🔑 2026-11-12 - deletion is happening anyway, for the client's own orders
+
+**The 12/11 client call did not solve this item, but it has made the work
+unavoidable: thirteen real orders cancelled in Mexal must be deleted from
+production before the delta runs →
+[OI-360](OI-360%20Cancelled%20Mexal%20orders%20must%20be%20deleted%20from%20production.md).**
+
+The cost is now stated plainly by the person who built the constraint:
+
+> _"**io non cancello mai ordini.** Fabrizio, abbiamo fatto tutto il sistema in modo
+> che gli ordini non si possono cancellare dagli utenti oppure da integrazioni.
+> Ovviamente li posso cancellare perche io sono sistema\[dmin\], \[ma\] devo fare **un
+> po' di porcherie sul sistema**"_
+
+> _"il sistema non ti permette a cancellare l'ordine se non hai pulito prima tutta la
+> struttura dietro. Quindi gli asset … gli eventi, i biglietti … **sono costretto a
+> fare una pulizia totale.**"_
+
+🟢 **And he distinguished ROMI's test orders as the easy case**: _"tutti gli ordini
+che sono collegati alle offerte che abbiamo fatto noi li posso cancellare, non e un
+problema perche tutti sono ordini di test."_ The quotes are the key.
+
+🔴 **Still no plan, date or owner** for actually removing the 03/11 and 04/11
+production test orders and freeing the accounts the client is waiting on. The
+scripts written for OI-360 would do it; nothing says they will be used for it.
+
+⚠ And the related question is **still unanswered**: whether the client may add more
+test records by running quote tests in production →
+[OI-355](OI-355%20Nobody%20answered%20whether%20quote%20tests%20can%20be%20run%20in%20production.md).

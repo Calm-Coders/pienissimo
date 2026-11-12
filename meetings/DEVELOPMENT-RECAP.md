@@ -9223,6 +9223,100 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, attaching `Ordini non ins
 
 🔴 `#tproj-pienissimo` silent a fifth consecutive sweep · ⚠ Fathom returned nothing a thirty-fourth consecutive run · the Slack canvas is unchanged since 20.08.2026, **78 days** · 🔴 the dev group's own 5 November report is **unanswered a second day** · 🔴 [#337](open-items.md) lead conversion in Prod has no owner and the #286 fix on `Devmain_LeadChecks` is unmerged a fourteenth day · 🔴 [#313](open-items.md) the client has still been told nothing, a fourth day · 🔴 [#312](open-items.md) Anticipay unmentioned by any source, a fourth day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a sixteenth run · 🔴 `lead-web-to-lead (2).html` still unopened and unexplained · **the requirement register is untouched and stays v1.6**; the tranche obligation and now the two mandatory picklists are the v1.7 candidates.
 
+## 81. Update 2026-11-12 — the migration is loaded tomorrow, and the client's commercial lead has resigned
+
+Nightly `requirements-check`, watermark **2026-11-09T22:00Z**, three days. ⚠ **A run did
+execute on 10 November and its work never reached the repository**: commit `17b3bc1` was
+blocked twice by the environment's publication classifier, so items **#351 → #356 were
+announced to the ROMI dev group on Slack and never existed here.** They are rebuilt in this
+section and in the tracker from the original sources, not from that report.
+
+**Four Pienissimo meetings were drilled, all from full transcripts**: the 10/11 Referenti
+call (14:35 CET, 00:12:27), the 10/11 internal follow-up (16:02 CET, 00:41:42), the 12/11
+**Check Pre-Import** with the client (11:03 CET, **02:06:02**, five people — the longest
+client session since 3 November) and the 12/11 Modifiche Marco call (17:44 CET, 00:46:31).
+
+### The client's commercial lead and web counterpart are both leaving
+
+**Marco Montesi has resigned** and **Sabatino Rinaldi is also leaving**, both said by
+Fabrizio Paganelli on the 12/11 call — _"Marco è di[missio]nario. **Marco Montesi**"_ and
+_"**Sabatino va via**"_. ROMI learned it in the room; Elena Spini's recorded reaction is one
+word. Marco Montesi owns every one of the twenty Sales change requests, the home-page work
+queue and the lead-source list; Sabatino Rinaldi holds the WooCommerce plugin, the shop
+credentials, the two public lead forms and the Lead migration file. **No leaving date,
+successor or handover exists for either** (#357).
+
+### The migration
+
+Final plan, loading **Friday 13 November** with the weekend as contingency and everything
+ready for **Monday 16 November 09:00**. The client stopped working in Zoho on 12-13 November
+and must re-key those two days by hand on Monday; those orders do not reach Mexal. Four files
+arrived on 12 November — Account, **Referenti (67,154 rows)**, Locali with Mexal codes, and
+the orders workbook — and none was opened, because all four carry real customer records.
+
+Two changes of substance. **Thirteen real orders cancelled in Mexal must be deleted from
+production first**, in an org deliberately built so that orders cannot be deleted: each one
+takes its assets, event links and tickets down with it, by script, in production, on the eve
+of go-live (#360). And **the delta is no longer insert-only** — the client required updates
+to the 19 modified orders, and Aurel Mrruku agreed: _"Ok, vado in modifica"_ (#310).
+
+### The referenti decision, and the price of it
+
+The answer #290 had been waiting for since 4 November arrived in writing on 10 November and
+was confirmed by the client on 11 November: the uncoded referenti become standard Leads with
+`Lead from Zoho` and `Referenti Marketing` set, surfaced through one list view, with cleanup
+on the client (#351). **#290 closes.**
+
+What it cost is #352. `Company` and `Partita IVA` are mandatory on Lead, which nobody had
+checked before the commitment was sent — the doubt arrived 33 minutes after the mail. The
+resolution is to write invented progressive values into both fields for roughly 50,000
+production records. Aurel Mrruku's first answer was _"nop"_; it was put to the client in
+writing on 11 November and **approved**. Neither cleanup option has been chosen, visibility
+has no design, and the 107 mis-coded rows went unmentioned.
+
+### What went right
+
+**Anticipay works in production and #312 closes.** A live WooCommerce order on the 12/11
+call ran the whole chain — shop → Salesforce → Anticipay (verified 11:40, ATECO returned) →
+Mexal — the first complete run in production, confirmed to the supplier the same morning.
+Nothing says what changed: the supplier had denied any problem, and the failure description
+asked of ROMI was never written, so the item closes on a working result rather than a
+diagnosis. **WooCommerce itself is live**, connected by the client on 11 November (#354),
+though the shop still accepts an invalid province that breaks Mexal silently, twice now.
+
+**The ticket flow got its two missing rules** — a send date in the future never fired, and
+the exit on event end date had been written and forgotten. #230, gating since 13 October,
+went unnamed for a second consecutive hour of work on that same flow.
+
+### Two holes with no mechanism at all
+
+**An interrupted contract cannot be unwound** (#359). A customer who stops a twelve-tranche
+service at six leaves tranches, released assets and sent event links with nothing to cancel
+them, and a credit note requires tickets to be annulled rather than merely unavailable:
+_"Per il momento non l'abbiamo previsto."_ It is the same missing reverse gear as #331 but
+wider, and it was parked on a Fase 2 shopping list it appears in no Fase 2 document of.
+
+**Pienissimo Live attendance cannot reach Salesforce** (#361). The 24-26 November event's
+tickets and QR codes are all Zoho's, the supplier has built nothing, and ~450 attendances
+will be back-filled by hand-matched record ids with Campaign Member abandoned for that
+edition.
+
+### Four days to go-live, and production is not ready
+
+The org **was never set to Italian** — dates in American order, separators inverted, no space
+before the euro sign — found by the tutors at training rather than by any test (#358). The
+**marketing and Performance Plus profiles do not exist** and are scheduled for the week after
+the users start, with the marketing walkthrough booked for 19 November, before the profile it
+needs (#363). **Three of four scheduled jobs are unscheduled** in production, confirmed in
+ROMI's own tracker and named as Aurel Mrruku's (#334, #301). **There is no logo.** **Agents
+can see neither the calendar nor any home page**, and the home page was never designed (#364).
+Licences, at least, are not the constraint: twelve, nine in use, three free (#341).
+
+All of the post-training change requests were deferred to next week and the client was told so
+the same evening, in [a twelve-row recap](../notes/The%20Pienissimo%20recap%20of%20open%20changes.md)
+that is ROMI's first formal answer to #344 — whose sheet now carries a verdict on most of its
+twenty rows.
+
 ## 80. Update 2026-11-09 — the Fase 2 roadmap grew a release, a reverse gear and a month, and the only developer said he cannot do December
 
 Nightly `requirements-check`, watermark **2026-11-06T22:00Z**, **three days** — no

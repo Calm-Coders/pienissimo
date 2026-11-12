@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Mastracci
 org: ROMI
 raised: 2026-10-13
-updated: 2026-11-09
+updated: 2026-11-12
 depends_on: [OI-197, OI-199]
 blocks: [go-live]
 severity: gating
@@ -158,3 +158,41 @@ switched off until the **12-13 November delta**
 so this flow is not firing now; when it is switched back on, **three days before the
 16 November user start**, either the fix is in or a customer-facing flow resumes
 failing deterministically.
+
+## 🔴🔑 2026-11-10 - the flow was edited for an hour and nobody named this defect
+
+**On the [10/11 follow-up](../meetings/2026-11-10%20Follow-up%20Interno.md) Fabrizio
+Mastracci opened this flow on screen, walked Aurel Mrruku and Elena Spini through
+it, and changed it. This item was not mentioned once — a second consecutive session
+on this flow in which the query that cannot succeed goes unnamed.**
+
+What was done to it instead:
+
+1. 🆕 **A date rule was added**, because a send date in the future never fired.
+   _"Devo solo a quanto pare aggiungere l'informazione della data."_ The rule is
+   `Data invio biglietto` equal-or-greater than today, evaluated daily.
+2. 🆕 **The lost exit on event end date was restored.** Aurel Mrruku: _"devi fare
+   anche un controllo che se la data di fine evento … deve uscire da questo ciclo."_
+   Fabrizio Mastracci: _"La avevo messo la regola … **Mi ero dimenticato.**"_
+3. 🆕 A field **`Invio_Oggi__c` on Event Invitation** was created that evening
+   (marketing group DM, 17:54 CET) to carry the comparison — _"mi serve per
+   calcolare che la data di invio biglietto sia uguale a oggi cosi passano solo
+   biglietti della data corrente"_. ⚠ Not verified in the org by this run.
+4. 🔑 **Reminder count confirmed at 15, not 11**: _"ci sono 15 reminder. Non piu 11."_
+
+🟢 Fabrizio Mastracci reported the change complete on 12/11, relayed by Elena Spini
+on the client call: _"anche Fabrizio nel mentre mi ha confermato effettivamente la
+logica e gia stata fatta rispetto a quello che ci siamo detti ieri … quindi per
+invio dei biglietti tutto ok."_
+
+🔴 **None of that is evidence this item is fixed.** The defect is a SOQL-style query
+on a relationship name where a field is required; it was raised on 13 October and
+has been gating since. Two sessions of flow work have now passed over it.
+
+⚠ **And the flows come back on at the 12-13/11 delta**, with two test guards still
+in place that must be removed at the same time: the recipient filter holding only
+Fabrizio Mastracci's and Elena Spini's addresses, and the wait intervals **set in
+minutes rather than days**.
+
+See [the ticket confirmation request flow](../flows/The%20ticket%20confirmation%20request%20flow.md)
+and [OI-353](OI-353%20Production%20event%20end%20dates%20are%20backdated%20to%20stop%20ticket%20mails%20during%20the%20load.md).

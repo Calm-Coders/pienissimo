@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-29
-updated: 2026-10-29
+updated: 2026-11-12
 depends_on: [OI-267]
 blocks: [go-live]
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
@@ -71,3 +71,51 @@ this run**. Steps could have been performed and not ticked, and the sheet's
 authorization asks to be cancelled before validation and restored afterwards.
 **Nothing in this sheet establishes whether it was restored** — a blank cell is
 not evidence either way, and this note makes no claim about it.
+
+## 🔑 2026-11-12 - the tracker moved, and two more steps surfaced
+
+[The Manual Steps tracker](../Manual%20Steps%20Pienissimo%20tracker.md)
+(`1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo`) was modified **2026-11-12
+16:50:30Z**. It now holds five rows, all `Done` in UAT.
+
+| Step | Prod |
+| --- | --- |
+| Lead Settings → keep the existing record type | 🟢 done |
+| Event Studio → the `ParticipantDocumentRequestTrigger` subscriber run-as user, batch 200, suspend and resume | 🟢 done |
+| **Run all scheduled jobs as amministratore pienissimo** | 🔴 _"**QuoteNegotiationAgingBatch -> only this is done the others should be done by Aurel**"_ |
+| Remove unnecessary buttons from object list views | 🟢 done |
+| Add the default agent for Accounts and Orders created from WooCommerce | 🟢 marked done |
+
+### 🔴 The scheduled jobs are still not scheduled
+
+Three of the four jobs in the tracker's own script are **not** running in
+production: `MexalArticleSyncScheduler`, `MexalCustomerSyncScheduler` and
+`MexalInvoiceSyncScheduler`. Only `QuoteNegotiationAgingBatch` is. This is the same
+gap [OI-334](OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md)
+carries, now confirmed in ROMI's own tracker and **named as Aurel Mrruku's**, four
+days before the users start.
+
+### 🔴 The WooCommerce default agent was marked done and was not
+
+The row reads `done`, yet the client's first production WooCommerce order on 11/11
+was rejected with _"**Configure Default Agent Username on the WooCommerce
+Integration Notification Config record** with an active user who has an agent code
+and customer commission category"_. Aurel Mrruku fixed it in eight minutes →
+[OI-354](OI-354%20WooCommerce%20is%20connected%20to%20production%20by%20the%20client.md).
+⚠ **The tracker's `done` was not reliable.**
+
+### 🆕🔴 There is no logo in production
+
+Found on the [12/11 internal call](../meetings/2026-11-12%20INTERNA%20Modifiche%20Marco.md).
+Elena Spini: _"non c'e logo sulla produzione"_. Aurel Mrruku: _"ovviamente non c'e …
+l'avevamo gia, **era nei manual step da fare**"_. ⚠ **It is not a row in the tracker
+at all**, and it is the first thing the client's users will see on Monday.
+
+### 🆕 Also surfaced, not in the tracker
+
+- 🔴 **Four Edizione date fields existed in production but were not on the layout** —
+  `Data fine evento`, `Data inizio evento`, `Data invio biglietto`, `Data evento`.
+  Aurel Mrruku added them **directly in production** during the 12/11 client call.
+- 🟢 The old `Romi Company` system admin can be deactivated once its record
+  ownership is cleared (guest-user default owner) —
+  [OI-356](OI-356%20The%20definitive%20list%20of%20production%20users%20is%20still%20incomplete.md).

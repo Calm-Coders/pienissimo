@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-06
-updated: 2026-11-09
+updated: 2026-11-12
 depends_on: [OI-304]
 blocks: []
 source: Gmail 1a1b03ba790c53c6, 2026-11-06T09:41:00Z
@@ -122,3 +122,23 @@ reply on the Blueprint point. Meanwhile:
   OI-346 directly.
 - 🔑 **The deadline is now four days away.** Fase 2 approval is due **13 November**
   and R0 is its first release.
+
+## 🔴 2026-11-12 - a seventh day with no reply to the client
+
+**Nothing in this window answers Fabrizio Paganelli.** Three days of mail, four
+Slack conversations and four meetings were swept; the Blueprint dispute is not
+mentioned in any of them.
+
+🔑 It now sits behind a client approval expected **13 November** for a Fase 2 offer
+whose R0 — the stage sale contract — is already in development and has since
+acquired a signature requirement
+([OI-346](OI-346%20The%20contract%20must%20be%20signed%20by%20the%20account%20legal%20representative.md)).
+Aurel Mrruku's own framing on the
+[12/11 internal call](../meetings/2026-11-12%20INTERNA%20Modifiche%20Marco.md):
+_"Ma perche **stiamo gia sviluppando**"_, against Elena Spini's _"ovviamente non
+hanno accettato ancora la fase due"_ and her reading of the exposure — _"questa
+parte comunque l'hanno accettata, quindi … c\[e\] la devono pagare"_.
+
+⚠ ROMI's own paperwork still contradicts ROMI's position, as established on 09/11:
+Elena Spini's `#tproj-pienissimo` status dates the requirement to **30/10**, not the
+02/11 call the disputed sentence cites.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-04
-updated: 2026-11-04
+updated: 2026-11-12
 depends_on: [OI-301]
 blocks: [go-live]
 severity: gating
@@ -81,3 +81,31 @@ by hand.
 
 **Closing it:** a chosen frequency, written down, with the corresponding
 `CronTrigger` records verified present in `Pienissimo Prod` under a named owner.
+
+## 🔴 2026-11-12 - confirmed in ROMI's own tracker, and named as Aurel Mrruku's
+
+[The Manual Steps tracker](../Manual%20Steps%20Pienissimo%20tracker.md), modified
+2026-11-12 16:50:30Z, records the scheduled-jobs row as **partially done in
+production**:
+
+> _"**QuoteNegotiationAgingBatch -> only this is done the others should be done by
+> Aurel**"_
+
+So of the four jobs in the tracker's own script, three are **not scheduled in
+production**: `MexalArticleSyncScheduler`, `MexalCustomerSyncScheduler` and
+`MexalInvoiceSyncScheduler`. This is written confirmation of the `CronTrigger`
+finding of 4 November, and it now carries a named owner.
+
+🔴 **Four days before the client's users start**, and every Mexal result of the past
+ten days has come from a hand-run sync.
+
+⚠ **The frequency is still undecided.** Nothing in this window chooses one, and the
+12/11 client call did not raise it — even while the load schedule was agreed in
+detail. The one adjacent fact: a nightly Mexal update is assumed to exist. Elena
+Spini, on the article-registry manoeuvre: _"non va la notte comunque l'aggiornamento
+di quello che modifica Mexal?"_ → Aurel Mrruku, _"in teoria si, **ma qualcuno deve
+controllare**"_, and he chose a manual run on Monday at 09:00 instead:
+_"lunedi mattina entro tipo verso le 9 e faccio un aggiornamento che spero che non
+duri piu di mezz'ora."_ 🔑 **That is a person, not a schedule.**
+
+See [OI-301](OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md).

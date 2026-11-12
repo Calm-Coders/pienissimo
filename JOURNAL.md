@@ -10,6 +10,53 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-12 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-11-09T22:00Z**
+  (three days). ⚠ **Discovered that the 10/11 run's commit `17b3bc1` was never pushed** —
+  blocked twice by the environment's publication classifier — so **OI-351 to OI-356 had been
+  announced to the dev group on Slack and never existed in the repository.** Verified: no
+  such ref, no stash, `notes/items/` stopped at OI-350. Rebuilt those six from the original
+  sources (the 10/11 transcripts, the Gmail threads, the Elena Spini DM), keeping the ids
+  because the team has already seen them. **Drilled four meetings, all from full
+  transcripts**: 10/11 Referenti call (00:12:27), 10/11 follow-up (00:41:42), **12/11 Check
+  Pre-Import with the client (02:06:02, read in four passes)** and 12/11 Modifiche Marco
+  (00:46:31).
+- **State:** committed to `DevMain`. 4 meeting notes, **14 new items (OI-351 → OI-364)**,
+  1 decision note, 2 reference notes, 18 notes updated, MAP/INDEX, both trackers (14 new +
+  16 regenerated rows each), both recaps (**§81**), this trace. **Next free id: 365.**
+  Register untouched at **v1.6**. `vault:check` green.
+- **The five things that matter:**
+  1. 🔴 **Marco Montesi has resigned and Sabatino Rinaldi is leaving** (OI-357), said by
+     Fabrizio Paganelli on the 12/11 call. ROMI learned it in the room. Between them they own
+     all twenty Sales change requests, the undefined home page, the WooCommerce plugin and
+     credentials, the two public lead forms and the Lead migration file. No handover exists.
+  2. 🔴 **The migration loads 13/11 and thirteen real orders must be deleted from production
+     first** (OI-360), each taking its assets, event links and tickets with it by script, in
+     an org built so orders cannot be deleted — and the delta is now update-mode, not
+     insert-only.
+  3. 🔴 **~50,000 production Leads will carry invented company names and VAT numbers**
+     (OI-352). Both fields are mandatory; the commitment to the client preceded that
+     discovery by 33 minutes; the fake-value route was put in writing and **the client
+     approved it**. Aurel Mrruku's answer to the idea was _"nop"_.
+  4. 🟢 **Anticipay works in production and OI-312 closes** — the first complete shop →
+     Salesforce → Anticipay → Mexal run, on the client call. **No diagnosis**; nothing says
+     what changed.
+  5. 🔴 **Production is not ready for the 16/11 start**: no marketing or Performance Plus
+     profile, three of four scheduled jobs unscheduled, no logo, no calendar or home page for
+     the agents. Licences are fine (12/9/3).
+- **Next:** the deletions list from Fabrizio Paganelli before the delta; the two profiles
+  before 16/11; a restore date and owner for the backdated event end dates (OI-353); answer
+  Fabrizio Paganelli on production quote tests (OI-355) and on the article registry (OI-329).
+- **Watch:** 🔴 **`STATUS.md` and the Notion mirror are stale** — the org was not opened and
+  the migration runs tomorrow. 🔴 **OI-230 went unnamed for a second consecutive hour of work
+  on that same flow**, and the flows come back on at the delta with the test recipient filter
+  and minute-long intervals still live. ⚠ **This environment has now failed to push once** —
+  if `git push` is blocked, say so loudly in the Slack report rather than letting the run
+  look complete.
+
+---
+
 ## 2026-11-12 - claude-sonnet-5-5 (full branch-vs-Prod check, Experience Cloud check, guest Apex access)
 
 - **Did:** retrieved every `force-app` component from Pienissimo Prod and compared it with

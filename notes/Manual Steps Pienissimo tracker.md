@@ -5,7 +5,7 @@ status: active
 owner: Rexhina Hysi
 org: ROMI
 raised: 2026-10-09
-updated: 2026-10-26
+updated: 2026-11-12
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
 ---
 
@@ -203,3 +203,29 @@ Still no owner for the production column, still no date, and go-live is
 | Add the default agent for Accounts and Orders created from WooCommerce                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Done       |             |
 
 &#x20;all this are nmanual steps to be done in prod should consider also that might need to add the page layouts to the agente profile i do not know if is retrieved this manual step write in a file under notes
+
+## 2026-11-12 - the production column, as it stands
+
+The sheet was modified **2026-11-12 16:50:30Z** and now holds five steps, `A1:C6`,
+all `Done` in UAT.
+
+| Step | Prod |
+| --- | --- |
+| Lead Settings → Record Type Settings → keep the existing record type | 🟢 done |
+| Event Studio → `ParticipantDocumentRequestTrigger` subscriber: set the active production run-as user, Batch Size 200, then Suspend and Resume the subscription | 🟢 done |
+| Run all scheduled jobs as `amministratore pienissimo` (`MexalArticleSyncScheduler`, `MexalCustomerSyncScheduler`, `MexalInvoiceSyncScheduler`, `QuoteNegotiationAgingBatch`) | 🔴 _"**QuoteNegotiationAgingBatch -> only this is done the others should be done by Aurel**"_ |
+| Remove unnecessary buttons from object list views | 🟢 done |
+| Add the default agent for Accounts and Orders created from WooCommerce | 🟢 marked done — ⚠ **but see below** |
+
+### Two cautions about this sheet
+
+1. 🔴 **Three of the four scheduled jobs are not running in production**, with four
+   days to the user start → [OI-334](items/OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md),
+   [OI-301](items/OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md).
+2. ⚠ **A `done` here is not proof.** The WooCommerce default-agent row reads `done`,
+   yet the client's first production WooCommerce order on 11/11 was rejected for
+   exactly that missing configuration →
+   [OI-354](items/OI-354%20WooCommerce%20is%20connected%20to%20production%20by%20the%20client.md).
+3. 🔴 **The production logo is not a row at all**, although Aurel Mrruku recalled it
+   as one: _"l'avevamo gia, era nei manual step da fare"_. It is still missing in
+   production.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-19
-updated: 2026-11-06
+updated: 2026-11-12
 depends_on: [OI-96]
 source: Gmail thread 1a154a97e004a741, 2026-10-19T14:55:54Z
 ---
@@ -255,3 +255,48 @@ be filled**, so the two requests cannot both stand as they are.
 
 **Still owed:** the complete value list as a file, identified; a ruling on the
 mandatory request; and reconciliation with the read-only grant.
+
+## 🟡 2026-11-12 - the values exist, ROMI had lost them, and a deletion list arrived
+
+**The client's own file always carried the values. They were at the bottom of a
+sheet and ROMI did not see them.** Elena Spini, on the
+[12/11 internal call](../meetings/2026-11-12%20INTERNA%20Modifiche%20Marco.md):
+
+> _"questi valori **ce li avevano gia dati**, questi qua che non ci sono … ma
+> stavano in fondo qua sotto e boh, **ce li siam persi perche stava qua sotto**,
+> pero li ho riordinati tutti sul primo s\[heet\], quindi tu basta che guardi qua e
+> c'e tutto."_
+
+She has rebuilt a readable sheet from the client's file, and the workbook is linked
+from [the recap](../The%20Pienissimo%20recap%20of%20open%20changes.md) row 2
+(`1eX-oOPwFW2M7emK7t2q7MgRF7z_Czptl`). ⚠ **Not opened by this run.**
+
+### What was decided about the values
+
+| Value | Action |
+| --- | --- |
+| `Altri servizi` | 🔴 **remove** — _"vogliono solo cassa zucchetti"_ |
+| `Generica` | 🔴 remove — _"Mi sa che generica pure l'abbiamo tolto"_, to be verified |
+| `Cassa Zucchetti` | 🟢 keep |
+| `Libro` | 🆕 **missing, to add** — _"Libro manca sicuro"_ |
+| `Pacchetti` | 🆕 to add — _"Pacchetti non c'era"_ |
+| `Corso` | 🟢 already correct |
+
+🔑 And the dependency question was settled: there is **no filtering between
+categoria and sottocategoria** — _"Fammi vedere tutti i valori possibili senza
+nessun filtro"_ — which Aurel Mrruku noted still means every value must be enrolled
+in the dependency.
+
+Committed to the client as row 2 of the recap, **Da implementare, inizio settimana
+prossima**.
+
+### What is still owed
+
+🔴 **The mandatory-versus-read-only collision is unresolved.** Rows 1 and 2 of
+`Modifiche flussi Sales` still read _"lista completa gia inviata + **compilazione da
+rendere obbligatoria**"_, both `IN LAVORAZIONE`, and nothing addresses making a
+field mandatory that the integration also writes.
+
+🟢 **A separate list did arrive complete**: the eleven lead-source values, with
+usage rules → [the lead source values](../The%20Pienissimo%20lead%20source%20values.md).
+That is a different picklist and does not close this item.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-02
-updated: 2026-11-06
+updated: 2026-11-12
 depends_on: [OI-244, OI-290]
 blocks: [go-live]
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -228,3 +228,48 @@ file in 38 all-or-nothing chunks, about six minutes in total, with no Mexal call
   ⚠ Changes in Mexal to orders already loaded are not picked up by a key-skip
   delta. ⚠ The 3-4 hour figure belongs to the invoice pull, which has not run in
   Prod yet.
+
+## 🔑 2026-11-12 - the delta is now an update, and the dates are set
+
+**Three changes to this plan, all from the
+[Check Pre-Import call](../meetings/2026-11-12%20Check%20Pre-Import.md) and the
+client's mails of the same day.**
+
+1. 🔴 **The delta is no longer insert-only.** Fabrizio Paganelli: _"Non vale non
+   andare solo in update dei record mancanti, **va anche in aggiornamento dei record
+   di quelli gia presenti**"_. Aurel Mrruku, who had planned additive only: _"**Ok,
+   vado in modifica.** Allora, faccio un controllo generale"_, _"su ordini
+   soprattutto"_. Expected size: _"un delta di **200, 300, 500 record al massimo**"_,
+   with Account and Order the entities he is wary of.
+2. 🔴 **Deletions come first.** Thirteen real orders cancelled in Mexal must be
+   removed from production before the delta runs →
+   [OI-360](OI-360%20Cancelled%20Mexal%20orders%20must%20be%20deleted%20from%20production.md).
+3. 🟢 **The schedule.** Load on **Friday 13/11**, _"spero domani sera, altrimenti
+   lavoro anche nel weekend"_, everything ready by **Monday 16/11** with a joint
+   check at 09:00-09:30. The client **stopped working in Zoho on 12-13/11**, and
+   anything keyed there on those two days is to be re-entered by hand in Salesforce
+   on Monday: _"tutto quello che voi fate giovedi e venerdi su Zo\[ho\], lunedi
+   mattina lo rimettete dentro Sales force"_. ⚠ Those orders do **not** reach Mexal.
+
+### The files that arrived for it, all 12/11
+
+| Time (UTC) | File | Thread |
+| --- | --- | --- |
+| 09:44:26Z | `Account` — the final account list, 5.2 MB | `1a1cf252e25e8584` |
+| 10:30:34Z | `Referenti Salesforce.xlsx` — 21 MB, **67,154 rows** | `1a1cf4f445a4aaf0` |
+| 13:57:22Z | `Locali_CON_codice_Mexal.xlsx` — locali with partita iva, azienda, name, attivo, stagionale, stato cliente, Mexal code | `1a1d00c85ebdda02` |
+| 15:32:30Z | `Import Ordini (versione del 2026.11.12).xlsx` — 41 new, 13 to delete, 19 to update | `1a1d06456c06e4f8` |
+
+⚠ **None was opened** — all four carry real customer records. Their existence and
+counts are recorded; no values are copied.
+
+🟢 Fabrizio Paganelli checked the accounts for duplicates before sending: _"Ho
+verificato anche gli account stamattina che non fossero doppi. Ce n'erano due tre
+doppi, li abbiamo gia risolti."_
+
+🟢 **Articles are no longer part of the exchange** — taken straight from Mexal:
+_"gli articoli avevamo detto l'altra volta che non ve li passo piu, giusto?"_ →
+_"Corretto, gia presi."_ 🔑 And an article-registry manoeuvre was agreed: Fabrizio
+Paganelli cleans the Mexal registry on **Friday evening**, Aurel Mrruku activates
+every product in Salesforce for the load, then re-pulls the Mexal flags on Monday
+morning so the old asterisked codes fall inactive before the tutors see them.

@@ -1,15 +1,15 @@
 ---
 id: OI-312
 type: open-item
-status: open
+status: resolved
 owner: Fabrizio Paganelli
 with: Andrea
 org: both
 raised: 2026-11-03
-updated: 2026-11-09
+updated: 2026-11-12
 depends_on: []
 blocks: [go-live]
-severity: gating
+severity: resolved
 source: notes/meetings/2026-11-03 Test e2e PROD.md
 ---
 
@@ -168,3 +168,50 @@ of that visit appears in any source in this window.**
 - ⚠ **The production Info Point connection has no separate finding any more**; the
   timeout attributed to it was Anticipay's. **Info Point's own integration does not
   exist yet** and is release R3, February 2027.
+
+## 🟢🔑 2026-11-12 - it works in production, and the item closes
+
+**The Anticipay production check ran successfully on the
+[Check Pre-Import call](../meetings/2026-11-12%20Check%20Pre-Import.md), nine days
+after it first timed out.**
+
+Sabatino Rinaldi placed an order through the live WooCommerce shop with a real
+Italian VAT number and an address in Rimini. Salesforce created the Account and
+Aurel Mrruku read the result out on screen:
+
+> _"Se vedete **ha gia fatto tutto il controllo con anticipate** … Ultima verifica
+> anticipay alle **11:40** … residenza fiscale Italia, **ha preso anche il codice
+> a\[te\]co**"_
+
+The order then reached Mexal — _"e andato anticipo\[lato\] e Maxile inviato"_ — so
+the whole WooCommerce → Salesforce → Anticipay → Mexal chain ran in production for
+the first time ([OI-354](OI-354%20WooCommerce%20is%20connected%20to%20production%20by%20the%20client.md)).
+
+🟢 **Confirmed to the supplier in writing.** Elena Spini to Fabrizio Paganelli and
+Andrea Parmeggiani, **2026-11-12 11:45:25Z** (thread `1a1bfc2c0e27f7d3`):
+
+> _"confermo che oggi abbiamo fatto il **test in produzione per Anticipay** ed e
+> andato tutto ok."_
+
+### What is not explained
+
+⚠ **Nothing says what changed.** Andrea Parmeggiani had denied any problem on 09/11
+(_"Avevo gia verificato che non avevo rilevato problemi"_), the precise failure
+description Fabrizio Paganelli asked Aurel Mrruku for was never written, and no
+supplier-side fix was announced. The item closes on a working result, **not on a
+diagnosis.**
+
+⚠ **The two sandbox `HTTP 404` alerts are not accounted for** — 09/11 11:13:32Z and
+14:09:08Z, plus 🆕 **a third on 2026-11-11 09:24:13Z** (`001MA000015Ld7yYAC`,
+Gmail `1a1c9ec132c8f251`), all carrying _"TEST -"_. Those are the UAT org and remain
+unexplained.
+
+🔑 **The QR scanner is a separate, unresolved matter with the same supplier.** On
+12/11 he told Sabatino Rinaldi live that he _"non ha ancora fatto niente"_ for the
+production scanner →
+[OI-361](OI-361%20Pienissimo%20Live%20attendance%20cannot%20be%20recorded%20in%20Salesforce.md),
+[OI-323](OI-323%20The%20production%20domain%20has%20not%20been%20supplied%20by%20the%20client.md).
+
+⚠ A smaller related answer, from the ROMI DM of 11/11 12:26 CET: the Anticipay check
+is **not** automatic on account creation — _"anticipay o si fa dal pulsante o quando
+inviamo l'ordine e l'account non ha un codice mexal"_.
