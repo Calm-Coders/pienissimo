@@ -10,6 +10,32 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-12 - claude-sonnet-5-5 (full branch-vs-Prod check, Experience Cloud check, guest Apex access)
+
+- **Did:** retrieved every `force-app` component from Pienissimo Prod and compared it with
+  the branch at `0fa4107` (XML compared semantically; own script, because `sf project convert
+mdapi` returned nothing). 899 files identical, nothing missing in Prod. Real differences:
+  the three Path assistants (`Asset`, `Contract_Stato`, `Default_Opportunity`) have **0 steps in
+  Prod** (confirmed through the Tooling API, branch has them); `Product2.AllProducts` and
+  `Mappatura_Edizione__c.All_Mappatura_Edizione` list views are older in Prod (the 05/11
+  Prod-side edits). Intentional: DocuSign auth provider and named credential, the `Agente`
+  profile, the guest profile. Experience Cloud (`Landing_Page1`, 73 files): identical except
+  org-specific media ids and the network sender address (`.invalid` in Prod).
+- **Prod write, at Aurel Mrruku's request:** enabled five more Apex classes on the **guest
+  profile `Landing Page Profile`** in Prod, to match the branch: `DocuSignQuoteEnvelopeService`,
+  `OrderMexalIntegrationService`, `OrderTriggerHandler`, `QuoteTrancheController`,
+  `QuoteTriggerHandler`. Minimal profile with those five `classAccesses` only, check-only first,
+  then deploy `0AfSW000001LyVF0A0` (2026-11-12 17:02Z), re-retrieved: all eight guest-enabled
+  classes read `enabled=true`. The deployed file held `classAccesses` only, so nothing else on the
+  profile was changed by construction (a partial profile retrieve cannot prove the absence of
+  object permissions, so none was claimed from the read-back).
+- ⚠ **Not done and deliberately not copied:** the branch's guest profile also grants the guest
+  object permissions (read on Account, Contact, Opportunity, Order, Contract...; create on Order,
+  Contract, Quote, Tranche, Integration Log) and 504 field grants against 101 in Prod. Prod has
+  none of the object permissions. Never deploy that profile wholesale.
+
+---
+
 ## 2026-11-12 - claude-sonnet-5-5 (DevMain delta deployed to Prod, tests repaired first)
 
 - **Did:** on Aurel Mrruku's request, released only the delta since the 05/11 Prod deploy
