@@ -409,10 +409,17 @@ global without sharing class WoocommerceOrderService {
 
     Map<String, Product2> productsByScCode = new Map<String, Product2>();
     for (Product2 productRec : [
-      SELECT Id, Name, ProductCode, RecordType.DeveloperName
+      SELECT Id, Name, ProductCode, IsActive, RecordType.DeveloperName
       FROM Product2
       WHERE ProductCode IN :scCodes
     ]) {
+      if (productRec.IsActive != true) {
+        throw new WooCommerceOrderException(
+          'Il prodotto ' +
+            productRec.Name +
+            ' non e attivo in Salesforce. Attivare il prodotto prima di reinviare l ordine WooCommerce.'
+        );
+      }
       productsByScCode.put(productRec.ProductCode, productRec);
     }
 
@@ -522,6 +529,15 @@ global without sharing class WoocommerceOrderService {
               '.'
           );
         }
+        if (component.Product__r.IsActive != true) {
+          throw new WooCommerceOrderException(
+            'Il prodotto ' +
+              component.Product__r.Name +
+              ' del bundle ' +
+              productRec.Name +
+              ' non e attivo in Salesforce. Attivare il prodotto prima di reinviare l ordine WooCommerce.'
+          );
+        }
         if (component.Quantity__c == null || component.Quantity__c <= 0) {
           throw new WooCommerceOrderException(
             'Configura una quantita maggiore di zero per ogni componente del bundle ' +
@@ -577,6 +593,8 @@ global without sharing class WoocommerceOrderService {
       SELECT
         Bundle__c,
         Product__c,
+        Product__r.Name,
+        Product__r.IsActive,
         Quantity__c,
         Unit_Spread__c,
         Bundle_Tranch__c
