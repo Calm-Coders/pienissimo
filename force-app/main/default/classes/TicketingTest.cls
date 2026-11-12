@@ -22,7 +22,7 @@ private class TicketingTest {
         'order_key' => orderKey,
         'status' => 'processing',
         'date_paid' => '2026-09-20T10:00:00',
-        'date_created' => 'bad'
+        'date_created' => '2026-09-20T09:00:00'
       },
       'billing' => new Map<String, Object>{
         'first_name' => 'Giulia',
@@ -319,6 +319,9 @@ private class TicketingTest {
       Opportunity deleted = TestDataFactory.opportunity(accountRecord.Id);
       delete deleted;
       missingOpportunity.put('sf_opportunity_id', String.valueOf(deleted.Id));
+      // order.date_created is the order date; an unparseable value is rejected.
+      Map<String, Object> badDate = wooPayload('wc_err_9', 'SC-NOPB', null);
+      ((Map<String, Object>) badDate.get('order')).put('date_created', 'bad');
 
       List<Object> payloads = new List<Object>{
         null,
@@ -332,7 +335,8 @@ private class TicketingTest {
         unknownSku,
         inactiveEntry,
         badOpportunity,
-        missingOpportunity
+        missingOpportunity,
+        badDate
       };
       Integer failures = 0;
       for (Object payload : payloads) {

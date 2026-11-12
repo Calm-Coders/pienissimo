@@ -10,6 +10,34 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-12 - claude-sonnet-5-5 (DevMain delta deployed to Prod, tests repaired first)
+
+- **Did:** on Aurel Mrruku's request, released only the delta since the 05/11 Prod deploy
+  (`16bf017`, `DevMain` at `2cf77af`): 30 components — the order PDF and DocuSign-at-order-level
+  stack (`OrderPdfService`, `DocuSignOrderEnvelopeService`/`Queueable`, `orderDocuSignErrorBanner`,
+  `orderDocuSignRetryAction`, the `Reinvia_DocuSign` quick action, the four `Order` DocuSign/PDF
+  fields, `OrderItem.Discount_Pct__c`), the WooCommerce changes, flexipages, layouts, the
+  `QuotePdf` page and the `Agente` and `Full_Permission` permission sets. Before deploying,
+  retrieved the same components from Prod: Prod matched the 05/11 commit, so no Prod-side edit was
+  overwritten (the Edit action on `Product_Record_Page1` is already in the branch).
+- **Validation 1 failed** (`0AfSW000001LxJ30AK`): 4 `TicketingTest` WooCommerce tests and 73.7%
+  coverage. Cause: `33ac872` made `order.date_created` the order date and rejects an invalid
+  value; the test payload carried `'bad'`. Fixed the payload, added `badDate` to the rejected
+  payloads, and added **`OrderPdfServiceTest`** (7 tests: classification, order guards, controller,
+  stored-contract reuse, queueable failure log). `getContentAsPDF` is not allowed in Apex tests, so
+  the render path itself stays uncovered.
+- **Deployed:** validation `0AfSW000001LxhF0AS` (`RunLocalTests`, 30/30 components, **176/176
+  tests, 75.8%**), quick deploy **`0AfSW000001Lxnh0AC`** (2026-11-12 16:19Z). Re-retrieved: the
+  eleven Apex classes are byte-identical to the branch; flexipages, layouts and `Agente` match.
+  `Full_Permission` keeps three `editable=false` field grants a deploy cannot remove.
+- ⚠ **Margin is thin:** 75.8% is 113 lines above the floor. `DocuSignOrderEnvelopeService` (243
+  lines) is still untested. **Uncommitted on `DevMain`:** `TicketingTest`, `OrderPdfServiceTest`.
+- **Not done, still owed for 16/11:** the three manual Prod steps ([OI-301](notes/items/OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md)),
+  the Mexal job schedule ([OI-334](notes/items/OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md)),
+  the delta migration. The aging job was not touched. No smoke test was run on a real order yet.
+
+---
+
 ## 2026-11-09 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-11-06T22:00Z**

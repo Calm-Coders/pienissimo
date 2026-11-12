@@ -6,7 +6,7 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-10-26
+updated: 2026-11-12
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
@@ -623,3 +623,18 @@ suite was repaired and all of DevMain went to Prod the same day.**
   and the update then fails the Azienda VAT rule.
 - A qualified Lead without a Partita IVA does not convert: the queueable fails
   on the Azienda VAT rule and only logs it.
+
+## 2026-11-12 - the delta passed at 75.8%, 113 lines above the floor
+
+🔴 **The gate came back and was cleared by a margin of 113 lines.** The delta since 05/11
+(30 components) failed its first Prod validation `0AfSW000001LxJ30AK` at **73.7%** with four
+`TicketingTest` WooCommerce failures: the order date now comes from `order.date_created`
+and an invalid value is rejected, while the test payload carried `bad`. After fixing the payload
+and adding `OrderPdfServiceTest`, validation `0AfSW000001LxhF0AS` passed at **75.8%
+(10,562 of 13,931 lines), 176/176 tests**, and was quick-deployed as `0AfSW000001Lxnh0AC`.
+
+⚠ **The next Prod deploy is at risk the moment it adds untested code.**
+`DocuSignOrderEnvelopeService` (243 lines) and `DocuSignOrderEnvelopeQueueable` have no test, and
+`OrderPdfService.generatePdf` cannot be covered past `getContentAsPDF` inside Apex tests.
+`MexalInvoiceLineImportBatch` (341 lines) is still at 0%. Keep the margin in view before the
+12-13/11 delta and any later release.
