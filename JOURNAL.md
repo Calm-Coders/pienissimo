@@ -339,6 +339,15 @@ Daily` was not touched. The change is still **uncommitted** in `force-app`.
   UAT only the data-extract permission set and two profiles can read them, none can edit.
   The other staged files (Mexal classes, Lead field and view, `Full_Permission`, the three
   Order/Woo classes, `TicketingTest`) are still staged and uncommitted.
+- **Field permissions of the two invitation fields given to `Full_Permission`, in both orgs
+  (Aurel Mrruku's request, 18:05 CET):** `Invio_Oggi__c` read only (it is a formula) and
+  `Richiesta_inviata__c` read and edit, inserted in alphabetical order. Each org's
+  `Full_Permission` was retrieved and compared first: the only differences were the two new
+  entries and Salesforce's own normalisation (`Event.Sottotipo__c`, `Order.TotalAmount`).
+  Check-only then deploy: UAT `0AfMA00000DBHdx0AH`, Prod `0AfSW000001M56v0AC`, both 1/1, and
+  the permissions were read back from each org. The edit is in the working tree of
+  `Full_Permission`, **not committed** (that file also still carries the uncommitted
+  `Lead.Referenti_Marketing__c` permission).
 
 ---
 
