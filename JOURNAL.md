@@ -327,6 +327,18 @@ Keep the twenty most recent entries here; archive older ones to
   names, crons and owner, `WAITING`, first runs 14/11. Read-only check in Prod: "today = 2027"
   -> 200 with 2026, normal day -> 200 with 2026, no log written. `Quote Negotiation Aging -
 Daily` was not touched. The change is still **uncommitted** in `force-app`.
+- **Two Prod-only fields brought into source and UAT (Aurel Mrruku's request, 17:58 CET):**
+  `Event_Invitation__c.Invio_Oggi__c` (formula checkbox, `Data_Invio_Biglietto__c = TODAY()`)
+  and `Event_Invitation__c.Richiesta_inviata__c` (checkbox, default false) had been created
+  directly in Prod on 10/11/2026 by Tech Romi and are read by the marketing flow "Invio
+  Richiesta conferma biglietto". Retrieved unchanged from Prod into `force-app`, deployed to
+  UAT (`0AfMA00000DBHHN`, check-only first) and checked there with the Tooling API (same type,
+  label and formula as Prod), then **committed to `DevMain` as `93f8468`, containing only
+  those two files, not pushed** (the branch is one commit ahead of origin). Field-level
+  security is not part of it: in Prod every profile can read both (and edit the checkbox); in
+  UAT only the data-extract permission set and two profiles can read them, none can edit.
+  The other staged files (Mexal classes, Lead field and view, `Full_Permission`, the three
+  Order/Woo classes, `TicketingTest`) are still staged and uncommitted.
 
 ---
 
