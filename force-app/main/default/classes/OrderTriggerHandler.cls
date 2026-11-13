@@ -173,7 +173,30 @@ public without sharing class OrderTriggerHandler {
       }
     }
 
-    if (opportunityIds.isEmpty()) {
+    closeWonOpportunities(opportunityIds);
+  }
+
+  // OI-69, changed 2026-11-13: the Opportunity is won at the first payment
+  // received on any line of its order, no longer only at Incassato.
+  public static void closeWonOpportunitiesForPaidOrders(Set<Id> orderIds) {
+    if (orderIds == null || orderIds.isEmpty()) {
+      return;
+    }
+
+    Set<Id> opportunityIds = new Set<Id>();
+    for (Order orderRecord : [
+      SELECT OpportunityId
+      FROM Order
+      WHERE Id IN :orderIds AND OpportunityId != NULL
+    ]) {
+      opportunityIds.add(orderRecord.OpportunityId);
+    }
+
+    closeWonOpportunities(opportunityIds);
+  }
+
+  private static void closeWonOpportunities(Set<Id> opportunityIds) {
+    if (opportunityIds == null || opportunityIds.isEmpty()) {
       return;
     }
 

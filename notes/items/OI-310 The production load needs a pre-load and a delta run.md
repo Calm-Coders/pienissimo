@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-02
-updated: 2026-11-12
+updated: 2026-11-13
 depends_on: [OI-244, OI-290]
 blocks: [go-live]
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -253,12 +253,12 @@ client's mails of the same day.**
 
 ### The files that arrived for it, all 12/11
 
-| Time (UTC) | File | Thread |
-| --- | --- | --- |
-| 09:44:26Z | `Account` — the final account list, 5.2 MB | `1a1cf252e25e8584` |
-| 10:30:34Z | `Referenti Salesforce.xlsx` — 21 MB, **67,154 rows** | `1a1cf4f445a4aaf0` |
-| 13:57:22Z | `Locali_CON_codice_Mexal.xlsx` — locali with partita iva, azienda, name, attivo, stagionale, stato cliente, Mexal code | `1a1d00c85ebdda02` |
-| 15:32:30Z | `Import Ordini (versione del 2026.11.12).xlsx` — 41 new, 13 to delete, 19 to update | `1a1d06456c06e4f8` |
+| Time (UTC) | File                                                                                                                   | Thread             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| 09:44:26Z  | `Account` — the final account list, 5.2 MB                                                                             | `1a1cf252e25e8584` |
+| 10:30:34Z  | `Referenti Salesforce.xlsx` — 21 MB, **67,154 rows**                                                                   | `1a1cf4f445a4aaf0` |
+| 13:57:22Z  | `Locali_CON_codice_Mexal.xlsx` — locali with partita iva, azienda, name, attivo, stagionale, stato cliente, Mexal code | `1a1d00c85ebdda02` |
+| 15:32:30Z  | `Import Ordini (versione del 2026.11.12).xlsx` — 41 new, 13 to delete, 19 to update                                    | `1a1d06456c06e4f8` |
 
 ⚠ **None was opened** — all four carry real customer records. Their existence and
 counts are recorded; no values are copied.
@@ -273,3 +273,50 @@ _"Corretto, gia presi."_ 🔑 And an article-registry manoeuvre was agreed: Fabr
 Paganelli cleans the Mexal registry on **Friday evening**, Aurel Mrruku activates
 every product in Salesforce for the load, then re-pulls the Mexal flags on Monday
 morning so the old asterisked codes fall inactive before the tutors see them.
+
+## 🟢 2026-11-13 - the Aziende delta is in Prod: 24 inserted, 32 updated, no Mexal call
+
+Upserted from the client's 13/11 account file on `Codice_Cliente_Mexal__c`, after a
+rolled-back dry run, in anonymous Apex with the Mexal customer-update bypass on. Of
+8,290 eligible rows (457 without a Partita IVA stay skipped): **24 new, 32 updated,
+8,234 unchanged.** The transaction queued no job and made no callout; afterwards there
+is no `Integration_Log__c` and no Mexal or Anticipay job, and no Mexal job is scheduled
+in Prod. Anticipay is not reachable from an Account save.
+
+- Case-only differences in PEC and `Email__c` (2,619 rows) were ignored; Salesforce
+  stores email fields lowercase.
+- 25 Aziende changed agent, 7 changed their Zoho id, 4 changed Partita IVA, and the
+  shipping address was cleared on 4. 🔴 **Mexal received none of it**, so the client's
+  Mexal master must already hold these values.
+- One PEC is unusable and was left blank, as on 05/11.
+- ⚠ Still to do: Locali, Referenti, the 13 order deletions and the order delta
+  ([OI-360](OI-360%20Cancelled%20Mexal%20orders%20must%20be%20deleted%20from%20production.md)).
+
+## 🟢 2026-11-13 - the Locali delta is in Prod: 953 inserted, 15 updated, no Mexal call
+
+Same bypass, same dry-run-first method as the Aziende delta; detail in
+[OI-333](OI-333%20Locali%20without%20a%20Mexal%20customer%20code%20will%20not%20be%20loaded.md).
+Prod now holds 8,307 Aziende and 4,873 Locali. Referenti, the 13 order deletions and
+the order delta remain.
+
+## 🟢 2026-11-13 - the Referenti delta is in Prod: 86 inserted, 231 updated, no Mexal call
+
+Detail in [OI-290](OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md).
+Prod now holds 17,775 Contacts. The 49,822 Referenti without a Mexal code and 100 with an
+unmatched code are not loaded. Aziende, Locali and Referenti are done; the 13 order
+deletions and the order delta remain.
+
+## 🟢 2026-11-13 - the order delta is in Prod: 63 inserted, 32 deleted, no Mexal call
+
+Detail in [OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md)
+and [OI-360](OI-360%20Cancelled%20Mexal%20orders%20must%20be%20deleted%20from%20production.md).
+Aziende, Locali, Referenti (Contacts and Leads) and orders are all done; 28 orders of 6
+customers are waiting for the client's account data.
+
+## 🟢 2026-11-13 - the invoices and rates are in Prod
+
+Pulled from Mexal after the delta, with a before/after sample and a mail guard; 10,969
+invoices, 7,624 orders `Incassato`, 19,574 tickets `Disponibile`, no mail triggered. Detail
+in [OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+Open: the Prod nightly jobs, the Monday product flags, the six customers, and the send
+dates of Pienissimo Live 2026 and Intensive 2026.

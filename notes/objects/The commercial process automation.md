@@ -5,7 +5,7 @@ status: active
 owner: Anita Aga
 org: ROMI
 raised: 2026-09-09
-updated: 2026-09-09
+updated: 2026-11-13
 depends_on: [DEC-2026-09-08-account-record-types]
 blocks: [OI-50, OI-59, OI-121]
 source: git DevMain a53345a (PR #37), metadata and Apex read directly 2026-09-09
@@ -33,13 +33,13 @@ verified against UAT, and no test was run.
 
 `standardValueSets/OpportunityStage` is now in source control with five values:
 
-| Value                          | Probability | Forecast  | Closed / Won   |
-| ------------------------------ | ----------- | --------- | -------------- |
-| `Qualificato` (**default**)    | 10          | Pipeline  | —              |
-| `In trattativa (Prev inviato)` | 75          | BestCase  | —              |
-| `Da ricontattare - Prev. inviato` | 35       | Pipeline  | —              |
-| `Chiusa/Vinta`                 | 100         | Closed    | closed **won** |
-| `Chiusa/Persa`                 | 0           | Omitted   | closed         |
+| Value                             | Probability | Forecast | Closed / Won   |
+| --------------------------------- | ----------- | -------- | -------------- |
+| `Qualificato` (**default**)       | 10          | Pipeline | —              |
+| `In trattativa (Prev inviato)`    | 75          | BestCase | —              |
+| `Da ricontattare - Prev. inviato` | 35          | Pipeline | —              |
+| `Chiusa/Vinta`                    | 100         | Closed   | closed **won** |
+| `Chiusa/Persa`                    | 0           | Omitted  | closed         |
 
 An `opportunityCustomPath` LWC (252 lines JS, plus markup and CSS) renders the
 path.
@@ -64,6 +64,12 @@ comparison table: [OI-59](../items/OI-59%20Quote%20workflow%20configuration.md).
 
 🟢 The close-won rule is the register's own, implemented as written:
 _"Chiusa/Vinta requires at least one quote sent; payment confirms the win."_
+
+**2026-11-13:** the win now comes at the **first** paid order line.
+`OrderItemTriggerHandler` calls
+`OrderTriggerHandler.closeWonOpportunitiesForPaidOrders`, and the `Incassato`
+path above remains as a backstop. This is deployed to Prod; see
+[OI-69](../items/OI-69%20Order%20state%20model.md).
 
 🔴 **Nothing moves an opportunity to `Chiusa/Persa`, and nothing implements
 `Da ricontattare - Prev. inviato`.** Both are values a user must set by hand. The

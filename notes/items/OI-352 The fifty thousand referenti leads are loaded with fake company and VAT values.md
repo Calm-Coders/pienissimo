@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Aurel Mrruku, Sabatino Rinaldi
 org: both
 raised: 2026-11-10
-updated: 2026-11-12
+updated: 2026-11-13
 depends_on: [OI-351]
 blocks: []
 severity: high
@@ -83,3 +83,13 @@ trigger was **not** modified. What it leaves behind belongs to
 - ⚠ No cleanup owner, no deadline and no option chosen (A or B).
 - ⚠ **The leads had not been imported at all** as of 10/11 — Aurel Mrruku,
   09:27:59Z: _"no i lead non li ho importati"_.
+
+## 2026-11-13 - the fake VAT values were not needed and not used
+
+`Partita_IVA__c` is not mandatory on Lead in Prod - only `Company` is, natively - so the
+49,811 Referenti were loaded **with the VAT field empty**, and `Company` carries the
+company name where the file has one (9,900 rows) and the text **"Referente Importato"**
+otherwise (39,922). The invented progressive values promised to the client on 11/11 were
+not written. ⚠ Elena Spini and Pienissimo have not been told; this differs from the
+mail they approved. Detail in
+[OI-351](OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md).

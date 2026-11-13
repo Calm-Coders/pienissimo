@@ -2,7 +2,6 @@
 global without sharing class WoocommerceOrderService {
   private static final String FLOW_NAME = 'WoocommerceOrderService.createOrder';
   private static final String BUNDLE_RECORD_TYPE = 'Bundle';
-  private static final String CREATED_STATUS = 'Incassato';
   private static final String INITIAL_STATUS = 'Ordinato';
   private static final String TRANCHE_STATUS_OPEN = 'Aperta';
   private static final String AZIENDA_RECORD_TYPE = 'Azienda';
@@ -80,14 +79,9 @@ global without sharing class WoocommerceOrderService {
 
       insertOrderLines(orderRec.Id, orderBuildPlan, entriesByProductId);
 
-      // Plus purchases must await collection, even without bundle tranche templates.
-      if (
-        contractPdfType != OrderPdfService.PLUS &&
-        !orderBuildPlan.hasBundleTranches()
-      ) {
-        orderRec.Status = CREATED_STATUS;
-        update orderRec;
-      }
+      // Pienissimo, 2026-11-13: a WooCommerce order stays Ordinato. Only the
+      // Mexal scadenziario moves it to Incassato (OrderItemTriggerHandler), as
+      // for every other order. It used to be created already Incassato.
 
       if (contractPdfType == OrderPdfService.PLUS) {
         PerformancePlusContractService.createForOrders(

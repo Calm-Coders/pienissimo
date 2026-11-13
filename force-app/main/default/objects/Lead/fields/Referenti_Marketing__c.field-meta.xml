@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Referenti_Marketing__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >Identifies Leads created from Zoho Referenti that have no Mexal customer code. Set to true when importing them; these Leads are worked by marketing, not by sales.</description>
+    <label>Referenti Marketing</label>
+    <type>Checkbox</type>
+</CustomField>

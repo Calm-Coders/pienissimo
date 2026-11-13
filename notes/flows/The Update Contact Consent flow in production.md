@@ -4,7 +4,7 @@ type: flow
 status: active
 org: ROMI
 raised: 2026-07-31
-updated: 2026-11-05
+updated: 2026-11-13
 source: Pienissimo Prod Tooling API FlowDefinition and Flow plus SetupAuditTrail read on 2026-11-05
 uncertain: The human behind ROMI COMPANY and the runtime effect of the Email equals false start filter are not established.
 ---
@@ -56,12 +56,12 @@ flow. This is configuration evidence, not proof of any actual consent created.
 The record above describes the version read in production on the morning of
 5 November. That evening it was switched off deliberately. In the marketing group DM:
 
-| Time (CET) | Who | Said |
-| --- | --- | --- |
-| 17:55 | Aurel Mrruku | _"hai fatto te sto flow in prod? update_contact_consent ti serve?"_, after pasting the inspection findings above |
-| 17:58 | Fabrizio Mastracci | _"sisi, **non cancellarlo**"_ |
-| 17:59 | Aurel Mrruku | _"**lo disattivo** perche sto facendo caricamento massivo"_ |
-| 17:59 | Fabrizio Mastracci | _"ok, no problem"_ |
+| Time (CET) | Who                | Said                                                                                                             |
+| ---------- | ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| 17:55      | Aurel Mrruku       | _"hai fatto te sto flow in prod? update_contact_consent ti serve?"_, after pasting the inspection findings above |
+| 17:58      | Fabrizio Mastracci | _"sisi, **non cancellarlo**"_                                                                                    |
+| 17:59      | Aurel Mrruku       | _"**lo disattivo** perche sto facendo caricamento massivo"_                                                      |
+| 17:59      | Fabrizio Mastracci | _"ok, no problem"_                                                                                               |
 
 🟢 **So the deactivation was agreed, not unilateral**, and the owner is now on the
 record: **Fabrizio Mastracci** confirms the flow is his and is needed, which the
@@ -81,3 +81,14 @@ that has no field to land in
 ([OI-340](../items/OI-340%20The%20website%20lead%20forms%20have%20no%20field%20for%20the%20marketing%20consent.md)),
 so this flow is the only thing creating marketing consent for a new contact, and it
 creates `OptIn` without reading any explicit consent flag.
+
+## 2026-11-13 - switched off for the Referenti delta and restored as version 3
+
+Deactivated through the Tooling API before the 13/11 Referenti load and reactivated after
+it, at Aurel Mrruku's choice, so that no Marketing Opt-In was created for the 86 new and
+231 updated Contacts. Redeploying the retrieved definition unchanged created **no** new
+version (deploys `0AfSW000001M24D0AS`); a changed description produced **version 3**
+(`0AfSW000001M25p0AC`, `301SW00000hhW0rYAE`), which a deploy leaves in Draft and a Tooling
+call then activated. Logic is identical to v2, so the two configuration concerns above are
+unchanged. ⚠ The definition is not in `force-app`. ⚠ Fabrizio Mastracci, who owns the flow,
+agreed to the 05/11 switch-off; no record shows he was told about this one.

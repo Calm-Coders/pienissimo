@@ -39,34 +39,34 @@ Every requirement carries a stable identifier (e.g. `SAL-04`), a priority and a 
 
 ## 1. Context and objectives
 
-| ID     | Requirement                                                                                                                                                         | Pri. | Status |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :----: |
-| CTX-01 | Replace Zoho CRM with Salesforce as Pienissimo's single operational CRM.                                                                                            |  M   |   ✅   |
+| ID     | Requirement                                                                                                                                                                                                                                        | Pri. | Status |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--: | :----: |
+| CTX-01 | Replace Zoho CRM with Salesforce as Pienissimo's single operational CRM.                                                                                                                                                                           |  M   |   ✅   |
 | CTX-02 | **Go-live date: 16 November 2026**, focused on the WooCommerce and Mexal integrations. Minor integrations move to Phase 2. Moved from 21 October: proposed by Pienissimo in writing 20 October 2026 and agreed by both parties on 21 October 2026. |  M   |   ✅   |
-| CTX-03 | The Zoho contract expires **31 October 2026**. The parallel-running window is therefore roughly three weeks and cannot be extended.                                 |  M   |   ✅   |
-| CTX-04 | During dual-run, tickets are entered twice (Zoho + Salesforce) and stage-sale invoicing stays on Zoho through the Food Marketing Festival on 29 September.          |  M   |   ✅   |
-| CTX-05 | Guiding principle: **no workarounds**. Processes are redesigned for Salesforce, not replicated from Zoho. Start simple and manual; automate what proves repetitive. |  M   |   ✅   |
-| CTX-06 | Every design decision must serve the **final statistics and reporting**: if a figure cannot be traced or aggregated, the solution is reworked.                      |  M   |   ✅   |
-| CTX-07 | Org language: **Italian**, with custom labels translated through the Translation Workbench.                                                                         |  M   |   ✅   |
-| CTX-08 | Reference terminology is Salesforce's: Lead → Opportunity → Quote → Order. Zoho's pre-acceptance "ordine" maps to the Salesforce **Quote**.                         |  M   |   ✅   |
+| CTX-03 | The Zoho contract expires **31 October 2026**. The parallel-running window is therefore roughly three weeks and cannot be extended.                                                                                                                |  M   |   ✅   |
+| CTX-04 | During dual-run, tickets are entered twice (Zoho + Salesforce) and stage-sale invoicing stays on Zoho through the Food Marketing Festival on 29 September.                                                                                         |  M   |   ✅   |
+| CTX-05 | Guiding principle: **no workarounds**. Processes are redesigned for Salesforce, not replicated from Zoho. Start simple and manual; automate what proves repetitive.                                                                                |  M   |   ✅   |
+| CTX-06 | Every design decision must serve the **final statistics and reporting**: if a figure cannot be traced or aggregated, the solution is reworked.                                                                                                     |  M   |   ✅   |
+| CTX-07 | Org language: **Italian**, with custom labels translated through the Translation Workbench.                                                                                                                                                        |  M   |   ✅   |
+| CTX-08 | Reference terminology is Salesforce's: Lead → Opportunity → Quote → Order. Zoho's pre-acceptance "ordine" maps to the Salesforce **Quote**.                                                                                                        |  M   |   ✅   |
 
 ### 1.1 Fixed calendar
 
-| Date                | Event                                       | Project impact                                                           |
-| ------------------- | ------------------------------------------- | ------------------------------------------------------------------------ |
-| ~1 September 2026   | Data import into Salesforce                 | Preceded by cleanup: ~6,000 leads/accounts against ~7,500 paying clients |
-| 7–19 September 2026 | Tour (free events)                          | ~90% new audience, client-typed data                                     |
-| 29 September 2026   | Food Marketing Festival                     | Peaks of 100–150 invoices per day                                        |
-| 21 October 2026     | ~~Go-live~~ (superseded)                    | Date in the signed text; not executed                                    |
-| ~9 November 2026    | **Technical release to production**         | Plus the manual configuration steps                                      |
-| 9–12 November 2026  | First historical-order import               | Invoicing stays on Zoho; no operational freeze                           |
-| 12 November 2026    | Last invoicing day on Zoho                  |                                                                          |
-| 13 November 2026    | Second historical-order import              | Client extract handed over at 09:00                                      |
-| **16 November 2026** | **Go-live**                                | Invoicing live on Salesforce; WooCommerce + Mexal operational            |
-| 29 October 2026     | Launch event, 1,500+ attendees              | First full-scale event on Salesforce                                     |
-| 31 October 2026     | Zoho contract expiry                        | End of dual-run                                                          |
-| 3 November 2026 🔴  | Camerieri Venditori — or postponed to April | Date to confirm                                                          |
-| 24–26 November 2026 | Pienissimo Live                             | Ticket delivery 60 days ahead in the as-is 🔴                            |
+| Date                 | Event                                       | Project impact                                                           |
+| -------------------- | ------------------------------------------- | ------------------------------------------------------------------------ |
+| ~1 September 2026    | Data import into Salesforce                 | Preceded by cleanup: ~6,000 leads/accounts against ~7,500 paying clients |
+| 7–19 September 2026  | Tour (free events)                          | ~90% new audience, client-typed data                                     |
+| 29 September 2026    | Food Marketing Festival                     | Peaks of 100–150 invoices per day                                        |
+| 21 October 2026      | ~~Go-live~~ (superseded)                    | Date in the signed text; not executed                                    |
+| ~9 November 2026     | **Technical release to production**         | Plus the manual configuration steps                                      |
+| 9–12 November 2026   | First historical-order import               | Invoicing stays on Zoho; no operational freeze                           |
+| 12 November 2026     | Last invoicing day on Zoho                  |                                                                          |
+| 13 November 2026     | Second historical-order import              | Client extract handed over at 09:00                                      |
+| **16 November 2026** | **Go-live**                                 | Invoicing live on Salesforce; WooCommerce + Mexal operational            |
+| 29 October 2026      | Launch event, 1,500+ attendees              | First full-scale event on Salesforce                                     |
+| 31 October 2026      | Zoho contract expiry                        | End of dual-run                                                          |
+| 3 November 2026 🔴   | Camerieri Venditori — or postponed to April | Date to confirm                                                          |
+| 24–26 November 2026  | Pienissimo Live                             | Ticket delivery 60 days ahead in the as-is 🔴                            |
 
 ---
 
@@ -107,7 +107,7 @@ Everything described in §3–§11 with priority **M**, **S** or **C**.
 | DM-03 | Every Opportunity requires an Account. Forms auto-create "primordial" accounts and contacts; sales completes the registry after first contact.                                                                                                                                                                                                                                                                                   |  M   |   ✅   |
 | DM-04 | Duplicate rules: **email OR phone** for forms; **email + VAT** for WooCommerce orders; VAT/company matching on lead → account conversion.                                                                                                                                                                                                                                                                                        |  M   |   ✅   |
 | DM-05 | **Opportunity** — created directly, skipping the Lead, for explicit contact-request forms (sponsored landings, live QR codes) and for all requests from existing clients.                                                                                                                                                                                                                                                        |  M   |   ✅   |
-| DM-06 | Four Opportunity stages (negotiation with sub-levels → postponed / lost / won). _Closed won_ is driven by **payment**, confirmed manually by administration.                                                                                                                                                                                                                                                                     |  M   |   ✅   |
+| DM-06 | Four Opportunity stages (negotiation with sub-levels → postponed / lost / won). _Closed won_ is driven by **payment**: automatic at the first payment received on the order (13/11/2026).                                                                                                                                                                                                                                        |  M   |   ✅   |
 | DM-07 | **Mandatory** loss reason, with **two distinct picklist sets**: one for Opportunity stages, one for Quote stages. The value "errato" must not exist for quotes.                                                                                                                                                                                                                                                                  |  M   |   ✅   |
 | DM-08 | Separate **Record Types** for the commercial and e-commerce flows, to keep statistics clean.                                                                                                                                                                                                                                                                                                                                     |  M   |   ✅   |
 | DM-09 | Track **existing-client vs new-business** origin on every Opportunity.                                                                                                                                                                                                                                                                                                                                                           |  M   |   ✅   |
@@ -414,14 +414,14 @@ The two draw.io files carry decisions that were never minuted. From here on they
 
 A record enters as a **Lead**, becomes an **Opportunity**, carries a **Quote**, turns into an **Order** with its tranches, and emits a **Ticket**.
 
-| Object      | States, in the order they are traversed                                                                                                                                                                                                                |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Lead        | New → In Lavorazione → Primo contatto → Qualificato · or Non Risponde (automatic task with a 48h reminder, then back into In Lavorazione) · or Non qualificato                                                                                         |
-| Opportunity | Qualificato → In trattativa (quote sent) → Chiusa/Vinta · with **Da ricontattare** after the appointment/demo and **Da ricontattare - Prev. inviato** after a quote, each requiring its own reason and date · Chiusa/Persa rejects every related Quote |
-| Quote       | Bozza → In trattativa (5-day validity) → **In attesa di accettazione** → Accettato (accounting copy received) → **Firmato** (signed; the order is generated) · or Rifiutata                                                                            |
-| Order       | Ordinato → Fatturato → **Incassato**, automatically when every tranche on the order is paid (v1.6); the Opportunity then goes Chiusa/Vinta. WooCommerce orders are created already Incassato                                                           |
-| Tranche     | Created on the Quote → fully paid when every included line is paid. ⚠ Final API value open: `Pagata`/`Incassata` vs legacy `CHIUSO/ACQUISITO`.                                                                                                         |
-| Ticket      | Ordinato → Disponibile → Assegnato → Utilizzato · or Non utilizzato · or Annullato                                                                                                                                                                     |
+| Object      | States, in the order they are traversed                                                                                                                                                                                                                                                                                               |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lead        | New → In Lavorazione → Primo contatto → Qualificato · or Non Risponde (automatic task with a 48h reminder, then back into In Lavorazione) · or Non qualificato                                                                                                                                                                        |
+| Opportunity | Qualificato → In trattativa (quote sent) → Chiusa/Vinta · with **Da ricontattare** after the appointment/demo and **Da ricontattare - Prev. inviato** after a quote, each requiring its own reason and date · Chiusa/Persa rejects every related Quote                                                                                |
+| Quote       | Bozza → In trattativa (5-day validity) → **In attesa di accettazione** → Accettato (accounting copy received) → **Firmato** (signed; the order is generated) · or Rifiutata                                                                                                                                                           |
+| Order       | Ordinato → Fatturato → **Incassato**, automatically when every tranche on the order is paid (v1.6). The Opportunity goes Chiusa/Vinta at the **first payment received** on the order (13/11/2026; previously at Incassato). WooCommerce orders are created Ordinato: only the Mexal scadenziario moves them to Incassato (13/11/2026) |
+| Tranche     | Created on the Quote → fully paid when every included line is paid. ⚠ Final API value open: `Pagata`/`Incassata` vs legacy `CHIUSO/ACQUISITO`.                                                                                                                                                                                        |
+| Ticket      | Ordinato → Disponibile → Assegnato → Utilizzato · or Non utilizzato · or Annullato                                                                                                                                                                                                                                                    |
 
 ⚠ **“In attesa di accettazione” is the new name for “preventivo scaduto”.** The room will keep saying “scaduto” for months: it is the same thing.
 

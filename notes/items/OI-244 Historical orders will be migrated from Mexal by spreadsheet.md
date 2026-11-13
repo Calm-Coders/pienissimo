@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-10-15
-updated: 2026-11-09
+updated: 2026-11-13
 depends_on: [OI-245, OI-165, OI-267, OI-274, OI-275, OI-276, OI-280]
 blocks: [go-live]
 severity: gating
@@ -1095,7 +1095,6 @@ tranche del 1/1/2021 sui ordini dek 2026**"_. ⚠ **The call left no written rec
 and no correction to the file has been promised; the placeholder dates are loaded in
 Prod as they stand.
 
-
 ## 🔑 2026-11-09 - the definitive import is upsert plus insert, and a differing Mexal code makes a new order
 
 **The load was reported to the client on the call, and the mechanics of the
@@ -1140,3 +1139,60 @@ delta, **three days before the 16 November user start**, and
 documented on 9 November, up to fifteen mails per participant — is one of them.
 ⚠ **Nothing records whether the Mexal API calls switched off for the load were
 switched back on.**
+
+## 🟢 2026-11-13 - the 12/11 delta is in Prod: 63 orders in, 32 out, 28 still blocked
+
+From `Import Ordini (versione del 2026.11.12).xlsx`, loaded by Claude Code at Aurel
+Mrruku's request with a **rebuilt loader** (anonymous Apex, rolled-back dry run first).
+Prod now holds **8,193 Mexal-origin orders**, all `Ordinato`, and the file and Prod agree
+on every one of them except the 28 below.
+
+|          | Orders                                      | Lines | Tranches | Tickets | Invitations |
+| -------- | ------------------------------------------- | ----- | -------- | ------- | ----------- |
+| Inserted | 63 (45 new, 18 recreated)                   | 172   | 63       | 171     | 87          |
+| Deleted  | 32 (13 cancelled, 1 re-keyed, 18 recreated) | 70    | 32       | 45      | 23          |
+
+- **The 73 "new" keys** are the 41 orders the client announced, 31 orders left out on
+  06/11 whose customer was missing then, and one re-keyed order. Of the 73, 28 orders (58
+  lines) of **6 customers still have no Account in Prod** - they are absent from the account
+  file altogether, not VAT-less - and were **not loaded**; an Excel for the client lists them.
+- **The 18 modified orders** differed in agent code (17), line contents (18), payment code
+  (1) and a line count (1); none had an invoice, payment or contract, which is why recreating
+  them was safe. 10 of the 63 orders carry the 2021 placeholder tranche date, loaded as is.
+- Five lines are on products currently inactive; the price book entries are active and the
+  insert went through. The Monday re-pull of the Mexal article flags will leave them as they
+  are.
+- 🟢 No Mexal or Anticipay call: only `EventInvitationUrlJob` ran, no `Integration_Log__c`.
+  The two marketing flows were left active - their start conditions (`Ready` invitation with
+  a URL and sending due today, or a ticket `Assegnato`) cannot be met by an `Ordinato` load.
+- 🔴 **Still to do:** the invoice and rate pull and relink, the Prod nightly jobs, the six
+  missing customers, and the open questions of OI-310.
+
+## 🟢 2026-11-13 - the invoices and rates are pulled and the orders have moved
+
+The invoice and scadenzario pull the client was told would follow the 12-13 November
+delta ran on 13/11 in **Pienissimo Prod**, read-only against Mexal: a first one-week sample
+(5-12 October 2026, 118 invoices) with a before/after check, then the rest in 152 weekly
+windows from 2024 and the line batch over 10,740 invoices (215/215, no error). A guard
+refused to run if any edition had a send date of today or tomorrow, and a monitor would have
+aborted the batch on any mail signal.
+
+|                                               | Before          | After                        |
+| --------------------------------------------- | --------------- | ---------------------------- |
+| Invoices / invoice lines / rates              | 111 / 209 / 123 | **10,969 / 32,612 / 15,670** |
+| Orders `Incassato` / `Fatturato` / `Ordinato` | 0 / 0 / 8,193   | **7,624 / 129 / 440**        |
+| Tranches `Pagata`                             | 4               | 7,671                        |
+| Tickets `Disponibile`                         | 5               | **19,574**                   |
+| Invitations `Ready` (with URL)                | 3               | **9,574**                    |
+
+- 17,395 of 18,108 order lines are linked to an invoice line; 440 orders have no invoice
+  and stay `Ordinato`. 3,170 invoices have no order (no order reference, or an order
+  outside the file); 33 have no Account in Prod.
+- 🟢 **No mail was triggered:** no invitation has `Invio_Oggi__c`, `Richiesta_inviata__c`
+  true is unchanged at one, no ticket is `Assegnato`.
+- 🔴 **245 Ready invitations on Pienissimo Live 2026 (24/11) and 64 on Pienissimo Intensive
+  2026 (01/12)** sit on editions whose send date (2024-01-01, 2099-12-31) the flow will never
+  match: their holders will not be mailed unless the client sets a real date, and doing so on
+  the day mails all of them together. A decision for the client and Fabrizio Mastracci.
+- Still open: the Prod nightly jobs, the product active flags on Monday, and the six
+  customers missing from the account file.

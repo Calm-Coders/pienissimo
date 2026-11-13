@@ -7,6 +7,8 @@
 public without sharing class MexalInvoiceImportService {
   public static final String MOVEMENT_SEARCH_ACTION = 'Mexal_Movimenti_Magazzino_Ricerca';
   public static final String SCADENZARIO_SEARCH_ACTION = 'Mexal_Scadenzario_Ricerca';
+  // The previous year's archive is read at least this many days back.
+  private static final Integer PREVIOUS_YEAR_LOOKBACK_DAYS = 31;
   private static final String INVOICE_SIGLA = 'FT';
   private static final String INVOICE_CAUSALE = 'FE';
   private static final String PAYMENT_STATUS_PAID = 'Paid';
@@ -56,24 +58,104 @@ public without sharing class MexalInvoiceImportService {
     String paymentStatus;
   }
 
-  // Invoices whose Mexal movement changed since modifiedSince.
+  // Invoices whose Mexal movement changed since modifiedSince. Mexal keeps one
+  // archive per accounting year, so the previous year's archive is read too:
+  // an invoice issued or edited around New Year lives in the closed year. That
+  // archive is read at least PREVIOUS_YEAR_LOOKBACK_DAYS back, because a closed
+  // year can still be edited weeks later.
   public static Result importInvoicesModifiedSince(Datetime modifiedSince) {
     if (modifiedSince == null) {
       throw new MexalInvoiceImportException(
         'Data di ultima modifica obbligatoria.'
       );
     }
-    List<Object> movementRows = search(
+    Datetime previousYearSince = modifiedSince;
+    Datetime lookbackFloor = Datetime.now()
+      .addDays(-PREVIOUS_YEAR_LOOKBACK_DAYS);
+    if (previousYearSince > lookbackFloor) {
+      previousYearSince = lookbackFloor;
+    }
+    // Previous year first (no log, a missing archive is tolerated); the current
+    // year last, because only the last callout of a transaction writes the log.
+    List<Object> previousYearRows = searchInYear(
       MOVEMENT_SEARCH_ACTION,
-      new List<Object>{
-        filter('sigla', '=', INVOICE_SIGLA),
-        filter('data_ult_mod', '>=', modifiedSince.format('yyyyMMdd HHmmss'))
-      },
+      movementModifiedFilters(previousYearSince),
+      MexalSearchCalloutService.currentYear() - 1
+    );
+    List<Object> currentYearRows = search(
+      MOVEMENT_SEARCH_ACTION,
+      movementModifiedFilters(modifiedSince),
       true
     );
     Result result = new Result();
-    saveInvoices(movementRows, result);
+    saveInvoices(mergeMovementRows(previousYearRows, currentYearRows), result);
     return result;
+  }
+
+  private static List<Object> movementModifiedFilters(Datetime since) {
+    return new List<Object>{
+      filter('sigla', '=', INVOICE_SIGLA),
+      filter('data_ult_mod', '>=', since.format('yyyyMMdd HHmmss'))
+    };
+  }
+
+  // The same invoice can come from both searches (for example while Mexal has
+  // not opened the new year and both ask the closed one): keep it once.
+  private static List<Object> mergeMovementRows(
+    List<Object> previousYearRows,
+    List<Object> currentYearRows
+  ) {
+    List<Object> merged = new List<Object>();
+    Set<String> seen = new Set<String>();
+    for (
+      List<Object> source : new List<List<Object>>{
+        previousYearRows,
+        currentYearRows
+      }
+    ) {
+      for (Object row : source) {
+        Map<String, Object> values = (Map<String, Object>) row;
+        String movementKey =
+          String.valueOf(values.get('serie')) +
+          '|' +
+          String.valueOf(values.get('numero')) +
+          '|' +
+          String.valueOf(values.get('data_documento'));
+        if (seen.add(movementKey)) {
+          merged.add(row);
+        }
+      }
+    }
+    return merged;
+  }
+
+  // One read-only search in a given accounting year, without writing a log.
+  // A year Mexal does not manage (error 6001) yields no rows instead of failing.
+  private static List<Object> searchInYear(
+    String actionName,
+    List<Object> filters,
+    Integer year
+  ) {
+    Integer previousSetting = MexalSearchCalloutService.accountingYear;
+    MexalSearchCalloutService.accountingYear = year;
+    try {
+      MexalSearchCalloutService.Result httpResult = MexalSearchCalloutService.sendReadOnly(
+        actionName,
+        new Map<String, Object>{ 'filtri' => filters },
+        false
+      );
+      if (
+        httpResult != null &&
+        httpResult.statusCode == 400 &&
+        httpResult.body != null &&
+        httpResult.body.contains('6001')
+      ) {
+        return new List<Object>();
+      }
+      return rowsOf(actionName, httpResult);
+    } finally {
+      MexalSearchCalloutService.accountingYear = previousSetting;
+    }
   }
 
   // Scadenzario documents changed since modifiedSince: a payment recorded in
@@ -503,6 +585,13 @@ public without sharing class MexalInvoiceImportService {
       new Map<String, Object>{ 'filtri' => filters },
       insertLog
     );
+    return rowsOf(actionName, httpResult);
+  }
+
+  private static List<Object> rowsOf(
+    String actionName,
+    MexalSearchCalloutService.Result httpResult
+  ) {
     if (httpResult == null || httpResult.success != true) {
       throw new MexalInvoiceImportException(
         'Ricerca Mexal ' +

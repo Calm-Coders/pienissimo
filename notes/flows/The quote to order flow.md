@@ -4,7 +4,7 @@ type: flow
 status: in-progress
 owner: ROMI
 org: ROMI
-updated: 2026-09-03
+updated: 2026-11-13
 requirement: SAL-17
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
@@ -33,8 +33,11 @@ CRM data directly.
 6. The order runs **Ordinato → Fatturato → Incassato** —
    [OI-69](../items/OI-69%20Order%20state%20model.md). The old "Chiuso acquisito"
    state is deleted.
-7. **The Opportunity goes Closed Won only when the order reaches _Incassato_.**
-   Payment closes the opportunity, not signature.
+7. **The Opportunity goes Closed Won at the first payment received on the
+   order** (changed 2026-11-13, deployed to Prod; until then it was "only when
+   the order reaches _Incassato_" —
+   [OI-69](../items/OI-69%20Order%20state%20model.md)). Payment still closes the
+   opportunity, not signature.
 
 **DocuSign is in for the commercial document and out for tickets** — Elena
 Spini: _"la firma digitale c'è solo per i preventivi."_ That split is what

@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-10-30
-updated: 2026-10-30
+updated: 2026-11-13
 depends_on: [OI-290]
 blocks: [go-live]
 severity: gating
@@ -71,3 +71,23 @@ Privacy` as `true` on every row visible in the preview.
 a blanket `true` reflects consent actually held for years-old Zoho Leads is not
 evidenced anywhere, and these records should not assert that it does. It is
 recorded here as what was said, by whom, and what the file shows.
+
+## 2026-11-13 - checked in Prod: no rule had to be disabled
+
+The two Lead duplicate rules in Prod are set to **Allow** on insert, yet the API still
+rejects a duplicate hit (`DUPLICATES_DETECTED`) unless the call carries `allowSave`.
+The Referenti Lead load sent it from Apex for the 2,059 rows concerned, so **no rule was
+switched off and none needs switching back on**. Most hits were Lead-against-Lead matches
+on name plus a shared placeholder company, not genuine duplicates. A masked VAT value was
+not involved: the Referenti were loaded with the field empty. This does not cover the
+29 October Lead file, which is still not loaded.
+
+## 2026-11-13 - the second Lead file (`lead-da-importare.xlsx`) was imported; the masked VAT was not
+
+The blocker named above is real but sits in code, not in a duplicate rule:
+`LeadConversionTriggerHandler.preventDuplicateOpenLeads` compares `Partita_IVA__c` as text,
+so the masked `XXXXXXXXXXX` carried by **9,527 of the 11,172 rows** would have been accepted
+once and refused for every other row. Disabling duplicate rules would not have helped. The
+masked value was therefore **written to no Lead** (the field is not mandatory); only 1,301 real
+P.IVA were stored. Result and counts: see
+[OI-351](OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md).

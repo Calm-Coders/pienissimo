@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-11-04
-updated: 2026-11-06
+updated: 2026-11-13
 depends_on: [OI-310]
 blocks: [go-live]
 source: notes/meetings/2026-11-04 Continuazione Test e2e PROD.md
@@ -161,3 +161,21 @@ the provisional 4 November one.
 🔴 **So there may now be a newer client list than the one the exception report was
 computed against**, and nobody has said so either way. The question to ask him is
 whether the 6 November edit is the promised correction of the uncoded rows.
+
+## 🟢 2026-11-13 - the coded Locali file is in Prod: 953 inserted, 15 updated, no Mexal call
+
+The client's `Locali_CON_codice_Mexal.xlsx` (4,638 rows, every one with a Mexal code
+that resolves to an Azienda in Prod) was upserted by parent and name. **953 Locali
+created, 15 `Stagionale__c` updates, 4,392 already present and unchanged; Prod now
+holds 4,873.** No queueable job, callout or integration log.
+
+- 🔑 The file carries **no Locale id**, unlike the 04/11 one, so there is no key to
+  upsert on; matching used the parent plus the name, with the ` - <digits>` suffix of
+  the 05/11 names stripped.
+- 134 name-and-parent combinations repeat; only the file rows beyond what Prod holds
+  were created (57), none updated.
+- 🔴 **926 of the new Locali carry the placeholder Tipologia** again, the same open
+  question as on 05/11.
+- ⚠ 205 Prod Locali (203 from 05/11) have no row in the new file. They were not
+  touched; whether the client dropped them on purpose is not known.
+- `Attivo` and `Stato Cliente` have no Prod field and were not loaded.

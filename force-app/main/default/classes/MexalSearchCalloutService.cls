@@ -6,6 +6,13 @@ public without sharing class MexalSearchCalloutService {
   // Mexal keeps documents in one archive per accounting year: a backfill of a
   // prior year's invoices sets it, everything else uses the current year.
   public static Integer accountingYear;
+  // The year the last read-only search was finally sent with. When
+  // accountingYear is not set and Mexal has not opened the current year yet
+  // (error 6001, "Data 01/01/yyyy non gestita"), the search is repeated once
+  // with the previous year, so the nightly syncs keep working across New Year.
+  public static Integer lastAccountingYearUsed;
+  // For checks only: makes the "current year" a given one. Null in production.
+  public static Integer currentYearOverride;
   private static final String CUSTOMER_SEARCH_ACTION = 'Mexal_Clienti_Ricerca';
   private static final String ARTICLE_SEARCH_ACTION = 'Mexal_Articoli_Ricerca';
   private static final String MOVEMENT_SEARCH_ACTION = 'Mexal_Movimenti_Magazzino_Ricerca';
@@ -196,13 +203,22 @@ public without sharing class MexalSearchCalloutService {
     String requestJson = requestBody == null
       ? '{}'
       : JSON.serialize(requestBody);
-    HttpRequest request = buildRequest(actionName, config, requestJson);
+    Boolean automaticYear = accountingYear == null;
+    Integer year = effectiveYear();
+    HttpRequest request = buildRequest(actionName, config, requestJson, year);
     Integration_Log__c logRow = buildLog(actionName, request, requestJson);
     Result result = new Result();
 
     try {
       Long sentAt = DateTime.now().getTime();
       HttpResponse response = new Http().send(request);
+      if (automaticYear && isYearNotManaged(response)) {
+        // The new accounting year is not open in Mexal yet: ask the previous one.
+        year = year - 1;
+        request = buildRequest(actionName, config, requestJson, year);
+        logRow = buildLog(actionName, request, requestJson);
+        response = new Http().send(request);
+      }
       Long receivedAt = DateTime.now().getTime();
 
       result.statusCode = response.getStatusCode();
@@ -222,8 +238,32 @@ public without sharing class MexalSearchCalloutService {
       logRow.Exception_StackTrace__c = abbreviate(error.getStackTraceString());
     }
 
+    lastAccountingYearUsed = year;
     saveLog(logRow, result, insertLog);
     return result;
+  }
+
+  // The accounting year a search uses when none is set explicitly.
+  public static Integer currentYear() {
+    return currentYearOverride != null
+      ? currentYearOverride
+      : Date.today().year();
+  }
+
+  private static Integer effectiveYear() {
+    return accountingYear != null ? accountingYear : currentYear();
+  }
+
+  // 400 "6001 - errore gestionale [Non e' possibile aprire l'azienda ...
+  // Data 01/01/yyyy non gestita]": the accounting year is not open in Mexal.
+  private static Boolean isYearNotManaged(HttpResponse response) {
+    if (response == null || response.getStatusCode() != 400) {
+      return false;
+    }
+    String body = response.getBody();
+    return body != null &&
+      body.contains('6001') &&
+      body.toLowerCase().contains('non gestita');
   }
 
   private static void preventCreationInSandbox(String recordType) {
@@ -496,6 +536,15 @@ public without sharing class MexalSearchCalloutService {
     Integration_Configuration2__c config,
     String requestJson
   ) {
+    return buildRequest(actionName, config, requestJson, effectiveYear());
+  }
+
+  private static HttpRequest buildRequest(
+    String actionName,
+    Integration_Configuration2__c config,
+    String requestJson,
+    Integer year
+  ) {
     HttpRequest request = new HttpRequest();
     String httpMethod = getHttpMethod(config);
     request.setEndpoint(buildEndpoint(actionName, config));
@@ -504,12 +553,7 @@ public without sharing class MexalSearchCalloutService {
     request.setHeader('Content-Type', CONTENT_TYPE_JSON);
     request.setHeader(
       COORDINATE_GESTIONALE_HEADER,
-      'Azienda=' +
-        MEXAL_COMPANY +
-        ' Anno=' +
-        String.valueOf(
-          accountingYear == null ? Date.today().year() : accountingYear
-        )
+      'Azienda=' + MEXAL_COMPANY + ' Anno=' + String.valueOf(year)
     );
     if (httpMethod != 'GET') {
       request.setBody(requestJson);

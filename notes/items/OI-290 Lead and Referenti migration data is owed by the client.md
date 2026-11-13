@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Elena Spini
 org: both
 raised: 2026-10-26
-updated: 2026-11-12
+updated: 2026-11-13
 depends_on: [OI-244]
 blocks: [go-live]
 source: notes/meetings/2026-10-26 Tema Ordini Mexal.md
@@ -514,10 +514,10 @@ that the file would be refreshed _"la settimana prossima con Sabatino"_.
 Gmail thread `1a1a746c8e63d5ac`), with a reason per row in the attachment's first
 column:
 
-| Referenti | Rows |
-| --- | --- |
-| Inserted, linked to the Azienda with that Mexal code | 17,652 |
-| Not inserted - Mexal code missing | 49,788 |
+| Referenti                                                    | Rows    |
+| ------------------------------------------------------------ | ------- |
+| Inserted, linked to the Azienda with that Mexal code         | 17,652  |
+| Not inserted - Mexal code missing                            | 49,788  |
 | Not inserted - **the Mexal code matches no Azienda in Prod** | **107** |
 
 🆕 **The 107 are new.** They are not the uncoded half: they carry a code that
@@ -554,7 +554,6 @@ copy:
 final import** — seven days before the 12-13 November migration. ⚠ The refresh
 promised _"la settimana prossima con Sabatino"_ has no date, and the week it refers
 to is the migration week itself.
-
 
 ## 🔴🔑 2026-11-09 - the client decided how to handle the uncoded Referenti, by WhatsApp, and the written answer never came
 
@@ -597,9 +596,9 @@ See [Sabatino Rinaldi](../people/Sabatino%20Rinaldi%20-%20Pienissimo%20project%2
 **What this item has been waiting for since 4 November is now written down and
 confirmed by the client.** It closes into two successors:
 
-| | |
-| --- | --- |
-| The design | [OI-351](OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md) — standard Lead, `Lead from Zoho` + `Referenti Marketing`, list view `Lead - Referenti Marketing`, cleanup on the client |
+|                                |                                                                                                                                                                                                                                 |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The design                     | [OI-351](OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md) — standard Lead, `Lead from Zoho` + `Referenti Marketing`, list view `Lead - Referenti Marketing`, cleanup on the client |
 | The blocker and its workaround | [OI-352](OI-352%20The%20fifty%20thousand%20referenti%20leads%20are%20loaded%20with%20fake%20company%20and%20VAT%20values.md) — `Company` and `Partita IVA` are mandatory, so ~50,000 rows load with invented progressive values |
 
 Sabatino Rinaldi, **2026-11-10 08:07:34Z**: _"la decisione presa con la direzione e
@@ -622,3 +621,24 @@ relayed to Elena Spini by WhatsApp on 6 November is now on the record in mail.
 - 🟢 The lead lot proper is confirmed as the file of **29 October**: Elena Spini,
   _"Per i lead va bene quella che ci avevi mandato anche per l'import di
   produzione?"_ → Sabatino Rinaldi, _"Sisi"_.
+
+## 🟢 2026-11-13 - the Referenti delta is in Prod: 86 inserted, 231 updated, no Mexal call
+
+The client's 13/11 `Referenti Salesforce (1).xlsx` (67,653 rows) was upserted on the
+Zoho id in `External_CRM_ID__c`, after a rolled-back dry run, with the Mexal bypass on.
+**86 Contacts created, 231 updated, 0 errors; Prod now holds 17,775.** No job, callout
+or integration log.
+
+| Of the 67,653 rows                | Rows   | Done                                                                                                                                          |
+| --------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mexal code resolves to an Azienda | 17,731 | 17,647 already in Prod, 86 created                                                                                                            |
+| No Mexal code (`#N/A`)            | 49,822 | 🔴 **not loaded** - the Lead import of [OI-351](OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md) |
+| Code matches no Azienda in Prod   | 100    | 🔴 **not loaded**, needs the client                                                                                                           |
+
+- Updates touched only fields that differ (names, phones, addresses, the role); no field
+  was cleared and no stored birth date was overwritten. Case-only differences in the role
+  and the e-mail were ignored.
+- 159 `Contatto principale = Yes` cannot be applied: the file flags several principals for
+  one Azienda and the trigger keeps one.
+- 🔑 The consent flow was off for the load and is back as **v3**; see
+  [the flow note](../flows/The%20Update%20Contact%20Consent%20flow%20in%20production.md).

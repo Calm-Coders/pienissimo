@@ -5097,11 +5097,11 @@ creation, edited the existing logic for quotes that contain an bundle."_
 The new object is a **tranche template on the bundle product**, which is the shape the
 client asked for that morning:
 
-| Field              | Type   | Metadata description                                                             |
-| ------------------ | ------ | -------------------------------------------------------------------------------- |
-| `Bundle__c`        | Lookup | To `Product2`, **filtered to the `Bundle` record type**                          |
-| `Data_Scadenza__c` | Date   | _"Due date copied to the quote tranche created from this bundle template."_       |
-| `Sequenza__c`      | Number | _"Order of this tranche in the bundle payment plan."_                             |
+| Field              | Type   | Metadata description                                                        |
+| ------------------ | ------ | --------------------------------------------------------------------------- |
+| `Bundle__c`        | Lookup | To `Product2`, **filtered to the `Bundle` record type**                     |
+| `Data_Scadenza__c` | Date   | _"Due date copied to the quote tranche created from this bundle template."_ |
+| `Sequenza__c`      | Number | _"Order of this tranche in the bundle payment plan."_                       |
 
 With **`Tranche__c.Bundle_Tranch__c`** — _"The bundle tranche template that generated
 this quote tranche"_ — so an inherited tranche can be told from a hand-made one, and
@@ -5598,11 +5598,11 @@ The flow as written: asset generated in `Ordinato` on quote signature → `Dispo
 
 `5b19caa` (Rexhina Hysi, 01/10 18:43 CEST), merged via PR **#73**. At `DevMain` `618e646`:
 
-| Field | Object |
-| --- | --- |
+| Field                          | Object                                                                       |
+| ------------------------------ | ---------------------------------------------------------------------------- |
 | `Ready_for_Ticket_Dispatch__c` | ✅ `Asset` — and `ParticipantRegistrationController.cls:524` already sets it |
-| `Ticket_Sent__c` | 🔴 **`Order`** |
-| `Ticket_Sent_Date__c` | 🔴 **`Order`** |
+| `Ticket_Sent__c`               | 🔴 **`Order`**                                                               |
+| `Ticket_Sent_Date__c`          | 🔴 **`Order`**                                                               |
 
 **The agreed query cannot be written**, because its two predicates sit on different objects. Worse, **an order-level boolean cannot record that three of five tickets were sent** — and after §52's ruling that naming three of five sends three, partial sending is the normal case, not the exception. The de-duplication guarantee the write-back exists for is lost for exactly those orders.
 
@@ -5736,8 +5736,8 @@ Three findings change open items:
 - **`NR_Tranche` is in the header and empty on every row.** The tranche count
   is the one thing #188 recorded Fabrizio Paganelli as owing, and the file that
   was supposed to carry it does not. Worse, it contradicts a ruling taken the
-  same afternoon: the UAT agreed Performance Plus is *one article with a
-  tranche-count field*, and the registry is built the other way — one article
+  same afternoon: the UAT agreed Performance Plus is _one article with a
+  tranche-count field_, and the registry is built the other way — one article
   per tranche, the number written into the description as free text. Three
   incompatible statements of one model, and **#210** is the new item.
 - **`E10` names two different events** — Golden Numbers and Pienissimo
@@ -6065,12 +6065,12 @@ prefix filter, since real orders are mixed into that set.
 
 ### The release calendar is finally explicit
 
-| Date | What |
-| ---- | ---- |
+| Date                        | What                                                                                 |
+| --------------------------- | ------------------------------------------------------------------------------------ |
 | **12 October**, 16:00–18:00 | e2e session on the untested paths — bundle, recall tutor, performance plus, renewals |
-| **13 October** | confirmation for the production release, later changes still possible |
-| **16 October** | marketing's ticket tests **in production** |
-| **21 October** | go-live, Fase 1 |
+| **13 October**              | confirmation for the production release, later changes still possible                |
+| **16 October**              | marketing's ticket tests **in production**                                           |
+| **21 October**              | go-live, Fase 1                                                                      |
 
 ⚠ **The Gemini notes date every one of these in August.** The months are a
 transcription error: the go-live of record is 21 October, and Elena Spini's own
@@ -6485,7 +6485,7 @@ Fase 2 proposal.
 
 ⚠ **It also overstates one thing.** It reports the Business Blueprint as
 _"confermato e firmato"_ — confirmed **and signed**. The evidence on the record is
-Elena Spini's own 08/10 message that it was *being sent* for signature
+Elena Spini's own 08/10 message that it was _being sent_ for signature
 (_"lo stanno mandando in firma"_). **No signed artifact has been seen by any
 sweep**, and §58 recorded the signature as the thing to look for next. Recorded as
 a discrepancy, not resolved.
@@ -6536,12 +6536,12 @@ was not opened.
 **`SAL-20`** in `requirements/pienissimo-requirements.yaml`, in
 `REQUIREMENTS.md` and in **`REQUISITI.it.md`** — the text Pienissimo signs:
 
-| | Before | After |
-| --- | --- | --- |
-| Mechanism | two **tasks** "da ricontattare" | two Opportunity **parking stages** |
-| Second trigger | after the **first contact** | after a **quote** |
-| The date | **settable** by the user | **populated automatically** on entry |
-| The reason | not mentioned | **mandatory**, one per stage |
+|                | Before                          | After                                |
+| -------------- | ------------------------------- | ------------------------------------ |
+| Mechanism      | two **tasks** "da ricontattare" | two Opportunity **parking stages**   |
+| Second trigger | after the **first contact**     | after a **quote**                    |
+| The date       | **settable** by the user        | **populated automatically** on entry |
+| The reason     | not mentioned                   | **mandatory**, one per stage         |
 
 The register's `opportunity` state machine also gained the state
 `"Da ricontattare"` and three rules, one of which is **not in `SAL-20` at all** —
@@ -6701,7 +6701,7 @@ Build claims are repository arithmetic against `DevMain` `29d1002`.**
 ### 🔑 The money leg of the integration ran end to end for the first time
 
 One order, `OC 1023`, €20,000, became four deferred invoices in Mexal through
-*emissione differita documenti*; invoice 10 for €5,000 was posted against customer
+_emissione differita documenti_; invoice 10 for €5,000 was posted against customer
 50171 with bonifico payment; the scadenzario came back into Salesforce carrying
 amount, tranche and the payment state `non pagato`; a €5,000 collection was
 registered; and the order roll-up reconciled at **ordinato €20,000 · fatturato
@@ -7065,7 +7065,7 @@ missing is a field for it on the order tracciato.
 1 December 2026) and mapped to category **`E11`** — ⚠ a category key new to these
 records. ⚠ Meanwhile both **production** TEST MKT editions still carry a ticket
 send date of **5 October, already past**, which Aurel Mrruku flagged himself.
-🔴 **`vendita libro` is in the 13 October test list** — a *third* statement
+🔴 **`vendita libro` is in the 13 October test list** — a _third_ statement
 putting books in Salesforce scope against the 9 October status post, which nothing
 has formally reversed. ⚠ The order record would not open for Fabrizio Paganelli;
 the record reads it both as a browser problem and as an access problem. ⚠ Empty
@@ -7408,7 +7408,7 @@ Sabatino Rinaldi then asked for and was promised the same admin profile
   `"SW House, Ag. Marketing, Web Agency"`; nobody compared them.
 - **[OI-259](../notes/items/OI-259%20A%20lost%20lead%20marked%20non%20interessato%20must%20carry%20a%20mandatory%20free%20text%20reason.md)**
   — a free-text `Motivazione` becomes mandatory when a lead is lost as `non
-  interessato`. Field name settled; **scope was not** — Sabatino Rinaldi wants it
+interessato`. Field name settled; **scope was not** — Sabatino Rinaldi wants it
   on that reason only, Elisa Migliano on all of them.
 
 🔴 **One of those carries a conflict with signable text.** Marco Montesi asked for
@@ -7425,15 +7425,15 @@ the one diagnostic that mattered was unreadable to her. When the quote PDF faile
 she said so plainly: _"purtroppo arrivano tutte le mail ad Aurel, quindi io non
 non posso neanche vedere cosa è successo."_
 
-| Finding | Row |
-| --- | --- |
-| `Genera PDF` returned _"si è verificato un errore di server interno"_, live | [OI-260](../notes/items/OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md) |
-| Quote lines show no sconto, unità di misura, listino, netto or row total | [OI-207](../notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md) |
-| Test article codes pollute the registry; bundle-only articles are selectable | [OI-261](../notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md) |
-| `Categoria`/`Sottocategoria` values do not match the client's own | [OI-265](../notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md) |
-| System labels still in English | [OI-263](../notes/items/OI-263%20Salesforce%20system%20labels%20are%20still%20in%20English.md) |
-| The quote-expiry reminder mail carries a placeholder copy | [OI-264](../notes/items/OI-264%20The%20quote%20expiry%20reminder%20email%20copy%20is%20a%20placeholder.md) |
-| The product grid does not refresh after adding a line | [OI-266](../notes/items/OI-266%20The%20quote%20product%20grid%20does%20not%20refresh%20after%20adding%20a%20line.md) |
+| Finding                                                                      | Row                                                                                                                                       |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `Genera PDF` returned _"si è verificato un errore di server interno"_, live  | [OI-260](../notes/items/OI-260%20Generating%20the%20quote%20PDF%20failed%20with%20an%20internal%20server%20error.md)                      |
+| Quote lines show no sconto, unità di misura, listino, netto or row total     | [OI-207](../notes/items/OI-207%20The%20quote%20and%20order%20layouts%20omit%20the%20commercial%20fields%20the%20client%20requires.md)     |
+| Test article codes pollute the registry; bundle-only articles are selectable | [OI-261](../notes/items/OI-261%20Test%20article%20codes%20pollute%20the%20product%20registry.md)                                          |
+| `Categoria`/`Sottocategoria` values do not match the client's own            | [OI-265](../notes/items/OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md) |
+| System labels still in English                                               | [OI-263](../notes/items/OI-263%20Salesforce%20system%20labels%20are%20still%20in%20English.md)                                            |
+| The quote-expiry reminder mail carries a placeholder copy                    | [OI-264](../notes/items/OI-264%20The%20quote%20expiry%20reminder%20email%20copy%20is%20a%20placeholder.md)                                |
+| The product grid does not refresh after adding a line                        | [OI-266](../notes/items/OI-266%20The%20quote%20product%20grid%20does%20not%20refresh%20after%20adding%20a%20line.md)                      |
 
 🔴 **And the client is out of patience about one of them.** Fabrizio Paganelli, on
 the open line after the goodbyes: _"a me mi fanno incazzare perché vi dico le
@@ -7446,12 +7446,12 @@ accepted into the frozen Fase 1 perimeter in writing three days earlier.
 
 Four PRs merged between 12:34 and 12:52 CEST:
 
-| PR | Branch | What it brought |
-| --- | --- | --- |
-| `#101` | `DevAnita14` | Azienda flexipage, Lead/Opportunity record pages, `quoteCreateTranche` LWC |
+| PR     | Branch                   | What it brought                                                                                                                                    |
+| ------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `#101` | `DevAnita14`             | Azienda flexipage, Lead/Opportunity record pages, `quoteCreateTranche` LWC                                                                         |
 | `#102` | `DevMainOpportunityWork` | 🟢 **OI-207's `Totale_Listino__c` and `Sconto_Totale__c`**, `QuoteLineItemTriggerHandler` (+79), `QuotePdf`, the Quote layout, the acceptance page |
-| `#103` | `DevAnita15` | 🟡 **OI-214's `Default_Agent_Username__c`** and its order-side fallback |
-| `#104` | `Devmain_LeadFix` | 🟢 **OI-163's duplicate rules and conversion Apex** — gating since September, in the integration branch for the first time |
+| `#103` | `DevAnita15`             | 🟡 **OI-214's `Default_Agent_Username__c`** and its order-side fallback                                                                            |
+| `#104` | `Devmain_LeadFix`        | 🟢 **OI-163's duplicate rules and conversion Apex** — gating since September, in the integration branch for the first time                         |
 
 🟢 **The contradiction this procedure reported on 16/10 is withdrawn.** OI-100 and
 OI-163 ended that night in opposite states on an unmerged branch. Rexhina Hysi
@@ -7648,7 +7648,7 @@ CR.** #259 **was** called one internally and the client was not told.
 The decision is mandatory detail on **four** values, blocking the save. ⚠ **Which
 four is never stated** — `Lead.Dettaglio_Motivazione_Uscita__c` carries ten, so
 four is a subset somebody chose, and the likeliest reading is the four debated on
-19/10. **Marked uncertain.** 🔴 `baa8597`, committed four and a half hours *before*
+19/10. **Marked uncertain.** 🔴 `baa8597`, committed four and a half hours _before_
 the decision, gates the field on `Perso` + `Non interessato` alone, with the
 mandatory behaviour in the LWC rather than the metadata — so it binds the custom
 path and not an API write. 🔑 **And if `Sceglie concorrenza` is one of the four,
@@ -7781,13 +7781,13 @@ draft, the `Opportunity` thread), Slack and the repository at `origin/DevMain`
 morning session and the two elements ROMI had internally refused were resolved
 in ROMI's favour.
 
-| When | What |
-| ---- | ---- |
-| ~**9 November** | Technical release to production, plus the manual configuration steps |
-| 9–12 November | 🟢 Client keeps invoicing on Zoho; first historical import runs in parallel |
-| Thu **12 November** | Last invoicing day on Zoho |
-| Fri **13 November** 09:00 | Client hands over the second extract; second import runs |
-| Mon **16 November** 09:00 | 🔴 Invoicing live on Salesforce, all four principals on duty |
+| When                      | What                                                                        |
+| ------------------------- | --------------------------------------------------------------------------- |
+| ~**9 November**           | Technical release to production, plus the manual configuration steps        |
+| 9–12 November             | 🟢 Client keeps invoicing on Zoho; first historical import runs in parallel |
+| Thu **12 November**       | Last invoicing day on Zoho                                                  |
+| Fri **13 November** 09:00 | Client hands over the second extract; second import runs                    |
+| Mon **16 November** 09:00 | 🔴 Invoicing live on Salesforce, all four principals on duty                |
 
 🟢 **The weekend migration is gone** — _"cerchiamo di non lasciare mai le
 immigrazioni e i deploy in weekend"_ — and nobody defended it.
@@ -7917,7 +7917,7 @@ and the change-control rule. The milestone table now carries the full agreed
 calendar with the superseded 21 October line kept visible.
 
 **Why it moved tonight when eight previous runs held it:** the OI-124 rule is
-that signable text does not follow a *proposal awaiting a reply*. That condition
+that signable text does not follow a _proposal awaiting a reply_. That condition
 is now met — the client proposed 16 November in writing on 20 October and ROMI
 accepted it in a recorded client session on 21 October, with the delivery plan
 built around it. 🔑 **The Italian wording needs a human's eye**, because
@@ -7948,16 +7948,16 @@ had migration **data** rather than migration design.
 The scope question open since 15/10 is answered: **the extract starts 1 January
 2024** — ~30,000 order lines from 2024, ~9,000 from 2025.
 
-| Rule | Status |
-| ---- | ------ |
-| Rows whose order key fields are empty are **excluded** | ✅ agreed |
+| Rule                                                                   | Status    |
+| ---------------------------------------------------------------------- | --------- |
+| Rows whose order key fields are empty are **excluded**                 | ✅ agreed |
 | All invoices and scadenzario entries import **regardless** of an order | ✅ agreed |
-| Tranche date = **invoice date** | ✅ agreed |
-| Payment condition **forced to `12`** on all history | ✅ agreed |
-| Missing agent code → **existing code `610`**, never invented | ✅ agreed |
-| **Credit notes excluded** to a later phase, kept in a separate file | ✅ agreed |
-| **~1,000 `SW` platform-sale lines deleted** | ✅ agreed |
-| Orders load **before** lines | ✅ agreed |
+| Tranche date = **invoice date**                                        | ✅ agreed |
+| Payment condition **forced to `12`** on all history                    | ✅ agreed |
+| Missing agent code → **existing code `610`**, never invented           | ✅ agreed |
+| **Credit notes excluded** to a later phase, kept in a separate file    | ✅ agreed |
+| **~1,000 `SW` platform-sale lines deleted**                            | ✅ agreed |
+| Orders load **before** lines                                           | ✅ agreed |
 
 ⚠ **The costs were not priced.** 2024 credit notes are _"parecchie"_ by the
 client's own account, so the migrated history overstates net sales for that
@@ -8337,7 +8337,7 @@ Slack surfaces that had been silent.
 🔑 **Sabatino Rinaldi's reply exists and this mailbox does not hold it.** It is
 known only through Elena Spini's verbatim quotation in the ROMI marketing group
 DM at **09:18:10 CET**, and **its date is unknown**. A 14-day Gmail sweep on his
-address returns only mail *to* him. The thread is the one Elena Spini noted on
+address returns only mail _to_ him. The thread is the one Elena Spini noted on
 23/10 that Aurel Mrruku and Fabrizio Mastracci were not copied on.
 
 - 🟢🔑 **§#250 is answered: a set of 11–15 communications with the delays set on
@@ -8489,16 +8489,16 @@ three commits on `DevMain`.
 🟢🔑 **The whole order-to-invoice cycle loaded cleanly in UAT**, reported to the
 client as it ran (§#244):
 
-| | |
-| --- | --- |
-| Orders · tranche · lines | **7,721 · 7,761 · 17,299** |
-| Tickets · invitations | **19,871 · 9,715** |
-| Invoices | **10,806** — 2024: 6,161 · 2025: 2,292 · 2026: 2,353, all with their Account |
-| Scadenze · invoice lines | **15,492 · 32,294** |
-| Order lines linked to an invoice | **17,299 / 17,299** |
-| Orders with an invoice | **7,721 / 7,721** |
-| Orders `Incassato` / `Ordinato` | 6,407 / 1,314 |
-| Tickets `Disponibile` / `Ordinato` | 16,970 / 2,901 |
+|                                    |                                                                              |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| Orders · tranche · lines           | **7,721 · 7,761 · 17,299**                                                   |
+| Tickets · invitations              | **19,871 · 9,715**                                                           |
+| Invoices                           | **10,806** — 2024: 6,161 · 2025: 2,292 · 2026: 2,353, all with their Account |
+| Scadenze · invoice lines           | **15,492 · 32,294**                                                          |
+| Order lines linked to an invoice   | **17,299 / 17,299**                                                          |
+| Orders with an invoice             | **7,721 / 7,721**                                                            |
+| Orders `Incassato` / `Ordinato`    | 6,407 / 1,314                                                                |
+| Tickets `Disponibile` / `Ordinato` | 16,970 / 2,901                                                               |
 
 Fabrizio Paganelli: _"Bene! Ottimo lavoro."_
 
@@ -8625,13 +8625,13 @@ branch that matters.
 
 🟢🔑 **`UAT` and `Prod` both moved, for the first time since 26 October.**
 
-| Commit | Time (CET) | What |
-| ------ | ---------- | ---- |
-| `882f53c` | 12:30 | _"fix match fattura con id righa"_ — the invoice/rate match moved off the date and onto the line id |
-| `cd8dc4c` | 14:30 | _"deploy on prod"_ |
-| `8f039ce` | 16:50 | **PR #118**, `DevMain` → `UAT` |
-| `7905945` | 16:51 | **PR #119**, `UAT` → `Prod` |
-| `7f648a8` | 18:03 | _"abbilitato le integrazioni mexal"_ — documentation only; the enabling happened in the org |
+| Commit    | Time (CET) | What                                                                                                |
+| --------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| `882f53c` | 12:30      | _"fix match fattura con id righa"_ — the invoice/rate match moved off the date and onto the line id |
+| `cd8dc4c` | 14:30      | _"deploy on prod"_                                                                                  |
+| `8f039ce` | 16:50      | **PR #118**, `DevMain` → `UAT`                                                                      |
+| `7905945` | 16:51      | **PR #119**, `UAT` → `Prod`                                                                         |
+| `7f648a8` | 18:03      | _"abbilitato le integrazioni mexal"_ — documentation only; the enabling happened in the org         |
 
 🔑 **The date-versus-id bug is the one Aurel Mrruku described as he found it**,
 Slack 12:27–12:29 CET: _"avevo un bel bug su pienissimo … il problame di prima
@@ -8808,8 +8808,7 @@ meetings drilled, one gating item withdrawn, seven opened.**
 
 🟢🔑 **[#298](open-items.md) was never a fault.** Aurel Mrruku opened integration
 log `a05MA00000GsbhJYAR` on screen in the 10:01 internal call: _"**Ha già fatto
-tutto, ha già creato l'ordine**"_ … _"ordine Wcommerce ordinato. **Fatto il
-29.**"_ Elena Spini, who had reported it, accepted the correction at once —
+tutto, ha già creato l'ordine**"_ … _"ordine Wcommerce ordinato. **Fatto il 29.**"_ Elena Spini, who had reported it, accepted the correction at once —
 _"Response non era 200, non era l'errore … **Che scema.**"_
 
 🔑 **Three premises of the 29/10 record were wrong.** The order reached Salesforce
@@ -8833,13 +8832,13 @@ rested on it falls away; `a05MA00000GqqcPYAR` is still unread.
 🟢🔑 **`#tproj-pienissimo` broke a long silence with a full status report at 15:30
 CET**, and it is the densest source of the sweep.
 
-| | |
-| --- | --- |
-| Go-live for users | **16 November**, confirmed, as the client proposed |
-| Final data import | 🆕 **13 November, a single pass** — _"non più in due momenti, perché le prove in UAT sono andate bene"_ |
-| Days to finish | **15**, down from 26 — the 10 migration days absorbed |
-| Red flag | 🔴 **_"Margine finito"_** — Gianpaolo Motta, 26/10: the project can absorb nothing more, so everything new goes to Fase 2 |
-| Positive news | _"Nulla questa settimana."_ |
+|                   |                                                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Go-live for users | **16 November**, confirmed, as the client proposed                                                                        |
+| Final data import | 🆕 **13 November, a single pass** — _"non più in due momenti, perché le prove in UAT sono andate bene"_                   |
+| Days to finish    | **15**, down from 26 — the 10 migration days absorbed                                                                     |
+| Red flag          | 🔴 **_"Margine finito"_** — Gianpaolo Motta, 26/10: the project can absorb nothing more, so everything new goes to Fase 2 |
+| Positive news     | _"Nulla questa settimana."_                                                                                               |
 
 🆕🔑 **The single-pass import is the consequential line.** A two-stage plan existed
 to de-risk the load; the risk has been retired on the strength of **one** successful
@@ -9121,10 +9120,10 @@ Sources: nine mail threads (all bodies read in full), four Slack conversations a
 
 The production pre-load of 8,262 Aziende, 3,918 Locali and 17,652 Referenti was reported in [JOURNAL.md](../JOURNAL.md) earlier the same day. In the evening both exclusion lists were mailed to the client:
 
-| Referenti, mailed 18:18 CET | Rows |
-| --- | --- |
-| Inserted, linked to the Azienda with that Mexal code | 17,652 |
-| Not inserted — Mexal code missing | 49,788 |
+| Referenti, mailed 18:18 CET                                  | Rows    |
+| ------------------------------------------------------------ | ------- |
+| Inserted, linked to the Azienda with that Mexal code         | 17,652  |
+| Not inserted — Mexal code missing                            | 49,788  |
 | Not inserted — **the Mexal code matches no Azienda in Prod** | **107** |
 
 🆕 **The 107 are new to the record.** They carry a code that resolves to nothing in production, which is a different defect from an absent code, and it has no owner. The Locali list went out at 16:46Z as `Locali non inseriti in Salesforce.xlsx`, _"con la loro mottivazione nella prima colona"_. ⚠ Neither attachment was opened — real customer records — and neither mail states a count in its body.
@@ -9332,15 +9331,15 @@ as such throughout.
 
 ### 🟢🔑 Seven releases, accepted, to 12 April 2027
 
-| Release | Content | Go-live |
-| --- | --- | --- |
-| R0 | Contratti post-vendita da palco | **Nov 2026**, before Pienissimo Live 24-26/11 |
-| **R1** | **Aggiornamento scadenziario** | **14/12/2026** |
-| R2 | Annullamento e cambio nome, plus the provisional contact import | **14/01/2027**, before the Academy 19/01 |
-| R3 | Info Point ⇆ Salesforce | **15/02/2027** |
-| R4 | Eventi multi-edizione e multi-giorno (Mastery) | **08/03/2027** |
-| R5 | Integrazioni e notifiche (Zoho, GLS, Teachable, WhatsApp) | **22/03/2027** |
-| R6 | Note di credito | **12/04/2027** |
+| Release | Content                                                         | Go-live                                       |
+| ------- | --------------------------------------------------------------- | --------------------------------------------- |
+| R0      | Contratti post-vendita da palco                                 | **Nov 2026**, before Pienissimo Live 24-26/11 |
+| **R1**  | **Aggiornamento scadenziario**                                  | **14/12/2026**                                |
+| R2      | Annullamento e cambio nome, plus the provisional contact import | **14/01/2027**, before the Academy 19/01      |
+| R3      | Info Point ⇆ Salesforce                                         | **15/02/2027**                                |
+| R4      | Eventi multi-edizione e multi-giorno (Mastery)                  | **08/03/2027**                                |
+| R5      | Integrazioni e notifiche (Zoho, GLS, Teachable, WhatsApp)       | **22/03/2027**                                |
+| R6      | Note di credito                                                 | **12/04/2027**                                |
 
 **`Pienissimo Offerta Fase 2_V.4`** appeared at **20:34:39Z** that evening, created
 by Andrea Galotto and still being edited at 21:43:06Z. 🟢 **It fixes everything
@@ -9496,3 +9495,9 @@ behind it · 🔴 **Zoho expired on 31 October and no source has mentioned it fo
 seventeenth sweep**, while offer R5 commits to integrating with Zoho in March 2027 ·
 ⚠ the register stays **v1.6** · ⚠ **no recording or transcript exists for the
 11:30-13:00 commercial training** of the same day.
+
+## 2026-11-13 - Production Lead consent checkboxes
+
+**13/11 final verified production scope, following the user correction:** both Lead consent checkboxes are true on all **49,818 unconverted Leads**, with **5,917 net updates** and zero remaining false in that population. All **4 converted Leads retain their original checkbox values**; the 3 initially changed were restored from the backup. All **4,617 email opt-outs** remain; email/fax opt-out fields were unchanged. The Lead consent flow remained active; downstream Marketing Opt-In creation was not checked.
+
+[OI-351 source](../notes/items/OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md).

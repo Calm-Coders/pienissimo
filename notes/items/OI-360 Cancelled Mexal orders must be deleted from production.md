@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-12
-updated: 2026-11-12
+updated: 2026-11-13
 depends_on: [OI-310, OI-315]
 blocks: [go-live]
 severity: gating
@@ -32,11 +32,11 @@ Fabrizio Paganelli, **2026-11-12 15:32:30Z**, `File Import Ordini`, attaching
 > annullati (e che sono da eliminare anche su Salesforce) … **19 ordini modificati**
 > (che sono da aggiornare su Salesforce)"_
 
-| | |
-| --- | --- |
-| New orders | **41** |
-| To delete | **13** — Mexal numbers `66387`-`66392`, `76581`-`76584`, `78050`, `78051`, `78111` |
-| To update | **19** — `68808`, `68949`, `69327`, `77568`, `77667`, `77688`, `77696`, `77718`, `77758`, `77778`, `77921`, `77985`, `78038`, `78061`, `78062`, `78075`, `78079`, `70868`, `77241` |
+|            |                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| New orders | **41**                                                                                                                                                                             |
+| To delete  | **13** — Mexal numbers `66387`-`66392`, `76581`-`76584`, `78050`, `78051`, `78111`                                                                                                 |
+| To update  | **19** — `68808`, `68949`, `69327`, `77568`, `77667`, `77688`, `77696`, `77718`, `77758`, `77778`, `77921`, `77985`, `78038`, `78061`, `78062`, `78075`, `78079`, `70868`, `77241` |
 
 ⚠ The workbook itself was **not opened** — it carries real customer records.
 
@@ -96,3 +96,15 @@ been owed since 3 November.
 - Confirmation that the update-mode delta does not overwrite the Prod-side edits
   the client made on 12/11 to the event dates
   ([OI-353](OI-353%20Production%20event%20end%20dates%20are%20backdated%20to%20stop%20ticket%20mails%20during%20the%20load.md)).
+
+## 🟢 2026-11-13 - the 13 cancelled orders are out of production, and the 19 updates are in
+
+All thirteen were deleted from **Pienissimo Prod** with everything hanging off them,
+after a rolled-back dry run and with a script that aborts on any invoice, payment, contract
+or ticket past `Ordinato`. A fourteenth order was deleted with them: the old version of
+one of the 19 listed orders, whose `DATA_DOC` had changed and so arrived as a new key.
+The other 18 were **recreated from the file rather than edited in place**, so their tickets
+and invitations match the corrected lines; their ids and order numbers changed. Together:
+**32 orders, 70 lines, 32 tranches, 45 tickets and 23 invitations deleted.** The records
+deleted are backed up outside the repository. Counts and the full picture:
+[OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).

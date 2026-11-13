@@ -16,6 +16,10 @@ meta:
   # Also v1.6 (2026-09-25, direct decision by Aurel Mrruku, not yet seen by the client): the
   # Order goes to Incassato automatically when every tranche on it is Pagata (ORD-14, OI-69).
   # To be sent to the client for signature as one change set at UAT close (~2026-10-13).
+  # 2026-11-13 (requested by Pienissimo, relayed by Aurel Mrruku): the Opportunity goes
+  # Chiusa/Vinta at the first payment received on its order, no longer at Incassato; and
+  # WooCommerce orders are no longer created Incassato, since only the scadenziario sets
+  # it (OI-69). Deployed to Prod and UAT; not yet in a signed version.
   signoff_session: 2026-08-06T15:00:00+02:00
   # Go-live renegotiated 6 -> 21 October by ROMI in writing on 2026-09-08
   # (Gmail 1a0815f9a43d3b87); "presa visione" from Fabrizio Paganelli 2026-09-09.
@@ -257,7 +261,7 @@ state_machines:
       - Created automatically when the contact is qualified
       - Multiple quotes allowed per opportunity
       - An existing client's request enters directly as an OPPORTUNITA'
-      - "Chiusa/Vinta requires at least one quote sent; payment confirms the win"
+      - "Chiusa/Vinta requires at least one quote sent; the first payment received on the order confirms the win (PIENISSIMO-2026-11-13-FIRST-PAYMENT, OI-69; previously at Incassato)"
       - "Da ricontattare requires a reason and a recontact date"
       - "Da ricontattare - Prev. inviato requires its own reason and recontact date"
       - "Moving to Chiusa/Persa automatically moves every related Quote to Rifiutato"
@@ -320,8 +324,8 @@ state_machines:
       - "A WooCommerce order reaches SFDC when its WooCommerce status becomes IN LAVORAZIONE or COMPLETATO, for any payment method (2026-08-27; supersedes 'not visible until COMPLETATO', DGM-2)"
       - "Bank transfer: administration waits for the transfer, then sets the WooCommerce order to COMPLETATO"
       - "Card payment: completes automatically"
-      - "The Order goes to Incassato automatically when every tranche on its lines is Pagata; the Opportunity then goes Closed Won (AUREL-2026-09-25-INCASSATO, v1.6; supersedes the manual CHIUSO/ACQUISITO step for orders with tranches)"
-      - "WooCommerce orders are created already Incassato (paid online)"
+      - "The Order goes to Incassato automatically when every tranche on its lines is Pagata (AUREL-2026-09-25-INCASSATO, v1.6; supersedes the manual CHIUSO/ACQUISITO step for orders with tranches). The Opportunity goes Closed Won earlier, at the first paid order line (PIENISSIMO-2026-11-13-FIRST-PAYMENT); Incassato still closes it if it is not already won"
+      - "WooCommerce orders are created Ordinato; only the Mexal scadenziario moves them to Incassato, as for every other order (Pienissimo by phone, 2026-11-13, OI-69; supersedes 'created already Incassato (paid online)')"
     opportunity_types:
       - "Standard" # was "Vendita da tutor"; tailored quote-based sales, never via WooCommerce
       - "WooCommerce" # replaces "Recall tutor" (UAT 2026-09-25, v1.6); mandatory origin Recall Tutor / Pack Tutor
@@ -468,7 +472,8 @@ requirements:
       pri: M,
       status: agreed,
       text: "Go-live 16 November 2026, focused on WooCommerce and Mexal",
-      tracked_by: [OI-124, OI-128, OI-243, OI-268, DEC-2026-09-08-go-live-21-october]
+      tracked_by:
+        [OI-124, OI-128, OI-243, OI-268, DEC-2026-09-08-go-live-21-october]
     }
   - {
       id: CTX-03,

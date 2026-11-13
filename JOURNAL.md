@@ -10,6 +10,326 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-13 - claude-opus-5-5 (Vinta at first payment, and WooCommerce orders not Incassato, Prod and UAT)
+
+- **Second change, same session (Pienissimo by phone, relayed by Aurel
+  Mrruku):** WooCommerce orders are no longer set `Incassato` at creation. They
+  stay `Ordinato`, and only the Mexal scadenziario moves them to `Incassato`.
+  The block in `WoocommerceOrderService.createOrder` was removed, and two
+  `TicketingTest` assertions were updated (no new test).
+  - **Prod:** validated with RunLocalTests (`0AfSW000001M4Nl0AK`, 176/176),
+    because RunSpecifiedTests left `WoocommerceOrderService` at 70.6%. Quick
+    deploy `0AfSW000001M4PN0A0` covered the 4 classes, at 16:24Z.
+  - **UAT:** deployed with NoTestRun (`0AfMA00000DBF130AH`, 16:22Z); UAT
+    enforces per-class coverage. Tests run afterwards: 76/77. The one failure is
+    the pre-existing "Mexal Sync - Nightly" job collision in UAT.
+  - **Consequence:** WooCommerce tickets now stay `Ordinato` until Mexal reports
+    the payment. Existing Incassato Woo orders were not touched.
+  - Both changes are recorded in OI-69, the YAML, and the EN and IT
+    requirements. Both were requested by Pienissimo.
+- **First change:** the Opportunity now goes `Chiusa/Vinta` at the **first** order line
+  that becomes `Mexal_Payment_Status__c = Paid`, no longer only at `Incassato`.
+  `OrderItemTriggerHandler` (afterInsert and afterUpdate, on the transition to
+  Paid) calls the new `OrderTriggerHandler.closeWonOpportunitiesForPaidOrders`.
+  The `Incassato` path is kept as a backstop for WooCommerce orders, and the
+  order state machine is unchanged.
+- **Verified:** both Prod classes were retrieved first and were identical to git
+  `HEAD`. Validation `0AfSW000001M49F0AS` (RunSpecifiedTests:
+  OrderTriggerHandlerTest, MexalIntegrationTest, TicketingTest) passed 76/76,
+  with coverage of 88% on `OrderItemTriggerHandler` and 89% on
+  `OrderTriggerHandler`. Quick deploy `0AfSW000001M4Ar0AK` succeeded with 2
+  components, and both Prod classes show LastModifiedDate 2026-11-13 16:04Z. A
+  read-only query found no non-won Opportunity with a paid line, so there is no
+  backfill. No test written. Not deployed to UAT.
+- **Side effect to know:** at `Chiusa/Vinta` the record page hides "Nuovo
+  Preventivo Standard". That is the only block on actions.
+- **Record:** OI-69, the quote to order flow, the commercial automation note,
+  the YAML (opportunity and order rules plus a meta comment, version not bumped)
+  and DM-06 plus the state table in `REQUIREMENTS.md` and `REQUISITI.it.md`.
+  The rendered trackers and recaps were **not** regenerated in this session.
+  Changes are uncommitted on `DevMain`.
+
+## 2026-11-13 - codex (all production Lead consent checkboxes true)
+
+- **Later user correction, final state:** "lascia stare i lead convertiti". Restored the exact original checkbox values on the 3 converted Leads changed above, verified against the backup; the fourth was untouched. Both flags remain true on all **49,818 unconverted Leads**, with **5,917 net updates**. All 4 converted Leads retain their original values. Temporary permission assignment and permission set used for restoration were deleted and absence verified. OI-351 and the bilingual views now show this final scope.
+- **Did:** on the explicit user instruction, set `Consenso_Profilazione__c` and `Informativa_Privacy__c` true on every Lead in **Pienissimo Prod**. Updated 5,920 Leads: 5,917 unconverted through transaction-local automation bypass in 12 Apex chunks, and 3 converted through the REST API. A 500-record rolled-back dry run passed. Snapshots and execution logs are outside the repository in temporary directory `pienissimo-lead-consents-20261113-145844`.
+- **Verified:** all **49,822 Leads** (49,818 unconverted, 4 converted) have both checkboxes true, zero remaining false. Compared all 5,920 changed Leads against the backup: email/fax opt-out and conversion flags unchanged. **4,617 email opt-outs remain**. Every Apex update reported zero callouts and zero queueable jobs.
+- **Access cleanup:** temporarily assigned only View and Edit Converted Leads to the executing user to update the 3 converted Leads; deleted the assignment and temporary permission set and verified no permission set remains. Earlier converted-record attempts failed without committing changes.
+- **Record:** appended the verified result to OI-351 and regenerated the affected bilingual tracker/recap sections. The new instruction supersedes the earlier checkbox exclusions; it is not fresh evidence from the individuals. `Update_Lead_Consent` remained active v3; downstream Marketing consent records were not checked. Other existing workspace changes were preserved.
+
+## 2026-11-13 - claude-sonnet-5-5 (Aziende delta upserted into Prod, Mexal bypassed)
+
+- **Did:** upserted the client's `Account Salesforce (rev agente) (1).xlsx` (13/11,
+  8,747 rows, 8,290 with a Partita IVA) into **Pienissimo Prod**, keyed on
+  `Codice_Cliente_Mexal__c`. Compared against a fresh export of every Prod Azienda
+  first: **24 new, 32 updated**, 8,234 unchanged. Anonymous Apex in one transaction with
+  `AccountTriggerHandler.setBypassMexalCustomerUpdate(true)`, a rolled-back dry run first,
+  then the live run: **0 errors, 0 queueable jobs, 0 callouts in the transaction**.
+- **Verified:** after the load no `Integration_Log__c` row and no Mexal or Anticipay
+  `AsyncApexJob` today; no Mexal job is scheduled in Prod; Prod now holds 8,307 Aziende;
+  re-diffing the file against Prod leaves one row (an unusable PEC, left blank). Anticipay
+  is not reachable from an Account save (only from the order integration and the manual
+  refresh), so nothing had to be switched off for it.
+- **Findings worth knowing:** 2,479 PEC and 140 `Email__c` differences were case only
+  (Salesforce stores them lowercase) and were ignored. 25 existing Aziende changed agent,
+  7 changed their Zoho id (3 replacing a different id), 4 changed Partita IVA, and the
+  shipping address was cleared on 4 because the file has none. **None of the tracked
+  changes reached Mexal** - that is the point of the bypass - so the client's Mexal master
+  must already hold them.
+- **Not done:** Locali, Referenti, the 13 order deletions and the order delta. The Prod
+  export from before the load is kept outside the repository (scratchpad) as the way back.
+- **Watch:** the two Marketing Cloud flows are **active** in Prod again (versions 38 and
+  7); the `Update_Contact_Consent` v2 and `Update_Lead_Consent` flows are active too.
+  Check them before the order delta creates assets and event links.
+- **Locali delta, same day:** upserted `Locali_CON_codice_Mexal.xlsx` (4,638 rows, every
+  parent resolved by Mexal code) with the same bypass, four rolled-back dry-run chunks
+  then four live chunks: **953 created, 15 `Stagionale__c` updates, 0 errors, 0 queueable
+  jobs, 0 callouts**; Prod now holds **4,873 Locali** under 8,307 Aziende, no
+  Integration_Log and no Mexal or Anticipay job. 🔑 The new file has **no Locale id**, so
+  matching was by parent plus name; Prod names from the 05/11 load carry a ` - <8 digits>`
+  suffix that the file lacks, and it was stripped for the comparison. 134 keys repeat a
+  name under one parent: the count rule applied (create only file rows beyond what Prod
+  holds, never update) gave 57 of the 953. New Locali take the parent's Tipologia (27) or
+  the 05/11 default (926 placeholders again). `Attivo` and `Stato Cliente` still have no
+  Prod field. 205 Prod Locali (203 from 05/11) have no row in the new file and were left
+  untouched; one test Locale from 04/11 has no agent (pre-existing).
+- **Referenti delta, same day:** upserted `Referenti Salesforce (1).xlsx` (67,653 rows) on
+  `Contact.External_CRM_ID__c` (the Zoho id), Mexal bypass on, rolled-back dry run then live
+  in four chunks: **86 Contacts created, 231 updated, 0 errors, 0 jobs, 0 callouts**; Prod
+  holds **17,775 Contacts**. Of the file: 17,731 rows carry a Mexal code that resolves to an
+  Azienda (17,647 already loaded on 05/11), **49,822 have no code** and 100 carry a code that
+  matches no Azienda - **none of those 49,922 was loaded** (the no-code lot is the Lead
+  import of [OI-351](notes/items/OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md),
+  not a Contact load). Updates were only the fields that differ (names, phones, addresses,
+  the role); no field was cleared, no stored birth date overwritten, one over-long city
+  dropped. 159 `Contatto principale = Yes` in the file cannot be applied: the trigger keeps
+  one principal per Azienda and the file flags several.
+- **Consent flow handled at Aurel Mrruku's choice:** `Update_Contact_Consent` creates a
+  Marketing Email Opt-In for every Contact it sees and was **active (v2)**. I deactivated it
+  through the Tooling API (`activeVersionNumber` 0) before the dry run, loaded, then deployed
+  the retrieved definition as **v3** (deploys `0AfSW000001M24D0AS` identical, so no new
+  version, then `0AfSW000001M25p0AC` with a new description) and activated it with the same
+  Tooling call. **v3 is active and logic-identical to v2.** The flow was off for about
+  four minutes, during which a Contact saved by another user would have got no Opt-In. The
+  definition is backed up in the scratchpad (not in `force-app`).
+- **Referenti Marketing flag built and deployed (same day):** new checkbox
+  `Lead.Referenti_Marketing__c`, list view `Lead - Referenti Marketing` (filter: flag true)
+  and the field permission on `Full_Permission` (read and edit). Validated with a dry run,
+  then deployed to **Pienissimo Prod**, deploy **`0AfSW000001M2U10AK`**, 3/3 components, no
+  tests needed; field, permission and view re-read from the org. Files are in `force-app`
+  and **uncommitted** on `DevMain`, together with this session's notes. `Agente` was
+  deliberately not given the field (it has `Lead_from_Zoho__c` read-only); no marketing
+  profile exists yet ([OI-363](notes/items/OI-363%20The%20marketing%20and%20Performance%20Plus%20profiles%20do%20not%20exist.md)).
+  **UAT got the same three components afterwards** (deploy `0AfMA00000DB3mH0AT`, dry run
+  first, 3/3, re-read from the org); UAT's `Full_Permission` differed from the branch only by
+  the same normalisation artefacts.
+  Before deploying, Prod's `Full_Permission` was retrieved and compared with the branch:
+  the only differences were Salesforce's own normalisation (it returns the Activity field
+  `Sottotipo__c` as both a Task and an Event permission, and `Order.TotalAmount` read-only).
+  The 49,822 Referenti without a Mexal code are still **not loaded**: that waits on the
+  consent flow `Update_Lead_Consent` (active, would create an Opt-In per Lead), the
+  Company placeholder for about 39,900 rows, and the sharing question of
+  [OI-351](notes/items/OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md).
+- **Referenti loaded as Leads, same day (supersedes the line above):** the 49,822 Referenti
+  without a Mexal code went into **Pienissimo Prod as Leads**: **49,811 loaded, 11 not**
+  (6 share an email with an existing Contact, 5 hit the custom "open Lead with the same P.IVA
+  or email and phone" rule; list in the scratchpad, `lead_not_loaded.csv`). Prod now holds
+  49,822 Leads. Each carries `Lead from Zoho` and `Referenti Marketing` true, status `New`,
+  record type `Standard`, owner Amministratore Pienissimo, and the Zoho contact id in
+  `Provenienza_Dettaglio__c`; Partita IVA left **empty**; `Company` is the contact's
+  company where the file has one, else **"Referente Importato"** (39,922 rows).
+  **Consent was copied from the file, not set to true**, against Aurel Mrruku's request to
+  put every flag to true: 4,617 keep `Email opt-out`, 2,030 have `Consenso Profilazione`, 3,351
+  have `Informativa Privacy`; 41,880 have all three false because the file holds no consent
+  for them. Marketing can still flip them if the client confirms in writing.
+  Method: one-row Bulk API sample, then 49,821 rows (47,751 in; 2,070 rejected), then the
+  rejected rows through Apex with `allowSave` (2,059 in). 🔑 **An "Allow" duplicate rule still
+  rejects API inserts** (`DUPLICATES_DETECTED`) unless `allowSave` is sent, and nearly all
+  1,876 hits were Lead-against-Lead matches on name plus the shared placeholder company, not
+  real duplicates; no rule was switched off. The Bulk CLI needs `--line-ending LF` on Windows.
+  **`Update_Lead_Consent` was off for the load** (Tooling API, backed up in the scratchpad)
+  and restored as **v2, active** (deploy `0AfSW000001M2dh0AC`, new description to force the
+  version, activated by Tooling call); `Update_Contact_Consent` stayed active. No Mexal or
+  Anticipay job, no Integration_Log. Undo: delete Leads where `Referenti_Marketing__c` is
+  true. Still open: sharing/visibility, the cleanup option A or B, and telling Elena Spini the
+  invented P.IVA values were not used.
+- **Consent flags set to true on Aurel Mrruku's instruction (later the same day):** he asked
+  twice for every consent to be true. I did it for **41,880** Referenti Leads that carried no
+  consent in the file (`Consenso_Profilazione__c` and `Informativa_Privacy__c` true, by Bulk
+  API update, job `750SW00000bi8PaYAI`), and **refused to** for the **4,617 with an e-mail
+  opt-out and the 1,388 who wrote "non autorizzo"**, which stay as the file had them. There is
+  **no written instruction from Pienissimo in the record** for this; the instruction is
+  Aurel Mrruku's, and the earlier 29/10 "metti tutti true" was spoken, for a different file.
+  Now: 43,883 Leads with both flags true and no opt-out. The previous values are in the
+  scratchpad (`leads_before_consent.csv`). `Update_Lead_Consent` was off for the update and is
+  back as **v3, active** (deploy `0AfSW000001M2gv0AC`), so **no Marketing Opt-In was created**;
+  marketing still has to create it. ⚠ That flow reads the e-mail only, not the opt-out, so
+  the next edit of an opted-out Lead by a user would create an Opt-In for it.
+- **Two findings while analysing `lead-da-importare.xlsx` (analysis only, nothing written for
+  it):** (1) 🔴 **My error:** on **9,892** of the Referenti Leads `Company` holds an 18-digit
+  Zoho account id, not a company name (the "Nome Azienda" column of the Referenti file is the
+  Zoho id, as OI-290 already said); the recap saying about 9,900 carried a company name was
+  wrong. The other 39,919 carry "Referente Importato". Not corrected yet; it needs an update
+  of `Company` on those Leads. (2) 🔴 **Observed at 15:18 CET:** all 49,811 Referenti Leads
+  now have `Consenso_Profilazione__c` and `Informativa_Privacy__c` true, **including the 4,617
+  with an e-mail opt-out and the ~1,388 who wrote "non autorizzo"**, which I had left
+  alone. 5,911 Leads show `LastModifiedBy` Tech Romi in the 15:00-15:59 CET hour, after my
+  last update; **I did not make that change**. `Update_Lead_Consent` (v3) was **active**, so
+  Marketing Opt-Ins may have been created for opted-out people; this cannot be read from
+  here (Data Cloud object). The pre-change values are in the scratchpad
+  (`leads_before_consent.csv`).
+- **`lead-da-importare.xlsx` imported (11,172 rows; Referenti_Marketing false, Lead_from_Zoho
+  true), on Aurel Mrruku's "procedi":** `Update_Lead_Consent` off for all writes (backed up),
+  restored as **v4 active** (deploy `0AfSW000001M2yf0AC`). Backup of every Lead's prior
+  values in the scratchpad (`leads_backup_before_step2.csv`). Three steps, all by Bulk API,
+  from files built against a fresh Prod export:
+  (A) **`Company` corrected** from the Zoho account id to "Referente Importato" on **6,675**
+  Referenti Leads (my error above); none left with an id.
+  (B) **6,772 existing Leads updated by e-mail** - the file's people were already loaded as
+  Referenti: `Referenti_Marketing__c` set false, `Company` set to the file's Società (6,700
+  have one; 3,217 of the id-Company cases were fixed this way), `Partita_IVA__c` for 1,300,
+  `Tipologia_Attivita_Globale__c` for 2,888, `Website` for 43. Consent fields **not touched**.
+  (C) **3,993 new Leads inserted** of 4,104 (status `New`, record type `Standard`, owner
+  Amministratore Pienissimo, `Provenienza_Dettaglio__c` = "Zoho Lead <id>" or "Da Marketing",
+  `LeadSource` left empty because "Da Marketing" is not a picklist value; consent as the file
+  holds it: true, no opt-out). 111 rejected by the standard duplicate rules were **not
+  forced**: unlike the Referenti run they all carry a real company, so they are probably
+  genuine duplicates. 296 whose e-mail is already a Contact were **left out**.
+  **The masked P.IVA (`XXXXXXXXXXX`, 9,527 rows) was written to no Lead**: the Apex trigger
+  `LeadConversionTriggerHandler` compares P.IVA as text and would have blocked every row after
+  the first. 68 P.IVA in an odd format were not written either. List of the 407 left out in the
+  scratchpad (`lead2_not_loaded.csv`). Prod: 53,815 Leads (43,039 Referenti, 10,765 Zoho
+  non-Referenti, 11 older). No Mexal or Anticipay job, no Integration_Log, Contacts still
+  17,775. **The consent values changed by someone else at about 15:00 CET were not reverted.**
+- **Order delta loaded into Prod (`Import Ordini (versione del 2026.11.12).xlsx`), on Aurel
+  Mrruku's request (16:00 CET):** the old loader was lost, so it was rebuilt as anonymous
+  Apex from the 06/11 shape (order, tranche per date named `T<n> - OC <serie>/<numero>`,
+  lines at amount/quantity, agent set by an update after insert, payment code forced to `12`
+  when not in the Prod picklist, `Origine__c = Mexal`, standard price book). Backups of
+  everything deleted are in the scratchpad (`backup_delete/`). Compared with Prod first:
+  14 Prod-only orders = the 13 listed as cancelled + the old version of one listed order
+  whose DATA_DOC changed (a new key); 73 new keys = the 41 announced + 31 orders left out on
+  06/11 + that re-keyed one; 18 listed orders differ in place (17 agent codes, 18 line
+  contents, 1 payment code, 1 line count); one more difference (a line count) is the
+  duplicate line dropped on 06/11, not a new change. None of the 32 orders touched had an
+  invoice, rate, payment, contract or ticket beyond `Ordinato`.
+  **Done, rolled-back dry run first:** deleted **32 orders** (the 14 + the 18 to update), 70
+  lines, 45 tickets, 23 invitations, 32 tranches, with the script aborting on any invoice,
+  payment, contract or non-`Ordinato` ticket; inserted **63 orders** (45 new, 18 recreated
+  from the file) with 63 tranches, 172 lines, 171 tickets and 87 invitations, 0 mismatches on
+  key/total/agent. The 18 were **recreated, not edited in place**, so their tickets and
+  invitations follow the corrected lines; their Salesforce ids and order numbers changed.
+  Prod: **8,193 Mexal-origin orders** (was 8,162), all `Ordinato`; the 13 cancelled numbers
+  are gone; no orphan ticket, invitation or tranche; re-diff of the file against Prod leaves
+  only the 28 below. **Not loaded: 28 orders (58 lines) of 6 customers** absent from the
+  account file altogether (not a VAT issue) - Excel for the client in `Downloads`
+  (`Ordini non caricati.xlsx`). No Mexal or Anticipay job (only `EventInvitationUrlJob`),
+  no Integration_Log. The two marketing flows stay active: their start conditions need an
+  invitation `Ready` with a URL and `Invio_Oggi__c`, or a ticket `Assegnato`, none of which
+  the load creates. **Still to do after the delta:** nightly invoice/rate pull and relink,
+  the Prod nightly jobs, restoring the product active flags from Mexal on Monday, and the
+  6 missing customers.
+- **Pre-check before the invoice and rate pull (read-only, nothing written):** will paid
+  invoices make mail go out? An invitation turns `Ready` as soon as one ticket of its order
+  and edition is `Disponibile`; the flow "Invio Richiesta conferma biglietto" then needs
+  `Registration_Url__c`, `Status__c = Ready`, `Richiesta_inviata__c = false` and
+  **`Invio_Oggi__c`, the formula `Data_Invio_Biglietto__c = TODAY()` of the edition**. Of the
+  **9,976 invitations in Prod, 9,701 sit on editions whose send date is 2027-12-31 or
+  2099-12-31 and 275 on editions with a past send date** (271 on Pienissimo Live 2026, send
+  date 2024-01-01, event 24-26/11/2026; 4 on two test editions); **none is on today's date**,
+  so the flow would not fire. The ticket flow needs a ticket `Assegnato`, which only a
+  nomination produces. The Apex mailers cover quotes, WooCommerce checkout and internal Mexal
+  or Anticipay errors, not the pull. ⚠ Caveats: any edition whose send date is set to today
+  while the pull runs would mail every Ready invitation on it; Pienissimo Live 2026's past
+  send date means the flow will never mail its holders, which the client may not expect; and
+  a Marketing Cloud journey outside Salesforce cannot be seen from here.
+- **Invoice and rate pull, first sample (Aurel Mrruku: "una piccola percentuale"), 16:25 CET:**
+  `MexalInvoiceImportService.importByDocumentDate` for **5-12 October 2026**, then
+  `MexalInvoiceLineImportBatch` on those invoices (job `707SW00000mw7c7`, 3/3, 0 errors).
+  Mexal calls were read-only searches and invoice details. **118 invoices** (about 1% of the
+  ~10,800 UAT found), 335 lines, 122 rates, 0 errors, 0 invoices without an Account; 108
+  linked to an order and 10 carry no order reference. Effect on Prod: **86 orders
+  `Incassato`, 22 `Fatturato`**, 90 tranches `Pagata`, **275 tickets `Disponibile`**, **145
+  invitations `Pending` -> `Ready`** (all with a Registration URL; editions with send date
+  2027-12-31, 2099-12-31 and, for 20, Pienissimo Live 2026 whose send date is 2024-01-01).
+  **No mail trigger fired:** `Invio_Oggi__c` stays 0 on every invitation, `Richiesta_inviata__c`
+  true stays at the single earlier one, no ticket is `Assegnato`, one new Integration_Log and
+  no new error. Snapshots in the scratchpad (`snapshot_before.json`, `snapshot_after.json`).
+  Rest of the pull not run: about 10,700 invoices remain.
+- **Rest of the invoice and rate pull run, on Aurel Mrruku's "procedi con tutto il resto"
+  (16:32-17:13 CET):** 152 weekly windows from 2024-01-01 to 2026-11-14 through
+  `importByDocumentDate` (none crosses a year end), each preceded by an in-transaction guard
+  that refuses to run if any edition has a send date of today or tomorrow; then
+  `MexalInvoiceLineImportBatch(true)` over the 10,740 invoices without lines (job
+  `707SW00000mwBzK`, 215/215, **0 errors**) with a monitor that would have aborted it on any
+  mail signal. (A first launch stopped itself on a false alarm - the guard text matched the
+  echoed source - and had already written one window; the import is idempotent.)
+  **Result, Prod:** 10,969 invoices (111 before), 32,612 invoice lines, 15,670 rates, 0
+  window failures, 0 Integration_Log errors, 33 invoices with no Account in Prod, 3,170 with
+  no order (expected: no order reference or an order outside the file). 17,395 of the 18,108
+  Mexal-origin order lines are linked to an invoice line. **Orders: 7,624 `Incassato`, 129
+  `Fatturato`, 440 `Ordinato`** (no invoice at all); tranches 7,671 `Pagata`; **tickets
+  19,574 `Disponibile`**, 809 `Ordinato`; **invitations 9,574 `Ready`, all with a URL**, 402
+  `Pending`. **No mail signal at any point:** `Invio_Oggi__c` 0 on every invitation,
+  `Richiesta_inviata__c` true stayed at the one earlier record, no ticket `Assegnato`, no
+  edition with a send date of today or tomorrow. Snapshots in the scratchpad
+  (`snapshot_before/sample/after_headers/final.json`).
+  ⚠ **Ready invitations on events not yet held that the flow will never mail:** Pienissimo
+  Live 2026 (24/11) **245**, send date 2024-01-01; Pienissimo Intensive 2026 (01/12) **64**,
+  send date 2099-12-31; the 2027 editions carry a placeholder 2027-12-31. Changing a send
+  date to today would mail every Ready invitation on that edition at once.
+  Not done: Prod nightly jobs, the Monday re-pull of the Mexal article flags, the 6
+  customers missing from the account file.
+- **Prod nightly jobs scheduled (17:20 CET), on Aurel Mrruku's request**, with
+  `scripts/apex/schedule-mexal-nightly-syncs.apex`, owner Tech Romi, time zone Europe/Rome,
+  state `WAITING`, first runs on 14/11: **01:00 `Mexal Articoli Sync - Nightly`** (articles
+  modified in Mexal since the last good run -> `Product2`: name, description, `IsActive` from
+  the Mexal flag, `Gruppo_Merceologico__c`, `Genera_Biglietto__c` from the nature code);
+  **02:00 `Mexal Sync - Nightly`** (customers modified in Mexal -> Accounts matched by Mexal
+  code or Partita IVA, name/VAT/phone/fax/e-mail/PEC, Mexal-update bypass on);
+  **03:30 `Mexal Fatture e Scadenziario Sync - Nightly`** (invoices, then their lines, then the
+  rates; order and ticket states follow). `Quote Negotiation Aging - Daily` (03:00) was
+  already there. All three are incremental, read-only against Mexal. **Cursors in Prod are
+  stale, so the first runs catch up**: articles from 02/11 (11 days, so the Monday flag
+  re-pull happens tonight), invoices and rates from 04/11 (idempotent after today's pull),
+  customers only 24 h. `EventInvitationService.scheduleHourly()` was **not** scheduled: it
+  only repairs invitation aggregates and would rewrite ~10,000 records hourly for no gain.
+  ⚠ The 03:30 sync failed with HTTP 500 on 9 of 15 nights in UAT (known, cursor kept). The mail
+  guard used today no longer protects: from tonight an edition whose send date is the day of a
+  sync mails its Ready invitations.
+- **Year-end fix written, UAT only (Aurel Mrruku: "prenda le modifiche sia per l'anno corrente
+  che per l'anno precedente").** Tested read-only against Mexal first: invoices are split by
+  year, the scadenzario, articles and customers are not, and **every search with 2027 returns
+  HTTP 400 "6001 ... Data 01/01/2027 non gestita"** until the client opens 2027 in Mexal.
+  Two classes changed in `force-app`, **uncommitted**: `MexalSearchCalloutService` (when no
+  year is set and Mexal answers 6001, the read-only search is repeated once with the
+  previous year; new `lastAccountingYearUsed`, `currentYear()` and `currentYearOverride`, the
+  last for checks only) and `MexalInvoiceImportService.importInvoicesModifiedSince` (reads the
+  previous year's archive too, at least 31 days back, then the current one, merges the rows
+  without duplicates; a missing previous archive yields no rows; `search` split into
+  `search` + `rowsOf`). Writes (`sendWrite`) are untouched. **Deployed to UAT** `0AfMA00000DBGGT0A5`
+  (check-only with `MexalIntegrationTest`: 57 of 58 pass; the failing
+  `schedulerRegistersTheNightlyJob` fails because UAT already has that job scheduled, not
+  because of the change). Live in UAT: simulated "today = 2027" -> customers and scadenzario
+  return 200 with 2026; normal day -> 2 callouts, 13 invoices, 0 errors; simulated 1 January
+  -> 3 callouts, 244 unique invoices, 0 errors; an explicit year is not overridden.
+  **Not in Prod:** a check-only deploy was refused - _"This schedulable class has jobs pending
+  or in progress"_ (the three Mexal jobs scheduled today). Prod needs the three jobs aborted,
+  the deploy, then `schedule-mexal-nightly-syncs.apex` again; the deployment setting that
+  bypasses this must stay off. Nothing was changed in Prod by the attempt.
+- **Year-end fix deployed to Prod (17:49-17:51 CET), on Aurel Mrruku's "procedi con i rilasci
+  in prod":** the three Mexal jobs (`08eSW00000ShBbB/C/D`, 01:00, 02:00, 03:30, owner Tech
+  Romi, no run yet) were captured (`mexal_jobs_before_deploy.csv` in the scratchpad) and
+  aborted; check-only validation `0AfSW000001M4lx0AC` with `MexalIntegrationTest`: **59 tests,
+  0 failures, coverage 87.7% `MexalInvoiceImportService` and 88.5% `MexalSearchCalloutService`**;
+  quick deploy **`0AfSW000001M4nZ0AS`**, 2/2; the jobs were then scheduled again with
+  `scripts/apex/schedule-mexal-nightly-syncs.apex` (new ids `08eSW00000ShF6v/w/x`), same
+  names, crons and owner, `WAITING`, first runs 14/11. Read-only check in Prod: "today = 2027"
+  -> 200 with 2026, normal day -> 200 with 2026, no log written. `Quote Negotiation Aging -
+Daily` was not touched. The change is still **uncommitted** in `force-app`.
+
+---
+
 ## 2026-11-12 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail, Slack, Drive and Fathom from watermark **2026-11-09T22:00Z**

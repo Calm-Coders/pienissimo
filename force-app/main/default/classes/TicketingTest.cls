@@ -115,7 +115,8 @@ private class TicketingTest {
         FROM Order
         WHERE WooCommerce_Order_Key__c = 'wc_order_A1'
       ];
-      System.assertEquals('Incassato', created.Status);
+      // Only the Mexal scadenziario moves a WooCommerce order to Incassato.
+      System.assertEquals('Ordinato', created.Status);
       System.assertEquals('WooCommerce', created.Origine__c);
       System.assertEquals(99, created.OrderItems[0].UnitPrice);
       Account customer = [
@@ -167,7 +168,8 @@ private class TicketingTest {
         WHERE Id = :opportunityRecord.Id
       ];
       System.assertEquals('9001', updated.WooCommerce_Order_Id__c);
-      System.assertEquals('Chiusa/Vinta', updated.StageName);
+      // Not won yet: the Opportunity closes at the first scadenziario payment.
+      System.assertNotEquals('Chiusa/Vinta', updated.StageName);
       System.assertEquals(
         accountRecord.Id,
         [

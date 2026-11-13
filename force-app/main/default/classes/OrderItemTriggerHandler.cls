@@ -23,6 +23,7 @@ public without sharing class OrderItemTriggerHandler {
     }
     markOrdersCollectedWithoutTranches(orderIds);
     syncOrdersInvoicedStatus(invoiceOrderIds);
+    OrderTriggerHandler.closeWonOpportunitiesForPaidOrders(orderIds);
   }
 
   public static void afterUpdate(
@@ -33,11 +34,19 @@ public without sharing class OrderItemTriggerHandler {
     Set<Id> contractOrderIds = new Set<Id>();
     Set<Id> paymentOrderIds = new Set<Id>();
     Set<Id> invoiceOrderIds = new Set<Id>();
+    Set<Id> firstPaymentOrderIds = new Set<Id>();
 
     for (OrderItem line : newLines) {
       OrderItem oldLine = oldLineMap == null ? null : oldLineMap.get(line.Id);
       if (oldLine == null) {
         continue;
+      }
+
+      if (
+        line.Mexal_Payment_Status__c == PAYMENT_STATUS_PAID &&
+        oldLine.Mexal_Payment_Status__c != PAYMENT_STATUS_PAID
+      ) {
+        firstPaymentOrderIds.add(line.OrderId);
       }
 
       if (
@@ -81,6 +90,10 @@ public without sharing class OrderItemTriggerHandler {
     markOrdersCollectedWithoutTranches(paymentOrderIds);
     // After the Incassato rules, so an order they just collected is skipped.
     syncOrdersInvoicedStatus(invoiceOrderIds);
+    // OI-69: the first paid line wins the Opportunity; no-op once already won.
+    OrderTriggerHandler.closeWonOpportunitiesForPaidOrders(
+      firstPaymentOrderIds
+    );
     PerformancePlusContractService.refreshAmounts(contractOrderIds);
   }
 

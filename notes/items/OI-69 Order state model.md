@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-11-04
+updated: 2026-11-13
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -13,6 +13,11 @@ source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 
 Order states are **Ordinato → Fatturato → Incassato**. The old **"Chiuso
 acquisito" is deleted** — Fabrizio Paganelli: _"non serve più."_
+
+> **Superseded 2026-11-13 — see the section of that date below.** The
+> Opportunity now goes Closed Won at the **first** payment received on its
+> order, no longer at `Incassato`. The paragraph that follows is kept as the
+> original 6 August decision.
 
 **The Opportunity goes Closed Won only when the order reaches _Incassato_.**
 Payment closes the opportunity, not signature. This binds the older
@@ -119,7 +124,94 @@ tranche, not the first.
   [v1.6 change set](OI-184%20Register%20v1.6%20goes%20to%20the%20client%20as%20one%20change%20set%20at%20UAT%20close.md).
 - WooCommerce orders are unaffected: they are created already `Incassato`.
 
+## 2026-11-13 - changed: the Opportunity is won at the first payment, deployed to Prod
+
+**Requested by Pienissimo**, relayed by Aurel Mrruku (_"hanno chiesto di
+mandare un opportunity in vinta nel momento in cui riceviamo il primo pagamento
+della fattura"_; _"tutte queste cose li ha chiesto pienissimo"_): the
+Opportunity goes `Chiusa/Vinta` as soon as **the first payment** on its order is
+received. The individual and the channel for this request are not recorded.
+
+- **Still payment, not signature** — only the threshold moved, from the last
+  paid tranche to the first paid order line.
+- **Mechanism.** When an `OrderItem` moves to `Mexal_Payment_Status__c = Paid`
+  (Mexal scadenziario `P` or `E`,
+  [OI-201](OI-201%20Ri.Ba.%20payments%20are%20read%20as%20unpaid%20because%20only%20P%20counts.md)),
+  `OrderItemTriggerHandler` calls the new
+  `OrderTriggerHandler.closeWonOpportunitiesForPaidOrders`. This happens on
+  insert and on update, and only on the transition to `Paid`. Opportunities that
+  are already won are skipped.
+- **The `Incassato` rule stays**, unchanged, as a backstop. Since the WooCommerce
+  change below, WooCommerce orders also close their Opportunity at the first
+  scadenziario payment.
+- **The order state machine is unchanged.** The order still goes `Fatturato` and
+  then `Incassato` only when every tranche is paid. Ticket availability per
+  tranche is untouched.
+- **Side effect.** Once the Opportunity is `Chiusa/Vinta`, the record page hides
+  the "Nuovo Preventivo Standard" action. A follow-up quote on the same
+  Opportunity can no longer be created from that button after the first payment.
+  Nothing else is blocked: no validation rule, trigger or path restriction acts
+  on `Chiusa/Vinta`.
+- **Deployed to Pienissimo Prod on 2026-11-13.** Validation `0AfSW000001M49F0AS`
+  ran `OrderTriggerHandlerTest`, `MexalIntegrationTest` and `TicketingTest`: 76
+  tests, 0 failures. Coverage was 88% on `OrderItemTriggerHandler` and 89% on
+  `OrderTriggerHandler`. Quick deploy `0AfSW000001M4Ar0AK` deployed the 2
+  components. Before deploying, both Prod classes were retrieved and matched git
+  `HEAD`. No new test was written.
+- **No backlog.** A read-only Prod query found **no** Opportunity that is not
+  won and has a paid order line, so no existing record needed updating.
+- Redeployed in the WooCommerce release below, and now **also in UAT**.
+
+## 2026-11-13 - changed: WooCommerce orders are no longer created Incassato
+
+**Requested by Pienissimo by phone**, relayed by Aurel Mrruku: _"quando un
+ordine arriva da woocomerce non deve arrivare in incassato. in incassato lo
+porta solo lo scadenziario."_
+
+- **Before.** `WoocommerceOrderService.createOrder` inserted the order as
+  `Ordinato`. It then set it to `Incassato` at once, unless the order was Plus or
+  had bundle tranches. That also made the tickets `Disponibile` and closed the
+  linked Opportunity won.
+- **Now.** The order stays `Ordinato`. It moves only through the scadenziario
+  path that every other order follows: `Fatturato` when invoiced, and
+  `Incassato` when Mexal reports every line or tranche paid. The Opportunity is
+  won at the first paid line.
+- ⚠ **Consequence: WooCommerce tickets wait for Mexal.** A customer who pays
+  online by card keeps the tickets in `Ordinato` until the scadenziario reports
+  the payment (`P` or `E`). Before, the tickets were available at once. If Mexal
+  does not register the receipt for these orders, they stay stuck.
+- This resolves the contradiction recorded at the
+  [2026-10-02 Pre-UAT](../meetings/2026-10-02%20Interna%20Pre-UAT%20Plus.md)
+  between the register rule _"created already Incassato (paid online)"_ and the
+  fact that only the first tranche is paid online.
+- **Existing orders are unchanged.** WooCommerce orders that are already
+  `Incassato` were not touched; nobody asked for that.
+- **Tests.** Two assertions in the existing `TicketingTest` were updated to the
+  new behaviour: the order is `Ordinato`, and the Opportunity is not won at
+  creation. No new test was written.
+- **Prod.** With `RunSpecifiedTests`, `WoocommerceOrderService` reached only
+  70.6% coverage, below the 75% per-class threshold; only `TicketingTest`
+  covers it. The release was therefore validated with `RunLocalTests`:
+  `0AfSW000001M4Nl0AK`, 176 tests, 0 failures. It was quick-deployed as
+  `0AfSW000001M4PN0A0` with all four classes; both handlers were redeployed
+  unchanged. All four classes show 2026-11-13 16:24Z.
+- **UAT.** UAT enforces per-class coverage with `RunSpecifiedTests`, so the
+  release was deployed with `NoTestRun` (`0AfMA00000DBF130AH`, 4 components,
+  16:22Z). The tests were then run in UAT: 77 tests, 76 passed. The one failure
+  is `MexalIntegrationTest.schedulerRegistersTheNightlyJob`, because a job named
+  "Mexal Sync - Nightly" is already scheduled in UAT. It is unrelated to this
+  change and passed in Prod. Before deploying, the UAT handlers and service
+  matched git `HEAD`; UAT's `TicketingTest` was older and is now aligned.
+- Seen in a separate UAT run: `QuoteDocumentsTest.pdfControllerRendersLinesAndFormatsMoney`
+  fails in UAT because the quote PDF controller requires tranches. Not investigated.
+
 ## Still open
+
+- ⚠ **Neither change is in a signed register version yet.** Both join the next
+  change set.
+- ⚠ **WooCommerce tickets are now gated on Mexal** — see the consequence above.
+  Confirm with Pienissimo that card-paid online orders are registered as paid in
+  the Mexal scadenziario.
 
 - ⚠ **The client has not seen this.** It is a ROMI decision; it reaches Pienissimo with
   the v1.6 change set.
