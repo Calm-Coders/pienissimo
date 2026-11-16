@@ -1,12 +1,12 @@
 ---
 id: OI-334
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-04
-updated: 2026-11-13
+updated: 2026-11-16
 depends_on: [OI-301]
 blocks: [go-live]
 severity: gating
@@ -190,3 +190,35 @@ years and a single call already carries rates of 2025 and 2026 invoices. A secon
 return the same rows and double a 30-60 s request. Nothing was changed. Its protection at
 year end is the year fallback (deployed 0AfSW000001M4nZ0AS) and the invoice headers now read
 from two archives. Open option, not chosen: re-read the last week of the scadenzario each night.
+
+## 🟢 2026-11-16 - two runs a day, 05:00 and 13:00
+
+On Aurel Mrruku's instruction the three nightly jobs were replaced in **Pienissimo Prod** by two
+full rounds a day, one job every 15 minutes, owner Tech Romi, Europe/Rome:
+
+| Round | Articles                      | Customers                    | Invoices and scadenzario                    |
+| ----- | ----------------------------- | ---------------------------- | ------------------------------------------- |
+| Early | `Mexal Articoli Sync - 05:00` | `Mexal Clienti Sync - 05:15` | `Mexal Fatture e Scadenziario Sync - 05:30` |
+| Day   | `Mexal Articoli Sync - 13:00` | `Mexal Clienti Sync - 13:15` | `Mexal Fatture e Scadenziario Sync - 13:30` |
+
+The order is unchanged (customers before invoices, so new customer codes are on their Accounts
+when invoices are linked). The 01:00, 02:00 and 03:30 jobs were aborted in the same transaction;
+`Quote Negotiation Aging - Daily` (03:00) was not touched. The cursors make the extra run safe:
+each run fetches only what changed since the last good one. A second run a day also halves the
+cost of a Mexal outage such as the HTTP 500 of the 16/11 01:00 and 02:00 runs.
+
+- 🟢 **The client approved this frequency by email on 2026-11-16**, as relayed by Aurel Mrruku.
+  The email itself is not in the repository; sender and wording are not recorded here.
+- The three scheduler classes now encode it: each has `scheduleDaily()`, which creates its two
+  jobs, the `JOB_NAME_HHMM` / `CRON_HHMM` constants, and a `LEGACY_JOB_NAME` for the old nightly
+  job. `scripts/apex/schedule-mexal-nightly-syncs.apex` aborts all nine names and schedules the
+  six. Deployed to Prod and UAT on 2026-11-16, and the same six jobs run in both orgs; see
+  [JOURNAL.md](../../JOURNAL.md).
+- ⚠ A future deploy of a class these jobs use must abort and re-create **six** jobs, not three.
+- 🔴 **While the jobs are scheduled, `MexalIntegrationTest.schedulerRegistersTheDailyJobs` fails**
+  (_"The Apex job named "Mexal Clienti Sync - 05:15" is already scheduled"_, verified in UAT). So
+  **any Prod deploy with RunLocalTests fails** unless the six jobs are aborted first. The old test
+  had the same flaw with `Mexal Sync - Nightly`. Not fixed.
+
+With the frequency chosen by the client and the jobs live, the question this item was raised for
+is answered.

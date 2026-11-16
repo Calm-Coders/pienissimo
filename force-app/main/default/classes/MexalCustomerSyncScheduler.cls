@@ -1,18 +1,31 @@
 public without sharing class MexalCustomerSyncScheduler implements Schedulable {
-  public static final String JOB_NAME = 'Mexal Sync - Nightly';
-  public static final String NIGHTLY_0200_CRON = '0 0 2 * * ?';
+  // Two runs a day, 05:15 and 13:15 (approved by the client, 2026-11-16).
+  public static final String JOB_NAME_0515 = 'Mexal Clienti Sync - 05:15';
+  public static final String JOB_NAME_1315 = 'Mexal Clienti Sync - 13:15';
+  public static final String CRON_0515 = '0 15 5 * * ?';
+  public static final String CRON_1315 = '0 15 13 * * ?';
+  // The single nightly job used until 2026-11-16 (02:00).
+  public static final String LEGACY_JOB_NAME = 'Mexal Sync - Nightly';
 
   public void execute(SchedulableContext context) {
-    // Articles run on their own schedule: MexalArticleSyncScheduler, 01:00.
-    // Invoices and scadenzario too: MexalInvoiceSyncScheduler, 03:30.
+    // Articles run on their own schedule: MexalArticleSyncScheduler, :00.
+    // Invoices and scadenzario too: MexalInvoiceSyncScheduler, :30.
     Database.executeBatch(new MexalCustomerSyncBatch(), 1);
   }
 
-  public static Id scheduleNightly() {
-    return System.schedule(
-      JOB_NAME,
-      NIGHTLY_0200_CRON,
-      new MexalCustomerSyncScheduler()
-    );
+  // The cron runs in the time zone of the user who schedules the job.
+  public static List<Id> scheduleDaily() {
+    return new List<Id>{
+      System.schedule(
+        JOB_NAME_0515,
+        CRON_0515,
+        new MexalCustomerSyncScheduler()
+      ),
+      System.schedule(
+        JOB_NAME_1315,
+        CRON_1315,
+        new MexalCustomerSyncScheduler()
+      )
+    };
   }
 }

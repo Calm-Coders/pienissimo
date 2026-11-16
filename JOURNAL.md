@@ -10,6 +10,82 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-16 - claude-opus-5-5 (One article resynced from Mexal after a failed nightly, Prod)
+
+- **Trigger:** Aurel Mrruku reported that one product still carried the old
+  `gruppo merceologico` in Salesforce after the client changed it in Mexal.
+- **Cause, verified in Prod:** the "Mexal Articoli Sync - Nightly" run at
+  2026-11-16 01:00 Europe/Rome got **HTTP 500 from Mexal** (`2001 - errore
+imprevisto in fase di interrogazione servizi predesk`, WebapiException). The
+  article had been modified in Mexal on 2026-11-15 at 17:24, after the
+  previous run. The cursor on `Mexal_Articoli_Ricerca` correctly did **not**
+  advance (still 2026-11-15T00:00:10Z, status `Failed`).
+- **Transient:** the same `data_ult_mod` range query re-run read-only at about
+  08:50Z returned 200 with 110 changed articles. Tonight's run retries from the
+  same cursor and should pick all of them up, if Mexal answers.
+- **Fixed:** `MexalArticleSyncService.syncByArticleCode` was run for that single
+  article: 1 returned, 1 upserted, 0 failures. Verified after: inactive,
+  `Gruppo_Merceologico__c` now matches Mexal. No other product was touched.
+- **Then caught up, same session:** on request, `MexalArticleSyncBatch` was run
+  manually (job `707SW00000n1vepYAA`, completed, 0 errors). It returned and
+  upserted 110 articles from the 15 Nov cursor. The cursor is now
+  2026-11-16T09:03:09Z, status `Success`, and 110 Item products show a
+  modification today. The nightly schedule was not touched.
+- **Customers too:** the 02:00 "Mexal Sync - Nightly" customer run had hit the
+  same Mexal 500. `MexalCustomerSyncBatch` was run manually (job
+  `707SW00000n2DugYAE`, completed, 0 errors). It returned 0 customers changed
+  since the 15 Nov cursor, so no Account changed. The `Mexal_Clienti_Ricerca`
+  cursor is now 2026-11-16T09:04:46Z, `Success`. The 03:30 invoice and
+  scadenzario run was not affected: no error, 0 returned.
+- **Invoices and scadenzario, last 24 hours, on request:** the
+  `Mexal_Movimenti_Magazzino_Ricerca` and `Mexal_Scadenzario_Ricerca` cursors
+  were moved back to 2026-11-15T09:49:23Z (from 02:30Z today) and
+  `MexalInvoiceSyncJob` was enqueued. The chain completed with 0 errors:
+  invoices 2 returned and 2 saved, 0 without account; scadenzario 2 returned and
+  2 deadlines saved, 0 without invoice, 0 order lines updated. Both cursors are
+  now `Success`, at 09:49:23Z and 09:49:26Z.
+- **Schedule changed, on request:** the three Mexal nightly jobs (01:00, 02:00
+  and 03:30) were aborted and replaced, in one anonymous-Apex transaction run as
+  Tech Romi (Europe/Rome), by two rounds a day with one job every 15 minutes:
+  articles at 05:00 and 13:00, customers at 05:15 and 13:15, invoices and
+  scadenzario at 05:30 and 13:30. All six were verified `WAITING`, owner Tech
+  Romi; the first fires today at 13:00. Recorded in
+  [OI-334](notes/items/OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md).
+  The client approved this frequency by email the same day (relayed by Aurel
+  Mrruku; the email is not in the repository).
+- **Scheduler classes updated and deployed, on request:**
+  `MexalArticleSyncScheduler`, `MexalCustomerSyncScheduler` and
+  `MexalInvoiceSyncScheduler` replace `scheduleNightly()` / `JOB_NAME` /
+  `NIGHTLY_*_CRON` with `scheduleDaily()` (two jobs each),
+  `JOB_NAME_HHMM` / `CRON_HHMM` and `LEGACY_JOB_NAME`. The one existing
+  `MexalIntegrationTest` method that used the old constants was adapted (no new
+  test). Both `scripts/apex/*schedule-mexal-nightly-syncs.apex` now handle the
+  six new names and the three legacy ones. Prod was retrieved first and matched
+  `HEAD`. The six jobs were aborted at 10:57Z, deployed with RunLocalTests
+  (`0AfSW000001MGoj0AG`, 176/176, succeeded), then re-created at about 11:02Z
+  with `scripts/apex/schedule-mexal-nightly-syncs.apex` as Tech Romi,
+  Europe/Rome. All six were verified `WAITING`, and today's 13:00 round was not
+  missed. `Quote Negotiation Aging - Daily` was untouched. OI-334 is resolved.
+- **UAT too, on request:** UAT classes matched `HEAD`. Its three old nightly
+  jobs (owner Aurel Mrruku, Europe/Rome) were aborted, the four classes deployed
+  with NoTestRun (`0AfMA00000DBnFd0AL`), `MexalIntegrationTest` run 60/60, then
+  the six jobs created with the repository script, same user. All verified
+  `WAITING`, same times as Prod.
+- 🔴 **Test collision, verified in UAT:** with the jobs scheduled,
+  `MexalIntegrationTest.schedulerRegistersTheDailyJobs` fails with _"The Apex
+  job named "Mexal Clienti Sync - 05:15" is already scheduled for execution"_.
+  The old `schedulerRegistersTheNightlyJob` had the same flaw with
+  `Mexal Sync - Nightly`. **The next Prod deploy with RunLocalTests (of any
+  class) fails on this test** unless the six jobs are aborted first or the test
+  or the scheduler is changed. Not fixed: changing tests waits for Aurel
+  Mrruku's request.
+- **Open:** nothing retries a run that Mexal fails; with two rounds a day a
+  single Mexal 500 now delays a sync by up to about 16 hours (13:00 to 05:00)
+  instead of a full day. Related to
+  [OI-327](notes/items/OI-327%20The%20blow%20product%20codes%20carry%20the%20wrong%20gruppo%20merceologico.md).
+
+---
+
 ## 2026-11-13 - claude-opus-5-5 (Vinta at first payment, and WooCommerce orders not Incassato, Prod and UAT)
 
 - **Second change, same session (Pienissimo by phone, relayed by Aurel

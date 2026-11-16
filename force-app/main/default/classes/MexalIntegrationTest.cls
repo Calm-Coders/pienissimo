@@ -1258,14 +1258,25 @@ private class MexalIntegrationTest {
   }
 
   @isTest
-  static void schedulerRegistersTheNightlyJob() {
+  static void schedulerRegistersTheDailyJobs() {
     Test.startTest();
-    Id jobId = MexalCustomerSyncScheduler.scheduleNightly();
+    List<Id> jobIds = MexalCustomerSyncScheduler.scheduleDaily();
     Test.stopTest();
 
+    Set<String> crons = new Set<String>();
+    for (CronTrigger job : [
+      SELECT CronExpression
+      FROM CronTrigger
+      WHERE Id IN :jobIds
+    ]) {
+      crons.add(job.CronExpression);
+    }
     System.assertEquals(
-      MexalCustomerSyncScheduler.NIGHTLY_0200_CRON,
-      [SELECT CronExpression FROM CronTrigger WHERE Id = :jobId].CronExpression
+      new Set<String>{
+        MexalCustomerSyncScheduler.CRON_0515,
+        MexalCustomerSyncScheduler.CRON_1315
+      },
+      crons
     );
   }
 
