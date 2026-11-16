@@ -74,7 +74,7 @@ non li volevo cosi come hanno fatto su tutto il resto'."_
 He got it: Elena Spini's recap mail went out at **18:41Z the same day** and the
 client confirmed the procedure on 11/11 →
 [OI-351](../items/OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md),
-[OI-352](../items/OI-352%20The%20fifty%20thousand%20referenti%20leads%20are%20loaded%20with%20fake%20company%20and%20VAT%20values.md).
+[OI-352](../items/OI-352%20Referenti%20leads%20were%20loaded%20with%20a%20placeholder%20company%20and%20no%20VAT%20value.md).
 
 ## Also in the call, briefly
 

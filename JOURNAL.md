@@ -10,6 +10,45 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-16 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark
+  **2026-11-12T22:00Z** (four days, the go-live window) and folded it back.
+  **Two meetings drilled from full transcripts**: the 13/11 Richiesta call urgente
+  (00:27:14) and the 16/11 Ultimi Check PROD (02:17:59, six people). Opened
+  **OI-365 to OI-372**, closed **OI-338, OI-355, OI-360**, updated 27 notes, wrote
+  1 decision and 1 reference note, renamed OI-352.
+- **State:** the users went live on 16/11. 🔑 **The Opportunity is now won at the
+  first collected invoice** - asked by the client as urgent on 13/11 mid-release,
+  built the same evening, put in writing as _"in deroga a quanto previsto nel
+  Blueprint"_, proved end to end in Prod on 16/11, and **one-way**: no reverse gear,
+  System Admin correction only, and the editing lock on a won Opportunity's order,
+  lines and assets was **relaxed** to allow it (OI-365). Three things broke on the
+  first morning: the nightly Mexal syncs (Mexal's own maintenance window - the
+  cause, from the client, is new), lead conversion at 09:16:51Z (OI-337, a user was
+  converting before the team was briefed), and the first real WooCommerce order,
+  which failed the product code match because the client's Sunday article cleanup
+  left most products inactive (OI-366, the shop is live). Four Product2 picklists
+  were typed into Production Setup during the call (OI-367).
+- **Next:** OI-366 is the one to act on - reconcile the articles deactivated on
+  15/11 against what the live shop sells. Then the 18/11 release (WooCommerce quote
+  creation + the Italian date format on the client-facing quote PDF + the manual
+  Mexal sync buttons promised to the client), and Elena Spini's change list due
+  Friday 20/11.
+- **Watch:** `f2a3294` and `13b16da` sit on **`DevAnita16` only** - the home-page
+  Mexal sync panel with `MexalSyncController.cls` (~400 lines, no Apex test,
+  reported not acted on) and the Italian `LeadSource` labels. Neither is on
+  `DevMain` or in the org. ⚠ `Business_Blueprint_Pienissimo.docx` was touched on
+  16/11 at 11:42Z and **not read**; the Opportunity change is a derogation from it
+  and OI-343 disputes what it covers. ⚠ Elena Spini's 13/11 change workbook was
+  not found anywhere. ⚠ The org was **not** opened: STATUS.md and the Notion mirror
+  are stale. Elena Spini is on leave 16-18/11, so the developer is alone on it.
+  Fase 2 rests with Daniela Morgese, promised for 17/11; the stage sale release is
+  due before Pienissimo Live, 24-26/11. Next free item id **373**; watermark for the
+  next run **2026-11-16T22:00Z**.
+
+---
+
 ## 2026-11-16 - claude-opus-5-5 (One article resynced from Mexal after a failed nightly, Prod)
 
 - **Trigger:** Aurel Mrruku reported that one product still carried the old

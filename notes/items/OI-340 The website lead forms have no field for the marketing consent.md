@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini
 org: both
 raised: 2026-11-05
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: []
 blocks: []
 source: Slack C0C38JJ9D1T, 2026-11-05 17:26 CET thread
@@ -112,3 +112,29 @@ lead source, Fabrizio Mastracci's position of 5 November was quoted back on the
 12/11 internal call: the forms send `sito`, Salesforce has no such value, and he set
 `website` as a stopgap → [the lead source values](../The%20Pienissimo%20lead%20source%20values.md).
 That list is still not reconciled with what the forms actually send.
+
+## 2026-11-16 - the forms are built and tested, and the consent field is still unnamed
+
+🔴 **Fourth consecutive window with no mention of the consent field, and the forms
+are now ready to publish.** Sabatino Rinaldi, on the go-live call:
+
+> _"stiamo raccogliendo richieste di iscrizione per il prossimo evento di
+> pienissimo live con il marketing. **Abbiamo gia i form**, cioe Fabrizio ce li ha
+> fatti lui per quell'evento li in particolare. Noi volendo lo possiamo gia inserire
+> sul sito ora … **i form sono funzionanti, li abbiamo testati** eccetera."_
+
+And later: _"appena Fabrizio ci da l'ok, mettiamo pienissimo live come nuovi
+moduli, procediamo a crearli tutti e aggiornarli su tutti i siti."_
+
+Aurel Mrruku's whole answer was that it is not his work — _"non ci ho lavorato io
+su quello"_ — and to go to **Fabrizio Mastracci** by mail.
+
+⚠ **So forms that collect registrations are built, tested, and one word away from
+going live on the client's sites, with nothing recording which field they write for
+the marketing consent.** Pienissimo Live runs 24-26 November. Tracked with the
+wider problem in
+[OI-371](OI-371%20Opportunities%20are%20re-keyed%20from%20Zoho%20while%20the%20web%20forms%20wait%20for%20ROMI.md).
+
+🔴 **The owner of the question is leaving** — see
+[OI-357](OI-357%20The%20client%20commercial%20lead%20and%20the%20web%20counterpart%20are%20both%20leaving.md).
+Whether `profilazione` is the marketing consent is unanswered for a fourth window.

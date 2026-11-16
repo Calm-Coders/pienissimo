@@ -1,12 +1,12 @@
 ---
 id: OI-338
 type: open-item
-status: open
+status: resolved
 owner: Rexhina Hysi
 with: Aurel Mrruku
 org: both
 raised: 2026-11-05
-updated: 2026-11-05
+updated: 2026-11-16
 depends_on: []
 blocks: []
 source: Gmail 1a1aa9c8b2f14291, 2026-11-05T07:29:07Z
@@ -74,3 +74,22 @@ of Anita Aga's requested field test is not recorded anywhere.
 3. 🔴 He was then locked out of Prod entirely until Monday —
    [OI-339](OI-339%20The%20client%20was%20locked%20out%20of%20production%20during%20the%20migration%20load.md)
    — so the verification cannot happen before 9 November either way.
+
+## 2026-11-16 - he can edit it now
+
+🟢 **Resolved in practice.** Fabrizio Paganelli edited `Tipo biglietto` himself in
+production on Sunday 15 November, on the go-live call's own account of it:
+
+> _"gli articoli intestati all'evento Food Marketing Festival **li ho aggiunti il
+> tipo biglietto**"_
+
+and he reads the field's value back on `plus_061` during the call — _"sul plus
+genera biglietto solo bundle ce l'ho"_ — with Aurel Mrruku checking the same values
+from the org side. Whatever permission change was reported done on 5 November at
+14:24 CET evidently took effect; nothing records which one.
+
+⚠ **What remains is not access but definition.** Fabrizio Paganelli stated on
+13/11 that `numero tranche` and `tipo biglietto` still have to be settled per
+article — see
+[OI-329](OI-329%20Tranches%20must%20be%20mandatory%20and%20the%20quote%20PDF%20blocked%20without%20them.md).
+Status moved to `resolved` on the access question alone.

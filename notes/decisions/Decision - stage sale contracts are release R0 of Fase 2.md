@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-02
-updated: 2026-11-03
+updated: 2026-11-16
 depends_on: [OI-304]
 blocks: []
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -138,3 +138,16 @@ lista delle attività è già definita, però poi c'è il preventivo"_ — then 
 and Daniela handle the quote and the numbers**. ⚠ **Daniela appears to be
 Pienissimo-side** — Fabrizio Paganelli undertook to brief her — but this is **inferred,
 not established**.
+
+## 2026-11-13 - approved, and the delivery window is the event
+
+🟢 The client approved the functional analysis, and ROMI's position hardened from
+*proposed* to *in progress*. Elena Spini, `#tproj-pienissimo`, 13/11 19:22:51 CET:
+_"analisi funzionale approvata. Li trattiamo come **primo rilascio della Fase 2, da
+portare in produzione prima di Pienissimo Live**"_ — i.e. before **24-26 November**.
+
+⚠ **R0 is being built while Fase 2 itself is unapproved**, which this decision
+anticipated and which is now explicit on the record: _"non abbiamo ancora la
+conferma, ma abbiamo gia iniziato a lavorare sul primo rilascio per la scadenza
+dell'evento."_ Detail in
+[the functional analysis](../The%20stage%20sale%20contract%20functional%20analysis.md).

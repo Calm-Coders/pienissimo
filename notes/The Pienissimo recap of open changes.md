@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-11-12
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: [OI-344]
 blocks: []
 source: Drive 1D2hnr7PAysXpPR-37P6pw44dcgF7sbiV
@@ -66,3 +66,32 @@ reconciled.
 
 🔴 And the requester is leaving —
 [OI-357](items/OI-357%20The%20client%20commercial%20lead%20and%20the%20web%20counterpart%20are%20both%20leaving.md).
+
+## 2026-11-16 - what has moved, and the one row that reached the client's customers
+
+- **Row 1, the Italian locale**, is now the most visible of the twelve: the
+  American date format appears on the **client-facing quote PDF**, found on the
+  go-live call. Fabrizio Paganelli asked for priority because _"questi documenti
+  hanno una rilevanza verso i nostri clienti"_. It goes into the **18 November**
+  release, not sooner. See
+  [OI-358](items/OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md).
+- **The lead source list in Italian** was committed on 16/11 at 18:01 CET by Anita
+  Aga (`13b16da`, `DevAnita16`), not merged and not deployed.
+- **Everything else slipped a second week.** Elena Spini's status post of 13/11:
+  the open changes _"dovevamo chiuderle questa settimana, ma sono arrivate altre
+  richieste di supporto, quindi **slittano alla prossima**"_, with the triage rule
+  _"le piccole entrano in questa fase, le evolutive vanno in un secondo momento o
+  come CR."_
+- ⚠ **A second change list exists and is not in the repository.** Elena Spini sent
+  Aurel Mrruku a workbook on Friday 13 November with further items raised during the
+  tutor tests, due **Friday 20 November** — _"c'e un elenco di modifiche da fare
+  entro venerdi."_ Not found in Drive or mail in the 16/11 sweep.
+
+## 2026-11-13 - the mail this note did not yet cover
+
+A second client-facing mail of the same kind went out on **13/11 at 14:46:20Z**
+(Gmail `1a1d55fdf926a7b5`), subject
+`[ROMI-PIENISSIMO] - Aggiornamento urgente per logiche Opportunity`, from Elena
+Spini to Sabatino Rinaldi, amministrazione and Fabrizio Paganelli, cc Aurel Mrruku.
+It is the written trace of the Opportunity derogation and is quoted in full in
+[the decision](decisions/Decision%20-%20the%20Opportunity%20is%20won%20at%20the%20first%20collected%20invoice.md).

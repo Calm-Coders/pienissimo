@@ -5,7 +5,7 @@ status: in-progress
 owner: ROMI
 org: ROMI
 raised: 2026-08-06
-updated: 2026-11-13
+updated: 2026-11-16
 source: meetings/results/2026-08-06-chiusura-punti-aperti.md
 ---
 
@@ -227,3 +227,31 @@ porta solo lo scadenziario."_
   [OI-157](OI-157%20Credit%20notes%20and%20storni%20are%20unbuilt%20and%20undefined.md)).
 - `Perso` ([OI-85](OI-85%20Order%20state%20set%20may%20be%20incomplete.md)) is still
   undecided.
+
+## 2026-11-16 - verified in production, and the lock is off
+
+The 13 November change was proved end to end on the client call, on a real order:
+quote with four tranches signed through DocuSign, order into Mexal, part-invoiced,
+first invoice paid. **The invoice and its scadenza went paid, the order correctly
+stayed out of `Fatturato` because not everything was invoiced, and the Opportunity
+went `Vinta`.** Aurel Mrruku: _"Perfetto, funziona."_
+
+🔑 **Fabrizio Paganelli stated the rule himself and it was confirmed**, which
+matters because he was absent when it was decided:
+
+> _"la regola generale che vale per tutto e che l'opportunity va in vinta quando
+> c'e stato l'incasso collegato alla fattura che e collegato a sua volta a
+> quell'ordine."_ — Aurel Mrruku: _"corretto."_
+
+**The WooCommerce path, in his words:** a card payment is registered the same day,
+so the order goes `Incassato` overnight and the linked Opportunity `Vinta`; a bank
+transfer leaves the order `Ordinato` until administration sees it on the statement,
+and only then does the Opportunity close. _"Anche se il cliente paga tramite il
+canale di incasso di WooCommerce, la logica e uguale a qualsiasi altro acquisto."_
+
+🔴 **The editing restriction on a won Opportunity has been removed**, as the rule
+required. Aurel Mrruku: _"non c'e nessun blocco su azioni su quella struttura …
+ordini, opportunita, righe d'ordini, asset, eccetera, per lo status vinto."_ What
+else that relaxation now permits is not established — see
+[OI-365](OI-365%20The%20Opportunity%20cannot%20return%20from%20Vinta%20once%20a%20payment%20is%20reversed.md)
+and [the decision](../decisions/Decision%20-%20the%20Opportunity%20is%20won%20at%20the%20first%20collected%20invoice.md).

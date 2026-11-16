@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Gianpaolo Motta
 org: ROMI
 raised: 2026-11-09
-updated: 2026-11-09
+updated: 2026-11-16
 depends_on: [OI-308]
 blocks: []
 source: notes/meetings/2026-11-09 INTERNA Review temi Fase 2.md
@@ -77,3 +77,32 @@ it sits in neither document:
   that it is absorbed.
 - Whether Gianpaolo Motta has been asked. Elena Spini said _"dovrò capire con
   Giampaolo"_ about capacity generally; ⚠ **nothing records her doing so.**
+
+## 2026-11-16 - the project manager is on leave for the go-live week
+
+🔴 **Elena Spini is away from the first day of real use.** In the ROMI DM on
+13/11 at 18:15-18:18 CET, closing the week:
+
+> **Elena Spini:** _"ciao Aurel, **ci vediamo il 19**"_ · _"in bocca al lupo con
+> quei pazzi"_ · _"buon weekend"_
+>
+> **Aurel Mrruku:** _"buon divertimento"_
+
+Earlier the same day she named the pressure herself: _"**ansia pre-ferie** di
+chiudere tutto."_ The 19th is the
+`[ROMI-PIENISSIMO] - Test Finale Flusso MKT` call at 09:30.
+
+🔴 **She was absent from the 16/11 go-live call**, which ran two hours and
+eighteen minutes with six people, settled a reschedule, changed four production
+picklists and left a WooCommerce failure open. The written trace of that morning is
+the transcript and this vault; nothing was minuted to her.
+
+So for 16, 17 and 18 November the only ROMI presence on this project is the
+developer, who is also carrying the 18 November release and the Friday change list.
+**Fase 1 post go-live support remains unassigned and unpriced**, and the week it
+was meant to cover has begun.
+
+Her own closing estimate, from the 13/11 status post: _"go-live per gli utenti il
+16/11/2026. Per la chiusura totale puntiamo a **fine mese**"_ ·
+_"**stima giornate a finire: 12 gg**, invariata causa nuove richieste lato
+cliente."_

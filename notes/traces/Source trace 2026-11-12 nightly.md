@@ -111,7 +111,7 @@ tree was **clean** at start, `DevMain` at **`6d70836`** (_"deploy in prod"_,
 3. 🟢🔑 **[The referenti decision is in writing and confirmed](../items/OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md)**,
    so [OI-290](../items/OI-290%20Lead%20and%20Referenti%20migration%20data%20is%20owed%20by%20the%20client.md)
    **closes** — but 🔴 **[the 49,800 rows load with invented Company and Partita IVA
-   values](../items/OI-352%20The%20fifty%20thousand%20referenti%20leads%20are%20loaded%20with%20fake%20company%20and%20VAT%20values.md)**,
+   values](../items/OI-352%20Referenti%20leads%20were%20loaded%20with%20a%20placeholder%20company%20and%20no%20VAT%20value.md)**,
    `az10000, az10001 …`. Aurel Mrruku said _"**nop**"_; the client approved it.
    ⚠ Neither cleanup option chosen, no visibility design, **and the 107 mis-coded
    rows went unmentioned.**

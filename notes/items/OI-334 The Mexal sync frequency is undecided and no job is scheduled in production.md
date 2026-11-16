@@ -224,3 +224,43 @@ cost of a Mexal outage such as the HTTP 500 of the 16/11 01:00 and 02:00 runs.
 
 With the frequency chosen by the client and the jobs live, the question this item was raised for
 is answered.
+
+## 2026-11-16 - what the client actually asked for, and the one piece that is missing
+
+The reschedule was agreed live on the go-live call, after the first night of
+scheduled runs failed. 🔑 **The failure was not a defect: Mexal is unreachable in
+the small hours because of its own nightly maintenance** — see
+[the sync window note](../The%20Mexal%20sync%20window%20and%20the%20year%20boundary.md).
+
+**The negotiation, in order.** Fabrizio Paganelli opened with _"ne mettiamo una
+alle 4:00, una alle 4:15 o alle 4:30, una alle 5, una alle 5:30"_; Aurel Mrruku
+countered _"facciamo 5 di mattina perche non penso che qualcuno inizia a lavorare
+prima delle 6:00"_; Fabrizio Paganelli accepted and asked for an afternoon round so
+that _"alle 2:00 quando la gente entra si ritrova gia a posto i dati"_, landing on
+_"13:15, 13:30 … **cosi alle 14 gira l'ultimo**."_
+
+He then typed it into the mail thread himself, **2026-11-16 09:01:12Z** (Gmail
+`1a1d06456c06e4f8`), as `PUNTO 5`:
+
+> _"Schedulare i job notturni **a partire dalle 5.00** di mattina **con cadenza
+> ogni 15 minuti**. Schedulare un ulteriore job **alle ore 13.15**. Darci le
+> istruzioni per lanciarlo manualmente al bisogno."_
+
+🟢 This is the client's written approval of the frequency, which the 16/11 journal
+entry recorded as relayed verbally. **It is now in the repository as a cited
+source.**
+
+⚠ **One piece does not match what was deployed.** The six jobs created the same day
+are articles 05:00/13:00, customers 05:15/13:15, invoices and scadenzario
+05:30/13:30. The client asked for the afternoon round to end at **14:00** and the
+mail names **13:15** as the start of the extra round, not its only slot. Nobody has
+told him the afternoon round starts at 13:00 and ends at 13:30.
+
+🔴 **The third bullet of `PUNTO 5` is not delivered**: the client still has no way
+to run a sync by hand and no instructions. Tracked separately in
+[OI-370](OI-370%20The%20client%20cannot%20run%20the%20Mexal%20syncs%20by%20hand.md), with
+Sabatino Rinaldi's standing request for the final times in writing.
+
+🔴 **Nothing retries a run that Mexal refuses.** With two rounds a day, a single
+Mexal 500 now delays a sync by up to about sixteen hours instead of a full day,
+which is better and still unhandled.

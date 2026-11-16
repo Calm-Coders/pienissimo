@@ -6,7 +6,7 @@ owner: Elisa Migliano
 with: Aurel Mrruku, Elena Spini, Andrea Parmeggiani
 org: both
 raised: 2026-11-12
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: [OI-312, OI-323]
 blocks: []
 severity: high
@@ -102,3 +102,38 @@ accendendo troppo la situazione."_
   will be ready for, with a date ([OI-323](OI-323%20The%20production%20domain%20has%20not%20been%20supplied%20by%20the%20client.md)).
 - Whether the missing Campaign Member history for Pienissimo Live is acceptable, or
   must be back-filled later.
+
+## 2026-11-13 - a plan at last, and it keeps Salesforce out of the loop
+
+🔑 **The handling is decided, and it is manual by design.** Elena Spini's status
+post to `#tproj-pienissimo`, 13/11 19:22:51 CET:
+
+> _"**Biglietti Pienissimo Live (24-26/11):** i biglietti validati all'evento
+> saranno gestiti come utilizzati **sul loro sistema (Zoho), senza connessione con
+> Salesforce**. Hanno chiesto **l'estrazione di tutti gli ID di account, contatti e
+> asset**, per poi aggiornarla con le loro numeriche post-evento. Da parte nostra ci
+> siamo resi disponibili a fare l'estrazione, **la compilazione del file resta a
+> loro**. Ne parliamo la settimana prossima."_
+
+So: no integration, no QR scanner in Salesforce for this event, and the reconciliation
+is a spreadsheet the client fills in afterwards from Zoho. ROMI supplies the id
+extraction only. This matches what the 12/11 session feared — _"io ho il dubbio che
+succederanno dei casini"_ — and makes it the agreed approach rather than a fallback.
+
+**What this changes in the record:**
+
+- 🟢 **ROMI's obligation is now bounded and named**: one extraction of Account,
+  Contact and Asset ids. Owner **Elena Spini**, per her own next step —
+  _"discutere la settimana prossima il tema dei biglietti validati durante
+  Pienissimo Live e fornire l'estrazione degli ID."_ ⚠ She is on leave until 19
+  November and the event is 24-26 November.
+- ⚠ **The event is 24-26 November**, three days, not the single 24/11 carried
+  earlier.
+- 🔴 **No date for the extraction**, no format agreed, and no owner on the client
+  side for filling it in.
+- 🔴 **The written specification of the id exchange that Elisa Migliano asked for by
+  mail is still not evidenced sent**, and this arrangement is exactly what it would
+  describe.
+- The ~450 attendances and the abandoned Campaign Member route are unchanged;
+  Andrea Parmeggiani's production QR scanner is not mentioned in this window, so
+  **which event it will be ready for is still unanswered**.

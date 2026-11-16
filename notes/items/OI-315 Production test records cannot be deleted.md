@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-11-03
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: []
 blocks: [go-live]
 source: notes/meetings/2026-11-03 Test e2e PROD.md
@@ -99,3 +99,32 @@ scripts written for OI-360 would do it; nothing says they will be used for it.
 ⚠ And the related question is **still unanswered**: whether the client may add more
 test records by running quote tests in production →
 [OI-355](OI-355%20Nobody%20answered%20whether%20quote%20tests%20can%20be%20run%20in%20production.md).
+
+## 2026-11-16 - testing in production is now explicit, and it leaves records behind
+
+🟢 **ROMI authorised production testing out loud**: Aurel Mrruku, on the go-live
+call, _"siete liberi di testare in produzione"_, and the client then spent two
+hours doing it. That closes the permission question of
+[OI-355](OI-355%20Nobody%20answered%20whether%20quote%20tests%20can%20be%20run%20in%20production.md)
+and widens this one.
+
+🔴 **What the morning added to the live org**, from the transcript:
+
+- a Performance Plus `attivazione` opportunity on the `test pienissimo` account,
+  with a signed quote, a Mexal order, two invoices and a paid scadenza
+- a second quote generated as the `commerciale pienissimo` user, link generated and
+  **not** sent
+- a `pack test` bundle product, created to test the `Tipo bundle` picklist
+- a real WooCommerce shop order, placed under Fabrizio Paganelli's name with
+  Sabatino Rinaldi's own address and mobile, which failed at the integration
+  ([OI-366](OI-366%20Most%20Salesforce%20products%20are%20inactive%20so%20WooCommerce%20orders%20fail%20the%20product%20code%20match.md))
+- Mexal-side test orders deleted by Fabrizio Paganelli as he went — _"questo qui lo
+  elimino che e una prova vecchia"_ — with no record of the Salesforce side
+
+⚠ **Stale test state was found on a live account**: the principal contact on the
+Pienissimo account had been repointed to a colleague's address _"per fare dei test
+per non ricevere te"_ and never put back, so the first quote of the morning would
+have gone to the wrong person. See
+[OI-372](OI-372%20Several%20principal%20contacts%20per%20Azienda%20were%20collapsed%20to%20the%20last%20one.md).
+
+Nobody owns the list of test records now in Prod, and the org is in use.

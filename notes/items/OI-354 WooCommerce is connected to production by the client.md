@@ -6,7 +6,7 @@ owner: Sabatino Rinaldi
 with: Aurel Mrruku, Anita Aga
 org: both
 raised: 2026-11-10
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: []
 blocks: []
 severity: normal
@@ -75,3 +75,38 @@ Mexal run in production.
    stated precondition — and they cannot be run any more.
 3. ⚠ The product code and test link Elena Spini needed for the 11/11 tutor
    training were never supplied; she ran it without them.
+
+## 2026-11-16 - the plugin flag was never switched on, and the first real order failed
+
+🔴 **The connection has been reported live since 11 November and the plugin flag
+was off the whole time.** On the go-live call, unprompted:
+
+> **Sabatino Rinaldi:** _"e comunque io il plugin di WooCommerce **ancora non l'ho
+> attivato**, che faccio? Lo attivo o aspetto? Cioe **non ho messo il flag**
+> semplicemente."_
+>
+> **Aurel Mrruku:** _"puoi fare, siamo in produzione ormai."_
+>
+> **Fabrizio Paganelli:** _"si, attivalo Sabatino, cosi stamattina facciamo dei
+> test in produzione."_
+
+He switched it on during the call — _"lo attivo ora"_. So whatever ran between
+11 and 16 November did not run through the live plugin, and the 12/11 end-to-end
+success was on a different path.
+
+🔴 **The first real order with the flag on did not reach Salesforce**: product code
+match failure, because the client had deactivated most of the catalogue the day
+before. Sabatino Rinaldi: _"non ti ha inviato l'ordine perche sotto c'ho l'errore
+**come l'altra volta: product code match**."_ Three substitute article codes were
+tried and all were inactive. Full account in
+[OI-366](OI-366%20Most%20Salesforce%20products%20are%20inactive%20so%20WooCommerce%20orders%20fail%20the%20product%20code%20match.md).
+
+⚠ _"come l'altra volta"_ — the same failure has happened before and nothing in the
+vault records it under that name.
+
+**The test was never completed.** Elisa Migliano pulled Sabatino Rinaldi into a
+management meeting and the retest was deferred to _"oggi pomeriggio … dopo le 3"_.
+This sweep found no record of it.
+
+🔑 **The shop is live with the flag on and the catalogue mismatched.** Nobody
+reconciled the articles the client deactivated against the products the shop sells.

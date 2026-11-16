@@ -1,12 +1,12 @@
 ---
 id: OI-360
 type: open-item
-status: in-progress
+status: resolved
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-12
-updated: 2026-11-13
+updated: 2026-11-16
 depends_on: [OI-310, OI-315]
 blocks: [go-live]
 severity: gating
@@ -108,3 +108,46 @@ and invitations match the corrected lines; their ids and order numbers changed. 
 **32 orders, 70 lines, 32 tranches, 45 tickets and 23 invitations deleted.** The records
 deleted are backed up outside the repository. Counts and the full picture:
 [OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
+
+## 2026-11-13 to 16 - loaded, and the open ends closed one by one
+
+🟢 **The delta ran on 13 November.** Reported to the client at 15:15Z and in full
+at 16:56Z (Gmail `1a1d06456c06e4f8`), and walked again on the 16/11 call. **No data
+was sent to Mexal — Mexal was read only.**
+
+| | |
+| --- | --- |
+| **Loaded** | **63** orders: 45 new (the 41 listed, plus 3 held back on 6 November for a missing customer, plus 77241) and 18 modified; **172 lines** with tranches, tickets and event invitations |
+| **Deleted** | **32**: the 13 cancelled in Mexal, the old 77241, and the 18 modified ones |
+| **Not loaded** | **28** orders, 58 lines, of 6 customers absent from the anagrafica |
+| **Invoices** | all from 2024 onward: 10,969 invoices, 15,670 scadenze; **19,574 tickets** now available, no ticket mail sent |
+
+🔑 **The 18 modified orders were not updated — they were destroyed and rebuilt.**
+Aurel Mrruku: _"ordini modificati non ho aggiornato quello che c'era, ma come
+avevamo gia messo d'accordo, Fabrizio, **abbiamo cancellato tutta la catena —
+ordine, biglietto, asset, eccetera — e l'ho reinserito**"_, under the same Mexal
+code. _"Nessuno di questi ordini aveva fatture, incassi o contratti collegati."_
+⚠ **No flag marks them as rebuilt** — _"non l'ho trattato piu come modificato, l'ho
+trattato come nuovo"_.
+
+**The three open ends, closed:**
+
+- **The 6 customers' anagrafica** — Fabrizio Paganelli, 13/11 16:12Z, answering in
+  red: _"**lasciamo stare cosi. Non li carichiamo.**"_ Confirmed on the 16/11 call:
+  old 2023-24 orders, _"essendo roba molto vecchia, lasciavamo stare cosi senza
+  stare a impazzire."_ So **28 orders stay permanently out of Salesforce by the
+  client's decision.**
+- **Order 77241's date** — _"**Si, confermato il 22/10/2026**"_. It had been 22/09
+  in Salesforce; since the date is part of the order key, it was loaded as a new
+  order and the old one deleted.
+- **The 33 invoices with no customer** — explained on the 16/11 call: an invoice
+  reaches its customer through its order, and their 2022-23 orders were never
+  imported. Fabrizio Paganelli thinks they belong to the same 6 customers and will
+  handle it himself: _"magari andiamo a creare noi l'azienda su Salesforce … comunque
+  **lo sistemo a mano**."_ ⚠ Open whether they are excluded from reports instead.
+
+**Status → resolved.** The deletions were done, the delta ran, and every question
+the item raised has an answer. What is left belongs elsewhere: the numerator to
+[OI-310](OI-310%20The%20production%20load%20needs%20a%20pre-load%20and%20a%20delta%20run.md),
+the test records to
+[OI-315](OI-315%20Production%20test%20records%20cannot%20be%20deleted.md).

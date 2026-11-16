@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-11
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: []
 blocks: []
 severity: normal
@@ -85,3 +85,40 @@ gia, era nei **manual step** da fare"_. Tracked at
 - A decision on who specifies the home page now, and whether it is Fase 1 or Fase 2
   under ROMI's own triage rule (_"le modifiche di layout e di campi le facciamo in
   Fase 1, il resto va in una Fase 2 successiva"_).
+
+## 2026-11-16 - a home page was built the same afternoon, on a branch
+
+🟢 **Commit `f2a3294`, Anita Aga, 2026-11-16 14:28 CET, on `DevAnita16`** —
+_"Changed the Home Page added the custom component for the sync with Mexal"_:
+
+- `mexalSyncPanel` LWC with two Jest specs, plus a `salesHomeTemplate` Aura
+  component and its design and CSS
+- `MexalSyncController.cls`, ≈400 lines of new Apex
+- the `Getting_Started_Home` flexipage, a `LightningSales_UtilityBar` change and the
+  `standard__LightningSales` app
+- three home-page reports: **Activity, Lead Source and Pipeline donuts**
+- a `Full_Permission` addition
+
+🔴 **It is not on `DevMain`, not merged and not deployed.** `DevMain` is at
+`4478915`. So the home page the agents could not see this morning exists on one
+developer's branch by the evening of the same day, and not in the org.
+
+⚠ `MexalSyncController.cls` is new Apex with **no Apex test class**. Reported as
+state, per the standing instruction; **not acted on**.
+
+**What the client asked for on the call, beyond the sync buttons:**
+
+- 🔑 **strip the standard components**: _"tutte queste cose che ci sono adesso le
+  puoi anche eliminare … magari Aurel mi elimini tutto quello che c'e qui che vedo
+  adesso."_ Aurel Mrruku defended only the recent-records list — _"sono praticamente
+  record recenti, quello che ti aiuta se vuoi riprendere il lavoro da dove sei
+  partito"_ — and agreed to the rest
+- the **Mexal sync section** itself →
+  [OI-370](OI-370%20The%20client%20cannot%20run%20the%20Mexal%20syncs%20by%20hand.md)
+
+🔴 **The work-queue request is still untriaged.** The row on
+`Modifiche flussi Sales` asking for a home-page section grouping lead requests and
+opportunities _"cosi si crea una coda di lavoro che il tutor puo seguire
+quotidianamente"_ has **no verdict** in the `Lavorato` column as of 16/11 15:50Z —
+see [OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md).
+Nothing in this window mentions the agent calendar.

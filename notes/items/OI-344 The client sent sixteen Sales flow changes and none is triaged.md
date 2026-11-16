@@ -6,7 +6,7 @@ owner: Marco Montesi
 with: Elena Spini
 org: both
 raised: 2026-11-06
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: [OI-265]
 blocks: [go-live]
 source: Drive 1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8, read 2026-11-06
@@ -233,3 +233,42 @@ values — _"È necessario che mentre si creano le tranche, si veda il valore de
 singola tranche ma anche il totale che si va a creare"_. 🔴 He also reported the
 quote and pop-up wording **still wrong**: _"le diciture sia del preventivo generato
 che del pop up erano tutti sballati, forse ci stavate lavorando."_
+
+## 2026-11-16 - the sheet moved again, and a second list arrived with a Friday deadline
+
+**The `Modifiche flussi Sales` workbook was edited again on 2026-11-16 at
+15:50:21Z by Marco Montesi** (Drive `1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8`),
+read in full in this sweep with comments requested.
+
+| | |
+| --- | --- |
+| Range | `A1:E21` — **19 request rows** under two header rows |
+| `Lavorato` column | unchanged: **5 `SI`, 6 `IN LAVORAZIONE`, 2 `NON SI FA`, 6 blank** |
+| Anchored comments | none |
+
+🔑 **What is new is column E, which now carries ROMI's disposition** on six rows:
+four marked _"inviato indicazione via mail"_, one _"inviato lista per email"_, and
+one rejection with a reason — _"Possibilita di avere anteprima senza dover creare il
+pdf"_ → **`NON SI FA`, "grossa modifica strutturale"**. The second rejection,
+_"Aggiunta campo cc"_ on the acceptance mail, carries no reason.
+
+🔴 **The home-page work queue row still has no verdict.** _"Nella pagina principale
+creare una sezione che raggruppa tutte le richieste ricevute dai lead e le
+opportunity … si crea cosi una coda di lavoro che il tutor puo seguire
+quotidianamente"_ — blank in `Lavorato`, _"inviato indicazione via mail"_ in E. See
+[OI-364](OI-364%20Agents%20cannot%20see%20the%20home%20page%20or%20the%20calendar%20in%20production.md).
+
+⚠ **A second, newer list exists and is not in the repository.** Aurel Mrruku on the
+16/11 call:
+
+> _"**c'e un elenco di modifiche da fare entro venerdi.** M'ha mandato un bel Excel
+> Elena venerdi. **C'erano altre cose chieste anche nei test.**"_
+
+So the tutor training produced further changes beyond these nineteen rows, Elena
+Spini sent them as a workbook on **Friday 13 November**, and they are due **Friday
+20 November**. That file was not found in Drive or in mail in this sweep.
+
+**The triage position from Elena Spini's 13/11 status post:** _"le piccole entrano
+in questa fase, **le evolutive vanno in un secondo momento o come CR**"_, and the
+whole set _"slittano alla prossima [settimana]"_ because support requests took the
+week. Still **no row-by-row Fase 1 / Fase 2 label**.

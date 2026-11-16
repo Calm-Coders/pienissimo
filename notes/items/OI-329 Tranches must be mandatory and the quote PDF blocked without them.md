@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-04
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: []
 blocks: [go-live]
 requirement: ORD-01
@@ -119,3 +119,29 @@ mensile … 1 deve mettere, quindi mi aspetto che non l'abbia fatto."_
 in the internal call. 🔑 And it is a predictable consequence of making tranches
 mandatory: every existing `plus` product in the registry needs `Numero tranche`
 set, and nothing records a sweep of them.
+
+## 2026-11-13 to 16 - the registry was frozen, then handed back, and the fields are still undefined
+
+Fabrizio Paganelli asked three times over two days whether he could work on the
+article registry:
+
+| When | What he asked |
+| --- | --- |
+| 12/11 16:51Z | _"state lavorando sull'anagrafica articoli? Perche ci sono alcune cose su cui non mi ritrovo, anche rispetto ai test che avevo fatto"_ |
+| 13/11 07:47Z | 🔑 _"ti chiedo di dirmi quanto i rilasci in produzione, per anagrafica articoli, sono definitivi. Perche poi **devo modificare gli articoli in quanto ci sono da definire bene numero tranche e tipo biglietto**"_ |
+| 13/11 14:19Z | _"posso fare modifiche all'anagrafica articoli? Oppure attendo che tu finisca le attivita di import?"_ |
+
+Aurel Mrruku, 13/11 14:23Z: _"ti chiedo la cortesia di aspettare che finisco con
+l'import dei ordini."_ Fabrizio Paganelli: _"Ok, grazie."_
+
+🟢 **Released at 16:56Z the same day**, in the migration recap mail (Gmail
+`1a1d06456c06e4f8`): _"Puoi procedere con l'aggiornamento dell'anagrafica
+prodotti."_ He acted on it on Sunday 15/11 — see
+[OI-327](OI-327%20The%20blow%20product%20codes%20carry%20the%20wrong%20gruppo%20merceologico.md).
+
+🔴 **Still open, and now stated by the client in writing: `numero tranche` and
+`tipo biglietto` are not yet defined on the articles.** The mandatory-tranche rule
+that stopped him on 12/11 is unchanged, and Aurel Mrruku's answer that day remains
+the whole of ROMI's position: _"i prodotti plus devono avere delle tranche."_
+Nothing records a reply to the registry question itself, nor whether every existing
+`plus` product now carries a `Numero tranche`.

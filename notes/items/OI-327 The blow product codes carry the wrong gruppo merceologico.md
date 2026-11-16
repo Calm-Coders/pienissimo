@@ -6,7 +6,7 @@ owner: Fabrizio Paganelli
 with: Aurel Mrruku
 org: both
 raised: 2026-11-03
-updated: 2026-11-03
+updated: 2026-11-16
 depends_on: [OI-309]
 blocks: [OI-320]
 source: notes/meetings/2026-11-03 Test e2e PROD.md
@@ -80,3 +80,28 @@ classification mistake silently activates a product family.
 
 - [The Articoli Salesforce article registry](../The%20Articoli%20Salesforce%20article%20registry.md)
 - [The Regole Codifica Codici Articolo workbook](../The%20Regole%20Codifica%20Codici%20Articolo%20workbook.md)
+
+## 2026-11-16 - the client re-flagged the articles himself, and the sync missed it for a day
+
+**Fabrizio Paganelli did the article cleanup on Sunday 15 November**, in Mexal,
+exactly as the 12/11 session planned:
+
+> _"ieri sono andato su Mexal e ho messo a posto alcuni prodotti perche avevamo
+> tanti codici articolo intestati alla Performance Plus che avevano natura attivo su
+> Salesforce. Io sono andato a modificare e **ho disattivato, andando a cambiare il
+> gruppo merceologico**, su tutti quegli articoli che i tutor questa mattina non
+> avrebbero dovuto vedere."_
+
+He also added `Tipo biglietto` to the Food Marketing Festival articles.
+
+🔴 **None of it had arrived by Monday morning.** The 01:00 article sync failed on
+Mexal's own nightly maintenance window — see
+[the sync window note](../The%20Mexal%20sync%20window%20and%20the%20year%20boundary.md).
+Aurel Mrruku re-ran it on the call: **109 articles returned**, and `plus_N02`'s
+description change verified at 10:03. The 16/11 journal entry records the same
+catch-up run as 110 articles.
+
+🔴 **The side effect nobody expected**: the articles the client deactivated are
+also WooCommerce catalogue articles, so shop orders now fail the product code
+match →
+[OI-366](OI-366%20Most%20Salesforce%20products%20are%20inactive%20so%20WooCommerce%20orders%20fail%20the%20product%20code%20match.md).

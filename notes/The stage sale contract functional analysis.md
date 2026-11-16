@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-11-03
-updated: 2026-11-09
+updated: 2026-11-16
 depends_on: [OI-304]
 blocks: [go-live]
 source: notes/meetings/2026-11-03 Follow-up Interno.md
@@ -276,3 +276,26 @@ not in the artifact, and the client left no comment in it.
 is committed elsewhere from December →
 [OI-349](items/OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).
 Pienissimo Live is **15 days** away.
+
+## 2026-11-13 - approved, and it has a deadline the event sets
+
+🟢 **The functional analysis is approved by the client.** Elena Spini's status post
+to `#tproj-pienissimo`, 13/11 19:22:51 CET: _"**Contratti da palco: analisi
+funzionale approvata.** Li trattiamo come primo rilascio della Fase 2, da portare in
+produzione **prima di Pienissimo Live**."_
+
+🔴 **The deadline is the event, not a release plan.** Pienissimo Live runs
+**24-26 November**. Her red flag, same post: _"il requisito e arrivato a ridosso del
+go-live. Se non sono in produzione prima di Pienissimo Live, **le vendite da palco
+restano senza contratto automatico**."_
+
+⚠ **It is being built against an unapproved Fase 2** — _"non abbiamo ancora la
+conferma, ma abbiamo gia iniziato a lavorare sul primo rilascio per la scadenza
+dell'evento"_. See
+[OI-342](items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md)
+and
+[OI-343](items/OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md).
+
+Elisa Migliano asked for both cases to be tested on the 16/11 call — _"vendita da
+palco che non vendita da palco"_, and Sabatino Rinaldi: _"le abbiamo tutti e due, le
+farei con entrambi"_ — and the call ran out of time before either was tried.

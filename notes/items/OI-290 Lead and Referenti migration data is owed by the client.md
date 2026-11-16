@@ -599,7 +599,7 @@ confirmed by the client.** It closes into two successors:
 |                                |                                                                                                                                                                                                                                 |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | The design                     | [OI-351](OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md) — standard Lead, `Lead from Zoho` + `Referenti Marketing`, list view `Lead - Referenti Marketing`, cleanup on the client |
-| The blocker and its workaround | [OI-352](OI-352%20The%20fifty%20thousand%20referenti%20leads%20are%20loaded%20with%20fake%20company%20and%20VAT%20values.md) — `Company` and `Partita IVA` are mandatory, so ~50,000 rows load with invented progressive values |
+| The blocker and its workaround | [OI-352](OI-352%20Referenti%20leads%20were%20loaded%20with%20a%20placeholder%20company%20and%20no%20VAT%20value.md) — `Company` and `Partita IVA` are mandatory, so ~50,000 rows load with invented progressive values |
 
 Sabatino Rinaldi, **2026-11-10 08:07:34Z**: _"la decisione presa con la direzione e
 quella di inserirli come lead con un flag Zoho: true … Questi Lead non dovranno

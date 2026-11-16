@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-06
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: [OI-304]
 blocks: []
 source: Gmail 1a1b03ba790c53c6, 2026-11-06T09:41:00Z
@@ -142,3 +142,37 @@ parte comunque l'hanno accettata, quindi … c\[e\] la devono pagare"_.
 ⚠ ROMI's own paperwork still contradicts ROMI's position, as established on 09/11:
 Elena Spini's `#tproj-pienissimo` status dates the requirement to **30/10**, not the
 02/11 call the disputed sentence cites.
+
+## 2026-11-13 - the analysis is approved and it is being built, before Fase 2 is agreed
+
+🟢 **The functional analysis is approved.** Elena Spini's status post to
+`#tproj-pienissimo`, 13/11 19:22:51 CET:
+
+> _"**Contratti da palco: analisi funzionale approvata.** Li trattiamo come **primo
+> rilascio della Fase 2, da portare in produzione prima di Pienissimo Live**."_
+
+So the thing the client disputed as outside the Fase 1 Blueprint is now agreed work
+with a delivery window, and ROMI has started it. Her own red flag on the same post:
+
+> _"Contratti da palco: il requisito e arrivato a ridosso del go-live. **Se non
+> sono in produzione prima di Pienissimo Live (24-26/11), le vendite da palco
+> restano senza contratto automatico.**"_
+>
+> _"Fase 2: non abbiamo ancora la conferma, ma abbiamo gia iniziato a lavorare sul
+> primo rilascio per la scadenza dell'evento."_
+
+🔴 **The Blueprint dispute itself is still unanswered — an eleventh day.** Nothing
+in this window records ROMI accepting or contesting the client's claim. Meanwhile
+ROMI took the opposite position on a different point in writing: the 13/11
+Opportunity change is described to the client as _"**in deroga a quanto previsto nel
+Blueprint**"_ — see
+[the decision](../decisions/Decision%20-%20the%20Opportunity%20is%20won%20at%20the%20first%20collected%20invoice.md).
+Both claims about what the Blueprint covers are now live at once, from opposite
+directions.
+
+⚠ **Pienissimo Live is 24-26 November**, not the single date of 24/11 carried in
+earlier records. Eight days from this sweep, with the release unscheduled and
+[no developer committed for December](OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).
+
+Elisa Migliano wanted both cases tested on the go-live call — _"vendita da palco
+che non vendita da palco"_ — and the call ran out of time before either.

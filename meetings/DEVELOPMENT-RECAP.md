@@ -9222,6 +9222,140 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, attaching `Ordini non ins
 
 🔴 `#tproj-pienissimo` silent a fifth consecutive sweep · ⚠ Fathom returned nothing a thirty-fourth consecutive run · the Slack canvas is unchanged since 20.08.2026, **78 days** · 🔴 the dev group's own 5 November report is **unanswered a second day** · 🔴 [#337](open-items.md) lead conversion in Prod has no owner and the #286 fix on `Devmain_LeadChecks` is unmerged a fourteenth day · 🔴 [#313](open-items.md) the client has still been told nothing, a fourth day · 🔴 [#312](open-items.md) Anticipay unmentioned by any source, a fourth day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a sixteenth run · 🔴 `lead-web-to-lead (2).html` still unopened and unexplained · **the requirement register is untouched and stays v1.6**; the tranche obligation and now the two mandatory picklists are the v1.7 candidates.
 
+## 82. Update 2026-11-16 — the users went live, the Opportunity rule was rewritten mid-release, and the first real shop order failed
+
+Nightly `requirements-check`, watermark **2026-11-12T22:00Z**, four days — the go-live
+window. **Two Pienissimo meetings were drilled, both from full transcripts**: the 13/11
+**Richiesta call urgente** (14:03 CET, 00:27:14, called by the client that lunchtime) and
+the 16/11 **Ultimi Check PROD** (09:14 CET, **02:17:59**, six people, the first morning of
+real use). Items **#365 → #372** opened; **#338, #355 and #360 closed**; #352 retitled
+because its premise turned out to be false.
+
+### The Opportunity is now won at the first collected invoice, and it cannot go back
+
+The client called an urgent meeting at 13:05 on Friday 13 November, in the middle of the
+final production release, and opened it by taking the blame: Sabatino Rinaldi — _"nostra
+culpa perché c'è stato tra di noi non ci siamo capiti e sta roba non va bene."_ The rule as
+built was the rule as specified: an Opportunity closed won when the order was paid in full.
+
+Elisa Migliano gave the business reason — a Performance Plus sold over twelve monthly
+tranches only closes at the twelfth, and _"questo è lato commerciale sbagliato … non è
+proprio un dato corretto a livello statistico, a livello commerciale, a livello
+marketing."_ The new rule: **Vinta at the first collected invoice**, explicitly the first
+*invoice* and not the first tranche, because one invoice can carry several tranches.
+WooCommerce included. It was built the same evening.
+
+ROMI put it in writing within the hour. Elena Spini's mail of 13/11 14:46:20Z calls it
+_"**in deroga a quanto previsto nel Blueprint**"_ and closes _"altrimenti procediamo con il
+rilascio come descritto."_ 🔑 That is ROMI's formal position on the record — and it sits
+awkwardly beside the client's own live claim that the stage sale contract *was* inside the
+Blueprint, which ROMI has still not answered.
+
+🟢 **It was proved end to end in production on 16 November**, on a real order: a
+Performance Plus quote with four tranches, signed through DocuSign, the order into Mexal,
+part-invoiced, the first invoice paid. The invoice and its scadenza went paid, the order
+correctly stayed out of `Fatturato` because not everything was invoiced, and the
+Opportunity went `Vinta`. Fabrizio Paganelli — absent from the call that decided it —
+restated the general rule himself and had it confirmed.
+
+🔴 **What it costs.** The Opportunity never comes back. Aurel Mrruku said so three times:
+_"non c'è nessuna casistica che mi fa portare indietro l'opportunity."_ Worse, a manual
+rollback is unrecoverable, because the later payments do not re-fire a rule that triggers
+only on the first. The case that needs it — a payment registered by mistake and reversed in
+Mexal — is the client's own example, quoted second-hand while its author was elsewhere.
+The agreed answer is a System Admin editing by hand, with _"dei dati che non matciano con le
+logiche che avete implementato."_ To allow even that, **the editing lock on a won
+Opportunity's order, lines and assets was relaxed**. The invoice-date rule that would fix it
+properly is parked on a Fase 2 that is still unapproved. No admin runbook exists.
+
+### Three things broke on the first morning
+
+**The nightly Mexal syncs had failed**, and the cause is new and not ROMI's: Mexal runs its
+own nightly procedures that eject users. Fabrizio Paganelli — _"ci sono delle procedure che
+girano in notte su Mexal che **buttano fuori gli utenti** … quindi qualsiasi procedura non
+funziona."_ The 01:00 and 02:00 runs returned HTTP 500; the 03:00 quote reminder, which does
+not call Mexal, succeeded. Re-run on the call, 109 articles came through. The jobs then
+moved to two rounds a day, which the client approved in writing the same morning as
+`PUNTO 5` — ⚠ asking for the afternoon round to end at **14:00**, where what was deployed
+runs 13:00 to 13:30, and nobody has told him.
+
+**Lead conversion threw again in production, at 09:16:51Z**, with a different and broader
+error than on 5 November — insufficient access on the Opportunity record itself, not merely
+its fields. The cause is audible in the room: a named user was converting leads before
+anyone had told the team how to work. Marco Montesi — _"li ho già avvisati tutti stamattina
+… **anche perché non sappiamo come muoverci**."_ The only mitigation applied was asking
+people to stop.
+
+🔴 **The first real WooCommerce order never reached Salesforce.** Sabatino Rinaldi revealed
+that the plugin flag had **never been switched on** — five days after the connection was
+reported live — switched it on during the call, placed a real order, and it died on a
+product code match. Three substitute article codes were tried and every one was inactive,
+because Fabrizio Paganelli had spent Sunday changing the Mexal gruppo merceologico on the
+Performance Plus articles so the tutors would not see them, and the sync turns that into
+inactive products. Nobody had compared the deactivated set against what the shop sells. The
+retest was deferred to the afternoon and this sweep found no record of it. **The shop is
+live with a mismatched catalogue.**
+
+### The migration is done, and the fake VAT values were never used
+
+8,307 Aziende, 4,873 Locali, 17,775 Contacts, **49,811 Leads**, 63 orders in and 32
+deleted, 10,969 invoices, 15,670 scadenze, **19,574 tickets available and not one ticket
+mail sent**. 🟢 Every open end of the order load closed: the 28 orders of six unknown
+customers stay permanently out by the client's own choice, order 77241's date is confirmed,
+and the 33 invoices with no customer are explained — their 2022-23 orders were never
+imported, and an invoice reaches its customer through its order.
+
+🔑 **The invented company and VAT values promised to the client on 11 November were never
+written.** `Partita IVA` is not mandatory on Lead; only `Company` is. Aurel Mrruku caught it
+opening the 13/11 call, Elena Spini conceded it on the record — _"mi ha ripreso, ha detto
+che si può mettere anche blank, quindi è ancora meglio"_ — and the three of them chose
+`Referente Importato` as the placeholder instead. ⚠ The mail the client formally approved
+still describes a cleanup of values that will never exist.
+
+🔴 **The marketing consent on those 49,811 leads was settled in two lines of a call.** Aurel
+Mrruku: _"sì, li metto tutti a true"_; Sabatino Rinaldi: _"chiaro, per forza tutti."_ No
+written basis was asked for or given, and 41,880 of those rows carried no consent in the
+source file at all.
+
+### Metadata typed into production, while the users worked
+
+Four Product2 picklists were edited inside Production Setup during the call, with the
+developer dictating the click path: `Anno accademico`, which existed only on Campaign;
+`Tipo bundle`, which gained a value one of the client's own people argued against;
+`Evento di origine`, which **had no values at all** and whose dependency had to be rebuilt
+by hand; and the Bundle record-type permission, granted live. None of it is in `force-app`,
+and the suspicion that the slash in `2026/27` breaks the dependency was raised and dropped
+without a verdict.
+
+### What is owed, and when
+
+The **18 November release** carries the quote creation on WooCommerce orders, the Italian
+date format on the client-facing quote PDF — which Fabrizio Paganelli asked be prioritised
+because _"questi documenti hanno una rilevanza verso i nostri clienti"_ — and the manual
+Mexal sync buttons the client asked for in writing. **Elena Spini's change list is due
+Friday 20 November**, and ⚠ a second, newer workbook of changes from the tutor tests was
+sent on 13 November and is not in the repository.
+
+🟢 Two commits exist on `DevAnita16` and nowhere else: a home-page Mexal sync panel with
+`MexalSyncController.cls` (`f2a3294`) and Italian `LeadSource` labels (`13b16da`), both
+unmerged and undeployed as of this sweep.
+
+### Still unanswered, and now urgent
+
+Fase 2 was not approved on 13 November despite the reminders. 🔑 Sabatino Rinaldi named who
+decides — **Daniela Morgese** — and Elena Spini set the expectation herself:
+_"vediamo risposta entro … sparo martedì"_, i.e. 17 November. Meanwhile 🟢 the stage sale
+contract analysis **is approved** and is being built as the first Fase 2 release, due in
+production **before Pienissimo Live on 24-26 November**, with no developer committed for
+December.
+
+And new business is still being keyed into Zoho: the commercial team was told to re-enter
+its Zoho opportunities by hand, the Pienissimo Live registration forms are built and tested
+and waiting on one word from Fabrizio Mastracci, and the consent field those forms should
+write has gone unnamed for a fourth window. 🔴 **The project manager is on leave from 16 to
+18 November**, so for the first three days of real use the only ROMI presence on this
+project is the developer.
+
 ## 81. Update 2026-11-12 — the migration is loaded tomorrow, and the client's commercial lead has resigned
 
 Nightly `requirements-check`, watermark **2026-11-09T22:00Z**, three days. ⚠ **A run did

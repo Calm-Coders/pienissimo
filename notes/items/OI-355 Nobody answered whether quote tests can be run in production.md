@@ -1,12 +1,12 @@
 ---
 id: OI-355
 type: open-item
-status: open
+status: resolved
 owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-10
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: [OI-315]
 blocks: []
 severity: normal
@@ -58,3 +58,27 @@ Re-checked in this run: the thread carries **17 messages** and no answer to it.
 
 A one-line answer from Aurel Mrruku, with the cleanup consequence stated: whether
 quote tests in production are allowed, and if so how the records come out again.
+
+## 2026-11-16 - answered, out loud, five days late
+
+🟢 **Aurel Mrruku authorised it on the go-live call**, in so many words:
+
+> _"faccio anche sugli articoli … e **siete liberi di testare in produzione**?
+> Volete che facciamo un ordine insieme?"_
+
+Fabrizio Paganelli: _"si, che io avrei piacere"_ — and the next hour and a half was
+exactly that: a Performance Plus quote with four tranches, signed through DocuSign,
+the order into Mexal, part-invoiced, the first invoice paid, the Opportunity
+verified Vinta. Sabatino Rinaldi placed a real WooCommerce order in parallel.
+Fabrizio Paganelli had already announced the intention: _"io e Elisa facciamo un po'
+di ordini in produzione per vedere che vada tutto bene."_
+
+So the question of **10 November** — _"i test di inserimento preventivi li possiamo
+fare direttamente in produzione?"_ — was answered on **16 November**, by doing it
+together, with the developer driving. **Status → resolved.**
+
+⚠ **The silence still cost something.** Between 10 and 16 November the client had no
+answer and the reasonable reading was yes; what, if anything, he inserted in that
+window is not established. And the testing leaves records in a live org that nobody
+owns — see
+[OI-315](OI-315%20Production%20test%20records%20cannot%20be%20deleted.md).

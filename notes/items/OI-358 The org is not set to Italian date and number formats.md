@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-12
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: []
 blocks: []
 severity: high
@@ -80,3 +80,42 @@ Row 1 of `Pienissimo_Recap_Modifiche_2026-11-12.xlsx`, sent 12/11 18:43Z:
   a date or an amount.
 - A decision on whether this lands before or after the 16/11 start: the commitment
   says _"inizio settimana prossima"_, which is **after** the users begin.
+
+## 2026-11-16 - it is on the client-facing quote PDF, and it waits for the 18 November release
+
+🔴 **The American date format reaches the client's own customers.** Fabrizio
+Paganelli, looking at a quote PDF generated and signed on the go-live call:
+
+> _"qui non abbiamo cambiato la data"_
+>
+> _"perche se i ragazzi iniziano a mandare via gli ordini, dopo non abbiamo degli
+> interlocutori che sono ad un livello sufficiente da capire che **questo qui e un
+> formato americano** … **visto che questi documenti hanno una rilevanza verso i
+> nostri clienti, dagli la priorita**, se riesci a sistemarlo anche in giornata."_
+
+Aurel Mrruku: _"ci sto gia lavorando"_ — but not today:
+
+> _"in giornata non riesco perche c'ho gia **il rilascio del 18** … il 18 porto
+> anche questo cambiamento su quel rilascio, cosi non faccio due volte il
+> rilascio."_
+
+Fabrizio Paganelli accepted: _"facciamolo domani mattina."_ ⚠ **The two statements
+do not agree** — "tomorrow morning" is the 17th and the release is the 18th — and
+nothing resolves which.
+
+🔑 **The 18 November release** carries the quote creation on WooCommerce orders, and
+now this. Aurel Mrruku also expects to finish Elena Spini's whole change list
+**by Friday 20 November**: _"penso che entro venerdi riesco a finire tutto quello che
+m'ha detto, e c'ho il 18."_
+
+🟢 **Partial movement in source**: commit `13b16da`, **Anita Aga, 2026-11-16 18:01
+CET, on `DevAnita16` only** — _"changed the labels of the picklists values in
+italian"_, a `LeadSource.standardValueSet` with 59 lines of Italian labels. That
+covers the lead source list the client asked to have in Italian, not the org locale.
+**Not on `DevMain`, not merged, not deployed.** See
+[the lead source values](../The%20Pienissimo%20lead%20source%20values.md).
+
+**Still open:** the org locale itself, the number separators, and whether the fix is
+a locale change or per-field formatting. It is row 1 of
+[the client recap](../The%20Pienissimo%20recap%20of%20open%20changes.md) and it has
+now been seen by the client's customers.

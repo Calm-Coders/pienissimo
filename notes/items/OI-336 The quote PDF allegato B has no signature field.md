@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-04
-updated: 2026-11-04
+updated: 2026-11-16
 depends_on: []
 blocks: []
 source: notes/meetings/2026-11-04 Continuazione Test e2e PROD.md
@@ -72,3 +72,31 @@ it reaches the customer, since the quote PDF is the client-facing document.
 
 **Closing it:** a stated answer on how many signature fields the quote carries and
 where, the misspelling fixed, and the client's line-by-line review returned.
+
+## 2026-11-16 - the client says a third signature is missing, and ROMI has no record of it
+
+Raised again by Fabrizio Paganelli mid-signature on the go-live call, and this time
+with a count:
+
+> _"hai anche la terza firma su quello dei contratti? Ti ricordi che avevamo visto
+> che c'era una firma che non veniva inserita?"_
+>
+> _"quando nel contratto dei corsi, l'anno con pienissimo, ci sono **tre firme** che
+> il cliente deve fare: una sul contratto vero e proprio, una sull'allegato. **La
+> terza firma manca**, l'avevamo vista insieme."_
+
+🔴 **Aurel Mrruku has no record of it:** _"Non ho tracciato questa modifica"_ ·
+_"**me la sono persa** se l'abbiamo visto insieme."_
+
+**What was agreed instead of a fix:** the client sends a mail with the contract as
+they hold it and the missing spot marked — _"mi mandate una mail … mi dite con un
+cerchio in rosso qualcosa, serve un'altra firma."_ Nothing in this sweep records
+that mail sent.
+
+⚠ Fabrizio Paganelli then thought he saw the same gap on the document he was
+signing live: _"mi sa che qui c'e la terza firma anche in questo qui"_, before
+completing the signature. So it is not established whether the defect is one
+missing field on one template or a pattern across the contract documents.
+
+**No owner and no date.** This is the second window in which the same signature
+defect has been raised and left unassigned.

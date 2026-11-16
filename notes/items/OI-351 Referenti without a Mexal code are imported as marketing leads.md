@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Sabatino Rinaldi
 org: both
 raised: 2026-11-10
-updated: 2026-11-13
+updated: 2026-11-16
 depends_on: [OI-290, OI-352]
 blocks: [go-live]
 severity: high
@@ -68,7 +68,7 @@ Two routes were put to Pienissimo and **neither has been chosen**:
    arrived 12/11 10:30Z and holds **67,154 rows**; it was not opened by this run
    because it carries real customer records.
 3. 🔴 **They cannot be converted as loaded** — no Partita IVA, so no qualification
-   and no conversion. See [OI-352](OI-352%20The%20fifty%20thousand%20referenti%20leads%20are%20loaded%20with%20fake%20company%20and%20VAT%20values.md).
+   and no conversion. See [OI-352](OI-352%20Referenti%20leads%20were%20loaded%20with%20a%20placeholder%20company%20and%20no%20VAT%20value.md).
 4. ⚠ **Aurel Mrruku recorded a dissent**, on the 10/11 call: _"Ma e sbagliato, pero
    fa niente. Non non andra cosi. **Assicuro che non andra cosi.**"_
 
@@ -99,7 +99,7 @@ they should be loaded unless Elena Spini says otherwise.
 in Prod** (deploy `0AfSW000001M2U10AK`), with edit access on `Full_Permission`.
 `Lead_from_Zoho__c` was already there. 🔑 **`Partita_IVA__c` is not mandatory on Lead in
 Prod** - only `Company` is, natively - so the invented VAT values promised in
-[OI-352](OI-352%20The%20fifty%20thousand%20referenti%20leads%20are%20loaded%20with%20fake%20company%20and%20VAT%20values.md)
+[OI-352](OI-352%20Referenti%20leads%20were%20loaded%20with%20a%20placeholder%20company%20and%20no%20VAT%20value.md)
 are not technically needed; Elena Spini has not been told. Of the 49,822 rows, 9,900
 carry a company name. Still open: the consent flow, the 4,617 opt-outs, the sharing
 design, and the cleanup option.
@@ -123,7 +123,7 @@ now holds 49,822 Leads in all. No Mexal or Anticipay job, no integration log.
   Opt-In was created. Marketing must still handle consent for these people.
 - `Company` is the contact's company for 9,900 rows and **"Referente Importato"** for
   39,922; `Partita_IVA__c` was left empty - the invented progressive values of
-  [OI-352](OI-352%20The%20fifty%20thousand%20referenti%20leads%20are%20loaded%20with%20fake%20company%20and%20VAT%20values.md)
+  [OI-352](OI-352%20Referenti%20leads%20were%20loaded%20with%20a%20placeholder%20company%20and%20no%20VAT%20value.md)
   were not used.
 - 🔴 Still open: the sharing design (the client asked that sales not work these Leads;
   the owner is the Amministratore and nothing hides them from commercial users), and the
@@ -189,3 +189,44 @@ Prod now holds 53,815 Leads: 43,039 Referenti, 10,765 Zoho Leads, 11 older.
 ✅ The `Company` error above is corrected: no Lead carries a Zoho id any more.
 🔴 Still open: the consent values changed by another hand at about 15:00 CET were not
 reverted, the sharing question, the cleanup option, and what becomes of the 407 left out.
+
+## 2026-11-13 to 16 - loaded, with three rulings and one consent decision
+
+🟢 **The load happened on 13 November**: **49,811 of 49,822** rows in as Leads,
+11 rejected (6 sharing an email with an existing Contact, 5 stopped by the custom
+duplicate rule). `Lead from Zoho` and `Referenti Marketing` true, status `New`,
+record type `Standard`. **No fake Partita IVA** — see
+[OI-352](OI-352%20Referenti%20leads%20were%20loaded%20with%20a%20placeholder%20company%20and%20no%20VAT%20value.md).
+
+**Three rulings that were not in the record before:**
+
+| Question | Ruling | Source |
+| --- | --- | --- |
+| A referente without a company and a Zoho lead sharing an email | **merged into one Lead**, keeping the richer record — _"non ha senso contattare la stessa persona due volte"_ | Aurel Mrruku, 16/11; Sabatino Rinaldi: _"hai fatto bene anche a fare il merge"_ |
+| The **296** rows whose email already belongs to a Contact | left out, and to be **worked as opportunities, not leads** — Sabatino Rinaldi: _"se gia presente nel CRM c'e gia il contatto, c'e gia l'azienda, **e giusto che venga trattato come un opportunity e non come un lead**"_ | 16/11 call |
+| The **111** probable duplicates | left out, same email | 16/11 call |
+
+The full Zoho lead file was **10,765 rows**, of which **6,772** were already
+present as referenti and were updated. The 407 rows left out were sent to the
+client as `Lead non importati.xlsx` on 13/11 14:48Z (Gmail `1a1cf4f445a4aaf0`).
+⚠ **Attachment not opened** — real customer records.
+
+🔴 **The marketing consent was decided in two lines on a call and then applied to
+every record.** On the 13/11 urgent call:
+
+> **Aurel Mrruku:** _"sui lead dobbiamo tracciare … i flag per comunicazione
+> marketing"_ → _"**Si, li metto tutti a true.**"_
+>
+> **Sabatino Rinaldi:** _"Chiaro, per forza tutti."_
+
+Reported to the client at 14:09Z the same day as _"**Consensi a vero 49.811**"_. The
+codex session of 13/11 then set both consent checkboxes true on all 49,818
+unconverted Leads in Prod on the user's explicit instruction, and restored the
+converted ones. ⚠ **No written client confirmation of the consent basis exists** —
+only the transcript line above, and a figure in a status mail. Where the consent came
+from for the 41,880 rows whose file held none was never asked.
+
+🔴 **Still unanswered**: which cleanup option, A or B; the handling rule for the
+rows whose Mexal code matches no Azienda (100 as reported on 16/11, 107 in the
+earlier record — the discrepancy is unexplained); and any visibility design for
+50,000 Leads now sitting in a production org in daily use.

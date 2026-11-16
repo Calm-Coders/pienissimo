@@ -4,7 +4,7 @@ type: object
 status: active
 owner: Aurel Mrruku
 org: ROMI
-updated: 2026-08-27
+updated: 2026-11-16
 source: git log 2026-08-03..2026-08-13 + force-app/main/default
 evidence: repository working tree on DevMain, commit 8712344
 ---
@@ -141,3 +141,26 @@ detail and the alternatives not yet ruled out:
 ⚠ Unlike the earlier entries in this note, which are bookkeeping problems, this
 one is **breaking a running feature**. Lead conversion does not complete in that
 sandbox.
+
+## 2026-11-16 - four more pieces of Product2 metadata were typed into Prod
+
+On the go-live call, while the client built his first production bundle, four
+picklist changes were made inside Production Setup with the developer reading out
+the click path. None came from source:
+
+- `Product2.Anno accademico` — `2026/27`, `2027/28`, `2028/29` added; the values had
+  existed **only on Campaign**, and Aurel Mrruku confirmed _"li abbiamo creati solo
+  in UAT"_
+- `Product2.Tipo bundle` — **Performance Plus** and a disputed catch-all
+  **altri pacchetti** added
+- `Product2.Evento di origine` — had **no values at all**; its dependency on
+  `Anno accademico` was rebuilt by hand after the controlling API name changed
+- the **Bundle record type** permission, granted live to the client's
+  administration user
+
+Detail, quotes and the unresolved slash-in-API-name question in
+[OI-367](../items/OI-367%20Picklist%20values%20and%20a%20dependency%20were%20created%20directly%20in%20production.md).
+
+⚠ This is the pattern this note exists to track, happening on the day the client's
+users started, with ROMI guiding it. The branch and the org now disagree on four
+pieces of Product2 metadata, and UAT has not been compared.

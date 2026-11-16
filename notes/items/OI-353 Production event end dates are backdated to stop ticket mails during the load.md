@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli, Elisa Migliano
 org: both
 raised: 2026-11-10
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: [OI-230]
 blocks: [go-live]
 severity: high
@@ -83,3 +83,40 @@ here.
 - Confirmation to the client that the dates on their own records are temporary —
   ⚠ it was agreed on 10/11 that they would be told _"prima di fare la
   migrazione"_; they were told on 12/11 and proposed it themselves, so this is met.
+
+## 2026-11-16 - the backdating worked, and the restore is explicitly held off
+
+🟢 **It did what it was for.** Aurel Mrruku, on the go-live call, after checking:
+_"**nessun biglietto e partito, quindi nessuna comunicazione mail e partita.**
+Questo anche grazie al lavoro che hai fatto te, Fabrizio, con le edizioni."_
+
+🔑 **The rule for turning the sends back on was stated plainly** for the first
+time:
+
+> _"se vogliamo inviare dei biglietti dobbiamo mettere **la data di invio biglietto
+> nel passato** e **la data dell'evento deve essere nel futuro**, fine evento
+> praticamente."_
+
+So two conditions, on two objects, and the backdated event end dates break the
+second one.
+
+**What is waiting on it**, from Aurel Mrruku's 13/11 recap mail:
+
+| Event | Invitations ready | Event date |
+| --- | --- | --- |
+| Pienissimo Live 2026 | **245** | 24/11 (24-26/11 per the 13/11 status post) |
+| Pienissimo Intensive 2026 | **64** | 01/12 |
+
+> _"Oggi le date sono quelle di default, quindi per loro non partira nessuna mail.
+> **Se impostate una data uguale a oggi, partira un'unica mail a tutti gli inviti
+> pronti di quell'evento.**"_
+
+🔴 **The client deliberately left them off on 16 November.** Sabatino Rinaldi:
+_"**Oggi non vanno attivati.**"_ Aurel Mrruku: _"se vogliamo, pero no, non
+vogliamo, ma l'ho tracciato qua."_
+
+⚠ So the restore date is still unowned and undated, and now the risk has sharpened:
+**309 invitations across two events are ready and silent**, Pienissimo Live is eight
+days out, and the only mechanism is a single mail to everyone at once the moment
+somebody sets a date. The _"non so, il 30 di novembre"_ of 12 November remains the
+only date anyone has said aloud, and it falls after Pienissimo Live.

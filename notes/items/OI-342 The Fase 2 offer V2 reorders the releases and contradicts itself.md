@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Galotto
 org: ROMI
 raised: 2026-11-05
-updated: 2026-11-09
+updated: 2026-11-16
 depends_on: [OI-308]
 blocks: []
 source: Drive 1_ilgbQZf_2TXHrJ2DNiRQdgc9ZY4FtQAq7tDqLvZ6j0, read 2026-11-05
@@ -164,3 +164,34 @@ dallo start dei lavori"_.
 - **A ruling on whether `150 giornate` is still the number** after +1 release and
   +17 days.
 - **A developer for R1** → [OI-349](OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).
+
+## 2026-11-16 - the 13 November approval did not happen, and the decision has a name
+
+🔴 **No answer, four days after the date it was expected.** Elena Spini's status
+post to `#tproj-pienissimo`, 13/11 19:22:51 CET:
+
+> _"**Fase 2:** la proposta e stata presentata al cliente, ma **non abbiamo ancora
+> risposta nonostante i solleciti**. Abbiamo gia iniziato a lavorare sui contratti
+> da palco per l'urgenza dell'evento."_
+
+🔑 **The decision maker is named for the first time.** On the 13/11 urgent call
+Elena Spini chased the reply to **Andrea Galotto's mail of Tuesday 10 November** —
+_"nessuno ci ha risposto"_, _"considera che noi stiamo gia facendo cose che sono in
+quel documento"_. Sabatino Rinaldi:
+
+> _"**bisogna che lo legga Daniela**"_ · _"ne abbiamo parlato oggi"_ ·
+> _"gliel'ho fatto stamattina fino a un'ora fa"_ · _"e qui di fianco"_ ·
+> _"sollecitiamo e prima possibile"_
+
+That is [Daniela Morgese](../people/Daniela%20Morgese%20-%20Pienissimo%20direction.md),
+the client's direction. Elena Spini set the next expectation herself: _"lo stiamo
+analizzando internamente. Vediamo risposta entro … **sparo martedi**"_ — i.e.
+**17 November**, which is tomorrow as of this sweep. She declined a written chaser
+when Sabatino Rinaldi offered to receive one: _"mi basta che mi rispondete."_
+
+⚠ **ROMI is building against an unapproved document and has said so to the client
+in writing and on the call.** The stage sale contract is being developed as the
+first Fase 2 release because the event will not wait — see
+[OI-343](OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md).
+Neither the `150 giornate` figure nor the release order has new evidence in this
+window.

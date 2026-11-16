@@ -6,7 +6,7 @@ owner: unassigned
 with: Aurel Mrruku
 org: ROMI
 raised: 2026-11-05
-updated: 2026-11-05
+updated: 2026-11-16
 depends_on: [OI-286]
 blocks: []
 severity: gating
@@ -89,3 +89,42 @@ object, not the field, and **no org was opened in this session**. The user id
   — the same handler, the same class of defect, in UAT
 - [OI-170](OI-170%20DevMain%20is%20ahead%20of%20UAT%20on%20the%20Lead%20conversion%20and%20quote-line%20paths.md)
 - [OI-307](OI-307%20The%20Lead%20import%20needs%20the%20duplicate%20rules%20disabled.md)
+
+## 2026-11-16 - it threw again, on the first morning of real use
+
+🔴 **A second production occurrence, 2026-11-16 at 09:16:51Z** (Gmail
+`1a1e3a51e6483f23`), organisation `00Dbl000005BSMH`,
+`ability-customization-52152.my.salesforce.com` — Prod again — running user
+**`005SW00000R9lD3`**, a different user from the 5 November instance:
+
+```
+LeadConversionTrigger: execution of AfterUpdate
+caused by: System.DmlException: Update failed. First exception on row 0 with
+id 006SW00000daZ2SYAU; first error: INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY,
+insufficient access rights on cross-reference id: 006SW00000daZ2S: []
+Class.LeadConversionTriggerHandler.copyConvertedFields: line 95, column 1
+Class.LeadConversionTriggerHandler.afterUpdate: line 26, column 1
+Trigger.LeadConversionTrigger: line 11, column 1
+```
+
+⚠ **It is a different error from 5 November.** That one was fields being
+inaccessible on the update; this one is
+`INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY` on the **Opportunity record
+itself** (`006…`) — the running user cannot access the converted Opportunity at
+all, not merely some of its fields. Same method, same line, broader failure.
+
+🔑 **The cause is visible in the room.** On the call that started at 09:14 CET,
+Aurel Mrruku read the job log and asked:
+
+> _"**chi stamattina ha fatto conversione dei lead?** Martina, perche in produzione
+> pure. Ma li potete fermare, per cortesia."_
+
+Marco Montesi: _"li ho gia avvisati tutti stamattina. Si vede che lei ha fatto
+qualcosa prima prima che io gli avvisassi, insomma, **anche perche non sappiamo
+come muoverci** … perche alcune cose qui non vanno e non girano e non funzionano."_
+
+So a named user was converting leads in production before anyone had told the team
+how to work, the trigger died, and the only mitigation applied was asking people to
+stop. **The defect is unfixed, the org is in use, and the user who hit it has not
+been told what happened to her record.** See
+[the 16/11 session](../meetings/2026-11-16%20Ultimi%20Check%20PROD.md).

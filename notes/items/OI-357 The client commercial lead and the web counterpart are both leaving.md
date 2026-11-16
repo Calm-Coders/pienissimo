@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-11-12
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: []
 blocks: [go-live]
 severity: gating
@@ -83,3 +83,36 @@ five hours later, Elena Spini to Aurel Mrruku:
   Sabatino Rinaldi leaves — ROMI holds none of it.
 - See [Marco Montesi](../people/Marco%20Montesi%20-%20Pienissimo%20sales.md)
   and [Sabatino Rinaldi](../people/Sabatino%20Rinaldi%20-%20Pienissimo%20project%20lead.md).
+
+## 2026-11-16 - both are still working, both still hold their files, still no dates
+
+**Marco Montesi was on the go-live call**, added to it by Fabrizio Paganelli, four
+days after his resignation was reported to ROMI in a meeting. What he did there:
+
+- 🔴 **asked for and received production access** — Elisa Migliano, to the room:
+  _"Marco ha chiesto gli accessi perche a loro serve, a Marco gli serve l'accesso
+  per guardare gli ordini della eventi sulla piattaforma. Ma io glieli ho dati."_
+- **took charge of the commercial start**: _"volevo capire se in questa fase i
+  commerciali possono spostare un po' di opportunita"_ → _"intanto gli faccio
+  creare le nuove opportunity"_ → _"**io intanto gli faccio caricare le opportunity
+  che avevano su Zoho**"_
+- **raised the DocuSign registration problem** and accepted it on behalf of his own
+  team → [OI-369](OI-369%20DocuSign%20asks%20signers%20to%20register%20and%20the%20client%20expects%20to%20lose%20them.md)
+- said of his own team, on day one: _"**non sappiamo come muoverci**"_ and
+  _"alcune cose qui non vanno e non girano e non funzionano"_
+
+**Sabatino Rinaldi** activated the WooCommerce plugin in production, ran the shop
+test, holds the Pienissimo Live registration forms waiting on ROMI
+([OI-371](OI-371%20Opportunities%20are%20re-keyed%20from%20Zoho%20while%20the%20web%20forms%20wait%20for%20ROMI.md)),
+and at 15:54Z the same day asked ROMI to send him
+[the Mexal integration APIs](OI-368%20The%20client%20asked%20for%20the%20Mexal%20integration%20APIs%20by%20mail.md)
+_"per dei collegamenti interni"_.
+
+🔴 **Still nothing on either departure**: no leaving date, no successor, no
+handover, and no written acknowledgement by ROMI that it was told. The WooCommerce
+plugin configuration and the shop credentials ROMI does not hold are still
+Sabatino Rinaldi's, and the twenty Sales change requests and the undefined home
+page are still Marco Montesi's.
+
+⚠ Their person notes are unchanged and should be revisited the moment a date
+exists.

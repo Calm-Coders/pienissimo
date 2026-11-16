@@ -9572,6 +9572,146 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 82. Aggiornamento 16/11/2026 — gli utenti sono partiti, la regola dell'Opportunity è stata riscritta durante il rilascio, e il primo ordine reale dello shop è fallito
+
+`requirements-check` notturno, watermark **2026-11-12T22:00Z**, quattro giorni — la
+finestra del go-live. **Due riunioni Pienissimo analizzate, entrambe da trascrizione
+integrale**: la **Richiesta call urgente** del 13/11 (14:03 CET, 00:27:14, convocata dal
+cliente a pranzo) e **Ultimi Check PROD** del 16/11 (09:14 CET, **02:17:59**, sei persone,
+la prima mattina di uso reale). Aperti gli item **#365 → #372**; **chiusi #338, #355 e
+#360**; #352 ritolato perché il suo presupposto era falso.
+
+### L'Opportunity passa in Vinta alla prima fattura incassata, e non può tornare indietro
+
+Il cliente ha convocato una riunione urgente alle 13:05 di venerdì 13 novembre, in pieno
+rilascio finale in produzione, e l'ha aperta assumendosi la responsabilità: Sabatino
+Rinaldi — _"nostra culpa perché c'è stato tra di noi non ci siamo capiti e sta roba non va
+bene."_ La regola costruita era la regola specificata: Opportunity vinta quando l'ordine è
+pagato per intero.
+
+Elisa Migliano ha dato la ragione commerciale — una Performance Plus venduta su dodici
+tranche mensili si chiude solo alla dodicesima, e _"questo è lato commerciale sbagliato …
+non è proprio un dato corretto a livello statistico, a livello commerciale, a livello
+marketing."_ La nuova regola: **Vinta alla prima fattura incassata**, esplicitamente la
+prima *fattura* e non la prima tranche, perché una fattura può contenere più tranche.
+WooCommerce incluso. È stata costruita la sera stessa.
+
+ROMI l'ha messa per iscritto entro l'ora. La mail di Elena Spini del 13/11 14:46:20Z la
+definisce _"**in deroga a quanto previsto nel Blueprint**"_ e chiude con _"altrimenti
+procediamo con il rilascio come descritto."_ 🔑 È la posizione formale di ROMI agli atti — e
+convive male con la contestazione, ancora senza risposta, in cui il cliente sostiene che il
+contratto da palco *fosse* dentro il Blueprint.
+
+🟢 **È stata provata end to end in produzione il 16 novembre**, su un ordine reale: un
+preventivo Performance Plus con quattro tranche, firmato con DocuSign, l'ordine su Mexal,
+fatturato in parte, la prima fattura incassata. Fattura e scadenza a pagato, l'ordine
+correttamente **non** in `Fatturato` perché non tutto era stato fatturato, e l'Opportunity in
+`Vinta`. Fabrizio Paganelli — assente dalla call che l'aveva decisa — ha riformulato lui
+stesso la regola generale e l'ha avuta confermata.
+
+🔴 **Quanto costa.** L'Opportunity non torna più indietro. Aurel Mrruku lo ha detto tre
+volte: _"non c'è nessuna casistica che mi fa portare indietro l'opportunity."_ Peggio: un
+ripristino manuale non è recuperabile, perché i pagamenti successivi non riattivano una
+regola che scatta solo sul primo. Il caso che lo richiede — un pagamento registrato per
+errore e poi stornato su Mexal — è l'esempio del cliente stesso, citato di seconda mano
+mentre il suo autore era altrove. La soluzione concordata è un System Admin che corregge a
+mano, con _"dei dati che non matciano con le logiche che avete implementato."_ Per
+permetterlo, **il blocco sulle modifiche a ordine, righe e asset di un'Opportunity vinta è
+stato allentato**. La logica sulla data fattura, che la risolverebbe davvero, è parcheggiata
+su una Fase 2 non ancora approvata. Non esiste alcun runbook per l'admin.
+
+### Tre cose si sono rotte la prima mattina
+
+**I sync notturni Mexal erano falliti**, e la causa è nuova e non è di ROMI: Mexal fa girare
+procedure notturne che buttano fuori gli utenti. Fabrizio Paganelli — _"ci sono delle
+procedure che girano in notte su Mexal che **buttano fuori gli utenti** … quindi qualsiasi
+procedura non funziona."_ I run dell'1:00 e delle 2:00 hanno dato HTTP 500; quello delle
+3:00, i promemoria preventivi, che non chiama Mexal, è andato a buon fine. Rilanciato in
+call, sono arrivati 109 articoli. I job sono poi passati a due giri al giorno, che il cliente
+ha approvato per iscritto la stessa mattina come `PUNTO 5` — ⚠ chiedendo che il giro del
+pomeriggio finisse alle **14:00**, mentre quello rilasciato gira dalle 13:00 alle 13:30, e
+nessuno gliel'ha detto.
+
+**La conversione lead è andata di nuovo in errore in produzione, alle 09:16:51Z**, con un
+errore diverso e più ampio di quello del 5 novembre: accesso insufficiente sul record
+Opportunity stesso, non solo sui suoi campi. La causa si sente nella stanza: un'utente stava
+convertendo lead prima che a qualcuno fosse stato spiegato come lavorare. Marco Montesi —
+_"li ho già avvisati tutti stamattina … **anche perché non sappiamo come muoverci**."_ La
+sola mitigazione applicata è stata chiedere di fermarsi.
+
+🔴 **Il primo ordine WooCommerce reale non è mai arrivato in Salesforce.** Sabatino Rinaldi
+ha rivelato che il flag del plugin **non era mai stato attivato** — cinque giorni dopo che il
+collegamento era stato dato per attivo — l'ha attivato durante la call, ha fatto un ordine
+reale, ed è morto sul product code match. Sono stati provati tre codici articolo sostitutivi
+e tutti risultavano non attivi, perché Fabrizio Paganelli aveva passato la domenica a
+cambiare il gruppo merceologico su Mexal degli articoli Performance Plus perché i tutor non
+li vedessero, e il sync lo traduce in prodotti inattivi. Nessuno aveva confrontato gli
+articoli disattivati con quelli che lo shop vende. Il retest è stato rinviato al pomeriggio e
+questo sweep non ne ha trovato traccia. **Lo shop è in produzione con un catalogo
+disallineato.**
+
+### La migrazione è completata, e i valori fittizi non sono mai stati usati
+
+8.307 Aziende, 4.873 Locali, 17.775 Contact, **49.811 Lead**, 63 ordini inseriti e 32
+eliminati, 10.969 fatture, 15.670 scadenze, **19.574 biglietti disponibili e nessuna mail
+biglietto partita**. 🟢 Tutti i punti aperti del carico ordini si sono chiusi: i 28 ordini di
+sei clienti sconosciuti restano fuori per scelta del cliente, la data dell'ordine 77241 è
+confermata, e le 33 fatture senza cliente sono spiegate — i loro ordini 2022-23 non sono mai
+stati importati, e una fattura raggiunge il cliente attraverso l'ordine.
+
+🔑 **I valori inventati di ragione sociale e partita IVA promessi al cliente l'11 novembre
+non sono mai stati scritti.** La `Partita IVA` non è obbligatoria su Lead; lo è solo
+`Company`. Aurel Mrruku lo ha scoperto in apertura della call del 13/11, Elena Spini lo ha
+ammesso agli atti — _"mi ha ripreso, ha detto che si può mettere anche blank, quindi è ancora
+meglio"_ — e tutti e tre hanno scelto `Referente Importato` come segnaposto. ⚠ La mail che il
+cliente ha formalmente approvato descrive ancora una bonifica di valori che non esisteranno
+mai.
+
+🔴 **Il consenso marketing su quelle 49.811 lead è stato deciso in due battute di una
+call.** Aurel Mrruku: _"sì, li metto tutti a true"_; Sabatino Rinaldi: _"chiaro, per forza
+tutti."_ Nessuna base scritta è stata chiesta né data, e 41.880 di quelle righe non
+portavano alcun consenso nel file di origine.
+
+### Metadati inseriti in produzione, mentre gli utenti lavoravano
+
+Quattro picklist di Product2 sono state modificate dal Setup di produzione durante la call,
+con lo sviluppatore che dettava il percorso: `Anno accademico`, che esisteva solo su
+Campagna; `Tipo bundle`, che ha guadagnato un valore contestato da una delle persone del
+cliente stesso; `Evento di origine`, che **non aveva alcun valore** e la cui dipendenza è
+stata ricostruita a mano; e il permesso sul record type Bundle, concesso dal vivo. Nulla di
+tutto questo è in `force-app`, e il sospetto che lo slash in `2026/27` rompa la dipendenza è
+stato sollevato e lasciato cadere senza un verdetto.
+
+### Cosa è dovuto, e quando
+
+Il **rilascio del 18 novembre** porta la creazione del preventivo sugli ordini WooCommerce,
+il formato data italiano sul PDF del preventivo che va ai clienti — che Fabrizio Paganelli ha
+chiesto di prioritizzare perché _"questi documenti hanno una rilevanza verso i nostri
+clienti"_ — e i pulsanti per il lancio manuale dei sync Mexal che il cliente ha chiesto per
+iscritto. **L'elenco di modifiche di Elena Spini scade venerdì 20 novembre**, e ⚠ un secondo
+workbook, più recente, con i punti emersi nei test tutor è stato inviato il 13 novembre e non
+è nel repository.
+
+🟢 Due commit esistono su `DevAnita16` e in nessun altro posto: un pannello di sync Mexal in
+home page con `MexalSyncController.cls` (`f2a3294`) e le etichette italiane di `LeadSource`
+(`13b16da`), entrambi non mergiati e non rilasciati al momento dello sweep.
+
+### Ancora senza risposta, e ormai urgente
+
+La Fase 2 non è stata approvata il 13 novembre, nonostante i solleciti. 🔑 Sabatino Rinaldi
+ha indicato chi decide — **Daniela Morgese** — ed Elena Spini ha posto lei stessa
+l'aspettativa: _"vediamo risposta entro … sparo martedì"_, cioè il 17 novembre. Nel
+frattempo 🟢 l'analisi del contratto da palco **è approvata** e si sta costruendo come primo
+rilascio di Fase 2, da portare in produzione **prima di Pienissimo Live, il 24-26 novembre**,
+senza alcuno sviluppatore impegnato per dicembre.
+
+E il nuovo business entra ancora in Zoho: alla squadra commerciale è stato detto di
+reinserire a mano le opportunità che aveva su Zoho, i form di iscrizione a Pienissimo Live
+sono pronti e testati e attendono una parola da Fabrizio Mastracci, e il campo del consenso
+che quei form dovrebbero scrivere resta senza nome per la quarta finestra. 🔴 **La project
+manager è in ferie dal 16 al 18 novembre**, quindi per i primi tre giorni di uso reale
+l'unica presenza ROMI su questo progetto è lo sviluppatore.
+
 ## 81. Aggiornamento 12/11/2026 — la migrazione si carica domani, e il referente commerciale del cliente è dimissionario
 
 `requirements-check` notturno, watermark **2026-11-09T22:00Z**, tre giorni. ⚠ **Un run è stato

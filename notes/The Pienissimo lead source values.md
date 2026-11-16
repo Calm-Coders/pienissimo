@@ -5,7 +5,7 @@ status: active
 owner: Marco Montesi
 org: Pienissimo
 raised: 2026-11-11
-updated: 2026-11-12
+updated: 2026-11-16
 depends_on: [OI-265, OI-340]
 blocks: []
 source: Drive 1PHX-sgHAfOHdy8RF8W3iowhXBDar8Pf8
@@ -74,3 +74,18 @@ only.
 
 ⚠ A marketing cross-check is still owed: _"Check anche lato Marketing se i campi
 forniti da Marco sono ok."_
+
+## 2026-11-16 - the Italian labels are in source, on a branch
+
+🟢 **Commit `13b16da`, Anita Aga, 2026-11-16 18:01 CET, on `DevAnita16`** —
+_"changed the labels of the picklists values in italian"_: a single file,
+`LeadSource.standardValueSet-meta.xml`, 59 lines added.
+
+This answers the client's request on
+[the Sales changes sheet](items/OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md)
+— _"Fonte dal Lead → rivedere lista e metterla in italiano + rinominare fonte in
+origine"_, whose column E reads _"inviato lista per email"_.
+
+🔴 **Not on `DevMain`, not merged, not deployed.** `DevMain` is at `4478915`.
+⚠ The rename of *fonte* to *origine* is a label change on the field, not on the
+value set, and nothing in this commit or this window shows it done.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-02
-updated: 2026-11-13
+updated: 2026-11-16
 depends_on: [OI-244, OI-290]
 blocks: [go-live]
 source: notes/meetings/2026-11-02 Tema Contratti WooCommerce.md
@@ -320,3 +320,23 @@ invoices, 7,624 orders `Incassato`, 19,574 tickets `Disponibile`, no mail trigge
 in [OI-244](OI-244%20Historical%20orders%20will%20be%20migrated%20from%20Mexal%20by%20spreadsheet.md).
 Open: the Prod nightly jobs, the Monday product flags, the six customers, and the send
 dates of Pienissimo Live 2026 and Intensive 2026.
+
+## 2026-11-16 - the Mexal order numerator is settled at 80,000
+
+🟢 **The open question about the production order numerator is answered.**
+Fabrizio Paganelli, on the go-live call, reporting work done on Friday 13 November:
+
+> _"venerdi mi sono sentito con Mirko, **ha sistemato il discorso della
+> numerazione**. Quando l'ordine entra su Mexal da Salesforce, abbiamo fatto partire
+> la numerazione **da 80.000** di modo tale che cosi sappiamo che da 80.000 in avanti
+> sono ordini di Salesforce. Quelli che hanno un numero antecedente sono ordini di
+> Zoho."_
+
+Set by **Mirko Merendi** (Kreosoft) on the Mexal side. Two orders created on the
+call came through as 80.001 and the next in sequence, so it is live and working.
+This supersedes the earlier record that the Mexal production order numerator
+started at 62.
+
+**The delta load itself completed on 13 November** — see
+[OI-360](OI-360%20Cancelled%20Mexal%20orders%20must%20be%20deleted%20from%20production.md)
+for the counts and what stayed out.
