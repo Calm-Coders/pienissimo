@@ -215,10 +215,12 @@ cost of a Mexal outage such as the HTTP 500 of the 16/11 01:00 and 02:00 runs.
   six. Deployed to Prod and UAT on 2026-11-16, and the same six jobs run in both orgs; see
   [JOURNAL.md](../../JOURNAL.md).
 - ⚠ A future deploy of a class these jobs use must abort and re-create **six** jobs, not three.
-- 🔴 **While the jobs are scheduled, `MexalIntegrationTest.schedulerRegistersTheDailyJobs` fails**
-  (_"The Apex job named "Mexal Clienti Sync - 05:15" is already scheduled"_, verified in UAT). So
-  **any Prod deploy with RunLocalTests fails** unless the six jobs are aborted first. The old test
-  had the same flaw with `Mexal Sync - Nightly`. Not fixed.
+- 🟢 **Test collision fixed the same day.** With the jobs scheduled,
+  `MexalIntegrationTest.schedulerRegistersTheDailyJobs` failed (_"The Apex job named "Mexal Clienti
+  Sync - 05:15" is already scheduled"_, verified in UAT), which would have failed any Prod deploy
+  with RunLocalTests; the old test had the same flaw with `Mexal Sync - Nightly`. Each scheduler
+  now has `scheduleDaily(String nameSuffix)`, and the test schedules `… (test)` names. Deployed to
+  UAT and Prod; the test passes in both orgs with the six live jobs scheduled.
 
 With the frequency chosen by the client and the jobs live, the question this item was raised for
 is answered.

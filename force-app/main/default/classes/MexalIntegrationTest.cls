@@ -1260,7 +1260,8 @@ private class MexalIntegrationTest {
   @isTest
   static void schedulerRegistersTheDailyJobs() {
     Test.startTest();
-    List<Id> jobIds = MexalCustomerSyncScheduler.scheduleDaily();
+    // The suffix keeps the names clear of the jobs live in the org.
+    List<Id> jobIds = MexalCustomerSyncScheduler.scheduleDaily(' (test)');
     Test.stopTest();
 
     Set<String> crons = new Set<String>();

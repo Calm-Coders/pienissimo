@@ -77,8 +77,16 @@ imprevisto in fase di interrogazione servizi predesk`, WebapiException). The
   The old `schedulerRegistersTheNightlyJob` had the same flaw with
   `Mexal Sync - Nightly`. **The next Prod deploy with RunLocalTests (of any
   class) fails on this test** unless the six jobs are aborted first or the test
-  or the scheduler is changed. Not fixed: changing tests waits for Aurel
-  Mrruku's request.
+  or the scheduler is changed.
+- 🟢 **Collision fixed, on request:** each scheduler gained
+  `scheduleDaily(String nameSuffix)` (`scheduleDaily()` passes `''`), and the
+  test calls it with `' (test)'`. UAT: six jobs aborted, NoTestRun deploy
+  `0AfMA00000DBnif0AD`, jobs re-created, then `MexalIntegrationTest` 60/60
+  **with the live jobs scheduled**. Prod: six jobs aborted at 11:13Z,
+  RunLocalTests deploy `0AfSW000001MHCv0AO` (176/176), jobs re-created at
+  11:19Z as Tech Romi, then `schedulerRegistersTheDailyJobs` run in Prod with
+  the jobs live: passed, the six jobs intact. Today's 13:00 round was not
+  missed.
 - **Open:** nothing retries a run that Mexal fails; with two rounds a day a
   single Mexal 500 now delays a sync by up to about 16 hours (13:00 to 05:00)
   instead of a full day. Related to

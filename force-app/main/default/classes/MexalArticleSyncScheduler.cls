@@ -14,13 +14,24 @@ public without sharing class MexalArticleSyncScheduler implements Schedulable {
 
   // The cron runs in the time zone of the user who schedules the job.
   public static List<Id> scheduleDaily() {
+    return scheduleDaily('');
+  }
+
+  // Job names are unique in the org, and a test sees the real jobs: tests pass
+  // a suffix so they never collide with the live schedule.
+  public static List<Id> scheduleDaily(String nameSuffix) {
+    String suffix = nameSuffix == null ? '' : nameSuffix;
     return new List<Id>{
       System.schedule(
-        JOB_NAME_0500,
+        JOB_NAME_0500 + suffix,
         CRON_0500,
         new MexalArticleSyncScheduler()
       ),
-      System.schedule(JOB_NAME_1300, CRON_1300, new MexalArticleSyncScheduler())
+      System.schedule(
+        JOB_NAME_1300 + suffix,
+        CRON_1300,
+        new MexalArticleSyncScheduler()
+      )
     };
   }
 }
