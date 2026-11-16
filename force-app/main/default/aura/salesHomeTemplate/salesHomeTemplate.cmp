@@ -1,0 +1,97 @@
+<aura:component
+  implements="lightning:homeTemplate"
+  access="global"
+  description="Home vendite con tre riepiloghi, strumenti e attività quotidiane."
+>
+  <aura:attribute name="opportunitiesSummary" type="Aura.Component[]" />
+  <aura:attribute name="activitySummary" type="Aura.Component[]" />
+  <aura:attribute name="leadsSummary" type="Aura.Component[]" />
+  <aura:attribute name="top" type="Aura.Component[]" />
+  <aura:attribute name="left" type="Aura.Component[]" />
+  <aura:attribute name="middle" type="Aura.Component[]" />
+  <aura:attribute name="right" type="Aura.Component[]" />
+
+  <div class="sales-home" role="main">
+    <div class="welcome">
+      <h1>Home vendite</h1>
+      <p>
+        Opportunità, relazioni e attività: la tua giornata a colpo d'occhio.
+      </p>
+    </div>
+
+    <div class="overview-grid">
+      <div
+        role="region"
+        class="home-card overview-card"
+        aria-label="Riepilogo opportunità"
+      >
+        <div class="card-heading">
+          <span class="eyebrow">OPPORTUNITA</span>
+          <h2>Chiudi le opportunità</h2>
+          <p>
+            Il valore della pipeline aperta, suddiviso per mese di creazione.
+          </p>
+        </div>
+        <div class="region-body">{!v.opportunitiesSummary}</div>
+      </div>
+      <div
+        role="region"
+        class="home-card overview-card"
+        aria-label="Riepilogo attività"
+      >
+        <div class="card-heading">
+          <span class="eyebrow">RELAZIONI</span>
+          <h2>Coltiva le relazioni</h2>
+          <p>Le tue attività commerciali, suddivise per azienda.</p>
+        </div>
+        <div class="region-body">{!v.activitySummary}</div>
+      </div>
+      <div
+        role="region"
+        class="home-card overview-card"
+        aria-label="Riepilogo lead"
+      >
+        <div class="card-heading">
+          <span class="eyebrow">PIPELINE</span>
+          <h2>Sviluppa la pipeline</h2>
+          <p>Le fonti dei lead e le nuove opportunità di contatto.</p>
+        </div>
+        <div class="region-body">{!v.leadsSummary}</div>
+      </div>
+    </div>
+
+    <div class="sync-region">{!v.top}</div>
+
+    <div class="work-grid">
+      <div
+        role="region"
+        class="home-card work-card"
+        aria-label="Attività di oggi"
+      >
+        <div class="card-heading">
+          <span class="eyebrow">OGGI</span>
+          <h2>Le attività di oggi</h2>
+        </div>
+        <div class="region-body">{!v.left}</div>
+      </div>
+      <div role="region" class="home-card work-card" aria-label="Eventi">
+        <div class="card-heading">
+          <span class="eyebrow">AGENDA</span>
+          <h2>I prossimi eventi</h2>
+        </div>
+        <div class="region-body">{!v.middle}</div>
+      </div>
+      <div
+        role="region"
+        class="home-card work-card"
+        aria-label="Strumenti e dati"
+      >
+        <div class="card-heading">
+          <span class="eyebrow">ACCESSO RAPIDO</span>
+          <h2>Strumenti e dati</h2>
+        </div>
+        <div class="region-body">{!v.right}</div>
+      </div>
+    </div>
+  </div>
+</aura:component>
