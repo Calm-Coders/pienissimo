@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-11
-updated: 2026-11-16
+updated: 2026-11-17
 depends_on: []
 blocks: []
 severity: normal
@@ -122,3 +122,43 @@ opportunities _"cosi si crea una coda di lavoro che il tutor puo seguire
 quotidianamente"_ has **no verdict** in the `Lavorato` column as of 16/11 15:50Z —
 see [OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md).
 Nothing in this window mentions the agent calendar.
+
+## 🟢 2026-11-17 - the home page now exists in source
+
+The half of this item that was _"una pagina che dobbiamo costruire"_ has been
+built. Merged into `DevMain` in **pull request #128** at 10:15 CET (commit
+`f2a3294`, Anita Aga, 16/11):
+
+- **`Getting_Started_Home.flexipage`** — 288 lines, the home page itself;
+- **`salesHomeTemplate`** Aura component with its own `.css` and `.design`;
+- **three home-page reports**: `Home_Activity_Donut`, `Home_Lead_Source_Donut`,
+  `Home_Pipeline_Donut`;
+- the `mexalSyncPanel` component the client asked for →
+  [OI-370](OI-370%20The%20client%20cannot%20run%20the%20Mexal%20syncs%20by%20hand.md);
+- changes to the **`Agente` profile** and the `Agente` and `Full_Permission`
+  permission sets, and to `standard__LightningSales` and its utility bar.
+
+🔑 **So the home page was specified by building it**, not by the client deciding
+what they wanted — _"non \[hanno\] deciso che cosa vogliono"_ remains true, and the
+three donut reports are ROMI's own choice of content. ⚠ Whether this is what the
+agents wanted is untested, and **the man who asked for it is leaving** →
+[OI-357](OI-357%20The%20client%20commercial%20lead%20and%20the%20web%20counterpart%20are%20both%20leaving.md).
+
+### 🟢 And the calendar half landed too
+
+The `Agente` profile gained exactly one thing in this window:
+
+```xml
+<tabVisibilities>
+    <tab>standard-Event</tab>
+    <visibility>DefaultOn</visibility>
+</tabVisibilities>
+```
+
+and the `Agente` permission set gained `tabSettings` for **`standard-Event`** and
+**`standard-home`**. 🔑 **So both halves of this item are now built**: the calendar
+is the `standard-Event` tab turned on by default for agents, and the home tab is
+granted alongside it. This was the half actually committed to the client for
+_"start of next week"_.
+
+🔴 Not deployed. Agents see neither until the 18 November release goes in.

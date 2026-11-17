@@ -10,6 +10,42 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-17 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail (3 queries + 5 threads read in full), Slack (4 conversations
+  + the canvas), Drive (2 searches + 2 reads) and Fathom from watermark
+  **2026-11-16T22:00Z**. Read the manual-steps tracker in full and reconstructed the
+  day's `DevMain` delta from git. Opened **OI-373**; updated OI-301, OI-342, OI-358,
+  OI-364, OI-370, the manual-steps tracker, the change recap and the lead source
+  values; MAP, INDEX, both trackers (#373 new, 5 rows regenerated each) and §83 in
+  both recaps.
+- **State:** `DevMain` `18a106a` → `92899c3` — **three PRs merged, 52 files,
+  +4,250 / -198**. 🔑 **Six rows of the client change recap are now in source**
+  (rows 2, 3, 5, 6 merged and done as asked; row 7 unmerged on `DevAnita17`; row 8
+  merged). The Mexal sync buttons promised for 18/11 are merged a day early, with
+  two Jest specs including an unauthorized-path test. Both halves of OI-364 are
+  built. 🔴 **No date-format change exists anywhere in the delta** — the one row the
+  client escalated. 🔴 The manual-steps tracker grew to seven rows with two new
+  production gaps; row 3 is stale and unverified. 🔴 The client said nothing all day
+  and Daniela Morgese's Fase 2 answer, expected today, did not come. Next free id
+  **374**; register stays **v1.6**.
+- **Next:** the 18/11 release is tomorrow — someone must decide whether the quote PDF
+  date format goes in it, because nothing is staged. Then: verify whether the three
+  Mexal schedulers in production run as `amministratore pienissimo`, and find out
+  what the production `Landing Page` publish of 14:40:33Z contained.
+- **Watch:** 🔑 **Row 2 of the recap looks half-done and is not** — `Altri Servizi`
+  and `Generica` carry `isActive: false`, which is the correct retirement, so do not
+  reopen it. ⚠ The production site publish at 14:40:33Z precedes the Italian-locale
+  commit by ten minutes; the timeline is recorded but **what it deployed is not
+  established** — do not assert it shipped the locale change. ⚠ The tracker's row 3
+  cell is unchanged since 12/11 and is **not** evidence the Mexal jobs are
+  unscheduled; they were rescheduled on 16/11 and client-approved. ⚠
+  `MexalSyncController.cls` (400 lines) and all four DocuSign envelope classes have
+  **no Apex test** — recorded as state only, per the standing instruction; **not
+  acted on**. The org was **not** opened: `STATUS.md` and the Notion mirror are
+  stale.
+
+
 ## 2026-11-16 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail, Slack, Drive, Fathom and git from watermark

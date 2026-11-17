@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Galotto
 org: ROMI
 raised: 2026-11-05
-updated: 2026-11-16
+updated: 2026-11-17
 depends_on: [OI-308]
 blocks: []
 source: Drive 1_ilgbQZf_2TXHrJ2DNiRQdgc9ZY4FtQAq7tDqLvZ6j0, read 2026-11-05
@@ -195,3 +195,37 @@ first Fase 2 release because the event will not wait — see
 [OI-343](OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md).
 Neither the `150 giornate` figure nor the release order has new evidence in this
 window.
+
+## 🔴 2026-11-17 - the expected day passed with no answer
+
+**`sparo martedi` was today. Nothing came.**
+
+This sweep covered 2026-11-16T22:00Z to the evening of the 17th across Gmail
+(three queries), Slack (`#tproj-pienissimo`, the ROMI dev group, the Elena Spini DM,
+the marketing group DM), Drive and Fathom. There is:
+
+- **no mail from Daniela Morgese**, or from anyone at Pienissimo, on Fase 2 — the
+  only client mail in the whole window is Sabatino Rinaldi's **API MEXAL** request
+  of 16/11 15:54Z, still unanswered →
+  [OI-368](OI-368%20The%20client%20asked%20for%20the%20Mexal%20integration%20APIs%20by%20mail.md);
+- **no message in `#tproj-pienissimo`** — zero since Elena Spini's status post of
+  13/11;
+- **no new or modified Fase 2 document in Drive**;
+- **no meeting** — Fathom has returned nothing for thirty-eight consecutive runs.
+
+⚠ **Nobody is chasing it.** Elena Spini declined a written chaser on 13/11 —
+_"mi basta che mi rispondete"_ — and she has been on leave since 16/11, returning
+**19 November** →
+[OI-348](OI-348%20Fase%201%20post%20go-live%20support%20is%20unassigned%20and%20unpriced.md).
+So the one person who set today's expectation was not at work to see it lapse, and
+the deadline was self-imposed and unwritten on the client's side: 🔑 **Daniela
+Morgese never committed to 17 November — Elena Spini guessed it** (_"sparo"_), and
+Sabatino Rinaldi promised only _"sollecitiamo e prima possibile"_.
+
+🔴 **Meanwhile the building continues.** Four rows of
+[the change recap](../The%20Pienissimo%20recap%20of%20open%20changes.md) were
+implemented today, and the stage sale contract — the first Fase 2 release — is due
+in production **before Pienissimo Live on 24-26 November**, seven days away, on a
+Fase 2 premise the client has still not approved.
+
+**Seven days** since Andrea Galotto's mail of Tuesday 10 November, **no reply**.

@@ -5,7 +5,7 @@ status: active
 owner: Marco Montesi
 org: Pienissimo
 raised: 2026-11-11
-updated: 2026-11-16
+updated: 2026-11-17
 depends_on: [OI-265, OI-340]
 blocks: []
 source: Drive 1PHX-sgHAfOHdy8RF8W3iowhXBDar8Pf8
@@ -89,3 +89,27 @@ origine"_, whose column E reads _"inviato lista per email"_.
 🔴 **Not on `DevMain`, not merged, not deployed.** `DevMain` is at `4478915`.
 ⚠ The rename of *fonte* to *origine* is a label change on the field, not on the
 value set, and nothing in this commit or this window shows it done.
+
+## 🟢 2026-11-17 - the Italian values are on `DevMain`
+
+Commit **`13b16da`** (Anita Aga, 16/11 18:01 CET, _"changed the labels of the
+picklists values in italian"_) was merged out of `DevAnita16` into `DevMain` in
+**pull request #128** at **10:15 CET**, 🔑 so the 124-line
+`LeadSource.standardValueSet` is now on the integration branch rather than stranded
+on a developer's. It carries row 5 of
+[the recap](The%20Pienissimo%20recap%20of%20open%20changes.md) and row 7 of
+[`Modifiche flussi Sales`](items/OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md).
+
+🔴 **Not deployed.** It reaches the org with the 18 November release.
+
+⚠ **A manual step was opened for the same thing on the same morning.** _"Change the
+Translation of Lead Source in Italian"_ became row 7 of
+[the Manual Steps tracker](Manual%20Steps%20Pienissimo%20tracker.md) at 10:46:26Z,
+`Done` in UAT and blank for production — 31 minutes after the metadata merged. A
+standard value set is deployable, so **what remains to be clicked by hand under
+that row is not stated**, and the two records may be tracking the same work twice.
+
+⚠ **The `Sito` / `Website` question is still unresolved** — it was open when Marco
+Montesi sent the list, he has since resigned, and nothing in this window answers
+it. The label itself remains untranslatable: `Fonte lead` -> `Origine del lead`
+stays **parzialmente fattibile**.

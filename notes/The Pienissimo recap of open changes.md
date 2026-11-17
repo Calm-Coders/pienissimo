@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-11-12
-updated: 2026-11-16
+updated: 2026-11-17
 depends_on: [OI-344]
 blocks: []
 source: Drive 1D2hnr7PAysXpPR-37P6pw44dcgF7sbiV
@@ -95,3 +95,66 @@ A second client-facing mail of the same kind went out on **13/11 at 14:46:20Z**
 Spini to Sabatino Rinaldi, amministrazione and Fabrizio Paganelli, cc Aurel Mrruku.
 It is the written trace of the Opportunity derogation and is quoted in full in
 [the decision](decisions/Decision%20-%20the%20Opportunity%20is%20won%20at%20the%20first%20collected%20invoice.md).
+
+## 🔑 2026-11-17 - six of the twelve rows moved into source in one day
+
+**The day after the users went live, and the day before the 18 November release,
+six rows of this recap were built and four of them merged onto `DevMain`. It is the
+largest single movement on this list since it was written — and the one row the
+client asked to have prioritised is not among them.**
+
+Eleven commits landed between 10:04 and 17:29 CET, and **three pull requests were
+merged into `DevMain`**: **#128** from `DevAnita16` (10:15), **#129** from
+`DevAnita_Modifications` (15:37) and **#130** from `DevMain_ExperienceCloud`
+(15:58). `DevMain` moved from `18a106a` to `92899c3`: **52 files, +4,250 / -198
+lines.**
+
+| Row | Request | What landed today | State |
+| --- | ------- | ----------------- | ----- |
+| **1** | Italian formats everywhere | `9a23553` Community site locale `en_US` -> `it`; `eb71235` + `0e05682` `Intl.NumberFormat("it-IT", EUR, 2 decimals, grouping always)` in `quoteAcceptancePage` and `quoteManageProducts`; `654618c` further price-format fixes | 🟡 **currency and Community language only — see below** |
+| **2** | Categoria/sottocategoria: drop `Altri servizi`, keep `Cassa Zucchetti`, add `Libro`, check `Generica` | `ca4e2ad` on Lead and Opportunity `Categoria__c` / `Sottocategoria__c` and five record types | 🟢 **done as asked** |
+| **3** | Primary quote in the quote list view and the opportunity compact layout | `e66bdbb` — `Is_Primary__c` into four Quote list views, a new `mine` list view, and `Opportunity_Awesome_Companct_Layout` | 🟢 **done as asked** |
+| **5** | `Fonte lead` picklist values in Italian | `13b16da` `LeadSource.standardValueSet`, 59 lines of Italian labels, merged in PR #128 | 🟢 **in source on `DevMain`** |
+| **6** | Note object linked to Account | `0e05682` — `RelatedContentNoteList` on the Account and Locale layouts, `AttachedContentNotes` related list on the Azienda and Locale record pages | 🟢 **done as asked** |
+| **7** | Show the reference order in the Account's Asset view | `86682d0` — a new Order formula field on Asset _"so we can use it on the Asset related list on Account"_ | 🟡 **built but on `DevAnita17` only** — not merged |
+| **8** | Home page and calendar not visible to agents | `f2a3294` — `Getting_Started_Home` flexipage, `salesHomeTemplate` Aura component, three home reports, `Agente` profile and permission-set changes, merged in PR #128 | 🟡 **the home page now exists in source** -> [OI-364](items/OI-364%20Agents%20cannot%20see%20the%20home%20page%20or%20the%20calendar%20in%20production.md) |
+
+### Row 2, verified rather than assumed
+
+`Altri Servizi` and `Generica` are **still present** in the value set but carry
+`isActive: false`. 🔑 That is the correct way to retire a picklist value without
+orphaning the records that already hold it, so the commitment _"drop `Altri
+servizi`"_ **is** met, and the open question _"check `Generica`"_ is answered the
+same way. `Cassa Zucchetti` is kept; `Libro` is added, together with `Corso`,
+`Pacchetti`, `Servizi Mktg`, `Piattaforma` and `Servizi Revenue`.
+
+### 🔴 Row 1 is the one that reached the client's customers, and the date format is still not in source
+
+The client asked for **the date format** by priority on 16/11, because the American
+order appears on the quote PDF that goes to Pienissimo's own customers — _"visto che
+questi documenti hanno una rilevanza verso i nostri clienti, dagli la priorita, se
+riesci a sistemarlo anche in giornata."_ It was deferred to the 18 November release.
+
+⚠ **As of this sweep the `DevMain` delta contains no date-format change at all** —
+no Visualforce page, no PDF or email template, and no `DateTimeFormat`, `dd/MM` or
+locale-date edit anywhere in the 52 changed files. What landed is **currency and
+number** formatting and the **Community site language**. The release is tomorrow.
+
+See [OI-358](items/OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md)
+for the org-level locale, which is also still open.
+
+### What this means for the Friday commitment
+
+Aurel Mrruku's own target was _"entro venerdi riesco a finire tutto quello che m'ha
+detto, e c'ho il 18"_ — everything on Elena Spini's list by **Friday 20 November**.
+🟢 On the evidence of one day, four rows are done and two more are built. 🔴 Against
+that: **rows 10, 11, 12 and 13 were never in scope for this week** (maintenance or
+dedicated development), the **second change workbook of 13/11 is still not in the
+repository** so its items cannot be counted at all, and Elena Spini has been on
+leave since 16/11 and returns on the 19th — so nobody on the ROMI side has checked
+any of this against what she promised.
+
+⚠ **Nothing here was verified in the org.** Every statement above is from the source
+tree and the git history. `MexalSyncController.cls` — 400 lines of new Apex merged
+in PR #128 — **has no Apex test class**; recorded as state per the standing
+instruction and **not acted on**.

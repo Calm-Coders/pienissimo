@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-12
-updated: 2026-11-16
+updated: 2026-11-17
 depends_on: []
 blocks: []
 severity: high
@@ -119,3 +119,74 @@ covers the lead source list the client asked to have in Italian, not the org loc
 a locale change or per-field formatting. It is row 1 of
 [the client recap](../The%20Pienissimo%20recap%20of%20open%20changes.md) and it has
 now been seen by the client's customers.
+
+## 🔑 2026-11-17 - the currency half shipped, the date half did not
+
+**Three pull requests merged into `DevMain` today and the Italian-format work is
+visibly under way — but it is the money that was fixed, not the dates, and the dates
+are what the client asked for by priority.**
+
+### What landed
+
+| Surface | Change | Commit |
+| --- | --- | --- |
+| **Community / Landing Page site** | `defaultLocale` `en_US` -> `it`, the single active language relabelled `English (US)` -> `Italian`, in `digitalExperiences/site/Landing_Page1/sfdc_cms__languageSettings` | `9a23553` (Rexhina Hysi), PR #130 |
+| **`quoteAcceptancePage`** | every amount now rendered through `new Intl.NumberFormat("it-IT", {style:"currency", currency:"EUR", useGrouping:"always", minimumFractionDigits:2, maximumFractionDigits:2})` — line list price, amount, discount, total, and the three header totals | `eb71235` / `0e05682`, PR #129 |
+| **`quoteManageProducts`** | the same, replacing `Intl.NumberFormat(undefined, …)` with the explicit `it-IT` locale and forcing two decimals and grouping | `eb71235` / `0e05682`, PR #129 |
+| **Lead source values** | `LeadSource.standardValueSet` with Italian labels, merged out of `DevAnita16` | `13b16da`, PR #128 |
+| further price fixes | _"italian format fixes for the prices on costum components"_ | `654618c` — 🟡 **`DevAnita17` only, not merged** |
+
+🔑 **`quoteManageProducts` is the component Elena Spini named on the 12/11 call** as
+the likely casualty of a locale change — _"Mi viene in mente la cosa dei prodotti.
+**Aggiungi prodotti**"_. It was fixed explicitly rather than left to the org locale.
+
+🟢 **The euro-spacing complaint is addressed by construction**: `style: "currency"`
+with the `it-IT` locale renders `1.234,56 €`, with the separators the client asked
+for and a space before the symbol.
+
+### 🔴 No date-format change exists in source
+
+The `DevMain` delta is **52 files, +4,250 / -198 lines**, and it contains:
+
+- no Visualforce page, PDF template or email template of any kind;
+- no `DateTimeFormat`, no `dd/MM`, no `MM/dd`, no date-locale edit anywhere.
+
+⚠ **So the one item the client escalated is the one item not in the release.**
+Fabrizio Paganelli, 16/11, on the signed quote PDF: _"qui non abbiamo cambiato la
+data"_ … _"visto che questi documenti hanno una rilevanza verso i nostri clienti,
+**dagli la priorita**, se riesci a sistemarlo anche in giornata."_ He accepted
+_"facciamolo domani mattina"_ — which was **today** — and the developer's own plan
+was to carry it on the **18 November** release. The release is tomorrow and nothing
+is staged for it.
+
+### 🔴 The org locale itself is still untouched
+
+Every change above is per-component or per-site. The org-level locale — Aurel
+Mrruku's own stated fix, _"devo abilitare il formato italiano nella ORG"_ — has no
+trace in source, which is expected (it is an org setting, not metadata) and
+therefore **unverifiable from the repository**. ⚠ The org was not opened in this
+run. Two unattributed Salesforce confirmations arrived today that *could* relate —
+an org-wide sharing-defaults change completed at **13:46:32Z** and an
+organization-wide email address verification request at **16:41:26Z** — but
+**neither names the org** and neither is a locale change. Nothing here connects
+them to Pienissimo.
+
+### Active retesting, same day
+
+🟢 The quote-acceptance page was being exercised in the **partial sandbox** this
+afternoon: an acceptance-request mail for quote `00000322`, subject
+_"Preventivo - test 11/17 2"_, at **15:29:41Z**, pointing at
+`…--partial.sandbox.my.site.com/gestione-preventivo`. Its own label says it was the
+**second** test of the day. The Landing Page site was published to that sandbox
+**seven times between 13:51:16Z and 14:24:26Z**.
+
+⚠ **And once to production, at 14:40:33Z**, by `Tech Romi`. The ordering matters and
+is not explained: the production publish is **ten minutes before** Rexhina Hysi's
+Italian-locale commit (14:50:33Z) and **eighteen minutes before** PR #130 merged
+(14:58:03Z). On a project with an established org-first-then-retrieve habit that is
+suggestive, but **nothing in this sweep establishes what the production publish
+contained**, and it is recorded here as a timestamp, not as a deployment of this
+change.
+
+**Still open:** the quote PDF date format, the org locale, the tranche-screen dates,
+and `654618c` sitting unmerged on `DevAnita17`.

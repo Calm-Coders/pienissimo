@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-29
-updated: 2026-11-12
+updated: 2026-11-17
 depends_on: [OI-267]
 blocks: [go-live]
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
@@ -119,3 +119,46 @@ at all**, and it is the first thing the client's users will see on Monday.
 - 🟢 The old `Romi Company` system admin can be deactivated once its record
   ownership is cleared (guest-user default owner) —
   [OI-356](OI-356%20The%20definitive%20list%20of%20production%20users%20is%20still%20incomplete.md).
+
+## 🆕 2026-11-17 - seven rows now, and the two new ones are blank for production
+
+[The tracker](../Manual%20Steps%20Pienissimo%20tracker.md) was modified **2026-11-17
+10:46:26Z** by **Anita Aga** — the first edit not by its owner Rexhina Hysi — and
+grew to **seven** rows, `A1:C8`. All seven are `Done` in UAT. Two are new and both
+have an empty production cell:
+
+| Step | UAT | Prod |
+| --- | --- | --- |
+| 🆕 **Configure DocuSign in Prod for the attachment of the pdf in orders** | `Done` | 🔴 **blank** |
+| 🆕 **Change the Translation of Lead Source in Italian** | `Done` | 🔴 **blank** |
+
+- The DocuSign row is now
+  [OI-373](OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md).
+  It is the **order** signature path, and the sending Apex for it has been on
+  `DevMain` since 09/11.
+- The Lead Source row's metadata half **merged into `DevMain` today** —
+  `13b16da`, `LeadSource.standardValueSet`, in PR #128 at 10:15 CET, 31 minutes
+  before the sheet was edited. ⚠ A standard value set is deployable, so what is
+  left to do by hand under this row is undefined. See
+  [OI-358](OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md).
+
+### 🔴 Row 3 was not re-verified
+
+The scheduled-jobs cell still reads, word for word as on 12/11,
+_"QuoteNegotiationAgingBatch -> only this is done the others should be done by
+Aurel"_ — although the three Mexal schedulers **were** rescheduled in production on
+16/11 (`79f3b0c`) and the new times were approved by the client in writing →
+[OI-334](OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md).
+
+⚠ The cell is therefore stale, and it leaves one real question open: the row asks
+for the jobs to run **as `amministratore pienissimo`**, and scheduled Apex runs as
+whoever scheduled it. Nothing in this sweep establishes whose identity the 16/11
+reschedule carries. That would not surface as a failed sync — only as one running
+with the wrong user's permissions. **The org was not opened in this run.**
+
+### The count, restated
+
+Of seven rows: 🟢 four confirmed `done` for production, 🔴 three not —
+the scheduled-jobs row (partially), DocuSign for orders, and the Lead Source
+translation. Still **no owner and no date on the production column**, thirty-nine
+days after the sheet was created.

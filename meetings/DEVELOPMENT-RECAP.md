@@ -9222,6 +9222,60 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, attaching `Ordini non ins
 
 🔴 `#tproj-pienissimo` silent a fifth consecutive sweep · ⚠ Fathom returned nothing a thirty-fourth consecutive run · the Slack canvas is unchanged since 20.08.2026, **78 days** · 🔴 the dev group's own 5 November report is **unanswered a second day** · 🔴 [#337](open-items.md) lead conversion in Prod has no owner and the #286 fix on `Devmain_LeadChecks` is unmerged a fourteenth day · 🔴 [#313](open-items.md) the client has still been told nothing, a fourth day · 🔴 [#312](open-items.md) Anticipay unmentioned by any source, a fourth day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a sixteenth run · 🔴 `lead-web-to-lead (2).html` still unopened and unexplained · **the requirement register is untouched and stays v1.6**; the tranche obligation and now the two mandatory picklists are the v1.7 candidates.
 
+## 83. Update 2026-11-17 — the 18 November release took shape in a day, and the one change the client escalated is not in it
+
+**One day after the users went live, eleven commits and three merged pull requests assembled the 18 November release on `DevMain`. Six rows of the client-facing change recap moved into source. The quote PDF date format — the row the client escalated because it reaches his own customers — is not among them. The client, for its part, said nothing at all.**
+
+### What was built
+
+`DevMain` moved from `18a106a` to `92899c3`: **52 files, +4,250 / -198 lines**, through **PR #128** from `DevAnita16` (10:15 CET), **PR #129** from `DevAnita_Modifications` (15:37) and **PR #130** from `DevMain_ExperienceCloud` (15:58).
+
+| Recap row | Request | What landed | State |
+| --- | --- | --- | --- |
+| 1 | Italian formats everywhere | Community site locale `en_US` → `it`; `Intl.NumberFormat("it-IT", EUR, 2 decimals, grouping always)` in `quoteAcceptancePage` and `quoteManageProducts` | 🟡 currency and language only |
+| 2 | Categoria/sottocategoria values | Lead and Opportunity `Categoria__c` / `Sottocategoria__c` and five record types | 🟢 done as asked |
+| 3 | Primary quote in the list view and compact layout | `Is_Primary__c` into four Quote list views, a new `mine` view, `Opportunity_Awesome_Companct_Layout` | 🟢 done as asked |
+| 5 | Italian lead-source values | `LeadSource.standardValueSet`, 124 lines | 🟢 on `DevMain` |
+| 6 | Note object linked to Account | `RelatedContentNoteList` on two layouts, `AttachedContentNotes` on the Azienda and Locale record pages | 🟢 done as asked |
+| 7 | Reference order in the Account's Asset view | a new Order formula field on Asset | 🟡 `DevAnita17` only, unmerged |
+| 8 | Home page and calendar for agents | `Getting_Started_Home` flexipage, `salesHomeTemplate`, three donut reports, `standard-Event` `DefaultOn` on the `Agente` profile | 🟢 both halves built |
+
+🔑 **Row 2 was verified rather than assumed.** `Altri Servizi` and `Generica` are still present in the value set but carry `isActive: false` — the correct way to retire a picklist value without orphaning the records that hold it. So _"drop `Altri servizi`"_ is met and _"check `Generica`"_ is answered the same way. `Cassa Zucchetti` is kept, `Libro` added, along with `Corso`, `Pacchetti`, `Servizi Mktg`, `Piattaforma` and `Servizi Revenue`.
+
+🟢 **The Mexal sync buttons the client was promised by 18 November are merged**, a day early: `mexalSyncPanel` with a 169-line controller, 164 lines of CSS and **two Jest specs, one of them for the unauthorized path** — so who may press the buttons appears to be answered in code rather than assumed, which is how it was left on the call. ⚠ `MexalSyncController.cls` is 400 lines of new Apex **with no Apex test class**; recorded as state, not acted on.
+
+### 🔴 The date format is nowhere in the release
+
+Fabrizio Paganelli asked for it by priority on 16 November, looking at a quote PDF signed on the go-live call: _"visto che questi documenti hanno una rilevanza verso i nostri clienti, dagli la priorita, se riesci a sistemarlo anche in giornata."_ He accepted _"facciamolo domani mattina"_ — which was today.
+
+The 52-file delta contains **no Visualforce page, no PDF template, no email template, and no date-format change of any kind**. What shipped is money and language. The release is tomorrow, and the org-level locale — the developer's own stated fix — is still untouched.
+
+### 🔴 Two new production gaps, and one that was never re-checked
+
+[The manual-steps tracker](../notes/Manual%20Steps%20Pienissimo%20tracker.md) grew from five rows to seven at 10:46:26Z, edited by Anita Aga rather than its owner. Both new rows are blank for production:
+
+- 🆕 **Configure DocuSign in Prod for the attachment of the pdf in orders** — opened as [OI-373](../notes/items/OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md). 🔑 The **order** path, not the quote path: `DocuSignOrderEnvelopeService` and `DocuSignOrderEnvelopeQueueable` have been on `DevMain` since `54adb2e` on 9 November, so the send is written, the production configuration is unticked, and the return trigger is still unbuilt (§ OI-322). The stage sale contract is due in production before Pienissimo Live on 24-26 November.
+- 🆕 **Change the Translation of Lead Source in Italian** — whose metadata had merged **31 minutes earlier**. A standard value set is deployable, so what remains to be clicked here is undefined; the two records may be tracking one piece of work twice.
+
+⚠ **Row 3's scheduled-jobs cell is unchanged since 12 November**, word for word, although the three Mexal schedulers were rescheduled in production on the 16th and the new times were approved by the client in writing. The cell was not re-verified, and it leaves one question genuinely open: the row asks for the jobs to run **as `amministratore pienissimo`**, scheduled Apex runs as whoever scheduled it, and nothing establishes whose identity the reschedule carries. That would not show up as a failed sync, only as one running with the wrong permissions.
+
+### 🔴 The client was silent, and a promised answer lapsed
+
+Nothing arrived from Pienissimo in the whole window — no mail, no `#tproj-pienissimo` message (none since 13 November), no Drive change, and nothing from Kreosoft, DocuSign or Anticipay. Fathom returned nothing for the thirty-eighth consecutive run.
+
+**Daniela Morgese's Fase 2 answer was expected today** — Elena Spini's own guess, _"sparo martedi"_ — and did not come. Nobody is chasing it: she declined a written chaser on the 13th and has been on leave since the 16th, back on the 19th. Seven days after Andrea Galotto's mail of 10 November, ROMI is still building against a document the client has not approved.
+
+Also still unanswered: Sabatino Rinaldi's request for the Mexal integration APIs (16/11 15:54Z), Fabrizio Mastracci's go-ahead on the Pienissimo Live forms, and any report of the deferred WooCommerce retest.
+
+### 🟡 Quote acceptance was retested, and something went to production unexplained
+
+The Landing Page site was published to the partial sandbox **seven times between 13:51:16Z and 14:24:26Z**, and a quote-acceptance mail for quote `00000322`, labelled _"Preventivo - test 11/17 2"_, went out at 15:29:41Z — the second test of the day by its own name.
+
+⚠ **The same site was published to production at 14:40:33Z**, by `Tech Romi` — **ten minutes before** the Italian-locale commit and eighteen before PR #130 merged. On a project with an established habit of changing production first and retrieving afterwards that is suggestive, but **nothing in this sweep establishes what the production publish contained**. It is recorded as a timestamp, not as a deployment.
+
+Two further Salesforce confirmations arrived unattributed — an org-wide sharing-defaults change completed at 13:46:32Z and an organization-wide email address verification at 16:41:26Z. **Neither names the org**, and nothing connects them to Pienissimo.
+
+
 ## 82. Update 2026-11-16 — the users went live, the Opportunity rule was rewritten mid-release, and the first real shop order failed
 
 Nightly `requirements-check`, watermark **2026-11-12T22:00Z**, four days — the go-live

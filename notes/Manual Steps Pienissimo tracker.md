@@ -5,7 +5,7 @@ status: active
 owner: Rexhina Hysi
 org: ROMI
 raised: 2026-10-09
-updated: 2026-11-12
+updated: 2026-11-17
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
 ---
 
@@ -229,3 +229,68 @@ all `Done` in UAT.
 3. 🔴 **The production logo is not a row at all**, although Aurel Mrruku recalled it
    as one: _"l'avevamo gia, era nei manual step da fare"_. It is still missing in
    production.
+
+## 2026-11-17 - two new rows, both blank for production
+
+The sheet was modified **2026-11-17 10:46:26Z** by **Anita Aga** — the first edit
+not made by its owner Rexhina Hysi — and grew from five rows to **seven**,
+`A1:C8`. Every row is `Done` in UAT.
+
+| # | Step | UAT | Prod |
+| - | ---- | --- | ---- |
+| 1 | Lead Settings -> Record Type Settings -> keep the existing record type | `Done` | 🟢 `done` |
+| 2 | Event Studio -> `ParticipantDocumentRequestTrigger` subscriber run-as user, Batch Size 200, suspend and resume | `Done` | 🟢 `done` |
+| 3 | Run all scheduled jobs as `amministratore pienissimo` | `Done` | 🔴 _"QuoteNegotiationAgingBatch -> only this is done the others should be done by Aurel"_ |
+| 4 | Remove unnecessary buttons from object list views | `Done` | 🟢 `Done` |
+| 5 | Add the default agent for Accounts and Orders created from WooCommerce | `Done` | 🟢 `done` |
+| 6 | 🆕 **Configure DocuSign in Prod for the attachment of the pdf in orders** | `Done` | 🔴 **blank** |
+| 7 | 🆕 **Change the Translation of Lead Source in Italian** | `Done` | 🔴 **blank** |
+
+### The two new rows
+
+- **Row 6** is the order-signature configuration, and it is the first row on this
+  sheet that is not already tracked somewhere in these records. Opened as
+  [OI-373](items/OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md).
+  🔑 It is the **order** path, distinct from the quote path that demonstrably works
+  in production, and it is the configuration half of the code gap in
+  [OI-322](items/OI-322%20The%20DocuSign%20return%20trigger%20only%20handles%20quotes%20not%20orders.md).
+- **Row 7** is the Italian lead-source list. 🟢 Its **metadata** half landed on
+  `DevMain` the same day: `13b16da` (`LeadSource.standardValueSet`, 59 lines of
+  Italian labels) was merged out of `DevAnita16` in PR #128 at 10:15 CET, 31
+  minutes before this sheet was edited. See
+  [the lead source values](The%20Pienissimo%20lead%20source%20values.md) and
+  [OI-358](items/OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md).
+  ⚠ Why a row was added for a change that is now in source is not stated — a
+  standard value set is deployable, so what remains by hand here is undefined.
+
+### 🔴 Row 3 is textually unchanged, and that is itself the finding
+
+Row 3's production cell carries **exactly the same sentence as the 12/11 reading** —
+_"QuoteNegotiationAgingBatch -> only this is done the others should be done by
+Aurel"_ — although 🔑 the three Mexal schedulers **were** rescheduled in production
+on 16/11 (commit `79f3b0c`, _"rischedulazione job in prod"_) and the new 05:00 and
+13:00 rounds were **approved by the client in writing** in `PUNTO 5` →
+[OI-334](items/OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md).
+
+⚠ So the cell was **not re-verified when the sheet was edited**, and it is now
+stale in the pessimistic direction. Two readings are open and this run settles
+neither:
+
+1. the jobs run and the cell was simply never updated; or
+2. the jobs run **but not as `amministratore pienissimo`**, which is what the row
+   actually asks for — scheduled Apex runs as whoever scheduled it, and nothing in
+   this sweep establishes whose identity the 16/11 reschedule used.
+
+🔑 **Reading 2 is not idle.** It is the precise failure this row exists to prevent,
+and it would not show up as a failed sync — only as one running with the wrong
+user's permissions. The org was not opened in this run.
+
+### The pattern, thirty-nine days on
+
+Two rows on 09/10, three on 12/10, four on 13/10, five on 16/10, **seven on
+17/11**. The production column was blank on every row for a month, filled on four
+after the release, and **the two rows added since are blank again**. Still no owner
+and no date on the production column. ⚠ And a `done` here is still not proof —
+see the WooCommerce default-agent row above.
+
+**No credentials, prices or personal data appear in the new rows.**

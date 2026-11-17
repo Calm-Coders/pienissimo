@@ -9572,6 +9572,60 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 83. Aggiornamento 17/11/2026 — il rilascio del 18 novembre ha preso forma in un giorno, e la modifica che il cliente aveva messo in priorità non c'è
+
+**Un giorno dopo la partenza degli utenti, undici commit e tre pull request mergiate hanno assemblato su `DevMain` il rilascio del 18 novembre. Sei righe del recap delle modifiche inviato al cliente sono entrate nel codice. Il formato data del PDF del preventivo — la riga che il cliente aveva messo in priorità perché arriva ai suoi clienti — non è tra queste. Il cliente, dal suo lato, non ha detto nulla.**
+
+### Cosa è stato realizzato
+
+`DevMain` è passato da `18a106a` a `92899c3`: **52 file, +4.250 / -198 righe**, con la **PR #128** da `DevAnita16` (10:15 CET), la **PR #129** da `DevAnita_Modifications` (15:37) e la **PR #130** da `DevMain_ExperienceCloud` (15:58).
+
+| Riga recap | Richiesta | Cosa è arrivato | Stato |
+| --- | --- | --- | --- |
+| 1 | Formato italiano ovunque | lingua del sito Community `en_US` → `it`; `Intl.NumberFormat("it-IT", EUR, 2 decimali, raggruppamento sempre)` in `quoteAcceptancePage` e `quoteManageProducts` | 🟡 solo valute e lingua |
+| 2 | Valori categoria/sottocategoria | `Categoria__c` / `Sottocategoria__c` su Lead e Opportunity e cinque record type | 🟢 fatto come richiesto |
+| 3 | Preventivo primario nella list view e nel compact layout | `Is_Primary__c` in quattro list view Preventivo, una nuova vista `mine`, `Opportunity_Awesome_Companct_Layout` | 🟢 fatto come richiesto |
+| 5 | Valori italiani della fonte lead | `LeadSource.standardValueSet`, 124 righe | 🟢 su `DevMain` |
+| 6 | Oggetto Note collegato ad Account | `RelatedContentNoteList` su due layout, `AttachedContentNotes` sulle record page Azienda e Locale | 🟢 fatto come richiesto |
+| 7 | Ordine di riferimento nella vista Asset dell'Account | un nuovo campo formula Ordine su Asset | 🟡 solo su `DevAnita17`, non mergiato |
+| 8 | Home page e calendario per gli agenti | flexipage `Getting_Started_Home`, `salesHomeTemplate`, tre report a ciambella, `standard-Event` `DefaultOn` sul profilo `Agente` | 🟢 entrambe le metà realizzate |
+
+🔑 **La riga 2 è stata verificata, non data per buona.** `Altri Servizi` e `Generica` sono ancora presenti nel value set ma con `isActive: false` — il modo corretto di ritirare un valore di picklist senza orfanare i record che lo contengono. Quindi _"togliere `Altri servizi`"_ è rispettato e _"verificare `Generica`"_ è risolto nello stesso modo. `Cassa Zucchetti` è mantenuto, `Libro` aggiunto, insieme a `Corso`, `Pacchetti`, `Servizi Mktg`, `Piattaforma` e `Servizi Revenue`.
+
+🟢 **I pulsanti di sync Mexal promessi al cliente entro il 18 novembre sono mergiati**, un giorno prima: `mexalSyncPanel` con un controller di 169 righe, 164 righe di CSS e **due spec Jest, una per il percorso non autorizzato** — quindi chi può premere i pulsanti sembra risolto nel codice e non assunto, come era rimasto in call. ⚠ `MexalSyncController.cls` è Apex nuovo per 400 righe **senza alcuna test class**; riportato come stato, non toccato.
+
+### 🔴 Il formato data non è nel rilascio
+
+Fabrizio Paganelli l'aveva chiesto in priorità il 16 novembre, guardando un PDF di preventivo firmato in call: _"visto che questi documenti hanno una rilevanza verso i nostri clienti, dagli la priorita, se riesci a sistemarlo anche in giornata."_ Ha accettato _"facciamolo domani mattina"_ — che era oggi.
+
+Il delta di 52 file non contiene **nessuna pagina Visualforce, nessun template PDF, nessun template email e nessuna modifica di formato data**. È uscito il denaro e la lingua. Il rilascio è domani, e il locale a livello di org — il rimedio indicato dallo sviluppatore stesso — resta intoccato.
+
+### 🔴 Due nuove lacune in produzione, e una che nessuno ha riverificato
+
+[Il tracker dei manual step](../notes/Manual%20Steps%20Pienissimo%20tracker.md) è passato da cinque a sette righe alle 10:46:26Z, modificato da Anita Aga e non dalla sua proprietaria. Entrambe le nuove righe sono vuote per la produzione:
+
+- 🆕 **Configure DocuSign in Prod for the attachment of the pdf in orders** — aperto come [OI-373](../notes/items/OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md). 🔑 È il percorso **ordine**, non quello preventivo: `DocuSignOrderEnvelopeService` e `DocuSignOrderEnvelopeQueueable` sono su `DevMain` dal commit `54adb2e` del 9 novembre, quindi l'invio è scritto, la configurazione di produzione non è spuntata e il trigger di ritorno non è ancora realizzato (cfr. OI-322). Il contratto da palco va in produzione prima di Pienissimo Live, 24-26 novembre.
+- 🆕 **Change the Translation of Lead Source in Italian** — i cui metadati erano stati mergiati **31 minuti prima**. Uno standard value set è deployabile, quindi cosa resti da fare a mano qui non è detto; i due record potrebbero tracciare due volte lo stesso lavoro.
+
+⚠ **La cella dei job schedulati della riga 3 è invariata dal 12 novembre**, parola per parola, nonostante i tre scheduler Mexal siano stati rischedulati in produzione il 16 e i nuovi orari approvati per iscritto dal cliente. La cella non è stata riverificata, e lascia aperta una domanda reale: la riga chiede che i job girino **come `amministratore pienissimo`**, l'Apex schedulato gira con l'identità di chi l'ha schedulato, e nulla stabilisce quale identità porti la rischedulazione. Non si manifesterebbe come un sync fallito, ma come un sync che gira con i permessi sbagliati.
+
+### 🔴 Il cliente è stato in silenzio, e una risposta promessa è scaduta
+
+Da Pienissimo non è arrivato nulla in tutta la finestra — nessuna mail, nessun messaggio in `#tproj-pienissimo` (nessuno dal 13 novembre), nessuna modifica su Drive, e nulla da Kreosoft, DocuSign o Anticipay. Fathom non ha restituito nulla per la trentottesima volta consecutiva.
+
+**La risposta di Daniela Morgese sulla Fase 2 era attesa oggi** — l'ipotesi di Elena Spini, _"sparo martedi"_ — e non è arrivata. Nessuno sollecita: ha rifiutato un sollecito scritto il 13 ed è in ferie dal 16, rientro il 19. A sette giorni dalla mail di Andrea Galotto del 10 novembre, ROMI continua a sviluppare su un documento che il cliente non ha approvato.
+
+Restano inoltre senza risposta: la richiesta di Sabatino Rinaldi per le API di integrazione Mexal (16/11 15:54Z), il via libera di Fabrizio Mastracci sui form di Pienissimo Live, e qualsiasi esito del retest WooCommerce rinviato.
+
+### 🟡 L'accettazione preventivo è stata ritestata, e qualcosa è andato in produzione senza spiegazione
+
+Il sito Landing Page è stato pubblicato sulla sandbox parziale **sette volte tra le 13:51:16Z e le 14:24:26Z**, e una mail di accettazione per il preventivo `00000322`, intitolata _"Preventivo - test 11/17 2"_, è partita alle 15:29:41Z — il secondo test della giornata per sua stessa etichetta.
+
+⚠ **Lo stesso sito è stato pubblicato in produzione alle 14:40:33Z**, da `Tech Romi` — **dieci minuti prima** del commit sul locale italiano e diciotto prima del merge della PR #130. Su un progetto con l'abitudine consolidata di modificare prima la produzione e recuperare dopo, è un indizio, ma **nulla in questa sweep stabilisce cosa contenesse quella pubblicazione**. È registrata come un timestamp, non come un rilascio.
+
+Sono arrivate altre due conferme Salesforce non attribuibili — una modifica dei valori predefiniti di condivisione a livello org completata alle 13:46:32Z e una verifica di indirizzo email a livello org alle 16:41:26Z. **Nessuna delle due nomina l'org**, e nulla le collega a Pienissimo.
+
+
 ## 82. Aggiornamento 16/11/2026 — gli utenti sono partiti, la regola dell'Opportunity è stata riscritta durante il rilascio, e il primo ordine reale dello shop è fallito
 
 `requirements-check` notturno, watermark **2026-11-12T22:00Z**, quattro giorni — la
