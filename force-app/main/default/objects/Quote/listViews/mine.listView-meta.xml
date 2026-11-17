@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>mine</fullName>
+    <columns>QUOTE.NAME</columns>
+    <columns>QUOTE.STATUS</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>Is_Primary__c</columns>
+    <columns>QUOTE.ISSYNCING</columns>
+    <columns>QUOTE.EXPIRATIONDATE</columns>
+    <columns>QUOTE.SUBTOTAL</columns>
+    <columns>QUOTE.TOTALPRICE</columns>
+    <columns>Condizione_di_Pagamento__c</columns>
+    <columns>DocuSign_Status__c</columns>
+    <filterScope>Mine</filterScope>
+    <label>My Quotes</label>
+</ListView>
