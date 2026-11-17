@@ -1,0 +1,122 @@
+<template>
+  <template lwc:if={authorized}>
+    <section class="mexal-section" aria-label="Sincronizzazione Mexal">
+      <lightning-card>
+        <div slot="title" class="sync-title">
+          <span class="sync-mark">
+            <lightning-icon
+              icon-name="utility:sync"
+              size="small"
+              variant="inverse"
+              alternative-text=""
+            ></lightning-icon>
+          </span>
+          <span class="sync-heading-group">
+            <span class="sync-eyebrow">AGGIORNAMENTO DATI</span>
+            <span class="sync-heading">Sincronizzazione Mexal</span>
+          </span>
+        </div>
+        <lightning-button-icon
+          slot="actions"
+          icon-name="utility:refresh"
+          alternative-text="Aggiorna stato"
+          title="Aggiorna stato"
+          onclick={refreshStatus}
+          disabled={refreshDisabled}
+        ></lightning-button-icon>
+        <div class="panel slds-p-horizontal_medium slds-p-bottom_small">
+          <p class="slds-text-color_weak slds-m-bottom_medium">
+            Aggiorna da Mexal. Per nuovi clienti, esegui Clienti prima di
+            Fatture.
+          </p>
+          <template lwc:if={loading}>
+            <div class="loading">
+              <lightning-spinner
+                alternative-text="Caricamento stato Mexal"
+                size="small"
+              ></lightning-spinner>
+            </div>
+          </template>
+          <template lwc:if={error}>
+            <p role="alert" class="slds-text-color_error slds-m-bottom_small">
+              {error}
+            </p>
+          </template>
+          <div class="sync-grid" aria-live="polite">
+            <template for:each={rows} for:item="row">
+              <section key={row.key} class="sync-item">
+                <button
+                  class="sync-button slds-button slds-button_brand"
+                  type="button"
+                  title={row.label}
+                  aria-label={row.label}
+                  data-key={row.key}
+                  onclick={handleStart}
+                  disabled={row.disabled}
+                >
+                  <span>{row.label}</span>
+                </button>
+                <p class={row.statusClass}>{row.status}</p>
+                <p class="status-description">{row.description}</p>
+                <template lwc:if={row.hasSuccessLogs}>
+                  <details class="status-details success-details">
+                    <summary>Dettagli esito</summary>
+                    <ul class="success-log-list">
+                      <template for:each={row.successLogs} for:item="log">
+                        <li key={log.logId}>
+                          <a
+                            class="success-log"
+                            href={log.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{log.label} (nuova scheda)</a
+                          >
+                        </li>
+                      </template>
+                    </ul>
+                  </details>
+                </template>
+                <template lwc:if={row.hasErrorDetails}>
+                  <details class="status-details">
+                    <summary>Dettagli errore</summary>
+                    <template lwc:if={row.errorReason}>
+                      <p class="status-detail">{row.errorReason}</p>
+                    </template>
+                    <template lwc:if={row.errorLogUrl}>
+                      <a
+                        class="error-log"
+                        href={row.errorLogUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >Apri log (nuova scheda)</a
+                      >
+                    </template>
+                  </details>
+                </template>
+                <template lwc:if={row.waiting}>
+                  <p class="status-detail">
+                    Attendi la fine dell'altra sincronizzazione.
+                  </p>
+                </template>
+                <p class="slds-text-body_small slds-text-color_weak">
+                  Ultimo successo:
+                  <template lwc:if={row.lastSuccess}>
+                    <lightning-formatted-date-time
+                      value={row.lastSuccess}
+                      day="2-digit"
+                      month="2-digit"
+                      year="numeric"
+                      hour="2-digit"
+                      minute="2-digit"
+                    ></lightning-formatted-date-time>
+                  </template>
+                  <template lwc:else> —</template>
+                </p>
+              </section>
+            </template>
+          </div>
+        </div>
+      </lightning-card>
+    </section>
+  </template>
+</template>

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Categoria__c</fullName>
-    <description
-  >Categoria commerciale del Lead, usata per determinare i valori disponibili in Sottocategoria.</description>
+    <description>Categoria commerciale del Lead.</description>
     <label>Categoria</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
@@ -12,24 +11,58 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Altri Servizi</fullName>
-                <default>false</default>
-                <label>Altri Servizi</label>
-            </value>
-            <value>
                 <fullName>Cassa Zucchetti</fullName>
                 <default>false</default>
+                <isActive>true</isActive>
                 <label>Cassa Zucchetti</label>
-            </value>
-            <value>
-                <fullName>Generica</fullName>
-                <default>false</default>
-                <label>Generica</label>
             </value>
             <value>
                 <fullName>Corso</fullName>
                 <default>false</default>
+                <isActive>true</isActive>
                 <label>Corso</label>
+            </value>
+            <value>
+                <fullName>Libro</fullName>
+                <default>false</default>
+                <isActive>true</isActive>
+                <label>Libro</label>
+            </value>
+            <value>
+                <fullName>Pacchetti</fullName>
+                <default>false</default>
+                <isActive>true</isActive>
+                <label>Pacchetti</label>
+            </value>
+            <value>
+                <fullName>Servizi Mktg</fullName>
+                <default>false</default>
+                <isActive>true</isActive>
+                <label>Servizi Mktg</label>
+            </value>
+            <value>
+                <fullName>Piattaforma</fullName>
+                <default>false</default>
+                <isActive>true</isActive>
+                <label>Piattaforma</label>
+            </value>
+            <value>
+                <fullName>Servizi Revenue</fullName>
+                <default>false</default>
+                <isActive>true</isActive>
+                <label>Servizi Revenue</label>
+            </value>
+            <value>
+                <fullName>Altri Servizi</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Altri Servizi</label>
+            </value>
+            <value>
+                <fullName>Generica</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Generica</label>
             </value>
         </valueSetDefinition>
     </valueSet>

@@ -1,0 +1,38 @@
+<design:component label="Home vendite - riepiloghi e attività">
+    <flexipage:template>
+        <flexipage:region
+      name="opportunitiesSummary"
+      label="Riepilogo opportunità"
+      defaultWidth="Medium"
+    />
+        <flexipage:region
+      name="activitySummary"
+      label="Riepilogo attività"
+      defaultWidth="Medium"
+    />
+        <flexipage:region
+      name="leadsSummary"
+      label="Riepilogo lead"
+      defaultWidth="Medium"
+    />
+        <flexipage:region
+      name="top"
+      label="Sincronizzazione Mexal"
+      defaultWidth="Xlarge"
+    />
+        <flexipage:region
+      name="left"
+      label="Attività di oggi"
+      defaultWidth="Medium"
+    />
+        <flexipage:region name="middle" label="Eventi" defaultWidth="Medium" />
+        <flexipage:region
+      name="right"
+      label="Strumenti e dati"
+      defaultWidth="Medium"
+    />
+    </flexipage:template>
+    <design:supportedFormFactors>
+        <design:supportedFormFactor type="Large" />
+    </design:supportedFormFactors>
+</design:component>
