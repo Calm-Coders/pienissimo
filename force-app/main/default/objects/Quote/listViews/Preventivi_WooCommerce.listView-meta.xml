@@ -3,6 +3,7 @@
     <fullName>Preventivi_WooCommerce</fullName>
     <columns>QUOTE.NAME</columns>
     <columns>QUOTE.STATUS</columns>
+    <columns>ACCOUNT.NAME</columns>
     <columns>OPPORTUNITY.NAME</columns>
     <columns>Is_Primary__c</columns>
     <columns>QUOTE.EXPIRATIONDATE</columns>

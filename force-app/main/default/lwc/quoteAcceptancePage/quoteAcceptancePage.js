@@ -122,11 +122,34 @@ export default class QuoteAcceptancePage extends LightningElement {
   }
 
   applyPage(payload) {
-    this.page = payload || {};
+    this.page = {
+      ...payload,
+      listPriceTotalLabel: this.formatCurrency(payload?.listPriceTotal),
+      discountTotalLabel: this.formatCurrency(payload?.discountTotal),
+      totalPriceLabel: this.formatCurrency(payload?.totalPrice)
+    };
     this.lines = (payload?.lines || []).map((line, index) => ({
       ...line,
-      displayNumber: index + 1
+      displayNumber: index + 1,
+      listPriceLabel: this.formatCurrency(line.listPrice),
+      amountLabel: this.formatCurrency(line.amount),
+      discountLabel: this.formatCurrency(line.discount),
+      totalPriceLabel: this.formatCurrency(line.totalPrice)
     }));
+  }
+
+  formatCurrency(value) {
+    if (value === null || value === undefined || value === "") {
+      return "";
+    }
+
+    return new Intl.NumberFormat("it-IT", {
+      style: "currency",
+      currency: "EUR",
+      useGrouping: "always",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
   }
 
   openAcceptConfirmation() {
