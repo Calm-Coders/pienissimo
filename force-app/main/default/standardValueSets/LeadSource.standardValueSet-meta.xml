@@ -2,58 +2,123 @@
 <StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <sorted>false</sorted>
     <standardValue>
+        <fullName>Marketing</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Marketing</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Partner</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Partner</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Trade Show</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Fiera</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Diretta</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Diretta</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Libro</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Libro</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Tutor</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Tutor</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Segnalazione cliente (referral)</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Segnalazione cliente (referral)</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Passaparola</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Passaparola</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Ci conosce gia</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Ci conosce gia</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Segnalazione interna</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Segnalazione interna</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Segnalazione Direzione</fullName>
+        <default>false</default>
+        <isActive>true</isActive>
+        <label>Segnalazione Direzione</label>
+    </standardValue>
+    <standardValue>
         <fullName>Advertisement</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Pubblicità</label>
     </standardValue>
     <standardValue>
         <fullName>Customer Event</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Evento per clienti</label>
     </standardValue>
     <standardValue>
         <fullName>Employee Referral</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Segnalazione di un dipendente</label>
     </standardValue>
     <standardValue>
         <fullName>External Referral</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Segnalazione esterna</label>
     </standardValue>
     <standardValue>
         <fullName>Google AdWords</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Google AdWords</label>
     </standardValue>
     <standardValue>
         <fullName>Other</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Altro</label>
-    </standardValue>
-    <standardValue>
-        <fullName>Partner</fullName>
-        <default>false</default>
-        <label>Partner</label>
     </standardValue>
     <standardValue>
         <fullName>Purchased List</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Lista acquistata</label>
-    </standardValue>
-    <standardValue>
-        <fullName>Trade Show</fullName>
-        <default>false</default>
-        <label>Fiera</label>
     </standardValue>
     <standardValue>
         <fullName>Webinar</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Webinar</label>
     </standardValue>
     <standardValue>
         <fullName>Website</fullName>
         <default>false</default>
+        <isActive>false</isActive>
         <label>Sito web</label>
     </standardValue>
 </StandardValueSet>

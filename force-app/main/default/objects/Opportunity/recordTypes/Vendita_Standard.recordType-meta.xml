@@ -49,27 +49,7 @@
     <picklistValues>
         <picklist>LeadSource</picklist>
         <values>
-            <fullName>Advertisement</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Customer Event</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Employee Referral</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>External Referral</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Google AdWords</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Other</fullName>
+            <fullName>Marketing</fullName>
             <default>false</default>
         </values>
         <values>
@@ -77,19 +57,39 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Purchased List</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Trade Show</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Webinar</fullName>
+            <fullName>Diretta</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Website</fullName>
+            <fullName>Libro</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Tutor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Segnalazione cliente %28referral%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Passaparola</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Ci conosce gia</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Segnalazione interna</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Segnalazione Direzione</fullName>
             <default>false</default>
         </values>
     </picklistValues>
