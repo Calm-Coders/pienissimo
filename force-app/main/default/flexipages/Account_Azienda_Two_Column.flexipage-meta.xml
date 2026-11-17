@@ -1014,13 +1014,7 @@
                             <value>ASSET.NAME</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>ASSET.SERIAL_NUMBER</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>ASSET.INSTALL_DATE</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>ASSET.QUANTITY</value>
+                            <value>ASSET.RECORDTYPE</value>
                         </valueListItems>
                         <valueListItems>
                             <value>CONTACT.NAME</value>
@@ -1029,7 +1023,19 @@
                             <value>ASSET.STATUS</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>ASSET.IS_COMPETITOR_PRODUCT</value>
+                            <value>Ordine__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Order_Product__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Campaign__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Fattura_Pagata__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Ticket_Sent_Date__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
