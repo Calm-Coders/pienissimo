@@ -29,33 +29,15 @@
           <div class="totals-grid" aria-label="Totali preventivo">
             <div class="total-card">
               <span>Totale Listino</span>
-              <strong>
-                <lightning-formatted-number
-                  value={page.listPriceTotal}
-                  format-style="currency"
-                  currency-code="EUR"
-                ></lightning-formatted-number>
-              </strong>
+              <strong> {page.listPriceTotalLabel} </strong>
             </div>
             <div class="total-card">
               <span>Sconto Totale</span>
-              <strong>
-                <lightning-formatted-number
-                  value={page.discountTotal}
-                  format-style="currency"
-                  currency-code="EUR"
-                ></lightning-formatted-number>
-              </strong>
+              <strong> {page.discountTotalLabel} </strong>
             </div>
             <div class="total-card total-net-card">
               <span>Totale Netto</span>
-              <strong>
-                <lightning-formatted-number
-                  value={page.totalPrice}
-                  format-style="currency"
-                  currency-code="EUR"
-                ></lightning-formatted-number>
-              </strong>
+              <strong> {page.totalPriceLabel} </strong>
             </div>
           </div>
         </section>
@@ -124,32 +106,16 @@
                         ></lightning-formatted-number>
                       </td>
                       <td data-label="Prezzo Listino" class="number-cell">
-                        <lightning-formatted-number
-                          value={line.listPrice}
-                          format-style="currency"
-                          currency-code="EUR"
-                        ></lightning-formatted-number>
+                        {line.listPriceLabel}
                       </td>
                       <td data-label="Importo" class="number-cell">
-                        <lightning-formatted-number
-                          value={line.amount}
-                          format-style="currency"
-                          currency-code="EUR"
-                        ></lightning-formatted-number>
+                        {line.amountLabel}
                       </td>
                       <td data-label="Sconto" class="number-cell">
-                        <lightning-formatted-number
-                          value={line.discount}
-                          format-style="currency"
-                          currency-code="EUR"
-                        ></lightning-formatted-number>
+                        {line.discountLabel}
                       </td>
                       <td data-label="Totale Netto" class="number-cell">
-                        <lightning-formatted-number
-                          value={line.totalPrice}
-                          format-style="currency"
-                          currency-code="EUR"
-                        ></lightning-formatted-number>
+                        {line.totalPriceLabel}
                       </td>
                       <td data-label="Scadenza Pagamento">
                         <lightning-formatted-date-time
