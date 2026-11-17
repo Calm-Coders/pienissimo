@@ -529,9 +529,12 @@ export default class QuoteCreateTranche extends LightningElement {
     if (value === null || value === undefined) {
       return "-";
     }
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat("it-IT", {
       style: "currency",
-      currency: "EUR"
+      currency: "EUR",
+      useGrouping: "always",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     }).format(value);
   }
 
