@@ -66,10 +66,17 @@ export default class QuoteManageProducts extends NavigationMixin(
   }
 
   get selectedProductsWithAmounts() {
-    return this.selectedProducts.map((product) => ({
-      ...product,
-      netAmount: this.calculateNetAmount(product.quantity, product.newPrice)
-    }));
+    return this.selectedProducts.map((product) => {
+      const netAmount = this.calculateNetAmount(
+        product.quantity,
+        product.newPrice
+      );
+      return {
+        ...product,
+        netAmount,
+        netAmountLabel: netAmount == null ? "" : this.formatAmount(netAmount)
+      };
+    });
   }
 
   get editingNetAmount() {
@@ -77,6 +84,11 @@ export default class QuoteManageProducts extends NavigationMixin(
       this.editingItem?.quantity,
       this.editingItem?.newPrice
     );
+  }
+
+  get editingNetAmountLabel() {
+    const amount = this.editingNetAmount;
+    return amount == null ? "" : this.formatAmount(amount);
   }
 
   calculateNetAmount(quantity, price) {
@@ -362,6 +374,7 @@ export default class QuoteManageProducts extends NavigationMixin(
       )
         ? this.selectedTranchePrices[index]
         : listPrice;
+      const netAmount = this.calculateNetAmount(product.quantity, newPrice);
       return {
         key: `selected-tranche-${sequence}`,
         label: `Tranche ${sequence}`,
@@ -370,7 +383,8 @@ export default class QuoteManageProducts extends NavigationMixin(
         listPriceLabel: this.formatAmount(listPrice),
         discountPercent,
         newPrice,
-        netAmount: this.calculateNetAmount(product.quantity, newPrice),
+        netAmount,
+        netAmountLabel: netAmount == null ? "" : this.formatAmount(netAmount),
         dueDate: this.selectedTrancheDates[index] || ""
       };
     });
@@ -1039,9 +1053,12 @@ export default class QuoteManageProducts extends NavigationMixin(
   }
 
   formatAmount(value) {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat("it-IT", {
       style: "currency",
-      currency: "EUR"
+      currency: "EUR",
+      useGrouping: "always",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     }).format(value || 0);
   }
 

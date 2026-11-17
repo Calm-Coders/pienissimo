@@ -100,18 +100,13 @@ describe("quote product refresh", () => {
     expect(grid.columns.map((column) => column.label)).toEqual(
       expect.arrayContaining(["Prezzo listino", "Sconto %", "Prezzo unitario"])
     );
-    const currency = (value) =>
-      new Intl.NumberFormat(undefined, {
-        style: "currency",
-        currency: "EUR"
-      }).format(value);
     expect(grid.data[0]).toMatchObject({
-      listPriceLabel: currency(200),
+      listPriceLabel: "200,00\u00a0\u20ac",
       discountPercentLabel: "15%",
-      unitPriceLabel: currency(175)
+      unitPriceLabel: "175,00\u00a0\u20ac"
     });
     expect(grid.data[1]).toMatchObject({
-      listPriceLabel: currency(0),
+      listPriceLabel: "0,00\u00a0\u20ac",
       discountPercentLabel: "0%"
     });
     expect(grid.data[2]).toMatchObject({
@@ -134,13 +129,28 @@ describe("quote product refresh", () => {
     const summary = element.shadowRoot.querySelector("lightning-tree-grid")
       .data[0];
     expect(summary).toMatchObject({
-      listPriceLabel: new Intl.NumberFormat(undefined, {
-        style: "currency",
-        currency: "EUR"
-      }).format(100),
+      listPriceLabel: "100,00\u00a0\u20ac",
       discountPercentLabel: "2%"
     });
     expect(summary._children[0].discountPercentLabel).toBe("-392.46%");
+  });
+
+  it("shows Italian price separators and a space before EUR regardless of browser locale", async () => {
+    const element = await mount([
+      {
+        ...row("italian-prices"),
+        listPrice: 1234.56,
+        unitPrice: 1000,
+        totalPrice: 2000
+      }
+    ]);
+    expect(
+      element.shadowRoot.querySelector("lightning-tree-grid").data[0]
+    ).toMatchObject({
+      listPriceLabel: "1.234,56\u00a0\u20ac",
+      unitPriceLabel: "1.000,00\u00a0\u20ac",
+      totalPriceLabel: "2.000,00\u00a0\u20ac"
+    });
   });
 
   it("totals list prices using quantities separately for each bundle without double counting nested components", async () => {

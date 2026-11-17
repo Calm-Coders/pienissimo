@@ -151,6 +151,28 @@ describe("Standard Item pricing", () => {
     return element;
   }
 
+  it("formats edited prices and calculated net amounts without changing their numeric values", async () => {
+    const element = await mountExisting();
+    [...element.shadowRoot.querySelectorAll("lightning-button-icon")]
+      .find((icon) => icon.iconName === "utility:edit")
+      .click();
+    await flush();
+    const priceInput = element.shadowRoot.querySelector(
+      'lightning-input[data-field="newPrice"]'
+    );
+    expect(priceInput.formatter).toBe("currency");
+    expect(priceInput.value).toBe(180);
+    await change(priceInput, "1234.56");
+    expect(priceInput.value).toBe(1234.56);
+    expect(
+      element.shadowRoot.querySelector('input[aria-label="Importo netto"]')
+        .value
+    ).toBe("2.469,12\u00a0\u20ac");
+    expect(
+      element.shadowRoot.querySelector(".item-editor").textContent
+    ).toContain("200,00\u00a0\u20ac");
+  });
+
   it("confirms deletion of the whole bundle and reloads the empty quote", async () => {
     const element = await mountExisting({
       existingBundleLine: {
@@ -424,7 +446,7 @@ describe("Standard Item pricing", () => {
     expect(queryInput(element, "Prezzo netto").value).toBe(175);
     await change(queryInput(element, "Quantita"), "3");
     expect(element.shadowRoot.querySelector(".net-amount input").value).toBe(
-      "525"
+      "525,00\u00a0\u20ac"
     );
     expect(queryInput(element, "Prezzo netto", "item2").value).toBe(80);
     button(element, "Torna indietro").click();
@@ -433,7 +455,7 @@ describe("Standard Item pricing", () => {
     await change(queryInput(element, "Prezzo netto"), "150");
     expect(queryInput(element, "Sconto %").value).toBe(25);
     expect(element.shadowRoot.querySelector(".net-amount input").value).toBe(
-      "450"
+      "450,00\u00a0\u20ac"
     );
     await change(queryInput(element, "Quantita"), "1");
     [...element.shadowRoot.querySelectorAll("lightning-input")].forEach(
