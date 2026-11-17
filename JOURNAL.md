@@ -7302,3 +7302,15 @@ mancante`) predates the config row (created 04/10 23:32Z).
   tracker row** (the developer documented it the same hour in the Mappatura note);
   it is cross-referenced from OI-96. The three 13/10 `Concordato` rulings are
   v1.6 candidates and were **not** written into the register.
+
+## 2026-11-17 — codex — Production community bundle retrieved
+
+- Retrieved only `DigitalExperienceBundle:site/Landing_Page1` from the
+  Salesforce CLI alias `prod pienissimo` into `force-app/main/default`.
+- The production bundle changes the community default/active locale from
+  `en_US` (English US) to `it` (Italian) and carries production-specific media
+  references and sizes for the main and print CSS assets. Salesforce's JSON
+  serialization noise was normalized with the repository Prettier rules.
+- The separate marketing Digital Experience, Brand Center, Network, Site,
+  profiles and permission metadata were not retrieved. No commit or deployment
+  was performed.
