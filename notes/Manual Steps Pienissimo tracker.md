@@ -5,7 +5,7 @@ status: active
 owner: Rexhina Hysi
 org: ROMI
 raised: 2026-10-09
-updated: 2026-11-17
+updated: 2026-11-18
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
 ---
 
@@ -294,3 +294,53 @@ and no date on the production column. ⚠ And a `done` here is still not proof �
 see the WooCommerce default-agent row above.
 
 **No credentials, prices or personal data appear in the new rows.**
+
+## 2026-11-18 - the production column moves for the first time since the release
+
+Modified **2026-11-18 14:54:08Z** by **Anita Aga**, a second consecutive edit not by
+its owner. Still **seven rows**, `A1:C8`, every one `Done` in UAT.
+
+| # | Step | UAT | Prod | Change today |
+| - | ---- | --- | ---- | ------------ |
+| 1 | Lead Settings -> Record Type Settings -> keep the existing record type | `Done` | 🟢 `done` | — |
+| 2 | `ParticipantDocumentRequestTrigger` subscriber run-as user, Batch Size 200, suspend and resume | `Done` | 🟢 `done` | — |
+| 3 | Run all scheduled jobs as `amministratore pienissimo` | `Done` | 🔴 _"QuoteNegotiationAgingBatch -> only this is done the others should be done by Aurel"_ | unchanged, third reading |
+| 4 | Remove unnecessary buttons from object list views | `Done` | 🟢 `Done` | — |
+| 5 | Add the default agent for Accounts and Orders created from WooCommerce | `Done` | 🟢 `done` | — |
+| 6 | Configure DocuSign in Prod for the attachment of the pdf in orders | `Done` | 🔴 **blank** | unchanged |
+| 7 | Change the Translation of Lead Source in Italian | `Done` | 🟢 **`done`** | 🆕 **filled today** |
+
+### Row 7 is the first row to close since the 2 November release
+
+Its metadata half reached production at **13:43:49Z** in quick deploy
+`0AfSW000001Malp0AC` and was verified afterwards with **11 active `LeadSource`
+values**, the English ones inactive. The client was told in the release mail at
+14:40:26Z. ⚠ What the row's *manual* half consisted of is still undefined — a
+standard value set is deployable — but the cell is ticked and the work it stood for
+is live.
+
+### 🔴 Row 6 did not move, and the mail went out anyway
+
+The sheet was edited **fourteen minutes after** ROMI told Pienissimo in writing that
+the WooCommerce order contract and its DocuSign send are released in production.
+Row 6 is still blank. See
+[OI-374](items/OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md)
+and [OI-373](items/OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md).
+
+### 🟡 Row 3, narrowed
+
+The cell is textually unchanged for a third reading, but the day's deployment
+session verified in production that **the six Mexal jobs and `Quote Negotiation
+Aging - Daily` are `WAITING` and unchanged**. So the jobs exist and are scheduled;
+what this row actually asks — that they run **as `amministratore pienissimo`** —
+is still unestablished. See
+[OI-301](items/OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md).
+
+### The pattern, forty days on
+
+Two rows on 09/10, three on 12/10, four on 13/10, five on 16/10, seven on 17/11,
+seven on 18/11. **Five of seven production cells are now filled** — the most this
+sheet has ever shown. Still no owner and no date on the production column, and a
+`done` here is still not proof.
+
+**No credentials, prices or personal data appear in the sheet.**

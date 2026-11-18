@@ -10,6 +10,46 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-18 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail (3 queries + 2 threads read in full), Slack (4 conversations
+  + the canvas), Drive (2 searches, 3 full reads + a revision list) and Fathom from
+  watermark **2026-11-17T22:00Z**. Read the manual-steps tracker, the change-recap
+  workbook and the Fase 2 offer V.4 in full, and reconstructed the day's deployment
+  from the developer's own journal entry above plus the git history. Opened
+  **OI-374**; updated OI-301, OI-322, OI-342, OI-358, OI-364, OI-370, OI-373, the
+  manual-steps tracker and the change recap; MAP, INDEX, both trackers (#374 new, 6
+  rows regenerated each) and §84 in both recaps.
+- **State:** `DevMain` `92899c3` → **`1a46bf2`** — one PR (#131, `DevAnita17`,
+  14:25:29 CET) and Aurel Mrruku's own release commit. 🔑 **The whole delta
+  `4478915..4d18d57` is in Pienissimo Prod**, in three quick deploys
+  (`0AfSW000001Malp0AC` 13:43:49Z, `0AfSW000001Map30AC` 13:45:39Z,
+  `0AfSW000001MbQ90AK` 14:23:28Z), bar the two standing exclusions.
+- 🔑 **The finding:** the client received the **first written release note of this
+  project** at 14:40:26Z, and it claims two things the delta cannot show —
+  **OI-374**. The order DocuSign configuration row was edited **fourteen minutes
+  later** and is still blank (OI-373), the order **return** path has never been
+  built (OI-322), and the code it describes went to Prod on 12/11 with **no smoke
+  test on a real order ever recorded**. Separately the mail declares the Italian
+  **date format** done while the 60-file delta contains **no date-format change of
+  any kind** (OI-358) — only an org-level Locale could make it true.
+- 🟢 **Paperwork moved with the code:** seven of the twelve change-recap rows now
+  read `Già fatto`, and the manual-steps tracker has **five of seven** production
+  cells filled, the most it has ever shown. 🟡 Its scheduled-jobs cell is narrowed
+  rather than answered — the jobs are `WAITING` in Prod; the running identity is
+  not established.
+- 🔴 **Client silent a third day** — no mail, no `#tproj-pienissimo` message since
+  13/11, no Drive change by the client, Fathom nothing a **39th** run. The Fase 2
+  answer is **day eight**; the Fase 2 deck V.4 was reopened by Andrea Galotto at
+  11:42:03Z with no detectable change (Drive keeps one revision).
+- **Not done:** the org was **not** opened — `STATUS.md` and the Notion mirror are
+  **stale**. ⚠ `MexalSyncControllerTest` (398 lines) was written by the **developer's
+  own session on Aurel Mrruku's explicit request**, not by this one; recorded as
+  state, **not acted on**. OI-64, OI-66 and the deploy risk needed no change here —
+  the developer updated the risk record himself in `1a46bf2`.
+
+---
+
 ## 2026-11-18 - claude-opus-5-5 (DevMain delta to Prod, Mexal home panel held back on coverage)
 
 - **Did:** on Aurel Mrruku's request, deployed the `DevMain` delta since the 16/11 Prod

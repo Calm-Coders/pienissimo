@@ -9222,6 +9222,69 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, attaching `Ordini non ins
 
 🔴 `#tproj-pienissimo` silent a fifth consecutive sweep · ⚠ Fathom returned nothing a thirty-fourth consecutive run · the Slack canvas is unchanged since 20.08.2026, **78 days** · 🔴 the dev group's own 5 November report is **unanswered a second day** · 🔴 [#337](open-items.md) lead conversion in Prod has no owner and the #286 fix on `Devmain_LeadChecks` is unmerged a fourteenth day · 🔴 [#313](open-items.md) the client has still been told nothing, a fourth day · 🔴 [#312](open-items.md) Anticipay unmentioned by any source, a fourth day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a sixteenth run · 🔴 `lead-web-to-lead (2).html` still unopened and unexplained · **the requirement register is untouched and stays v1.6**; the tranche obligation and now the two mandatory picklists are the v1.7 candidates.
 
+## 84. Update 2026-11-18 — the release went to production, and the client was told more than the delta can show
+
+**The 18 November release is live. The whole `DevMain` delta went into Pienissimo Prod in three quick deploys, the Mexal sync buttons and the agent home page with it, and Pienissimo received the first written release note of this project. Two of the things that note tells the client are not supported by anything in the delta.**
+
+### What went in
+
+| | |
+| --- | --- |
+| Delta | `4478915..4d18d57`, **60 `force-app` files** |
+| `0AfSW000001Malp0AC` | **13:43:49Z** — 33 non-Apex components: Lead/Opportunity `Categoria__c` and `Sottocategoria__c` with their record types, `LeadSource` with Italian labels, `Asset.Ordine__c`, the Quote list views, the Opportunity compact layout, 3 flexipages, 4 layouts, 6 LWCs, and the `Agente` and `Full_Permission` permission sets |
+| `0AfSW000001Map30AC` | **13:45:39Z** — a permission-set restore, see below |
+| `0AfSW000001MbQ90AK` | **14:23:28Z** — the Mexal home-page bundle: `MexalSyncController` and its new test, `mexalSyncPanel`, `Getting_Started_Home`, `salesHomeTemplate`, 3 donut reports, the Sales app with the Admin home assignment |
+
+Everything except two standing exclusions — the `Agente` profile, and the community locale, which production already carries as `it` — is now live. Each deploy was verified by re-retrieval from the org.
+
+🟢 **PR #131 merged `DevAnita17`** at 14:25:29 CET, taking `DevMain` from `92899c3` to `1a46bf2`. The Asset `Ordine__c` field and the Italian price formats that were stranded unmerged yesterday are no longer stranded.
+
+### 🔴 A two-minute production regression, caused and fixed in the same session
+
+The branch's `Agente` permission set carries the Event and Task grants **read-only** and `standard-Event` as `Available`; production had them **editable** and `DefaultOn`. Those entries were left out of the deploy on the assumption that omitted permission-set entries survive. They do not. Production lost **15 Event/Task field grants and the Event tab**, three days into live use, and had them back at 13:45:39Z, verified by SOQL.
+
+🟢 The source was then aligned to production — `Agente` and `Full_Permission` retrieved from Prod into `force-app` and committed in `1a46bf2` — so redeploying either file no longer revokes anything.
+
+### 🟢 The Mexal buttons were promised by today, and they are live
+
+The bundle missed the first deploy: validation `0AfSW000001MafN0AS` passed 40/40 components and 176/176 tests but returned **74.55%** org coverage, **65 lines short of the floor**, because `MexalSyncController` had 211 lines at 0%. A test class was then written on Aurel Mrruku's explicit request — eleven tests, 11/11 in UAT, the controller at 92% — and validation `0AfSW000001MbMv0AK` passed **186/186 at 76.36%**. ⚠ Recorded here as state, per the standing instruction; the developer updated [the deploy-risk record](../notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md) himself.
+
+🔴 **Two commitments around it are still unmet, a second day**: the documentation promised on the 16/11 call, and the mail to Sabatino Rinaldi with the exact job times so the client's own nightly procedures do not collide with the 05:00 round.
+
+### 🔑 The first client release note — and what it claims
+
+`Rilascio 18/11/2026`, **14:40:26Z**, from Aurel Mrruku to `amministrazione@pienissimo.com`, Fabrizio Paganelli and Sabatino Rinaldi, with Elena Spini. Its headline is not on the change list at all:
+
+> _"abbiamo rilasciato in produzione la Change Request (CR) per la generazione automatica dei contratti a seguito degli ordini ricevuti da WooCommerce … L'invio tramite DocuSign, come richiesto, dopo la conferma di ricezione dell'ordine da Mexal."_
+
+🔴 **Three things the mail does not say** → [OI-374](../notes/items/OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md):
+
+1. The manual-steps row _"Configure DocuSign in Prod for the attachment of the pdf in orders"_ was edited **fourteen minutes later** and is **still blank for production** (OI-373).
+2. **The return path does not exist.** `force-app` holds the order send classes and no order-side return handling, unchanged since 3 November (OI-322). The contract goes out and the signed document has nowhere to come back to.
+3. The code is **six days old** — it went to production on 12 November at 16:19Z — and **no smoke test on a real order has ever been recorded**.
+
+⚠ A blank tracker cell is not proof the step is undone, and the author of the mail is the person who would have done the configuration. ⚠ ROMI's project manager was **out of office**: Elena Spini's auto-reply to this very mail, forty seconds later, states leave _"fino al 18/11 compreso"_.
+
+### 🔴 The date format is declared done, and nothing in the delta changes a date
+
+Row 1 of the client-facing change recap was moved to **`Già fatto`** at 10:37:52Z, and the release mail lists _"Formato date: aggiornato al formato italiano"_.
+
+The 60-file delta contains **no Visualforce page, no PDF or email template, and no date-format edit of any kind**. What shipped is `Intl.NumberFormat("it-IT", EUR)` in six LWC bundles, and the community locale was excluded from the deploy because production already has `it`. 🔑 The only mechanism by which the claim can be true is the **org-level Locale** — not metadata, no trace in the repository, and the developer's own stated fix. ⚠ **The org was not opened in this run**, and the date in question is on the signed quote PDF that reaches Pienissimo's own customers. Nobody has reported looking at one since. → [OI-358](../notes/items/OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md)
+
+### 🟢 The paperwork moved with the code
+
+- **Seven of the twelve rows** of [the change recap](../notes/The%20Pienissimo%20recap%20of%20open%20changes.md) now read `Già fatto` — rows 1, 2, 3, 5, 6, 7 and 8 — edited by Anita Aga at 10:37:52Z. Only the status column changed; every note and date cell is as it was on 12 November.
+- [The manual-steps tracker](../notes/Manual%20Steps%20Pienissimo%20tracker.md) has **five of seven production cells filled**, the most it has ever shown: the Lead Source translation closed today. 🟡 Its scheduled-jobs cell is unchanged a third reading, but the deployment session verified in production that the six Mexal jobs and `Quote Negotiation Aging - Daily` are `WAITING` — so the jobs exist, and only the question the row actually asks, **whose identity they run as**, is still open.
+- ⚠ One wording difference worth keeping: the mail says _"eliminato il valore «Altri servizi»"_, while the metadata **deactivated** it rather than deleting it — which is the correct treatment, and not what the client has been told.
+
+### 🔴 The client said nothing, for a third day
+
+No mail from anyone at Pienissimo, no `#tproj-pienissimo` message since 13 November, no Drive change by the client, no meeting — Fathom returned nothing for the **thirty-ninth** consecutive run — and nothing from Kreosoft, DocuSign or Anticipay.
+
+🟡 **The Fase 2 deck was reopened by Andrea Galotto** at 11:42:03Z, nine days after its last edit; Drive keeps one revision, so what changed cannot be established, and the deck read in full today is unchanged on every element the record holds. **Eight days** after Andrea Galotto's mail of 10 November there is still no answer → [OI-342](../notes/items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md).
+
+🔑 The only account of the silence comes from ROMI's own side — Aurel Mrruku to Elena Spini in the ROMI DM at 10:38:22 CET, as she flew home: _"si Lunedì abbiamo fatto dei test in prod ed è andato tutto bene. poi e arrivato **la loro direzione in ufficio** e non si sono più fatti sentire."_ ⚠ _"la loro direzione"_ is not named, and nothing connects it to Daniela Morgese. Elena Spini returns **19 November**.
+
 ## 83. Update 2026-11-17 — the 18 November release took shape in a day, and the one change the client escalated is not in it
 
 **One day after the users went live, eleven commits and three merged pull requests assembled the 18 November release on `DevMain`. Six rows of the client-facing change recap moved into source. The quote PDF date format — the row the client escalated because it reaches his own customers — is not among them. The client, for its part, said nothing at all.**

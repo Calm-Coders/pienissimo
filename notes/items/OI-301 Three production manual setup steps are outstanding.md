@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Rexhina Hysi
 org: ROMI
 raised: 2026-10-29
-updated: 2026-11-17
+updated: 2026-11-18
 depends_on: [OI-267]
 blocks: [go-live]
 source: Google Drive 1u-LgUKVlGK9ePyjMzZ_uJjXniHluo5_449siHgAIBHo
@@ -161,4 +161,43 @@ with the wrong user's permissions. **The org was not opened in this run.**
 Of seven rows: 🟢 four confirmed `done` for production, 🔴 three not —
 the scheduled-jobs row (partially), DocuSign for orders, and the Lead Source
 translation. Still **no owner and no date on the production column**, thirty-nine
+days after the sheet was created.
+
+## 2026-11-18 - one row closes, one stays blank, and row 3 is now partly answered
+
+The sheet was modified **2026-11-18 14:54:08Z** by **Anita Aga**. Still seven rows,
+`A1:C8`, all `Done` in UAT.
+
+| # | Step | UAT | Prod |
+| - | ---- | --- | ---- |
+| 1 | Lead Settings -> Record Type Settings | `Done` | 🟢 `done` |
+| 2 | `ParticipantDocumentRequestTrigger` subscriber run-as user | `Done` | 🟢 `done` |
+| 3 | Run all scheduled jobs as `amministratore pienissimo` | `Done` | 🔴 _"QuoteNegotiationAgingBatch -> only this is done the others should be done by Aurel"_ |
+| 4 | Remove unnecessary buttons from object list views | `Done` | 🟢 `Done` |
+| 5 | Default agent for WooCommerce Accounts and Orders | `Done` | 🟢 `done` |
+| 6 | Configure DocuSign in Prod for the order PDF attachment | `Done` | 🔴 **still blank** → [OI-373](OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md), [OI-374](OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md) |
+| 7 | Change the Translation of Lead Source in Italian | `Done` | 🟢 **`done`** — moved today |
+
+🟢 **Row 7 closes.** Its metadata half (`LeadSource.standardValueSet`, Italian
+labels) was deployed to production at 13:43:49Z in `0AfSW000001Malp0AC`, verified
+afterwards with **11 active values** and the English values inactive, and the client
+was told in the release mail (_"il campo Fonte lead è stato rinominato in Origine
+del lead"_). What the manual half consisted of is still not stated anywhere, but the
+row is now ticked.
+
+### 🟡 Row 3: the jobs exist, the identity is still open
+
+The cell text is unchanged for a second day. But the day's deployment session
+**did** look at the scheduler state in production and reports that **the six Mexal
+jobs and `Quote Negotiation Aging - Daily` are `WAITING` and unchanged**.
+
+🔑 That removes one of the two readings this row left open: the jobs are scheduled
+and waiting, so the pessimistic reading _"three of the four jobs are not running"_
+is **not** supported. What remains open is precisely what the row asks for — **whose
+identity they carry**. Scheduled Apex runs as whoever scheduled it; no source in this
+sweep states the running user of the 16/11 reschedule, and that would never surface
+as a failed sync, only as one running with the wrong permissions.
+
+**Of seven rows: 🟢 five confirmed `done` for production, 🟡 one partial (row 3),
+🔴 one blank (row 6).** Still no owner and no date on the production column, forty
 days after the sheet was created.

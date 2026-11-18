@@ -5,7 +5,7 @@ status: open
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-11-03
-updated: 2026-11-03
+updated: 2026-11-18
 depends_on: [OI-304]
 blocks: []
 severity: gating
@@ -69,3 +69,23 @@ standard Salesforce Quotes, the order path could not have been built.
 - [OI-326](OI-326%20A%20second%20PDF%20template%20is%20needed%20for%20corsi%20and%20for%20Plus.md)
 - [OI-328](OI-328%20A%20bundle%20containing%20a%20Plus%20product%20must%20be%20flagged%20as%20a%20Plus%20bundle.md)
 - [How the Quote acceptance email action works](../How%20the%20Quote%20acceptance%20email%20action%20works.md)
+
+## 🔴 2026-11-18 - unbuilt, and the client has been told the flow works
+
+Fifteen days on, `force-app` still holds only the **send** side for orders —
+`DocuSignOrderEnvelopeService` and `DocuSignOrderEnvelopeQueueable` — and no
+order-side return handling. The only trigger in the project remains
+`ParticipantDocumentRequestTrigger`.
+
+🔴 **ROMI's release mail of 18/11 14:40:26Z tells Pienissimo that the automatic
+contract generation after a WooCommerce order, with the DocuSign send, is released
+in production** →
+[OI-374](OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
+The mail says nothing about what happens when the signed document comes back, and
+on the evidence in the repository nothing does.
+
+**Pienissimo Live is 24-26 November**, and the stage sale contract is due in
+production before it
+([OI-343](OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md)).
+No new evidence in this window changes the technical position; what changed is that
+the gap is now behind a written client commitment.

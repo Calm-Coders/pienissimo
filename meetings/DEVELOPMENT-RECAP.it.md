@@ -9572,6 +9572,69 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 84. Aggiornamento 18/11/2026 — il rilascio è andato in produzione, e al cliente è stato detto più di quanto il delta possa mostrare
+
+**Il rilascio del 18 novembre è live. L'intero delta di `DevMain` è entrato in Pienissimo Prod con tre quick deploy, insieme ai pulsanti di sincronizzazione Mexal e alla home page degli agenti, e Pienissimo ha ricevuto la prima nota di rilascio scritta di questo progetto. Due delle cose che quella nota comunica al cliente non trovano riscontro in nulla del delta.**
+
+### Cosa è entrato
+
+| | |
+| --- | --- |
+| Delta | `4478915..4d18d57`, **60 file `force-app`** |
+| `0AfSW000001Malp0AC` | **13:43:49Z** — 33 componenti non Apex: `Categoria__c` e `Sottocategoria__c` su Lead e Opportunity con i loro record type, `LeadSource` con le etichette italiane, `Asset.Ordine__c`, le list view Preventivo, il compact layout Opportunity, 3 flexipage, 4 layout, 6 LWC e i permission set `Agente` e `Full_Permission` |
+| `0AfSW000001Map30AC` | **13:45:39Z** — un ripristino di permission set, vedi sotto |
+| `0AfSW000001MbQ90AK` | **14:23:28Z** — il bundle Mexal della home page: `MexalSyncController` con la sua nuova test class, `mexalSyncPanel`, `Getting_Started_Home`, `salesHomeTemplate`, 3 report donut, l'app Sales con l'assegnazione home per gli amministratori |
+
+Tutto tranne due esclusioni permanenti — il profilo `Agente` e il locale della Community, che la produzione ha già come `it` — è ora in produzione. Ogni deploy è stato verificato con un nuovo retrieve dall'org.
+
+🟢 **La PR #131 ha mergiato `DevAnita17`** alle 14:25:29 CET, portando `DevMain` da `92899c3` a `1a46bf2`. Il campo `Ordine__c` su Asset e i formati prezzo italiani, ieri fermi e non mergiati, non lo sono più.
+
+### 🔴 Una regressione in produzione di due minuti, causata e risolta nella stessa sessione
+
+Il permission set `Agente` del branch ha i grant Event e Task in **sola lettura** e `standard-Event` come `Available`; la produzione li aveva **modificabili** e `DefaultOn`. Quelle voci sono state omesse dal deploy, assumendo che le voci omesse di un permission set sopravvivano. Non è così. La produzione ha perso **15 grant di campo Event/Task e il tab Event**, al terzo giorno di uso reale, e li ha riavuti alle 13:45:39Z, verificati via SOQL.
+
+🟢 Il sorgente è stato poi allineato alla produzione — `Agente` e `Full_Permission` recuperati dalla Prod dentro `force-app` e committati in `1a46bf2` — quindi un redeploy di quei file non revoca più nulla.
+
+### 🟢 I pulsanti Mexal erano promessi per oggi, e sono attivi
+
+Il bundle non è entrato nel primo deploy: la validazione `0AfSW000001MafN0AS` ha superato 40/40 componenti e 176/176 test ma ha dato **74,55%** di copertura org, **65 righe sotto la soglia**, perché `MexalSyncController` aveva 211 righe allo 0%. È stata poi scritta una test class su richiesta esplicita di Aurel Mrruku — undici test, 11/11 in UAT, controller al 92% — e la validazione `0AfSW000001MbMv0AK` ha dato **186/186 al 76,36%**. ⚠ Riportato qui come stato, da istruzione permanente; lo sviluppatore ha aggiornato lui stesso [il record del rischio copertura](../notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md).
+
+🔴 **Due impegni collegati restano non mantenuti, secondo giorno**: la documentazione promessa nella call del 16/11 e la mail a Sabatino Rinaldi con gli orari esatti dei job, perché le procedure notturne del cliente non collidano con il giro delle 05:00.
+
+### 🔑 La prima nota di rilascio al cliente — e cosa afferma
+
+`Rilascio 18/11/2026`, **14:40:26Z**, da Aurel Mrruku a `amministrazione@pienissimo.com`, Fabrizio Paganelli e Sabatino Rinaldi, con Elena Spini. Il suo titolo non è nemmeno nella lista modifiche:
+
+> _"abbiamo rilasciato in produzione la Change Request (CR) per la generazione automatica dei contratti a seguito degli ordini ricevuti da WooCommerce … L'invio tramite DocuSign, come richiesto, dopo la conferma di ricezione dell'ordine da Mexal."_
+
+🔴 **Tre cose che la mail non dice** → [OI-374](../notes/items/OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md):
+
+1. La riga dei manual step _"Configure DocuSign in Prod for the attachment of the pdf in orders"_ è stata modificata **quattordici minuti dopo** ed è **ancora vuota per la produzione** (OI-373).
+2. **Il percorso di ritorno non esiste.** `force-app` contiene le classi di invio lato ordine e nessuna gestione del ritorno, invariato dal 3 novembre (OI-322). Il contratto parte e il documento firmato non ha dove tornare.
+3. Il codice ha **sei giorni** — è andato in produzione il 12 novembre alle 16:19Z — e **nessun test su un ordine reale è mai stato registrato**.
+
+⚠ Una cella vuota del tracker non prova che il passo non sia stato fatto, e chi ha scritto la mail è la persona che avrebbe fatto la configurazione. ⚠ La project manager di ROMI era **fuori ufficio**: la risposta automatica di Elena Spini a questa stessa mail, quaranta secondi dopo, indica ferie _"fino al 18/11 compreso"_.
+
+### 🔴 Il formato data è dichiarato fatto, e nulla nel delta cambia una data
+
+La riga 1 del recap modifiche inviato al cliente è passata a **`Già fatto`** alle 10:37:52Z, e la mail di rilascio elenca _"Formato date: aggiornato al formato italiano"_.
+
+Il delta di 60 file non contiene **nessuna pagina Visualforce, nessun template PDF o email e nessuna modifica di formato data**. Ciò che è uscito è `Intl.NumberFormat("it-IT", EUR)` in sei bundle LWC, e il locale della Community è stato escluso dal deploy perché la produzione ha già `it`. 🔑 L'unico meccanismo per cui l'affermazione può essere vera è il **Locale a livello di org** — non è metadato, non lascia traccia nel repository, ed è la correzione che lo sviluppatore stesso aveva indicato. ⚠ **L'org non è stata aperta in questo run**, e la data in questione è sul PDF del preventivo firmato che arriva ai clienti di Pienissimo. Nessuno ha riferito di averne guardato uno da allora. → [OI-358](../notes/items/OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md)
+
+### 🟢 La documentazione si è mossa insieme al codice
+
+- **Sette delle dodici righe** del [recap modifiche](../notes/The%20Pienissimo%20recap%20of%20open%20changes.md) riportano ora `Già fatto` — le righe 1, 2, 3, 5, 6, 7 e 8 — modificate da Anita Aga alle 10:37:52Z. È cambiata solo la colonna stato; ogni nota e ogni data sono come il 12 novembre.
+- [Il tracker dei manual step](../notes/Manual%20Steps%20Pienissimo%20tracker.md) ha **cinque celle di produzione su sette compilate**, il massimo mai raggiunto: la traduzione di Lead Source si è chiusa oggi. 🟡 La cella dei job schedulati è invariata alla terza lettura, ma la sessione di deploy ha verificato in produzione che i sei job Mexal e `Quote Negotiation Aging - Daily` sono `WAITING` — quindi i job esistono, e resta aperta solo la domanda che la riga pone davvero: **con quale identità girano**.
+- ⚠ Una differenza di formulazione da tenere: la mail dice _"eliminato il valore «Altri servizi»"_, mentre i metadati lo hanno **disattivato** anziché cancellarlo — che è il trattamento corretto, e non è ciò che è stato detto al cliente.
+
+### 🔴 Il cliente non ha detto nulla, terzo giorno
+
+Nessuna mail da Pienissimo, nessun messaggio su `#tproj-pienissimo` dal 13 novembre, nessuna modifica del cliente su Drive, nessun meeting — Fathom non ha restituito nulla per il **trentanovesimo** run consecutivo — e nulla da Kreosoft, DocuSign o Anticipay.
+
+🟡 **Il deck della Fase 2 è stato riaperto da Andrea Galotto** alle 11:42:03Z, nove giorni dopo l'ultima modifica; Drive conserva una sola revisione, quindi cosa sia cambiato non è stabilibile, e il deck letto integralmente oggi risulta invariato su ogni elemento che il record conserva. **Otto giorni** dopo la mail di Andrea Galotto del 10 novembre non c'è ancora risposta → [OI-342](../notes/items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md).
+
+🔑 L'unico racconto del silenzio viene dal lato ROMI — Aurel Mrruku a Elena Spini nella DM ROMI alle 10:38:22 CET, mentre lei rientrava in volo: _"si Lunedì abbiamo fatto dei test in prod ed è andato tutto bene. poi e arrivato **la loro direzione in ufficio** e non si sono più fatti sentire."_ ⚠ _"la loro direzione"_ non è nominata, e nulla la collega a Daniela Morgese. Elena Spini rientra il **19 novembre**.
+
 ## 83. Aggiornamento 17/11/2026 — il rilascio del 18 novembre ha preso forma in un giorno, e la modifica che il cliente aveva messo in priorità non c'è
 
 **Un giorno dopo la partenza degli utenti, undici commit e tre pull request mergiate hanno assemblato su `DevMain` il rilascio del 18 novembre. Sei righe del recap delle modifiche inviato al cliente sono entrate nel codice. Il formato data del PDF del preventivo — la riga che il cliente aveva messo in priorità perché arriva ai suoi clienti — non è tra queste. Il cliente, dal suo lato, non ha detto nulla.**

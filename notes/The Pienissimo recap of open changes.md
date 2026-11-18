@@ -5,7 +5,7 @@ status: active
 owner: Elena Spini
 org: ROMI
 raised: 2026-11-12
-updated: 2026-11-17
+updated: 2026-11-18
 depends_on: [OI-344]
 blocks: []
 source: Drive 1D2hnr7PAysXpPR-37P6pw44dcgF7sbiV
@@ -158,3 +158,73 @@ any of this against what she promised.
 tree and the git history. `MexalSyncController.cls` — 400 lines of new Apex merged
 in PR #128 — **has no Apex test class**; recorded as state per the standing
 instruction and **not acted on**.
+
+## 🟢🔑 2026-11-18 - seven of the twelve rows are marked done, and the client was told
+
+**The workbook was edited by Anita Aga at 10:37:52Z and seven rows moved to `Già
+fatto`. Four hours later the release went to production and the client got a written
+release note — the first on this project.**
+
+### The rows as they now read
+
+| # | Area | Request | State today | Was |
+| - | ---- | ------- | ----------- | --- |
+| 1 | Formati | Italian formats everywhere — dates, separators, `€` spacing | **`Già fatto`** | Da implementare |
+| 2 | Prodotti | Categoria/sottocategoria values | **`Già fatto`** | Da implementare |
+| 3 | Preventivo | Primary quote in the list view and compact layout | **`Già fatto`** | Da implementare |
+| 5 | Lead | `Fonte lead` -> `Origine del lead` | **`Già fatto`** | Parzialmente fattibile |
+| 6 | Account | Note object linked to Account | **`Già fatto`** | Da implementare |
+| 7 | Asset | Reference order in the Account's Asset view | **`Già fatto`** | Da implementare |
+| 8 | Utenti | Home page and calendar for agents | **`Già fatto`** | Da implementare |
+| 10 | Preventivo | CC and multiple recipients on the quote send | `Da pianificare` | unchanged |
+| 11 | Preventivo | Running economic total while inserting products | `Da pianificare` | unchanged |
+| 12 | Tranche | Live tranche amount while assigning products | `Da pianificare` | unchanged |
+| 13 | Preventivo | Totals of all columns in the related products table | `Non fattibile` | unchanged |
+
+⚠ **Only the `Stato` column changed.** Every note and date cell is as it was on
+12/11, including row 1's _"Abilitiamo il formato italiano a livello di org"_ and
+row 5's unresolved _"resta da confermare se usare `Sito` o `Website`"_.
+
+🟢 **Row 7 earned its status today.** `654618c`, `86682d0` and `a9f92f3` merged into
+`DevMain` as **PR #131** from `DevAnita17` at **14:25:29 CET** — the Asset `Ordine__c`
+formula field, the Asset and Contact layouts, the Locale and Opportunity record
+pages — so the one row that was stranded unmerged yesterday is no longer stranded.
+
+### The release
+
+The `DevMain` delta `4478915..4d18d57` went to **Pienissimo Prod** in three quick
+deploys: `0AfSW000001Malp0AC` (13:43:49Z, 33 non-Apex components),
+`0AfSW000001Map30AC` (13:45:39Z, a permission-set restore after a two-minute
+regression on the `Agente` Event/Task grants) and `0AfSW000001MbQ90AK` (14:23:28Z,
+the Mexal home-page bundle, after an Apex test class took org coverage from 74.55%
+to 76.36%). Apart from two standing exclusions — the `Agente` profile and the
+community locale, already `it` in production — the whole delta is live.
+
+### 🔴 Row 1 is marked done and nothing in the delta changes a date
+
+The release mail says _"Formato date: aggiornato al formato italiano"_. The 60-file
+delta contains **no Visualforce page, no PDF or email template, and no date-format
+edit of any kind**; what shipped is `Intl.NumberFormat("it-IT", EUR)` in six LWC
+bundles. The only mechanism left is the **org-level Locale**, which is not metadata
+and was not verified — the org was not opened. The date in question is on the quote
+PDF that reaches Pienissimo's own customers →
+[OI-358](items/OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md).
+
+### The release mail
+
+`Rilascio 18/11/2026`, 14:40:26Z, from Aurel Mrruku to `amministrazione@pienissimo.com`,
+Fabrizio Paganelli, Sabatino Rinaldi and Elena Spini. Its headline is not on this
+list at all — the WooCommerce order contract CR with the DocuSign send — and that is
+the part with an unticked production configuration behind it →
+[OI-374](items/OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
+
+⚠ One wording difference worth keeping: the mail says _"eliminato il valore «Altri
+servizi»"_, while the metadata **deactivated** it (`isActive: false`) rather than
+deleting it — which is the correct treatment, and not what the client has been told.
+
+### What is still not in the repository
+
+⚠ **Elena Spini's second change workbook of Friday 13 November**, due **Friday 20
+November**, was **not found** in Drive or mail for a third consecutive window. Its
+items cannot be counted against this week's progress at all, and she returns on the
+19th.

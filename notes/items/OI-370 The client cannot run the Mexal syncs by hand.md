@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Anita Aga, Fabrizio Paganelli
 org: ROMI
 raised: 2026-11-16
-updated: 2026-11-17
+updated: 2026-11-18
 depends_on: [OI-334]
 blocks: []
 severity: normal
@@ -141,3 +141,57 @@ now on the integration branch. Recorded as state per the standing instruction;
   nightly procedures do not collide with the 05:00 round. Asked on 16/11; **no such
   mail was sent in this window**, and the mailbox was read only — nothing here
   sends it.
+
+## 🟢 2026-11-18 - deployed to production, and the client has been told
+
+**The panel is in production and the promise `entro il 18` was kept. Two things the
+same commitment carried are still missing.**
+
+### What happened
+
+The Mexal home-page bundle was **not** in the first deploy of the day. Validation
+`0AfSW000001MafN0AS` of the whole `DevMain` delta against **Pienissimo Prod**
+(`RunLocalTests`) passed 40/40 components and 176/176 tests but returned **74.55%**
+org-wide coverage — **65 covered lines short of the floor** — because
+`MexalSyncController` had 211 lines at 0%. The non-Apex subset went in without it
+(`0AfSW000001Malp0AC`, 13:43:49Z).
+
+On Aurel Mrruku's request a test class was then written, and the bundle followed:
+
+| | |
+| --- | --- |
+| Validation | `0AfSW000001MbMv0AK`, `RunLocalTests`, **186/186 tests, 76.36%** |
+| Quick deploy | **`0AfSW000001MbQ90AK`**, **2026-11-18 14:23:28Z**, 10/10 components |
+| Contents | `MexalSyncController` + its test, `mexalSyncPanel`, `Getting_Started_Home`, `salesHomeTemplate`, the three `Home_*_Donut` reports, the Sales app with the Admin home assignment, and `Full_Permission` with the class grant |
+| Verified after | the class grant present, the home page modified at 14:23Z |
+
+🟢 **The client was told the same afternoon.** The release mail of 14:40:26Z lists
+_"Sincronizzazione: è stato creato un componente custom nella home page (visibile
+esclusivamente agli amministratori) per supportare la sincronizzazione di articoli,
+clienti, fatture e scadenziario"_ → [OI-374](OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
+
+⚠ **`MexalSyncControllerTest` was written by the developer's own session on his
+explicit request** — _"cover the test classes and deploy the rest"_. It is recorded
+here as state. Eleven tests, 11/11 in UAT, the controller at **92%** (194 of 211
+lines). See [the deploy risk](../risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md),
+which the developer updated himself in `1a46bf2`.
+
+### 🔴 Still owed from the same point
+
+Unchanged, a second day:
+
+- **The documentation** — _"poi vi do anche una documentazione"_. No trace in mail,
+  Slack or Drive.
+- **The mail to Sabatino Rinaldi with the exact job times**, so the client's own
+  nightly procedures do not collide with the 05:00 round
+  ([OI-334](OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md)).
+  The release mail does not carry them.
+
+⚠ **Which user can press the buttons is still not verified against the org.** The
+panel is gated on `Full_Permission` — the Jest specs test the authorized and
+unauthorized paths, and the deploy granted the class on that permission set — but
+whether the client's `Amministrazione pienissimo` user holds `Full_Permission` was
+**not** checked in this run, and the mail promises the component to administrators.
+
+**Status stays `in-progress`:** the build is live, the two commitments around it are
+not met, and nobody has watched the client press a button.

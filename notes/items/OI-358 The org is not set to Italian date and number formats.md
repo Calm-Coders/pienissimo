@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-12
-updated: 2026-11-17
+updated: 2026-11-18
 depends_on: []
 blocks: []
 severity: high
@@ -190,3 +190,54 @@ change.
 
 **Still open:** the quote PDF date format, the org locale, the tranche-screen dates,
 and `654618c` sitting unmerged on `DevAnita17`.
+
+## 🟡 2026-11-18 - declared done to the client, with nothing in the delta to show for it
+
+**Row 1 of the client-facing change recap was moved to `Già fatto` at 10:37:52Z, and
+the release mail at 14:40:26Z tells Pienissimo `Formato date: aggiornato al formato
+italiano`. The production deploy of the same afternoon contains no date-format change
+of any kind.**
+
+### What is now claimed
+
+- 🆕 **`Pienissimo_Recap_Modifiche_2026-11-12.xlsx` was edited by Anita Aga at
+  **2026-11-18 10:37:52Z** and row 1 — _"Formato italiano ovunque: date (anche nelle
+  tranche e nella Community), separatore delle migliaia e dei decimali, spazio tra
+  numero e simbolo € nella Community"_ — now reads **`Già fatto`**, having read
+  `Da implementare` since 12/11. Its own note column is unchanged and still says what
+  the fix is: _"Abilitiamo il formato italiano **a livello di org** e verifichiamo
+  tutti i componenti con riferimenti custom alla data (es. Aggiungi prodotti)."_
+- 🆕 **The release mail** (`1a1ef1a15d272f94`, 14:40:26Z, to amministrazione,
+  Fabrizio Paganelli, Sabatino Rinaldi and Elena Spini) lists _"Formato date:
+  aggiornato al formato italiano"_ among the released changes →
+  [OI-374](OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
+
+### 🔴 What the deploy contains
+
+The production release of 18/11 is the `DevMain` delta `4478915..4d18d57`, deployed
+in three quick deploys — `0AfSW000001Malp0AC` (13:43:49Z, 33 non-Apex components),
+`0AfSW000001Map30AC` (13:45:39Z, a permission-set restore) and
+`0AfSW000001MbQ90AK` (14:23:28Z, the Mexal home-page bundle).
+
+**That delta contains no Visualforce page, no PDF or email template, and no
+`dd/MM`, `DateTimeFormat` or locale-date edit anywhere in its 60 `force-app`
+files.** The formatting it carries is money: `Intl.NumberFormat("it-IT", EUR)` in
+six LWC bundles. The community locale was **excluded from the deploy** because, per
+the developer's journal, **production already has `it` as its default** — which
+concerns the Experience Cloud site, not the quote PDF.
+
+🔑 **So the only mechanism by which the claim can be true is the org-level Locale
+setting**, which is not metadata, leaves no trace in the repository, and was the
+developer's own stated fix (_"devo abilitare il formato italiano nella ORG"_). It
+is plausible and it is unverified: ⚠ **the org was not opened in this run.**
+
+### Why this needs a person, not another sweep
+
+The date in question appears on the **signed quote PDF that reaches Pienissimo's own
+customers**. Fabrizio Paganelli escalated it for that reason on 16/11. The client has
+now been told in writing that it is fixed. **Nobody has reported looking at a quote
+PDF in production since.**
+
+**Still open:** a confirmed reading of a production quote PDF, the tranche-screen
+dates, and `654618c`, which merged into `DevMain` in PR #131 on 18/11 and is
+therefore no longer stranded on `DevAnita17`.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Galotto
 org: ROMI
 raised: 2026-11-05
-updated: 2026-11-17
+updated: 2026-11-18
 depends_on: [OI-308]
 blocks: []
 source: Drive 1_ilgbQZf_2TXHrJ2DNiRQdgc9ZY4FtQAq7tDqLvZ6j0, read 2026-11-05
@@ -229,3 +229,53 @@ in production **before Pienissimo Live on 24-26 November**, seven days away, on 
 Fase 2 premise the client has still not approved.
 
 **Seven days** since Andrea Galotto's mail of Tuesday 10 November, **no reply**.
+
+## 🟡 2026-11-18 - the deck was reopened, the client still has not answered
+
+**Eight days after Andrea Galotto's mail of 10 November, there is still no reply.
+What moved is on ROMI's side: V.4 was saved again.**
+
+`Pienissimo Offerta Fase 2_V.4` (`1nE19jesbBpP2JXdnDOZfAnB--fhaEKMCMrgf9RxkWbY`) was
+modified **2026-11-18 11:42:03Z** by **Andrea Galotto**, nine days after its previous
+edit of 09/11 21:43:06Z.
+
+⚠ **What changed in it cannot be established.** Drive exposes a single head revision
+for this file, so there is nothing to diff against. The deck was **read in full in
+this run**, and on every element the record already holds it is unchanged: seven
+releases R0-R6, `150 giornate`, `7 rilasci in produzione`, complete **12 aprile
+2027**, R1 **Scadenziario 14 dicembre 2026** with the reversed-collection case inside
+it, R2 14/01/2027, R3 Info Point 15/02/2027, R4 08/03/2027, R5 22/03/2027, R6
+12/04/2027, analysis **novembre - dicembre 2026**, `Maintenance di rilascio`
+**10 giornate da R0 a R6**, three instalments 40% / 30% / 30%, five months from
+start, one month of post-go-live support included. R0 still reads _"In produzione
+prima di Pienissimo Live (24-26/11)"_. **No figures are transcribed here.**
+
+🔑 So the record's open questions are untouched: the `150 giornate` was never
+revisited after the seventh release was added, and the offer and
+`Pienissimo_Project_Plan_Fase2` still describe different projects.
+
+### What did not happen
+
+- **No mail from Daniela Morgese**, or from anyone at Pienissimo, in the whole
+  window — the only Pienissimo-addressed mail is ROMI's own release note of 14:40Z.
+- **No `#tproj-pienissimo` message** — none since 13/11, now six days.
+- **No meeting** — Fathom has returned nothing for thirty-nine consecutive runs.
+
+### 🔑 A stated reason for the silence, from the ROMI side
+
+Aurel Mrruku to Elena Spini in the ROMI DM, **18/11 10:38:22 CET**, as she flew
+home:
+
+> _"si Lunedì abbiamo fatto dei test in prod ed è andato tutto bene. poi e arrivato
+> **la loro direzione in ufficio** e non si sono più fatti sentire"_
+
+⚠ **This is one person's account, recorded as said.** _"la loro direzione"_ is not
+named, and nothing in this sweep connects it to
+[Daniela Morgese](../people/Daniela%20Morgese%20-%20Pienissimo%20direction.md), who
+is the person the Fase 2 answer rests with. It is the first explanation offered for
+a silence now in its third day, and it is not evidence.
+
+**Elena Spini returns 19 November**
+([OI-348](OI-348%20Fase%201%20post%20go-live%20support%20is%20unassigned%20and%20unpriced.md)).
+She is the one who set the lapsed expectation and the one who declined to send a
+written chaser.

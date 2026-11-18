@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-11
-updated: 2026-11-17
+updated: 2026-11-18
 depends_on: []
 blocks: []
 severity: normal
@@ -162,3 +162,45 @@ granted alongside it. This was the half actually committed to the client for
 _"start of next week"_.
 
 🔴 Not deployed. Agents see neither until the 18 November release goes in.
+
+## 🟢 2026-11-18 - both halves are in production
+
+The `Getting_Started_Home` flexipage, the `salesHomeTemplate` Aura component, the
+three `Home_*_Donut` reports and the Admin home-page assignment went to
+**Pienissimo Prod** in quick deploy **`0AfSW000001MbQ90AK`** at **14:23:28Z**,
+alongside the Mexal panel they host
+([OI-370](OI-370%20The%20client%20cannot%20run%20the%20Mexal%20syncs%20by%20hand.md)). The
+home page was verified modified at 14:23Z.
+
+The calendar half went in earlier, with the non-Apex subset
+(`0AfSW000001Malp0AC`, 13:43:49Z), as part of the `Agente` and `Full_Permission`
+permission sets.
+
+### 🔴 The calendar grant was lost for about two minutes, then restored
+
+Between the two, agents briefly lost more than they gained. The branch's `Agente`
+permission set carries the Event and Task grants **read-only** and `standard-Event`
+as `Available`, while production had them **editable** and `DefaultOn`. The deploy
+omitted those entries on the assumption that omitted permission-set entries survive;
+they do not. Production lost **15 Event/Task field grants and the Event tab**.
+
+Restored at **13:45:39Z** with production's pre-deploy permission set plus
+`Asset.Ordine__c` (`0AfSW000001Map30AC`), and verified by SOQL: 15 grants back and
+editable, `standard-Event` `DefaultOn`. Exposure was about two minutes, inside the
+working day, on the third day of live use. No user report exists either way.
+
+🟢 **The source was then aligned to production** — `Agente` and `Full_Permission`
+were retrieved from Prod into `force-app` and committed in `1a46bf2` — so
+redeploying either file no longer revokes anything. The `Agente` **profile** remains
+a standing deployment exclusion; its only change here, the Event tab, is already
+granted by the permission set.
+
+⚠ **The home page is still ROMI's own choice of content.** Nothing in this window
+specifies what the agents wanted, the three donut reports were picked by ROMI, and
+the man who asked for the page is leaving
+([OI-357](OI-357%20The%20client%20commercial%20lead%20and%20the%20web%20counterpart%20are%20both%20leaving.md)).
+The client was told the sync component exists; **the home page itself is not
+mentioned in the release mail** →
+[OI-374](OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
+
+**Both halves are deployed. Nobody has confirmed an agent can see either.**

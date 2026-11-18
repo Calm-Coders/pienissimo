@@ -6,7 +6,7 @@ owner: unassigned
 with: Rexhina Hysi, Anita Aga, Aurel Mrruku
 org: ROMI
 raised: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 depends_on: [OI-322]
 blocks: []
 severity: normal
@@ -108,3 +108,33 @@ No DocuSign configuration, credential or connected-app value was read or copied.
 - [OI-301](OI-301%20Three%20production%20manual%20setup%20steps%20are%20outstanding.md) — the tracker's unticked production column
 - [OI-336](OI-336%20The%20quote%20PDF%20allegato%20B%20has%20no%20signature%20field.md) — the missing third signature, raised again on 16/11
 - [The Manual Steps tracker](../Manual%20Steps%20Pienissimo%20tracker.md)
+
+## 🔴 2026-11-18 - still blank, and the client has now been told the flow is live
+
+The sheet was edited again by **Anita Aga** at **2026-11-18 14:54:08Z**. Row 7, the
+Lead Source translation, moved to `done` for production. **This row did not move:
+`Status Uat` = `Done`, `Status Prod` still blank.**
+
+🔴 **Fourteen minutes earlier, at 14:40:26Z, ROMI told Pienissimo in writing that
+the flow is released** — _"L'invio tramite DocuSign, come richiesto, dopo la
+conferma di ricezione dell'ordine da Mexal"_ →
+[OI-374](OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
+
+Two readings, and this run settles neither:
+
+1. the configuration was done today and the cell was simply not ticked — the same
+   person wrote the mail and would have done the work; or
+2. the mail describes code that is in production while the configuration it needs is
+   not.
+
+🔑 **The code is not new.** The order PDF and DocuSign-at-order-level stack —
+`OrderPdfService`, `DocuSignOrderEnvelopeService` / `Queueable`,
+`orderDocuSignErrorBanner`, `orderDocuSignRetryAction`, the `Reinvia_DocuSign` quick
+action and the four `Order` DocuSign/PDF fields — went to production on **12
+November at 16:19Z** (quick deploy `0AfSW000001Lxnh0AC`). Today's delta
+`4478915..4d18d57` contains **no DocuSign component at all**. So this row has been
+blank for six days with the code live behind it, and ⚠ the 12/11 journal entry ends
+_"No smoke test was run on a real order yet"_ — nothing since reports one.
+
+**Six days to Pienissimo Live (24-26/11).** The org was not opened; no DocuSign
+credential or connected-app value was read.
