@@ -53,22 +53,13 @@
               </div>
               <div class="figure">
                 <span class="figure-label">Prezzo listino</span>
-                <lightning-formatted-number
-                  value={listTotal}
-                  format-style="currency"
-                  currency-code="EUR"
-                  class="figure-value"
-                ></lightning-formatted-number>
+                <span class="figure-value">{listTotalLabel}</span>
               </div>
               <div class="figure">
                 <span class="figure-label">Totale assegnato</span>
-                <lightning-formatted-number
-                  data-id="total"
-                  value={spreadTotal}
-                  format-style="currency"
-                  currency-code="EUR"
-                  class="figure-value"
-                ></lightning-formatted-number>
+                <span data-id="total" class="figure-value"
+                  >{spreadTotalLabel}</span
+                >
               </div>
             </div>
             <template lwc:if={hasMissingListPrices}>
@@ -126,11 +117,7 @@
                     <div class="unit-price-box">
                       <span class="unit-price-label">Listino unitario</span>
                       <span class="unit-price-value">
-                        <lightning-formatted-number
-                          value={editingComponent.listPrice}
-                          format-style="currency"
-                          currency-code="EUR"
-                        ></lightning-formatted-number>
+                        {editingListPriceLabel}
                       </span>
                     </div>
                   </div>
@@ -192,19 +179,11 @@
                     </span>
                     <span class="preview-item">
                       <span class="preview-label">Prezzo riga:</span>
-                      <lightning-formatted-number
-                        value={editingComponent.spreadPrice}
-                        format-style="currency"
-                        currency-code="EUR"
-                      ></lightning-formatted-number>
+                      <span>{editingSpreadPriceLabel}</span>
                     </span>
                     <span class="preview-item">
                       <span class="preview-label">Totale assegnato:</span>
-                      <lightning-formatted-number
-                        value={spreadTotal}
-                        format-style="currency"
-                        currency-code="EUR"
-                      ></lightning-formatted-number>
+                      <span>{spreadTotalLabel}</span>
                     </span>
                   </div>
                   <div class="editor-actions">
@@ -227,7 +206,7 @@
                   <lightning-datatable
                     data-id="components"
                     key-field="key"
-                    data={rows}
+                    data={componentRows}
                     columns={componentColumns}
                     hide-checkbox-column
                     suppress-bottom-bar

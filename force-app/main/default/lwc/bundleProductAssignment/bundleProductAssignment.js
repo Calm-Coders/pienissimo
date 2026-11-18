@@ -17,7 +17,6 @@ import {
   validRows
 } from "./pricing";
 
-const currency = { currencyCode: "EUR", minimumFractionDigits: 2 };
 export default class BundleProductAssignment extends LightningElement {
   productColumns = [
     { label: "Prodotto", fieldName: "name", wrapText: true },
@@ -87,6 +86,26 @@ export default class BundleProductAssignment extends LightningElement {
       0
     );
   }
+  get listTotalLabel() {
+    return this.formatCurrency(this.listTotal);
+  }
+  get spreadTotalLabel() {
+    return this.formatCurrency(this.spreadTotal);
+  }
+  get componentRows() {
+    return this.rows.map((row) => ({
+      ...row,
+      lineListPriceLabel: this.formatCurrency(row.lineListPrice),
+      spreadPriceLabel: this.formatCurrency(row.spreadPrice),
+      unitSpreadLabel: this.formatCurrency(row.unitSpread)
+    }));
+  }
+  get editingListPriceLabel() {
+    return this.formatCurrency(this.editingComponent?.listPrice);
+  }
+  get editingSpreadPriceLabel() {
+    return this.formatCurrency(this.editingComponent?.spreadPrice);
+  }
   get hasMissingListPrices() {
     return [...this.rowsForTotals, ...this.selectedProducts].some(
       (row) => row.listPrice == null
@@ -133,21 +152,21 @@ export default class BundleProductAssignment extends LightningElement {
       },
       {
         label: "Listino riga",
-        fieldName: "lineListPrice",
-        type: "currency",
-        typeAttributes: currency
+        fieldName: "lineListPriceLabel",
+        type: "text",
+        cellAttributes: { alignment: "right" }
       },
       {
         label: "Importo assegnato alla riga",
-        fieldName: "spreadPrice",
-        type: "currency",
-        typeAttributes: currency
+        fieldName: "spreadPriceLabel",
+        type: "text",
+        cellAttributes: { alignment: "right" }
       },
       {
         label: "Importo per unita",
-        fieldName: "unitSpread",
-        type: "currency",
-        typeAttributes: currency
+        fieldName: "unitSpreadLabel",
+        type: "text",
+        cellAttributes: { alignment: "right" }
       },
       { label: "Sconto", fieldName: "discountLabel" },
       {
@@ -922,9 +941,15 @@ export default class BundleProductAssignment extends LightningElement {
     return Math.round((Number(value) || 0) * 100);
   }
   formatCurrency(value) {
+    if (value === null || value === undefined) {
+      return "";
+    }
     return new Intl.NumberFormat("it-IT", {
       style: "currency",
-      currency: "EUR"
+      currency: "EUR",
+      useGrouping: "always",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     }).format(value);
   }
   formatTranchOption(tranch) {

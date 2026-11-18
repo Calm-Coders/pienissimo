@@ -75,6 +75,10 @@
                 <field>Order_Product__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Ordine__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Anno_Competenza__c</field>
             </layoutItems>
