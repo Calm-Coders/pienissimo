@@ -224,6 +224,7 @@
     </quickActionList>
     <relatedLists>
         <fields>OPPORTUNITY.NAME</fields>
+        <fields>Preventivo_Primario__c</fields>
         <fields>OPPORTUNITY.STAGE_NAME</fields>
         <fields>OPPORTUNITY.AMOUNT</fields>
         <fields>OPPORTUNITY.CLOSE_DATE</fields>
@@ -232,6 +233,7 @@
     <relatedLists>
         <fields>QUOTE.QUOTENUMBER</fields>
         <fields>QUOTE.NAME</fields>
+        <fields>Is_Primary__c</fields>
         <fields>QUOTE.EXPIRATIONDATE</fields>
         <fields>QUOTE.ISSYNCING</fields>
         <fields>QUOTE.SUBTOTAL</fields>

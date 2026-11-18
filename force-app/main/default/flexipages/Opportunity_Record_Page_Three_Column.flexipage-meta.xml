@@ -132,10 +132,13 @@
                     <name>relatedListFieldAliases</name>
                     <valueList>
                         <valueListItems>
+                            <value>QUOTE.NAME</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>QUOTE.QUOTENUMBER</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>QUOTE.NAME</value>
+                            <value>Is_Primary__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>QUOTE.STATUS</value>
