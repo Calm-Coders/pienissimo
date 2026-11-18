@@ -10,15 +10,79 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-18 - claude-opus-5-5 (DevMain delta to Prod, Mexal home panel held back on coverage)
+
+- **Did:** on Aurel Mrruku's request, deployed the `DevMain` delta since the 16/11 Prod
+  deploy (`4478915..4d18d57`, 60 `force-app` files). Before deploying, retrieved every
+  touched component from Prod and compared Prod, base and HEAD three ways.
+- **Prod-side differences handled:**
+  - `standard__LightningSales`: Prod carried 42 page assignments the branch lacks (Campaign,
+    Contact, and Plus Account/Lead/Product pages). Deployed **Prod's app plus the 23 new
+    branch assignments only**, and lost none.
+  - Object files were sent as children only (fields, record types, list views, compact
+    layout), so object-level settings were not touched.
+  - Flexipage and layout differences were formatting only. The utility bar was a no-op and
+    was skipped.
+- **Validation 1** (`0AfSW000001MafN0AS`, RunLocalTests, full delta): 40/40 components and
+  176/176 tests passed, but coverage was **74.55%**, 65 lines short. `MexalSyncController` has
+  211 lines at 0%.
+- **Deployed:** the non-Apex subset (33 components), validated as `0AfSW000001MakD0AS`
+  (RunSpecifiedTests, because Prod rejects NoTestRun), then quick deploy
+  **`0AfSW000001Malp0AC`** at 13:43:49Z. It covers the Lead/Opp Categoria and Sottocategoria
+  fields and record types, LeadSource (Italian labels, English values inactive),
+  `Asset.Ordine__c`, the Quote list views, the Opp compact layout, 3 flexipages, 4 layouts,
+  6 LWCs (Italian price format), and the `Agente` and `Full_Permission` permission sets.
+- **Verified after:** re-retrieved from Prod. The six LWC bundles match the branch, all 176
+  previous app assignments are kept, and LeadSource has 11 active values.
+- 🔴 **Regression caused and fixed:** the branch's `Agente` permission set has the Event/Task
+  grants read-only, while Prod had them editable. I left those entries out of the deploy,
+  wrongly assuming that omitted permission set entries survive a deploy. Prod then lost 15
+  Event/Task field grants and the Event tab. Restored with Prod's pre-deploy permission set
+  plus `Asset.Ordine__c` (`0AfSW000001Map30AC`, 13:45:39Z), and verified by SOQL: 15 grants
+  back and editable, `standard-Event` DefaultOn. **Exposure was about 2 minutes.**
+- **Not deployed:** the Mexal home-page bundle (`MexalSyncController`, `mexalSyncPanel`,
+  `Getting_Started_Home`, `salesHomeTemplate`, 3 `Home_*_Donut` reports, the Admin home
+  assignment). It is blocked on coverage, see
+  [the deploy risk](notes/risks/Risk%20-%20production%20deploy%20is%20blocked%20by%20Apex%20coverage.md),
+  reopened. Also not deployed: the `Agente` profile (standing exclusion; its only change, the
+  Event tab, is already granted by the permission set) and the community locale (standing
+  exclusion; Prod already has `it` as default, identical to the branch).
+- **Watch:** ⚠ `force-app/.../Agente.permissionset-meta.xml` still has the Event/Task grants
+  `editable=false` and `standard-Event` `Available`. **The next deploy of that file from
+  source repeats the regression** unless the source is aligned to Prod first. Source was
+  not changed this session.
+- **Follow-up, same session (Aurel Mrruku: "the permission set need to have the access
+  that is already in prod, cover the test classes and deploy the rest"):**
+  - **Source aligned to Prod:** `Agente` and `Full_Permission` were retrieved from Prod into
+    `force-app`. `Agente` now has the Event/Task grants editable and `standard-Event`
+    `Visible`. `Full_Permission` gained `Event.Sottotipo__c` (editable) and
+    `Order.TotalAmount` (read-only), and keeps `MexalSyncController`. The rest of both
+    diffs is reordering. Redeploying either file from source no longer revokes anything.
+  - **`MexalSyncControllerTest` written (11 tests).** UAT: 11/11, controller at 92%.
+  - **Mexal home-page bundle deployed:** the controller and its test, `mexalSyncPanel`,
+    `Getting_Started_Home`, `salesHomeTemplate`, the 3 donut reports, the app with Prod's
+    198 assignments plus the Admin home page, and `Full_Permission` (Prod's file plus
+    the class grant). Validation `0AfSW000001MbMv0AK` (`RunLocalTests`, 186/186,
+    **76.36%**, 193 lines above the floor). Quick deploy **`0AfSW000001MbQ90AK`** at
+    14:23:28Z, 10/10.
+  - **Verified after:** the class grant is present, the 15 `Agente` Event/Task grants are
+    intact, the six Mexal jobs and `Quote Negotiation Aging - Daily` are `WAITING` and
+    unchanged, and the home page was modified at 14:23Z.
+  - **The whole `4478915..4d18d57` delta is now in Prod**, apart from the two standing
+    exclusions (the `Agente` profile and the community locale, which is already live).
+    Nothing committed.
+
+---
+
 ## 2026-11-17 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail (3 queries + 5 threads read in full), Slack (4 conversations
-  + the canvas), Drive (2 searches + 2 reads) and Fathom from watermark
-  **2026-11-16T22:00Z**. Read the manual-steps tracker in full and reconstructed the
-  day's `DevMain` delta from git. Opened **OI-373**; updated OI-301, OI-342, OI-358,
-  OI-364, OI-370, the manual-steps tracker, the change recap and the lead source
-  values; MAP, INDEX, both trackers (#373 new, 5 rows regenerated each) and §83 in
-  both recaps.
+  - the canvas), Drive (2 searches + 2 reads) and Fathom from watermark
+    **2026-11-16T22:00Z**. Read the manual-steps tracker in full and reconstructed the
+    day's `DevMain` delta from git. Opened **OI-373**; updated OI-301, OI-342, OI-358,
+    OI-364, OI-370, the manual-steps tracker, the change recap and the lead source
+    values; MAP, INDEX, both trackers (#373 new, 5 rows regenerated each) and §83 in
+    both recaps.
 - **State:** `DevMain` `18a106a` → `92899c3` — **three PRs merged, 52 files,
   +4,250 / -198**. 🔑 **Six rows of the client change recap are now in source**
   (rows 2, 3, 5, 6 merged and done as asked; row 7 unmerged on `DevAnita17`; row 8
@@ -44,7 +108,6 @@ Keep the twenty most recent entries here; archive older ones to
   **no Apex test** — recorded as state only, per the standing instruction; **not
   acted on**. The org was **not** opened: `STATUS.md` and the Notion mirror are
   stale.
-
 
 ## 2026-11-16 - claude-opus-5 - nightly requirements-check
 

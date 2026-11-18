@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
-        <apexClass>MexalSyncController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>DocuSignOrderEnvelopeService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>BundleTranchController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>CommercialAccountResolver</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DocuSignOrderEnvelopeService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -46,6 +42,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>MexalSearchCalloutService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>MexalSyncController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -492,6 +492,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Asset.Order_ID__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Asset.Order_Product__c</field>
         <readable>true</readable>
@@ -499,11 +504,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Asset.Ordine__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Asset.Order_ID__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -884,6 +884,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Contract.Tipo_Contratto__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Event.Sottotipo__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1587,11 +1592,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Order.Contract_Pdf_Type__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Order.ContractEndDate</field>
         <readable>true</readable>
@@ -1599,6 +1599,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Order.ContractName</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Order.Contract_Pdf_Type__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1622,13 +1627,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Order.DocuSign_Status__c</field>
+        <editable>false</editable>
+        <field>Order.DocuSign_Error__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Order.DocuSign_Error__c</field>
+        <editable>true</editable>
+        <field>Order.DocuSign_Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1737,7 +1742,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Order.TotalAmount</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1754,6 +1759,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>OrderItem.Data_Scadenza__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>OrderItem.Discount_Pct__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1774,11 +1784,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>OrderItem.Prezzo_Listino__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>OrderItem.Discount_Pct__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

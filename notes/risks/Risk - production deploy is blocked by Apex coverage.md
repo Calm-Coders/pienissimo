@@ -6,13 +6,37 @@ severity: high
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-08-03
-updated: 2026-11-12
+updated: 2026-11-18
 depends_on: [OI-64, OI-66]
 blocks: [go-live]
 source: meetings/open-items.md org verification 2026-08-03
 ---
 
 # Risk - production deploy is blocked by Apex coverage
+
+## 2026-11-18 (later) - resolved again: `MexalSyncControllerTest` written on request
+
+On Aurel Mrruku's request, `MexalSyncControllerTest` (11 tests) was written: status
+outcomes, error translation, success log links, every sync start and its guards, and
+the `Full_Permission` gate, directly and through a permission set group. In UAT it
+passed 11/11, with `MexalSyncController` at 92% (194 of 211 lines). Prod validation
+`0AfSW000001MbMv0AK` (`RunLocalTests`) passed 186/186 tests with **76.36%** org-wide
+coverage, **193 lines above the floor**. Quick deploy `0AfSW000001MbQ90AK` followed.
+Still untested, and so still part of the thin margin: the DocuSign envelope classes
+([OI-66](../items/OI-66%20No%20test%20classes%20for%20the%20Biglietto%20stack.md)).
+
+## 2026-11-18 - reopened: `MexalSyncController` alone drops Prod below 75%
+
+Validation `0AfSW000001MafN0AS` of the `DevMain` delta (`4478915..4d18d57`)
+against **Pienissimo Prod** with `RunLocalTests`: 40/40 components and 176/176
+tests passed, but org-wide coverage came to **74.55%** (14,249 lines, 3,627
+uncovered), **65 covered lines short** of 75%. The cause is the new
+`MexalSyncController` (211 lines, 0 covered, no test class references it). The
+Mexal home-page bundle (`MexalSyncController`, `mexalSyncPanel`,
+`Getting_Started_Home`, `salesHomeTemplate`, the three `Home_*_Donut` reports
+and the Admin home-page assignment) is therefore **not in Prod**. The rest of
+the delta was deployed without Apex. Recorded as state only, per the standing
+instruction; no test was written.
 
 ## 2026-09-07 - invitation source extends the production coverage brief
 
