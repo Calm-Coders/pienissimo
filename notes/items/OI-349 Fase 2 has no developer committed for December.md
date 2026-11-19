@@ -6,7 +6,7 @@ owner: Gianpaolo Motta
 with: Elena Spini
 org: ROMI
 raised: 2026-11-09
-updated: 2026-11-09
+updated: 2026-11-19
 depends_on: []
 blocks: []
 severity: gating
@@ -80,3 +80,22 @@ See [Gianpaolo Motta](../people/Gianpaolo%20Motta%20-%20ROMI%20staffing%20author
 - A named developer for R1, with dates, before the client approves on 13 November.
 - A decision on whether 14 December survives the availability stated.
 - Whether the capacity problem has been put to Gianpaolo Motta at all.
+
+## 🟡 2026-11-19 - the question is suspended, not answered
+
+**Fase 2 was stopped on 19 November after the client contested it by PEC**
+([OI-375](OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md),
+[OI-342](OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md)).
+Elena Spini: _"Quindi per ora fase due, stop."_
+
+🟡 **This item does not resolve — it is overtaken.** There is no longer a
+December delivery to staff, so the gating question of who builds R1 by 14
+December has no answer and, for now, no subject. ⚠ **It stays open and `gating`**
+because nothing has been cancelled contractually: the client's claim is that the
+Fase 2 scope is owed under Fase 1, which would make the same work due sooner
+rather than later, and still with nobody assigned.
+
+🔴 Aurel Mrruku's stated capacity position is unchanged, and on 19/11 he stood
+his own team down — Anita Aga was told _"di non toccare piu niente su
+pianissimo"_ before being put on the reports remediation
+([OI-376](OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md)).

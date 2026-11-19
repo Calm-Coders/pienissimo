@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Anita Aga, Fabrizio Paganelli
 org: ROMI
 raised: 2026-11-16
-updated: 2026-11-18
+updated: 2026-11-19
 depends_on: [OI-334]
 blocks: []
 severity: normal
@@ -195,3 +195,39 @@ whether the client's `Amministrazione pienissimo` user holds `Full_Permission` w
 
 **Status stays `in-progress`:** the build is live, the two commitments around it are
 not met, and nobody has watched the client press a button.
+
+## 🟢 2026-11-19 - the provenance is established, after being questioned
+
+**On the 19/11 internal call ROMI's project manager questioned whether the Mexal
+panel had ever been asked for, and whether it had been built straight in
+production. Both were answered on the record.**
+
+Elena Spini: _"chi ce l'ha chiesta quella roba?"_ … _"chi e quando e stato
+chiesto una dashboard … direttamente in un[a] page?"_ … _"e comunque e una cosa
+che hai fatto direttamente in produzione."_
+
+Aurel Mrruku's answers, in
+[the call](../meetings/2026-11-19%20INTERNA%20Check%20temi%20PEC.md):
+
+1. 🟢 **It is not a dashboard.** _"C'e la sincronizzazione, non una dashboard.
+   Ci sono i pulsanti per fare la sincronizzazione direttamente loro, cosi non
+   mettono mano su script."_
+2. 🟢 **It was requested by Fabrizio Paganelli** — _"E stato chiesto da
+   Fabrizio"_ — verbally on the 16/11 call, where he asked what could be
+   customised and whether buttons could be put somewhere, and **in writing on
+   16/11**: _"darci l'istruzione per lanciarlo manualmente al bisogno."_ Elena
+   Spini accepted both and recalled reading the written request.
+3. 🟢 **It went through UAT, not straight to production.** _"io non faccio mai le
+   cose direttamente in produzione"_, and she conceded the point: _"L'hai fatto
+   in UAT e l'hai portato."_
+
+🟢 **So the panel is a requested, process-compliant delivery**, and Elena Spini's
+verdict on the result was _"e stato super carino"_.
+
+🔴 **The two commitments around it are still unmet, a third day**: the written
+instructions for running the syncs by hand, and the mail to Sabatino Rinaldi with
+the exact job times ([OI-334](OI-334%20The%20Mexal%20sync%20frequency%20is%20undecided%20and%20no%20job%20is%20scheduled%20in%20production.md)).
+⚠ And they are now caught by the freeze
+([OI-376](OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md)) —
+with Elena Spini unable to write to the client, nobody is named to send either.
+Status stays `in-progress`.

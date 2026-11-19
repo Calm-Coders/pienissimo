@@ -6,7 +6,7 @@ owner: Marco Montesi
 with: Elena Spini
 org: both
 raised: 2026-11-06
-updated: 2026-11-16
+updated: 2026-11-19
 depends_on: [OI-265]
 blocks: [go-live]
 source: Drive 1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8, read 2026-11-06
@@ -272,3 +272,64 @@ Spini sent them as a workbook on **Friday 13 November**, and they are due **Frid
 in questa fase, **le evolutive vanno in un secondo momento o come CR**"_, and the
 whole set _"slittano alla prossima [settimana]"_ because support requests took the
 week. Still **no row-by-row Fase 1 / Fase 2 label**.
+
+## 🟢🔴 2026-11-19 - two rows close, and then the project froze
+
+**`Modifiche flussi Sales` (`1y4DeVJEjd3g5vPo-LqYyczQbc0BRp9jVfVw9RJA7Yh8`) was
+edited at 2026-11-19 07:30:07Z — by Elena Spini, not by the client — and read in
+full with comments requested. Two rows moved to done. Hours later the project was
+frozen, so the eleven rows that are not done are now stopped where they stand.**
+
+| | |
+| --- | --- |
+| Range | `A1:E21` — **19 request rows** under two header rows, unchanged |
+| Last modified by | 🆕 **Elena Spini (ROMI)** — every prior edit in the record was Marco Montesi's |
+| Anchored comments | none |
+
+### The `Lavorato` column now
+
+| Verdict | Count | Change since 16/11 |
+| --- | --- | --- |
+| `SI` | **7** | 🟢 **+2** |
+| `IN LAVORAZIONE` | **4** | 🟢 **-2** |
+| `NON SI FA` | **2** | unchanged |
+| blank | **6** | unchanged |
+
+🟢 **The two that moved are rows 1 and 2 — `Categorie` and `Sottocategorie`,
+`IN LAVORAZIONE` → `SI`.** That matches the 18 November release, which put
+Categoria/sottocategoria into production with `Altri Servizi` and `Generica`
+deactivated rather than deleted. 🔑 **So the client's oldest written complaint on
+this sheet, and the open half of
+[OI-265](OI-265%20Opportunity%20Categoria%20and%20Sottocategoria%20values%20do%20not%20match%20the%20client%20registry.md),
+is marked closed by ROMI.** ⚠ Marked by ROMI, in ROMI's own hand, on a
+client-owned sheet — **the client has not confirmed it**, and the second half of
+those rows, _"compilazione da rendere obbligatoria"_, remains a **v1.7 candidate**
+with no ruling. The register stays **v1.6**.
+
+### 🆕 Two things observed that no prior reading recorded
+
+1. **Column A is `Priorita`**, carrying the value **`1`** on four rows:
+   `Categorie`, `Sottocategorie`, `Preventivi` (identifying the primary quote)
+   and `Nota` (the note-created indicator). ⚠ **When the priorities were added is
+   not established** — the column has been inside the `A1:E21` range since 12/11
+   and no earlier note describes its contents. Two of the four priority-1 rows
+   are the ones that just closed.
+2. **Row 5 now reads `"Fonte dal Lead → rivedere lista e metterla in italiano
+   + rinominare fonte in origine"`** — the rename of `Fonte` to `Origine` is new
+   wording against the 6/11 text. ⚠ Date of the addition not established. The row
+   is still **blank** in `Lavorato`, annotated _"inviato lista per email"_ →
+   [the lead source values](../The%20Pienissimo%20lead%20source%20values.md).
+
+### 🔴 And then the work stopped
+
+[OI-376](OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md):
+on the afternoon of the same day every Pienissimo thread was frozen except the
+reports and dashboard remediation. **The four `IN LAVORAZIONE` rows** — the
+primary-quote identifier, the running discounted total, the tranche grand total
+and the note indicator — **are in progress and halted**, and the six blanks are
+unscheduled.
+
+🔴 **Elena Spini's own change workbook of Friday 13/11 was due Friday 20
+November.** It has never been found in Drive or in mail — a **fourth** window —
+and the freeze now overtakes its deadline. ⚠ Nothing in this window says whether
+it still stands.

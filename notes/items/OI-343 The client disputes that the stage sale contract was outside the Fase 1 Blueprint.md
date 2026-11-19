@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Paganelli
 org: both
 raised: 2026-11-06
-updated: 2026-11-16
+updated: 2026-11-19
 depends_on: [OI-304]
 blocks: []
 source: Gmail 1a1b03ba790c53c6, 2026-11-06T09:41:00Z
@@ -176,3 +176,19 @@ earlier records. Eight days from this sweep, with the release unscheduled and
 
 Elisa Migliano wanted both cases tested on the go-live call — _"vendita da palco
 che non vendita da palco"_ — and the call ran out of time before either.
+
+## 🔴🔑 2026-11-19 - the dispute became a legal notice
+
+**The scope argument this item recorded on 6 November has been escalated into a
+PEC.** The client's Blueprint claim — that the stage sale contract was inside
+Fase 1 all along — is now the general form of its legal position: that
+**everything ROMI calls Fase 2 is already in the Fase 1 contract**. See
+[OI-375](OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md)
+and [OI-342](OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md).
+
+🔴 **ROMI never replied to the 6 November mail.** Fourteen days. The reply is now
+a legal one, owned by Elena Spini and routed through Giancarlo and Angelo rather
+than by the project manager direct to Fabrizio Paganelli.
+
+⚠ **`OP-1`, `OP-2` and `OP-4` of the R0 analysis are still unanswered**, a
+sixteenth day, and nothing in this window touched them.

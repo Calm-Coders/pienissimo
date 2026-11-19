@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-12
-updated: 2026-11-18
+updated: 2026-11-19
 depends_on: []
 blocks: []
 severity: high
@@ -241,3 +241,34 @@ PDF in production since.**
 **Still open:** a confirmed reading of a production quote PDF, the tranche-screen
 dates, and `654618c`, which merged into `DevMain` in PR #131 on 18/11 and is
 therefore no longer stranded on `DevAnita17`.
+
+## 🟡 2026-11-19 - the developer accounts for it, on the record
+
+**Yesterday's gap — the mail declaring the Italian date format done while the
+60-file delta contained no date-format change — has an explanation from its
+author, spoken on an internal call and therefore recorded.**
+
+Aurel Mrruku, on
+[the 19/11 internal call](../meetings/2026-11-19%20INTERNA%20Check%20temi%20PEC.md):
+
+> _"anche il lunedi gli ho detto 'Guarda che porto … il formato della data'
+> eccetera, **li porto col rilascio del 18, quindi c'e traccia del 18**. E c'e
+> anche nel contratto scritto **prima del 24**."_
+
+🟢 **Three things this adds.** (1) The change was **announced to the client on
+Monday 16/11**, in the four-hour session, not sprung on them. (2) It was
+**deliberately shipped with the 18/11 release**, which is consistent with the
+only mechanism that could do it — an **org-level Locale change, which is not
+metadata and so could not appear in the delta**. (3) ROMI reads the contract as
+requiring it **before the 24th**, so on its own account it is early, not late.
+
+⚠ **It is still an account, not a verification.** The org was not opened in this
+sweep either, and no production quote PDF has been seen printing an Italian date.
+The claim and the evidence remain one step apart — but the gap is now explained
+rather than unexplained, and the explanation is from the person who made the
+change.
+
+🟡 Both rows of this story are also marked done by the client's own sheet and by
+ROMI's recap, so no surface now disagrees →
+[OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md),
+[the recap of open changes](../The%20Pienissimo%20recap%20of%20open%20changes.md).

@@ -9222,6 +9222,138 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, attaching `Ordini non ins
 
 🔴 `#tproj-pienissimo` silent a fifth consecutive sweep · ⚠ Fathom returned nothing a thirty-fourth consecutive run · the Slack canvas is unchanged since 20.08.2026, **78 days** · 🔴 the dev group's own 5 November report is **unanswered a second day** · 🔴 [#337](open-items.md) lead conversion in Prod has no owner and the #286 fix on `Devmain_LeadChecks` is unmerged a fourteenth day · 🔴 [#313](open-items.md) the client has still been told nothing, a fourth day · 🔴 [#312](open-items.md) Anticipay unmentioned by any source, a fourth day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a sixteenth run · 🔴 `lead-web-to-lead (2).html` still unopened and unexplained · **the requirement register is untouched and stays v1.6**; the tranche obligation and now the two mandatory picklists are the v1.7 candidates.
 
+## 85. Update 2026-11-19 — the client went legal, and the project stopped
+
+**Nightly `requirements-check`, watermark 2026-11-18T22:00Z, one day.**
+
+🔴🔑 **Pienissimo has sent ROMI a PEC — a legally registered Italian notice —
+dated 17 November 2026.** Its subject, verbatim: _"Formale contestazione delle
+attività di implementazione Salesforce – **Sospensione del golive del 16 novembre
+2026** – Messa in mora e diffida ad adempiere ai sensi degli artt. 1454 e 1662
+c.c. – **Contestazione della cosiddetta «fase 2»**"_ →
+[#375](../notes/items/OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md).
+
+It reached ROMI on **18 November by telephone** — Gianpaolo Motta called Elena
+Spini during her last day of leave for an urgent call with Angelo and Andrea G. —
+and the project team on **19 November at 08:00 CET**, in the marketing group DM.
+
+⚠ **The document was not found.** It is not in the mailbox searched and no copy
+is in Drive, so everything known of its contents is Elena Spini's account on
+[the 19/11 internal call](../notes/meetings/2026-11-19%20INTERNA%20Check%20temi%20PEC.md),
+which she deliberately held on Meet so it would be recorded. She declined to read
+the PEC out. 🔴 **Art. 1454 c.c. works by a fixed term, and no deadline is
+recorded anywhere.**
+
+### The grounds, as ROMI understands them
+
+1. 🔴 **Reports and dashboards are missing** — and conceded as contractual:
+   _"le dashboard che mancano, che sono nel contratto e mancano, ok?"_ The client
+   never gave a requirement for them, _"non c'hanno dato nessun requisito"_, and
+   the requirements meeting planned for them never happened. The only requirement
+   in existence is one sentence from **Marco Montesi, who has resigned** →
+   [#377](../notes/items/OI-377%20Reports%20and%20dashboards%20were%20never%20built%20and%20have%20no%20requirements.md).
+2. 🔴 **Training is missing**, specifically the **marketing** half. ROMI's answer
+   is a calendar, not a denial. The commercial half is asserted as _"più di 5
+   giorni da 8 ore di formazione col cliente … è tutto registrato"_ against a
+   contractual 20 hours — ⚠ and **this repository holds no training record at
+   all** → [#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md),
+   [#246](../notes/items/OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md).
+3. 🔴 **«Fase 2» is contested in full**, with its additional cost, on the claim
+   that _"tutti i punti della fase due sono inclusi nel contratto"_ →
+   [#342](../notes/items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md),
+   [#343](../notes/items/OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md).
+   ⚠ No euro figure transcribed.
+4. ⚠ **The 16 November go-live is itself contested**, which ROMI disputes because
+   the client proposed that date ([#268](../notes/items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)) —
+   _"non puoi contestare il 16 quando io ti ho fatto il favore che il 16 andava bene?"_
+
+### What stopped
+
+🔴 **Fase 2 is stopped** — _"Quindi per ora fase due, stop."_ The seven-release
+roadmap to April 2027, the R1 reverse gear of 14 December and the maintenance
+pricing are suspended, not re-planned ([#349](../notes/items/OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md)).
+
+🔴 **Everything else is frozen.** Aurel Mrruku had already told Anita Aga _"di
+non toccare più niente su pianissimo"_; Elena Spini confirmed _"il resto fermi
+tutti"_. He had asked at 09:12:30 CET _"devo fermarmi su questo progetto?"_ and
+got the answer four hours later through a call and a DM, never in writing →
+[#376](../notes/items/OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md).
+
+🟡 **R0 stays in production** _"per ora"_, after Elena Spini wrote to Angelo —
+so the only Fase 2 code in the org remains there while Fase 2 is disputed.
+
+🔴 **ROMI's project manager may no longer speak to the client** — _"ormai non
+posso più parlare con il cliente"_; approvals go via Giancarlo and Angelo, ⚠
+neither surname established → [#348](../notes/items/OI-348%20Fase%201%20post%20go-live%20support%20is%20unassigned%20and%20unpriced.md).
+
+### The one thing authorised
+
+Lead and Opportunity reports plus one Home-page dashboard for the agents, with
+two further reports on orders and invoices, built by **Anita Aga in UAT only** —
+_"confermo niente PROD per i report/dashboard"_, _"facciamo solo UAT"_ — for an
+**internal** review on **20/11 at 09:30**. 🔑 Its purpose is stated plainly:
+_"così almeno nella risposta noi diciamo che abbiamo tutto."_
+
+⚠ An unresolved process disagreement sits inside it: Elena Spini holds reports
+are configuration that could be made straight in production; Aurel Mrruku that
+_"anche un campo, anche una label deve passare sempre"_ through UAT and git. The
+work went to UAT, but her closing position was _"fai come vuoi"_, so the rule
+rests on practice rather than decision.
+
+### 🔴 And the client did not come to the marketing test
+
+`[ROMI-PIENISSIMO] - Test Finale Flusso MKT`, 19/11 **09:31 CET**: five
+Pienissimo addresses invited, **only Elena Spini and Fabrizio Mastracci
+attended**, 00:14:29, closed after a two-minute wait →
+[the meeting](../notes/meetings/2026-11-19%20Test%20Finale%20Flusso%20MKT.md).
+
+🟢 **What went unseen:** both marketing flows **complete** with landing pages
+shared, test records re-blanked, and mini-campaigns needing only a date change so
+the client could test unaided. 🔴 **The offer to mail that test pack was left
+unassigned.** ⚠ Pienissimo Live is **25 November**.
+
+### What moved anyway
+
+🟢 **Two rows closed on the client's change sheet** — `Categorie` and
+`Sottocategorie`, `IN LAVORAZIONE` → `SI`, **seven of nineteen now done** —
+edited at 07:30:07Z **by Elena Spini, not the client**, the first ROMI-hand edit
+of that file. ⚠ The client has not confirmed it, and the mandatory-field half of
+those rows is still an unruled v1.7 candidate. 🆕 Column A is `Priorità` with `1`
+on four rows, and row 5 now adds _"+ rinominare fonte in origine"_ — ⚠ neither
+dated → [#344](../notes/items/OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md).
+🔴 **The four `IN LAVORAZIONE` rows are now halted mid-work**, and Elena Spini's
+own 13/11 workbook — **due Friday 20 November** — has still never been found, a
+fourth window.
+
+🟡 **The date format has an account at last.** Aurel Mrruku: announced to the
+client on Monday 16/11, _"li porto col rilascio del 18, quindi c'è traccia del
+18"_, contract due _"prima del 24"_. An **org-level Locale change is not
+metadata**, which is exactly why the 60-file delta could never show it. ⚠ Still
+an account, not a verification → [#358](../notes/items/OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md).
+
+🟢 **The Mexal panel's provenance is established** against a direct challenge:
+it is a **button panel, not a dashboard**; **Fabrizio Paganelli asked for it**
+verbally on 16/11 and in writing the same day; and it went **UAT → Prod** →
+[#370](../notes/items/OI-370%20The%20client%20cannot%20run%20the%20Mexal%20syncs%20by%20hand.md).
+🔴 Its two commitments are unmet a third day and now have nobody to send them.
+
+⚠ **ROMI's own project manager would not have made the 18/11 release** — _"non
+avrei fatto un rilascio così … hanno l'ennesima cosa in più"_, and _"e contestano
+pure"_. Her testing objection was never answered →
+[#374](../notes/items/OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
+
+### Unchanged
+
+**One commit in the window** — `026cc33`, `Reports, Dashboards and Home Page
+Layout edits`, Anita Aga, 17:52:37+01:00, on **`DevAnita19`** and **unmerged**;
+`DevMain` stays at `1a46bf2`, tree clean. 🔴 `#tproj-pienissimo` silent a
+**seventh** day · 🔴 the dev group has **never** answered a nightly report ·
+⚠ **Fathom returned nothing a fortieth consecutive run**, on a day with two
+recorded calls · the Slack canvas unchanged since 20.08.2026, **91 days** ·
+⚠ the register stays **v1.6** · **the org was not opened**, so `STATUS.md` and
+its Notion mirror are **stale** · 🔴 Zoho expired on 31 October, unmentioned for
+an eighteenth sweep · no Apex test class was written or proposed.
+
 ## 84. Update 2026-11-18 — the release went to production, and the client was told more than the delta can show
 
 **The 18 November release is live. The whole `DevMain` delta went into Pienissimo Prod in three quick deploys, the Mexal sync buttons and the agent home page with it, and Pienissimo received the first written release note of this project. Two of the things that note tells the client are not supported by anything in the delta.**

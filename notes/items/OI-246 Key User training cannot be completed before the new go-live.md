@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Marco Montesi
 org: both
 raised: 2026-10-15
-updated: 2026-10-21
+updated: 2026-11-19
 depends_on: [OI-240, OI-186]
 blocks: [go-live]
 severity: gating
@@ -279,3 +279,25 @@ control now depends on training that is not scheduled.**
 
 ⚠ The client also undertook on 20/10 to send a written summary of their key-user
 review. **Not received.**
+
+## 🔴🔑 2026-11-19 - training is now a head of claim in a PEC
+
+**The objection recorded here on 15 October — that the client's staff could not
+be trained in the time available — has arrived back as a formal contestation.**
+Training is the second named ground of the PEC of 17 November
+([OI-375](OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md)).
+
+🔑 **ROMI concedes the marketing half and asserts the commercial half.** Elena
+Spini on [the 19/11 internal call](../meetings/2026-11-19%20INTERNA%20Check%20temi%20PEC.md):
+_"la formazione io ho fatto quella commerciale, **manca quella di marketing**"_,
+and ROMI must now supply _"un calendario di disponibilita per fare formazione del
+marketing"_ → [OI-378](OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md).
+
+Aurel Mrruku's counter, for the reply: _"abbiamo fatto **piu di 5 giorni da 8 ore
+di formazione** col cliente … **E tutto registrato.**"_ Elena Spini puts the
+contractual budget at **20 hours** — ⚠ spoken, not read from the contract — and
+believes more than that was consumed.
+
+🔴 **This repository holds no training record** — no dates, hours, attendees or
+recordings set against the contractual figure. That record is now the evidence
+the claim turns on, and it does not exist.

@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Galotto
 org: ROMI
 raised: 2026-11-05
-updated: 2026-11-18
+updated: 2026-11-19
 depends_on: [OI-308]
 blocks: []
 source: Drive 1_ilgbQZf_2TXHrJ2DNiRQdgc9ZY4FtQAq7tDqLvZ6j0, read 2026-11-05
@@ -279,3 +279,37 @@ a silence now in its third day, and it is not evidence.
 ([OI-348](OI-348%20Fase%201%20post%20go-live%20support%20is%20unassigned%20and%20unpriced.md)).
 She is the one who set the lapsed expectation and the one who declined to send a
 written chaser.
+
+## 🔴🔑 2026-11-19 - Fase 2 is contested by PEC and stopped
+
+**The client has contested Fase 2 in a legally registered notice, and ROMI has
+halted it.** See
+[OI-375](OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md).
+
+The PEC of **17 November** carries, in its own subject line,
+_"Contestazione della cosiddetta «fase 2»"_. Elena Spini's account of the body,
+on [the 19/11 internal call](../meetings/2026-11-19%20INTERNA%20Check%20temi%20PEC.md):
+
+> _"uno dei punti di questa … pec e **la cosiddetta fase due e la richiesta di
+> ulteriori [importo]**, e **loro si aspettano che tutti i punti della fase due
+> sono inclusi nel contratto**."_
+
+🔑 **That is the position this item has been circling since 05/11, now stated as
+a legal claim**: there is no Fase 2, only unperformed Fase 1. ⚠ The euro figure
+is **not transcribed**, consistent with every prior reading of the offer.
+
+### What changed
+
+- 🔴 **Fase 2 is stopped**: _"Quindi per ora fase due, stop."_ The seven-release
+  roadmap ending 12 April 2027, the R1 scadenziario reverse gear of 14 December
+  and the maintenance pricing are all suspended, not re-planned →
+  [OI-349](OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md).
+- 🟡 **R0 stays in production** — it shipped on 18/11 and Aurel Mrruku offered to
+  pull it; Elena Spini instructed _"No, per ora lascialo"_ after writing to
+  Angelo. So the only Fase 2 code in the org stays while Fase 2 is disputed.
+- 🟢 **Elena Spini is assembling the rebuttal** from the meeting record: every
+  Fase 2 point traced to the moment the client itself said _"mettetelo in fase
+  due, tranquilli"_.
+- 🔴 **Day nine** since Andrea Galotto's mail of 10/11, and **Daniela Morgese's
+  answer on the offer is now moot** — the client has answered by PEC instead.
+- 🟡 **V.4 did not change today.** No Drive edit in the window.

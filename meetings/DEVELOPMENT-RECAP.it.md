@@ -9572,6 +9572,144 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 85. Aggiornamento 19/11/2026 — il cliente è andato per vie legali, e il progetto si è fermato
+
+**`requirements-check` notturno, watermark 2026-11-18T22:00Z, un giorno.**
+
+🔴🔑 **Pienissimo ha inviato a ROMI una PEC — notifica registrata e giuridicamente
+opponibile — datata 17 novembre 2026.** Oggetto, verbatim: _"Formale contestazione
+delle attività di implementazione Salesforce – **Sospensione del golive del 16
+novembre 2026** – Messa in mora e diffida ad adempiere ai sensi degli artt. 1454 e
+1662 c.c. – **Contestazione della cosiddetta «fase 2»**"_ →
+[#375](../notes/items/OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md).
+
+È arrivata a ROMI il **18 novembre per telefono** — Gianpaolo Motta ha chiamato
+Elena Spini nel suo ultimo giorno di ferie per una call urgente con Angelo e
+Andrea G. — e al team di progetto il **19 novembre alle 08:00 CET**, nella DM del
+gruppo marketing.
+
+⚠ **Il documento non è stato trovato.** Non è nella casella consultata e nessuna
+copia è su Drive: tutto ciò che si sa del contenuto è il resoconto di Elena Spini
+nella [call interna del 19/11](../notes/meetings/2026-11-19%20INTERNA%20Check%20temi%20PEC.md),
+tenuta deliberatamente su Meet perché restasse registrata. Ha rifiutato di leggere
+la PEC. 🔴 **L'art. 1454 c.c. opera per termine fisso, e nessuna scadenza risulta
+in alcuna fonte.**
+
+### I capi di contestazione, come ROMI li riferisce
+
+1. 🔴 **Report e dashboard mancanti** — e ammessi come contrattuali: _"le
+   dashboard che mancano, che sono nel contratto e mancano, ok?"_ Il cliente non
+   ha mai dato un requisito, _"non c'hanno dato nessun requisito"_, e il meeting
+   di requisiti previsto non si è mai tenuto. L'unico requisito esistente è una
+   frase di **Marco Montesi, che si è dimesso** →
+   [#377](../notes/items/OI-377%20Reports%20and%20dashboards%20were%20never%20built%20and%20have%20no%20requirements.md).
+2. 🔴 **Formazione mancante**, in particolare la parte **marketing**. La risposta
+   di ROMI è un calendario, non una smentita. La parte commerciale è dichiarata
+   _"più di 5 giorni da 8 ore di formazione col cliente … è tutto registrato"_ a
+   fronte di 20 ore contrattuali — ⚠ e **questo repository non contiene alcun
+   registro della formazione** → [#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md),
+   [#246](../notes/items/OI-246%20Key%20User%20training%20cannot%20be%20completed%20before%20the%20new%20go-live.md).
+3. 🔴 **La «fase 2» è contestata integralmente**, col suo costo aggiuntivo, sulla
+   tesi che _"tutti i punti della fase due sono inclusi nel contratto"_ →
+   [#342](../notes/items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md),
+   [#343](../notes/items/OI-343%20The%20client%20disputes%20that%20the%20stage%20sale%20contract%20was%20outside%20the%20Fase%201%20Blueprint.md).
+   ⚠ Nessun importo trascritto.
+4. ⚠ **Anche il go-live del 16 novembre è contestato**, cosa che ROMI respinge
+   perché la data l'ha proposta il cliente ([#268](../notes/items/OI-268%20The%20client%20proposed%20a%20go-live%20calendar%20of%2016%20November.md)) —
+   _"non puoi contestare il 16 quando io ti ho fatto il favore che il 16 andava bene?"_
+
+### Cosa si è fermato
+
+🔴 **La Fase 2 è ferma** — _"Quindi per ora fase due, stop."_ La roadmap a sette
+rilasci fino ad aprile 2027, la retromarcia R1 del 14 dicembre e il prezzo della
+manutenzione sono sospesi, non ripianificati ([#349](../notes/items/OI-349%20Fase%202%20has%20no%20developer%20committed%20for%20December.md)).
+
+🔴 **Tutto il resto è bloccato.** Aurel Mrruku aveva già detto ad Anita Aga _"di
+non toccare più niente su pianissimo"_; Elena Spini ha confermato _"il resto fermi
+tutti"_. Lui aveva chiesto alle 09:12:30 CET _"devo fermarmi su questo progetto?"_
+e ha avuto risposta quattro ore dopo tramite una call e una DM, mai per iscritto →
+[#376](../notes/items/OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md).
+
+🟡 **R0 resta in produzione** _"per ora"_, dopo che Elena Spini ha scritto ad
+Angelo — l'unico codice di Fase 2 nell'org resta lì mentre la Fase 2 è contestata.
+
+🔴 **La project manager di ROMI non può più parlare col cliente** — _"ormai non
+posso più parlare con il cliente"_; le conferme passano da Giancarlo e Angelo, ⚠
+cognomi non accertati → [#348](../notes/items/OI-348%20Fase%201%20post%20go-live%20support%20is%20unassigned%20and%20unpriced.md).
+
+### L'unica cosa autorizzata
+
+Report su Lead e Opportunità più una dashboard in Home per gli agenti, con due
+report aggiuntivi su ordini e fatture, realizzati da **Anita Aga solo in UAT** —
+_"confermo niente PROD per i report/dashboard"_, _"facciamo solo UAT"_ — per una
+revisione **interna** il **20/11 alle 09:30**. 🔑 Lo scopo è dichiarato:
+_"così almeno nella risposta noi diciamo che abbiamo tutto."_
+
+⚠ Dentro c'è un disaccordo di processo irrisolto: per Elena Spini i report sono
+configurazione e si potrebbero fare direttamente in produzione; per Aurel Mrruku
+_"anche un campo, anche una label deve passare sempre"_ da UAT e git. Il lavoro è
+andato in UAT, ma la sua posizione finale era _"fai come vuoi"_: la regola poggia
+sulla prassi, non su una decisione.
+
+### 🔴 E al test marketing il cliente non si è presentato
+
+`[ROMI-PIENISSIMO] - Test Finale Flusso MKT`, 19/11 **09:31 CET**: cinque
+indirizzi Pienissimo invitati, **presenti solo Elena Spini e Fabrizio
+Mastracci**, 00:14:29, chiusa dopo due minuti di attesa →
+[la riunione](../notes/meetings/2026-11-19%20Test%20Finale%20Flusso%20MKT.md).
+
+🟢 **Cosa non è stato visto:** entrambi i flussi marketing **completati** con le
+landing page condivise, i record di test ripuliti e mini campagne che richiedono
+solo lo spostamento della data, così che il cliente potesse testare da solo.
+🔴 **L'offerta di inviare quel pacchetto di test è rimasta senza responsabile.**
+⚠ Pienissimo Live è il **25 novembre**.
+
+### Cosa si è mosso comunque
+
+🟢 **Due righe chiuse sul foglio di modifiche del cliente** — `Categorie` e
+`Sottocategorie`, da `IN LAVORAZIONE` a `SI`, **sette su diciannove ora fatte** —
+modificato alle 07:30:07Z **da Elena Spini, non dal cliente**, prima modifica di
+mano ROMI su quel file. ⚠ Il cliente non l'ha confermato, e la metà
+"obbligatorietà" di quelle righe resta candidata v1.7 senza decisione. 🆕 La
+colonna A è `Priorità` con `1` su quattro righe, e la riga 5 aggiunge ora
+_"+ rinominare fonte in origine"_ — ⚠ nessuna delle due datata →
+[#344](../notes/items/OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md).
+🔴 **Le quattro righe `IN LAVORAZIONE` sono ora interrotte a metà**, e il workbook
+del 13/11 di Elena Spini — **atteso per venerdì 20 novembre** — non è mai stato
+trovato, quarta finestra.
+
+🟡 **Il formato data ha finalmente un resoconto.** Aurel Mrruku: comunicato al
+cliente lunedì 16/11, _"li porto col rilascio del 18, quindi c'è traccia del 18"_,
+contratto _"prima del 24"_. Una **modifica del Locale a livello di org non è
+metadato**, ed è esattamente per questo che il delta di 60 file non poteva
+mostrarla. ⚠ Resta un resoconto, non una verifica →
+[#358](../notes/items/OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md).
+
+🟢 **La provenienza del pannello Mexal è accertata** contro una contestazione
+diretta: è un **pannello di pulsanti, non una dashboard**; **l'ha chiesto Fabrizio
+Paganelli** a voce il 16/11 e per iscritto lo stesso giorno; ed è passato da
+**UAT a Prod** → [#370](../notes/items/OI-370%20The%20client%20cannot%20run%20the%20Mexal%20syncs%20by%20hand.md).
+🔴 I due impegni collegati sono inevasi al terzo giorno e ora non hanno nessuno
+che li invii.
+
+⚠ **La project manager di ROMI non avrebbe fatto il rilascio del 18/11** — _"non
+avrei fatto un rilascio così … hanno l'ennesima cosa in più"_, e _"e contestano
+pure"_. La sua obiezione sui test non ha mai avuto risposta →
+[#374](../notes/items/OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
+
+### Invariato
+
+**Un commit nella finestra** — `026cc33`, `Reports, Dashboards and Home Page
+Layout edits`, Anita Aga, 17:52:37+01:00, su **`DevAnita19`** e **non
+mergiato**; `DevMain` resta a `1a46bf2`, albero pulito. 🔴 `#tproj-pienissimo`
+silenzioso al **settimo** giorno · 🔴 il gruppo dev non ha **mai** risposto a un
+report notturno · ⚠ **Fathom non ha restituito nulla al quarantesimo giro
+consecutivo**, in un giorno con due call registrate · canvas Slack invariato dal
+20.08.2026, **91 giorni** · ⚠ il registro resta alla **v1.6** · **l'org non è
+stata aperta**, quindi `STATUS.md` e il mirror Notion sono **obsoleti** · 🔴 Zoho
+è scaduto il 31 ottobre, non menzionato da diciotto giri · nessuna classe di test
+Apex scritta o proposta.
+
 ## 84. Aggiornamento 18/11/2026 — il rilascio è andato in produzione, e al cliente è stato detto più di quanto il delta possa mostrare
 
 **Il rilascio del 18 novembre è live. L'intero delta di `DevMain` è entrato in Pienissimo Prod con tre quick deploy, insieme ai pulsanti di sincronizzazione Mexal e alla home page degli agenti, e Pienissimo ha ricevuto la prima nota di rilascio scritta di questo progetto. Due delle cose che quella nota comunica al cliente non trovano riscontro in nulla del delta.**

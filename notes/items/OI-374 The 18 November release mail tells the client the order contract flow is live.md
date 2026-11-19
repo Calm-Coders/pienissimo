@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Fabrizio Paganelli, Sabatino Rinaldi
 org: ROMI
 raised: 2026-11-18
-updated: 2026-11-18
+updated: 2026-11-19
 depends_on: [OI-322, OI-373]
 blocks: []
 severity: high
@@ -103,3 +103,39 @@ relationship.
 - [OI-322](OI-322%20The%20DocuSign%20return%20trigger%20only%20handles%20quotes%20not%20orders.md) — the missing return path
 - [OI-358](OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md) — the date format the same mail declares done
 - [The Pienissimo recap of open changes](../The%20Pienissimo%20recap%20of%20open%20changes.md)
+
+## 🔴 2026-11-19 - ROMI's own project manager would not have made this release
+
+**The release is now inside a legal dispute, and the person who owns the client
+relationship says on the record she would not have shipped it.**
+
+Elena Spini, marketing group DM, **08:03:35 CET**, her first working hour back
+from leave:
+
+> _"ho visto che ieri hai rilasciato … **ma avevate fatto i test di questa
+> parte? non mi aspettavo un rilascio**."_
+
+And in the thread, 09:09:28: _"dal documento condiviso era rilascio pianificato:
+**18 o 19** — ma dato che poi non ci siamo + scambiati ne email ne nulla,
+**non avrei fatto un rilascio cosi** comunque va beh pace ormai, **hanno
+l'ennesima cosa in piu**."_ Then: _"e contestano pure."_
+
+🟡 **The date objection resolved itself.** Aurel Mrruku answered that he had
+confirmed the release in Monday's meeting with the client — _"lunedi ho
+confermato nella riunione con loro"_ — and she accepted it: _"ok ottimo non
+sapevo (ero rimasta al documento che li era scritto 18-19)"_. 🔴 **Her testing
+objection was never answered.**
+
+🔴 **The context has changed underneath this item.** The PEC of 17 November
+suspends the 16 November go-live
+([OI-375](OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md)),
+so a release note sent on the 18th describes work delivered into a go-live the
+client was already contesting in writing — **and ROMI did not know that when it
+sent the mail**. Elena Spini's _"hanno l'ennesima cosa in piu"_ is the assessment
+of the person who has to answer the PEC.
+
+⚠ **Still unverified, a second day:** whether DocuSign is configured in Prod for
+order PDFs ([OI-373](OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md)),
+whether the return path exists ([OI-322](OI-322%20The%20DocuSign%20return%20trigger%20only%20handles%20quotes%20not%20orders.md)),
+and whether any real WooCommerce order has gone end to end in production. 🔴 The
+freeze means nobody is now assigned to find out.

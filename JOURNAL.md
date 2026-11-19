@@ -10,6 +10,58 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-19 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail (4 queries), Slack (4 conversations, 2 threads + the canvas),
+  Drive (2 searches, 3 full reads) and Fathom from watermark **2026-11-18T22:00Z**.
+  Drilled **two meetings** from their full transcripts — `PIENISSIMO - Check temi PEC`
+  (00:25:09) and `[ROMI-PIENISSIMO] - Test Finale Flusso MKT` (00:14:29) — and re-read
+  the client change sheet in full. Opened **OI-375 to OI-378**; updated OI-246, OI-342,
+  OI-343, OI-344, OI-348, OI-349, OI-358, OI-370, OI-374; MAP, INDEX, both trackers
+  (4 new rows + 9 regenerated each) and §85 in both recaps.
+- 🔴🔑 **The finding: Pienissimo has sent ROMI a PEC dated 17 November** — _"Formale
+  contestazione delle attivita di implementazione Salesforce – **Sospensione del golive
+  del 16 novembre 2026** – Messa in mora e diffida ad adempiere ai sensi degli artt.
+  1454 e 1662 c.c. – **Contestazione della cosiddetta «fase 2»**"_ — **OI-375**. Grounds
+  as ROMI recounts them: **reports and dashboards** missing and conceded as contractual
+  with no requirement ever given (**OI-377**), **marketing training** missing
+  (**OI-378**), and **all of Fase 2 claimed to sit inside the Fase 1 contract**. The
+  16/11 go-live is itself contested, which ROMI disputes because the client proposed it.
+- ⚠ **The PEC itself is in no source this account can reach** — four mail formulations
+  and two Drive searches found nothing. Everything recorded about its contents is
+  **Elena Spini's spoken account**, flagged as such on every artifact. 🔴 **Its deadline
+  is unknown**, and art. 1454 c.c. operates by a fixed term. That is the single most
+  important open question on the project.
+- 🔴 **State: the project is stopped.** Fase 2 halted (_"per ora fase due, stop"_), every
+  other thread frozen (_"il resto fermi tutti"_; Anita Aga told _"di non toccare piu
+  niente su pianissimo"_), **R0 left in production _"per ora"_**, and one carve-out —
+  Lead/Opportunity reports plus a Home dashboard, **UAT only, explicitly not Prod**,
+  internal review **20/11 09:30** — built to answer the notice (**OI-376**).
+  🔴 **Elena Spini is barred from client contact**; approvals go via Giancarlo and
+  Angelo, ⚠ neither surname established.
+- 🔴 **The client also did not come to the final marketing test** at 09:31 CET — five
+  Pienissimo addresses invited, two ROMI people present, closed after a two-minute
+  wait, with both flows finished and a self-service test pack ready and unseen.
+- 🟢 **What moved anyway:** two rows closed on the client change sheet (Categorie,
+  Sottocategorie → `SI`, **seven of nineteen**, edited by **Elena Spini** — the first
+  ROMI-hand edit of that file); the **date format has an account at last** (announced
+  Monday, shipped with the 18/11 release, contract due before the 24th — an org Locale
+  change is not metadata, which is why no delta could show it); and the **Mexal panel's
+  provenance is established** — a button panel, not a dashboard, requested by Fabrizio
+  Paganelli verbally and in writing on 16/11, built UAT → Prod.
+- **Not done:** the org was **not** opened — `STATUS.md` and the Notion mirror are
+  **stale**. ⚠ `026cc33` (`DevAnita19`, Anita Aga, 17:52 CET, _"Reports, Dashboards and
+  Home Page Layout edits"_) is **unmerged and was not inspected** — its title matches the
+  OI-377 remediation but nothing connects them. No Apex test class written or proposed;
+  OI-64, OI-66 and the deploy risk unchanged. Register stays **v1.6**. No euro figure
+  from the PEC transcribed.
+- **Watch:** 🔴 **get the PEC and its deadline.** Nothing else on OI-375 can be assessed
+  without it, and four of the newest items hang off it. Also: the 13/11 change workbook
+  was due **20/11** and has never been found (fourth window), and **Pienissimo Live is
+  25/11** with the marketing flows still never shown to the client.
+
+---
+
 ## 2026-11-18 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail (3 queries + 2 threads read in full), Slack (4 conversations

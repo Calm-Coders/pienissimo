@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Gianpaolo Motta
 org: ROMI
 raised: 2026-11-09
-updated: 2026-11-16
+updated: 2026-11-19
 depends_on: [OI-308]
 blocks: []
 source: notes/meetings/2026-11-09 INTERNA Review temi Fase 2.md
@@ -106,3 +106,25 @@ Her own closing estimate, from the 13/11 status post: _"go-live per gli utenti i
 16/11/2026. Per la chiusura totale puntiamo a **fine mese**"_ ·
 _"**stima giornate a finire: 12 gg**, invariata causa nuove richieste lato
 cliente."_
+
+## 🔴 2026-11-19 - the project manager is back, and barred from the client
+
+**Elena Spini returned from leave on 19 November, as her out-of-office said she
+would. On her first day back she learned of the PEC and was stood down from
+client contact.**
+
+Her own words on [the 19/11 internal call](../meetings/2026-11-19%20INTERNA%20Check%20temi%20PEC.md):
+_"**ormai non posso piu parlare con il cliente**"_ — confirmations now go through
+**Giancarlo** and **Angelo**. ⚠ Neither surname is established from a primary
+source. See [OI-375](OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md).
+
+🔴 **So the support question this item asks is now worse, not better.** The
+person who owns the client relationship cannot use it, and no replacement
+counterpart is named anywhere. The unpriced, unassigned Fase 1 support continues
+against a client that has placed ROMI in default.
+
+🟡 She describes her first day back as spent on the rebuttal document rather than
+on the project: _"adesso mi sto facendo sta rottura di … sto documento."_ The
+chain of events she gives: Gianpaolo Motta called her on **18/11**, during her
+last day of leave, for an urgent call with Angelo and Andrea G.; she held that
+call on the afternoon of 18/11.
