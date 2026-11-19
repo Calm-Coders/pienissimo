@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <chartTheme>light</chartTheme>
+    <colorPalette>Default</colorPalette>
+    <dashboardGridLayout>
+        <dashboardGridComponents>
+            <colSpan>12</colSpan>
+            <columnIndex>0</columnIndex>
+            <dashboardComponent>
+                <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+                <chartAxisRange>Auto</chartAxisRange>
+                <chartSummary>
+                    <aggregate>Sum</aggregate>
+                    <axisBinding>y</axisBinding>
+                    <column>ORDER_TOTAL_AMOUNT</column>
+                </chartSummary>
+                <componentType>Column</componentType>
+                <displayUnits>Auto</displayUnits>
+                <drillEnabled>true</drillEnabled>
+                <enableHover>true</enableHover>
+                <groupingColumn>ORDER_EFFECTIVE_DATE</groupingColumn>
+                <header>Valori Ordini per Mese</header>
+                <legendPosition>Bottom</legendPosition>
+                <report
+        >PienissimoReportCommercialieAmmini/Informazioni_generali_sul_Order</report>
+                <showValues>true</showValues>
+                <sortBy>RowLabelAscending</sortBy>
+                <title>Valore ordini per mese - anno corrente</title>
+                <useReportChart>false</useReportChart>
+            </dashboardComponent>
+            <rowIndex>0</rowIndex>
+            <rowSpan>6</rowSpan>
+        </dashboardGridComponents>
+        <numberOfColumns>12</numberOfColumns>
+        <rowHeight>60</rowHeight>
+    </dashboardGridLayout>
+    <dashboardType>LoggedInUser</dashboardType>
+    <description
+  >Somma del valore degli ordini per mese della data di inizio ordine nell anno corrente, secondo gli accessi dell utente.</description>
+    <isGridLayout>true</isGridLayout>
+    <textColor>#16325C</textColor>
+    <title>Valori Ordini per Mese</title>
+    <titleColor>#16325C</titleColor>
+    <titleSize>14</titleSize>
+</Dashboard>

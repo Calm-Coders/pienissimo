@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns><field>Fattura__c$Account__c</field></columns>
+    <columns><field>Fattura__c$Name</field></columns>
+    <columns><field>Fattura__c.Scadenze__r$Data_Scadenza__c</field></columns>
+    <columns><field>Fattura__c.Scadenze__r$Importo__c</field></columns>
+    <columns><field>Fattura__c.Scadenze__r$Giorni_Ritardo__c</field></columns>
+    <filter>
+        <criteriaItems><column
+      >Fattura__c.Scadenze__r$Pagata__c</column><operator
+      >equals</operator><value>0</value></criteriaItems>
+        <criteriaItems><column
+      >Fattura__c.Scadenze__r$Data_Scadenza__c</column><operator
+      >lessThan</operator><value>TODAY</value></criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>Scadenze insolute - le 5 piu vecchie</name>
+    <reportType>Fatture_whith_Scadenza_Fatture_Custom__c</reportType>
+    <rowLimit>5</rowLimit>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>false</showGrandTotal>
+    <showSubTotals>false</showSubTotals>
+    <sortColumn>Fattura__c.Scadenze__r$Data_Scadenza__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter><dateColumn
+    >Fattura__c.Scadenze__r$Data_Scadenza__c</dateColumn><interval
+    >INTERVAL_CUSTOM</interval></timeFrameFilter>
+</Report>
