@@ -3,7 +3,7 @@ id: person-daniela-morgese
 type: person
 status: active
 org: Pienissimo
-updated: 2026-10-02
+updated: 2026-11-20
 ---
 
 # Daniela Morgese - Pienissimo direction
@@ -13,7 +13,7 @@ signs the requirements document for the client side.
 
 Her title on the April 2026 org chart is **General Executive — of both
 Pienissimo Srl and Pienissimo Software Srl**, alongside
-[G Lanzetti](G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md) as CEO
+[G Lanzetti](Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md) as CEO
 of both. So she does have standing over the software company at the centre of
 the scope dispute; she is not, however, its CEO.
 
@@ -64,3 +64,33 @@ logics hang together.
 ⚠ **The transcript and the Gemini notes say only "Daniela".** She is the only
 Daniela in the records and the role fits, but no source in this sweep states the
 surname. Treat the identification as probable, not attested.
+
+## ⚠ 2026-11-20 - "la famosa direzione", and ROMI's reply landed badly
+
+🔑 **She is the client's decision-maker in the contestation**, as far as any
+source read here shows.
+
+At the ROMI-Salesforce-Pienissimo meeting of **20 November 14:30 CET**, Elena
+Spini reported:
+
+> _"call iniziata malissimo (**Daniela NERA per aver ricevuto la pec di
+> risposta**) alla fine andata un po meglio"_
+
+and, asked by Fabrizio Mastracci _"daniela chi e?"_, answered: 🔑 **_"la famosa
+direzione"_** — which matches this note's own description of her as General
+Executive of both Pienissimo companies.
+
+Afterwards, **Angelo Pastorelli called her privately** and the project team was
+not told what was said: _"per ora tutti fermi perche poi Angelo ha chiamato in
+privato Daniela e non ho piu saputo nulla"_ →
+[OI-380](../items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+
+⚠ **The source names only "Daniela".** No surname appears in the 20/11 messages.
+The identification rests on the role — _"la famosa direzione"_ — and on her being
+the standing escalation path on this project. It is strong but it is an inference,
+and it is recorded as one.
+
+🔑 **The legal channel and the working channel are different people.** The PEC was
+answered to **Giuliano Lanzetti** as Pienissimo's legal representative
+([the person note](Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)),
+while the anger about that answer, and the private call that followed, are hers.

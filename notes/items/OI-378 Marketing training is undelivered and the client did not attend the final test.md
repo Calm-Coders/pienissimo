@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini, Matteo D, Rebecca M, Fabrizio Paganelli
 org: both
 raised: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-20
 depends_on: [OI-375, OI-246]
 blocks: []
 severity: high
@@ -124,3 +124,39 @@ landing pages and formats, and _"rimango in attesa di risposta"_.
 - **The training record itself**: dates, hours, attendees, recordings, against
   the 20 contractual hours. ⚠ It does not exist in this repository and the PEC
   turns on it.
+
+## 🟡 2026-11-20 - the calendar exists, and it is unconfirmed
+
+🟢 **Fabrizio Mastracci's dates landed**, one day after he committed to them.
+From Elena Spini's status post in `#tproj-pienissimo`, 20/11 19:00 CET:
+
+| Date | Session |
+| --- | --- |
+| **Monday 24 November** | segments and newsletter |
+| **Wednesday 26 November** | forms and landing pages |
+
+🔴 **Both are "da confermare con il cliente"**, and ⚠ **nobody is named as the
+sender.** The project manager is still stood down from client contact, so the
+calendar has the same unassigned-delivery problem as the test pack of 19/11 —
+which also remains unsent, a second day.
+
+🔴 **The dates collide with Pienissimo Live, 24-26 November.** Both training
+sessions fall inside the event the marketing flows were built for, and the 26/11
+session covers the **forms and landing pages** the event itself depends on
+([OI-371](OI-371%20Opportunities%20are%20re-keyed%20from%20Zoho%20while%20the%20web%20forms%20wait%20for%20ROMI.md)).
+⚠ And the landing-page **domain** is an open question raised the same morning and
+not yet put to the marketing team →
+[OI-383](OI-383%20The%20landing%20page%20domain%20must%20be%20re-raised%20with%20the%20marketing%20team.md).
+
+🔴 **The scaletta is still not recorded.** The written agenda he committed to on
+19/11 appears in no source read on 20/11.
+
+🔴 **A third dependency on the client surfaced**, and it is grouped with this one
+in ROMI's own red flags: **WhatsApp is blocked by Meta, on the client's number**
+→ [OI-382](OI-382%20WhatsApp%20is%20blocked%20because%20Meta%20blocked%20the%20client%20number.md).
+Elena Spini: _"formazione e test finale del marketing e WhatsApp (Meta) non
+dipendono da noi."_
+
+⚠ **Still nothing on the no-show**, and still no training record. The 20 contractual
+hours remain an unverified spoken figure, and the PEC's second ground turns on a
+document that does not exist — **a second day**.

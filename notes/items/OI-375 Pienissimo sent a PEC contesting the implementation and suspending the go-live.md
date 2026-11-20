@@ -3,14 +3,14 @@ id: OI-375
 type: open-item
 status: open
 owner: Elena Spini
-with: Gianpaolo Motta, Angelo, Andrea Galotto, Aurel Mrruku, Fabrizio Mastracci
+with: Gianpaolo Motta, Angelo Pastorelli, Andrea Galotto, Aurel Mrruku, Fabrizio Mastracci
 org: both
 raised: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-20
 depends_on: [OI-342, OI-343]
 blocks: [go-live, fase-2]
 severity: gating
-uncertain: the PEC itself was not read in this sweep - it is not in the Gmail mailbox and no copy was found in Drive; every statement of its contents here is Elena Spini's account of it on the 19/11 internal call, and the surnames of "Angelo" and "Andrea G." are not established from a primary source
+uncertain: the PEC itself has still not been read - it is not in the Gmail mailbox and no copy was found in Drive, and its deadline under art. 1454 c.c. remains unknown; every statement of its contents here is Elena Spini's account of it on the 19/11 internal call. The surnames of Angelo Pastorelli and Andrea Galotto were established on 2026-11-20
 source: notes/meetings/2026-11-19 INTERNA Check temi PEC.md
 ---
 
@@ -94,8 +94,9 @@ mettetelo in fase due, tranquilli."_
   [OI-376](OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md).
 - 🔴 **ROMI's project manager may no longer speak to the client.** Elena Spini:
   _"ormai non posso piu parlare con il cliente"_ — approvals now go through
-  **Giancarlo** and **Angelo**. ⚠ Neither surname is established; "Giancarlo" is
-  not the Life365 Giancarlo Spadini on the evidence read here.
+  **Gianpaolo Motta** and **Angelo Pastorelli** — both surnames established on
+  2026-11-20, see the update below. ⚠ The 19/11 record said _"Giancarlo"_; that
+  was a mis-hearing of **Gianpaolo**.
 - 🟡 **R0 of Fase 2 stays in production for now**, on Elena Spini's instruction
   and after she wrote to Angelo — Aurel Mrruku offered to remove it
   (_"R0 lo tolgo da produzione … che e facile toglierlo"_) and she answered
@@ -130,3 +131,38 @@ call:
   contesting the go-live it followed → [OI-374](OI-374%20The%2018%20November%20release%20mail%20tells%20the%20client%20the%20order%20contract%20flow%20is%20live.md).
 - ⚠ **Who speaks to the client, in writing.** The project manager has been
   stood down from client contact and no replacement is named in any source.
+
+## 🔑 2026-11-20 - ROMI answered it, and the client met ROMI the next day
+
+🟢 **ROMI replied on 19 November.** Angelo Pastorelli, signing as ROMI's legal
+representative, contests the PEC in full — the reconstruction of the facts and
+the legal qualifications both — reserves a detailed rebuttal for a separate
+communication, and states that neither the reply nor continuing to work is
+acquiescence. Full text and analysis:
+[OI-379](OI-379%20ROMI%20replied%20to%20the%20PEC%20and%20contested%20it%20in%20full.md).
+
+🔑 **Three names are settled by that document**, all previously listed as
+unreachable:
+
+| Was | Is |
+| --- | --- |
+| "Angelo" | **Angelo Pastorelli**, ROMI's legal representative → [person note](../people/Angelo%20Pastorelli%20-%20ROMI%20legal%20representative.md) |
+| "Giancarlo" | **Gianpaolo Motta** — a mis-hearing; Giancarlo Spadini is Life365 |
+| the PEC's addressee | **Sig. Giuliano Lanzetti**, Pienissimo's legal representative → [person note](../people/Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md), whose first name this confirms |
+
+🔴 **The meeting of 20 November at 14:30 happened**, with Salesforce present, and
+produced a demand rather than a settlement: the client wants **lo scadenziario
+and le note di credito ASAP** — both Fase 2 scope, demanded under Fase 1 →
+[OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+The reply landed badly: _"call iniziata malissimo (Daniela NERA per aver ricevuto
+la pec di risposta) alla fine andata un po meglio"_.
+
+🔴 **The deadline is still unknown.** Four more mail formulations and two Drive
+searches on 20/11 found no copy of the PEC and no term. ROMI has now answered a
+notice to perform whose term this repository cannot state — **a second day**.
+
+🟢 **ROMI's position on the substance is on the record for the first time**, in
+Elena Spini's status post: _"Per noi tutto quello concordato per la Fase 1 e in
+PROD dal 16/11."_ ⚠ Her own red flag is the closure, not the delivery — _"Fase 1
+senza data di chiusura"_ — with reports and dashboards, marketing training and
+WhatsApp outstanding, and two of the three dependent on the client.

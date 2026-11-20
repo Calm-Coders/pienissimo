@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Anita Aga, Fabrizio Paganelli
 org: ROMI
 raised: 2026-11-16
-updated: 2026-11-19
+updated: 2026-11-20
 depends_on: [OI-334]
 blocks: []
 severity: normal
@@ -231,3 +231,24 @@ the exact job times ([OI-334](OI-334%20The%20Mexal%20sync%20frequency%20is%20und
 ([OI-376](OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md)) —
 with Elena Spini unable to write to the client, nobody is named to send either.
 Status stays `in-progress`.
+
+## 🟡 2026-11-20 - the panel was tidied, the commitments are a fourth day unmet
+
+🟢 **The sync icon was removed from the component** — `a25d4b3`, Anita Aga,
+2026-11-20 11:46:22 +01:00, on `origin/DevAnita19`: `mexalSyncPanel.html`,
+`mexalSyncPanel.js` and its jest test. ⚠ **Unmerged**, riding on the reports
+branch rather than its own →
+[OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+The panel's earlier form has been live in Prod since 18/11, so production
+currently shows the icon.
+
+🟢 **The panel was used, and the buttons it serves are confirmed working.** Elena
+Spini's status post records that on Monday 16/11, with Fabrizio Paganelli and
+Elisa Migliano, ROMI re-ran the full circuit — _"il giro preventivo >> DocuSign
+>> ordine >> Mexal >> fattura >> incasso e **funziona**"_.
+
+🔴 **The two commitments are still unmet, a fourth day**: the **written run
+instructions** and the **job-times mail to Sabatino Rinaldi**. ⚠ And the problem
+has got worse, not better — Sabatino Rinaldi is leaving
+([OI-357](OI-357%20The%20client%20commercial%20lead%20and%20the%20web%20counterpart%20are%20both%20leaving.md)),
+the project manager may not write to the client, and the project is frozen.

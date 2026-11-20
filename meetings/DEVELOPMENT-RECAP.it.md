@@ -9572,6 +9572,177 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 86. Aggiornamento 20/11/2026 — ROMI ha contestato integralmente la messa in mora, e il cliente è tornato a chiedere lo scadenziario
+
+**`requirements-check` notturno, watermark 2026-11-19T22:00Z, un giorno.**
+
+🟢🔑 **ROMI ha risposto alla PEC il 19 novembre.** **Angelo Pastorelli**, in
+qualità di _Legale Rappresentante_ di ROMI S.r.l., ha scritto a Pienissimo S.r.l.
+alla cortese attenzione del suo legale rappresentante, **Sig. Giuliano Lanzetti**
+→ [#379](../notes/items/OI-379%20ROMI%20replied%20to%20the%20PEC%20and%20contested%20it%20in%20full.md).
+
+Il testo, come citato:
+
+> _"riscontriamo la Vostra comunicazione del 17 novembre 2026, che **non
+> condividiamo né nella ricostruzione dei fatti né nelle qualificazioni
+> giuridiche** e che pertanto contestiamo. **Ci riserviamo di replicare nel
+> dettaglio con separata comunicazione.** […] Il presente riscontro, la
+> partecipazione all'incontro e **la prosecuzione delle attività non costituiscono
+> acquiescenza né riconoscimento** delle contestazioni formulate. **ROMI si riserva
+> ogni diritto, azione ed eccezione, anche in relazione ai corrispettivi
+> contrattuali.**"_
+
+🔑 **La postura è contestare-e-proseguire, non sospendere.** ⚠ È stato letto come
+testo incollato nella group DM marketing da Elena Spini alle 09:11:03 CET del
+20/11; **il documento inviato non è stato visto** e non è nella casella
+consultata, come non lo è la PEC a cui risponde.
+
+### 🔑 Tre nomi stabiliti da un solo documento
+
+| Era | È |
+| --- | --- |
+| "Angelo" | **Angelo Pastorelli**, legale rappresentante di ROMI, `a.pastorelli@romicompany.com` → [la nota persona](../notes/people/Angelo%20Pastorelli%20-%20ROMI%20legal%20representative.md) |
+| "Giancarlo" | **Gianpaolo Motta** — il verbale del 19/11 aveva frainteso; Giancarlo Spadini è Life365, altro progetto |
+| il destinatario della PEC | **Sig. Giuliano Lanzetti**, legale rappresentante di Pienissimo — il che **conferma il nome di battesimo** marcato `uncertain:` da agosto, con un atto formale e non con una trascrizione Gemini. [La nota è rinominata](../notes/people/Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md) e i suoi sette link aggiornati |
+
+### 🔴 L'incontro delle 14:30 si è tenuto e non ha deciso nulla
+
+L'incontro che ROMI aveva confermato si è tenuto il **20 novembre alle 14:30
+CET**, 🔑 **con Salesforce presente** — fatto nuovo su questo progetto →
+[#380](../notes/items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+
+Il racconto di Elena Spini: _"call iniziata malissimo (**Daniela NERA per aver
+ricevuto la pec di risposta**) alla fine andata un po meglio"_.
+
+🔑 **L'esito è una richiesta, non un accordo:**
+
+> _"cosa è uscito: **vogliono ASAP lo scadenziario e le note credito**"_
+
+**Sono entrambi perimetro di Fase 2 richiesti sotto la Fase 1**: la retromarcia
+dello scadenziario era il rilascio **R1 del 14 dicembre** nella roadmap di Fase 2,
+e nel registro non esiste alcun requisito sulle note di credito. È il terzo capo
+della PEC reso concreto per la prima volta: non una disputa su un allegato, ma due
+deliverable con nome e cognome e un "ASAP".
+
+🔴 **E non è stato deciso nulla.** _"per ora tutti fermi perché poi **Angelo ha
+chiamato in privato Daniela** e non ho più saputo nulla"_ — è seguita una
+telefonata privata di cui il team non conosce il contenuto, il blocco resta su
+entrambe le nuove voci, e la settimana prossima non ha un piano: _"finché non
+arriva il feedback di Angelo e Gianpaolo non so come muovermi"_. ⚠ **In quella
+settimana cade Pienissimo Live, 24-26 novembre.**
+
+🔴 **L'incontro non è stato registrato.** Niente Fathom, niente trascrizione Meet,
+niente appunti Gemini, nessuna minuta su Drive — su un progetto la cui difesa
+dichiarata è _"abbiamo tutto registrato"_.
+
+### 🟢 Report e dashboard esistono
+
+Anita Aga li ha costruiti **a mano** in un giorno. Sono stati mostrati e accettati
+nella [review interna delle 09:30](../notes/meetings/2026-11-20%20INTERNA%20Check%20Report.md)
+→ [#377](../notes/items/OI-377%20Reports%20and%20dashboards%20were%20never%20built%20and%20have%20no%20requirements.md).
+
+Su `origin/DevAnita19`, **tre commit, 27 file, +1.132 / -71**:
+
+- **Cinque dashboard** — `Lead_per_Stato`, `Pipeline_Opportunita`,
+  `Valori_Ordini_per_Mese` in `Pienissimo_Dashboards`;
+  `Fatture_Incassi_e_Insoluti`, `Tranche_in_Scadenza` in
+  `Pienissimo_Admin_Dashboards`.
+- **Sei report** in `Pienissimo_Dashboard_Reports` — esattamente i _"sei
+  report"_ — più altri tre report, un tipo di report personalizzato, la Home
+  (`Getting_Started_Home.flexipage`, `salesHomeTemplate`,
+  `standard__LightningSales.app`) e `Agente.permissionset`.
+
+🔑 **Questo chiude la domanda che lo sweep del 19/11 non poteva risolvere**:
+`026cc33` **è** il lavoro di OI-377, e sono seguiti altri due commit.
+
+🔴 **È il piano di rilascio il problema** →
+[#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+Il branch **non è mergiato** e `DevMain` non ne contiene nulla; il rilascio è
+previsto per **lunedì 23 novembre, giorno festivo**, da un solo sviluppatore che
+lavora senza dirlo; ed è esplicitamente non accompagnato — _"senza però fornire
+spiegazioni agli utenti"_, e in call _"I can do it, but I'm not going to explain
+them. Nothing"_. ⚠ Scavalca inoltre l'**istruzione solo-UAT del 19/11, mai
+ritirata**, ed è subordinato ad Angelo Pastorelli e Gianpaolo Motta.
+
+⚠ **Il requisito continua a non esserci.** Lo hanno detto entrambi, a verbale:
+_"we have **invented** six of them"_ e _"we can invent … report"_. 🟢 Una sola
+voce è riconducibile a una richiesta del cliente — Fabrizio Paganelli sulle
+fatture da saldare, ricondotta al report insoluti — come ricordo, non come
+documento.
+
+🟡 **Un impegno concreto ci viaggia sopra**: il report tranche va **schedulato
+all'amministrazione prima della fine del mese** per le tranche in scadenza il mese
+successivo. Basta la schedulazione standard; non è schedulato nulla; novembre
+finisce fra dieci giorni.
+
+### 🟢 Il giro in produzione è stato verificato il 16 novembre
+
+> _"**Primo lunedì in PROD (16/11):** con Fabrizio P. ed Elisa abbiamo rifatto il
+> giro **preventivo >> DocuSign >> ordine >> Mexal >> fattura >> incasso** e
+> **funziona**."_
+
+🔑 **Quindi DocuSign in produzione funziona**, dentro un ciclo completo
+preventivo-incasso percorso col cliente: risponde a quattro finestre di domande →
+[#373](../notes/items/OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md).
+⚠ **Non del tutto**: il giro provato era preventivo → DocuSign, mentre la riga
+aperta riguarda l'allegato PDF dell'**ordine** rilasciato due giorni dopo, e il
+trigger di ritorno sull'ordine non è ancora stato costruito.
+
+🔑 **E un fatto nuovo dallo stesso test**: _"**Dai dati migrati non è partito
+nessun biglietto**."_ ⚠ Se sia comportamento corretto — nessun ordine migrato
+idoneo, o le date fine evento ancora non ripristinate — oppure un difetto,
+**nessuna fonte lo dice**, e nessuno risulta incaricato di verificarlo.
+
+### 🔴 Altre due cose in mano al cliente, e una che ROMI aveva dimenticato
+
+- 🔴 **WhatsApp è fermo ed è lato cliente**: _"WhatsApp resta fermo: il numero è
+  bloccato da Meta, lato cliente."_ ROMI la conta fra le **tre voci di chiusura
+  della Fase 1**, e ⚠ **nel registro non esiste alcun requisito WhatsApp** →
+  [#382](../notes/items/OI-382%20WhatsApp%20is%20blocked%20because%20Meta%20blocked%20the%20client%20number.md).
+- 🟡 **La formazione marketing ha delle date**: **24/11** segmenti e newsletter,
+  **26/11** form e landing page — ⚠ entrambe _"da confermare con il cliente"_,
+  entrambe dentro Pienissimo Live, e **nessuno è autorizzato a inviarle** →
+  [#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md).
+- 🆕 **Il dominio delle landing page.** Il cliente ha rinunciato a
+  personalizzarlo — ma la cosa è stata concordata **solo con la sua
+  amministrazione**, e il dominio non personalizzato compare sulle **landing page
+  pubbliche e nella community**. Fabrizio Paganelli chiede che si avvisi il
+  marketing, perché possano cambiare **il solo dominio delle landing page**, non
+  quello Salesforce. 🟢 Il **dominio di invio email è cosa distinta, obbligatoria
+  e già fatta a luglio** su indicazione del cliente stesso →
+  [#383](../notes/items/OI-383%20The%20landing%20page%20domain%20must%20be%20re-raised%20with%20the%20marketing%20team.md).
+
+### 🆕 Una V.4.1 dell'offerta contestata
+
+`Pienissimo_Offerta_Fase_2_V_4.1.pptx` è comparsa su Drive, creata alle
+**08:13:19Z** e modificata per ultimo alle **12:36:20Z da Angelo Pastorelli** —
+due ore prima dell'incontro col cliente, per mano di chi ha firmato la risposta
+alla PEC. La V.4 è stata toccata alle 12:35:07Z da Andrea Galotto. ⚠ **Nessuna
+delle due è stata letta e nessun importo è trascritto** →
+[#342](../notes/items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md).
+
+### 🔑 La posizione di ROMI, per la prima volta per iscritto
+
+> _"Per noi **tutto quello concordato per la Fase 1 è in PROD dal 16/11**."_
+
+⚠ Con la sua stessa red flag contro: _"**Fase 1 senza data di chiusura**"_, perché
+restano report e dashboard, formazione marketing e WhatsApp — e **due dei tre
+dipendono dal cliente**. La red flag sul perimetro è il terzo capo della PEC in una
+riga: _"il cliente si aspetta che i punti della Fase 2 siano compresi nel
+contratto di fase1."_
+
+### 🔴 Cosa resta ignoto
+
+🔴 **La PEC resta non letta e il suo termine ex art. 1454 c.c. resta ignoto —
+secondo giorno.** Altre quattro formulazioni in posta e due ricerche su Drive non
+ne hanno trovato copia. **ROMI ha risposto a una messa in mora di cui questo
+archivio non sa indicare la scadenza.** La replica di dettaglio che ROMI si è
+riservata non è scritta. 🔴 **Fathom non ha restituito nulla per la
+quarantunesima esecuzione consecutiva**, in una giornata con una call Pienissimo
+registrata.
+
+---
+
 ## 85. Aggiornamento 19/11/2026 — il cliente è andato per vie legali, e il progetto si è fermato
 
 **`requirements-check` notturno, watermark 2026-11-18T22:00Z, un giorno.**

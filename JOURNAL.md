@@ -10,6 +10,49 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-20 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail (4 queries + 1 full thread read), Slack (4 conversations +
+  the canvas), Drive (2 searches, 1 full read) and Fathom from watermark
+  **2026-11-19T22:00Z**. Drilled **`[PIENISSIMO] - Interna Check Report`**
+  (00:13:05) from its full transcript (~6k). Opened **OI-379 to OI-383**; updated
+  OI-342, OI-370, OI-373, OI-374, OI-375, OI-376, OI-377, OI-378, the Fase 2 offer
+  note and the Daniela Morgese note; added a person note for **Angelo Pastorelli**;
+  **renamed `G Lanzetti` to `Giuliano Lanzetti`** and fixed 7 link sources; MAP,
+  INDEX, both trackers (5 new + 8 regenerated rows each), §86 in both recaps,
+  [the trace](notes/traces/Source%20trace%202026-11-20%20nightly.md).
+- **State:** 🟢 **ROMI answered the PEC on 19/11** — Angelo Pastorelli, ROMI's legal
+  representative, contests it in full, reserves a detailed rebuttal, and states that
+  continuing to work is not acquiescence (**OI-379**). 🔴 **The 20/11 14:30 meeting
+  happened, with Salesforce present, and settled nothing**: the client wants **lo
+  scadenziario e le note di credito ASAP** — Fase 2 scope under a Fase 1 claim
+  (**OI-380**) — and Angelo Pastorelli then called the client's direction privately.
+  🟢 **The reports and dashboards exist**: 5 dashboards, 6 reports, built by hand by
+  Anita Aga in a day, accepted at the 09:30 review — 🔴 **unmerged on `DevAnita19`**,
+  with a Prod release planned for **Monday 23/11, a public holiday**, explicitly
+  without telling the users (**OI-381**). 🟢 **The 16/11 production circuit was
+  verified** — preventivo → DocuSign → ordine → Mexal → fattura → incasso, _"e
+  funziona"_ — which closes four windows on DocuSign in Prod (OI-373). 🔴 **WhatsApp
+  is blocked by Meta on the client's number** (**OI-382**). 🟡 Marketing training
+  is set for 24/11 and 26/11, unconfirmed and with no sender (OI-378).
+- **Next:** the Monday release decision from **Angelo Pastorelli and Gianpaolo
+  Motta** is the one thing the project is waiting on; if it is yes, `DevAnita19`
+  must be merged to `DevMain` first. Then the tranche report's schedule, before
+  month end.
+- **Watch:** 🔴 **The PEC is still unread and its art. 1454 deadline is still
+  unknown — a second day**; eight mail formulations and four Drive searches have
+  found neither it nor ROMI's reply as sent. 🔴 **The 20/11 client meeting has no
+  record of any kind** on a project whose stated defence is _"abbiamo tutto
+  registrato"_. ⚠ Three things ROMI now treats as owed — **reports and dashboards,
+  credit notes, WhatsApp** — have **no requirement in the register**, still v1.6.
+  ⚠ Two Slack audio messages of 20/11 morning could not be transcribed by this
+  account. ⚠ `STATUS.md` and the Notion mirror are **stale**; the org was not
+  opened. **No Apex test class was written or proposed** — note that
+  `mexalSyncPanel.test.js` changed on `DevAnita19`, which is an existing LWC jest
+  test edited by Anita Aga, not Apex.
+
+---
+
 ## 2026-11-19 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail (4 queries), Slack (4 conversations, 2 threads + the canvas),

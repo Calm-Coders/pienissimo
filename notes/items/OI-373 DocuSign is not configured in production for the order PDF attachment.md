@@ -6,7 +6,7 @@ owner: unassigned
 with: Rexhina Hysi, Anita Aga, Aurel Mrruku
 org: ROMI
 raised: 2026-11-17
-updated: 2026-11-18
+updated: 2026-11-20
 depends_on: [OI-322]
 blocks: []
 severity: normal
@@ -138,3 +138,39 @@ _"No smoke test was run on a real order yet"_ — nothing since reports one.
 
 **Six days to Pienissimo Live (24-26/11).** The org was not opened; no DocuSign
 credential or connected-app value was read.
+
+## 🟢 2026-11-20 - the circuit was verified end to end in production on 16 November
+
+🟢 **The one thing this item has been waiting for is now on the record**, from
+Elena Spini's weekly status post in `#tproj-pienissimo`, 20/11 19:00 CET:
+
+> _"**Primo lunedi in PROD (16/11):** con Fabrizio P. ed Elisa abbiamo rifatto il
+> giro **preventivo >> DocuSign >> ordine >> Mexal >> fattura >> incasso** e
+> **funziona**."_
+
+🔑 **So DocuSign does work in production**, inside a complete quote-to-cash
+circuit, walked through with **Fabrizio Paganelli and Elisa Migliano** on the
+first production Monday. That answers four windows of _"whether DocuSign is
+actually configured in production"_.
+
+⚠ **It is not a complete answer to this item.** Three gaps remain:
+
+1. ⚠ **The circuit tested was quote → DocuSign.** This row is specifically about
+   the **order** PDF attachment — the stage sale contract released on 18/11, two
+   days after the test. Nothing says the order path was exercised.
+2. 🔴 **The manual-steps production cell was still blank** at its last reading
+   ([the tracker](../Manual%20Steps%20Pienissimo%20tracker.md)), and no source on
+   20/11 shows it filled.
+3. 🔴 **The order return trigger is still unbuilt** ([OI-322](OI-322%20The%20DocuSign%20return%20trigger%20only%20handles%20quotes%20not%20orders.md)) — a signature
+   coming back from DocuSign on an order has nowhere to land.
+
+🔑 **And a new fact from the same test, which is a question in its own right:**
+
+> _"Dai dati migrati **non e partito nessun biglietto**."_
+
+⚠ **No Biglietto was generated from the migrated data.** Whether that is correct
+behaviour — no qualifying migrated order, or the event end dates still unrestored
+([OI-353](OI-353%20Production%20event%20end%20dates%20are%20backdated%20to%20stop%20ticket%20mails%20during%20the%20load.md))
+— or a defect, **no source says**. It is reported as an observation, not as a
+pass or a fail, and nobody is recorded as investigating it. Pienissimo Live is
+24-26 November.

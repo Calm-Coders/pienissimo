@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Andrea Galotto
 org: ROMI
 raised: 2026-11-05
-updated: 2026-11-19
+updated: 2026-11-20
 depends_on: [OI-308]
 blocks: []
 source: Drive 1_ilgbQZf_2TXHrJ2DNiRQdgc9ZY4FtQAq7tDqLvZ6j0, read 2026-11-05
@@ -313,3 +313,37 @@ is **not transcribed**, consistent with every prior reading of the offer.
 - 🔴 **Day nine** since Andrea Galotto's mail of 10/11, and **Daniela Morgese's
   answer on the offer is now moot** — the client has answered by PEC instead.
 - 🟡 **V.4 did not change today.** No Drive edit in the window.
+
+## 🔑 2026-11-20 - a V.4.1 appears, written by ROMI's legal representative
+
+🆕 **`Pienissimo_Offerta_Fase_2_V_4.1.pptx`** exists in Drive, in the same folder
+as V.4 (`1ZwExa9fOMXLE_goWi8VaDVjs4m60ZzdE`):
+
+| | |
+| --- | --- |
+| Drive id | `1G8uQOTnfvLIDFHJdrIXVpxI30mLTXhwr` |
+| Created | **2026-11-20 08:13:19Z** |
+| Last modified | **2026-11-20 12:36:20Z**, 🔑 **by Angelo Pastorelli** — ROMI's legal representative |
+| Owner | Elena Spini |
+| Format | `.pptx`, 6.19 MB — ⚠ **not** a Google Slides file like V.4 |
+
+🔑 **The timing is the finding.** It was created and last edited in the hours
+between ROMI's PEC reply of 19/11 and **the client meeting at 14:30 on 20/11**,
+by the person who signed that reply
+([OI-379](OI-379%20ROMI%20replied%20to%20the%20PEC%20and%20contested%20it%20in%20full.md)).
+The client's PEC contests _"la cosiddetta «fase 2»"_ in its entirety, so a fresh
+version of the contested offer, in the legal representative's hands, on the
+morning of the meeting, is a negotiating document and not a routine revision.
+
+🟡 **V.4 itself was touched the same hour** — 2026-11-20 12:35:07Z, by **Andrea
+Galotto**, who was on the 18/11 urgent call about the PEC.
+
+⚠ **Neither file was read and no figure is transcribed**, per the standing rule
+and the precedent set for the Fase 2 offer. **What V.4.1 changes from V.4 is
+unknown**, including whether the amount moved.
+
+🔴 **Fase 2 remains stopped** ([OI-375](OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md)),
+and 🔑 **two of its items were demanded by the client as Fase 1 work** on the same
+afternoon — **lo scadenziario**, whose reverse gear was release R1 on 14 December
+in this very roadmap, and **le note di credito** →
+[OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).

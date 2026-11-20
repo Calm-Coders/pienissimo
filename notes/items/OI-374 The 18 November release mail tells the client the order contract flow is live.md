@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Fabrizio Paganelli, Sabatino Rinaldi
 org: ROMI
 raised: 2026-11-18
-updated: 2026-11-19
+updated: 2026-11-20
 depends_on: [OI-322, OI-373]
 blocks: []
 severity: high
@@ -139,3 +139,41 @@ order PDFs ([OI-373](OI-373%20DocuSign%20is%20not%20configured%20in%20production
 whether the return path exists ([OI-322](OI-322%20The%20DocuSign%20return%20trigger%20only%20handles%20quotes%20not%20orders.md)),
 and whether any real WooCommerce order has gone end to end in production. 🔴 The
 freeze means nobody is now assigned to find out.
+
+## 🟡 2026-11-20 - the release content is confirmed, and the testing objection is answered in part
+
+🟢 **The 18/11 release contents are now stated independently**, in Elena Spini's
+status post of 20/11 19:00 CET, and they match what the client was told:
+
+> _"**Contratti da palco:** rilasciati in PROD il 18/11 **su richiesta di
+> Fabrizio P.**, che lunedi ha chiesto di anticipare. Contratto fisico e digitale
+> via DocuSign dopo la conferma d'ordine da Mexal. Nello stesso rilascio: **date
+> in formato italiano**, Oggetto Nota sull'account, preventivo primario visibile
+> in list view, **"Origine del lead" al posto di "Fonte lead"**, pulsanti di
+> sincronizzazione Mexal in home per gli admin."_
+
+🔑 **Three things that were open are closed by that paragraph:**
+
+1. 🟢 **The release was client-requested and the acceleration was the client's
+   own** — Fabrizio Paganelli asked on Monday 16/11 to bring it forward. That
+   meets the _"non mi aspettavo un rilascio"_ objection of ROMI's own project
+   manager: she had not expected it, but the client had asked for it.
+2. 🟢 **The Italian date format is confirmed as shipped in that release**, by a
+   second person → [OI-358](OI-358%20The%20org%20is%20not%20set%20to%20Italian%20date%20and%20number%20formats.md).
+   ⚠ Still an account, not a verification against the org or a printed PDF.
+3. 🟢 **The trigger order is stated**: physical and digital contract via DocuSign
+   **after the order confirmation comes back from Mexal**.
+
+🟡 **The testing objection is partly answered.** ROMI did walk the production
+circuit — preventivo → DocuSign → ordine → Mexal → fattura → incasso — with the
+client on **16/11**, two days before this release →
+[OI-373](OI-373%20DocuSign%20is%20not%20configured%20in%20production%20for%20the%20order%20PDF%20attachment.md).
+⚠ **That test predates the release it would have to vouch for**, so _"avevate
+fatto i test di questa parte?"_ is still not answered for the stage sale contract
+itself.
+
+⚠ **The mirror risk is now live.** This item is about a release note that said
+more than the delta contained. The next release — reports and dashboards, planned
+for Monday 23/11 — is planned to say **nothing at all** to the users: _"senza
+pero fornire spiegazioni agli utenti"_ →
+[OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).

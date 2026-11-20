@@ -6,7 +6,7 @@ owner: Andrea Galotto
 with: Elena Spini
 org: ROMI
 raised: 2026-11-02
-updated: 2026-11-09
+updated: 2026-11-20
 depends_on: [OI-308]
 source: Drive 1nE19jesbBpP2JXdnDOZfAnB--fhaEKMCMrgf9RxkWbY and 1b329SMXkcG3kivDfvoziCFuk2I19DlQQqS_UTQtKFeA
 ---
@@ -294,3 +294,27 @@ and **_"Approvazione Fase 2 entro il 13/11"_**.
    _"c'è caso che sia anche un elemento che viene soppresso, perché se la direzione
    dice 'No, no, a me non me ne frega niente del multiingresso'"_; Elena Spini
    agreed it can be removed. **It is priced inside R4 regardless.**
+
+## 🆕 2026-11-20 - V.4.1, and two of its items demanded as Fase 1
+
+🆕 **A fourth-point-one version exists**: `Pienissimo_Offerta_Fase_2_V_4.1.pptx`,
+Drive `1G8uQOTnfvLIDFHJdrIXVpxI30mLTXhwr`, created 2026-11-20 08:13:19Z and last
+modified 12:36:20Z **by Angelo Pastorelli**, ROMI's legal representative — in the
+hours between ROMI's reply to the client's PEC and the client meeting at 14:30.
+`.pptx`, 6.19 MB, owned by Elena Spini, in the same folder as V.4. V.4 itself was
+touched at 12:35:07Z by Andrea Galotto.
+
+⚠ **Neither was read and no figure is transcribed.** What V.4.1 changes is
+unknown. See [OI-342](items/OI-342%20The%20Fase%202%20offer%20V2%20reorders%20the%20releases%20and%20contradicts%20itself.md).
+
+🔴 **The whole document is contested.** The client's PEC of 17 November contests
+_"la cosiddetta «fase 2»"_ in its entirety and asserts that everything in it is
+already inside the Fase 1 contract
+([OI-375](items/OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md)).
+Fase 2 is stopped.
+
+🔑 **And on 20 November two of its items were demanded as Fase 1 work, ASAP** —
+**lo scadenziario**, whose reverse gear was release **R1 on 14 December** in this
+roadmap, and **le note di credito** →
+[OI-380](items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+That is the scope dispute stopping being abstract.

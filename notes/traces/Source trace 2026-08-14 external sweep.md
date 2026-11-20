@@ -83,7 +83,7 @@ Elena Spini or Andrea Galotto.
 | ---------------------------------------------- | -------------------------------------------------------------------------- |
 | `Pienissimo_Project Plan.pptx` (10 Jul)        | **Fine sviluppi Fase 1 = 10/09** and **go-live Fase 2 = 09/11**, neither recorded anywhere. Phase split of the integrations. |
 | `Integrazione_Salesforce_WooCommerce.docx` (31 Jul) | Full mu-plugin source, URL anatomy, REST contract, and **five** points to agree — the records tracked two. |
-| `Organigrammi Pienissimo (EV - SW) (APRILE 26).pdf` | The only April artifact. Yielded [G Lanzetti](../people/G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md), [Matteo Distaso](../people/Matteo%20Distaso%20-%20Pienissimo%20marketing%20lead.md), [Andrea Parmeggiani's employer](../people/Andrea%20Parmeggiani%20-%20Pienissimo%20Software%20maintenance%20manager.md), and corrected four titles. |
+| `Organigrammi Pienissimo (EV - SW) (APRILE 26).pdf` | The only April artifact. Yielded [G Lanzetti](../people/Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md), [Matteo Distaso](../people/Matteo%20Distaso%20-%20Pienissimo%20marketing%20lead.md), [Andrea Parmeggiani's employer](../people/Andrea%20Parmeggiani%20-%20Pienissimo%20Software%20maintenance%20manager.md), and corrected four titles. |
 | `[Romi Tech] Questionario Startup` (25 May)    | **Blank template** — never filled in. Not a source of facts.               |
 
 ### Third pass — the client documents, the diagram, the attachment

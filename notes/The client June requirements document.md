@@ -57,7 +57,7 @@ and Fabrizio are so sure they were discussed.
   survives to the invoice without appearing on it.
 - **"Giuliano"** sells services live and those stay commercially with Pienissimo
   Srl rather than routing to the software company — probably
-  [G Lanzetti](people/G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md).
+  [G Lanzetti](people/Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md).
 - The internal owners table assigns the **Tipo Ordine value list** and the
   **credit-note flow** to Fabrizio, the **loss-reason taxonomy** and
   **assignment rules** to Marco, and the **tranche calendar** and **GLS check**

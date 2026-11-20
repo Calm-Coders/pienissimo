@@ -41,7 +41,7 @@ _"ok ti aggiorno lunedi"_. **So the project manager's account of this call is
 second-hand.**
 
 🔑 **Giuliano Lanzetti is the first name of the person held as
-[G Lanzetti](../people/G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)**,
+[G Lanzetti](../people/Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)**,
 and this is the first session in this record he is named in.
 
 ⚠ **This note is drilled from the Gemini summary and its `Dettagli` section, not

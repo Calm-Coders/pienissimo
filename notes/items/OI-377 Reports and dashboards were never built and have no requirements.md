@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Aurel Mrruku, Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-20
 depends_on: [OI-375]
 blocks: []
 severity: gating
@@ -90,3 +90,55 @@ cosa."_
 - ⚠ **Whether the register needs a reporting requirement at v1.7.** If reports
   are contractual they belong in it; nothing has been agreed and the register is
   untouched.
+
+## 🟢 2026-11-20 - it is built, it is accepted, and it is still uninstructed
+
+**The gap is closed as a build.** Anita Aga delivered it in a day; it was
+demonstrated and accepted at
+[the 09:30 internal review](../meetings/2026-11-20%20INTERNA%20Check%20Report.md)
+and it is in source control. Full inventory and the release problem:
+[OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+
+🟢 **What exists, on `origin/DevAnita19` (unmerged, 27 files, +1,132 / -71):**
+
+- **Five dashboards** — `Lead_per_Stato`, `Pipeline_Opportunita`,
+  `Valori_Ordini_per_Mese` in `Pienissimo_Dashboards`; `Fatture_Incassi_e_Insoluti`
+  and `Tranche_in_Scadenza` in `Pienissimo_Admin_Dashboards`.
+- **Six reports** in `Pienissimo_Dashboard_Reports` — the _"sei report"_ exactly:
+  `Fatture_da_Incassare`, `Fatture_per_Stato_Pagamento`, `Scadenze_Insolute_Prime_5`,
+  `Scadenze_da_Incassare_30_Giorni`, `Tranche_Prossime_5_Scadenze`,
+  `Tranche_in_Scadenza_30_Giorni`.
+- **Three more reports and a report type** —
+  `Informazioni_generali_sul_Opportunity`, `Informazioni_generali_sul_Order`,
+  `Preventivi_con_Righe_e_Tranche`, type `Preventivi_Righe_e_Tranche`.
+- The Home surface — `Getting_Started_Home.flexipage`, `salesHomeTemplate`,
+  `standard__LightningSales.app` — and `Agente.permissionset`, the
+  _"added visibility to agents"_ commit.
+
+🔑 **The scope grew beyond the one sentence.** The 19/11 authorisation was Lead
+and Opportunity plus two reports on orders and invoices. What shipped covers
+leads by status, the opportunity pipeline by amount, orders by month, tranches
+due in 30 days, invoices by payment status and the insoluti — six reports behind
+five dashboards.
+
+🟢 **One line of it is traceable to a client ask.** Aurel Mrruku on the call:
+_"they asked Fabrizio Pienissimo usually ask that can we see the fature that
+needs to be paid"_ — Fabrizio Paganelli, on outstanding invoices, which Elena
+Spini matched to the insoluti report. ⚠ That is the only requirement behind any
+of it that originates with the client, and it is a recollection, not a document.
+
+🔴 **The rest remains invention, and both of them said so.** Aurel Mrruku: _"we
+have **invented** six of them."_ Elena Spini: _"we can invent [...] report. It was
+something that we have to do it."_ ⚠ **So the contract clause is still unquoted,
+the client requirement is still absent, and the register is still v1.6 with no
+reporting requirement in it.** The build does not cure any of those three.
+
+🟡 **One commitment attached to it is real and dated**: the tranche report is to
+be **scheduled to administration before the end of the month**, for the following
+month's expiring tranches — a flow previously discussed with the client. Standard
+scheduled reporting suffices. ⚠ Nothing is scheduled yet and November ends in ten
+days.
+
+⚠ **It is not what the client asked for at the 14:30 meeting.** The client's
+stated want, hours after this was accepted, was the **scadenziario** and the
+**credit notes** → [OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).

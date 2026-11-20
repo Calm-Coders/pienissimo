@@ -161,7 +161,7 @@ was created with `git checkout DevMain` against the fetched remote branch.
     where; no value copied.** 🔑 It is the partial answer to a standing unreachable —
     the Woo production endpoints are now documented somewhere — ⚠ **but the
     production switch still has no date.**
-18. ⚠ **A first name for [G Lanzetti](../people/G%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)
+18. ⚠ **A first name for [G Lanzetti](../people/Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)
     appeared and was not acted on.** Gemini names _"Giuliano Lanzetti"_ among the
     WooCommerce call's participants. **The note was deliberately not renamed**: the
     same transcripts render Rexhina as _"Regina Ana"_, Anita as _"Anna"_ and Mexal as

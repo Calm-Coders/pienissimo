@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Anita Aga
 org: ROMI
 raised: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-20
 depends_on: [OI-375]
 blocks: [fase-2]
 severity: gating
@@ -103,3 +103,35 @@ manualmente al bisogno"_) → [OI-370](OI-370%20The%20client%20cannot%20run%20th
   [OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md)**,
   four of which were `IN LAVORAZIONE` when the freeze landed, nor to Elena
   Spini's change workbook of 13/11 that was due **Friday 20 November**.
+
+## 🟡 2026-11-20 - the freeze holds, but the UAT boundary now has a Monday exit
+
+🟢 **The carve-out was delivered and reviewed.** The internal review happened at
+09:30 CET as planned →
+[the meeting note](../meetings/2026-11-20%20INTERNA%20Check%20Report.md). Five
+dashboards and six reports, built by hand by Anita Aga in a day, accepted as
+_"completi e pronti"_.
+
+🔴 **And the UAT-only instruction was planned past without being withdrawn.** On
+19/11 Elena Spini wrote _"confermo niente PROD per i report/dashboard"_ and
+_"facciamo solo UAT"_. On 20/11 the same meeting agreed a **production deployment
+on Monday 23 November** if a stakeholder asks. ⚠ No source records the earlier
+instruction being lifted; her evening status post re-gates it instead — _"In PROD
+solo dopo l'ok di Angelo e Gianpaolo"_ →
+[OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+
+🔴 **Everything else is still frozen, and now explicitly so after the client
+meeting**: _"per ora tutti fermi"_, and the two new client demands — the
+scadenziario and the credit notes — are frozen with it: _"scadenziario e note di
+credito restano fermi"_ →
+[OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+
+🔴 **The freeze has no lift date and the project manager cannot set one.** _"Finche
+non arriva il feedback di Angelo e Gianpaolo non so come muovermi la settimana
+prossima."_ ⚠ The week in question contains **Pienissimo Live, 24-26 November**.
+
+⚠ **The two questions this note left open on 19/11 are still open.** Nothing
+records what becomes of the four `IN LAVORAZIONE` rows of
+[OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md),
+and Elena Spini's change workbook of 13/11 — **due today, 20 November** — was
+again not found, a **fifth** window.
