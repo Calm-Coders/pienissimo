@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ReportType xmlns="http://soap.sforce.com/2006/04/metadata">
+<baseObject>Quote</baseObject>
+<category>opportunities</category>
+<deployed>true</deployed>
+<description
+  >Quotes with their line items and the tranche assigned to each line. Quotes without lines and lines without a tranche remain visible.</description>
+<join><outerJoin>true</outerJoin><relationship
+    >QuoteLineItems</relationship></join>
+<label>Preventivi con Righe e Tranche</label>
+<sections>
+<columns><checkedByDefault>false</checkedByDefault><field>Id</field><table
+      >Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >QuoteNumber</field><table>Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field>Name</field><table
+      >Quote</table></columns>
+
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Opportunity</field><table>Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field>Status</field><table
+      >Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >ExpirationDate</field><table>Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >GrandTotal</field><table>Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Opportunity.Owner.Name</field><table>Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Agente__c</field><table>Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >CreatedDate</field><table>Quote</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Opportunity.Account.Name</field><table>Quote</table></columns>
+<masterLabel>Preventivo</masterLabel>
+</sections>
+<sections>
+<columns><checkedByDefault>false</checkedByDefault><field>Id</field><table
+      >Quote.QuoteLineItems</table></columns>
+
+<columns><checkedByDefault>false</checkedByDefault><field>Product2</field><table
+      >Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field>Quantity</field><table
+      >Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >UnitPrice</field><table>Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field>Discount</field><table
+      >Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >TotalPrice</field><table>Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Tranche__c</field><table>Quote.QuoteLineItems</table></columns>
+<masterLabel>Righe Preventivo</masterLabel>
+</sections>
+<sections>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Tranche__c.Id</field><table>Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Tranche__c.Name</field><table>Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Tranche__c.Data_Scadenza__c</field><table
+      >Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Tranche__c.Sequenza__c</field><table
+      >Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Tranche__c.Stato__c</field><table>Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Tranche__c.Completamente_Pagata__c</field><table
+      >Quote.QuoteLineItems</table></columns>
+<columns><checkedByDefault>false</checkedByDefault><field
+      >Tranche__c.Importo_Previsto__c</field><table
+      >Quote.QuoteLineItems</table></columns>
+<masterLabel>Tranche della Riga</masterLabel>
+</sections>
+</ReportType>

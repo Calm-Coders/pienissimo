@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <dashboardGridLayout>
+        <dashboardGridComponents>
+            <colSpan>3</colSpan>
+            <columnIndex>0</columnIndex>
+            <dashboardComponent>
+                <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+                <chartSummary>
+                    <axisBinding>y</axisBinding>
+                    <column>RowCount</column>
+                </chartSummary>
+                <componentType>Metric</componentType>
+                <displayUnits>Integer</displayUnits>
+                <groupingSortProperties />
+                <header>Entro 30 giorni</header>
+                <indicatorBreakpoint1>0.0</indicatorBreakpoint1>
+                <indicatorBreakpoint2>1.0</indicatorBreakpoint2>
+                <indicatorHighColor>#2276CA</indicatorHighColor>
+                <indicatorLowColor>#2276CA</indicatorLowColor>
+                <indicatorMiddleColor>#2276CA</indicatorMiddleColor>
+                <metricLabel>Tranche da seguire</metricLabel>
+                <report
+        >Pienissimo_Dashboard_Reports/Tranche_in_Scadenza_30_Giorni</report>
+                <showRange>false</showRange>
+            </dashboardComponent>
+            <rowIndex>0</rowIndex>
+            <rowSpan>5</rowSpan>
+        </dashboardGridComponents>
+        <dashboardGridComponents>
+            <colSpan>9</colSpan>
+            <columnIndex>3</columnIndex>
+            <dashboardComponent>
+                <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+                <componentType>FlexTable</componentType>
+                <flexComponentProperties>
+                    <flexTableColumn>
+                        <reportColumn>CUST_NAME</reportColumn>
+                        <showSubTotal>false</showSubTotal>
+                        <showTotal>false</showTotal>
+                        <type>detail</type>
+                    </flexTableColumn>
+                    <flexTableColumn>
+                        <reportColumn>Tranche__c.Data_Scadenza__c</reportColumn>
+                        <showSubTotal>false</showSubTotal>
+                        <showTotal>false</showTotal>
+                        <type>detail</type>
+                    </flexTableColumn>
+                    <flexTableColumn>
+                        <reportColumn
+            >Tranche__c.Importo_Previsto__c</reportColumn>
+                        <showSubTotal>false</showSubTotal>
+                        <showTotal>false</showTotal>
+                        <type>detail</type>
+                    </flexTableColumn>
+                    <flexTableSortInfo>
+                        <sortColumn>Tranche__c.Data_Scadenza__c</sortColumn>
+                        <sortOrder>1</sortOrder>
+                    </flexTableSortInfo>
+                    <hideChatterPhotos>false</hideChatterPhotos>
+                    <useReportTableSetting>true</useReportTableSetting>
+                </flexComponentProperties>
+                <footer
+        >Apri il report dal riquadro del totale per tutte le scadenze. Importo previsto della tranche.</footer>
+                <groupingSortProperties />
+                <header>Prossime 5 scadenze</header>
+                <report
+        >Pienissimo_Dashboard_Reports/Tranche_Prossime_5_Scadenze</report>
+                <title>In ordine di scadenza</title>
+            </dashboardComponent>
+            <rowIndex>0</rowIndex>
+            <rowSpan>5</rowSpan>
+        </dashboardGridComponents>
+        <numberOfColumns>12</numberOfColumns>
+        <rowHeight>60</rowHeight>
+    </dashboardGridLayout>
+    <dashboardType>SpecifiedUser</dashboardType>
+    <description
+  >Tranche non completamente pagate in scadenza da oggi ai prossimi 30 giorni. Totale completo e tabella delle prossime cinque scadenze.</description>
+    <isGridLayout>true</isGridLayout>
+    <owner>a.mrruku@pienissimo.uat</owner>
+    <runningUser>a.mrruku@pienissimo.uat</runningUser>
+    <textColor>#16325C</textColor>
+    <title>Tranche in Scadenza</title>
+    <titleColor>#16325C</titleColor>
+    <titleSize>14</titleSize>
+</Dashboard>
