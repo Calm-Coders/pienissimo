@@ -61,7 +61,7 @@
                         <sortOrder>1</sortOrder>
                     </flexTableSortInfo>
                     <hideChatterPhotos>false</hideChatterPhotos>
-                    <useReportTableSetting>false</useReportTableSetting>
+                    <useReportTableSetting>true</useReportTableSetting>
                 </flexComponentProperties>
                 <footer
         >Apri il report dal riquadro del totale per tutte le scadenze. Importo previsto della tranche.</footer>
@@ -79,7 +79,7 @@
     </dashboardGridLayout>
     <dashboardType>SpecifiedUser</dashboardType>
     <description
-  >Tranche non completamente pagate con data scadenza da oggi ai prossimi 30 giorni, ordinate per scadenza crescente.</description>
+  >Tranche non completamente pagate in scadenza da oggi ai prossimi 30 giorni. Totale completo e tabella delle prossime cinque scadenze.</description>
     <isGridLayout>true</isGridLayout>
     <owner>a.mrruku@pienissimo.uat</owner>
     <runningUser>a.mrruku@pienissimo.uat</runningUser>

@@ -1,22 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Report xmlns="http://soap.sforce.com/2006/04/metadata">
-    <columns><field>CUST_NAME</field></columns>
-    <columns><field>Tranche__c.Quote__c</field></columns>
-    <columns><field>Tranche__c.Data_Scadenza__c</field></columns>
-    <columns><field>Tranche__c.Importo_Previsto__c</field></columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>Tranche__c.Quote__c</field>
+    </columns>
+    <columns>
+        <field>Tranche__c.Data_Scadenza__c</field>
+    </columns>
+    <columns>
+        <field>Tranche__c.Importo_Previsto__c</field>
+    </columns>
+    <columns>
+        <field>Tranche__c.Stato_Scadenza__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Tranche__c.Sequenza__c</field>
+    </columns>
+    <columns>
+        <field>CUST_CREATED_DATE</field>
+    </columns>
+    <columns>
+        <field>CUST_OWNER_NAME</field>
+    </columns>
     <filter>
         <criteriaItems>
             <column>Tranche__c.Completamente_Pagata__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
             <operator>equals</operator>
             <value>0</value>
         </criteriaItems>
         <criteriaItems>
             <column>Tranche__c.Data_Scadenza__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
             <operator>greaterOrEqual</operator>
             <value>TODAY</value>
         </criteriaItems>
         <criteriaItems>
             <column>Tranche__c.Data_Scadenza__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
             <operator>lessOrEqual</operator>
             <value>NEXT_N_DAYS:30</value>
         </criteriaItems>
@@ -28,6 +55,10 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Tranche in scadenza - prossimi 30 giorni</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>CustomEntity$Tranche__c</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>
