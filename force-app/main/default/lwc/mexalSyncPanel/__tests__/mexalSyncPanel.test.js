@@ -95,12 +95,12 @@ describe("Mexal Home sync panel", () => {
     await flush();
     expect(getStatus).toHaveBeenCalledTimes(2);
   });
-  it("blocks stale buttons when polling fails and allows manual recovery", async () => {
+  it("blocks stale buttons when polling fails and recovers automatically", async () => {
     const element = await mount();
     getStatus.mockRejectedValueOnce({
       body: { message: "Connessione non disponibile" }
     });
-    element.shadowRoot.querySelector("lightning-button-icon").click();
+    jest.runOnlyPendingTimers();
     await flush();
     expect(
       element.shadowRoot.querySelector('[role="alert"]').textContent
@@ -110,7 +110,7 @@ describe("Mexal Home sync panel", () => {
         (item) => item.disabled
       )
     ).toBe(true);
-    element.shadowRoot.querySelector("lightning-button-icon").click();
+    jest.runOnlyPendingTimers();
     await flush();
     expect(element.shadowRoot.querySelector('[role="alert"]')).toBeNull();
     expect(
