@@ -5,7 +5,7 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-29
-updated: 2026-09-29
+updated: 2026-11-23
 ---
 
 # The marketing group DM is a project source
@@ -42,6 +42,19 @@ This is the second retrieval correction in two nights, after
   `URL_Refreshed_At__c`, `URL_Status__c`.
 - **The link to the participation document**, 29/09 10:05 CEST — the find behind
   [OI-194](items/OI-194%20The%20ticket%20is%20a%20signed%20participation%20document%20not%20just%20a%20QR%20code.md).
+
+## It is now the project's only live channel
+
+🔑 **Since the contestation it carries the project on its own.** On
+**20/11** it held 33 messages, including ROMI's PEC reply pasted verbatim
+([OI-379](items/OI-379%20ROMI%20replied%20to%20the%20PEC%20and%20contested%20it%20in%20full.md))
+and the outcome of the 14:30 client meeting
+([OI-380](items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md)).
+On **23/11** its single message - Elena Spini at 18:44:29 CET, on Angelo
+Pastorelli's evening call with the client's direction - was **the only
+Pienissimo-relevant message in any source for three days**, with
+`#tproj-pienissimo` silent and Gmail unreachable. ⚠ A conversation nobody
+minutes is now the project's primary record.
 
 ## Standing instruction
 

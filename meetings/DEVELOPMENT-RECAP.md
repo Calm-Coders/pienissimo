@@ -9222,6 +9222,69 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, attaching `Ordini non ins
 
 🔴 `#tproj-pienissimo` silent a fifth consecutive sweep · ⚠ Fathom returned nothing a thirty-fourth consecutive run · the Slack canvas is unchanged since 20.08.2026, **78 days** · 🔴 the dev group's own 5 November report is **unanswered a second day** · 🔴 [#337](open-items.md) lead conversion in Prod has no owner and the #286 fix on `Devmain_LeadChecks` is unmerged a fourteenth day · 🔴 [#313](open-items.md) the client has still been told nothing, a fourth day · 🔴 [#312](open-items.md) Anticipay unmentioned by any source, a fourth day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a sixteenth run · 🔴 `lead-web-to-lead (2).html` still unopened and unexplained · **the requirement register is untouched and stays v1.6**; the tranche obligation and now the two mandatory picklists are the v1.7 candidates.
 
+## 87. Update 2026-11-23 — the holiday release did not happen, and the decision was taken in a private call
+
+**Nightly `requirements-check`, watermark 2026-11-20T22:00Z, three days** — no run
+on 21/11 or 22/11.
+
+🔴 **The 23 November production release did not happen.** The reports and
+dashboards accepted on 20 November were to go to production on Monday 23
+November if a stakeholder asked and Angelo Pastorelli and Gianpaolo Motta
+approved →
+[#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+Checked at 21:45Z on 23 November:
+
+| Check | Result |
+| --- | --- |
+| Commits on any branch since the watermark | **None**, apart from this procedure's own 20/11 report commit `9e989b0` |
+| `origin/DevAnita19` | **Unchanged** at `a25d4b3` — 27 files, +1,132 / -71, still unmerged |
+| `origin/DevMain` | **Unchanged** at `9e989b0`; holds none of it |
+| The stakeholder request | 🔴 **Not recorded** |
+| The Angelo Pastorelli / Gianpaolo Motta ok | 🔴 **Not recorded** |
+
+The developer stood himself down instead — _"ciao, in teoria oggi sono off"_, to
+Elena Spini at **11:39 CET**. ⚠ **The org was not opened**, so this is a
+source-control answer and not a production one.
+
+🔑 **The one Pienissimo-relevant message in three days** is Elena Spini's, in
+the marketing group DM at **18:44:29 CET**:
+
+> _"ciao ragazzi, stasera **Angelo sentiva Daniela** quindi credo che **domani vi
+> daro aggiornamenti** sul da farsi"_
+
+That is **a second direction-to-direction call**, on the evening of Monday 23
+November, after the private one that followed the 20/11 client meeting — again
+outside the project team, again leaving no record →
+[#380](../notes/items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+The plan for the week is promised for **24 November**.
+
+🔴 **The freeze has now held four days with no lift date** →
+[#376](../notes/items/OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md),
+and 24 November is both the opening day of **Pienissimo Live** and the nominal
+date of the marketing training that is unconfirmed with the client and has
+nobody named to send it →
+[#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md).
+⚠ **Neither the scadenziario nor the credit notes was mentioned at all** in
+three days.
+
+### Not reachable this run
+
+🔴 **Gmail could not be swept.** The connector's authorisation expired and two
+reconnect attempts were refused, so the four standing mail queries did not run
+for the first time in this procedure's history. Any mail-borne traffic in the
+window is unknown — the PEC of 17 November and ROMI's reply as sent included.
+
+### Unchanged
+
+🔴 `#tproj-pienissimo` **0 messages**, silence resumed after the 19/11 weekly post
+· 🔴 the dev group **0 new messages**, no human has ever answered a nightly
+report · ⚠ **Fathom returned nothing a forty-second consecutive run** · the Slack
+canvas is unchanged since 20.08.2026, **95 days** · **no Pienissimo file changed
+in Drive in three days** — the only new transcript is a ROMI all-hands on AI
+strategy with no Pienissimo content · 🔴 Zoho expired on 31 October, a
+twenty-third sweep with no mention · **the register stays v1.6** and **no new
+item ids were allocated; the next free is still 384**.
+
 ## 86. Update 2026-11-20 — ROMI contested the notice in full, and the client came back asking for the scadenziario
 
 **Nightly `requirements-check`, watermark 2026-11-19T22:00Z, one day.**

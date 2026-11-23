@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Angelo Pastorelli, Gianpaolo Motta, Daniela Morgese, Aurel Mrruku
 org: both
 raised: 2026-11-20
-updated: 2026-11-20
+updated: 2026-11-23
 depends_on: [OI-375, OI-379]
 blocks: [fase-1-closure]
 severity: gating
@@ -97,6 +97,33 @@ outstanding and only one of them is ROMI's to finish:
 
 ⚠ **Pienissimo Live is 24-26 November** — four days after this meeting, with the
 project frozen and no agreed plan for the week it falls in.
+
+## 🔴 Update 2026-11-23 - still no ruling, and a second private call
+
+**Three days on, nothing has been ruled.** The only Pienissimo message in the
+whole 21-23 November window is Elena Spini's, in
+[the marketing group DM](../The%20marketing%20group%20DM%20is%20a%20project%20source.md)
+at **18:44:29 CET** on 23 November:
+
+> _"ciao ragazzi, stasera **Angelo sentiva Daniela** quindi credo che **domani vi
+> daro aggiornamenti** sul da farsi"_
+
+🔑 **A second direction-to-direction call**, on the evening of Monday 23
+November, after the private one that followed the 20/11 meeting. ⚠ Like the
+first it sits outside the project team, and like the first it will leave no
+record this account can reach. ⚠ The source again says _"Daniela"_ with no
+surname.
+
+🔴 **The decision the project manager is waiting on is therefore later than
+she expected it**, and the plan for the week is now promised for **24 November** -
+the opening day of **Pienissimo Live** and the nominal date of the marketing
+training on segments and newsletters
+([OI-378](OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md)),
+which is still unconfirmed with the client and still has nobody named to send it.
+
+⚠ **Nothing new was said about the scadenziario or the credit notes
+themselves** in three days. Neither has been estimated, ruled Fase 1 or Fase 2,
+or started.
 
 ## What is owed
 

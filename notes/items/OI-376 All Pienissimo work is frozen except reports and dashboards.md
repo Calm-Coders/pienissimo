@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Anita Aga
 org: ROMI
 raised: 2026-11-19
-updated: 2026-11-20
+updated: 2026-11-23
 depends_on: [OI-375]
 blocks: [fase-2]
 severity: gating
@@ -135,3 +135,16 @@ records what becomes of the four `IN LAVORAZIONE` rows of
 [OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md),
 and Elena Spini's change workbook of 13/11 — **due today, 20 November** — was
 again not found, a **fifth** window.
+
+## Update 2026-11-23 - the freeze held through the weekend and the holiday
+
+🔴 **Four days on, the freeze is unchanged and still has no lift date.** The
+23 November holiday release that the one authorised exception pointed at **did
+not happen** - no merge, no commit, no recorded approval
+([OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md)).
+
+🔑 **The lift signal now has a date.** Elena Spini expects to brief the team
+on **24 November**, after Angelo Pastorelli's call with the client's direction on
+the evening of 23 November
+([OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md)).
+⚠ That is the day **Pienissimo Live** opens.

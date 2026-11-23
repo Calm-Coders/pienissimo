@@ -10,6 +10,48 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-23 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Slack (4 conversations + 3 searches + the canvas), Drive (2
+  searches, 1 probe) and Fathom from watermark **2026-11-20T22:00Z**, **three
+  days**. 🔴 **Gmail refused authorisation and could not be swept at all** -
+  the first run of this procedure with no mail sweep. Updated **OI-376**,
+  **OI-380**, **OI-381** and the marketing-DM source note; **no new ids, next
+  free is still 384**; MAP, INDEX (3 rows + 1 trace row), both trackers (3
+  regenerated rows each), §87 in both recaps,
+  [the trace](notes/traces/Source%20trace%202026-11-23%20nightly.md).
+- **State:** 🔴 **The 23 November holiday production release did not happen.**
+  No commit on any branch in the window, `origin/DevAnita19` unchanged at
+  `a25d4b3` and still unmerged, `origin/DevMain` unchanged at `9e989b0`, and
+  **neither the stakeholder request nor the Angelo Pastorelli / Gianpaolo Motta
+  approval it was gated on exists in any record** (**OI-381**). Aurel Mrruku
+  stood himself down - _"ciao, in teoria oggi sono off"_, 11:39 CET. ⚠ The org
+  was not opened, so that is a source-control answer, not a production one.
+  🔑 **The only Pienissimo-relevant message in three days** is Elena Spini's at
+  18:44:29 CET - _"stasera **Angelo sentiva Daniela** quindi credo che **domani vi
+  daro aggiornamenti** sul da farsi"_ - **a second direction-to-direction call**,
+  again outside the project team and again unrecorded, with the plan for the week
+  promised for **24 November** (**OI-380**). 🔴 **The freeze has held four days
+  with no lift date** (**OI-376**). ⚠ Neither the scadenziario nor the credit
+  notes was mentioned at all. 🔴 `#tproj-pienissimo` 0 messages, Fathom 0 for a
+  42nd run, canvas unchanged 95 days, **no Pienissimo file touched in Drive in
+  three days**.
+- **Next:** **re-authorise the Gmail connector before the next run** - until then
+  the mail sweep is blind and the gap compounds nightly. Then Elena Spini's 24/11
+  briefing is the one thing to catch: it carries the release decision, the Fase 1
+  / Fase 2 ruling on the scadenziario and credit notes, and whatever plan exists
+  for the week. **Pienissimo Live opens 24/11** with the event end dates still
+  backdated, the migrated-data Biglietto question unowned and the marketing
+  training unconfirmed with nobody named to send it.
+- **Watch:** the holiday non-release is evidenced from git only. If an org check
+  later shows metadata in Prod that `DevMain` does not contain, **OI-381 is the
+  note to correct, not to re-open** - and the standing practice it cites
+  (_"anche un campo, anche una label deve passare sempre"_) would have been
+  broken. Do not read OI-381's rewritten `uncertain:` as proof that nothing was
+  deployed; it records that nothing was *committed*.
+
+---
+
 ## 2026-11-20 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail (4 queries + 1 full thread read), Slack (4 conversations +

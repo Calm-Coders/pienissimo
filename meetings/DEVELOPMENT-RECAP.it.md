@@ -9572,6 +9572,71 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 87. Aggiornamento 23/11/2026 — il rilascio festivo non e avvenuto, e la decisione e stata presa in una chiamata privata
+
+**`requirements-check` notturno, watermark 2026-11-20T22:00Z, tre giorni** —
+nessun run il 21/11 e il 22/11.
+
+🔴 **Il rilascio in produzione del 23 novembre non e avvenuto.** I report e le
+dashboard accettati il 20 novembre dovevano andare in produzione lunedi 23
+novembre se richiesti dagli stakeholder e approvati da Angelo Pastorelli e
+Gianpaolo Motta →
+[#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+Verificato alle 21:45Z del 23 novembre:
+
+| Verifica | Risultato |
+| --- | --- |
+| Commit su qualsiasi branch dal watermark | **Nessuno**, a parte il commit di report del 20/11 di questa procedura, `9e989b0` |
+| `origin/DevAnita19` | **Invariato** su `a25d4b3` — 27 file, +1.132 / -71, ancora non mergiato |
+| `origin/DevMain` | **Invariato** su `9e989b0`; non ne contiene nulla |
+| La richiesta degli stakeholder | 🔴 **Non risulta** |
+| L'ok di Angelo Pastorelli / Gianpaolo Motta | 🔴 **Non risulta** |
+
+Lo sviluppatore si e invece chiamato fuori — _"ciao, in teoria oggi sono off"_, a
+Elena Spini alle **11:39 CET**. ⚠ **L'org non e stata aperta**, quindi questa e
+una risposta di source control e non di produzione.
+
+🔑 **L'unico messaggio rilevante per Pienissimo in tre giorni** e quello di
+Elena Spini, nella DM di gruppo marketing alle **18:44:29 CET**:
+
+> _"ciao ragazzi, stasera **Angelo sentiva Daniela** quindi credo che **domani vi
+> daro aggiornamenti** sul da farsi"_
+
+E **una seconda chiamata direzione-a-direzione**, la sera di lunedi 23 novembre,
+dopo quella privata seguita all'incontro con il cliente del 20/11 — di nuovo
+fuori dal team di progetto, di nuovo senza lasciare traccia →
+[#380](../notes/items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+Il piano della settimana e promesso per il **24 novembre**.
+
+🔴 **Il blocco dura ora da quattro giorni senza data di sblocco** →
+[#376](../notes/items/OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md),
+e il 24 novembre e sia il giorno di apertura di **Pienissimo Live** sia la data
+nominale della formazione marketing, non confermata con il cliente e senza
+nessuno designato a inviarla →
+[#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md).
+⚠ **Ne lo scadenziario ne le note di credito sono stati menzionati** in tre
+giorni.
+
+### Non raggiungibile in questo run
+
+🔴 **Gmail non e stato esaminato.** L'autorizzazione del connettore e scaduta e
+due tentativi di riconnessione sono stati rifiutati, quindi le quattro query di
+posta previste non sono state eseguite, per la prima volta nella storia di questa
+procedura. Il traffico via posta nella finestra e sconosciuto — compresa la PEC
+del 17 novembre e la risposta di ROMI come inviata.
+
+### Invariati
+
+🔴 `#tproj-pienissimo` **0 messaggi**, silenzio ripreso dopo il post settimanale
+del 19/11 · 🔴 il gruppo dev **0 nuovi messaggi**, nessun essere umano ha mai
+risposto a un report notturno · ⚠ **Fathom non ha restituito nulla al
+quarantaduesimo run consecutivo** · il canvas Slack e invariato dal 20.08.2026,
+**95 giorni** · **nessun file Pienissimo modificato su Drive in tre giorni** —
+l'unica trascrizione nuova e una riunione ROMI all-hands sull'AI, senza contenuto
+Pienissimo · 🔴 Zoho scaduto il 31 ottobre, ventitreesimo sweep senza una
+menzione · **il registro resta a v1.6** e **non e stato allocato nessun nuovo id;
+il prossimo libero e ancora 384**.
+
 ## 86. Aggiornamento 20/11/2026 — ROMI ha contestato integralmente la messa in mora, e il cliente è tornato a chiedere lo scadenziario
 
 **`requirements-check` notturno, watermark 2026-11-19T22:00Z, un giorno.**

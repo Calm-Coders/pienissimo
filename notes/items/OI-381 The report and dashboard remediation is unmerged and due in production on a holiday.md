@@ -6,11 +6,11 @@ owner: Aurel Mrruku
 with: Anita Aga, Elena Spini, Angelo Pastorelli, Gianpaolo Motta
 org: ROMI
 raised: 2026-11-20
-updated: 2026-11-20
+updated: 2026-11-23
 depends_on: [OI-376, OI-377]
 blocks: [fase-1-closure]
 severity: high
-uncertain: whether the Monday deployment will be asked for at all - it is conditional on a stakeholder request and on Angelo Pastorelli's and Gianpaolo Motta's approval, neither of which is recorded
+uncertain: whether a deployment happened outside source control - the 23 November date passed with no commit, no merge and no recorded approval, and the org was not opened
 source: notes/meetings/2026-11-20 INTERNA Check Report.md
 ---
 
@@ -27,6 +27,32 @@ The remediation authorised by
 [OI-376](OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md)
 for the gap in [OI-377](OI-377%20Reports%20and%20dashboards%20were%20never%20built%20and%20have%20no%20requirements.md).
 Reviewed at [the 20/11 internal meeting](../meetings/2026-11-20%20INTERNA%20Check%20Report.md).
+
+## 🔴 Update 2026-11-23 - the date passed and nothing was released
+
+**Monday 23 November came and went. Nothing was merged, nothing was committed,
+and nothing is recorded as deployed.** Checked at 21:45Z on 23 November:
+
+| Check | Result |
+| --- | --- |
+| Commits on any branch since 2026-11-20T22:00Z | **None**, apart from this procedure's own 20/11 report commit `9e989b0` |
+| `origin/DevAnita19` | **Unchanged** at `a25d4b3` - still 27 files, +1,132 / -71, still unmerged |
+| `origin/DevMain` | **Unchanged** at `9e989b0`; holds none of the reports or dashboards |
+| The stakeholder request the release was conditional on | 🔴 **No source records it being made** |
+| Angelo Pastorelli's and Gianpaolo Motta's ok | 🔴 **Still not recorded, in any form** |
+
+⚠ **The org was not opened**, so this is a source-control answer and not a
+production one. Nothing says a deployment was made outside git - and nothing
+says it was not. What the record does hold is the developer standing himself
+down: _"ciao, in teoria oggi sono off"_, to Elena Spini at **11:39 CET**.
+
+🔑 **So this note's `uncertain:` resolved by default.** The deployment was
+either never asked for or the ask never reached any record this account can
+reach. The gate held, and the reports are exactly where they were on 20
+November - built, accepted, in UAT, unmerged.
+
+🟡 **The tranche report schedule is now seven days from its deadline** -
+_"all'amministrazione prima della fine del mese"_ - and nothing is scheduled.
 
 ## What exists, in source
 
