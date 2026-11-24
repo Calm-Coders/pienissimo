@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Anita Aga
 org: ROMI
 raised: 2026-11-19
-updated: 2026-11-23
+updated: 2026-11-24
 depends_on: [OI-375]
 blocks: [fase-2]
 severity: gating
@@ -148,3 +148,39 @@ on **24 November**, after Angelo Pastorelli's call with the client's direction o
 the evening of 23 November
 ([OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md)).
 ⚠ That is the day **Pienissimo Live** opens.
+
+## 🔑 Update 2026-11-24 - the freeze is partly lifted, by direction, in two places only
+
+**Angelo Pastorelli lifted two things and nothing else.** In
+`#tproj-pienissimo` at **15:35:51 CET** — the channel's first Pienissimo traffic
+since the 19/11 weekly status post:
+
+> _"[Elena Spini] io direi **manda al cliente le proposte per le call di
+> formazione e mettiamo live le dashboard**"_
+
+| What moved | From | To |
+| --- | --- | --- |
+| The reports and dashboards | **UAT only** — _"confermo niente PROD"_, 19/11 | 🟢 **Production**, planned 25/11 by 12:00 → [OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md) |
+| Client contact on training | 🔴 nobody named since the PM was stood down | 🟢 **Elena Spini is told to write to the client** with the training call proposals → [OI-378](OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md) |
+
+🔑 **This is the first withdrawal of the 19 November UAT-only instruction**, and
+it comes from one of the two gatekeepers rather than from the person who gave it.
+⚠ It is one line in a chat channel: there is no release note, no scope statement
+and no mention of the PEC or of what the client was told.
+
+🔴 **Nothing else was lifted.** _"Il resto fermi tutti"_ still stands:
+
+- 🔴 **Fase 2 remains stopped** — and is now being planned around: Anita Aga, the
+  developer who built the reports, is being lined up for another project on the
+  express premise that Fase 2 will not start →
+  [OI-384](OI-384%20Anita%20Aga%20is%20being%20reallocated%20off%20Pienissimo%20while%20Fase%202%20is%20stopped.md).
+- 🔴 **The scadenziario and the credit notes are not mentioned**, a fourth day
+  ([OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md)).
+- ⚠ **The four `IN LAVORAZIONE` rows of [OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md)
+  and Elena Spini's 13/11 change workbook** are unmentioned for a **sixth**
+  window.
+
+🟡 **Angelo Pastorelli also said, at 15:36:00, _"oggi la sento per i punti
+aperti"_** — a third direction-to-direction contact about the open points, on
+24 November. ⚠ Nothing records what came of it; see
+[OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).

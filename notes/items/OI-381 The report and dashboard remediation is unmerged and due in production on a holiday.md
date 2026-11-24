@@ -6,12 +6,13 @@ owner: Aurel Mrruku
 with: Anita Aga, Elena Spini, Angelo Pastorelli, Gianpaolo Motta
 org: ROMI
 raised: 2026-11-20
-updated: 2026-11-23
+updated: 2026-11-24
 depends_on: [OI-376, OI-377]
 blocks: [fase-1-closure]
 severity: high
-uncertain: whether a deployment happened outside source control - the 23 November date passed with no commit, no merge and no recorded approval, and the org was not opened
+uncertain: whether Angelo Pastorelli gave the written consent Elena Spini asked for on 24 November at 17:18 CET - nothing records an answer by 22:45 CET; and whether anything was deployed outside source control on 23 November, which only an org inspection can settle
 source: notes/meetings/2026-11-20 INTERNA Check Report.md
+also_source: Slack C0B5T3RB4FM 2026-11-24 15:35-17:18 CET
 ---
 
 # OI-381 - The report and dashboard remediation is unmerged and due in production on a holiday
@@ -27,6 +28,67 @@ The remediation authorised by
 [OI-376](OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md)
 for the gap in [OI-377](OI-377%20Reports%20and%20dashboards%20were%20never%20built%20and%20have%20no%20requirements.md).
 Reviewed at [the 20/11 internal meeting](../meetings/2026-11-20%20INTERNA%20Check%20Report.md).
+
+## 🔑 Update 2026-11-24 - the release is back on, for tomorrow by midday, and is now waiting on one written consent
+
+**The day after the holiday that produced nothing, direction ordered the release.
+Angelo Pastorelli, in `#tproj-pienissimo` at 15:35:51 CET - the channel's first
+Pienissimo traffic since the 19/11 weekly post:**
+
+> _"[Elena Spini] io direi **manda al cliente le proposte per le call di
+> formazione e mettiamo live le dashboard**"_
+> — one 👍 reaction; and at **15:36:00**, _"**oggi la sento per i punti aperti**"_
+
+🔑 **That is the instruction the 23/11 release never had.** It came from one of
+the two named gatekeepers, in the project channel, in writing. What followed, in
+the same channel:
+
+| Time (CET) | Who | What |
+| --- | --- | --- |
+| 15:35:51 | Angelo Pastorelli | _"mettiamo live le dashboard"_ |
+| 16:05:56 | Elena Spini | _"[Aurel mrruku] **quando possiamo portare report/dashboard in PROD?**"_ |
+| 16:14:32 | Aurel Mrruku | _"**domani entro le 12 va bene ?**"_ |
+| 16:15:45 | Aurel Mrruku | _"**ma non facciamo dei test con loro ? devono decidere chi deve vedere sti report ?**"_ |
+| 16:35:05 | Elena Spini | _"ma penso che **per ora nessuno sta usando nulla**... ma e per portarci avanti questa cosa 'che avevamo pending'"_ |
+| 17:18:41 | Elena Spini | _"[Angelo Pastorelli] **ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno dicesse che abbiamo toccato PROD senza consenso**"_ |
+
+🔴 **Angelo Pastorelli has not answered that question.** Checked at **21:45Z /
+22:45 CET on 24 November**: no reply in the channel, in the thread, or in any
+conversation this account can reach. So the release is scheduled for **25
+November by 12:00** and the explicit written consent its own project manager
+asked for **does not exist**.
+
+🔑 **Elena Spini's reason for asking is itself the finding.** _"non vorremmo mai
+che qualcuno dicesse che abbiamo toccato PROD senza consenso"_ — the team is now
+documenting consent before touching production because the client is contesting
+the implementation in a formal notice. ⚠ Nothing in the record says whether
+Angelo Pastorelli's 15:35 instruction is that consent or whether a further
+explicit one is required; Elena Spini's 17:18 message implies she does not think
+the first one is enough.
+
+🔴 **Two things the release still does not have:**
+
+1. 🔴 **No merge.** `origin/DevAnita19` is **still at `a25d4b3`**, unchanged since
+   20/11 11:46, still 27 files / +1,132 / -71. **PR [#132](https://github.com/Calm-Coders/pienissimo/pull/132)**
+   _"Reports, Dashboards and Home Page Layout edits"_ (anitaaga → `DevMain`) is
+   **open, untouched since 20/11 10:46**, and its base is `46d3847` — two nightly
+   commits behind `DevMain`, now at `47c2d33`. ⚠ A deployment tomorrow by midday
+   either merges that PR first or deploys from a personal branch, against the
+   standing practice Aurel Mrruku defended on 19/11.
+2. 🔴 **No client test and no decision on who may see the reports.** Aurel
+   Mrruku asked both questions at 16:15:45 and got neither answer: Elena Spini
+   replied that nobody is using anything yet and the point is to clear a pending
+   item. ⚠ So five dashboards and nine reports are to reach production with
+   **no acceptance test by the client and no visibility model agreed** — and the
+   `Agente.permissionset` change (+8 lines) rides along with them.
+
+🟡 **The tranche report schedule is now six days from its deadline** —
+_"all'amministrazione prima della fine del mese"_ — and still nothing is
+scheduled. ⚠ A deployment does not discharge it; the scheduled send is a separate
+act.
+
+🟢 **No commit on any branch in the window.** `origin/DevMain` is at `47c2d33`,
+this procedure's own 23/11 report commit; the working tree was clean at start.
 
 ## 🔴 Update 2026-11-23 - the date passed and nothing was released
 
@@ -143,10 +205,14 @@ November ends in ten days.
 
 ## What is owed
 
-- 🔴 **Angelo Pastorelli's and Gianpaolo Motta's ok, or refusal**, in writing.
+- 🔴 **Angelo Pastorelli's answer to Elena Spini's 17:18 CET question of 24
+  November**, in writing, before anything is deployed — and **Gianpaolo Motta's
+  ok or refusal**, which no source has recorded at any point.
 - 🔴 **A merge to `DevMain`** before anything reaches production, per the standing
   practice Aurel Mrruku defended on 19/11 — _"anche un campo, anche una label
   deve passare sempre"_.
 - **A decision on whether an unexplained release is acceptable** while the
   project is under a formal notice to perform.
 - **The schedule on the tranche report**, before month end.
+- 🔴 **A decision on who may see the reports and dashboards**, and whether the
+  client tests them before or after they are live — asked on 24/11 and unanswered.

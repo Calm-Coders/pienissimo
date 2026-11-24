@@ -9572,6 +9572,130 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 88. Aggiornamento 24/11/2026 — il blocco si apre su due punti, e il rilascio attende un consenso
+
+**`requirements-check` notturno, watermark 2026-11-23T22:00Z, un giorno.**
+
+🔑 **`#tproj-pienissimo` ha rotto cinque giorni di silenzio, e la direzione ha
+ordinato due messe in linea.** Angelo Pastorelli, **15:35:51 CET**:
+
+> _"[Elena Spini] io direi **manda al cliente le proposte per le call di
+> formazione e mettiamo live le dashboard**"_ — una reazione 👍
+
+e alle **15:36:00**, _"**oggi la sento per i punti aperti**"_.
+
+🟢 **Due cose si sono mosse, e soltanto due** →
+[#376](../notes/items/OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md):
+
+| Cosa si e mossa | Da | A |
+| --- | --- | --- |
+| Report e dashboard | **solo UAT** — _"confermo niente PROD"_, 19/11 | 🟢 **Produzione**, prevista **25/11 entro le 12** → [#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md) |
+| Contatto col cliente sulla formazione | 🔴 nessuno nominato da quando il PM e stato fermato | 🟢 **Elena Spini**, per nome e per iscritto → [#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md), [#375](../notes/items/OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md) |
+
+🔑 **E la prima revoca dell'istruzione solo-UAT del 19 novembre**, e arriva da uno
+dei due decisori e non da chi l'aveva data. ⚠ E una riga in un canale di chat:
+nessuna nota di rilascio, nessun perimetro dichiarato, nessun riferimento alla
+PEC o a cosa venga detto al cliente.
+
+### 🔴 Il deploy e fissato per domani a mezzogiorno, e il consenso scritto non esiste
+
+| Ora (CET) | Chi | Cosa |
+| --- | --- | --- |
+| 16:05:56 | Elena Spini | _"[Aurel mrruku] **quando possiamo portare report/dashboard in PROD?**"_ |
+| 16:14:32 | Aurel Mrruku | _"**domani entro le 12 va bene ?**"_ |
+| 16:15:45 | Aurel Mrruku | _"**ma non facciamo dei test con loro ? devono decidere chi deve vedere sti report ?**"_ |
+| 16:35:05 | Elena Spini | _"ma penso che **per ora nessuno sta usando nulla**... ma e per portarci avanti questa cosa 'che avevamo pending'"_ |
+| 17:18:41 | Elena Spini | _"[Angelo Pastorelli] **ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno dicesse che abbiamo toccato PROD senza consenso**"_ |
+
+🔴 **Angelo Pastorelli non ha risposto.** Verificato alle **21:45Z / 22:45 CET**:
+nessuna risposta nel canale, nel thread o in alcuna conversazione raggiungibile
+da questo account. **L'ok di Gianpaolo Motta non e mai stato messo agli atti.**
+🔑 Il project manager chiede il consenso per iscritto *perche* il cliente sta
+contestando l'implementazione con una diffida formale.
+
+🔴 **E al rilascio mancano ancora due cose che mancavano il 20 novembre:**
+
+- **Il merge.** `origin/DevAnita19` e invariato ad `a25d4b3` — 27 file, +1.132 /
+  -71. La **PR #132** _"Reports, Dashboards and Home Page Layout edits"_ e
+  **aperta e non toccata dal 20/11 10:46**, base `46d3847`, due commit notturni
+  dietro `DevMain` (`47c2d33`). **Zero commit su qualsiasi branch nella finestra.**
+- **Un collaudo del cliente e un modello di visibilita.** Entrambi chiesti alle
+  16:15:45, nessuno dei due risolto →
+  [#377](../notes/items/OI-377%20Reports%20and%20dashboards%20were%20never%20built%20and%20have%20no%20requirements.md).
+  Cinque dashboard e nove report andranno in produzione senza requisito scritto
+  del cliente, senza collaudo e senza destinatari concordati, mentre
+  `Agente.permissionset` va in rilascio con loro. 🟡 La schedulazione del report
+  tranche e a **sei giorni** dalla scadenza di fine mese e non e predisposta.
+
+### 🔑 L'aggiornamento promesso per il 24 novembre e arrivato — come call non registrata
+
+Nel group DM marketing: Aurel Mrruku alle **17:09:41**, _"non si fa la call vero
+?"_ / _"il nostro follow up intendo"_; Elena Spini alle **17:11:06**, _"**ho
+appena finito una call, ci colleghiamo al volo tutti?**"_; **17:11:17**, _"5
+min"_.
+
+🔴 **Nessuna registrazione, nessuna trascrizione, nessun appunto Gemini, nessun
+verbale.** Fathom non ha restituito nulla per la quarantatreesima esecuzione
+consecutiva e nessun documento Pienissimo e stato toccato su Drive in tutta la
+giornata. ⚠ **Tre righe di chat in cui si concorda di collegarsi sono tutto il
+record dell'aggiornamento atteso per quattro giorni** →
+[#380](../notes/items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+Il _"oggi la sento per i punti aperti"_ di Angelo Pastorelli e il **terzo
+contatto direzione-direzione in cinque giorni**, contenuto non registrato.
+
+🔴 **Quarto giorno senza una parola su scadenziario e note di credito** — le due
+cose che il cliente ha effettivamente chiesto il 20 novembre. Nessuna delle due e
+stimata, attribuita a Fase 1 o Fase 2, o avviata. Si sono mosse invece le
+dashboard e il calendario della formazione.
+
+### 🆕🔴 #384 — il blocco ha iniziato a costare al progetto la sua squadra
+
+**Aurel Mrruku ha offerto Anita Aga a un altro progetto ROMI**, in un messaggio
+diretto alle **15:06:00 CET**, sul presupposto esplicito che questo non ripartira:
+
+> _"**Ho anita che in teoria se non parte pienissimo fase 2 e libera**"_
+
+Il responsabile ricevente ha accettato in linea di principio. ⚠ L'uscita da
+coprire riguarda un altro progetto e la persona non e deliberatamente nominata
+agli atti. 🔴 **E l'unica persona che abbia costruito qualcosa su Pienissimo dal
+19 novembre** — le cinque dashboard e i nove report sono suoi, e **la PR #132 e
+sua ed e ancora aperta**, il merge da cui dipende il rilascio del 25/11. 🔴
+**Nessuna fonte dice che sia stato concordato con lei, ne approvato sopra Aurel
+Mrruku, nessuna data di inizio, nessuna quota del suo tempo** — e la sorte della
+Fase 2 spetta ad Angelo Pastorelli e Gianpaolo Motta, che non compaiono nello
+scambio. 🔑 **E la prima fonte in cui ROMI pianifica come se la Fase 2 non
+dovesse avvenire** →
+[#384](../notes/items/OI-384%20Anita%20Aga%20is%20being%20reallocated%20off%20Pienissimo%20while%20Fase%202%20is%20stopped.md).
+
+### 🔴 Il 24 novembre era anche la data della formazione marketing, e non e stato consegnato nulla
+
+Nessuna sessione, nessun calendario, nessuna mail agli atti. L'incarico dato alle
+15:35 dello stesso giorno e di **proporre** le date — quindi il 24/11 e il 26/11
+non valgono piu e nessuna nuova data esiste in alcuna fonte. ⚠ **La sessione del
+26/11 copre i form e le landing page da cui dipende Pienissimo Live**, ed e a due
+giorni con nulla di concordato →
+[#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md).
+
+### Non raggiungibile in questo run
+
+🔴 **Gmail ha rifiutato per la seconda notte consecutiva** — tre tentativi,
+compresa una riconnessione tramite ricerca strumenti col nome del server, che ha
+riportato su il server e ha poi rifiutato comunque la query. **La finestra posta
+e ora cieca da quattro giorni** (20/11 22:00Z → 24/11 21:45Z), e con essa se le
+proposte di formazione di Elena Spini siano state effettivamente inviate, la PEC
+stessa e la risposta di ROMI come spedita. ⚠ **Un umano deve riautorizzare il
+connettore.**
+
+### Invariato
+
+⚠ **Fathom nulla per la quarantatreesima esecuzione consecutiva** · la canvas
+Slack invariata dal 20.08.2026, **96 giorni** · il group DM dev **0 messaggi**,
+nessun umano ha mai risposto a un report notturno · **nessun file Pienissimo
+toccato su Drive, quarto giorno** · 🔴 Zoho scaduto il 31 ottobre, **ventiquattresimo**
+run senza una menzione · **il registro resta v1.6** — report e dashboard, note di
+credito e WhatsApp sono tutti trattati come dovuti e nessuno ha un requisito ·
+**aperto OI-384; il prossimo id libero e 385**.
+
 ## 87. Aggiornamento 23/11/2026 — il rilascio festivo non e avvenuto, e la decisione e stata presa in una chiamata privata
 
 **`requirements-check` notturno, watermark 2026-11-20T22:00Z, tre giorni** —

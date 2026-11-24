@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Angelo Pastorelli, Gianpaolo Motta, Daniela Morgese, Aurel Mrruku
 org: both
 raised: 2026-11-20
-updated: 2026-11-23
+updated: 2026-11-24
 depends_on: [OI-375, OI-379]
 blocks: [fase-1-closure]
 severity: gating
@@ -135,3 +135,38 @@ or started.
   Fase 2 work**, before either is estimated or started.
 - **The calendar of next activities** ROMI promised in its PEC reply, and
   confirmation it was actually delivered.
+
+## 🔑 Update 2026-11-24 - the promised briefing arrived, as an unrecorded call
+
+🟢 **The plan promised for 24 November was delivered.** 🔴 **Verbally, in a
+call, and nothing of it is written down.** From
+[the marketing group DM](../The%20marketing%20group%20DM%20is%20a%20project%20source.md):
+
+| Time (CET) | Who | What |
+| --- | --- | --- |
+| 17:09:41 | Aurel Mrruku | _"[Elena Spini] non si fa la call vero ?"_ — and at 17:10:05, _"il nostro follow up intendo"_ |
+| 17:11:06 | Elena Spini | _"**ho appena finito una call, ci colleghiamo al volo tutti?**"_ |
+| 17:11:17 | Elena Spini | _"[Fabrizio Mastracci] [Aurel mrruku] **5 min**"_ — one ✅ reaction |
+
+🔴 **No recording, no transcript, no Gemini notes and no minute exists for it.**
+Fathom returned nothing for a forty-third consecutive run, and no Pienissimo
+document was created or touched in Drive all day. ⚠ So the project's record of
+the briefing it had been waiting four days for is **three chat lines agreeing to
+get on a call**.
+
+🔑 **What is visible of the outcome is in `#tproj-pienissimo`, and it is narrow.**
+Angelo Pastorelli at **15:35:51 CET**, before that call: _"manda al cliente le
+proposte per le call di formazione e **mettiamo live le dashboard**"_, and at
+**15:36:00**, _"**oggi la sento per i punti aperti**"_ — 🔑 **a third
+direction-to-direction contact about the open points**, on 24 November, after the
+two of 20/11 and 23/11. ⚠ Nothing records what was said or decided in it, and
+again the counterpart is unnamed in the message itself.
+
+🔴 **Neither the scadenziario nor the credit notes was mentioned, a fourth day.**
+Not in the channel, not in the DM, not in any search this account can run.
+**Neither is estimated, ruled Fase 1 or Fase 2, or started** — while the two
+things that did move are the dashboards and the training calendar, neither of
+which the client asked for on 20 November.
+
+⚠ **Daniela's surname is still not established from a primary source** — a fourth
+day.

@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Aurel Mrruku, Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-19
-updated: 2026-11-20
+updated: 2026-11-24
 depends_on: [OI-375]
 blocks: []
 severity: gating
@@ -142,3 +142,29 @@ days.
 ⚠ **It is not what the client asked for at the 14:30 meeting.** The client's
 stated want, hours after this was accepted, was the **scadenziario** and the
 **credit notes** → [OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+
+## 🔴 Update 2026-11-24 - the gap is about to reach production unrequirement-ed
+
+**Direction ordered the build live.** Angelo Pastorelli, `#tproj-pienissimo`
+**15:35:51 CET**: _"mettiamo live le dashboard"_; the deployment is planned for
+**25 November by 12:00** →
+[OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+
+🔴 **Nothing about this note's substance changed.** Five dashboards and nine
+reports are about to be production metadata on a contested implementation with:
+
+| | |
+| --- | --- |
+| A written client requirement | 🔴 **None.** _"we have invented six of them"_ |
+| A requirement in the register | 🔴 **None.** The register stays **v1.6** |
+| A client acceptance test | 🔴 **None.** Aurel Mrruku asked for one on 24/11 at 16:15:45 — _"ma non facciamo dei test con loro ?"_ — and was told _"per ora nessuno sta usando nulla"_ |
+| An agreed visibility model | 🔴 **None.** _"devono decidere chi deve vedere sti report ?"_ — unanswered, while `Agente.permissionset` changes with the release |
+| The contract clause making them a deliverable | 🔴 **Still not quoted from the contract**, a sixth day |
+
+🔑 **Elena Spini's stated reason for releasing is process, not requirement**:
+_"e per portarci avanti questa cosa 'che avevamo pending'"_ (16:35:05 CET). ⚠ That
+makes this the clearest live instance of the project's pattern — a deliverable
+asserted, built, accepted and shipped entirely inside ROMI.
+
+🟡 **The tranche report schedule is now six days from its deadline** and still
+nothing is scheduled.

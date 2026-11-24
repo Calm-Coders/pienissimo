@@ -5,7 +5,7 @@ status: active
 owner: Aurel Mrruku
 org: ROMI
 raised: 2026-09-29
-updated: 2026-11-23
+updated: 2026-11-24
 ---
 
 # The marketing group DM is a project source
@@ -55,6 +55,21 @@ Pastorelli's evening call with the client's direction - was **the only
 Pienissimo-relevant message in any source for three days**, with
 `#tproj-pienissimo` silent and Gmail unreachable. ⚠ A conversation nobody
 minutes is now the project's primary record.
+
+### 2026-11-24 - it stopped being the only one, and lost the day's substance
+
+🟢 **`#tproj-pienissimo` broke five days of silence on 24/11**, and that is where
+the day's two decisions are: Angelo Pastorelli ordering the dashboards live and
+the training proposals sent, and the deploy consent Elena Spini then asked him
+for ([OI-381](items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md)).
+
+🔴 **What landed in this DM instead was the call itself** — _"ho appena finito
+una call, ci colleghiamo al volo tutti?"_, 17:11:06 CET, and _"5 min"_ — the
+follow-up that delivered the briefing promised for 24 November. ⚠ **Four chat
+lines are the entire record of it**; no recording, no transcript, no notes
+([OI-380](items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md)).
+🔑 So the pattern holds in a new form: the channel carries the decisions, and
+this DM carries the fact that an unminuted call happened.
 
 ## Standing instruction
 

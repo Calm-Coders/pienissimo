@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Gianpaolo Motta, Angelo Pastorelli, Andrea Galotto, Aurel Mrruku, Fabrizio Mastracci
 org: both
 raised: 2026-11-19
-updated: 2026-11-20
+updated: 2026-11-24
 depends_on: [OI-342, OI-343]
 blocks: [go-live, fase-2]
 severity: gating
@@ -166,3 +166,27 @@ Elena Spini's status post: _"Per noi tutto quello concordato per la Fase 1 e in
 PROD dal 16/11."_ ⚠ Her own red flag is the closure, not the delivery — _"Fase 1
 senza data di chiusura"_ — with reports and dashboards, marketing training and
 WhatsApp outstanding, and two of the three dependent on the client.
+
+## 🟢 2026-11-24 - one named person is authorised to write to the client
+
+**The open question _"who speaks to the client, in writing"_ has its first
+answer, for one subject only.** Angelo Pastorelli, `#tproj-pienissimo`
+**15:35:51 CET**:
+
+> _"[Elena Spini] io direi **manda al cliente le proposte per le call di
+> formazione** e mettiamo live le dashboard"_
+
+🟢 **Elena Spini is instructed to write to the client** about the training
+calendar →
+[OI-378](OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md).
+⚠ **It covers that subject and no other.** Nothing authorises anyone to write to
+the client about the PEC, the scadenziario, the credit notes, or the production
+release planned for 25 November — which is still to go out _"senza fornire
+spiegazioni agli utenti"_
+([OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md)).
+⚠ And whether the mail was actually sent **cannot be verified**: Gmail is
+unreachable for a second consecutive night.
+
+🟡 **Angelo Pastorelli also reported, at 15:36:00, _"oggi la sento per i punti
+aperti"_** — he keeps the client contact on the open points himself, for a third
+time in five days, and nothing records the content.

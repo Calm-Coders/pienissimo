@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini, Matteo D, Rebecca M, Fabrizio Paganelli
 org: both
 raised: 2026-11-19
-updated: 2026-11-20
+updated: 2026-11-24
 depends_on: [OI-375, OI-246]
 blocks: []
 severity: high
@@ -160,3 +160,42 @@ dipendono da noi."_
 ⚠ **Still nothing on the no-show**, and still no training record. The 20 contractual
 hours remain an unverified spoken figure, and the PEC's second ground turns on a
 document that does not exist — **a second day**.
+
+## 🔑 Update 2026-11-24 - the sender is named at last, and the nominal date passed undelivered
+
+🟢 **The question this note has carried since 19 November — who sends the
+training calendar — is answered.** Angelo Pastorelli, in `#tproj-pienissimo` at
+**15:35:51 CET**:
+
+> _"[Elena Spini] io direi **manda al cliente le proposte per le call di
+> formazione** e mettiamo live le dashboard"_
+
+🔑 **Elena Spini is instructed to write to the client**, by name, in writing, by
+one of ROMI's two gatekeepers. ⚠ That is also the first thing in any source that
+authorises a named person to contact the client since the project manager was
+stood down on 19 November →
+[OI-375](OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md).
+It is specific to the training proposals and says nothing about the PEC, the
+scadenziario or the credit notes.
+
+🔴 **But 24 November was itself the nominal date of the marketing training**, and
+it passed with **nothing delivered**. What the record now holds is an instruction
+to send *proposals for* training calls — so the dates are no longer 24/11 and
+26/11 but unknown, and the sessions have moved from "unconfirmed" to
+"not yet proposed":
+
+| | |
+| --- | --- |
+| Nominal dates, per the 20/11 record | **24/11** (segments and newsletters) and **26/11** (forms and landing pages) |
+| What happened on 24/11 | 🔴 **Nothing.** No session, no calendar, no mail recorded; the instruction to propose dates was given at 15:35 CET the same day |
+| New dates | 🔴 **None.** Not proposed in any source this account can reach by 22:45 CET |
+| Sent? | 🔴 **Unconfirmed.** Gmail is unreachable for a second night, so whether Elena Spini sent the proposals cannot be checked |
+
+⚠ **The 26/11 session is therefore two days away with nothing agreed**, and it is
+the one covering the forms and landing pages Pienissimo Live depends on
+([OI-371](OI-371%20Opportunities%20are%20re-keyed%20from%20Zoho%20while%20the%20web%20forms%20wait%20for%20ROMI.md),
+[OI-383](OI-383%20The%20landing%20page%20domain%20must%20be%20re-raised%20with%20the%20marketing%20team.md)).
+
+⚠ **Still nothing on the no-show, still no training record**, and the 20
+contractual hours remain an unverified spoken figure — a **sixth** day. The
+PEC's second ground still turns on a document that does not exist.

@@ -10,6 +10,59 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-24 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Slack (4 conversations + 2 threads + 5 searches + the canvas),
+  Drive (2 searches), Fathom, git and GitHub from watermark **2026-11-23T22:00Z**,
+  **one day**. 🔴 **Gmail refused for a second consecutive night** - three
+  attempts, one of them a reconnect that brought the server back and refused the
+  query anyway. Opened **OI-384**; updated **OI-375**, **OI-376**, **OI-377**,
+  **OI-378**, **OI-380**, **OI-381** and the marketing-DM source note; MAP, INDEX
+  (6 rows amended + 1 item row + 1 trace row, 648 -> 650), both trackers (6
+  regenerated rows + 1 new row each), §88 in both recaps,
+  [the trace](notes/traces/Source%20trace%202026-11-24%20nightly.md).
+- **State:** 🔑 **The freeze was partly lifted, by direction, on two points
+  only.** Angelo Pastorelli in `#tproj-pienissimo` at **15:35:51 CET** - the
+  channel's first Pienissimo traffic in five days - _"manda al cliente le proposte
+  per le call di formazione e **mettiamo live le dashboard**"_: the **first
+  withdrawal of the 19/11 _"niente PROD"_ instruction** (**OI-376**) and the first
+  named authorisation to write to the client since the PM was stood down
+  (**OI-375**, **OI-378**). 🔴 **The deploy is set for 25/11 by 12:00** -
+  _"domani entro le 12 va bene ?"_ - and 🔴 **the written consent Elena Spini
+  asked Angelo Pastorelli for at 17:18:41 is unanswered at 22:45 CET**:
+  _"ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno
+  dicesse che abbiamo toccato PROD senza consenso"_. Gianpaolo Motta's ok has
+  **never** been recorded. 🔴 **PR #132 is open and untouched since 20/11**, base
+  two nightly commits behind `DevMain` (`47c2d33`), `DevAnita19` unchanged at
+  `a25d4b3`, **0 commits on any branch** (**OI-381**). 🔴 **No client test and no
+  visibility decision** - both asked, neither answered (**OI-377**). 🔑 **The
+  briefing promised for 24/11 arrived as a call with no record of any kind**,
+  17:11 CET in the marketing group DM; a **fourth day** with no word on the
+  scadenziario or the credit notes (**OI-380**). 🆕🔴 **OI-384 - Anita Aga is
+  being offered to another project** on the premise _"se non parte pienissimo fase
+  2 e libera"_; she built the reports and owns PR #132. 🔴 **24/11 was also the
+  nominal marketing-training date and nothing was delivered** - the instruction is
+  to *propose* dates, so 26/11 is two days away with nothing agreed (**OI-378**).
+- **Next:** **the deploy is tomorrow by 12:00 and has no written consent** - that
+  is the one thing to check first. Then whether PR #132 was merged or the release
+  went from a personal branch, whether the client was told anything, and whether
+  report visibility was ever decided. **Re-authorise the Gmail connector**: the
+  mail window is **four days blind** and it now hides whether Elena Spini's
+  training proposals were actually sent. Then OI-384 - whether anyone above Aurel
+  Mrruku knows Anita Aga is being reallocated before her own PR is merged.
+- **Watch:** 🔴 **the register stays v1.6** and five dashboards / nine reports are
+  about to be production metadata with **no requirement, no client test and no
+  agreed audience** on an implementation under formal contestation; Elena Spini's
+  stated reason is process, not requirement - _"e per portarci avanti questa cosa
+  'che avevamo pending'"_. 🟡 **The tranche report schedule is six days from its
+  month-end deadline** and a deployment does not discharge it. ⚠ **The org was not
+  opened**, so nothing here says whether anything reached Prod outside git on
+  23 or 24 November. **No Apex test class was written or proposed** (standing
+  instruction) - and note the 25/11 release carries no Apex, so coverage does not
+  gate it. **Next free id is 385.**
+
+---
+
 ## 2026-11-23 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Slack (4 conversations + 3 searches + the canvas), Drive (2
