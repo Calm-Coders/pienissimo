@@ -9587,9 +9587,9 @@ e alle **15:36:00**, _"**oggi la sento per i punti aperti**"_.
 🟢 **Due cose si sono mosse, e soltanto due** →
 [#376](../notes/items/OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md):
 
-| Cosa si e mossa | Da | A |
-| --- | --- | --- |
-| Report e dashboard | **solo UAT** — _"confermo niente PROD"_, 19/11 | 🟢 **Produzione**, prevista **25/11 entro le 12** → [#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md) |
+| Cosa si e mossa                       | Da                                                  | A                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Report e dashboard                    | **solo UAT** — _"confermo niente PROD"_, 19/11      | 🟢 **Produzione**, prevista **25/11 entro le 12** → [#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md)                                                                                                                           |
 | Contatto col cliente sulla formazione | 🔴 nessuno nominato da quando il PM e stato fermato | 🟢 **Elena Spini**, per nome e per iscritto → [#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md), [#375](../notes/items/OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md) |
 
 🔑 **E la prima revoca dell'istruzione solo-UAT del 19 novembre**, e arriva da uno
@@ -9599,18 +9599,18 @@ PEC o a cosa venga detto al cliente.
 
 ### 🔴 Il deploy e fissato per domani a mezzogiorno, e il consenso scritto non esiste
 
-| Ora (CET) | Chi | Cosa |
-| --- | --- | --- |
-| 16:05:56 | Elena Spini | _"[Aurel mrruku] **quando possiamo portare report/dashboard in PROD?**"_ |
-| 16:14:32 | Aurel Mrruku | _"**domani entro le 12 va bene ?**"_ |
-| 16:15:45 | Aurel Mrruku | _"**ma non facciamo dei test con loro ? devono decidere chi deve vedere sti report ?**"_ |
-| 16:35:05 | Elena Spini | _"ma penso che **per ora nessuno sta usando nulla**... ma e per portarci avanti questa cosa 'che avevamo pending'"_ |
-| 17:18:41 | Elena Spini | _"[Angelo Pastorelli] **ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno dicesse che abbiamo toccato PROD senza consenso**"_ |
+| Ora (CET) | Chi          | Cosa                                                                                                                                                  |
+| --------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 16:05:56  | Elena Spini  | _"[Aurel mrruku] **quando possiamo portare report/dashboard in PROD?**"_                                                                              |
+| 16:14:32  | Aurel Mrruku | _"**domani entro le 12 va bene ?**"_                                                                                                                  |
+| 16:15:45  | Aurel Mrruku | _"**ma non facciamo dei test con loro ? devono decidere chi deve vedere sti report ?**"_                                                              |
+| 16:35:05  | Elena Spini  | _"ma penso che **per ora nessuno sta usando nulla**... ma e per portarci avanti questa cosa 'che avevamo pending'"_                                   |
+| 17:18:41  | Elena Spini  | _"[Angelo Pastorelli] **ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno dicesse che abbiamo toccato PROD senza consenso**"_ |
 
 🔴 **Angelo Pastorelli non ha risposto.** Verificato alle **21:45Z / 22:45 CET**:
 nessuna risposta nel canale, nel thread o in alcuna conversazione raggiungibile
 da questo account. **L'ok di Gianpaolo Motta non e mai stato messo agli atti.**
-🔑 Il project manager chiede il consenso per iscritto *perche* il cliente sta
+🔑 Il project manager chiede il consenso per iscritto _perche_ il cliente sta
 contestando l'implementazione con una diffida formale.
 
 🔴 **E al rilascio mancano ancora due cose che mancavano il 20 novembre:**
@@ -9708,13 +9708,13 @@ Gianpaolo Motta →
 [#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
 Verificato alle 21:45Z del 23 novembre:
 
-| Verifica | Risultato |
-| --- | --- |
-| Commit su qualsiasi branch dal watermark | **Nessuno**, a parte il commit di report del 20/11 di questa procedura, `9e989b0` |
-| `origin/DevAnita19` | **Invariato** su `a25d4b3` — 27 file, +1.132 / -71, ancora non mergiato |
-| `origin/DevMain` | **Invariato** su `9e989b0`; non ne contiene nulla |
-| La richiesta degli stakeholder | 🔴 **Non risulta** |
-| L'ok di Angelo Pastorelli / Gianpaolo Motta | 🔴 **Non risulta** |
+| Verifica                                    | Risultato                                                                         |
+| ------------------------------------------- | --------------------------------------------------------------------------------- |
+| Commit su qualsiasi branch dal watermark    | **Nessuno**, a parte il commit di report del 20/11 di questa procedura, `9e989b0` |
+| `origin/DevAnita19`                         | **Invariato** su `a25d4b3` — 27 file, +1.132 / -71, ancora non mergiato           |
+| `origin/DevMain`                            | **Invariato** su `9e989b0`; non ne contiene nulla                                 |
+| La richiesta degli stakeholder              | 🔴 **Non risulta**                                                                |
+| L'ok di Angelo Pastorelli / Gianpaolo Motta | 🔴 **Non risulta**                                                                |
 
 Lo sviluppatore si e invece chiamato fuori — _"ciao, in teoria oggi sono off"_, a
 Elena Spini alle **11:39 CET**. ⚠ **L'org non e stata aperta**, quindi questa e
@@ -9788,10 +9788,10 @@ consultata, come non lo è la PEC a cui risponde.
 
 ### 🔑 Tre nomi stabiliti da un solo documento
 
-| Era | È |
-| --- | --- |
-| "Angelo" | **Angelo Pastorelli**, legale rappresentante di ROMI, `a.pastorelli@romicompany.com` → [la nota persona](../notes/people/Angelo%20Pastorelli%20-%20ROMI%20legal%20representative.md) |
-| "Giancarlo" | **Gianpaolo Motta** — il verbale del 19/11 aveva frainteso; Giancarlo Spadini è Life365, altro progetto |
+| Era                       | È                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Angelo"                  | **Angelo Pastorelli**, legale rappresentante di ROMI, `a.pastorelli@romicompany.com` → [la nota persona](../notes/people/Angelo%20Pastorelli%20-%20ROMI%20legal%20representative.md)                                                                                                                                                           |
+| "Giancarlo"               | **Gianpaolo Motta** — il verbale del 19/11 aveva frainteso; Giancarlo Spadini è Life365, altro progetto                                                                                                                                                                                                                                        |
 | il destinatario della PEC | **Sig. Giuliano Lanzetti**, legale rappresentante di Pienissimo — il che **conferma il nome di battesimo** marcato `uncertain:` da agosto, con un atto formale e non con una trascrizione Gemini. [La nota è rinominata](../notes/people/Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md) e i suoi sette link aggiornati |
 
 ### 🔴 L'incontro delle 14:30 si è tenuto e non ha deciso nulla
@@ -10076,12 +10076,12 @@ Apex scritta o proposta.
 
 ### Cosa è entrato
 
-| | |
-| --- | --- |
-| Delta | `4478915..4d18d57`, **60 file `force-app`** |
+|                      |                                                                                                                                                                                                                                                                                                                            |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Delta                | `4478915..4d18d57`, **60 file `force-app`**                                                                                                                                                                                                                                                                                |
 | `0AfSW000001Malp0AC` | **13:43:49Z** — 33 componenti non Apex: `Categoria__c` e `Sottocategoria__c` su Lead e Opportunity con i loro record type, `LeadSource` con le etichette italiane, `Asset.Ordine__c`, le list view Preventivo, il compact layout Opportunity, 3 flexipage, 4 layout, 6 LWC e i permission set `Agente` e `Full_Permission` |
-| `0AfSW000001Map30AC` | **13:45:39Z** — un ripristino di permission set, vedi sotto |
-| `0AfSW000001MbQ90AK` | **14:23:28Z** — il bundle Mexal della home page: `MexalSyncController` con la sua nuova test class, `mexalSyncPanel`, `Getting_Started_Home`, `salesHomeTemplate`, 3 report donut, l'app Sales con l'assegnazione home per gli amministratori |
+| `0AfSW000001Map30AC` | **13:45:39Z** — un ripristino di permission set, vedi sotto                                                                                                                                                                                                                                                                |
+| `0AfSW000001MbQ90AK` | **14:23:28Z** — il bundle Mexal della home page: `MexalSyncController` con la sua nuova test class, `mexalSyncPanel`, `Getting_Started_Home`, `salesHomeTemplate`, 3 report donut, l'app Sales con l'assegnazione home per gli amministratori                                                                              |
 
 Tutto tranne due esclusioni permanenti — il profilo `Agente` e il locale della Community, che la produzione ha già come `it` — è ora in produzione. Ogni deploy è stato verificato con un nuovo retrieve dall'org.
 
@@ -10141,15 +10141,15 @@ Nessuna mail da Pienissimo, nessun messaggio su `#tproj-pienissimo` dal 13 novem
 
 `DevMain` è passato da `18a106a` a `92899c3`: **52 file, +4.250 / -198 righe**, con la **PR #128** da `DevAnita16` (10:15 CET), la **PR #129** da `DevAnita_Modifications` (15:37) e la **PR #130** da `DevMain_ExperienceCloud` (15:58).
 
-| Riga recap | Richiesta | Cosa è arrivato | Stato |
-| --- | --- | --- | --- |
-| 1 | Formato italiano ovunque | lingua del sito Community `en_US` → `it`; `Intl.NumberFormat("it-IT", EUR, 2 decimali, raggruppamento sempre)` in `quoteAcceptancePage` e `quoteManageProducts` | 🟡 solo valute e lingua |
-| 2 | Valori categoria/sottocategoria | `Categoria__c` / `Sottocategoria__c` su Lead e Opportunity e cinque record type | 🟢 fatto come richiesto |
-| 3 | Preventivo primario nella list view e nel compact layout | `Is_Primary__c` in quattro list view Preventivo, una nuova vista `mine`, `Opportunity_Awesome_Companct_Layout` | 🟢 fatto come richiesto |
-| 5 | Valori italiani della fonte lead | `LeadSource.standardValueSet`, 124 righe | 🟢 su `DevMain` |
-| 6 | Oggetto Note collegato ad Account | `RelatedContentNoteList` su due layout, `AttachedContentNotes` sulle record page Azienda e Locale | 🟢 fatto come richiesto |
-| 7 | Ordine di riferimento nella vista Asset dell'Account | un nuovo campo formula Ordine su Asset | 🟡 solo su `DevAnita17`, non mergiato |
-| 8 | Home page e calendario per gli agenti | flexipage `Getting_Started_Home`, `salesHomeTemplate`, tre report a ciambella, `standard-Event` `DefaultOn` sul profilo `Agente` | 🟢 entrambe le metà realizzate |
+| Riga recap | Richiesta                                                | Cosa è arrivato                                                                                                                                                 | Stato                                 |
+| ---------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| 1          | Formato italiano ovunque                                 | lingua del sito Community `en_US` → `it`; `Intl.NumberFormat("it-IT", EUR, 2 decimali, raggruppamento sempre)` in `quoteAcceptancePage` e `quoteManageProducts` | 🟡 solo valute e lingua               |
+| 2          | Valori categoria/sottocategoria                          | `Categoria__c` / `Sottocategoria__c` su Lead e Opportunity e cinque record type                                                                                 | 🟢 fatto come richiesto               |
+| 3          | Preventivo primario nella list view e nel compact layout | `Is_Primary__c` in quattro list view Preventivo, una nuova vista `mine`, `Opportunity_Awesome_Companct_Layout`                                                  | 🟢 fatto come richiesto               |
+| 5          | Valori italiani della fonte lead                         | `LeadSource.standardValueSet`, 124 righe                                                                                                                        | 🟢 su `DevMain`                       |
+| 6          | Oggetto Note collegato ad Account                        | `RelatedContentNoteList` su due layout, `AttachedContentNotes` sulle record page Azienda e Locale                                                               | 🟢 fatto come richiesto               |
+| 7          | Ordine di riferimento nella vista Asset dell'Account     | un nuovo campo formula Ordine su Asset                                                                                                                          | 🟡 solo su `DevAnita17`, non mergiato |
+| 8          | Home page e calendario per gli agenti                    | flexipage `Getting_Started_Home`, `salesHomeTemplate`, tre report a ciambella, `standard-Event` `DefaultOn` sul profilo `Agente`                                | 🟢 entrambe le metà realizzate        |
 
 🔑 **La riga 2 è stata verificata, non data per buona.** `Altri Servizi` e `Generica` sono ancora presenti nel value set ma con `isActive: false` — il modo corretto di ritirare un valore di picklist senza orfanare i record che lo contengono. Quindi _"togliere `Altri servizi`"_ è rispettato e _"verificare `Generica`"_ è risolto nello stesso modo. `Cassa Zucchetti` è mantenuto, `Libro` aggiunto, insieme a `Corso`, `Pacchetti`, `Servizi Mktg`, `Piattaforma` e `Servizi Revenue`.
 
@@ -10186,7 +10186,6 @@ Il sito Landing Page è stato pubblicato sulla sandbox parziale **sette volte tr
 
 Sono arrivate altre due conferme Salesforce non attribuibili — una modifica dei valori predefiniti di condivisione a livello org completata alle 13:46:32Z e una verifica di indirizzo email a livello org alle 16:41:26Z. **Nessuna delle due nomina l'org**, e nulla le collega a Pienissimo.
 
-
 ## 82. Aggiornamento 16/11/2026 — gli utenti sono partiti, la regola dell'Opportunity è stata riscritta durante il rilascio, e il primo ordine reale dello shop è fallito
 
 `requirements-check` notturno, watermark **2026-11-12T22:00Z**, quattro giorni — la
@@ -10208,14 +10207,14 @@ Elisa Migliano ha dato la ragione commerciale — una Performance Plus venduta s
 tranche mensili si chiude solo alla dodicesima, e _"questo è lato commerciale sbagliato …
 non è proprio un dato corretto a livello statistico, a livello commerciale, a livello
 marketing."_ La nuova regola: **Vinta alla prima fattura incassata**, esplicitamente la
-prima *fattura* e non la prima tranche, perché una fattura può contenere più tranche.
+prima _fattura_ e non la prima tranche, perché una fattura può contenere più tranche.
 WooCommerce incluso. È stata costruita la sera stessa.
 
 ROMI l'ha messa per iscritto entro l'ora. La mail di Elena Spini del 13/11 14:46:20Z la
 definisce _"**in deroga a quanto previsto nel Blueprint**"_ e chiude con _"altrimenti
 procediamo con il rilascio come descritto."_ 🔑 È la posizione formale di ROMI agli atti — e
 convive male con la contestazione, ancora senza risposta, in cui il cliente sostiene che il
-contratto da palco *fosse* dentro il Blueprint.
+contratto da palco _fosse_ dentro il Blueprint.
 
 🟢 **È stata provata end to end in produzione il 16 novembre**, su un ordine reale: un
 preventivo Performance Plus con quattro tranche, firmato con DocuSign, l'ordine su Mexal,
@@ -10622,3 +10621,11 @@ formazione commerciale 11:30-13:00** dello stesso giorno.
 **13/11, perimetro finale verificato in produzione dopo la correzione dell utente:** entrambi i campi consenso sono true su tutti i **49.818 Lead non convertiti**, con **5.917 aggiornamenti netti** e nessun valore false residuo in questa popolazione. Tutti i **4 Lead convertiti conservano i valori originali**; i 3 inizialmente modificati sono stati ripristinati dal backup. Restano tutti i **4.617 opt-out email**; i campi di opt-out email e fax non sono cambiati. Il flow dei consensi Lead e rimasto attivo; la creazione di Opt-In Marketing a valle non e stata verificata.
 
 [OI-351 source](../notes/items/OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md).
+
+## Aggiornamento 25/11/2026 - rilascio report validato e bloccato dal limite delle dashboard dinamiche
+
+PR #132 integrata in DevMain al commit `56a7020`, verificato localmente il 25 novembre. L utente ha richiesto esplicitamente il rilascio in produzione e indicato Amministrazione Pienissimo per le due dashboard amministrative. Pacchetto: cinque dashboard, dieci report (nove del branch piu il report Lead mancante), tre tipi di report personalizzati, quattro cartelle, Home/template, navigazione e accesso report per gli agenti. I tre report a ciambella gia presenti coincidono con produzione e sono esclusi. Due tipi di report e il report Lead sono dipendenze recuperate da UAT, assenti da Git. Le configurazioni di produzione sono mantenute aggiungendo soltanto le modifiche di reporting. Due destinatari UAT non hanno un account attivo corrispondente in produzione: nessun accesso sostitutivo e stato assegnato. Il filtro ridondante del report Lead su tutti i tipi di record e stato normalizzato nel candidato, includendo i sette Lead senza tipo di record. Validazione check-only `0AfSW000001NQE90AO`: 24 componenti su 26 validi, due errori dovuti al limite delle dashboard dinamiche e al riferimento Home conseguente. Non e un rilascio parziale. Produzione ha quattro dashboard dinamiche esistenti e le tre nuove richiedono almeno sette posti. L utente chiede lo stesso comportamento di UAT: nessuna conversione delle nuove dashboard a utente fisso. Serve capacita aggiuntiva oppure una decisione esplicita sulle dashboard esistenti. Nessun deployment effettivo, modifica di produzione o invio schedulato. Collaudo del cliente e ulteriori decisioni sulla visibilita restano non verificati.
+
+## Aggiornamento 25/11/2026 - rilascio report completato con utente di esecuzione fisso
+
+L'utente ha richiesto che tutte e cinque le nuove dashboard siano eseguite come Amministrazione Pienissimo, sostituendo la precedente indicazione di mantenere le tre dashboard dinamiche di UAT. Account attivo verificato in produzione. Validazione `0AfSW000001NQMD0A4` riuscita su tutti i 26 componenti; deployment effettivo `0AfSW000001NQPR0A4` riuscito il 25/11/2026 alle 17:19:59Z (18:19:59 Europe/Tirane). Rilasciati cinque dashboard, dieci report (nove del branch più la dipendenza Lead mancante), tre tipi di report, quattro cartelle, Home/template, navigazione dell'app Sales e accesso report per gli agenti. Verificati tramite nuova estrazione da produzione l'utente di esecuzione di tutte le dashboard, i dieci report, i tre tipi di report, l'assegnazione Home agli agenti, le schede Report/Dashboard e il permesso RunReports. Tutti i dieci report sono stati eseguiti correttamente via Analytics REST API con allData=true. Le quattro dashboard dinamiche preesistenti non sono state modificate. Le dashboard mostreranno i dati secondo l'accesso dell'account amministrativo indicato, come richiesto. Le condivisioni UAT sono state mappate su account attivi di produzione; due destinatari senza corrispondenza non hanno ricevuto accessi sostitutivi. I tre report a ciambella esistenti erano identici e non sono stati rilasciati di nuovo. Il filtro Lead ridondante su tutti i tipi di record è stato normalizzato mantenendo anche i sette Lead senza tipo di record. Dipendenze mancanti e utenti di esecuzione sono aggiornati localmente nei sorgenti; nessun commit o push. Collaudo con il cliente e invio schedulato del report tranche restano da eseguire: il rilascio tecnico è completo, ma il punto rimane in corso.

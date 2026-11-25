@@ -82,7 +82,7 @@
   >Tranche non completamente pagate in scadenza da oggi ai prossimi 30 giorni. Totale completo e tabella delle prossime cinque scadenze.</description>
     <isGridLayout>true</isGridLayout>
     <owner>a.mrruku@pienissimo.uat</owner>
-    <runningUser>a.mrruku@pienissimo.uat</runningUser>
+    <runningUser>amministrazione@pienissimo.com</runningUser>
     <textColor>#16325C</textColor>
     <title>Tranche in Scadenza</title>
     <titleColor>#16325C</titleColor>

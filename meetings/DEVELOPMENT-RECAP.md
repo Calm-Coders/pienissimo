@@ -9237,10 +9237,10 @@ and at **15:36:00**, _"**oggi la sento per i punti aperti**"_.
 🟢 **Two things moved, and only two** →
 [#376](../notes/items/OI-376%20All%20Pienissimo%20work%20is%20frozen%20except%20reports%20and%20dashboards.md):
 
-| What moved | From | To |
-| --- | --- | --- |
-| The reports and dashboards | **UAT only** — _"confermo niente PROD"_, 19/11 | 🟢 **Production**, planned **25/11 by 12:00** → [#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md) |
-| Client contact on training | 🔴 nobody named since the PM was stood down | 🟢 **Elena Spini**, by name and in writing → [#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md), [#375](../notes/items/OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md) |
+| What moved                 | From                                           | To                                                                                                                                                                                                                                                                                                                            |
+| -------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The reports and dashboards | **UAT only** — _"confermo niente PROD"_, 19/11 | 🟢 **Production**, planned **25/11 by 12:00** → [#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md)                                                                                                                              |
+| Client contact on training | 🔴 nobody named since the PM was stood down    | 🟢 **Elena Spini**, by name and in writing → [#378](../notes/items/OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md), [#375](../notes/items/OI-375%20Pienissimo%20sent%20a%20PEC%20contesting%20the%20implementation%20and%20suspending%20the%20go-live.md) |
 
 🔑 **This is the first withdrawal of the 19 November UAT-only instruction**, and
 it comes from one of the two gatekeepers rather than from the person who gave it.
@@ -9249,18 +9249,18 @@ mention of the PEC or of what the client is told.
 
 ### 🔴 The deploy is set for tomorrow midday, and its written consent does not exist
 
-| Time (CET) | Who | What |
-| --- | --- | --- |
-| 16:05:56 | Elena Spini | _"[Aurel mrruku] **quando possiamo portare report/dashboard in PROD?**"_ |
-| 16:14:32 | Aurel Mrruku | _"**domani entro le 12 va bene ?**"_ |
-| 16:15:45 | Aurel Mrruku | _"**ma non facciamo dei test con loro ? devono decidere chi deve vedere sti report ?**"_ |
-| 16:35:05 | Elena Spini | _"ma penso che **per ora nessuno sta usando nulla**... ma e per portarci avanti questa cosa 'che avevamo pending'"_ |
-| 17:18:41 | Elena Spini | _"[Angelo Pastorelli] **ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno dicesse che abbiamo toccato PROD senza consenso**"_ |
+| Time (CET) | Who          | What                                                                                                                                                  |
+| ---------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 16:05:56   | Elena Spini  | _"[Aurel mrruku] **quando possiamo portare report/dashboard in PROD?**"_                                                                              |
+| 16:14:32   | Aurel Mrruku | _"**domani entro le 12 va bene ?**"_                                                                                                                  |
+| 16:15:45   | Aurel Mrruku | _"**ma non facciamo dei test con loro ? devono decidere chi deve vedere sti report ?**"_                                                              |
+| 16:35:05   | Elena Spini  | _"ma penso che **per ora nessuno sta usando nulla**... ma e per portarci avanti questa cosa 'che avevamo pending'"_                                   |
+| 17:18:41   | Elena Spini  | _"[Angelo Pastorelli] **ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno dicesse che abbiamo toccato PROD senza consenso**"_ |
 
 🔴 **Angelo Pastorelli has not answered.** Checked at **21:45Z / 22:45 CET**: no
 reply in the channel, in the thread, or in any conversation this account can
 reach. **Gianpaolo Motta's ok has never been recorded at any point.** 🔑 The
-project manager is asking for consent in writing *because* the client is
+project manager is asking for consent in writing _because_ the client is
 contesting the implementation in a formal notice — _"non vorremmo mai che
 qualcuno dicesse che abbiamo toccato PROD senza consenso"_.
 
@@ -9353,13 +9353,13 @@ approved →
 [#381](../notes/items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
 Checked at 21:45Z on 23 November:
 
-| Check | Result |
-| --- | --- |
-| Commits on any branch since the watermark | **None**, apart from this procedure's own 20/11 report commit `9e989b0` |
-| `origin/DevAnita19` | **Unchanged** at `a25d4b3` — 27 files, +1,132 / -71, still unmerged |
-| `origin/DevMain` | **Unchanged** at `9e989b0`; holds none of it |
-| The stakeholder request | 🔴 **Not recorded** |
-| The Angelo Pastorelli / Gianpaolo Motta ok | 🔴 **Not recorded** |
+| Check                                      | Result                                                                  |
+| ------------------------------------------ | ----------------------------------------------------------------------- |
+| Commits on any branch since the watermark  | **None**, apart from this procedure's own 20/11 report commit `9e989b0` |
+| `origin/DevAnita19`                        | **Unchanged** at `a25d4b3` — 27 files, +1,132 / -71, still unmerged     |
+| `origin/DevMain`                           | **Unchanged** at `9e989b0`; holds none of it                            |
+| The stakeholder request                    | 🔴 **Not recorded**                                                     |
+| The Angelo Pastorelli / Gianpaolo Motta ok | 🔴 **Not recorded**                                                     |
 
 The developer stood himself down instead — _"ciao, in teoria oggi sono off"_, to
 Elena Spini at **11:39 CET**. ⚠ **The org was not opened**, so this is a
@@ -9431,10 +9431,10 @@ answers is not.
 
 ### 🔑 Three names are settled by that one document
 
-| Was | Is |
-| --- | --- |
-| "Angelo" | **Angelo Pastorelli**, ROMI's legal representative, `a.pastorelli@romicompany.com` → [the person note](../notes/people/Angelo%20Pastorelli%20-%20ROMI%20legal%20representative.md) |
-| "Giancarlo" | **Gianpaolo Motta** — the 19/11 record mis-heard it; Giancarlo Spadini is Life365, another project |
+| Was                 | Is                                                                                                                                                                                                                                                                                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| "Angelo"            | **Angelo Pastorelli**, ROMI's legal representative, `a.pastorelli@romicompany.com` → [the person note](../notes/people/Angelo%20Pastorelli%20-%20ROMI%20legal%20representative.md)                                                                                                                                                                           |
+| "Giancarlo"         | **Gianpaolo Motta** — the 19/11 record mis-heard it; Giancarlo Spadini is Life365, another project                                                                                                                                                                                                                                                           |
 | the PEC's addressee | **Sig. Giuliano Lanzetti**, Pienissimo's legal representative — which **confirms the first name** that had carried `uncertain:` since August, from a formal legal notice rather than a Gemini transcription. [The note is renamed](../notes/people/Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md) and its seven link targets updated |
 
 ### 🔴 The 14:30 meeting happened, and settled nothing
@@ -9708,12 +9708,12 @@ an eighteenth sweep · no Apex test class was written or proposed.
 
 ### What went in
 
-| | |
-| --- | --- |
-| Delta | `4478915..4d18d57`, **60 `force-app` files** |
+|                      |                                                                                                                                                                                                                                                                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Delta                | `4478915..4d18d57`, **60 `force-app` files**                                                                                                                                                                                                                                                                                |
 | `0AfSW000001Malp0AC` | **13:43:49Z** — 33 non-Apex components: Lead/Opportunity `Categoria__c` and `Sottocategoria__c` with their record types, `LeadSource` with Italian labels, `Asset.Ordine__c`, the Quote list views, the Opportunity compact layout, 3 flexipages, 4 layouts, 6 LWCs, and the `Agente` and `Full_Permission` permission sets |
-| `0AfSW000001Map30AC` | **13:45:39Z** — a permission-set restore, see below |
-| `0AfSW000001MbQ90AK` | **14:23:28Z** — the Mexal home-page bundle: `MexalSyncController` and its new test, `mexalSyncPanel`, `Getting_Started_Home`, `salesHomeTemplate`, 3 donut reports, the Sales app with the Admin home assignment |
+| `0AfSW000001Map30AC` | **13:45:39Z** — a permission-set restore, see below                                                                                                                                                                                                                                                                         |
+| `0AfSW000001MbQ90AK` | **14:23:28Z** — the Mexal home-page bundle: `MexalSyncController` and its new test, `mexalSyncPanel`, `Getting_Started_Home`, `salesHomeTemplate`, 3 donut reports, the Sales app with the Admin home assignment                                                                                                            |
 
 Everything except two standing exclusions — the `Agente` profile, and the community locale, which production already carries as `it` — is now live. Each deploy was verified by re-retrieval from the org.
 
@@ -9773,15 +9773,15 @@ No mail from anyone at Pienissimo, no `#tproj-pienissimo` message since 13 Novem
 
 `DevMain` moved from `18a106a` to `92899c3`: **52 files, +4,250 / -198 lines**, through **PR #128** from `DevAnita16` (10:15 CET), **PR #129** from `DevAnita_Modifications` (15:37) and **PR #130** from `DevMain_ExperienceCloud` (15:58).
 
-| Recap row | Request | What landed | State |
-| --- | --- | --- | --- |
-| 1 | Italian formats everywhere | Community site locale `en_US` → `it`; `Intl.NumberFormat("it-IT", EUR, 2 decimals, grouping always)` in `quoteAcceptancePage` and `quoteManageProducts` | 🟡 currency and language only |
-| 2 | Categoria/sottocategoria values | Lead and Opportunity `Categoria__c` / `Sottocategoria__c` and five record types | 🟢 done as asked |
-| 3 | Primary quote in the list view and compact layout | `Is_Primary__c` into four Quote list views, a new `mine` view, `Opportunity_Awesome_Companct_Layout` | 🟢 done as asked |
-| 5 | Italian lead-source values | `LeadSource.standardValueSet`, 124 lines | 🟢 on `DevMain` |
-| 6 | Note object linked to Account | `RelatedContentNoteList` on two layouts, `AttachedContentNotes` on the Azienda and Locale record pages | 🟢 done as asked |
-| 7 | Reference order in the Account's Asset view | a new Order formula field on Asset | 🟡 `DevAnita17` only, unmerged |
-| 8 | Home page and calendar for agents | `Getting_Started_Home` flexipage, `salesHomeTemplate`, three donut reports, `standard-Event` `DefaultOn` on the `Agente` profile | 🟢 both halves built |
+| Recap row | Request                                           | What landed                                                                                                                                             | State                          |
+| --------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| 1         | Italian formats everywhere                        | Community site locale `en_US` → `it`; `Intl.NumberFormat("it-IT", EUR, 2 decimals, grouping always)` in `quoteAcceptancePage` and `quoteManageProducts` | 🟡 currency and language only  |
+| 2         | Categoria/sottocategoria values                   | Lead and Opportunity `Categoria__c` / `Sottocategoria__c` and five record types                                                                         | 🟢 done as asked               |
+| 3         | Primary quote in the list view and compact layout | `Is_Primary__c` into four Quote list views, a new `mine` view, `Opportunity_Awesome_Companct_Layout`                                                    | 🟢 done as asked               |
+| 5         | Italian lead-source values                        | `LeadSource.standardValueSet`, 124 lines                                                                                                                | 🟢 on `DevMain`                |
+| 6         | Note object linked to Account                     | `RelatedContentNoteList` on two layouts, `AttachedContentNotes` on the Azienda and Locale record pages                                                  | 🟢 done as asked               |
+| 7         | Reference order in the Account's Asset view       | a new Order formula field on Asset                                                                                                                      | 🟡 `DevAnita17` only, unmerged |
+| 8         | Home page and calendar for agents                 | `Getting_Started_Home` flexipage, `salesHomeTemplate`, three donut reports, `standard-Event` `DefaultOn` on the `Agente` profile                        | 🟢 both halves built           |
 
 🔑 **Row 2 was verified rather than assumed.** `Altri Servizi` and `Generica` are still present in the value set but carry `isActive: false` — the correct way to retire a picklist value without orphaning the records that hold it. So _"drop `Altri servizi`"_ is met and _"check `Generica`"_ is answered the same way. `Cassa Zucchetti` is kept, `Libro` added, along with `Corso`, `Pacchetti`, `Servizi Mktg`, `Piattaforma` and `Servizi Revenue`.
 
@@ -9818,7 +9818,6 @@ The Landing Page site was published to the partial sandbox **seven times between
 
 Two further Salesforce confirmations arrived unattributed — an org-wide sharing-defaults change completed at 13:46:32Z and an organization-wide email address verification at 16:41:26Z. **Neither names the org**, and nothing connects them to Pienissimo.
 
-
 ## 82. Update 2026-11-16 — the users went live, the Opportunity rule was rewritten mid-release, and the first real shop order failed
 
 Nightly `requirements-check`, watermark **2026-11-12T22:00Z**, four days — the go-live
@@ -9839,13 +9838,13 @@ Elisa Migliano gave the business reason — a Performance Plus sold over twelve 
 tranches only closes at the twelfth, and _"questo è lato commerciale sbagliato … non è
 proprio un dato corretto a livello statistico, a livello commerciale, a livello
 marketing."_ The new rule: **Vinta at the first collected invoice**, explicitly the first
-*invoice* and not the first tranche, because one invoice can carry several tranches.
+_invoice_ and not the first tranche, because one invoice can carry several tranches.
 WooCommerce included. It was built the same evening.
 
 ROMI put it in writing within the hour. Elena Spini's mail of 13/11 14:46:20Z calls it
 _"**in deroga a quanto previsto nel Blueprint**"_ and closes _"altrimenti procediamo con il
 rilascio come descritto."_ 🔑 That is ROMI's formal position on the record — and it sits
-awkwardly beside the client's own live claim that the stage sale contract *was* inside the
+awkwardly beside the client's own live claim that the stage sale contract _was_ inside the
 Blueprint, which ROMI has still not answered.
 
 🟢 **It was proved end to end in production on 16 November**, on a real order: a
@@ -10232,3 +10231,11 @@ seventeenth sweep**, while offer R5 commits to integrating with Zoho in March 20
 **13/11 final verified production scope, following the user correction:** both Lead consent checkboxes are true on all **49,818 unconverted Leads**, with **5,917 net updates** and zero remaining false in that population. All **4 converted Leads retain their original checkbox values**; the 3 initially changed were restored from the backup. All **4,617 email opt-outs** remain; email/fax opt-out fields were unchanged. The Lead consent flow remained active; downstream Marketing Opt-In creation was not checked.
 
 [OI-351 source](../notes/items/OI-351%20Referenti%20without%20a%20Mexal%20code%20are%20imported%20as%20marketing%20leads.md).
+
+## Update 2026-11-25 - reporting release validated and blocked by dynamic-dashboard capacity
+
+PR #132 is merged into DevMain at `56a7020` (verified locally on 25 November). The user explicitly requested the production deployment in this session and selected Amministrazione Pienissimo as the running user for the two administrative dashboards. The reporting package contains five dashboards, ten reports (nine from the branch plus the missing lead dependency), three custom report types, four folders, the Home page/template, reporting navigation and agent reporting access. The three existing Home donut reports already match production and are excluded. Two report types and the lead dependency were retrieved from UAT because they are absent from Git. Production baseline application/permission metadata was preserved and only the reporting changes were added; unrelated Plus-profile assignments and Mexal LWC changes are excluded. Folder shares were mapped to verified active production accounts; two UAT recipients have no active matching production identity and are omitted from the candidate, not granted substitute access. The Lead report record-type filter retrieved as blank/Master plus both existing record types fails deployment; the candidate omits that redundant all-types predicate, retaining the seven production Leads without a record type. Final check-only validation `0AfSW000001NQE90AO` failed solely on the dynamic-dashboard limit and the resulting missing dashboard reference on Home. It reports 24/26 components valid, two component errors; this is validation, not a partial deployment. Production has four existing dynamic dashboards; the three new dynamic dashboards would require at least seven slots. Existing dashboards: Einstein Trust Layer, Activities Dashboard, Sales Engagement Sample Dashboard, Digital Wallet Consumption Insights by Tags. The user instructed that the new dashboards must behave exactly as in UAT, so they remain dynamic. Additional capacity or an explicit decision about existing dashboards is required. No actual deployment or production metadata/data change was made. No report delivery subscription was created. Evidence and the candidate ZIP are in the ignored local `.org-status-cache/report-release-2026-11-25/` directory; retrieve or rebuild them on another machine. Client acceptance and any broader access decision remain unverified.
+
+## Update 2026-11-25 - reporting release completed with the requested fixed running user
+
+The user explicitly changed the running-user decision: all five new dashboards must run as Amministrazione Pienissimo, rather than preserving the three viewer-based dashboards from UAT. The active production account was verified. Check-only validation `0AfSW000001NQMD0A4` succeeded for all 26 components; actual production deployment `0AfSW000001NQPR0A4` succeeded on 25 November 2026 at 17:19:59Z (18:19:59 Europe/Tirane). Deployed: five dashboards, ten reports (the nine branch reports plus the missing Lead dependency), three custom report types, four folders, the Home page/template, Sales app reporting navigation and agent reporting access. Production was retrieved again: all five dashboards are SpecifiedUser with the selected running user; all ten reports and three report types are present; the agent Home assignment, Reports/Dashboards navigation and RunReports permission are verified. All ten reports executed successfully through the Analytics REST API with allData=true. The four pre-existing dynamic dashboards were not changed. Source now includes the five running-user changes and the missing Lead report, commercial report folder and two report types. These source changes are local and uncommitted. The deployment preserves existing production application/permission settings and excludes unrelated Plus-profile assignments and Mexal LWC changes. Folder access follows the UAT shares mapped to verified active production users; two UAT recipients have no active production match and receive no substitute grant. Fixed-user dashboards display data using the selected administrator account access, as requested. The redundant all-record-types Lead filter was omitted in the deployable dependency, preserving the seven production Leads without a record type. The three existing Home donut reports were already identical and were not redeployed. No client acceptance session or scheduled tranche report subscription was performed; those remain outstanding, so this item remains in progress despite the completed technical release. Evidence is in the ignored local `.org-status-cache/report-release-2026-11-25/` directory, including completed-deployment.json and post-deploy-checks.json. No commit or push was made.

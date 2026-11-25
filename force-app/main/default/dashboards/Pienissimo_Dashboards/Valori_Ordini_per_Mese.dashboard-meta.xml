@@ -37,10 +37,11 @@
         <numberOfColumns>12</numberOfColumns>
         <rowHeight>60</rowHeight>
     </dashboardGridLayout>
-    <dashboardType>LoggedInUser</dashboardType>
+    <dashboardType>SpecifiedUser</dashboardType>
     <description
-  >Somma del valore degli ordini per mese della data di inizio ordine nell anno corrente, secondo gli accessi dell utente.</description>
+  >Somma del valore degli ordini per mese della data di inizio ordine nell anno corrente, con i dati visibili all utente di esecuzione configurato.</description>
     <isGridLayout>true</isGridLayout>
+    <runningUser>amministrazione@pienissimo.com</runningUser>
     <textColor>#16325C</textColor>
     <title>Valori Ordini per Mese</title>
     <titleColor>#16325C</titleColor>

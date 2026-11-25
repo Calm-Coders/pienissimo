@@ -36,10 +36,11 @@
         <numberOfColumns>12</numberOfColumns>
         <rowHeight>60</rowHeight>
     </dashboardGridLayout>
-    <dashboardType>LoggedInUser</dashboardType>
+    <dashboardType>SpecifiedUser</dashboardType>
     <description
-  >Numero di lead per stato dal report Informazioni generali sul Lead, secondo gli accessi dell utente che visualizza il dashboard.</description>
+  >Numero di lead per stato dal report Informazioni generali sul Lead, con i dati visibili all utente di esecuzione configurato.</description>
     <isGridLayout>true</isGridLayout>
+    <runningUser>amministrazione@pienissimo.com</runningUser>
     <textColor>#16325C</textColor>
     <title>Lead per Stato</title>
     <titleColor>#16325C</titleColor>

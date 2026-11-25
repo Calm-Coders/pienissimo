@@ -1,21 +1,29 @@
 ---
 id: OI-381
 type: open-item
-status: open
+status: in-progress
 owner: Aurel Mrruku
 with: Anita Aga, Elena Spini, Angelo Pastorelli, Gianpaolo Motta
 org: ROMI
 raised: 2026-11-20
-updated: 2026-11-24
+updated: 2026-11-25
 depends_on: [OI-376, OI-377]
 blocks: [fase-1-closure]
 severity: high
-uncertain: whether Angelo Pastorelli gave the written consent Elena Spini asked for on 24 November at 17:18 CET - nothing records an answer by 22:45 CET; and whether anything was deployed outside source control on 23 November, which only an org inspection can settle
+uncertain: client acceptance, broader visibility agreement and scheduled tranche-report delivery remain unverified
 source: notes/meetings/2026-11-20 INTERNA Check Report.md
 also_source: Slack C0B5T3RB4FM 2026-11-24 15:35-17:18 CET
 ---
 
 # OI-381 - The report and dashboard remediation is unmerged and due in production on a holiday
+
+## Update 2026-11-25 - production release completed with the requested fixed running user
+
+The user explicitly changed the running-user decision: all five new dashboards must run as Amministrazione Pienissimo, rather than preserving the three viewer-based dashboards from UAT. The active production account was verified. Check-only validation `0AfSW000001NQMD0A4` succeeded for all 26 components; actual production deployment `0AfSW000001NQPR0A4` succeeded on 25 November 2026 at 17:19:59Z (18:19:59 Europe/Tirane). Deployed: five dashboards, ten reports (the nine branch reports plus the missing Lead dependency), three custom report types, four folders, the Home page/template, Sales app reporting navigation and agent reporting access. Production was retrieved again: all five dashboards are SpecifiedUser with the selected running user; all ten reports and three report types are present; the agent Home assignment, Reports/Dashboards navigation and RunReports permission are verified. All ten reports executed successfully through the Analytics REST API with allData=true. The four pre-existing dynamic dashboards were not changed. Source now includes the five running-user changes and the missing Lead report, commercial report folder and two report types. These source changes are local and uncommitted. The deployment preserves existing production application/permission settings and excludes unrelated Plus-profile assignments and Mexal LWC changes. Folder access follows the UAT shares mapped to verified active production users; two UAT recipients have no active production match and receive no substitute grant. Fixed-user dashboards display data using the selected administrator account access, as requested. The redundant all-record-types Lead filter was omitted in the deployable dependency, preserving the seven production Leads without a record type. The three existing Home donut reports were already identical and were not redeployed. No client acceptance session or scheduled tranche report subscription was performed; those remain outstanding, so this item remains in progress despite the completed technical release. Evidence is in the ignored local `.org-status-cache/report-release-2026-11-25/` directory, including completed-deployment.json and post-deploy-checks.json. No commit or push was made.
+
+## Update 2026-11-25 - merged and validated; dynamic-dashboard capacity blocks production
+
+PR #132 is merged into DevMain at `56a7020` (verified locally on 25 November). The user explicitly requested the production deployment in this session and selected Amministrazione Pienissimo as the running user for the two administrative dashboards. The reporting package contains five dashboards, ten reports (nine from the branch plus the missing lead dependency), three custom report types, four folders, the Home page/template, reporting navigation and agent reporting access. The three existing Home donut reports already match production and are excluded. Two report types and the lead dependency were retrieved from UAT because they are absent from Git. Production baseline application/permission metadata was preserved and only the reporting changes were added; unrelated Plus-profile assignments and Mexal LWC changes are excluded. Folder shares were mapped to verified active production accounts; two UAT recipients have no active matching production identity and are omitted from the candidate, not granted substitute access. The Lead report record-type filter retrieved as blank/Master plus both existing record types fails deployment; the candidate omits that redundant all-types predicate, retaining the seven production Leads without a record type. Final check-only validation `0AfSW000001NQE90AO` failed solely on the dynamic-dashboard limit and the resulting missing dashboard reference on Home. It reports 24/26 components valid, two component errors; this is validation, not a partial deployment. Production has four existing dynamic dashboards; the three new dynamic dashboards would require at least seven slots. Existing dashboards: Einstein Trust Layer, Activities Dashboard, Sales Engagement Sample Dashboard, Digital Wallet Consumption Insights by Tags. The user instructed that the new dashboards must behave exactly as in UAT, so they remain dynamic. Additional capacity or an explicit decision about existing dashboards is required. No actual deployment or production metadata/data change was made. No report delivery subscription was created. Evidence and the candidate ZIP are in the ignored local `.org-status-cache/report-release-2026-11-25/` directory; retrieve or rebuild them on another machine. Client acceptance and any broader access decision remain unverified.
 
 **The reports and dashboards exist. They were reviewed and accepted on 20
 November, they are in UAT, and they are in source on `DevAnita19` — three
@@ -43,14 +51,14 @@ Pienissimo traffic since the 19/11 weekly post:**
 the two named gatekeepers, in the project channel, in writing. What followed, in
 the same channel:
 
-| Time (CET) | Who | What |
-| --- | --- | --- |
-| 15:35:51 | Angelo Pastorelli | _"mettiamo live le dashboard"_ |
-| 16:05:56 | Elena Spini | _"[Aurel mrruku] **quando possiamo portare report/dashboard in PROD?**"_ |
-| 16:14:32 | Aurel Mrruku | _"**domani entro le 12 va bene ?**"_ |
-| 16:15:45 | Aurel Mrruku | _"**ma non facciamo dei test con loro ? devono decidere chi deve vedere sti report ?**"_ |
-| 16:35:05 | Elena Spini | _"ma penso che **per ora nessuno sta usando nulla**... ma e per portarci avanti questa cosa 'che avevamo pending'"_ |
-| 17:18:41 | Elena Spini | _"[Angelo Pastorelli] **ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno dicesse che abbiamo toccato PROD senza consenso**"_ |
+| Time (CET) | Who               | What                                                                                                                                                  |
+| ---------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 15:35:51   | Angelo Pastorelli | _"mettiamo live le dashboard"_                                                                                                                        |
+| 16:05:56   | Elena Spini       | _"[Aurel mrruku] **quando possiamo portare report/dashboard in PROD?**"_                                                                              |
+| 16:14:32   | Aurel Mrruku      | _"**domani entro le 12 va bene ?**"_                                                                                                                  |
+| 16:15:45   | Aurel Mrruku      | _"**ma non facciamo dei test con loro ? devono decidere chi deve vedere sti report ?**"_                                                              |
+| 16:35:05   | Elena Spini       | _"ma penso che **per ora nessuno sta usando nulla**... ma e per portarci avanti questa cosa 'che avevamo pending'"_                                   |
+| 17:18:41   | Elena Spini       | _"[Angelo Pastorelli] **ci dai tu il consenso a fare questo deploy? non vorremmo mai che qualcuno dicesse che abbiamo toccato PROD senza consenso**"_ |
 
 🔴 **Angelo Pastorelli has not answered that question.** Checked at **21:45Z /
 22:45 CET on 24 November**: no reply in the channel, in the thread, or in any
@@ -95,13 +103,13 @@ this procedure's own 23/11 report commit; the working tree was clean at start.
 **Monday 23 November came and went. Nothing was merged, nothing was committed,
 and nothing is recorded as deployed.** Checked at 21:45Z on 23 November:
 
-| Check | Result |
-| --- | --- |
-| Commits on any branch since 2026-11-20T22:00Z | **None**, apart from this procedure's own 20/11 report commit `9e989b0` |
-| `origin/DevAnita19` | **Unchanged** at `a25d4b3` - still 27 files, +1,132 / -71, still unmerged |
-| `origin/DevMain` | **Unchanged** at `9e989b0`; holds none of the reports or dashboards |
-| The stakeholder request the release was conditional on | 🔴 **No source records it being made** |
-| Angelo Pastorelli's and Gianpaolo Motta's ok | 🔴 **Still not recorded, in any form** |
+| Check                                                  | Result                                                                    |
+| ------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Commits on any branch since 2026-11-20T22:00Z          | **None**, apart from this procedure's own 20/11 report commit `9e989b0`   |
+| `origin/DevAnita19`                                    | **Unchanged** at `a25d4b3` - still 27 files, +1,132 / -71, still unmerged |
+| `origin/DevMain`                                       | **Unchanged** at `9e989b0`; holds none of the reports or dashboards       |
+| The stakeholder request the release was conditional on | 🔴 **No source records it being made**                                    |
+| Angelo Pastorelli's and Gianpaolo Motta's ok           | 🔴 **Still not recorded, in any form**                                    |
 
 ⚠ **The org was not opened**, so this is a source-control answer and not a
 production one. Nothing says a deployment was made outside git - and nothing
@@ -121,21 +129,21 @@ _"all'amministrazione prima della fine del mese"_ - and nothing is scheduled.
 🟢 **`origin/DevAnita19`, unmerged, 27 files, +1,132 / -71 lines**, three commits
 by **Anita Aga**:
 
-| Commit | When | Subject |
-| --- | --- | --- |
-| `026cc33` | 2026-11-19 17:52:37 +01:00 | _"Reports, Dashboards and Home Page Layout edits"_ |
+| Commit    | When                       | Subject                                                    |
+| --------- | -------------------------- | ---------------------------------------------------------- |
+| `026cc33` | 2026-11-19 17:52:37 +01:00 | _"Reports, Dashboards and Home Page Layout edits"_         |
 | `47a2a42` | 2026-11-20 11:29:54 +01:00 | _"Modifications on report and added visibility to agents"_ |
-| `a25d4b3` | 2026-11-20 11:46:22 +01:00 | _"removed the sync icon from the mexal sync component"_ |
+| `a25d4b3` | 2026-11-20 11:46:22 +01:00 | _"removed the sync icon from the mexal sync component"_    |
 
 🔑 **This closes the question the 19/11 sweep could not answer** — whether
 `026cc33` was the OI-377 work. It is, and two more commits followed.
 
 **Five dashboards**, in two new folders:
 
-| Folder | Dashboards |
-| --- | --- |
-| `Pienissimo_Dashboards` | `Lead_per_Stato`, `Pipeline_Opportunita`, `Valori_Ordini_per_Mese` |
-| `Pienissimo_Admin_Dashboards` | `Fatture_Incassi_e_Insoluti`, `Tranche_in_Scadenza` |
+| Folder                        | Dashboards                                                         |
+| ----------------------------- | ------------------------------------------------------------------ |
+| `Pienissimo_Dashboards`       | `Lead_per_Stato`, `Pipeline_Opportunita`, `Valori_Ordini_per_Mese` |
+| `Pienissimo_Admin_Dashboards` | `Fatture_Incassi_e_Insoluti`, `Tranche_in_Scadenza`                |
 
 **Six reports** in `Pienissimo_Dashboard_Reports` — `Fatture_da_Incassare`,
 `Fatture_per_Stato_Pagamento`, `Scadenze_Insolute_Prime_5`,
@@ -163,11 +171,11 @@ earlier form.
 
 From [the 20/11 meeting](../meetings/2026-11-20%20INTERNA%20Check%20Report.md):
 
-| | |
-| --- | --- |
-| Decision recorded | _"le dashboard e i report realizzati sono **completi e pronti** per l'eventuale rilascio"_ |
+|                    |                                                                                                                                                                             |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Decision recorded  | _"le dashboard e i report realizzati sono **completi e pronti** per l'eventuale rilascio"_                                                                                  |
 | Next step recorded | _"[Aurel mrruku] Eseguire il deployment delle dashboard e dei report: **in produzione lunedi se richiesto dagli stakeholder**, senza pero fornire spiegazioni agli utenti"_ |
-| Gate | 🔴 **Angelo Pastorelli and Gianpaolo Motta.** Elena Spini's status post: _"In PROD solo dopo l'ok di Angelo e Gianpaolo"_ |
+| Gate               | 🔴 **Angelo Pastorelli and Gianpaolo Motta.** Elena Spini's status post: _"In PROD solo dopo l'ok di Angelo e Gianpaolo"_                                                   |
 
 ## 🔴 Why this is an item and not a completed task
 

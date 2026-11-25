@@ -79,7 +79,7 @@
   >Fatture per stato di pagamento e importi delle rate non pagate in scadenza nei prossimi 30 giorni, raggruppati per settimana.</description>
     <isGridLayout>true</isGridLayout>
     <owner>a.mrruku@pienissimo.uat</owner>
-    <runningUser>a.mrruku@pienissimo.uat</runningUser>
+    <runningUser>amministrazione@pienissimo.com</runningUser>
     <textColor>#16325C</textColor>
     <title>Fatture - Incassi e Scadenze</title>
     <titleColor>#16325C</titleColor>

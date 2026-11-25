@@ -40,10 +40,11 @@
         <numberOfColumns>12</numberOfColumns>
         <rowHeight>60</rowHeight>
     </dashboardGridLayout>
-    <dashboardType>LoggedInUser</dashboardType>
+    <dashboardType>SpecifiedUser</dashboardType>
     <description
-  >Somma degli importi delle opportunita aperte per fase, secondo gli accessi dell utente che visualizza il dashboard.</description>
+  >Somma degli importi delle opportunita aperte per fase, con i dati visibili all utente di esecuzione configurato.</description>
     <isGridLayout>true</isGridLayout>
+    <runningUser>amministrazione@pienissimo.com</runningUser>
     <textColor>#16325C</textColor>
     <title>Pipeline Opportunita</title>
     <titleColor>#16325C</titleColor>

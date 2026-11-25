@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <DashboardFolder xmlns="http://soap.sforce.com/2006/04/metadata">
-    <accessType>Hidden</accessType>
+    <folderShares>
+        <accessLevel>View</accessLevel>
+        <sharedTo>barbara@pienissimo.com</sharedTo>
+        <sharedToType>User</sharedToType>
+    </folderShares>
+    <folderShares>
+        <accessLevel>View</accessLevel>
+        <sharedTo>carmen.t@pienissimo.com</sharedTo>
+        <sharedToType>User</sharedToType>
+    </folderShares>
+    <folderShares>
+        <accessLevel>View</accessLevel>
+        <sharedTo>davide.s@pienissimo.com</sharedTo>
+        <sharedToType>User</sharedToType>
+    </folderShares>
+    <folderShares>
+        <accessLevel>View</accessLevel>
+        <sharedTo>martina.p@pienissimo.com</sharedTo>
+        <sharedToType>User</sharedToType>
+    </folderShares>
+    <folderShares>
+        <accessLevel>View</accessLevel>
+        <sharedTo>sara.d@pienissimo.com</sharedTo>
+        <sharedToType>User</sharedToType>
+    </folderShares>
+    <folderShares>
+        <accessLevel>View</accessLevel>
+        <sharedTo>valentina.v@pienissimo.com</sharedTo>
+        <sharedToType>User</sharedToType>
+    </folderShares>
     <name>Pienissimo - Dashboard Admin</name>
-    <publicFolderAccess>ReadOnly</publicFolderAccess>
 </DashboardFolder>

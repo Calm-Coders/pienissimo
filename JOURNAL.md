@@ -10,6 +10,21 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-25 - codex - reporting release deployed with fixed running user
+
+- **Did:** applied the explicit user instruction to run all five dashboards as Amministrazione Pienissimo. Validated (`0AfSW000001NQMD0A4`) and deployed (`0AfSW000001NQPR0A4`) all 26 reporting components to `Pienissimo Prod`; completed 17:19:59Z.
+- **Verified:** retrieved production metadata again; all five dashboards are SpecifiedUser with the selected active account. Ten reports, three report types, Home/template, agent Home assignment, reporting navigation and RunReports are present. All ten reports executed successfully via Analytics REST API with allData=true. Existing dynamic dashboards were not changed.
+- **Source:** five dashboard metadata files changed; added the missing Lead report, commercial report folder and two report types. No commit/push. Environment-specific folder sharing follows verified UAT-to-Prod mappings; two unmatched UAT recipients were omitted from the deploy candidate. Unrelated Plus-profile assignments and Mexal LWC changes were excluded.
+- **Records:** OI-381, MAP, INDEX and both rendered tracker/recap twins updated from the atomic note. Earlier blocked validations are historical. Local evidence: `.org-status-cache/report-release-2026-11-25/completed-deployment.json` and `post-deploy-checks.json`.
+- **Next:** client acceptance and scheduled tranche-report delivery remain open; neither was performed in this deployment. OI-381 stays in progress for those outstanding tasks. No Apex code or tests were changed; Salesforce ran no Apex tests for this metadata-only package.
+
+## 2026-11-25 - codex - reporting release preparation and production validation
+
+- **Did:** compared reporting changes now merged by PR #132 (`56a7020`) with live production; retrieved missing UAT dependencies into an isolated ignored workspace; prepared a targeted ZIP and ran check-only validations.
+- **State:** final validation `0AfSW000001NQE90AO` failed only on dynamic-dashboard capacity and the resulting Home reference. No actual deployment or production metadata/data change. OI-381, MAP, INDEX and both rendered trackers/recaps updated from the note.
+- **Next:** retain the UAT dynamic-dashboard behaviour requested by the user. Obtain two more slots through an explicit decision about existing dashboards or additional Salesforce capacity; then revalidate, deploy and verify. Do not convert or delete existing dashboards without that decision.
+- **Watch:** use Amministrazione Pienissimo for the two administrative dashboards. Candidate includes 10 reports, 5 dashboards, 3 report types, 4 folders, Home/template/app/agent access. Three Home donut reports are already identical in Prod. Two UAT folder recipients have no matching active production account. No scheduled report subscription was created. Local evidence/ZIP: `.org-status-cache/report-release-2026-11-25/`; no commit or push.
+
 ## 2026-11-24 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Slack (4 conversations + 2 threads + 5 searches + the canvas),
@@ -42,7 +57,7 @@ Keep the twenty most recent entries here; archive older ones to
   being offered to another project** on the premise _"se non parte pienissimo fase
   2 e libera"_; she built the reports and owns PR #132. 🔴 **24/11 was also the
   nominal marketing-training date and nothing was delivered** - the instruction is
-  to *propose* dates, so 26/11 is two days away with nothing agreed (**OI-378**).
+  to _propose_ dates, so 26/11 is two days away with nothing agreed (**OI-378**).
 - **Next:** **the deploy is tomorrow by 12:00 and has no written consent** - that
   is the one thing to check first. Then whether PR #132 was merged or the release
   went from a personal branch, whether the client was told anything, and whether
@@ -101,7 +116,7 @@ Keep the twenty most recent entries here; archive older ones to
   note to correct, not to re-open** - and the standing practice it cites
   (_"anche un campo, anche una label deve passare sempre"_) would have been
   broken. Do not read OI-381's rewritten `uncertain:` as proof that nothing was
-  deployed; it records that nothing was *committed*.
+  deployed; it records that nothing was _committed_.
 
 ---
 
@@ -203,13 +218,13 @@ Keep the twenty most recent entries here; archive older ones to
 ## 2026-11-18 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail (3 queries + 2 threads read in full), Slack (4 conversations
-  + the canvas), Drive (2 searches, 3 full reads + a revision list) and Fathom from
-  watermark **2026-11-17T22:00Z**. Read the manual-steps tracker, the change-recap
-  workbook and the Fase 2 offer V.4 in full, and reconstructed the day's deployment
-  from the developer's own journal entry above plus the git history. Opened
-  **OI-374**; updated OI-301, OI-322, OI-342, OI-358, OI-364, OI-370, OI-373, the
-  manual-steps tracker and the change recap; MAP, INDEX, both trackers (#374 new, 6
-  rows regenerated each) and §84 in both recaps.
+  - the canvas), Drive (2 searches, 3 full reads + a revision list) and Fathom from
+    watermark **2026-11-17T22:00Z**. Read the manual-steps tracker, the change-recap
+    workbook and the Fase 2 offer V.4 in full, and reconstructed the day's deployment
+    from the developer's own journal entry above plus the git history. Opened
+    **OI-374**; updated OI-301, OI-322, OI-342, OI-358, OI-364, OI-370, OI-373, the
+    manual-steps tracker and the change recap; MAP, INDEX, both trackers (#374 new, 6
+    rows regenerated each) and §84 in both recaps.
 - **State:** `DevMain` `92899c3` → **`1a46bf2`** — one PR (#131, `DevAnita17`,
   14:25:29 CET) and Aurel Mrruku's own release commit. 🔑 **The whole delta
   `4478915..4d18d57` is in Pienissimo Prod**, in three quick deploys
